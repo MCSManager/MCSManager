@@ -5,5 +5,8 @@ testServer/
 *.jpg
 *.png
 *.jpeg
-core/*.json
-news.json
+*.exe
+users/*.json
+server/*.json
+public/*.json
+McserverConfig.json

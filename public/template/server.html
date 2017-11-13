@@ -1,0 +1,82 @@
+<div id='ServerList' class="OneContainer">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="Panel PanelBlue">
+				<div class="PanelTitle">服务器列表</div>
+				<div class="PanelBody">
+					<div class="row">
+						<div class="col-sm-12 PanelItemF">
+							<div class="PanelItem" v-on:click="newServerx()">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 引导创建服务器
+							</div>
+							<div class="PanelItem" v-on:click="newServer()">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新的服务器
+							</div>
+						</div>
+					</div>
+
+					<div class="PanelItem" v-for="item of items">
+						<div class="row">
+							<div class="col-md-7">
+								<div class="PanelItemInfo">
+									<h4 v-if="item.data.jarName == ''"><span class="color-high-red">[未配置端] </span><s v-text="item.serverName"></s></h4> 
+									<h4 v-if="item.data.jarName != ''" v-text="item.serverName"></h4>
+									状态:
+									<span v-if="item.data.run" class="color-green"> 正在运行  </span>
+									<span v-else="item.data.run" class="color-red"> 关闭  </span> | 创建时间 ：<span v-text="item.data.createDate">  </span> | 最后启动：
+									<span v-text="item.data.lastDate"> </span> | 端: <span v-text="item.data.jarName">  </span > 
+									</div>
+								</div>
+								<div class="col-md-5 NextCol">
+									<div class="PanelItemMuem">
+											<!--<button class="btn btn-success">开启</button>
+											<button class="btn btn-success">关闭</button>-->
+											<button class="btn btn-success" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName)">
+												参数 | 配置
+											</button>
+											<button class="btn btn-info" v-on:click="onRedirect('./template/component/console.html', 'server/console', item.serverName );">
+												控制 | 管理
+											</button>
+											<button class="btn btn-danger" v-on:click="toDeleteServer(item.serverName)">删除</button>
+											
+									</div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		console.log('页面开始')
+		VIEW_MODEL.newVue('ServerList', {
+			el: '#ServerList',
+			methods: {
+				onRedirect: function(link, api,serverName) {
+					RES.redirectPage(link, api, serverName);
+				},
+				newServer:function(){
+					RES.redirectPage('./template/component/newserver.html', null, '');
+				},
+				newServerx:function(){
+					RES.redirectPage('./template/component/newserverx.html', null, '');
+				},
+				toDeleteServer :function(serverName){
+					//删除服务器
+					console.log('删除服务器:' + serverName);
+					var result = confirm('是否删除 ['+serverName+'] 这个服务端？\n注意: 删除服务器并不会删除服务端文件');
+					if(!result)return;
+					WS.sendMsg('server/delete',serverName);
+					RES.redirectPage('./template/server.html', 'server/view');
+				}
+			}
+		});
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭')
+	});
+</script>

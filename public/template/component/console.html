@@ -1,0 +1,226 @@
+<div id='ConsolePanel' class="OneContainer">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">服务器信息</div>
+				<div class="PanelBody">
+
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span> 名称: {{ serverData.name }}
+					</div>
+
+				</div>
+			</div>
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">服务器操作</div>
+				<div class="PanelBody">
+
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toOpenServer()" v-if="!run">
+							<span class="glyphicon glyphicon-play" aria-hidden="true"> </span> 开启服务器
+						</div>
+					</transition>
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toCommand('stop');toCommand('end')" v-if="run">
+							<span class="glyphicon glyphicon-pause" aria-hidden="true"> </span> 关闭服务器
+						</div>
+					</transition>
+					<div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
+						<span class="glyphicon glyphicon-refresh" aria-hidden="true"> </span> 重启服务器
+					</div>
+					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-if="run">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"> </span> 强制性结束进程
+					</div>
+				</div>
+			</div>
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">FTP 链接信息</div>
+				<div class="PanelBody">
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-user" aria-hidden="true"> </span> 账号: {{ username + "." + serverData.name }}
+					</div>
+
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span> 端口: {{ FTP_port }} 
+					</div>
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> 密码: <span style="color: #666666;">&lt;与登陆密码相同&gt;</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="Panel PanelRed">
+				<div class="PanelTitle">服务器实时状态</div>
+				<div class="PanelBody">
+					<div class="row">
+						<div class="col-md-3 col-sm-6" v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
+							<div class="PanelItemBlock">
+								<div class="LogV"><span class="glyphicon glyphicon-console" aria-hidden="true"> </span> </div>
+								<div class="LogK">命令控制台</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6" v-on:click="toProperties()">
+							<div class="PanelItemBlock">
+								<div class="LogV"><span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </div>
+								<div class="LogK">服务器配置</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-4">
+							<div class="LogV">{{ sysCpu }} %</div>
+							<div class="LogK">CPU 使用 </div>
+						</div>
+						<div class="col-md-2 col-sm-4">
+							<div class="LogV">{{ (100 - sysMonery).toFixed(1) }} %</div>
+							<div class="LogK">内存使用</div>
+						</div>
+						<div class="col-md-2 col-sm-4" v-if="run">
+							<div class="LogV color-green">运行中</div>
+							<div class="LogK">状态</div>
+						</div>
+						<div class="col-md-2 col-sm-4 " v-if="!run">
+							<div class="LogV">非运行</div>
+							<div class="LogK">状态</div>
+						</div>
+						<!--<div class="col-md-2 col-sm-4">
+							<div class="LogV"><samll><b>{{ serverData.name }} </samll></b></div>
+							<div class="LogK">名字</div>
+						</div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-9" id='ChartCPUFor'>
+			<div class="Panel PanelRed">
+				<div class="PanelTitle">CPU（中央处理器）利用率 （%）</div>
+				<div class="PanelBody">
+					<div class="row">
+						<div id="ChartCPU" style="height:280px;width:100%;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-9">
+			<div class="Panel PanelRed">
+				<div class="PanelTitle">物理内存使用率 （%）</div>
+				<div class="PanelBody">
+					<div class="row">
+						<div id="ChartRAM" style="height:280px;width:100%;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		//默认隐藏控制台
+		MCSERVER.colmDo();
+
+		//		PAGE.MinecraftConsole = document.getElementById('MinecraftConsole');
+
+		var serverName = VIEW_MODEL['ConsolePanel'].serverData.name;
+		MCSERVER.listenServername = serverName;
+		//		WS.sendMsg('server/console/ws', serverName);
+
+		VIEW_MODEL.newVue('ConsolePanel', {
+			el: '#ConsolePanel',
+			methods: {
+				toOpenServer: function() {
+					this.allowedStart = !this.allowedStart;
+					WS.sendMsg('server/console/open', serverName);
+				},
+				toCommand: function(parCommand) {
+					if(parCommand && typeof(parCommand) == 'string') this.command = parCommand;
+					var data = {
+						command: this.command,
+						serverName: serverName
+					};
+					if(this.command.length >= 1 || typeof(parCommand) == 'string') {
+						WS.sendMsg('server/console/command', JSON.stringify(data));
+					}
+					this.command = '';
+				},
+				toProperties: function() {
+					RES.redirectPage('./template/component/properties.html', 'server/properties', serverName);
+				},
+				toTerminal: function() {
+					//					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName );
+					RES.redirectPage('./template/component/terminal.html', 'server/console', serverName);
+				}
+			},
+			data: {
+				//				MinecraftConsoleBuff: 'Minecraft 控制台，您可以在这里实时监听到这个Minecraft服务器的内容:',
+				command: "",
+				allowedStart: true,
+				runStatusClass: '',
+				username : MCSERVER.username
+			},
+			watch: {
+				run: function(cur, old) {
+					//if(cur == true)this.toCommand('list')
+				}
+			}
+		});
+
+		PAGE.timerR = setInterval(function() {
+			WS.sendMsg('server/console', serverName);
+		}, 2000);
+
+		//CPU
+		var CPUoption = TOOLS.charts.DefOption;
+		var RAMoption = TOOLS.charts.DefOption;
+
+		//use
+		var ChartCPU = null;
+		var ChartRAM = null;
+		PAGE.ChartLogIs = true;
+		TOOLS.charts.bulider('ChartCPU', 16, {}, function(chart) {
+			ChartCPU = chart;
+
+			function doing() {
+				chart.replaceData(VIEW_MODEL['ConsolePanel'].CPUlog);
+				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
+				chart.reOption();
+				if(PAGE.ChartLogIs) setTimeout(doing, 2000);
+			}
+			doing();
+		}, CPUoption);
+		//ChartRAM
+		TOOLS.charts.bulider('ChartRAM', 16, {}, function(chart) {
+			ChartRAM = chart;
+
+			function doing() {
+				chart.replaceData(VIEW_MODEL['ConsolePanel'].RAMlog);
+				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
+				chart.reOption();
+				if(PAGE.ChartLogIs) setTimeout(doing, 2000);
+			}
+			doing();
+		}, CPUoption);
+		
+		PAGE.chartResizeFunc = function() {
+			console.log('图表改变')
+			ChartCPU.chart.resize();
+			ChartRAM.chart.resize();
+		}
+
+		MI.listener('colmchangeEnd', PAGE.chartResizeFunc);
+		MI.listener('resize', PAGE.chartResizeFunc);
+
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭');
+		//		WS.sendMsg('server/console/remove', '');
+		//		PAGE[chartResizeFunc] = undefined;
+		MI.onDestroy('colmchangeEnd', PAGE.chartResizeFunc);
+		MI.onDestroy('resize', PAGE.chartResizeFunc);
+		PAGE.ChartLogIs = false;
+		clearInterval(PAGE.timerR);
+	});
+</script>

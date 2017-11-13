@@ -1,0 +1,108 @@
+<div id='ServerPanel' class="OneContainer">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="Panel PanelBlue">
+				<div class="PanelTitle">Minecraft 服务器控制面板与资料</div>
+				<div class="PanelBody">
+					<div class="row" style="padding-top: 30px;padding-bottom: 30px;">
+						<div class="col-md-3">
+							<div class="PanelItem">服务器名字: {{ name }}</div>
+							<div class="PanelItem">创建时间: {{ createDate }}</div>
+							<div class="PanelItem" v-if="run">当前状况: 正在运行</div>
+							<div class="PanelItem" v-else="run">当前状况: 未运行</div>
+							<div class="PanelItem">最后一次启动时间: {{ lastDate }}</div>
+						</div>
+						<div class="col-md-4">
+
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">服务器名字</span>
+								<input type="text" class="form-control" v-model="name">
+							</div>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">Java 路径</span>
+								<input type="text" class="form-control" v-model="java">
+							</div>
+							<p>以 {{ cwd }} 作为服务端根目录</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 服务端文件名 </span>
+								<input type="text" class="form-control" v-model="jarName">
+							</div>
+
+						</div>
+						<div class="col-md-5">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">启动附加参数</span>
+								<input type="text" class="form-control" v-model="addCmd">
+							</div>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">服务器根目录</span>
+								<input type="text" class="form-control" v-model="cwd">
+							</div>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 最大内存堆  </span>
+								<input type="text" class="form-control" v-model="Xmx">
+							</div>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 初始内存堆  </span>
+								<input type="text" class="form-control" v-model="Xms">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<p>普通用户无权修改任何服务器的启动参数，仅仅可修改 Minecraft 相关配置。</p>
+							<div class="Line"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="" style="float: right;margin-top: 20px;">
+								<button class="btn btn-info" v-on:click="toConsole(name)">前往此服务器的控制台</button>
+								<button class="btn btn-success" v-on:click="toRebulider()">更改配置</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		console.log('页面开始')
+		VIEW_MODEL.newVue('ServerPanel', {
+			el: '#ServerPanel',
+			data: {
+				oldServerName : ''
+			},
+			methods: {
+				toConsole: function(serverName) {
+					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName );
+				},
+				toRebulider: function() {
+					var addCmdList = this.addCmd.split(' ');
+					var obj = {
+						addCmd: addCmdList,
+						serverName: this.name,
+						jarName: this.jarName,
+						cwd: this.cwd,
+						Xmx: this.Xmx,
+						Xms: this.Xms,
+						java: this.java,
+						oldServerName : this.oldServerName 
+					};
+					WS.sendMsg('server/rebulider', JSON.stringify(obj));
+					setTimeout(function(){RES.redirectPage('./template/server.html','server/view');},100);
+				}
+
+			},
+		});
+		VIEW_MODEL['ServerPanel'].addCmd = VIEW_MODEL['ServerPanel'].addCmd.toString().replace(/,/gim, ' ');
+		VIEW_MODEL['ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + " ";
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭')
+	});
+</script>

@@ -1,0 +1,26 @@
+{
+  "name": "mcserver",
+  "version": "8.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "colors": "^1.1.2",
+    "connect": "^3.6.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "express-ws": "^3.0.0",
+    "jade": "^1.11.0",
+    "os-utils": "0.0.14",
+    "pidusage": "^1.1.5",
+    "properties": "^1.2.1",
+    "vue": "^2.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

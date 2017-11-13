@@ -1,0 +1,104 @@
+<div id='Terminal'>
+	<div id="TerminalMinecraft" contenteditable="false">
+		<div id="TerminalTOP" style="height: 0px;"></div>
+		<div data-terminalPage="2">
+			<div v-for="item in LineLength">{{ item }}</div>
+		</div>
+		<div data-terminalPage="1">
+			<div v-for="item in LineLength">2</div>
+		</div>
+		<div data-terminalPage="0">
+			<div v-for="item in LineLength">1</div>
+		</div>
+		<div id="TerminalBOTTOM" style="height: 0px;"></div>
+	</div>
+	<!--<input @keyup.enter="toCommand" v-model="command" type="text" class="form-control" placeholder="您可以直接输入命令发送到服务器" aria-describedby="sizing-addon3">-->
+</div>
+<script>
+	MI.rListener('onload', function() {
+
+		console.log('页面开始')
+		//默认隐藏控制台
+		MCSERVER.colmSet(false);
+
+		PAGE.nowPage = 0; //当前最低页
+
+		var BUFF_BLOCK_SIZE = 70;
+
+		$('#MainContainer').css('background-color', 'rgb(60,60,60)');
+		var glineh = BUFF_BLOCK_SIZE;
+		//		console.log(document.body.clientHeight, glineh)
+		var linearr = [];
+		//扩展数组而已
+		for(var i = 0; i < glineh; i++) linearr.push('---- unkonw ----');
+
+		VIEW_MODEL.newVue('Terminal', {
+			el: '#Terminal',
+			methods: {
+				toCommand: function() {
+
+				}
+			},
+			data: {
+				command: '',
+				LineLength: linearr,
+				terminalBuff: []
+			}
+		});
+
+		$('#MainContainer')[0].scrollTop = $('#MainContainer')[0].scrollHeight;
+
+		var jl = true;
+		//滚动事件
+		$('#MainContainer').scroll(function() {
+			var MainContainer = $('#MainContainer');
+
+			var BUFF_FONTIER_SIZE_UP = 0;
+			var BUFF_FONTIER_SIZE_DOWN = MainContainer[0].scrollHeight - MainContainer[0].clientHeight;
+
+			console.log('scrollTop:', $('#MainContainer').scrollTop())
+
+			if(MainContainer[0].scrollTop + 256 >= BUFF_FONTIER_SIZE_DOWN) {
+				console.log('最下 --- 开始加载最新，无则无视');
+
+				if(jl == true) {
+					jl = false;
+					PAGE.buffLoadUp();
+					setTimeout(function() {
+						jl = true
+					}, 3000);
+				}
+
+			}
+			if(MainContainer[0].scrollTop - 256 <= 0) {
+				console.log('最上 --- 开始加载最新')
+			}
+		});
+
+		//		PAGE.jieliou = function(callback) {
+		//			var jl;
+		//			return function(){}
+		//			if(jl == true) {
+		//				var jl = false;
+		//				PAGE.buffLoadUp();
+		//				setTimeout(function() {
+		//					jl = true
+		//				}, 3000);
+		//			}
+		//		}
+
+		PAGE.buffLoadUp = function() {
+			var page = PAGE.nowPage++;
+			//$('[data-terminalPage="' + page + '"]').remove();
+			//			$('<div class="TerminalLine" data-terminalPage="'+page+2+'" v-for="item in LineLength">3</div>')
+			$('TerminalMinecraft').html($('<div class="TerminalLine" data-terminalPage="' + page + 2 + '" v-for="item in LineLength">3</div>').html())
+		}
+
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭');
+		document.getElementById('MainContainer').onscroll = undefined;
+		$('#MainContainer').css('background-color', 'rgb(220,218,218)');
+	})
+</script>

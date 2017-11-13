@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="zh-CN" />
+	<meta name="renderer" content="webkit" />
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+
+	<title>Mcserver 管理面板</title>
+	<link href="./common/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="./common/css/common.css" rel="stylesheet">
+	<link href="./common/css/block.css" rel="stylesheet">
+	<link href="./favicon.ico" rel="shortcut icon">
+	<link rel="stylesheet" href="common/css/unit.css" />
+		
+	<!--[if lt IE 9]>
+      		<div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
+            	<b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
+        	</div>
+   		<![endif]-->
+
+	<!--前端完全开源，您可以自由更改，但仅限于使用在 Mcserver Manager 程序-->
+	<!--版权所有 Mcserver Manager 8     开发者 (Suwings) 双羽 -->
+	<!--前端开源使用 请遵循 MIT 协议即可已经其他额外附属条件，勿删除版权信息-->
+</head>
+
+<!--百度数据统计,如果您不想被统计,请删除这段代码-->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?242b21aa18712872e0775282aaeae0a5";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- 
+    __  ___                                       __  ___                                 
+   /  |/  /____________  ______   _____  _____   /  |/  /___ _____  ____ _____ ____  _____
+  / /|_/ / ___/ ___/ _ \/ ___/ | / / _ \/ ___/  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ ___/
+ / /  / / /__(__  )  __/ /   | |/ /  __/ /     / /  / / /_/ / / / / /_/ / /_/ /  __/ /    
+/_/  /_/\___/____/\___/_/    |___/\___/_/     /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/     
+                                                                       /____/            
+ Only you.
+-->
+
+<body>
+	<div id='Header' class="box-shadow">
+		<div id='MasterLogo' class="HeaderItem" onclick="MCSERVER.colmDo()" style="cursor: pointer;">
+			<b>Mcserver
+				<b> 管理面板</div>
+		<div class="HeaderR">
+			<div id='websocket' v-text="status">
+				正在链接到服务器...
+			</div>
+			<div id='loginOut' v-on:click="loginOut()">退出</div>
+		</div>
+	</div>
+	<div id='MainContainer'>
+		<div id='SideCol' class="box-shadow">
+			<div id="SideColMenu">
+				<div id='SideColMenuInfo'>
+					Mcserver Manager
+					<br>
+					<div id='websocket2'>
+						<div v-if="is"><span class="color-green">Online: </span>{{ MCSERVER.username }}</div>
+						<div v-else>offline (离线)</div>
+					</div>
+				</div>
+				<div id='SideColFor'>
+					<!--如果您想更改菜单名或功能，请查看 common/js/meum.js 文件-->
+					<a href="#" v-for="item of items" v-on:click="onRedirect(item.link,item.api)" v-on:mouseenter="onMouse($event,true)" v-on:mouseleave="onMouse($event,false)">
+						<span class="glyphicon " :class="item.class" aria-hidden="true"></span>
+						<span v-text="item.name"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div id="Container">
+			<div id="ConsoleMain">
+				<!--可变动内嵌html区域开始-->
+
+				<!--默认的单页应用模板，这个是用于第一次加载时使用-->
+				<div class="OneContainer">
+					<div class="row">
+						<div class="col-xs-12">
+							<h3>正在启动...</h3>
+							<div class="Line"></div>
+							<h4>我们正在加载一些必须的数据....</h4>
+							<br>
+							<br>
+							<p>如果您看见这个页面超过几秒，请刷新重试，很有可能链接不畅通或中断。</p>
+							<p>您可以看左上角的 Websocket 链接状态来判断</p>
+
+						</div>
+					</div>
+				</div>
+
+				<!--可变动内嵌html区域结束-->
+			</div>
+		</div>
+	</div>
+	<!--信息框HTML-->
+	<div id='ToolsInfo'>
+		<transition name="fade">
+			<div class="ToolsInfo tools-info text-center show-ui" v-if='show' v-text="msg">
+			</div>
+		</transition>
+	</div>
+
+	<!--传说中的菜单改变按钮-->
+	<div id='ShowMenu' onclick="MCSERVER.colmDo()">
+		<h4></h4>
+	</div>
+
+
+	<!--Js文件引用，顺序不能乱，所有js都是依赖于前js的-->
+	<script src="./common/jquery-3.2.1.min.js"></script>
+	<!--vue-->
+	<script type="text/javascript" src="./common/vue/vue.min.js"></script>
+	<!--公用的js方法，公用的函数，类，模式-->
+	<!--					全局变量 MI(中介者) MS(保留) MCSERVER(全局寄生器)-->
+	<script type="text/javascript" src="./common/js/common.js"></script>
+	<!--URL 处理函数-->
+	<script type="text/javascript" src="common/URL.js"></script>
+	<!--请求类相关方法			全局变量 RES(请求) PAGE(单页应用临时全局存储变量)-->
+	<script type="text/javascript" src="./common/js/response.js"></script>
+	<!--Websocket 封装类		全局变量 WS	-->
+	<script type="text/javascript" src="./common/js/websocket.js"></script>
+	<!--工具类				全局变量 TOOLS(工具xiang)-->
+	<script type="text/javascript" src="./common/js/tools.js"></script>
+	<!--首页菜单获取			虚拟的后端菜单数据-->
+	<script type="text/javascript" src="common/js/meum.js"></script>
+	<!--echarts 库 -->
+	<script type="text/javascript" src="common/echarts.js"></script>
+	<!--Vue.data 数据模型处理  	全局变量 VIEW_MODEL-->
+	<script type="text/javascript" src="./common/js/viewmodel.js"></script>
+	<!--图像统计表格封装			附属于 TOOLS 变量-->
+	<script type="text/javascript" src="common/js/chart.js"></script>
+
+	<script>
+		//事件
+		window.onresize = function () {
+			MI.on('resize', null);
+		}
+
+		//防止页面后退
+		history.pushState(null, null, document.URL);
+		window.addEventListener('popstate', function () {
+			history.pushState(null, null, document.URL);
+		});
+
+		//一般制约能力的防止被 iframe 嵌入，另外，HTTP返回了 X-Frame-Options: DENY
+		this.top.location !== this.location && (this.top.location = this.location);
+
+		// echart 路径配置
+		require.config({
+			paths: {
+				echarts: './common/echarts-dist'
+			}
+		});
+
+		//抗CSRF攻击
+		//身份验证，令牌获取
+		RES.getToken(function (token) {
+
+			RES.TOKEN = token;
+			console.log('登陆的用户是:' + MCSERVER.username)
+
+			//初始化 Websocket
+			WS.init(function () {
+
+				//获取菜单
+				WS.sendMsg('menu', '');
+
+				//异步自动获取单页
+				setTimeout(function () {
+
+					//是否登陆
+					if (!MCSERVER.username) {
+						TOOLS.pushMsgWindow('身份认证失败，请重新登陆验证身份');
+					}
+
+					//test
+					//					RES.redirectPage('./template/component/terminal.html','index/update', '--- 更新页面 ---');
+					//					return;
+
+					//判断是否是#权限用户，请放心，后端也会给予判断并不只是前端
+					if (MCSERVER.username.substr(0, 1) == '#') {
+						RES.redirectPage('./template/index.html', 'index/update', '--- 更新页面 ---');
+					} else {
+						RES.redirectPage('./template/gen_home.html', 'genuser/home', '--- 更新页面 ---');
+					}
+
+				}, 300);
+			});
+		});
+		
+		//建立 退出按钮 Vue
+		var vueLoginOut = new Vue({
+				el: '#loginOut',
+				methods: {
+					loginOut: function () {
+						RES.ajax({
+							type: 'POST',
+							url: './user/loginout',
+							success: function () {
+								console.log('用户退出');
+								WS.close();
+								TOOLS.pushMsgWindow('您已退出，现在即将跳转网页');
+								setTimeout(function () {
+									window.location.href = MCSERVER.URL('./public/login');
+								}, 2000);
+							},
+							error: function () {
+								TOOLS.pushMsgWindow('退出失败，您网络正常且是否登陆？');
+							}
+						});
+					}
+				}
+			});
+
+		//工具栏
+		VIEW_MODEL.newVueOnce('ToolsInfo', {
+			el: '#ToolsInfo',
+			data: {
+				show: false,
+				msg: ''
+			}
+		});
+
+		VIEW_MODEL.COMMON = {};
+
+	</script>
+</body>
+
+</html>

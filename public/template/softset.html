@@ -1,0 +1,79 @@
+<div id='SoftProperties' class="OneContainer">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">控制面板配置</div>
+				<div class="PanelBody">
+					<div class="row">
+						<div class="col-lg-12">
+							<p>控制面板 - 配置文件更改</p>
+							<!--<p>解释: true 代表开, false 代表关,空白代表无值，请注意格式修改，确认无误保存即可，重启服务端生效</p>-->
+							<table class='PropertiesList' width="100%">
+								<tr>
+									<th>设置项目字段</th>
+									<th>项目解释</th>
+									<th>设置值</th>
+								</tr>
+								<tr v-for="(val, key) in softConfig">
+									<th v-text="key"></th>
+									<th v-text="findKey(key)">项目解释</th>
+									<th>
+										<center>
+											<div class="input-group  input-group-sm">
+												<input type="text" class="form-control" aria-describedby="basic-addon1" v-model="softConfig[key]" />
+											</div>
+										</center>
+									</th>
+								</tr>
+							</table>
+							<br/>
+							<div class="row">
+								<div class="col-sm-12 PanelItemF">
+									<p>请务必检查是否符合格式，条件，仔细检查后即可确认修改，或者直接返回到其他页面直接舍弃修改。</p>
+									<div class="PanelItem" v-on:click="toUpdateProperties()">
+										<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 保存配置
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		console.log('页面开始')
+		//自動調整菜單
+		MCSERVER.autoColmDo();
+
+		VIEW_MODEL.newVue('SoftProperties', {
+			el: '#SoftProperties',
+			data: {
+
+			},
+			methods: {
+				toUpdateProperties: function() {
+					if(!this.softConfig) return;
+					WS.sendMsg('soft/update', JSON.stringify(this.softConfig));
+				},
+				findKey: function(key) {
+					var SuwingsLoveYou = {
+						"__filename__": "控制面板内部使用，请勿改动",
+						'port': '控制面板程序端口号（务必进行更改）',
+						'ip': '控制面板监听的ip地址，不填写则自动',
+						'FTP_ip': 'FTP 服务器监听的ip，不填写自动',
+						'FTP_port': 'FTP 服务器端口号'
+					}
+					return SuwingsLoveYou[key];
+				}
+			}
+		});
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭')
+	});
+</script>

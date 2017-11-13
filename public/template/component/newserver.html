@@ -1,0 +1,139 @@
+<div id='CreateServerView' class="OneContainer">
+	<div class="row">
+		<div class="col-lg-12 col-sm-12">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">创建服务器</div>
+				<div class="PanelBody">
+					<p>您可以创建一个新的服务器，默认所有用户不可操作，只限于管理员一人可以控制。</p>
+					<p>不过创建一个服务器您可以需要完善以下信息：</p>
+					<div class="row" style="padding-top: 10px;padding-bottom: 30px;">
+						<div class="col-md-6">
+							<p>[必填] 服务器名字必须唯一，这个名字标识唯一的一个服务器终端 (仅限字母数字下划线组合)</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">服务器名字</span>
+								<input type="text" class="form-control" v-model="name">
+							</div>
+							<p>[可填] 服务端核心文件，可以后再填，因为服务端目录还未创建，但是您指定目录的话就可填写.</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 服务端文件名 </span>
+								<input type="text" class="form-control" v-model="jarName">
+							</div>
+							<p>[选填] 您可以指定您计算机上的Java环境程序路径，默认自动选择环境变量</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">Java 路径</span>
+								<input type="text" class="form-control" v-model="java">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<p>[选填] 一般而言当您需要附加参数如(-server等等)时，可以填写</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">启动附加参数</span>
+								<input type="text" class="form-control" v-model="addCmd">
+							</div>
+							<p>[选填] 可不填写，只有当您需要指定目录时填写，默认将自动建立目录，选择好请单击按钮确认</p>
+							<p style="color: #B92C28;">当前服务端根目录设为: {{ serverCwd }}</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">服务端文件根目录</span>
+								<input type="text" class="form-control" v-model="cwd">
+								<span class="input-group-btn">
+						        <button class="btn btn-success" v-on:click="toCreaterDir()"> 确认创建目录 </button>
+						      </span>
+
+							</div>
+							<p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="input-group input-group-sm">
+										<span class="input-group-addon"> 最大内存堆  </span>
+										<input type="text" class="form-control" v-model="Xmx">
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="input-group input-group-sm">
+										<span class="input-group-addon"> 初始内存堆  </span>
+										<input type="text" class="form-control" v-model="Xms">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<p>到目前为止，我们创建一个服务器只需要这些信息足以，您可以在创建之后修改相关配置；</p>
+							<p>或者，如果您想的话，可以分配给其他用户使用。</p>
+							<div class="Line"></div>
+							<div class="" style="float: right;margin-top: 20px;">
+								<button class="btn btn-primary" v-on:click="toCreateServer()">创建服务器</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="Panel PanelRed">
+				<div class="PanelTitle">创建服务器相关协议</div>
+				<div class="PanelBody">
+					<p>您使用本控制面板创建 Minecraft 之后，请遵循您所使用的那个服务端的相关协议;</p>
+					<p>鉴于大多数服务器创建需求，控制面板在创建服务器的时候您需要手动同意EULA协议与关闭正版验证。但服务端不同，配置文件可能不同，不能保证一定关闭了正版验证和同意EULA。</p>
+					<p>如果可以的话，请支持正版服务器。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		console.log('页面开始')
+		VIEW_MODEL.newVue('CreateServerView', {
+			el: '#CreateServerView',
+			data: {
+				name: 'NewServer_' + ((Date.parse(new Date()) + "").substr( 6)),
+				jarName: '',
+				cwd: '<默认标准位置>',
+				Xmx: '',
+				Xms: '',
+				addCmd: '',
+				java: 'java'
+			},
+			methods: {
+				toCreateServer: function() {
+					var addCmdList = this.addCmd.split(' ');
+					var obj = {
+						addCmd: addCmdList,
+						serverName: this.name,
+						jarName: this.jarName,
+						cwd: this.cwd,
+						Xmx: this.Xmx,
+						Xms: this.Xms,
+						java: this.Java
+					};
+					WS.sendMsg('server/create', JSON.stringify(obj));
+					//					console.log(this.name)
+					RES.redirectPage('./template/server.html', 'server/view');
+				},
+				toCreaterDir: function() {
+					var obj = {
+						serverName: this.name,
+						cwd: this.cwd
+					};
+					WS.sendMsg('server/create_dir', JSON.stringify(obj));
+				}
+			},
+			computed: {
+				serverCwd: function() {
+					if(this.cwd == '<默认标准位置>' || this.cwd == '') return './server/server_core/' + this.name;
+					return this.cwd;
+				}
+			}
+		});
+
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭')
+	});
+</script>

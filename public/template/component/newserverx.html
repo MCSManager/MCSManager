@@ -1,0 +1,140 @@
+<div id='CreateServerViewx' class="OneContainer">
+	<div class="row">
+
+		<div class="col-md-12">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">引导创建服务器</div>
+				<div class="PanelBody">
+
+					<p>我们将一步步引导您创建一个 Minecraft 服务器</p>
+
+					<br>
+					<div class="PanelTitle">[可填] 第一步，选择 Java 路径或环境变量</div>
+					<p>Jre 或 Jdk 是启动 Minecraft 非常关键的东西，您必须填写</p>
+					<p>但是如果您确定您的 Java 安装是正确无误的，你大可添加 'Java' 或省略不填写</p>
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">Java 路径</span>
+						<input type="text" class="form-control" v-model="java">
+					</div>
+
+					<br>
+					<div class="PanelTitle">[必填] 第二步，取个唯一的名字.</div>
+					<p>名字必须唯一</p>
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">服务器名字</span>
+						<input type="text" class="form-control" v-model="name">
+					</div>
+
+					<br>
+					<div class="PanelTitle">[可填] 第三步，设置最小内存和最大内存参数和附加参数.</div>
+					<p>[选填] 一般而言当您需要附加参数如(-server等等)时，可以填写</p>
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">启动附加参数</span>
+						<input type="text" class="form-control" v-model="addCmd">
+					</div>
+					<p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 最大内存堆  </span>
+								<input type="text" class="form-control" v-model="Xmx">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 初始内存堆  </span>
+								<input type="text" class="form-control" v-model="Xms">
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<div class="PanelTitle">[可填] 第四步，指定储存服务端相关内容的目录，服务端产生的文件都会在那个目录中.</div>
+					<p>可填写，只有当您需要指定一个目录时填写，默认将自动建立目录管理</p>
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">服务端文件根目录</span>
+						<input type="text" class="form-control" v-model="cwd">
+					</div>
+					<p>这个必须优先创建，优先选择服务端应该在何处（或不填写将自动选择位置），确认后/默认后 请单击下面的按钮</p>
+					<p>
+						<button class="btn btn-success" v-on:click="toCreaterDir()"> 确认并且创建目录 </button>
+					</p>
+
+					<br>
+					<div class="PanelTitle">[必做] 第五步，移动你的服务端文件</div>
+					<p>现在您只需要将您的服务端文件移到下面的 “服务端根目录”，这个目录是您刚刚创建或自定义的。</p>
+					<p>如果您没有服务端文件，您可以下载: </p>
+					<p><span style="color: #3278B3">服务端根目录:</span> “{{ serverCwd }}” </p>
+
+					<br>
+					<div class="PanelTitle">[必填] 第六步，填写刚刚移动的服务端名字 (请记得加上后戳，如.jar)</div>
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon"> 服务端文件名字 </span>
+						<input type="text" class="form-control" v-model="jarName">
+					</div>
+
+					<br>
+					<div class="PanelTitle">[必填] 至此，您已完成所有所需内容</div>
+					<p>请仔细再检查一次数据是否是你的期望，然后您可以单击 “创建服务器”</p>
+					<p>
+						<button class="btn btn-success" v-on:click="toCreateServer()"> 创建服务器 </button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	MI.rListener('onload', function() {
+		//有木有发现一样的~  好吧其实是生成的
+		console.log('页面开始')
+		VIEW_MODEL.newVue('CreateServerViewx', {
+			el: '#CreateServerViewx',
+			data: {
+				name: 'NewServer_' + ((Date.parse(new Date()) + "").substr(6)),
+				jarName: '',
+				cwd: '<默认标准位置>',
+				Xmx: '',
+				Xms: '',
+				addCmd: '',
+				java: 'java'
+			},
+			methods: {
+				toCreateServer: function() {
+					var addCmdList = this.addCmd.split(' ');
+					var obj = {
+						addCmd: addCmdList,
+						serverName: this.name,
+						jarName: this.jarName,
+						cwd: this.cwd,
+						Xmx: this.Xmx,
+						Xms: this.Xms,
+						java: this.Java
+					};
+					WS.sendMsg('server/create', JSON.stringify(obj));
+					//					console.log(this.name)
+					RES.redirectPage('./template/server.html', 'server/view');
+				},
+				toCreaterDir: function() {
+					var obj = {
+						serverName: this.name,
+						cwd: this.cwd
+					};
+					WS.sendMsg('server/create_dir', JSON.stringify(obj));
+				}
+			},
+			computed: {
+				serverCwd: function() {
+					if(this.cwd == '<默认标准位置>' || this.cwd == '') return '控制面板目录/server/server_core/' + this.name;
+					return this.cwd;
+				}
+			}
+		});
+
+	});
+
+	MI.rListener('onend', function() {
+		console.log('页面关闭')
+	});
+</script>
