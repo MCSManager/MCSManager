@@ -8,7 +8,7 @@
 正在开发..
 
 #### 下载与使用（普通用户）
-请访问临时站点 [http://honery.zqstudio.top/mcserver_manager/](./LICENSE "http://honery.zqstudio.top/mcserver_manager/") 
+请访问临时站点 [http://honery.zqstudio.top/mcserver_manager/](http://honery.zqstudio.top/mcserver_manager/) 
 
 
 #### 构建二次开发环境 （针对开发者）
