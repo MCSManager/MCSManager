@@ -1,7 +1,7 @@
 {
     "__filename__": "./core/info.json",
     "counterData": {
-        "login": 2,
+        "login": 0,
         "userOnlineCounter": 0,
         "notPermssionCounter": 0,
         "passwordError": 0,
