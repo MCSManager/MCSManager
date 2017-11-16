@@ -2,7 +2,10 @@
 const router = require('express')();
 var session = require('express-session');
 
-const { loginUser, userCenter } = require('../model/UserModel');
+const {
+    loginUser,
+    userCenter
+} = require('../model/UserModel');
 const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
 const tools = require('../core/tools');
@@ -52,7 +55,7 @@ router.post('/login', function (req, res) {
     counter.plus('login');
     // password = tools.md5(password + enkey);
     loginUser(username, password, (loginUser) => {
-        req.session['login'] = true;                    
+        req.session['login'] = true;
         req.session['username'] = username;
         req.session['dataModel'] = loginUser.dataModel; //Only read
         delete MCSERVER.login[ip];
@@ -68,7 +71,7 @@ router.post('/login', function (req, res) {
         req.session['login'] = undefined;
         req.session['login_md5key'] = null;
         response.returnMsg(res, 'login/check', false);
-    },enkey);
+    }, enkey);
 });
 
 router.get('/login_key', function (req, res) {
@@ -78,15 +81,24 @@ router.get('/login_key', function (req, res) {
     req.session['login_md5key'] = md5Key;
     //取salt
     let loggingUser = userManager.get(username);
+    //是否存在用户名
     if (loggingUser) {
+        //伪装的 enkey
         res.send(JSON.stringify({
             //salt
             enkey1: loggingUser.dataModel.salt,
             //md5Key
             enkey2: md5Key
         }));
+        return;
     }
-
+    
+    //这里是 随机的 salt 与 md5key 因为用户根本不存在，则返回一个随机的类似于正常的信息，让前端判断错误
+    //防止轻而易举的遍历用户名，但这仍然可以通过两次或三次尝试判断用户名是否存在
+    res.send(JSON.stringify({
+        enkey1: tools.randomString(6),
+        enkey2: tools.randomString(32)
+    }));
 });
 
 
