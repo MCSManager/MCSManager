@@ -2,9 +2,6 @@ server/
 users/
 .vscode/
 testServer/
-*.jpg
-*.png
-*.jpeg
 *.exe
 users/*.json
 server/*.json
