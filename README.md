@@ -1,5 +1,5 @@
-## Minecraft Manager
-简单，易用，简约，轻量级的 Minecraft 控制面板
+## Minecraft Server Manager
+简单，易用，简约，轻量级的 Minecraft Server 控制面板
 
 ### 快速上手
 我们用最简单上手的方式，来构建整个应用程序，绝大部分的开发者可以轻而易举的进行修改，以及依照协议开发使用。你会发现，这可能是一非常适合你的 `Minecraft` 服务器管理工具，支持绝大部分的主流服务端。
@@ -28,10 +28,13 @@ git clone https://github.com/Suwings/Mc-manager.git
 > `core/logo.txt`				控制台输出
 >
 > `public/`					前端所有代码(压缩)
+>
 > `public_src/`				前端所有代码，如果你想更改前端，请用这个覆盖public/
+>
 > `public/common/js/meum.js` 	菜单名修改
 >
 > `server/server_core` 		服务器核心目录
+>
 > `server/*.json`				服务器配置文件
 >
 > `users/*.json`				用户配置文件
