@@ -18,22 +18,6 @@
 				callback(undefined);
 			}
 		});
-		//		var token = TOOLS.getCookie('token_to') || '';
-		//		var username = TOOLS.getCookie('username_to');
-		//		console.log('！！！！！！返回 TOKEN ',token,'username ',username);
-		//		
-		//		TOOLS.delCookie('token_to');
-		//		TOOLS.delCookie('username_to');
-		//		TOOLS.setCookie('is_to','1');
-
-		//		if(token == '') {
-		//			console.log('token ==  || username == ')
-		//			window.location.href = '../../token?callback=' + encodeURI('http://sub.mine.ol:23333/public/');
-		//			return;
-		//		}
-
-//		MCSERVER.username = u  sername;
-//		callback(token);
 	}
 
 	RES.tokenAjax = function(parameter) {
