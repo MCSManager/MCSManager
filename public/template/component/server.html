@@ -118,7 +118,7 @@
 				},
 				toRebulider: function() {
 					var addCmdList = this.addCmd.split(' ');
-					if(this.serverName == '') {
+					if(this.oldServerName.trim() == '' || this.name.trim() == '') {
 						TOOLS.pushMsgWindow("服务器唯一标识名不能为空，请取一个名字!");
 						return;
 					}
@@ -151,7 +151,7 @@
 			}
 		});
 		VIEW_MODEL['ServerPanel'].addCmd = VIEW_MODEL['ServerPanel'].addCmd.toString().replace(/,/gim, ' ');
-		VIEW_MODEL['ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + " ";
+		VIEW_MODEL['ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + "";
 		
 	});
 
