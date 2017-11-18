@@ -126,7 +126,7 @@
 	}
 
 	function PageLoading() {
-		ToolsLoading.css("width", "80%");
+		ToolsLoading.css("width", "40%");
 	}
 
 	function ToolsLoadingEnd() {

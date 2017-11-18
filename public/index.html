@@ -89,14 +89,19 @@
 				<div class="OneContainer">
 					<div class="row">
 						<div class="col-xs-12">
-							<h3>正在启动...</h3>
-							<div class="Line"></div>
-							<h4>我们正在加载一些必须的数据....</h4>
-							<br>
-							<br>
-							<p>如果您看见这个页面超过几秒，请刷新重试，很有可能链接不畅通或中断。</p>
-							<p>您可以看左上角的 Websocket 链接状态来判断</p>
-
+							<h3 id="_TMP_LOADING">请稍等,正在传输资源 ....</h3>
+							<script>
+								(function(){
+									var count = 0;
+									var www = document.getElementById('_TMP_LOADING');
+									var masks = setInterval(function(){
+										www.innerHTML = www.innerHTML + '.';
+										count++;
+										if(count > 15)clearInterval(masks);
+									},1000);
+										
+								})();
+							</script>
 						</div>
 					</div>
 				</div>
@@ -153,7 +158,9 @@
 	<script type="text/javascript" src="common/js/chart.js"></script>
 
 	<script>
-		//事件
+		
+	(function(){
+			//事件
 		window.onresize = function () {
 			MI.on('resize', null);
 		}
@@ -173,7 +180,7 @@
 				echarts: './common/echarts-dist'
 			}
 		});
-
+		
 		//抗CSRF攻击
 		//身份验证，令牌获取
 		RES.getToken(function (token) {
@@ -244,6 +251,10 @@
 		});
 
 		VIEW_MODEL.COMMON = {};
+		
+	})();
+		
+						
 
 	</script>
 </body>
