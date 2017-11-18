@@ -155,26 +155,30 @@ process.on("uncaughtException", function (err) {
     MCSERVER.error('UncaughtException 机制错误报告:', err);
 });
 
-//初始化环境
-const USERS_PATH = './users/';
-const SERVER_PATH = './server/';
-const SERVER_PATH_CORE = './server/server_core/';
-try {
-    if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
-    if (!fs.existsSync(SERVER_PATH)) {
-        fs.mkdirSync(SERVER_PATH);
-        fs.mkdirSync(SERVER_PATH_CORE);
-        // fs.renameSync('./core/info_reset.json','./core/info.json');
-        let resetData = fs.readFileSync('./core/info_reset.json', {
-            encoding: 'UTF-8'
-        });
-        fs.writeFileSync('./core/info.json', resetData, {
-            encoding: 'UTF-8'
-        });
+//初始化目录结构环境
+(function initializationRun() {
+    const USERS_PATH = './users/';
+    const SERVER_PATH = './server/';
+    const SERVER_PATH_CORE = './server/server_core/';
+    const CENTEN_LOG_JSON_PATH = './core/info.json';
+    try {
+        if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
+        if (!fs.existsSync(SERVER_PATH)) {
+            fs.mkdirSync(SERVER_PATH);
+            fs.mkdirSync(SERVER_PATH_CORE);
+        }
+        if (!fs.existsSync(CENTEN_LOG_JSON_PATH)) {
+            let resetData = fs.readFileSync('./core/info_reset.json', {
+                encoding: 'UTF-8'
+            });
+            fs.writeFileSync('./core/info.json', resetData, {
+                encoding: 'UTF-8'
+            });
+        }
+    } catch (err) {
+        MCSERVER.error('初始化文件环境失败,建议重启,请检查以下报错:', err);
     }
-} catch (err) {
-    MCSERVER.error('初始化失败,建议重启,如果依然如此,请检查以下报错:',err);
-}
+})();
 
 function serverAppListen() {
     return new Promise((resolve, reject) => {

@@ -7,3 +7,4 @@ users/*.json
 server/*.json
 public/*.json
 McserverConfig.json
+core/*.json
