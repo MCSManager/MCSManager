@@ -7,16 +7,28 @@
 ### 文档 && 使用说明
 正在开发..
 
-
-### 构建二次开发环境 （针对开发者）
-```
-git clone https://github.com/Suwings/Mc-manager.git
-```
-
-
 ### 环境需求
 - `Node.js` >= 8.0
 - `Java`    >= 7.0 但强烈推荐 `Java` 8
+
+
+### 普通用户使用
+> 首先您需要所说明的环境需求
+```bash
+git clone https://github.com/Suwings/MCSManager.git
+cd mcsmanager
+npm install
+node app.js #或 npm start
+```
+
+### 构建二次开发环境 （针对开发者）
+```bash
+git clone https://github.com/Suwings/MCSManager.git
+cd mcsmanager
+npm install
+```
+
+
 
 
 ### 基本目录解释
