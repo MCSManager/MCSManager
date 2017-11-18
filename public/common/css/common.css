@@ -261,3 +261,15 @@ a,input{outline:none;}
 	margin-left: -20px;
 }
 
+/*进度条CSS*/
+.Toolscon{
+	position: fixed;
+    top: 0px;
+    left: 0px;
+    /*background-color: #00cc06;*/
+    height: 4px;
+    z-index: 999;
+    width: 100%;
+    overflow: hidden;
+    line-height: 3px;
+}

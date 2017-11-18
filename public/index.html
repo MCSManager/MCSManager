@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Content-Language" content="zh-CN" />
-	<meta name="renderer" content="webkit" />
-	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="zh-CN" />
+		<meta name="renderer" content="webkit" />
+		<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
 
-	<title>Mcserver 管理面板</title>
-	<link href="./common/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<title>Mcserver 管理面板</title>
+		<link href="./common/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-	<link href="./common/css/common.css" rel="stylesheet">
-	<link href="./common/css/block.css" rel="stylesheet">
-	<link href="./favicon.ico" rel="shortcut icon">
-	<link rel="stylesheet" href="common/css/unit.css" />
-		
-	<!--[if lt IE 9]>
+		<link href="./common/css/common.css" rel="stylesheet">
+		<link href="./common/css/block.css" rel="stylesheet">
+		<link href="./favicon.ico" rel="shortcut icon">
+		<link rel="stylesheet" href="common/css/unit.css" />
+
+		<!--[if lt IE 9]>
       		<div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
             	<b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
         	</div>
    		<![endif]-->
 
-	<!--前端完全开源，您可以自由更改，但仅限于使用在 Mcserver Manager 程序-->
-	<!--版权所有 Mcserver Manager 8     开发者 (Suwings) 双羽 -->
-	<!--前端开源使用 请遵循 MIT 协议即可已经其他额外附属条件，勿删除版权信息-->
-</head>
+		<!--前端完全开源，您可以自由更改，但仅限于使用在 Mcserver Manager 程序-->
+		<!--版权所有 Mcserver Manager 8     开发者 (Suwings) 双羽 -->
+		<!--前端开源使用 请遵循 MIT 协议即可已经其他额外附属条件，勿删除版权信息-->
+	</head>
 
-<!--百度数据统计,如果您不想被统计,请删除这段代码-->
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?242b21aa18712872e0775282aaeae0a5";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+	<!--百度数据统计,如果您不想被统计,请删除这段代码-->
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+			var hm = document.createElement("script");
+			hm.src = "https://hm.baidu.com/hm.js?242b21aa18712872e0775282aaeae0a5";
+			var s = document.getElementsByTagName("script")[0];
+			s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
 
-<!-- 
+	<!-- 
     __  ___                                       __  ___                                 
    /  |/  /____________  ______   _____  _____   /  |/  /___ _____  ____ _____ ____  _____
   / /|_/ / ___/ ___/ _ \/ ___/ | / / _ \/ ___/  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ ___/
@@ -49,10 +49,10 @@ var _hmt = _hmt || [];
  Only you.
 -->
 
-<body>
-	<div id='Header' class="box-shadow">
-		<div id='MasterLogo' class="HeaderItem" onclick="MCSERVER.colmDo()" style="cursor: pointer;">
-			<b>Mcserver
+	<body>
+		<div id='Header' class="box-shadow">
+			<div id='MasterLogo' class="HeaderItem" onclick="MCSERVER.colmDo()" style="cursor: pointer;">
+				<b>Mcserver
 				<b> 管理面板</div>
 		<div class="HeaderR">
 			<div id='websocket' v-text="status">
@@ -117,6 +117,15 @@ var _hmt = _hmt || [];
 	<div id='ShowMenu' onclick="MCSERVER.colmDo()">
 		<h4></h4>
 	</div>
+	
+	<!--页面加载进度条-->
+	<div class="Toolscon" id="ToolsPageLoading">
+		<div class="progress" style="height: 4px;line-height: 4px;">
+		  <div id="ToolsLoading" class="progress-bar progress-bar-success progress-bar-striped"  style="width: 0%;height: 4px;">
+		  </div>
+		</div>
+	</div>
+	
 
 
 	<!--Js文件引用，顺序不能乱，所有js都是依赖于前js的-->

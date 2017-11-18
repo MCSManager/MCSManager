@@ -89,34 +89,56 @@
 			});
 		}
 	}
-	
-	var PageMain = $('#ConsoleMain');
-	RES.redirectPage = function(url, key, body, callback) {
-		PageMain.stop(true, true).animate({
-			'opacity': '0'
-			// 'margin-left':'50px'
-		}, 150, MmDoing);
 
-		//切换事件处理
-		function MmDoing() {
+	RES.redirectPage = function(url, key, body, callback) {
+
+		ToolsLoadingStart(function() {
 			MI.rOn('onend');
+			PageLoading();
 			//替換掉原先存在的 函数。防止新的单页没有这些函数而导致代码二次执行
 			MI.rListener('onend', function() {});
 			MI.rListener('onload', function() {});
 			RES.redirectHTML(url, key, body, function() {
-				MI.on('page/live'); //MCSERVER.URL(
+				MI.on('page/live');
 				//赋予的单页刷新
 				PAGE.refresh = function() {
 					RES.redirectPage(url, key, body, callback);
 				}
+				ToolsLoadingEnd();
 				MI.rOn('onload');
 				callback && callback();
-				PageMain.stop(true, true).animate({
-					'opacity': '1'
-					// 'margin-left':'0px'
-				}, 150);
+				
 			});
-		}
+		});
 
 	}
+
+	var PageMain = $('#ConsoleMain');
+	var ToolsLoading = $('#ToolsLoading'); //进度条
+	var ToolsPageLoading = $("#ToolsPageLoading"); //进度条容器
+
+	function ToolsLoadingStart(callback) {
+		ToolsLoading.css("width", "0%");
+		ToolsPageLoading.css("display", "block");
+		PageMain.stop(true, true).animate({
+			'opacity': '0'
+		}, 150, callback);
+	}
+
+	function PageLoading() {
+		ToolsLoading.css("width", "80%");
+	}
+
+	function ToolsLoadingEnd() {
+		ToolsLoading.css("width", "100%");
+
+		
+		
+		PageMain.stop(true, true).animate({
+			'opacity': '1'
+		}, 150, function() {
+			ToolsPageLoading.css("display", "none");
+		});
+	}
+
 })();

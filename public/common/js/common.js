@@ -173,7 +173,6 @@
 						}, 200, function() {
 							MI.on('colmchangeEnd', null); //触发事件
 						});
-					//					$SideCol.removeAttr('style')
 					$Container.removeAttr('style')
 				});
 		}
@@ -203,20 +202,3 @@
 
 	//	if(document.body.clientWidth <)
 })();
-
-//logo
-$(function() {
-
-	//	var MasterLogo = $('#MasterLogo');
-	//
-	//	function logoAnimate() {
-	//		MasterLogo.animate({
-	//			'letter-spacing': '2.0px'
-	//		}, 15000, function() {
-	//			MasterLogo.animate({
-	//				'letter-spacing': '1px'
-	//			}, 15000, logoAnimate);
-	//		});
-	//	}
-	//	logoAnimate();
-})
