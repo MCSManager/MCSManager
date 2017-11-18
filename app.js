@@ -163,6 +163,7 @@ try {
     if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
     if (!fs.existsSync(SERVER_PATH)) {
         fs.mkdirSync(SERVER_PATH);
+        fs.mkdirSync(SERVER_PATH_CORE);
         // fs.renameSync('./core/info_reset.json','./core/info.json');
         let resetData = fs.readFileSync('./core/info_reset.json', {
             encoding: 'UTF-8'
