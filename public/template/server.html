@@ -19,8 +19,9 @@
 						<div class="row">
 							<div class="col-md-7">
 								<div class="PanelItemInfo">
-									<h4 v-if="item.data.jarName == ''"><span class="color-high-red">[未配置端] </span><s v-text="item.serverName"></s></h4> 
-									<h4 v-if="item.data.jarName != ''" v-text="item.serverName"></h4>
+									<h4 v-if="item.data.jarName == '' && !item.data.highCommande "><span class="color-high-red">[未配置端] </span><s v-text="item.serverName"></s></h4>
+									<h4 v-if="item.data.highCommande"><span class="color-green">[自定义参数]</span><span v-text="item.serverName"></span></h4>
+									<h4 v-if="item.data.jarName != '' && !item.data.highCommande" v-text="item.serverName"></h4>
 									状态:
 									<span v-if="item.data.run" class="color-green"> 正在运行  </span>
 									<span v-else="item.data.run" class="color-red"> 关闭  </span> | 创建时间 ：<span v-text="item.data.createDate">  </span> | 最后启动：
