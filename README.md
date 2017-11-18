@@ -17,7 +17,7 @@
 ```bash
 git clone https://github.com/Suwings/MCSManager.git
 cd mcsmanager
-npm install
+npm install --production
 node app.js #或 npm start
 ```
 
