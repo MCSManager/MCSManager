@@ -180,15 +180,8 @@ process.on("uncaughtException", function (err) {
     }
 })();
 
-function serverAppListen() {
-    return new Promise((resolve, reject) => {
-        app.listen(MCSERVER.softConfig.port, MCSERVER.softConfig.ip, () => {
-            resolve();
-        });
-    })
-}
 
-(async function initializationProm() {
+(function initializationProm() {
 
     counter.init();
     UserModel.userCenter().initUser();
@@ -204,19 +197,21 @@ function serverAppListen() {
     if (host == '::')
         host = '127.0.0.1';
 
-    //App Http listen
-    await serverAppListen();
+    app.listen(MCSERVER.softConfig.port, MCSERVER.softConfig.ip, () => {
+        //App Http listen
 
-    MCSERVER.infoLog('HTTP', 'HTTP 模块监听: [ http://' + (host || '127.0.0.1'.yellow) + ':' + port + ' ]');
+        MCSERVER.infoLog('HTTP', 'HTTP 模块监听: [ http://' + (host || '127.0.0.1'.yellow) + ':' + port + ' ]');
 
-    //现在执行 FTP 服务器启动过程
-    ftpServerInterface.initFTPdServerOptions({
-        host: MCSERVER.softConfig.FTP_ip || '127.0.0.1',
-        port: MCSERVER.softConfig.FTP_port,
-        tls: null
+        //现在执行 FTP 服务器启动过程
+        ftpServerInterface.initFTPdServerOptions({
+            host: MCSERVER.softConfig.FTP_ip || '127.0.0.1',
+            port: MCSERVER.softConfig.FTP_port,
+            tls: null
+        });
+
+        //执行ftp逻辑
+        require('./ftpd/index');
+
     });
-
-    //执行ftp逻辑
-    require('./ftpd/index');
 
 })();
