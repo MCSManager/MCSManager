@@ -39,7 +39,7 @@
 			type: parameter['type'] || "POST",
 			url: MCSERVER.URL(parameter['url']),
 			data: parameter['data'], //具体实例化
-			timeout: parameter['timeout'] || 5000,
+			timeout: parameter['timeout'] || 10000,
 			success: function(data, textStatus) {
 				try {
 					data = JSON.parse(data);
@@ -75,17 +75,20 @@
 	RES.redirectHTML = function(url, key, body, callback) {
 		//静态文件均在 public 目录下，动态文件则在不同API接口
 		var _url = MCSERVER.URL('./public/' + url, 'http://');
+
+		//响应事件函数
+		function responseCallback(response, status, xhr) {
+			if(status != 'success')
+				TOOLS.pushMsgWindow("[ " + status + " ] 由于网络或权限问题,请求的网页无法成功！");
+			callback && callback();
+		}
+
 		if(key == null) {
 			//不需要API数据的单页
-			$("#ConsoleMain").load(_url, function() {
-				callback && callback();
-				return;
-			});
+			$("#ConsoleMain").load(_url, responseCallback);
 		} else {
 			WS.sendMsg(key, body || '', function() {
-				$("#ConsoleMain").load(_url, function() {
-					callback && callback();
-				});
+				$("#ConsoleMain").load(_url, responseCallback);
 			});
 		}
 	}
@@ -107,7 +110,7 @@
 				ToolsLoadingEnd();
 				MI.rOn('onload');
 				callback && callback();
-				
+
 			});
 		});
 
@@ -126,21 +129,19 @@
 	}
 
 	function PageLoading() {
-		ToolsLoading.css("width", "40%");
+		ToolsLoading.css("width", "60%");
 	}
 
 	function ToolsLoadingEnd() {
 		ToolsLoading.css("width", "100%");
 
-		
-		
 		PageMain.stop(true, true).animate({
 			'opacity': '1'
 		}, 150, function() {
-			setTimeout(function(){
+			setTimeout(function() {
 				ToolsPageLoading.css("display", "none");
-			},100);
-			
+			}, 100);
+
 		});
 	}
 
