@@ -164,8 +164,7 @@ process.on("uncaughtException", function (err) {
     try {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) {
-            fs.mkdirSync(SERVER_PATH);
-            fs.mkdirSync(SERVER_PATH_CORE);
+            fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
         }
         if (!fs.existsSync(CENTEN_LOG_JSON_PATH)) {
             let resetData = fs.readFileSync('./core/info_reset.json', {
