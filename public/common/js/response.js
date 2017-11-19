@@ -140,7 +140,7 @@
 		}, 150, function() {
 			setTimeout(function() {
 				ToolsPageLoading.css("display", "none");
-			}, 100);
+			}, 150);
 
 		});
 	}
