@@ -97,7 +97,7 @@
 									var masks = setInterval(function(){
 										www.innerHTML = www.innerHTML + '.';
 										count++;
-										if(count > 15)clearInterval(masks);
+										if(count > 10)clearInterval(masks);
 									},1000);
 										
 								})();
@@ -125,8 +125,8 @@
 	
 	<!--页面加载进度条-->
 	<div class="Toolscon" id="ToolsPageLoading">
-		<div class="progress" style="height: 4px;line-height: 4px;">
-		  <div id="ToolsLoading" class="progress-bar progress-bar-success progress-bar-striped"  style="width: 0%;height: 4px;">
+		<div class="progress" style="height: 4px;line-height: 4px;background-color: inherit;border: 0px;">
+		  <div id="ToolsLoading" class="progress-bar progress-bar-success progress-bar-striped active"  style="width: 0%;height: 4px;">
 		  </div>
 		</div>
 	</div>

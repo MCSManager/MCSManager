@@ -137,7 +137,10 @@
 		PageMain.stop(true, true).animate({
 			'opacity': '1'
 		}, 150, function() {
-			ToolsPageLoading.css("display", "none");
+			setTimeout(function(){
+				ToolsPageLoading.css("display", "none");
+			},100);
+			
 		});
 	}
 
