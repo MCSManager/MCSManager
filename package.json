@@ -2,6 +2,7 @@
   "name": "MinecraftServerManager",
   "version": "8.0.0",
   "description": "A Simple Minecraft server web panel",
+  "Keywords": ["Minecraft", "MinecraftServerManager", "MinecraftServerPanel"],
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -26,11 +27,7 @@
   "engines": {
     "node": ">=8.0"
   },
-  "author": {
-    "name": "Suwings",
-    "email": "Suwings@outlook.com",
-    "url": "https://github.com/Suwings"
-  },
+  "author": "Suwings",
   "readmeFilename": "README.md",
   "license": "AGPL"
 }
