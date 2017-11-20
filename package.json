@@ -1,6 +1,6 @@
 {
   "name": "MinecraftServerManager",
-  "version": "8.0.0",
+  "version": "8.0",
   "description": "A Simple Minecraft server web panel",
   "main": "app.js",
   "dependencies": {
@@ -15,18 +15,7 @@
     "pidusage": "^1.1.5",
     "properties": "^1.2.1"
   },
-  "devDependencies": {
-    "body-parser": "^1.17.2",
-    "colors": "^1.1.2",
-    "connect": "^3.6.2",
-    "cookie-parser": "^1.4.3",
-    "express": "^4.15.3",
-    "express-session": "^1.15.3",
-    "express-ws": "^3.0.0",
-    "os-utils": "0.0.14",
-    "pidusage": "^1.1.5",
-    "properties": "^1.2.1"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/Suwings/MCSManager"
@@ -42,5 +31,6 @@
     "email": "Suwings@outlook.com",
     "url": "https://github.com/Suwings"
   },
+  "readmeFilename": "README.md", 
   "license": "AGPL"
 }
