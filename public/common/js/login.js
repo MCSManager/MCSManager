@@ -17,19 +17,13 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 	});
 
 	function logging() {
-		// console.log('password: ', password)
-		// console.log('POST_OBJECT.salt: ', POST_OBJECT.enkey1)
-		// console.log('POST_OBJECT.enkey: ', POST_OBJECT.enkey2)
 		var md5Password = hex_md5(hex_md5(password) + POST_OBJECT.enkey1)//账号注册时保存的格式
 		var md5Passworded = hex_md5(md5Password + POST_OBJECT.enkey2);//登陆的格式
-		// console.log('md5Passworded:', md5Passworded);
 		$.post({
 			url: MCSERVER.URL('./user/login'),
 			data: {
 				username: username,
 				password: md5Passworded
-				// enkey: POST_OBJECT.enkey2,
-				// rand: rand || 0
 			},
 			success: function (data, textStatus) {
 				var obj = JSON.parse(data);
