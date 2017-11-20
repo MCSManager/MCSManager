@@ -4,6 +4,14 @@
   "description": "A Simple Minecraft server web panel",
   "Keywords": ["Minecraft", "MinecraftServerManager", "MinecraftServerPanel"],
   "main": "app.js",
+  "author": "Suwings",
+  "readmeFilename": "README.md",
+  "license": "AGPL",
+  "contributors": [
+    "Suwings",
+    "pppploi8",
+    "paji"
+  ],
   "dependencies": {
     "body-parser": "^1.17.2",
     "colors": "^1.1.2",
@@ -26,8 +34,5 @@
   },
   "engines": {
     "node": ">=8.0"
-  },
-  "author": "Suwings",
-  "readmeFilename": "README.md",
-  "license": "AGPL"
+  }
 }
