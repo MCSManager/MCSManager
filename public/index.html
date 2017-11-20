@@ -29,7 +29,7 @@
 	</head>
 
 	<!--百度数据统计,如果您不想被统计,请删除这段代码-->
-	<!--<script>
+	<script>
 		var _hmt = _hmt || [];
 		(function() {
 			var hm = document.createElement("script");
@@ -37,9 +37,9 @@
 			var s = document.getElementsByTagName("script")[0];
 			s.parentNode.insertBefore(hm, s);
 		})();
-	</script>-->
+	</script>
 
-	<!-- 
+<!-- 
     __  ___                                       __  ___                                 
    /  |/  /____________  ______   _____  _____   /  |/  /___ _____  ____ _____ ____  _____
   / /|_/ / ___/ ___/ _ \/ ___/ | / / _ \/ ___/  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ ___/
@@ -50,7 +50,7 @@
 -->
 
 	<body>
-		<div id='Header' class="box-shadow">
+		<div id='Header' class="">
 			<div id='MasterLogo' class="HeaderItem" onclick="MCSERVER.colmDo()" style="cursor: pointer;">
 				<b>Mcserver
 				<b> 管理面板</div>
@@ -62,7 +62,7 @@
 		</div>
 	</div>
 	<div id='MainContainer'>
-		<div id='SideCol' class="box-shadow">
+		<div id='SideCol' class="">
 			<div id="SideColMenu">
 				<div id='SideColMenuInfo'>
 					Mcserver Manager
@@ -158,13 +158,14 @@
 	<script type="text/javascript" src="common/js/chart.js"></script>
 
 	<script>
-		
-	(function(){
-			//事件
+	
+	if(!window.$)alert('网络不流畅，文件加载失败！');
+	
+	$(function(){
+		//事件
 		window.onresize = function () {
 			MI.on('resize', null);
 		}
-
 		//防止页面后退
 		history.pushState(null, null, document.URL);
 		window.addEventListener('popstate', function () {
@@ -172,10 +173,10 @@
 		});
 
 		//一般制约能力的防止被 iframe 嵌入，另外，HTTP返回了 X-Frame-Options: DENY
-		this.top.location !== this.location && (this.top.location = this.location);
-
+		window.top.location !== window.location && (window.top.location = window.location);
+		
 		// echart 路径配置
-		require.config({
+		window.require.config({
 			paths: {
 				echarts: './common/echarts-dist'
 			}
@@ -252,7 +253,7 @@
 
 		VIEW_MODEL.COMMON = {};
 		
-	})();
+	});
 		
 						
 

@@ -71,7 +71,6 @@ WebSocketObserver().listener('genuser/re_password', (data) => {
                 userCenter().rePassword(username, config.newPassword);
                 userCenter().initUser();
                 response.wsMsgWindow(data.ws, '密码修改修改完成，请重新登陆!');
-                data.ws.close();
             } catch (err) {
                 throw err;
             }
