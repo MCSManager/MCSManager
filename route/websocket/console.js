@@ -86,16 +86,11 @@ WebSocketObserver().listener('server/console/remove', (data) => {
 });
 
 serverModel.ServerManager().on('console', (data) => {
-    // console.log('[' + data.serverName + '] >>> ' + data.msg);
-
-    // serverModel.ServerManager(data.serverName)
-    // .terminLog().unshift(data.msg);
     let server = serverModel.ServerManager().getServer(data.serverName);
     let consoleData = data.msg.replace(/\n/gim, '<br />');
 
-    //将输出载入历史记录
-    server.terminalLog(consoleData);
-    // console.log(server.consoleLog.length);
+    //将输出载入历史记录  这里曾出现过 server 未定义bug，情况不明，已加保险
+    if(server) server.terminalLog(consoleData);
 
     selectWebsocket(data.serverName, (socket) => {
         socket.send({
@@ -105,15 +100,8 @@ serverModel.ServerManager().on('console', (data) => {
             body: consoleData
         });
     });
-})
+});
 
-
-
-// require('./console/command');
-// require('./console/history');
-// require('./console/open');
-// require('./console/properties');
-// require('./console/console-info');
 
 const {autoLoadModule} = require("../../core/tools");
 autoLoadModule('route/websocket/console','console/',(path)=>{
