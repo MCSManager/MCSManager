@@ -38,9 +38,10 @@
 /*通用面板*/
 
 .Panel {
-	border-radius: 3px;
-	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
-	margin-bottom: 20px;
+	/*border-radius: 3px;*/
+	/*box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);*/
+box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
+	margin-bottom: 16px;
 	background-color: #fff;
 }
 
@@ -67,7 +68,7 @@
 	font-weight: 800;
 	margin: 0;
 	line-height: 1;
-	border-bottom: 1px solid rgb(249, 249, 249);
+	border-bottom: 1px solid rgb(246, 246, 246);
 }
 
 .PanelBody {
