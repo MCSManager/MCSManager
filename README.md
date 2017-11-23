@@ -36,9 +36,7 @@ npm install
 >  
 > `core/logo.txt`				控制台输出
 >
-> `public/`					前端所有代码(压缩)
->
-> `public_src/`				前端所有代码，如果你想更改前端，请用这个覆盖public/
+> `public/`					前端所有代码
 >
 > `public/common/js/meum.js` 	菜单名修改
 >
