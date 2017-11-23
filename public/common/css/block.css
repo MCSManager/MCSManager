@@ -4,7 +4,6 @@
 	border: 1px solid rgb(225, 225, 225);
 	padding: 8px;
 	margin-bottom: 10px;
-	;
 	width: 100%;
 }
 
@@ -17,7 +16,6 @@
 	font-size: 12px;
 	font-weight: 400;
 	margin-bottom: 2px;
-	;
 }
 
 .news small {
@@ -40,7 +38,7 @@
 .Panel {
 	/*border-radius: 3px;*/
 	/*box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);*/
-box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
+	box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
 	margin-bottom: 16px;
 	background-color: #fff;
 }
@@ -50,7 +48,7 @@ box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
 }
 
 .PanelGray {
-	/*border-top: 3px solid #c7c7c7;*/
+	border-top: 3px solid #c7c7c7;
 }
 
 .PanelGreen {
