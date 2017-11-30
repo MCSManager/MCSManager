@@ -1,15 +1,18 @@
 ## Minecraft Server Manager
 简单，易用，简约，轻量级的 Minecraft Server 控制面板
 
-### 快速上手
+### 快速扩展
 我们用最简单上手的方式，来构建整个应用程序，绝大部分的开发者可以轻而易举的进行修改，以及依照协议开发使用。你会发现，这可能是一非常适合你的 `Minecraft` 服务器管理工具，支持绝大部分的主流服务端。
+
+并且，我们将尽可能的降低扩展的学习成本来帮助你更好的扩展与自定义，让一个完全属于你的`Minecraft`服务器管理器出现。
 
 ### 文档 && 使用说明
 正在开发..
 
+
 ### 环境需求
 - `Node.js` >= 8.0
-- `Java`    >= 7.0 但强烈推荐 `Java` 8
+- `Java`    >= 7.0 但强烈推荐 `Java` >= 8
 
 
 ### 普通用户使用
@@ -47,4 +50,5 @@ npm install
 > `users/*.json`				用户配置文件
 
 ### 开源协议
-> 采用 [AGPL](./LICENSE "AGPL") 协议
+> 使用请自觉遵守 [GNU Affero General Public License v3.0](./LICENSE "GNU Affero General Public License v3.0") 协议
+
