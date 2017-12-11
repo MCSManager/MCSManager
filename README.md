@@ -18,7 +18,7 @@
 运行在 Windows 平台
 -----------
 
-- 方法一
+**方法一**
 
 下载并正确安装 `Node` 8 环境: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
 
@@ -33,7 +33,7 @@
 执行命令 `node app.js` 或 `npm start`
 
 
-- 方法二
+**方法二**
 
 介于某些原因，您可能并不愿意安装这些运行环境，于是我们给予了一种绿色打包的运行环境，下载即可直接使用
 
