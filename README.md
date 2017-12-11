@@ -1,5 +1,6 @@
 <p><h1><img src="http://39.108.57.206/public/MCSM_LOGO_1.png" />Minecraft Server Manager<h1></p> 
------------
+
+
 简单，易用，简约，轻量级的 Minecraft Server 控制面板
 
 快速扩展
