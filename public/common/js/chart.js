@@ -1,17 +1,17 @@
 TOOLS.charts = {};
 
-TOOLS.charts.bulider = function(dom, len, config, callback, chartOption) {
+TOOLS.charts.bulider = function (dom, len, config, callback, chartOption) {
 	var viewData = [];
 	var keyData = [];
 	var option = chartOption;
 	var myChart = null;
 	// var UPMAX = upMAX || 100;
-	for(var i = 0; i < len; i++) {
+	for (var i = 0; i < len; i++) {
 		viewData[i] = 0;
 		keyData[i] = '';
 	}
 	require(['echarts', 'echarts/chart/line'],
-		function(ec) {
+		function (ec) {
 			// 基于准备好的dom，初始化echarts图表
 			myChart = ec.init(document.getElementById(dom));
 
@@ -21,18 +21,12 @@ TOOLS.charts.bulider = function(dom, len, config, callback, chartOption) {
 			// 为echarts对象加载数据 
 			myChart.setOption(option);
 
-			//			var resizeFunc = {};
-			//			resizeFunc.oooo = function() {
-			////				resizeCallback();
-			//			}
-			//			MI.listener('resize', resizeFunc.oooo);
-
 			callback({
 				chart: myChart,
-				reOption: function() {
+				reOption: function () {
 					myChart.setOption(option);
 				},
-				pushData: function(key, val) {
+				pushData: function (key, val) {
 					console.log('viewData:', viewData)
 
 					viewData = viewData.slice(1);
@@ -43,24 +37,19 @@ TOOLS.charts.bulider = function(dom, len, config, callback, chartOption) {
 					keyData.push(key);
 					option.xAxis[0].data = keyData;
 				},
-				replaceData: function(arr) {
-					if(arr == undefined) return;
+				replaceData: function (arr) {
+					if (arr == undefined) return;
 					viewData = [];
 					keyData = [];
-					for(var i = 0; i < arr.length; i++) {
-						if(arr[i] == null) continue;
+					for (var i = 0; i < arr.length; i++) {
+						if (arr[i] == null) continue;
 						viewData.push(arr[i].val);
 						keyData.push(arr[i].key);
 					}
 					option.series[0].data = viewData;
 					option.xAxis[0].data = keyData;
 				},
-				end: function() {
-					//					resizeFunc.oooo = undefined;
-					//					delete resizeFunc;
-					//					delete myChart;
-					//					delete this;
-				}
+				end: function () {}
 			});
 		}
 	);

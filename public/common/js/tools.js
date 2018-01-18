@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	//全局TOOLS
 	window.TOOLS = {};
 
@@ -8,29 +8,29 @@
 	function showMsgWindow(value, callback) {
 		VIEW_MODEL['ToolsInfo'].show = true;
 		VIEW_MODEL['ToolsInfo'].msg = value;
-		setTimeout(function() {
+		setTimeout(function () {
 			VIEW_MODEL['ToolsInfo'].show = false;
 			VIEW_MODEL['ToolsInfo'].msg = '';
 			callback && callback();
 		}, 1800);
 	}
 
-	TOOLS.pushMsgWindow = function(value) {
+	TOOLS.pushMsgWindow = function (value) {
 		_queue.push({
 			msg: value
 		});
 
-		if(_run == true) return;
+		if (_run == true) return;
 
 		function whiles() {
-			if(_queue.length <= 0) {
+			if (_queue.length <= 0) {
 				_run = false;
 				return;
 			}
 			_run = true;
 			msgObj = _queue.shift();
 
-			showMsgWindow(msgObj.msg, function() {
+			showMsgWindow(msgObj.msg, function () {
 				//下一个
 				setTimeout(whiles, 200);
 			});
@@ -39,16 +39,16 @@
 	}
 
 	//后端要求打开信息框
-	MI.routeListener('window/msg', function(data) {
+	MI.routeListener('window/msg', function (data) {
 		TOOLS.pushMsgWindow(data.body);
 	});
-	
-	TOOLS.isMaster = function(username){
+
+	TOOLS.isMaster = function (username) {
 		return username.substr(0, 1) === "#";
 	}
 
 	// XSS 攻击防御函数
-	TOOLS.encode = function(html) {
+	TOOLS.encode = function (html) {
 		var rstr = html.replace(/&/gim, '&amp;')
 			.replace(/</gim, '&lt;')
 			.replace(/>/gim, '&gt;')
@@ -58,7 +58,7 @@
 		return rstr;
 	}
 
-	TOOLS.decode = function(text) {
+	TOOLS.decode = function (text) {
 		var str = text
 			.replace(/&lt;/gim, '<')
 			.replace(/&gt;/gim, '>')
@@ -70,29 +70,29 @@
 		return str;
 	}
 
-	TOOLS.getCookie = function(name) {
+	TOOLS.getCookie = function (name) {
 		var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-		if(arr = document.cookie.match(reg))
+		if (arr = document.cookie.match(reg))
 			return unescape(arr[2]);
 		else
 			return null;
 	}
 
-	TOOLS.delCookie = function(name) {
+	TOOLS.delCookie = function (name) {
 		var exp = new Date();
 		exp.setTime(exp.getTime() - 1);
 		var cval = TOOLS.getCookie(name);
-		if(cval != null)
+		if (cval != null)
 			document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
 	}
 
-	TOOLS.setCookie = function(name, value) {
+	TOOLS.setCookie = function (name, value) {
 		//		var strsec = getsec(time); 
 		document.cookie = name + "=" + escape(value) + ";expires=" + new Date(Date.now() + 10000 * 60 * 60 * 4).toGMTString();
 	}
-	
-//	TOOLS.onResize = function($dom,callback){
-//		
-//	}
+
+	//	TOOLS.onResize = function($dom,callback){
+	//		
+	//	}
 
 })();

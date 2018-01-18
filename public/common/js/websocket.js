@@ -6,7 +6,6 @@
 	//from @BBleae
 	function wsHeartBeatPackage(ws) {
 		setInterval(function () {
-			console.log("--HeartBeatPackage--");
 			ws.sendMsg("HeartBeatPackage", "");
 		}, 10000);
 	}

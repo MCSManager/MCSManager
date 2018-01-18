@@ -4,7 +4,10 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 	$.get({
 		url: MCSERVER.URL('./user/login_key'),
 		//import
-		data: { username: username, wIwdj274: "adFh_u297?4jGs1" },
+		data: {
+			username: username,
+			wIwdj274: "adFh_u297?4jGs1"
+		},
 		success: function (data, textStatus) {
 			var obj = JSON.parse(data);
 			POST_OBJECT = obj;
@@ -17,8 +20,8 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 	});
 
 	function logging() {
-		var md5Password = hex_md5(hex_md5(password) + POST_OBJECT.enkey1)//账号注册时保存的格式
-		var md5Passworded = hex_md5(md5Password + POST_OBJECT.enkey2);//登陆的格式
+		var md5Password = hex_md5(hex_md5(password) + POST_OBJECT.enkey1) //账号注册时保存的格式
+		var md5Passworded = hex_md5(md5Password + POST_OBJECT.enkey2); //登陆的格式
 		$.post({
 			url: MCSERVER.URL('./user/login'),
 			data: {
