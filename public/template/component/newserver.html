@@ -36,21 +36,21 @@
 								<span class="input-group-addon">服务端文件根目录</span>
 								<input type="text" class="form-control" v-model="cwd">
 								<span class="input-group-btn">
-						        <button class="btn btn-success" v-on:click="toCreaterDir()"> 确认创建目录 </button>
-						      </span>
+									<button class="btn btn-success" v-on:click="toCreaterDir()"> 确认创建目录 </button>
+								</span>
 
 							</div>
 							<p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="input-group input-group-sm">
-										<span class="input-group-addon"> 最大内存堆  </span>
+										<span class="input-group-addon"> 最大内存堆 </span>
 										<input type="text" class="form-control" v-model="Xmx">
 									</div>
 								</div>
 								<div class="col-sm-6">
 									<div class="input-group input-group-sm">
-										<span class="input-group-addon"> 初始内存堆  </span>
+										<span class="input-group-addon"> 初始内存堆 </span>
 										<input type="text" class="form-control" v-model="Xms">
 									</div>
 								</div>
@@ -86,12 +86,12 @@
 </div>
 
 <script>
-	MI.rListener('onload', function() {
+	MI.rListener('onload', function () {
 		console.log('页面开始')
 		VIEW_MODEL.newVue('CreateServerView', {
 			el: '#CreateServerView',
 			data: {
-				name: 'NewServer_' + ((Date.parse(new Date()) + "").substr( 6)),
+				name: 'NewServer_' + ((Date.parse(new Date()) + "").substr(6)),
 				jarName: '',
 				cwd: '<默认标准位置>',
 				Xmx: '',
@@ -100,7 +100,7 @@
 				java: 'java'
 			},
 			methods: {
-				toCreateServer: function() {
+				toCreateServer: function () {
 					var addCmdList = this.addCmd.split(' ');
 					var obj = {
 						addCmd: addCmdList,
@@ -112,10 +112,9 @@
 						java: this.Java
 					};
 					WS.sendMsg('server/create', JSON.stringify(obj));
-					//					console.log(this.name)
 					RES.redirectPage('./template/server.html', 'server/view');
 				},
-				toCreaterDir: function() {
+				toCreaterDir: function () {
 					var obj = {
 						serverName: this.name,
 						cwd: this.cwd
@@ -124,8 +123,8 @@
 				}
 			},
 			computed: {
-				serverCwd: function() {
-					if(this.cwd == '<默认标准位置>' || this.cwd == '') return './server/server_core/' + this.name;
+				serverCwd: function () {
+					if (this.cwd == '<默认标准位置>' || this.cwd == '') return './server/server_core/' + this.name;
 					return this.cwd;
 				}
 			}
@@ -133,7 +132,7 @@
 
 	});
 
-	MI.rListener('onend', function() {
+	MI.rListener('onend', function () {
 		console.log('页面关闭')
 	});
 </script>

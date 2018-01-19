@@ -41,10 +41,11 @@
 					</div>
 
 					<div class="PanelItem">
-						<span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span> 端口: {{ FTP_port }} 
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span> 端口: {{ FTP_port }}
 					</div>
 					<div class="PanelItem">
-						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> 密码: <span style="color: #666666;">&lt;与登陆密码相同&gt;</span>
+						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> 密码:
+						<span style="color: #666666;">&lt;与登陆密码相同&gt;</span>
 					</div>
 				</div>
 			</div>
@@ -56,13 +57,17 @@
 					<div class="row">
 						<div class="col-md-3 col-sm-6" v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
 							<div class="PanelItemBlock">
-								<div class="LogV"><span class="glyphicon glyphicon-console" aria-hidden="true"> </span> </div>
+								<div class="LogV">
+									<span class="glyphicon glyphicon-console" aria-hidden="true"> </span>
+								</div>
 								<div class="LogK">命令控制台</div>
 							</div>
 						</div>
 						<div class="col-md-3 col-sm-6" v-on:click="toProperties()">
 							<div class="PanelItemBlock">
-								<div class="LogV"><span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> </div>
+								<div class="LogV">
+									<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>
+								</div>
 								<div class="LogK">服务器配置</div>
 							</div>
 						</div>
@@ -117,57 +122,50 @@
 </div>
 
 <script>
-	MI.rListener('onload', function() {
-		//默认隐藏控制台
-		MCSERVER.colmDo();
+	MI.rListener('onload', function () {
 
-		//		PAGE.MinecraftConsole = document.getElementById('MinecraftConsole');
+		// MCSERVER.colmSet();	//不自动调整，则边栏继承父类情况
 
 		var serverName = VIEW_MODEL['ConsolePanel'].serverData.name;
 		MCSERVER.listenServername = serverName;
-		//		WS.sendMsg('server/console/ws', serverName);
 
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
 			methods: {
-				toOpenServer: function() {
+				toOpenServer: function () {
 					this.allowedStart = !this.allowedStart;
 					WS.sendMsg('server/console/open', serverName);
 				},
-				toCommand: function(parCommand) {
-					if(parCommand && typeof(parCommand) == 'string') this.command = parCommand;
+				toCommand: function (parCommand) {
+					if (parCommand && typeof (parCommand) == 'string') this.command = parCommand;
 					var data = {
 						command: this.command,
 						serverName: serverName
 					};
-					if(this.command.length >= 1 || typeof(parCommand) == 'string') {
+					if (this.command.length >= 1 || typeof (parCommand) == 'string') {
 						WS.sendMsg('server/console/command', JSON.stringify(data));
 					}
 					this.command = '';
 				},
-				toProperties: function() {
+				toProperties: function () {
 					RES.redirectPage('./template/component/properties.html', 'server/properties', serverName);
 				},
-				toTerminal: function() {
-					//					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName );
+				toTerminal: function () {
 					RES.redirectPage('./template/component/terminal.html', 'server/console', serverName);
 				}
 			},
 			data: {
-				//				MinecraftConsoleBuff: 'Minecraft 控制台，您可以在这里实时监听到这个Minecraft服务器的内容:',
 				command: "",
 				allowedStart: true,
 				runStatusClass: '',
-				username : MCSERVER.username
+				username: MCSERVER.username
 			},
 			watch: {
-				run: function(cur, old) {
-					//if(cur == true)this.toCommand('list')
-				}
+				run: function (cur, old) {}
 			}
 		});
 
-		PAGE.timerR = setInterval(function() {
+		PAGE.timerR = setInterval(function () {
 			WS.sendMsg('server/console', serverName);
 		}, 2000);
 
@@ -179,32 +177,31 @@
 		var ChartCPU = null;
 		var ChartRAM = null;
 		PAGE.ChartLogIs = true;
-		TOOLS.charts.bulider('ChartCPU', 16, {}, function(chart) {
+		TOOLS.charts.bulider('ChartCPU', 16, {}, function (chart) {
 			ChartCPU = chart;
 
 			function doing() {
 				chart.replaceData(VIEW_MODEL['ConsolePanel'].CPUlog);
 				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
 				chart.reOption();
-				if(PAGE.ChartLogIs) setTimeout(doing, 2000);
+				if (PAGE.ChartLogIs) setTimeout(doing, 2000);
 			}
 			doing();
 		}, CPUoption);
 		//ChartRAM
-		TOOLS.charts.bulider('ChartRAM', 16, {}, function(chart) {
+		TOOLS.charts.bulider('ChartRAM', 16, {}, function (chart) {
 			ChartRAM = chart;
 
 			function doing() {
 				chart.replaceData(VIEW_MODEL['ConsolePanel'].RAMlog);
 				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
 				chart.reOption();
-				if(PAGE.ChartLogIs) setTimeout(doing, 2000);
+				if (PAGE.ChartLogIs) setTimeout(doing, 2000);
 			}
 			doing();
 		}, CPUoption);
-		
-		PAGE.chartResizeFunc = function() {
-			console.log('图表改变')
+
+		PAGE.chartResizeFunc = function () {
 			ChartCPU.chart.resize();
 			ChartRAM.chart.resize();
 		}
@@ -214,10 +211,7 @@
 
 	});
 
-	MI.rListener('onend', function() {
-		console.log('页面关闭');
-		//		WS.sendMsg('server/console/remove', '');
-		//		PAGE[chartResizeFunc] = undefined;
+	MI.rListener('onend', function () {
 		MI.onDestroy('colmchangeEnd', PAGE.chartResizeFunc);
 		MI.onDestroy('resize', PAGE.chartResizeFunc);
 		PAGE.ChartLogIs = false;

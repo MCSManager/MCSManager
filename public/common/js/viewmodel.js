@@ -5,6 +5,7 @@
 
 	var DEBUG = false;
 
+	//ws 链接事件
 	MI.listener('ws/open', function (ws) {
 		VIEW_MODEL['websocketStatus'] = {};
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
@@ -33,12 +34,14 @@
 		webscoketStatus['color'] = '#f5ea6c';
 	});
 
+	//单页生命周期替换事件
 	MI.listener('page/live', function (ws) {
 		for (var tmp in PAGE) delete PAGE[tmp];
 		delete PAGE;
 		PAGE = new Object();
 	});
 
+	//菜单获取
 	MI.routeListener('ws/muem', function (data) {
 		DEBUG && console.log('--- 系统菜单获取成功 ---')
 		MCSERVER.username = data.obj.username;
@@ -104,8 +107,7 @@
 	//服务器控制台
 	MI.routeListener('server/console', function (data) {
 		if (data.obj == null) {
-			//alert('你无权访问此服务器');
-			TOOLS.pushMsgWindow('您并不拥有这个服务器的所有权，需要管理员设定')
+			TOOLS.pushMsgWindow('您并不拥有这个服务器的所有权，需要管理员设定');
 			VIEW_MODEL['ConsolePanel'].serverData.name = null;
 		}
 		MI.routeCopy('ConsolePanel', data.obj);
@@ -119,8 +121,6 @@
 	var terminalEncode = function (text) {
 		var ify = '[_b_r_]';
 		var txt = text;
-		//		if(txt == '')return;
-
 		txt = txt.replace(/<br \/>/igm, '[_b_r_]');
 		var consoleSafe = TOOLS.encode(txt);
 		consoleSafe = consoleSafe.replace(/\[_b_r_\]/igm, '<br>');
@@ -134,23 +134,17 @@
 			console.log('NULL')
 		}
 		MinecraftConsole.innerHTML += consoleSafe;
-		//		if(MinecraftConsole.children.length > 612)MinecraftConsole.innerHTML = '';
-		//		MinecraftConsole.scrollIntoView();
-		//		MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;
 		var BUFF_FONTIER_SIZE_DOWN = MinecraftConsole.scrollHeight - MinecraftConsole.clientHeight;
-		//		console.log('scrollTop:', $(MinecraftConsole).scrollTop())
-
 		if (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN) {
 			MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;
 		}
 	});
 
+	//获取控制台历史记录
 	MI.routeListener('server/console/history', function (data) {
 		var consoleSafe = terminalEncode(data.body);
 
 		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		//		if(MinecraftConsole == undefined) {console.log('NULL')}
-		//		var teButton = "<div class='TerminalLoad' onclick='PAGE.terminalLoad()'> [ 单击加载更多历史记录 ]</div>"
 		var ifyLoad =
 			'<span style="color:#3af138;">[历史日志] </span>' +
 			'<span style="color:rgb(212, 136, 30);">================<br></span>';
@@ -164,11 +158,6 @@
 
 		var resVTopLac = newHeightV - oldHeightV;
 		MinecraftConsole.scrollTop = resVTopLac - 60;
-		//		console.log('NewTop:', resVTopLac, newHeightV, oldHeightV)
-		//		if(MinecraftConsole.children.length > 612)MinecraftConsole.innerHTML = '';
-		//		MinecraftConsole.scrollIntoView();
-		//		MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;\n
-
 	});
 
 	//普通用户主页

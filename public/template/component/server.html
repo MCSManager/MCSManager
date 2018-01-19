@@ -9,7 +9,9 @@
 						<div class="col-md-12">
 							<div class="PanelItem">标识名: {{ name }}</div>
 							<div class="PanelItem">创建时间: {{ createDate }}</div>
-							<div class="PanelItem" v-if="run">状况: <span class="color-green">正在运行</span></div>
+							<div class="PanelItem" v-if="run">状况:
+								<span class="color-green">正在运行</span>
+							</div>
 							<div class="PanelItem" v-else="run">状况: 未运行</div>
 							<div class="PanelItem">最后启动: {{ lastDate }}</div>
 						</div>
@@ -45,14 +47,14 @@
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">服务器根目录</span>
-								<input  type="text" class="form-control" v-model="cwd">
+								<input type="text" class="form-control" v-model="cwd">
 							</div>
 							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 最大内存堆  </span>
+								<span class="input-group-addon"> 最大内存堆 </span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="<自动>">
 							</div>
-							<div class="input-group input-group-sm" >
-								<span class="input-group-addon"> 初始内存堆  </span>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 初始内存堆 </span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="<自动>">
 							</div>
 						</div>
@@ -66,9 +68,8 @@
 								<li>一旦使用这个自定义参数，将会忽略您上面所设置的所有选项</li>
 								<li>您设定的自定义启动参数依然会将服务端根目录作为工作目录来执行命令</li>
 								<li>甚至可以运行 bash shell 或 cmd.exe 程序,谨慎设置</li>
-								<li>列如: java -xxx -yyy Xmx4g Xms2g <span class="color-red">-Djline.terminal=jline.UnsupportedTerminal</span> -jar test.jar --xxx 这类高级需求</li>
-								
-								
+								<li>列如: java -xxx -yyy Xmx4g Xms2g
+									<span class="color-red">-Djline.terminal=jline.UnsupportedTerminal</span> -jar test.jar --xxx 这类高级需求</li>
 							</ul>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 自定义参数 </span>
@@ -104,21 +105,20 @@
 
 </div>
 <script>
-	MI.rListener('onload', function() {
-		console.log('页面开始')
+	MI.rListener('onload', function () {
 		VIEW_MODEL.newVue('ServerPanel', {
 			el: '#ServerPanel',
 			data: {
 				oldServerName: '',
-				isHighCommande : false
+				isHighCommande: false
 			},
 			methods: {
-				toConsole: function(serverName) {
+				toConsole: function (serverName) {
 					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName);
 				},
-				toRebulider: function() {
+				toRebulider: function () {
 					var addCmdList = this.addCmd.split(' ');
-					if(this.oldServerName.trim() == '' || this.name.trim() == '') {
+					if (this.oldServerName.trim() == '' || this.name.trim() == '') {
 						TOOLS.pushMsgWindow("服务器唯一标识名不能为空，请取一个名字!");
 						return;
 					}
@@ -130,21 +130,20 @@
 						Xmx: this.Xmx,
 						Xms: this.Xms,
 						java: this.java,
-						highCommande : this.highCommande,
+						highCommande: this.highCommande,
 						oldServerName: this.oldServerName
 					};
 					WS.sendMsg('server/rebulider', JSON.stringify(obj));
-					setTimeout(function() {
+					setTimeout(function () {
 						RES.redirectPage('./template/server.html', 'server/view');
 					}, 100);
 				}
 			},
 			watch: {
-				// 如果 question 发生改变，这个函数就会运行
-				highCommande: function(newQuestion) {
-					if(this.highCommande){
+				highCommande: function (newQuestion) {
+					if (this.highCommande) {
 						this.isHighCommande = true;
-					}else{
+					} else {
 						this.isHighCommande = false;
 					}
 				}
@@ -152,10 +151,8 @@
 		});
 		VIEW_MODEL['ServerPanel'].addCmd = VIEW_MODEL['ServerPanel'].addCmd.toString().replace(/,/gim, ' ');
 		VIEW_MODEL['ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + "";
-		
+
 	});
 
-	MI.rListener('onend', function() {
-		console.log('页面关闭')
-	});
+	MI.rListener('onend', function () {});
 </script>

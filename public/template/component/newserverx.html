@@ -36,13 +36,13 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 最大内存堆  </span>
+								<span class="input-group-addon"> 最大内存堆 </span>
 								<input type="text" class="form-control" v-model="Xmx">
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 初始内存堆  </span>
+								<span class="input-group-addon"> 初始内存堆 </span>
 								<input type="text" class="form-control" v-model="Xms">
 							</div>
 						</div>
@@ -64,7 +64,8 @@
 					<div class="PanelTitle">[必做] 第五步，移动你的服务端文件</div>
 					<p>现在您只需要将您的服务端文件移到下面的 “服务端根目录”，这个目录是您刚刚创建或自定义的。</p>
 					<p>如果您没有服务端文件，您可以下载: </p>
-					<p><span style="color: #3278B3">服务端根目录:</span> “{{ serverCwd }}” </p>
+					<p>
+						<span style="color: #3278B3">服务端根目录:</span> “{{ serverCwd }}” </p>
 
 					<br>
 					<div class="PanelTitle">[必填] 第六步，填写刚刚移动的服务端名字 (请记得加上后戳，如.jar)</div>
@@ -86,9 +87,7 @@
 </div>
 
 <script>
-	MI.rListener('onload', function() {
-		//有木有发现一样的~  好吧其实是生成的
-		console.log('页面开始')
+	MI.rListener('onload', function () {
 		VIEW_MODEL.newVue('CreateServerViewx', {
 			el: '#CreateServerViewx',
 			data: {
@@ -101,7 +100,7 @@
 				java: 'java'
 			},
 			methods: {
-				toCreateServer: function() {
+				toCreateServer: function () {
 					var addCmdList = this.addCmd.split(' ');
 					var obj = {
 						addCmd: addCmdList,
@@ -116,7 +115,7 @@
 					//					console.log(this.name)
 					RES.redirectPage('./template/server.html', 'server/view');
 				},
-				toCreaterDir: function() {
+				toCreaterDir: function () {
 					var obj = {
 						serverName: this.name,
 						cwd: this.cwd
@@ -125,8 +124,8 @@
 				}
 			},
 			computed: {
-				serverCwd: function() {
-					if(this.cwd == '<默认标准位置>' || this.cwd == '') return '控制面板目录/server/server_core/' + this.name;
+				serverCwd: function () {
+					if (this.cwd == '<默认标准位置>' || this.cwd == '') return '控制面板目录/server/server_core/' + this.name;
 					return this.cwd;
 				}
 			}
@@ -134,7 +133,5 @@
 
 	});
 
-	MI.rListener('onend', function() {
-		console.log('页面关闭')
-	});
+	MI.rListener('onend', function () {});
 </script>

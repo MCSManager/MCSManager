@@ -50,7 +50,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 			</div>
 		</div>
@@ -64,11 +64,15 @@
 								<div class="row">
 									<div class="col-md-7">
 										<div class="PanelItemInfo">
-											<h4><span v-text="item.serverName"></span > | <span v-text="item.jarName"></span ></h4> 状态:
-											<span v-if="item.run" class="color-green"> 正在运行  </span>
-											<span v-else="item.run" class="color-red"> 关闭  </span>
+											<h4>
+												<span v-text="item.serverName"></span> |
+												<span v-text="item.jarName"></span>
+											</h4> 状态:
+											<span v-if="item.run" class="color-green"> 正在运行 </span>
+											<span v-else="item.run" class="color-red"> 关闭 </span>
 											<!--											<br>创建时间 ：<span v-text="item.createDate"></span>-->
-											<br>最后启动：<span v-text="item.lastDate"></span>
+											<br>最后启动：
+											<span v-text="item.lastDate"></span>
 
 										</div>
 									</div>
@@ -91,24 +95,23 @@
 
 <!--js-->
 <script>
-	MI.rListener('onload', function() {
+	MI.rListener('onload', function () {
 		console.log('页面开始')
 		MCSERVER.colmSet(false);
 		VIEW_MODEL.newVue('GenHome', {
 			el: '#GenHome',
 			methods: {
-				toConsole: function(serverName) {
-					//onRedirect('./template/component/console.html', 'server/console', item.serverName );
+				toConsole: function (serverName) {
 					RES.redirectPage('./template/component/console.html', 'server/console', serverName);
 				},
-				toRePassword : function(){
+				toRePassword: function () {
 					RES.redirectPage('./template/component/gen_repassword.html');
 				}
 			}
 		});
 	})
 
-	MI.rListener('onend', function() {
+	MI.rListener('onend', function () {
 		console.log('页面关闭')
 	})
 </script>

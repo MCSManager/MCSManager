@@ -23,22 +23,19 @@
 	<!--<div id='' v-if="historyIf" v-on:click="loadHistory()">更多历史日志</div>-->
 	<div class="" style="border-top: 1px solid #585858;">
 		<!--<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>-->
-		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command" type="text" class="TerminalCommand" placeholder="[命令输入框] 操作 ↑ 和 ↓ 可以查看历史命令记录,输入 help 或 ? 可以查看帮助信息." aria-describedby="sizing-addon3">
+		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command"
+		    type="text" class="TerminalCommand" placeholder="[命令输入框] 操作 ↑ 和 ↓ 可以查看历史命令记录,输入 help 或 ? 可以查看帮助信息." aria-describedby="sizing-addon3">
 
 	</div>
 </div>
 </div>
 <script>
-	MI.rListener('onload', function() {
-
-		console.log('页面开始')
+	MI.rListener('onload', function () {
 		//默认隐藏控制台
 		MCSERVER.colmSet(false);
 
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;
-
-		//		var BUFF_BLOCK_SIZE = 70;
 
 		$('#MainContainer').css('background-color', 'rgb(60,60,60)');
 
@@ -47,7 +44,7 @@
 		PAGE.TerminalMinecraft = $('#TerminalMinecraft');
 		PAGE.TerminalMinecraft.css('height', (document.body.clientHeight - 50 - 45) + 'px')
 
-		PAGE.tmp_onresize = function() {
+		PAGE.tmp_onresize = function () {
 			console.log('改变 --- TerminalMinecraft')
 			$('#TerminalMinecraft').css('height', (document.body.clientHeight - 50 - 45) + 'px');
 		};
@@ -57,26 +54,26 @@
 		VIEW_MODEL.newVue('Terminal', {
 			el: '#Terminal',
 			methods: {
-				goBttom: function() {
+				goBttom: function () {
 					var ele = document.getElementById('TerminalMinecraft');
 					ele.scrollTop = ele.scrollHeight;
 				},
-				loadHistory: function() {
+				loadHistory: function () {
 					console.log('loading');
 					var obj = {};
 					obj.serverName = PAGE.serverName;
 					WS.sendMsg('server/console/history', JSON.stringify(obj));
 				},
-				toOpenServer: function() {
+				toOpenServer: function () {
 					WS.sendMsg('server/console/open', PAGE.serverName);
 				},
-				toCommand: function(parCommand) {
-					if(parCommand && typeof(parCommand) == 'string') this.command = parCommand;
+				toCommand: function (parCommand) {
+					if (parCommand && typeof (parCommand) == 'string') this.command = parCommand;
 					var data = {
 						command: this.command,
 						serverName: PAGE.serverName
 					};
-					if(this.command.length >= 1 || typeof(parCommand) == 'string') {
+					if (this.command.length >= 1 || typeof (parCommand) == 'string') {
 						//压入命令栈 并 发送
 						this.commandList.unshift(this.command);
 						WS.sendMsg('server/console/command', JSON.stringify(data));
@@ -85,15 +82,15 @@
 					this.commandListPrint = 0;
 
 				},
-				toCommandhi: function(fl) {
-					if(this.commandListPrint > (this.commandList.length - 1)) this.commandListPrint = this.commandList.length - 1;
-					if(this.commandListPrint < 0) this.commandListPrint = 0;
+				toCommandhi: function (fl) {
+					if (this.commandListPrint > (this.commandList.length - 1)) this.commandListPrint = this.commandList.length -
+						1;
+					if (this.commandListPrint < 0) this.commandListPrint = 0;
 					console.log('commandListPrint', this.commandListPrint, 'vlaue', this.commandList[this.commandListPrint]);
-					if(fl == 1) { //up
+					if (fl == 1) { //up
 						this.command = this.commandList[this.commandListPrint];
 						this.commandListPrint++;
 					} else { //down
-						//console.log(11111111111111111111)
 						this.command = this.commandList[this.commandListPrint];
 						this.commandListPrint--;
 					}
@@ -111,16 +108,16 @@
 		});
 		PAGE.mainC = document.getElementById('TerminalMinecraft');
 		var jl = true;
-		PAGE.mainC.onscroll = function() {
+		PAGE.mainC.onscroll = function () {
 			VIEW_MODEL['Terminal'].historyIf = (PAGE.mainC.scrollTop - 100 <= 0);
 		}
 
-		PAGE.maskTerminalLoad = function() {
-			if(PAGE.mainC.scrollTop - 300 <= 0 && jl == true) {
+		PAGE.maskTerminalLoad = function () {
+			if (PAGE.mainC.scrollTop - 300 <= 0 && jl == true) {
 				jl = false;
 				var obj = {};
 				obj.serverName = PAGE.serverName;
-				WS.sendMsg('server/console/history', JSON.stringify(obj), function() {
+				WS.sendMsg('server/console/history', JSON.stringify(obj), function () {
 					jl = true;
 				});
 			}
@@ -128,20 +125,20 @@
 		}
 		//		setInterval(PAGE.maskTerminalLoad, 500);
 
-		PAGE.terminalLoad = function(callback) {
+		PAGE.terminalLoad = function (callback) {
 			jl = false;
 			var obj = {};
 			obj.serverName = PAGE.serverName;
-			WS.sendMsg('server/console/history', JSON.stringify(obj), function() {
+			WS.sendMsg('server/console/history', JSON.stringify(obj), function () {
 				jl = true;
 				callback && callback();
 			});
 			//			$(this).css('display', 'none');
 		}
 
-		PAGE.terminalLoad(function() {
+		PAGE.terminalLoad(function () {
 			//由于DOM插入时间不一定，所以此功能只能靠猜~
-			setTimeout(function() {
+			setTimeout(function () {
 				$("#TerminalMinecraft")[0].scrollTop = $("#TerminalMinecraft")[0].scrollHeight;
 				//				console.log('fuck!!!!!!!!', $("#TerminalMinecraft")[0].scrollTop)
 			}, 800);
@@ -152,10 +149,10 @@
 
 	});
 
-	MI.rListener('onend', function() {
+	MI.rListener('onend', function () {
 		console.log('页面关闭');
 		WS.sendMsg('server/console/remove', '');
-		PAGE.mainC.onscroll = function() {};
+		PAGE.mainC.onscroll = function () {};
 
 		MI.onDestroy('resize', PAGE.tmp_onresize);
 		//		$('#MainContainer').css('background-color', 'rgb(220,218,218)');
