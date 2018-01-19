@@ -28,10 +28,10 @@
 			try {
 				obj = JSON.parse(header);
 				if (DEBUG) {
-					console.log('--------------- Websocket收到触发 ---------------')
+					console.log('=== Websocket 收到触发 ===');
 					console.log(obj);
 					console.log('Body:' + body);
-					console.log('--------------- Websocket收到结束 ---------------')
+					console.log('=== Websocket 收到结束 ===');
 				}
 				obj.body = body;
 				MI.on('ws/response', obj, body);
@@ -60,10 +60,10 @@
 				RequestValue: value
 			}
 			if (DEBUG) {
-				console.log('--------------- Websocket发送触发 ---------------');
+				console.log('=== Websocket 发送触发 ===');
 				console.log(obj);
 				console.log(body);
-				console.log('--------------- Websocket发送结束 ---------------');
+				console.log('=== Websocket 发送结束 ===');
 			}
 			var headerStr = JSON.stringify(obj);
 			body = body || '';
