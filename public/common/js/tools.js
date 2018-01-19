@@ -1,3 +1,4 @@
+//Tools 工具模块
 (function () {
 	//全局TOOLS
 	window.TOOLS = {};
@@ -87,12 +88,7 @@
 	}
 
 	TOOLS.setCookie = function (name, value) {
-		//		var strsec = getsec(time); 
 		document.cookie = name + "=" + escape(value) + ";expires=" + new Date(Date.now() + 10000 * 60 * 60 * 4).toGMTString();
 	}
-
-	//	TOOLS.onResize = function($dom,callback){
-	//		
-	//	}
 
 })();

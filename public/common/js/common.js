@@ -1,8 +1,5 @@
-//Debug
-//(function() {
-//	var _consoleObj = console;
-////	window.console.log = function(){};
-//})();
+//初始化公共层
+//用于各类程序初始化
 
 (function () {
 	window.MS = {};

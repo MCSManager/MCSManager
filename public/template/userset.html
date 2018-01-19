@@ -23,7 +23,9 @@
 								<div class="PanelItemInfo">
 									<h4 v-text="item.username"></h4>
 									<div>
-										创建时间: <span v-text="item.data.createDate"> </span> | 最后上线: <span v-text="item.data.lastDate">  </span>
+										创建时间:
+										<span v-text="item.data.createDate"> </span> | 最后上线:
+										<span v-text="item.data.lastDate"> </span>
 									</div>
 								</div>
 							</div>
@@ -62,7 +64,7 @@
 							<div class="col-sm-6">
 								<p>用户名 [字母 数字 下划线] (6~18位)</p>
 								<div class="input-group input-group-sm">
-									<span class="input-group-addon"> 用户名   </span>
+									<span class="input-group-addon"> 用户名 </span>
 									<input type="text" class="form-control" v-model="username">
 								</div>
 							</div>
@@ -76,7 +78,7 @@
 						</div>
 						<p>准许的服务器，输入服务器名字，分别以空格分割</p>
 						<div class="input-group input-group-sm">
-							<span class="input-group-addon"> 准许的服务器  </span>
+							<span class="input-group-addon"> 准许的服务器 </span>
 							<input type="text" class="form-control" v-model="allowedServer">
 						</div>
 						<div class="row">
@@ -96,8 +98,7 @@
 	</div>
 </div>
 <script>
-	MI.rListener('onload', function() {
-		console.log('页面开始')
+	MI.rListener('onload', function () {
 		VIEW_MODEL.newVue('UsersetList', {
 			el: '#UsersetList',
 			data: {
@@ -107,7 +108,7 @@
 				allowedServer: ''
 			},
 			methods: {
-				toRegisterUser: function() {
+				toRegisterUser: function () {
 					var allwoedServers = this.allowedServer.trim().split(' ');
 
 					var obj = {
@@ -115,41 +116,39 @@
 						password: this.password,
 						allowedServer: allwoedServers
 					};
-					WS.sendMsg('userset/create', JSON.stringify(obj), function() {
+					WS.sendMsg('userset/create', JSON.stringify(obj), function () {
 						PAGE.refresh();
 					});
 				},
 
-				toDeleteUser: function(itemUsername) {
+				toDeleteUser: function (itemUsername) {
 					var obj = {
 						username: itemUsername
 					};
 					var result = confirm('您真的打算删除这个这个用户吗?');
-					if(!result)return;
-					WS.sendMsg('userset/delete', JSON.stringify(obj), function() {
+					if (!result) return;
+					WS.sendMsg('userset/delete', JSON.stringify(obj), function () {
 						PAGE.refresh();
 					});
 
 				},
-				refresh: function() {
+				refresh: function () {
 					PAGE.refresh();
 					TOOLS.pushMsgWindow('刷新完毕√')
 				},
 
-				reloadUser: function() {
-					WS.sendMsg('userset/reload', '', function() {
+				reloadUser: function () {
+					WS.sendMsg('userset/reload', '', function () {
 						PAGE.refresh();
 					});
 				},
 
-				toUserView: function(_username) {
+				toUserView: function (_username) {
 					RES.redirectPage('./template/component/user.html', 'userset/view', _username);
 				}
 			}
 		});
 	});
 
-	MI.rListener('onend', function() {
-		console.log('页面关闭')
-	});
+	MI.rListener('onend', function () {});
 </script>

@@ -1,3 +1,6 @@
+//依附于 Tools 工具
+//Charts 的图表封装模块
+
 TOOLS.charts = {};
 
 TOOLS.charts.bulider = function (dom, len, config, callback, chartOption) {

@@ -44,8 +44,7 @@
 </div>
 
 <script>
-	MI.rListener('onload', function() {
-		console.log('页面开始')
+	MI.rListener('onload', function () {
 		//自動調整菜單
 		MCSERVER.autoColmDo();
 
@@ -55,11 +54,11 @@
 
 			},
 			methods: {
-				toUpdateProperties: function() {
-					if(!this.softConfig) return;
+				toUpdateProperties: function () {
+					if (!this.softConfig) return;
 					WS.sendMsg('soft/update', JSON.stringify(this.softConfig));
 				},
-				findKey: function(key) {
+				findKey: function (key) {
 					var SuwingsLoveYou = {
 						"__filename__": "控制面板内部使用，请勿改动",
 						'port': '控制面板程序端口号（务必进行更改）',
@@ -73,7 +72,5 @@
 		});
 	});
 
-	MI.rListener('onend', function() {
-		console.log('页面关闭')
-	});
+	MI.rListener('onend', function () {});
 </script>

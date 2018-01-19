@@ -1,31 +1,11 @@
 <div id='IndexApp'>
 	<div class="OneContainer">
-		<!--<div class="row">
-			<div class="col-xs-12">
-				<div class="Panel PanelBlue">
-					<div class="PanelTitle">Mcserver 控制面板信息</div>
-					<div class="PanelBody">
-						<small>如果您使用中遇到任何问题或发现BUG错误，您可以反馈给我们:</small>
-						<br><br>
-						<a class="Link" href="/">技术问题基本解答</a> |
-						<a class="Link" href="/">反馈问题</a>
-						<br><br>
-						<small>或者您想做一些其他的:</small>
-						<br><br>
-						<a class="Link" href="/">访问官方站点</a> |
-						<a class="Link" href="/">加入QQ群</a> |
-						<a class="Link" href="/">后期版本的开发</a>
-						<br><br>
-					</div>
-				</div>
-			</div>
-		</div>-->
 		<div class="row">
 			<div id='News' class="col-md-6">
 				<div class="Panel PanelGreen">
 					<div class="PanelTitle">最新动态与 BUG 通知</div>
 					<div class="PanelBody">
-						<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板重启获取一次)</p>
+						<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板重启时自动更新)</p>
 						<div class="news" v-for="item of items">
 							<p class="color-gray" v-text="item.time"></p>
 							<p v-text="item.msg"></p>
@@ -37,18 +17,24 @@
 				<div class="Panel PanelGreen">
 					<div class="PanelTitle">当前版本</div>
 					<div class="PanelBody">
-						<p>当前版本号: <span class="color-gray">8.1.0.0</span></p>
+						<p>当前版本号:
+							<span class="color-gray">8.1.0.0</span>
+						</p>
 						<br>
-					
+
 					</div>
 				</div>
 				<div class="Panel PanelGreen">
 					<div class="PanelTitle">操作系统</div>
 					<div class="PanelBody">
 						<div id="SystemUp">
-						<p>平台: <span class="color-gray" v-text="system"></span></p>
-						<p>进程根目录: <span class="color-gray" v-text="root"></span></p>
-						<br>
+							<p>平台:
+								<span class="color-gray" v-text="system"></span>
+							</p>
+							<p>进程根目录:
+								<span class="color-gray" v-text="root"></span>
+							</p>
+							<br>
 						</div>
 					</div>
 				</div>
@@ -60,7 +46,7 @@
 						<p>3.不准出售本软件，但可以用于合法的商业用途。</p>
 						<p>4.注意，不要在 64 位系统上运行 32 位的控制面板，否则无法正确启动服务器</p>
 						<br>
-					
+
 					</div>
 				</div>
 			</div>
@@ -70,14 +56,12 @@
 
 </div>
 <script>
-	MI.rListener('onload', function() {
+	MI.rListener('onload', function () {
 		console.log('页面开始')
 		RES.ajax({
 			type: 'GET',
-			///public/news.json
 			url: './public/news.json',
-//			url: 'http://mcservermanager.oss-cn-beijing.aliyuncs.com/news.json',
-			success: function(data) {
+			success: function (data) {
 				VIEW_MODEL['News'] = data;
 				console.log(data)
 				VIEW_MODEL.newVue('News', {
@@ -91,7 +75,7 @@
 		});
 	})
 
-	MI.rListener('onend', function() {
+	MI.rListener('onend', function () {
 		console.log('页面关闭')
 	})
 </script>

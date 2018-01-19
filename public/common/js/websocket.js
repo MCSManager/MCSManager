@@ -1,4 +1,4 @@
-;
+//Websocket 层
 (function () {
 
 	var DEBUG = false; //Websocket DEBUG
