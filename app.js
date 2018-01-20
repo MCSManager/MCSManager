@@ -151,15 +151,15 @@ for (let key in routeList) {
 }
 
 //载入在线文件管理路由
-app.use('/fs', require('./onlinefs/controller/auth'));
+app.use('/fs_auth', require('./onlinefs/controller/auth'));
 app.use('/fs', require('./onlinefs/controller/function'));
-//必须先进行登陆
-app.use('/fs', , function (req, res, next) {
-    if (req.session.fsos) {
+//必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
+app.use('/fs', function (req, res, next) {
+    if (req.session.fsos && req.xhr) {
         next();
         return true;
     }
-    res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序，请先进行登陆！');
+    res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！');
 });
 
 

@@ -8,7 +8,12 @@
 					<div class="PanelItem">
 						<span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span> 名称: {{ serverData.name }}
 					</div>
-
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-tasks" aria-hidden="true"> </span> CPU: {{ sysCpu }} %
+					</div>
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 剩余内存: {{ (100 - sysMonery).toFixed(1) }} %
+					</div>
 				</div>
 			</div>
 			<div class="Panel PanelGreen">
@@ -52,7 +57,7 @@
 		</div>
 		<div class="col-md-9">
 			<div class="Panel PanelRed">
-				<div class="PanelTitle">服务器实时状态</div>
+				<div class="PanelTitle">服务端控制组</div>
 				<div class="PanelBody">
 					<div class="row">
 						<div class="col-md-3 col-sm-6" v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
@@ -71,26 +76,32 @@
 								<div class="LogK">服务器配置</div>
 							</div>
 						</div>
-						<div class="col-md-2 col-sm-4">
-							<div class="LogV">{{ sysCpu }} %</div>
-							<div class="LogK">CPU 使用 </div>
+						<div class="col-md-3 col-sm-6" v-on:click="toOnlineFs()">
+							<div class="PanelItemBlock">
+								<div class="LogV">
+									<span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span>
+								</div>
+								<div class="LogK">文件在线管理</div>
+							</div>
 						</div>
-						<div class="col-md-2 col-sm-4">
-							<div class="LogV">{{ (100 - sysMonery).toFixed(1) }} %</div>
-							<div class="LogK">内存使用</div>
+						<!-- 一个组件 -->
+						<div class="col-md-3 col-sm-6" v-if="run">
+							<div class=" PanelItemBlock ">
+								<div class="LogV ">
+									<span class="glyphicon glyphicon-ok" aria-hidden="true "> </span>
+								</div>
+								<div class="LogK" style="color:#2dd60b">运行中</div>
+							</div>
 						</div>
-						<div class="col-md-2 col-sm-4" v-if="run">
-							<div class="LogV color-green">运行中</div>
-							<div class="LogK">状态</div>
+						<div class="col-md-3 col-sm-6" v-if="!run">
+							<div class=" PanelItemBlock ">
+								<div class="LogV ">
+									<span class="glyphicon glyphicon-remove" aria-hidden="true "> </span>
+								</div>
+								<div class="LogK" style="">非运行</div>
+							</div>
 						</div>
-						<div class="col-md-2 col-sm-4 " v-if="!run">
-							<div class="LogV">非运行</div>
-							<div class="LogK">状态</div>
-						</div>
-						<!--<div class="col-md-2 col-sm-4">
-							<div class="LogV"><samll><b>{{ serverData.name }} </samll></b></div>
-							<div class="LogK">名字</div>
-						</div>-->
+						<!-- 一个组件 -->
 					</div>
 				</div>
 			</div>
@@ -124,14 +135,16 @@
 <script>
 	MI.rListener('onload', function () {
 
-		// MCSERVER.colmSet();	//不自动调整，则边栏继承父类情况
-
 		var serverName = VIEW_MODEL['ConsolePanel'].serverData.name;
 		MCSERVER.listenServername = serverName;
 
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
 			methods: {
+				toOnlineFs() {
+					var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
+					window.open(path);
+				},
 				toOpenServer: function () {
 					this.allowedStart = !this.allowedStart;
 					WS.sendMsg('server/console/open', serverName);

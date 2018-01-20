@@ -22,7 +22,7 @@ router.all('/auth/:servername', (req, res) => {
         dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
     }
     if (!dataModel || !dataModel.cwd) {
-        res.send("[ 权限阻止 ] dataModel 空");
+        res.send("[ 权限阻止 ] dataModel 空，无权限操作的服务器！");
         return;
     };
     let cwd = null;
@@ -41,7 +41,8 @@ router.all('/auth/:servername', (req, res) => {
 
 
 router.all('/logout', (req, res) => {
-    req.session.destroy();
+    req.session.fsos = null;
+    req.session.fsoperate = null;
     res.send('[正常] 您已安全退出，现在可以关闭这个网页。');
 });
 
