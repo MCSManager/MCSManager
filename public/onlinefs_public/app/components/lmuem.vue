@@ -110,18 +110,17 @@
               tools.popWindow("非法操作，不能同时重命名多个文件或未选择文件");
               break;
             }
-            functionMudule.rename(
-              this.getFileStack(),
-              prompt("对于您选中的文件，请输入一个新的文件/目录名", "")
-            );
-            location.reload();
+            let stack = this.getFileStack();
+            tools.prompt("重命名", (newName) => {
+              functionMudule.rename(stack, newName);
+              location.reload();
+            }, () => location.reload());
             break;
           case "新建目录":
             tools.prompt("新的目录名", (newDirName) => {
               functionMudule.mkdir(newDirName);
               location.reload();
             });
-
             break;
           case "退出":
             window.location.href = "/fs_auth/logout";
