@@ -116,8 +116,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row">
 		<div class="col-md-3"></div>
 		<div class="col-md-9">
 			<div class="Panel PanelRed">
@@ -141,7 +139,7 @@
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
 			methods: {
-				toOnlineFs() {
+				toOnlineFs: function () {
 					var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
 					window.open(path);
 				},
