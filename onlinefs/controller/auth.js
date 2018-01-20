@@ -43,7 +43,7 @@ router.all('/auth/:servername', (req, res) => {
 router.all('/logout', (req, res) => {
     req.session.fsos = null;
     req.session.fsoperate = null;
-    res.send('[正常] 您已安全退出，现在可以关闭这个网页。');
+    res.send('<script> window.close();</script>');
 });
 
 
