@@ -150,19 +150,6 @@ for (let key in routeList) {
     app.use('/' + name, require('./route/' + name));
 }
 
-//载入在线文件管理路由
-app.use('/fs_auth', require('./onlinefs/controller/auth'));
-app.use('/fs', require('./onlinefs/controller/function'));
-//必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
-app.use('/fs', function (req, res, next) {
-    if (req.session.fsos && req.xhr) {
-        next();
-        return true;
-    }
-    res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！');
-});
-
-
 process.on("uncaughtException", function (err) {
     //打印出错误
     MCSERVER.error('UncaughtException 机制错误报告:', err);
@@ -192,6 +179,18 @@ process.on("uncaughtException", function (err) {
     }
 })();
 
+MCSERVER.infoLog('Online_Fs', '初始化 Online_Fs 路由与中间件 ');
+//载入在线文件管理路由
+app.use('/fs_auth', require('./onlinefs/controller/auth'));
+app.use('/fs', require('./onlinefs/controller/function'));
+//必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
+app.use('/fs', function (req, res, next) {
+    if (req.session.fsos && req.xhr) {
+        next();
+        return true;
+    }
+    res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！');
+});
 
 (function initializationProm() {
 
