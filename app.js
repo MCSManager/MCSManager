@@ -120,6 +120,7 @@ VarCenter.set('express_app', app);
 //基础根目录
 app.use('/public', express.static('./public'));
 
+
 // console 中间件挂载
 app.use((req, res, next) => {
     console.log('[', req.protocol.green, req.httpVersion.green, req.method.cyan, ']', req.originalUrl);
@@ -129,7 +130,6 @@ app.use((req, res, next) => {
     // res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('X-Soft', 'Mcserver Manager HTTP_SERVER');
     res.header('X-Frame-Options', 'DENY');
-
     next();
 });
 
@@ -180,17 +180,19 @@ process.on("uncaughtException", function (err) {
 })();
 
 MCSERVER.infoLog('Online_Fs', '初始化 Online_Fs 路由与中间件 ');
-//载入在线文件管理路由
-app.use('/fs_auth', require('./onlinefs/controller/auth'));
-app.use('/fs', require('./onlinefs/controller/function'));
+
 //必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
 app.use('/fs', function (req, res, next) {
     if (req.session.fsos && req.xhr) {
         next();
-        return true;
+        return;
     }
     res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！');
 });
+//载入在线文件管理路由
+app.use('/fs_auth', require('./onlinefs/controller/auth'));
+app.use('/fs', require('./onlinefs/controller/function'));
+
 
 (function initializationProm() {
 

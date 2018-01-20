@@ -99,7 +99,7 @@ router.post('/rename', (req, res) => {
 
 
 const multiparty = require('multiparty');
-router.all('/upload', (req, res) => {
+router.post('/upload', (req, res) => {
     let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
     var target_path = fileOperate.normalizePath(req.session.fsos.cwd); //获取绝对路径
     //生成multiparty对象，并配置上传目标路径
