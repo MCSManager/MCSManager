@@ -150,6 +150,19 @@ for (let key in routeList) {
     app.use('/' + name, require('./route/' + name));
 }
 
+//载入在线文件管理路由
+app.use('/fs', require('./onlinefs/controller/auth'));
+app.use('/fs', require('./onlinefs/controller/function'));
+//必须先进行登陆
+app.use('/fs', , function (req, res, next) {
+    if (req.session.fsos) {
+        next();
+        return true;
+    }
+    res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序，请先进行登陆！');
+});
+
+
 process.on("uncaughtException", function (err) {
     //打印出错误
     MCSERVER.error('UncaughtException 机制错误报告:', err);
