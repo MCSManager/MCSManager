@@ -67,14 +67,15 @@
           location.reload();
         }, (XML, textStatus, errorThrown) => {
           tools.popWindow("错误，文件上传失败！\n" + errorThrown);
-          location.reload();
+          // location.reload();
         });
       },
       filesOperate(item) {
         console.log("----------------- 操作文件栈 -------------------");
-        let stack = this.filesHub.get("CompFiles", []);
+        let stack = this.getFileStack();
         console.log(stack);
         if (item.title) return;
+
         switch (item.name) {
           case "刷新":
             location.reload();
@@ -83,7 +84,7 @@
             if (this.allowUpload)
               $("#m-upload-file").click();
             else
-              tools.popWindow("当前再禁止上传文件");
+              tools.popWindow("当前再禁止上传文件，请点击刷新即可再次上传。");
             break;
           case "复制":
             functionMudule.copy(this.getFileStack());
@@ -103,7 +104,7 @@
               functionMudule.remove(filestack);
               location.reload();
               //BUG Note: 如果取消也不刷新，则再次确定需要确定两次
-            }, () => location.reload());
+            });
             break;
           case "重命名":
             if (this.getFileStack().length != 1) {
@@ -114,7 +115,7 @@
             tools.prompt("重命名", (newName) => {
               functionMudule.rename(stack, newName);
               location.reload();
-            }, () => location.reload());
+            });
             break;
           case "新建目录":
             tools.prompt("新的目录名", (newDirName) => {
@@ -128,7 +129,7 @@
             console.error("--------------- 选择操作未执行 ---------------");
             break;
         }
-        this.filesHub.set("CompFiles", []);
+        // this.filesHub.set("CompFiles", []);
       },
       getFileStack() {
         let stack = this.filesHub.get("CompFiles", []);

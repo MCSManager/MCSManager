@@ -8,7 +8,7 @@ module.exports = {
   // 输出配置
   output: {
     // 输出路径是 myProject/output/static
-    path: path.resolve(__dirname, "./output_js"),
+    path: path.resolve(__dirname, "./dist"),
     publicPath: '/',
     filename: 'app.js'
     //chunkFilename: '[id].[chunkhash].js'
