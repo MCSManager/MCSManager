@@ -182,7 +182,7 @@ process.on("uncaughtException", function (err) {
 MCSERVER.infoLog('Online_Fs', '初始化 Online_Fs 路由与中间件 ');
 
 //必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
-app.use('/fs', function (req, res, next) {
+app.use(['/fs/mkdir', '/fs/rm', '/fs/patse', '/fs/cp', '/fs/rename', '/fs/ls'], function (req, res, next) {
     if (req.session.fsos && req.xhr) {
         next();
         return;
