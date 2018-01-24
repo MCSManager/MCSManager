@@ -1,0 +1,19 @@
+{
+  "name": "iwfmanager",
+  "version": "1.0.0",
+  "description": "independent web file manager",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Suwings",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "fs-extra": "^5.0.0",
+    "multiparty": "^4.1.3"
+  }
+}

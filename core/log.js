@@ -2,8 +2,8 @@
 
 MCSERVER.log = function () {
     let str = "";
-    for(let i=0;i<arguments.length;i++){
-        str +=  arguments[i] + ' '; 
+    for (let i = 0; i < arguments.length; i++) {
+        str += arguments[i] + ' ';
     }
     MCSERVER.infoLog('INFO', str);
 }

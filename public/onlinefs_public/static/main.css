@@ -1,0 +1,53 @@
+body,
+html {
+    font-family: "microsoft yahei" "微软雅黑" "黑体" "新宋体" "microsoft sans serif";
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #d8d8d8;
+}
+
+#m-container {
+    -webkit-box-shadow: #666 0px 0px 10px;
+    -moz-box-shadow: #666 0px 0px 10px;
+    box-shadow: #666 0px 0px 10px;
+    background-color: rgb(240, 240, 240);
+    margin-bottom: 40px;
+}
+
+.m-header {
+    background-color: #286bb1;
+    text-align: left;
+    color: rgb(222, 222, 222);
+    font-size: 22px;
+    height: 60px;
+    line-height: 60px;
+    padding-left: 14px;
+}
+
+.m-panel {
+    /*background-color: #FCF8E3;*/
+    height: 100%;
+}
+
+#vm-leftm-items {
+    height: 100%;
+    background-color: rgb(240, 240, 240);
+}
+
+#m-right-container {
+    height: 100%;
+    background-color: white;
+    padding: 4px;
+    min-height: 500px;
+}
+
+@media (max-width: 768px) {
+    .m-phone-none {
+        display: none;
+    }
+}
+
+.color-green {
+    color: green;
+}
