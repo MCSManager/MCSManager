@@ -2,15 +2,26 @@
 
 import swal from 'sweetalert2';
 
-//弹出提示框
-exports.popWindow = (data) => {
+//弹出提示框     
+exports.popWindow = (data, title, timer) => {
     console.log("弹出:", data);
     swal({
-        title: "",
+        title: title || "",
         text: '' + data,
-        timer: 2000
+        timer: timer || 5000
     });
 };
+
+exports.popWindowHtml = (html, title, timer) => {
+    //可能的 XSS 攻击！
+    swal({
+        title: title || "",
+        type: 'info',
+        html: html,
+        width: 600
+    });
+}
+
 
 exports.confirm = (msg, callbackt, callbackf) => {
     swal({

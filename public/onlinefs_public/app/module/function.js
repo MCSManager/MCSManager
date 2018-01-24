@@ -85,7 +85,8 @@ exports.rename = (filesStack, newName) => {
 
 exports.upload = (file, progress) => { //$("#m-upload-file")[0].files[0]
     if (typeof FormData != "function") {
-        tools.popWindow("很遗憾，您的浏览器不兼容异步文件上传。请使用现代浏览器！");
+        //兼容性
+        alert("很遗憾，您的浏览器不兼容异步文件上传。请使用现代浏览器！");
         return null;
     }
     var oMyForm = new FormData();
@@ -108,3 +109,13 @@ exports.upload = (file, progress) => { //$("#m-upload-file")[0].files[0]
         oReq.send(oMyForm);
     });
 };
+
+exports.userInfo = () => {
+    tools.popWindowHtml([
+        "<div style='text-align: left;'>1. 因单页应用缘故不可同时在同一浏览器内打开两个文件管理",
+        "2. 复制目录不可复制到目录本身内",
+        "3. 单击文件即可下载，单击目录即可进入目录",
+        "4. 如需编辑文件，请下载修改再上传，会自动覆盖重名文件</div>"
+    ].join("<br />"), "使用须知", 20000);
+
+}

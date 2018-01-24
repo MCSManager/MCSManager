@@ -125,6 +125,10 @@
             break;
           case "退出":
             window.location.href = "/fs_auth/logout";
+            break;
+          case "使用提示":
+            functionMudule.userInfo();
+            break;
           default:
             console.error("--------------- 选择操作未执行 ---------------");
             break;
@@ -198,6 +202,11 @@
             class: "",
             api: "",
             title: true
+          },
+          {
+            name: "使用提示",
+            class: "glyphicon glyphicon-asterisk",
+            api: ""
           },
           {
             name: "退出",
