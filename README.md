@@ -2,6 +2,11 @@
 
 - 简单，易用，简约，轻量级的 Minecraft Server 控制面板
 
+期待你的使用
+-----------
+![软件截图](http://39.108.57.206/public/MCSM_A.png)
+**注意:** 因为不定时更换原因，目前截图不一定最新。
+
 快速扩展
 -----------
 我们用最简单上手的方式，来构建整个应用程序，绝大部分的开发者可以轻而易举的进行修改，以及依照协议开发使用。你会发现，这可能是一非常适合你的 `Minecraft` 服务器管理工具，支持绝大部分的主流服务端。
@@ -60,18 +65,24 @@ node app.js #或 npm start
 | 目录名 | 详情/解释 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
 | **core/logo.txt**               |控制台输出logo文字|
-| **public**                      |端所有代码|
-| **public/common/js/meum.js**    |菜单名修改|
+| **public/**                      |前端所有代码，资源，工具目录|
+| **public/login/**                |独立登陆页面|
+| **public/template/**             |前端 HTML 模板|
+| **public/onlinefs_public**      |文件在线管理模块前端所有代码|
+| **public/common/js/meum.js**    |左侧菜单列表|
 | **server/server_core**          |Minecraft 服务端核心目录，包括服务端文件，配置，Mod，以及插件|
 | **server/x.json**               |Minecraft 服务器面板配置文件|
 | **users/x.json**                |控制面板用户配置文件|
 | **route/**                      |控制器，HTTP 请求业务逻辑层（建议二次扩展从此处扩展）|
 | **route/websocket/**            |控制器，Webscoket 请求业务逻辑层（建议二次扩展从此处扩展）|
-| **core/Process**                |Minecraft Server 类实现|
-| **core/User**                   |User 类实现|
+| **core/Process/**                |Minecraft Server 类实现|
+| **core/User/**                   |User 类实现|
 | **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
-| **helper/**                     |业务逻辑辅助层，通常控制器会使用这些，列如权限判定之类|
-| **ftpd/**                       |FTP 功能模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
+| **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
+| **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
+| **onlinefs**                    |文件在线管理独立模块，(项目: [Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
+
+
 
 Bug 报告
 -----------
