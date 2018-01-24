@@ -3,7 +3,7 @@
 		<div class="row">
 			<div id='News' class="col-md-6">
 				<div class="Panel PanelGreen">
-					<div class="PanelTitle">最新动态与 BUG 通知</div>
+					<div class="PanelTitle">最新动态与信息通知</div>
 					<div class="PanelBody">
 						<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板重启时自动更新)</p>
 						<div class="news" v-for="item of items">
@@ -18,7 +18,7 @@
 					<div class="PanelTitle">当前版本</div>
 					<div class="PanelBody">
 						<p>当前版本号:
-							<span class="color-gray">8.1.0.0</span>
+							<span class="color-gray">8.2.0.0</span>
 						</p>
 						<br>
 
@@ -41,12 +41,9 @@
 				<div class="Panel PanelRed">
 					<div class="PanelTitle">本程序版权与相关协议声明</div>
 					<div class="PanelBody">
-						<p>1.当您一旦使用本软件，则代表您同意尊重本软件版权，不私自修改后端代码并且重新发布。</p>
+						<p>1.软件为开源自由软件，您可以进行任何修改和增删，自定义化设计。</p>
 						<p>2.当您使用控制台开启 Minecraft 服务器时，则代表您遵守 Minecraft 相关协议和 EULA 协议。</p>
-						<p>3.不准出售本软件，但可以用于合法的商业用途。</p>
-						<p>4.注意，不要在 64 位系统上运行 32 位的控制面板，否则无法正确启动服务器</p>
 						<br>
-
 					</div>
 				</div>
 			</div>
@@ -57,13 +54,11 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
-		console.log('页面开始')
 		RES.ajax({
 			type: 'GET',
 			url: './public/news.json',
 			success: function (data) {
 				VIEW_MODEL['News'] = data;
-				console.log(data)
 				VIEW_MODEL.newVue('News', {
 					el: '#News',
 				});
@@ -75,7 +70,5 @@
 		});
 	})
 
-	MI.rListener('onend', function () {
-		console.log('页面关闭')
-	})
+	MI.rListener('onend', function () {})
 </script>
