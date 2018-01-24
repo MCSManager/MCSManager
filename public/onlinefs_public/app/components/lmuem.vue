@@ -1,6 +1,7 @@
 <template lang="html">
   <div class="letsgo">
     <div class="m-lmuem-items">
+      <!-- 菜单列表项 数据源在下面 -->
       <div v-for="item in items" v-on:click="filesOperate(item)">
         <span v-if="item.title" class="m-lmuem-items-title">
           {{ item.name }}
@@ -52,8 +53,6 @@
     props: ["filesHub"],
     methods: {
       formSub(e) {
-        console.log('---------- 文件选择完毕 ----------------', this);
-        // let ele = e.target;
         this.allowUpload = false;
         let file = $("#m-upload-file")[0].files[0];
         functionMudule.upload(file, (status) => {
@@ -62,16 +61,14 @@
           this.items[2].class = this.items[2].class + " color-green";
           console.log(this.items[2].name);
         }).then((status) => {
-          // tools.popWindow("正确，文件上传成功！");
           this.items[2].name = "上传完毕！"
           location.reload();
         }, (XML, textStatus, errorThrown) => {
           tools.popWindow("错误，文件上传失败！\n" + errorThrown);
-          // location.reload();
         });
       },
       filesOperate(item) {
-        console.log("----------------- 操作文件栈 -------------------");
+        //文件栈开始操作
         let stack = this.getFileStack();
         console.log(stack);
         if (item.title) return;
@@ -99,11 +96,10 @@
             location.reload();
             break;
           case "删除":
-            let filestack = this.getFileStack(); //BUG Note:this上下文不可出现在异步
+            let filestack = this.getFileStack(); //BUG Note:this 上下文不可出现在异步
             tools.confirm("您确定要删除这(些)文件吗?", () => {
               functionMudule.remove(filestack);
               location.reload();
-              //BUG Note: 如果取消也不刷新，则再次确定需要确定两次
             });
             break;
           case "重命名":
@@ -133,7 +129,7 @@
             console.error("--------------- 选择操作未执行 ---------------");
             break;
         }
-        // this.filesHub.set("CompFiles", []);
+        // this.filesHub.set("CompFiles", []); //Line: bug
       },
       getFileStack() {
         let stack = this.filesHub.get("CompFiles", []);
@@ -145,10 +141,12 @@
       return {
         allowUpload: true,
         items: [{
-            name: "基本功能",
-            class: "",
-            api: "",
-            title: true
+            //如果您修改了这里的名字，请将上面的名字也修改
+            //我们是通过名字来进行监控单击事件的
+            name: "基本功能", //项目名
+            class: "", //图标 Class
+            api: "", //保留，暂无使用，请求的 API
+            title: true //是否为大标题
           },
           {
             name: "刷新",

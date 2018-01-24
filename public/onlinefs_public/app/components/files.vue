@@ -97,7 +97,6 @@
       },
       enContext(text) {
         return tools.encodeContext(text);
-        // return text;
       },
       sizecomp(item, size) {
         //初始单位字节
@@ -151,7 +150,6 @@
     },
     watch: {
       checkboxAll() {
-        console.log("selectAll------------");
         for (let v of this.fileList) {
           v.checkbox = this.checkboxAll;
         }
