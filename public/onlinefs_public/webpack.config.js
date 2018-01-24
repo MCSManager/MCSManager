@@ -1,5 +1,7 @@
 // nodejs 中的path模块
-var path = require('path');
+const path = require('path');
+const uglify = require('uglifyjs-webpack-plugin');
+
 require('es6-promise').polyfill();
 
 module.exports = {
@@ -31,5 +33,8 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
-  }
+  },
+  plugins: [
+    new uglify()
+  ]
 }
