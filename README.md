@@ -67,8 +67,8 @@ node app.js #或 npm start
 | **core/logo.txt**               |控制台输出logo文字|
 | **public/**                      |前端所有代码，资源，工具目录|
 | **public/login/**                |独立登陆页面|
-| **public/template/**             |前端 HTML 模板|
-| **public/onlinefs_public**      |文件在线管理模块前端所有代码|
+| **public/template/**             |前端业务模板，每个模板拥有着一个生命周期，开始与结束。|
+| **public/onlinefs_public/**      |文件在线管理模块前端所有代码|
 | **public/common/js/meum.js**    |左侧菜单列表|
 | **server/server_core**          |Minecraft 服务端核心目录，包括服务端文件，配置，Mod，以及插件|
 | **server/x.json**               |Minecraft 服务器面板配置文件|
@@ -80,7 +80,7 @@ node app.js #或 npm start
 | **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
 | **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
 | **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
-| **onlinefs**                    |文件在线管理独立模块，(项目: [Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
+| **onlinefs/**                    |文件在线管理独立模块，(项目: [Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
 
 
 
