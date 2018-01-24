@@ -28,8 +28,7 @@
         </td>
         <td>
           <a v-if="!item.isFile" class="m-item-file-a-dir" href="javascript:void(0);" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
-          <a v-else target="_black" class="m-item-file-a-file" :href="'/fs/download/'+encodeURIComponent(item.name)" v-html="enContext(item.name)"
-            v-on:click="cd(item)"></a>
+          <a v-else target="_black" class="m-item-file-a-file" :href="getDownloadURL(item)" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
         </td>
         <td v-if="item.isFile">文件</td>
         <td v-else>目录</td>
@@ -93,6 +92,9 @@
       };
     },
     methods: {
+      getDownloadURL(item) {
+        return window.MCSERVER.URL('fs/download/') + encodeURIComponent(item.name);
+      },
       enContext(text) {
         return tools.encodeContext(text);
         // return text;

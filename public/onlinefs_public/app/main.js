@@ -35,6 +35,3 @@ const vm_files_items = new Vue({
 funcModule.ls().then(function name(data) {
     vm_files_items.$data.filesCollect = data;
 });
-
-
-console.log("URL:", )
