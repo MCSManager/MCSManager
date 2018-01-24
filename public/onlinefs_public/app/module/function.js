@@ -2,7 +2,7 @@ import ajaxMoudule from "./ajax";
 import tools from "./tools";
 
 const Ajax = ajaxMoudule.Ajax;
-// const BASE_DIR = "";
+const BASE_DIR = "";
 
 function promiseAjax(url, datas = "") {
     return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ function promiseAjax(url, datas = "") {
 exports.ls = (path) => {
     console.log("刷新");
     return new Promise((resolve, reject) => {
-        promiseAjax("/fs/ls", path).then((data) => {
+        promiseAjax(MCSERVER.URL("fs/ls"), path).then((data) => {
             //排序
             let res_dir = [];
             let res_file = [];
@@ -45,34 +45,34 @@ exports.ls = (path) => {
 
 exports.mkdir = (newName) => {
     console.log("新建目录");
-    return promiseAjax("/fs/mkdir", newName);
+    return promiseAjax(MCSERVER.URL("fs/mkdir"), newName);
 };
 
 exports.copy = (fileStack) => {
     console.log("复制");
-    return promiseAjax("/fs/cp", fileStack);
+    return promiseAjax(MCSERVER.URL("fs/cp"), fileStack);
 };
 
 exports.paste = () => {
     console.log("粘贴");
-    return promiseAjax("/fs/patse");
+    return promiseAjax(MCSERVER.URL("fs/patse"));
 };
 
 exports.remove = (fileStack) => {
     console.log("删除");
-    return promiseAjax("/fs/rm", fileStack);
+    return promiseAjax(MCSERVER.URL("fs/rm"), fileStack);
 };
 
 exports.cponce = (fileStack) => {
     console.log("剪贴");
-    return promiseAjax("/fs/ct", fileStack);
+    return promiseAjax(MCSERVER.URL("fs/ct"), fileStack);
 };
 
 exports.rename = (filesStack, newName) => {
     console.log("重名名:", filesStack[0].name, "->", newName);
     if (filesStack.length == 1) {
         let oldName = filesStack[0].name;
-        return promiseAjax("/fs/rename", {
+        return promiseAjax(MCSERVER.URL("fs/rename"), {
             oldName: oldName,
             newName: newName
         });

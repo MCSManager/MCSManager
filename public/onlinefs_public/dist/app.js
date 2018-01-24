@@ -94,7 +94,8 @@
 	_function2.default.ls().then(function name(data) {
 	    vm_files_items.$data.filesCollect = data;
 	});
-	//tools.popWindow(123)
+	
+	console.log("URL:");
 
 /***/ }),
 /* 1 */
@@ -11363,7 +11364,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Ajax = _ajax2.default.Ajax;
-	// const BASE_DIR = "";
+	var BASE_DIR = "";
 	
 	function promiseAjax(url) {
 	    var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
@@ -11385,7 +11386,7 @@
 	exports.ls = function (path) {
 	    console.log("刷新");
 	    return new Promise(function (resolve, reject) {
-	        promiseAjax("/fs/ls", path).then(function (data) {
+	        promiseAjax(MCSERVER.URL("fs/ls"), path).then(function (data) {
 	            //排序
 	            var res_dir = [];
 	            var res_file = [];
@@ -11408,34 +11409,34 @@
 	
 	exports.mkdir = function (newName) {
 	    console.log("新建目录");
-	    return promiseAjax("/fs/mkdir", newName);
+	    return promiseAjax(MCSERVER.URL("fs/mkdir"), newName);
 	};
 	
 	exports.copy = function (fileStack) {
 	    console.log("复制");
-	    return promiseAjax("/fs/cp", fileStack);
+	    return promiseAjax(MCSERVER.URL("fs/cp"), fileStack);
 	};
 	
 	exports.paste = function () {
 	    console.log("粘贴");
-	    return promiseAjax("/fs/patse");
+	    return promiseAjax(MCSERVER.URL("fs/patse"));
 	};
 	
 	exports.remove = function (fileStack) {
 	    console.log("删除");
-	    return promiseAjax("/fs/rm", fileStack);
+	    return promiseAjax(MCSERVER.URL("fs/rm"), fileStack);
 	};
 	
 	exports.cponce = function (fileStack) {
 	    console.log("剪贴");
-	    return promiseAjax("/fs/ct", fileStack);
+	    return promiseAjax(MCSERVER.URL("fs/ct"), fileStack);
 	};
 	
 	exports.rename = function (filesStack, newName) {
 	    console.log("重名名:", filesStack[0].name, "->", newName);
 	    if (filesStack.length == 1) {
 	        var oldName = filesStack[0].name;
-	        return promiseAjax("/fs/rename", {
+	        return promiseAjax(MCSERVER.URL("fs/rename"), {
 	            oldName: oldName,
 	            newName: newName
 	        });
