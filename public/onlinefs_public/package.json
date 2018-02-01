@@ -8,7 +8,7 @@
     "dist": "webpack"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.3.17",
     "babel-loader": "^6.2.0",
