@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
@@ -14,18 +13,17 @@
 
 	<link href="./common/css/common.css" rel="stylesheet">
 	<link href="./common/css/block.css" rel="stylesheet">
-	<link href="./favicon.ico" rel="shortcut icon">
-	<link rel="stylesheet" href="common/css/unit.css" />
+	<link href="common/css/unit.css" rel="stylesheet" />
 
+	<link href="./favicon.ico" rel="shortcut icon">
 	<!--[if lt IE 9]>
       		<div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
             	<b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
         	</div>
    		<![endif]-->
 
-	<!--前端完全开源，您可以自由更改，但仅限于使用在 Mcserver Manager 程序-->
-	<!--版权所有 Mcserver Manager 8     开发者 (Suwings) 双羽 -->
-	<!--前端开源使用 请遵循协议即可已经其他额外附属条件，勿删除版权信息-->
+	<!--前端完全开源，您可以进行任何自由更改! -->
+	<!--版权所有 Mcserver Manager     主要开发者 (Suwings) 双羽 -->
 </head>
 
 <!--百度数据统计,如果您不想被统计,请删除这段代码-->
@@ -100,7 +98,6 @@
 										count++;
 										if (count > 10) clearInterval(masks);
 									}, 1000);
-
 								})();
 							</script>
 						</div>
@@ -119,7 +116,7 @@
 		</transition>
 	</div>
 
-	<!--传说中的菜单改变按钮-->
+	<!--菜单改变按钮-->
 	<div id='ShowMenu' onclick="MCSERVER.colmDo()">
 		<h4></h4>
 	</div>
@@ -134,28 +131,28 @@
 
 
 
-	<!--Js文件引用，顺序不能乱，所有js都是依赖于前js的-->
+	<!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->
 	<script src="common/jquery-3.2.1.min.js"></script>
-	<!--vue-->
+	<!--Vue -->
 	<script type="text/javascript" src="common/vue/vue.min.js"></script>
 	<!--公用的js方法，公用的函数，类，模式-->
-	<!--					全局变量 MI(中介者) MS(保留) MCSERVER(全局寄生器)-->
+	<!--						   全局变量 MI(中介者) MS(保留) MCSERVER(全局寄生器)-->
 	<script type="text/javascript" src="common/js/common.js"></script>
-	<!--URL 处理函数-->
+	<!--URL 处理函数				MCSERVER.URL URL 定位器-->
 	<script type="text/javascript" src="common/URL.js"></script>
-	<!--请求类相关方法			全局变量 RES(请求) PAGE(单页应用临时全局存储变量)-->
+	<!--请求类相关方法				 全局变量 RES(请求) PAGE(单页应用临时全局存储变量)-->
 	<script type="text/javascript" src="common/js/response.js"></script>
-	<!--Websocket 封装类		全局变量 WS	-->
+	<!--Websocket 封装类			全局变量 WS	-->
 	<script type="text/javascript" src="common/js/websocket.js"></script>
-	<!--工具类				全局变量 TOOLS(工具xiang)-->
+	<!--工具类						全局变量 TOOLS(工具箱)-->
 	<script type="text/javascript" src="common/js/tools.js"></script>
-	<!--首页菜单获取			虚拟的后端菜单数据-->
+	<!--首页菜单获取				  虚拟的后端菜单数据-->
 	<script type="text/javascript" src="common/js/meum.js"></script>
-	<!--echarts 库 -->
+	<!--echarts 库 				  统计图-->
 	<script type="text/javascript" src="common/echarts.js"></script>
-	<!--Vue.data 数据模型处理  	全局变量 VIEW_MODEL-->
+	<!--Vue.data 数据模型处理  	  全局变量 VIEW_MODEL-->
 	<script type="text/javascript" src="common/js/viewmodel.js"></script>
-	<!--图像统计表格封装			附属于 TOOLS 变量-->
+	<!--图像统计表格封装			 附属于 TOOLS 变量-->
 	<script type="text/javascript" src="common/js/chart.js"></script>
 
 	<script>
@@ -173,7 +170,7 @@
 			});
 
 			//一般制约能力的防止被 iframe 嵌入，另外，HTTP返回了 X-Frame-Options: DENY
-			window.top.location !== window.location && (window.top.location = window.location);
+			// window.top.location !== window.location && (window.top.location = window.location);  //已弃用
 
 			// echart 路径配置
 			window.require.config({
@@ -187,7 +184,7 @@
 			RES.getToken(function (token) {
 
 				RES.TOKEN = token;
-				console.log('登陆的用户是:' + MCSERVER.username)
+				console.log('登陆的用户是:' + MCSERVER.username);
 
 				//初始化 Websocket
 				WS.init(function () {
@@ -238,7 +235,7 @@
 				}
 			});
 
-			//工具栏
+			//工具信息栏
 			VIEW_MODEL.newVueOnce('ToolsInfo', {
 				el: '#ToolsInfo',
 				data: {
