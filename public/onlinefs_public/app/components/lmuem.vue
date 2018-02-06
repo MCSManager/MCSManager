@@ -92,14 +92,13 @@
             tools.popWindow("已复制到临时区域,使用粘贴即可移动到当前目录");
             break;
           case "粘贴":
-            functionMudule.paste();
-            location.reload();
+            //BUG Note 刷新必须写在then中
+            functionMudule.paste().then(() => location.reload());
             break;
           case "删除":
             let filestack = this.getFileStack(); //BUG Note:this 上下文不可出现在异步
             tools.confirm("您确定要删除这(些)文件吗?", () => {
-              functionMudule.remove(filestack);
-              location.reload();
+              functionMudule.remove(filestack).then(() => location.reload());
             });
             break;
           case "重命名":
@@ -109,14 +108,12 @@
             }
             let stack = this.getFileStack();
             tools.prompt("重命名", (newName) => {
-              functionMudule.rename(stack, newName);
-              location.reload();
+              functionMudule.rename(stack, newName).then(() => location.reload());
             });
             break;
           case "新建目录":
             tools.prompt("新的目录名", (newDirName) => {
-              functionMudule.mkdir(newDirName);
-              location.reload();
+              functionMudule.mkdir(newDirName).then(() => location.reload());
             });
             break;
           case "退出":
