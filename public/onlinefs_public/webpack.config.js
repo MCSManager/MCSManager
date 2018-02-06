@@ -33,8 +33,8 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
-  }
-  // plugins: [
-  //   new uglify()
-  // ]
+  },
+  plugins: [
+    new uglify()
+  ]
 }
