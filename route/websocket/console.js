@@ -1,4 +1,6 @@
-const { WebSocketObserver } = require('../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../model/WebSocketModel');
 const counter = require('../../core/counter');
 const response = require('../../helper/Response');
 var serverModel = require('../../model/ServerModel');
@@ -28,7 +30,7 @@ function selectWebsocket(serverName, callback) {
 
 //服务器异常
 serverModel.ServerManager().on('error', (data) => {
-    MCSERVER.infoLog('Error'.red,'[' + data.serverName + '] >>> 异常',true);
+    MCSERVER.infoLog('Error'.red, '[' + data.serverName + '] >>> 异常', true);
     selectWebsocket(data.serverName, (socket) => {
         response.wsMsgWindow(socket.ws, "服务器异常:" + data.msg);
     });
@@ -37,9 +39,18 @@ serverModel.ServerManager().on('error', (data) => {
 //服务器退出
 serverModel.ServerManager().on('exit', (data) => {
     MCSERVER.log('[' + data.serverName + '] >>> 进程退出');
-    selectWebsocket(data.serverName, (socket) => {
-        response.wsMsgWindow(socket.ws, '服务器关闭');
-    });
+    let server = serverModel.ServerManager().getServer(data.serverName);
+    if (server.dataModel.autoRestart) {
+        //自动重启
+        setTimeout(() => {
+            serverModel.startServer(data.serverName);
+        }, 5000);
+        selectWebsocket(data.serverName,
+            (socket) => response.wsMsgWindow(socket.ws, '检测到服务器关闭，稍后将根据任务自动重启！'));
+        return;
+    }
+    selectWebsocket(data.serverName,
+        (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
 })
 
 //服务器开启
@@ -66,7 +77,7 @@ WebSocketObserver().listener('server/console/ws', (data) => {
         data.WsSession['listenerQueue'] = serverT.getTerminalLog().length - 1;
         response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
-    }else{
+    } else {
         MCSERVER.log('[' + serverName + '] 拒绝用户 ' + userName + ' 控制台监听');
     }
     data.WsSession['console'] = undefined;
@@ -90,7 +101,7 @@ serverModel.ServerManager().on('console', (data) => {
     let consoleData = data.msg.replace(/\n/gim, '<br />');
 
     //将输出载入历史记录  这里曾出现过 server 未定义bug，情况不明，已加保险
-    if(server) server.terminalLog(consoleData);
+    if (server) server.terminalLog(consoleData);
 
     selectWebsocket(data.serverName, (socket) => {
         socket.send({
@@ -103,7 +114,9 @@ serverModel.ServerManager().on('console', (data) => {
 });
 
 
-const {autoLoadModule} = require("../../core/tools");
-autoLoadModule('route/websocket/console','console/',(path)=>{
+const {
+    autoLoadModule
+} = require("../../core/tools");
+autoLoadModule('route/websocket/console', 'console/', (path) => {
     require(path);
 });

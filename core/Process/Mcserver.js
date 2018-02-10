@@ -15,6 +15,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.name = name;
         this.dataModel.createDate = now;
         this.dataModel.lastDate = now;
+        this.dataModel.autoRestart = false; //是否自动重启
 
         this.properties = undefined;
 

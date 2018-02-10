@@ -58,6 +58,23 @@
 					</div>
 				</div>
 			</div>
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">任务与机制</div>
+				<div class="PanelBody">
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 自动重启:
+							<span style="color: #29b90c;">打开</span>
+						</div>
+					</transition>
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-if="!serverData.autoRestart">
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 自动重启:
+							<span style="color: #818181;">关闭</span>
+						</div>
+					</transition>
+				</div>
+			</div>
 		</div>
 		<div class="col-md-9">
 			<div class="Panel PanelRed">
@@ -143,6 +160,9 @@
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
 			methods: {
+				toAutoRestart: function () {
+					WS.sendMsg('server/console/autorestart', serverName);
+				},
 				toOnlineFs: function () {
 					var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
 					window.open(path);
