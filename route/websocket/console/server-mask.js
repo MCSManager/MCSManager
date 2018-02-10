@@ -1,6 +1,6 @@
 const response = require('../../../helper/Response');
-var serverModel = require('../../../model/ServerModel');
-var userModel = require('../../../model/UserModel');
+const serverModel = require('../../../model/ServerModel');
+const userModel = require('../../../model/UserModel');
 const permssion = require('../../../helper/Permission');
 const {
     WebSocketObserver

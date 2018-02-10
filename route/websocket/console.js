@@ -3,10 +3,10 @@ const {
 } = require('../../model/WebSocketModel');
 const counter = require('../../core/counter');
 const response = require('../../helper/Response');
-var serverModel = require('../../model/ServerModel');
-var userModel = require('../../model/UserModel');
+const serverModel = require('../../model/ServerModel');
+const userModel = require('../../model/UserModel');
 const permssion = require('../../helper/Permission');
-var observerModel = require('../../model/ObserverModel');
+const observerModel = require('../../model/ObserverModel');
 const EventEmitter = require('events');
 
 

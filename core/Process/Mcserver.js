@@ -12,14 +12,15 @@ class MinecraftServer extends ServerProcess {
         //这是配置文件
         this.dataModel = new DataModel('server/' + name);
         let now = new Date().toLocaleString();
-        this.dataModel.name = name;
-        this.dataModel.createDate = now;
-        this.dataModel.lastDate = now;
+
+        this.dataModel.name = name; //服务器名字
+        this.dataModel.createDate = now; //创建时间
+        this.dataModel.lastDate = now; //最后启动时间
         this.dataModel.autoRestart = false; //是否自动重启
 
-        this.properties = undefined;
+        this.properties = undefined; //服务端配置表
 
-        this.terminalQueue = [];
+        this.terminalQueue = []; //终端记录队列
         this._tmpTerminalLog = [];
         this.terminalPageCount = 0;
     }
