@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
@@ -156,7 +157,7 @@
 	<script type="text/javascript" src="common/js/chart.js"></script>
 
 	<script>
-		if (!window.$) alert('网络不流畅，文件加载失败！');
+		if (!window.$) alert('[文件加载失败] 网络不通畅，请检查您的网络状态！');
 
 		$(function () {
 			//事件
@@ -197,7 +198,13 @@
 
 						//是否登陆
 						if (!MCSERVER.username) {
-							TOOLS.pushMsgWindow('身份认证失败，请重新登陆验证身份');
+							TOOLS.pushMsgWindow('[认证失败] 请登录您的账号，正在为您跳转....');
+							//重定向到登录页面
+							setTimeout(function () {
+								console.log("跳转");
+								window.location.href = MCSERVER.URL("login");
+							}, 4200);
+							return;
 						}
 
 						//判断是否是#权限用户，请放心，后端也会给予判断并不只是前端
@@ -224,7 +231,7 @@
 								WS.close();
 								TOOLS.pushMsgWindow('您已退出，现在即将跳转网页');
 								setTimeout(function () {
-									window.location.href = MCSERVER.URL('./public/login');
+									window.location.href = MCSERVER.URL('login');
 								}, 2000);
 							},
 							error: function () {
