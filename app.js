@@ -1,7 +1,7 @@
 //运行时环境检测
 try {
     let versionNum = parseInt(process.version.replace(/v/igm, "").split(".")[0]);
-    if (versionNum < 9) {
+    if (versionNum < 8) {
         console.log("[ ERROR ] 您的 Node 运行环境版本似乎低于我们要求的版本.");
         console.log("[ ERROR ] 可能会出现未知异常,请立即更新 Node 版本 (>=8.0.0)");
     }
