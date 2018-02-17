@@ -91,4 +91,10 @@
 		document.cookie = name + "=" + escape(value) + ";expires=" + new Date(Date.now() + 10000 * 60 * 60 * 4).toGMTString();
 	}
 
+	//判断是否是一个 标准字符串（标准的定义：仅有字母数字下划线）
+	TOOLS.isStdText = function (text) {
+		var reg = /^[A-Za-z0-9_]*$/igm;
+		return reg.test(text);
+	}
+
 })();

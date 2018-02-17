@@ -102,6 +102,10 @@
 			methods: {
 				toCreateServer: function () {
 					var addCmdList = this.addCmd.split(' ');
+					if (!TOOLS.isStdText(this.name)) {
+						TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
+						return;
+					}
 					var obj = {
 						addCmd: addCmdList,
 						serverName: this.name,
