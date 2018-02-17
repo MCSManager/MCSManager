@@ -15,10 +15,16 @@
 			</div>
 			<div class="col-md-6 NextCol">
 				<div class="Panel PanelGreen">
-					<div class="PanelTitle">当前版本</div>
+					<div class="PanelTitle">版本</div>
 					<div class="PanelBody">
-						<p>当前版本号:
-							<span class="color-gray">8.2.0.0</span>
+						<p>程序版本:
+							<span class="color-gray">8.2</span>
+						</p>
+						<p>后端测试发行版:
+							<span class="color-gray">Release_8.2.1</span>
+						</p>
+						<p>前端测试发行版:
+							<span class="color-gray">Release_8.2.1</span>
 						</p>
 						<br>
 
@@ -28,7 +34,7 @@
 					<div class="PanelTitle">操作系统</div>
 					<div class="PanelBody">
 						<div id="SystemUp">
-							<p>平台:
+							<p>系统与平台:
 								<span class="color-gray" v-text="system"></span>
 							</p>
 							<p>进程根目录:
@@ -54,6 +60,7 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
+		//请求早已缓存的 最新动态
 		RES.ajax({
 			type: 'GET',
 			url: './public/news.json',
