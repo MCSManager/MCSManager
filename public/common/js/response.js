@@ -76,7 +76,7 @@
 
 	RES.redirectHTML = function (url, key, body, callback) {
 		//静态文件均在 public 目录下，动态文件则在不同API接口
-		var _url = MCSERVER.URL('./public/' + url, 'http://');
+		var _url = MCSERVER.URL('./public/' + url);
 
 		//响应事件函数
 		function responseCallback(response, status, xhr) {
