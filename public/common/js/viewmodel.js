@@ -9,9 +9,9 @@
 	MI.listener('ws/open', function (ws) {
 		VIEW_MODEL['websocketStatus'] = {};
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
-		webscoketStatus['status'] = 'WebSocket 连接正常';
+		webscoketStatus['status'] = '服务器连接正常';
 		webscoketStatus['is'] = true;
-		webscoketStatus['color'] = '#ffffff';
+		webscoketStatus['tcolor'] = '#12ea19';
 		VIEW_MODEL.newVue('websocketStatus', {
 			el: '#websocket'
 		});
@@ -22,16 +22,16 @@
 
 	MI.listener('ws/close', function (ws) {
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
-		webscoketStatus['status'] = 'WebSocket 连接断开,请刷新网页重连';
+		webscoketStatus['status'] = '!!! 连接断开 !!!';
 		webscoketStatus['is'] = false;
-		webscoketStatus['color'] = '#f5ea6c';
+		webscoketStatus['tcolor'] = '#ffffff';
 	});
 
 	MI.listener('ws/error', function (ws) {
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
-		webscoketStatus['status'] = 'WebSocket 连接错误,请刷新网页重连';
+		webscoketStatus['status'] = '!!! 连接错误 !!!';
 		webscoketStatus['is'] = false;
-		webscoketStatus['color'] = '#f5ea6c';
+		webscoketStatus['tcolor'] = '#ffffff';
 	});
 
 	//单页生命周期替换事件

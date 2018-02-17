@@ -51,10 +51,11 @@
 <body>
 	<div id='Header' class="">
 		<div id='MasterLogo' class="HeaderItem" onclick="MCSERVER.colmDo()" style="cursor: pointer;">
-			<b>Mcserver
-				<b> 管理面板</div>
+			<b>
+				<span style="color:#ffed00;">M</span>cserver
+			</b> 管理面板</div>
 		<div class="HeaderR">
-			<div id='websocket' v-text="status">
+			<div id='websocket' v-text="status" v-bind:style="{ color: tcolor}">
 				正在链接到服务器...
 			</div>
 			<div id='loginOut' v-on:click="loginOut()">退出</div>
