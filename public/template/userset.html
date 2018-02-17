@@ -21,7 +21,11 @@
 						<div class="row">
 							<div class="col-md-7">
 								<div class="PanelItemInfo">
-									<h4 v-text="item.username"></h4>
+									<h4>
+										<span v-if="TOOLS.isMaster(item.username)" class="color-high-red">[管理账号] </span>
+										<span v-else class="color-green">[普通账号] </span>
+										<span v-text="item.username"></span>
+									</h4>
 									<div>
 										创建时间:
 										<span v-text="item.data.createDate"> </span> | 最后上线:
@@ -47,7 +51,7 @@
 			<div class="Panel PanelRed">
 				<div class="PanelTitle">用户机制须知</div>
 				<div class="PanelBody">
-					<p>以#符合开头的均是最高权限账号,请慎重创建</p>
+					<p class="color-high-red">以#符合开头的均是最高权限账号,请慎重创建</p>
 					<p>我们尽可能的保证管理员与普通用户的数据安全性，但管理员是可以一定程度管理普通用户。</p>
 					<p>普通用户只可以在规定的服务器内操作。</p>
 					<p>普通用户无法创建，删除服务器和编辑服务器启动时参数配置。</p>
@@ -65,21 +69,21 @@
 								<p>用户名 [字母 数字 下划线] (6~18位)</p>
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 用户名 </span>
-									<input type="text" class="form-control" v-model="username">
+									<input type="text" class="form-control" v-model="username" placeholder="用户名 [字母 数字 下划线] (6~18位)">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<p>密码 [字母 数字 符号] (6~18位) </p>
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 密码 </span>
-									<input type="text" class="form-control" v-model="password">
+									<input type="text" class="form-control" v-model="password" placeholder="密码 [字母 数字 符号] (6~18位)">
 								</div>
 							</div>
 						</div>
 						<p>准许的服务器，输入服务器名字，分别以空格分割</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon"> 准许的服务器 </span>
-							<input type="text" class="form-control" v-model="allowedServer">
+							<input type="text" class="form-control" v-model="allowedServer" placeholder="列如: 服务器名字A 服务器名字B 服务器名字C">
 						</div>
 						<div class="row">
 							<div class="col-lg-12">
@@ -110,7 +114,14 @@
 			methods: {
 				toRegisterUser: function () {
 					var allwoedServers = this.allowedServer.trim().split(' ');
-
+					if (!TOOLS.isStdText(this.username)) {
+						TOOLS.pushMsgWindow("用户名不合法！请重新输入！");
+						return;
+					}
+					if (this.password.length < 6 || this.password.length > 18) {
+						TOOLS.pushMsgWindow("密码长度不正确！");
+						return;
+					}
 					var obj = {
 						username: this.username,
 						password: this.password,
@@ -138,6 +149,7 @@
 				},
 
 				reloadUser: function () {
+					//命令服务器重新刷新
 					WS.sendMsg('userset/reload', '', function () {
 						PAGE.refresh();
 					});
