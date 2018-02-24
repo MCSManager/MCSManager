@@ -26,7 +26,7 @@ class MinecraftServer extends ServerProcess {
     }
 
     builder(args) {
-        this.dataModel.addCmd = args.addCmd || ['-server', '-Xincgc'];
+        this.dataModel.addCmd = args.addCmd || [];
 
         this.dataModel.java = args.java || 'java';
         this.dataModel.jarName = args.jarName;
