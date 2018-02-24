@@ -1,4 +1,6 @@
-const { WebSocketObserver } = require('../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../model/WebSocketModel');
 const counter = require('../../core/counter');
 const tools = require('../../core/tools');
 const response = require('../../helper/Response');
@@ -40,12 +42,12 @@ let cacheSystemInfo = null;
 let usage = process.memoryUsage();
 
 //init 记录器
-MCSERVER.logCenter.initLogData('CPU',16);
-MCSERVER.logCenter.initLogData('RAM',16);
+MCSERVER.logCenter.initLogData('CPU', 16);
+MCSERVER.logCenter.initLogData('RAM', 16);
 
 //实不相瞒，其实我是弄的缓存
-setInterval(function() {
-    osUtils.cpuUsage(function(v) {
+setInterval(function () {
+    osUtils.cpuUsage(function (v) {
         // console.log('CPU Usage (%): ' + v * 100);
         cacheCPU = (v * 100).toFixed(2);
         MCSERVER.dataCenter.cacheCPU = cacheCPU;
@@ -81,15 +83,15 @@ setInterval(function() {
 
     }
 
-    let useMemBai  = ((os.freemem() / 1024) / (os.totalmem() / 1024) * 100).toFixed(0);
+    let useMemBai = ((os.freemem() / 1024) / (os.totalmem() / 1024) * 100).toFixed(0);
     //压入记录器
-    MCSERVER.logCenter.pushLogData('CPU',tools.getMineTime(),parseInt(cacheCPU));
-    MCSERVER.logCenter.pushLogData('RAM',tools.getMineTime(),100 - useMemBai);
+    MCSERVER.logCenter.pushLogData('CPU', tools.getMineTime(), parseInt(cacheCPU));
+    MCSERVER.logCenter.pushLogData('RAM', tools.getMineTime(), 100 - useMemBai);
 
     // console.log(MCSERVER.logCenter.RAM)
-    
+
     setTimeout(() => counter.save(), 0); //让其异步的去保存
-}, 2000);
+}, MCSERVER.localProperty.data_center_times);
 
 
 //数据中心

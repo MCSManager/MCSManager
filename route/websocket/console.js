@@ -115,7 +115,7 @@ setInterval(() => {
         delete consoleBuffer[serverName]
         consoleBuffer[serverName] = "";
     }
-}, 1100);
+}, MCSERVER.localProperty.console_send_times);
 //控制台标准输出流
 serverModel.ServerManager().on('console', (data) => {
     let server = serverModel.ServerManager().getServer(data.serverName);

@@ -9,6 +9,15 @@ try {
     //忽略任何版本检测导致的错误
 }
 
+//总全局变量
+global.MCSERVER = {};
+
+//全局仅限本地配置
+MCSERVER.localProperty = {}
+//加载配置
+require('./property');
+
+
 const express = require('express');
 const fs = require('fs');
 var session = require('express-session');
@@ -51,8 +60,7 @@ const LOGO_FILE_PATH = './core/logo.txt';
 let data = fs.readFileSync(LOGO_FILE_PATH, 'utf-8');
 console.log(data);
 
-//总全局变量
-global.MCSERVER = {};
+
 //全局数据中心 记录 CPU 内存 
 MCSERVER.dataCenter = {};
 
@@ -126,7 +134,8 @@ app.use(session({
 }));
 
 //使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
-//app.use(compression());
+if (MCSERVER.localProperty.is_gzip)
+    app.use(compression());
 
 //初始化令牌管理器  已弃用 向下兼容
 VarCenter.set('user_token', {});
@@ -139,10 +148,12 @@ app.use('/public', express.static('./public'));
 // console 中间件挂载
 app.use((req, res, next) => {
     console.log('[', req.protocol.green, req.httpVersion.green, req.method.cyan, ']', req.originalUrl);
-    // res.header("Access-Control-Allow-Origin", "*");
-    // res.header('Access-Control-Allow-Methods', 'GET, POST');
-    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    // res.header('Access-Control-Allow-Headers', 'Content-Type');
+    if (MCSERVER.localProperty.is_allow_csrf) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header('Access-Control-Allow-Methods', 'GET, POST');
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header('Access-Control-Allow-Headers', 'Content-Type');
+    }
     res.header('X-Soft', 'Mcserver Manager HTTP_SERVER');
     res.header('X-Frame-Options', 'DENY');
     next();
@@ -154,7 +165,7 @@ app.get(['/login', '/l', '/', '/logined'], function (req, res) {
     permission.needLogin(req, res, () => {
         res.redirect('/public/#welcome');
     }, () => {
-        res.redirect('/public/login/');
+        res.redirect(MCSERVER.localProperty.login_url);
     });
 });
 

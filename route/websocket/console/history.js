@@ -2,7 +2,9 @@ const response = require('../../../helper/Response');
 var serverModel = require('../../../model/ServerModel');
 var userModel = require('../../../model/UserModel');
 const permssion = require('../../../helper/Permission');
-const { WebSocketObserver } = require('../../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../../model/WebSocketModel');
 
 //前端请求加载历史缓存
 const HISTORY_SIZE = 64;
@@ -22,7 +24,7 @@ WebSocketObserver().listener('server/console/history', (data) => {
             stringHistory += dataHistory[i];
         }
         if (stringHistory == '' || stringHistory.length <= 2)
-            stringHistory = '------- 暂无历史记录 -------<br />';
+            stringHistory = '------- 暂无记录历史记录，更多历史记录请查看在线文件管理的 Log 文本文件 -------<br />';
         response.wsSend(data.ws, 'server/console/history', 'terminalBack', stringHistory);
     }
 

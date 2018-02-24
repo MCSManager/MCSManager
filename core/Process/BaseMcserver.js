@@ -5,12 +5,7 @@ const EventEmitter = require('events');
 const DataModel = require('../DataModel');
 const os = require('os');
 
-var CODE_CONSOLE = 'GBK';
-if (os.platform() == 'win32') {
-    CODE_CONSOLE = 'GBK';
-} else {
-    CODE_CONSOLE = 'UTF-8';
-}
+var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
 //https://github.com/Gagle/Node-Properties
 const properties = require("properties");
