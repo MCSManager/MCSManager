@@ -6,7 +6,7 @@ const {
     WebSocketObserver
 } = require('../../../model/WebSocketModel');
 
-//开启服务器
+//自动重启设定
 WebSocketObserver().listener('server/console/autorestart', (data) => {
     let serverName = data.body.trim();
     let userName = data.WsSession.username;
