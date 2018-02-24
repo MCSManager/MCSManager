@@ -96,6 +96,26 @@ WebSocketObserver().listener('server/console/remove', (data) => {
     }
 });
 
+//缓冲区定时发送频率，默认限制两秒刷新缓冲区
+let consoleBuffer = {};
+setInterval(() => {
+    for (const serverName in consoleBuffer) {
+        let data = consoleBuffer[serverName];
+        //忽略极小体积数据
+        if (!data || data.length <= 1) continue;
+        //刷新每个服务器的缓冲数据
+        selectWebsocket(serverName, (socket) => {
+            socket.send({
+                ws: socket.ws,
+                resK: 'server/console/ws',
+                resV: {},
+                body: data
+            });
+        });
+        consoleBuffer[serverName] = "";
+    }
+}, 1000);
+//控制台标准输出流
 serverModel.ServerManager().on('console', (data) => {
     let server = serverModel.ServerManager().getServer(data.serverName);
     let consoleData = data.msg.replace(/\n/gim, '<br />');
@@ -103,14 +123,9 @@ serverModel.ServerManager().on('console', (data) => {
     //将输出载入历史记录  这里曾出现过 server 未定义bug，情况不明，已加保险
     if (server) server.terminalLog(consoleData);
 
-    selectWebsocket(data.serverName, (socket) => {
-        socket.send({
-            ws: socket.ws,
-            resK: 'server/console/ws',
-            resV: {},
-            body: consoleData
-        });
-    });
+    if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";
+    consoleBuffer[data.serverName] += consoleData;
+
 });
 
 
