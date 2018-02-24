@@ -7,7 +7,7 @@
 					<div class="row">
 						<div class="col-sm-12 PanelItemF">
 							<div class="PanelItem" v-on:click="newServerx()">
-								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 引导创建服务器
+								<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 引导创建服务器
 							</div>
 							<div class="PanelItem" v-on:click="newServer()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新的服务器
@@ -19,14 +19,17 @@
 							<div class="col-md-7">
 								<div class="PanelItemInfo">
 									<h4 v-if="item.data.jarName == '' && !item.data.highCommande ">
-										<span class="color-high-red">[未配置端] </span>
+										<span class="color-high-red">[未配置] </span>
 										<s v-text="item.serverName"></s>
 									</h4>
 									<h4 v-if="item.data.highCommande">
-										<span class="color-green">[自定义参数]</span>
+										<span class="color-red">[自定义]</span>
 										<span v-text="item.serverName"></span>
 									</h4>
-									<h4 v-if="item.data.jarName != '' && !item.data.highCommande" v-text="item.serverName"></h4>
+									<h4 v-if="item.data.jarName != '' && !item.data.highCommande">
+										<span class="color-green">[普通端]</span>
+										<span v-text="item.serverName"></span>
+									</h4>
 									状态:
 									<span v-if="item.data.run" class="color-green"> 正在运行 </span>
 									<span v-else="item.data.run" class="color-red"> 关闭 </span> | 创建时间 ：
@@ -39,12 +42,13 @@
 								<div class="PanelItemMuem">
 									<!--<button class="btn btn-success">开启</button>
 											<button class="btn btn-success">关闭</button>-->
-									<button class="btn btn-success" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName)">
+									<button class="btn btn-info" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName)">
 										参数 | 配置
 									</button>
-									<button class="btn btn-info" v-on:click="onRedirect('./template/component/console.html', 'server/console', item.serverName );">
+									<button class="btn btn-success" v-on:click="onRedirect('./template/component/console.html', 'server/console', item.serverName );">
 										控制 | 管理
 									</button>
+									<span style="margin-left: 8px;"> | </span>
 									<button class="btn btn-danger" v-on:click="toDeleteServer(item.serverName)">删除</button>
 
 								</div>
@@ -72,7 +76,7 @@
 					RES.redirectPage('./template/component/newserverx.html', null, '');
 				},
 				toDeleteServer: function (serverName) {
-					var result = confirm('是否删除 [' + serverName + '] 这个服务端？\n注意: 删除服务器并不会删除服务端文件');
+					var result = confirm('是否删除 [' + serverName + '] 这个服务端？\n注意: 删除服务器并不会删除服务端文件,只会从控制面板删除！');
 					if (!result) return;
 					WS.sendMsg('server/delete', serverName);
 					RES.redirectPage('./template/server.html', 'server/view');
