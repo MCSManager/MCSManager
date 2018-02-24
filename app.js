@@ -15,7 +15,8 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var querystring = require('querystring');
-// var PSUtil = require('psutil').PSUtil;  //已舍弃
+//gzip压缩
+var compression = require('compression');
 
 const serverModel = require('./model/ServerModel');
 const UserModel = require('./model/UserModel');
@@ -123,6 +124,9 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
 }));
+
+//使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
+//app.use(compression());
 
 //初始化令牌管理器  已弃用 向下兼容
 VarCenter.set('user_token', {});
