@@ -112,9 +112,10 @@ setInterval(() => {
                 body: data
             });
         });
+        delete consoleBuffer[serverName]
         consoleBuffer[serverName] = "";
     }
-}, 1000);
+}, 1100);
 //控制台标准输出流
 serverModel.ServerManager().on('console', (data) => {
     let server = serverModel.ServerManager().getServer(data.serverName);
