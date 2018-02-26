@@ -32,8 +32,9 @@ else
 
 /*--------------- 配置开始，这与 Minecraft 服务器配置几乎差不多 --------------- */
 
-//控制台实时刷新频率 单位毫秒 默认1100 毫秒
-MCSERVER.localProperty.console_send_times = 1100;
+//控制台实时刷新频率 单位毫秒 默认1200 毫秒
+//建议在 1000 毫秒 与 3000毫秒之选择
+MCSERVER.localProperty.console_send_times = 1200;
 
 
 //控制台默认编码，默认自动选择，你可以去除变量 auto_console_coding 自己写，如 "UFT-8" 或 "GBXXXX"
@@ -50,7 +51,8 @@ MCSERVER.localProperty.is_allow_csrf = false;
 
 
 //登录页面 URL，我们有两个登录页面，你可以选择其一，或自己选择
-MCSERVER.localProperty.login_url = "/public/login/";
+//可以 "/public/login/" 或者 "/public/login2/" 或你自定义
+MCSERVER.localProperty.login_url = "/public/login2/";
 
 
 //控制台历史记录最大缓存长度
