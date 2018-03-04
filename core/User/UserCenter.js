@@ -34,8 +34,9 @@ class UserCenter {
         if (masterUserCounter == 0) {
             this.userList['#master'] = this.register('#master', '123456');
             MCSERVER.log('========================================================');
-            MCSERVER.log('收到命令用户机制初始化,创建账号: #master 密码 123456');
+            MCSERVER.log('收到命令用户机制初始化 | 创建账号: #master 密码 123456');
             MCSERVER.log('========================================================');
+            MCSERVER.log('请注意！凡是以 # 符号开头的用户名,均视为管理员账号');
         }
 
     }

@@ -137,7 +137,7 @@ WebSocketObserver().listener('userset/upinfo', (data) => {
         userCenter().get(username).allowedServer(allowedServerList);
 
         //如果需求，则更改密码
-        if (newPW != '<未更改>' || newPW.trim() != '') {
+        if (newPW.trim() != '') {
             if (newPW.length < 6 || newPW.length > 18) {
                 response.wsMsgWindow(data.ws, '新的密码格式不正确，已舍弃密码的更改');
             } else {

@@ -21,8 +21,8 @@
 						<div class="col-sm-7">
 							<p>密码 [字母 数字 下划线] (6~18位) 注意* 显示 “未更改” 代表不改动本身密码</p>
 							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 密码 </span>
-								<input type="text" class="form-control" v-model="password">
+								<span class="input-group-addon"> 账号密码 </span>
+								<input type="text" class="form-control" v-model="password" placeholder="[未更改 您可以直接从这里重设此用户的密码]">
 							</div>
 						</div>
 					</div>
@@ -31,7 +31,7 @@
 					<p>注意，如果是以#开头的最高权限账号，则可以无条件访问任何服务器</p>
 					<div class="input-group input-group-sm">
 						<span class="input-group-addon"> 准许的服务器 </span>
-						<input type="text" class="form-control" v-model="allowedServer">
+						<input type="text" class="form-control" v-model="allowedServer" placeholder="[无]">
 					</div>
 				</div>
 			</div>
@@ -59,7 +59,7 @@
 			el: '#OneUserView',
 			data: {
 				ServerLen: 0,
-				password: '<未更改>',
+				password: '',
 				oldUsername: ''
 			},
 			methods: {
