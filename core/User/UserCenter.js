@@ -1,5 +1,12 @@
-const { User, USER_SAVE_PATH } = require('./User');
-const { md5, createPassword, randomString } = require('./CryptoMine');
+const {
+    User,
+    USER_SAVE_PATH
+} = require('./User');
+const {
+    md5,
+    createPassword,
+    randomString
+} = require('./CryptoMine');
 const fs = require('fs');
 
 const USER_DIR = './' + USER_SAVE_PATH;
@@ -119,6 +126,8 @@ class UserCenter {
         let data = {};
         let tmp = null;
         for (let k in this.userList) {
+            data = {}; //BUG Note: 引用初始化
+
             if (!this.userList[k]) continue;
             tmp = this.userList[k].dataModel;
             //删除掉一些不可泄露的信息

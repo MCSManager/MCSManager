@@ -1,7 +1,7 @@
 //Websocket 层
 (function () {
 
-	var DEBUG = false; //Websocket DEBUG
+	var DEBUG = true; //Websocket DEBUG
 
 	//from @BBleae
 	function wsHeartBeatPackage(ws) {

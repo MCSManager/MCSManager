@@ -1,5 +1,10 @@
-const { WebSocketObserver } = require('../../model/WebSocketModel');
-const { userCenter, deleteUser } = require('../../model/UserModel');
+const {
+    WebSocketObserver
+} = require('../../model/WebSocketModel');
+const {
+    userCenter,
+    deleteUser
+} = require('../../model/UserModel');
 const response = require('../../helper/Response');
 const permssion = require('../../helper/Permission');
 const tools = require('../../core/tools');
@@ -28,7 +33,7 @@ WebSocketObserver().listener('userset/create', (data) => {
         let password = newUserConfig.password.trim();
         var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
         //输出 true
-        
+
         if (!uPattern.test(username) && tools.between(password, 6, 18)) {
             response.wsMsgWindow(data.ws, '用户账号或密码格式不正确');
             return;
@@ -49,7 +54,7 @@ WebSocketObserver().listener('userset/create', (data) => {
         response.wsMsgWindow(data.ws, '用户建立完成√');
         return;
     } catch (e) {
-        MCSERVER.error('用户建立失败',e);
+        MCSERVER.error('用户建立失败', e);
         response.wsSend(data.ws, 'userset/create', null);
         response.wsMsgWindow(data.ws, '用户建立失败: ' + e);
     }
@@ -71,7 +76,7 @@ WebSocketObserver().listener('userset/delete', (data) => {
         });
         return;
     } catch (e) {
-        MCSERVER.error('删除用户失败',e);
+        MCSERVER.error('删除用户失败', e);
         response.wsSend(data.ws, 'userset/delete', null);
         response.wsMsgWindow(data.ws, '删除用户失败:' + e);
     }
@@ -87,11 +92,12 @@ WebSocketObserver().listener('userset/reload', (data) => {
         response.wsMsgWindow(data.ws, '用户重新导入完成√');
         return;
     } catch (e) {
-        MCSERVER.error('用户重新导入失败',e);
+        MCSERVER.error('用户重新导入失败', e);
         response.wsSend(data.ws, 'userset/reload', null);
         response.wsMsgWindow(data.ws, '错误：用户重新导入失败' + e);
     }
 })
+
 //查看某個用戶信息
 WebSocketObserver().listener('userset/view', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
@@ -131,7 +137,7 @@ WebSocketObserver().listener('userset/upinfo', (data) => {
         userCenter().get(username).allowedServer(allowedServerList);
 
         //如果需求，则更改密码
-        if (newPW != '<未更改>') {
+        if (newPW != '<未更改>' || newPW.trim() != '') {
             if (newPW.length < 6 || newPW.length > 18) {
                 response.wsMsgWindow(data.ws, '新的密码格式不正确，已舍弃密码的更改');
             } else {
