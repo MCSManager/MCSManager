@@ -131,7 +131,6 @@
 	MCSERVER.colmSet = function (booleans) {
 		MI.on('colmchange', null); //触发事件
 		if (!booleans) {
-			console.log('菜单隐藏')
 			$SideCol
 				.stop(true, true)
 				.animate({
@@ -151,7 +150,6 @@
 				});
 
 		} else {
-			console.log('菜单显示')
 			$Container
 				.stop(true, true)
 				.animate({

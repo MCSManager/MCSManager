@@ -63,4 +63,4 @@ MCSERVER.localProperty.terminalQueue_max_length = 512;
 
 //控制数据中心 数据刷新频率 单位毫秒
 //默认 2000 毫秒
-MCSERVER.localProperty.data_center_times = 2000;
+MCSERVER.localProperty.data_center_times = 500;

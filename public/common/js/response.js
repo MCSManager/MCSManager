@@ -95,6 +95,11 @@
 		}
 	}
 
+	MI.listener("RedirectPage", function () {
+		//自动菜单更改
+		MCSERVER.autoColmDo();
+	});
+
 	RES.redirectPage = function (url, key, body, callback) {
 
 		ToolsLoadingStart(function () {
@@ -103,6 +108,8 @@
 			//替換掉原先存在的 函数。防止新的单页没有这些函数而导致代码二次执行
 			MI.rListener('onend', function () {});
 			MI.rListener('onload', function () {});
+			//触发页面切换事件
+			MI.on('RedirectPage', url);
 			RES.redirectHTML(url, key, body, function () {
 				MI.on('page/live');
 				//赋予的单页刷新

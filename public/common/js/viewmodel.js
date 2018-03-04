@@ -41,9 +41,17 @@
 		PAGE = new Object();
 	});
 
+
 	//菜单获取
 	MI.routeListener('ws/muem', function (data) {
-		DEBUG && console.log('--- 系统菜单获取成功 ---')
+		//菜单选项选择
+		MI.listener("SideMeumClick", function () {
+			console.log("--- 菜单选项被选择 ---");
+			// MCSERVER.autoColmDo();
+		});
+
+		DEBUG && console.log('--- 系统菜单获取成功 ---');
+
 		MCSERVER.username = data.obj.username;
 		//虚拟的数据接受，让前端数据得到，菜单在前端建筑
 		if (TOOLS.isMaster(MCSERVER.username)) {
@@ -61,6 +69,8 @@
 			methods: {
 				onRedirect: function (link, api) {
 					DEBUG && console.log('菜单处网页开始跳转:' + link);
+					//触发菜单选项点击事件
+					MI.on("SideMeumClick", null);
 					RES.redirectPage(link, api, 'update_page');
 				},
 				onMouse: function ($event, flag) {
