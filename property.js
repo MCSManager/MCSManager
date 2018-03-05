@@ -33,7 +33,7 @@ else
 /*--------------- 配置开始，这与 Minecraft 服务器配置几乎差不多 --------------- */
 
 //控制台实时刷新频率 单位毫秒 默认1200 毫秒
-//建议在 1000 毫秒 与 3000毫秒之选择
+//建议在 1000 毫秒 与 3000 毫秒之选择
 MCSERVER.localProperty.console_send_times = 1200;
 
 
@@ -63,4 +63,4 @@ MCSERVER.localProperty.terminalQueue_max_length = 512;
 
 //控制数据中心 数据刷新频率 单位毫秒
 //默认 2000 毫秒
-MCSERVER.localProperty.data_center_times = 500;
+MCSERVER.localProperty.data_center_times = 2000;
