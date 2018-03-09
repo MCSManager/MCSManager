@@ -81,7 +81,7 @@ node app.js #或 npm start
 | **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
 | **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
 | **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
-| **onlinefs/**                    |文件管理独立模块，([Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
+| **onlinefs/**                    |文件管理独立模块 ([Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
 
 
 浏览器兼容性
