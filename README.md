@@ -64,6 +64,7 @@ node app.js #或 npm start
 
 | 目录名 | 详情/解释 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
+| **property.js**                   |控制面板内部深度配置|
 | **core/logo.txt**               |控制台输出 logo 文字|
 | **public/**                      |前端所有代码，资源目录，前后端分离，使用 ws 或 ajax 通讯|
 | **public/login/**                |纯 UI 逻辑登陆页面|
@@ -80,7 +81,9 @@ node app.js #或 npm start
 | **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
 | **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
 | **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
-| **onlinefs/**                    |文件在线管理独立模块，(项目: [Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
+| **onlinefs/**                    |文件在线管理独立模块，(项目: [Suwings/IndependentFileManager]
+(https://github.com/Suwings/IndependentFileManager))|
+
 
 浏览器兼容性
 -----------
