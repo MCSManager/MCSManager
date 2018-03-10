@@ -82,8 +82,9 @@ class ServerProcess extends EventEmitter {
 
         let jarPath = (this.dataModel.cwd + '/' + this.dataModel.jarName).replace(/\/\//igm, '/');
 
-        //尽在非自定义模式下检查参数
+        //选择启动方式 自定义命令与配置启动
         if (!this.dataModel.highCommande) {
+            //只在非自定义模式下检查参数
             if (!fs.existsSync(this.dataModel.cwd)) {
                 this.stop();
                 throw new Error('服务端根目录 "' + jarPath + '" 不存在!');
@@ -95,6 +96,14 @@ class ServerProcess extends EventEmitter {
             if (!fs.existsSync(jarPath)) {
                 this.stop();
                 throw new Error('服务端文件 "' + jarPath + '" 不存在或错误!');
+            }
+
+        } else {
+            //自定义模式检查
+            //检查是否准许自定义命令
+            if (!MCSERVER.localProperty.customize_commande) {
+                this.stop();
+                throw new Error('操作禁止！管理员禁止服务器使用自定义命令！');
             }
         }
 
