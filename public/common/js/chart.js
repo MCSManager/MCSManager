@@ -30,12 +30,9 @@ TOOLS.charts.bulider = function (dom, len, config, callback, chartOption) {
 					myChart.setOption(option);
 				},
 				pushData: function (key, val) {
-					console.log('viewData:', viewData)
-
 					viewData = viewData.slice(1);
 					viewData.push(val);
 					option.series[0].data = viewData;
-
 					keyData = keyData.slice(1);
 					keyData.push(key);
 					option.xAxis[0].data = keyData;

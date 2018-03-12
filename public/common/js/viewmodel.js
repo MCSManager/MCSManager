@@ -72,20 +72,6 @@
 					//触发菜单选项点击事件
 					MI.on("SideMeumClick", null);
 					RES.redirectPage(link, api, 'update_page');
-				},
-				onMouse: function ($event, flag) {
-					// var $elem = $event.target;
-					// if (flag) {
-					// 	//进入
-					// 	$($elem).stop(true, true).animate({
-					// 		'padding-left': '24px'
-					// 	}, 200);
-					// } else {
-					// 	//移出
-					// 	$($elem).stop(true, true).animate({
-					// 		'padding-left': '20px'
-					// 	}, 200);
-					// }
 				}
 			}
 		});

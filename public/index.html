@@ -75,7 +75,7 @@
 				</div>
 				<div id='SideColFor'>
 					<!--如果您想更改菜单名或功能，请查看 common/js/meum.js 文件-->
-					<a href="#" v-for="item of items" v-on:click="onRedirect(item.link,item.api)" v-on:mouseenter="onMouse($event,true)" v-on:mouseleave="onMouse($event,false)">
+					<a href="#" v-for="item of items" v-on:click="onRedirect(item.link,item.api)">
 						<span class="glyphicon " :class="item.class" aria-hidden="true"></span>
 						<span v-text="item.name"></span>
 					</a>
