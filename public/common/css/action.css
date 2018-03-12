@@ -1,0 +1,81 @@
+/* 动画 CSS */
+
+@keyframes ActionLeftButtonA {
+    0% {
+        background-color: rgb(226, 226, 0);
+        width: 20px;
+    }
+    100% {
+        width: 8px;
+        background-color: #4ebd2a;
+    }
+}
+
+@keyframes ActionLeftButtonB {
+    100% {
+        width: 20px;
+        background-color: rgb(226, 226, 0);
+    }
+}
+
+/* 公共颜色动作 */
+
+@keyframes ActionCommonColorA {
+    0% {
+        background-color: rgb(1, 126, 188);
+    }
+    100% {
+        background-color: initial;
+    }
+}
+
+@keyframes ActionCommonColorB {
+    100% {
+        background-color: rgb(1, 126, 188);
+    }
+}
+
+/* 公共左边突出动作 */
+
+@keyframes ActionMarginLeftA {
+    0% {
+        margin-left: 8px;
+    }
+    100% {
+        margin-left: 0px;
+    }
+}
+
+@keyframes ActionMarginLeftB {
+    100% {
+        margin-left: 8px;
+    }
+}
+
+/* Logo 动画 */
+
+@keyframes ActionLogoA {
+    0% {
+        background-color: #016698;
+    }
+    100% {
+        background-color: #017EBC;
+    }
+}
+
+@keyframes ActionLogoB {
+    100% {
+        background-color: #016698;
+    }
+}
+
+/* 淡入 */
+
+@keyframes ActionFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

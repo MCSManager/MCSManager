@@ -40,6 +40,8 @@
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 	margin-bottom: 16px;
 	background-color: #fff;
+	/* animation: ActionFadeIn 0.5s; 有淡入淡出动画
+	animation-fill-mode: forwards; */
 }
 
 .PanelBlue {
