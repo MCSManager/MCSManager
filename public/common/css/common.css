@@ -133,6 +133,9 @@ input {
 	text-align: left;
 	padding-left: 20px;
 	font-size: 12px;
+	/* action */
+	animation: ActionCommonColorA 1s, ActionMarginLeftA 0.3s;
+	animation-fill-mode: forwards;
 }
 
 #SideColMenu a span {
@@ -141,7 +144,10 @@ input {
 
 #SideColMenu a:hover {
 	text-decoration: none;
-	background-color: #017EBC;
+	/* background-color: #017EBC; */
+	/* action */
+	animation: ActionCommonColorB 0.3s, ActionMarginLeftB 0.2s;
+	animation-fill-mode: forwards;
 }
 
 /*菜单的收缩*/
@@ -158,6 +164,15 @@ input {
 	border-radius: 2px;
 	cursor: pointer;
 	box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25);
+	animation: ActionLeftButtonA 0.5s;
+	animation-fill-mode: forwards;
+}
+
+#ShowMenu:hover {
+	/* action */
+	animation: ActionLeftButtonB 0.5s;
+	animation-fill-mode: forwards;
+	/* animation-iteration-count: infinite; */
 }
 
 /*针对于单页的首页容器*/
@@ -274,4 +289,58 @@ input {
 	width: 100%;
 	overflow: hidden;
 	line-height: 3px;
+}
+
+/* 动画 CSS */
+
+@keyframes ActionLeftButtonA {
+	0% {
+		background-color: rgb(226, 226, 0);
+		width: 20px;
+	}
+	100% {
+		width: 8px;
+		background-color: #4ebd2a;
+	}
+}
+
+@keyframes ActionLeftButtonB {
+	100% {
+		width: 20px;
+		background-color: rgb(226, 226, 0);
+	}
+}
+
+/* 公共颜色动作 */
+
+@keyframes ActionCommonColorA {
+	0% {
+		background-color: rgb(1, 126, 188);
+	}
+	100% {
+		background-color: initial;
+	}
+}
+
+@keyframes ActionCommonColorB {
+	100% {
+		background-color: rgb(1, 126, 188);
+	}
+}
+
+/* 公共左边突出动作 */
+
+@keyframes ActionMarginLeftA {
+	0% {
+		margin-left: 8px;
+	}
+	100% {
+		margin-left: 0px;
+	}
+}
+
+@keyframes ActionMarginLeftB {
+	100% {
+		margin-left: 8px;
+	}
 }

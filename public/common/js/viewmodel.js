@@ -74,18 +74,18 @@
 					RES.redirectPage(link, api, 'update_page');
 				},
 				onMouse: function ($event, flag) {
-					var $elem = $event.target;
-					if (flag) {
-						//进入
-						$($elem).stop(true, true).animate({
-							'padding-left': '24px'
-						}, 200);
-					} else {
-						//移出
-						$($elem).stop(true, true).animate({
-							'padding-left': '20px'
-						}, 200);
-					}
+					// var $elem = $event.target;
+					// if (flag) {
+					// 	//进入
+					// 	$($elem).stop(true, true).animate({
+					// 		'padding-left': '24px'
+					// 	}, 200);
+					// } else {
+					// 	//移出
+					// 	$($elem).stop(true, true).animate({
+					// 		'padding-left': '20px'
+					// 	}, 200);
+					// }
 				}
 			}
 		});
