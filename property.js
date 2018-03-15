@@ -69,4 +69,4 @@ MCSERVER.localProperty.data_center_times = 2000;
 //是否准许本控制面板使用自定义参数 | 默认准许使用
 //注意! 此功能既可以让你的控制面板尝试更多姿势 (包括 WebShell)
 //注意! 也会让其他别有用心的管理员 (只有管理员有权使用)，入侵你的宿主机
-MCSERVER.localProperty.customize_commande = false;
+MCSERVER.localProperty.customize_commande = true;
