@@ -6,7 +6,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 		//import
 		data: {
 			username: username,
-			wIwdj274: "adFh_u297?4jGs1"
+			_rand: Math.random() //增加缓存拒绝随机数
 		},
 		success: function (data, textStatus) {
 			var obj = JSON.parse(data);

@@ -78,6 +78,8 @@ class UserCenter {
         if (this.userList.hasOwnProperty(username) && this.userList[username] != undefined) {
             let loginUser = this.userList[username];
             try {
+                //BUG Note: loginUser 同步问题
+                //第二次审查，不一定
                 loginUser.load();
             } catch (e) {
                 falsecb && falsecb();
