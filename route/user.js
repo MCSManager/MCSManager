@@ -92,7 +92,7 @@ router.get('/login_key', function (req, res) {
         }));
         return;
     }
-    
+
     //这里是 随机的 salt 与 md5key 因为用户根本不存在，则返回一个随机的类似于正常的信息，让前端判断错误
     //防止轻而易举的遍历用户名，但这仍然可以通过两次或三次尝试判断用户名是否存在
     res.send(JSON.stringify({

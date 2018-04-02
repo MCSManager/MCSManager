@@ -79,7 +79,7 @@ class UserCenter {
             let loginUser = this.userList[username];
             try {
                 //BUG Note: loginUser 同步问题
-                //第二次审查，不一定
+                //第二次审查，否定
                 loginUser.load();
             } catch (e) {
                 falsecb && falsecb();
@@ -87,17 +87,19 @@ class UserCenter {
                 return false;
             }
             loginUser.updateLastDate();
-            //login登陆时使用 md5传码方式 
+
+            // 目前只准许 登陆时使用 md5传码方式 ，不准传输明文
             if (md5key) {
                 let userMd5 = loginUser.getPasswordMD5();
                 let md5Passworded = md5(userMd5 + md5key);
                 return md5Passworded == password ? truecb && truecb(loginUser) : falsecb && falsecb();
             }
-            //一般模式
-            if (loginUser.isPassword(password)) {
-                truecb && truecb(loginUser);
-                return true;
-            }
+            // 一般模式
+            // 禁止使用一般登录模式
+            // if (loginUser.isPassword(password)) {
+            //     truecb && truecb(loginUser);
+            //     return true;
+            // }
         }
         falsecb && falsecb();
         return false;
