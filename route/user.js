@@ -53,7 +53,6 @@ router.post('/login', function (req, res) {
     };
     //登陆次数加一
     counter.plus('login');
-    // password = tools.md5(password + enkey);
     loginUser(username, password, (loginUser) => {
         req.session['login'] = true;
         req.session['username'] = username;

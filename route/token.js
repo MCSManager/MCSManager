@@ -9,13 +9,16 @@ const counter = require('../core/counter');
 router.get('/', function (req, res) {
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
     if (req.xhr) {
+        var UUID = require('uuid');
         if (!req.session['token']) {
-            req.session['token'] = permssion.randomString(32);
+            //强化 token
+            req.session['token'] = permssion.randomString(6) + UUID.v4();
         }
-        VarCenter.get('user_token')[req.session['token']] = req.session['username'];
+        let username = req.session['username'].trim();
+        VarCenter.get('user_token')[req.session['token']] = username;
         response.returnMsg(res, 'token', {
             token: req.session['token'],
-            username: req.session['username'],
+            username: username,
         });
     } else {
         counter.plus('csrfCounter');
@@ -28,12 +31,5 @@ router.get('/', function (req, res) {
 //模块导出
 module.exports = router;
 
-    // res.header('X-Powered-By','Mcserver Manager HTT_P_SERVER');
-    //res.cookie('token_to',permssion.randomString(32));
-
-
-
-
-
-
-
+// res.header('X-Powered-By','Mcserver Manager HTT_P_SERVER');
+//res.cookie('token_to',permssion.randomString(32));
