@@ -11,12 +11,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+
+var UUID = require('uuid');
 app.use(session({
-    secret: 'IFM_session_wseccret',
+    secret: UUID.v4(),
     name: 'IFM_session',
     //1小时
     cookie: {
-        maxAge: 10000 * 60 * 60
+        maxAge: 1000 * 60 * 60
     },
     resave: true,
     saveUninitialized: true,
@@ -31,9 +33,9 @@ app.post('/', function (req, res) {
 var baseR = require('./controller/function');
 var authR = require('./controller/auth');
 
-process.on("uncaughtException", function (err) {
-    console.log('UncaughtException 机制错误报告:', err);
-});
+// process.on("uncaughtException", function (err) {
+//     console.log('UncaughtException 机制错误报告:', err);
+// });
 
 app.use('/fs_auth', authR);
 //必须先进行登陆

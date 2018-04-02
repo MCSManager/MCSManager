@@ -41,7 +41,7 @@ const counter = require('../core/counter');
 
 module.exports.isMaster = (wsSession, notPermssionCounter) => {
     if (wsSession.username) {
-        if (wsSession.username.substr(0, 1) == '#') {
+        if (wsSession.username.trim().substr(0, 1) == '#') {
             return true;
         }
     }
@@ -88,4 +88,3 @@ module.exports.isCanServer = (userName, serverName) => {
     }
     return false;
 }
-

@@ -128,8 +128,8 @@ app.use(session({
     secret: UUID.v4(),
     name: 'Mcserver_session',
     cookie: {
-        maxAge: 10000 * 60 * 60 * 3
-    }, // 3 小时
+        maxAge: 1000 * 60 * 60 * 4
+    },
     resave: true,
     saveUninitialized: true,
 }));
