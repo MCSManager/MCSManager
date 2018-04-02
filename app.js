@@ -123,8 +123,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+var UUID = require('uuid');
 app.use(session({
-    secret: 'Mcserver_w2j4o_7_er_idwih',
+    secret: UUID.v4(),
     name: 'Mcserver_session',
     cookie: {
         maxAge: 10000 * 60 * 60 * 3
