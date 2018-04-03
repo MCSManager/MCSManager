@@ -99,18 +99,24 @@ router.post('/rename', (req, res) => {
 
 
 const multiparty = require('multiparty');
-router.post('/upload', (req, res) => {
-    let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-    var target_path = fileOperate.normalizePath(req.session.fsos.cwd); //获取绝对路径
-    //生成multiparty对象，并配置上传目标路径
-    var form = new multiparty.Form({
-        uploadDir: os.tmpdir()
-    });
+router.get('/upload', (req, res) => {
+    //权限判断,需要登录
+    if (!req.session.fsos || !req.session.fsos.cwd) return;
+    let fileOperate;
+    var target_path;
+    try {
+        fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+        target_path = fileOperate.normalizePath(req.session.fsos.cwd); //获取绝对路径
+        //生成multiparty对象，并配置上传目标路径
+        var form = new multiparty.Form({
+            uploadDir: os.tmpdir()
+        });
+    } catch (err) {
+        res.status(500).send('服务器上传初始化错误!请重试!');
+    }
     form.parse(req, function (err, fields, files) {
-        // var filesTmp = JSON.stringify(files, null, 2);
-        // console.log('parse files: ' + filesTmp);
         if (err) {
-            res.status(500).send('服务器内部错误！文件上传错误！' + err);
+            res.status(500).send('服务器内部错误,文件上传错误!');
             return;
         }
         try {
@@ -130,8 +136,14 @@ router.post('/upload', (req, res) => {
 });
 
 router.get('/download/:name', (req, res) => {
+    if (!req.session.fsos || !req.session.fsos.cwd) return;
     if (!req.params.name) return;
-    let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    let fileOperate;
+    try {
+        fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    } catch (err) {
+        res.status(500).send('文件下载错误,请重新登录并且重新下载.');
+    }
     let cwd = req.session.fsos.cwd;
     let filename = pathm.join(cwd, req.params.name);
     res.sendfile(filename, {
