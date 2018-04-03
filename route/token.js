@@ -4,17 +4,25 @@ const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
 const VarCenter = require('../model/VarCenter');
 const counter = require('../core/counter');
+const UUID = require('uuid');
 //Token 
 
 router.get('/', function (req, res) {
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
     if (req.xhr) {
-        var UUID = require('uuid');
         if (!req.session['token']) {
             //强化 token
             req.session['token'] = permssion.randomString(6) + UUID.v4().replace(/-/igm, "");
         }
         let username = req.session['username'] || undefined;
+        if (username == undefined || username.trim() == '') {
+            //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
+            response.returnMsg(res, 'token', {
+                token: permssion.randomString(6) + UUID.v4().replace(/-/igm, ""),
+                username: username,
+            });
+            return;
+        }
         VarCenter.get('user_token')[req.session['token']] = username;
         response.returnMsg(res, 'token', {
             token: req.session['token'],

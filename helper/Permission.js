@@ -40,6 +40,9 @@ module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
 const counter = require('../core/counter');
 
 module.exports.isMaster = (wsSession, notPermssionCounter) => {
+    if (!wsSession.username || typeof wsSession.username != 'string') {
+        return false;
+    }
     let username = wsSession.username.trim() || '';
     if (username) {
         if (username.substr(0, 1) == '#') {
