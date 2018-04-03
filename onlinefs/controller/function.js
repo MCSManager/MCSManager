@@ -99,7 +99,7 @@ router.post('/rename', (req, res) => {
 
 
 const multiparty = require('multiparty');
-router.get('/upload', (req, res) => {
+router.post('/upload', (req, res) => {
     //权限判断,需要登录
     if (!req.session.fsos || !req.session.fsos.cwd) return;
     let fileOperate;
