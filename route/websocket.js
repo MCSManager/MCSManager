@@ -37,11 +37,10 @@ router.ws('/ws', function (ws, req) {
     var tokens = varCenter.get('user_token');
     username = tokens[token];
     //权限判定
-    if (!username || username == null || username == "") {
+    if (!username || username == "") {
         MCSERVER.log('[ WebSocket INIT ]', '错误的令牌 [' + token + '] 尝试发起 Websocket 被拒绝');
         counter.plus('notPermssionCounter');
         ws.close();
-        req.send('ErrorToken');
         return;
     }
 
@@ -52,7 +51,7 @@ router.ws('/ws', function (ws, req) {
         response.wsSend(data.ws, data.resK, data.resV, data.body);
     }
 
-    WsSession.login = username ? true : false;
+    WsSession.login = (username && req.session['login']) ? true : false;
     WsSession.uid = uid;
     WsSession.ws = ws;
     WsSession.username = username;
@@ -70,7 +69,7 @@ router.ws('/ws', function (ws, req) {
     ws.on('message', function (data) {
 
         //禁止未登陆用户进入
-        if (WsSession.login == false) {
+        if (!WsSession.login) {
             MCSERVER.log('[ WebSocket MSG ]', ' 未登陆用户尝试发起 Websocket 被拒绝');
             counter.plus('notPermssionCounter');
             return;
