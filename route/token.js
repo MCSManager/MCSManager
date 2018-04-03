@@ -12,9 +12,9 @@ router.get('/', function (req, res) {
         var UUID = require('uuid');
         if (!req.session['token']) {
             //强化 token
-            req.session['token'] = permssion.randomString(6) + UUID.v4();
+            req.session['token'] = permssion.randomString(6) + UUID.v4().replace(/-/igm, "");
         }
-        let username = req.session['username'].trim();
+        let username = req.session['username'] || undefined;
         VarCenter.get('user_token')[req.session['token']] = username;
         response.returnMsg(res, 'token', {
             token: req.session['token'],

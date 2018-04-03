@@ -37,7 +37,7 @@ router.ws('/ws', function (ws, req) {
     var tokens = varCenter.get('user_token');
     username = tokens[token];
     //权限判定
-    if (!username) {
+    if (!username || username == null || username == "") {
         MCSERVER.log('[ WebSocket INIT ]', '错误的令牌 [' + token + '] 尝试发起 Websocket 被拒绝');
         counter.plus('notPermssionCounter');
         ws.close();
@@ -121,6 +121,7 @@ router.ws('/ws', function (ws, req) {
 
         //释放一些数据
         delete varCenter.get('user_token')[token];
+        varCenter.get('user_token')[token] = undefined;
         delete token;
         delete WsSession;
 
