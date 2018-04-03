@@ -13,14 +13,19 @@ const tools = require('../core/tools');
 const userManager = userCenter();
 
 router.post('/loginout', function (req, res) {
-    permssion.needLogin(req, res, () => {
-        MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
-        req.session.destroy();
-        response.returnMsg(res, 'user/logout', 'loginOut');
-    }, () => {
-        response.returnMsg(res, 'MASTER!', 'Please Login!!! | 请登陆好么?');
-    });
 
+    MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
+    // BUG Note: Ws—close 与 Loginout 时 Session 可能不一定及时同步
+    // 导致我们暂时无法用一种很简单的方式来实现动态的更换 token
+    // req.session['login'] = false;
+    // req.session['username'] = null;
+    // req.session['login_md5key'] = null;
+    // req.session['token'] = null;
+    // req.session['dataModel'] = {};
+    // req.session.save();
+    req.session.destroy();
+    response.returnMsg(res, 'user/logout', 'loginOut');
+    res.end();
 });
 
 MCSERVER.login._banip = 0;
@@ -58,6 +63,7 @@ router.post('/login', function (req, res) {
         req.session['dataModel'] = loginUser.dataModel; //Only read
         delete MCSERVER.login[ip];
         req.session['login_md5key'] = null;
+        req.session.save();
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -68,6 +74,7 @@ router.post('/login', function (req, res) {
         counter.plus('passwordError');
         req.session['login'] = undefined;
         req.session['login_md5key'] = null;
+        req.session.save();
         response.returnMsg(res, 'login/check', false);
     }, enkey);
 });

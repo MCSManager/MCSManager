@@ -126,12 +126,12 @@ app.use(bodyParser.json());
 var UUID = require('uuid');
 app.use(session({
     secret: UUID.v4(),
-    name: 'Mcserver_session',
+    name: 'Mcserver_session-' + UUID.v1(),
     cookie: {
         maxAge: 1000 * 60 * 60 * 4
     },
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: true
 }));
 
 //使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它

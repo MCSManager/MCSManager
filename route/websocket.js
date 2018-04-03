@@ -89,14 +89,9 @@ router.ws('/ws', function (ws, req) {
             let obj;
             let reqs = req;
 
-            // console.log('TOKEN' + req.session['token']++)
             //Websocket 自定义协议解析
-
             reqHeaderObj = JSON.parse(reqHeader);
             if (!reqHeaderObj) return;
-
-            //console
-            // console.log(' [ WebSocket MSG ] ', reqHeaderObj['RequestValue']);
 
             WebSocketObserver().emit('ws/req', {
                 ws: ws,
@@ -120,9 +115,8 @@ router.ws('/ws', function (ws, req) {
 
         //释放一些数据
         delete varCenter.get('user_token')[token];
-        // varCenter.get('user_token')[token] = undefined;
-        req.session['token'] = undefined;
-        req.session.save();
+        // req.session['token'] = undefined;
+        // req.session.save();
         delete WsSession;
 
         //释放全局变量
