@@ -111,7 +111,7 @@ router.ws('/ws', function (ws, req) {
             });
             //response.wsSend(ws, 'ws/res', true);
         } catch (err) {
-            MCSERVER.error('WebSocket 请求处理时报错，且下层尚未捕捉', err);
+            MCSERVER.error('WebSocket 处理此请求出现异常:', err);
         }
     });
 
@@ -121,8 +121,9 @@ router.ws('/ws', function (ws, req) {
 
         //释放一些数据
         delete varCenter.get('user_token')[token];
-        varCenter.get('user_token')[token] = undefined;
-        delete token;
+        // varCenter.get('user_token')[token] = undefined;
+        req.session['token'] = undefined;
+        req.session.save();
         delete WsSession;
 
         //释放全局变量

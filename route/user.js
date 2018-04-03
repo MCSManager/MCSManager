@@ -14,9 +14,8 @@ const userManager = userCenter();
 
 router.post('/loginout', function (req, res) {
     permssion.needLogin(req, res, () => {
-        MCSERVER.log('用户:' + req.session['username'] + '退出');
+        MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
         req.session.destroy();
-        //向前端发送退出
         response.returnMsg(res, 'user/logout', 'loginOut');
     }, () => {
         response.returnMsg(res, 'MASTER!', 'Please Login!!! | 请登陆好么?');

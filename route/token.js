@@ -11,6 +11,7 @@ router.get('/', function (req, res) {
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
     if (req.xhr) {
         if (!req.session['token']) {
+            MCSERVER.log('[ Token ]', '用户 ', req.session['username'], ' 请求更新令牌');
             //强化 token
             req.session['token'] = permssion.randomString(6) + UUID.v4().replace(/-/igm, "");
         }
