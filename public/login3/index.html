@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="zh-CN" />
+	<meta name="renderer" content="webkit" />
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+
+	<title>Mcserver Manager | 身份验证</title>
+
+	<link href="../common/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./static/login/css/action.css" rel="stylesheet">
+	<link href="./static/login/css/style.css" rel="stylesheet">
+	<link href="./static/common/image/icon.ico" rel="shortcut icon">
+	<!--[if lt IE 9]>
+        <div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
+            <b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
+        </div>
+    <![endif]-->
+</head>
+
+<body>
+	<div id='view-bg'>
+		<img src="./static/login/img/background.jpg" height="100%" width="100%" />
+
+	</div>
+	<!-- <div id="view-bg-back"></div> -->
+	<div id="view-page">
+		<div id="panel-login">
+			<div id="panel-title">
+				<!-- <img src="./static/login/img/small_logo.png" width="120px" height="22px" /> -->
+				<span id="mptit">验证</span>
+			</div>
+			<p>您必须要进行身份识别，才可以进入面板</p>
+			<div id="panel-context">
+				<input class="minput" placeholder="标准账号 或 管理账号" style="width:100%;">
+				<input class="minput" placeholder="账号密码" style="width:100%;">
+				<button class="mbutton">验证</button>
+				<p>忘记密码?
+					<a href="#">点击这里</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+
+<script src="./static/template/jq/jq.min.js"></script>
+<script type="text/javascript" src="../common/URL.js"></script>
+<script type="text/javascript" src="../common/md5.js"></script>
+<script src="../common/js/login.js"></script>
+<script type="text/javascript">
+	function enKeyPress() {
+		if (event.keyCode == 13) {
+			//登录
+			MCSERVER.btnLogin();
+		}
+	}
+</script>
+
+
+</html>

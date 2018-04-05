@@ -1,0 +1,32 @@
+/* 背景淡入 */
+
+@keyframes ActionBackbgFadeIn {
+    0% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes ActionFadeIn {
+    0% {
+        opacity: 0.4;
+        /* width: 10%; */
+    }
+    100% {
+        /* width: 100%; */
+        opacity: 1;
+    }
+}
+
+@keyframes ActionOut {
+    0% {
+        opacity: 1;
+        /* width: 10%; */
+    }
+    100% {
+        /* width: 100%; */
+        opacity: 0.4;
+    }
+}
