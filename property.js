@@ -51,8 +51,9 @@ MCSERVER.localProperty.is_allow_csrf = false;
 
 
 //登录页面 URL，我们有两个登录页面，你可以选择其一，或自己选择
-//可以 "/public/login/" 或者 "/public/login2/" 或你自定义
-MCSERVER.localProperty.login_url = "/public/login3/";
+//我们设计了 3 个不同的登录界面供你选择
+// /public/login/    /public/login2/    /public/login3/
+MCSERVER.localProperty.login_url = "/public/login/";
 
 
 //控制台历史记录最大缓存长度
