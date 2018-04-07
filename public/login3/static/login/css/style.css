@@ -16,6 +16,7 @@ p,
 span,
 input {
 	-webkit-text-stroke-width: 0.2px;
+	stroke-width: 0.2px;
 }
 
 a:link {
@@ -136,18 +137,25 @@ a:active {
 	min-width: 100px;
 	padding: 4px 12px 4px 12px;
 	margin-top: 4px;
-	margin-bottom: 4px;
+	margin-bottom: 8px;
 	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;
-	vertical-align: middle;
 	text-overflow: ellipsis;
 	touch-action: manipulation;
 	animation: ActionFadeIn 1s;
 	animation-fill-mode: forwards;
+	/* align-self: flex-end; */
 }
 
 .mbutton:hover {
 	animation: ActionOut 1s;
 	animation-fill-mode: forwards;
+}
+
+#copyright {
+	margin-top: 4px;
+	font-size: 10px;
+	color: rgb(133, 133, 133);
+	/* align-self: flex-end; */
 }
