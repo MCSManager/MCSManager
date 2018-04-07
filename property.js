@@ -59,7 +59,7 @@ MCSERVER.localProperty.login_url = "/public/login/";
 //控制台历史记录最大缓存长度
 //缓存长度越高，能存下的日志越多，但是对服务器内存牺牲更大
 //只建议调小，而不建议调大
-MCSERVER.localProperty.terminalQueue_max_length = 512;
+MCSERVER.localProperty.terminalQueue_max_length = 400;
 
 
 //控制数据中心 数据刷新频率 单位毫秒
