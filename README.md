@@ -25,13 +25,13 @@
 
 **方法一**
 
-下载并正确安装 `Node` 8 环境: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
+下载并正确安装 `Node` 环境:
 
 下载源代码并解压: [https://github.com/Suwings/MCSManager/archive/master.zip](Master.zip)
 
 确认您的 `JRE` 或 `JDK` 安装并且可以运行
 
-进入程序源代码目录，并且在当前目录打开命令控制台（Shift + 右键）
+进入程序源代码目录，并且在当前目录打开命令控制台
 
 执行命令 `npm install --production`
 
