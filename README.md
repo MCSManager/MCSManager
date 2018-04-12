@@ -14,7 +14,7 @@
 并且，我们将尽可能的降低扩展的学习成本来帮助你更好的扩展与自定义，让一个完全属于你的`Minecraft`服务器管理器出现。
 
 
-环境需求
+运行环境
 -----------
 - `Node.js` >= 8.0
 - `镜像`: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
@@ -89,7 +89,23 @@ node app.js #或 npm start
 - `ECMAScript 5` 标准
 - `IE 10+` `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器
 
-**例外:** 文件在线管理界面需要 `IE 11+` (使用 ECMAScript 6)
+**例外:** 文件在线管理界面需要 `IE 11+` 
+
+
+反向代理
+-----------
+反向代理之前，请仔细阅读 `property.js` 内部文件（开关 gzip）之类的设置。
+
+并且从软件控制面板中设置您的端口（默认 23333）。以及反向代理需要对 Webscoket 提供配置项。
+
+
+虚拟化
+-----------
+**注意** 这是一个轻量级的管理面板，没有集成虚拟化容器，请注意为供陌生人端的风险。
+
+但是你可以实现一个整体的虚拟化容器，以保证你的宿主机安全。
+
+另外，在服务器启动时也有`自定义启动命令 (可禁止)`功能，这可以让你启动服务器时不止是运行 java 相关命令，甚至可以运行命令脚本，对此你可以尝试更多的技巧组合，实现你的需求，列如，启动服务器时顺便启动一个脚本来做某些事情。
 
 
 问题报告
@@ -99,6 +115,8 @@ node app.js #或 npm start
 
 开源协议与版权
 -----------
-程序是基于 [GNU Affero General Public License v3.0](./LICENSE "GNU Affero General Public License v3.0")  开放源代码的自由软件，你可以遵照 AGPLv3 协议来修改和重新发布这一程序。
+程序是基于 [GNU Affero General Public License v3.0](./LICENSE "GNU Affero General Public License v3.0")  开放源代码的自由软件。
 
+你可以遵照 AGPLv3 协议来修改和重新发布这一程序。
 
+或者，在学习或私自 (内部) 使用时，无视这个协议，因为这本身并不能束缚你，但是我们欢迎这样做。
