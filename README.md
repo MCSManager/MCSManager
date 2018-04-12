@@ -86,6 +86,7 @@ node app.js #或 npm start
 | **route/websocket/**            |控制器，Webscoket 请求业务逻辑层（可二次扩展）|
 | **core/Process/**                |Minecraft Server 类实现|
 | **core/User/**                   |User 类实现|
+| **core/DataModel.js**            |数据持久化模型，几乎是所有的配置的 I/O 模型|
 | **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
 | **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
 | **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
