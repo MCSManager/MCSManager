@@ -91,14 +91,17 @@ MCSERVER.tokens = {};
 //全局 数据内存记录器
 MCSERVER.logCenter = {};
 
+// 过期的数据对象
 // MCSERVER.logCenter.CPU = [];
 // MCSERVER.logCenter.RAM = [];
+
 //init
 MCSERVER.logCenter.initLogData = (objStr, len, def = null) => {
     let tmp = [];
     for (let i = 0; i < len; i++) tmp.push(def);
     MCSERVER.logCenter[objStr] = tmp;
 }
+
 //压入方法
 MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
     MCSERVER.logCenter[objStr] = MCSERVER.logCenter[objStr].slice(1);
@@ -138,7 +141,7 @@ app.use(session({
 if (MCSERVER.localProperty.is_gzip)
     app.use(compression());
 
-//初始化令牌管理器  已弃用 向下兼容
+//初始化令牌管理器
 VarCenter.set('user_token', {});
 VarCenter.set('express_app', app);
 
@@ -206,6 +209,7 @@ process.on("uncaughtException", function (err) {
     }
 })();
 
+//开始对 Oneline File Manager 模块进行必要的初始化
 MCSERVER.infoLog('Online_Fs', '初始化 Online_Fs 路由与中间件 ');
 
 //必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
