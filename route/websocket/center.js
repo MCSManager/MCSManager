@@ -55,11 +55,20 @@ setInterval(function () {
     let onliec = 0;
     let sockec = 0;
     let banipc = 0;
-    //更好的方法
-    for (let k in MCSERVER.onlineUser) onliec++;
-    for (let k in MCSERVER.allSockets) sockec++;
+    //统计在线用户
+    for (let k in MCSERVER.onlineUser) {
+        if (MCSERVER.onlineUser[k] == null) continue;
+        onliec++
+    }
+    //统计在线 Ws
+    for (let k in MCSERVER.allSockets) {
+        if (MCSERVER.allSockets[k] == null) continue;
+        sockec++
+    }
+    //统计封号ip数量
     for (let k in MCSERVER.login) MCSERVER.login[k] > 10 ? banipc++ : banipc = banipc;
-    //发送的值
+
+    //缓存值
     cacheSystemInfo = {
         system: os.type() + " " + os.arch(),
         rss: (usage.rss / MB_SIZE).toFixed(1),
