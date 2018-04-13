@@ -1,26 +1,23 @@
+# mineself files
 server/
-
 users/
-
 .vscode/
-
 testServer/
-
 *.exe
+*.zip
 
+# config files
 users/*.json
-
 server/*.json
-
 public/*.json
-
 McserverConfig.json
-
 core/*.json
 
+
+# node
 node_modules/
 
-#tmp
+# tmp
 tmp_files/
 
 # Logs
