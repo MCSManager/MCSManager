@@ -6,6 +6,7 @@ testServer/
 *.exe
 *.zip
 
+
 # config files
 users/*.json
 server/*.json
