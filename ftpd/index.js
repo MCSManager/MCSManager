@@ -18,16 +18,10 @@ ftpServerInterface.createFTPServer({
         if (!realName || !serverName) return false;
 
         let user = userModel.userCenter().get(realName);
-        //if (serverModel.ServerManager().isExist(serverName) && permission.isCanServer(realName, serverName)) {
 
         let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
         if (dataModel) return dataModel.cwd;
 
-        //}
-        // connected.close();
-        //return null;
-
-        // return process.cwd() + '/' + connected.username;
     },
     pasvPortRangeStart: 1025,
     pasvPortRangeEnd: 1050,

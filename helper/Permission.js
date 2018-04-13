@@ -34,9 +34,6 @@ module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
     return false;
 }
 
-// module.exports.wsNeedLogin = (ws) => {
-
-// }
 const counter = require('../core/counter');
 
 module.exports.isMaster = (wsSession, notPermssionCounter) => {

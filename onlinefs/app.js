@@ -33,6 +33,7 @@ app.post('/', function (req, res) {
 var baseR = require('./controller/function');
 var authR = require('./controller/auth');
 
+// Not need
 // process.on("uncaughtException", function (err) {
 //     console.log('UncaughtException 机制错误报告:', err);
 // });
