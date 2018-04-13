@@ -1,5 +1,6 @@
 (function () {
 	MCSERVER.findPropertiesShow = function (key) {
+
 		var SuwingsLoveYou = {
 			"generator-settings": "用于自定义超平坦世界的生成，不生成超平坦世界请留空",
 			"allow-nether": "是否允许下界（包括地狱）",
@@ -37,11 +38,11 @@
 			"resource-pack": "统一资源标识符 (URI) 指向一个资源包。玩家可选择是否使用",
 			"max-world-size": "最大世界大小"
 		}
-		//1.1
 
 		if (SuwingsLoveYou.hasOwnProperty(key)) {
 			return SuwingsLoveYou[key];
 		} else {
+			//Not find, Return space
 			return ' ';
 		}
 	}

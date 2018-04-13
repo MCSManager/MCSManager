@@ -43,6 +43,8 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 	}
 }
 
+// 想要执行登录，我们将自动获取
+// id 为 login-userid 与 login-passwd 的 input 元素
 $(function () {
 	var logining = false;
 	var $btnLogin = $('#login-button');
@@ -54,7 +56,8 @@ $(function () {
 		$btnLogin
 			.html('正在验证...')
 			.attr("disabled", "disabled");
-		MCSERVER.login($('#login-userid').val(), $('#login-passwd').val(), 548314,
+
+		MCSERVER.login($('#login-userid').val(), $('#login-passwd').val(), Math.random(),
 			function () {
 				//成功登陆
 				$btnLogin
@@ -78,7 +81,7 @@ $(function () {
 			function () {
 				//服务器错误
 				$btnLogin
-					.html('服务器错误，请重试登陆')
+					.html('服务器错误 :(')
 					.removeAttr("disabled");
 			});
 

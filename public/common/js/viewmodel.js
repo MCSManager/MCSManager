@@ -46,7 +46,7 @@
 	MI.routeListener('ws/muem', function (data) {
 		//菜单选项选择
 		MI.listener("SideMeumClick", function () {
-			console.log("--- 菜单选项被选择 ---");
+			DEBUG && console.log("--- 菜单选项被选择 ---");
 			// MCSERVER.autoColmDo();
 		});
 
