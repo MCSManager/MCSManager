@@ -10,7 +10,7 @@ MCSERVER.log = function () {
 
 MCSERVER.infoLog = (info, value, colors = false) => {
     let infoStr = colors ? info : info.green;
-    console.log('[ ' + infoStr + ' ]  ' + (value + "").white);
+    console.log('[ ' + infoStr + ' ]  ' + (value + '').white);
 }
 
 //error 报告器
@@ -20,4 +20,13 @@ MCSERVER.error = (msg, err) => {
     MCSERVER.infoLog(header.red, msg.yellow, true);
     console.log(err);
     console.log("--------Error-------\n");
+}
+
+
+MCSERVER.warning = (title, msg = null) => {
+    console.log('[Warning] '.yellow + title.white);
+    if (msg) {
+        console.log('[Warning] '.yellow + msg.white);
+    }
+
 }

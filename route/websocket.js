@@ -76,7 +76,7 @@ router.ws('/ws', function (ws, req) {
             MCSERVER.log('[ WebSocket MSG ]', ' 未登陆用户尝试发起 Websocket 被拒绝');
             counter.plus('notPermssionCounter');
             return;
-        };
+        }
 
         try {
             //在线用户计数器
