@@ -17,8 +17,8 @@ router.post('/loginout', function (req, res) {
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
     // BUG Note: Ws—close 与 Loginout 时 Session 可能不一定及时同步
     // 导致我们暂时无法用一种很简单的方式来实现动态的更换 token
-    // req.session['login'] = false;
-    // req.session['username'] = null;
+    req.session['login'] = false;
+    req.session['username'] = undefined;
     // req.session['login_md5key'] = null;
     // req.session['token'] = null;
     // req.session['dataModel'] = {};
@@ -58,12 +58,13 @@ router.post('/login', function (req, res) {
     //登陆次数加一
     counter.plus('login');
     loginUser(username, password, (loginUser) => {
+        //只有这里 唯一的地方设置 login = true
         req.session['login'] = true;
         req.session['username'] = username;
         req.session['dataModel'] = loginUser.dataModel; //Only read
-        delete MCSERVER.login[ip];
-        req.session['login_md5key'] = null;
+        req.session['login_md5key'] = undefined;
         req.session.save();
+        delete MCSERVER.login[ip];
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -72,8 +73,10 @@ router.post('/login', function (req, res) {
         MCSERVER.login[ip] > 1000 ? MCSERVER.login[ip] = 1000 : MCSERVER.login[ip] = MCSERVER.login[ip];
         //passwordError
         counter.plus('passwordError');
-        req.session['login'] = undefined;
-        req.session['login_md5key'] = null;
+        req.session['login'] = false;
+        req.session['username'] = undefined;
+        req.session['login_md5key'] = undefined;
+        req.session['dataModel'] = undefined;
         req.session.save();
         response.returnMsg(res, 'login/check', false);
     }, enkey);

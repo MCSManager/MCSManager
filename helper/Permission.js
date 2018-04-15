@@ -25,7 +25,7 @@ module.exports.randomString = randomString;
 
 module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
     if (req.session['login']) {
-        if (req.session['login'] === true) {
+        if (req.session['login'] === true && req.session['usernam']) {
             trueCallBack && trueCallBack();
             return true;
         }

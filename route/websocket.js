@@ -36,13 +36,16 @@ router.ws('/ws', function (ws, req) {
     //从令牌管理器中 获取对应的用户
     var tokens = varCenter.get('user_token');
     username = tokens[token];
+
     //权限判定
-    if (!username || username == "") {
+    if (!username || typeof username != "string" || username.trim() == "") {
         MCSERVER.log('[ WebSocket INIT ]', '错误的令牌 [' + token + '] 尝试发起 Websocket 被拒绝');
         counter.plus('notPermssionCounter');
         ws.close();
         return;
     }
+
+    username = username.trim();
 
     //创建新的 Ws Session 类
     // var WsSession = _newWsSsession();
