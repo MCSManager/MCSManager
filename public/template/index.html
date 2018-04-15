@@ -17,17 +17,22 @@
 				<div class="Panel PanelGreen">
 					<div class="PanelTitle">版本</div>
 					<div class="PanelBody">
-						<p>程序版本:
-							<span class="color-gray">8.2</span>
-						</p>
-						<p>后端发行版:
-							<span class="color-gray">Release_8.2.6</span>
-						</p>
-						<p>前端发行版:
-							<span class="color-gray">Release_8.2.5</span>
-						</p>
-						<br>
-
+						<div id="VersionShow">
+							<p>程序版本:
+								<span class="color-gray">8.2</span>
+							</p>
+							<p>前端发行版:
+								<span class="color-gray">
+									<span class="color-gray" v-text="oneversion"></span>
+								</span>
+							</p>
+							<p>后端发行版:
+								<span class="color-gray">
+									<span class="color-gray" v-text="twoversion"></span>
+								</span>
+							</p>
+							<br>
+						</div>
 					</div>
 				</div>
 				<div class="Panel PanelGreen">
@@ -60,6 +65,10 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
+		//版本显示组件
+		VIEW_MODEL.newVue('VersionShow', {
+			el: '#VersionShow'
+		});
 		//请求早已缓存的 最新动态
 		RES.ajax({
 			type: 'GET',
@@ -73,6 +82,7 @@
 				VIEW_MODEL.newVue('SystemUp', {
 					el: '#SystemUp'
 				});
+
 			}
 		});
 	})

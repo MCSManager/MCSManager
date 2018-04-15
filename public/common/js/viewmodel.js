@@ -80,6 +80,7 @@
 
 	MI.routeListener('index/update', function (data) {
 		MI.routeCopy('SystemUp', data.obj);
+		MI.routeCopy('VersionShow', data.obj);
 	});
 
 	MI.routeListener('center/show', function (data) {
