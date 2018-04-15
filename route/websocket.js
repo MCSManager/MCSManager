@@ -18,14 +18,14 @@ router.ws('/ws', function (ws, req) {
 
     let token = req.query[permssion.tokenName] || undefined;
 
-    //无令牌，csrf
+    //无令牌
     if (!token) {
         counter.plus('csrfCounter');
         ws.close();
         return;
     }
 
-    let username = undefined;
+    let username = null;
     let status = true;
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
@@ -35,17 +35,17 @@ router.ws('/ws', function (ws, req) {
 
     //从令牌管理器中 获取对应的用户
     var tokens = varCenter.get('user_token');
-    username = tokens[token];
+    username = tokens[token] || null;
 
-    //权限判定
+    //用户名检查
     if (!username || typeof username != "string" || username.trim() == "") {
-        MCSERVER.log('[ WebSocket INIT ]', '错误的令牌 [' + token + '] 尝试发起 Websocket 被拒绝');
+        MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
         counter.plus('notPermssionCounter');
         ws.close();
         return;
     }
 
-    username = username.trim();
+    // username = username.trim();
 
     //创建新的 Ws Session 类
     // var WsSession = _newWsSsession();
@@ -61,6 +61,14 @@ router.ws('/ws', function (ws, req) {
     WsSession.token = token;
     WsSession.console = undefined;
 
+    //完全禁止没有登录的用户连接 ws 
+    if (!WsSession.login) {
+        MCSERVER.warning('不明身份者建立 ws 链接', '已经阻止 | 可能的用户值: ' + WsSession.username);
+        counter.plus('notPermssionCounter');
+        ws.close();
+        return;
+    }
+
     //放置全局在线列表
     MCSERVER.allSockets[uid] = WsSession;
     if (!MCSERVER.onlineUser[WsSession.username])
@@ -70,15 +78,17 @@ router.ws('/ws', function (ws, req) {
     MCSERVER.log('[ WebSocket INIT ]', ' 用户:', username, "与服务器建立链接");
     //数据到达
     ws.on('message', function (data) {
-
-        //禁止未登陆用户进入
-        if (!WsSession.login) {
-            MCSERVER.log('[ WebSocket MSG ]', ' 未登陆用户尝试发起 Websocket 被拒绝');
-            counter.plus('notPermssionCounter');
-            return;
-        }
-
         try {
+
+            //禁止未登陆用户进入
+            if (!WsSession.login) {
+                //触发这里代表极为有可能有人正在攻击你
+                MCSERVER.warning('没有登录的用户正在尝试发送 Ws 命令', '已经阻止 | 可能的用户值: ' + username);
+                counter.plus('notPermssionCounter');
+                ws.close();
+                return;
+            }
+
             //在线用户计数器
             if (!MCSERVER.onlineUser[username]) {
                 counter.plus('userOnlineCounter');

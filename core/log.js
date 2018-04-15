@@ -24,9 +24,9 @@ MCSERVER.error = (msg, err) => {
 
 
 MCSERVER.warning = (title, msg = null) => {
-    console.log('[Warning] '.yellow + title.white);
+    MCSERVER.infoLog('WARN'.yellow, title.white);
     if (msg) {
-        console.log('[Warning] '.yellow + msg.white);
+        MCSERVER.infoLog('WARN'.yellow, msg.white);
     }
 
 }
