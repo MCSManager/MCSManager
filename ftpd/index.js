@@ -11,20 +11,20 @@ ftpServerInterface.createFTPServer({
         let username = connected.username;
         let arrName = username.split('.');
 
-        if (arrName.length != 2) return false;
+        if (arrName.length != 2) return null;
 
         let realName = arrName[0];
         let serverName = arrName[1];
-        if (!realName || !serverName) return false;
+        if (!realName || !serverName) return null;
 
         let user = userModel.userCenter().get(realName);
 
         let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
         if (dataModel) return dataModel.cwd;
-
+        return null;
     },
-    pasvPortRangeStart: 1025,
-    pasvPortRangeEnd: 1050,
+    pasvPortRangeStart: 30100,
+    pasvPortRangeEnd: 31000,
     tlsOptions: null,
     allowUnauthorizedTls: false,
     useWriteFile: false, //true 则客户端上传的文件将缓冲在内存中，然后使用写入磁盘writeFile。
