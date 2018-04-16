@@ -8,6 +8,7 @@ ftpServerInterface.createFTPServer({
         return '/';
     },
     getRoot: function (connected) {
+
         let username = connected.username;
         let arrName = username.split('.');
 
@@ -20,7 +21,11 @@ ftpServerInterface.createFTPServer({
         let user = userModel.userCenter().get(realName);
 
         let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
-        if (dataModel) return dataModel.cwd;
+        if (dataModel) {
+            MCSERVER.infoLog('Ftpd', ['用户', realName, '请求 FTP 访问 |', serverName, '| 同意'].join(" "));
+            return dataModel.cwd;
+        }
+        MCSERVER.warning('Ftpd 发现不明身份不明根目录者正在尝试访问', ['已经阻止 | 可能的值', username, serverName].join(" "));
         return null;
     },
     pasvPortRangeStart: 30100,
