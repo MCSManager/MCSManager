@@ -34,12 +34,14 @@ else
 
 /*--------------- 配置开始，这与 Minecraft 服务器配置几乎差不多 --------------- */
 
+
 //FTP 被动模式端口范围
 //你可能需要对你的服务器防火墙进行设置, 开放这个端口段来确保 FTP 传输数据的正常工作
 //开始范围
 MCSERVER.localProperty.ftp_start_port = 20010;
 //结束范围
 MCSERVER.localProperty.ftp_end_port = 20200;
+
 
 //控制台实时刷新频率 单位毫秒 默认1200 毫秒
 //建议在 1000 毫秒 与 3000 毫秒之选择
@@ -65,10 +67,10 @@ MCSERVER.localProperty.is_allow_csrf = false;
 MCSERVER.localProperty.login_url = "/public/login/";
 
 
-//控制台历史记录最大缓存长度
+//控制台历史记录最大缓存长度 (单位 一次缓冲区刷新的数据,一般为 1 行到 5 行)
 //缓存长度越高，能存下的日志越多，但是对服务器内存牺牲更大
 //只建议调小，而不建议调大
-MCSERVER.localProperty.terminalQueue_max_length = 400;
+MCSERVER.localProperty.terminalQueue_max_length = 320;
 
 
 //控制数据中心 数据刷新频率 单位毫秒
