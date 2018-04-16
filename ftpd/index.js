@@ -22,14 +22,14 @@ ftpServerInterface.createFTPServer({
 
         let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
         if (dataModel) {
-            MCSERVER.infoLog('Ftpd', ['用户', realName, '请求 FTP 访问 |', serverName, '| 同意'].join(" "));
+            MCSERVER.infoLog('Ftpd', ['用户', realName, '请求 FTP 访问 |', serverName, '| OK'].join(" "));
             return dataModel.cwd;
         }
         MCSERVER.warning('Ftpd 发现不明身份不明根目录者正在尝试访问', ['已经阻止 | 可能的值', username, serverName].join(" "));
         return null;
     },
-    pasvPortRangeStart: 30100,
-    pasvPortRangeEnd: 31000,
+    pasvPortRangeStart: MCSERVER.localProperty.ftp_start_port,
+    pasvPortRangeEnd: MCSERVER.localProperty.ftp_end_port,
     tlsOptions: null,
     allowUnauthorizedTls: false,
     useWriteFile: false, //true 则客户端上传的文件将缓冲在内存中，然后使用写入磁盘writeFile。

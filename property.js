@@ -34,6 +34,13 @@ else
 
 /*--------------- 配置开始，这与 Minecraft 服务器配置几乎差不多 --------------- */
 
+//FTP 被动模式端口范围
+//你可能需要对你的服务器防火墙进行设置, 开放这个端口段来确保 FTP 传输数据的正常工作
+//开始范围
+MCSERVER.localProperty.ftp_start_port = 20010;
+//结束范围
+MCSERVER.localProperty.ftp_end_port = 20200;
+
 //控制台实时刷新频率 单位毫秒 默认1200 毫秒
 //建议在 1000 毫秒 与 3000 毫秒之选择
 MCSERVER.localProperty.console_send_times = 1200;
