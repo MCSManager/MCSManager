@@ -52,10 +52,10 @@
 						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> 密码:
 						<span style="color: #666666;">&lt;与登陆密码相同&gt;</span>
 					</div>
-					<div class="PanelItem">
+					<!-- <div class="PanelItem">
 						<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 模式:
 						<span style="color: #666666;">&lt;主动传输模式&gt;</span>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="Panel PanelGreen">
@@ -63,13 +63,13 @@
 				<div class="PanelBody">
 					<transition name="slide-fade">
 						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
-							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 自动重启:
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
 							<span style="color: #29b90c;">打开</span>
 						</div>
 					</transition>
 					<transition name="slide-fade">
 						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-if="!serverData.autoRestart">
-							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 自动重启:
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
 							<span style="color: #818181;">关闭</span>
 						</div>
 					</transition>
