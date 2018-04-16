@@ -1,4 +1,7 @@
-const { USER_SAVE_PATH, User } = require('../core/User/User');
+const {
+    USER_SAVE_PATH,
+    User
+} = require('../core/User/User');
 
 const UserCenter = require('../core/User/UserCenter');
 const fs = require('fs');
@@ -13,8 +16,12 @@ module.exports.registerUser = (username, password) => {
 }
 
 
-module.exports.loginUser = (username, password, truecb, falsecb,enkey) => {
-    return userCenters.loginCheck(username, password, truecb, falsecb,enkey);
+module.exports.loginUser = (username, password, truecb, falsecb, enkey) => {
+    return userCenters.loginCheck(username, password, truecb, falsecb, enkey, false);
+}
+
+module.exports.beliveLogin = (username, password, truecb, falsecb) => {
+    return userCenters.loginCheck(username, password, truecb, falsecb, null, true);
 }
 
 

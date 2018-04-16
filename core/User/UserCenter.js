@@ -74,7 +74,7 @@ class UserCenter {
         this.deleteUser(username);
     }
 
-    loginCheck(username, password, truecb, falsecb, md5key) {
+    loginCheck(username, password, truecb, falsecb, md5key, notSafeLogin = false) {
         if (this.userList.hasOwnProperty(username) && this.userList[username] != undefined) {
             let loginUser = this.userList[username];
             try {
@@ -89,17 +89,18 @@ class UserCenter {
             loginUser.updateLastDate();
 
             // 目前只准许 登陆时使用 md5传码方式 ，不准传输明文
-            if (md5key) {
+            if (md5key && !notSafeLogin) {
                 let userMd5 = loginUser.getPasswordMD5();
                 let md5Passworded = md5(userMd5 + md5key);
                 return md5Passworded == password ? truecb && truecb(loginUser) : falsecb && falsecb();
             }
-            // 一般模式
-            // 禁止使用一般登录模式
-            // if (loginUser.isPassword(password)) {
-            //     truecb && truecb(loginUser);
-            //     return true;
-            // }
+
+            // 一般模式 供ftp 等登录
+            if (notSafeLogin && loginUser.isPassword(password)) {
+                truecb && truecb(loginUser);
+                return true;
+            }
+
         }
         falsecb && falsecb();
         return false;

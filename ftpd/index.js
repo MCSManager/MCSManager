@@ -43,7 +43,7 @@ ftpServerInterface.initFTPServerListener({
         let userName = arrName[0];
         if (serverModel.ServerManager().isExist(serverName) && permission.isCanServer(userName, serverName)) {
             try {
-                return userModel.loginUser(userName, password);
+                return userModel.beliveLogin(userName, password);
             } catch (e) {
                 return false;
             }
