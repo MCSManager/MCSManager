@@ -118,8 +118,8 @@
 				},
 				toRebulider: function () {
 					var addCmdList = this.addCmd.split(' ');
-					if (this.oldServerName.trim() == '' || this.name.trim() == '') {
-						TOOLS.pushMsgWindow("服务器唯一标识名不能为空，请取一个名字!");
+					if (!TOOLS.isStdText(this.oldServerName) || !TOOLS.isStdText(this.name)) {
+						TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
 						return;
 					}
 					var obj = {
@@ -150,7 +150,8 @@
 			}
 		});
 		VIEW_MODEL['ServerPanel'].addCmd = VIEW_MODEL['ServerPanel'].addCmd.toString().replace(/,/gim, ' ');
-		VIEW_MODEL['ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + "";
+		VIEW_MODEL[
+			'ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + "";
 
 	});
 
