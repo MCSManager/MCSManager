@@ -123,7 +123,6 @@
 						java: this.Java || 'java'
 					};
 					WS.sendMsg('server/create', JSON.stringify(obj));
-					//					console.log(this.name)
 					RES.redirectPage('./template/server.html', 'server/view');
 				},
 				toCreaterDir: function () {
