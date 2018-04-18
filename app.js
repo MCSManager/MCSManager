@@ -268,8 +268,11 @@ process.on('SIGINT', function () {
     _endFlag = true;
     MCSERVER.infoLog('PROCESS', '程序正在结束,请稍等...'.red);
 
+    //保存
+    counter.save();
     ServerModel.ServerManager().saveAllMinecraftServer();
     UserModel.userCenter().saveAllUser();
+
 
     setTimeout(() => {
         MCSERVER.infoLog('PROCESS', 'EXIT...'.red);
