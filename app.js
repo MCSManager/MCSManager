@@ -20,13 +20,14 @@ require('./property');
 
 const express = require('express');
 const fs = require('fs');
-var session = require('express-session');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var querystring = require('querystring');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const querystring = require('querystring');
 //gzip压缩
-var compression = require('compression');
+const compression = require('compression');
 
+//各类层装载
 const serverModel = require('./model/ServerModel');
 const UserModel = require('./model/UserModel');
 const permission = require('./helper/Permission');
@@ -37,11 +38,10 @@ const {
 const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
-
 const VarCenter = require('./model/VarCenter');
+
 //控制台颜色
 const colors = require('colors');
-
 colors.setTheme({
     silly: 'rainbow',
     input: 'grey',
@@ -220,11 +220,12 @@ app.use(['/fs/mkdir', '/fs/rm', '/fs/patse', '/fs/cp', '/fs/rename', '/fs/ls'], 
     }
     res.status(403).send('禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！');
 });
+
 //载入在线文件管理路由
 app.use('/fs_auth', require('./onlinefs/controller/auth'));
 app.use('/fs', require('./onlinefs/controller/function'));
 
-
+//初始化模块
 (function initializationProm() {
 
     counter.init();
@@ -241,8 +242,8 @@ app.use('/fs', require('./onlinefs/controller/function'));
     if (host == '::')
         host = '127.0.0.1';
 
+    //App Http listen
     app.listen(MCSERVER.softConfig.port, MCSERVER.softConfig.ip, () => {
-        //App Http listen
 
         MCSERVER.infoLog('HTTP', 'HTTP 模块监听: [ http://' + (host || '127.0.0.1'.yellow) + ':' + port + ' ]');
 
@@ -255,7 +256,6 @@ app.use('/fs', require('./onlinefs/controller/function'));
 
         //执行ftp逻辑
         require('./ftpd/index');
-
     });
 
 })();
