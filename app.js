@@ -13,7 +13,7 @@ try {
 global.MCSERVER = {};
 
 //全局仅限本地配置
-MCSERVER.localProperty = {}
+MCSERVER.localProperty = {};
 //加载配置
 require('./property');
 
@@ -259,3 +259,14 @@ app.use('/fs', require('./onlinefs/controller/function'));
     });
 
 })();
+
+//退出事件
+let _endFlag = false;
+process.on('SIGINT', function () {
+    if (_endFlag) return;
+    _endFlag = true;
+    MCSERVER.infoLog('EXIT', '程序正在结束,请稍等...');
+    setTimeout(() => {
+        process.exit(0);
+    }, 5000)
+});
