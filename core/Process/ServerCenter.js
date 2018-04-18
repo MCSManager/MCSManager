@@ -68,7 +68,6 @@ class ServerManager extends EventEmitter {
 
     saveAllMinecraftServer() {
         for (let key in this.serverList) {
-            // return this.serverList[key].save();
             this.saveMinecraftServer(this.serverList[key]);
         }
     }

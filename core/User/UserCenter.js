@@ -154,6 +154,17 @@ class UserCenter {
         return tmp;
     }
 
+    saveAllUser() {
+        let objs = this.userList;
+        for (let k in objs) {
+            objs[k].save();
+        }
+    }
+
+    returnUserObjList() {
+        return this.userList;
+    }
+
 
 
 }

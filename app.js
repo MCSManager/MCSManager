@@ -28,7 +28,7 @@ const querystring = require('querystring');
 const compression = require('compression');
 
 //各类层装载
-const serverModel = require('./model/ServerModel');
+const ServerModel = require('./model/ServerModel');
 const UserModel = require('./model/UserModel');
 const permission = require('./helper/Permission');
 const response = require('./helper/Response');
@@ -233,7 +233,7 @@ app.use('/fs', require('./onlinefs/controller/function'));
     MCSERVER.infoLog('Module', '初始化 UserManager Module  ');
 
 
-    serverModel.ServerManager().loadALLMinecraftServer();
+    ServerModel.ServerManager().loadALLMinecraftServer();
     MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
 
     var host = MCSERVER.softConfig.ip;
@@ -258,6 +258,7 @@ app.use('/fs', require('./onlinefs/controller/function'));
         require('./ftpd/index');
     });
 
+
 })();
 
 //退出事件
@@ -265,8 +266,13 @@ let _endFlag = false;
 process.on('SIGINT', function () {
     if (_endFlag) return;
     _endFlag = true;
-    MCSERVER.infoLog('EXIT', '程序正在结束,请稍等...');
+    MCSERVER.infoLog('PROCESS', '程序正在结束,请稍等...'.red);
+
+    ServerModel.ServerManager().saveAllMinecraftServer();
+    UserModel.userCenter().saveAllUser();
+
     setTimeout(() => {
+        MCSERVER.infoLog('PROCESS', 'EXIT...'.red);
         process.exit(0);
-    }, 5000)
+    }, 1000)
 });
