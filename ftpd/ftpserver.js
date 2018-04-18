@@ -63,6 +63,15 @@ module.exports.getFTPserver = () => {
 module.exports.runFTPServer = () => {
   FTPserver.debugging = 0;
   FTPserver.listen(options.port);
-  // MCSERVER.infoLog('FTP'.green, 'FTP Module', true);
-  MCSERVER.infoLog('FTP'.green, " FTP  模块监听: [ ftp://" + (MCSERVER.softConfig.FTP_ip || "127.0.0.1".yellow) + ":" + MCSERVER.softConfig.FTP_port + " ]");
+
+  MCSERVER.infoLog('FTP'.green, [" FTP  被动传输端口范围: [",
+    MCSERVER.localProperty.ftp_start_port,
+    "-",
+    MCSERVER.localProperty.ftp_end_port,
+    "]"
+  ].join(" "));
+
+  MCSERVER.infoLog('FTP'.green,
+    " FTP  模块监听: [ ftp://" + (MCSERVER.softConfig.FTP_ip || "127.0.0.1".yellow) + ":" + MCSERVER.softConfig.FTP_port + " ]");
+
 }
