@@ -1,4 +1,5 @@
 const router = require('express')();
+const fs = require('fs');
 
 const varCenter = require('../model/VarCenter');
 const {
@@ -10,13 +11,29 @@ const permssion = require('../helper/Permission');
 const response = require('../helper/Response');
 const counter = require('../core/counter');
 
-var expressWs = require('express-ws')(router);
+const expressWs = require('express-ws')(router);
+
+//WebSocket 会话类
+class WebsocketSession {
+    constructor(config = {}) {
+        this.login = config.login || false;
+        this.uid = config.uid || null;
+        this.ws = config.ws || null;
+        this.username = config.username || null;
+        this.token = config.token || null;
+        this.console = config.console || null;
+    }
+    send(data) {
+        if (data)
+            response.wsSend(data.ws, data.resK, data.resV, data.body);
+    }
+}
 
 
 //WebSocket 创建
 router.ws('/ws', function (ws, req) {
 
-    let token = req.query[permssion.tokenName] || undefined;
+    let token = req.query[permssion.tokenName] || null;
 
     //无令牌
     if (!token) {
@@ -45,21 +62,18 @@ router.ws('/ws', function (ws, req) {
         return;
     }
 
-    // username = username.trim();
+    username = username.trim();
 
-    //创建新的 Ws Session 类
-    // var WsSession = _newWsSsession();
-    var WsSession = new Object();
-    WsSession.send = (data) => {
-        response.wsSend(data.ws, data.resK, data.resV, data.body);
-    }
+    let WsSession = new WebsocketSession({
+        //Ws 判断身份条件,必须在 token 管理器与 Session 中认证登录
+        login: (username && req.session['login']) ? true : false,
+        uid: uid,
+        ws: ws,
+        username: username,
+        token: token,
+        console: null
+    });
 
-    WsSession.login = (username && req.session['login']) ? true : false;
-    WsSession.uid = uid;
-    WsSession.ws = ws;
-    WsSession.username = username;
-    WsSession.token = token;
-    WsSession.console = undefined;
 
     //完全禁止没有登录的用户连接 ws 
     if (!WsSession.login) {
@@ -116,9 +130,8 @@ router.ws('/ws', function (ws, req) {
                 token: token,
                 WsSession: WsSession
             });
-            //response.wsSend(ws, 'ws/res', true);
         } catch (err) {
-            MCSERVER.error('WebSocket 处理此请求出现异常:', err);
+            MCSERVER.error('WebSocket 请求处理时异常:', err);
         }
     });
 
@@ -142,12 +155,8 @@ router.ws('/ws', function (ws, req) {
 
 });
 
-const fs = require('fs');
-//加载子路由
-const {
-    autoLoadModule
-} = require("../core/tools");
-autoLoadModule('route/websocket/', 'websocket/', (path) => {
+//加载 ws 子路由
+require("../core/tools").autoLoadModule('route/websocket/', 'websocket/', (path) => {
     require(path);
 });
 
