@@ -5,28 +5,35 @@ const permssion = require('../helper/Permission');
 const VarCenter = require('../model/VarCenter');
 const counter = require('../core/counter');
 const UUID = require('uuid');
+
+function getRandToken() {
+    return permssion.randomString(6) + UUID.v4().replace(/-/igm, "");
+}
+
 //Token 
 
 router.get('/', function (req, res) {
     let username = req.session['username'] || undefined;
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
-    if (req.xhr) {
+    if (req.xhr || true) {
         if (!req.session['token']) {
             MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌');
             //强化 token
-            req.session['token'] = permssion.randomString(6) + UUID.v4().replace(/-/igm, "");
+            req.session['token'] = getRandToken();
         }
         if (username == undefined || username.trim() == '' || !req.session['login']) {
             //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
             response.returnMsg(res, 'token', {
-                token: permssion.randomString(6) + UUID.v4().replace(/-/igm, ""),
+                token: getRandToken(),
                 username: username,
             });
             return;
         }
         let maybeUsername = VarCenter.get('user_token')[req.session['token']];
         if (maybeUsername) {
-            console.log("已经存在！！！！！！！！！！！！！！");
+            MCSERVER.warning('令牌已经存在不能继续使用 | 已经重新生成', username + ' 令牌值: ' + req.session['token']);
+            req.session['token'] = getRandToken();
+            // return;
         }
 
         VarCenter.get('user_token')[req.session['token']] = username;
