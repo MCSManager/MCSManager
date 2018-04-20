@@ -65,7 +65,7 @@ router.post('/login', function (req, res) {
     loginUser(username, password, (loginUser) => {
         //只有这里 唯一的地方设置 login = true
         req.session['login'] = true;
-        req.session['username'] = username;
+        req.session['username'] = loginUser.dataModel.username;
         req.session['dataModel'] = loginUser.dataModel; //Only read
         req.session['login_md5key'] = undefined;
         req.session.save();

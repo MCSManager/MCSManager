@@ -34,6 +34,17 @@ class WebsocketSession {
     }
 }
 
+//判断当前令牌者是否在线
+function isWsOnline(token) {
+    for (let k in MCSERVER.allSockets) {
+        let wsSession = MCSERVER.allSockets[k];
+        if (wsSession.token == token) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 //WebSocket 创建
 router.ws('/ws', function (ws, req) {
@@ -47,11 +58,12 @@ router.ws('/ws', function (ws, req) {
         return;
     }
 
+    token = token.trim();
     let username = null;
     let status = true;
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
-    let uid = "__" + permssion.randomString(12) + Date.parse(new Date()).toString() + "__";
+    let uid = permssion.randomString(12) + Date.parse(new Date()).toString();
     let session_id = req.sessionID;
 
     MCSERVER.log('[ WS CREATE ] 新的 Ws 创建 SESSION_ID:' + session_id);
@@ -62,20 +74,29 @@ router.ws('/ws', function (ws, req) {
 
     //用户名检查
     if (!username || typeof username != "string" || username.trim() == "") {
-        MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', '用户值:' + username + ' 令牌值: ' + token);
         counter.plus('notPermssionCounter');
+        ws.close();
+        return;
+    }
+
+    //唯一性检查
+    if (isWsOnline(token)) {
+        MCSERVER.warning('此令牌正在使用 | 阻止重复使用', '用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;
     }
 
     username = username.trim();
 
+    //逻辑性缺陷检查
     if (!loginedContainer.isLogined(username)) {
-        MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', '用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;
     }
 
+    //最后一层检查
     let WsSession = new WebsocketSession({
         //Ws 判断身份条件,必须在 token 管理器与 Session 中认证登录
         login: (username && req.session['login']) ? true : false,
