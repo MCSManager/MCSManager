@@ -1,3 +1,5 @@
+const loginedContainer = require('./LoginedContainer');
+
 function randomString(len) {
     len = len || 32;
     var $chars = 'ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_';
@@ -24,8 +26,9 @@ function defaultFalseCallBack(req, res, ResponseKey, ResponseValue, notAjaxRedir
 module.exports.randomString = randomString;
 
 module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
-    if (req.session['login']) {
-        if (req.session['login'] === true && req.session['usernam']) {
+    let username = req.session['usernam'];
+    if (req.session['login'] && loginedContainer.isLogined(username)) {
+        if (req.session['login'] === true && username) {
             trueCallBack && trueCallBack();
             return true;
         }

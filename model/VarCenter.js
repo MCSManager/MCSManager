@@ -3,10 +3,16 @@ global.__MCSERVER_VAR_LIST__ = {};
 
 
 module.exports.set = (key, value) => {
-    global.__MCSERVER_VAR_LIST__[key] = value;
+    if (key)
+        global.__MCSERVER_VAR_LIST__[key] = value;
+    else
+        throw new Error("key is undefined")
 }
 
 
 module.exports.get = (key, def = undefined) => {
-    return global.__MCSERVER_VAR_LIST__[key] || def;
+    if (key)
+        return global.__MCSERVER_VAR_LIST__[key] || def;
+    else
+        throw new Error("key is undefined")
 }

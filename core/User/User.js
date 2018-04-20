@@ -1,7 +1,11 @@
 //用户模型
 
 const DataModel = require('../DataModel');
-const { md5, createPassword, randomString } = require('./CryptoMine');
+const {
+    md5,
+    createPassword,
+    randomString
+} = require('./CryptoMine');
 const fs = require('fs');
 
 const USER_SAVE_PATH = 'users/';
@@ -36,14 +40,14 @@ class User {
 
     isPassword(password) {
         let tmp = createPassword(password, this.dataModel.salt);
-        if (tmp.password == this.dataModel.password) {
+        if (tmp.password === this.dataModel.password) {
             this.updateLastDate();
             return true;
         }
         return false;
     }
 
-    getPasswordMD5(){
+    getPasswordMD5() {
         return this.dataModel.password;
     }
 
@@ -69,5 +73,7 @@ class User {
 }
 
 
-module.exports = { User, USER_SAVE_PATH };
-
+module.exports = {
+    User,
+    USER_SAVE_PATH
+};

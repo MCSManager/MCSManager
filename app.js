@@ -151,7 +151,7 @@ app.use('/public', express.static('./public'));
 
 // console 中间件挂载
 app.use((req, res, next) => {
-    console.log('[', req.protocol.green, req.httpVersion.green, req.method.cyan, ']', req.originalUrl);
+    console.log('[', req.protocol.green, req.method.cyan, ']', req.originalUrl);
     if (MCSERVER.localProperty.is_allow_csrf) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header('Access-Control-Allow-Methods', 'GET, POST');

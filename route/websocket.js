@@ -9,6 +9,7 @@ const {
 
 const permssion = require('../helper/Permission');
 const response = require('../helper/Response');
+const loginedContainer = require('../helper/LoginedContainer');
 const counter = require('../core/counter');
 
 const expressWs = require('express-ws')(router);
@@ -58,6 +59,12 @@ router.ws('/ws', function (ws, req) {
     if (!username || typeof username != "string" || username.trim() == "") {
         MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
         counter.plus('notPermssionCounter');
+        ws.close();
+        return;
+    }
+
+    if (!loginedContainer.isLogined(username)) {
+        MCSERVER.warning('这是十分危险的请求 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;
     }

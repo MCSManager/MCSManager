@@ -8,9 +8,12 @@ const {
 } = require('../model/UserModel');
 const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
+const loginedContainer = require('../helper/LoginedContainer');
 const tools = require('../core/tools');
 
 const userManager = userCenter();
+
+
 
 router.post('/loginout', function (req, res) {
 
@@ -19,10 +22,6 @@ router.post('/loginout', function (req, res) {
     // 导致我们暂时无法用一种很简单的方式来实现动态的更换 token
     req.session['login'] = false;
     req.session['username'] = undefined;
-    // req.session['login_md5key'] = null;
-    // req.session['token'] = null;
-    // req.session['dataModel'] = {};
-    // req.session.save();
     req.session.destroy();
     response.returnMsg(res, 'user/logout', 'loginOut');
     res.end();
@@ -65,6 +64,8 @@ router.post('/login', function (req, res) {
         req.session['login_md5key'] = undefined;
         req.session.save();
         delete MCSERVER.login[ip];
+        //添加到 login 容器
+        loginedContainer.addLogined(username, loginUser.dataModel);
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -78,13 +79,18 @@ router.post('/login', function (req, res) {
         req.session['login_md5key'] = undefined;
         req.session['dataModel'] = undefined;
         req.session.save();
+        //删除到 login 容器
+        loginedContainer.delLogined(username);
         response.returnMsg(res, 'login/check', false);
     }, enkey);
 });
 
 router.get('/login_key', function (req, res) {
-    let username = req.query.username || '';
+    let username = req.query.username || null;
     let md5Key = req.session['login_md5key'] || tools.randomString(32);
+
+    if (!username && !permssion.needLogin()) return;
+
 
     req.session['login_md5key'] = md5Key;
     //取salt

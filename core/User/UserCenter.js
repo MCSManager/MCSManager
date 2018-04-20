@@ -92,7 +92,7 @@ class UserCenter {
             if (md5key && !notSafeLogin) {
                 let userMd5 = loginUser.getPasswordMD5();
                 let md5Passworded = md5(userMd5 + md5key);
-                return md5Passworded == password ? truecb && truecb(loginUser) : falsecb && falsecb();
+                return md5Passworded === password ? truecb && truecb(loginUser) : falsecb && falsecb();
             }
 
             // 一般模式 供ftp 等登录
