@@ -134,7 +134,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 4
     },
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 
 //使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它

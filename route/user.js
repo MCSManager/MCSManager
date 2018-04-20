@@ -18,6 +18,7 @@ const userManager = userCenter();
 router.post('/loginout', function (req, res) {
 
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
+    loginedContainer.delLogined(req.session['username']);
     // BUG Note: Ws—close 与 Loginout 时 Session 可能不一定及时同步
     // 导致我们暂时无法用一种很简单的方式来实现动态的更换 token
     req.session['login'] = false;
