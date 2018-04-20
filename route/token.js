@@ -15,7 +15,7 @@ function getRandToken() {
 router.get('/', function (req, res) {
     let username = req.session['username'] || undefined;
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
-    if (req.xhr || true) {
+    if (req.xhr) {
         if (!req.session['token']) {
             MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌');
             //强化 token
