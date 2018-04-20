@@ -27,7 +27,6 @@ router.get('/', function (req, res) {
         let maybeUsername = VarCenter.get('user_token')[req.session['token']];
         if (maybeUsername) {
             console.log("已经存在！！！！！！！！！！！！！！");
-
         }
 
         VarCenter.get('user_token')[req.session['token']] = username;

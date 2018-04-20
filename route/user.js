@@ -24,7 +24,6 @@ router.post('/loginout', function (req, res) {
     req.session['username'] = undefined;
     req.session.destroy();
     response.returnMsg(res, 'user/logout', 'loginOut');
-    res.end();
 });
 
 MCSERVER.login._banip = 0;
