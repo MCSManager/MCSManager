@@ -23,6 +23,7 @@ class WebsocketSession {
         this.username = config.username || null;
         this.token = config.token || null;
         this.console = config.console || null;
+        this.sessionID = config.sessionID || null;
     }
     send(data) {
         if (data)

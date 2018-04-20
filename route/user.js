@@ -46,6 +46,16 @@ function LoginRule(ip) {
     return true;
 }
 
+//唯一性登录检查
+function OnlyLoginCheck(sessionID) {
+    for (let k in MCSERVER.allSockets) {
+        if (MCSERVER.allSockets[k].sessionID == sessionID) {
+            return true;
+        }
+    }
+    return false;
+}
+
 const counter = require('../core/counter');
 
 router.post('/login', function (req, res) {
@@ -57,6 +67,13 @@ router.post('/login', function (req, res) {
     if (!LoginRule(ip)) {
         return;
     };
+
+    //判断是否有 ws 正在连接
+    if (OnlyLoginCheck(req.sessionID)) {
+        console.log("FUCK");
+        return;
+    }
+
     //登陆次数加一
     counter.plus('login');
 
