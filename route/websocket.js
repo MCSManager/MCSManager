@@ -28,6 +28,10 @@ class WebsocketSession {
         if (data)
             response.wsSend(data.ws, data.resK, data.resV, data.body);
     }
+
+    getWebsocket() {
+        return this.ws || null;
+    }
 }
 
 
@@ -48,6 +52,7 @@ router.ws('/ws', function (ws, req) {
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
     let uid = "__" + permssion.randomString(12) + Date.parse(new Date()).toString() + "__";
+    let session_id = req.sessionID;
 
     MCSERVER.log('[ WebSocket CREATE ] 新的 WebSocket 链接创建');
 
@@ -63,18 +68,19 @@ router.ws('/ws', function (ws, req) {
         return;
     }
 
+    username = username.trim();
+
     if (!loginedContainer.isLogined(username)) {
-        MCSERVER.warning('这是十分危险的请求 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', '可能的用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;
     }
-
-    username = username.trim();
 
     let WsSession = new WebsocketSession({
         //Ws 判断身份条件,必须在 token 管理器与 Session 中认证登录
         login: (username && req.session['login']) ? true : false,
         uid: uid,
+        sessionID: session_id,
         ws: ws,
         username: username,
         token: token,
@@ -148,8 +154,8 @@ router.ws('/ws', function (ws, req) {
 
         //释放一些数据
         delete varCenter.get('user_token')[token];
-        // req.session['token'] = undefined;
-        // req.session.save();
+        req.session['token'] = undefined;
+        req.session.save();
         delete WsSession;
 
         //释放全局变量

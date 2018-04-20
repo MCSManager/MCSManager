@@ -10,7 +10,7 @@ const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
 const loginedContainer = require('../helper/LoginedContainer');
 const tools = require('../core/tools');
-
+const VarCenter = require('../model/VarCenter');
 const userManager = userCenter();
 
 
@@ -18,11 +18,14 @@ const userManager = userCenter();
 router.post('/loginout', function (req, res) {
 
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
+    //删除一些辅助管理器的值
     if (req.session['username']) loginedContainer.delLogined(req.session['username']);
-    // BUG Note: Ws—close 与 Loginout 时 Session 可能不一定及时同步
-    // 导致我们暂时无法用一种很简单的方式来实现动态的更换 token
+    VarCenter.get('user_token')[req.session['token']] = undefined;
+    delete VarCenter.get('user_token')[req.session['token']];
+
     req.session['login'] = false;
     req.session['username'] = undefined;
+    req.session['token'] = undefined;
     req.session.destroy();
     response.returnMsg(res, 'user/logout', 'loginOut');
 });
@@ -67,7 +70,7 @@ router.post('/login', function (req, res) {
         req.session['login_md5key'] = undefined;
         req.session.save();
         delete MCSERVER.login[ip];
-        //添加到 login 容器
+        //添加到 login 容器  注意，全部代码只能有这一个地方使用这个函数
         loginedContainer.addLogined(username, loginUser.dataModel);
         response.returnMsg(res, 'login/check', true);
     }, () => {
