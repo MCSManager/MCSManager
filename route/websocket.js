@@ -54,7 +54,7 @@ router.ws('/ws', function (ws, req) {
     let uid = "__" + permssion.randomString(12) + Date.parse(new Date()).toString() + "__";
     let session_id = req.sessionID;
 
-    MCSERVER.log('[ WebSocket CREATE ] 新的 WebSocket 链接创建');
+    MCSERVER.log('[ WS CREATE ] 新的 Ws 创建 SESSION_ID:' + session_id);
 
     //从令牌管理器中 获取对应的用户
     var tokens = varCenter.get('user_token');
