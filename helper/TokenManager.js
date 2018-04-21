@@ -5,7 +5,8 @@ let onlyTokenManager = new baseManagerModel.ModelManager();
 
 
 module.exports.addToken = (key, value) => {
-    if (onlyTokenManager.len > 100) {
+    if (onlyTokenManager.len >= 20) {
+        //TOken 请求最大并发数,超过则统一删除
         onlyTokenManager.clear();
     }
     onlyTokenManager.add(key, value);
