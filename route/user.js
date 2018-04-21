@@ -19,7 +19,7 @@ router.post('/loginout', function (req, res) {
 
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
     //删除一些辅助管理器的值
-    if (req.session['username']) loginedContainer.delLogined(req.session['username']);
+    if (req.session['username']) loginedContainer.delLogined(req.sessionID);
     VarCenter.get('user_token')[req.session['token']] = undefined;
     delete VarCenter.get('user_token')[req.session['token']];
 
@@ -88,7 +88,7 @@ router.post('/login', function (req, res) {
         req.session.save();
         delete MCSERVER.login[ip];
         //添加到 login 容器  注意，全部代码只能有这一个地方使用这个函数
-        loginedContainer.addLogined(username, loginUser.dataModel);
+        loginedContainer.addLogined(req.sessionID, username, loginUser.dataModel);
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -103,7 +103,7 @@ router.post('/login', function (req, res) {
         req.session['dataModel'] = undefined;
         req.session.save();
         //删除到 login 容器
-        if (req.session['username']) loginedContainer.delLogined(username);
+        if (req.session['username']) loginedContainer.delLogined(req.sessionID);
         response.returnMsg(res, 'login/check', false);
     }, enkey);
 });

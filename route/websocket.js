@@ -91,7 +91,7 @@ router.ws('/ws', function (ws, req) {
     username = username.trim();
 
     //逻辑性缺陷检查
-    if (!loginedContainer.isLogined(username)) {
+    if (!loginedContainer.isLogined(session_id)) {
         MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', '用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;

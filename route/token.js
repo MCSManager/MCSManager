@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
             //强化 token
             req.session['token'] = getRandToken();
         }
-        if (!username || !loginedContainer.isLogined(username)) {
+        if (!username || !loginedContainer.isLogined(req.sessionID)) {
             //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
             response.returnMsg(res, 'token', {
                 token: getRandToken(),
