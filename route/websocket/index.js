@@ -9,7 +9,7 @@ const os = require("os");
 //每次更新之后,修改此处,表明修改
 //这样, 用户截图时, 可以知道具体的版本
 const oversion = "Release_8.2.6.1"; //前端
-const tversion = "Test_8.3.0.0"; //后端
+const tversion = "Beta_8.3.0.0"; //后端
 
 //首页
 WebSocketObserver().listener('index/update', (data) => {
