@@ -86,8 +86,6 @@ MCSERVER.login = {};
 MCSERVER.onlineUser = {};
 //全局 在线 Websocket 监视器
 MCSERVER.allSockets = {};
-//全局 token 记录器 /
-MCSERVER.tokens = {};
 //全局 数据内存记录器
 MCSERVER.logCenter = {};
 
@@ -140,10 +138,6 @@ app.use(session({
 //使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
 if (MCSERVER.localProperty.is_gzip)
     app.use(compression());
-
-//初始化令牌管理器
-// VarCenter.set('user_token', {});
-// VarCenter.set('express_app', app);
 
 //基础根目录
 app.use('/public', express.static('./public'));
