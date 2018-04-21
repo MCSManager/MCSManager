@@ -30,6 +30,11 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 			},
 			success: function (data, textStatus) {
 				var obj = JSON.parse(data);
+				if (typeof obj['ResponseValue'] == 'string') {
+					alert(obj['ResponseValue']);
+					loginError && loginError();
+					return;
+				}
 				if (obj['ResponseValue']) {
 					loginSuccess && loginSuccess();
 				} else {
