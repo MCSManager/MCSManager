@@ -27,7 +27,7 @@ module.exports.randomString = randomString;
 
 module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
     let username = req.session['username'];
-    if (req.session['login'] && loginedContainer.isLogined(req.sessionID)) {
+    if (req.session['login'] && loginedContainer.isLogined(req.sessionID, username)) {
         if (req.session['login'] === true && username) {
             trueCallBack && trueCallBack();
             return true;
@@ -41,6 +41,9 @@ const counter = require('../core/counter');
 
 module.exports.isMaster = (wsSession, notPermssionCounter) => {
     if (!wsSession.username || typeof wsSession.username != 'string') {
+        return false;
+    }
+    if (!loginedContainer.isLogined(wsSession.sessionID, wsSession.username)) {
         return false;
     }
     let username = wsSession.username.trim() || '';
