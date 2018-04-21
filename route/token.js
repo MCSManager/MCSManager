@@ -16,11 +16,9 @@ router.get('/', function (req, res) {
     let username = req.session['username'] || undefined;
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
     if (req.xhr || true) {
-        MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌');
-        // if (!req.session['token']) {
-        //     req.session['token'] = getRandToken();
-        // }
+
         if (!username || !loginedContainer.isLogined(req.sessionID)) {
+            MCSERVER.log('[ Token ]', '未登录用户 ', username, ' 请求更新令牌 | 已经阻止');
             //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
             response.returnMsg(res, 'token', {
                 token: getRandToken(),
@@ -28,25 +26,17 @@ router.get('/', function (req, res) {
             });
             return;
         }
-        // let tmpToken = req.session['token']; //上一次此 Session 得到的令牌
-        // let tokens = VarCenter.get('user_token');
-        //禁止重复使用
-        // let maybeUsername = TokenManager.getToken(tmpToken);
-        // if (maybeUsername) {
-        //     MCSERVER.log('令牌已经存在不能继续使用 | 已经重新生成 ' + username + ' 令牌值: ' + req.session['token']);
-        //     //删除这个 Session 下的,以防内存泄露
-        //     TokenManager.delToken(tmpToken);
-        //     req.session['token'] = getRandToken();
-        // }
 
         //删除原先可能存在的
-        TokenManager.delToken(req.session['token'] || '');
+        TokenManager.delToken(req.session['token'] || null);
 
         //永远生产一个新的
         let newtoken = getRandToken();
         TokenManager.addToken(newtoken, username);
         req.session['token'] = newtoken;
         req.session.save();
+
+        MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌 | 准许');
 
         response.returnMsg(res, 'token', {
             token: req.session['token'],

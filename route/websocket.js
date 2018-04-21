@@ -52,8 +52,8 @@ router.ws('/ws', function (ws, req) {
 
     let token = req.query[permssion.tokenName] || null;
 
-    //无令牌
-    if (!token) {
+    //无令牌 或 未登录
+    if (!token || !req.session['login']) {
         counter.plus('csrfCounter');
         ws.close();
         return;
@@ -67,22 +67,19 @@ router.ws('/ws', function (ws, req) {
     let uid = permssion.randomString(12) + Date.parse(new Date()).toString();
     let session_id = req.sessionID;
 
-    MCSERVER.log('[ WS CREATE ] 新的 Ws 创建 SESSION_ID:' + session_id);
+    MCSERVER.log('[ WS CREATE ] 新的 Ws 创建 会话ID: [', session_id, ']');
 
     //从令牌管理器中 获取对应的用户
-    // var tokens = varCenter.get('user_token');
     username = TokenManager.getToken(token);
+
+    //Token 任务完成 | 删除
     TokenManager.delToken(token);
     delete req.session['token'];
-
-    //从 Token 管理器中删除它，因为 token 都是一次性的
-    //BUG 这个必须写在断开处,因为 Token 需要利用它辨别是否有重复
-
-    //req.session['token'] = undefined; 
+    req.session.save();
 
     //用户名检查
     if (!username || typeof username != "string" || username.trim() == "") {
-        MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', '用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('错误令牌的 WS 尝试建立链接 | 已经阻止', ['用户值:', username, ' 令牌值:', token].join(" "));
         counter.plus('notPermssionCounter');
         ws.close();
         return;
@@ -90,21 +87,22 @@ router.ws('/ws', function (ws, req) {
 
     //唯一性检查
     if (isWsOnline(token)) {
-        MCSERVER.warning('此令牌正在使用 | 阻止重复使用 | isWsOnline', '用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('此令牌正在使用 | 阻止重复使用 | isWsOnline', ['用户值:', username, ' 令牌值:', token].join(" "));
         ws.close();
         return;
     }
 
     username = username.trim();
 
-    //逻辑性缺陷检查
+    //登录逻辑性缺陷检查
     if (!loginedContainer.isLogined(session_id)) {
-        MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', '用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('未经过登陆逻辑的用户尝试连接 | 已经阻止', ['用户值:', username, ' 令牌值:', token].join(" "));
+        counter.plus('notPermssionCounter');
         ws.close();
         return;
     }
 
-    //最后一层检查
+    //WebsocketSession 类生成
     let WsSession = new WebsocketSession({
         //Ws 判断身份条件,必须在 token 管理器与 Session 中认证登录
         login: (username && req.session['login']) ? true : false,
@@ -116,8 +114,7 @@ router.ws('/ws', function (ws, req) {
         console: null
     });
 
-
-    //完全禁止没有登录的用户连接 ws 
+    //Session 级别验证登录检查
     if (!WsSession.login) {
         MCSERVER.warning('不明身份者建立 ws 链接', '已经阻止 | 可能的用户值: ' + WsSession.username);
         counter.plus('notPermssionCounter');
@@ -125,18 +122,21 @@ router.ws('/ws', function (ws, req) {
         return;
     }
 
+
+
     //放置全局在线列表
     MCSERVER.allSockets[uid] = WsSession;
     if (!MCSERVER.onlineUser[WsSession.username])
         MCSERVER.onlineUser[WsSession.username] = WsSession;
 
-
+    //检查通过..
     MCSERVER.log('[ WebSocket INIT ]', ' 用户:', username, "与服务器建立链接");
-    //数据到达
+
+    //数据到达事件
     ws.on('message', function (data) {
         try {
 
-            //禁止未登陆用户进入
+            //是否合法用户检查
             if (!WsSession.login) {
                 //触发这里代表极为有可能有人正在攻击你
                 MCSERVER.warning('没有登录的用户正在尝试发送 Ws 命令', '已经阻止 | 可能的用户值: ' + username);
@@ -145,12 +145,13 @@ router.ws('/ws', function (ws, req) {
                 return;
             }
 
-            //在线用户计数器
+            //在线用户容器检查
             if (!MCSERVER.onlineUser[username]) {
                 counter.plus('userOnlineCounter');
                 MCSERVER.onlineUser[username] = WsSession;
             }
 
+            //检查完毕 | 开始解析数据
             //自定义协议数据解析
             let loc = data.indexOf('\n\n');
             let reqHeader = data.substr(0, loc);
@@ -182,7 +183,6 @@ router.ws('/ws', function (ws, req) {
         status = false;
 
         //再删一次，保险
-        // delete tokens[token];
         TokenManager.delToken(token);
         delete req.session['token'];
         delete WsSession;
