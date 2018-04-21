@@ -7,13 +7,22 @@ const userModel = require('../../model/UserModel');
 const permission = require('../../helper/Permission');
 const serverModel = require('../../model/ServerModel');
 const pathm = require("path");
+const loginedContainer = require('../../helper/LoginedContainer');
 
 //自定义扩展
 router.all('/auth/:servername', (req, res) => {
     let serverName = req.params.servername;
     let userName = req.session['username'];
+
+    //基础检查
     if (!serverName || !userName) {
-        res.send("[ 权限阻止 ] ");
+        res.send("[ 权限阻止 ] 您未登录");
+        return;
+    }
+
+    //统一登录逻辑性检查
+    if (!loginedContainer.isLogined(req.sessionID, userName)) {
+        res.send("[ 权限阻止 ] 您未登录");
         return;
     }
 

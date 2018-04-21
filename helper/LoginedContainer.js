@@ -16,8 +16,11 @@ module.exports.delLogined = (sessionID) => {
 }
 
 
-module.exports.isLogined = (sessionID) => {
+module.exports.isLogined = (sessionID, username = null) => {
     if (Logined.hasOwnProperty(sessionID) && Logined[sessionID]) {
+        if (username) {
+            return Logined[sessionID][0] === username;
+        }
         return Logined[sessionID][1];
     }
     return null;
