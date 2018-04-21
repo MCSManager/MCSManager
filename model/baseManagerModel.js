@@ -10,7 +10,6 @@ class ModelManager {
             this._mineself[key] = value;
             this.len++;
         }
-        console.log("MINE:" + this.len)
     }
     del(key) {
         if (key) {
@@ -19,7 +18,6 @@ class ModelManager {
             delete this._mineself[key];
             this.len--;
         }
-        console.log("MINE:" + this.len)
     }
 
     get(key) {

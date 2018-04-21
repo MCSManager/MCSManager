@@ -72,7 +72,7 @@ router.post('/login', function (req, res) {
 
     //判断是否有 ws 正在连接
     if (OnlyLoginCheck(req.sessionID)) {
-        console.log("FUCK");
+        response.returnMsg(res, 'login/check', "您已经登录过账号了,不可再进行登录,请先退出原账号!");
         return;
     }
 
