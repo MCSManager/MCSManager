@@ -38,7 +38,7 @@ const {
 const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
-const VarCenter = require('./model/VarCenter');
+const tokenManger = require('./helper/TokenManager');
 
 //控制台颜色
 const colors = require('colors');
@@ -142,8 +142,8 @@ if (MCSERVER.localProperty.is_gzip)
     app.use(compression());
 
 //初始化令牌管理器
-VarCenter.set('user_token', {});
-VarCenter.set('express_app', app);
+// VarCenter.set('user_token', {});
+// VarCenter.set('express_app', app);
 
 //基础根目录
 app.use('/public', express.static('./public'));

@@ -2,20 +2,24 @@ class ModelManager {
     constructor() {
         this._mineself = {};
         this.name = null;
+        this.len = 0;
     }
 
     add(key, value) {
-        if (key && value)
-            this._mineself[username] = userdata;
-        else
-            throw new Error("key or value is Null");
+        if (key && value) {
+            this._mineself[key] = value;
+            this.len++;
+        }
+        console.log("MINE:" + this.len)
     }
     del(key) {
         if (key) {
+            if (!this._mineself.hasOwnProperty(key)) return;
             this._mineself[key] = undefined;
             delete this._mineself[key];
-        } else
-            throw new Error("key is Null");
+            this.len--;
+        }
+        console.log("MINE:" + this.len)
     }
 
     get(key) {
@@ -23,6 +27,14 @@ class ModelManager {
             return this._mineself[key];
         }
         return null;
+    }
+
+    clear() {
+        this._mineself = {};
+    }
+
+    returnObj() {
+        return this._mineself
     }
 
 }

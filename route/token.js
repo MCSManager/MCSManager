@@ -2,7 +2,7 @@
 const router = require('express')();
 const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
-const VarCenter = require('../model/VarCenter');
+const TokenManager = require('../helper/TokenManager');
 const counter = require('../core/counter');
 const UUID = require('uuid');
 const loginedContainer = require('../helper/LoginedContainer');
@@ -15,12 +15,11 @@ function getRandToken() {
 router.get('/', function (req, res) {
     let username = req.session['username'] || undefined;
     //ajax 会受到浏览器跨域限制，姑不能对其进行csrf攻击获取token，尽管它可伪造。
-    if (req.xhr) {
-        if (!req.session['token']) {
-            MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌');
-            //强化 token
-            req.session['token'] = getRandToken();
-        }
+    if (req.xhr || true) {
+        MCSERVER.log('[ Token ]', '用户 ', username, ' 请求更新令牌');
+        // if (!req.session['token']) {
+        //     req.session['token'] = getRandToken();
+        // }
         if (!username || !loginedContainer.isLogined(req.sessionID)) {
             //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
             response.returnMsg(res, 'token', {
@@ -29,15 +28,26 @@ router.get('/', function (req, res) {
             });
             return;
         }
-        let maybeUsername = VarCenter.get('user_token')[req.session['token']];
-        if (maybeUsername) {
-            MCSERVER.log('令牌已经存在不能继续使用 | 已经重新生成 ' + username + ' 令牌值: ' + req.session['token']);
-            req.session['token'] = getRandToken();
-            // return;
-        }
+        // let tmpToken = req.session['token']; //上一次此 Session 得到的令牌
+        // let tokens = VarCenter.get('user_token');
+        //禁止重复使用
+        // let maybeUsername = TokenManager.getToken(tmpToken);
+        // if (maybeUsername) {
+        //     MCSERVER.log('令牌已经存在不能继续使用 | 已经重新生成 ' + username + ' 令牌值: ' + req.session['token']);
+        //     //删除这个 Session 下的,以防内存泄露
+        //     TokenManager.delToken(tmpToken);
+        //     req.session['token'] = getRandToken();
+        // }
 
-        VarCenter.get('user_token')[req.session['token']] = username;
+        //删除原先可能存在的
+        TokenManager.delToken(req.session['token'] || '');
+
+        //永远生产一个新的
+        let newtoken = getRandToken();
+        TokenManager.addToken(newtoken, username);
+        req.session['token'] = newtoken;
         req.session.save();
+
         response.returnMsg(res, 'token', {
             token: req.session['token'],
             username: username,

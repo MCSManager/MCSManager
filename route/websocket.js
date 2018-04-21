@@ -1,7 +1,7 @@
 const router = require('express')();
 const fs = require('fs');
 
-const varCenter = require('../model/VarCenter');
+const TokenManager = require('../helper/TokenManager');
 const {
     WebSocketObserver
 } = require('../model/WebSocketModel');
@@ -70,8 +70,15 @@ router.ws('/ws', function (ws, req) {
     MCSERVER.log('[ WS CREATE ] 新的 Ws 创建 SESSION_ID:' + session_id);
 
     //从令牌管理器中 获取对应的用户
-    var tokens = varCenter.get('user_token');
-    username = tokens[token] || null;
+    // var tokens = varCenter.get('user_token');
+    username = TokenManager.getToken(token);
+    TokenManager.delToken(token);
+    delete req.session['token'];
+
+    //从 Token 管理器中删除它，因为 token 都是一次性的
+    //BUG 这个必须写在断开处,因为 Token 需要利用它辨别是否有重复
+
+    //req.session['token'] = undefined; 
 
     //用户名检查
     if (!username || typeof username != "string" || username.trim() == "") {
@@ -83,7 +90,7 @@ router.ws('/ws', function (ws, req) {
 
     //唯一性检查
     if (isWsOnline(token)) {
-        MCSERVER.warning('此令牌正在使用 | 阻止重复使用', '用户值:' + username + ' 令牌值: ' + token);
+        MCSERVER.warning('此令牌正在使用 | 阻止重复使用 | isWsOnline', '用户值:' + username + ' 令牌值: ' + token);
         ws.close();
         return;
     }
@@ -174,11 +181,12 @@ router.ws('/ws', function (ws, req) {
 
         status = false;
 
-        //释放一些数据
-        delete varCenter.get('user_token')[token];
-        req.session['token'] = undefined;
-        req.session.save();
+        //再删一次，保险
+        // delete tokens[token];
+        TokenManager.delToken(token);
+        delete req.session['token'];
         delete WsSession;
+        req.session.save();
 
         //释放全局变量
         if (MCSERVER.onlineUser[username]) {

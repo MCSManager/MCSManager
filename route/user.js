@@ -10,7 +10,7 @@ const response = require('../helper/Response');
 const permssion = require('../helper/Permission');
 const loginedContainer = require('../helper/LoginedContainer');
 const tools = require('../core/tools');
-const VarCenter = require('../model/VarCenter');
+const TokenManager = require('../helper/TokenManager');
 const userManager = userCenter();
 
 
@@ -20,8 +20,10 @@ router.post('/loginout', function (req, res) {
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
     //删除一些辅助管理器的值
     if (req.session['username']) loginedContainer.delLogined(req.sessionID);
-    VarCenter.get('user_token')[req.session['token']] = undefined;
-    delete VarCenter.get('user_token')[req.session['token']];
+
+    // VarCenter.get('user_token')[req.session['token']] = undefined;
+    // delete VarCenter.get('user_token')[req.session['token']];
+    TokenManager.delToken(req.session['token']);
 
     req.session['login'] = false;
     req.session['username'] = undefined;
