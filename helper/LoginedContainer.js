@@ -24,7 +24,7 @@ module.exports.isLogined = (sessionID) => {
 }
 
 //登录验证时间删除
-const MAX_AGE = 1000 * 10;
+const MAX_AGE = MCSERVER.localProperty.session_max_age * 1000 * 60;
 setInterval(() => {
     let time = Date.now();
     let oldtime = null;
@@ -36,4 +36,4 @@ setInterval(() => {
             }
         }
     }
-}, 1000 * 60);
+}, 1000 * 50); //50秒检索一遍

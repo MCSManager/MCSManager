@@ -82,3 +82,11 @@ MCSERVER.localProperty.data_center_times = 2000;
 //注意! 此功能既可以让你的控制面板尝试更多姿势 (包括 WebShell)
 //注意! 也会让其他别有用心的管理员 (只有管理员有权使用)，入侵你的宿主机
 MCSERVER.localProperty.customize_commande = true;
+
+
+
+//Session Cookie 与 Login 管理器最大时间
+//意味着,第一次登录之后,这段时间内是可以不需要输入密码就可以登录的。
+//超过这段时间后,访问需要重新登录
+//单位 分钟 | 默认 240 分钟
+MCSERVER.localProperty.session_max_age = 240

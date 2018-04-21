@@ -131,7 +131,7 @@ app.use(session({
     secret: UUID.v4(),
     name: 'MCSM_SESSION_ID',
     cookie: {
-        maxAge: 1000 * 60 * 60 * 4
+        maxAge: MCSERVER.localProperty.session_max_age * 1000 * 60
     },
     resave: false,
     saveUninitialized: false
