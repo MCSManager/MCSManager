@@ -30,11 +30,22 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
 			},
 			success: function (data, textStatus) {
 				var obj = JSON.parse(data);
+				//后端指令操作
+				if (typeof obj['ResponseValue'] == 'number') {
+					var commande = Number.parseInt(obj['ResponseValue']);
+					if (commande == 302) {
+						alert("您已登录,不可重复或覆盖原先登录,我们将为你跳转网页....");
+						window.location.href = '../';
+					}
+					return;
+				}
+				//后端警告操作
 				if (typeof obj['ResponseValue'] == 'string') {
 					alert(obj['ResponseValue']);
 					loginError && loginError();
 					return;
 				}
+				//后端正常操作,判断密码与账户
 				if (obj['ResponseValue']) {
 					loginSuccess && loginSuccess();
 				} else {

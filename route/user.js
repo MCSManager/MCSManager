@@ -76,6 +76,12 @@ router.post('/login', function (req, res) {
         return;
     }
 
+    //如果已经登录,则直接跳转
+    if (req.session['login'] || req.session['username']) {
+        response.returnMsg(res, 'login/check', 302);
+        return;
+    }
+
     //登陆次数加一
     counter.plus('login');
 
