@@ -26,7 +26,7 @@
 
 <br />
 
-运行在 Windows 平台
+运行在 Windows 
 -----------
 
 **方法一**
@@ -45,7 +45,6 @@
 
 
 **方法二**
-
 介于某些原因，您可能并不愿意安装这些运行环境，于是我们给予了一种绿色打包的运行环境，下载即可直接使用
 
 下载直接双击运行: https://pan.baidu.com/s/1bpbB8Az (下载地址)
@@ -54,7 +53,8 @@
 
 <br />
 
-运行在 Linux 平台
+
+运行在 Linux 
 -----------
 - 相对而言，这可能更加简单
 
@@ -64,6 +64,20 @@ cd mcsmanager
 npm install --production
 node app.js #或 npm start
 ```
+<br />
+
+安装常见问题
+-----------
+这里是一些常见问题，并不代表你一定会遇见。
+- 找不到模块 `express`
+> 输入 `npm install` 解决
+
+- 找不到模块 `ftpd`
+> 请输入 `npm install ftpd` 进行再次手动安装,这个模块是直接 github 指定源
+
+- 端口监听失败
+> 请修改 `McserverConfig.json` 文件中的端口号
+
 <br />
 
 项目目录结构
@@ -127,6 +141,21 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10021`(可更改)
 反向代理之前，请仔细阅读 `property.js` 内部文件（开关 gzip）之类的设置。
 
 并且从软件控制面板中设置您的端口（默认 23333）。以及反向代理需要对 Webscoket 提供配置项。
+
+<br />
+
+
+SSL
+-----------
+将 `public/common/URL.js` 中的 `'http://'` 改成 `'https://'`
+
+将 `public/common/js/websocket.js` 中的`'ws://'` 改成 `'wss://'`
+
+即可保证前端所有请求均为 Https 和 Wss
+
+后端请通过反向代理完成，或自行修改 Express 初始化 App。
+
+- 相关 Issues: [SSL 服务](https://github.com/Suwings/MCSManager/issues/25) | [Nginx 反向代理](https://github.com/Suwings/MCSManager/issues/22) 
 
 <br />
 
