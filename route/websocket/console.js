@@ -18,7 +18,6 @@ const EventObserver = new EventEmitter();
 MCSERVER.consoleLog = {};
 
 //控制台信息广播
-//使用万年蠢逼 Mg 设计方案
 function selectWebsocket(serverName, callback) {
     let all = MCSERVER.allSockets;
     for (let k in all) {
@@ -67,7 +66,6 @@ WebSocketObserver().listener('server/console/ws', (data) => {
 
     let userName = data.WsSession.username;
     let serverName = data.body.trim();
-    // console.log('[' + serverName + '] >>> 用户 ' + userName + ' 请求控制台监听');
     //可以将 user 实例化存在Session中，以便于只读的使用。。。。
     if (permssion.isCanServer(userName, serverName)) {
         var serverT = serverModel.ServerManager().getServer(serverName);
@@ -121,7 +119,7 @@ serverModel.ServerManager().on('console', (data) => {
     let server = serverModel.ServerManager().getServer(data.serverName);
     let consoleData = data.msg.replace(/\n/gim, '<br />');
 
-    //将输出载入历史记录  这里曾出现过 server 未定义bug，情况不明，已加保险
+    //将输出载入历史记录
     if (server) server.terminalLog(consoleData);
 
     if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";
