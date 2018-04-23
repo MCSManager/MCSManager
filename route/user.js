@@ -13,18 +13,17 @@ const tools = require('../core/tools');
 const TokenManager = require('../helper/TokenManager');
 const userManager = userCenter();
 
-
-
+//用户退出事件
 router.post('/loginout', function (req, res) {
-
+    if (!req.xhr) return;
     MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
     //删除一些辅助管理器的值
-    if (req.session['username']) loginedContainer.delLogined(req.sessionID);
+    if (req.session['username'] && req.session['login'])
+        loginedContainer.delLogined(req.sessionID);
 
-    // VarCenter.get('user_token')[req.session['token']] = undefined;
-    // delete VarCenter.get('user_token')[req.session['token']];
     TokenManager.delToken(req.session['token']);
 
+    //退出后的 Session 并不会立刻反馈到所有 Session 上
     req.session['login'] = false;
     req.session['username'] = undefined;
     req.session['token'] = undefined;
@@ -60,7 +59,9 @@ function OnlyLoginCheck(sessionID) {
 
 const counter = require('../core/counter');
 
+//用户登录请求路由
 router.post('/login', function (req, res) {
+    if (!req.xhr) return;
     let ip = req.socket.remoteAddress;
     let username = req.body.username || '';
     let password = req.body.password || '';
@@ -70,14 +71,14 @@ router.post('/login', function (req, res) {
         return;
     };
 
-    //判断是否有 ws 正在连接
+    //判断是否有 ws 正在连接 
     if (OnlyLoginCheck(req.sessionID)) {
-        response.returnMsg(res, 'login/check', "您已在此登录过账号,请关闭所有与服务器的链接网页并退出账号！");
+        response.returnMsg(res, 'login/check', "您已在此浏览器登录过账号,请关闭所有与服务器的链接网页并退出账号!");
         return;
     }
 
-    //如果已经登录,则直接跳转
-    if (req.session['login'] || req.session['username']) {
+    //同 Session 只可登录一个 用户
+    if (loginedContainer.isLogined(req.sessionID)) {
         response.returnMsg(res, 'login/check', 302);
         return;
     }
@@ -116,19 +117,23 @@ router.post('/login', function (req, res) {
     }, enkey);
 });
 
+//用户请求登录键路由
 router.get('/login_key', function (req, res) {
+    if (!req.xhr) return;
     let username = req.query.username || null;
     let md5Key = req.session['login_md5key'] || tools.randomString(32);
+    let okflag = true;
 
-    if (!username && !permssion.needLogin()) return;
+    //拒绝掉已登录用户
+    if (!username || loginedContainer.isLogined(req.sessionID))
+        okflag = false;
 
 
     req.session['login_md5key'] = md5Key;
     //取salt
     let loggingUser = userManager.get(username);
-    //是否存在用户名
-    if (loggingUser) {
-        //伪装的 enkey
+    //是否存在用户名 && Flag is true
+    if (loggingUser && okflag) {
         res.send(JSON.stringify({
             //salt
             enkey1: loggingUser.dataModel.salt,
