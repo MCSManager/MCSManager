@@ -1,5 +1,10 @@
-const { WebSocketObserver } = require('../../model/WebSocketModel');
-const { userCenter, loginUser } = require('../../model/UserModel');
+const {
+    WebSocketObserver
+} = require('../../model/WebSocketModel');
+const {
+    userCenter,
+    beliveLogin
+} = require('../../model/UserModel');
 const serverModel = require('../../model/ServerModel');
 const response = require('../../helper/Response');
 const permssion = require('../../helper/Permission');
@@ -49,7 +54,7 @@ WebSocketObserver().listener('genuser/home', (data) => {
             OnlineServerList: OnlineServerList
         });
     } catch (err) {
-        MCSERVER.error('普通用户访问异常',err);
+        MCSERVER.error('普通用户访问异常', err);
     }
 
 });
@@ -62,7 +67,7 @@ WebSocketObserver().listener('genuser/re_password', (data) => {
     let config = JSON.parse(data.body);
     if (config.newPassword && config.oldPassword) {
         let user = userCenter().get(username);
-        loginUser(username, config.oldPassword, () => {
+        beliveLogin(username, config.oldPassword, () => {
             try {
                 if (config.newPassword.length > 18 || config.newPassword.length < 6) {
                     response.wsMsgWindow(data.ws, '新的密码长度不正确，需要 6~18 位长度');
