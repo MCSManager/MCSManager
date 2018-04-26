@@ -1,8 +1,3 @@
-const {
-    WebSocketObserver
-} = require('../../model/WebSocketModel');
-const response = require('../../helper/Response');
-const permssion = require('../../helper/Permission');
 const os = require("os");
 
 //前端显示版本

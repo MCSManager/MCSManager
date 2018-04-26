@@ -135,7 +135,48 @@
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-6 ">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">版本</div>
+				<div class="PanelBody">
+					<div id="VersionShow">
+						<p>程序版本:
+							<span class="color-gray">8.3</span>
+						</p>
+						<p>前端发行版:
+							<span class="color-gray">
+								<span class="color-gray" v-text="oneversion"></span>
+							</span>
+						</p>
+						<p>后端发行版:
+							<span class="color-gray">
+								<span class="color-gray" v-text="twoversion"></span>
+							</span>
+						</p>
+						<br>
+					</div>
+				</div>
+			</div>
 
+		</div>
+		<div class="col-md-6 ">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">操作系统</div>
+				<div class="PanelBody">
+					<div id="SystemUp">
+						<p>系统与平台:
+							<span class="color-gray" v-text="system"></span>
+						</p>
+						<p>进程根目录:
+							<span class="color-gray" v-text="root"></span>
+						</p>
+						<br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
