@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="../common/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="./static/main.css" rel="stylesheet">
-    <style>
-    </style>
+    <link href="./favicon.ico" rel="shortcut icon">
+
 </head>
 
 <body>
@@ -37,10 +37,10 @@
                     <p>使用您的 MCSM 账户 </p>
                     <div id="mlogin_form">
                         <p>用户名</p>
-                        <input type="text" class="minput" placeholder="普通账号 | 管理用户" />
+                        <input id="login-userid" type="text" class="minput" placeholder="普通账号 | 管理用户" />
                         <p>密码</p>
-                        <input type="password" class="minput" placeholder="账号密码" />
-                        <button class="mbutton">验证</button>
+                        <input id="login-passwd" type="password" class="minput" placeholder="账号密码" />
+                        <button id="login-button" class="mbutton" onclick="MCSERVER.btnLogin()">验证</button>
                         <a href="/" id="mlogin_forge" class="text-right help-text" onclick="alert('请联系管理员更改密码，如果您是管理员，请删除user/文件夹下的所有#开头的管理用户')">
                             忘记密码?
                         </a>
@@ -56,5 +56,18 @@
 
 
 </body>
+<script type="text/javascript" src="../common/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../common/URL.js"></script>
+<script type="text/javascript" src="../common/md5.js"></script>
+<script type="text/javascript" src="../common/js/login.js"></script>
+<script>
+    function enKeyPress() {
+        console.log("按下:" + event.keyCode);
+        if (event.keyCode == 13) {
+            //登录
+            MCSERVER.btnLogin();
+        }
+    }
+</script>
 
 </html>
