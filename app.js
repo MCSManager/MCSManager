@@ -230,26 +230,26 @@ app.use('/fs', require('./onlinefs/controller/function'));
     ServerModel.ServerManager().loadALLMinecraftServer();
     MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
 
-    var host = MCSERVER.softConfig.ip;
-    var port = MCSERVER.softConfig.port;
+    var host = MCSERVER.localProperty.http_ip;
+    var port = MCSERVER.localProperty.http_port;
 
     if (host == '::')
         host = '127.0.0.1';
 
     //App Http listen
-    app.listen(MCSERVER.softConfig.port, MCSERVER.softConfig.ip, () => {
+    app.listen(MCSERVER.localProperty.http_port, MCSERVER.localProperty.http_ip, () => {
 
         MCSERVER.infoLog('HTTP', 'HTTP 模块监听: [ http://' + (host || '127.0.0.1'.yellow) + ':' + port + ' ]');
 
         //现在执行 FTP 服务器启动过程
         ftpServerInterface.initFTPdServerOptions({
-            host: MCSERVER.softConfig.FTP_ip || '127.0.0.1',
-            port: MCSERVER.softConfig.FTP_port,
+            host: MCSERVER.localProperty.ftp_ip || '127.0.0.1',
+            port: MCSERVER.localProperty.ftp_port,
             tls: null
         });
 
-        //执行ftp逻辑
-        require('./ftpd/index');
+        if (MCSERVER.localProperty.ftp_is_allow)
+            require('./ftpd/index'); //执行ftp逻辑
     });
 
 
