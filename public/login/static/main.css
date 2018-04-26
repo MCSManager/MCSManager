@@ -38,6 +38,8 @@ html {
     top: 26%;
     right: 10%;
     box-shadow: 0 0 30px rgba(0, 0, 0, .6);
+    animation: Loading1 2s;
+    animation-fill-mode: forwards;
 }
 
 #mlogin_left_context {
@@ -54,6 +56,7 @@ html {
 }
 
 #mlogin_right {
+    opacity: 0;
     height: 420px;
     width: 310px;
     min-height: 420px;
@@ -62,6 +65,11 @@ html {
     right: 8%;
     top: -20%;
     box-shadow: 0 0 30px rgba(0, 0, 0, .6);
+    /* 动画 */
+    /* Safari 和 Chrome */
+    animation: Loading2 2s;
+    animation-fill-mode: forwards;
+    animation-delay: 1s;
 }
 
 #mlogin_center {
@@ -161,5 +169,25 @@ html {
     }
     .phone {
         display: block;
+    }
+}
+
+/* 动画 */
+
+@keyframes Loading1 {
+    0% {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    100% {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+}
+
+@keyframes Loading2 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
