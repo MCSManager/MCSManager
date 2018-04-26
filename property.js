@@ -35,7 +35,7 @@ else
 /*--------------- 配置开始，这与 Minecraft 服务器配置基本一样 --------------- */
 
 //HTTP 服务监听端口
-MCSERVER.localProperty.http_port = 23334;
+MCSERVER.localProperty.http_port = 23333;
 
 
 //HTTP 服务监听ip, 默认 0.0.0.0
