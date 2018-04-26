@@ -33,11 +33,6 @@
 		link: './template/userset.html',
 		api: 'userset/update'
 	}, {
-		class: 'glyphicon-cog',
-		name: '控制面板设置',
-		link: './template/softset.html',
-		api: 'soft/view'
-	}, {
 		class: 'glyphicon-floppy-open',
 		name: '服务与支持',
 		link: './template/feelback.html',
