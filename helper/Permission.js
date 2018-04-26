@@ -95,3 +95,13 @@ module.exports.isCanServer = (userName, serverName) => {
     }
     return false;
 }
+
+module.exports.isOnline = (username) => {
+    let onlineusers = MCSERVER.onlineUser;
+    for (let k in onlineusers) {
+        if (k === username) {
+            return true;
+        }
+    }
+    return false;
+}

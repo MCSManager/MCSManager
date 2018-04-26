@@ -27,8 +27,11 @@
 										<span v-text="item.username"></span>
 									</h4>
 									<div>
-										创建时间:
-										<span v-text="item.data.createDate"> </span> | 最后上线:
+										<span v-if="item.data.online" class="color-green">正在线上</span>
+										<span v-if="!item.data.online" class="color-red">离线</span>
+										| 创建时间:
+										<span v-text="item.data.createDate"> </span>
+										| 最后上线:
 										<span v-text="item.data.lastDate"> </span>
 									</div>
 								</div>

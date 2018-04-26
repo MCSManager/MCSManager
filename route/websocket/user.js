@@ -13,7 +13,16 @@ const os = require("os");
 WebSocketObserver().listener('userset/update', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
 
+    //添加是否在线
     let userNameList = userCenter().getUserList();
+    for (let k in userNameList) {
+        let userdata = userNameList[k];
+        if (permssion.isOnline(userdata.username))
+            userdata.data.online = true;
+        else
+            userdata.data.online = false;
+    }
+
     response.wsSend(data.ws, 'userset/update', {
         items: userNameList
     });
