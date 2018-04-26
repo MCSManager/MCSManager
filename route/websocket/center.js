@@ -72,7 +72,6 @@ setInterval(function () {
 
     //缓存值
     cacheSystemInfo = {
-        system: os.type() + " " + os.arch(),
         rss: (usage.rss / MB_SIZE).toFixed(1),
         heapTotal: (usage.heapTotal / MB_SIZE).toFixed(1),
         heapUsed: (usage.heapUsed / MB_SIZE).toFixed(1),
@@ -93,7 +92,8 @@ setInterval(function () {
         notPermssionCounter: counter.get('notPermssionCounter'), //API的无权访问
         root: mversion.root,
         oneversion: mversion.oneversion,
-        twoversion: mversion.twoversion
+        twoversion: mversion.twoversion,
+        system: mversion.system
     }
 
     let useMemBai = ((os.freemem() / 1024) / (os.totalmem() / 1024) * 100).toFixed(0);

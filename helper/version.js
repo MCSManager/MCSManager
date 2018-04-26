@@ -17,9 +17,10 @@ const tversion = "Beta_8.3.0.0"; //后端
 //     })
 // });
 
+let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
 module.exports = {
-    system: os.type() + " " + os.arch(),
+    system: info,
     root: process.cwd(),
     oneversion: oversion,
     twoversion: tversion

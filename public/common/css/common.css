@@ -81,6 +81,13 @@ input {
 	overflow-y: auto;
 }
 
+/* 右侧容器 */
+
+#ConsoleMain {
+	max-width: 1360px;
+	margin: auto;
+}
+
 /*布局结束*/
 
 /*标题*/
