@@ -262,6 +262,9 @@ process.on('SIGINT', function () {
     _endFlag = true;
     MCSERVER.infoLog('PROCESS', '程序正在结束,请稍等...'.red);
 
+    if (true) {
+        return 0;
+    }
     //保存
     counter.save();
     ServerModel.ServerManager().saveAllMinecraftServer();
