@@ -36,14 +36,14 @@ input {
 }
 
 #MasterLogo {
-	letter-spacing: 1.5px;
-	animation: ActionLogoA 1s;
-	animation-fill-mode: forwards;
+	/* letter-spacing: 1.5px; */
+	/* animation: ActionLogoA 1s; */
+	/* animation-fill-mode: forwards; */
 }
 
 #MasterLogo:hover {
-	animation: ActionLogoB 1s;
-	animation-fill-mode: forwards;
+	/* animation: ActionLogoB 1s; */
+	/* animation-fill-mode: forwards; */
 }
 
 #SideCol {
