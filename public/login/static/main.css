@@ -48,7 +48,7 @@ html {
     color: #fff;
 }
 
-#mlogin_context_footer {
+.mlogin_context_footer {
     color: #666;
     position: absolute;
     bottom: 8px;
@@ -163,7 +163,7 @@ html {
         top: 0;
         right: 0;
     }
-    #mlogin_context_footer {
+    .mlogin_context_footer {
         left: 24px;
     }
     .phone_not {
