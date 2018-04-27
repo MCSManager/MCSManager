@@ -95,7 +95,7 @@ html {
 
 #mlogin_forge {
     margin-top: 8px;
-    display: block;
+    display: inline-block;
 }
 
 /* 输入 */
