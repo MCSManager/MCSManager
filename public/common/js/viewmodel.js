@@ -137,7 +137,7 @@
 		flag = (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN);
 		//add
 		MinecraftConsole.innerHTML += consoleSafe;
-
+		//unblive bt ths is t
 		if (flag)
 			MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;
 
