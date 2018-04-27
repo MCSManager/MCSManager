@@ -41,8 +41,11 @@
                         <p>密码</p>
                         <input id="login-passwd" type="password" class="minput" placeholder="账号密码" onkeypress="enKeyPress()" />
                         <button id="login-button" class="mbutton" onclick="MCSERVER.btnLogin()">验证</button>
-                        <a href="/" id="mlogin_forge" class="text-right help-text" onclick="alert('请联系管理员更改密码，如果您是管理员，请删除user/文件夹下的所有#开头的管理用户')">
+                        <a href="/" class="mlogin_forge" onclick="alert('请联系管理员更改密码，如果您是管理员，请删除user/文件夹下的所有#开头的管理用户')">
                             忘记密码?
+                        </a>
+                        <a href="/" class="mlogin_forge" onclick="alert('暂无帮助提供')">
+                            需要帮助?
                         </a>
                     </div>
                     <p id="mlogin_context_footer" class="phone ">

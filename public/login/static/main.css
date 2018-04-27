@@ -93,9 +93,11 @@ html {
     margin-top: 20px;
 }
 
-#mlogin_forge {
-    margin-top: 8px;
-    display: inline-block;
+.mlogin_forge {
+    margin-top: 10px;
+    margin-left: 6px;
+    display: block;
+    float: right;
 }
 
 /* 输入 */
