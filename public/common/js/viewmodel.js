@@ -127,14 +127,20 @@
 	MI.routeListener('server/console/ws', function (data) {
 		var consoleSafe = terminalEncode(data.body);
 		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		if (MinecraftConsole == undefined) {
-			console.log('NULL')
+		if (MinecraftConsole == null) {
+			console.error('MinecraftConsole is null');
+			return;
 		}
-		MinecraftConsole.innerHTML += consoleSafe;
+		var flag = false;
+		//判断用户是否自己移动了滚轴
 		var BUFF_FONTIER_SIZE_DOWN = MinecraftConsole.scrollHeight - MinecraftConsole.clientHeight;
-		if (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN) {
+		flag = (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN);
+		//add
+		MinecraftConsole.innerHTML += consoleSafe;
+
+		if (flag)
 			MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;
-		}
+
 	});
 
 	//获取控制台历史记录
