@@ -14,7 +14,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="PanelItem" v-for="item of items">
+					<div class=" ItemTableList"></div>
+					<div class="PanelItem ItemTableList" v-for="item of items">
 						<div class="row">
 							<div class="col-md-7">
 								<div class="PanelItemInfo">
@@ -42,6 +43,9 @@
 								<div class="PanelItemMuem">
 									<!--<button class="btn btn-success">开启</button>
 											<button class="btn btn-success">关闭</button>-->
+									<button class="btn btn-primary" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName)">
+										事件监听
+									</button>
 									<button class="btn btn-info" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName)">
 										参数 | 配置
 									</button>
