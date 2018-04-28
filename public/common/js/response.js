@@ -103,7 +103,7 @@
 	RES.redirectPage = function (url, key, body, callback) {
 		var showUrl = url.replace(".", "");
 		var showKey = key || "Null"
-		TOOLS.setHeaderTitle(["加载", "|", showUrl, "| API:", showKey || "null"].join(" "));
+		TOOLS.setHeaderTitle(["正在加载...."].join(" "));
 		ToolsLoadingStart(function () {
 			MI.rOn('onend');
 			PageLoading();

@@ -24,6 +24,17 @@ input {
 	outline: none;
 }
 
+.btn {
+	border-radius: 0px;
+}
+
+.btn:hover {
+	opacity: 0.5;
+	/* action */
+	animation: btnHover 1s;
+	animation-fill-mode: forwards;
+}
+
 /*全局css定义结束*/
 
 #Header {
