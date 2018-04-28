@@ -101,7 +101,9 @@
 	});
 
 	RES.redirectPage = function (url, key, body, callback) {
-
+		var showUrl = url.replace(".", "");
+		var showKey = key || "Null"
+		TOOLS.setHeaderTitle(["加载", "|", showUrl, "| API:", showKey || "null"].join(" "));
 		ToolsLoadingStart(function () {
 			MI.rOn('onend');
 			PageLoading();
@@ -111,6 +113,7 @@
 			//触发页面切换事件
 			MI.on('RedirectPage', url);
 			RES.redirectHTML(url, key, body, function () {
+				TOOLS.setHeaderTitle(["当前", showUrl, " | ", "接口", showKey].join(" "));
 				MI.on('page/live');
 				//赋予的单页刷新
 				PAGE.refresh = function () {

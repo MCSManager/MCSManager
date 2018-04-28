@@ -97,4 +97,14 @@
 		return reg.test(text);
 	}
 
+	var cacheHeaderTitleEle = $("#HeaderInfo");
+	//设置头上显示什么
+	TOOLS.setHeaderTitle = function (text) {
+		if (text) {
+			cacheHeaderTitleEle.html(TOOLS.encode(text));
+		} else {
+			cacheHeaderTitleEle.html("");
+		}
+	}
+
 })();
