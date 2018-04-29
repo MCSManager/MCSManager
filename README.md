@@ -21,8 +21,10 @@
 
 运行环境
 -----------
+- 我们的部署简单至极，在`Master`分支下，我们的设计是下载即可运行，不需要编译与任何配置，除了安装一个环境。
+
 - `Node.js` >= 8.0
-- `镜像`: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
+- `下载镜像站点`: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
 
 <br />
 
@@ -45,6 +47,7 @@
 
 
 **方法二**
+
 介于某些原因，您可能并不愿意安装这些运行环境，于是我们给予了一种绿色打包的运行环境，下载即可直接使用
 
 下载直接双击运行: https://pan.baidu.com/s/1bpbB8Az (下载地址)
@@ -74,9 +77,6 @@ node app.js #或 npm start
 
 - 找不到模块 `ftpd`
 > 请输入 `npm install ftpd` 进行再次手动安装,这个模块是直接 github 指定源
-
-- 端口监听失败
-> 请修改 `McserverConfig.json` 文件中的端口号
 
 <br />
 
@@ -118,9 +118,26 @@ node app.js #或 npm start
 <br />
 
 
+配置文件
+-----------
+我们的配置文件是程序目录下的 `property.js` 文件，它会在你第一次运行的时候，自动生成。
+
+> 注意！原旧版本的 McserverConfig.json 文件完全弃用。
+
+> 现在，所有配置将全部归纳于此文件。
+
+> 此文件不会与 github 版本冲突，更新时也不会自动覆盖
+
+<br />
+
+
 自定义设计
 -----------
 如果你是内部使用或学习用途，你可以对前端以及后端进行任何修改，包括版权声明。
+
+> 注意！当你进行版本更新的时候，可能会覆盖掉你的自定义修改部分。
+
+> 当然，并不是所有文件都需要覆盖一遍，也不一定非得使用新版本。
 
 <br />
 
@@ -147,9 +164,9 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10021`(可更改)
 
 SSL
 -----------
-将 `public/common/URL.js` 中的 `'http://'` 改成 `'https://'`
+打开前端 URL 定位文件 `public/common/URL.js`, 将 http 与 ws 改成 https 与 wss；
 
-将 `public/common/js/websocket.js` 中的`'ws://'` 改成 `'wss://'`
+> 此文件不会与 github 版本冲突，更新时也不会覆盖，请放心修改。
 
 即可保证前端所有请求均为 Https 和 Wss
 
@@ -190,7 +207,7 @@ SSL
 
 <br />
 
-开源协议与版权
+协议与版权
 -----------
 程序是基于 [GNU Affero General Public License v3.0](./LICENSE "GNU Affero General Public License v3.0")  开放源代码的自由软件。
 

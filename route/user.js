@@ -68,6 +68,7 @@ router.post('/login', function (req, res) {
     let enkey = req.session['login_md5key'] || '';
     //登陆规则
     if (!LoginRule(ip)) {
+        response.returnMsg(res, 'login/check', "密码错误次数过多!您已被锁定!请10分钟之后再进行登录!");
         return;
     };
 

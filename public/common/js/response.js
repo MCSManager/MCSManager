@@ -8,7 +8,7 @@
 	RES.TOKEN_NAME = TOKEN_NAME;
 	RES.TOKEN = null;
 	RES.getToken = function (callback) {
-		//		同源策略可以防止其他域对这里发送一个Ajax请求.
+		//同源策略可以防止其他域对这里发送一个Ajax请求.
 		var _url = MCSERVER.URL("./token?_LoveYouMaster_Time=" + Date.parse(new Date()));
 		$.get(_url, function (data, status) {
 			data = JSON.parse(data);
@@ -101,7 +101,9 @@
 	});
 
 	RES.redirectPage = function (url, key, body, callback) {
-
+		var showUrl = url.replace(".", "");
+		var showKey = key || "Null"
+		TOOLS.setHeaderTitle(["正在加载...."].join(" "));
 		ToolsLoadingStart(function () {
 			MI.rOn('onend');
 			PageLoading();
@@ -111,6 +113,7 @@
 			//触发页面切换事件
 			MI.on('RedirectPage', url);
 			RES.redirectHTML(url, key, body, function () {
+				TOOLS.setHeaderTitle(["当前", showUrl, " | ", "接口", showKey].join(" "));
 				MI.on('page/live');
 				//赋予的单页刷新
 				PAGE.refresh = function () {

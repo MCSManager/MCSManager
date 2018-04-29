@@ -10,6 +10,8 @@ const permssion = require('../../helper/Permission');
 const userModel = require('../../model/UserModel');
 const os = require("os");
 
+const mversion = require('../../helper/version');
+
 const MB_SIZE = 1024 * 1024;
 let serverM = serverModel.ServerManager();
 let userM = userModel.userCenter();
@@ -70,7 +72,6 @@ setInterval(function () {
 
     //缓存值
     cacheSystemInfo = {
-        system: os.type() + " " + os.arch(),
         rss: (usage.rss / MB_SIZE).toFixed(1),
         heapTotal: (usage.heapTotal / MB_SIZE).toFixed(1),
         heapUsed: (usage.heapUsed / MB_SIZE).toFixed(1),
@@ -88,8 +89,11 @@ setInterval(function () {
         banip: banipc, //封的ip
         passwordError: counter.get('passwordError'), //密码错误次数
         csrfCounter: counter.get('csrfCounter'), //可能存在的CSRF攻击次数
-        notPermssionCounter: counter.get('notPermssionCounter') //API的无权访问
-
+        notPermssionCounter: counter.get('notPermssionCounter'), //API的无权访问
+        root: mversion.root,
+        oneversion: mversion.oneversion,
+        twoversion: mversion.twoversion,
+        system: mversion.system
     }
 
     let useMemBai = ((os.freemem() / 1024) / (os.totalmem() / 1024) * 100).toFixed(0);

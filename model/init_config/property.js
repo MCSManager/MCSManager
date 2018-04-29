@@ -15,7 +15,7 @@
  * 当然你可以选择不改动此文件。
  * 
  * 
- * 绝大部分设置，需要重启面板生效！
+ * 绝大部分设置，需要重启面板生效！！
  */
 
 
@@ -32,7 +32,26 @@ else
 
 
 
-/*--------------- 配置开始，这与 Minecraft 服务器配置几乎差不多 --------------- */
+/*--------------- 配置开始，这与 Minecraft 服务器配置基本一样 --------------- */
+
+//HTTP 服务监听端口
+MCSERVER.localProperty.http_port = 23333;
+
+
+//HTTP 服务监听ip, 默认 0.0.0.0
+MCSERVER.localProperty.http_ip = "";
+
+
+//是否开启 FTP 服务
+MCSERVER.localProperty.ftp_is_allow = true;
+
+
+//FTP 服务监听端口
+MCSERVER.localProperty.ftp_port = 10022;
+
+
+//HTTP 服务监听ip, 默认 0.0.0.0
+MCSERVER.localProperty.ftp_ip = "";
 
 
 //FTP 被动模式端口范围

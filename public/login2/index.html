@@ -1,73 +1,93 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta http-equiv="Content-Language" content="zh-CN" />
-		<meta name="renderer" content="webkit" />
-		<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
-		
-		<title>Mcserver 验证</title>
-		
-		<link rel="stylesheet" href="./app.min.css">
-		<!--[if lt IE 9]>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="zh-CN" />
+	<meta name="renderer" content="webkit" />
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+
+	<title>Mcserver 验证</title>
+
+	<link href="./static/template/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./static/login/css/style.css" rel="stylesheet">
+	<link href="./static/common/image/icon.ico" rel="shortcut icon">
+	<!--[if lt IE 9]>
         <div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
             <b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
         </div>
     <![endif]-->
-	</head>
+</head>
 
-	<body class="hold-transition login-page">
+<body>
 
-		<div class="login-box">
-			<div class="login-logo">
-				<a href="#">Mcserver Panel</a>
-			</div>
-			<!-- login-logo -->
-			<div class="login-box-body">
-				<p class="login-box-msg">登录以管理您的服务器</p>
-
-				<!--<form id="login-form">-->
-				<div class="form-group has-feedback">
-					<input id="login-userid" type="email" class="form-control" placeholder="用户名">
-					<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-				</div>
-				<div class="form-group has-feedback">
-					<input id="login-passwd" type="password" class="form-control" placeholder="密码">
-					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-				</div>
-
-				<div id="msg" class="callout hide"></div>
-
+	<div id='view-bg'>
+		<img src="./static/login/img/background.jpg" height="100%" width="100%" />
+	</div>
+	<div id='login-view' class="show-ui">
+		<div id='login-sub'>
+			<div class="container-fluid">
 				<div class="row">
-					<!-- col -->
-					<div id="forgot-passwd" class="col-xs-8">
-						<a href="#" onclick="alert('请联系管理员更改密码，如果您是管理员，请删除user/文件夹下的所有#开头的管理用户')">忘记密码</a><br>
-					</div>
-
-					<div class="col-xs-4">
-						<button id="login-button" class="btn btn-primary btn-block btn-flat" onclick="MCSERVER.btnLogin()">登 录</button>
-					</div>
-					<!-- col -->
+					<img id='logo' src="static/common/logo.png">
+					<br>
+					<!-- <span class="ft-size-12 ft-color-black ft-text-index">登录到 Mcserver。</span> -->
 				</div>
-				<!--</form>-->
+				<div id='login-form' class="row">
+					<!-- 表单开始 -->
+					<form class="form-horizontal" role="form">
+						<div class="form-group has-feedback">
+							<div class="col-sm-12">
+								<input type="text" class="form-control border-1 minput" id="login-userid" placeholder="普通用户 | 管理用户">
+								<span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
+
+							</div>
+						</div>
+						<div class="form-group has-feedback">
+							<div class="col-sm-12">
+								<input type="password" class="form-control border-1 minput" id="login-passwd" placeholder="密码" onkeypress="enKeyPress()">
+								<span class="glyphicon glyphicon-th form-control-feedback" aria-hidden="true"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-4 col-sm-6"></div>
+							<div class="col-xs-8 col-sm-6">
+								<a href="/" id="form-help" class="text-right help-text" onclick="alert('请联系管理员更改密码，如果您是管理员，请删除user/文件夹下的所有#开头的管理用户')">忘记密码?</a>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div id='login-button' class="btn btn-default btn-info border-1" onclick="MCSERVER.btnLogin()">
+									<b>验证</b>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- 表单结束 -->
+				</div>
+				<div id="copyright" class="row text-justify">
+					<!-- 你可以删除这里的版权，添加你自己的版权 -->
+					<span>©2013-2018 Suwings. All rights reserved.</span>
+				</div>
 			</div>
-			<!-- login-box-body -->
 		</div>
+	</div>
+	<div id='view-info' class="alert alert-info show-ui tools-info">默认信息框</div>
+</body>
+<script type="text/javascript" src="./static/template/jq/jq.min.js"></script>
+<script type="text/javascript" src="../common/URL.js"></script>
+<script type="text/javascript" src="../common/md5.js"></script>
+<script type="text/javascript" src="../common/js/login.js"></script>
+<script type="text/javascript">
+	function enKeyPress() {
+		console.log("按下:" + event.keyCode);
+		if (event.keyCode == 13) {
+			//登录
+			MCSERVER.btnLogin();
+		}
+	}
+</script>
 
-		<!-- login-box -->
-
-		<!-- App Scripts -->
-		<!--<script type="text/javascript" src="./app.min.js"></script>-->
-		<script src="../common/jquery-3.2.1.min.js"></script>
-		<script type="text/javascript" src="../common/URL.js" ></script>
-		<script type="text/javascript" src="../common/md5.js" ></script>
-		<script src="../common/js/login.js"></script>
-		
-
-		<!--<script src="./static/template/bootstrap/js/bootstrap.min.js"></script>-->
-	</body>
 
 </html>

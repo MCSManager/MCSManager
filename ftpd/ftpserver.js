@@ -72,6 +72,8 @@ module.exports.runFTPServer = () => {
   ].join(" "));
 
   MCSERVER.infoLog('FTP'.green,
-    " FTP  模块监听: [ ftp://" + (MCSERVER.softConfig.FTP_ip || "127.0.0.1".yellow) + ":" + MCSERVER.softConfig.FTP_port + " ]");
+    " FTP  模块监听: [ ftp://" +
+    (options.host || "127.0.0.1".yellow) +
+    ":" + options.port + " ]");
 
 }

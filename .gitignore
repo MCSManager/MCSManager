@@ -13,7 +13,8 @@ server/*.json
 public/*.json
 McserverConfig.json
 core/*.json
-
+public/common/URL.js
+property.js
 
 # node
 node_modules/

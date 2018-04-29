@@ -24,6 +24,17 @@ input {
 	outline: none;
 }
 
+.btn {
+	border-radius: 0px;
+}
+
+.btn:hover {
+	opacity: 0.5;
+	/* action */
+	animation: btnHover 1s;
+	animation-fill-mode: forwards;
+}
+
 /*全局css定义结束*/
 
 #Header {
@@ -33,17 +44,19 @@ input {
 	top: 0px;
 	width: 100%;
 	z-index: 102;
+	box-shadow: 0 0 5px 0 rgba(0, 0, 0, .6);
 }
 
 #MasterLogo {
-	letter-spacing: 1.5px;
-	animation: ActionLogoA 1s;
-	animation-fill-mode: forwards;
+	/* background-color: rgb(255, 255, 255); */
+	/* letter-spacing: 1.5px; */
+	/* animation: ActionLogoA 1s; */
+	/* animation-fill-mode: forwards; */
 }
 
 #MasterLogo:hover {
-	animation: ActionLogoB 1s;
-	animation-fill-mode: forwards;
+	/* animation: ActionLogoB 1s; */
+	/* animation-fill-mode: forwards; */
 }
 
 #SideCol {
@@ -65,12 +78,6 @@ input {
 	right: 0px;
 }
 
-@media (max-width:640px) {
-	#websocket {
-		display: none;
-	}
-}
-
 #MainContainer {
 	position: absolute;
 	width: 100%;
@@ -81,13 +88,20 @@ input {
 	overflow-y: auto;
 }
 
+/* 右侧容器 */
+
+#ConsoleMain {
+	max-width: 1360px;
+	margin: auto;
+}
+
 /*布局结束*/
 
 /*标题*/
 
 .HeaderItem {
 	color: #E5E5E5;
-	line-height: 49px;
+	line-height: 50px;
 	font-size: 14px;
 	margin: 0;
 	float: left;
@@ -98,6 +112,18 @@ input {
 
 /*标题的右侧菜单*/
 
+.HeaderTitle {
+	display: inline-block;
+	*zoom: 1;
+	overflow: hidden;
+	text-align: center;
+	line-height: 50px;
+	color: rgb(252, 252, 252);
+	font-size: 12px;
+	padding: 0 16px;
+	font-weight: 400;
+}
+
 .HeaderR {
 	float: right;
 }
@@ -107,8 +133,8 @@ input {
 	*zoom: 1;
 	overflow: hidden;
 	text-align: center;
-	line-height: 49px;
-	color: white;
+	line-height: 50px;
+	color: rgb(250, 250, 250);
 	font-size: 12px;
 	padding: 0 12px;
 	cursor: pointer;
@@ -296,4 +322,13 @@ input {
 	width: 100%;
 	overflow: hidden;
 	line-height: 3px;
+}
+
+@media (max-width:640px) {
+	#websocket {
+		display: none;
+	}
+	#HeaderInfo {
+		display: none;
+	}
 }

@@ -15,7 +15,7 @@
 
 	window.WS.init = function (openCallback) {
 		var wsURL = 'websocket/ws?' + RES.TOKEN_NAME + '=' + RES.TOKEN;
-		window.WS = new WebSocket(MCSERVER.URL(wsURL, 'ws://'));
+		window.WS = new WebSocket(MCSERVER.URL(wsURL, MCSERVER.WS_PROTOCOL));
 		var tmp_callback = null;
 		wsHeartBeatPackage(WS); //心跳包定时器开启
 

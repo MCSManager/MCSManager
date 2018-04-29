@@ -17,7 +17,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="PanelItem" v-for="item of items">
+					<div class="ItemTableList"></div>
+					<div class="PanelItem ItemTableList" v-for="item of items">
 						<div class="row">
 							<div class="col-md-7">
 								<div class="PanelItemInfo">
@@ -27,14 +28,18 @@
 										<span v-text="item.username"></span>
 									</h4>
 									<div>
-										创建时间:
-										<span v-text="item.data.createDate"> </span> | 最后上线:
+										<span v-if="item.data.online" class="color-green">正在线上</span>
+										<span v-if="!item.data.online" class="color-red">离线</span>
+										| 创建时间:
+										<span v-text="item.data.createDate"> </span>
+										| 最后上线:
 										<span v-text="item.data.lastDate"> </span>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-5 NextCol">
 								<div class="PanelItemMuem">
+									<!-- <button class="btn btn-primary" v-on:click="">权限配置</button> -->
 									<button class="btn btn-success" v-on:click="toUserView(item.username)">详细信息</button>
 									<span style="margin-left: 8px;"> | </span>
 									<button class="btn btn-danger" v-on:click="toDeleteUser(item.username)">删除</button>

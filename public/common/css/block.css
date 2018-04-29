@@ -172,6 +172,16 @@
 	background-color: #e6e6e6;
 }
 
+/* 专门用来覆盖 PanelItem 的特殊元素 */
+
+.ItemTableList {
+	padding: 0px 8px;
+	width: 100%;
+	margin-bottom: 0px;
+	border-bottom: 1px solid #d8d8d8;
+	background-color: initial;
+}
+
 .input-group {
 	margin-bottom: 10px;
 }

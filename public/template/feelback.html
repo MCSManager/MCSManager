@@ -1,5 +1,17 @@
 <div id='' class="OneContainer">
 	<div class="row">
+		<div id='News' class="col-md-6">
+			<div class="Panel PanelGreen">
+				<div class="PanelTitle">最新动态与信息通知</div>
+				<div class="PanelBody">
+					<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板重启时自动更新)</p>
+					<div class="news" v-for="item of items">
+						<p class="color-gray" v-text="item.time"></p>
+						<p v-text="item.msg"></p>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="col-sm-6">
 			<div class="Panel PanelGreen">
 				<div class="PanelTitle">客户使用反馈</div>
@@ -11,13 +23,12 @@
 						<a target="_blank" href="https://wj.qq.com/s/1494129/b8b5">调查问卷</a>
 					</p>
 					<br>
-					<p>我们将快速更新，加快版本更新周期。</p>
+					<p>我们将逐步稳定更新，减少或不更改核心模块。</p>
+
 					<br>
-					<br>
+
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-6">
 			<div class="Panel PanelGreen">
 				<div class="PanelTitle">支持 Mcserver 管理器后续版本</div>
 				<div class="PanelBody">
@@ -36,30 +47,45 @@
 					<p>我们欢迎您转载本软件，使用次数越高，便越有可能更早的更新后续版本.</p>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="Panel PanelRed">
+
+			<div class="Panel ">
 				<div class="PanelTitle">源代码开放协议</div>
 				<div class="PanelBody">
 					<p>本项目完全开源:
 						<a href="https://github.com/Suwings/MCSManager" target="_blank">https://github.com/Suwings/MCSManager </a>
 					</p>
 					<p>欢迎参观，欢迎 pull request , issues，或 star</p>
-					<small>开源协议: GNU Affero General Public License v3.0</small>
+					<p>开源协议: GNU Affero General Public License v3.0</p>
+					<p>每一个人都是这款软件的开发者，自定义设计将完全取决于您。</p>
 					<br>
-
 				</div>
 			</div>
+
 		</div>
 	</div>
+
+
 </div>
 
 </div>
 <script>
 	MI.rListener('onload', function () {
+		//请求早已缓存的 最新动态
+		RES.ajax({
+			type: 'GET',
+			url: './public/news.json',
+			success: function (data) {
+				VIEW_MODEL['News'] = data;
+				VIEW_MODEL.newVue('News', {
+					el: '#News',
+				});
+				MI.routeCopy('News', data);
+				VIEW_MODEL.newVue('SystemUp', {
+					el: '#SystemUp'
+				});
 
+			}
+		});
 	})
 
 	MI.rListener('onend', function () {})

@@ -9,17 +9,28 @@ try {
     //忽略任何版本检测导致的错误
 }
 
+const fs = require('fs');
+const fsex = require('fs-extra');
+
 //总全局变量
 global.MCSERVER = {};
 
 //全局仅限本地配置
 MCSERVER.localProperty = {};
+
+const tools = require('./core/tools');
+
+//生成第一次配置文件
+const INIT_CONFIG_PATH = './model/init_config/';
+const PRO_CONFIG = './property.js';
+if (!fs.existsSync(PRO_CONFIG))
+    tools.mCopyFileSync(INIT_CONFIG_PATH + 'property.js', PRO_CONFIG);
+
 //加载配置
 require('./property');
 
 
 const express = require('express');
-const fs = require('fs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -39,6 +50,7 @@ const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
 const tokenManger = require('./helper/TokenManager');
+
 
 //控制台颜色
 const colors = require('colors');
@@ -60,25 +72,11 @@ const LOGO_FILE_PATH = './core/logo.txt';
 let data = fs.readFileSync(LOGO_FILE_PATH, 'utf-8');
 console.log(data);
 
-
 //全局数据中心 记录 CPU 内存 
 MCSERVER.dataCenter = {};
 
 //装载log记录器
 require('./core/log');
-
-//全局设置
-MCSERVER.softConfig = new DataModel('McserverConfig');
-if (fs.existsSync('./McserverConfig.json')) {
-    MCSERVER.softConfig.load();
-} else {
-    //初始化
-    MCSERVER.softConfig.ip = '';
-    MCSERVER.softConfig.port = 23333;
-    MCSERVER.softConfig.FTP_port = 10021;
-    MCSERVER.softConfig.FTP_ip = '';
-    MCSERVER.softConfig.save();
-}
 
 //全局登陆记录器
 MCSERVER.login = {};
@@ -88,10 +86,6 @@ MCSERVER.onlineUser = {};
 MCSERVER.allSockets = {};
 //全局 数据内存记录器
 MCSERVER.logCenter = {};
-
-// 过期的数据对象
-// MCSERVER.logCenter.CPU = [];
-// MCSERVER.logCenter.RAM = [];
 
 //init
 MCSERVER.logCenter.initLogData = (objStr, len, def = null) => {
@@ -185,19 +179,20 @@ process.on("uncaughtException", function (err) {
     const SERVER_PATH = './server/';
     const SERVER_PATH_CORE = './server/server_core/';
     const CENTEN_LOG_JSON_PATH = './core/info.json';
+    const PUBLIC_URL_PATH = './public/common/URL.js';
+
     try {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) {
             fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
         }
-        if (!fs.existsSync(CENTEN_LOG_JSON_PATH)) {
-            let resetData = fs.readFileSync('./core/info_reset.json', {
-                encoding: 'UTF-8'
-            });
-            fs.writeFileSync('./core/info.json', resetData, {
-                encoding: 'UTF-8'
-            });
-        }
+
+        // 生成不 git 同步的文件
+        if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
+            tools.mCopyFileSync(INIT_CONFIG_PATH + 'info_reset.json', CENTEN_LOG_JSON_PATH);
+        if (!fs.existsSync(PUBLIC_URL_PATH))
+            tools.mCopyFileSync(INIT_CONFIG_PATH + 'INIT_URL.js', PUBLIC_URL_PATH);
+
     } catch (err) {
         MCSERVER.error('初始化文件环境失败,建议重启,请检查以下报错:', err);
     }
@@ -230,26 +225,26 @@ app.use('/fs', require('./onlinefs/controller/function'));
     ServerModel.ServerManager().loadALLMinecraftServer();
     MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
 
-    var host = MCSERVER.softConfig.ip;
-    var port = MCSERVER.softConfig.port;
+    var host = MCSERVER.localProperty.http_ip;
+    var port = MCSERVER.localProperty.http_port;
 
     if (host == '::')
         host = '127.0.0.1';
 
     //App Http listen
-    app.listen(MCSERVER.softConfig.port, MCSERVER.softConfig.ip, () => {
+    app.listen(MCSERVER.localProperty.http_port, MCSERVER.localProperty.http_ip, () => {
 
         MCSERVER.infoLog('HTTP', 'HTTP 模块监听: [ http://' + (host || '127.0.0.1'.yellow) + ':' + port + ' ]');
 
         //现在执行 FTP 服务器启动过程
         ftpServerInterface.initFTPdServerOptions({
-            host: MCSERVER.softConfig.FTP_ip || '127.0.0.1',
-            port: MCSERVER.softConfig.FTP_port,
+            host: MCSERVER.localProperty.ftp_ip || '127.0.0.1',
+            port: MCSERVER.localProperty.ftp_port,
             tls: null
         });
 
-        //执行ftp逻辑
-        require('./ftpd/index');
+        if (MCSERVER.localProperty.ftp_is_allow)
+            require('./ftpd/index'); //执行ftp逻辑
     });
 
 

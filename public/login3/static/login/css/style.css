@@ -52,6 +52,7 @@ a:active {
 	animation-fill-mode: forwards;
 }
 
+/* 
 #view-bg-back {
 	/* z-index: -2;
 	width: 100%;
@@ -60,9 +61,10 @@ a:active {
 	min-height: 475px;
 	background-color: black;
 	opacity: 0.4; */
-}
 
-#view-page {
+/* } */
+
+*/ #view-page {
 	background-color: unset;
 	height: 100%;
 	width: 100%;

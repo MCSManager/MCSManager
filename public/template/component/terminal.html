@@ -37,7 +37,9 @@
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;
 
+		//容器布局改变
 		$('#MainContainer').css('background-color', 'rgb(60,60,60)');
+		$('#ConsoleMain').css('max-width', '999999px');
 
 		WS.sendMsg('server/console/ws', PAGE.serverName);
 
@@ -45,7 +47,6 @@
 		PAGE.TerminalMinecraft.css('height', (document.body.clientHeight - 50 - 45) + 'px')
 
 		PAGE.tmp_onresize = function () {
-			console.log('改变 --- TerminalMinecraft')
 			$('#TerminalMinecraft').css('height', (document.body.clientHeight - 50 - 45) + 'px');
 		};
 
@@ -123,7 +124,6 @@
 			}
 
 		}
-		//		setInterval(PAGE.maskTerminalLoad, 500);
 
 		PAGE.terminalLoad = function (callback) {
 			jl = false;
@@ -133,30 +133,28 @@
 				jl = true;
 				callback && callback();
 			});
-			//			$(this).css('display', 'none');
 		}
 
 		PAGE.terminalLoad(function () {
 			//由于DOM插入时间不一定，所以此功能只能靠猜~
 			setTimeout(function () {
 				$("#TerminalMinecraft")[0].scrollTop = $("#TerminalMinecraft")[0].scrollHeight;
-				//				console.log('fuck!!!!!!!!', $("#TerminalMinecraft")[0].scrollTop)
-			}, 800);
+			}, 1000);
 
 		});
-
-		//		setTimeout
 
 	});
 
 	MI.rListener('onend', function () {
-		console.log('页面关闭');
 		WS.sendMsg('server/console/remove', '');
 		PAGE.mainC.onscroll = function () {};
 
 		MI.onDestroy('resize', PAGE.tmp_onresize);
-		//		$('#MainContainer').css('background-color', 'rgb(220,218,218)');
+
+		//布局恢复
 		$('#MainContainer').removeAttr('style');
+		$('#ConsoleMain').removeAttr('style');
+
 		delete PAGE;
 		PAGE = {};
 	})

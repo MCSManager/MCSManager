@@ -18,11 +18,6 @@
 	//管理员的
 	//注意，这些页面只能管理员访问，普通用户就算访问，也得不到任何数据
 	MCSERVER.meumObject.masterMeum = [{
-		class: 'glyphicon-home',
-		name: '控制面板情报',
-		link: './template/index.html',
-		api: 'index/update'
-	}, {
 		class: 'glyphicon-equalizer',
 		name: '监控数据中心',
 		link: './template/center.html',
@@ -38,13 +33,8 @@
 		link: './template/userset.html',
 		api: 'userset/update'
 	}, {
-		class: 'glyphicon-cog',
-		name: '控制面板设置',
-		link: './template/softset.html',
-		api: 'soft/view'
-	}, {
 		class: 'glyphicon-floppy-open',
-		name: '客户支持',
+		name: '服务与支持',
 		link: './template/feelback.html',
 		api: null
 	}]
