@@ -39,6 +39,7 @@ const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
 const tokenManger = require('./helper/TokenManager');
+const fsex = require('fs-extra');
 
 //控制台颜色
 const colors = require('colors');
@@ -185,19 +186,17 @@ process.on("uncaughtException", function (err) {
     const SERVER_PATH = './server/';
     const SERVER_PATH_CORE = './server/server_core/';
     const CENTEN_LOG_JSON_PATH = './core/info.json';
+    const PUBLIC_URL_PATH = './public/common/URL.js';
     try {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) {
             fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
         }
-        if (!fs.existsSync(CENTEN_LOG_JSON_PATH)) {
-            let resetData = fs.readFileSync('./core/info_reset.json', {
-                encoding: 'UTF-8'
-            });
-            fs.writeFileSync('./core/info.json', resetData, {
-                encoding: 'UTF-8'
-            });
-        }
+        // 生成不 git 同步的文件
+        if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
+            fsex.copy('./core/info_reset.json', CENTEN_LOG_JSON_PATH, (err) => {});
+        if (!fs.existsSync(PUBLIC_URL_PATH))
+            fsex.copy('./public/common/INIT_URL.js', PUBLIC_URL_PATH, (err) => {});
     } catch (err) {
         MCSERVER.error('初始化文件环境失败,建议重启,请检查以下报错:', err);
     }

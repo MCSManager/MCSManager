@@ -1,6 +1,8 @@
 //标准的URL定位器
 //如果你的程序不在根目录，可以考虑更改这里，或者你有什么其他姿势。
 //如果你需要反向代理加入SSL，请更改此处
+//INIT_URL.js 与 URL.js 一模一样,前者是用于第一次运行作为副本使用
+//请修改 URL.js 而不是 INIT_URL.js
 
 //某些 login 页面没有 MCSERVER 全局变量，在此实例化
 if (window.MCSERVER == undefined) window.MCSERVER = {};
