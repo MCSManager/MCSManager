@@ -13,6 +13,7 @@ server/*.json
 public/*.json
 McserverConfig.json
 core/*.json
+public/common/URL.js
 
 
 # node
