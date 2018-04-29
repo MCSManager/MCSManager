@@ -193,13 +193,14 @@ process.on("uncaughtException", function (err) {
         if (!fs.existsSync(SERVER_PATH)) {
             fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
         }
+
         // 生成不 git 同步的文件
         if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
             fsex.copy(INIT_CONFIG_PATH + 'info_reset.json', CENTEN_LOG_JSON_PATH, (err) => {});
         if (!fs.existsSync(PUBLIC_URL_PATH))
             fsex.copy(INIT_CONFIG_PATH + 'INIT_URL.js', PUBLIC_URL_PATH, (err) => {});
-        // if (!fs.existsSync(PUBLIC_URL_PATH))
-        //     fsex.copy(INIT_CONFIG_PATH + 'INIT_URL.js', PUBLIC_URL_PATH, (err) => {});
+        if (!fs.existsSync(PUBLIC_URL_PATH))
+            fsex.copy(INIT_CONFIG_PATH + 'property.js', './property.js', (err) => {});
     } catch (err) {
         MCSERVER.error('初始化文件环境失败,建议重启,请检查以下报错:', err);
     }
