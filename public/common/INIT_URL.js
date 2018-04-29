@@ -13,14 +13,13 @@ MCSERVER.WS_PROTOCOL = 'ws://';
 //HTTP 默认协议
 MCSERVER.HTTP_PROTOCOL = 'http://';
 
-
-console.log([
-	'PROTOCOL: ',
-	'WS_PROTOCOL:',
-	MCSERVER.WS_PROTOCOL,
-	'| HTTP_PROTOCOL:',
-	MCSERVER.HTTP_PROTOCOL
-].join(" "));
+// console.log([
+// 	'PROTOCOL: ',
+// 	'WS_PROTOCOL:',
+// 	MCSERVER.WS_PROTOCOL,
+// 	'| HTTP_PROTOCOL:',
+// 	MCSERVER.HTTP_PROTOCOL
+// ].join(" "));
 
 
 //URL定位器
