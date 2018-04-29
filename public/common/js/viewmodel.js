@@ -21,6 +21,7 @@
 	});
 
 	MI.listener('ws/close', function (ws) {
+		TOOLS.setHeaderTitle("离线 | 当前与服务器断开..");
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
 		webscoketStatus['status'] = '!!! 连接断开 !!!';
 		webscoketStatus['is'] = false;

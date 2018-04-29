@@ -200,12 +200,7 @@
 
 						//是否登陆
 						if (!MCSERVER.username) {
-							TOOLS.pushMsgWindow('[认证失败] 请登录您的账号，正在为您跳转....');
-							//重定向到登录页面
-							setTimeout(function () {
-								console.log("跳转");
-								window.location.href = MCSERVER.URL("login");
-							}, 4200);
+							window.location.href = MCSERVER.URL("login");
 							return;
 						}
 
