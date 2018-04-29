@@ -8,7 +8,7 @@
 	RES.TOKEN_NAME = TOKEN_NAME;
 	RES.TOKEN = null;
 	RES.getToken = function (callback) {
-		//		同源策略可以防止其他域对这里发送一个Ajax请求.
+		//同源策略可以防止其他域对这里发送一个Ajax请求.
 		var _url = MCSERVER.URL("./token?_LoveYouMaster_Time=" + Date.parse(new Date()));
 		$.get(_url, function (data, status) {
 			data = JSON.parse(data);
