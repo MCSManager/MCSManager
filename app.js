@@ -72,25 +72,11 @@ const LOGO_FILE_PATH = './core/logo.txt';
 let data = fs.readFileSync(LOGO_FILE_PATH, 'utf-8');
 console.log(data);
 
-
 //全局数据中心 记录 CPU 内存 
 MCSERVER.dataCenter = {};
 
 //装载log记录器
 require('./core/log');
-
-//全局设置
-MCSERVER.softConfig = new DataModel('McserverConfig');
-if (fs.existsSync('./McserverConfig.json')) {
-    MCSERVER.softConfig.load();
-} else {
-    //初始化
-    MCSERVER.softConfig.ip = '';
-    MCSERVER.softConfig.port = 23333;
-    MCSERVER.softConfig.FTP_port = 10021;
-    MCSERVER.softConfig.FTP_ip = '';
-    MCSERVER.softConfig.save();
-}
 
 //全局登陆记录器
 MCSERVER.login = {};
@@ -100,10 +86,6 @@ MCSERVER.onlineUser = {};
 MCSERVER.allSockets = {};
 //全局 数据内存记录器
 MCSERVER.logCenter = {};
-
-// 过期的数据对象
-// MCSERVER.logCenter.CPU = [];
-// MCSERVER.logCenter.RAM = [];
 
 //init
 MCSERVER.logCenter.initLogData = (objStr, len, def = null) => {
