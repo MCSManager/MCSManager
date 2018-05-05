@@ -317,7 +317,7 @@ input {
 	line-height: 3px;
 }
 
-@media (max-width:640px) {
+@media (max-width:760px) {
 	#HeaderInfo {
 		display: none;
 	}
