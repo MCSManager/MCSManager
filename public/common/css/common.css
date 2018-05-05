@@ -26,13 +26,11 @@ input {
 
 .btn {
 	border-radius: 0px;
+	transition: opacity 1s;
 }
 
 .btn:hover {
 	opacity: 0.5;
-	/* action */
-	animation: btnHover 1s;
-	animation-fill-mode: forwards;
 }
 
 /*全局css定义结束*/
@@ -47,16 +45,18 @@ input {
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, .6);
 }
 
-#MasterLogo {
-	/* background-color: rgb(255, 255, 255); */
-	/* letter-spacing: 1.5px; */
-	/* animation: ActionLogoA 1s; */
-	/* animation-fill-mode: forwards; */
+/* logo 图片 */
+
+#MasterLogo img {
+	animation: MasterLogoImg 2s ease infinite;
+	animation-delay: 4s;
+	animation-iteration-count: 100;
 }
 
+/* logo 块 */
+
 #MasterLogo:hover {
-	/* animation: ActionLogoB 1s; */
-	/* animation-fill-mode: forwards; */
+	animation: MasterLogoImg 1s;
 }
 
 #SideCol {
@@ -138,6 +138,7 @@ input {
 	font-size: 12px;
 	padding: 0 12px;
 	cursor: pointer;
+	transition: background-color .3s;
 }
 
 .HeaderR div:hover {
@@ -166,9 +167,7 @@ input {
 	text-align: left;
 	padding-left: 20px;
 	font-size: 12px;
-	/* action */
-	animation: ActionCommonColorA 1.4s, ActionMarginLeftA 0.3s;
-	animation-fill-mode: forwards;
+	transition: background-color 0.5s, margin-left 0.3s;
 }
 
 #SideColMenu a span {
@@ -177,10 +176,8 @@ input {
 
 #SideColMenu a:hover {
 	text-decoration: none;
-	/* background-color: #017EBC; */
-	/* action */
-	animation: ActionCommonColorB 0.3s, ActionMarginLeftB 0.2s;
-	animation-fill-mode: forwards;
+	background-color: rgb(1, 126, 188);
+	margin-left: 8px;
 }
 
 /*菜单的收缩*/
@@ -197,15 +194,12 @@ input {
 	border-radius: 2px;
 	cursor: pointer;
 	box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25);
-	animation: ActionLeftButtonA 0.5s;
-	animation-fill-mode: forwards;
+	transition: width 0.4s, background-color 0.4s;
 }
 
 #ShowMenu:hover {
-	/* action */
-	animation: ActionLeftButtonB 0.5s;
-	animation-fill-mode: forwards;
-	/* animation-iteration-count: infinite; */
+	width: 20px;
+	background-color: rgb(226, 226, 0);
 }
 
 /*针对于单页的首页容器*/
