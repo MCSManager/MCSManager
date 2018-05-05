@@ -14,11 +14,13 @@ a:active {
     text-decoration: none;
 }
 
-body,
-html {
+html,
+body {
     border: 0;
     margin: 0;
     height: 100%;
+    font-family: "微软雅黑", "幼圆", "microsoft yahei";
+    overflow: hidden;
 }
 
 #mview_background {
