@@ -56,10 +56,20 @@
 		</div>
 		<div id="HeaderInfo" class="HeaderTitle"></div>
 		<div class="HeaderR">
-			<div id='websocket' v-text="status" v-bind:style="{ color: tcolor}">
+
+			<div id='websocket' v-text="status" v-bind:style="{ color: tcolor}" class="PhoneDisplayNone">
 				正在链接到服务器...
 			</div>
-			<div id='loginOut' v-on:click="loginOut()">退出</div>
+			<div id='TitleUser' class="PhoneDisplayNone">
+				<span v-if="is">
+					<span class="glyphicon glyphicon-user"></span>
+					{{ MCSERVER.username }}
+				</span>
+			</div>
+			<div id='loginOut' v-on:click="loginOut()">
+				<span class="glyphicon glyphicon-log-out"></span>
+				退出
+			</div>
 		</div>
 	</div>
 	<div id='MainContainer'>

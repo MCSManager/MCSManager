@@ -137,11 +137,11 @@ input {
 	font-size: 12px;
 	padding: 0 12px;
 	cursor: pointer;
-	transition: background-color .3s;
+	transition: background-color 0.4s;
 }
 
 .HeaderR div:hover {
-	background-color: #005983;
+	background-color: #003c58;
 }
 
 /*左侧的菜单*/
@@ -318,10 +318,12 @@ input {
 }
 
 @media (max-width:640px) {
-	#websocket {
-		display: none;
-	}
 	#HeaderInfo {
 		display: none;
+	}
+	.PhoneDisplayNone {
+		display: none;
+		width: 1px;
+		height: 1px;
 	}
 }

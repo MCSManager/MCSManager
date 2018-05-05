@@ -18,6 +18,10 @@
 		VIEW_MODEL.newVue('websocketStatus', {
 			el: '#websocket2'
 		});
+		//左上角用户显示
+		VIEW_MODEL.newVue('websocketStatus', {
+			el: '#TitleUser'
+		});
 	});
 
 	MI.listener('ws/close', function (ws) {
