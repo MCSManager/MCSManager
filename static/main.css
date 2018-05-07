@@ -7,6 +7,10 @@ html {
     border: 0;
 }
 
+h4 {
+    font-weight: 700;
+}
+
 .mbg {
     /* background-color: blue; */
     height: 64%;
