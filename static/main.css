@@ -1,0 +1,32 @@
+body,
+html {
+    font-family: "微软雅黑";
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    border: 0;
+}
+
+.mbg {
+    /* background-color: blue; */
+    height: 64%;
+}
+
+.mtitle,
+.mcontext {
+    color: rgb(49, 49, 49);
+}
+
+.mtitle {
+    font-size: 36px;
+    font-weight: 800;
+    margin-top: 24px;
+}
+
+.mcontext {
+    font-size: 20px;
+}
+
+.mrow {
+    margin-top: 12px;
+}
