@@ -14,15 +14,18 @@ h4 {
 
 .mbg {
     /* background-color: blue; */
-    height: 64%;
+    height: 100%;
+    min-height: 800px;
 }
 
 .mtitle,
 .mcontext {
-    color: rgb(49, 49, 49);
+    color: rgb(94, 94, 94);
 }
 
 .mtitle {
+    font-family: "黑体" "微软雅黑";
+    text-shadow: 1px 2px 1px rgb(196, 196, 196);
     font-size: 36px;
     font-weight: 800;
     margin-top: 24px;
@@ -32,6 +35,18 @@ h4 {
     font-size: 20px;
 }
 
+#mlogo {
+    /* background-image: url("./small_logo.png"); */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .mrow {
     margin-top: 12px;
+}
+
+.mfooter {
+    margin-top: 20px;
+    color: rgb(122, 122, 122);
+    text-align: left;
 }
