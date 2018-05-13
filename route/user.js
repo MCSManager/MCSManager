@@ -87,7 +87,7 @@ router.post('/login', function (req, res) {
     //登陆次数加一
     counter.plus('login');
 
-    MCSERVER.log(['[Login]'.green, '用户尝试登陆:', username, "密匙:", password].join(" "));
+    MCSERVER.log('[Login]'.green, '用户尝试登陆:', username, "密匙:", password);
 
     loginUser(username, password, (loginUser) => {
         //只有这里 唯一的地方设置 login = true
@@ -99,6 +99,7 @@ router.post('/login', function (req, res) {
         delete MCSERVER.login[ip];
         //添加到 login 容器  注意，全部代码只能有这一个地方使用这个函数
         loginedContainer.addLogined(req.sessionID, username, loginUser.dataModel);
+        MCSERVER.log('[Login]'.green, '用户:', username, "密匙正确", "准许登录");
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -114,6 +115,7 @@ router.post('/login', function (req, res) {
         req.session.save();
         //删除到 login 容器
         if (req.session['username']) loginedContainer.delLogined(req.sessionID);
+        MCSERVER.log('[Login]'.green, '用户:', username, "密匙错误", "拒绝登录");
         response.returnMsg(res, 'login/check', false);
     }, enkey);
 });
