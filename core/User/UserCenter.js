@@ -88,10 +88,14 @@ class UserCenter {
             if (md5key && !notSafeLogin) {
                 let userMd5 = loginUser.getPasswordMD5();
                 let md5Passworded = md5(userMd5 + md5key);
-                let res = md5Passworded === password ? truecb && truecb(loginUser) : falsecb && falsecb();
-                //此登录才更新时间
-                if (res) loginUser.updateLastDate();
-                return res;
+                let isok = md5Passworded === password;
+                if (isok) {
+                    loginUser.updateLastDate();
+                    truecb && truecb(loginUser);
+                    return true;
+                }
+                falsecb && falsecb();
+                return false;
             }
 
             // 一般模式 供ftp 等登录
