@@ -78,21 +78,20 @@ class UserCenter {
         if (this.userList.hasOwnProperty(username) && this.userList[username] != undefined) {
             let loginUser = this.userList[username];
             try {
-                //BUG Note: loginUser 同步问题
-                //第二次审查，否定
                 loginUser.load();
-            } catch (e) {
+            } catch (err) {
                 falsecb && falsecb();
-                throw e;
                 return false;
             }
-            loginUser.updateLastDate();
 
             // 目前只准许 登陆时使用 md5传码方式 ，不准传输明文
             if (md5key && !notSafeLogin) {
                 let userMd5 = loginUser.getPasswordMD5();
                 let md5Passworded = md5(userMd5 + md5key);
-                return md5Passworded === password ? truecb && truecb(loginUser) : falsecb && falsecb();
+                let res = md5Passworded === password ? truecb && truecb(loginUser) : falsecb && falsecb();
+                //此登录才更新时间
+                if (res) loginUser.updateLastDate();
+                return res;
             }
 
             // 一般模式 供ftp 等登录
