@@ -28,6 +28,17 @@
 
 <br />
 
+演示环境
+-----------
+- 地址: [https://link.suwings.top/](https://link.suwings.top/)
+- 账号: `public` 密码: `123456`
+- 账号: `public2` 密码: `1234567`
+- 账号: `#master` 密码: `<暂不开放>`
+
+> 仅仅开放普通账号给予演示，管理账号不开放，想了解更多，请下载体验。
+
+<br />
+
 运行在 Windows 
 -----------
 
@@ -36,8 +47,6 @@
 下载并正确安装 `Node` 环境:
 
 下载源代码并解压: [https://github.com/Suwings/MCSManager/archive/master.zip](Master.zip)
-
-确认您的 `JRE` 或 `JDK` 安装并且可以运行
 
 进入程序源代码目录，并且在当前目录打开命令控制台
 
