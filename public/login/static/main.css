@@ -43,8 +43,6 @@ body {
     top: 26%;
     right: 10%;
     box-shadow: 0 0 30px rgba(0, 0, 0, .6);
-    animation: Loading1 2s;
-    animation-fill-mode: forwards;
 }
 
 #mlogin_left_context {
@@ -61,7 +59,7 @@ body {
 }
 
 #mlogin_right {
-    opacity: 0;
+    opacity: 0.9;
     height: 420px;
     width: 310px;
     min-height: 420px;
@@ -70,11 +68,6 @@ body {
     right: 8%;
     top: -20%;
     box-shadow: 0 0 30px rgba(0, 0, 0, .6);
-    /* 动画 */
-    /* Safari 和 Chrome */
-    animation: Loading2 2s;
-    animation-fill-mode: forwards;
-    animation-delay: 1s;
 }
 
 #mlogin_center {
