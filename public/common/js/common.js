@@ -131,42 +131,26 @@
 	MCSERVER.colmSet = function (booleans) {
 		MI.on('colmchange', null); //触发事件
 		if (!booleans) {
-			$SideCol
-				.stop(true, true)
-				.animate({
-					'opacity': '0'
-				}, 200, function () {
-					$SideCol.css({
-						'display': 'none'
-					});
-				});
-
-			$Container
-				.stop(true, true)
-				.animate({
-					'left': '0px'
-				}, 200, function () {
-					MI.on('colmchangeEnd', null); //触发事件
-				});
-
+			$SideCol.css({
+				'opacity': '0'
+			});
+			$SideCol.css({
+				'display': 'none'
+			});
+			$Container.css({
+				'left': '0px'
+			});
+			MI.on('colmchangeEnd', null); //触发事件
 		} else {
-			$Container
-				.stop(true, true)
-				.animate({
-					'left': '180px'
-				}, 200, function () {
-					$SideCol
-						.css({
-							'display': 'block'
-						})
-						.stop(true, true)
-						.animate({
-							'opacity': '1'
-						}, 200, function () {
-							MI.on('colmchangeEnd', null); //触发事件
-						});
-					$Container.removeAttr('style')
-				});
+			$Container.css({
+				'left': '180px'
+			});
+			$SideCol.css({
+				'display': 'block',
+				'opacity': '1'
+			});
+			MI.on('colmchangeEnd', null); //触发事件
+			$Container.removeAttr('style')
 		}
 	}
 
