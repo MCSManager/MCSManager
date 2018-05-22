@@ -110,10 +110,9 @@
 
 	//Minecraft 服务器输出基本颜色
 	TOOLS.encodeConsoleColor = function (text) {
-		text = text.replace(/\[/igm, "<span class='color-green'>[&nbsp;</span>");
-		text = text.replace(/\]/igm, "<span class='color-green'>&nbsp;]</span>");
+		text = text.replace(/\[/igm, "<span class='color-green'><b>[&nbsp;</b></span>");
+		text = text.replace(/\]/igm, "<span class='color-green'><b>&nbsp;]</b></span>");
 		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
-		text = text.replace(/WANG/gm, "<span class='color-red'>WANG</span>");
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'> $1 </span>");
 
 		RegExpStringArr = [
@@ -129,7 +128,6 @@
 			["\\d{1,3}%", "true", "false",
 				"Starting Minecraft server on", "--------",
 				"world_the_end",
-				"(player\\d{0,1})",
 				"world_nether",
 				"Usage",
 				"Server thread", "Done"
