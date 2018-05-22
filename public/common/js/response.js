@@ -22,10 +22,8 @@
 	}
 
 	RES.tokenAjax = function (parameter) {
-		//请务必主要异步陷阱
 		window.RES.getToken(function (token) {
 			parameter['token'] = token;
-			//			RES.ajax(parameter);
 		});
 	}
 
@@ -33,7 +31,6 @@
 		if (!parameter['data']) parameter['data'] = {};
 
 		var tokenV = parameter['token'] || RES.TOKEN;
-		//		if(tokenV) parameter['data'][TOKEN_NAME] = tokenV;
 		if (tokenV != null) parameter['url'] += '?' + TOKEN_NAME + '=' + tokenV;
 
 		$.ajax({
@@ -50,7 +47,6 @@
 						}
 					}
 				} catch (e) {
-					//返回的不是一个json对象
 					DEBUG && console.log("$.ajax 响应数据非一个JSON对象");
 				} finally {
 					if (parameter['success']) parameter['success'](data, textStatus);
@@ -58,13 +54,11 @@
 			},
 			error: function (XML, textStatus, errorThrown) {
 				if (parameter['error']) parameter['error'](XML);
-				//alert('操作失败,被服务器拒绝,请保存好内容重新登录.');
 				DEBUG && console.log('Ajax ERROR 回调触发');
 				DEBUG && console.log(XML);
 				DEBUG && console.log(textStatus);
 				DEBUG && console.log(errorThrown);
 				DEBUG && console.log(XML.responseText);
-				//				alert("服务器: " + XML.responseText);
 				window.MI.routeOn('ajax/error', XML);
 			},
 			processData: parameter['processData'] == false || true,
@@ -107,7 +101,7 @@
 		ToolsLoadingStart(function () {
 			MI.rOn('onend');
 			PageLoading();
-			//替換掉原先存在的 函数。防止新的单页没有这些函数而导致代码二次执行
+			//替換掉原先存在的函数 防止新的单页没有这些函数而导致代码二次执行
 			MI.rListener('onend', function () {});
 			MI.rListener('onload', function () {});
 			//触发页面切换事件
