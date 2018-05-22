@@ -117,22 +117,37 @@
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'> $1 </span>");
 
 		RegExpStringArr = [
-			["Unknown command", "Stopping", "Loading libraries, please wait..."],
-			["/help"],
-			["WARN", "EULA"]
+			//蓝色
+			["Unknown command", "Loading libraries, please wait...",
+				"Preparing"
+			],
+			//绿色
+			["/help", "left the game", "Enabling"],
+			//红色
+			["WARN", "EULA", "Error", "Exception", "Stopping the server", "Caused by", "Stopping"],
+			//黄色
+			["\\d{1,3}%", "true", "false",
+				"Starting Minecraft server on", "--------",
+				"world_the_end",
+				"(player\\d{0,1})",
+				"world_nether",
+				"Usage",
+				"Server thread", "Done"
+			]
 		]
 		for (var k in RegExpStringArr) {
 			for (var y in RegExpStringArr[k]) {
 
 				var reg = new RegExp("(" + RegExpStringArr[k][y].replace(/ /igm, "&nbsp;") + ")", "igm");
 				console.log("当前:", k, y, "正则是:", "(" + RegExpStringArr[k][y] + ")", reg)
-				if (k == 0)
-					text = text.replace(reg, "<span style='color:#017EBC;'>$1</span>");
-				if (k == 1)
+				if (k == 0) //蓝色
+					text = text.replace(reg, "<span style='color:#009fef;'>$1</span>");
+				if (k == 1) //绿色
 					text = text.replace(reg, "<span class='color-green'>$1</span>");
-				if (k == 2)
+				if (k == 2) //红色
 					text = text.replace(reg, "<span style='color:#ea1f1a;'>$1</span>");
-
+				if (k == 3)
+					text = text.replace(reg, "<span style='color:#ffa700;'>$1</span>");
 
 			}
 		}
