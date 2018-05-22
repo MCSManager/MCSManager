@@ -15,15 +15,17 @@
 			</div>
 		</div>
 	</div>
-	<!--<div id='TerminalBox'>+</div>-->
 	<div id="TerminalMinecraft" contenteditable="false">
-
+		<span class="color-green">[INFO]</span> MCSM Console Subsystem
+		<br>
+		<span class="color-green">[INFO]</span> 欢迎使用，现在正在监听控制台...
+		<br>
+		<span class="color-green">[INFO]</span> 现在，服务端的所有标准输出均将输出到此区域..
+		<br>
 	</div>
-	<!--<div id='' v-if="historyIf" v-on:click="loadHistory()">更多历史日志</div>-->
 	<div class="" style="border-top: 1px solid #585858;">
-		<!--<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>-->
 		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command"
-		    type="text" class="TerminalCommand" placeholder="[命令输入框] 操作 ↑ 和 ↓ 可以查看历史命令记录,输入 help 或 ? 可以查看帮助信息." aria-describedby="sizing-addon3">
+		    type="text" class="TerminalCommand" placeholder="[命令输入框] 按下 ↑ 或 ↓ 可以查看本地命令记录,输入 help 或 ? 可以查看帮助信息,回车执行命令." aria-describedby="sizing-addon3">
 
 	</div>
 </div>
