@@ -66,20 +66,19 @@ WebSocketObserver().listener('server/console/ws', (data) => {
 
     let userName = data.WsSession.username;
     let serverName = data.body.trim();
-    //可以将 user 实例化存在Session中，以便于只读的使用。。。。
+
     if (permssion.isCanServer(userName, serverName)) {
+
         var serverT = serverModel.ServerManager().getServer(serverName);
         MCSERVER.log('[' + serverName + '] >>> 准许用户 ' + userName + ' 控制台监听');
         data.WsSession['console'] = serverName;
-        //set log控制台记录器
-        data.WsSession['listenerQueue'] = serverT.getTerminalLog().length - 1;
         response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
     } else {
         MCSERVER.log('[' + serverName + '] 拒绝用户 ' + userName + ' 控制台监听');
     }
+
     data.WsSession['console'] = undefined;
-    response.wsSend(data.ws, 'server/console/ws', null);
 });
 
 //前端退出控制台界面
@@ -120,7 +119,7 @@ serverModel.ServerManager().on('console', (data) => {
     let consoleData = data.msg.replace(/\n/gim, '<br />');
 
     //将输出载入历史记录
-    if (server) server.terminalLog(consoleData);
+    // if (server) server.terminalLog(consoleData);
 
     if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";
     consoleBuffer[data.serverName] += consoleData;
