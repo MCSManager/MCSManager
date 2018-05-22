@@ -20,9 +20,6 @@ class MinecraftServer extends ServerProcess {
 
         this.properties = undefined; //服务端配置表
 
-        this.terminalQueue = []; //终端记录队列
-        this._tmpTerminalLog = [];
-        this.terminalPageCount = 0;
     }
 
     builder(args) {
@@ -78,23 +75,6 @@ class MinecraftServer extends ServerProcess {
                 callback && callback(this.properties, err);
             });
         });
-    }
-
-    terminalLog(strLine) {
-        this.terminalQueue.push(strLine);
-        if (this.terminalQueue.length > MCSERVER.localProperty.terminalQueue_max_length) {
-            this.terminalQueue = this.terminalQueue.slice(400);
-        }
-    }
-
-    getTerminalLog(print, size) {
-        if (print == undefined)
-            return this.terminalQueue || [];
-        let tmp = [];
-        for (let i = print; i > (print - size) && i >= 0; i--) {
-            tmp.unshift(this.terminalQueue[i]);
-        }
-        return tmp;
     }
 
 }
