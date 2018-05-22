@@ -171,6 +171,7 @@ router.ws('/ws', function (ws, req) {
             if (reqHeaderObj['RequestValue'] == "HBPackage") {
                 status = true;
                 wsAliveHBCount < 10 && wsAliveHBCount++;
+                return;
             }
 
             WebSocketObserver().emit('ws/req', {
