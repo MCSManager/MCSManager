@@ -158,9 +158,4 @@
 		MI.routeCopy('ServerProperties', data.obj);
 	});
 
-	//配置项试图
-	MI.routeListener('soft/view', function (data) {
-		MI.routeCopy('SoftProperties', data.obj);
-	});
-
 })();
