@@ -148,26 +148,6 @@
 
 	});
 
-	//获取控制台历史记录
-	MI.routeListener('server/console/history', function (data) {
-		var consoleSafe = terminalEncode(data.body);
-
-		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		var ifyLoad =
-			'<span style="color:#3af138;">[历史日志] </span>' +
-			'<span style="color:rgb(212, 136, 30);">================<br></span>';
-
-		var oldTopV = 0;
-		var oldHeightV = MinecraftConsole.scrollHeight;
-		//incude
-		MinecraftConsole.innerHTML = consoleSafe + ifyLoad + MinecraftConsole.innerHTML;
-		var newTopV = MinecraftConsole.scrollTop;
-		var newHeightV = MinecraftConsole.scrollHeight;
-
-		var resVTopLac = newHeightV - oldHeightV;
-		MinecraftConsole.scrollTop = resVTopLac - 60;
-	});
-
 	//普通用户主页
 	MI.routeListener('genuser/home', function (data) {
 		MI.routeCopy('GenHome', data.obj);

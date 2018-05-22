@@ -1,5 +1,4 @@
 <div id='Terminal'>
-	<div id='TerminalLoad' v-if="historyIf" v-on:click="loadHistory()">更多历史日志</div>
 	<div class="row" style="position: absolute;right: 25px;">
 		<div class="col-sm-12 PanelItemF">
 			<div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
@@ -59,12 +58,7 @@
 					var ele = document.getElementById('TerminalMinecraft');
 					ele.scrollTop = ele.scrollHeight;
 				},
-				loadHistory: function () {
-					console.log('loading');
-					var obj = {};
-					obj.serverName = PAGE.serverName;
-					WS.sendMsg('server/console/history', JSON.stringify(obj));
-				},
+
 				toOpenServer: function () {
 					WS.sendMsg('server/console/open', PAGE.serverName);
 				},
@@ -108,41 +102,6 @@
 			}
 		});
 		PAGE.mainC = document.getElementById('TerminalMinecraft');
-		var jl = true;
-		PAGE.mainC.onscroll = function () {
-			VIEW_MODEL['Terminal'].historyIf = (PAGE.mainC.scrollTop - 100 <= 0);
-		}
-
-		PAGE.maskTerminalLoad = function () {
-			if (PAGE.mainC.scrollTop - 300 <= 0 && jl == true) {
-				jl = false;
-				var obj = {};
-				obj.serverName = PAGE.serverName;
-				WS.sendMsg('server/console/history', JSON.stringify(obj), function () {
-					jl = true;
-				});
-			}
-
-		}
-
-		PAGE.terminalLoad = function (callback) {
-			jl = false;
-			var obj = {};
-			obj.serverName = PAGE.serverName;
-			WS.sendMsg('server/console/history', JSON.stringify(obj), function () {
-				jl = true;
-				callback && callback();
-			});
-		}
-
-		PAGE.terminalLoad(function () {
-			//由于DOM插入时间不一定，所以此功能只能靠猜~
-			setTimeout(function () {
-				$("#TerminalMinecraft")[0].scrollTop = $("#TerminalMinecraft")[0].scrollHeight;
-			}, 1000);
-
-		});
-
 	});
 
 	MI.rListener('onend', function () {
