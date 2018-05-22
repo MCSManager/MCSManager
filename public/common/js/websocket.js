@@ -4,10 +4,11 @@
 	var DEBUG = false; //Websocket DEBUG
 
 	//from @BBleae
+	//10 秒自动发送一次心跳包，此时间不可改变
 	function wsHeartBeatPackage(ws) {
 		setInterval(function () {
-			ws.sendMsg("HeartBeatPackage", "");
-		}, 10000);
+			ws.sendMsg("HBPackage", "");
+		}, 1000 * 10);
 	}
 
 	var ify = '\n\n';

@@ -61,7 +61,8 @@ router.ws('/ws', function (ws, req) {
 
     token = token.trim();
     let username = null;
-    let status = true;
+    let status = false;
+    let wsAliveHBCount = 5;
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
     let uid = permssion.randomString(12) + Date.parse(new Date()).toString();
@@ -122,7 +123,8 @@ router.ws('/ws', function (ws, req) {
         return;
     }
 
-
+    //状态标识
+    status = true;
 
     //放置全局在线列表
     MCSERVER.allSockets[uid] = WsSession;
@@ -131,6 +133,7 @@ router.ws('/ws', function (ws, req) {
 
     //检查通过..
     MCSERVER.log('[ WebSocket INIT ]', ' 用户:', username, "与服务器建立链接");
+
 
     //数据到达事件
     ws.on('message', function (data) {
@@ -163,6 +166,13 @@ router.ws('/ws', function (ws, req) {
             reqHeaderObj = JSON.parse(reqHeader);
             if (!reqHeaderObj) return;
 
+            //Websocket 心跳包 | 前端 10 秒递增链接健康指数
+            //当网络延迟特别高时，也能很好的降低指数. 将来指数够低时，将自动优化数据的发送
+            if (reqHeaderObj['RequestValue'] == "HBPackage") {
+                status = true;
+                wsAliveHBCount < 10 && wsAliveHBCount++;
+            }
+
             WebSocketObserver().emit('ws/req', {
                 ws: ws,
                 req: req,
@@ -178,8 +188,26 @@ router.ws('/ws', function (ws, req) {
         }
     });
 
+    //关闭事件
     ws.on('close', function () {
+        WebSocketClose();
+    });
 
+    //Websocket 心跳包检查 | 12 秒递减一个链接健康指数
+    var HBMask = setInterval(() => {
+        if (wsAliveHBCount <= 0) {
+            MCSERVER.log('[ WebSocket HBPackage ]', '用户', username, '长时间未响应心跳包 | 已自动断开');
+            WebSocketClose();
+        }
+        wsAliveHBCount--;
+    }, 1000 * 12)
+
+    //Websocket 关闭函数
+    function WebSocketClose() {
+        if (!status) return;
+
+        ws.close();
+        clearInterval(HBMask);
         status = false;
 
         //再删一次，保险
@@ -194,7 +222,7 @@ router.ws('/ws', function (ws, req) {
         }
         delete MCSERVER.allSockets[uid];
         MCSERVER.log('[ WebSocket CLOSE ]', '用户', username, '已经断开链接');
-    });
+    }
 
 });
 
