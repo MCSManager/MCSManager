@@ -107,4 +107,33 @@
 		}
 	}
 
+
+	//Minecraft 服务器输出基本颜色
+	TOOLS.encodeConsoleColor = function (text) {
+		text = text.replace(/\[/igm, "<span class='color-green'>[&nbsp;</span>");
+		text = text.replace(/\]/igm, "<span class='color-green'>&nbsp;]</span>");
+		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
+		text = text.replace(/WANG/gm, "<span class='color-red'>WANG</span>");
+		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'> $1 </span>");
+		RegExpStringArr = [
+			["Unknown&nbsp;command", "Server", "Stopping"],
+			["/help"],
+			["WARN"]
+		]
+		for (var k in RegExpStringArr) {
+			for (var y in RegExpStringArr[k]) {
+
+				var reg = new RegExp("(" + RegExpStringArr[k][y] + ")", "igm");
+				console.log("当前:", k, y, "正则是:", "(" + RegExpStringArr[k][y] + ")", reg)
+				if (k == 0)
+					text = text.replace(reg, "<span style='color:#017EBC;'>$1</span>");
+				if (k == 1)
+					text = text.replace(reg, "<span class='color-green'>$1</span>");
+				if (k == 2)
+					text = text.replace(reg, "<span class='color-red'>$1</span>");
+			}
+		}
+		return text;
+	}
+
 })();

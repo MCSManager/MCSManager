@@ -140,6 +140,8 @@
 		//判断用户是否自己移动了滚轴
 		var BUFF_FONTIER_SIZE_DOWN = MinecraftConsole.scrollHeight - MinecraftConsole.clientHeight;
 		flag = (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN);
+		//color
+		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
 		//add
 		MinecraftConsole.innerHTML += consoleSafe;
 		//unblive bt ths is t
