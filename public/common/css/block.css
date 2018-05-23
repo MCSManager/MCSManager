@@ -35,13 +35,9 @@
 /*通用面板*/
 
 .Panel {
-	/*border-radius: 3px;*/
-	/*box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);*/
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 	margin-bottom: 16px;
 	background-color: #fff;
-	/* animation: ActionFadeIn 0.5s; 有淡入淡出动画
-	animation-fill-mode: forwards; */
 }
 
 .PanelBlue {
@@ -235,7 +231,6 @@
 	font-size: 12px;
 	color: white;
 	width: 100%;
-	/* margin: 0 8px; */
 	padding: 0 10px;
 	background-color: rgb(60, 60, 60);
 	border: 0px;
