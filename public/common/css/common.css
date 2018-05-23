@@ -37,6 +37,7 @@ input {
 
 #Header {
 	background-color: #0D6AAD;
+	background: linear-gradient(to right, #0D6AAD, rgb(14, 100, 161));
 	height: 50px;
 	position: fixed;
 	top: 0px;
@@ -60,7 +61,6 @@ input {
 
 #SideCol {
 	position: fixed;
-	/*float: left;*/
 	color: white;
 	background-color: #001A35;
 	z-index: 100;

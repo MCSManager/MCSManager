@@ -11,7 +11,7 @@
 		var webscoketStatus = VIEW_MODEL['websocketStatus'];
 		webscoketStatus['status'] = '服务器连接正常';
 		webscoketStatus['is'] = true;
-		webscoketStatus['tcolor'] = '#12ea19';
+		webscoketStatus['tcolor'] = '#ffffff';
 		VIEW_MODEL.newVue('websocketStatus', {
 			el: '#websocket'
 		});
