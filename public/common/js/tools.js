@@ -110,23 +110,29 @@
 
 	//Minecraft 服务器输出基本颜色
 	TOOLS.encodeConsoleColor = function (text) {
-		text = text.replace(/\[/igm, "<span class='color-green'><b>[&nbsp;</b></span>");
-		text = text.replace(/\]/igm, "<span class='color-green'><b>&nbsp;]</b></span>");
+		text = text.replace(/([A-Za-z _&;-]{1,}:)/igm, "<span style='color:#ffa700;'>$1</span>");
+		text = text.replace(/\[/igm, "<span style='color:#e111e2;'><b>[&nbsp;</b></span>");
+		text = text.replace(/\]/igm, "<span style='color:#e111e2;'><b>&nbsp;]</b></span>");
 		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'> $1 </span>");
 
 		RegExpStringArr = [
 			//蓝色
 			["Unknown command", "Loading libraries, please wait...",
-				"Preparing"
+				"Loading", "Loaded",
+				"Preparing start region for level", "\\d{1,3}%", "true", "false",
 			],
 			//绿色
-			["/help", "left the game", "Enabling"],
+			["/help", "left the game", "Enabling",
+				"Saving chunks for level", "--------", "UUID", "Starting minecraft server version",
+				"Timings Reset",
+				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;"
+			],
 			//红色
 			["WARN", "EULA", "Error", "Exception", "Stopping the server", "Caused by", "Stopping"],
 			//黄色
-			["\\d{1,3}%", "true", "false",
-				"Starting Minecraft server on", "--------",
+			[
+				"Starting Minecraft server on",
 				"world_the_end",
 				"world_nether",
 				"Usage",
@@ -136,15 +142,16 @@
 		for (var k in RegExpStringArr) {
 			for (var y in RegExpStringArr[k]) {
 
-				var reg = new RegExp("(" + RegExpStringArr[k][y].replace(/ /igm, "&nbsp;") + ")", "igm");
-				console.log("当前:", k, y, "正则是:", "(" + RegExpStringArr[k][y] + ")", reg)
+				var reg = new RegExp(
+					"(" + RegExpStringArr[k][y].replace(/ /igm, "&nbsp;") + ")",
+					"igm");
 				if (k == 0) //蓝色
 					text = text.replace(reg, "<span style='color:#009fef;'>$1</span>");
 				if (k == 1) //绿色
-					text = text.replace(reg, "<span class='color-green'>$1</span>");
+					text = text.replace(reg, "<span style='color:#10e616;'>$1</span>");
 				if (k == 2) //红色
 					text = text.replace(reg, "<span style='color:#ea1f1a;'>$1</span>");
-				if (k == 3)
+				if (k == 3) //黄色
 					text = text.replace(reg, "<span style='color:#ffa700;'>$1</span>");
 
 			}
