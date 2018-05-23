@@ -119,14 +119,14 @@
 		RegExpStringArr = [
 			//蓝色
 			["Unknown command", "Loading libraries, please wait...",
-				"Loading", "Loaded",
-				"Preparing start region for level", "\\d{1,3}%", "true", "false",
+				"Loading", "Loaded", "\\d{1,3}%", "true", "false",
 			],
 			//绿色
 			["/help", "left the game", "Enabling",
 				"Saving chunks for level", "--------", "UUID", "Starting minecraft server version",
 				"Timings Reset",
-				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;"
+				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;",
+				"Preparing start region for level"
 			],
 			//红色
 			["WARN", "EULA", "Error", "Exception", "Stopping the server", "Caused by", "Stopping"],
