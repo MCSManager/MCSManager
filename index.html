@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="mrow">
-                <p>简单，易用，多实例，轻量级的 Minecraft Server 控制面板</p>
+                <p id="show2"></p>
                 <hr>
                 <p>我们用最简单上手的方式，来构建整个应用程序，绝大部分的开发者可以轻而易举的进行修改，以及依照协议开发使用。你会发现，这可能是一非常适合你的 Minecraft 服务器管理工具，支持绝大部分的主流服务端。</p>
                 <p>并且，我们将尽可能的降低扩展的学习成本来帮助你更好的扩展与自定义，让一个完全属于你的Minecraft服务器管理器出现。</p>
@@ -124,18 +124,69 @@
     }
 
     PAGE.setText = function (elem, text) {
-        for (var i = elem.innerHTML.length - 1; i > 0; i--) {
+        // text += "_";
+
+        function inde(i, callback) {
             elem.innerHTML = elem.innerHTML.slice(0, i)
+            setTimeout(function () {
+                if (i == 0) {
+                    callback();
+                    return;
+                }
+                inde(--i, callback);
+            }, 40)
         }
-        for (var i = 0; i < text.length; i++) {
+
+        function oude(i, callback) {
             elem.innerHTML = text.slice(0, i);
+            setTimeout(function () {
+                if (i >= text.length) {
+                    callback();
+                    return;
+                }
+                oude(++i, callback);
+            }, 40)
         }
+
+        inde(elem.innerHTML.length, function () {
+            oude(0, function () {
+                //igrone
+            })
+        });
+
     }
 
 
 
     // PAGE.setcur(document.getElementById("mtitlean"));
     PAGE.setcur(document.getElementsByClassName("mcontext")[0]);
+
+    (function () {
+        var mcontext = document.getElementsByClassName("mcontext")[0]
+        setTimeout(function () {
+            PAGE.setText(mcontext, "感谢关注，感谢访问，希望我们这款软件可以帮助到您。")
+
+            setTimeout(function () {
+                PAGE.setText(document.getElementById("show2"),
+                    "简单， 易用， 多实例， 轻量级的 Minecraft Server 控制面板")
+            }, 3000)
+
+        }, 2000)
+
+
+        setTimeout(function () {
+            PAGE.setText(mcontext, "也许，下载看看不是一个坏的选择呢？？")
+        }, 1000 * 10)
+        setTimeout(function () {
+            PAGE.setText(mcontext, "据说这款面板还不错的，我们一向专注轻量级，部署简单，五脏俱全。_")
+        }, 1000 * 14)
+        setTimeout(function () {
+            PAGE.setText(mcontext, "开源，免费，不用过于担心版权的非商业管理面板。_")
+        }, 1000 * 20)
+        setTimeout(function () {
+            PAGE.setText(mcontext, "现在，一切只在于你一念之间。")
+        }, 1000 * 24)
+    })()
 </script>
 
 </html>
