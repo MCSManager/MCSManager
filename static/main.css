@@ -1,6 +1,6 @@
 body,
 html {
-    font-family: "微软雅黑";
+    font-family: Tahoma, Geneva, sans-serif;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -22,15 +22,25 @@ h4 {
 }
 
 .mtitle {
-    font-family: "黑体" "微软雅黑";
+    font-family: Tahoma, Geneva, sans-serif;
     text-shadow: 1px 1px 1px rgb(196, 196, 196);
     font-size: 36px;
     font-weight: 800;
     margin-top: 24px;
+    animation: action_logo 15s;
+    animation-iteration-count: 999;
+    animation-direction: alternate;
+}
+
+#mtitlean {
+    /* animation: action_cur 2s;
+    animation-iteration-count: 999; */
 }
 
 .mcontext {
     font-size: 20px;
+    padding-right: 2px;
+    display: block;
 }
 
 #mlogo {
@@ -47,4 +57,37 @@ h4 {
     margin-top: 20px;
     color: rgb(122, 122, 122);
     text-align: left;
+    font-size: 12px;
+}
+
+/* 动画 */
+
+@keyframes action_logo {
+    0% {
+        color: rgb(201, 25, 25);
+    }
+    25% {
+        color: rgb(197, 197, 22);
+    }
+    50% {
+        color: rgb(34, 150, 218);
+    }
+    100% {
+        color: rgb(46, 214, 46);
+    }
+}
+
+@keyframes action_cur {
+    0% {
+        border-right: 2px solid red;
+    }
+    25% {
+        border-right: 2px solid rgb(255, 255, 255);
+    }
+    50% {
+        border-right: 2px solid red;
+    }
+    100% {
+        border-right: 2px solid rgb(255, 255, 255);
+    }
 }

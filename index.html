@@ -21,8 +21,9 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="mtitle">
-                        <span style="color:rgb(255, 155, 24);">MCS</span>
-                        <span>MANAGER</span>
+                        <div id="mtitlean">
+                            <span style="color:rgb(255, 155, 24);">MCS</span>
+                            MANAGER</div>
                     </div>
                     <div class="mcontext">Version 8 | Yelin Plan</div>
                 </div>
@@ -95,6 +96,11 @@
             </div>
             <footer class="mfooter">
                 <p>©2013-2018 Suwings. All rights reserved.</p>
+                <p style="font-size: 12px;">此为公益开源项目，非商业项目 - 友情链接 |
+                    <a href="">Minecraft 中文论坛 | </a>
+                    <a href="">光速御联 |</a>
+                    <a href="">LL 小镇 | </a>
+                </p>
             </footer>
 
         </div>
@@ -104,5 +110,32 @@
 
 
 </body>
+<script>
+    window.PAGE = {};
+
+    PAGE.setcur = function (elem) {
+        elem.innerHTML += "_";
+        setTimeout(function () {
+            elem.innerHTML = elem.innerHTML.slice(0, elem.innerHTML.length - 1)
+            setTimeout(function () {
+                PAGE.setcur(elem)
+            }, 500)
+        }, 500)
+    }
+
+    PAGE.setText = function (elem, text) {
+        for (var i = elem.innerHTML.length - 1; i > 0; i--) {
+            elem.innerHTML = elem.innerHTML.slice(0, i)
+        }
+        for (var i = 0; i < text.length; i++) {
+            elem.innerHTML = text.slice(0, i);
+        }
+    }
+
+
+
+    // PAGE.setcur(document.getElementById("mtitlean"));
+    PAGE.setcur(document.getElementsByClassName("mcontext")[0]);
+</script>
 
 </html>
