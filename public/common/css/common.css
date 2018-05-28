@@ -37,13 +37,13 @@ input {
 
 #Header {
 	background-color: #0D6AAD;
-	background: linear-gradient(to right, #0D6AAD, rgb(14, 100, 161));
+	background: linear-gradient(to right, #0D6AAD, rgb(14, 96, 155));
 	height: 50px;
 	position: fixed;
 	top: 0px;
 	width: 100%;
 	z-index: 102;
-	box-shadow: 0 0 5px 0 rgba(0, 0, 0, .6);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* logo 图片 */
