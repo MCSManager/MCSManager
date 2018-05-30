@@ -9,6 +9,14 @@ try {
     //忽略任何版本检测导致的错误
 }
 
+setTimeout(() => {
+    let arg2 = process.argv[2] || '';
+    if (arg2 == '--test') {
+        MCSERVER.infoLog("Test", "测试过程结束 | 退出...");
+        process.exit(0);
+    }
+}, 10000);
+
 const fs = require('fs');
 const fsex = require('fs-extra');
 
@@ -246,13 +254,6 @@ app.use('/fs', require('./onlinefs/controller/function'));
         if (MCSERVER.localProperty.ftp_is_allow)
             require('./ftpd/index'); //执行ftp逻辑
 
-        setTimeout(() => {
-            let arg2 = process.argv[2];
-            if (arg2 == '--debug') {
-                MCSERVER.infoLog("测试完毕 | 退出...");
-                process.exit(0);
-            }
-        }, 10000);
     });
 
 

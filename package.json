@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js"
+    "test": "node app.js --test"
   },
   "engines": {
     "node": ">=8.0"
