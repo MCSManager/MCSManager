@@ -1,14 +1,15 @@
-![doc_logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)![doc_logo.png](/public/common/doc_logo.png)
-
-
-
-简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+![doc_logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)
+![doc_logo.png](/public/common/doc_logo.png)
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v7.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://github.com/Suwings/MCSManager)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
+
+
+简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+
 <br />
 
 欢迎使用
