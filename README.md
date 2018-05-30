@@ -1,14 +1,15 @@
-![doc_logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)![doc_logo.png](/public/common/doc_logo.png)
-
-
-
-简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+![logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)
+![doc_logo.png](/public/common/doc_logo.png)
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v7.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://github.com/Suwings/MCSManager)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
+
+
+简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+
 <br />
 
 欢迎使用
@@ -83,6 +84,9 @@ cd MCSManager
 npm install --production
 node app.js #或 npm start
 ```
+
+> 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
+
 <br />
 
 安装常见问题
@@ -203,6 +207,8 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10021`(可更改)
 **整体的虚拟化**
 
 尽管我们没有为每一个实例服务器都创建一个虚拟化容器，但是你可以为整个控制面板套一个整体上的虚拟化容器。
+
+> 更多信息可参考 [Wiki](https://github.com/Suwings/MCSManager/wiki/Linux-Docker-%E6%95%B4%E4%BD%93%E5%8C%96%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88)
 
 
 <br />
