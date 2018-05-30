@@ -1,7 +1,10 @@
-<p><h1><img src="http://39.108.57.206/public/MCSM_LOGO_1.png" />Minecraft Server Manager</h1></p> 
+<p><h1>
+<img src="http://39.108.57.206/public/MCSM_LOGO_1.png" />Minecraft Server Manager
+</h1></p> 
 
-- 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
-
+简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+  
+[![Build Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 <br />
 
 欢迎使用
