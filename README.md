@@ -1,4 +1,4 @@
-![doc_logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)
+![logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)
 ![doc_logo.png](/public/common/doc_logo.png)
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
