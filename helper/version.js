@@ -5,7 +5,7 @@ const os = require("os");
 //这样, 用户截图时, 可以知道具体的版本
 //请用户尽可能的不要修改本文件任何代码，因为每一次版本更新时，必定会冲突
 const oversion = "release_8.3.4.0"; //前端
-const tversion = "release_8.3.4.0"; //后端
+const tversion = "release_8.3.4.1"; //后端
 
 let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
