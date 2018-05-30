@@ -1,7 +1,14 @@
-<p><h1><img src="http://39.108.57.206/public/MCSM_LOGO_1.png" />Minecraft Server Manager</h1></p> 
+<p><h1>
+<img src="http://39.108.57.206/public/MCSM_LOGO_1.png" />Minecraft Server Manager
+</h1></p> 
 
-- 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
-
+简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+  
+[![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/node-v7.0-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://github.com/Suwings/MCSManager)
+[![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
+[![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
 <br />
 
 欢迎使用
@@ -23,7 +30,7 @@
 -----------
 - 我们的部署简单至极，在`Master`分支下，我们的设计是下载即可运行，不需要编译与任何配置，除了安装一个环境。
 
-- `Node.js` >= 8.0
+- `Node.js` >= 7.0
 - `下载镜像站点`: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
 
 <br />
