@@ -11,3 +11,6 @@ cache:
     - node_modules
 before_script:
   - npm install
+branches:
+  only:
+    - master
