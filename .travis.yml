@@ -1,8 +1,10 @@
 language: node_js
 node_js:
+  - "6.0"
   - "7.0"
   - "8.0"
-  - "iojs"
+  - "9.0"
+  - "10.0"
 sudo: true
 cache:
   directories:
