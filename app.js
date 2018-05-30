@@ -245,6 +245,14 @@ app.use('/fs', require('./onlinefs/controller/function'));
 
         if (MCSERVER.localProperty.ftp_is_allow)
             require('./ftpd/index'); //执行ftp逻辑
+
+        setTimeout(() => {
+            let arg2 = process.argv[2];
+            if (arg2 == '--debug') {
+                MCSERVER.infoLog("测试完毕 | 退出...");
+                process.exit(0);
+            }
+        }, 10000);
     });
 
 
