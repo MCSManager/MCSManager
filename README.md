@@ -4,10 +4,10 @@
 
 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
   
-[![Build Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://img.shields.io/badge/Windows-passing-brightgreen.svg)
-[![Build Status](https://img.shields.io/badge/node-v6.0-blue.svg)](https://img.shields.io/badge/Windows-passing-brightgreen.svg)
-[![Build Status](https://img.shields.io/badge/Windows-passing-brightgreen.svg)](https://img.shields.io/badge/Windows-passing-brightgreen.svg)
-[![Build Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://img.shields.io/badge/Windows-passing-brightgreen.svg)
+[![Build Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
+[![Build Status](https://img.shields.io/badge/node-v6.0-blue.svg)](https://nodejs.org/en/download/)
+[![Build Status](https://img.shields.io/badge/Windows-passing-brightgreen.svg)]()
+[![Build Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)]()
 [![Build Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 <br />
 
