@@ -114,14 +114,14 @@ Wiki
 
 | 目录名 | 详情/解释 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
-| **property.js**                   |控制面板配置文件，请放心修改|
+| **property.js**                   |控制面板配置文件|
 | **core/logo.txt**               |控制台输出 logo 文字|
 | **public/**                      |前端所有代码，资源目录，前后端分离，使用 ws 和 ajax 通讯|
 | **public/login/**                |纯 UI 逻辑登陆页面|
 | **public/template/**             |前端业务模板，每个模板拥有着一个生命周期，开始与结束。|
 | **public/onlinefs_public/**      |文件在线管理模块前端所有代码|
-| **public/common/js/meum.js**     |左侧菜单列表，可修改|
-| **public/common/js/login.js**    |通用登录流程逻辑，可重复利用在各类 HTML 目标|
+| **public/common/js/meum.js**     |控制面板左侧菜单列表|
+| **public/common/js/login.js**    |通用登录流程逻辑，可重复利用在各类 HTML 登录模板|
 | **server/server_core**           |Minecraft 服务端核心目录，包括服务端文件，配置，Mod，以及插件|
 | **server/x.json**               |Minecraft 服务器面板配置文件|
 | **users/x.json**                |控制面板用户配置文件|
