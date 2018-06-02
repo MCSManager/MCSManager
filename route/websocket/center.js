@@ -44,8 +44,8 @@ let cacheSystemInfo = null;
 let usage = process.memoryUsage();
 
 //init 记录器
-MCSERVER.logCenter.initLogData('CPU', 16);
-MCSERVER.logCenter.initLogData('RAM', 16);
+MCSERVER.logCenter.initLogData('CPU', 32);
+MCSERVER.logCenter.initLogData('RAM', 32);
 
 //实不相瞒，其实我是弄的缓存
 setInterval(function () {

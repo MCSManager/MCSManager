@@ -213,7 +213,7 @@
 		var ChartCPU = null;
 		var ChartRAM = null;
 		PAGE.ChartLogIs = true;
-		TOOLS.charts.bulider('ChartCPU', 16, {}, function (chart) {
+		TOOLS.charts.bulider('ChartCPU', 32, {}, function (chart) {
 			ChartCPU = chart;
 
 			function doing() {
@@ -225,7 +225,7 @@
 			doing();
 		}, CPUoption);
 		//ChartRAM
-		TOOLS.charts.bulider('ChartRAM', 16, {}, function (chart) {
+		TOOLS.charts.bulider('ChartRAM', 32, {}, function (chart) {
 			ChartRAM = chart;
 
 			function doing() {
