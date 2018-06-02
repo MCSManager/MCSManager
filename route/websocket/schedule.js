@@ -8,6 +8,9 @@ const UUID = require('uuid');
 const tools = require('../../core/tools');
 const serverModel = require('../../model/ServerModel');
 
+//每个服务器最大数量
+const MAX_MASK = MCSERVER.localProperty.schedule_max || 10;
+
 function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
     let thisServer = serverModel.ServerManager().getServer(obj.servername);
@@ -52,7 +55,7 @@ WebSocketObserver().listener('schedule/create', (data) => {
     if (permssion.isCanServer(username, obj.servername || "")) {
         try {
             list = getMineScheduleList(obj.servername);
-            if (list.length > MCSERVER.localProperty.schedule_max) {
+            if (list.length > MAX_MASK) {
                 response.wsMsgWindow(data.ws, "到达创建数量上限！");
                 return;
             }
