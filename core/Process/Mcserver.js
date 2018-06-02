@@ -18,7 +18,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.lastDate = now; //最后启动时间
 
         this.dataModel.autoRestart = false; //是否自动重启
-        this.dataModel.schedule = {}; //计划任务配置项目
+        this.dataModel.schedule = []; //计划任务配置项目
 
         this.properties = undefined; //服务端配置表
 

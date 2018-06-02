@@ -20,11 +20,11 @@ function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
     let thisServer = serverModel.ServerManager().getServer(servername);
     if (obj.count <= 0) {
-        schedulejob.createScheduleJob(id, obj.timestr, () => {
+        schedulejob.createScheduleJob(id, obj.timestr, commande, () => {
 
         });
     } else {
-        schedulejob.createScheduleJobCount(id, obj.timestr, obj.count, () => {
+        schedulejob.createScheduleJobCount(id, obj.timestr, obj.count, commande, () => {
 
         });
     }
