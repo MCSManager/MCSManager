@@ -29,7 +29,7 @@
 									<th>任务指令</th>
 									<th>操作</th>
 								</tr>
-								<tr v-for="obj in schedules">
+								<tr v-for="obj in schedules" v-if="obj">
 									<th v-text="obj.id"></th>
 									<th v-text="obj.count"></th>
 									<th v-text="obj.time"></th>
@@ -37,7 +37,7 @@
 									<th>
 										<a href="#" v-on:click="toSchedule(obj)">[ 配置 ]</a>
 										&nbsp;&nbsp;
-										<a href="#">[ 删除 ]</a>
+										<a href="#" v-on:click="toDelete(obj)">[ 删除 ]</a>
 									</th>
 								</tr>
 							</table>
@@ -48,19 +48,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- 新建计划任务项目 -->
-	<!-- <div class="row">
-		<div class="col-md-12 ">
-			<div class="Panel PanelBlue">
-				<div class="PanelTitle">新建计划任务项目</div>
-				<div class="PanelBody">
-
-
-				</div>
-			</div>
-		</div>
-	</div> -->
 </div>
 
 
@@ -81,6 +68,15 @@
 				toSchedule: function (obj) {
 					MCSERVER.website.schedule.nowdata = obj;
 					RES.redirectPage('./template/component/new_schedule.html', null);
+				},
+				toDelete: function (obj) {
+					if (!confirm("您确定要删除这个计划任务吗？")) return;
+					WS.sendMsg('schedule/delete', JSON.stringify({
+						id: obj.id,
+						servername: this.servername
+					}), () => {
+						PAGE.refresh();
+					});
 				}
 			}
 		});

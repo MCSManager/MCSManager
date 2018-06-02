@@ -34,48 +34,38 @@ WebSocketObserver().listener('schedule/list', (data) => {
         response.wsSend(data.ws, 'schedule/list', {
             username: data.WsSession.username,
             servername: servername,
-            schedules: [{
-                id: "test_123456",
-                count: 0,
-                time: "5 * * * * *",
-                commande: "__restart__",
-            }, {
-                id: "test_123457",
-                count: 0,
-                time: "*/6 * * * * *",
-                commande: "kill xxxx",
-            }, {
-                id: "test_123458",
-                count: 0,
-                time: "5 * * * * *",
-                commande: "stop",
-            }]
+            schedules: MCSERVER.Schedule.dataModel.list
         });
-    } else {
-        MCSERVER.log('权限不足！');
     }
 });
 
 //创建计划任务
 WebSocketObserver().listener('schedule/create', (data) => {
     let username = data.WsSession.username;
-    let obj = JSON.parse(data.body);
+    let obj = JSON.parse(data.body) || {};
 
     if (permssion.isCanServer(username, obj.servername || "")) {
-        CreateScheduleJob(obj);
-    } else {
-        MCSERVER.log('权限不足！');
+        try {
+            CreateScheduleJob(obj);
+            response.wsMsgWindow(data.ws, "创建计划任务成功 √");
+        } catch (err) {
+            response.wsMsgWindow(data.ws, "错误！创建失败:" + err);
+        }
     }
 });
 
 //删除计划任务
 WebSocketObserver().listener('schedule/delete', (data) => {
     let username = data.WsSession.username;
-    let obj = JSON.parse(data.body);
+    let obj = JSON.parse(data.body) || {};
 
     if (permssion.isCanServer(username, obj.servername || "")) {
-        schedulejob.deleteScheduleJob(obj.id);
-    } else {
-        MCSERVER.log('权限不足！2');
+        try {
+
+            schedulejob.deleteScheduleJob(obj.id || "");
+            response.wsMsgWindow(data.ws, "删除序号:" + obj.id + "计划任务");
+        } catch (err) {
+            response.wsMsgWindow(data.ws, "删除失败！" + err);
+        }
     }
 });

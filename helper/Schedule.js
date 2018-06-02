@@ -40,7 +40,7 @@ function createScheduleJobCount(id, time, count, commande, servername, callback,
         callback && callback(commande);
 
     });
-    if (mask) {
+    if (mask && _save) {
         MCSERVER.Schedule.dataModel.list.push({
             id: id,
             count: count,
@@ -61,8 +61,9 @@ function deleteScheduleJob(id) {
     MCSERVER.Schedule.container[id] = undefined;
     for (const key in MCSERVER.Schedule.dataModel.list) {
         const element = MCSERVER.Schedule.dataModel.list[key];
-        if (element.id == id) {
-            delete MCSERVER.Schedule.dataModel.list[key];
+        if (element && element.id == id) {
+            MCSERVER.Schedule.dataModel.list.splice(key, 1);
+            break;
         }
     }
     MCSERVER.Schedule.dataModel.save();

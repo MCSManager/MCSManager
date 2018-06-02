@@ -95,6 +95,13 @@
                         servername);
                 },
                 toSave: function () {
+                    if (this.id.length >= 1) {
+                        //如果是修改，则删除原先的，再创建一个新的
+                        WS.sendMsg('schedule/delete', JSON.stringify({
+                            id: this.id,
+                            servername: this.servername
+                        }));
+                    }
                     WS.sendMsg('schedule/create', JSON.stringify({
                         id: this.id || "",
                         time: this.time || "",
@@ -102,6 +109,7 @@
                         commande: this.commande || "",
                         servername: this.servername
                     }));
+                    this.toBack();
                 }
             }
         });

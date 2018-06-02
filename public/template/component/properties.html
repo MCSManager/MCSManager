@@ -86,7 +86,6 @@
 					WS.sendMsg('server/properties_update', JSON.stringify(obj));
 				},
 				toBackConsole: function () {
-					console.log('---- 返回控制台 ---- ')
 					RES.redirectPage('./template/component/console.html', 'server/console', this.serverName);
 				},
 				re: function () {
