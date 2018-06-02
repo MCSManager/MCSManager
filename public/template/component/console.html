@@ -14,6 +14,13 @@
 					<div class="PanelItem">
 						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 内存 使用率: {{ (100 - sysMonery).toFixed(1) }} %
 					</div>
+					<div class="PanelItem" v-if="run">
+						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 正在运行..
+					</div>
+					<div class="PanelItem" v-else>
+						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 未运行
+					</div>
+
 				</div>
 			</div>
 			<div class="Panel PanelGreen">
@@ -105,24 +112,14 @@
 								<div class="LogK">文件在线管理</div>
 							</div>
 						</div>
-						<!-- 一个组件 -->
-						<div class="col-md-3 col-sm-6" v-if="run">
-							<div class=" PanelItemBlock ">
-								<div class="LogV ">
-									<span class="glyphicon glyphicon-ok" aria-hidden="true "> </span>
+						<div class="col-md-3 col-sm-6" v-on:click="toSchedule()">
+							<div class="PanelItemBlock">
+								<div class="LogV">
+									<span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span>
 								</div>
-								<div class="LogK" style="color:#2dd60b">运行中</div>
+								<div class="LogK">计划任务</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6" v-if="!run">
-							<div class=" PanelItemBlock ">
-								<div class="LogV ">
-									<span class="glyphicon glyphicon-remove" aria-hidden="true "> </span>
-								</div>
-								<div class="LogK">非运行</div>
-							</div>
-						</div>
-						<!-- 一个组件 -->
 					</div>
 				</div>
 			</div>
@@ -187,6 +184,9 @@
 				},
 				toTerminal: function () {
 					RES.redirectPage('./template/component/terminal.html', 'server/console', serverName);
+				},
+				toSchedule: function () {
+					RES.redirectPage('./template/component/schedule.html', null, serverName);
 				}
 			},
 			data: {
