@@ -18,6 +18,7 @@ let e = {
 
 function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
+    let thisServer = serverModel.ServerManager().getServer(servername);
     if (obj.count <= 0) {
         schedulejob.createScheduleJob(id, obj.timestr, () => {
 
@@ -45,15 +46,15 @@ WebSocketObserver().listener('schedule/list', (data) => {
                 time: "5 * * * * *",
                 commande: "__restart__",
             }, {
-                id: "test_123456",
+                id: "test_123457",
                 count: 0,
-                time: "5 * * * * *",
-                commande: "__restart__",
+                time: "*/6 * * * * *",
+                commande: "kill xxxx",
             }, {
-                id: "test_123456",
+                id: "test_123458",
                 count: 0,
                 time: "5 * * * * *",
-                commande: "__restart__",
+                commande: "stop",
             }]
         });
     } else {

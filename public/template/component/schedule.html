@@ -6,7 +6,7 @@
 				<div class="PanelBody">
 					<div class="row">
 						<div class="col-sm-12 PanelItemF">
-							<div class="PanelItem" v-on:click="toBackConsole()">
+							<div class="PanelItem" v-on:click="toBackNew()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新建计划任务项目
 							</div>
 							<div class="PanelItem" v-on:click="toBackConsole()">
@@ -35,7 +35,7 @@
 									<th v-text="obj.time"></th>
 									<th v-text="obj.commande"></th>
 									<th>
-										<a href="#">[ 配置 ]</a>
+										<a href="#" v-on:click="toSchedule(obj)">[ 配置 ]</a>
 										&nbsp;&nbsp;
 										<a href="#">[ 删除 ]</a>
 									</th>
@@ -67,18 +67,26 @@
 
 <script>
 	MI.rListener('onload', function () {
+		MCSERVER.website.schedule = {};
 
 		VIEW_MODEL.newVue('ServerSchedule', {
 			el: '#ServerSchedule',
 			methods: {
 				toBackConsole: function () {
 					RES.redirectPage('./template/component/console.html', 'server/console', this.servername);
+				},
+				toBackNew: function () {
+					RES.redirectPage('./template/component/new_schedule.html', null);
+				},
+				toSchedule: function (obj) {
+					MCSERVER.website.schedule.nowdata = obj;
+					RES.redirectPage('./template/component/new_schedule.html', null);
 				}
 			}
 		});
 	});
 
 	MI.rListener('onend', function () {
-		VIEW_MODEL['ServerSchedule'] = null;
+		// VIEW_MODEL['ServerSchedule'] = null;
 	});
 </script>
