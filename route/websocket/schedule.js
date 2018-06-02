@@ -18,16 +18,10 @@ let e = {
 
 function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
-    let thisServer = serverModel.ServerManager().getServer(servername);
-    if (obj.count <= 0) {
-        schedulejob.createScheduleJob(id, obj.timestr, commande, () => {
+    let thisServer = serverModel.ServerManager().getServer(obj.servername);
 
-        });
-    } else {
-        schedulejob.createScheduleJobCount(id, obj.timestr, obj.count, commande, () => {
+    schedulejob.createScheduleJobCount(id, obj.time, obj.count, obj.commande, obj.servername);
 
-        });
-    }
 }
 
 //列出计划任务

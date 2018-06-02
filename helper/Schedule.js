@@ -9,64 +9,56 @@ MCSERVER.Schedule.container = {};
 MCSERVER.Schedule.dataModel = new DataModel(PATH)
 MCSERVER.Schedule.dataModel.list = [];
 
-module.exports.init = () => {
-    if (fs.existsSync(PATH))
-        MCSERVER.Schedule.dataModel.load();
-    else
-        MCSERVER.Schedule.dataModel.save();
+function serverExe(commande) {
+    console.log("执行:" + commande)
 }
 
-//循环型任务
-module.exports.createScheduleJob = (id, time, commande, callback) => {
-    let mask = MCSERVER.Schedule.container[id] = schedule.scheduleJob(time, (fireDate) => {
-        let res = callback();
-        if (res === false) {
-            mask.cancel();
-        }
-    });
-    if (mask) {
-        MCSERVER.Schedule.dataModel.list.push({
-            id: id,
-            count: 0,
-            time: time,
-            commande: commande
-        });
+module.exports.init = () => {
+    try {
+        MCSERVER.Schedule.dataModel.load();
+    } catch (err) {
+        MCSERVER.Schedule.dataModel.save();
     }
-    MCSERVER.Schedule.dataModel.save();
+    for (const key in MCSERVER.Schedule.dataModel.list) {
+        const element = MCSERVER.Schedule.dataModel.list[key];
+        if (element == null) continue;
+        createScheduleJobCount(element.id, element.time, element.count, element.commande, element.servername,
+            null, false);
+    }
 }
 
 //计次型任务
-module.exports.createScheduleJobCount = (id, time, count, commande, callback) => {
+function createScheduleJobCount(id, time, count, commande, servername, callback, _save = true) {
     let lco = 0;
     let mask = MCSERVER.Schedule.container[id] = schedule.scheduleJob(time, (fireDate) => {
-        if (lco >= count) {
-            mask.cancel();
+        if (lco >= count && count > 0) {
+            deleteScheduleJob(id);
             return;
         }
         lco++;
-        let res = callback();
-        if (res === false) {
-            mask.cancel();
-        }
+        serverExe(commande);
+        callback && callback(commande);
+
     });
     if (mask) {
         MCSERVER.Schedule.dataModel.list.push({
             id: id,
             count: count,
             time: time,
-            commande: commande
+            commande: commande,
+            servername: servername
         });
     }
-    MCSERVER.Schedule.dataModel.save();
+    if (_save)
+        MCSERVER.Schedule.dataModel.save();
 }
+module.exports.createScheduleJobCount = createScheduleJobCount;
+
 
 //删除
-module.exports.deleteScheduleJob = (id) => {
+function deleteScheduleJob(id) {
     let mask = MCSERVER.Schedule.container[id] || null;
-    if (mask) {
-        mask.cancel();
-    }
-    delete MCSERVER.Schedule.container[id];
+    MCSERVER.Schedule.container[id] = undefined;
     for (const key in MCSERVER.Schedule.dataModel.list) {
         const element = MCSERVER.Schedule.dataModel.list[key];
         if (element.id == id) {
@@ -74,4 +66,8 @@ module.exports.deleteScheduleJob = (id) => {
         }
     }
     MCSERVER.Schedule.dataModel.save();
+    if (mask) {
+        mask.cancel();
+    }
 }
+module.exports.deleteScheduleJob = deleteScheduleJob;

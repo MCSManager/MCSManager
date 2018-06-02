@@ -62,7 +62,7 @@
                 <div class="row">
                     <hr>
                     <div class="col-sm-12 PanelItemF">
-                        <div class="PanelItem" v-on:click="toBackNew()">
+                        <div class="PanelItem" v-on:click="toSave()">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 保存
                         </div>
                         <div class="PanelItem" v-on:click="toBack()">
@@ -93,6 +93,15 @@
                 toBack: function () {
                     RES.redirectPage('./template/component/schedule.html', 'schedule/list',
                         servername);
+                },
+                toSave: function () {
+                    WS.sendMsg('schedule/create', JSON.stringify({
+                        id: this.id || "",
+                        time: this.time || "",
+                        count: this.count || 0,
+                        commande: this.commande || "",
+                        servername: this.servername
+                    }));
                 }
             }
         });
