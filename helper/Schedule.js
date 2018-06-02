@@ -30,7 +30,7 @@ function serverExe(servername, commande) {
         serverModel.sendCommand(servername, commande);
     } catch (err) {
         //默认忽略定时计划任务错误
-        MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行时报错 | 已忽略");
+        // MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行时报错 | 已忽略");
     }
 
 }

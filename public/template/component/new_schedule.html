@@ -10,18 +10,18 @@
                         <table class='PropertiesList' width="80%" style="margin: auto;">
                             <tr>
                                 <th>任务间隔表达式</th>
-                                <th>任务性质</th>
+                                <th>任务次数(0 无限制)</th>
                                 <th>任务指令</th>
                             </tr>
                             <tr>
                                 <th>
-                                    <input type="text" v-model="time" placeholder="*/1 * * * * *">
+                                    <input type="text" v-model="time" placeholder="[不可为空]">
                                 </th>
                                 <th>
-                                    <input type="text" v-model="count" placeholder="未设置">
+                                    <input type="text" v-model="count" placeholder="[不可为空]">
                                 </th>
                                 <th>
-                                    <input style="width: 90%" type="text" v-model="commande" placeholder="如: stop">
+                                    <input style="width: 90%" type="text" v-model="commande" placeholder="如: stop,say Hello,__start__ 等等">
                                 </th>
                             </tr>
                         </table>
@@ -45,10 +45,11 @@
                         </p>
                         <p>其他的您基本使用不到，无需学习过多。</p>
                         <p>
-                            <b>任务性质?</b>
+                            <b>任务次数?</b>
                         </p>
                         <p>数字 0 代表重复任务，不断执行，直到您手动删除掉它。</p>
                         <p>数字大于 0 代表计次任务，代表着执行多少次之后自动删除。</p>
+                        <p>注意：如果在计次次数未归零前，控制面板被关闭，我们只能重新计次。</p>
                         <p>
                             <b>任务指令?</b>
                         </p>
@@ -84,7 +85,7 @@
             el: "#NewSchedule",
             data: {
                 id: obj.id || "",
-                time: obj.time || "",
+                time: obj.time || "* * * * * *",
                 count: obj.count || 0,
                 commande: obj.commande || "",
                 servername: servername
