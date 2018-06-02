@@ -1,18 +1,41 @@
 const schedule = require("node-schedule");
-const DataModel = require('../core/DataModel');
 const fs = require('fs');
 
-const PATH = 'server/_ schedule _.js';
+const DataModel = require('../core/DataModel');
+const serverModel = require('../model/ServerModel');
+
+const PATH = 'server/schedule/_ schedule _.js';
 
 MCSERVER.Schedule = {};
 MCSERVER.Schedule.container = {};
 MCSERVER.Schedule.dataModel = new DataModel(PATH)
 MCSERVER.Schedule.dataModel.list = [];
 
-function serverExe(commande) {
-    console.log("执行:" + commande)
+function serverExe(servername, commande) {
+    MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行: ", commande);
+    try {
+        if (commande == "__start__") {
+            serverModel.startServer(servername);
+        }
+        if (commande == "__stop__") {
+            serverModel.stopServer(servername);
+        }
+        if (commande == "__restart__") {
+            serverModel.stopServer(servername);
+            setTimeout(() => {
+                serverModel.startServer(servername);
+            }, 15000)
+        }
+        //默认执行命令
+        serverModel.sendCommand(servername, commande);
+    } catch (err) {
+        //默认忽略定时计划任务错误
+        MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行时保存 | 已忽略");
+    }
+
 }
 
+//计划任务模块初始化
 module.exports.init = () => {
     try {
         MCSERVER.Schedule.dataModel.load();
@@ -36,7 +59,7 @@ function createScheduleJobCount(id, time, count, commande, servername, callback,
             return;
         }
         lco++;
-        serverExe(commande);
+        serverExe(servername, commande);
         callback && callback(commande);
 
     });

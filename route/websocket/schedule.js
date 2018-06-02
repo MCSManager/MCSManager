@@ -20,13 +20,20 @@ function CreateScheduleJob(obj) {
 WebSocketObserver().listener('schedule/list', (data) => {
     let username = data.WsSession.username;
     let servername = data.body;
+    let list = MCSERVER.Schedule.dataModel.list;
+    sendlist = [];
+    for (const iterator of list) {
+        if (iterator && iterator.servername == servername) {
+            sendlist.push(iterator);
+        }
+    }
 
     if (permssion.isCanServer(username, servername)) {
         let thisServer = serverModel.ServerManager().getServer(servername);
         response.wsSend(data.ws, 'schedule/list', {
             username: data.WsSession.username,
             servername: servername,
-            schedules: MCSERVER.Schedule.dataModel.list
+            schedules: sendlist
         });
     }
 });

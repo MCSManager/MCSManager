@@ -186,6 +186,7 @@ process.on("uncaughtException", function (err) {
     const USERS_PATH = './users/';
     const SERVER_PATH = './server/';
     const SERVER_PATH_CORE = './server/server_core/';
+    const SERVER_PATH_SCH = './server/schedule/';
     const CENTEN_LOG_JSON_PATH = './core/info.json';
     const PUBLIC_URL_PATH = './public/common/URL.js';
 
@@ -193,6 +194,7 @@ process.on("uncaughtException", function (err) {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) {
             fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
+            fs.mkdirSync(SERVER_PATH_SCH);
         }
 
         // 生成不 git 同步的文件
