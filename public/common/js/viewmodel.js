@@ -160,4 +160,8 @@
 		MI.routeCopy('ServerProperties', data.obj);
 	});
 
+	MI.routeListener('schedule/list', function (data) {
+		MI.routeCopy('ServerSchedule', data.obj);
+	});
+
 })();

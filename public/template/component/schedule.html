@@ -1,12 +1,14 @@
-<div id='ServerProperties' class="OneContainer">
+<div id='ServerSchedule' class="OneContainer">
 	<div class="row">
 		<div class="col-md-12 ">
 			<div class="Panel PanelBlue">
-				<div class="PanelTitle">服务器计划任务</div>
+				<div class="PanelTitle">服务器 {{servername}} 计划任务列表</div>
 				<div class="PanelBody">
 					<div class="row">
 						<div class="col-sm-12 PanelItemF">
-							<p>您可以进行如下操作:</p>
+							<div class="PanelItem" v-on:click="toBackConsole()">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新建计划任务项目
+							</div>
 							<div class="PanelItem" v-on:click="toBackConsole()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 返回到控制台
 							</div>
@@ -14,35 +16,24 @@
 					</div>
 					<div class="row">
 						<div class="col-lg-12">
-							<p>服务器的计划任务集合</p>
+							<p>欢迎您，{{username}}，这是本服务器的计划任务列表</p>
 							<p>
-								凡是 __xxx__ 格式的命令均是内部命令，不影响使用，请勿乱使用，以防错误
+								<b>凡是</b> __xxx__ 格式的命令均是内部命令，不影响使用，请勿乱使用，以防错误。
+								<b>另外</b>，任务性质为 0 代表重复任务，不为 0 代表计次任务并且代表剩余计次数量。
 							</p>
 							<table class='PropertiesList' width="100%">
 								<tr>
 									<th>任务序号</th>
-									<th>任务性质与类型</th>
-									<th>任务触发指令</th>
+									<th>任务性质</th>
+									<th>任务间隔</th>
+									<th>任务指令</th>
 									<th>操作</th>
 								</tr>
-								<tr>
-									<th>XXXXXX_15451654561</th>
-									<th>计次任务</th>
-									<th>
-										stop
-									</th>
-									<th>
-										<a href="#">[ 配置 ]</a>
-										&nbsp;&nbsp;
-										<a href="#">[ 删除 ]</a>
-									</th>
-								</tr>
-								<tr>
-									<th>XXXXXX_15451654561</th>
-									<th>计次任务</th>
-									<th>
-										stop
-									</th>
+								<tr v-for="obj in schedules">
+									<th v-text="obj.id"></th>
+									<th v-text="obj.count"></th>
+									<th v-text="obj.time"></th>
+									<th v-text="obj.commande"></th>
 									<th>
 										<a href="#">[ 配置 ]</a>
 										&nbsp;&nbsp;
@@ -51,16 +42,6 @@
 								</tr>
 							</table>
 							<br/>
-							<!-- <div class="row">
-								<div class="col-sm-12 PanelItemF">
-									<div class="PanelItem" v-on:click="toBackConsole()">
-										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 返回到控制台
-									</div>
-									<hr>
-									<p>最后，请检查是否符合格式，条件，仔细检查后即可确认修改，或者直接返回到其他页面直接舍弃修改。</p>
-									<p>如果显示不全或不是最新，您可以单击 [重新刷新读取] 来进行获取更新，设置完毕请重启服务器。</p>
-								</div>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -69,7 +50,7 @@
 	</div>
 
 	<!-- 新建计划任务项目 -->
-	<div class="row">
+	<!-- <div class="row">
 		<div class="col-md-12 ">
 			<div class="Panel PanelBlue">
 				<div class="PanelTitle">新建计划任务项目</div>
@@ -79,26 +60,25 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </div>
 
 
 
 <script>
-	// MI.rListener('onload', function () {
-	// 	// MCSERVER.autoColmDo();
+	MI.rListener('onload', function () {
 
-	// 	VIEW_MODEL.newVue('ServerProperties', {
-	// 		el: '#ServerProperties',
-	// 		methods: {
-	// 			toBackConsole: function () {
-	// 				RES.redirectPage('./template/component/console.html', 'server/console', this.serverName);
-	// 			}
-	// 		}
-	// 	});
-	// });
+		VIEW_MODEL.newVue('ServerSchedule', {
+			el: '#ServerSchedule',
+			methods: {
+				toBackConsole: function () {
+					RES.redirectPage('./template/component/console.html', 'server/console', this.servername);
+				}
+			}
+		});
+	});
 
-	// MI.rListener('onend', function () {
-	// 	VIEW_MODEL['ServerProperties'] = null;
-	// });
+	MI.rListener('onend', function () {
+		VIEW_MODEL['ServerSchedule'] = null;
+	});
 </script>

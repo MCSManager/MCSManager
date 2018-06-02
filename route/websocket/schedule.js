@@ -2,6 +2,7 @@ const {
     WebSocketObserver
 } = require('../../model/WebSocketModel');
 const permssion = require('../../helper/Permission');
+const response = require('../../helper/Response');
 const schedulejob = require('../../helper/Schedule');
 const UUID = require('uuid');
 const tools = require('../../core/tools');
@@ -35,6 +36,26 @@ WebSocketObserver().listener('schedule/list', (data) => {
 
     if (permssion.isCanServer(username, servername)) {
         let thisServer = serverModel.ServerManager().getServer(servername);
+        response.wsSend(data.ws, 'schedule/list', {
+            username: data.WsSession.username,
+            servername: servername,
+            schedules: [{
+                id: "test_123456",
+                count: 0,
+                time: "5 * * * * *",
+                commande: "__restart__",
+            }, {
+                id: "test_123456",
+                count: 0,
+                time: "5 * * * * *",
+                commande: "__restart__",
+            }, {
+                id: "test_123456",
+                count: 0,
+                time: "5 * * * * *",
+                commande: "__restart__",
+            }]
+        });
     } else {
         MCSERVER.log('权限不足！');
     }
