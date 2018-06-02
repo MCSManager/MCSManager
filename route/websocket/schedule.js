@@ -4,13 +4,15 @@ const {
 const permssion = require('../../helper/Permission');
 const response = require('../../helper/Response');
 const schedulejob = require('../../helper/Schedule');
-const UUID = require('uuid');
 const tools = require('../../core/tools');
 const serverModel = require('../../model/ServerModel');
 
-//每个服务器最大数量
+const UUID = require('uuid');
+
+//每个服务器最大数量计划任务
 const MAX_MASK = MCSERVER.localProperty.schedule_max || 10;
 
+//创建计划任务函数
 function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
     let thisServer = serverModel.ServerManager().getServer(obj.servername);
@@ -19,6 +21,7 @@ function CreateScheduleJob(obj) {
 
 }
 
+//过滤计划任务列表
 function getMineScheduleList(servername) {
     let list = MCSERVER.Schedule.dataModel.list;
     sendlist = [];
@@ -74,7 +77,6 @@ WebSocketObserver().listener('schedule/delete', (data) => {
 
     if (permssion.isCanServer(username, obj.servername || "")) {
         try {
-
             schedulejob.deleteScheduleJob(obj.id || "");
             response.wsMsgWindow(data.ws, "删除序号:" + obj.id + "计划任务");
         } catch (err) {

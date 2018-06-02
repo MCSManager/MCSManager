@@ -11,9 +11,9 @@ MCSERVER.Schedule.container = {};
 MCSERVER.Schedule.dataModel = new DataModel(PATH)
 MCSERVER.Schedule.dataModel.list = [];
 
+//任务具体执行函数
 function serverExe(servername, commande) {
     if (commande.length == 0) return;
-    // MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行: ", commande);
     try {
         if (commande == "__start__") {
             serverModel.startServer(servername);
@@ -27,10 +27,10 @@ function serverExe(servername, commande) {
                 serverModel.startServer(servername);
             }, 15000)
         }
-        //默认执行命令
+        // 默认执行命令
         serverModel.sendCommand(servername, commande);
     } catch (err) {
-        //默认忽略定时计划任务错误
+        // 默认忽略定时计划任务错误
         // MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行时报错 | 已忽略");
     }
 
