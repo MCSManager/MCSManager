@@ -56,7 +56,9 @@
 		</div>
 		<div id="HeaderInfo" class="HeaderTitle"></div>
 		<div class="HeaderR">
-
+			<div class="PhoneDisplayNone" onclick="PAGE.refresh()">
+				<span class="glyphicon glyphicon-refresh"></span>
+			</div>
 			<div id='websocket' v-text="status" v-bind:style="{ color: tcolor}" class="PhoneDisplayNone">
 				正在链接到服务器...
 			</div>

@@ -16,10 +16,7 @@ function CreateScheduleJob(obj) {
 
 }
 
-//列出计划任务
-WebSocketObserver().listener('schedule/list', (data) => {
-    let username = data.WsSession.username;
-    let servername = data.body;
+function getMineScheduleList(servername) {
     let list = MCSERVER.Schedule.dataModel.list;
     sendlist = [];
     for (const iterator of list) {
@@ -27,6 +24,15 @@ WebSocketObserver().listener('schedule/list', (data) => {
             sendlist.push(iterator);
         }
     }
+    return sendlist;
+}
+
+//列出计划任务
+WebSocketObserver().listener('schedule/list', (data) => {
+    let username = data.WsSession.username;
+    let servername = data.body;
+    let list = MCSERVER.Schedule.dataModel.list;
+    let sendlist = getMineScheduleList(servername);
 
     if (permssion.isCanServer(username, servername)) {
         let thisServer = serverModel.ServerManager().getServer(servername);
@@ -45,6 +51,11 @@ WebSocketObserver().listener('schedule/create', (data) => {
 
     if (permssion.isCanServer(username, obj.servername || "")) {
         try {
+            list = getMineScheduleList(obj.servername);
+            if (list.length > MCSERVER.localProperty.schedule_max) {
+                response.wsMsgWindow(data.ws, "到达创建数量上限！");
+                return;
+            }
             CreateScheduleJob(obj);
             response.wsMsgWindow(data.ws, "创建计划任务成功 √");
         } catch (err) {

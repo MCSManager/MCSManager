@@ -109,3 +109,8 @@ MCSERVER.localProperty.customize_commande = true;
 //超过这段时间后,访问需要重新登录
 //单位 分钟 | 默认 240 分钟
 MCSERVER.localProperty.session_max_age = 240
+
+
+//每个服务器拥有的最大计划任务数量
+//默认 10 个
+MCSERVER.localProperty.schedule_max = 10;

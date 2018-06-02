@@ -12,7 +12,8 @@ MCSERVER.Schedule.dataModel = new DataModel(PATH)
 MCSERVER.Schedule.dataModel.list = [];
 
 function serverExe(servername, commande) {
-    MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行: ", commande);
+    if (commande.length == 0) return;
+    // MCSERVER.log("[ Schedule ] [", servername, "] 服务器计划执行: ", commande);
     try {
         if (commande == "__start__") {
             serverModel.startServer(servername);
