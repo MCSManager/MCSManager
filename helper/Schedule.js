@@ -14,7 +14,7 @@ module.exports.createScheduleJob = (id, time, callback) => {
 }
 
 //计次型任务
-module.exports.createScheduleJobCount = (id, time, callback, count) => {
+module.exports.createScheduleJobCount = (id, time, count, callback) => {
     let lco = 0;
     let mask = MCSERVER.Schedule.container[id] = schedule.scheduleJob(time, (fireDate) => {
         if (lco >= count) {
