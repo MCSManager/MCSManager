@@ -8,14 +8,6 @@ const UUID = require('uuid');
 const tools = require('../../core/tools');
 const serverModel = require('../../model/ServerModel');
 
-
-let e = {
-    servername: "xxxxxx",
-    commande: "xxxxxx",
-    timestr: "",
-    count: 0
-}
-
 function CreateScheduleJob(obj) {
     let id = tools.randomString(6) + "_" + new Date().getTime();
     let thisServer = serverModel.ServerManager().getServer(obj.servername);
