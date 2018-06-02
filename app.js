@@ -1,13 +1,22 @@
 //运行时环境检测
 try {
     let versionNum = parseInt(process.version.replace(/v/igm, "").split(".")[0]);
-    if (versionNum < 8) {
-        console.log("[ ERROR ] 您的 Node 运行环境版本似乎低于我们要求的版本.");
-        console.log("[ ERROR ] 可能会出现未知异常,请立即更新 Node 版本 (>=8.0.0)");
+    if (versionNum < 7) {
+        console.log("[ WARN ] 您的 Node 运行环境版本似乎低于我们要求的版本.");
+        console.log("[ WARN ] 可能会出现未知情况,建议您更新 Node 版本 (>=7.0.0)");
     }
 } catch (err) {
     //忽略任何版本检测导致的错误
 }
+
+//测试
+setTimeout(() => {
+    let arg2 = process.argv[2] || '';
+    if (arg2 == '--test') {
+        MCSERVER.infoLog("Test", "测试过程结束 | 退出...");
+        process.exit(0);
+    }
+}, 10000);
 
 const fs = require('fs');
 const fsex = require('fs-extra');
@@ -244,6 +253,7 @@ app.use('/fs', require('./onlinefs/controller/function'));
 
         if (MCSERVER.localProperty.ftp_is_allow)
             require('./ftpd/index'); //执行ftp逻辑
+
     });
 
 

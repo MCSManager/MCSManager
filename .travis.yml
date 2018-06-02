@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "6.0"
+  - "7.0"
+  - "8.0"
+  - "9.0"
+  - "10.0"
+sudo: true
+cache:
+  directories:
+    - node_modules
+before_script:
+  - npm install
+branches:
+  only:
+    - master

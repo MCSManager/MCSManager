@@ -42,7 +42,8 @@
     "url": "https://github.com/Suwings/MCSManager"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node app.js --test"
   },
   "engines": {
     "node": ">=8.0"
