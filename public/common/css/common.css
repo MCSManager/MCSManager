@@ -1,10 +1,14 @@
 html,
 body {
-	font-family: "微软雅黑";
+	font-family: "微软雅黑" 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	background-color: rgb(220, 218, 218)
+}
+
+code {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 a:link {
