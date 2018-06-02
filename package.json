@@ -30,6 +30,7 @@
     "graceful-fs": "^4.1.11",
     "iconv-lite": "^0.4.21",
     "multiparty": "^4.1.3",
+    "node-schedule": "^1.3.0",
     "os-utils": "0.0.14",
     "pidusage": "^1.1.5",
     "properties": "^1.2.1",

@@ -38,7 +38,7 @@ const querystring = require('querystring');
 //gzip压缩
 const compression = require('compression');
 
-//各类层装载
+//各类层装载 与 初始化
 const ServerModel = require('./model/ServerModel');
 const UserModel = require('./model/UserModel');
 const permission = require('./helper/Permission');
@@ -50,7 +50,7 @@ const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
 const tokenManger = require('./helper/TokenManager');
-
+const Schedule = require('./helper/Schedule');
 
 //控制台颜色
 const colors = require('colors');
