@@ -236,7 +236,7 @@ app.use('/fs', require('./onlinefs/controller/function'));
     MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
 
     Schedule.init();
-    MCSERVER.infoLog('Module', '初始化 计划任务机制');
+    MCSERVER.infoLog('Module', '初始化 Schedule Module');
 
     var host = MCSERVER.localProperty.http_ip;
     var port = MCSERVER.localProperty.http_port;
