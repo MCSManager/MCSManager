@@ -193,12 +193,10 @@ process.on("uncaughtException", function (err) {
 
     try {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
-        if (!fs.existsSync(SERVER_PATH)) {
-            fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
-        }
-        if (!fs.existsSync(SERVER_PATH_SCH)) {
-            fs.mkdirSync(SERVER_PATH_SCH);
-        }
+        if (!fs.existsSync(SERVER_PATH)) fs.mkdirSync(SERVER_PATH);
+        if (!fs.existsSync(SERVER_PATH_CORE)) fs.mkdirSync(SERVER_PATH_CORE);
+        if (!fs.existsSync(SERVER_PATH_SCH)) fs.mkdirSync(SERVER_PATH_SCH);
+
 
         // 生成不 git 同步的文件
         if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
