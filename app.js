@@ -194,6 +194,8 @@ process.on("uncaughtException", function (err) {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) {
             fs.mkdir(SERVER_PATH, () => fs.mkdirSync(SERVER_PATH_CORE));
+        }
+        if (!fs.existsSync(SERVER_PATH_SCH)) {
             fs.mkdirSync(SERVER_PATH_SCH);
         }
 
