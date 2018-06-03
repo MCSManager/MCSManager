@@ -23,18 +23,18 @@
 							</p>
 							<table class='PropertiesList' width="100%">
 								<tr>
-									<th>任务序号</th>
+									<th class="PhoneDisplayNone">任务序号</th>
 									<th>任务次数</th>
 									<th>任务间隔</th>
-									<th>任务指令</th>
-									<th>操作</th>
+									<th style="max-width: 120px;">任务指令</th>
+									<th style="min-width: 94px;">操作</th>
 								</tr>
 								<tr v-for="obj in schedules" v-if="obj">
-									<th v-text="obj.id"></th>
+									<th v-text="obj.id" class="PhoneDisplayNone"></th>
 									<th v-text="obj.count"></th>
 									<th v-text="obj.time"></th>
 									<th v-text="obj.commande"></th>
-									<th>
+									<th style="min-width: 94px;">
 										<a href="#" v-on:click="toSchedule(obj)">[ 配置 ]</a>
 										&nbsp;&nbsp;
 										<a href="#" v-on:click="toDelete(obj)">[ 删除 ]</a>

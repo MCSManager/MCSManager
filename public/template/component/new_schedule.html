@@ -1,65 +1,30 @@
 <div id='NewSchedule' class="OneContainer">
     <div class="col-md-12 ">
-        <div class="Panel PanelBlue">
-            <div class="PanelTitle">{{id}} 计划任务项目</div>
+        <div class="Panel">
+            <div class="PanelTitle">计划任务项目表达式</div>
             <div class="PanelBody">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>这是服务器 {{servername}} 的其中一个计划任务项目控制。</p>
-                        <p>这里是计划任务项目的所有数据，请根据您的需要更改，如果不知如何更改，请仔细阅读下面说明:</p>
-                        <table class='PropertiesList' width="80%" style="margin: auto;">
+                        <p>这是此 {{id}} 计划任务项目的表达式</p>
+                        <table class="PropertiesList">
                             <tr>
-                                <th>任务间隔表达式</th>
-                                <th>任务次数(0 无限制)</th>
+                                <th>间隔表达式</th>
+                                <th>次数</th>
                                 <th>任务指令</th>
                             </tr>
                             <tr>
                                 <th>
-                                    <input type="text" v-model="time" placeholder="[不可为空]">
+                                    <input style="width: 90%;" type="text" v-model="time" placeholder="[必填]">
                                 </th>
                                 <th>
-                                    <input type="text" v-model="count" placeholder="[不可为空]">
+                                    <input style="width: 90%;" type="text" v-model="count" placeholder="[必填]">
                                 </th>
                                 <th>
-                                    <input style="width: 90%" type="text" v-model="commande" placeholder="如: stop,say Hello,__start__ 等等">
+                                    <input style="width: 100%;" type="text" v-model="commande" placeholder="如: stop,say Hello,__start__ 等等">
                                 </th>
                             </tr>
                         </table>
-                        <br/>
-                        <p>
-                            <b>任务时间间隔？</b>
-                        </p>
-                        <p>如果您使用过 Linux 的 crontab 命令，您会发现它的用法非常相似。总共有 6 个 * 号，其中按照顺序代表不同的时间，分别是 秒，分，时，每月第几天，第几个月，每周第几天</p>
-                        <p>如果您不会使用这个，请按照以下修改：</p>
-                        <p>
-                            <code> */20 */2 * * * * </code> &nbsp;代表每隔 2 分钟的一分钟内每隔 20 秒执行一次
-                            <br />
-                            <code> */1 * * * * * </code> &nbsp;代表每 1 秒钟执行一次 (1~59)
-                            <br />
-                            <code> * */5 * * * * </code> &nbsp;代表每 5 分钟执行一次 (1~59)
-                            <br />
-                            <code> * * */4 * * * </code> &nbsp;代表每 4 小时执行一次 (1~24)
-                            <br />
-                            <code> * * * */2 * * </code> &nbsp;代表每 2 天执行一次 (1~31)
-                            <br />
-
-                        </p>
-                        <p>其他的您基本使用不到，无需学习过多。</p>
-                        <p>
-                            <b>任务次数?</b>
-                        </p>
-                        <p>数字 0 代表重复任务，不断执行，直到您手动删除掉它。</p>
-                        <p>数字大于 0 代表计次任务，代表着执行多少次之后自动删除。</p>
-                        <p>注意：如果在计次次数未归零前，控制面板被关闭，我们只能重新计次。</p>
-                        <p>
-                            <b>任务指令?</b>
-                        </p>
-                        <p>向 Minecraft 服务器一样，正常的输入命令即可，切记不要加
-                            <code>/</code>
-                        </p>
-                        <p>特殊指令：__start__ 代表开启服务器，__restart__ 代表重启服务器。</p>
                     </div>
-                    <br>
                 </div>
                 <div class="row">
                     <hr>
@@ -74,6 +39,48 @@
                 </div>
             </div>
         </div>
+        <div class="Panel PanelBlue">
+            <div class="PanelTitle">计划任务项目参数手册</div>
+            <div class="PanelBody">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>这是服务器 {{servername}} 的其中一个计划任务项目控制。</p>
+                        <p>这里是计划任务项目的所有数据，请根据您的需要更改，如果不知如何更改，请仔细阅读下面说明:</p>
+                        <p>
+                            <b>任务时间间隔</b>
+                        </p>
+                        <p>如果您使用过 Linux 的 crontab 命令，您会发现它的用法非常相似。总共有 6 个 * 号，其中按照顺序代表不同的时间，分别是 秒，分，时，每月第几天，第几个月，每周第几天</p>
+                        <p>如果您不会使用这个，请按照以下修改：</p>
+                        <p>
+                            <code> */20 */2 * * * * </code> &nbsp;代表每隔 2 分钟的一分钟内每隔 20 秒执行一次
+                            <br />
+                            <code> */1 * * * * * </code> &nbsp;代表每 1 秒钟执行一次 (1~59)
+                            <br />
+                            <code> * */5 * * * * </code> &nbsp;代表每 5 分钟执行一次 (1~59)
+                            <br />
+                            <code> * * */4 * * * </code> &nbsp;代表每 4 小时执行一次 (1~24)
+                            <br />
+                            <code> * * * */2 * * </code> &nbsp;代表每 2 天执行一次 (1~31)
+                        </p>
+                        <p>其他的您基本使用不到，无需学习过多。</p>
+                        <p>
+                            <b>任务次数</b>
+                        </p>
+                        <p>数字 0 代表重复任务，不断执行，直到您手动删除掉它。</p>
+                        <p>数字大于 0 代表计次任务，代表着执行多少次之后自动删除。</p>
+                        <p>注意：如果在计次次数未归零前，控制面板被关闭，我们只能重新计次。</p>
+                        <p>
+                            <b>任务指令</b>
+                        </p>
+                        <p>向 Minecraft 服务器一样，正常的输入命令即可，切记不要加
+                            <code>/</code>
+                        </p>
+                        <p>特殊指令：__start__ 代表开启服务器，__restart__ 代表重启服务器。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

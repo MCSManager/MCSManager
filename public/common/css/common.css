@@ -280,6 +280,7 @@ input {
 	border-top: 1px solid #ccc;
 	padding: 8px 0px;
 	color: #666;
+	word-break: break-all;
 }
 
 .PropertiesList tr {
