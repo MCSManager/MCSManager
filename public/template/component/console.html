@@ -201,38 +201,39 @@
 			}
 		});
 
+		//服务器状态请求
 		PAGE.timerR = setInterval(function () {
 			WS.sendMsg('server/console', serverName);
-		}, 2000);
+		}, 3000);
 
 		//CPU
 		var CPUoption = TOOLS.charts.DefOption;
 		var RAMoption = TOOLS.charts.DefOption;
 
-		//use
+		//表格
 		var ChartCPU = null;
 		var ChartRAM = null;
 		PAGE.ChartLogIs = true;
-		TOOLS.charts.bulider('ChartCPU', 32, {}, function (chart) {
+		TOOLS.charts.bulider('ChartCPU', 24, {}, function (chart) {
 			ChartCPU = chart;
 
 			function doing() {
 				chart.replaceData(VIEW_MODEL['ConsolePanel'].CPUlog);
 				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
 				chart.reOption();
-				if (PAGE.ChartLogIs) setTimeout(doing, 2000);
+				if (PAGE.ChartLogIs) setTimeout(doing, 4000);
 			}
 			doing();
 		}, CPUoption);
 		//ChartRAM
-		TOOLS.charts.bulider('ChartRAM', 32, {}, function (chart) {
+		TOOLS.charts.bulider('ChartRAM', 24, {}, function (chart) {
 			ChartRAM = chart;
 
 			function doing() {
 				chart.replaceData(VIEW_MODEL['ConsolePanel'].RAMlog);
 				//chart.pushData(getNowFormatDate(), GetRandomNum(1, 40));
 				chart.reOption();
-				if (PAGE.ChartLogIs) setTimeout(doing, 2000);
+				if (PAGE.ChartLogIs) setTimeout(doing, 4000);
 			}
 			doing();
 		}, CPUoption);
