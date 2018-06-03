@@ -10,20 +10,27 @@ try {
     //忽略任何版本检测导致的错误
 }
 
-//测试
+//全局变量 MCSERVER
+global.MCSERVER = {};
+
+//测试时检测
+MCSERVER.allError = 0;
+//自动化部署测试
 setTimeout(() => {
     let arg2 = process.argv[2] || '';
     if (arg2 == '--test') {
-        MCSERVER.infoLog("Test", "测试过程结束 | 退出...");
+        MCSERVER.infoLog("Test", "测试过程结束...");
+        if (MCSERVER.allError > 0) {
+            MCSERVER.infoLog("Test", "测试未通过!");
+            process.exit(500);
+        }
+        MCSERVER.infoLog("Test", "测试通过!");
         process.exit(0);
     }
 }, 10000);
 
 const fs = require('fs');
 const fsex = require('fs-extra');
-
-//总全局变量
-global.MCSERVER = {};
 
 //全局仅限本地配置
 MCSERVER.localProperty = {};
@@ -178,6 +185,8 @@ for (let key in routeList) {
 }
 
 process.on("uncaughtException", function (err) {
+    //是否出过错误,本变量用于自动化测试
+    MCSERVER.allError++;
     //打印出错误
     MCSERVER.error('UncaughtException 机制错误报告:', err);
 });
