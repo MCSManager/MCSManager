@@ -6,6 +6,8 @@ const properties = require("properties");
 const fs = require('fs');
 const tools = require('../tools');
 
+const SYSTEM_CODE = tools.getSystemCodeing();
+
 class MinecraftServer extends ServerProcess {
 
     constructor(name, args) {
@@ -18,10 +20,9 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.createDate = now; //创建时间
         this.dataModel.lastDate = now; //最后启动时间
 
-        //输入 输出编码
-        let systemCode = tools.getSystemCodeing();
-        this.dataModel.ie = systemCode;
-        this.dataModel.oe = systemCode;
+        //输入 输出 编码
+        this.dataModel.ie = SYSTEM_CODE;
+        this.dataModel.oe = SYSTEM_CODE;
 
         this.dataModel.autoRestart = false; //是否自动重启
         this.dataModel.schedule = []; //计划任务配置项目
@@ -38,6 +39,9 @@ class MinecraftServer extends ServerProcess {
 
         this.dataModel.Xmx = args.Xmx;
         this.dataModel.Xms = args.Xms;
+
+        this.dataModel.ie = args.ie || SYSTEM_CODE;
+        this.dataModel.oe = args.oe || SYSTEM_CODE;
 
         //cwd 是服务端文件，不是控制面板需要的配置
         this.dataModel.cwd = args.cwd || './server/' + this.dataModel.name + '/';

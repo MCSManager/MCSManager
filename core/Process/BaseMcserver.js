@@ -138,8 +138,8 @@ class ServerProcess extends EventEmitter {
         }
 
         // 事件的传递
-        this.process.stdout.on('data', (data) => this.emit('console', iconv.decode(data, CODE_CONSOLE)));
-        this.process.stderr.on('data', (data) => this.emit('console', iconv.decode(data, CODE_CONSOLE)));
+        this.process.stdout.on('data', (data) => this.emit('console', iconv.decode(data, this.dataModel.oe)));
+        this.process.stderr.on('data', (data) => this.emit('console', iconv.decode(data, this.dataModel.oe)));
         this.process.on('exit', (code) => {
             this.emit('exit', code);
             this.stop();
@@ -152,7 +152,7 @@ class ServerProcess extends EventEmitter {
 
     send(command) {
         if (this._run) {
-            this.process.stdin.write(iconv.encode(command, CODE_CONSOLE));
+            this.process.stdin.write(iconv.encode(command, this.dataModel.ie));
             this.process.stdin.write('\n');
             return true;
         }

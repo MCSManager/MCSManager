@@ -28,22 +28,22 @@
 						<div class="col-md-6">
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">服务器唯一标识名</span>
-								<input type="text" class="form-control" v-model="name" placeholder="<未设定>">
+								<input type="text" class="form-control" v-model="name" placeholder="[未设定]">
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">Java 路径</span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java" placeholder="<未设定>">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java" placeholder="[未设定]">
 							</div>
 							<p>端根目录: [ {{ cwd }} ] </p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 服务端文件名 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="jarName" placeholder="<未设定>">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="jarName" placeholder="[未设定]">
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">启动附加参数</span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd" placeholder="<无>">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd" placeholder="[无]">
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">服务器根目录</span>
@@ -54,11 +54,11 @@
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 最大内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="[自动 如需修改请加单位 (M,G)]">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="[自动 如需修改请加单位]">
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 初始内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="[自动 如需修改请加单位 (M,G)]">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="[自动 如需修改请加单位]">
 							</div>
 							<div class="row">
 								<div class="col-lg-12">
@@ -68,13 +68,13 @@
 								<div class="col-lg-6">
 									<div class="input-group input-group-sm">
 										<span class="input-group-addon"> 日志输出编码 </span>
-										<input type="text" class="form-control" v-model="ie" placeholder="[不可空]">
+										<input type="text" class="form-control" v-model="oe" placeholder="[默认 自动选择]">
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="input-group input-group-sm">
 										<span class="input-group-addon"> 命令输入编码 </span>
-										<input type="text" class="form-control" v-model="oe" placeholder="[不可空]">
+										<input type="text" class="form-control" v-model="ie" placeholder="[默认 自动选择]">
 									</div>
 								</div>
 							</div>
@@ -88,7 +88,6 @@
 								<li>一旦使用这个自定义参数，将会忽略您上面所设置的所有选项</li>
 								<li>您设定的自定义启动参数依然会将服务端根目录作为工作目录来执行命令</li>
 								<li>甚至可以运行 bash shell 或 cmd.exe 程序,谨慎设置</li>
-
 							</ul>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 自定义参数 </span>
@@ -149,6 +148,8 @@
 						Xmx: this.Xmx,
 						Xms: this.Xms,
 						java: this.java,
+						ie: this.ie,
+						oe: this.oe,
 						highCommande: this.highCommande,
 						oldServerName: this.oldServerName
 					};
