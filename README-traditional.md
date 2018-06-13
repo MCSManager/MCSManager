@@ -94,17 +94,6 @@ node app.js #或 npm start
 
 <br />
 
-安裝常見問題
------------
-這裡是一些常見問題，並不代表你一定會遇見。
-- 找不到模組 `express`
-> 輸入 `npm install` 解決
-
-- 找不到模組 `ftpd`
-> 請輸入 `npm install ftpd` 進行再次手動安裝,這個模組是直接 github 指定源
-
-<br />
-
 Wiki
 ---------
 我們有些常見問題與細節上的問題，已經把它們都整合在 `Wiki` 裡面。

@@ -94,17 +94,6 @@ node app.js #或 npm start
 
 <br />
 
-安装常见问题
------------
-这里是一些常见问题，并不代表你一定会遇见。
-- 找不到模块 `express`
-> 输入 `npm install` 解决
-
-- 找不到模块 `ftpd`
-> 请输入 `npm install ftpd` 进行再次手动安装,这个模块是直接 github 指定源
-
-<br />
-
 Wiki
 ---------
 我们有些常见问题与细节上的问题，已经把它们都整合在 `Wiki` 里面。
