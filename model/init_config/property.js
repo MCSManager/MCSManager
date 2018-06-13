@@ -18,20 +18,6 @@
  * 绝大部分设置，需要重启面板生效！！
  */
 
-
-/* --------------- 功能代码区，请勿修改 ---------------*/
-//控制台默认编码代码
-const os = require("os");
-let auto_console_coding;
-if (os.platform() == "win32")
-    auto_console_coding = 'GBK';
-else
-    auto_console_coding = 'UTF-8';
-/* --------------- 功能代码区，请勿修改 ---------------*/
-
-
-
-
 /*--------------- 配置开始，这与 Minecraft 服务器配置基本一样 --------------- */
 
 //HTTP 服务监听端口
@@ -65,11 +51,6 @@ MCSERVER.localProperty.ftp_end_port = 20200;
 //控制台实时刷新频率 单位毫秒 默认1200 毫秒
 //建议在 1000 毫秒 与 3000 毫秒之选择
 MCSERVER.localProperty.console_send_times = 1200;
-
-
-//控制台默认编码，默认自动选择，你可以去除变量 auto_console_coding 自己写，如 "UFT-8" 或 "GBXXXX"
-//如果控制台中文乱码，你可以尝试更改此选项
-MCSERVER.localProperty.console_encode = auto_console_coding;
 
 
 //是否开启 gzip 静态文件压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
