@@ -16,6 +16,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel = new DataModel('server/' + name);
         let now = new Date().toLocaleString();
 
+        //以下均为模型默认值
         this.dataModel.name = name; //服务器名字
         this.dataModel.createDate = now; //创建时间
         this.dataModel.lastDate = now; //最后启动时间
