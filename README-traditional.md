@@ -7,7 +7,10 @@
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
 
+
 簡單，易用，多實例，羽量級的 Minecraft Server 控制台
+
+[中文簡體](Readme.md) | [中文繁體](README-traditional.md)
 
 <br />
 
@@ -49,7 +52,7 @@
 運行在 Windows 
 -----------
 
-**方法一**
+**方法一 (僅限中文簡體)**
 
 下載並正確安裝 `Node` 環境:
 
@@ -61,19 +64,24 @@
 
 執行命令 `node app.js` 或 `npm start`
 
-**方法二**
 
-介於某些原因，您可能並不願意安裝這些運行環境，於是我們給予了一種綠色打包的運行環境，下載即可直接使用
+**方法二 (包含簡體/繁體版本)**
 
-下載直接按兩下運行: https://pan.baidu.com/s/1bpbB8Az (下載地址)
+可能因為某些原因，您可能並不願意安裝這些運行環境，於是我們給予了一種綠色打包的運行環境，下載即可直接使用。
+
+下載直接運行:
+
+https://pan.baidu.com/s/1bpbB8Az (中文簡體/繁體中文版本 下載地址)
+
 
 **注意:** 百度網盤提供的下載是打包集成好的，小版本更新我們不會打包，也就是意味著，這裡不能即時跟隨最新版本。
 
 <br />
 
+
 運行在 Linux 
 -----------
-- 相對而言，這可能更加簡單
+- 相對而言，這可能更加簡單。保證您的 node 版本正確與 git 工具可行下，安裝與運行易如反掌。
 
 ```bash
 git clone https://github.com/Suwings/MCSManager.git
@@ -143,6 +151,7 @@ Wiki
 
 <br />
 
+
 設定檔
 -----------
 我們的設定檔是程式目錄下的 `property.js` 檔，它會在你第一次運行的時候，自動生成。
@@ -154,6 +163,7 @@ Wiki
 > 此檔不會與 github 版本衝突，更新時也不會自動覆蓋
 
 <br />
+
 
 自訂設計
 -----------
@@ -219,7 +229,9 @@ FTP 模組採用被動傳輸模式，傳輸命令預設使用 `10021`(可更改)
 
 > 更多資訊可參考 [Wiki](https://github.com/Suwings/MCSManager/wiki/Linux-Docker-%E6%95%B4%E4%BD%93%E5%8C%96%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88)
 
+
 <br />
+
 
 許可權系統
 -----------
@@ -247,4 +259,6 @@ FTP 模組採用被動傳輸模式，傳輸命令預設使用 `10021`(可更改)
 
 你可以遵照 AGPLv3 協議來修改和重新發佈這一程式。
 
-或者，在學習或私自 (內部) 使用時，在不公開發佈的原則下，可以無視這個**協議和版權**，因為這本身並不能束縛你，並且我們歡迎這
+或者，在學習或私自 (內部) 使用時，在不公開發佈的原則下，可以無視這個**協議和版權**，因為這本身並不能束縛你，並且我們歡迎這樣做。
+
+<br />
