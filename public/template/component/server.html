@@ -49,13 +49,34 @@
 								<span class="input-group-addon">服务器根目录</span>
 								<input type="text" class="form-control" v-model="cwd">
 							</div>
+							<div class="row">
+
+							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 最大内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="<自动>">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="[自动 如需修改请加单位 (M,G)]">
 							</div>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 初始内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="<自动>">
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="[自动 如需修改请加单位 (M,G)]">
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<p>端 1.9.X 以上可能需要输入编码为 UTF-8，如控制台有乱码，可修改这里。</p>
+								</div>
+
+								<div class="col-lg-6">
+									<div class="input-group input-group-sm">
+										<span class="input-group-addon"> 日志输出编码 </span>
+										<input type="text" class="form-control" v-model="ie" placeholder="[不可空]">
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="input-group input-group-sm">
+										<span class="input-group-addon"> 命令输入编码 </span>
+										<input type="text" class="form-control" v-model="oe" placeholder="[不可空]">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -63,17 +84,15 @@
 						<div class="col-lg-12">
 							<p>完全自定义启动参数 (针对特殊需求)</p>
 							<ul class="ulInfo">
-								<li>仅限于一行，各个参数之间使用 空格分割，尽可能保证正确</li>
 								<li>必须添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前，否则可能导致命令传递失效</li>
 								<li>一旦使用这个自定义参数，将会忽略您上面所设置的所有选项</li>
 								<li>您设定的自定义启动参数依然会将服务端根目录作为工作目录来执行命令</li>
 								<li>甚至可以运行 bash shell 或 cmd.exe 程序,谨慎设置</li>
-								<li>列如: java -xxx -yyy Xmx4g Xms2g
-									<span class="color-red">-Djline.terminal=jline.UnsupportedTerminal</span> -jar test.jar --xxx 这类高级需求</li>
+
 							</ul>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 自定义参数 </span>
-								<input type="text" class="form-control" v-model="highCommande" placeholder="<尚未使用>">
+								<input type="text" class="form-control" v-model="highCommande" placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	">
 							</div>
 						</div>
 						<br />

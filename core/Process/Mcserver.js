@@ -19,7 +19,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.lastDate = now; //最后启动时间
 
         //输入 输出编码
-        systemCode = tools.getSystemCodeing();
+        let systemCode = tools.getSystemCodeing();
         this.dataModel.ie = systemCode;
         this.dataModel.oe = systemCode;
 
