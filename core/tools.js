@@ -1,5 +1,7 @@
 //工具箱
 
+const os = require("os");
+
 module.exports.getMineTime = () => {
     var date = new Date();
     return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
@@ -53,4 +55,13 @@ module.exports.mCopyFileSync = (oldpath, newpath) => {
         encoding: 'UTF-8'
     });
     return true;
+}
+
+module.exports.getSystemCodeing = () => {
+    let auto_console_coding;
+    if (os.platform() == "win32")
+        auto_console_coding = 'GBK';
+    else
+        auto_console_coding = 'UTF-8';
+    return auto_console_coding;
 }

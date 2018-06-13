@@ -4,6 +4,7 @@ const os = require('os');
 
 const properties = require("properties");
 const fs = require('fs');
+const tools = require('../tools');
 
 class MinecraftServer extends ServerProcess {
 
@@ -16,6 +17,11 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.name = name; //服务器名字
         this.dataModel.createDate = now; //创建时间
         this.dataModel.lastDate = now; //最后启动时间
+
+        //输入 输出编码
+        systemCode = tools.getSystemCodeing();
+        this.dataModel.ie = systemCode;
+        this.dataModel.oe = systemCode;
 
         this.dataModel.autoRestart = false; //是否自动重启
         this.dataModel.schedule = []; //计划任务配置项目
