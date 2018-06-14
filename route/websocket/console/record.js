@@ -25,6 +25,9 @@ WebSocketObserver().listener('server/console/history', (data) => {
         // 从文件读取日志
         recordCommande.readRecord(start, HISTORY_SIZE_LINE, (resText) => {
             data.WsSession['record_start'] += HISTORY_SIZE_LINE;
+            // 替换为 HTML
+            resText = resText.replace(/\n/gim, '<br />');
+            console.log("指针:", data.WsSession['record_start'])
             response.wsSend(data.ws, 'server/console/history', 'terminalBack', resText);
         });
     }
