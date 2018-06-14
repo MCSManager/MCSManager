@@ -1,6 +1,10 @@
 const fs = require("fs");
 const readline = require('readline');
+
+//默认目录 RecordTmp
+
 class RecordCommand {
+
     constructor(path = "") {
         this.path = path;
         this.timerlock = false;
@@ -38,3 +42,6 @@ class RecordCommand {
         });
     }
 }
+
+
+module.exports.RecordCommand = RecordCommand;
