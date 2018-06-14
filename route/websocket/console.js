@@ -71,10 +71,13 @@ WebSocketObserver().listener('server/console/ws', (data) => {
     let serverName = data.body.trim();
 
     if (permssion.isCanServer(userName, serverName)) {
-
         var serverT = serverModel.ServerManager().getServer(serverName);
         MCSERVER.log('[' + serverName + '] >>> 准许用户 ' + userName + ' 控制台监听');
+        //设置简体终端
         data.WsSession['console'] = serverName;
+        //设置历史指针
+        data.WsSession['record_start'] = 0;
+
         response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
     } else {
