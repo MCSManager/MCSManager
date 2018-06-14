@@ -11,7 +11,10 @@ class RecordCommand {
     }
 
     writeRecord(data = "") {
-        fs.appendFile(this.path, data, 'utf8', function (err) {});
+        if (fs.existsSync(this.path))
+            fs.appendFile(this.path, data, 'utf8', function (err) {});
+        else
+            fs.writeFileSync(this.path, data);
     }
 
     readRecord(start = 0, end = -1, callback = () => {}) {

@@ -7,6 +7,9 @@ const serverModel = require('../../model/ServerModel');
 const userModel = require('../../model/UserModel');
 const permssion = require('../../helper/Permission');
 const observerModel = require('../../model/ObserverModel');
+const {
+    RecordCommand
+} = require('../../helper/RecordCommand')
 const EventEmitter = require('events');
 
 
@@ -93,6 +96,8 @@ WebSocketObserver().listener('server/console/remove', (data) => {
     }
 });
 
+const BASE_RECORD_DIR = "./core/RecordTmp/";
+
 //缓冲区定时发送频率，默认限制两秒刷新缓冲区
 let consoleBuffer = {};
 setInterval(() => {
@@ -115,11 +120,12 @@ setInterval(() => {
 }, MCSERVER.localProperty.console_send_times);
 //控制台标准输出流
 serverModel.ServerManager().on('console', (data) => {
-    let server = serverModel.ServerManager().getServer(data.serverName);
-    let consoleData = data.msg.replace(/\n/gim, '<br />');
+    let serverName = data.serverName;
 
-    //将输出载入历史记录
-    // if (server) server.terminalLog(consoleData);
+    //压入原始数据的历史记录
+    new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data.msg);
+    //替换元素
+    let consoleData = data.msg.replace(/\n/gim, '<br />');
 
     if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";
     consoleBuffer[data.serverName] += consoleData;
