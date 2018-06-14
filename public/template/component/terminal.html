@@ -4,8 +4,11 @@
 			<div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
 				<span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回
 			</div>
+			<div class="PanelItem PanelItemBlack" v-on:click="loadHistory()">
+				<span class="glyphicon glyphicon-play" aria-hidden="true"></span> 历史
+			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="goBttom()">
-				<span class="glyphicon glyphicon-download" aria-hidden="true"></span> 回到底部
+				<span class="glyphicon glyphicon-download" aria-hidden="true"></span> 底部
 			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="toCommand('stop');toCommand('end')">
 				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
@@ -17,7 +20,7 @@
 	</div>
 	<div id="TerminalMinecraft" contenteditable="false">
 		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console Listener...
-		<br>
+		<br />
 	</div>
 	<div class="" style="border-top: 1px solid #585858;">
 		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command"
@@ -46,7 +49,6 @@
 		PAGE.tmp_onresize = function () {
 			$('#TerminalMinecraft').css('height', (document.body.clientHeight - 50 - 45) + 'px');
 		};
-
 		MI.listener('resize', PAGE.tmp_onresize);
 
 		VIEW_MODEL.newVue('Terminal', {
@@ -56,7 +58,11 @@
 					var ele = document.getElementById('TerminalMinecraft');
 					ele.scrollTop = ele.scrollHeight;
 				},
-
+				loadHistory: function () {
+					var obj = {};
+					obj.serverName = PAGE.serverName;
+					WS.sendMsg('server/console/history', JSON.stringify(obj));
+				},
 				toOpenServer: function () {
 					WS.sendMsg('server/console/open', PAGE.serverName);
 				},
@@ -112,7 +118,5 @@
 		$('#MainContainer').removeAttr('style');
 		$('#ConsoleMain').removeAttr('style');
 
-		delete PAGE;
-		PAGE = {};
 	})
 </script>
