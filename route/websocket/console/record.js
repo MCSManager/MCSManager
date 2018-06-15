@@ -8,14 +8,13 @@ const {
 const {
     RecordCommand
 } = require('../../../helper/RecordCommand');
-
+const fs = require("fs");
 
 //前端请求加载历史缓存
 const HISTORY_SIZE_LINE = 1024;
 const BASE_RECORD_DIR = "./server/record_tmp/";
 
 
-// BUG Note: 顺序应该是倒序，而不是正序。
 WebSocketObserver().listener('server/console/history', (data) => {
     let userName = data.WsSession.username;
     let bodyJson = JSON.parse(data.body);
@@ -40,3 +39,22 @@ WebSocketObserver().listener('server/console/history', (data) => {
         });
     }
 });
+
+// 自动计划任务
+// 每 3 分钟刷新一次日志文件，当文件大于 3MB（默认） 时删除。
+setInterval(() => {
+    try {
+        var files = fs.readdirSync(BASE_RECORD_DIR);
+        for (filename of files) {
+            let path = BASE_RECORD_DIR + filename;
+            let filesize = fs.statSync(path).size;
+            if (filesize > 1024 * 1024 * 1) {
+                MCSERVER.infoLog("Log", "自动清除日志文件:" + path)
+                // 如遇冲突，忽略不计
+                fs.unlinkSync(path);
+            }
+        }
+    } catch (err) {
+        MCSERVER.infoLog("Log", "清除某日志文件: 出错，我们将下次继续:\n" + err)
+    }
+}, 1000 * 60 * 3);
