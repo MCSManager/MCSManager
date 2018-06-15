@@ -1,23 +1,23 @@
 <div id='Terminal'>
-	<div class="row" style="position: absolute;right: 25px;">
+	<div class="row" style="position: absolute;right: 16px;">
 		<div class="col-sm-12 PanelItemF">
 			<div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
 				<span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回
 			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="loadHistory()">
-				<span class="glyphicon glyphicon-play" aria-hidden="true"></span> 历史
+				<span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> 历史
 			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="goBttom()">
 				<span class="glyphicon glyphicon-download" aria-hidden="true"></span> 底部
 			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="clearConsole()">
-				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 清屏
+			<div class="PanelItem PanelItemBlack " v-on:click="clearConsole()">
+				<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
 			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="toCommand('stop');toCommand('end')">
 				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
 			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="toOpenServer()">
-				<span class="glyphicon glyphicon-play" aria-hidden="true"></span> 开启
+			<div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="toOpenServer()">
+				<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
 			</div>
 		</div>
 	</div>
