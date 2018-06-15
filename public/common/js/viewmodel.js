@@ -155,19 +155,17 @@
 		var consoleSafe = terminalEncode(data.body);
 
 		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		// var ifyLoad =
-		// 	'<span style="color:#3af138;">[历史日志] </span>' +
-		// 	'<span style="color:rgb(212, 136, 30);">================<br></span>';
 
-		var oldTopV = 0;
+
 		var oldHeightV = MinecraftConsole.scrollHeight;
+		//颜色过滤
+		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
 		//incude
 		MinecraftConsole.innerHTML = consoleSafe + MinecraftConsole.innerHTML;
-		var newTopV = MinecraftConsole.scrollTop;
 		var newHeightV = MinecraftConsole.scrollHeight;
 
 		var resVTopLac = newHeightV - oldHeightV;
-		MinecraftConsole.scrollTop = resVTopLac - 60;
+		MinecraftConsole.scrollTop = resVTopLac - 999;
 	});
 
 	//普通用户主页

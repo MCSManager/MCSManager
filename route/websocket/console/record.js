@@ -11,7 +11,7 @@ const {
 
 
 //前端请求加载历史缓存
-const HISTORY_SIZE_LINE = 256;
+const HISTORY_SIZE_LINE = 1024;
 const BASE_RECORD_DIR = "./core/RecordTmp/";
 
 // BUG Note: 顺序应该是倒序，而不是正序。
@@ -23,6 +23,11 @@ WebSocketObserver().listener('server/console/history', (data) => {
     if (permssion.isCanServer(userName, serverName)) {
         let recordCommande = new RecordCommand(BASE_RECORD_DIR + serverName + ".log");
         let start = data.WsSession['record_start'] || 0;
+        if (start <= HISTORY_SIZE_LINE) {
+            response.wsSend(data.ws, 'server/console/history', 'terminalBack',
+                "[控制面板]: 无法读取更多的服务端日志: 已到最顶端.. <br />");
+            return;
+        }
         // 从文件读取日志
         recordCommande.readRecord(start, HISTORY_SIZE_LINE, (resText) => {
             data.WsSession['record_start'] -= HISTORY_SIZE_LINE;
