@@ -43,7 +43,7 @@ WebSocketObserver().listener('server/console/history', (data) => {
 
 
 // 自动计划任务
-// 每 3 分钟刷新一次日志文件，当文件大于 3MB（默认） 时删除。
+// 每 3 分钟刷新一次日志文件，当文件大于 1MB（默认） 时删除。
 const TER_MAX_SIZE = MCSERVER.localProperty.terminalQueue_max_size || 1;
 setInterval(() => {
     try {
