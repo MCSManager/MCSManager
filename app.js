@@ -199,13 +199,14 @@ process.on("uncaughtException", function (err) {
     const SERVER_PATH_SCH = './server/schedule/';
     const CENTEN_LOG_JSON_PATH = './core/info.json';
     const PUBLIC_URL_PATH = './public/common/URL.js';
+    const RECORD_PARH = './server/record_tmp/'
 
     try {
         if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
         if (!fs.existsSync(SERVER_PATH)) fs.mkdirSync(SERVER_PATH);
         if (!fs.existsSync(SERVER_PATH_CORE)) fs.mkdirSync(SERVER_PATH_CORE);
         if (!fs.existsSync(SERVER_PATH_SCH)) fs.mkdirSync(SERVER_PATH_SCH);
-
+        if (!fs.existsSync(RECORD_PARH)) fs.mkdirSync(RECORD_PARH);
 
         // 生成不 git 同步的文件
         if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
@@ -240,7 +241,6 @@ app.use('/fs', require('./onlinefs/controller/function'));
     counter.init();
     UserModel.userCenter().initUser();
     MCSERVER.infoLog('Module', '初始化 UserManager Module  ');
-
 
     ServerModel.ServerManager().loadALLMinecraftServer();
     MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
