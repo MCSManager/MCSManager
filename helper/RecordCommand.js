@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const HISTORY_SIZE_LINE = 1024;
+const FILE_CODE = "utf8";
 
 // 默认目录 RecordTmp
 class RecordCommand {
@@ -25,7 +26,7 @@ class RecordCommand {
     // 向最后追加一行或一堆数据
     writeRecord(data = "") {
         if (fs.existsSync(this.path))
-            fs.appendFile(this.path, data, 'utf8', function (err) {});
+            fs.appendFile(this.path, data, FILE_CODE, function (err) {});
         else
             fs.writeFileSync(this.path, new Buffer(HISTORY_SIZE_LINE * 2).toString() + data);
     }
