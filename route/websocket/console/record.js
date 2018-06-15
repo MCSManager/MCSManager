@@ -40,15 +40,18 @@ WebSocketObserver().listener('server/console/history', (data) => {
     }
 });
 
+
+
 // 自动计划任务
 // 每 3 分钟刷新一次日志文件，当文件大于 3MB（默认） 时删除。
+const TER_MAX_SIZE = MCSERVER.localProperty.terminalQueue_max_size || 1;
 setInterval(() => {
     try {
         var files = fs.readdirSync(BASE_RECORD_DIR);
         for (filename of files) {
             let path = BASE_RECORD_DIR + filename;
             let filesize = fs.statSync(path).size;
-            if (filesize > 1024 * 1024 * 1) {
+            if (filesize > 1024 * 1024 * TER_MAX_SIZE) {
                 MCSERVER.infoLog("Log", "自动清除日志文件:" + path)
                 // 如遇冲突，忽略不计
                 fs.unlinkSync(path);

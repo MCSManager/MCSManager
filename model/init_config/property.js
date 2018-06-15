@@ -67,10 +67,10 @@ MCSERVER.localProperty.is_allow_csrf = false;
 MCSERVER.localProperty.login_url = "/public/login/";
 
 
-//控制台历史记录最大缓存长度 (单位 一次缓冲区刷新的数据,一般为 1 行到 5 行)
-//缓存长度越高，能存下的日志越多，但是对服务器内存牺牲更大
-//只建议调小，而不建议调大
-MCSERVER.localProperty.terminalQueue_max_length = 320;
+//日志文件记录的最大大小。默认是 1MB
+//大小越大，储存的日志内容越多，但是对服务器硬盘要求也会略微变大。
+//单位 MB | 推荐 1~5 MB 之间
+MCSERVER.localProperty.terminalQueue_max_size = 1;
 
 
 //控制数据中心 数据刷新频率 单位毫秒
