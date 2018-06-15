@@ -9,13 +9,15 @@ const permssion = require('../../helper/Permission');
 const observerModel = require('../../model/ObserverModel');
 const {
     RecordCommand
-} = require('../../helper/RecordCommand')
+} = require('../../helper/RecordCommand');
 const EventEmitter = require('events');
 
 
 const os = require("os");
 const MB_SIZE = 1024 * 1024;
 const EventObserver = new EventEmitter();
+
+const BASE_RECORD_DIR = "./core/RecordTmp/";
 
 //日志缓存记录器
 MCSERVER.consoleLog = {};
@@ -76,7 +78,8 @@ WebSocketObserver().listener('server/console/ws', (data) => {
         //设置简体终端
         data.WsSession['console'] = serverName;
         //设置历史指针
-        data.WsSession['record_start'] = 0;
+        console.log("设置指针:", new RecordCommand(BASE_RECORD_DIR + serverName + ".log").recordLength() - 1)
+        data.WsSession['record_start'] = new RecordCommand(BASE_RECORD_DIR + serverName + ".log").recordLength() - 1;
 
         response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
@@ -99,7 +102,6 @@ WebSocketObserver().listener('server/console/remove', (data) => {
     }
 });
 
-const BASE_RECORD_DIR = "./core/RecordTmp/";
 
 //缓冲区定时发送频率，默认限制两秒刷新缓冲区
 let consoleBuffer = {};
@@ -125,9 +127,14 @@ setInterval(() => {
 serverModel.ServerManager().on('console', (data) => {
     let serverName = data.serverName;
 
-    //压入原始数据的历史记录
+    // 压入原始数据的历史记录
     new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data.msg);
-    //替换元素
+
+    // 自增偏移量记录  没有获取数据
+    // if (!data.WsSession['record_start']) data.WsSession['record_start'] = 0;
+    // data.WsSession['record_start'] += 1;
+
+    // 替换元素
     let consoleData = data.msg.replace(/\n/gim, '<br />');
 
     if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";

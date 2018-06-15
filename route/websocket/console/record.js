@@ -11,9 +11,10 @@ const {
 
 
 //前端请求加载历史缓存
-const HISTORY_SIZE_LINE = 32;
+const HISTORY_SIZE_LINE = 256;
 const BASE_RECORD_DIR = "./core/RecordTmp/";
 
+// BUG Note: 顺序应该是倒序，而不是正序。
 WebSocketObserver().listener('server/console/history', (data) => {
     let userName = data.WsSession.username;
     let bodyJson = JSON.parse(data.body);
@@ -24,10 +25,10 @@ WebSocketObserver().listener('server/console/history', (data) => {
         let start = data.WsSession['record_start'] || 0;
         // 从文件读取日志
         recordCommande.readRecord(start, HISTORY_SIZE_LINE, (resText) => {
-            data.WsSession['record_start'] += HISTORY_SIZE_LINE;
+            data.WsSession['record_start'] -= HISTORY_SIZE_LINE;
             // 替换为 HTML
             resText = resText.replace(/\n/gim, '<br />');
-            console.log("指针:", data.WsSession['record_start'])
+            console.log("指针:", data.WsSession['record_start'], "当前总大小:", recordCommande.recordLength())
             response.wsSend(data.ws, 'server/console/history', 'terminalBack', resText);
         });
     }
