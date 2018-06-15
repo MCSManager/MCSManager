@@ -113,6 +113,7 @@
 	display: block;
 	cursor: pointer;
 	color: #141A1D;
+	user-select: none;
 }
 
 .PanelItemBlack {
