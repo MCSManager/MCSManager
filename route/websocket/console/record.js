@@ -12,7 +12,7 @@ const {
 
 //前端请求加载历史缓存
 const HISTORY_SIZE_LINE = 1024;
-const BASE_RECORD_DIR = "./server/record_tmp";
+const BASE_RECORD_DIR = "./server/record_tmp/";
 
 
 // BUG Note: 顺序应该是倒序，而不是正序。

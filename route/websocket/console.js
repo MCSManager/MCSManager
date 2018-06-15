@@ -12,12 +12,7 @@ const {
 } = require('../../helper/RecordCommand');
 const EventEmitter = require('events');
 
-
-const os = require("os");
-const MB_SIZE = 1024 * 1024;
-const EventObserver = new EventEmitter();
-
-const BASE_RECORD_DIR = "./server/record_tmp";
+const BASE_RECORD_DIR = "./server/record_tmp/";
 
 //日志缓存记录器
 MCSERVER.consoleLog = {};
