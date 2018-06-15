@@ -73,20 +73,18 @@ WebSocketObserver().listener('server/console/ws', (data) => {
     let serverName = data.body.trim();
 
     if (permssion.isCanServer(userName, serverName)) {
-        var serverT = serverModel.ServerManager().getServer(serverName);
         MCSERVER.log('[' + serverName + '] >>> 准许用户 ' + userName + ' 控制台监听');
-        //设置简体终端
-        data.WsSession['console'] = serverName;
+
         //设置历史指针
-        console.log("设置指针:", new RecordCommand(BASE_RECORD_DIR + serverName + ".log").recordLength() - 1)
         data.WsSession['record_start'] = new RecordCommand(BASE_RECORD_DIR + serverName + ".log").recordLength() - 1;
 
+        //设置监听终端
+        data.WsSession['console'] = serverName;
         response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
-    } else {
-        MCSERVER.log('[' + serverName + '] 拒绝用户 ' + userName + ' 控制台监听');
     }
 
+    MCSERVER.log('[' + serverName + '] 拒绝用户 ' + userName + ' 控制台监听');
     data.WsSession['console'] = undefined;
 });
 
@@ -110,36 +108,29 @@ setInterval(() => {
         let data = consoleBuffer[serverName];
         //忽略极小体积数据
         if (!data || data.length <= 1) continue;
+        // 替换元素
+        let htmlData = data.replace(/\n/gim, '<br />');
         //刷新每个服务器的缓冲数据
         selectWebsocket(serverName, (socket) => {
             socket.send({
                 ws: socket.ws,
                 resK: 'server/console/ws',
                 resV: {},
-                body: data
+                body: htmlData
             });
         });
+        // 压入原始数据的历史记录
+        new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data);
+        // 释放内存
         delete consoleBuffer[serverName]
         consoleBuffer[serverName] = "";
     }
 }, MCSERVER.localProperty.console_send_times);
 //控制台标准输出流
 serverModel.ServerManager().on('console', (data) => {
-    let serverName = data.serverName;
-
-    // 压入原始数据的历史记录
-    new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data.msg);
-
-    // 自增偏移量记录  没有获取数据
-    // if (!data.WsSession['record_start']) data.WsSession['record_start'] = 0;
-    // data.WsSession['record_start'] += 1;
-
-    // 替换元素
-    let consoleData = data.msg.replace(/\n/gim, '<br />');
-
+    // 加入到缓冲区
     if (!consoleBuffer[data.serverName]) consoleBuffer[data.serverName] = "";
-    consoleBuffer[data.serverName] += consoleData;
-
+    consoleBuffer[data.serverName] += data.msg;
 });
 
 

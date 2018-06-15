@@ -14,6 +14,7 @@ const {
 const HISTORY_SIZE_LINE = 1024;
 const BASE_RECORD_DIR = "./core/RecordTmp/";
 
+
 // BUG Note: 顺序应该是倒序，而不是正序。
 WebSocketObserver().listener('server/console/history', (data) => {
     let userName = data.WsSession.username;
@@ -28,12 +29,13 @@ WebSocketObserver().listener('server/console/history', (data) => {
                 "[控制面板]: 无法读取更多的服务端日志: 已到最顶端.. <br />");
             return;
         }
+
+        // 先移动指针到指定位置开始
+        data.WsSession['record_start'] -= HISTORY_SIZE_LINE;
         // 从文件读取日志
-        recordCommande.readRecord(start, HISTORY_SIZE_LINE, (resText) => {
-            data.WsSession['record_start'] -= HISTORY_SIZE_LINE;
+        recordCommande.readRecord(data.WsSession['record_start'], HISTORY_SIZE_LINE, (resText) => {
             // 替换为 HTML
             resText = resText.replace(/\n/gim, '<br />');
-            console.log("指针:", data.WsSession['record_start'], "当前总大小:", recordCommande.recordLength())
             response.wsSend(data.ws, 'server/console/history', 'terminalBack', resText);
         });
     }
