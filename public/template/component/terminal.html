@@ -10,6 +10,9 @@
 			<div class="PanelItem PanelItemBlack" v-on:click="goBttom()">
 				<span class="glyphicon glyphicon-download" aria-hidden="true"></span> 底部
 			</div>
+			<div class="PanelItem PanelItemBlack" v-on:click="clearConsole()">
+				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 清屏
+			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="toCommand('stop');toCommand('end')">
 				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
 			</div>
@@ -19,7 +22,8 @@
 		</div>
 	</div>
 	<div id="TerminalMinecraft" contenteditable="false">
-		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console Listener...
+		<br />
+		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console...
 		<br />
 	</div>
 	<div class="" style="border-top: 1px solid #585858;">
@@ -94,6 +98,15 @@
 						this.commandListPrint--;
 					}
 					return false;
+				},
+				clearConsole: function () {
+					var ele = document.getElementById('TerminalMinecraft');
+					ele.innerHTML = ["<span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
+						"控制面板内容已经清空，您所查看的历史记录位置依然保留。",
+						"<br>",
+						"<span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
+						"如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。"
+					].join(" ");
 				}
 			},
 			data: {
