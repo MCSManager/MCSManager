@@ -123,6 +123,7 @@
 
 	MI.rListener('onend', function () {
 		WS.sendMsg('server/console/remove', '');
+		PAGE.mainC.innerHTML = "";
 		PAGE.mainC.onscroll = function () {};
 
 		MI.onDestroy('resize', PAGE.tmp_onresize);
