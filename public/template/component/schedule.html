@@ -74,7 +74,7 @@
 					WS.sendMsg('schedule/delete', JSON.stringify({
 						id: obj.id,
 						servername: this.servername
-					}), () => {
+					}), function () {
 						PAGE.refresh();
 					});
 				}
