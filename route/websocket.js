@@ -62,7 +62,7 @@ router.ws('/ws', function (ws, req) {
     token = token.trim();
     let username = null;
     let status = false;
-    let wsAliveHBCount = 5;
+    let wsAliveHBCount = 2;
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
     let uid = permssion.randomString(12) + Date.parse(new Date()).toString();
@@ -170,7 +170,8 @@ router.ws('/ws', function (ws, req) {
             //当网络延迟特别高时，也能很好的降低指数. 将来指数够低时，将自动优化数据的发送
             if (reqHeaderObj['RequestValue'] == "HBPackage") {
                 status = true;
-                wsAliveHBCount < 10 && wsAliveHBCount++;
+                // 最高心跳包健康数
+                wsAliveHBCount < 3 && wsAliveHBCount++;
                 return;
             }
 
@@ -194,14 +195,15 @@ router.ws('/ws', function (ws, req) {
         WebSocketClose();
     });
 
-    //Websocket 心跳包检查 | 12 秒递减一个链接健康指数
+    //Websocket 心跳包检查 | 10 秒递减一个链接健康指数
     var HBMask = setInterval(() => {
+        // 超过指定次数不响应，代表链接丢失
         if (wsAliveHBCount <= 0) {
             MCSERVER.log('[ WebSocket HBPackage ]', '用户', username, '长时间未响应心跳包 | 已自动断开');
             WebSocketClose();
         }
         wsAliveHBCount--;
-    }, 1000 * 12)
+    }, 1000 * 10)
 
     //Websocket 关闭函数
     function WebSocketClose() {
