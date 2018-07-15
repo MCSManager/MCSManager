@@ -124,7 +124,7 @@ class ServerProcess extends EventEmitter {
         this.dataModel.lastDate = new Date().toLocaleString();
 
         this.process.on('error', (err) => {
-            MCSERVER.error('服务器启动时保存,建议检查配置与环境', err);
+            MCSERVER.error('服务器启动时异常,建议检查配置与环境', err);
             this.stop();
             this.emit('error', err);
         });
@@ -133,19 +133,23 @@ class ServerProcess extends EventEmitter {
             MCSERVER.error('this.process.pid is null', this.process.pid);
             this.stop();
             delete this.process;
-            throw new Error('服务端进程启动失败，请检查启动参数');
+            throw new Error('服务端进程启动失败，请检查启动参数。进程 PID 是 Null！');
             return false;
         }
 
-        // 事件的传递
+        // 输出事件的传递
         this.process.stdout.on('data', (data) => this.emit('console', iconv.decode(data, this.dataModel.oe)));
         this.process.stderr.on('data', (data) => this.emit('console', iconv.decode(data, this.dataModel.oe)));
         this.process.on('exit', (code) => {
             this.emit('exit', code);
             this.stop();
         });
-        //产生事件开启
+
+        // 产生事件开启
         this.emit('open', this);
+
+        // 输出开服资料
+        this.printlnStdin('服务端 ' + this.dataModel.name + " 执行开启命令. PID:" + this.process.pid);
 
         return true;
     }
@@ -186,9 +190,11 @@ class ServerProcess extends EventEmitter {
     stop() {
         this._run = false;
         this._loading = false;
+        // 输出关服资料
+        this.printlnStdin('服务端 ' + this.dataModel.name + " 执行关闭命令.");
+
         this.send('stop');
         this.send('end');
-
     }
 
     kill() {
@@ -202,6 +208,15 @@ class ServerProcess extends EventEmitter {
 
     isRun() {
         return this._run;
+    }
+
+    //输出一行到标准输出
+    printlnStdin(line) {
+        let str = ['[MCSMANAGER] [', new Date().toString(), ']:',
+            line,
+            "\n"
+        ].join(" ");
+        this.emit('console', str);
     }
 
 }
