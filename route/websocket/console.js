@@ -48,6 +48,9 @@ serverModel.ServerManager().on('exit', (data) => {
             (socket) => response.wsMsgWindow(socket.ws, '检测到服务器关闭，稍后将根据任务自动重启！'));
         return;
     }
+    //输出到标准输出
+    server.printlnStdin('服务端 ' + data.serverName + " 关闭.");
+
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
 })

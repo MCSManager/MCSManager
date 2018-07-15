@@ -125,6 +125,7 @@ class ServerProcess extends EventEmitter {
 
         this.process.on('error', (err) => {
             MCSERVER.error('服务器启动时异常,建议检查配置与环境', err);
+            this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid]);
             this.stop();
             this.emit('error', err);
         });
@@ -190,8 +191,6 @@ class ServerProcess extends EventEmitter {
     stop() {
         this._run = false;
         this._loading = false;
-        // 输出关服资料
-        this.printlnStdin('服务端 ' + this.dataModel.name + " 执行关闭命令.");
 
         this.send('stop');
         this.send('end');
