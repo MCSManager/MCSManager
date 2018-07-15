@@ -32,7 +32,7 @@ class ServerProcess extends EventEmitter {
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
-        if (!this.highCommande) new Error("自定义参数非法,无法启动服务端");
+        if (!this.highCommande || this.highCommande.trim().length <= 0) new Error("自定义参数非法,无法启动服务端");
         let commandArray = this.dataModel.highCommande.split(" ");
         let javaPath = commandArray.shift();
         //过滤
@@ -117,6 +117,7 @@ class ServerProcess extends EventEmitter {
             this.dataModel.highCommande ? this.twoStart() : this.oneStart();
         } catch (err) {
             this.stop();
+            throw new Error('进程启动时异常:' + err.name + ":" + err.message);
         }
 
         this._run = true;
@@ -135,7 +136,6 @@ class ServerProcess extends EventEmitter {
             this.stop();
             delete this.process;
             throw new Error('服务端进程启动失败，请检查启动参数。进程 PID 是 Null！');
-            return false;
         }
 
         // 输出事件的传递

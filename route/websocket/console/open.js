@@ -2,7 +2,9 @@ const response = require('../../../helper/Response');
 var serverModel = require('../../../model/ServerModel');
 var userModel = require('../../../model/UserModel');
 const permssion = require('../../../helper/Permission');
-const { WebSocketObserver } = require('../../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../../model/WebSocketModel');
 
 //开启服务器
 WebSocketObserver().listener('server/console/open', (data) => {
@@ -17,10 +19,9 @@ WebSocketObserver().listener('server/console/open', (data) => {
             }
             response.wsSend(data.ws, 'server/console/open', true);
         } catch (err) {
-            response.wsMsgWindow(data.ws, '启动出错:' + err);
+            response.wsMsgWindow(data.ws, '' + err);
         }
         return;
     }
     response.wsSend(data.ws, 'server/console/open', null);
 });
-
