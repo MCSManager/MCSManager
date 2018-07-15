@@ -137,7 +137,7 @@
 				"world_the_end",
 				"world_nether",
 				"Usage",
-				"Server thread", "Done"
+				"Server thread", "Done", "MCSMANAGER"
 			]
 		]
 		for (var k in RegExpStringArr) {
