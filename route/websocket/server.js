@@ -102,11 +102,14 @@ WebSocketObserver().listener('server/opt_all', (data) => {
 
     try {
         let servers = serverModel.ServerManager().getServerObjects();
-        for (let server of servers) {
+        for (let k in servers) {
+            let server = servers[k];
             if (command == "start") {
                 server.start();
             } else {
-                server.stop();
+                server.send('stop');
+                server.send('end');
+                server.send('exit');
             }
         }
         response.wsMsgWindow(data.ws, '操作执行成功√');
