@@ -150,8 +150,7 @@ class ServerProcess extends EventEmitter {
         this.emit('open', this);
 
         // 输出开服资料
-        this.printlnStdin('服务端 ' + this.dataModel.name + " 执行开启命令. PID:" + this.process.pid);
-
+        this.printlnCommandLine('服务端 ' + this.dataModel.name + " 执行开启命令. PID:" + this.process.pid);
         return true;
     }
 
@@ -216,6 +215,12 @@ class ServerProcess extends EventEmitter {
             "\n"
         ].join(" ");
         this.emit('console', str);
+    }
+
+    printlnCommandLine(line) {
+        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
+        this.printlnStdin(line);
+        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
     }
 
 }

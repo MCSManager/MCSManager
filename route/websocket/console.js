@@ -49,7 +49,7 @@ serverModel.ServerManager().on('exit', (data) => {
         return;
     }
     //输出到标准输出
-    server.printlnStdin('服务端 ' + data.serverName + " 关闭.");
+    server.printlnCommandLine('服务端 ' + data.serverName + " 关闭.");
 
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
