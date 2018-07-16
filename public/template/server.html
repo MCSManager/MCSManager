@@ -12,6 +12,12 @@
 							<div class="PanelItem" v-on:click="newServer()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新的服务器
 							</div>
+							<div class="PanelItem" v-on:click="opt_all('start')">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 启动所有服务器
+							</div>
+							<div class="PanelItem" v-on:click="opt_all('stop')">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 关闭所有服务器
+							</div>
 						</div>
 					</div>
 					<div class=" ItemTableList"></div>
@@ -73,6 +79,9 @@
 				},
 				newServerx: function () {
 					RES.redirectPage('./template/component/newserverx.html', null, '');
+				},
+				opt_all: function (command) {
+					WS.sendMsg('server/opt_all', command);
 				},
 				toDeleteServer: function (serverName) {
 					var result = confirm('是否删除 [' + serverName + '] 这个服务端？\n注意: 删除服务器并不会删除服务端文件,只会从控制面板删除！');

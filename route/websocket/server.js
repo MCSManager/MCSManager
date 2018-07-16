@@ -1,4 +1,6 @@
-const { WebSocketObserver } = require('../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../model/WebSocketModel');
 const serverModel = require('../../model/ServerModel');
 const response = require('../../helper/Response');
 const permssion = require('../../helper/Permission');
@@ -8,7 +10,9 @@ const os = require("os");
 WebSocketObserver().listener('server/view', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
     let value = serverModel.ServerManager().getServerList();
-    response.wsSend(data.ws, 'server/view', { items: value });
+    response.wsSend(data.ws, 'server/view', {
+        items: value
+    });
 });
 
 
@@ -86,6 +90,28 @@ WebSocketObserver().listener('server/delete', (data) => {
     } catch (e) {
         response.wsSend(data.ws, 'server/delete', null);
         response.wsMsgWindow(data.ws, '删除服务器失败' + e);
+    }
+
+});
+
+
+//服务器批量启动与关闭
+WebSocketObserver().listener('server/opt_all', (data) => {
+    if (!permssion.isMaster(data.WsSession)) return;
+    let command = data.body.trim();
+
+    try {
+        let servers = serverModel.ServerManager().getServerObjects();
+        for (let server of servers) {
+            if (command == "start") {
+                server.start();
+            } else {
+                server.stop();
+            }
+        }
+        response.wsMsgWindow(data.ws, '操作执行成功√');
+    } catch (err) {
+        response.wsMsgWindow(data.ws, '执行失败:' + err);
     }
 
 });

@@ -206,6 +206,10 @@ class ServerManager extends EventEmitter {
         return undefined;
     }
 
+    getServerObjects() {
+        return this.serverList;
+    }
+
 }
 
 module.exports = ServerManager;
