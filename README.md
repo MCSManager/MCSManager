@@ -56,7 +56,7 @@
 
 下载并正确安装 `Node` 环境:
 
-下载源代码并解压: [https://github.com/Suwings/MCSManager/archive/master.zip](Master.zip)
+下载源代码并解压: [https://github.com/Suwings/MCSManager/archive/master.zip](https://github.com/Suwings/MCSManager/archive/master.zip)
 
 进入程序源代码目录，并且在当前目录打开命令控制台
 
