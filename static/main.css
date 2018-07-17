@@ -1,6 +1,6 @@
 body,
 html {
-    font-family: Tahoma, Geneva, sans-serif;
+    font-family: "微软雅黑";
     height: 100%;
     width: 100%;
     margin: 0;
@@ -22,7 +22,7 @@ h4 {
 }
 
 .mtitle {
-    font-family: Tahoma, Geneva, sans-serif;
+    font-family: monospace;
     text-shadow: 1px 1px 1px rgb(196, 196, 196);
     font-size: 36px;
     font-weight: 800;
@@ -54,7 +54,7 @@ h4 {
 }
 
 .mfooter {
-    margin-top: 20px;
+    margin-top: 40px;
     color: rgb(122, 122, 122);
     text-align: left;
     font-size: 12px;
@@ -90,4 +90,22 @@ h4 {
     100% {
         border-right: 2px solid rgb(255, 255, 255);
     }
+}
+
+pre,
+xmp,
+plaintext,
+listing {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: initial;
+    border: 0px;
+    /* border-radius: 4px; */
 }
