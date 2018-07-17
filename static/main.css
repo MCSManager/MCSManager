@@ -91,6 +91,15 @@ h4 {
     }
 }
 
+@media (max-width:760px) {
+    .phonenot {
+        display: none;
+    }
+    .phone {
+        display: block;
+    }
+}
+
 pre,
 xmp,
 plaintext,
