@@ -1,7 +1,7 @@
 //Websocket 层
 (function () {
 
-	var DEBUG = true; //Websocket DEBUG
+	var DEBUG = false; //Websocket DEBUG
 
 	//from @BBleae
 	//10 秒自动发送一次心跳包，此时间不可改变

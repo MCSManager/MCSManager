@@ -26,7 +26,7 @@
 							<p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里，来避免重复的输入相同的数据。</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">目标实例名字</span>
-								<input type="text" class="form-control" v-model="readServerName" placeholder="[无导入的配置]">
+								<input type="text" class="form-control" v-model="readServerName" placeholder="[在此输入目标服务端的名字即可复制它的配置项目]">
 								<span class="input-group-btn">
 									<button class="btn btn-default" v-on:click="readServerConfig(readServerName)"> 导入配置 </button>
 								</span>
@@ -142,7 +142,7 @@
 						if (serverData == null || serverData['serverName'] == null) {
 							return;
 						}
-						that.name = serverData.serverName + "_cpoy";
+						that.name = serverData.serverName + "_copy";
 						that.Xmx = serverData.Xmx;
 						that.Xms = serverData.Xms;
 						that.Java = serverData.Java;
