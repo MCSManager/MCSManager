@@ -23,6 +23,14 @@
 								<span class="input-group-addon">Java 路径</span>
 								<input type="text" class="form-control" v-model="java" placeholder="[自动]">
 							</div>
+							<p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里，来避免重复的输入相同的数据。</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon">目标实例名字</span>
+								<input type="text" class="form-control" v-model="readServerName" placeholder="[无导入的配置]">
+								<span class="input-group-btn">
+									<button class="btn btn-default" v-on:click="readServerConfig(readServerName)"> 导入配置 </button>
+								</span>
+							</div>
 						</div>
 						<div class="col-md-6">
 							<p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
@@ -96,7 +104,8 @@
 				Xmx: '',
 				Xms: '',
 				addCmd: '',
-				java: 'java'
+				java: 'java',
+				readServerName: ''
 			},
 			methods: {
 				toCreateServer: function () {
@@ -123,6 +132,24 @@
 						cwd: this.cwd
 					};
 					WS.sendMsg('server/create_dir', JSON.stringify(obj));
+				},
+				readServerConfig: function (serverName) {
+					if (serverName.trim() == "") return;
+					var that = this;
+					//请求此服务端配置数据并且赋值给自己
+					WS.sendMsg('server/get', serverName, function (pack) {
+						serverData = pack.ResponseValue;
+						if (serverData == null || serverData['serverName'] == null) {
+							return;
+						}
+						that.name = serverData.serverName + "_cpoy";
+						that.Xmx = serverData.Xmx;
+						that.Xms = serverData.Xms;
+						that.Java = serverData.Java;
+						that.jarName = serverData.jarName;
+						that.addCmd = serverData.addCmd.join(" ").trim();
+						// that.cwd = serverData.cwd;
+					});
 				}
 			},
 			computed: {

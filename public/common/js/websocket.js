@@ -1,7 +1,7 @@
 //Websocket 层
 (function () {
 
-	var DEBUG = false; //Websocket DEBUG
+	var DEBUG = true; //Websocket DEBUG
 
 	//from @BBleae
 	//10 秒自动发送一次心跳包，此时间不可改变
@@ -36,7 +36,8 @@
 				}
 				obj.body = body;
 				MI.on('ws/response', obj, body);
-				tmp_callback && tmp_callback();
+				//产生当时数据接受事件
+				tmp_callback && tmp_callback(obj);
 				tmp_callback = null;
 			} catch (e) {
 				DEBUG && console.log('Websocket 收到的数据异常:');

@@ -22,6 +22,11 @@ WebSocketObserver().listener('server/get', (data) => {
 
     let serverName = data.body.trim();
     let mcserver = serverModel.ServerManager().getServer(serverName);
+    if (mcserver == null) {
+        response.wsMsgWindow(data.ws, '服务端 ' + serverName + ' 不存在！请刷新或自行检查。');
+        return;
+    }
+
     let serverData = mcserver.dataModel;
     serverData.serverName = serverName;
     response.wsSend(data.ws, 'server/get', serverData);
