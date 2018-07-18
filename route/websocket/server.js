@@ -108,16 +108,21 @@ WebSocketObserver().listener('server/opt_all', (data) => {
     try {
         let servers = serverModel.ServerManager().getServerObjects();
         for (let k in servers) {
-            let server = servers[k];
-            if (command == "start") {
-                server.start();
-            } else {
-                server.send('stop');
-                server.send('end');
-                server.send('exit');
+            try {
+                let server = servers[k];
+                if (command == "start") {
+                    server.start();
+                } else {
+                    server.send('stop');
+                    server.send('end');
+                    server.send('exit');
+                }
+            } catch (serverErr) {
+                //忽略
+                continue;
             }
         }
-        response.wsMsgWindow(data.ws, '操作执行成功√');
+        response.wsMsgWindow(data.ws, '操作执行发出！需要一定时间,具体结果请看服务端运行状态.');
     } catch (err) {
         response.wsMsgWindow(data.ws, '执行失败:' + err);
     }
