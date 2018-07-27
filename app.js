@@ -274,21 +274,7 @@ app.use('/fs', require('./onlinefs/controller/function'));
 
 })();
 
-//退出事件
-let _endFlag = false;
-process.on('SIGINT', function () {
-    if (_endFlag) return;
-    _endFlag = true;
-    MCSERVER.infoLog('PROCESS', '程序正在结束,请稍等...'.red);
-
-    //保存
-    counter.save();
-    ServerModel.ServerManager().saveAllMinecraftServer();
-    UserModel.userCenter().saveAllUser();
 
 
-    setTimeout(() => {
-        MCSERVER.infoLog('PROCESS', 'EXIT...'.red);
-        process.exit(0);
-    }, 1000)
-});
+//程序退出信号处理
+require('./core/procexit');
