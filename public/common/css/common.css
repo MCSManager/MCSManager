@@ -4,7 +4,7 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	background-color: rgb(220, 218, 218)
+	background-color: #f6f8fb;
 }
 
 code {
@@ -41,7 +41,6 @@ input {
 
 #Header {
 	background-color: #0D6AAD;
-	background: linear-gradient(to right, #0D6AAD, rgb(14, 96, 155));
 	height: 50px;
 	position: fixed;
 	top: 0px;
