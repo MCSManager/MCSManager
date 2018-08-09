@@ -269,6 +269,14 @@ app.use('/fs', require('./onlinefs/controller/function'));
         if (MCSERVER.localProperty.ftp_is_allow)
             require('./ftpd/index'); //执行ftp逻辑
 
+        MCSERVER.infoLog('INFO', '配置文件: property.js 文件');
+        MCSERVER.infoLog('INFO', '文档参阅: https://github.com/suwings/mcsmanager');
+
+        if (MCSERVER.allError <= 0) {
+            MCSERVER.infoLog('INFO', '控制面板已经启动');
+        } else {
+            MCSERVER.infoLog('INFO', '控制面板启动异常');
+        }
     });
 
 
