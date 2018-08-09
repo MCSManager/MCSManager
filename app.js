@@ -275,6 +275,12 @@ app.use('/fs', require('./onlinefs/controller/function'));
 })();
 
 
+//用于捕捉前方所有路由都未经过的请求，则可为 404 页面
+app.get('*', function (req, res) {
+    //404 页面
+    res.redirect('/public/template/404_page.html');
+    res.end();
+})
 
 //程序退出信号处理
 require('./core/procexit');
