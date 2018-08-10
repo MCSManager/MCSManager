@@ -83,6 +83,19 @@
 					</transition>
 				</div>
 			</div>
+			<div class="Panel ">
+				<div class="PanelTitle">外置接口</div>
+				<div class="PanelBody">
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
+						<span v-on:click="toAPI_JSON()">格式 JSON | API 接口</span>
+					</div>
+					<div class="PanelItem">
+						<span class="glyphicon glyphicon-picture" aria-hidden="true"> </span>
+						<span v-on:click="toAPI_PAGE()">正常访问接口</span>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="col-md-9">
 			<div class="Panel PanelRed">
@@ -188,6 +201,12 @@
 				},
 				toSchedule: function () {
 					RES.redirectPage('./template/component/schedule.html', 'schedule/list', serverName);
+				},
+				toAPI_JSON: function () {
+					window.open("/api/get/" + serverName);
+				},
+				toAPI_PAGE: function () {
+					window.open("/api/status/" + serverName);
 				}
 			},
 			data: {
