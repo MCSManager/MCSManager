@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>状态查询页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        .header {
+            height: 40px;
+            background-color: #292929;
+            color: white;
+            line-height: 40px;
+            font-size: 22px;
+            padding: 8px;
+        }
+
+        .container {
+            padding: 8px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        服务端基础信息
+    </div>
+    <div class="container">
+        <p>服务端标识名: $servername</p>
+        <p>最近启动时间: $last_time </p>
+        <p>状态: $status</p>
+
+        <br>
+        <p>通过此链接你可以随时随地在任何地点获取服务端状态，而不需要登录。
+            <br> 此文件在 /public/template/api_server.html 可自定义。
+
+        </p>
+
+    </div>
+
+</body>
+
+</html>

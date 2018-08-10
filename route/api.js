@@ -1,5 +1,6 @@
 const router = require('express')();
 const serverModel = require('../model/ServerModel');
+const fs = require('fs');
 
 //公开 服务端状态获取 JSON格式
 router.all('/get/:name', function (req, res) {
@@ -24,21 +25,22 @@ router.all('/status/:name', function (req, res) {
     let params = req.params || {};
     let serverName = params.name || "";
     //十分简单的网页模板
-    let template = '<!DOCTYPE html><html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>$0</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>$1</body></html>';
-    let mcserver = serverModel.ServerManager().getServer(serverName.trim());
-    if (mcserver == null) {
-        res.send("Not Found");
-        return;
-    }
-    //渲染模板
-    template = template.replace(/\$0/igm, "状态信息");
-    template = template.replace(/\$1/igm, [
-        "服务端名:" + serverName,
-        "启动时间:" + mcserver.dataModel.lastDate,
-        "状态:" + (mcserver.isRun() ? "正在运行" : "关闭")
-    ].join("<br />"));
+    try {
+        let template = fs.readFileSync("./public/template/api_server.html").toString();
+        let mcserver = serverModel.ServerManager().getServer(serverName.trim());
+        if (mcserver == null) {
+            res.send("Not Found");
+            return;
+        }
+        //渲染模板
+        template = template.replace(/\$servername/igm, serverName);
+        template = template.replace(/\$last_time/igm, mcserver.dataModel.lastDate);
+        template = template.replace(/\$status/igm, mcserver.isRun() ? "正在运行" : "关闭");
 
-    res.send(template);
+        res.send(template);
+    } catch (err) {
+        console.log(err)
+    }
     res.end();
 });
 
