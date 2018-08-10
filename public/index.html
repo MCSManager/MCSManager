@@ -148,11 +148,14 @@
 		<div class="Panel">
 			<div class="PanelTitle">信息框</div>
 			<div class="PanelBody">
-				AAAAAAAAAA
+				<div id="PopWinContext">
+					<!-- 动态 HTML -->
+					<p>正在加载信息框,请稍等...</p>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="balckWarp"></div>
+	<div id="balckWarp" onclick="TOOLS.popWindClose(null)"></div>
 
 
 	<!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->

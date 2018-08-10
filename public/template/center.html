@@ -184,12 +184,15 @@
 <script>
 	function testcl() {
 		console.log("DOING");
-		var popwin = new PopWin({
+		TOOLS.popWind({
 			style: {
-				width: "100px",
+				width: "200px",
 				height: "30px"
 			},
-			template: "404_page.html"
+			template: "404_page.html",
+			callback: function (result) {
+				console.log("得到结果", result)
+			}
 		});
 	}
 	//创建

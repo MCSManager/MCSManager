@@ -160,4 +160,32 @@
 		return text;
 	}
 
+	// 弹窗
+	TOOLS.popWind = function (config) {
+		var popWinContext = $("#PopWinContext");
+		MCSERVER.popWindCallback = config.callback || function () {}; //全局的callback变量
+		var css = config.style || null;
+		popWinContext.html("<p>正在加载信息框,请稍等...</p>");
+
+		$(".PopWin").css(css)
+			.css({
+				display: "block"
+			});
+		$("#balckWarp").css({
+			display: "block"
+		});
+		popWinContext.load(config.template, function (response, status, xhr) {
+			if (status != 'success') {
+				popWinContext.html("信息框加载失败！请保持网络通畅！单击灰色区域关闭！");
+				return;
+			}
+		});
+	}
+	TOOLS.popWindClose = function (res) {
+		$(".PopWin").removeAttr("style");
+		$("#balckWarp").removeAttr("style");
+		//返回结果
+		MCSERVER.popWindCallback(res);
+	}
+
 })();
