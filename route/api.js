@@ -5,7 +5,7 @@ const fs = require('fs');
 //公开 服务端状态获取 JSON格式
 router.all('/get/:name', function (req, res) {
     if (MCSERVER.localProperty.allow_status_api) {
-        res.send("管理员禁止此项功能 | Access denied")
+        res.send("管理员禁止此项功能 | Access denied");
         return;
     }
     let params = req.params || {};
@@ -24,10 +24,11 @@ router.all('/get/:name', function (req, res) {
     res.end();
 });
 
+
 //公开 服务端状态获取 可视模式
 router.all('/status/:name', function (req, res) {
     if (MCSERVER.localProperty.allow_status_api) {
-        res.send("管理员禁止此项功能 | Access denied")
+        res.send("管理员禁止此项功能 | Access denied");
         return;
     }
     let params = req.params || {};
@@ -47,7 +48,7 @@ router.all('/status/:name', function (req, res) {
 
         res.send(template);
     } catch (err) {
-        console.log(err)
+        MCSERVER.error('API 处理异常:', err);
     }
     res.end();
 });
