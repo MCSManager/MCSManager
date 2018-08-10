@@ -24,7 +24,7 @@
 MCSERVER.localProperty.http_port = 23333;
 
 
-//HTTP 服务监听ip, 默认 0.0.0.0
+//HTTP 服务监听ip, 默认 0.0.0.0 | 可不填
 MCSERVER.localProperty.http_ip = "";
 
 
@@ -36,7 +36,7 @@ MCSERVER.localProperty.ftp_is_allow = true;
 MCSERVER.localProperty.ftp_port = 10022;
 
 
-//FTP 服务监听ip, 默认 0.0.0.0
+//FTP 服务监听ip, 默认 0.0.0.0 | 可不填
 MCSERVER.localProperty.ftp_ip = "";
 
 
