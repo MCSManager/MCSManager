@@ -95,3 +95,8 @@ MCSERVER.localProperty.session_max_age = 240
 //每个服务器拥有的最大计划任务数量
 //默认 10 个
 MCSERVER.localProperty.schedule_max = 10;
+
+
+//是否禁止 /api/* 公开接口获取 | 默认不禁止
+//这不利于你二次开发，对接或使用，但是会更加的安全 
+MCSERVER.localProperty.allow_status_api = false;
