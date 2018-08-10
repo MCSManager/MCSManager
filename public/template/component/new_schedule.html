@@ -27,16 +27,19 @@
                     </div>
                 </div>
                 <div class="row">
+
                     <hr>
                     <div class="col-sm-12 PanelItemF">
-                        <div class="PanelItem" v-on:click="toPopWindForTime()">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 使用简单模式填写
-                        </div>
+                        <p>如果您不会填写，请仔细阅读参数手册，或者使用简单模式来生成参数。</p>
+
                         <div class="PanelItem" v-on:click="toSave()">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 新建/重构
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 新建/保存
                         </div>
                         <div class="PanelItem" v-on:click="toBack()">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 放弃并返回
+                        </div>
+                        <div class="PanelItem" v-on:click="toPopWindForTime()">
+                            <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span> 使用简单模式生成(推荐)
                         </div>
                     </div>
                 </div>
@@ -124,6 +127,8 @@
                     this.toBack();
                 },
                 toPopWindForTime: function () {
+                    var that = this;
+                    //弹出简单模式窗口
                     TOOLS.popWind({
                         style: {
                             maxWidth: "400px"
@@ -131,7 +136,11 @@
                         title: "计划任务简单模式",
                         template: "template/dialog/time_bulider.html",
                         callback: function (result) {
-                            console.log("得到结果", result)
+                            console.log("简单模式结果:", result);
+                            if (!result) return;
+                            that.time = result.time || "* * * * * *";
+                            that.count = result.count || "0";
+                            that.commande = result.command || "";
                         }
                     });
                 }

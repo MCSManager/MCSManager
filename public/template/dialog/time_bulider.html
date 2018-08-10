@@ -4,8 +4,9 @@
     <samll>旨在简化计划任务时间表达式的书写，十分简单</samll>
     <hr>
     <div class="input-group input-group-sm">
-        <span class="input-group-addon" id="sizing-addon3">每隔分数</span>
-        <input id="DialogSec" type="text" class="form-control" placeholder="单位分钟" aria-describedby="sizing-addon3" v-model="sec">
+        <span class="input-group-addon" id="sizing-addon3">每隔时间</span>
+        <input id="DialogSec" type="text" class="form-control" placeholder="单位分钟，每隔多久执行 | 列如 60 代表一个小时" aria-describedby="sizing-addon3"
+            v-model="sec">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">执行次数</span>
@@ -15,8 +16,9 @@
         <span class="input-group-addon" id="sizing-addon3">执行指令</span>
         <input id="DialogCommand" type="text" class="form-control" placeholder="与服务器命令一样，不要加 \ 符号" v-model="command" aria-describedby="sizing-addon3">
     </div>
+    <p>填写好您需要的计划数据，单击 "生成" 再进行保存即可。</p>
     <button class="btn btn-success" v-on:click="ok()">
-        确认并生成
+        生成
     </button>
     <button class="btn btn-danger" v-on:click="no()">
         取消
@@ -61,7 +63,7 @@
                 console.log("生成的时间表达式是:", reg)
 
                 TOOLS.popWindClose({
-                    time: this.sec,
+                    time: reg,
                     count: this.count,
                     command: this.command
                 });
