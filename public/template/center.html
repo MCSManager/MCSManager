@@ -1,3 +1,8 @@
+<button onclick="testcl()">
+	Test</button>
+
+
+
 <div id='CenterShow' class="OneContainer">
 
 	<div class="row">
@@ -177,6 +182,16 @@
 </div>
 
 <script>
+	function testcl() {
+		console.log("DOING");
+		var popwin = new PopWin({
+			style: {
+				width: "100px",
+				height: "30px"
+			},
+			template: "404_page.html"
+		});
+	}
 	//创建
 	MI.rListener('onload', function () {
 		PAGE.time = function (value) {

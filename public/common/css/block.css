@@ -274,3 +274,25 @@
 	right: 20px;
 	bottom: 50px;
 }
+
+/* 黑色屏障 */
+
+#balckWarp {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	background-color: #141A1D;
+	opacity: 0.4;
+	z-index: 998;
+}
+
+/* 弹窗CSS */
+
+.PopWin {
+	position: fixed;
+	top: 45%;
+	right: 45%;
+	z-index: 999;
+}
