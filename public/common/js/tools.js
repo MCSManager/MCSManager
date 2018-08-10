@@ -161,9 +161,10 @@
 	}
 
 	// 弹窗
+	var _popWindCallback = null;
 	TOOLS.popWind = function (config) {
 		var popWinContext = $("#PopWinContext");
-		MCSERVER.popWindCallback = config.callback || function () {}; //全局的callback变量
+		_popWindCallback = config.callback || function () {}; //全局的callback变量
 		var css = config.style || {
 			display: "block"
 		};
@@ -189,8 +190,8 @@
 		$(".PopWin").removeAttr("style");
 		$("#balckWarp").removeAttr("style");
 		//返回结果
-		MCSERVER.popWindCallback(res);
-		MCSERVER.popWindCallback = function () {};
+		_popWindCallback(res);
+		_popWindCallback = null;
 	}
 
 })();
