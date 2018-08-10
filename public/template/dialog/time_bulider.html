@@ -4,8 +4,8 @@
     <samll>旨在简化计划任务时间表达式的书写，十分简单</samll>
     <hr>
     <div class="input-group input-group-sm">
-        <span class="input-group-addon" id="sizing-addon3">每隔秒数</span>
-        <input id="DialogSec" type="text" class="form-control" placeholder="单位秒" aria-describedby="sizing-addon3" v-model="sec">
+        <span class="input-group-addon" id="sizing-addon3">每隔分数</span>
+        <input id="DialogSec" type="text" class="form-control" placeholder="单位分钟" aria-describedby="sizing-addon3" v-model="sec">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">执行次数</span>
@@ -34,6 +34,32 @@
         },
         methods: {
             ok: function () {
+                var time = this.sec;
+                var h = 0;
+                var d = 0;
+                var mf = 0;
+                while (time >= 60) {
+                    h++;
+                    time -= 60;
+                    if (mf == 0) mf = 1;
+                    if (h >= 24) {
+                        d++;
+                        h -= 24;
+                        mf = 2;
+                    };
+                    if (d > 32) {
+                        console.log("时间太长，不建议设置")
+                        return;
+                    }
+                }
+                var reg = "0 " + (mf == 0 ? "*/" : "") + time +
+                    " " + (mf == 1 ? "*/" + h : mf == 0 ? "*" : h) +
+                    " */" + d +
+                    " * *";
+                reg = reg.replace(/\*\/0/igm, "*");
+                reg = reg.replace(/\_0/igm, "*");
+                console.log("生成的时间表达式是:", reg)
+
                 TOOLS.popWindClose({
                     time: this.sec,
                     count: this.count,
