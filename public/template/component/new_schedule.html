@@ -29,6 +29,9 @@
                 <div class="row">
                     <hr>
                     <div class="col-sm-12 PanelItemF">
+                        <div class="PanelItem" v-on:click="toPopWindForTime()">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 使用简单模式填写
+                        </div>
                         <div class="PanelItem" v-on:click="toSave()">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 新建/重构
                         </div>
@@ -119,6 +122,18 @@
                         servername: this.servername
                     }));
                     this.toBack();
+                },
+                toPopWindForTime: function () {
+                    TOOLS.popWind({
+                        style: {
+                            maxWidth: "400px"
+                        },
+                        title: "计划任务简单模式",
+                        template: "template/dialog/time_bulider.html",
+                        callback: function (result) {
+                            console.log("得到结果", result)
+                        }
+                    });
                 }
             }
         });

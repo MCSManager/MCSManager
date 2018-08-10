@@ -1,24 +1,48 @@
-<p>
-    这是计划任务时间表达式生成器</p>
-<samll>旨在简化计划任务时间表达式的书写，十分简单</samll>
-<hr>
-<div>
+<div id="DialogTimeBulider">
+    <p>
+        这是计划任务时间表达式生成器</p>
+    <samll>旨在简化计划任务时间表达式的书写，十分简单</samll>
+    <hr>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">每隔秒数</span>
-        <input type="text" class="form-control" placeholder="单位秒" aria-describedby="sizing-addon3">
+        <input id="DialogSec" type="text" class="form-control" placeholder="单位秒" aria-describedby="sizing-addon3" v-model="sec">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">执行次数</span>
-        <input type="text" class="form-control" placeholder="0 代表无限，其他正整数代表次数" aria-describedby="sizing-addon3">
+        <input id="DialogCount" type="text" class="form-control" placeholder="0 代表无限，其他正整数代表次数" v-model="count" aria-describedby="sizing-addon3">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">执行指令</span>
-        <input type="text" class="form-control" placeholder="与服务器命令一样，不要加 \ 符号" aria-describedby="sizing-addon3">
+        <input id="DialogCommand" type="text" class="form-control" placeholder="与服务器命令一样，不要加 \ 符号" v-model="command" aria-describedby="sizing-addon3">
     </div>
-    <button class="btn btn-success">
+    <button class="btn btn-success" v-on:click="ok()">
         确认并生成
     </button>
-    <button class="btn btn-danger">
+    <button class="btn btn-danger" v-on:click="no()">
         取消
     </button>
+
 </div>
+
+<script>
+    new Vue({
+        el: "#DialogTimeBulider",
+        data: {
+            sec: "",
+            count: "",
+            command: ""
+        },
+        methods: {
+            ok: function () {
+                TOOLS.popWindClose({
+                    time: this.sec,
+                    count: this.count,
+                    command: this.command
+                });
+            },
+            no: function () {
+                TOOLS.popWindClose(null);
+            }
+        }
+    });
+</script>
