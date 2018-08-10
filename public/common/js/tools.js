@@ -164,9 +164,12 @@
 	TOOLS.popWind = function (config) {
 		var popWinContext = $("#PopWinContext");
 		MCSERVER.popWindCallback = config.callback || function () {}; //全局的callback变量
-		var css = config.style || null;
+		var css = config.style || {
+			display: "block"
+		};
 		popWinContext.html("<p>正在加载信息框,请稍等...</p>");
 
+		$("#PopWinTitle").html(config.title || "信息对话框");
 		$(".PopWin").css(css)
 			.css({
 				display: "block"
@@ -174,6 +177,7 @@
 		$("#balckWarp").css({
 			display: "block"
 		});
+		console.log("信息框弹出", "配置:", config);
 		popWinContext.load(config.template, function (response, status, xhr) {
 			if (status != 'success') {
 				popWinContext.html("信息框加载失败！请保持网络通畅！单击灰色区域关闭！");
@@ -186,6 +190,7 @@
 		$("#balckWarp").removeAttr("style");
 		//返回结果
 		MCSERVER.popWindCallback(res);
+		MCSERVER.popWindCallback = function () {};
 	}
 
 })();

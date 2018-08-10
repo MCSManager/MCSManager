@@ -303,3 +303,8 @@
 	z-index: 999;
 	display: none;
 }
+
+#PopWinContext {
+	overflow: hidden;
+	zoom: 1;
+}

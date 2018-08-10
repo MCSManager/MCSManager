@@ -186,10 +186,10 @@
 		console.log("DOING");
 		TOOLS.popWind({
 			style: {
-				width: "200px",
-				height: "30px"
+				maxWidth: "400px"
 			},
-			template: "404_page.html",
+			title: "时间表达式生成器",
+			template: "template/dialog/time_bulider.html",
 			callback: function (result) {
 				console.log("得到结果", result)
 			}
