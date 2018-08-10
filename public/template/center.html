@@ -1,8 +1,3 @@
-<button onclick="testcl()">
-	Test</button>
-
-
-
 <div id='CenterShow' class="OneContainer">
 
 	<div class="row">
@@ -182,19 +177,6 @@
 </div>
 
 <script>
-	function testcl() {
-		console.log("DOING");
-		TOOLS.popWind({
-			style: {
-				maxWidth: "400px"
-			},
-			title: "时间表达式生成器",
-			template: "template/dialog/time_bulider.html",
-			callback: function (result) {
-				console.log("得到结果", result)
-			}
-		});
-	}
 	//创建
 	MI.rListener('onload', function () {
 		PAGE.time = function (value) {

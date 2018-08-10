@@ -53,6 +53,16 @@
 
 
 <script>
+	TOOLS.popWind({
+		style: {
+			maxWidth: "400px"
+		},
+		title: "时间表达式生成器",
+		template: "template/dialog/time_bulider.html",
+		callback: function (result) {
+			console.log("得到结果", result)
+		}
+	});
 	MI.rListener('onload', function () {
 		MCSERVER.website.schedule = {};
 
