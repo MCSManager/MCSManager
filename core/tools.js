@@ -65,3 +65,10 @@ module.exports.getSystemCodeing = () => {
         auto_console_coding = 'UTF-8';
     return auto_console_coding;
 }
+
+
+module.exports.getFullTime = () => {
+    var date = new Date();
+    return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' +
+        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+}

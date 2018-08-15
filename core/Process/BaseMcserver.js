@@ -4,6 +4,7 @@ const EventEmitter = require('events');
 
 const DataModel = require('../DataModel');
 const os = require('os');
+const tools = require('../tools');
 
 var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
@@ -210,7 +211,7 @@ class ServerProcess extends EventEmitter {
 
     //输出一行到标准输出
     printlnStdin(line) {
-        let str = ['[MCSMANAGER] [', new Date().toString(), ']:',
+        let str = ['[MCSMANAGER] [', tools.getFullTime(), ']:',
             line,
             "\n"
         ].join(" ");
