@@ -69,10 +69,10 @@ module.exports.builder = (serverName, config) => {
 }
 
 
-//服务端中心 周期 24 小时定时器 | 用于每日判断所有运行服务端是否到期
+//服务端中心 用于判断所有运行服务端是否到期 | 每2个小时检查一次
 //https://www.npmjs.com/package/node-schedule
 const schedule = require("node-schedule");
-schedule.scheduleJob('1 0 0 */1 * *', function () {
+schedule.scheduleJob('1 0 */2 * * *', function () {
     let serverCollect = onlyServerManager.getServerObjects();
     try {
         for (let k in serverCollect) {
