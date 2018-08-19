@@ -147,6 +147,11 @@
 						TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
 						return;
 					}
+					if (!TOOLS.isSmallDate(this.timeLimitDate)) {
+						TOOLS.pushMsgWindow("您输入的时间期限格式不正确，请检查再尝试。");
+						return;
+					}
+
 					var obj = {
 						addCmd: addCmdList,
 						serverName: this.name,

@@ -97,6 +97,11 @@
 		return reg.test(text);
 	}
 
+	TOOLS.isSmallDate = function (text) {
+		var reg = /^[0-9]{4}\/[0-9]{1,2}\/[0-9]{1,2}$/igm
+		return reg.test(text);
+	}
+
 	var cacheHeaderTitleEle = $("#HeaderInfo");
 	//设置头上显示什么
 	TOOLS.setHeaderTitle = function (text) {
