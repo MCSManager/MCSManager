@@ -46,6 +46,7 @@
 						<div class="col-sm-6">
 							<div class="PanelItem text-center">
 								<span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+								<!-- 您可以在这里附上您的链接，修改 href 属性即可 -->
 								<a href="javascript:alert('您的提供商未提供使用说明')">使用说明</a>
 							</div>
 						</div>
@@ -70,7 +71,7 @@
 											</h4> 状态:
 											<span v-if="item.run" class="color-green"> 正在运行 </span>
 											<span v-else="item.run" class="color-red"> 关闭 </span>
-											<!--											<br>创建时间 ：<span v-text="item.createDate"></span>-->
+											<!--<br>创建时间 ：<span v-text="item.createDate"></span>-->
 											<br>最后启动：
 											<span v-text="item.lastDate"></span>
 											<br>到期:
