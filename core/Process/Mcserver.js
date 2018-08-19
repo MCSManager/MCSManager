@@ -20,6 +20,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.name = name; //服务器名字
         this.dataModel.createDate = now; //创建时间
         this.dataModel.lastDate = now; //最后启动时间
+        this.dataModel.timeLimitDate = ''; //服务端使用期限，到期自动禁止开服
 
         //输入 输出 编码
         this.dataModel.ie = SYSTEM_CODE;
@@ -32,6 +33,7 @@ class MinecraftServer extends ServerProcess {
 
     }
 
+    //构建服务端配置信息
     builder(args) {
         this.dataModel.addCmd = args.addCmd || [];
 
@@ -43,6 +45,8 @@ class MinecraftServer extends ServerProcess {
 
         this.dataModel.ie = args.ie || SYSTEM_CODE;
         this.dataModel.oe = args.oe || SYSTEM_CODE;
+
+        this.dataModel.timeLimitDate = args.timeLimitDate || '';
 
         //cwd 是服务端文件，不是控制面板需要的配置
         this.dataModel.cwd = args.cwd || './server/' + this.dataModel.name + '/';

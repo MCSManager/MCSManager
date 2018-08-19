@@ -39,6 +39,11 @@
 								<span class="input-group-addon"> 服务端文件名 </span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="jarName" placeholder="[未设定]">
 							</div>
+							<p>如需设置请按照 2018/10/1 这种格式，到期后服务端将无法开启，但文件依然可以上传下载。你可以从用户的可用服务端列表让他彻底对此失去控制。</p>
+							<div class="input-group input-group-sm">
+								<span class="input-group-addon"> 到期限制 </span>
+								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="timeLimitDate" placeholder="[未设定 如 2018/10/1 2020/1/12]">
+							</div>
 						</div>
 						<div class="col-md-6">
 
@@ -153,7 +158,8 @@
 						ie: this.ie,
 						oe: this.oe,
 						highCommande: this.highCommande,
-						oldServerName: this.oldServerName
+						oldServerName: this.oldServerName,
+						timeLimitDate: this.timeLimitDate
 					};
 					WS.sendMsg('server/rebulider', JSON.stringify(obj));
 					setTimeout(function () {

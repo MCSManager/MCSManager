@@ -105,3 +105,13 @@ module.exports.isOnline = (username) => {
     }
     return false;
 }
+
+//是否到期时间已经到达
+module.exports.isTimeLimit = (deallineStr) => {
+    if (!deallineStr || deallineStr.length < 1) {
+        return false;
+    }
+    let dealTime = new Date(deallineStr);
+    let nowTime = new Date();
+    return nowTime >= dealTime;
+}
