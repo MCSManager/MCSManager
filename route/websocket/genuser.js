@@ -36,9 +36,10 @@ WebSocketObserver().listener('genuser/home', (data) => {
                 createDate: userHaveServer.dataModel.createDate,
                 run: userHaveServer.isRun(),
                 jarName: userHaveServer.dataModel.jarName,
+                timeLimitDate: userHaveServer.dataModel.timeLimitDate
             });
             if (userHaveServer.isRun()) {
-                OnlineServerList.push(userHaveServer.dataModel.nam);
+                OnlineServerList.push(userHaveServer.dataModel.name);
             }
         }
 

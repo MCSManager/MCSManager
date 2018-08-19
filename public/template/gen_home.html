@@ -66,14 +66,15 @@
 										<div class="PanelItemInfo">
 											<h4>
 												<span v-text="item.serverName"></span> |
-												<span v-text="item.jarName"></span>
+												<span v-text="item.jarName || '未设置'"></span>
 											</h4> 状态:
 											<span v-if="item.run" class="color-green"> 正在运行 </span>
 											<span v-else="item.run" class="color-red"> 关闭 </span>
 											<!--											<br>创建时间 ：<span v-text="item.createDate"></span>-->
 											<br>最后启动：
 											<span v-text="item.lastDate"></span>
-
+											<br>到期:
+											<span v-text="item.timeLimitDate"></span>
 										</div>
 									</div>
 									<div class="col-md-5 NextCol">
