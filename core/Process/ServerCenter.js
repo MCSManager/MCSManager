@@ -19,6 +19,7 @@ function deleteall(path) {
         fs.rmdirSync(path);
     }
 };
+
 class ServerManager extends EventEmitter {
 
     constructor(args) {

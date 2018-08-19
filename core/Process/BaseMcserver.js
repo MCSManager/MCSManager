@@ -79,7 +79,7 @@ class ServerProcess extends EventEmitter {
     //统一服务端开启
     start() {
         //服务端时间权限判断
-        let timeResult = permission.isTimeLimit(this.dataModel.timeLimitDate);
+        let timeResult = this.isDealLineDate();
         if (timeResult) {
             throw new Error('服务端于 ' + this.dataModel.timeLimitDate + ' 时间已到期，拒绝启动，请咨询管理员。');
         }
@@ -230,6 +230,11 @@ class ServerProcess extends EventEmitter {
         this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
         this.printlnStdin(line);
         this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
+    }
+
+    isDealLineDate() {
+        let timeResult = permission.isTimeLimit(this.dataModel.timeLimitDate);
+        return timeResult;
     }
 
 }
