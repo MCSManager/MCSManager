@@ -5,6 +5,7 @@ const EventEmitter = require('events');
 const DataModel = require('../DataModel');
 const os = require('os');
 const tools = require('../tools');
+const permission = require('../../helper/Permission');
 
 var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
@@ -75,7 +76,14 @@ class ServerProcess extends EventEmitter {
         this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
     }
 
+    //统一服务端开启
     start() {
+        //服务端时间权限判断
+        let timeResult = permission.isTimeLimit(this.dataModel.timeLimitDate);
+        if (timeResult) {
+            throw new Error('服务端于 ' + this.dataModel.timeLimitDate + ' 时间已到期，拒绝启动，请咨询管理员。');
+        }
+
         //防止重复启动
         if (this._run || this._loading) throw new Error('服务端进程在运行或正在加载..');
 
