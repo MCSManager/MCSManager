@@ -41,6 +41,7 @@ input {
 
 #Header {
 	background-color: #0D6AAD;
+	background: linear-gradient(to right, #0D6AAD, #600dad);
 	height: 50px;
 	position: fixed;
 	top: 0px;
