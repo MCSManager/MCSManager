@@ -78,7 +78,7 @@ WebSocketObserver().listener('server/console/ws', (data) => {
 
         //设置监听终端
         data.WsSession['console'] = serverName;
-        response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
+        // response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
     }
 
