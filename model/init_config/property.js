@@ -48,9 +48,14 @@ MCSERVER.localProperty.ftp_start_port = 20010;
 MCSERVER.localProperty.ftp_end_port = 20200;
 
 
-//控制台实时刷新频率 单位毫秒 默认1200 毫秒
-//建议在 1000 毫秒 与 3000 毫秒之选择
-MCSERVER.localProperty.console_send_times = 1200;
+//控制台实时刷新频率 单位毫秒 默认 1500 毫秒
+//建议在 1000 毫秒 与 3000 毫秒之选择 
+MCSERVER.localProperty.console_send_times = 1500;
+
+
+//控制台一次性发送的数据最大限制 
+//数据最大限制 单位KB | 默认 28 KB
+MCSERVER.localProperty.console_max_out = 28;
 
 
 //是否开启 gzip 静态文件压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它

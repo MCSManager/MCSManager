@@ -107,7 +107,7 @@ setInterval(() => {
         //忽略极小体积数据
         if (!data || data.length <= 1) continue;
         //忽略极大体积数据
-        const MAX_OUT_LEN = 1024 * 30;
+        const MAX_OUT_LEN = 1024 * (MCSERVER.localProperty.console_max_out || 28);
         if (data.length > MAX_OUT_LEN) {
             data = data.slice(0, MAX_OUT_LEN) +
                 "\n - 更多的此刻输出已经忽略...\n"
