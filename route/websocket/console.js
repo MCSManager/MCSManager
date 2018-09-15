@@ -106,6 +106,12 @@ setInterval(() => {
         let data = consoleBuffer[serverName];
         //忽略极小体积数据
         if (!data || data.length <= 1) continue;
+        //忽略极大体积数据
+        const MAX_OUT_LEN = 1024 * 30;
+        if (data.length > MAX_OUT_LEN) {
+            data = data.slice(0, MAX_OUT_LEN) +
+                "\n - 更多的此刻输出已经忽略...\n"
+        }
         // 替换元素
         let htmlData = data.replace(/\n/gim, '<br />');
         //刷新每个服务器的缓冲数据
