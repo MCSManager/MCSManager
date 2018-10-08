@@ -107,7 +107,7 @@
 			//触发页面切换事件
 			MI.on('RedirectPage', url);
 			RES.redirectHTML(url, key, body, function () {
-				TOOLS.setHeaderTitle(["当前", showUrl, "|", showKey].join(" "));
+				TOOLS.setHeaderTitle(["", showUrl, "|", showKey].join(" "));
 				MI.on('page/live');
 				//赋予的单页刷新
 				PAGE.refresh = function () {
