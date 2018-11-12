@@ -6,6 +6,7 @@ const response = require('../../helper/Response');
 const permssion = require('../../helper/Permission');
 const tools = require('../../core/tools');
 const fs = require('fs');
+const childProcess = require('child_process');
 
 
 WebSocketObserver().listener('docker/new', (data) => {
@@ -28,12 +29,22 @@ WebSocketObserver().listener('docker/new', (data) => {
     try {
         if (!fs.existsSync("./docker_temp")) fs.mkdirSync("./docker_temp");
         fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
-        tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
-            cwd: '.',
-            stdio: 'pipe'
-        }, function (msg, code) {
-            MCSERVER.warning('创建结果:', msg, code);
+        // tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
+        //     cwd: '.',
+        //     stdio: 'pipe'
+        // }, function (msg, code) {
+        //     MCSERVER.warning('创建结果:', msg, code);
+        // });
+
+        let process =
+            childProcess.spawn("docker", ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
+                cwd: '.',
+                stdio: 'pipe'
+            });
+        process.on('exit', (code) => {
+            callback('exit', code);
         });
+
     } catch (err) {
         MCSERVER.warning('创建出错：', err);
     }
