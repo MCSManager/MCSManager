@@ -42,7 +42,17 @@ WebSocketObserver().listener('docker/new', (data) => {
                 stdio: 'pipe'
             });
         process.on('exit', (code) => {
-            callback('exit', code);
+            // callback('exit', code);
+            console.log("EXIT", code)
+        });
+        process.on('error', (err) => {
+            MCSERVER.error('Docker 创建出错', err);
+        });
+        process.stdout.on('data', (data) => {
+            console.log(data)
+        });
+        process.stderr.on('data', (data) => {
+            console.log(data)
         });
 
     } catch (err) {
