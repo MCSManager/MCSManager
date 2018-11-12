@@ -18,6 +18,9 @@
 							<div class="PanelItem" v-on:click="opt_all('stop')">
 								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有服务端
 							</div>
+							<div class="PanelItem" v-on:click="newDocker()">
+								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 新建 Docker 镜像
+							</div>
 						</div>
 					</div>
 					<div class=" ItemTableList"></div>
@@ -102,6 +105,9 @@
 					//设置全局监听变量
 					MCSERVER.listenServername = serverName;
 					RES.redirectPage('./template/component/terminal.html', null, '');
+				},
+				newDocker: function () {
+					RES.redirectPage('./template/component/new_docker_image.html', null, '');
 				}
 			}
 		});
