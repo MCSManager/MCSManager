@@ -60,9 +60,8 @@ RUN apt-get update</pre>
                         dockerImageName: this.dockerImageName,
                         dockerfile: $('#dockerfile').html()
                     };
-                    console.log(obj)
-                    if (obj.dockerImageName.trim().length <= 0 || obj.dockerfile.trim().length < 4) {
-                        TOOLS.pushMsgWindow("格式不合法，Docker 名字或 DockerFile 请检查。");
+                    if (!TOOLS.isStdText(obj.dockerImageName)) {
+                        TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
                     }
                     this.createDockerDis = true;
