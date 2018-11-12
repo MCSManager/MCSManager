@@ -85,6 +85,9 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+
+							</div>
 						</div>
 					</div>
 					<div class="row">
@@ -107,17 +110,18 @@
 			</div>
 			<!--底部-->
 			<div class="Panel">
-				<div class="PanelTitle">保存与更新</div>
+				<div class="PanelTitle"></div>
 				<div class="PanelBody">
 					<div class="row">
-						<div class="col-lg-12">
+						<!-- <div class="col-lg-12">
 							<p>普通用户无权修改任何服务器的启动参数，仅仅可修改 Minecraft 相关配置。</p>
 							<div class="Line"></div>
-						</div>
+						</div> -->
 					</div>
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="" style="float: right;margin-top: 20px;">
+								<button class="btn btn-primary" v-on:click="toConsole(name)">Docker 配置</button>
 								<button class="btn btn-primary" v-on:click="toConsole(name)">控制面板</button>
 								<button class="btn btn-success" v-on:click="toRebulider()">更新设置</button>
 							</div>
