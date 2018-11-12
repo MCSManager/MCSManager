@@ -31,9 +31,10 @@ RUN apt-get update</pre>
                                 <span style="color: red">这需要联网下载文件构建，构建时间根据网速决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。</span>
                             </b>
                         </p>
-                        <button v-bind:disabled="createDockerDis" class="btn btn-primary" v-on:click="createDocker()">
+                        <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">
                             创建 Docker 镜像
                         </button>
+                        &nbsp;|&nbsp;
                         <button class="btn btn-success" v-on:click="toCreateRes()">
                             任务结果列表
                         </button>
@@ -56,7 +57,8 @@ RUN apt-get update</pre>
             },
             methods: {
                 createDocker: function () {
-                    console.log("FUNCTION createDocker")
+                    console.log("FUNCTION createDocker");
+                    if (!confirm("请单击【确定】按钮继续操作，我们将创建镜像")) return;
                     var obj = {
                         dockerImageName: this.dockerImageName || 'mcsd',
                         dockerfile: $('#dockerfile').html()
@@ -65,7 +67,7 @@ RUN apt-get update</pre>
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
                     }
-                    this.createDockerDis = true;
+                    // this.createDockerDis = true;
                     WS.sendMsg('docker/new', JSON.stringify(obj));
                 },
                 toCreateRes: function () {
