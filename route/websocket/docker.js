@@ -49,10 +49,13 @@ WebSocketObserver().listener('docker/new', (data) => {
             MCSERVER.error('Docker 创建出错', err);
         });
         process.stdout.on('data', (data) => {
-            console.log(data)
+            // console.log(data)
+            let e = iconv.decode(data, 'utf-8');
+            console.log(e)
         });
         process.stderr.on('data', (data) => {
-            console.log(data)
+            let e = iconv.decode(data, 'utf-8');
+            console.log(e)
         });
 
     } catch (err) {
