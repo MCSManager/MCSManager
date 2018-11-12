@@ -7,6 +7,7 @@ const permssion = require('../../helper/Permission');
 const tools = require('../../core/tools');
 const fs = require('fs');
 const childProcess = require('child_process');
+const iconv = require('iconv-lite');
 
 
 WebSocketObserver().listener('docker/new', (data) => {
