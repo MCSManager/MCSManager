@@ -11,7 +11,7 @@
                         </small>
                         <h4>DockerFile 文件</h4>
                         <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft 服务器。</p>
-                        <p style="color:red;">必须使用 /mcsd 作为工作目录。</p>
+                        <p style="color:red;">必须使用 /mcsd 作为工作目录。 如需修改请直接修改，切勿粘贴复制文本，否则容易粘贴富文本代码！</p>
                         <pre id="dockerfile" contenteditable="true" autocomplete="off">FROM java:latest
 RUN mkdir -p /mcsd
 RUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata
@@ -20,7 +20,8 @@ RUN apt-get update</pre>
 
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-                            <input type="text" autocomplete="off" class="form-control" placeholder="默认 mcsd" aria-describedby="sizing-addon3" v-model="dockerImageName">
+                            <input type="text" autocomplete="off" class="form-control" placeholder="可填，默认 mcsd 镜像名" aria-describedby="sizing-addon3"
+                                v-model="dockerImageName">
                         </div>
                         <p>
                             确认无误之后，单击新建镜像按钮，但是这需要一定时间的等待，创建完成后 MCSM 会通知您。
@@ -57,10 +58,10 @@ RUN apt-get update</pre>
                 createDocker: function () {
                     console.log("FUNCTION createDocker")
                     var obj = {
-                        dockerImageName: this.dockerImageName,
+                        dockerImageName: this.dockerImageName || 'mcsd',
                         dockerfile: $('#dockerfile').html()
                     };
-                    if (obj.dockerImageName.trim() == "" || !TOOLS.isStdText(obj.dockerImageName)) {
+                    if (!TOOLS.isStdText(obj.dockerImageName)) {
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
                     }

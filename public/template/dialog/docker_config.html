@@ -1,20 +1,30 @@
 <div id="DialogDockerConfig">
-    <p>为此服务端开启 Docker 虚拟化。</p>
+    <p>
+        <b>操作，查看此服务端的 Docker 容器的配置项目</b>
+    </p>
     <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。</small>
 
     <p>
         <input type="checkbox" v-model="isDocker">
-        <b> 启用 Docker 容器框架</b>
+        <b> 启用 Docker 容器</b>
     </p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">启动命令</span>
-        <input id="DialogDockerCommand" type="text" class="form-control" placeholder="Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash"
-            aria-describedby="sizing-addon3" v-model="dockerCommand">
+        <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash" aria-describedby="sizing-addon3"
+            v-model="dockerCommand">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-        <input id="DialogDockerCommand" type="text" class="form-control" placeholder="必填，如不会请填 mcsd 默认镜像" aria-describedby="sizing-addon3"
-            v-model="dockerImageName">
+        <input type="text" class="form-control" placeholder="可填，默认是名叫 mcsd 镜像。" aria-describedby="sizing-addon3" v-model="dockerImageName">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">内存限制</span>
+        <input type="text" class="form-control" placeholder="可填，列如填写 2GB 则代表容器最大可使用 2GB 内存。" aria-describedby="sizing-addon3" v-model="dockerXmx">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">开放端口</span>
+        <input type="text" class="form-control" placeholder="可填，容器端口默认是全封闭的，您可以自定义多个开放端口，空格分割(25565 25567)。" aria-describedby="sizing-addon3"
+            v-model="dockerPorts">
     </div>
     <p>确认无误之后，单击保存即可 |
         <a href="" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
@@ -30,6 +40,8 @@
         data: {
             dockerCommand: "",
             dockerImageName: "",
+            dockerXmx: "",
+            dockerPorts: "",
             isDocker: false
         },
         methods: {
