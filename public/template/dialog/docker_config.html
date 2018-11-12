@@ -1,0 +1,45 @@
+<div id="DialogDockerConfig">
+    <p>为此服务端开启 Docker 虚拟化。</p>
+    <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。</small>
+
+    <p>
+        <input type="checkbox" v-model="isDocker">
+        <b> 启用 Docker 容器框架</b>
+    </p>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">启动命令</span>
+        <input id="DialogDockerCommand" type="text" class="form-control" placeholder="Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash"
+            aria-describedby="sizing-addon3" v-model="dockerCommand">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
+        <input id="DialogDockerCommand" type="text" class="form-control" placeholder="必填，如不会请填 mcsd 默认镜像" aria-describedby="sizing-addon3"
+            v-model="dockerImageName">
+    </div>
+    <p>确认无误之后，单击保存即可 |
+        <a href="" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
+    </p>
+    <button class="btn btn-success" v-on:click="ok()">
+        保存 Docker 配置
+    </button>
+
+</div>
+<script>
+    new Vue({
+        el: "#DialogDockerConfig",
+        data: {
+            dockerCommand: "",
+            dockerImageName: "",
+            isDocker: false
+        },
+        methods: {
+            ok: function () {
+                TOOLS.popWindClose({
+                    dockerCommand: this.dockerCommand,
+                    dockerImageName: this.dockerImageName,
+                    isDocker: this.isDocker
+                });
+            }
+        }
+    });
+</script>

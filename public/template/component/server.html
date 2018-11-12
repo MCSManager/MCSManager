@@ -121,7 +121,7 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="" style="float: right;margin-top: 20px;">
-								<button class="btn btn-primary" v-on:click="toConsole(name)">Docker 配置</button>
+								<button class="btn btn-primary" v-on:click="toDocker(name)">Docker 配置</button>
 								<button class="btn btn-primary" v-on:click="toConsole(name)">控制面板</button>
 								<button class="btn btn-success" v-on:click="toRebulider()">更新设置</button>
 							</div>
@@ -142,6 +142,20 @@
 				isHighCommande: false
 			},
 			methods: {
+				toDocker: function () {
+					var that = this;
+					TOOLS.popWind({
+						style: {
+							maxWidth: "600px"
+						},
+						title: "Docker Config",
+						template: "template/dialog/docker_config.html",
+						callback: function (result) {
+							if (!result) return;
+							console.log(result)
+						}
+					});
+				},
 				toConsole: function (serverName) {
 					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName);
 				},
