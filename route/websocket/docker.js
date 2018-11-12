@@ -20,10 +20,13 @@ WebSocketObserver().listener('docker/new', (data) => {
 
     MCSERVER.warning('正在创建 Docker 镜像.');
     MCSERVER.warning('镜像名字:', dockerImageName);
+    dockerfileData = dockerfileData.replace(/\&gt;/igm, ">")
+    dockerfileData = dockerfileData.replace(/\&lt;/igm, "<")
+    dockerfileData = dockerfileData.replace(/\&nbsp;/igm, " ")
     MCSERVER.warning('DockerFile:\n', dockerfileData);
 
     try {
-        fs.mkdirSync("./docker_temp");
+        if (!fs.existsSync("./docker_temp")) fs.mkdirSync("./docker_temp");
         fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
         tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), '.'], {
             cwd: './docker_tmp/',
