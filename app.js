@@ -103,6 +103,8 @@ MCSERVER.onlineUser = {};
 MCSERVER.allSockets = {};
 //全局 数据内存记录器
 MCSERVER.logCenter = {};
+//PAGE 页面数据储存器
+MCSERVER.PAGE = {};
 
 //init
 MCSERVER.logCenter.initLogData = (objStr, len, def = null) => {

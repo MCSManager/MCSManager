@@ -9,7 +9,10 @@ const fs = require('fs');
 const childProcess = require('child_process');
 const iconv = require('iconv-lite');
 
+//Docker 镜像构建结果储存
+MCSERVER.PAGE.DockerRes = [];
 
+//Docker 容器创建路由
 WebSocketObserver().listener('docker/new', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
     let dockerConfig = JSON.parse(data.body);
@@ -19,6 +22,17 @@ WebSocketObserver().listener('docker/new', (data) => {
     let dockerfileData = dockerConfig.dockerfile;
 
     if (dockerImageName.trim() == '') return;
+
+    function pushRes(text) {
+        MCSERVER.PAGE.DockerRes.unshift({
+            time: tools.getFullTime(),
+            name: dockerImageName.trim(),
+            res: text
+        });
+
+    }
+    //任务列表
+    pushRes("正在构建...");
 
     MCSERVER.warning('正在创建 Docker 镜像.');
     MCSERVER.warning('镜像名字:', dockerImageName);
@@ -41,15 +55,29 @@ WebSocketObserver().listener('docker/new', (data) => {
             console.log("EXIT", code)
             if (code == 0) {
                 response.wsMsgWindow(data.ws, ['镜像', dockerImageName, '创建完毕.'].join(" "));
+                pushRes("成功");
+            } else {
+                response.wsMsgWindow(data.ws, ['镜像', dockerImageName, '构建失败，原因未知.'].join(" "));
+                pushRes("失败");
             }
         });
-        process.on('error', (err) =>
-            MCSERVER.error('Docker 创建出错', err)
-        );
-        process.stdout.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
-        process.stderr.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
+        process.on('error', (err) => {
+            pushRes("构建出错");
+        });
+        // process.stdout.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
+        // process.stderr.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
 
     } catch (err) {
         MCSERVER.warning('创建出错：', err);
+        pushRes("构建错误");
     }
 });
+
+
+
+//结果列表获取
+//路由
+WebSocketObserver().listener('docker/res', (data) => {
+    if (!permssion.isMaster(data.WsSession)) return;
+    response.wsSend(data.ws, 'docker/res', MCSERVER.PAGE.DockerRes);
+})

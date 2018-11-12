@@ -33,7 +33,7 @@ RUN apt-get update</pre>
                         <button v-bind:disabled="createDockerDis" class="btn btn-primary" v-on:click="createDocker()">
                             创建 Docker 镜像
                         </button>
-                        <button class="btn btn-success">
+                        <button class="btn btn-success" v-on:click="toCreateRes()">
                             任务结果列表
                         </button>
                     </div>
@@ -60,12 +60,24 @@ RUN apt-get update</pre>
                         dockerImageName: this.dockerImageName,
                         dockerfile: $('#dockerfile').html()
                     };
-                    if (!TOOLS.isStdText(obj.dockerImageName)) {
+                    if (obj.dockerImageName.trim() == "" || !TOOLS.isStdText(obj.dockerImageName)) {
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
                     }
                     this.createDockerDis = true;
                     WS.sendMsg('docker/new', JSON.stringify(obj));
+                },
+                toCreateRes: function () {
+                    TOOLS.popWind({
+                        style: {
+                            maxWidth: "400px",
+                            top: "0px",
+
+                        },
+                        title: "Docker 构建结果",
+                        template: "template/dialog/docker_res.html",
+                        callback: function () {}
+                    });
                 }
             }
         });
