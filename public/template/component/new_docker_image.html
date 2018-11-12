@@ -60,7 +60,11 @@ RUN apt-get update</pre>
                         dockerfile: $('#dockerfile').html()
                     };
                     console.log(obj)
-                    WS.sendMsg('server/create_docker', JSON.stringify(obj));
+                    if (obj.dockerImageName.trim().length <= 0 || obj.dockerfile.trim().length < 4) {
+                        TOOLS.pushMsgWindow("格式不合法，Docker 名字或 DockerFile 请检查。");
+                        return;
+                    }
+                    WS.sendMsg('docker/new', JSON.stringify(obj));
                 }
             }
         });
