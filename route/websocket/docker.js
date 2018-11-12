@@ -28,8 +28,8 @@ WebSocketObserver().listener('docker/new', (data) => {
     try {
         if (!fs.existsSync("./docker_temp")) fs.mkdirSync("./docker_temp");
         fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
-        tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), '.'], {
-            cwd: './docker_tmp/',
+        tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
+            cwd: '.',
             stdio: 'pipe'
         }, function (msg, code) {
             MCSERVER.warning('创建结果:', msg, code);
