@@ -1,6 +1,15 @@
 //工具箱
 
 const os = require("os");
+const childProcess = require('child_process');
+
+module.exports.startProcess = (command, parList, ProcessConfigs, callback) => {
+    let process =
+        childProcess.spawn(command, parList, ProcessConfigs);
+    process.on('exit', (code) => {
+        callback('exit', code);
+    });
+}
 
 module.exports.getMineTime = () => {
     var date = new Date();

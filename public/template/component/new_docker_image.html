@@ -1,0 +1,40 @@
+<div id='NewDockerImage' class="OneContainer">
+    <div class="col-md-12 ">
+        <div class="Panel">
+            <div class="PanelTitle">计划任务项目表达式</div>
+            <div class="PanelBody">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>创建新的 Docker 镜像</p>
+                        <small>您不需要具备 Docker 专业知识，最简单的方法是，您只需要填写一个名字即可。
+                            <br>其他选项请给有需求与具备相关知识的人员填写。
+                        </small>
+                        <p>DockerFile 文件：</p>
+                        <textarea rows="3" cols="20">
+
+                        </textarea>
+
+                        <p>
+                            确认无误之后，单击新建镜像按钮，但是这需要一定时间的等待，创建完成后 MCSM 会通知您。
+                        </p>
+                        <button class="btn btn-success" v-on:click="ok()">
+                            保存 Docker 配置
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    MI.rListener('onload', function () {
+
+    });
+
+    MI.rListener('onend', function () {
+
+    });
+</script>
