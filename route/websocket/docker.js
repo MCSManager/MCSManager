@@ -25,7 +25,7 @@ WebSocketObserver().listener('docker/new', (data) => {
     try {
         fs.mkdirSync("./docker_temp");
         fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
-        tools.startProcess('docker', ['-t', 'build', dockerImageName, '.'], {
+        tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), '.'], {
             cwd: './docker_tmp/',
             stdio: 'pipe'
         }, function (msg, code) {
