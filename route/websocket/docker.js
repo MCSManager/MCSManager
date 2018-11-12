@@ -38,7 +38,7 @@ WebSocketObserver().listener('docker/new', (data) => {
         // });
 
         let process =
-            childProcess.spawn("docker", ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
+            childProcess.spawn("docker", ['build', '-t', dockerImageName.trim(), './docker_temp/'], {
                 cwd: '.',
                 stdio: 'pipe'
             });
