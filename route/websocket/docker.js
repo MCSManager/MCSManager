@@ -27,15 +27,10 @@ WebSocketObserver().listener('docker/new', (data) => {
     dockerfileData = dockerfileData.replace(/\&nbsp;/igm, " ")
     MCSERVER.warning('DockerFile:\n', dockerfileData);
 
+    response.wsMsgWindow(data.ws, '镜像正在创建中，请稍等....');
     try {
         if (!fs.existsSync("./docker_temp")) fs.mkdirSync("./docker_temp");
         fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
-        // tools.startProcess('docker', ['build', '-t', dockerImageName.trim(), './docker_tmp/'], {
-        //     cwd: '.',
-        //     stdio: 'pipe'
-        // }, function (msg, code) {
-        //     MCSERVER.warning('创建结果:', msg, code);
-        // });
 
         let process =
             childProcess.spawn("docker", ['build', '-t', dockerImageName.trim(), './docker_temp/'], {
@@ -43,21 +38,16 @@ WebSocketObserver().listener('docker/new', (data) => {
                 stdio: 'pipe'
             });
         process.on('exit', (code) => {
-            // callback('exit', code);
             console.log("EXIT", code)
+            if (code == 0) {
+                response.wsMsgWindow(data.ws, ['镜像', dockerImageName, '创建完毕.'].join(" "));
+            }
         });
-        process.on('error', (err) => {
-            MCSERVER.error('Docker 创建出错', err);
-        });
-        process.stdout.on('data', (data) => {
-            // console.log(data)
-            let e = iconv.decode(data, 'utf-8');
-            console.log(e)
-        });
-        process.stderr.on('data', (data) => {
-            let e = iconv.decode(data, 'utf-8');
-            console.log(e)
-        });
+        process.on('error', (err) =>
+            MCSERVER.error('Docker 创建出错', err)
+        );
+        process.stdout.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
+        process.stderr.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));
 
     } catch (err) {
         MCSERVER.warning('创建出错：', err);
