@@ -34,7 +34,8 @@ class ServerProcess extends EventEmitter {
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
-        if (!this.highCommande || this.highCommande.trim().length <= 0) new Error("自定义参数非法,无法启动服务端");
+        if (!this.dataModel.highCommande || this.dataModel.highCommande.trim().length <= 0)
+            new Error("自定义参数非法,无法启动服务端");
         let commandArray = this.dataModel.highCommande.split(" ");
         let javaPath = commandArray.shift();
         //过滤
@@ -49,7 +50,7 @@ class ServerProcess extends EventEmitter {
     }
 
     //普通启动
-    oneStart() {
+    oneStart(onlyCommandString = false) {
         let tmpAddList = [];
         let tmpShouldList = [];
 
@@ -66,14 +67,60 @@ class ServerProcess extends EventEmitter {
             if (tmpAddList[k] == '') continue;
             parList.push(tmpAddList[k]);
         }
+
+        let commandString = this.dataModel.java + ' ' + parList.toString().replace(/,/gim, ' ');
+
+        //是否只获取命令字符串
+        if (onlyCommandString) return commandString;
+
         MCSERVER.infoLog('Minecraft Server start', this.dataModel.name);
         MCSERVER.log('服务器 [' + this.dataModel.name + '] 启动进程:')
         MCSERVER.log('-------------------------------');
-        MCSERVER.log('启动: ' + this.dataModel.java + ' ' + parList.toString().replace(/,/gim, ' '));
+        MCSERVER.log('启动: ' + commandString);
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
         this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
+    }
+
+    //使用 Docker 命令启动
+    dockerStart() {
+        let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
+        let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
+        let stdCwd = (this.dataModel.cwd).replace(/\\/igm, "/");
+        //分割的参数全部渲染
+        for (let k in dockerCommandPart) {
+            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{imagename\}/igm,
+                this.dataModel.dockerConfig.dockerImageName);
+            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{ports\}/igm,
+                this.dataModel.dockerConfig.dockerPorts);
+            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{serverpath\}/igm,
+                stdCwd);
+            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{xmx\}/igm,
+                (this.dataModel.dockerConfig.dockerXmx) || "");
+            if (this.dataModel.highCommande.trim() != "") {
+                //使用自定义参数来渲染 Docker 命令
+                dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{commande\}/igm, this.dataModel.highCommande || "");
+            } else {
+                let command = this.oneStart(true);
+                dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{commande\}/igm, command);
+            }
+        }
+
+
+        let execDockerCommande = [];
+        for (let i = 1; i < dockerCommandPart.length; i++) {
+            if (dockerCommandPart[i].trim() != "") execDockerCommande.push(dockerCommandPart[i]);
+        }
+
+        MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
+        MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:')
+        MCSERVER.log('-------------------------------');
+        MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
+        MCSERVER.log('根:' + this.dataModel.cwd);
+        MCSERVER.log('-------------------------------');
+
+        this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
     }
 
     //统一服务端开启
@@ -122,8 +169,13 @@ class ServerProcess extends EventEmitter {
         }
 
         try {
-            //确定启动方式
-            this.dataModel.highCommande ? this.twoStart() : this.oneStart();
+            if (this.dataModel.dockerConfig.isDocker) {
+                //Docker 启动
+                this.dockerStart();
+            } else {
+                //确定启动方式
+                this.dataModel.highCommande ? this.twoStart() : this.oneStart();
+            }
         } catch (err) {
             this.stop();
             throw new Error('进程启动时异常:' + err.name + ":" + err.message);
