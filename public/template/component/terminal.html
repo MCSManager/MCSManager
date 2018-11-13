@@ -16,7 +16,7 @@
 			<div class="PanelItem PanelItemBlack " v-on:click="clearConsole()">
 				<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
 			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="toCommand('stop');toCommand('end');toCommand('exit');toCommand('stop');toCommand('end');toCommand('exit');toCommand('stop');toCommand('end');toCommand('exit');">
+			<div class="PanelItem PanelItemBlack" v-on:click="stopServer()">
 				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
 			</div>
 			<div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="toOpenServer()">
@@ -110,6 +110,18 @@
 						"<span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
 						"如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。<br />"
 					].join(" ");
+				},
+				stopServer: function () {
+					this.toCommand('stop');
+					this.toCommand('end');
+					this.toCommand('exit');
+					var that = this;
+					setTimeout(function () {
+						console.log("AAAAAAAAA")
+						that.toCommand('stop');
+						that.toCommand('end');
+						that.toCommand('exit');
+					}, 2000);
 				}
 			},
 			data: {

@@ -1,6 +1,6 @@
 //响应层
 (function () {
-	var DEBUG = true;
+	var DEBUG = false;
 	var TOKEN_NAME = '_T0K_N';
 	var RES = window.RES = function () {
 		return null;
