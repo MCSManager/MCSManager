@@ -143,7 +143,8 @@
 			},
 			methods: {
 				toDocker: function () {
-					var that = this;
+					// var that = this;
+					PAGE.selectServerName = this.oldServerName;
 					TOOLS.popWind({
 						style: {
 							maxWidth: "600px",
@@ -152,8 +153,8 @@
 						title: "Minecraft Docker 配置",
 						template: "template/dialog/docker_config.html",
 						callback: function (result) {
-							if (!result) return;
-							console.log(result)
+							// if (!result) return;
+							// console.log(result)
 						}
 					});
 				},

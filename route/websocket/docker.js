@@ -81,3 +81,31 @@ WebSocketObserver().listener('docker/res', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
     response.wsSend(data.ws, 'docker/res', MCSERVER.PAGE.DockerRes);
 })
+
+//获取配置
+WebSocketObserver().listener('docker/config', (data) => {
+    if (!permssion.isMaster(data.WsSession)) return;
+    let serverName = data.body || "";
+    if (serverName) {
+        let mcserver = serverModel.ServerManager().getServer(serverName);
+        response.wsSend(data.ws, 'docker/config', mcserver.dataModel.dockerConfig);
+    }
+});
+
+
+//设置配置
+WebSocketObserver().listener('docker/setconfig', (data) => {
+    if (!permssion.isMaster(data.WsSession)) return;
+    // {
+    //     serverName: "xxxx",
+    //     dockerConfig: { ... }
+    // }
+    let jsonObj = JSON.parse(data.body);
+    if (jsonObj.serverName) {
+        let serverName = jsonObj.serverName;
+        let mcserver = serverModel.ServerManager().getServer(serverName);
+        mcserver.dataModel.dockerConfig = jsonObj.dockerConfig;
+        mcserver.dataModel.save();
+        response.wsMsgWindow(data.ws, '操作成功，数据已保存');
+    }
+});

@@ -9,7 +9,7 @@
         <b> 启用 Docker 容器</b>
     </p>
     <div class="input-group input-group-sm">
-        <span class="input-group-addon" id="sizing-addon3">启动命令</span>
+        <span class="input-group-addon" id="sizing-addon3">命令模板</span>
         <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash" aria-describedby="sizing-addon3"
             v-model="dockerCommand">
     </div>
@@ -35,23 +35,27 @@
 
 </div>
 <script>
-    new Vue({
-        el: "#DialogDockerConfig",
-        data: {
-            dockerCommand: "",
-            dockerImageName: "",
-            dockerXmx: "",
-            dockerPorts: "",
-            isDocker: false
-        },
-        methods: {
-            ok: function () {
-                TOOLS.popWindClose({
-                    dockerCommand: this.dockerCommand,
-                    dockerImageName: this.dockerImageName,
-                    isDocker: this.isDocker
-                });
+    console.log(PAGE.selectServerName)
+    WS.sendMsg('docker/config', PAGE.selectServerName, function (obj) {
+
+        new Vue({
+            el: "#DialogDockerConfig",
+            data: obj.ResponseValue,
+            methods: {
+                ok: function () {
+                    WS.sendMsg('docker/setconfig', JSON.stringify({
+                        serverName: PAGE.selectServerName,
+                        dockerConfig: {
+                            dockerCommand: this.dockerCommand,
+                            dockerImageName: this.dockerImageName,
+                            dockerXmx: this.dockerXmx,
+                            dockerPorts: this.dockerPorts,
+                            isDocker: this.isDocker
+                        }
+                    }));
+                    TOOLS.popWindClose();
+                }
             }
-        }
+        });
     });
 </script>
