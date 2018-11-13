@@ -42,8 +42,8 @@
 									</h4>
 									状态:
 									<span v-if="item.data.run" class="color-green"> 正在运行 </span>
-									<span v-else="item.data.run" class="color-red"> 关闭 </span> | 创建时间 ：
-									<span v-text="item.data.createDate"> </span> | 最后启动：
+									<span v-else="item.data.run" class="color-red"> 关闭 </span> | 创建时间:
+									<span v-text="item.data.createDate"> </span> | 最后启动:
 									<span v-text="item.data.lastDate"> </span> | 时间期限:
 									<span v-text="item.data.timeLimitDate || '- - 永久 - -'"> </span> | 端:
 									<span v-text="item.data.jarName || '未指定'"> </span>
