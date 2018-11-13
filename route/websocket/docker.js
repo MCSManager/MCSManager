@@ -88,7 +88,13 @@ WebSocketObserver().listener('docker/config', (data) => {
     let serverName = data.body || "";
     if (serverName) {
         let mcserver = serverModel.ServerManager().getServer(serverName);
+        // if (!mcserver.dataModel.dockerConfig) {
+        //     mcserver.dataModel.dockerConfig = {
+
+        //     }
+        // }
         response.wsSend(data.ws, 'docker/config', mcserver.dataModel.dockerConfig);
+        mcserver.dataModel.save();
     }
 });
 
