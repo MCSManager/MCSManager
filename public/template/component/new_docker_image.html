@@ -11,13 +11,11 @@
                         </small>
                         <h4>DockerFile 文件</h4>
                         <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft 服务器。</p>
-                        <p style="color:red;">必须使用 /mcsd 作为工作目录。 如需修改请直接修改，切勿粘贴复制文本，否则容易粘贴富文本代码！</p>
-                        <pre id="dockerfile" contenteditable="true" autocomplete="off">FROM java:latest
-RUN mkdir -p /mcsd
-RUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata
-WORKDIR /mcsd
-RUN apt-get update</pre>
+                        <p style="color:red;">必须使用 /mcsd 作为工作目录。Docker 镜像名就是您生成后的名字，请一定要记住！</p>
+                        <!-- <pre id="dockerfile" contenteditable="true" autocomplete="off"></pre> -->
+                        <textarea id="dockerfile" row=30 style="height: 120px;width: 100%;">
 
+                        </textarea>
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
                             <input type="text" autocomplete="off" class="form-control" placeholder="可填，默认 mcsd 镜像名" aria-describedby="sizing-addon3"
@@ -49,6 +47,9 @@ RUN apt-get update</pre>
 
 <script>
     MI.rListener('onload', function () {
+        var baseDockerFile =
+            'FROM java:latest\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd\nRUN apt-get update'
+        $("#dockerfile").text(baseDockerFile);
         new Vue({
             el: "#NewDockerImage",
             data: {
@@ -61,9 +62,10 @@ RUN apt-get update</pre>
 
                     var obj = {
                         dockerImageName: this.dockerImageName || 'mcsd',
-                        dockerfile: $('#dockerfile').html()
+                        dockerfile: TOOLS.decode($('#dockerfile').text())
                     }
-                    if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj.dockerImageName +
+                    if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj
+                            .dockerImageName +
                             "\n确认无误单击【确定】得以继续"))
                         return;
                     if (!TOOLS.isStdText(obj.dockerImageName)) {
