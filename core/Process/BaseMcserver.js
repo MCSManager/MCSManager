@@ -86,6 +86,15 @@ class ServerProcess extends EventEmitter {
     //使用 Docker 命令启动
     dockerStart() {
         let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
+        //先进行替换
+        if (this.dataModel.highCommande.trim() != "") {
+            //使用自定义参数来渲染 Docker 命令
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
+        } else {
+            //使用普通模式渲染
+            let command = this.oneStart(true);
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, command);
+        }
         let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
         let stdCwd = (this.dataModel.cwd).replace(/\\/igm, "/");
         //分割的参数全部渲染
@@ -98,13 +107,7 @@ class ServerProcess extends EventEmitter {
                 stdCwd);
             dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{xmx\}/igm,
                 (this.dataModel.dockerConfig.dockerXmx) || "");
-            if (this.dataModel.highCommande.trim() != "") {
-                //使用自定义参数来渲染 Docker 命令
-                dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{commande\}/igm, this.dataModel.highCommande || "");
-            } else {
-                let command = this.oneStart(true);
-                dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{commande\}/igm, command);
-            }
+
         }
 
 
@@ -114,13 +117,15 @@ class ServerProcess extends EventEmitter {
         }
 
         MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
-        MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:')
+        MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
         MCSERVER.log('-------------------------------');
         MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
         this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
+
+        this.send(this.dataModel.highCommande || this.oneStart(true));
     }
 
     //统一服务端开启
