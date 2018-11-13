@@ -85,31 +85,29 @@ class ServerProcess extends EventEmitter {
 
     //使用 Docker 命令启动
     dockerStart() {
+        //命令模板与准备数据
         let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
-        //先进行替换
-        if (this.dataModel.highCommande.trim() != "") {
-            //使用自定义参数来渲染 Docker 命令
-            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
-        } else {
-            //使用普通模式渲染
-            let command = this.oneStart(true);
-            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, command);
-        }
-        let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
         let stdCwd = (this.dataModel.cwd).replace(/\\/igm, "/");
+
+        //命令模板渲染
+        if (this.dataModel.highCommande.trim() != "")
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
+        else
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.oneStart(true));
+        dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
+            this.dataModel.dockerConfig.dockerImageName);
+        dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
+            this.dataModel.dockerConfig.dockerPorts);
+        dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
+            stdCwd);
+        dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
+            (this.dataModel.dockerConfig.dockerXmx) || "");
+
+        //格式替换
+        let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
+
         //分割的参数全部渲染
-        for (let k in dockerCommandPart) {
-            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{imagename\}/igm,
-                this.dataModel.dockerConfig.dockerImageName);
-            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{ports\}/igm,
-                this.dataModel.dockerConfig.dockerPorts);
-            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{serverpath\}/igm,
-                stdCwd);
-            dockerCommandPart[k] = dockerCommandPart[k].replace(/\$\{xmx\}/igm,
-                (this.dataModel.dockerConfig.dockerXmx) || "");
-
-        }
-
+        // for (let k in dockerCommandPart) { }
 
         let execDockerCommande = [];
         for (let i = 1; i < dockerCommandPart.length; i++) {
