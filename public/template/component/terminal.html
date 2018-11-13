@@ -2,9 +2,9 @@
 	<div class="row" style="position: absolute;right: 16px;">
 		<div class="col-sm-12 PanelItemF">
 			<div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
-				<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 控制台
+				<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制台
 			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
+			<div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
 				<span class="glyphicon glyphicon-list" aria-hidden="true"></span> 实例列表
 			</div>
 			<div class="PanelItem PanelItemBlack" v-on:click="loadHistory()">
