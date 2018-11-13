@@ -259,6 +259,7 @@ class ServerProcess extends EventEmitter {
 
         this.send('stop');
         this.send('end');
+        this.send('exit');
     }
 
     kill() {
