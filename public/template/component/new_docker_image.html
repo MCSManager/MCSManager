@@ -58,11 +58,14 @@ RUN apt-get update</pre>
             methods: {
                 createDocker: function () {
                     console.log("FUNCTION createDocker");
-                    if (!confirm("请单击【确定】按钮继续操作，我们将创建镜像")) return;
+
                     var obj = {
                         dockerImageName: this.dockerImageName || 'mcsd',
                         dockerfile: $('#dockerfile').html()
-                    };
+                    }
+                    if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj.dockerImageName +
+                            "\n确认无误单击【确定】得以继续"))
+                        return;
                     if (!TOOLS.isStdText(obj.dockerImageName)) {
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
