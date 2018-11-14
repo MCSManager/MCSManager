@@ -23,6 +23,10 @@ a:active {
 	text-decoration: none;
 }
 
+a {
+	cursor: pointer;
+}
+
 a,
 input {
 	outline: none;
@@ -40,8 +44,8 @@ input {
 /*全局css定义结束*/
 
 #Header {
-	background-color: #0D6AAD;
-	background: linear-gradient(to right, #0D6AAD, #600dad);
+	background-color: #6314ad;
+	/* background: linear-gradient(to right, #0D6AAD, #600dad); */
 	height: 50px;
 	position: fixed;
 	top: 0px;
@@ -109,7 +113,7 @@ input {
 	margin: 0;
 	float: left;
 	width: 180px;
-	background-color: #017EBC;
+	background-color: #001A35;
 	text-align: center;
 }
 
@@ -340,4 +344,7 @@ input {
 		z-index: -1;
 	}
 	.PhomeOpZore {}
+	.HeaderItem {
+		background-color: #6314ad;
+	}
 }

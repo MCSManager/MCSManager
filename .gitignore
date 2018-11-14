@@ -5,6 +5,7 @@ users/
 testServer/
 *.exe
 *.zip
+docker_temp/
 
 
 # config files

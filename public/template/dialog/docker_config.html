@@ -1,0 +1,64 @@
+<div id="DialogDockerConfig">
+    <p>
+        <b>操作，查看此服务端的 Docker 容器的配置项目</b>
+    </p>
+    <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。
+        <br>如果您的系统上装有 SELinux 请在命令模板的镜像名前添加 --privileged=true 参数或关闭 SELinux。
+    </small>
+
+    <p>
+        <input type="checkbox" v-model="isDocker">
+        <b> 此服务端启用 Docker 容器（只支持 Linux 系统）</b>
+    </p>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">命令模板</span>
+        <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash" aria-describedby="sizing-addon3"
+            v-model="dockerCommand">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
+        <input type="text" class="form-control" placeholder="可填，默认是名叫 mcsd 镜像。" aria-describedby="sizing-addon3" v-model="dockerImageName">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">内存限制</span>
+        <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3" v-model="dockerXmx">
+    </div>
+    <p>此 Docker 开放的端口,冒号左边代表 Docker 内部端口,右边代表宿主机端口,通常保持相同即可。</p>
+    <div class="input-group input-group-sm">
+
+        <span class="input-group-addon" id="sizing-addon3">开放端口</span>
+        <input type="text" class="form-control" placeholder="可填，列如 25565:25565" aria-describedby="sizing-addon3" v-model="dockerPorts">
+    </div>
+    <p>确认无误之后，单击保存即可 | &nbsp;
+        <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_3.md" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
+    </p>
+    <button class="btn btn-success" v-on:click="ok()">
+        保存 Docker 配置
+    </button>
+
+</div>
+<script>
+    console.log(PAGE.selectServerName)
+    WS.sendMsg('docker/config', PAGE.selectServerName, function (obj) {
+
+        new Vue({
+            el: "#DialogDockerConfig",
+            data: obj.ResponseValue,
+            methods: {
+                ok: function () {
+                    WS.sendMsg('docker/setconfig', JSON.stringify({
+                        serverName: PAGE.selectServerName,
+                        dockerConfig: {
+                            dockerCommand: this.dockerCommand.trim() || "",
+                            dockerImageName: this.dockerImageName.trim() || "mcsd",
+                            dockerXmx: this.dockerXmx.trim(),
+                            dockerPorts: this.dockerPorts.trim(),
+                            isDocker: this.isDocker
+                        }
+                    }));
+                    TOOLS.popWindClose();
+                }
+            }
+        });
+    });
+</script>

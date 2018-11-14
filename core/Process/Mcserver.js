@@ -31,6 +31,17 @@ class MinecraftServer extends ServerProcess {
 
         this.properties = undefined; //服务端配置表
 
+        //Docker 容器是否启用
+        // this.isDocker = false;
+        //Docker 配置项目
+        this.dataModel.dockerConfig = {
+            dockerCommand: 'docker run -i ${xmx} -v ${serverpath}:/mcsd/ ${ports} ${imagename} ${commande}',
+            dockerImageName: "mcsd",
+            dockerXmx: "",
+            dockerPorts: "",
+            isDocker: false
+        };
+
     }
 
     //构建服务端配置信息

@@ -1,0 +1,11 @@
+<div class="container">
+    <p>自定义命令可以帮助您执行任何命令！</p>
+    <ul class="ulInfo">
+        <li>必须添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前，否则可能导致命令传递失效。</li>
+        <li>一旦使用这个自定义参数，将会忽略您上面所设置的所有选项。</li>
+        <li>您设定的自定义启动参数依然会将服务端根目录作为工作目录来执行命令。</li>
+        <li>甚至可以运行 bash shell 或 cmd.exe 程序,谨慎设置。</li>
+        <li>如开启 Docker 也可配合 Docker 容器使用，列如 /bin/bash 将启动 Docker 容器的 bash 程序。</li>
+        <li>列如填写: java -Djline.terminal=jline.UnsupportedTerminal -jar run.jar --nogui 就是自定义命令。</li>
+    </ul>
+</div>

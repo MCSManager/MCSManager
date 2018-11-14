@@ -6,6 +6,7 @@ const DataModel = require('../DataModel');
 const os = require('os');
 const tools = require('../tools');
 const permission = require('../../helper/Permission');
+const path = require('path')
 
 var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
@@ -34,7 +35,8 @@ class ServerProcess extends EventEmitter {
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
-        if (!this.highCommande || this.highCommande.trim().length <= 0) new Error("自定义参数非法,无法启动服务端");
+        if (!this.dataModel.highCommande || this.dataModel.highCommande.trim().length <= 0)
+            new Error("自定义参数非法,无法启动服务端");
         let commandArray = this.dataModel.highCommande.split(" ");
         let javaPath = commandArray.shift();
         //过滤
@@ -49,7 +51,7 @@ class ServerProcess extends EventEmitter {
     }
 
     //普通启动
-    oneStart() {
+    oneStart(onlyCommandString = false) {
         let tmpAddList = [];
         let tmpShouldList = [];
 
@@ -66,14 +68,64 @@ class ServerProcess extends EventEmitter {
             if (tmpAddList[k] == '') continue;
             parList.push(tmpAddList[k]);
         }
+
+        let commandString = this.dataModel.java + ' ' + parList.toString().replace(/,/gim, ' ');
+
+        //是否只获取命令字符串
+        if (onlyCommandString) return commandString;
+
         MCSERVER.infoLog('Minecraft Server start', this.dataModel.name);
         MCSERVER.log('服务器 [' + this.dataModel.name + '] 启动进程:')
         MCSERVER.log('-------------------------------');
-        MCSERVER.log('启动: ' + this.dataModel.java + ' ' + parList.toString().replace(/,/gim, ' '));
+        MCSERVER.log('启动: ' + commandString);
         MCSERVER.log('根:' + this.dataModel.cwd);
         MCSERVER.log('-------------------------------');
 
         this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
+    }
+
+    //使用 Docker 命令启动
+    dockerStart() {
+        //命令模板与准备数据
+        let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
+        // let processCwd = process.cwd();
+        let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/igm, "/");
+
+        //命令模板渲染
+        if (this.dataModel.highCommande.trim() != "")
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
+        else
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.oneStart(true));
+        dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
+            this.dataModel.dockerConfig.dockerImageName);
+        dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
+            this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
+        dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
+            stdCwd);
+        dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
+            this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
+
+        //格式替换
+        let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
+
+        //分割的参数全部渲染
+        // for (let k in dockerCommandPart) { }
+
+        let execDockerCommande = [];
+        for (let i = 1; i < dockerCommandPart.length; i++) {
+            if (dockerCommandPart[i].trim() != "") execDockerCommande.push(dockerCommandPart[i]);
+        }
+
+        MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
+        MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
+        MCSERVER.log('-------------------------------');
+        MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
+        MCSERVER.log('根:' + stdCwd);
+        MCSERVER.log('-------------------------------');
+
+        this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
+
+        this.send(this.dataModel.highCommande || this.oneStart(true));
     }
 
     //统一服务端开启
@@ -122,8 +174,13 @@ class ServerProcess extends EventEmitter {
         }
 
         try {
-            //确定启动方式
-            this.dataModel.highCommande ? this.twoStart() : this.oneStart();
+            if (this.dataModel.dockerConfig.isDocker) {
+                //Docker 启动
+                this.dockerStart();
+            } else {
+                //确定启动方式
+                this.dataModel.highCommande ? this.twoStart() : this.oneStart();
+            }
         } catch (err) {
             this.stop();
             throw new Error('进程启动时异常:' + err.name + ":" + err.message);
@@ -135,12 +192,12 @@ class ServerProcess extends EventEmitter {
 
         this.process.on('error', (err) => {
             MCSERVER.error('服务器启动时异常,建议检查配置与环境', err);
-            this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid]);
+            this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid || "启动失败，无法获取进程。"]);
             this.stop();
             this.emit('error', err);
         });
 
-        if (this.process.pid == undefined) {
+        if (!this.process.pid) {
             MCSERVER.error('this.process.pid is null', this.process.pid);
             this.stop();
             delete this.process;
@@ -202,6 +259,7 @@ class ServerProcess extends EventEmitter {
 
         this.send('stop');
         this.send('end');
+        this.send('exit');
     }
 
     kill() {

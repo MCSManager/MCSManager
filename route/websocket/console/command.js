@@ -1,4 +1,6 @@
-const { WebSocketObserver } = require('../../../model/WebSocketModel');
+const {
+    WebSocketObserver
+} = require('../../../model/WebSocketModel');
 const response = require('../../../helper/Response');
 var serverModel = require('../../../model/ServerModel');
 var userModel = require('../../../model/UserModel');
@@ -27,11 +29,8 @@ WebSocketObserver().listener('server/console/command', (data) => {
 
         } catch (e) {
             throw e;
-            response.wsSend(data.ws, 'server/console/command', null);
-            response.wsMsgWindow(data.ws, '执行命令错误:' + e);
         }
         return;
     }
     response.wsSend(data.ws, 'server/console/command', null);
 });
-

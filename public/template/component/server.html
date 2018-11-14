@@ -30,6 +30,7 @@
 								<span class="input-group-addon">服务器唯一标识名</span>
 								<input type="text" class="form-control" v-model="name" placeholder="[未设定]">
 							</div>
+							<p>如果您 Java 环境无误，使用 "java" 环境变量即可</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">Java 路径</span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java" placeholder="[未设定]">
@@ -51,6 +52,7 @@
 								<span class="input-group-addon">启动附加参数</span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd" placeholder="[可空 列如: -server -xxx 等]">
 							</div>
+							<p>服务端文件与数据的目录所在地。</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">服务器根目录</span>
 								<input type="text" class="form-control" v-model="cwd">
@@ -58,6 +60,7 @@
 							<div class="row">
 
 							</div>
+							<p>实质是 -Xmx -Xms 参数，填写请加单位(M,G)</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon"> 最大内存堆 </span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="[自动 如需修改请加单位]">
@@ -85,19 +88,19 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+
+							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-lg-12">
-							<p>完全自定义启动参数 (针对特殊需求)</p>
-							<ul class="ulInfo">
-								<li>必须添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前，否则可能导致命令传递失效</li>
-								<li>一旦使用这个自定义参数，将会忽略您上面所设置的所有选项</li>
-								<li>您设定的自定义启动参数依然会将服务端根目录作为工作目录来执行命令</li>
-								<li>甚至可以运行 bash shell 或 cmd.exe 程序,谨慎设置</li>
-							</ul>
+							<p>完全自定义启动命令 (针对特殊需求)
+								<a v-on:click="toOpenCommmandInfo()">这是什么?</a>
+							</p>
+
 							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 自定义参数 </span>
+								<span class="input-group-addon"> 自定义命令 </span>
 								<input type="text" class="form-control" v-model="highCommande" placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	">
 							</div>
 						</div>
@@ -107,19 +110,20 @@
 			</div>
 			<!--底部-->
 			<div class="Panel">
-				<div class="PanelTitle">保存与更新</div>
+				<div class="PanelTitle"></div>
 				<div class="PanelBody">
 					<div class="row">
-						<div class="col-lg-12">
+						<!-- <div class="col-lg-12">
 							<p>普通用户无权修改任何服务器的启动参数，仅仅可修改 Minecraft 相关配置。</p>
 							<div class="Line"></div>
-						</div>
+						</div> -->
 					</div>
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="" style="float: right;margin-top: 20px;">
-								<button class="btn btn-primary" v-on:click="toConsole(name)">控制面板</button>
-								<button class="btn btn-success" v-on:click="toRebulider()">更新设置</button>
+								<button class="btn btn-danger" v-on:click="toDocker(name)">Docker 配置</button> &nbsp;|&nbsp;
+								<button class="btn btn-primary" v-on:click="toConsole(name)">控制面板</button> &nbsp;|&nbsp;
+								<button class="btn btn-success" v-on:click="toRebulider()">保存/更新设置</button>
 							</div>
 						</div>
 					</div>
@@ -138,6 +142,31 @@
 				isHighCommande: false
 			},
 			methods: {
+				toOpenCommmandInfo: function () {
+					TOOLS.popWind({
+						style: {
+							maxWidth: "700px"
+						},
+						title: "自定义参数说明",
+						template: "template/dialog/usercommand.html"
+					});
+				},
+				toDocker: function () {
+					// var that = this;
+					PAGE.selectServerName = this.oldServerName;
+					TOOLS.popWind({
+						style: {
+							maxWidth: "600px",
+							top: "15%"
+						},
+						title: "Minecraft Docker 配置",
+						template: "template/dialog/docker_config.html",
+						callback: function (result) {
+							// if (!result) return;
+							// console.log(result)
+						}
+					});
+				},
 				toConsole: function (serverName) {
 					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName);
 				},
