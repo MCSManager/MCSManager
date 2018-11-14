@@ -23,6 +23,10 @@ a:active {
 	text-decoration: none;
 }
 
+a {
+	cursor: pointer;
+}
+
 a,
 input {
 	outline: none;

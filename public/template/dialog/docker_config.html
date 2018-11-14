@@ -8,7 +8,7 @@
 
     <p>
         <input type="checkbox" v-model="isDocker">
-        <b> 启用 Docker 容器</b>
+        <b> 此服务端启用 Docker 容器（只支持 Linux 系统）</b>
     </p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">命令模板</span>
@@ -29,7 +29,7 @@
             v-model="dockerPorts">
     </div>
     <p>确认无误之后，单击保存即可 | &nbsp;
-        <a href="" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
+        <a href="https://www.docker.com/" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
     </p>
     <button class="btn btn-success" v-on:click="ok()">
         保存 Docker 配置
