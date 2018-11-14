@@ -99,11 +99,11 @@ class ServerProcess extends EventEmitter {
         dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
             this.dataModel.dockerConfig.dockerImageName);
         dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
-            this.dataModel.dockerConfig.dockerPorts);
+            this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
         dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
             stdCwd);
         dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
-            (this.dataModel.dockerConfig.dockerXmx) || "");
+            this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
 
         //格式替换
         let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");

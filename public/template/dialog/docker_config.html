@@ -49,10 +49,10 @@
                     WS.sendMsg('docker/setconfig', JSON.stringify({
                         serverName: PAGE.selectServerName,
                         dockerConfig: {
-                            dockerCommand: this.dockerCommand || "",
-                            dockerImageName: this.dockerImageName || "mcsd",
-                            dockerXmx: this.dockerXmx ? "-m " + this.dockerXmx : "",
-                            dockerPorts: this.dockerPorts ? "-p " + this.dockerPorts : "",
+                            dockerCommand: this.dockerCommand.trim() || "",
+                            dockerImageName: this.dockerImageName.trim() || "mcsd",
+                            dockerXmx: this.dockerXmx.trim(),
+                            dockerPorts: this.dockerPorts.trim(),
                             isDocker: this.isDocker
                         }
                     }));
