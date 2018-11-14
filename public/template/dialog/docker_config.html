@@ -2,7 +2,9 @@
     <p>
         <b>操作，查看此服务端的 Docker 容器的配置项目</b>
     </p>
-    <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。</small>
+    <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。
+        <br>如果您的系统上装有 SELinux 请在命令模板的镜像名前添加 --privileged=true 参数或关闭 SELinux。
+    </small>
 
     <p>
         <input type="checkbox" v-model="isDocker">
@@ -26,7 +28,7 @@
         <input type="text" class="form-control" placeholder="可填，容器端口默认是全封闭的，您可以自定义多个开放端口，空格分割(25565 25567)。" aria-describedby="sizing-addon3"
             v-model="dockerPorts">
     </div>
-    <p>确认无误之后，单击保存即可 |
+    <p>确认无误之后，单击保存即可 | &nbsp;
         <a href="" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
     </p>
     <button class="btn btn-success" v-on:click="ok()">
