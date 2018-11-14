@@ -52,7 +52,7 @@
 								<span class="input-group-addon">启动附加参数</span>
 								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd" placeholder="[可空 列如: -server -xxx 等]">
 							</div>
-							<p>如果使用 Docker 启动，此处必须填绝对路径，列如 /root/mcsm/server/server_core/serverA 这种形式</p>
+							<p>服务端文件与数据的目录所在地。</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">服务器根目录</span>
 								<input type="text" class="form-control" v-model="cwd">

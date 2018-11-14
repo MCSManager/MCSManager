@@ -6,6 +6,7 @@ const DataModel = require('../DataModel');
 const os = require('os');
 const tools = require('../tools');
 const permission = require('../../helper/Permission');
+const path = require('path')
 
 var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
@@ -87,7 +88,8 @@ class ServerProcess extends EventEmitter {
     dockerStart() {
         //命令模板与准备数据
         let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
-        let stdCwd = (this.dataModel.cwd).replace(/\\/igm, "/");
+        // let processCwd = process.cwd();
+        let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/igm, "/");
 
         //命令模板渲染
         if (this.dataModel.highCommande.trim() != "")
@@ -118,7 +120,7 @@ class ServerProcess extends EventEmitter {
         MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
         MCSERVER.log('-------------------------------');
         MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
-        MCSERVER.log('根:' + this.dataModel.cwd);
+        MCSERVER.log('根:' + stdCwd);
         MCSERVER.log('-------------------------------');
 
         this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
