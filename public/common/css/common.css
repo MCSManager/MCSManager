@@ -344,4 +344,7 @@ input {
 		z-index: -1;
 	}
 	.PhomeOpZore {}
+	.HeaderItem {
+		background-color: #6314ad;
+	}
 }
