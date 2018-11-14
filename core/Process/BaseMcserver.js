@@ -190,12 +190,12 @@ class ServerProcess extends EventEmitter {
 
         this.process.on('error', (err) => {
             MCSERVER.error('服务器启动时异常,建议检查配置与环境', err);
-            this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid]);
+            this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid || "无"]);
             this.stop();
             this.emit('error', err);
         });
 
-        if (this.process.pid == undefined) {
+        if (this.process.pid) {
             MCSERVER.error('this.process.pid is null', this.process.pid);
             this.stop();
             delete this.process;
