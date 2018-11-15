@@ -165,8 +165,7 @@
 <script>
 	MI.rListener('onload', function () {
 
-		var serverName = VIEW_MODEL['ConsolePanel'].serverData.name;
-		MCSERVER.listenServername = serverName;
+		var serverName = MCSERVER.listenServername || "";
 
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
@@ -213,7 +212,7 @@
 				command: "",
 				allowedStart: true,
 				runStatusClass: '',
-				username: MCSERVER.username
+				username: MCSERVER.listenServername
 			},
 			watch: {
 				run: function (cur, old) {}
