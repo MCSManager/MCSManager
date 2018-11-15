@@ -3,7 +3,6 @@
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v8.0-blue.svg)](https://nodejs.org/en/download/)
-[![Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://github.com/Suwings/MCSManager)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
 
@@ -83,6 +82,19 @@ node app.js #或 npm start
 > 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
 <br />
+
+Docker 虚拟化
+-----------
+**我们支持 Docker 软件** 我们使用 Docker 来进行虚拟化部署，纵使您的机器上没有 Java 任何环境，只需一个 Docker 就能轻松开启 Minecraft 服务器。
+
+另外使用 Docker 也能保证您的宿主机安全性和稳定性，对 Linux 客户而言相信使用起来会更好。
+
+如何使用？打开软件界面，单击 `创建 Docker 镜像`，随后在参数面板设置 `Docker 配置` 即可。
+
+**如需使用 Docker ，请确保您的 Linux 系统拥有 Docker 环境，并且启动服务。**
+
+<br />
+
 
 Wiki
 ---------
@@ -193,24 +205,6 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 **注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)
 
 <br />
-
-虚拟化
------------
-**注意** 这是一个轻量级的管理面板，没有集成虚拟化容器，请注意提供陌生人服务端的风险。
-
-但是你可以实现一个整体的虚拟化容器，以保证你的宿主机安全。
-
-另外，在服务器启动时也有 `自定义启动命令(可禁止)` 功能，这可以让你启动服务器时不止是运行 java 相关命令，甚至可以运行命令脚本，对此你可以尝试更多的技巧组合，实现你的需求，列如，启动服务器时顺便启动一个脚本来做某些事情。
-
-**整体的虚拟化**
-
-尽管我们没有为每一个实例服务器都创建一个虚拟化容器，但是你可以为整个控制面板套一个整体上的虚拟化容器。
-
-> 更多信息可参考 [Wiki](https://github.com/Suwings/MCSManager/wiki/Linux-Docker-%E6%95%B4%E4%BD%93%E5%8C%96%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88)
-
-
-<br />
-
 
 权限系统
 -----------
