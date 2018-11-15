@@ -160,14 +160,11 @@
 							top: "15%"
 						},
 						title: "Minecraft Docker 配置",
-						template: "template/dialog/docker_config.html",
-						callback: function (result) {
-							// if (!result) return;
-							// console.log(result)
-						}
+						template: "template/dialog/docker_config.html"
 					});
 				},
 				toConsole: function (serverName) {
+					MCSERVER.listenServername = this.oldServerName;
 					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName);
 				},
 				toRebulider: function () {

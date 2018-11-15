@@ -54,7 +54,7 @@
 									<button class="btn btn-primary" v-on:click="toTerminal(item.serverName);">
 										终端
 									</button>
-									<button class="btn btn-success" v-on:click="onRedirect('./template/component/console.html', 'server/console', item.serverName );">
+									<button class="btn btn-success" v-on:click="toConsole(item.serverName);">
 										控制
 									</button>
 									<button class="btn btn-info" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
@@ -78,6 +78,10 @@
 		VIEW_MODEL.newVue('ServerList', {
 			el: '#ServerList',
 			methods: {
+				toConsole: function (serverName) {
+					MCSERVER.listenServername = serverName;
+					RES.redirectPage('./template/component/console.html', 'server/console', serverName);
+				},
 				onRedirect: function (link, api, serverName) {
 					RES.redirectPage(link, api, serverName);
 				},
