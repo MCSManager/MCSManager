@@ -13,6 +13,7 @@ sudo apt-get install docker.io
 ```bash
 sudo service docker start
 ```
+<br />
 
 ### Centos
 Docker 要求 CentOS 系统的内核版本高于 3.10 ，查看本页面的前提条件来验证你的CentOS 版本是否支持 Docker 。
@@ -29,6 +30,22 @@ yum -y install docker
 ```bash
 sudo service docker start
 ```
+<br />
+
+### Arch Linux
+
+```bash
+安装 Docker
+pacman -S docker
+启动 Docker
+systemctl start docker
+开机启动 Docker
+systemctl enable docker
+关掉开机启动 Docker
+systemclt disable docker
+```
+
+<br /><br />
 
 ### 检查 Docker 环境是否正确（可选）
 
@@ -56,7 +73,7 @@ docker run hello-world
 vi /etc/docker/daemon.json 
 
 { 
-“registry-mirrors”: [“https://registry.docker-cn.com“] 
+"registry-mirrors": ["https://registry.docker-cn.com"] 
 }
 ```
 
@@ -66,7 +83,7 @@ vi /etc/docker/daemon.json
 sudo service docker restart
 ```
 
-
+<br />
 
 ### 写在最后
 
