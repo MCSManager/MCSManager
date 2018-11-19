@@ -83,7 +83,7 @@ node app.js #或 npm start
 
 <br />
 
-Docker 虚拟化
+使用 Docker 
 -----------
 **我们支持 Docker 软件** 我们使用 Docker 来进行虚拟化部署，纵使您的机器上没有 Java 任何环境，只需一个 Docker 就能轻松开启 Minecraft 服务器。
 
@@ -93,6 +93,12 @@ Docker 虚拟化
 
 **如需使用 Docker ，请确保您的 Linux 系统拥有 Docker 环境，并且启动服务。**
 
+
+我们设计得十分简单，但是如果您依然担心您不会操作，可以参考以下相关信息：
+
+具体使用方法: [单击此处跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md)
+
+安装 Docker: [单击此处跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md)
 <br />
 
 
