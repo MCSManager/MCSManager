@@ -3,7 +3,6 @@
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v8.0-blue.svg)](https://nodejs.org/en/download/)
-[![Status](https://img.shields.io/badge/Linux-passing-brightgreen.svg)](https://github.com/Suwings/MCSManager)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
 
@@ -16,7 +15,7 @@
 
 歡迎使用
 -----------
-![軟體截圖](http://39.108.57.206/public/MCSM_A.png)
+![軟體截圖](https://linkwww.oss-cn-qingdao.aliyuncs.com/public/mcsm_index.png)
 **注意:** 因為不定時更換原因，目前截圖不一定最新。
 
 <br />
@@ -38,16 +37,6 @@
 
 <br />
 
-演示環境
------------
-- 地址: [https://link.suwings.top/](https://link.suwings.top/)
-- 帳號: `public` 密碼: `123456`
-- 帳號: `public2` 密碼: `1234567`
-- 帳號: `#master` 密碼: `<暫不開放>`
-
-> 僅僅開放普通帳號給予演示，管理帳號不開放，想瞭解更多，請下載體驗。
-
-<br />
 
 運行在 Windows 
 -----------
@@ -56,7 +45,7 @@
 
 下載並正確安裝 `Node` 環境:
 
-下載原始程式碼並解壓: [https://github.com/Suwings/MCSManager/archive/master.zip](Master.zip)
+下載原始程式碼並解壓: [https://github.com/Suwings/MCSManager/archive/master.zip](https://github.com/Suwings/MCSManager/archive/master.zip)
 
 進入程式原始程式碼目錄，並且在目前的目錄打開命令控制台
 
@@ -93,6 +82,25 @@ node app.js #或 npm start
 > 如果您還是無法運行，請 [按一下這裡](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
 <br />
+
+使用 Docker 
+-----------
+**我們支援 Docker 軟體** 我們使用 Docker 來進行虛擬化部署，縱使您的機器上沒有 Java 任何環境，只需一個 Docker 就能輕鬆開啟 Minecraft 伺服器。
+
+另外使用 Docker 也能保證您的宿主機安全性和穩定性，對 Linux 客戶而言相信使用起來會更好。
+
+如何使用？打開軟體介面，按一下 `創建 Docker 鏡像`，隨後在參數面板設置 `Docker 配置` 即可。
+
+**如需使用 Docker ，請確保您的 Linux 系統擁有 Docker 環境，並且啟動服務。**
+
+
+我們設計得十分簡單，但是如果您依然擔心您不會操作，可以參考以下相關資訊：
+
+具體使用方法: [按一下此處跳轉](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md)
+
+安裝 Docker: [按一下此處跳轉](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md)
+<br />
+
 
 Wiki
 ---------
@@ -203,24 +211,6 @@ FTP 模組採用被動傳輸模式，傳輸命令預設使用 `10022`(可更改)
 **注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)
 
 <br />
-
-虛擬化
------------
-**注意** 這是一個羽量級的管理面板，沒有集成虛擬化容器，請注意提供陌生人服務端的風險。
-
-但是你可以實現一個整體的虛擬化容器，以保證你的宿主機安全。
-
-另外，在伺服器啟動時也有 `自訂啟動命令(可禁止)` 功能，這可以讓你啟動伺服器時不止是運行 java 相關命令，甚至可以運行命令腳本，對此你可以嘗試更多的技巧組合，實現你的需求，列如，啟動伺服器時順便啟動一個腳本來做某些事情。
-
-**整體的虛擬化**
-
-儘管我們沒有為每一個實例伺服器都創建一個虛擬化容器，但是你可以為整個控制台套一個整體上的虛擬化容器。
-
-> 更多資訊可參考 [Wiki](https://github.com/Suwings/MCSManager/wiki/Linux-Docker-%E6%95%B4%E4%BD%93%E5%8C%96%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88)
-
-
-<br />
-
 
 許可權系統
 -----------
