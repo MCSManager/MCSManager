@@ -15,7 +15,7 @@
 
 欢迎使用
 -----------
-![软件截图](http://39.108.57.206/public/MCSM_A.png)
+![软件截图](https://linkwww.oss-cn-qingdao.aliyuncs.com/public/mcsm_index.png)
 **注意:** 因为不定时更换原因，目前截图不一定最新。
 
 <br />
