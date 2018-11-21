@@ -104,6 +104,7 @@
 			el: '#GenHome',
 			methods: {
 				toConsole: function (serverName) {
+					MCSERVER.listenServername = serverName;
 					RES.redirectPage('./template/component/console.html', 'server/console', serverName);
 				},
 				toRePassword: function () {
