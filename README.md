@@ -9,7 +9,11 @@
 
 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
 
+**This project does not support English.**
+
 [中文简体](Readme.md) | [中文繁體](README-traditional.md)
+
+
 
 <br />
 
