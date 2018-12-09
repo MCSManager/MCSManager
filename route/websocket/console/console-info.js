@@ -28,6 +28,7 @@ WebSocketObserver().listener('server/console', (data) => {
             RAMlog: MCSERVER.logCenter.RAM,
             FTP_ip: MCSERVER.localProperty.ftp_ip,
             FTP_port: MCSERVER.localProperty.ftp_port,
+            userName: userName
         });
         // MCSERVER.log('准许用户 [' + userName + '] 获取控制台实时数据');
 

@@ -12,7 +12,8 @@
 						<span class="glyphicon glyphicon-tasks" aria-hidden="true"> </span> CPU 使用率: {{ sysCpu }} %
 					</div>
 					<div class="PanelItem">
-						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 内存 使用率: {{ (100 - sysMonery).toFixed(1) }} %
+						<span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 内存 使用率: {{ (100 - sysMonery).toFixed(1)
+						}} %
 					</div>
 					<div class="PanelItem" v-if="run">
 						<span class="glyphicon glyphicon-ok" aria-hidden="true"> </span>
@@ -50,7 +51,8 @@
 				<div class="PanelTitle">FTP 链接信息</div>
 				<div class="PanelBody">
 					<div class="PanelItem">
-						<span class="glyphicon glyphicon-user" aria-hidden="true"> </span> 账号: {{ username + "." + serverData.name }}
+						<span class="glyphicon glyphicon-user" aria-hidden="true"> </span> 账号: {{ MCSERVER.username + "." +
+						serverData.name }}
 					</div>
 
 					<div class="PanelItem">
