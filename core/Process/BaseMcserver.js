@@ -141,8 +141,12 @@ class ServerProcess extends EventEmitter {
 
         this._loading = true;
 
-        let jarPath = (this.dataModel.cwd + '/' + this.dataModel.jarName).replace(/\/\//igm, '/');
-
+        let jarPath = this.dataModel.jarName;
+        if (!path.isAbsolute(jarPath)) {
+            jarPath = (this.dataModel.cwd + '/' + this.dataModel.jarName)
+        }
+        jarPath = jarPath.replace(/\/\//igm, '/');
+        
         //选择启动方式 自定义命令与配置启动
         if (!this.dataModel.highCommande) {
             //只在非自定义模式下检查参数
