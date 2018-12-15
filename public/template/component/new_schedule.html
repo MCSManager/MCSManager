@@ -136,7 +136,6 @@
                         title: "计划任务简单模式",
                         template: "template/dialog/time_bulider.html",
                         callback: function (result) {
-                            console.log("简单模式结果:", result);
                             if (!result) return;
                             that.time = result.time || "* * * * * *";
                             that.count = result.count || "0";

@@ -43,7 +43,7 @@
 									</th>
 								</tr>
 							</table>
-							<br/>
+							<br />
 							<div class="row">
 								<div class="col-sm-12 PanelItemF">
 									<div class="PanelItem" v-on:click="toBackConsole()">
@@ -82,7 +82,6 @@
 						serverName: this.serverName,
 						properties: this.properties
 					}
-					console.log(this.properties)
 					WS.sendMsg('server/properties_update', JSON.stringify(obj));
 				},
 				toBackConsole: function () {

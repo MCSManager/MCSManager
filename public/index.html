@@ -254,7 +254,6 @@
 							type: 'POST',
 							url: './user/loginout',
 							success: function () {
-								console.log('用户退出');
 								WS.close();
 								TOOLS.pushMsgWindow('您已退出，现在即将跳转网页');
 								setTimeout(function () {

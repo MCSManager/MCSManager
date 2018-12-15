@@ -12,25 +12,29 @@
     </p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">命令模板</span>
-        <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash" aria-describedby="sizing-addon3"
-            v-model="dockerCommand">
+        <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash"
+            aria-describedby="sizing-addon3" v-model="dockerCommand">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-        <input type="text" class="form-control" placeholder="可填，默认是名叫 mcsd 镜像。" aria-describedby="sizing-addon3" v-model="dockerImageName">
+        <input type="text" class="form-control" placeholder="可填，默认是名叫 mcsd 镜像。" aria-describedby="sizing-addon3"
+            v-model="dockerImageName">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">内存限制</span>
-        <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3" v-model="dockerXmx">
+        <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3"
+            v-model="dockerXmx">
     </div>
     <p>此 Docker 开放的端口,冒号左边代表 Docker 内部端口,右边代表宿主机端口,通常保持相同即可。</p>
     <div class="input-group input-group-sm">
 
         <span class="input-group-addon" id="sizing-addon3">开放端口</span>
-        <input type="text" class="form-control" placeholder="可填，列如 25565:25565" aria-describedby="sizing-addon3" v-model="dockerPorts">
+        <input type="text" class="form-control" placeholder="可填，列如 25565:25565" aria-describedby="sizing-addon3"
+            v-model="dockerPorts">
     </div>
     <p>确认无误之后，单击保存即可 | &nbsp;
-        <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_3.md" style="color:rgb(32, 32, 192);">什么是 Docker ?</a>
+        <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_3.md" style="color:rgb(32, 32, 192);">什么是
+            Docker ?</a>
     </p>
     <button class="btn btn-success" v-on:click="ok()">
         保存 Docker 配置
@@ -38,9 +42,7 @@
 
 </div>
 <script>
-    console.log(PAGE.selectServerName)
     WS.sendMsg('docker/config', PAGE.selectServerName, function (obj) {
-
         new Vue({
             el: "#DialogDockerConfig",
             data: obj.ResponseValue,

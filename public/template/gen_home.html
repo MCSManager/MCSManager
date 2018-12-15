@@ -98,7 +98,6 @@
 <!--js-->
 <script>
 	MI.rListener('onload', function () {
-		console.log('页面开始')
 		MCSERVER.colmSet(false);
 		VIEW_MODEL.newVue('GenHome', {
 			el: '#GenHome',
@@ -114,7 +113,5 @@
 		});
 	})
 
-	MI.rListener('onend', function () {
-		console.log('页面关闭')
-	})
+	MI.rListener('onend', function () {})
 </script>
