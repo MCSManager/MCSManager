@@ -50,7 +50,6 @@ MCSERVER.logCenter.initLogData('RAM', 24);
 //实不相瞒，其实我是弄的缓存
 setInterval(function () {
     osUtils.cpuUsage(function (v) {
-        // console.log('CPU Usage (%): ' + v * 100);
         cacheCPU = (v * 100).toFixed(2);
         MCSERVER.dataCenter.cacheCPU = cacheCPU;
     });
@@ -100,8 +99,6 @@ setInterval(function () {
     //压入记录器
     MCSERVER.logCenter.pushLogData('CPU', tools.getMineTime(), parseInt(cacheCPU));
     MCSERVER.logCenter.pushLogData('RAM', tools.getMineTime(), 100 - useMemBai);
-
-    // console.log(MCSERVER.logCenter.RAM)
 
     setTimeout(() => counter.save(), 0); //让其异步的去保存
 }, MCSERVER.localProperty.data_center_times);

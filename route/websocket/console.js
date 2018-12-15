@@ -92,7 +92,6 @@ WebSocketObserver().listener('server/console/remove', (data) => {
     for (let k in MCSERVER.allSockets) {
         if (MCSERVER.allSockets[k].uid == data.WsSession.uid) {
             MCSERVER.allSockets[k]['console'] = undefined;
-            // console.log('前端退出控制台界面  -- 成功')
             return;
         }
     }
