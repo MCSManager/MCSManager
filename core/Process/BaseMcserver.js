@@ -8,11 +8,10 @@ const tools = require('../tools');
 const permission = require('../../helper/Permission');
 const path = require('path')
 
-var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
-
-//https://github.com/Gagle/Node-Properties
 const properties = require("properties");
 const fs = require('fs');
+
+var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
 class ServerProcess extends EventEmitter {
 
@@ -28,11 +27,13 @@ class ServerProcess extends EventEmitter {
 
     //自定义高级参数启动
     customCommandStart() {
+
+        //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
         MCSERVER.infoLog('Minecraft Server start', this.dataModel.name);
-        MCSERVER.log('服务器 [' + this.dataModel.name + '] 启动进程:')
+        MCSERVER.log(['服务器 [', this.dataModel.name, '] 启动进程:'].join(" "));
         MCSERVER.log('-------------------------------');
-        MCSERVER.log('自定义参数启动: ' + this.dataModel.highCommande);
-        MCSERVER.log('根:' + this.dataModel.cwd);
+        MCSERVER.log(['自定义参数启动: ', this.dataModel.highCommande].join(" "));
+        MCSERVER.log(['根:', this.dataModel.cwd].join(" "));
         MCSERVER.log('-------------------------------');
 
         if (!this.dataModel.highCommande || this.dataModel.highCommande.trim().length <= 0)
@@ -74,11 +75,12 @@ class ServerProcess extends EventEmitter {
         //是否只获取命令字符串
         if (onlyCommandString) return commandString;
 
+        //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
         MCSERVER.infoLog('Minecraft Server start', this.dataModel.name);
-        MCSERVER.log('服务器 [' + this.dataModel.name + '] 启动进程:')
+        MCSERVER.log(['服务器 [', this.dataModel.name, '] 启动进程:'].join(" "))
         MCSERVER.log('-------------------------------');
-        MCSERVER.log('启动: ' + commandString);
-        MCSERVER.log('根:' + this.dataModel.cwd);
+        MCSERVER.log(['启动: ', commandString].join(" "));
+        MCSERVER.log(['根:', this.dataModel.cwd].join(" "));
         MCSERVER.log('-------------------------------');
 
         this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
@@ -116,6 +118,7 @@ class ServerProcess extends EventEmitter {
             if (dockerCommandPart[i].trim() != "") execDockerCommande.push(dockerCommandPart[i]);
         }
 
+        //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
         MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
         MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
         MCSERVER.log('-------------------------------');
