@@ -108,9 +108,13 @@ setInterval(() => {
         if (!data || data.length <= 1) continue;
         //忽略极大体积数据
         const MAX_OUT_LEN = 1024 * (MCSERVER.localProperty.console_max_out || 28);
+        // 保留被截断消息的末尾部分
+        const KEEP_TAIL_LEN = 1024;
         if (data.length > MAX_OUT_LEN) {
+            let real_tail_len = Math.min(KEEP_TAIL_LEN, data.length - MAX_OUT_LEN);
             data = data.slice(0, MAX_OUT_LEN) +
-                "\n - 更多的此刻输出已经忽略...\n"
+                "\n - 更多的此刻输出已经忽略...\n" +
+                data.slice(data.length - real_tail_len, data.length);
         }
         // 替换元素
         let htmlData = data.replace(/\n/gim, '<br />');
