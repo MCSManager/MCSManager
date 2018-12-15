@@ -27,7 +27,7 @@ class ServerProcess extends EventEmitter {
     }
 
     //自定义高级参数启动
-    twoStart() {
+    customCommandStart() {
         MCSERVER.infoLog('Minecraft Server start', this.dataModel.name);
         MCSERVER.log('服务器 [' + this.dataModel.name + '] 启动进程:')
         MCSERVER.log('-------------------------------');
@@ -51,7 +51,7 @@ class ServerProcess extends EventEmitter {
     }
 
     //普通启动
-    oneStart(onlyCommandString = false) {
+    templateStart(onlyCommandString = false) {
         let tmpAddList = [];
         let tmpShouldList = [];
 
@@ -95,7 +95,7 @@ class ServerProcess extends EventEmitter {
         if (this.dataModel.highCommande.trim() != "")
             dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
         else
-            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.oneStart(true));
+            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.templateStart(true));
         dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
             this.dataModel.dockerConfig.dockerImageName);
         dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
@@ -125,7 +125,7 @@ class ServerProcess extends EventEmitter {
 
         this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
 
-        this.send(this.dataModel.highCommande || this.oneStart(true));
+        this.send(this.dataModel.highCommande || this.templateStart(true));
     }
 
     //统一服务端开启
@@ -146,7 +146,7 @@ class ServerProcess extends EventEmitter {
             jarPath = (this.dataModel.cwd + '/' + this.dataModel.jarName)
         }
         jarPath = jarPath.replace(/\/\//igm, '/');
-        
+
         //选择启动方式 自定义命令与配置启动
         if (!this.dataModel.highCommande) {
             //只在非自定义模式下检查参数
@@ -183,7 +183,7 @@ class ServerProcess extends EventEmitter {
                 this.dockerStart();
             } else {
                 //确定启动方式
-                this.dataModel.highCommande ? this.twoStart() : this.oneStart();
+                this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
             }
         } catch (err) {
             this.stop();
