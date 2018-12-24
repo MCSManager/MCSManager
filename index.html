@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 
 <head>
     <meta charset="utf-8" />
@@ -8,70 +8,76 @@
     <meta http-equiv="Content-Language" content="zh-CN" />
     <meta name="renderer" content="webkit" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
-    <link href="./static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./static/main.css">
     <link rel="shortcut icon" href="./favicon.ico">
-    <title>MCSMANAGER | YELIN 8 </title>
+    <title>获取 Mcserver Manager 软件</title>
+
+    <link rel="stylesheet" href="http://cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css">
+    <script src="http://cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
+    <style>
+        .m-download>a,
+        .m-download>button {
+            margin: 4px 2px;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="mbg">
-        <div class="container">
-            <!-- 标题 -->
-            <div class="row">
-                <div id="" class="col-lg-12 phonenot">
-                    <pre>
-      ___           ___           ___           ___           ___           ___           ___           ___           ___           ___     
-     /\__\         /\  \         /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \    
-    /::|  |       /::\  \       /::\  \       /::|  |       /::\  \       /::|  |       /::\  \       /::\  \       /::\  \       /::\  \   
-   /:|:|  |      /:/\:\  \     /:/\ \  \     /:|:|  |      /:/\:\  \     /:|:|  |      /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  
-  /:/|:|__|__   /:/  \:\  \   _\:\~\ \  \   /:/|:|__|__   /::\~\:\  \   /:/|:|  |__   /::\~\:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ 
- /:/ |::::\__\ /:/__/ \:\__\ /\ \:\ \ \__\ /:/ |::::\__\ /:/\:\ \:\__\ /:/ |:| /\__\ /:/\:\ \:\__\ /:/__/_\:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\
- \/__/~~/:/  / \:\  \  \/__/ \:\ \:\ \/__/ \/__/~~/:/  / \/__\:\/:/  / \/__|:|/:/  / \/__\:\/:/  / \:\  /\ \/__/ \:\~\:\ \/__/ \/_|::\/:/  /
-       /:/  /   \:\  \        \:\ \:\__\         /:/  /       \::/  /      |:/:/  /       \::/  /   \:\ \:\__\    \:\ \:\__\      |:|::/  / 
-      /:/  /     \:\  \        \:\/:/  /        /:/  /        /:/  /       |::/  /        /:/  /     \:\/:/  /     \:\ \/__/      |:|\/__/  
-     /:/  /       \:\__\        \::/  /        /:/  /        /:/  /        /:/  /        /:/  /       \::/  /       \:\__\        |:|  |    
-     \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \|__|   
-    Version Yelin 8</pre>
-                    <hr />
+<body class="mdui-color-grey-900 mdui-bottom-nav-fixed">
+    <header class="mdui-toolbar mdui-color-black">
+        <a href="index.html" class="mdui-typo-title">获取 <span style="color: #e4c306;">M</span>cserver
+            Manager</a>
+        <div class="mdui-toolbar-spacer"></div>
+        <a href="https://github.com/Suwings/MCSManager">
+            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve" class="mdui-icon"
+                style="width: 24px;height:24px;">
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#ffffff" d="M18,1.4C9,1.4,1.7,8.7,1.7,17.7c0,7.2,4.7,13.3,11.1,15.5
+                c0.8,0.1,1.1-0.4,1.1-0.8c0-0.4,0-1.4,0-2.8c-4.5,1-5.5-2.2-5.5-2.2c-0.7-1.9-1.8-2.4-1.8-2.4c-1.5-1,0.1-1,0.1-1
+                c1.6,0.1,2.5,1.7,2.5,1.7c1.5,2.5,3.8,1.8,4.7,1.4c0.1-1.1,0.6-1.8,1-2.2c-3.6-0.4-7.4-1.8-7.4-8.1c0-1.8,0.6-3.2,1.7-4.4
+                c-0.2-0.4-0.7-2.1,0.2-4.3c0,0,1.4-0.4,4.5,1.7c1.3-0.4,2.7-0.5,4.1-0.5c1.4,0,2.8,0.2,4.1,0.5c3.1-2.1,4.5-1.7,4.5-1.7
+                c0.9,2.2,0.3,3.9,0.2,4.3c1,1.1,1.7,2.6,1.7,4.4c0,6.3-3.8,7.6-7.4,8c0.6,0.5,1.1,1.5,1.1,3c0,2.2,0,3.9,0,4.5
+                c0,0.4,0.3,0.9,1.1,0.8c6.5-2.2,11.1-8.3,11.1-15.5C34.3,8.7,27,1.4,18,1.4z"></path>
+            </svg>
+        </a>
+    </header>
+    <div class="mdui-container" style="margin-top: 14vh;">
+        <div class="mdui-row">
+            <div class="mdui-col-xs-12">
+                <h4 class="mdui-typo-headline"><span style="color: #e4c306;">M</span>cserver Manager 8.5</h4>
+                <p class="mdui-typo-body-1"> 轻量级，方便快捷的 Minecraft 服务器管理软件，帮助你的日常运维，适用于绝大部分服务端与版本。</p>
+                <p class="mdui-typo-body-1"> 现在，您只需要点击下载即可享受免费，开源和安全的服务。</p>
+                <div class="m-download">
+                    <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-yellow-500" mdui-menu="{target: '#windows-select'}">Windows
+                        版本</button>
+                    <ul class="mdui-menu" id="windows-select">
+                        <li class="mdui-menu-item">
+                            <a href="https://pan.baidu.com/s/1bpbB8Az" class="mdui-ripple">百度网盘</a>
+                        </li>
+                        <li class="mdui-menu-item" class="mdui-ripple">
+                            <a href="https://cuncu-1252309123.cos.ap-chengdu.myqcloud.com/MCSManagerPackage_8.5_%E7%AE%80%E4%BD%93.zip">直接下载</a>
+                        </li>
+                    </ul>
+                    <a href="https://github.com/Suwings/MCSManager/blob/master/README.md#%E8%BF%90%E8%A1%8C%E5%9C%A8-linux"
+                        class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-pink-500">Linux 版本</a>
+                    <a href="http://www.mcbbs.net/thread-140678-1-1.html" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-purple-500 ">
+                        给个好评</a>
+
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <H3>
-                        <span style="color: #ceaf00;">M</span>CSERVER MANAGER
-                        <small>Version Yelin 8</small>
-                    </H3>
-                    <!-- <h4>具体信息</h4> -->
-                    <br>
-                    <p>
-                        Windows 版本下载:
-                        <a href="https://pan.baidu.com/s/1bpbB8Az">单击下载</a>
-                    </p>
-                    <p>
-                        Linux 安装运行:
-                        <a href="https://github.com/Suwings/MCSManager/blob/master/README.md#%E8%BF%90%E8%A1%8C%E5%9C%A8-linux">参考 README.md</a>
-                    </p>
-                    <p>
-                        Github 项目地址:
-                        <a href="https://github.com/Suwings/MCSManager">https://github.com/Suwings/MCSManager</a>
-                    </p>
-                </div>
-            </div>
-
-            <footer class="mfooter">
-                <p>版权所有 2013-2018 Suwings. All rights reserved.</p>
-                <p style="font-size: 12px;">此为公益开源项目，非商业项目 - 友情链接 |
-                    <a href="http://www.mcbbs.net/">Minecraft 中文论坛 | </a>
-                    <a href="http://www.guangsyl.cn/">光速御联 |</a>
-                    <a href="http://mcllxz.cc:88/">LL 小镇 | </a>
-                    <a href="https://minecraft-zh.gamepedia.com/Minecraft_Wiki">MC Wiki 中文 | </a>
-                </p>
-            </footer>
-
         </div>
+
     </div>
+    <footer class="mdui-bottom-nav">
+        <div class="mdui-container">
+            <div class="mdui-col-xs-12">
+                <span class="mdui-typo-caption-opacity">版权所有 2013-2018 Suwings. All rights reserved.</span>
+                <p class="mdui-typo-caption-opacity">这是公益开源项目，非商业项目 - 友情链接
+                    <a style="display: inline;padding:2px;" href="http://www.mcbbs.net/">MC 中文论坛 </a>
+                    <a style="display: inline;padding:2px;" href="http://www.guangsyl.cn/">光速御联 </a>
+                    <a style="display: inline;padding:2px;" href="http://mcllxz.cc:88/">LL 小镇 </a>
+                </p>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>
