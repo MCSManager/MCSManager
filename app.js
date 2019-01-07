@@ -122,7 +122,7 @@ MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
     });
 }
 
-//获取最新咨询
+//获取最新资讯
 require('./model/requestNews');
 
 //exp 框架
