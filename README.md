@@ -76,11 +76,13 @@ https://pan.baidu.com/s/1bpbB8Az (中文简体/繁体中文版本 下载地址)
 -----------
 - 相对而言，这可能更加简单。保证您的 node 版本正确与 git 工具可行下，安装与运行易如反掌。
 
+**提示:** 请尽可能的给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限，如使用 Docker 等服务不保证能够完全正确运行。
+
 ```bash
 git clone https://github.com/Suwings/MCSManager.git
 cd MCSManager
 npm install --production
-node app.js #或 npm start
+sudo node app.js #或 sudo npm start
 ```
 
 > 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
