@@ -1,26 +1,14 @@
 //一个专门为了解决内存泄露而设计的观察者模型
 
-// var observerMask = {
-//     'event': [{
-//             'callbackName': 'dsdsds',
-//             'callback': () => {}
-//         },
-//         {
-//             sd: 'callbackfun'
-//         }
-//     ],
-//     'event2': []
-// };
-
-var observerMask = {};
-
+const observerMask = {};
 const CALLBACK = 'CALLBACK';
 const CALLBACK_NAME = 'CALLBACK_NAME'
 const FUNCTION_END = '__FUNCTI0N_END__'
 
 module.exports.FUNCTION_END = FUNCTION_END;
 
-module.exports.listener = function(event, _callbackName, _callback) {
+//监听
+module.exports.listener = function (event, _callbackName, _callback) {
     let callbackName = '';
     let callback = null;
     if (_callback != undefined) {
@@ -42,12 +30,13 @@ module.exports.listener = function(event, _callbackName, _callback) {
     return false;
 }
 
-module.exports.emit = function(event, msg) {
+//触发
+module.exports.emit = function (event, msg) {
     if (observerMask.hasOwnProperty(event)) {
         for (var i in observerMask[event]) {
             let returnV = observerMask[event][i][CALLBACK](msg);
             if (returnV && returnV === FUNCTION_END) {
-                //如果函数自己返回自己 需要删除自己，就删除
+                //如果函数返回 FUNCTION_END，移除监听
                 delete observerMask[event][i][CALLBACK];
                 delete observerMask[event][i];
             }
@@ -57,8 +46,8 @@ module.exports.emit = function(event, msg) {
     return false;
 }
 
-
-module.exports.remove = function(event, callbackName) {
+//移除监听
+module.exports.remove = function (event, callbackName) {
     if (observerMask.hasOwnProperty(event)) {
         for (var i in observerMask[event]) {
             if (observerMask[event][i][CALLBACK_NAME] = callbackName) {
