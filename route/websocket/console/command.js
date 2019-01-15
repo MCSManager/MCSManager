@@ -17,20 +17,46 @@ WebSocketObserver().listener('server/console/command', (data) => {
         if (command == '__restart__') {
             serverModel.ServerManager().getServer(serverName).restart();
             response.wsMsgWindow(data.ws, '服务器正在重启..');
-            //return
+            return
         }
+        //强制结束服务端进程
         if (command == '__killserver__') {
             serverModel.ServerManager().getServer(serverName).kill();
             response.wsMsgWindow(data.ws, '服务器结束进程');
+            return
+        }
+        //通过命令方法停止服务端
+        if (command == '__stop__') {
+            let server = serverModel.ServerManager().getServer(serverName);
+            let isRestart = server.dataModel.autoRestart;
+            if (isRestart) {
+                server.dataModel.autoRestart = false;
+                server._onceStopRestart = true;
+            }
+            //使用三种可能的命令按照顺序进行发送
+            serverModel.sendCommand(serverName, 'stop');
+            serverModel.sendCommand(serverName, 'end');
+            serverModel.sendCommand(serverName, 'exit');
+            return
         }
         //不是特殊命令，则直接执行
         try {
             serverModel.sendCommand(serverName, command);
-
-        } catch (e) {
-            throw e;
+        } catch (err) {
+            throw err;
         }
         return;
     }
     response.wsSend(data.ws, 'server/console/command', null);
 });
+
+
+//服务端退出之后第一事件
+//当服务端开启自动崩溃重启后，手动关闭服务端时将忽略临时重启规则
+serverModel.ServerManager().on('exit_next', (data) => {
+    let server = serverModel.ServerManager().getServer(data.serverName);
+    if (server._onceStopRestart) {
+        server.dataModel.autoRestart = true;
+        server._onceStopRestart = false;
+    }
+})

@@ -240,6 +240,7 @@ class ServerProcess extends EventEmitter {
         if (this._run == true) {
             this.send('stop');
             this.send('end');
+            this.send('exit');
 
             //开始计时重启
             let timeCount = 0;

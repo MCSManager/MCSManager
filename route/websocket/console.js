@@ -53,6 +53,9 @@ serverModel.ServerManager().on('exit', (data) => {
 
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
+
+    //下一个事件
+    serverModel.ServerManager().emit("exit_next", data);
 })
 
 //服务器开启

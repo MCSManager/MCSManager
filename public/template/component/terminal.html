@@ -112,15 +112,7 @@
 					].join(" ");
 				},
 				stopServer: function () {
-					this.toCommand('stop');
-					this.toCommand('end');
-					this.toCommand('exit');
-					var that = this;
-					setTimeout(function () {
-						that.toCommand('stop');
-						that.toCommand('end');
-						that.toCommand('exit');
-					}, 2000);
+					this.toCommand('__stop__');
 				}
 			},
 			data: {

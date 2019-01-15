@@ -35,7 +35,7 @@
 						</div>
 					</transition>
 					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toCommand('stop');toCommand('end')" v-if="run">
+						<div class="PanelItem" v-on:click="toCommand('__stop__')" v-if="run">
 							<span class="glyphicon glyphicon-pause" aria-hidden="true"> </span> 关闭服务器
 						</div>
 					</transition>
