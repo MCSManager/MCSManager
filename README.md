@@ -1,4 +1,3 @@
-![logo.png](http://39.108.57.206/public/MCSM_LOGO_1.png)
 ![doc_logo.png](/public/common/doc_logo.png)
   
 [![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
@@ -13,14 +12,6 @@
 
 [中文简体](Readme.md) | [中文繁體](README-traditional.md)
 
-
-
-<br />
-
-欢迎使用
------------
-![软件截图](https://linkwww.oss-cn-qingdao.aliyuncs.com/public/mcsm_index.png)
-**注意:** 因为不定时更换原因，目前截图不一定最新。
 
 <br />
 
