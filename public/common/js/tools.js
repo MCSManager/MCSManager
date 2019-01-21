@@ -119,7 +119,7 @@
 		text = text.replace(/\[/igm, "<span style='color:#10e616;'>[</span>");
 		text = text.replace(/\]/igm, "<span style='color:#10e616;'>]</span>");
 		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
-		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'> $1 </span>");
+		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
 
 		RegExpStringArr = [
 			//蓝色
