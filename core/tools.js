@@ -81,3 +81,16 @@ module.exports.getFullTime = () => {
     return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' +
         date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 }
+
+
+const REPALCE_STR = '__MCSMANAGER_REPLACE_STR__';
+module.exports.CharReplaceTemp = (text = "", replaceStr = "") => {
+    let re = new RegExp(replaceStr, "gim"); //注意，反斜杠需要转义
+    text = text.replace(re, REPALCE_STR);
+    return text;
+}
+module.exports.TempReplaceChar = (text = "", replaceStr = "") => {
+    let re = new RegExp(REPALCE_STR, "gim"); //注意，反斜杠需要转义
+    text = text.replace(re, replaceStr);
+    return text;
+}
