@@ -204,6 +204,7 @@
 }
 
 #TerminalMinecraft {
+	font-family: 'Consolas', 'Courier New', Courier, monospace;
 	overflow: auto;
 	width: 100%;
 	resize: none;
@@ -231,6 +232,7 @@
 }
 
 #TerminalCommand {
+	font-family: 'Consolas', 'Courier New', Courier, monospace;
 	font-size: 12px;
 	color: white;
 	width: 100%;
@@ -250,6 +252,7 @@
 /* 控制台的手机设定 */
 
 @media (max-width:760px) {
+
 	#Terminal div,
 	#Terminal input,
 	#Terminal a {

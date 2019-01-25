@@ -98,12 +98,16 @@ class ServerProcess extends EventEmitter {
             dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
         else
             dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.templateStart(true));
+        //加入镜像名
         dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
             this.dataModel.dockerConfig.dockerImageName);
+        //加入端口限制
         dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
             this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
+        //加入服务端绝对路径
         dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
-            stdCwd);
+            tools.CharReplaceTemp(stdCwd, " "));
+        //加入最大内存限制
         dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
             this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
 
@@ -115,7 +119,7 @@ class ServerProcess extends EventEmitter {
 
         let execDockerCommande = [];
         for (let i = 1; i < dockerCommandPart.length; i++) {
-            if (dockerCommandPart[i].trim() != "") execDockerCommande.push(dockerCommandPart[i]);
+            if (dockerCommandPart[i].trim() != "") execDockerCommande.push(tools.TempReplaceChar(dockerCommandPart[i], " "));
         }
 
         //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
