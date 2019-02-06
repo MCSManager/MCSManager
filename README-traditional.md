@@ -10,7 +10,7 @@
 
 **This project does not support English.**
 
-[中文簡體](Readme.md) | [中文繁體](README-traditional.md)
+[中文簡體](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md)
 
 
 <br />
