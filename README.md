@@ -32,7 +32,6 @@
 
 <br />
 
-
 运行在 Windows 
 -----------
 
@@ -104,6 +103,20 @@ Wiki
 我们有些常见问题与细节上的问题，已经把它们都整合在 `Wiki` 里面。
 
 欢迎你阅读 [Wiki](https://github.com/Suwings/MCSManager/wiki) 与提出建议。
+
+<br />
+
+
+常见问题
+-----------
+| 问题 | 详情 |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+使用面板开启 `Bedrock Server` 端 | [详情页](https://github.com/Suwings/MCSManager/issues/86)
+面板管理员的默认账号和密码是什么？ | [详情页](https://github.com/Suwings/MCSManager/issues/75)
+面板如何正确关闭？ | Ctrl+C
+配置文件是什么？ | property.js
+配好反向代理却无法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22)
+FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
 
 <br />
 
@@ -211,7 +224,7 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 权限系统
 -----------
-尤其注意的是，为了更加简化面板权限系统，我们只分为两种账号；
+尤其注意的是，为了更加简化面板权限系统，我们只分为两种账号。
 
 `管理账号` 凡是以 # 字符开头的用户，均为管理账号，列如 `#master` `#admin` `#test`
 
@@ -225,7 +238,7 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 问题报告
 -----------
-欢迎各位发现任何 BUG 及时反馈给我，必当及时修复
+欢迎各位发现任何 BUG 及时反馈给我，必当及时修复。
 
 <br />
 
