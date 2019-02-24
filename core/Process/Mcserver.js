@@ -96,7 +96,11 @@ class MinecraftServer extends ServerProcess {
 
     propertiesSave(newProperties, callback) {
         //解析
-        let text = properties.stringify(newProperties);
+        let text = properties.stringify(newProperties, {
+            separator: "="
+        });
+        //properties 库自动给等于两边加入了空格，现在去除
+        text = text.replace(/ = /igm, "=");
         // 写入数据, 文件不存在会自动创建
         fs.writeFile(this.dataModel.cwd + '/server.properties', text, (err) => {
             this.propertiesLoad(() => {
