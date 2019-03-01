@@ -112,6 +112,11 @@
 		}
 	}
 
+	//Minecraft 服务器输出删除双S
+	TOOLS.deletDoubleS = function (text) {
+		text = text.replace(/§./igm,"");
+		return text;
+	}
 
 	//Minecraft 服务器输出基本颜色
 	TOOLS.encodeConsoleColor = function (text) {
