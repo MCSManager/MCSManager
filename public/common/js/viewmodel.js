@@ -142,6 +142,7 @@
 		flag = (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN);
 		//color
 		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
+		consoleSafe = TOOLS.deletDoubleS(consoleSafe);
 		//add
 		MinecraftConsole.innerHTML += consoleSafe;
 		//unblive bt ths is t
@@ -160,6 +161,7 @@
 		var oldHeightV = MinecraftConsole.scrollHeight;
 		//颜色过滤
 		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
+		consoleSafe = TOOLS.deletDoubleS(consoleSafe);
 		//incude
 		MinecraftConsole.innerHTML = consoleSafe + MinecraftConsole.innerHTML;
 		var newHeightV = MinecraftConsole.scrollHeight;
