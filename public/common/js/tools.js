@@ -114,7 +114,7 @@
 
 	//Minecraft 服务器输出删除双S
 	TOOLS.deletDoubleS = function (text) {
-		text = text.replace(/§/igm, "");
+		text = text.replace(/§./igm, "");
 		return text;
 	}
 
