@@ -121,10 +121,7 @@
 
 	//Minecraft 服务器终端插入
 	var terminalEncode = function (text) {
-		var ify = '[_b_r_]';
-		var txt = text;
-		txt = txt.replace(/<br \/>/igm, '[_b_r_]');
-		var consoleSafe = TOOLS.encode(txt);
+		var consoleSafe = TOOLS.encode(text);
 		consoleSafe = consoleSafe.replace(/\[_b_r_\]/igm, '<br>');
 		return consoleSafe;
 	}
@@ -154,10 +151,7 @@
 	//获取控制台历史记录
 	MI.routeListener('server/console/history', function (data) {
 		var consoleSafe = terminalEncode(data.body);
-
 		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-
-
 		var oldHeightV = MinecraftConsole.scrollHeight;
 		//颜色过滤
 		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
@@ -165,7 +159,6 @@
 		//incude
 		MinecraftConsole.innerHTML = consoleSafe + MinecraftConsole.innerHTML;
 		var newHeightV = MinecraftConsole.scrollHeight;
-
 		var resVTopLac = newHeightV - oldHeightV;
 		MinecraftConsole.scrollTop = resVTopLac - 999;
 	});

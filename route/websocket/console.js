@@ -119,7 +119,7 @@ setInterval(() => {
                 data.slice(data.length - real_tail_len, data.length);
         }
         // 替换元素
-        let htmlData = data.replace(/\n/gim, '<br />');
+        let htmlData = data.replace(/\n/gim, '[_b_r_]');
         //刷新每个服务器的缓冲数据
         selectWebsocket(serverName, (socket) => {
             socket.send({
