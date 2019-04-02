@@ -25,7 +25,7 @@ WebSocketObserver().listener('server/console/history', (data) => {
         let start = data.WsSession['record_start'] || 0;
         if (start <= HISTORY_SIZE_LINE) {
             response.wsSend(data.ws, 'server/console/history', 'terminalBack',
-                "[控制面板]: 无法读取更多的服务端日志: 已到最顶端.. <br />");
+                "[控制面板]: 无法读取更多的服务端日志: 已到最顶端.. [_b_r_]");
             return;
         }
 
@@ -34,7 +34,7 @@ WebSocketObserver().listener('server/console/history', (data) => {
         // 从文件读取日志
         recordCommande.readRecord(data.WsSession['record_start'], HISTORY_SIZE_LINE, (resText) => {
             // 替换为 HTML
-            resText = resText.replace(/\n/gim, '<br />');
+            resText = resText.replace(/\n/gim, '[_b_r_]');
             response.wsSend(data.ws, 'server/console/history', 'terminalBack', resText);
         });
     }
