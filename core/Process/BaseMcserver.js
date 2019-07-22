@@ -276,7 +276,7 @@ class ServerProcess extends EventEmitter {
 
     kill() {
         if (this._run) {
-            this.process.kill();
+            this.process.kill('SIGKILL');
             this._run = false;
             return true;
         }
