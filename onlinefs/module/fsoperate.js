@@ -6,6 +6,7 @@ const {
 } = require("./base_fsoperate");
 const fsex = require('fs-extra');
 const AdmZip = require('adm-zip');
+const iconv = require('iconv-lite');
 
 
 
@@ -150,6 +151,13 @@ class FileOperate extends BaseFileOperate {
             try {
                 const zip = new AdmZip(absPath);
                 const zipExtractDir = absPath.split('.')[0];
+                // zip.extractAllTo(zipExtractDir, true);
+                // 解决目录中中文乱码问题
+                const zipEntries = zip.getEntries();
+                for (let i = 0; i < zipEntries.length; i++) {
+                    const entry = zipEntries[i];
+                    entry.entryName = iconv.decode(entry.rawEntryName, 'gbk');
+                }
                 zip.extractAllTo(zipExtractDir, true);
                 return true;
             } catch (err) {
