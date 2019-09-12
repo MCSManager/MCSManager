@@ -4,7 +4,8 @@ const path_moduel = require("path");
 const {
     BaseFileOperate
 } = require("./base_fsoperate");
-var fsex = require('fs-extra');
+const fsex = require('fs-extra');
+const AdmZip = require('adm-zip');
 
 
 
@@ -141,6 +142,23 @@ class FileOperate extends BaseFileOperate {
         }
         return resultStack;
     }
+
+
+    //解压文件
+    extract(path) {
+        return this.pathAccessCheck(path, (absPath) => {
+            try {
+                const zip = new AdmZip(absPath);
+                const zipExtractDir = absPath.split('.')[0];
+                zip.extractAllTo(zipExtractDir, true);
+                return true;
+            } catch (err) {
+                console.log("[错误]", "文件解压出错:\n", err);
+                return false;
+            }
+        });
+    }
+
 
 }
 

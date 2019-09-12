@@ -98,6 +98,19 @@ router.post('/rename', (req, res) => {
 });
 
 
+
+
+router.post('/extract', (req, res) => {
+    const zipName = (parseHandle(req.body))
+    if (!zipName) {
+        res.status(403).send("非法名称");
+    }
+    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    const result = fileOperate.extract(zipName);
+    sendHandle(req, res, result);
+});
+
+
 const multiparty = require('multiparty');
 router.post('/upload', (req, res) => {
     //权限判断,需要登录
@@ -153,7 +166,7 @@ router.get('/download/:name', (req, res) => {
             'Content-Disposition': "attachmnet",
             'filename': encodeURIComponent(req.params.name.trim())
         }
-    }, (err) => {});
+    }, (err) => { });
 
 });
 
