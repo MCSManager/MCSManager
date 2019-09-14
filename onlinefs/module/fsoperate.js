@@ -167,6 +167,31 @@ class FileOperate extends BaseFileOperate {
         });
     }
 
+    writeFile(path, data) {
+        return this.pathAccessCheck(path, (absPath) => {
+            try {
+                fs.writeFileSync(absPath, data);
+                return fs.existsSync(absPath);
+            } catch (err) {
+                console.log("[错误]", "文件写出错:\n", err);
+                return false;
+            }
+        });
+    }
+
+    readFile(path) {
+        return this.pathAccessCheck(path, (absPath) => {
+            try {
+                if (fs.existsSync(absPath)) {
+                    return fs.readFileSync(absPath);
+                }
+            } catch (err) {
+                console.log("[错误]", "文件读出错:\n", err);
+                return false;
+            }
+        });
+    }
+
 
 }
 

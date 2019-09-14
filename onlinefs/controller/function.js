@@ -98,8 +98,34 @@ router.post('/rename', (req, res) => {
 });
 
 
+//文件内容读取路由
+router.post('/edit_read', (req, res) => {
+    const filename = (parseHandle(req.body))
+    if (!filename) return;
+    //没有经过安全的 UseFileOperate 进行安全操作
+    //必须经过目录越级漏洞防御
+    if (filename.indexOf('../') != -1 || filename.indexOf('./') != -1) return;
+    const cwd = req.session.fsos.cwd;
+    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    const filedata = fileOperate.readFile(pathm.join(cwd, filename));
+    sendHandle(req, res, filedata.toString());
+});
+
+//文件内容写入路由
+router.post('/edit_write', (req, res) => {
+    const obj = (parseHandle(req.body))
+    if (!obj || !obj.filename || !obj.context) return
+    //没有经过安全的 UseFileOperate 进行安全操作
+    //必须经过目录越级漏洞防御
+    if (obj.filename.indexOf('../') != -1 || obj.filename.indexOf('./') != -1) return;
+    const cwd = req.session.fsos.cwd;
+    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    fileOperate.writeFile(pathm.join(cwd, obj.filename), obj.context);
+});
 
 
+
+//解压路由
 router.post('/extract', (req, res) => {
     const zipName = (parseHandle(req.body))
     if (!zipName) {
@@ -170,6 +196,9 @@ router.get('/download/:name', (req, res) => {
     }, (err) => { });
 
 });
+
+
+
 
 
 module.exports = router;
