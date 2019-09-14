@@ -106,7 +106,8 @@ router.post('/extract', (req, res) => {
         res.status(403).send("非法名称");
     }
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-    const result = fileOperate.extract(zipName);
+    const cwd = req.session.fsos.cwd;
+    const result = fileOperate.extract(pathm.join(cwd, zipName));
     sendHandle(req, res, result);
 });
 
