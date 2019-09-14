@@ -39,7 +39,7 @@ html {
     height: 100%;
     background-color: white;
     padding: 4px;
-    min-height: 500px;
+    min-height: 519px;
 }
 
 @media (max-width: 768px) {
