@@ -120,7 +120,8 @@ router.post('/edit_write', (req, res) => {
     if (obj.filename.indexOf('../') != -1 || obj.filename.indexOf('./') != -1) return;
     const cwd = req.session.fsos.cwd;
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-    fileOperate.writeFile(pathm.join(cwd, obj.filename), obj.context);
+    const result = fileOperate.writeFile(pathm.join(cwd, obj.filename), obj.context);
+    sendHandle(req, res, result);
 });
 
 
