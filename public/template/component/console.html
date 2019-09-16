@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-md-3">
 			<div class="Panel PanelBlack">
-				<div class="PanelTitle">服务器信息</div>
+				<div class="PanelTitle">服务端信息</div>
 				<div class="PanelBody">
 
 					<div class="PanelItem">
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 			<div class="Panel" :class="run==true?'PanelGreen':'PanelYellow'">
-				<div class="PanelTitle">服务器操作</div>
+				<div class="PanelTitle">服务端操作</div>
 				<div class="PanelBody">
 
 					<transition name="slide-fade">
@@ -45,6 +45,23 @@
 					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-if="run">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"> </span> 强制性结束进程
 					</div>
+				</div>
+			</div>
+			<div class="Panel " :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
+				<div class="PanelTitle">任务与机制</div>
+				<div class="PanelBody">
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
+							<span style="color: #29b90c;">打开</span>
+						</div>
+					</transition>
+					<transition name="slide-fade">
+						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-if="!serverData.autoRestart">
+							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
+							<span style="color: #818181;">关闭</span>
+						</div>
+					</transition>
 				</div>
 			</div>
 			<div class="Panel PanelGray">
@@ -66,23 +83,6 @@
 						<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 模式:
 						<span style="color: #666666;">&lt;被动传输模式&gt;</span>
 					</div>
-				</div>
-			</div>
-			<div class="Panel " :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
-				<div class="PanelTitle">任务与机制</div>
-				<div class="PanelBody">
-					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
-							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
-							<span style="color: #29b90c;">打开</span>
-						</div>
-					</transition>
-					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-if="!serverData.autoRestart">
-							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
-							<span style="color: #818181;">关闭</span>
-						</div>
-					</transition>
 				</div>
 			</div>
 			<div class="Panel PanelGray">
