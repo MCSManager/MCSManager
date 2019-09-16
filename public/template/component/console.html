@@ -1,7 +1,7 @@
 <div id='ConsolePanel' class="OneContainer">
 	<div class="row">
 		<div class="col-md-3">
-			<div class="Panel PanelGreen">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">服务器信息</div>
 				<div class="PanelBody">
 
@@ -25,7 +25,7 @@
 
 				</div>
 			</div>
-			<div class="Panel ">
+			<div class="Panel" :class="run==true?'PanelGreen':'PanelYellow'">
 				<div class="PanelTitle">服务器操作</div>
 				<div class="PanelBody">
 
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="Panel ">
+			<div class="Panel PanelGray">
 				<div class="PanelTitle">FTP 链接信息</div>
 				<div class="PanelBody">
 					<div class="PanelItem">
@@ -68,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="Panel ">
+			<div class="Panel " :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
 				<div class="PanelTitle">任务与机制</div>
 				<div class="PanelBody">
 					<transition name="slide-fade">
@@ -85,7 +85,7 @@
 					</transition>
 				</div>
 			</div>
-			<div class="Panel ">
+			<div class="Panel PanelGray">
 				<div class="PanelTitle">外置接口</div>
 				<div class="PanelBody">
 					<div class="PanelItem">
@@ -100,7 +100,7 @@
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="Panel PanelBlue">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">服务端控制组</div>
 				<div class="PanelBody">
 					<div class="row">

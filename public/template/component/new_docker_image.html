@@ -1,14 +1,16 @@
 <div id='NewDockerImage' class="OneContainer">
     <div class="col-md-12 ">
         <div class="Panel">
-            <div class="PanelTitle">基于 DockerFile 创建镜像 Beta (Only Linux) </div>
+            <div class="PanelTitle">基于 DockerFile 创建镜像 (仅支持 Linux 系统) </div>
             <div class="PanelBody">
                 <div class="row">
                     <div class="col-md-12">
                         <p>创建新的 Docker 镜像 |
-                            <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md" style="color: #2f3ad6;">如何让
+                            <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md"
+                                style="color: #2f3ad6;">如何让
                                 Minecraft 服务端运行在 Docker 镜像中？</a>
-                            <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md" style="color: #2f3ad6;">如何在我的电脑上安装
+                            <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md"
+                                style="color: #2f3ad6;">如何在我的电脑上安装
                                 Docker？</a>
                         </p>
                         <small>您不需要具备 Docker 专业知识，最简单的方法是，您只需要填写一个名字即可。
@@ -24,8 +26,9 @@
                         </textarea>
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-                            <input type="text" autocomplete="off" class="form-control" placeholder="可填，默认 mcsd 镜像名，不建议更改，除非您要创建其他的镜像，请一定要记住名字"
-                                aria-describedby="sizing-addon3" v-model="dockerImageName">
+                            <input type="text" autocomplete="off" class="form-control"
+                                placeholder="可填，默认 mcsd 镜像名，不建议更改，除非您要创建其他的镜像，请一定要记住名字" aria-describedby="sizing-addon3"
+                                v-model="dockerImageName">
                         </div>
                         <p>
                             确认无误之后，单击新建镜像按钮，但是这需要一定时间的等待，创建完成后 MCSM 会通知您。
@@ -36,7 +39,8 @@
                                     MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。</span>
                                 <br>
                                 <br>
-                                <span>如果出现构建失败失败，请尝试检查 Docker 服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。</span>
+                                <span>如果出现构建失败失败，请尝试检查 Docker 服务是否成功启动 (service docker start)，以及 docker
+                                    命令是否能执行，网络是否畅通。</span>
                             </b>
                         </p>
                         <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">
@@ -73,8 +77,8 @@
                         dockerfile: TOOLS.decode($('#dockerfile').text())
                     }
                     if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj
-                            .dockerImageName +
-                            "\n确认无误单击【确定】得以继续"))
+                        .dockerImageName +
+                        "\n确认无误单击【确定】得以继续"))
                         return;
                     if (!TOOLS.isStdText(obj.dockerImageName)) {
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
@@ -92,7 +96,7 @@
                         },
                         title: "Docker 构建结果",
                         template: "template/dialog/docker_res.html",
-                        callback: function () {}
+                        callback: function () { }
                     });
                 }
             }

@@ -1,7 +1,7 @@
 <div id='UsersetList' class="OneContainer">
 	<div class="row">
 		<div class="col-md-12 ">
-			<div class="Panel PanelBlue">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">用户中心</div>
 				<div class="PanelBody">
 					<div class="row">
@@ -75,21 +75,24 @@
 								<p>用户名 [字母 数字 下划线] (6~18位)</p>
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 用户名 </span>
-									<input type="text" class="form-control" v-model="username" placeholder="用户名 [字母 数字 下划线] (6~18位)">
+									<input type="text" class="form-control" v-model="username"
+										placeholder="用户名 [字母 数字 下划线] (6~18位)">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<p>密码 [字母 数字 符号] (6~18位) </p>
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 密码 </span>
-									<input type="text" class="form-control" v-model="password" placeholder="密码 [字母 数字 符号] (6~18位)">
+									<input type="text" class="form-control" v-model="password"
+										placeholder="密码 [字母 数字 符号] (6~18位)">
 								</div>
 							</div>
 						</div>
 						<p>准许的服务器，输入服务器名字，分别以空格分割</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon"> 准许的服务器 </span>
-							<input type="text" class="form-control" v-model="allowedServer" placeholder="列如: 服务器名字A 服务器名字B 服务器名字C">
+							<input type="text" class="form-control" v-model="allowedServer"
+								placeholder="列如: 服务器名字A 服务器名字B 服务器名字C">
 						</div>
 						<div class="row">
 							<div class="col-lg-12">
@@ -168,5 +171,5 @@
 		});
 	});
 
-	MI.rListener('onend', function () {});
+	MI.rListener('onend', function () { });
 </script>

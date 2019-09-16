@@ -63,6 +63,10 @@
 	border-top: 3px solid #f39c12;
 }
 
+.PanelBlack{
+	border-top: 3px solid #141A1D;
+}
+
 .PanelTitle {
 	font-family: 'Source Sans Pro', "微软雅黑", sans-serif;
 	padding: 10px 12px;
@@ -78,6 +82,8 @@
 	font-weight: 400;
 	font-size: 12px;
 }
+
+
 
 .NextCol {
 	/*padding-left: 5px;*/

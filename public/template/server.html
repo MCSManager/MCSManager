@@ -1,7 +1,7 @@
 <div id='ServerList' class="OneContainer">
 	<div class="row">
 		<div class="col-md-12 ">
-			<div class="Panel PanelBlue">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">服务器列表</div>
 				<div class="PanelBody">
 					<div class="row">
@@ -57,11 +57,13 @@
 									<button class="btn btn-success" v-on:click="toConsole(item.serverName);">
 										控制
 									</button>
-									<button class="btn btn-info" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
+									<button class="btn btn-info"
+										v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
 										参数
 									</button>
 									<span style="margin-left: 8px;"> | </span>
-									<button class="btn btn-danger" v-on:click="toDeleteServer(item.serverName)">删除</button>
+									<button class="btn btn-danger"
+										v-on:click="toDeleteServer(item.serverName)">删除</button>
 
 								</div>
 							</div>
@@ -117,5 +119,5 @@
 		});
 	});
 
-	MI.rListener('onend', function () {});
+	MI.rListener('onend', function () { });
 </script>
