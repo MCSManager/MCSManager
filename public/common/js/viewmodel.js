@@ -72,7 +72,11 @@
 				isOnMouse: false
 			},
 			methods: {
-				onRedirect: function (link, api) {
+				onRedirect: function (link, api, item) {
+					for (let k in this.items) {
+						this.items[k].select = false;
+					}
+					item.select = true;
 					DEBUG && console.log('菜单处网页开始跳转:' + link);
 					//触发菜单选项点击事件
 					MI.on("SideMeumClick", null);

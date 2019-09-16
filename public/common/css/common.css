@@ -160,6 +160,13 @@ input {
 	background-color: #003c58;
 }
 
+
+/* 菜单选择后的颜色 */
+.MeumSelect {
+	margin-left: 8px;	
+	background-color: #289804;
+}
+
 /*左侧的菜单*/
 
 #SideColMenu {
@@ -177,7 +184,7 @@ input {
 	width: 100%;
 	height: 45px;
 	color: white;
-	background-color: #001A35;
+	/* background-color: #001A35; */
 	line-height: 45px;
 	text-align: left;
 	padding-left: 20px;
@@ -191,9 +198,10 @@ input {
 
 #SideColMenu a:hover {
 	text-decoration: none;
-	background-color: rgb(1, 126, 188);
+	background-color: #4ebd2a;
 	margin-left: 8px;
 }
+
 
 /*菜单的收缩*/
 
@@ -216,6 +224,7 @@ input {
 	width: 20px;
 	background-color: rgb(226, 226, 0);
 }
+
 
 /*针对于单页的首页容器*/
 
