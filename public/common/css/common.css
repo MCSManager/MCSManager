@@ -44,7 +44,7 @@ input {
 /*全局css定义结束*/
 
 #Header {
-	background-color: #6314ad;
+	background-color: #3c8dbc;
 	/* background: linear-gradient(to right, #0D6AAD, #600dad); */
 	height: 50px;
 	position: fixed;
@@ -65,6 +65,10 @@ input {
 
 #MasterLogo:hover {
 	animation: MasterLogoImg 2s;
+}
+
+.HeaderPress{
+	float: right;
 }
 
 #SideCol {
@@ -131,8 +135,11 @@ input {
 	font-weight: 400;
 }
 
+/* 菜单栏 */
 .HeaderR {
 	float: right;
+	background-color: rgba(68, 114, 196, 1);
+    max-height: 50px;
 }
 
 .HeaderR div {
@@ -345,6 +352,6 @@ input {
 	}
 	.PhomeOpZore {}
 	.HeaderItem {
-		background-color: #6314ad;
+		background-color: #3c8dbc;
 	}
 }

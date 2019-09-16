@@ -25,7 +25,7 @@
 
 				</div>
 			</div>
-			<div class="Panel PanelGreen">
+			<div class="Panel ">
 				<div class="PanelTitle">服务器操作</div>
 				<div class="PanelBody">
 
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="Panel PanelGreen">
+			<div class="Panel ">
 				<div class="PanelTitle">FTP 链接信息</div>
 				<div class="PanelBody">
 					<div class="PanelItem">
@@ -68,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="Panel PanelGreen">
+			<div class="Panel ">
 				<div class="PanelTitle">任务与机制</div>
 				<div class="PanelBody">
 					<transition name="slide-fade">
@@ -100,11 +100,12 @@
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="Panel PanelRed">
+			<div class="Panel PanelBlue">
 				<div class="PanelTitle">服务端控制组</div>
 				<div class="PanelBody">
 					<div class="row">
-						<div class="col-md-3 col-sm-6" v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
+						<div class="col-md-3 col-sm-6"
+							v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
 							<div class="PanelItemBlock">
 								<div class="LogV">
 									<span class="glyphicon glyphicon-console" aria-hidden="true"> </span>
@@ -141,7 +142,7 @@
 			</div>
 		</div>
 		<div class="col-md-9" id='ChartCPUFor'>
-			<div class="Panel PanelRed">
+			<div class="Panel ">
 				<div class="PanelTitle">CPU（中央处理器）利用率 （%）</div>
 				<div class="PanelBody">
 					<div class="row">
@@ -152,7 +153,7 @@
 		</div>
 		<div class="col-md-3"></div>
 		<div class="col-md-9">
-			<div class="Panel PanelRed">
+			<div class="Panel ">
 				<div class="PanelTitle">物理内存使用率 （%）</div>
 				<div class="PanelBody">
 					<div class="row">
@@ -217,7 +218,7 @@
 				username: MCSERVER.listenServername
 			},
 			watch: {
-				run: function (cur, old) {}
+				run: function (cur, old) { }
 			}
 		});
 
