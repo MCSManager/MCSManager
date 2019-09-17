@@ -6,14 +6,8 @@ const {
     BaseFileOperate
 } = require("./base_fsoperate");
 const fsex = require('fs-extra');
-const AdmZip = require('adm-zip');
 const child_process = require('child_process');
 
-let SYSTEM_CODE = null;
-if (os.platform() == "win32")
-    SYSTEM_CODE = 'GBK';
-else
-    SYSTEM_CODE = 'UTF-8';
 
 //文件操作具体
 class FileOperate extends BaseFileOperate {
@@ -88,13 +82,15 @@ class FileOperate extends BaseFileOperate {
 
     rm(path) {
         this.pathAccessCheck(path, (absPath) => {
-            // if (fs.statSync(absPath).isDirectory()) {
-            //     this._rm_rf(absPath);
-            // }
-            // fs.unlinkSync(absPath);
-            fsex.remove(absPath, (err) => {
-                if (err) return;
-            });
+            //如果仅单文件则直接删除
+            if (!fs.statSync(absPath).isDirectory()) {
+                fsex.remove(absPath, (err) => {
+                    if (err) return;
+                });
+            } else {
+                //若删除文件夹则分配子进程来进行解压操作
+                child_process.fork("./onlinefs/module/extend_worker.js", ['remove', absPath]);
+            }
         });
     }
 
@@ -155,7 +151,7 @@ class FileOperate extends BaseFileOperate {
     extract(path) {
         return this.pathAccessCheck(path, (absPath) => {
             //分配子进程来进行解压操作
-            child_process.fork("./onlinefs/module/ExtractTaskWorker.js", [absPath]);
+            child_process.fork("./onlinefs/module/extend_worker.js", ['extract', absPath]);
         });
     }
 
