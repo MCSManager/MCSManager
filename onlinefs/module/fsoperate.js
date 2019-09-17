@@ -7,7 +7,13 @@ const {
 const fsex = require('fs-extra');
 const AdmZip = require('adm-zip');
 const iconv = require('iconv-lite');
+const os = require('os');
 
+let SYSTEM_CODE = null;
+if (os.platform() == "win32")
+    SYSTEM_CODE = 'GBK';
+else
+    SYSTEM_CODE = 'UTF-8';
 
 
 //文件操作具体
@@ -156,7 +162,7 @@ class FileOperate extends BaseFileOperate {
                 const zipEntries = zip.getEntries();
                 for (let i = 0; i < zipEntries.length; i++) {
                     const entry = zipEntries[i];
-                    entry.entryName = iconv.decode(entry.rawEntryName, 'gbk');
+                    entry.entryName = iconv.decode(entry.rawEntryName, SYSTEM_CODE);
                 }
                 zip.extractAllTo(zipExtractDir, true);
                 return true;

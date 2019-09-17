@@ -14,6 +14,7 @@ const fs = require("fs");
 const os = require('os');
 
 
+
 router.post('/mkdir', (req, res) => {
     let name = parseHandle(req.body, "string");
     if (name == "") return;
@@ -132,10 +133,12 @@ router.post('/extract', (req, res) => {
     if (!zipName) {
         res.status(403).send("非法名称");
     }
-    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-    const cwd = req.session.fsos.cwd;
-    const result = fileOperate.extract(pathm.join(cwd, zipName));
-    sendHandle(req, res, result);
+    setTimeout(() => {
+        const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+        const cwd = req.session.fsos.cwd;
+        fileOperate.extract(pathm.join(cwd, zipName));
+    }, 0);
+    sendHandle(req, res, true);
 });
 
 
