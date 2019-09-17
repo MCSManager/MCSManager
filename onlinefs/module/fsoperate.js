@@ -1,20 +1,19 @@
 const fs = require("fs");
 const path_moduel = require("path");
-// const os = require("os");
+const cluster = require('cluster');
+const os = require("os");
 const {
     BaseFileOperate
 } = require("./base_fsoperate");
 const fsex = require('fs-extra');
 const AdmZip = require('adm-zip');
-const iconv = require('iconv-lite');
-const os = require('os');
+const child_process = require('child_process');
 
 let SYSTEM_CODE = null;
 if (os.platform() == "win32")
     SYSTEM_CODE = 'GBK';
 else
     SYSTEM_CODE = 'UTF-8';
-
 
 //文件操作具体
 class FileOperate extends BaseFileOperate {
@@ -154,22 +153,8 @@ class FileOperate extends BaseFileOperate {
     //解压文件
     extract(path) {
         return this.pathAccessCheck(path, (absPath) => {
-            try {
-                const zip = new AdmZip(absPath);
-                const zipExtractDir = absPath.split('.')[0];
-                // zip.extractAllTo(zipExtractDir, true);
-                // 解决目录中中文乱码问题
-                const zipEntries = zip.getEntries();
-                for (let i = 0; i < zipEntries.length; i++) {
-                    const entry = zipEntries[i];
-                    entry.entryName = iconv.decode(entry.rawEntryName, SYSTEM_CODE);
-                }
-                zip.extractAllTo(zipExtractDir, true);
-                return true;
-            } catch (err) {
-                console.log("[错误]", "文件解压出错:\n", err);
-                return false;
-            }
+            //分配子进程来进行解压操作
+            child_process.fork("./onlinefs/module/ExtractTaskWorker.js", [absPath]);
         });
     }
 

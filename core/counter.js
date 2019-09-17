@@ -12,7 +12,7 @@ module.exports.initData = (callback) => {
 module.exports.init = () => {
     module.exports.load();
     //定时清楚
-    setInterval(function() {
+    setInterval(function () {
         if (new Date().getDate() == 1 && (new Date().getMonth() + 1) >= dataModel.reloadMonth) {
             dataModel.reloadMonth = (new Date().getMonth() + 2); //调至下个月
             MCSERVER.log(' ---- 数据期限已到 清空数据统计 ---- ');

@@ -133,12 +133,10 @@ router.post('/extract', (req, res) => {
     if (!zipName) {
         res.status(403).send("非法名称");
     }
-    setTimeout(() => {
-        const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-        const cwd = req.session.fsos.cwd;
-        fileOperate.extract(pathm.join(cwd, zipName));
-    }, 0);
-    sendHandle(req, res, true);
+    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    const cwd = req.session.fsos.cwd;
+    fileOperate.extract(pathm.join(cwd, zipName));
+    sendHandle(req, res, "OK");
 });
 
 
