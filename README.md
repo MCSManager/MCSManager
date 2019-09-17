@@ -64,15 +64,24 @@ http://mcsm.suwings.top/ (官方站点 有中文简体/繁体中文版本)
 
 运行在 Linux 
 -----------
-- 相对而言，这可能更加简单。保证您的 node 版本正确与 git 工具可行下，安装与运行易如反掌。
-
-**提示:** 请尽可能的给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限，如使用 Docker 等服务不保证能够完全正确运行。
+**提示:** 请给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限。
 
 ```bash
-git clone https://github.com/Suwings/MCSManager.git
-cd MCSManager
-npm install --production
-sudo node app.js #或 sudo npm start
+# 安装 Node 版本控制工具(若没有 wget,请安装它)
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+# 关闭终端重新打开再执行以下命令
+# 项目支持 8.0.0 版本以上，这里使用最新大版本
+nvm install 12.0.0
+# 克隆仓库
+git clone https://github.com/suwings/mcsmanager.git
+# 进入目录
+cd mcsmanager/
+# 安装依赖库
+npm install
+# 启动面板
+sudo npm start #或 sudo node app.js
+
+
 ```
 
 > 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
