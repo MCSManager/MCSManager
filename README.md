@@ -84,6 +84,10 @@ sudo npm start #或 sudo node app.js
 
 ```
 
+- 项目属于开箱即用的面板，未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
+- 可以使用 screen 软件来让面板持续在后台运行。
+
+
 > 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
 <br />
