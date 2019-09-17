@@ -10,7 +10,7 @@
   "main": "app.js",
   "author": "Suwings",
   "readmeFilename": "README.md",
-  "license": "AGPL",
+  "license": "AGPL-3.0-or-later",
   "contributors": [
     "Suwings",
     "pppploi8",
