@@ -83,17 +83,18 @@ class FileOperate extends BaseFileOperate {
     }
 
     _rm_rf(path) { //递归
-        this._forEachFile(path, (p) => fs.unlinkSync(p));
+        this._forEachFile(path, (p) => { fs.unlinkSync(p) });
     }
 
     rm(path) {
-        return this.pathAccessCheck(path, (absPath) => {
-            if (fs.statSync(absPath).isDirectory()) {
-                this._rm_rf(absPath);
-                return !fs.existsSync(absPath);
-            }
-            fs.unlinkSync(absPath);
-            return !fs.existsSync(absPath);
+        this.pathAccessCheck(path, (absPath) => {
+            // if (fs.statSync(absPath).isDirectory()) {
+            //     this._rm_rf(absPath);
+            // }
+            // fs.unlinkSync(absPath);
+            fsex.remove(absPath, (err) => {
+                if (err) return;
+            });
         });
     }
 

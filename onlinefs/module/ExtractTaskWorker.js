@@ -16,7 +16,7 @@ const realArgv = argv.filter((val, index) => {
 
 if (realArgv.length == 1) {
     //解压子进程开始执行
-    console.log('[解压]', '解压', realArgv, '任务开始');
+    console.log('[ 解压 ]', '解压', realArgv, '任务开始');
 
     //执行解压
     const absPath = realArgv[0];
@@ -33,6 +33,6 @@ if (realArgv.length == 1) {
     zip.extractAllTo(zipExtractDir, true);
 
     //解压完成，进程终止
-    console.log('[解压]', '解压', realArgv, '任务结束');
+    console.log('[ 解压 ]', '解压', realArgv, '任务结束');
     process.exit(0);
 }
