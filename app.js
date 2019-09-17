@@ -1,10 +1,10 @@
 //运行时环境检测
 try {
     let versionNum = parseInt(process.version.replace(/v/igm, "").split(".")[0]);
-    //尽管我们建议最低版本为 v8 版本，但是事实上我们在 v7 版本以上都可以正常运行
-    if (versionNum < 7) {
+    //尽管我们建议最低版本为 v8 版本
+    if (versionNum < 8) {
         console.log("[ WARN ] 您的 Node 运行环境版本似乎低于我们要求的版本.");
-        console.log("[ WARN ] 可能会出现未知情况,建议您更新 Node 版本 (>=7.0.0)");
+        console.log("[ WARN ] 可能会出现未知情况,建议您更新 Node 版本 (>=8.0.0)");
     }
 } catch (err) {
     //忽略任何版本检测导致的错误
