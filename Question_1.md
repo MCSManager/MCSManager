@@ -1,6 +1,5 @@
 本页面将告诉你如何利用 MCSManager 软件来创建一个使用 Docker 启动的 Minecraft 服务端。
 
-国内相关教程:[http://www.guangsyl.cn/MCSM](http://www.guangsyl.cn/MCSM)
 
 ### 创建Docker
 
