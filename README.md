@@ -51,6 +51,7 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 # 关闭终端重新打开再执行以下命令
 # 项目支持 8.0.0 版本以上，这里使用最新大版本
 nvm install 12.0.0
+nvm use 12.0.0.0
 # 克隆仓库
 git clone https://github.com/suwings/mcsmanager.git
 # 进入目录
@@ -63,11 +64,10 @@ sudo npm start #或 sudo node app.js
 
 ```
 
+> 如果您还是无法正常运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
+
 - 项目属于**开箱即用**的面板，未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
 - 可以使用 **screen** 软件来让面板持续在后台运行。
-
-
-> 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
 <br />
 
