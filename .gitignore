@@ -17,6 +17,9 @@ core/*.json
 public/common/URL.js
 property.js
 
+#vscode
+*.code-workspace
+
 # node
 node_modules/
 
