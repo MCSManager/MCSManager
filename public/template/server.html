@@ -1,71 +1,25 @@
 <div id='ServerList' class="OneContainer">
 	<div class="row">
 		<div class="col-md-12 ">
-			<div class="Panel PanelBlack">
-				<div class="PanelTitle">服务端列表</div>
+			<div class="Panel PanelBlack" style="margin-bottom: 8px;">
+				<div class="PanelTitle">应用实例列表</div>
 				<div class="PanelBody">
 					<div class="row">
 						<div class="col-sm-12 PanelItemF">
 							<div class="PanelItem" v-on:click="newServerx()">
-								<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 引导创建服务器
+								<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 引导创建应用（推荐）
 							</div>
 							<div class="PanelItem" v-on:click="newServer()">
-								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新的服务器
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新应用（高级）
 							</div>
 							<div class="PanelItem" v-on:click="opt_all('start')">
-								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有服务端
+								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有应用
 							</div>
 							<div class="PanelItem" v-on:click="opt_all('stop')">
-								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有服务端
+								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有应用
 							</div>
 							<div class="PanelItem" v-on:click="newDocker()">
-								<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 创建 Docker 镜像
-							</div>
-						</div>
-					</div>
-					<div class=" ItemTableList"></div>
-					<div class="PanelItem ItemTableList" v-for="item of items">
-						<div class="row">
-							<div class="col-md-7">
-								<div class="PanelItemInfo">
-									<h4 v-if="item.data.jarName == '' && !item.data.highCommande ">
-										<span class="color-high-red">[未配置] </span>
-										<s v-text="item.serverName"></s>
-									</h4>
-									<h4 v-if="item.data.highCommande">
-										<span class="color-red">[自定义]</span>
-										<span v-text="item.serverName"></span>
-									</h4>
-									<h4 v-if="item.data.jarName != '' && !item.data.highCommande">
-										<span class="color-green">[普通端]</span>
-										<span v-text="item.serverName"></span>
-									</h4>
-									状态:
-									<span v-if="item.data.run" class="color-green"> 正在运行 </span>
-									<span v-else="item.data.run" class="color-red"> 关闭 </span> | 创建时间:
-									<span v-text="item.data.createDate"> </span> | 最后启动:
-									<span v-text="item.data.lastDate"> </span> | 时间期限:
-									<span v-text="item.data.timeLimitDate || '- - 永久 - -'"> </span> | 端:
-									<span v-text="item.data.jarName || '未指定'"> </span>
-								</div>
-							</div>
-							<div class="col-md-5 NextCol">
-								<div class="PanelItemMuem">
-									<button class="btn btn-primary" v-on:click="toTerminal(item.serverName);">
-										终端
-									</button>
-									<button class="btn btn-success" v-on:click="toConsole(item.serverName);">
-										控制
-									</button>
-									<button class="btn btn-info"
-										v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
-										参数
-									</button>
-									<span style="margin-left: 8px;"> | </span>
-									<button class="btn btn-danger"
-										v-on:click="toDeleteServer(item.serverName)">删除</button>
-
-								</div>
+								<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 创建虚拟镜像
 							</div>
 						</div>
 					</div>
@@ -73,7 +27,161 @@
 			</div>
 		</div>
 	</div>
+	<!-- 新的应用列表 -->
+	<div class="container-fluid" style="padding: 0px;">
+		<div class="row">
+			<div class="col-sm-4" v-for="item of items">
+				<a href="javascript:void(0);" class="FontBlack" v-on:click="toConsole(item.serverName);">
+					<div class="Panel AppInlineBlockList ">
+						<!-- <div class="PanelTitle"></div> -->
+						<div class="PanelBody">
+
+							<div class="AppInlineBlockListTitle">
+								<h4 v-if="item.data.jarName == '' && !item.data.highCommande">
+									<s v-text="item.serverName"></s>
+									<span class="AppInlineBlockListTitleTip color-high-red">未配置</span>
+								</h4>
+								<h4 v-if="item.data.highCommande">
+									<span v-text="item.serverName"></span>
+									<span class="AppInlineBlockListTitleTip "><span class="FontGray">自定义</span></span>
+								</h4>
+								<h4 v-if="item.data.jarName != '' && !item.data.highCommande">
+									<span v-text="item.serverName"></span>
+									<span class="AppInlineBlockListTitleTip"><span class="FontGray">普通端</span></span>
+								</h4>
+							</div>
+							<div class="AppInlineBlockListBody">
+								<div class="row">
+									<div class="col-xs-9">
+										<span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
+										<span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
+										<hr style="margin-top: 8px;margin-bottom: 10px;">
+										<p>
+											<span class="FontGray">创建时间:</span>
+											<span v-text="item.data.createDate"></span>
+										</p>
+
+										<p>
+											<span class="FontGray">最后启动:</span>
+											<span v-text="item.data.lastDate"></span>
+										</p>
+										<p>
+											<span class="FontGray">时间期限:</span>
+											<span v-text="item.data.timeLimitDate || '无限期'"></span>
+										</p>
+										<p>
+											<span class="FontGray">端: </span>
+											<span v-text="item.data.jarName"></span>
+										</p>
+									</div>
+									<div class="col-xs-3">
+										<a href="javascript:void(0);" class="mbuttonWhite"
+											v-on:click="toTerminal(item.serverName);">
+											<span class="glyphicon glyphicon-console" aria-hidden="true">
+											</span>&nbsp; 终端
+										</a>
+										<a href="javascript:void(0);" class="mbuttonWhite"
+											v-on:click="toConsole(item.serverName);">
+											<span class="glyphicon glyphicon-th-large" aria-hidden="true">
+											</span>&nbsp; 控制
+										</a>
+										<a href="javascript:void(0);" class="mbuttonWhite"
+											v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
+											<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>&nbsp; 参数
+										</a>
+										<a href="javascript:void(0);" class="mbuttonWhite"
+											v-on:click="toDeleteServer(item.serverName)">
+											<span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
 </div>
+<style>
+	.FontBlack {
+		color: #141414;
+	}
+
+	.FontGray {
+		color: #797676;
+	}
+
+	.mbuttonWhite {
+		display: block;
+		margin-bottom: 2px;
+		color: #292929;
+		border: 1px solid #797676;
+		padding: 2px 4px;
+		text-align: center;
+		margin-right: 10px;
+	}
+
+	.AppInlineBlockListTitle {
+		position: relative;
+	}
+
+	.AppInlineBlockListTitleMuem {
+		position: absolute;
+		right: 12px;
+		top: 0px;
+		font-size: 14px;
+		color: rgb(26, 26, 26);
+	}
+
+	.AppInlineBlockListTitleMuem>a {
+		color: #2e2e2e;
+		display: inline-block;
+		margin-left: 6px;
+		border-radius: 1px;
+	}
+
+	.AppInlineBlockListBorderRed {
+		border-top: 3px solid rgb(196, 46, 46);
+	}
+
+	.AppInlineBlockListBorderBlack {
+		border-top: 3px solid #2e2e2e;
+	}
+
+	.AppInlineBlockListBorderGreen {
+		border-top: 3px solid rgb(37, 146, 37);
+	}
+
+	.AppInlineBlockList {
+		display: inline-block;
+		width: 100%;
+		margin: 6px 8px 8px 0px;
+		transition: all .4s;
+		/* border-top: 3px solid rgb(255, 255, 255); */
+	}
+
+	.AppInlineBlockList:hover {
+		border: 1px solid rgb(0, 139, 222);
+	}
+
+	.AppInlineBlockListTitleTip {
+		border: 1px solid rgb(63, 216, 63);
+		border-radius: 3px;
+		padding: 2px 3px;
+		font-weight: 400;
+		letter-spacing: 1px;
+		font-size: 10px;
+	}
+
+	.AppInlineBlockListBody p,
+	.AppInlineBlockListBody span {
+		/* display: block; */
+		margin-bottom: 1px;
+	}
+</style>
+
 
 <script>
 	MI.rListener('onload', function () {
