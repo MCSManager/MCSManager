@@ -1,6 +1,6 @@
 ![doc_logo.png](/public/common/doc_logo.png)
   
-[![Status](https://img.shields.io/badge/npm-v4.16.3-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/npm-v5.0.0-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v8.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-AGPLv3-red.svg)](https://github.com/Suwings/MCSManager)
@@ -25,55 +25,47 @@
 
 运行环境
 -----------
-- 我们的部署简单至极，在`Master`分支下，我们的设计是下载即可运行，不需要编译与任何配置，除了安装一个环境。
+- 我们的部署简单至极，在`Master`分支下，我们的设计是下载即可运行，不需要其他服务与数据库，除了安装一个环境。
 
 - `Node.js` >= 8.0
-- `下载镜像站点`: [https://npm.taobao.org/mirrors/node/v8.0.0/](https://npm.taobao.org/mirrors/node/v8.0.0/)
-
 <br />
 
 运行在 Windows 
 -----------
+对于 Windows 系统，已整合成直接运行版本，下载即可运行:
 
-**方法一 (仅限中文简体)**
+http://mcsm.suwings.top/ (官方站点)
 
-下载并正确安装 `Node` 环境:
-
-下载源代码并解压: [https://github.com/Suwings/MCSManager/archive/master.zip](https://github.com/Suwings/MCSManager/archive/master.zip)
-
-进入程序源代码目录，并且在当前目录打开命令控制台
-
-执行命令 `npm install --production`
-
-执行命令 `node app.js` 或 `npm start`
-
-
-**方法二 (包含简体/繁体版本)**
-
-可能因为某些原因，您可能并不愿意安装这些运行环境，于是我们给予了一种绿色打包的运行环境，下载即可直接使用。
-
-下载直接运行:
-
-http://mcsm.suwings.top/ (官方站点 有中文简体/繁体中文版本)
-
-
-**注意:** 百度网盘提供的下载是打包集成好的，小版本更新我们不会打包，也就是意味着，这里不能实时跟随最新版本。
+**注意:** 这里提供的下载是打包集成好的，小版本更新我们不会打包，也就是意味着，这里不能实时跟随最新版本。
 
 <br />
 
 
 运行在 Linux 
 -----------
-- 相对而言，这可能更加简单。保证您的 node 版本正确与 git 工具可行下，安装与运行易如反掌。
-
-**提示:** 请尽可能的给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限，如使用 Docker 等服务不保证能够完全正确运行。
+**提示:** 请给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限。
 
 ```bash
-git clone https://github.com/Suwings/MCSManager.git
-cd MCSManager
-npm install --production
-sudo node app.js #或 sudo npm start
+# 安装 Node 版本控制工具(若没有 wget,请安装它)
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+# 关闭终端重新打开再执行以下命令
+# 项目支持 8.0.0 版本以上，这里使用最新大版本
+nvm install 12.0.0
+# 克隆仓库
+git clone https://github.com/suwings/mcsmanager.git
+# 进入目录
+cd mcsmanager/
+# 安装依赖库
+npm install
+# 启动面板
+sudo npm start #或 sudo node app.js
+
+
 ```
+
+- 项目属于**开箱即用**的面板，未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
+- 可以使用 **screen** 软件来让面板持续在后台运行。
+
 
 > 如果您还是无法运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
