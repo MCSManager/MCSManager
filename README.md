@@ -51,7 +51,7 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 # 关闭终端重新打开再执行以下命令
 # 项目支持 8.0.0 版本以上，这里使用最新大版本
 nvm install 12.0.0
-nvm use 12.0.0.0
+nvm use 12.0.0
 # 克隆仓库
 git clone https://github.com/suwings/mcsmanager.git
 # 进入目录
