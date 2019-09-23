@@ -5,7 +5,7 @@
             <div class="PanelBody">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>创建新的 Docker 镜像 |
+                        <p>
                             <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md"
                                 style="color: #2f3ad6;">如何让
                                 Minecraft 服务端运行在 Docker 镜像中？</a>
@@ -13,15 +13,12 @@
                                 style="color: #2f3ad6;">如何在我的电脑上安装
                                 Docker？</a>
                         </p>
-                        <small>您不需要具备 Docker 专业知识，最简单的方法是，您只需要填写一个名字即可。
-                            <br>其他选项请给有需求与具备相关知识的人员填写。
-                        </small>
                         <h4>DockerFile 文件</h4>
                         <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft
                             服务器。</p>
                         <p style="color:red;">必须使用 /mcsd 作为工作目录。Docker 镜像名就是您生成后的名字，请一定要记住！</p>
                         <!-- <pre id="dockerfile" contenteditable="true" autocomplete="off"></pre> -->
-                        <textarea id="dockerfile" row=30 style="height: 120px;width: 100%;">
+                        <textarea id="dockerfile" row=30 style="height: 220px;width: 100%;" v-model="dockerFileText">
 
                         </textarea>
                         <div class="input-group input-group-sm">
@@ -30,9 +27,6 @@
                                 placeholder="可填，默认 mcsd 镜像名，不建议更改，除非您要创建其他的镜像，请一定要记住名字" aria-describedby="sizing-addon3"
                                 v-model="dockerImageName">
                         </div>
-                        <p>
-                            确认无误之后，单击新建镜像按钮，但是这需要一定时间的等待，创建完成后 MCSM 会通知您。
-                        </p>
                         <p>
                             <b>
                                 <span style="color: red">这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700
@@ -61,12 +55,10 @@
 
 <script>
     MI.rListener('onload', function () {
-        var baseDockerFile =
-            'FROM java:latest\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd'
-        $("#dockerfile").text(baseDockerFile);
         new Vue({
             el: "#NewDockerImage",
             data: {
+                dockerFileText: "'FROM java:latest\nRUN mkdir -p /mcsd\nRUN echo \"Asia/Shanghai\" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd'",
                 dockerImageName: "",
                 createDockerDis: false
             },
@@ -74,7 +66,7 @@
                 createDocker: function () {
                     var obj = {
                         dockerImageName: this.dockerImageName || 'mcsd',
-                        dockerfile: TOOLS.decode($('#dockerfile').text())
+                        dockerfile: TOOLS.decode(this.dockerFileText)
                     }
                     if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj
                         .dockerImageName +
@@ -84,7 +76,7 @@
                         TOOLS.pushMsgWindow("镜像名字不合法！仅限字母数字下划线！");
                         return;
                     }
-                    // this.createDockerDis = true;
+                    this.createDockerDis = true;
                     WS.sendMsg('docker/new', JSON.stringify(obj));
                 },
                 toCreateRes: function () {
