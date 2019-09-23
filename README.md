@@ -49,9 +49,9 @@ http://mcsm.suwings.top/ (官方站点)
 # 安装 Node 版本控制工具(若没有 wget,请安装它)
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 # 关闭终端重新打开再执行以下命令
-# 项目支持 8.0.0 版本以上，这里使用最新大版本
-nvm install 12.0.0
-nvm use 12.0.0
+# 项目支持 8.0 版本以上，这里使用11版本
+nvm install 11.0.0
+nvm use 11.0.0
 # 克隆仓库
 git clone https://github.com/suwings/mcsmanager.git
 # 进入目录
