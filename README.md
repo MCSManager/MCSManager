@@ -210,6 +210,8 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 后端请通过反向代理完成，或自行修改 Express 初始化 App。
 
+[Apache 反向代理教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
+
 **注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)  | [关于 Caddy 反向代理坑](https://github.com/Suwings/MCSManager/issues/122)
 
 <br />
