@@ -293,10 +293,13 @@ app.get('*', function (req, res) {
 
 
 //设置定时获取最新新闻动态
-nodeSchedule.scheduleJob('59 59 23 * *', function () {
+//这里是每23小时59分59秒更新一次
+nodeSchedule.scheduleJob('59 59 */23 * * * ', function () {
     MCSERVER.infoLog('INFO', '自动更新新闻动态与最新消息');
     RequestNews.requestNews();
 });
+//重启自动获取一次
+RequestNews.requestNews();
 
 
 //程序退出信号处理
