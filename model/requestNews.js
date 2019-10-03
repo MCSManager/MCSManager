@@ -18,7 +18,7 @@ function requestNewsError() {
     }
 }
 
-//get 请求外网  
+//请求下载最新动态并且缓存到本地
 function requestNews() {
     let req = http.get(requestNewsUrl, function (req, res) {
         var html = '';
@@ -42,4 +42,6 @@ function requestNews() {
     });
 }
 
-module.exports = requestNews;
+module.exports = {
+    requestNews
+}

@@ -67,7 +67,9 @@ const counter = require('./core/counter');
 const DataModel = require('./core/DataModel');
 const ftpServerInterface = require('./ftpd/ftpserver');
 const tokenManger = require('./helper/TokenManager');
+const nodeSchedule = require("node-schedule");
 const Schedule = require('./helper/Schedule');
+const RequestNews = require('./model/RequestNews');
 
 //控制台颜色
 const colors = require('colors');
@@ -288,6 +290,14 @@ app.get('*', function (req, res) {
     res.redirect('/public/template/404_page.html');
     res.end();
 })
+
+
+//设置定时获取最新新闻动态
+nodeSchedule.scheduleJob('59 59 23 * *', function () {
+    MCSERVER.infoLog('INFO', '自动更新新闻动态与最新消息');
+    RequestNews.requestNews();
+});
+
 
 //程序退出信号处理
 require('./core/procexit');
