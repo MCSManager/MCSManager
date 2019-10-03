@@ -69,7 +69,7 @@ const ftpServerInterface = require('./ftpd/ftpserver');
 const tokenManger = require('./helper/TokenManager');
 const nodeSchedule = require("node-schedule");
 const Schedule = require('./helper/Schedule');
-const RequestNews = require('./model/RequestNews');
+const NewsCenter = require('./model/NewsCenter');
 
 //控制台颜色
 const colors = require('colors');
@@ -296,10 +296,10 @@ app.get('*', function (req, res) {
 //这里是每23小时59分59秒更新一次
 nodeSchedule.scheduleJob('59 59 */23 * * * ', function () {
     MCSERVER.infoLog('INFO', '自动更新新闻动态与最新消息');
-    RequestNews.requestNews();
+    NewsCenter.requestNews();
 });
 //重启自动获取一次
-RequestNews.requestNews();
+NewsCenter.requestNews();
 
 
 //程序退出信号处理
