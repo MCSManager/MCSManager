@@ -122,9 +122,6 @@ MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
     });
 }
 
-//获取最新资讯
-require('./model/requestNews');
-
 //exp 框架
 var app = express();
 //web Socket 框架
