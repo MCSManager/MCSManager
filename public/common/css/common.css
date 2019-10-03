@@ -359,8 +359,30 @@ input {
 		left: 0px;
 		z-index: -1;
 	}
-	.PhomeOpZore {}
+	/* .PhomeOpZore {} */
+	/* .HeaderItem {
+		background-color: #3c8dbc;
+	} */
+}
+
+
+@media (max-width:790px) {
+	.IpadDisplayNone {
+		display: none;
+		width: 1px;
+		height: 1px;
+		max-width: 1px;
+		max-height: 1px;
+		/* opacity: 0; */
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		z-index: -1;
+	}
 	.HeaderItem {
+		background-color: #3c8dbc;
+	}
+	.HeaderR{
 		background-color: #3c8dbc;
 	}
 }
