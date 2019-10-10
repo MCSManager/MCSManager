@@ -9,9 +9,19 @@ MCSERVER.log = function () {
 }
 
 MCSERVER.infoLog = (info, value, colors = false) => {
-    var date = new Date();
+    let date = new Date();
     let infoStr = colors ? info : info.green;
-    console.log('[ '+(date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()).green+' '+(date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()).blue+' ] [ ' + infoStr + ' ]  ' + (value + '').white);
+    //时间格式
+    let timeStr = [
+        date.getFullYear(),
+        '-',
+        date.getMonth() + 1,
+        '-',
+        date.getDate(),
+        ' ',
+        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
+    ].join('');
+    console.log('[', timeStr.green, '] [', infoStr, ']', (value + '').white);
 }
 
 //error 报告器
