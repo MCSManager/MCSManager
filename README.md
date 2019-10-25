@@ -8,7 +8,6 @@
 
 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
 
-**This project does not support English.**
 
 [中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md)
 
@@ -25,10 +24,20 @@
 
 运行环境
 -----------
-- 我们的部署简单至极，在`Master`分支下，我们的设计是下载即可运行，不需要其他服务与数据库，除了安装一个环境。
 
-- `Node.js` >= 8.0
+Node 8.0 以上
+
 <br />
+
+
+配置文件
+-----------
+配置文件是程序目录下的 `property.js` 文件，它会在你第一次运行的时候，自动生成。
+
+> 此文件不会与 github 版本冲突，git pull 更新时也不会自动覆盖。
+
+<br />
+
 
 运行在 Windows 
 -----------
@@ -61,32 +70,27 @@ npm install
 # 启动面板
 sudo npm start #或 sudo node app.js
 
-
 ```
 
 > 如果您还是无法正常运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
 
-- 项目属于**开箱即用**的面板，未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
+- 项目属于**开箱即用**的面板，并未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
 - 可以使用 **screen** 软件来让面板持续在后台运行。
 
 <br />
 
-使用 Docker 
+通过 Docker 启动 MC 服务端 
 -----------
-**我们支持 Docker 软件** 我们使用 Docker 来进行虚拟化部署，纵使您的机器上没有 Java 任何环境，只需一个 Docker 就能轻松开启 Minecraft 服务器。
 
-另外使用 Docker 也能保证您的宿主机安全性和稳定性，对 Linux 客户而言相信使用起来会更好。
+我们支持面板在 Linux 系统下，配合 Docker 以命令的形式，来创建 Minecraft 服务端所需 Java 环境镜像，并且在容器中启动和关闭你的 Minecraft 服务端。
 
-如何使用？打开软件界面，单击 `创建 Docker 镜像`，随后在参数面板设置 `Docker 配置` 即可。
-
-**如需使用 Docker ，请确保您的 Linux 系统拥有 Docker 环境，并且启动服务。**
-
-
-我们设计得十分简单，但是如果您依然担心您不会操作，可以参考以下相关信息：
+如果你不会使用，请点击`具体使用方法` 链接，如果你还未安装 Docker 请点击 `安装Docker` 的链接。
 
 具体使用方法: [单击此处跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md)
 
 安装 Docker: [单击此处跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md)
+
+
 <br />
 
 
@@ -151,26 +155,11 @@ FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%
 <br />
 
 
-配置文件
------------
-我们的配置文件是程序目录下的 `property.js` 文件，它会在你第一次运行的时候，自动生成。
-
-> 注意！原旧版本的 McserverConfig.json 文件完全弃用。
-
-> 现在，所有配置将全部归纳于此文件。
-
-> 此文件不会与 github 版本冲突，更新时也不会自动覆盖
-
-<br />
-
 
 自定义设计
 -----------
-如果你是内部使用或学习用途，你可以对前端以及后端进行任何修改，包括版权声明。
+你可以对前端以及后端进行任何程度的修改，包括版权声明。
 
-> 注意！当你进行版本更新的时候，可能会覆盖掉你的自定义修改部分。
-
-> 当然，并不是所有文件都需要覆盖一遍，也不一定非得使用新版本。
 
 <br />
 
@@ -182,7 +171,7 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 为确保 FTP 服务正常使用，请配置好您的防火墙设置，对这些端口范围进行开放。
 
-> 当然，我们提供了在线文件管理功能，您大可不必完全使用 FTP。
+> 此功能未来版本有可能会删除，使用已有的在线文件管理完全代替。
 
 <br />
 
