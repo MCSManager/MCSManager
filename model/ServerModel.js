@@ -22,7 +22,7 @@ module.exports.createServerDir = (serverName, cwd) => {
         fs.mkdirSync(cwd);
     }
     //EULA.txt 写入
-    fs.writeFile(cwd + 'eula.txt', 'eula=true','utf8',(err)=>{console.log('eula 写入成功,服务器文件夹'+serverName+'已创建')});}
+    fs.writeFile(cwd + 'eula.txt', 'eula=true','utf8',() => {});}
 
 module.exports.createServer = (serverName, config) => {
     if (config.cwd == '' || config.cwd == '<默认标准位置>')
