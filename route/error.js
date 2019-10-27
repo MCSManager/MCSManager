@@ -23,7 +23,7 @@ router.get('/499', function(req, res) {
 });
 
 router.get('/notlogin', function(req, res) {
-    res.send('你特么不登陆么？');
+    res.send('请登录');
 });
 
 router.get('/token', function(req, res) {
