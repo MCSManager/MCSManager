@@ -6,29 +6,52 @@
         <th width="4%" style="">
           <input type="checkbox" v-model="checkboxAll">
         </th>
-        <th width="45%">文件名</th>
+         <th width="2%"></th>
+        <th width="44%">文件名</th>
         <th width="10%">类型</th>
         <th width="15%">大小</th>
-        <th class="m-phone-none" width="26%">创建时间</th>
+        <th class="m-phone-none" width="35%">创建时间</th>
       </tr>
       <tr>
         <td>
           <input type="checkbox" aria-checked="false" value="on" disabled="disabled">
         </td>
+        
+        <td> <span  class="glyphicon glyphicon-folder-open"></span></td>
         <td style="color: blue;cursor: pointer;">
           <a class="m-item-file-a-dir" href="javascript:void(0);" v-on:click="cduplevel">上级目录</a>
         </td>
-        <td>指令</td>
+        <td>上级</td>
         <td></td>
         <td class="m-phone-none"></td>
       </tr>
+      <!-- Test -->
+        <!-- <tr >
+        <td>
+          <input type="checkbox" >
+        </td>
+        <td>
+          <span  class="glyphicon glyphicon-folder-open"></span>
+        </td>
+        <td>
+          <a target="_black" class="m-item-file-a-file">XXXXXXXXXX.json</a>
+        </td>
+        <td>文件</td>
+        <td >19.5 MB</td>
+        <td class="m-phone-none" >2019-10-03T02:17:10.629Z</td>
+      </tr> -->
+      <!-- Test -->
       <tr v-for="item in fileList">
         <td v-on:click="fileSelectedEvent(item)">
           <input type="checkbox" v-model="item.checkbox">
         </td>
+        <td class="m-td-file-logo">
+          <span v-if="!item.isFile" class="glyphicon glyphicon-folder-open"></span>
+          <span v-else="item.isFile" class="glyphicon glyphicon-file"></span>
+        </td>
         <td>
           <a v-if="!item.isFile" class="m-item-file-a-dir" href="javascript:void(0);" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
-          <a v-else target="_black" class="m-item-file-a-file" :href="getDownloadURL(item)" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
+          <a v-else="item.isFile" target="_black" class="m-item-file-a-file" :href="getDownloadURL(item)" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
         </td>
         <td v-if="item.isFile">文件</td>
         <td v-else>目录</td>
@@ -66,15 +89,21 @@
 }
 
 .m-item-file-a-dir {
-  color: black;
+  color: #161616;
   display: inline-block;
   width: 100%;
 }
 
 .m-item-file-a-file {
-  color: rgb(100, 100, 100);
+  color: #161616;
   display: inline-block;
   width: 100%;
+}
+
+.m-td-file-logo {
+  padding: 4px 0px;
+  text-align: right;
+  color: #464646;
 }
 </style>
 

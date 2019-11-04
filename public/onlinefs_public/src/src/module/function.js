@@ -169,6 +169,9 @@ export default {
 
     //压缩文件
     compress: (filesStack) => {
+        tools.popWindow("压缩任务已经开始，完成后会在文件列表显示",
+            "正在压缩文件", 60000)
+            .then(() => location.reload());
         return promiseAjax(MCSERVER.URL("fs/compress"), filesStack[0].name);
     },
 

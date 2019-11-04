@@ -200,7 +200,7 @@ export default {
         },
         {
           name: "压缩目录",
-          class: "glyphicon glyphicon-level-up",
+          class: "glyphicon glyphicon-briefcase",
           api: ""
         },
         {
