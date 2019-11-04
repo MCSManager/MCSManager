@@ -155,6 +155,13 @@ class FileOperate extends BaseFileOperate {
         });
     }
 
+    compress(path) {
+        return this.pathAccessCheck(path, (absPath) => {
+            //分配子进程来进行解压操作
+            child_process.fork("./onlinefs/module/extend_worker.js", ['compress', absPath]);
+        });
+    }
+
     writeFile(path, data) {
         return this.pathAccessCheck(path, (absPath) => {
             try {

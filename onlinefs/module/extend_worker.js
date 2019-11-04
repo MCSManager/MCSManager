@@ -1,4 +1,5 @@
 const AdmZip = require('adm-zip');
+const zipper = require("zip-local");
 const iconv = require('iconv-lite');
 const fsex = require('fs-extra');
 const os = require('os');
@@ -46,6 +47,20 @@ if (realArgv.length >= 1) {
     if (ACTION === 'remove') {
         console.log('[ 删除任务 ]', '删除:', realArgv[1]);
         fsex.removeSync(realArgv[1])
+    }
+
+    //文件压缩子进程
+    if (ACTION === 'compress') {
+        zipper.zip(realArgv[1], function (error, zipped) {
+            if (!error) {
+                zipped.compress(); // compress before exporting
+                var buff = zipped.memory(); // get the zipped file as a Buffer
+                // or save the zipped file to disk
+                zipped.save('压缩文件_' + realArgv[1] + '.zip', function (error) {
+                    if (!error) { }
+                });
+            }
+        });
     }
 
     process.exit(0);

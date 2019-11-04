@@ -115,7 +115,7 @@ router.post('/edit_read', (req, res) => {
 //文件内容写入路由
 router.post('/edit_write', (req, res) => {
     const obj = (parseHandle(req.body))
-    if (!obj || !obj.filename || !obj.context) return
+    if (!obj || !obj.filename || !obj.context) return;
     //没有经过安全的 UseFileOperate 进行安全操作
     //必须经过目录越级漏洞防御
     if (obj.filename.indexOf('../') != -1 || obj.filename.indexOf('./') != -1) return;
@@ -136,6 +136,19 @@ router.post('/extract', (req, res) => {
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
     const cwd = req.session.fsos.cwd;
     fileOperate.extract(pathm.join(cwd, zipName));
+    sendHandle(req, res, "OK");
+});
+
+
+//压缩文件路由
+router.post('/compress', (req, res) => {
+    const directoryName = (parseHandle(req.body))
+    if (!directoryName) {
+        res.status(403).send("非法名称");
+    }
+    const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+    const cwd = req.session.fsos.cwd;
+    fileOperate.extract(pathm.join(cwd, directoryName));
     sendHandle(req, res, "OK");
 });
 
