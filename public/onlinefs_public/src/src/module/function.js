@@ -167,6 +167,11 @@ export default {
         return promiseAjax(MCSERVER.URL("fs/extract"), filesStack[0].name);
     },
 
+    //压缩文件
+    compress: (filesStack) => {
+        return promiseAjax(MCSERVER.URL("fs/compress"), filesStack[0].name);
+    },
+
     //编辑文件
     editFile: (filesStack) => {
         const filename = filesStack[0].name;

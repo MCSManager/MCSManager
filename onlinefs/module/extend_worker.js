@@ -61,13 +61,18 @@ if (realArgv.length >= 1) {
         //         zipped.compress(); // compress before exporting
         //         var buff = zipped.memory(); // get the zipped file as a Buffer
         //         // or save the zipped file to disk
-        //         zipped.save('压缩文件_' + realArgv[1] + '.zip', function (error) {
+        //         zipped.save(compressZipPath, function (error) {
         //             if (!error) { }
         //         });
         //     }
         // });
         // 同步写法，我们使用同步写法，因为这是子进程
-        zipper.sync.zip(realArgv[1]).compress().save('压缩文件_' + realArgv[1] + '.zip');
+        const absPath = realArgv[1];
+        const compressZipPath = path.normalize(
+            path.dirname(absPath) + '/压缩文件_' + path.basename(absPath, path.extname(absPath)) + '.zip'
+        );
+        console.log('压缩到:' + compressZipPath)
+        zipper.sync.zip(absPath).compress().save(compressZipPath);
     }
 
     process.exit(0);

@@ -36,7 +36,8 @@
     "os-utils": "0.0.14",
     "pidusage": "^1.1.5",
     "properties": "^1.2.1",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "zip-local": "^0.3.4"
   },
   "devDependencies": {},
   "repository": {

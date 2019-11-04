@@ -126,6 +126,13 @@ export default {
         case "使用提示":
           functionMudule.userInfo();
           break;
+        case "压缩目录":
+          if (this.getFileStack().length != 1) {
+            tools.popWindow("不可解压空文件或同时解压多个文件！", "非法操作");
+            break;
+          }
+          functionMudule.compress(this.getFileStack()).then(() => {});
+          break;
         case "解压 ZIP":
           if (this.getFileStack().length != 1) {
             tools.popWindow("不可解压空文件或同时解压多个文件！", "非法操作");
@@ -189,6 +196,11 @@ export default {
         {
           name: "编辑文件",
           class: "glyphicon glyphicon-pencil",
+          api: ""
+        },
+        {
+          name: "压缩目录",
+          class: "glyphicon glyphicon-level-up",
           api: ""
         },
         {
