@@ -17,6 +17,9 @@ const realArgv = argv.filter((val, index) => {
     return index >= 2
 });
 
+// 特殊文件操作子进程
+// 为了防止用户解压/压缩/删除 文件数量过大导致整个面板反应速度下降或者无反应
+// 所有耗时的文件操作（除非异步）均写入此。
 if (realArgv.length >= 1) {
     const ACTION = realArgv[0];
 
@@ -49,18 +52,22 @@ if (realArgv.length >= 1) {
         fsex.removeSync(realArgv[1])
     }
 
-    //文件压缩子进程
+    // 文件压缩子进程
+    // 此压缩库支持异步写法，但以防不测，依然列入子进程
     if (ACTION === 'compress') {
-        zipper.zip(realArgv[1], function (error, zipped) {
-            if (!error) {
-                zipped.compress(); // compress before exporting
-                var buff = zipped.memory(); // get the zipped file as a Buffer
-                // or save the zipped file to disk
-                zipped.save('压缩文件_' + realArgv[1] + '.zip', function (error) {
-                    if (!error) { }
-                });
-            }
-        });
+        // 异步写法
+        // zipper.zip(realArgv[1], function (error, zipped) {
+        //     if (!error) {
+        //         zipped.compress(); // compress before exporting
+        //         var buff = zipped.memory(); // get the zipped file as a Buffer
+        //         // or save the zipped file to disk
+        //         zipped.save('压缩文件_' + realArgv[1] + '.zip', function (error) {
+        //             if (!error) { }
+        //         });
+        //     }
+        // });
+        // 同步写法，我们使用同步写法，因为这是子进程
+        zipper.sync.zip(realArgv[1]).compress().save('压缩文件_' + realArgv[1] + '.zip');
     }
 
     process.exit(0);

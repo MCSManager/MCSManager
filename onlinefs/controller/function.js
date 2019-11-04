@@ -148,7 +148,7 @@ router.post('/compress', (req, res) => {
     }
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
     const cwd = req.session.fsos.cwd;
-    fileOperate.extract(pathm.join(cwd, directoryName));
+    fileOperate.compress(pathm.join(cwd, directoryName));
     sendHandle(req, res, "OK");
 });
 
