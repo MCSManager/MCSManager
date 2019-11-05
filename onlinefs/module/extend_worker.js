@@ -28,12 +28,12 @@ if (realArgv.length >= 1) {
     if (ACTION === 'extract') {
         //执行解压
         const absPath = realArgv[1];
-        // const zip = new AdmZip(absPath);
         //目录名与原文件同名
         const zipExtractDir = path.normalize(
             path.dirname(absPath) + '/解压文件_' + path.basename(absPath, path.extname(absPath))
         );
-        // console.log('[ 解压任务 ]', '解压', realArgv[1], '任务开始\n', '解压到:', zipExtractDir);
+        // 旧版本解压方法
+        // const zip = new AdmZip(absPath);
         // zip.extractAllTo(zipExtractDir, true);
         // // 解决目录中中文乱码问题
         // const zipEntries = zip.getEntries();
@@ -43,17 +43,14 @@ if (realArgv.length >= 1) {
         // }
         // //全部解压
         // zip.extractAllTo(zipExtractDir, true);
-        // //解压完成，进程终止
-        // console.log('[ 解压任务 ]', '解压', realArgv[1], '任务结束');
-        if (!fs.existsSync(zipExtractDir)) {
+        try {
             fs.mkdirSync(zipExtractDir);
-        }
+        } catch (ignore) { }
         zipper.sync.unzip(absPath).save(zipExtractDir);
     }
 
     //文件删除子进程开始执行
     if (ACTION === 'remove') {
-        // console.log('[ 删除任务 ]', '删除:', realArgv[1]);
         fsex.removeSync(realArgv[1])
     }
 
@@ -74,9 +71,8 @@ if (realArgv.length >= 1) {
         // 同步写法，我们使用同步写法，因为这是子进程
         const absPath = realArgv[1];
         const compressZipPath = path.normalize(
-            path.dirname(absPath) + '/压缩文件_' + path.basename(absPath, path.extname(absPath)) + '.zip'
+            path.dirname(absPath) + '/压缩文件_' + path.basename(absPath) + '.zip'
         );
-        // console.log('压缩到:' + compressZipPath)
         zipper.sync.zip(absPath).compress().save(compressZipPath);
     }
 
