@@ -1,9 +1,10 @@
-const AdmZip = require('adm-zip');
+// const AdmZip = require('adm-zip');
 const zipper = require("zip-local");
-const iconv = require('iconv-lite');
+// const iconv = require('iconv-lite');
 const fsex = require('fs-extra');
 const os = require('os');
 const path = require('path');
+const fs = require('fs');
 
 let SYSTEM_CODE = null;
 if (os.platform() == "win32")
@@ -27,28 +28,32 @@ if (realArgv.length >= 1) {
     if (ACTION === 'extract') {
         //执行解压
         const absPath = realArgv[1];
-        const zip = new AdmZip(absPath);
+        // const zip = new AdmZip(absPath);
         //目录名与原文件同名
         const zipExtractDir = path.normalize(
             path.dirname(absPath) + '/解压文件_' + path.basename(absPath, path.extname(absPath))
         );
-        console.log('[ 解压任务 ]', '解压', realArgv[1], '任务开始\n', '解压到:', zipExtractDir);
-        zip.extractAllTo(zipExtractDir, true);
-        // 解决目录中中文乱码问题
-        const zipEntries = zip.getEntries();
-        for (let i = 0; i < zipEntries.length; i++) {
-            const entry = zipEntries[i];
-            entry.entryName = iconv.decode(entry.rawEntryName, SYSTEM_CODE);
+        // console.log('[ 解压任务 ]', '解压', realArgv[1], '任务开始\n', '解压到:', zipExtractDir);
+        // zip.extractAllTo(zipExtractDir, true);
+        // // 解决目录中中文乱码问题
+        // const zipEntries = zip.getEntries();
+        // for (let i = 0; i < zipEntries.length; i++) {
+        //     const entry = zipEntries[i];
+        //     entry.entryName = iconv.decode(entry.rawEntryName, SYSTEM_CODE);
+        // }
+        // //全部解压
+        // zip.extractAllTo(zipExtractDir, true);
+        // //解压完成，进程终止
+        // console.log('[ 解压任务 ]', '解压', realArgv[1], '任务结束');
+        if (!fs.existsSync(zipExtractDir)) {
+            fs.mkdirSync(zipExtractDir);
         }
-        //全部解压
-        zip.extractAllTo(zipExtractDir, true);
-        //解压完成，进程终止
-        console.log('[ 解压任务 ]', '解压', realArgv[1], '任务结束');
+        zipper.sync.unzip(absPath).save(zipExtractDir);
     }
 
     //文件删除子进程开始执行
     if (ACTION === 'remove') {
-        console.log('[ 删除任务 ]', '删除:', realArgv[1]);
+        // console.log('[ 删除任务 ]', '删除:', realArgv[1]);
         fsex.removeSync(realArgv[1])
     }
 
@@ -71,7 +76,7 @@ if (realArgv.length >= 1) {
         const compressZipPath = path.normalize(
             path.dirname(absPath) + '/压缩文件_' + path.basename(absPath, path.extname(absPath)) + '.zip'
         );
-        console.log('压缩到:' + compressZipPath)
+        // console.log('压缩到:' + compressZipPath)
         zipper.sync.zip(absPath).compress().save(compressZipPath);
     }
 
