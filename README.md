@@ -184,7 +184,7 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 **Property 文件**
 
-反向代理之前，你可以但不是必须阅读 `property.js` 文件
+反向代理之前，建议你阅读 `property.js` 文件
 
 > 里面有各类的设置，包括 gzip压缩，端口和ip绑定等等。
 
@@ -192,14 +192,15 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 打开前端 URL 定位文件 `public/common/URL.js`, 将 http 与 ws 改成 https 与 wss；
 
-可保证前端所有请求均为 https 和 wss
-> 此文件不会与 github 版本冲突，更新时也不会覆盖，请放心修改。
+可保证前端所有请求均为 https 和 wss，但是后端方面还需要配置 SSL 与 反向代理。
 
 **反向代理**
 
 后端请通过反向代理完成，或自行修改 Express 初始化 App。
 
 [Apache 反向代理教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
+
+[SSL 功能实现示例](https://github.com/Suwings/MCSManager/issues/146)
 
 **注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)  | [关于 Caddy 反向代理坑](https://github.com/Suwings/MCSManager/issues/122)
 
