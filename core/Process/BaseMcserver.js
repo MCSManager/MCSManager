@@ -61,6 +61,7 @@ class ServerProcess extends EventEmitter {
         tmpShouldList.push('-Djline.terminal=jline.UnsupportedTerminal');
         tmpShouldList.push('-jar');
         tmpShouldList.push(this.dataModel.jarName);
+        tmpShouldList.push('nogui');
 
         tmpAddList = this.dataModel.addCmd.concat(tmpShouldList);
         //过滤
