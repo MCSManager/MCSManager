@@ -45,6 +45,16 @@ systemclt disable docker
 
 <br /><br />
 
+### 给予当前用户Docker权限 （强烈建议）
+
+```bash
+#添加docker用户组
+sudo groupadd docker
+#将当前用户加入该用户组
+sudo usermod -aG docker $USER
+```
+可能需要重新登陆后生效。
+
 ### 检查 Docker 环境是否正确（可选）
 
 查看是否已经安装，配好PATH路径，一般而言自动配好了。MCSManager 需要 Docker 命令必须能够执行，否则无法正确使用。
