@@ -16,7 +16,7 @@ var UUID = require('uuid');
 app.use(session({
     secret: UUID.v4(),
     name: 'IFM_session',
-    //1小时
+    // Cookie 默认时间：一小时
     cookie: {
         maxAge: 1000 * 60 * 60
     },
@@ -24,6 +24,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+// public 公开目录
 app.use('/public', express.static('./public'));
 
 app.post('/', function (req, res) {

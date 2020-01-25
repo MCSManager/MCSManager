@@ -14,6 +14,8 @@ const fs = require("fs");
 const os = require('os');
 
 
+// 压缩 & 解压任务计数器 暂无用
+let CompressDecompressCounter = 0;
 
 router.post('/mkdir', (req, res) => {
     let name = parseHandle(req.body, "string");
