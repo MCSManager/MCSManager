@@ -21,6 +21,7 @@
     "adm-zip-iconv": "^0.4.9",
     "body-parser": "^1.17.2",
     "colors": "^1.1.2",
+    "compressing": "^1.5.0",
     "compression": "^1.7.2",
     "connect": "^3.6.2",
     "cookie-parser": "^1.4.3",

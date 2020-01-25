@@ -1,18 +1,9 @@
-// const AdmZip = require('adm-zip');
-const zipper = require("zip-local");
-// const iconv = require('iconv-lite');
-const fsex = require('fs-extra');
-const os = require('os');
 const path = require('path');
 const fs = require('fs');
+const compressing = require('compressing');
+const fsex = require('fs-extra');
 
-let SYSTEM_CODE = null;
-if (os.platform() == "win32")
-    SYSTEM_CODE = 'GBK';
-else
-    SYSTEM_CODE = 'UTF-8';
-
-//参数获取
+// 任务参数获取
 const argv = process.argv;
 const realArgv = argv.filter((val, index) => {
     return index >= 2
@@ -32,24 +23,24 @@ if (realArgv.length >= 1) {
         const zipExtractDir = path.normalize(
             path.dirname(absPath) + '/解压文件_' + path.basename(absPath, path.extname(absPath))
         );
-        // 旧版本解压方法
-        // const zip = new AdmZip(absPath);
-        // zip.extractAllTo(zipExtractDir, true);
-        // // 解决目录中中文乱码问题
-        // const zipEntries = zip.getEntries();
-        // for (let i = 0; i < zipEntries.length; i++) {
-        //     const entry = zipEntries[i];
-        //     entry.entryName = iconv.decode(entry.rawEntryName, SYSTEM_CODE);
-        // }
-        // //全部解压
-        // zip.extractAllTo(zipExtractDir, true);
+        // 创建目标目录
         try {
             fs.mkdirSync(zipExtractDir);
-        } catch (ignore) { }
-        zipper.sync.unzip(absPath).save(zipExtractDir);
+        } catch (ignore) {
+            // 忽略创建目录错误
+        }
+        // 进行解压操作
+        compressing.zip.uncompress(absPath, zipExtractDir)
+            .then(() => {
+                console.log('解压任务', absPath, '成功.');
+            })
+            .catch(err => {
+                console.log('解压任务', absPath, '失败，原因:\n', err);
+            });
     }
 
-    //文件删除子进程开始执行
+    // 文件删除子进程开始执行
+    // 此进程用于删除大量文件时使用，以防造成面板卡顿
     if (ACTION === 'remove') {
         fsex.removeSync(realArgv[1])
     }
@@ -57,24 +48,18 @@ if (realArgv.length >= 1) {
     // 文件压缩子进程
     // 此压缩库支持异步写法，但以防不测，依然列入子进程
     if (ACTION === 'compress') {
-        // 异步写法
-        // zipper.zip(realArgv[1], function (error, zipped) {
-        //     if (!error) {
-        //         zipped.compress(); // compress before exporting
-        //         var buff = zipped.memory(); // get the zipped file as a Buffer
-        //         // or save the zipped file to disk
-        //         zipped.save(compressZipPath, function (error) {
-        //             if (!error) { }
-        //         });
-        //     }
-        // });
-        // 同步写法，我们使用同步写法，因为这是子进程
         const absPath = realArgv[1];
         const compressZipPath = path.normalize(
             path.dirname(absPath) + '/压缩文件_' + path.basename(absPath) + '.zip'
         );
-        zipper.sync.zip(absPath).compress().save(compressZipPath);
+        // 进行压缩操作
+        compressing.zip.compressDir(absPath, compressZipPath)
+            .then(() => {
+                console.log('压缩任务', absPath, '成功.');
+            })
+            .catch(err => {
+                console.log('压缩任务', absPath, '失败，原因:\n', err);
+            });
     }
-
-    process.exit(0);
 }
+
