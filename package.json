@@ -17,8 +17,6 @@
     "paji"
   ],
   "dependencies": {
-    "adm-zip": "^0.4.13",
-    "adm-zip-iconv": "^0.4.9",
     "body-parser": "^1.17.2",
     "colors": "^1.1.2",
     "compressing": "^1.5.0",
@@ -37,8 +35,7 @@
     "os-utils": "0.0.14",
     "pidusage": "^1.1.5",
     "properties": "^1.2.1",
-    "uuid": "^3.2.1",
-    "zip-local": "^0.3.4"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {},
   "repository": {
