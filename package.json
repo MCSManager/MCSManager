@@ -1,7 +1,7 @@
 {
   "name": "minecraft_server_manager",
-  "version": "8.5.0",
-  "description": "A Simple Minecraft server web panel",
+  "version": "8.5.9",
+  "description": "A simple Minecraft server web panel",
   "Keywords": [
     "Minecraft",
     "MinecraftServerManager",
