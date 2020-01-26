@@ -224,7 +224,7 @@
 					window.open("/api/status/" + serverName);
 				},
 				toPingMCProtocol: function () {
-					PAGE.selectServerName = this.oldServerName;
+					PAGE.listenServername = MCSERVER.listenServername;
 					TOOLS.popWind({
 						style: {
 							maxWidth: "500px",

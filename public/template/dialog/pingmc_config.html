@@ -44,43 +44,38 @@
     </button>
 </div>
 <script>
-    //   { host: 'localhost',
-    //   port: 25566,
-    //   status: true,
-    //   version: '1.9',
-    //   motd: 'A Minecraft Server',
-    //   current_players: '0',
-    //   max_players: '244',
-    //   latency: 45 }
-    new Vue({
-        el: "#PingmcContainer",
-        data: {
-            mcpingName: "MinecraftServer",
-            mcpingHost: "",
-            mcpingPort: "",
-            mcpingMotd: ""
-        },
-        methods: {
-            ok: function () {
-                // WS.sendMsg('docker/setconfig', JSON.stringify({
-                //     serverName: PAGE.selectServerName,
-                //     dockerConfig: {
-                //         dockerCommand: this.dockerCommand.trim() || "",
-                //         dockerImageName: this.dockerImageName.trim() || "mcsd",
-                //         dockerXmx: this.dockerXmx.trim(),
-                //         dockerPorts: this.dockerPorts.trim(),
-                //         isDocker: this.isDocker
-                //     }
-                // }));
-                TOOLS.popWindClose();
+    WS.sendMsg('mcping/config', PAGE.listenServername, function (obj) {
+        var remoteMCPingConfig = obj.ResponseValue;
+        new Vue({
+            el: "#PingmcContainer",
+            data: {
+                mcpingName: remoteMCPingConfig.mcpingName || "",
+                mcpingHost: remoteMCPingConfig.mcpingHost || "",
+                mcpingPort: remoteMCPingConfig.mcpingPort || "",
+                mcpingMotd: remoteMCPingConfig.mcpingMotd || ""
             },
-            toAPI_JSON: function () {
+            methods: {
+                ok: function () {
+                    WS.sendMsg('mcping/config_save', JSON.stringify({
+                        mcpingServerName: PAGE.listenServername,
+                        mcpingConfig: {
+                            mcpingName: this.mcpingName.trim() || "Null",
+                            mcpingHost: this.mcpingHost.trim() || "localhost",
+                            mcpingPort: this.mcpingPort.trim() || "25565",
+                            mcpingMotd: this.mcpingMotd.trim() || ""
+                        }
+                    }));
+                    TOOLS.popWindClose();
+                },
+                toAPI_JSON: function () {
 
-            },
-            toAPI_PAGE: function () {
+                },
+                toAPI_PAGE: function () {
 
+                }
             }
-        }
+        });
     });
+
 
 </script>

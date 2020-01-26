@@ -42,6 +42,13 @@ class MinecraftServer extends ServerProcess {
             isDocker: false
         };
 
+        // Minecraft Ping 查询配置项目
+        this.dataModel.mcpingConfig = {
+            mcpingName: "",
+            mcpingHost: "",
+            mcpingPort: "",
+            mcpingMotd: ""
+        }
     }
 
     //构建服务端配置信息
