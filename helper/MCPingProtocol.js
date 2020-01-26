@@ -77,39 +77,56 @@ function formatMotd(motd) {
 
 function PingMCServer(ip, port, callback) {
     new MCServStatus(port, ip).getStatus().then((res) => {
-        callback(res);
+        callback(res, null);
     }).catch(rej => {
         callback(null, rej);
     });
 }
 
+// 任务对象数据库
 const TASK_DATABASE = {};
+// 任务结果数据库
 const MCPING_RESULT_DATABASE = {};
+// 任务参数数据库
+const TASK_OBJECT_DATABASE = {};
 
-
+// 当服务器开启时，为其创建一个定时任务
 function CreateMCPingTask(id, ip, port) {
+    // 若任务存在，禁止重复创建，每个服务器有且只有一个定时查询任务
     if (TASK_DATABASE[id]) {
         return;
     }
+    // 每隔10秒，ping 查询一次服务器状态，并且缓存结果
     const taskInterval = setInterval(() => {
-        console.log('正在进行查询...', ip, port);
+        // 任务参数对象，用于记录错误次数和其他数据
+        TASK_OBJECT_DATABASE[id] = {
+            errorCount: 0
+        }
+        // 进行查询
         PingMCServer(ip, port, (v, e) => {
-            if (v) {
+            if (v != null && e == null) {
+                // 查询成功则缓存值
                 MCPING_RESULT_DATABASE[id] = v;
+            } else {
+                TASK_OBJECT_DATABASE[id].errorCount += 1;
+                // 连续查询错误次数20次以上，主动销毁自身
+                if (TASK_OBJECT_DATABASE[id].errorCount > 20) {
+                    DestroyMCPingTask(id);
+                }
             }
-            console.log('查询结果', v, e);
         });
-    }, 5000);
+    }, 1000 * 10);
     TASK_DATABASE[id] = taskInterval;
 }
 
+// 当服务器关闭时，为其关闭一个定时任务
 function DestroyMCPingTask(id) {
     clearInterval(TASK_DATABASE[id]);
     TASK_DATABASE[id] = undefined;
-    delete TASK_DATABASE[id]
+    delete TASK_DATABASE[id];
     MCPING_RESULT_DATABASE[id] = undefined;
-    delete MCPING_RESULT_DATABASE[id]
-    console.log('列表还存在:', TASK_DATABASE);
+    delete MCPING_RESULT_DATABASE[id];
+    delete TASK_OBJECT_DATABASE[id];
 }
 
 function QueryMCPingTask(id) {
