@@ -35,12 +35,13 @@ WebSocketObserver().listener('server/console/open', (data) => {
 // 服务端开启后的第一事件
 serverModel.ServerManager().on('open_next', (data) => {
     const server = serverModel.ServerManager().getServer(data.serverName);
+    const host = server.dataModel.mcpingConfig.mcpingHost || 'localhost';
     if (server) {
         // 若已设定值，则使用已设定值
         if (server.dataModel.mcpingConfig.mcpingPort) {
             mcPingProtocol.CreateMCPingTask(
                 data.serverName,
-                server.dataModel.mcpingConfig.mcpingHost,
+                host,
                 parseInt(server.dataModel.mcpingConfig.mcpingPort)
             );
             return;
@@ -51,14 +52,14 @@ serverModel.ServerManager().on('open_next', (data) => {
                 // 配置文件不存在，默认 25565，因为配置文件不存在必定先初始化
                 mcPingProtocol.CreateMCPingTask(
                     data.serverName,
-                    server.dataModel.mcpingConfig.mcpingHost,
+                    host,
                     25565
                 );
             } else {
                 // 配置文件存在，读取配置
                 mcPingProtocol.CreateMCPingTask(
                     data.serverName,
-                    server.dataModel.mcpingConfig.mcpingHost,
+                    host,
                     parseInt(obj['server-port'])
                 );
             }
