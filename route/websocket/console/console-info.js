@@ -30,7 +30,10 @@ WebSocketObserver().listener('server/console', (data) => {
             FTP_ip: MCSERVER.localProperty.ftp_ip,
             FTP_port: MCSERVER.localProperty.ftp_port,
             userName: userName,
-            mcping: mcPingProtocol.QueryMCPingTask(serverName) || null
+            mcping: mcPingProtocol.QueryMCPingTask(serverName) || {
+                current_players: '--',
+                max_players: '--'
+            }
         });
         // MCSERVER.log('准许用户 [' + userName + '] 获取控制台实时数据');
 
