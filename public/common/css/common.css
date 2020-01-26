@@ -1,10 +1,13 @@
 html,
 body {
-	font-family: "微软雅黑" 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    /* background: #f6f6f6; */
+    -webkit-tap-highlight-color: rgba(26,26,26,0);
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	background-color: #f6f8fb;
 }
 
 code {
@@ -41,66 +44,40 @@ input {
 	opacity: 0.5;
 }
 
-/*全局css定义结束*/
-
-#Header {
-	background-color: #3c8dbc;
-	/* background: linear-gradient(to right, #0D6AAD, #600dad); */
-	height: 50px;
-	position: fixed;
-	top: 0px;
-	width: 100%;
-	z-index: 102;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+/* 页面主要容器 */
+#MainContainer{
+	overflow: hidden;
+    height: 100%;
 }
 
-/* logo 图片 */
+/*
+-----------
+全局css定义结束
+-----------
+*/
 
-#MasterLogo img {
-	animation: MasterLogoTitle 10s ease infinite;
-	animation-iteration-count: 100;
-}
-
-/* logo 块 */
-
-#MasterLogo:hover {
-	animation: MasterLogoImg 2s;
-}
-
-.HeaderPress{
-	float: right;
-}
-
+/* 菜单栏控制 */
 #SideCol {
 	position: fixed;
 	color: white;
 	background-color: #001A35;
 	z-index: 100;
-	width: 180px;
-	top: 50px;
+	width: 200px;
+	top: 0px;
 	bottom: 0px;
+	font-size: 18px;
+	box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 #Container {
 	position: absolute;
 	width: auto;
 	top: 10px;
-	left: 180px;
+	left: 200px;
 	right: 0px;
 }
 
-#MainContainer {
-	position: absolute;
-	width: 100%;
-	top: 50px;
-	bottom: 0px;
-	z-index: 100;
-	overflow: hidden;
-	overflow-y: auto;
-}
-
 /* 右侧容器 */
-
 #ConsoleMain {
 	max-width: 1360px;
 	margin: auto;
@@ -115,49 +92,10 @@ input {
 	line-height: 50px;
 	font-size: 14px;
 	margin: 0;
-	float: left;
-	width: 180px;
+	width: 100%;
 	background-color: #001A35;
 	text-align: center;
-}
-
-/*标题的右侧菜单*/
-
-.HeaderTitle {
-	display: inline-block;
-	*zoom: 1;
-	overflow: hidden;
-	text-align: center;
-	line-height: 50px;
-	color: rgb(252, 252, 252);
-	font-size: 12px;
-	padding: 0 16px;
-	font-weight: 400;
-}
-
-/* 菜单栏 */
-.HeaderR {
-	float: right;
-	background-color: rgba(68, 114, 196, 1);
-    max-height: 50px;
-}
-
-.HeaderR div {
-	display: inline-block;
-	*zoom: 1;
-	overflow: hidden;
-	text-align: center;
-	line-height: 50px;
-	color: rgb(250, 250, 250);
-	font-size: 12px;
-	padding: 0 12px;
-	cursor: pointer;
-	transition: background-color 0.4s;
-	user-select: none;
-}
-
-.HeaderR div:hover {
-	background-color: #003c58;
+	margin: auto;
 }
 
 
@@ -171,25 +109,27 @@ input {
 
 #SideColMenu {
 	height: 100%;
+	
 }
 
 #SideColMenuInfo {
-	color: #8C8C8C;
-	font-size: 12px;
+	color: rgb(189, 189, 189);
+	font-size: 13px;
 	padding: 12px 25px;
 }
 
 #SideColMenu a {
+	border-radius: 2px;
 	display: block;
 	width: 100%;
 	height: 45px;
 	color: white;
-	/* background-color: #001A35; */
 	line-height: 45px;
 	text-align: left;
-	padding-left: 20px;
-	font-size: 12px;
+	padding-left: 25px;
+	font-size: 13px;
 	transition: background-color 0.5s, margin-left 0.3s;
+	margin:2px 0px;
 }
 
 #SideColMenu a span {
@@ -198,8 +138,9 @@ input {
 
 #SideColMenu a:hover {
 	text-decoration: none;
-	background-color: #4ebd2a;
+	background-color: #1f6906;
 	margin-left: 8px;
+	opacity: 0.9;
 }
 
 
@@ -378,11 +319,5 @@ input {
 		top: 0px;
 		left: 0px;
 		z-index: -1;
-	}
-	.HeaderItem {
-		background-color: #3c8dbc;
-	}
-	.HeaderR{
-		background-color: #3c8dbc;
 	}
 }
