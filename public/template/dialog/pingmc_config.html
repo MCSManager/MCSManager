@@ -5,23 +5,23 @@
     <p>数据每隔 10 秒刷新缓存。</p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">服务器名称</span>
-        <input type="text" class="form-control" placeholder="选填，不填写则自动获取" aria-describedby="sizing-addon3"
-            v-model="mcpingName">
+        <input type="text" class="form-control" placeholder="选填，默认是 Minecraft Server，推荐自己取名"
+            aria-describedby="sizing-addon3" v-model="mcpingName">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">域名或IP地址</span>
-        <input type="text" class="form-control" placeholder="默认是 localhost，不推荐修改" aria-describedby="sizing-addon3"
+        <input type="text" class="form-control" placeholder="选填，默认是 localhost，不推荐修改" aria-describedby="sizing-addon3"
             v-model="mcpingHost">
     </div>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">服务端端口</span>
-        <input type="text" class="form-control" placeholder="默认是 25565，请根据你自己配置文件修改成正确端口"
+        <input type="text" class="form-control" placeholder="选填，为空则自动，取自 server.properties 文件"
             aria-describedby="sizing-addon3" v-model="mcpingPort">
     </div>
 
     <div class="input-group input-group-sm">
-        <span class="input-group-addon" id="sizing-addon3">motd 介绍</span>
-        <input type="text" class="form-control" placeholder="选填，不填写则自动获取" aria-describedby="sizing-addon3"
+        <span class="input-group-addon" id="sizing-addon3">自定义 Motd</span>
+        <input type="text" class="form-control" placeholder="选填，不填写则获取 motd" aria-describedby="sizing-addon3"
             v-model="mcpingMotd">
     </div>
 
@@ -63,7 +63,7 @@
                         mcpingConfig: {
                             mcpingName: this.mcpingName.trim() || "Minecraft Server",
                             mcpingHost: this.mcpingHost.trim() || "localhost",
-                            mcpingPort: this.mcpingPort.trim() || "25565",
+                            mcpingPort: this.mcpingPort.trim() || "",
                             mcpingMotd: this.mcpingMotd.trim() || ""
                         }
                     }));

@@ -21,8 +21,8 @@ WebSocketObserver().listener('mcping/config_save', (data) => {
         const mcserver = serverModel.ServerManager().getServer(serverName);
         mcserver.dataModel.mcpingConfig = {
             mcpingName: jsonObject.mcpingConfig.mcpingName || '',
-            mcpingHost: jsonObject.mcpingConfig.mcpingHost || 'localhost',
-            mcpingPort: jsonObject.mcpingConfig.mcpingPort || '25565',
+            mcpingHost: jsonObject.mcpingConfig.mcpingHost || '',
+            mcpingPort: jsonObject.mcpingConfig.mcpingPort || '',
             mcpingMotd: jsonObject.mcpingConfig.mcpingMotd || ''
         }
         // console.log('mcping mcserver.dataModel:', mcserver.dataModel)
