@@ -132,21 +132,20 @@
 								<div class="LogK">计划任务项目</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6" v-on:click="toProperties()">
+						<div class="col-md-3 col-sm-6" v-on:click="toPingMCProtocol()">
 							<div class="PanelItemBlock">
 								<div class="LogV" style="font-size: 18px;">
 									<!-- <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> -->
 									<strong>
 										<span>
-											<span style="color: rgb(38, 165, 26);">8</span>
+											<span style="color: rgb(38, 165, 26);">--</span>
 											<span style="color: rgb(0, 0, 0);">/</span>
-											<span style="color: rgb(38, 165, 26);">20</span>
+											<span style="color: rgb(38, 165, 26);">--</span>
 
 										</span>
 									</strong>
 								</div>
 								<div class="LogK">
-
 									<span>监控协议配置</span>
 								</div>
 							</div>
@@ -223,6 +222,17 @@
 				},
 				toAPI_PAGE: function () {
 					window.open("/api/status/" + serverName);
+				},
+				toPingMCProtocol: function () {
+					PAGE.selectServerName = this.oldServerName;
+					TOOLS.popWind({
+						style: {
+							maxWidth: "500px",
+							top: "15%"
+						},
+						title: "监控协议配置",
+						template: "template/dialog/pingmc_config.html"
+					});
 				}
 			},
 			data: {

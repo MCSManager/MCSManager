@@ -1,0 +1,86 @@
+<div id="PingmcContainer">
+    <p>
+        <b>配置此项目，可以让你正常监听到 Minecraft 服务端的运行状态与玩家人数。</b>
+    </p>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">服务器名称</span>
+        <input type="text" class="form-control" placeholder="选填，不填写则自动获取" aria-describedby="sizing-addon3"
+            v-model="mcpingName">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">域名或IP地址</span>
+        <input type="text" class="form-control" placeholder="默认是 localhost，不推荐修改" aria-describedby="sizing-addon3"
+            v-model="mcpingHost">
+    </div>
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">服务端端口</span>
+        <input type="text" class="form-control" placeholder="默认是 25565，请根据你自己配置文件修改成正确端口"
+            aria-describedby="sizing-addon3" v-model="mcpingPort">
+    </div>
+
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3">motd 介绍</span>
+        <input type="text" class="form-control" placeholder="选填，不填写则自动获取" aria-describedby="sizing-addon3"
+            v-model="mcpingMotd">
+    </div>
+
+    <div class="PanelBody">
+        <p><b>对外公开常用功能</b></p>
+        <div class="PanelItem">
+            <span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
+            <span v-on:click="toAPI_JSON()">格式 JSON | API 接口</span>
+        </div>
+        <div class="PanelItem">
+            <span class="glyphicon glyphicon-picture" aria-hidden="true"> </span>
+            <span v-on:click="toAPI_PAGE()">贴图系统 Beta</span>
+        </div>
+    </div>
+    <p>确认无误之后，单击保存即可.</p>
+    <button class="btn btn-success" v-on:click="ok()">
+        保存配置
+    </button>
+    <button class="btn btn-danger" v-on:click="TOOLS.popWindClose();">
+        返回
+    </button>
+</div>
+<script>
+    //   { host: 'localhost',
+    //   port: 25566,
+    //   status: true,
+    //   version: '1.9',
+    //   motd: 'A Minecraft Server',
+    //   current_players: '0',
+    //   max_players: '244',
+    //   latency: 45 }
+    new Vue({
+        el: "#PingmcContainer",
+        data: {
+            mcpingName: "MinecraftServer",
+            mcpingHost: "",
+            mcpingPort: "",
+            mcpingMotd: ""
+        },
+        methods: {
+            ok: function () {
+                // WS.sendMsg('docker/setconfig', JSON.stringify({
+                //     serverName: PAGE.selectServerName,
+                //     dockerConfig: {
+                //         dockerCommand: this.dockerCommand.trim() || "",
+                //         dockerImageName: this.dockerImageName.trim() || "mcsd",
+                //         dockerXmx: this.dockerXmx.trim(),
+                //         dockerPorts: this.dockerPorts.trim(),
+                //         isDocker: this.isDocker
+                //     }
+                // }));
+                TOOLS.popWindClose();
+            },
+            toAPI_JSON: function () {
+
+            },
+            toAPI_PAGE: function () {
+
+            }
+        }
+    });
+
+</script>
