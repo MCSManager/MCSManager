@@ -6,6 +6,8 @@ var serverModel = require('../../../model/ServerModel');
 var userModel = require('../../../model/UserModel');
 const permssion = require('../../../helper/Permission');
 
+const mcPingProtocol = require('../../../helper/MCPingProtocol');
+
 //发送指令
 WebSocketObserver().listener('server/console/command', (data) => {
     let par = JSON.parse(data.body);
@@ -59,4 +61,7 @@ serverModel.ServerManager().on('exit_next', (data) => {
         server.dataModel.autoRestart = true;
         server._onceStopRestart = false;
     }
+
+    // 关闭 mcping 定时器
+    mcPingProtocol.DestroyMCPingTask(data.serverName);
 })

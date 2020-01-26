@@ -75,7 +75,6 @@ function formatMotd(motd) {
     // console.log(noColor);
 }
 
-
 function PingMCServer(ip, port, callback) {
     new MCServStatus(port, ip).getStatus().then((res) => {
         callback(res);
@@ -84,8 +83,44 @@ function PingMCServer(ip, port, callback) {
     });
 }
 
+const TASK_DATABASE = {};
+const MCPING_RESULT_DATABASE = {};
+
+
+function CreateMCPingTask(id, ip, port) {
+    if (TASK_DATABASE[id]) {
+        return;
+    }
+    const taskInterval = setInterval(() => {
+        console.log('正在进行查询...', ip, port);
+        PingMCServer(ip, port, (v, e) => {
+            if (v) {
+                MCPING_RESULT_DATABASE[id] = v;
+            }
+            console.log('查询结果', v, e);
+        });
+    }, 5000);
+    TASK_DATABASE[id] = taskInterval;
+}
+
+function DestroyMCPingTask(id) {
+    clearInterval(TASK_DATABASE[id]);
+    TASK_DATABASE[id] = undefined;
+    delete TASK_DATABASE[id]
+    MCPING_RESULT_DATABASE[id] = undefined;
+    delete MCPING_RESULT_DATABASE[id]
+    console.log('列表还存在:', TASK_DATABASE);
+}
+
+function QueryMCPingTask(id) {
+    return MCPING_RESULT_DATABASE[id];
+}
+
 module.exports = {
-    PingMCServer
+    PingMCServer,
+    CreateMCPingTask,
+    DestroyMCPingTask,
+    QueryMCPingTask
 };
 
 // PROMISE VERSION

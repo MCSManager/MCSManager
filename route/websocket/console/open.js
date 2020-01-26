@@ -5,6 +5,8 @@ const permssion = require('../../../helper/Permission');
 const {
     WebSocketObserver
 } = require('../../../model/WebSocketModel');
+const mcPingProtocol = require('../../../helper/MCPingProtocol');
+
 
 //开启服务器
 WebSocketObserver().listener('server/console/open', (data) => {
@@ -18,6 +20,10 @@ WebSocketObserver().listener('server/console/open', (data) => {
                 return;
             }
             response.wsSend(data.ws, 'server/console/open', true);
+            serverModel.ServerManager().emit("open_next", {
+                serverName: serverName,
+                userName: userName
+            });
         } catch (err) {
             response.wsMsgWindow(data.ws, '' + err);
         }
@@ -25,3 +31,20 @@ WebSocketObserver().listener('server/console/open', (data) => {
     }
     response.wsSend(data.ws, 'server/console/open', null);
 });
+
+// 服务端开启后的第一事件
+serverModel.ServerManager().on('open_next', (data) => {
+    const server = serverModel.ServerManager().getServer(data.serverName);
+    if (server) {
+        // dataModel.mcpingConfig = {
+        //     mcpingName: "",
+        //     mcpingHost: "",
+        //     mcpingPort: "",
+        //     mcpingMotd: ""
+        // }
+        mcPingProtocol.CreateMCPingTask(data.serverName,
+            server.dataModel.mcpingConfig.mcpingHost,
+            parseInt(server.dataModel.mcpingConfig.mcpingPort)
+        );
+    }
+})

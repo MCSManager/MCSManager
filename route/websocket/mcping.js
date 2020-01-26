@@ -19,7 +19,12 @@ WebSocketObserver().listener('mcping/config_save', (data) => {
     }
     if (permssion.isCanServer(userName, serverName)) {
         const mcserver = serverModel.ServerManager().getServer(serverName);
-        mcserver.dataModel.mcpingConfig = jsonObject.mcpingConfig;
+        mcserver.dataModel.mcpingConfig = {
+            mcpingName: jsonObject.mcpingConfig.mcpingName || '',
+            mcpingHost: jsonObject.mcpingConfig.mcpingHost || 'localhost',
+            mcpingPort: jsonObject.mcpingConfig.mcpingPort || '25565',
+            mcpingMotd: jsonObject.mcpingConfig.mcpingMotd || ''
+        }
         // console.log('mcping mcserver.dataModel:', mcserver.dataModel)
         mcserver.dataModel.save();
     }
