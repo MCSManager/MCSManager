@@ -39,9 +39,9 @@
 							<span class="glyphicon glyphicon-pause" aria-hidden="true"> </span> 关闭服务器
 						</div>
 					</transition>
-					<div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
+					<!-- <div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
 						<span class="glyphicon glyphicon-refresh" aria-hidden="true"> </span> 重启服务器
-					</div>
+					</div> -->
 					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-if="run">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"> </span> 强制性结束进程
 					</div>
@@ -51,7 +51,7 @@
 				<div class="PanelTitle">崩溃监视与配置</div>
 				<div class="PanelBody">
 					<div class="PanelItem" v-on:click="toProperties()" v-if="!serverData.autoRestart">
-						<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> server.properties 配置文件
+						<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> Server.properties 配置文件
 					</div>
 					<transition name="slide-fade">
 						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
@@ -89,7 +89,7 @@
 				</div>
 			</div>
 			<div class="Panel PanelGray">
-				<div class="PanelTitle">外置接口</div>
+				<div class="PanelTitle">普通外置接口</div>
 				<div class="PanelBody">
 					<div class="PanelItem">
 						<span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
@@ -146,7 +146,7 @@
 									</strong>
 								</div>
 								<div class="LogK">
-									<span>监控协议配置</span>
+									<span>状态监控协议</span>
 								</div>
 							</div>
 						</div>
@@ -156,7 +156,7 @@
 		</div>
 		<div class="col-md-9" id='ChartCPUFor'>
 			<div class="Panel ">
-				<div class="PanelTitle">CPU（中央处理器）利用率 （%）</div>
+				<div class="PanelTitle">中央处理器 使用率 （%）</div>
 				<div class="PanelBody">
 					<div class="row">
 						<div id="ChartCPU" style="height:280px;width:100%;"></div>
@@ -167,7 +167,7 @@
 		<div class="col-md-3"></div>
 		<div class="col-md-9">
 			<div class="Panel ">
-				<div class="PanelTitle">物理内存使用率 （%）</div>
+				<div class="PanelTitle">物理内存 使用率 （%）</div>
 				<div class="PanelBody">
 					<div class="row">
 						<div id="ChartRAM" style="height:280px;width:100%;"></div>

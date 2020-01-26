@@ -2,6 +2,7 @@
     <p>
         <b>配置此项目，可以让你正常监听到 Minecraft 服务端的运行状态与玩家人数。</b>
     </p>
+    <p>数据每隔 10 秒刷新缓存。</p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">服务器名称</span>
         <input type="text" class="form-control" placeholder="选填，不填写则自动获取" aria-describedby="sizing-addon3"
@@ -35,10 +36,11 @@
             <span v-on:click="toAPI_PAGE()">贴图系统 Beta</span>
         </div>
     </div>
-    <p>确认无误之后，单击保存即可.</p>
+    <p style="color: rgb(230, 55, 55);">保存或更新配置内容后，需要重启 Minecraft 服务器，才可使用。</p>
     <button class="btn btn-success" v-on:click="ok()">
         保存配置
     </button>
+    &nbsp;|&nbsp;
     <button class="btn btn-danger" v-on:click="TOOLS.popWindClose();">
         返回
     </button>
@@ -59,7 +61,7 @@
                     WS.sendMsg('mcping/config_save', JSON.stringify({
                         mcpingServerName: PAGE.listenServername,
                         mcpingConfig: {
-                            mcpingName: this.mcpingName.trim() || "Null",
+                            mcpingName: this.mcpingName.trim() || "Minecraft Server",
                             mcpingHost: this.mcpingHost.trim() || "localhost",
                             mcpingPort: this.mcpingPort.trim() || "25565",
                             mcpingMotd: this.mcpingMotd.trim() || ""
