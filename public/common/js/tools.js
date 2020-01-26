@@ -102,14 +102,14 @@
 		return reg.test(text);
 	}
 
-	var cacheHeaderTitleEle = $("#HeaderInfo");
+	// var cacheHeaderTitleEle = $("#HeaderInfo");
 	//设置头上显示什么
 	TOOLS.setHeaderTitle = function (text) {
-		if (text) {
-			cacheHeaderTitleEle.html(TOOLS.encode(text));
-		} else {
-			cacheHeaderTitleEle.html("");
-		}
+		// if (text) {
+		// 	cacheHeaderTitleEle.html(TOOLS.encode(text));
+		// } else {
+		// 	cacheHeaderTitleEle.html("");
+		// }
 	}
 
 	//Minecraft 服务器输出删除双S
@@ -174,7 +174,7 @@
 	var _popWindCallback = null;
 	TOOLS.popWind = function (config) {
 		var popWinContext = $("#PopWinContext");
-		_popWindCallback = config.callback || function () {}; //全局的callback变量
+		_popWindCallback = config.callback || function () { }; //全局的callback变量
 		var css = config.style || {
 			display: "block"
 		};
@@ -188,7 +188,6 @@
 		$("#balckWarp").css({
 			display: "block"
 		});
-		console.log("信息框弹出", "配置:", config);
 		popWinContext.load(config.template, function (response, status, xhr) {
 			if (status != 'success') {
 				popWinContext.html("信息框加载失败！请保持网络通畅！单击灰色区域关闭！");
