@@ -31,10 +31,10 @@
             <span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
             <span v-on:click="toAPI_JSON()">格式 JSON | API 接口</span>
         </div>
-        <div class="PanelItem">
+        <!-- <div class="PanelItem">
             <span class="glyphicon glyphicon-picture" aria-hidden="true"> </span>
             <span v-on:click="toAPI_PAGE()">贴图系统 Beta</span>
-        </div>
+        </div> -->
     </div>
     <p style="color: rgb(230, 55, 55);">保存或更新配置内容后，需要重启 Minecraft 服务器，才可使用。</p>
     <button class="btn btn-success" v-on:click="ok()">
@@ -70,11 +70,11 @@
                     TOOLS.popWindClose();
                 },
                 toAPI_JSON: function () {
-
+                    window.open("/api/status/" + serverName);
                 },
                 toAPI_PAGE: function () {
-
-                }
+                    window.open("/api/status/" + serverName);
+                },
             }
         });
     });
