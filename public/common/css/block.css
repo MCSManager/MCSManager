@@ -87,7 +87,7 @@
 
 .LogK {
 	color: #6f7376;
-	font-size: 12px;
+	font-size: 13px;
 	text-align: center;
 	height: 50px;
 	line-height: 50px;
@@ -95,9 +95,9 @@
 }
 
 .LogV {
-	margin: 12px 8px 2px 8px;
-	color: #6f7376;
-	font-size: 18px;
+	margin: 20px 8px 2px 8px;
+    color: #6f7376;
+    font-size: 20px;
 	text-align: center;
 	line-height: 40px;
 	overflow: hidden;

@@ -48,8 +48,11 @@
 				</div>
 			</div>
 			<div class="Panel " :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
-				<div class="PanelTitle">任务与机制</div>
+				<div class="PanelTitle">崩溃监视与配置</div>
 				<div class="PanelBody">
+					<div class="PanelItem" v-on:click="toProperties()" v-if="!serverData.autoRestart">
+						<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> server.properties 配置文件
+					</div>
 					<transition name="slide-fade">
 						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
 							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
@@ -113,14 +116,6 @@
 								<div class="LogK">命令控制台</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6" v-on:click="toProperties()">
-							<div class="PanelItemBlock">
-								<div class="LogV">
-									<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>
-								</div>
-								<div class="LogK">服务器配置</div>
-							</div>
-						</div>
 						<div class="col-md-3 col-sm-6" v-on:click="toOnlineFs()">
 							<div class="PanelItemBlock">
 								<div class="LogV">
@@ -135,6 +130,25 @@
 									<span class="glyphicon glyphicon-indent-right" aria-hidden="true"> </span>
 								</div>
 								<div class="LogK">计划任务项目</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6" v-on:click="toProperties()">
+							<div class="PanelItemBlock">
+								<div class="LogV" style="font-size: 18px;">
+									<!-- <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> -->
+									<strong>
+										<span>
+											<span style="color: rgb(38, 165, 26);">8</span>
+											<span style="color: rgb(0, 0, 0);">/</span>
+											<span style="color: rgb(38, 165, 26);">20</span>
+
+										</span>
+									</strong>
+								</div>
+								<div class="LogK">
+
+									<span>监控协议配置</span>
+								</div>
 							</div>
 						</div>
 					</div>
