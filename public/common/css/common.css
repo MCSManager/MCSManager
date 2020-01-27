@@ -3,7 +3,6 @@ body {
 	font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
     font-size: 14px;
     color: #1a1a1a;
-    /* background: #f6f6f6; */
     -webkit-tap-highlight-color: rgba(26,26,26,0);
 	margin: 0;
 	padding: 0;
@@ -60,9 +59,9 @@ input {
 #SideCol {
 	position: fixed;
 	color: white;
-	background-color: #001A35;
+	background-color: rgb(44, 43, 43);
 	z-index: 102;
-	width: 200px;
+	width: 220px;
 	top: 0px;
 	bottom: 0px;
 	font-size: 18px;
@@ -73,7 +72,7 @@ input {
 	position: absolute;
 	width: auto;
 	top: 10px;
-	left: 200px;
+	left: 220px;
 	right: 0px;
 }
 
@@ -93,7 +92,6 @@ input {
 	font-size: 14px;
 	margin: 0;
 	width: 100%;
-	background-color: #001A35;
 	text-align: center;
 	margin: auto;
 }
@@ -115,7 +113,7 @@ input {
 #SideColMenuInfo {
 	color: rgb(189, 189, 189);
 	font-size: 13px;
-	padding: 12px 25px;
+	padding: 12px 35px;
 }
 
 #SideColMenu a {
@@ -126,10 +124,10 @@ input {
 	color: white;
 	line-height: 45px;
 	text-align: left;
-	padding-left: 25px;
+	padding-left: 35px;
 	font-size: 13px;
 	transition: background-color 0.5s, margin-left 0.3s;
-	margin:2px 0px;
+	margin:4px 0px;
 }
 
 #SideColMenu a span {
