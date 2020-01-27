@@ -8,6 +8,10 @@ const {
 const fsex = require('fs-extra');
 const child_process = require('child_process');
 
+// 最大同时解压任务
+let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = 3;
+// 当前解压任务
+let nowEacTaskCounter = 0;
 
 //文件操作具体
 class FileOperate extends BaseFileOperate {
@@ -147,18 +151,32 @@ class FileOperate extends BaseFileOperate {
     }
 
 
-    //解压文件
+    // 解压文件
     extract(path) {
         return this.pathAccessCheck(path, (absPath) => {
             //分配子进程来进行解压操作
-            child_process.fork("./onlinefs/module/extend_worker.js", ['extract', absPath]);
+            if (nowEacTaskCounter < MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT) {
+                const extend_worker = child_process.fork("./onlinefs/module/extend_worker.js", ['extract', absPath]);
+                nowEacTaskCounter += 1
+                extend_worker.on('close', () => {
+                    nowEacTaskCounter -= 1;
+                });
+            }
+
         });
     }
 
+    // 压缩文件
     compress(path) {
         return this.pathAccessCheck(path, (absPath) => {
             //分配子进程来进行解压操作
-            child_process.fork("./onlinefs/module/extend_worker.js", ['compress', absPath]);
+            if (nowEacTaskCounter < MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT) {
+                const extend_worker = child_process.fork("./onlinefs/module/extend_worker.js", ['compress', absPath]);
+                nowEacTaskCounter += 1
+                extend_worker.on('close', () => {
+                    nowEacTaskCounter -= 1;
+                });
+            }
         });
     }
 
