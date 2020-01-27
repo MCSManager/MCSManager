@@ -49,7 +49,10 @@
 
 		//容器布局改变
 		$('#MainContainer').css('background-color', 'rgb(60,60,60)');
+		$('body').css('background-color', 'rgb(60,60,60)');
 		$('#ConsoleMain').css('max-width', '999999px');
+
+
 
 		WS.sendMsg('server/console/ws', PAGE.serverName);
 
@@ -128,6 +131,8 @@
 			}
 		});
 		PAGE.mainC = document.getElementById('TerminalMinecraft');
+
+		$("#TerminalCommand").focus();
 	});
 
 	MI.rListener('onend', function () {
@@ -140,6 +145,7 @@
 		//布局恢复
 		$('#MainContainer').removeAttr('style');
 		$('#ConsoleMain').removeAttr('style');
+		$('body').removeAttr('style');
 
 	})
 </script>
