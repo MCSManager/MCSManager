@@ -9,7 +9,7 @@ const fsex = require('fs-extra');
 const child_process = require('child_process');
 
 // 最大同时解压任务
-let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = 6;
+let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = MCSERVER.localProperty.max_eac_task_limit || 6;
 // 当前解压任务
 let nowEacTaskCounter = 0;
 
