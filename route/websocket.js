@@ -47,9 +47,14 @@ function isWsOnline(token) {
 }
 
 
+// 最高心跳包延迟
+const MAX_ALIVE_COUNT = 36;
+
 //WebSocket 创建
 router.ws('/ws', function (ws, req) {
 
+
+    // 令牌
     let token = req.query[permssion.tokenName] || null;
 
     //无令牌 或 未登录
@@ -62,7 +67,7 @@ router.ws('/ws', function (ws, req) {
     token = token.trim();
     let username = null;
     let status = false;
-    let wsAliveHBCount = 2;
+    let wsAliveHBCount = MAX_ALIVE_COUNT;
 
     //临时的会话id  一般只用于内部验证是否是这个tcp链接
     let uid = permssion.randomString(12) + Date.parse(new Date()).toString();
@@ -171,7 +176,7 @@ router.ws('/ws', function (ws, req) {
             if (reqHeaderObj['RequestValue'] == "HBPackage") {
                 status = true;
                 // 最高心跳包健康数
-                wsAliveHBCount < 3 && wsAliveHBCount++;
+                wsAliveHBCount < MAX_ALIVE_COUNT && wsAliveHBCount++;
                 return;
             }
 
