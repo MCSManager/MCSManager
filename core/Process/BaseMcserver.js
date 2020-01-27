@@ -203,7 +203,7 @@ class ServerProcess extends EventEmitter {
         this.dataModel.lastDate = new Date().toLocaleString();
 
         this.process.on('error', (err) => {
-            MCSERVER.error('服务器启动时异常,建议检查配置与环境', err);
+            MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
             this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid || "启动失败，无法获取进程。"]);
             this.stop();
             this.emit('error', err);
@@ -213,7 +213,7 @@ class ServerProcess extends EventEmitter {
             MCSERVER.error('this.process.pid is null', this.process.pid);
             this.stop();
             delete this.process;
-            throw new Error('服务端进程启动失败，请检查启动参数。进程 PID 是 Null！');
+            throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
         }
 
         // 输出事件的传递
