@@ -74,7 +74,12 @@
 						<span class="glyphicon " :class="item.class" aria-hidden="true"></span>
 						<span v-text="item.name"></span>
 					</a>
+
 				</div>
+				<a id="loginOut" href="javascript:void(0);" v-on:click="loginOut()">
+					<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+					<span>退出</span>
+				</a>
 			</div>
 		</div>
 		<div id="Container">

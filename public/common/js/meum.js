@@ -43,12 +43,6 @@
 		link: './template/feelback.html',
 		api: null,
 		select: false
-	}, {
-		class: 'glyphicon-tasks',
-		name: '安全退出',
-		link: './template/feelback.html',
-		api: null,
-		select: false
 	}]
 
 })();
