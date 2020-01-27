@@ -60,7 +60,8 @@ input {
 #SideCol {
 	position: fixed;
 	color: white;
-	background-color: rgb(44, 43, 43);
+	background-color: rgb(36, 35, 40);
+	/* background: linear-gradient(rgb(25, 30, 40), rgb(23, 32, 38)); */
 	z-index: 102;
 	width: 220px;
 	top: 0px;
