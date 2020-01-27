@@ -145,7 +145,7 @@
 
 	<div id="SidebarButton" v-on:click="operate()">
 		<div class="SidebarButtonWapper">
-			<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+			<span class="glyphicon " :class="!isExpand?'glyphicon-th-list':'glyphicon-list'" aria-hidden="true"></span>
 		</div>
 	</div>
 

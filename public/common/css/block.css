@@ -305,11 +305,13 @@
 /* 弹窗CSS */
 
 .PopWin {
-	position: relative;
+	position: fixed;
 	margin: auto;
 	top: 30%;
 	display: none;
 	z-index: 999;
+	left: 0px;
+	right: 0px;
 }
 
 #PopWinContext {
