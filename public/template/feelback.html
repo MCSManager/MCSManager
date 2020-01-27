@@ -1,10 +1,10 @@
 <div id='' class="OneContainer">
 	<div class="row">
-		<div id='News' class="col-md-6">
-			<div class="Panel PanelGreen">
+		<div id='News' class="col-md-8">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">最新动态与信息通知</div>
-				<div class="PanelBody">
-					<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板重启时自动更新)</p>
+				<div class="PanelBody" style="max-height: 590px;overflow-y: scroll;">
+					<p>关注这里，如果出现BUG/新版本我们会立即通告 (面板自动每天定时更新)</p>
 					<div class="news" v-for="item of items">
 						<p class="color-gray" v-text="item.time"></p>
 						<p v-text="item.msg"></p>
@@ -12,14 +12,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-6">
-			<div class="Panel PanelGreen">
+		<div class="col-md-4">
+			<div class="Panel PanelBlack">
 				<div class="PanelTitle">客户使用反馈</div>
 				<div class="PanelBody">
-					<p>如果您使用中遇到任何问题或发现BUG错误，您可以反馈给我们:</p>
+					<p>如果使用中遇到任何问题或发现错误，可反馈到此:</p>
 					<br>
 					<p>邮箱: Suwings@outlook.com</p>
-					<br>
+					<p>GITHUB:
+						<a
+							href="https://github.com/Suwings/MCSManager/issues">https://github.com/Suwings/MCSManager/issues</a>
+					</p>
 					<p>我们将逐步稳定更新，减少或不更改核心模块。</p>
 
 					<br>
@@ -32,28 +35,28 @@
 					<p>我们真诚的希望您可以资助我们一些支持资金，不论多少，所有资金将用于下一个版本.</p>
 					<p>当然您也可以不资助资金帮助我们，为我们的宣传资料提供支持.</p>
 					<br>
-					<p>资助唯一支付宝二维码:
+					<p>爱发电赞助平台:
+						<a target="_blank" href="https://afdian.net/@mcsmanager">https://afdian.net/@mcsmanager</a>
+					</p>
+					<p>资助支付宝二维码:
 						<a target="_blank" href="template/other/sponsor.html">二维码地址</a>
 					</p>
-					<p>Mcbbs.net 宣传贴:
-						<a target="_blank" href="http://www.mcbbs.net/thread-140678-1-1.html">http://www.mcbbs.net/thread-140678-1-1.html</a>
+					<p>宣传贴:
+						<a target="_blank"
+							href="http://www.mcbbs.net/thread-140678-1-1.html">http://www.mcbbs.net/thread-140678-1-1.html</a>
 					</p>
-					<p>Zuimc.com 宣传贴:
-						<a target="_blank" href="http://www.zuimc.com/thread-52079-1-2.html">http://www.zuimc.com/thread-52079-1-2.html</a>
-					</p>
-					<p>我们欢迎您转载本软件，使用次数越高，便越有可能更早的更新后续版本.</p>
+					<p>软件所有代码与文件均可转载，修改。</p>
 				</div>
 			</div>
 
-			<div class="Panel ">
-				<div class="PanelTitle">源代码开放协议</div>
+			<div class="Panel PanelRed">
+				<div class="PanelTitle">开源软件</div>
 				<div class="PanelBody">
-					<p>本项目完全开源:
-						<a href="https://github.com/Suwings/MCSManager" target="_blank">https://github.com/Suwings/MCSManager </a>
+					<p>项目完全开源:
+						<a href="https://github.com/Suwings/MCSManager"
+							target="_blank">https://github.com/Suwings/MCSManager </a>
 					</p>
-					<p>欢迎参观，欢迎 pull request , issues，或 star</p>
 					<p>开源协议: GNU Affero General Public License v3.0</p>
-					<p>每一个人都是这款软件的开发者，自定义设计将完全取决于您。</p>
 					<br>
 				</div>
 			</div>
@@ -85,5 +88,5 @@
 		});
 	})
 
-	MI.rListener('onend', function () {})
+	MI.rListener('onend', function () { })
 </script>
