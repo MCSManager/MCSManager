@@ -33,7 +33,7 @@
 		select: false
 	}, {
 		class: 'glyphicon-th-large',
-		name: '用户权限设定',
+		name: '用户管理',
 		link: './template/userset.html',
 		api: 'userset/update',
 		select: false
