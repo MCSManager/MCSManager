@@ -10,6 +10,7 @@ const {
     FileOperateStructure,
     UseFileOperate
 } = require("../model/fsoperate_session");
+const fsoperate = require('../module/fsoperate');
 const fs = require("fs");
 const os = require('os');
 
@@ -153,6 +154,17 @@ router.post('/compress', (req, res) => {
     fileOperate.compress(pathm.join(cwd, directoryName));
     sendHandle(req, res, "OK");
 });
+
+// 获取当前解压缩任务队列
+router.get('/eac_quque', (req, res) => {
+    const quque = fsoperate.FileOperate.getEACQuque();
+    const nowTask = fsoperate.FileOperate.getNowEacTaskCounter();
+    sendHandle(req, res, {
+        quque: quque.length,
+        now: nowTask
+    });
+});
+
 
 
 const multiparty = require('multiparty');

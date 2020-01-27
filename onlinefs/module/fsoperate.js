@@ -9,9 +9,30 @@ const fsex = require('fs-extra');
 const child_process = require('child_process');
 
 // 最大同时解压任务
-let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = MCSERVER.localProperty.max_eac_task_limit || 6;
+let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = MCSERVER.localProperty.max_eac_task_limit || 1;
 // 当前解压任务
 let nowEacTaskCounter = 0;
+// 解压缩任务队列
+const EAC_QUQUE = [];
+
+
+// 解压缩队列循环器
+setInterval(() => {
+    if (nowEacTaskCounter < MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT) {
+        // category: 'compress',
+        // path: absPath
+        const task = EAC_QUQUE.pop();
+        if (task == null) return;
+        nowEacTaskCounter += 1
+        const extend_worker = child_process.fork(
+            "./onlinefs/module/extend_worker.js",
+            [task['category'], task['path']]
+        );
+        extend_worker.on('close', () => {
+            nowEacTaskCounter -= 1;
+        });
+    }
+}, 1000);
 
 //文件操作具体
 class FileOperate extends BaseFileOperate {
@@ -154,30 +175,31 @@ class FileOperate extends BaseFileOperate {
     // 解压文件
     extract(path) {
         return this.pathAccessCheck(path, (absPath) => {
-            //分配子进程来进行解压操作
-            if (nowEacTaskCounter < MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT) {
-                const extend_worker = child_process.fork("./onlinefs/module/extend_worker.js", ['extract', absPath]);
-                nowEacTaskCounter += 1
-                extend_worker.on('close', () => {
-                    nowEacTaskCounter -= 1;
-                });
-            }
-
+            // 加入到解压缩队列
+            EAC_QUQUE.push({
+                category: 'extract',
+                path: absPath
+            })
         });
     }
 
     // 压缩文件
     compress(path) {
         return this.pathAccessCheck(path, (absPath) => {
-            //分配子进程来进行解压操作
-            if (nowEacTaskCounter < MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT) {
-                const extend_worker = child_process.fork("./onlinefs/module/extend_worker.js", ['compress', absPath]);
-                nowEacTaskCounter += 1
-                extend_worker.on('close', () => {
-                    nowEacTaskCounter -= 1;
-                });
-            }
+            // 加入到解压缩队列
+            EAC_QUQUE.push({
+                category: 'compress',
+                path: absPath
+            })
         });
+    }
+
+    static getEACQuque() {
+        return EAC_QUQUE;
+    }
+
+    static getNowEacTaskCounter() {
+        return nowEacTaskCounter;
     }
 
     writeFile(path, data) {

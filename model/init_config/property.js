@@ -104,8 +104,8 @@ MCSERVER.localProperty.session_max_age = 240
 MCSERVER.localProperty.schedule_max = 10;
 
 //所有用户总数，最高解压缩任务上限
-//默认最大同时解压6个压缩文件
-MCSERVER.localProperty.max_eac_task_limit = 6;
+//默认最大同时解压1个压缩文件，多余的会排队进行
+MCSERVER.localProperty.max_eac_task_limit = 1;
 
 
 //是否禁止 /api/* 公开接口获取 | 默认不禁止

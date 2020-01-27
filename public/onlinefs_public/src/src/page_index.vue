@@ -3,8 +3,10 @@
     <div class="row">
       <div class="m-header">
         <p>
-          <span style="color: #ffffff;">控制面板 - 文件管理</span>
+          <span style="color: #ffffff;">控制面板 - 文件管理</span> 
+          <span class="task-info" v-text="extpressQueueInfo"></span>
         </p>
+    
       </div>
       <div class="container m-panel">
         <div class="row">
@@ -37,6 +39,8 @@ import componentShady from "./components/shady";
 import funcModule from "./module/function";
 import hubModule from "./module/hub";
 
+import ajaxMoudule from "./module/ajax";
+
 //文件事件 Hub
 const filesHub = hubModule.Hub;
 
@@ -46,8 +50,24 @@ MCSERVER.pageIndexModel = {
   editorDisplay: false,
   editorCallback: obj => {},
   editorOpenContext: "",
-  editorFilename: ""
+  editorFilename: "",
+  extpressQueueInfo: ""
 };
+
+// 首页请求获取任务队列，以及其他后续需要的数据
+new ajaxMoudule.Ajax({
+  type: "GET",
+  url: MCSERVER.URL("fs/eac_quque"),
+  data: "",
+  success(res, _o) {
+    if (res) {
+      // const obj = res["response"];
+      const quque = res["quque"];
+      const now = res["now"];
+      MCSERVER.pageIndexModel.extpressQueueInfo = `解压缩队列: ${quque}个排队，${now}个正在处理`;
+    }
+  }
+}).ajax();
 
 //首页 Vue 组件
 export default {
@@ -63,3 +83,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.task-info {
+  display: block;
+  float: right;
+  margin-right: 8px;
+  font-size: 12px;
+  color: rgb(247, 244, 244);
+}
+</style>
