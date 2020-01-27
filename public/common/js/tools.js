@@ -203,4 +203,15 @@
 		_popWindCallback = null;
 	}
 
+
+	TOOLS.blackJumbotron = function (boolean) {
+		if (boolean) {
+			$("#balckWarp").css({
+				display: "block"
+			});
+		} else {
+			$("#balckWarp").removeAttr("style");
+		}
+	}
+
 })();

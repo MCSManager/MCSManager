@@ -126,7 +126,15 @@
 
 (function () {
 	$SideCol = $('#SideCol');
-	$Container = $('#Container');
+	// $Container = $('#Container');
+
+	// 获取菜单栏状态
+	MCSERVER.getColmStatus = function () {
+		if ($SideCol[0].style.display == 'none') {
+			return false;
+		}
+		return true;
+	}
 
 	MCSERVER.colmSet = function (booleans) {
 		MI.on('colmchange', null); //触发事件
@@ -137,33 +145,36 @@
 			$SideCol.css({
 				'display': 'none'
 			});
-			$Container.css({
-				'left': '0px'
-			});
+			// $Container.css({
+			// 	'left': '0px'
+			// });
 			MI.on('colmchangeEnd', null); //触发事件
 		} else {
-			$Container.css({
-				'left': '180px'
-			});
+			// $Container.css({
+			// 	'left': '180px'
+			// });
+			// $Container.css({
+			// 	'left': '0px'
+			// });
 			$SideCol.css({
 				'display': 'block',
 				'opacity': '1'
 			});
 			MI.on('colmchangeEnd', null); //触发事件
-			$Container.removeAttr('style')
+			// $Container.removeAttr('style')
 		}
 	}
 
 	MCSERVER.colmDo = function () {
-		if ($Container[0].style.left == '0px') {
-			MCSERVER.colmSet(true);
-		} else {
-			MCSERVER.colmSet(false);
-		}
+		// if ($Container[0].style.left == '0px') {
+		// 	MCSERVER.colmSet(true);
+		// } else {
+		// 	MCSERVER.colmSet(false);
+		// }
 	}
 
 	MCSERVER.autoColmDo = function () {
-		if (document.body.clientWidth <= 1136) {
+		if (document.body.clientWidth <= 780) {
 			MCSERVER.colmSet(false);
 		} else {
 			MCSERVER.colmSet(true);

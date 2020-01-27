@@ -61,7 +61,7 @@ input {
 	position: fixed;
 	color: white;
 	background-color: #001A35;
-	z-index: 100;
+	z-index: 102;
 	width: 200px;
 	top: 0px;
 	bottom: 0px;
@@ -285,7 +285,30 @@ input {
 	line-height: 3px;
 }
 
-@media (max-width:760px) {
+
+/* 手机端的导航球 */
+#SidebarButton{
+	display: none;
+	
+	position: fixed;
+	right: 30px;
+	bottom: 48px;
+
+	height: 48px;
+	width: 48px;
+	border-radius: 4px;
+	background-color: rgb(224, 16, 61);
+
+	font-size: 24px;
+	line-height: 48px;
+	text-align: center;
+	color: white;
+	
+	z-index: 102;
+	box-shadow: 0px 0px 12px rgba(54, 52, 52, 0.39);
+}
+
+@media (max-width:800px) {
 	#HeaderInfo {
 		display: none;
 	}
@@ -301,10 +324,16 @@ input {
 		left: 0px;
 		z-index: -1;
 	}
-	/* .PhomeOpZore {} */
-	/* .HeaderItem {
-		background-color: #3c8dbc;
-	} */
+	#SidebarButton{
+		display: block;
+		cursor: pointer;
+	}
+	#Container{
+		left: 0px;
+	}
+	#SideCol{
+		box-shadow: 8px 0px 32px rgba(54, 52, 52, 0.452);
+	}
 }
 
 

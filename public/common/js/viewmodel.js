@@ -78,8 +78,11 @@
 					}
 					item.select = true;
 					DEBUG && console.log('菜单处网页开始跳转:' + link);
-					//触发菜单选项点击事件
+					// 取消黑色幕布
+					TOOLS.blackJumbotron(false)
+					// 触发菜单选项点击事件
 					MI.on("SideMeumClick", null);
+					// 跳转
 					RES.redirectPage(link, api, 'update_page');
 				}
 			}

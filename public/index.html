@@ -143,6 +143,12 @@
 	<!-- 黑屏 HTML -->
 	<div id="balckWarp" onclick="TOOLS.popWindClose(null);"></div>
 
+	<div id="SidebarButton" v-on:click="operate()">
+		<div class="SidebarButtonWapper">
+			<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+		</div>
+	</div>
+
 
 	<!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->
 	<script type="text/javascript" src="common/jquery-3.2.1.min.js"></script>
@@ -159,11 +165,11 @@
 	<script type="text/javascript" src="common/js/websocket.js"></script>
 	<!--工具类						全局变量 TOOLS(工具箱)-->
 	<script type="text/javascript" src="common/js/tools.js"></script>
-	<!--首页菜单获取				  虚拟的后端菜单数据-->
+	<!--首页菜单获取				 虚拟的后端菜单数据-->
 	<script type="text/javascript" src="common/js/meum.js"></script>
-	<!--echarts 库 				  统计图-->
+	<!--echarts 库 				  	统计图-->
 	<script type="text/javascript" src="common/echarts.js"></script>
-	<!--Vue.data 数据模型处理  	  全局变量 VIEW_MODEL-->
+	<!--Vue.data 数据模型处理  	  	全局变量 VIEW_MODEL-->
 	<script type="text/javascript" src="common/js/viewmodel.js"></script>
 	<!--图像统计表格封装			 附属于 TOOLS 变量-->
 	<script type="text/javascript" src="common/js/chart.js"></script>
@@ -199,7 +205,7 @@
 			RES.getToken(function (token) {
 
 				RES.TOKEN = token;
-				console.log('登陆的用户是:' + MCSERVER.username);
+				console.log('用户登陆:' + MCSERVER.username);
 
 				//初始化 Websocket
 				WS.init(function () {
@@ -258,6 +264,21 @@
 					msg: ''
 				}
 			});
+
+			// 手机端导航球
+			var SidebarButton = new Vue({
+				el: "#SidebarButton",
+				data: {
+					isExpand: false
+				},
+				methods: {
+					operate: function () {
+						MCSERVER.colmSet(!MCSERVER.getColmStatus());
+						// TOOLS.blackJumbotron(!this.isExpand)
+						this.isExpand = !MCSERVER.getColmStatus();
+					}
+				}
+			})
 
 			VIEW_MODEL.COMMON = {};
 
