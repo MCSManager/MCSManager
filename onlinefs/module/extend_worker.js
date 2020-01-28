@@ -3,6 +3,13 @@ const fs = require('fs');
 const compressing = require('compressing');
 const fsex = require('fs-extra');
 
+let SYSTEM_CODE = null;
+if (os.platform() == "win32")
+    SYSTEM_CODE = 'GBK';
+else
+    SYSTEM_CODE = 'UTF-8';
+
+
 // 任务参数获取
 const argv = process.argv;
 const realArgv = argv.filter((val, index) => {
@@ -30,7 +37,9 @@ if (realArgv.length >= 1) {
             // 忽略创建目录错误
         }
         // 进行解压操作
-        compressing.zip.uncompress(absPath, zipExtractDir)
+        compressing.zip.uncompress(absPath, zipExtractDir, {
+            zipFileNameEncoding: SYSTEM_CODE
+        })
             .then(() => {
                 console.log('解压任务', absPath, '成功.');
             })
@@ -53,7 +62,9 @@ if (realArgv.length >= 1) {
             path.dirname(absPath) + '/压缩文件_' + path.basename(absPath) + '.zip'
         );
         // 进行压缩操作
-        compressing.zip.compressDir(absPath, compressZipPath)
+        compressing.zip.compressDir(absPath, compressZipPath, {
+            zipFileNameEncoding: SYSTEM_CODE
+        })
             .then(() => {
                 console.log('压缩任务', absPath, '成功.');
             })
