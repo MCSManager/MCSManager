@@ -48,7 +48,7 @@ function isWsOnline(token) {
 
 
 // 最高心跳包延迟
-const MAX_ALIVE_COUNT = 36;
+const MAX_ALIVE_COUNT = 60;
 
 //WebSocket 创建
 router.ws('/ws', function (ws, req) {
