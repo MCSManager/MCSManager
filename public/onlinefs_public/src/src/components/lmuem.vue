@@ -91,7 +91,7 @@ export default {
           functionMudule.copy(this.getFileStack());
           tools.popWindow("已复制到临时区域,使用粘贴即可复制到当前目录");
           break;
-        case "剪贴":
+        case "剪切":
           functionMudule.cponce(this.getFileStack());
           tools.popWindow("已复制到临时区域,使用粘贴即可移动到当前目录");
           break;
@@ -219,7 +219,7 @@ export default {
           api: ""
         },
         {
-          name: "剪贴",
+          name: "剪切",
           class: "glyphicon glyphicon-scissors",
           api: ""
         },
