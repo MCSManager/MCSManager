@@ -3,11 +3,11 @@ const fs = require('fs');
 const compressing = require('compressing');
 const fsex = require('fs-extra');
 const os = require('os');
-let SYSTEM_CODE = null;
-if (os.platform() == "win32")
-    SYSTEM_CODE = 'GBK';
-else
-    SYSTEM_CODE = 'UTF-8';
+// let SYSTEM_CODE = null;
+// if (os.platform() == "win32")
+const SYSTEM_CODE = 'GBK';
+// else
+//     SYSTEM_CODE = 'UTF-8';
 
 
 // 任务参数获取
