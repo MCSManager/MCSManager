@@ -2,7 +2,9 @@ const path = require('path');
 const fs = require('fs');
 const compressing = require('compressing');
 const fsex = require('fs-extra');
-const os = require('os');
+// const os = require('os');
+
+// 此处使用临时解决方案
 // let SYSTEM_CODE = null;
 // if (os.platform() == "win32")
 const SYSTEM_CODE = 'GBK';
