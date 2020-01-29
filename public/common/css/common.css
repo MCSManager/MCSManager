@@ -46,8 +46,14 @@ input {
 
 /* 页面主要容器 */
 #MainContainer{
-	overflow: hidden;
-	height: 100%;
+	position: absolute;
+    width: 100%;
+    top: 1px;
+	bottom: 1px;
+    z-index: 100;
+    overflow: hidden;
+	overflow-y: auto;
+	zoom: 1;
 }
 
 /*
