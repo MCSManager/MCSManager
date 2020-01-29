@@ -308,6 +308,12 @@ input {
 	box-shadow: 0px 0px 12px rgba(54, 52, 52, 0.39);
 }
 
+/* 普通用户按钮居中 */
+.GenhomeButton{
+	float: right;
+	height: 100%;
+	line-height: 60px
+}
 
 @media (max-width:800px) {
 	#HeaderInfo {
@@ -336,9 +342,11 @@ input {
 		box-shadow: 8px 0px 32px rgba(54, 52, 52, 0.452);
 	}
 	.GenhomeButton{
-		float: none;
 		text-align: center;
-    	display: block;
+		display: block;
+		float: none;
+		height: 100%;
+		line-height: 60px
 	}
 }
 

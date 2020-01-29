@@ -265,6 +265,15 @@
 		font-weight: 400;
 		line-height: 12px;
 	}
+
+	/* 手机时的命令输入框 */
+		/* .TerminalCommandWapper{
+			position: fixed;
+			bottom: 10px;
+			left: 10px;
+			right: 10px;
+			
+		} */
 }
 
 #Terminal a {
