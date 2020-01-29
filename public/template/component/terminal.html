@@ -31,11 +31,10 @@
 		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console...
 		<br />
 	</div>
-	<div class="" style="border-top: 1px solid #585858;">
+	<div class="TerminalCommandWapper">
 		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand"
-			v-model="command" type="text" class="TerminalCommand"
-			placeholder="[命令输入框] 按下 ↑ 或 ↓ 可以查看本地命令记录,输入 help 或 ? 可以查看帮助信息,回车执行命令." aria-describedby="sizing-addon3"
-			autocomplete="off">
+			v-model="command" type="text" class="TerminalCommand" placeholder="[命令输入框] 请输入您要执行的命令..."
+			aria-describedby="sizing-addon3" autocomplete="off">
 	</div>
 </div>
 </div>

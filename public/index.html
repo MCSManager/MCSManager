@@ -147,6 +147,7 @@
 	<!-- 黑屏 HTML -->
 	<div id="balckWarp" onclick="TOOLS.popWindClose(null);"></div>
 
+	<!-- 手机端导航球 -->
 	<div id="SidebarButton" v-on:click="operate()">
 		<div class="SidebarButtonWapper">
 			<span class="glyphicon " :class="!isExpand?'glyphicon-th-list':'glyphicon-list'" aria-hidden="true"></span>
@@ -179,7 +180,11 @@
 	<script type="text/javascript" src="common/js/chart.js"></script>
 
 	<script>
+		// 网络加载判断
 		if (!window.$) alert('[文件加载失败] 网络不通畅，请检查您的网络状态！');
+
+		// // 动态背景色，稍后会继续改变
+		// $('body').css('background-color', 'rgb(243, 243, 243);');
 
 		MCSERVER.website = {};
 

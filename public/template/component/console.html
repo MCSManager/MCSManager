@@ -50,7 +50,7 @@
 			<div class="Panel " :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
 				<div class="PanelTitle">崩溃监视与配置</div>
 				<div class="PanelBody">
-					<div class="PanelItem" v-on:click="toProperties()" v-if="!serverData.autoRestart">
+					<div class="PanelItem" v-on:click="toProperties()">
 						<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> Server.properties 配置文件
 					</div>
 					<transition name="slide-fade">

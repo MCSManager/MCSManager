@@ -66,8 +66,9 @@
 									<div class="col-md-7">
 										<div class="PanelItemInfo">
 											<h4>
-												<span v-text="item.serverName"></span> |
-												<span v-text="item.jarName || '未设置'"></span>
+												<p>{{item.serverName}}</p>
+
+												<p v-text="'端:' + item.jarName || '未设置'"></p>
 											</h4> 状态:
 											<span v-if="item.run" class="color-green"> 正在运行 </span>
 											<span v-else="item.run" class="color-red"> 关闭 </span>
@@ -79,8 +80,8 @@
 										</div>
 									</div>
 									<div class="col-md-5 NextCol">
-										<div class="PanelItemMuem">
-											<button class="btn btn-info" v-on:click="toConsole(item.serverName)">
+										<div class="PanelItemMuem GenhomeButton">
+											<button class="btn btn-info " v-on:click="toConsole(item.serverName)">
 												控制 | 管理
 											</button>
 										</div>
@@ -94,6 +95,8 @@
 		</div>
 	</div>
 </div>
+
+
 
 <!--js-->
 <script>
