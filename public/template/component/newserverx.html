@@ -38,7 +38,7 @@
 <div id='CreateServerViewx' class="OneContainer">
 	<div class="PAGE_NewserverxCreatePanelWapper" v-show="pagecode==0">
 		<div class="Panel PanelBlack">
-			<div class="PanelTitle">实例创建方案</div>
+			<div class="PanelTitle">实例创建方案（正在开发）</div>
 			<div class="PanelBody">
 				<div class="row">
 					<div class="col-md-4">
@@ -76,6 +76,7 @@
 		</div>
 	</div>
 
+
 	<div class="PAGE_NewserverxCreatePanelWapper" v-show="pagecode==1" style="max-width: 500px;">
 		<div class="Panel PanelBlack">
 			<div class="PanelTitle">实例命名</div>
@@ -86,7 +87,7 @@
 						<p>如: MyServer001,MyBungeecord,BukkitServer_xiaowang</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">实例名称</span>
-							<input type="text" class="form-control" placeholder="">
+							<input type="text" class="form-control" placeholder="" v-model="name">
 						</div>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
@@ -113,7 +114,7 @@
 							<button class="btn btn-primary">选择上传文件</button>
 							<span>&nbsp;&nbsp;上传进度 0%</span>
 						</p>
-						<p>实例项目存放目录:</p>
+						<p>实例项目存放目录: {{serverCwd}}</p>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
 							<button class="btn btn-success" v-on:click="nextStep">下一步</button>
@@ -156,12 +157,14 @@
 					</div>
 					<div class="col-md-12">
 						<h4>信息确认</h4>
-						<p>实例项目名: NewServer_xsiadhidh</p>
-						<p>服务端文件: Bukkit1.1.7_sduhw_wwww.jar</p>
-						<p>项目存放目录: D:/sdas/wdw/sdaf/sdww/dwwa</p>
+						<p><b>实例项目名:</b> {{name}}</p>
+						<p><b>服务端文件:</b> {{jarName}}</p>
+						<p><b>存放目录:</b> {{serverCwd}}</p>
+						<p><b>最大内存:</b>{{Xmx || '自动'}}<b> | 最小内存:</b>{{Xms || '自动'}} <b> | 附加参数:</b>{{addCmd || '无'}}
+						</p>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
-							<button class="btn btn-success">确认无误，立刻创建</button>
+							<button class="btn btn-success" v-on:click="toCreateServer">确认无误，立刻创建</button>
 						</div>
 					</div>
 
@@ -182,9 +185,9 @@
 						<br />
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">启动命令</span>
-							<input type="text" class="form-control" placeholder="程序启动命令....">
+							<input type="text" class="form-control" placeholder="程序启动命令...." v-model="highCommande">
 						</div>
-						<small>项目存放目录: D:/xxx/xxx/aaa/xxx </small>
+						<small>运行目录: {{serverCwd}} </small>
 						<br /><br />
 						<p>自定义命令可以帮助您执行任何命令，请务必仔细阅读以下文字！</p>
 						<ul class="ulInfo">
@@ -195,7 +198,7 @@
 						</ul>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
-							<button class="btn btn-success">确认无误，立刻创建</button>
+							<button class="btn btn-success" v-on:click="toCreateServer">确认无误，立刻创建</button>
 						</div>
 					</div>
 				</div>
@@ -212,14 +215,14 @@
 			data: {
 				pagecode: 0,
 				selectCreateType: 0,
-				name: 'NewServer_' + ((Date.parse(new Date()) + "").substr(6)),
+				name: 'new_server_' + ((Date.parse(new Date()) + "").substr(6)),
 				jarName: '',
 				cwd: '',
 				Xmx: '',
 				Xms: '',
 				addCmd: '',
 				java: '',
-				customizeCommand: ''
+				highCommande: ''
 			},
 			methods: {
 				toCreateServer: function () {
@@ -235,7 +238,8 @@
 						cwd: this.cwd,
 						Xmx: this.Xmx,
 						Xms: this.Xms,
-						java: this.Java || 'java'
+						java: this.Java || 'java',
+						highCommande: this.highCommande
 					};
 					WS.sendMsg('server/create', JSON.stringify(obj));
 					RES.redirectPage('./template/server.html', 'server/view');
@@ -259,10 +263,10 @@
 				}
 			},
 			computed: {
-				// serverCwd: function () {
-				// 	if (this.cwd == '<默认标准位置>' || this.cwd == '') return './server/server_core/' + this.name;
-				// 	return this.cwd;
-				// }
+				serverCwd: function () {
+					if (this.cwd == '<默认标准位置>' || this.cwd == '') return '<面板所在目录>/server/server_core/' + this.name + '/';
+					return this.cwd;
+				}
 			}
 		});
 
