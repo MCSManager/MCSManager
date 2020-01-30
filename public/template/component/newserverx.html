@@ -33,6 +33,7 @@
 		margin-top: 24px;
 		border-top: 1px solid rgb(182, 177, 177);
 		text-align: right;
+		overflow: hidden;
 	}
 </style>
 <div id='CreateServerViewx' class="OneContainer">
@@ -44,7 +45,7 @@
 					<div class="col-md-4">
 						<div class="PanelItemBlock" v-on:click="createTypeSelect(0)">
 							<div class="PAGE_NewserverxLogV">
-								<p>引导创建方式</p>
+								<p>引导创建(推荐)</p>
 							</div>
 							<div class="PAGE_NewserverxLogK">
 								适应于基于 Java 开发的主流服务端（Spigot，Bukkit，Bungeecord 等）
@@ -54,7 +55,7 @@
 					<div class="col-md-4">
 						<div class="PanelItemBlock" v-on:click="toNewServer">
 							<div class="PAGE_NewserverxLogV">
-								<p>快速创建方式</p>
+								<p>快速创建</p>
 							</div>
 							<div class="PAGE_NewserverxLogK">
 								适应于基于 Java 开发的主流服务端，并且非常熟悉面板操作的用户
@@ -84,7 +85,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<p><b>实例项目命名与位置（只支持字母，下划线和数字）</b></p>
-						<p>如: MyServer001,MyBungeecord,BukkitServer_xiaowang</p>
+						<p>如: MyServer001,MyBungeecord</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">实例名称</span>
 							<input type="text" class="form-control" v-model="name">
