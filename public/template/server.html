@@ -162,7 +162,19 @@
 		width: 100%;
 		margin: 6px 8px 8px 0px;
 		transition: all .4s;
+
+		height: 200px;
+		min-height: 200px;
+		max-height: 200px;
 		/* border-top: 3px solid rgb(255, 255, 255); */
+
+	}
+
+	.AppInlineBlockList p,
+	.AppInlineBlockList span {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.AppInlineBlockList:hover {

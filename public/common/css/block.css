@@ -80,8 +80,12 @@
 .PanelBody {
 	padding: 10px 12px;
 	font-weight: 400;
-	font-size: 12px;
+	font-size: 14px;
 }
+/* 
+.PanelBodyFontSize12{
+	font-size: 12px;
+} */
 
 /*面板的数据显示css*/
 
