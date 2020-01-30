@@ -79,15 +79,20 @@
 
 	<div class="PAGE_NewserverxCreatePanelWapper" v-show="pagecode==1" style="max-width: 500px;">
 		<div class="Panel PanelBlack">
-			<div class="PanelTitle">实例命名</div>
+			<div class="PanelTitle">项目确定</div>
 			<div class="PanelBody">
 				<div class="row">
 					<div class="col-md-12">
-						<p>实例项目命名（只支持字母，下划线和数字）</p>
+						<p><b>实例项目命名与位置（只支持字母，下划线和数字）</b></p>
 						<p>如: MyServer001,MyBungeecord,BukkitServer_xiaowang</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">实例名称</span>
-							<input type="text" class="form-control" placeholder="" v-model="name">
+							<input type="text" class="form-control" v-model="name">
+						</div>
+						<p>项目存放目录，一般情况自动即可</p>
+						<div class="input-group input-group-sm">
+							<span class="input-group-addon">项目位置</span>
+							<input type="text" class="form-control" placeholder="[自动]" v-model="cwd">
 						</div>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
@@ -114,7 +119,7 @@
 							<button class="btn btn-primary">选择上传文件</button>
 							<span>&nbsp;&nbsp;上传进度 0%</span>
 						</p>
-						<p>实例项目存放目录: {{serverCwd}}</p>
+						<p class="red">实例项目存放目录: {{serverCwd}}</p>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
 							<button class="btn btn-success" v-on:click="nextStep">下一步</button>
