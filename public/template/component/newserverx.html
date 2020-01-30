@@ -116,7 +116,7 @@
 						<p v-show="selectCreateType==2">上传你的程序，记住你的文件名，稍后可能会用到</p>
 						<p v-show="selectCreateType==2">支持任何可执行程序，支持所有服务端程序，（如 jar,exe,bat,sh）</p>
 						<p>
-							<button class="btn btn-primary">选择上传文件</button>
+							<button class="btn btn-primary" v-on:click="uploadFile()">选择上传文件</button>
 							<span>&nbsp;&nbsp;上传进度 0%</span>
 						</p>
 						<p class="red">实例项目存放目录: {{serverCwd}}</p>
@@ -210,7 +210,10 @@
 			</div>
 		</div>
 	</div>
-	</transition>
+	<!-- 文件上传时的表单 -->
+	<form id="PAGE_UploadForm" style="display:none;" method="post" enctype="multipart/form-data" action="/fs/upload">
+		<input type="file" name="upload_file" id="PAGE_UploadFormButton" v-on:change="uploadFormChange" />
+	</form>
 </div>
 
 <script>
@@ -269,6 +272,13 @@
 				toNewServer: function () {
 					RES.redirectPage('./template/component/newserver.html', null, '');
 				},
+				uploadFile: function () {
+					$("#PAGE_UploadFormButton").click();
+				},
+				uploadFormChange: function (e) {
+					console.log(e)
+					$('#PAGE_UploadForm').submit();
+				}
 			},
 			computed: {
 				serverCwd: function () {
