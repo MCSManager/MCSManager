@@ -146,20 +146,23 @@
 							<div class="col-sm-6">
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 最大内存堆 </span>
-									<input type="text" class="form-control" v-model="Xmx" placeholder="[自动]">
+									<input type="text" class="form-control" v-model="Xmx"
+										placeholder="[自动] 若填写请加单位(如1024M,2G)">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon"> 初始内存堆 </span>
-									<input type="text" class="form-control" v-model="Xms" placeholder="[自动]">
+									<input type="text" class="form-control" v-model="Xms"
+										placeholder="[自动] 若填写请加单位(如1024M,2G)">
 								</div>
 							</div>
 						</div>
 						<p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">启动附加参数</span>
-							<input type="text" class="form-control" v-model="addCmd" placeholder="[无附加参数]">
+							<input type="text" class="form-control" v-model="addCmd"
+								placeholder="[无附加参数，可不填] (列如: -server)">
 						</div>
 					</div>
 					<div class="col-md-12">
