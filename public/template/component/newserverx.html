@@ -52,7 +52,7 @@
 						</div>
 					</div>
 					<div class="col-md-4">
-						<div class="PanelItemBlock" v-on:click="createTypeSelect(1)">
+						<div class="PanelItemBlock" v-on:click="toNewServer">
 							<div class="PAGE_NewserverxLogV">
 								<p>快速创建方式</p>
 							</div>
@@ -265,7 +265,10 @@
 				createTypeSelect: function (id) {
 					this.selectCreateType = id;
 					this.nextStep();
-				}
+				},
+				toNewServer: function () {
+					RES.redirectPage('./template/component/newserver.html', null, '');
+				},
 			},
 			computed: {
 				serverCwd: function () {

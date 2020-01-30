@@ -7,16 +7,16 @@
 					<div class="row">
 						<div class="col-sm-12 PanelItemF">
 							<div class="PanelItem" v-on:click="newServerx()">
-								<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 引导创建应用（推荐）
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 创建新实例应用
 							</div>
-							<div class="PanelItem" v-on:click="newServer()">
+							<!-- <div class="PanelItem" v-on:click="newServer()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新应用（高级）
-							</div>
+							</div> -->
 							<div class="PanelItem" v-on:click="opt_all('start')">
-								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有应用
+								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有实例应用
 							</div>
 							<div class="PanelItem" v-on:click="opt_all('stop')">
-								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有应用
+								<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有实例应用
 							</div>
 							<div class="PanelItem" v-on:click="newDocker()">
 								<span class="glyphicon glyphicon-send" aria-hidden="true"></span> 创建虚拟镜像

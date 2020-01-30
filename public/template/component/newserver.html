@@ -26,9 +26,11 @@
 							<p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里，来避免重复的输入相同的数据。</p>
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">目标实例名字</span>
-								<input type="text" class="form-control" v-model="readServerName" placeholder="[在此输入目标服务端的名字即可复制它的配置项目]">
+								<input type="text" class="form-control" v-model="readServerName"
+									placeholder="[在此输入目标服务端的名字即可复制它的配置项目]">
 								<span class="input-group-btn">
-									<button class="btn btn-default" v-on:click="readServerConfig(readServerName)"> 导入配置 </button>
+									<button class="btn btn-default" v-on:click="readServerConfig(readServerName)"> 导入配置
+									</button>
 								</span>
 							</div>
 						</div>
@@ -162,5 +164,5 @@
 
 	});
 
-	MI.rListener('onend', function () {});
+	MI.rListener('onend', function () { });
 </script>
