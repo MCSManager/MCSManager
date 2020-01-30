@@ -38,7 +38,7 @@
 <div id='CreateServerViewx' class="OneContainer">
 	<div class="PAGE_NewserverxCreatePanelWapper" v-show="pagecode==0">
 		<div class="Panel PanelBlack">
-			<div class="PanelTitle">实例创建方案（正在开发）</div>
+			<div class="PanelTitle">实例创建方案</div>
 			<div class="PanelBody">
 				<div class="row">
 					<div class="col-md-4">
@@ -117,9 +117,10 @@
 						<p v-show="selectCreateType==2">支持任何可执行程序，支持所有服务端程序，（如 jar,exe,bat,sh）</p>
 						<p>
 							<button class="btn btn-primary" v-on:click="uploadFile()">选择上传文件</button>
-							<span>&nbsp;&nbsp;上传进度 0%</span>
+							<span>&nbsp;&nbsp;上传进度: <span id="uploadPercentComplete">0%</span></span>
 						</p>
 						<p class="red">实例项目存放目录: {{serverCwd}}</p>
+						<p class="red">启动程序端: <span class="color-high-red ">{{jarName}}</span></p>
 						<div class="PAGE_NewserverNextWapper">
 							<button class="btn btn-warning" v-on:click="previousStep">上一步</button>
 							<button class="btn btn-success" v-on:click="nextStep">下一步</button>
@@ -190,13 +191,16 @@
 						<br />
 						<div class="input-group input-group-sm">
 							<span class="input-group-addon">启动命令</span>
-							<input type="text" class="form-control" placeholder="程序启动命令...." v-model="highCommande">
+							<input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)"
+								v-model="highCommande">
 						</div>
 						<small>运行目录: {{serverCwd}} </small>
+						<br />
+						<small>程序名: {{jarName}} </small>
 						<br /><br />
 						<p>自定义命令可以帮助您执行任何命令，请务必仔细阅读以下文字！</p>
 						<ul class="ulInfo">
-							<li>若是 java 程序需添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前，否则可能导致命令传递失效。
+							<li>若是 java 程序可能需要添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前。
 							</li>
 							<li>示范: java -Djline.terminal=jline.UnsupportedTerminal -jar run.jar --nogui</li>
 							<li>示范: "bash"，"cmd.exe"，"./start_server.sh" 或 "python xxx.py"</li>
@@ -211,8 +215,9 @@
 		</div>
 	</div>
 	<!-- 文件上传时的表单 -->
-	<form id="PAGE_UploadForm" style="display:none;" method="post" enctype="multipart/form-data" action="/fs/upload">
+	<form id="PAGE_UploadForm" style="display:none;" method="post" enctype="multipart/form-data" action="/fileupload">
 		<input type="file" name="upload_file" id="PAGE_UploadFormButton" v-on:change="uploadFormChange" />
+		<input type="text" name="cwd" v-model="cwd">
 	</form>
 </div>
 
@@ -230,7 +235,8 @@
 				Xms: '',
 				addCmd: '',
 				java: '',
-				highCommande: ''
+				highCommande: '',
+				uploadPercentComplete: 0
 			},
 			methods: {
 				toCreateServer: function () {
@@ -273,16 +279,41 @@
 					RES.redirectPage('./template/component/newserver.html', null, '');
 				},
 				uploadFile: function () {
-					$("#PAGE_UploadFormButton").click();
+					// 若未填写cwd则自动默认
+					if (this.cwd == '') this.cwd = './server/server_core/' + this.name;
+					if (this.uploadPercentComplete == 0) {
+						$("#PAGE_UploadFormButton").click();
+					}
 				},
 				uploadFormChange: function (e) {
-					console.log(e)
-					$('#PAGE_UploadForm').submit();
+					if (this.uploadPercentComplete == 0) {
+						var file = $("#PAGE_UploadFormButton")[0].files[0];
+						var filename = file.name;
+						this.jarName = filename;
+						var that = this;
+						TOOLS.fileupload(file, '/fileupload', {
+							cwd: this.cwd
+						}, function (percentComplete) {
+							console.log('上传进度:', percentComplete);
+							that.uploadPercentComplete = percentComplete;
+							$('#uploadPercentComplete').text(percentComplete + '%');
+						}, function () {
+							that.uploadPercentComplete = 100;
+							TOOLS.pushMsgWindow('上传成功');
+							$('#uploadPercentComplete').text('上传成功');
+						}, function () {
+							that.uploadPercentComplete = -1;
+							TOOLS.pushMsgWindow('上传失败，请稍后再进行尝试');
+							$('#uploadPercentComplete').text('上传错误，请刷新网页再重试');
+						});
+					}
+
+
 				}
 			},
 			computed: {
 				serverCwd: function () {
-					if (this.cwd == '<默认标准位置>' || this.cwd == '') return '<面板所在目录>/server/server_core/' + this.name + '/';
+					if (this.cwd == '') return '<面板所在目录>/server/server_core/' + this.name + '/';
 					return this.cwd;
 				}
 			}

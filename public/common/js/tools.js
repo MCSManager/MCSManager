@@ -214,4 +214,34 @@
 		}
 	}
 
+	// 异步大文件上传方案
+	// $("#m-upload-file")[0].files[0] 参数 进程回调
+	TOOLS.fileupload = function (file, url, args, progressCallback, successCallback, failureCallback) {
+		if (typeof FormData != "function") {
+			alert("很遗憾，您的浏览器不兼容异步文件上传。请使用现代浏览器！推荐 Chrome！");
+			return null;
+		}
+		console.log(file);
+		var oMyForm = new FormData();
+		oMyForm.append("time", new Date().toUTCString());
+		oMyForm.append("upload_file", file);
+		for (var k in args) {
+			oMyForm.append(k, args[k]);
+		}
+		var oReq = new XMLHttpRequest();
+		oReq.open("POST", url, true);
+		oReq.onload = function (oEvent) {
+			if (oReq.status == 200) {
+				successCallback && successCallback();
+			} else {
+				failureCallback && failureCallback();
+			}
+		};
+		oReq.upload.addEventListener("progress", (evt) => {
+			var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+			progressCallback(percentComplete);
+		}, false);
+		oReq.send(oMyForm);
+	}
+
 })();

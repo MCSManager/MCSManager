@@ -58,6 +58,17 @@ module.exports.isMaster = (wsSession, notPermssionCounter) => {
     return false;
 }
 
+// 基于 SESSION 的管理员判断
+module.exports.IsSessionMaster = (req, res) => {
+    if (this.needLogin(req, res)) {
+        const username = req.session['username'];
+        if (username.substr(0, 1) == '#') {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 const TOKEN_NAME = '_T0K_N';
 module.exports.tokenName = TOKEN_NAME;
