@@ -54,16 +54,23 @@ serverModel.ServerManager().on('exit', (data) => {
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
 
-    //下一个事件
+    // 传递服务器关闭事件
     serverModel.ServerManager().emit("exit_next", data);
 })
 
 //服务器开启
 serverModel.ServerManager().on('open', (data) => {
     MCSERVER.log('[' + data.serverName + '] >>> 进程创建');
+    // 传递开启服务端事件
+    serverModel.ServerManager().emit("open_next", {
+        serverName: data.serverName
+    });
+    // 仅发送给正在监听控制台的用户
     selectWebsocket(data.serverName, (socket) => {
         response.wsMsgWindow(socket.ws, '服务器运行');
+        // 传递服务器开启事件
     });
+
 })
 
 

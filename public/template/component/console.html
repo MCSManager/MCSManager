@@ -39,9 +39,9 @@
 							<span class="glyphicon glyphicon-pause" aria-hidden="true"> </span> 关闭服务器
 						</div>
 					</transition>
-					<!-- <div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
+					<div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
 						<span class="glyphicon glyphicon-refresh" aria-hidden="true"> </span> 重启服务器
-					</div> -->
+					</div>
 					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-if="run">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"> </span> 强制性结束进程
 					</div>
@@ -95,10 +95,6 @@
 						<span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
 						<span v-on:click="toAPI_JSON()">格式 JSON | API 接口</span>
 					</div>
-					<!-- <div class="PanelItem">
-						<span class="glyphicon glyphicon-picture" aria-hidden="true"> </span>
-						<span v-on:click="toAPI_PAGE()">正常访问接口</span>
-					</div> -->
 				</div>
 			</div>
 		</div>
