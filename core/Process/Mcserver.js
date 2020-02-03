@@ -94,7 +94,7 @@ class MinecraftServer extends ServerProcess {
         properties.parse(this.dataModel.cwd + '/server.properties', {
             path: true
         }, (err, obj) => {
-
+            //Note: 这里callback似乎会执行两次
             //箭头函数this 并且这个不需要保存到配置文件，所以不应该在datamodel
             this.properties = obj;
             callback && callback(this.properties, err);
