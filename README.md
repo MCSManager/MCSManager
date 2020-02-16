@@ -70,7 +70,8 @@ cd mcsmanager/
 # 安装依赖库
 npm install
 # 启动面板
-sudo npm start #或 sudo node app.js
+npm start 
+# 或者 node app.js
 
 ```
 
