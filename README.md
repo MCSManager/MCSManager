@@ -229,12 +229,8 @@ FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改)
 
 <br />
 
-协议与版权
+开源协议
 -----------
-程序是基于 [GNU Affero General Public License v3.0](./LICENSE "GNU Affero General Public License v3.0")  开放源代码的自由软件。
-
-你可以遵照 AGPLv3 协议来修改和重新发布这一程序。
-
-或者，在学习或私自 (内部) 使用时，在不公开发布的原则下，可以无视这个**协议和版权**，因为这本身并不能束缚你，并且我们欢迎这样做。
+MIT License
 
 <br />
