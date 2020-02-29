@@ -58,7 +58,7 @@ http://mcsm.suwings.top/ (官方站点)
 
 ```bash
 # 安装 Node 版本控制工具(若没有 wget,请安装它)
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
 # 关闭终端重新打开再执行以下命令
 # 项目支持 8.0 版本以上，这里使用11版本
 nvm install 11.0.0
