@@ -236,18 +236,18 @@ app.use(['/fs/mkdir', '/fs/rm', '/fs/patse', '/fs/cp', '/fs/rename', '/fs/ls'], 
 app.use('/fs_auth', require('./onlinefs/controller/auth'));
 app.use('/fs', require('./onlinefs/controller/function'));
 
-//初始化模块
+//初始化各个模块
 (function initializationProm() {
 
+    MCSERVER.infoLog('Module', '正在初始化用户管理模块');
     counter.init();
     UserModel.userCenter().initUser();
-    MCSERVER.infoLog('Module', '初始化 UserManager Module  ');
 
+    MCSERVER.infoLog('Module', '正在初始化服务端管理模块');
     ServerModel.ServerManager().loadALLMinecraftServer();
-    MCSERVER.infoLog('Module', '初始化 ServerManager Module ');
 
+    MCSERVER.infoLog('Module', '正在初始化计划任务模块');
     Schedule.init();
-    MCSERVER.infoLog('Module', '初始化 Schedule Module');
 
     var host = MCSERVER.localProperty.http_ip;
     var port = MCSERVER.localProperty.http_port;

@@ -30,6 +30,7 @@ WebSocketObserver().listener('server/console', (data) => {
             FTP_ip: MCSERVER.localProperty.ftp_ip,
             FTP_port: MCSERVER.localProperty.ftp_port,
             userName: userName,
+            isFtpOpen: MCSERVER.localProperty.ftp_is_allow,
             mcping: mcPingProtocol.QueryMCPingTask(serverName) || {
                 current_players: '--',
                 max_players: '--'

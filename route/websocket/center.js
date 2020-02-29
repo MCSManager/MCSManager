@@ -47,8 +47,9 @@ let usage = process.memoryUsage();
 MCSERVER.logCenter.initLogData('CPU', 24);
 MCSERVER.logCenter.initLogData('RAM', 24);
 
-//实不相瞒，其实我是弄的缓存
+// 数据缓存，以避免频繁请求带来的损耗
 setInterval(function () {
+    // CPU 值缓存
     osUtils.cpuUsage(function (v) {
         cacheCPU = (v * 100).toFixed(2);
         MCSERVER.dataCenter.cacheCPU = cacheCPU;
@@ -92,7 +93,7 @@ setInterval(function () {
         root: mversion.root,
         oneversion: mversion.oneversion,
         twoversion: mversion.twoversion,
-        system: mversion.system
+        system: mversion.system,
     }
 
     let useMemBai = (os.freemem() / os.totalmem() * 100).toFixed(0);

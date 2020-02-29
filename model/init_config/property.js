@@ -31,7 +31,10 @@ MCSERVER.localProperty.http_ip = "";
 
 
 //是否开启 FTP 服务
-MCSERVER.localProperty.ftp_is_allow = true;
+//此功能默认为关闭，不建议开启，目前FTP在大量用户使用时可能会出现问题
+//使用在线文件管理可以代替此功能
+//如必须使用，请使用主流FTP客户端连接，并防火墙开启20010~20200端口。
+MCSERVER.localProperty.ftp_is_allow = false;
 
 
 //FTP 服务监听端口
@@ -50,9 +53,9 @@ MCSERVER.localProperty.ftp_start_port = 20010;
 MCSERVER.localProperty.ftp_end_port = 20200;
 
 
-//控制台实时刷新频率 单位毫秒 默认 1500 毫秒
+//控制台实时刷新频率 单位毫秒 默认 1400 毫秒
 //建议在 1000 毫秒 与 3000 毫秒之选择 
-MCSERVER.localProperty.console_send_times = 1500;
+MCSERVER.localProperty.console_send_times = 1400;
 
 
 //控制台一次性发送的数据最大限制 
@@ -102,6 +105,7 @@ MCSERVER.localProperty.session_max_age = 240
 //每个服务器拥有的最大计划任务数量
 //默认 10 个
 MCSERVER.localProperty.schedule_max = 10;
+
 
 //所有用户总数，最高解压缩任务上限
 //默认最大同时解压1个压缩文件，多余的会排队进行
