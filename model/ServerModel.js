@@ -21,8 +21,9 @@ module.exports.createServerDir = (serverName, cwd) => {
     if (!fs.existsSync(cwd)) {
         fs.mkdirSync(cwd);
     }
-    //EULA.txt 写入
-    fs.writeFile(cwd + '/eula.txt', 'eula=true', () => { });
+
+    // 因法律协议问题，面板不再自动同意 EULA 协议，从此以后需玩家手动同意。
+    // fs.writeFile(cwd + '/eula.txt', 'eula=true', () => { });
 }
 
 module.exports.createServer = (serverName, config) => {
