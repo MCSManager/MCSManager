@@ -93,7 +93,7 @@ setInterval(function () {
         root: mversion.root,
         oneversion: mversion.oneversion,
         twoversion: mversion.twoversion,
-        system: mversion.system,
+        system: mversion.system
     }
 
     let useMemBai = (os.freemem() / os.totalmem() * 100).toFixed(0);
