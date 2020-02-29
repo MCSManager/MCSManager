@@ -242,9 +242,9 @@
 			}
 		});
 
-		//服务器状态请求
+		// 服务器状态请求
 		PAGE.timerR = setInterval(function () {
-			WS.sendMsg('server/console', serverName);
+			WS.sendMsg('server/console', MCSERVER.listenServername);
 		}, 3000);
 
 		//CPU
@@ -290,9 +290,9 @@
 	});
 
 	MI.rListener('onend', function () {
+		clearInterval(PAGE.timerR);
 		MI.onDestroy('colmchangeEnd', PAGE.chartResizeFunc);
 		MI.onDestroy('resize', PAGE.chartResizeFunc);
 		PAGE.ChartLogIs = false;
-		clearInterval(PAGE.timerR);
 	});
 </script>
