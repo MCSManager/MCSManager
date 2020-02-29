@@ -30,19 +30,19 @@
 				<div class="PanelBody">
 
 					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toOpenServer()" v-if="!run">
+						<div class="PanelItem" v-on:click="toOpenServer()" v-show="!run">
 							<span class="glyphicon glyphicon-play" aria-hidden="true"> </span> 开启服务器
 						</div>
 					</transition>
 					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toCommand('__stop__')" v-if="run">
+						<div class="PanelItem" v-on:click="toCommand('__stop__')" v-show="run">
 							<span class="glyphicon glyphicon-pause" aria-hidden="true"> </span> 关闭服务器
 						</div>
 					</transition>
-					<div class="PanelItem" v-on:click="toCommand('__restart__')" v-if="run">
+					<div class="PanelItem" v-on:click="toCommand('__restart__')" v-show="run">
 						<span class="glyphicon glyphicon-refresh" aria-hidden="true"> </span> 重启服务器
 					</div>
-					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-if="run">
+					<div class="PanelItem" v-on:click="toCommand('__killserver__')" v-show="run">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"> </span> 强制性结束进程
 					</div>
 				</div>
@@ -54,13 +54,13 @@
 						<span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> Server.properties 配置文件
 					</div>
 					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-if="serverData.autoRestart">
+						<div class="PanelItem" v-on:click="toAutoRestart(false)" v-show="serverData.autoRestart">
 							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
 							<span style="color: #29b90c;">打开</span>
 						</div>
 					</transition>
 					<transition name="slide-fade">
-						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-if="!serverData.autoRestart">
+						<div class="PanelItem" v-on:click="toAutoRestart(true)" v-show="!serverData.autoRestart">
 							<span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
 							<span style="color: #818181;">关闭</span>
 						</div>
