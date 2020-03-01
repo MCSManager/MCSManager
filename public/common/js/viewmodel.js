@@ -144,7 +144,7 @@
 			return;
 		}
 		// 终端最长长度限制
-		var consoleMaxLength = 250000;
+		var consoleMaxLength = 200000;
 		if (MinecraftConsole.innerHTML.length > consoleMaxLength) {
 			MinecraftConsole.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />"
 		}
