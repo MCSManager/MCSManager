@@ -139,7 +139,6 @@ setInterval(() => {
         // 压入原始数据的历史记录
         new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data);
         // 释放内存
-        delete consoleBuffer[serverName]
         consoleBuffer[serverName] = "";
     }
 }, MCSERVER.localProperty.console_send_times);
