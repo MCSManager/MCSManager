@@ -25,7 +25,7 @@ WebSocketObserver().listener('genuser/home', (data) => {
         // 判断是否为管理员，若是的话则返回所有服务端的数据
         if (permssion.isMaster(data.WsSession)) {
             allowedServerList = [];
-            serverList = serverModel.ServerManager().getServerList();
+            const serverList = serverModel.ServerManager().getServerList();
             for (const v of serverList) {
                 allowedServerList.push(v.serverName);
             }

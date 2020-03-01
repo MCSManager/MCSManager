@@ -24,7 +24,7 @@ function CreateScheduleJob(obj) {
 //过滤计划任务列表
 function getMineScheduleList(servername) {
     let list = MCSERVER.Schedule.dataModel.list;
-    sendlist = [];
+    const sendlist = [];
     for (const iterator of list) {
         if (iterator && iterator.servername == servername) {
             sendlist.push(iterator);
@@ -57,7 +57,7 @@ WebSocketObserver().listener('schedule/create', (data) => {
 
     if (permssion.isCanServer(username, obj.servername || "")) {
         try {
-            list = getMineScheduleList(obj.servername);
+            const list = getMineScheduleList(obj.servername);
             if (list.length > MAX_MASK) {
                 response.wsMsgWindow(data.ws, "到达创建数量上限！");
                 return;

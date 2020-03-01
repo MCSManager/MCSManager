@@ -168,7 +168,7 @@ router.ws('/ws', function (ws, req) {
             let reqs = req;
 
             //Websocket 自定义协议解析
-            reqHeaderObj = JSON.parse(reqHeader);
+            const reqHeaderObj = JSON.parse(reqHeader);
             if (!reqHeaderObj) return;
 
             //Websocket 心跳包 | 前端 10 秒递增链接健康指数
