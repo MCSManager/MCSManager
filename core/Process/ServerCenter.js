@@ -1,6 +1,8 @@
 const MinecraftServer = require('./Mcserver');
 const EventEmitter = require('events');
 const fs = require('fs');
+const mcPingProtocol = require('../../helper/MCPingProtocol');
+
 const BASE_SERVER_DIR = './server/';
 const BASE_SERVER_CORE_NAME = 'server_core';
 
@@ -177,8 +179,19 @@ class ServerManager extends EventEmitter {
         let list = [];
         let returnData = null;
         for (let k in this.serverList) {
+            // 从服务端模型中获取数据
             returnData = this.serverList[k].dataModel;
             returnData.run = this.serverList[k].isRun();
+            // 从缓存中获取玩家数量
+            const mcpingResult = mcPingProtocol.QueryMCPingTask(k);
+            if (mcpingResult) {
+                returnData.currnetPlayers = mcpingResult.current_players;
+                returnData.maxPlayers = mcpingResult.max_players;
+            } else {
+                returnData.currnetPlayers = '--';
+                returnData.maxPlayers = '--';
+            }
+            // 准备发送给前端的服务端集合数据
             list.push({
                 serverName: k,
                 data: returnData

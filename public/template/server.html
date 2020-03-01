@@ -33,7 +33,7 @@
 	<!-- 新的应用列表 -->
 	<div class="container-fluid" style="padding: 0px;">
 		<div class="row">
-			<div class="col-sm-4" v-for="item of items">
+			<div class="col-md-6 col-lg-4" v-for="item of items">
 				<a href="javascript:void(0);" class="FontBlack" v-on:click="toConsole(item.serverName);">
 					<div class="Panel AppInlineBlockList ">
 						<!-- <div class="PanelTitle"></div> -->
@@ -47,17 +47,31 @@
 								<h4 v-if="item.data.highCommande">
 									<span v-text="item.serverName"></span>
 									<span class="AppInlineBlockListTitleTip "><span class="FontGray">自定义</span></span>
+									<span class="AppInlineBlockListTitlePlayer">
+										<span v-text="item.data.currnetPlayers"></span>
+										/
+										<span v-text="item.data.maxPlayers"></span>
+									</span>
 								</h4>
 								<h4 v-if="item.data.jarName != '' && !item.data.highCommande">
 									<span v-text="item.serverName"></span>
-									<span class="AppInlineBlockListTitleTip"><span class="FontGray">普通端</span></span>
+									<span class="AppInlineBlockListTitleTip"><span class="FontGray">普通</span></span>
+									<span class="AppInlineBlockListTitlePlayer">
+										<span v-text="item.data.currnetPlayers"></span>
+										/
+										<span v-text="item.data.maxPlayers"></span>
+									</span>
 								</h4>
+
 							</div>
 							<div class="AppInlineBlockListBody">
 								<div class="row">
 									<div class="col-xs-9">
-										<span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
-										<span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
+										<p>
+											<span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
+											<span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
+
+										</p>
 										<hr style="margin-top: 8px;margin-bottom: 10px;">
 										<p>
 											<span class="FontGray">创建时间:</span>
@@ -73,11 +87,11 @@
 											<span v-text="item.data.timeLimitDate || '无限期'"></span>
 										</p>
 										<p>
-											<span class="FontGray">端: </span>
+											<span class="FontGray">文件名: </span>
 											<span v-text="item.data.jarName"></span>
 										</p>
 									</div>
-									<div class="col-xs-3">
+									<div class="col-xs-3" style="text-align: center;">
 										<a href="javascript:void(0);" class="mbuttonWhite"
 											v-on:click="toTerminal(item.serverName);">
 											<span class="glyphicon glyphicon-console" aria-hidden="true">
@@ -96,6 +110,7 @@
 											v-on:click="toDeleteServer(item.serverName)">
 											<span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除
 										</a>
+
 									</div>
 								</div>
 							</div>
@@ -123,12 +138,18 @@
 		border: 1px solid #797676;
 		padding: 2px 2px;
 		text-align: center;
-		margin-right: 10px;
+		/* margin-right: 8px; */
 		font-size: 11px;
+		max-width: 90px;
 	}
 
 	.AppInlineBlockListTitle {
 		position: relative;
+	}
+
+	.AppInlineBlockListTitlePlayer {
+		font-size: 13px;
+		float: right;
 	}
 
 	.AppInlineBlockListTitleMuem {
