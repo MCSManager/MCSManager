@@ -9,6 +9,7 @@
 简单，易用，多实例，轻量级的 Minecraft Server 控制面板
 
 
+
 [中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md)
 
 <br />
@@ -21,6 +22,8 @@
 这是一款可以管理多个 Minecraft 服务端（支持群组端）的 Web 管理面板，并且可以分配多个子账号来分别管理不同的 Minecraft 服务端，支持绝大部分主流的服务端，甚至是其他非 Minecraft 的程序。
 
 控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行，属于轻量级的 Minecraft 服务端控制面板。
+
+![main_theme.png](/public/common/main_theme.png)
 
 <br />
 
