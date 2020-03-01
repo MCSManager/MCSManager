@@ -9,6 +9,35 @@ const serverModel = require('../../model/ServerModel');
 const pathm = require("path");
 const loginedContainer = require('../../helper/LoginedContainer');
 
+const SERVERS_DIR = "./server/server_core/";
+
+router.all('/auth_master/pwd', (req, res) => {
+    let userName = req.session['username'];
+
+    //基础检查
+    if (!userName) {
+        res.send("[ 权限阻止 ] 您未登录");
+        return;
+    }
+
+    //统一登录逻辑性检查
+    if (!loginedContainer.isLogined(req.sessionID, userName)) {
+        res.send("[ 权限阻止 ] 您未登录");
+        return;
+    }
+
+    // 判断是否为管理员
+    if (permission.IsSessionMaster(req, res)) {
+        MCSERVER.log("[Online Fs]", "管理员", userName, "访问服务端存放目录");
+        const absServersDir = pathm.normalize(pathm.join(pathm.join(__dirname, "../../"), SERVERS_DIR));
+        req.session.fsos = new FileOperateStructure(absServersDir, "./");
+        req.session.fsoperate = {};
+        req.session.fsoperate.tmp = [];
+        req.session.save();
+        res.redirect('/public/onlinefs_public');
+    }
+})
+
 //自定义扩展
 router.all('/auth/:servername', (req, res) => {
     let serverName = req.params.servername;

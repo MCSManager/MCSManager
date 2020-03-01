@@ -1,0 +1,79 @@
+<div id="QuickOperation" class="OneContainer">
+	<div class="Panel PanelBlack">
+		<div class="PanelTitle">用户 {{ username }} 持有的服务器</div>
+		<div class="PanelBody">
+			请选择一个项目来进行文件管理
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3" v-if="MCSERVER.username.substr(0, 1) == '#'">
+			<div class="Panel AppInlineBlockList" v-on:click="toServersDir()">
+				<div class="PanelBody">
+					<div class="PanelItemInfo">
+						<p class="PagePanelItemInfoTextCenter"><b>服务端文件默认存放目录</b></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3" v-for="item of userServerList">
+			<div class="Panel AppInlineBlockList" v-on:click="toOnlineFs(item.serverName)">
+				<div class="PanelBody">
+
+					<div class="PanelItemInfo">
+						<p class="PagePanelItemInfoTextCenter">{{item.serverName}}</p>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<style>
+	.mbuttonWhite {
+		display: inline-block;
+		/* margin-bottom: 2px; */
+		color: #292929;
+		border: 1px solid #797676;
+		padding: 2px 2px;
+		text-align: center;
+		margin-right: 4px;
+		font-size: 11px;
+		border-radius: 2px;
+	}
+
+	.PagePanelItemInfoTextCenter {
+		margin: 0px;
+		text-align: center;
+	}
+
+	.AppInlineBlockList:hover {
+		border: 1px solid rgb(0, 139, 222);
+		cursor: pointer;
+	}
+</style>
+
+
+<!--js-->
+<script>
+	MI.rListener('onload', function () {
+		// MCSERVER.colmSet(false);
+		VIEW_MODEL.newVue('GenHome', {
+			el: '#QuickOperation',
+			methods: {
+				toOnlineFs: function (serverName) {
+					// MCSERVER.listenServername = serverName;
+					var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
+					window.open(path);
+				},
+				toServersDir: function () {
+					var path = MCSERVER.URL("fs_auth/auth_master/pwd");
+					window.open(path);
+				}
+			}
+		});
+	})
+
+	MI.rListener('onend', function () { })
+</script>
