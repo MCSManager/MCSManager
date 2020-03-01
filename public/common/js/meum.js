@@ -8,7 +8,7 @@
 		name: '用户中心', //菜单名
 		link: './template/gen_home.html', //单击时跳转目的
 		api: 'genuser/home', //通过 Webscoket 后端请求的API,null为不请求,
-		select: true
+		select: false
 	}, {
 		class: 'glyphicon-th-list', //html元素 类
 		name: '文件管理', //菜单名
@@ -30,7 +30,7 @@
 		name: '监控数据中心',
 		link: './template/center.html',
 		api: 'center/show',
-		select: true
+		select: false
 	}, {
 		class: 'glyphicon-tasks',
 		name: '服务端管理',

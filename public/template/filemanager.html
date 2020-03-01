@@ -58,6 +58,9 @@
 <!--js-->
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/filemanager', 'genuser/home', null);
+
 		// MCSERVER.colmSet(false);
 		VIEW_MODEL.newVue('GenHome', {
 			el: '#QuickOperation',

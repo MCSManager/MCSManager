@@ -222,6 +222,9 @@
 
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/server', 'server/view', null);
+
 		VIEW_MODEL.newVue('ServerList', {
 			el: '#ServerList',
 			methods: {

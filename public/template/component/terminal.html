@@ -40,8 +40,8 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
-		//默认隐藏控制台
-		// MCSERVER.colmSet(false);
+		// 定义页面地址
+		TOOLS.definePage('template/component/terminal', 'server/console', MCSERVER.listenServername);
 
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;

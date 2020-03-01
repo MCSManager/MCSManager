@@ -97,6 +97,9 @@
 
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/component/newserver', 'genuser/home', '');
+
 		VIEW_MODEL.newVue('CreateServerView', {
 			el: '#CreateServerView',
 			data: {

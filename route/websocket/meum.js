@@ -16,5 +16,5 @@ WebSocketObserver().listener('menu', (data) => {
     response.wsSend(data.ws, 'ws/muem', {
         username: data.WsSession.username,
     });
-    response.wsMsgWindow(data.ws, '欢迎上线 ' + data.WsSession.username);
+    // response.wsMsgWindow(data.ws, '欢迎上线 ' + data.WsSession.username);
 });

@@ -66,6 +66,9 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/feelback', '', null);
+
 		//请求早已缓存的 最新动态
 		RES.ajax({
 			type: 'GET',

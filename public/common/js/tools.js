@@ -244,4 +244,50 @@
 		oReq.send(oMyForm);
 	}
 
+
+	TOOLS.page = function (toUrl) {
+		var url = window.location.href;
+		//page=template/component/console.html&api=server/console&v=sds
+		var parameter = url.split("#")[1];
+		if (!parameter) return false;
+		// [api=server/console,xxx=xxx]
+		parameter = parameter.split("&");
+		var parameters = {};
+		for (var k in parameter) {
+			var z = parameter[k].split("=");
+			parameters[z[0]] = z[1];
+		}
+		console.log(parameters)
+		if (parameters['page']) {
+			RES.redirectPage('./' + parameters['page'] + ".html", parameters['api'], parameters['listen']);
+			return true
+		} else {
+			return false;
+		}
+	}
+
+
+	TOOLS.definePage = function (v1, v2, v3) {
+		if (MCSERVER.listenServername) {
+			v3 = MCSERVER.listenServername;
+		} else {
+			v3 = MCSERVER.listenServername = TOOLS.pageParameter('listen');
+		}
+		console.log('definePage:', "#page=" + v1 + "&api=" + v2 + "&listen=" + v3);
+		window.location.hash = "#page=" + v1 + "&api=" + v2 + "&listen=" + v3;
+	}
+
+
+	TOOLS.pageParameter = function (pageKey) {
+		var hash = window.location.hash;
+		var parameter = hash.split("&");
+		for (var k in parameter) {
+			var z = parameter[k].split("=");
+			if (z[0] == pageKey) {
+				return z[1];
+			}
+		}
+		return null;
+	}
+
 })();

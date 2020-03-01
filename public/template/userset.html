@@ -112,6 +112,9 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/userset', 'userset/update', null);
+
 		VIEW_MODEL.newVue('UsersetList', {
 			el: '#UsersetList',
 			data: {

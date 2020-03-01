@@ -56,6 +56,9 @@
 	MI.rListener('onload', function () {
 		MCSERVER.website.schedule = {};
 
+		// 定义页面地址
+		TOOLS.definePage('template/component/schedule', 'schedule/list', MCSERVER.listenServername);
+
 		VIEW_MODEL.newVue('ServerSchedule', {
 			el: '#ServerSchedule',
 			methods: {

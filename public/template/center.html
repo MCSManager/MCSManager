@@ -180,6 +180,9 @@
 <script>
 	//创建
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/center', 'center/show', null);
+
 		PAGE.time = function (value) {
 			return function () {
 				var theTime = parseInt(Math.floor(this.uptime)); // 秒

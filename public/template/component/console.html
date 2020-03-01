@@ -176,8 +176,12 @@
 
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/component/console', 'server/console', MCSERVER.listenServername);
 
-		var serverName = MCSERVER.listenServername || "";
+
+		var serverName = MCSERVER.listenServername;
+
 
 		VIEW_MODEL.newVue('ConsolePanel', {
 			el: '#ConsolePanel',
