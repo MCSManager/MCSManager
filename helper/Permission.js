@@ -5,7 +5,7 @@ function randomString(len) {
     var $chars = 'ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_';
     var maxPos = $chars.length;
     var pwd = '';
-    for (i = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
         pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
     }
     return pwd;

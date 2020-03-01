@@ -68,7 +68,7 @@ setInterval(function () {
         sockec++
     }
     //统计封号ip数量
-    for (let k in MCSERVER.login) MCSERVER.login[k] > 10 ? banipc++ : banipc = banipc;
+    for (let k in MCSERVER.login) MCSERVER.login[k] > 10 ? banipc++ : banipc;
 
     //缓存值
     cacheSystemInfo = {

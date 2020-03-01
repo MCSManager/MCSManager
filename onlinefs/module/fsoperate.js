@@ -92,7 +92,7 @@ class FileOperate extends BaseFileOperate {
             for (let file of files) {
                 var curPath = path + "/" + file;
                 if (fs.statSync(curPath).isDirectory()) { // recurse  
-                    this._rm_rf(curPath, null);
+                    this._rm_rf(curPath);
                 } else { // delete file  
                     callbackExec && callbackExec(curPath);
                 }

@@ -42,7 +42,6 @@
 	//单页生命周期替换事件
 	MI.listener('page/live', function (ws) {
 		for (var tmp in PAGE) delete PAGE[tmp];
-		delete PAGE;
 		PAGE = new Object();
 	});
 

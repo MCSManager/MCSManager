@@ -125,7 +125,7 @@
 })();
 
 (function () {
-	$SideCol = $('#SideCol');
+	var $SideCol = $('#SideCol');
 	// $Container = $('#Container');
 
 	// 获取菜单栏状态

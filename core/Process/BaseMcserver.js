@@ -37,7 +37,7 @@ class ServerProcess extends EventEmitter {
         MCSERVER.log('-------------------------------');
 
         if (!this.dataModel.highCommande || this.dataModel.highCommande.trim().length <= 0)
-            new Error("自定义参数非法,无法启动服务端");
+            throw new Error("自定义参数非法,无法启动服务端");
         let commandArray = this.dataModel.highCommande.split(" ");
         let javaPath = commandArray.shift();
         //过滤

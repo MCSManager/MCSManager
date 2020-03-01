@@ -34,7 +34,7 @@ function wsSend(ws, info, value, body = '') {
 }
 
 module.exports.returnMsg = (res, info, value) => {
-    send(res, info, value, undefined);
+    send(res, info, value);
 }
 
 module.exports.returnInfo = (res, value) => {

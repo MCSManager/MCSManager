@@ -110,8 +110,8 @@ class MinecraftServer extends ServerProcess {
         text = text.replace(/ = /igm, "=");
         // 写入数据, 文件不存在会自动创建
         fs.writeFile(this.dataModel.cwd + '/server.properties', text, (err) => {
-            this.propertiesLoad(() => {
-                callback && callback(this.properties, err);
+            this.propertiesLoad((properties, propertiesError) => {
+                callback && callback(properties, propertiesError);
             });
         });
     }

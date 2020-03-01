@@ -29,7 +29,7 @@
 				return;
 			}
 			_run = true;
-			msgObj = _queue.shift();
+			var msgObj = _queue.shift();
 
 			showMsgWindow(msgObj.msg, function () {
 				//下一个
@@ -126,7 +126,7 @@
 		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
 
-		RegExpStringArr = [
+		var RegExpStringArr = [
 			//蓝色
 			["Unknown command", "Loading libraries, please wait...",
 				"Loading", "Loaded", "\\d{1,3}%", "true", "false",
