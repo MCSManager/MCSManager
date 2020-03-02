@@ -5,7 +5,7 @@
 				<div class="PanelBody">
 					<div class="row">
 						<div class="col-md-8" style="text-align: center;margin-top: 2px;">
-							<div class="input-group input-group-sm mb0">
+							<div class="input-group input-group-sm">
 								<span class="input-group-addon">/</span>
 								<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
 									@keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command" type="text"
@@ -13,7 +13,7 @@
 									aria-describedby="sizing-addon3">
 							</div>
 						</div>
-						<div class="col-md-4 PanelItemF" style="text-align: right;">
+						<div class="col-md-4 PanelItemF" style="text-align: center;">
 							<div class="PanelItem mb0"
 								v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
 								<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制面板
@@ -46,22 +46,38 @@
 
 		// 若终端未初始化则初始化终端与其方法
 		if (!MCSERVER.term) {
+			// 根据浏览器的高宽来决定终端的列数和行数
 			var clientHeight = document.body.clientHeight - 60;
 			var clientWidth = $('#WebTerminal').width();
-			var rows = parseInt(clientHeight / 20);
-			var cols = parseInt(clientWidth / 10);
+			var rows = parseInt(clientHeight / 20) - 1;
+			var cols = parseInt(clientWidth / 8) - 4;
+			var fontSize = 14;
+			if (document.body.clientWidth <= 800) fontSize = 10;
 			var tempCommandString = "";
 			var term = MCSERVER.term = new Terminal({
 				disableStdin: true,
 				rows: rows,
-				cols: cols
+				cols: cols,
+				fontSize: fontSize
 			});
+			// 终端基本颜色代码
+			term.TERM_TEXT_RED = "\x1B[31m";
+			term.TERM_TEXT_GREEN = "\x1B[32m";
+			term.TERM_TEXT_YELLOW = "\x1B[33m";
+			term.TERM_TEXT_WHTILE = "\x1B[37m";
+			term.TERM_TEXT_B = "\x1B[1m";
+			// 装载终端到 DOM 对象
 			term.open(document.getElementById('WebTerminal'));
+			// 终端提示行
 			term.prompt = function (command) {
-				term.write('\r\n[' + PAGE.serverName + '@application]'
+				term.write('\x1B[1;1;32m' + '[' + term.TERM_TEXT_WHTILE
+					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'application'
+					+ term.TERM_TEXT_YELLOW + ']' + term.TERM_TEXT_WHTILE
 					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
-					+ (command || '') + '\r\n');
+					+ (command || '')
+					+ '\x1B[0m \r\n');
 			}
+			// 初始化终端方法
 			term.startTerminal = function () {
 				MCSERVER.term.clear();
 				MCSERVER.term.prompt();
@@ -71,7 +87,7 @@
 		// 清空屏幕并输出基本欢迎语
 		MCSERVER.term.startTerminal();
 
-		// 开始请求控制台
+		// 监听此实例的标准输出，接下来将会有信息主动传来
 		WS.sendMsg('server/console/ws', PAGE.serverName);
 
 		VIEW_MODEL.newVue('Terminal', {
@@ -120,7 +136,6 @@
 				commandList: [],
 				commandListPrint: 0,
 				historyIf: false
-
 			}
 		});
 	});
