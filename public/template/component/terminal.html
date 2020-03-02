@@ -1,37 +1,38 @@
 <div id='Terminal' class="OneContainer">
-
-	<div class="Panel PanelBlack">
-		<div class="PanelBody">
-			<div class="row">
-				<div class="col-md-8">
-					<div class="input-group input-group-sm">
-						<span class="input-group-addon">/</span>
-						<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
-							@keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command" type="text"
-							autocomplete="off" placeholder="[命令输入框] 请输入您要执行的命令..." aria-describedby="sizing-addon3">
-					</div>
-
-				</div>
-				<div class="col-md-4 PanelItemF">
-					<div class="PanelItem "
-						v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
-						<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制面板
-					</div>
-					<div class="PanelItem  " v-on:click="MCSERVER.term.startTerminal()">
-						<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
-					</div>
-					<div class="PanelItem " v-on:click="stopServer()">
-						<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
-					</div>
-					<div class="PanelItem  PhoneDisplayNone" v-on:click="toOpenServer()">
-						<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
+	<div class="row">
+		<div class="col-md-12">
+			<div class="Panel PanelGray">
+				<div class="PanelBody">
+					<div class="row">
+						<div class="col-md-8" style="text-align: center;margin-top: 2px;">
+							<div class="input-group input-group-sm mb0">
+								<span class="input-group-addon">/</span>
+								<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
+									@keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command" type="text"
+									autocomplete="off" placeholder="[命令输入框] 请输入您要执行的命令..."
+									aria-describedby="sizing-addon3">
+							</div>
+						</div>
+						<div class="col-md-4 PanelItemF" style="text-align: right;">
+							<div class="PanelItem mb0"
+								v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
+								<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制面板
+							</div>
+							<div class="PanelItem mb0" v-on:click="MCSERVER.term.startTerminal()">
+								<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
+							</div>
+							<div class="PanelItem mb0" v-on:click="stopServer()">
+								<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
+							</div>
+							<div class="PanelItem mb0" v-on:click="toOpenServer()">
+								<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
-</div>
 </div>
 <script>
 	MI.rListener('onload', function () {
@@ -45,7 +46,7 @@
 
 		// 若终端未初始化则初始化终端与其方法
 		if (!MCSERVER.term) {
-			var clientHeight = document.body.clientHeight - 100;
+			var clientHeight = document.body.clientHeight - 60;
 			var clientWidth = $('#WebTerminal').width();
 			var rows = parseInt(clientHeight / 20);
 			var cols = parseInt(clientWidth / 10);
