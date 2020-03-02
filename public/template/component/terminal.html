@@ -1,41 +1,46 @@
 <div id='Terminal'>
-	<div class="row" style="position: absolute;right: 16px;">
-		<div class="col-sm-12 PanelItemF">
-			<div class="PanelItem PanelItemBlack"
-				v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
-				<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制台
-			</div>
-			<div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem PanelItemBlack"
-				v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
-				<span class="glyphicon glyphicon-list" aria-hidden="true"></span> 实例列表
-			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="loadHistory()">
-				<span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> 历史
-			</div>
-			<div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="goBttom()">
-				<span class="glyphicon glyphicon-download PhoneDisplayNone" aria-hidden="true"></span> 底部
-			</div>
-			<div class="PanelItem PanelItemBlack " v-on:click="clearConsole()">
-				<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
-			</div>
-			<div class="PanelItem PanelItemBlack" v-on:click="stopServer()">
-				<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
-			</div>
-			<div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="toOpenServer()">
-				<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
+
+	<div class="Panel PanelBlack">
+		<div class="PanelBody">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">/</span>
+						<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
+							@keyup.down="toCommandhi(-1)" @keyup.enter="toCommand" v-model="command" type="text"
+							autocomplete="off" placeholder="[命令输入框] 请输入您要执行的命令..." aria-describedby="sizing-addon3">
+					</div>
+
+				</div>
+				<div class="col-md-6 PanelItemF">
+					<div class="PanelItem "
+						v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
+						<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制台
+					</div>
+					<div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem "
+						v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
+						<span class="glyphicon glyphicon-list" aria-hidden="true"></span> 实例列表
+					</div>
+					<div class="PanelItem " v-on:click="loadHistory()">
+						<span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> 历史
+					</div>
+					<div class="PanelItem " v-on:click="goBttom()">
+						<span class="glyphicon glyphicon-download PhoneDisplayNone" aria-hidden="true"></span> 底部
+					</div>
+					<div class="PanelItem  " v-on:click="clearConsole()">
+						<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
+					</div>
+					<div class="PanelItem " v-on:click="stopServer()">
+						<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
+					</div>
+					<div class="PanelItem  PhoneDisplayNone" v-on:click="toOpenServer()">
+						<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="TerminalMinecraft" contenteditable="false">
-		<br />
-		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console...
-		<br />
-	</div>
-	<div class="TerminalCommandWapper">
-		<input id='TerminalCommand' @keyup.up="toCommandhi(1)" @keyup.down="toCommandhi(-1)" @keyup.enter="toCommand"
-			v-model="command" type="text" class="TerminalCommand" placeholder="[命令输入框] 请输入您要执行的命令..."
-			aria-describedby="sizing-addon3" autocomplete="off">
-	</div>
+
 </div>
 </div>
 <script>
@@ -43,43 +48,37 @@
 		// 定义页面地址
 		TOOLS.definePage('template/component/terminal', 'server/console', MCSERVER.listenServername);
 
-		if (!MCSERVER.term) {
-			var tempCommandString = "";
-			var term = MCSERVER.term = new Terminal();
-			term.open(document.getElementById('WebTerminal'));
-			term.write('Hello\r\n')
-			term.onKey(e => {
-				const printable = !e.domEvent.altKey && !e.domEvent.altGraphKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
-				if (e.domEvent.keyCode === 13) {
-					console.log('发送命令:', tempCommandString)
-					term.write('\r\n$ ');
-					WS.sendMsg('server/console/command', JSON.stringify({
-						serverName: MCSERVER.listenServername,
-						command: tempCommandString
-					}));
-				} else if (e.domEvent.keyCode === 8) {
-					// Do not delete the prompt
-					if (term._core.buffer.x > 2) {
-						term.write('\b \b');
-						tempCommandString = tempCommandString.slice(0, tempCommandString.length - 1);
-					}
-				} else if (printable) {
-
-				}
-			});
-			term.onData(function (e) {
-				tempCommandString += e;
-				term.write(e);
-			})
-		}
-
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;
 
+		$('#WebTerminalScreenWapper').removeAttr('style');
+
+		if (!MCSERVER.term) {
+			var clientHeight = document.body.clientHeight - 100;
+			var clientWidth = $('#WebTerminal').width();
+			var rows = parseInt(clientHeight / 20);
+			var cols = parseInt(clientWidth / 12);
+			console.log('设置终端 rows:', rows, 'cols:', cols);
+			var tempCommandString = "";
+			var term = MCSERVER.term = new Terminal({
+				disableStdin: true,
+				rows: rows,
+				cols: cols
+			});
+			term.open(document.getElementById('WebTerminal'));
+			term.prompt = function (command) {
+				term.write('\r\n[' + PAGE.serverName + '@application]'
+					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
+					+ (command || '') + '\r\n');
+			}
+			term.prompt();
+		}
+
+
 		//容器布局改变
-		$('#MainContainer').css('background-color', 'rgb(60,60,60)');
-		$('body').css('background-color', 'rgb(60,60,60)');
-		$('#ConsoleMain').css('max-width', '999999px');
+		// $('#MainContainer').css('background-color', 'rgb(60,60,60)');
+		// $('body').css('background-color', 'rgb(60,60,60)');
+		// $('#ConsoleMain').css('max-width', '999999px');
 
 
 
@@ -97,8 +96,8 @@
 			el: '#Terminal',
 			methods: {
 				goBttom: function () {
-					var ele = document.getElementById('TerminalMinecraft');
-					ele.scrollTop = ele.scrollHeight;
+					// var ele = document.getElementById('TerminalMinecraft');
+					// ele.scrollTop = ele.scrollHeight;
 				},
 				loadHistory: function () {
 					var obj = {};
@@ -110,6 +109,7 @@
 				},
 				toCommand: function (parCommand) {
 					if (parCommand && typeof (parCommand) == 'string') this.command = parCommand;
+					MCSERVER.term.prompt(this.command);
 					var data = {
 						command: this.command,
 						serverName: PAGE.serverName
@@ -138,13 +138,13 @@
 					return false;
 				},
 				clearConsole: function () {
-					var ele = document.getElementById('TerminalMinecraft');
-					ele.innerHTML = ["<br /><span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
-						"控制面板内容已经清空，您所查看的历史记录位置依然保留。",
-						"<br>",
-						"<span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
-						"如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。<br />"
-					].join(" ");
+					// var ele = document.getElementById('TerminalMinecraft');
+					// ele.innerHTML = ["<br /><span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
+					// 	"控制面板内容已经清空，您所查看的历史记录位置依然保留。",
+					// 	"<br>",
+					// 	"<span style='color:#03ea0a;'>", "[ 控制面板 ]:", "</span>",
+					// 	"如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。<br />"
+					// ].join(" ");
 				},
 				stopServer: function () {
 					this.toCommand('__stop__');
@@ -159,22 +159,24 @@
 
 			}
 		});
-		PAGE.mainC = document.getElementById('TerminalMinecraft');
+		// PAGE.mainC = document.getElementById('TerminalMinecraft');
 
-		$("#TerminalCommand").focus();
+		// $("#TerminalCommand").focus();
 	});
 
 	MI.rListener('onend', function () {
-		WS.sendMsg('server/console/remove', '');
-		PAGE.mainC.innerHTML = "";
-		PAGE.mainC.onscroll = function () { };
+		$('#WebTerminalScreenWapper').css('display', 'none');
 
-		MI.onDestroy('resize', PAGE.tmp_onresize);
+		WS.sendMsg('server/console/remove', '');
+		// PAGE.mainC.innerHTML = "";
+		// PAGE.mainC.onscroll = function () { };
+
+		// MI.onDestroy('resize', PAGE.tmp_onresize);
 
 		//布局恢复
-		$('#MainContainer').removeAttr('style');
-		$('#ConsoleMain').removeAttr('style');
-		$('body').removeAttr('style');
+		// $('#MainContainer').removeAttr('style');
+		// $('#ConsoleMain').removeAttr('style');
+		// $('body').removeAttr('style');
 
 	})
 </script>

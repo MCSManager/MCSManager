@@ -242,10 +242,10 @@
 
 #TerminalCommand {
 	font-family: 'Consolas', 'Courier New', Courier, monospace;
-	color: white;
+	/* color: white; */
 	width: 100%;
 	padding: 0 10px;
-	background-color: rgb(60, 60, 60);
+	/* background-color: rgb(60, 60, 60); */
 	border: 0px;
 	margin-top: 4px;
 }

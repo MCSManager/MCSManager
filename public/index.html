@@ -90,6 +90,16 @@
 			</div>
 		</div>
 		<div id="Container">
+			<!-- 终端控制台 -->
+			<div id="WebTerminalScreenWapper" class="OneContainer" style="display: none;">
+				<div class="Panel PanelBlack WebTerminalScreen">
+					<div class="PanelTitle">实时终端控制台</div>
+					<div class="PanelBody">
+						<!-- 终端 -->
+						<div id="WebTerminal"></div>
+					</div>
+				</div>
+			</div>
 			<div id="ConsoleMain">
 				<!--可变动内嵌html区域开始-->
 
@@ -116,10 +126,13 @@
 				<!--可变动内嵌html区域结束-->
 			</div>
 
-			<!-- 终端 -->
-			<div id="WebTerminal"></div>
+
 		</div>
 	</div>
+
+
+
+
 	<!--信息框HTML-->
 	<div id='ToolsInfo'>
 		<transition name="fade">
