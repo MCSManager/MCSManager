@@ -324,8 +324,7 @@ input {
 
 /* 终端 */
 .WebTerminalScreen{
-	position: relative;
-	top: 0px;
+	overflow-y: auto;
 }
 
 @media (max-width:800px) {

@@ -1,9 +1,9 @@
-<div id='Terminal'>
+<div id='Terminal' class="OneContainer">
 
 	<div class="Panel PanelBlack">
 		<div class="PanelBody">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-8">
 					<div class="input-group input-group-sm">
 						<span class="input-group-addon">/</span>
 						<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
@@ -12,22 +12,16 @@
 					</div>
 
 				</div>
-				<div class="col-md-6 PanelItemF">
+				<div class="col-md-4 PanelItemF">
 					<div class="PanelItem "
 						v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
-						<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制台
+						<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 返回控制台
 					</div>
-					<div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem "
+					<!-- <div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem "
 						v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
 						<span class="glyphicon glyphicon-list" aria-hidden="true"></span> 实例列表
-					</div>
-					<div class="PanelItem " v-on:click="loadHistory()">
-						<span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> 历史
-					</div>
-					<div class="PanelItem " v-on:click="goBttom()">
-						<span class="glyphicon glyphicon-download PhoneDisplayNone" aria-hidden="true"></span> 底部
-					</div>
-					<div class="PanelItem  " v-on:click="clearConsole()">
+					</div> -->
+					<div class="PanelItem  " v-on:click="MCSERVER.term.startTerminal()">
 						<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
 					</div>
 					<div class="PanelItem " v-on:click="stopServer()">
@@ -57,7 +51,7 @@
 			var clientHeight = document.body.clientHeight - 100;
 			var clientWidth = $('#WebTerminal').width();
 			var rows = parseInt(clientHeight / 20);
-			var cols = parseInt(clientWidth / 12);
+			var cols = parseInt(clientWidth / 10);
 			console.log('设置终端 rows:', rows, 'cols:', cols);
 			var tempCommandString = "";
 			var term = MCSERVER.term = new Terminal({
@@ -71,9 +65,14 @@
 					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
 					+ (command || '') + '\r\n');
 			}
-			term.prompt();
-		}
+			term.startTerminal = function () {
+				MCSERVER.term.clear();
+				MCSERVER.term.prompt();
+			}
 
+		}
+		// 清空屏幕并输出基本欢迎语
+		MCSERVER.term.startTerminal();
 
 		//容器布局改变
 		// $('#MainContainer').css('background-color', 'rgb(60,60,60)');
@@ -166,7 +165,6 @@
 
 	MI.rListener('onend', function () {
 		$('#WebTerminalScreenWapper').css('display', 'none');
-
 		WS.sendMsg('server/console/remove', '');
 		// PAGE.mainC.innerHTML = "";
 		// PAGE.mainC.onscroll = function () { };

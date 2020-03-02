@@ -237,7 +237,7 @@
 				failureCallback && failureCallback();
 			}
 		};
-		oReq.upload.addEventListener("progress", (evt) => {
+		oReq.upload.addEventListener("progress", function (evt) {
 			var percentComplete = Math.round(evt.loaded * 100 / evt.total);
 			progressCallback(percentComplete);
 		}, false);
