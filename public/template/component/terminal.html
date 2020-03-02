@@ -43,6 +43,12 @@
 		// 定义页面地址
 		TOOLS.definePage('template/component/terminal', 'server/console', MCSERVER.listenServername);
 
+		if (!MCSERVER.term) {
+			MCSERVER.term = new Terminal();
+			MCSERVER.term.open(document.getElementById('WebTerminal'));
+			MCSERVER.term.write('Hello\r\n')
+		}
+
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;
 
@@ -55,13 +61,13 @@
 
 		WS.sendMsg('server/console/ws', PAGE.serverName);
 
-		PAGE.TerminalMinecraft = $('#TerminalMinecraft');
-		PAGE.TerminalMinecraft.css('height', (document.body.clientHeight - 45) + 'px')
+		// PAGE.TerminalMinecraft = $('#TerminalMinecraft');
+		// PAGE.TerminalMinecraft.css('height', (document.body.clientHeight - 45) + 'px')
 
-		PAGE.tmp_onresize = function () {
-			$('#TerminalMinecraft').css('height', (document.body.clientHeight - 45) + 'px');
-		};
-		MI.listener('resize', PAGE.tmp_onresize);
+		// PAGE.tmp_onresize = function () {
+		// 	$('#TerminalMinecraft').css('height', (document.body.clientHeight - 45) + 'px');
+		// };
+		// MI.listener('resize', PAGE.tmp_onresize);
 
 		VIEW_MODEL.newVue('Terminal', {
 			el: '#Terminal',

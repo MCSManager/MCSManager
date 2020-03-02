@@ -292,15 +292,15 @@ class ServerProcess extends EventEmitter {
     printlnStdin(line) {
         let str = ['[MCSMANAGER] [', tools.getFullTime(), ']:',
             line,
-            "\n"
+            "\r\n"
         ].join(" ");
         this.emit('console', str);
     }
 
     printlnCommandLine(line) {
-        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
+        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \r\n");
         this.printlnStdin(line);
-        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \n");
+        this.emit('console', "[MCSMANAGER] -------------------------------------------------------------- \r\n");
     }
 
     isDealLineDate() {

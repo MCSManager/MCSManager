@@ -126,14 +126,14 @@ setInterval(() => {
                 data.slice(data.length - real_tail_len, data.length);
         }
         // 替换元素
-        let htmlData = data.replace(/\n/gim, '[_b_r_]');
+        // let htmlData = data.replace(/\n/gim, '[_b_r_]');
         //刷新每个服务器的缓冲数据
         selectWebsocket(serverName, (socket) => {
             socket.send({
                 ws: socket.ws,
                 resK: 'server/console/ws',
                 resV: {},
-                body: htmlData
+                body: data
             });
         });
         // 压入原始数据的历史记录

@@ -135,6 +135,8 @@
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
+		MCSERVER.term.write(data.body);
+		return;
 		// 文本编码成 html 编码方式
 		var consoleSafe = terminalEncode(data.body);
 		// 因子页面生命周期，必须单独获取 dom

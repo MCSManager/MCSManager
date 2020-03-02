@@ -17,6 +17,9 @@
 	<link href="./common/css/block.css" rel="stylesheet">
 	<link href="common/css/unit.css" rel="stylesheet" />
 
+	<link href="common/xterm.css" rel="stylesheet" />
+	<script type="text/javascript" src="common/xterm.js"></script>
+
 	<link href="./favicon.ico" rel="shortcut icon">
 	<!--[if lt IE 9]>
       		<div id='Not_' class="show-ui" style="height: 40px;background-color: rgb(221,79,67);text-align:center;line-height: 40px;color: white;">
@@ -112,6 +115,9 @@
 
 				<!--可变动内嵌html区域结束-->
 			</div>
+
+			<!-- 终端 -->
+			<div id="WebTerminal"></div>
 		</div>
 	</div>
 	<!--信息框HTML-->
@@ -155,6 +161,7 @@
 	</div>
 
 
+
 	<!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->
 	<script type="text/javascript" src="common/jquery-3.2.1.min.js"></script>
 	<!--Vue -->
@@ -189,6 +196,8 @@
 		MCSERVER.website = {};
 
 		$(function () {
+
+
 			//事件
 			window.onresize = function () {
 				MI.on('resize', null);
