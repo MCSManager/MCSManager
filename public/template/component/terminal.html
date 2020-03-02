@@ -44,9 +44,33 @@
 		TOOLS.definePage('template/component/terminal', 'server/console', MCSERVER.listenServername);
 
 		if (!MCSERVER.term) {
-			MCSERVER.term = new Terminal();
-			MCSERVER.term.open(document.getElementById('WebTerminal'));
-			MCSERVER.term.write('Hello\r\n')
+			var tempCommandString = "";
+			var term = MCSERVER.term = new Terminal();
+			term.open(document.getElementById('WebTerminal'));
+			term.write('Hello\r\n')
+			term.onKey(e => {
+				const printable = !e.domEvent.altKey && !e.domEvent.altGraphKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
+				if (e.domEvent.keyCode === 13) {
+					console.log('发送命令:', tempCommandString)
+					term.write('\r\n$ ');
+					WS.sendMsg('server/console/command', JSON.stringify({
+						serverName: MCSERVER.listenServername,
+						command: tempCommandString
+					}));
+				} else if (e.domEvent.keyCode === 8) {
+					// Do not delete the prompt
+					if (term._core.buffer.x > 2) {
+						term.write('\b \b');
+						tempCommandString = tempCommandString.slice(0, tempCommandString.length - 1);
+					}
+				} else if (printable) {
+
+				}
+			});
+			term.onData(function (e) {
+				tempCommandString += e;
+				term.write(e);
+			})
 		}
 
 		PAGE.nowPage = 0; //当前最低页

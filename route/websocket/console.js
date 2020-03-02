@@ -125,7 +125,7 @@ setInterval(() => {
         //         "\n - 更多的此刻输出已经忽略...\n" +
         //         data.slice(data.length - real_tail_len, data.length);
         // }
-        // 替换元素
+        // 替换元素 
         // let htmlData = data.replace(/\n/gim, '[_b_r_]');
 
         data = data.replace(/\n/gim, '\r\n');
