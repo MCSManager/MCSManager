@@ -136,32 +136,6 @@
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
 		MCSERVER.term.write(data.body);
-		return;
-		// 文本编码成 html 编码方式
-		var consoleSafe = terminalEncode(data.body);
-		// 因子页面生命周期，必须单独获取 dom
-		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		if (MinecraftConsole == null) {
-			console.error('MinecraftConsole is null');
-			return;
-		}
-		// 终端最长长度限制
-		var consoleMaxLength = 200000;
-		if (MinecraftConsole.innerHTML.length > consoleMaxLength) {
-			MinecraftConsole.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />"
-		}
-		var flag = false;
-		// 判断用户是否自己移动了滚轴
-		var BUFF_FONTIER_SIZE_DOWN = MinecraftConsole.scrollHeight - MinecraftConsole.clientHeight;
-		flag = (MinecraftConsole.scrollTop + 354 >= BUFF_FONTIER_SIZE_DOWN);
-		// 处理控制台颜色与双问号
-		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
-		consoleSafe = TOOLS.deletDoubleS(consoleSafe);
-		// 插入到页面控制台中
-		MinecraftConsole.innerHTML += consoleSafe;
-
-		if (flag)
-			MinecraftConsole.scrollTop = MinecraftConsole.scrollHeight;
 	});
 
 	// 获取MC服务端终端日志历史记录

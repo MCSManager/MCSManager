@@ -6,11 +6,6 @@ const response = require('../../helper/Response');
 const serverModel = require('../../model/ServerModel');
 const userModel = require('../../model/UserModel');
 const permssion = require('../../helper/Permission');
-const observerModel = require('../../model/ObserverModel');
-const {
-    RecordCommand
-} = require('../../helper/RecordCommand');
-const EventEmitter = require('events');
 
 const BASE_RECORD_DIR = "./server/record_tmp/";
 
@@ -70,7 +65,6 @@ serverModel.ServerManager().on('open', (data) => {
         response.wsMsgWindow(socket.ws, '服务器运行');
         // 传递服务器开启事件
     });
-
 })
 
 
@@ -83,12 +77,8 @@ WebSocketObserver().listener('server/console/ws', (data) => {
     if (permssion.isCanServer(userName, serverName)) {
         MCSERVER.log('[' + serverName + '] >>> 准许用户 ' + userName + ' 控制台监听');
 
-        //设置历史指针
-        data.WsSession['record_start'] = new RecordCommand(BASE_RECORD_DIR + serverName + ".log").recordLength() - 1;
-
         //设置监听终端
         data.WsSession['console'] = serverName;
-        // response.wsMsgWindow(data.ws, '监听 [' + serverName + '] 终端');
         return;
     }
 
@@ -113,20 +103,6 @@ let consoleBuffer = {};
 setInterval(() => {
     for (const serverName in consoleBuffer) {
         let data = consoleBuffer[serverName];
-        // //忽略极小体积数据
-        // if (!data || data.length <= 1) continue;
-        // //忽略极大体积数据
-        // const MAX_OUT_LEN = 1024 * (MCSERVER.localProperty.console_max_out || 28);
-        // // 保留被截断消息的末尾部分
-        // const KEEP_TAIL_LEN = 1024;
-        // if (data.length > MAX_OUT_LEN) {
-        //     let real_tail_len = Math.min(KEEP_TAIL_LEN, data.length - MAX_OUT_LEN);
-        //     data = data.slice(0, MAX_OUT_LEN) +
-        //         "\n - 更多的此刻输出已经忽略...\n" +
-        //         data.slice(data.length - real_tail_len, data.length);
-        // }
-        // 替换元素 
-        // let htmlData = data.replace(/\n/gim, '[_b_r_]');
 
         data = data.replace(/\n/gim, '\r\n');
         data = data.replace(/\r\r\n/gim, '\r\n');
@@ -139,8 +115,6 @@ setInterval(() => {
                 body: data
             });
         });
-        // 压入原始数据的历史记录
-        // new RecordCommand(BASE_RECORD_DIR + serverName + ".log").writeRecord(data);
         // 释放内存
         consoleBuffer[serverName] = "";
     }
