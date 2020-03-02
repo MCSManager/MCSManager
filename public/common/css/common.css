@@ -376,4 +376,12 @@ input {
 		left: 0px;
 		z-index: -1;
 	}
+	/* 终端的手机优化 */
+	#WebTerminalScreenWapper{
+		padding: 0px;
+		margin: 0px;
+	}
+	.WebTerminalScreen{
+		margin: -10px -12px;
+	}
 }

@@ -49,10 +49,14 @@
 			// 根据浏览器的高宽来决定终端的列数和行数
 			var clientHeight = document.body.clientHeight - 60;
 			var clientWidth = $('#WebTerminal').width();
-			var rows = parseInt(clientHeight / 20) - 1;
+			var rows = parseInt(clientHeight / 18) - 1;
 			var cols = parseInt(clientWidth / 8) - 4;
 			var fontSize = 14;
-			if (document.body.clientWidth <= 800) fontSize = 10;
+			if (document.body.clientWidth <= 800) {
+				fontSize = 10;
+				rows = parseInt(clientHeight / 14);
+				cols = parseInt(clientWidth / 3);
+			}
 			var tempCommandString = "";
 			var term = MCSERVER.term = new Terminal({
 				disableStdin: true,
@@ -71,7 +75,7 @@
 			// 终端提示行
 			term.prompt = function (command) {
 				term.write('\x1B[1;1;32m' + '[' + term.TERM_TEXT_WHTILE
-					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'application'
+					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'app'
 					+ term.TERM_TEXT_YELLOW + ']' + term.TERM_TEXT_WHTILE
 					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
 					+ (command || '')
