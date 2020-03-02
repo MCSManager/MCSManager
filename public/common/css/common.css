@@ -46,14 +46,7 @@ input {
 
 /* 页面主要容器 */
 #MainContainer{
-	position: absolute;
-    width: 100%;
-    top: 1px;
-	bottom: 1px;
-    z-index: 100;
-    overflow: hidden;
-	overflow-y: auto;
-	zoom: 1;
+
 }
 
 /*
@@ -77,11 +70,13 @@ input {
 }
 
 #Container {
-	position: absolute;
+	/* position: absolute;
 	width: auto;
 	top: 10px;
 	left: 220px;
-	right: 0px;
+	right: 0px; */
+	margin-top: 10px;
+	margin-left: 220px;
 }
 
 /* 右侧容器 */
@@ -348,7 +343,7 @@ input {
 		cursor: pointer;
 	}
 	#Container{
-		left: 0px;
+		margin-left: 0px;
 	}
 	#SideCol{
 		box-shadow: 8px 0px 32px rgba(54, 52, 52, 0.452);
@@ -382,6 +377,6 @@ input {
 		margin: 0px;
 	}
 	.WebTerminalScreen{
-		margin: -10px -12px;
+		margin: -10px -12px -9px -12px;
 	}
 }
