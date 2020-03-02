@@ -31,6 +31,7 @@ router.post('/mkdir', (req, res) => {
 
 router.post('/ls', (req, res) => {
     let name = parseHandle(req.body, "string") || "./";
+    // 唯一的当前目录赋值场景
     req.session.fsos.cwd = pathm.normalize(pathm.join(req.session.fsos.cwd, name));
     let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
     if (req.session.fsos.cwd == "..\\" || req.session.fsos.cwd == "../") req.session.fsos.cwd = "./"; //越级,重置
@@ -106,8 +107,7 @@ router.post('/rename', (req, res) => {
 router.post('/edit_read', (req, res) => {
     const filename = (parseHandle(req.body))
     if (!filename) return;
-    //没有经过安全的 UseFileOperate 进行安全操作
-    //必须经过目录越级漏洞防御
+    //先进行基本的越权过滤
     if (filename.indexOf('../') != -1 || filename.indexOf('./') != -1) return;
     const cwd = req.session.fsos.cwd;
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
@@ -119,8 +119,7 @@ router.post('/edit_read', (req, res) => {
 router.post('/edit_write', (req, res) => {
     const obj = (parseHandle(req.body))
     if (!obj || !obj.filename || !obj.context) return;
-    //没有经过安全的 UseFileOperate 进行安全操作
-    //必须经过目录越级漏洞防御
+    //先进行基本的越权过滤
     if (obj.filename.indexOf('../') != -1 || obj.filename.indexOf('./') != -1) return;
     const cwd = req.session.fsos.cwd;
     const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
@@ -176,6 +175,8 @@ router.post('/upload', (req, res) => {
     try {
         fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
         target_path = fileOperate.normalizePath(req.session.fsos.cwd); //获取绝对路径
+        if (!fileOperate.isPathAccess(target_path)) return;
+
         //生成multiparty对象，并配置上传目标路径
         var form = new multiparty.Form({
             uploadDir: os.tmpdir()
