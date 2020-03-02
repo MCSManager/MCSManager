@@ -125,32 +125,10 @@
 		MI.routeCopy('OneUserView', data.obj);
 	});
 
-	// Minecraft 服务器终端换行替换符
-	var terminalEncode = function (text) {
-		var consoleSafe = TOOLS.encode(text);
-		consoleSafe = consoleSafe.replace(/\[_b_r_\]/igm, '<br>');
-		return consoleSafe;
-	}
-
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
 		MCSERVER.term.write(data.body);
-	});
-
-	// 获取MC服务端终端日志历史记录
-	MI.routeListener('server/console/history', function (data) {
-		var consoleSafe = terminalEncode(data.body);
-		var MinecraftConsole = document.getElementById('TerminalMinecraft');
-		var oldHeightV = MinecraftConsole.scrollHeight;
-		//颜色过滤
-		consoleSafe = TOOLS.encodeConsoleColor(consoleSafe);
-		consoleSafe = TOOLS.deletDoubleS(consoleSafe);
-		//incude
-		MinecraftConsole.innerHTML = consoleSafe + MinecraftConsole.innerHTML;
-		var newHeightV = MinecraftConsole.scrollHeight;
-		var resVTopLac = newHeightV - oldHeightV;
-		MinecraftConsole.scrollTop = resVTopLac - 999;
 	});
 
 	// 普通用户主页
