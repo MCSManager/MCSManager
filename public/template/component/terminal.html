@@ -74,7 +74,7 @@
 			term.open(document.getElementById('WebTerminal'));
 			// 终端提示行
 			term.prompt = function (command) {
-				term.write('\x1B[1;1;32m' + '[' + term.TERM_TEXT_WHTILE
+				term.write('\x1B[1;1;33m' + '[' + term.TERM_TEXT_WHTILE
 					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'app'
 					+ term.TERM_TEXT_YELLOW + ']' + term.TERM_TEXT_WHTILE
 					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
