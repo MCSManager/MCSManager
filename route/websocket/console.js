@@ -65,7 +65,7 @@ serverModel.ServerManager().on('open', (data) => {
     });
 
     // 为此服务端创建历史记录类
-    const serverInstance = serverModel.ServerManager().getServer(serverName);
+    const serverInstance = serverModel.ServerManager().getServer(data.serverName);
     serverInstance.logHistory = new LogHistory(data.serverName);
 
     // 仅发送给正在监听控制台的用户
@@ -117,9 +117,9 @@ setInterval(() => {
         let data = consoleBuffer[serverName];
         // 记录日志历史记录
         const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
-        if (logHistory) {
-            logHistory.writeLine(data)
-        }
+
+        logHistory.writeLine(data)
+
         // 发送前端的标准，前端只识别 \r\n ，不可是\n
         data = data.replace(/\n/gim, '\r\n');
         data = data.replace(/\r\r\n/gim, '\r\n');
