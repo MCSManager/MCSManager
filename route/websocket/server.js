@@ -124,8 +124,7 @@ WebSocketObserver().listener('server/opt_all', (data) => {
                     server.send('exit');
                 }
             } catch (serverErr) {
-                //忽略
-                continue;
+                throw serverErr;
             }
         }
         response.wsMsgWindow(data.ws, '操作执行发出！需要一定时间,具体结果请看服务端运行状态.');

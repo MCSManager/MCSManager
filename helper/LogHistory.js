@@ -47,7 +47,7 @@ class LogHistory {
             let point = logarr.length - i - 1;
             if (point < 0) break;
             let v = logarr[point] + '\n';
-            if (logarr[point].trim().length > 0) text += v;
+            if (logarr[point] && logarr[point].trim().length > 0) text += v;
         }
         this.readPoints[demander] = demanderPoint + size;
         return text;
@@ -63,7 +63,7 @@ class LogHistory {
         let i;
         for (i = (logarr.length - 1 - size - demanderPoint); i < logarr.length - demanderPoint; i++) {
             let v = logarr[i] + '\n';
-            if (logarr[i].trim().length > 0) text += v;
+            if (logarr[i] && logarr[i].trim().length > 0) text += v;
         }
         if (!notadd) this.readPoints[demander] = demanderPoint + size;
         return text;

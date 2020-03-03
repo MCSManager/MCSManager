@@ -6,6 +6,8 @@ const response = require('../../helper/Response');
 const serverModel = require('../../model/ServerModel');
 const userModel = require('../../model/UserModel');
 const permssion = require('../../helper/Permission');
+const { LogHistory } = require('../../helper/LogHistory');
+
 
 const BASE_RECORD_DIR = "./server/record_tmp/";
 
@@ -117,8 +119,7 @@ setInterval(() => {
         let data = consoleBuffer[serverName];
         // 记录日志历史记录
         const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
-
-        logHistory.writeLine(data)
+        if (logHistory) logHistory.writeLine(data)
 
         // 发送前端的标准，前端只识别 \r\n ，不可是\n
         data = data.replace(/\n/gim, '\r\n');

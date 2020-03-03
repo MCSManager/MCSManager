@@ -6,7 +6,7 @@ const {
     WebSocketObserver
 } = require('../../../model/WebSocketModel');
 const mcPingProtocol = require('../../../helper/MCPingProtocol');
-const { LogHistory } = require('../../../helper/LogHistory');
+
 
 //开启服务器
 WebSocketObserver().listener('server/console/open', (data) => {
