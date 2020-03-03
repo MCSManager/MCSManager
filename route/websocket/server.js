@@ -124,7 +124,8 @@ WebSocketObserver().listener('server/opt_all', (data) => {
                     server.send('exit');
                 }
             } catch (serverErr) {
-                throw serverErr;
+                MCSERVER.error('批量开启某服务器失败:', serverErr);
+                continue;
             }
         }
         response.wsMsgWindow(data.ws, '操作执行发出！需要一定时间,具体结果请看服务端运行状态.');
