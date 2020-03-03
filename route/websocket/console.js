@@ -63,6 +63,11 @@ serverModel.ServerManager().on('open', (data) => {
     serverModel.ServerManager().emit("open_next", {
         serverName: data.serverName
     });
+
+    // 为此服务端创建历史记录类
+    const serverInstance = serverModel.ServerManager().getServer(serverName);
+    serverInstance.logHistory = new LogHistory(data.serverName);
+
     // 仅发送给正在监听控制台的用户
     selectWebsocket(data.serverName, (socket) => {
         response.wsMsgWindow(socket.ws, '服务器运行');
@@ -111,7 +116,10 @@ setInterval(() => {
     for (const serverName in consoleBuffer) {
         let data = consoleBuffer[serverName];
         // 记录日志历史记录
-        serverModel.ServerManager().getServer(serverName).logHistory.writeLine(data);
+        const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
+        if (logHistory) {
+            logHistory.writeLine(data)
+        }
         // 发送前端的标准，前端只识别 \r\n ，不可是\n
         data = data.replace(/\n/gim, '\r\n');
         data = data.replace(/\r\r\n/gim, '\r\n');

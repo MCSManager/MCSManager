@@ -189,7 +189,7 @@ process.on("uncaughtException", function (err) {
     //是否出过错误,本变量用于自动化测试
     MCSERVER.allError++;
     //打印出错误
-    MCSERVER.error('UncaughtException 机制错误报告:', err);
+    MCSERVER.error('错误报告:', err);
 });
 
 //初始化目录结构环境

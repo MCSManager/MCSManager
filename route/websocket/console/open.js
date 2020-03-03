@@ -14,12 +14,6 @@ WebSocketObserver().listener('server/console/open', (data) => {
     let userName = data.WsSession.username;
     if (permssion.isCanServer(userName, serverName)) {
         MCSERVER.log('用户 ', userName, ' 正在启动 ', serverName, ' 服务端实例...');
-        const serverInstance = serverModel.ServerManager().getServer(serverName);
-        if (!serverInstance) {
-            throw new Error("服务端实例不存在，这可能是恶意操作或误操作。");
-        }
-        // 为此服务端创建历史记录类
-        serverInstance.logHistory = new LogHistory(serverName);
         try {
             let retu = serverModel.startServer(serverName);
             if (!retu) {
