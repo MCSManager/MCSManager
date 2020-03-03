@@ -128,6 +128,14 @@
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
+		if (!VIEW_MODEL['Terminal']['isHistoryMode']) {
+			MCSERVER.term.write(data.body);
+		}
+	});
+
+
+	// 获取MC服务端终端日志历史记录
+	MI.routeListener('server/console/history', function (data) {
 		MCSERVER.term.write(data.body);
 	});
 

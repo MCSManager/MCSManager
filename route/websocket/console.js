@@ -49,6 +49,9 @@ serverModel.ServerManager().on('exit', (data) => {
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
 
+    // 历史记录类释放
+    serverModel.ServerManager().getServer(data.serverName).logHistory = null;
+
     // 传递服务器关闭事件
     serverModel.ServerManager().emit("exit_next", data);
 })
@@ -77,8 +80,12 @@ WebSocketObserver().listener('server/console/ws', (data) => {
     if (permssion.isCanServer(userName, serverName)) {
         MCSERVER.log('[' + serverName + '] >>> 准许用户 ' + userName + ' 控制台监听');
 
-        //设置监听终端
+        // 设置监听终端
         data.WsSession['console'] = serverName;
+
+        // 重置用户历史指针
+        const instanceLogHistory = serverModel.ServerManager().getServer(serverName).logHistory;
+        if (instanceLogHistory) instanceLogHistory.setPoint(userName, 0);
         return;
     }
 
@@ -103,7 +110,9 @@ let consoleBuffer = {};
 setInterval(() => {
     for (const serverName in consoleBuffer) {
         let data = consoleBuffer[serverName];
-
+        // 记录日志历史记录
+        serverModel.ServerManager().getServer(serverName).logHistory.writeLine(data);
+        // 发送前端的标准，前端只识别 \r\n ，不可是\n
         data = data.replace(/\n/gim, '\r\n');
         data = data.replace(/\r\r\n/gim, '\r\n');
         //刷新每个服务器的缓冲数据

@@ -6,15 +6,21 @@ const {
     WebSocketObserver
 } = require('../../../model/WebSocketModel');
 const mcPingProtocol = require('../../../helper/MCPingProtocol');
-
+const { LogHistory } = require('../../../helper/LogHistory');
 
 //开启服务器
 WebSocketObserver().listener('server/console/open', (data) => {
     let serverName = data.body.trim();
     let userName = data.WsSession.username;
     if (permssion.isCanServer(userName, serverName)) {
+        MCSERVER.log('用户 ', userName, ' 正在启动 ', serverName, ' 服务端实例...');
+        const serverInstance = serverModel.ServerManager().getServer(serverName);
+        if (!serverInstance) {
+            throw new Error("服务端实例不存在，这可能是恶意操作或误操作。");
+        }
+        // 为此服务端创建历史记录类
+        serverInstance.logHistory = new LogHistory(serverName);
         try {
-            MCSERVER.log('用户 ', userName, ' 正在启动 ', serverName, ' 服务端实例...');
             let retu = serverModel.startServer(serverName);
             if (!retu) {
                 response.wsMsgWindow(data.ws, '服务器无法启动,建议检查配置或权限');

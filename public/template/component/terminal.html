@@ -4,7 +4,7 @@
 			<div class="Panel PanelGray">
 				<div class="PanelBody">
 					<div class="row">
-						<div class="col-md-8" style="text-align: center;margin-top: 2px;">
+						<div class="col-md-7" style="text-align: center;margin-top: 2px;">
 							<div class="input-group input-group-sm">
 								<span class="input-group-addon">/</span>
 								<input type="text" id="" class="form-control" @keyup.up="toCommandhi(1)"
@@ -13,20 +13,29 @@
 									aria-describedby="sizing-addon3">
 							</div>
 						</div>
-						<div class="col-md-4 PanelItemF" style="text-align: center;">
+						<div class="col-md-5 PanelItemF" style="text-align: center;">
 							<div class="PanelItem mb0"
 								v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
-								<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 控制面板
+								<span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 返回
 							</div>
-							<div class="PanelItem mb0" v-on:click="MCSERVER.term.startTerminal()">
-								<span class="glyphicon glyphicon-th-large " aria-hidden="true"></span> 清屏
-							</div>
-							<div class="PanelItem mb0" v-on:click="stopServer()">
+							<div class="PanelItem mb0" v-on:click="stopServer()" v-show="!isHistoryMode">
 								<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
 							</div>
-							<div class="PanelItem mb0" v-on:click="toOpenServer()">
-								<span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span> 开启
+							<div class="PanelItem mb0" v-on:click="toOpenServer()" v-show="!isHistoryMode">
+								<span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+								开启
 							</div>
+							<div class="PanelItem mb0" v-on:click="loadHistory()" v-show="!isHistoryMode">
+								<span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> 历史模式
+							</div>
+							<div class="PanelItem mb0" v-on:click="loadHistory()" v-show="isHistoryMode">
+								<span class="glyphicon glyphicon-console" aria-hidden="true"></span> 正常模式
+							</div>
+							<div class="PanelItem mb0" v-on:click="simpleLoadHistory()" v-show="isHistoryMode">
+								<span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+								下一页
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -62,7 +71,8 @@
 				disableStdin: true,
 				rows: rows,
 				cols: cols,
-				fontSize: fontSize
+				fontSize: fontSize,
+				convertEol: false
 			});
 			// 终端基本颜色代码
 			term.TERM_TEXT_RED = "\x1B[31m";
@@ -94,8 +104,21 @@
 		// 监听此实例的标准输出，接下来将会有信息主动传来
 		WS.sendMsg('server/console/ws', PAGE.serverName);
 
+		// 加载此网页时立刻请求一次历史
+		WS.sendMsg('server/console/history_reverse', JSON.stringify({
+			serverName: PAGE.serverName
+		}));
+
 		VIEW_MODEL.newVue('Terminal', {
 			el: '#Terminal',
+			data: {
+				allowedStart: true,
+				command: '',
+				commandList: [],
+				commandListPrint: 0,
+				historyIf: false,
+				isHistoryMode: false
+			},
 			methods: {
 				toOpenServer: function () {
 					WS.sendMsg('server/console/open', PAGE.serverName);
@@ -132,19 +155,35 @@
 				},
 				stopServer: function () {
 					this.toCommand('__stop__');
+				},
+				loadHistory: function (bool) {
+					if (!this.isHistoryMode) {
+						MCSERVER.term.clear();
+						// 加载下一页历史记录
+						WS.sendMsg('server/console/history', JSON.stringify({
+							serverName: PAGE.serverName
+						}));
+						this.isHistoryMode = true;
+					} else {
+						MCSERVER.term.startTerminal();
+						// 重置历史记录指针
+						WS.sendMsg('server/console/history_reset', JSON.stringify({
+							serverName: PAGE.serverName
+						}));
+						this.isHistoryMode = false;
+					}
+				},
+				simpleLoadHistory: function () {
+					WS.sendMsg('server/console/history', JSON.stringify({
+						serverName: PAGE.serverName
+					}));
 				}
-			},
-			data: {
-				allowedStart: true,
-				command: '',
-				commandList: [],
-				commandListPrint: 0,
-				historyIf: false
 			}
 		});
 	});
 
 	MI.rListener('onend', function () {
+		window.MCSERVER.term.clear();
 		// 终端窗口隐藏
 		$('#WebTerminalScreenWapper').css('display', 'none');
 		// 退出监听实例，停止接受控制台信息
