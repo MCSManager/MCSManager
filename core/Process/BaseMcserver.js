@@ -120,9 +120,13 @@ class ServerProcess extends EventEmitter {
             }];
         }
         // 输出启动消息
-        MCSERVER.log('服务器 [', this.dataModel.name, '] 启动进程:');
-        MCSERVER.log("正在使用虚拟化技术启动", "进程参数:", startCommandeArray.join(" "), "\nPort:", portmap)
+        MCSERVER.log('实例 [', this.dataModel.name, '] 正在启动....');
+        MCSERVER.log('-------------------------------');
+        MCSERVER.log("正在使用虚拟化技术启动进程");
+        MCSERVER.log("命令:", startCommandeArray.join(" "));
+        MCSERVER.log("开放端口:", portmap.join("->"));
         MCSERVER.log("工作目录:", stdCwd);
+        MCSERVER.log('-------------------------------');
 
         // 模拟一个正常的 Process
         this.process = new EventEmitter();
