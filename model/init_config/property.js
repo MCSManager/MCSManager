@@ -53,9 +53,9 @@ MCSERVER.localProperty.ftp_start_port = 20010;
 MCSERVER.localProperty.ftp_end_port = 20200;
 
 
-//控制台实时刷新频率 单位毫秒 默认 1400 毫秒
+//控制台实时刷新频率 单位毫秒 默认 1000 毫秒
 //建议在 1000 毫秒 与 3000 毫秒之选择 
-MCSERVER.localProperty.console_send_times = 1400;
+MCSERVER.localProperty.console_send_times = 1000;
 
 
 //控制台一次性发送的数据最大限制 
