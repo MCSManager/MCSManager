@@ -154,6 +154,7 @@ class ServerProcess extends EventEmitter {
                 PortBindings: PortBindingsObj
             }
         }).then((container) => {
+            // 启动虚拟化容器
             auxContainer = container;
             return auxContainer.start();
         }).then(() => {
@@ -181,18 +182,19 @@ class ServerProcess extends EventEmitter {
                         });
                     });
                 });
-                // 容器进程事件传递
+                // 容器工作完毕退出事件
                 auxContainer.wait(() => {
                     self.emit('exit', 0);
                     self.stop();
                 });
+                // 容器流错误事件传递
                 stream.on('error', (err) => {
                     MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
                     self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
                     self.stop();
                     self.emit('error', err);
                 });
-
+                // 判断启动是否成功
                 if (!process.pid) {
                     MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', self.process.pid);
                     self.stop();
@@ -212,7 +214,9 @@ class ServerProcess extends EventEmitter {
                 // 输出开服资料
                 self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
             });
-        });
+        }).catch((err) => {
+            throw new Error("进程启动失败，建议检查配置参数");
+        });;
     }
 
     //统一服务端开启
@@ -315,8 +319,12 @@ class ServerProcess extends EventEmitter {
 
     send(command) {
         if (this._run) {
-            this.process.stdin.write(iconv.encode(command, this.dataModel.ie) + '\n');
-            // this.process.stdin.write('\n');
+            if (this.process.dockerContainer != null) {
+                this.process.stdin.write(iconv.encode(command, this.dataModel.ie) + '\n');
+            } else {
+                this.process.stdin.write(iconv.encode(command, this.dataModel.ie));
+                this.process.stdin.write('\n');
+            }
             return true;
         }
         return true;
