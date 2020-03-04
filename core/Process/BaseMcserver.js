@@ -26,7 +26,7 @@ class ServerProcess extends EventEmitter {
 
     }
 
-    //自定义高级参数启动
+    // 自定义命令启动方式
     customCommandStart() {
 
         //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
@@ -52,7 +52,7 @@ class ServerProcess extends EventEmitter {
             childProcess.spawn(javaPath, parList, this.ProcessConfig);
     }
 
-    //普通启动
+    // 标准 Java 程序启动方式
     templateStart(onlyCommandString = false) {
         let tmpAddList = [];
         let tmpShouldList = [];
@@ -88,7 +88,7 @@ class ServerProcess extends EventEmitter {
         this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
     }
 
-    //使用 Docker 命令启动
+    //使用 Docker API 启动进程
     async dockerStart() {
         // 命令模板与准备数据
         let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/igm, "/");
@@ -204,6 +204,7 @@ class ServerProcess extends EventEmitter {
                 throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
             }
 
+            // 开启启动状态
             self._run = true;
             self._loading = false;
             self.dataModel.lastDate = new Date().toLocaleString();
@@ -219,15 +220,16 @@ class ServerProcess extends EventEmitter {
         });
     }
 
-    //统一服务端开启
+    // 统一服务端开启入口
+    // 不论是通过哪种方式启动，必须从这个入口进入，再根据不同配置进行分支
     start() {
-        //服务端时间权限判断
+        // 服务端时间权限判断
         let timeResult = this.isDealLineDate();
         if (timeResult) {
             throw new Error('服务端于 ' + this.dataModel.timeLimitDate + ' 时间已到期，拒绝启动，请咨询管理员。');
         }
 
-        //防止重复启动
+        // 防止重复启动
         if (this._run || this._loading) throw new Error('服务端进程在运行或正在加载..');
 
         this._loading = true;
@@ -238,9 +240,9 @@ class ServerProcess extends EventEmitter {
         }
         jarPath = jarPath.replace(/\/\//igm, '/');
 
-        //选择启动方式 自定义命令与配置启动
+        // 选择启动方式 自定义命令与配置启动
         if (!this.dataModel.highCommande) {
-            //只在非自定义模式下检查参数
+            // 只在非自定义模式下检查参数
             if (!fs.existsSync(this.dataModel.cwd)) {
                 this.stop();
                 throw new Error('服务端根目录 "' + jarPath + '" 不存在!');
@@ -255,8 +257,8 @@ class ServerProcess extends EventEmitter {
             }
 
         } else {
-            //自定义模式检查
-            //检查是否准许自定义命令
+            // 自定义模式检查
+            // 检查是否准许自定义命令
             if (!MCSERVER.localProperty.customize_commande) {
                 this.stop();
                 throw new Error('操作禁止！管理员禁止服务器使用自定义命令！');
@@ -270,17 +272,18 @@ class ServerProcess extends EventEmitter {
 
         try {
             if (this.dataModel.dockerConfig.isDocker) {
-                // Docker 启动
+                // Docker 启动，异步函数
                 // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
                 this.dockerStart().then(undefined, (error) => {
-                    MCSERVER.error('此服务器启动时异常,具体错误信息:', err);
+                    // Docker 启动时异常处理
+                    MCSERVER.error('此服务器启动时异常,具体错误信息:', error);
                     this.printlnCommandLine("进程实例启动时失败，建议检查配置文件与启动参数");
                     this.stop();
                 });
                 // 阻止继续运行下去
                 return true;
             } else {
-                //确定启动方式
+                // 确定是自定义命令启动还是模板正常方式启动。
                 this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
             }
         } catch (err) {
@@ -288,10 +291,12 @@ class ServerProcess extends EventEmitter {
             throw new Error('进程启动时异常:' + err.name + ":" + err.message);
         }
 
+        // 设置启动状态
         this._run = true;
         this._loading = false;
         this.dataModel.lastDate = new Date().toLocaleString();
 
+        // 进程事件监听
         this.process.on('error', (err) => {
             MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
             this.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', this.process.pid || "启动失败，无法获取进程。"]);
@@ -299,6 +304,7 @@ class ServerProcess extends EventEmitter {
             this.emit('error', err);
         });
 
+        // 进程启动成功确认
         if (!this.process.pid) {
             MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', this.process.pid);
             this.stop();
@@ -317,11 +323,12 @@ class ServerProcess extends EventEmitter {
         // 产生事件开启
         this.emit('open', this);
 
-        // 输出开服资料
+        // 输出开服信息
         this.printlnCommandLine('服务端 ' + this.dataModel.name + " 执行开启命令.");
         return true;
     }
 
+    // 发送指令
     send(command) {
         if (this._run) {
             if (this.process.dockerContainer != null) {
@@ -335,6 +342,7 @@ class ServerProcess extends EventEmitter {
         return true;
     }
 
+    // 重启实例
     restart() {
         if (this._run == true) {
             this.send('stop');
@@ -367,6 +375,10 @@ class ServerProcess extends EventEmitter {
         }
     }
 
+    // 这并不是推荐的直接使用方式；
+    // stop 方法只适用于本类调用，因为使用此方法不管是否成功停止，都必将进入停止状态；
+    // 这样即有可能面板显示已经停止，但进程还在运行的情况；
+    // 最好的做法是通过命令来结束。
     stop() {
         this._run = false;
         this._loading = false;
@@ -376,6 +388,7 @@ class ServerProcess extends EventEmitter {
         this.send('exit');
     }
 
+    // 杀死进程，若是 Docker 进程则是移除容器
     kill() {
         if (this._run) {
             this.process.kill('SIGKILL');
@@ -385,6 +398,7 @@ class ServerProcess extends EventEmitter {
         return false;
     }
 
+    // 是否运行中
     isRun() {
         return this._run;
     }
