@@ -273,6 +273,7 @@ class ServerProcess extends EventEmitter {
                 // Docker 启动
                 // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
                 this.dockerStart().then(undefined, (error) => {
+                    MCSERVER.error('此服务器启动时异常,具体错误信息:', err);
                     this.printlnCommandLine("进程实例启动时失败，建议检查配置文件与启动参数");
                     this.stop();
                 });
