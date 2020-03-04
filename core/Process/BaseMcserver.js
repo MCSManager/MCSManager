@@ -210,7 +210,7 @@ class ServerProcess extends EventEmitter {
         });
 
         if (!this.process.pid) {
-            MCSERVER.error('this.process.pid is null', this.process.pid);
+            MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', this.process.pid);
             this.stop();
             delete this.process;
             throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
@@ -228,7 +228,7 @@ class ServerProcess extends EventEmitter {
         this.emit('open', this);
 
         // 输出开服资料
-        this.printlnCommandLine('服务端 ' + this.dataModel.name + " 执行开启命令. PID:" + this.process.pid);
+        this.printlnCommandLine('服务端 ' + this.dataModel.name + " 执行开启命令.");
         return true;
     }
 
@@ -247,11 +247,18 @@ class ServerProcess extends EventEmitter {
             this.send('end');
             this.send('exit');
 
-            //开始计时重启
+            // 开始计时重启
             let timeCount = 0;
             let timesCan = setInterval(() => {
                 if (this._run == false) {
-                    setTimeout(() => this.start(), 1000);
+                    // 服务器关闭时 3 秒后立即重启
+                    setTimeout(() => {
+                        try {
+                            this.start();
+                        } catch (err) {
+                            MCSERVER.error('服务器重启失败:', err);
+                        }
+                    }, 3000);
                     clearInterval(timesCan);
                 }
                 //60s 内服务器依然没有关闭，代表出现问题

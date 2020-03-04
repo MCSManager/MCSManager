@@ -17,15 +17,15 @@ function serverExe(servername, commande) {
     try {
         if (commande == "__start__") {
             serverModel.startServer(servername);
+            return;
         }
         if (commande == "__stop__") {
             serverModel.stopServer(servername);
+            return;
         }
         if (commande == "__restart__") {
-            serverModel.stopServer(servername);
-            setTimeout(() => {
-                serverModel.startServer(servername);
-            }, 15000)
+            serverModel.restartServer(servername);
+            return;
         }
         // 默认执行命令
         serverModel.sendCommand(servername, commande);

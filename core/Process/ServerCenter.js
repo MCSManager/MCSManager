@@ -80,7 +80,6 @@ class ServerManager extends EventEmitter {
         let serverList = fs.readdirSync(BASE_SERVER_DIR);
         for (let key in serverList) {
             serverName = serverList[key].replace('.json', '');
-            //return this.serverList[key].load();
             this.loadMinecraftServer(serverName);
         }
     }
@@ -96,9 +95,19 @@ class ServerManager extends EventEmitter {
 
     stopMinecraftServer(name) {
         if (this.isExist(name)) {
-            let server = this.serverList[name].send('stop');
+            const server = this.serverList[name];
+            server.send('stop');
             server.send('end');
+            server.send('exit');
             return true;
+        }
+        return false;
+    }
+
+    restartServer(name) {
+        if (this.isExist(name)) {
+            const server = this.serverList[name];
+            return server.restart();
         }
         return false;
     }

@@ -58,6 +58,15 @@ module.exports.stopServer = (serverName) => {
 }
 
 
+module.exports.restartServer = (serverName) => {
+    if (onlyServerManager.isExist(serverName)) {
+        return onlyServerManager.restartServer(serverName);
+    }
+    return false;
+}
+
+
+
 module.exports.sendCommand = (serverName, command) => {
     if (onlyServerManager.isExist(serverName)) {
         return onlyServerManager.sendMinecraftServer(serverName, command);
