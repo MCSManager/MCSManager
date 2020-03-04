@@ -129,12 +129,13 @@ class ServerProcess extends EventEmitter {
         // 基于镜像启动虚拟化容器
         const docker = new Docker();
         let auxContainer = null;
+        auxContainer = await docker.createContainer();
         docker.createContainer({
             Image: this.dataModel.dockerConfig.dockerImageName,
             AttachStdin: true,
             AttachStdout: true,
             AttachStderr: true,
-            Tty: false,
+            Tty: true,
             Cmd: startCommandeArray,
             OpenStdin: true,
             StdinOnce: false,
@@ -160,7 +161,7 @@ class ServerProcess extends EventEmitter {
                 // 赋值进程容器
                 process.dockerContainer = auxContainer;
                 // 模拟 pid
-                process.pid = 1;
+                process.pid = 999;
                 // 对接普通进程的输入输出流
                 process.stdin = stream;
                 process.stdout = stream;
