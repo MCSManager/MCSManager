@@ -266,22 +266,20 @@ class ServerProcess extends EventEmitter {
             stdio: 'pipe'
         }
 
-        if (this.dataModel.dockerConfig.isDocker) {
-            // Docker 启动
-            // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
-            this.dockerStart().catch((err) => {
-                throw err;
-            });
-            // 阻止继续运行下去
-            return true;
-        } else {
-            try {
+        try {
+            if (this.dataModel.dockerConfig.isDocker) {
+                // Docker 启动
+                // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
+                this.dockerStart();
+                // 阻止继续运行下去
+                return true;
+            } else {
                 //确定启动方式
                 this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
-            } catch (err) {
-                this.stop();
-                throw new Error('进程启动时异常:' + err.name + ":" + err.message);
             }
+        } catch (err) {
+            this.stop();
+            throw new Error('进程启动时异常:' + err.name + ":" + err.message);
         }
 
         this._run = true;
