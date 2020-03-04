@@ -131,13 +131,13 @@ class ServerProcess extends EventEmitter {
         let auxContainer = null;
         docker.createContainer({
             Image: this.dataModel.dockerConfig.dockerImageName,
-            // AttachStdin: true,
-            // AttachStdout: true,
-            // AttachStderr: true,
-            // Tty: false,
+            AttachStdin: true,
+            AttachStdout: true,
+            AttachStderr: true,
+            Tty: false,
             Cmd: startCommandeArray,
-            // OpenStdin: true,
-            // StdinOnce: false,
+            OpenStdin: true,
+            StdinOnce: false,
             ExposedPorts: ExposedPortsObj,
             HostConfig: {
                 Binds: [
@@ -175,11 +175,11 @@ class ServerProcess extends EventEmitter {
                     });
                 });
                 // 进程事件传递
-                stream.on('exit', (e) => process.emit('exit', e));
-                stream.on('error', (e) => process.emit('error', e));
-
-                // Docker 的独特启动方式
-                process.on('error', (err) => {
+                stream.on('exit', (e) => {
+                    self.emit('exit', code);
+                    self.stop();
+                });
+                stream.on('error', (err) => {
                     MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
                     self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
                     self.stop();
@@ -197,11 +197,7 @@ class ServerProcess extends EventEmitter {
                 this.dataModel.lastDate = new Date().toLocaleString();
 
                 // 输出事件的传递
-                process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
-                process.on('exit', (code) => {
-                    emit('exit', code);
-                    self.stop();
-                });
+                process.stdout.on('data', (data) => self.emit('console', data));
 
                 // 产生事件开启
                 self.emit('open', self);
@@ -312,8 +308,8 @@ class ServerProcess extends EventEmitter {
 
     send(command) {
         if (this._run) {
-            this.process.stdin.write(iconv.encode(command, this.dataModel.ie));
-            this.process.stdin.write('\n');
+            this.process.stdin.write(iconv.encode(command, this.dataModel.ie) + '\n');
+            // this.process.stdin.write('\n');
             return true;
         }
         return true;
