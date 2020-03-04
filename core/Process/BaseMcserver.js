@@ -152,9 +152,7 @@ class ServerProcess extends EventEmitter {
             auxContainer = container;
             return auxContainer.start();
         }).then(() => {
-            auxContainer.wait(() => {
-                console.log("容器退出");
-            });
+
             // 链接容器的输入输出流
             auxContainer.attach({
                 stream: true,
@@ -180,6 +178,11 @@ class ServerProcess extends EventEmitter {
                     });
                 });
                 // 进程事件传递
+                auxContainer.wait(() => {
+                    console.log("容器退出");
+                    self.emit('exit', e);
+                    self.stop();
+                });
                 stream.on('close', (e) => {
                     console.log("容器流结束");
                     self.emit('exit', e);
@@ -198,12 +201,12 @@ class ServerProcess extends EventEmitter {
                     throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
                 }
 
-                this._run = true;
-                this._loading = false;
-                this.dataModel.lastDate = new Date().toLocaleString();
+                self._run = true;
+                self._loading = false;
+                self.dataModel.lastDate = new Date().toLocaleString();
 
                 // 输出事件的传递
-                process.stdout.on('data', (data) => self.emit('console', data));
+                process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
 
                 // 产生事件开启
                 self.emit('open', self);
@@ -268,7 +271,7 @@ class ServerProcess extends EventEmitter {
                 // Docker 启动
                 // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
                 this.dockerStart();
-                return;
+                return true;
             } else {
                 //确定启动方式
                 this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
