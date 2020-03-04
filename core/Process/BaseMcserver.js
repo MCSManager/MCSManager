@@ -165,6 +165,7 @@ class ServerProcess extends EventEmitter {
 
         // 模拟一个正常的 Process
         this.process = new EventEmitter();
+        const that = this;
 
         // 基于镜像启动虚拟化容器
         const docker = new Docker();
@@ -198,15 +199,15 @@ class ServerProcess extends EventEmitter {
             }, (err, stream) => {
                 if (err) throw err;
                 // 赋值进程容器
-                this.process.dockerContainer = auxContainer;
+                that.process.dockerContainer = auxContainer;
                 // 模拟 pid
-                this.process.pid = 1;
+                that.process.pid = 1;
                 // 对接普通进程的输入输出流
-                this.process.stdin = stream;
-                this.process.stdout = stream;
-                this.process.stderr = stream;
+                that.process.stdin = stream;
+                that.process.stdout = stream;
+                that.process.stderr = stream;
                 // 模拟进程杀死功能
-                this.process.kill = (() => {
+                that.process.kill = (() => {
                     docker.getContainer(auxContainer.id).kill().then(() => {
                         docker.getContainer(auxContainer.id).remove().then(() => {
                             console.log('this.process.kill')
@@ -215,10 +216,10 @@ class ServerProcess extends EventEmitter {
                     });
                 });
                 // 进程事件传递
-                stream.on('exit', (e) => this.process.emit('exit', e));
-                stream.on('error', (e) => this.process.emit('error', e));
+                stream.on('exit', (e) => that.process.emit('exit', e));
+                stream.on('error', (e) => that.process.emit('error', e));
 
-                console.log("\nDEBUG Docker process start:", this.process);
+                console.log("\nDEBUG Docker process start:", that.process);
             });
         });
     }
