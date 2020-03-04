@@ -158,7 +158,6 @@ class ServerProcess extends EventEmitter {
             auxContainer = container;
             return auxContainer.start();
         }).then(() => {
-
             // 链接容器的输入输出流
             auxContainer.attach({
                 stream: true,
@@ -196,7 +195,7 @@ class ServerProcess extends EventEmitter {
                 });
                 // 判断启动是否成功
                 if (!process.pid) {
-                    MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', self.process.pid);
+                    MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确');
                     self.stop();
                     throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
                 }
@@ -214,9 +213,9 @@ class ServerProcess extends EventEmitter {
                 // 输出开服资料
                 self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
             });
-        }).catch((err) => {
-            throw new Error("进程启动失败，建议检查配置参数");
-        });;
+        }, (err) => {
+            throw new Error("服务端进程启动失败，建议检查启动命令与参数是否正确");
+        });
     }
 
     //统一服务端开启
