@@ -193,7 +193,7 @@ class ServerProcess extends EventEmitter {
             return auxContainer.start();
         }).then(() => {
             // 链接容器的输入输出流
-            return auxContainer.attach({
+            auxContainer.attach({
                 stream: true,
                 stdin: true,
                 stdout: true
@@ -221,34 +221,34 @@ class ServerProcess extends EventEmitter {
                 stream.on('error', (e) => process.emit('error', e));
 
                 console.log("\nDEBUG Docker process start:", process);
+
+                // Docker 的独特启动方式
+                process.on('error', (err) => {
+                    MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
+                    self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
+                    self.stop();
+                    self.emit('error', err);
+                });
+
+                if (!process.pid) {
+                    MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', self.process.pid);
+                    self.stop();
+                    throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
+                }
+
+                // 输出事件的传递
+                process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
+                process.on('exit', (code) => {
+                    emit('exit', code);
+                    stop();
+                });
+
+                // 产生事件开启
+                self.emit('open', self);
+
+                // 输出开服资料
+                self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
             });
-        }).then(() => {
-            // Docker 的独特启动方式
-            process.on('error', (err) => {
-                MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
-                self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
-                self.stop();
-                self.emit('error', err);
-            });
-
-            if (!process.pid) {
-                MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', self.process.pid);
-                self.stop();
-                throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
-            }
-
-            // 输出事件的传递
-            process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
-            process.on('exit', (code) => {
-                emit('exit', code);
-                stop();
-            });
-
-            // 产生事件开启
-            self.emit('open', self);
-
-            // 输出开服资料
-            self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
         });
     }
 
