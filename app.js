@@ -192,6 +192,11 @@ process.on("uncaughtException", function (err) {
     MCSERVER.error('错误报告:', err);
 });
 
+process.on('unhandledRejection', (reason, p) => {
+    MCSERVER.infoLog('错误报告:');
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});
+
 //初始化目录结构环境
 (function initializationRun() {
     const USERS_PATH = './users/';

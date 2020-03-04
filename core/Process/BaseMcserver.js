@@ -272,7 +272,10 @@ class ServerProcess extends EventEmitter {
             if (this.dataModel.dockerConfig.isDocker) {
                 // Docker 启动
                 // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
-                this.dockerStart();
+                this.dockerStart().catch((err) => {
+                    this.printlnCommandLine("进程实例启动时失败，建议检查配置文件与启动参数");
+                    this.stop();
+                });
                 // 阻止继续运行下去
                 return true;
             } else {
