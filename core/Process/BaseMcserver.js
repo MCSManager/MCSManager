@@ -156,7 +156,7 @@ class ServerProcess extends EventEmitter {
         });
         try {
             // 尝试启动容器
-            auxContainer.start();
+            await auxContainer.start();
             // 链接容器的输入输出流
             auxContainer.attach({
                 stream: true,
