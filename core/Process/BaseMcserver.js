@@ -131,13 +131,13 @@ class ServerProcess extends EventEmitter {
         let auxContainer = null;
         docker.createContainer({
             Image: this.dataModel.dockerConfig.dockerImageName,
-            AttachStdin: true,
-            AttachStdout: true,
-            AttachStderr: true,
-            Tty: false,
+            // AttachStdin: true,
+            // AttachStdout: true,
+            // AttachStderr: true,
+            // Tty: false,
             Cmd: startCommandeArray,
-            OpenStdin: true,
-            StdinOnce: false,
+            // OpenStdin: true,
+            // StdinOnce: false,
             ExposedPorts: ExposedPortsObj,
             HostConfig: {
                 Binds: [
@@ -177,8 +177,6 @@ class ServerProcess extends EventEmitter {
                 // 进程事件传递
                 stream.on('exit', (e) => process.emit('exit', e));
                 stream.on('error', (e) => process.emit('error', e));
-
-                console.log("\nDEBUG Docker process start:", process);
 
                 // Docker 的独特启动方式
                 process.on('error', (err) => {
