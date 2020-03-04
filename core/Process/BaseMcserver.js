@@ -90,50 +90,8 @@ class ServerProcess extends EventEmitter {
 
     //使用 Docker 命令启动
     dockerStart() {
-        //命令模板与准备数据
-        // let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
-        // let processCwd = process.cwd();
+        // 命令模板与准备数据
         let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/igm, "/");
-
-        //命令模板渲染
-        // if (this.dataModel.highCommande.trim() != "")
-        //     dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
-        // else
-        //     dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.templateStart(true));
-        // //加入镜像名
-        // dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
-        //     this.dataModel.dockerConfig.dockerImageName);
-        // //加入端口限制
-        // dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
-        //     this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
-        // //加入服务端绝对路径
-        // dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
-        //     tools.CharReplaceTemp(stdCwd, " "));
-        // //加入最大内存限制
-        // dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
-        //     this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
-
-        //格式替换
-        // let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
-
-        //分割的参数全部渲染
-        // for (let k in dockerCommandPart) { }
-
-        // let execDockerCommande = [];
-        // for (let i = 1; i < dockerCommandPart.length; i++) {
-        //     if (dockerCommandPart[i].trim() != "") execDockerCommande.push(tools.TempReplaceChar(dockerCommandPart[i], " "));
-        // }
-
-        // 暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
-        // MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
-        // MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
-        // MCSERVER.log('-------------------------------');
-        // MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
-        // MCSERVER.log('根:' + stdCwd);
-        // MCSERVER.log('-------------------------------');
-        // this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
-        // this.send(this.dataModel.highCommande || this.templateStart(true));
-
 
         // 采用 Docker API 进行启动与监控
         // 启动命令解析
@@ -236,11 +194,15 @@ class ServerProcess extends EventEmitter {
                     throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
                 }
 
+                this._run = true;
+                this._loading = false;
+                this.dataModel.lastDate = new Date().toLocaleString();
+
                 // 输出事件的传递
                 process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
                 process.on('exit', (code) => {
                     emit('exit', code);
-                    stop();
+                    self.stop();
                 });
 
                 // 产生事件开启
