@@ -129,7 +129,6 @@ class ServerProcess extends EventEmitter {
         // 基于镜像启动虚拟化容器
         const docker = new Docker();
         let auxContainer = null;
-        auxContainer = await docker.createContainer();
         docker.createContainer({
             Image: this.dataModel.dockerConfig.dockerImageName,
             AttachStdin: true,
