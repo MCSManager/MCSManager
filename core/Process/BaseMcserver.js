@@ -102,26 +102,27 @@ class ServerProcess extends EventEmitter {
             startCommande = this.templateStart(true);
         const startCommandeArray = startCommande.split(" ");
         // 端口解析
+        const protocol = "tcp";
         let portmap = this.dataModel.dockerConfig.dockerPorts;
         portmap = portmap.split(":");
-        if (portmap.length != 2) {
-            throw new Error("不支持的多端口操作方法");
-        } else {
-
+        if (portmap.length > 2) {
+            throw new Error("不支持的多端口操作方法，参数配置端口数量错误。");
         }
         // 绑定内部暴露端口
-        const protocol = "tcp";
         const ExposedPortsObj = {};
-        ExposedPortsObj[portmap[0] + "/" + protocol] = {};
-
         // 绑定内部暴露端口与其对应的宿主机端口
         const PortBindingsObj = {};
-        PortBindingsObj[portmap[0] + "/" + protocol] = [{
-            HostPort: portmap[1] + ""
-        }];
-
-        console.log("正在使用虚拟化技术启动进程:\n", startCommandeArray, " Port:", portmap)
-        console.log("Pwd:", stdCwd, "端口参数:", ExposedPortsObj, PortBindingsObj)
+        if (portmap.length == 2) {
+            // 一个端口的配置项目
+            ExposedPortsObj[portmap[0] + "/" + protocol] = {};
+            PortBindingsObj[portmap[0] + "/" + protocol] = [{
+                HostPort: portmap[1] + ""
+            }];
+        }
+        // 输出启动消息
+        MCSERVER.info('服务器 [', this.dataModel.name, '] 启动进程:');
+        MCSERVER.info("正在使用虚拟化技术启动", "进程参数:", startCommandeArray.join(" "), "\nPort:", portmap)
+        MCSERVER.info("工作目录:", stdCwd);
 
         // 模拟一个正常的 Process
         this.process = new EventEmitter();
@@ -146,7 +147,7 @@ class ServerProcess extends EventEmitter {
                     stdCwd + ":/mcsd/"
                 ],
                 Memory: this.dataModel.dockerConfig.dockerXmx * 1024 * 1024 * 1024,
-                PortBindings: PortBindingsObj,
+                PortBindings: PortBindingsObj
             }
         }).then((container) => {
             auxContainer = container;
@@ -163,7 +164,7 @@ class ServerProcess extends EventEmitter {
                 // 赋值进程容器
                 process.dockerContainer = auxContainer;
                 // 模拟 pid
-                process.pid = 999;
+                process.pid = auxContainer.id;
                 // 对接普通进程的输入输出流
                 process.stdin = stream;
                 process.stdout = stream;
@@ -179,7 +180,6 @@ class ServerProcess extends EventEmitter {
                 });
                 // 容器进程事件传递
                 auxContainer.wait(() => {
-                    console.log("容器退出");
                     self.emit('exit', 0);
                     self.stop();
                 });
