@@ -177,15 +177,10 @@ class ServerProcess extends EventEmitter {
                         });
                     });
                 });
-                // 进程事件传递
+                // 容器进程事件传递
                 auxContainer.wait(() => {
                     console.log("容器退出");
-                    self.emit('exit', e);
-                    self.stop();
-                });
-                stream.on('close', (e) => {
-                    console.log("容器流结束");
-                    self.emit('exit', e);
+                    self.emit('exit', 0);
                     self.stop();
                 });
                 stream.on('error', (err) => {
