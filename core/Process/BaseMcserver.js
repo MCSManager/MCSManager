@@ -175,7 +175,7 @@ class ServerProcess extends EventEmitter {
                     });
                 });
                 // 进程事件传递
-                stream.on('exit', (e) => {
+                stream.on('close', (e) => {
                     self.emit('exit', code);
                     self.stop();
                 });
