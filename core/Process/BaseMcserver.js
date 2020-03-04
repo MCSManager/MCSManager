@@ -106,6 +106,8 @@ class ServerProcess extends EventEmitter {
         portmap = portmap.split(":");
         if (portmap.length != 2) {
             throw new Error("不支持的多端口操作方法");
+        } else {
+
         }
         // 绑定内部暴露端口
         const protocol = "tcp";
@@ -176,7 +178,7 @@ class ServerProcess extends EventEmitter {
                 });
                 // 进程事件传递
                 stream.on('close', (e) => {
-                    self.emit('exit', code);
+                    self.emit('exit', e);
                     self.stop();
                 });
                 stream.on('error', (err) => {
