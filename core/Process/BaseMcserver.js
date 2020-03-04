@@ -157,64 +157,66 @@ class ServerProcess extends EventEmitter {
         try {
             // 尝试启动容器
             await auxContainer.start();
-            // 链接容器的输入输出流
-            auxContainer.attach({
-                stream: true,
-                stdin: true,
-                stdout: true
-            }, (err, stream) => {
-                if (err) throw err;
-                // 赋值进程容器
-                process.dockerContainer = auxContainer;
-                // 模拟 pid
-                process.pid = auxContainer.id;
-                // 对接普通进程的输入输出流
-                process.stdin = stream;
-                process.stdout = stream;
-                process.stderr = null;
-                // 模拟进程杀死功能
-                process.kill = (() => {
-                    docker.getContainer(auxContainer.id).kill().then(() => {
-                        docker.getContainer(auxContainer.id).remove().then(() => {
-                            MCSERVER.log('实例', '[', self.dataModel.name, ']', '容器已强制移除');
-                        });
-                    });
-                });
-                // 容器工作完毕退出事件
-                auxContainer.wait(() => {
-                    self.emit('exit', 0);
-                    self.stop();
-                });
-                // 容器流错误事件传递
-                stream.on('error', (err) => {
-                    MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
-                    self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
-                    self.stop();
-                    self.emit('error', err);
-                });
-                // 判断启动是否成功
-                if (!process.pid) {
-                    MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确');
-                    self.stop();
-                    throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
-                }
-
-                self._run = true;
-                self._loading = false;
-                self.dataModel.lastDate = new Date().toLocaleString();
-
-                // 输出事件的传递
-                process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
-
-                // 产生事件开启
-                self.emit('open', self);
-
-                // 输出开服资料
-                self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
-            });
         } catch (err) {
+            this.stop();
+            this.emit('exit', 0);
             throw new Error("实例进程启动失败，建议检查启动参数与设置");
         }
+        // 链接容器的输入输出流
+        auxContainer.attach({
+            stream: true,
+            stdin: true,
+            stdout: true
+        }, (err, stream) => {
+            if (err) throw err;
+            // 赋值进程容器
+            process.dockerContainer = auxContainer;
+            // 模拟 pid
+            process.pid = auxContainer.id;
+            // 对接普通进程的输入输出流
+            process.stdin = stream;
+            process.stdout = stream;
+            process.stderr = null;
+            // 模拟进程杀死功能
+            process.kill = (() => {
+                docker.getContainer(auxContainer.id).kill().then(() => {
+                    docker.getContainer(auxContainer.id).remove().then(() => {
+                        MCSERVER.log('实例', '[', self.dataModel.name, ']', '容器已强制移除');
+                    });
+                });
+            });
+            // 容器工作完毕退出事件
+            auxContainer.wait(() => {
+                self.emit('exit', 0);
+                self.stop();
+            });
+            // 容器流错误事件传递
+            stream.on('error', (err) => {
+                MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
+                self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
+                self.stop();
+                self.emit('error', err);
+            });
+            // 判断启动是否成功
+            if (!process.pid) {
+                MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确');
+                self.stop();
+                throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
+            }
+
+            self._run = true;
+            self._loading = false;
+            self.dataModel.lastDate = new Date().toLocaleString();
+
+            // 输出事件的传递
+            process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
+
+            // 产生事件开启
+            self.emit('open', self);
+
+            // 输出开服资料
+            self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
+        });
     }
 
     //统一服务端开启
