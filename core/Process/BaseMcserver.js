@@ -120,9 +120,9 @@ class ServerProcess extends EventEmitter {
             }];
         }
         // 输出启动消息
-        MCSERVER.info('服务器 [', this.dataModel.name, '] 启动进程:');
-        MCSERVER.info("正在使用虚拟化技术启动", "进程参数:", startCommandeArray.join(" "), "\nPort:", portmap)
-        MCSERVER.info("工作目录:", stdCwd);
+        MCSERVER.log('服务器 [', this.dataModel.name, '] 启动进程:');
+        MCSERVER.log("正在使用虚拟化技术启动", "进程参数:", startCommandeArray.join(" "), "\nPort:", portmap)
+        MCSERVER.log("工作目录:", stdCwd);
 
         // 模拟一个正常的 Process
         this.process = new EventEmitter();
@@ -173,8 +173,7 @@ class ServerProcess extends EventEmitter {
                 process.kill = (() => {
                     docker.getContainer(auxContainer.id).kill().then(() => {
                         docker.getContainer(auxContainer.id).remove().then(() => {
-                            console.log('this.process.kill')
-                            return;
+                            MCSERVER.log('实例', '[', self.dataModel.name, ']', '容器已强制移除');
                         });
                     });
                 });
