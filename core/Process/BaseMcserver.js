@@ -152,6 +152,9 @@ class ServerProcess extends EventEmitter {
             auxContainer = container;
             return auxContainer.start();
         }).then(() => {
+            auxContainer.wait(() => {
+                console.log("容器退出");
+            });
             // 链接容器的输入输出流
             auxContainer.attach({
                 stream: true,
@@ -178,6 +181,7 @@ class ServerProcess extends EventEmitter {
                 });
                 // 进程事件传递
                 stream.on('close', (e) => {
+                    console.log("容器流结束");
                     self.emit('exit', e);
                     self.stop();
                 });
