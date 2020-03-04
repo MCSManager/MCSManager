@@ -1,6 +1,6 @@
 ![doc_logo.png](/public/common/doc_logo.png)
   
-[![Status](https://img.shields.io/badge/npm-v5.9.0-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/npm-v6.9.0-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v10.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-MIT-red.svg)](https://github.com/Suwings/MCSManager)
