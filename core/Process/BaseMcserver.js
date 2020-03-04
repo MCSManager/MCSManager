@@ -10,8 +10,9 @@ const path = require('path')
 
 const properties = require("properties");
 const fs = require('fs');
+const Docker = require('dockerode');
 
-var CODE_CONSOLE = MCSERVER.localProperty.console_encode;
+const CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
 class ServerProcess extends EventEmitter {
 
@@ -90,50 +91,136 @@ class ServerProcess extends EventEmitter {
     //使用 Docker 命令启动
     dockerStart() {
         //命令模板与准备数据
-        let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
+        // let dockerCommand = this.dataModel.dockerConfig.dockerCommand;
         // let processCwd = process.cwd();
         let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/igm, "/");
 
         //命令模板渲染
-        if (this.dataModel.highCommande.trim() != "")
-            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
-        else
-            dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.templateStart(true));
-        //加入镜像名
-        dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
-            this.dataModel.dockerConfig.dockerImageName);
-        //加入端口限制
-        dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
-            this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
-        //加入服务端绝对路径
-        dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
-            tools.CharReplaceTemp(stdCwd, " "));
-        //加入最大内存限制
-        dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
-            this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
+        // if (this.dataModel.highCommande.trim() != "")
+        //     dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.dataModel.highCommande);
+        // else
+        //     dockerCommand = dockerCommand.replace(/\$\{commande\}/igm, this.templateStart(true));
+        // //加入镜像名
+        // dockerCommand = dockerCommand.replace(/\$\{imagename\}/igm,
+        //     this.dataModel.dockerConfig.dockerImageName);
+        // //加入端口限制
+        // dockerCommand = dockerCommand.replace(/\$\{ports\}/igm,
+        //     this.dataModel.dockerConfig.dockerPorts ? "-p " + this.dataModel.dockerConfig.dockerPorts : "");
+        // //加入服务端绝对路径
+        // dockerCommand = dockerCommand.replace(/\$\{serverpath\}/igm,
+        //     tools.CharReplaceTemp(stdCwd, " "));
+        // //加入最大内存限制
+        // dockerCommand = dockerCommand.replace(/\$\{xmx\}/igm,
+        //     this.dataModel.dockerConfig.dockerXmx ? "-m " + this.dataModel.dockerConfig.dockerXmx : "");
 
         //格式替换
-        let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
+        // let dockerCommandPart = dockerCommand.replace(/  /igm, " ").split(" ");
 
         //分割的参数全部渲染
         // for (let k in dockerCommandPart) { }
 
-        let execDockerCommande = [];
-        for (let i = 1; i < dockerCommandPart.length; i++) {
-            if (dockerCommandPart[i].trim() != "") execDockerCommande.push(tools.TempReplaceChar(dockerCommandPart[i], " "));
+        // let execDockerCommande = [];
+        // for (let i = 1; i < dockerCommandPart.length; i++) {
+        //     if (dockerCommandPart[i].trim() != "") execDockerCommande.push(tools.TempReplaceChar(dockerCommandPart[i], " "));
+        // }
+
+        // 暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
+        // MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
+        // MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
+        // MCSERVER.log('-------------------------------');
+        // MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
+        // MCSERVER.log('根:' + stdCwd);
+        // MCSERVER.log('-------------------------------');
+        // this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
+        // this.send(this.dataModel.highCommande || this.templateStart(true));
+
+
+        // 采用 Docker API 进行启动与监控
+        // 启动命令解析
+        let startCommande = "";
+        if (this.dataModel.highCommande.trim() != "")
+            startCommande = this.dataModel.highCommande;
+        else
+            startCommande = this.templateStart(true);
+        const startCommandeArray = startCommande.split(" ");
+        // 端口解析
+        let portmap = this.dataModel.dockerConfig.dockerPorts;
+        portmap = portmap.split(":");
+        if (portmap.length != 2) {
+            throw new Error("不支持的多端口操作方法");
         }
+        // 绑定内部暴露端口
+        const protocol = "tcp";
+        const ExposedPortsObj = {};
+        ExposedPortsObj[portmap[0] + "/" + protocol] = {};
 
-        //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
-        MCSERVER.infoLog('Minecraft Server start (Docker)', this.dataModel.name);
-        MCSERVER.log('端实例 [' + this.dataModel.name + '] 启动 Docker 容器:');
-        MCSERVER.log('-------------------------------');
-        MCSERVER.log('启动命令: ' + dockerCommandPart[0] + " " + execDockerCommande.join(" "));
-        MCSERVER.log('根:' + stdCwd);
-        MCSERVER.log('-------------------------------');
+        // 绑定内部暴露端口与其对应的宿主机端口
+        const PortBindingsObj = {};
+        PortBindingsObj[portmap[0] + "/" + protocol] = [{
+            HostPort: portmap[1] + ""
+        }];
 
-        this.process = childProcess.spawn(dockerCommandPart[0], execDockerCommande, this.ProcessConfig);
+        console.log("正在使用虚拟化技术启动进程:\n", startCommandeArray, " Port:", portmap)
+        console.log("Pwd:", stdCwd, "端口参数:", ExposedPortsObj, PortBindingsObj)
 
-        this.send(this.dataModel.highCommande || this.templateStart(true));
+        // 模拟一个正常的 Process
+        this.process = new EventEmitter();
+
+        // 基于镜像启动虚拟化容器
+        const docker = new Docker();
+        let auxContainer = null;
+        docker.createContainer({
+            Image: this.dataModel.dockerConfig.dockerImageName,
+            AttachStdin: true,
+            AttachStdout: true,
+            AttachStderr: true,
+            Tty: false,
+            Cmd: startCommandeArray,
+            OpenStdin: true,
+            StdinOnce: false,
+            ExposedPorts: ExposedPortsObj,
+            HostConfig: {
+                Binds: [
+                    stdCwd + ":/mcsd/"
+                ],
+                Memory: this.dataModel.dockerConfig.dockerXmx * 1024 * 1024 * 1024,
+                PortBindings: PortBindingsObj,
+            }
+        }).then((container) => {
+            auxContainer = container;
+            return auxContainer.start();
+        }).then(() => {
+            // 链接容器的输入输出流
+            auxContainer.attach({
+                stream: true,
+                stdin: true,
+                stdout: true
+            }, (err, stream) => {
+                if (err) throw err;
+                // 赋值进程容器
+                this.process.dockerContainer = auxContainer;
+                // 模拟 pid
+                this.process.pid = 1;
+                // 对接普通进程的输入输出流
+                this.process.stdin = stream;
+                this.process.stdout = stream;
+                this.process.stderr = stream;
+                // 模拟进程杀死功能
+                this.process.kill = (() => {
+                    docker.getContainer(auxContainer.id).kill().then(() => {
+                        docker.getContainer(auxContainer.id).remove().then(() => {
+                            console.log('this.process.kill')
+                            return;
+                        });
+                    });
+                });
+                // 进程事件传递
+                stream.on('exit', (e) => this.process.emit('exit', e));
+                stream.on('error', (e) => this.process.emit('error', e));
+
+                console.log("\nDEBUG Docker process start:", this.process);
+            });
+        });
     }
 
     //统一服务端开启
