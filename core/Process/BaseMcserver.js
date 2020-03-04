@@ -165,7 +165,8 @@ class ServerProcess extends EventEmitter {
 
         // 模拟一个正常的 Process
         this.process = new EventEmitter();
-        const that = this;
+        const process = this.process;
+        const self = this;
 
         // 基于镜像启动虚拟化容器
         const docker = new Docker();
@@ -192,22 +193,22 @@ class ServerProcess extends EventEmitter {
             return auxContainer.start();
         }).then(() => {
             // 链接容器的输入输出流
-            auxContainer.attach({
+            return auxContainer.attach({
                 stream: true,
                 stdin: true,
                 stdout: true
             }, (err, stream) => {
                 if (err) throw err;
                 // 赋值进程容器
-                that.process.dockerContainer = auxContainer;
+                process.dockerContainer = auxContainer;
                 // 模拟 pid
-                that.process.pid = 1;
+                process.pid = 1;
                 // 对接普通进程的输入输出流
-                that.process.stdin = stream;
-                that.process.stdout = stream;
-                that.process.stderr = stream;
+                process.stdin = stream;
+                process.stdout = stream;
+                process.stderr = null;
                 // 模拟进程杀死功能
-                that.process.kill = (() => {
+                process.kill = (() => {
                     docker.getContainer(auxContainer.id).kill().then(() => {
                         docker.getContainer(auxContainer.id).remove().then(() => {
                             console.log('this.process.kill')
@@ -216,11 +217,38 @@ class ServerProcess extends EventEmitter {
                     });
                 });
                 // 进程事件传递
-                stream.on('exit', (e) => that.process.emit('exit', e));
-                stream.on('error', (e) => that.process.emit('error', e));
+                stream.on('exit', (e) => process.emit('exit', e));
+                stream.on('error', (e) => process.emit('error', e));
 
-                console.log("\nDEBUG Docker process start:", that.process);
+                console.log("\nDEBUG Docker process start:", process);
             });
+        }).then(() => {
+            // Docker 的独特启动方式
+            process.on('error', (err) => {
+                MCSERVER.error('服务器运行时异常,建议检查配置与环境', err);
+                self.printlnStdin(['Error:', err.name, '\n Error Message:', err.message, '\n 进程 PID:', self.process.pid || "启动失败，无法获取进程。"]);
+                self.stop();
+                self.emit('error', err);
+            });
+
+            if (!process.pid) {
+                MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确，pid:', self.process.pid);
+                self.stop();
+                throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
+            }
+
+            // 输出事件的传递
+            process.stdout.on('data', (data) => self.emit('console', iconv.decode(data, self.dataModel.oe)));
+            process.on('exit', (code) => {
+                emit('exit', code);
+                stop();
+            });
+
+            // 产生事件开启
+            self.emit('open', self);
+
+            // 输出开服资料
+            self.printlnCommandLine('服务端 ' + self.dataModel.name + " 执行开启命令.");
         });
     }
 
@@ -275,8 +303,10 @@ class ServerProcess extends EventEmitter {
 
         try {
             if (this.dataModel.dockerConfig.isDocker) {
-                //Docker 启动
+                // Docker 启动
+                // 选用虚拟化技术启动后，将不再执行下面代码逻辑，由专属的进程启动方式启动。
                 this.dockerStart();
+                return;
             } else {
                 //确定启动方式
                 this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
