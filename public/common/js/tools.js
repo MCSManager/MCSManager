@@ -131,6 +131,11 @@
 		term.TERM_TEXT_CYAN = "\x1B[1;0;36m";
 		term.TERM_TEXT_WHITE = "\x1B[1;0;37m";
 		term.TERM_TEXT_B = "\x1B[1m";
+
+		// 字体格式
+		text = text.replace(/§r/gm, term.TERM_NULL);
+		text = text.replace(/&r/gm, term.TERM_NULL);
+
 		// 基本颜色
 		text = text.replace(/([A-Za-z _&;\-\\.]{1,}:)/igm, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
 		text = text.replace(/INFO/gm, term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL);
@@ -171,8 +176,6 @@
 		text = text.replace(/&e/gm, term.TERM_TEXT_YELLOW);
 		text = text.replace(/&f/gm, term.TERM_TEXT_WHITE);
 		// 字体格式
-		text = text.replace(/§r/gm, term.TERM_NULL);
-		text = text.replace(/&r/gm, term.TERM_NULL);
 		text = text.replace(/§k/gm, "\x1B[1m");
 		text = text.replace(/&k/gm, "\x1B[1m");
 		text = text.replace(/§l/gm, "\x1B[1m");
