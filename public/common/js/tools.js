@@ -153,7 +153,7 @@
 		text = text.replace(/§d/gm, term.TERM_TEXT_RED);
 		text = text.replace(/§e/gm, term.TERM_TEXT_YELLOW);
 		text = text.replace(/§f/gm, term.TERM_TEXT_WHITE);
-
+		// 基于&符号
 		text = text.replace(/&0/gm, term.TERM_TEXT_WHITE);
 		text = text.replace(/&1/gm, term.TERM_TEXT_CYAN);
 		text = text.replace(/&2/gm, term.TERM_TEXT_GREEN);
@@ -170,6 +170,20 @@
 		text = text.replace(/&d/gm, term.TERM_TEXT_RED);
 		text = text.replace(/&e/gm, term.TERM_TEXT_YELLOW);
 		text = text.replace(/&f/gm, term.TERM_TEXT_WHITE);
+		// 字体格式
+		text = text.replace(/§r/gm, term.TERM_NULL);
+		text = text.replace(/&r/gm, term.TERM_NULL);
+		text = text.replace(/§k/gm, "\x1B[1m");
+		text = text.replace(/&k/gm, "\x1B[1m");
+		text = text.replace(/§l/gm, "\x1B[1m");
+		text = text.replace(/&l/gm, "\x1B[1m");
+		text = text.replace(/§m/gm, "\x1B[2m");
+		text = text.replace(/&m/gm, "\x1B[2m");
+		text = text.replace(/§n/gm, "\x1B[4m");
+		text = text.replace(/&n/gm, "\x1B[4m");
+		text = text.replace(/§o/gm, "\x1B[3m");
+		text = text.replace(/&o/gm, "\x1B[3m");
+
 
 		// 行结尾符号替换
 		text = text.replace(/\r\n/gm, term.TERM_NULL + "\r\n");
@@ -181,7 +195,7 @@
 				"plugin.yml"
 			],
 			//绿色
-			["/help", "left the game", "Enabling",
+			["/help", "left the game", "Enabling", "Server thread",
 				"Saving chunks for level", "----", "UUID", "Starting minecraft server version",
 				"Timings Reset",
 				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;",
