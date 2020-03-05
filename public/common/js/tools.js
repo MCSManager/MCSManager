@@ -120,12 +120,60 @@
 
 	//Minecraft 服务器输出基本颜色
 	TOOLS.encodeConsoleColor = function (text) {
-		text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/igm, "<span style='color:#ffa700;'>$1</span>");
-		text = text.replace(/\[/igm, "<span style='color:#10e616;'>[</span>");
-		text = text.replace(/\]/igm, "<span style='color:#10e616;'>]</span>");
-		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
-		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
+		var term = MCSERVER.term;
+		if (!term) term = {};
+		term.TERM_NULL = "\x1B[0m";
+		term.TERM_TEXT_RED = "\x1B[1;1;31m";
+		term.TERM_TEXT_GREEN = "\x1B[1;1;32m";
+		term.TERM_TEXT_YELLOW = "\x1B[1;1;33m";
+		term.TERM_TEXT_BLUE = "\x1B[1;1;34m";
+		term.TERM_TEXT_FUCHSIA = "\x1B[1;1;35m";
+		term.TERM_TEXT_CYAN = "\x1B[1;1;36m";
+		term.TERM_TEXT_WHITE = "\x1B[1;1;37m";
+		term.TERM_TEXT_B = "\x1B[1m";
+		// 基本颜色
+		text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/igm, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
+		text = text.replace(/INFO/gm, term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL);
+		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, term.TERM_TEXT_CYAN + "$1" + term.TERM_NULL);
 
+		// Minecraft 原生颜色替代解析
+		text = text.replace(/§0/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/§1/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/§2/gm, term.TERM_TEXT_GREEN);
+		text = text.replace(/§3/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/§4/gm, term.TERM_TEXT_RED);
+		text = text.replace(/§5/gm, term.TERM_TEXT_FUCHSIA);
+		text = text.replace(/§6/gm, term.TERM_TEXT_YELLOW);
+		text = text.replace(/§7/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/§8/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/§9/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/§a/gm, term.TERM_TEXT_RED);
+		text = text.replace(/§b/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/§c/gm, term.TERM_TEXT_RED);
+		text = text.replace(/§d/gm, term.TERM_TEXT_RED);
+		text = text.replace(/§e/gm, term.TERM_TEXT_YELLOW);
+		text = text.replace(/§f/gm, term.TERM_TEXT_WHITE);
+
+		text = text.replace(/&0/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/&1/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/&2/gm, term.TERM_TEXT_GREEN);
+		text = text.replace(/&3/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/&4/gm, term.TERM_TEXT_RED);
+		text = text.replace(/&5/gm, term.TERM_TEXT_FUCHSIA);
+		text = text.replace(/&6/gm, term.TERM_TEXT_YELLOW);
+		text = text.replace(/&7/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/&8/gm, term.TERM_TEXT_WHITE);
+		text = text.replace(/&9/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/&a/gm, term.TERM_TEXT_RED);
+		text = text.replace(/&b/gm, term.TERM_TEXT_CYAN);
+		text = text.replace(/&c/gm, term.TERM_TEXT_RED);
+		text = text.replace(/&d/gm, term.TERM_TEXT_RED);
+		text = text.replace(/&e/gm, term.TERM_TEXT_YELLOW);
+		text = text.replace(/&f/gm, term.TERM_TEXT_WHITE);
+
+		// 行结尾符号替换
+		text = text.replace(/\r\n/gm, term.TERM_NULL + "\r\n");
+		// 特殊文本替换
 		var RegExpStringArr = [
 			//蓝色
 			["Unknown command", "Loading libraries, please wait...",
@@ -134,7 +182,7 @@
 			],
 			//绿色
 			["/help", "left the game", "Enabling",
-				"Saving chunks for level", "--------", "UUID", "Starting minecraft server version",
+				"Saving chunks for level", "----", "UUID", "Starting minecraft server version",
 				"Timings Reset",
 				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;",
 				"Preparing start region for level"
@@ -157,13 +205,13 @@
 					"(" + RegExpStringArr[k][y].replace(/ /igm, "&nbsp;") + ")",
 					"igm");
 				if (k == 0) //蓝色
-					text = text.replace(reg, "<span style='color:#009fef;'>$1</span>");
+					text = text.replace(reg, term.TERM_TEXT_BLUE + "$1" + term.TERM_NULL);
 				if (k == 1) //绿色
-					text = text.replace(reg, "<span style='color:#10e616;'>$1</span>");
+					text = text.replace(reg, term.TERM_TEXT_GREEN + "$1" + term.TERM_NULL);
 				if (k == 2) //红色
-					text = text.replace(reg, "<span style='color:#ea1f1a;'>$1</span>");
+					text = text.replace(reg, term.TERM_TEXT_RED + "$1" + term.TERM_NULL);
 				if (k == 3) //黄色
-					text = text.replace(reg, "<span style='color:#ffa700;'>$1</span>");
+					text = text.replace(reg, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
 
 			}
 		}
@@ -195,6 +243,7 @@
 			}
 		});
 	}
+
 	TOOLS.popWindClose = function (res) {
 		$(".PopWin").removeAttr("style");
 		$("#balckWarp").removeAttr("style");
@@ -202,7 +251,6 @@
 		_popWindCallback(res);
 		_popWindCallback = null;
 	}
-
 
 	TOOLS.blackJumbotron = function (boolean) {
 		if (boolean) {
@@ -243,7 +291,6 @@
 		}, false);
 		oReq.send(oMyForm);
 	}
-
 
 	TOOLS.page = function (toUrl) {
 		var url = window.location.href;
