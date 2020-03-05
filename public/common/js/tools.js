@@ -123,16 +123,16 @@
 		var term = MCSERVER.term;
 		if (!term) term = {};
 		term.TERM_NULL = "\x1B[0m";
-		term.TERM_TEXT_RED = "\x1B[1;1;31m";
-		term.TERM_TEXT_GREEN = "\x1B[1;1;32m";
-		term.TERM_TEXT_YELLOW = "\x1B[1;1;33m";
+		term.TERM_TEXT_RED = "\x1B[1;0;31m";
+		term.TERM_TEXT_GREEN = "\x1B[1;0;32m";
+		term.TERM_TEXT_YELLOW = "\x1B[1;0;33m";
 		term.TERM_TEXT_BLUE = "\x1B[1;1;34m";
-		term.TERM_TEXT_FUCHSIA = "\x1B[1;1;35m";
-		term.TERM_TEXT_CYAN = "\x1B[1;1;36m";
-		term.TERM_TEXT_WHITE = "\x1B[1;1;37m";
+		term.TERM_TEXT_FUCHSIA = "\x1B[1;0;35m";
+		term.TERM_TEXT_CYAN = "\x1B[1;0;36m";
+		term.TERM_TEXT_WHITE = "\x1B[1;0;37m";
 		term.TERM_TEXT_B = "\x1B[1m";
 		// 基本颜色
-		text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/igm, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
+		text = text.replace(/([A-Za-z _&;\-\\.]{1,}:)/igm, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
 		text = text.replace(/INFO/gm, term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL);
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, term.TERM_TEXT_CYAN + "$1" + term.TERM_NULL);
 
