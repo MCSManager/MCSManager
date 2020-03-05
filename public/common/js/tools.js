@@ -132,12 +132,8 @@
 		term.TERM_TEXT_WHITE = "\x1B[1;0;37m";
 		term.TERM_TEXT_B = "\x1B[1m";
 
-		// 字体格式
-		text = text.replace(/§r/gm, term.TERM_NULL);
-		text = text.replace(/&r/gm, term.TERM_NULL);
-
 		// 基本颜色
-		text = text.replace(/([A-Za-z _&;\-\\.]{1,}:)/igm, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
+		text = text.replace(/([A-Za-z _§&;\-\\.]{1,}:)/igm, "§6$1§r");
 		text = text.replace(/INFO/gm, term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL);
 		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, term.TERM_TEXT_CYAN + "$1" + term.TERM_NULL);
 
@@ -176,6 +172,8 @@
 		text = text.replace(/&e/gm, term.TERM_TEXT_YELLOW);
 		text = text.replace(/&f/gm, term.TERM_TEXT_WHITE);
 		// 字体格式
+		text = text.replace(/§r/gm, term.TERM_NULL);
+		text = text.replace(/&r/gm, term.TERM_NULL);
 		text = text.replace(/§k/gm, "\x1B[1m");
 		text = text.replace(/&k/gm, "\x1B[1m");
 		text = text.replace(/§l/gm, "\x1B[1m");
@@ -187,9 +185,6 @@
 		text = text.replace(/§o/gm, "\x1B[3m");
 		text = text.replace(/&o/gm, "\x1B[3m");
 
-
-		// 行结尾符号替换
-		text = text.replace(/\r\n/gm, term.TERM_NULL + "\r\n");
 		// 特殊文本替换
 		var RegExpStringArr = [
 			//蓝色
@@ -211,8 +206,7 @@
 				"Starting Minecraft server on",
 				"world_the_end",
 				"world_nether",
-				"Usage",
-				"Server thread", "Done", "MCSMANAGER"
+				"Done", "MCSMANAGER"
 			]
 		]
 		for (var k in RegExpStringArr) {
@@ -232,6 +226,8 @@
 
 			}
 		}
+		// 行结尾符号替换
+		text = text.replace(/\r\n/gm, term.TERM_NULL + "\r\n");
 		return text;
 	}
 
