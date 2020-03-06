@@ -63,7 +63,7 @@ http://mcsm.suwings.top/ (官方站点)
 # 安装 Node 版本控制工具(若没有 wget,请安装它)
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
 # 关闭终端重新打开再执行以下命令
-# 项目支持 8.0 版本以上，这里使用11版本
+# 项目支持 10.0 版本以上，这里使用11版本
 nvm install 11.0.0
 nvm use 11.0.0
 # 克隆仓库
@@ -171,7 +171,10 @@ FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%
 
 FTP 服务
 -----------
-FTP 模块采用被动传输模式，传输命令默认使用 `10022`(可更改) 端口；
+
+FTP 模块默认为关闭状态.开启选项在 property.js 文件中 但不建议使用
+
+采用被动传输模式，传输命令默认使用 `10022`(可更改) 端口；
 
 传输数据需要一个端口段，默认是 `20010` - `20100`；
 
