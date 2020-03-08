@@ -119,6 +119,7 @@ Wiki
 配置文件是什么？ | property.js
 配好反向代理却无法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22)
 FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
+反代后文件管理偶尔失效? | 请检查反代机器的防火墙是否拦截
 
 <br />
 
