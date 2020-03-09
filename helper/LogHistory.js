@@ -1,72 +1,90 @@
 "use strict";
 // 日志历史储存
 
-const MAX_HISTORY_SIZE = 1000;
-const DELETE_ALTER_INIT_SIZE = 600;
+const fs = require('fs');
+const fsExtra = require('fs-extra');
+
+const MAX_HISTORY_SIZE = 1024 * 1024 * 1;
+const BASE_RECORD_DIR = './server/tmp_log_history/';
+const FILE_CODE = "utf8";
 
 class LogHistory {
     constructor(id) {
         this.id = id;
         this.readPoints = {};
         this.log = new Array();
+        this.path = BASE_RECORD_DIR + id + '.log';
+        if (!fsExtra.existsSync(BASE_RECORD_DIR)) {
+            fsExtra.mkdirs(BASE_RECORD_DIR);
+        }
     }
 
     writeLine(text = "") {
         if (text.length == 0) return;
-        if (this.log.length > MAX_HISTORY_SIZE) {
-            this.log.splice(0, DELETE_ALTER_INIT_SIZE);
-        }
-        let addLineLength = 0;
-        text = text.replace(/\r/igm, "");
-        if (text.indexOf('\n') != -1) {
-            let arr = text.split('\n');
-            for (let v of arr) {
-                if (v) {
-                    this.log.push(v);
-                    addLineLength++;
+        if (fs.existsSync(this.path))
+            fs.appendFile(this.path, text, FILE_CODE, (err) => {
+                if (err) MCSERVER.log('实例', this.id, '日志历史记录文件写入错误:', err.message);
+                let fsstat = fs.statSync(this.path);
+                let size = fsstat.size;
+                if (size > MAX_HISTORY_SIZE) {
+                    fs.unlinkSync(this.path);
                 }
+            });
+        else
+            fs.writeFile(this.path, text, (err) => {
+                if (err) MCSERVER.log('实例', this.id, '日志历史记录文件创建错误:', err.message);
+            });
+    }
+
+    readLine(demander = "", size = 1024, callback = () => { }) {
+        if (!this.readPoints[demander]) {
+            this.readPoints[demander] = 0;
+        }
+        const demanderPoint = this.readPoints[demander];
+        const buffer = Buffer.alloc(size);
+        fs.open(this.path, 'r', (err, fd) => {
+            if (err) {
+                MCSERVER.log('实例', this.id, '日志历史记录文件打开错误:', err.message);
+                return;
             }
-        } else {
-            this.log.push(text);
-            addLineLength++;
-        }
-        for (let k in this.readPoints) {
-            this.readPoints[k] += addLineLength;
-        }
+            fs.read(fd, buffer, 0, size, demanderPoint, (err, bytesRead, buffer) => {
+                if (err) {
+                    MCSERVER.log('实例', this.id, '日志历史记录文件读取错误:', err.message);
+                    return;
+                };
+                const logText = buffer.slice(0, bytesRead).toString();
+                this.readPoints[demander] += size;
+                callback && callback(logText);
+                // 关闭文件
+                fs.close(fd, () => { });
+            });
+        });
     }
 
-    readLine(demander = "", size = 10) {
+    readLineReverse(demander = "", size = 1024, notadd = false, callback = () => { }) {
         if (!this.readPoints[demander]) {
             this.readPoints[demander] = 0;
         }
-        let demanderPoint = this.readPoints[demander];
-        let text = "";
-        let logarr = this.log;
-        let i;
-        for (i = demanderPoint; i <= demanderPoint + size; i++) {
-            let point = logarr.length - i - 1;
-            if (point < 0) break;
-            let v = logarr[point] + '\n';
-            if (logarr[point] && logarr[point].trim().length > 0) text += v;
-        }
-        this.readPoints[demander] = demanderPoint + size;
-        return text;
-    }
-
-    readLineReverse(demander = "", size = 10, notadd = false) {
-        if (!this.readPoints[demander]) {
-            this.readPoints[demander] = 0;
-        }
-        let demanderPoint = this.readPoints[demander];
-        let text = "";
-        let logarr = this.log;
-        let i;
-        for (i = (logarr.length - 1 - size - demanderPoint); i < logarr.length - demanderPoint; i++) {
-            let v = logarr[i] + '\n';
-            if (logarr[i] && logarr[i].trim().length > 0) text += v;
-        }
+        const demanderPoint = this.readPoints[demander];
+        const buffer = Buffer.alloc(size);
+        fs.open(this.path, 'r', (err, fd) => {
+            if (err) {
+                MCSERVER.log('实例', this.id, '日志历史记录文件打开错误:', err.message);
+                return;
+            }
+            fs.read(fd, buffer, 0, size, demanderPoint, (err, bytesRead, buffer) => {
+                if (err) {
+                    MCSERVER.log('实例', this.id, '日志历史记录文件读取错误:', err.message);
+                    return;
+                };
+                const logText = buffer.slice(0, bytesRead).toString();
+                this.readPoints[demander] += size;
+                callback && callback(logText);
+                // 关闭文件
+                fs.close(fd, () => { });
+            });
+        });
         if (!notadd) this.readPoints[demander] = demanderPoint + size;
-        return text;
     }
 
     setPoint(demander, v) {

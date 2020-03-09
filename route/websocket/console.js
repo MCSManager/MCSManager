@@ -112,29 +112,41 @@ WebSocketObserver().listener('server/console/remove', (data) => {
 });
 
 
-//缓冲区定时发送频率，默认限制两秒刷新缓冲区
-let consoleBuffer = {};
+// 缓冲区定时发送频率，默认限制两秒刷新缓冲区
+const consoleBuffer = {};
 setInterval(() => {
     for (const serverName in consoleBuffer) {
-        let data = consoleBuffer[serverName];
-        // 记录日志历史记录
-        const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
-        if (logHistory) logHistory.writeLine(data)
-
-        // 发送前端的标准，前端只识别 \r\n ，不可是\n
-        data = data.replace(/\n/gim, '\r\n');
-        data = data.replace(/\r\r\n/gim, '\r\n');
-        //刷新每个服务器的缓冲数据
-        selectWebsocket(serverName, (socket) => {
-            socket.send({
-                ws: socket.ws,
-                resK: 'server/console/ws',
-                resV: {},
-                body: data
+        try {
+            let data = consoleBuffer[serverName];
+            const server = serverModel.ServerManager().getServer(serverName);
+            // 此实例可能已经失去联系，可能被删除，可能被改名
+            if (!server || !data) {
+                consoleBuffer[serverName] = undefined;
+                delete consoleBuffer[serverName];
+                continue;
+            }
+            const logHistory = server.logHistory;
+            if (logHistory) logHistory.writeLine(data)
+            // 发送前端的标准，前端只识别 \r\n ，不可是\n
+            data = data.replace(/\n/gim, '\r\n');
+            data = data.replace(/\r\r\n/gim, '\r\n');
+            //刷新每个服务器的缓冲数据
+            selectWebsocket(serverName, (socket) => {
+                socket.send({
+                    ws: socket.ws,
+                    resK: 'server/console/ws',
+                    resV: {},
+                    body: data
+                });
             });
-        });
-        // 释放内存
-        consoleBuffer[serverName] = "";
+            // 释放内存并删除键
+            consoleBuffer[serverName] = undefined;
+            delete consoleBuffer[serverName];
+        } catch (error) {
+            MCSERVER.log('实例', serverName, '日志周期性广播任务错误:');
+            console.log(error);
+            continue;
+        }
     }
 }, MCSERVER.localProperty.console_send_times);
 //控制台标准输出流

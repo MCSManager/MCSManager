@@ -5,6 +5,7 @@ const permssion = require('../../../helper/Permission');
 const serverModel = require('../../../model/ServerModel');
 const response = require('../../../helper/Response');
 
+const HISTORY_SIZE_LINE = 1024;
 
 // 正序历史记录路由
 WebSocketObserver().listener('server/console/history', (data) => {
@@ -18,14 +19,16 @@ WebSocketObserver().listener('server/console/history', (data) => {
             response.wsSend(data.ws, 'server/console/history', 'terminalBack', "[控制面板]: 暂无任何历史记录.\r\n");
             return;
         }
-        let sendText = logHistory.readLine(userName, 30);
-        if (sendText) {
-            sendText = sendText.replace(/\n/gim, '\r\n');
-            sendText = sendText.replace(/\r\r\n/gim, '\r\n');
-            response.wsSend(data.ws, 'server/console/history', 'terminalBack', sendText);
-        } else {
-            response.wsSend(data.ws, 'server/console/history', 'terminalBack', "[控制面板]: 无法再读取更多的服务端日志.\r\n");
-        }
+        logHistory.readLine(userName, HISTORY_SIZE_LINE, (sendText) => {
+            if (sendText) {
+                sendText = sendText.replace(/\n/gim, '\r\n');
+                sendText = sendText.replace(/\r\r\n/gim, '\r\n');
+                response.wsSend(data.ws, 'server/console/history', 'terminalBack', sendText);
+            } else {
+                response.wsSend(data.ws, 'server/console/history', 'terminalBack', "[控制面板]: 无法再读取更多的服务端日志.\r\n");
+            }
+        });
+
     }
 });
 
@@ -40,12 +43,14 @@ WebSocketObserver().listener('server/console/history_reverse', (data) => {
         const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
         if (!logHistory)
             return;
-        let sendText = logHistory.readLineReverse(userName, 50, true);
-        if (sendText) {
-            sendText = sendText.replace(/\n/gim, '\r\n');
-            sendText = sendText.replace(/\r\r\n/gim, '\r\n');
-            response.wsSend(data.ws, 'server/console/history', 'terminalBack', sendText);
-        }
+        logHistory.readLineReverse(userName, HISTORY_SIZE_LINE, true, (sendText) => {
+            if (sendText) {
+                sendText = sendText.replace(/\n/gim, '\r\n');
+                sendText = sendText.replace(/\r\r\n/gim, '\r\n');
+                response.wsSend(data.ws, 'server/console/history', 'terminalBack', sendText);
+            }
+        });
+
     }
 });
 
