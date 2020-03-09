@@ -27,7 +27,7 @@ class LogHistory {
                 let fsstat = fs.statSync(this.path);
                 let size = fsstat.size;
                 if (size > MAX_HISTORY_SIZE) {
-                    fs.unlinkSync(this.path);
+                    this.delete();
                 }
             });
         else
@@ -109,7 +109,10 @@ class LogHistory {
     }
 
     delete() {
-        fs.unlinkSync(this.path);
+        fs.unlink(this.path, (err) => {
+            if (err) MCSERVER.log('实例', this.id, '日志历史记录文件删除错误:', err.message);
+        });
+        return this;
     }
 }
 

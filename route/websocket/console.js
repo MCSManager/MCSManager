@@ -47,15 +47,14 @@ serverModel.ServerManager().on('exit', (data) => {
     }
     //输出到标准输出
     server.printlnCommandLine('服务端 ' + data.serverName + " 关闭.");
-
+    // 告知前端已关闭
     selectWebsocket(data.serverName,
         (socket) => response.wsMsgWindow(socket.ws, '服务器关闭'));
-
-    // 历史记录类释放
-    serverModel.ServerManager().getServer(data.serverName).logHistory = null;
-
     // 传递服务器关闭事件
     serverModel.ServerManager().emit("exit_next", data);
+    // 历史记录类释放
+    serverModel.ServerManager().getServer(data.serverName).logHistory.delete();
+    serverModel.ServerManager().getServer(data.serverName).logHistory = null;
 })
 
 //服务器开启
