@@ -128,17 +128,25 @@
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
-		if (!VIEW_MODEL['Terminal']['isHistoryMode']) {
-			var text = TOOLS.encodeConsoleColor(data.body);
-			MCSERVER.term.write(text);
-		}
+		var text = TOOLS.encodeConsoleColor(data.body);
+		MCSERVER.term.write(text);
 	});
 
 
 	// 获取MC服务端终端日志历史记录
+	var $ele = document.getElementById('LogHistoryTerminal');
 	MI.routeListener('server/console/history', function (data) {
-		var text = TOOLS.encodeConsoleColor(data.body);
-		MCSERVER.term.write(text);
+		if (VIEW_MODEL['Terminal']['isHistoryMode']) {
+			var text = data.body;
+			text = text.replace(/\r\n/igm, '<br />');
+			if ((text + $ele.innerHTML).length > 20000) {
+				$ele.innerHTML = "";
+			}
+			$ele.innerHTML = text + $ele.innerHTML;
+		} else {
+			var text = TOOLS.encodeConsoleColor(data.body);
+			MCSERVER.term.write(text);
+		}
 	});
 
 	// 普通用户主页

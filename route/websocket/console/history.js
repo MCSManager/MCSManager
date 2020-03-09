@@ -43,7 +43,7 @@ WebSocketObserver().listener('server/console/history_reverse', (data) => {
         const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
         if (!logHistory)
             return;
-        logHistory.readLineReverse(userName, HISTORY_SIZE_LINE, true, (sendText) => {
+        logHistory.readLineOnce(userName, HISTORY_SIZE_LINE * 3, (sendText) => {
             if (sendText) {
                 sendText = sendText.replace(/\n/gim, '\r\n');
                 sendText = sendText.replace(/\r\r\n/gim, '\r\n');

@@ -33,7 +33,7 @@
 							</div>
 							<div class="PanelItem mb0" v-on:click="simpleLoadHistory()" v-show="isHistoryMode">
 								<span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-								下一页
+								下一段
 							</div>
 
 						</div>
@@ -52,6 +52,9 @@
 
 		// 终端窗口显示
 		$('#WebTerminalScreenWapper').removeAttr('style');
+		$('#WebTerminal').removeAttr('style');
+		$('#LogHistoryTerminal').html('');
+
 
 		// 若终端未初始化则初始化终端与其方法
 		if (!MCSERVER.term) {
@@ -146,7 +149,6 @@
 					if (this.commandListPrint > (this.commandList.length - 1)) this.commandListPrint = this.commandList.length -
 						1;
 					if (this.commandListPrint < 0) this.commandListPrint = 0;
-					console.log('commandListPrint', this.commandListPrint, 'vlaue', this.commandList[this.commandListPrint]);
 					if (fl == 1) { //up
 						this.command = this.commandList[this.commandListPrint];
 						this.commandListPrint++;
@@ -161,14 +163,16 @@
 				},
 				loadHistory: function (bool) {
 					if (!this.isHistoryMode) {
-						MCSERVER.term.clear();
+						$('#WebTerminal').css('display', 'none');
+						$('#LogHistoryTerminal').removeAttr('style');
 						// 加载下一页历史记录
 						WS.sendMsg('server/console/history', JSON.stringify({
 							serverName: PAGE.serverName
 						}));
 						this.isHistoryMode = true;
 					} else {
-						MCSERVER.term.startTerminal();
+						$('#WebTerminal').removeAttr('style');
+						$('#LogHistoryTerminal').css('display', 'none').html('');
 						// 重置历史记录指针
 						WS.sendMsg('server/console/history_reset', JSON.stringify({
 							serverName: PAGE.serverName
@@ -189,6 +193,9 @@
 		window.MCSERVER.term.clear();
 		// 终端窗口隐藏
 		$('#WebTerminalScreenWapper').css('display', 'none');
+		$('#WebTerminal').removeAttr('style');
+		$('#LogHistoryTerminal').css('display', 'none');
+		$('#LogHistoryTerminal').html('');
 		// 退出监听实例，停止接受控制台信息
 		WS.sendMsg('server/console/remove', '');
 	})
