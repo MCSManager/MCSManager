@@ -40,6 +40,10 @@ class LogHistory {
         if (!this.readPoints[demander]) {
             this.readPoints[demander] = 0;
         }
+        if (!fs.existsSync(this.path)) {
+            callback && callback('');
+            return this;
+        }
         const demanderPoint = this.readPoints[demander];
         const buffer = Buffer.alloc(size);
         fs.open(this.path, 'r', (err, fd) => {
@@ -67,12 +71,17 @@ class LogHistory {
                 fs.close(fd, () => { });
             });
         });
+        return this;
     }
 
 
     readLineOnce(demander = "", size = 1024, callback = () => { }) {
         if (!this.readPoints[demander]) {
             this.readPoints[demander] = 0;
+        }
+        if (!fs.existsSync(this.path)) {
+            callback && callback('');
+            return this;
         }
         const demanderPoint = this.readPoints[demander];
         const buffer = Buffer.alloc(size);
@@ -102,6 +111,7 @@ class LogHistory {
                 fs.close(fd, () => { });
             });
         });
+        return this;
     }
 
     setPoint(demander, v) {
@@ -109,9 +119,11 @@ class LogHistory {
     }
 
     delete() {
-        fs.unlink(this.path, (err) => {
-            if (err) MCSERVER.log('实例', this.id, '日志历史记录文件删除错误:', err.message);
-        });
+        if (fs.existsSync(this.path)) {
+            fs.unlink(this.path, (err) => {
+                if (err) MCSERVER.log('实例', this.id, '日志历史记录文件删除错误:', err.message);
+            });
+        }
         return this;
     }
 }

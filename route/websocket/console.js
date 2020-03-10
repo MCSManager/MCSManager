@@ -9,8 +9,6 @@ const permssion = require('../../helper/Permission');
 const { LogHistory } = require('../../helper/LogHistory');
 
 
-const BASE_RECORD_DIR = "./server/record_tmp/";
-
 //日志缓存记录器
 MCSERVER.consoleLog = {};
 

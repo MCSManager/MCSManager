@@ -321,6 +321,16 @@ input {
 .WebTerminalScreen{
 	overflow-y: auto;
 }
+/* 日志历史终端 */
+#LogHistoryTerminal{
+	height: 80vh;
+	background-color: rgb(0, 0, 0);
+	overflow-y: scroll;
+	color: rgb(207, 207, 207);
+	padding: 4px;
+	font-size: 11px;
+	margin: 0;
+}
 
 @media (max-width:800px) {
 	#HeaderInfo {
@@ -378,5 +388,13 @@ input {
 	}
 	.WebTerminalScreen{
 		margin: -10px -12px -9px -12px;
+	}
+
+	#LogHistoryTerminal{
+		font-size: 10px;
+		height: 70vh;
+		padding: 2px;
+		margin: -10px -12px -9px -12px;
+		overflow-x: scroll;
 	}
 }
