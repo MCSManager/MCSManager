@@ -1,31 +1,37 @@
 <div id="DialogDockerConfig">
     <p>
-        <b>操作，查看此服务端的 Docker 容器的配置项目</b>
+        <b>操作，查看此实例的 Docker 容器的配置项目</b>
     </p>
-    <small>我们建议您如果不具备 Docker 专业知识，请不要修改这里任何内容，否则服务端可能无法启动。另外，如果您最一开始就启动了 Docker ，那么这里应该会自动生成，建议不改动。
-        <br>如果您的系统上装有 SELinux 请在命令模板的镜像名前添加 --privileged=true 参数或关闭 SELinux。
+    <small>
+        虚拟化容器可让服务端出租给任何人也不用担心宿主机的安危，容器会保证每个子服都拥有独立空间。
+        <br>
+        如果您的系统上开启了 SELinux 建议关闭 SELinux 机制或自行配置权限。
     </small>
 
     <p>
         <input type="checkbox" v-model="isDocker">
-        <b> 此服务端启用 Docker 容器（只支持 Linux 系统）</b>
+        <b> <small>此服务端启用 Docker 容器（只支持 Linux 系统）</small></b>
     </p>
+    <p><small>启动命令修改是无效的，只是展示等价命令效果。</small></p>
     <div class="input-group input-group-sm">
-        <span class="input-group-addon" id="sizing-addon3">命令模板</span>
-        <input type="text" class="form-control" placeholder="不推荐修改，Docker run -i -v /xxxxx:/xxxxx -p xxxx:xxxx /bin/bash"
-            aria-describedby="sizing-addon3" v-model="dockerCommand">
+        <span class="input-group-addon" id="sizing-addon3">等价启动命令</span>
+        <input type="text" class="form-control" disabled="disabled" aria-describedby="sizing-addon3"
+            v-model="dockerCommand">
     </div>
+    <p><small>镜像名，在创建虚拟镜像时填写的名称，一般默认即可。</small></p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
         <input type="text" class="form-control" placeholder="可填，默认是名叫 mcsd 镜像。" aria-describedby="sizing-addon3"
             v-model="dockerImageName">
     </div>
+    <p><small>以 GB 为单位，1G 为 1024 MB，最小 1GB 内存。不填写无限制。</small></p>
     <div class="input-group input-group-sm">
         <span class="input-group-addon" id="sizing-addon3">内存限制</span>
-        <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3"
-            v-model="dockerXmx">
+        <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。"
+            aria-describedby="sizing-addon3" v-model="dockerXmx">
     </div>
-    <p>此 Docker 开放的端口,冒号左边代表 Docker 内部端口,右边代表宿主机端口,通常保持相同即可。</p>
+    <p><small>开放的端口,冒号左边代表容器内部端口,右边代表宿主机端口,通常保持相同即可。</small></p>
+    <p><small>目前最多只准许开放一个</small></p>
     <div class="input-group input-group-sm">
 
         <span class="input-group-addon" id="sizing-addon3">开放端口</span>
