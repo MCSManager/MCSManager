@@ -91,8 +91,8 @@ setInterval(function () {
         csrfCounter: counter.get('csrfCounter'), //可能存在的CSRF攻击次数
         notPermssionCounter: counter.get('notPermssionCounter'), //API的无权访问
         root: mversion.root,
-        oneversion: mversion.oneversion,
-        twoversion: mversion.twoversion,
+        verisonA: mversion.verisonA,
+        verisonB: mversion.verisonB,
         system: mversion.system
     }
 
