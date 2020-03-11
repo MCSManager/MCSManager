@@ -60,7 +60,8 @@ input {
 	position: fixed;
 	color: white;
 	background-color: rgb(36, 35, 40);
-	/* background: linear-gradient(rgb(25, 30, 40), rgb(23, 32, 38)); */
+	background-image: url('../img/SideColMenu.png');
+	background-repeat: repeat;
 	z-index: 102;
 	width: 220px;
 	top: 0px;
