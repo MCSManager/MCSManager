@@ -1,7 +1,7 @@
 ![doc_logo.png](/public/common/doc_logo.png)
   
 [![Status](https://img.shields.io/badge/npm-v6.9.0-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v10.0.0-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/node-v10.16.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://travis-ci.org/Suwings/MCSManager.svg?branch=master)](https://travis-ci.org/Suwings/MCSManager)
 [![Status](https://img.shields.io/badge/License-MIT-red.svg)](https://github.com/Suwings/MCSManager)
 
@@ -30,7 +30,7 @@
 运行环境
 -----------
 
-Node 10.0.0 以上，无需数据库和更改任何系统配置，开箱运行。
+必须 `Node 10.0.0` 以上，推荐 `10.16.0` 以上，无需数据库和更改任何系统配置，开箱即可运行。
 
 <br />
 
