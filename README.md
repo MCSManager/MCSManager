@@ -44,6 +44,30 @@
 <br />
 
 
+常见问题
+-----------
+| 问题 | 详情 |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+无法正常安装面板？| [参考教程](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
+Linux 下面板如何后台运行？ | [参考方法](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3#%E4%BF%9D%E6%8C%81%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C)
+使用面板开启 `Bedrock Server` 端 | [参考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8%E9%9D%A2%E6%9D%BF%E5%BC%80%E5%90%AF-Bedrock_server-%E6%9C%8D%E5%8A%A1%E7%AB%AF)
+面板管理员的默认账号和密码是什么？ | 账号 `#master` 密码 `123456`
+面板如何正确关闭？ | `Ctrl+C`
+配置文件是什么？ | `property.js` 文件
+如何修改面板默认端口？ | `property.js` 文件
+如何配置反向代理？ | [Apache 配置参考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
+配好反向代理却无法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22) [宝塔上的Nginx](https://github.com/Suwings/MCSManager/wiki/%E5%85%B3%E4%BA%8E%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E7%9A%84-Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E4%BB%A5%E5%8F%8ASSL%E8%AF%81%E4%B9%A6%E9%83%A8%E7%BD%B2)
+FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
+反代后文件管理偶尔失效? | 请检查反代机器的防火墙是否拦截
+我能修改登录页面吗？| [修改教程](https://github.com/Suwings/MCSManager/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BF%AE%E6%94%B9%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2)
+其他常见问题 | [查看 Wiki](https://github.com/Suwings/MCSManager/wiki)
+
+
+<br />
+
+
+
+
 运行在 Windows 
 -----------
 对于 Windows 系统，已整合成直接运行版本，下载即可运行(建议使用管理员权限运行):
@@ -101,29 +125,6 @@ npm start
 
 <br />
 
-
-Wiki
----------
-我们有些常见问题与细节上的问题，已经把它们都整合在 `Wiki` 里面。
-
-欢迎你阅读 [Wiki](https://github.com/Suwings/MCSManager/wiki) 与提出建议。
-
-<br />
-
-
-常见问题
------------
-| 问题 | 详情 |
-| ------------------------ | --------------------------------------------------------------------------------------------- |
-使用面板开启 `Bedrock Server` 端 | [详情页](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8%E9%9D%A2%E6%9D%BF%E5%BC%80%E5%90%AF-Bedrock_server-%E6%9C%8D%E5%8A%A1%E7%AB%AF)
-面板管理员的默认账号和密码是什么？ | [详情页](https://github.com/Suwings/MCSManager/issues/75)
-面板如何正确关闭？ | Ctrl+C
-配置文件是什么？ | property.js
-配好反向代理却无法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22) [宝塔上的Nginx](https://github.com/Suwings/MCSManager/wiki/%E5%85%B3%E4%BA%8E%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E7%9A%84-Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E4%BB%A5%E5%8F%8ASSL%E8%AF%81%E4%B9%A6%E9%83%A8%E7%BD%B2)
-FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
-反代后文件管理偶尔失效? | 请检查反代机器的防火墙是否拦截
-
-<br />
 
 项目目录结构
 -----------
