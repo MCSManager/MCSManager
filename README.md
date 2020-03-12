@@ -115,7 +115,7 @@ Wiki
 -----------
 | 问题 | 详情 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
-使用面板开启 `Bedrock Server` 端 | [详情页](https://github.com/Suwings/MCSManager/issues/86)
+使用面板开启 `Bedrock Server` 端 | [详情页](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8%E9%9D%A2%E6%9D%BF%E5%BC%80%E5%90%AF-Bedrock_server-%E6%9C%8D%E5%8A%A1%E7%AB%AF)
 面板管理员的默认账号和密码是什么？ | [详情页](https://github.com/Suwings/MCSManager/issues/75)
 面板如何正确关闭？ | Ctrl+C
 配置文件是什么？ | property.js
