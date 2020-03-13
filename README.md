@@ -104,8 +104,8 @@ npm start
 
 ```
 
-> 如果您还是无法正常运行，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
-
+> 详细使用教程，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
+**注意**: 如果不使用 **screen** 如果你断开了SSH,面板也会随之关闭.
 - 项目属于**开箱即用**的面板，并未提供服务注册功能，当终端关闭时，面板也会跟随终端关闭。
 - 可以使用 **screen** 软件来让面板持续在后台运行。
 
