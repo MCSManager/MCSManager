@@ -104,7 +104,7 @@ npm start
 
 ```
 
-> 详细使用教程，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
+> 详细安装以及使用教程，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
 - 项目属于**开箱即用**的面板，如果不使用 **screen** 进行后台常驻.当你断开了SSH后,面板也会随之关闭.
 - **screen** 需要单独安装,执行安装指令"yum -y install screen"或"apt -y install screen"
 
