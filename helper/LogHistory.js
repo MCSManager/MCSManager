@@ -21,19 +21,29 @@ class LogHistory {
 
     writeLine(text = "") {
         if (text.length == 0) return;
-        if (fs.existsSync(this.path))
-            fs.appendFile(this.path, text, FILE_CODE, (err) => {
-                if (err) MCSERVER.log('实例', this.id, '日志历史记录文件写入错误:', err.message);
-                let fsstat = fs.statSync(this.path);
-                let size = fsstat.size;
-                if (size > MAX_HISTORY_SIZE) {
-                    this.delete();
-                }
-            });
-        else
+
+        if (fs.existsSync(this.path)) {
+            // fs.appendFile(this.path, text, FILE_CODE, (err) => {
+            //     if (err) MCSERVER.log('实例', this.id, '日志历史记录文件写入错误:', err.message);
+            //     let fsstat = fs.statSync(this.path);
+            //     let size = fsstat.size;
+            //     if (size > MAX_HISTORY_SIZE) {
+            //         this.delete();
+            //     }
+            // });
+            const fd = fs.openSync(this.path, 'a+')
+            fs.writeSync(fd, text, FILE_CODE);
+            fs.closeSync(fd);
+            let fsstat = fs.statSync(this.path);
+            let size = fsstat.size;
+            if (size > MAX_HISTORY_SIZE) {
+                this.delete();
+            }
+        } else {
             fs.writeFile(this.path, text, (err) => {
                 if (err) MCSERVER.log('实例', this.id, '日志历史记录文件创建错误:', err.message);
             });
+        }
     }
 
     readLine(demander = "", size = 1024, callback = () => { }) {
@@ -49,6 +59,7 @@ class LogHistory {
         fs.open(this.path, 'r', (err, fd) => {
             if (err) {
                 MCSERVER.log('实例', this.id, '日志历史记录文件打开错误:', err.message);
+                fs.closeSync(fd);
                 return;
             }
             // 计算末尾读取的指针位置
@@ -62,13 +73,14 @@ class LogHistory {
             fs.read(fd, buffer, 0, size, endReadPoint, (err, bytesRead, buffer) => {
                 if (err) {
                     MCSERVER.log('实例', this.id, '日志历史记录文件读取错误:', err.message);
+                    fs.closeSync(fd);
                     return;
                 };
                 const logText = buffer.slice(0, bytesRead).toString();
                 this.readPoints[demander] += size;
                 callback && callback(logText);
                 // 关闭文件
-                fs.close(fd, () => { });
+                fs.closeSync(fd);
             });
         });
         return this;
@@ -120,9 +132,9 @@ class LogHistory {
 
     delete() {
         if (fs.existsSync(this.path)) {
-            fs.unlink(this.path, (err) => {
-                if (err) MCSERVER.log('实例', this.id, '日志历史记录文件删除错误:', err.message);
-            });
+            const fd = fs.openSync(path, 'w')
+            fs.writeSync(fd, '', FILE_CODE);
+            fs.closeSync(fd);
         }
         return this;
     }
