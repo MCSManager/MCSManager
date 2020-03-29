@@ -23,21 +23,17 @@ class LogHistory {
         if (text.length == 0) return;
 
         if (fs.existsSync(this.path)) {
-            // fs.appendFile(this.path, text, FILE_CODE, (err) => {
-            //     if (err) MCSERVER.log('实例', this.id, '日志历史记录文件写入错误:', err.message);
-            //     let fsstat = fs.statSync(this.path);
-            //     let size = fsstat.size;
-            //     if (size > MAX_HISTORY_SIZE) {
-            //         this.delete();
-            //     }
-            // });
-            const fd = fs.openSync(this.path, 'a+')
-            fs.writeSync(fd, text, FILE_CODE);
-            fs.closeSync(fd);
-            let fsstat = fs.statSync(this.path);
-            let size = fsstat.size;
-            if (size > MAX_HISTORY_SIZE) {
-                this.delete();
+            try {
+                const fd = fs.openSync(this.path, 'a+');
+                fs.writeSync(fd, text, FILE_CODE);
+                fs.closeSync(fd);
+                let fsstat = fs.statSync(this.path);
+                let size = fsstat.size;
+                if (size > MAX_HISTORY_SIZE) {
+                    this.delete();
+                }
+            } catch (err) {
+                // 忽略
             }
         } else {
             fs.writeFile(this.path, text, (err) => {
@@ -132,7 +128,7 @@ class LogHistory {
 
     delete() {
         if (fs.existsSync(this.path)) {
-            const fd = fs.openSync(path, 'w')
+            const fd = fs.openSync(this.path, 'w');
             fs.writeSync(fd, '', FILE_CODE);
             fs.closeSync(fd);
         }
