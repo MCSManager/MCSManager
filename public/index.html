@@ -40,11 +40,9 @@
 	<div id='MainContainer'>
 		<div id='SideCol'>
 			<div id="SideColMenu">
-				<!-- logo -->
 				<div id='MasterLogo' class="HeaderItem" style="cursor: pointer;">
 					<img src="common/logo.png" width="160px" height="100%" />
 				</div>
-
 				<div id='SideColMenuInfo'>
 					Mcserver Manager
 					<br>
@@ -61,7 +59,6 @@
 						<span class="glyphicon " :class="item.class" aria-hidden="true"></span>
 						<span v-text="item.name"></span>
 					</a>
-
 				</div>
 				<a href="javascript:void(0);" onclick="PAGE.refresh()">
 					<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
@@ -87,36 +84,17 @@
 			</div>
 			<div id="ConsoleMain">
 				<!--可变动内嵌html区域开始-->
-
-				<!--默认的单页应用模板，这个是用于第一次加载时使用-->
 				<div class="OneContainer">
 					<div class="row">
 						<div class="col-xs-12">
-							<h3 id="_TMP_LOADING">请稍等,正在传输资源 ....</h3>
-							<script>
-								(function () {
-									var count = 0;
-									var www = document.getElementById('_TMP_LOADING');
-									var masks = setInterval(function () {
-										www.innerHTML = www.innerHTML + '.';
-										count++;
-										if (count > 10) clearInterval(masks);
-									}, 1000);
-								})();
-							</script>
+							<h3 id="_TMP_LOADING">请稍等,正在加载...</h3>
 						</div>
 					</div>
 				</div>
-
 				<!--可变动内嵌html区域结束-->
 			</div>
-
-
 		</div>
 	</div>
-
-
-
 
 	<!--信息框HTML-->
 	<div id='ToolsInfo'>
