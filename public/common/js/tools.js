@@ -148,7 +148,7 @@
 		text = text.replace(/§7/gm, term.TERM_TEXT_WHITE);
 		text = text.replace(/§8/gm, term.TERM_TEXT_WHITE);
 		text = text.replace(/§9/gm, term.TERM_TEXT_CYAN);
-		text = text.replace(/§a/gm, term.TERM_TEXT_RED);
+		text = text.replace(/§a/gm, term.TERM_TEXT_GREEN);
 		text = text.replace(/§b/gm, term.TERM_TEXT_CYAN);
 		text = text.replace(/§c/gm, term.TERM_TEXT_RED);
 		text = text.replace(/§d/gm, term.TERM_TEXT_RED);
@@ -165,7 +165,7 @@
 		text = text.replace(/&7/gm, term.TERM_TEXT_WHITE);
 		text = text.replace(/&8/gm, term.TERM_TEXT_WHITE);
 		text = text.replace(/&9/gm, term.TERM_TEXT_CYAN);
-		text = text.replace(/&a/gm, term.TERM_TEXT_RED);
+		text = text.replace(/&a/gm, term.TERM_TEXT_GREEN);
 		text = text.replace(/&b/gm, term.TERM_TEXT_CYAN);
 		text = text.replace(/&c/gm, term.TERM_TEXT_RED);
 		text = text.replace(/&d/gm, term.TERM_TEXT_RED);
