@@ -179,8 +179,8 @@ class ServerProcess extends EventEmitter {
             process.stderr = null;
             // 模拟进程杀死功能
             process.kill = (() => {
-                docker.getContainer(auxContainer.id).kill().then(() => {
-                    docker.getContainer(auxContainer.id).remove().then(() => {
+                auxContainer.kill().then(() => {
+                    auxContainer.remove().then(() => {
                         MCSERVER.log('实例', '[', self.dataModel.name, ']', '容器已强制移除');
                     });
                 });
@@ -189,6 +189,7 @@ class ServerProcess extends EventEmitter {
             auxContainer.wait(() => {
                 self.emit('exit', 0);
                 self.stop();
+                auxContainer.remove();
             });
             // 容器流错误事件传递
             stream.on('error', (err) => {
@@ -201,6 +202,7 @@ class ServerProcess extends EventEmitter {
             if (!process.pid) {
                 MCSERVER.error('服务端进程启动失败，建议检查启动命令与参数是否正确');
                 self.stop();
+                auxContainer.remove();
                 throw new Error('服务端进程启动失败，建议检查启动命令与参数是否正确');
             }
 
