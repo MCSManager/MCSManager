@@ -102,7 +102,12 @@ class ServerProcess extends EventEmitter {
             startCommande = this.templateStart(true);
         const startCommandeArray = startCommande.split(" ");
         // 端口解析
-        const protocol = "tcp";
+        agreement = portmap.split("/");
+        if(agreement.length>=2 && (agreement[1]==="udp" || agreement[1]==="tcp")){
+            const protocol = agreement[1];
+        }else{
+            const protocol = "tcp";
+        }
         let portmap = this.dataModel.dockerConfig.dockerPorts;
         portmap = portmap.split(":");
         if (portmap.length > 2) {
