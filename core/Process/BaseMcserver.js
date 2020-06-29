@@ -101,9 +101,13 @@ class ServerProcess extends EventEmitter {
         else
             startCommande = this.templateStart(true);
         const startCommandeArray = startCommande.split(" ");
-        // 端口解析
-        const protocol = "tcp";
         let portmap = this.dataModel.dockerConfig.dockerPorts;
+        // 端口解析
+        var agreement = portmap.split("/");
+        var protocol = "tcp"
+        if(agreement.length>=2 && (agreement[1]==="udp" || agreement[1]==="tcp")){
+            protocol = agreement[1];
+        }
         portmap = portmap.split(":");
         if (portmap.length > 2) {
             throw new Error("不支持的多端口操作方法，参数配置端口数量错误。");
