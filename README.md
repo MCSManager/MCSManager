@@ -65,6 +65,7 @@ FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%
 反代后文件管理偶尔失效? | 请检查反代机器的防火墙是否拦截
 我能修改登录页面吗？| [修改教程](https://github.com/Suwings/MCSManager/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BF%AE%E6%94%B9%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2)
 其他常见问题 | [查看 Wiki](https://github.com/Suwings/MCSManager/wiki)
+关于HTTP跳转HTTPS的帮助 | [查看 Nginx 301永久重定向 范例](https://github.com/Suwings/MCSManager/wiki/Nginx%E5%85%A8%E5%B1%80301%E6%B0%B8%E4%B9%85%E9%87%8D%E5%AE%9A%E5%90%91)
 
 
 <br />
