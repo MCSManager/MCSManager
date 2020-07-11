@@ -154,12 +154,17 @@
 
 	// 获取MC服务端终端日志历史记录
 	MI.routeListener('server/console/history', function (data) {
-		var eleTerminal = document.getElementById('TerminalMinecraft');
-		var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
-		if (eleTerminal.innerHTML.length >= 100000) {
-			eleTerminal.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
+		if (PAGE.methods == 0) {
+			var text = TOOLS.encodeConsoleColor(data.body);
+			MCSERVER.term.write(text);
+		} else {
+			var eleTerminal = document.getElementById('TerminalMinecraft');
+			var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
+			if (eleTerminal.innerHTML.length >= 100000) {
+				eleTerminal.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
+			}
+			eleTerminal.innerHTML = text + eleTerminal.innerHTML;
 		}
-		eleTerminal.innerHTML = text + eleTerminal.innerHTML;
 	});
 
 	// 普通用户主页
@@ -211,7 +216,7 @@
 			// 初始化终端方法
 			term.startTerminal = function () {
 				MCSERVER.term.clear();
-				MCSERVER.term.prompt();
+				// MCSERVER.term.prompt();
 			}
 
 			term.simpleLoadHistory = function () {

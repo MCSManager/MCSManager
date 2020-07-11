@@ -412,10 +412,10 @@ a, input {
 	/* 终端的手机优化 */
 	#WebTerminalScreenWapper {
 		padding: 0px;
-		margin: 0px;
+		margin: 0px 0px;
 	}
 	.WebTerminalScreen {
-		margin: -10px -12px -9px -12px;
+		margin: -10px -8px 0px -8px;
 	}
 	#LogHistoryTerminal {
 		font-size: 10px;

@@ -28,7 +28,9 @@
 			<div class="Panel" :class="run==true?'PanelGreen':'PanelYellow'">
 				<div class="PanelTitle">服务端操作</div>
 				<div class="PanelBody">
-
+					<div class="PanelItem" v-on:click="toTerminal()">
+						<span class="glyphicon glyphicon-unchecked" aria-hidden="true"> </span> 模拟型终端
+					</div>
 					<transition name="slide-fade">
 						<div class="PanelItem" v-on:click="toOpenServer()" v-show="!run">
 							<span class="glyphicon glyphicon-play" aria-hidden="true"> </span> 开启服务器
