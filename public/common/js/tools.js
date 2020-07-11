@@ -350,4 +350,22 @@
 		return null;
 	}
 
+	// 开始监听并打开终端窗口
+	TOOLS.listenTerminal = function (serverName) {
+		console.log('监听终端:', serverName)
+		MCSERVER.listenServername = PAGE.serverName = serverName;
+		WS.sendMsg('server/console/ws', serverName);
+		MCSERVER.term.simpleLoadHistory();
+		$('#WebTerminalScreenWapper').removeAttr('style');
+	}
+
+	// 退出监听实例，停止接受控制台信息
+	TOOLS.CloseTerminal = function () {
+		console.log('停止监听')
+		WS.sendMsg('server/console/remove', '');
+		$('#WebTerminalScreenWapper').css('display', 'none');
+		MCSERVER.term.clear();
+		MCSERVER.term.prompt();
+	}
+
 })();

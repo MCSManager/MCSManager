@@ -1,9 +1,8 @@
-html,
-body {
-	font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
-    font-size: 14px;
-    color: #1a1a1a;
-	-webkit-tap-highlight-color: rgba(26,26,26,0);
+html, body {
+	font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+	font-size: 14px;
+	color: #1a1a1a;
+	-webkit-tap-highlight-color: rgba(26, 26, 26, 0);
 	background-color: rgb(243, 243, 243);
 	margin: 0;
 	padding: 0;
@@ -30,8 +29,7 @@ a {
 	cursor: pointer;
 }
 
-a,
-input {
+a, input {
 	outline: none;
 }
 
@@ -45,6 +43,7 @@ input {
 }
 
 /* 页面主要容器 */
+
 /* #MainContainer{
 
 } */
@@ -56,6 +55,7 @@ input {
 */
 
 /* 菜单栏控制 */
+
 #SideCol {
 	position: fixed;
 	color: white;
@@ -81,6 +81,7 @@ input {
 }
 
 /* 右侧容器 */
+
 #ConsoleMain {
 	max-width: 1360px;
 	margin: auto;
@@ -100,10 +101,10 @@ input {
 	margin: auto;
 }
 
-
 /* 菜单选择后的颜色 */
+
 .MeumSelect {
-	margin-left: 8px;	
+	margin-left: 8px;
 	background-color: #289804;
 }
 
@@ -111,7 +112,6 @@ input {
 
 #SideColMenu {
 	height: 100%;
-	
 }
 
 #SideColMenuInfo {
@@ -131,7 +131,7 @@ input {
 	padding-left: 35px;
 	font-size: 13px;
 	transition: background-color 0.5s, margin-left 0.3s;
-	margin:4px 0px;
+	margin: 4px 0px;
 }
 
 #SideColMenu a span {
@@ -144,7 +144,6 @@ input {
 	margin-left: 8px;
 	opacity: 0.9;
 }
-
 
 /*菜单的收缩*/
 
@@ -168,7 +167,6 @@ input {
 	background-color: rgb(226, 226, 0);
 }
 
-
 /*针对于单页的首页容器*/
 
 .OneContainer {
@@ -191,8 +189,7 @@ input {
 	transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 
-.slide-fade-enter,
-.slide-fade-leave-to
+.slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active for <2.1.8 */
 
 	{
@@ -200,13 +197,11 @@ input {
 	opacity: 0;
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade-enter-active, .fade-leave-active {
 	transition: opacity .4s
 }
 
-.fade-enter,
-.fade-leave-to
+.fade-enter, .fade-leave-to
 /* .fade-leave-active in below version 2.1.8 */
 
 	{
@@ -287,11 +282,10 @@ input {
 	line-height: 3px;
 }
 
-
 /* 手机端的导航球 */
-#SidebarButton{
+
+#SidebarButton {
 	display: none;
-	
 	position: fixed;
 	right: 30px;
 	bottom: 42px;
@@ -301,43 +295,59 @@ input {
 	width: 46px;
 	border-radius: 46px;
 	background-color: rgb(224, 16, 61);
-
 	text-align: center;
 	color: white;
-	
 	z-index: 102;
 	box-shadow: 0px 0px 8px rgba(54, 52, 52, 0.712);
-
 	text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    vertical-align: middle;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	vertical-align: middle;
 	direction: ltr;
 	font-family: 'Material Icons';
 }
 
 /* 普通用户按钮居中 */
-.GenhomeButton{
+
+.GenhomeButton {
 	float: right;
 	height: 100%;
 	line-height: 60px
 }
 
-
 /* 终端 */
-.WebTerminalScreen{
-	overflow-y: auto;
+
+#WebTerminalScreenWapper {
+	border-radius: 4px;
+	background-color: rgba(3, 3, 3, 0.555);
+	position: fixed;
+	top: 0px;
+	z-index: 999;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
+
+.WebTerminalScreen {
+	overflow-y: auto;
+	max-width: 840px;
+	margin: 0 auto;
+	margin-bottom: 2px;
+}
+
 /* 日志历史终端 */
-#LogHistoryTerminal{
+
+#LogHistoryTerminal {
 	height: 80vh;
 	background-color: rgb(0, 0, 0);
 	overflow-y: scroll;
 	color: rgb(207, 207, 207);
 	padding: 4px;
 	font-size: 11px;
-	margin: 0;
 }
 
 @media (max-width:800px) {
@@ -356,17 +366,17 @@ input {
 		left: -100px;
 		z-index: -1;
 	}
-	#SidebarButton{
+	#SidebarButton {
 		display: block;
 		cursor: pointer;
 	}
-	#Container{
+	#Container {
 		margin-left: 0px;
 	}
-	#SideCol{
+	#SideCol {
 		box-shadow: 8px 0px 32px rgba(54, 52, 52, 0.452);
 	}
-	.GenhomeButton{
+	.GenhomeButton {
 		text-align: center;
 		display: block;
 		float: none;
@@ -374,7 +384,6 @@ input {
 		line-height: 60px
 	}
 }
-
 
 @media (max-width:790px) {
 	.IpadDisplayNone {
@@ -390,15 +399,14 @@ input {
 		z-index: -1;
 	}
 	/* 终端的手机优化 */
-	#WebTerminalScreenWapper{
+	#WebTerminalScreenWapper {
 		padding: 0px;
 		margin: 0px;
 	}
-	.WebTerminalScreen{
+	.WebTerminalScreen {
 		margin: -10px -12px -9px -12px;
 	}
-
-	#LogHistoryTerminal{
+	#LogHistoryTerminal {
 		font-size: 10px;
 		height: 70vh;
 		padding: 2px;

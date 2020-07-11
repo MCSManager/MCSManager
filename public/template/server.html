@@ -258,7 +258,8 @@
 				toTerminal: function (serverName) {
 					//设置全局监听变量
 					MCSERVER.listenServername = serverName;
-					RES.redirectPage('./template/component/terminal.html', null, '');
+					TOOLS.listenTerminal(serverName);
+					// RES.redirectPage('./template/component/terminal.html', null, '');
 				},
 				newDocker: function () {
 					RES.redirectPage('./template/component/new_docker_image.html', null, '');

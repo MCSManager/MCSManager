@@ -56,56 +56,7 @@
 		$('#LogHistoryTerminal').html('');
 
 
-		// 若终端未初始化则初始化终端与其方法
-		if (!MCSERVER.term) {
-			// 根据浏览器的高宽来决定终端的列数和行数
-			var clientHeight = document.body.clientHeight - 60;
-			var clientWidth = $('#WebTerminal').width();
-			var rows = parseInt(clientHeight / 18) - 1;
-			var cols = parseInt(clientWidth / 8) - 4;
-			var fontSize = 14;
-			if (document.body.clientWidth <= 820) {
-				fontSize = 10;
-				rows = parseInt(clientHeight / 14);
-				cols = parseInt(clientWidth / 3);
-			}
-			var tempCommandString = "";
-			var term = MCSERVER.term = new Terminal({
-				disableStdin: true,
-				rows: rows,
-				cols: cols,
-				fontSize: fontSize,
-				convertEol: true
-			});
-			// 终端基本颜色代码
-			term.TERM_TEXT_RED = "\x1B[31m";
-			term.TERM_TEXT_GREEN = "\x1B[32m";
-			term.TERM_TEXT_YELLOW = "\x1B[33m";
-			term.TERM_TEXT_BLUE = "\x1B[34m";
-			term.TERM_TEXT_FUCHSIA = "\x1B[35m";
-			term.TERM_TEXT_CYAN = "\x1B[36m";
-			term.TERM_TEXT_WHITE = "\x1B[37m";
-			term.TERM_TEXT_B = "\x1B[1m";
-			// 装载终端到 DOM 对象
-			term.open(document.getElementById('WebTerminal'));
-			// 终端提示行
-			term.prompt = function (command) {
-				term.write('\x1B[1;1;33m' + '[' + term.TERM_TEXT_WHITE
-					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'app'
-					+ term.TERM_TEXT_YELLOW + ']' + term.TERM_TEXT_WHITE
-					+ (MCSERVER.username.substr(0, 1) == '#' ? '# ' : '$ ')
-					+ (command || '')
-					+ '\x1B[0m \r\n');
-			}
-			// 初始化终端方法
-			term.startTerminal = function () {
-				MCSERVER.term.clear();
-				MCSERVER.term.prompt();
-			}
 
-		}
-		// 清空屏幕并输出基本欢迎语
-		MCSERVER.term.startTerminal();
 
 		// 监听此实例的标准输出，接下来将会有信息主动传来
 		WS.sendMsg('server/console/ws', PAGE.serverName);
@@ -190,9 +141,9 @@
 	});
 
 	MI.rListener('onend', function () {
-		window.MCSERVER.term.clear();
+		// window.MCSERVER.term.clear();
 		// 终端窗口隐藏
-		$('#WebTerminalScreenWapper').css('display', 'none');
+		// $('#WebTerminalScreenWapper').css('display', 'none');
 		$('#WebTerminal').removeAttr('style');
 		$('#LogHistoryTerminal').css('display', 'none');
 		$('#LogHistoryTerminal').html('');

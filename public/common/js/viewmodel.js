@@ -132,7 +132,6 @@
 		MCSERVER.term.write(text);
 	});
 
-
 	// 获取MC服务端终端日志历史记录
 	var $ele = document.getElementById('LogHistoryTerminal');
 	MI.routeListener('server/console/history', function (data) {
@@ -163,5 +162,115 @@
 	MI.routeListener('schedule/list', function (data) {
 		MI.routeCopy('ServerSchedule', data.obj);
 	});
+
+	// 初始化终端
+	function initTerminal() {
+		// 若终端未初始化则初始化终端与其方法
+		if (!MCSERVER.term) {
+			var fontSize = 12;
+			var term = MCSERVER.term = new Terminal({
+				disableStdin: false,
+				rows: 30,
+				cols: 100,
+				fontSize: fontSize,
+				convertEol: true
+			});
+			// 终端基本颜色代码
+			term.TERM_TEXT_RED = "\x1B[31m";
+			term.TERM_TEXT_GREEN = "\x1B[32m";
+			term.TERM_TEXT_YELLOW = "\x1B[33m";
+			term.TERM_TEXT_BLUE = "\x1B[34m";
+			term.TERM_TEXT_FUCHSIA = "\x1B[35m";
+			term.TERM_TEXT_CYAN = "\x1B[36m";
+			term.TERM_TEXT_WHITE = "\x1B[37m";
+			term.TERM_TEXT_B = "\x1B[1m";
+			// 装载终端到 DOM 对象
+			term.open(document.getElementById('WebTerminal'));
+			// 终端提示行
+			term.prompt = function (command) {
+				term.write('\x1B[1;1;33m' + '[' + term.TERM_TEXT_WHITE
+					+ term.TERM_TEXT_GREEN + PAGE.serverName + '@' + 'app'
+					+ term.TERM_TEXT_YELLOW + ']' + term.TERM_TEXT_WHITE
+					+ (command || '')
+					+ '\x1B[0m \r\n');
+			}
+			// 初始化终端方法
+			term.startTerminal = function () {
+				MCSERVER.term.clear();
+				MCSERVER.term.prompt();
+			}
+
+			term.simpleLoadHistory = function () {
+				WS.sendMsg('server/console/history', JSON.stringify({
+					serverName: PAGE.serverName
+				}));
+			}
+		}
+		// 清空屏幕并输出基本欢迎语
+		MCSERVER.term.startTerminal();
+
+
+		// 终端的Vue组件
+		var WebTerminalScreenWapper = new Vue({
+			el: '#WebTerminalControl',
+			data: {
+				command: ''
+			},
+			methods: {
+				toOpenServer: function () {
+					WS.sendMsg('server/console/open', PAGE.serverName);
+				},
+				toCommand: function (parCommand) {
+					if (parCommand && typeof (parCommand) == 'string') this.command = parCommand;
+					MCSERVER.term.prompt(this.command);
+					console.log('发送命令:', this.command);
+					var data = {
+						command: this.command,
+						serverName: PAGE.serverName
+					};
+					if (this.command.length >= 1 || typeof (parCommand) == 'string') {
+						//压入命令栈 并 发送
+						WS.sendMsg('server/console/command', JSON.stringify(data));
+					}
+					this.command = '';
+
+				},
+				stopServer: function () {
+					this.toCommand('__stop__');
+				},
+				// loadHistory: function (bool) {
+				// 	if (!this.isHistoryMode) {
+				// 		$('#WebTerminal').css('display', 'none');
+				// 		$('#LogHistoryTerminal').removeAttr('style');
+				// 		// 加载下一页历史记录
+				// 		WS.sendMsg('server/console/history', JSON.stringify({
+				// 			serverName: PAGE.serverName
+				// 		}));
+				// 		this.isHistoryMode = true;
+				// 	} else {
+				// 		$('#WebTerminal').removeAttr('style');
+				// 		$('#LogHistoryTerminal').css('display', 'none').html('');
+				// 		// 重置历史记录指针
+				// 		WS.sendMsg('server/console/history_reset', JSON.stringify({
+				// 			serverName: PAGE.serverName
+				// 		}));
+				// 		this.isHistoryMode = false;
+				// 	}
+				// },
+				simpleLoadHistory: function () {
+					WS.sendMsg('server/console/history', JSON.stringify({
+						serverName: PAGE.serverName
+					}));
+				}
+			}
+		});
+
+
+		$('#WebTerminalScreenWapper').removeAttr('style');
+		$('#WebTerminalScreenWapper').css('display', 'none');
+	}
+
+	initTerminal();
+
 
 })();
