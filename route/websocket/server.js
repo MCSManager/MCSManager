@@ -71,6 +71,11 @@ WebSocketObserver().listener('server/rebulider', (data) => {
     let ServerConfig = JSON.parse(data.body);
     let oldServerName = ServerConfig.oldServerName.trim();
     let newServerName = ServerConfig.serverName.trim();
+    const server = serverModel.ServerManager().getServer(oldServerName);
+    if (server.isRun()) {
+        response.wsMsgWindow(data.ws, '实例正在运行，实例名字禁止修改.');
+        return;
+    }
     if (oldServerName != newServerName) {
         serverModel.ServerManager().reServerName(oldServerName, newServerName);
         serverModel.builder(newServerName, ServerConfig);
