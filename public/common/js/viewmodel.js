@@ -134,34 +134,32 @@
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
+		// 一种针对弹窗终端，一种针对网页终端
 		if (PAGE.methods == 0) {
 			var text = TOOLS.encodeConsoleColor(data.body);
 			MCSERVER.term.write(text);
 		} else {
 			var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
 			var eleTerminal = document.getElementById('TerminalMinecraft');
-			var nowstr = eleTerminal.innerHTML || '';
-			if (nowstr.length >= 40000) {
+			if (eleTerminal.innerHTML.length >= 100000) {
 				eleTerminal.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
 			}
 			eleTerminal.innerHTML = eleTerminal.innerHTML + text;
+			var BUFF_FONTIER_SIZE_DOWN = eleTerminal.scrollHeight - eleTerminal.clientHeight;
+			flag = (eleTerminal.scrollTop + 400 >= BUFF_FONTIER_SIZE_DOWN);
+			if (flag)
+				eleTerminal.scrollTop = eleTerminal.scrollHeight;
 		}
 	});
 
-	// 获取MC服务端终端日志历	史记录
-	var $ele = document.getElementById('LogHistoryTerminal');
+	// 获取MC服务端终端日志历史记录
 	MI.routeListener('server/console/history', function (data) {
-		if (VIEW_MODEL['Terminal']['isHistoryMode']) {
-			var text = data.body;
-			text = text.replace(/\r\n/igm, '<br />');
-			if ((text + $ele.innerHTML).length > 20000) {
-				$ele.innerHTML = "";
-			}
-			$ele.innerHTML = text + $ele.innerHTML;
-		} else {
-			var text = TOOLS.encodeConsoleColor(data.body);
-			MCSERVER.term.write(text);
+		var eleTerminal = document.getElementById('TerminalMinecraft');
+		var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
+		if (eleTerminal.innerHTML.length >= 100000) {
+			eleTerminal.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
 		}
+		eleTerminal.innerHTML = text + eleTerminal.innerHTML;
 	});
 
 	// 普通用户主页

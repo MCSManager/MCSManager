@@ -27,7 +27,8 @@
 		</div>
 	</div>
 	<div id="TerminalMinecraft" contenteditable="false">
-		<span style='color:#03ea0a;'>[ SYSTEM ]</span> MCSM Console...
+		<br />
+		<span style='color:#03ea0a;'>[ SYSTEM ]</span> 正在监听服务端的日志输出.
 		<br />
 	</div>
 	<div class="" style="border-top: 1px solid #585858;">
@@ -40,6 +41,8 @@
 </div>
 <script>
 	MI.rListener('onload', function () {
+		// 定义页面地址
+		TOOLS.definePage('template/component/terminal', 'server/console', MCSERVER.listenServername);
 
 		PAGE.nowPage = 0; //当前最低页
 		PAGE.serverName = MCSERVER.listenServername;
@@ -60,6 +63,11 @@
 		};
 		MI.listener('resize', PAGE.tmp_onresize);
 
+		// 默认请求一段历史
+		WS.sendMsg('server/console/history', JSON.stringify({
+			serverName: PAGE.serverName
+		}));
+
 		VIEW_MODEL.newVue('Terminal', {
 			el: '#Terminal',
 			methods: {
@@ -68,9 +76,9 @@
 					ele.scrollTop = ele.scrollHeight;
 				},
 				loadHistory: function () {
-					var obj = {};
-					obj.serverName = PAGE.serverName;
-					WS.sendMsg('server/console/history', JSON.stringify(obj));
+					WS.sendMsg('server/console/history', JSON.stringify({
+						serverName: PAGE.serverName
+					}));
 				},
 				toOpenServer: function () {
 					WS.sendMsg('server/console/open', PAGE.serverName);
