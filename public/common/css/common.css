@@ -339,6 +339,17 @@ a, input {
 	margin-bottom: 2px;
 }
 
+#Terminal {
+	margin-top: -10px;
+	padding: 8px;
+}
+
+.TerminalCommand {
+	background-color: rgb(60, 60, 60);
+	color: white;
+	font-size: 14px;
+}
+
 /* 日志历史终端 */
 
 #LogHistoryTerminal {

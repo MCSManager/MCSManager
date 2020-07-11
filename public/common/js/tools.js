@@ -231,6 +231,58 @@
 		return text;
 	}
 
+	//Minecraft 服务器输出基本颜色
+	TOOLS.encodeConsoleColorForHtml = function (text) {
+		text = text.replace(/\n/igm, '<br />');
+		text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/igm, "<span style='color:#ffa700;'>$1</span>");
+		text = text.replace(/\[/igm, "<span style='color:#10e616;'>[</span>");
+		text = text.replace(/\]/igm, "<span style='color:#10e616;'>]</span>");
+		text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
+		text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
+		text = text.replace(/§[0-9A-Za-z]{1}/igm, "");
+
+		RegExpStringArr = [
+			//蓝色
+			["Unknown command", "Loading libraries, please wait...",
+				"Loading", "Loaded", "\\d{1,3}%", "true", "false",
+				"plugin.yml"
+			],
+			//绿色
+			["/help", "left the game", "Enabling",
+				"Saving chunks for level", "--------", "UUID", "Starting minecraft server version",
+				"Timings Reset",
+				"\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;",
+				"Preparing start region for level"
+			],
+			//红色
+			["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
+			//黄色
+			[
+				"Starting Minecraft server on",
+				"world_the_end",
+				"world_nether",
+				"Usage",
+				"Server thread", "Done", "MCSMANAGER"
+			]
+		]
+		for (var k in RegExpStringArr) {
+			for (var y in RegExpStringArr[k]) {
+				var reg = new RegExp(
+					"(" + RegExpStringArr[k][y].replace(/ /igm, "&nbsp;") + ")",
+					"igm");
+				if (k == 0) //蓝色
+					text = text.replace(reg, "<span style='color:#009fef;'>$1</span>");
+				if (k == 1) //绿色
+					text = text.replace(reg, "<span style='color:#10e616;'>$1</span>");
+				if (k == 2) //红色
+					text = text.replace(reg, "<span style='color:#ea1f1a;'>$1</span>");
+				if (k == 3) //黄色
+					text = text.replace(reg, "<span style='color:#ffa700;'>$1</span>");
+			}
+		}
+		return text;
+	}
+
 	// 弹窗
 	var _popWindCallback = null;
 	TOOLS.popWind = function (config) {
@@ -352,6 +404,7 @@
 
 	// 开始监听并打开终端窗口
 	TOOLS.listenTerminal = function (serverName) {
+		PAGE.methods = 0;
 		console.log('监听终端:', serverName)
 		MCSERVER.listenServername = PAGE.serverName = serverName;
 		WS.sendMsg('server/console/ws', serverName);

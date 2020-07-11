@@ -125,14 +125,30 @@
 		MI.routeCopy('OneUserView', data.obj);
 	});
 
+	// Minecraft 服务器终端换行替换符
+	var terminalEncode = function (text) {
+		var consoleSafe = TOOLS.encode(text);
+		return consoleSafe;
+	}
+
 	// 终端控制台界面，实时接受服务端终端日志
 	// 每当控制面板后端发送实时日志，都将第一时间触发此
 	MI.routeListener('server/console/ws', function (data) {
-		var text = TOOLS.encodeConsoleColor(data.body);
-		MCSERVER.term.write(text);
+		if (PAGE.methods == 0) {
+			var text = TOOLS.encodeConsoleColor(data.body);
+			MCSERVER.term.write(text);
+		} else {
+			var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
+			var eleTerminal = document.getElementById('TerminalMinecraft');
+			var nowstr = eleTerminal.innerHTML || '';
+			if (nowstr.length >= 40000) {
+				eleTerminal.innerHTML = "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
+			}
+			eleTerminal.innerHTML = eleTerminal.innerHTML + text;
+		}
 	});
 
-	// 获取MC服务端终端日志历史记录
+	// 获取MC服务端终端日志历	史记录
 	var $ele = document.getElementById('LogHistoryTerminal');
 	MI.routeListener('server/console/history', function (data) {
 		if (VIEW_MODEL['Terminal']['isHistoryMode']) {

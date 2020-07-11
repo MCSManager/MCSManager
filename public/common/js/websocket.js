@@ -40,9 +40,8 @@
 				tmp_callback && tmp_callback(obj);
 				tmp_callback = null;
 			} catch (e) {
-				DEBUG && console.log('Websocket 收到的数据异常:');
-				DEBUG && console.log('收到的数据是:' + e.data)
-				DEBUG && console.log(e)
+				console.log('Websocket 数据到达时逻辑异常:');
+				console.log(e);
 			}
 		};
 		WS.onerror = function (err) {
