@@ -9,7 +9,7 @@
 			"allow-flight": "是否允许玩家飞行（在任何游戏模式下）",
 			"server-port": "服务器端口",
 			"level-type": "地图的生成类型",
-			"enable-rcon": "是否允许远程访问服务器控制台 [ RCON ]",
+			"enable-rcon": "是否允许远程访问服务器控制台（RCON）",
 			"force-gamemode": "强制玩家加入时为默认游戏模式",
 			"level-seed": "地图种子 默认留空",
 			"server-ip": "服务器ip，若不绑定请留空",
@@ -21,7 +21,7 @@
 			"hardcore": "极限模式（死后自动封禁）",
 			"texture-pack": "材质包",
 			"online-mode": "在线（正版）验证",
-			"pvp": "是否允许玩家掐架",
+			"pvp": "是否允许玩家互相攻击",
 			"difficulty": "难度0=和平 1=简单 2=普通 3=困难",
 			"player-idle-timeout": "允许的挂机时间，单位为分钟 超过限制后自动T出服务器",
 			"gamemode": "游戏模式 0=生存 1=创造 2=冒险 3=旁观",
@@ -48,8 +48,7 @@
 			"broadcast-rcon-to-ops": "向OP广播RCON信息",
 			"broadcast-console-to-ops": "向OP广播服务器控制台信息",
 			"enforce-whitelist": "在服务器上强制使用白名单",
-			"spawn-protection": "通过将该值进行 2x+1 的运算来决定出生点的保护半径。设置为0将不会禁用出生点保护",
-			"": "",
+			"spawn-protection": "通过将该值进行 2x+1 的运算来决定出生点的保护半径。设置为0将不会禁用出生点保护"
 		}
 
 		if (SuwingsLoveYou.hasOwnProperty(key)) {
