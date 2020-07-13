@@ -9,7 +9,7 @@
 			"allow-flight": "是否允许玩家飞行（在任何游戏模式下）",
 			"server-port": "服务器端口",
 			"level-type": "地图的生成类型",
-			"enable-rcon": "是否允许远程访问服务器控制台",
+			"enable-rcon": "是否允许远程访问服务器控制台 [ RCON ]",
 			"force-gamemode": "强制玩家加入时为默认游戏模式",
 			"level-seed": "地图种子 默认留空",
 			"server-ip": "服务器ip，若不绑定请留空",
@@ -36,7 +36,20 @@
 			"resource-pack-sha1": "资源包的SHA-1值，必须为小写十六进制，不是必填选项",
 			"enable-command-block": "启用命令方块",
 			"resource-pack": "统一资源标识符 (URI) 指向一个资源包。玩家可选择是否使用",
-			"max-world-size": "最大世界大小"
+			"max-world-size": "最大世界大小",
+			"function-permission-level": "设定函数的默认权限等级",
+			"max-tick-time": "设置每个tick花费的最大毫秒数",
+			"prevent-proxy-connections": "是否允许玩家使用网络代理进入服务器",
+			"rcon.port": "设置RCON远程访问的端口号",
+			"rcon.password": "设置RCON远程访问的密码（参见enable-rcon）",
+			"query.port": "设置监听服务器的端口号（参见 enable-rcon）",
+			"use-native-transport": "是否使用针对Linux平台的数据包收发优化 [ 仅Linux ]",
+			"debug": "调试模式",
+			"broadcast-rcon-to-ops": "向OP广播RCON信息",
+			"broadcast-console-to-ops": "向OP广播服务器控制台信息",
+			"enforce-whitelist": "在服务器上强制使用白名单",
+			"spawn-protection": "通过将该值进行 2x+1 的运算来决定出生点的保护半径。设置为0将不会禁用出生点保护",
+			"": "",
 		}
 
 		if (SuwingsLoveYou.hasOwnProperty(key)) {
