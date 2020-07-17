@@ -5,9 +5,19 @@ class NullError {
 }
 
 
+module.exports.send = (res, data = "", statusCode = 200) => {
+    res.send(JSON.stringify({
+        status: statusCode,
+        data: data
+    }));
+    res.end();
+}
+
+
 module.exports.ok = (res, statusCode = 200) => {
     res.send(JSON.stringify({
-        status: statusCode
+        status: statusCode,
+        data: null
     }));
     res.end();
 }

@@ -51,15 +51,20 @@ router.all('/status/:name', function (req, res) {
 });
 
 
-// 创建实例 API
+// 获取所有实例 | API
+router.post('/server_list', function (req, res) {
+    const list = serverModel.ServerManager().getServerList();
+    apiResponse.send(res, list);
+});
+
+
+// 创建实例 | API
 router.post('/create_server', function (req, res) {
     // 解析请求参数
     const params = JSON.parse(req.body);
     const result = serverModel.createServer(params);
-
     // 返回状态码
     result ? apiResponse.ok(res) : apiResponse.error(res);
-
 });
 
 
@@ -76,6 +81,12 @@ router.all('/delete_server/:name', function (req, res) {
     res.end();
 });
 
+
+// 获取所有用户 | API
+router.post('/user_list', function (req, res) {
+    const list = userModel.userCenter().getUserList();
+    apiResponse.send(res, list);
+});
 
 // 创建用户 API
 // params.username
