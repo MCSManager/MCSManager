@@ -52,7 +52,7 @@ router.all('/status/:name', function (req, res) {
 
 
 // 获取所有实例 | API
-router.post('/server_list', function (req, res) {
+router.all('/server_list', function (req, res) {
     const list = serverModel.ServerManager().getServerList();
     apiResponse.send(res, list);
 });
@@ -83,10 +83,11 @@ router.all('/delete_server/:name', function (req, res) {
 
 
 // 获取所有用户 | API
-router.post('/user_list', function (req, res) {
+router.all('/user_list', function (req, res) {
     const list = userModel.userCenter().getUserList();
     apiResponse.send(res, list);
 });
+
 
 // 创建用户 API
 // params.username
@@ -94,14 +95,19 @@ router.post('/user_list', function (req, res) {
 // params.serverList
 router.post('/create_user', function (req, res) {
     try {
-        // 解析请求参数
-        const params = JSON.parse(req.body);
         // 注册用户
-        userModel.userCenter().register(params.username, params.password);
+        userModel.userCenter().register(req.body.username, req.body.password);
         // 注册其名下的服务端实例
-        userModel.userCenter().get(params.username).allowedServer(params.serverList);
+        const allowedServerList = [];
+        const serverList = req.body.serverlist.split(" ");
+        for (const k in serverList) {
+            if (serverList[k] != " " && serverList.length > 0) {
+                allowedServerList.push(serverList[k]);
+            }
+        }
+        userModel.userCenter().get(req.body.username).allowedServer(allowedServerList);
         // 数据模型保存
-        userModel.userCenter().get(username).dataModel.save();
+        userModel.userCenter().get(req.body.username).dataModel.save();
         // 返回状态码
         apiResponse.ok(res);
     } catch (err) {
@@ -111,7 +117,7 @@ router.post('/create_user', function (req, res) {
 
 
 // 删除用户 API
-router.post('/delete_user/:name', function (req, res) {
+router.all('/delete_user/:name', function (req, res) {
     try {
         // 解析请求参数
         const userName = req.params.name;

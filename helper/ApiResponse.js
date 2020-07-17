@@ -1,7 +1,9 @@
 // 针对API返回的数据缩写的服务模块
 
-class NullError {
-    message = null
+class NullError extends Error {
+    constructor() {
+        super(null);
+    }
 }
 
 
@@ -17,7 +19,6 @@ module.exports.send = (res, data = "", statusCode = 200) => {
 module.exports.ok = (res, statusCode = 200) => {
     res.send(JSON.stringify({
         status: statusCode,
-        data: null
     }));
     res.end();
 }
