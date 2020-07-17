@@ -58,13 +58,17 @@ router.all('/server_list', function (req, res) {
 });
 
 
-// 创建实例 | API
+// 创建服务器实例 | API
 router.post('/create_server', function (req, res) {
     // 解析请求参数
-    const params = JSON.parse(req.body);
-    const result = serverModel.createServer(params);
-    // 返回状态码
-    result ? apiResponse.ok(res) : apiResponse.error(res);
+    try {
+        const params = req.body;
+        const result = serverModel.createServer(params.serverName, params);
+        // 返回状态码
+        result ? apiResponse.ok(res) : apiResponse.error(res);
+    } catch (err) {
+        apiResponse.error(res, err);
+    }
 });
 
 
