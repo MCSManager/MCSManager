@@ -1,18 +1,19 @@
 <div id="ApiKeyContainer">
     <p>
-        <b>设置至关重要的接口密匙（API KEY）。</b>
+        <b>设置第三方应用程序接口密匙（API KEY）。</b>
     </p>
-    <p><small>若此用户管理员用户，那么密匙将可以"创建/删除用户","创建/删除服务器","管理所有服务器"</small></p>
-    <p><small>若此用户为普通用户，则仅仅能管理其名下的所有服务器。</small></p>
+    <p><small>若此用户是管理员用户，那么密匙将可以"创建/删除用户","创建/删除服务器","管理所有服务器"</small></p>
+    <p><small>若此用户是普通用户，则仅仅能管理其名下的所有服务器。</small></p>
 
     <div class="input-group">
         <span class="input-group-addon">API KEY</span>
         <input type="text" class="form-control" v-model="API_KEY" placeholder="关闭" disabled="disabled">
     </div>
 
-    <p style="color: rgb(230, 55, 55);">切勿泄露，安全至上，至关重要，不可泄露</p>
+    <p style="color: rgb(230, 55, 55);">此字段至关重要，切勿泄露，复制给其他人。</p>
 
-    <p>留空则代表关闭此用户 API 功能</p>
+    <p>留空则代表关闭此用户 API 功能 | <a>接口调用文档</a> </p>
+
     <button class="btn btn-success" v-on:click="updateKey()">
         更新 KEY
     </button>
