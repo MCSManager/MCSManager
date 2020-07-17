@@ -7,6 +7,7 @@ const {
     randomString
 } = require('./CryptoMine');
 const fs = require('fs');
+const uuid = require('uuid');
 
 const USER_SAVE_PATH = 'users/';
 class User {
@@ -21,6 +22,9 @@ class User {
         this.dataModel.createDate = now;
         this.dataModel.lastDate = now;
         this.dataModel.allowedServer = [];
+
+        // API KEYthis.dataModel.apikey
+        this.dataModel.apikey = '';
     }
 
     load() {
@@ -61,6 +65,7 @@ class User {
         this.dataModel.allowedServer = list;
         return this;
     }
+
     hasServer(serverName) {
         for (let key in this.dataModel.allowedServer) {
             if (this.dataModel.allowedServer[key] == serverName) {
@@ -70,6 +75,13 @@ class User {
         return false;
     }
 
+    setApiKey(v) {
+        this.dataModel.apikey = v;
+    }
+
+    updateApiKey() {
+        this.dataModel.apikey = uuid.v4().replace(/-/igm, "");
+    }
 }
 
 
