@@ -4,6 +4,7 @@ const userModel = require('../model/UserModel');
 const mcPingProtocol = require('../helper/MCPingProtocol');
 const apiResponse = require('../helper/ApiResponse');
 const keyManager = require('../helper/KeyManager');
+const requestLimit = require('../helper/RequestLimit');
 
 const fs = require('fs');
 
@@ -173,6 +174,11 @@ router.all('/start_server/:name', function (req, res) {
         apiResponse.forbidden(res);
         return;
     }
+    // 流量限制 | 10 秒间隔
+    if (!requestLimit.execute(apiResponse.key(req), 1000 * 10)) {
+        apiResponse.unavailable(res);
+        return;
+    }
     try {
         // 解析请求参数
         const name = req.params.name;
@@ -191,6 +197,11 @@ router.all('/restart_server/:name', function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
         apiResponse.forbidden(res);
+        return;
+    }
+    // 流量限制 | 60 秒执行一次
+    if (!requestLimit.execute(apiResponse.key(req), 1000 * 60)) {
+        apiResponse.unavailable(res);
         return;
     }
     try {
@@ -213,6 +224,11 @@ router.all('/stop_server/:name', function (req, res) {
         apiResponse.forbidden(res);
         return;
     }
+    // 流量限制 | 1 秒间隔
+    if (!requestLimit.execute(apiResponse.key(req), 1000 * 1)) {
+        apiResponse.unavailable(res);
+        return;
+    }
     try {
         // 解析请求参数
         const name = req.params.name;
@@ -232,6 +248,11 @@ router.post('/execute/', function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.body.name)) {
         apiResponse.forbidden(res);
+        return;
+    }
+    // 流量限制 | 1 秒间隔
+    if (!requestLimit.execute(apiResponse.key(req), 1000 * 1)) {
+        apiResponse.unavailable(res);
         return;
     }
     try {

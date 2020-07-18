@@ -8,7 +8,14 @@ class NullError extends Error {
 
 class ForbiddenError extends Error {
     constructor() {
-        super('权限不足');
+        super('权限不足 | Forbidden');
+    }
+}
+
+
+class UnavailableError extends Error {
+    constructor() {
+        super('请求频繁，拒绝服务 | Service Unavailable');
     }
 }
 
@@ -40,6 +47,15 @@ module.exports.error = (res, error = new NullError(), statusCode = 500) => {
 
 
 module.exports.forbidden = (res, error = new ForbiddenError(), statusCode = 403) => {
+    res.send(JSON.stringify({
+        status: statusCode,
+        error: error.message
+    }));
+    res.end();
+}
+
+
+module.exports.unavailable = (res, error = new UnavailableError(), statusCode = 503) => {
     res.send(JSON.stringify({
         status: statusCode,
         error: error.message
