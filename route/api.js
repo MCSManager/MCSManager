@@ -250,8 +250,8 @@ router.post('/execute/', function (req, res) {
         apiResponse.forbidden(res);
         return;
     }
-    // 流量限制 | 1 秒间隔
-    if (!requestLimit.execute(apiResponse.key(req) + 'execute', 1000 * 1)) {
+    // 流量限制 | 0.5 秒间隔
+    if (!requestLimit.execute(apiResponse.key(req) + 'execute', 500)) {
         apiResponse.unavailable(res);
         return;
     }
