@@ -93,7 +93,7 @@ router.all('/user_list', function (req, res) {
 });
 
 
-// 创建用户 API
+// 创建用户 | API
 // params.username
 // params.password
 // params.serverList
@@ -142,6 +142,21 @@ router.all('/start_server/:name', function (req, res) {
         const name = req.params.name;
         // 启动服务器
         const result = serverModel.ServerManager().startMinecraftServer(name);
+        // 返回状态码
+        result ? apiResponse.ok(res) : apiResponse.error(res);
+    } catch (err) {
+        apiResponse.error(res, err);
+    }
+});
+
+
+// 重启服务器 | API
+router.all('/restart_server/:name', function (req, res) {
+    try {
+        // 解析请求参数
+        const name = req.params.name;
+        // 启动服务器
+        const result = serverModel.ServerManager().restartServer(name);
         // 返回状态码
         result ? apiResponse.ok(res) : apiResponse.error(res);
     } catch (err) {
