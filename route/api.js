@@ -175,7 +175,7 @@ router.all('/start_server/:name', function (req, res) {
         return;
     }
     // 流量限制 | 10 秒间隔
-    if (!requestLimit.execute(apiResponse.key(req), 1000 * 10)) {
+    if (!requestLimit.execute(apiResponse.key(req) + 'start_server', 1000 * 10)) {
         apiResponse.unavailable(res);
         return;
     }
@@ -200,7 +200,7 @@ router.all('/restart_server/:name', function (req, res) {
         return;
     }
     // 流量限制 | 60 秒执行一次
-    if (!requestLimit.execute(apiResponse.key(req), 1000 * 60)) {
+    if (!requestLimit.execute(apiResponse.key(req) + 'restart_server', 1000 * 60)) {
         apiResponse.unavailable(res);
         return;
     }
@@ -225,7 +225,7 @@ router.all('/stop_server/:name', function (req, res) {
         return;
     }
     // 流量限制 | 1 秒间隔
-    if (!requestLimit.execute(apiResponse.key(req), 1000 * 1)) {
+    if (!requestLimit.execute(apiResponse.key(req) + 'stop_server', 1000 * 1)) {
         apiResponse.unavailable(res);
         return;
     }
@@ -251,7 +251,7 @@ router.post('/execute/', function (req, res) {
         return;
     }
     // 流量限制 | 1 秒间隔
-    if (!requestLimit.execute(apiResponse.key(req), 1000 * 1)) {
+    if (!requestLimit.execute(apiResponse.key(req) + 'execute', 1000 * 1)) {
         apiResponse.unavailable(res);
         return;
     }
