@@ -40,10 +40,10 @@ WebSocketObserver().listener('userset/create', (data) => {
         }
         let username = newUserConfig.username.trim();
         let password = newUserConfig.password.trim();
-        var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
-        //输出 true
 
-        if (!uPattern.test(username) && tools.between(password, 6, 18)) {
+        // 用户名范围限制
+        var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+        if (!uPattern.test(username) || !tools.between(password, 6, 18)) {
             response.wsMsgWindow(data.ws, '用户账号或密码格式不正确');
             return;
         }

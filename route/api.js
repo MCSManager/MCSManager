@@ -133,7 +133,7 @@ router.post('/create_user', function (req, res) {
     }
     try {
         // 账号密码判定
-        var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+        const uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
         if (!uPattern.test(req.body.username) || !tools.between(req.body.password, 6, 18)) {
             apiResponse.error(res, new Error('用户名或密码格式不正确'));
             return;
