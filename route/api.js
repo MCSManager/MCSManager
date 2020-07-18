@@ -8,6 +8,7 @@ const requestLimit = require('../helper/RequestLimit');
 const tools = require('../core/tools');
 
 const fs = require('fs');
+const { add } = require('../core/counter');
 
 
 
@@ -77,10 +78,17 @@ router.post('/create_server', function (req, res) {
     // 解析请求参数
     try {
         const params = req.body;
+        // 创建名判定
         if (!tools.between(params.serverName, 6, 32)) {
             apiResponse.error(res, new Error('名字格式不正确'));
             return;
         }
+        // 附加参数解析
+        const addList = (params.addCmd || '').split(' ');
+        params.addCmd = addList;
+        // 工作目录确定
+        params.cwd = params.cwd || '';
+        // 创建
         const result = serverModel.createServer(params.serverName, params);
         // 返回状态码
         result ? apiResponse.ok(res) : apiResponse.error(res);

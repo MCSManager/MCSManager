@@ -56,10 +56,10 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.addCmd = args.addCmd || [];
 
         this.dataModel.java = args.java || 'java';
-        this.dataModel.jarName = args.jarName;
+        this.dataModel.jarName = args.jarName || '';
 
-        this.dataModel.Xmx = args.Xmx;
-        this.dataModel.Xms = args.Xms;
+        this.dataModel.Xmx = args.Xmx || '';
+        this.dataModel.Xms = args.Xms || '';
 
         this.dataModel.ie = args.ie || SYSTEM_CODE;
         this.dataModel.oe = args.oe || SYSTEM_CODE;
@@ -70,7 +70,7 @@ class MinecraftServer extends ServerProcess {
         this.dataModel.cwd = args.cwd || './server/' + this.dataModel.name + '/';
 
         //自定义参数
-        let tmpCommandeStart = args.highCommande || "";
+        let tmpCommandeStart = args.highCommande || '';
         //自定义参数去掉所有两个空格
         tmpCommandeStart = tmpCommandeStart.replace(/  /igm, ' ');
         this.dataModel.highCommande = tmpCommandeStart;
