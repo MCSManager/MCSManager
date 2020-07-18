@@ -5,8 +5,10 @@ const mcPingProtocol = require('../helper/MCPingProtocol');
 const apiResponse = require('../helper/ApiResponse');
 const keyManager = require('../helper/KeyManager');
 const requestLimit = require('../helper/RequestLimit');
+const tools = require('../core/tools');
 
 const fs = require('fs');
+
 
 
 // 服务端实例状态获取 | 公共性 API 接口
@@ -75,6 +77,10 @@ router.post('/create_server', function (req, res) {
     // 解析请求参数
     try {
         const params = req.body;
+        if (!tools.between(params.serverName, 6, 32)) {
+            apiResponse.error(res, new Error('名字格式不正确'));
+            return;
+        }
         const result = serverModel.createServer(params.serverName, params);
         // 返回状态码
         result ? apiResponse.ok(res) : apiResponse.error(res);
@@ -126,6 +132,12 @@ router.post('/create_user', function (req, res) {
         return;
     }
     try {
+        // 账号密码判定
+        var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+        if (!uPattern.test(req.body.username) || !tools.between(req.body.password, 6, 18)) {
+            apiResponse.error(res, new Error('用户名或密码格式不正确'));
+            return;
+        }
         // 注册用户
         userModel.userCenter().register(req.body.username, req.body.password);
         // 注册其名下的服务端实例
