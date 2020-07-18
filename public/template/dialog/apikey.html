@@ -7,12 +7,14 @@
 
     <div class="input-group">
         <span class="input-group-addon">API KEY</span>
-        <input type="text" class="form-control" v-model="API_KEY" placeholder="关闭" disabled="disabled">
+        <input type="text" class="form-control" v-model="API_KEY" placeholder="关闭">
     </div>
 
     <p style="color: rgb(230, 55, 55);">此字段至关重要，切勿泄露，复制给其他人。</p>
 
-    <p>留空则代表关闭此用户 API 功能 | <a>接口调用文档</a> </p>
+    <p>留空则代表关闭此用户 API 功能 |
+        <a href="https://github.com/Suwings/MCSManager/wiki/API-Documentation"><b>接口开发文档（推荐阅读）</b></a>
+    </p>
 
     <button class="btn btn-success" v-on:click="updateKey()">
         更新 KEY
@@ -22,7 +24,7 @@
     </button>
     &nbsp;|&nbsp;
     <button class="btn btn-danger" v-on:click="TOOLS.popWindClose();">
-        返回
+        关闭
     </button>
 </div>
 <script>
