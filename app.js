@@ -157,7 +157,12 @@ app.use('/public', express.static('./public'));
 
 // console 中间件挂载
 app.use((req, res, next) => {
-    console.log('[', req.protocol.green, req.method.cyan, ']', req.originalUrl);
+    // 部分请求不必显示
+    if (req.originalUrl.indexOf('/api/') == -1 &&
+        req.originalUrl.indexOf('/fs/') == -1 &&
+        req.originalUrl.indexOf('/fs_auth/') == -1) {
+        console.log('[', req.protocol.green, req.method.cyan, ']', req.originalUrl);
+    }
     if (MCSERVER.localProperty.is_allow_csrf) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header('Access-Control-Allow-Methods', 'GET, POST');
