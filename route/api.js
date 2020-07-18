@@ -258,6 +258,13 @@ router.post('/execute/', function (req, res) {
     try {
         // 解析请求参数
         const params = req.body;
+        // 判定服务器是否运行
+        const server = serverModel.ServerManager().getServer(params.name);
+        if (!server) return;
+        if (!server.isRun()) {
+            apiResponse.error(res, new Error('服务器非运行状态,无法投递命令'));
+            return;
+        }
         // 启动服务器
         const result = serverModel.ServerManager().sendMinecraftServer(params.name, params.command);
         // 返回状态码
