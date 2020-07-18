@@ -135,6 +135,51 @@ router.all('/delete_user/:name', function (req, res) {
 });
 
 
+// 启动服务器 | API
+router.all('/start_server/:name', function (req, res) {
+    try {
+        // 解析请求参数
+        const name = req.params.name;
+        // 启动服务器
+        const result = serverModel.ServerManager().startMinecraftServer(name);
+        // 返回状态码
+        result ? apiResponse.ok(res) : apiResponse.error(res);
+    } catch (err) {
+        apiResponse.error(res, err);
+    }
+});
+
+
+// 关闭服务器 | API
+router.all('/stop_server/:name', function (req, res) {
+    try {
+        // 解析请求参数
+        const name = req.params.name;
+        // 启动服务器
+        const result = serverModel.ServerManager().stopMinecraftServer(name);
+        // 返回状态码
+        result ? apiResponse.ok(res) : apiResponse.error(res);
+    } catch (err) {
+        apiResponse.error(res, err);
+    }
+});
+
+
+// 向某服务器执行命令 | API
+// params.name, params.command
+router.post('/execute/', function (req, res) {
+    try {
+        // 解析请求参数
+        const params = req.body;
+        // 启动服务器
+        const result = serverModel.ServerManager().sendMinecraftServer(params.name, params.command);
+        // 返回状态码
+        result ? apiResponse.ok(res) : apiResponse.error(res);
+    } catch (err) {
+        apiResponse.error(res, err);
+    }
+});
+
 
 
 //模块导出
