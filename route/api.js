@@ -168,6 +168,11 @@ router.all('/delete_user/:name', function (req, res) {
 
 // 启动服务器 | API
 router.all('/start_server/:name', function (req, res) {
+    // 用户权限判定
+    if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 解析请求参数
         const name = req.params.name;
@@ -183,6 +188,11 @@ router.all('/start_server/:name', function (req, res) {
 
 // 重启服务器 | API
 router.all('/restart_server/:name', function (req, res) {
+    // 用户权限判定
+    if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 解析请求参数
         const name = req.params.name;
@@ -198,6 +208,11 @@ router.all('/restart_server/:name', function (req, res) {
 
 // 关闭服务器 | API
 router.all('/stop_server/:name', function (req, res) {
+    // 用户权限判定
+    if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 解析请求参数
         const name = req.params.name;
@@ -214,6 +229,11 @@ router.all('/stop_server/:name', function (req, res) {
 // 向某服务器执行命令 | API
 // params.name, params.command
 router.post('/execute/', function (req, res) {
+    // 用户权限判定
+    if (!keyManager.hasServer(apiResponse.key(req), req.body.name)) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 解析请求参数
         const params = req.body;
