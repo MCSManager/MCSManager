@@ -3,6 +3,7 @@ const serverModel = require('../model/ServerModel');
 const userModel = require('../model/UserModel');
 const mcPingProtocol = require('../helper/MCPingProtocol');
 const apiResponse = require('../helper/ApiResponse');
+const keyManager = require('../helper/KeyManager');
 
 const fs = require('fs');
 
@@ -53,6 +54,11 @@ router.all('/status/:name', function (req, res) {
 
 // 获取所有实例 | API
 router.all('/server_list', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     const list = serverModel.ServerManager().getServerList();
     apiResponse.send(res, list);
 });
@@ -60,6 +66,11 @@ router.all('/server_list', function (req, res) {
 
 // 创建服务器实例 | API
 router.post('/create_server', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     // 解析请求参数
     try {
         const params = req.body;
@@ -74,6 +85,11 @@ router.post('/create_server', function (req, res) {
 
 // 删除实例 API
 router.all('/delete_server/:name', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     // 解析请求参数
     const params = req.params.name;
     try {
@@ -88,6 +104,11 @@ router.all('/delete_server/:name', function (req, res) {
 
 // 获取所有用户 | API
 router.all('/user_list', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     const list = userModel.userCenter().getUserList();
     apiResponse.send(res, list);
 });
@@ -98,6 +119,11 @@ router.all('/user_list', function (req, res) {
 // params.password
 // params.serverList
 router.post('/create_user', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 注册用户
         userModel.userCenter().register(req.body.username, req.body.password);
@@ -122,6 +148,11 @@ router.post('/create_user', function (req, res) {
 
 // 删除用户 API
 router.all('/delete_user/:name', function (req, res) {
+    // 仅仅准许管理员使用
+    if (!keyManager.isMaster(apiResponse.key(req))) {
+        apiResponse.forbidden(res);
+        return;
+    }
     try {
         // 解析请求参数
         const userName = req.params.name;

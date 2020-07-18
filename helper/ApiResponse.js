@@ -6,6 +6,12 @@ class NullError extends Error {
     }
 }
 
+class ForbiddenError extends Error {
+    constructor() {
+        super('权限不足');
+    }
+}
+
 
 module.exports.send = (res, data = "", statusCode = 200) => {
     res.send(JSON.stringify({
@@ -30,4 +36,18 @@ module.exports.error = (res, error = new NullError(), statusCode = 500) => {
         error: error.message
     }));
     res.end();
+}
+
+
+module.exports.forbidden = (res, error = new ForbiddenError(), statusCode = 403) => {
+    res.send(JSON.stringify({
+        status: statusCode,
+        error: error.message
+    }));
+    res.end();
+}
+
+
+module.exports.key = (req) => {
+    return req.query.apikey || "";
 }
