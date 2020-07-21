@@ -43,10 +43,10 @@ if (realArgv.length >= 1) {
             zipFileNameEncoding: SYSTEM_CODE
         })
             .then(() => {
-                console.log('解压任务', absPath, '成功.');
+                MCSERVER.log('解压任务', absPath, '成功.');
             })
             .catch(err => {
-                console.log('解压任务', absPath, '失败，原因:\n', err);
+                MCSERVER.log('解压任务', absPath, '失败，原因:\n', err);
             });
     }
 
@@ -68,10 +68,10 @@ if (realArgv.length >= 1) {
             zipFileNameEncoding: SYSTEM_CODE
         })
             .then(() => {
-                console.log('压缩任务', absPath, '成功.');
+                MCSERVER.log('压缩任务', absPath, '成功.');
             })
             .catch(err => {
-                console.log('压缩任务', absPath, '失败，原因:\n', err);
+                MCSERVER.log('压缩任务', absPath, '失败，原因:\n', err);
             });
     }
 }

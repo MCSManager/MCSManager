@@ -208,7 +208,7 @@ class FileOperate extends BaseFileOperate {
                 fs.writeFileSync(absPath, data);
                 return fs.existsSync(absPath);
             } catch (err) {
-                console.log("[错误]", "文件写出错:\n", err);
+                MCSERVER.error("文件写出错:\n", err);
                 return false;
             }
         });
@@ -221,7 +221,7 @@ class FileOperate extends BaseFileOperate {
                     return fs.readFileSync(absPath);
                 }
             } catch (err) {
-                console.log("[错误]", "文件读出错:\n", err);
+                MCSERVER.error("文件读出错:\n", err);
                 return false;
             }
         });
