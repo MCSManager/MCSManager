@@ -54,11 +54,12 @@ MCSERVER.info = (...p) => {
 // ERROR 级别输出
 MCSERVER.error = (msg, err) => {
     logger.error(msg);
-    logger.error(err);
+    if (err) logger.error(err);
 }
 
 
 // WARN 级别输出
 MCSERVER.warning = (title, msg = null) => {
-    logger.warn(msg);
+    logger.warn(title);
+    if (msg) logger.warn(msg);
 }
