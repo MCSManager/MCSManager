@@ -46,7 +46,6 @@ if (!fs.existsSync(PRO_CONFIG))
 //加载配置
 require('./property');
 
-
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -135,6 +134,7 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
+
 
 var UUID = require('uuid');
 app.use(session({

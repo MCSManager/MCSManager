@@ -1,4 +1,27 @@
-//log 输出标准
+const log4js = require("log4js");
+log4js.configure({
+    appenders: {
+        out: {
+            type: 'stdout', layout: {
+                type: 'pattern',
+                pattern: '[%d{MM/dd hh:mm:ss}] [%[%p%]] %m'
+            }
+        },
+        app: {
+            type: 'file', filename: 'application.log', layout: {
+                type: 'pattern',
+                pattern: '%d %p %m'
+            }
+        }
+    },
+    categories: {
+        default: {
+            appenders: ['out', 'app'], level: 'info'
+        }
+    }
+});
+
+const logger = log4js.getLogger("default");
 
 MCSERVER.log = function () {
     let str = "";
@@ -8,36 +31,21 @@ MCSERVER.log = function () {
     MCSERVER.infoLog('INFO', str);
 }
 
-MCSERVER.infoLog = (info, value, colors = false) => {
-    let date = new Date();
-    let infoStr = colors ? info : info.green;
-    //时间格式
-    let timeStr = [
-        date.getFullYear(),
-        '-',
-        date.getMonth() + 1,
-        '-',
-        date.getDate(),
-        ' ',
-        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
-    ].join('');
-    console.log('[', timeStr.green, '] [', infoStr, ']', (value + '').white);
+MCSERVER.infoLog = (info = "", value = "", colors = false) => {
+    let msg = value;
+    if (info.toUpperCase() != 'INFO') {
+        msg = [info, '-', value].join(' ');
+    }
+    logger.info(msg);
 }
 
 //error 报告器
 MCSERVER.error = (msg, err) => {
-    let header = 'ERROR';
-    MCSERVER.infoLog(header.red, '\n--------Error-------\n', true);
-    MCSERVER.infoLog(header.red, msg.yellow, true);
-    console.log(err);
-    console.log("--------Error-------\n");
+    logger.error(msg);
+    logger.error(err);
 }
 
 
 MCSERVER.warning = (title, msg = null) => {
-    MCSERVER.infoLog('WARN'.yellow, title.white);
-    if (msg) {
-        MCSERVER.infoLog('WARN'.yellow, msg.white);
-    }
-
+    logger.warn(msg);
 }
