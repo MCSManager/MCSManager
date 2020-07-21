@@ -16,12 +16,12 @@ const userManager = userCenter();
 //用户退出事件
 router.post('/loginout', function (req, res) {
     if (!req.xhr) return;
-    MCSERVER.log('[loginout] 用户:' + req.session['username'] + '退出');
     //删除一些辅助管理器的值
     if (req.session['username'] && req.session['login'])
         loginedContainer.delLogined(req.sessionID);
 
     TokenManager.delToken(req.session['token']);
+    MCSERVER.log('[ loginout ] 用户:', req.session['username'], '退出，会话注销');
 
     //退出后的 Session 并不会立刻反馈到所有 Session 上
     req.session['login'] = false;
@@ -86,8 +86,7 @@ router.post('/login', function (req, res) {
 
     //登陆次数加一
     counter.plus('login');
-
-    MCSERVER.log('[Login]'.green, '用户尝试登陆:', username, "密匙:", password);
+    MCSERVER.log('用户', username, '正在尝试登录...');
 
     loginUser(username, password, (loginUser) => {
         //只有这里 唯一的地方设置 login = true
@@ -99,7 +98,7 @@ router.post('/login', function (req, res) {
         delete MCSERVER.login[ip];
         //添加到 login 容器  注意，全部代码只能有这一个地方使用这个函数
         loginedContainer.addLogined(req.sessionID, username, loginUser.dataModel);
-        MCSERVER.log('[Login]'.green, '用户:', username, "密匙正确", "准许登录");
+        MCSERVER.log('[ Login ]', '用户:', username, "密匙正确", "准许登录");
         response.returnMsg(res, 'login/check', true);
     }, () => {
         //密码错误记录
@@ -115,7 +114,7 @@ router.post('/login', function (req, res) {
         req.session.save();
         //删除到 login 容器
         if (req.session['username']) loginedContainer.delLogined(req.sessionID);
-        MCSERVER.log('[Login]'.green, '用户:', username, "密匙错误", "拒绝登录");
+        MCSERVER.log('[ Login ]', '用户:', username, "密匙错误", "拒绝登录");
         response.returnMsg(res, 'login/check', false);
     }, enkey);
 });

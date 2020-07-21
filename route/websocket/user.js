@@ -59,6 +59,7 @@ WebSocketObserver().listener('userset/create', (data) => {
         userCenter().get(username).allowedServer(allowedServerList);
         //其数据模型保存
         userCenter().get(username).dataModel.save();
+        MCSERVER.info('用户', data.WsSession.username, '建立', username, '用户');
         response.wsSend(data.ws, 'userset/create', true);
         response.wsMsgWindow(data.ws, '用户建立完成√');
         return;
@@ -76,6 +77,7 @@ WebSocketObserver().listener('userset/delete', (data) => {
     try {
         let deleteObj = JSON.parse(data.body);
         let username = deleteObj.username.trim();
+        MCSERVER.info('用户', data.WsSession.username, '删除', username, '用户');
         deleteUser(username, () => {
             userCenter().initUser();
             response.wsSend(data.ws, 'userset/delete', true);

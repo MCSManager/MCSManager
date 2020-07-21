@@ -7,14 +7,14 @@ let _endFlag = false;
 process.on('SIGINT', function () {
     if (_endFlag) return;
     _endFlag = true;
-    MCSERVER.infoLog('PROCESS', '控制面板正在结束与回收资源,请稍等...'.red);
+    MCSERVER.infoLog('PROCESS', '控制面板正在结束与回收资源,请稍等...');
 
-    //保存
+    // 保存
     counter.save();
     serverModel.ServerManager().saveAllMinecraftServer();
     userModel.userCenter().saveAllUser();
 
-    //关闭所有服务器
+    // 关闭所有服务器
     let servers = serverModel.ServerManager().getServerObjects();
     for (let k in servers) {
         let server = servers[k];
@@ -30,8 +30,7 @@ process.on('SIGINT', function () {
     }
 
     setTimeout(() => {
-        MCSERVER.infoLog('PROCESS', '进程结束流程逻辑执行完毕.'.red);
-        MCSERVER.infoLog('PROCESS', 'EXIT...'.red);
+        MCSERVER.infoLog('PROCESS', 'EXIT...');
         process.exit(0);
-    }, 4000)
+    }, 3000)
 });

@@ -32,6 +32,7 @@ WebSocketObserver().listener('server/get', (data) => {
     response.wsSend(data.ws, 'server/get', serverData);
 });
 
+
 WebSocketObserver().listener('server/create', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
 
@@ -50,6 +51,7 @@ WebSocketObserver().listener('server/create', (data) => {
     response.wsMsgWindow(data.ws, '创建完成√');
 });
 
+
 WebSocketObserver().listener('server/create_dir', (data) => {
     if (!permssion.isMaster(data.WsSession)) return;
 
@@ -62,7 +64,6 @@ WebSocketObserver().listener('server/create_dir', (data) => {
     }
 
 });
-
 
 
 WebSocketObserver().listener('server/rebulider', (data) => {

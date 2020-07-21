@@ -95,6 +95,7 @@ MCSERVER.dataCenter = {};
 
 //装载log记录器
 require('./core/log');
+MCSERVER.info('控制面板正在启动中...');
 
 //全局登陆记录器
 MCSERVER.login = {};
@@ -199,8 +200,7 @@ process.on("uncaughtException", function (err) {
 });
 
 process.on('unhandledRejection', (reason, p) => {
-    MCSERVER.infoLog('错误报告:');
-    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    MCSERVER.error('错误报告:', reason);
 });
 
 //初始化目录结构环境

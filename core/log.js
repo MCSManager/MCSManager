@@ -23,15 +23,17 @@ log4js.configure({
 
 const logger = log4js.getLogger("default");
 
-MCSERVER.log = function () {
-    let str = "";
-    for (let i = 0; i < arguments.length; i++) {
-        str += arguments[i] + ' ';
+// 多参数输出，但仅限于输出 INFO 级别
+MCSERVER.log = function (...p) {
+    let msg = '';
+    for (const v of p) {
+        if (v) msg += v + ' ';
     }
-    MCSERVER.infoLog('INFO', str);
+    logger.info(msg);
 }
 
-MCSERVER.infoLog = (info = "", value = "", colors = false) => {
+// INFO 级别输出
+MCSERVER.infoLog = (info = "", value = "") => {
     let msg = value;
     if (info.toUpperCase() != 'INFO') {
         msg = [info, '-', value].join(' ');
@@ -39,13 +41,24 @@ MCSERVER.infoLog = (info = "", value = "", colors = false) => {
     logger.info(msg);
 }
 
-//error 报告器
+// INFO 级别输出 
+MCSERVER.info = (...p) => {
+    let msg = '';
+    for (const v of p) {
+        if (v) msg += v + ' ';
+    }
+    logger.info(msg);
+}
+
+
+// ERROR 级别输出
 MCSERVER.error = (msg, err) => {
     logger.error(msg);
     logger.error(err);
 }
 
 
+// WARN 级别输出
 MCSERVER.warning = (title, msg = null) => {
     logger.warn(msg);
 }
