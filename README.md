@@ -6,11 +6,11 @@
 [![Status](https://img.shields.io/badge/License-MIT-red.svg)](https://github.com/Suwings/MCSManager)
 
 
-简单，易用，多实例，轻量级的 Minecraft Server 控制面板
+简单，易用，多实例，轻量级的 Minecraft Server 控制面板 
 
 
 
-[中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md)
+[中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md) |  [API 文档](https://github.com/Suwings/MCSManager/wiki) 
 
 <br />
 
