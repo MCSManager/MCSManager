@@ -29,6 +29,7 @@ process.on('SIGINT', function () {
         }
     }
 
+    // 异步等待3秒，控制面板自动结束
     setTimeout(() => {
         MCSERVER.infoLog('PROCESS', 'EXIT...');
         process.exit(0);
