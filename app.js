@@ -232,7 +232,7 @@ process.on('unhandledRejection', (reason, p) => {
 })();
 
 //开始对 Oneline File Manager 模块进行必要的初始化
-MCSERVER.infoLog('Online_Fs', '初始化 Online_Fs 路由与中间件 ');
+MCSERVER.infoLog('OnlineFs', '正在初始化文件管理路由与中间件 ');
 
 //必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
 app.use(['/fs/mkdir', '/fs/rm', '/fs/patse', '/fs/cp', '/fs/rename', '/fs/ls'], function (req, res, next) {
