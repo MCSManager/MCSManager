@@ -6,31 +6,31 @@
 [![Status](https://img.shields.io/badge/License-MIT-red.svg)](https://github.com/Suwings/MCSManager)
 
 
-简单，易用，多实例，轻量级的 Minecraft Server 控制面板 
+簡單，易用，多實例，輕量級的 Minecraft Server 控制面板 
 
 
 
-[中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md) |  [API 文档](https://github.com/Suwings/MCSManager/wiki) 
+[中文簡體](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md) |  [API 文檔](https://github.com/Suwings/MCSManager/wiki) 
 
 <br />
 
-**本项目 [赞助者名单](https://docs.qq.com/sheet/DYWJNVXhib0dtamh2?c=B3A0A0)**
+**本項目 [贊助者名單](https://docs.qq.com/sheet/DYWJNVXhib0dtamh2?c=B3A0A0)**
 <br />
 
-简介
+簡介
 -----------
-这是一款可以管理多个 Minecraft 服务端（支持群组端）的 Web 管理面板，并且可以分配多个子账号来分别管理不同的 Minecraft 服务端，支持绝大部分主流的服务端，甚至是其他非 Minecraft 的程序。
+這是一款可以管理多個 Minecraft 服務端（支持群組端）的 Web 管理面板，並且可以分配多個子賬號來分別管理不同的 Minecraft 服務端，支持絕大部分主流的服務端，甚至是其他非 Minecraft 的程序。
 
-控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行，属于轻量级的 Minecraft 服务端控制面板。
+控制面板可運行在 Windows 與 Linux 平台，無需數據庫與任何系統配置，只需安裝 node 環境即可快速運行，屬於輕量級的 Minecraft 服務端控制面板。
 
 ![main_theme.png](/public/common/main_theme.png)
 
 <br />
 
-运行环境
+運行環境
 -----------
 
-推荐 `Node 10.16.0` 以上，无需数据库和更改任何系统配置，开箱即可运行。
+推薦 `Node 10.16.0` 以上，無需數據庫和更改任何系統配置，開箱即可運行。
 
 
 <br />
@@ -38,31 +38,31 @@
 
 配置文件
 -----------
-配置文件是程序目录下的 `property.js` 文件，它会在你第一次运行的时候，自动生成。
+配置文件是程序目錄下的 `property.js` 文件，它會在你第一次運行的時候，自動生成。
 
-> 此文件不会与 github 版本冲突，git pull 更新时也不会自动覆盖。
+> 此文件不會與 github 版本衝突，git pull 更新時也不會自動覆蓋。
 
 <br />
 
 
-常见问题
+常見問題
 -----------
-| 问题 | 详情 |
+| 問題 | 詳情 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
-无法正常安装面板？| [参考教程](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
-Linux 下面板如何后台运行？ | [参考方法](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3#%E4%BF%9D%E6%8C%81%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C)
-使用面板开启 `Bedrock Server` 端 | [参考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8%E9%9D%A2%E6%9D%BF%E5%BC%80%E5%90%AF-Bedrock_server-%E6%9C%8D%E5%8A%A1%E7%AB%AF)
-面板管理员的默认账号和密码是什么？ | 账号 `#master` 密码 `123456`
-面板如何正确关闭？ | `Ctrl+C`
-配置文件是什么？ | `property.js` 文件
-如何修改面板默认端口？ | `property.js` 文件
-如何配置反向代理？ | [Apache 配置参考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
-配好反向代理却无法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22) [宝塔上的Nginx](https://github.com/Suwings/MCSManager/wiki/%E5%85%B3%E4%BA%8E%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E7%9A%84-Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E4%BB%A5%E5%8F%8ASSL%E8%AF%81%E4%B9%A6%E9%83%A8%E7%BD%B2)
-FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
-反代后文件管理偶尔失效? | 请检查反代机器的防火墙是否拦截
-我能修改登录页面吗？| [修改教程](https://github.com/Suwings/MCSManager/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BF%AE%E6%94%B9%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2)
-其他常见问题 | [查看 Wiki](https://github.com/Suwings/MCSManager/wiki)
-关于HTTP跳转HTTPS的帮助 | [查看 Nginx 301永久重定向 范例](https://github.com/Suwings/MCSManager/wiki/Nginx%E5%85%A8%E5%B1%80301%E6%B0%B8%E4%B9%85%E9%87%8D%E5%AE%9A%E5%90%91)
+無法正常安裝面板？| [參考教程](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)
+Linux 下面板如何後台運行？ | [參考方法](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3#%E4%BF%9D%E6%8C%81%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C)
+使用面板開啟 `Bedrock Server` 端 | [參考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8%E9%9D%A2%E6%9D%BF%E5%BC%80%E5%90%AF-Bedrock_server-%E6%9C%8D%E5%8A%A1%E7%AB%AF)
+面板管理員的默認賬號和密碼是什麼？ | 賬號 `#master` 密碼 `123456`
+面板如何正確關閉？ | `Ctrl+C`
+配置文件是什麼？ | `property.js` 文件
+如何修改面板默認端口？ | `property.js` 文件
+如何配置反向代理？ | [Apache 配置參考教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
+配好反向代理卻無法使用？ | [Apache](https://github.com/Suwings/MCSManager/issues/34) [Nginx](https://github.com/Suwings/MCSManager/issues/22) [寶塔上的Nginx](https://github.com/Suwings/MCSManager/wiki/%E5%85%B3%E4%BA%8E%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E7%9A%84-Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E4%BB%A5%E5%8F%8ASSL%E8%AF%81%E4%B9%A6%E9%83%A8%E7%BD%B2)
+FTP 無法使用？ | [跳轉](https://github.com/Suwings/MCSManager#ftp-%E6%9C%8D%E5%8A%A1)
+反代後文件管理偶爾失效? | 請檢查反代機器的防火牆是否攔截
+我能修改登錄頁面嗎？| [修改教程](https://github.com/Suwings/MCSManager/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BF%AE%E6%94%B9%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2)
+其他常見問題 | [查看 Wiki](https://github.com/Suwings/MCSManager/wiki)
+關於HTTP跳轉HTTPS的幫助 | [查看 Nginx 301永久重定向 範例](https://github.com/Suwings/MCSManager/wiki/Nginx%E5%85%A8%E5%B1%80301%E6%B0%B8%E4%B9%85%E9%87%8D%E5%AE%9A%E5%90%91)
 
 
 <br />
@@ -70,177 +70,177 @@ FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%
 
 
 
-运行在 Windows 
+運行在 Windows 
 -----------
-对于 Windows 系统，已整合成直接运行版本，下载即可运行(建议使用管理员权限运行):
+對於 Windows 系統，已整合成直接運行版本，下載即可運行(建議使用管理員權限運行):
 
 
 
-http://mcsm.suwings.top/ (官方站点)
+http://mcsm.suwings.top/ (官方站點)
 
-**注意:** 这里提供的下载是打包集成好的，小版本更新我们不会打包，也就是意味着，这里不能实时跟随最新版本。
+**注意:** 這裏提供的下載是打包集成好的，小版本更新我們不會打包，也就是意味着，這裏不能實時跟隨最新版本。
 
 <br />
 
 
-运行在 Linux 
+運行在 Linux 
 -----------
-**提示:** 请给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限。
+**提示:** 請給予 root 權限運行，如無法給予 root 權限，請編輯好文件目錄權限。
 
 ```bash
-# 安装 Node 版本控制工具(若没有 wget,请安装它)
+# 安裝 Node 版本控制工具(若沒有 wget,請安裝它)
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
-# 关闭终端重新打开再执行以下命令
-# 项目支持 10.0 版本以上，这里使用11版本
+# 關閉終端重新打開再執行以下命令
+# 項目支持 10.0 版本以上，這裏使用11版本
 nvm install 11.0.0
 nvm use 11.0.0
-# 克隆仓库
+# 克隆倉庫
 git clone https://github.com/suwings/mcsmanager.git
-# 进入目录
+# 進入目錄
 cd mcsmanager/
-# 安装依赖库
+# 安裝依賴庫
 npm install
-# 启动面板
+# 啟動面板
 npm start 
 # 或者 node app.js
 
 ```
 
-> 详细安装以及使用教程，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
-- 项目属于**开箱即用**的面板，如果不使用 **screen** 进行后台常驻.当你断开了SSH后,面板也会随之关闭.
-- **screen** 需要单独安装,执行安装指令"yum -y install screen"或"apt -y install screen"
+> 詳細安裝以及使用教程，請 [單擊這裏](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
+- 項目屬於**開箱即用**的面板，如果不使用 **screen** 進行後台常駐.當你斷開了SSH後,面板也會隨之關閉.
+- **screen** 需要單獨安裝,執行安裝指令"yum -y install screen"或"apt -y install screen"
 
 <br />
 
-通过 Docker 启动 MC 服务端 
+通過 Docker 啟動 MC 服務端 
 -----------
 
-我们支持面板在 Linux 系统下，配合 Docker 以命令的形式，来创建 Minecraft 服务端所需 Java 环境镜像，并且在容器中启动和关闭你的 Minecraft 服务端。
+我們支持面板在 Linux 系統下，配合 Docker 以命令的形式，來創建 Minecraft 服務端所需 Java 環境鏡像，並且在容器中啟動和關閉你的 Minecraft 服務端。
 
-如果你不会使用，请点击`具体使用方法` 链接，如果你还未安装 Docker 请点击 `安装Docker` 的链接。
+如果你不會使用，請點擊`具體使用方法` 連結，如果你還未安裝 Docker 請點擊 `安裝Docker` 的連結。
 
-**具体使用方法:** [单击跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md)
+**具體使用方法:** [單擊跳轉](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md)
 
-**安装 Docker:** [单击跳转](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md)
+**安裝 Docker:** [單擊跳轉](https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md)
 
 
 <br />
 
 
-项目目录结构
+項目目錄結構
 -----------
-**注意:** 并不是所有目录的文件我们都建议你进行更改！
+**注意:** 並不是所有目錄的文件我們都建議你進行更改！
 
-| 目录名 | 详情/解释 |
+| 目錄名 | 詳情/解釋 |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
 | **property.js**                   |控制面板配置文件|
-| **core/logo.txt**               |控制台输出 logo 文字|
-| **public/**                      |前端所有代码，资源目录，前后端分离，使用 ws 和 ajax 通讯|
-| **public/login/**                |纯 UI 逻辑登陆页面|
-| **public/template/**             |前端业务模板，每个模板拥有着一个生命周期，开始与结束。|
-| **public/onlinefs_public/**      |文件在线管理模块前端所有代码|
-| **public/common/js/meum.js**     |控制面板左侧菜单列表|
-| **public/common/js/login.js**    |通用登录流程逻辑，可重复利用在各类 HTML 登录模板|
-| **server/server_core**           |Minecraft 服务端核心目录，包括服务端文件，配置，Mod，以及插件|
-| **server/x.json**               |Minecraft 服务器面板配置文件|
-| **users/x.json**                |控制面板用户配置文件|
-| **route/**                      |控制器，HTTP 请求业务逻辑层（可二次扩展）|
-| **route/websocket/**            |控制器，Webscoket 请求业务逻辑层（可二次扩展）|
-| **core/Process/**                |Minecraft Server 类实现|
-| **core/User/**                   |User 类实现|
-| **core/DataModel.js**            |数据持久化模型，几乎是所有的配置的 I/O 模型|
-| **model/**                      |模型层，用于提供控制器与服务端，用户操作，也提供设计模式模型|
-| **helper/**                     |业务逻辑辅助层，用于辅助和重复利用业务逻辑|
-| **ftpd/**                       |FTP 独立模块，其中 ftpserver.js 已经实现了抽象 ftpServerInterface 接口|
-| **onlinefs/**                    |文件管理独立模块 ([Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
+| **core/logo.txt**               |控制台輸出 logo 文字|
+| **public/**                      |前端所有代碼，資源目錄，前後端分離，使用 ws 和 ajax 通訊|
+| **public/login/**                |純 UI 邏輯登陸頁面|
+| **public/template/**             |前端業務模板，每個模板擁有着一個生命周期，開始與結束。|
+| **public/onlinefs_public/**      |文件在線管理模塊前端所有代碼|
+| **public/common/js/meum.js**     |控制面板左側菜單列表|
+| **public/common/js/login.js**    |通用登錄流程邏輯，可重複利用在各類 HTML 登錄模板|
+| **server/server_core**           |Minecraft 服務端核心目錄，包括服務端文件，配置，Mod，以及插件|
+| **server/x.json**               |Minecraft 伺服器面板配置文件|
+| **users/x.json**                |控制面板用戶配置文件|
+| **route/**                      |控制器，HTTP 請求業務邏輯層（可二次擴展）|
+| **route/websocket/**            |控制器，Webscoket 請求業務邏輯層（可二次擴展）|
+| **core/Process/**                |Minecraft Server 類實現|
+| **core/User/**                   |User 類實現|
+| **core/DataModel.js**            |數據持久化模型，幾乎是所有的配置的 I/O 模型|
+| **model/**                      |模型層，用於提供控制器與服務端，用戶操作，也提供設計模式模型|
+| **helper/**                     |業務邏輯輔助層，用於輔助和重複利用業務邏輯|
+| **ftpd/**                       |FTP 獨立模塊，其中 ftpserver.js 已經實現了抽象 ftpServerInterface 接口|
+| **onlinefs/**                    |文件管理獨立模塊 ([Suwings/IndependentFileManager](https://github.com/Suwings/IndependentFileManager))|
 
 <br />
 
-浏览器兼容性
+瀏覽器兼容性
 -----------
-- `ECMAScript 5` 标准
-- `IE 10+` `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器
+- `ECMAScript 5` 標準
+- `IE 10+` `Chrome` `Firefox` `Safari` `Opera` 等現代主流瀏覽器
 
-**例外:** 文件在线管理界面需要 `IE 11+` 
+**例外:** 文件在線管理界面需要 `IE 11+` 
 
 <br />
 
 
 
-自定义设计
+自定義設計
 -----------
-你可以对前端以及后端进行任何程度的修改，包括版权声明。
+你可以對前端以及後端進行任何程度的修改，包括版權聲明。
 
 
 <br />
 
-FTP 服务
+FTP 服務
 -----------
 
-FTP 模块默认为关闭状态.开启选项在 property.js 文件中 但不建议使用
+FTP 模塊默認為關閉狀態.開啟選項在 property.js 文件中 但不建議使用
 
-采用被动传输模式，传输命令默认使用 `10022`(可更改) 端口；
+採用被動傳輸模式，傳輸命令默認使用 `10022`(可更改) 端口；
 
-传输数据需要一个端口段，默认是 `20010` - `20100`；
+傳輸數據需要一個端口段，默認是 `20010` - `20100`；
 
-为确保 FTP 服务正常使用，请配置好您的防火墙设置，对这些端口范围进行开放。
+為確保 FTP 服務正常使用，請配置好您的防火牆設置，對這些端口範圍進行開放。
 
-> 此功能未来版本有可能会删除，使用已有的在线文件管理完全代替。
+> 此功能未來版本有可能會刪除，使用已有的在線文件管理完全代替。
 
 <br />
 
-反向代理 与 SSL
+反向代理 與 SSL
 -----------
 
-尽管默认没有 Https ，您可能在公共网络下不太放心，但是我们不传递明文的密码，可以保证你的账号的密码是难以泄露的。
+儘管默認沒有 Https ，您可能在公共網絡下不太放心，但是我們不傳遞明文的密碼，可以保證你的賬號的密碼是難以泄露的。
 
-具体密码传递过程可参考 [单击这里跳转](https://github.com/Suwings/MCSManager/wiki/%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B%E5%9B%BE)
+具體密碼傳遞過程可參考 [單擊這裏跳轉](https://github.com/Suwings/MCSManager/wiki/%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B%E5%9B%BE)
 
 **Property 文件**
 
-反向代理之前，建议你阅读 `property.js` 文件
+反向代理之前，建議你閱讀 `property.js` 文件
 
-> 里面有各类的设置，包括 gzip压缩，端口和ip绑定等等。
+> 裏面有各類的設置，包括 gzip壓縮，端口和ip綁定等等。
 
-**实现 HTTPS 与 WSS**
+**實現 HTTPS 與 WSS**
 
-打开前端 URL 定位文件 `public/common/URL.js`, 将 http 与 ws 改成 https 与 wss；
+打開前端 URL 定位文件 `public/common/URL.js`, 將 http 與 ws 改成 https 與 wss；
 
-可保证前端所有请求均为 https 和 wss，但是后端方面还需要配置 SSL 与 反向代理。
+可保證前端所有請求均為 https 和 wss，但是後端方面還需要配置 SSL 與 反向代理。
 
 **反向代理**
 
-后端请通过反向代理完成，或自行修改 Express 初始化 App。
+後端請通過反向代理完成，或自行修改 Express 初始化 App。
 
 [Apache 反向代理教程](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-Apache2.4-%E8%BF%9B%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86)
 
-[SSL 功能实现示例](https://github.com/Suwings/MCSManager/issues/146)
+[SSL 功能實現示例](https://github.com/Suwings/MCSManager/issues/146)
 
-**注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)  | [关于 Caddy 反向代理坑](https://github.com/Suwings/MCSManager/issues/122)
+**注意:** [Nginx 反向代理注意](https://github.com/Suwings/MCSManager/issues/22)  | [Apache 反向代理注意](https://github.com/Suwings/MCSManager/issues/34)  | [關於 Caddy 反向代理坑](https://github.com/Suwings/MCSManager/issues/122)
 
 <br />
 
-权限系统
+權限系統
 -----------
-尤其注意的是，为了更加简化面板权限系统，我们只分为两种账号。
+尤其注意的是，為了更加簡化面板權限系統，我們只分為兩種賬號。
 
-`管理账号` 凡是以 # 字符开头的用户，均为管理账号，列如 `#master` `#admin` `#test`
+`管理賬號` 凡是以 # 字符開頭的用戶，均為管理賬號，列如 `#master` `#admin` `#test`
 
-`普通账号` 不以 # 字符开头的用户，列如 `test` `usernameww` `xxx`
+`普通賬號` 不以 # 字符開頭的用戶，列如 `test` `usernameww` `xxx`
 
-普通账号能够管理的服务器只能由管理账号来进行设定，管理账号可以管理任何服务器，并且能管理所有用户。
+普通賬號能夠管理的伺服器只能由管理賬號來進行設定，管理賬號可以管理任何伺服器，並且能管理所有用戶。
 
-具体使用，我想你只需要运行就知道，设计的十分简单。
+具體使用，我想你只需要運行就知道，設計的十分簡單。
 
 <br />
 
-问题报告
+問題報告
 -----------
-欢迎各位发现任何 BUG 及时反馈给我，必当及时修复。
+歡迎各位發現任何 BUG 及時反饋給我，必當及時修復。
 
 <br />
 
-开源协议
+開源協議
 -----------
 MIT License
 
