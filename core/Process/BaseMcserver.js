@@ -105,7 +105,7 @@ class ServerProcess extends EventEmitter {
         // 端口解析
         var agreement = portmap.split("/");
         var protocol = "tcp"
-        if(agreement.length>=2 && (agreement[1]==="udp" || agreement[1]==="tcp")){
+        if (agreement.length >= 2 && (agreement[1] === "udp" || agreement[1] === "tcp")) {
             protocol = agreement[1];
         }
         portmap = portmap.split(":");
