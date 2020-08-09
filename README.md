@@ -10,7 +10,7 @@
 
 
 
-[中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md) |  [API 文档](https://github.com/Suwings/MCSManager/wiki) 
+[中文简体](https://github.com/Suwings/MCSManager) | [中文繁體](README-traditional.md) |  [API 文档](https://github.com/Suwings/MCSManager/wiki/API-Documentation)  | [二次开发参考文档](https://gitee.com/Suwingser/MCSManager/wikis/Development_Document)
 
 <br />
 
