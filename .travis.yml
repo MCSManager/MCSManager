@@ -3,6 +3,8 @@ node_js:
   - "10.0"
   - "11.0"
   - "12.0"
+  - "13.0"
+  - "14.8"
 sudo: true
 cache:
   directories:
