@@ -41,13 +41,12 @@ if (realArgv.length >= 1) {
         // 进行解压操作
         compressing.zip.uncompress(absPath, zipExtractDir, {
             zipFileNameEncoding: SYSTEM_CODE
-        })
-            .then(() => {
-                MCSERVER.log('解压任务', absPath, '成功.');
-            })
-            .catch(err => {
-                MCSERVER.log('解压任务', absPath, '失败，原因:\n', err);
-            });
+        }).then(() => {
+            // BUG note: 此处无法使用 MCSM 全局变量，此为额外任务子进程。感谢 @ColorfulGhost
+            console.log('解压任务', absPath, '成功.');
+        }).catch(err => {
+            console.log('解压任务', absPath, '失败，原因:\n', err);
+        });
     }
 
     // 文件删除子进程开始执行
@@ -66,13 +65,11 @@ if (realArgv.length >= 1) {
         // 进行压缩操作
         compressing.zip.compressDir(absPath, compressZipPath, {
             zipFileNameEncoding: SYSTEM_CODE
-        })
-            .then(() => {
-                MCSERVER.log('压缩任务', absPath, '成功.');
-            })
-            .catch(err => {
-                MCSERVER.log('压缩任务', absPath, '失败，原因:\n', err);
-            });
+        }).then(() => {
+            console.log('压缩任务', absPath, '成功.');
+        }).catch(err => {
+            console.log('压缩任务', absPath, '失败，原因:\n', err);
+        });
     }
 }
 
