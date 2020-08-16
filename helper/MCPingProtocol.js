@@ -100,7 +100,7 @@ function CreateMCPingTask(id, ip, port) {
     TASK_OBJECT_DATABASE[id] = {
         errorCount: 0
     }
-    // 每隔 5 秒，ping 查询一次服务器状态，并且缓存结果
+    // 每隔 6 秒，ping 查询一次服务器状态，并且缓存结果
     const taskInterval = setInterval(() => {
         // 进行查询
         PingMCServer(ip, port, (v, e) => {
@@ -108,14 +108,14 @@ function CreateMCPingTask(id, ip, port) {
                 // 查询成功则缓存值
                 MCPING_RESULT_DATABASE[id] = v;
             } else {
-                // 连续查询错误次数20次以上，主动销毁自身
+                // 连续查询错误次数 300 次以上，即 30 分钟，主动销毁自身
                 TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount++;
-                if (TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount > 20) {
+                if (TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount > 300) {
                     DestroyMCPingTask(id);
                 }
             }
         });
-    }, 1000 * 5);
+    }, 1000 * 6);
     // 记录定时任务
     TASK_DATABASE[id] = taskInterval;
 }
