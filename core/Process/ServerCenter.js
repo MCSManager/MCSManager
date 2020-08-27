@@ -194,10 +194,10 @@ class ServerManager extends EventEmitter {
             // 从缓存中获取玩家数量
             const mcpingResult = mcPingProtocol.QueryMCPingTask(k);
             if (mcpingResult) {
-                returnData.currnetPlayers = mcpingResult.current_players;
+                returnData.currentPlayers = mcpingResult.current_players;
                 returnData.maxPlayers = mcpingResult.max_players;
             } else {
-                returnData.currnetPlayers = '--';
+                returnData.currentPlayers = '--';
                 returnData.maxPlayers = '--';
             }
             // 准备发送给前端的服务端集合数据
