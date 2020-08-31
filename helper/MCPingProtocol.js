@@ -43,7 +43,7 @@ class MCServStatus {
             // });
 
             client.on('data', function(data){
-                console.log(data.toString().substr(3,));
+                // console.log(data.toString().substr(3,));
                 resolve(data.toString().substr(3,));
             });
            
