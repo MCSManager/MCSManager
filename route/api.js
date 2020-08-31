@@ -32,16 +32,16 @@ router.all('/status/:name', function (req, res) {
     const mcpingResult = mcPingProtocol.QueryMCPingTask(serverName)
 
     // 判断服务器启动状态发送不同的数据
-    if (mcserver.isRun() && mcpingResult) {
+    if (mcserver.isRun() && Object.keys(mcpingResult).length > 0) {
         sendStatus = {
             id: serverName,
             serverName: mcserver.dataModel.mcpingConfig.mcpingName,
             lastDate: mcserver.dataModel.mcpingConfig.lastDate,
             status: mcserver.isRun(),
-            current_players: mcpingResult.current_players,
-            max_players: mcpingResult.max_players,
-            motd: mcserver.dataModel.mcpingConfig.mcpingMotd || mcpingResult.motd,
-            version: mcpingResult.version
+            current_players: mcpingResult.players.online,
+            max_players: mcpingResult.players.max,
+            motd: mcserver.dataModel.mcpingConfig.mcpingMotd || mcpingResult.description.text,
+            version: mcpingResult.version.name
         };
     } else {
         sendStatus = {

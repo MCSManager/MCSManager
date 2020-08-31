@@ -1,4 +1,4 @@
-const net = require('net');
+var net = require('net');
 
 // Using SLT (Server List Ping) provided by Minecraft.
 // Since it is part of the protocol it is always enabled contrary to Query
@@ -22,58 +22,82 @@ class MCServStatus {
     getStatus() {
         return new Promise((resolve, reject) => {
             var start_time = new Date();
+            // const client = net.connect(this.port, this.host, () => {
+            //     this.status.latency = Math.round(new Date() - start_time);
+            //     // 0xFE packet identifier for a server list ping
+            //     // 0x01 server list ping's payload (always 1)
+            //     let data = Buffer.from([0xFE, 0x01])
+            //     client.write(data);
+            // });
+
+            
             const client = net.connect(this.port, this.host, () => {
                 this.status.latency = Math.round(new Date() - start_time);
-                // 0xFE packet identifier for a server list ping
-                // 0x01 server list ping's payload (always 1)
-                let data = Buffer.from([0xFE, 0x01])
-                client.write(data);
+                client.write(Buffer.from("0c00e005053132372e3163dd010100", "hex"))
             });
+
+            client.setTimeout(30000);
+
+            // client.on('connect', function(){
+            //     console.log('客户端：已经与服务端建立连接');
+            // });
+
+            client.on('data', function(data){
+                console.log(data.toString().substr(3,));
+                resolve(data.toString().substr(3,));
+            });
+           
 
             // The client can also receive data from the server by reading from its socket.
-            client.on('data', (response) => {
-                // Check the readme for a simple explanation
-                var server_info = response.toString().split("\x00\x00");
+            // client.on('data', (response) => {
+            //     // Check the readme for a simple explanation
+            //     var server_info = response.toString().split("\x00\x00");
+            //     console.log(response.toString());
+            //     this.status = {
+            //         host: this.host,
+            //         port: this.port,
+            //         status: true,
+            //         version: server_info[2].replace(/\u0000/g, ''),
+            //         motd: server_info[3].replace(/\u0000/g, ''),
+            //         current_players: server_info[4].replace(/\u0000/g, ''),
+            //         max_players: server_info[5].replace(/\u0000/g, ''),
+            //         latency: this.status.latency
+            //     }
+            //     formatMotd(server_info[3]);
+            //     // Request an end to the connection after the data has been received.
+            //     client.end();
+            //     resolve(this.status);
+            // });
 
-                this.status = {
-                    host: this.host,
-                    port: this.port,
-                    status: true,
-                    version: server_info[2].replace(/\u0000/g, ''),
-                    motd: server_info[3].replace(/\u0000/g, ''),
-                    current_players: server_info[4].replace(/\u0000/g, ''),
-                    max_players: server_info[5].replace(/\u0000/g, ''),
-                    latency: this.status.latency
-                }
-                formatMotd(server_info[3]);
-                // Request an end to the connection after the data has been received.
-                client.end();
-                resolve(this.status);
-            });
-
-            client.on('end', () => {
-                // console.log('Requested an end to the TCP connection');
-            });
+            // client.on('end', () => {
+            //     console.log('Requested an end to the TCP connection');
+            // });
 
             client.on('error', (err) => {
                 reject(err);
             });
+
+            // client.on('timeout', () => {
+            //     console.log('客户端：连接超时');
+            //     client.end();
+            // });
+
         })
     }
 
-    async asyncStatus() {
-        let status = await this.getStatus();
-        return status;
-    }
+    // async asyncStatus() {
+    //     let status = await this.getStatus();
+    //     return status;
+    // }
 }
 
-function formatMotd(motd) {
-    let noSpaces = motd.replace(/\u0000/g, '');
-    Buffer.from(noSpaces);
-    // let noColor = noSpaces.toString().replace(/[^\x00-\x7F]/g, '');
-    // console.log(Buffer.from(motd, 'utf8').toString('hex'));
-    // console.log(noColor);
-}
+// function formatMotd(motd) {
+//     let noSpaces = motd.replace(/\u0000/g, '');
+//     Buffer.from(noSpaces);
+//     let noColor = noSpaces.toString().replace(/[^\x00-\x7F]/g, '');
+//     console.log(Buffer.from(motd, 'utf8').toString('hex'));
+//     console.log(noColor);
+// }
 
 function PingMCServer(ip, port, callback) {
     new MCServStatus(port, ip).getStatus().then((res) => {
@@ -106,7 +130,7 @@ function CreateMCPingTask(id, ip, port) {
         PingMCServer(ip, port, (v, e) => {
             if (v != null && e == null) {
                 // 查询成功则缓存值
-                MCPING_RESULT_DATABASE[id] = v;
+                MCPING_RESULT_DATABASE[id] = JSON.parse(v);
             } else {
                 // 连续查询错误次数 300 次以上，即 30 分钟，主动销毁自身
                 TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount++;
@@ -139,6 +163,9 @@ module.exports = {
     DestroyMCPingTask,
     QueryMCPingTask
 };
+
+
+
 
 
 // PROMISE VERSION
