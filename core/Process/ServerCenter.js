@@ -199,7 +199,7 @@ class ServerManager extends EventEmitter {
                 returnData.currnetPlayers = mcpingResult.players.online;
                 returnData.maxPlayers = mcpingResult.players.max;
             } else {
-                returnData.currnetPlayers = '--';
+                returnData.currentPlayers = '--';
                 returnData.maxPlayers = '--';
             }
             // 准备发送给前端的服务端集合数据
