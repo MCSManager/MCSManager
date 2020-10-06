@@ -3,7 +3,7 @@ const serverModel = require("../../model/ServerModel");
 const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
 const tools = require("../../core/tools");
-const fs = require("fs");
+const fs = require("fs-extra");
 const childProcess = require("child_process");
 const iconv = require("iconv-lite");
 

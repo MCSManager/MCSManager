@@ -2,7 +2,7 @@
 
 const DataModel = require("../DataModel");
 const { md5, createPassword, randomString } = require("./CryptoMine");
-const fs = require("fs");
+const fs = require("fs-extra");
 const uuid = require("uuid");
 
 const USER_SAVE_PATH = "users/";

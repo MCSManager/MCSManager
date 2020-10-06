@@ -42,9 +42,10 @@ const tools = require("./core/tools");
 // const INIT_CONFIG_PATH = __dirname + "/model/init_config/";
 // Path Fix
 const INIT_CONFIG_PATH = path.join(__dirname, "model", "init_config");
-const PRO_CONFIG = "./property.js";
-if (!fs.existsSync(PRO_CONFIG))
-	tools.mCopyFileSync(INIT_CONFIG_PATH + "property.js", PRO_CONFIG);
+const PRO_CONFIG = path.join(process.cwd(), "property.js");
+if (!fs.existsSync(PRO_CONFIG)) {
+	tools.mCopyFileSync(path.join(INIT_CONFIG_PATH, "property.js"), PRO_CONFIG);
+}
 
 //加载配置
 require("./property");
@@ -217,13 +218,19 @@ process.on("unhandledRejection", (reason, p) => {
 
 //初始化目录结构环境
 (function initializationRun() {
-	const USERS_PATH = path.join(__dirname, "users");
-	const SERVER_PATH = path.join(__dirname, "server");
-	const SERVER_CORE_PATH = path.join(__dirname, "server", "server_core");
-	const SERVER_SCH_PATH = path.join(__dirname, "server", "schedule");
-	const CENTEN_LOG_JSON_PATH = path.join(__dirname, "core", "info.json");
-	const PUBLIC_URL_PATH = path.join(__dirname, "public", "common", "URL.js");
-	const RECORD_PARH = path.join(__dirname, "server", "record_tmp");
+	// 这个目录应该从实际机器读取
+	const USERS_PATH = path.join(process.cwd(), "users");
+	const SERVER_PATH = path.join(process.cwd(), "server");
+	const SERVER_CORE_PATH = path.join(process.cwd(), "server", "server_core");
+	const SERVER_SCH_PATH = path.join(process.cwd(), "server", "schedule");
+	const CENTEN_LOG_JSON_PATH = path.join(process.cwd(), "core", "info.json");
+	const PUBLIC_URL_PATH = path.join(
+		process.cwd(),
+		"public",
+		"common",
+		"URL.js"
+	);
+	const RECORD_PARH = path.join(process.cwd(), "server", "record_tmp");
 
 	try {
 		if (!fs.existsSync(USERS_PATH)) fs.mkdirSync(USERS_PATH);
@@ -240,7 +247,12 @@ process.on("unhandledRejection", (reason, p) => {
 				CENTEN_LOG_JSON_PATH
 			);
 		if (!fs.existsSync(PUBLIC_URL_PATH))
-			tools.mCopyFileSync(INIT_CONFIG_PATH + "INIT_URL.js", PUBLIC_URL_PATH);
+			// tools.mCopyFileSync(INIT_CONFIG_PATH + "INIT_URL.js", PUBLIC_URL_PATH);
+			// 继续改用join
+			tools.mCopyFileSync(
+				path.join(INIT_CONFIG_PATH, "INIT_URL.js"),
+				PUBLIC_URL_PATH
+			);
 	} catch (err) {
 		MCSERVER.error("初始化文件环境失败,建议重启,请检查以下报错:", err);
 	}

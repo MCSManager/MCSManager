@@ -9,7 +9,7 @@ const permission = require("../../helper/Permission");
 const path = require("path");
 
 const properties = require("properties");
-const fs = require("fs");
+const fs = require("fs-extra");
 const Docker = require("dockerode");
 
 const CODE_CONSOLE = MCSERVER.localProperty.console_encode;

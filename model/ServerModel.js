@@ -1,5 +1,5 @@
 const ServerManager = require("../core/Process/ServerCenter");
-const fs = require("fs");
+const fs = require("fs-extra");
 const fsextra = require("fs-extra");
 
 // 事实上，Node.js 的缓存机制可以间接的到达单列模式的目的

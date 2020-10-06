@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const http = require("http");
 
 //最新动态信息获取模块

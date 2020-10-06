@@ -1,6 +1,6 @@
 const { User, USER_SAVE_PATH } = require("./User");
 const { md5, createPassword, randomString } = require("./CryptoMine");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 const USER_DIR = "./" + USER_SAVE_PATH;
 

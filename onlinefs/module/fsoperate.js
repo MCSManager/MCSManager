@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const path_moduel = require("path");
 const cluster = require("cluster");
 const os = require("os");

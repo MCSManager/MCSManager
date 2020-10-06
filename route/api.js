@@ -7,7 +7,7 @@ const keyManager = require("../helper/KeyManager");
 const requestLimit = require("../helper/RequestLimit");
 const tools = require("../core/tools");
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const { add } = require("../core/counter");
 
 // 服务端实例状态获取 | 公共性 API 接口

@@ -1,5 +1,5 @@
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs-extra");
 const compressing = require("compressing");
 const fsex = require("fs-extra");
 // const os = require('os');

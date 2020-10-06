@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pathm = require("path");
 const os = require("os");
-const fs = require("fs");
+const fs = require("fs-extra");
 const fsex = require("fs-extra");
 const permission = require("../helper/Permission");
 

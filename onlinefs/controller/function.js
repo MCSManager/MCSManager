@@ -11,7 +11,7 @@ const {
   UseFileOperate,
 } = require("../model/fsoperate_session");
 const fsoperate = require("../module/fsoperate");
-const fs = require("fs");
+const fs = require("fs-extra");
 const os = require("os");
 
 // 压缩 & 解压任务计数器 暂无用

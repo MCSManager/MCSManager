@@ -61,7 +61,8 @@
     "assets": [
       "model/init_config",
       "core/logo.txt",
-      "core/info.json"
+      "core/info.json",
+      "public"
     ]
   },
   "engines": {

@@ -1,6 +1,6 @@
 const MinecraftServer = require("./Mcserver");
 const EventEmitter = require("events");
-const fs = require("fs");
+const fs = require("fs-extra");
 const mcPingProtocol = require("../../helper/MCPingProtocol");
 
 const BASE_SERVER_DIR = "./server/";

@@ -1,7 +1,7 @@
 "use strict";
 // 日志历史储存
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const fsExtra = require("fs-extra");
 
 const MAX_HISTORY_SIZE = 1024 * 1024 * 3;

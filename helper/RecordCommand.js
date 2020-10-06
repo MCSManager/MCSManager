@@ -1,6 +1,6 @@
 // 日志命令操作类
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const HISTORY_SIZE_LINE = 1024;
 const FILE_CODE = "utf8";
 

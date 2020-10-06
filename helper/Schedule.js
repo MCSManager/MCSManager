@@ -1,5 +1,5 @@
 const schedule = require("node-schedule");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 const DataModel = require("../core/DataModel");
 const serverModel = require("../model/ServerModel");

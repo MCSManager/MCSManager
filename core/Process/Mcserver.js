@@ -3,7 +3,7 @@ const DataModel = require("../DataModel");
 const os = require("os");
 
 const properties = require("properties");
-const fs = require("fs");
+const fs = require("fs-extra");
 const tools = require("../tools");
 
 const SYSTEM_CODE = tools.getSystemCodeing();

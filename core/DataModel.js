@@ -1,11 +1,12 @@
-let fs = require("fs");
+let fs = require("fs-extra");
 let path = require("path");
 const EventEmitter = require("events");
 
 class DataModel {
 	constructor(filename) {
 		// 还是路径 Fix
-		let rootDirForApp = path.dirname(path.dirname(__filename));
+		// let rootDirForApp = path.dirname(path.dirname(process.cwd()));
+		let rootDirForApp = process.cwd();
 		this.__filename__ = path.join(rootDirForApp, filename + ".json");
 	}
 

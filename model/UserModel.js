@@ -1,7 +1,7 @@
 const { USER_SAVE_PATH, User } = require("../core/User/User");
 
 const UserCenter = require("../core/User/UserCenter");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 let userCenters = new UserCenter();
 module.exports.userCenter = () => {

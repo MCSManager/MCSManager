@@ -41,7 +41,7 @@ module.exports.randomString = (len) => {
 	return pwd;
 };
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 module.exports.autoLoadModule = (filePath, routePath, callback) => {
 	// filePath 是文件路径
@@ -72,6 +72,8 @@ module.exports.mCopyFileSync = (oldpath, newpath) => {
 	let resetData = fs.readFileSync(oldpath, {
 		encoding: "UTF-8",
 	});
+	// 确保文件存在
+	fs.ensureDirSync(path.dirname(newpath));
 	fs.writeFileSync(newpath, resetData, {
 		encoding: "UTF-8",
 	});
