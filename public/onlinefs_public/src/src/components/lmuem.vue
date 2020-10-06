@@ -7,15 +7,27 @@
           {{ item.name }}
         </span>
         <span v-else>
-          <span v-bind:class="item.class" style="margin-right: 5px;"></span> {{ item.name }}
+          <span v-bind:class="item.class" style="margin-right: 5px"></span>
+          {{ item.name }}
         </span>
       </div>
     </div>
-    
-  <!-- 文件上传的表单 -->
-  <form id="m-upload-form" style="display:none;" method="post" enctype="multipart/form-data" action="/fs/upload">
-    <input type="file" name="upload_file" id="m-upload-file" v-on:change="formSub" />
-  </form>
+
+    <!-- 文件上传的表单 -->
+    <form
+      id="m-upload-form"
+      style="display: none"
+      method="post"
+      enctype="multipart/form-data"
+      action="/fs/upload"
+    >
+      <input
+        type="file"
+        name="upload_file"
+        id="m-upload-file"
+        v-on:change="formSub"
+      />
+    </form>
   </div>
 </template>
 
@@ -58,13 +70,13 @@ export default {
       this.allowUpload = false;
       let file = $("#m-upload-file")[0].files[0];
       functionMudule
-        .upload(file, status => {
+        .upload(file, (status) => {
           this.items[2].name = "正在上传.." + status + "%";
           this.items[2].class = this.items[2].class + " color-green";
           console.log(this.items[2].name);
         })
         .then(
-          status => {
+          (status) => {
             this.items[2].name = "上传完毕！";
             location.reload();
           },
@@ -111,12 +123,12 @@ export default {
             break;
           }
           let stack = this.getFileStack();
-          tools.prompt("重命名", newName => {
+          tools.prompt("重命名", (newName) => {
             functionMudule.rename(stack, newName).then(() => location.reload());
           });
           break;
         case "新建目录":
-          tools.prompt("新的目录名", newDirName => {
+          tools.prompt("新的目录名", (newDirName) => {
             functionMudule.mkdir(newDirName).then(() => location.reload());
           });
           break;
@@ -156,7 +168,7 @@ export default {
     getFileStack() {
       let stack = this.filesHub.get("CompFiles", []);
       return stack;
-    }
+    },
   },
   data() {
     let that = this;
@@ -169,88 +181,88 @@ export default {
           name: "基本功能", //项目名
           class: "", //图标 Class
           api: "", //保留，暂无使用，请求的 API
-          title: true //是否为大标题
+          title: true, //是否为大标题
         },
         {
           name: "刷新",
           class: "glyphicon glyphicon-refresh",
-          api: ""
+          api: "",
         },
         {
           name: "上传文件", //此项目顺序不可改变，必须第三项
           class: "glyphicon glyphicon-open",
           api: "",
-          upload: true
+          upload: true,
         },
         {
           name: "文件操作",
           class: "",
           api: "",
-          title: true
+          title: true,
         },
         {
           name: "新建目录",
           class: "glyphicon glyphicon-plus",
-          api: ""
+          api: "",
         },
         {
           name: "编辑文件",
           class: "glyphicon glyphicon-pencil",
-          api: ""
+          api: "",
         },
         {
           name: "压缩目录",
           class: "glyphicon glyphicon-briefcase",
-          api: ""
+          api: "",
         },
         {
           name: "解压 ZIP",
           class: "glyphicon glyphicon-level-up",
-          api: ""
+          api: "",
         },
         {
           name: "重命名",
           class: "glyphicon glyphicon-credit-card",
-          api: ""
+          api: "",
         },
         {
           name: "复制",
           class: "glyphicon glyphicon-duplicate",
-          api: ""
+          api: "",
         },
         {
           name: "剪切",
           class: "glyphicon glyphicon-scissors",
-          api: ""
+          api: "",
         },
         {
           name: "粘贴",
           class: "glyphicon glyphicon-paste",
-          api: ""
+          api: "",
         },
         {
           name: "删除",
           class: "glyphicon glyphicon-trash",
-          api: ""
+          api: "",
         },
         {
           name: "用户操作",
           class: "",
           api: "",
-          title: true
+          title: true,
         },
         {
           name: "使用提示",
           class: "glyphicon glyphicon-asterisk",
-          api: ""
+          api: "",
         },
         {
           name: "退出",
           class: "glyphicon glyphicon-log-out",
-          api: ""
-        }
-      ]
+          api: "",
+        },
+      ],
     };
-  }
+  },
 };
 </script>

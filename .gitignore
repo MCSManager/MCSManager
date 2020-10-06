@@ -85,3 +85,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# pkg打包目录
+package

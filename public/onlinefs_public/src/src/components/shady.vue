@@ -1,7 +1,7 @@
 <template lang="html">
-    <div id="shady_box" class="container" v-show="isDisplay">
-        <!-- 黑幕 -->
-    </div>
+  <div id="shady_box" class="container" v-show="isDisplay">
+    <!-- 黑幕 -->
+  </div>
 </template>
 
 <style lang="css">
@@ -27,6 +27,6 @@ export default {
   data() {
     return vmModel;
   },
-  methods: {}
+  methods: {},
 };
 </script>

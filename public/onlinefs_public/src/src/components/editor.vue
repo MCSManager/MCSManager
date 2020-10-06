@@ -1,17 +1,32 @@
 <template lang="html">
-    <div id="editor_box" class="container" v-show="isDisplay">
-      <div class="editor_wapper">
-          <!-- 文本内容 -->
-          <textarea style="margin: 0px; width: 100%; height: 94%;resize: none;" v-model="textareaContext">
-          </textarea>
-          <!-- 控制按钮 -->
-          <div class="editor_button">
-            <span>您正在编辑 {{ editorFilename }} 文件</span>
-             <button type="button" class="btn btn-default btn-success" @click="savetextareaContext()">保存</button>
-             <button type="button" class="btn btn-default btn-danger" @click="cancel()">取消</button>
-          </div>
+  <div id="editor_box" class="container" v-show="isDisplay">
+    <div class="editor_wapper">
+      <!-- 文本内容 -->
+      <textarea
+        style="margin: 0px; width: 100%; height: 94%; resize: none"
+        v-model="textareaContext"
+      >
+      </textarea>
+      <!-- 控制按钮 -->
+      <div class="editor_button">
+        <span>您正在编辑 {{ editorFilename }} 文件</span>
+        <button
+          type="button"
+          class="btn btn-default btn-success"
+          @click="savetextareaContext()"
+        >
+          保存
+        </button>
+        <button
+          type="button"
+          class="btn btn-default btn-danger"
+          @click="cancel()"
+        >
+          取消
+        </button>
       </div>
     </div>
+  </div>
 </template>
 
 <style lang="css">
@@ -71,13 +86,13 @@ export default {
     savetextareaContext() {
       this.saveCallback({
         filename: this.editorFilename,
-        context: this.textareaContext
+        context: this.textareaContext,
       });
       this.cancel();
     },
     cancel() {
       MCSERVER.pageIndexModel.editorDisplay = false;
-    }
-  }
+    },
+  },
 };
 </script>

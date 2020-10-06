@@ -12,8 +12,8 @@ const verisonB = "No.20200721-02"; //版本批次
 let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
 module.exports = {
-    system: info,
-    root: process.cwd(),
-    verisonA: verisonA,
-    verisonB: verisonB
-}
+  system: info,
+  root: process.cwd(),
+  verisonA: verisonA,
+  verisonB: verisonB,
+};

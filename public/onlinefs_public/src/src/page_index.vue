@@ -1,12 +1,11 @@
 <template lang="html">
-  <div id="m-container" class=" container">
+  <div id="m-container" class="container">
     <div class="row">
       <div class="m-header">
         <p>
-          <span style="color: #ffffff;">控制面板 - 文件管理</span> 
+          <span style="color: #ffffff">控制面板 - 文件管理</span>
           <span class="task-info" v-text="extpressQueueInfo"></span>
         </p>
-    
       </div>
       <div class="container m-panel">
         <div class="row">
@@ -18,14 +17,19 @@
           <div class="col-md-9">
             <div id="m-right-container">
               <div id="vm-files-items">
-                <component-files  :common-hub="filesHub"></component-files>
+                <component-files :common-hub="filesHub"></component-files>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <component-editor :is-display="editorDisplay" :save-callback="editorCallback" :textareaContext="editorOpenContext" :editorFilename="editorFilename"></component-editor>
+    <component-editor
+      :is-display="editorDisplay"
+      :save-callback="editorCallback"
+      :textareaContext="editorOpenContext"
+      :editorFilename="editorFilename"
+    ></component-editor>
     <component-shady :is-display="editorDisplay"></component-shady>
   </div>
 </template>
@@ -48,10 +52,10 @@ const filesHub = hubModule.Hub;
 MCSERVER.pageIndexModel = {
   filesHub: filesHub,
   editorDisplay: false,
-  editorCallback: obj => {},
+  editorCallback: (obj) => {},
   editorOpenContext: "",
   editorFilename: "",
-  extpressQueueInfo: ""
+  extpressQueueInfo: "",
 };
 
 // 首页请求获取任务队列，以及其他后续需要的数据
@@ -66,7 +70,7 @@ new ajaxMoudule.Ajax({
       const now = res["now"];
       MCSERVER.pageIndexModel.extpressQueueInfo = `解压缩队列: ${quque}个排队，${now}个正在处理`;
     }
-  }
+  },
 }).ajax();
 
 //首页 Vue 组件
@@ -76,11 +80,11 @@ export default {
     componentLmuem,
     componentFiles,
     componentEditor,
-    componentShady
+    componentShady,
   },
-  data: function() {
+  data: function () {
     return MCSERVER.pageIndexModel;
-  }
+  },
 };
 </script>
 

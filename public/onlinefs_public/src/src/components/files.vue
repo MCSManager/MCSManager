@@ -4,9 +4,9 @@
     <table class="m-table" width="100%">
       <tr height="52px">
         <th width="4%" style="">
-          <input type="checkbox" v-model="checkboxAll">
+          <input type="checkbox" v-model="checkboxAll" />
         </th>
-         <th width="2%"></th>
+        <th width="2%"></th>
         <th width="44%">文件名</th>
         <th width="10%">类型</th>
         <th width="15%">大小</th>
@@ -14,12 +14,22 @@
       </tr>
       <tr>
         <td>
-          <input type="checkbox" aria-checked="false" value="on" disabled="disabled">
+          <input
+            type="checkbox"
+            aria-checked="false"
+            value="on"
+            disabled="disabled"
+          />
         </td>
-        
-        <td> <span  class="glyphicon glyphicon-folder-open"></span></td>
-        <td style="color: blue;cursor: pointer;">
-          <a class="m-item-file-a-dir" href="javascript:void(0);" v-on:click="cduplevel">上级目录</a>
+
+        <td><span class="glyphicon glyphicon-folder-open"></span></td>
+        <td style="color: blue; cursor: pointer">
+          <a
+            class="m-item-file-a-dir"
+            href="javascript:void(0);"
+            v-on:click="cduplevel"
+            >上级目录</a
+          >
         </td>
         <td>上级</td>
         <td></td>
@@ -27,24 +37,38 @@
       </tr>
       <tr v-for="item in fileList">
         <td v-on:click="fileSelectedEvent(item)">
-          <input type="checkbox" v-model="item.checkbox">
+          <input type="checkbox" v-model="item.checkbox" />
         </td>
         <td class="m-td-file-logo">
-          <span v-if="!item.isFile" class="glyphicon glyphicon-folder-open"></span>
+          <span
+            v-if="!item.isFile"
+            class="glyphicon glyphicon-folder-open"
+          ></span>
           <span v-else class="glyphicon glyphicon-file"></span>
         </td>
         <td>
-          <a v-if="!item.isFile" class="m-item-file-a-dir" href="javascript:void(0);" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
-          <a v-else target="_black" class="m-item-file-a-file" :href="getDownloadURL(item)" v-html="enContext(item.name)" v-on:click="cd(item)"></a>
+          <a
+            v-if="!item.isFile"
+            class="m-item-file-a-dir"
+            href="javascript:void(0);"
+            v-html="enContext(item.name)"
+            v-on:click="cd(item)"
+          ></a>
+          <a
+            v-else
+            target="_black"
+            class="m-item-file-a-file"
+            :href="getDownloadURL(item)"
+            v-html="enContext(item.name)"
+            v-on:click="cd(item)"
+          ></a>
         </td>
         <td v-if="item.isFile">文件</td>
         <td v-else>目录</td>
-        <td v-text="sizecomp(item,item.size)"></td>
+        <td v-text="sizecomp(item, item.size)"></td>
         <td class="m-phone-none" v-text="item.time"></td>
       </tr>
     </table>
-
-
   </div>
 </template>
 
@@ -99,10 +123,10 @@ import tools from "../module/tools";
 const vmModel = {
   checkboxAll: false,
   selectedStack: [],
-  fileList: []
+  fileList: [],
 };
 
-functionModule.ls().then(data => {
+functionModule.ls().then((data) => {
   vmModel.fileList = data;
 });
 
@@ -156,7 +180,7 @@ export default {
         //进入目录 并 刷新文件栈
         this.commonHub.set("CompFiles", []);
         this.checkboxAll = false;
-        functionModule.ls(item.name).then(data => {
+        functionModule.ls(item.name).then((data) => {
           that.fileList = data;
         });
       }
@@ -164,11 +188,11 @@ export default {
     cduplevel() {
       this.checkboxAll = false;
       let that = this;
-      functionModule.ls("../").then(data => {
+      functionModule.ls("../").then((data) => {
         that.fileList = data;
       });
       this.commonHub.set("CompFiles", []);
-    }
+    },
   },
   watch: {
     checkboxAll() {
@@ -177,7 +201,7 @@ export default {
       }
       this.reloadStack();
       return this.checkboxAll;
-    }
-  }
+    },
+  },
 };
 </script>

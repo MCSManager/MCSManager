@@ -1,16 +1,16 @@
-import Vue from 'vue';
+import Vue from "vue";
 // import componentLmuem from './components/lmuem';
 // import componentFiles from './components/files';
 
 // import hubModule from "./module/hub";
 
-import VueApp from './page_index.vue';
+import VueApp from "./page_index.vue";
 
 Vue.config.productionTip = true;
 
 new Vue({
-    render: h => h(VueApp)
-}).$mount('#app')
+  render: (h) => h(VueApp),
+}).$mount("#app");
 
 // const filesHub = hubModule.Hub;
 
@@ -25,9 +25,6 @@ new Vue({
 // });
 
 // import funcModule from "./module/function";
-
-
-
 
 // const vm_files_items = new Vue({
 //     el: "#vm-files-items",
