@@ -1,5 +1,5 @@
 const fs = require("fs-extra");
-const path_moduel = require("path");
+const pathm = require("path");
 const cluster = require("cluster");
 const os = require("os");
 const { BaseFileOperate } = require("./base_fsoperate");
@@ -48,7 +48,7 @@ class FileOperate extends BaseFileOperate {
 			//     info.isBlockDevice() ? "BlockDevice" :
 			//     info.isSymbolicLink() ? "SymbolicLink" : "";
 			return {
-				name: path_moduel.basename(absPath),
+				name: pathm.basename(absPath),
 				size: info.size,
 				isFile: !info.isDirectory(),
 				time: info.mtime,
@@ -66,9 +66,9 @@ class FileOperate extends BaseFileOperate {
 		let result = [];
 		let that = this;
 		this.pathAccessCheck(path, (absPath) => {
-			let list = fs.readdirSync(path.join(process.cwd(), absPath));
+			let list = fs.readdirSync(absPath);
 			for (const v of list) {
-				let pathonce = path_moduel.join(absPath, v);
+				let pathonce = pathm.join(absPath, v);
 				result.push(that.type(pathonce));
 			}
 		});
@@ -148,7 +148,7 @@ class FileOperate extends BaseFileOperate {
 			let files = fs.readdirSync(absPath);
 			let result = [];
 			for (let v of files) {
-				let info = fs.statSync(path_moduel.join(absPath, v));
+				let info = fs.statSync(pathm.join(absPath, v));
 				result.push(info);
 			}
 			if (result.length <= 0) return null;

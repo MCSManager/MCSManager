@@ -22,6 +22,9 @@ router.post("/mkdir", (req, res) => {
 	if (name == "") return;
 	let cwd = req.session.fsos.cwd;
 	let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
+	// TODO: 追查fsos的rootPath
+	// 已完成
+	// console.log("传入的fsos", req.session.fsos);
 	let sendObj = fileOperate.mkdir(pathm.join(cwd, name));
 	sendHandle(req, res, sendObj);
 });
