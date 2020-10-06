@@ -159,7 +159,8 @@ app.use(
 if (MCSERVER.localProperty.is_gzip) app.use(compression());
 
 //基础根目录
-app.use("/public", express.static("./public"));
+// app.use("/public", express.static("./public"));
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 // console 中间件挂载
 app.use((req, res, next) => {

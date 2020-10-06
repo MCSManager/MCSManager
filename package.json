@@ -44,14 +44,17 @@
     "properties": "^1.2.1",
     "uuid": "^3.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Suwings/MCSManager"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js --test"
+    "test": "node app.js --test",
+    "package": "pkg . --out-path package/"
   },
   "bin": "app.js",
   "pkg": {
