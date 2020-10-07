@@ -30,7 +30,7 @@
 		name: '监控数据中心',
 		link: './template/center.html',
 		api: 'center/show',
-		select: true
+		select: false
 	}, {
 		class: 'glyphicon-tasks',
 		name: '服务端管理',
