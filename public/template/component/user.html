@@ -66,6 +66,14 @@
 			},
 			methods: {
 				toUpdate: function () {
+					if (!TOOLS.isStdText(this.username)) {
+						TOOLS.pushMsgWindow("用户名不合法！请重新输入！");
+						return;
+					}
+					if (this.password.length < 6 || this.password.length > 18) {
+						TOOLS.pushMsgWindow("密码长度不正确！");
+						return;
+					}
 					var allowedServers = this.allowedServer.trim().split(' ');
 					var obj = {
 						newUsername: this.username,
