@@ -2,17 +2,13 @@ const childProcess = require("child_process");
 const iconv = require("iconv-lite");
 const EventEmitter = require("events");
 
-const DataModel = require("../DataModel");
-const os = require("os");
 const tools = require("../tools");
 const permission = require("../../helper/Permission");
 const path = require("path");
 
-const properties = require("properties");
 const fs = require("fs");
 const Docker = require("dockerode");
 
-const CODE_CONSOLE = MCSERVER.localProperty.console_encode;
 
 class ServerProcess extends EventEmitter {
   constructor(args) {

@@ -1,4 +1,3 @@
-var querystring = require("querystring");
 
 function send(res, info, value) {
   let str = JSON.stringify({

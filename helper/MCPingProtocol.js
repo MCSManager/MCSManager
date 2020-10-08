@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 const net = require("net");
 
 // Using SLT (Server List Ping) provided by Minecraft.

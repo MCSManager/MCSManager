@@ -4,25 +4,7 @@ const fs = require("fs");
 const mcPingProtocol = require("../../helper/MCPingProtocol");
 
 const BASE_SERVER_DIR = "./server/";
-const BASE_SERVER_CORE_NAME = "server_core";
 
-function deleteall(path) {
-  var files = [];
-  if (fs.existsSync(path)) {
-    files = fs.readdirSync(path);
-    files.forEach(function (file, index) {
-      var curPath = path + "/" + file;
-      if (fs.statSync(curPath).isDirectory()) {
-        // recurse
-        deleteall(curPath);
-      } else {
-        // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(path);
-  }
-}
 
 class ServerManager extends EventEmitter {
   constructor(args) {
@@ -31,6 +13,7 @@ class ServerManager extends EventEmitter {
   }
 
   newMinecraftServer(name) {
+    // eslint-disable-next-line no-prototype-builtins
     if (!this.serverList.hasOwnProperty(name)) {
       this.serverList[name] = new MinecraftServer(name);
       this._bindEvent(name);
@@ -113,6 +96,7 @@ class ServerManager extends EventEmitter {
   }
 
   isExist(name) {
+    // eslint-disable-next-line no-prototype-builtins
     if (this.serverList.hasOwnProperty(name)) {
       return true;
     }

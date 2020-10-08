@@ -17,7 +17,7 @@ ftpServerInterface.createFTPServer({
     let serverName = arrName[1];
     if (!realName || !serverName) return null;
 
-    let user = userModel.userCenter().get(realName);
+    // let user = userModel.userCenter().get(realName);
 
     let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
     if (dataModel) {

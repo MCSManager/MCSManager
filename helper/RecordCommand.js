@@ -31,7 +31,7 @@ class RecordCommand {
     else fs.writeFileSync(this.path, new Buffer(HISTORY_SIZE_LINE * 2).toString() + data);
   }
 
-  readRecord(pstart = 0, length = 32, callback = (logStr) => {}) {
+  readRecord(pstart = 0, length = 32, callback = () => { }) {
     if (!fs.existsSync(this.path)) return;
 
     const fsstat = fs.statSync(this.path);
@@ -54,7 +54,7 @@ class RecordCommand {
         callback(resStr);
 
         // 关闭文件
-        fs.close(fd, () => {});
+        fs.close(fd, () => { });
       });
     });
   }

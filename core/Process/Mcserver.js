@@ -1,7 +1,5 @@
 const ServerProcess = require("./BaseMcserver");
 const DataModel = require("../DataModel");
-const os = require("os");
-
 const properties = require("properties");
 const fs = require("fs");
 const tools = require("../tools");
@@ -71,7 +69,7 @@ class MinecraftServer extends ServerProcess {
     //自定义参数
     let tmpCommandeStart = args.highCommande || "";
     //自定义参数去掉所有两个空格
-    tmpCommandeStart = tmpCommandeStart.replace(/  /gim, " ");
+    tmpCommandeStart = tmpCommandeStart.replace(/ {2}/gim, " ");
     this.dataModel.highCommande = tmpCommandeStart;
 
     this.propertiesLoad();
@@ -110,7 +108,7 @@ class MinecraftServer extends ServerProcess {
     //properties 库自动给等于两边加入了空格，现在去除
     text = text.replace(/ = /gim, "=");
     // 写入数据, 文件不存在会自动创建
-    fs.writeFile(this.dataModel.cwd + "/server.properties", text, (err) => {
+    fs.writeFile(this.dataModel.cwd + "/server.properties", text, () => {
       this.propertiesLoad((properties, propertiesError) => {
         callback && callback(properties, propertiesError);
       });
