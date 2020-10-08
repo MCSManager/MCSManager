@@ -31,7 +31,8 @@
           <p>注意，如果是以#开头的最高权限账号，则可以无条件访问任何服务器</p>
           <div class="input-group input-group-sm">
             <span class="input-group-addon"> 准许的服务器 </span>
-            <input type="text" class="form-control" v-model="allowedServer" placeholder="默认空，列如 ServerNameA ServerNameB ServerNameC" />
+            <input type="text" class="form-control" v-model="allowedServer"
+              placeholder="默认空，列如 ServerNameA ServerNameB ServerNameC" />
           </div>
         </div>
       </div>
@@ -68,7 +69,7 @@
             TOOLS.pushMsgWindow("用户名不合法！请重新输入！");
             return;
           }
-          if (this.password.length < 6 || this.password.length > 18) {
+          if ((this.password.length < 6 || this.password.length > 18) && this.password.length != 0) {
             TOOLS.pushMsgWindow("密码长度不正确！");
             return;
           }
@@ -99,5 +100,5 @@
     viewModel.allowedServer = viewModel.allowedServer.toString().replace(/,/gim, " ");
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
