@@ -102,8 +102,8 @@
       MI.rOn("onend");
       PageLoading();
       //替換掉原先存在的函数 防止新的单页没有这些函数而导致代码二次执行
-      MI.rListener("onend", function () { });
-      MI.rListener("onload", function () { });
+      MI.rListener("onend", function () {});
+      MI.rListener("onload", function () {});
       //触发页面切换事件
       MI.on("RedirectPage", url);
       RES.redirectHTML(url, key, body, function () {
