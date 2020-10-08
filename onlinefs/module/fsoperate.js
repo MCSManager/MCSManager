@@ -1,7 +1,5 @@
 const fs = require("fs");
 const path_moduel = require("path");
-const cluster = require("cluster");
-const os = require("os");
 const { BaseFileOperate } = require("./base_fsoperate");
 const fsex = require("fs-extra");
 const child_process = require("child_process");

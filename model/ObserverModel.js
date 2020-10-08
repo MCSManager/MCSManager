@@ -1,4 +1,4 @@
-//一个专门为了解决内存泄露而设计的观察者模型
+/* eslint-disable no-prototype-builtins */
 
 const observerMask = {};
 const CALLBACK = "CALLBACK";
@@ -17,7 +17,6 @@ module.exports.listener = function (event, _callbackName, _callback) {
   } else {
     callback = _callbackName;
   }
-  let listTmp = observerMask[event];
   let callbackConfig = {};
   callbackConfig[CALLBACK_NAME] = callbackName;
   callbackConfig[CALLBACK] = callback;

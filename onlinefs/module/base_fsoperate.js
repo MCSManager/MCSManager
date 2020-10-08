@@ -2,7 +2,7 @@ const fs = require("fs");
 const path_moduel = require("path");
 // const os = require("os");
 
-const DEBUG = true;
+const DEBUG = false;
 
 //基本的操作权限
 class BaseFileOperate {

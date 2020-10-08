@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { FileOperateStructure } = require("../model/fsoperate_session");
-const userModel = require("../../model/UserModel");
 const permission = require("../../helper/Permission");
 const serverModel = require("../../model/ServerModel");
 const pathm = require("path");

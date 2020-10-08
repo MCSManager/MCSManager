@@ -1,4 +1,3 @@
-const EventEmitter = require("events");
 const observerModel = require("./ObserverModel");
 
 //事件二次转发  监听ws/req即可监听所有Websocket请求
