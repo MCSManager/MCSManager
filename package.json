@@ -43,7 +43,9 @@
     "properties": "^1.2.1",
     "uuid": "^3.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "2.1.2"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Suwings/MCSManager"

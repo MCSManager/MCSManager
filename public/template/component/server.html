@@ -1,226 +1,292 @@
-<div id='ServerPanel' class="OneContainer">
-	<div class="row">
-		<div class="col-md-3">
-			<div class="Panel PanelBlack">
-				<div class="PanelTitle">服务器信息</div>
-				<div class="PanelBody">
-					<!--右侧-->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="PanelItem">标识名: {{ name }}</div>
-							<div class="PanelItem">创建时间: {{ createDate }}</div>
-							<div class="PanelItem" v-if="run">状况:
-								<span class="color-green">正在运行</span>
-							</div>
-							<div class="PanelItem" v-else="run">状况: 未运行</div>
-							<div class="PanelItem">最后启动: {{ lastDate }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-9">
-			<div class="Panel PanelBlack">
-				<div class="PanelTitle">基本参数</div>
-				<div class="PanelBody">
-					<!--left 侧-->
-					<div class="row">
-						<div class="col-md-6">
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon">服务器唯一标识名</span>
-								<input type="text" class="form-control" v-model="name" placeholder="[未设定]">
-							</div>
-							<p>如果您 Java 环境无误，使用 "java" 环境变量即可</p>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon">Java 路径</span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java"
-									placeholder="[未设定]">
-							</div>
-							<p>端根目录: [ {{ cwd }} ] </p>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 服务端文件名 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control"
-									v-model="jarName" placeholder="[未设定]">
-							</div>
-							<p>如需设置请按照 2018/10/1 这种格式，到期后服务端将无法开启，但文件依然可以上传下载。你可以从用户的可用服务端列表让他彻底对此失去控制。</p>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 到期限制 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control"
-									v-model="timeLimitDate" placeholder="[未设定 如 2018/10/1 2020/1/12]">
-							</div>
-						</div>
-						<div class="col-md-6">
+<div id="ServerPanel" class="OneContainer">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="Panel PanelBlack">
+        <div class="PanelTitle">服务器信息</div>
+        <div class="PanelBody">
+          <!--右侧-->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="PanelItem">标识名: {{ name }}</div>
+              <div class="PanelItem">创建时间: {{ createDate }}</div>
+              <div class="PanelItem" v-if="run">
+                状况:
+                <span class="color-green">正在运行</span>
+              </div>
+              <div class="PanelItem" v-else="run">状况: 未运行</div>
+              <div class="PanelItem">最后启动: {{ lastDate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="Panel PanelBlack">
+        <div class="PanelTitle">基本参数</div>
+        <div class="PanelBody">
+          <!--left 侧-->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">服务器唯一标识名</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="name"
+                  placeholder="[未设定]"
+                />
+              </div>
+              <p>如果您 Java 环境无误，使用 "java" 环境变量即可</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">Java 路径</span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="java"
+                  placeholder="[未设定]"
+                />
+              </div>
+              <p>端根目录: [ {{ cwd }} ]</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 服务端文件名 </span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="jarName"
+                  placeholder="[未设定]"
+                />
+              </div>
+              <p>
+                如需设置请按照 2018/10/1
+                这种格式，到期后服务端将无法开启，但文件依然可以上传下载。你可以从用户的可用服务端列表让他彻底对此失去控制。
+              </p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 到期限制 </span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="timeLimitDate"
+                  placeholder="[未设定 如 2018/10/1 2020/1/12]"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">启动附加参数</span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="addCmd"
+                  placeholder="[可空 列如: -server -xxx 等]"
+                />
+              </div>
+              <p>服务端文件与数据的目录所在地。</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">服务器根目录</span>
+                <input type="text" class="form-control" v-model="cwd" />
+              </div>
+              <div class="row"></div>
+              <p>实质是 -Xmx -Xms 参数，填写请加单位(M,G)</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 最大内存堆 </span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="Xmx"
+                  placeholder="[自动 如需修改请加单位]"
+                />
+              </div>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 初始内存堆 </span>
+                <input
+                  v-bind:disabled="isHighCommande"
+                  type="text"
+                  class="form-control"
+                  v-model="Xms"
+                  placeholder="[自动 如需修改请加单位]"
+                />
+              </div>
 
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon">启动附加参数</span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control"
-									v-model="addCmd" placeholder="[可空 列如: -server -xxx 等]">
-							</div>
-							<p>服务端文件与数据的目录所在地。</p>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon">服务器根目录</span>
-								<input type="text" class="form-control" v-model="cwd">
-							</div>
-							<div class="row">
+              <div class="row">
+                <div class="col-lg-12">
+                  <p>
+                    端 1.9.X 以上可能需要输入编码为
+                    UTF-8，如控制台有乱码，可修改这里。 <br />
+                    默认值: Windows 默认 GBK 编码，Linux 默认 UTF8 编码。
+                  </p>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-addon"> 日志输出编码 </span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="oe"
+                      placeholder="[默认 自动选择]"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-addon"> 命令输入编码 </span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="ie"
+                      placeholder="[默认 自动选择]"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <p>
+                完全自定义启动命令 (针对特殊需求)
+                <a v-on:click="toOpenCommmandInfo()">这是什么?</a>
+              </p>
 
-							</div>
-							<p>实质是 -Xmx -Xms 参数，填写请加单位(M,G)</p>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 最大内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx"
-									placeholder="[自动 如需修改请加单位]">
-							</div>
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 初始内存堆 </span>
-								<input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms"
-									placeholder="[自动 如需修改请加单位]">
-							</div>
-
-							<div class="row">
-								<div class="col-lg-12">
-									<p>端 1.9.X 以上可能需要输入编码为 UTF-8，如控制台有乱码，可修改这里。
-										<br> 默认值: Windows 默认 GBK 编码，Linux 默认 UTF8 编码。</p>
-								</div>
-								<div class="col-lg-6">
-									<div class="input-group input-group-sm">
-										<span class="input-group-addon"> 日志输出编码 </span>
-										<input type="text" class="form-control" v-model="oe" placeholder="[默认 自动选择]">
-									</div>
-								</div>
-								<div class="col-lg-6">
-									<div class="input-group input-group-sm">
-										<span class="input-group-addon"> 命令输入编码 </span>
-										<input type="text" class="form-control" v-model="ie" placeholder="[默认 自动选择]">
-									</div>
-								</div>
-							</div>
-							<div class="row">
-
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-12">
-							<p>完全自定义启动命令 (针对特殊需求)
-								<a v-on:click="toOpenCommmandInfo()">这是什么?</a>
-							</p>
-
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon"> 自定义命令 </span>
-								<input type="text" class="form-control" v-model="highCommande"
-									placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	">
-							</div>
-						</div>
-						<br />
-					</div>
-				</div>
-			</div>
-			<!--底部-->
-			<div class="Panel">
-				<div class="PanelTitle"></div>
-				<div class="PanelBody">
-					<div class="row">
-						<!-- <div class="col-lg-12">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 自定义命令 </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="highCommande"
+                  placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	"
+                />
+              </div>
+            </div>
+            <br />
+          </div>
+        </div>
+      </div>
+      <!--底部-->
+      <div class="Panel">
+        <div class="PanelTitle"></div>
+        <div class="PanelBody">
+          <div class="row">
+            <!-- <div class="col-lg-12">
 							<p>普通用户无权修改任何服务器的启动参数，仅仅可修改 Minecraft 相关配置。</p>
 							<div class="Line"></div>
 						</div> -->
-					</div>
-					<div class="row">
-						<div class="col-lg-12">
-							<div class="" style="float: right;margin-top: 20px;">
-								<button class="btn btn-danger" v-on:click="toDocker(name)">Docker 配置</button>
-								&nbsp;|&nbsp;
-								<button class="btn btn-primary" v-on:click="toConsole(name)">控制面板</button> &nbsp;|&nbsp;
-								<button class="btn btn-success" v-on:click="toRebulider()">保存设置</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="" style="float: right; margin-top: 20px">
+                <button class="btn btn-danger" v-on:click="toDocker(name)">
+                  Docker 配置
+                </button>
+                &nbsp;|&nbsp;
+                <button class="btn btn-primary" v-on:click="toConsole(name)">
+                  控制面板
+                </button>
+                &nbsp;|&nbsp;
+                <button class="btn btn-success" v-on:click="toRebulider()">
+                  保存设置
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <script>
-	MI.rListener('onload', function () {
-		VIEW_MODEL.newVue('ServerPanel', {
-			el: '#ServerPanel',
-			data: {
-				oldServerName: '',
-				isHighCommande: false
-			},
-			methods: {
-				toOpenCommmandInfo: function () {
-					TOOLS.popWind({
-						style: {
-							maxWidth: "700px"
-						},
-						title: "自定义参数说明",
-						template: "template/dialog/usercommand.html"
-					});
-				},
-				toDocker: function () {
-					// var that = this;
-					PAGE.selectServerName = this.oldServerName;
-					TOOLS.popWind({
-						style: {
-							maxWidth: "600px",
-							top: "15%"
-						},
-						title: "Minecraft Docker 配置",
-						template: "template/dialog/docker_config.html"
-					});
-				},
-				toConsole: function (serverName) {
-					MCSERVER.listenServername = this.oldServerName;
-					RES.redirectPage('./template/component/console.html', 'server/console', this.oldServerName);
-				},
-				toRebulider: function () {
-					var addCmdList = this.addCmd.split(' ');
-					if (!TOOLS.isStdText(this.name)) {
-						TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
-						return;
-					}
-					if (this.timeLimitDate != '' && !TOOLS.isSmallDate(this.timeLimitDate)) {
-						TOOLS.pushMsgWindow("您输入的时间期限格式不正确，请检查再尝试。");
-						return;
-					}
+  MI.rListener("onload", function () {
+    VIEW_MODEL.newVue("ServerPanel", {
+      el: "#ServerPanel",
+      data: {
+        oldServerName: "",
+        isHighCommande: false,
+      },
+      methods: {
+        toOpenCommmandInfo: function () {
+          TOOLS.popWind({
+            style: {
+              maxWidth: "700px",
+            },
+            title: "自定义参数说明",
+            template: "template/dialog/usercommand.html",
+          });
+        },
+        toDocker: function () {
+          // var that = this;
+          PAGE.selectServerName = this.oldServerName;
+          TOOLS.popWind({
+            style: {
+              maxWidth: "600px",
+              top: "15%",
+            },
+            title: "Minecraft Docker 配置",
+            template: "template/dialog/docker_config.html",
+          });
+        },
+        toConsole: function (serverName) {
+          MCSERVER.listenServername = this.oldServerName;
+          RES.redirectPage(
+            "./template/component/console.html",
+            "server/console",
+            this.oldServerName
+          );
+        },
+        toRebulider: function () {
+          var addCmdList = this.addCmd.split(" ");
+          if (!TOOLS.isStdText(this.name)) {
+            TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
+            return;
+          }
+          if (
+            this.timeLimitDate != "" &&
+            !TOOLS.isSmallDate(this.timeLimitDate)
+          ) {
+            TOOLS.pushMsgWindow("您输入的时间期限格式不正确，请检查再尝试。");
+            return;
+          }
 
-					var obj = {
-						addCmd: addCmdList,
-						serverName: this.name,
-						jarName: this.jarName,
-						cwd: this.cwd,
-						Xmx: this.Xmx,
-						Xms: this.Xms,
-						java: this.java,
-						ie: this.ie,
-						oe: this.oe,
-						highCommande: this.highCommande,
-						oldServerName: this.oldServerName,
-						timeLimitDate: this.timeLimitDate
-					};
-					WS.sendMsg('server/rebulider', JSON.stringify(obj));
-					setTimeout(function () {
-						RES.redirectPage('./template/server.html', 'server/view');
-					}, 100);
-				}
-			},
-			watch: {
-				highCommande: function (newQuestion) {
-					if (this.highCommande) {
-						this.isHighCommande = true;
-					} else {
-						this.isHighCommande = false;
-					}
-				}
-			}
-		});
-		VIEW_MODEL['ServerPanel'].addCmd = VIEW_MODEL['ServerPanel'].addCmd.toString().replace(/,/gim, ' ');
-		VIEW_MODEL[
-			'ServerPanel'].oldServerName = VIEW_MODEL['ServerPanel'].name + "";
+          var obj = {
+            addCmd: addCmdList,
+            serverName: this.name,
+            jarName: this.jarName,
+            cwd: this.cwd,
+            Xmx: this.Xmx,
+            Xms: this.Xms,
+            java: this.java,
+            ie: this.ie,
+            oe: this.oe,
+            highCommande: this.highCommande,
+            oldServerName: this.oldServerName,
+            timeLimitDate: this.timeLimitDate,
+          };
+          WS.sendMsg("server/rebulider", JSON.stringify(obj));
+          setTimeout(function () {
+            RES.redirectPage("./template/server.html", "server/view");
+          }, 100);
+        },
+      },
+      watch: {
+        highCommande: function (newQuestion) {
+          if (this.highCommande) {
+            this.isHighCommande = true;
+          } else {
+            this.isHighCommande = false;
+          }
+        },
+      },
+    });
+    VIEW_MODEL["ServerPanel"].addCmd = VIEW_MODEL["ServerPanel"].addCmd
+      .toString()
+      .replace(/,/gim, " ");
+    VIEW_MODEL["ServerPanel"].oldServerName =
+      VIEW_MODEL["ServerPanel"].name + "";
+  });
 
-	});
-
-	MI.rListener('onend', function () { });
+  MI.rListener("onend", function () {});
 </script>

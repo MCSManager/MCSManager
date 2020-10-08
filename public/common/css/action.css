@@ -1,31 +1,31 @@
 /* 动画 CSS */
 
 @keyframes MasterLogoImg {
-    0% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(8deg);
-    }
-    75% {
-        transform: rotate(-8deg);
-    }
-    100% {
-        transform: rotate(0deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(8deg);
+  }
+  75% {
+    transform: rotate(-8deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes MasterLogoTitle {
-    62% {
-        transform: rotate(0deg);
-    }
-    75% {
-        transform: rotate(4deg);
-    }
-    88% {
-        transform: rotate(-4deg);
-    }
-    100% {
-        transform: rotate(0deg);
-    }
+  62% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+  88% {
+    transform: rotate(-4deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }

@@ -1,12 +1,12 @@
 {
-    "__filename__": "./core/info.json",
-    "counterData": {
-        "login": 0,
-        "userOnlineCounter": 0,
-        "notPermssionCounter": 0,
-        "passwordError": 0,
-        "maybeLogin": 0,
-        "csrfCounter": 0
-    },
-    "reloadMonth": 0
+  "__filename__": "./core/info.json",
+  "counterData": {
+    "login": 0,
+    "userOnlineCounter": 0,
+    "notPermssionCounter": 0,
+    "passwordError": 0,
+    "maybeLogin": 0,
+    "csrfCounter": 0
+  },
+  "reloadMonth": 0
 }

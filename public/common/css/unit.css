@@ -1,26 +1,26 @@
 .color-red {
-	color: #A94442;
+  color: #a94442;
 }
 
 .color-green {
-	color: #0bbd10;
+  color: #0bbd10;
 }
 
 .color-high-red {
-	color: #ff0000;
+  color: #ff0000;
 }
 
 .color-gray {
-	color: #a5a5a5;
+  color: #a5a5a5;
 }
 
 .box-shadow {
-	box-shadow: 2px 0px 6px #888888;
+  box-shadow: 2px 0px 6px #888888;
 }
 
 .width-100 {
-	width: 100%;
+  width: 100%;
 }
-.mb0{
-	margin-bottom: 0px;
+.mb0 {
+  margin-bottom: 0px;
 }
