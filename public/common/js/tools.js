@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //Tools 工具模块
 (function () {
   //全局TOOLS
@@ -50,7 +51,7 @@
 
   // XSS 攻击防御函数
   TOOLS.encode = function (html) {
-    var rstr = html.replace(/&/gim, "&amp;").replace(/</gim, "&lt;").replace(/>/gim, "&gt;").replace(/\"/gim, "&quot;").replace(/\'/gim, "&apos;").replace(/ /gim, "&nbsp;");
+    var rstr = html.replace(/&/gim, "&amp;").replace(/</gim, "&lt;").replace(/>/gim, "&gt;").replace(/"/gim, "&quot;").replace(/'/gim, "&apos;").replace(/ /gim, "&nbsp;");
     return rstr;
   };
 
@@ -95,15 +96,8 @@
     return reg.test(text);
   };
 
-  // var cacheHeaderTitleEle = $("#HeaderInfo");
-  //设置头上显示什么
-  TOOLS.setHeaderTitle = function (text) {
-    // if (text) {
-    // 	cacheHeaderTitleEle.html(TOOLS.encode(text));
-    // } else {
-    // 	cacheHeaderTitleEle.html("");
-    // }
-  };
+  //设置头上显示什么 已舍弃
+  TOOLS.setHeaderTitle = function () { };
 
   //Minecraft 服务器输出删除双S
   TOOLS.deletDoubleS = function (text) {
@@ -238,7 +232,7 @@
     text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
     text = text.replace(/§[0-9A-Za-z]{1}/gim, "");
 
-    RegExpStringArr = [
+    var RegExpStringArr = [
       //蓝色
       ["Unknown command", "Loading libraries, please wait...", "Loading", "Loaded", "\\d{1,3}%", "true", "false", "plugin.yml"],
       //绿色
@@ -288,7 +282,7 @@
   var _popWindCallback = null;
   TOOLS.popWind = function (config) {
     var popWinContext = $("#PopWinContext");
-    _popWindCallback = config.callback || function () {}; //全局的callback变量
+    _popWindCallback = config.callback || function () { }; //全局的callback变量
     var css = config.style || {
       display: "block"
     };

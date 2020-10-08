@@ -5,7 +5,7 @@
   var DEBUG = false;
 
   //ws 链接事件
-  MI.listener("ws/open", function (ws) {
+  MI.listener("ws/open", function () {
     VIEW_MODEL["websocketStatus"] = {};
     var webscoketStatus = VIEW_MODEL["websocketStatus"];
     webscoketStatus["status"] = "服务器连接正常";
@@ -23,7 +23,7 @@
     });
   });
 
-  MI.listener("ws/close", function (ws) {
+  MI.listener("ws/close", function () {
     TOOLS.setHeaderTitle("离线 | 当前与服务器断开..");
     var webscoketStatus = VIEW_MODEL["websocketStatus"];
     webscoketStatus["status"] = "!!! 连接断开 !!!";
@@ -31,7 +31,7 @@
     webscoketStatus["tcolor"] = "#ffffff";
   });
 
-  MI.listener("ws/error", function (ws) {
+  MI.listener("ws/error", function () {
     var webscoketStatus = VIEW_MODEL["websocketStatus"];
     webscoketStatus["status"] = "!!! 连接错误 !!!";
     webscoketStatus["is"] = false;
@@ -39,7 +39,7 @@
   });
 
   //单页生命周期替换事件
-  MI.listener("page/live", function (ws) {
+  MI.listener("page/live", function () {
     for (var tmp in PAGE) delete PAGE[tmp];
     window.PAGE = new Object();
   });
@@ -132,11 +132,12 @@
   // 每当控制面板后端发送实时日志，都将第一时间触发此
   MI.routeListener("server/console/ws", function (data) {
     // 一种针对弹窗终端，一种针对网页终端
+    var text;
     if (PAGE.methods == 0) {
-      var text = TOOLS.encodeConsoleColor(data.body);
+      text = TOOLS.encodeConsoleColor(data.body);
       MCSERVER.term.write(text);
     } else {
-      var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
+      text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
       var eleTerminal = document.getElementById("TerminalMinecraft");
       if (eleTerminal.innerHTML.length >= 100000) {
         eleTerminal.innerHTML =
@@ -144,19 +145,20 @@
       }
       eleTerminal.innerHTML = eleTerminal.innerHTML + text;
       var BUFF_FONTIER_SIZE_DOWN = eleTerminal.scrollHeight - eleTerminal.clientHeight;
-      flag = eleTerminal.scrollTop + 400 >= BUFF_FONTIER_SIZE_DOWN;
+      var flag = eleTerminal.scrollTop + 400 >= BUFF_FONTIER_SIZE_DOWN;
       if (flag) eleTerminal.scrollTop = eleTerminal.scrollHeight;
     }
   });
 
   // 获取MC服务端终端日志历史记录
   MI.routeListener("server/console/history", function (data) {
+    var text;
     if (PAGE.methods == 0) {
-      var text = TOOLS.encodeConsoleColor(data.body);
+      text = TOOLS.encodeConsoleColor(data.body);
       MCSERVER.term.write(text);
     } else {
       var eleTerminal = document.getElementById("TerminalMinecraft");
-      var text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
+      text = TOOLS.encodeConsoleColorForHtml(terminalEncode(data.body));
       if (eleTerminal.innerHTML.length >= 100000) {
         eleTerminal.innerHTML =
           "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
@@ -185,6 +187,7 @@
     // 若终端未初始化则初始化终端与其方法
     if (!MCSERVER.term) {
       var fontSize = 12;
+      // eslint-disable-next-line no-undef
       var term = (MCSERVER.term = new Terminal({
         disableStdin: false,
         rows: 30,
@@ -228,7 +231,7 @@
     MCSERVER.term.startTerminal();
 
     // 终端的Vue组件
-    var WebTerminalScreenWapper = new Vue({
+    new Vue({
       el: "#WebTerminalControl",
       data: {
         command: ""
@@ -254,25 +257,6 @@
         stopServer: function () {
           this.toCommand("__stop__");
         },
-        // loadHistory: function (bool) {
-        // 	if (!this.isHistoryMode) {
-        // 		$('#WebTerminal').css('display', 'none');
-        // 		$('#LogHistoryTerminal').removeAttr('style');
-        // 		// 加载下一页历史记录
-        // 		WS.sendMsg('server/console/history', JSON.stringify({
-        // 			serverName: PAGE.serverName
-        // 		}));
-        // 		this.isHistoryMode = true;
-        // 	} else {
-        // 		$('#WebTerminal').removeAttr('style');
-        // 		$('#LogHistoryTerminal').css('display', 'none').html('');
-        // 		// 重置历史记录指针
-        // 		WS.sendMsg('server/console/history_reset', JSON.stringify({
-        // 			serverName: PAGE.serverName
-        // 		}));
-        // 		this.isHistoryMode = false;
-        // 	}
-        // },
         simpleLoadHistory: function () {
           WS.sendMsg(
             "server/console/history",
@@ -283,7 +267,6 @@
         }
       }
     });
-
     $("#WebTerminalScreenWapper").removeAttr("style");
     $("#WebTerminalScreenWapper").css("display", "none");
   }

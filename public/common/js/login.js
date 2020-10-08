@@ -8,7 +8,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
       username: username,
       _rand: Math.random() //增加缓存拒绝随机数
     },
-    success: function (data, textStatus) {
+    success: function (data) {
       var obj = JSON.parse(data);
       POST_OBJECT = obj;
       console.log("POST_OBJECT", POST_OBJECT);
@@ -28,7 +28,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
         username: username,
         password: md5Passworded
       },
-      success: function (data, textStatus) {
+      success: function (data) {
         var obj = JSON.parse(data);
         //后端指令操作
         if (typeof obj["ResponseValue"] == "number") {
