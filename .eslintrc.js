@@ -8,7 +8,10 @@ module.exports = {
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
-        "MCSERVER": true
+        "MCSERVER": "writeable",
+        "__dirname": "writeable",
+        "Buffer": "writeable",
+        "process": "writeable",
     },
     "parserOptions": {
         "ecmaVersion": 2018
@@ -16,6 +19,8 @@ module.exports = {
     "rules": {
         "no-unused-vars": "warn",
         "no-use-before-define": "warn",
-        "no-undef": "warn"
+        "no-undef": "warn",
+        "no-use-before-define": "off",
+        "no-prototype-builtins": "off",
     }
 };

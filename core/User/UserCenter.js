@@ -23,11 +23,11 @@ class UserCenter {
       userTemp.load();
       this.userList[username] = userTemp;
     }
-    //卧槽还真全部删除了 管理员账号？我认输，我们新建一个把
+    //删除所有管理员账号后，自动创建一个新的初始化用户
     if (masterUserCounter == 0) {
       this.userList["#master"] = this.register("#master", "123456");
       MCSERVER.log("========================================================");
-      MCSERVER.log("收到命令用户机制初始化 | 创建账号: #master 密码 123456");
+      MCSERVER.log("管理用户已初始化 | 创建账号: #master 密码 123456");
       MCSERVER.log("========================================================");
       MCSERVER.log("请注意！凡是以 # 符号开头的用户名,均视为管理员账号");
     }

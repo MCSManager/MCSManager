@@ -1,5 +1,4 @@
 const router = require("express")();
-const fs = require("fs");
 
 const TokenManager = require("../helper/TokenManager");
 const { WebSocketObserver } = require("../model/WebSocketModel");

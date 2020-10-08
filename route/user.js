@@ -1,5 +1,4 @@
 const router = require("express")();
-const session = require("express-session");
 const { loginUser, userCenter } = require("../model/UserModel");
 const response = require("../helper/Response");
 const loginedContainer = require("../helper/LoginedContainer");

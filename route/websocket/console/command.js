@@ -40,11 +40,7 @@ WebSocketObserver().listener("server/console/command", (data) => {
       return;
     }
     //不是特殊命令，则直接执行
-    try {
-      serverModel.sendCommand(serverName, command);
-    } catch (err) {
-      throw err;
-    }
+    serverModel.sendCommand(serverName, command);
     return;
   }
   response.wsSend(data.ws, "server/console/command", null);

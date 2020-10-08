@@ -1,6 +1,7 @@
 let fs = require("fs");
-const EventEmitter = require("events");
 
+// 数据模型类
+// 用作数据与真实文件之间的抽象关系，数据模型保存的所有数据均会序列化成 JSON 格式保存在文件中。
 class DataModel {
   constructor(filename) {
     this.__filename__ = "./" + filename + ".json";
@@ -11,8 +12,8 @@ class DataModel {
     else return this.__filename__;
   }
 
+  // 从JSON文件装载到数据模型
   load() {
-    // 同步而非异步 因为我们必须要线性执行而且读取的文件很小
     let data = fs.readFileSync(this.__filename__, "utf-8");
     let ele = JSON.parse(data);
     for (var key in ele) {
@@ -20,9 +21,8 @@ class DataModel {
     }
   }
 
+  // 数据模型写入到JSON文件中
   save() {
-    let name = this.__filename__;
-    // 同步而非异步 因为我们必须要线性执行而且读取的文件很小
     fs.writeFileSync(this.__filename__, JSON.stringify(this, null, 4));
   }
 
