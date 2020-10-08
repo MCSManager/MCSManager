@@ -1,4 +1,3 @@
-
 function send(res, info, value) {
   let str = JSON.stringify({
     ResponseKey: info,

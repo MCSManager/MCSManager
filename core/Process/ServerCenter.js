@@ -5,7 +5,6 @@ const mcPingProtocol = require("../../helper/MCPingProtocol");
 
 const BASE_SERVER_DIR = "./server/";
 
-
 class ServerManager extends EventEmitter {
   constructor(args) {
     super(args);

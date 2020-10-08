@@ -97,7 +97,7 @@
   };
 
   //设置头上显示什么 已舍弃
-  TOOLS.setHeaderTitle = function () { };
+  TOOLS.setHeaderTitle = function () {};
 
   //Minecraft 服务器输出删除双S
   TOOLS.deletDoubleS = function (text) {
@@ -282,7 +282,7 @@
   var _popWindCallback = null;
   TOOLS.popWind = function (config) {
     var popWinContext = $("#PopWinContext");
-    _popWindCallback = config.callback || function () { }; //全局的callback变量
+    _popWindCallback = config.callback || function () {}; //全局的callback变量
     var css = config.style || {
       display: "block"
     };

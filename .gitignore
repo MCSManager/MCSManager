@@ -1,4 +1,4 @@
-# mineself files
+# myself files
 server/
 users/
 .vscode/
@@ -6,7 +6,7 @@ testServer/
 *.exe
 *.zip
 docker_temp/
-
+toprettier.bat
 
 # config files
 users/*.json

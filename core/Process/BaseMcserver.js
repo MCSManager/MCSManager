@@ -9,7 +9,6 @@ const path = require("path");
 const fs = require("fs");
 const Docker = require("dockerode");
 
-
 class ServerProcess extends EventEmitter {
   constructor(args) {
     super(args);

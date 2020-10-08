@@ -8,7 +8,6 @@ const userModel = require("../../model/UserModel");
 const os = require("os");
 const mversion = require("../../helper/version");
 
-
 const MB_SIZE = 1024 * 1024;
 let serverM = serverModel.ServerManager();
 let userM = userModel.userCenter();

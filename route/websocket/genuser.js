@@ -4,7 +4,6 @@ const serverModel = require("../../model/ServerModel");
 const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
 
-
 WebSocketObserver().listener("genuser/home", (data) => {
   try {
     let username = data.WsSession.username.trim();

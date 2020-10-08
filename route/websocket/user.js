@@ -4,7 +4,6 @@ const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
 const tools = require("../../core/tools");
 
-
 WebSocketObserver().listener("userset/update", (data) => {
   if (!permssion.isMaster(data.WsSession)) return;
 
