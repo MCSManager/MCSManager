@@ -10,7 +10,7 @@
   RES.getToken = function (callback) {
     //同源策略可以防止其他域对这里发送一个Ajax请求.
     var _url = MCSERVER.URL("./token?_LoveYouMaster_Time=" + Date.parse(new Date()));
-    $.get(_url, function (data, status) {
+    $.get(_url, function (data) {
       data = JSON.parse(data);
       if (data.hasOwnProperty("ResponseValue")) {
         MCSERVER.username = data["ResponseValue"].username;
@@ -72,7 +72,7 @@
     var _url = MCSERVER.URL("./public/" + url);
 
     //响应事件函数
-    function responseCallback(response, status, xhr) {
+    function responseCallback(response, status) {
       if (status != "success") TOOLS.pushMsgWindow("[ " + status + " ] 由于网络或权限问题,请求的网页无法成功！");
       callback && callback();
     }
@@ -102,8 +102,8 @@
       MI.rOn("onend");
       PageLoading();
       //替換掉原先存在的函数 防止新的单页没有这些函数而导致代码二次执行
-      MI.rListener("onend", function () {});
-      MI.rListener("onload", function () {});
+      MI.rListener("onend", function () { });
+      MI.rListener("onload", function () { });
       //触发页面切换事件
       MI.on("RedirectPage", url);
       RES.redirectHTML(url, key, body, function () {

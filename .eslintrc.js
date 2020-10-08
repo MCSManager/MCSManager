@@ -11,7 +11,17 @@ module.exports = {
         "MCSERVER": "writeable",
         "__dirname": "writeable",
         "Buffer": "writeable",
-        "process": "writeable",
+        "Vue": "readonly",
+        "MI": "writeable",
+        "MS": "writeable",
+        "TOOLS": "writeable",
+        "VIEW_MODEL": "writeable",
+        "RES": "readonly",
+        "PAGE": "writeable",
+        "$": "writeable",
+        "WS": "readonly",
+        "hex_md5": "readonly",
+
     },
     "parserOptions": {
         "ecmaVersion": 2018

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pathm = require("path");
 const { parseHandle, sendHandle, filesToPaths } = require("../module/dataHandle");
-const { FileOperateStructure, UseFileOperate } = require("../model/fsoperate_session");
+const { UseFileOperate } = require("../model/fsoperate_session");
 const fsoperate = require("../module/fsoperate");
 const fs = require("fs");
 const os = require("os");
@@ -31,7 +31,7 @@ router.post("/rm", (req, res) => {
   let stack = parseHandle(req.body);
   let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
   let names = filesToPaths(stack, req.session.fsos.cwd);
-  let obj = fileOperate.batchExectue(fileOperate.rm, names);
+  fileOperate.batchExectue(fileOperate.rm, names);
   sendHandle(req, res, true);
 });
 
@@ -171,9 +171,7 @@ router.post("/upload", (req, res) => {
       let readStream = fs.createReadStream(uploadedPath);
       let writeStream = fs.createWriteStream(dstPath);
       readStream.pipe(writeStream);
-      fs.unlink(uploadedPath, (err) => {
-        /*ignore*/
-      });
+      fs.unlink(uploadedPath, () => { });
       res.send("Done");
     } catch (err) {
       res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
@@ -202,7 +200,7 @@ router.get("/download/:name", (req, res) => {
         filename: encodeURIComponent(req.params.name.trim())
       }
     },
-    (err) => { }
+    () => { }
   );
 });
 
