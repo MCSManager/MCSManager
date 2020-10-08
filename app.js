@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //运行时环境检测
 try {
   let versionNum = parseInt(process.version.replace(/v/gim, "").split(".")[0]);
