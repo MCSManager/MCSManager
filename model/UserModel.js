@@ -13,25 +13,11 @@ module.exports.registerUser = (username, password) => {
 };
 
 module.exports.loginUser = (username, password, truecb, falsecb, enkey) => {
-  return userCenters.loginCheck(
-    username,
-    password,
-    truecb,
-    falsecb,
-    enkey,
-    false
-  );
+  return userCenters.loginCheck(username, password, truecb, falsecb, enkey, false);
 };
 
 module.exports.beliveLogin = (username, password, truecb, falsecb) => {
-  return userCenters.loginCheck(
-    username,
-    password,
-    truecb,
-    falsecb,
-    null,
-    true
-  );
+  return userCenters.loginCheck(username, password, truecb, falsecb, null, true);
 };
 
 module.exports.deleteUser = (username, truecb, falsecb) => {

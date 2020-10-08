@@ -2,8 +2,7 @@ const loginedContainer = require("./LoginedContainer");
 
 function randomString(len) {
   len = len || 32;
-  var $chars =
-    "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_";
+  var $chars = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_";
   var maxPos = $chars.length;
   var pwd = "";
   for (let i = 0; i < len; i++) {
@@ -12,13 +11,7 @@ function randomString(len) {
   return pwd;
 }
 
-function defaultFalseCallBack(
-  req,
-  res,
-  ResponseKey,
-  ResponseValue,
-  notAjaxRedirect
-) {
+function defaultFalseCallBack(req, res, ResponseKey, ResponseValue, notAjaxRedirect) {
   if (req.xhr) {
     res.send({
       ResponseKey: ResponseKey,
@@ -34,18 +27,13 @@ module.exports.randomString = randomString;
 
 module.exports.needLogin = (req, res, trueCallBack, falseCallBack) => {
   let username = req.session["username"];
-  if (
-    req.session["login"] &&
-    loginedContainer.isLogined(req.sessionID, username)
-  ) {
+  if (req.session["login"] && loginedContainer.isLogined(req.sessionID, username)) {
     if (req.session["login"] === true && username) {
       trueCallBack && trueCallBack();
       return true;
     }
   }
-  falseCallBack
-    ? falseCallBack()
-    : defaultFalseCallBack(req, res, "user/status", "NotLogin");
+  falseCallBack ? falseCallBack() : defaultFalseCallBack(req, res, "user/status", "NotLogin");
   return false;
 };
 
@@ -92,9 +80,7 @@ module.exports.tokenCheck = (req, res, trueCallBack, falseCallBack) => {
       return;
     }
   }
-  falseCallBack
-    ? falseCallBack()
-    : defaultFalseCallBack(req, res, "user/status", "NotToken", "/error/token");
+  falseCallBack ? falseCallBack() : defaultFalseCallBack(req, res, "user/status", "NotToken", "/error/token");
 };
 
 const serverModel = require("../model/ServerModel");

@@ -37,11 +37,7 @@ serverModel.ServerManager().on("open_next", (data) => {
   if (server) {
     // 若已设定值，则使用已设定值
     if (server.dataModel.mcpingConfig.mcpingPort) {
-      mcPingProtocol.CreateMCPingTask(
-        data.serverName,
-        host,
-        parseInt(server.dataModel.mcpingConfig.mcpingPort)
-      );
+      mcPingProtocol.CreateMCPingTask(data.serverName, host, parseInt(server.dataModel.mcpingConfig.mcpingPort));
       return;
     }
     // 首先从配置文件读取，若成功读取则使用配置文件，否则使用原值
@@ -51,11 +47,7 @@ serverModel.ServerManager().on("open_next", (data) => {
         mcPingProtocol.CreateMCPingTask(data.serverName, host, 25565);
       } else {
         // 配置文件存在，读取配置
-        mcPingProtocol.CreateMCPingTask(
-          data.serverName,
-          host,
-          parseInt(obj["server-port"])
-        );
+        mcPingProtocol.CreateMCPingTask(data.serverName, host, parseInt(obj["server-port"]));
       }
     });
   }

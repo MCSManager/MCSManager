@@ -15,13 +15,7 @@ function CreateScheduleJob(obj) {
   let id = tools.randomString(6) + "_" + new Date().getTime();
   let thisServer = serverModel.ServerManager().getServer(obj.servername);
 
-  schedulejob.createScheduleJobCount(
-    id,
-    obj.time,
-    obj.count,
-    obj.commande,
-    obj.servername
-  );
+  schedulejob.createScheduleJobCount(id, obj.time, obj.count, obj.commande, obj.servername);
 }
 
 //过滤计划任务列表

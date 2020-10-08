@@ -94,11 +94,7 @@ setInterval(function () {
 
   let useMemBai = ((os.freemem() / os.totalmem()) * 100).toFixed(0);
   //压入记录器
-  MCSERVER.logCenter.pushLogData(
-    "CPU",
-    tools.getMineTime(),
-    parseInt(cacheCPU)
-  );
+  MCSERVER.logCenter.pushLogData("CPU", tools.getMineTime(), parseInt(cacheCPU));
   MCSERVER.logCenter.pushLogData("RAM", tools.getMineTime(), 100 - useMemBai);
 
   setTimeout(() => counter.save(), 0); //让其异步地去保存

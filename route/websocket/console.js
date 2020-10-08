@@ -36,20 +36,13 @@ serverModel.ServerManager().on("exit", (data) => {
     setTimeout(() => {
       serverModel.startServer(data.serverName);
     }, 5000);
-    selectWebsocket(data.serverName, (socket) =>
-      response.wsMsgWindow(
-        socket.ws,
-        "检测到服务器关闭，稍后将根据任务自动重启！"
-      )
-    );
+    selectWebsocket(data.serverName, (socket) => response.wsMsgWindow(socket.ws, "检测到服务器关闭，稍后将根据任务自动重启！"));
     return;
   }
   //输出到标准输出
   server.printlnCommandLine("服务端 " + data.serverName + " 关闭.");
   // 告知前端已关闭
-  selectWebsocket(data.serverName, (socket) =>
-    response.wsMsgWindow(socket.ws, "服务器关闭")
-  );
+  selectWebsocket(data.serverName, (socket) => response.wsMsgWindow(socket.ws, "服务器关闭"));
   // 传递服务器关闭事件
   serverModel.ServerManager().emit("exit_next", data);
   // 历史记录类释放
@@ -82,16 +75,13 @@ WebSocketObserver().listener("server/console/ws", (data) => {
   let serverName = data.body.trim();
 
   if (permssion.isCanServer(userName, serverName)) {
-    MCSERVER.log(
-      "[" + serverName + "] >>> 准许用户 " + userName + " 控制台监听"
-    );
+    MCSERVER.log("[" + serverName + "] >>> 准许用户 " + userName + " 控制台监听");
 
     // 设置监听终端
     data.WsSession["console"] = serverName;
 
     // 重置用户历史指针
-    const instanceLogHistory = serverModel.ServerManager().getServer(serverName)
-      .logHistory;
+    const instanceLogHistory = serverModel.ServerManager().getServer(serverName).logHistory;
     if (instanceLogHistory) instanceLogHistory.setPoint(userName, 0);
     return;
   }

@@ -44,9 +44,7 @@ class ServerManager extends EventEmitter {
       fs.unlinkSync(BASE_SERVER_DIR + name + ".json");
       delete this.serverList[name];
     } catch (err) {
-      throw new Error(
-        "删除服务器出现错误，删除失败并且服务器可能已经损坏:" + err
-      );
+      throw new Error("删除服务器出现错误，删除失败并且服务器可能已经损坏:" + err);
     }
   }
 
@@ -85,14 +83,8 @@ class ServerManager extends EventEmitter {
   }
 
   startMinecraftServer(name) {
-    if (!this.isExist(name))
-      throw new Error(
-        "您选择的服务器 [" +
-          name +
-          "] 似乎不存在，请重新创建或检查数据是否完整。"
-      );
-    if (this.serverList[name].isRun())
-      throw new Error("服务器已经运行,无法再继续运行");
+    if (!this.isExist(name)) throw new Error("您选择的服务器 [" + name + "] 似乎不存在，请重新创建或检查数据是否完整。");
+    if (this.serverList[name].isRun()) throw new Error("服务器已经运行,无法再继续运行");
     return this.serverList[name].start();
   }
 

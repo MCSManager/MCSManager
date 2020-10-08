@@ -37,13 +37,7 @@ class LogHistory {
       }
     } else {
       fs.writeFile(this.path, text, (err) => {
-        if (err)
-          MCSERVER.log(
-            "实例",
-            this.id,
-            "日志历史记录文件创建错误:",
-            err.message
-          );
+        if (err) MCSERVER.log("实例", this.id, "日志历史记录文件创建错误:", err.message);
       });
     }
   }
@@ -74,12 +68,7 @@ class LogHistory {
       // 倒置指针，从末尾开始读字符
       fs.read(fd, buffer, 0, size, endReadPoint, (err, bytesRead, buffer) => {
         if (err) {
-          MCSERVER.log(
-            "实例",
-            this.id,
-            "日志历史记录文件读取错误:",
-            err.message
-          );
+          MCSERVER.log("实例", this.id, "日志历史记录文件读取错误:", err.message);
           fs.closeSync(fd);
           return;
         }
@@ -118,12 +107,7 @@ class LogHistory {
       // 倒置指针，从末尾开始读字符
       fs.read(fd, buffer, 0, size, endReadPoint, (err, bytesRead, buffer) => {
         if (err) {
-          MCSERVER.log(
-            "实例",
-            this.id,
-            "日志历史记录文件读取错误:",
-            err.message
-          );
+          MCSERVER.log("实例", this.id, "日志历史记录文件读取错误:", err.message);
           return;
         }
         const logText = buffer.slice(0, bytesRead).toString();

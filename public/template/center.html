@@ -4,8 +4,7 @@
       <div class="Panel">
         <div class="PanelTitle PanelBlack">
           <!--请不要怀疑这是在欺骗您数据统计日期来自前端，事实上，后端是在每月1日统计至今，所以是一致的-->
-          控制面板 {{ new Date().getMonth()+1 }}月1日 ~ {{ new
-          Date().getMonth()+1 }}月{{ new Date().getDate() }}日 基础监控
+          控制面板 {{ new Date().getMonth()+1 }}月1日 ~ {{ new Date().getMonth()+1 }}月{{ new Date().getDate() }}日 基础监控
         </div>
         <div class="PanelBody">
           <div class="row">
@@ -47,9 +46,7 @@
           <div class="">
             <div class="row">
               <div class="col-md-4 col-sm-4">
-                <div class="LogV">
-                  {{ (sysTotalmem - sysFreemem).toFixed(1) }} MB
-                </div>
+                <div class="LogV">{{ (sysTotalmem - sysFreemem).toFixed(1) }} MB</div>
                 <div class="LogK">系统已使用内存</div>
               </div>
               <div class="col-md-4 col-sm-4">

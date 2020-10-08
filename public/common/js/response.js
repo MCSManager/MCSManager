@@ -9,9 +9,7 @@
   RES.TOKEN = null;
   RES.getToken = function (callback) {
     //同源策略可以防止其他域对这里发送一个Ajax请求.
-    var _url = MCSERVER.URL(
-      "./token?_LoveYouMaster_Time=" + Date.parse(new Date())
-    );
+    var _url = MCSERVER.URL("./token?_LoveYouMaster_Time=" + Date.parse(new Date()));
     $.get(_url, function (data, status) {
       data = JSON.parse(data);
       if (data.hasOwnProperty("ResponseValue")) {
@@ -75,10 +73,7 @@
 
     //响应事件函数
     function responseCallback(response, status, xhr) {
-      if (status != "success")
-        TOOLS.pushMsgWindow(
-          "[ " + status + " ] 由于网络或权限问题,请求的网页无法成功！"
-        );
+      if (status != "success") TOOLS.pushMsgWindow("[ " + status + " ] 由于网络或权限问题,请求的网页无法成功！");
       callback && callback();
     }
 

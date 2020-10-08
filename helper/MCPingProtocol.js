@@ -113,10 +113,7 @@ function CreateMCPingTask(id, ip, port) {
       } else {
         // 连续查询错误次数 300 次以上，即 30 分钟，主动销毁自身
         TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount++;
-        if (
-          TASK_OBJECT_DATABASE[id] &&
-          TASK_OBJECT_DATABASE[id].errorCount > 300
-        ) {
+        if (TASK_OBJECT_DATABASE[id] && TASK_OBJECT_DATABASE[id].errorCount > 300) {
           DestroyMCPingTask(id);
         }
       }

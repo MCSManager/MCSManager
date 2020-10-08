@@ -7,17 +7,11 @@
           <div class="row">
             <div class="col-sm-12 PanelItemF">
               <div class="PanelItem" v-on:click="toBackConsole()">
-                <span
-                  class="glyphicon glyphicon-backward"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
                 返回到控制台
               </div>
               <div class="PanelItem" v-on:click="toBackNew()">
-                <span
-                  class="glyphicon glyphicon-plus"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 新建计划任务项目
               </div>
             </div>
@@ -25,12 +19,7 @@
           <div class="row">
             <div class="col-lg-12">
               <p>欢迎您，{{username}}，这是本服务器的计划任务列表</p>
-              <p>
-                <b>凡是</b> __xxx__
-                格式的命令均是内部命令，不影响使用，请勿乱使用，以防错误。
-                <b>另外</b>，任务性质为 0 代表重复任务，不为 0
-                代表计次任务并且代表剩余计次数量。
-              </p>
+              <p><b>凡是</b> __xxx__ 格式的命令均是内部命令，不影响使用，请勿乱使用，以防错误。 <b>另外</b>，任务性质为 0 代表重复任务，不为 0 代表计次任务并且代表剩余计次数量。</p>
               <table class="PropertiesList" width="100%">
                 <tr>
                   <th class="PhoneDisplayNone">任务序号</th>
@@ -65,21 +54,13 @@
     MCSERVER.website.schedule = {};
 
     // 定义页面地址
-    TOOLS.definePage(
-      "template/component/schedule",
-      "schedule/list",
-      MCSERVER.listenServername
-    );
+    TOOLS.definePage("template/component/schedule", "schedule/list", MCSERVER.listenServername);
 
     VIEW_MODEL.newVue("ServerSchedule", {
       el: "#ServerSchedule",
       methods: {
         toBackConsole: function () {
-          RES.redirectPage(
-            "./template/component/console.html",
-            "server/console",
-            this.servername
-          );
+          RES.redirectPage("./template/component/console.html", "server/console", this.servername);
         },
         toBackNew: function () {
           RES.redirectPage("./template/component/new_schedule.html", null);

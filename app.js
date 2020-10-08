@@ -40,8 +40,7 @@ const tools = require("./core/tools");
 //生成第一次配置文件
 const INIT_CONFIG_PATH = "./model/init_config/";
 const PRO_CONFIG = "./property.js";
-if (!fs.existsSync(PRO_CONFIG))
-  tools.mCopyFileSync(INIT_CONFIG_PATH + "property.js", PRO_CONFIG);
+if (!fs.existsSync(PRO_CONFIG)) tools.mCopyFileSync(INIT_CONFIG_PATH + "property.js", PRO_CONFIG);
 
 //加载配置
 require("./property");
@@ -158,12 +157,7 @@ app.use("/public", express.static("./public"));
 // console 中间件挂载
 app.use((req, res, next) => {
   // 部分请求不必显示
-  if (
-    req.originalUrl.indexOf("/api/") == -1 &&
-    req.originalUrl.indexOf("/fs/") == -1 &&
-    req.originalUrl.indexOf("/fs_auth/") == -1 &&
-    req.originalUrl.indexOf("/fs_auth/") == -1
-  ) {
+  if (req.originalUrl.indexOf("/api/") == -1 && req.originalUrl.indexOf("/fs/") == -1 && req.originalUrl.indexOf("/fs_auth/") == -1 && req.originalUrl.indexOf("/fs_auth/") == -1) {
     // MCSERVER.log('[', req.method.cyan, ']', '[', req.ip, ']', req.originalUrl);
   }
   if (MCSERVER.localProperty.is_allow_csrf) {
@@ -226,13 +220,8 @@ process.on("unhandledRejection", (reason, p) => {
     if (!fs.existsSync(RECORD_PARH)) fs.mkdirSync(RECORD_PARH);
 
     // 生成不 git 同步的文件
-    if (!fs.existsSync(CENTEN_LOG_JSON_PATH))
-      tools.mCopyFileSync(
-        INIT_CONFIG_PATH + "info_reset.json",
-        CENTEN_LOG_JSON_PATH
-      );
-    if (!fs.existsSync(PUBLIC_URL_PATH))
-      tools.mCopyFileSync(INIT_CONFIG_PATH + "INIT_URL.js", PUBLIC_URL_PATH);
+    if (!fs.existsSync(CENTEN_LOG_JSON_PATH)) tools.mCopyFileSync(INIT_CONFIG_PATH + "info_reset.json", CENTEN_LOG_JSON_PATH);
+    if (!fs.existsSync(PUBLIC_URL_PATH)) tools.mCopyFileSync(INIT_CONFIG_PATH + "INIT_URL.js", PUBLIC_URL_PATH);
   } catch (err) {
     MCSERVER.error("初始化文件环境失败,建议重启,请检查以下报错:", err);
   }
@@ -242,20 +231,13 @@ process.on("unhandledRejection", (reason, p) => {
 MCSERVER.infoLog("OnlineFs", "正在初始化文件管理路由与中间件 ");
 
 //必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
-app.use(
-  ["/fs/mkdir", "/fs/rm", "/fs/patse", "/fs/cp", "/fs/rename", "/fs/ls"],
-  function (req, res, next) {
-    if (req.session.fsos && req.xhr) {
-      next();
-      return;
-    }
-    res
-      .status(403)
-      .send(
-        "禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！"
-      );
+app.use(["/fs/mkdir", "/fs/rm", "/fs/patse", "/fs/cp", "/fs/rename", "/fs/ls"], function (req, res, next) {
+  if (req.session.fsos && req.xhr) {
+    next();
+    return;
   }
-);
+  res.status(403).send("禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！");
+});
 
 //载入在线文件管理路由
 app.use("/fs_auth", require("./onlinefs/controller/auth"));
@@ -279,41 +261,27 @@ app.use("/fs", require("./onlinefs/controller/function"));
   if (host == "::") host = "127.0.0.1";
 
   //App Http listen
-  app.listen(
-    MCSERVER.localProperty.http_port,
-    MCSERVER.localProperty.http_ip,
-    () => {
-      MCSERVER.infoLog(
-        "HTTP",
-        "HTTP 模块监听: [ http://" +
-          (host || "127.0.0.1".yellow) +
-          ":" +
-          port +
-          " ]"
-      );
+  app.listen(MCSERVER.localProperty.http_port, MCSERVER.localProperty.http_ip, () => {
+    MCSERVER.infoLog("HTTP", "HTTP 模块监听: [ http://" + (host || "127.0.0.1".yellow) + ":" + port + " ]");
 
-      //现在执行 FTP 服务器启动过程
-      ftpServerInterface.initFTPdServerOptions({
-        host: MCSERVER.localProperty.ftp_ip || "127.0.0.1",
-        port: MCSERVER.localProperty.ftp_port,
-        tls: null,
-      });
+    //现在执行 FTP 服务器启动过程
+    ftpServerInterface.initFTPdServerOptions({
+      host: MCSERVER.localProperty.ftp_ip || "127.0.0.1",
+      port: MCSERVER.localProperty.ftp_port,
+      tls: null,
+    });
 
-      if (MCSERVER.localProperty.ftp_is_allow) require("./ftpd/index"); //执行ftp逻辑
+    if (MCSERVER.localProperty.ftp_is_allow) require("./ftpd/index"); //执行ftp逻辑
 
-      MCSERVER.infoLog("INFO", "配置文件: property.js 文件");
-      MCSERVER.infoLog(
-        "INFO",
-        "文档参阅: https://github.com/suwings/mcsmanager"
-      );
+    MCSERVER.infoLog("INFO", "配置文件: property.js 文件");
+    MCSERVER.infoLog("INFO", "文档参阅: https://github.com/suwings/mcsmanager");
 
-      if (MCSERVER.allError <= 0) {
-        MCSERVER.infoLog("INFO", "控制面板已经启动");
-      } else {
-        MCSERVER.infoLog("INFO", "控制面板启动异常");
-      }
+    if (MCSERVER.allError <= 0) {
+      MCSERVER.infoLog("INFO", "控制面板已经启动");
+    } else {
+      MCSERVER.infoLog("INFO", "控制面板启动异常");
     }
-  );
+  });
 })();
 
 //用于捕捉前方所有路由都未经过的请求，则可为 404 页面

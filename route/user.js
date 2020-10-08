@@ -14,8 +14,7 @@ const userManager = userCenter();
 router.post("/loginout", function (req, res) {
   if (!req.xhr) return;
   //删除一些辅助管理器的值
-  if (req.session["username"] && req.session["login"])
-    loginedContainer.delLogined(req.sessionID);
+  if (req.session["username"] && req.session["login"]) loginedContainer.delLogined(req.sessionID);
 
   TokenManager.delToken(req.session["token"]);
   MCSERVER.log("[ loginout ] 用户:", req.session["username"], "退出，会话注销");
@@ -65,21 +64,13 @@ router.post("/login", function (req, res) {
   let enkey = req.session["login_md5key"] || "";
   //登陆规则
   if (!LoginRule(ip)) {
-    response.returnMsg(
-      res,
-      "login/check",
-      "密码错误次数过多!您已被锁定!请10分钟之后再进行登录!"
-    );
+    response.returnMsg(res, "login/check", "密码错误次数过多!您已被锁定!请10分钟之后再进行登录!");
     return;
   }
 
   //判断是否有 ws 正在连接
   if (OnlyLoginCheck(req.sessionID)) {
-    response.returnMsg(
-      res,
-      "login/check",
-      "您已在此浏览器登录过账号,请关闭所有与服务器的链接网页并退出账号!"
-    );
+    response.returnMsg(res, "login/check", "您已在此浏览器登录过账号,请关闭所有与服务器的链接网页并退出账号!");
     return;
   }
 
@@ -113,9 +104,7 @@ router.post("/login", function (req, res) {
       //密码错误记录
       MCSERVER.login[ip] ? MCSERVER.login[ip]++ : (MCSERVER.login[ip] = 1);
       //防止数目过于太大 溢出
-      MCSERVER.login[ip] > 1000
-        ? (MCSERVER.login[ip] = 1000)
-        : (MCSERVER.login[ip] = MCSERVER.login[ip]);
+      MCSERVER.login[ip] > 1000 ? (MCSERVER.login[ip] = 1000) : (MCSERVER.login[ip] = MCSERVER.login[ip]);
       //passwordError
       counter.plus("passwordError");
       req.session["login"] = false;

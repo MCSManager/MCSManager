@@ -52,11 +52,7 @@ class UserCenter {
   //理应只有管理员可以操作
   reUsername(username, newUsername) {
     let oldDataModel = this.userList[username].dataModel;
-    let newUser = new User(
-      newUsername,
-      oldDataModel.password,
-      oldDataModel.salt
-    );
+    let newUser = new User(newUsername, oldDataModel.password, oldDataModel.salt);
     //移植數據
     // for (let k in oldDataModel) {
     //     if (k == '__filename__') continue;
@@ -70,18 +66,8 @@ class UserCenter {
     this.deleteUser(username);
   }
 
-  loginCheck(
-    username,
-    password,
-    truecb,
-    falsecb,
-    md5key,
-    notSafeLogin = false
-  ) {
-    if (
-      this.userList.hasOwnProperty(username) &&
-      this.userList[username] != undefined
-    ) {
+  loginCheck(username, password, truecb, falsecb, md5key, notSafeLogin = false) {
+    if (this.userList.hasOwnProperty(username) && this.userList[username] != undefined) {
       let loginUser = this.userList[username];
       try {
         loginUser.load();

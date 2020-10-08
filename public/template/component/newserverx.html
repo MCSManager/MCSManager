@@ -46,10 +46,7 @@
               <div class="PAGE_NewserverxLogV">
                 <p>引导创建(推荐)</p>
               </div>
-              <div class="PAGE_NewserverxLogK">
-                适应于基于 Java 开发的主流服务端（Spigot，Bukkit，Bungeecord
-                等）
-              </div>
+              <div class="PAGE_NewserverxLogK">适应于基于 Java 开发的主流服务端（Spigot，Bukkit，Bungeecord 等）</div>
             </div>
           </div>
           <div class="col-md-4">
@@ -57,9 +54,7 @@
               <div class="PAGE_NewserverxLogV">
                 <p>快速创建</p>
               </div>
-              <div class="PAGE_NewserverxLogK">
-                适应于基于 Java 开发的主流服务端，并且非常熟悉面板操作的用户
-              </div>
+              <div class="PAGE_NewserverxLogK">适应于基于 Java 开发的主流服务端，并且非常熟悉面板操作的用户</div>
             </div>
           </div>
           <div class="col-md-4">
@@ -67,9 +62,7 @@
               <div class="PAGE_NewserverxLogV">
                 <p>自定义启动命令</p>
               </div>
-              <div class="PAGE_NewserverxLogK">
-                支持所有类型的服务端，支持所有程序，甚至可以启动脚本来实现各种需求
-              </div>
+              <div class="PAGE_NewserverxLogK">支持所有类型的服务端，支持所有程序，甚至可以启动脚本来实现各种需求</div>
             </div>
           </div>
         </div>
@@ -77,11 +70,7 @@
     </div>
   </div>
 
-  <div
-    class="PAGE_NewserverxCreatePanelWapper"
-    v-show="pagecode==1"
-    style="max-width: 500px"
-  >
+  <div class="PAGE_NewserverxCreatePanelWapper" v-show="pagecode==1" style="max-width: 500px">
     <div class="Panel PanelBlack">
       <div class="PanelTitle">项目确定</div>
       <div class="PanelBody">
@@ -96,20 +85,11 @@
             <p>项目存放目录，一般情况自动即可</p>
             <div class="input-group input-group-sm">
               <span class="input-group-addon">项目位置</span>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="[自动]"
-                v-model="cwd"
-              />
+              <input type="text" class="form-control" placeholder="[自动]" v-model="cwd" />
             </div>
             <div class="PAGE_NewserverNextWapper">
-              <button class="btn btn-warning" v-on:click="previousStep">
-                上一步
-              </button>
-              <button class="btn btn-success" v-on:click="nextStep">
-                下一步
-              </button>
+              <button class="btn btn-warning" v-on:click="previousStep">上一步</button>
+              <button class="btn btn-success" v-on:click="nextStep">下一步</button>
             </div>
           </div>
         </div>
@@ -123,39 +103,19 @@
       <div class="PanelBody">
         <div class="row">
           <div class="col-md-12">
-            <p v-show="selectCreateType==0">
-              请上传你的核心程序或者 Minecraft 服务端程序。
-            </p>
-            <p v-show="selectCreateType==0">
-              通常都是以 jar
-              结尾的文件，支持大部分主流服务端（Spigot，Bukkit，Bungeecord 等）
-            </p>
-            <p v-show="selectCreateType==2">
-              上传你的程序，记住你的文件名，稍后可能会用到
-            </p>
-            <p v-show="selectCreateType==2">
-              支持任何可执行程序，支持所有服务端程序，（如 jar,exe,bat,sh）
-            </p>
+            <p v-show="selectCreateType==0">请上传你的核心程序或者 Minecraft 服务端程序。</p>
+            <p v-show="selectCreateType==0">通常都是以 jar 结尾的文件，支持大部分主流服务端（Spigot，Bukkit，Bungeecord 等）</p>
+            <p v-show="selectCreateType==2">上传你的程序，记住你的文件名，稍后可能会用到</p>
+            <p v-show="selectCreateType==2">支持任何可执行程序，支持所有服务端程序，（如 jar,exe,bat,sh）</p>
             <p>
-              <button class="btn btn-primary" v-on:click="uploadFile()">
-                选择上传文件
-              </button>
-              <span
-                >&nbsp;&nbsp;上传进度:
-                <span id="uploadPercentComplete">0%</span></span
-              >
+              <button class="btn btn-primary" v-on:click="uploadFile()">选择上传文件</button>
+              <span>&nbsp;&nbsp;上传进度: <span id="uploadPercentComplete">0%</span></span>
             </p>
             <p class="red">实例项目存放目录: {{serverCwd}}</p>
-            <p class="red">
-              启动程序端: <span class="color-high-red">{{jarName}}</span>
-            </p>
+            <p class="red">启动程序端: <span class="color-high-red">{{jarName}}</span></p>
             <div class="PAGE_NewserverNextWapper">
-              <button class="btn btn-warning" v-on:click="previousStep">
-                上一步
-              </button>
-              <button class="btn btn-success" v-on:click="nextStep">
-                下一步
-              </button>
+              <button class="btn btn-warning" v-on:click="previousStep">上一步</button>
+              <button class="btn btn-success" v-on:click="nextStep">下一步</button>
             </div>
           </div>
         </div>
@@ -163,11 +123,7 @@
     </div>
   </div>
 
-  <div
-    class="PAGE_NewserverxCreatePanelWapper"
-    style="margin-top: 5%"
-    v-show="pagecode==3&&selectCreateType==0"
-  >
+  <div class="PAGE_NewserverxCreatePanelWapper" style="margin-top: 5%" v-show="pagecode==3&&selectCreateType==0">
     <div class="Panel PanelGreen">
       <div class="PanelTitle">即将创建</div>
       <div class="PanelBody">
@@ -175,44 +131,25 @@
           <div class="col-md-12">
             <h4>确保 Java 安装正常，再填写相关启动参数，即可创建完成</h4>
             <br />
-            <p>
-              [选填]
-              根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位（如
-              1024M，2G）
-            </p>
+            <p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位（如 1024M，2G）</p>
             <div class="row">
               <div class="col-sm-6">
                 <div class="input-group input-group-sm">
                   <span class="input-group-addon"> 最大内存堆 </span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="Xmx"
-                    placeholder="[自动] 若填写请加单位(如1024M,2G)"
-                  />
+                  <input type="text" class="form-control" v-model="Xmx" placeholder="[自动] 若填写请加单位(如1024M,2G)" />
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="input-group input-group-sm">
                   <span class="input-group-addon"> 初始内存堆 </span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="Xms"
-                    placeholder="[自动] 若填写请加单位(如1024M,2G)"
-                  />
+                  <input type="text" class="form-control" v-model="Xms" placeholder="[自动] 若填写请加单位(如1024M,2G)" />
                 </div>
               </div>
             </div>
             <p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
             <div class="input-group input-group-sm">
               <span class="input-group-addon">启动附加参数</span>
-              <input
-                type="text"
-                class="form-control"
-                v-model="addCmd"
-                placeholder="[无附加参数，可不填] (列如: -server)"
-              />
+              <input type="text" class="form-control" v-model="addCmd" placeholder="[无附加参数，可不填] (列如: -server)" />
             </div>
           </div>
           <div class="col-md-12">
@@ -220,17 +157,10 @@
             <p><b>实例项目名:</b> {{name}}</p>
             <p><b>服务端文件:</b> {{jarName}}</p>
             <p><b>存放目录:</b> {{serverCwd}}</p>
-            <p>
-              <b>最大内存:</b>{{Xmx || '自动'}}<b> | 最小内存:</b>{{Xms ||
-              '自动'}} <b> | 附加参数:</b>{{addCmd || '无'}}
-            </p>
+            <p><b>最大内存:</b>{{Xmx || '自动'}}<b> | 最小内存:</b>{{Xms || '自动'}} <b> | 附加参数:</b>{{addCmd || '无'}}</p>
             <div class="PAGE_NewserverNextWapper">
-              <button class="btn btn-warning" v-on:click="previousStep">
-                上一步
-              </button>
-              <button class="btn btn-success" v-on:click="toCreateServer">
-                确认无误，立刻创建
-              </button>
+              <button class="btn btn-warning" v-on:click="previousStep">上一步</button>
+              <button class="btn btn-success" v-on:click="toCreateServer">确认无误，立刻创建</button>
             </div>
           </div>
         </div>
@@ -238,29 +168,18 @@
     </div>
   </div>
 
-  <div
-    class="PAGE_NewserverxCreatePanelWapper"
-    style="margin-top: 10%"
-    v-show="pagecode==3&&selectCreateType==2"
-  >
+  <div class="PAGE_NewserverxCreatePanelWapper" style="margin-top: 10%" v-show="pagecode==3&&selectCreateType==2">
     <div class="Panel PanelBlack">
       <div class="PanelTitle">填写自定义启动命令</div>
       <div class="PanelBody">
         <div class="row">
           <div class="col-md-12">
-            <p>
-              通常是一行启动命令，若你想启动多行命令，可将命令写在脚本文件中，然后在这里启动脚本
-            </p>
+            <p>通常是一行启动命令，若你想启动多行命令，可将命令写在脚本文件中，然后在这里启动脚本</p>
 
             <br />
             <div class="input-group input-group-sm">
               <span class="input-group-addon">启动命令</span>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="程序启动命令.... (列如: java -jar xxx.jar)"
-                v-model="highCommande"
-              />
+              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)" v-model="highCommande" />
             </div>
             <small>运行目录: {{serverCwd}} </small>
             <br />
@@ -268,25 +187,13 @@
             <br /><br />
             <p>自定义命令可以帮助您执行任何命令，请务必仔细阅读以下文字！</p>
             <ul class="ulInfo">
-              <li>
-                若是 java 程序可能需要添加
-                -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前。
-              </li>
-              <li>
-                示范: java -Djline.terminal=jline.UnsupportedTerminal -jar
-                run.jar --nogui
-              </li>
-              <li>
-                示范: "bash"，"cmd.exe"，"./start_server.sh" 或 "python xxx.py"
-              </li>
+              <li>若是 java 程序可能需要添加 -Djline.terminal=jline.UnsupportedTerminal 参数在 -jar 之前。</li>
+              <li>示范: java -Djline.terminal=jline.UnsupportedTerminal -jar run.jar --nogui</li>
+              <li>示范: "bash"，"cmd.exe"，"./start_server.sh" 或 "python xxx.py"</li>
             </ul>
             <div class="PAGE_NewserverNextWapper">
-              <button class="btn btn-warning" v-on:click="previousStep">
-                上一步
-              </button>
-              <button class="btn btn-success" v-on:click="toCreateServer">
-                确认无误，立刻创建
-              </button>
+              <button class="btn btn-warning" v-on:click="previousStep">上一步</button>
+              <button class="btn btn-success" v-on:click="toCreateServer">确认无误，立刻创建</button>
             </div>
           </div>
         </div>
@@ -294,19 +201,8 @@
     </div>
   </div>
   <!-- 文件上传时的表单 -->
-  <form
-    id="PAGE_UploadForm"
-    style="display: none"
-    method="post"
-    enctype="multipart/form-data"
-    action="/fileupload"
-  >
-    <input
-      type="file"
-      name="upload_file"
-      id="PAGE_UploadFormButton"
-      v-on:change="uploadFormChange"
-    />
+  <form id="PAGE_UploadForm" style="display: none" method="post" enctype="multipart/form-data" action="/fileupload">
+    <input type="file" name="upload_file" id="PAGE_UploadFormButton" v-on:change="uploadFormChange" />
     <input type="text" name="cwd" v-model="cwd" />
   </form>
 </div>
@@ -411,8 +307,7 @@
       },
       computed: {
         serverCwd: function () {
-          if (this.cwd == "")
-            return "<面板所在目录>/server/server_core/" + this.name + "/";
+          if (this.cwd == "") return "<面板所在目录>/server/server_core/" + this.name + "/";
           return this.cwd;
         },
       },

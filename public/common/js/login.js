@@ -1,12 +1,5 @@
 //通用登陆 API js
-MCSERVER.login = function (
-  username,
-  password,
-  rand,
-  loginSuccess,
-  loginError,
-  error
-) {
+MCSERVER.login = function (username, password, rand, loginSuccess, loginError, error) {
   var POST_OBJECT = null;
   $.get({
     url: MCSERVER.URL("./user/login_key"),

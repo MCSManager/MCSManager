@@ -135,10 +135,7 @@ router.post("/create_user", function (req, res) {
   try {
     // 账号密码判定
     const uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
-    if (
-      !uPattern.test(req.body.username) ||
-      !tools.between(req.body.password, 6, 18)
-    ) {
+    if (!uPattern.test(req.body.username) || !tools.between(req.body.password, 6, 18)) {
       apiResponse.error(res, new Error("用户名或密码格式不正确"));
       return;
     }
@@ -152,10 +149,7 @@ router.post("/create_user", function (req, res) {
         allowedServerList.push(serverList[k]);
       }
     }
-    userModel
-      .userCenter()
-      .get(req.body.username)
-      .allowedServer(allowedServerList);
+    userModel.userCenter().get(req.body.username).allowedServer(allowedServerList);
     // 数据模型保存
     userModel.userCenter().get(req.body.username).dataModel.save();
     // 返回状态码
@@ -216,9 +210,7 @@ router.all("/restart_server/:name", function (req, res) {
     return;
   }
   // 流量限制 | 60 秒执行一次
-  if (
-    !requestLimit.execute(apiResponse.key(req) + "restart_server", 1000 * 60)
-  ) {
+  if (!requestLimit.execute(apiResponse.key(req) + "restart_server", 1000 * 60)) {
     apiResponse.unavailable(res);
     return;
   }
@@ -282,9 +274,7 @@ router.post("/execute/", function (req, res) {
       return;
     }
     // 启动服务器
-    const result = serverModel
-      .ServerManager()
-      .sendMinecraftServer(params.name, params.command);
+    const result = serverModel.ServerManager().sendMinecraftServer(params.name, params.command);
     // 返回状态码
     result ? apiResponse.ok(res) : apiResponse.error(res);
   } catch (err) {

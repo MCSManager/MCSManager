@@ -28,11 +28,7 @@ if (realArgv.length >= 1) {
     //执行解压
     const absPath = realArgv[1];
     //目录名与原文件同名
-    const zipExtractDir = path.normalize(
-      path.dirname(absPath) +
-        "/解压文件_" +
-        path.basename(absPath, path.extname(absPath))
-    );
+    const zipExtractDir = path.normalize(path.dirname(absPath) + "/解压文件_" + path.basename(absPath, path.extname(absPath)));
     // 创建目标目录
     try {
       fs.mkdirSync(zipExtractDir);
@@ -63,9 +59,7 @@ if (realArgv.length >= 1) {
   // 此压缩库支持异步写法，但以防不测，依然列入子进程
   if (ACTION === "compress") {
     const absPath = realArgv[1];
-    const compressZipPath = path.normalize(
-      path.dirname(absPath) + "/压缩文件_" + path.basename(absPath) + ".zip"
-    );
+    const compressZipPath = path.normalize(path.dirname(absPath) + "/压缩文件_" + path.basename(absPath) + ".zip");
     // 进行压缩操作
     compressing.zip
       .compressDir(absPath, compressZipPath, {

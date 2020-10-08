@@ -45,12 +45,7 @@ router.post("/", (req, res) => {
       });
       res.send("Done");
 
-      MCSERVER.log(
-        "[ 文件上传 ] 用户",
-        req.session["username"],
-        "上传文件到",
-        target_path
-      );
+      MCSERVER.log("[ 文件上传 ] 用户", req.session["username"], "上传文件到", target_path);
     } catch (err) {
       res.status(500).send("上传出错" + err);
     }

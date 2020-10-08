@@ -50,13 +50,7 @@
 
   // XSS 攻击防御函数
   TOOLS.encode = function (html) {
-    var rstr = html
-      .replace(/&/gim, "&amp;")
-      .replace(/</gim, "&lt;")
-      .replace(/>/gim, "&gt;")
-      .replace(/\"/gim, "&quot;")
-      .replace(/\'/gim, "&apos;")
-      .replace(/ /gim, "&nbsp;");
+    var rstr = html.replace(/&/gim, "&amp;").replace(/</gim, "&lt;").replace(/>/gim, "&gt;").replace(/\"/gim, "&quot;").replace(/\'/gim, "&apos;").replace(/ /gim, "&nbsp;");
     return rstr;
   };
 
@@ -83,17 +77,11 @@
     var exp = new Date();
     exp.setTime(exp.getTime() - 1);
     var cval = TOOLS.getCookie(name);
-    if (cval != null)
-      document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+    if (cval != null) document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
   };
 
   TOOLS.setCookie = function (name, value) {
-    document.cookie =
-      name +
-      "=" +
-      escape(value) +
-      ";expires=" +
-      new Date(Date.now() + 10000 * 60 * 60 * 4).toGMTString();
+    document.cookie = name + "=" + escape(value) + ";expires=" + new Date(Date.now() + 10000 * 60 * 60 * 4).toGMTString();
   };
 
   //判断是否是一个 标准字符串（标准的定义：仅有字母数字下划线）
@@ -139,14 +127,8 @@
 
     // 基本颜色
     text = text.replace(/([A-Za-z _§&;\-\\.]{1,}:)/gim, "§6$1§r");
-    text = text.replace(
-      /INFO/gm,
-      term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL
-    );
-    text = text.replace(
-      /(\d{2,}:\d{2,}:\d{2,})/gm,
-      term.TERM_TEXT_CYAN + "$1" + term.TERM_NULL
-    );
+    text = text.replace(/INFO/gm, term.TERM_TEXT_GREEN + "INFO" + term.TERM_NULL);
+    text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, term.TERM_TEXT_CYAN + "$1" + term.TERM_NULL);
 
     // Minecraft 原生颜色替代解析
     text = text.replace(/§0/gm, term.TERM_TEXT_WHITE);
@@ -199,16 +181,7 @@
     // 特殊文本替换
     var RegExpStringArr = [
       //蓝色
-      [
-        "Unknown command",
-        "Loading libraries, please wait...",
-        "Loading",
-        "Loaded",
-        "\\d{1,3}%",
-        "true",
-        "false",
-        "plugin.yml",
-      ],
+      ["Unknown command", "Loading libraries, please wait...", "Loading", "Loaded", "\\d{1,3}%", "true", "false", "plugin.yml"],
       //绿色
       [
         "/help",
@@ -229,48 +202,25 @@
         "Preparing start region for level",
       ],
       //红色
-      [
-        "WARN",
-        "EULA",
-        "Error",
-        "Invalid",
-        "Stopping the server",
-        "Caused by",
-        "Stopping",
-      ],
+      ["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
       //黄色
-      [
-        "Starting Minecraft server on",
-        "world_the_end",
-        "world_nether",
-        "Done",
-        "MCSMANAGER",
-      ],
+      ["Starting Minecraft server on", "world_the_end", "world_nether", "Done", "MCSMANAGER"],
     ];
     for (var k in RegExpStringArr) {
       for (var y in RegExpStringArr[k]) {
-        var reg = new RegExp(
-          "(" + RegExpStringArr[k][y].replace(/ /gim, "&nbsp;") + ")",
-          "igm"
-        );
+        var reg = new RegExp("(" + RegExpStringArr[k][y].replace(/ /gim, "&nbsp;") + ")", "igm");
         if (k == 0)
           //蓝色
           text = text.replace(reg, term.TERM_TEXT_BLUE + "$1" + term.TERM_NULL);
         if (k == 1)
           //绿色
-          text = text.replace(
-            reg,
-            term.TERM_TEXT_GREEN + "$1" + term.TERM_NULL
-          );
+          text = text.replace(reg, term.TERM_TEXT_GREEN + "$1" + term.TERM_NULL);
         if (k == 2)
           //红色
           text = text.replace(reg, term.TERM_TEXT_RED + "$1" + term.TERM_NULL);
         if (k == 3)
           //黄色
-          text = text.replace(
-            reg,
-            term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL
-          );
+          text = text.replace(reg, term.TERM_TEXT_YELLOW + "$1" + term.TERM_NULL);
       }
     }
     // 行结尾符号替换
@@ -281,31 +231,16 @@
   //Minecraft 服务器输出基本颜色
   TOOLS.encodeConsoleColorForHtml = function (text) {
     text = text.replace(/\n/gim, "<br />");
-    text = text.replace(
-      /([A-Za-z _&;-\\.]{1,}:)/gim,
-      "<span style='color:#ffa700;'>$1</span>"
-    );
+    text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/gim, "<span style='color:#ffa700;'>$1</span>");
     text = text.replace(/\[/gim, "<span style='color:#10e616;'>[</span>");
     text = text.replace(/\]/gim, "<span style='color:#10e616;'>]</span>");
     text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
-    text = text.replace(
-      /(\d{2,}:\d{2,}:\d{2,})/gm,
-      "<span style='color:#017EBC;'>$1</span>"
-    );
+    text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
     text = text.replace(/§[0-9A-Za-z]{1}/gim, "");
 
     RegExpStringArr = [
       //蓝色
-      [
-        "Unknown command",
-        "Loading libraries, please wait...",
-        "Loading",
-        "Loaded",
-        "\\d{1,3}%",
-        "true",
-        "false",
-        "plugin.yml",
-      ],
+      ["Unknown command", "Loading libraries, please wait...", "Loading", "Loaded", "\\d{1,3}%", "true", "false", "plugin.yml"],
       //绿色
       [
         "/help",
@@ -325,32 +260,13 @@
         "Preparing start region for level",
       ],
       //红色
-      [
-        "WARN",
-        "EULA",
-        "Error",
-        "Invalid",
-        "Stopping the server",
-        "Caused by",
-        "Stopping",
-      ],
+      ["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
       //黄色
-      [
-        "Starting Minecraft server on",
-        "world_the_end",
-        "world_nether",
-        "Usage",
-        "Server thread",
-        "Done",
-        "MCSMANAGER",
-      ],
+      ["Starting Minecraft server on", "world_the_end", "world_nether", "Usage", "Server thread", "Done", "MCSMANAGER"],
     ];
     for (var k in RegExpStringArr) {
       for (var y in RegExpStringArr[k]) {
-        var reg = new RegExp(
-          "(" + RegExpStringArr[k][y].replace(/ /gim, "&nbsp;") + ")",
-          "igm"
-        );
+        var reg = new RegExp("(" + RegExpStringArr[k][y].replace(/ /gim, "&nbsp;") + ")", "igm");
         if (k == 0)
           //蓝色
           text = text.replace(reg, "<span style='color:#009fef;'>$1</span>");
@@ -387,9 +303,7 @@
     });
     popWinContext.load(config.template, function (response, status, xhr) {
       if (status != "success") {
-        popWinContext.html(
-          "信息框加载失败！请保持网络通畅！单击灰色区域关闭！"
-        );
+        popWinContext.html("信息框加载失败！请保持网络通畅！单击灰色区域关闭！");
         return;
       }
     });
@@ -415,18 +329,9 @@
 
   // 异步大文件上传方案
   // $("#m-upload-file")[0].files[0] 参数 进程回调
-  TOOLS.fileupload = function (
-    file,
-    url,
-    args,
-    progressCallback,
-    successCallback,
-    failureCallback
-  ) {
+  TOOLS.fileupload = function (file, url, args, progressCallback, successCallback, failureCallback) {
     if (typeof FormData != "function") {
-      alert(
-        "很遗憾，您的浏览器不兼容异步文件上传。请使用现代浏览器！推荐 Chrome！"
-      );
+      alert("很遗憾，您的浏览器不兼容异步文件上传。请使用现代浏览器！推荐 Chrome！");
       return null;
     }
     console.log(file);
@@ -470,11 +375,7 @@
     }
     console.log(parameters);
     if (parameters["page"]) {
-      RES.redirectPage(
-        "./" + parameters["page"] + ".html",
-        parameters["api"],
-        parameters["listen"]
-      );
+      RES.redirectPage("./" + parameters["page"] + ".html", parameters["api"], parameters["listen"]);
       return true;
     } else {
       return false;

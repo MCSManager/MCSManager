@@ -11,11 +11,7 @@ WebSocketObserver().listener("genuser/home", (data) => {
     let user = userCenter().get(username);
     //有一定可能是 管理员修改了用户名
     if (!user) {
-      for (let i = 0; i < 5; i++)
-        response.wsMsgWindow(
-          data.ws,
-          "您的用户资料似乎已经被修改且失效，请咨询管理员"
-        );
+      for (let i = 0; i < 5; i++) response.wsMsgWindow(data.ws, "您的用户资料似乎已经被修改且失效，请咨询管理员");
       data.ws.close();
       return;
     }
@@ -32,9 +28,7 @@ WebSocketObserver().listener("genuser/home", (data) => {
     let userServerList = [];
     let OnlineServerList = [];
     for (let k in allowedServerList) {
-      let userHaveServer = serverModel
-        .ServerManager()
-        .getServer(allowedServerList[k]);
+      let userHaveServer = serverModel.ServerManager().getServer(allowedServerList[k]);
       //有些用户就是喜欢取不存在的
       if (userHaveServer == undefined) continue;
       //有些数据不应该是用户可以收到的
@@ -78,10 +72,7 @@ WebSocketObserver().listener("genuser/re_password", (data) => {
       () => {
         try {
           if (config.newPassword.length > 18 || config.newPassword.length < 6) {
-            response.wsMsgWindow(
-              data.ws,
-              "新的密码长度不正确，需要 6~18 位长度"
-            );
+            response.wsMsgWindow(data.ws, "新的密码长度不正确，需要 6~18 位长度");
             return;
           }
           userCenter().rePassword(username, config.newPassword);

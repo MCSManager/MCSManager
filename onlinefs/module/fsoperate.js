@@ -7,8 +7,7 @@ const fsex = require("fs-extra");
 const child_process = require("child_process");
 
 // 最大同时解压任务
-let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT =
-  MCSERVER.localProperty.max_eac_task_limit || 1;
+let MAX_EXTRACT_AND_COMPRESS_TASK_LIMIT = MCSERVER.localProperty.max_eac_task_limit || 1;
 // 当前解压任务
 let nowEacTaskCounter = 0;
 // 解压缩任务队列
@@ -22,10 +21,7 @@ setInterval(() => {
     const task = EAC_QUQUE.pop();
     if (task == null) return;
     nowEacTaskCounter += 1;
-    const extend_worker = child_process.fork(
-      "./onlinefs/module/extend_worker.js",
-      [task["category"], task["path"]]
-    );
+    const extend_worker = child_process.fork("./onlinefs/module/extend_worker.js", [task["category"], task["path"]]);
     extend_worker.on("close", () => {
       nowEacTaskCounter -= 1;
     });
@@ -116,10 +112,7 @@ class FileOperate extends BaseFileOperate {
         });
       } else {
         //若删除文件夹则分配子进程来进行解压操作
-        child_process.fork("./onlinefs/module/extend_worker.js", [
-          "remove",
-          absPath,
-        ]);
+        child_process.fork("./onlinefs/module/extend_worker.js", ["remove", absPath]);
       }
     });
   }

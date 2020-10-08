@@ -47,11 +47,7 @@ module.exports.error = (res, error = new NullError(), statusCode = 500) => {
   res.end();
 };
 
-module.exports.forbidden = (
-  res,
-  error = new ForbiddenError(),
-  statusCode = 403
-) => {
+module.exports.forbidden = (res, error = new ForbiddenError(), statusCode = 403) => {
   res.send(
     JSON.stringify({
       status: statusCode,
@@ -61,11 +57,7 @@ module.exports.forbidden = (
   res.end();
 };
 
-module.exports.unavailable = (
-  res,
-  error = new UnavailableError(),
-  statusCode = 503
-) => {
+module.exports.unavailable = (res, error = new UnavailableError(), statusCode = 503) => {
   res.send(
     JSON.stringify({
       status: statusCode,

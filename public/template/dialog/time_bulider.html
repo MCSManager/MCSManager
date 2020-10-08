@@ -4,36 +4,15 @@
   <hr />
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">每隔时间</span>
-    <input
-      id="DialogSec"
-      type="text"
-      class="form-control"
-      placeholder="单位分钟，每隔多久执行 | 列如 60 代表一个小时"
-      aria-describedby="sizing-addon3"
-      v-model="sec"
-    />
+    <input id="DialogSec" type="text" class="form-control" placeholder="单位分钟，每隔多久执行 | 列如 60 代表一个小时" aria-describedby="sizing-addon3" v-model="sec" />
   </div>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">执行次数</span>
-    <input
-      id="DialogCount"
-      type="text"
-      class="form-control"
-      placeholder="0 代表无限，其他正整数代表次数"
-      v-model="count"
-      aria-describedby="sizing-addon3"
-    />
+    <input id="DialogCount" type="text" class="form-control" placeholder="0 代表无限，其他正整数代表次数" v-model="count" aria-describedby="sizing-addon3" />
   </div>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">执行指令</span>
-    <input
-      id="DialogCommand"
-      type="text"
-      class="form-control"
-      placeholder="与控制台命令一样，不要加 \ 符号"
-      v-model="command"
-      aria-describedby="sizing-addon3"
-    />
+    <input id="DialogCommand" type="text" class="form-control" placeholder="与控制台命令一样，不要加 \ 符号" v-model="command" aria-describedby="sizing-addon3" />
   </div>
   <p>填写好您需要的计划数据，单击 "生成" 再进行保存即可。</p>
   <button class="btn btn-success" v-on:click="ok()">生成</button>
@@ -68,15 +47,7 @@
             return;
           }
         }
-        var reg =
-          "0 " +
-          (mf == 0 ? "*/" : "") +
-          time +
-          " " +
-          (mf == 1 ? "*/" + h : mf == 0 ? "*" : h) +
-          " */" +
-          d +
-          " * *";
+        var reg = "0 " + (mf == 0 ? "*/" : "") + time + " " + (mf == 1 ? "*/" + h : mf == 0 ? "*" : h) + " */" + d + " * *";
         reg = reg.replace(/\*\/0/gim, "*");
         reg = reg.replace(/\_0/gim, "*");
         console.log("生成的时间表达式是:", reg);

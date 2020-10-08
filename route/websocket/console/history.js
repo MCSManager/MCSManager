@@ -12,34 +12,18 @@ WebSocketObserver().listener("server/console/history", (data) => {
   let serverName = bodyJson["serverName"] || "";
 
   if (permssion.isCanServer(userName, serverName)) {
-    const logHistory = serverModel.ServerManager().getServer(serverName)
-      .logHistory;
+    const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
     if (!logHistory) {
-      response.wsSend(
-        data.ws,
-        "server/console/history",
-        "terminalBack",
-        "[控制面板]: 暂无任何历史记录.\r\n"
-      );
+      response.wsSend(data.ws, "server/console/history", "terminalBack", "[控制面板]: 暂无任何历史记录.\r\n");
       return;
     }
     logHistory.readLine(userName, HISTORY_SIZE_LINE, (sendText) => {
       if (sendText) {
         sendText = sendText.replace(/\n/gim, "\r\n");
         sendText = sendText.replace(/\r\r\n/gim, "\r\n");
-        response.wsSend(
-          data.ws,
-          "server/console/history",
-          "terminalBack",
-          sendText
-        );
+        response.wsSend(data.ws, "server/console/history", "terminalBack", sendText);
       } else {
-        response.wsSend(
-          data.ws,
-          "server/console/history",
-          "terminalBack",
-          "[控制面板]: 无法再读取更多的服务端日志.\r\n"
-        );
+        response.wsSend(data.ws, "server/console/history", "terminalBack", "[控制面板]: 无法再读取更多的服务端日志.\r\n");
       }
     });
   }
@@ -52,19 +36,13 @@ WebSocketObserver().listener("server/console/history_reverse", (data) => {
   let serverName = bodyJson["serverName"] || "";
 
   if (permssion.isCanServer(userName, serverName)) {
-    const logHistory = serverModel.ServerManager().getServer(serverName)
-      .logHistory;
+    const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
     if (!logHistory) return;
     logHistory.readLineOnce(userName, HISTORY_SIZE_LINE * 3, (sendText) => {
       if (sendText) {
         sendText = sendText.replace(/\n/gim, "\r\n");
         sendText = sendText.replace(/\r\r\n/gim, "\r\n");
-        response.wsSend(
-          data.ws,
-          "server/console/history",
-          "terminalBack",
-          sendText
-        );
+        response.wsSend(data.ws, "server/console/history", "terminalBack", sendText);
       }
     });
   }
@@ -77,8 +55,7 @@ WebSocketObserver().listener("server/console/history_reset", (data) => {
   let serverName = bodyJson["serverName"] || "";
 
   if (permssion.isCanServer(userName, serverName)) {
-    const logHistory = serverModel.ServerManager().getServer(serverName)
-      .logHistory;
+    const logHistory = serverModel.ServerManager().getServer(serverName).logHistory;
     if (!logHistory) return;
     logHistory.setPoint(userName, 0);
   }

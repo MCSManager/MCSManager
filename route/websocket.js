@@ -78,10 +78,7 @@ router.ws("/ws", function (ws, req) {
 
   //用户名检查
   if (!username || typeof username != "string" || username.trim() == "") {
-    MCSERVER.warning(
-      "错误令牌的 WS 尝试建立链接 | 已经阻止",
-      ["用户值:", username, " 令牌值:", token].join(" ")
-    );
+    MCSERVER.warning("错误令牌的 WS 尝试建立链接 | 已经阻止", ["用户值:", username, " 令牌值:", token].join(" "));
     counter.plus("notPermssionCounter");
     ws.close();
     return;
@@ -89,10 +86,7 @@ router.ws("/ws", function (ws, req) {
 
   //唯一性检查
   if (isWsOnline(token)) {
-    MCSERVER.warning(
-      "此令牌正在使用 | 阻止重复使用 | isWsOnline",
-      ["用户值:", username, " 令牌值:", token].join(" ")
-    );
+    MCSERVER.warning("此令牌正在使用 | 阻止重复使用 | isWsOnline", ["用户值:", username, " 令牌值:", token].join(" "));
     ws.close();
     return;
   }
@@ -101,10 +95,7 @@ router.ws("/ws", function (ws, req) {
 
   //登录逻辑性缺陷检查
   if (!loginedContainer.isLogined(session_id, username)) {
-    MCSERVER.warning(
-      "未经过登陆逻辑的用户尝试连接 | 已经阻止",
-      ["用户值:", username, " 令牌值:", token].join(" ")
-    );
+    MCSERVER.warning("未经过登陆逻辑的用户尝试连接 | 已经阻止", ["用户值:", username, " 令牌值:", token].join(" "));
     counter.plus("notPermssionCounter");
     ws.close();
     return;
@@ -124,10 +115,7 @@ router.ws("/ws", function (ws, req) {
 
   //Session 级别验证登录检查
   if (!WsSession.login) {
-    MCSERVER.warning(
-      "不明身份者建立 ws 链接",
-      "已经阻止 | 可能的用户值: " + WsSession.username
-    );
+    MCSERVER.warning("不明身份者建立 ws 链接", "已经阻止 | 可能的用户值: " + WsSession.username);
     counter.plus("notPermssionCounter");
     ws.close();
     return;
@@ -138,8 +126,7 @@ router.ws("/ws", function (ws, req) {
 
   //放置全局在线列表
   MCSERVER.allSockets[uid] = WsSession;
-  if (!MCSERVER.onlineUser[WsSession.username])
-    MCSERVER.onlineUser[WsSession.username] = WsSession;
+  if (!MCSERVER.onlineUser[WsSession.username]) MCSERVER.onlineUser[WsSession.username] = WsSession;
 
   //检查通过..
   MCSERVER.log("[ WebSocket INIT ]", " 用户:", username, "与服务器建立链接");
@@ -150,10 +137,7 @@ router.ws("/ws", function (ws, req) {
       //是否合法用户检查
       if (!WsSession.login) {
         //触发这里代表极为有可能有人正在攻击你
-        MCSERVER.warning(
-          "没有登录的用户正在尝试发送 Ws 命令",
-          "已经阻止 | 可能的用户值: " + username
-        );
+        MCSERVER.warning("没有登录的用户正在尝试发送 Ws 命令", "已经阻止 | 可能的用户值: " + username);
         counter.plus("notPermssionCounter");
         ws.close();
         return;
@@ -210,12 +194,7 @@ router.ws("/ws", function (ws, req) {
   var HBMask = setInterval(() => {
     // 超过指定次数不响应，代表链接丢失
     if (wsAliveHBCount <= 0) {
-      MCSERVER.log(
-        "[ WebSocket HBPackage ]",
-        "用户",
-        username,
-        "长时间未响应心跳包 | 已自动断开"
-      );
+      MCSERVER.log("[ WebSocket HBPackage ]", "用户", username, "长时间未响应心跳包 | 已自动断开");
       WebSocketClose();
     }
     wsAliveHBCount--;
@@ -245,13 +224,9 @@ router.ws("/ws", function (ws, req) {
 });
 
 //加载 ws 子路由
-require("../core/tools").autoLoadModule(
-  "route/websocket/",
-  "websocket/",
-  (path) => {
-    require(path);
-  }
-);
+require("../core/tools").autoLoadModule("route/websocket/", "websocket/", (path) => {
+  require(path);
+});
 
 //模块导出
 module.exports = router;

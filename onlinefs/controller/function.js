@@ -1,15 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const pathm = require("path");
-const {
-  parseHandle,
-  sendHandle,
-  filesToPaths,
-} = require("../module/dataHandle");
-const {
-  FileOperateStructure,
-  UseFileOperate,
-} = require("../model/fsoperate_session");
+const { parseHandle, sendHandle, filesToPaths } = require("../module/dataHandle");
+const { FileOperateStructure, UseFileOperate } = require("../model/fsoperate_session");
 const fsoperate = require("../module/fsoperate");
 const fs = require("fs");
 const os = require("os");
@@ -29,12 +22,9 @@ router.post("/mkdir", (req, res) => {
 router.post("/ls", (req, res) => {
   let name = parseHandle(req.body, "string") || "./";
   // 唯一的当前目录赋值场景
-  req.session.fsos.cwd = pathm.normalize(
-    pathm.join(req.session.fsos.cwd, name)
-  );
+  req.session.fsos.cwd = pathm.normalize(pathm.join(req.session.fsos.cwd, name));
   let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-  if (req.session.fsos.cwd == "..\\" || req.session.fsos.cwd == "../")
-    req.session.fsos.cwd = "./"; //越级,重置
+  if (req.session.fsos.cwd == "..\\" || req.session.fsos.cwd == "../") req.session.fsos.cwd = "./"; //越级,重置
   let obj = fileOperate.lsType(req.session.fsos.cwd);
   req.session.save();
   sendHandle(req, res, obj);
@@ -73,14 +63,8 @@ router.post("/patse", (req, res) => {
   let fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
   if (req.session.fsoperate.tmp_action == "cp") callFunc = fileOperate.cp;
   else callFunc = fileOperate.mv;
-  let oldpaths = filesToPaths(
-    req.session.fsoperate.tmp_files,
-    req.session.fsoperate.tmp_cwd
-  );
-  let newpaths = filesToPaths(
-    req.session.fsoperate.tmp_files,
-    req.session.fsos.cwd
-  );
+  let oldpaths = filesToPaths(req.session.fsoperate.tmp_files, req.session.fsoperate.tmp_cwd);
+  let newpaths = filesToPaths(req.session.fsoperate.tmp_files, req.session.fsos.cwd);
   let obj = fileOperate.batchExectue(callFunc, oldpaths, newpaths);
 
   sendHandle(req, res, obj);
@@ -118,14 +102,10 @@ router.post("/edit_write", (req, res) => {
   const obj = parseHandle(req.body);
   if (!obj || !obj.filename || !obj.context) return;
   //先进行基本的越权过滤
-  if (obj.filename.indexOf("../") != -1 || obj.filename.indexOf("./") != -1)
-    return;
+  if (obj.filename.indexOf("../") != -1 || obj.filename.indexOf("./") != -1) return;
   const cwd = req.session.fsos.cwd;
   const fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
-  const result = fileOperate.writeFile(
-    pathm.join(cwd, obj.filename),
-    obj.context
-  );
+  const result = fileOperate.writeFile(pathm.join(cwd, obj.filename), obj.context);
   sendHandle(req, res, result);
 });
 

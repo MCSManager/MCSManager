@@ -7,39 +7,25 @@
           <div class="row">
             <div class="col-sm-12 PanelItemF">
               <div class="PanelItem" v-on:click="newServerx()">
-                <span
-                  class="glyphicon glyphicon-plus"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 创建新实例应用
               </div>
               <!-- <div class="PanelItem" v-on:click="newServer()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新应用（高级）
 							</div> -->
               <div class="PanelItem" v-on:click="opt_all('start')">
-                <span
-                  class="glyphicon glyphicon-ok-sign"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 启动所有实例应用
               </div>
               <div class="PanelItem" v-on:click="opt_all('stop')">
-                <span
-                  class="glyphicon glyphicon-remove-sign"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                 关闭所有实例应用
               </div>
               <div class="PanelItem" v-on:click="newDocker()">
-                <span
-                  class="glyphicon glyphicon-send"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
                 创建虚拟镜像
               </div>
-              <p style="color: #969292; line-height: 35px; float: right">
-                若实例数量众多，可以使用 Ctrl+F 来查询
-              </p>
+              <p style="color: #969292; line-height: 35px; float: right">若实例数量众多，可以使用 Ctrl+F 来查询</p>
             </div>
           </div>
         </div>
@@ -50,26 +36,18 @@
   <div class="container-fluid" style="padding: 0px">
     <div class="row">
       <div class="col-md-6 col-lg-4" v-for="item of items">
-        <a
-          href="javascript:void(0);"
-          class="FontBlack"
-          v-on:click="toConsole(item.serverName);"
-        >
+        <a href="javascript:void(0);" class="FontBlack" v-on:click="toConsole(item.serverName);">
           <div class="Panel AppInlineBlockList">
             <!-- <div class="PanelTitle"></div> -->
             <div class="PanelBody">
               <div class="AppInlineBlockListTitle">
                 <h4 v-if="item.data.jarName == '' && !item.data.highCommande">
                   <s v-text="item.serverName"></s>
-                  <span class="AppInlineBlockListTitleTip color-high-red"
-                    >未配置</span
-                  >
+                  <span class="AppInlineBlockListTitleTip color-high-red">未配置</span>
                 </h4>
                 <h4 v-if="item.data.highCommande">
                   <span v-text="item.serverName"></span>
-                  <span class="AppInlineBlockListTitleTip"
-                    ><span class="FontGray">自定义</span></span
-                  >
+                  <span class="AppInlineBlockListTitleTip"><span class="FontGray">自定义</span></span>
                   <span class="AppInlineBlockListTitlePlayer">
                     <span v-text="item.data.currentPlayers"></span>
                     /
@@ -78,9 +56,7 @@
                 </h4>
                 <h4 v-if="item.data.jarName != '' && !item.data.highCommande">
                   <span v-text="item.serverName"></span>
-                  <span class="AppInlineBlockListTitleTip"
-                    ><span class="FontGray">普通</span></span
-                  >
+                  <span class="AppInlineBlockListTitleTip"><span class="FontGray">普通</span></span>
                   <span class="AppInlineBlockListTitlePlayer">
                     <span v-text="item.data.currentPlayers"></span>
                     /
@@ -92,12 +68,8 @@
                 <div class="row">
                   <div class="col-xs-9">
                     <p>
-                      <span v-if="item.data.run" class="color-green">
-                        状态: 正在运行
-                      </span>
-                      <span v-else="item.data.run" class="color-red">
-                        状态: 关闭
-                      </span>
+                      <span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
+                      <span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
                     </p>
                     <hr style="margin-top: 8px; margin-bottom: 10px" />
                     <p>
@@ -119,51 +91,12 @@
                     </p>
                   </div>
                   <div class="col-xs-3" style="text-align: center">
-                    <a
-                      href="javascript:void(0);"
-                      class="mbuttonWhite"
-                      v-on:click="toTerminal(item.serverName);"
-                    >
-                      <span
-                        class="glyphicon glyphicon-console"
-                        aria-hidden="true"
-                      >
-                      </span
-                      >&nbsp; 终端
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toTerminal(item.serverName);"> <span class="glyphicon glyphicon-console" aria-hidden="true"> </span>&nbsp; 终端 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toConsole(item.serverName);"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>&nbsp; 管理 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
+                      <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>&nbsp; 参数
                     </a>
-                    <a
-                      href="javascript:void(0);"
-                      class="mbuttonWhite"
-                      v-on:click="toConsole(item.serverName);"
-                    >
-                      <span
-                        class="glyphicon glyphicon-th-large"
-                        aria-hidden="true"
-                      >
-                      </span
-                      >&nbsp; 管理
-                    </a>
-                    <a
-                      href="javascript:void(0);"
-                      class="mbuttonWhite"
-                      v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);"
-                    >
-                      <span class="glyphicon glyphicon-cog" aria-hidden="true">
-                      </span
-                      >&nbsp; 参数
-                    </a>
-                    <a
-                      href="javascript:void(0);"
-                      class="mbuttonWhite"
-                      v-on:click="toDeleteServer(item.serverName)"
-                    >
-                      <span
-                        class="glyphicon glyphicon-trash"
-                        aria-hidden="true"
-                      >
-                      </span
-                      >&nbsp; 删除
-                    </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toDeleteServer(item.serverName)"> <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除 </a>
                   </div>
                 </div>
               </div>
@@ -279,11 +212,7 @@
       methods: {
         toConsole: function (serverName) {
           MCSERVER.listenServername = serverName;
-          RES.redirectPage(
-            "./template/component/console.html",
-            "server/console",
-            serverName
-          );
+          RES.redirectPage("./template/component/console.html", "server/console", serverName);
         },
         onRedirect: function (link, api, serverName) {
           RES.redirectPage(link, api, serverName);
@@ -303,11 +232,7 @@
           }
         },
         toDeleteServer: function (serverName) {
-          var result = confirm(
-            "是否删除 [" +
-              serverName +
-              "] 这个服务端？\n注意: 删除服务器并不会删除服务端文件,只会从控制面板删除！"
-          );
+          var result = confirm("是否删除 [" + serverName + "] 这个服务端？\n注意: 删除服务器并不会删除服务端文件,只会从控制面板删除！");
           if (!result) return;
           WS.sendMsg("server/delete", serverName);
           RES.redirectPage("./template/server.html", "server/view");
@@ -319,11 +244,7 @@
           // RES.redirectPage('./template/component/terminal.html', null, '');
         },
         newDocker: function () {
-          RES.redirectPage(
-            "./template/component/new_docker_image.html",
-            null,
-            ""
-          );
+          RES.redirectPage("./template/component/new_docker_image.html", null, "");
         },
       },
     });

@@ -44,10 +44,7 @@ WebSocketObserver().listener("userset/create", (data) => {
     //去除掉空白的
     let allowedServerList = [];
     for (let k in newUserConfig.allowedServer) {
-      if (
-        newUserConfig.allowedServer[k] != " " &&
-        newUserConfig.allowedServer[k].length > 0
-      ) {
+      if (newUserConfig.allowedServer[k] != " " && newUserConfig.allowedServer[k].length > 0) {
         allowedServerList.push(newUserConfig.allowedServer[k]);
       }
     }
@@ -132,10 +129,7 @@ WebSocketObserver().listener("userset/upinfo", (data) => {
     //去除掉空白的
     let allowedServerList = [];
     for (let k in newUserConfig.allowedServer) {
-      if (
-        newUserConfig.allowedServer[k] != " " &&
-        newUserConfig.allowedServer[k].length > 0
-      ) {
+      if (newUserConfig.allowedServer[k] != " " && newUserConfig.allowedServer[k].length > 0) {
         allowedServerList.push(newUserConfig.allowedServer[k]);
       }
     }
@@ -159,10 +153,7 @@ WebSocketObserver().listener("userset/upinfo", (data) => {
     if (username != newUS) {
       let uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
       if (!uPattern.test(newUS)) {
-        response.wsMsgWindow(
-          data.ws,
-          "新的用户名格式不正确，已舍弃用户名的更改"
-        );
+        response.wsMsgWindow(data.ws, "新的用户名格式不正确，已舍弃用户名的更改");
         return;
       }
       userCenter().reUsername(username, newUS);

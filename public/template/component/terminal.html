@@ -1,56 +1,29 @@
 <div id="Terminal">
   <div class="row" style="position: absolute; right: 16px">
     <div class="col-sm-12 PanelItemF">
-      <div
-        class="PanelItem PanelItemBlack"
-        v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);"
-      >
-        <span
-          class="glyphicon glyphicon-modal-window"
-          aria-hidden="true"
-        ></span>
+      <div class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/component/console.html', 'server/console', MCSERVER.listenServername);">
+        <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span>
         控制台
       </div>
-      <div
-        v-if="MCSERVER.username.substr(0, 1)=='#'"
-        class="PanelItem PanelItemBlack"
-        v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');"
-      >
+      <div v-if="MCSERVER.username.substr(0, 1)=='#'" class="PanelItem PanelItemBlack" v-on:click="RES.redirectPage('./template/server.html', 'server/view', '');">
         <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
         实例列表
       </div>
       <div class="PanelItem PanelItemBlack" v-on:click="loadHistory()">
-        <span
-          class="glyphicon glyphicon-facetime-video"
-          aria-hidden="true"
-        ></span>
+        <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
         历史
       </div>
-      <div
-        class="PanelItem PanelItemBlack PhoneDisplayNone"
-        v-on:click="goBttom()"
-      >
-        <span
-          class="glyphicon glyphicon-download PhoneDisplayNone"
-          aria-hidden="true"
-        ></span>
+      <div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="goBttom()">
+        <span class="glyphicon glyphicon-download PhoneDisplayNone" aria-hidden="true"></span>
         底部
       </div>
       <div class="PanelItem PanelItemBlack" v-on:click="clearConsole()">
         <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
         清屏
       </div>
-      <div class="PanelItem PanelItemBlack" v-on:click="stopServer()">
-        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭
-      </div>
-      <div
-        class="PanelItem PanelItemBlack PhoneDisplayNone"
-        v-on:click="toOpenServer()"
-      >
-        <span
-          class="glyphicon glyphicon-play PhoneDisplayNone"
-          aria-hidden="true"
-        ></span>
+      <div class="PanelItem PanelItemBlack" v-on:click="stopServer()"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭</div>
+      <div class="PanelItem PanelItemBlack PhoneDisplayNone" v-on:click="toOpenServer()">
+        <span class="glyphicon glyphicon-play PhoneDisplayNone" aria-hidden="true"></span>
         开启
       </div>
     </div>
@@ -79,11 +52,7 @@
 <script>
   MI.rListener("onload", function () {
     // 定义页面地址
-    TOOLS.definePage(
-      "template/component/terminal",
-      "server/console",
-      MCSERVER.listenServername
-    );
+    TOOLS.definePage("template/component/terminal", "server/console", MCSERVER.listenServername);
 
     PAGE.nowPage = 0; //当前最低页
     PAGE.serverName = MCSERVER.listenServername;
@@ -97,16 +66,10 @@
     WS.sendMsg("server/console/ws", PAGE.serverName);
 
     PAGE.TerminalMinecraft = $("#TerminalMinecraft");
-    PAGE.TerminalMinecraft.css(
-      "height",
-      document.body.clientHeight - 45 + "px"
-    );
+    PAGE.TerminalMinecraft.css("height", document.body.clientHeight - 45 + "px");
 
     PAGE.tmp_onresize = function () {
-      $("#TerminalMinecraft").css(
-        "height",
-        document.body.clientHeight - 45 + "px"
-      );
+      $("#TerminalMinecraft").css("height", document.body.clientHeight - 45 + "px");
     };
     MI.listener("resize", PAGE.tmp_onresize);
 
@@ -137,8 +100,7 @@
           WS.sendMsg("server/console/open", PAGE.serverName);
         },
         toCommand: function (parCommand) {
-          if (parCommand && typeof parCommand == "string")
-            this.command = parCommand;
+          if (parCommand && typeof parCommand == "string") this.command = parCommand;
           var data = {
             command: this.command,
             serverName: PAGE.serverName,
@@ -152,15 +114,9 @@
           this.commandListPrint = 0;
         },
         toCommandhi: function (fl) {
-          if (this.commandListPrint > this.commandList.length - 1)
-            this.commandListPrint = this.commandList.length - 1;
+          if (this.commandListPrint > this.commandList.length - 1) this.commandListPrint = this.commandList.length - 1;
           if (this.commandListPrint < 0) this.commandListPrint = 0;
-          console.log(
-            "commandListPrint",
-            this.commandListPrint,
-            "vlaue",
-            this.commandList[this.commandListPrint]
-          );
+          console.log("commandListPrint", this.commandListPrint, "vlaue", this.commandList[this.commandListPrint]);
           if (fl == 1) {
             //up
             this.command = this.commandList[this.commandListPrint];

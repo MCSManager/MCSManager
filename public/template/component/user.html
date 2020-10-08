@@ -19,18 +19,10 @@
               </div>
             </div>
             <div class="col-sm-7">
-              <p>
-                密码 [字母 数字 下划线] (6~18位) 注意* 显示 “未更改”
-                代表不改动本身密码
-              </p>
+              <p>密码 [字母 数字 下划线] (6~18位) 注意* 显示 “未更改” 代表不改动本身密码</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 账号密码 </span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="password"
-                  placeholder="[未更改 您可以直接从这里重设此用户的密码]"
-                />
+                <input type="text" class="form-control" v-model="password" placeholder="[未更改 您可以直接从这里重设此用户的密码]" />
               </div>
             </div>
           </div>
@@ -39,12 +31,7 @@
           <p>注意，如果是以#开头的最高权限账号，则可以无条件访问任何服务器</p>
           <div class="input-group input-group-sm">
             <span class="input-group-addon"> 准许的服务器 </span>
-            <input
-              type="text"
-              class="form-control"
-              v-model="allowedServer"
-              placeholder="默认空，列如 ServerNameA ServerNameB ServerNameC"
-            />
+            <input type="text" class="form-control" v-model="allowedServer" placeholder="默认空，列如 ServerNameA ServerNameB ServerNameC" />
           </div>
         </div>
       </div>
@@ -54,17 +41,11 @@
           <br />
           <br />
           <p>您可以重新配置这个用户</p>
-          <p>
-            警告:修改用户名时请务必减少此类操作，如果当前用户在线的话，很有可能会导致意外的错误，因为用户已经使用原用户名登陆，请确保用户不在线的情况下修改用户名.
-          </p>
+          <p>警告:修改用户名时请务必减少此类操作，如果当前用户在线的话，很有可能会导致意外的错误，因为用户已经使用原用户名登陆，请确保用户不在线的情况下修改用户名.</p>
           <div class="Line"></div>
           <div class="PanelItemMuem">
-            <button class="btn btn-success" v-on:click="toUpdate()">
-              更新配置
-            </button>
-            <button class="btn btn-danger" v-on:click="toDeleteUser()">
-              删除此用户
-            </button>
+            <button class="btn btn-success" v-on:click="toUpdate()">更新配置</button>
+            <button class="btn btn-danger" v-on:click="toDeleteUser()">删除此用户</button>
           </div>
         </div>
       </div>
@@ -115,9 +96,7 @@
     var viewModel = VIEW_MODEL["OneUserView"];
     viewModel.oldUsername = viewModel.username + " ";
     viewModel.ServerLen = viewModel.allowedServer.length;
-    viewModel.allowedServer = viewModel.allowedServer
-      .toString()
-      .replace(/,/gim, " ");
+    viewModel.allowedServer = viewModel.allowedServer.toString().replace(/,/gim, " ");
   });
 
   MI.rListener("onend", function () {});

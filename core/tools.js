@@ -31,8 +31,7 @@ module.exports.md5 = () => {
 
 module.exports.randomString = (len) => {
   len = len || 64;
-  var $chars =
-    "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_";
+  var $chars = "ABCDEFGHIJKLNMOPQRSTUVWXYZabcdefghijklnmopqrstuvwxyz1234567890_";
   var maxPos = $chars.length;
   var pwd = "";
   for (let i = 0; i < len; i++) {
@@ -74,19 +73,7 @@ module.exports.getSystemCodeing = () => {
 
 module.exports.getFullTime = () => {
   var date = new Date();
-  return (
-    date.getFullYear() +
-    "/" +
-    date.getMonth() +
-    "/" +
-    date.getDay() +
-    " " +
-    date.getHours() +
-    ":" +
-    date.getMinutes() +
-    ":" +
-    date.getSeconds()
-  );
+  return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 };
 
 const REPALCE_STR = "__MCSMANAGER_REPLACE_STR__";

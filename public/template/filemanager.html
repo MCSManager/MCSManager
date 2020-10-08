@@ -16,10 +16,7 @@
       </div>
     </div>
     <div class="col-sm-3" v-for="item of userServerList">
-      <div
-        class="Panel AppInlineBlockList"
-        v-on:click="toOnlineFs(item.serverName)"
-      >
+      <div class="Panel AppInlineBlockList" v-on:click="toOnlineFs(item.serverName)">
         <div class="PanelBody">
           <div class="PanelItemInfo">
             <p class="PagePanelItemInfoTextCenter">{{item.serverName}}</p>
@@ -66,9 +63,7 @@
       methods: {
         toOnlineFs: function (serverName) {
           // MCSERVER.listenServername = serverName;
-          var path = MCSERVER.URL(
-            "fs_auth/auth/" + encodeURIComponent(serverName)
-          );
+          var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
           window.open(path);
         },
         toServersDir: function () {

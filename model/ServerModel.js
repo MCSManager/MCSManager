@@ -27,8 +27,7 @@ module.exports.createServerDir = (serverName, cwd) => {
 };
 
 module.exports.createServer = (serverName, config) => {
-  if (config.cwd == "" || config.cwd == "<默认标准位置>")
-    config.cwd = getServerDir(serverName);
+  if (config.cwd == "" || config.cwd == "<默认标准位置>") config.cwd = getServerDir(serverName);
   if (!fs.existsSync(config.cwd)) {
     fsextra.mkdirsSync(config.cwd);
   }
@@ -86,12 +85,7 @@ schedule.scheduleJob("1 0 */2 * * *", function () {
       if (server && server.isRun()) {
         let res = server.isDealLineDate();
         if (res) {
-          MCSERVER.log(
-            "[时间期限] 服务端 [",
-            server.dataModel.name,
-            "]",
-            "于现在过期，正在执行关闭程序."
-          );
+          MCSERVER.log("[时间期限] 服务端 [", server.dataModel.name, "]", "于现在过期，正在执行关闭程序.");
           //先进行标准流程关闭服务端，如果 45 秒后未关闭，则强制性结束进程
           server.send("stop");
           server.send("end");
@@ -103,9 +97,6 @@ schedule.scheduleJob("1 0 */2 * * *", function () {
       }
     }
   } catch (err) {
-    MCSERVER.error(
-      "[时间期限] 关闭服务端时出现异常，某个服务端可能未能正确关闭:",
-      err
-    );
+    MCSERVER.error("[时间期限] 关闭服务端时出现异常，某个服务端可能未能正确关闭:", err);
   }
 });

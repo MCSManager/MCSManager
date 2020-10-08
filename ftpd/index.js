@@ -19,19 +19,12 @@ ftpServerInterface.createFTPServer({
 
     let user = userModel.userCenter().get(realName);
 
-    let dataModel =
-      serverModel.ServerManager().getServer(serverName).dataModel || null;
+    let dataModel = serverModel.ServerManager().getServer(serverName).dataModel || null;
     if (dataModel) {
-      MCSERVER.infoLog(
-        "Ftpd",
-        ["用户", realName, "请求 FTP 访问 |", serverName, "| OK"].join(" ")
-      );
+      MCSERVER.infoLog("Ftpd", ["用户", realName, "请求 FTP 访问 |", serverName, "| OK"].join(" "));
       return dataModel.cwd;
     }
-    MCSERVER.warning(
-      "Ftpd 发现不明身份不明根目录者正在尝试访问",
-      ["已经阻止 | 可能的值", username, serverName].join(" ")
-    );
+    MCSERVER.warning("Ftpd 发现不明身份不明根目录者正在尝试访问", ["已经阻止 | 可能的值", username, serverName].join(" "));
     return null;
   },
   pasvPortRangeStart: MCSERVER.localProperty.ftp_start_port,
@@ -50,10 +43,7 @@ ftpServerInterface.initFTPServerListener({
     let arrName = usname.split(".");
     let serverName = arrName[1];
     let userName = arrName[0];
-    if (
-      serverModel.ServerManager().isExist(serverName) &&
-      permission.isCanServer(userName, serverName)
-    ) {
+    if (serverModel.ServerManager().isExist(serverName) && permission.isCanServer(userName, serverName)) {
       try {
         return userModel.beliveLogin(userName, password);
       } catch (e) {

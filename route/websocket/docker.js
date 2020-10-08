@@ -43,27 +43,17 @@ WebSocketObserver().listener("docker/new", (data) => {
     if (!fs.existsSync("./docker_temp")) fs.mkdirSync("./docker_temp");
     fs.writeFileSync("./docker_temp/dockerfile", dockerfileData);
 
-    let process = childProcess.spawn(
-      "docker",
-      ["build", "-t", dockerImageName.trim(), "./docker_temp/"],
-      {
-        cwd: ".",
-        stdio: "pipe",
-      }
-    );
+    let process = childProcess.spawn("docker", ["build", "-t", dockerImageName.trim(), "./docker_temp/"], {
+      cwd: ".",
+      stdio: "pipe",
+    });
     process.on("exit", (code) => {
       console.log("EXIT", code);
       if (code == 0) {
-        response.wsMsgWindow(
-          data.ws,
-          ["镜像", dockerImageName, "创建完毕."].join(" ")
-        );
+        response.wsMsgWindow(data.ws, ["镜像", dockerImageName, "创建完毕."].join(" "));
         pushRes("成功");
       } else {
-        response.wsMsgWindow(
-          data.ws,
-          ["镜像", dockerImageName, "构建失败，原因未知."].join(" ")
-        );
+        response.wsMsgWindow(data.ws, ["镜像", dockerImageName, "构建失败，原因未知."].join(" "));
         pushRes("失败");
       }
     });

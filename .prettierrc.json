@@ -1,1 +1,4 @@
-{}
+{
+  "printWidth": 200,
+  "trailingComma":"none"
+}

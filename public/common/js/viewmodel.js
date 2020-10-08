@@ -143,8 +143,7 @@
           "<br /><br />[ 控制面板 ]: 日志显示过长，为避免网页卡顿，现已自动清空。<br />[ 控制面板 ]: 若想回看历史日志，请点击右上角刷新按钮，再重新进入点击 [历史] 按钮即可。<br /><br />";
       }
       eleTerminal.innerHTML = eleTerminal.innerHTML + text;
-      var BUFF_FONTIER_SIZE_DOWN =
-        eleTerminal.scrollHeight - eleTerminal.clientHeight;
+      var BUFF_FONTIER_SIZE_DOWN = eleTerminal.scrollHeight - eleTerminal.clientHeight;
       flag = eleTerminal.scrollTop + 400 >= BUFF_FONTIER_SIZE_DOWN;
       if (flag) eleTerminal.scrollTop = eleTerminal.scrollHeight;
     }
@@ -207,18 +206,7 @@
       // 终端提示行
       term.prompt = function (command) {
         term.write(
-          "\x1B[1;1;33m" +
-            "[" +
-            term.TERM_TEXT_WHITE +
-            term.TERM_TEXT_GREEN +
-            PAGE.serverName +
-            "@" +
-            "app" +
-            term.TERM_TEXT_YELLOW +
-            "]" +
-            term.TERM_TEXT_WHITE +
-            (command || "") +
-            "\x1B[0m \r\n"
+          "\x1B[1;1;33m" + "[" + term.TERM_TEXT_WHITE + term.TERM_TEXT_GREEN + PAGE.serverName + "@" + "app" + term.TERM_TEXT_YELLOW + "]" + term.TERM_TEXT_WHITE + (command || "") + "\x1B[0m \r\n"
         );
       };
       // 初始化终端方法
@@ -250,8 +238,7 @@
           WS.sendMsg("server/console/open", PAGE.serverName);
         },
         toCommand: function (parCommand) {
-          if (parCommand && typeof parCommand == "string")
-            this.command = parCommand;
+          if (parCommand && typeof parCommand == "string") this.command = parCommand;
           MCSERVER.term.prompt(this.command);
           console.log("发送命令:", this.command);
           var data = {

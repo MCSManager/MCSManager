@@ -10,9 +10,7 @@ class FileOperateStructure {
 class UseFileOperate {
   constructor(fileOperateStructure) {
     if (!fileOperateStructure || !fileOperateStructure["rootPath"]) {
-      throw new Error(
-        "[UseFileOperate Mineself Error] UseFileOperate(...) Not is FileOperateStructure"
-      );
+      throw new Error("[UseFileOperate Mineself Error] UseFileOperate(...) Not is FileOperateStructure");
     }
     this.fileOperate = new FileOperate(fileOperateStructure.rootPath);
     this.fileOperateStructure = fileOperateStructure;

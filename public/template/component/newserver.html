@@ -4,127 +4,61 @@
       <div class="Panel PanelGreen">
         <div class="PanelTitle">创建服务器</div>
         <div class="PanelBody">
-          <p>
-            您可以创建一个新的服务器，默认所有用户不可操作，只限于管理员一人可以控制。
-          </p>
+          <p>您可以创建一个新的服务器，默认所有用户不可操作，只限于管理员一人可以控制。</p>
           <p>不过创建一个服务器您可以需要完善以下信息：</p>
           <div class="row" style="padding-top: 10px; padding-bottom: 30px">
             <div class="col-md-6">
-              <p>
-                [必填] 服务器名字必须唯一，这个名字标识唯一的一个服务器终端
-                (仅限字母数字下划线组合)
-              </p>
+              <p>[必填] 服务器名字必须唯一，这个名字标识唯一的一个服务器终端 (仅限字母数字下划线组合)</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">服务器名字</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="name"
-                  placeholder="[不可空，必填]"
-                />
+                <input type="text" class="form-control" v-model="name" placeholder="[不可空，必填]" />
               </div>
-              <p>
-                [可填]
-                服务端核心文件，可以后再填或上传后再填，因为服务端目录还未创建，但是您指定目录的话就可填写.
-              </p>
+              <p>[可填] 服务端核心文件，可以后再填或上传后再填，因为服务端目录还未创建，但是您指定目录的话就可填写.</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 服务端文件名 </span>
                 <input type="text" class="form-control" v-model="jarName" />
               </div>
-              <p>
-                [选填]
-                您可以指定您计算机上的Java环境程序路径，默认自动选择环境变量
-              </p>
+              <p>[选填] 您可以指定您计算机上的Java环境程序路径，默认自动选择环境变量</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">Java 路径</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="java"
-                  placeholder="[自动]"
-                />
+                <input type="text" class="form-control" v-model="java" placeholder="[自动]" />
               </div>
-              <p>
-                [选填]
-                您可以从已有的服务器配置中，复制一份配置到这里，来避免重复的输入相同的数据。
-              </p>
+              <p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里，来避免重复的输入相同的数据。</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">目标实例名字</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="readServerName"
-                  placeholder="[在此输入目标服务端的名字即可复制它的配置项目]"
-                />
+                <input type="text" class="form-control" v-model="readServerName" placeholder="[在此输入目标服务端的名字即可复制它的配置项目]" />
                 <span class="input-group-btn">
-                  <button
-                    class="btn btn-default"
-                    v-on:click="readServerConfig(readServerName)"
-                  >
-                    导入配置
-                  </button>
+                  <button class="btn btn-default" v-on:click="readServerConfig(readServerName)">导入配置</button>
                 </span>
               </div>
             </div>
             <div class="col-md-6">
-              <p>
-                [选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写
-              </p>
+              <p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">启动附加参数</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="addCmd"
-                  placeholder="[无附加参数]"
-                />
+                <input type="text" class="form-control" v-model="addCmd" placeholder="[无附加参数]" />
               </div>
-              <p>
-                [选填]
-                可不填写，只有当您需要指定目录时填写，默认将自动建立目录，选择好请单击按钮确认
-              </p>
-              <p style="color: #b92c28">
-                当前服务端根目录设为: {{ serverCwd }}
-              </p>
+              <p>[选填] 可不填写，只有当您需要指定目录时填写，默认将自动建立目录，选择好请单击按钮确认</p>
+              <p style="color: #b92c28">当前服务端根目录设为: {{ serverCwd }}</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">服务端文件根目录</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="cwd"
-                  :placeholder="serverCwd"
-                />
+                <input type="text" class="form-control" v-model="cwd" :placeholder="serverCwd" />
                 <span class="input-group-btn">
-                  <button class="btn btn-success" v-on:click="toCreaterDir()">
-                    确认创建目录
-                  </button>
+                  <button class="btn btn-success" v-on:click="toCreaterDir()">确认创建目录</button>
                 </span>
               </div>
-              <p>
-                [选填]
-                根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位
-              </p>
+              <p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
               <div class="row">
                 <div class="col-sm-6">
                   <div class="input-group input-group-sm">
                     <span class="input-group-addon"> 最大内存堆 </span>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="Xmx"
-                      placeholder="[缺省值]"
-                    />
+                    <input type="text" class="form-control" v-model="Xmx" placeholder="[缺省值]" />
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="input-group input-group-sm">
                     <span class="input-group-addon"> 初始内存堆 </span>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="Xms"
-                      placeholder="[缺省值]"
-                    />
+                    <input type="text" class="form-control" v-model="Xms" placeholder="[缺省值]" />
                   </div>
                 </div>
               </div>
@@ -132,15 +66,11 @@
           </div>
           <div class="row">
             <div class="col-lg-12">
-              <p>
-                到目前为止，我们创建一个服务器只需要这些信息足以，您可以在创建之后修改相关配置；
-              </p>
+              <p>到目前为止，我们创建一个服务器只需要这些信息足以，您可以在创建之后修改相关配置；</p>
               <p>或者，如果您想的话，可以分配给其他用户使用。</p>
               <div class="Line"></div>
               <div class="" style="float: right; margin-top: 20px">
-                <button class="btn btn-primary" v-on:click="toCreateServer()">
-                  创建服务器
-                </button>
+                <button class="btn btn-primary" v-on:click="toCreateServer()">创建服务器</button>
               </div>
             </div>
           </div>
@@ -153,14 +83,8 @@
       <div class="Panel PanelRed">
         <div class="PanelTitle">创建服务器相关协议</div>
         <div class="PanelBody">
-          <p>
-            您使用本控制面板创建 Minecraft
-            之后，请遵循您所使用的那个服务端的相关协议;
-          </p>
-          <p>
-            面板不会自动同意Minecraft
-            EULA（最终用户协议），请首次启动后手动修改eula.txt文件更改。
-          </p>
+          <p>您使用本控制面板创建 Minecraft 之后，请遵循您所使用的那个服务端的相关协议;</p>
+          <p>面板不会自动同意Minecraft EULA（最终用户协议），请首次启动后手动修改eula.txt文件更改。</p>
           <p>尊重版权，请支持 Minecraft 正版。</p>
         </div>
       </div>

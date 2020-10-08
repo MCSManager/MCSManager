@@ -12,10 +12,7 @@ module.exports.init = () => {
   module.exports.load();
   //定时清楚
   setInterval(function () {
-    if (
-      new Date().getDate() == 1 &&
-      new Date().getMonth() + 1 >= dataModel.reloadMonth
-    ) {
+    if (new Date().getDate() == 1 && new Date().getMonth() + 1 >= dataModel.reloadMonth) {
       dataModel.reloadMonth = new Date().getMonth() + 2; //调至下个月
       MCSERVER.log(" ---- 数据期限已到 清空数据统计 ---- ");
       for (let i in initDataCallbackList) {
@@ -29,8 +26,7 @@ module.exports.init = () => {
 module.exports.load = () => {
   dataModel.load();
   counterMask = dataModel.counterData;
-  if (dataModel.reloadMonth == undefined)
-    dataModel.reloadMonth = new Date().getMonth() + 2; //下个月
+  if (dataModel.reloadMonth == undefined) dataModel.reloadMonth = new Date().getMonth() + 2; //下个月
   dataModel.save();
   return this;
 };

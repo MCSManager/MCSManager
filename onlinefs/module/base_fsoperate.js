@@ -7,8 +7,7 @@ const DEBUG = true;
 //基本的操作权限
 class BaseFileOperate {
   constructor(rootPath) {
-    if (path_moduel.isAbsolute(rootPath))
-      this.rootPath = path_moduel.normalize(rootPath);
+    if (path_moduel.isAbsolute(rootPath)) this.rootPath = path_moduel.normalize(rootPath);
     else throw Error("RootPath 必须是一个绝对路径，否则将无法定位");
     // this.rootPath = path_moduel.normalize(path_moduel.resolve(rootPath));
     this.fs = fs;

@@ -19,10 +19,7 @@ WebSocketObserver().listener("server/get", (data) => {
   let serverName = data.body.trim();
   let mcserver = serverModel.ServerManager().getServer(serverName);
   if (mcserver == null) {
-    response.wsMsgWindow(
-      data.ws,
-      "服务端 " + serverName + " 不存在！请刷新或自行检查。"
-    );
+    response.wsMsgWindow(data.ws, "服务端 " + serverName + " 不存在！请刷新或自行检查。");
     return;
   }
 
@@ -126,10 +123,7 @@ WebSocketObserver().listener("server/opt_all", (data) => {
         continue;
       }
     }
-    response.wsMsgWindow(
-      data.ws,
-      "操作执行发出！需要一定时间,具体结果请看服务端运行状态."
-    );
+    response.wsMsgWindow(data.ws, "操作执行发出！需要一定时间,具体结果请看服务端运行状态.");
   } catch (err) {
     response.wsMsgWindow(data.ws, "执行失败:" + err);
   }

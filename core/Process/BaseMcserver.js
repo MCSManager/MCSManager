@@ -34,11 +34,7 @@ class ServerProcess extends EventEmitter {
     MCSERVER.log(["根:", this.dataModel.cwd].join(" "));
     MCSERVER.log("-------------------------------");
 
-    if (
-      !this.dataModel.highCommande ||
-      this.dataModel.highCommande.trim().length <= 0
-    )
-      throw new Error("自定义参数非法,无法启动服务端");
+    if (!this.dataModel.highCommande || this.dataModel.highCommande.trim().length <= 0) throw new Error("自定义参数非法,无法启动服务端");
     let commandArray = this.dataModel.highCommande.split(" ");
     let javaPath = commandArray.shift();
     //过滤
@@ -71,8 +67,7 @@ class ServerProcess extends EventEmitter {
       parList.push(tmpAddList[k]);
     }
 
-    let commandString =
-      this.dataModel.java + " " + parList.toString().replace(/,/gim, " ");
+    let commandString = this.dataModel.java + " " + parList.toString().replace(/,/gim, " ");
 
     //是否只获取命令字符串
     if (onlyCommandString) return commandString;
@@ -85,11 +80,7 @@ class ServerProcess extends EventEmitter {
     MCSERVER.log(["根:", this.dataModel.cwd].join(" "));
     MCSERVER.log("-------------------------------");
 
-    this.process = childProcess.spawn(
-      this.dataModel.java,
-      parList,
-      this.ProcessConfig
-    );
+    this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
   }
 
   //使用 Docker API 启动进程
@@ -100,18 +91,14 @@ class ServerProcess extends EventEmitter {
     // 采用 Docker API 进行启动与监控
     // 启动命令解析
     let startCommande = "";
-    if (this.dataModel.highCommande.trim() != "")
-      startCommande = this.dataModel.highCommande;
+    if (this.dataModel.highCommande.trim() != "") startCommande = this.dataModel.highCommande;
     else startCommande = this.templateStart(true);
     const startCommandeArray = startCommande.split(" ");
     let portmap = this.dataModel.dockerConfig.dockerPorts;
     // 端口解析
     var agreement = portmap.split("/");
     var protocol = "tcp";
-    if (
-      agreement.length >= 2 &&
-      (agreement[1] === "udp" || agreement[1] === "tcp")
-    ) {
+    if (agreement.length >= 2 && (agreement[1] === "udp" || agreement[1] === "tcp")) {
       protocol = agreement[1];
     }
     portmap = portmap.split(":");
@@ -193,13 +180,7 @@ class ServerProcess extends EventEmitter {
         process.kill = () => {
           auxContainer.kill().then(() => {
             auxContainer.remove().then(() => {
-              MCSERVER.log(
-                "实例",
-                "[",
-                self.dataModel.name,
-                "]",
-                "容器已强制移除"
-              );
+              MCSERVER.log("实例", "[", self.dataModel.name, "]", "容器已强制移除");
             });
           });
         };
@@ -212,14 +193,7 @@ class ServerProcess extends EventEmitter {
         // 容器流错误事件传递
         stream.on("error", (err) => {
           MCSERVER.error("服务器运行时异常,建议检查配置与环境", err);
-          self.printlnStdin([
-            "Error:",
-            err.name,
-            "\n Error Message:",
-            err.message,
-            "\n 进程 PID:",
-            self.process.pid || "启动失败，无法获取进程。",
-          ]);
+          self.printlnStdin(["Error:", err.name, "\n Error Message:", err.message, "\n 进程 PID:", self.process.pid || "启动失败，无法获取进程。"]);
           self.stop();
           self.emit("error", err);
         });
@@ -237,17 +211,13 @@ class ServerProcess extends EventEmitter {
         self.dataModel.lastDate = new Date().toLocaleString();
 
         // 输出事件的传递
-        process.stdout.on("data", (data) =>
-          self.emit("console", iconv.decode(data, self.dataModel.oe))
-        );
+        process.stdout.on("data", (data) => self.emit("console", iconv.decode(data, self.dataModel.oe)));
 
         // 产生事件开启
         self.emit("open", self);
 
         // 输出开服资料
-        self.printlnCommandLine(
-          "服务端 " + self.dataModel.name + " 执行开启命令."
-        );
+        self.printlnCommandLine("服务端 " + self.dataModel.name + " 执行开启命令.");
       }
     );
   }
@@ -258,16 +228,11 @@ class ServerProcess extends EventEmitter {
     // 服务端时间权限判断
     let timeResult = this.isDealLineDate();
     if (timeResult) {
-      throw new Error(
-        "服务端于 " +
-          this.dataModel.timeLimitDate +
-          " 时间已到期，拒绝启动，请咨询管理员。"
-      );
+      throw new Error("服务端于 " + this.dataModel.timeLimitDate + " 时间已到期，拒绝启动，请咨询管理员。");
     }
 
     // 防止重复启动
-    if (this._run || this._loading)
-      throw new Error("服务端进程在运行或正在加载..");
+    if (this._run || this._loading) throw new Error("服务端进程在运行或正在加载..");
 
     this._loading = true;
 
@@ -313,18 +278,14 @@ class ServerProcess extends EventEmitter {
         this.dockerStart().then(undefined, (error) => {
           // Docker 启动时异常处理
           MCSERVER.error("此服务器启动时异常,具体错误信息:", error);
-          this.printlnCommandLine(
-            "进程实例启动时失败，建议检查配置文件与启动参数"
-          );
+          this.printlnCommandLine("进程实例启动时失败，建议检查配置文件与启动参数");
           this.stop();
         });
         // 阻止继续运行下去
         return true;
       } else {
         // 确定是自定义命令启动还是模板正常方式启动。
-        this.dataModel.highCommande
-          ? this.customCommandStart()
-          : this.templateStart();
+        this.dataModel.highCommande ? this.customCommandStart() : this.templateStart();
       }
     } catch (err) {
       this.stop();
@@ -339,36 +300,22 @@ class ServerProcess extends EventEmitter {
     // 进程事件监听
     this.process.on("error", (err) => {
       MCSERVER.error("服务器运行时异常,建议检查配置与环境", err);
-      this.printlnStdin([
-        "Error:",
-        err.name,
-        "\n Error Message:",
-        err.message,
-        "\n 进程 PID:",
-        this.process.pid || "启动失败，无法获取进程。",
-      ]);
+      this.printlnStdin(["Error:", err.name, "\n Error Message:", err.message, "\n 进程 PID:", this.process.pid || "启动失败，无法获取进程。"]);
       this.stop();
       this.emit("error", err);
     });
 
     // 进程启动成功确认
     if (!this.process.pid) {
-      MCSERVER.error(
-        "服务端进程启动失败，建议检查启动命令与参数是否正确，pid:",
-        this.process.pid
-      );
+      MCSERVER.error("服务端进程启动失败，建议检查启动命令与参数是否正确，pid:", this.process.pid);
       this.stop();
       delete this.process;
       throw new Error("服务端进程启动失败，建议检查启动命令与参数是否正确");
     }
 
     // 输出事件的传递
-    this.process.stdout.on("data", (data) =>
-      this.emit("console", iconv.decode(data, this.dataModel.oe))
-    );
-    this.process.stderr.on("data", (data) =>
-      this.emit("console", iconv.decode(data, this.dataModel.oe))
-    );
+    this.process.stdout.on("data", (data) => this.emit("console", iconv.decode(data, this.dataModel.oe)));
+    this.process.stderr.on("data", (data) => this.emit("console", iconv.decode(data, this.dataModel.oe)));
     this.process.on("exit", (code) => {
       this.emit("exit", code);
       this.stop();
@@ -386,9 +333,7 @@ class ServerProcess extends EventEmitter {
   send(command) {
     if (this._run) {
       if (this.process.dockerContainer != null) {
-        this.process.stdin.write(
-          iconv.encode(command, this.dataModel.ie) + "\n"
-        );
+        this.process.stdin.write(iconv.encode(command, this.dataModel.ie) + "\n");
       } else {
         this.process.stdin.write(iconv.encode(command, this.dataModel.ie));
         this.process.stdin.write("\n");
@@ -460,22 +405,14 @@ class ServerProcess extends EventEmitter {
 
   //输出一行到标准输出
   printlnStdin(line) {
-    let str = ["[MCSMANAGER] [", tools.getFullTime(), "]:", line, "\r\n"].join(
-      " "
-    );
+    let str = ["[MCSMANAGER] [", tools.getFullTime(), "]:", line, "\r\n"].join(" ");
     this.emit("console", str);
   }
 
   printlnCommandLine(line) {
-    this.emit(
-      "console",
-      "[MCSMANAGER] -------------------------------------------------------------- \r\n"
-    );
+    this.emit("console", "[MCSMANAGER] -------------------------------------------------------------- \r\n");
     this.printlnStdin(line);
-    this.emit(
-      "console",
-      "[MCSMANAGER] -------------------------------------------------------------- \r\n"
-    );
+    this.emit("console", "[MCSMANAGER] -------------------------------------------------------------- \r\n");
   }
 
   isDealLineDate() {

@@ -9,10 +9,7 @@
             用户名: {{ username }}
           </div>
           <div class="PanelItem">
-            <span
-              class="glyphicon glyphicon-calendar"
-              aria-hidden="true"
-            ></span>
+            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
             创建时间: {{ createDate }}
           </div>
           <div class="PanelItem">
@@ -42,23 +39,15 @@
           <div class="row">
             <div class="col-sm-6">
               <div class="PanelItem text-center" v-on:click="toRePassword()">
-                <span
-                  class="glyphicon glyphicon-lock"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                 修改密码
               </div>
             </div>
             <div class="col-sm-6">
               <div class="PanelItem text-center">
-                <span
-                  class="glyphicon glyphicon-book"
-                  aria-hidden="true"
-                ></span>
+                <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
                 <!-- 您可以在这里附上您的链接，修改 href 属性即可 -->
-                <a href="javascript:alert('您的提供商未提供使用说明')"
-                  >使用说明</a
-                >
+                <a href="javascript:alert('您的提供商未提供使用说明')">使用说明</a>
               </div>
             </div>
           </div>
@@ -68,10 +57,7 @@
         <div class="PanelTitle">用户 API 密匙</div>
         <div class="PanelBody">
           <div class="PanelItem text-center" v-on:click="toApiKey()">
-            <span
-              class="glyphicon glyphicon-th-large"
-              aria-hidden="true"
-            ></span>
+            <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
             我的 API 密匙
           </div>
         </div>
@@ -93,9 +79,7 @@
                         <p v-text="'文件名:' + item.jarName || '未设置'"></p>
                       </h4>
                       状态:
-                      <span v-if="item.run" class="color-green">
-                        正在运行
-                      </span>
+                      <span v-if="item.run" class="color-green"> 正在运行 </span>
                       <span v-else="item.run" class="color-red"> 关闭 </span>
                       <!--<br>创建时间 ：<span v-text="item.createDate"></span>-->
                       <br />最后启动：
@@ -106,12 +90,7 @@
                   </div>
                   <div class="col-md-5 NextCol">
                     <div class="GenhomeButton">
-                      <button
-                        class="btn btn-info"
-                        v-on:click="toConsole(item.serverName)"
-                      >
-                        控制 | 管理
-                      </button>
+                      <button class="btn btn-info" v-on:click="toConsole(item.serverName)">控制 | 管理</button>
                     </div>
                   </div>
                 </div>
@@ -136,11 +115,7 @@
       methods: {
         toConsole: function (serverName) {
           MCSERVER.listenServername = serverName;
-          RES.redirectPage(
-            "./template/component/console.html",
-            "server/console",
-            serverName
-          );
+          RES.redirectPage("./template/component/console.html", "server/console", serverName);
         },
         toRePassword: function () {
           RES.redirectPage("./template/component/gen_repassword.html");

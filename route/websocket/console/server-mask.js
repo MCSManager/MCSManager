@@ -15,10 +15,7 @@ WebSocketObserver().listener("server/console/autorestart", (data) => {
       server.save();
       response.wsMsgWindow(data.ws, "更改设置成功！");
     } catch (err) {
-      response.wsMsgWindow(
-        data.ws,
-        "更改设置失败！不正常，请刷新网页重新设置!"
-      );
+      response.wsMsgWindow(data.ws, "更改设置失败！不正常，请刷新网页重新设置!");
     }
     return;
   }

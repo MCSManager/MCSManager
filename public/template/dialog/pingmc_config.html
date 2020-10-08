@@ -5,44 +5,20 @@
   <p>数据每隔 10 秒刷新缓存。</p>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">服务器名称</span>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="选填，默认是 Minecraft Server，推荐自己取名"
-      aria-describedby="sizing-addon3"
-      v-model="mcpingName"
-    />
+    <input type="text" class="form-control" placeholder="选填，默认是 Minecraft Server，推荐自己取名" aria-describedby="sizing-addon3" v-model="mcpingName" />
   </div>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">域名或IP地址</span>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="选填，默认是 localhost，不推荐修改"
-      aria-describedby="sizing-addon3"
-      v-model="mcpingHost"
-    />
+    <input type="text" class="form-control" placeholder="选填，默认是 localhost，不推荐修改" aria-describedby="sizing-addon3" v-model="mcpingHost" />
   </div>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">服务端端口</span>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="选填，为空则自动，取自 server.properties 文件"
-      aria-describedby="sizing-addon3"
-      v-model="mcpingPort"
-    />
+    <input type="text" class="form-control" placeholder="选填，为空则自动，取自 server.properties 文件" aria-describedby="sizing-addon3" v-model="mcpingPort" />
   </div>
 
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">自定义 Motd</span>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="选填，不填写则获取 motd"
-      aria-describedby="sizing-addon3"
-      v-model="mcpingMotd"
-    />
+    <input type="text" class="form-control" placeholder="选填，不填写则获取 motd" aria-describedby="sizing-addon3" v-model="mcpingMotd" />
   </div>
 
   <div class="PanelBody">
@@ -56,14 +32,10 @@
             <span v-on:click="toAPI_PAGE()">贴图系统 Beta</span>
         </div> -->
   </div>
-  <p style="color: rgb(230, 55, 55)">
-    保存或更新配置内容后，需要重启 Minecraft 服务器，才可使用。
-  </p>
+  <p style="color: rgb(230, 55, 55)">保存或更新配置内容后，需要重启 Minecraft 服务器，才可使用。</p>
   <button class="btn btn-success" v-on:click="ok()">保存配置</button>
   &nbsp;|&nbsp;
-  <button class="btn btn-danger" v-on:click="TOOLS.popWindClose();">
-    返回
-  </button>
+  <button class="btn btn-danger" v-on:click="TOOLS.popWindClose();">返回</button>
 </div>
 <script>
   WS.sendMsg("mcping/config", PAGE.listenServername, function (obj) {

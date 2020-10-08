@@ -45,41 +45,22 @@ module.exports.init = () => {
   for (const key in MCSERVER.Schedule.dataModel.list) {
     const element = MCSERVER.Schedule.dataModel.list[key];
     if (element == null) continue;
-    createScheduleJobCount(
-      element.id,
-      element.time,
-      element.count,
-      element.commande,
-      element.servername,
-      null,
-      false
-    );
+    createScheduleJobCount(element.id, element.time, element.count, element.commande, element.servername, null, false);
   }
 };
 
 //计次型任务
-function createScheduleJobCount(
-  id,
-  time,
-  count,
-  commande,
-  servername,
-  callback,
-  _save = true
-) {
+function createScheduleJobCount(id, time, count, commande, servername, callback, _save = true) {
   let lco = 0;
-  let mask = (MCSERVER.Schedule.container[id] = schedule.scheduleJob(
-    time,
-    (fireDate) => {
-      if (lco >= count && count > 0) {
-        deleteScheduleJob(id);
-        return;
-      }
-      lco++;
-      serverExe(servername, commande);
-      callback && callback(commande);
+  let mask = (MCSERVER.Schedule.container[id] = schedule.scheduleJob(time, (fireDate) => {
+    if (lco >= count && count > 0) {
+      deleteScheduleJob(id);
+      return;
     }
-  ));
+    lco++;
+    serverExe(servername, commande);
+    callback && callback(commande);
+  }));
   if (mask && _save) {
     MCSERVER.Schedule.dataModel.list.push({
       id: id,

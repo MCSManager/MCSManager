@@ -28,11 +28,7 @@ class RecordCommand {
       fs.appendFile(this.path, data, FILE_CODE, function (err) {
         if (err) throw err;
       });
-    else
-      fs.writeFileSync(
-        this.path,
-        new Buffer(HISTORY_SIZE_LINE * 2).toString() + data
-      );
+    else fs.writeFileSync(this.path, new Buffer(HISTORY_SIZE_LINE * 2).toString() + data);
   }
 
   readRecord(pstart = 0, length = 32, callback = (logStr) => {}) {

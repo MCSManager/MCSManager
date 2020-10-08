@@ -15,10 +15,7 @@ WebSocketObserver().listener("server/console", (data) => {
 
   if (permssion.isCanServer(userName, serverName)) {
     let serverData = serverModel.ServerManager().getServer(serverName);
-    let sysMonery = (
-      (os.freemem() / 1024 / (os.totalmem() / 1024)) *
-      100
-    ).toFixed(2);
+    let sysMonery = ((os.freemem() / 1024 / (os.totalmem() / 1024)) * 100).toFixed(2);
     let cpu = MCSERVER.dataCenter.cacheCPU;
     response.wsSend(data.ws, "server/console", {
       serverData: serverData.dataModel,

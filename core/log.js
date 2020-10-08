@@ -7,18 +7,7 @@ if (!fs.existsSync("logs/")) fs.mkdirSync("logs");
 // 启动时自动储存上次日志文件
 if (fs.existsSync(LOG_FILE_PATH)) {
   const date = new Date();
-  const logFilename =
-    date.getFullYear() +
-    "-" +
-    (date.getMonth() + 1) +
-    "-" +
-    date.getDay() +
-    "_" +
-    date.getHours() +
-    "-" +
-    date.getMinutes() +
-    "-" +
-    date.getSeconds();
+  const logFilename = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDay() + "_" + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
   fs.renameSync(LOG_FILE_PATH, "logs/" + logFilename + ".log");
 }
 

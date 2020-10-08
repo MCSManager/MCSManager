@@ -5,8 +5,7 @@
         <div class="PanelTitle">服务端信息</div>
         <div class="PanelBody">
           <div class="PanelItem">
-            <span class="glyphicon glyphicon-th-large" aria-hidden="true">
-            </span>
+            <span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>
             名称: {{ serverData.name }}
           </div>
           <div class="PanelItem">
@@ -14,8 +13,7 @@
             CPU 使用率: {{ sysCpu }} %
           </div>
           <div class="PanelItem">
-            <span class="glyphicon glyphicon-equalizer" aria-hidden="true">
-            </span>
+            <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span>
             内存 使用率: {{ (100 - sysMonery).toFixed(1) }} %
           </div>
           <div class="PanelItem" v-if="run">
@@ -32,8 +30,7 @@
         <div class="PanelTitle">服务端操作</div>
         <div class="PanelBody">
           <div class="PanelItem" v-on:click="toTerminal()">
-            <span class="glyphicon glyphicon-unchecked" aria-hidden="true">
-            </span>
+            <span class="glyphicon glyphicon-unchecked" aria-hidden="true"> </span>
             模拟型终端
           </div>
           <transition name="slide-fade">
@@ -43,39 +40,22 @@
             </div>
           </transition>
           <transition name="slide-fade">
-            <div
-              class="PanelItem"
-              v-on:click="toCommand('__stop__')"
-              v-show="run"
-            >
-              <span class="glyphicon glyphicon-pause" aria-hidden="true">
-              </span>
+            <div class="PanelItem" v-on:click="toCommand('__stop__')" v-show="run">
+              <span class="glyphicon glyphicon-pause" aria-hidden="true"> </span>
               关闭服务器
             </div>
           </transition>
-          <div
-            class="PanelItem"
-            v-on:click="toCommand('__restart__')"
-            v-show="run"
-          >
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true">
-            </span>
+          <div class="PanelItem" v-on:click="toCommand('__restart__')" v-show="run">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"> </span>
             重启服务器
           </div>
-          <div
-            class="PanelItem"
-            v-on:click="toCommand('__killserver__')"
-            v-show="run"
-          >
+          <div class="PanelItem" v-on:click="toCommand('__killserver__')" v-show="run">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"> </span>
             强制性结束进程
           </div>
         </div>
       </div>
-      <div
-        class="Panel"
-        :class="serverData.autoRestart?'PanelGreen':'PanelGray'"
-      >
+      <div class="Panel" :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
         <div class="PanelTitle">崩溃监视与配置</div>
         <div class="PanelBody">
           <div class="PanelItem" v-on:click="toProperties()">
@@ -83,25 +63,15 @@
             Server.properties 配置文件
           </div>
           <transition name="slide-fade">
-            <div
-              class="PanelItem"
-              v-on:click="toAutoRestart(false)"
-              v-show="serverData.autoRestart"
-            >
-              <span class="glyphicon glyphicon-retweet" aria-hidden="true">
-              </span>
+            <div class="PanelItem" v-on:click="toAutoRestart(false)" v-show="serverData.autoRestart">
+              <span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span>
               崩溃重启:
               <span style="color: #29b90c">打开</span>
             </div>
           </transition>
           <transition name="slide-fade">
-            <div
-              class="PanelItem"
-              v-on:click="toAutoRestart(true)"
-              v-show="!serverData.autoRestart"
-            >
-              <span class="glyphicon glyphicon-retweet" aria-hidden="true">
-              </span>
+            <div class="PanelItem" v-on:click="toAutoRestart(true)" v-show="!serverData.autoRestart">
+              <span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span>
               崩溃重启:
               <span style="color: #818181">关闭</span>
             </div>
@@ -117,8 +87,7 @@
           </div>
 
           <div class="PanelItem">
-            <span class="glyphicon glyphicon-th-list" aria-hidden="true">
-            </span>
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span>
             端口: {{ FTP_port }}
           </div>
           <div class="PanelItem">
@@ -137,8 +106,7 @@
         <div class="PanelTitle">普通外置接口</div>
         <div class="PanelBody">
           <div class="PanelItem">
-            <span class="glyphicon glyphicon-barcode" aria-hidden="true">
-            </span>
+            <span class="glyphicon glyphicon-barcode" aria-hidden="true"> </span>
             <span v-on:click="toAPI_JSON()">格式 JSON | API 接口</span>
           </div>
         </div>
@@ -149,14 +117,10 @@
         <div class="PanelTitle">服务端控制组</div>
         <div class="PanelBody">
           <div class="row">
-            <div
-              class="col-md-3 col-sm-6"
-              v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')"
-            >
+            <div class="col-md-3 col-sm-6" v-on:click="RES.redirectPage('./template/component/terminal.html', null, '')">
               <div class="PanelItemBlock">
                 <div class="LogV">
-                  <span class="glyphicon glyphicon-console" aria-hidden="true">
-                  </span>
+                  <span class="glyphicon glyphicon-console" aria-hidden="true"> </span>
                 </div>
                 <div class="LogK">命令控制台</div>
               </div>
@@ -164,8 +128,7 @@
             <div class="col-md-3 col-sm-6" v-on:click="toOnlineFs()">
               <div class="PanelItemBlock">
                 <div class="LogV">
-                  <span class="glyphicon glyphicon-th-list" aria-hidden="true">
-                  </span>
+                  <span class="glyphicon glyphicon-th-list" aria-hidden="true"> </span>
                 </div>
                 <div class="LogK">文件在线管理</div>
               </div>
@@ -173,11 +136,7 @@
             <div class="col-md-3 col-sm-6" v-on:click="toSchedule()">
               <div class="PanelItemBlock">
                 <div class="LogV">
-                  <span
-                    class="glyphicon glyphicon-indent-right"
-                    aria-hidden="true"
-                  >
-                  </span>
+                  <span class="glyphicon glyphicon-indent-right" aria-hidden="true"> </span>
                 </div>
                 <div class="LogK">计划任务项目</div>
               </div>
@@ -188,15 +147,9 @@
                   <!-- <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> -->
                   <strong>
                     <span>
-                      <span
-                        style="color: rgb(38, 165, 26)"
-                        v-text="mcping.current_players"
-                      ></span>
+                      <span style="color: rgb(38, 165, 26)" v-text="mcping.current_players"></span>
                       <span style="color: rgb(0, 0, 0)">/</span>
-                      <span
-                        style="color: rgb(38, 165, 26)"
-                        v-text="mcping.max_players"
-                      ></span>
+                      <span style="color: rgb(38, 165, 26)" v-text="mcping.max_players"></span>
                     </span>
                   </strong>
                 </div>
@@ -236,11 +189,7 @@
 <script>
   MI.rListener("onload", function () {
     // 定义页面地址
-    TOOLS.definePage(
-      "template/component/console",
-      "server/console",
-      MCSERVER.listenServername
-    );
+    TOOLS.definePage("template/component/console", "server/console", MCSERVER.listenServername);
 
     var serverName = MCSERVER.listenServername;
 
@@ -251,9 +200,7 @@
           WS.sendMsg("server/console/autorestart", serverName);
         },
         toOnlineFs: function () {
-          var path = MCSERVER.URL(
-            "fs_auth/auth/" + encodeURIComponent(serverName)
-          );
+          var path = MCSERVER.URL("fs_auth/auth/" + encodeURIComponent(serverName));
           window.open(path);
         },
         toOpenServer: function () {
@@ -261,8 +208,7 @@
           WS.sendMsg("server/console/open", serverName);
         },
         toCommand: function (parCommand) {
-          if (parCommand && typeof parCommand == "string")
-            this.command = parCommand;
+          if (parCommand && typeof parCommand == "string") this.command = parCommand;
           var data = {
             command: this.command,
             serverName: serverName,
@@ -273,25 +219,13 @@
           this.command = "";
         },
         toProperties: function () {
-          RES.redirectPage(
-            "./template/component/properties.html",
-            "server/properties",
-            serverName
-          );
+          RES.redirectPage("./template/component/properties.html", "server/properties", serverName);
         },
         toTerminal: function () {
-          RES.redirectPage(
-            "./template/component/terminal.html",
-            "server/console",
-            serverName
-          );
+          RES.redirectPage("./template/component/terminal.html", "server/console", serverName);
         },
         toSchedule: function () {
-          RES.redirectPage(
-            "./template/component/schedule.html",
-            "schedule/list",
-            serverName
-          );
+          RES.redirectPage("./template/component/schedule.html", "schedule/list", serverName);
         },
         toAPI_JSON: function () {
           window.open("/api/status/" + serverName);

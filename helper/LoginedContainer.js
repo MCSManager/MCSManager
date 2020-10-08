@@ -1,8 +1,7 @@
 var Logined = {};
 
 module.exports.addLogined = (sessionID, username, userdata) => {
-  if (username && userdata && sessionID)
-    Logined[sessionID] = [username, userdata, Date.now()];
+  if (username && userdata && sessionID) Logined[sessionID] = [username, userdata, Date.now()];
   else throw new Error("Username or Userdata is Null");
 };
 
