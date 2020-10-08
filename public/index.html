@@ -221,8 +221,8 @@
         // echart 路径配置
         window.require.config({
           paths: {
-            echarts: "./common/echarts-dist",
-          },
+            echarts: "./common/echarts-dist"
+          }
         });
 
         //抗CSRF攻击
@@ -273,10 +273,10 @@
                 },
                 error: function () {
                   TOOLS.pushMsgWindow("退出失败，您网络正常且是否登陆？");
-                },
+                }
               });
-            },
-          },
+            }
+          }
         });
 
         //工具信息栏
@@ -284,23 +284,23 @@
           el: "#ToolsInfo",
           data: {
             show: false,
-            msg: "",
-          },
+            msg: ""
+          }
         });
 
         // 手机端导航球
         var SidebarButton = new Vue({
           el: "#SidebarButton",
           data: {
-            isExpand: false,
+            isExpand: false
           },
           methods: {
             operate: function () {
               MCSERVER.colmSet(!MCSERVER.getColmStatus());
               // TOOLS.blackJumbotron(!this.isExpand)
               this.isExpand = !MCSERVER.getColmStatus();
-            },
-          },
+            }
+          }
         });
 
         VIEW_MODEL.COMMON = {};

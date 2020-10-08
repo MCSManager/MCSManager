@@ -130,7 +130,7 @@ class ServerManager extends EventEmitter {
       this.emit("console", {
         serverName: name,
         command: "CONSOLE",
-        msg: data,
+        msg: data
       });
     });
     //监听退出
@@ -138,21 +138,21 @@ class ServerManager extends EventEmitter {
       this.emit("exit", {
         serverName: name,
         command: "EXIT",
-        msg: code,
+        msg: code
       });
     });
     server.on("open", (server) => {
       this.emit("open", {
         serverName: name,
         command: "OPEN",
-        msg: server,
+        msg: server
       });
     });
     server.on("error", (err) => {
       this.emit("open", {
         serverName: name,
         command: "ERROR",
-        msg: err,
+        msg: err
       });
     });
   }
@@ -195,7 +195,7 @@ class ServerManager extends EventEmitter {
       // 准备发送给前端的服务端集合数据
       list.push({
         serverName: k,
-        data: returnData,
+        data: returnData
       });
     }
     return list;

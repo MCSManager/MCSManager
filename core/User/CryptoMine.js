@@ -10,7 +10,7 @@ function createPassword(_password, _salt) {
   PasswordMD5 = md5(PasswordMD5);
   return {
     password: PasswordMD5,
-    salt: _salt,
+    salt: _salt
   };
 }
 

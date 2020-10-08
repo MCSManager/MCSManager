@@ -52,13 +52,13 @@
       data: {
         dockerFileText: 'FROM java:latest\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd',
         dockerImageName: "",
-        createDockerDis: false,
+        createDockerDis: false
       },
       methods: {
         createDocker: function () {
           var obj = {
             dockerImageName: this.dockerImageName || "mcsd",
-            dockerfile: TOOLS.decode(this.dockerFileText),
+            dockerfile: TOOLS.decode(this.dockerFileText)
           };
           if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj.dockerImageName + "\n确认无误单击【确定】得以继续")) return;
           if (!TOOLS.isStdText(obj.dockerImageName)) {
@@ -72,14 +72,14 @@
           TOOLS.popWind({
             style: {
               maxWidth: "400px",
-              top: "0px",
+              top: "0px"
             },
             title: "Docker 构建结果",
             template: "template/dialog/docker_res.html",
-            callback: function () {},
+            callback: function () {}
           });
-        },
-      },
+        }
+      }
     });
   });
 

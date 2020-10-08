@@ -79,7 +79,7 @@ colors.setTheme({
   help: "cyan",
   warn: "yellow",
   debug: "magenta",
-  error: "red",
+  error: "red"
 });
 
 //logo输出
@@ -117,7 +117,7 @@ MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
   MCSERVER.logCenter[objStr] = MCSERVER.logCenter[objStr].slice(1);
   MCSERVER.logCenter[objStr].push({
     key: k,
-    val: v,
+    val: v
   });
 };
 
@@ -130,7 +130,7 @@ var expressWs = require("express-ws")(app);
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
-    extended: false,
+    extended: false
   })
 );
 app.use(bodyParser.json());
@@ -141,10 +141,10 @@ app.use(
     secret: UUID.v4(),
     name: "MCSM_SESSION_ID",
     cookie: {
-      maxAge: MCSERVER.localProperty.session_max_age * 1000 * 60,
+      maxAge: MCSERVER.localProperty.session_max_age * 1000 * 60
     },
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: false
   })
 );
 
@@ -268,7 +268,7 @@ app.use("/fs", require("./onlinefs/controller/function"));
     ftpServerInterface.initFTPdServerOptions({
       host: MCSERVER.localProperty.ftp_ip || "127.0.0.1",
       port: MCSERVER.localProperty.ftp_port,
-      tls: null,
+      tls: null
     });
 
     if (MCSERVER.localProperty.ftp_is_allow) require("./ftpd/index"); //执行ftp逻辑

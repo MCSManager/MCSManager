@@ -6,7 +6,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
     //import
     data: {
       username: username,
-      _rand: Math.random(), //增加缓存拒绝随机数
+      _rand: Math.random() //增加缓存拒绝随机数
     },
     success: function (data, textStatus) {
       var obj = JSON.parse(data);
@@ -16,7 +16,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
     },
     error: function () {
       error && error();
-    },
+    }
   });
 
   function logging() {
@@ -26,7 +26,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
       url: MCSERVER.URL("./user/login"),
       data: {
         username: username,
-        password: md5Passworded,
+        password: md5Passworded
       },
       success: function (data, textStatus) {
         var obj = JSON.parse(data);
@@ -54,7 +54,7 @@ MCSERVER.login = function (username, password, rand, loginSuccess, loginError, e
       },
       error: function () {
         error && error();
-      },
+      }
     });
   }
 };

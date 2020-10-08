@@ -48,7 +48,7 @@ TOOLS.charts.bulider = function (dom, len, config, callback, chartOption) {
         option.series[0].data = viewData;
         option.xAxis[0].data = keyData;
       },
-      end: function () {},
+      end: function () {}
     });
   });
 };
@@ -73,31 +73,31 @@ TOOLS.charts.DefOption = {
     "#ff00ff",
     "#3cb371",
     "#b8860b",
-    "#30e0e0",
+    "#30e0e0"
   ],
   tooltip: {
-    trigger: "axis",
+    trigger: "axis"
   },
   legend: {
-    data: ["百分比"],
+    data: ["百分比"]
   },
   toolbox: {
-    show: false,
+    show: false
   },
   calculable: true,
   xAxis: [
     {
       type: "category",
       boundaryGap: false,
-      data: [],
-    },
+      data: []
+    }
   ],
   yAxis: [
     {
       type: "value",
       max: 100,
-      min: 0,
-    },
+      min: 0
+    }
   ],
   series: [
     {
@@ -107,11 +107,11 @@ TOOLS.charts.DefOption = {
       itemStyle: {
         normal: {
           areaStyle: {
-            type: "default",
-          },
-        },
+            type: "default"
+          }
+        }
       },
-      data: [],
-    },
-  ],
+      data: []
+    }
+  ]
 };

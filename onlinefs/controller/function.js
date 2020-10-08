@@ -139,7 +139,7 @@ router.get("/eac_quque", (req, res) => {
   const nowTask = fsoperate.FileOperate.getNowEacTaskCounter();
   sendHandle(req, res, {
     quque: quque.length,
-    now: nowTask,
+    now: nowTask
   });
 });
 
@@ -156,7 +156,7 @@ router.post("/upload", (req, res) => {
 
     //生成multiparty对象，并配置上传目标路径
     var form = new multiparty.Form({
-      uploadDir: os.tmpdir(),
+      uploadDir: os.tmpdir()
     });
   } catch (err) {
     res.status(500).send("服务器上传初始化错误!请重试!");
@@ -202,8 +202,8 @@ router.get("/download/:name", (req, res) => {
       dotfiles: "deny",
       headers: {
         "Content-Disposition": "attachmnet",
-        filename: encodeURIComponent(req.params.name.trim()),
-      },
+        filename: encodeURIComponent(req.params.name.trim())
+      }
     },
     (err) => {}
   );

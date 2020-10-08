@@ -15,7 +15,7 @@ class MCServStatus {
       motd: null,
       current_players: null,
       max_players: null,
-      latency: null,
+      latency: null
     };
   }
 
@@ -43,7 +43,7 @@ class MCServStatus {
           motd: server_info[3].replace(/\u0000/g, ""),
           current_players: server_info[4].replace(/\u0000/g, ""),
           max_players: server_info[5].replace(/\u0000/g, ""),
-          latency: this.status.latency,
+          latency: this.status.latency
         };
         formatMotd(server_info[3]);
         // Request an end to the connection after the data has been received.
@@ -101,7 +101,7 @@ function CreateMCPingTask(id, ip, port) {
   }
   // 任务参数对象，用于记录错误次数和其他数据
   TASK_OBJECT_DATABASE[id] = {
-    errorCount: 0,
+    errorCount: 0
   };
   // 每隔 6 秒，ping 查询一次服务器状态，并且缓存结果
   const taskInterval = setInterval(() => {
@@ -140,7 +140,7 @@ module.exports = {
   PingMCServer,
   CreateMCPingTask,
   DestroyMCPingTask,
-  QueryMCPingTask,
+  QueryMCPingTask
 };
 
 // PROMISE VERSION

@@ -90,7 +90,7 @@
           if (!this.properties) return;
           var obj = {
             serverName: this.serverName,
-            properties: this.properties,
+            properties: this.properties
           };
           WS.sendMsg("server/properties_update", JSON.stringify(obj));
         },
@@ -105,8 +105,8 @@
         },
         findProperties: function (key) {
           return MCSERVER.findPropertiesShow(key);
-        },
-      },
+        }
+      }
     });
   });
 

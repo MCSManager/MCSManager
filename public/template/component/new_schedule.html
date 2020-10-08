@@ -103,7 +103,7 @@
         time: obj.time || "* * * * * *",
         count: obj.count || 0,
         commande: obj.commande || "",
-        servername: servername,
+        servername: servername
       },
       methods: {
         toBack: function () {
@@ -116,7 +116,7 @@
               "schedule/delete",
               JSON.stringify({
                 id: this.id,
-                servername: this.servername,
+                servername: this.servername
               })
             );
           }
@@ -127,7 +127,7 @@
               time: this.time || "",
               count: this.count || 0,
               commande: this.commande || "",
-              servername: this.servername,
+              servername: this.servername
             })
           );
           this.toBack();
@@ -137,7 +137,7 @@
           //弹出简单模式窗口
           TOOLS.popWind({
             style: {
-              maxWidth: "400px",
+              maxWidth: "400px"
             },
             title: "计划任务简单模式",
             template: "template/dialog/time_bulider.html",
@@ -146,10 +146,10 @@
               that.time = result.time || "* * * * * *";
               that.count = result.count || "0";
               that.commande = result.command || "";
-            },
+            }
           });
-        },
-      },
+        }
+      }
     });
   });
 

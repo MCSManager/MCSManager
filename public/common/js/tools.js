@@ -18,7 +18,7 @@
 
   TOOLS.pushMsgWindow = function (value) {
     _queue.push({
-      msg: value,
+      msg: value
     });
 
     if (_run == true) return;
@@ -199,12 +199,12 @@
         "\\}",
         "&lt;",
         "&gt;",
-        "Preparing start region for level",
+        "Preparing start region for level"
       ],
       //红色
       ["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
       //黄色
-      ["Starting Minecraft server on", "world_the_end", "world_nether", "Done", "MCSMANAGER"],
+      ["Starting Minecraft server on", "world_the_end", "world_nether", "Done", "MCSMANAGER"]
     ];
     for (var k in RegExpStringArr) {
       for (var y in RegExpStringArr[k]) {
@@ -257,12 +257,12 @@
         "\\}",
         "&lt;",
         "&gt;",
-        "Preparing start region for level",
+        "Preparing start region for level"
       ],
       //红色
       ["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
       //黄色
-      ["Starting Minecraft server on", "world_the_end", "world_nether", "Usage", "Server thread", "Done", "MCSMANAGER"],
+      ["Starting Minecraft server on", "world_the_end", "world_nether", "Usage", "Server thread", "Done", "MCSMANAGER"]
     ];
     for (var k in RegExpStringArr) {
       for (var y in RegExpStringArr[k]) {
@@ -290,16 +290,16 @@
     var popWinContext = $("#PopWinContext");
     _popWindCallback = config.callback || function () {}; //全局的callback变量
     var css = config.style || {
-      display: "block",
+      display: "block"
     };
     popWinContext.html("<p>正在加载信息框,请稍等...</p>");
 
     $("#PopWinTitle").html(config.title || "信息对话框");
     $(".PopWin").css(css).css({
-      display: "block",
+      display: "block"
     });
     $("#balckWarp").css({
-      display: "block",
+      display: "block"
     });
     popWinContext.load(config.template, function (response, status, xhr) {
       if (status != "success") {
@@ -320,7 +320,7 @@
   TOOLS.blackJumbotron = function (boolean) {
     if (boolean) {
       $("#balckWarp").css({
-        display: "block",
+        display: "block"
       });
     } else {
       $("#balckWarp").removeAttr("style");

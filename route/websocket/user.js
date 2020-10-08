@@ -17,7 +17,7 @@ WebSocketObserver().listener("userset/update", (data) => {
   }
 
   response.wsSend(data.ws, "userset/update", {
-    items: userNameList,
+    items: userNameList
   });
 });
 
@@ -112,7 +112,7 @@ WebSocketObserver().listener("userset/view", (data) => {
     username: user.dataModel.username,
     lastDate: user.dataModel.lastDate,
     createDate: user.dataModel.createDate,
-    allowedServer: user.dataModel.allowedServer || [],
+    allowedServer: user.dataModel.allowedServer || []
   });
 });
 

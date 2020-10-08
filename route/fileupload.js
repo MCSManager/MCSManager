@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
   // 但此仅限于管理员使用
 
   const form = new multiparty.Form({
-    uploadDir: os.tmpdir(),
+    uploadDir: os.tmpdir()
   });
   form.parse(req, function (err, fields, files) {
     if (err) {

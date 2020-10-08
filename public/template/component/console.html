@@ -211,7 +211,7 @@
           if (parCommand && typeof parCommand == "string") this.command = parCommand;
           var data = {
             command: this.command,
-            serverName: serverName,
+            serverName: serverName
           };
           if (this.command.length >= 1 || typeof parCommand == "string") {
             WS.sendMsg("server/console/command", JSON.stringify(data));
@@ -238,26 +238,26 @@
           TOOLS.popWind({
             style: {
               maxWidth: "500px",
-              top: "15%",
+              top: "15%"
             },
             title: "监控协议配置",
-            template: "template/dialog/pingmc_config.html",
+            template: "template/dialog/pingmc_config.html"
           });
         },
         toTerminal: function () {
           // 打开弹窗型终端
           TOOLS.listenTerminal(serverName);
-        },
+        }
       },
       data: {
         command: "",
         allowedStart: true,
         runStatusClass: "",
-        username: MCSERVER.listenServername,
+        username: MCSERVER.listenServername
       },
       watch: {
-        run: function (cur, old) {},
-      },
+        run: function (cur, old) {}
+      }
     });
 
     // 服务器状态请求

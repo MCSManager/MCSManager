@@ -19,7 +19,7 @@ WebSocketObserver().listener("mcping/config_save", (data) => {
       mcpingName: jsonObject.mcpingConfig.mcpingName || "",
       mcpingHost: jsonObject.mcpingConfig.mcpingHost || "",
       mcpingPort: jsonObject.mcpingConfig.mcpingPort || "",
-      mcpingMotd: jsonObject.mcpingConfig.mcpingMotd || "",
+      mcpingMotd: jsonObject.mcpingConfig.mcpingMotd || ""
     };
     // console.log('mcping mcserver.dataModel:', mcserver.dataModel)
     mcserver.dataModel.save();

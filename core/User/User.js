@@ -81,5 +81,5 @@ class User {
 
 module.exports = {
   User,
-  USER_SAVE_PATH,
+  USER_SAVE_PATH
 };

@@ -33,7 +33,7 @@ ftpServerInterface.createFTPServer({
   allowUnauthorizedTls: false,
   useWriteFile: false, //true 则客户端上传的文件将缓冲在内存中，然后使用写入磁盘writeFile。
   useReadFile: false,
-  maxStatsAtOnce: 10,
+  maxStatsAtOnce: 10
   // uploadMaxSlurpSize: uploadMaxSlurpSize // N/A unless 'useWriteFile' is true.
 });
 
@@ -54,7 +54,7 @@ ftpServerInterface.initFTPServerListener({
   },
   error: () => {
     return false;
-  },
+  }
 });
 
 //run

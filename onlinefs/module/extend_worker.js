@@ -38,7 +38,7 @@ if (realArgv.length >= 1) {
     // 进行解压操作
     compressing.zip
       .uncompress(absPath, zipExtractDir, {
-        zipFileNameEncoding: SYSTEM_CODE,
+        zipFileNameEncoding: SYSTEM_CODE
       })
       .then(() => {
         // BUG note: 此处无法使用 MCSM 全局变量，此为额外任务子进程。感谢 @ColorfulGhost
@@ -63,7 +63,7 @@ if (realArgv.length >= 1) {
     // 进行压缩操作
     compressing.zip
       .compressDir(absPath, compressZipPath, {
-        zipFileNameEncoding: SYSTEM_CODE,
+        zipFileNameEncoding: SYSTEM_CODE
       })
       .then(() => {
         console.log("压缩任务", absPath, "成功.");

@@ -8,7 +8,7 @@ WebSocketObserver().listener("server/view", (data) => {
   if (!permssion.isMaster(data.WsSession)) return;
   let value = serverModel.ServerManager().getServerList();
   response.wsSend(data.ws, "server/view", {
-    items: value,
+    items: value
   });
 });
 

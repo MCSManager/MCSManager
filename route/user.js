@@ -141,7 +141,7 @@ router.get("/login_key", function (req, res) {
         //salt
         enkey1: loggingUser.dataModel.salt,
         //md5Key
-        enkey2: md5Key,
+        enkey2: md5Key
       })
     );
     return;
@@ -152,7 +152,7 @@ router.get("/login_key", function (req, res) {
   res.send(
     JSON.stringify({
       enkey1: tools.randomString(6),
-      enkey2: tools.randomString(32),
+      enkey2: tools.randomString(32)
     })
   );
 });

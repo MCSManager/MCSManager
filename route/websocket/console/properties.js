@@ -19,7 +19,7 @@ WebSocketObserver().listener("server/properties", (data) => {
         response.wsSend(data.ws, "server/properties", {
           run: serverModel.ServerManager().getServer(serverName).isRun(),
           serverName: serverName,
-          properties: properties,
+          properties: properties
         });
       });
   }
@@ -63,7 +63,7 @@ WebSocketObserver().listener("server/properties_update_reload", (data) => {
           response.wsSend(data.ws, "server/properties", {
             run: serverModel.ServerManager().getServer(serverName).isRun(),
             serverName: serverName,
-            properties: properties,
+            properties: properties
           });
           //信息框
           response.wsMsgWindow(data.ws, "properties 配置重读刷新完毕");

@@ -49,7 +49,7 @@ class FileOperate extends BaseFileOperate {
         isFile: !info.isDirectory(),
         time: info.mtime,
         // info: other,
-        checkbox: false, //唯一前端数据
+        checkbox: false //唯一前端数据
       };
     });
   }
@@ -171,7 +171,7 @@ class FileOperate extends BaseFileOperate {
       // 加入到解压缩队列
       EAC_QUQUE.push({
         category: "extract",
-        path: absPath,
+        path: absPath
       });
     });
   }
@@ -182,7 +182,7 @@ class FileOperate extends BaseFileOperate {
       // 加入到解压缩队列
       EAC_QUQUE.push({
         category: "compress",
-        path: absPath,
+        path: absPath
       });
     });
   }

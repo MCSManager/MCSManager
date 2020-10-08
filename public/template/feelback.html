@@ -79,13 +79,13 @@
       success: function (data) {
         VIEW_MODEL["News"] = data;
         VIEW_MODEL.newVue("News", {
-          el: "#News",
+          el: "#News"
         });
         MI.routeCopy("News", data);
         VIEW_MODEL.newVue("SystemUp", {
-          el: "#SystemUp",
+          el: "#SystemUp"
         });
-      },
+      }
     });
   });
 

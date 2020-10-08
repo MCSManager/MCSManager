@@ -225,7 +225,7 @@
         addCmd: "",
         java: "",
         highCommande: "",
-        uploadPercentComplete: 0,
+        uploadPercentComplete: 0
       },
       methods: {
         toCreateServer: function () {
@@ -242,7 +242,7 @@
             Xmx: this.Xmx,
             Xms: this.Xms,
             java: this.Java || "java",
-            highCommande: this.highCommande,
+            highCommande: this.highCommande
           };
           WS.sendMsg("server/create", JSON.stringify(obj));
           RES.redirectPage("./template/server.html", "server/view");
@@ -250,7 +250,7 @@
         toCreaterDir: function () {
           var obj = {
             serverName: this.name,
-            cwd: this.cwd,
+            cwd: this.cwd
           };
           WS.sendMsg("server/create_dir", JSON.stringify(obj));
         },
@@ -284,7 +284,7 @@
               file,
               "/fileupload",
               {
-                cwd: this.cwd,
+                cwd: this.cwd
               },
               function (percentComplete) {
                 console.log("上传进度:", percentComplete);
@@ -303,14 +303,14 @@
               }
             );
           }
-        },
+        }
       },
       computed: {
         serverCwd: function () {
           if (this.cwd == "") return "<面板所在目录>/server/server_core/" + this.name + "/";
           return this.cwd;
-        },
-      },
+        }
+      }
     });
   });
 
