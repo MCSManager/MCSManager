@@ -39,11 +39,10 @@
                   <th v-text="key"></th>
                   <th v-text="findProperties(key)"></th>
                   <th>
-                    <center>
-                      <div class="input-group input-group-sm">
-                        <input type="text" class="form-control" aria-describedby="basic-addon1" v-model="properties[key]" />
-                      </div>
-                    </center>
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control" aria-describedby="basic-addon1"
+                        v-model="properties[key]" />
+                    </div>
                   </th>
                 </tr>
               </table>
