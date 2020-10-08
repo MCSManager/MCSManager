@@ -1,6 +1,6 @@
 //响应层
 (function () {
-  var DEBUG = false;
+  var DEBUG = false; // 调试开关
   var TOKEN_NAME = "_T0K_N";
   var RES = (window.RES = function () {
     return null;
