@@ -187,6 +187,7 @@ class ServerManager extends EventEmitter {
 
   getServerCounter() {
     let tmp = 0;
+    // eslint-disable-next-line no-unused-vars
     for (let k in this.serverList) tmp++;
     return tmp;
   }

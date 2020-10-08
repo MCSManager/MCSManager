@@ -2,13 +2,12 @@ const { WebSocketObserver } = require("../../model/WebSocketModel");
 const counter = require("../../core/counter");
 const tools = require("../../core/tools");
 const response = require("../../helper/Response");
-
 const serverModel = require("../../model/ServerModel");
 const permssion = require("../../helper/Permission");
 const userModel = require("../../model/UserModel");
 const os = require("os");
-
 const mversion = require("../../helper/version");
+
 
 const MB_SIZE = 1024 * 1024;
 let serverM = serverModel.ServerManager();
@@ -22,16 +21,6 @@ counter.initData(() => {
   counter.set("passwordError", 0);
   counter.set("csrfCounter", 0);
 });
-
-// var pusage = require('pidusage');
-// //CPU
-// //需要刷新的CPU
-// var cacheCPU = 0;
-// setInterval(() => {
-//     pusage.stat(process.pid, function(err, stat) {
-//         cacheCPU = stat.cpu.toFixed(1);
-//     })
-// }, 3000);
 
 const osUtils = require("os-utils");
 //系统CPU

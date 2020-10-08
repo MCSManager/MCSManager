@@ -41,6 +41,7 @@ class DataModel {
   upload(that, needkey) {
     let key = null;
     if (needkey == undefined) {
+      // eslint-disable-next-line no-unused-vars
       for (var mineKey in this) {
         that[key] = this[key];
       }

@@ -144,6 +144,7 @@ class UserCenter {
 
   getUserCounter() {
     let tmp = 0;
+    // eslint-disable-next-line no-unused-vars
     for (let k in this.userList) tmp++;
     return tmp;
   }

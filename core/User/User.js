@@ -1,7 +1,7 @@
 //用户模型
 
 const DataModel = require("../DataModel");
-const { md5, createPassword, randomString } = require("./CryptoMine");
+const { createPassword } = require("./CryptoMine");
 const fs = require("fs");
 const uuid = require("uuid");
 

@@ -4,9 +4,9 @@ var ftpdzz = require("ftpd");
 
 var options = null;
 var FTPserver = null;
-var rootCwdListener = () => {
-  return "/";
-}; //默认
+// var rootCwdListener = () => {
+//   return "/";
+// }; //默认
 
 module.exports.initFTPdServerOptions = (_options) => {
   options = _options;

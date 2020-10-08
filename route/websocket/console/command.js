@@ -1,7 +1,6 @@
 const { WebSocketObserver } = require("../../../model/WebSocketModel");
 const response = require("../../../helper/Response");
 var serverModel = require("../../../model/ServerModel");
-var userModel = require("../../../model/UserModel");
 const permssion = require("../../../helper/Permission");
 
 const mcPingProtocol = require("../../../helper/MCPingProtocol");

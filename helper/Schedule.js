@@ -50,6 +50,7 @@ module.exports.init = () => {
 //计次型任务
 function createScheduleJobCount(id, time, count, commande, servername, callback, _save = true) {
   let lco = 0;
+  // eslint-disable-next-line no-unused-vars
   let mask = (MCSERVER.Schedule.container[id] = schedule.scheduleJob(time, (fireDate) => {
     if (lco >= count && count > 0) {
       deleteScheduleJob(id);

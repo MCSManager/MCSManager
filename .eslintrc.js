@@ -21,6 +21,7 @@ module.exports = {
         "$": "writeable",
         "WS": "readonly",
         "hex_md5": "readonly",
+        "process": "readonly"
 
     },
     "parserOptions": {
