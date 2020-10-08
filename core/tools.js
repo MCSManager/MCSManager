@@ -25,7 +25,7 @@ module.exports.between = (value, MIN, MAX) => {
 };
 
 const crypto = require("crypto");
-module.exports.md5 = () => {
+module.exports.md5 = (text) => {
   return crypto.createHash("md5").update(text).digest("hex");
 };
 
