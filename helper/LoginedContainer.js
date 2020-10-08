@@ -13,7 +13,7 @@ module.exports.delLogined = (sessionID) => {
 };
 
 module.exports.isLogined = (sessionID, username = null) => {
-  if (Logined.hasOwnProperty(sessionID) && Logined[sessionID]) {
+  if (Logined[sessionID]) {
     if (username) {
       return Logined[sessionID][0] === username;
     }

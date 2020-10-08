@@ -1,10 +1,7 @@
-//基础的路由定义
 const router = require("express")();
-var session = require("express-session");
-
+const session = require("express-session");
 const { loginUser, userCenter } = require("../model/UserModel");
 const response = require("../helper/Response");
-const permssion = require("../helper/Permission");
 const loginedContainer = require("../helper/LoginedContainer");
 const tools = require("../core/tools");
 const TokenManager = require("../helper/TokenManager");
@@ -104,7 +101,7 @@ router.post("/login", function (req, res) {
       //密码错误记录
       MCSERVER.login[ip] ? MCSERVER.login[ip]++ : (MCSERVER.login[ip] = 1);
       //防止数目过于太大 溢出
-      MCSERVER.login[ip] > 1000 ? (MCSERVER.login[ip] = 1000) : (MCSERVER.login[ip] = MCSERVER.login[ip]);
+      MCSERVER.login[ip] > 1000 ? (MCSERVER.login[ip] = 1000) : null;
       //passwordError
       counter.plus("passwordError");
       req.session["login"] = false;

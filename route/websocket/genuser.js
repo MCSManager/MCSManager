@@ -3,7 +3,7 @@ const { userCenter, beliveLogin } = require("../../model/UserModel");
 const serverModel = require("../../model/ServerModel");
 const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
-const os = require("os");
+
 
 WebSocketObserver().listener("genuser/home", (data) => {
   try {
@@ -65,22 +65,17 @@ WebSocketObserver().listener("genuser/re_password", (data) => {
   let username = data.WsSession.username.trim();
   let config = JSON.parse(data.body);
   if (config.newPassword && config.oldPassword) {
-    let user = userCenter().get(username);
     beliveLogin(
       username,
       config.oldPassword,
       () => {
-        try {
-          if (config.newPassword.length > 18 || config.newPassword.length < 6) {
-            response.wsMsgWindow(data.ws, "新的密码长度不正确，需要 6~18 位长度");
-            return;
-          }
-          userCenter().rePassword(username, config.newPassword);
-          userCenter().initUser();
-          response.wsMsgWindow(data.ws, "密码修改修改完成，请重新登陆!");
-        } catch (err) {
-          throw err;
+        if (config.newPassword.length > 18 || config.newPassword.length < 6) {
+          response.wsMsgWindow(data.ws, "新的密码长度不正确，需要 6~18 位长度");
+          return;
         }
+        userCenter().rePassword(username, config.newPassword);
+        userCenter().initUser();
+        response.wsMsgWindow(data.ws, "密码修改修改完成，请重新登陆!");
       },
       () => {
         response.wsMsgWindow(data.ws, "很抱歉，原密码错误，无法修改");

@@ -2,7 +2,6 @@ const { WebSocketObserver } = require("../../model/WebSocketModel");
 const serverModel = require("../../model/ServerModel");
 const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
-const os = require("os");
 
 WebSocketObserver().listener("server/view", (data) => {
   if (!permssion.isMaster(data.WsSession)) return;

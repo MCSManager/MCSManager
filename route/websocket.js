@@ -9,7 +9,7 @@ const response = require("../helper/Response");
 const loginedContainer = require("../helper/LoginedContainer");
 const counter = require("../core/counter");
 
-const expressWs = require("express-ws")(router);
+require("express-ws")(router);
 
 //WebSocket 会话类
 class WebsocketSession {
@@ -154,8 +154,6 @@ router.ws("/ws", function (ws, req) {
       let loc = data.indexOf("\n\n");
       let reqHeader = data.substr(0, loc);
       let reqBody = data.substr(loc + 2);
-      let obj;
-      let reqs = req;
 
       //Websocket 自定义协议解析
       const reqHeaderObj = JSON.parse(reqHeader);
@@ -211,7 +209,7 @@ router.ws("/ws", function (ws, req) {
     //再删一次，保险
     TokenManager.delToken(token);
     delete req.session["token"];
-    delete WsSession;
+    WsSession = null;
     req.session.save();
 
     //释放全局变量

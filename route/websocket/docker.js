@@ -5,7 +5,6 @@ const permssion = require("../../helper/Permission");
 const tools = require("../../core/tools");
 const fs = require("fs");
 const childProcess = require("child_process");
-const iconv = require("iconv-lite");
 
 //Docker 镜像构建结果储存
 MCSERVER.PAGE.DockerRes = [];
@@ -33,9 +32,9 @@ WebSocketObserver().listener("docker/new", (data) => {
 
   MCSERVER.warning("正在创建 Docker 镜像.");
   MCSERVER.warning("镜像名字:", dockerImageName);
-  dockerfileData = dockerfileData.replace(/\&gt;/gim, ">");
-  dockerfileData = dockerfileData.replace(/\&lt;/gim, "<");
-  dockerfileData = dockerfileData.replace(/\&nbsp;/gim, " ");
+  dockerfileData = dockerfileData.replace(/&gt;/gim, ">");
+  dockerfileData = dockerfileData.replace(/&lt;/gim, "<");
+  dockerfileData = dockerfileData.replace(/&nbsp;/gim, " ");
   MCSERVER.warning("DockerFile:\n", dockerfileData);
 
   response.wsMsgWindow(data.ws, "镜像正在创建中，请稍等....");
@@ -57,7 +56,7 @@ WebSocketObserver().listener("docker/new", (data) => {
         pushRes("失败");
       }
     });
-    process.on("error", (err) => {
+    process.on("error", () => {
       pushRes("构建出错");
     });
     // process.stdout.on('data', (data) => console.log(iconv.decode(data, 'utf-8')));

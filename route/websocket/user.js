@@ -3,7 +3,7 @@ const { userCenter, deleteUser } = require("../../model/UserModel");
 const response = require("../../helper/Response");
 const permssion = require("../../helper/Permission");
 const tools = require("../../core/tools");
-const os = require("os");
+
 
 WebSocketObserver().listener("userset/update", (data) => {
   if (!permssion.isMaster(data.WsSession)) return;
@@ -34,7 +34,7 @@ WebSocketObserver().listener("userset/create", (data) => {
     let password = newUserConfig.password.trim();
 
     // 用户名范围限制
-    var uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+    var uPattern = /^[a-zA-Z0-9_#$]{4,18}$/;
     if (!uPattern.test(username) || !tools.between(password, 6, 18)) {
       response.wsMsgWindow(data.ws, "用户账号或密码格式不正确");
       return;
@@ -151,7 +151,7 @@ WebSocketObserver().listener("userset/upinfo", (data) => {
 
     //如果需求，则更改用户名以及存储文件
     if (username != newUS) {
-      let uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+      let uPattern = /^[a-zA-Z0-9_#$]{4,18}$/;
       if (!uPattern.test(newUS)) {
         response.wsMsgWindow(data.ws, "新的用户名格式不正确，已舍弃用户名的更改");
         return;

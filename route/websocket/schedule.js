@@ -3,9 +3,6 @@ const permssion = require("../../helper/Permission");
 const response = require("../../helper/Response");
 const schedulejob = require("../../helper/Schedule");
 const tools = require("../../core/tools");
-const serverModel = require("../../model/ServerModel");
-
-const UUID = require("uuid");
 
 //每个服务器最大数量计划任务
 const MAX_MASK = MCSERVER.localProperty.schedule_max || 10;
@@ -13,8 +10,6 @@ const MAX_MASK = MCSERVER.localProperty.schedule_max || 10;
 //创建计划任务函数
 function CreateScheduleJob(obj) {
   let id = tools.randomString(6) + "_" + new Date().getTime();
-  let thisServer = serverModel.ServerManager().getServer(obj.servername);
-
   schedulejob.createScheduleJobCount(id, obj.time, obj.count, obj.commande, obj.servername);
 }
 
@@ -34,11 +29,10 @@ function getMineScheduleList(servername) {
 WebSocketObserver().listener("schedule/list", (data) => {
   let username = data.WsSession.username;
   let servername = data.body;
-  let list = MCSERVER.Schedule.dataModel.list;
+  // let list = MCSERVER.Schedule.dataModel.list;
   let sendlist = getMineScheduleList(servername);
 
   if (permssion.isCanServer(username, servername)) {
-    let thisServer = serverModel.ServerManager().getServer(servername);
     response.wsSend(data.ws, "schedule/list", {
       username: data.WsSession.username,
       servername: servername,

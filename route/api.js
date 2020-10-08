@@ -7,8 +7,7 @@ const keyManager = require("../helper/KeyManager");
 const requestLimit = require("../helper/RequestLimit");
 const tools = require("../core/tools");
 
-const fs = require("fs");
-const { add } = require("../core/counter");
+
 
 // 服务端实例状态获取 | 公共性 API 接口
 // 无需任何权限判定
@@ -103,7 +102,7 @@ router.all("/delete_server/:name", function (req, res) {
   // 解析请求参数
   const params = req.params.name;
   try {
-    const result = serverModel.deleteServer(params);
+    serverModel.deleteServer(params);
     apiResponse.ok(res);
   } catch (err) {
     apiResponse.error(res, err);
@@ -134,7 +133,7 @@ router.post("/create_user", function (req, res) {
   }
   try {
     // 账号密码判定
-    const uPattern = /^[a-zA-Z0-9_#\$]{4,18}$/;
+    const uPattern = /^[a-zA-Z0-9_#$]{4,18}$/;
     if (!uPattern.test(req.body.username) || !tools.between(req.body.password, 6, 18)) {
       apiResponse.error(res, new Error("用户名或密码格式不正确"));
       return;

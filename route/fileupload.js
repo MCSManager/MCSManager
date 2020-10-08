@@ -40,7 +40,7 @@ router.post("/", (req, res) => {
       const writeStream = fs.createWriteStream(dstPath);
       readStream.pipe(writeStream);
       // 删除遗留旧文件
-      fs.unlink(uploadedPath, (err) => {
+      fs.unlink(uploadedPath, () => {
         /*ignore*/
       });
       res.send("Done");
