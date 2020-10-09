@@ -91,6 +91,7 @@ wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh
 ```
 
 - 执行完成后，使用 `systemctl start mcsm` 即可启动面板服务。
+- 控制面板代码与运行环境自动安装在 `/opt/` 目录下。
 
 <br />
 
