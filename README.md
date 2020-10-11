@@ -84,18 +84,20 @@ http://mcsm.suwings.top/ (官方站点)
 在 Linux 运行
 -----------
 
-**一行命令快速安装（适用于 Ubuntu/Centos）**
+**一行命令快速安装（适用于 Ubuntu/Centos/Debian/Archlinux）**
 
 ```bash
 wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh | bash
 ```
 
 - 执行完成后，使用 `systemctl start mcsm` 即可启动面板服务。
-- 控制面板代码与运行环境自动安装在 `/opt/` 目录下。
+- 面板代码与运行环境自动安装在 `/opt/` 目录下。
 
 <br />
 
 **其他 Linux 发行版安装**
+
+- 若一键安装不起作用，则可以尝试此步骤手动安装。
 
 ```bash
 # 切换到安装目录，没有此目录请执行 mkdir /opt/
