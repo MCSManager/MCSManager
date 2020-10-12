@@ -70,31 +70,46 @@ FTP 无法使用？ | [跳转](https://github.com/Suwings/MCSManager#ftp-%E6%9C%
 
 
 
-运行在 Windows 
+在 Windows 运行 
 -----------
-对于 Windows 系统，已整合成直接运行版本，下载即可运行(建议使用管理员权限运行):
-
-
+对于 Windows 系统，**已整合成直接运行版本，下载即可运行**(建议使用管理员权限运行):
 
 http://mcsm.suwings.top/ (官方站点)
 
-**注意:** 这里提供的下载是打包集成好的，小版本更新我们不会打包，也就是意味着，这里不能实时跟随最新版本。
+- 前往官方网站下载 Windows 版本即可，双击 `运行.bat` 或 `Start.bat` 文件即可。
 
 <br />
 
 
-运行在 Linux 
+在 Linux 运行
 -----------
-**提示:** 请给予 root 权限运行，如无法给予 root 权限，请编辑好文件目录权限。
+
+**一行命令快速安装（适用于 Ubuntu/Centos/Debian/Archlinux）**
 
 ```bash
-# 安装 Node 版本控制工具(若没有 wget,请安装它)
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
-# 关闭终端重新打开再执行以下命令
-# 项目支持 10.0 版本以上，这里使用11版本
-nvm install 11.0.0
-nvm use 11.0.0
-# 克隆仓库
+wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh | bash
+```
+
+- 执行完成后，使用 `systemctl start mcsm` 即可启动面板服务。
+- 面板代码与运行环境自动安装在 `/opt/` 目录下。
+
+<br />
+
+**其他 Linux 发行版安装**
+
+- 若一键安装不起作用，则可以尝试此步骤手动安装。
+
+```bash
+# 切换到安装目录，没有此目录请执行 mkdir /opt/
+cd /opt/
+# 下载运行环境
+wget https://npm.taobao.org/mirrors/node/v12.16.1/node-v12.16.1-linux-x64.tar.gz
+# 解压文件
+tar -zxvf node-v12.16.1-linux-x64.tar.gz
+# 链接程序到环境变量中
+ln -s /opt/node-v12.16.1-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v12.16.1-linux-x64/bin/npm /usr/bin/npm
+# 克隆仓库(若没有 git，请安装它，如 apt install -y git)
 git clone https://github.com/suwings/mcsmanager.git
 # 进入目录
 cd mcsmanager/
@@ -102,13 +117,14 @@ cd mcsmanager/
 npm install
 # 启动面板
 npm start 
-# 或者 node app.js
-
+# 关闭面板使用 Ctrl+C 快捷键即可
 ```
 
-> 详细安装以及使用教程，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
-- 项目属于**开箱即用**的面板，如果不使用 **screen** 进行后台常驻.当你断开了SSH后,面板也会随之关闭.
-- **screen** 需要单独安装,执行安装指令"yum -y install screen"或"apt -y install screen"
+- 注意，这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理。
+- 或者您可以 [点击这里](https://github.com/Suwings/MCSManager/wiki/%E4%BD%BF%E7%94%A8-systemctl-%E7%AE%A1%E7%90%86%E5%99%A8) 来手动配置面板到系统
+
+
+> 关于更多的安装说明，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
 
 <br />
 
