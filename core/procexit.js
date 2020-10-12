@@ -19,12 +19,8 @@ process.on("SIGINT", function () {
   for (let k in servers) {
     let server = servers[k];
     try {
-      //最好使用指令来关闭，这样标准输出会截取到关闭输出，而不是用 server.stop();
-      server.send("stop");
-      server.send("end");
-      server.send("exit");
+      server.stopServer();
     } catch (serverErr) {
-      //忽略
       continue;
     }
   }

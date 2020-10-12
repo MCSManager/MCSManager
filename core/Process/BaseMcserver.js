@@ -341,10 +341,7 @@ class ServerProcess extends EventEmitter {
   // 重启实例
   restart() {
     if (this._run == true) {
-      this.send("stop");
-      this.send("end");
-      this.send("exit");
-
+      this.stopServer();
       // 开始计时重启
       let timeCount = 0;
       let timesCan = setInterval(() => {
@@ -359,8 +356,8 @@ class ServerProcess extends EventEmitter {
           }, 3000);
           clearInterval(timesCan);
         }
-        //60s 内服务器依然没有关闭，代表出现问题
-        if (timeCount >= 60) {
+        //90s 内服务器依然没有关闭，代表出现问题
+        if (timeCount >= 90) {
           clearInterval(timesCan);
         }
         timeCount++;
@@ -377,7 +374,18 @@ class ServerProcess extends EventEmitter {
   stop() {
     this._run = false;
     this._loading = false;
+  }
 
+  // 通过命令关闭服务器
+  stopServer() {
+    if (this.dataModel.stopCommand.toLocaleLowerCase() === "^c") {
+      this.process.kill("SIGINT");
+      return;
+    }
+    if (this.dataModel.stopCommand) {
+      this.send(this.dataModel.stopCommand);
+      return;
+    }
     this.send("stop");
     this.send("end");
     this.send("exit");

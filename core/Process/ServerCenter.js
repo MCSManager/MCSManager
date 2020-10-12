@@ -73,9 +73,7 @@ class ServerManager extends EventEmitter {
   stopMinecraftServer(name) {
     if (this.isExist(name)) {
       const server = this.serverList[name];
-      server.send("stop");
-      server.send("end");
-      server.send("exit");
+      server.stopServer();
       return true;
     }
     return false;

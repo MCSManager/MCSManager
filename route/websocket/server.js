@@ -65,7 +65,7 @@ WebSocketObserver().listener("server/rebulider", (data) => {
   let newServerName = ServerConfig.serverName.trim();
   const server = serverModel.ServerManager().getServer(oldServerName);
   if (server.isRun()) {
-    response.wsMsgWindow(data.ws, "实例正在运行，实例名字禁止修改.");
+    response.wsMsgWindow(data.ws, "实例正在运行，参数无法修改，请先关闭实例");
     return;
   }
   if (oldServerName != newServerName) {
@@ -113,9 +113,7 @@ WebSocketObserver().listener("server/opt_all", (data) => {
             server.dataModel.autoRestart = false;
             server._onceStopRestart = true;
           }
-          server.send("stop");
-          server.send("end");
-          server.send("exit");
+          server.stopServer();
         }
       } catch (serverErr) {
         MCSERVER.error("批量开启某服务器失败:", serverErr);

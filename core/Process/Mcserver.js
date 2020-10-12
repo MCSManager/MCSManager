@@ -72,6 +72,9 @@ class MinecraftServer extends ServerProcess {
     tmpCommandeStart = tmpCommandeStart.replace(/ {2}/gim, " ");
     this.dataModel.highCommande = tmpCommandeStart;
 
+    //关服命令
+    this.dataModel.stopCommand = args.stopCommand || "";
+
     this.propertiesLoad();
   }
 

@@ -32,10 +32,7 @@ WebSocketObserver().listener("server/console/command", (data) => {
         server.dataModel.autoRestart = false;
         server._onceStopRestart = true;
       }
-      //使用三种可能的命令按照顺序进行发送
-      serverModel.sendCommand(serverName, "stop");
-      serverModel.sendCommand(serverName, "end");
-      serverModel.sendCommand(serverName, "exit");
+      server.stopServer();
       return;
     }
     //不是特殊命令，则直接执行

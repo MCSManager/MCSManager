@@ -87,9 +87,7 @@ schedule.scheduleJob("1 0 */2 * * *", function () {
         if (res) {
           MCSERVER.log("[时间期限] 服务端 [", server.dataModel.name, "]", "于现在过期，正在执行关闭程序.");
           //先进行标准流程关闭服务端，如果 45 秒后未关闭，则强制性结束进程
-          server.send("stop");
-          server.send("end");
-          server.send("exit");
+          server.stopServer();
           setTimeout(() => {
             server.kill();
           }, 45 * 1000);
