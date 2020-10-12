@@ -19,7 +19,6 @@ function requestNewsError() {
 
 //请求下载最新动态并且缓存到本地
 function requestNews() {
-
   const req = http.get(requestNewsUrl, function (req) {
     var html = "";
     req.on("data", (data) => (html += data));
