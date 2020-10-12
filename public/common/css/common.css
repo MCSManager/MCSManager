@@ -1,5 +1,4 @@
-html,
-body {
+html, body {
   font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
   font-size: 14px;
   color: #1a1a1a;
@@ -30,8 +29,7 @@ a {
   cursor: pointer;
 }
 
-a,
-input {
+a, input {
   outline: none;
 }
 
@@ -42,6 +40,10 @@ input {
 
 .btn:hover {
   opacity: 0.5;
+}
+
+p {
+  font-size: 13px;
 }
 
 /* 页面主要容器 */
@@ -192,18 +194,21 @@ input {
 }
 
 .slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active for <2.1.8 */ {
+/* .slide-fade-leave-active for <2.1.8 */
+
+  {
   transform: translateX(10px);
   opacity: 0;
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade-enter-active, .fade-leave-active {
   transition: opacity 0.4s;
 }
 
 .fade-enter, .fade-leave-to
-/* .fade-leave-active in below version 2.1.8 */ {
+/* .fade-leave-active in below version 2.1.8 */
+
+  {
   opacity: 0;
 }
 
