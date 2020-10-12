@@ -10,8 +10,7 @@ let requestNewsUrl = newsUrl1;
 let requestNewsCount = 1;
 
 function requestNewsError() {
-  if (requestNewsCount == 1) {
-    //尝试第二次链接
+  if (requestNewsCount <= 5) {
     requestNewsCount++;
     requestNews();
     return;
@@ -20,11 +19,11 @@ function requestNewsError() {
 
 //请求下载最新动态并且缓存到本地
 function requestNews() {
-  let req = http.get(requestNewsUrl, function (req, res) {
+
+  const req = http.get(requestNewsUrl, function (req) {
     var html = "";
     req.on("data", (data) => (html += data));
     req.on("end", () => {
-      //判断是否是正确的
       try {
         JSON.parse(html);
         fs.writeFile("./public/news.json", html, function (err) {
@@ -37,7 +36,7 @@ function requestNews() {
       }
     });
   });
-  req.on("error", function (err) {
+  req.on("error", function () {
     requestNewsError();
   });
 }

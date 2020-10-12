@@ -1,11 +1,11 @@
 <div id="" class="OneContainer">
   <div class="row">
-    <div id="News" class="col-md-8">
+    <div class="col-md-8">
       <div class="Panel PanelBlack">
         <div class="PanelTitle">最新动态与信息通知</div>
         <div class="PanelBody" style="max-height: 94vh; overflow-y: scroll">
           <p>关注这里，如果出现BUG/新版本我们会立即通告 (面板自动每天定时更新)</p>
-          <div class="news" v-for="item of items">
+          <div id="News" class="news" v-for="item of items">
             <p class="color-gray" v-text="item.time"></p>
             <p v-text="item.msg"></p>
           </div>
@@ -55,10 +55,9 @@
           </p>
           <p>使用 MIT License</p>
           <p>
-            <small
-              >A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed
-              under different terms and without source code.</small
-            >
+            <small>A short and simple permissive license with conditions only requiring preservation of copyright and
+              license notices. Licensed works, modifications, and larger works may be distributed
+              under different terms and without source code.</small>
           </p>
           <br />
         </div>
@@ -70,7 +69,7 @@
 <script>
   MI.rListener("onload", function () {
     // 定义页面地址
-    TOOLS.definePage("template/feelback", "", null);
+    TOOLS.definePage("template/feelback", "genuser/home", null);
 
     //请求早已缓存的 最新动态
     RES.ajax({
@@ -89,5 +88,5 @@
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
