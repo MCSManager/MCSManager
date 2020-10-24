@@ -300,5 +300,32 @@ router.post("/advanced_create_server", function (req, res) {
   }
 });
 
+
+// 修改服务器实例（JSON） | API
+router.post("/advanced_configure_server", function (req, res) {
+  // 仅仅准许管理员使用
+  if (!keyManager.isMaster(apiResponse.key(req))) {
+    apiResponse.forbidden(res);
+    return;
+  }
+  // 解析请求参数
+  try {
+    const params = req.body;
+    const config = JSON.parse(params.config);
+    // 使用松散配置模式
+    config.modify = true;
+    const server = serverModel.ServerManager().getServer(params.serverName);
+    if (!server) {
+      apiResponse.error(res, "服务器并不存在");
+      return;
+    }
+    // 不更名的情况重新构建服务器实例
+    server.builder(config);
+    apiResponse.ok(res);
+  } catch (err) {
+    apiResponse.error(res, err);
+  }
+});
+
 //模块导出
 module.exports = router;

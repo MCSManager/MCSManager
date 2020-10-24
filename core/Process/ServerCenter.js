@@ -197,6 +197,13 @@ class ServerManager extends EventEmitter {
     return tmp;
   }
 
+  /**
+   *
+   *
+   * @param {*} serverName
+   * @returns {MinecraftServer}
+   * @memberof ServerManager
+   */
   getServer(serverName) {
     if (this.serverList[serverName]) return this.serverList[serverName];
     return undefined;

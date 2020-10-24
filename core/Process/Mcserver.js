@@ -48,39 +48,53 @@ class MinecraftServer extends ServerProcess {
     };
   }
 
+
   //构建服务端配置信息
   builder(args) {
-    this.dataModel.addCmd = args.addCmd || [];
+    this.dataModel.addCmd = this.configureParams(args, "addCmd", []);
 
-    this.dataModel.java = args.java || "java";
-    this.dataModel.jarName = args.jarName || "";
+    this.dataModel.java = this.configureParams(args, "java", "java");
+    this.dataModel.jarName = this.configureParams(args, "jarName", "");
 
-    this.dataModel.Xmx = args.Xmx || "";
-    this.dataModel.Xms = args.Xms || "";
+    this.dataModel.Xmx = this.configureParams(args, "Xmx", "");
+    this.dataModel.Xms = this.configureParams(args, "Xms", "");
 
-    this.dataModel.ie = args.ie || SYSTEM_CODE;
-    this.dataModel.oe = args.oe || SYSTEM_CODE;
+    this.dataModel.ie = this.configureParams(args, "ie", SYSTEM_CODE);
+    this.dataModel.oe = this.configureParams(args, "oe", SYSTEM_CODE);
 
-    this.dataModel.timeLimitDate = args.timeLimitDate || "";
+    this.dataModel.timeLimitDate = this.configureParams(args, "timeLimitDate", "");
 
     //cwd 是服务端文件，不是控制面板需要的配置
-    this.dataModel.cwd = args.cwd || "./server/" + this.dataModel.name + "/";
+    this.dataModel.cwd = this.configureParams(args, "cwd", "./server/" + this.dataModel.name + "/");
 
     //自定义参数
-    let tmpCommandeStart = args.highCommande || "";
+    let tmpCommandeStart = this.configureParams(args, "highCommande", "");
     //自定义参数去掉所有两个空格
     tmpCommandeStart = tmpCommandeStart.replace(/ {2}/gim, " ");
     this.dataModel.highCommande = tmpCommandeStart;
 
     //关服命令
-    this.dataModel.stopCommand = args.stopCommand || "";
-
-    this.dataModel.dockerConfig = args.dockerConfig || this.dataModel.dockerConfig;
-
-    this.dataModel.mcpingConfig = args.mcpingConfig || this.dataModel.mcpingConfig;
+    this.dataModel.stopCommand = this.configureParams(args, "stopCommand", "");
+    //Docker配置
+    this.dataModel.dockerConfig = this.configureParams(args, "dockerConfig", this.dataModel.dockerConfig);
+    //mcping配置
+    this.dataModel.mcpingConfig = this.configureParams(args, "mcpingConfig", this.dataModel.mcpingConfig);
 
     this.propertiesLoad();
   }
+
+
+  // 修改实例信息
+  configureParams(args, key, defval = "") {
+    // 根据松散配置（局部修改）和严格配置（整体修改）对应配置不同的优先级
+    if (args.modify === true) {
+      this.dataModel[key] = args[key] || this.dataModel[key] || defval;
+    } else {
+      this.dataModel[key] = args[key] || defval;
+    }
+    return this.dataModel[key];
+  }
+
 
   load() {
     this.dataModel.load();
