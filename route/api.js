@@ -279,5 +279,26 @@ router.post("/execute/", function (req, res) {
   }
 });
 
+
+// 创建服务器实例（JSON） | API
+router.post("/advanced_create_server", function (req, res) {
+  // 仅仅准许管理员使用
+  if (!keyManager.isMaster(apiResponse.key(req))) {
+    apiResponse.forbidden(res);
+    return;
+  }
+  // 解析请求参数
+  try {
+    const params = req.body;
+    const config = JSON.parse(params.config);
+    // 创建
+    const result = serverModel.createServer(params.serverName, config);
+    // 返回状态码
+    result ? apiResponse.ok(res) : apiResponse.error(res);
+  } catch (err) {
+    apiResponse.error(res, err);
+  }
+});
+
 //模块导出
 module.exports = router;

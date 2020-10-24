@@ -75,6 +75,10 @@ class MinecraftServer extends ServerProcess {
     //关服命令
     this.dataModel.stopCommand = args.stopCommand || "";
 
+    this.dataModel.dockerConfig = args.dockerConfig || this.dataModel.dockerConfig;
+
+    this.dataModel.mcpingConfig = args.mcpingConfig || this.dataModel.mcpingConfig;
+
     this.propertiesLoad();
   }
 
