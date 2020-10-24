@@ -1,8 +1,9 @@
 {
-  "name": "minecraft_server_manager",
-  "version": "8.6.12",
+  "name": "mcsmanager",
+  "version": "8.6.15",
   "description": "A simple Minecraft server web panel",
   "Keywords": [
+    "MCSManager",
     "Minecraft",
     "MinecraftServerManager",
     "MinecraftServerPanel"
@@ -13,11 +14,14 @@
   "license": "MIT",
   "contributors": [
     "Suwings",
+    "huangsijun17",
+    "Shuazijun",
     "pppploi8",
     "HonokaClub",
-    "huangsijun17",
     "lupohan44",
     "Jecvay",
+    "RimuruChan",
+    "Rabbit0w0",
     "SaigyoujiYuyuko233"
   ],
   "dependencies": {
