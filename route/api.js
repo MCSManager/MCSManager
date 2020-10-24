@@ -115,7 +115,7 @@ router.all("/user_list", function (req, res) {
     apiResponse.forbidden(res);
     return;
   }
-  const list = userModel.userCenter().getUserList();
+  const list = userModel.userCenter().getAdvancedUserList();
   apiResponse.send(res, list);
 });
 

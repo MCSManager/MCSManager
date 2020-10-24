@@ -142,6 +142,21 @@ class UserCenter {
     return list;
   }
 
+  getAdvancedUserList() {
+    const list = [];
+    for (const name in this.userList) {
+      // 暴力克隆对象
+      const newData = JSON.parse(JSON.stringify(this.userList[name].dataModel));
+      // 删除一部分隐私
+      delete newData['password'];
+      delete newData['salt'];
+      delete newData['__filename__'];
+      delete newData['apikey'];
+      list.push(newData);
+    }
+    return list;
+  }
+
   getUserCounter() {
     let tmp = 0;
     // eslint-disable-next-line no-unused-vars
