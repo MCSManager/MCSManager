@@ -1,6 +1,6 @@
 ---
 name: bug_report
-about: 错误报告模板
+about: 错误报告模板（如果你要反馈BUG请选择这个提交模板）
 title: ''
 labels: ''
 assignees: Suwings
@@ -13,6 +13,6 @@ assignees: Suwings
 
 **Node版本:**
 
-**遇到的问题与操作步骤:**
+**出现概率:**
 
-**出现概率**
+**问题和操作步骤:**
