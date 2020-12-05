@@ -143,8 +143,6 @@ router.get("/eac_quque", (req, res) => {
 const multer = require('multer')
 const upload = multer({ dest: 'tmp_upload/' });
 router.post("/upload", upload.single('upload_file'), (req, res) => {
-  console.log(req.file, req.body)
-
   //权限判断,需要登录
   if (!req.session.fsos || !req.session.fsos.cwd) return;
   let fileOperate;
