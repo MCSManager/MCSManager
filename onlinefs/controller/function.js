@@ -4,7 +4,7 @@ const pathm = require("path");
 const { parseHandle, sendHandle, filesToPaths } = require("../module/dataHandle");
 const { UseFileOperate } = require("../model/fsoperate_session");
 const fsoperate = require("../module/fsoperate");
-const fs = require("fs");
+const fs = require("fs-extra");
 const os = require("os");
 
 router.post("/mkdir", (req, res) => {
@@ -140,43 +140,35 @@ router.get("/eac_quque", (req, res) => {
   });
 });
 
-const multiparty = require("multiparty");
-router.post("/upload", (req, res) => {
+const multer = require('multer')
+const upload = multer({ dest: 'tmp_upload/' });
+router.post("/upload", upload.single('upload_file'), (req, res) => {
+  console.log(req.file, req.body)
+
   //权限判断,需要登录
   if (!req.session.fsos || !req.session.fsos.cwd) return;
   let fileOperate;
-  var target_path;
+  let target_path;
   try {
     fileOperate = new UseFileOperate(req.session.fsos).fileOperate;
     target_path = fileOperate.normalizePath(req.session.fsos.cwd); //获取绝对路径
     if (!fileOperate.isPathAccess(target_path)) return;
-
-    //生成multiparty对象，并配置上传目标路径
-    var form = new multiparty.Form({
-      uploadDir: os.tmpdir()
-    });
   } catch (err) {
     res.status(500).send("服务器上传初始化错误!请重试!");
   }
-  form.parse(req, function (err, fields, files) {
-    if (err) {
-      res.status(500).send("服务器内部错误,文件上传错误!");
-      return;
-    }
-    try {
-      var inputFile = files.upload_file[0];
-      var uploadedPath = inputFile.path;
-      var dstPath = pathm.join(target_path, inputFile.originalFilename);
+  if (req.file) {
+    const originalname = req.file.originalname;
+    const dstPath = pathm.join(target_path, originalname);
+    fs.rename(req.file.path, dstPath, (err) => {
+      if (err) {
+        res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
+      } else {
+        res.send("Done");
+      }
+      fs.remove(req.path, () => { });
+    });
 
-      let readStream = fs.createReadStream(uploadedPath);
-      let writeStream = fs.createWriteStream(dstPath);
-      readStream.pipe(writeStream);
-      fs.unlink(uploadedPath, () => {});
-      res.send("Done");
-    } catch (err) {
-      res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
-    }
-  });
+  }
 });
 
 router.get("/download/:name", (req, res) => {
@@ -200,7 +192,7 @@ router.get("/download/:name", (req, res) => {
         filename: encodeURIComponent(req.params.name.trim())
       }
     },
-    () => {}
+    () => { }
   );
 });
 

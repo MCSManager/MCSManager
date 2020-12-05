@@ -17,6 +17,8 @@ core/*.json
 public/common/URL.js
 property.js
 
+tmp_upload/
+
 #vscode
 *.code-workspace
 
