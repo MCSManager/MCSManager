@@ -165,7 +165,7 @@ router.post("/upload", upload.single('upload_file'), (req, res) => {
       } else {
         res.send("Done");
       }
-      fs.remove(req.path, () => { });
+      fs.remove(req.file.path, () => { });
     });
 
   }

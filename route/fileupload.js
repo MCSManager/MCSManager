@@ -1,3 +1,9 @@
+/*
+ * @Author: Copyright(c) 2020 Suwings
+ * @Date: 2020-10-08 13:28:28
+ * @LastEditTime: 2020-12-05 23:24:22
+ * @Description: 文件上传
+ */
 const express = require("express");
 const router = express.Router();
 const pathm = require("path");
@@ -7,49 +13,31 @@ const fsex = require("fs-extra");
 const permission = require("../helper/Permission");
 
 const multiparty = require("multiparty");
-router.post("/", (req, res) => {
+const multer = require('multer')
+const upload = multer({ dest: 'tmp_upload/' });
+
+router.post("/", upload.single('upload_file'), (req, res) => {
   // 任意目录的文件上传，仅限于管理员使用
   if (!permission.needLogin(req, res)) return;
   if (!permission.IsSessionMaster(req, res)) {
-    res.status(500).send("权限不足");
-    return;
+    return res.status(500).send("权限不足");
   }
-
-  // Note：此处有可上传任意文件到任意目录的危险
-  // 但此仅限于管理员使用
-
-  const form = new multiparty.Form({
-    uploadDir: os.tmpdir()
-  });
-  form.parse(req, function (err, fields, files) {
-    if (err) {
-      res.status(500).send("服务器内部错误,文件上传错误!");
-      return;
-    }
-    try {
-      const target_path = fields["cwd"][0];
-      // 不存在目标则创建
-      if (!fs.existsSync(target_path)) fsex.mkdirSync(target_path);
-
-      // 准备移动已上传的文件
-      const inputFile = files.upload_file[0];
-      const uploadedPath = inputFile.path;
-      const dstPath = pathm.join(target_path, inputFile.originalFilename);
-      // 文件已经上传，开始移动
-      const readStream = fs.createReadStream(uploadedPath);
-      const writeStream = fs.createWriteStream(dstPath);
-      readStream.pipe(writeStream);
-      // 删除遗留旧文件
-      fs.unlink(uploadedPath, () => {
-        /*ignore*/
-      });
-      res.send("Done");
-
-      MCSERVER.log("[ 文件上传 ] 用户", req.session["username"], "上传文件到", target_path);
-    } catch (err) {
-      res.status(500).send("上传出错" + err);
-    }
-  });
+  // 文件上传域
+  if (req.file && req.body['cwd']) {
+    const target_path = req.body['cwd'];
+    if (!fs.existsSync(target_path)) fsex.mkdirSync(target_path);
+    const originalname = req.file.originalname;
+    const dstPath = pathm.join(target_path, originalname);
+    fs.rename(req.file.path, dstPath, (err) => {
+      if (err) {
+        res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
+      } else {
+        MCSERVER.log("[ 文件上传 ] 用户", req.session["username"], "上传文件到", target_path);
+        res.send("Done");
+      }
+      fs.remove(req.file.path, () => { });
+    });
+  }
 });
 
 //模块导出
