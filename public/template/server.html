@@ -91,12 +91,16 @@
                     </p>
                   </div>
                   <div class="col-xs-3" style="text-align: center">
-                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toTerminal(item.serverName);"> <span class="glyphicon glyphicon-console" aria-hidden="true"> </span>&nbsp; 终端 </a>
-                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toConsole(item.serverName);"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>&nbsp; 管理 </a>
-                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toTerminal(item.serverName);"> <span
+                        class="glyphicon glyphicon-console" aria-hidden="true"> </span>&nbsp; 终端 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toConsole(item.serverName);"> <span
+                        class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>&nbsp; 管理 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite"
+                      v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
                       <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>&nbsp; 参数
                     </a>
-                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toDeleteServer(item.serverName)"> <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toDeleteServer(item.serverName)">
+                      <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除 </a>
                   </div>
                 </div>
               </div>
@@ -144,7 +148,7 @@
     color: rgb(26, 26, 26);
   }
 
-  .AppInlineBlockListTitleMuem > a {
+  .AppInlineBlockListTitleMuem>a {
     color: #2e2e2e;
     display: inline-block;
     margin-left: 6px;
@@ -232,7 +236,7 @@
           }
         },
         toDeleteServer: function (serverName) {
-          var result = confirm("是否删除 [" + serverName + "] 这个服务端？\n注意: 删除服务器并不会删除服务端文件,只会从控制面板删除！");
+          var result = confirm("是否删除 [" + serverName + "] 这个服务端？\n注意: 此操作不可逆！");
           if (!result) return;
           WS.sendMsg("server/delete", serverName);
           RES.redirectPage("./template/server.html", "server/view");
@@ -250,5 +254,5 @@
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
