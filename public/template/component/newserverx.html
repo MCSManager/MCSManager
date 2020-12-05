@@ -20,11 +20,15 @@
   .PAGE_NewserverxLogV {
     margin: 20px 8px 2px 8px;
     color: #131212;
-    font-size: 20px;
+
     text-align: center;
     line-height: 40px;
     overflow: hidden;
     font-weight: 800;
+  }
+
+  .PAGE_NewserverxLogV p {
+    font-size: 20px;
   }
 
   .PAGE_NewserverNextWapper {
@@ -179,7 +183,8 @@
             <br />
             <div class="input-group input-group-sm">
               <span class="input-group-addon">启动命令</span>
-              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)" v-model="highCommande" />
+              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)"
+                v-model="highCommande" />
             </div>
             <small>运行目录: {{serverCwd}} </small>
             <br />
@@ -314,5 +319,5 @@
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
