@@ -1,7 +1,7 @@
 /*
  * @Author: Copyright(c) 2020 Suwings
  * @Date: 2020-10-08 13:28:28
- * @LastEditTime: 2020-12-05 23:25:06
+ * @LastEditTime: 2020-12-05 23:34:08
  * @Description: 文件上传
  */
 const express = require("express");
@@ -12,7 +12,6 @@ const fs = require("fs");
 const fsex = require("fs-extra");
 const permission = require("../helper/Permission");
 
-const multiparty = require("multiparty");
 const multer = require('multer')
 const upload = multer({ dest: 'tmp_upload/' });
 
