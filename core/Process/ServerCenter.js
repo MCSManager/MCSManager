@@ -1,6 +1,6 @@
 const MinecraftServer = require("./Mcserver");
 const EventEmitter = require("events");
-const fs = require("fs");
+const fs = require("fs-extra");
 const mcPingProtocol = require("../../helper/MCPingProtocol");
 
 const BASE_SERVER_DIR = "./server/";
@@ -23,8 +23,10 @@ class ServerManager extends EventEmitter {
 
   delMinecraftServer(name) {
     try {
-      fs.unlinkSync(BASE_SERVER_DIR + name + ".json");
+      fs.removeSync(BASE_SERVER_DIR + name + ".json");
+      fs.remove(this.serverList[name].dataModel.cwd);
       delete this.serverList[name];
+      return true;
     } catch (err) {
       throw new Error("删除服务器出现错误，删除失败并且服务器可能已经损坏:" + err);
     }

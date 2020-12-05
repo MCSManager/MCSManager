@@ -1,7 +1,7 @@
 /*
  * @Author: Copyright(c) 2020 Suwings
  * @Date: 2020-10-08 13:28:28
- * @LastEditTime: 2020-12-05 23:24:22
+ * @LastEditTime: 2020-12-05 23:25:06
  * @Description: 文件上传
  */
 const express = require("express");
@@ -28,14 +28,14 @@ router.post("/", upload.single('upload_file'), (req, res) => {
     if (!fs.existsSync(target_path)) fsex.mkdirSync(target_path);
     const originalname = req.file.originalname;
     const dstPath = pathm.join(target_path, originalname);
-    fs.rename(req.file.path, dstPath, (err) => {
+    fsex.rename(req.file.path, dstPath, (err) => {
       if (err) {
         res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
       } else {
         MCSERVER.log("[ 文件上传 ] 用户", req.session["username"], "上传文件到", target_path);
         res.send("Done");
       }
-      fs.remove(req.file.path, () => { });
+      fsex.remove(req.file.path, () => { });
     });
   }
 });
