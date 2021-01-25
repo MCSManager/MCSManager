@@ -69,8 +69,11 @@ WebSocketObserver().listener("server/rebulider", (data) => {
     return;
   }
   if (oldServerName != newServerName) {
-    serverModel.ServerManager().reServerName(oldServerName, newServerName);
-    serverModel.builder(newServerName, ServerConfig);
+    // 暂时性禁止服务器标识名修改，重构版本后将会优化此功能
+    response.wsMsgWindow(data.ws, "服务器标识名不可再更改");
+    return;
+    // serverModel.ServerManager().reServerName(oldServerName, newServerName);
+    // serverModel.builder(newServerName, ServerConfig);
     //serverModel.loadALLMinecraftServer();
   } else {
     serverModel.builder(oldServerName, ServerConfig);
