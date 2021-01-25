@@ -48,7 +48,6 @@ class MinecraftServer extends ServerProcess {
     };
   }
 
-
   //构建服务端配置信息
   builder(args) {
     this.dataModel.addCmd = this.configureParams(args, "addCmd", []);
@@ -83,7 +82,6 @@ class MinecraftServer extends ServerProcess {
     this.propertiesLoad();
   }
 
-
   // 修改实例信息
   configureParams(args, key, defval = "") {
     // 根据松散配置（局部修改）和严格配置（整体修改）对应配置不同的优先级
@@ -94,7 +92,6 @@ class MinecraftServer extends ServerProcess {
     }
     return this.dataModel[key];
   }
-
 
   load() {
     this.dataModel.load();

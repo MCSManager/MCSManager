@@ -1,20 +1,16 @@
 ---
 name: Feature request
 about: 功能建议模板（如果你有任何想法，请使用这个模板）
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: ""
+assignees: ""
 ---
 
 **你对哪些功能有建议或想法？**
 
-
 **这些功能有哪些代替方案？**
 
-
 **对应你提出的内容，你觉得有什么价值？**
-
 
 **其他内容:**
 

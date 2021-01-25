@@ -34,14 +34,12 @@
               <p>如果您 Java 环境无误，使用 "java" 环境变量即可</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">Java 路径</span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java"
-                  placeholder="[未设定]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="java" placeholder="[未设定]" />
               </div>
               <p>端根目录: [ {{ cwd }} ]</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 服务端文件名 </span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="jarName"
-                  placeholder="[未设定]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="jarName" placeholder="[未设定]" />
               </div>
               <p>关服命令</p>
               <div class="input-group input-group-sm">
@@ -52,15 +50,13 @@
               <p><small>设置按照 2018/10/1 格式，到期后将无法开启，需手动删除</small></p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 到期限制 </span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="timeLimitDate"
-                  placeholder="[未设定 如 2018/10/1 2020/1/12]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="timeLimitDate" placeholder="[未设定 如 2018/10/1 2020/1/12]" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="input-group input-group-sm">
                 <span class="input-group-addon">启动附加参数</span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd"
-                  placeholder="[可空 列如: -server -xxx 等]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="addCmd" placeholder="[可空 列如: -server -xxx 等]" />
               </div>
               <p>服务端文件与数据的目录所在地。</p>
               <div class="input-group input-group-sm">
@@ -71,20 +67,19 @@
               <p>实质是 -Xmx -Xms 参数，填写请加单位(M,G)</p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 最大内存堆 </span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx"
-                  placeholder="[自动 如需修改请加单位]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xmx" placeholder="[自动 如需修改请加单位]" />
               </div>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 初始内存堆 </span>
-                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms"
-                  placeholder="[自动 如需修改请加单位]" />
+                <input v-bind:disabled="isHighCommande" type="text" class="form-control" v-model="Xms" placeholder="[自动 如需修改请加单位]" />
               </div>
               <div class="row">
                 <div class="col-lg-12">
                   <p>
                     <small>
                       版本 1.9.X 以上可能需要输入编码为 UTF-8 <br />
-                      默认值: Windows 默认 GBK 编码，Linux 默认 UTF8 编码</small>
+                      默认值: Windows 默认 GBK 编码，Linux 默认 UTF8 编码</small
+                    >
                   </p>
                 </div>
                 <div class="col-lg-6">
@@ -110,8 +105,12 @@
               </p>
               <div class="input-group input-group-sm">
                 <span class="input-group-addon"> 自定义命令 </span>
-                <input type="text" class="form-control" v-model="highCommande"
-                  placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	" />
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="highCommande"
+                  placeholder="[ 尚未使用 | 列如:  java -xxx -yyy Xmx4g Xms2g -Djline.terminal=jline.UnsupportedTerminal -jar test.jar --xxx ]	"
+                />
               </div>
             </div>
             <br />
@@ -223,5 +222,5 @@
     VIEW_MODEL["ServerPanel"].oldServerName = VIEW_MODEL["ServerPanel"].name + "";
   });
 
-  MI.rListener("onend", function () { });
+  MI.rListener("onend", function () {});
 </script>

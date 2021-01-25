@@ -1,10 +1,9 @@
 ---
 name: bug_report
 about: 错误报告模板（如果你要反馈BUG请使用这个问题模板）
-title: ''
-labels: ''
+title: ""
+labels: ""
 assignees: Suwings
-
 ---
 
 提交 BUG 需要很多信息，请尽可能完善以下信息，若无法全面完善也无妨，写好之后请删除这行文字。
@@ -13,7 +12,7 @@ assignees: Suwings
 
 **面板版本:**
 
-**Node版本:**
+**Node 版本:**
 
 **出现概率:**
 

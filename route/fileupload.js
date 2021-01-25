@@ -12,18 +12,18 @@ const fs = require("fs");
 const fsex = require("fs-extra");
 const permission = require("../helper/Permission");
 
-const multer = require('multer')
-const upload = multer({ dest: 'tmp_upload/' });
+const multer = require("multer");
+const upload = multer({ dest: "tmp_upload/" });
 
-router.post("/", upload.single('upload_file'), (req, res) => {
+router.post("/", upload.single("upload_file"), (req, res) => {
   // 任意目录的文件上传，仅限于管理员使用
   if (!permission.needLogin(req, res)) return;
   if (!permission.IsSessionMaster(req, res)) {
     return res.status(500).send("权限不足");
   }
   // 文件上传域
-  if (req.file && req.body['cwd']) {
-    const target_path = req.body['cwd'];
+  if (req.file && req.body["cwd"]) {
+    const target_path = req.body["cwd"];
     if (!fs.existsSync(target_path)) fsex.mkdirSync(target_path);
     const originalname = req.file.originalname;
     const dstPath = pathm.join(target_path, originalname);
@@ -34,7 +34,7 @@ router.post("/", upload.single('upload_file'), (req, res) => {
         MCSERVER.log("[ 文件上传 ] 用户", req.session["username"], "上传文件到", target_path);
         res.send("Done");
       }
-      fsex.remove(req.file.path, () => { });
+      fsex.remove(req.file.path, () => {});
     });
   }
 });

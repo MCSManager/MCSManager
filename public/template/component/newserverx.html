@@ -183,8 +183,7 @@
             <br />
             <div class="input-group input-group-sm">
               <span class="input-group-addon">启动命令</span>
-              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)"
-                v-model="highCommande" />
+              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)" v-model="highCommande" />
             </div>
             <small>运行目录: {{serverCwd}} </small>
             <br />
@@ -319,5 +318,5 @@
     });
   });
 
-  MI.rListener("onend", function () { });
+  MI.rListener("onend", function () {});
 </script>
