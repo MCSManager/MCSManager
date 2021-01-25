@@ -87,3 +87,4 @@ typings/
 # dotenv environment variables file
 .env
 
+start.bat
