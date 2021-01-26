@@ -1,0 +1,208 @@
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+    font-size: 15px;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: #304455;
+    transition: all 0.5s;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+h4 {
+    margin-bottom: 30px;
+}
+
+.mjumbotron {
+    min-height: 500px;
+    text-align: center;
+    height: 100%;
+}
+
+.page1 {
+    background-color: rgb(34, 34, 34);
+    background-image: url(./f1c023e088cc5c92d75574b6c3a6221f.jpg);
+    background-size: cover;
+    height: 100%;
+}
+
+#nav {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0);
+    /* border-bottom: 1px solid #ebf2f2; */
+}
+
+#nav a {
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: color 0.2s;
+    font-size: 1.2rem;
+}
+
+.mtext-wapper {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 50%;
+    transform: translateY(-60%);
+}
+
+.mtext-hello {
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    color: white;
+}
+
+.mtext-info {
+    color: white;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
+}
+
+.install-link {
+    display: block;
+    margin: 8px 0px;
+    text-decoration: underline;
+}
+
+.mbutton {
+    display: inline-block;
+    font-size: 1rem;
+    /* text-transform: uppercase; */
+    border: 2px solid #191e1e;
+    padding: 6px 28px;
+    font-weight: 700;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    transition: all 0.5s;
+    color: rgb(41, 40, 40);
+    margin: 6px;
+}
+
+.mbuttonf {
+    display: inline-block;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border: 2px solid #dadada;
+    padding: 6px 28px;
+    font-weight: 700;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    transition: all 0.5s;
+    color: #ffffff;
+    margin: 6px;
+}
+
+.mbutton:hover {
+    background-color: #191e1e;
+    color: white;
+    padding: 6px 32px;
+}
+
+.mbuttonf:hover {
+    background-color: #c2c2c2;
+    color: rgb(36, 36, 36);
+    padding: 6px 32px;
+}
+
+.page {
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.img-box {
+    box-shadow: 0 0 10px rgb(46, 46, 46);
+}
+
+.sponsor {
+    /* background-color: rgb(246, 246, 246); */
+}
+
+.sponsor-list {
+    text-align: center;
+}
+
+.sponsor-list img {
+    /* width: 240px; */
+    height: 60px;
+}
+
+.sponsor-list a {
+    margin: 20px 15px 0;
+    display: inline-block;
+}
+
+.sponsor-list a:hover {
+    /* box-shadow: 0 0 10px #7d7d7d8c; */
+}
+
+.footer {
+    background-color: rgb(70, 70, 70);
+    padding: 60px 0px;
+    color: white;
+    font-size: 13px;
+}
+
+.footer a {
+    color: white;
+}
+.card-body {
+    min-height: 200px;
+}
+
+.card-text {
+    margin-bottom: 0;
+    text-align: center;
+    margin-top: 26px;
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1.4em;
+}
+
+.card {
+    transition: all 0.5s;
+    padding: 10px;
+    border: 0px;
+}
+
+.card:hover {
+    box-shadow: 0 0 10px #7d7d7d8c;
+}
+
+.relative {
+    position: relative;
+}
+
+#nav {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.nav-link:hover {
+    opacity: 0.8;
+}
+
+pre, code {
+    display: block;
+    background-color: #333333;
+    color: #eee;
+    padding: 8px;
+    border-radius: 2px;
+    /* overflow-x: scroll; */
+}
