@@ -263,6 +263,7 @@ router.post("/execute/", function (req, res) {
   try {
     // 解析请求参数
     const params = req.body;
+    const commands = params.command ? [params.command] : ((req.query.commands instanceof Array) ? req.query.commands : [req.query.commands]);
     // 判定服务器是否运行
     const server = serverModel.ServerManager().getServer(params.name);
     if (!server) return;
@@ -270,10 +271,19 @@ router.post("/execute/", function (req, res) {
       apiResponse.error(res, new Error("服务器非运行状态,无法投递命令"));
       return;
     }
-    // 启动服务器
-    const result = serverModel.ServerManager().sendMinecraftServer(params.name, params.command);
+    // 发送指令
+    commands.forEach( v =>{
+      if(!serverModel.ServerManager().sendMinecraftServer(params.name, v)){
+        // 返回状态码
+        apiResponse.error(res, {
+          message: `command "${v}" exec fail.`
+        })
+      }
+    });
     // 返回状态码
-    result ? apiResponse.ok(res) : apiResponse.error(res);
+    apiResponse.send(res, {
+      commands: commands
+    });
   } catch (err) {
     apiResponse.error(res, err);
   }
