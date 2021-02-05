@@ -1,5 +1,5 @@
 //因为这库在旧版本节点上有问题，所以从 github 获取最新版本
-//npm i https://github.com/sstur/nodeftpd.git --save
+//npm i https://github.com/nodeftpd/nodeftpd.git --save
 var ftpdzz = require("ftpd");
 
 var options = null;
