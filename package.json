@@ -36,7 +36,7 @@
     "express-session": "^1.15.3",
     "express-ws": "^4.0.0",
     "fs-extra": "^5.0.0",
-    "ftpd": "git+https://github.com/sstur/nodeftpd.git",
+    "ftpd": "git+https://github.com/nodeftpd/nodeftpd.git",
     "graceful-fs": "^4.1.11",
     "iconv-lite": "^0.4.21",
     "log4js": "^6.3.0",
