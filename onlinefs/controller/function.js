@@ -157,7 +157,7 @@ router.post("/upload", upload.single("upload_file"), (req, res) => {
   if (req.file) {
     const originalname = req.file.originalname;
     const dstPath = pathm.join(target_path, originalname);
-    fs.rename(req.file.path, dstPath, (err) => {
+    fs.move(req.file.path, dstPath, (err) => {
       if (err) {
         res.status(500).send("上传虽然成功，但是处理文件出错: " + err);
       } else {
