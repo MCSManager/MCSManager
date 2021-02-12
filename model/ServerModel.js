@@ -1,6 +1,13 @@
+/*
+ * @Author: Copyright(c) 2020 Suwings
+ * @Date: 2020-10-08 13:28:28
+ * @LastEditTime: 2021-02-12 12:20:18
+ * @Description: 
+ */
 const ServerManager = require("../core/Process/ServerCenter");
 const fs = require("fs");
 const fsextra = require("fs-extra");
+const pathm = require("path");
 
 // 事实上，Node.js 的缓存机制可以间接的到达单列模式的目的
 var onlyServerManager = new ServerManager();
@@ -21,15 +28,17 @@ module.exports.createServerDir = (serverName, cwd) => {
   if (!fs.existsSync(cwd)) {
     fsextra.mkdirsSync(cwd);
   }
-
-  // 因法律协议问题，面板不再自动同意 EULA 协议，从此以后需玩家手动同意。
-  // fs.writeFile(cwd + '/eula.txt', 'eula=true', () => { });
 };
 
 module.exports.createServer = (serverName, config) => {
   if (config.cwd == "" || config.cwd == "<默认标准位置>") config.cwd = getServerDir(serverName);
   if (!fs.existsSync(config.cwd)) {
     fsextra.mkdirsSync(config.cwd);
+  }
+  // 关于 EULA 同意功能，在使用面板时就必须表示接受 Minecraft 相关的 EULA 与其他协议。
+  const eulaPath = pathm.join(config.cwd, "eula.txt");
+  if (!fs.existsSync(eulaPath)) {
+    fsextra.writeFileSync(eulaPath, "eula=true");
   }
   onlyServerManager.newMinecraftServer(serverName);
   onlyServerManager.builderMinecraftServer(serverName, config);
