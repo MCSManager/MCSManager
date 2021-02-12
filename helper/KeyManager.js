@@ -1,12 +1,22 @@
+/*
+ * @Author: Copyright(c) 2020 Suwings
+ * @Date: 2020-10-08 13:28:28
+ * @LastEditTime: 2021-02-12 12:02:24
+ * @Description: 身份验证
+ */
 const userCenter = require("../model/UserModel").userCenter();
 const permission = require("./Permission");
 
 // 通过 KEY 来获取相对的用户身份
 function getUser(key = "") {
   key = key.trim();
+  // 感谢来自 https://lazy.ink 贡献。
+  if (!key) return null;
   const userList = userCenter.userList;
   for (const userName in userList) {
-    if (userList[userName].dataModel.apikey === key) {
+    const userApiKey = userList[userName].dataModel.apikey;
+    if (!userApiKey) continue;
+    if (userApiKey === key) {
       return userList[userName];
     }
   }
