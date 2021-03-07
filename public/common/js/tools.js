@@ -224,11 +224,15 @@
 
   //Minecraft 服务器输出基本颜色
   TOOLS.encodeConsoleColorForHtml = function (text) {
+    // 删除 Linux 终端颜色代码
+    text = text.replace(/\033((.|\n)+?)\033\[0m/gim, "");
+    text = text.replace(/\033\[m/gim, "");
+    text = text.replace(/\033\[0m/gim, "");
+    // 其他颜色代码
     text = text.replace(/\n/gim, "<br />");
     text = text.replace(/([A-Za-z _&;-\\.]{1,}:)/gim, "<span style='color:#ffa700;'>$1</span>");
     text = text.replace(/\[/gim, "<span style='color:#10e616;'>[</span>");
     text = text.replace(/\]/gim, "<span style='color:#10e616;'>]</span>");
-    text = text.replace(/INFO/gm, "<span style='color:#03ea0a;'>INFO</span>");
     text = text.replace(/(\d{2,}:\d{2,}:\d{2,})/gm, "<span style='color:#017EBC;'>$1</span>");
     text = text.replace(/§[0-9A-Za-z]{1}/gim, "");
 
@@ -238,7 +242,6 @@
       //绿色
       [
         "--------",
-        "Starting minecraft server version",
         "\\(",
         "\\)",
         "\\{",
