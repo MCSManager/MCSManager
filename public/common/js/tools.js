@@ -97,7 +97,7 @@
   };
 
   //设置头上显示什么 已舍弃
-  TOOLS.setHeaderTitle = function () {};
+  TOOLS.setHeaderTitle = function () { };
 
   //Minecraft 服务器输出删除双S
   TOOLS.deletDoubleS = function (text) {
@@ -234,17 +234,11 @@
 
     var RegExpStringArr = [
       //蓝色
-      ["Unknown command", "Loading libraries, please wait...", "Loading", "Loaded", "\\d{1,3}%", "true", "false", "plugin.yml"],
+      ["\\d{1,3}%", "true", "false"],
       //绿色
       [
-        "/help",
-        "left the game",
-        "Enabling",
-        "Saving chunks for level",
         "--------",
-        "UUID",
         "Starting minecraft server version",
-        "Timings Reset",
         "\\(",
         "\\)",
         "\\{",
@@ -254,9 +248,9 @@
         "Preparing start region for level"
       ],
       //红色
-      ["WARN", "EULA", "Error", "Invalid", "Stopping the server", "Caused by", "Stopping"],
+      ["WARN", "Error", "Caused by"],
       //黄色
-      ["Starting Minecraft server on", "world_the_end", "world_nether", "Usage", "Server thread", "Done", "MCSMANAGER"]
+      ["MCSMANAGER"]
     ];
     for (var k in RegExpStringArr) {
       for (var y in RegExpStringArr[k]) {
@@ -282,7 +276,7 @@
   var _popWindCallback = null;
   TOOLS.popWind = function (config) {
     var popWinContext = $("#PopWinContext");
-    _popWindCallback = config.callback || function () {}; //全局的callback变量
+    _popWindCallback = config.callback || function () { }; //全局的callback变量
     var css = config.style || {
       display: "block"
     };
