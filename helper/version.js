@@ -1,7 +1,7 @@
 /*
  * @Author: Copyright(c) 2020 Suwings
  * @Date: 2020-10-08 13:28:28
- * @LastEditTime: 2021-03-07 17:23:36
+ * @LastEditTime: 2021-03-10 16:22:02
  * @Description: 版本发行说明文件
  */
 const os = require("os");
@@ -13,7 +13,7 @@ const os = require("os");
 
 const verisonA = "8.6.19 发行版本"; //发行版本
 
-const verisonB = "No.20210307-01"; //版本批次
+const verisonB = "No.20210310-01"; //版本批次
 
 let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
