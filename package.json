@@ -15,14 +15,11 @@
   "contributors": [
     "Suwings",
     "huangsijun17",
+    "LazyCreeper",
     "Shuazijun",
-    "pppploi8",
-    "HonokaClub",
-    "lupohan44",
     "Jecvay",
     "RimuruChan",
-    "Rabbit0w0",
-    "SaigyoujiYuyuko233"
+    "Rabbit0w0"
   ],
   "dependencies": {
     "body-parser": "^1.17.2",
