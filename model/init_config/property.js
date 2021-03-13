@@ -30,26 +30,11 @@ MCSERVER.localProperty.http_port = 23333;
 MCSERVER.localProperty.http_ip = "";
 
 
-//是否开启 FTP 服务
-//此功能默认为关闭，不建议开启，目前FTP在大量用户使用时可能会出现问题
-//使用在线文件管理可以代替此功能
-//如必须使用，请使用主流FTP客户端连接，并防火墙开启20010~20200端口。
+// 注意：FTP 功能已于当前版本删除，因为原版的FTP功能及其不稳定。
 MCSERVER.localProperty.ftp_is_allow = false;
-
-
-//FTP 服务监听端口
 MCSERVER.localProperty.ftp_port = 10022;
-
-
-//FTP 服务监听ip, 默认 0.0.0.0 | 可不填
 MCSERVER.localProperty.ftp_ip = "";
-
-
-//FTP 被动模式端口范围
-//你可能需要对你的服务器防火墙进行设置, 开放这个端口段来确保 FTP 传输数据的正常工作
-//开始范围
 MCSERVER.localProperty.ftp_start_port = 20010;
-//结束范围
 MCSERVER.localProperty.ftp_end_port = 20200;
 
 

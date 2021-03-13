@@ -62,7 +62,6 @@ const response = require("./helper/Response");
 const { randomString } = require("./core/User/CryptoMine");
 const counter = require("./core/counter");
 const DataModel = require("./core/DataModel");
-const ftpServerInterface = require("./ftpd/ftpserver");
 const tokenManger = require("./helper/TokenManager");
 const nodeSchedule = require("node-schedule");
 const Schedule = require("./helper/Schedule");
@@ -264,15 +263,6 @@ app.use("/fs", require("./onlinefs/controller/function"));
   //App Http listen
   app.listen(MCSERVER.localProperty.http_port, MCSERVER.localProperty.http_ip, () => {
     MCSERVER.infoLog("HTTP", "HTTP 模块监听: [ http://" + (host || "127.0.0.1".yellow) + ":" + port + " ]");
-
-    //现在执行 FTP 服务器启动过程
-    ftpServerInterface.initFTPdServerOptions({
-      host: MCSERVER.localProperty.ftp_ip || "127.0.0.1",
-      port: MCSERVER.localProperty.ftp_port,
-      tls: null
-    });
-
-    if (MCSERVER.localProperty.ftp_is_allow) require("./ftpd/index"); //执行ftp逻辑
 
     MCSERVER.infoLog("INFO", "配置文件: property.js 文件");
     MCSERVER.infoLog("INFO", "文档参阅: https://github.com/suwings/mcsmanager");

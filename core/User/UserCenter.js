@@ -91,10 +91,10 @@ class UserCenter {
       }
 
       // 一般模式 供ftp 等登录
-      if (notSafeLogin && loginUser.isPassword(password)) {
-        truecb && truecb(loginUser);
-        return true;
-      }
+      // if (notSafeLogin && loginUser.isPassword(password)) {
+      //   truecb && truecb(loginUser);
+      //   return true;
+      // }
     }
     falsecb && falsecb();
     return false;
