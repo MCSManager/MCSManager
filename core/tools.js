@@ -88,8 +88,7 @@ module.exports.TempReplaceChar = (text = "", replaceStr = "") => {
   return text;
 };
 
-
 module.exports.deleteLinuxColorCode = (text) => {
   text = text.replace(/\033((.|\n)+?)\033\[0m/gim, "");
   return text;
-}
+};

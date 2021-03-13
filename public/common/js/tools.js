@@ -97,7 +97,7 @@
   };
 
   //设置头上显示什么 已舍弃
-  TOOLS.setHeaderTitle = function () { };
+  TOOLS.setHeaderTitle = function () {};
 
   //Minecraft 服务器输出删除双S
   TOOLS.deletDoubleS = function (text) {
@@ -240,16 +240,7 @@
       //蓝色
       ["\\d{1,3}%", "true", "false"],
       //绿色
-      [
-        "--------",
-        "\\(",
-        "\\)",
-        "\\{",
-        "\\}",
-        "&lt;",
-        "&gt;",
-        "Preparing start region for level"
-      ],
+      ["--------", "\\(", "\\)", "\\{", "\\}", "&lt;", "&gt;", "Preparing start region for level"],
       //红色
       ["WARN", "Error", "Caused by"],
       //黄色
@@ -279,7 +270,7 @@
   var _popWindCallback = null;
   TOOLS.popWind = function (config) {
     var popWinContext = $("#PopWinContext");
-    _popWindCallback = config.callback || function () { }; //全局的callback变量
+    _popWindCallback = config.callback || function () {}; //全局的callback变量
     var css = config.style || {
       display: "block"
     };
