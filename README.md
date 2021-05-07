@@ -17,6 +17,7 @@
 **本项目 [赞助者名单](https://docs.qq.com/sheet/DYWJNVXhib0dtamh2?c=B3A0A0)**
 <br />
 
+
 简介
 -----------
 这是一款可以管理多个 Minecraft 服务端（支持群组端）的 Web 管理面板，并且可以分配多个子账号来分别管理不同的 Minecraft 服务端，支持绝大部分主流的服务端，甚至是其他非 Minecraft 的程序。
@@ -124,6 +125,15 @@ npm start
 > 关于更多的安装说明，请 [单击这里](https://github.com/Suwings/MCSManager/wiki/Linux-%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3)  
 
 <br />
+
+
+重大更新
+-----------
+
+MCSManager 9.0 版本已经正在开发，将在一段时间（3~6个月）后推出测试版供部分用户使用，待完全推出正式版后，将不再兼容旧版本的配置文件。当前版本依然可以正常使用，推荐您 `Fork` 本项目进行备份，以便于升级后对旧版本项目的代码更新工作。
+
+<br />
+
 
 通过 Docker 启动 MC 服务端 
 -----------
