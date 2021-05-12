@@ -82,7 +82,7 @@ http://mcsm.suwings.top/ (官方站点)
 在 Linux 运行
 -----------
 
-**一行命令快速安装（适用于 Ubuntu/Centos/Debian/Archlinux）**
+**一行命令快速安装（适用于AMD64架构 Ubuntu/Centos/Debian/Archlinux）**
 
 ```bash
 wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh | bash
