@@ -89,6 +89,8 @@ class ServerProcess extends EventEmitter {
     if (this.dataModel.highCommande.trim() != "") startCommande = this.dataModel.highCommande;
     else startCommande = this.templateStart(true);
     const startCommandeArray = startCommande.split(" ");
+    let restartPolicy = "";
+    if (this.dataModel.autoRestart) restartPolicy = "unless-stopped";
     let portmap = this.dataModel.dockerConfig.dockerPorts;
     // 端口解析
     var agreement = portmap.split("/");
@@ -143,7 +145,8 @@ class ServerProcess extends EventEmitter {
       HostConfig: {
         Binds: [stdCwd + ":/mcsd/"],
         Memory: this.dataModel.dockerConfig.dockerXmx * 1024 * 1024 * 1024,
-        PortBindings: PortBindingsObj
+        PortBindings: PortBindingsObj,
+        RestartPolicy: restartPolicy
       }
     });
     try {
