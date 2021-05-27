@@ -132,7 +132,7 @@ npm start
 
 项目 star 超过 1k 之后将开始计划更新 9.0 特大更新版本，将支持分布式管理，更优秀的前端和守护进程。
 
-具体项目参考：https://github.com/Suwings/MCSManager-Daemon
+<br />
 
 
 通过 Docker 启动 MC 服务端 
