@@ -6,8 +6,10 @@
         <div class="row">
           <div class="col-md-12">
             <p>
-              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md" style="color: #2f3ad6">如何让 Minecraft 服务端运行在 Docker 镜像中？</a>
-              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md" style="color: #2f3ad6">如何在我的电脑上安装 Docker？</a>
+              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md" style="color: #2f3ad6">如何让
+                Minecraft 服务端运行在 Docker 镜像中？</a>
+              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md"
+                style="color: #2f3ad6">如何在我的电脑上安装 Docker？</a>
             </p>
             <h4>DockerFile 文件</h4>
             <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft 服务器。</p>
@@ -16,24 +18,21 @@
             <textarea id="dockerfile" row="30" style="height: 220px; width: 100%" v-model="dockerFileText"> </textarea>
             <div class="input-group input-group-sm">
               <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-              <input
-                type="text"
-                autocomplete="off"
-                class="form-control"
-                placeholder="可填，默认 mcsd 镜像名，不建议更改，除非您要创建其他的镜像，请一定要记住名字"
-                aria-describedby="sizing-addon3"
-                v-model="dockerImageName"
-              />
+              <input type="text" autocomplete="off" class="form-control"
+                placeholder="可填，默认 mcsd 镜像名，不建议更改，除非您要创建其他的镜像，请一定要记住名字" aria-describedby="sizing-addon3"
+                v-model="dockerImageName" />
             </div>
             <p>
               <b>
-                <span style="color: red">这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。</span>
+                <span style="color: red">这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700
+                  MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。</span>
                 <br />
                 <br />
                 <span>如果出现构建失败失败，请尝试检查 Docker 服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。</span>
               </b>
             </p>
-            <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">创建 Docker 镜像</button>
+            <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">创建 Docker
+              镜像</button>
             &nbsp;|&nbsp;
             <button class="btn btn-success" v-on:click="toCreateRes()">任务结果列表</button>
           </div>
@@ -50,7 +49,7 @@
     new Vue({
       el: "#NewDockerImage",
       data: {
-        dockerFileText: 'FROM java:latest\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd',
+        dockerFileText: 'FROM openjdk:8\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd',
         dockerImageName: "",
         createDockerDis: false
       },
@@ -76,12 +75,12 @@
             },
             title: "Docker 构建结果",
             template: "template/dialog/docker_res.html",
-            callback: function () {}
+            callback: function () { }
           });
         }
       }
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
