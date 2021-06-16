@@ -27,15 +27,15 @@
   </p>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">内存限制</span>
-    <input type="text" class="form-control" placeholder="可填，列如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3" v-model="dockerXmx" />
+    <input type="text" class="form-control" placeholder="可填，例如填写 2G 则代表容器最大可使用 2G 内存。" aria-describedby="sizing-addon3" v-model="dockerXmx" />
   </div>
   <p>
     <small>开放的端口,冒号左边代表容器内部端口,右边代表宿主机端口,通常保持相同即可。</small>
   </p>
-  <p><small>目前最多只准许开放一个</small></p>
+  <p><small>如果任意一个端口被占用，服务器将会无法启动。多个端口用 | 分割。</small></p>
   <div class="input-group input-group-sm">
     <span class="input-group-addon" id="sizing-addon3">开放端口</span>
-    <input type="text" class="form-control" placeholder="可填，列如 25565:25565" aria-describedby="sizing-addon3" v-model="dockerPorts" />
+    <input type="text" class="form-control" placeholder="可填，例如 25565:25565/tcp|25565:25565/udp|8080:8080/tcp" aria-describedby="sizing-addon3" v-model="dockerPorts" />
   </div>
   <p>
     确认无误之后，单击保存即可 | &nbsp;

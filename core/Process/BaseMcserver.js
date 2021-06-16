@@ -91,34 +91,37 @@ class ServerProcess extends EventEmitter {
     const startCommandeArray = startCommande.split(" ");
     let portmap = this.dataModel.dockerConfig.dockerPorts;
     // 端口解析
-    var agreement = portmap.split("/");
-    var protocol = "tcp";
-    if (agreement.length >= 2 && (agreement[1] === "udp" || agreement[1] === "tcp")) {
-      protocol = agreement[1];
-    }
-    portmap = portmap.split(":");
-    if (portmap.length > 2) {
-      throw new Error("不支持的多端口操作方法，参数配置端口数量错误。");
-    }
+    var ports = portmap.split("|");
     // 绑定内部暴露端口
     const ExposedPortsObj = {};
     // 绑定内部暴露端口与其对应的宿主机端口
     const PortBindingsObj = {};
-    if (portmap.length == 2) {
-      // 一个端口的配置项目
-      ExposedPortsObj[portmap[0] + "/" + protocol] = {};
-      PortBindingsObj[portmap[0] + "/" + protocol] = [
-        {
-          HostPort: portmap[1] + ""
-        }
-      ];
+    for (var portstr of ports) {
+      var agreement = portstr.split("/");
+      var protocol = "tcp";
+      if (agreement.length >= 2 && (agreement[1] === "udp" || agreement[1] === "tcp")) {
+        protocol = agreement[1];
+      }
+      var port = portstr.split(":");
+      if (port.length > 2) {
+        throw new Error("参数配置端口映射错误。");
+      }
+      if (port.length == 2) {
+        // 一个端口的配置项目
+        ExposedPortsObj[port[0] + "/" + protocol] = {};
+        PortBindingsObj[port[0] + "/" + protocol] = [
+          {
+            HostPort: port[1] + ""
+          }
+        ];
+      }
     }
     // 输出启动消息
     MCSERVER.log("实例 [", this.dataModel.name, "] 正在启动...");
     MCSERVER.log("-------------------------------");
     MCSERVER.log("正在使用虚拟化技术启动进程");
     MCSERVER.log("命令:", startCommandeArray.join(" "));
-    MCSERVER.log("开放端口:", portmap.join("->"));
+    MCSERVER.log("开放端口:", portmap);
     MCSERVER.log("工作目录:", stdCwd);
     MCSERVER.log("-------------------------------");
 
