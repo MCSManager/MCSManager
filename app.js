@@ -1,22 +1,40 @@
-/* eslint-disable no-unused-vars */
-//运行时环境检测
+/*
+ * ==================================
+ * MCSManager
+ * Copyright(c) 2021 Suwings.
+ * MIT Licensed
+ * ==================================
+ */
+
+// Logo 输出
+console.log(`______  _______________________  ___                                         
+___   |/  /_  ____/_  ___/__   |/  /_____ _____________ _______ _____________
+__  /|_/ /_  /    _____ \\__  /|_/ /_  __  /_  __ \\  __  /_  __  /  _ \\_  ___/
+_  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /    
+/_/  /_/  \\____/  /____/ /_/  /_/  \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/     
+                                                        /____/             
+ + Copyright 2021 Suwings All rights reserved.
+ + Version 8.6
+`);
+
+// 运行时环境检测
 try {
   let versionNum = parseInt(process.version.replace(/v/gim, "").split(".")[0]);
-  //尽管我们建议最低版本为 v10 版本
+  // 尽管我们建议最低版本为 v10 版本
   if (versionNum < 10) {
     console.log("[ WARN ] 您的 Node 运行环境版本似乎低于我们要求的版本.");
     console.log("[ WARN ] 可能会出现未知情况,建议您更新 Node 版本 (>=10.0.0)");
   }
 } catch (err) {
-  //忽略任何版本检测导致的错误
+  // 忽略任何版本检测导致的错误
 }
 
-//全局变量 MCSERVER
+// 全局变量 MCSERVER
 global.MCSERVER = {};
 
-//测试时检测
+// 测试时检测
 MCSERVER.allError = 0;
-//自动化部署测试
+// 自动化部署测试
 setTimeout(() => {
   let arg2 = process.argv[2] || "";
   if (arg2 == "--test") {
@@ -31,19 +49,18 @@ setTimeout(() => {
 }, 10000);
 
 const fs = require("fs");
-const fsex = require("fs-extra");
 
-//全局仅限本地配置
+// 全局仅限本地配置
 MCSERVER.localProperty = {};
 
 const tools = require("./core/tools");
 
-//生成第一次配置文件
+// 生成第一次配置文件
 const INIT_CONFIG_PATH = "./model/init_config/";
 const PRO_CONFIG = "./property.js";
 if (!fs.existsSync(PRO_CONFIG)) tools.mCopyFileSync(INIT_CONFIG_PATH + "property.js", PRO_CONFIG);
 
-//加载配置
+// 加载配置
 require("./property");
 
 const express = require("express");
@@ -51,10 +68,10 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const querystring = require("querystring");
-//gzip压缩
+// gzip压缩
 const compression = require("compression");
 
-//各类层装载 与 初始化
+// 各类层装载 与 初始化
 const ServerModel = require("./model/ServerModel");
 const UserModel = require("./model/UserModel");
 const permission = require("./helper/Permission");
@@ -67,7 +84,7 @@ const nodeSchedule = require("node-schedule");
 const Schedule = require("./helper/Schedule");
 const NewsCenter = require("./model/NewsCenter");
 
-//控制台颜色
+// 控制台颜色
 const colors = require("colors");
 colors.setTheme({
   silly: "rainbow",
@@ -82,37 +99,32 @@ colors.setTheme({
   error: "red"
 });
 
-//logo输出
-const LOGO_FILE_PATH = "./core/logo.txt";
-let data = fs.readFileSync(LOGO_FILE_PATH, "utf-8");
-console.log(data);
-
-//全局数据中心 记录 CPU 内存
+// 全局数据中心 记录 CPU 内存
 MCSERVER.dataCenter = {};
 
-//装载log记录器
+// 装载log记录器
 require("./core/log");
 MCSERVER.info("控制面板正在启动中...");
 
-//全局登陆记录器
+// 全局登陆记录器
 MCSERVER.login = {};
-//全局 在线用户监视器
+// 全局 在线用户监视器
 MCSERVER.onlineUser = {};
-//全局 在线 Websocket 监视器
+// 全局 在线 Websocket 监视器
 MCSERVER.allSockets = {};
-//全局 数据内存记录器
+// 全局 数据内存记录器
 MCSERVER.logCenter = {};
-//PAGE 页面数据储存器
+// PAGE 页面数据储存器
 MCSERVER.PAGE = {};
 
-//init
+// 计数数据：初始化方法
 MCSERVER.logCenter.initLogData = (objStr, len, def = null) => {
   let tmp = [];
   for (let i = 0; i < len; i++) tmp.push(def);
   MCSERVER.logCenter[objStr] = tmp;
 };
 
-//压入方法
+// 计数数据：压入方法
 MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
   MCSERVER.logCenter[objStr] = MCSERVER.logCenter[objStr].slice(1);
   MCSERVER.logCenter[objStr].push({
@@ -121,12 +133,12 @@ MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
   });
 };
 
-//exp 框架
+// 初始化 Express 框架
 var app = express();
-//web Socket 框架
+// 初始化 Express-WebSocket 框架
 var expressWs = require("express-ws")(app);
 
-//Cookie and Session 的基础功能
+// 初始化 Cookie and Session 的基础功能
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
@@ -135,6 +147,7 @@ app.use(
 );
 app.use(bodyParser.json());
 
+// 初始化 Session 功能
 var UUID = require("uuid");
 app.use(
   session({
@@ -148,10 +161,10 @@ app.use(
   })
 );
 
-//使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
+// 使用 gzip 静态文本压缩，但是如果你使用反向代理或某 HTTP 服务自带的gzip，请关闭它
 if (MCSERVER.localProperty.is_gzip) app.use(compression());
 
-//基础根目录
+// 设置静态文件基础根目录
 app.use("/public", express.static("./public"));
 
 // console 中间件挂载
@@ -170,7 +183,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//基础的根目录路由
+// 初始化基础的根目录路由
 app.get(["/login", "/l", "/", "/logined"], function (req, res) {
   permission.needLogin(
     req,
@@ -184,7 +197,7 @@ app.get(["/login", "/l", "/", "/logined"], function (req, res) {
   );
 });
 
-//自动装载所有路由
+// 自动装载所有路由
 let routeList = fs.readdirSync("./route/");
 for (let key in routeList) {
   let name = routeList[key].replace(".js", "");
@@ -192,9 +205,9 @@ for (let key in routeList) {
 }
 
 process.on("uncaughtException", function (err) {
-  //是否出过错误,本变量用于自动化测试
+  // 是否出过错误,本变量用于自动化测试
   MCSERVER.allError++;
-  //打印出错误
+  // 打印出错误
   MCSERVER.error("错误报告:", err);
 });
 
@@ -202,7 +215,7 @@ process.on("unhandledRejection", (reason, p) => {
   MCSERVER.error("错误报告:", reason);
 });
 
-//初始化目录结构环境
+// 初始化目录结构环境
 (function initializationRun() {
   const USERS_PATH = "./users/";
   const SERVER_PATH = "./server/";
@@ -227,10 +240,10 @@ process.on("unhandledRejection", (reason, p) => {
   }
 })();
 
-//开始对 Oneline File Manager 模块进行必要的初始化
+// 开始对 Oneline File Manager 模块进行必要的初始化
 MCSERVER.infoLog("OnlineFs", "正在初始化文件管理路由与中间件 ");
 
-//必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
+// 必须先进行登陆 且 fs API 请求必须为 Ajax 请求，得以保证跨域阻止
 app.use(["/fs/mkdir", "/fs/rm", "/fs/patse", "/fs/cp", "/fs/rename", "/fs/ls"], function (req, res, next) {
   if (req.session.fsos && req.xhr) {
     next();
@@ -239,11 +252,11 @@ app.use(["/fs/mkdir", "/fs/rm", "/fs/patse", "/fs/cp", "/fs/rename", "/fs/ls"], 
   res.status(403).send("禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！");
 });
 
-//载入在线文件管理路由
+// 载入在线文件管理路由
 app.use("/fs_auth", require("./onlinefs/controller/auth"));
 app.use("/fs", require("./onlinefs/controller/function"));
 
-//初始化各个模块
+// 初始化各个模块
 (function initializationProm() {
   MCSERVER.infoLog("Module", "正在初始化用户管理模块");
   counter.init();
@@ -260,7 +273,7 @@ app.use("/fs", require("./onlinefs/controller/function"));
 
   if (host == "::") host = "127.0.0.1";
 
-  //App Http listen
+  // Express HTTP 服务监听启动
   app.listen(MCSERVER.localProperty.http_port, MCSERVER.localProperty.http_ip, () => {
     MCSERVER.infoLog("HTTP", "HTTP 模块监听: [ http://" + (host || "127.0.0.1".yellow) + ":" + port + " ]");
 
@@ -275,20 +288,20 @@ app.use("/fs", require("./onlinefs/controller/function"));
   });
 })();
 
-//用于捕捉前方所有路由都未经过的请求，则可为 404 页面
+// 用于捕捉前方所有路由都未经过的请求，则可为 404 页面
 app.get("*", function (req, res) {
-  //404 页面
+  // 重定向到 404 页面
   res.redirect("/public/template/404_page.html");
   res.end();
 });
 
-//设置定时获取最新新闻动态
+// 设置定时获取最新新闻动态
 nodeSchedule.scheduleJob("59 59 23 * * *", function () {
   MCSERVER.infoLog("INFO", "自动更新新闻动态与最新消息");
   NewsCenter.requestNews();
 });
-//重启自动获取一次
+// 重启自动获取一次
 NewsCenter.requestNews();
 
-//程序退出信号处理
+// 程序退出信号处理
 require("./core/procexit");
