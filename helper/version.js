@@ -1,7 +1,7 @@
 /*
  * @Author: Copyright(c) 2020 Suwings
  * @Date: 2020-10-08 13:28:28
- * @LastEditTime: 2021-06-23 10:18:59
+ * @LastEditTime: 2021-06-23 10:37:30
  * @Description: 版本发行说明文件
  */
 const os = require("os");
@@ -11,9 +11,9 @@ const os = require("os");
 //这样, 用户截图时, 可以知道具体的版本
 //请用户尽可能的不要修改本文件任何代码，因为每一次版本更新时，必定会冲突
 
-const verisonA = "8.6.22 发行版本"; //发行版本
+const verisonA = "8.6.23 测试版本"; //发行版本
 
-const verisonB = "No.20210623-01"; //版本批次
+const verisonB = "No.20210623-02"; //版本批次
 
 let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
