@@ -282,6 +282,22 @@ app.use("/fs", require("./onlinefs/controller/function"));
 
     if (MCSERVER.allError <= 0) {
       MCSERVER.infoLog("INFO", "控制面板已经启动");
+      // 异步等待3秒，打开已配置打开 MCSM 时自启的服务器
+      setTimeout(() => {
+        var serverModel = require("./model/ServerModel");
+        let servers = serverModel.ServerManager().getServerObjects();
+        for (let k in servers) {
+          try {
+            let server = servers[k];
+            if (server.dataModel.autoStart) {
+              server.start();
+            }
+          } catch (serverErr) {
+            MCSERVER.error("自动开启某服务器失败:", serverErr);
+            continue;
+          }
+        }
+      }, 3000);
     } else {
       MCSERVER.infoLog("INFO", "控制面板启动异常");
     }
