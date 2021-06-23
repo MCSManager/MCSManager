@@ -5,7 +5,6 @@
  * @Description: 自启动任务
  */
 
-
 const serverModel = require("../model/ServerModel");
 
 module.exports.startAutoTask = () => {
@@ -26,5 +25,4 @@ module.exports.startAutoTask = () => {
       }
     }
   }, 3000);
-}
-
+};
