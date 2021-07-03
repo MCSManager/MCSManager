@@ -168,10 +168,13 @@
                         <a href="http://www.duzuii.com/" target="_blank">
                             <img src="/assets/sponsor/duzui.png" />
                         </a>
-                        <p style="color: rgb(173, 173, 173)">
-                            <small>“重要赞助商” 指累积赞助超过一定金额或对项目有极大帮助的个人或公司。</small>
-                        </p>
+                        <a href="https://www.elyart.cn/" target="_blank">
+                            <img src="/assets/sponsor/elyart.jpg" />
+                        </a>
                     </div>
+                    <p style="text-align: center; color: rgb(173, 173, 173)">
+                        <small>“重要赞助商” 指累积赞助超过一定金额或对项目有极大帮助的个人或公司。</small>
+                    </p>
                     <hr>
                     <h4>赞助我们</h4>
                     <div class="text-center" style="margin-top: 30px">
@@ -445,17 +448,24 @@
     }
 
     .sponsor-list {
-        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .sponsor-list img {
-        /* width: 240px; */
-        height: 60px;
+        max-width: 160px;
+        max-height: 50px;
+        transition: all 1s;
+    }
+
+    .sponsor-list img:hover {
+        transform: scale(1.1);
     }
 
     .sponsor-list a {
         margin: 20px 15px 0;
-        display: inline-block;
+        display: block;
     }
 
     .footer {
