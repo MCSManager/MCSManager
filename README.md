@@ -127,10 +127,13 @@ npm start
 <br />
 
 
-特大更新
+MCSManager 9.0 版本
 -----------
+现在已处于开发阶段，请点击 `star`使其增加以支持开发团队，目前您依然可以继续使用 MCSManager 8.X 版本程序。
 
-项目 star 超过 1k 之后将开始计划更新 9.0 特大更新版本，将支持分布式管理，更优秀的前端和守护进程。
+[MCSManager 网页界面项目](https://github.com/Suwings/MCSManager-UI)
+
+[MCSManager 守护进程项目](https://github.com/Suwings/MCSManager-Daemon)
 
 <br />
 
