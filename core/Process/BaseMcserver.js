@@ -1,3 +1,7 @@
+const process=require('process');
+const processUserUid=process.getuid;
+const processGroupGid=process.getgid;
+
 const childProcess = require("child_process");
 const iconv = require("iconv-lite");
 const EventEmitter = require("events");
@@ -142,6 +146,7 @@ class ServerProcess extends EventEmitter {
       Cmd: startCommandeArray,
       OpenStdin: true,
       StdinOnce: false,
+      User: `${processUserUid()}:${processGroupGid()}`,
       ExposedPorts: ExposedPortsObj,
       HostConfig: {
         Binds: [stdCwd + ":/mcsd/"],
