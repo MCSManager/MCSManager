@@ -88,6 +88,16 @@
   <div class="container page">
     <div class="row">
       <div class="col-md-12">
+        <h4>这是什么？</h4>
+        <p>MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开箱即用，多实例和支持 Docker 的 Minecraft 服务端管理面板。在 Minecraft Java
+          版中已有一定的流行程度，它可以帮助你集中管理多个服务器，又或者分配账号供其他人使用而不必过于担心安全问题，对于商业活动也有一定的基础功能。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-12">
         <h4>功能与特点</h4>
       </div>
       <div class="col-md-3">
@@ -168,7 +178,7 @@
               <img src="/assets/sponsor/elyart.jpg" />
             </a>
             <a href="https://o.ls/" target="_blank">
-              <img src="/assets/sponsor/markcode.png" />
+              <img src="/assets/sponsor/markcode.png" style="max-width: 120px;" />
             </a>
           </div>
           <p style="text-align: center; color: rgb(173, 173, 173)">
@@ -199,7 +209,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <h4>部分赞助者</h4>
+          <h4>所有赞助者</h4>
           <div class="sponsor-table" style="max-height: 700px; overflow-y: auto">
             <table>
               <tr>
@@ -216,6 +226,15 @@
             <p v-show="!isMoreSponsor">
               <a class="install-link" href="javascript:void(0)" @click="displayMoreSponsor">查看更多赞助者</a>
             </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row page">
+        <div class="col-md-12">
+          <div class="text-center">
+            <h4 style="margin-bottom:4px;">没有上述名单成员的支持与赞助，就不会有 MCSManager 项目的长期维护。</h4>
+            <p class="text-secondary">再次对上述名单全体成员的无私奉献表达谢意。</p>
           </div>
         </div>
       </div>
@@ -433,8 +452,8 @@
   }
 
   .page {
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 80px;
+    margin-bottom: 80px;
   }
 
   .img-box {
@@ -449,12 +468,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
+    flex-wrap: wrap;
   }
 
   .sponsor-list img {
-    max-width: 160px;
-    max-height: 50px;
+    max-width: 140px;
+    max-height: 40px;
     transition: all 1s;
   }
 
