@@ -2,575 +2,574 @@
 <html lang="zh-CN">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCSManager | Minecraft 中文管理面板</title>
-    <meta name="keywords" content="MCSManager,MCSM,MCSM面板,Minecraft管理面板,MC管理面板" />
-    <meta name="description" content="MCSManager 管理面板（简称：MCSM面板）是适用于 Minecraft 游戏服务器的轻量级管理面板" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous" />
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?613715e86a534a1f660d85cd0a42c684";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCSManager | Minecraft 中文管理面板</title>
+  <meta name="keywords" content="MCSManager,MCSM,MCSM面板,Minecraft管理面板,MC管理面板" />
+  <meta name="description" content="MCSManager 管理面板（简称：MCSM面板）是适用于 Minecraft 游戏服务器的轻量级管理面板" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous" />
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?613715e86a534a1f660d85cd0a42c684";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 </head>
 
 <body>
-    <div id="index-page" class="page1">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <nav id="nav" class="navbar navbar-expand-lg">
-                        <a class="navbar-brand" href="#">
-                            <img src="/assets/logo.png" height="30" />
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
+  <div id="index-page" class="page1">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <nav id="nav" class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="#">
+              <img src="/assets/logo.png" height="30" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
 
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav ml-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" href="/">首页 <span
-                                            class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
-                                        role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        备用下载 </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="https://pan.baidu.com/s/1N6xB3NdL5nk7254-0ea83Q">
-                                            百度网盘 (Q9WV) </a>
-                                        <a class="dropdown-item" href="https://github.com/Suwings/MCSManager"> Linux 版
-                                        </a>
-                                    </div>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white"
-                                        href="https://github.com/Suwings/MCSManager/wiki/API-Documentation">API 文档</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white"
-                                        href="https://github.com/Suwings/MCSManager/wiki/Development_Document"> 开发文档
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white"
-                                        href="https://github.com/Suwings/MCSManager/wiki/">WIKI</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white"
-                                        href="https://github.com/Suwings/MCSManager/issues">反馈</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/">首页 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    备用下载 </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="https://pan.baidu.com/s/1N6xB3NdL5nk7254-0ea83Q">
+                      百度网盘 (Q9WV) </a>
+                    <a class="dropdown-item" href="https://github.com/Suwings/MCSManager"> Linux 版
+                    </a>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="https://github.com/Suwings/MCSManager/wiki/API-Documentation">API
+                    文档</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="https://github.com/Suwings/MCSManager/wiki/Development_Document">
+                    开发文档
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="https://github.com/Suwings/MCSManager/wiki/">WIKI</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="https://github.com/Suwings/MCSManager/issues">反馈</a>
+                </li>
+              </ul>
             </div>
+          </nav>
         </div>
-
-        <div class="mjumbotron">
-            <div class="mtext-wapper">
-                <p class="mtext-hello color-white">
-                    <span class="text-warning">稳定可靠</span> ，<span class="text-warning">轻量级</span>和<span
-                        class="text-warning">开箱即用</span>的 Minecraft 服务端<span class="text-warning">管理面板</span>
-                </p>
-                <p class="mtext-info">现在，你可以立即下载并免费开始使用！</p>
-                <a href="#download" class="mbuttonf"> 开始使用</a>
-                <a href="https://github.com/Suwings/MCSManager" target="_blank" class="mbuttonf">项目源码</a>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <div class="container page">
-        <div class="row">
-            <div class="col-md-12">
-                <h4>功能与特点</h4>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">稳定性</h5>
-                        <p class="card-text">管理面板采用 Express 框架开发，绝大部分逻辑采用异步形式，确保主程序稳定运作。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">安全性</h5>
-                        <p class="card-text">在 Linux 下可使用 Docker API 实现虚拟化隔离，控制面板用户权限机制拥有严格检查。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">开箱即用</h5>
-                        <p class="card-text">无需数据库，无需 Apache/nginx ，可适用于 Linux/Windows，下载即用，一键安装！</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">界面美观</h5>
-                        <p class="card-text">基于 Vue 的 SPA 网页，无需刷新，快速加载，并且拥有优雅的 UI 设计。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="mjumbotron">
+      <div class="mtext-wapper">
+        <p class="mtext-hello color-white">
+          <span class="text-warning">稳定可靠</span> ，<span class="text-warning">轻量级</span>和<span
+            class="text-warning">开箱即用</span>的 Minecraft 服务端<span class="text-warning">管理面板</span>
+        </p>
+        <p class="mtext-info">现在，你可以立即下载并免费开始使用！</p>
+        <a href="#download" class="mbuttonf"> 开始使用</a>
+        <a href="https://github.com/Suwings/MCSManager" target="_blank" class="mbuttonf">项目源码</a>
+      </div>
     </div>
+  </div>
 
-    <div class="container page">
-        <div class="row">
-            <div class="col-md-12">
-                <h4 id="download">开始使用</h4>
-            </div>
-            <div class="col-md-6">
-                <p>
-                    <b>Linux 系统快速安装（适用于 Ubuntu/Centos/Debian/Arch）</b>
-                    <br />
-                    <small>安装成功后，使用 systemctl start mcsm 命令即可启动面板</small>
-                </p>
-                <code>wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh | bash</code>
-                <a class="install-link" href="https://github.com/Suwings/MCSManager#%E5%9C%A8-linux-%E8%BF%90%E8%A1%8C"
-                    target="_blank"> Linux 安装失败？查看更多方法</a>
-                <hr>
-                <p><b>Windows 系统直接下载双击 运行.bat 程序即可开始运行。</b></p>
-                <a href="https://mcsmuuwinn.coding.net/s/46258ad7-d524-4130-8502-636a56242327" target="_blank"
-                    class="mbutton"> 下载 Windows 整合版 </a>
-            </div>
-            <div class="col-md-6">
-                <div class="img-box">
-                    <img src="/assets/mcsm.png" class="img-fluid" alt="Responsive image" />
-                </div>
-            </div>
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-12">
+        <h4>功能与特点</h4>
+      </div>
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">稳定性</h5>
+            <p class="card-text">管理面板采用 Express 框架开发，绝大部分逻辑采用异步形式，确保主程序稳定运作。</p>
+          </div>
         </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">安全性</h5>
+            <p class="card-text">在 Linux 下可使用 Docker API 实现虚拟化隔离，控制面板用户权限机制拥有严格检查。</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">开箱即用</h5>
+            <p class="card-text">无需数据库，无需 Apache/nginx ，可适用于 Linux/Windows，下载即用，一键安装！</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">界面美观</h5>
+            <p class="card-text">基于 Vue 的 SPA 网页，无需刷新，快速加载，并且拥有优雅的 UI 设计。</p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="page sponsor" id="app-sponsor">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4>重要赞助商</h4>
-                    <div class="sponsor-list">
-                        <a href="http://www.llxz.cc/" target="_blank">
-                            <img src="/assets/sponsor/llxz1.png" />
-                        </a>
-                        <a href="http://www.duzuii.com/" target="_blank">
-                            <img src="/assets/sponsor/duzui.png" />
-                        </a>
-                        <a href="https://www.elyart.cn/" target="_blank">
-                            <img src="/assets/sponsor/elyart.jpg" />
-                        </a>
-                    </div>
-                    <p style="text-align: center; color: rgb(173, 173, 173)">
-                        <small>“重要赞助商” 指累积赞助超过一定金额或对项目有极大帮助的个人或公司。</small>
-                    </p>
-                    <hr>
-                    <h4>赞助我们</h4>
-                    <div class="text-center" style="margin-top: 30px">
-                        <!-- <a href=" https://docs.qq.com/sheet/DYWJNVXhib0dtamh2" target="_blank"
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-12">
+        <h4 id="download">开始使用</h4>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <b>Linux 系统快速安装（适用于 Ubuntu/Centos/Debian/Arch）</b>
+          <br />
+          <small>安装成功后，使用 systemctl start mcsm 命令即可启动面板</small>
+        </p>
+        <code>wget -qO- https://gitee.com/Suwingser/MCSManager-installer/raw/master/install.sh | bash</code>
+        <a class="install-link" href="https://github.com/Suwings/MCSManager#%E5%9C%A8-linux-%E8%BF%90%E8%A1%8C"
+          target="_blank"> Linux 安装失败？查看更多方法</a>
+        <hr>
+        <p><b>Windows 系统直接下载双击 运行.bat 程序即可开始运行。</b></p>
+        <a href="https://mcsmuuwinn.coding.net/s/46258ad7-d524-4130-8502-636a56242327" target="_blank" class="mbutton">
+          下载 Windows 整合版 </a>
+      </div>
+      <div class="col-md-6">
+        <div class="img-box">
+          <img src="/assets/mcsm.png" class="img-fluid" alt="Responsive image" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page sponsor" id="app-sponsor">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h4>重要赞助商</h4>
+          <div class="sponsor-list">
+            <a href="http://www.llxz.cc/" target="_blank">
+              <img src="/assets/sponsor/llxz1.png" />
+            </a>
+            <a href="http://www.duzuii.com/" target="_blank">
+              <img src="/assets/sponsor/duzui.png" />
+            </a>
+            <a href="https://www.elyart.cn/" target="_blank">
+              <img src="/assets/sponsor/elyart.jpg" />
+            </a>
+            <a href="https://o.ls/" target="_blank">
+              <img src="/assets/sponsor/markcode.png" />
+            </a>
+          </div>
+          <p style="text-align: center; color: rgb(173, 173, 173)">
+            <small>“重要赞助商” 指累积赞助超过一定金额或对项目有极大帮助的个人或公司。</small>
+          </p>
+          <hr>
+          <h4>赞助我们</h4>
+          <div class="text-center" style="margin-top: 30px">
+            <!-- <a href=" https://docs.qq.com/sheet/DYWJNVXhib0dtamh2" target="_blank"
                                 class="mbutton">更多赞助者名单</a> -->
-                        <a href="https://afdian.net/@mcsmanager" target="_blank" class="mbutton">爱发电</a>
-                        <a href="javascript:void(0)" class="mbutton" @click="toPay(true)">支付宝/微信</a>
-                        <a href="https://jq.qq.com/?_wv=1027&k=bFPF831l" target="_blank" class="mbutton">QQ 群</a>
-                    </div>
-                    <!-- 在线支付对话框 -->
-                    <div class="paycode" style="display: none;" v-show="paycode">
-                        <div class="paycode-payload">
-                            <img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/pay.png" alt="" srcset="">
-                            <hr>
-                            <p style="font-size: 13px;">扫描上述二维码，支付任意金额，备注请写 “MCSM 赞助人 XXX 留言 XXX”
-                                <br> 我们定期查看交易记录，届时将会把你的名字添加至赞助列表中。
-                                <small>若您急需加入到列表或长期无响应，请加入QQ群联系群主</small>
-                            </p>
-                            <div style="text-align: center;">
-                                <div class="mbutton" @click="toPay(false)">关闭</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h4>部分赞助者</h4>
-                    <div class="sponsor-table" style="max-height: 700px; overflow-y: auto">
-                        <table>
-                            <tr>
-                                <th style="width: 30%">赞助者名称</th>
-                                <th style="width: 20%">累积金额</th>
-                                <th style="width: 55%">介绍/留言</th>
-                            </tr>
-                            <tr v-for="(item,index) in viewSponsorList" :key="index">
-                                <td v-text="item.name"></td>
-                                <td v-text="'￥'+item.price"></td>
-                                <td v-text="item.message"></td>
-                            </tr>
-                        </table>
-                        <p v-show="!isMoreSponsor">
-                            <a class="install-link" href="javascript:void(0)" @click="displayMoreSponsor">查看更多赞助者</a>
-                        </p>
-                    </div>
-                </div>
+            <a href="https://afdian.net/@mcsmanager" target="_blank" class="mbutton">爱发电</a>
+            <a href="javascript:void(0)" class="mbutton" @click="toPay(true)">支付宝/微信</a>
+            <a href="https://jq.qq.com/?_wv=1027&k=bFPF831l" target="_blank" class="mbutton">QQ 群</a>
+          </div>
+          <!-- 在线支付对话框 -->
+          <div class="paycode" style="display: none;" v-show="paycode">
+            <div class="paycode-payload">
+              <img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/pay.png" alt="" srcset="">
+              <hr>
+              <p style="font-size: 13px;">扫描上述二维码，支付任意金额，备注请写 “MCSM 赞助人 XXX 留言 XXX”
+                <br> 我们定期查看交易记录，届时将会把你的名字添加至赞助列表中。
+                <small>若您急需加入到列表或长期无响应，请加入QQ群联系群主</small>
+              </p>
+              <div style="text-align: center;">
+                <div class="mbutton" @click="toPay(false)">关闭</div>
+              </div>
             </div>
+          </div>
         </div>
+        <div class="col-md-6">
+          <h4>部分赞助者</h4>
+          <div class="sponsor-table" style="max-height: 700px; overflow-y: auto">
+            <table>
+              <tr>
+                <th style="width: 30%">赞助者名称</th>
+                <th style="width: 20%">累积金额</th>
+                <th style="width: 55%">介绍/留言</th>
+              </tr>
+              <tr v-for="(item,index) in viewSponsorList" :key="index">
+                <td v-text="item.name"></td>
+                <td v-text="'￥'+item.price"></td>
+                <td v-text="item.message"></td>
+              </tr>
+            </table>
+            <p v-show="!isMoreSponsor">
+              <a class="install-link" href="javascript:void(0)" @click="displayMoreSponsor">查看更多赞助者</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div style="font-size: 12px;color: #c2c2c2;">
-                        <p>遵循 MIT 开源协议&nbsp;⋄&nbsp;版权所有 © 2021 <a class="link"
-                                href="https://github.com/Suwings">Suwings</a> All
-                            rights
-                            reserved.</p>
-                        <p>
-                            <a class="link" href="http://www.beian.miit.gov.cn/">湘ICP备17022362号</a>&nbsp;⋄&nbsp;友情链接
-                            <a class="link" href="http://mcllxz.cc:88/">LL Town Server</a>
-                            &nbsp;
-                            <a class="link" href="http://www.mcbbs.net/">MCBBS 论坛</a>
-                            &nbsp;
-                            <a class="link" href="https://www.minebbs.com/">MineBBS 论坛</a>
-                            &nbsp;
-                            <a class="link" href="https://mcsm.imlazy.ink/">Lazy 文档</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div style="font-size: 12px;color: #c2c2c2;">
+            <p>遵循 MIT 开源协议&nbsp;⋄&nbsp;版权所有 © 2021 <a class="link" href="https://github.com/Suwings">Suwings</a> All
+              rights
+              reserved.</p>
+            <p>
+              <a class="link" href="http://www.beian.miit.gov.cn/">湘ICP备17022362号</a>&nbsp;⋄&nbsp;友情链接
+              <a class="link" href="http://mcllxz.cc:88/">LL Town Server</a>
+              &nbsp;
+              <a class="link" href="http://www.mcbbs.net/">MCBBS 论坛</a>
+              &nbsp;
+              <a class="link" href="https://www.minebbs.com/">MineBBS 论坛</a>
+              &nbsp;
+              <a class="link" href="https://mcsm.imlazy.ink/">Lazy 文档</a>
+            </p>
+          </div>
         </div>
-    </footer>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"
-        async></script>
-    <script src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_sponsor.js"></script>
-    <script>
-        $(function () {
-            new Vue({
-                el: "#app-sponsor",
-                data: {
-                    sponsorList: [],
-                    viewSponsorList: [],
-                    isMoreSponsor: false,
-                    paycode: false
-                },
-                methods: {
-                    displayMoreSponsor: function () {
-                        this.viewSponsorList = this.sponsorList;
-                        this.isMoreSponsor = true;
-                    },
-                    toPay: function (f) {
-                        $(".paycode").removeAttr("style");
-                        this.paycode = f;
-                    }
-                },
-                mounted: function () {
-                    var that = this;
-                    var array = (this.sponsorList = window.sponsorList());
-                    for (var k in array) {
-                        for (var j in array) {
-                            if (array[k].price > array[j].price) {
-                                var tmp = array[k];
-                                array[k] = array[j];
-                                array[j] = tmp;
-                            }
-                        }
-                    }
-                    // 注意：这里所写规则并不代表永久规则，在赞助人数足够多时，
-                    // 此规则会随之改变以适应新的变化。
-                    this.sponsorList.forEach(function (item) {
-                        if (item.price >= 100) {
-                            that.viewSponsorList.push(item);
-                        }
-                    });
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"
+    async></script>
+  <script src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_sponsor.js"></script>
+  <script>
+    $(function () {
+      new Vue({
+        el: "#app-sponsor",
+        data: {
+          sponsorList: [],
+          viewSponsorList: [],
+          isMoreSponsor: false,
+          paycode: false
+        },
+        methods: {
+          displayMoreSponsor: function () {
+            this.viewSponsorList = this.sponsorList;
+            this.isMoreSponsor = true;
+          },
+          toPay: function (f) {
+            $(".paycode").removeAttr("style");
+            this.paycode = f;
+          }
+        },
+        mounted: function () {
+          var that = this;
+          var array = (this.sponsorList = window.sponsorList());
+          for (var k in array) {
+            for (var j in array) {
+              if (array[k].price > array[j].price) {
+                var tmp = array[k];
+                array[k] = array[j];
+                array[j] = tmp;
+              }
+            }
+          }
+          // 注意：这里所写规则并不代表永久规则，在赞助人数足够多时，
+          // 此规则会随之改变以适应新的变化。
+          this.sponsorList.forEach(function (item) {
+            if (item.price >= 100) {
+              that.viewSponsorList.push(item);
+            }
+          });
 
-                    console.log("赞助者列表:", this.sponsorList);
-                    console.log("感谢你们，谢谢。")
-                }
-            });
-        });
-    </script>
+          console.log("赞助者列表:", this.sponsorList);
+          console.log("感谢你们，谢谢。")
+        }
+      });
+    });
+  </script>
 </body>
 <style>
-    html,
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
-        font-size: 15px;
-        height: 100%;
-    }
+  html,
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+    font-size: 15px;
+    height: 100%;
+  }
 
-    a {
-        text-decoration: none;
-        color: #304455;
-        transition: all 0.5s;
-    }
+  a {
+    text-decoration: none;
+    color: #304455;
+    transition: all 0.5s;
+  }
 
-    a:hover {
-        text-decoration: none;
-        color: #262b2b;
-    }
+  a:hover {
+    text-decoration: none;
+    color: #262b2b;
+  }
 
-    h4 {
-        margin-bottom: 30px;
-    }
+  h4 {
+    margin-bottom: 30px;
+  }
 
-    .mjumbotron {
-        min-height: 500px;
-        text-align: center;
-        height: 100%;
-    }
+  .mjumbotron {
+    min-height: 500px;
+    text-align: center;
+    height: 100%;
+  }
 
-    .page1 {
-        background-color: rgb(34, 34, 34);
-        background-image: url("/assets/bg.jpg");
-        background-size: cover;
-        height: 100%;
-    }
+  .page1 {
+    background-color: rgb(34, 34, 34);
+    background-image: url("/assets/bg.jpg");
+    background-size: cover;
+    height: 100%;
+  }
 
-    #nav {
-        padding-top: 8px;
-        padding-bottom: 8px;
-        align-items: center;
-        background: rgba(255, 255, 255, 0);
-        /* border-bottom: 1px solid #ebf2f2; */
-    }
+  #nav {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0);
+    /* border-bottom: 1px solid #ebf2f2; */
+  }
 
-    #nav a {
-        font-weight: 700;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        transition: color 0.2s;
-        font-size: 1.2rem;
-    }
+  #nav a {
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: color 0.2s;
+    font-size: 1.2rem;
+  }
 
-    .mtext-wapper {
-        position: absolute;
-        left: 0%;
-        right: 0%;
-        top: 50%;
-        transform: translateY(-60%);
-    }
+  .mtext-wapper {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 50%;
+    transform: translateY(-60%);
+  }
 
-    .mtext-hello {
-        font-weight: 800;
-        font-size: 2rem;
-        letter-spacing: 0.04em;
-        color: white;
-    }
+  .mtext-hello {
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    color: white;
+  }
 
-    .mtext-info {
-        color: white;
-        font-weight: 800;
-        font-size: 1.2rem;
-        letter-spacing: 0.02em;
-    }
+  .mtext-info {
+    color: white;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
+  }
 
-    .install-link {
-        display: block;
-        margin: 8px 0px;
-        text-decoration: underline;
-    }
+  .install-link {
+    display: block;
+    margin: 8px 0px;
+    text-decoration: underline;
+  }
 
-    .link {
-        text-decoration: underline;
-    }
+  .link {
+    text-decoration: underline;
+  }
 
-    .link:hover {
-        opacity: 0.6;
-        text-decoration: underline;
-    }
+  .link:hover {
+    opacity: 0.6;
+    text-decoration: underline;
+  }
 
-    .mbutton {
-        display: inline-block;
-        font-size: 1rem;
-        /* text-transform: uppercase; */
-        border: 2px solid #191e1e;
-        padding: 6px 28px;
-        font-weight: 700;
-        box-sizing: border-box;
-        overflow: hidden;
-        position: relative;
-        z-index: 0;
-        transition: all 0.5s;
-        color: rgb(41, 40, 40);
-        margin: 6px;
-        cursor: pointer;
-    }
+  .mbutton {
+    display: inline-block;
+    font-size: 1rem;
+    /* text-transform: uppercase; */
+    border: 2px solid #191e1e;
+    padding: 6px 28px;
+    font-weight: 700;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    transition: all 0.5s;
+    color: rgb(41, 40, 40);
+    margin: 6px;
+    cursor: pointer;
+  }
 
-    .mbuttonf {
-        display: inline-block;
-        font-size: 1rem;
-        text-transform: uppercase;
-        border: 2px solid #dadada;
-        padding: 6px 28px;
-        font-weight: 700;
-        box-sizing: border-box;
-        overflow: hidden;
-        position: relative;
-        z-index: 0;
-        transition: all 0.5s;
-        color: #ffffff;
-        margin: 6px;
-    }
+  .mbuttonf {
+    display: inline-block;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border: 2px solid #dadada;
+    padding: 6px 28px;
+    font-weight: 700;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    transition: all 0.5s;
+    color: #ffffff;
+    margin: 6px;
+  }
 
-    .mbutton:hover {
-        background-color: #191e1e;
-        color: white;
-        padding: 6px 32px;
-    }
+  .mbutton:hover {
+    background-color: #191e1e;
+    color: white;
+    padding: 6px 32px;
+  }
 
-    .mbuttonf:hover {
-        background-color: #c2c2c2;
-        color: rgb(36, 36, 36);
-        padding: 6px 32px;
-    }
+  .mbuttonf:hover {
+    background-color: #c2c2c2;
+    color: rgb(36, 36, 36);
+    padding: 6px 32px;
+  }
 
-    .page {
-        margin-top: 60px;
-        margin-bottom: 60px;
-    }
+  .page {
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
 
-    .img-box {
-        box-shadow: 0 0 10px rgb(46, 46, 46);
-    }
+  .img-box {
+    box-shadow: 0 0 10px rgb(46, 46, 46);
+  }
 
-    .sponsor {
-        margin-top: 120px;
-    }
+  .sponsor {
+    margin-top: 120px;
+  }
 
-    .sponsor-list {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+  .sponsor-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    .sponsor-list img {
-        max-width: 160px;
-        max-height: 50px;
-        transition: all 1s;
-    }
+  }
 
-    .sponsor-list img:hover {
-        transform: scale(1.1);
-    }
+  .sponsor-list img {
+    max-width: 160px;
+    max-height: 50px;
+    transition: all 1s;
+  }
 
-    .sponsor-list a {
-        margin: 20px 15px 0;
-        display: block;
-    }
+  .sponsor-list img:hover {
+    transform: scale(1.1);
+  }
 
-    .footer {
-        background-color: rgb(70, 70, 70);
-        padding: 60px 0px;
-        color: white;
-        font-size: 13px;
-    }
+  .sponsor-list a {
+    margin: 20px 15px 0;
+    display: block;
+  }
 
-    .footer a {
-        color: white;
-    }
+  .footer {
+    background-color: rgb(70, 70, 70);
+    padding: 60px 0px;
+    color: white;
+    font-size: 13px;
+  }
 
-    table {
-        width: 100%;
-        margin: 0px auto;
-        border-collapse: collapse;
-        border-spacing: 0;
-        font-size: 13px;
-    }
+  .footer a {
+    color: white;
+  }
 
-    table tr {
-        border-bottom: 1px solid #e0e0e0;
-    }
+  table {
+    width: 100%;
+    margin: 0px auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 13px;
+  }
 
-    table td,
-    table th {
-        padding: 4px;
-    }
+  table tr {
+    border-bottom: 1px solid #e0e0e0;
+  }
 
-    .sponsor-table {
-        max-width: 900px;
-        margin: auto;
-    }
+  table td,
+  table th {
+    padding: 4px;
+  }
 
-    .card-body {
-        min-height: 200px;
-    }
+  .sponsor-table {
+    max-width: 900px;
+    margin: auto;
+  }
 
-    .card-text {
-        margin-bottom: 0;
-        text-align: center;
-        margin-top: 26px;
-    }
+  .card-body {
+    min-height: 200px;
+  }
 
-    .card-title {
-        font-weight: 700;
-        font-size: 1.4em;
-    }
+  .card-text {
+    margin-bottom: 0;
+    text-align: center;
+    margin-top: 26px;
+  }
 
-    .card {
-        transition: all 0.5s;
-        padding: 10px;
-        border: 0px;
-    }
+  .card-title {
+    font-weight: 700;
+    font-size: 1.4em;
+  }
 
-    .card:hover {
-        box-shadow: 0 0 10px #7d7d7d8c;
-    }
+  .card {
+    transition: all 0.5s;
+    padding: 10px;
+    border: 0px;
+  }
 
-    .relative {
-        position: relative;
-    }
+  .card:hover {
+    box-shadow: 0 0 10px #7d7d7d8c;
+  }
 
-    #nav {
-        padding-left: 0px;
-        padding-right: 0px;
-    }
+  .relative {
+    position: relative;
+  }
 
-    .nav-link:hover {
-        opacity: 0.8;
-    }
+  #nav {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
 
-    pre,
-    code {
-        display: block;
-        background-color: #333333;
-        color: #eee;
-        padding: 8px;
-        border-radius: 2px;
-        /* overflow-x: scroll; */
-    }
+  .nav-link:hover {
+    opacity: 0.8;
+  }
 
-    .paycode {
-        position: fixed;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
+  pre,
+  code {
+    display: block;
+    background-color: #333333;
+    color: #eee;
+    padding: 8px;
+    border-radius: 2px;
+    /* overflow-x: scroll; */
+  }
 
-    .paycode-payload {
-        text-align: center;
-        padding: 16px;
-        max-width: 800px;
-        margin: auto;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0px 0px 18px rgba(26, 25, 25, 0.877);
+  .paycode {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
 
-    }
+  .paycode-payload {
+    text-align: center;
+    padding: 16px;
+    max-width: 800px;
+    margin: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 18px rgba(26, 25, 25, 0.877);
+
+  }
 </style>
 
 </html>
