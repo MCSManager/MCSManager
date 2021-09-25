@@ -10,6 +10,19 @@ MCSERVER.WS_PROTOCOL = "ws://";
 //HTTP 默认协议
 MCSERVER.HTTP_PROTOCOL = "http://";
 
+//自适应HTTPS
+var protocolStr = document.location.protocol;
+if(protocolStr == "http:")
+{
+  MCSERVER.WS_PROTOCOL = 'ws://';
+  MCSERVER.HTTP_PROTOCOL = 'http://';
+}
+else if(protocolStr == "https:")
+{
+  MCSERVER.WS_PROTOCOL = 'wss://';
+  MCSERVER.HTTP_PROTOCOL = 'https://';
+}
+
 //URL定位器
 MCSERVER.URL = function (url, protocol) {
   var _protocol = protocol || MCSERVER.HTTP_PROTOCOL;
