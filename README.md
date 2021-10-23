@@ -126,6 +126,35 @@ npm start
 
 <br />
 
+在 macOS 运行 
+-----------
+
+安装 `node`, `npm`, 和 `homebrew`
+
+- 可用于 Apple Silicon（arm64）和 Intel（x64）的 Mac
+
+手动安装 mcsmanager
+
+```zsh
+# 克隆仓库
+git clone https://github.com/suwings/mcsmanager.git
+# 进入目录
+cd mcsmanager/
+# 启动面板
+npm start
+# 关闭面板使用 Ctrl+C 快捷键即可
+```
+
+启动
+
+```bash
+#进入目录
+cd mcsmanager/
+# 启动面板
+npm start
+```
+
+<br />
 
 MCSManager 9.0 版本
 -----------
