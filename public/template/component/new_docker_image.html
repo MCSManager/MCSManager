@@ -6,14 +6,20 @@
         <div class="row">
           <div class="col-md-12">
 
-            <h4>DockerFile 文件</h4>
+            <p><b>DockerFile</b></p>
             <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft 服务器。</p>
 
-            <!-- <pre id="dockerfile" contenteditable="true" autocomplete="off"></pre> -->
+            <p><b>默认模板</b></p>
+            <p>您可以选择你需要的镜像默认配置，我们给您提供两个选择。选择后点击构建即可。</p>
+            <div style="margin: 8px 0px ;">
+              <button class="btn btn-primary" v-on:click="selectImageFile(1)">Java 8</button>
+              <button class="btn btn-primary" v-on:click="selectImageFile(2)">Java 16</button>
+            </div>
+
             <textarea id="dockerfile" row="30" style="height: 220px; width: 100%" v-model="dockerFileText"> </textarea>
             <div class="input-group input-group-sm">
-              <span class="input-group-addon" id="sizing-addon3">Docker 镜像名</span>
-              <input type="text" autocomplete="off" class="form-control" placeholder="可填，默认 mcsd 镜像名，不建议更改"
+              <span class="input-group-addon" id="sizing-addon3">生成的镜像名</span>
+              <input type="text" autocomplete="off" class="form-control" placeholder="可选项，默认 mcsd 镜像名"
                 aria-describedby="sizing-addon3" v-model="dockerImageName" />
             </div>
 
@@ -49,11 +55,20 @@
     new Vue({
       el: "#NewDockerImage",
       data: {
-        dockerFileText: 'FROM openjdk:8\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd',
+        dockerFileText: "",
         dockerImageName: "",
-        createDockerDis: false
+        createDockerDis: false,
+        java16: "FROM openjdk:16.0.2\nRUN mkdir -p /mcsd\nENV TZ=Asia/Shanghai\nWORKDIR /mcsd",
+        java8: 'FROM openjdk:8\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd'
       },
       methods: {
+        selectImageFile: function (type) {
+          if (type === 1) {
+            this.dockerFileText = this.java8
+          } else {
+            this.dockerFileText = this.java16
+          }
+        },
         createDocker: function () {
           var obj = {
             dockerImageName: this.dockerImageName || "mcsd",
