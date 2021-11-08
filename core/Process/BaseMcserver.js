@@ -1,6 +1,6 @@
-const process=require('process');
-const processUserUid=process.getuid;
-const processGroupGid=process.getgid;
+const process = require('process');
+const processUserUid = process.getuid;
+const processGroupGid = process.getgid;
 
 const childProcess = require("child_process");
 const iconv = require("iconv-lite");
@@ -11,7 +11,9 @@ const permission = require("../../helper/Permission");
 const path = require("path");
 
 const fs = require("fs");
+const os = require("os");
 const Docker = require("dockerode");
+const { exec } = require("child_process")
 
 class ServerProcess extends EventEmitter {
   constructor(args) {
@@ -21,11 +23,15 @@ class ServerProcess extends EventEmitter {
     this._run = false;
     //用于异步进行的锁
     this._loading = false;
+    this._processType = 1; // 1=正常进程，2=容器
   }
 
   // 自定义命令启动方式
   customCommandStart() {
-    //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
+
+    // 设置启动进程的类型
+    this._processType = 1;
+
     MCSERVER.infoLog("Minecraft Server start", this.dataModel.name);
     MCSERVER.log(["服务器 [", this.dataModel.name, "] 启动进程:"].join(" "));
     MCSERVER.log("-------------------------------");
@@ -50,7 +56,6 @@ class ServerProcess extends EventEmitter {
   templateStart(onlyCommandString = false) {
     let tmpAddList = [];
     let tmpShouldList = [];
-
     this.dataModel.Xmx && tmpShouldList.push("-Xmx" + this.dataModel.Xmx);
     this.dataModel.Xms && tmpShouldList.push("-Xms" + this.dataModel.Xms);
     tmpShouldList.push("-Djline.terminal=jline.UnsupportedTerminal");
@@ -71,6 +76,9 @@ class ServerProcess extends EventEmitter {
     //是否只获取命令字符串
     if (onlyCommandString) return commandString;
 
+    // 设置启动进程的类型
+    this._processType = 1;
+
     //暂时使用 MCSMERVER.log 目前已弃用，下版本 log4js
     MCSERVER.infoLog("Minecraft Server start", this.dataModel.name);
     MCSERVER.log(["服务器 [", this.dataModel.name, "] 启动进程:"].join(" "));
@@ -80,10 +88,13 @@ class ServerProcess extends EventEmitter {
     MCSERVER.log("-------------------------------");
 
     this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
+    this.process
   }
+
 
   //使用 Docker API 启动进程
   async dockerStart() {
+
     // 命令模板与准备数据
     let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/gim, "/");
 
@@ -129,6 +140,9 @@ class ServerProcess extends EventEmitter {
     MCSERVER.log("工作目录:", stdCwd);
     MCSERVER.log("-------------------------------");
 
+    // 设置启动进程的类型
+    this._processType = 2;
+
     // 模拟一个正常的 Process
     this.process = new EventEmitter();
     const process = this.process;
@@ -162,7 +176,9 @@ class ServerProcess extends EventEmitter {
       this.emit("exit", 0);
       throw new Error("实例进程启动失败，建议检查启动参数与设置");
     }
+
     // 链接容器的输入输出流
+    // 并且模拟成一个类 Process 进程
     auxContainer.attach(
       {
         stream: true,
@@ -401,12 +417,30 @@ class ServerProcess extends EventEmitter {
 
   // 杀死进程，若是 Docker 进程则是移除容器
   kill() {
-    if (this._run) {
+    if (this._processType === 1) {
+      this.killViaCommand();
+    } else {
       this.process.kill("SIGKILL");
-      this._run = false;
-      return true;
     }
-    return false;
+    return true;
+  }
+
+  killViaCommand() {
+    const pid = this.process.pid;
+    if (!pid) {
+      try { return this.process.kill("SIGKILL"); } catch (err) { return }
+    }
+    if (os.platform() === "win32") {
+      return exec(`taskkill /PID ${pid} /T /F`, (err, stdout, stderr) => {
+        MCSERVER.log(`实例进程 ${pid} 使用指令强制结束.`);
+      });
+    }
+    if (os.platform() === "linux") {
+      return exec(`kill -s 9 ${pid}`, (err, stdout, stderr) => {
+        MCSERVER.log(`实例进程 ${pid} 使用指令强制结束.`);
+      });
+    }
+    return this.process.kill("SIGKILL");
   }
 
   // 是否运行中
