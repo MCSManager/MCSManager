@@ -13,8 +13,8 @@ __  /|_/ /_  /    _____ \\__  /|_/ /_  __  /_  __ \\  __  /_  __  /  _ \\_  ___/
 _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /    
 /_/  /_/  \\____/  /____/ /_/  /_/  \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/     
                                                         /____/             
- + Copyright 2021 Suwings All rights reserved.
- + Version 8.6
+ + Copyright Suwings All rights reserved.
+ + Version 8.7 Final Edition
 `);
 
 // 运行时环境检测
@@ -28,6 +28,8 @@ try {
 } catch (err) {
   // 忽略任何版本检测导致的错误
 }
+
+
 
 // 全局变量 MCSERVER
 global.MCSERVER = {};
@@ -278,7 +280,8 @@ app.use("/fs", require("./onlinefs/controller/function"));
     MCSERVER.infoLog("HTTP", "HTTP 模块监听: [ http://" + (host || "127.0.0.1".yellow) + ":" + port + " ]");
 
     MCSERVER.infoLog("INFO", "配置文件: property.js 文件");
-    MCSERVER.infoLog("INFO", "文档参阅: https://github.com/suwings/mcsmanager");
+    MCSERVER.infoLog("INFO", "MCSManager 9.X 版本已经可供使用，可以前往 Github 了解");
+    MCSERVER.infoLog("INFO", "Github & 文档参阅: https://github.com/suwings/mcsmanager");
 
     if (MCSERVER.allError <= 0) {
       MCSERVER.infoLog("INFO", "控制面板已经启动");
