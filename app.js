@@ -1,12 +1,50 @@
 /*
  * ==================================
- * MCSManager
- * Copyright(c) 2021 Suwings.
+ * Copyright(c) 2021 https://github.com/Suwings.
  * MIT Licensed
+ * 
+ * 欢迎阅读:
+ * 您现在看见的这份代码为 MCSManager 8.X 版本代码，此版本已是落后版本。
+ * 您可以来此处了解最新版本：https://github.com/Suwings/MCSManager
+ * 但这不代表此代码毫无价值，它依然有基本的功能。
+ * 不过，这份代码将不再进行任何更新与维护，纵使发现漏洞缺陷，纵使拥有严重的错误缺陷，也不再修复。
+ * 它的使命已经完成。现在，您可以压榨它的剩余价值，以便于更好的服务于您。
+ * 或者，服务下一位，直到 Minecraft 消失，计算机换代更新，人类文明结束，它也许还会存在。
+ * 
+ * 根据 MIT 开源协议发行:
+ * 此软件源代码与相关文档对所有人免费，可以任意处置，包括使用，复制，修改，合并，发表，分发，再授权，或者销售。
+ * 唯一的限制是，软件中必须包含版权说明和许可提示。
+ * 
+ * 只适用于中国市场:
+ * 本程序无英文版，有且只有中文版。
+ * 
+ * 历史遗留:
+ * 此程序源代码经历了 2013 年到 2021 年，代码中会有一些古老的语法与实现方式。
+ * 某些地方如果您不知道为何这样写，那么切勿改动。
+ * 
+ * 
+ * Google translate:
+ * The code you see now is the MCSManager 8.X version code, which is already a backward version.
+ * You can check the latest version here: https://github.com/Suwings/MCSManager
+ * But this does not mean that this code is worthless, it still has basic functions.
+ * However, this code will no longer be updated and maintained, even if vulnerabilities are found, even if there are serious bugs and defects, it will no longer be repaired.
+ * Its mission has been completed. Now, you can squeeze its remaining value in order to better serve you.
+ * Or, serve the next one, until Minecraft disappears, the computer is updated and the human civilization ends, it may still exist.
+ *
+ * Released under the MIT open source agreement:
+ * The source code of this software and related documents are free to everyone and can be disposed of at will, including use, copy, modify, merge, publish, distribute, sublicense, or sell.
+ * The only restriction is that the software must contain copyright notices and license hints.
+ *
+ * Only applicable to the Chinese market:
+ * There is no English version of this program, and only Chinese version.
+ *
+ * Historical legacy:
+ * The source code of this program has gone through from 2013 to 2021, and there will be some ancient syntax and implementation methods in the code.
+ * In some places, if you don't know why it is written this CODE, please don't change it.
  * ==================================
  */
 
-// Logo 输出
+// 软件终端图标输出
 console.log(`______  _______________________  ___                                         
 ___   |/  /_  ____/_  ___/__   |/  /_____ _____________ _______ _____________
 __  /|_/ /_  /    _____ \\__  /|_/ /_  __  /_  __ \\  __  /_  __  /  _ \\_  ___/
