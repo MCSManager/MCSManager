@@ -20,7 +20,7 @@
     },
     {
       class: "glyphicon-equalizer",
-      name: "技术支持",
+      name: "关于",
       link: "./template/gen_about.html",
       api: null,
       select: false
