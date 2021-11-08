@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="Panel PanelBlue">
-        <div class="PanelTitle">用户 {{ username }} 的服务器</div>
+        <div class="PanelTitle">用户实例状态总览</div>
         <div class="PanelBody">
           <div class="row">
             <div class="col-sm-6">
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="Panel PanelGreen">
-        <div class="PanelTitle">用户 {{ username }}，欢迎使用</div>
+        <div class="PanelTitle">访问密码与使用说明</div>
         <div class="PanelBody">
           <div class="row">
             <div class="col-sm-6">
@@ -47,7 +47,7 @@
               <div class="PanelItem text-center">
                 <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
                 <!-- 您可以在这里附上您的链接，修改 href 属性即可 -->
-                <a href="javascript:alert('您的提供商未提供使用说明')">使用说明</a>
+                <a href="javascript:alert('您的提供商未提供使用说明，如需修改请前往 public/template/gen_home.html 文件')">使用说明</a>
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@
     </div>
     <div class="col-md-8">
       <div class="Panel PanelBlack">
-        <div class="PanelTitle">用户 {{ username }} 持有的服务器</div>
+        <div class="PanelTitle">用户 {{ username }} 的应用实例</div>
         <div class="PanelBody">
           <div class="row">
             <div class="col-md-12">
@@ -136,5 +136,5 @@
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
