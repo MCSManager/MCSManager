@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="zh-CN" />
+    <meta name="renderer" content="webkit" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Content-Language" content="zh-CN" />
-  <meta name="renderer" content="webkit" />
-  <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no" />
+    <title>MCSManager 管理面板</title>
+    <link href="./common/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
-  <title>MCSManager 管理面板</title>
-  <link href="./common/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="common/css/action.css" rel="stylesheet" />
+    <link href="./common/css/common.css" rel="stylesheet" />
+    <link href="./common/css/block.css" rel="stylesheet" />
+    <link href="common/css/unit.css" rel="stylesheet" />
 
-  <link href="common/css/action.css" rel="stylesheet" />
-  <link href="./common/css/common.css" rel="stylesheet" />
-  <link href="./common/css/block.css" rel="stylesheet" />
-  <link href="common/css/unit.css" rel="stylesheet" />
+    <link href="common/xterm.css" rel="stylesheet" />
+    <script type="text/javascript" src="common/xterm.js"></script>
 
-  <link href="common/xterm.css" rel="stylesheet" />
-  <script type="text/javascript" src="common/xterm.js"></script>
-
-  <link href="./favicon.ico" rel="shortcut icon" />
-  <!--[if lt IE 9]>
+    <link href="./favicon.ico" rel="shortcut icon" />
+    <!--[if lt IE 9]>
       <div id="Not_" class="show-ui" style="height: 40px; background-color: rgb(221, 79, 67); text-align: center; line-height: 40px; color: white">
         <b>无法访问! 您的浏览器版本过低或是兼容模式,请使用最新/更高版本的浏览器: IE10+ chrome FireFox 等，如果是国内浏览器请打开极速浏览模式（webkit内核）。</b>
       </div>
     <![endif]-->
-</head>
+  </head>
 
-<!-- 
+  <!-- 
 ______  _______________________  ___                                         
 ___   |/  /_  ____/_  ___/__   |/  /_____ _____________ _______ _____________
 __  /|_/ /_  /    _____ \__  /|_/ /_  __  /_  __ \  __  /_  __  /  _ \_  ___/
@@ -38,259 +37,266 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 Copyright(c) 2021 https://github.com/Suwings.
 -->
 
-<body>
-  <div id="MainContainer">
-    <div id="SideCol">
-      <div id="SideColMenu">
-        <div id="MasterLogo" class="HeaderItem" style="cursor: pointer">
-          <img src="common/logo.png" width="160px" height="100%" />
-        </div>
-        <div id="SideColMenuInfo">
-          <div id="websocket2">
-            <div v-if="is"><span class="color-green">在线: </span>{{ MCSERVER.username }}</div>
-            <div v-else>offline (离线)</div>
+  <body>
+    <div id="MainContainer">
+      <div id="SideCol">
+        <div id="SideColMenu">
+          <div id="MasterLogo" class="HeaderItem" style="cursor: pointer">
+            <img src="common/logo.png" width="160px" height="100%" />
           </div>
-        </div>
-        <div id="SideColFor">
-          <!--若想更改菜单名或功能，请查看 common/js/meum.js 文件-->
-          <a href="javascript:void(0);" v-for="item of items" :class="{ MeumSelect: item.select }"
-            v-on:click="onRedirect(item.link,item.api,item)">
-            <span class="glyphicon" :class="item.class" aria-hidden="true"></span>
-            <span v-text="item.name"></span>
+          <div id="SideColMenuInfo">
+            <div id="websocket2">
+              <div v-if="is"><span class="color-green">在线: </span>{{ MCSERVER.username }}</div>
+              <div v-else>offline (离线)</div>
+            </div>
+          </div>
+          <div id="SideColFor">
+            <!--若想更改菜单名或功能，请查看 common/js/meum.js 文件-->
+            <a href="javascript:void(0);" v-for="item of items" :class="{ MeumSelect: item.select }" v-on:click="onRedirect(item.link,item.api,item)">
+              <span class="glyphicon" :class="item.class" aria-hidden="true"></span>
+              <span v-text="item.name"></span>
+            </a>
+          </div>
+          <a href="javascript:void(0);" onclick="PAGE.refresh()">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>刷新</span>
+          </a>
+          <a id="loginOut" href="javascript:void(0);" v-on:click="loginOut()">
+            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+            <span>退出</span>
           </a>
         </div>
-        <a href="javascript:void(0);" onclick="PAGE.refresh()">
-          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-          <span>刷新</span>
-        </a>
-        <a id="loginOut" href="javascript:void(0);" v-on:click="loginOut()">
-          <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-          <span>退出</span>
-        </a>
       </div>
-    </div>
-    <div id="Container">
-      <div id="ConsoleMain">
-        <!--可变动内嵌html区域开始-->
-        <div class="OneContainer">
-          <div class="row">
-            <div class="col-xs-12">
-              <h3 id="_TMP_LOADING">请稍等,正在加载...</h3>
+      <div id="Container">
+        <div id="ConsoleMain">
+          <!--可变动内嵌html区域开始-->
+          <div class="OneContainer">
+            <div class="row">
+              <div class="col-xs-12">
+                <h3 id="_TMP_LOADING">请稍等,正在加载...</h3>
+              </div>
             </div>
           </div>
-        </div>
-        <!--可变动内嵌html区域结束-->
-      </div>
-    </div>
-  </div>
-
-  <!--信息框HTML-->
-  <div id="ToolsInfo">
-    <transition name="fade">
-      <div class="ToolsInfo tools-info text-center show-ui" v-if="show" v-text="msg"></div>
-    </transition>
-  </div>
-
-  <!--页面加载进度条-->
-  <div class="Toolscon" id="ToolsPageLoading">
-    <div class="progress" style="height: 4px; line-height: 4px; background-color: inherit; border: 0px">
-      <div id="ToolsLoading" class="progress-bar progress-bar-success progress-bar-striped active"
-        style="width: 0%; height: 4px"></div>
-    </div>
-  </div>
-
-  <!-- 弹窗HTML -->
-  <div class="PopWin">
-    <div class="Panel">
-      <div id="PopWinTitle" class="PanelTitle">信息框</div>
-      <div class="PanelBody">
-        <div id="PopWinContext">
-          <!-- 动态 HTML -->
-          <p>正在加载信息框,请稍等...</p>
+          <!--可变动内嵌html区域结束-->
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 黑屏 HTML -->
-  <div id="balckWarp" onclick="TOOLS.popWindClose(null);"></div>
-
-  <!-- 手机端导航球 -->
-  <div id="SidebarButton" v-on:click="operate()">
-    <div class="SidebarButtonWapper">
-      <svg t="1583817080960" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-        p-id="941" width="24" height="46">
-        <path
-          d="M393 475.7H176.5c-44.9 0-81.5-36.6-81.5-81.5V182.5c0-44.9 36.6-81.5 81.5-81.5H393c44.9 0 81.5 36.6 81.5 81.5v211.7c0 45-36.5 81.5-81.5 81.5zM176.5 155.4c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2H393c15 0 27.2-12.2 27.2-27.2V182.5c0-15-12.2-27.2-27.2-27.2l-216.5 0.1zM846.5 469.9H629.9c-44.9 0-81.5-36.6-81.5-81.5V176.7c0-44.9 36.6-81.5 81.5-81.5h216.6c44.9 0 81.5 36.6 81.5 81.5v211.7c0 44.9-36.6 81.5-81.5 81.5zM629.9 149.5c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2h216.6c15 0 27.2-12.2 27.2-27.2V176.7c0-15-12.2-27.2-27.2-27.2H629.9zM393 928.2H176.5c-44.9 0-81.5-36.6-81.5-81.5V635c0-44.9 36.6-81.5 81.5-81.5H393c44.9 0 81.5 36.6 81.5 81.5v211.7c0 45-36.5 81.5-81.5 81.5zM176.5 607.9c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2H393c15 0 27.2-12.2 27.2-27.2V635c0-15-12.2-27.2-27.2-27.2H176.5v0.1zM846.5 922.4H629.9c-44.9 0-81.5-36.6-81.5-81.5V629.2c0-44.9 36.6-81.5 81.5-81.5h216.6c44.9 0 81.5 36.6 81.5 81.5v211.7c0 44.9-36.6 81.5-81.5 81.5zM629.9 602c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2h216.6c15 0 27.2-12.2 27.2-27.2V629.2c0-15-12.2-27.2-27.2-27.2H629.9z"
-          fill="#ffffff" p-id="942"></path>
-      </svg>
+    <!--信息框HTML-->
+    <div id="ToolsInfo">
+      <transition name="fade">
+        <div class="ToolsInfo tools-info text-center show-ui" v-if="show" v-text="msg"></div>
+      </transition>
     </div>
-  </div>
 
-  <!-- 弹出型终端控制台 -->
-  <div id="WebTerminalScreenWapper" style="top: 9999px">
-    <div class="Panel WebTerminalScreen">
-      <div class="PanelTitle">控制终端</div>
-      <div class="PanelBody">
-        <!-- 终端 -->
-        <div id="WebTerminal" class="WebTerminalScreen" style="display: block"></div>
-        <div id="WebTerminalControl">
-          <div class="input-group input-group-sm">
-            <span class="input-group-addon">/</span>
-            <input type="text" id="" class="form-control" @keyup.enter="toCommand" v-model="command" type="text"
-              autocomplete="off" placeholder="[命令输入框] 请输入您要执行的命令..." aria-describedby="sizing-addon3" />
-          </div>
-          <div class="PanelItemF" style="text-align: right">
-            <div class="PanelItem mb0" v-on:click="toCommand">
-              <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
-              执行命令
-            </div>
-            <div class="PanelItem mb0" v-on:click="stopServer()">
-              <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-              关闭
-            </div>
-            <div class="PanelItem mb0" v-on:click="toOpenServer()">
-              <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-              开启
-            </div>
-            <div class="PanelItem mb0" v-on:click="TOOLS.CloseTerminal()">
-              <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span>
-              关闭窗口
-            </div>
+    <!--页面加载进度条-->
+    <div class="Toolscon" id="ToolsPageLoading">
+      <div class="progress" style="height: 4px; line-height: 4px; background-color: inherit; border: 0px">
+        <div id="ToolsLoading" class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%; height: 4px"></div>
+      </div>
+    </div>
+
+    <!-- 弹窗HTML -->
+    <div class="PopWin">
+      <div class="Panel">
+        <div id="PopWinTitle" class="PanelTitle">信息框</div>
+        <div class="PanelBody">
+          <div id="PopWinContext">
+            <!-- 动态 HTML -->
+            <p>正在加载信息框,请稍等...</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->
-  <script type="text/javascript" src="common/jquery-3.2.1.min.js"></script>
-  <!--Vue -->
-  <script type="text/javascript" src="common/vue/vue.min.js"></script>
-  <!--公用的js方法，公用的函数，类，模式-->
-  <!--						   全局变量 MI(中介者) MS(保留) MCSERVER(全局寄生器)-->
-  <script type="text/javascript" src="common/js/common.js"></script>
-  <!--URL 处理函数				MCSERVER.URL URL 定位器-->
-  <script type="text/javascript" src="common/URL.js"></script>
-  <!--请求类相关方法				 全局变量 RES(请求) PAGE(单页应用临时全局存储变量)-->
-  <script type="text/javascript" src="common/js/response.js"></script>
-  <!--Websocket 封装类			全局变量 WS	-->
-  <script type="text/javascript" src="common/js/websocket.js"></script>
-  <!--工具类						全局变量 TOOLS(工具箱)-->
-  <script type="text/javascript" src="common/js/tools.js"></script>
-  <!--首页菜单获取				 虚拟的后端菜单数据-->
-  <script type="text/javascript" src="common/js/meum.js"></script>
-  <!--echarts 库 				  	统计图-->
-  <script type="text/javascript" src="common/echarts.js"></script>
-  <!--Vue.data 数据模型处理  	  	全局变量 VIEW_MODEL-->
-  <script type="text/javascript" src="common/js/viewmodel.js"></script>
-  <!--图像统计表格封装			 附属于 TOOLS 变量-->
-  <script type="text/javascript" src="common/js/chart.js"></script>
+    <!-- 黑屏 HTML -->
+    <div id="balckWarp" onclick="TOOLS.popWindClose(null);"></div>
 
-  <script>
-    // 网络加载判断
-    if (!window.$) alert("[文件加载失败] 网络不通畅，请检查您的网络状态！");
+    <!-- 手机端导航球 -->
+    <div id="SidebarButton" v-on:click="operate()">
+      <div class="SidebarButtonWapper">
+        <svg t="1583817080960" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="941" width="24" height="46">
+          <path
+            d="M393 475.7H176.5c-44.9 0-81.5-36.6-81.5-81.5V182.5c0-44.9 36.6-81.5 81.5-81.5H393c44.9 0 81.5 36.6 81.5 81.5v211.7c0 45-36.5 81.5-81.5 81.5zM176.5 155.4c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2H393c15 0 27.2-12.2 27.2-27.2V182.5c0-15-12.2-27.2-27.2-27.2l-216.5 0.1zM846.5 469.9H629.9c-44.9 0-81.5-36.6-81.5-81.5V176.7c0-44.9 36.6-81.5 81.5-81.5h216.6c44.9 0 81.5 36.6 81.5 81.5v211.7c0 44.9-36.6 81.5-81.5 81.5zM629.9 149.5c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2h216.6c15 0 27.2-12.2 27.2-27.2V176.7c0-15-12.2-27.2-27.2-27.2H629.9zM393 928.2H176.5c-44.9 0-81.5-36.6-81.5-81.5V635c0-44.9 36.6-81.5 81.5-81.5H393c44.9 0 81.5 36.6 81.5 81.5v211.7c0 45-36.5 81.5-81.5 81.5zM176.5 607.9c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2H393c15 0 27.2-12.2 27.2-27.2V635c0-15-12.2-27.2-27.2-27.2H176.5v0.1zM846.5 922.4H629.9c-44.9 0-81.5-36.6-81.5-81.5V629.2c0-44.9 36.6-81.5 81.5-81.5h216.6c44.9 0 81.5 36.6 81.5 81.5v211.7c0 44.9-36.6 81.5-81.5 81.5zM629.9 602c-15 0-27.2 12.2-27.2 27.2v211.7c0 15 12.2 27.2 27.2 27.2h216.6c15 0 27.2-12.2 27.2-27.2V629.2c0-15-12.2-27.2-27.2-27.2H629.9z"
+            fill="#ffffff"
+            p-id="942"
+          ></path>
+        </svg>
+      </div>
+    </div>
 
-    MCSERVER.website = {};
+    <!-- 弹出型终端控制台 -->
+    <div id="WebTerminalScreenWapper" style="top: 9999px">
+      <div class="Panel WebTerminalScreen">
+        <div class="PanelTitle">控制终端</div>
+        <div class="PanelBody">
+          <!-- 终端 -->
+          <div id="WebTerminal" class="WebTerminalScreen" style="display: block"></div>
+          <div id="WebTerminalControl">
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">/</span>
+              <input
+                type="text"
+                id=""
+                class="form-control"
+                @keyup.enter="toCommand"
+                v-model="command"
+                type="text"
+                autocomplete="off"
+                placeholder="[命令输入框] 请输入您要执行的命令..."
+                aria-describedby="sizing-addon3"
+              />
+            </div>
+            <div class="PanelItemF" style="text-align: right">
+              <div class="PanelItem mb0" v-on:click="toCommand">
+                <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
+                执行命令
+              </div>
+              <div class="PanelItem mb0" v-on:click="stopServer()">
+                <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                关闭
+              </div>
+              <div class="PanelItem mb0" v-on:click="toOpenServer()">
+                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                开启
+              </div>
+              <div class="PanelItem mb0" v-on:click="TOOLS.CloseTerminal()">
+                <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span>
+                关闭窗口
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    $(function () {
-      //事件
-      window.onresize = function () {
-        MI.on("resize", null);
-      };
-      //防止页面后退
-      history.pushState(null, null, document.URL);
-      window.addEventListener("popstate", function () {
+    <!--JavaScript 文件引用，顺序不能乱，大部分 js 都是依赖于前 js 的-->
+    <script type="text/javascript" src="common/jquery-3.2.1.min.js"></script>
+    <!--Vue -->
+    <script type="text/javascript" src="common/vue/vue.min.js"></script>
+    <!--公用的js方法，公用的函数，类，模式-->
+    <!--						   全局变量 MI(中介者) MS(保留) MCSERVER(全局寄生器)-->
+    <script type="text/javascript" src="common/js/common.js"></script>
+    <!--URL 处理函数				MCSERVER.URL URL 定位器-->
+    <script type="text/javascript" src="common/URL.js"></script>
+    <!--请求类相关方法				 全局变量 RES(请求) PAGE(单页应用临时全局存储变量)-->
+    <script type="text/javascript" src="common/js/response.js"></script>
+    <!--Websocket 封装类			全局变量 WS	-->
+    <script type="text/javascript" src="common/js/websocket.js"></script>
+    <!--工具类						全局变量 TOOLS(工具箱)-->
+    <script type="text/javascript" src="common/js/tools.js"></script>
+    <!--首页菜单获取				 虚拟的后端菜单数据-->
+    <script type="text/javascript" src="common/js/meum.js"></script>
+    <!--echarts 库 				  	统计图-->
+    <script type="text/javascript" src="common/echarts.js"></script>
+    <!--Vue.data 数据模型处理  	  	全局变量 VIEW_MODEL-->
+    <script type="text/javascript" src="common/js/viewmodel.js"></script>
+    <!--图像统计表格封装			 附属于 TOOLS 变量-->
+    <script type="text/javascript" src="common/js/chart.js"></script>
+
+    <script>
+      // 网络加载判断
+      if (!window.$) alert("[文件加载失败] 网络不通畅，请检查您的网络状态！");
+
+      MCSERVER.website = {};
+
+      $(function () {
+        //事件
+        window.onresize = function () {
+          MI.on("resize", null);
+        };
+        //防止页面后退
         history.pushState(null, null, document.URL);
-      });
+        window.addEventListener("popstate", function () {
+          history.pushState(null, null, document.URL);
+        });
 
-      // echart 路径配置
-      window.require.config({
-        paths: {
-          echarts: "./common/echarts-dist"
-        }
-      });
-
-      //抗CSRF攻击
-      //身份验证，令牌获取
-      RES.getToken(function (token) {
-        RES.TOKEN = token;
-
-        //初始化 Websocket
-        WS.init(function () {
-          //获取菜单
-          WS.sendMsg("menu", "");
-
-          //异步自动获取单页
-
-          //是否登陆
-          if (!MCSERVER.username) {
-            window.location.href = MCSERVER.URL("login");
-            return;
+        // echart 路径配置
+        window.require.config({
+          paths: {
+            echarts: "./common/echarts-dist"
           }
+        });
 
-          // 判断是否需要进行页面转移
-          if (!TOOLS.page(true)) {
-            // 初始化终端
-            //判断是否是#权限用户，请放心，后端也会给予判断并不只是前端
-            if (MCSERVER.username.substr(0, 1) == "#") {
-              RES.redirectPage("./template/center.html", "center/show", "--- 更新页面 ---");
-            } else {
-              RES.redirectPage("./template/gen_home.html", "genuser/home", "--- 更新页面 ---");
+        //抗CSRF攻击
+        //身份验证，令牌获取
+        RES.getToken(function (token) {
+          RES.TOKEN = token;
+
+          //初始化 Websocket
+          WS.init(function () {
+            //获取菜单
+            WS.sendMsg("menu", "");
+
+            //异步自动获取单页
+
+            //是否登陆
+            if (!MCSERVER.username) {
+              window.location.href = MCSERVER.URL("login");
+              return;
+            }
+
+            // 判断是否需要进行页面转移
+            if (!TOOLS.page(true)) {
+              // 初始化终端
+              //判断是否是#权限用户，请放心，后端也会给予判断并不只是前端
+              if (MCSERVER.username.substr(0, 1) == "#") {
+                RES.redirectPage("./template/center.html", "center/show", "--- 更新页面 ---");
+              } else {
+                RES.redirectPage("./template/gen_home.html", "genuser/home", "--- 更新页面 ---");
+              }
+            }
+          });
+        });
+
+        //建立 退出按钮 Vue
+        var vueLoginOut = new Vue({
+          el: "#loginOut",
+          methods: {
+            loginOut: function () {
+              RES.ajax({
+                type: "POST",
+                url: "./user/loginout",
+                success: function () {
+                  WS.close();
+                  TOOLS.pushMsgWindow("您已退出，现在即将跳转网页");
+                  setTimeout(function () {
+                    window.location.href = MCSERVER.URL("login");
+                  }, 2000);
+                },
+                error: function () {
+                  TOOLS.pushMsgWindow("退出失败，您网络正常且是否登陆？");
+                }
+              });
             }
           }
         });
-      });
 
-      //建立 退出按钮 Vue
-      var vueLoginOut = new Vue({
-        el: "#loginOut",
-        methods: {
-          loginOut: function () {
-            RES.ajax({
-              type: "POST",
-              url: "./user/loginout",
-              success: function () {
-                WS.close();
-                TOOLS.pushMsgWindow("您已退出，现在即将跳转网页");
-                setTimeout(function () {
-                  window.location.href = MCSERVER.URL("login");
-                }, 2000);
-              },
-              error: function () {
-                TOOLS.pushMsgWindow("退出失败，您网络正常且是否登陆？");
-              }
-            });
+        //工具信息栏
+        VIEW_MODEL.newVueOnce("ToolsInfo", {
+          el: "#ToolsInfo",
+          data: {
+            show: false,
+            msg: ""
           }
-        }
-      });
+        });
 
-      //工具信息栏
-      VIEW_MODEL.newVueOnce("ToolsInfo", {
-        el: "#ToolsInfo",
-        data: {
-          show: false,
-          msg: ""
-        }
-      });
-
-      // 手机端导航球
-      var SidebarButton = new Vue({
-        el: "#SidebarButton",
-        data: {
-          isExpand: false
-        },
-        methods: {
-          operate: function () {
-            MCSERVER.colmSet(!MCSERVER.getColmStatus());
-            this.isExpand = !MCSERVER.getColmStatus();
+        // 手机端导航球
+        var SidebarButton = new Vue({
+          el: "#SidebarButton",
+          data: {
+            isExpand: false
+          },
+          methods: {
+            operate: function () {
+              MCSERVER.colmSet(!MCSERVER.getColmStatus());
+              this.isExpand = !MCSERVER.getColmStatus();
+            }
           }
-        }
+        });
+
+        VIEW_MODEL.COMMON = {};
       });
-
-      VIEW_MODEL.COMMON = {};
-    });
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>

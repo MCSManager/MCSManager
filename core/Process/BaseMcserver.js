@@ -1,4 +1,4 @@
-const process = require('process');
+const process = require("process");
 const processUserUid = process.getuid;
 const processGroupGid = process.getgid;
 
@@ -13,7 +13,7 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const Docker = require("dockerode");
-const { exec } = require("child_process")
+const { exec } = require("child_process");
 
 class ServerProcess extends EventEmitter {
   constructor(args) {
@@ -28,7 +28,6 @@ class ServerProcess extends EventEmitter {
 
   // 自定义命令启动方式
   customCommandStart() {
-
     // 设置启动进程的类型
     this._processType = 1;
 
@@ -88,13 +87,10 @@ class ServerProcess extends EventEmitter {
     MCSERVER.log("-------------------------------");
 
     this.process = childProcess.spawn(this.dataModel.java, parList, this.ProcessConfig);
-    this.process
   }
-
 
   //使用 Docker API 启动进程
   async dockerStart() {
-
     // 命令模板与准备数据
     let stdCwd = path.resolve(this.dataModel.cwd).replace(/\\/gim, "/");
 
@@ -428,7 +424,11 @@ class ServerProcess extends EventEmitter {
   killViaCommand() {
     const pid = this.process.pid;
     if (!pid) {
-      try { return this.process.kill("SIGKILL"); } catch (err) { return }
+      try {
+        return this.process.kill("SIGKILL");
+      } catch (err) {
+        return;
+      }
     }
     if (os.platform() === "win32") {
       return exec(`taskkill /PID ${pid} /T /F`, (err, stdout, stderr) => {

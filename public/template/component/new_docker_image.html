@@ -5,13 +5,12 @@
       <div class="PanelBody">
         <div class="row">
           <div class="col-md-12">
-
             <p><b>DockerFile</b></p>
             <p>DockerFile 可以供你定制与参考，使用 DockerFile 来生成 Docker 镜像，随后使用镜像名与指定的服务端文件，就可以在 Docker 中开启 Minecraft 服务器。</p>
 
             <p><b>默认模板</b></p>
             <p>您可以选择你需要的镜像默认配置，我们给您提供两个选择。选择后点击构建即可。</p>
-            <div style="margin: 8px 0px ;">
+            <div style="margin: 8px 0px">
               <button class="btn btn-primary" v-on:click="selectImageFile(1)">Java 8</button>
               <button class="btn btn-primary" v-on:click="selectImageFile(2)">Java 16</button>
             </div>
@@ -19,26 +18,22 @@
             <textarea id="dockerfile" row="30" style="height: 220px; width: 100%" v-model="dockerFileText"> </textarea>
             <div class="input-group input-group-sm">
               <span class="input-group-addon" id="sizing-addon3">生成的镜像名</span>
-              <input type="text" autocomplete="off" class="form-control" placeholder="可选项，默认 mcsd 镜像名"
-                aria-describedby="sizing-addon3" v-model="dockerImageName" />
+              <input type="text" autocomplete="off" class="form-control" placeholder="可选项，默认 mcsd 镜像名" aria-describedby="sizing-addon3" v-model="dockerImageName" />
             </div>
 
             <p><b>注意事项</b></p>
             <p>必须使用 /mcsd 作为工作目录。Docker 镜像名就是您生成后的名字。</p>
             <p>
-              这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。如果出现构建失败失败，请尝试检查 Docker
-              服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。
+              这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。如果出现构建失败失败，请尝试检查
+              Docker 服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。
             </p>
 
             <p><b>相关链接</b></p>
             <p>
-              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md" style="color: #2f3ad6">如何让
-                Minecraft 服务端运行在 Docker 镜像中？</a>
-              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md"
-                style="color: #2f3ad6">如何在我的电脑上安装 Docker？</a>
+              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_1.md" style="color: #2f3ad6">如何让 Minecraft 服务端运行在 Docker 镜像中？</a>
+              <a href="https://github.com/Suwings/MCSManager/blob/gh-pages/Question_2.md" style="color: #2f3ad6">如何在我的电脑上安装 Docker？</a>
             </p>
-            <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">创建 Docker
-              镜像</button>
+            <button v-bind:disabled="createDockerDis" class="btn btn-danger" v-on:click="createDocker()">创建 Docker 镜像</button>
             &nbsp;|&nbsp;
             <button class="btn btn-success" v-on:click="toCreateRes()">任务结果列表</button>
           </div>
@@ -64,9 +59,9 @@
       methods: {
         selectImageFile: function (type) {
           if (type === 1) {
-            this.dockerFileText = this.java8
+            this.dockerFileText = this.java8;
           } else {
-            this.dockerFileText = this.java16
+            this.dockerFileText = this.java16;
           }
         },
         createDocker: function () {
@@ -90,12 +85,12 @@
             },
             title: "Docker 构建结果",
             template: "template/dialog/docker_res.html",
-            callback: function () { }
+            callback: function () {}
           });
         }
       }
     });
   });
 
-  MI.rListener("onend", function () { });
+  MI.rListener("onend", function () {});
 </script>

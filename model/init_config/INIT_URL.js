@@ -12,15 +12,12 @@ MCSERVER.HTTP_PROTOCOL = "http://";
 
 //自适应HTTPS
 var protocolStr = document.location.protocol;
-if(protocolStr == "http:")
-{
-  MCSERVER.WS_PROTOCOL = 'ws://';
-  MCSERVER.HTTP_PROTOCOL = 'http://';
-}
-else if(protocolStr == "https:")
-{
-  MCSERVER.WS_PROTOCOL = 'wss://';
-  MCSERVER.HTTP_PROTOCOL = 'https://';
+if (protocolStr == "http:") {
+  MCSERVER.WS_PROTOCOL = "ws://";
+  MCSERVER.HTTP_PROTOCOL = "http://";
+} else if (protocolStr == "https:") {
+  MCSERVER.WS_PROTOCOL = "wss://";
+  MCSERVER.HTTP_PROTOCOL = "https://";
 }
 
 //URL定位器
