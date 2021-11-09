@@ -77,7 +77,8 @@
             </div>
           </div>
         </div>
-        <p class="PAGE_info">控制面板将会自动生成 eula.txt ，这将表明你已知晓并且同意 eula 协议。</p>
+        <p class="PAGE_info">控制面板将会自动生成 eula.txt ，这将表明你已知晓并且同意 eula 协议。<br> 在 Minecraft 1.17 以上版本，需要 Java 运行时环境 16
+          版本。</p>
       </div>
     </div>
   </div>
@@ -88,8 +89,8 @@
       <div class="PanelBody">
         <div class="row">
           <div class="col-md-12">
-            <p><b>实例项目命名与位置（只支持字母，下划线和数字）</b></p>
-            <p>如: MyServer001,MyBungeecord</p>
+            <p><b>实例项目命名与位置（仅支持，中文，下划线，字母和数字）</b></p>
+            <p>如: MyServer001，MyBungeecord，我的服务器，群组_01，等</p>
             <div class="input-group input-group-sm">
               <span class="input-group-addon">实例名称</span>
               <input type="text" class="form-control" v-model="name" />
@@ -191,7 +192,8 @@
             <br />
             <div class="input-group input-group-sm">
               <span class="input-group-addon">启动命令</span>
-              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)" v-model="highCommande" />
+              <input type="text" class="form-control" placeholder="程序启动命令.... (列如: java -jar xxx.jar)"
+                v-model="highCommande" />
             </div>
             <small>运行目录: {{serverCwd}} </small>
             <br />
@@ -242,10 +244,6 @@
       methods: {
         toCreateServer: function () {
           var addCmdList = this.addCmd.split(" ");
-          if (!TOOLS.isStdText(this.name)) {
-            TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
-            return;
-          }
           var obj = {
             addCmd: addCmdList,
             serverName: this.name,
@@ -326,5 +324,5 @@
     });
   });
 
-  MI.rListener("onend", function () {});
+  MI.rListener("onend", function () { });
 </script>
