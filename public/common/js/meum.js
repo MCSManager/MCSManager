@@ -32,7 +32,7 @@
   MCSERVER.meumObject.masterMeum = [
     {
       class: "glyphicon-equalizer",
-      name: "监控数据中心",
+      name: "面板数据总览",
       link: "./template/center.html",
       api: "center/show",
       select: false
