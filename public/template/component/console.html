@@ -47,10 +47,10 @@
                 </div>
             </div>
             <div class="Panel" :class="serverData.autoRestart?'PanelGreen':'PanelGray'">
-                <div class="PanelTitle">崩溃监视与配置</div>
+                <div class="PanelTitle">配置文件</div>
                 <div class="PanelBody">
                     <div class="PanelItem" v-on:click="toProperties()">
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> Server.properties 配置文件
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span> Server.Properties
                     </div>
                     <transition name="slide-fade">
                         <div class="PanelItem" v-on:click="toAutoRestart(false)" v-show="serverData.autoRestart">
@@ -58,12 +58,16 @@
                             <span style="color: #29b90c">打开</span>
                         </div>
                     </transition>
+                    <!-- 此功能有问题缺陷，因 9.X 版本发布，8.7 最终版本修复此问题收益已经不大，此功能现已隐藏 -->
+                    <!-- 若您想恢复此功能，只需要将注释掉的 HTML 代码恢复即可使用 -->
+                    <!--
                     <transition name="slide-fade">
                         <div class="PanelItem" v-on:click="toAutoRestart(true)" v-show="!serverData.autoRestart">
                             <span class="glyphicon glyphicon-retweet" aria-hidden="true"> </span> 崩溃重启:
                             <span style="color: #818181">关闭</span>
                         </div>
                     </transition>
+                    -->
                 </div>
             </div>
             <div class="Panel" :class="serverData.autoStart?'PanelGreen':'PanelGray'">
