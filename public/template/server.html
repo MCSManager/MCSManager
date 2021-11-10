@@ -1,229 +1,221 @@
 <div id="ServerList" class="OneContainer">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="Panel PanelBlack" style="margin-bottom: 8px">
-                <div class="PanelTitle">服务端实例管理</div>
-                <div class="PanelBody">
-                    <div class="row">
-                        <div class="col-sm-12 PanelItemF">
-                            <div class="PanelItem" v-on:click="newServerx()">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 创建新实例应用
-                            </div>
-                            <!-- <div class="PanelItem" v-on:click="newServer()">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="Panel PanelBlack" style="margin-bottom: 8px">
+        <div class="PanelTitle">服务端实例管理</div>
+        <div class="PanelBody">
+          <div class="row">
+            <div class="col-sm-12 PanelItemF">
+              <div class="PanelItem" v-on:click="newServerx()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 创建新实例应用</div>
+              <!-- <div class="PanelItem" v-on:click="newServer()">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 直接创建新应用（高级）
 							</div> -->
-                            <div class="PanelItem" v-on:click="opt_all('start')">
-                                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有实例应用
-                            </div>
-                            <div class="PanelItem" v-on:click="opt_all('stop')">
-                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有实例应用
-                            </div>
-                            <div class="PanelItem" v-on:click="newDocker()">
-                                <span class="glyphicon glyphicon-send" aria-hidden="true"></span> 创建虚拟镜像
-                            </div>
-                            <p style="color: #969292; line-height: 35px; float: right">若实例数量众多，可以使用 Ctrl+F 来查询</p>
-                        </div>
-                    </div>
-                </div>
+              <div class="PanelItem" v-on:click="opt_all('start')"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 启动所有实例应用</div>
+              <div class="PanelItem" v-on:click="opt_all('stop')"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 关闭所有实例应用</div>
+              <div class="PanelItem" v-on:click="newDocker()"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> 创建虚拟镜像</div>
+              <p style="color: #969292; line-height: 35px; float: right">若实例数量众多，可以使用 Ctrl+F 来查询</p>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- 新的应用列表 -->
-    <div class="container-fluid" style="padding: 0px">
-        <div class="row">
-            <div class="col-md-6 col-lg-4" v-for="item of items">
-                <a href="javascript:void(0);" class="FontBlack" v-on:click="toConsole(item.serverName);">
-                    <div class="Panel AppInlineBlockList">
-                        <div class="PanelBody">
-                            <div class="AppInlineBlockListTitle">
-                                <h4>
-                                    <span v-text="item.serverName"></span>
-                                </h4>
-                            </div>
-                            <div class="AppInlineBlockListBody">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <p>
-                                            <span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
-                                            <span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
-                                        </p>
-                                        <hr style="margin-top: 8px; margin-bottom: 10px" />
-                                        <p>
-                                            <span class="FontGray">创建时间:</span>
-                                            <span v-text="item.data.createDate"></span>
-                                        </p>
+  </div>
+  <!-- 新的应用列表 -->
+  <div class="container-fluid" style="padding: 0px">
+    <div class="row">
+      <div class="col-md-6 col-lg-4" v-for="item of items">
+        <a href="javascript:void(0);" class="FontBlack" v-on:click="toConsole(item.serverName);">
+          <div class="Panel AppInlineBlockList">
+            <div class="PanelBody">
+              <div class="AppInlineBlockListTitle">
+                <h4>
+                  <span v-text="item.serverName"></span>
+                </h4>
+              </div>
+              <div class="AppInlineBlockListBody">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <p>
+                      <span v-if="item.data.run" class="color-green"> 状态: 正在运行 </span>
+                      <span v-else="item.data.run" class="color-red"> 状态: 关闭 </span>
+                    </p>
+                    <hr style="margin-top: 8px; margin-bottom: 10px" />
+                    <p>
+                      <span class="FontGray">创建时间:</span>
+                      <span v-text="item.data.createDate"></span>
+                    </p>
 
-                                        <p>
-                                            <span class="FontGray">最后启动:</span>
-                                            <span v-text="item.data.lastDate"></span>
-                                        </p>
-                                        <p>
-                                            <span class="FontGray">时间期限:</span>
-                                            <span v-text="item.data.timeLimitDate || '无限期'"></span>
-                                        </p>
-                                        <p>
-                                            <span class="FontGray">程序文件: </span>
-                                            <span v-text="item.data.jarName"></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-xs-3" style="text-align: center">
-                                        <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toTerminal(item.serverName);"> <span class="glyphicon glyphicon-console" aria-hidden="true"> </span>&nbsp; 终端 </a>
-                                        <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toConsole(item.serverName);"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>&nbsp; 管理 </a>
-                                        <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
-                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>&nbsp; 参数
-                                        </a>
-                                        <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toDeleteServer(item.serverName)"> <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除 </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+                    <p>
+                      <span class="FontGray">最后启动:</span>
+                      <span v-text="item.data.lastDate"></span>
+                    </p>
+                    <p>
+                      <span class="FontGray">时间期限:</span>
+                      <span v-text="item.data.timeLimitDate || '无限期'"></span>
+                    </p>
+                    <p>
+                      <span class="FontGray">程序文件: </span>
+                      <span v-text="item.data.jarName"></span>
+                    </p>
+                  </div>
+                  <div class="col-xs-3" style="text-align: center">
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toTerminal(item.serverName);"> <span class="glyphicon glyphicon-console" aria-hidden="true"> </span>&nbsp; 终端 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toConsole(item.serverName);"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span>&nbsp; 管理 </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="onRedirect('./template/component/server.html','server/get',item.serverName);">
+                      <span class="glyphicon glyphicon-cog" aria-hidden="true"> </span>&nbsp; 参数
+                    </a>
+                    <a href="javascript:void(0);" class="mbuttonWhite" v-on:click="toDeleteServer(item.serverName)"> <span class="glyphicon glyphicon-trash" aria-hidden="true"> </span>&nbsp; 删除 </a>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        </a>
+      </div>
     </div>
+  </div>
 </div>
 <style>
-    .FontBlack {
-        color: #141414;
-    }
-    
-    .FontGray {
-        color: #797676;
-    }
-    
-    .mbuttonWhite {
-        display: block;
-        margin-bottom: 2px;
-        color: #292929;
-        border: 1px solid #797676;
-        padding: 2px 2px;
-        text-align: center;
-        font-size: 11px;
-        max-width: 90px;
-    }
-    
-    .AppInlineBlockListTitle {
-        position: relative;
-    }
-    
-    .AppInlineBlockListTitlePlayer {
-        font-size: 13px;
-        float: right;
-    }
-    
-    .AppInlineBlockListTitleMuem {
-        position: absolute;
-        right: 12px;
-        top: 0px;
-        font-size: 14px;
-        color: rgb(26, 26, 26);
-    }
-    
-    .AppInlineBlockListTitleMuem>a {
-        color: #2e2e2e;
-        display: inline-block;
-        margin-left: 6px;
-        border-radius: 1px;
-    }
-    
-    .AppInlineBlockListBorderRed {
-        border-top: 3px solid rgb(196, 46, 46);
-    }
-    
-    .AppInlineBlockListBorderBlack {
-        border-top: 3px solid #2e2e2e;
-    }
-    
-    .AppInlineBlockListBorderGreen {
-        border-top: 3px solid rgb(37, 146, 37);
-    }
-    
-    .AppInlineBlockList {
-        display: inline-block;
-        width: 100%;
-        margin: 6px 8px 8px 0px;
-        transition: all 0.4s;
-        height: 200px;
-        min-height: 200px;
-        max-height: 200px;
-        /* border-top: 3px solid rgb(255, 255, 255); */
-    }
-    
-    .AppInlineBlockList p,
-    .AppInlineBlockList span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .AppInlineBlockList:hover {
-        border: 1px solid rgb(0, 139, 222);
-    }
-    
-    .AppInlineBlockListTitleTip {
-        border: 1px solid rgb(63, 216, 63);
-        border-radius: 3px;
-        padding: 2px 3px;
-        font-weight: 400;
-        letter-spacing: 1px;
-        font-size: 10px;
-    }
-    
-    .AppInlineBlockListBody p,
-    .AppInlineBlockListBody span {
-        /* display: block; */
-        margin-bottom: 1px;
-    }
+  .FontBlack {
+    color: #141414;
+  }
+
+  .FontGray {
+    color: #797676;
+  }
+
+  .mbuttonWhite {
+    display: block;
+    margin-bottom: 2px;
+    color: #292929;
+    border: 1px solid #797676;
+    padding: 2px 2px;
+    text-align: center;
+    font-size: 11px;
+    max-width: 90px;
+  }
+
+  .AppInlineBlockListTitle {
+    position: relative;
+  }
+
+  .AppInlineBlockListTitlePlayer {
+    font-size: 13px;
+    float: right;
+  }
+
+  .AppInlineBlockListTitleMuem {
+    position: absolute;
+    right: 12px;
+    top: 0px;
+    font-size: 14px;
+    color: rgb(26, 26, 26);
+  }
+
+  .AppInlineBlockListTitleMuem > a {
+    color: #2e2e2e;
+    display: inline-block;
+    margin-left: 6px;
+    border-radius: 1px;
+  }
+
+  .AppInlineBlockListBorderRed {
+    border-top: 3px solid rgb(196, 46, 46);
+  }
+
+  .AppInlineBlockListBorderBlack {
+    border-top: 3px solid #2e2e2e;
+  }
+
+  .AppInlineBlockListBorderGreen {
+    border-top: 3px solid rgb(37, 146, 37);
+  }
+
+  .AppInlineBlockList {
+    display: inline-block;
+    width: 100%;
+    margin: 6px 8px 8px 0px;
+    transition: all 0.4s;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    /* border-top: 3px solid rgb(255, 255, 255); */
+  }
+
+  .AppInlineBlockList p,
+  .AppInlineBlockList span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .AppInlineBlockList:hover {
+    border: 1px solid rgb(0, 139, 222);
+  }
+
+  .AppInlineBlockListTitleTip {
+    border: 1px solid rgb(63, 216, 63);
+    border-radius: 3px;
+    padding: 2px 3px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 10px;
+  }
+
+  .AppInlineBlockListBody p,
+  .AppInlineBlockListBody span {
+    /* display: block; */
+    margin-bottom: 1px;
+  }
 </style>
 
 <script>
-    MI.rListener("onload", function() {
-        // 定义页面地址
-        TOOLS.definePage("template/server", "server/view", null);
+  MI.rListener("onload", function () {
+    // 定义页面地址
+    TOOLS.definePage("template/server", "server/view", null);
 
-        VIEW_MODEL.newVue("ServerList", {
-            el: "#ServerList",
-            methods: {
-                toConsole: function(serverName) {
-                    MCSERVER.listenServername = serverName;
-                    RES.redirectPage("./template/component/console.html", "server/console", serverName);
-                },
-                onRedirect: function(link, api, serverName) {
-                    RES.redirectPage(link, api, serverName);
-                },
-                newServer: function() {
-                    RES.redirectPage("./template/component/newserver.html", null, "");
-                },
-                newServerx: function() {
-                    RES.redirectPage("./template/component/newserverx.html", null, "");
-                },
-                opt_all: function(command) {
-                    if (confirm("您真的要执行这个影响所有服务器的操作吗？")) {
-                        WS.sendMsg("server/opt_all", command);
-                        setTimeout(function() {
-                            PAGE.refresh();
-                        }, 2000);
-                    }
-                },
-                toDeleteServer: function(serverName) {
-                    var result = confirm("是否删除 [" + serverName + "] 这个服务端以及其工作目录下的所有文件？\n注意: 此操作不可逆！有重要文件请先备份。");
-                    if (!result) return;
-                    WS.sendMsg("server/delete", serverName);
-                    RES.redirectPage("./template/server.html", "server/view");
-                },
-                toTerminal: function(serverName) {
-                    //设置全局监听变量
-                    MCSERVER.listenServername = serverName;
-                    TOOLS.listenTerminal(serverName);
-                    // RES.redirectPage('./template/component/terminal.html', null, '');
-                },
-                newDocker: function() {
-                    RES.redirectPage("./template/component/new_docker_image.html", null, "");
-                }
-            }
-        });
+    VIEW_MODEL.newVue("ServerList", {
+      el: "#ServerList",
+      methods: {
+        toConsole: function (serverName) {
+          MCSERVER.listenServername = serverName;
+          RES.redirectPage("./template/component/console.html", "server/console", serverName);
+        },
+        onRedirect: function (link, api, serverName) {
+          RES.redirectPage(link, api, serverName);
+        },
+        newServer: function () {
+          RES.redirectPage("./template/component/newserver.html", null, "");
+        },
+        newServerx: function () {
+          RES.redirectPage("./template/component/newserverx.html", null, "");
+        },
+        opt_all: function (command) {
+          if (confirm("您真的要执行这个影响所有服务器的操作吗？")) {
+            WS.sendMsg("server/opt_all", command);
+            setTimeout(function () {
+              PAGE.refresh();
+            }, 2000);
+          }
+        },
+        toDeleteServer: function (serverName) {
+          var result = confirm("是否删除 [" + serverName + "] 这个服务端以及其工作目录下的所有文件？\n注意: 此操作不可逆！有重要文件请先备份。");
+          if (!result) return;
+          WS.sendMsg("server/delete", serverName);
+          RES.redirectPage("./template/server.html", "server/view");
+        },
+        toTerminal: function (serverName) {
+          //设置全局监听变量
+          MCSERVER.listenServername = serverName;
+          TOOLS.listenTerminal(serverName);
+          // RES.redirectPage('./template/component/terminal.html', null, '');
+        },
+        newDocker: function () {
+          RES.redirectPage("./template/component/new_docker_image.html", null, "");
+        }
+      }
     });
+  });
 
-    MI.rListener("onend", function() {});
+  MI.rListener("onend", function () {});
 </script>

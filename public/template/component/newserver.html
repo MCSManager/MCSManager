@@ -1,151 +1,151 @@
 <div id="CreateServerView" class="OneContainer">
-    <div class="row">
-        <div class="col-lg-12 col-sm-12">
-            <div class="Panel PanelGreen">
-                <div class="PanelTitle">创建服务器</div>
-                <div class="PanelBody">
-                    <div class="row" style="padding-top: 10px; padding-bottom: 30px">
-                        <div class="col-md-6">
-                            <p>[必填] 服务器标识符，必须唯一(仅限字母数字下划线组合)</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">服务器名字</span>
-                                <input type="text" class="form-control" v-model="name" placeholder="[不可空，必填]" />
-                            </div>
-                            <p>[可填] 服务端核心文件，可以后再填或上传后再填，因为服务端目录还未创建，但是您指定目录的话就可填写.</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon"> 服务端文件名 </span>
-                                <input type="text" class="form-control" v-model="jarName" />
-                            </div>
-                            <p>[选填] 您可以指定您计算机上的Java环境程序路径，默认自动选择环境变量</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">Java 路径</span>
-                                <input type="text" class="form-control" v-model="java" placeholder="[自动]" />
-                            </div>
-                            <p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">目标实例名字</span>
-                                <input type="text" class="form-control" v-model="readServerName" placeholder="[在此输入目标服务端的名字即可复制它的配置项目]" />
-                                <span class="input-group-btn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12">
+      <div class="Panel PanelGreen">
+        <div class="PanelTitle">创建服务器</div>
+        <div class="PanelBody">
+          <div class="row" style="padding-top: 10px; padding-bottom: 30px">
+            <div class="col-md-6">
+              <p>[必填] 服务器标识符，必须唯一(仅限字母数字下划线组合)</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">服务器名字</span>
+                <input type="text" class="form-control" v-model="name" placeholder="[不可空，必填]" />
+              </div>
+              <p>[可填] 服务端核心文件，可以后再填或上传后再填，因为服务端目录还未创建，但是您指定目录的话就可填写.</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon"> 服务端文件名 </span>
+                <input type="text" class="form-control" v-model="jarName" />
+              </div>
+              <p>[选填] 您可以指定您计算机上的Java环境程序路径，默认自动选择环境变量</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">Java 路径</span>
+                <input type="text" class="form-control" v-model="java" placeholder="[自动]" />
+              </div>
+              <p>[选填] 您可以从已有的服务器配置中，复制一份配置到这里</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">目标实例名字</span>
+                <input type="text" class="form-control" v-model="readServerName" placeholder="[在此输入目标服务端的名字即可复制它的配置项目]" />
+                <span class="input-group-btn">
                   <button class="btn btn-default" v-on:click="readServerConfig(readServerName)">导入配置</button>
                 </span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">启动附加参数</span>
-                                <input type="text" class="form-control" v-model="addCmd" placeholder="[无附加参数]" />
-                            </div>
-                            <p>[选填] 可填，默认将自动建立目录，选择好请单击按钮确认</p>
-                            <p style="color: #b92c28">当前服务端根目录设为: {{ serverCwd }}</p>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">服务端文件根目录</span>
-                                <input type="text" class="form-control" v-model="cwd" :placeholder="serverCwd" />
-                                <span class="input-group-btn">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <p>[选填] 一般而言当您需要附加参数如 (-server 等等) 时，可以填写</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">启动附加参数</span>
+                <input type="text" class="form-control" v-model="addCmd" placeholder="[无附加参数]" />
+              </div>
+              <p>[选填] 可填，默认将自动建立目录，选择好请单击按钮确认</p>
+              <p style="color: #b92c28">当前服务端根目录设为: {{ serverCwd }}</p>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">服务端文件根目录</span>
+                <input type="text" class="form-control" v-model="cwd" :placeholder="serverCwd" />
+                <span class="input-group-btn">
                   <button class="btn btn-primary" v-on:click="toCreaterDir()">确认创建目录</button>
                 </span>
-                            </div>
-                            <p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-addon"> 最大内存堆 </span>
-                                        <input type="text" class="form-control" v-model="Xmx" placeholder="[缺省值]" />
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-addon"> 初始内存堆 </span>
-                                        <input type="text" class="form-control" v-model="Xms" placeholder="[缺省值]" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>确保配置设置全部正确，更多设置可创建后前往编辑参数界面。</p>
-                            <div class="" style="float: right; margin-top: 20px">
-                                <button class="btn btn-success" v-on:click="toCreateServer()">创建服务器</button>
-                            </div>
-                        </div>
-                    </div>
+              </div>
+              <p>[选填] 根据您的需求或计算机内存大小填写，默认自动，需要在数字后加单位</p>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-addon"> 最大内存堆 </span>
+                    <input type="text" class="form-control" v-model="Xmx" placeholder="[缺省值]" />
+                  </div>
                 </div>
+                <div class="col-sm-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-addon"> 初始内存堆 </span>
+                    <input type="text" class="form-control" v-model="Xms" placeholder="[缺省值]" />
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <p>确保配置设置全部正确，更多设置可创建后前往编辑参数界面。</p>
+              <div class="" style="float: right; margin-top: 20px">
+                <button class="btn btn-success" v-on:click="toCreateServer()">创建服务器</button>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    MI.rListener("onload", function() {
-        // 定义页面地址
-        TOOLS.definePage("template/component/newserver", "genuser/home", "");
+  MI.rListener("onload", function () {
+    // 定义页面地址
+    TOOLS.definePage("template/component/newserver", "genuser/home", "");
 
-        VIEW_MODEL.newVue("CreateServerView", {
-            el: "#CreateServerView",
-            data: {
-                name: "NewServer_" + (Date.parse(new Date()) + "").substr(6),
-                jarName: "",
-                cwd: "",
-                Xmx: "",
-                Xms: "",
-                addCmd: "",
-                java: "java",
-                readServerName: ""
-            },
-            methods: {
-                toCreateServer: function() {
-                    var addCmdList = this.addCmd.split(" ");
-                    if (!TOOLS.isStdText(this.name)) {
-                        TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
-                        return;
-                    }
-                    var obj = {
-                        addCmd: addCmdList,
-                        serverName: this.name,
-                        jarName: this.jarName,
-                        cwd: this.cwd,
-                        Xmx: this.Xmx,
-                        Xms: this.Xms,
-                        java: this.Java
-                    };
-                    WS.sendMsg("server/create", JSON.stringify(obj));
-                    RES.redirectPage("./template/server.html", "server/view");
-                },
-                toCreaterDir: function() {
-                    var obj = {
-                        serverName: this.name,
-                        cwd: this.cwd
-                    };
-                    WS.sendMsg("server/create_dir", JSON.stringify(obj));
-                },
-                readServerConfig: function(serverName) {
-                    if (serverName.trim() == "") return;
-                    var that = this;
-                    //请求此服务端配置数据并且赋值给自己
-                    WS.sendMsg("server/get", serverName, function(pack) {
-                        serverData = pack.ResponseValue;
-                        if (serverData == null || serverData["serverName"] == null) {
-                            return;
-                        }
-                        that.name = serverData.serverName + "_copy";
-                        that.Xmx = serverData.Xmx;
-                        that.Xms = serverData.Xms;
-                        that.Java = serverData.Java;
-                        that.jarName = serverData.jarName;
-                        that.addCmd = serverData.addCmd.join(" ").trim();
-                        // that.cwd = serverData.cwd;
-                    });
-                }
-            },
-            computed: {
-                serverCwd: function() {
-                    if (this.cwd == "") return "./server/server_core/" + this.name;
-                    return this.cwd;
-                }
+    VIEW_MODEL.newVue("CreateServerView", {
+      el: "#CreateServerView",
+      data: {
+        name: "NewServer_" + (Date.parse(new Date()) + "").substr(6),
+        jarName: "",
+        cwd: "",
+        Xmx: "",
+        Xms: "",
+        addCmd: "",
+        java: "java",
+        readServerName: ""
+      },
+      methods: {
+        toCreateServer: function () {
+          var addCmdList = this.addCmd.split(" ");
+          if (!TOOLS.isStdText(this.name)) {
+            TOOLS.pushMsgWindow("服务器名字不合法！仅限字母数字下划线！");
+            return;
+          }
+          var obj = {
+            addCmd: addCmdList,
+            serverName: this.name,
+            jarName: this.jarName,
+            cwd: this.cwd,
+            Xmx: this.Xmx,
+            Xms: this.Xms,
+            java: this.Java
+          };
+          WS.sendMsg("server/create", JSON.stringify(obj));
+          RES.redirectPage("./template/server.html", "server/view");
+        },
+        toCreaterDir: function () {
+          var obj = {
+            serverName: this.name,
+            cwd: this.cwd
+          };
+          WS.sendMsg("server/create_dir", JSON.stringify(obj));
+        },
+        readServerConfig: function (serverName) {
+          if (serverName.trim() == "") return;
+          var that = this;
+          //请求此服务端配置数据并且赋值给自己
+          WS.sendMsg("server/get", serverName, function (pack) {
+            serverData = pack.ResponseValue;
+            if (serverData == null || serverData["serverName"] == null) {
+              return;
             }
-        });
+            that.name = serverData.serverName + "_copy";
+            that.Xmx = serverData.Xmx;
+            that.Xms = serverData.Xms;
+            that.Java = serverData.Java;
+            that.jarName = serverData.jarName;
+            that.addCmd = serverData.addCmd.join(" ").trim();
+            // that.cwd = serverData.cwd;
+          });
+        }
+      },
+      computed: {
+        serverCwd: function () {
+          if (this.cwd == "") return "./server/server_core/" + this.name;
+          return this.cwd;
+        }
+      }
     });
+  });
 
-    MI.rListener("onend", function() {});
+  MI.rListener("onend", function () {});
 </script>
