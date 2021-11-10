@@ -62,6 +62,16 @@ Linux 下面板如何后台运行？ | [参考方法](https://github.com/Suwings
 <br />
 
 
+MCSManager 9.0 版本大更新
+-----------
+现在已处于测试阶段，请点击 `star`使其增加以支持开发团队，目前您依然可以继续使用 MCSManager 8.X 版本程序。
+
+[MCSManager 网页界面项目](https://github.com/Suwings/MCSManager-UI)
+
+[MCSManager 守护进程项目](https://github.com/Suwings/MCSManager-Daemon)
+
+<br />
+
 
 
 在 Windows 运行 
@@ -122,7 +132,7 @@ npm start
 
 <br />
 
-在 macOS 运行 
+在 MacOS 运行 
 -----------
 
 安装 `node`, `npm`, 和 `homebrew`
@@ -149,16 +159,6 @@ cd mcsmanager/
 # 启动面板
 npm start
 ```
-
-<br />
-
-MCSManager 9.0 版本
------------
-现在已处于开发阶段，请点击 `star`使其增加以支持开发团队，目前您依然可以继续使用 MCSManager 8.X 版本程序。
-
-[MCSManager 网页界面项目](https://github.com/Suwings/MCSManager-UI)
-
-[MCSManager 守护进程项目](https://github.com/Suwings/MCSManager-Daemon)
 
 <br />
 
