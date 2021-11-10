@@ -24,7 +24,11 @@ module.exports.init = () => {
 };
 
 module.exports.load = () => {
-  dataModel.load();
+  try {
+    dataModel.load();
+  } catch (error) {
+    MCSERVER.error("初始化 core/info.json 文件失败，请删除此文件重启面板进行恢复", error);
+  }
   counterMask = dataModel.counterData;
   if (dataModel.reloadMonth == undefined) dataModel.reloadMonth = new Date().getMonth() + 2; //下个月
   dataModel.save();
