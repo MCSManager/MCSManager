@@ -44,9 +44,9 @@ serverModel.ServerManager().on("exit", (data) => {
     // 传递服务器关闭事件
     serverModel.ServerManager().emit("exit_next", data);
     // 历史记录类释放
-    const logHistory = serverModel.ServerManager().getServer(data.serverName).logHistory;
+    const logHistory = server.logHistory;
     if (logHistory) logHistory.delete();
-    serverModel.ServerManager().getServer(data.serverName).logHistory = null;
+    server.logHistory = null;
 });
 
 //服务器开启
@@ -80,8 +80,11 @@ WebSocketObserver().listener("server/console/ws", (data) => {
         data.WsSession["console"] = serverName;
 
         // 重置用户历史指针
-        const instanceLogHistory = serverModel.ServerManager().getServer(serverName).logHistory;
-        if (instanceLogHistory) instanceLogHistory.setPoint(userName, 0);
+        const server = serverModel.ServerManager().getServer(serverName);
+        if (server) {
+            const instanceLogHistory = server.logHistory;
+            if (instanceLogHistory) instanceLogHistory.setPoint(userName, 0);
+        }
         return;
     }
 
