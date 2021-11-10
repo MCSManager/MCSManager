@@ -14,9 +14,6 @@
 
 <br />
 
-**本项目 [赞助者名单](https://docs.qq.com/sheet/DYWJNVXhib0dtamh2?c=B3A0A0)**
-<br />
-
 
 简介
 -----------
