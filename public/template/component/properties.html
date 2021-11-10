@@ -1,95 +1,93 @@
 <div id="ServerProperties" class="OneContainer">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="Panel PanelBlack">
-        <div class="PanelTitle">服务端 server.properties 配置文件</div>
-        <div class="PanelBody">
-          <div class="row">
-            <div class="col-sm-12 PanelItemF">
-              <div class="PanelItem" v-on:click="toBackConsole()"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回到控制台</div>
-              <div class="PanelItem" v-on:click="toUpdateProperties()"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新配置</div>
-              <div class="PanelItem" v-on:click="re()"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> 从内存刷新</div>
-              <div class="PanelItem" v-on:click="toUpdatePropertiesFormFile()"><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span> 从文件刷新</div>
-              <p>
-                文件配置参考：
-                <a href="https://minecraft.fandom.com/zh/wiki/Server.properties">https://minecraft.fandom.com/zh/wiki/Server.properties</a>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <p>解释: true 代表启用，false 代表关闭，空白代表无值，请注意格式修改，确认无误保存即可，重启服务端生效。</p>
-              <table class="PropertiesList" width="100%">
-                <tr>
-                  <th>原字段键值</th>
-                  <th>第三方解释</th>
-                  <th>存在的值</th>
-                </tr>
-                <tr v-for="(val, key) in properties">
-                  <th v-text="key"></th>
-                  <th v-text="findProperties(key)"></th>
-                  <th>
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control" aria-describedby="basic-addon1" v-model="properties[key]" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="Panel PanelBlack">
+                <div class="PanelTitle">服务端 server.properties 配置文件</div>
+                <div class="PanelBody">
+                    <div class="row">
+                        <div class="col-sm-12 PanelItemF">
+                            <div class="PanelItem" v-on:click="toBackConsole()"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回到控制台</div>
+                            <div class="PanelItem" v-on:click="toUpdateProperties()"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新配置</div>
+                            <div class="PanelItem" v-on:click="re()"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> 从内存刷新</div>
+                            <div class="PanelItem" v-on:click="toUpdatePropertiesFormFile()"><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span> 从文件刷新</div>
+                            <p>
+                                文件配置参考：
+                                <a href="https://minecraft.fandom.com/zh/wiki/Server.properties">https://minecraft.fandom.com/zh/wiki/Server.properties</a>
+                            </p>
+                        </div>
                     </div>
-                  </th>
-                </tr>
-              </table>
-              <br />
-              <div class="row">
-                <div class="col-sm-12 PanelItemF">
-                  <div class="PanelItem" v-on:click="toBackConsole()"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回到控制台</div>
-                  <div class="PanelItem" v-on:click="toUpdateProperties()"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新配置</div>
-                  <div class="PanelItem" v-on:click="re()"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> 重新刷新读取</div>
-                  <hr />
-                  <p>最后，请检查是否符合格式，条件，仔细检查后即可确认修改，或者直接返回到其他页面直接舍弃修改。</p>
-                  <p>如果显示不全或不是最新，您可以单击 [重新刷新读取] 来进行获取更新，设置完毕请重启服务器。</p>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>解释: true 代表启用，false 代表关闭，空白代表无值，请注意格式修改，确认无误保存即可，重启服务端生效。</p>
+                            <table class="PropertiesList" width="100%">
+                                <tr>
+                                    <th>原字段键值</th>
+                                    <th>第三方解释</th>
+                                    <th>存在的值</th>
+                                </tr>
+                                <tr v-for="(val, key) in properties">
+                                    <th v-text="key"></th>
+                                    <th v-text="findProperties(key)"></th>
+                                    <th>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control" aria-describedby="basic-addon1" v-model="properties[key]" />
+                                        </div>
+                                    </th>
+                                </tr>
+                            </table>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-12 PanelItemF">
+                                    <div class="PanelItem" v-on:click="toBackConsole()"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> 返回到控制台</div>
+                                    <div class="PanelItem" v-on:click="toUpdateProperties()"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新配置</div>
+                                    <div class="PanelItem" v-on:click="re()"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> 重新刷新读取</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script src="./common/js/properties.js"></script>
 <script>
-  // 定义页面地址
-  TOOLS.definePage("template/component/properties", "server/properties", MCSERVER.listenServername);
+    // 定义页面地址
+    TOOLS.definePage("template/component/properties", "server/properties", MCSERVER.listenServername);
 
-  MI.rListener("onload", function () {
-    // MCSERVER.autoColmDo();
+    MI.rListener("onload", function() {
+        // MCSERVER.autoColmDo();
 
-    VIEW_MODEL.newVue("ServerProperties", {
-      el: "#ServerProperties",
-      methods: {
-        toUpdateProperties: function () {
-          if (!this.properties) return;
-          var obj = {
-            serverName: this.serverName,
-            properties: this.properties
-          };
-          WS.sendMsg("server/properties_update", JSON.stringify(obj));
-        },
-        toBackConsole: function () {
-          RES.redirectPage("./template/component/console.html", "server/console", this.serverName);
-        },
-        re: function () {
-          RES.redirectPage("./template/component/properties.html", "server/properties", this.serverName);
-        },
-        toUpdatePropertiesFormFile: function () {
-          WS.sendMsg("server/properties_update_reload", this.serverName);
-        },
-        findProperties: function (key) {
-          return MCSERVER.findPropertiesShow(key);
-        }
-      }
+        VIEW_MODEL.newVue("ServerProperties", {
+            el: "#ServerProperties",
+            methods: {
+                toUpdateProperties: function() {
+                    if (!this.properties) return;
+                    var obj = {
+                        serverName: this.serverName,
+                        properties: this.properties
+                    };
+                    WS.sendMsg("server/properties_update", JSON.stringify(obj));
+                },
+                toBackConsole: function() {
+                    RES.redirectPage("./template/component/console.html", "server/console", this.serverName);
+                },
+                re: function() {
+                    RES.redirectPage("./template/component/properties.html", "server/properties", this.serverName);
+                },
+                toUpdatePropertiesFormFile: function() {
+                    WS.sendMsg("server/properties_update_reload", this.serverName);
+                },
+                findProperties: function(key) {
+                    return MCSERVER.findPropertiesShow(key);
+                }
+            }
+        });
     });
-  });
 
-  MI.rListener("onend", function () {
-    VIEW_MODEL["ServerProperties"] = null;
-  });
+    MI.rListener("onend", function() {
+        VIEW_MODEL["ServerProperties"] = null;
+    });
 </script>
