@@ -37,7 +37,7 @@ class MinecraftServer extends ServerProcess {
       dockerImageName: "mcsd",
       dockerXmx: "",
       dockerPorts: "",
-      isDocker: false
+      isDocker: false,
     };
 
     // Minecraft Ping 查询配置项目
@@ -45,7 +45,7 @@ class MinecraftServer extends ServerProcess {
       mcpingName: "",
       mcpingHost: "",
       mcpingPort: "",
-      mcpingMotd: ""
+      mcpingMotd: "",
     };
   }
 
@@ -108,7 +108,7 @@ class MinecraftServer extends ServerProcess {
     properties.parse(
       this.dataModel.cwd + "/server.properties",
       {
-        path: true
+        path: true,
       },
       (err, obj) => {
         //Note: 这里callback似乎会执行两次
@@ -122,7 +122,7 @@ class MinecraftServer extends ServerProcess {
   propertiesSave(newProperties, callback) {
     //解析
     let text = properties.stringify(newProperties, {
-      separator: "="
+      separator: "=",
     });
     //properties 库自动给等于两边加入了空格，现在去除
     text = text.replace(/ = /gim, "=");

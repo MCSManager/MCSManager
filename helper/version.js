@@ -21,5 +21,5 @@ module.exports = {
   system: info,
   root: process.cwd(),
   verisonA: verisonA,
-  verisonB: verisonB
+  verisonB: verisonB,
 };

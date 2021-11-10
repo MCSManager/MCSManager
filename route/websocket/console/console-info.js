@@ -29,8 +29,8 @@ WebSocketObserver().listener("server/console", (data) => {
       isFtpOpen: MCSERVER.localProperty.ftp_is_allow,
       mcping: mcPingProtocol.QueryMCPingTask(serverName) || {
         current_players: "--",
-        max_players: "--"
-      }
+        max_players: "--",
+      },
     });
     // MCSERVER.log('准许用户 [' + userName + '] 获取控制台实时数据');
   }

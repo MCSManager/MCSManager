@@ -148,22 +148,10 @@ Copyright(c) 2021 https://github.com/Suwings.
               />
             </div>
             <div class="PanelItemF" style="text-align: right">
-              <div class="PanelItem mb0" v-on:click="toCommand">
-                <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
-                执行命令
-              </div>
-              <div class="PanelItem mb0" v-on:click="stopServer()">
-                <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-                关闭
-              </div>
-              <div class="PanelItem mb0" v-on:click="toOpenServer()">
-                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                开启
-              </div>
-              <div class="PanelItem mb0" v-on:click="TOOLS.CloseTerminal()">
-                <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span>
-                关闭窗口
-              </div>
+              <div class="PanelItem mb0" v-on:click="toCommand"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> 执行命令</div>
+              <div class="PanelItem mb0" v-on:click="stopServer()"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> 关闭</div>
+              <div class="PanelItem mb0" v-on:click="toOpenServer()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> 开启</div>
+              <div class="PanelItem mb0" v-on:click="TOOLS.CloseTerminal()"><span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span> 关闭窗口</div>
             </div>
           </div>
         </div>
@@ -214,8 +202,8 @@ Copyright(c) 2021 https://github.com/Suwings.
         // echart 路径配置
         window.require.config({
           paths: {
-            echarts: "./common/echarts-dist"
-          }
+            echarts: "./common/echarts-dist",
+          },
         });
 
         //抗CSRF攻击
@@ -266,10 +254,10 @@ Copyright(c) 2021 https://github.com/Suwings.
                 },
                 error: function () {
                   TOOLS.pushMsgWindow("退出失败，您网络正常且是否登陆？");
-                }
+                },
               });
-            }
-          }
+            },
+          },
         });
 
         //工具信息栏
@@ -277,22 +265,22 @@ Copyright(c) 2021 https://github.com/Suwings.
           el: "#ToolsInfo",
           data: {
             show: false,
-            msg: ""
-          }
+            msg: "",
+          },
         });
 
         // 手机端导航球
         var SidebarButton = new Vue({
           el: "#SidebarButton",
           data: {
-            isExpand: false
+            isExpand: false,
           },
           methods: {
             operate: function () {
               MCSERVER.colmSet(!MCSERVER.getColmStatus());
               this.isExpand = !MCSERVER.getColmStatus();
-            }
-          }
+            },
+          },
         });
 
         VIEW_MODEL.COMMON = {};

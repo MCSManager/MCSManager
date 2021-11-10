@@ -24,7 +24,7 @@ WebSocketObserver().listener("docker/new", (data) => {
     MCSERVER.PAGE.DockerRes.unshift({
       time: tools.getFullTime(),
       name: dockerImageName.trim(),
-      res: text
+      res: text,
     });
   }
   //任务列表
@@ -44,7 +44,7 @@ WebSocketObserver().listener("docker/new", (data) => {
 
     let process = childProcess.spawn("docker", ["build", "-t", dockerImageName.trim(), "./docker_temp/"], {
       cwd: ".",
-      stdio: "pipe"
+      stdio: "pipe",
     });
     process.on("exit", (code) => {
       console.log("EXIT", code);

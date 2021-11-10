@@ -36,13 +36,13 @@ router.all("/status/:name", function (req, res) {
       current_players: mcpingResult.current_players,
       max_players: mcpingResult.max_players,
       motd: mcserver.dataModel.mcpingConfig.mcpingMotd || mcpingResult.motd,
-      version: mcpingResult.version
+      version: mcpingResult.version,
     };
   } else {
     sendStatus = {
       id: serverName,
       lastDate: mcserver.dataModel.lastDate,
-      status: mcserver.isRun()
+      status: mcserver.isRun(),
     };
   }
 

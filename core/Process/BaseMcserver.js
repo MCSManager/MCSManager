@@ -122,8 +122,8 @@ class ServerProcess extends EventEmitter {
         ExposedPortsObj[port[0] + "/" + protocol] = {};
         PortBindingsObj[port[0] + "/" + protocol] = [
           {
-            HostPort: port[1] + ""
-          }
+            HostPort: port[1] + "",
+          },
         ];
       }
     }
@@ -161,8 +161,8 @@ class ServerProcess extends EventEmitter {
       HostConfig: {
         Binds: [stdCwd + ":/mcsd/"],
         Memory: this.dataModel.dockerConfig.dockerXmx * 1024 * 1024 * 1024,
-        PortBindings: PortBindingsObj
-      }
+        PortBindings: PortBindingsObj,
+      },
     });
     try {
       // 尝试启动容器
@@ -179,7 +179,7 @@ class ServerProcess extends EventEmitter {
       {
         stream: true,
         stdin: true,
-        stdout: true
+        stdout: true,
       },
       (err, stream) => {
         if (err) throw err;
@@ -283,7 +283,7 @@ class ServerProcess extends EventEmitter {
 
     this.ProcessConfig = {
       cwd: this.dataModel.cwd,
-      stdio: "pipe"
+      stdio: "pipe",
     };
 
     try {

@@ -66,7 +66,7 @@ function createScheduleJobCount(id, time, count, commande, servername, callback,
       count: count,
       time: time,
       commande: commande,
-      servername: servername
+      servername: servername,
     });
   }
   if (_save) MCSERVER.Schedule.dataModel.save();

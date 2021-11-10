@@ -15,7 +15,7 @@ function defaultFalseCallBack(req, res, ResponseKey, ResponseValue, notAjaxRedir
   if (req.xhr) {
     res.send({
       ResponseKey: ResponseKey,
-      ResponseValue: ResponseValue
+      ResponseValue: ResponseValue,
     });
   } else {
     res.redirect(notAjaxRedirect || "./error/notlogin");

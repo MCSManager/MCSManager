@@ -121,7 +121,7 @@
         createUser: false,
         username: "",
         password: "",
-        allowedServer: ""
+        allowedServer: "",
       },
       methods: {
         toRegisterUser: function () {
@@ -137,7 +137,7 @@
           var obj = {
             username: this.username,
             password: this.password,
-            allowedServer: allwoedServers
+            allowedServer: allwoedServers,
           };
           WS.sendMsg("userset/create", JSON.stringify(obj), function () {
             PAGE.refresh();
@@ -146,7 +146,7 @@
 
         toDeleteUser: function (itemUsername) {
           var obj = {
-            username: itemUsername
+            username: itemUsername,
           };
           var result = confirm("您真的打算删除这个这个用户吗?");
           if (!result) return;
@@ -175,13 +175,13 @@
           TOOLS.popWind({
             style: {
               maxWidth: "600px",
-              top: "24%"
+              top: "24%",
             },
             title: "用户 " + PAGE.username + " 的密匙设置",
-            template: "template/dialog/apikey.html"
+            template: "template/dialog/apikey.html",
           });
-        }
-      }
+        },
+      },
     });
   });
 

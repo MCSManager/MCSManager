@@ -134,7 +134,7 @@ colors.setTheme({
   help: "cyan",
   warn: "yellow",
   debug: "magenta",
-  error: "red"
+  error: "red",
 });
 
 // 全局数据中心 记录 CPU 内存
@@ -167,7 +167,7 @@ MCSERVER.logCenter.pushLogData = (objStr, k, v) => {
   MCSERVER.logCenter[objStr] = MCSERVER.logCenter[objStr].slice(1);
   MCSERVER.logCenter[objStr].push({
     key: k,
-    val: v
+    val: v,
   });
 };
 
@@ -180,7 +180,7 @@ var expressWs = require("express-ws")(app);
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: false,
   })
 );
 app.use(bodyParser.json());
@@ -192,10 +192,10 @@ app.use(
     secret: UUID.v4(),
     name: "MCSM_SESSION_ID",
     cookie: {
-      maxAge: MCSERVER.localProperty.session_max_age * 1000 * 60
+      maxAge: MCSERVER.localProperty.session_max_age * 1000 * 60,
     },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
   })
 );
 

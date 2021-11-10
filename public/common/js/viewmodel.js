@@ -12,14 +12,14 @@
     webscoketStatus["is"] = true;
     webscoketStatus["tcolor"] = "#ffffff";
     VIEW_MODEL.newVue("websocketStatus", {
-      el: "#websocket"
+      el: "#websocket",
     });
     VIEW_MODEL.newVue("websocketStatus", {
-      el: "#websocket2"
+      el: "#websocket2",
     });
     //左上角用户显示
     VIEW_MODEL.newVue("websocketStatus", {
-      el: "#TitleUser"
+      el: "#TitleUser",
     });
   });
 
@@ -66,7 +66,7 @@
     VIEW_MODEL.newVueOnce("col-muem", {
       el: "#SideColFor",
       data: {
-        isOnMouse: false
+        isOnMouse: false,
       },
       methods: {
         onRedirect: function (link, api, item) {
@@ -81,8 +81,8 @@
           MI.on("SideMeumClick", null);
           // 跳转
           RES.redirectPage(link, api, "update_page");
-        }
-      }
+        },
+      },
     });
   });
 
@@ -193,7 +193,7 @@
         rows: 30,
         cols: 100,
         fontSize: fontSize,
-        convertEol: true
+        convertEol: true,
       }));
       // 终端基本颜色代码
       term.TERM_TEXT_RED = "\x1B[31m";
@@ -222,7 +222,7 @@
         WS.sendMsg(
           "server/console/history",
           JSON.stringify({
-            serverName: PAGE.serverName
+            serverName: PAGE.serverName,
           })
         );
       };
@@ -234,7 +234,7 @@
     new Vue({
       el: "#WebTerminalControl",
       data: {
-        command: ""
+        command: "",
       },
       methods: {
         toOpenServer: function () {
@@ -246,7 +246,7 @@
           console.log("发送命令:", this.command);
           var data = {
             command: this.command,
-            serverName: PAGE.serverName
+            serverName: PAGE.serverName,
           };
           if (this.command.length >= 1 || typeof parCommand == "string") {
             //压入命令栈 并 发送
@@ -261,11 +261,11 @@
           WS.sendMsg(
             "server/console/history",
             JSON.stringify({
-              serverName: PAGE.serverName
+              serverName: PAGE.serverName,
             })
           );
-        }
-      }
+        },
+      },
     });
     $("#WebTerminalScreenWapper").removeAttr("style");
     $("#WebTerminalScreenWapper").css("display", "none");

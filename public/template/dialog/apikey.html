@@ -30,7 +30,7 @@
   new Vue({
     el: "#ApiKeyContainer",
     data: {
-      API_KEY: ""
+      API_KEY: "",
     },
     methods: {
       updateKey: function () {
@@ -46,7 +46,7 @@
           var API_KEY = obj.ResponseValue;
           that.API_KEY = API_KEY;
         });
-      }
+      },
     },
     mounted: function () {
       var that = this;
@@ -54,6 +54,6 @@
         var API_KEY = obj.ResponseValue;
         that.API_KEY = API_KEY;
       });
-    }
+    },
   });
 </script>

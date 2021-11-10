@@ -17,24 +17,24 @@ log4js.configure({
       type: "stdout",
       layout: {
         type: "pattern",
-        pattern: "[%d{MM/dd hh:mm:ss}] [%[%p%]] %m"
-      }
+        pattern: "[%d{MM/dd hh:mm:ss}] [%[%p%]] %m",
+      },
     },
     app: {
       type: "file",
       filename: LOG_FILE_PATH,
       layout: {
         type: "pattern",
-        pattern: "%d %p %m"
-      }
-    }
+        pattern: "%d %p %m",
+      },
+    },
   },
   categories: {
     default: {
       appenders: ["out", "app"],
-      level: "info"
-    }
-  }
+      level: "info",
+    },
+  },
 });
 
 const logger = log4js.getLogger("default");

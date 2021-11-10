@@ -6,7 +6,7 @@ const response = require("../../helper/Response");
 WebSocketObserver().listener("soft/view", (data) => {
   if (!permssion.isMaster(data.WsSession)) return;
   response.wsSend(data.ws, "soft/view", {
-    softConfig: MCSERVER.softConfig
+    softConfig: MCSERVER.softConfig,
   });
 });
 

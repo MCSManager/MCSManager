@@ -136,7 +136,7 @@ router.get("/eac_quque", (req, res) => {
   const nowTask = fsoperate.FileOperate.getNowEacTaskCounter();
   sendHandle(req, res, {
     quque: quque.length,
-    now: nowTask
+    now: nowTask,
   });
 });
 
@@ -186,8 +186,8 @@ router.get("/download/:name", (req, res) => {
       dotfiles: "deny",
       headers: {
         "Content-Disposition": "attachmnet",
-        filename: encodeURIComponent(req.params.name.trim())
-      }
+        filename: encodeURIComponent(req.params.name.trim()),
+      },
     },
     () => {}
   );

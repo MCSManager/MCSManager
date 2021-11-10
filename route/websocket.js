@@ -109,7 +109,7 @@ router.ws("/ws", function (ws, req) {
     ws: ws,
     username: username,
     token: token,
-    console: null
+    console: null,
   });
 
   //Session 级别验证登录检查
@@ -175,7 +175,7 @@ router.ws("/ws", function (ws, req) {
         body: reqBody,
         RequestValue: reqHeaderObj["RequestValue"],
         token: token,
-        WsSession: WsSession
+        WsSession: WsSession,
       });
     } catch (err) {
       MCSERVER.error("WebSocket 请求处理时异常:", err);

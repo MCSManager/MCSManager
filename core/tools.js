@@ -56,10 +56,10 @@ module.exports.autoLoadModule = (proPath, minePath, callback) => {
 
 module.exports.mCopyFileSync = (oldpath, newpath) => {
   let resetData = fs.readFileSync(oldpath, {
-    encoding: "UTF-8"
+    encoding: "UTF-8",
   });
   fs.writeFileSync(newpath, resetData, {
-    encoding: "UTF-8"
+    encoding: "UTF-8",
   });
   return true;
 };

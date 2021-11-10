@@ -54,7 +54,7 @@ serverModel.ServerManager().on("open", (data) => {
   MCSERVER.log("[" + data.serverName + "] >>> 进程创建");
   // 传递开启服务端事件
   serverModel.ServerManager().emit("open_next", {
-    serverName: data.serverName
+    serverName: data.serverName,
   });
 
   // 为此服务端创建历史记录类
@@ -127,7 +127,7 @@ setInterval(() => {
           ws: socket.ws,
           resK: "server/console/ws",
           resV: {},
-          body: data
+          body: data,
         });
       });
       // 释放内存并删除键

@@ -37,7 +37,7 @@ WebSocketObserver().listener("genuser/home", (data) => {
         createDate: userHaveServer.dataModel.createDate,
         run: userHaveServer.isRun(),
         jarName: userHaveServer.dataModel.jarName,
-        timeLimitDate: userHaveServer.dataModel.timeLimitDate
+        timeLimitDate: userHaveServer.dataModel.timeLimitDate,
       });
       if (userHaveServer.isRun()) {
         OnlineServerList.push(userHaveServer.dataModel.name);
@@ -53,7 +53,7 @@ WebSocketObserver().listener("genuser/home", (data) => {
       OnlineLen: OnlineServerList.length,
       AllServerLen: userServerList.length,
       userServerList: userServerList,
-      OnlineServerList: OnlineServerList
+      OnlineServerList: OnlineServerList,
     });
   } catch (err) {
     MCSERVER.error("普通用户访问异常", err);

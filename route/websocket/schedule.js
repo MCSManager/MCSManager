@@ -36,7 +36,7 @@ WebSocketObserver().listener("schedule/list", (data) => {
     response.wsSend(data.ws, "schedule/list", {
       username: data.WsSession.username,
       servername: servername,
-      schedules: sendlist
+      schedules: sendlist,
     });
   }
 });

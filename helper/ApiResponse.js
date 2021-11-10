@@ -22,7 +22,7 @@ module.exports.send = (res, data = "", statusCode = 200) => {
   res.send(
     JSON.stringify({
       status: statusCode,
-      data: data
+      data: data,
     })
   );
   res.end();
@@ -31,7 +31,7 @@ module.exports.send = (res, data = "", statusCode = 200) => {
 module.exports.ok = (res, statusCode = 200) => {
   res.send(
     JSON.stringify({
-      status: statusCode
+      status: statusCode,
     })
   );
   res.end();
@@ -41,7 +41,7 @@ module.exports.error = (res, error = new NullError(), statusCode = 500) => {
   res.send(
     JSON.stringify({
       status: statusCode,
-      error: error.message
+      error: error.message,
     })
   );
   res.end();
@@ -51,7 +51,7 @@ module.exports.forbidden = (res, error = new ForbiddenError(), statusCode = 403)
   res.send(
     JSON.stringify({
       status: statusCode,
-      error: error.message
+      error: error.message,
     })
   );
   res.end();
@@ -61,7 +61,7 @@ module.exports.unavailable = (res, error = new UnavailableError(), statusCode = 
   res.send(
     JSON.stringify({
       status: statusCode,
-      error: error.message
+      error: error.message,
     })
   );
   res.end();

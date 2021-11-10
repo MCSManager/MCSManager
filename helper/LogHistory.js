@@ -136,5 +136,5 @@ class LogHistory {
 }
 
 module.exports = {
-  LogHistory
+  LogHistory,
 };

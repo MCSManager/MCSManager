@@ -1,7 +1,7 @@
 function send(res, info, value) {
   let str = JSON.stringify({
     ResponseKey: info,
-    ResponseValue: value
+    ResponseValue: value,
   });
 
   try {
@@ -16,7 +16,7 @@ function send(res, info, value) {
 function wsSend(ws, info, value, body = "") {
   let str = JSON.stringify({
     ResponseKey: info,
-    ResponseValue: value
+    ResponseValue: value,
   });
   try {
     if (ws.readyState == ws.OPEN) {

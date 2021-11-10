@@ -91,7 +91,7 @@
         Xms: "",
         addCmd: "",
         java: "java",
-        readServerName: ""
+        readServerName: "",
       },
       methods: {
         toCreateServer: function () {
@@ -107,7 +107,7 @@
             cwd: this.cwd,
             Xmx: this.Xmx,
             Xms: this.Xms,
-            java: this.Java
+            java: this.Java,
           };
           WS.sendMsg("server/create", JSON.stringify(obj));
           RES.redirectPage("./template/server.html", "server/view");
@@ -115,7 +115,7 @@
         toCreaterDir: function () {
           var obj = {
             serverName: this.name,
-            cwd: this.cwd
+            cwd: this.cwd,
           };
           WS.sendMsg("server/create_dir", JSON.stringify(obj));
         },
@@ -136,14 +136,14 @@
             that.addCmd = serverData.addCmd.join(" ").trim();
             // that.cwd = serverData.cwd;
           });
-        }
+        },
       },
       computed: {
         serverCwd: function () {
           if (this.cwd == "") return "./server/server_core/" + this.name;
           return this.cwd;
-        }
-      }
+        },
+      },
     });
   });
 

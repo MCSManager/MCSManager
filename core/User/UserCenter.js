@@ -137,7 +137,7 @@ class UserCenter {
       data.createDate = tmp.createDate;
       list.push({
         username: this.userList[k].dataModel.username,
-        data: data
+        data: data,
       });
     }
     return list;

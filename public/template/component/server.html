@@ -149,16 +149,16 @@
       el: "#ServerPanel",
       data: {
         oldServerName: "",
-        isHighCommande: false
+        isHighCommande: false,
       },
       methods: {
         toOpenCommmandInfo: function () {
           TOOLS.popWind({
             style: {
-              maxWidth: "700px"
+              maxWidth: "700px",
             },
             title: "自定义参数说明",
-            template: "template/dialog/usercommand.html"
+            template: "template/dialog/usercommand.html",
           });
         },
         toDocker: function () {
@@ -167,10 +167,10 @@
           TOOLS.popWind({
             style: {
               maxWidth: "600px",
-              top: "15%"
+              top: "15%",
             },
             title: "Minecraft Docker 配置",
-            template: "template/dialog/docker_config.html"
+            template: "template/dialog/docker_config.html",
           });
         },
         toConsole: function (serverName) {
@@ -211,13 +211,13 @@
             highCommande: this.highCommande,
             oldServerName: this.oldServerName,
             timeLimitDate: this.timeLimitDate,
-            stopCommand: this.stopCommand
+            stopCommand: this.stopCommand,
           };
           WS.sendMsg("server/rebulider", JSON.stringify(obj));
           setTimeout(function () {
             RES.redirectPage("./template/server.html", "server/view");
           }, 100);
-        }
+        },
       },
       watch: {
         highCommande: function (newQuestion) {
@@ -226,8 +226,8 @@
           } else {
             this.isHighCommande = false;
           }
-        }
-      }
+        },
+      },
     });
     VIEW_MODEL["ServerPanel"].addCmd = VIEW_MODEL["ServerPanel"].addCmd.toString().replace(/,/gim, " ");
     VIEW_MODEL["ServerPanel"].oldServerName = VIEW_MODEL["ServerPanel"].name + "";

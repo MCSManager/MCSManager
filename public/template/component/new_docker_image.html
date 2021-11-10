@@ -24,8 +24,8 @@
             <p><b>注意事项</b></p>
             <p>必须使用 /mcsd 作为工作目录。Docker 镜像名就是您生成后的名字。</p>
             <p>
-              这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。如果出现构建失败失败，请尝试检查
-              Docker 服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。
+              这需要联网下载文件构建，构建时间根据网络与处理器决定，大小约 700 MB，可能需要一段时间，可以关闭网页控制台，任务完成后，可以在结果列表按钮处查看结果。如果出现构建失败失败，请尝试检查 Docker
+              服务是否成功启动 (service docker start)，以及 docker 命令是否能执行，网络是否畅通。
             </p>
 
             <p><b>相关链接</b></p>
@@ -54,7 +54,7 @@
         dockerImageName: "",
         createDockerDis: false,
         java16: "FROM openjdk:16.0.2\nRUN mkdir -p /mcsd\nENV TZ=Asia/Shanghai\nWORKDIR /mcsd",
-        java8: 'FROM openjdk:8\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd'
+        java8: 'FROM openjdk:8\nRUN mkdir -p /mcsd\nRUN echo "Asia/Shanghai" > /etc/timezone;dpkg-reconfigure -f noninteractive tzdata\nWORKDIR /mcsd',
       },
       methods: {
         selectImageFile: function (type) {
@@ -67,7 +67,7 @@
         createDocker: function () {
           var obj = {
             dockerImageName: this.dockerImageName || "mcsd",
-            dockerfile: TOOLS.decode(this.dockerFileText)
+            dockerfile: TOOLS.decode(this.dockerFileText),
           };
           if (!confirm("DockerFile 文件：\n" + obj.dockerfile + "\n镜像名:" + obj.dockerImageName + "\n确认无误单击【确定】得以继续")) return;
           if (!TOOLS.isStdText(obj.dockerImageName)) {
@@ -81,14 +81,14 @@
           TOOLS.popWind({
             style: {
               maxWidth: "400px",
-              top: "0px"
+              top: "0px",
             },
             title: "Docker 构建结果",
             template: "template/dialog/docker_res.html",
-            callback: function () {}
+            callback: function () {},
           });
-        }
-      }
+        },
+      },
     });
   });
 

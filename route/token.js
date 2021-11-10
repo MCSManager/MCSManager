@@ -21,7 +21,7 @@ router.get("/", function (req, res) {
       //用户未登录，返回一个随机的 token 给它，并且这个 token 与正常的 token 几乎一模一样
       response.returnMsg(res, "token", {
         token: getRandToken(),
-        username: username
+        username: username,
       });
       return;
     }
@@ -39,7 +39,7 @@ router.get("/", function (req, res) {
 
     response.returnMsg(res, "token", {
       token: req.session["token"],
-      username: username
+      username: username,
     });
   } else {
     counter.plus("csrfCounter");

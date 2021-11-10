@@ -63,7 +63,7 @@
       },
       processData: parameter["processData"] == false || true,
       traditional: parameter["traditional"] == false || true,
-      cache: parameter["cache"] || false
+      cache: parameter["cache"] || false,
     });
   };
 
@@ -129,7 +129,7 @@
     ToolsPageLoading.css("display", "block");
     PageMain.stop(true, true).animate(
       {
-        opacity: "0"
+        opacity: "0",
       },
       150,
       callback
@@ -145,7 +145,7 @@
 
     PageMain.stop(true, true).animate(
       {
-        opacity: "1"
+        opacity: "1",
       },
       150,
       function () {

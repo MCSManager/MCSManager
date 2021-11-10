@@ -46,7 +46,7 @@
         mcpingName: remoteMCPingConfig.mcpingName || "",
         mcpingHost: remoteMCPingConfig.mcpingHost || "",
         mcpingPort: remoteMCPingConfig.mcpingPort || "",
-        mcpingMotd: remoteMCPingConfig.mcpingMotd || ""
+        mcpingMotd: remoteMCPingConfig.mcpingMotd || "",
       },
       methods: {
         ok: function () {
@@ -58,8 +58,8 @@
                 mcpingName: this.mcpingName.trim() || "Minecraft Server",
                 mcpingHost: this.mcpingHost.trim() || "localhost",
                 mcpingPort: this.mcpingPort.trim() || "",
-                mcpingMotd: this.mcpingMotd.trim() || ""
-              }
+                mcpingMotd: this.mcpingMotd.trim() || "",
+              },
             })
           );
           TOOLS.popWindClose();
@@ -69,8 +69,8 @@
         },
         toAPI_PAGE: function () {
           window.open("/api/status/" + PAGE.listenServername);
-        }
-      }
+        },
+      },
     });
   });
 </script>

@@ -8,7 +8,7 @@ var bodyParser = require("body-parser");
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: false,
   })
 );
 app.use(bodyParser.json());
@@ -20,10 +20,10 @@ app.use(
     name: "IFM_session",
     // Cookie 默认时间：一小时
     cookie: {
-      maxAge: 1000 * 60 * 60
+      maxAge: 1000 * 60 * 60,
     },
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 );
 

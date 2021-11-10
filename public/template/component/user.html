@@ -67,7 +67,7 @@
       data: {
         ServerLen: 0,
         password: "",
-        oldUsername: ""
+        oldUsername: "",
       },
       methods: {
         toUpdate: function () {
@@ -84,7 +84,7 @@
             newUsername: this.username,
             newPassword: this.password,
             allowedServer: allowedServers,
-            username: this.oldUsername
+            username: this.oldUsername,
           };
           WS.sendMsg("userset/upinfo", JSON.stringify(obj));
           //返回到上层
@@ -92,13 +92,13 @@
         },
         toDeleteUser: function (itemUsername) {
           var obj = {
-            username: this.oldUsername
+            username: this.oldUsername,
           };
           WS.sendMsg("userset/delete", JSON.stringify(obj), function () {
             RES.redirectPage("./template/userset.html", "userset/update");
           });
-        }
-      }
+        },
+      },
     });
     var viewModel = VIEW_MODEL["OneUserView"];
     viewModel.oldUsername = viewModel.username + " ";

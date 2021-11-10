@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
     commonjs: true,
-    es6: true
+    es6: true,
   },
   extends: "eslint:recommended",
   globals: {
@@ -21,16 +21,16 @@ module.exports = {
     $: "writeable",
     WS: "readonly",
     hex_md5: "readonly",
-    process: "readonly"
+    process: "readonly",
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
   },
   rules: {
     "no-unused-vars": "warn",
     "no-use-before-define": "warn",
     "no-undef": "warn",
     "no-use-before-define": "off",
-    "no-prototype-builtins": "off"
-  }
+    "no-prototype-builtins": "off",
+  },
 };

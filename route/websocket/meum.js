@@ -10,7 +10,7 @@ WebSocketObserver().listener("menu", (data) => {
     return;
   }
   response.wsSend(data.ws, "ws/muem", {
-    username: data.WsSession.username
+    username: data.WsSession.username,
   });
   // response.wsMsgWindow(data.ws, '欢迎上线 ' + data.WsSession.username);
 });

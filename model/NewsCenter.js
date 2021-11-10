@@ -41,5 +41,5 @@ function requestNews() {
 }
 
 module.exports = {
-  requestNews
+  requestNews,
 };

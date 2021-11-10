@@ -77,7 +77,7 @@
     WS.sendMsg(
       "server/console/history",
       JSON.stringify({
-        serverName: PAGE.serverName
+        serverName: PAGE.serverName,
       })
     );
 
@@ -92,7 +92,7 @@
           WS.sendMsg(
             "server/console/history",
             JSON.stringify({
-              serverName: PAGE.serverName
+              serverName: PAGE.serverName,
             })
           );
         },
@@ -103,7 +103,7 @@
           if (parCommand && typeof parCommand == "string") this.command = parCommand;
           var data = {
             command: this.command,
-            serverName: PAGE.serverName
+            serverName: PAGE.serverName,
           };
           if (this.command.length >= 1 || typeof parCommand == "string") {
             //压入命令栈 并 发送
@@ -139,20 +139,20 @@
             "<span style='color:#03ea0a;'>",
             "[ 控制面板 ]:",
             "</span>",
-            "如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。<br />"
+            "如果您在此页面遇到卡顿，内存高等现象，请使用此功能来优化。<br />",
           ].join(" ");
         },
         stopServer: function () {
           this.toCommand("__stop__");
-        }
+        },
       },
       data: {
         allowedStart: true,
         command: "",
         commandList: [],
         commandListPrint: 0,
-        historyIf: false
-      }
+        historyIf: false,
+      },
     });
     PAGE.mainC = document.getElementById("TerminalMinecraft");
 

@@ -113,7 +113,7 @@
   MI.listener("ws/response", function (obj) {
     MI.routeOn(obj["ResponseKey"], {
       obj: obj["ResponseValue"],
-      body: obj.body
+      body: obj.body,
     });
   });
 })();
@@ -134,10 +134,10 @@
     MI.on("colmchange", null); //触发事件
     if (!booleans) {
       $SideCol.css({
-        opacity: "0"
+        opacity: "0",
       });
       $SideCol.css({
-        display: "none"
+        display: "none",
       });
       // $Container.css({
       // 	'left': '0px'
@@ -152,7 +152,7 @@
       // });
       $SideCol.css({
         display: "block",
-        opacity: "1"
+        opacity: "1",
       });
       MI.on("colmchangeEnd", null); //触发事件
       // $Container.removeAttr('style')

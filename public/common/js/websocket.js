@@ -57,7 +57,7 @@
     WS.sendMsg = function (value, body, callback) {
       var obj = {
         RequestKey: "req",
-        RequestValue: value
+        RequestValue: value,
       };
       if (DEBUG) {
         console.log("=== Websocket 发送触发 ===");

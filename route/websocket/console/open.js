@@ -19,7 +19,7 @@ WebSocketObserver().listener("server/console/open", (data) => {
       response.wsSend(data.ws, "server/console/open", true);
       // 传递开启服务端事件
       serverModel.ServerManager().emit("open_next", {
-        serverName: serverName
+        serverName: serverName,
       });
     } catch (err) {
       response.wsMsgWindow(data.ws, "" + err);

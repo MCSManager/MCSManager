@@ -50,7 +50,7 @@
       "broadcast-rcon-to-ops": "向OP广播RCON信息",
       "broadcast-console-to-ops": "向OP广播服务器控制台信息",
       "enforce-whitelist": "在服务器上强制使用白名单",
-      "spawn-protection": "通过将该值进行 2x+1 的运算来决定出生点的保护半径，设置为0将只保护出生点下方那一个方块。"
+      "spawn-protection": "通过将该值进行 2x+1 的运算来决定出生点的保护半径，设置为0将只保护出生点下方那一个方块。",
     };
     if (translate.hasOwnProperty(key)) {
       return translate[key];
