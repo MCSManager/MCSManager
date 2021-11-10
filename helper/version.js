@@ -13,7 +13,7 @@ const os = require("os");
 
 const verisonA = "8.7.0 发行版本"; //发行版本
 
-const verisonB = "No.20211110-01"; //版本批次
+const verisonB = "No.20211110-02"; //版本批次
 
 let info = [os.type(), os.arch(), os.hostname(), os.release()].join(" ");
 
