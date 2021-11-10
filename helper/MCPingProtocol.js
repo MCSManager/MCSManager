@@ -101,9 +101,6 @@ function CreateMCPingTask(id, ip, port) {
         return;
     }
 
-    // 过滤
-    if (!port || !ip) return;
-
     // 任务参数对象，用于记录错误次数和其他数据
     TASK_OBJECT_DATABASE[id] = {
         errorCount: 0
