@@ -1,226 +1,225 @@
 <div id="CenterShow" class="OneContainer">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="Panel">
-        <div class="PanelTitle PanelBlack">
-          <!--请不要怀疑这是在欺骗您数据统计日期来自前端，事实上，后端是在每月1日统计至今，所以是一致的-->
-          控制面板 {{ new Date().getMonth()+1 }}月1日 ~ {{ new Date().getMonth()+1 }}月{{ new Date().getDate() }}日 基础监控
+    <div class="row">
+        <div class="col-md-12">
+            <div class="Panel">
+                <div class="PanelTitle PanelBlack">
+                    控制面板 {{ new Date().getMonth()+1 }}月1日 ~ {{ new Date().getMonth()+1 }}月{{ new Date().getDate() }}日 数据简报
+                </div>
+                <div class="PanelBody">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV">{{ loginCounter }} 次</div>
+                            <div class="LogK">用户总计登陆次数</div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV">{{ passwordError }} 次</div>
+                            <div class="LogK">错误密码登陆次数</div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV">{{ banip }} ip</div>
+                            <div class="LogK">触发防火墙临时禁封</div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV">{{ csrfCounter }} 次</div>
+                            <div class="LogK">可能的CSRF跨域</div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV">{{ notPermssionCounter }} 次</div>
+                            <div class="LogK">被拒绝的请求</div>
+                        </div>
+                        <div class="col-md-2 col-sm-4">
+                            <div class="LogV" v-text="time()"></div>
+                            <div class="LogK">系统正常运行的时间</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="PanelBody">
-          <div class="row">
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV">{{ loginCounter }} 次</div>
-              <div class="LogK">用户总计登陆次数</div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV">{{ passwordError }} 次</div>
-              <div class="LogK">错误密码登陆次数</div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV">{{ banip }} ip</div>
-              <div class="LogK">触发防火墙临时禁封</div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV">{{ csrfCounter }} 次</div>
-              <div class="LogK">可能的CSRF跨域</div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV">{{ notPermssionCounter }} 次</div>
-              <div class="LogK">被拒绝的请求</div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-              <div class="LogV" v-text="time()"></div>
-              <div class="LogK">系统正常运行的时间</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="Panel">
-        <div class="PanelTitle">系统信息监控</div>
-        <div class="PanelBody">
-          <div class="">
-            <div class="row">
-              <div class="col-md-4 col-sm-4">
-                <div class="LogV">{{ (sysTotalmem - sysFreemem).toFixed(1) }} MB</div>
-                <div class="LogK">系统已使用内存</div>
-              </div>
-              <div class="col-md-4 col-sm-4">
-                <div class="LogV">{{ sysFreemem }} MB</div>
-                <div class="LogK">系统剩余内存</div>
-              </div>
-              <div class="col-md-4 col-sm-4">
-                <div class="LogV">{{ cpu }} %</div>
-                <div class="LogK">中央处理器利用率</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="col-md-6 NextCol">
-      <div class="Panel">
-        <div class="PanelTitle">控制面板内存监控</div>
-        <div class="PanelBody">
-          <div class="row">
-            <div class="col-md-4 col-sm-4">
-              <div class="LogV">{{ rss }} MB</div>
-              <div class="LogK">程序使用的物理内存</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="Panel">
+                <div class="PanelTitle">系统信息监控</div>
+                <div class="PanelBody">
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="LogV">{{ (sysTotalmem - sysFreemem).toFixed(1) }} MB</div>
+                                <div class="LogK">系统已使用内存</div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="LogV">{{ sysFreemem }} MB</div>
+                                <div class="LogK">系统剩余内存</div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="LogV">{{ cpu }} %</div>
+                                <div class="LogK">中央处理器利用率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 col-sm-4">
-              <div class="LogV">{{ heapTotal }} MB</div>
-              <div class="LogK">程序内部内存堆大小</div>
-            </div>
-            <div class="col-md-4 col-sm-4">
-              <div class="LogV">{{ heapUsed }} MB</div>
-              <div class="LogK">已使用内存堆大小</div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!--服务器与用户统计-->
-  <div class="row">
-    <!--服务器统计-->
-    <div class="col-md-6">
-      <div class="Panel">
-        <div class="PanelTitle">服务端监控</div>
-        <div class="PanelBody">
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="LogV">{{ serverCounter }} 个</div>
-              <div class="LogK">服务器总数</div>
+        <div class="col-md-6 NextCol">
+            <div class="Panel">
+                <div class="PanelTitle">控制面板内存监控</div>
+                <div class="PanelBody">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="LogV">{{ rss }} MB</div>
+                            <div class="LogK">程序使用的物理内存</div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="LogV">{{ heapTotal }} MB</div>
+                            <div class="LogK">程序内部内存堆大小</div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="LogV">{{ heapUsed }} MB</div>
+                            <div class="LogK">已使用内存堆大小</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-4">
-              <div class="LogV">{{ runServerCounter }} 个</div>
-              <div class="LogK">正在运行的服务器总数</div>
-            </div>
-            <div class="col-sm-4">
-              <div class="LogV">{{serverCounter - runServerCounter }} 个</div>
-              <div class="LogK">未启动的服务器总数</div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-    <!--用户统计-->
-    <div class="col-md-6 NextCol">
-      <div class="Panel">
-        <div class="PanelTitle">用户管理权限监控</div>
-        <div class="PanelBody">
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="LogV">{{ userCounter }} 个</div>
-              <div class="LogK">用户总数 (包括管理员)</div>
+
+    <!--服务器与用户统计-->
+    <div class="row">
+        <!--服务器统计-->
+        <div class="col-md-6">
+            <div class="Panel">
+                <div class="PanelTitle">服务端监控</div>
+                <div class="PanelBody">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="LogV">{{ serverCounter }} 个</div>
+                            <div class="LogK">服务器总数</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="LogV">{{ runServerCounter }} 个</div>
+                            <div class="LogK">正在运行的服务器总数</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="LogV">{{serverCounter - runServerCounter }} 个</div>
+                            <div class="LogK">未启动的服务器总数</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-4">
-              <div class="LogV">{{ userOnlineCounter }} 个</div>
-              <div class="LogK">正在线上的用户总数</div>
-            </div>
-            <div class="col-sm-4">
-              <div class="LogV">{{ WebsocketCounter }} 会话</div>
-              <div class="LogK">Websocket 链接数</div>
-            </div>
-          </div>
         </div>
-      </div>
+        <!--用户统计-->
+        <div class="col-md-6 NextCol">
+            <div class="Panel">
+                <div class="PanelTitle">用户管理权限监控</div>
+                <div class="PanelBody">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="LogV">{{ userCounter }} 个</div>
+                            <div class="LogK">用户总数 (包括管理员)</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="LogV">{{ userOnlineCounter }} 个</div>
+                            <div class="LogK">正在线上的用户总数</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="LogV">{{ WebsocketCounter }} 会话</div>
+                            <div class="LogK">Websocket 链接数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="Panel">
-        <div class="PanelTitle">版本</div>
-        <div class="PanelBody">
-          <div id="VersionShow">
-            <p>
-              发行版本:
-              <span class="color-gray">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="Panel">
+                <div class="PanelTitle">版本</div>
+                <div class="PanelBody">
+                    <div id="VersionShow">
+                        <p>
+                            发行版本:
+                            <span class="color-gray">
                 <span class="color-gray" v-text="verisonA"></span>
-              </span>
-            </p>
-            <p>
-              发行编号:
-              <span class="color-gray">
+                            </span>
+                        </p>
+                        <p>
+                            发行编号:
+                            <span class="color-gray">
                 <span class="color-gray" v-text="verisonB"></span>
-              </span>
-            </p>
-            <br />
-          </div>
+                            </span>
+                        </p>
+                        <br />
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="Panel">
-        <div class="PanelTitle">操作系统</div>
-        <div class="PanelBody">
-          <div id="SystemUp">
-            <p>
-              系统与平台:
-              <span class="color-gray" v-text="system"></span>
-            </p>
-            <p>
-              进程根目录:
-              <span class="color-gray" v-text="root"></span>
-            </p>
-            <br />
-          </div>
+        <div class="col-md-6">
+            <div class="Panel">
+                <div class="PanelTitle">操作系统</div>
+                <div class="PanelBody">
+                    <div id="SystemUp">
+                        <p>
+                            系统与平台:
+                            <span class="color-gray" v-text="system"></span>
+                        </p>
+                        <p>
+                            进程根目录:
+                            <span class="color-gray" v-text="root"></span>
+                        </p>
+                        <br />
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script>
-  //创建
-  MI.rListener("onload", function () {
-    // 定义页面地址
-    TOOLS.definePage("template/center", "center/show", null);
+    //创建
+    MI.rListener("onload", function() {
+        // 定义页面地址
+        TOOLS.definePage("template/center", "center/show", null);
 
-    PAGE.time = function (value) {
-      return function () {
-        var theTime = parseInt(Math.floor(this.uptime)); // 秒
-        var theTime1 = 0; // 分
-        var theTime2 = 0; // 小时
-        if (theTime > 60) {
-          theTime1 = parseInt(theTime / 60);
-          theTime = parseInt(theTime % 60);
-          if (theTime1 > 60) {
-            theTime2 = parseInt(theTime1 / 60);
-            theTime1 = parseInt(theTime1 % 60);
-          }
-        }
-        var result = "";
-        if (theTime1 > 0) {
-          result = "" + parseInt(theTime1) + "分";
-        }
-        if (theTime2 > 0) {
-          result = "" + parseInt(theTime2) + "时" + result;
-        }
-        return result;
-      };
-    };
+        PAGE.time = function(value) {
+            return function() {
+                var theTime = parseInt(Math.floor(this.uptime)); // 秒
+                var theTime1 = 0; // 分
+                var theTime2 = 0; // 小时
+                if (theTime > 60) {
+                    theTime1 = parseInt(theTime / 60);
+                    theTime = parseInt(theTime % 60);
+                    if (theTime1 > 60) {
+                        theTime2 = parseInt(theTime1 / 60);
+                        theTime1 = parseInt(theTime1 % 60);
+                    }
+                }
+                var result = "";
+                if (theTime1 > 0) {
+                    result = "" + parseInt(theTime1) + "分";
+                }
+                if (theTime2 > 0) {
+                    result = "" + parseInt(theTime2) + "时" + result;
+                }
+                return result;
+            };
+        };
 
-    VIEW_MODEL.newVue("centerShow", {
-      el: "#CenterShow",
-      methods: {
-        time: PAGE.time()
-      }
+        VIEW_MODEL.newVue("centerShow", {
+            el: "#CenterShow",
+            methods: {
+                time: PAGE.time()
+            }
+        });
+
+        PAGE.time = setInterval(function() {
+            WS.sendMsg("center/show", "");
+        }, 2100);
     });
 
-    PAGE.time = setInterval(function () {
-      WS.sendMsg("center/show", "");
-    }, 2100);
-  });
-
-  //关闭
-  MI.rListener("onend", function () {
-    clearInterval(PAGE.time);
-  });
+    //关闭
+    MI.rListener("onend", function() {
+        clearInterval(PAGE.time);
+    });
 </script>

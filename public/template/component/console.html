@@ -5,8 +5,8 @@
                 <div class="PanelTitle">服务端信息</div>
                 <div class="PanelBody">
                     <div class="PanelItem"><span class="glyphicon glyphicon-th-large" aria-hidden="true"> </span> 名称: {{ serverData.name }}</div>
-                    <div class="PanelItem"><span class="glyphicon glyphicon-tasks" aria-hidden="true"> </span> CPU 使用率: {{ sysCpu }} %</div>
-                    <div class="PanelItem"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> 内存 使用率: {{ (100 - sysMonery).toFixed(1) }} %</div>
+                    <div class="PanelItem"><span class="glyphicon glyphicon-tasks" aria-hidden="true"> </span> CPU: {{ sysCpu }} %</div>
+                    <div class="PanelItem"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"> </span> RAM: {{ (100 - sysMonery).toFixed(1) }} %</div>
                     <div class="PanelItem" v-if="run">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"> </span>
                         <span style="color: #23970c"> 状态: 正在运行..</span>
