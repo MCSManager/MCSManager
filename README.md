@@ -14,10 +14,6 @@
 
 <br />
 
-**本项目 [赞 助 者 名 单](https://docs.qq.com/sheet/DYWJNVXhib0dtamh2?c=B3A0A0)**
-<br />
-
-
 简介
 -----------
 这是一款可以管理多个 Minecraft 服务端（支持群组端）的 Web 管理面板，并且可以分配多个子账号来分别管理不同的 Minecraft 服务端，支持绝大部分主流的服务端，甚至是其他非 Minecraft 的程序。
