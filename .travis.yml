@@ -5,6 +5,7 @@ node_js:
   - "12.0"
   - "13.0"
   - "14.8"
+  - "16.13"
 sudo: true
 cache:
   directories:
@@ -14,4 +15,3 @@ before_script:
 branches:
   only:
     - master
-    - develop

@@ -209,7 +209,6 @@ app.use("/public", express.static("./public"));
 app.use((req, res, next) => {
   // 部分请求不必显示
   if (req.originalUrl.indexOf("/api/") == -1 && req.originalUrl.indexOf("/fs/") == -1 && req.originalUrl.indexOf("/fs_auth/") == -1 && req.originalUrl.indexOf("/fs_auth/") == -1) {
-    // MCSERVER.log('[', req.method.cyan, ']', '[', req.ip, ']', req.originalUrl);
   }
   if (MCSERVER.localProperty.is_allow_csrf) {
     res.header("Access-Control-Allow-Origin", "*");
