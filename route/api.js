@@ -9,7 +9,7 @@ const tools = require("../core/tools");
 
 // 服务端实例状态获取 | 公共性 API 接口
 // 无需任何权限判定
-router.all("/status/:name", function(req, res) {
+router.all("/status/:name", function (req, res) {
     if (MCSERVER.localProperty.allow_status_api) {
         res.send("管理员禁止此项功能 | Access denied");
         return;
@@ -51,7 +51,7 @@ router.all("/status/:name", function(req, res) {
 });
 
 // 获取所有实例 | API
-router.all("/server_list", function(req, res) {
+router.all("/server_list", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -62,7 +62,7 @@ router.all("/server_list", function(req, res) {
 });
 
 // 创建服务器实例 | API
-router.post("/create_server", function(req, res) {
+router.post("/create_server", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -91,7 +91,7 @@ router.post("/create_server", function(req, res) {
 });
 
 // 删除实例 API
-router.all("/delete_server/:name", function(req, res) {
+router.all("/delete_server/:name", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -109,7 +109,7 @@ router.all("/delete_server/:name", function(req, res) {
 });
 
 // 获取所有用户 | API
-router.all("/user_list", function(req, res) {
+router.all("/user_list", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -120,29 +120,25 @@ router.all("/user_list", function(req, res) {
 });
 
 // 生成用户KeyAPI | API
-router.all("/user_apikey", function(req, res) {
-
+router.all("/user_apikey", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
         return;
     }
-
     const users = userModel.userCenter();
-
-    let curr_key = users.apiKey(req.query.username, false);
-    if (curr_key == "") {
-        curr_key = users.apiKey(req.query.username, true);
+    let currKey = users.apiKey(req.query.username, false);
+    if (currKey == "") {
+        currKey = users.apiKey(req.query.username, true);
     }
-
-    apiResponse.send(res, curr_key);
+    apiResponse.send(res, currKey);
 });
 
 // 创建用户 | API
 // params.username
 // params.password
 // params.serverList
-router.post("/create_user", function(req, res) {
+router.post("/create_user", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -176,7 +172,7 @@ router.post("/create_user", function(req, res) {
 });
 
 // 删除用户 API
-router.all("/delete_user/:name", function(req, res) {
+router.all("/delete_user/:name", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -195,7 +191,7 @@ router.all("/delete_user/:name", function(req, res) {
 });
 
 // 启动服务器 | API
-router.all("/start_server/:name", function(req, res) {
+router.all("/start_server/:name", function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
         apiResponse.forbidden(res);
@@ -219,7 +215,7 @@ router.all("/start_server/:name", function(req, res) {
 });
 
 // 重启服务器 | API
-router.all("/restart_server/:name", function(req, res) {
+router.all("/restart_server/:name", function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
         apiResponse.forbidden(res);
@@ -243,7 +239,7 @@ router.all("/restart_server/:name", function(req, res) {
 });
 
 // 关闭服务器 | API
-router.all("/stop_server/:name", function(req, res) {
+router.all("/stop_server/:name", function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.params.name)) {
         apiResponse.forbidden(res);
@@ -268,7 +264,7 @@ router.all("/stop_server/:name", function(req, res) {
 
 // 向某服务器执行命令 | API
 // params.name, params.command
-router.post("/execute/", function(req, res) {
+router.post("/execute/", function (req, res) {
     // 用户权限判定
     if (!keyManager.hasServer(apiResponse.key(req), req.body.name)) {
         apiResponse.forbidden(res);
@@ -299,7 +295,7 @@ router.post("/execute/", function(req, res) {
 });
 
 // 创建服务器实例（JSON） | API
-router.post("/advanced_create_server", function(req, res) {
+router.post("/advanced_create_server", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
@@ -319,7 +315,7 @@ router.post("/advanced_create_server", function(req, res) {
 });
 
 // 修改服务器实例（JSON） | API
-router.post("/advanced_configure_server", function(req, res) {
+router.post("/advanced_configure_server", function (req, res) {
     // 仅仅准许管理员使用
     if (!keyManager.isMaster(apiResponse.key(req))) {
         apiResponse.forbidden(res);
