@@ -288,7 +288,82 @@ app.use(["/fs/mkdir", "/fs/rm", "/fs/patse", "/fs/cp", "/fs/rename", "/fs/ls"], 
   }
   res.status(403).send("禁止访问:权限不足！您不能直接访问文件在线管理程序 API，请通过正常流程！");
 });
-
+仅供参考
+const fs = require('fs')
+fs.stat('hello.js', (error,stats)=>{
+    if(error) {
+        console.log(error)
+    } else {
+        console.log(stats)
+        console.log(`文件：${stats.isFile()}`)
+        console.log(`目录：${stats.isDirectory()}`)
+    }
+})
+const fs = require('fs')
+fs.mkdir('logs', error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('目录创建成功！')
+    }
+})
+const fs = require('fs')
+fs.rmdir('logs', error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('成功删除了目录 logs')
+    }
+})
+const fs = require('fs')
+fs.writeFile('logs/hello.log','您好~\n', error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('成功写入文件');
+    }
+})
+const fs = require('fs')
+fs.appendFile('logs/hello.log','hello~\n', error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('成功写入文件');
+    }
+})
+const fs = require('fs')
+fs.readFile('logs/hello.log','utf-8', (error, data) => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log(data);
+    }
+})
+const fs = require('fs')
+fs.unlink(`logs/${file}`, error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log(`成功删除了文件： ${file}`)
+    }
+})
+const fs = require('fs')
+fs.readdir('logs', (error, files) => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log(files);
+    }
+})
+const fs = require('fs')
+fs.rename('js/hello.log', 'js/greeting.log', error => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('重命名成功')
+    }
+})
+仅供参考
 // 载入在线文件管理路由
 app.use("/fs_auth", require("./onlinefs/controller/auth"));
 app.use("/fs", require("./onlinefs/controller/function"));
