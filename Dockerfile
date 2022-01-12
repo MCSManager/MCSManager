@@ -1,4 +1,4 @@
-FROM debian
+FROM ubuntu
 COPY . /opt/MCSManager/
 RUN apt update &&\
 ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
