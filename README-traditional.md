@@ -112,6 +112,19 @@ npm start
 
 <br />
 
+**構建Docker鏡像**
+
+```bash
+# 克隆倉庫(若沒有 git，請安裝它，如 apt install -y git)
+git clone https://github.com/MCSManager/MCSManager.git
+# 進入目錄
+cd mcsmanager/
+# 構建鏡像(若沒有 docker，請安裝它，如 apt install -y docker.io)
+docker build -t mcsmanager .
+```
+
+<br />
+
 通過 Docker 啟動 MC 服務端 
 -----------
 

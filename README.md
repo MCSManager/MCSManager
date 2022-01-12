@@ -132,6 +132,19 @@ npm start
 
 <br />
 
+**构建Docker镜像**
+
+```bash
+# 克隆仓库(若没有 git，请安装它，如 apt install -y git)
+git clone https://github.com/MCSManager/MCSManager.git
+# 进入目录
+cd mcsmanager/
+# 构建镜像(若没有 docker，请安装它，如 apt install -y docker.io)
+docker build -t mcsmanager .
+```
+
+<br />
+
 在 MacOS 运行 
 -----------
 
