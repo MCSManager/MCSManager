@@ -125,6 +125,18 @@ node app.js
 
 <br />
 
+## 开发环境
+
+本仓库源代码为 Node 运行时不可直接运行的 `Typescript` 代码，必须经过编译之后才可供直接使用。
+
+程序需要还需要 `UI`，`Daemon` 另外两个项目才可开发预览和运行。
+
+```bash
+git clone https://github.com/MCSManager/MCSManager.git
+npm install
+npm run start
+```
+
 ## 浏览器兼容性
 
 - 支持 `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器。
