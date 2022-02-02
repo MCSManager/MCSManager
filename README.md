@@ -1,4 +1,6 @@
-![doc_logo.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png)
+<img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManager 图标.png" width="500px" />
+
+<br />
 
 [![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
@@ -16,7 +18,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器。
 
-![main_theme.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
+![截图.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
 
 <br />
 
@@ -52,13 +54,13 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
 
-临时下载点：https://mcsmuuwinn.coding.net/s/c6a6b5de-fd2d-4857-b5f7-2528fd7b0c30
+前往：[https://mcsmanager.com/](https://mcsmanager.com/)
 
 <br />
 
 ## 在 Linux 运行
 
-**一行命令快速安装**
+一行命令快速安装
 
 ```bash
 wget -qO- https://cdn.jsdelivr.net/gh/MCSManager/Script/setup.sh | bash
@@ -125,6 +127,18 @@ node app.js
 
 <br />
 
+## 更新版本
+
+如果您想从 `8.X` 版本更新到 `9.X` 版本，这是不支持的，只能手动一个个导入实例配置和文件。
+
+如果您是 `9.X` 升级到更高版本，在 `Linux` 系统下，请分别前往 `/opt/mcsmanager/web`，`/opt/mcsmanager/daemon` 目录中执行 `git pull` 进行更新。
+
+在 `Windows` 系统下更新请前往官方下载最新安装包，覆盖所有文件即可生效。
+
+> 注意，建议更新前备份一次 `data` 目录。
+
+<br />
+
 ## 开发环境
 
 本仓库源代码为 Node 运行时不可直接运行的 `Typescript` 代码，必须经过编译之后才可供直接使用。
@@ -136,6 +150,8 @@ git clone https://github.com/MCSManager/MCSManager.git
 npm install
 npm run start
 ```
+
+<br />
 
 ## 浏览器兼容性
 
