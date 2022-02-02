@@ -1,45 +1,47 @@
 {
-  "name": "mcsmanager",
-  "version": "8.7.0",
-  "description": "A Minecraft server web panel",
-  "main": "app.js",
-  "author": "Suwings",
-  "readmeFilename": "README.md",
-  "license": "MIT",
+  "name": "mcsmanager-panel",
+  "version": "9.2.1",
+  "daemonVersion":"1.3.0",
+  "description": "Distributed clustering, groupable, lightweight and out-of-the-box Minecraft server management panel",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "ts-node ./src/app.ts",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "colors": "^1.1.2",
-    "compressing": "^1.5.0",
-    "compression": "^1.7.2",
-    "connect": "^3.6.2",
-    "cookie-parser": "^1.4.3",
-    "dockerode": "^3.1.0",
-    "express": "^4.15.3",
-    "express-session": "^1.15.3",
-    "express-ws": "^4.0.0",
-    "fs-extra": "^5.0.0",
-    "graceful-fs": "^4.1.11",
-    "iconv-lite": "^0.4.21",
+    "@koa/router": "^10.0.0",
+    "crypto": "^1.0.1",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-mount": "^4.0.0",
+    "koa-session": "^6.2.0",
+    "koa-static": "^5.0.0",
     "log4js": "^6.4.0",
-    "multer": "^1.4.2",
-    "node-schedule": "^1.3.0",
+    "md5": "^2.3.0",
+    "node-schedule": "^2.0.0",
     "os-utils": "0.0.14",
-    "pidusage": "^1.1.5",
-    "properties": "^1.2.1",
-    "uuid": "^3.2.1"
+    "socket.io": "^3.1.2",
+    "socket.io-client": "^3.1.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "prettier": "2.1.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Suwings/MCSManager"
-  },
-  "scripts": {
-    "start": "node app.js",
-    "test": "node app.js --test"
-  },
-  "engines": {
-    "node": ">=8.0"
+    "@types/fs-extra": "^9.0.11",
+    "@types/koa": "^2.13.1",
+    "@types/koa-session": "^5.10.3",
+    "@types/koa-static": "^4.0.1",
+    "@types/koa__router": "^8.0.4",
+    "@types/md5": "^2.3.1",
+    "@types/node": "^14.14.41",
+    "@types/node-schedule": "^1.3.2",
+    "@types/os-utils": "0.0.1",
+    "@types/socket.io": "^2.1.13",
+    "@types/socket.io-client": "^1.4.36",
+    "@types/uuid": "^8.3.0",
+    "eslint": "^7.23.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   }
 }
