@@ -1,4 +1,4 @@
-![doc_logo.png](/docs/logo.png)
+![doc_logo.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png)
 
 [![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
@@ -16,7 +16,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器。
 
-![main_theme.png](docs/panel.png)
+![main_theme.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
 
 <br />
 
