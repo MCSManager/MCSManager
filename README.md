@@ -6,8 +6,7 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-GPL-red.svg)](https://github.com/Suwings/MCSManager)
 
-[官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/)
-
+[官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/) | [团队主页](https://github.com/MCSManager) | [UI 界面仓库](https://github.com/MCSManager/UI) | [Daemon 项目仓库](https://github.com/MCSManager/Daemon)
 <br />
 
 ## 软件简介
@@ -139,7 +138,7 @@ node app.js
 
 <br />
 
-## 开发环境
+## 搭建开发环境
 
 本仓库源代码为 Node 运行时不可直接运行的 `Typescript` 代码，必须经过编译之后才可供直接使用。
 
