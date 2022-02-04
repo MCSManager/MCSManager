@@ -11,9 +11,6 @@
   "homepage": "https://mcsmanager.com/",
   "author": "https://github.com/Suwings",
   "license": "GPL-3.0",
-  "engines": {
-    "node": ">=14.17.6"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MCSManager/MCSManager"
