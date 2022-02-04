@@ -3,14 +3,21 @@
   "version": "9.2.2",
   "daemonVersion": "1.3.0",
   "description": "Distributed clustering, groupable, lightweight and out-of-the-box Minecraft server management panel",
-  "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "ts-node ./src/app.ts",
     "build": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://mcsmanager.com/",
+  "author": "https://github.com/Suwings",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">=14.17.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MCSManager/MCSManager"
+  },
   "dependencies": {
     "@koa/router": "^10.0.0",
     "crypto": "^1.0.1",
