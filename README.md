@@ -60,7 +60,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 ## 在 Linux 运行
 
-一行命令快速安装
+**一行命令快速安装**
 
 ```bash
 wget -qO- https://cdn.jsdelivr.net/gh/MCSManager/Script/setup.sh | bash
