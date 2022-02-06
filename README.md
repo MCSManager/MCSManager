@@ -168,6 +168,12 @@ npm run start
 
 <br />
 
+## 贡献
+
+如果你在使用过程中发现任何问题，可以 [提交 Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) 或自行 Fork 修改后提交 Pull Request。
+
+代码需要保持现有格式，不得格式化多余代码，具体可[参考这里](https://github.com/MCSManager/MCSManager/issues/544)。
+
 ## 问题报告
 
 欢迎发现的任何问题进行反馈，必当及时修复。
