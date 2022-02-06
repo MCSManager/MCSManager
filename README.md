@@ -174,6 +174,8 @@ npm run start
 
 代码需要保持现有格式，不得格式化多余代码，具体可[参考这里](https://github.com/MCSManager/MCSManager/issues/544)。
 
+<br />
+
 ## 问题报告
 
 欢迎发现的任何问题进行反馈，必当及时修复。
