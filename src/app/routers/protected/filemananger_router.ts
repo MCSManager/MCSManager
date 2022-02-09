@@ -193,7 +193,7 @@ router.post(
       const targets = ctx.request.body.targets;
       const type = Number(ctx.request.body.type);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
-      new RemoteRequest(remoteService).request("file/compress", {
+      await new RemoteRequest(remoteService).request("file/compress", {
         instanceUuid,
         targets,
         source,
