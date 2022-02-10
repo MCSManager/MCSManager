@@ -107,6 +107,24 @@ router.get(
 );
 
 // [Top-level Permission]
+// 获取指定远程服务现有网络列表
+router.get(
+  "/networkModes",
+  permission({ level: 10 }),
+  validator({ query: { remote_uuid: String } }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("environment/networkModes", {});
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Top-level Permission]
 // 获取指定远程服务的创建镜像进度
 router.get(
   "/progress",

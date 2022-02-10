@@ -118,3 +118,6 @@ dist
 .tern-port
 workspace.code-workspace
 src/public/1.png
+
+# IntelliJ Idea project files
+/.idea/*
