@@ -65,7 +65,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 **一行命令快速安装**
 
 ```bash
-wget -qO- https://cdn.jsdelivr.net/gh/MCSManager/Script/setup.sh | bash
+wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
 ```
 
 - 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux）
