@@ -46,7 +46,9 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 地址：[https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
 
-> 官方文档正在不断完善，里面的内容还有瑕疵，暂且仅供参考。
+> 文档正在不断完善，里面的内容还有瑕疵，暂且仅供参考。
+
+> 旧版 `8.X` 文档与 API 备份在[此处](https://github.com/MCSManager/Backup-v8.7/wiki/API-Documentation)。
 
 <br />
 
@@ -63,7 +65,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 **一行命令快速安装**
 
 ```bash
-wget -qO- https://cdn.jsdelivr.net/gh/MCSManager/Script/setup.sh | bash
+wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
 ```
 
 - 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux）
