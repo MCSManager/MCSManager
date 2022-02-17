@@ -43,6 +43,25 @@ class StorageSubsystem {
     fs.writeFileSync(filePath, data, { encoding: "utf-8" });
   }
 
+  // 以复制目标方为原型的基本类型的深复制
+  // target 复制目标 object 复制源
+  protected defineAttr(target: any, object: any): any {
+    for (const v of Object.keys(target)) {
+      const objectValue = object[v];
+      if (objectValue === undefined) continue;
+      if (objectValue instanceof Array) {
+        target[v] = objectValue;
+        continue;
+      }
+      if (objectValue instanceof Object && typeof objectValue === "object") {
+        this.defineAttr(target[v], objectValue);
+        continue;
+      }
+      target[v] = objectValue;
+    }
+    return target;
+  }
+
   /**
    * 根据类定义和标识符实例化成对象
    */
@@ -54,10 +73,11 @@ class StorageSubsystem {
     const data = fs.readFileSync(filePath, { encoding: "utf-8" });
     const dataObject = JSON.parse(data);
     const target = new classz();
-    for (const v of Object.keys(target)) {
-      if (dataObject[v] !== undefined) target[v] = dataObject[v];
-    }
-    return target;
+    // for (const v of Object.keys(target)) {
+    //   if (dataObject[v] !== undefined) target[v] = dataObject[v];
+    // }
+    // 深层对象复制
+    return this.defineAttr(target, dataObject);
   }
 
   /**
