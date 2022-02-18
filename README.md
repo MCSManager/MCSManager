@@ -141,17 +141,67 @@ node app.js
 
 <br />
 
+
+## 项目体系
+
+整个软件运行需要三个项目的互相配合才可运行，您普通安装的代码是编译再整合后的产物。
+
+[**控制面板端**](https://github.com/MCSManager/MCSManager)
+
+- 角色：控制中心
+- 责任：负责提供网页前端的后端接口，提供API接口，用户数据管理和对守护进程进行通信和授权。
+ 
+[**网页前端**](https://github.com/MCSManager/UI)
+
+- 角色：控制中心的用户交互界面
+- 责任：以网页形式展示数据，发送请求，并且拥有与守护进程通信的能力，此项目最终产物是纯静态文件。
+ 
+[**守护进程**](https://github.com/MCSManager/Daemon)
+
+- 角色：被控端
+- 责任：控制本地主机的所有实例，真实进程的实际管理者，拥有与任何对象的通信能力。
+
+<br />
+
 ## 搭建开发环境
 
-本仓库源代码为 Node 运行时不可直接运行的 `Typescript` 代码，必须经过编译之后才可供直接使用。
+此段落面向开发人员，普通用户无需关注也无需执行。
 
-程序需要还需要 `UI`，`Daemon` 另外两个项目才可开发预览和运行。
+所有项目全部以开发环境运行后，便可以进行开发与预览，请务必遵循开源协议。
+
+**控制面板端（MCSManager）**
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
+cd MCSManager
+npm install
+npm run start 
+# 默认将采用 ts-node 直接执行 Typescript 代码
+# 默认运行在 23333 端口
+```
+
+**网页前端（UI）**
+
+```bash
+git clone https://github.com/MCSManager/UI.git
+cd UI
+npm install
+npm run serve
+# 访问 http://localhost:8080/ 即可预览界面
+# 所有 API 请求将自动转发到 23333 端口
+```
+
+**守护进程（Daemon）**
+
+```bash
+https://github.com/MCSManager/Daemon.git
+cd Daemon
 npm install
 npm run start
+# 运行后请在控制面板端连接本守护进程
+# 默认运行在 24444 端口
 ```
+
 
 <br />
 
