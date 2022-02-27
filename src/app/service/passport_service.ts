@@ -24,6 +24,7 @@ import userSystem from "./system_user";
 import { timeUuid } from "./password";
 import GlobalVariable from "../common/global_variable";
 import { systemConfig } from "../setting";
+import { logger } from "./log";
 
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
@@ -34,11 +35,11 @@ export const LOGIN_FAILED_COUNT_KEY = "loginFailedCount";
 export function login(ctx: Koa.ParameterizedContext, userName: string, passWord: string): string {
   // 记录登录请求次数
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
+  const ip = ctx.socket.remoteAddress;
   // 进行用户信息检查
   if (userSystem.checkUser({ userName, passWord })) {
     // 登录成功后重置此IP的错误次数
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-    const ip = ctx.socket.remoteAddress;
     delete ipMap[ip];
     // 会话 Session 状态改变为已登陆
     const user = userSystem.getUserByUserName(userName);
@@ -48,6 +49,8 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     ctx.session["uuid"] = user.uuid;
     ctx.session["token"] = timeUuid();
     ctx.session.save();
+    logger.info(`[Logined Event] IP: ${ip} 成功登录账号 ${userName}`);
+    logger.info(`Token: ${ctx.session["token"]}`);
     return ctx.session["token"];
   } else {
     // 记录登录失败次数
@@ -55,6 +58,7 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     ctx.session["login"] = null;
     ctx.session["token"] = null;
     ctx.session.save();
+    logger.info(`[Logined Event] IP: ${ip} 登录账号 ${userName} 失败`);
     return null;
   }
 }
