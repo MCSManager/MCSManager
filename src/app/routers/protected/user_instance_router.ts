@@ -152,6 +152,34 @@ router.all(
 );
 
 // [Low-level Permission]
+// 执行异步任务
+router.post(
+  "/asynchronous",
+  permission({ level: 1 }),
+  validator({
+    query: { remote_uuid: String, uuid: String, task_name: String },
+    body: {}
+  }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const taskName = String(ctx.query.task_name);
+      const parameter = ctx.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
+        instanceUuid,
+        taskName,
+        parameter
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
 // 请求与守护进程建立数据流专有通道
 router.post(
   "/stream_channel",
