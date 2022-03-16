@@ -180,6 +180,29 @@ router.post(
 );
 
 // [Low-level Permission]
+// 终止异步任务
+router.all(
+  "/stop_asynchronous",
+  permission({ level: 1 }),
+  validator({
+    query: { remote_uuid: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("instance/stop_asynchronous", {
+        instanceUuid
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
 // 请求与守护进程建立数据流专有通道
 router.post(
   "/stream_channel",
