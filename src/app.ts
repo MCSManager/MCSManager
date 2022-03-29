@@ -60,6 +60,7 @@ import { v4 } from "uuid";
 import path from "path";
 import koaBody from "koa-body";
 import session from "koa-session";
+import compress from "koa-compress";
 import koaStatic from "koa-static";
 import http from "http";
 
@@ -109,6 +110,12 @@ app.use(protocolMiddleware);
 
 // 静态文件路由
 app.use(koaStatic(path.join(BASE_PATH, "public")));
+
+const options = {
+  threshold: 1024 //数据超过1kb时压缩
+};
+app.use(compress(options));
+/* gzip压缩配置 end */
 
 // 装载所有路由
 import { index } from "./app/index";
