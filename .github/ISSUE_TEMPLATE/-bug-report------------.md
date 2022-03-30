@@ -1,9 +1,9 @@
 ---
-name: BUG 报告
+name: "[Bug Report] 问题/漏洞/错误反馈"
 about: 创建一个 BUG 报告给予开发团队。
-title: "[BUG]"
+title: "[Bug Report] XXXXXXX"
 labels: ''
-assignees: ''
+assignees: Suwings
 
 ---
 
