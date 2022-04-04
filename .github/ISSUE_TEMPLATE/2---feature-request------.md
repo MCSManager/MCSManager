@@ -1,7 +1,7 @@
 ---
-name: 功能建议
+name: 2. [Feature Request] 功能建议
 about: 有任何功能上的想法或意见可以使用此模板发布。
-title: "[Feature]"
+title: "[Feature Request] XXXXXXX"
 labels: Feature Request
 assignees: ''
 

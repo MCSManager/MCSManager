@@ -1,5 +1,5 @@
 ---
-name: 其他类型模板
+name: 4. [Other] 其他类型模板
 about: 除BUG报告与功能建议之外的任何内容，请使用本模板。
 title: ''
 labels: ''
