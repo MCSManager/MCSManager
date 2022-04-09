@@ -74,6 +74,12 @@ initSystemConfig();
 
 const app = new Koa();
 
+// 监听 Koa 错误
+app.on("error", (error) => {
+  // 屏蔽所有 Koa 框架级别事件
+  // 当 Koa 遭遇短连接洪水攻击时，很容易错误信息刷屏，有可能会间接影响某些应用程序运作
+});
+
 app.use(
   koaBody({
     multipart: true,
