@@ -23,7 +23,8 @@ import Koa from "koa";
 import Router from "@koa/router";
 import validator from "../../middleware/validator";
 import permission from "../../middleware/permission";
-import { check, login, logout, register, getUserUuid, checkBanIp } from '../../service/passport_service';
+import { check, login, logout, checkBanIp } from "../../service/passport_service";
+import { systemConfig } from "../../setting";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -36,25 +37,38 @@ router.post(
   async (ctx: Koa.ParameterizedContext) => {
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
-    if (!checkBanIp(ctx))
-      throw new Error("身份验证次数过多，您的 IP 地址已被锁定 10 分钟")
+    if (!checkBanIp(ctx)) throw new Error("身份验证次数过多，您的 IP 地址已被锁定 10 分钟");
     if (check(ctx)) return (ctx.body = "Logined");
     let token = login(ctx, userName, passWord);
     if (token) {
       ctx.body = true;
     } else {
-      throw new Error("账号或密码错误")
+      throw new Error("账号或密码错误");
     }
   }
 );
 
 // [Public Permission]
 // 退出路由
-router.get("/logout",
+router.get(
+  "/logout",
   permission({ token: false, level: null }),
   async (ctx: Koa.ParameterizedContext) => {
     logout(ctx);
     ctx.body = true;
-  });
+  }
+);
+
+// [Public Permission]
+// 登录界面文案展示
+router.all(
+  "/login_info",
+  permission({ token: false, level: null }),
+  async (ctx: Koa.ParameterizedContext) => {
+    ctx.body = {
+      loginInfo: systemConfig.loginInfo
+    };
+  }
+);
 
 export default router;

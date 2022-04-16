@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
-  "version": "9.4.2",
-  "daemonVersion": "1.5.2",
+  "version": "9.4.3",
+  "daemonVersion": "1.5.3",
   "description": "Distributed clustering, groupable, lightweight and out-of-the-box Minecraft server management panel",
   "scripts": {
     "dev": "nodemon app.js",

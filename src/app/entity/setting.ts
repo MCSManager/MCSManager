@@ -43,4 +43,6 @@ export default class SystemConfig {
   zipType: number = 1;
   // 登录次数IP限制
   loginCheckIp: boolean = true;
+  // 登录界面文案
+  loginInfo: string = "";
 }
