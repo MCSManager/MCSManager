@@ -38,7 +38,7 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 远程守护进程配置：`data/RemoteServiceConfig/*.json`
 
-面板默认访问账号：`root` `123456`
+面板默认访问账号：`root` `控制台第一次生成的10位随机密码`
 
 <br />
 

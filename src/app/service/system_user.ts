@@ -38,17 +38,29 @@ class UserSubsystem {
     logger.info(`用户系统初始化完毕`);
     logger.info(`用户数：${this.objects.size}`);
     if (this.objects.size <= 0) {
+      const password = this.randomPassword()
       logger.info("检测到用户数量等于0，正在生成新用户");
       logger.info("账号: root");
-      logger.info("密码: 123456");
+      logger.info(`密码: ${password}`);
+      logger.info("注意: root密码仅输出一次!");
       this.create({
         userName: "root",
-        passWord: "123456",
+        passWord: password,
         permission: 10,
         instances: []
       });
     }
   }
+
+  randomPassword() {
+    //随机数字+小写字母
+      let characterList = "0123456789abcdefghijklmnopqrstuvwxyz";
+      var password = "";
+      for (let i = 0; i < 10; ++i) {
+        password += characterList[Math.floor(Math.random() * characterList.length)];
+      }
+      return password;
+    }
 
   create(config: IUser): User {
     const newUuid = v4().replace(/-/gim, "");
