@@ -37,4 +37,5 @@ export class User implements IUser {
   loginTime: string = "";
   instances: Array<IUserApp> = [];
   apiKey: string = "";
+  isInit: boolean = false;
 }

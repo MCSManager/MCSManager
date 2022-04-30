@@ -67,6 +67,7 @@ class UserSubsystem {
   edit(uuid: string, config: any) {
     const instance = this.getInstance(uuid);
     if (config.userName) instance.userName = config.userName;
+    if (config.isInit != null) instance.isInit = Boolean(config.isInit);
     if (config.permission) instance.permission = config.permission;
     if (config.registerTime) instance.registerTime = config.registerTime;
     if (config.loginTime) instance.loginTime = config.loginTime;

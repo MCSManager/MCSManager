@@ -42,6 +42,7 @@ export interface IUser {
   registerTime?: string;
   loginTime?: string;
   instances?: Array<any>;
+  isInit?: boolean;
 }
 
 export interface ICompleteUser {

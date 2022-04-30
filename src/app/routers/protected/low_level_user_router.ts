@@ -123,7 +123,8 @@ router.get("/", permission({ level: 1, token: false }), async (ctx) => {
       instances: resInstances,
       permission: user.permission,
       token: getToken(ctx),
-      apiKey: user.apiKey
+      apiKey: user.apiKey,
+      isInit: user.isInit
     };
   }
 });
@@ -138,10 +139,10 @@ router.put(
     const userUuid = getUserUuid(ctx);
     if (userUuid) {
       const config = ctx.request.body;
-      const passWord = config.passWord;
+      const { passWord, isInit } = config;
       if (!userSystem.validatePassword(passWord))
         throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在12到36之间");
-      userSystem.edit(userUuid, { passWord });
+      userSystem.edit(userUuid, { passWord, isInit });
       ctx.body = true;
     }
   }
