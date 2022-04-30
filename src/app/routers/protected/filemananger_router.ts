@@ -47,16 +47,22 @@ router.use(async (ctx, next) => {
 router.get(
   "/list",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String, target: String } }),
+  validator({
+    query: { remote_uuid: String, uuid: String, target: String, page: Number, page_size: Number }
+  }),
   async (ctx) => {
     try {
       const target = String(ctx.query.target);
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
+      const page = Number(ctx.query.page);
+      const pageSize = Number(ctx.query.page_size);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("file/list", {
         instanceUuid,
-        target
+        target,
+        pageSize,
+        page
       });
       ctx.body = result;
     } catch (err) {
