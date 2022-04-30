@@ -78,7 +78,9 @@ class UserSubsystem {
   }
 
   validatePassword(password = "") {
-    const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{12,36}$/;
+    if (password.length < 12 || password.length > 36)
+      throw new Error(`密码长度不正确，期望是 12 到 36 位，但当前长度是 ${password.length} 位`);
+    const reg = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
     return reg.test(password);
   }
 
