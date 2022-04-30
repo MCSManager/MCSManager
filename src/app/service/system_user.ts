@@ -76,6 +76,11 @@ class UserSubsystem {
     StorageSubsystem.store("User", uuid, instance);
   }
 
+  validatePassword(password = "") {
+    const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{12,36}$/;
+    return reg.test(password);
+  }
+
   checkUser(info: IUser): boolean {
     let flag = false;
     const infoPassword = md5(info.passWord);

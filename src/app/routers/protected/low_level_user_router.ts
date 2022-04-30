@@ -139,8 +139,8 @@ router.put(
     if (userUuid) {
       const config = ctx.request.body;
       const passWord = config.passWord;
-      if (passWord && (passWord.length < 2 || passWord.length > 18))
-        throw new Error("错误的密码长度规则");
+      if (!userSystem.validatePassword(passWord))
+        throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在12到36之间");
       userSystem.edit(userUuid, { passWord });
       ctx.body = true;
     }
