@@ -138,14 +138,10 @@ router.put(
     const userUuid = getUserUuid(ctx);
     if (userUuid) {
       const config = ctx.request.body;
-      const userName = config.userName;
       const passWord = config.passWord;
-      if (userName && (userName.length < 2 || userName.length > 18))
-        throw new Error("错误的用户名长度规则");
       if (passWord && (passWord.length < 2 || passWord.length > 18))
         throw new Error("错误的密码长度规则");
-      if (userSystem.existUserName(userName)) throw new Error("用户名已经被占用");
-      userSystem.edit(userUuid, { passWord, userName });
+      userSystem.edit(userUuid, { passWord });
       ctx.body = true;
     }
   }
