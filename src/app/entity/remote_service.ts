@@ -73,7 +73,8 @@ export default class RemoteService {
       await this.onDisconnect();
     });
     this.socket.on("connect_error", async (error: string) => {
-      logger.warn(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 连接错误`);
+      // 提示次数过于频繁，不再提示
+      // logger.warn(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 连接错误`);
       await this.onDisconnect();
     });
   }
