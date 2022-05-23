@@ -144,7 +144,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     this.services?.forEach((v) => {
       if (v && v.available === false) {
         logger.warn(
-          `[守护进程状态检查] 检测到守护进程 ${v.config.remarks} ${v.config.ip}:${v.config.port} 状态异常，正在重置并连接`
+          `检测到守护进程 ${v.config.remarks} ${v.config.ip}:${v.config.port} 状态异常，正在重置并连接`
         );
         return v.connect();
       }

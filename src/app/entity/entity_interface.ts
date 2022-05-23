@@ -70,9 +70,9 @@ export class RemoteServiceConfig {
   public apiKey = "";
   connectOpts: SocketIOClient.ConnectOpts = {
     multiplex: false,
-    reconnectionDelayMax: 3000,
-    timeout: 3000,
+    reconnectionDelayMax: 1000 * 3,
+    timeout: 1000 * 3,
     reconnection: true,
-    reconnectionAttempts: 1000
+    reconnectionAttempts: 20
   };
 }
