@@ -141,7 +141,7 @@ router.put(
       const config = ctx.request.body;
       const { passWord, isInit } = config;
       if (!userSystem.validatePassword(passWord))
-        throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在12到36之间");
+        throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
       userSystem.edit(userUuid, { passWord, isInit });
       ctx.body = true;
     }

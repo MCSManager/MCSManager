@@ -33,7 +33,7 @@ router.put("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
   const { uuid, config } = ctx.request.body;
   const { passWord } = config;
   if (passWord && !userSystem.validatePassword(passWord))
-    throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在12到36之间");
+    throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
   try {
     userSystem.edit(uuid, config);
     ctx.body = true;
