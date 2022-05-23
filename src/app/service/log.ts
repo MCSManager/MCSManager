@@ -19,10 +19,16 @@
   可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
 */
 
+import fs from "fs-extra";
 import log4js from "log4js";
 
 const LOG_FILE_PATH = "logs/current.log";
 const DEBUG = true;
+
+if (fs.existsSync(LOG_FILE_PATH)) {
+  const time = new Date().toLocaleDateString().replace(/\//gim, "-");
+  fs.renameSync(LOG_FILE_PATH, `logs/${time}.log`);
+}
 
 log4js.configure({
   appenders: {
