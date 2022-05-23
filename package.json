@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "axios": "^0.27.2",
     "crypto": "^1.0.1",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",

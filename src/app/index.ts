@@ -28,6 +28,7 @@ import Router from "@koa/router";
 import "./service/system_user";
 import "./service/system_visual_data";
 import "./service/system_remote_service";
+import "./service/user_statistics";
 
 // Load routes
 import overviewRouter from "./routers/private/overview_router";
