@@ -23,11 +23,14 @@ import fs from "fs-extra";
 import log4js from "log4js";
 
 const LOG_FILE_PATH = "logs/current.log";
-const DEBUG = true;
 
+// 每次启动时将日志文件单独保存
 if (fs.existsSync(LOG_FILE_PATH)) {
-  const time = new Date().toLocaleDateString().replace(/\//gim, "-");
-  fs.renameSync(LOG_FILE_PATH, `logs/${time}.log`);
+  const time = new Date();
+  const timeString = `${time.getFullYear()}-${
+    time.getMonth() + 1
+  }-${time.getDate()}_${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
+  fs.renameSync(LOG_FILE_PATH, `logs/${timeString}.log`);
 }
 
 log4js.configure({
