@@ -45,4 +45,7 @@ setTimeout(async () => {
   }
 }, 1000 * 60 * 60 * 24);
 
-statistics();
+// 面板启动时进行统计一次
+statistics()
+  .then(() => {})
+  .catch(() => {});
