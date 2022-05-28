@@ -101,6 +101,7 @@ cd web
 # 安装依赖库
 npm install --registry=https://registry.npm.taobao.org
 
+cd /opt/mcsmanager/
 # 下载守护进程（Daemon）程序
 git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 # 重命名文件夹并进入
