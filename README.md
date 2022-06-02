@@ -82,7 +82,7 @@ wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
 # 切换到安装目录，没有此目录请执行 mkdir /opt/
 cd /opt/
 # 下载运行环境（已有 Node 14+ 可忽略）
-wget https://npm.taobao.org/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
 # 解压文件
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
 # 链接程序到环境变量中
@@ -99,8 +99,7 @@ git clone https://github.com/MCSManager/MCSManager-Web-Production.git
 mv MCSManager-Web-Production web
 cd web
 # 安装依赖库
-npm install --registry=https://registry.npm.taobao.org
-
+npm install --registry=https://registry.npmmirror.com/
 cd /opt/mcsmanager/
 # 下载守护进程（Daemon）程序
 git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
@@ -108,7 +107,7 @@ git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 mv MCSManager-Daemon-Production daemon
 cd daemon
 # 安装依赖库
-npm install --registry=https://registry.npm.taobao.org
+npm install --registry=https://registry.npmmirror.com/
 
 
 # 打开两个终端或两个 Screen 软件的终端窗口
