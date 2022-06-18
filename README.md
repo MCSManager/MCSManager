@@ -194,7 +194,7 @@ npm run serve
 **守护进程（Daemon）**
 
 ```bash
-https://github.com/MCSManager/Daemon.git
+git clone https://github.com/MCSManager/Daemon.git
 cd Daemon
 npm install
 npm run start
