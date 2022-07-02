@@ -126,7 +126,13 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       logger.info("无法自动获取本地守护进程配置文件，已发起连接但可能未经证实...");
       return this.registerRemoteService({ apiKey: key, port, ip });
     }
-    logger.info("无法自动获取本地守护进程配置文件，请手动连接守护进程");
+    logger.warn("无法自动获取本地守护进程配置文件，请前往面板手动连接守护进程");
+    logger.warn("前往 https://docs.mcsmanager.com/ 了解更多。");
+
+    // 5秒后判断是否已经连上守护进程，直到有一个守护进程连上
+    setTimeout(() => {
+      if (this.services.size === 0) return this.initConnectLocalhost();
+    }, 5 * 1000);
   }
 
   count() {
