@@ -40,7 +40,7 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
   if (userSystem.checkUser({ userName, passWord })) {
     // 登录成功后重置此IP的错误次数
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-    delete ipMap[ip];
+    if (ipMap) delete ipMap[ip];
     // 会话 Session 状态改变为已登陆
     const user = userSystem.getUserByUserName(userName);
     user.loginTime = new Date().toLocaleString();

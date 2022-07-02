@@ -26,6 +26,7 @@ import permission from "../../middleware/permission";
 import { check, login, logout, checkBanIp } from "../../service/passport_service";
 import { systemConfig } from "../../setting";
 import userSystem from "../../service/system_user";
+import { logger } from "../../service/log";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -100,11 +101,13 @@ router.all(
     if (userSystem.objects.size === 0) {
       if (!userSystem.validatePassword(passWord))
         throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
+      logger.info(`[安装面板] 正在初始化面板管理员账号: ${userName}`);
       userSystem.create({
         userName,
         passWord,
         permission: 10
       });
+      login(ctx, userName, passWord);
       return (ctx.body = true);
     }
     throw new Error("Panel installed");
