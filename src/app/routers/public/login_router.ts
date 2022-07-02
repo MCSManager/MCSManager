@@ -25,6 +25,7 @@ import validator from "../../middleware/validator";
 import permission from "../../middleware/permission";
 import { check, login, logout, checkBanIp } from "../../service/passport_service";
 import { systemConfig } from "../../setting";
+import userSystem from "../../service/system_user";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -68,6 +69,45 @@ router.all(
     ctx.body = {
       loginInfo: systemConfig.loginInfo
     };
+  }
+);
+
+// [Public Permission]
+// 面板可公开的状态信息获取
+router.all(
+  "/status",
+  permission({ token: false, level: null }),
+  async (ctx: Koa.ParameterizedContext) => {
+    let isInstall = true;
+    if (userSystem.objects.size === 0) {
+      isInstall = false;
+    }
+    ctx.body = {
+      isInstall
+    };
+  }
+);
+
+// [Public Permission]
+// 安装面板，只有当用户实体数为0时才可使用
+router.all(
+  "/install",
+  permission({ token: false, level: null }),
+  validator({ body: { username: String, password: String } }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const userName = ctx.request.body.username;
+    const passWord = ctx.request.body.password;
+    if (userSystem.objects.size === 0) {
+      if (!userSystem.validatePassword(passWord))
+        throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
+      userSystem.create({
+        userName,
+        passWord,
+        permission: 10
+      });
+      return (ctx.body = true);
+    }
+    throw new Error("Panel installed");
   }
 );
 

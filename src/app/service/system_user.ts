@@ -35,19 +35,7 @@ class UserSubsystem {
       const user = StorageSubsystem.load("User", User, uuid) as User;
       this.objects.set(uuid, user);
     });
-    logger.info(`用户系统初始化完毕`);
-    logger.info(`用户数：${this.objects.size}`);
-    if (this.objects.size <= 0) {
-      logger.info("检测到用户数量等于0，正在生成新用户");
-      logger.info("账号: root");
-      logger.info("密码: 123456");
-      this.create({
-        userName: "root",
-        passWord: "123456",
-        permission: 10,
-        instances: []
-      });
-    }
+    logger.info(`面板用户实体数：${this.objects.size}`);
   }
 
   create(config: IUser): User {
