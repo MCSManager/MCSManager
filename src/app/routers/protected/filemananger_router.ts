@@ -43,6 +43,28 @@ router.use(async (ctx, next) => {
   }
 });
 
+// 查看文件系统状态
+router.get(
+  "/status",
+  permission({ level: 1 }),
+  validator({
+    query: { remote_uuid: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("file/status", {
+        instanceUuid
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
 // 查看文件列表
 router.get(
   "/list",
@@ -189,7 +211,7 @@ router.post(
   permission({ level: 1 }),
   validator({
     query: { remote_uuid: String, uuid: String },
-    body: { source: String, targets: Object, type: Number }
+    body: { source: String, targets: Object, type: Number, code: String }
   }),
   async (ctx) => {
     try {
@@ -198,12 +220,14 @@ router.post(
       const source = String(ctx.request.body.source);
       const targets = ctx.request.body.targets;
       const type = Number(ctx.request.body.type);
+      const code = String(ctx.request.body.code);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       await new RemoteRequest(remoteService).request("file/compress", {
         instanceUuid,
         targets,
         source,
-        type
+        type,
+        code
       });
       ctx.body = true;
     } catch (err) {
