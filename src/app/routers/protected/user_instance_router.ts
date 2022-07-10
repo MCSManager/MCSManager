@@ -334,18 +334,21 @@ router.put(
       // 此处是低权限用户配置设置接口，为防止数据注入，必须进行一层过滤
       // Ping 协议配置
       const pingConfig = {
-        ip: config.pingConfig.ip,
-        port: config.pingConfig.port,
+        ip: String(config.pingConfig.ip),
+        port: Number(config.pingConfig.port),
         type: config.pingConfig.type
       };
       // 事件任务配置
       const eventTask = {
-        autoStart: config.eventTask.autoStart,
-        autoRestart: config.eventTask.autoRestart
+        autoStart: Boolean(config.eventTask.autoStart),
+        autoRestart: Boolean(config.eventTask.autoRestart)
       };
       // 网页终端设置
       const terminalOption = {
-        haveColor: config.terminalOption?.haveColor ?? false
+        haveColor: Boolean(config.terminalOption?.haveColor),
+        pty: Boolean(config.terminalOption.pty),
+        ptyWindowCol: Number(config.terminalOption.ptyWindowCol),
+        ptyWindowRow: Number(config.terminalOption.ptyWindowRow)
       };
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/update", {
