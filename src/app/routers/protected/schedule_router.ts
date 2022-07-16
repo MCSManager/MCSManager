@@ -26,6 +26,7 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { FILENAME_BLACKLIST } from "../../const";
 
 const router = new Router({ prefix: "/protected_schedule" });
 
@@ -79,11 +80,18 @@ router.post(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const task = ctx.request.body;
+
+      // 计划任务名需要文件名格式检查
+      const name = String(task.name);
+      FILENAME_BLACKLIST.forEach((ch) => {
+        if (name.includes(ch)) throw new Error("非法的计划任务名");
+      });
+
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(
         "schedule/register",
         {
           instanceUuid,
-          name: String(task.name),
+          name,
           count: Number(task.count),
           time: String(task.time),
           action: String(task.action),
@@ -98,7 +106,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 注册计划任务
+// 删除计划任务
 router.delete(
   "/",
   permission({ level: 1 }),

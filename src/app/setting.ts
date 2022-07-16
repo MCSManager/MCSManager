@@ -23,9 +23,11 @@
 
 import SystemConfig from "./entity/setting";
 import StorageSystem from "./common/system_storage";
+import GlobalVariable from "./common/global_variable";
 
 let systemConfig: SystemConfig = null;
 
+// 系统持久化配置表
 export function initSystemConfig() {
   systemConfig = StorageSystem.load("SystemConfig", SystemConfig, "config");
   if (!systemConfig) {
