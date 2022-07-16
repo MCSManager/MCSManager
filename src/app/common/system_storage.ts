@@ -32,12 +32,21 @@ class StorageSubsystem {
     path.join(process.cwd(), "data", "index")
   );
 
+  private checkFileName(name: string) {
+    const blackList = ["\\", "/", ".."];
+    for (const ch of blackList) {
+      if (name.includes(ch)) return false;
+    }
+    return true;
+  }
+
   /**
    * 根据类定义和标识符储存成本地文件
    */
   public store(category: string, uuid: string, object: any) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
+    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     const data = JSON.stringify(object, null, 4);
     fs.writeFileSync(filePath, data, { encoding: "utf-8" });
@@ -68,6 +77,7 @@ class StorageSubsystem {
   public load(category: string, classz: any, uuid: string) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
+    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, { encoding: "utf-8" });

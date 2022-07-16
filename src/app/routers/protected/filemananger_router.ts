@@ -25,8 +25,9 @@ import validator from "../../middleware/validator";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
-import { getUserUuid } from "../../service/passport_service";
+import { getUserPermission, getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { systemConfig } from "../../setting";
 
 const router = new Router({ prefix: "/files" });
 
@@ -35,6 +36,11 @@ router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
   const userUuid = getUserUuid(ctx);
+  if (systemConfig.canFileManager === false && getUserPermission(ctx) < 10) {
+    ctx.status = 403;
+    ctx.body = new Error("管理员已限制全部用户使用文件管理功能");
+    return;
+  }
   if (isHaveInstanceByUuid(userUuid, serviceUuid, instanceUuid)) {
     await next();
   } else {

@@ -48,6 +48,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
+    if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
     saveSystemConfig(systemConfig);
     ctx.body = "OK";
     return;

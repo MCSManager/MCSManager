@@ -45,4 +45,6 @@ export default class SystemConfig {
   loginCheckIp: boolean = true;
   // 登录界面文案
   loginInfo: string = "";
+  // 是否对普通用户开启文件管理功能
+  canFileManager = true;
 }

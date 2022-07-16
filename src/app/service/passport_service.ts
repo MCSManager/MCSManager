@@ -25,6 +25,7 @@ import { timeUuid } from "./password";
 import GlobalVariable from "../common/global_variable";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
+import { User } from "../entity/user";
 
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
@@ -98,6 +99,17 @@ export function register(
     return true;
   }
   return false;
+}
+
+export function getUserPermission(ctx: Koa.ParameterizedContext): number {
+  let user: User = null;
+  if (isApiRequest(ctx)) {
+    user = getUuidByApiKey(getApiKey(ctx));
+  } else {
+    user = userSystem.getInstance(ctx.session["uuid"]);
+  }
+  if (!user) return 0;
+  return user.permission ?? 0;
 }
 
 export function getUserNameBySession(ctx: Koa.ParameterizedContext): string {
