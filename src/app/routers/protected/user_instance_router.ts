@@ -353,16 +353,19 @@ router.put(
 
       // 可选参数
       const crlf = Number(config?.crlf);
-      const oe = String(config?.oe || "");
-      const ie = String(config?.ie || "");
+      const oe = config?.oe ? String(config?.oe) : null;
+      const ie = config?.ie ? String(config?.ie) : null;
 
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+
+      // 松散性参数传递，每个配置都可以传递或不传递
+      // 其子对象配置一定要完整或者一个都没有
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
-          pingConfig: pingConfig.ip != null ? pingConfig : null,
-          eventTask: eventTask.autoStart != null ? eventTask : null,
-          terminalOption,
+          pingConfig: config.pingConfig?.ip != null ? pingConfig : null,
+          eventTask: config.eventTask?.autoStart != null ? eventTask : null,
+          terminalOption: config.terminalOption?.pty != null ? terminalOption : null,
           crlf,
           oe,
           ie
