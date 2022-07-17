@@ -351,10 +351,11 @@ router.put(
         ptyWindowRow: Number(config.terminalOption?.ptyWindowRow)
       };
 
-      // 可选参数
+      // 普通用户可控参数
       const crlf = Number(config?.crlf);
-      const oe = config?.oe ? String(config?.oe) : null;
-      const ie = config?.ie ? String(config?.ie) : null;
+      const oe = config.oe ? String(config?.oe) : null;
+      const ie = config.ie ? String(config?.ie) : null;
+      const stopCommand = config.stopCommand ? String(config.stopCommand) : null;
 
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
 
@@ -368,7 +369,8 @@ router.put(
           terminalOption: config.terminalOption?.pty != null ? terminalOption : null,
           crlf,
           oe,
-          ie
+          ie,
+          stopCommand
         }
       });
       ctx.body = result;
