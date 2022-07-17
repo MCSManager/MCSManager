@@ -334,29 +334,38 @@ router.put(
       // 此处是低权限用户配置设置接口，为防止数据注入，必须进行一层过滤
       // Ping 协议配置
       const pingConfig = {
-        ip: String(config.pingConfig.ip),
-        port: Number(config.pingConfig.port),
-        type: config.pingConfig.type
+        ip: String(config.pingConfig?.ip),
+        port: Number(config.pingConfig?.port),
+        type: config.pingConfig?.type
       };
       // 事件任务配置
       const eventTask = {
-        autoStart: Boolean(config.eventTask.autoStart),
-        autoRestart: Boolean(config.eventTask.autoRestart)
+        autoStart: Boolean(config.eventTask?.autoStart),
+        autoRestart: Boolean(config.eventTask?.autoRestart)
       };
       // 网页终端设置
       const terminalOption = {
         haveColor: Boolean(config.terminalOption?.haveColor),
-        pty: Boolean(config.terminalOption.pty),
-        ptyWindowCol: Number(config.terminalOption.ptyWindowCol),
-        ptyWindowRow: Number(config.terminalOption.ptyWindowRow)
+        pty: Boolean(config.terminalOption?.pty),
+        ptyWindowCol: Number(config.terminalOption?.ptyWindowCol),
+        ptyWindowRow: Number(config.terminalOption?.ptyWindowRow)
       };
+
+      // 可选参数
+      const crlf = Number(config?.crlf);
+      const io = String(config?.io || "");
+      const ie = String(config?.ie || "");
+
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
           pingConfig: pingConfig.ip != null ? pingConfig : null,
           eventTask: eventTask.autoStart != null ? eventTask : null,
-          terminalOption
+          terminalOption,
+          crlf,
+          io,
+          ie
         }
       });
       ctx.body = result;
