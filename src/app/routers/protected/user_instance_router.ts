@@ -353,7 +353,7 @@ router.put(
 
       // 可选参数
       const crlf = Number(config?.crlf);
-      const io = String(config?.io || "");
+      const oe = String(config?.oe || "");
       const ie = String(config?.ie || "");
 
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
@@ -364,7 +364,7 @@ router.put(
           eventTask: eventTask.autoStart != null ? eventTask : null,
           terminalOption,
           crlf,
-          io,
+          oe,
           ie
         }
       });
