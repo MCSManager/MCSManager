@@ -99,16 +99,16 @@ git clone https://github.com/MCSManager/MCSManager-Web-Production.git
 mv MCSManager-Web-Production web
 cd web
 # 安装依赖库
-npm install --registry=https://registry.npmmirror.com/
+npm install --production --registry=https://registry.npmmirror.com/
 cd /opt/mcsmanager/
+
 # 下载守护进程（Daemon）程序
 git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 # 重命名文件夹并进入
 mv MCSManager-Daemon-Production daemon
 cd daemon
 # 安装依赖库
-npm install --registry=https://registry.npmmirror.com/
-
+npm install --production --registry=https://registry.npmmirror.com/
 
 # 打开两个终端或两个 Screen 软件的终端窗口
 # 先启动守护进程
