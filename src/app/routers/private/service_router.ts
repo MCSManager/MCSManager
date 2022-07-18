@@ -104,6 +104,7 @@ router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
       ip: remoteService.config.ip,
       port: remoteService.config.port,
       available: remoteService.available,
+      remarks: remoteService.config.remarks,
       instances: instancesInfo
     });
   }
