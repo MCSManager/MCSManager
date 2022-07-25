@@ -1,5 +1,12 @@
  {
   "common": {
     "title": "标题"
+  },
+  "app":{
+    "panelStarted":"控制面板端已启动",
+    "reference":"项目参考: https://github.com/mcsmanager",
+    "host":"访问地址: http://localhost:{{port}}",
+    "portTip":"软件公网访问需开放端口 {{port}} 与守护进程端口",
+    "exitTip":"关闭此程序请使用 Ctrl+C 快捷键"
   }
 }

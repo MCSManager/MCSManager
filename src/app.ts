@@ -118,6 +118,7 @@ app.use(koaStatic(path.join(BASE_PATH, "public")));
 
 // 装载所有路由
 import { index } from "./app/index";
+import { $t } from "./app/i18n";
 // Websocket 路由（暂无用）
 // import SocketService from "./app/service/socket_service";
 index(app);
@@ -136,16 +137,16 @@ process.on("unhandledRejection", (reason, p) => {
 function startUp(port: number, host?: string) {
   const httpServer = http.createServer(app.callback());
 
-  // 暂不需要 Socket 服务
+  // The Socket service is not required
   // SocketService.setUpSocketIO(httpServer);
 
   httpServer.listen(port, host);
   logger.info("================================");
-  logger.info("控制面板端已启动");
-  logger.info("项目参考: https://github.com/mcsmanager");
-  logger.info(`访问地址: http://${host ? host : "localhost"}:${port}/`);
-  logger.info(`软件公网访问需开放端口 ${port} 与守护进程端口`);
-  logger.info("关闭此程序请使用 Ctrl+C 快捷键");
+  logger.info($t("app.panelStarted"));
+  logger.info($t("app.reference"));
+  logger.info($t("app.host", { port }));
+  logger.info($t("app.portTip", { port }));
+  logger.info($t("app.exitTip", { port }));
   logger.info("================================");
 }
 
