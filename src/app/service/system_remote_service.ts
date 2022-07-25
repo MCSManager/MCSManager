@@ -26,6 +26,7 @@ import { UniversalRemoteSubsystem } from "./base/urs";
 import StorageSubsystem from "../common/system_storage";
 import fs from "fs-extra";
 import path from "path";
+import { $t } from "../i18n";
 
 // 远程服务管理子系统（RemoteServiceSubsystem）这个子系统将是最重要的系统之一
 // 主要功能是在所有地方存储远程服务
@@ -51,8 +52,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       this.initConnectLocalhost("");
     }
 
-    logger.info(`远程服务子系统初始化完毕`);
-    logger.info(`总计配置节点数: ${this.services.size}`);
+    logger.info($t("systemRemoteService.nodeCount", { n: this.services.size }));
 
     // 注册定期连接状态检查
     setInterval(() => this.connectionStatusCheckTask(), 1000 * 60);
@@ -111,23 +111,20 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     const localKeyFilePath = path.normalize(
       path.join(process.cwd(), "../daemon/data/Config/global.json")
     );
-    logger.info(`正在尝试读取本地守护进程: ${localKeyFilePath}`);
+    logger.info($t("systemRemoteService.loadDaemonTitle", { localKeyFilePath }));
     if (fs.existsSync(localKeyFilePath)) {
-      logger.info("检测到本地守护进程，正在自动获取密钥和端口...");
+      logger.info($t("systemRemoteService.autoCheckDaemon"));
       const localDaemonConfig = JSON.parse(
         fs.readFileSync(localKeyFilePath, { encoding: "utf-8" })
       );
       const localKey = localDaemonConfig.key;
       const localPort = localDaemonConfig.port;
-      logger.info("正在自动连接本地守护进程...");
       return this.registerRemoteService({ apiKey: localKey, port: localPort, ip });
     } else if (key) {
       const port = 24444;
-      logger.info("无法自动获取本地守护进程配置文件，已发起连接但可能未经证实...");
       return this.registerRemoteService({ apiKey: key, port, ip });
     }
-    logger.warn("无法自动获取本地守护进程配置文件，请前往面板手动连接守护进程");
-    logger.warn("前往 https://docs.mcsmanager.com/ 了解更多。");
+    logger.warn($t("systemRemoteService.error"));
 
     // 5秒后判断是否已经连上守护进程，直到有一个守护进程连上
     setTimeout(() => {
@@ -150,7 +147,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     this.services?.forEach((v) => {
       if (v && v.available === false) {
         logger.warn(
-          `检测到守护进程 ${v.config.remarks} ${v.config.ip}:${v.config.port} 状态异常，正在重置并连接`
+          `Daemon exception detected: ${v.config.remarks} ${v.config.ip}:${v.config.port}, reconnecting...`
         );
         return v.connect();
       }

@@ -1,7 +1,7 @@
 import i18next from "i18next";
 
-const zh_cn = require("./language/zh_cn.json");
-const en_us = require("./language/en_us.json");
+import zh_cn from "./language/zh_cn";
+import en_us from "./language/en_us";
 
 i18next.init({
   lng: "zh_cn",
@@ -16,9 +16,7 @@ i18next.init({
   }
 });
 
-console.log(i18next.t("common.title"));
-console.log(i18next.t("common.title2"));
-
+// alias
 const $t = i18next.t;
 
 export { $t, i18next };

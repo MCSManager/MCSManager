@@ -23,26 +23,27 @@ import Koa from "koa";
 import GlobalVariable from "../common/global_variable";
 import userSystem from "../service/system_user";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax } from "../service/passport_service";
+import { $t } from "../i18n";
 
 // Failed callback
 function verificationFailed(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
-  ctx.body = "[Forbidden] 权限不足";
+  ctx.body = `[Forbidden] ${$t("permission.forbidden")}`;
 }
 
 function tokenError(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
-  ctx.body = "[Forbidden] 令牌(Token)验证失败，拒绝访问";
+  ctx.body = `[Forbidden] ${$t("permission.forbiddenTokenError")}`;
 }
 
 function ajaxError(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
-  ctx.body = "[Forbidden] 无法找到请求头 x-requested-with: xmlhttprequest";
+  ctx.body = `[Forbidden] ${$t("permission.xmlhttprequestError")}`;
 }
 
 function apiError(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
-  ctx.body = "[Forbidden] API 密钥不正确";
+  ctx.body = `[Forbidden] ${$t("permission.apiError")}`;
 }
 
 // 基本用户权限中间件
