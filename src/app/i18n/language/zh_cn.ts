@@ -48,7 +48,15 @@ export default {
     },
     schedule: {
       invaildName: "非法的计划任务名"
+    },
+    login: {
+      ban: "身份验证次数过多，您的 IP 地址已被锁定 10 分钟",
+      nameOrPassError: "账号或密码错误",
+      init: "[安装面板] 正在初始化面板管理员账号: {{userName}}",
+      installed: "面板已安装，无法重新安装，请备份并删除 data 文件夹以实现全新安装"
     }
   }
 };
 // import { $t } from "../../i18n";
+// $t("permission.forbiddenInstance");]
+// $t("router.login.ban")
