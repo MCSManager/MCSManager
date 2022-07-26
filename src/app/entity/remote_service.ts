@@ -24,6 +24,7 @@ import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
 import InstanceStreamListener from "../common/instance_stream";
+import { $t } from "../i18n";
 
 export default class RemoteService {
   public static readonly STATUS_OK = 200;
@@ -73,8 +74,6 @@ export default class RemoteService {
       await this.onDisconnect();
     });
     this.socket.on("connect_error", async (error: string) => {
-      // 提示次数过于频繁，不再提示
-      // logger.warn(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 连接错误`);
       await this.onDisconnect();
     });
   }
@@ -84,18 +83,19 @@ export default class RemoteService {
   // Generally, there is no need to execute it manually.
   public async auth(key?: string) {
     if (key) this.config.apiKey = key;
+    const daemonInfo = `[${this.uuid}] [${this.config.ip}:${this.config.port}]`;
     try {
       const res = await new RemoteRequest(this).request("auth", this.config.apiKey, 5000, true);
       if (res === true) {
         this.available = true;
-        logger.info(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 验证成功`);
+        logger.info($t("daemonInfo.connect", { v: daemonInfo }));
         return true;
       }
       this.available = false;
-      logger.warn(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 验证失败`);
+      logger.warn($t("daemonInfo.disconnect", { v: daemonInfo }));
       return false;
     } catch (error) {
-      logger.warn(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 验证错误`);
+      logger.warn($t("daemonInfo.connectError", { v: daemonInfo }));
       return false;
     }
   }
@@ -115,7 +115,8 @@ export default class RemoteService {
 
   disconnect() {
     if (this.socket) {
-      logger.info(`[${this.uuid}] [${this.config.ip}:${this.config.port}] Socket 已主动释放连接`);
+      const daemonInfo = `[${this.uuid}] [${this.config.ip}:${this.config.port}]`;
+      logger.info($t("daemonInfo.closed", { v: daemonInfo }));
       this.socket.removeAllListeners();
       this.socket.disconnect();
       this.socket.close();

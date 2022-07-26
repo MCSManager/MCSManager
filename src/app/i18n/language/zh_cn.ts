@@ -55,6 +55,15 @@ export default {
       init: "[安装面板] 正在初始化面板管理员账号: {{userName}}",
       installed: "面板已安装，无法重新安装，请备份并删除 data 文件夹以实现全新安装"
     }
+  },
+  daemonInfo: {
+    connect: "远程节点 {{v}} 已连接",
+    disconnect: "远程节点 {{v}} 已断开",
+    connectError: "连接远程节点错误：{{v}} ",
+    authSuccess: "远程节点 {{v}} 验证成功",
+    authFailure: "远程节点 {{v}} 验证失败",
+    authError: "远程节点 {{v}} 验证错误",
+    closed: "主动断开远程节点 {{v}} "
   }
 };
 // import { $t } from "../../i18n";
