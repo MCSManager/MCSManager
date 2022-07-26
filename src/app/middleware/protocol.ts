@@ -52,8 +52,8 @@ export async function middleware(
   }
 
   // 产品信息标识
-  ctx.cookies.set("MCSManager", "Copyright 2021 Suwings");
-  ctx.response.set("X-Powered-By", "MCSManager");
+  ctx.cookies.set("MCSManager", "Copyright 2022 https://github.com/mcsmanager");
+  ctx.response.set("X-Powered-By", "https://github.com/mcsmanager");
 
   // 发送Error类时序列化并显示
   if (ctx.body instanceof Error) {

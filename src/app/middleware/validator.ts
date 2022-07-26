@@ -24,7 +24,7 @@ import Koa from "koa";
 // Failed callback
 function verificationFailed(ctx: Koa.ParameterizedContext) {
   ctx.status = 400;
-  ctx.body = "错误请求：请求参数不正确";
+  ctx.body = "Request parameters are incorrect";
 }
 
 // Type check
