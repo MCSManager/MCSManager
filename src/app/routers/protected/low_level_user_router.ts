@@ -30,6 +30,7 @@ import RemoteRequest from "../../service/remote_command";
 import { isTopPermissionByUuid } from "../../service/permission_service";
 import validator from "../../middleware/validator";
 import { v4 } from "uuid";
+import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -62,7 +63,7 @@ router.get("/", permission({ level: 1, token: false }), async (ctx) => {
   // 有且只有 Ajax 请求准许访问
   if (isAjax(ctx)) {
     const user = userSystem.getInstance(uuid);
-    if (!user) throw new Error("此用户UID不存在");
+    if (!user) throw new Error("The UID does not exist");
 
     // 高级功能可选，分析每一个实例数据
     let resInstances = [];
@@ -140,8 +141,7 @@ router.put(
     if (userUuid) {
       const config = ctx.request.body;
       const { passWord, isInit } = config;
-      if (!userSystem.validatePassword(passWord))
-        throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
+      if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.passwordCheck"));
       userSystem.edit(userUuid, { passWord, isInit });
       ctx.body = true;
     }

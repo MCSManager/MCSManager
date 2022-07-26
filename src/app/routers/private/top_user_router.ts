@@ -24,6 +24,7 @@ import Router from "@koa/router";
 import permission from "../../middleware/permission";
 import userSystem from "../../service/system_user";
 import { ICompleteUser } from "../../entity/entity_interface";
+import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -33,7 +34,7 @@ router.put("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
   const { uuid, config } = ctx.request.body;
   const { passWord } = config;
   if (passWord && !userSystem.validatePassword(passWord))
-    throw new Error("密码不规范，必须为拥有大小写字母，数字，长度在9到36之间");
+    throw new Error($t("router.user.passwordCheck"));
   try {
     userSystem.edit(uuid, config);
     ctx.body = true;

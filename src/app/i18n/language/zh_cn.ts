@@ -18,7 +18,8 @@ export default {
     forbidden: "权限不足",
     forbiddenTokenError: "令牌(Token)验证失败，拒绝访问",
     xmlhttprequestError: "无法找到请求头 x-requested-with: xmlhttprequest",
-    apiError: "密钥不正确"
+    apiError: "密钥不正确",
+    forbiddenInstance: "[Forbidden] [中间件] 参数不正确或非法访问实例"
   },
   // src\app\service\system_remote_service.ts
   systemRemoteService: {
@@ -30,5 +31,24 @@ export default {
   },
   systemUser: {
     userCount: "本地用户数：{{n}}"
+  },
+  router: {
+    user: {
+      invalidUserName: "非法的用户名格式",
+      invalidPassword: "非法的密码格式",
+      existsUserName: "用户名已经被占用",
+      deleteFailure: "无法完成用户数据删除",
+      passwordCheck: "密码不规范，必须为拥有大小写字母，数字，长度在9到36之间"
+    },
+    instance: {
+      createError: "创建实例失败"
+    },
+    file: {
+      off: "管理员已限制全部用户使用文件管理功能"
+    },
+    schedule: {
+      invaildName: "非法的计划任务名"
+    }
   }
 };
+// import { $t } from "../../i18n";

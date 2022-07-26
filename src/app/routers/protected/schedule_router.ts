@@ -27,7 +27,7 @@ import RemoteRequest from "../../service/remote_command";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { FILENAME_BLACKLIST } from "../../const";
-
+import { $t } from "../../i18n";
 const router = new Router({ prefix: "/protected_schedule" });
 
 // 路由权限验证中间件
@@ -39,7 +39,7 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = "[Forbidden] [中间件] 参数不正确或非法访问实例";
+    ctx.body = $t("permission.forbiddenInstance");
   }
 });
 
@@ -84,7 +84,7 @@ router.post(
       // 计划任务名需要文件名格式检查
       const name = String(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
-        if (name.includes(ch)) throw new Error("非法的计划任务名");
+        if (name.includes(ch)) throw new Error($t("router.schedule.invaildName"));
       });
 
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(

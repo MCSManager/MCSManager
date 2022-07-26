@@ -26,6 +26,7 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { multiOperationForwarding } from "../../service/instance_service";
 import { timeUuid } from "../../service/password";
+import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -83,7 +84,7 @@ router.post(
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
-      if (!newInstanceUuid) throw new Error("创建实例失败");
+      if (!newInstanceUuid) throw new Error($t("router.instance.createError"));
       // 向守护进程发送跨端文件上传任务
       const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
       const password = timeUuid();

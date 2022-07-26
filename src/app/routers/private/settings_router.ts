@@ -53,7 +53,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     ctx.body = "OK";
     return;
   }
-  ctx.body = new Error("错误的配置方式");
+  ctx.body = new Error("The body is incorrect");
 });
 
 export default router;

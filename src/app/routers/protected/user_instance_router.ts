@@ -27,7 +27,7 @@ import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
-
+import { $t } from "../../i18n";
 const router = new Router({ prefix: "/protected_instance" });
 
 // 路由权限验证中间件
@@ -39,7 +39,7 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = "[Forbidden] [中间件] 参数不正确或非法访问实例";
+    ctx.body = $t("permission.forbiddenInstance");
   }
 });
 

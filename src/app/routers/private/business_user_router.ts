@@ -25,6 +25,7 @@ import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import { register } from "../../service/passport_service";
 import userSystem from "../../service/system_user";
+import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -37,9 +38,11 @@ router.post(
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
     const permission = Number(ctx.request.body.permission);
-    if (userName.length < 2 || userName.length > 18) throw new Error("错误的用户名长度规则");
-    if (passWord.length < 6 || passWord.length > 18) throw new Error("错误的密码长度规则");
-    if (userSystem.existUserName(userName)) throw new Error("用户名已经被占用");
+    if (userName.length < 2 || userName.length > 18)
+      throw new Error($t("router.user.invalidUserName"));
+    if (passWord.length < 6 || passWord.length > 18)
+      throw new Error($t("router.user.invalidPassword"));
+    if (userSystem.existUserName(userName)) throw new Error($t("router.user.existsUserName"));
     const result = register(ctx, userName, passWord, permission);
     ctx.body = result;
   }
@@ -54,7 +57,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
     }
     ctx.body = true;
   } catch (error) {
-    ctx.throw(500, "无法完成用户数据删除");
+    ctx.throw(500, $t("router.user.deleteFailure"));
   }
 });
 
