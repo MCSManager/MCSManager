@@ -41,17 +41,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 // 启动前开发环境检测
 import fs from "fs";
 if (!fs.existsSync("public")) {
-  console.log(
-    "Unable to start, this project is used by the MCSManager development environment and cannot be run directly."
-  );
-  console.log("Please go to https://mcsmanager.com/ for the latest installation method.");
-  console.log(
-    'If you are running in development mode, create "public" directory and place the frontend static files before rerunning.'
-  );
-  console.log("");
-  console.log("无法启动，此项目是 MCSManager 开发人员所用项目，普通用户不可直接运行。");
-  console.log("请前往 https://mcsmanager.com/ 了解最新的安装方式。");
-  console.log("如果您要以开发模式运行，请创建 public 目录并放置前端静态文件再重新运行。");
+  console.log($t("app.developInfo"));
   process.exit(0);
 }
 

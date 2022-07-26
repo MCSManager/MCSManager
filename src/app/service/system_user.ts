@@ -26,6 +26,7 @@ import { logger } from "./log";
 import { IUser } from "../entity/entity_interface";
 import StorageSubsystem from "../common/system_storage";
 import { QueryWrapper, LocalFileSource } from "../common/query_wrapper";
+import { $t } from "../i18n";
 
 class UserSubsystem {
   public readonly objects: Map<string, User> = new Map();
@@ -35,7 +36,7 @@ class UserSubsystem {
       const user = StorageSubsystem.load("User", User, uuid) as User;
       this.objects.set(uuid, user);
     });
-    logger.info(`面板用户实体数：${this.objects.size}`);
+    logger.info($t("systemUser.userCount", { n: this.objects.size }));
   }
 
   create(config: IUser): User {

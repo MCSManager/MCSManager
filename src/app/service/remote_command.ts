@@ -37,14 +37,16 @@ export default class RemoteRequest {
       throw new Error("Unable to complete initialization, remote service does not exist.");
   }
 
-  // request to remote service
+  // request to remote daemon
   public async request(event: string, data?: any, timeout = 6000, force = false): Promise<any> {
     if (!this.rService.socket)
       throw new Error("The Socket must is SocketIOClient.Socket, Not null.");
     if (!this.rService.available && !force)
-      throw new Error("远程服务状态不可用，建议尝试重连远程服务或检查配置");
+      throw new Error(
+        "The remote daemon is not available. Try reconnecting to the remote daemon or check the configuration"
+      );
     if (!this.rService.socket.connected && !force)
-      throw new Error("远程服务连接不可用，无法发送数据");
+      throw new Error("The remote daemon connection is unavailable");
 
     return new Promise((resolve, reject) => {
       const uuid = [v4(), new Date().getTime()].join("");
@@ -52,7 +54,8 @@ export default class RemoteRequest {
 
       // Start countdown
       const countdownTask = setTimeout(
-        () => reject(new RemoteError(`请求远程(${this.rService.config.ip})事件 [${event}] 超时`)),
+        () =>
+          reject(new RemoteError(`Request daemon:(${this.rService.config.ip}) [${event}] timeout`)),
         timeout
       );
 

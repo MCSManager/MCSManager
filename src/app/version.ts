@@ -35,7 +35,7 @@ export function initVersionManager() {
       }
     }
   } catch (error) {
-    logger.error("版本检查失败", error);
+    logger.error("Version Check failure:", error);
   }
 }
 
