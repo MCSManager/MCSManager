@@ -84,7 +84,7 @@ router.post(
       // 计划任务名需要文件名格式检查
       const name = String(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
-        if (name.includes(ch)) throw new Error($t("router.schedule.invaildName"));
+        if (name.includes(ch)) throw new Error($t("router.schedule.invalidName"));
       });
 
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(

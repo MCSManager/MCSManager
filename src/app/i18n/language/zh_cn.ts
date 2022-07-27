@@ -47,7 +47,7 @@ export default {
       off: "管理员已限制全部用户使用文件管理功能"
     },
     schedule: {
-      invaildName: "非法的计划任务名"
+      invalidName: "非法的计划任务名"
     },
     login: {
       ban: "身份验证次数过多，您的 IP 地址已被锁定 10 分钟",
@@ -63,7 +63,10 @@ export default {
     authSuccess: "远程节点 {{v}} 验证成功",
     authFailure: "远程节点 {{v}} 验证失败",
     authError: "远程节点 {{v}} 验证错误",
-    closed: "主动断开远程节点 {{v}} "
+    closed: "主动断开远程节点 {{v}} ",
+    resetConnect: "用户发起重连已可用状态的远程节点，正在重置连接通道",
+    replaceConnect: "用户发起重复连接请求，现进行重置连接配置",
+    tryConnect: "正在尝试连接远程节点"
   }
 };
 // import { $t } from "../../i18n";

@@ -44,33 +44,34 @@ export default class RemoteService {
   // 连接远程服务
   public connect(connectOpts?: SocketIOClient.ConnectOpts) {
     if (connectOpts) this.config.connectOpts = connectOpts;
-
-    if (this.available) {
-      logger.info(`[${this.uuid}] 用户发起重连已可用状态的远程服务，正在重置连接通道`);
-      this.disconnect();
-    }
-
-    // 防止重复注册事件
-    if (this.socket && this.socket.hasListeners("connect")) {
-      logger.info(`[${this.uuid}] 用户发起重复连接请求，现进行重置连接配置`);
-      return this.refreshReconnect();
-    }
-
     // 开始正式连接远程Socket程序
     let addr = `ws://${this.config.ip}:${this.config.port}`;
     if (this.config.ip.indexOf("wss://") === 0 || this.config.ip.indexOf("ws://") === 0) {
       addr = `${this.config.ip}:${this.config.port}`;
     }
-    logger.info(`[${this.uuid}] 面板正在尝试连接远程服务 ${addr}`);
+    const daemonInfo = `[${this.uuid}] [${addr}]`;
+
+    if (this.available) {
+      logger.info(`${$t("daemonInfo.resetConnect")}:${daemonInfo}`);
+      this.disconnect();
+    }
+
+    // 防止重复注册事件
+    if (this.socket && this.socket.hasListeners("connect")) {
+      logger.info(`${$t("daemonInfo.replaceConnect")}:${daemonInfo}`);
+      return this.refreshReconnect();
+    }
+
+    logger.info(`${$t("daemonInfo.tryConnect")}:${daemonInfo}`);
     this.socket = io.connect(addr, connectOpts);
 
     // 注册内置事件
     this.socket.on("connect", async () => {
-      logger.info(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 已连接`);
+      logger.info($t("daemonInfo.connect", { v: daemonInfo }));
       await this.onConnect();
     });
     this.socket.on("disconnect", async () => {
-      logger.info(`远程服务 [${this.uuid}] [${this.config.ip}:${this.config.port}] 已断开`);
+      logger.info($t("daemonInfo.disconnect", { v: daemonInfo }));
       await this.onDisconnect();
     });
     this.socket.on("connect_error", async (error: string) => {
