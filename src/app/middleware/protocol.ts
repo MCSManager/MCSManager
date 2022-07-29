@@ -11,18 +11,18 @@ export async function middleware(
   ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext, any>,
   next: Function
 ): Promise<void> {
-  // 接口请求次数增加
+  // Increase the number of interface requests
   if (ctx.url.startsWith("/api/")) {
     VisualDataSubsystem.addRequestCount();
   }
-  // 传递下一个中间件，遇到任何错误和返回数据将按照响应协议处理
+  // Pass the next middleware, any errors and return data will be processed according to the response protocol
   try {
     await next();
   } catch (error) {
     ctx.body = error;
   }
 
-  // 设置公开头
+  // set public header
   if (systemConfig.crossDomain) {
     ctx.response.set("Access-Control-Allow-Origin", "*");
     ctx.response.set("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
@@ -32,11 +32,11 @@ export async function middleware(
     );
   }
 
-  // 产品信息标识
+  // Product information ID
   ctx.cookies.set("MCSManager", "Copyright 2022 https://github.com/mcsmanager");
   ctx.response.set("X-Powered-By", "https://github.com/mcsmanager");
 
-  // 发送Error类时序列化并显示
+  // Serialize and display when sending Error class
   if (ctx.body instanceof Error) {
     const error = ctx.body as Error;
     ctx.status = 500;
@@ -48,12 +48,12 @@ export async function middleware(
     return;
   }
 
-  // 放行所有数据流
+  // release all data streams
   if (ctx.body instanceof Stream) {
     return;
   }
 
-  // 404 错误码
+  // 404 error code
   if (ctx.status == 404) {
     ctx.status = 404;
     ctx.body = JSON.stringify({
@@ -64,7 +64,7 @@ export async function middleware(
     return;
   }
 
-  // 响应文本为字符串时则使用普通格式化
+  // When the response text is a string, use normal formatting
   if (typeof ctx.body == "string") {
     const status = ctx.status;
     const data = ctx.body;
@@ -76,7 +76,7 @@ export async function middleware(
     return;
   }
 
-  // 返回结果为空时，显示处理失败
+  // When the return result is empty, display processing failed
   if (ctx.body === null || ctx.body === false || ctx.body === undefined) {
     ctx.status = 500;
     ctx.body = JSON.stringify({
@@ -87,7 +87,7 @@ export async function middleware(
     return;
   }
 
-  // 正常数据
+  // normal data
   if (ctx.status == 200) {
     ctx.body = JSON.stringify({
       status: ctx.status,
