@@ -12,7 +12,7 @@ import { $t } from "../../i18n";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
-// 登录路由
+// login route
 router.post(
   "/login",
   permission({ token: false, level: null }),
@@ -32,7 +32,7 @@ router.post(
 );
 
 // [Public Permission]
-// 退出路由
+// exit route
 router.get(
   "/logout",
   permission({ token: false, level: null }),
@@ -43,7 +43,7 @@ router.get(
 );
 
 // [Public Permission]
-// 登录界面文案展示
+// Display the text of the login interface
 router.all(
   "/login_info",
   permission({ token: false, level: null }),
@@ -55,7 +55,7 @@ router.all(
 );
 
 // [Public Permission]
-// 面板可公开的状态信息获取
+// Get the state information that the panel can expose
 router.all(
   "/status",
   permission({ token: false, level: null }),
@@ -71,7 +71,7 @@ router.all(
 );
 
 // [Public Permission]
-// 安装面板，只有当用户实体数为0时才可使用
+// Install the panel, only available when the number of user entities is 0
 router.all(
   "/install",
   permission({ token: false, level: null }),

@@ -15,7 +15,7 @@ import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/protected_instance" });
 
-// 路由权限验证中间件
+// Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
@@ -28,7 +28,7 @@ router.use(async (ctx, next) => {
   }
 });
 
-// 更新有限实例信息（普通用户）
+// Update limited instance information (normal users)
 router.put(
   "/low_permission",
   permission({ level: 1 }),
@@ -38,7 +38,7 @@ router.put(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const config = ctx.request.body;
-      // 用户数据过滤
+      // User data filter
       const believableConfig = {
         ie: String(config.ie),
         oe: String(config.oe),

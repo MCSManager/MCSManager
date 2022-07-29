@@ -16,12 +16,12 @@ import { $t } from "../../i18n";
 const router = new Router({ prefix: "/auth" });
 
 // [Low-level Permission]
-// 新增令牌返回
+// add token return
 router.get(
   "/token",
   permission({ level: 1, token: false }),
   async (ctx: Koa.ParameterizedContext) => {
-    // 有且只有 Ajax 请求能够获取 token 令牌
+    // Some and only Ajax requests can get the token
     if (isAjax(ctx)) {
       ctx.body = getToken(ctx);
     } else {
@@ -31,28 +31,28 @@ router.get(
 );
 
 // [Low-level Permission]
-// 获取用户数据
+// get user data
 router.get("/", permission({ level: 1, token: false }), async (ctx) => {
-  // 默认权限获取本人
+  // Default permission to get me
   let uuid = getUserUuid(ctx);
-  // 前端可以选择需要高级数据
+  // The front end can choose to require advanced data
   const advanced = ctx.query.advanced;
-  // 管理权限可获取任何人
+  // Admin permissions can be obtained from anyone
   if (isTopPermissionByUuid(uuid)) {
     if (ctx.query.uuid) uuid = String(ctx.query.uuid);
   }
-  // 有且只有 Ajax 请求准许访问
+  // Some and only Ajax requests grant access
   if (isAjax(ctx)) {
     const user = userSystem.getInstance(uuid);
     if (!user) throw new Error("The UID does not exist");
 
-    // 高级功能可选，分析每一个实例数据
+    // Advanced functions are optional, analyze each instance data
     let resInstances = [];
     if (advanced) {
       const instances = user.instances;
       for (const iterator of instances) {
         const remoteService = RemoteServiceSubsystem.getInstance(iterator.serviceUuid);
-        // 若此远程服务根本不存在，则装载一个已删除的提示
+        // If the remote service doesn't exist at all, load a deleted prompt
         if (!remoteService) {
           resInstances.push({
             hostIp: "-- Unknown --",
@@ -65,7 +65,7 @@ router.get("/", permission({ level: 1, token: false }), async (ctx) => {
           continue;
         }
         try {
-          // Note: 这里可以整合UUID来节省返回的流量，暂不做此优化
+          // Note: UUID can be integrated here to save the returned traffic, and this optimization will not be done for the time being
           let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
             instanceUuids: [iterator.instanceUuid]
           });
@@ -96,7 +96,7 @@ router.get("/", permission({ level: 1, token: false }), async (ctx) => {
     } else {
       resInstances = user.instances;
     }
-    // 响应用户数据
+    // respond to user data
     ctx.body = {
       uuid: user.uuid,
       userName: user.userName,
@@ -112,7 +112,7 @@ router.get("/", permission({ level: 1, token: false }), async (ctx) => {
 });
 
 // [Low-level Permission]
-// 修改个人用户信息
+// Modify personal user information
 router.put(
   "/update",
   permission({ level: 1 }),
@@ -130,7 +130,7 @@ router.put(
 );
 
 // [Low-level Permission]
-// API 生成和关闭
+// API generation and shutdown
 router.put(
   "/api",
   permission({ level: 1 }),

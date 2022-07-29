@@ -12,7 +12,6 @@ import { systemConfig } from "../../setting";
 import { $t } from "../../i18n";
 const router = new Router({ prefix: "/files" });
 
-// 路由权限验证中间件
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
@@ -30,7 +29,6 @@ router.use(async (ctx, next) => {
   }
 });
 
-// 查看文件系统状态
 router.get(
   "/status",
   permission({ level: 1 }),
@@ -52,7 +50,6 @@ router.get(
   }
 );
 
-// 查看文件列表
 router.get(
   "/list",
   permission({ level: 1 }),
@@ -80,7 +77,6 @@ router.get(
   }
 );
 
-// 新建目录
 router.post(
   "/mkdir",
   permission({ level: 1 }),
@@ -102,7 +98,6 @@ router.post(
   }
 );
 
-// 编辑文件
 router.put(
   "/",
   permission({ level: 1 }),
@@ -126,7 +121,6 @@ router.put(
   }
 );
 
-// 复制文件
 router.post(
   "/copy",
   permission({ level: 1 }),
@@ -148,7 +142,6 @@ router.post(
   }
 );
 
-// 重命名/移动文件
 router.put(
   "/move",
   permission({ level: 1 }),
@@ -170,7 +163,6 @@ router.put(
   }
 );
 
-// 删除文件
 router.delete(
   "/",
   permission({ level: 1 }),
@@ -192,7 +184,6 @@ router.delete(
   }
 );
 
-// 压缩/解压缩文件
 router.post(
   "/compress",
   permission({ level: 1 }),

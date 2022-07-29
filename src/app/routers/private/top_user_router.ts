@@ -10,7 +10,6 @@ import { $t } from "../../i18n";
 const router = new Router({ prefix: "/auth" });
 
 // [Top-level Permission]
-// 更新用户数据
 router.put("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext) => {
   const { uuid, config } = ctx.request.body;
   const { passWord } = config;
@@ -25,7 +24,6 @@ router.put("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
 });
 
 // [Top-level Permission]
-// 获取所有用户数据
 router.get("/overview", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext) => {
   const users: Array<ICompleteUser> = [];
   userSystem.objects.forEach((user) => {

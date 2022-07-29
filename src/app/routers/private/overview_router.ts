@@ -20,9 +20,9 @@ import {
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
-// 控制面板首页信息总览路由
+// Control panel home page information overview routing
 router.get("/", permission({ level: 10, token: false }), async (ctx) => {
-  // 获取远程服务各个信息
+  // Get the information of the remote service
   const remoteInfoList = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
     const remoteService = iterator[1];
@@ -30,9 +30,9 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
     try {
       remoteInfo = await new RemoteRequest(remoteService).request("info/overview");
     } catch (err) {
-      // 忽略请求错误，继续循环
+      // ignore request errors and continue looping
     }
-    // 赋予一些标识符值
+    // assign some identifier value
     remoteInfo.uuid = remoteService.uuid;
     remoteInfo.ip = remoteService.config.ip;
     remoteInfo.port = remoteService.config.port;
@@ -41,7 +41,7 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
     remoteInfoList.push(remoteInfo);
   }
   const selfInfo = systemInfo();
-  // 获取本面板端所在系统信息
+  // Get the information of the system where the panel is located
   const overviewData = {
     version: getVersion(),
     specifiedDaemonVersion: specifiedDaemonVersion(),

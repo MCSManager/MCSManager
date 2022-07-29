@@ -10,7 +10,7 @@ import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/auth" });
 
-// 新增用户数据
+// add user data
 router.post(
   "/",
   permission({ level: 10 }),
@@ -29,7 +29,7 @@ router.post(
   }
 );
 
-// 删除用户数据
+// delete user data
 router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext) => {
   const uuids = ctx.request.body;
   try {
@@ -42,7 +42,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
   }
 });
 
-// 用户搜索功能
+// User search function
 router.get(
   "/search",
   permission({ level: 10 }),
@@ -54,7 +54,7 @@ router.get(
     const condition: any = {};
     if (userName) condition["userName"] = `%${userName}%`;
     let resultPage = userSystem.getQueryWrapper().selectPage(condition, page, pageSize);
-    // 复制一份，删除多余数据
+    // make a copy, delete redundant data
     resultPage = JSON.parse(JSON.stringify(resultPage));
     resultPage.data.forEach((v) => {
       delete v.passWord;

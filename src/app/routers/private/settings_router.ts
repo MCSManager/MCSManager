@@ -8,13 +8,13 @@ import { saveSystemConfig, systemConfig } from "../../setting";
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
-// 获取面板配置项
+// Get panel configuration items
 router.get("/setting", permission({ level: 10 }), async (ctx) => {
   ctx.body = systemConfig;
 });
 
 // [Top-level Permission]
-// 更新面板配置项
+// Update panel configuration items
 router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async (ctx) => {
   const config = ctx.request.body;
   if (config) {

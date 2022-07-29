@@ -9,7 +9,7 @@ import RemoteRequest from "../../service/remote_command";
 const router = new Router({ prefix: "/environment" });
 
 // [Top-level Permission]
-// 获取指定远程服务镜像列表
+// Get the specified remote service mirror list
 router.get(
   "/image",
   permission({ level: 10 }),
@@ -27,7 +27,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 创建镜像
+// create image
 router.post(
   "/image",
   permission({ level: 10 }),
@@ -49,7 +49,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 删除指定镜像
+// delete the specified image
 router.delete(
   "/image",
   permission({ level: 10 }),
@@ -70,7 +70,7 @@ router.delete(
 );
 
 // [Top-level Permission]
-// 获取指定远程服务现有容器列表
+// Get the list of existing containers of the specified remote service
 router.get(
   "/containers",
   permission({ level: 10 }),
@@ -88,7 +88,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 获取指定远程服务现有网络列表
+// Get the list of existing networks for the specified remote service
 router.get(
   "/networkModes",
   permission({ level: 10 }),
@@ -106,7 +106,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 获取指定远程服务的创建镜像进度
+// Get the image creation progress of the specified remote service
 router.get(
   "/progress",
   permission({ level: 10 }),

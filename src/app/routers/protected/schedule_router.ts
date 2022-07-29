@@ -11,7 +11,7 @@ import { FILENAME_BLACKLIST } from "../../const";
 import { $t } from "../../i18n";
 const router = new Router({ prefix: "/protected_schedule" });
 
-// 路由权限验证中间件
+// Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
@@ -25,7 +25,7 @@ router.use(async (ctx, next) => {
 });
 
 // [Low-level Permission]
-// 获取计划任务列表
+// Get the list of scheduled tasks
 router.get(
   "/",
   permission({ level: 1 }),
@@ -48,7 +48,7 @@ router.get(
 );
 
 // [Low-level Permission]
-// 创建计划任务
+// create a scheduled task
 router.post(
   "/",
   permission({ level: 1 }),
@@ -62,7 +62,7 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const task = ctx.request.body;
 
-      // 计划任务名需要文件名格式检查
+      // Scheduled task name needs file name format check
       const name = String(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
         if (name.includes(ch)) throw new Error($t("router.schedule.invalidName"));
@@ -87,7 +87,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 删除计划任务
+// delete scheduled task
 router.delete(
   "/",
   permission({ level: 1 }),

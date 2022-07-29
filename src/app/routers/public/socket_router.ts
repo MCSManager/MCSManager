@@ -2,7 +2,7 @@
 
 import { Socket } from "socket.io";
 
-// 适用于 WebSocket 的路由，基于 Socket.io（暂时无用）
+// Routing for WebSocket, based on Socket.io (useless for now)
 export default class WebSocketRouter {
   constructor(public socket: Socket) {
     this.routers(socket);
@@ -10,7 +10,7 @@ export default class WebSocketRouter {
 
   private routers(socket: Socket) {
     socket.use((event, next) => {
-      socket.disconnect(); // 暂时禁用 Websocket
+      socket.disconnect(); // temporarily disable Websocket
       return next(null);
     });
   }

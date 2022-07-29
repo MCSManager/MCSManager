@@ -12,7 +12,7 @@ import { $t } from "../../i18n";
 const router = new Router({ prefix: "/instance" });
 
 // [Top-level Permission]
-// 获取某实例详细信息
+// Get the details of an instance
 router.get(
   "/",
   permission({ level: 10 }),
@@ -33,7 +33,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 创建实例
+// create instance
 router.post(
   "/",
   permission({ level: 10 }),
@@ -52,7 +52,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 创建实例时上传文件
+// upload the file when creating the instance
 router.post(
   "/upload",
   permission({ level: 10 }),
@@ -66,7 +66,7 @@ router.post(
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("router.instance.createError"));
-      // 向守护进程发送跨端文件上传任务
+      // Send a cross-end file upload task to the daemon
       const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
@@ -89,7 +89,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 更新实例信息（管理用户）
+// Update instance information (manage users)
 router.put(
   "/",
   permission({ level: 10 }),
@@ -112,7 +112,7 @@ router.put(
 );
 
 // [Top-level Permission]
-// 删除实例
+// delete instance
 router.delete(
   "/",
   permission({ level: 10 }),
@@ -135,7 +135,7 @@ router.delete(
 );
 
 // [Top-level Permission]
-// 批量开启实例路由
+// Open instance routing in batches
 router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
@@ -154,7 +154,7 @@ router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 批量关闭实例路由
+//Close instance routing in batches
 router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
@@ -173,7 +173,7 @@ router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 批量终止实例路由
+// batch terminate instance routing
 router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
