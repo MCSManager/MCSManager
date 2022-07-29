@@ -25,7 +25,7 @@ interface ISystemInfo {
   loadavg: number[];
 }
 
-// 系统详细信息每一段时间更新一次
+// System details are updated every time
 const info: ISystemInfo = {
   type: os.type(),
   hostname: os.hostname(),
@@ -42,7 +42,7 @@ const info: ISystemInfo = {
   processMem: 0
 };
 
-// 定时刷新缓存
+// periodically refresh the cache
 setInterval(() => {
   if (os.platform() === "linux") {
     return setLinuxSystemInfo();
@@ -69,7 +69,7 @@ function setWindowsSystemInfo() {
 
 function setLinuxSystemInfo() {
   try {
-    // 基于 /proc/meminfo 的内存数据读取
+    // read memory data based on /proc/meminfo
     const data = fs.readFileSync("/proc/meminfo", { encoding: "utf-8" });
     const list = data.split("\n");
     const infoTable: IInfoTable = {};
@@ -91,7 +91,7 @@ function setLinuxSystemInfo() {
     info.memUsage = (info.totalmem - info.freemem) / info.totalmem;
     osUtils.cpuUsage((p) => (info.cpuUsage = p));
   } catch (error) {
-    // 若读取错误，则自动采用默认通用读取法
+    // If the reading is wrong, the default general reading method is automatically used
     otherSystemInfo();
   }
 }

@@ -13,7 +13,7 @@ interface Page<T> {
   data: T[];
 }
 
-// 供给路由层使用的MAP型查询接口
+// Provide the MAP query interface used by the routing layer
 export class QueryMapWrapper {
   constructor(public map: IMap) {}
 
@@ -43,7 +43,7 @@ export class QueryMapWrapper {
   }
 }
 
-// 供 QueryWrapper 使用的数据源接口
+// Data source interface for QueryWrapper to use
 export interface IDataSource<T> {
   selectPage: (condition: any, page: number, pageSize: number) => Page<T>;
   select: (condition: any) => any[];
@@ -52,7 +52,7 @@ export interface IDataSource<T> {
   insert: (data: any) => void;
 }
 
-// MYSQL 数据源
+// MYSQL data source
 export class MySqlSource<T> implements IDataSource<T> {
   selectPage: (condition: any, page: number, pageSize: number) => Page<T>;
   select: (condition: any) => any[];
@@ -61,7 +61,7 @@ export class MySqlSource<T> implements IDataSource<T> {
   insert: (data: any) => void;
 }
 
-// 本地文件数据源（内嵌式微型数据库）
+// local file data source (embedded microdatabase)
 export class LocalFileSource<T> implements IDataSource<T> {
   constructor(public data: any) {}
 
@@ -108,7 +108,7 @@ export class LocalFileSource<T> implements IDataSource<T> {
   insert(data: any) {}
 }
 
-// 供给路由层使用的统一数据查询接口
+// Provide the unified data query interface used by the routing layer
 export class QueryWrapper<T> {
   constructor(public dataSource: IDataSource<T>) {}
 

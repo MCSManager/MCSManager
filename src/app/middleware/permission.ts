@@ -27,10 +27,10 @@ function apiError(ctx: Koa.ParameterizedContext) {
   ctx.body = `[Forbidden] ${$t("permission.apiError")}`;
 }
 
-// 基本用户权限中间件
+// Basic user permission middleware
 export = (parameter: any) => {
   return async (ctx: Koa.ParameterizedContext, next: Function) => {
-    // 若为 API 请求，则进行 API 级的权限判断
+    // If it is an API request, perform API-level permission judgment
     if (ctx.query.apikey) {
       const apiKey = String(ctx.query.apikey);
       const user = getUuidByApiKey(apiKey);
@@ -41,7 +41,7 @@ export = (parameter: any) => {
       }
     }
 
-    // 若路由需要 Token 验证则进行验证，默认是自动验证
+    // If the route requires Token verification, it will be verified, the default is automatic verification
     if (parameter["token"] !== false) {
       if (!isAjax(ctx)) return ajaxError(ctx);
       const requestToken = ctx.query.token;
@@ -51,12 +51,12 @@ export = (parameter: any) => {
       }
     }
 
-    // 若权限属性为数字则自动执行权限判定
+    // If the permission attribute is a number, the permission determination is automatically executed
     if (!isNaN(parseInt(parameter["level"]))) {
-      // 最基础的身份认证判定
+      // The most basic authentication decision
       if (ctx.session["login"] === true && ctx.session["uuid"] && ctx.session["userName"]) {
         const user = userSystem.getInstance(ctx.session["uuid"]);
-        // 普通用户与管理用户的权限判断
+        // Judgment of permissions for ordinary users and administrative users
         if (user && user.permission >= parameter["level"]) {
           return await next();
         }
@@ -65,7 +65,7 @@ export = (parameter: any) => {
       return await next();
     }
 
-    // 记录越权访问次数
+    // record the number of unauthorized access
     GlobalVariable.set(ILLEGAL_ACCESS_KEY, GlobalVariable.get(ILLEGAL_ACCESS_KEY, 0) + 1);
     return verificationFailed(ctx);
   };

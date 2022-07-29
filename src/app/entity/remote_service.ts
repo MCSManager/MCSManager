@@ -22,10 +22,10 @@ export default class RemoteService {
     this.config = config;
   }
 
-  // 连接远程服务
+  // connect to remote service
   public connect(connectOpts?: SocketIOClient.ConnectOpts) {
     if (connectOpts) this.config.connectOpts = connectOpts;
-    // 开始正式连接远程Socket程序
+    // Start the formal connection to the remote Socket program
     let addr = `ws://${this.config.ip}:${this.config.port}`;
     if (this.config.ip.indexOf("wss://") === 0 || this.config.ip.indexOf("ws://") === 0) {
       addr = `${this.config.ip}:${this.config.port}`;
@@ -37,7 +37,7 @@ export default class RemoteService {
       this.disconnect();
     }
 
-    // 防止重复注册事件
+    // prevent duplicate registration of events
     if (this.socket && this.socket.hasListeners("connect")) {
       logger.info(`${$t("daemonInfo.replaceConnect")}:${daemonInfo}`);
       return this.refreshReconnect();
@@ -46,7 +46,7 @@ export default class RemoteService {
     logger.info(`${$t("daemonInfo.tryConnect")}:${daemonInfo}`);
     this.socket = io.connect(addr, connectOpts);
 
-    // 注册内置事件
+    // register built-in events
     this.socket.on("connect", async () => {
       logger.info($t("daemonInfo.connect", { v: daemonInfo }));
       await this.onConnect();

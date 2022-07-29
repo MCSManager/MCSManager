@@ -21,20 +21,18 @@ class StorageSubsystem {
     return true;
   }
 
-  /**
-   * 根据类定义和标识符储存成本地文件
-   */
+  // Stored in local file based on class definition and identifier
   public store(category: string, uuid: string, object: any) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     const data = JSON.stringify(object, null, 4);
     fs.writeFileSync(filePath, data, { encoding: "utf-8" });
   }
 
-  // 以复制目标方为原型的基本类型的深复制
-  // target 复制目标 object 复制源
+  // deep copy of the primitive type with the copy target as the prototype
   protected defineAttr(target: any, object: any): any {
     for (const v of Object.keys(target)) {
       const objectValue = object[v];
@@ -53,26 +51,27 @@ class StorageSubsystem {
   }
 
   /**
-   * 根据类定义和标识符实例化成对象
+   * Instantiate an object based on the class definition and identifier
    */
   public load(category: string, classz: any, uuid: string) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, { encoding: "utf-8" });
     const dataObject = JSON.parse(data);
     const target = new classz();
-    // for (const v of Object.keys(target)) {
-    //   if (dataObject[v] !== undefined) target[v] = dataObject[v];
+    // for (const v of Object. keys(target)) {
+    // if (dataObject[v] !== undefined) target[v] = dataObject[v];
     // }
-    // 深层对象复制
+    // deep object copy
     return this.defineAttr(target, dataObject);
   }
 
   /**
-   * 通过类定义返回所有与此类有关的标识符
+   * Return all identifiers related to this class through the class definition
    */
   public list(category: string) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
@@ -86,7 +85,7 @@ class StorageSubsystem {
   }
 
   /**
-   * 通过类定义删除指定类型的标识符实例
+   * Delete an identifier instance of the specified type through the class definition
    */
   public delete(category: string, uuid: string) {
     const filePath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category, `${uuid}.json`);
