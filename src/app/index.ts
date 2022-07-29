@@ -33,7 +33,7 @@ import scheduleRouter from "./routers/protected/schedule_router";
 
 import environmentRouter from "./routers/private/environment_router";
 
-// 所有路由装载入口点
+// all routes load entry points
 export function index(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   // API router
   const apiRouter = new Router({ prefix: "/api" });

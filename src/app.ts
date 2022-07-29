@@ -1,25 +1,22 @@
 // Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
-// 程序启动入口文件
-
-// 初始化版本管理器
+// Initialize the version manager
 import { initVersionManager, getVersion } from "./app/version";
 initVersionManager();
 const VERSION = getVersion();
 
-// 显示产品标识
-console.log(`______  _______________________  ___                                         
-___   |/  /_  ____/_  ___/__   |/  /_____ _____________ _______ _____________
-__  /|_/ /_  /    _____ \\__  /|_/ /_  __  /_  __ \\  __  /_  __  /  _ \\_  ___/
-_  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /    
-/_/  /_/  \\____/  /____/ /_/  /_/  \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/     
-                                                        /____/             
- + Released under the AGPL-3.0 License
- + Copyright 2022 Suwings
+// show product Logo
+console.log(`______ _______________________ ___
+___ |/ /_ ____/_ ___/__ |/ /_____ _____________ _______ _____________
+__ /|_/ /_ / _____ \\__ /|_/ /_ __ /_ __ \\ __ /_ __ / _ \\_ ___/
+_ / / / / /___ ____/ /_ / / / / /_/ /_ / / /_/ /_ /_/ // __/ /
+/_/ /_/ \\____/ /____/ /_/ /_/ \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/
+                                                        /_____/
+ + Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
  + Version ${VERSION}
 `);
 
-// 启动前开发环境检测
+// Development environment detection before startup
 import fs from "fs";
 if (!fs.existsSync("public")) {
   console.log($t("app.developInfo"));
@@ -39,16 +36,16 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 
 const BASE_PATH = __dirname;
 
-// 装载全局配置文件
+// load global configuration file
 import { initSystemConfig, systemConfig } from "./app/setting";
 initSystemConfig();
 
 const app = new Koa();
 
-// 监听 Koa 错误
+// Listen for Koa errors
 app.on("error", (error) => {
-  // 屏蔽所有 Koa 框架级别事件
-  // 当 Koa 遭遇短连接洪水攻击时，很容易错误信息刷屏，有可能会间接影响某些应用程序运作
+  // Block all Koa framework level events
+  // When Koa is attacked by a short connection flood, it is easy for error messages to swipe the screen, which may indirectly affect the operation of some applications
 });
 
 app.use(
@@ -84,13 +81,13 @@ app.use(async (ctx, next) => {
 // Protocol middleware
 app.use(protocolMiddleware);
 
-// 静态文件路由
+// static file routing
 app.use(koaStatic(path.join(BASE_PATH, "public")));
 
-// 装载所有路由
+// load all routes
 import { index } from "./app/index";
 import { $t } from "./app/i18n";
-// Websocket 路由（暂无用）
+// Websocket routing (useless for now)
 // import SocketService from "./app/service/socket_service";
 index(app);
 
@@ -104,7 +101,7 @@ process.on("unhandledRejection", (reason, p) => {
   logger.error(`ERROR (unhandledRejection):`, reason, p);
 });
 
-// 启动 HTTP 服务
+// start the HTTP service
 function startUp(port: number, host?: string) {
   const httpServer = http.createServer(app.callback());
 
@@ -112,13 +109,13 @@ function startUp(port: number, host?: string) {
   // SocketService.setUpSocketIO(httpServer);
 
   httpServer.listen(port, host);
-  logger.info("================================");
+  logger.info("==================================");
   logger.info($t("app.panelStarted"));
   logger.info($t("app.reference"));
   logger.info($t("app.host", { port }));
   logger.info($t("app.portTip", { port }));
   logger.info($t("app.exitTip", { port }));
-  logger.info("================================");
+  logger.info("==================================");
 }
 
 startUp(systemConfig.httpPort, systemConfig.httpIp);

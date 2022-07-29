@@ -9,9 +9,9 @@ import fs from "fs-extra";
 import path from "path";
 import { $t } from "../i18n";
 
-// 远程服务管理子系统（RemoteServiceSubsystem）这个子系统将是最重要的系统之一
-// 主要功能是在所有地方存储远程服务
-// 扫描本地服务，统一管理，远程调用和代理等
+// The RemoteServiceSubsystem will be one of the most important systems
+// main function is to store remote services everywhere
+// Scan local services, unified management, remote calls and proxies, etc.
 class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   constructor() {
     super();
@@ -28,22 +28,22 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       newService.connect();
     });
 
-    // 若无任何守护进程，则检测本地是否存在守护进程
+    // If there is no daemon process, check whether there is a daemon process locally
     if (this.services.size === 0) {
       this.initConnectLocalhost("");
     }
 
     logger.info($t("systemRemoteService.nodeCount", { n: this.services.size }));
 
-    // 注册定期连接状态检查
+    // Register for periodic connection status checks
     setInterval(() => this.connectionStatusCheckTask(), 1000 * 60);
   }
 
   // Register a NEW remote service to system and connect it.
   // Like: this.registerRemoteService({
-  //   ip: "127.0.0.1",
-  //   apiKey: "test_key",
-  //   port: 24444
+  // ip: "127.0.0.1",
+  // apiKey: "test_key",
+  // port: 24444
   // });
   registerRemoteService(config: IRemoteService) {
     const instance = this.newInstance(config);
@@ -52,7 +52,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     return instance;
   }
 
-  // 根据 UUID 删除指定的远程服务
+  // Delete the specified remote service based on UUID
   deleteRemoteService(uuid: string) {
     if (this.getInstance(uuid)) {
       this.getInstance(uuid).disconnect();
@@ -107,7 +107,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     }
     logger.warn($t("systemRemoteService.error"));
 
-    // 5秒后判断是否已经连上守护进程，直到有一个守护进程连上
+    // After 5 seconds, determine whether the daemon has been connected until a daemon is connected
     setTimeout(() => {
       if (this.services.size === 0) return this.initConnectLocalhost();
     }, 5 * 1000);
@@ -123,7 +123,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     return { available, total };
   }
 
-  // 定期连接状态检查
+  // Periodic connection status check
   connectionStatusCheckTask() {
     this.services?.forEach((v) => {
       if (v && v.available === false) {

@@ -22,14 +22,14 @@ class UserSubsystem {
 
   create(config: IUser): User {
     const newUuid = v4().replace(/-/gim, "");
-    // 初始化必要用户数据
+    // Initialize necessary user data
     const instance = new User();
     instance.uuid = newUuid;
     instance.registerTime = new Date().toLocaleString();
-    // 加入到用户系统
+    // add to the user system
     this.setInstance(newUuid, instance);
     this.edit(instance.uuid, config);
-    // 持久化保存用户信息
+    // Persistently save user information
     StorageSubsystem.store("User", instance.uuid, instance);
     return instance;
   }
@@ -74,7 +74,7 @@ class UserSubsystem {
     const instance = this.getInstance(uuid);
     instanceIds.forEach((value) => {
       if (!value.serviceUuid || !value.instanceUuid)
-        throw new Error("Type error, The instances of user must is IUserHaveInstance array.");
+        throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
     });
     instance.instances = [];
     instanceIds.forEach((value) => {

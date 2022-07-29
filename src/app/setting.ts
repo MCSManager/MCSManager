@@ -1,6 +1,6 @@
 // Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
-// 全局配置初始化
+// global configuration initialization
 
 import SystemConfig from "./entity/setting";
 import StorageSystem from "./common/system_storage";
@@ -8,7 +8,7 @@ import GlobalVariable from "./common/global_variable";
 
 let systemConfig: SystemConfig = null;
 
-// 系统持久化配置表
+// System persistence configuration table
 export function initSystemConfig() {
   systemConfig = StorageSystem.load("SystemConfig", SystemConfig, "config");
   if (!systemConfig) {

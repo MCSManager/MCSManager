@@ -13,7 +13,7 @@ export default class SocketService {
     const io = new Server(httpServer, {
       path: "/socket.io",
       cors: {
-        // 临时的
+        // temporary
         origin: "*",
         methods: ["GET", "POST"],
         credentials: true
@@ -21,12 +21,12 @@ export default class SocketService {
     });
 
     io.on("connection", (socket) => {
-      // 用户 Websocket 链接时，加入全局，绑定相关事件
+      // When the user is connected to the Websocket, join the global and bind related events
       logger.info(`Websocket ${socket.id}(${socket.handshake.address}) connection`);
       this.socketsMap.set(socket.id, socket);
-      // 绑定业务事件
+      // bind the business event
       SocketService.bindEvents(socket);
-      // 当用户 Websocket 断开时，从Socket列表中删除，并释放一些资源
+      // When the user Websocket is disconnected, delete from the Socket list and release some resources
       socket.on("disconnect", () => {
         this.socketsMap.delete(socket.id);
         for (const name of socket.eventNames()) socket.removeAllListeners(name);
@@ -38,7 +38,7 @@ export default class SocketService {
     return this.server;
   }
 
-  // 用于绑定 Socket 事件
+  // used to bind Socket events
   private static bindEvents(socket: Socket) {
     new WebSocketRouter(socket);
   }

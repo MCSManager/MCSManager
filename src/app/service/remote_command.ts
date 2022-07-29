@@ -21,7 +21,7 @@ export default class RemoteRequest {
   // request to remote daemon
   public async request(event: string, data?: any, timeout = 6000, force = false): Promise<any> {
     if (!this.rService.socket)
-      throw new Error("The Socket must is SocketIOClient.Socket, Not null.");
+      throw new Error("The Socket must be SocketIOClient.Socket, Not null.");
     if (!this.rService.available && !force)
       throw new Error(
         "The remote daemon is not available. Try reconnecting to the remote daemon or check the configuration"
@@ -44,7 +44,8 @@ export default class RemoteRequest {
       const fn = (msg: IPacket) => {
         if (msg.uuid === uuid) {
           clearTimeout(countdownTask);
-          // 每当返回消息后，匹配ID确保响应是请求的对应，则删除自身事件监听
+          // Whenever a message is returned, match the ID to ensure that the response corresponds to the request,
+          // then delete its own event listener
           this.rService.socket.removeEventListener(event, fn);
           if (msg.status == RemoteService.STATUS_OK) resolve(msg.data);
           else if (msg.data.err) {

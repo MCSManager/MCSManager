@@ -1,13 +1,13 @@
 // Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
-// 多转发操作方法
+// Multi-forward operation method
 export function multiOperationForwarding(
   instances: any[],
   callback: (remoteUuid: string, instanceUuids: string[]) => void
 ) {
-  // 分类表
+  // classification table
   const map = new Map<string, string[]>();
-  // 根据信息进行远程主机与实例ID分类
+  // Classify remote hosts and instance IDs based on information
   for (const instanceInfo of instances) {
     const remoteUuid: string = instanceInfo.serviceUuid;
     const instanceUuid: string = instanceInfo.instanceUuid;
@@ -17,7 +17,7 @@ export function multiOperationForwarding(
       map.set(remoteUuid, [instanceUuid]);
     }
   }
-  // 将分类好的数据分别打包转发
+  // Pack and forward the classified data separately
   for (const iterator of map) {
     const remoteUuid = iterator[0];
     const instanceUuids = iterator[1];

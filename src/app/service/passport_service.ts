@@ -15,15 +15,15 @@ export const LOGIN_COUNT = "loginCount";
 export const LOGIN_FAILED_COUNT_KEY = "loginFailedCount";
 
 export function login(ctx: Koa.ParameterizedContext, userName: string, passWord: string): string {
-  // 记录登录请求次数
+  // record the number of login requests
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
   const ip = ctx.socket.remoteAddress;
-  // 进行用户信息检查
+  // check user information
   if (userSystem.checkUser({ userName, passWord })) {
-    // 登录成功后重置此IP的错误次数
+    // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
     if (ipMap) delete ipMap[ip];
-    // 会话 Session 状态改变为已登陆
+    // Session Session state changes to logged in
     const user = userSystem.getUserByUserName(userName);
     user.loginTime = new Date().toLocaleString();
     ctx.session["login"] = true;
@@ -35,7 +35,7 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     logger.info(`[LOGIN] Token: ${ctx.session["token"]}`);
     return ctx.session["token"];
   } else {
-    // 记录登录失败次数
+    // record the number of login failures
     GlobalVariable.set(LOGIN_FAILED_COUNT_KEY, GlobalVariable.get(LOGIN_FAILED_COUNT_KEY, 0) + 1);
     ctx.session["login"] = null;
     ctx.session["token"] = null;
@@ -122,16 +122,16 @@ export function isAjax(ctx: Koa.ParameterizedContext) {
 
 export function checkBanIp(ctx: Koa.ParameterizedContext) {
   if (!GlobalVariable.map.has(LOGIN_FAILED_KEY)) GlobalVariable.set(LOGIN_FAILED_KEY, {});
-  // 此IpMap 在登录时也需要使用
+  // This IpMap also needs to be used when logging in
   const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
   const ip = ctx.socket.remoteAddress;
   if (ipMap[ip] > 10 && systemConfig.loginCheckIp === true) {
     if (ipMap[ip] != 999) {
-      // 记录封禁次数
+      // record the number of bans
       GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 0) + 1);
       setTimeout(() => {
         delete ipMap[ip];
-        // 删除封禁次数
+        // delete the number of bans
         GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 1) - 1);
       }, 1000 * 60 * 10);
     }

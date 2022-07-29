@@ -5,7 +5,7 @@ import log4js from "log4js";
 
 const LOG_FILE_PATH = "logs/current.log";
 
-// 每次启动时将日志文件单独保存
+// save the log file separately on each startup
 if (fs.existsSync(LOG_FILE_PATH)) {
   const time = new Date();
   const timeString = `${time.getFullYear()}-${
