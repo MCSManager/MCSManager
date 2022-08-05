@@ -1,6 +1,6 @@
 {
   "name": "mcsmanager-panel",
-  "version": "9.5.0",
+  "version": "9.6.0",
   "daemonVersion": "1.6.0",
   "description": "Distributed clustering, Groupable, Lightweight and out-of-the-box Minecraft server management panel",
   "scripts": {

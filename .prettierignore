@@ -7,6 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 
 data/
+error
 *.json
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
