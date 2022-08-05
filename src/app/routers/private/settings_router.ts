@@ -6,6 +6,8 @@ import { setImmediate } from "timers";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import { saveSystemConfig, systemConfig } from "../../setting";
+import { logger } from "../../service/log";
+import { i18next } from "../../i18n";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -33,7 +35,9 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
     if (config.language != null) {
+      logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
+      i18next.changeLanguage(systemConfig.language);
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
     saveSystemConfig(systemConfig);
