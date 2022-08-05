@@ -1,4 +1,4 @@
-<img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManager 图标.png" width="500px" />
+<img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />
 
 <br />
 
@@ -141,7 +141,6 @@ node app.js
 
 <br />
 
-
 ## 项目体系
 
 整个软件运行需要三个项目的互相配合才可运行，您普通安装的代码是编译再整合后的产物。
@@ -149,13 +148,13 @@ node app.js
 [**控制面板端**](https://github.com/MCSManager/MCSManager)
 
 - 角色：控制中心
-- 责任：负责提供网页前端的后端接口，提供API接口，用户数据管理和对守护进程进行通信和授权。
- 
+- 责任：负责提供网页前端的后端接口，提供 API 接口，用户数据管理和对守护进程进行通信和授权。
+
 [**网页前端**](https://github.com/MCSManager/UI)
 
 - 角色：控制中心的用户交互界面
 - 责任：以网页形式展示数据，发送请求，并且拥有与守护进程通信的能力，此项目最终产物是纯静态文件。
- 
+
 [**守护进程**](https://github.com/MCSManager/Daemon)
 
 - 角色：被控端
@@ -175,7 +174,7 @@ node app.js
 git clone https://github.com/MCSManager/MCSManager.git
 cd MCSManager
 npm install
-npm run start 
+npm run start
 # 默认将采用 ts-node 直接执行 Typescript 代码
 # 默认运行在 23333 端口
 ```
@@ -201,7 +200,6 @@ npm run start
 # 运行后请在控制面板端连接本守护进程
 # 默认运行在 24444 端口
 ```
-
 
 <br />
 
