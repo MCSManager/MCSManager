@@ -65,7 +65,8 @@ router.all(
       isInstall = false;
     }
     ctx.body = {
-      isInstall
+      isInstall,
+      language: systemConfig.language || null
     };
   }
 );

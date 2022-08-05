@@ -1,6 +1,7 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
+import { setImmediate } from "timers";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import { saveSystemConfig, systemConfig } from "../../setting";
@@ -30,6 +31,10 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
+    if (config.language != null) {
+      systemConfig.language = String(config.language);
+      setImmediate(() => {});
+    }
     saveSystemConfig(systemConfig);
     ctx.body = "OK";
     return;

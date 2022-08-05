@@ -28,4 +28,7 @@ export default class SystemConfig {
   loginInfo: string = "";
   // Whether to open the file management function for ordinary users
   canFileManager = true;
+
+  // i18n
+  language = "en_us";
 }
