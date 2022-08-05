@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
@@ -27,10 +8,10 @@ import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
-
+import { $t } from "../../i18n";
 const router = new Router({ prefix: "/protected_instance" });
 
-// 路由权限验证中间件
+// Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
@@ -39,12 +20,12 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = "[Forbidden] [中间件] 参数不正确或非法访问实例";
+    ctx.body = $t("permission.forbiddenInstance");
   }
 });
 
 // [Low-level Permission]
-// 开启实例路由
+// Enable instance routing
 router.all(
   "/open",
   permission({ level: 1 }),
@@ -65,7 +46,7 @@ router.all(
 );
 
 // [Low-level Permission]
-// 实例关闭路由
+// The instance closes the route
 router.all(
   "/stop",
   permission({ level: 1 }),
@@ -86,8 +67,8 @@ router.all(
 );
 
 // [Low-level Permission]
-// 向实例发送命令路由
-// 现阶段已实现WS跨面板端命令传递，此接口保留做API接口
+// Send the command route to the instance
+// At this stage, WS cross-panel command transfer has been implemented, and this interface is reserved as an API interface
 router.all(
   "/command",
   permission({ level: 1 }),
@@ -110,7 +91,7 @@ router.all(
 );
 
 // [Low-level Permission]
-// 重启实例
+// restart the instance
 router.all(
   "/restart",
   permission({ level: 1 }),
@@ -131,7 +112,7 @@ router.all(
 );
 
 // [Low-level Permission]
-// 终止实例
+// terminate the instance
 router.all(
   "/kill",
   permission({ level: 1 }),
@@ -150,9 +131,8 @@ router.all(
     }
   }
 );
-
 // [Low-level Permission]
-// 执行异步任务
+// execute asynchronous task
 router.post(
   "/asynchronous",
   permission({ level: 1 }),
@@ -180,7 +160,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 终止异步任务
+// Terminate the asynchronous task
 router.all(
   "/stop_asynchronous",
   permission({ level: 1 }),
@@ -203,7 +183,7 @@ router.all(
 );
 
 // [Low-level Permission]
-// 请求与守护进程建立数据流专有通道
+// Request to establish a data stream dedicated channel with the daemon
 router.post(
   "/stream_channel",
   permission({ level: 1 }),
@@ -233,7 +213,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 根据文件列表获取实例配置文件列表
+// Get the instance configuration file list based on the file list
 router.post(
   "/process_config/list",
   permission({ level: 1 }),
@@ -259,7 +239,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 获取指定配置文件内容
+// Get the content of the specified configuration file
 router.get(
   "/process_config/file",
   permission({ level: 1 }),
@@ -288,7 +268,7 @@ router.get(
 );
 
 // [Low-level Permission]
-// 更新指定配置文件内容
+// Update the content of the specified configuration file
 router.put(
   "/process_config/file",
   permission({ level: 1 }),
@@ -318,7 +298,7 @@ router.put(
 );
 
 // [Low-level Permission]
-// 更新实例低权限配置数据（普通用户）
+// Update instance low-privilege configuration data (normal user)
 router.put(
   "/instance_update",
   permission({ level: 1 }),
@@ -331,19 +311,19 @@ router.put(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const config = ctx.request.body;
-      // 此处是低权限用户配置设置接口，为防止数据注入，必须进行一层过滤
-      // Ping 协议配置
+      // Here is the low-privileged user configuration setting interface, in order to prevent data injection, a layer of filtering must be performed
+      // Ping protocol configuration
       const pingConfig = {
         ip: String(config.pingConfig?.ip),
         port: Number(config.pingConfig?.port),
         type: config.pingConfig?.type
       };
-      // 事件任务配置
+      // event task configuration
       const eventTask = {
         autoStart: Boolean(config.eventTask?.autoStart),
         autoRestart: Boolean(config.eventTask?.autoRestart)
       };
-      // 网页终端设置
+      // web terminal settings
       const terminalOption = {
         haveColor: Boolean(config.terminalOption?.haveColor),
         pty: Boolean(config.terminalOption?.pty),
@@ -351,7 +331,7 @@ router.put(
         ptyWindowRow: Number(config.terminalOption?.ptyWindowRow)
       };
 
-      // 普通用户可控参数
+      // Normal user controllable parameters
       const crlf = Number(config?.crlf);
       const oe = config.oe ? String(config?.oe) : null;
       const ie = config.ie ? String(config?.ie) : null;
@@ -359,8 +339,8 @@ router.put(
 
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
 
-      // 松散性参数传递，每个配置都可以传递或不传递
-      // 其子对象配置一定要完整或者一个都没有
+      // loose parameter passing, each configuration can be passed or not passed
+      // Its sub-object configuration must be complete or none at all
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
@@ -380,7 +360,7 @@ router.put(
   }
 );
 
-// 获取某实例终端日志
+// Get the terminal log of an instance
 router.get(
   "/outputlog",
   permission({ level: 1 }),

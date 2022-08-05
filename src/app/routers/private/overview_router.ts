@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
@@ -39,9 +20,9 @@ import {
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
-// 控制面板首页信息总览路由
+// Control panel home page information overview routing
 router.get("/", permission({ level: 10, token: false }), async (ctx) => {
-  // 获取远程服务各个信息
+  // Get the information of the remote service
   const remoteInfoList = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
     const remoteService = iterator[1];
@@ -49,9 +30,9 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
     try {
       remoteInfo = await new RemoteRequest(remoteService).request("info/overview");
     } catch (err) {
-      // 忽略请求错误，继续循环
+      // ignore request errors and continue looping
     }
-    // 赋予一些标识符值
+    // assign some identifier value
     remoteInfo.uuid = remoteService.uuid;
     remoteInfo.ip = remoteService.config.ip;
     remoteInfo.port = remoteService.config.port;
@@ -60,7 +41,7 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
     remoteInfoList.push(remoteInfo);
   }
   const selfInfo = systemInfo();
-  // 获取本面板端所在系统信息
+  // Get the information of the system where the panel is located
   const overviewData = {
     version: getVersion(),
     specifiedDaemonVersion: specifiedDaemonVersion(),

@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
@@ -26,11 +7,12 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { multiOperationForwarding } from "../../service/instance_service";
 import { timeUuid } from "../../service/password";
+import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/instance" });
 
 // [Top-level Permission]
-// 获取某实例详细信息
+// Get the details of an instance
 router.get(
   "/",
   permission({ level: 10 }),
@@ -51,7 +33,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 创建实例
+// create instance
 router.post(
   "/",
   permission({ level: 10 }),
@@ -70,7 +52,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 创建实例时上传文件
+// upload the file when creating the instance
 router.post(
   "/upload",
   permission({ level: 10 }),
@@ -83,8 +65,8 @@ router.post(
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
-      if (!newInstanceUuid) throw new Error("创建实例失败");
-      // 向守护进程发送跨端文件上传任务
+      if (!newInstanceUuid) throw new Error($t("router.instance.createError"));
+      // Send a cross-end file upload task to the daemon
       const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
@@ -107,7 +89,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 更新实例信息（管理用户）
+// Update instance information (manage users)
 router.put(
   "/",
   permission({ level: 10 }),
@@ -130,7 +112,7 @@ router.put(
 );
 
 // [Top-level Permission]
-// 删除实例
+// delete instance
 router.delete(
   "/",
   permission({ level: 10 }),
@@ -153,7 +135,7 @@ router.delete(
 );
 
 // [Top-level Permission]
-// 批量开启实例路由
+// Open instance routing in batches
 router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
@@ -172,7 +154,7 @@ router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 批量关闭实例路由
+//Close instance routing in batches
 router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
@@ -191,7 +173,7 @@ router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 批量终止实例路由
+// batch terminate instance routing
 router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;

@@ -1,30 +1,11 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-
-  可视化数据子系统：负责收集系统数据和事件数据，并且提供一些方法展示出来
-*/
 import { logger } from "./log";
 import { systemInfo } from "../common/system_info";
 import RemoteServiceSubsystem from "../service/system_remote_service";
 import RemoteRequest from "./remote_command";
 
+// Visual data subsystem: responsible for collecting system data and event data, and providing some methods to display them
 class LineQueue<T> {
   private readonly arr = new Array<T>();
 
@@ -62,20 +43,20 @@ interface IWebChartInfo {
 class VisualDataSubsystem {
   public readonly countMap: Map<string, number> = new Map<string, number>();
 
-  // 系统信息表
+  // system information table
   public readonly systemChart = new LineQueue<ISystemChartInfo>(60, { cpu: 0, mem: 0 });
-  // 面板状态表
+  // panel state table
   public readonly statusChart = new LineQueue<IWebChartInfo>(60, {
     value: 0,
     totalInstance: 0,
     runningInstance: 0
   });
 
-  // 请求次数计数器
+  // request count counter
   private requestCount = 0;
 
   constructor() {
-    // 系统信息表
+    // system information table
     setInterval(() => {
       const info = systemInfo();
       if (info) {
@@ -91,9 +72,9 @@ class VisualDataSubsystem {
       }
     }, 1000 * 10);
 
-    // 状态表
+    // state table
     setInterval(async () => {
-      // 计算总实例与运行实例数
+      // Calculate the total number of instances and the number of running instances
       const remoteInfoList = new Array();
       for (const iterator of RemoteServiceSubsystem.services.entries()) {
         try {

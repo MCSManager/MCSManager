@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
@@ -27,10 +8,10 @@ import RemoteRequest from "../../service/remote_command";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { FILENAME_BLACKLIST } from "../../const";
-
+import { $t } from "../../i18n";
 const router = new Router({ prefix: "/protected_schedule" });
 
-// 路由权限验证中间件
+// Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const serviceUuid = String(ctx.query.remote_uuid);
@@ -39,12 +20,12 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = "[Forbidden] [中间件] 参数不正确或非法访问实例";
+    ctx.body = $t("permission.forbiddenInstance");
   }
 });
 
 // [Low-level Permission]
-// 获取计划任务列表
+// Get the list of scheduled tasks
 router.get(
   "/",
   permission({ level: 1 }),
@@ -67,7 +48,7 @@ router.get(
 );
 
 // [Low-level Permission]
-// 创建计划任务
+// create a scheduled task
 router.post(
   "/",
   permission({ level: 1 }),
@@ -81,10 +62,10 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const task = ctx.request.body;
 
-      // 计划任务名需要文件名格式检查
+      // Scheduled task name needs file name format check
       const name = String(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
-        if (name.includes(ch)) throw new Error("非法的计划任务名");
+        if (name.includes(ch)) throw new Error($t("router.schedule.invalidName"));
       });
 
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(
@@ -106,7 +87,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// 删除计划任务
+// delete scheduled task
 router.delete(
   "/",
   permission({ level: 1 }),

@@ -1,25 +1,5 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
-
-import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
@@ -29,8 +9,8 @@ import RemoteRequest from "../../service/remote_command";
 const router = new Router({ prefix: "/service" });
 
 // [Top-level Permission]
-// 获取远程服务列表
-// 仅包含服务信息，不包括实例信息列表
+// Get the list of remote services
+// Contains only service information, not a list of instance information
 router.get("/remote_services_list", permission({ level: 10 }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
@@ -47,7 +27,7 @@ router.get("/remote_services_list", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 向守护进程查询指定的实例
+// Query the daemon for the specified instance
 router.get(
   "/remote_service_instances",
   permission({ level: 10 }),
@@ -70,7 +50,7 @@ router.get(
 );
 
 // [Top-level Permission]
-// 获取远程服务器系统信息
+// Get remote server system information
 router.get("/remote_services_system", permission({ level: 10 }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
@@ -87,7 +67,7 @@ router.get("/remote_services_system", permission({ level: 10 }), async (ctx) => 
 });
 
 // [Top-level Permission]
-// 获取远程服务器实例信息（浏览过大）
+// Get remote server instance information (browse too large)
 router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
@@ -96,9 +76,9 @@ router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
     try {
       instancesInfo = await new RemoteRequest(remoteService).request("instance/overview");
     } catch (err) {
-      // 忽略请求出错
+      // ignore request errors
     }
-    // 如果连接可用则发送远程指令
+    // send remote command if connection is available
     result.push({
       uuid: remoteService.uuid,
       ip: remoteService.config.ip,
@@ -112,14 +92,14 @@ router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
 });
 
 // [Top-level Permission]
-// 新增远程服务
+// add remote service
 router.post(
   "/remote_service",
   permission({ level: 10 }),
   validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
-    // 进行异步注册
+    // do asynchronous registration
     const instance = RemoteServiceSubsystem.registerRemoteService({
       apiKey: parameter.apiKey,
       port: parameter.port,
@@ -131,7 +111,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// 修改远程服务参数
+// Modify remote service parameters
 router.put(
   "/remote_service",
   permission({ level: 10 }),
@@ -139,7 +119,7 @@ router.put(
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
     const parameter = ctx.request.body;
-    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("实例不存在");
+    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     await RemoteServiceSubsystem.edit(uuid, {
       port: parameter.port,
       ip: parameter.ip,
@@ -151,28 +131,28 @@ router.put(
 );
 
 // [Top-level Permission]
-// 删除远程服务
+// delete remote service
 router.delete(
   "/remote_service",
   permission({ level: 10 }),
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
-    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("实例不存在");
+    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     await RemoteServiceSubsystem.deleteRemoteService(uuid);
     ctx.body = true;
   }
 );
 
 // [Top-level Permission]
-// 连接远程实例
+// connect to remote instance
 router.get(
   "/link_remote_service",
   permission({ level: 10 }),
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
-    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("实例不存在");
+    if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     try {
       RemoteServiceSubsystem.getInstance(uuid).connect();
       ctx.body = true;

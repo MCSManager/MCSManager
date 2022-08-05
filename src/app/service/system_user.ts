@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import md5 from "md5";
 import { v4 } from "uuid";
@@ -26,6 +7,7 @@ import { logger } from "./log";
 import { IUser } from "../entity/entity_interface";
 import StorageSubsystem from "../common/system_storage";
 import { QueryWrapper, LocalFileSource } from "../common/query_wrapper";
+import { $t } from "../i18n";
 
 class UserSubsystem {
   public readonly objects: Map<string, User> = new Map();
@@ -35,19 +17,19 @@ class UserSubsystem {
       const user = StorageSubsystem.load("User", User, uuid) as User;
       this.objects.set(uuid, user);
     });
-    logger.info(`面板用户实体数：${this.objects.size}`);
+    logger.info($t("systemUser.userCount", { n: this.objects.size }));
   }
 
   create(config: IUser): User {
     const newUuid = v4().replace(/-/gim, "");
-    // 初始化必要用户数据
+    // Initialize necessary user data
     const instance = new User();
     instance.uuid = newUuid;
     instance.registerTime = new Date().toLocaleString();
-    // 加入到用户系统
+    // add to the user system
     this.setInstance(newUuid, instance);
     this.edit(instance.uuid, config);
-    // 持久化保存用户信息
+    // Persistently save user information
     StorageSubsystem.store("User", instance.uuid, instance);
     return instance;
   }
@@ -92,7 +74,7 @@ class UserSubsystem {
     const instance = this.getInstance(uuid);
     instanceIds.forEach((value) => {
       if (!value.serviceUuid || !value.instanceUuid)
-        throw new Error("Type error, The instances of user must is IUserHaveInstance array.");
+        throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
     });
     instance.instances = [];
     instanceIds.forEach((value) => {

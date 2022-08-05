@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import path from "path";
 import fs from "fs-extra";
@@ -40,20 +21,18 @@ class StorageSubsystem {
     return true;
   }
 
-  /**
-   * 根据类定义和标识符储存成本地文件
-   */
+  // Stored in local file based on class definition and identifier
   public store(category: string, uuid: string, object: any) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     const data = JSON.stringify(object, null, 4);
     fs.writeFileSync(filePath, data, { encoding: "utf-8" });
   }
 
-  // 以复制目标方为原型的基本类型的深复制
-  // target 复制目标 object 复制源
+  // deep copy of the primitive type with the copy target as the prototype
   protected defineAttr(target: any, object: any): any {
     for (const v of Object.keys(target)) {
       const objectValue = object[v];
@@ -72,26 +51,27 @@ class StorageSubsystem {
   }
 
   /**
-   * 根据类定义和标识符实例化成对象
+   * Instantiate an object based on the class definition and identifier
    */
   public load(category: string, classz: any, uuid: string) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} 不符合规范`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, { encoding: "utf-8" });
     const dataObject = JSON.parse(data);
     const target = new classz();
-    // for (const v of Object.keys(target)) {
-    //   if (dataObject[v] !== undefined) target[v] = dataObject[v];
+    // for (const v of Object. keys(target)) {
+    // if (dataObject[v] !== undefined) target[v] = dataObject[v];
     // }
-    // 深层对象复制
+    // deep object copy
     return this.defineAttr(target, dataObject);
   }
 
   /**
-   * 通过类定义返回所有与此类有关的标识符
+   * Return all identifiers related to this class through the class definition
    */
   public list(category: string) {
     const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
@@ -105,7 +85,7 @@ class StorageSubsystem {
   }
 
   /**
-   * 通过类定义删除指定类型的标识符实例
+   * Delete an identifier instance of the specified type through the class definition
    */
   public delete(category: string, uuid: string) {
     const filePath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category, `${uuid}.json`);

@@ -1,23 +1,4 @@
-/*
-  Copyright (C) 2022 Suwings <Suwings@outlook.com>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  According to the AGPL, it is forbidden to delete all copyright notices, 
-  and if you modify the source code, you must open source the
-  modified source code.
-
-  版权所有 (C) 2022 Suwings <Suwings@outlook.com>
-
-  该程序是免费软件，您可以重新分发和/或修改据 GNU Affero 通用公共许可证的条款，
-  由自由软件基金会，许可证的第 3 版，或（由您选择）任何更高版本。
-
-  根据 AGPL 与用户协议，您必须保留所有版权声明，如果修改源代码则必须开源修改后的源代码。
-  可以前往 https://mcsmanager.com/ 阅读用户协议，申请闭源开发授权等。
-*/
+// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
 
 import { logger } from "./log";
 import { IRemoteService, RemoteServiceConfig } from "../entity/entity_interface";
@@ -26,10 +7,11 @@ import { UniversalRemoteSubsystem } from "./base/urs";
 import StorageSubsystem from "../common/system_storage";
 import fs from "fs-extra";
 import path from "path";
+import { $t } from "../i18n";
 
-// 远程服务管理子系统（RemoteServiceSubsystem）这个子系统将是最重要的系统之一
-// 主要功能是在所有地方存储远程服务
-// 扫描本地服务，统一管理，远程调用和代理等
+// The RemoteServiceSubsystem will be one of the most important systems
+// main function is to store remote services everywhere
+// Scan local services, unified management, remote calls and proxies, etc.
 class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   constructor() {
     super();
@@ -46,23 +28,22 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       newService.connect();
     });
 
-    // 若无任何守护进程，则检测本地是否存在守护进程
+    // If there is no daemon process, check whether there is a daemon process locally
     if (this.services.size === 0) {
       this.initConnectLocalhost("");
     }
 
-    logger.info(`远程服务子系统初始化完毕`);
-    logger.info(`总计配置节点数: ${this.services.size}`);
+    logger.info($t("systemRemoteService.nodeCount", { n: this.services.size }));
 
-    // 注册定期连接状态检查
+    // Register for periodic connection status checks
     setInterval(() => this.connectionStatusCheckTask(), 1000 * 60);
   }
 
   // Register a NEW remote service to system and connect it.
   // Like: this.registerRemoteService({
-  //   ip: "127.0.0.1",
-  //   apiKey: "test_key",
-  //   port: 24444
+  // ip: "127.0.0.1",
+  // apiKey: "test_key",
+  // port: 24444
   // });
   registerRemoteService(config: IRemoteService) {
     const instance = this.newInstance(config);
@@ -71,7 +52,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     return instance;
   }
 
-  // 根据 UUID 删除指定的远程服务
+  // Delete the specified remote service based on UUID
   deleteRemoteService(uuid: string) {
     if (this.getInstance(uuid)) {
       this.getInstance(uuid).disconnect();
@@ -111,25 +92,22 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     const localKeyFilePath = path.normalize(
       path.join(process.cwd(), "../daemon/data/Config/global.json")
     );
-    logger.info(`正在尝试读取本地守护进程: ${localKeyFilePath}`);
+    logger.info($t("systemRemoteService.loadDaemonTitle", { localKeyFilePath }));
     if (fs.existsSync(localKeyFilePath)) {
-      logger.info("检测到本地守护进程，正在自动获取密钥和端口...");
+      logger.info($t("systemRemoteService.autoCheckDaemon"));
       const localDaemonConfig = JSON.parse(
         fs.readFileSync(localKeyFilePath, { encoding: "utf-8" })
       );
       const localKey = localDaemonConfig.key;
       const localPort = localDaemonConfig.port;
-      logger.info("正在自动连接本地守护进程...");
       return this.registerRemoteService({ apiKey: localKey, port: localPort, ip });
     } else if (key) {
       const port = 24444;
-      logger.info("无法自动获取本地守护进程配置文件，已发起连接但可能未经证实...");
       return this.registerRemoteService({ apiKey: key, port, ip });
     }
-    logger.warn("无法自动获取本地守护进程配置文件，请前往面板手动连接守护进程");
-    logger.warn("前往 https://docs.mcsmanager.com/ 了解更多。");
+    logger.warn($t("systemRemoteService.error"));
 
-    // 5秒后判断是否已经连上守护进程，直到有一个守护进程连上
+    // After 5 seconds, determine whether the daemon has been connected until a daemon is connected
     setTimeout(() => {
       if (this.services.size === 0) return this.initConnectLocalhost();
     }, 5 * 1000);
@@ -145,12 +123,12 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     return { available, total };
   }
 
-  // 定期连接状态检查
+  // Periodic connection status check
   connectionStatusCheckTask() {
     this.services?.forEach((v) => {
       if (v && v.available === false) {
         logger.warn(
-          `检测到守护进程 ${v.config.remarks} ${v.config.ip}:${v.config.port} 状态异常，正在重置并连接`
+          `Daemon exception detected: ${v.config.remarks} ${v.config.ip}:${v.config.port}, reconnecting...`
         );
         return v.connect();
       }
