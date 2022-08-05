@@ -1,6 +1,7 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 import Router from "@koa/router";
+import remoteService from "../../service/system_remote_service";
 import { setImmediate } from "timers";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
@@ -33,7 +34,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
     if (config.language != null) {
       systemConfig.language = String(config.language);
-      setImmediate(() => {});
+      remoteService.changeDaemonLanguage(systemConfig.language);
     }
     saveSystemConfig(systemConfig);
     ctx.body = "OK";

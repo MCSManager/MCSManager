@@ -8,6 +8,7 @@ import StorageSubsystem from "../common/system_storage";
 import fs from "fs-extra";
 import path from "path";
 import { $t } from "../i18n";
+import RemoteRequest from "./remote_command";
 
 // The RemoteServiceSubsystem will be one of the most important systems
 // main function is to store remote services everywhere
@@ -133,6 +134,17 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
         return v.connect();
       }
     });
+  }
+
+  changeDaemonLanguage(language: string) {
+    for (const iterator of this.services.entries()) {
+      new RemoteRequest(iterator[1])
+        .request("info/setting", {
+          language
+        })
+        .then(() => {})
+        .catch(() => {});
+    }
   }
 }
 
