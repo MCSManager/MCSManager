@@ -1,4 +1,4 @@
-// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
+// Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 import Koa from "koa";
 import userSystem from "./system_user";

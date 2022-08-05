@@ -1,4 +1,4 @@
-// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
+// Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 import { v4 } from "uuid";
 import { IPacket, IRequestPacket } from "../entity/entity_interface";
