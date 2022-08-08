@@ -1,6 +1,7 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 // Initialize the version manager
+import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
 initVersionManager();
 const VERSION = getVersion();
@@ -86,7 +87,7 @@ app.use(koaStatic(path.join(BASE_PATH, "public")));
 
 // load all routes
 import { index } from "./app/index";
-import { $t } from "./app/i18n";
+
 // Websocket routing (useless for now)
 // import SocketService from "./app/service/socket_service";
 index(app);
