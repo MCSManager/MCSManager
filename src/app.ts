@@ -13,7 +13,7 @@ __ /|_/ /_ / _____ \\__ /|_/ /_ __ /_ __ \\ __ /_ __ / _ \\_ ___/
 _ / / / / /___ ____/ /_ / / / / /_/ /_ / / /_/ /_ /_/ // __/ /
 /_/ /_/ \\____/ /____/ /_/ /_/ \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/
                                                         /_____/
- + Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
+ + Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
  + Version ${VERSION}
 `);
 
