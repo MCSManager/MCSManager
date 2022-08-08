@@ -8,7 +8,7 @@ import validator from "../../middleware/validator";
 import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
-
+import userSystem from "../../service/system_user";
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
@@ -45,6 +45,24 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     return;
   }
   ctx.body = new Error("The body is incorrect");
+});
+
+// [Public Permission]
+// Update config when install
+router.put("/install", async (ctx) => {
+  const config = ctx.request.body;
+  if (userSystem.objects.size === 0) {
+    if (config.language != null) {
+      logger.warn("Language change:", config.language);
+      systemConfig.language = String(config.language);
+      i18next.changeLanguage(systemConfig.language);
+      remoteService.changeDaemonLanguage(systemConfig.language);
+    }
+    saveSystemConfig(systemConfig);
+    ctx.body = "OK";
+    return;
+  }
+  ctx.body = new Error("The MCSManager has been installed");
 });
 
 export default router;
