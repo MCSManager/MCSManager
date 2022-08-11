@@ -75,8 +75,12 @@ app.use(
 
 // Http log and print
 app.use(async (ctx, next) => {
-  logger.info(`[HTTP] ${ctx.ip} ${ctx.method} - ${ctx.URL.href}`);
-  logger.info(`[HTTP] ${ctx.session.userName}`);
+  const ignoreUrls = ["/api/overview", "/api/files/status"];
+  for (const iterator of ignoreUrls) {
+    if (ctx.URL.pathname.includes(iterator)) return await next();
+  }
+  logger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
+  logger.info(`[HTTP] IP: ${ctx.ip} USER: ${ctx.session.userName} UUID: ${ctx.session.uuid}`);
   await next();
 });
 
