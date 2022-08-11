@@ -138,12 +138,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
 
   changeDaemonLanguage(language: string) {
     for (const iterator of this.services.entries()) {
-      new RemoteRequest(iterator[1])
-        .request("info/setting", {
-          language
-        })
-        .then(() => {})
-        .catch(() => {});
+      iterator[1].setLanguage(language);
     }
   }
 }

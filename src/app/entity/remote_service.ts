@@ -60,6 +60,12 @@ export default class RemoteService {
     });
   }
 
+  public async setLanguage(language: string) {
+    return await new RemoteRequest(this).request("info/setting", {
+      language
+    });
+  }
+
   // This function is used to verify the identity. It only needs to be verified once.
   // This function will be executed automatically after the connection event is triggered.
   // Generally, there is no need to execute it manually.
