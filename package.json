@@ -1,16 +1,16 @@
 {
   "name": "mcsmanager-panel",
   "version": "9.6.0",
-  "daemonVersion": "1.6.0",
-  "description": "Distributed clustering, Groupable, Lightweight and out-of-the-box Minecraft server management panel",
+  "daemonVersion": "1.7.0",
+  "description": "Distributed, out-of-the-box, supports docker, supports minecraft server and other software management panel",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "ts-node ./src/app.ts",
     "build": "tsc && webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
-  "author": "https://github.com/Suwings",
-  "license": "AGPL-3.0",
+  "author": "https://github.com/unitwk",
+  "license": " Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MCSManager/MCSManager"

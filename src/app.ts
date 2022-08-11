@@ -75,7 +75,8 @@ app.use(
 
 // Http log and print
 app.use(async (ctx, next) => {
-  logger.info(`${ctx.ip} ${ctx.method} - ${ctx.URL.href}`);
+  logger.info(`[HTTP] ${ctx.ip} ${ctx.method} - ${ctx.URL.href}`);
+  logger.info(`[HTTP] ${ctx.session.userName}`);
   await next();
 });
 

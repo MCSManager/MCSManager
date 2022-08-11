@@ -57,16 +57,17 @@ export default {
     }
   },
   daemonInfo: {
-    connect: "远程节点 {{v}} 已连接",
-    disconnect: "远程节点 {{v}} 已断开",
-    connectError: "连接远程节点错误：{{v}} ",
-    authSuccess: "远程节点 {{v}} 验证成功",
-    authFailure: "远程节点 {{v}} 验证失败",
-    authError: "远程节点 {{v}} 验证错误",
-    closed: "主动断开远程节点 {{v}} ",
+    connect: "远程节点 {{- v}} 已连接",
+    disconnect: "远程节点 {{- v}} 已断开",
+    connectError: "连接远程节点错误：{{- v}} ",
+    authSuccess: "远程节点 {{- v}} 密钥验证通过",
+    authFailure: "远程节点 {{- v}} 密钥验证拒绝",
+    authError: "远程节点 {{- v}} 密钥验证错误",
+    closed: "主动断开远程节点 {{- v}} ",
     resetConnect: "用户发起重连已可用状态的远程节点，正在重置连接通道",
     replaceConnect: "用户发起重复连接请求，现进行重置连接配置",
-    tryConnect: "正在尝试连接远程节点"
+    tryConnect: "正在尝试连接远程节点",
+    setLanguage: "设置节点语言"
   }
 };
 // import { $t } from "../../i18n";

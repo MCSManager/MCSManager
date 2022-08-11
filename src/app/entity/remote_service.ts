@@ -5,7 +5,7 @@ import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
 import InstanceStreamListener from "../common/instance_stream";
-import { $t } from "../i18n";
+import { $t, i18next } from "../i18n";
 
 export default class RemoteService {
   public static readonly STATUS_OK = 200;
@@ -30,7 +30,7 @@ export default class RemoteService {
     if (this.config.ip.indexOf("wss://") === 0 || this.config.ip.indexOf("ws://") === 0) {
       addr = `${this.config.ip}:${this.config.port}`;
     }
-    const daemonInfo = `[${this.uuid}] [${addr}]`;
+    const daemonInfo = `[${this.uuid}] [${addr}/${this.config.remarks}]`;
 
     if (this.available) {
       logger.info(`${$t("daemonInfo.resetConnect")}:${daemonInfo}`);
@@ -60,7 +60,13 @@ export default class RemoteService {
     });
   }
 
-  public async setLanguage(language: string) {
+  public async setLanguage(language?: string) {
+    if (!language) language = i18next.language;
+    logger.info(
+      `${$t("daemonInfo.setLanguage")} (${this.config.ip}:${this.config.port}/${
+        this.config.remarks
+      }) language: ${language}`
+    );
     return await new RemoteRequest(this).request("info/setting", {
       language
     });
@@ -76,14 +82,16 @@ export default class RemoteService {
       const res = await new RemoteRequest(this).request("auth", this.config.apiKey, 5000, true);
       if (res === true) {
         this.available = true;
-        logger.info($t("daemonInfo.connect", { v: daemonInfo }));
+        await this.setLanguage();
+        logger.info($t("daemonInfo.authSuccess", { v: daemonInfo }));
         return true;
       }
       this.available = false;
-      logger.warn($t("daemonInfo.disconnect", { v: daemonInfo }));
+      logger.warn($t("daemonInfo.authFailure", { v: daemonInfo }));
       return false;
     } catch (error) {
-      logger.warn($t("daemonInfo.connectError", { v: daemonInfo }));
+      logger.warn($t("daemonInfo.authError", { v: daemonInfo }));
+      logger.warn(error);
       return false;
     }
   }
