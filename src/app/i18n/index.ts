@@ -6,7 +6,7 @@ import zh_cn from "./language/zh_cn";
 import en_us from "./language/en_us";
 
 i18next.init({
-  lng: "zh_cn",
+  lng: "en_us",
   fallbackLng: "en_us",
   resources: {
     zh_cn: {

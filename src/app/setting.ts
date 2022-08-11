@@ -5,7 +5,7 @@
 import SystemConfig from "./entity/setting";
 import StorageSystem from "./common/system_storage";
 import GlobalVariable from "./common/global_variable";
-
+import { $t, i18next } from "./i18n";
 let systemConfig: SystemConfig = null;
 
 // System persistence configuration table
@@ -15,6 +15,7 @@ export function initSystemConfig() {
     systemConfig = new SystemConfig();
     StorageSystem.store("SystemConfig", "config", systemConfig);
   }
+  if (systemConfig.language) i18next.changeLanguage(systemConfig.language);
 }
 
 export function saveSystemConfig(_systemConfig: SystemConfig) {

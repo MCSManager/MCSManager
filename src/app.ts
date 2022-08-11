@@ -1,8 +1,13 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
 // Initialize the version manager
-import { $t } from "./app/i18n";
+import { $t, i18next } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
+
+// load global configuration file
+import { initSystemConfig, systemConfig } from "./app/setting";
+initSystemConfig();
+
 initVersionManager();
 const VERSION = getVersion();
 
@@ -31,15 +36,12 @@ import koaBody from "koa-body";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
+import open from "open";
 
 import { logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 
 const BASE_PATH = __dirname;
-
-// load global configuration file
-import { initSystemConfig, systemConfig } from "./app/setting";
-initSystemConfig();
 
 const app = new Koa();
 
@@ -108,6 +110,7 @@ process.on("unhandledRejection", (reason, p) => {
 });
 
 // start the HTTP service
+
 function startUp(port: number, host?: string) {
   const httpServer = http.createServer(app.callback());
 
@@ -122,6 +125,8 @@ function startUp(port: number, host?: string) {
   logger.info($t("app.portTip", { port }));
   logger.info($t("app.exitTip", { port }));
   logger.info("==================================");
+
+  open(`http://localhost:${port}/`).then(() => {});
 }
 
 startUp(systemConfig.httpPort, systemConfig.httpIp);
