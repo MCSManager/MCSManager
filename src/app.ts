@@ -1,6 +1,8 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
-// Initialize the version manager
+import os from "os";
+
+// Initialize the version manager & i18n
 import { $t, i18next } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
 
@@ -126,7 +128,9 @@ function startUp(port: number, host?: string) {
   logger.info($t("app.exitTip", { port }));
   logger.info("==================================");
 
-  open(`http://localhost:${port}/`).then(() => {});
+  if (os.platform() == "win32") {
+    open(`http://localhost:${port}/`).then(() => {});
+  }
 }
 
 startUp(systemConfig.httpPort, systemConfig.httpIp);
