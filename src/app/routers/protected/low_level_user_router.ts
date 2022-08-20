@@ -19,7 +19,7 @@ const router = new Router({ prefix: "/auth" });
 // add token return
 router.get(
   "/token",
-  permission({ level: 1, token: false }),
+  permission({ level: 1, token: false, speedLimit: false }),
   async (ctx: Koa.ParameterizedContext) => {
     // Some and only Ajax requests can get the token
     if (isAjax(ctx)) {
@@ -32,7 +32,7 @@ router.get(
 
 // [Low-level Permission]
 // get user data
-router.get("/", permission({ level: 1, token: false }), async (ctx) => {
+router.get("/", permission({ level: 1, token: false, speedLimit: false }), async (ctx) => {
   // Default permission to get me
   let uuid = getUserUuid(ctx);
   // The front end can choose to require advanced data

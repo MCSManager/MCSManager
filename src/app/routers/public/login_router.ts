@@ -35,7 +35,7 @@ router.post(
 // exit route
 router.get(
   "/logout",
-  permission({ token: false, level: null }),
+  permission({ token: false, level: null, speedLimit: false }),
   async (ctx: Koa.ParameterizedContext) => {
     logout(ctx);
     ctx.body = true;
@@ -46,7 +46,7 @@ router.get(
 // Display the text of the login interface
 router.all(
   "/login_info",
-  permission({ token: false, level: null }),
+  permission({ token: false, level: null, speedLimit: false }),
   async (ctx: Koa.ParameterizedContext) => {
     ctx.body = {
       loginInfo: systemConfig.loginInfo
@@ -58,7 +58,7 @@ router.all(
 // Get the state information that the panel can expose
 router.all(
   "/status",
-  permission({ token: false, level: null }),
+  permission({ token: false, level: null, speedLimit: false }),
   async (ctx: Koa.ParameterizedContext) => {
     let isInstall = true;
     if (userSystem.objects.size === 0) {

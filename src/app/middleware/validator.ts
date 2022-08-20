@@ -53,8 +53,14 @@ function check(taget: any, parameter: any) {
   return false;
 }
 
+interface IParam {
+  params?: any;
+  query?: any;
+  body?: any;
+}
+
 // Entry function
-export = function (parameter: any) {
+export = function (parameter: IParam) {
   return async (ctx: Koa.ParameterizedContext, next: Function) => {
     try {
       let checkBool = true;

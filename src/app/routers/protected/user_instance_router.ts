@@ -363,7 +363,7 @@ router.put(
 // Get the terminal log of an instance
 router.get(
   "/outputlog",
-  permission({ level: 1 }),
+  permission({ level: 1, speedLimit: false }),
   validator({ query: { remote_uuid: String, uuid: String } }),
   async (ctx) => {
     try {

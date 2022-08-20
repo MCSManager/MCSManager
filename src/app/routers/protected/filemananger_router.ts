@@ -31,7 +31,7 @@ router.use(async (ctx, next) => {
 
 router.get(
   "/status",
-  permission({ level: 1 }),
+  permission({ level: 1, speedLimit: false }),
   validator({
     query: { remote_uuid: String, uuid: String }
   }),
@@ -52,7 +52,7 @@ router.get(
 
 router.get(
   "/list",
-  permission({ level: 1 }),
+  permission({ level: 1, speedLimit: false }),
   validator({
     query: { remote_uuid: String, uuid: String, target: String, page: Number, page_size: Number }
   }),

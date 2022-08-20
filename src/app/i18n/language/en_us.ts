@@ -20,7 +20,8 @@ export default {
     xmlhttprequestError: "Cannot find request header x-requested-with: xmlhttprequest",
     apiError: "Incorrect key",
     forbiddenInstance:
-      "[Forbidden] [Middleware] Incorrect parameters or illegal access to the instance"
+      "[Forbidden] [Middleware] Incorrect parameters or illegal access to the instance",
+    tooFast: "Too fast"
   },
   // src\app\service\system_remote_service.ts
   systemRemoteService: {

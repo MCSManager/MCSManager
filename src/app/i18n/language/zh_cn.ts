@@ -19,7 +19,8 @@ export default {
     forbiddenTokenError: "令牌(Token)验证失败，拒绝访问",
     xmlhttprequestError: "无法找到请求头 x-requested-with: xmlhttprequest",
     apiError: "密钥不正确",
-    forbiddenInstance: "[Forbidden] [中间件] 参数不正确或非法访问实例"
+    forbiddenInstance: "[Forbidden] [中间件] 参数不正确或非法访问实例",
+    tooFast: "请求速度过快，请稍后再进行操作"
   },
   // src\app\service\system_remote_service.ts
   systemRemoteService: {

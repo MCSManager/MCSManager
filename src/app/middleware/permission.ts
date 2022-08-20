@@ -6,6 +6,21 @@ import userSystem from "../service/system_user";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax } from "../service/passport_service";
 import { $t } from "../i18n";
 
+function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
+  const SESSION_REQ_TIME = "lastRequestTime";
+  const INV = 300;
+  const currentTime = new Date().getTime();
+  const LastTime = ctx.session[SESSION_REQ_TIME] as number;
+  if (!LastTime) {
+    ctx.session[SESSION_REQ_TIME] = currentTime;
+  } else {
+    console.log(currentTime, LastTime, currentTime - LastTime);
+    if (currentTime - LastTime < INV) return false;
+    ctx.session[SESSION_REQ_TIME] = currentTime;
+  }
+  return true;
+}
+
 // Failed callback
 function verificationFailed(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
@@ -27,14 +42,32 @@ function apiError(ctx: Koa.ParameterizedContext) {
   ctx.body = `[Forbidden] ${$t("permission.apiError")}`;
 }
 
+function tooFast(ctx: Koa.ParameterizedContext) {
+  ctx.status = 500;
+  ctx.body = `[TooFast] ${$t("permission.tooFast")}`;
+}
+
+interface IPermissionCfg {
+  token?: boolean;
+  level?: number;
+  speedLimit?: boolean;
+}
+
 // Basic user permission middleware
-export = (parameter: any) => {
+export = (parameter: IPermissionCfg) => {
   return async (ctx: Koa.ParameterizedContext, next: Function) => {
+    // Request speed check
+    if ((parameter.speedLimit == null || parameter.speedLimit === true) && parameter.level < 10) {
+      if (!requestSpeedLimit(ctx)) {
+        return tooFast(ctx);
+      }
+    }
+
     // If it is an API request, perform API-level permission judgment
     if (ctx.query.apikey) {
       const apiKey = String(ctx.query.apikey);
       const user = getUuidByApiKey(apiKey);
-      if (user && user.permission >= parameter["level"]) {
+      if (user && user.permission >= parameter.level) {
         return await next();
       } else {
         return apiError(ctx);
@@ -42,7 +75,7 @@ export = (parameter: any) => {
     }
 
     // If the route requires Token verification, it will be verified, the default is automatic verification
-    if (parameter["token"] !== false) {
+    if (parameter.token !== false) {
       if (!isAjax(ctx)) return ajaxError(ctx);
       const requestToken = ctx.query.token;
       const realToken = ctx.session["token"];
@@ -52,12 +85,12 @@ export = (parameter: any) => {
     }
 
     // If the permission attribute is a number, the permission determination is automatically executed
-    if (!isNaN(parseInt(parameter["level"]))) {
+    if (!isNaN(parseInt(String(parameter.level)))) {
       // The most basic authentication decision
       if (ctx.session["login"] === true && ctx.session["uuid"] && ctx.session["userName"]) {
         const user = userSystem.getInstance(ctx.session["uuid"]);
         // Judgment of permissions for ordinary users and administrative users
-        if (user && user.permission >= parameter["level"]) {
+        if (user && user.permission >= parameter.level) {
           return await next();
         }
       }
