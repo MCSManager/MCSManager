@@ -3,7 +3,7 @@
 import Koa from "koa";
 import GlobalVariable from "../common/global_variable";
 import userSystem from "../service/system_user";
-import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax } from "../service/passport_service";
+import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";
 
 function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
@@ -14,7 +14,6 @@ function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
   if (!LastTime) {
     ctx.session[SESSION_REQ_TIME] = currentTime;
   } else {
-    console.log(currentTime, LastTime, currentTime - LastTime);
     if (currentTime - LastTime < INV) return false;
     ctx.session[SESSION_REQ_TIME] = currentTime;
   }
@@ -89,6 +88,12 @@ export = (parameter: IPermissionCfg) => {
       // The most basic authentication decision
       if (ctx.session["login"] === true && ctx.session["uuid"] && ctx.session["userName"]) {
         const user = userSystem.getInstance(ctx.session["uuid"]);
+
+        // ban check
+        if (user.permission < 0) {
+          return logout(ctx);
+        }
+
         // Judgment of permissions for ordinary users and administrative users
         if (user && user.permission >= parameter.level) {
           return await next();
