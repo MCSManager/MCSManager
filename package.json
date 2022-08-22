@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
   "version": "9.6.0",
-  "daemonVersion": "1.7.0",
+  "daemonVersion": "2.0.0",
   "description": "Distributed, out-of-the-box, supports docker, supports minecraft server and other software management panel",
   "scripts": {
     "dev": "nodemon app.js",
