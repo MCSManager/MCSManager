@@ -214,7 +214,7 @@ npm run start
 
 MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆盖。
 
-软件国际化由 [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233)，[CreeperKong](https://github.com/CreeperKong) 和 [Unitwk](https://github.com/unitwk) 共同完成
+软件国际化由 [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
 <br />
 
