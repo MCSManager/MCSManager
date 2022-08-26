@@ -61,6 +61,7 @@ export default {
     }
   },
   daemonInfo: {
+    setLanguage: "set remote node language",
     connect: "The remote node {{v}} is connected",
     disconnect: "The remote node {{v}} has been disconnected",
     connectError: "Error connecting to remote node: {{v}}",
