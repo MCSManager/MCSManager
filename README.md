@@ -6,25 +6,20 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Usage Documentation](https://docs.mcsmanager.com/) | [Team Homepage](https://github.com/MCSManager) | [Panels side project](https://github.com/MCSManager/MCSManager) | [web front-end project](https://github.com/MCSManager/UI) | [daemon project](https://github.com/ MCSManager/Daemon)
+[Official Website](http://mcsmanager.com/) | [Team Homepage](https://github.com/MCSManager) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon project](https://github.com/MCSManager/Daemon)
 
 <br />
 
-## Software Description
 
-**Distributed, stable and reliable, out-of-the-box, highly scalable, support control panel for Minecraft and few other games. **
+![Screenshot.png](https://mcsmanager.com/main.png)
 
-The MCSManager panel (referred to as: MCSM panel) is an all-Chinese, lightweight, out-of-the-box, multi-instance and Docker-supported Minecraft server management panel.
-
-This software has a certain popularity in Minecraft and other gaming communities, it can help you centrally manage multiple physical servers, dynamically create game servers on any host, and provide a secure and reliable multi-user permission system that can be easily Easily help you manage multiple servers.
-
-![Screenshot.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
+![Screenshot.png](https://mcsmanager.com/main2.png)
 
 <br />
 
-## runtime environment
+## Environment
 
-The control panel can run on Windows and Linux platforms, without database and any system configuration, just install the node environment to run quickly, it is a lightweight Minecraft server control panel.
+The control panel support Windows and Linux platforms, without database and any system configuration, just install the node environment to run quickly, it is a lightweight Minecraft server control panel.
 
 Must be `Node 14.17.0` or above, it can run out of the box without database and any system configuration changes.
 
@@ -38,43 +33,33 @@ User data files: `data/User/*.json`
 
 Remote daemon configuration: `data/RemoteServiceConfig/*.json`
 
-Panel default access account: `root` `123456`
 
 <br />
 
-## Software usage documentation
+## Install
 
-Address: [https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
-
-> The document is constantly being improved, and the content in it is still flawed. It is for reference only.
-
-> Legacy `8.X` documentation and API are backed up [here](https://github.com/MCSManager/Backup-v8.7/wiki/API-Documentation).
-
-<br />
-
-## run on Windows
+### Windows
 
 For Windows systems, **has been integrated into a direct-run version, download and run** (run with administrator privileges):
 
 Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
-<br />
 
-## run on linux
+### linux
 
 **One line command to install quickly**
 
 ```bash
-wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
+wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh | bash
 ````
 
-- Script only works on AMD64 architecture Ubuntu/Centos/Debian/Archlinux)
+- Script only works on AMD64 architecture Ubuntu/Centos/Debian/Archlinux
 - After the execution is complete, use `systemctl start mcsm-{web,daemon}` to start the panel service.
 - The panel code and runtime environment are automatically installed in the `/opt/mcsmanager/` directory.
 
 <br />
 
-**Linux manual installation**
+**Manual installation**
 
 - If the one-click installation does not work, you can try this step to install it manually.
 
@@ -93,13 +78,13 @@ ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# Download the panel-side (Web) program
+# Download the panel (Web) program
 git clone https://github.com/MCSManager/MCSManager-Web-Production.git
 # rename the folder and enter
 mv MCSManager-Web-Production web
 cd web
 # install dependencies
-npm install --production --registry=https://registry.npmmirror.com/
+npm install --production
 cd /opt/mcsmanager/
 
 # Download the Daemon program
@@ -108,7 +93,7 @@ git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 mv MCSManager-Daemon-Production daemon
 cd daemon
 # install dependencies
-npm install --production --registry=https://registry.npmmirror.com/
+npm install --production
 
 # Open two terminals or two terminal windows of Screen software
 # Start the daemon first
@@ -129,9 +114,7 @@ node app.js
 
 <br />
 
-## updated version
-
-If you want to update from `8.X` version to `9.X` version, this is not supported, you can only manually import instance configuration and files one by one.
+## How to Update
 
 If you are upgrading from `9.X` to a later version, under `Linux` system, please go to `/opt/mcsmanager/web`, `/opt/mcsmanager/daemon` and execute `git pull` to update .
 
@@ -141,7 +124,7 @@ To update under the `Windows` system, please go to the official website to downl
 
 <br />
 
-## Project system
+## Projects
 
 The entire software requires the cooperation of the three projects to run. The code you normally install is the product of compilation and integration.
 
@@ -203,14 +186,14 @@ npm run start
 
 <br />
 
-## Browser compatibility
+## Browser
 
 - Support modern mainstream browsers such as `Chrome` `Firefox` `Safari` `Opera`.
 - `IE` browser support has been dropped.
 
 <br />
 
-## globalization
+## Globalization
 
 MCSManager has supported Chinese and English two languages, and has achieved full coverage of internationalization.
 
@@ -226,7 +209,7 @@ If you forget the administrator account, you can only backup the existing user p
 
 <br />
 
-## contribute
+## Contribute
 
 If you find any problems during use, you can [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) or submit a Pull Request after fork modification.
 
@@ -234,7 +217,7 @@ The code needs to keep the existing format, and no redundant code should be form
 
 <br />
 
-## problem report
+## Problem report
 
 Feedback on any problems found is welcome and must be fixed in time.
 
