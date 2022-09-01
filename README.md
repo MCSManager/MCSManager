@@ -8,7 +8,11 @@
 
 [Official Website](http://mcsmanager.com/) | [Team Homepage](https://github.com/MCSManager) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon project](https://github.com/MCSManager/Daemon)
 
+
+[English](readme.md) | [简体中文](README_CN.md) 
+
 <br />
+
 
 
 ![Screenshot.png](https://mcsmanager.com/main.png)
