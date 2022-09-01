@@ -6,241 +6,240 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/) | [团队主页](https://github.com/MCSManager) | [面板端项目](https://github.com/MCSManager/MCSManager) | [网页前端项目](https://github.com/MCSManager/UI) | [守护进程项目](https://github.com/MCSManager/Daemon)
+[Official Website](http://mcsmanager.com/) | [Usage Documentation](https://docs.mcsmanager.com/) | [Team Homepage](https://github.com/MCSManager) | [Panels side project](https://github.com/MCSManager/MCSManager) | [web front-end project](https://github.com/MCSManager/UI) | [daemon project](https://github.com/ MCSManager/Daemon)
 
 <br />
 
-## 软件简介
+## Software Description
 
-**分布式，稳定可靠，开箱即用，高扩展性，支持 Minecraft 和其他少数游戏的控制面板。**
+**Distributed, stable and reliable, out-of-the-box, highly scalable, support control panel for Minecraft and few other games. **
 
-MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开箱即用，多实例和支持 Docker 的 Minecraft 服务端管理面板。
+The MCSManager panel (referred to as: MCSM panel) is an all-Chinese, lightweight, out-of-the-box, multi-instance and Docker-supported Minecraft server management panel.
 
-此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器。
+This software has a certain popularity in Minecraft and other gaming communities, it can help you centrally manage multiple physical servers, dynamically create game servers on any host, and provide a secure and reliable multi-user permission system that can be easily Easily help you manage multiple servers.
 
-![截图.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
-
-<br />
-
-## 运行环境
-
-控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行，属于轻量级的 Minecraft 服务端控制面板。
-
-必须 `Node 14.17.0` 以上，无需数据库和更改任何系统配置，开箱即可运行。
+![Screenshot.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
 
 <br />
 
-## 配置/数据文件
+## runtime environment
 
-配置文件： `data/SystemConfig/config.json`
+The control panel can run on Windows and Linux platforms, without database and any system configuration, just install the node environment to run quickly, it is a lightweight Minecraft server control panel.
 
-用户数据文件：`data/User/*.json`
-
-远程守护进程配置：`data/RemoteServiceConfig/*.json`
-
-面板默认访问账号：`root` `123456`
+Must be `Node 14.17.0` or above, it can run out of the box without database and any system configuration changes.
 
 <br />
 
-## 软件使用文档
+## config/data files
 
-地址：[https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
+Configuration file: `data/SystemConfig/config.json`
 
-> 文档正在不断完善，里面的内容还有瑕疵，暂且仅供参考。
+User data files: `data/User/*.json`
 
-> 旧版 `8.X` 文档与 API 备份在[此处](https://github.com/MCSManager/Backup-v8.7/wiki/API-Documentation)。
+Remote daemon configuration: `data/RemoteServiceConfig/*.json`
 
-<br />
-
-## 在 Windows 运行
-
-对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
-
-前往：[https://mcsmanager.com/](https://mcsmanager.com/)
+Panel default access account: `root` `123456`
 
 <br />
 
-## 在 Linux 运行
+## Software usage documentation
 
-**一行命令快速安装**
+Address: [https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
+
+> The document is constantly being improved, and the content in it is still flawed. It is for reference only.
+
+> Legacy `8.X` documentation and API are backed up [here](https://github.com/MCSManager/Backup-v8.7/wiki/API-Documentation).
+
+<br />
+
+## run on Windows
+
+For Windows systems, **has been integrated into a direct-run version, download and run** (run with administrator privileges):
+
+Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
+
+<br />
+
+## run on linux
+
+**One line command to install quickly**
 
 ```bash
 wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
-```
+````
 
-- 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux）
-- 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
-- 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
+- Script only works on AMD64 architecture Ubuntu/Centos/Debian/Archlinux)
+- After the execution is complete, use `systemctl start mcsm-{web,daemon}` to start the panel service.
+- The panel code and runtime environment are automatically installed in the `/opt/mcsmanager/` directory.
 
 <br />
 
-**Linux 手动安装**
+**Linux manual installation**
 
-- 若一键安装不起作用，则可以尝试此步骤手动安装。
+- If the one-click installation does not work, you can try this step to install it manually.
 
 ```bash
-# 切换到安装目录，没有此目录请执行 mkdir /opt/
+# Switch to the installation directory, if there is no such directory, please execute mkdir /opt/
 cd /opt/
-# 下载运行环境（已有 Node 14+ 可忽略）
+# Download the runtime environment (if you have Node 14+, it can be ignored)
 wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
-# 解压文件
+# unzip files
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
-# 链接程序到环境变量中
+# link the program into the environment variable
 ln -s /opt/node-v14.17.6-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
 
-# 准备安装目录
+# Prepare the installation directory
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# 下载面板端（Web）程序
+# Download the panel-side (Web) program
 git clone https://github.com/MCSManager/MCSManager-Web-Production.git
-# 重命名文件夹并进入
+# rename the folder and enter
 mv MCSManager-Web-Production web
 cd web
-# 安装依赖库
+# install dependencies
 npm install --production --registry=https://registry.npmmirror.com/
 cd /opt/mcsmanager/
 
-# 下载守护进程（Daemon）程序
+# Download the Daemon program
 git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
-# 重命名文件夹并进入
+# rename the folder and enter
 mv MCSManager-Daemon-Production daemon
 cd daemon
-# 安装依赖库
+# install dependencies
 npm install --production --registry=https://registry.npmmirror.com/
 
-# 打开两个终端或两个 Screen 软件的终端窗口
-# 先启动守护进程
+# Open two terminals or two terminal windows of Screen software
+# Start the daemon first
 cd /opt/mcsmanager/daemon
-# 启动
+# start up
 node app.js
 
-# 然后启动面板端进程
+# Then start the panel side process
 cd /opt/mcsmanager/web
-# 启动
+# start up
 node app.js
 
-# 访问 http://localhost:23333/ 即可进入面板。
-# 默认情况下，面板端会自动扫描 daemon 文件夹并且自动连接到守护进程。
-```
+# Visit http://localhost:23333/ to enter the panel.
+# By default, the panel will automatically scan the daemon folder and automatically connect to the daemon.
+````
 
-- 注意，这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理。
-
-<br />
-
-## 更新版本
-
-如果您想从 `8.X` 版本更新到 `9.X` 版本，这是不支持的，只能手动一个个导入实例配置和文件。
-
-如果您是 `9.X` 升级到更高版本，在 `Linux` 系统下，请分别前往 `/opt/mcsmanager/web`，`/opt/mcsmanager/daemon` 目录中执行 `git pull` 进行更新。
-
-在 `Windows` 系统下更新请前往官方下载最新安装包，覆盖所有文件即可生效。
-
-> 注意，建议更新前备份一次 `data` 目录。
+- Note that this installation method does not automatically register the panel to the system service (Service), so it must be managed using the `screen` software.
 
 <br />
 
-## 项目体系
+## updated version
 
-整个软件运行需要三个项目的互相配合才可运行，您普通安装的代码是编译再整合后的产物。
+If you want to update from `8.X` version to `9.X` version, this is not supported, you can only manually import instance configuration and files one by one.
 
-[**控制面板端**](https://github.com/MCSManager/MCSManager)
+If you are upgrading from `9.X` to a later version, under `Linux` system, please go to `/opt/mcsmanager/web`, `/opt/mcsmanager/daemon` and execute `git pull` to update .
 
-- 角色：控制中心
-- 责任：负责提供网页前端的后端接口，提供 API 接口，用户数据管理和对守护进程进行通信和授权。
+To update under the `Windows` system, please go to the official website to download the latest installation package and overwrite all files to take effect.
 
-[**网页前端**](https://github.com/MCSManager/UI)
-
-- 角色：控制中心的用户交互界面
-- 责任：以网页形式展示数据，发送请求，并且拥有与守护进程通信的能力，此项目最终产物是纯静态文件。
-
-[**守护进程**](https://github.com/MCSManager/Daemon)
-
-- 角色：被控端
-- 责任：控制本地主机的所有实例，真实进程的实际管理者，拥有与任何对象的通信能力。
+> Note, it is recommended to back up the `data` directory before updating.
 
 <br />
 
-## 搭建开发环境
+## Project system
 
-此段落面向开发人员，普通用户无需关注也无需执行。
+The entire software requires the cooperation of the three projects to run. The code you normally install is the product of compilation and integration.
 
-所有项目全部以开发环境运行后，便可以进行开发与预览，请务必遵循开源协议。
+[**Control panel side**](https://github.com/MCSManager/MCSManager)
 
-**控制面板端（MCSManager）**
+- Role: Control Center
+- Responsibilities: Responsible for providing the back-end interface of the front end of the web page, providing API interfaces, user data management, and communicating and authorizing the daemon.
+
+[**Web Frontend**](https://github.com/MCSManager/UI)
+
+- Role: User interface of the Control Center
+- Responsibilities: Display data in the form of web pages, send requests, and have the ability to communicate with daemons. The final product of this project is pure static files.
+
+[**Daemon**](https://github.com/MCSManager/Daemon)
+
+- Role: Controlled
+- Responsibility: Controls all instances of localhost, the actual manager of the real process, has the ability to communicate with any object.
+
+<br />
+
+## Build the development environment
+
+This paragraph is intended for developers, normal users do not need to pay attention and do not need to do it.
+
+After all projects are running in the development environment, development and preview can be carried out. Please be sure to follow the open source agreement.
+
+**Control Panel (MCSManager)**
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
 cd MCSManager
 npm install
 npm run start
-# 默认将采用 ts-node 直接执行 Typescript 代码
-# 默认运行在 23333 端口
-```
+# By default, ts-node will be used to directly execute Typescript code
+# run on port 23333 by default
+````
 
-**网页前端（UI）**
+**Web Frontend (UI)**
 
 ```bash
 git clone https://github.com/MCSManager/UI.git
 cd UI
 npm install
 npm run serve
-# 访问 http://localhost:8080/ 即可预览界面
-# 所有 API 请求将自动转发到 23333 端口
-```
+# Visit http://localhost:8080/ to preview the interface
+# All API requests will be automatically forwarded to port 23333
+````
 
-**守护进程（Daemon）**
+**Daemon**
 
 ```bash
 git clone https://github.com/MCSManager/Daemon.git
 cd Daemon
 npm install
 npm run start
-# 运行后请在控制面板端连接本守护进程
-# 默认运行在 24444 端口
-```
+# After running, please connect the daemon on the control panel side
+# run on port 24444 by default
+````
 
 <br />
 
-## 浏览器兼容性
+## Browser compatibility
 
-- 支持 `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器。
-- 已放弃支持 `IE` 浏览器。
-
-<br />
-
-## 国际化
-
-MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆盖。
-
-软件国际化由 [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
+- Support modern mainstream browsers such as `Chrome` `Firefox` `Safari` `Opera`.
+- `IE` browser support has been dropped.
 
 <br />
 
-## 面板权限
+## globalization
 
-控制面板在运行时会检测用户是否为空，若为空会自动创建一个默认的管理员账号。
+MCSManager has supported Chinese and English two languages, and has achieved full coverage of internationalization.
 
-如果您忘记了管理员账号，您只能备份现有的用户配置文件夹，并且重新生成一个新的管理员账号以覆盖。
-
-<br />
-
-## 贡献
-
-如果你在使用过程中发现任何问题，可以 [提交 Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) 或自行 Fork 修改后提交 Pull Request。
-
-代码需要保持现有格式，不得格式化多余代码，具体可[参考这里](https://github.com/MCSManager/MCSManager/issues/544)。
+Software internationalization is done by [Lazy](https://github.com/LazyCreeper), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk)
 
 <br />
 
-## 问题报告
+## Panel permissions
 
-欢迎发现的任何问题进行反馈，必当及时修复。
+The control panel will detect whether the user is empty at runtime, and if it is empty, it will automatically create a default administrator account.
 
-若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com。
-
-安全问题修复后将在代码中附加漏洞发现者姓名。
+If you forget the administrator account, you can only backup the existing user profile folder and regenerate a new administrator account to overwrite.
 
 <br />
 
+## contribute
+
+If you find any problems during use, you can [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) or submit a Pull Request after fork modification.
+
+The code needs to keep the existing format, and no redundant code should be formatted. For details, please refer to [here](https://github.com/MCSManager/MCSManager/issues/544).
+
+<br />
+
+## problem report
+
+Feedback on any problems found is welcome and must be fixed in time.
+
+If you find a serious security vulnerability and it is inconvenient to publish it publicly, please send an email to: mcsmanager-dev@outlook.com.
+
+The name of the bug discoverer will be appended to the code after the security issue is fixed.
+
+<br />
