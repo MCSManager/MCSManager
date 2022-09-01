@@ -29,7 +29,7 @@ Must be `Node 14.17.0` or above, it can run out of the box without database and 
 
 <br />
 
-## config/data files
+## Data directory
 
 Configuration file: `data/SystemConfig/config.json`
 
