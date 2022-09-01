@@ -71,7 +71,7 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh
 # Switch to the installation directory, if there is no such directory, please execute mkdir /opt/
 cd /opt/
 # Download the runtime environment (if you have Node 14+, it can be ignored)
-wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
 # unzip files
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
 # link the program into the environment variable
