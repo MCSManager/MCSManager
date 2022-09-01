@@ -44,9 +44,9 @@ Remote daemon configuration: `data/RemoteServiceConfig/*.json`
 
 ### Windows
 
-For Windows systems, **has been integrated into a direct-run version, download and run** (run with administrator privileges):
+For Windows, Just go to the official website to download and run (run with administrator privileges):
 
-Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
+Official Website: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 
 ### linux
@@ -61,11 +61,10 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh
 - After the execution is complete, use `systemctl start mcsm-{web,daemon}` to start the panel service.
 - The panel code and runtime environment are automatically installed in the `/opt/mcsmanager/` directory.
 
-<br />
 
 **Manual installation**
 
-- If the one-click installation does not work, you can try this step to install it manually.
+- If the installation script does not work, you can try this step to install it manually.
 
 ```bash
 # Switch to the installation directory, if there is no such directory, please execute mkdir /opt/
