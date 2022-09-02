@@ -117,7 +117,7 @@ node app.js
 
 <br />
 
-## How to Update
+## How to update
 
 If you are upgrading from `9.X` to a later version, under `Linux` system, please go to `/opt/mcsmanager/web`, `/opt/mcsmanager/daemon` and execute `git pull` to update .
 
@@ -196,15 +196,15 @@ npm run start
 
 <br />
 
-## Globalization
+## internationalization
 
-MCSManager has supported Chinese and English two languages, and has achieved full coverage of internationalization.
+MCSManager has supported English/Chinese, and has achieved full coverage of internationalization.
 
-Software internationalization is done by [Lazy](https://github.com/LazyCreeper), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk)
+The MCSManager internationalization is done by [Lazy](https://github.com/LazyCreeper), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk)
 
 <br />
 
-## Panel permissions
+## Permissions
 
 The control panel will detect whether the user is empty at runtime, and if it is empty, it will automatically create a default administrator account.
 
@@ -220,7 +220,7 @@ The code needs to keep the existing format, and no redundant code should be form
 
 <br />
 
-## Problem report
+## Bug Report
 
 Feedback on any problems found is welcome and must be fixed in time.
 
