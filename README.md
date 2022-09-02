@@ -196,7 +196,7 @@ npm run start
 
 <br />
 
-## internationalization
+## Internationalization
 
 MCSManager has supported English/Chinese, and has achieved full coverage of internationalization.
 
