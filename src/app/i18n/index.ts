@@ -2,8 +2,8 @@
 
 import i18next from "i18next";
 
-import zh_cn from "./language/zh_cn";
-import en_us from "./language/en_us";
+import zh_cn from "./language/zh_cn.json";
+import en_us from "./language/en_us.json";
 
 i18next.init({
   lng: "en_us",

@@ -2,6 +2,8 @@
 
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "allowJs": false,
     "module": "commonjs",
     "esModuleInterop": true,
@@ -13,13 +15,8 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*"
-      ]
+      "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
