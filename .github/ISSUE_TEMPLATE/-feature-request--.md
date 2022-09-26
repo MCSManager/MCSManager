@@ -2,7 +2,7 @@
 name: "[Feature request] "
 about: Feature request
 title: ''
-labels: ''
+labels: Feature Request
 assignees: ''
 
 ---

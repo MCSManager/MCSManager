@@ -2,13 +2,15 @@
 name: "[Bug report]"
 about: Bug report
 title: ''
-labels: ''
+labels: BUG
 assignees: ''
 
 ---
 
-**Version**
+**MCSManager Version**
 
-**System**
+**System Info/Version**
 
 **Node Version**
+
+**Step**
