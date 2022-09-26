@@ -131,19 +131,19 @@ To update under the `Windows` system, please go to the official website to downl
 
 The entire software requires the cooperation of the three projects to run. The code you normally install is the product of compilation and integration.
 
-[**Control panel side**](https://github.com/MCSManager/MCSManager)
+[**Web Backend**](https://github.com/MCSManager/MCSManager)
 
 - Role: Control Center
 - Responsibilities: Responsible for providing the back-end interface of the front end of the web page, providing API interfaces, user data management, and communicating and authorizing the daemon.
 
 [**Web Frontend**](https://github.com/MCSManager/UI)
 
-- Role: User interface of the Control Center
+- Role: Web UI
 - Responsibilities: Display data in the form of web pages, send requests, and have the ability to communicate with daemons. The final product of this project is pure static files.
 
 [**Daemon**](https://github.com/MCSManager/Daemon)
 
-- Role: Controlled
+- Role: Controlled/Remote Node
 - Responsibility: Controls all instances of localhost, the actual manager of the real process, has the ability to communicate with any object.
 
 <br />
@@ -154,7 +154,7 @@ This paragraph is intended for developers, normal users do not need to pay atten
 
 After all projects are running in the development environment, development and preview can be carried out. Please be sure to follow the open source agreement.
 
-**Control Panel (MCSManager)**
+**Web Backend (Panel)**
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
@@ -196,7 +196,7 @@ npm run start
 
 <br />
 
-## Internationalization
+## i18n
 
 MCSManager has supported English/Chinese, and has achieved full coverage of internationalization.
 
@@ -229,3 +229,11 @@ If you find a serious security vulnerability and it is inconvenient to publish i
 The name of the bug discoverer will be appended to the code after the security issue is fixed.
 
 <br />
+
+
+## License
+
+Apache-2.0 license
+
+Copyright [MCSManager Dev](https://github.com/MCSManager) All rights reserved.
+
