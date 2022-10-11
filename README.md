@@ -235,5 +235,5 @@ The name of the bug discoverer will be appended to the code after the security i
 
 Apache-2.0 license
 
-Copyright [MCSManager Dev](https://github.com/MCSManager) All rights reserved.
+Copyright 2022 [MCSManager Dev](https://github.com/MCSManager) .
 
