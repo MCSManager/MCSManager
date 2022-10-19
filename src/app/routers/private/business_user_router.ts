@@ -19,10 +19,7 @@ router.post(
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
     const permission = Number(ctx.request.body.permission);
-    if (userName.length < 2 || userName.length > 18)
-      throw new Error($t("router.user.invalidUserName"));
-    if (passWord.length < 6 || passWord.length > 18)
-      throw new Error($t("router.user.invalidPassword"));
+    if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.invalidPassword"));
     if (userSystem.existUserName(userName)) throw new Error($t("router.user.existsUserName"));
     const result = register(ctx, userName, passWord, permission);
     ctx.body = result;

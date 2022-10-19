@@ -171,9 +171,11 @@ router.all(
     try {
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
+      const parameter = ctx.body;
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/stop_asynchronous", {
-        instanceUuid
+        instanceUuid,
+        parameter
       });
       ctx.body = result;
     } catch (err) {
