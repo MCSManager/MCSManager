@@ -9,6 +9,7 @@ import { systemConfig } from "../../setting";
 import userSystem from "../../service/system_user";
 import { logger } from "../../service/log";
 import { $t } from "../../i18n";
+import axios from "axios";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
@@ -92,6 +93,24 @@ router.all(
       return (ctx.body = true);
     }
     throw new Error($t("router.user.installed"));
+  }
+);
+
+router.all(
+  "/proxy",
+  validator({ query: { target: String } }),
+  permission({ level: 10 }),
+  async (ctx) => {
+    try {
+      const response = await axios.request({
+        method: (ctx.query.method as string) || ctx.method,
+        url: String(ctx.query.target)
+      });
+      if (response.status !== 200) throw new Error("Response code != 200");
+      ctx.body = response.data;
+    } catch (err) {
+      ctx.body = err;
+    }
   }
 );
 
