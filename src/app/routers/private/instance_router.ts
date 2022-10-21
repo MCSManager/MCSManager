@@ -8,6 +8,8 @@ import RemoteRequest from "../../service/remote_command";
 import { multiOperationForwarding } from "../../service/instance_service";
 import { timeUuid } from "../../service/password";
 import { $t } from "../../i18n";
+import axios from "axios";
+import { systemConfig } from "../../setting";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -186,6 +188,22 @@ router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
     ctx.body = true;
   } catch (err) {
     ctx.body = err;
+  }
+});
+
+// [Top-level Permission]
+// Get quick install list
+router.get("/quick_install_list", permission({ level: 10 }), async (ctx) => {
+  const ADDR = systemConfig.quickInstallAddr;
+  try {
+    const response = await axios.request({
+      method: "GET",
+      url: ADDR
+    });
+    if (response.status !== 200) throw new Error("Response code != 200");
+    ctx.body = response.data;
+  } catch (err) {
+    ctx.body = [];
   }
 });
 

@@ -31,4 +31,6 @@ export default class SystemConfig {
 
   // i18n
   language = "en_us";
+
+  quickInstallAddr = "https://mcsmanager.com/support/quick_install.json";
 }
