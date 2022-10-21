@@ -131,8 +131,9 @@ router.all(
     }
   }
 );
+
 // [Low-level Permission]
-// execute asynchronous task
+// start asynchronous task
 router.post(
   "/asynchronous",
   permission({ level: 1 }),
@@ -160,7 +161,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// Terminate the asynchronous task
+// stop an asynchronous task
 router.all(
   "/stop_asynchronous",
   permission({ level: 1 }),
@@ -178,6 +179,30 @@ router.all(
         parameter
       });
       ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+// query asynchronous task status
+router.all(
+  "/query_asynchronous",
+  permission({ level: 1 }),
+  validator({
+    query: { remote_uuid: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const parameter = ctx.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      ctx.body = await new RemoteRequest(remoteService).request("instance/query_asynchronous", {
+        instanceUuid,
+        parameter
+      });
     } catch (err) {
       ctx.body = err;
     }
