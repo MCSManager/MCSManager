@@ -146,7 +146,7 @@ router.post(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const taskName = String(ctx.query.task_name);
-      const parameter = ctx.body;
+      const parameter = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
         instanceUuid,
