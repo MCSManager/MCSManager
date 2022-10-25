@@ -8,6 +8,9 @@
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/) | [团队主页](https://github.com/MCSManager) | [面板端项目](https://github.com/MCSManager/MCSManager) | [网页前端项目](https://github.com/MCSManager/UI) | [守护进程项目](https://github.com/MCSManager/Daemon)
 
+
+MCSManager 用户 Telegram 群（中文）：https://t.me/MCSManager_dev
+
 <br />
 
 ## 软件简介
