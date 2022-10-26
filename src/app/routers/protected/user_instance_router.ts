@@ -9,6 +9,7 @@ import { timeUuid } from "../../service/password";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { $t } from "../../i18n";
+import { isTopPermissionByUuid } from "../../service/permission_service";
 const router = new Router({ prefix: "/protected_instance" });
 
 // Routing permission verification middleware
@@ -198,6 +199,11 @@ router.all(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const parameter = ctx.request.body;
+      const taskId = parameter.taskId;
+      // Must have administrator to query all asynchronous tasks
+      if (!taskId && !isTopPermissionByUuid(getUserUuid(ctx))) {
+        throw new Error("Unauthorized access");
+      }
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       ctx.body = await new RemoteRequest(remoteService).request("instance/query_asynchronous", {
         instanceUuid,
