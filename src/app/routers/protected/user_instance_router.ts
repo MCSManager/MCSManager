@@ -190,7 +190,7 @@ router.all(
 // query asynchronous task status
 router.all(
   "/query_asynchronous",
-  permission({ level: 1 }),
+  permission({ level: 10, speedLimit: false }),
   validator({
     query: { remote_uuid: String, uuid: String }
   }),
@@ -198,6 +198,7 @@ router.all(
     try {
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
+      const taskName = String(ctx.query.task_name);
       const parameter = ctx.request.body;
       const taskId = parameter.taskId;
       // Must have administrator to query all asynchronous tasks
@@ -207,6 +208,7 @@ router.all(
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       ctx.body = await new RemoteRequest(remoteService).request("instance/query_asynchronous", {
         instanceUuid,
+        taskName,
         parameter
       });
     } catch (err) {
