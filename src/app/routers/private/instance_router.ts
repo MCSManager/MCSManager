@@ -207,4 +207,26 @@ router.get("/quick_install_list", permission({ level: 10 }), async (ctx) => {
   }
 });
 
+// [Top-level Permission]
+// forward request
+router.all(
+  "/forward",
+  permission({ level: 10 }),
+  validator({ query: { target: String } }),
+  async (ctx) => {
+    const ADDR = String(ctx.query.target);
+    try {
+      const response = await axios.request({
+        method: ctx.request.method,
+        url: ADDR,
+        data: ctx.request.body
+      });
+      if (response.status !== 200) throw new Error("Response code != 200");
+      ctx.body = response.data;
+    } catch (err) {
+      ctx.body = [];
+    }
+  }
+);
+
 export default router;
