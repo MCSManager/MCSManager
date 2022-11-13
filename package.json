@@ -4,7 +4,7 @@
   "daemonVersion": "2.0.0",
   "description": "Distributed, out-of-the-box, supports docker, supports minecraft server and other software management panel",
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "nodemon --watch ./src/**/*.ts --exec ts-node ./src/app.ts",
     "start": "ts-node ./src/app.ts",
     "build": "tsc && webpack --config webpack.config.js"
   },
@@ -38,9 +38,9 @@
   "devDependencies": {
     "@types/fs-extra": "^9.0.11",
     "@types/koa": "^2.13.1",
-    "@types/koa__router": "^8.0.4",
     "@types/koa-session": "^5.10.3",
     "@types/koa-static": "^4.0.1",
+    "@types/koa__router": "^8.0.4",
     "@types/md5": "^2.3.1",
     "@types/node": "^14.14.41",
     "@types/node-schedule": "^1.3.2",
@@ -49,6 +49,7 @@
     "@types/socket.io-client": "^1.4.36",
     "@types/uuid": "^8.3.0",
     "eslint": "^7.23.0",
+    "nodemon": "^2.0.20",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "webpack": "^5.73.0",
