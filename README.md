@@ -9,7 +9,7 @@
 [Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/) | [Team Home Page](https://github.com/MCSManager) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
 
 
-Telegram Group(Simplified Chinese): https://t.me/MCSManager_dev
+Telegram Group (Simplified Chinese): https://t.me/MCSManager_dev
 
 <br />
 
@@ -21,7 +21,8 @@ MCSManager Panel（abbr: MCSM Panel）is a multilingual, light-weight, out-of-th
 
 MCSManager control panel can help you manage multiple physical servers at one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
 
-![screenshot.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
+![Screenshot.png](https://mcsmanager.com/main.png)
+![Screenshot.png](https://mcsmanager.com/main2.png)
 
 <br />
 
