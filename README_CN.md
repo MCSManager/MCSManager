@@ -11,13 +11,15 @@
 
 中文 TG 用户群：https://t.me/MCSManager_dev
 
+中文 QQ 群：https://jq.qq.com/?_wv=1027&k=Pgl9ScGw
+
+
 <br />
 
 ## 软件简介
 
-**分布式，稳定可靠，开箱即用，高扩展性，支持 Minecraft 和其他少数游戏的控制面板。**
 
-MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开箱即用，多实例和支持 Docker 的 Minecraft 服务端管理面板。
+MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，分布式，高扩展性和支持 Docker 的 Minecraft 服务端管理面板。
 
 此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器。
 
@@ -55,7 +57,9 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 <br />
 
-## 在 Windows 运行
+## 安装
+
+### Windows
 
 对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
 
@@ -63,15 +67,19 @@ MCSManager 面板（简称：MCSM 面板）是一款全中文，轻量级，开�
 
 <br />
 
-## 在 Linux 运行
+
+### Linux
 
 **一行命令快速安装**
 
 ```bash
+// 国内用户专用 gitee 加速源
 wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
+// 或使用原始源
+wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
 ```
 
-- 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux）
+- 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
 - 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
 - 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
 
@@ -217,15 +225,7 @@ npm run start
 
 MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆盖。
 
-软件国际化由 [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
-
-<br />
-
-## 面板权限
-
-控制面板在运行时会检测用户是否为空，若为空会自动创建一个默认的管理员账号。
-
-如果您忘记了管理员账号，您只能备份现有的用户配置文件夹，并且重新生成一个新的管理员账号以覆盖。
+软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
 <br />
 
@@ -247,3 +247,9 @@ MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆
 
 <br />
 
+
+## 开源协议
+
+遵循 Apache-2.0 协议。
+
+版权所有 2022 MCSManager 开发团队。
