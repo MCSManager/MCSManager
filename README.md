@@ -28,9 +28,9 @@ MCSManager control panel can help you manage multiple physical servers at one pl
 
 ## Runtime Environment
 
-MCSManager control panel can run on both Windows and Linux platforms without database or specific system configuration. As a light-weight control panel, you only need NodeJS to run it. 
+MCSManager control panel can run on both Windows and Linux platforms without database or specific system configuration. As a light-weight control panel, you only need Node.js to run it. 
 
-Required NodeJS version: 14.17.0 or above.
+Required Node.js version: 14.17.0 or above.
 
 <br />
 
@@ -85,7 +85,7 @@ wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
 ```bash
 # switch to installation directory. Please create it in advance with 'mkdir /opt/' if not exist.
 cd /opt/
-# Download runtime environment (NodeJS). Ignore this step if you have NodeJS 14+ installed already.
+# Download runtime environment (Node.js). Ignore this step if you have Node.js 14+ installed already.
 wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
 # Decompress archive
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
