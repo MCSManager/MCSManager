@@ -248,4 +248,5 @@ After the security issue has been resolved, your name will be listed as as the b
 
 Apache-2.0 license
 
-Copyright 2022 [MCSManager Dev](https://github.com/MCSManager) .
+Copyright 2022 [MCSManager Dev](https://github.com/MCSManager).
+
