@@ -16,8 +16,6 @@
 
 ## Introduction
 
-**Distributed, Reliable, Scalable, and Out-of-the-box Control Panel for Minecraft and More.**
-
 MCSManager Panel（abbr: MCSM Panel）is a multilingual, light-weight, out-of-the-box, and multi-instance Minecraft server control panel with Docker support.
 
 MCSManager control panel can help you manage multiple physical servers at one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
