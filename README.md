@@ -6,7 +6,10 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/) | [Team Home Page](https://github.com/MCSManager) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
+[Official Website](http://mcsmanager.com/) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
+
+
+[English](readme.md) | [简体中文](README_CN.md) 
 
 
 <br />
@@ -40,21 +43,15 @@ User data files: `data/User/*.json`
 
 Remote daemon configurations: `data/RemoteServiceConfig/*.json`
 
-Default username and password: `root` `123456`
 
 <br />
 
-## Documentation
-
-Docs: [https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
-
-> We are still developing a complete documentation. The current content is for reference only.
-
-> Documentation for version `8.X` and API is [here](https://github.com/MCSManager/Backup-v8.7/wiki/API-Documentation)。
 
 <br />
 
-## Running on Windows
+## Install
+
+### Windows
 
 For Windows system, the panel was **compiled to a click-to-run version, just download and run.**(administrator permission required):
 
@@ -62,12 +59,12 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 <br />
 
-## Running on Linux
+### Linux
 
 **Quick Install with one command**
 
 ```bash
-wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
+wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh | bash
 ```
 
 - The script is designed for Ubuntu/Centos/Debian/Archlinux of AMD64 architecture only.
@@ -84,7 +81,7 @@ wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
 # switch to installation directory. Please create it in advance with 'mkdir /opt/' if not exist.
 cd /opt/
 # Download runtime environment (Node.js). Ignore this step if you have Node.js 14+ installed already.
-wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
 # Decompress archive
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
 # Add program to system PATH
@@ -101,7 +98,7 @@ git clone https://github.com/MCSManager/MCSManager-Web-Production.git
 mv MCSManager-Web-Production web
 cd web
 # Install dependencies
-npm install --production --registry=https://registry.npmmirror.com/
+npm install --production
 cd /opt/mcsmanager/
 
 # Download the Daemon Program
@@ -110,7 +107,7 @@ git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 mv MCSManager-Daemon-Production daemon
 cd daemon
 # Install dependencies
-npm install --production --registry=https://registry.npmmirror.com/
+npm install --production
 
 # Please open two terminals or Screen
 # Start the daemon first
@@ -219,7 +216,7 @@ npm run start
 
 Currently, MCSManager supports Chinese and English.
 
-The MCSManager internationlization was done by  [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk).
+The MCSManager internationlization was done by [Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk).
 
 <br />
 
