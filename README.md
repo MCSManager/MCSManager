@@ -9,8 +9,6 @@
 [Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/) | [Team Home Page](https://github.com/MCSManager) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
 
 
-Telegram Group (Simplified Chinese): https://t.me/MCSManager_dev
-
 <br />
 
 ## Introduction
