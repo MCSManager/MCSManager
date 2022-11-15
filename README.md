@@ -6,7 +6,7 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Panel Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
+[Official Website](http://mcsmanager.com/) | [Web Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
 
 
 [English](readme.md) | [简体中文](README_CN.md) 
@@ -18,7 +18,7 @@
 
 MCSManager Panel（abbr: MCSM Panel）is a multilingual, lightweight, out-of-the-box, and multi-instance Minecraft server control panel with Docker support.
 
-MCSManager control panel can help you manage multiple physical servers in one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
+MCSManager panel can help you manage multiple physical servers in one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
 
 ![Screenshot.png](https://mcsmanager.com/main.png)
 ![Screenshot.png](https://mcsmanager.com/main2.png)
@@ -27,7 +27,7 @@ MCSManager control panel can help you manage multiple physical servers in one pl
 
 ## Runtime Environment
 
-MCSManager control panel can run on both Windows and Linux platforms without database or specific system configuration. As a lightweight control panel, you only need Node.js to run it. 
+MCSManager panel can run on both Windows and Linux platforms without a database or specific system configuration. As a lightweight control panel, you only need Node.js to run it. 
 
 Required Node.js version: **14.17.0** or above.
 
@@ -67,7 +67,7 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh
 
 - The script is designed for Ubuntu/Centos/Debian/Archlinux of AMD64 architecture only.
 - Use `systemctl start mcsm-{web,daemon}` to start service after installtion.
-- Directory for panel and runtime: `/opt/mcsmanager/`
+- Directory for panel components and runtime: `/opt/mcsmanager/`
 
 <br />
 
@@ -76,7 +76,7 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh
 - If the installation script does not work, you can try the following steps to install manually.
 
 ```bash
-# switch to installation directory. Please create it in advance with 'mkdir /opt/' if not exist.
+# switch to the installation directory. Please create it in advance with 'mkdir /opt/' if not exist.
 cd /opt/
 # Download runtime environment (Node.js). Ignore this step if you have Node.js 14+ installed already.
 wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
@@ -90,7 +90,7 @@ ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# Download the Web Panel
+# Download the web project
 git clone https://github.com/MCSManager/MCSManager-Web-Production.git
 # Rename and enter the directory
 mv MCSManager-Web-Production web
@@ -99,7 +99,7 @@ cd web
 npm install --production
 cd /opt/mcsmanager/
 
-# Download the Daemon Program
+# Download the Daemon
 git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
 # Rename and enter the directory
 mv MCSManager-Daemon-Production daemon
@@ -113,16 +113,16 @@ cd /opt/mcsmanager/daemon
 # Start the daemon
 node app.js
 
-# Start the web panel (in the second terminal/screen)
+# Start the web project (in the second terminal/screen)
 cd /opt/mcsmanager/web
-# start the panel
+# start the application
 node app.js
 
-# Access http://localhost:23333/ for web panel
-# In general, the web panel will scan and connect to the local daemon automatically.
+# Access http://localhost:23333/ for web interface
+# In general, the web application will scan and connect to the local daemon automatically.
 ```
 
-- Note, the above steps will not register the panel to system service. You have to use 'screen' to manage it or register the system service manually.
+- Note, the above steps do not register the panel components to system service. You have to use 'screen' to manage it or register the system service manually.
 
 <br />
 
@@ -142,32 +142,32 @@ For Windows: Download the latest installation pack and overwrite all existing fi
 
 ## Projects
 
-This software requires all the three projects to run. The code you use for installation is the result of compilation and integration.
+This software requires all three projects to run. The code you use for installation is the result of compilation and integration.
 
-[**Control Panel/Web Backend**](https://github.com/MCSManager/MCSManager)
+[**Web Backend/Control Panel**](https://github.com/MCSManager/MCSManager)
 
 - Role: Control Center
-- Responsibie for: Backend APIs, user data management, and communication & authentication with daemons.
+- Responsible for: Backend APIs, user data management, and communication & authentication with daemons.
 
-[**Web Frontend**](https://github.com/MCSManager/UI)
+[**Web Frontend/UI**](https://github.com/MCSManager/UI)
 
-- Role: The user interface for the backend.
-- Responsible for: Displaying statistics via web interface, sending requests, and are capable of communicating with daemons. The final product of this project is pure static files. 
+- Role: The user interfaces for the backend.
+- Responsible for: Displaying statistics via the web interface, sending requests, and are capable of communicating with daemons. The final product of this project is pure static files. 
 
 [**Daemon**](https://github.com/MCSManager/Daemon)
 
 - Role: Slave/controlled remote node
-- Responsible for: Controlling all instances on local host and managing the actual instance process. It is capablle to communicate with all objects.
+- Responsible for: Controlling all instances on localhost and managing the actual instance process. It is capable to communicate with all objects.
 
 <br />
 
 ## Build the Development Environment
 
-This is indended for developers. If you are not a developer, you can safely ignore these.
+This is intended for developers. If you are not a developer, you can safely ignore these.
 
-You can continue to develop or prevew all the projects once they are running under the development environment. Please make sure to be in compliance with the license. 
+You can continue to develop or preview all the projects once they are running under the development environment. Please make sure to be in compliance with the license. 
 
-**Control Panel (MCSManager)**
+**Web Project**
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
@@ -179,7 +179,7 @@ npm run start
 
 ```
 
-**Web Interface (UI)**
+**UI Project**
 
 ```bash
 git clone https://github.com/MCSManager/UI.git
@@ -190,14 +190,14 @@ npm run serve
 # All the requests will be redirected to port 23333.
 ```
 
-**Daemon**
+**Daemon Project**
 
 ```bash
 git clone https://github.com/MCSManager/Daemon.git
 cd Daemon
 npm install
 npm run start
-# After running, please connect the daemon at the control panel.
+# After running, please connect the daemon to the control panel via the web interface.
 # By default, run on port 24444
 ```
 
@@ -220,15 +220,15 @@ The MCSManager internationlization was done by [Lazy](https://github.com/LazyCre
 
 ## Panel Permission
 
-The control panel will check the user list during running. If there is no user available, a default administrator user will be created. 
+The control panel will check the user list while running. If there is no user available, a default administrator user will be created. 
 
-If you forget your only administrator account, you can backup all the current user data, regenerate a new admin account, and overwrite previous one. 
+If you forget your only administrator account, you can back up all the current user data, regenerate a new admin account, and overwrite the previous one. 
 
 <br />
 
 ## Contribution
 
-If you encounter any issue during your use, you can [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) or submit Pull Request after you fix it in a fork.
+If you encounter any issue while using, you can [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) or submit Pull Request after you fix it in a fork.
 
 The code needs to be in its existing format, and no extra codes should be formatted. For details: [click here](https://github.com/MCSManager/MCSManager/issues/544)。
 
@@ -236,11 +236,11 @@ The code needs to be in its existing format, and no extra codes should be format
 
 ## Report a bug
 
-Feedback on any problems encountered are welcome and will be responded in a timely manner.
+Feedback on any problem encountered is welcomed and will be responded to in a timely manner.
 
 If you find a serious security vulnerability, you can email mcsmanager-dev@outlook.com for a private submission.
 
-After the security issue has been resolved, your name will be listed as as the bug finder. 
+After the security issue has been resolved, your name will be listed as the bug-finder. 
 
 <br />
 
