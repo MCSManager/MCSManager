@@ -27,7 +27,7 @@ MCSManager panel can help you manage multiple physical servers in one place, and
 
 ## Runtime Environment
 
-MCSManager panel can run on both Windows and Linux platforms without a database or specific system configuration. As a lightweight control panel, you only need Node.js to run it. 
+MCSManager panel can run on both Windows and Linux platforms without a database or complicated system configuration. As a lightweight control panel, you only need Node.js to run it. 
 
 Required Node.js version: **14.17.0** or above.
 
@@ -51,7 +51,7 @@ Remote daemon configurations: `data/RemoteServiceConfig/*.json`
 
 ### Windows
 
-For the Windows systems, the MCSM panel has been **compiled to a click-to-run version**. 
+For the Windows systems, the MCSM panel has been **compiled into a click-to-run version**. 
 
 Download it from the official site: [https://mcsmanager.com/](https://mcsmanager.com/), **run the program as administrator**, and you will be all set!
 
@@ -144,15 +144,15 @@ For Windows: Download the latest installation pack and overwrite all existing fi
 
 This software requires all three projects to run. The code you use for installation is the result of compilation and integration.
 
-[**Web Backend/Control Panel**](https://github.com/MCSManager/MCSManager)
+[**Web/Web Backend**](https://github.com/MCSManager/MCSManager)
 
 - Role: Control Center
 - Responsible for: Backend APIs, user data management, and communication & authentication with daemons.
 
-[**Web Frontend/UI**](https://github.com/MCSManager/UI)
+[**Frontend/UI**](https://github.com/MCSManager/UI)
 
 - Role: The user interfaces for the backend.
-- Responsible for: Displaying statistics via the web interface, sending requests, and are capable of communicating with daemons. The final product of this project is pure static files. 
+- Responsible for: Displaying statistics via the web interface, sending requests, and communicating with daemons. The final product of this project is pure static files. 
 
 [**Daemon**](https://github.com/MCSManager/Daemon)
 
