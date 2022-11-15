@@ -51,11 +51,7 @@ Remote daemon configurations: `data/RemoteServiceConfig/*.json`
 
 ### Windows
 
-For the Windows systems, the MCSM panel has been **compiled to a click-to-run version**, you just need to download it here: 
-
-Official Site: [https://mcsmanager.com/](https://mcsmanager.com/)
-
-*Run the program as administrator* and you will be all set!
+For the Windows systems, the MCSM panel has been **compiled to a click-to-run version**. You just need to download it from the official site: [https://mcsmanager.com/](https://mcsmanager.com/), **run the program as administrator**, and you will be all set!
 
 <br />
 
