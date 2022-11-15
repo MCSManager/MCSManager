@@ -16,9 +16,9 @@
 
 ## Introduction
 
-MCSManager Panel（abbr: MCSM Panel）is a multilingual, light-weight, out-of-the-box, and multi-instance Minecraft server control panel with Docker support.
+MCSManager Panel（abbr: MCSM Panel）is a multilingual, lightweight, out-of-the-box, and multi-instance Minecraft server control panel with Docker support.
 
-MCSManager control panel can help you manage multiple physical servers at one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
+MCSManager control panel can help you manage multiple physical servers in one place, and create game servers at any host dynamically. It also provides a secure and reliable user permission system for a seamless multi-user experience.
 
 ![Screenshot.png](https://mcsmanager.com/main.png)
 ![Screenshot.png](https://mcsmanager.com/main2.png)
@@ -27,9 +27,9 @@ MCSManager control panel can help you manage multiple physical servers at one pl
 
 ## Runtime Environment
 
-MCSManager control panel can run on both Windows and Linux platforms without database or specific system configuration. As a light-weight control panel, you only need Node.js to run it. 
+MCSManager control panel can run on both Windows and Linux platforms without database or specific system configuration. As a lightweight control panel, you only need Node.js to run it. 
 
-Required Node.js version: 14.17.0 or above.
+Required Node.js version: **14.17.0** or above.
 
 <br />
 
@@ -51,7 +51,7 @@ Remote daemon configurations: `data/RemoteServiceConfig/*.json`
 
 ### Windows
 
-For Windows system, the panel was **compiled to a click-to-run version, just download and run.**(administrator permission required):
+For the Windows systems, the panel was **compiled to a click-to-run version, just download and run.** (administrator permission required):
 
 Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
@@ -122,7 +122,7 @@ node app.js
 # In general, the web panel will scan and connect to the local daemon automatically.
 ```
 
-- Note, the above steps does not register the panel to system service. You have to use 'screen' to manage it or register system service manually.
+- Note, the above steps will not register the panel to system service. You have to use 'screen' to manage it or register the system service manually.
 
 <br />
 
