@@ -234,7 +234,7 @@ The code needs to be in its existing format, and no extra codes should be format
 
 <br />
 
-## Report a bug
+## Report bug
 
 Feedback on any problem encountered is welcomed and will be responded to in a timely manner.
 
