@@ -10,6 +10,9 @@ import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { $t } from "../../i18n";
 import { isTopPermissionByUuid } from "../../service/permission_service";
+import { isEmpty, toText } from "../../../app/common/typecheck";
+import { toBoolean } from "../../../app/common/typecheck";
+import { toNumber } from "../../../app/common/typecheck";
 const router = new Router({ prefix: "/protected_instance" });
 
 // Routing permission verification middleware
@@ -339,49 +342,55 @@ router.put(
   permission({ level: 1 }),
   validator({
     query: { uuid: String, remote_uuid: String },
-    body: { pingConfig: Object, eventTask: Object, terminalOption: Object }
+    body: {}
   }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
-      const instanceUuid = String(ctx.query.uuid);
+      // Here is the low-privileged user configuration setting interface,
+      // in order to prevent data injection, a layer of filtering must be performed
+      const serviceUuid = toText(ctx.query.remote_uuid);
+      const instanceUuid = toText(ctx.query.uuid);
       const config = ctx.request.body;
-      // Here is the low-privileged user configuration setting interface, in order to prevent data injection, a layer of filtering must be performed
+
       // Ping protocol configuration
       const pingConfig = {
-        ip: String(config.pingConfig?.ip),
-        port: Number(config.pingConfig?.port),
+        ip: toText(config.pingConfig?.ip),
+        port: toNumber(config.pingConfig?.port),
         type: config.pingConfig?.type
       };
+
       // event task configuration
       const eventTask = {
-        autoStart: Boolean(config.eventTask?.autoStart),
-        autoRestart: Boolean(config.eventTask?.autoRestart)
+        autoStart: toBoolean(config.eventTask?.autoStart),
+        autoRestart: toBoolean(config.eventTask?.autoRestart)
       };
+
       // web terminal settings
       const terminalOption = {
-        haveColor: Boolean(config.terminalOption?.haveColor),
-        pty: Boolean(config.terminalOption?.pty),
-        ptyWindowCol: Number(config.terminalOption?.ptyWindowCol),
-        ptyWindowRow: Number(config.terminalOption?.ptyWindowRow)
+        haveColor: toBoolean(config.terminalOption?.haveColor),
+        pty: toBoolean(config.terminalOption?.pty),
+        ptyWindowCol: toNumber(config.terminalOption?.ptyWindowCol),
+        ptyWindowRow: toNumber(config.terminalOption?.ptyWindowRow)
       };
 
-      // Normal user controllable parameters
-      const crlf = Number(config?.crlf);
-      const oe = config.oe ? String(config?.oe) : null;
-      const ie = config.ie ? String(config?.ie) : null;
-      const stopCommand = config.stopCommand ? String(config.stopCommand) : null;
+      const extraServiceConfig = {
+        openFrpTunnelId: toText(config.extraServiceConfig?.openFrpTunnelId),
+        openFrpToken: toText(config.extraServiceConfig?.openFrpToken)
+      };
+
+      const crlf = !isEmpty(config.crlf) ? toNumber(config?.crlf) : null;
+      const oe = !isEmpty(config.oe) ? toText(config?.oe) : null;
+      const ie = !isEmpty(config.ie) ? toText(config?.ie) : null;
+      const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
 
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
-
-      // loose parameter passing, each configuration can be passed or not passed
-      // Its sub-object configuration must be complete or none at all
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
-          pingConfig: config.pingConfig?.ip != null ? pingConfig : null,
-          eventTask: config.eventTask?.autoStart != null ? eventTask : null,
-          terminalOption: config.terminalOption?.pty != null ? terminalOption : null,
+          pingConfig: !isEmpty(config.pingConfig) ? pingConfig : null,
+          eventTask: !isEmpty(config.eventTask) ? eventTask : null,
+          terminalOption: !isEmpty(config.terminalOption) ? terminalOption : null,
+          extraServiceConfig: !isEmpty(config.extraServiceConfig) ? extraServiceConfig : null,
           crlf,
           oe,
           ie,
