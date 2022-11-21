@@ -134,3 +134,27 @@ function startUp(port: number, host?: string) {
 }
 
 startUp(systemConfig.httpPort, systemConfig.httpIp);
+
+async function processExit() {
+  try {
+    console.log("");
+    logger.warn("Program received EXIT command.");
+    logger.info("Exit.");
+  } catch (err) {
+    logger.error("ERROR:", err);
+  } finally {
+    process.exit(0);
+  }
+}
+
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
+  process.on(sig, () => {
+    logger.warn(`${sig} close process signal detected.`);
+    processExit();
+  });
+});
+
+process.stdin.on("data", (v) => {
+  const command = v.toString().replace("\n", "").replace("\r", "").trim().toLowerCase();
+  if (command === "exit") processExit();
+});
