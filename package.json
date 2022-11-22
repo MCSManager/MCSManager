@@ -31,7 +31,7 @@
     "node-schedule": "^2.0.0",
     "open": "^8.4.0",
     "os-utils": "0.0.14",
-    "socket.io": "^3.1.2",
+    "socket.io": "^4.5.3",
     "socket.io-client": "^3.1.3",
     "uuid": "^8.3.2"
   },
