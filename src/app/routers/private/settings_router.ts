@@ -34,6 +34,8 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
+    if (config.quickInstallAddr != null)
+      systemConfig.quickInstallAddr = String(config.quickInstallAddr);
     if (config.language != null) {
       logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
