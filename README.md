@@ -246,7 +246,9 @@ After the security issue has been resolved, your name will be listed as the bug-
 
 ## License
 
-Apache-2.0 license
+Apache-2.0 license.
+
+We have additional restrictions on the source code, You must keep the original software icons, MCSManager names and all copyright info.
 
 Copyright 2022 [MCSManager Dev](https://github.com/MCSManager).
 
