@@ -33,7 +33,8 @@
       "invalidPassword": "非法的密码格式",
       "existsUserName": "用户名已经被占用",
       "deleteFailure": "无法完成用户数据删除",
-      "passwordCheck": "密码不规范，必须为拥有大小写字母，数字，长度在9到36之间"
+      "passwordCheck": "密码不规范，必须为拥有大小写字母，数字，长度在9到36之间",
+      "installed": "管理员账号已经创建，不可重复创建"
     },
     "instance": {
       "createError": "创建实例失败"

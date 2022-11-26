@@ -33,7 +33,8 @@
       "invalidPassword": "Invalid password format",
       "existsUserName": "Username already exist.",
       "deleteFailure": "Unable to delete user data",
-      "passwordCheck": "Password must contains the following: uppercase letter, lowercase letter, numbers, and a length between 9 and 36."
+      "passwordCheck": "Password must contains the following: uppercase letter, lowercase letter, numbers, and a length between 9 and 36.",
+      "installed": "Unable to install panel: already installed. For reinstallation, backup and delete data folder."
     },
     "instance": {
       "createError": "Failed to create instance."
