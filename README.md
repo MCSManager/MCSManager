@@ -250,7 +250,7 @@ Apache-2.0 license, Copyright 2022 [MCSManager Dev](https://github.com/mcsmanage
 
 **Additional restrictions:**
 
-You must retain all copyright information and attach it in a prominent location Powered by MCSManager.
+You must retain all copyright information. And attach "Powered by MCSManager" in a prominent position.
 
 
 
