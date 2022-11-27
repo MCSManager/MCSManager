@@ -246,11 +246,11 @@ After the security issue has been resolved, your name will be listed as the bug-
 
 ## License
 
-Apache-2.0 license, Copyright 2022 [MCSManager Dev](https://github.com/mcsmanager).
+Copyright 2022 [MCSManager Dev](https://github.com/mcsmanager), Apache-2.0 license.
 
-**Additional restrictions:**
+**Additional Requirements:**
 
-You must retain all copyright information. And attach "Powered by MCSManager" in a prominent position.
+You must keep all copyright information and place "Powered by MCSManager" in a conspicuous position.
 
 
 
