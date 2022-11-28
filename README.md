@@ -144,7 +144,7 @@ For Windows: Download the latest installation pack and overwrite all existing fi
 
 This software requires all three projects to run. The code you use for installation is the result of compilation and integration.
 
-[**Web/Web Backend**](https://github.com/MCSManager/MCSManager)
+[**Web Backend**](https://github.com/MCSManager/MCSManager)
 
 - Role: Control Center
 - Responsible for: Backend APIs, user data management, and communication & authentication with daemons.
