@@ -8,7 +8,8 @@
     "reference": "Project reference: https://github.com/mcsmanager",
     "host": "Access address: http://localhost:{{port}}",
     "portTip": "You need to open daemon port and port {{port}} for public access.",
-    "exitTip": "Use Ctrl+C to close this program."
+    "exitTip": "Use Ctrl+C to close this program.",
+    "httpSetupError": "The port may already be in use or the network device is unavailable."
   },
   "permission": {
     "forbidden": "Insufficient permission",

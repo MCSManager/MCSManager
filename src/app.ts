@@ -116,6 +116,12 @@ process.on("unhandledRejection", (reason, p) => {
 function startUp(port: number, host?: string) {
   const httpServer = http.createServer(app.callback());
 
+  httpServer.on("error", (err) => {
+    logger.error($t("app.httpSetupError"));
+    logger.error(err);
+    process.exit(1);
+  });
+
   // The Socket service is not required
   // SocketService.setUpSocketIO(httpServer);
 
