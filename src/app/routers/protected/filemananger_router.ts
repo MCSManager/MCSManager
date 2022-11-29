@@ -78,6 +78,27 @@ router.get(
 );
 
 router.post(
+  "/touch",
+  permission({ level: 1 }),
+  validator({ query: { remote_uuid: String, uuid: String }, body: { target: String } }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const target = String(ctx.request.body.target);
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("file/touch", {
+        target,
+        instanceUuid
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.post(
   "/mkdir",
   permission({ level: 1 }),
   validator({ query: { remote_uuid: String, uuid: String }, body: { target: String } }),

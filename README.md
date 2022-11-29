@@ -144,7 +144,7 @@ For Windows: Download the latest installation pack and overwrite all existing fi
 
 This software requires all three projects to run. The code you use for installation is the result of compilation and integration.
 
-[**Web/Web Backend**](https://github.com/MCSManager/MCSManager)
+[**Web Backend**](https://github.com/MCSManager/MCSManager)
 
 - Role: Control Center
 - Responsible for: Backend APIs, user data management, and communication & authentication with daemons.
@@ -246,7 +246,11 @@ After the security issue has been resolved, your name will be listed as the bug-
 
 ## License
 
-Apache-2.0 license
+Copyright 2022 [MCSManager Dev](https://github.com/mcsmanager), Apache-2.0 license.
 
-Copyright 2022 [MCSManager Dev](https://github.com/MCSManager).
+**Additional Requirements:**
+
+You must keep all copyright information and place "Powered by MCSManager" in a conspicuous position.
+
+
 
