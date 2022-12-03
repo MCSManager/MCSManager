@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
-  "version": "9.7.0",
-  "daemonVersion": "3.0.0",
+  "version": "9.7.1",
+  "daemonVersion": "3.1.0",
   "description": "Distributed, Docker-supported, Multilingual, and Lightweight control panel for Minecraft server and all console programsFeat: update package.json",
   "scripts": {
     "dev": "nodemon --watch ./src/**/*.ts --exec ts-node ./src/app.ts",
