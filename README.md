@@ -44,9 +44,6 @@ Remote daemon configurations: `data/RemoteServiceConfig/*.json`
 
 <br />
 
-
-<br />
-
 ## Install
 
 ### Windows
