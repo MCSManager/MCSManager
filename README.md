@@ -2,6 +2,7 @@
 
 <br />
 
+[![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
@@ -29,18 +30,7 @@ MCSManager panel can help you manage multiple physical servers in one place, and
 
 MCSManager panel can run on both Windows and Linux platforms without a database or complicated system configuration. As a lightweight control panel, you only need Node.js to run it. 
 
-Required Node.js version: **14.17.0** or above.
-
-<br />
-
-## Configurations/Data Directories
-
-Configuration: `data/SystemConfig/config.json`
-
-User data files: `data/User/*.json`
-
-Remote daemon configurations: `data/RemoteServiceConfig/*.json`
-
+Required Node.js version: **14.17.6** or above.
 
 <br />
 
@@ -123,11 +113,20 @@ node app.js
 
 <br />
 
+
+## Data Directories
+
+Web Config & Data: `/opt/mcsmanager/web/data/`
+
+Daemon Config & Data `/opt/mcsmanager/daemon/data/`
+
+<br />
+
+
 ## Update
 
-Upgrading from version `8.X` to `9.X` is not supported. You have to manually import all instance configurations.
-
 Upgrading from version `9.X` to newer:
+
 For Linux: Execute `git pull` in both `/opt/mcsmanager/web` and `/opt/mcsmanager/daemon`.
 
 For Windows: Download the latest installation pack and overwrite all existing files.
@@ -209,8 +208,6 @@ npm run start
 
 ## i18n
 
-Currently, MCSManager supports Chinese and English.
-
 The MCSManager internationlization was done by [Lazy](https://github.com/LazyCreeper), [KevinLu2000](https://github.com/KevinLu2000), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk).
 
 <br />
@@ -220,6 +217,8 @@ The MCSManager internationlization was done by [Lazy](https://github.com/LazyCre
 The control panel will check the user list while running. If there is no user available, a default administrator user will be created. 
 
 If you forget your only administrator account, you can back up all the current user data, regenerate a new admin account, and overwrite the previous one. 
+
+> User Data: /opt/mcsmanager/web/data/Users/*.json
 
 <br />
 
