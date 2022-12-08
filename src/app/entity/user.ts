@@ -12,6 +12,7 @@ export class User implements IUser {
   uuid: string = "";
   userName: string = "";
   passWord: string = "";
+  passWord2: string = "";
   salt: string = "";
   permission: number = 0;
   registerTime: string = "";

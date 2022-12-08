@@ -8,6 +8,7 @@ import { IUser } from "../entity/entity_interface";
 import StorageSubsystem from "../common/system_storage";
 import { QueryWrapper, LocalFileSource } from "../common/query_wrapper";
 import { $t } from "../i18n";
+import bcrypt from "bcryptjs";
 
 class UserSubsystem {
   public readonly objects: Map<string, User> = new Map();
@@ -41,7 +42,7 @@ class UserSubsystem {
     if (config.permission) instance.permission = config.permission;
     if (config.registerTime) instance.registerTime = config.registerTime;
     if (config.loginTime) instance.loginTime = config.loginTime;
-    if (config.passWord) instance.passWord = md5(config.passWord);
+    if (config.passWord) instance.passWord = bcrypt.hashSync(config.passWord, 10);
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.apiKey != null) instance.apiKey = config.apiKey;
     StorageSubsystem.store("User", uuid, instance);
@@ -54,12 +55,16 @@ class UserSubsystem {
   }
 
   checkUser(info: IUser): boolean {
-    let flag = false;
-    const infoPassword = md5(info.passWord);
-    this.objects.forEach((user) => {
-      if (user.userName === info.userName && user.passWord === infoPassword) return (flag = true);
-    });
-    return flag;
+    for (const [userName, user] of this.objects) {
+      if (userName === info.userName) {
+        if (user.passWord2) {
+          return bcrypt.compareSync(info.passWord, user.passWord2);
+        } else {
+          return info.passWord === md5(user.passWord);
+        }
+      }
+    }
+    return false;
   }
 
   existUserName(userName: string): boolean {

@@ -10,7 +10,7 @@ import { $t } from "../../i18n";
 
 const router = new Router({ prefix: "/auth" });
 
-// add user data
+// Add user
 router.post(
   "/",
   permission({ level: 10 }),
@@ -26,7 +26,7 @@ router.post(
   }
 );
 
-// delete user data
+// Delete user
 router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext) => {
   const uuids = ctx.request.body;
   try {
@@ -51,7 +51,7 @@ router.get(
     const condition: any = {};
     if (userName) condition["userName"] = `%${userName}%`;
     let resultPage = userSystem.getQueryWrapper().selectPage(condition, page, pageSize);
-    // make a copy, delete redundant data
+    // make a copy, delete redundant
     resultPage = JSON.parse(JSON.stringify(resultPage));
     resultPage.data.forEach((v) => {
       delete v.passWord;

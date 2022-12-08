@@ -18,6 +18,7 @@
   "dependencies": {
     "@koa/router": "^10.0.0",
     "axios": "^0.27.2",
+    "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "i18n": "^0.15.0",
     "i18next": "^21.8.14",
@@ -36,11 +37,12 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/fs-extra": "^9.0.11",
     "@types/koa": "^2.13.1",
+    "@types/koa__router": "^8.0.4",
     "@types/koa-session": "^5.10.3",
     "@types/koa-static": "^4.0.1",
-    "@types/koa__router": "^8.0.4",
     "@types/md5": "^2.3.1",
     "@types/node": "^14.14.41",
     "@types/node-schedule": "^1.3.2",
