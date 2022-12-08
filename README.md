@@ -40,7 +40,7 @@ Required Node.js version: **14.17.6** or above.
 
 For the Windows systems, the MCSM panel has been **compiled into a click-to-run version**. 
 
-Download it from the official site: [https://mcsmanager.com/](https://mcsmanager.com/), **run the program as administrator**, and you will be all set!
+Download it from the official site: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 <br />
 
