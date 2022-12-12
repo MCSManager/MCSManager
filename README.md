@@ -125,12 +125,7 @@ Daemon Config & Data `/opt/mcsmanager/daemon/data/`
 
 ## Update
 
-Upgrading from version `9.X` to newer:
-
-For Linux: Execute `git pull` in both `/opt/mcsmanager/web` and `/opt/mcsmanager/daemon`.
-
-For Windows: Download the latest installation pack and overwrite all existing files.
-
+Reference: https://github.com/MCSManager/MCSManager/wiki/Update-MCSManager
 
 > Note, backup of `data` directory before each update is highly recommended.
 
