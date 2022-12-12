@@ -2,7 +2,7 @@
 
 import md5 from "md5";
 import { v4 } from "uuid";
-import { IUserApp, User } from "../entity/user";
+import { IUserApp, User, UserPassWordType } from "../entity/user";
 import { logger } from "./log";
 import { IUser } from "../entity/entity_interface";
 import StorageSubsystem from "../common/system_storage";
@@ -42,7 +42,10 @@ class UserSubsystem {
     if (config.permission) instance.permission = config.permission;
     if (config.registerTime) instance.registerTime = config.registerTime;
     if (config.loginTime) instance.loginTime = config.loginTime;
-    if (config.passWord) instance.passWord = bcrypt.hashSync(config.passWord, 10);
+    if (config.passWord) {
+      instance.passWordType = UserPassWordType.bcrypt;
+      instance.passWord = bcrypt.hashSync(config.passWord, 10);
+    }
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.apiKey != null) instance.apiKey = config.apiKey;
     StorageSubsystem.store("User", uuid, instance);
@@ -55,12 +58,12 @@ class UserSubsystem {
   }
 
   checkUser(info: IUser): boolean {
-    for (const [userName, user] of this.objects) {
-      if (userName === info.userName) {
-        if (user.passWord2) {
-          return bcrypt.compareSync(info.passWord, user.passWord2);
+    for (const [uuid, user] of this.objects) {
+      if (user.userName === info.userName) {
+        if (user.passWordType === UserPassWordType.bcrypt) {
+          return bcrypt.compareSync(info.passWord, user.passWord);
         } else {
-          return info.passWord === md5(user.passWord);
+          return md5(info.passWord) === user.passWord;
         }
       }
     }

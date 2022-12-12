@@ -2,6 +2,11 @@
 
 import { IUser } from "./entity_interface";
 
+export enum UserPassWordType {
+  md5 = 0,
+  bcrypt = 1
+}
+
 export interface IUserApp {
   instanceUuid: string;
   serviceUuid: string;
@@ -12,7 +17,7 @@ export class User implements IUser {
   uuid: string = "";
   userName: string = "";
   passWord: string = "";
-  passWord2: string = "";
+  passWordType: number = null;
   salt: string = "";
   permission: number = 0;
   registerTime: string = "";
