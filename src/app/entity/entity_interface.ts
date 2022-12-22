@@ -1,6 +1,5 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
-
-// Remote >>> Local
+import { SocketOptions, ManagerOptions } from "socket.io-client";
 export interface IPacket {
   uuid: string;
   status: number;
@@ -8,7 +7,6 @@ export interface IPacket {
   data: any;
 }
 
-// Local >>> Remote
 export interface IRequestPacket {
   uuid: string;
   data: any;
@@ -49,7 +47,7 @@ export class RemoteServiceConfig {
   public port = 24444;
   public remarks = "";
   public apiKey = "";
-  connectOpts: SocketIOClient.ConnectOpts = {
+  connectOpts: Partial<SocketOptions & ManagerOptions> = {
     multiplex: false,
     reconnectionDelayMax: 1000 * 3,
     timeout: 1000 * 3,

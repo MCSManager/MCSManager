@@ -1,6 +1,6 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
-import * as io from "socket.io-client";
+import { io, Socket, SocketOptions, ManagerOptions } from "socket.io-client";
 import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
@@ -13,7 +13,7 @@ export default class RemoteService {
 
   public uuid: string = null;
   public available: boolean = false;
-  public socket: SocketIOClient.Socket = null;
+  public socket: Socket = null;
   public readonly instanceStream = new InstanceStreamListener();
   public config: RemoteServiceConfig;
 
@@ -23,7 +23,7 @@ export default class RemoteService {
   }
 
   // connect to remote service
-  public connect(connectOpts?: SocketIOClient.ConnectOpts) {
+  public connect(connectOpts?: Partial<SocketOptions & ManagerOptions>) {
     if (connectOpts) this.config.connectOpts = connectOpts;
     // Start the formal connection to the remote Socket program
     let addr = `ws://${this.config.ip}:${this.config.port}`;
@@ -44,7 +44,7 @@ export default class RemoteService {
     }
 
     logger.info(`${$t("daemonInfo.tryConnect")}:${daemonInfo}`);
-    this.socket = io.connect(addr, connectOpts);
+    this.socket = io(addr, connectOpts);
 
     // register built-in events
     this.socket.on("connect", async () => {
