@@ -150,6 +150,11 @@ router.post(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const taskName = String(ctx.query.task_name);
+      // some asynchronous tasks are only allowed for administrators
+      const needAdminTask = ["quick_install"];
+      if (needAdminTask.includes(taskName) && !isTopPermissionByUuid(ctx.session["uuid"])) {
+        throw new Error("illegal access");
+      }
       const parameter = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
