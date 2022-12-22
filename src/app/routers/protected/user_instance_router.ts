@@ -149,7 +149,7 @@ router.post(
     try {
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
-      const taskName = String(ctx.query.task_name);
+      const taskName = String(ctx.query.task_name).toLowerCase().trim();
       const parameter = ctx.request.body;
 
       // some asynchronous tasks are only allowed for administrators
