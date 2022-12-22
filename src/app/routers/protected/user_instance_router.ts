@@ -150,12 +150,14 @@ router.post(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const taskName = String(ctx.query.task_name);
+      const parameter = ctx.request.body;
+
       // some asynchronous tasks are only allowed for administrators
-      const needAdminTask = ["quick_install"];
-      if (needAdminTask.includes(taskName) && !isTopPermissionByUuid(ctx.session["uuid"])) {
+      const needTopPermissionTask = ["quick_install"];
+      if (needTopPermissionTask.includes(taskName) && !isTopPermissionByUuid(ctx.session["uuid"])) {
         throw new Error("illegal access");
       }
-      const parameter = ctx.request.body;
+
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
         instanceUuid,
@@ -183,6 +185,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const parameter = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      // No permission check is required because "Parameter.TaskId" is not easily obtained.
       const result = await new RemoteRequest(remoteService).request("instance/stop_asynchronous", {
         instanceUuid,
         parameter
