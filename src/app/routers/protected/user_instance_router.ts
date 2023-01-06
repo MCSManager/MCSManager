@@ -370,7 +370,12 @@ router.put(
       // event task configuration
       const eventTask = {
         autoStart: toBoolean(config.eventTask?.autoStart),
-        autoRestart: toBoolean(config.eventTask?.autoRestart)
+        autoRestart: toBoolean(config.eventTask?.autoRestart),
+        childInstance: config.eventTask?.childInstance,
+        childInstanceStart: toBoolean(config.eventTask?.childInstanceStart),
+        childInstanceStop: toBoolean(config.eventTask?.childInstanceStop),
+        childInstanceRestart: toBoolean(config.eventTask?.childInstanceRestart),
+
       };
 
       // web terminal settings
