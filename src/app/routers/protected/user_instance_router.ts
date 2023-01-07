@@ -7,12 +7,15 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
 import { getUserUuid } from "../../service/passport_service";
-import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { isHaveInstanceByUuid, isTopPermission } from "../../service/permission_service";
 import { $t } from "../../i18n";
 import { isTopPermissionByUuid } from "../../service/permission_service";
 import { isEmpty, toText } from "../../../app/common/typecheck";
 import { toBoolean } from "../../../app/common/typecheck";
 import { toNumber } from "../../../app/common/typecheck";
+import userSystem from "../../service/system_user";
+import RemoteService from "../../entity/remote_service";
+
 const router = new Router({ prefix: "/protected_instance" });
 
 // Routing permission verification middleware
@@ -39,8 +42,16 @@ router.all(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      let userInstances: string[] = [];
+      for (const instance of userSystem.getInstance(getUserUuid(ctx)).instances) {
+        if (instance.serviceUuid == serviceUuid) {
+          userInstances[userInstances.length] = instance.instanceUuid;
+        }
+      }
       const result = await new RemoteRequest(remoteService).request("instance/open", {
-        instanceUuids: [instanceUuid]
+        instanceUuids: [instanceUuid],
+        userInstances: userInstances,
+        isTopPermission: isTopPermission(userSystem.getInstance(getUserUuid(ctx)))
       });
       ctx.body = result;
     } catch (err) {
@@ -60,8 +71,14 @@ router.all(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      let userInstances: string[] = [];
+      for (const instance of userSystem.getInstance(getUserUuid(ctx)).instances) {
+        if (instance.serviceUuid == serviceUuid) {
+          userInstances[userInstances.length] = instance.instanceUuid;
+        }
+      }
       const result = await new RemoteRequest(remoteService).request("instance/stop", {
-        instanceUuids: [instanceUuid]
+        instanceUuids: [instanceUuid], userInstances: userInstances
       });
       ctx.body = result;
     } catch (err) {
@@ -105,8 +122,14 @@ router.all(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      let userInstances: string[] = [];
+      for (const instance of userSystem.getInstance(getUserUuid(ctx)).instances) {
+        if (instance.serviceUuid == serviceUuid) {
+          userInstances[userInstances.length] = instance.instanceUuid;
+        }
+      }
       const result = await new RemoteRequest(remoteService).request("instance/restart", {
-        instanceUuids: [instanceUuid]
+        instanceUuids: [instanceUuid], userInstances: userInstances
       });
       ctx.body = result;
     } catch (err) {
@@ -374,7 +397,7 @@ router.put(
         childInstance: config.eventTask?.childInstance,
         childInstanceStart: toBoolean(config.eventTask?.childInstanceStart),
         childInstanceStop: toBoolean(config.eventTask?.childInstanceStop),
-        childInstanceRestart: toBoolean(config.eventTask?.childInstanceRestart),
+        childInstanceRestart: toBoolean(config.eventTask?.childInstanceRestart)
 
       };
 
