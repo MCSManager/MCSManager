@@ -148,11 +148,9 @@ node app.js
 
 ## 更新版本
 
-如果您是 `9.X` 升级到更高版本，在 `Linux` 系统下，请分别前往 `/opt/mcsmanager/web`，`/opt/mcsmanager/daemon` 目录中执行 `git pull` 进行更新。
+参考: https://github.com/MCSManager/MCSManager/wiki/Update-MCSManager
 
-在 `Windows` 系统下更新请前往官方下载最新安装包，覆盖所有文件即可生效。
-
-> 注意，建议更新前备份一次 `data` 目录。
+> 如果你不是特别需要新版本的功能，或者不是为了修复安全隐患，那就不建议更新。
 
 <br />
 
