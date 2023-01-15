@@ -20,7 +20,7 @@ export function initVersionManager() {
   }
 }
 
-export function getVersion() {
+export function getVersion(): string {
   return GlobalVariable.get("version", "Unknown");
 }
 
