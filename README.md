@@ -199,7 +199,7 @@ npm run start
 
 ## i18n
 
-The MCSManager internationlization was done by [Lazy](https://github.com/LazyCreeper), [KevinLu2000](https://github.com/KevinLu2000), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk).
+The MCSManager internationalization was done by [Lazy](https://github.com/LazyCreeper), [KevinLu2000](https://github.com/KevinLu2000), [zijiren233](https://github.com/zijiren233) and [Unitwk](https://github.com/unitwk).
 
 <br />
 
