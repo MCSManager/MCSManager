@@ -78,18 +78,14 @@ mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
 # Download the web project
-git clone https://github.com/MCSManager/MCSManager-Web-Production.git
-# Rename and enter the directory
-mv MCSManager-Web-Production web
+git clone https://github.com/MCSManager/MCSManager-Web-Production.git web
 cd web
 # Install dependencies
 npm install --production
 cd /opt/mcsmanager/
 
 # Download the Daemon
-git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
-# Rename and enter the directory
-mv MCSManager-Daemon-Production daemon
+git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git daemon
 cd daemon
 # Install dependencies
 npm install --production

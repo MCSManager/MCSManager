@@ -111,18 +111,14 @@ mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
 # 下载面板端（Web）程序
-git clone https://github.com/MCSManager/MCSManager-Web-Production.git
-# 重命名文件夹并进入
-mv MCSManager-Web-Production web
+git clone https://github.com/MCSManager/MCSManager-Web-Production.git web
 cd web
 # 安装依赖库
 npm install --production --registry=https://registry.npmmirror.com/
 cd /opt/mcsmanager/
 
 # 下载守护进程（Daemon）程序
-git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git
-# 重命名文件夹并进入
-mv MCSManager-Daemon-Production daemon
+git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git daemon
 cd daemon
 # 安装依赖库
 npm install --production --registry=https://registry.npmmirror.com/
