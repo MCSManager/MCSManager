@@ -4,22 +4,20 @@ import { logger } from "./log";
 import { IRemoteService, RemoteServiceConfig } from "../entity/entity_interface";
 import RemoteService from "../entity/remote_service";
 import { UniversalRemoteSubsystem } from "./base/urs";
-import StorageSubsystem from "../common/system_storage";
+import Storage from "../common/storage/sys_storage";
 import fs from "fs-extra";
 import path from "path";
 import { $t } from "../i18n";
-import RemoteRequest from "./remote_command";
 
 // The RemoteServiceSubsystem will be one of the most important systems
 // main function is to store remote services everywhere
 // Scan local services, unified management, remote calls and proxies, etc.
 class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
-  constructor() {
-    super();
+  async initialize() {
     // If it is the first startup, it will automatically try to connect to "LocalHost",
     // otherwise it will automatically read from the configuration file and connect to all remote services.
-    StorageSubsystem.list("RemoteServiceConfig").forEach((uuid) => {
-      const config = StorageSubsystem.load(
+    for (const uuid of (await Storage.getStorage().list("RemoteServiceConfig"))) {
+      const config = await Storage.getStorage().load(
         "RemoteServiceConfig",
         RemoteServiceConfig,
         uuid
@@ -27,11 +25,11 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       const newService = new RemoteService(uuid, config);
       this.setInstance(uuid, newService);
       newService.connect();
-    });
+    }
 
     // If there is no daemon process, check whether there is a daemon process locally
     if (this.services.size === 0) {
-      this.initConnectLocalhost("");
+      await this.initConnectLocalhost("");
     }
 
     logger.info($t("systemRemoteService.nodeCount", { n: this.services.size }));
@@ -46,49 +44,49 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   // apiKey: "test_key",
   // port: 24444
   // });
-  registerRemoteService(config: IRemoteService) {
-    const instance = this.newInstance(config);
-    StorageSubsystem.store("RemoteServiceConfig", instance.uuid, instance.config);
+  async registerRemoteService(config: IRemoteService) {
+    const instance = await this.newInstance(config);
+    await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
     instance.connect();
     return instance;
   }
 
   // Delete the specified remote service based on UUID
-  deleteRemoteService(uuid: string) {
+  async deleteRemoteService(uuid: string) {
     if (this.getInstance(uuid)) {
       this.getInstance(uuid).disconnect();
       this.deleteInstance(uuid);
-      StorageSubsystem.delete("RemoteServiceConfig", uuid);
+      await Storage.getStorage().delete("RemoteServiceConfig", uuid);
     }
   }
 
   // According to the IRemoteService, New a RemoteService object
   // Used to initialize objects.
-  newInstance(config: IRemoteService) {
+  async newInstance(config: IRemoteService) {
     const instance = new RemoteService(
       config.uuid || this.randdomUuid(),
       new RemoteServiceConfig()
     );
     this.setInstance(instance.uuid, instance);
-    this.edit(instance.uuid, config);
+    await this.edit(instance.uuid, config);
     return instance;
   }
 
   // Edit the configuration file of the instance
-  edit(uuid: string, config: IRemoteService) {
+  async edit(uuid: string, config: IRemoteService) {
     const instance = this.getInstance(uuid);
     if (config.remarks) instance.config.remarks = config.remarks;
     if (config.ip) instance.config.ip = config.ip;
     if (config.port) instance.config.port = config.port;
     if (config.apiKey) instance.config.apiKey = config.apiKey;
-    StorageSubsystem.store("RemoteServiceConfig", instance.uuid, instance.config);
+    await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
   }
 
   // Scannce localhost service
   // First use, need to scan the local host
   // Note: Every time you execute "initConnectLocalhost",
   // it will be managed by the subsystem (regardless of whether the target exists).
-  async initConnectLocalhost(key?: string) {
+  async initConnectLocalhost(key?: string): Promise<RemoteService> {
     const ip = "localhost";
     const localKeyFilePath = path.normalize(
       path.join(process.cwd(), "../daemon/data/Config/global.json")
@@ -101,10 +99,10 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       );
       const localKey = localDaemonConfig.key;
       const localPort = localDaemonConfig.port;
-      return this.registerRemoteService({ apiKey: localKey, port: localPort, ip });
+      return await this.registerRemoteService({ apiKey: localKey, port: localPort, ip });
     } else if (key) {
       const port = 24444;
-      return this.registerRemoteService({ apiKey: key, port, ip });
+      return await this.registerRemoteService({ apiKey: key, port, ip });
     }
     logger.warn($t("systemRemoteService.error"));
 

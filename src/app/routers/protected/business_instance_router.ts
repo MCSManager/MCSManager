@@ -1,13 +1,9 @@
 // Copyright (C) 2022 MCSManager <mcsmanager-dev@outlook.com>
 
-import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
-import { check, login, logout, register, getUserUuid } from "../../service/passport_service";
-import userSystem from "../../service/system_user";
-import { ICompleteUser } from "../../entity/entity_interface";
-import { getToken, isAjax } from "../../service/passport_service";
+import { getUserUuid } from "../../service/passport_service";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
@@ -45,11 +41,10 @@ router.put(
         stopCommand: String(config.stopCommand)
       };
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
-      const result = await new RemoteRequest(remoteService).request("instance/update", {
+      ctx.body = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: believableConfig
       });
-      ctx.body = result;
     } catch (err) {
       ctx.body = err;
     }

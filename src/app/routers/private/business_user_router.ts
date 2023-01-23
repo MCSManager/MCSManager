@@ -21,8 +21,7 @@ router.post(
     const permission = Number(ctx.request.body.permission);
     if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.invalidPassword"));
     if (userSystem.existUserName(userName)) throw new Error($t("router.user.existsUserName"));
-    const result = register(ctx, userName, passWord, permission);
-    ctx.body = result;
+    ctx.body = await register(ctx, userName, passWord, permission);
   }
 );
 
@@ -31,7 +30,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
   const uuids = ctx.request.body;
   try {
     for (const iterator of uuids) {
-      userSystem.deleteInstance(iterator);
+      await userSystem.deleteInstance(iterator);
     }
     ctx.body = true;
   } catch (error) {
