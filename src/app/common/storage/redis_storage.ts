@@ -1,6 +1,5 @@
 // Copyright (C) 2023 MCSManager <mcsmanager-dev@outlook.com>
 
-import { $t } from "../../i18n";
 import { createClient} from "redis";
 import { IStorage } from "./storage_interface";
 import Storage from "./sys_storage";
@@ -59,7 +58,7 @@ class RedisStorageSubsystem implements IStorage {
    * Stored in local file based on class definition and identifier
    */
   public async store(category: string, uuid: string, object: any) {
-    if (!this.checkFileName(uuid)) throw new Error($t("common.uuidIrregular", { uuid: uuid }));
+    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
     await this.set(category + ":" + uuid, JSON.stringify(object));
   }
 
@@ -67,7 +66,7 @@ class RedisStorageSubsystem implements IStorage {
    * Instantiate an object based on the class definition and identifier
    */
   public async load(category: string, classz: any, uuid: string) {
-    if (!this.checkFileName(uuid)) throw new Error($t("common.uuidIrregular", { uuid: uuid }));
+    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
     let result = await this.get(category + ":" + uuid)
     if (result == null) {
       return null;
@@ -94,7 +93,7 @@ class RedisStorageSubsystem implements IStorage {
    * Delete an identifier instance of the specified type through the class definition
    */
   public async delete(category: string, uuid: string) {
-    if (!this.checkFileName(uuid)) throw new Error($t("common.uuidIrregular", { uuid: uuid }));
+    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
     await this.del(category + ":" + uuid);
   }
 
