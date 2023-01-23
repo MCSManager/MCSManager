@@ -16,12 +16,12 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   async initialize() {
     // If it is the first startup, it will automatically try to connect to "LocalHost",
     // otherwise it will automatically read from the configuration file and connect to all remote services.
-    for (const uuid of (await Storage.getStorage().list("RemoteServiceConfig"))) {
-      const config = await Storage.getStorage().load(
+    for (const uuid of await Storage.getStorage().list("RemoteServiceConfig")) {
+      const config = (await Storage.getStorage().load(
         "RemoteServiceConfig",
         RemoteServiceConfig,
         uuid
-      ) as RemoteServiceConfig;
+      )) as RemoteServiceConfig;
       const newService = new RemoteService(uuid, config);
       this.setInstance(uuid, newService);
       newService.connect();

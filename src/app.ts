@@ -32,7 +32,7 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 // Routes
 import { index } from "./app/index";
 
-function startUp(koaApp: Koa, port: number, host?: string) {
+function setupHttp(koaApp: Koa, port: number, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
 
   httpServer.on("error", (err) => {
@@ -54,11 +54,9 @@ function startUp(koaApp: Koa, port: number, host?: string) {
   logger.info("==================================");
 
   if (os.platform() == "win32") {
-    open(`http://localhost:${port}/`).then(() => {
-    });
+    open(`http://localhost:${port}/`).then(() => {});
   }
 }
-
 
 async function processExit() {
   try {
@@ -72,13 +70,25 @@ async function processExit() {
   }
 }
 
-(async () => {
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
+  process.on(sig, () => {
+    logger.warn(`${sig} close process signal detected.`);
+    processExit();
+  });
+});
+
+process.stdin.on("data", (v) => {
+  const command = v.toString().replace("\n", "").replace("\r", "").trim().toLowerCase();
+  if (command === "exit") processExit();
+});
+
+async function main() {
   // load global configuration file
   initSystemConfig();
 
   if (systemConfig.redisUrl.length != 0) {
     await RedisStorage.initialize(systemConfig.redisUrl);
-    Storage.setStorageType(1);
+    Storage.setStorageType(Storage.TYPE.REDIS);
   }
 
   initVersionManager();
@@ -161,7 +171,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   index(app);
 
   // Error reporting
-  process.on("uncaughtException", function(err) {
+  process.on("uncaughtException", function (err) {
     logger.error(`ERROR (uncaughtException):`, err);
   });
 
@@ -170,19 +180,11 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-// start the HTTP service
+  // start the HTTP service
+  setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
+}
 
-  startUp(app, systemConfig.httpPort, systemConfig.httpIp);
-})();
-
-["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function(sig) {
-  process.on(sig, () => {
-    logger.warn(`${sig} close process signal detected.`);
-    processExit();
-  });
-});
-
-process.stdin.on("data", (v) => {
-  const command = v.toString().replace("\n", "").replace("\r", "").trim().toLowerCase();
-  if (command === "exit") processExit();
+main().catch((err) => {
+  logger.error("main() error:", err);
+  process.exit(0);
 });
