@@ -100,7 +100,7 @@ router.post(
   async (ctx) => {
     const parameter = ctx.request.body;
     // do asynchronous registration
-    const instance = RemoteServiceSubsystem.registerRemoteService({
+    const instance = await RemoteServiceSubsystem.registerRemoteService({
       apiKey: parameter.apiKey,
       port: parameter.port,
       ip: parameter.ip,

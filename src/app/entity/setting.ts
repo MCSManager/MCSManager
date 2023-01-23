@@ -34,4 +34,5 @@ export default class SystemConfig {
 
   // Quick installation address for the Chinese market
   quickInstallAddr = "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/quick_install.json";
+  redisUrl = "";
 }

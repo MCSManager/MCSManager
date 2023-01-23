@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { IUserApp, User, UserPassWordType } from "../entity/user";
 import { logger } from "./log";
 import { IUser } from "../entity/entity_interface";
-import StorageSubsystem from "../common/system_storage";
+import Storage from "../common/storage/sys_storage";
 import { QueryWrapper, LocalFileSource } from "../common/query_wrapper";
 import { $t } from "../i18n";
 import bcrypt from "bcryptjs";
@@ -13,15 +13,15 @@ import bcrypt from "bcryptjs";
 class UserSubsystem {
   public readonly objects: Map<string, User> = new Map();
 
-  constructor() {
-    StorageSubsystem.list("User").forEach((uuid) => {
-      const user = StorageSubsystem.load("User", User, uuid) as User;
+  async initialize() {
+    for (const uuid of (await Storage.getStorage().list("User"))) {
+      const user = await Storage.getStorage().load("User", User, uuid) as User;
       this.objects.set(uuid, user);
-    });
+    }
     logger.info($t("systemUser.userCount", { n: this.objects.size }));
   }
 
-  create(config: IUser): User {
+  async create(config: IUser): Promise<User> {
     const newUuid = v4().replace(/-/gim, "");
     // Initialize necessary user data
     const instance = new User();
@@ -29,13 +29,13 @@ class UserSubsystem {
     instance.registerTime = new Date().toLocaleString();
     // add to the user system
     this.setInstance(newUuid, instance);
-    this.edit(instance.uuid, config);
+    await this.edit(instance.uuid, config);
     // Persistently save user information
-    StorageSubsystem.store("User", instance.uuid, instance);
+    await Storage.getStorage().store("User", instance.uuid, instance);
     return instance;
   }
 
-  edit(uuid: string, config: any) {
+  async edit(uuid: string, config: any) {
     const instance = this.getInstance(uuid);
     if (config.userName) instance.userName = config.userName;
     if (config.isInit != null) instance.isInit = Boolean(config.isInit);
@@ -48,7 +48,7 @@ class UserSubsystem {
     }
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.apiKey != null) instance.apiKey = config.apiKey;
-    StorageSubsystem.store("User", uuid, instance);
+    await Storage.getStorage().store("User", uuid, instance);
   }
 
   validatePassword(password = "") {
@@ -113,10 +113,10 @@ class UserSubsystem {
     return this.objects.has(uuid);
   }
 
-  deleteInstance(uuid: string) {
+  async deleteInstance(uuid: string) {
     if (this.hasInstance(uuid)) {
       this.objects.delete(uuid);
-      StorageSubsystem.delete("User", uuid);
+      await Storage.getStorage().delete("User", uuid);
     }
   }
 
@@ -125,4 +125,4 @@ class UserSubsystem {
   }
 }
 
-export = new UserSubsystem();
+export default new UserSubsystem();

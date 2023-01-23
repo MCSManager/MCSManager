@@ -6,7 +6,6 @@
     "esModuleInterop": true,
     "allowJs": false,
     "module": "commonjs",
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2018",
     "noImplicitAny": true,
