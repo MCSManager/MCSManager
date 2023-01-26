@@ -16,7 +16,7 @@ router.put("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
   if (passWord && !userSystem.validatePassword(passWord))
     throw new Error($t("router.user.passwordCheck"));
   try {
-    userSystem.edit(uuid, config);
+    await userSystem.edit(uuid, config);
     ctx.body = true;
   } catch (error) {
     ctx.throw(500, error.message);

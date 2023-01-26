@@ -84,7 +84,7 @@ router.all(
     if (userSystem.objects.size === 0) {
       if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.passwordCheck"));
       logger.info($t("router.login.init", { userName }));
-      userSystem.create({
+      await userSystem.create({
         userName,
         passWord,
         permission: 10

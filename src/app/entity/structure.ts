@@ -18,7 +18,7 @@ export class DataStructure {
     if (!fs.existsSync(this.__filename__)) return;
     let data = fs.readFileSync(this.__filename__, "utf-8");
     let ele = JSON.parse(data);
-    for (var key in ele) {
+    for (const key in ele) {
       this[key] = ele[key];
     }
   }

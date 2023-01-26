@@ -123,7 +123,7 @@ router.put(
       const config = ctx.request.body;
       const { passWord, isInit } = config;
       if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.passwordCheck"));
-      userSystem.edit(userUuid, { passWord, isInit });
+      await userSystem.edit(userUuid, { passWord, isInit });
       ctx.body = true;
     }
   }
@@ -144,11 +144,11 @@ router.put(
       if (user) {
         if (enable) {
           newKey = v4().replace(/-/gim, "");
-          userSystem.edit(userUuid, {
+          await userSystem.edit(userUuid, {
             apiKey: newKey
           });
         } else {
-          userSystem.edit(userUuid, {
+          await userSystem.edit(userUuid, {
             apiKey: ""
           });
         }

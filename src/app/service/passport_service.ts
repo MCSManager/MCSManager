@@ -59,7 +59,7 @@ export function logout(ctx: Koa.ParameterizedContext): boolean {
   return true;
 }
 
-export function register(
+export async function register(
   ctx: Koa.ParameterizedContext,
   userName: string,
   passWord: string,
@@ -72,7 +72,7 @@ export function register(
   });
   if (f) {
     // Next. UUID and other data will be automatically generated.
-    userSystem.create({
+    await userSystem.create({
       userName,
       passWord,
       permission
