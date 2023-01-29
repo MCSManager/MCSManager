@@ -60,7 +60,7 @@ interface IParam {
 }
 
 // Entry function
-export = function (parameter: IParam) {
+export default function (parameter: IParam) {
   return async (ctx: Koa.ParameterizedContext, next: Function) => {
     try {
       let checkBool = true;
@@ -75,4 +75,4 @@ export = function (parameter: IParam) {
       ctx.body = `${error.message}`;
     }
   };
-};
+}
