@@ -4,7 +4,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "allowJs": false,
+    "allowJs": true,
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
     "target": "ES2018",
