@@ -22,6 +22,7 @@ export interface IUser {
   loginTime?: string;
   instances?: Array<any>;
   isInit?: boolean;
+  passWordType?: number;
 }
 
 export interface ICompleteUser {

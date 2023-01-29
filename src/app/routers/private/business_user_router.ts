@@ -34,7 +34,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
     }
     ctx.body = true;
   } catch (error) {
-    ctx.throw(500, $t("router.user.deleteFailure"));
+    ctx.throw(500, $t("router.user.deleteFailure") as string);
   }
 });
 
@@ -52,7 +52,7 @@ router.get(
     let resultPage = userSystem.getQueryWrapper().selectPage(condition, page, pageSize);
     // make a copy, delete redundant
     resultPage = JSON.parse(JSON.stringify(resultPage));
-    resultPage.data.forEach((v) => {
+    resultPage.data.forEach((v: any) => {
       delete v.passWord;
       delete v.salt;
     });
