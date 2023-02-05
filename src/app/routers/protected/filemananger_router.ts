@@ -7,7 +7,7 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
 import { getUserPermission, getUserUuid } from "../../service/passport_service";
-import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../../service/permission_service";
 import { systemConfig } from "../../setting";
 import { $t } from "../../i18n";
 const router = new Router({ prefix: "/files" });
@@ -43,6 +43,7 @@ router.get(
       const result = await new RemoteRequest(remoteService).request("file/status", {
         instanceUuid
       });
+      if (!isTopPermissionByUuid(getUserUuid(ctx))) delete result.disk;
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
