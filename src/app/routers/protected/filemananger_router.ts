@@ -7,7 +7,7 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { timeUuid } from "../../service/password";
 import { getUserPermission, getUserUuid } from "../../service/passport_service";
-import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../../service/permission_service";
 import { systemConfig } from "../../setting";
 import { $t } from "../../i18n";
 const router = new Router({ prefix: "/files" });
@@ -43,6 +43,7 @@ router.get(
       const result = await new RemoteRequest(remoteService).request("file/status", {
         instanceUuid
       });
+      if (!isTopPermissionByUuid(getUserUuid(ctx))) delete result.disk;
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -69,6 +70,34 @@ router.get(
         target,
         pageSize,
         page
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.put(
+  "/chmod",
+  permission({ level: 1 }),
+  validator({
+    query: { remote_uuid: String, uuid: String },
+    body: { target: String, chmod: Number, deep: Boolean }
+  }),
+  async (ctx) => {
+    try {
+      const serviceUuid = String(ctx.query.remote_uuid);
+      const instanceUuid = String(ctx.query.uuid);
+      const target = String(ctx.request.body.target);
+      const chmod = Number(ctx.request.body.chmod);
+      const deep = Number(ctx.request.body.deep);
+      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const result = await new RemoteRequest(remoteService).request("file/chmod", {
+        target,
+        instanceUuid,
+        chmod,
+        deep
       });
       ctx.body = result;
     } catch (err) {
