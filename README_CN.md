@@ -248,8 +248,6 @@ MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆
 
 ## 源代码协议
 
-遵循 Apache-2.0 协议。
-
-**我们对源代码有额外的限制，你必须保留所有版权文字（带Copyright），并在明显位置附上 Powered by MCSManager。**
+源代码遵循 Apache-2.0 协议。
 
 版权所有 2022 MCSManager 开发团队。
