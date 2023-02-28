@@ -233,6 +233,6 @@ After the security issue has been resolved, your name will be listed as the bug-
 
 ## License
 
-Copyright 2022 [MCSManager Dev](https://github.com/mcsmanager), Apache-2.0 license.
+Copyright 2023 [MCSManager Dev](https://github.com/mcsmanager), Apache-2.0 license.
 
 
