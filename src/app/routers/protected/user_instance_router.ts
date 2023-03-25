@@ -13,6 +13,7 @@ import { isTopPermissionByUuid } from "../../service/permission_service";
 import { isEmpty, toText } from "../../../app/common/typecheck";
 import { toBoolean } from "../../../app/common/typecheck";
 import { toNumber } from "../../../app/common/typecheck";
+
 const router = new Router({ prefix: "/protected_instance" });
 
 // Routing permission verification middleware
@@ -422,9 +423,22 @@ router.get(
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
-      const result = await new RemoteRequest(remoteService).request("instance/outputlog", {
+      let result = await new RemoteRequest(remoteService).request("instance/outputlog", {
         instanceUuid
       });
+      if (ctx.query.size) {
+        let size, sizeStr = ctx.query.size;
+        if (sizeStr instanceof Array) {
+          sizeStr = sizeStr[0];
+        }
+        size = parseInt(sizeStr);
+        if (sizeStr.toLowerCase().endsWith("kb")) {
+          size *= 1024;
+        }
+        if (result.length > size) {
+          result = result.slice(-size);
+        }
+      }
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
