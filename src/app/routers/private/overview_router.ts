@@ -58,7 +58,7 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
     },
     system: {
       user: os.userInfo(),
-      time: new Date().toLocaleString(),
+      time: new Date().getTime(),
       totalmem: selfInfo.totalmem,
       freemem: selfInfo.freemem,
       type: selfInfo.type,
