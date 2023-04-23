@@ -79,7 +79,7 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ```bash
 // 国内用户专用 gitee 加速源
-wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup.sh | bash
+wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup_cn.sh | bash
 
 // 或原始源（科学上网）
 wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
