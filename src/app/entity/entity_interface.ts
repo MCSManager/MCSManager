@@ -53,6 +53,7 @@ export class RemoteServiceConfig {
     reconnectionDelayMax: 1000 * 3,
     timeout: 1000 * 3,
     reconnection: true,
-    reconnectionAttempts: 20
+    reconnectionAttempts: 20,
+    rejectUnauthorized: false
   };
 }
