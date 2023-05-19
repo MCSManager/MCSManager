@@ -64,12 +64,14 @@ router.get(
       const instanceUuid = String(ctx.query.uuid);
       const page = Number(ctx.query.page);
       const pageSize = Number(ctx.query.page_size);
+      const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("file/list", {
         instanceUuid,
         target,
         pageSize,
-        page
+        page,
+        fileName
       });
       ctx.body = result;
     } catch (err) {
