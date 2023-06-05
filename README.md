@@ -77,29 +77,19 @@ ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# Download the web project
-git clone https://github.com/MCSManager/MCSManager-Web-Production.git web
-cd web
-# Install dependencies
-npm install --production
-cd /opt/mcsmanager/
+# Download MCSManager
+wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
+tar -zxf mcsmanager_linux_release.tar.gz
 
-# Download the Daemon
-git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git daemon
-cd daemon
-# Install dependencies
-npm install --production
+./install-dependency.sh
 
 # Please open two terminals or Screen
-# Start the daemon first
-cd /opt/mcsmanager/daemon
-# Start the daemon
-node app.js
 
-# Start the web project (in the second terminal/screen)
-cd /opt/mcsmanager/web
-# start the application
-node app.js
+# Start the daemon first
+./start-daemon.sh
+
+# Start the web service (in the second terminal)
+./start-web.sh
 
 # Access http://localhost:23333/ for web interface
 # In general, the web application will scan and connect to the local daemon automatically.
