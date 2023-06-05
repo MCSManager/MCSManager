@@ -96,46 +96,37 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 - 若一键安装不起作用，则可以尝试此步骤手动安装。
 
 ```bash
-# 切换到安装目录，没有此目录请执行 mkdir /opt/
+# 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
-# 下载运行环境（已有 Node 14+ 可忽略）
-wget https://npmmirror.com/mirrors/node/v14.17.6/node-v14.17.6-linux-x64.tar.gz
-# 解压文件
+# 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
+wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+# 解压档案
 tar -zxvf node-v14.17.6-linux-x64.tar.gz
-# 链接程序到环境变量中
+# 添加程序到系统环境变量
 ln -s /opt/node-v14.17.6-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
 
-# 准备安装目录
+# 准备好安装目录
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# 下载面板端（Web）程序
-git clone https://github.com/MCSManager/MCSManager-Web-Production.git web
-cd web
+# 下载MCSManager
+wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
+tar -zxf mcsmanager_linux_release.tar.gz
+
 # 安装依赖库
-npm install --production --registry=https://registry.npmmirror.com/
-cd /opt/mcsmanager/
+./install-dependency.sh
 
-# 下载守护进程（Daemon）程序
-git clone https://github.com/MCSManager/MCSManager-Daemon-Production.git daemon
-cd daemon
-# 安装依赖库
-npm install --production --registry=https://registry.npmmirror.com/
+# 请打开两个终端或屏幕
 
-# 打开两个终端或两个 Screen 软件的终端窗口
-# 先启动守护进程
-cd /opt/mcsmanager/daemon
-# 启动
-node app.js
+# 先启动守护程序
+./start-daemon.sh
 
-# 然后启动面板端进程
-cd /opt/mcsmanager/web
-# 启动
-node app.js
+# 启动网络服务(在第二个终端)
+./start-web.sh
 
-# 访问 http://localhost:23333/ 即可进入面板。
-# 默认情况下，面板端会自动扫描 daemon 文件夹并且自动连接到守护进程。
+# 为网络界面访问http://localhost:23333/
+# 一般来说，网络应用会自动扫描并连接到本地守护进程。
 ```
 
 - 注意，这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理。
