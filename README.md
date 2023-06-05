@@ -49,7 +49,7 @@ Download it from the official site: [https://mcsmanager.com/](https://mcsmanager
 **Quick Install with one command**
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup_en.sh | bash
+wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
 ```
 
 - The script is designed for Ubuntu/Centos/Debian/Archlinux of AMD64 architecture only.
