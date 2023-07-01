@@ -44,7 +44,7 @@ export default class RemoteService {
     }
 
     logger.info(`${$t("daemonInfo.tryConnect")}:${daemonInfo}`);
-    this.socket = io(addr, connectOpts);
+    this.socket = io(addr, this.config.connectOpts);
 
     // register built-in events
     this.socket.on("connect", async () => {
