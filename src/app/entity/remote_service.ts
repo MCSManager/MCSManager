@@ -22,7 +22,6 @@ export default class RemoteService {
     this.config = config;
   }
 
-  // connect to remote service
   public connect(connectOpts?: Partial<SocketOptions & ManagerOptions>) {
     if (connectOpts) this.config.connectOpts = connectOpts;
     // Start the formal connection to the remote Socket program
