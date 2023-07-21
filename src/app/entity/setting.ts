@@ -19,7 +19,7 @@ export default class SystemConfig {
   // Maximum simultaneous compression tasks
   maxCompress: number = 1;
   // Maximum simultaneous download tasks
-  maxDonwload: number = 10;
+  maxDownload: number = 10;
   // Decompression implementation form
   zipType: number = 1;
   // Login times IP limit
