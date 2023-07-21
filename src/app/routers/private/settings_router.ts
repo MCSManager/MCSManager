@@ -27,7 +27,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.crossDomain != null) systemConfig.crossDomain = config.crossDomain;
     if (config.gzip != null) systemConfig.gzip = config.gzip;
     if (config.maxCompress != null) systemConfig.maxCompress = config.maxCompress;
-    if (config.maxDonwload != null) systemConfig.maxDonwload = config.maxDonwload;
+    if (config.maxDownload != null) systemConfig.maxDownload = config.maxDownload;
     if (config.zipType != null) systemConfig.zipType = config.zipType;
     if (config.loginCheckIp != null) systemConfig.loginCheckIp = config.loginCheckIp;
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
