@@ -41,7 +41,7 @@
       "createError": "Failed to create instance."
     },
     "file": {
-      "off": "The system administrator has choose to restrict file management function for all users."
+      "off": "The system administrator has choosen to restrict the file management function for all users."
     },
     "schedule": {
       "invalidName": "Invalid task name"
@@ -60,10 +60,10 @@
     "authSuccess": "Remote node {{- v}} token verification succeed.",
     "authFailure": "Remote node {{- v}} token verification failed.",
     "authError": "Remote node {{- v}} token verification error.",
-    "closed": "Actively dissconnect from the remote node {{- v}} ",
-    "resetConnect": "User request to reconnect all available remote node, reconnecting...",
+    "closed": "Actively disconnect from the remote node {{- v}} ",
+    "resetConnect": "User request to reconnect all available remote nodes, reconnecting...",
     "replaceConnect": "User initiated a duplicate connection request, resetting the connection.",
-    "tryConnect": "Trying to connect remote node.",
+    "tryConnect": "Trying to connect to remote node.",
     "setLanguage": "Set node language."
   }
 }
