@@ -41,7 +41,7 @@
       "createError": "Failed to create instance."
     },
     "file": {
-      "off": "The system administrator has choosen to restrict the file management function for all users."
+      "off": "The system administrator has chosen to restrict the file management function for all users."
     },
     "schedule": {
       "invalidName": "Invalid task name"
@@ -63,7 +63,7 @@
     "closed": "Actively disconnect from the remote node {{- v}} ",
     "resetConnect": "User request to reconnect all available remote nodes, reconnecting...",
     "replaceConnect": "User initiated a duplicate connection request, resetting the connection.",
-    "tryConnect": "Trying to connect to remote node.",
+    "tryConnect": "Trying to connect to remote node...",
     "setLanguage": "Set node language."
   }
 }
