@@ -1,6 +1,6 @@
 cd daemon
 npm install
-cd ../backend
+cd ../panel
 npm install
 cd ../frontend
 npm install
