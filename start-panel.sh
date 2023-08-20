@@ -1,2 +1,2 @@
-cd backend
+cd panel
 npm run dev
