@@ -1,0 +1,137 @@
+// Global tool style class
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.direction-column {
+  flex-direction: column;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+.justify-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.justify-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.h-50 {
+  height: 50% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.color-danger {
+  color: var(--color-danger);
+}
+
+.color-primary {
+  color: var(--color-primary);
+}
+
+.color-warning {
+  color: var(--color-warning);
+}
+
+.color-success {
+  color: var(--color-success);
+}
+
+.color-info {
+  color: var(--color-info);
+}
+
+.transition-all-6 {
+  transition: all 0.6s;
+}
+
+.transition-all-4 {
+  transition: all 0.4s;
+}
+
+.app-max-width {
+  max-width: var(--app-max-width);
+  margin: auto;
+}
+
+.select-none {
+  user-select: none;
+}
+
+@mixin generate-styles($depth) {
+  .m-#{$depth} {
+    margin: #{$depth}px !important;
+  }
+  .ml-#{$depth} {
+    margin-left: #{$depth}px !important;
+  }
+  .mr-#{$depth} {
+    margin-right: #{$depth}px !important;
+  }
+  .mb-#{$depth} {
+    margin-bottom: #{$depth}px !important;
+  }
+  .mt-#{$depth} {
+    margin-top: #{$depth}px !important;
+  }
+  .p-#{$depth} {
+    padding: #{$depth}px !important;
+  }
+  .pl-#{$depth} {
+    padding-left: #{$depth}px !important;
+  }
+  .pr-#{$depth} {
+    padding-right: #{$depth}px !important;
+  }
+  .pb-#{$depth} {
+    padding-bottom: #{$depth}px !important;
+  }
+  .pt-#{$depth} {
+    padding-top: #{$depth}px !important;
+  }
+
+  @if $depth >= 1 {
+    @include generate-styles($depth - 1);
+  }
+}
+
+@include generate-styles(60);
