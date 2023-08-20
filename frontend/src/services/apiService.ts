@@ -3,6 +3,9 @@ import axios from "axios";
 import EventEmitter from "events";
 import _ from "lodash";
 
+// Each request must carry the X-Requested-With: XMLHttpRequest header
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+
 export interface RequestConfig extends AxiosRequestConfig {
   forceRequest?: boolean;
 }
@@ -16,8 +19,8 @@ class ApiService {
         String(config.method),
         String(config.url),
         JSON.stringify(config.data ?? {}),
-        JSON.stringify(config.params ?? {}),
-      ].join(""),
+        JSON.stringify(config.params ?? {})
+      ].join("")
     );
 
     return new Promise((resolve, reject) => {

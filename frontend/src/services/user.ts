@@ -8,8 +8,8 @@ export const userService = createGlobalState(() => {
       url: "https://jsonplaceholder.typicode.com/todos/1",
       data: {
         username,
-        password,
-      },
+        password
+      }
     });
     return result.data;
   };
@@ -18,17 +18,17 @@ export const userService = createGlobalState(() => {
     const state = userInfoApi();
     state.execute({
       params: {
-        uid,
+        uid
       },
       data: {
-        newName: "dsad",
-      },
+        newName: "dsad"
+      }
     });
     return state;
   };
 
   return {
     login,
-    getUserInfo,
+    getUserInfo
   };
 });

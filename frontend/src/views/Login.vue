@@ -5,31 +5,47 @@ import {
   CheckCircleOutlined,
   LoadingOutlined,
   LockOutlined,
-  UserOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
 import { reactive, ref } from "vue";
 import { router } from "@/config/router";
+import { loginUser } from "@/services/apis";
+import { sleep } from "@/tools/commom";
 
 const formData = reactive({
   username: "",
-  password: "",
+  password: ""
 });
+
+const { execute: login } = loginUser();
 
 const loginStep = ref(0);
 
-const handleLogin = () => {
+const handleLogin = async () => {
   loginStep.value++;
-  setTimeout(() => {
-    // loginStep.value = 0;
-    loginStep.value++;
-    setTimeout(() => loginSuccess(), 1200);
-  }, 3000);
+  await sleep(1500);
+
+  try {
+    const res = await login({
+      data: {
+        username: "1",
+        password: "2"
+      }
+    });
+    console.log("resresres:", res);
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+  }
+
+  loginStep.value++;
+  await sleep(1200);
+  loginSuccess();
 };
 
 const loginSuccess = () => {
   loginStep.value++;
   router.push({
-    path: "/",
+    path: "/"
   });
 };
 </script>
@@ -108,7 +124,7 @@ const loginSuccess = () => {
   <div
     :class="{
       logging: loginStep === 1,
-      loginDone: loginStep === 3,
+      loginDone: loginStep === 3
     }"
   >
     <div class="login-page-container">
@@ -124,11 +140,7 @@ const loginSuccess = () => {
                   {{ t("使用服务器的 MCSManager 账号进入面板") }}
                 </a-typography-paragraph>
                 <div>
-                  <a-input
-                    v-model:value="formData.username"
-                    :placeholder="t('账号')"
-                    size="large"
-                  >
+                  <a-input v-model:value="formData.username" :placeholder="t('账号')" size="large">
                     <template #suffix>
                       <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
                     </template>
@@ -148,11 +160,7 @@ const loginSuccess = () => {
                   <div class="mt-24 flex-between align-center">
                     <div class="mcsmanager-link">
                       Powered by
-                      <a
-                        href="https://mcsmanager.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
                         MCSManager
                       </a>
                     </div>
@@ -167,10 +175,7 @@ const loginSuccess = () => {
                   </div>
                 </div>
               </div>
-              <div
-                class="login-panel-body flex-center"
-                v-show="loginStep === 1"
-              >
+              <div class="login-panel-body flex-center" v-show="loginStep === 1">
                 <div style="text-align: center">
                   <LoadingOutlined :style="{ fontSize: '50px' }" />
                 </div>
@@ -180,7 +185,7 @@ const loginSuccess = () => {
                   <CheckCircleOutlined
                     :style="{
                       fontSize: '40px',
-                      color: 'var(--color-green-6)',
+                      color: 'var(--color-green-6)'
                     }"
                   />
                 </div>
@@ -193,7 +198,7 @@ const loginSuccess = () => {
         <div
           :class="{
             'right-square': true,
-            'right-square-logging': loginStep === 1,
+            'right-square-logging': loginStep === 1
           }"
         >
           <div class="square1"></div>

@@ -8,28 +8,30 @@ import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:23333",
+        changeOrigin: true
+        // rewrite: (path) => path.replace(/^\/api/, "")
+      }
+    }
+  },
+
   plugins: [
     vue(),
     vueJsx(),
     Components({
       resolvers: [
         AntDesignVueResolver({
-          importStyle: false, // css in js
-        }),
-      ],
-    }),
+          importStyle: false // css in js
+        })
+      ]
+    })
   ],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-  },
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       javascriptEnabled: true,
-  //       additionalData: `@import "${path.resolve(__dirname, 'src/assets/variables.scss')}";`
-  //     }
-  //   }
-  // }
+      "@": fileURLToPath(new URL("./src", import.meta.url))
+    }
+  }
 });
