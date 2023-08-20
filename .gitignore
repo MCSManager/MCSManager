@@ -12,13 +12,13 @@ src/public
 *.code-workspace
 vscode/
 .vscode/
-Daemon/
 data/
 dist/
 out/
-public/
+lib/
 production/
 .DS_Store
+production-code/
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

@@ -11,10 +11,10 @@ cd ..
 cd panel
 npm run build
 
-# echo "Build frontend..."
-# cd ..
-# cd frontend
-# npm run build
+echo "Build frontend..."
+cd ..
+cd frontend
+npm run build
 
 echo "Collecting files..."
 cd ..
@@ -24,17 +24,19 @@ mkdir production-code/daemon
 mkdir production-code/web
 mkdir production-code/web/public
 
-cp ./daemon/production/app.js ./production-code/daemon/app.js
+mv ./daemon/production/app.js ./production-code/daemon
 cp ./daemon/package.json ./production-code/daemon/package.json
 cp ./daemon/package-lock.json ./production-code/daemon/package-lock.json
 
-cp ./panel/production/app.js ./production-code/web/app.js
+mv ./panel/production/app.js ./production-code/web
 cp ./panel/package.json ./production-code/web/package.json
 cp ./panel/package-lock.json ./production-code/web/package-lock.json
 
+mv ./frontend/dist/* ./production-code/web/public
 
 rm -rf ./daemon/dist ./daemon/production
 rm -rf ./panel/dist ./panel/production
+rm -rf ./frontend/dist
 
 echo "------------"
 echo "Done!"
