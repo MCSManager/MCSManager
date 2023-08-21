@@ -1,5 +1,3 @@
-#!/bin/sh
-
 cd daemon
 npm install
 cd ../panel

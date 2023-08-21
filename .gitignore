@@ -5,10 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-test.txt
-*.bat
 
-src/public
 *.code-workspace
 vscode/
 .vscode/
