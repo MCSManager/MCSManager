@@ -3,8 +3,8 @@
 <br />
 
 [![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
-[![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/npm-v8.11.0-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/node-16.16.0-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 [Official Website](https://mcsmanager.com/)
