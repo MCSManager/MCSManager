@@ -46,7 +46,9 @@ class ApiService {
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
       if (reqSpeed < 100) await this.wait(100 - reqSpeed);
-      this.event.emit(reqId, result.data);
+      let realData = result.data;
+      if (realData.data) realData = realData.data;
+      this.event.emit(reqId, realData);
     } catch (error) {
       this.event.emit(reqId, error);
     }

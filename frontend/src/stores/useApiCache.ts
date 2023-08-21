@@ -12,8 +12,8 @@ export const useDefineApi = <P, T>(baseConfig: RequestConfig = {}) => {
       isLoading,
       state,
       isReady,
-      execute: async (config: P & RequestConfig) => {
-        await execute(0, config);
+      execute: async (config?: P & RequestConfig) => {
+        await execute(0, config ? config : {});
         return state;
       }
     };

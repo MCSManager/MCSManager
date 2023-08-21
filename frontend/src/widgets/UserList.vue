@@ -17,7 +17,7 @@ export interface UserInfo {
   registerTime: number;
 }
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 

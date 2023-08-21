@@ -4,7 +4,7 @@ import { createGlobalState } from "@vueuse/core";
 
 export enum THEME {
   LIGHT = "light",
-  DARK = "dark",
+  DARK = "dark"
 }
 
 export const THEME_KEY = "THEME_KEY";
@@ -13,7 +13,7 @@ const defaultTheme = localStorage.getItem(THEME_KEY) || THEME.LIGHT;
 
 export const useAppConfigStore = createGlobalState(() => {
   const appConfig = reactive({
-    theme: defaultTheme as THEME,
+    theme: defaultTheme as THEME
   });
 
   const setTheme = (theme: THEME) => {
@@ -44,6 +44,6 @@ export const useAppConfigStore = createGlobalState(() => {
     getCurrentLanguage,
     isDarkTheme,
     setTheme,
-    getTheme,
+    getTheme
   };
 });

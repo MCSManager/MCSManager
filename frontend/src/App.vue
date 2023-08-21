@@ -6,14 +6,16 @@ import enUS from "ant-design-vue/es/locale/en_US";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import "dayjs/locale/en";
-import { ref } from "vue";
-import { useAppConfigStore } from "./stores/useAppConfigStore";
+import { onMounted, ref, unref } from "vue";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import { theme } from "ant-design-vue";
 
 import InputDialogProvider from "./components/InputDialogProvider.vue";
+import { userInfoApi } from "./services/apis";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-
+const { state } = useAppStateStore();
 const locale = ref(enUS);
 
 if (getCurrentLanguage() === "zh_CN") {
@@ -34,6 +36,16 @@ if (isDarkUI) {
 } else {
   document.body.classList.add("app-light-theme");
 }
+
+const { execute: reqUserInfo, isLoading } = userInfoApi();
+
+onMounted(async () => {
+  const info = await reqUserInfo();
+  if (info.value) {
+    state.userInfo = info.value;
+  }
+  console.log("用户信息:", state.userInfo);
+});
 </script>
 
 <template>
