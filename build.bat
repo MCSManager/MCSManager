@@ -6,17 +6,17 @@ rd /s /q ".\panel\production"
 
 echo "Build daemon..."
 cd daemon
-npm run build
+call npm run build
 
 echo "Build panel..."
 cd ..
 cd panel
-npm run build
+call npm run build
 
 echo "Build frontend..."
 cd ..
 cd frontend
-npm run build
+call npm run build
 
 echo "Collecting files..."
 cd ..
@@ -42,6 +42,13 @@ rd /s /q ".\daemon\dist"
 rd /s /q ".\panel\dist" 
 rd /s /q ".\frontend\dist" 
 
-echo "------------"
+cd "production-code\daemon"
+call npm install --production
+cd "../web"
+call npm install --production
+cd "../../"
+
+echo "--------"
 echo "Done!"
-echo "------------"
+
+pause

@@ -1,13 +1,12 @@
 cd daemon
-start npm install
+call npm install
 
 cd ..
 cd panel
-start npm install
+call npm install
 
 cd ..
 cd frontend
-start npm install
-
+call npm install
 
 pause
