@@ -15,7 +15,7 @@ export const useDefineApi = <P, T>(baseConfig: RequestConfig = {}) => {
       execute: async (config: P & RequestConfig) => {
         await execute(0, config);
         return state;
-      },
+      }
     };
   };
 };

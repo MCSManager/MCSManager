@@ -28,18 +28,17 @@ const handleLogin = async () => {
   try {
     const res = await login({
       data: {
-        username: "1",
-        password: "2"
+        ...formData
       }
     });
-    console.log("resresres:", res);
+    console.log("LOGIN:", res);
+    loginStep.value++;
+    await sleep(1200);
+    loginSuccess();
   } catch (error) {
     console.log("LOGIN ERROR:", error);
+    loginStep.value--;
   }
-
-  loginStep.value++;
-  await sleep(1200);
-  loginSuccess();
 };
 
 const loginSuccess = () => {
@@ -141,14 +140,18 @@ const loginSuccess = () => {
                     {{ t("使用服务器的 MCSManager 账号进入面板") }}
                   </a-typography-paragraph>
                   <div>
-                    <a-input v-model="formData.username" :placeholder="t('账号')" size="large">
+                    <a-input
+                      v-model:value="formData.username"
+                      :placeholder="t('账号')"
+                      size="large"
+                    >
                       <template #suffix>
                         <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
                       </template>
                     </a-input>
 
                     <a-input
-                      v-model="formData.password"
+                      v-model:value="formData.password"
                       class="mt-20"
                       :placeholder="t('密码')"
                       size="large"

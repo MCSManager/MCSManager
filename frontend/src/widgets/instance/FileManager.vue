@@ -3,12 +3,12 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed, reactive } from "vue";
 import { t } from "@/lang/i18n";
-import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
