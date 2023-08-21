@@ -1,0 +1,39 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="theme-color" content="#ffffff"><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="MCSManager Panel"><link rel="icon" href="./favicon.ico"><link rel="manifest" href="./manifest.json"><style>#before-app-mount {
+      background-color: rgb(228, 228, 228);
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      top: 0px;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #before-app-mount-text {
+      text-align: center;
+    }
+
+    ._nb-spinner {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto;
+      background: transparent;
+      border-top: 4px solid #009688;
+      border-right: 4px solid transparent;
+      border-radius: 50%;
+      animation: 1s _spin linear infinite;
+    }
+
+    @keyframes _spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }</style><script>window.removeLoadingPage = function(){
+      document.getElementById("before-app-mount").setAttribute("style", "display: none;");
+    }</script><title>MCSManager Panel</title><link href="css/chunk-vendors.e7e6b1c7.css" rel="preload" as="style"><link href="css/index.49259bf3.css" rel="preload" as="style"><link href="js/chunk-vendors.dc2b7dfb.js" rel="preload" as="script"><link href="js/index.138cd00f.js" rel="preload" as="script"><link href="css/chunk-vendors.e7e6b1c7.css" rel="stylesheet"><link href="css/index.49259bf3.css" rel="stylesheet"></head><body class="auto"><noscript><div style="text-align: center;margin-top: 10%;"><h4>Sorry, the web page requires a Javascript runtime environment, please allow you to run scripts or use a new version of the modern browser.</h4><p>It is recommended to use <a href="https://www.google.cn/chrome/">Chrome</a> modern browser.</p></div></noscript><div id="before-app-mount" data-component-type="loading"><div id="before-app-mount-text"><div class="_nb-spinner"></div><div style="margin: 12px;">Loading</div></div></div><div id="app" class="app" data-component-type="vue-root"></div><script src="js/chunk-vendors.dc2b7dfb.js"></script><script src="js/index.138cd00f.js"></script></body><script src="./static/editor/ace.js" charset="utf-8"></script><script async src="https://mcsmanager.com/sponsor.js" charset="utf-8"></script></html>
