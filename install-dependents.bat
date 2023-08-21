@@ -1,10 +1,13 @@
 cd daemon
-npm install
-cd ../panel
-npm install
-cd ../frontend
-npm install
+start npm install
 
-echo "------------"
-echo "Done!"
-echo "------------"
+cd ..
+cd panel
+start npm install
+
+cd ..
+cd frontend
+start npm install
+
+
+pause
