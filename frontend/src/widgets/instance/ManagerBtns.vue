@@ -22,45 +22,45 @@ const btns = arrayFilter([
       toPage({
         path: "/instances/terminal/serverConfig",
         query: {
-          type: "Minecraft",
-        },
+          type: "Minecraft"
+        }
       });
-    },
+    }
   },
   {
     title: t("文件管理"),
     icon: CloudServerOutlined,
     click: () => {
       toPage({ path: "/instances/terminal/files" });
-    },
+    }
   },
   {
     title: t("终端设置"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
-    },
+    }
   },
   {
     title: t("计划任务"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
-    },
+    }
   },
   {
     title: t("状态查询"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
-    },
+    }
   },
   {
     title: t("事件任务"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
-    },
+    }
   },
 
   {
@@ -68,8 +68,8 @@ const btns = arrayFilter([
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
-    },
-  },
+    }
+  }
 ]);
 </script>
 
@@ -80,21 +80,18 @@ const btns = arrayFilter([
       <div class="pb-4">
         <a-row :gutter="[24, 24]" style="height: 100%">
           <a-col
+            v-for="btn in btns"
+            :key="btn.title"
             :span="24"
             :md="12"
             :lg="6"
-            v-for="btn in btns"
-            :key="btn.title"
             style="height: 100%"
           >
-            <InnerCard
-              :style="{ height: LayoutCardHeight.MINI }"
-              @click="btn.click"
-            >
+            <InnerCard :style="{ height: LayoutCardHeight.MINI }" @click="btn.click">
               <template #title>
                 <component :is="btn.icon"></component>
-                {{ btn.title }}</template
-              >
+                {{ btn.title }}
+              </template>
               <template #body>
                 <a href="javascript:void(0);">
                   <span>
@@ -111,7 +108,4 @@ const btns = arrayFilter([
   </CardPanel>
 </template>
 
-<style lang="scss" scoped>
-.containerWrapper {
-}
-</style>
+<style lang="scss" scoped></style>

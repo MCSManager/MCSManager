@@ -36,7 +36,7 @@ const onSubmit = async () => {
 };
 
 defineExpose({
-  openDialog,
+  openDialog
 });
 </script>
 
@@ -57,19 +57,11 @@ defineExpose({
       </a-button>
     </template>
     <div v-if="card && card.meta" class="app-max-width">
-      <a-form
-        ref="formRef"
-        :model="formData"
-        layout="vertical"
-        autocomplete="off"
-      >
+      <a-form ref="formRef" :model="formData" layout="vertical" autocomplete="off">
         <a-row :gutter="[20, 20]">
-          <a-col :span="24" :md="12" v-for="item in card.params">
+          <a-col v-for="item in card.params" :key="item.field" :span="24" :md="12">
             <a-form-item :label="item.label" :name="item.field">
-              <a-input
-                v-if="item.type === 'string'"
-                v-model:value="formData[item.field]"
-              />
+              <a-input v-if="item.type === 'string'" v-model:value="formData[item.field]" />
             </a-form-item>
           </a-col>
         </a-row>

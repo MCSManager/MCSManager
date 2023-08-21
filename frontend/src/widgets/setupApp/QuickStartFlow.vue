@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const formData = ref({
-  language: "en_US",
+  language: "en_US"
 });
 </script>
 

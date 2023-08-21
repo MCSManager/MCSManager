@@ -14,11 +14,7 @@ const componentMap: { [key: string]: any } = LAYOUT_CARD_TYPES;
     :id="'layout-card-container-' + card.id"
     class="layout-card-container transition-all-6 global-drag-animation"
   >
-    <component
-      style="height: 100%"
-      :card="props.card"
-      :is="componentMap[card.type]"
-    ></component>
+    <component :is="componentMap[card.type]" style="height: 100%" :card="props.card"></component>
   </div>
 </template>
 

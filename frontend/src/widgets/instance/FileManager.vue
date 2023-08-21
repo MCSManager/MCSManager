@@ -3,11 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed, reactive } from "vue";
 import { t } from "@/lang/i18n";
-import {
-  DownOutlined,
-  SearchOutlined,
-  UserOutlined,
-} from "@ant-design/icons-vue";
+import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
@@ -19,7 +15,7 @@ const props = defineProps<{
 const screen = useScreen();
 
 const operationForm = ref({
-  name: "",
+  name: ""
 });
 
 const dataSource = [
@@ -29,7 +25,7 @@ const dataSource = [
     size: "1824 MB",
     permission: 777,
     modifyTime: new Date().getTime(),
-    createTime: new Date().getTime(),
+    createTime: new Date().getTime()
   },
   {
     key: "1",
@@ -37,7 +33,7 @@ const dataSource = [
     size: "1824 MB",
     permission: 777,
     modifyTime: new Date().getTime(),
-    createTime: new Date().getTime(),
+    createTime: new Date().getTime()
   },
   {
     key: "1",
@@ -45,7 +41,7 @@ const dataSource = [
     size: "1824 MB",
     permission: 777,
     modifyTime: new Date().getTime(),
-    createTime: new Date().getTime(),
+    createTime: new Date().getTime()
   },
   {
     key: "1",
@@ -53,8 +49,8 @@ const dataSource = [
     size: "1824 MB",
     permission: 777,
     modifyTime: new Date().getTime(),
-    createTime: new Date().getTime(),
-  },
+    createTime: new Date().getTime()
+  }
 ];
 
 const columns = computed(() => {
@@ -64,7 +60,7 @@ const columns = computed(() => {
       title: "文件名",
       dataIndex: "name",
       key: "name",
-      minWidth: "200px",
+      minWidth: "200px"
     },
     {
       align: "center",
@@ -72,7 +68,7 @@ const columns = computed(() => {
       dataIndex: "size",
       key: "size",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -80,7 +76,7 @@ const columns = computed(() => {
       dataIndex: "modifyTime",
       key: "modifyTime",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -88,7 +84,7 @@ const columns = computed(() => {
       dataIndex: "createTime",
       key: "createTime",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -96,14 +92,14 @@ const columns = computed(() => {
       dataIndex: "permission",
       key: "permission",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
       title: "操作",
       key: "action",
-      minWidth: "200px",
-    },
+      minWidth: "200px"
+    }
   ]);
 });
 
@@ -124,17 +120,17 @@ const breadcrumbs = reactive<
 breadcrumbs.push({
   path: "/",
   name: "/",
-  disabled: false,
+  disabled: false
 });
 breadcrumbs.push({
   path: "/workspace",
   name: "workspace",
-  disabled: false,
+  disabled: false
 });
 breadcrumbs.push({
   path: "/workspace/test files",
   name: "test files",
-  disabled: false,
+  disabled: false
 });
 </script>
 
@@ -149,16 +145,16 @@ breadcrumbs.push({
             </a-typography-title>
           </template>
           <template #right>
-            <a-button type="dashed" danger class="mr-8">粘贴文件</a-button>
+            <a-button type="dashed" danger class="mr-8"> 粘贴文件 </a-button>
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="1">上传文件</a-menu-item>
-                  <a-menu-item key="4">新建目录</a-menu-item>
-                  <a-menu-item key="4">新建文件</a-menu-item>
-                  <a-menu-item key="3">压缩</a-menu-item>
-                  <a-menu-item key="4">解压</a-menu-item>
-                  <a-menu-item key="2">批量删除</a-menu-item>
+                  <a-menu-item key="1"> 上传文件 </a-menu-item>
+                  <a-menu-item key="4"> 新建目录 </a-menu-item>
+                  <a-menu-item key="4"> 新建文件 </a-menu-item>
+                  <a-menu-item key="3"> 压缩 </a-menu-item>
+                  <a-menu-item key="4"> 解压 </a-menu-item>
+                  <a-menu-item key="2"> 批量删除 </a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
@@ -169,10 +165,7 @@ breadcrumbs.push({
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.name"
-                :placeholder="t('根据文件名搜索')"
-              >
+              <a-input v-model:value="operationForm.name" :placeholder="t('根据文件名搜索')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -188,10 +181,7 @@ breadcrumbs.push({
             <div class="file-breadcrumbs mb-20">
               <a-breadcrumb separator=">">
                 <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
-                  <div
-                    class="file-breadcrumbs-item"
-                    @click="handleChangeDir(item.path)"
-                  >
+                  <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
                     {{ item.name }}
                   </div>
                 </a-breadcrumb-item>
@@ -200,20 +190,33 @@ breadcrumbs.push({
             <a-table
               size="middle"
               :row-selection="rowSelection"
-              :dataSource="dataSource"
+              :data-source="dataSource"
               :columns="columns"
             >
+              <!-- eslint-disable-next-line vue/no-unused-vars -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
                   <a-dropdown>
                     <template #overlay>
                       <a-menu>
-                        <a-menu-item key="3">{{ t("更改权限") }}</a-menu-item>
-                        <a-menu-item key="1">{{ t("重命名") }}</a-menu-item>
-                        <a-menu-item key="3">{{ t("解压") }}</a-menu-item>
-                        <a-menu-item key="2">{{ t("复制") }}</a-menu-item>
-                        <a-menu-item key="3">{{ t("剪贴") }}</a-menu-item>
-                        <a-menu-item key="4">{{ t("删除") }}</a-menu-item>
+                        <a-menu-item key="3">
+                          {{ t("更改权限") }}
+                        </a-menu-item>
+                        <a-menu-item key="1">
+                          {{ t("重命名") }}
+                        </a-menu-item>
+                        <a-menu-item key="3">
+                          {{ t("解压") }}
+                        </a-menu-item>
+                        <a-menu-item key="2">
+                          {{ t("复制") }}
+                        </a-menu-item>
+                        <a-menu-item key="3">
+                          {{ t("剪贴") }}
+                        </a-menu-item>
+                        <a-menu-item key="4">
+                          {{ t("删除") }}
+                        </a-menu-item>
                       </a-menu>
                     </template>
                     <a-button>

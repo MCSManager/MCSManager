@@ -2,8 +2,8 @@
 const props = defineProps({
   fullHeight: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 });
 </script>
 
@@ -12,10 +12,10 @@ const props = defineProps({
     :class="{
       'card-panel': true,
       'global-card-container-shadow': true,
-      'h-100': props.fullHeight,
+      'h-100': props.fullHeight
     }"
   >
-    <div class="card-panel-title" v-if="$slots.title">
+    <div v-if="$slots.title" class="card-panel-title">
       <div>
         <a-typography-title :level="5">
           <slot name="title"></slot>

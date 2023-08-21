@@ -3,11 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
-import {
-  DownOutlined,
-  SearchOutlined,
-  UserOutlined,
-} from "@ant-design/icons-vue";
+import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
@@ -29,7 +25,7 @@ const { getRouteParamsUrl, toPage } = useAppRouters();
 const screen = useScreen();
 
 const operationForm = ref({
-  name: "",
+  name: ""
 });
 
 const handleToUserConfig = (user: UserInfo) => {
@@ -37,8 +33,8 @@ const handleToUserConfig = (user: UserInfo) => {
   toPage({
     path: "/users/config",
     query: {
-      uuid: "XXXZZZ123",
-    },
+      uuid: "XXXZZZ123"
+    }
   });
 };
 
@@ -50,29 +46,29 @@ const dataSource: UserInfo[] = [
     name: "Admin",
     level: 10,
     time: new Date().getTime(),
-    registerTime: new Date().getTime(),
+    registerTime: new Date().getTime()
   },
   {
     key: "2",
     name: "Admin",
     level: 10,
     time: new Date().getTime(),
-    registerTime: new Date().getTime(),
+    registerTime: new Date().getTime()
   },
   {
     key: "3",
     name: "Admin",
     level: 10,
     time: new Date().getTime(),
-    registerTime: new Date().getTime(),
+    registerTime: new Date().getTime()
   },
   {
     key: "4",
     name: "Admin",
     level: 10,
     time: new Date().getTime(),
-    registerTime: new Date().getTime(),
-  },
+    registerTime: new Date().getTime()
+  }
 ];
 
 const columns = computed(() => {
@@ -82,14 +78,14 @@ const columns = computed(() => {
       title: "用户名",
       dataIndex: "name",
       key: "name",
-      minWidth: "200px",
+      minWidth: "200px"
     },
     {
       align: "center",
       title: "角色",
       dataIndex: "level",
       key: "level",
-      minWidth: "200px",
+      minWidth: "200px"
     },
     {
       align: "center",
@@ -97,7 +93,7 @@ const columns = computed(() => {
       dataIndex: "time",
       key: "time",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -105,14 +101,14 @@ const columns = computed(() => {
       dataIndex: "registerTime",
       key: "registerTime",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
       title: "操作",
       key: "action",
-      minWidth: "200px",
-    },
+      minWidth: "200px"
+    }
   ]);
 });
 
@@ -146,10 +142,7 @@ const rowSelection = () => {};
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.name"
-                :placeholder="t('根据用户名搜索')"
-              >
+              <a-input v-model:value="operationForm.name" :placeholder="t('根据用户名搜索')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -165,7 +158,7 @@ const rowSelection = () => {};
             <a-table
               size="middle"
               :row-selection="rowSelection"
-              :dataSource="dataSource"
+              :data-source="dataSource"
               :columns="columns"
             >
               <template #bodyCell="{ column, record }">
@@ -173,10 +166,7 @@ const rowSelection = () => {};
                   <a-dropdown>
                     <template #overlay>
                       <a-menu>
-                        <a-menu-item
-                          key="1"
-                          @click="handleToUserConfig(record)"
-                        >
+                        <a-menu-item key="1" @click="handleToUserConfig(record)">
                           {{ t("用户配置") }}
                         </a-menu-item>
                         <a-menu-item key="2" @click="handleDeleteUser(record)">

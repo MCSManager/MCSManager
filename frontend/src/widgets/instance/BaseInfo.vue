@@ -8,12 +8,16 @@ const props = defineProps<{
 
 <template>
   <CardPanel class="containerWrapper" style="height: 100%">
-    <template #title>{{ card.title }}</template>
-    <template #body> 基本信息 </template>
+    <template #title>
+      {{ card.title }}
+    </template>
+    <template #body>
+      <div>基本信息</div>
+    </template>
   </CardPanel>
 </template>
 
 <style lang="scss" scoped>
-.containerWrapper {
-}
+// .containerWrapper {
+// }
 </style>

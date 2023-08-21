@@ -38,9 +38,9 @@ const quickOperations = arrayFilter([
       console.log(2);
     },
     props: {
-      danger: true,
-    },
-  },
+      danger: true
+    }
+  }
 ]);
 
 const instanceOperations = arrayFilter([
@@ -49,15 +49,15 @@ const instanceOperations = arrayFilter([
     icon: PlaySquareOutlined,
     click: () => {
       console.log(3);
-    },
+    }
   },
   {
     title: t("更新"),
     icon: PlaySquareOutlined,
     click: () => {
       console.log(4);
-    },
-  },
+    }
+  }
 ]);
 </script>
 
@@ -65,22 +65,13 @@ const instanceOperations = arrayFilter([
   <CardPanel class="containerWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #operator>
-      <a-button
-        class="mr-8"
-        v-for="item in quickOperations"
-        :key="item.title"
-        v-bind="item.props"
-      >
+      <a-button v-for="item in quickOperations" :key="item.title" class="mr-8" v-bind="item.props">
         {{ item.title }}
       </a-button>
       <a-dropdown>
         <template #overlay>
           <a-menu>
-            <a-menu-item
-              v-for="item in instanceOperations"
-              :key="item.title"
-              @click="item.click"
-            >
+            <a-menu-item v-for="item in instanceOperations" :key="item.title" @click="item.click">
               <component :is="item.icon"></component>
               <span>&nbsp;{{ item.title }}</span>
             </a-menu-item>
@@ -101,7 +92,4 @@ const instanceOperations = arrayFilter([
   </CardPanel>
 </template>
 
-<style lang="scss" scoped>
-.containerWrapper {
-}
-</style>
+<style lang="scss" scoped></style>

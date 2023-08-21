@@ -2,8 +2,7 @@ import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { findParentWithClass } from "@/tools/dom";
 
 export function useCardDragMove() {
-  const { deleteLayoutItem, insertLayoutItem, getIndexById } =
-    useLayoutConfigStore();
+  const { deleteLayoutItem, insertLayoutItem, getIndexById } = useLayoutConfigStore();
 
   const addDragClass = (
     dom: HTMLElement,
@@ -24,11 +23,7 @@ export function useCardDragMove() {
     if (div) div.classList.remove(actionClassName);
   };
 
-  const moveCardItem = (
-    sourceId: string,
-    targetId: string,
-    newArea = false
-  ) => {
+  const moveCardItem = (sourceId: string, targetId: string, newArea = false) => {
     if (sourceId === targetId) return;
     if (sourceId) {
       const checkIndex = getIndexById("", sourceId);
@@ -47,24 +42,17 @@ export function useCardDragMove() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dragover = (e: DragEvent, id: string) => {
     e.preventDefault();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dragenter = (e: DragEvent, id: string) => {
     addDragClass(e.currentTarget as HTMLElement);
     e.preventDefault();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dragleave = (e: DragEvent, id: string) => {
-    if (
-      !(e.currentTarget as HTMLElement)?.contains(
-        e.relatedTarget as HTMLLIElement
-      )
-    ) {
+    if (!(e.currentTarget as HTMLElement)?.contains(e.relatedTarget as HTMLLIElement)) {
       removeDragClass(e.target as HTMLElement);
     }
     e.preventDefault();
@@ -77,9 +65,7 @@ export function useCardDragMove() {
   const drop = (e: DragEvent, myId: string) => {
     e.preventDefault();
     removeDragClass(e.target as HTMLElement);
-    const sourceConfig = JSON.parse(
-      e?.dataTransfer?.getData("text/plain") || "{}"
-    );
+    const sourceConfig = JSON.parse(e?.dataTransfer?.getData("text/plain") || "{}");
     const sourceId = sourceConfig?.id;
     moveCardItem(sourceId, myId);
   };
@@ -91,9 +77,7 @@ export function useCardDragMove() {
       "global-placeholder-card",
       "global-placeholder-card-dragover"
     );
-    const sourceConfig = JSON.parse(
-      e?.dataTransfer?.getData("text/plain") || "{}"
-    );
+    const sourceConfig = JSON.parse(e?.dataTransfer?.getData("text/plain") || "{}");
     const sourceId = sourceConfig?.id;
     console.log("拖动到新区域", e, sourceId, "--->", followId);
     moveCardItem(sourceId, followId, true);
@@ -109,11 +93,7 @@ export function useCardDragMove() {
   };
 
   const newAreaDragleave = (e: DragEvent) => {
-    if (
-      !(e.currentTarget as HTMLElement)?.contains(
-        e.relatedTarget as HTMLLIElement
-      )
-    ) {
+    if (!(e.currentTarget as HTMLElement)?.contains(e.relatedTarget as HTMLLIElement)) {
       removeDragClass(
         e.target as HTMLElement,
         "global-placeholder-card",
@@ -131,6 +111,6 @@ export function useCardDragMove() {
     dragenter,
     dropToNewArea,
     newAreaDragenter,
-    newAreaDragleave,
+    newAreaDragleave
   };
 }

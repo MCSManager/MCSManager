@@ -44,20 +44,20 @@ onMounted(() => {
       <template #title>
         {{ card.title }}
         <a-button
+          v-if="urlSrc !== '' && containerState.isDesignMode"
           class="ml-10"
           type="primary"
           size="small"
-          v-if="urlSrc !== '' && containerState.isDesignMode"
           @click="editImgSrc()"
         >
-          {{ t("编辑URL") }}</a-button
-        >
+          {{ t("编辑URL") }}
+        </a-button>
       </template>
 
       <template #body>
         <a-skeleton
-          active
           v-show="myIframeLoading"
+          active
           :paragraph="{ rows: Number(card.height[0]) * 2 }"
         />
         <iframe
@@ -77,9 +77,7 @@ onMounted(() => {
           <template #description>
             <span>{{ t("暂无网页") }}</span>
           </template>
-          <a-button type="primary" @click="editImgSrc()">{{
-            t("添加一个")
-          }}</a-button>
+          <a-button type="primary" @click="editImgSrc()">{{ t("添加一个") }}</a-button>
         </a-empty>
       </template>
     </CardPanel>

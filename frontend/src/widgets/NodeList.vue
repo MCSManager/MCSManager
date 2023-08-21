@@ -11,12 +11,10 @@ const props = defineProps<{
 }>();
 
 const operationForm = ref({
-  name: "",
+  name: ""
 });
 
-const arr = [
-  1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-];
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 </script>
 
 <template>
@@ -35,10 +33,7 @@ const arr = [
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.name"
-                :placeholder="t('根据节点名字搜索')"
-              >
+              <a-input v-model:value="operationForm.name" :placeholder="t('根据节点名字搜索')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -51,29 +46,24 @@ const arr = [
       <a-col :span="24">
         <a-typography-text type="secondary">
           {{
-            t(
-              "远程节点上的应用程序的控制台，文件上传，文件下载都需要网页能够直接连接远程节点。"
-            )
+            t("远程节点上的应用程序的控制台，文件上传，文件下载都需要网页能够直接连接远程节点。")
           }}
           <br />
           {{
-            t(
-              "因此必须避免使用除 localhost 外的局域网段任何 IP，必须使用外网 IP 或域名进行连接。"
-            )
+            t("因此必须避免使用除 localhost 外的局域网段任何 IP，必须使用外网 IP 或域名进行连接。")
           }}
         </a-typography-text>
       </a-col>
 
-      <a-col :span="24" :lg="12" v-for="item in arr" :key="item">
+      <a-col v-for="item in arr" :key="item" :span="24" :lg="12">
         <CardPanel style="height: 100%">
           <template #title>我的程序</template>
           <template #body>
             卡片示例 <br />
             测试信息
             <p>
-              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan
-              oiqwoie rhiwoh oiwa doiaw oid owiaydhoia ocaoshd oiadh oiadhioas
-              doiashd oa o123123
+              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan oiqwoie rhiwoh oiwa
+              doiaw oid owiaydhoia ocaoshd oiadh oiadhioas doiashd oa o123123
             </p>
           </template>
         </CardPanel>

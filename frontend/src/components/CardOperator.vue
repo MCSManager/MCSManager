@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { useCardOperation } from "@/hooks/useCardOperation";
 import type { LayoutCard } from "@/types";
-import {
-  CloseOutlined,
-  EditOutlined,
-  VerticalAlignTopOutlined,
-} from "@ant-design/icons-vue";
+import { CloseOutlined, EditOutlined, VerticalAlignTopOutlined } from "@ant-design/icons-vue";
 import { h } from "vue";
 import { $t as t } from "@/lang/i18n";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
@@ -17,14 +13,8 @@ const props = defineProps<{
 
 const { openInputDialog } = useAppToolsStore();
 
-const {
-  addCardHeight,
-  reduceCardHeight,
-  addCardWidth,
-  reduceCardWidth,
-  deleteCard,
-  editCardName,
-} = useCardOperation();
+const { addCardHeight, reduceCardHeight, addCardWidth, reduceCardWidth, deleteCard, editCardName } =
+  useCardOperation();
 
 let btns = arrayFilter([
   {
@@ -33,31 +23,31 @@ let btns = arrayFilter([
     click: deleteCard,
     condition: () => {
       return props.card.disableDelete !== true;
-    },
+    }
   },
   {
     tipText: t("TXT_CODE_fd5ca298"),
     icon: VerticalAlignTopOutlined,
     click: reduceCardHeight,
-    style: "transform: rotate(0deg);",
+    style: "transform: rotate(0deg);"
   },
   {
     tipText: t("TXT_CODE_5db4e96b"),
     icon: VerticalAlignTopOutlined,
     click: addCardHeight,
-    style: "transform: rotate(180deg);",
+    style: "transform: rotate(180deg);"
   },
   {
     tipText: t("TXT_CODE_d356cf9d"),
     icon: VerticalAlignTopOutlined,
     click: reduceCardWidth,
-    style: "transform: rotate(270deg);",
+    style: "transform: rotate(270deg);"
   },
   {
     tipText: t("TXT_CODE_baa16e45"),
     icon: VerticalAlignTopOutlined,
     click: addCardWidth,
-    style: "transform: rotate(90deg);",
+    style: "transform: rotate(90deg);"
   },
   {
     tipText: t("TXT_CODE_18cdc17f"),
@@ -65,14 +55,14 @@ let btns = arrayFilter([
     click: async (id: string) => {
       const newName = await openInputDialog(t("请输入新的卡片标题"));
       editCardName(id, String(newName));
-    },
-  },
+    }
+  }
 ]);
 </script>
 
 <template>
   <div class="layout-card-design-btn">
-    <a-tooltip placement="left" v-for="(item, index) in btns" :key="index">
+    <a-tooltip v-for="(item, index) in btns" :key="index" placement="left">
       <template #title>
         <span>{{ item.tipText }}</span>
       </template>

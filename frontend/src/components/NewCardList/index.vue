@@ -42,24 +42,24 @@ const insertCardToLayout = async (card: LayoutCard) => {
 const cardCategoryList = [
   {
     label: t("通用卡片"),
-    value: NEW_CARD_TYPE.COMMON,
+    value: NEW_CARD_TYPE.COMMON
   },
   {
     label: t("应用程序相关"),
-    value: NEW_CARD_TYPE.INSTANCE,
+    value: NEW_CARD_TYPE.INSTANCE
   },
   {
     label: t("用户相关"),
-    value: NEW_CARD_TYPE.USER,
+    value: NEW_CARD_TYPE.USER
   },
   {
     label: t("节点相关"),
-    value: NEW_CARD_TYPE.NODE,
+    value: NEW_CARD_TYPE.NODE
   },
   {
     label: t("其他"),
-    value: NEW_CARD_TYPE.OTHER,
-  },
+    value: NEW_CARD_TYPE.OTHER
+  }
 ];
 
 const currentCardCategory = ref<NEW_CARD_TYPE>(NEW_CARD_TYPE.COMMON);
@@ -76,25 +76,20 @@ const handleTabClick = (value: string) => {
   <Transition name="global-action-float">
     <div v-if="display" class="new-card-list-tabs">
       <a-tabs
-        :tabBarGutter="0"
-        size="small"
         v-model:activeKey="currentCardCategory"
+        :tab-bar-gutter="0"
+        size="small"
         tab-position="right"
         animated
         @change="handleTabClick"
       >
-        <a-tab-pane
-          v-for="item in cardCategoryList"
-          :key="item.value"
-          :tab="item.label"
-        ></a-tab-pane>
+        <a-tab-pane v-for="item in cardCategoryList" :key="item.value" :tab="item.label" />
 
         <a-tab-pane
           key="EXIT"
           :tab="t('关闭')"
           @click="() => (containerState.showNewCardDialog = false)"
-        >
-        </a-tab-pane>
+        />
       </a-tabs>
     </div>
   </Transition>
@@ -102,10 +97,7 @@ const handleTabClick = (value: string) => {
     <div v-if="display" class="new-card-list-container">
       <div class="new-card-list">
         <div v-for="card in cardPool" :key="card.id + currentCardCategory">
-          <a-row
-            style="margin-bottom: 20px"
-            v-if="card.category === currentCardCategory"
-          >
+          <a-row v-if="card.category === currentCardCategory" style="margin-bottom: 20px">
             <a-col span="24">
               <a-typography>
                 <a-typography-title :level="4">
@@ -121,14 +113,13 @@ const handleTabClick = (value: string) => {
             <a-col span="24" :md="24" :lg="card.width * 2">
               <div class="card-container-wrapper">
                 <LayoutCardComponent
-                  class="card-list-container"
                   :id="'card-card-container-' + card.id"
+                  class="card-list-container"
                   :data-id="card.id"
                   :card="card"
                   :style="{ height: card.height }"
                   @click="() => insertCardToLayout(card)"
-                >
-                </LayoutCardComponent>
+                />
               </div>
             </a-col>
           </a-row>
@@ -137,7 +128,7 @@ const handleTabClick = (value: string) => {
     </div>
   </Transition>
 
-  <Params ref="paramsDialog"></Params>
+  <Params ref="paramsDialog" />
 </template>
 
 <style lang="scss" scoped>

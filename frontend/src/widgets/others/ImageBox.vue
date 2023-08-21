@@ -26,25 +26,21 @@ const editImgSrc = async () => {
 
 <template>
   <div style="width: 100%; position: relative">
-    <div class="mask" v-if="imgSrc !== '' && containerState.isDesignMode">
-      <a-button type="primary" @click="editImgSrc()">{{
-        t("编辑图片")
-      }}</a-button>
+    <div v-if="imgSrc !== '' && containerState.isDesignMode" class="mask">
+      <a-button type="primary" @click="editImgSrc()">
+        {{ t("编辑图片") }}
+      </a-button>
     </div>
-    <img
-      class="global-card-container-shadow"
-      v-if="imgSrc !== ''"
-      :src="imgSrc"
-    />
+    <img v-if="imgSrc !== ''" class="global-card-container-shadow" :src="imgSrc" />
     <CardPanel v-else style="height: 100%">
       <template #body>
         <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE">
           <template #description>
             <span>{{ t("暂无图片") }}</span>
           </template>
-          <a-button type="primary" @click="editImgSrc()">{{
-            t("添加一张")
-          }}</a-button>
+          <a-button type="primary" @click="editImgSrc()">
+            {{ t("添加一张") }}
+          </a-button>
         </a-empty>
       </template>
     </CardPanel>

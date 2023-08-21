@@ -9,7 +9,7 @@ import {
   DropboxSquareFilled,
   GoldFilled,
   SwitcherFilled,
-  UserOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
 
 const props = defineProps<{
@@ -24,10 +24,10 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "minecraft",
-        },
+          type: "minecraft"
+        }
       });
-    },
+    }
   },
   {
     icon: SwitcherFilled,
@@ -36,10 +36,10 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "steam",
-        },
+          type: "steam"
+        }
       });
-    },
+    }
   },
   {
     icon: DropboxSquareFilled,
@@ -48,11 +48,11 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "console",
-        },
+          type: "console"
+        }
       });
-    },
-  },
+    }
+  }
 ];
 </script>
 
@@ -64,7 +64,8 @@ const actions = [
         <action-button
           v-for="(action, key) in actions"
           :key="action.title"
-          :action="actions[key]"
+          :title="action.title"
+          :action="actions[key].click"
         />
       </a-row>
     </template>

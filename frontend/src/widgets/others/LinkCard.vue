@@ -27,9 +27,9 @@ const cardData: Ref<LinkCardType[]> = ref(
   getMetaValue("linkCardData", [
     {
       title: t("示例链接"),
-      link: "https://example.com/",
-    },
-  ]),
+      link: "https://example.com/"
+    }
+  ])
 );
 
 const addLink = ref({
@@ -46,13 +46,13 @@ const addLink = ref({
       return message.error(t("请正确填写表单"));
     cardData.value.push({
       title: addLink.value.title,
-      link: addLink.value.link,
+      link: addLink.value.link
     });
     setMetaValue("linkCardData", cardData.value);
     message.success(t("添加成功"));
     addLink.value.close();
     addLink.value.show = false;
-  },
+  }
 });
 
 const openLink = (url: string) => {
@@ -79,14 +79,14 @@ const deleteLink = (index: number) => {
 
     <template #body>
       <a-row :gutter="[0, 16]">
-        <div class="h-100 w-100 button" v-for="(item, index) in cardData" :key="item.title">
+        <div v-for="(item, index) in cardData" :key="item.title" class="h-100 w-100 button">
           <a-popconfirm
             :title="t('你确定要删除这个超链接吗?')"
             :ok-text="t('确定')"
             :cancel-text="t('取消')"
             @confirm="deleteLink(index)"
           >
-            <div class="delete-button" v-if="containerState.isDesignMode"><DeleteOutlined /></div>
+            <div v-if="containerState.isDesignMode" class="delete-button"><DeleteOutlined /></div>
           </a-popconfirm>
           <action-button :title="item.title" :click="() => openLink(item.link)" />
         </div>

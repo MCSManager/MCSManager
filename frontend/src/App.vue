@@ -25,7 +25,7 @@ if (getCurrentLanguage() === "zh_CN") {
 
 const isDarkUI = isDarkTheme();
 const appTheme = {
-  algorithm: theme.defaultAlgorithm,
+  algorithm: theme.defaultAlgorithm
 };
 
 if (isDarkUI) {

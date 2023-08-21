@@ -5,10 +5,7 @@ import LayoutCardComponent from "@/components//LayoutCard.vue";
 import PlaceHolderCard from "@/components//PlaceHolderCard.vue";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useCardDragMove } from "@/hooks/useCardDragMove";
-import {
-  useCardLayoutComputed,
-  PLACE_HOLDER_CARD,
-} from "@/hooks/useCardLayoutComputed";
+import { useCardLayoutComputed, PLACE_HOLDER_CARD } from "@/hooks/useCardLayoutComputed";
 import { useRouterParams } from "../hooks/useRouterParams";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 
@@ -26,15 +23,14 @@ const {
   dropToNewArea,
   dragenter,
   newAreaDragenter,
-  newAreaDragleave,
+  newAreaDragleave
 } = useCardDragMove();
 </script>
 
 <template>
   <main class="main-layout-container">
     <!-- 新增卡片对话框 -->
-    <NewCardList v-if="containerState.isDesignMode" ref="newCardList">
-    </NewCardList>
+    <NewCardList v-if="containerState.isDesignMode" ref="newCardList" />
 
     <!-- 调试代码 -->
     <!-- <div>
@@ -44,8 +40,8 @@ const {
     </div> -->
 
     <a-row
-      :class="{ 'row-order-mode': containerState.isDesignMode }"
       v-if="currentLayoutConfig.length > 1"
+      :class="{ 'row-order-mode': containerState.isDesignMode }"
       :gutter="[24, 24]"
     >
       <a-col
@@ -62,7 +58,7 @@ const {
         <CardOperator
           v-if="card.type != PLACE_HOLDER_CARD && containerState.isDesignMode"
           :card="card"
-        ></CardOperator>
+        />
         <LayoutCardComponent
           v-if="card.type != PLACE_HOLDER_CARD"
           :card="card"
@@ -74,8 +70,7 @@ const {
           @dragleave="(e: DragEvent) => dragleave(e, card.id)"
           @dragenter="(e: DragEvent) => dragenter(e, card.id)"
           @drop="(e: DragEvent) => drop(e, card.id)"
-        >
-        </LayoutCardComponent>
+        />
 
         <PlaceHolderCard
           v-else-if="card.type == PLACE_HOLDER_CARD"
@@ -89,14 +84,13 @@ const {
           @dragleave="(e: DragEvent) => newAreaDragleave(e)"
           @dragenter="(e: DragEvent) => newAreaDragenter(e)"
           @drop="(e: DragEvent) => dropToNewArea(e, String(card.followId))"
-        >
-        </PlaceHolderCard>
+        />
       </a-col>
     </a-row>
 
     <div
-      class="main-flex-center"
       v-if="currentLayoutConfig.length <= 1 && currentLayoutConfig.length != 0"
+      class="main-flex-center"
     >
       <a-row :gutter="[0, 0]" align="center" style="width: 100%">
         <a-col
@@ -105,16 +99,12 @@ const {
           :lg="currentLayoutConfig[0].width * 2"
           class="layout-card-col transition-all-6"
         >
-          <CardOperator
-            v-if="containerState.isDesignMode"
-            :card="currentLayoutConfig[0]"
-          ></CardOperator>
+          <CardOperator v-if="containerState.isDesignMode" :card="currentLayoutConfig[0]" />
           <LayoutCardComponent
             :card="currentLayoutConfig[0]"
             :data-id="currentLayoutConfig[0].id"
             :style="{ height: currentLayoutConfig[0].height }"
-          >
-          </LayoutCardComponent>
+          />
         </a-col>
       </a-row>
     </div>

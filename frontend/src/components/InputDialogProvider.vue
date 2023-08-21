@@ -1,18 +1,15 @@
 <template>
   <div>
     <a-modal
-      centered
       v-model:open="state.inputDialog.show"
+      centered
       :title="state.inputDialog.title"
+      :width="400"
       @ok="handleOk"
       @cancel="handleCancel"
-      :width="400"
     >
       <div class="dialog-input-container">
-        <a-input
-          v-model:value="inputValue"
-          :placeholder="state.inputDialog.title"
-        />
+        <a-input v-model:value="inputValue" :placeholder="state.inputDialog.title" />
       </div>
     </a-modal>
   </div>

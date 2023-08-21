@@ -10,7 +10,7 @@ import { markdownToHTML } from "../../tools/safe";
 
 enum EDIT_MODE {
   PREVIEW = "PREVIEW",
-  EDIT = "EDIT",
+  EDIT = "EDIT"
 }
 
 const props = defineProps<{
@@ -41,34 +41,26 @@ const editTextContent = () => {
         {{ card.title }}
         <div v-if="containerState.isDesignMode" class="ml-10">
           <a-button
+            v-if="status !== EDIT_MODE.PREVIEW"
             type="primary"
             size="small"
-            v-if="status !== EDIT_MODE.PREVIEW"
             @click="previewsTextContent()"
           >
             {{ t("预览") }}
           </a-button>
-          <a-button
-            type="primary"
-            size="small"
-            v-else
-            @click="editTextContent()"
-          >
+          <a-button v-else type="primary" size="small" @click="editTextContent()">
             {{ t("编辑") }}
           </a-button>
         </div>
       </div>
     </template>
 
-    <template
-      #body
-      v-if="containerState.isDesignMode && status == EDIT_MODE.EDIT"
-    >
+    <template v-if="containerState.isDesignMode && status == EDIT_MODE.EDIT" #body>
       <div class="edit h-100">
         <a-textarea
+          v-model:value="textContent"
           class="h-100"
           style="resize: none"
-          v-model:value="textContent"
           :placeholder="
             t(
               `输入文本内容，支持 Markdown 语法，可换行。\n不要轻易使用其他人的文案，否则将有可能注入恶意代码对你进行攻击。`
@@ -78,11 +70,9 @@ const editTextContent = () => {
       </div>
     </template>
 
-    <template #body v-else>
-      <div
-        class="previews global-markdown-html h-100"
-        v-html="markdownToHTML(textContent)"
-      ></div>
+    <template v-else #body>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="previews global-markdown-html h-100" v-html="markdownToHTML(textContent)"></div>
     </template>
   </CardPanel>
 </template>

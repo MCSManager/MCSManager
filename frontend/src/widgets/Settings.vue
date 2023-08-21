@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 
 const formData = ref({
-  language: "en_US",
+  language: "en_US"
 });
 
 // const { getUserInfo } = userService();
@@ -21,23 +21,23 @@ const { execute, isLoading, state, isReady } = userInfoApi();
 onMounted(async () => {
   const info = await execute({
     params: {
-      uid: "",
+      uid: ""
     },
     data: {
-      newName: "newName",
+      newName: "newName"
     },
-    method: "GET",
+    method: "GET"
   });
 });
 
 const click = async () => {
   const d = await execute({
     params: {
-      uid: "",
+      uid: ""
     },
     data: {
-      newName: "newName",
-    },
+      newName: "newName"
+    }
   });
   d.value!.id = 9999;
   console.log("XZXZX:", d.value);
@@ -61,9 +61,4 @@ const click = async () => {
   </CardPanel>
 </template>
 
-<style lang="scss" scoped>
-.CardWrapper {
-  .tab {
-  }
-}
-</style>
+<style lang="scss" scoped></style>

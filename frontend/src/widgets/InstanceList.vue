@@ -12,20 +12,18 @@ const props = defineProps<{
 }>();
 
 const operationForm = ref({
-  name: "",
+  name: ""
 });
 
-const arr = [
-  1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-];
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 const toAppDetailPage = (daemonId: string, instanceId: string) => {
   router.push({
     path: `/instances/terminal`,
     query: {
       daemonId,
-      instanceId,
-    },
+      instanceId
+    }
   });
 };
 </script>
@@ -45,10 +43,7 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.name"
-                :placeholder="t('根据应用名字搜索')"
-              >
+              <a-input v-model:value="operationForm.name" :placeholder="t('根据应用名字搜索')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -57,19 +52,15 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
           </template>
         </BetweenMenus>
       </a-col>
-      <a-col :span="24" :md="6" v-for="item in arr" :key="item">
-        <CardPanel
-          style="height: 100%"
-          @click="toAppDetailPage('11111', '2222')"
-        >
+      <a-col v-for="item in arr" :key="item" :span="24" :md="6">
+        <CardPanel style="height: 100%" @click="toAppDetailPage('11111', '2222')">
           <template #title>我的程序</template>
           <template #body>
             卡片示例 <br />
             测试信息
             <p>
-              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan
-              oiqwoie rhiwoh oiwa doiaw oid owiaydhoia ocaoshd oiadh oiadhioas
-              doiashd oa o123123
+              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan oiqwoie rhiwoh oiwa
+              doiaw oid owiaydhoia ocaoshd oiadh oiadhioas doiashd oa o123123
             </p>
           </template>
         </CardPanel>

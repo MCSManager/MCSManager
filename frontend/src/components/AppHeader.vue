@@ -15,7 +15,7 @@ import {
   MenuUnfoldOutlined,
   FormatPainterOutlined,
   FormatPainterFilled,
-  TranslationOutlined,
+  TranslationOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
@@ -34,7 +34,7 @@ const openNewCardDialog = () => {
 const handleToPage = (url: string) => {
   containerState.showPhoneMenu = false;
   toPage({
-    path: url,
+    path: url
   });
 };
 
@@ -47,7 +47,7 @@ const menus = router
     return {
       name: r.name,
       path: r.path,
-      meta: r.meta,
+      meta: r.meta
     };
   });
 
@@ -57,8 +57,8 @@ router.beforeEach((to, from) => {
     router.push({
       path: "/404",
       query: {
-        redirect: to.fullPath,
-      },
+        redirect: to.fullPath
+      }
     });
     return false;
   }
@@ -70,8 +70,8 @@ const breadcrumbs = computed(() => {
     {
       title: t("TXT_CODE_f5b9d58f"),
       disabled: false,
-      href: "/",
-    },
+      href: "/"
+    }
   ];
 
   const queryUrl = getRouteParamsUrl();
@@ -83,7 +83,7 @@ const breadcrumbs = computed(() => {
       arr.push({
         title: v.name,
         disabled: false,
-        href: `/#${v.path}${params}`,
+        href: `/#${v.path}${params}`
       });
     });
   }
@@ -91,7 +91,7 @@ const breadcrumbs = computed(() => {
   arr.push({
     title: String(route.name),
     disabled: true,
-    href: `/#${route.fullPath}`,
+    href: `/#${route.fullPath}`
   });
 
   return arr;
@@ -104,7 +104,7 @@ const appMenus = computed(() => {
       icon: AppstoreAddOutlined,
       click: openNewCardDialog,
       conditions: containerState.isDesignMode,
-      onlyPC: true,
+      onlyPC: true
     },
     {
       title: t("TXT_CODE_8145d82"),
@@ -114,11 +114,11 @@ const appMenus = computed(() => {
         notification.success({
           placement: "top",
           message: t("布局已保存"),
-          description: t("所有用户都将在刷新网页显示您的新更改。"),
+          description: t("所有用户都将在刷新网页显示您的新更改。")
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true,
+      onlyPC: true
     },
 
     {
@@ -132,13 +132,13 @@ const appMenus = computed(() => {
       menus: [
         {
           title: $t("浅色模式"),
-          value: THEME.LIGHT,
+          value: THEME.LIGHT
         },
         {
           title: $t("深色模式"),
-          value: THEME.DARK,
-        },
-      ],
+          value: THEME.DARK
+        }
+      ]
     },
     {
       title: t("语言（Language）"),
@@ -151,13 +151,13 @@ const appMenus = computed(() => {
       menus: [
         {
           title: "English",
-          value: "en_US",
+          value: "en_US"
         },
         {
           title: "简体中文",
-          value: "zh_CN",
-        },
-      ],
+          value: "zh_CN"
+        }
+      ]
     },
     {
       title: t("TXT_CODE_ebd2a6a1"),
@@ -170,11 +170,11 @@ const appMenus = computed(() => {
           message: t("界面设计模式"),
           description: t(
             "您可以自由设计出所想要的一切。过多的元素在同一个页面可能会导致性能下降，请合理分配。"
-          ),
+          )
         });
       },
       conditions: !containerState.isDesignMode,
-      onlyPC: true,
+      onlyPC: true
     },
     {
       title: t("TXT_CODE_8c3164c9"),
@@ -183,7 +183,7 @@ const appMenus = computed(() => {
         toPage({ path: "/user" });
       },
       conditions: !containerState.isDesignMode,
-      onlyPC: false,
+      onlyPC: false
     },
     {
       title: t("TXT_CODE_2c69ab15"),
@@ -193,8 +193,8 @@ const appMenus = computed(() => {
         messageApi.success(t("成功退出"));
       },
       conditions: !containerState.isDesignMode,
-      onlyPC: false,
-    },
+      onlyPC: false
+    }
   ];
 });
 
@@ -208,7 +208,7 @@ const openPhoneMenu = (b = false) => {
 
 <template>
   <header class="app-header-wrapper">
-    <div class="app-header-content" v-if="!isPhone">
+    <div v-if="!isPhone" class="app-header-content">
       <div class="btns">
         <a href="/" style="margin-right: 12px">
           <div class="logo">
@@ -217,9 +217,9 @@ const openPhoneMenu = (b = false) => {
         </a>
 
         <div
-          class="nav-button"
           v-for="item in menus"
           :key="item.path"
+          class="nav-button"
           @click="handleToPage(item.path)"
         >
           <span>{{ item.name }}</span>
@@ -227,19 +227,19 @@ const openPhoneMenu = (b = false) => {
       </div>
       <div class="btns">
         <div v-for="(item, index) in appMenus" :key="index">
-          <a-dropdown placement="bottom" v-if="item.menus && item.conditions">
+          <a-dropdown v-if="item.menus && item.conditions" placement="bottom">
             <div class="nav-button" @click.prevent>
               <component :is="item.icon"></component>
             </div>
             <template #overlay>
               <a-menu @click="(e: any) => item.click(String(e.key))">
-                <a-menu-item v-for="(m, i) in item.menus" :key="m.value">
+                <a-menu-item v-for="m in item.menus" :key="m.value">
                   {{ m.title }}
                 </a-menu-item>
               </a-menu>
             </template>
           </a-dropdown>
-          <a-tooltip placement="bottom" v-else-if="item.conditions">
+          <a-tooltip v-else-if="item.conditions" placement="bottom">
             <template #title>
               <span>{{ item.title }}</span>
             </template>
@@ -254,16 +254,10 @@ const openPhoneMenu = (b = false) => {
   <div v-if="!isPhone" style="height: 60px"></div>
 
   <!-- Menus for phone -->
-  <header class="app-header-content-for-phone" v-if="isPhone">
+  <header v-if="isPhone" class="app-header-content-for-phone">
     <CardPanel class="card-panel">
       <template #body>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          "
-        >
+        <div style="display: flex; justify-content: space-between; align-items: center">
           <div style="width: 100px" class="flex">
             <a-button
               type="text"
@@ -272,19 +266,11 @@ const openPhoneMenu = (b = false) => {
               @click="openPhoneMenu(true)"
             ></a-button>
             <div v-for="(item, index) in appMenus" :key="index">
-              <a-dropdown
-                placement="bottom"
-                v-if="item.menus && item.conditions && !item.onlyPC"
-              >
-                <a-button
-                  type="text"
-                  :icon="h(item.icon)"
-                  size="small"
-                  @click.prevent
-                ></a-button>
+              <a-dropdown v-if="item.menus && item.conditions && !item.onlyPC" placement="bottom">
+                <a-button type="text" :icon="h(item.icon)" size="small" @click.prevent></a-button>
                 <template #overlay>
                   <a-menu @click="(e: any) => item.click(String(e.key))">
-                    <a-menu-item v-for="(m, i) in item.menus" :key="m.value">
+                    <a-menu-item v-for="m in item.menus" :key="m.value">
                       {{ m.title }}
                     </a-menu-item>
                   </a-menu>
@@ -298,11 +284,11 @@ const openPhoneMenu = (b = false) => {
           <div style="width: 100px" class="justify-end">
             <div v-for="(item, index) in appMenus" :key="index">
               <a-button
+                v-if="item.conditions && !item.onlyPC && !item.menus"
                 type="text"
                 :icon="h(item.icon)"
                 size="small"
                 @click="item.click"
-                v-if="item.conditions && !item.onlyPC && !item.menus"
               ></a-button>
             </div>
           </div>
@@ -320,9 +306,9 @@ const openPhoneMenu = (b = false) => {
   >
     <div class="phone-menu">
       <div
-        class="phone-menu-btn"
         v-for="item in menus"
         :key="item.path"
+        class="phone-menu-btn"
         @click="handleToPage(item.path)"
       >
         {{ item.name }}

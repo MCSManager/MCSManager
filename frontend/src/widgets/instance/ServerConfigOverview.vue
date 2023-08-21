@@ -13,7 +13,4 @@ const props = defineProps<{
   </CardPanel>
 </template>
 
-<style lang="scss" scoped>
-.ServerConfigOverview {
-}
-</style>
+<style lang="scss" scoped></style>

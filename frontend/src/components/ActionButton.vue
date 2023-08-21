@@ -1,28 +1,23 @@
 <script setup lang="ts">
-import { t } from "@/lang/i18n";
-
 import { LinkOutlined } from "@ant-design/icons-vue";
 
-const props = defineProps({
-  action: Object as () => {
-    icon?: Object;
-    title: string;
-    click: Function;
-  },
-  icon: Object,
-  title: String,
-  click: Function,
-});
+defineProps<{
+  icon?: any;
+  title: string;
+  click?: (...args: any) => any;
+}>();
 </script>
 
 <template>
   <div class="actions-button w-100">
     <a-col :span="24">
-      <div class="btn w-100 flex" @click="click ? click() : action?.click() || ''">
+      <div class="btn w-100 flex" @click="click">
         <div>
-          <component :is="icon || action?.icon || LinkOutlined"></component>
+          <component :is="icon || LinkOutlined" />
         </div>
-        <div class="ml-8">{{ title || action?.title || t("ActionButton 按钮") }}</div>
+        <div class="ml-8">
+          {{ title }}
+        </div>
       </div>
     </a-col>
   </div>

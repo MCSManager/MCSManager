@@ -51,159 +51,161 @@ const loginSuccess = () => {
 </script>
 
 <template>
-  <!-- Background Image -->
-  <div :class="{ 'login-page-bg': true }">
-    <a-row :gutter="[24, 24]">
-      <a-col :span="6">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 4 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="6">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 4 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="6">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 4 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="6">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 4 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="24">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 9 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="8">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 6 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="16">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 6 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="8">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 6 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-      <a-col :span="16">
-        <CardPanel>
-          <template #body>
-            <a-skeleton :paragraph="{ rows: 6 }" />
-          </template>
-        </CardPanel>
-      </a-col>
-    </a-row>
-  </div>
-
-  <!-- Main Window -->
-  <div
-    :class="{
-      logging: loginStep === 1,
-      loginDone: loginStep === 3
-    }"
-  >
-    <div class="login-page-container">
-      <div style="position: relative">
-        <div style="z-index: 300; position: relative">
-          <CardPanel class="login-panel">
+  <div>
+    <!-- Background Image -->
+    <div :class="{ 'login-page-bg': true }">
+      <a-row :gutter="[24, 24]">
+        <a-col :span="6">
+          <CardPanel>
             <template #body>
-              <div class="login-panel-body" v-show="loginStep === 0">
-                <a-typography-title :level="3" class="mb-20">
-                  {{ t("用户验证") }}
-                </a-typography-title>
-                <a-typography-paragraph class="mb-20">
-                  {{ t("使用服务器的 MCSManager 账号进入面板") }}
-                </a-typography-paragraph>
-                <div>
-                  <a-input v-model:value="formData.username" :placeholder="t('账号')" size="large">
-                    <template #suffix>
-                      <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                    </template>
-                  </a-input>
-
-                  <a-input
-                    class="mt-20"
-                    v-model:value="formData.username"
-                    :placeholder="t('密码')"
-                    size="large"
-                  >
-                    <template #suffix>
-                      <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                    </template>
-                  </a-input>
-
-                  <div class="mt-24 flex-between align-center">
-                    <div class="mcsmanager-link">
-                      Powered by
-                      <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
-                        MCSManager
-                      </a>
-                    </div>
-                    <a-button
-                      size="large"
-                      type="primary"
-                      style="min-width: 100px"
-                      @click="handleLogin"
-                    >
-                      {{ t("验证") }}
-                    </a-button>
-                  </div>
-                </div>
-              </div>
-              <div class="login-panel-body flex-center" v-show="loginStep === 1">
-                <div style="text-align: center">
-                  <LoadingOutlined :style="{ fontSize: '50px' }" />
-                </div>
-              </div>
-              <div class="login-panel-body flex-center" v-show="loginStep >= 2">
-                <div style="text-align: center">
-                  <CheckCircleOutlined
-                    :style="{
-                      fontSize: '40px',
-                      color: 'var(--color-green-6)'
-                    }"
-                  />
-                </div>
-              </div>
+              <a-skeleton :paragraph="{ rows: 4 }" />
             </template>
           </CardPanel>
-        </div>
+        </a-col>
+        <a-col :span="6">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 4 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="6">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 4 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="6">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 4 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="24">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 9 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="8">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 6 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="16">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 6 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="8">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 6 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+        <a-col :span="16">
+          <CardPanel>
+            <template #body>
+              <a-skeleton :paragraph="{ rows: 6 }" />
+            </template>
+          </CardPanel>
+        </a-col>
+      </a-row>
+    </div>
 
-        <!-- Login bg square -->
-        <div
-          :class="{
-            'right-square': true,
-            'right-square-logging': loginStep === 1
-          }"
-        >
-          <div class="square1"></div>
-          <div class="square2"></div>
-          <div class="square3"></div>
+    <!-- Main Window -->
+    <div
+      :class="{
+        logging: loginStep === 1,
+        loginDone: loginStep === 3
+      }"
+    >
+      <div class="login-page-container">
+        <div style="position: relative">
+          <div style="z-index: 300; position: relative">
+            <CardPanel class="login-panel">
+              <template #body>
+                <div v-show="loginStep === 0" class="login-panel-body">
+                  <a-typography-title :level="3" class="mb-20">
+                    {{ t("用户验证") }}
+                  </a-typography-title>
+                  <a-typography-paragraph class="mb-20">
+                    {{ t("使用服务器的 MCSManager 账号进入面板") }}
+                  </a-typography-paragraph>
+                  <div>
+                    <a-input v-model="formData.username" :placeholder="t('账号')" size="large">
+                      <template #suffix>
+                        <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                      </template>
+                    </a-input>
+
+                    <a-input
+                      v-model="formData.password"
+                      class="mt-20"
+                      :placeholder="t('密码')"
+                      size="large"
+                    >
+                      <template #suffix>
+                        <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                      </template>
+                    </a-input>
+
+                    <div class="mt-24 flex-between align-center">
+                      <div class="mcsmanager-link">
+                        Powered by
+                        <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
+                          MCSManager
+                        </a>
+                      </div>
+                      <a-button
+                        size="large"
+                        type="primary"
+                        style="min-width: 100px"
+                        @click="handleLogin"
+                      >
+                        {{ t("验证") }}
+                      </a-button>
+                    </div>
+                  </div>
+                </div>
+                <div v-show="loginStep === 1" class="login-panel-body flex-center">
+                  <div style="text-align: center">
+                    <LoadingOutlined :style="{ fontSize: '50px' }" />
+                  </div>
+                </div>
+                <div v-show="loginStep >= 2" class="login-panel-body flex-center">
+                  <div style="text-align: center">
+                    <CheckCircleOutlined
+                      :style="{
+                        fontSize: '40px',
+                        color: 'var(--color-green-6)'
+                      }"
+                    />
+                  </div>
+                </div>
+              </template>
+            </CardPanel>
+          </div>
+
+          <!-- Login bg square -->
+          <div
+            :class="{
+              'right-square': true,
+              'right-square-logging': loginStep === 1
+            }"
+          >
+            <div class="square1"></div>
+            <div class="square2"></div>
+            <div class="square3"></div>
+          </div>
         </div>
       </div>
     </div>

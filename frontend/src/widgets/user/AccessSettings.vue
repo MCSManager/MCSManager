@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { t } from "@/lang/i18n";
-import {
-  DownOutlined,
-  SearchOutlined,
-  UserOutlined,
-} from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
@@ -38,8 +33,8 @@ const dataSource: InstanceBaseInfo[] = [
     daemon: "守护进程1",
     limitTime: "限制时间1",
     status: 1,
-    uuid: "1",
-  },
+    uuid: "1"
+  }
 ];
 
 const columns = computed(() => {
@@ -49,14 +44,14 @@ const columns = computed(() => {
       title: "所属节点",
       dataIndex: "daemon",
       key: "daemon",
-      minWidth: "200px",
+      minWidth: "200px"
     },
     {
       align: "center",
       title: "实例名称",
       dataIndex: "name",
       key: "name",
-      minWidth: "200px",
+      minWidth: "200px"
     },
     {
       align: "center",
@@ -64,7 +59,7 @@ const columns = computed(() => {
       dataIndex: "limitTime",
       key: "limitTime",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -72,14 +67,14 @@ const columns = computed(() => {
       dataIndex: "status",
       key: "status",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value,
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
       title: "操作",
       key: "action",
-      minWidth: "200px",
-    },
+      minWidth: "200px"
+    }
   ]);
 });
 </script>
@@ -103,8 +98,8 @@ const columns = computed(() => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-table size="middle" :dataSource="dataSource" :columns="columns">
-              <template #bodyCell="{ column, record }">
+            <a-table size="middle" :data-source="dataSource" :columns="columns">
+              <template #bodyCell="{ column }">
                 <template v-if="column.key === 'action'">
                   <a-button danger>
                     {{ t("删除") }}

@@ -10,44 +10,44 @@ const props = defineProps<{
 const overviewList = [
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666oasihdiah23oi1u28921938y1298312983h2189h",
+    value: "6666oasihdiah23oi1u28921938y1298312983h2189h"
   },
   {
     title: t("计算机型号"),
-    value: "6666oasihdiah23oi1u28921938y1298312983h2189h",
+    value: "6666oasihdiah23oi1u28921938y1298312983h2189h"
   },
   {
     title: t("计算机型号"),
-    value: "6666oasihdiah23oi1u28921938y1298312983h2189h",
+    value: "6666oasihdiah23oi1u28921938y1298312983h2189h"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
+    value: "6666"
   },
   {
     title: t("计算机型号"),
-    value: "6666",
-  },
+    value: "6666"
+  }
 ];
 </script>
 
@@ -57,15 +57,8 @@ const overviewList = [
       <template #title>{{ card.title }}</template>
       <template #body>
         <a-row :gutter="[24, 24]">
-          <a-col
-            :span="12"
-            :md="12"
-            :lg="6"
-            v-for="item in overviewList"
-            :key="item.value"
-          >
-            <DataStatistic :title="item.title" :value="item.value">
-            </DataStatistic>
+          <a-col v-for="item in overviewList" :key="item.value" :span="12" :md="12" :lg="6">
+            <DataStatistic :title="item.title" :value="item.value"> </DataStatistic>
           </a-col>
         </a-row>
       </template>
