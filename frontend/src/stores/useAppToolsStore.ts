@@ -1,16 +1,12 @@
-import { LANGUAGE_KEY, setLanguage } from "@/lang/i18n";
 import { createGlobalState } from "@vueuse/core";
-import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 
 export enum THEME {
   LIGHT = "light",
-  DARK = "dark",
+  DARK = "dark"
 }
 
 export const THEME_KEY = "THEME_KEY";
-
-const defaultTheme = localStorage.getItem(THEME_KEY) || THEME.LIGHT;
 
 export const useAppToolsStore = createGlobalState(() => {
   const state = reactive({
@@ -18,8 +14,8 @@ export const useAppToolsStore = createGlobalState(() => {
       title: "",
       show: false,
       resolve: (value: unknown) => {},
-      reject: (value: unknown) => {},
-    },
+      reject: (value: unknown) => {}
+    }
   });
 
   const openInputDialog = (title: string) => {
@@ -33,6 +29,6 @@ export const useAppToolsStore = createGlobalState(() => {
 
   return {
     state,
-    openInputDialog,
+    openInputDialog
   };
 });

@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import { reactive } from "vue";
 import type { LayoutWithRouter, LayoutCard } from "@/types";
 import { useRouterParams } from "@/hooks/useRouterParams";
@@ -12,8 +11,7 @@ export const useLayoutConfigStore = createGlobalState(() => {
 
   const getPageLayoutConfig = (pageName: string) => {
     if (!pageName) pageName = currentRoutePath.value;
-    const res = globalLayoutConfig.find((item) => item.page === pageName)
-      ?.items;
+    const res = globalLayoutConfig.find((item) => item.page === pageName)?.items;
     return res ? res : [];
   };
 
@@ -30,11 +28,7 @@ export const useLayoutConfigStore = createGlobalState(() => {
     return null;
   };
 
-  const insertLayoutItem = (
-    pageName: string,
-    card: LayoutCard,
-    index?: number
-  ) => {
+  const insertLayoutItem = (pageName: string, card: LayoutCard, index?: number) => {
     if (!pageName) pageName = currentRoutePath.value;
     const items = getPageLayoutConfig(pageName);
     if (items) {
@@ -46,11 +40,7 @@ export const useLayoutConfigStore = createGlobalState(() => {
     }
   };
 
-  const moveCardItem = (
-    pageName: string,
-    sourceId: string,
-    targetId: string
-  ) => {
+  const moveCardItem = (pageName: string, sourceId: string, targetId: string) => {
     if (!pageName) pageName = currentRoutePath.value;
     const items = getPageLayoutConfig(pageName);
     const sourceIndex = getIndexById(pageName, sourceId);
@@ -77,6 +67,6 @@ export const useLayoutConfigStore = createGlobalState(() => {
     getIndexById,
     getCardById,
     moveCardItem,
-    globalLayoutConfig,
+    globalLayoutConfig
   };
 });

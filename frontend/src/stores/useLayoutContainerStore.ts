@@ -1,12 +1,11 @@
 import { createGlobalState } from "@vueuse/core";
-import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 
 export const useLayoutContainerStore = createGlobalState(() => {
   const containerState = reactive({
     isDesignMode: false,
     showNewCardDialog: false,
-    showPhoneMenu: false,
+    showPhoneMenu: false
   });
 
   const changeDesignMode = (b: boolean) => {
@@ -15,6 +14,6 @@ export const useLayoutContainerStore = createGlobalState(() => {
 
   return {
     containerState,
-    changeDesignMode,
+    changeDesignMode
   };
 });

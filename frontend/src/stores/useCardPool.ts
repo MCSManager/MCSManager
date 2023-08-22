@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import { getLayoutCardPool } from "@/config";
 import { createGlobalState } from "@vueuse/core";
 
@@ -8,6 +7,6 @@ export const useCardPool = createGlobalState(() => {
   };
 
   return {
-    getCardPool,
+    getCardPool
   };
 });

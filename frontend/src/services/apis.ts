@@ -1,4 +1,4 @@
-import { useDefineApi } from "@/stores/useApiCache";
+import { useDefineApi } from "@/stores/useDefineApi";
 
 export const loginUser = useDefineApi<
   {

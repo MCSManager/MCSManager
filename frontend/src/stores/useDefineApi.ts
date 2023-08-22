@@ -1,9 +1,5 @@
 import { executeRequest } from "@/hooks/useApi";
-import type { AxiosRequestConfig } from "axios";
-
-export interface RequestConfig extends AxiosRequestConfig {
-  forceRequest?: boolean;
-}
+import type { RequestConfig } from "@/services/apiService";
 
 export const useDefineApi = <P, T>(baseConfig: RequestConfig = {}) => {
   return () => {
