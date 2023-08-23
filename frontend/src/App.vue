@@ -39,6 +39,12 @@ if (isDarkUI) {
   document.body.classList.add("app-light-theme");
 }
 
+import { Button, Select, Input, Table } from "ant-design-vue";
+
+[Button, Select, Input, Table].forEach((element) => {
+  element.props.size.default = "middle";
+});
+
 const { execute: reqUserInfo } = userInfoApi();
 
 onMounted(async () => {

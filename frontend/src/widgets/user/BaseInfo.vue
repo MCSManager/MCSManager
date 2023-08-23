@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
-import DataStatistic from "@/components/DataStatistic.vue";
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types/index";
-import { MenuOutlined, ProjectOutlined, RobotOutlined } from "@ant-design/icons-vue";
-import type { UnwrapRef } from "vue";
+import { ProjectOutlined, RobotOutlined } from "@ant-design/icons-vue";
 import { reactive, toRaw } from "vue";
 const { state } = useAppStateStore();
+
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -50,8 +48,6 @@ const onSubmit = () => {
 };
 const labelCol = { style: { width: "150px" } };
 const wrapperCol = { span: 14 };
-
-const userInfo = state.userInfo;
 </script>
 
 <template>
@@ -98,7 +94,9 @@ const userInfo = state.userInfo;
           </a-form-item>
         </a-form>
       </template>
-      <template #api>BBB</template>
+      <template #api>
+        {{ state.userInfo }}
+      </template>
     </LeftMenusPanel>
   </div>
 </template>

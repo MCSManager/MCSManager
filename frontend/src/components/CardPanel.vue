@@ -61,7 +61,6 @@ const props = defineProps({
   .card-panel-content {
     flex-grow: 1;
     color: var(--text-color);
-    font-size: 14px;
   }
 }
 
@@ -69,6 +68,5 @@ const props = defineProps({
   overflow: hidden;
   zoom: 1;
   word-break: break-all;
-  font-size: 14px;
 }
 </style>

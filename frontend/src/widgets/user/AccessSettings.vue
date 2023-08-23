@@ -98,7 +98,7 @@ const columns = computed(() => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-table size="middle" :data-source="dataSource" :columns="columns">
+            <a-table :data-source="dataSource" :columns="columns">
               <template #bodyCell="{ column }">
                 <template v-if="column.key === 'action'">
                   <a-button danger>

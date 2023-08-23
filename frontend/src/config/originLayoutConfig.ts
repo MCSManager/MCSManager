@@ -303,17 +303,17 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         meta: {},
         type: "UserInfo",
         title: t("个人信息"),
-        width: 12,
-        height: LayoutCardHeight.AUTO
-      },
-      {
-        id: getRandomId(),
-        meta: {},
-        type: "EmptyCard",
-        title: "",
-        width: 12,
-        height: LayoutCardHeight.MINI
+        width: 8,
+        height: LayoutCardHeight.MEDIUM
       }
+      // {
+      //   id: getRandomId(),
+      //   meta: {},
+      //   type: "EmptyCard",
+      //   title: "",
+      //   width: 12,
+      //   height: LayoutCardHeight.MINI
+      // }
     ]
   },
 

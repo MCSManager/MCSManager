@@ -155,12 +155,7 @@ const rowSelection = () => {};
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-table
-              size="middle"
-              :row-selection="rowSelection"
-              :data-source="dataSource"
-              :columns="columns"
-            >
+            <a-table :row-selection="rowSelection" :data-source="dataSource" :columns="columns">
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
                   <a-dropdown>

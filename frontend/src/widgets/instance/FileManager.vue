@@ -187,12 +187,7 @@ breadcrumbs.push({
                 </a-breadcrumb-item>
               </a-breadcrumb>
             </div>
-            <a-table
-              size="middle"
-              :row-selection="rowSelection"
-              :data-source="dataSource"
-              :columns="columns"
-            >
+            <a-table :row-selection="rowSelection" :data-source="dataSource" :columns="columns">
               <!-- eslint-disable-next-line vue/no-unused-vars -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">

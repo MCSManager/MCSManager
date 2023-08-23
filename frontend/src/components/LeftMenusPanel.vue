@@ -45,15 +45,17 @@ const handleChangeMenu = (item: LeftMenuItem) => {
 <style lang="scss" scoped>
 .menu-body {
   height: 100%;
-  display: flex;
   .left-menu {
-    width: 280px;
+    height: 100%;
+    float: left;
+    width: 240px;
     padding: 12px 16px;
     background-color: var(--color-gray-4);
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
   }
   .right-content {
+    overflow: hidden;
     flex-grow: 1;
     padding: 20px;
     text-align: left;
