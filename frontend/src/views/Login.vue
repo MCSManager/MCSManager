@@ -153,6 +153,7 @@ const loginSuccess = () => {
                     <a-input
                       v-model:value="formData.password"
                       class="mt-20"
+                      type="password"
                       :placeholder="t('密码')"
                       size="large"
                     >

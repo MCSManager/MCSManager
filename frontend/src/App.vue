@@ -10,9 +10,11 @@ import { onMounted, ref, unref } from "vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { theme } from "ant-design-vue";
-
+import { message } from "ant-design-vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
 import { userInfoApi } from "./services/apis";
+import { t } from "./lang/i18n";
+import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
 const { state } = useAppStateStore();
@@ -40,11 +42,19 @@ if (isDarkUI) {
 const { execute: reqUserInfo, isLoading } = userInfoApi();
 
 onMounted(async () => {
-  const info = await reqUserInfo();
-  if (info.value) {
-    state.userInfo = info.value;
+  try {
+    const info = await reqUserInfo();
+    if (info.value) {
+      state.userInfo = info.value;
+    } else {
+      throw new Error();
+    }
+    console.log("用户信息:", state.userInfo);
+  } catch (error) {
+    router.push({
+      path: "/login"
+    });
   }
-  console.log("用户信息:", state.userInfo);
 });
 </script>
 
