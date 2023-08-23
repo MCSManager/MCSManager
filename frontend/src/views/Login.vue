@@ -154,6 +154,7 @@ const loginSuccess = () => {
                       v-model:value="formData.password"
                       class="mt-20"
                       type="password"
+                      :press-enter="handleLogin"
                       :placeholder="t('密码')"
                       size="large"
                     >
@@ -172,7 +173,7 @@ const loginSuccess = () => {
                       <a-button
                         size="large"
                         type="primary"
-                        style="min-width: 100px"
+                        style="min-width: 95px"
                         @click="handleLogin"
                       >
                         {{ t("验证") }}

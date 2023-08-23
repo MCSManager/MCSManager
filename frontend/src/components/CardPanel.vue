@@ -3,6 +3,10 @@ const props = defineProps({
   fullHeight: {
     type: Boolean,
     default: true
+  },
+  padding: {
+    type: Boolean,
+    default: true
   }
 });
 </script>
@@ -12,7 +16,8 @@ const props = defineProps({
     :class="{
       'card-panel': true,
       'global-card-container-shadow': true,
-      'h-100': props.fullHeight
+      'h-100': props.fullHeight,
+      padding: props.padding
     }"
   >
     <div v-if="$slots.title" class="card-panel-title">
@@ -35,10 +40,12 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 @import "@/assets/global.scss";
-
+.padding {
+  padding: 16px;
+}
 .card-panel {
   background-color: var(--background-color-white);
-  padding: 16px;
+
   display: flex;
   flex-direction: column;
 

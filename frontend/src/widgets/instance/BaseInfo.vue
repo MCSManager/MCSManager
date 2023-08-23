@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
-
+const { state } = useAppStateStore();
 const props = defineProps<{
   card: LayoutCard;
 }>();
+
+const userInfo = state.userInfo;
 </script>
 
 <template>

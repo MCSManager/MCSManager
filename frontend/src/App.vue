@@ -39,7 +39,7 @@ if (isDarkUI) {
   document.body.classList.add("app-light-theme");
 }
 
-const { execute: reqUserInfo, isLoading } = userInfoApi();
+const { execute: reqUserInfo } = userInfoApi();
 
 onMounted(async () => {
   try {

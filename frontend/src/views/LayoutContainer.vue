@@ -103,7 +103,7 @@ const {
           <LayoutCardComponent
             :card="currentLayoutConfig[0]"
             :data-id="currentLayoutConfig[0].id"
-            :style="{ height: currentLayoutConfig[0].height }"
+            :style="{ minHeight: currentLayoutConfig[0].height }"
           />
         </a-col>
       </a-row>
