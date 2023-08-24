@@ -1,4 +1,4 @@
-interface BaseUserInfo {
+export interface BaseUserInfo {
   uuid: string;
   userName: string;
   loginTime: string;

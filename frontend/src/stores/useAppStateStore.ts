@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
 import _ from "lodash";
 import { userInfoApi } from "@/services/apis";
+import type { BaseUserInfo } from "@/types/user";
 
 interface AppStateInfo {
   userInfo: BaseUserInfo | null;
