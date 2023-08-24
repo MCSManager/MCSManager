@@ -17,7 +17,7 @@ import { t } from "./lang/i18n";
 import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-const { state } = useAppStateStore();
+const { state, updateUserInfo } = useAppStateStore();
 const locale = ref(enUS);
 
 if (getCurrentLanguage() === "zh_CN") {
@@ -50,11 +50,8 @@ const { execute: reqUserInfo } = userInfoApi();
 onMounted(async () => {
   try {
     const info = await reqUserInfo();
-    if (info.value) {
-      state.userInfo = info.value;
-    } else {
-      throw new Error();
-    }
+    updateUserInfo(info.value);
+
     console.log("用户信息:", state.userInfo);
   } catch (error) {
     router.push({

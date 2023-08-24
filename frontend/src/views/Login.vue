@@ -11,6 +11,8 @@ import { reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginUser } from "@/services/apis";
 import { sleep } from "@/tools/commom";
+import { message } from "ant-design-vue";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 
 const formData = reactive({
   username: "",
@@ -18,6 +20,7 @@ const formData = reactive({
 });
 
 const { execute: login } = loginUser();
+const { updateUserInfo } = useAppStateStore();
 
 const loginStep = ref(0);
 
@@ -26,17 +29,18 @@ const handleLogin = async () => {
   await sleep(1500);
 
   try {
-    const res = await login({
+    await login({
       data: {
         ...formData
       }
     });
-    console.log("LOGIN:", res);
     loginStep.value++;
     await sleep(1200);
-    loginSuccess();
-  } catch (error) {
-    console.log("LOGIN ERROR:", error);
+    await loginSuccess();
+    await updateUserInfo();
+  } catch (error: any) {
+    console.log(error);
+    message.error(error.message ? error.message : error);
     loginStep.value--;
   }
 };
