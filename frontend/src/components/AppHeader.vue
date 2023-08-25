@@ -23,10 +23,12 @@ import { $t, setLanguage, $t as t } from "@/lang/i18n";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 
 import { message } from "ant-design-vue";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
 const [messageApi] = message.useMessage();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme, isDarkTheme } = useAppConfigStore();
+const { state: appTools } = useAppToolsStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -180,7 +182,7 @@ const appMenus = computed(() => {
       title: t("TXT_CODE_8c3164c9"),
       icon: UserOutlined,
       click: () => {
-        toPage({ path: "/user" });
+        appTools.showUserInfoDialog = true;
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false

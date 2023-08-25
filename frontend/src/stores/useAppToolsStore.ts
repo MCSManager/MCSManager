@@ -15,7 +15,8 @@ export const useAppToolsStore = createGlobalState(() => {
       show: false,
       resolve: (value: unknown) => {},
       reject: (value: unknown) => {}
-    }
+    },
+    showUserInfoDialog: false
   });
 
   const openInputDialog = (title: string) => {

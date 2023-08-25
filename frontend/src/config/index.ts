@@ -23,7 +23,6 @@ import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
 import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
 import InstanceFileManager from "@/widgets/instance/FileManager.vue";
 import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
-import UserInfo from "@/widgets/user/BaseInfo.vue";
 import ImageBox from "@/widgets/others/ImageBox.vue";
 import TextCard from "@/widgets/others/TextCard.vue";
 import LinkCard from "@/widgets/others/LinkCard.vue";
@@ -55,12 +54,11 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   InstanceServerConfigOverview,
   InstanceFileManager,
   UserAccessSettings,
-  UserInfo,
   ImageBox,
   QuickStartFlow,
   IframeCard,
   TextCard,
-  LinkCard,
+  LinkCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -79,7 +77,7 @@ export function getLayoutCardPool() {
       width: 2,
       description: "此卡片没有任何内容，可以用来占位，实现居中等排版需求。",
       height: LayoutCardHeight.MINI,
-      category: NEW_CARD_TYPE.OTHER,
+      category: NEW_CARD_TYPE.OTHER
     },
 
     // 只展示到个人资料的卡片（但是不推荐这样用）
@@ -92,7 +90,7 @@ export function getLayoutCardPool() {
       onlyPath: ["/user"],
       description: "这个卡片只能在「个人资料」这种界面出现，不能在其他场景使用。",
       height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.USER,
+      category: NEW_CARD_TYPE.USER
     },
 
     // 一个新增时要求设置参数的卡片
@@ -111,14 +109,14 @@ export function getLayoutCardPool() {
         {
           field: "instanceId",
           label: "实例 ID",
-          type: "string",
+          type: "string"
         },
         {
           field: "daemonId",
           label: "节点 ID",
-          type: "string",
-        },
-      ],
+          type: "string"
+        }
+      ]
     },
 
     {
@@ -127,12 +125,12 @@ export function getLayoutCardPool() {
       title: t("节点在线数444"),
       meta: {
         title: "在线节点 / 总节点",
-        type: "node",
+        type: "node"
       },
       width: 3,
       description: t("用于显示面板的所有基本数据"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.COMMON,
+      category: NEW_CARD_TYPE.COMMON
     },
 
     // 一个正常的卡片
@@ -144,7 +142,7 @@ export function getLayoutCardPool() {
       width: 4,
       description: "卡片的详细说明以及使用方式。",
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.COMMON,
+      category: NEW_CARD_TYPE.COMMON
     },
 
     // 一个多个项目组合一起的卡片
@@ -156,7 +154,7 @@ export function getLayoutCardPool() {
       width: 12,
       description: "卡片的详细说明以及使用方式。",
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.INSTANCE,
+      category: NEW_CARD_TYPE.INSTANCE
     },
 
     // 包含上下布局的卡片
@@ -168,7 +166,7 @@ export function getLayoutCardPool() {
       width: 6,
       description: "卡片的详细说明以及使用方式。",
       height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.COMMON,
+      category: NEW_CARD_TYPE.COMMON
     },
 
     // 图片卡片
@@ -180,7 +178,7 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("可以用来显示图片"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.OTHER,
+      category: NEW_CARD_TYPE.OTHER
     },
 
     // iframe卡片
@@ -192,7 +190,7 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("可以用来显示外部网站"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.OTHER,
+      category: NEW_CARD_TYPE.OTHER
     },
 
     // 自定义文本卡片
@@ -204,7 +202,7 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("显示指定文本，支持 Markdown 语法"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.OTHER,
+      category: NEW_CARD_TYPE.OTHER
     },
 
     // 超链接块卡片
@@ -216,8 +214,8 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("显示一组自定义超链接按钮"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.OTHER,
-    },
+      category: NEW_CARD_TYPE.OTHER
+    }
   ];
   return LAYOUT_CARD_POOL;
 }

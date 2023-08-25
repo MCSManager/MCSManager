@@ -40,6 +40,7 @@ if (isDarkUI) {
 }
 
 import { Button, Select, Input, Table } from "ant-design-vue";
+import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 
 [Button, Select, Input, Table].forEach((element) => {
   element.props.size.default = "large";
@@ -70,5 +71,6 @@ onMounted(async () => {
 
     <!-- Global Components -->
     <InputDialogProvider></InputDialogProvider>
+    <MyselfInfoDialog></MyselfInfoDialog>
   </a-config-provider>
 </template>

@@ -21,25 +21,16 @@ const handleChangeMenu = (item: LeftMenuItem) => {
 </script>
 
 <template>
-  <CardPanel :padding="false">
-    <template #body>
-      <div class="menu-body">
-        <div class="left-menu">
-          <div
-            v-for="item in props.menus"
-            :key="item.key"
-            class="mb-6"
-            @click="handleChangeMenu(item)"
-          >
-            <LeftMenuBtn :title="item.title" :icon="item.icon"> </LeftMenuBtn>
-          </div>
-        </div>
-        <div class="right-content">
-          <slot :name="currentMenu?.key"></slot>
-        </div>
+  <div class="menu-body">
+    <div class="left-menu">
+      <div v-for="item in props.menus" :key="item.key" class="mb-6" @click="handleChangeMenu(item)">
+        <LeftMenuBtn :title="item.title" :icon="item.icon"> </LeftMenuBtn>
       </div>
-    </template>
-  </CardPanel>
+    </div>
+    <div class="right-content">
+      <slot :name="currentMenu?.key"></slot>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
