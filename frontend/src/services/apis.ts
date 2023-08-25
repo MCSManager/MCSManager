@@ -1,4 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { BaseUserInfo } from "@/types/user";
 
 export const loginUser = useDefineApi<
   {
