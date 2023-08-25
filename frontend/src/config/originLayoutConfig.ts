@@ -267,7 +267,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         meta: {},
         type: "Settings",
         title: "系统设置",
-        width: 6,
+        width: 8,
         height: LayoutCardHeight.MEDIUM,
         disableDelete: true
       }
@@ -295,28 +295,6 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
       }
     ]
   },
-  {
-    page: "/user",
-    items: [
-      {
-        id: getRandomId(),
-        meta: {},
-        type: "UserInfo",
-        title: t("个人信息"),
-        width: 8,
-        height: LayoutCardHeight.MEDIUM
-      }
-      // {
-      //   id: getRandomId(),
-      //   meta: {},
-      //   type: "EmptyCard",
-      //   title: "",
-      //   width: 12,
-      //   height: LayoutCardHeight.MINI
-      // }
-    ]
-  },
-
   {
     page: "/quickstart",
     items: [

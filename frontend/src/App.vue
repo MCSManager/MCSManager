@@ -29,7 +29,12 @@ if (getCurrentLanguage() === "zh_CN") {
 
 const isDarkUI = isDarkTheme();
 const appTheme = {
-  algorithm: theme.defaultAlgorithm
+  algorithm: theme.defaultAlgorithm,
+  token: {
+    fontSizeLG: 14,
+    fontSizeSM: 12,
+    fontSizeXL: 18
+  }
 };
 
 if (isDarkUI) {
@@ -39,7 +44,7 @@ if (isDarkUI) {
   document.body.classList.add("app-light-theme");
 }
 
-import { Button, Select, Input, Table } from "ant-design-vue";
+import { Button, Select, Input, Table, ConfigProvider } from "ant-design-vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 
 [Button, Select, Input, Table].forEach((element) => {
@@ -63,7 +68,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <a-config-provider :theme="appTheme" :locale="locale">
+  <ConfigProvider :theme="appTheme" :locale="locale">
     <div class="global-app-container">
       <AppHeader></AppHeader>
       <RouterView :key="$route.fullPath" />
@@ -72,5 +77,5 @@ onMounted(async () => {
     <!-- Global Components -->
     <InputDialogProvider></InputDialogProvider>
     <MyselfInfoDialog></MyselfInfoDialog>
-  </a-config-provider>
+  </ConfigProvider>
 </template>
