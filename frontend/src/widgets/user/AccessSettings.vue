@@ -85,7 +85,7 @@ const columns = computed(() => {
       <a-col :span="24">
         <BetweenMenus>
           <template #left>
-            <a-typography-title class="mb-0" :level="5">
+            <a-typography-title class="mb-0" :level="4">
               {{ t("应用访问权限") }}
             </a-typography-title>
           </template>

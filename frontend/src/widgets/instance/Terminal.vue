@@ -65,7 +65,13 @@ const instanceOperations = arrayFilter([
   <CardPanel class="containerWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #operator>
-      <a-button v-for="item in quickOperations" :key="item.title" class="mr-8" v-bind="item.props">
+      <a-button
+        v-for="item in quickOperations"
+        :key="item.title"
+        size="default"
+        class="mr-8"
+        v-bind="item.props"
+      >
         {{ item.title }}
       </a-button>
       <a-dropdown>
@@ -77,7 +83,7 @@ const instanceOperations = arrayFilter([
             </a-menu-item>
           </a-menu>
         </template>
-        <a-button type="primary">
+        <a-button size="default" type="primary">
           操作
           <DownOutlined />
         </a-button>

@@ -23,7 +23,7 @@ const arr = [1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 
       <a-col :span="24">
         <BetweenMenus>
           <template #left>
-            <a-typography-title class="mb-0" :level="5">
+            <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
           </template>

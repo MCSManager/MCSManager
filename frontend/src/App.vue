@@ -42,7 +42,7 @@ if (isDarkUI) {
 import { Button, Select, Input, Table } from "ant-design-vue";
 
 [Button, Select, Input, Table].forEach((element) => {
-  element.props.size.default = "middle";
+  element.props.size.default = "large";
 });
 
 const { execute: reqUserInfo } = userInfoApi();

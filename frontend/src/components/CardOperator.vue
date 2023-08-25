@@ -69,6 +69,7 @@ let btns = arrayFilter([
       <a-button
         :style="item.style"
         type="text"
+        size="default"
         :icon="h(item.icon)"
         @click="() => item.click(card.id)"
       />
@@ -109,7 +110,7 @@ let btns = arrayFilter([
 
 .number-card {
   position: absolute;
-  right: 40px;
+  right: 16px;
   top: 0px;
   z-index: 10;
   > div {
@@ -127,7 +128,7 @@ let btns = arrayFilter([
   @extend .base;
   width: 32px;
   position: absolute;
-  right: 0px;
+  left: -6px;
   top: 0px;
 
   i {
