@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus } from "@/types";
+import type { InstanceDetail, NodeStatus, Settings } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -54,49 +54,14 @@ export const remoteInstances = useDefineApi<
 });
 
 // 获取设置信息
-export const settingInfo = useDefineApi<
-  any,
-  {
-    httpPort: number;
-    httpIp: any;
-    dataPort: number;
-    forwardType: number;
-    crossDomain: boolean;
-    gzip: boolean;
-    maxCompress: number;
-    maxDownload: number;
-    zipType: number;
-    loginCheckIp: boolean;
-    loginInfo: string;
-    canFileManager: boolean;
-    language: string;
-    quickInstallAddr: string;
-    redisUrl: string;
-  }
->({
+export const settingInfo = useDefineApi<any, Settings>({
   url: "/api/overview/setting"
 });
 
 // 提交设置信息
 export const setSettingInfo = useDefineApi<
   | {
-      data: {
-        httpPort: number;
-        httpIp: any;
-        dataPort: number;
-        forwardType: number;
-        crossDomain: boolean;
-        gzip: boolean;
-        maxCompress: number;
-        maxDownload: number;
-        zipType: number;
-        loginCheckIp: boolean;
-        loginInfo: string;
-        canFileManager: boolean;
-        language: string;
-        quickInstallAddr: string;
-        redisUrl: string;
-      };
+      data: Settings;
     }
   | undefined,
   string

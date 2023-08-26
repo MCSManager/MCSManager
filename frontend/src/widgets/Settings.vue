@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { t } from "@/lang/i18n";
-import type { LayoutCard } from "@/types";
+import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref, h } from "vue";
 import { message } from "ant-design-vue";
 import {
@@ -79,23 +79,7 @@ const allYesNo = [
   }
 ];
 
-const formData = ref({
-  httpPort: 23333,
-  httpIp: null,
-  dataPort: 23334,
-  forwardType: 1,
-  crossDomain: false,
-  gzip: false,
-  maxCompress: 1,
-  maxDownload: 10,
-  zipType: 1,
-  loginCheckIp: true,
-  loginInfo: "",
-  canFileManager: true,
-  quickInstallAddr: "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/quick_install.json",
-  redisUrl: "",
-  language: "en_US"
-});
+const formData = ref<Settings>({} as Settings);
 
 onMounted(async () => {
   const res = await execute();
@@ -190,6 +174,7 @@ onMounted(async () => {
                       :placeholder="t('请输入内容')"
                     />
                   </a-form-item>
+
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
                       保存
@@ -223,6 +208,7 @@ onMounted(async () => {
                       }}
                     </a-typography-text>
                   </a-typography-paragraph>
+
                   <a-form-item>
                     <a-typography-title :level="5">
                       {{ t("准许普通用户使用文件管理功能") }}
