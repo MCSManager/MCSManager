@@ -22,5 +22,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build
-        run: sh build.sh
+      - name: Build Frontend
+        run: cd frontend && npm install && npm run build
