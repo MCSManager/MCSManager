@@ -2,23 +2,27 @@
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, h } from "vue";
 import { message } from "ant-design-vue";
 import {
   LockOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
-  // SaveOutlined,
-  // QuestionOutlined,
-  // RobotOutlined
+  QuestionCircleOutlined,
+  LoadingOutlined
 } from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
 
-// const props = defineProps<{
 defineProps<{
   card: LayoutCard;
 }>();
+
+const indicator = h(LoadingOutlined, {
+  style: {
+    fontSize: "24px"
+  },
+  spin: true
+});
 
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
@@ -332,18 +336,9 @@ onMounted(async () => {
         </LeftMenusPanel>
       </template>
     </CardPanel>
-    <div v-if="!isReady" class="loading">
-      <a-spin :spinning="true" :tip="t('Loading...')" />
+    <div v-if="!isReady" class="loading w-100 h-100">
+      <a-spin :indicator="indicator" :tip="t('Loading...')" />
     </div>
-    <!-- <div class="button">
-      <a-button
-        type="primary"
-        shape="circle"
-        :loading="submitIsLoading"
-        :icon="h(SaveOutlined)"
-        @click="submit()"
-      />
-    </div> -->
   </div>
 </template>
 
@@ -351,8 +346,6 @@ onMounted(async () => {
 div {
   position: relative;
   .loading {
-    width: 100%;
-    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
@@ -363,10 +356,5 @@ div {
     justify-content: center;
     align-items: center;
   }
-  // .button {
-  //   position: absolute;
-  //   bottom: 15px;
-  //   right: 50px;
-  // }
 }
 </style>
