@@ -61,3 +61,27 @@ export const remoteInstances = useDefineApi<
 >({
   url: "/api/service/remote_service_instances"
 });
+
+// 获取设置信息
+export const settingInfo = useDefineApi<
+  any,
+  {
+    httpPort: number;
+    httpIp: any;
+    dataPort: number;
+    forwardType: number;
+    crossDomain: boolean;
+    gzip: boolean;
+    maxCompress: number;
+    maxDownload: number;
+    zipType: number;
+    loginCheckIp: boolean;
+    loginInfo: string;
+    canFileManager: boolean;
+    language: string;
+    quickInstallAddr: string;
+    redisUrl: string;
+  }
+>({
+  url: "/api/overview/setting"
+});

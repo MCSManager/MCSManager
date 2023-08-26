@@ -2,7 +2,7 @@
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   LockOutlined,
   ProjectOutlined,
@@ -11,10 +11,19 @@ import {
   // RobotOutlined
 } from "@ant-design/icons-vue";
 
+import { settingInfo } from "@/services/apis";
+
 // const props = defineProps<{
 defineProps<{
   card: LayoutCard;
 }>();
+
+const { execute, state, isLoading, isReady } = settingInfo();
+
+onMounted(async () => {
+  const { value: res } = await execute();
+  console.log(res);
+});
 
 const menus = [
   {
@@ -144,7 +153,135 @@ const allLanguages = [
               </div>
             </div>
           </template>
-          <template #api> B </template>
+
+          <template #api>
+            <div style="max-height: 500px; overflow-y: auto">
+              <a-typography-title :level="4" class="mb-24">{{ t("安全设置") }}</a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("准许普通用户使用文件管理功能") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("文件管理是一个较为消耗资源且不易控制的功能。") }}
+                        <br />
+                        {{
+                          t("如果您的普通用户没有文件管理的任何需求，可以禁止用户使用文件管理。")
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                      <a-select-option
+                        v-for="item in allLanguages"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("跨域请求 API 接口") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "HTTP 响应将会加入 access-control-allow-origin: *，可能会降低安全性，但是会提高开发扩展性。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                      <a-select-option
+                        v-for="item in allLanguages"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("同 IP 登录次数限制") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "此功能将保护您的面板不被单个主机暴力破解密码，每个 IP 只有 10 次密码错误次数。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                      <a-select-option
+                        v-for="item in allLanguages"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-form>
+                <a-typography-title :level="5">
+                  {{ t("注意事项") }}
+                </a-typography-title>
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{
+                      t(
+                        "这些配置设置需要一部分专业知识，您可以根据您的硬件设备来大概猜测哪些值适合您。"
+                      )
+                    }}
+                    <br />
+                    {{
+                      t(
+                        "一般情况下，默认值可以满足个人日常的使用场景，如果规模一旦更大，对硬件的要求更高，为了不过分损失用户体验，一个合适的阈值是十分重要的."
+                      )
+                    }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+              </div>
+            </div>
+          </template>
+
+          <template #password>
+            <div style="max-height: 500px; overflow-y: auto">
+              <a-typography-title :level="4" class="mb-24">{{ t("关于") }}</a-typography-title>
+              <div style="text-align: left">
+                <a-form-item>
+                  <a-typography-title :level="5">
+                    {{ t("软件根据 Apache-2.0 开源软件协议发行") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-typography-text type="secondary">
+                      {{ t("https://github.com/MCSManager/MCSManager/blob/master/LICENSE") }}
+                    </a-typography-text>
+                  </a-typography-paragraph>
+                </a-form-item>
+
+                <a-form-item>
+                  <a-typography-title :level="5">
+                    {{ t("开源项目赞助名单") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-typography-text type="secondary">
+                      {{ t("只含前 40 名赞助者，查看完整赞助名单或进行赞助支持请前往") }}
+                      <a href="https://mcsmanager.com/" target="_blank">MCSManager.com</a>&nbsp;.
+                    </a-typography-text>
+                  </a-typography-paragraph>
+                </a-form-item>
+              </div>
+            </div>
+          </template>
         </LeftMenusPanel>
       </template>
     </CardPanel>
