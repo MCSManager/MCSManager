@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail } from "@/types";
+import type { InstanceDetail, NodeStatus } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -29,16 +29,7 @@ export const userInfoApi = useDefineApi<any, BaseUserInfo>({
 });
 
 // 获取远程服务列表
-export const remoteNodeList = useDefineApi<
-  any,
-  {
-    available: boolean;
-    ip: string;
-    port: number;
-    remarks: string;
-    uuid: string;
-  }[]
->({
+export const remoteNodeList = useDefineApi<any, NodeStatus[]>({
   url: "/api/service/remote_services_list"
 });
 

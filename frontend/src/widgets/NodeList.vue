@@ -36,7 +36,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-6" type="primary">{{ t("新增节点") }}</a-button>
+            <a-button class="mr-12" type="primary">{{ t("新增节点") }}</a-button>
             <a-button>{{ t("使用手册") }}</a-button>
           </template>
           <template #center>

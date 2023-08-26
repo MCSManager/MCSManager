@@ -59,3 +59,11 @@ export interface InstanceDetail {
   };
   config: GlobalInstanceConfig;
 }
+
+export interface NodeStatus {
+  available: boolean;
+  ip: string;
+  port: number;
+  remarks: string;
+  uuid: string;
+}

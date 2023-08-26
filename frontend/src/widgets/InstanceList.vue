@@ -3,33 +3,62 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
+import {
+  SearchOutlined,
+  DownOutlined,
+  FormOutlined,
+  DatabaseOutlined
+} from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
 import { remoteInstances } from "@/services/apis";
 import { remoteNodeList } from "../services/apis";
+import type { NodeStatus } from "../types/index";
+import { message } from "ant-design-vue";
+import { computeNodeName } from "../tools/nodes";
+import Loading from "@/components/Loading.vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const operationForm = ref({
-  name: ""
+  instanceName: "",
+  currentPage: 1,
+  pageSize: 20
 });
 
-const { execute: getNodes, state: nodes } = remoteNodeList();
-const { execute: getInstances, state: instances } = remoteInstances();
+const currentRemoteNode = ref<NodeStatus>();
 
-onMounted(async () => {
+const { execute: getNodes, state: nodes } = remoteNodeList();
+const { execute: getInstances, state: instances, isLoading } = remoteInstances();
+
+const initNodes = async () => {
   await getNodes();
+  if (!nodes.value?.length) {
+    return message.error(t("面板未能链接到任何一个远程节点，请先前往节点界面添加远程节点"));
+  }
+  if (nodes.value?.length === 1) {
+    currentRemoteNode.value = nodes.value[0];
+  }
+};
+
+const initInstancesData = async () => {
+  if (!currentRemoteNode.value) {
+    await initNodes();
+  }
   await getInstances({
     params: {
-      remote_uuid: nodes.value?.[0].uuid ?? "",
-      page: 1,
-      page_size: 10,
-      instance_name: ""
+      remote_uuid: currentRemoteNode.value?.uuid ?? "",
+      page: operationForm.value.currentPage,
+      page_size: operationForm.value.pageSize,
+      instance_name: operationForm.value.instanceName.trim()
     }
   });
+};
+
+onMounted(async () => {
+  await initInstancesData();
 });
 
 const toAppDetailPage = (daemonId: string, instanceId: string) => {
@@ -41,6 +70,8 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
     }
   });
 };
+
+const handleChangeNode = () => {};
 </script>
 
 <template>
@@ -54,11 +85,34 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
             </a-typography-title>
           </template>
           <template #right>
+            <a-dropdown>
+              <template #overlay>
+                <a-menu @click="handleChangeNode">
+                  <a-menu-item v-for="item in nodes" :key="item.uuid">
+                    <DatabaseOutlined />
+                    {{ computeNodeName(item.ip, item.remarks) }}
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="toNodesPage">
+                    <FormOutlined />
+                    {{ t("管理远程节点") }}
+                  </a-menu-item>
+                </a-menu>
+              </template>
+              <a-button class="mr-12">
+                {{ computeNodeName(currentRemoteNode?.ip || "", currentRemoteNode?.remarks) }}
+                <DownOutlined />
+              </a-button>
+            </a-dropdown>
             <a-button type="primary">{{ t("新建应用") }}</a-button>
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('根据应用名字搜索')">
+              <a-input
+                v-model:value="operationForm.instanceName"
+                :placeholder="t('根据应用名字搜索')"
+                @press-enter="initInstancesData"
+              >
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -67,30 +121,51 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
           </template>
         </BetweenMenus>
       </a-col>
-      <a-col v-for="item in instances?.data" :key="item" :span="24" :md="6">
-        <CardPanel style="height: 100%" @click="toAppDetailPage('11111', '2222')">
-          <template #title>{{ item.config.nickname }}</template>
-          <template #body>
-            <a-typography-paragraph>
-              <div>
-                {{ t("状态：") }}
-                {{ item.status }}
-              </div>
-              <div>
-                {{ t("类型：") }}
-                {{ item.config.type }}
-              </div>
-              <div>
-                {{ t("启动时间：") }}
-                {{ item.config.lastDatetime }}
-              </div>
-              <div>
-                {{ t("到期时间：") }}
-                {{ item.config.endTime }}
-              </div>
-            </a-typography-paragraph>
-          </template>
-        </CardPanel>
+      <a-col :span="24">
+        <div v-if="instances" class="flex justify-end">
+          <a-pagination
+            v-model:current="operationForm.currentPage"
+            v-model:pageSize="operationForm.pageSize"
+            :total="instances.maxPage * operationForm.pageSize"
+            show-size-changer
+            @change="initInstancesData"
+          />
+        </div>
+      </a-col>
+      <template v-if="!isLoading">
+        <a-col v-for="item in instances?.data" :key="item" :span="24" :md="6">
+          <CardPanel
+            class="instance-card"
+            style="height: 100%"
+            @click="toAppDetailPage(currentRemoteNode?.uuid || '', item.instanceUuid)"
+          >
+            <template #title>{{ item.config.nickname }}</template>
+            <template #body>
+              <a-typography-paragraph>
+                <div>
+                  {{ t("状态：") }}
+                  {{ item.status }}
+                </div>
+                <div>
+                  {{ t("类型：") }}
+                  {{ item.config.type }}
+                </div>
+                <div>
+                  {{ t("启动时间：") }}
+                  {{ item.config.lastDatetime }}
+                </div>
+                <div>
+                  {{ t("到期时间：") }}
+                  {{ item.config.endTime }}
+                </div>
+              </a-typography-paragraph>
+            </template>
+          </CardPanel>
+        </a-col>
+      </template>
+
+      <a-col v-if="isLoading" :span="24">
+        <Loading class="mt-24"></Loading>
       </a-col>
     </a-row>
   </div>
@@ -113,5 +188,12 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
 
 .search-input:hover {
   width: 100%;
+}
+.instance-card {
+  cursor: pointer;
+}
+.instance-card:hover {
+  border: 1px solid var(--color-gray-8);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
 }
 </style>
