@@ -43,11 +43,6 @@ const menus = [
   }
 ];
 
-const formData = ref({
-  language: "en_US",
-  tmp: ""
-});
-
 const allLanguages = [
   {
     label: "中文",
@@ -58,6 +53,36 @@ const allLanguages = [
     value: "en_US"
   }
 ];
+
+const allYesNo = [
+  {
+    label: t("启用"),
+    value: true
+  },
+  {
+    label: t("禁止"),
+    value: false
+  }
+];
+
+const formData = ref({
+  httpPort: 23333,
+  httpIp: null,
+  dataPort: 23334,
+  forwardType: 1,
+  crossDomain: false,
+  gzip: false,
+  maxCompress: 1,
+  maxDownload: 10,
+  zipType: 1,
+  loginCheckIp: true,
+  loginInfo: "",
+  canFileManager: true,
+  quickInstallAddr: "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/quick_install.json",
+  redisUrl: "",
+  language: "en_US",
+  tmp: ""
+});
 </script>
 
 <template>
@@ -98,7 +123,7 @@ const allLanguages = [
                       {{ t("网页访问端口，请填写一个纯数字，默认端口是 23333 端口。") }}
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="formData.tmp"
+                      v-model:value="formData.httpPort"
                       style="max-width: 320px"
                       :placeholder="t('请输入内容')"
                     />
@@ -112,7 +137,7 @@ const allLanguages = [
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-textarea
-                      v-model:value="formData.tmp"
+                      v-model:value="formData.loginInfo"
                       :rows="4"
                       :placeholder="t('请输入内容')"
                     />
@@ -128,7 +153,7 @@ const allLanguages = [
                       }}
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="formData.tmp"
+                      v-model:value="formData.httpIp"
                       style="max-width: 320px"
                       :placeholder="t('请输入内容')"
                     />
@@ -144,7 +169,7 @@ const allLanguages = [
                       }}
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="formData.tmp"
+                      v-model:value="formData.quickInstallAddr"
                       style="max-width: 320px"
                       :placeholder="t('请输入内容')"
                     />
@@ -172,9 +197,9 @@ const allLanguages = [
                         }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                    <a-select v-model:value="formData.canFileManager" style="max-width: 320px">
                       <a-select-option
-                        v-for="item in allLanguages"
+                        v-for="item in allYesNo"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -196,9 +221,9 @@ const allLanguages = [
                         }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                    <a-select v-model:value="formData.crossDomain" style="max-width: 320px">
                       <a-select-option
-                        v-for="item in allLanguages"
+                        v-for="item in allYesNo"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -220,9 +245,9 @@ const allLanguages = [
                         }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.language" style="max-width: 320px">
+                    <a-select v-model:value="formData.loginCheckIp" style="max-width: 320px">
                       <a-select-option
-                        v-for="item in allLanguages"
+                        v-for="item in allYesNo"
                         :key="item.value"
                         :value="item.value"
                       >
