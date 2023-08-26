@@ -2,23 +2,38 @@
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, h } from "vue";
+import { message } from "ant-design-vue";
 import {
   LockOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SaveOutlined
   // QuestionOutlined,
   // RobotOutlined
 } from "@ant-design/icons-vue";
 
-import { settingInfo } from "@/services/apis";
+import { settingInfo, setSettingInfo } from "@/services/apis";
 
 // const props = defineProps<{
 defineProps<{
   card: LayoutCard;
 }>();
 
-const { execute, state, isLoading, isReady } = settingInfo();
+const { execute, isReady } = settingInfo();
+const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
+
+const submit = async () => {
+  const res = await submitExecute({
+    data: {
+      ...formData.value
+    }
+  });
+  if (res.value == "OK") {
+    return message.success(t("保存成功"));
+  }
+  message.error(res.value);
+};
 
 const menus = [
   {
@@ -86,8 +101,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div></div>
-
     <CardPanel class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
         <LeftMenusPanel :menus="menus">
@@ -173,6 +186,11 @@ onMounted(async () => {
                       :placeholder="t('请输入内容')"
                     />
                   </a-form-item>
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                      保存
+                    </a-button>
+                  </div>
                 </a-form>
               </div>
             </div>
@@ -183,6 +201,24 @@ onMounted(async () => {
               <a-typography-title :level="4" class="mb-24">{{ t("安全设置") }}</a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
+                  <a-typography-title :level="5">
+                    {{ t("注意事项") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-typography-text type="secondary">
+                      {{
+                        t(
+                          "这些配置设置需要一部分专业知识，您可以根据您的硬件设备来大概猜测哪些值适合您。"
+                        )
+                      }}
+                      <br />
+                      {{
+                        t(
+                          "一般情况下，默认值可以满足个人日常的使用场景，如果规模一旦更大，对硬件的要求更高，为了不过分损失用户体验，一个合适的阈值是十分重要的."
+                        )
+                      }}
+                    </a-typography-text>
+                  </a-typography-paragraph>
                   <a-form-item>
                     <a-typography-title :level="5">
                       {{ t("准许普通用户使用文件管理功能") }}
@@ -254,25 +290,12 @@ onMounted(async () => {
                       </a-select-option>
                     </a-select>
                   </a-form-item>
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                      保存
+                    </a-button>
+                  </div>
                 </a-form>
-                <a-typography-title :level="5">
-                  {{ t("注意事项") }}
-                </a-typography-title>
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary">
-                    {{
-                      t(
-                        "这些配置设置需要一部分专业知识，您可以根据您的硬件设备来大概猜测哪些值适合您。"
-                      )
-                    }}
-                    <br />
-                    {{
-                      t(
-                        "一般情况下，默认值可以满足个人日常的使用场景，如果规模一旦更大，对硬件的要求更高，为了不过分损失用户体验，一个合适的阈值是十分重要的."
-                      )
-                    }}
-                  </a-typography-text>
-                </a-typography-paragraph>
               </div>
             </div>
           </template>
@@ -309,7 +332,41 @@ onMounted(async () => {
         </LeftMenusPanel>
       </template>
     </CardPanel>
+    <div v-if="!isReady" class="loading">
+      <a-spin :spinning="true" :tip="t('Loading...')" />
+    </div>
+    <!-- <div class="button">
+      <a-button
+        type="primary"
+        shape="circle"
+        :loading="submitIsLoading"
+        :icon="h(SaveOutlined)"
+        @click="submit()"
+      />
+    </div> -->
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+div {
+  position: relative;
+  .loading {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  // .button {
+  //   position: absolute;
+  //   bottom: 15px;
+  //   right: 50px;
+  // }
+}
+</style>

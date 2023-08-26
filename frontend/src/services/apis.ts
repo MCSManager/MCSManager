@@ -85,3 +85,31 @@ export const settingInfo = useDefineApi<
 >({
   url: "/api/overview/setting"
 });
+
+// 提交设置信息
+export const setSettingInfo = useDefineApi<
+  | {
+      data: {
+        httpPort: number;
+        httpIp: any;
+        dataPort: number;
+        forwardType: number;
+        crossDomain: boolean;
+        gzip: boolean;
+        maxCompress: number;
+        maxDownload: number;
+        zipType: number;
+        loginCheckIp: boolean;
+        loginInfo: string;
+        canFileManager: boolean;
+        language: string;
+        quickInstallAddr: string;
+        redisUrl: string;
+      };
+    }
+  | undefined,
+  string
+>({
+  url: "/api/overview/setting",
+  method: "PUT"
+});
