@@ -6,12 +6,13 @@ import { ref } from "vue";
 import {
   LockOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined,
-  QuestionOutlined,
-  RobotOutlined
+  QuestionCircleOutlined
+  // QuestionOutlined,
+  // RobotOutlined
 } from "@ant-design/icons-vue";
 
-const props = defineProps<{
+// const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
@@ -90,9 +91,10 @@ const allLanguages = [
                     <a-input
                       v-model:value="formData.tmp"
                       style="max-width: 320px"
-                      placeholder="请输入内容"
+                      :placeholder="t('请输入内容')"
                     />
                   </a-form-item>
+
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("登录页文字展示") }}</a-typography-title>
                     <a-typography-paragraph>
@@ -100,7 +102,11 @@ const allLanguages = [
                         {{ t("支持 Markdown 格式") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-textarea v-model:value="formData.tmp" :rows="4" placeholder="请输入内容" />
+                    <a-textarea
+                      v-model:value="formData.tmp"
+                      :rows="4"
+                      :placeholder="t('请输入内容')"
+                    />
                   </a-form-item>
 
                   <a-form-item>
@@ -115,7 +121,23 @@ const allLanguages = [
                     <a-input
                       v-model:value="formData.tmp"
                       style="max-width: 320px"
-                      placeholder="请输入内容"
+                      :placeholder="t('请输入内容')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("预设资源下载点") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{
+                        t(
+                          "快速安装服务器时的下载源列表，您可以通过更改此地址实现自定义服务端预设下载站。"
+                        )
+                      }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.tmp"
+                      style="max-width: 320px"
+                      :placeholder="t('请输入内容')"
                     />
                   </a-form-item>
                 </a-form>
