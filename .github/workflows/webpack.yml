@@ -24,3 +24,9 @@ jobs:
 
       - name: Build Frontend
         run: cd frontend && npm install && npm run build
+
+      - name: Build Daemon
+        run: cd daemon && npm install && npm run build
+
+      - name: Build Panel
+        run: cd panel && npm install && npm run build
