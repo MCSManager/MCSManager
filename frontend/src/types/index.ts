@@ -41,5 +41,20 @@ export enum NEW_CARD_TYPE {
   INSTANCE = "INSTANCE",
   USER = "USER",
   NODE = "NODE",
-  OTHER = "OTHER",
+  OTHER = "OTHER"
+}
+
+export interface InstanceDetail {
+  instanceUuid: string;
+  started: number;
+  status: number;
+  info: {
+    currentPlayers: number;
+    fileLock: number;
+    maxPlayers: number;
+    openFrpStatus: boolean;
+    playersChart: any[];
+    version: string;
+  };
+  config: any;
 }

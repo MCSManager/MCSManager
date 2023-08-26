@@ -12,10 +12,17 @@ import { router } from "./config/router";
 import { i18n } from "@/lang/i18n";
 import App from "./App.vue";
 
-const app = createApp(App);
+import { userInfoApi } from "./services/apis";
+import { useAppStateStore } from "./stores/useAppStateStore";
 
+const { updateUserInfo } = useAppStateStore();
+
+const { execute: reqUserInfo } = userInfoApi();
+const info = await reqUserInfo();
+updateUserInfo(info.value);
+
+const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(i18n);
-
 app.mount("#app");
