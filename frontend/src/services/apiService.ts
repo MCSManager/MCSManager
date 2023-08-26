@@ -1,10 +1,16 @@
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import EventEmitter from "events";
 import _ from "lodash";
 
-// Each request must carry the X-Requested-With: XMLHttpRequest header
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+axios.interceptors.request.use(async (config) => {
+  const { state } = useAppStateStore();
+  if (!config.params) config.params = {};
+  config.params.token = state.userInfo?.token;
+  return config;
+});
 
 export interface RequestConfig extends AxiosRequestConfig {
   forceRequest?: boolean;
@@ -41,6 +47,7 @@ class ApiService {
 
   private async sendRequest(reqId: string, config: AxiosRequestConfig) {
     try {
+      console.debug(`[ApiService] Request: ${config.url} \n Full AxiosRequestConfig:`, config);
       const startTime = Date.now();
       const result = await axios(config);
       const endTime = Date.now();

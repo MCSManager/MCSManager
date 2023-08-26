@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type CardPanel from "./CardPanel.vue";
-import { ref, type FunctionalComponent } from "vue";
+import { ref, type FunctionalComponent, onMounted } from "vue";
 import LeftMenuBtn from "./LeftMenuBtn.vue";
+import { useScreen } from "@/hooks/useScreen";
+
+const { isPhone } = useScreen();
 
 interface LeftMenuItem {
   title: string;
@@ -13,23 +16,46 @@ const props = defineProps<{
   menus: LeftMenuItem[];
 }>();
 
-const currentMenu = ref<LeftMenuItem>();
+const activeKey = ref<string>();
 
 const handleChangeMenu = (item: LeftMenuItem) => {
-  currentMenu.value = item;
+  activeKey.value = item.key;
 };
+
+onMounted(() => {
+  activeKey.value = props.menus[0].key;
+});
 </script>
 
 <template>
-  <div class="menu-body">
+  <div v-if="!isPhone" class="menu-body">
     <div class="left-menu">
       <div v-for="item in props.menus" :key="item.key" class="mb-6" @click="handleChangeMenu(item)">
         <LeftMenuBtn :title="item.title" :icon="item.icon"> </LeftMenuBtn>
       </div>
     </div>
-    <div class="right-content">
-      <slot :name="currentMenu?.key"></slot>
+    <div class="right-content" style="text-align: left">
+      <slot :name="activeKey"></slot>
     </div>
+  </div>
+
+  <div v-else class="ml-16 mr-16 mt-8 mb-8">
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane
+        v-for="item in props.menus"
+        :key="item.key"
+        class="mb-6"
+        @click="handleChangeMenu(item)"
+      >
+        <template #tab>
+          <!-- <component :is="item.icon"></component> -->
+          {{ item.title }}
+        </template>
+        <div style="text-align: left">
+          <slot :name="activeKey"></slot>
+        </div>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 

@@ -17,7 +17,7 @@ import { t } from "./lang/i18n";
 import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-const { state, updateUserInfo } = useAppStateStore();
+const { state } = useAppStateStore();
 const locale = ref(enUS);
 
 if (getCurrentLanguage() === "zh_CN") {
@@ -51,15 +51,8 @@ import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
   element.props.size.default = "large";
 });
 
-const { execute: reqUserInfo } = userInfoApi();
-
 onMounted(async () => {
-  try {
-    const info = await reqUserInfo();
-    updateUserInfo(info.value);
-
-    console.log("用户信息:", state.userInfo);
-  } catch (error) {
+  if (!state.userInfo?.token) {
     router.push({
       path: "/login"
     });
