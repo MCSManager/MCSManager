@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
+import { remoteInstances } from "@/services/apis";
+import { remoteNodeList } from "../services/apis";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -15,7 +17,20 @@ const operationForm = ref({
   name: ""
 });
 
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+const { execute: getNodes, state: nodes } = remoteNodeList();
+const { execute: getInstances, state: instances } = remoteInstances();
+
+onMounted(async () => {
+  await getNodes();
+  await getInstances({
+    params: {
+      remote_uuid: nodes.value?.[0].uuid ?? "",
+      page: 1,
+      page_size: 10,
+      instance_name: ""
+    }
+  });
+});
 
 const toAppDetailPage = (daemonId: string, instanceId: string) => {
   router.push({
@@ -52,16 +67,28 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
           </template>
         </BetweenMenus>
       </a-col>
-      <a-col v-for="item in arr" :key="item" :span="24" :md="6">
+      <a-col v-for="item in instances?.data" :key="item" :span="24" :md="6">
         <CardPanel style="height: 100%" @click="toAppDetailPage('11111', '2222')">
-          <template #title>我的程序</template>
+          <template #title>{{ item.config.nickname }}</template>
           <template #body>
-            卡片示例 <br />
-            测试信息
-            <p>
-              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan oiqwoie rhiwoh oiwa
-              doiaw oid owiaydhoia ocaoshd oiadh oiadhioas doiashd oa o123123
-            </p>
+            <a-typography-paragraph>
+              <div>
+                {{ t("状态：") }}
+                {{ item.status }}
+              </div>
+              <div>
+                {{ t("类型：") }}
+                {{ item.config.type }}
+              </div>
+              <div>
+                {{ t("启动时间：") }}
+                {{ item.config.lastDatetime }}
+              </div>
+              <div>
+                {{ t("到期时间：") }}
+                {{ item.config.endTime }}
+              </div>
+            </a-typography-paragraph>
           </template>
         </CardPanel>
       </a-col>

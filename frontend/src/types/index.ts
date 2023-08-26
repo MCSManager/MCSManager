@@ -1,3 +1,4 @@
+import type { GlobalInstanceConfig } from "./../../../common/global";
 import type { LayoutCardHeight } from "@/config/originLayoutConfig";
 
 export interface JsonData {
@@ -56,5 +57,5 @@ export interface InstanceDetail {
     playersChart: any[];
     version: string;
   };
-  config: any;
+  config: GlobalInstanceConfig;
 }

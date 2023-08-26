@@ -15,14 +15,15 @@ import App from "./App.vue";
 import { userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
 
-const { updateUserInfo } = useAppStateStore();
+(async function () {
+  const { updateUserInfo } = useAppStateStore();
+  const { execute: reqUserInfo } = userInfoApi();
+  const info = await reqUserInfo();
+  updateUserInfo(info.value);
 
-const { execute: reqUserInfo } = userInfoApi();
-const info = await reqUserInfo();
-updateUserInfo(info.value);
-
-const app = createApp(App);
-app.use(createPinia());
-app.use(router);
-app.use(i18n);
-app.mount("#app");
+  const app = createApp(App);
+  app.use(createPinia());
+  app.use(router);
+  app.use(i18n);
+  app.mount("#app");
+})();

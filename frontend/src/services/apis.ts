@@ -1,4 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { InstanceDetail } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -44,12 +45,19 @@ export const remoteNodeList = useDefineApi<
 // 获取远程实例列表
 export const remoteInstances = useDefineApi<
   {
-    remote_uuid: string;
-    page: number;
-    page_size: number;
-    instance_name?: string;
+    params: {
+      remote_uuid: string;
+      page: number;
+      page_size: number;
+      instance_name?: string;
+    };
   },
-  any // 这里等会再写
+  {
+    maxPage: 1;
+    page: 1;
+    pageSize: 10;
+    data: InstanceDetail[];
+  }
 >({
   url: "/api/service/remote_service_instances"
 });

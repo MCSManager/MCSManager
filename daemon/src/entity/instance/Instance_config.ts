@@ -1,6 +1,7 @@
 import Instance from "./instance";
 import { IDockerConfig } from "./interface";
 import os from "os";
+import { GlobalInstanceConfig } from "../../../../common/global";
 interface IActionCommand {
   name: string;
   command: string;
@@ -9,7 +10,7 @@ interface IActionCommand {
 type ProcessType = "general" | "docker";
 
 // @Entity
-export default class InstanceConfig {
+export default class InstanceConfig implements GlobalInstanceConfig {
   public nickname = "Undefined";
   public startCommand = "";
   public stopCommand = "^C";
