@@ -8,12 +8,14 @@ import { useCardDragMove } from "@/hooks/useCardDragMove";
 import { useCardLayoutComputed, PLACE_HOLDER_CARD } from "@/hooks/useCardLayoutComputed";
 import { useRouterParams } from "../hooks/useRouterParams";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { useScreen } from "@/hooks/useScreen";
 
 const { containerState } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();
 const { getPageLayoutConfig } = useLayoutConfigStore();
 const currentLayoutConfig = getPageLayoutConfig(currentRoutePath.value);
 const { computedLayout } = useCardLayoutComputed(currentLayoutConfig);
+const { isPhone } = useScreen();
 
 const {
   dragover,
@@ -90,7 +92,7 @@ const {
 
     <div
       v-if="currentLayoutConfig.length <= 1 && currentLayoutConfig.length != 0"
-      class="main-flex-center"
+      :class="{ 'main-flex-center': !isPhone }"
     >
       <a-row :gutter="[0, 0]" align="center" style="width: 100%">
         <a-col
