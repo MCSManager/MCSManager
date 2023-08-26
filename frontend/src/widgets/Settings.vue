@@ -20,11 +20,6 @@ defineProps<{
 
 const { execute, state, isLoading, isReady } = settingInfo();
 
-onMounted(async () => {
-  const { value: res } = await execute();
-  console.log(res);
-});
-
 const menus = [
   {
     title: t("基本设置"),
@@ -46,11 +41,11 @@ const menus = [
 const allLanguages = [
   {
     label: "中文",
-    value: "zh_CN"
+    value: "zh_cn"
   },
   {
     label: "English",
-    value: "en_US"
+    value: "en_us"
   }
 ];
 
@@ -60,7 +55,7 @@ const allYesNo = [
     value: true
   },
   {
-    label: t("禁止"),
+    label: t("禁用"),
     value: false
   }
 ];
@@ -80,8 +75,12 @@ const formData = ref({
   canFileManager: true,
   quickInstallAddr: "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/quick_install.json",
   redisUrl: "",
-  language: "en_US",
-  tmp: ""
+  language: "en_US"
+});
+
+onMounted(async () => {
+  const res = await execute();
+  formData.value = res.value!;
 });
 </script>
 
