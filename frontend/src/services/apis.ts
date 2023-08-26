@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus } from "@/types";
+import type { InstanceDetail, NodeStatus, Settings } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -51,4 +51,21 @@ export const remoteInstances = useDefineApi<
   }
 >({
   url: "/api/service/remote_service_instances"
+});
+
+// 获取设置信息
+export const settingInfo = useDefineApi<any, Settings>({
+  url: "/api/overview/setting"
+});
+
+// 提交设置信息
+export const setSettingInfo = useDefineApi<
+  | {
+      data: Settings;
+    }
+  | undefined,
+  string
+>({
+  url: "/api/overview/setting",
+  method: "PUT"
 });

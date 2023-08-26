@@ -67,3 +67,21 @@ export interface NodeStatus {
   remarks: string;
   uuid: string;
 }
+
+export interface Settings {
+  httpPort: number;
+  httpIp: any;
+  dataPort: number;
+  forwardType: number;
+  crossDomain: boolean;
+  gzip: boolean;
+  maxCompress: number;
+  maxDownload: number;
+  zipType: number;
+  loginCheckIp: boolean;
+  loginInfo: string;
+  canFileManager: boolean;
+  language: string;
+  quickInstallAddr: string;
+  redisUrl: string;
+}

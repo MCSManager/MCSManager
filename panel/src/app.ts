@@ -51,9 +51,9 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   logger.info($t("app.exitTip", { port }));
   logger.info("==================================");
 
-  if (os.platform() == "win32") {
-    open(`http://localhost:${port}/`).then(() => {});
-  }
+  // if (os.platform() == "win32") {
+  //   open(`http://localhost:${port}/`).then(() => {});
+  // }
 }
 
 async function processExit() {
