@@ -336,7 +336,7 @@ onMounted(async () => {
         </LeftMenusPanel>
       </template>
     </CardPanel>
-    <div v-if="!isReady" class="loading w-100 h-100">
+    <div v-if="!isReady" class="loading flex-center w-100 h-100">
       <a-spin :indicator="indicator" :tip="t('Loading...')" />
     </div>
   </div>
@@ -349,12 +349,8 @@ div {
     position: absolute;
     top: 0;
     left: 0;
-    text-align: center;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 </style>
