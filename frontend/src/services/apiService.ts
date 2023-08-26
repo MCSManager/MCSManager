@@ -21,12 +21,14 @@ class ApiService {
 
   public async subscribe<T>(config: RequestConfig): Promise<T | undefined> {
     const reqId = btoa(
-      [
-        String(config.method),
-        String(config.url),
-        JSON.stringify(config.data ?? {}),
-        JSON.stringify(config.params ?? {})
-      ].join("")
+      encodeURIComponent(
+        [
+          String(config.method),
+          String(config.url),
+          JSON.stringify(config.data ?? {}),
+          JSON.stringify(config.params ?? {})
+        ].join("")
+      )
     );
 
     return new Promise((resolve, reject) => {
@@ -52,7 +54,8 @@ class ApiService {
       const result = await axios(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
-      if (reqSpeed < 100) await this.wait(100 - reqSpeed);
+      const INV = 200;
+      if (reqSpeed < INV) await this.wait(INV - reqSpeed);
       let realData = result.data;
       if (realData.data) realData = realData.data;
       this.event.emit(reqId, realData);

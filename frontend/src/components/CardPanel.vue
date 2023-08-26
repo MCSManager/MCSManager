@@ -42,12 +42,13 @@ const props = defineProps({
 @import "@/assets/global.scss";
 .padding {
   padding: 16px;
+  border: 1px solid var(--card-border-color);
 }
 .card-panel {
   background-color: var(--background-color-white);
-
   display: flex;
   flex-direction: column;
+  transition: all 0.4s;
 
   .card-panel-title {
     font-weight: 600;
