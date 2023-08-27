@@ -165,7 +165,7 @@ const handleTabClick = (value: string) => {
 
   .new-card-list {
     margin: auto;
-    max-width: 1440px;
+    max-width: var(--app-max-width);
   }
 
   .card-list-container {

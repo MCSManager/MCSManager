@@ -6,14 +6,11 @@ import enUS from "ant-design-vue/es/locale/en_US";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import "dayjs/locale/en";
-import { onMounted, ref, unref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { theme } from "ant-design-vue";
-import { message } from "ant-design-vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
-import { userInfoApi } from "./services/apis";
-import { t } from "./lang/i18n";
 import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
@@ -46,12 +43,14 @@ if (isDarkUI) {
 
 import { Button, Select, Input, Table, ConfigProvider } from "ant-design-vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
+import { closeAppLoading } from "./tools/dom";
 
 [Button, Select, Input, Table].forEach((element) => {
   element.props.size.default = "large";
 });
 
 onMounted(async () => {
+  closeAppLoading();
   if (!state.userInfo?.token) {
     router.push({
       path: "/login"

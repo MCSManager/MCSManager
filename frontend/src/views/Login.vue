@@ -144,28 +144,32 @@ const loginSuccess = () => {
                     {{ t("使用服务器的 MCSManager 账号进入面板") }}
                   </a-typography-paragraph>
                   <div>
-                    <a-input
-                      v-model:value="formData.username"
-                      :placeholder="t('账号')"
-                      size="large"
-                    >
-                      <template #suffix>
-                        <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                      </template>
-                    </a-input>
+                    <form>
+                      <a-input
+                        v-model:value="formData.username"
+                        :placeholder="t('账号')"
+                        size="large"
+                        autocomplete="off"
+                      >
+                        <template #suffix>
+                          <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                        </template>
+                      </a-input>
 
-                    <a-input
-                      v-model:value="formData.password"
-                      class="mt-20"
-                      type="password"
-                      :press-enter="handleLogin"
-                      :placeholder="t('密码')"
-                      size="large"
-                    >
-                      <template #suffix>
-                        <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                      </template>
-                    </a-input>
+                      <a-input
+                        v-model:value="formData.password"
+                        class="mt-20"
+                        type="password"
+                        :press-enter="handleLogin"
+                        :placeholder="t('密码')"
+                        size="large"
+                        autocomplete="off"
+                      >
+                        <template #suffix>
+                          <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                        </template>
+                      </a-input>
+                    </form>
 
                     <div class="mt-24 flex-between align-center">
                       <div class="mcsmanager-link">
@@ -343,6 +347,7 @@ const loginSuccess = () => {
   }
 
   .mcsmanager-link {
+    font-size: var(--font-body);
     text-align: right;
     color: var(--color-gray-7);
     a {

@@ -4,39 +4,32 @@ import { t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref, h } from "vue";
 import { message } from "ant-design-vue";
-import {
-  LockOutlined,
-  ProjectOutlined,
-  QuestionCircleOutlined,
-  LoadingOutlined
-} from "@ant-design/icons-vue";
+import { LockOutlined, ProjectOutlined, QuestionCircleOutlined } from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
+import Loading from "@/components/Loading.vue";
 
 defineProps<{
   card: LayoutCard;
 }>();
 
-const indicator = h(LoadingOutlined, {
-  style: {
-    fontSize: "24px"
-  },
-  spin: true
-});
-
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
 
+const formData = ref<Settings>();
+
 const submit = async () => {
-  const res = await submitExecute({
-    data: {
-      ...formData.value
+  if (formData.value) {
+    const res = await submitExecute({
+      data: {
+        ...formData.value
+      }
+    });
+    if (res.value == "OK") {
+      return message.success(t("保存成功"));
     }
-  });
-  if (res.value == "OK") {
-    return message.success(t("保存成功"));
+    message.error(res.value);
   }
-  message.error(res.value);
 };
 
 const menus = [
@@ -79,8 +72,6 @@ const allYesNo = [
   }
 ];
 
-const formData = ref<Settings>({} as Settings);
-
 onMounted(async () => {
   const res = await execute();
   formData.value = res.value!;
@@ -89,7 +80,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <CardPanel class="CardWrapper" style="height: 100%" :padding="false">
+    <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
         <LeftMenusPanel :menus="menus">
           <template #baseInfo>
@@ -323,7 +314,7 @@ onMounted(async () => {
       </template>
     </CardPanel>
     <div v-if="!isReady" class="loading flex-center w-100 h-100">
-      <a-spin :indicator="indicator" :tip="t('Loading...')" />
+      <Loading></Loading>
     </div>
   </div>
 </template>
@@ -335,8 +326,6 @@ div {
     position: absolute;
     top: 0;
     left: 0;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
   }
 }
 </style>

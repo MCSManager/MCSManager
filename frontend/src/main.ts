@@ -16,14 +16,18 @@ import { userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
 
 (async function () {
-  const { updateUserInfo } = useAppStateStore();
-  const { execute: reqUserInfo } = userInfoApi();
-  const info = await reqUserInfo();
-  updateUserInfo(info.value);
-
-  const app = createApp(App);
-  app.use(createPinia());
-  app.use(router);
-  app.use(i18n);
-  app.mount("#app");
+  try {
+    const { updateUserInfo } = useAppStateStore();
+    const { execute: reqUserInfo } = userInfoApi();
+    const info = await reqUserInfo();
+    updateUserInfo(info.value);
+  } catch (err) {
+    console.warn("Failed to get user info: ", err);
+  } finally {
+    const app = createApp(App);
+    app.use(createPinia());
+    app.use(router);
+    app.use(i18n);
+    app.mount("#app");
+  }
 })();
