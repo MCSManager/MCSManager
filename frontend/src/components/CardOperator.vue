@@ -69,7 +69,7 @@ let btns = arrayFilter([
       <a-button
         :style="item.style"
         type="text"
-        size="default"
+        size="mini"
         :icon="h(item.icon)"
         @click="() => item.click(card.id)"
       />
@@ -100,7 +100,7 @@ let btns = arrayFilter([
   align-items: center;
   justify-content: center;
   background-color: var(--float-box-bg-color);
-  backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(16px);
   font-size: 12px;
   border: 1px dashed var(--gray-border-color);
   font-size: 12px;
@@ -110,10 +110,14 @@ let btns = arrayFilter([
 
 .number-card {
   position: absolute;
-  right: 16px;
-  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -4px;
   z-index: 10;
+  display: flex;
   > div {
+    min-width: 110px;
+    margin: 0px 6px;
     margin-bottom: 8px;
     padding: 2px 4px;
   }
@@ -126,10 +130,10 @@ let btns = arrayFilter([
 }
 .layout-card-design-btn {
   @extend .base;
-  width: 32px;
+  width: 28px;
   position: absolute;
-  left: -6px;
-  top: 0px;
+  left: -4px;
+  top: -4px;
 
   i {
     margin: 4px;

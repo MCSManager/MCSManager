@@ -69,11 +69,13 @@ const deleteLink = (index: number) => {
     <template #title>
       <div class="flex">
         {{ card.title }}
-        <div v-if="containerState.isDesignMode" class="btn-group ml-10">
-          <a-button type="primary" size="small" @click="addLink.show = true">
-            {{ t("添加") }}
-          </a-button>
-        </div>
+      </div>
+    </template>
+    <template #operator>
+      <div v-if="containerState.isDesignMode" class="btn-group ml-10">
+        <a-button type="primary" size="small" @click="addLink.show = true">
+          {{ t("添加") }}
+        </a-button>
       </div>
     </template>
 

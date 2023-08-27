@@ -22,7 +22,7 @@ const props = defineProps({
   >
     <div v-if="$slots.title" class="card-panel-title">
       <div>
-        <a-typography-title :level="5">
+        <a-typography-title :level="5" style="margin-bottom: 0px">
           <slot name="title"></slot>
         </a-typography-title>
       </div>
@@ -58,6 +58,7 @@ const props = defineProps({
     justify-content: space-between;
     align-items: center;
     margin-top: -4px; // For Ant-Design Font
+    margin-bottom: 8px;
   }
   .card-panel-content {
     flex-grow: 1;

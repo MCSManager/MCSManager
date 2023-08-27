@@ -39,19 +39,21 @@ const editTextContent = () => {
     <template #title>
       <div class="flex">
         {{ card.title }}
-        <div v-if="containerState.isDesignMode" class="ml-10">
-          <a-button
-            v-if="status !== EDIT_MODE.PREVIEW"
-            type="primary"
-            size="small"
-            @click="previewsTextContent()"
-          >
-            {{ t("预览") }}
-          </a-button>
-          <a-button v-else type="primary" size="small" @click="editTextContent()">
-            {{ t("编辑") }}
-          </a-button>
-        </div>
+      </div>
+    </template>
+    <template #operator>
+      <div v-if="containerState.isDesignMode" class="ml-10">
+        <a-button
+          v-if="status !== EDIT_MODE.PREVIEW"
+          type="primary"
+          size="small"
+          @click="previewsTextContent()"
+        >
+          {{ t("预览") }}
+        </a-button>
+        <a-button v-else type="primary" size="small" @click="editTextContent()">
+          {{ t("编辑") }}
+        </a-button>
       </div>
     </template>
 
