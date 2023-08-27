@@ -26,7 +26,10 @@ defineProps<{
 .btn {
   display: flex;
   text-align: center;
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0px 12px;
   min-width: 40px;
   cursor: pointer;
   border-radius: 6px;

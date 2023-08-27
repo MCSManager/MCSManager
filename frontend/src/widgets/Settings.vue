@@ -135,22 +135,6 @@ onMounted(async () => {
                   </a-form-item>
 
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("面板绑定IP") }}</a-typography-title>
-                    <a-typography-paragraph type="secondary">
-                      {{
-                        t(
-                          "适用于主机上拥有多张网卡多个IP地址的情况，如果您只有一个公网IP，那么请不要配置此项。"
-                        )
-                      }}
-                    </a-typography-paragraph>
-                    <a-input
-                      v-model:value="formData.httpIp"
-                      style="max-width: 320px"
-                      :placeholder="t('请输入内容')"
-                    />
-                  </a-form-item>
-
-                  <a-form-item>
                     <a-typography-title :level="5">{{ t("预设资源下载点") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{
@@ -161,6 +145,21 @@ onMounted(async () => {
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.quickInstallAddr"
+                      :placeholder="t('请输入内容')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("面板绑定IP") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{
+                        t(
+                          "适用于主机上拥有多张网卡多个IP地址的情况，如果您只有一个公网IP，那么请不要配置此项。"
+                        )
+                      }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.httpIp"
                       style="max-width: 320px"
                       :placeholder="t('请输入内容')"
                     />
