@@ -31,7 +31,11 @@ onMounted(() => {
   <div v-if="!isPhone" class="menu-body">
     <div class="left-menu">
       <div v-for="item in props.menus" :key="item.key" class="mb-6" @click="handleChangeMenu(item)">
-        <LeftMenuBtn :title="item.title" :icon="item.icon"> </LeftMenuBtn>
+        <LeftMenuBtn
+          :title="item.title"
+          :icon="item.icon"
+          :is-active="activeKey === item.key"
+        ></LeftMenuBtn>
       </div>
     </div>
     <div class="right-content" style="text-align: left">

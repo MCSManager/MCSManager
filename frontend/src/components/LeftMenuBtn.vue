@@ -5,12 +5,13 @@ defineProps<{
   title: string;
   textStyle?: any;
   icon?: FunctionalComponent;
+  isActive?: boolean;
 }>();
 </script>
 
 <template>
-  <div class="btn">
-    <component v-if="icon" :is="icon"></component>
+  <div :class="{ btn: true, isActive: isActive }">
+    <component :is="icon" v-if="icon"></component>
     <a-typography-text class="text ml-6" :style="textStyle">
       {{ title }}
     </a-typography-text>
@@ -18,6 +19,10 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
+.isActive {
+  background-color: rgba(168, 168, 168, 0.143);
+  color: var(--color-blue-5) !important;
+}
 .btn {
   display: flex;
   text-align: center;
@@ -28,7 +33,7 @@ defineProps<{
   transition: all 0.6s;
 
   .text {
-    color: var(--color-gray-9) !important;
+    color: var(--color-gray-9);
   }
 
   &:hover {
