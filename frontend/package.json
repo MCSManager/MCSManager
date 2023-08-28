@@ -20,6 +20,7 @@
     "axios": "^1.4.0",
     "crc": "^4.3.2",
     "dayjs": "^1.11.9",
+    "eventemitter3": "^5.0.1",
     "i18next-scanner": "^4.3.0",
     "lodash": "^4.17.21",
     "marked": "^7.0.3",

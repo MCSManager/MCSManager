@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  }
+}

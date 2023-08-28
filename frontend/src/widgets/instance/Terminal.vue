@@ -5,6 +5,9 @@ import type { LayoutCard } from "@/types";
 import { DownOutlined, PlaySquareOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useRoute } from "vue-router";
+import { useTerminal } from "../../hooks/useTerminal";
+import { onMounted } from "vue";
+import type { InstanceDetail } from "../../types/index";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -59,6 +62,19 @@ const instanceOperations = arrayFilter([
     }
   }
 ]);
+
+const { execute, events, state } = useTerminal();
+
+// events.on("detail", (v: InstanceDetail) => {
+//   console.debug("XZXZX:", v);
+// });
+
+onMounted(async () => {
+  await execute({
+    instanceId,
+    daemonId
+  });
+});
 </script>
 
 <template>
@@ -94,6 +110,10 @@ const instanceOperations = arrayFilter([
 
       <p>实例ID: {{ instanceId }}</p>
       <p>守护进程ID: {{ daemonId }}</p>
+
+      <p>
+        {{ state }}
+      </p>
     </template>
   </CardPanel>
 </template>
