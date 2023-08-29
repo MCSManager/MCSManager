@@ -1,7 +1,8 @@
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 import { onUnmounted, ref, unref } from "vue";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
+import type { Socket } from "socket.io-client";
 import { t } from "@/lang/i18n";
 import EventEmitter from "eventemitter3";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";

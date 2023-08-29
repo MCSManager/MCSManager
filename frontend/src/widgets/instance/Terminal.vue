@@ -65,9 +65,9 @@ const instanceOperations = arrayFilter([
 
 const { execute, events, state } = useTerminal();
 
-// events.on("detail", (v: InstanceDetail) => {
-//   console.debug("XZXZX:", v);
-// });
+events.on("stdout", (v: InstanceDetail) => {
+  console.debug("stdout:", v);
+});
 
 onMounted(async () => {
   await execute({
