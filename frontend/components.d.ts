@@ -42,6 +42,7 @@ declare module 'vue' {
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
+    CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     InnerCard: typeof import('./src/components/InnerCard.vue')['default']
     InputDialogProvider: typeof import('./src/components/InputDialogProvider.vue')['default']

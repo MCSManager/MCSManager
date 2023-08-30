@@ -5,6 +5,7 @@ import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, toRaw } from "vue";
 import { setUserApiKey } from "@/services/apis";
 import { message } from "ant-design-vue";
+import CopyButton from "@/components/CopyButton.vue";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -119,7 +120,7 @@ const onSubmit = () => {
             }}
           </a-typography-paragraph>
           <a-typography-paragraph v-if="state.userInfo?.apiKey">
-            <pre>{{ state.userInfo.apiKey }}</pre>
+            <pre>{{ state.userInfo.apiKey }}<CopyButton class="float-right" size="small" type="text" :value="state.userInfo.apiKey" /></pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
             <pre>{{ t("未启用") }}</pre>
@@ -135,8 +136,6 @@ const onSubmit = () => {
           <a-popconfirm
             v-if="state.userInfo?.apiKey"
             :title="t('你确定要关闭APIKey吗')"
-            ok-text="Yes"
-            cancel-text="No"
             @confirm="handleGenerateApiKey(false)"
           >
             <a-button size="default" danger> {{ t("关闭") }} </a-button>
