@@ -1,4 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { GlobalInstanceConfig } from "../../../../common/global";
+import type { InstanceDetail } from "@/types";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
@@ -19,4 +21,17 @@ export const setUpTerminalStreamChannel = useDefineApi<
 >({
   url: "/api/protected_instance/stream_channel",
   method: "POST"
+});
+
+export const getInstanceInfo = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  InstanceDetail
+>({
+  url: "/api/instance",
+  method: "GET"
 });

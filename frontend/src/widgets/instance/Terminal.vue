@@ -8,22 +8,16 @@ import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
 import { onMounted } from "vue";
 import type { InstanceDetail } from "../../types/index";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
-// 如果 meta 参数包含数值，则应该使用 meta 传递而来的参数。
-// 用户在新增卡片时会被要求补充 meta 参数。
-// 这样的好处是可以实现卡片被放置在任意界面。
-let { instanceId, daemonId } = props.card.meta ?? {};
+const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
-// 如果 Meta 中不包含实例 ID 和节点 ID，那么就需要从路由中获取 route 上的参数
-const route = useRoute();
-if (!instanceId || !daemonId) {
-  instanceId = route.query.instanceId ?? "";
-  daemonId = route.query.daemonId ?? "";
-}
+const instanceId = getMetaOrRouteValue<string>("instanceId");
+const daemonId = getMetaOrRouteValue<string>("daemonId");
 
 const quickOperations = arrayFilter([
   // {
@@ -70,10 +64,12 @@ events.on("stdout", (v: InstanceDetail) => {
 });
 
 onMounted(async () => {
-  await execute({
-    instanceId,
-    daemonId
-  });
+  if (instanceId && daemonId) {
+    await execute({
+      instanceId,
+      daemonId
+    });
+  }
 });
 </script>
 
