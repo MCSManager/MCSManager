@@ -6,9 +6,10 @@ import { DownOutlined, PlaySquareOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import type { InstanceDetail } from "../../types/index";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { getRandomId } from "../../tools/randId";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -18,6 +19,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
 const instanceId = getMetaOrRouteValue<string>("instanceId");
 const daemonId = getMetaOrRouteValue<string>("daemonId");
+const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 
 const quickOperations = arrayFilter([
   // {
@@ -57,11 +59,14 @@ const instanceOperations = arrayFilter([
   }
 ]);
 
-const { execute, events, state } = useTerminal();
+const { execute, initTerminalWindow } = useTerminal();
 
-events.on("stdout", (v: InstanceDetail) => {
-  console.debug("stdout:", v);
-});
+const initTerminal = () => {
+  const dom = document.getElementById(terminalDomId.value);
+  if (dom) {
+    initTerminalWindow(dom);
+  }
+};
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -70,6 +75,8 @@ onMounted(async () => {
       daemonId
     });
   }
+
+  initTerminal();
 });
 </script>
 
@@ -102,16 +109,37 @@ onMounted(async () => {
       </a-dropdown>
     </template>
     <template #body>
-      <p>控制台区域（TODO）</p>
+      <div class="terminal-wrapper">
+        <div class="terminal-container">
+          <div :id="terminalDomId"></div>
+        </div>
+      </div>
+      <!-- <p>控制台区域（TODO）</p>
 
       <p>实例ID: {{ instanceId }}</p>
       <p>守护进程ID: {{ daemonId }}</p>
 
       <p>
         {{ state }}
-      </p>
+      </p> -->
     </template>
   </CardPanel>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+@import "../../assets/xterm.scss";
+
+.terminal-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  background-color: #1e1e1e;
+  padding: 4px;
+  border-radius: 4px;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  .terminal-container {
+    min-width: 680px;
+  }
+}
+</style>
