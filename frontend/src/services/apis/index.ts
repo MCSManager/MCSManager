@@ -82,3 +82,16 @@ export const setUserApiKey = useDefineApi<
   url: "/api/auth/api",
   method: "PUT"
 });
+
+// 更新密码
+export const updatePassword = useDefineApi<
+  {
+    data: {
+      passWord: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth/update",
+  method: "PUT"
+});

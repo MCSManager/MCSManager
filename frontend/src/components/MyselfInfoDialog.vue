@@ -2,21 +2,25 @@
 import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
-import { reactive, toRaw } from "vue";
-import { setUserApiKey } from "@/services/apis";
+import { reactive, ref } from "vue";
+import { setUserApiKey, updatePassword } from "@/services/apis";
 import { message } from "ant-design-vue";
+import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
+import { sleep } from "@/tools/commom";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
-const { execute, isLoading } = setUserApiKey();
+const { execute, isLoading: setUserApiKeyLoading } = setUserApiKey();
+const { execute: executeUpdatePassword, isLoading: updatePasswordLoading } = updatePassword();
 
 const formState = reactive({
   resetPassword: false,
-  oldPassword: "",
   password1: "",
   password2: ""
 });
+
+const formRef = ref<FormInstance>();
 
 const handleGenerateApiKey = async (enable: boolean) => {
   const res = await execute({
@@ -31,9 +35,25 @@ const handleGenerateApiKey = async (enable: boolean) => {
   }
 };
 
-const handleChangePassword = () => {};
-const onSubmit = () => {
-  console.log("submit!", toRaw(formState));
+const handleChangePassword = async () => {
+  formRef.value?.validateFields().then(async () => {
+    if (formState.password1 !== formState.password2)
+      return message.error(t("两次输入的密码不一致"));
+    if (formState.password1.length < 6 || formState.password1.length > 36)
+      return message.error(t("密码长度不能小于6位"));
+    try {
+      await executeUpdatePassword({
+        data: {
+          passWord: formState.password1
+        }
+      });
+      await sleep(1000);
+      updateUserInfo();
+      return message.success(t("更新成功"));
+    } catch (error: any) {
+      return message.error(error.response.data.data);
+    }
+  });
 };
 </script>
 
@@ -46,7 +66,7 @@ const onSubmit = () => {
     @ok="tools.showUserInfoDialog = false"
   >
     <div>
-      <a-form :model="formState" layout="vertical">
+      <a-form ref="formRef" :model="formState" layout="vertical">
         <a-row>
           <a-col :span="12">
             <a-form-item :label="t('用户名')">
@@ -88,12 +108,6 @@ const onSubmit = () => {
           </a-button>
           <div v-if="formState.resetPassword">
             <a-input
-              v-model:value="formState.oldPassword"
-              size="default"
-              class="mb-12"
-              :placeholder="t('请输入旧密码')"
-            />
-            <a-input
               v-model:value="formState.password1"
               size="default"
               class="mb-12"
@@ -106,7 +120,13 @@ const onSubmit = () => {
               :placeholder="t('请重复输入新密码')"
             />
             <div>
-              <a-button size="default" @click="handleChangePassword">确定</a-button>
+              <a-button
+                size="default"
+                :loading="updatePasswordLoading"
+                @click="handleChangePassword"
+              >
+                确定
+              </a-button>
             </div>
           </div>
         </a-form-item>
@@ -128,7 +148,7 @@ const onSubmit = () => {
           <a-button
             class="mr-10"
             size="default"
-            :loading="isLoading"
+            :loading="setUserApiKeyLoading"
             @click="handleGenerateApiKey(true)"
           >
             {{ t("生成") }}
