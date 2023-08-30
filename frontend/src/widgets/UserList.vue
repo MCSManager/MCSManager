@@ -1,97 +1,68 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types/index";
-import { ref, computed } from "vue";
+import type { LayoutCard, UserInfo } from "@/types/index";
+import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
-
-export interface UserInfo {
-  key?: string | number;
-  name: string;
-  level: number;
-  time: number;
-  registerTime: number;
-}
+import { getUserInfo } from "@/services/apis";
 
 defineProps<{
   card: LayoutCard;
 }>();
 
+const { execute } = getUserInfo();
+
+// eslint-disable-next-line no-unused-vars
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const screen = useScreen();
 
 const operationForm = ref({
-  name: ""
+  name: "",
+  currentPage: 1,
+  pageSize: 20
 });
 
-const handleToUserConfig = (user: UserInfo) => {
+const handleToUserConfig = (user: any) => {
   console.log(user);
   toPage({
     path: "/users/config",
     query: {
-      uuid: "XXXZZZ123"
+      uuid: user.uuid
     }
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const handleDeleteUser = (user: UserInfo) => {};
 
-const dataSource: UserInfo[] = [
-  {
-    key: "1",
-    name: "Admin",
-    level: 10,
-    time: new Date().getTime(),
-    registerTime: new Date().getTime()
-  },
-  {
-    key: "2",
-    name: "Admin",
-    level: 10,
-    time: new Date().getTime(),
-    registerTime: new Date().getTime()
-  },
-  {
-    key: "3",
-    name: "Admin",
-    level: 10,
-    time: new Date().getTime(),
-    registerTime: new Date().getTime()
-  },
-  {
-    key: "4",
-    name: "Admin",
-    level: 10,
-    time: new Date().getTime(),
-    registerTime: new Date().getTime()
-  }
-];
+const dataSource = ref<UserInfo>({} as UserInfo);
+const total = ref(0);
 
 const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
       title: "用户名",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "userName",
+      key: "userName",
       minWidth: "200px"
     },
     {
       align: "center",
       title: "角色",
-      dataIndex: "level",
-      key: "level",
+      dataIndex: "permission",
+      key: "permission",
       minWidth: "200px"
     },
     {
       align: "center",
       title: "最后上线时间",
-      dataIndex: "time",
-      key: "time",
+      dataIndex: "loginTime",
+      key: "loginTime",
       minWidth: "200px",
       condition: () => !screen.isPhone.value
     },
@@ -113,6 +84,22 @@ const columns = computed(() => {
 });
 
 const rowSelection = () => {};
+
+const fetchData = async () => {
+  const res = await execute({
+    params: {
+      userName: operationForm.value.name,
+      page: operationForm.value.currentPage,
+      page_size: operationForm.value.pageSize
+    }
+  });
+  dataSource.value = res.value!;
+  total.value = res.value?.total ?? 0;
+};
+
+onMounted(async () => {
+  fetchData();
+});
 </script>
 
 <template>
@@ -155,7 +142,12 @@ const rowSelection = () => {};
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-table :row-selection="rowSelection" :data-source="dataSource" :columns="columns">
+            <a-table
+              :row-selection="rowSelection"
+              :data-source="dataSource.data"
+              :columns="columns"
+              :pagination="false"
+            >
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
                   <a-dropdown>
@@ -177,6 +169,15 @@ const rowSelection = () => {};
                 </template>
               </template>
             </a-table>
+            <div class="flex justify-end mt-24">
+              <a-pagination
+                v-model:current="operationForm.currentPage"
+                v-model:pageSize="operationForm.pageSize"
+                :total="total"
+                show-size-changer
+                @change="fetchData"
+              />
+            </div>
           </template>
         </CardPanel>
       </a-col>

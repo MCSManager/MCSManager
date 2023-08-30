@@ -85,3 +85,23 @@ export interface Settings {
   quickInstallAddr: string;
   redisUrl: string;
 }
+
+export interface UserInfo {
+  total: number;
+  pageSize: number;
+  page: number;
+  maxPage: number;
+  data: [
+    {
+      uuid: string;
+      userName: string;
+      registerTime: string;
+      permission: number;
+      passWordType: number;
+      loginTime: string;
+      isInit: boolean;
+      instances: any[];
+      apiKey: string;
+    }
+  ];
+}

@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus, Settings } from "@/types";
+import type { InstanceDetail, NodeStatus, Settings, UserInfo } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -68,4 +68,19 @@ export const setSettingInfo = useDefineApi<
 >({
   url: "/api/overview/setting",
   method: "PUT"
+});
+
+// 用户管理 获取信息
+export const getUserInfo = useDefineApi<
+  {
+    params: {
+      userName: string;
+      page: number;
+      page_size: number;
+    };
+  },
+  UserInfo
+>({
+  url: "/api/auth/search",
+  method: "GET"
 });
