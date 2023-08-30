@@ -3,37 +3,31 @@ import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, toRaw } from "vue";
-const { state } = useAppStateStore();
+import { setUserApiKey } from "@/services/apis";
+import { message } from "ant-design-vue";
+const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
-// const menus = [
-//   {
-//     title: t("基本信息"),
-//     key: "baseInfo",
-//     icon: ProjectOutlined
-//   },
-//   {
-//     title: t("第三方接口"),
-//     key: "api",
-//     icon: RobotOutlined
-//   },
-//   {
-//     title: t("账号安全"),
-//     key: "password",
-//     icon: RobotOutlined
-//   }
-// ];
+const { execute, isLoading } = setUserApiKey();
 
 const formState = reactive({
   resetPassword: false,
-  apikey: "",
   oldPassword: "",
   password1: "",
   password2: ""
 });
 
-const handleGenerateApiKey = () => {
-  formState.apikey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+const handleGenerateApiKey = async (enable: boolean) => {
+  const res = await execute({
+    data: {
+      enable
+    }
+  });
+
+  if (res.value) {
+    updateUserInfo();
+    return message.success(t("更新成功"));
+  }
 };
 
 const handleChangePassword = () => {};
@@ -45,8 +39,8 @@ const onSubmit = () => {
 <template>
   <a-modal
     v-model:open="tools.showUserInfoDialog"
-    :title="t('用户信息')"
     centered
+    :title="t('用户信息')"
     :footer="null"
     @ok="tools.showUserInfoDialog = false"
   >
@@ -124,10 +118,29 @@ const onSubmit = () => {
               )
             }}
           </a-typography-paragraph>
-          <a-typography-paragraph v-if="formState.apikey">
-            <pre>{{ formState.apikey }}</pre>
+          <a-typography-paragraph v-if="state.userInfo?.apiKey">
+            <pre>{{ state.userInfo.apiKey }}</pre>
           </a-typography-paragraph>
-          <a-button size="default" danger @click="handleGenerateApiKey">生成</a-button>
+          <a-typography-paragraph v-else>
+            <pre>{{ t("未启用") }}</pre>
+          </a-typography-paragraph>
+          <a-button
+            class="mr-10"
+            size="default"
+            :loading="isLoading"
+            @click="handleGenerateApiKey(true)"
+          >
+            {{ t("生成") }}
+          </a-button>
+          <a-popconfirm
+            v-if="state.userInfo?.apiKey"
+            :title="t('你确定要关闭APIKey吗')"
+            ok-text="Yes"
+            cancel-text="No"
+            @confirm="handleGenerateApiKey(false)"
+          >
+            <a-button size="default" danger> {{ t("关闭") }} </a-button>
+          </a-popconfirm>
         </a-form-item>
       </a-form>
     </div>
