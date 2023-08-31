@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
-import { useRoute } from "vue-router";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { getInstanceInfo } from "@/services/apis/instance";
 import { onMounted } from "vue";
@@ -11,11 +9,10 @@ const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { state } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
-const instanceId = getMetaOrRouteValue<string>("instanceId");
-const daemonId = getMetaOrRouteValue<string>("daemonId");
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
 
 const { execute, state: instanceInfo } = getInstanceInfo();
 
@@ -54,16 +51,9 @@ onMounted(async () => {
         {{ t("创建时间：") }}{{ instanceInfo?.config.createDatetime }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <span>{{ t("输出编码：") }}{{ instanceInfo?.config.nickname }} </span>
-        <span class="ml-6">{{ t("输入编码：") }}{{ instanceInfo?.config.nickname }} </span>
+        <span>{{ t("输出编码：") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>
+        <span class="ml-6">{{ t("输入编码：") }}{{ instanceInfo?.config.ie.toUpperCase() }} </span>
       </a-typography-paragraph>
-
-      <!-- <p>{{ t("名称:") }}{{ instanceInfo?.config.nickname }}</p> -->
     </template>
   </CardPanel>
 </template>
-
-<style lang="scss" scoped>
-// .containerWrapper {
-// }
-</style>

@@ -150,6 +150,15 @@ export function useTerminal() {
     terminal.value?.write(v.text);
   });
 
+  const sendCommand = (command: string) => {
+    if (!socket?.connected) throw new Error(t("实例没有在运行"));
+    socket.emit("stream/input", {
+      data: {
+        command
+      }
+    });
+  };
+
   // const handleTerminalSizeChange = () => {
   //   termFitAddon.value?.fit();
   // };
@@ -169,6 +178,7 @@ export function useTerminal() {
     events,
     state,
     terminal,
-    initTerminalWindow
+    initTerminalWindow,
+    sendCommand
   };
 }

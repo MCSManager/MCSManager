@@ -12,9 +12,9 @@ export function useLayoutCardTools(card: LayoutCard) {
     return card.meta[key] ?? def;
   };
 
-  const getMetaOrRouteValue = <T extends any>(key: string, def?: T) => {
+  const getMetaOrRouteValue = (key: string, def?: string): string | undefined => {
     if (card.meta[key] != null) {
-      return card.meta[key] as T;
+      return card.meta[key];
     }
     if (route.query[key] != null) {
       return String(route.query[key]);

@@ -25,8 +25,8 @@ const props = defineProps<{
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
-const instanceId = getMetaOrRouteValue<string>("instanceId");
-const daemonId = getMetaOrRouteValue<string>("daemonId");
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 const commandInputValue = ref("");
 
@@ -78,7 +78,12 @@ const instanceOperations = arrayFilter([
   }
 ]);
 
-const { execute, initTerminalWindow } = useTerminal();
+const { execute, initTerminalWindow, sendCommand } = useTerminal();
+
+const handleSendCommand = () => {
+  sendCommand(commandInputValue.value);
+  commandInputValue.value = "";
+};
 
 const initTerminal = () => {
   const dom = document.getElementById(terminalDomId.value);
@@ -134,7 +139,11 @@ onMounted(async () => {
           </div>
         </div>
         <div class="command-input">
-          <a-input v-model:value="commandInputValue" :placeholder="t('在这里输入命令按回车键发送')">
+          <a-input
+            v-model:value="commandInputValue"
+            :placeholder="t('在这里输入命令按回车键发送')"
+            @press-enter="handleSendCommand"
+          >
             <template #prefix>
               <CodeOutlined style="font-size: 18px" />
             </template>
