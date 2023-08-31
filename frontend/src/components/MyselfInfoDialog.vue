@@ -47,7 +47,6 @@ const handleChangePassword = async () => {
           passWord: formState.password1
         }
       });
-      await sleep(1000);
       updateUserInfo();
       return message.success(t("更新成功"));
     } catch (error: any) {
@@ -140,7 +139,8 @@ const handleChangePassword = async () => {
             }}
           </a-typography-paragraph>
           <a-typography-paragraph v-if="state.userInfo?.apiKey">
-            <pre>{{ state.userInfo.apiKey }}<CopyButton class="float-right" size="small" type="text" :value="state.userInfo.apiKey" /></pre>
+            <pre
+              class="flex flex-between">{{ state.userInfo.apiKey }}<CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
             <pre>{{ t("未启用") }}</pre>
