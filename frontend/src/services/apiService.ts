@@ -20,15 +20,13 @@ class ApiService {
   private readonly event = new EventEmitter();
 
   public async subscribe<T>(config: RequestConfig): Promise<T | undefined> {
-    const reqId = btoa(
-      encodeURIComponent(
-        [
-          String(config.method),
-          String(config.url),
-          JSON.stringify(config.data ?? {}),
-          JSON.stringify(config.params ?? {})
-        ].join("")
-      )
+    const reqId = encodeURIComponent(
+      [
+        String(config.method),
+        String(config.url),
+        JSON.stringify(config.data ?? {}),
+        JSON.stringify(config.params ?? {})
+      ].join("")
     );
 
     return new Promise((resolve, reject) => {
@@ -54,7 +52,7 @@ class ApiService {
       const result = await axios(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
-      const INV = 200;
+      const INV = 100;
       if (reqSpeed < INV) await this.wait(INV - reqSpeed);
       let realData = result.data;
       if (realData.data) realData = realData.data;

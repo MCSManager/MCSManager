@@ -35,3 +35,33 @@ export const getInstanceInfo = useDefineApi<
   url: "/api/instance",
   method: "GET"
 });
+
+export const openInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/open",
+  method: "GET"
+});
+
+export const stopInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/stop",
+  method: "GET"
+});

@@ -1,3 +1,5 @@
+@import "./xterm.scss";
+
 body,
 html {
   min-height: 100%;
@@ -77,9 +79,9 @@ html {
   margin: auto;
 }
 
-@media (max-width: 1470px) {
+@media (max-width: 1410px) {
   .global-app-container {
-    margin: 0px 25px;
+    margin: 0px 24px;
   }
 }
 

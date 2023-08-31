@@ -2,13 +2,22 @@
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { DownOutlined, PlaySquareOutlined } from "@ant-design/icons-vue";
+import {
+  CodeOutlined,
+  DownOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  PlaySquareOutlined
+} from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
-import { onMounted } from "vue";
+import { onMounted, computed, ref } from "vue";
 import type { InstanceDetail } from "../../types/index";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { getRandomId } from "../../tools/randId";
+import IconBtn from "@/components/IconBtn.vue";
+import { openInstance, stopInstance } from "@/services/apis/instance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -18,21 +27,33 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
 const instanceId = getMetaOrRouteValue<string>("instanceId");
 const daemonId = getMetaOrRouteValue<string>("daemonId");
+const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
+const commandInputValue = ref("");
 
 const quickOperations = arrayFilter([
-  // {
-  //   title: t("开启程序"),
-  //   icon: PlaySquareOutlined,
-  //   click: () => {
-  //     console.log(1);
-  //   },
-  //   props: {},
-  // },
+  {
+    title: t("开启程序"),
+    icon: PlayCircleOutlined,
+    click: () => {
+      openInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        }
+      });
+    },
+    props: {}
+  },
   {
     title: t("关闭程序"),
-    icon: PlaySquareOutlined,
+    icon: PauseCircleOutlined,
     click: () => {
-      console.log(2);
+      stopInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        }
+      });
     },
     props: {
       danger: true
@@ -57,11 +78,14 @@ const instanceOperations = arrayFilter([
   }
 ]);
 
-const { execute, events, state } = useTerminal();
+const { execute, initTerminalWindow } = useTerminal();
 
-events.on("stdout", (v: InstanceDetail) => {
-  console.debug("stdout:", v);
-});
+const initTerminal = () => {
+  const dom = document.getElementById(terminalDomId.value);
+  if (dom) {
+    initTerminalWindow(dom);
+  }
+};
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -70,6 +94,8 @@ onMounted(async () => {
       daemonId
     });
   }
+
+  initTerminal();
 });
 </script>
 
@@ -77,15 +103,15 @@ onMounted(async () => {
   <CardPanel class="containerWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #operator>
-      <a-button
+      <span
         v-for="item in quickOperations"
         :key="item.title"
         size="default"
-        class="mr-8"
+        class="mr-2"
         v-bind="item.props"
       >
-        {{ item.title }}
-      </a-button>
+        <IconBtn :icon="item.icon" :title="item.title" @click="item.click"></IconBtn>
+      </span>
       <a-dropdown>
         <template #overlay>
           <a-menu>
@@ -95,23 +121,53 @@ onMounted(async () => {
             </a-menu-item>
           </a-menu>
         </template>
-        <a-button size="default" type="primary">
-          操作
-          <DownOutlined />
-        </a-button>
+        <span size="default" type="primary">
+          <IconBtn :icon="DownOutlined" :title="t('操作')"></IconBtn>
+        </span>
       </a-dropdown>
     </template>
     <template #body>
-      <p>控制台区域（TODO）</p>
-
-      <p>实例ID: {{ instanceId }}</p>
-      <p>守护进程ID: {{ daemonId }}</p>
-
-      <p>
-        {{ state }}
-      </p>
+      <div class="console-wrapper">
+        <div class="terminal-wrapper">
+          <div class="terminal-container">
+            <div :id="terminalDomId"></div>
+          </div>
+        </div>
+        <div class="command-input">
+          <a-input v-model:value="commandInputValue" :placeholder="t('在这里输入命令按回车键发送')">
+            <template #prefix>
+              <CodeOutlined style="font-size: 18px" />
+            </template>
+          </a-input>
+        </div>
+      </div>
     </template>
   </CardPanel>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.console-wrapper {
+  .terminal-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background-color: #1e1e1e;
+    padding: 4px;
+    border-radius: 6px;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    .terminal-container {
+      min-width: 680px;
+      height: 100%;
+    }
+
+    margin-bottom: 12px;
+  }
+
+  .command-input {
+    position: relative;
+  }
+}
+</style>
