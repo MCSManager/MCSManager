@@ -20,15 +20,13 @@ class ApiService {
   private readonly event = new EventEmitter();
 
   public async subscribe<T>(config: RequestConfig): Promise<T | undefined> {
-    const reqId = btoa(
-      encodeURIComponent(
-        [
-          String(config.method),
-          String(config.url),
-          JSON.stringify(config.data ?? {}),
-          JSON.stringify(config.params ?? {})
-        ].join("")
-      )
+    const reqId = encodeURIComponent(
+      [
+        String(config.method),
+        String(config.url),
+        JSON.stringify(config.data ?? {}),
+        JSON.stringify(config.params ?? {})
+      ].join("")
     );
 
     return new Promise((resolve, reject) => {
