@@ -116,17 +116,19 @@ export function useTerminal() {
       disableStdin: false,
       cursorStyle: "underline",
       cursorBlink: true,
-      fontSize: isPhone.value ? 10 : 13,
+      fontSize: 14,
       theme: {
         background: "#1e1e1e"
       },
       allowProposedApi: true,
-      rendererType: "canvas"
+      rendererType: "canvas",
+      rows: 40,
+      cols: 160
     });
     const fitAddon = new FitAddon();
-    term.loadAddon(fitAddon);
+    // term.loadAddon(fitAddon);
     term.open(element);
-    fitAddon.fit();
+    // fitAddon.fit();
     termFitAddon.value = fitAddon;
 
     term.onData((data) => {
@@ -145,21 +147,20 @@ export function useTerminal() {
   };
 
   events.on("stdout", (v: StdoutData) => {
-    // console.debug("stdout:", v.text);
     terminal.value?.write(v.text);
   });
 
-  const handleTerminalSizeChange = () => {
-    termFitAddon.value?.fit();
-  };
+  // const handleTerminalSizeChange = () => {
+  //   termFitAddon.value?.fit();
+  // };
 
   onMounted(() => {
-    window.addEventListener("resize", handleTerminalSizeChange);
+    // window.addEventListener("resize", handleTerminalSizeChange);
   });
 
   onUnmounted(() => {
     events.removeAllListeners();
-    window.removeEventListener("resize", handleTerminalSizeChange);
+    // window.removeEventListener("resize", handleTerminalSizeChange);
     socket.close();
   });
 
