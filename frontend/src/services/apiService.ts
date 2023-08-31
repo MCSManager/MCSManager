@@ -54,7 +54,7 @@ class ApiService {
       const result = await axios(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
-      const INV = 200;
+      const INV = 100;
       if (reqSpeed < INV) await this.wait(INV - reqSpeed);
       let realData = result.data;
       if (realData.data) realData = realData.data;

@@ -6,10 +6,12 @@ defineProps<{
   title: string;
   placement?: string;
 }>();
+
+defineEmits(["click"]);
 </script>
 
 <template>
-  <span class="btn">
+  <span class="btn" @click="$emit('click')">
     <a-tooltip :placement="placement ? placement : 'top'">
       <template #title>
         <span>{{ title }}</span>

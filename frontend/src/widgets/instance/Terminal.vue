@@ -2,7 +2,13 @@
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { CodeOutlined, DownOutlined, PlaySquareOutlined } from "@ant-design/icons-vue";
+import {
+  CodeOutlined,
+  DownOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  PlaySquareOutlined
+} from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
@@ -11,6 +17,7 @@ import type { InstanceDetail } from "../../types/index";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
+import { openInstance, stopInstance } from "@/services/apis/instance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -24,19 +31,29 @@ const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 const commandInputValue = ref("");
 
 const quickOperations = arrayFilter([
-  // {
-  //   title: t("开启程序"),
-  //   icon: PlaySquareOutlined,
-  //   click: () => {
-  //     console.log(1);
-  //   },
-  //   props: {},
-  // },
+  {
+    title: t("开启程序"),
+    icon: PlayCircleOutlined,
+    click: () => {
+      openInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        }
+      });
+    },
+    props: {}
+  },
   {
     title: t("关闭程序"),
-    icon: PlaySquareOutlined,
+    icon: PauseCircleOutlined,
     click: () => {
-      console.log(2);
+      stopInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        }
+      });
     },
     props: {
       danger: true
@@ -90,10 +107,10 @@ onMounted(async () => {
         v-for="item in quickOperations"
         :key="item.title"
         size="default"
-        class="mr-8"
+        class="mr-2"
         v-bind="item.props"
       >
-        <IconBtn :icon="item.icon" :title="item.title"></IconBtn>
+        <IconBtn :icon="item.icon" :title="item.title" @click="item.click"></IconBtn>
       </span>
       <a-dropdown>
         <template #overlay>
@@ -128,9 +145,7 @@ onMounted(async () => {
   </CardPanel>
 </template>
 
-<style lang="scss">
-@import "../../assets/xterm.scss";
-
+<style lang="scss" scoped>
 .console-wrapper {
   .terminal-wrapper {
     position: relative;
