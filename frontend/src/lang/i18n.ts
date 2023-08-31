@@ -14,8 +14,8 @@ const i18n = createI18n({
   fallbackLocale: "en_US",
   messages: {
     en_US: enUS,
-    zh_CN: zhCN,
-  },
+    zh_CN: zhCN
+  }
 });
 
 const setLanguage = (lang: string) => {

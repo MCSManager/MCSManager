@@ -1,8 +1,7 @@
 import { v4 } from "uuid";
 
 export function generateRandomString(len = 16) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomString = "";
 
   for (let i = 0; i < len; i++) {

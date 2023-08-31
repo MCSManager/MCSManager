@@ -10,10 +10,8 @@ import {
   PlaySquareOutlined
 } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
-import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
 import { onMounted, computed, ref } from "vue";
-import type { InstanceDetail } from "../../types/index";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
