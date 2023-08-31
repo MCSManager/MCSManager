@@ -7,12 +7,12 @@ import type { BaseUserInfo } from "@/types/user";
 // 用户登录
 export const loginUser = useDefineApi<
   | {
-    // Post
-    data: {
-      username: string;
-      password: string;
-    };
-  }
+      // Post
+      data: {
+        username: string;
+        password: string;
+      };
+    }
   | undefined,
   // Response
   {
@@ -61,37 +61,11 @@ export const settingInfo = useDefineApi<any, Settings>({
 // 提交设置信息
 export const setSettingInfo = useDefineApi<
   | {
-    data: Settings;
-  }
+      data: Settings;
+    }
   | undefined,
   string
 >({
   url: "/api/overview/setting",
-  method: "PUT"
-});
-
-// 设置用户APIKey
-export const setUserApiKey = useDefineApi<
-  {
-    data: {
-      enable: boolean;
-    };
-  },
-  string
->({
-  url: "/api/auth/api",
-  method: "PUT"
-});
-
-// 更新密码
-export const updatePassword = useDefineApi<
-  {
-    data: {
-      passWord: string;
-    };
-  },
-  boolean
->({
-  url: "/api/auth/update",
   method: "PUT"
 });

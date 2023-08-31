@@ -3,7 +3,7 @@ import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, ref } from "vue";
-import { setUserApiKey, updatePassword } from "@/services/apis";
+import { setUserApiKey, updatePassword } from "@/services/apis/user";
 import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
