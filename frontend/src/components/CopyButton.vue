@@ -9,18 +9,13 @@ const props = defineProps<{
   value: string;
 }>();
 
-const copy = () => {
-  if (navigator.clipboard) {
-    navigator.clipboard
-      .writeText(props.value)
-      .then(() => {
-        message.success(t("复制成功"));
-      })
-      .catch((error) => {
-        message.error(t("复制失败：") + error);
-      });
-  } else {
-    message.error(t("您当前的浏览器不支持 Clipboard API"));
+const copy = async () => {
+  if (!navigator.clipboard) return message.error(t("您当前的浏览器不支持 Clipboard API"));
+  try {
+    await navigator.clipboard.writeText(props.value);
+    message.success(t("复制成功"));
+  } catch (error) {
+    message.error(t("复制失败：") + error);
   }
 };
 </script>
