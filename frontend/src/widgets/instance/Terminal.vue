@@ -3,11 +3,12 @@ import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import {
+  CloudDownloadOutlined,
   CodeOutlined,
   DownOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
-  PlaySquareOutlined
+  ReconciliationOutlined
 } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
@@ -16,67 +17,76 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
 import { openInstance, stopInstance } from "@/services/apis/instance";
+import { CloseOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+const { execute, initTerminalWindow, sendCommand } = useTerminal();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 const commandInputValue = ref("");
 
-const quickOperations = arrayFilter([
-  {
-    title: t("开启程序"),
-    icon: PlayCircleOutlined,
-    click: () => {
-      openInstance().execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || ""
-        }
-      });
+const quickOperations = computed(() =>
+  arrayFilter([
+    {
+      title: t("开启程序"),
+      icon: PlayCircleOutlined,
+      click: () => {
+        openInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      props: {}
     },
-    props: {}
-  },
-  {
-    title: t("关闭程序"),
-    icon: PauseCircleOutlined,
-    click: () => {
-      stopInstance().execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || ""
-        }
-      });
-    },
-    props: {
-      danger: true
+    {
+      title: t("关闭程序"),
+      icon: PauseCircleOutlined,
+      click: () => {
+        stopInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      props: {
+        danger: true
+      }
     }
-  }
-]);
+  ])
+);
 
 const instanceOperations = arrayFilter([
   {
     title: t("重启"),
-    icon: PlaySquareOutlined,
+    icon: ReconciliationOutlined,
+    click: () => {
+      console.log(3);
+    }
+  },
+  {
+    title: t("终止"),
+    icon: CloseOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
     title: t("更新"),
-    icon: PlaySquareOutlined,
+    icon: CloudDownloadOutlined,
     click: () => {
       console.log(4);
     }
   }
 ]);
-
-const { execute, initTerminalWindow, sendCommand } = useTerminal();
 
 const handleSendCommand = () => {
   sendCommand(commandInputValue.value);
@@ -88,6 +98,7 @@ const initTerminal = () => {
   if (dom) {
     initTerminalWindow(dom);
   }
+  throw new Error("init terminal failed");
 };
 
 onMounted(async () => {
@@ -97,7 +108,6 @@ onMounted(async () => {
       daemonId
     });
   }
-
   initTerminal();
 });
 </script>

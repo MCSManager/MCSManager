@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -17,6 +17,10 @@ import type { NodeStatus } from "../types/index";
 import { message } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import Loading from "@/components/Loading.vue";
+import { useInstanceInfo } from "@/hooks/useInstance";
+import type { InstanceMoreDetail } from "../hooks/useInstance";
+import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { useInstanceMoreDetail } from "../hooks/useInstance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -32,6 +36,15 @@ const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes } = remoteNodeList();
 const { execute: getInstances, state: instances, isLoading } = remoteInstances();
+
+const instancesMoreInfo = computed(() => {
+  const newInstances: InstanceMoreDetail[] = [];
+  for (const instance of instances.value?.data || []) {
+    const instanceMoreInfo = useInstanceMoreDetail(instance);
+    newInstances.push(instanceMoreInfo);
+  }
+  return newInstances;
+});
 
 const initNodes = async () => {
   await getNodes();
@@ -133,7 +146,7 @@ const handleChangeNode = () => {};
         </div>
       </a-col>
       <template v-if="!isLoading">
-        <a-col v-for="item in instances?.data" :key="item" :span="24" :md="6">
+        <a-col v-for="item in instancesMoreInfo" :key="item" :span="24" :md="6">
           <CardPanel
             class="instance-card"
             style="height: 100%"
@@ -144,11 +157,21 @@ const handleChangeNode = () => {};
               <a-typography-paragraph>
                 <div>
                   {{ t("状态：") }}
-                  {{ item.status }}
+                  <span v-if="item.moreInfo?.isRunning" class="color-success">
+                    <CheckCircleOutlined />
+                    {{ item.moreInfo?.statusText }}
+                  </span>
+                  <span v-else-if="item.moreInfo?.isStopped" class="color-info">
+                    {{ item.moreInfo?.statusText }}
+                  </span>
+                  <span v-else>
+                    <ExclamationCircleOutlined />
+                    {{ item.moreInfo?.statusText }}
+                  </span>
                 </div>
                 <div>
                   {{ t("类型：") }}
-                  {{ item.config.type }}
+                  {{ item.moreInfo?.instanceTypeText }}
                 </div>
                 <div>
                   {{ t("启动时间：") }}
