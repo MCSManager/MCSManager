@@ -10,6 +10,7 @@ declare module 'vue' {
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
+    ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACol: typeof import('ant-design-vue/es')['Col']
     ActionButton: typeof import('./src/components/ActionButton.vue')['default']
     ADrawer: typeof import('ant-design-vue/es')['Drawer']

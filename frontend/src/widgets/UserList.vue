@@ -3,16 +3,25 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard, UserInfo } from "@/types/index";
 import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
+import { message } from "ant-design-vue";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { getUserInfo } from "@/services/apis";
+import { getUserInfo, deleteUser as deleteUserApi } from "@/services/apis";
 
 defineProps<{
   card: LayoutCard;
 }>();
+
+interface dataType {
+  total: number;
+  pageSize: number;
+  page: number;
+  maxPage: number;
+  data: UserInfo[];
+}
 
 const { execute } = getUserInfo();
 
@@ -27,7 +36,6 @@ const operationForm = ref({
 });
 
 const handleToUserConfig = (user: any) => {
-  console.log(user);
   toPage({
     path: "/users/config",
     query: {
@@ -36,31 +44,47 @@ const handleToUserConfig = (user: any) => {
   });
 };
 
-// eslint-disable-next-line no-unused-vars
-const handleDeleteUser = (user: UserInfo) => {};
+const deleteUser = async (userList: string[]) => {
+  const { execute } = deleteUserApi();
+  const res = await execute({
+    data: userList
+  });
+  console.log(res.value);
 
-const dataSource = ref<UserInfo>({} as UserInfo);
+  if (res.value === true) {
+    message.success(t("删除成功"));
+    return fetchData();
+  }
+  message.error(t("删除失败"));
+};
+const handleDeleteUser = async (user: UserInfo) => {
+  await deleteUser([user.uuid]);
+};
+
+const data = ref<dataType>({} as dataType);
+const dataSource = computed(() => data.value.data);
+const selectedUsers = ref<UserInfo[]>([]);
 const total = ref(0);
 
 const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
-      title: "用户名",
+      title: t("用户名"),
       dataIndex: "userName",
       key: "userName",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: "角色",
+      title: t("权限"),
       dataIndex: "permission",
       key: "permission",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: "最后上线时间",
+      title: t("最后登录时间"),
       dataIndex: "loginTime",
       key: "loginTime",
       minWidth: "200px",
@@ -68,7 +92,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: "注册时间",
+      title: t("注册时间"),
       dataIndex: "registerTime",
       key: "registerTime",
       minWidth: "200px",
@@ -76,14 +100,35 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: "操作",
+      title: t("操作"),
       key: "action",
       minWidth: "200px"
     }
   ]);
 });
 
-const rowSelection = () => {};
+const rowSelection = {
+  selectedRowKeys: selectedUsers.value,
+  onChange: (selectedRowKeys: string[] | number[], selectedRows: UserInfo[]) => {
+    selectedUsers.value = selectedRows;
+  }
+};
+
+const handleBatchDelete = async () => {
+  console.log(selectedUsers.value);
+
+  // if (selectedUsers.value.length === 0) {
+  //   return message.warn(t("请选择要删除的用户"));
+  // }
+  // const res = await deleteUser(selectedUsers.value.map((user) => user.uuid));
+  // console.log(res);
+  // if (res === true) {
+  //   message.success(t("批量删除成功"));
+  //   selectedUsers.value = [];
+  //   return fetchData();
+  // {
+  //   message.error(t("删除失败"));
+};
 
 const fetchData = async () => {
   const res = await execute({
@@ -93,7 +138,7 @@ const fetchData = async () => {
       page_size: operationForm.value.pageSize
     }
   });
-  dataSource.value = res.value!;
+  data.value = res.value!;
   total.value = res.value?.total ?? 0;
 };
 
@@ -116,9 +161,11 @@ onMounted(async () => {
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="1">新增用户</a-menu-item>
-                  <a-menu-item key="2">删除用户</a-menu-item>
-                  <a-menu-item key="3">封禁用户</a-menu-item>
+                  <a-menu-item key="1">{{ t("新增用户") }}</a-menu-item>
+                  <a-menu-item key="2" @click="handleBatchDelete()">
+                    {{ t("删除用户") }}
+                  </a-menu-item>
+                  <a-menu-item key="3">{{ t("封禁用户") }}</a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
@@ -144,9 +191,11 @@ onMounted(async () => {
           <template #body>
             <a-table
               :row-selection="rowSelection"
-              :data-source="dataSource.data"
+              :data-source="dataSource"
               :columns="columns"
               :pagination="false"
+              :preserve-selected-row-keys="true"
+              :row-key="(record: UserInfo) => record.uuid"
             >
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">

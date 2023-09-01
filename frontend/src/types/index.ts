@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import type { GlobalInstanceConfig } from "./../../../common/global";
 import type { LayoutCardHeight } from "@/config/originLayoutConfig";
 
@@ -87,21 +88,13 @@ export interface Settings {
 }
 
 export interface UserInfo {
-  total: number;
-  pageSize: number;
-  page: number;
-  maxPage: number;
-  data: [
-    {
-      uuid: string;
-      userName: string;
-      registerTime: string;
-      permission: number;
-      passWordType: number;
-      loginTime: string;
-      isInit: boolean;
-      instances: any[];
-      apiKey: string;
-    }
-  ];
+  uuid: string;
+  userName: string;
+  registerTime: string;
+  permission: number;
+  passWordType: number;
+  loginTime: string;
+  isInit: boolean;
+  instances: any[];
+  apiKey: string;
 }

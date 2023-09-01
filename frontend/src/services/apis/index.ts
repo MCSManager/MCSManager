@@ -79,8 +79,19 @@ export const getUserInfo = useDefineApi<
       page_size: number;
     };
   },
-  UserInfo
+  { total: number; pageSize: number; page: number; maxPage: number; data: UserInfo[] }
 >({
   url: "/api/auth/search",
   method: "GET"
+});
+
+// 用户管理 删除用户
+export const deleteUser = useDefineApi<
+  {
+    data: string[];
+  },
+  any
+>({
+  url: "/api/auth",
+  method: "DELETE"
 });
