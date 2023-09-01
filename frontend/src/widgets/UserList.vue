@@ -49,8 +49,6 @@ const deleteUser = async (userList: string[]) => {
   const res = await execute({
     data: userList
   });
-  console.log(res.value);
-
   if (res.value === true) {
     message.success(t("删除成功"));
     return fetchData();
@@ -63,7 +61,7 @@ const handleDeleteUser = async (user: UserInfo) => {
 
 const data = ref<dataType>({} as dataType);
 const dataSource = computed(() => data.value.data);
-const selectedUsers = ref<UserInfo[]>([]);
+const selectedUsers = ref<string[]>([]);
 const total = ref(0);
 
 const columns = computed(() => {
@@ -106,30 +104,6 @@ const columns = computed(() => {
     }
   ]);
 });
-
-const rowSelection = {
-  selectedRowKeys: selectedUsers.value,
-  onChange: (selectedRowKeys: string[] | number[], selectedRows: UserInfo[]) => {
-    selectedUsers.value = selectedRows;
-  }
-};
-
-const handleBatchDelete = async () => {
-  console.log(selectedUsers.value);
-
-  // if (selectedUsers.value.length === 0) {
-  //   return message.warn(t("请选择要删除的用户"));
-  // }
-  // const res = await deleteUser(selectedUsers.value.map((user) => user.uuid));
-  // console.log(res);
-  // if (res === true) {
-  //   message.success(t("批量删除成功"));
-  //   selectedUsers.value = [];
-  //   return fetchData();
-  // {
-  //   message.error(t("删除失败"));
-};
-
 const fetchData = async () => {
   const res = await execute({
     params: {
@@ -140,6 +114,15 @@ const fetchData = async () => {
   });
   data.value = res.value!;
   total.value = res.value?.total ?? 0;
+};
+
+const handleBatchDelete = async () => {
+  console.log(selectedUsers.value);
+
+  if (selectedUsers.value.length === 0) {
+    return message.warn(t("请选择要删除的用户"));
+  }
+  await deleteUser(selectedUsers.value);
 };
 
 onMounted(async () => {
@@ -190,7 +173,13 @@ onMounted(async () => {
         <CardPanel style="height: 100%">
           <template #body>
             <a-table
-              :row-selection="rowSelection"
+              :row-selection="{
+                selectedRowKeys: selectedUsers,
+                onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
+                  selectedUsers = selectedRowKeys;
+                  console.log(selectedRowKeys, selectedRows, selectedUsers);
+                }
+              }"
               :data-source="dataSource"
               :columns="columns"
               :pagination="false"
