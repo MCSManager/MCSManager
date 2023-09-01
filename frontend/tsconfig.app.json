@@ -15,6 +15,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-     "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": [
+      "node"
+    ]
   }
 }

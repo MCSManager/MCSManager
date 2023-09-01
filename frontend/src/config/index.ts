@@ -28,6 +28,7 @@ import TextCard from "@/widgets/others/TextCard.vue";
 import LinkCard from "@/widgets/others/LinkCard.vue";
 import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
 import IframeCard from "@/widgets/others/IframeCard.vue";
+import ClockCard from "@/widgets/others/ClockCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 
@@ -58,7 +59,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   QuickStartFlow,
   IframeCard,
   TextCard,
-  LinkCard
+  LinkCard,
+  ClockCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -213,6 +215,18 @@ export function getLayoutCardPool() {
       title: t("超链接块"),
       width: 4,
       description: t("显示一组自定义超链接按钮"),
+      height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.OTHER
+    },
+
+    // 时钟卡片
+    {
+      id: getRandomId(),
+      meta: {},
+      type: "ClockCard",
+      title: t("时钟"),
+      width: 4,
+      description: t("显示当前时间"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     }
