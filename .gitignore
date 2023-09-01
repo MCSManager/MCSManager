@@ -119,3 +119,4 @@ src/public/1.png
 
 # IntelliJ Idea project files
 /.idea/*
+*/.idea/*
