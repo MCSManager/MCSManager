@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard, UserInfo } from "@/types/index";
 import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import { DownOutlined } from "@ant-design/icons-vue";
+
+import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
+
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { getUserInfo, deleteUser as deleteUserApi } from "@/services/apis";
+
+import type { LayoutCard, UserInfo } from "@/types/index";
 
 defineProps<{
   card: LayoutCard;
@@ -34,35 +37,6 @@ const operationForm = ref({
   currentPage: 1,
   pageSize: 20
 });
-
-const handleToUserConfig = (user: any) => {
-  toPage({
-    path: "/users/config",
-    query: {
-      uuid: user.uuid
-    }
-  });
-};
-
-const deleteUser = async (userList: string[]) => {
-  const { execute } = deleteUserApi();
-  const res = await execute({
-    data: userList
-  });
-  if (res.value === true) {
-    message.success(t("删除成功"));
-    return fetchData();
-  }
-  message.error(t("删除失败"));
-};
-const handleDeleteUser = async (user: UserInfo) => {
-  await deleteUser([user.uuid]);
-};
-
-const data = ref<dataType>({} as dataType);
-const dataSource = computed(() => data.value.data);
-const selectedUsers = ref<string[]>([]);
-const total = ref(0);
 
 const columns = computed(() => {
   return arrayFilter([
@@ -104,6 +78,37 @@ const columns = computed(() => {
     }
   ]);
 });
+
+const total = ref(0);
+const data = ref<dataType>({} as dataType);
+const dataSource = computed(() => data.value.data);
+const selectedUsers = ref<string[]>([]);
+
+const handleToUserConfig = (user: any) => {
+  toPage({
+    path: "/users/config",
+    query: {
+      uuid: user.uuid
+    }
+  });
+};
+
+const deleteUser = async (userList: string[]) => {
+  const { execute } = deleteUserApi();
+  const res = await execute({
+    data: userList
+  });
+  if (res.value === true) {
+    message.success(t("删除成功"));
+    return fetchData();
+  }
+  message.error(t("删除失败"));
+};
+
+const handleDeleteUser = async (user: UserInfo) => {
+  await deleteUser([user.uuid]);
+};
+
 const fetchData = async () => {
   const res = await execute({
     params: {
@@ -228,17 +233,13 @@ onMounted(async () => {
   transition: all 0.4s;
   text-align: center;
   width: 50%;
-}
 
-@media (max-width: 992px) {
-  .search-input {
-    transition: all 0.4s;
-    text-align: center;
+  &:hover {
+    width: 100%;
+  }
+
+  @media (max-width: 992px) {
     width: 100% !important;
   }
-}
-
-.search-input:hover {
-  width: 100%;
 }
 </style>
