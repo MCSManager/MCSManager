@@ -97,6 +97,14 @@
   user-select: none;
 }
 
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;
