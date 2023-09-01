@@ -49,3 +49,9 @@ export interface GlobalInstanceConfig {
     openFrpToken?: string;
   };
 }
+
+export interface PanelResponseProtocol {
+  data: any;
+  timestamp: number;
+  status: number;
+}

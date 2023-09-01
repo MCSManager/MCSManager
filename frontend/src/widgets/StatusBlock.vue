@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 
@@ -6,7 +7,18 @@ const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { title } = props.card.meta ?? {};
+const { getMetaValue, setMetaValue } = useLayoutCardTools(props.card);
+
+const type = getMetaValue<string>("type");
+
+const subTitleMap: Record<string, string> = {
+  node: "在线节点 / 总节点",
+  instance: "正在运行数 / 全部实例总数",
+  users: "登录失败次数 : 登录成功次数",
+  system: "面板所在主机 CPU，RAM 百分比"
+};
+
+const subTitle = subTitleMap[type] || "";
 
 const value = "10/11";
 </script>
@@ -16,7 +28,7 @@ const value = "10/11";
     <template #title>{{ card.title }}</template>
     <template #body>
       <a-typography-text class="color-info">
-        {{ title }}
+        {{ subTitle }}
       </a-typography-text>
 
       <div class="value">{{ value }}</div>

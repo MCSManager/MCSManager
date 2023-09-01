@@ -28,7 +28,6 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         type: "StatusBlock",
         title: t("节点在线数1"),
         meta: {
-          title: "在线节点 / 总节点",
           type: "node"
         },
         width: 3,
@@ -40,7 +39,6 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         type: "StatusBlock",
         title: t("实例运行状态"),
         meta: {
-          title: "正在运行数 / 全部实例总数",
           type: "instance"
         },
         width: 3,
@@ -52,7 +50,6 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         type: "StatusBlock",
         title: t("面板登录次数"),
         meta: {
-          title: "登录失败次数 : 登录成功次数",
           type: "users"
         },
         width: 3,
@@ -64,7 +61,6 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         type: "StatusBlock",
         title: t("系统资源信息"),
         meta: {
-          title: "面板所在主机 CPU，RAM 百分比",
           type: "system"
         },
         width: 3,

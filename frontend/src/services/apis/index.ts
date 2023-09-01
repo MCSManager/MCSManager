@@ -69,3 +69,10 @@ export const setSettingInfo = useDefineApi<
   url: "/api/overview/setting",
   method: "PUT"
 });
+
+// 获取总览
+
+// 获取设置信息
+export const overviewInfo = useDefineApi<any, Settings>({
+  url: "/api/overview"
+});

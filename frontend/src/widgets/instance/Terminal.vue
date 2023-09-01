@@ -96,7 +96,7 @@ const handleSendCommand = () => {
 const initTerminal = () => {
   const dom = document.getElementById(terminalDomId.value);
   if (dom) {
-    initTerminalWindow(dom);
+    return initTerminalWindow(dom);
   }
   throw new Error("init terminal failed");
 };
