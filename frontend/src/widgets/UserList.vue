@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import { DownOutlined } from "@ant-design/icons-vue";
+import { throttle } from "lodash";
 
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -190,6 +191,10 @@ const newUserDialog = ref({
   }
 });
 
+const reload = throttle(() => {
+  fetchData();
+}, 2000);
+
 onMounted(async () => {
   fetchData();
 });
@@ -289,7 +294,12 @@ onMounted(async () => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('根据用户名搜索')">
+              <a-input
+                v-model:value="operationForm.name"
+                :placeholder="t('根据用户名搜索')"
+                @change="reload()"
+                @press-enter="fetchData()"
+              >
                 <template #prefix>
                   <search-outlined />
                 </template>
