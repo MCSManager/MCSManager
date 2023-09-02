@@ -17,18 +17,6 @@ const type = getMetaValue<string>("type");
 const computedStatusList = computed(() => {
   if (!state.value) return [];
 
-  let totalInstance = 0;
-  let runningInstance = 0;
-  for (const iterator of state.value?.remote || []) {
-    if (iterator.instance) {
-      totalInstance += iterator.instance.total;
-      runningInstance += iterator.instance.running;
-    }
-  }
-
-  let cpu = Number(state.value.system.cpu * 100).toFixed(0);
-  let mem = Number((state.value.system.freemem / state.value.system.totalmem) * 100).toFixed(0);
-
   return [
     {
       type: "node",
@@ -38,7 +26,7 @@ const computedStatusList = computed(() => {
     {
       type: "instance",
       title: t("正在运行数 / 全部实例总数"),
-      value: `${runningInstance}/${totalInstance}`
+      value: `${state.value.runningInstance}/${state.value.runningInstance}`
     },
     {
       type: "users",
@@ -48,7 +36,7 @@ const computedStatusList = computed(() => {
     {
       type: "system",
       title: t("面板主机 CPU，RAM 使用率"),
-      value: `${cpu}% ${mem}%`
+      value: `${state.value.cpu}% ${state.value.mem}%`
     }
   ];
 });
