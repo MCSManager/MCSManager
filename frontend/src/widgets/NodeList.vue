@@ -4,12 +4,8 @@ import type { LayoutCard } from "@/types/index";
 import { ref, onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import {
-  NumberOutlined,
   ProfileOutlined,
   SearchOutlined,
-  PartitionOutlined,
-  UserOutlined,
-  FileOutlined,
   SettingOutlined,
   CodeOutlined,
   ClusterOutlined,
@@ -59,16 +55,16 @@ const computedNodes = computed(() => {
 const detailList = (node: ComputedNodeInfo) => {
   return [
     {
-      title: t("平台"),
-      value: node.platformText
-    },
-    {
-      title: t("CPU"),
-      value: node.cpuInfo
+      title: t("连接地址"),
+      value: `${node.ip}:${node.port}`
     },
     {
       title: t("内存"),
       value: node.memText
+    },
+    {
+      title: t("CPU"),
+      value: node.cpuInfo
     },
     {
       title: t("实例状态"),
@@ -77,6 +73,10 @@ const detailList = (node: ComputedNodeInfo) => {
     {
       title: t("在线状态"),
       value: node.available ? t("在线") : t("离线")
+    },
+    {
+      title: t("平台"),
+      value: node.platformText
     },
     {
       title: t("版本"),
@@ -192,6 +192,9 @@ const nodeOperations = [
                   </div>
                 </a-typography-paragraph>
               </a-col>
+
+              <a-col :span="12"> A </a-col>
+              <a-col :span="12"> b </a-col>
             </a-row>
           </template>
         </CardPanel>
