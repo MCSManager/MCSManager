@@ -184,6 +184,7 @@ const newUserDialog = ref({
     } catch (error: any) {
       message.error(t("新增用户失败：") + error.response.data.data);
     }
+    fetchData();
   }
 });
 
