@@ -262,7 +262,7 @@ const loginSuccess = () => {
 }
 .square-base {
   position: absolute;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.6s;
   box-shadow: 0 1px 2px 1px var(--card-shadow-color);
   background-color: var(--background-color-white);

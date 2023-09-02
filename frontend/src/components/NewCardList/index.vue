@@ -141,12 +141,12 @@ const handleTabClick = (value: string) => {
   background-color: var(--new-card-list-background-color-menu);
   backdrop-filter: saturate(100%) blur(12px);
   padding: 16px 0px;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px dashed var(--gray-border-color);
 }
 .card-container-wrapper {
   border: 1px dashed var(--gray-border-color);
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 16px;
   overflow: auto;
 }

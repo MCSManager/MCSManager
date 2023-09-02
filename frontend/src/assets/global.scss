@@ -33,7 +33,7 @@ html {
   opacity: 0.5;
   border: 1px dashed #5f5f5f;
   transform: scale(1.02);
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: var(--drag-background-color);
 }
 
@@ -95,7 +95,7 @@ html {
 .global-markdown-html {
   img {
     border: 0;
-    border-radius: 4px;
+    border-radius: 6px;
     width: 100%;
     box-shadow: 0 1px 2px 1px var(--card-shadow-color);
     height: 100%;

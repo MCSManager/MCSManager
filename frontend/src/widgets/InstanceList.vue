@@ -7,7 +7,8 @@ import {
   SearchOutlined,
   DownOutlined,
   FormOutlined,
-  DatabaseOutlined
+  DatabaseOutlined,
+  AppstoreOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
@@ -94,6 +95,7 @@ const handleChangeNode = () => {};
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
+              <AppstoreOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>

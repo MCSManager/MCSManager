@@ -11,14 +11,14 @@ defineEmits(["click"]);
 </script>
 
 <template>
-  <span class="btn" @click="$emit('click')">
-    <a-tooltip :placement="placement ? placement : 'top'">
-      <template #title>
-        <span>{{ title }}</span>
-      </template>
+  <a-tooltip :placement="placement ? placement : 'top'">
+    <template #title>
+      <span>{{ title }}</span>
+    </template>
+    <span class="btn" @click="$emit('click')">
       <component :is="icon"></component>
-    </a-tooltip>
-  </span>
+    </span>
+  </a-tooltip>
 </template>
 
 <style scoped lang="scss">
@@ -29,7 +29,7 @@ defineEmits(["click"]);
   cursor: pointer;
   user-select: none;
   transition: all 0.4s;
-  border-radius: 4px;
+  border-radius: 6px;
 
   &:hover {
     background-color: var(--color-gray-2);

@@ -404,7 +404,7 @@ const openPhoneMenu = (b = false) => {
     padding: 8px 12px;
     min-width: 40px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 
   .icon-button {
