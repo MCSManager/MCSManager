@@ -56,6 +56,43 @@ export interface IPanelResponseProtocol {
   status: number;
 }
 
+export interface IPanelOverviewRemoteResponse {
+  version: string;
+  process: {
+    cpu: number;
+    memory: number;
+    cwd: string;
+  };
+  instance: {
+    running: number;
+    total: number;
+  };
+  system: {
+    type: string;
+    hostname: string;
+    platform: string;
+    release: string;
+    uptime: number;
+    cwd: string;
+    loadavg: number[];
+    freemem: number;
+    cpuUsage: number;
+    memUsage: number;
+    totalmem: number;
+    processCpu: number;
+    processMem: number;
+  };
+  cpuMemChart: {
+    cpu: number;
+    mem: number;
+  }[];
+  uuid: string;
+  ip: string;
+  port: number;
+  available: boolean;
+  remarks: string;
+}
+
 export interface IPanelOverviewResponse {
   version: string;
   specifiedDaemonVersion: string;
@@ -71,7 +108,7 @@ export interface IPanelOverviewResponse {
     loginFailed: number;
   };
   system: {
-    user: os.UserInfo;
+    user: any;
     time: number;
     totalmem: number;
     freemem: number;
@@ -93,5 +130,5 @@ export interface IPanelOverviewResponse {
     available: number;
     total: number;
   };
-  remote: any[];
+  remote: IPanelOverviewRemoteResponse[];
 }

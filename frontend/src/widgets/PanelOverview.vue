@@ -9,16 +9,18 @@ defineProps<{
   card: LayoutCard;
 }>();
 
-const { state, isReady } = useOverviewInfo();
+const { state } = useOverviewInfo();
 
 const overviewList = computed(() => {
-  if (!state.value || !isReady.value)
+  if (!state.value)
     return [
       {
         title: t("数据加载中..."),
         value: ""
       }
     ];
+
+  console.debug("计算：ZZZZ", state.value);
 
   const { system, version, record, specifiedDaemonVersion, process } = state.value;
   const free = Number((system.freemem / 1024 / 1024 / 1024).toFixed(1));

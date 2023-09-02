@@ -26,7 +26,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
       {
         id: getRandomId(),
         type: "StatusBlock",
-        title: t("节点在线数1"),
+        title: t("节点在线数"),
         meta: {
           type: "node"
         },
