@@ -102,6 +102,21 @@ const handleToUserConfig = (user: any) => {
     }
   });
 };
+const fetchData = async () => {
+  const res = await execute({
+    params: {
+      userName: operationForm.value.name,
+      page: operationForm.value.currentPage,
+      page_size: operationForm.value.pageSize
+    }
+  });
+  data.value = res.value!;
+  total.value = res.value?.total ?? 0;
+};
+
+const reload = throttle(() => {
+  fetchData();
+}, 2000);
 
 const deleteUser = async (userList: string[]) => {
   const { execute } = deleteUserApi();
@@ -117,18 +132,6 @@ const deleteUser = async (userList: string[]) => {
 
 const handleDeleteUser = async (user: UserInfo) => {
   await deleteUser([user.uuid]);
-};
-
-const fetchData = async () => {
-  const res = await execute({
-    params: {
-      userName: operationForm.value.name,
-      page: operationForm.value.currentPage,
-      page_size: operationForm.value.pageSize
-    }
-  });
-  data.value = res.value!;
-  total.value = res.value?.total ?? 0;
 };
 
 const handleBatchDelete = async () => {
@@ -177,23 +180,17 @@ const newUserDialog = ref({
       return message.error(t("请正确填写表单"));
 
     try {
-      const res = await addUserExecute({
+      await addUserExecute({
         data: newUserDialog.value.data
       });
-      if (res.value === true) {
-        message.success(t("新增用户成功"));
-        newUserDialog.value.hidden();
-      }
+      message.success(t("新增用户成功"));
+      newUserDialog.value.hidden();
     } catch (error: any) {
       message.error(t("新增用户失败：") + error.response.data.data);
     }
     fetchData();
   }
 });
-
-const reload = throttle(() => {
-  fetchData();
-}, 2000);
 
 onMounted(async () => {
   fetchData();
