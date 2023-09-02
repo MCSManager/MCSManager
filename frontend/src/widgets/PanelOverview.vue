@@ -20,8 +20,6 @@ const overviewList = computed(() => {
       }
     ];
 
-  console.debug("计算：ZZZZ", state.value);
-
   const { system, version, record, specifiedDaemonVersion, process } = state.value;
   const free = Number((system.freemem / 1024 / 1024 / 1024).toFixed(1));
   const total = Number((system.totalmem / 1024 / 1024 / 1024).toFixed(1));

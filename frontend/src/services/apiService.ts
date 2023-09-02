@@ -67,11 +67,13 @@ class ApiService {
       if (this.responseMap.has(reqId) && !config.forceRequest) {
         const cache = this.responseMap.get(reqId) as ResponseDataRecord;
         if (cache.timestamp + this.RESPONSE_CACHE_TIME > Date.now()) {
+          console.debug("[ApiService] Cache hit: ", config);
           return this.event.emit(reqId, cache.data);
         }
       }
 
       console.debug(`[ApiService] Request: ${config.url} \n Full AxiosRequestConfig:`, config);
+      if (!config.timeout) config.timeout = 1000 * 10;
       const result = await axios(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
