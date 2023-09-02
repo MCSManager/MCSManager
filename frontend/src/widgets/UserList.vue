@@ -103,6 +103,9 @@ const handleToUserConfig = (user: any) => {
   });
 };
 const fetchData = async () => {
+  if (operationForm.value.currentPage < 1) {
+    operationForm.value.currentPage = 1;
+  }
   const res = await execute({
     params: {
       userName: operationForm.value.name,
