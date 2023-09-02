@@ -23,7 +23,11 @@ watch(state, () => {
     const v = source[key] as JsonData;
     v.time = `${MAX_TIME - Number(key) * 1} MIN`;
   }
+  const max = Math.max(...source.map((v) => v.value));
   chart.setOption({
+    yAxis: {
+      max
+    },
     dataset: {
       dimensions: ["time", "value"],
       source
