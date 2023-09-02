@@ -1,4 +1,4 @@
-import type { PanelResponseProtocol } from "./../../../common/global.d";
+import type { IPanelResponseProtocol } from "./../../../common/global.d";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import axios from "axios";
@@ -92,7 +92,7 @@ class ApiService {
       const axiosErr = error as AxiosError;
       const otherErr = error as Error | any;
       if (axiosErr?.response?.data) {
-        const protocol = axiosErr?.response?.data as PanelResponseProtocol;
+        const protocol = axiosErr?.response?.data as IPanelResponseProtocol;
         if (protocol.data && protocol.status !== 200) {
           throw new Error(String(protocol.data));
         } else {

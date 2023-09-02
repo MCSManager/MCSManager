@@ -1,5 +1,4 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { GlobalInstanceConfig } from "../../../../common/global";
 import type { InstanceDetail } from "@/types";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
