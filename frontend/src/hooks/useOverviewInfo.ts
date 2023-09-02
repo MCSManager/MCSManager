@@ -51,6 +51,7 @@ export function useOverviewInfo() {
 
   return {
     ...result,
-    state: result.state as Ref<ComputedOverviewResponse | undefined>
+    state: result.state as Ref<ComputedOverviewResponse | undefined>,
+    execute: null
   };
 }

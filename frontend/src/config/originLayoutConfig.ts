@@ -141,13 +141,16 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
     items: [
       {
         id: getRandomId(),
-        meta: {},
+        meta: {
+          viewType: "inner"
+        },
         type: "Terminal",
         title: t("控制台"),
         width: 12,
         height: LayoutCardHeight.BIG,
         disableDelete: true
       },
+
       {
         id: getRandomId(),
         meta: {},

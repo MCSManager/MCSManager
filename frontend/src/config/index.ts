@@ -100,13 +100,16 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       type: "Terminal",
       title: "实例控制台",
+
       width: 6,
       description: "用于显示和交互某个实例的控制台。",
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.INSTANCE,
 
       // 新增卡片时被要求填写的参数
-      meta: {},
+      meta: {
+        viewType: "card"
+      },
       params: [
         {
           field: "instanceId",
