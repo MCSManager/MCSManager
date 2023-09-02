@@ -179,8 +179,10 @@ const newUserDialog = ref({
       const res = await addUserExecute({
         data: newUserDialog.value.data
       });
-      if (res.value === true) message.success(t("新增用户成功"));
-      newUserDialog.value.hidden();
+      if (res.value === true) {
+        message.success(t("新增用户成功"));
+        newUserDialog.value.hidden();
+      }
     } catch (error: any) {
       message.error(t("新增用户失败：") + error.response.data.data);
     }
