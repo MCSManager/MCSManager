@@ -7,7 +7,6 @@ import { setUserApiKey, updatePassword } from "@/services/apis/user";
 import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
-import { sleep } from "@/tools/commom";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -23,15 +22,19 @@ const formState = reactive({
 const formRef = ref<FormInstance>();
 
 const handleGenerateApiKey = async (enable: boolean) => {
-  const res = await execute({
-    data: {
-      enable
+  try {
+    const res = await execute({
+      data: {
+        enable
+      },
+      forceRequest: true
+    });
+    if (res.value) {
+      updateUserInfo();
+      return message.success(t("更新成功"));
     }
-  });
-
-  if (res.value) {
-    updateUserInfo();
-    return message.success(t("更新成功"));
+  } catch (error: any) {
+    return message.error(error.message);
   }
 };
 
@@ -50,7 +53,7 @@ const handleChangePassword = async () => {
       updateUserInfo();
       return message.success(t("更新成功"));
     } catch (error: any) {
-      return message.error(error.response.data.data);
+      return message.error(error.message);
     }
   });
 };

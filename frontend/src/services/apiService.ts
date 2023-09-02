@@ -60,11 +60,11 @@ class ApiService {
     });
   }
 
-  private async sendRequest(reqId: string, config: AxiosRequestConfig) {
+  private async sendRequest(reqId: string, config: RequestConfig) {
     try {
       const startTime = Date.now();
 
-      if (this.responseMap.has(reqId)) {
+      if (this.responseMap.has(reqId) && !config.forceRequest) {
         const cache = this.responseMap.get(reqId) as ResponseDataRecord;
         if (cache.timestamp + this.RESPONSE_CACHE_TIME > Date.now()) {
           return this.event.emit(reqId, cache.data);
@@ -94,14 +94,15 @@ class ApiService {
       if (axiosErr?.response?.data) {
         const protocol = axiosErr?.response?.data as IPanelResponseProtocol;
         if (protocol.data && protocol.status !== 200) {
-          throw new Error(String(protocol.data));
-        } else {
-          throw error;
+          this.event.emit(reqId, new Error(String(protocol.data)));
+          return;
         }
       }
-      throw new Error(otherErr?.message ? otherErr?.message : String(otherErr));
-    } finally {
-      this.event.emit(reqId, undefined);
+      if (otherErr instanceof Error) {
+        this.event.emit(reqId, otherErr);
+      } else {
+        this.event.emit(reqId, new Error(String(otherErr)));
+      }
     }
   }
 
