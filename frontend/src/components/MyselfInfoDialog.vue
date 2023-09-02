@@ -23,16 +23,14 @@ const formRef = ref<FormInstance>();
 
 const handleGenerateApiKey = async (enable: boolean) => {
   try {
-    const res = await execute({
+    await execute({
       data: {
         enable
       },
       forceRequest: true
     });
-    if (res.value) {
-      updateUserInfo();
-      return message.success(t("更新成功"));
-    }
+    updateUserInfo();
+    return message.success(t("更新成功"));
   } catch (error: any) {
     return message.error(error.message);
   }
