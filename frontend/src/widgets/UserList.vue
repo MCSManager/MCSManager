@@ -10,7 +10,7 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { getUserInfo, deleteUser as deleteUserApi } from "@/services/apis";
+import { getUserInfo, deleteUser as deleteUserApi, addUser as addUserApi } from "@/services/apis";
 
 import type { LayoutCard, UserInfo } from "@/types/index";
 
@@ -38,6 +38,12 @@ const operationForm = ref({
   pageSize: 20
 });
 
+const permissionList = {
+  "1": t("普通用户"),
+  "10": t("管理员"),
+  "-1": t("被封禁")
+};
+
 const columns = computed(() => {
   return arrayFilter([
     {
@@ -52,7 +58,10 @@ const columns = computed(() => {
       title: t("权限"),
       dataIndex: "permission",
       key: "permission",
-      minWidth: "200px"
+      minWidth: "200px",
+      customRender: (e: { text: "1" | "10" | "-1" }) => {
+        return permissionList[e.text] || e.text;
+      }
     },
     {
       align: "center",
@@ -122,13 +131,61 @@ const fetchData = async () => {
 };
 
 const handleBatchDelete = async () => {
-  console.log(selectedUsers.value);
-
   if (selectedUsers.value.length === 0) {
     return message.warn(t("请选择要删除的用户"));
   }
   await deleteUser(selectedUsers.value);
 };
+
+const { execute: addUserExecute, isLoading: addUserIsLoading } = addUserApi();
+
+const newUserDialog = ref({
+  status: false,
+  title: t("新增用户"),
+  permissionList: [
+    {
+      lable: t("普通权限"),
+      value: 1
+    },
+    {
+      lable: t("最高权限"),
+      value: 10
+    }
+  ],
+  data: {
+    username: "",
+    password: "",
+    permission: 1
+  },
+  show: () => {
+    newUserDialog.value.status = true;
+  },
+  hidden: () => {
+    newUserDialog.value.clear();
+    newUserDialog.value.status = false;
+  },
+  clear: () => {
+    newUserDialog.value.data = {
+      username: "",
+      password: "",
+      permission: 1
+    };
+  },
+  resolve: async () => {
+    if (newUserDialog.value.data.username == "" || newUserDialog.value.data.password == "")
+      return message.error(t("请正确填写表单"));
+
+    try {
+      const res = await addUserExecute({
+        data: newUserDialog.value.data
+      });
+      if (res.value === true) message.success(t("新增用户成功"));
+      newUserDialog.value.hidden();
+    } catch (error: any) {
+      message.error(t("新增用户失败：") + error.response.data.data);
+    }
+  }
+});
 
 onMounted(async () => {
   fetchData();
@@ -136,6 +193,69 @@ onMounted(async () => {
 </script>
 
 <template>
+  <div class="new">
+    <a-modal
+      v-model:open="newUserDialog.status"
+      destroy-on-close="true"
+      :title="newUserDialog.title"
+      :confirm-loading="addUserIsLoading"
+      @ok="newUserDialog.resolve()"
+    >
+      <div class="mb-20">
+        <a-typography-title :level="5">{{ t("用户名") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("必填，6 到 12 个字符，支持中文，英文和字符") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="newUserDialog.data.username" :placeholder="t('请输入内容')" />
+      </div>
+
+      <div class="mb-20">
+        <a-typography-title :level="5">{{ t("用户密码") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("必填，9 到 36 个字符，必须包含大小写字母和数字") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="newUserDialog.data.password" :placeholder="t('请输入内容')" />
+      </div>
+
+      <div class="mb-20">
+        <a-typography-title :level="5">{{ t("权限") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("普通权限适用于商业用户，最高权限适用于管理人员") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-select v-model:value="newUserDialog.data.permission" style="max-width: 320px">
+          <a-select-option
+            v-for="item in newUserDialog.permissionList"
+            :key="item"
+            :value="item.value"
+          >
+            {{ item.lable }}
+          </a-select-option>
+        </a-select>
+      </div>
+
+      <div class="mb-20">
+        <a-typography-title :level="5">{{ t("注意事项") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{
+              t(
+                "若您从事出租商业活动，请务必保证应用实例运行在 Linux 的 Docker 虚拟容器中，否则将有安全隐患。"
+              )
+            }}
+            <br />
+            <a href="https://docs.mcsmanager.com/" target="_blank">具体信息参考</a>
+          </a-typography-text>
+        </a-typography-paragraph>
+      </div>
+    </a-modal>
+  </div>
+
   <div style="height: 100%" class="container">
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
@@ -149,15 +269,17 @@ onMounted(async () => {
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="1">{{ t("新增用户") }}</a-menu-item>
+                  <a-menu-item key="1" @click="newUserDialog.show()">
+                    {{ t("新增用户") }}
+                  </a-menu-item>
                   <a-menu-item key="2" @click="handleBatchDelete()">
                     {{ t("删除用户") }}
                   </a-menu-item>
-                  <a-menu-item key="3">{{ t("封禁用户") }}</a-menu-item>
+                  <!-- <a-menu-item key="3">{{ t("封禁用户") }}</a-menu-item> -->
                 </a-menu>
               </template>
               <a-button type="primary">
-                用户操作
+                {{ t("用户操作") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -182,7 +304,6 @@ onMounted(async () => {
                 selectedRowKeys: selectedUsers,
                 onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
                   selectedUsers = selectedRowKeys;
-                  console.log(selectedRowKeys, selectedRows, selectedUsers);
                 }
               }"
               :data-source="dataSource"
@@ -202,6 +323,9 @@ onMounted(async () => {
                         <a-menu-item key="2" @click="handleDeleteUser(record)">
                           {{ t("删除用户") }}
                         </a-menu-item>
+                        <!-- <a-menu-item key="3">
+                          {{ t("封禁用户") }}
+                        </a-menu-item> -->
                       </a-menu>
                     </template>
                     <a-button>

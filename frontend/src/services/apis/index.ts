@@ -95,3 +95,18 @@ export const deleteUser = useDefineApi<
   url: "/api/auth",
   method: "DELETE"
 });
+
+// 用户管理 新增用户
+export const addUser = useDefineApi<
+  {
+    data: {
+      username: string;
+      password: string;
+      permission: number;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth",
+  method: "POST"
+});
