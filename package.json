@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "echarts": "^5.4.3",
-    "zrender": "^5.4.4"
-  }
-}
