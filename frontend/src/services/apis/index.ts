@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus, Settings } from "@/types";
+import type { InstanceDetail, NodeStatus, Settings, UserInfo } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
@@ -69,6 +69,48 @@ export const setSettingInfo = useDefineApi<
 >({
   url: "/api/overview/setting",
   method: "PUT"
+});
+
+// 用户管理
+// 用户管理 获取信息
+export const getUserInfo = useDefineApi<
+  {
+    params: {
+      userName: string;
+      page: number;
+      page_size: number;
+    };
+  },
+  { total: number; pageSize: number; page: number; maxPage: number; data: UserInfo[] }
+>({
+  url: "/api/auth/search",
+  method: "GET"
+});
+
+// 用户管理 删除用户
+export const deleteUser = useDefineApi<
+  {
+    data: string[];
+  },
+  any
+>({
+  url: "/api/auth",
+  method: "DELETE"
+});
+
+// 用户管理 新增用户
+export const addUser = useDefineApi<
+  {
+    data: {
+      username: string;
+      password: string;
+      permission: number;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth",
+  method: "POST"
 });
 
 // 获取总览

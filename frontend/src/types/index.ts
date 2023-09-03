@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import type { IGlobalInstanceConfig } from "./../../../common/global";
 import type { LayoutCardHeight } from "@/config/originLayoutConfig";
 
@@ -84,4 +85,16 @@ export interface Settings {
   language: string;
   quickInstallAddr: string;
   redisUrl: string;
+}
+
+export interface UserInfo {
+  uuid: string;
+  userName: string;
+  registerTime: string;
+  permission: number;
+  passWordType: number;
+  loginTime: string;
+  isInit: boolean;
+  instances: any[];
+  apiKey: string;
 }
