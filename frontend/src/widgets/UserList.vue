@@ -127,6 +127,8 @@ const deleteUser = async (userList: string[]) => {
     await execute({
       data: userList
     });
+    message.success(t("删除成功"));
+    await fetchData();
   } catch (error: any) {
     message.error(error.message);
   }
