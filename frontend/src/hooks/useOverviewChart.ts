@@ -1,11 +1,11 @@
-import * as echarts from "echarts";
+import { init, graphic, type ECharts } from "echarts";
 import { onMounted, onUnmounted, ref } from "vue";
 
 export function useSimpleChart(dom: string, initData: number[] = []) {
-  let chart = ref<echarts.ECharts>();
+  let chart = ref<ECharts>();
 
   onMounted(() => {
-    chart.value = echarts.init(document.getElementById(dom));
+    chart.value = init(document.getElementById(dom));
     chart.value.setOption(getSimpleChartDefaultOption(initData));
   });
 
@@ -21,10 +21,10 @@ export function useSimpleChart(dom: string, initData: number[] = []) {
 }
 
 export function useOverviewChart(dom: string) {
-  let chart = ref<echarts.ECharts>();
+  let chart = ref<ECharts>();
 
   onMounted(() => {
-    chart.value = echarts.init(document.getElementById(dom));
+    chart.value = init(document.getElementById(dom));
     chart.value.setOption(getChartDefaultOption());
   });
 
@@ -40,7 +40,7 @@ export function useOverviewChart(dom: string) {
 }
 
 function getChartDefaultOption() {
-  const color: any = new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+  const color: any = new graphic.LinearGradient(0, 0, 0, 1, [
     {
       offset: 0,
       color: "rgb(67, 145, 250,0.8)"
@@ -101,7 +101,7 @@ function getSimpleChartDefaultOption(data: number[] = []) {
           width: 1
         },
         areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          color: new graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
               color: "rgb(67, 145, 250,0.8)"

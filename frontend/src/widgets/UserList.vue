@@ -258,7 +258,9 @@ onMounted(async () => {
               )
             }}
             <br />
-            <a href="https://docs.mcsmanager.com/" target="_blank">具体信息参考</a>
+            <a href="https://docs.mcsmanager.com/" target="_blank">
+              {{ t("了解更多") }}
+            </a>
           </a-typography-text>
         </a-typography-paragraph>
       </div>
