@@ -26,7 +26,7 @@ const computedStatusList = computed(() => {
     {
       type: "instance",
       title: t("正在运行数 / 全部实例总数"),
-      value: `${state.value.runningInstance}/${state.value.runningInstance}`
+      value: `${state.value.runningInstance}/${state.value.totalInstance}`
     },
     {
       type: "users",
