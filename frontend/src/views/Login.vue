@@ -160,10 +160,10 @@ const loginSuccess = () => {
                         v-model:value="formData.password"
                         class="mt-20"
                         type="password"
-                        :press-enter="handleLogin"
                         :placeholder="t('密码')"
                         size="large"
                         autocomplete="off"
+                        @press-enter="handleLogin"
                       >
                         <template #suffix>
                           <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
@@ -262,7 +262,7 @@ const loginSuccess = () => {
 }
 .square-base {
   position: absolute;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.6s;
   box-shadow: 0 1px 2px 1px var(--card-shadow-color);
   background-color: var(--background-color-white);

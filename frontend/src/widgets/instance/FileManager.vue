@@ -250,7 +250,7 @@ breadcrumbs.push({
 
 .file-breadcrumbs {
   border: 1px solid var(--color-gray-5);
-  border-radius: 4px;
+  border-radius: 6px;
 
   .file-breadcrumbs-item {
     padding: 6px;

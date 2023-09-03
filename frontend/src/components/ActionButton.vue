@@ -32,7 +32,7 @@ defineProps<{
   cursor: pointer;
   user-select: none;
   transition: all 0.4s;
-  border-radius: 4px;
+  border-radius: 6px;
 
   &:hover {
     border: 1px solid var(--color-gray-8);

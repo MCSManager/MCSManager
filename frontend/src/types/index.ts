@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import type { GlobalInstanceConfig } from "./../../../common/global";
+import type { IGlobalInstanceConfig } from "./../../../common/global";
 import type { LayoutCardHeight } from "@/config/originLayoutConfig";
 
 export interface JsonData {
@@ -58,7 +58,7 @@ export interface InstanceDetail {
     playersChart: any[];
     version: string;
   };
-  config: GlobalInstanceConfig;
+  config: IGlobalInstanceConfig;
 }
 
 export interface NodeStatus {

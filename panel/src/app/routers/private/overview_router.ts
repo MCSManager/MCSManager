@@ -1,3 +1,4 @@
+import { IPanelOverviewResponse } from "./../../../../../common/global.d";
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
@@ -40,7 +41,7 @@ router.get("/", permission({ level: 10, token: false }), async (ctx) => {
   }
   const selfInfo = systemInfo();
   // Get the information of the system where the panel is located
-  const overviewData = {
+  const overviewData: IPanelOverviewResponse = {
     version: getVersion(),
     specifiedDaemonVersion: specifiedDaemonVersion(),
     process: {

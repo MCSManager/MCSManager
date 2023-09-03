@@ -2,70 +2,105 @@
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { DownOutlined, PlaySquareOutlined } from "@ant-design/icons-vue";
+import {
+  CloudDownloadOutlined,
+  CloudServerOutlined,
+  CodeOutlined,
+  DownOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  ReconciliationOutlined
+} from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
-import { useRoute } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
-import { onMounted, computed } from "vue";
-import type { InstanceDetail } from "../../types/index";
+import { onMounted, computed, ref } from "vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
+import IconBtn from "@/components/IconBtn.vue";
+import { openInstance, stopInstance } from "@/services/apis/instance";
+import { CloseOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+const { execute, initTerminalWindow, sendCommand, state: instanceInfo } = useTerminal();
 
-const instanceId = getMetaOrRouteValue<string>("instanceId");
-const daemonId = getMetaOrRouteValue<string>("daemonId");
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
+const viewType = getMetaOrRouteValue("viewType");
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
+const commandInputValue = ref("");
 
-const quickOperations = arrayFilter([
-  // {
-  //   title: t("开启程序"),
-  //   icon: PlaySquareOutlined,
-  //   click: () => {
-  //     console.log(1);
-  //   },
-  //   props: {},
-  // },
-  {
-    title: t("关闭程序"),
-    icon: PlaySquareOutlined,
-    click: () => {
-      console.log(2);
+const quickOperations = computed(() =>
+  arrayFilter([
+    {
+      title: t("开启"),
+      icon: PlayCircleOutlined,
+      click: () => {
+        openInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      props: {}
     },
-    props: {
-      danger: true
+    {
+      title: t("关闭"),
+      icon: PauseCircleOutlined,
+      click: () => {
+        stopInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      props: {
+        danger: true
+      }
     }
-  }
-]);
+  ])
+);
 
 const instanceOperations = arrayFilter([
   {
     title: t("重启"),
-    icon: PlaySquareOutlined,
+    icon: ReconciliationOutlined,
+    click: () => {
+      console.log(3);
+    }
+  },
+  {
+    title: t("终止"),
+    icon: CloseOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
     title: t("更新"),
-    icon: PlaySquareOutlined,
+    icon: CloudDownloadOutlined,
     click: () => {
       console.log(4);
     }
   }
 ]);
 
-const { execute, initTerminalWindow } = useTerminal();
+const handleSendCommand = () => {
+  sendCommand(commandInputValue.value);
+  commandInputValue.value = "";
+};
 
 const initTerminal = () => {
   const dom = document.getElementById(terminalDomId.value);
   if (dom) {
-    initTerminalWindow(dom);
+    return initTerminalWindow(dom);
   }
+  throw new Error("init terminal failed");
 };
 
 onMounted(async () => {
@@ -75,24 +110,78 @@ onMounted(async () => {
       daemonId
     });
   }
-
   initTerminal();
 });
+
+const innerTerminalType = viewType === "inner";
 </script>
 
 <template>
-  <CardPanel class="containerWrapper" style="height: 100%">
+  <!-- Terminal Page View -->
+  <div v-if="innerTerminalType">
+    <div class="mb-24">
+      <BetweenMenus>
+        <template #left>
+          <a-typography-title class="mb-0" :level="4">
+            <CloudServerOutlined />
+            <span class="ml-8">{{ t("实例") }} {{ instanceInfo?.config.nickname }} </span>
+          </a-typography-title>
+        </template>
+        <template #right>
+          <a-dropdown>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item
+                  v-for="item in [...quickOperations, ...instanceOperations]"
+                  :key="item.title"
+                  @click="item.click"
+                >
+                  <component :is="item.icon" />
+                  {{ item.title }}
+                </a-menu-item>
+              </a-menu>
+            </template>
+            <a-button type="primary">
+              {{ t("操作") }}
+              <DownOutlined />
+            </a-button>
+          </a-dropdown>
+        </template>
+      </BetweenMenus>
+    </div>
+    <div class="console-wrapper">
+      <div class="terminal-wrapper">
+        <div class="terminal-container">
+          <div :id="terminalDomId"></div>
+        </div>
+      </div>
+      <div class="command-input">
+        <a-input
+          v-model:value="commandInputValue"
+          :placeholder="t('在这里输入命令按回车键发送')"
+          @press-enter="handleSendCommand"
+        >
+          <template #prefix>
+            <CodeOutlined style="font-size: 18px" />
+          </template>
+        </a-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other Page View -->
+  <CardPanel v-else class="containerWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #operator>
-      <a-button
+      <span
         v-for="item in quickOperations"
         :key="item.title"
         size="default"
-        class="mr-8"
+        class="mr-2"
         v-bind="item.props"
       >
-        {{ item.title }}
-      </a-button>
+        <IconBtn :icon="item.icon" :title="item.title" @click="item.click"></IconBtn>
+      </span>
       <a-dropdown>
         <template #overlay>
           <a-menu>
@@ -102,44 +191,60 @@ onMounted(async () => {
             </a-menu-item>
           </a-menu>
         </template>
-        <a-button size="default" type="primary">
-          操作
-          <DownOutlined />
-        </a-button>
+        <span size="default" type="primary">
+          <IconBtn :icon="DownOutlined" :title="t('操作')"></IconBtn>
+        </span>
       </a-dropdown>
     </template>
     <template #body>
-      <div class="terminal-wrapper">
-        <div class="terminal-container">
-          <div :id="terminalDomId"></div>
+      <div class="console-wrapper">
+        <div class="terminal-wrapper">
+          <div class="terminal-container">
+            <div :id="terminalDomId"></div>
+          </div>
+        </div>
+        <div class="command-input">
+          <a-input
+            v-model:value="commandInputValue"
+            :placeholder="t('在这里输入命令按回车键发送')"
+            @press-enter="handleSendCommand"
+          >
+            <template #prefix>
+              <CodeOutlined style="font-size: 18px" />
+            </template>
+          </a-input>
         </div>
       </div>
-      <!-- <p>控制台区域（TODO）</p>
-
-      <p>实例ID: {{ instanceId }}</p>
-      <p>守护进程ID: {{ daemonId }}</p>
-
-      <p>
-        {{ state }}
-      </p> -->
     </template>
   </CardPanel>
 </template>
 
-<style lang="scss">
-@import "../../assets/xterm.scss";
-
-.terminal-wrapper {
+<style lang="scss" scoped>
+.console-wrapper {
   position: relative;
   overflow: hidden;
-  height: 100%;
-  background-color: #1e1e1e;
-  padding: 4px;
-  border-radius: 4px;
-  overflow-x: auto !important;
-  overflow-y: hidden;
-  .terminal-container {
-    min-width: 680px;
+
+  .terminal-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background-color: #1e1e1e;
+    padding: 8px;
+    border-radius: 6px;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    .terminal-container {
+      min-width: 680px;
+      height: 100%;
+    }
+
+    margin-bottom: 12px;
+  }
+
+  .command-input {
+    position: relative;
   }
 }
 </style>

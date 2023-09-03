@@ -1,3 +1,5 @@
+@import "./xterm.scss";
+
 body,
 html {
   min-height: 100%;
@@ -31,7 +33,7 @@ html {
   opacity: 0.5;
   border: 1px dashed #5f5f5f;
   transform: scale(1.02);
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: var(--drag-background-color);
 }
 
@@ -77,9 +79,9 @@ html {
   margin: auto;
 }
 
-@media (max-width: 1470px) {
+@media (max-width: 1410px) {
   .global-app-container {
-    margin: 0px 25px;
+    margin: 0px 24px;
   }
 }
 
@@ -93,7 +95,7 @@ html {
 .global-markdown-html {
   img {
     border: 0;
-    border-radius: 4px;
+    border-radius: 6px;
     width: 100%;
     box-shadow: 0 1px 2px 1px var(--card-shadow-color);
     height: 100%;

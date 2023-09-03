@@ -22,7 +22,7 @@
   padding: 12px;
   cursor: pointer;
   transition: all 0.4s;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .inner-card-wrapper:hover {

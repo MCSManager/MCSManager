@@ -1,14 +1,47 @@
 <script setup lang="ts">
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import { t } from "@/lang/i18n";
-import type { LayoutCard } from "@/types";
+import type { JsonData, LayoutCard } from "@/types";
+import { computed } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { title } = props.card.meta ?? {};
+const { state } = useOverviewInfo();
+const { getMetaValue } = useLayoutCardTools(props.card);
 
-const value = "10/11";
+const type = getMetaValue<string>("type");
+
+const computedStatusList = computed(() => {
+  if (!state.value) return [];
+
+  return [
+    {
+      type: "node",
+      title: t("在线节点 / 总节点"),
+      value: `${state.value?.remoteCount.available}/${state.value?.remoteCount.total}`
+    },
+    {
+      type: "instance",
+      title: t("正在运行数 / 全部实例总数"),
+      value: `${state.value.runningInstance}/${state.value.totalInstance}`
+    },
+    {
+      type: "users",
+      title: t("登录失败次数 : 登录成功次数"),
+      value: `${state.value.record.loginFailed}:${state.value.record.logined}`
+    },
+    {
+      type: "system",
+      title: t("面板主机 CPU，RAM 使用率"),
+      value: `${state.value.cpu}% ${state.value.mem}%`
+    }
+  ];
+});
+
+const realStatus = computed(() => computedStatusList.value.find((v) => v.type === type));
 </script>
 
 <template>
@@ -16,10 +49,9 @@ const value = "10/11";
     <template #title>{{ card.title }}</template>
     <template #body>
       <a-typography-text class="color-info">
-        {{ title }}
+        {{ realStatus?.title }}
       </a-typography-text>
-
-      <div class="value">{{ value }}</div>
+      <div class="value">{{ realStatus?.value }}</div>
     </template>
   </CardPanel>
 </template>
@@ -28,7 +60,7 @@ const value = "10/11";
 .StatusBlock {
   .value {
     font-weight: 800;
-    font-size: 36px;
+    font-size: var(--font-h1);
     margin-top: 4px;
   }
 }

@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
-import { useRoute } from "vue-router";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { getInstanceInfo } from "@/services/apis/instance";
 import { onMounted } from "vue";
 import { t } from "@/lang/i18n";
+import { useInstanceInfo } from "@/hooks/useInstance";
+import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { state } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
-const instanceId = getMetaOrRouteValue<string>("instanceId");
-const daemonId = getMetaOrRouteValue<string>("daemonId");
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
 
-const { execute, state: instanceInfo } = getInstanceInfo();
+const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execute } =
+  useInstanceInfo({
+    instanceId,
+    daemonId,
+    autoRefresh: true
+  });
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -40,10 +43,21 @@ onMounted(async () => {
       <a-typography-paragraph>
         {{ t("名称：") }}{{ instanceInfo?.config.nickname }}
       </a-typography-paragraph>
+      <a-typography-paragraph> {{ t("类型：") }}{{ instanceTypeText }} </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("类型：") }}{{ instanceInfo?.config.type }}
+        <span>{{ t("状态：") }}</span>
+        <span v-if="isRunning" class="color-success">
+          <CheckCircleOutlined />
+          {{ statusText }}
+        </span>
+        <span v-else-if="isStopped" class="color-info">
+          <ExclamationCircleOutlined />
+          {{ statusText }}
+        </span>
+        <span v-else>
+          {{ statusText }}
+        </span>
       </a-typography-paragraph>
-      <a-typography-paragraph> {{ t("状态：") }}{{ instanceInfo?.status }} </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("最后启动：") }}{{ instanceInfo?.config.lastDatetime }}
       </a-typography-paragraph>
@@ -54,16 +68,9 @@ onMounted(async () => {
         {{ t("创建时间：") }}{{ instanceInfo?.config.createDatetime }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <span>{{ t("输出编码：") }}{{ instanceInfo?.config.nickname }} </span>
-        <span class="ml-6">{{ t("输入编码：") }}{{ instanceInfo?.config.nickname }} </span>
+        <span>{{ t("输出编码：") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>
+        <span class="ml-6">{{ t("输入编码：") }}{{ instanceInfo?.config.ie.toUpperCase() }} </span>
       </a-typography-paragraph>
-
-      <!-- <p>{{ t("名称:") }}{{ instanceInfo?.config.nickname }}</p> -->
     </template>
   </CardPanel>
 </template>
-
-<style lang="scss" scoped>
-// .containerWrapper {
-// }
-</style>

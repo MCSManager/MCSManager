@@ -1,6 +1,7 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail, NodeStatus, Settings, UserInfo } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
+import type { IPanelOverviewResponse } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
@@ -70,6 +71,7 @@ export const setSettingInfo = useDefineApi<
   method: "PUT"
 });
 
+// 用户管理
 // 用户管理 获取信息
 export const getUserInfo = useDefineApi<
   {
@@ -109,4 +111,11 @@ export const addUser = useDefineApi<
 >({
   url: "/api/auth",
   method: "POST"
+});
+
+// 获取总览
+
+// 获取设置信息
+export const overviewInfo = useDefineApi<any, IPanelOverviewResponse>({
+  url: "/api/overview"
 });

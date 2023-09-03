@@ -50,7 +50,7 @@ const editImgSrc = async () => {
 <style scoped lang="scss">
 img {
   border: 0;
-  border-radius: 4px;
+  border-radius: 6px;
   width: 100%;
   box-shadow: 0 1px 2px 1px var(--card-shadow-color);
   height: 100%;

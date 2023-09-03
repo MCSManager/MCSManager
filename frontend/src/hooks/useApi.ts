@@ -15,6 +15,7 @@ export function executeRequest<T>(config: RequestConfig) {
       immediate: false,
       shallow: false as any,
       throwError: true,
-    },
+      resetOnExecute: false
+    }
   );
 }

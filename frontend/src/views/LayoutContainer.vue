@@ -130,7 +130,7 @@ const {
   .layout-card-container {
     border: 1px dashed var(--gray-border-color);
     background-color: var(--drag-background-color);
-    border-radius: 4px;
+    border-radius: 6px;
     height: 100%;
   }
 }

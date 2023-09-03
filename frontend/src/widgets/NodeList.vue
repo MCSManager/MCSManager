@@ -1,11 +1,33 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, type Ref, watch } from "vue";
 import { t } from "@/lang/i18n";
-import { SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
+import {
+  ProfileOutlined,
+  SearchOutlined,
+  SettingOutlined,
+  CodeOutlined,
+  ClusterOutlined,
+  BlockOutlined,
+  FolderOpenOutlined
+} from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { remoteNodeList } from "../services/apis";
+import { useOverviewInfo } from "../hooks/useOverviewInfo";
+import type { IPanelOverviewRemoteResponse } from "../../../common/global";
+import IconBtn from "@/components/IconBtn.vue";
+import { useOverviewChart } from "../hooks/useOverviewChart";
+import { getRandomId } from "@/tools/randId";
+import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
+
+interface ComputedNodeInfo extends IPanelOverviewRemoteResponse {
+  platformText: string;
+  cpuInfo: string;
+  instanceStatus: string;
+  memText: string;
+  cpuChartData: number[];
+  memChartData: number[];
+}
 
 const props = defineProps<{
   card: LayoutCard;
@@ -15,14 +37,91 @@ const operationForm = ref({
   name: ""
 });
 
-const { execute: getRemoteNodeList, state: nodes } = remoteNodeList();
+const { state } = useOverviewInfo();
 
-onMounted(async () => {
-  const res = await getRemoteNodeList({
-    params: {}
-  });
-  console.log("XXZZ:", res);
+onMounted(async () => {});
+
+const computedNodes = computed(() => {
+  const newNodes = state.value?.remote as ComputedNodeInfo[] | undefined;
+  if (!newNodes) return [];
+  for (let node of newNodes) {
+    const free = Number(node.system.freemem / 1024 / 1024 / 1024).toFixed(1);
+    const total = Number(node.system.totalmem / 1024 / 1024 / 1024).toFixed(1);
+    const used = Number(Number(total) - Number(free)).toFixed(1);
+    node.platformText =
+      node?.system?.platform == "win32" ? "windows" : node?.system?.platform || "--";
+    node.instanceStatus = `${node.instance.running}/${node.instance.total}`;
+    node.cpuInfo = `${Number(node.system.cpuUsage * 100).toFixed(1)}%`;
+    node.memText = `${used}G/${total}G`;
+    node.cpuChartData = node?.cpuMemChart.map((v) => v.cpu);
+    node.memChartData = node?.cpuMemChart.map((v) => v.mem);
+  }
+  return newNodes;
 });
+
+const detailList = (node: ComputedNodeInfo) => {
+  return [
+    {
+      title: t("连接地址"),
+      value: `${node.ip}:${node.port}`
+    },
+    {
+      title: t("内存"),
+      value: node.memText
+    },
+    {
+      title: t("CPU"),
+      value: node.cpuInfo
+    },
+    {
+      title: t("实例状态"),
+      value: node.instanceStatus
+    },
+    {
+      title: t("在线状态"),
+      value: node.available ? t("在线") : t("离线")
+    },
+    {
+      title: t("平台"),
+      value: node.platformText
+    },
+    {
+      title: t("版本"),
+      value: node.version
+    }
+  ];
+};
+
+const nodeOperations = [
+  {
+    title: t("文件管理"),
+    icon: FolderOpenOutlined,
+    click: () => {
+      console.log(3);
+    }
+  },
+  {
+    title: t("终端"),
+    icon: CodeOutlined,
+    click: () => {
+      console.log(3);
+    }
+  },
+  {
+    title: t("镜像管理"),
+    icon: BlockOutlined,
+    click: () => {
+      console.log(3);
+    }
+  },
+  {
+    title: t("设置"),
+    icon: SettingOutlined,
+    click: () => {
+      console.log(3);
+    }
+  }
+];
 </script>
 
 <template>
@@ -32,6 +131,7 @@ onMounted(async () => {
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
+              <ClusterOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
@@ -63,16 +163,48 @@ onMounted(async () => {
         </a-typography-text>
       </a-col>
 
-      <a-col v-for="item in nodes" :key="item" :span="24" :lg="12">
+      <a-col v-for="item in computedNodes" :key="item.uuid" :span="24" :lg="12">
         <CardPanel style="height: 100%">
-          <template #title>{{ item.remarks || item.ip }}</template>
+          <template #title>
+            <ProfileOutlined />
+            {{ item.remarks || item.ip }}
+          </template>
+          <template #operator>
+            <span
+              v-for="operation in nodeOperations"
+              :key="operation.title"
+              size="default"
+              class="mr-2"
+            >
+              <IconBtn
+                :icon="operation.icon"
+                :title="operation.title"
+                @click="operation.click"
+              ></IconBtn>
+            </span>
+          </template>
           <template #body>
-            卡片示例 <br />
-            测试信息
-            <p>
-              我是测试信息113sadklasndfiasbifoashiofhwoifhopiashdoias iofan oiqwoie rhiwoh oiwa
-              doiaw oid owiaydhoia ocaoshd oiadh oiadhioas doiashd oa o123123
-            </p>
+            <a-row :gutter="[24, 24]" class="mt-2">
+              <a-col
+                v-for="detail in detailList(item)"
+                :key="detail.title + detail.value"
+                :span="6"
+              >
+                <a-typography-paragraph>
+                  <div>
+                    {{ detail.title }}
+                  </div>
+                  <div>
+                    {{ detail.value }}
+                  </div>
+                </a-typography-paragraph>
+              </a-col>
+            </a-row>
+            <NodeSimpleChart
+              class="mt-24"
+              :cpu-data="item.cpuChartData"
+              :mem-data="item.memChartData"
+            ></NodeSimpleChart>
           </template>
         </CardPanel>
       </a-col>

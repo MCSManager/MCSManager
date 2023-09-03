@@ -1,5 +1,4 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { GlobalInstanceConfig } from "../../../../common/global";
 import type { InstanceDetail } from "@/types";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -33,5 +32,35 @@ export const getInstanceInfo = useDefineApi<
   InstanceDetail
 >({
   url: "/api/instance",
+  method: "GET"
+});
+
+export const openInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/open",
+  method: "GET"
+});
+
+export const stopInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/stop",
   method: "GET"
 });

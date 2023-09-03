@@ -27,12 +27,12 @@ export function markdownToHTML(markdown: string) {
       "tbody",
       "tr",
       "th",
-      "td",
+      "td"
     ],
     allowedAttributes: {
       a: ["href", "target"],
-      img: ["height", "width", "src", "alt"],
-    },
+      img: ["height", "width", "src", "alt"]
+    }
   });
   return safeHtml;
 }
