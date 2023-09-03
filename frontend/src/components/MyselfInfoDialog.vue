@@ -22,18 +22,15 @@ const formState = reactive({
 const formRef = ref<FormInstance>();
 
 const handleGenerateApiKey = async (enable: boolean) => {
-  try {
-    await execute({
-      data: {
-        enable
-      },
-      forceRequest: true
-    });
-    updateUserInfo();
-    return message.success(t("更新成功"));
-  } catch (error: any) {
-    return message.error(error.message);
-  }
+  await execute({
+    data: {
+      enable
+    },
+    forceRequest: true,
+    errorAlert: true
+  });
+  updateUserInfo();
+  return message.success(t("更新成功"));
 };
 
 const handleChangePassword = async () => {

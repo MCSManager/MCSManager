@@ -1,3 +1,4 @@
+import { message } from "ant-design-vue";
 import type { IPanelResponseProtocol } from "./../../../common/global.d";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { AxiosError, AxiosRequestConfig } from "axios";
@@ -15,6 +16,7 @@ axios.interceptors.request.use(async (config) => {
 
 export interface RequestConfig extends AxiosRequestConfig {
   forceRequest?: boolean;
+  errorAlert?: boolean;
 }
 interface ResponseDataRecord {
   timestamp: number;
@@ -47,6 +49,9 @@ class ApiService {
     return new Promise((resolve, reject) => {
       this.event.once(reqId, (data: any) => {
         if (data instanceof Error) {
+          if (config.errorAlert === true) {
+            message.error(data.message);
+          }
           reject(data);
         } else {
           data = _.cloneDeep(data);
@@ -90,7 +95,6 @@ class ApiService {
 
       this.event.emit(reqId, realData);
     } catch (error: AxiosError | Error | any) {
-      console.error("Request Error:", error);
       const axiosErr = error as AxiosError;
       const otherErr = error as Error | any;
       if (axiosErr?.response?.data) {
