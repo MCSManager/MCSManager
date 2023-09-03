@@ -90,8 +90,8 @@ const columns = computed(() => {
 });
 
 const total = ref(0);
-const data = ref<dataType>({} as dataType);
-const dataSource = computed(() => data.value.data);
+const data = ref<dataType>();
+const dataSource = computed(() => data?.value?.data);
 const selectedUsers = ref<string[]>([]);
 
 const handleToUserConfig = (user: any) => {
@@ -122,15 +122,14 @@ const reload = throttle(() => {
 }, 2000);
 
 const deleteUser = async (userList: string[]) => {
-  const { execute } = deleteUserApi();
-  const res = await execute({
-    data: userList
-  });
-  if (res.value === true) {
-    message.success(t("删除成功"));
-    return fetchData();
+  try {
+    const { execute } = deleteUserApi();
+    await execute({
+      data: userList
+    });
+  } catch (error: any) {
+    message.error(error.message);
   }
-  message.error(t("删除失败"));
 };
 
 const handleDeleteUser = async (user: UserInfo) => {
@@ -189,7 +188,7 @@ const newUserDialog = ref({
       message.success(t("新增用户成功"));
       newUserDialog.value.hidden();
     } catch (error: any) {
-      message.error(t("新增用户失败：") + error.response.data.data);
+      message.error(t("新增用户失败：") + error.message);
     }
     fetchData();
   }
