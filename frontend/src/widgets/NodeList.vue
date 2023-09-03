@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted, computed, type Ref, watch } from "vue";
+import { ref } from "vue";
 import { t } from "@/lang/i18n";
 import {
   ProfileOutlined,
@@ -13,21 +13,9 @@ import {
   FolderOpenOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useOverviewInfo } from "../hooks/useOverviewInfo";
-import type { IPanelOverviewRemoteResponse } from "../../../common/global";
+import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
-import { useOverviewChart } from "../hooks/useOverviewChart";
-import { getRandomId } from "@/tools/randId";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
-
-interface ComputedNodeInfo extends IPanelOverviewRemoteResponse {
-  platformText: string;
-  cpuInfo: string;
-  instanceStatus: string;
-  memText: string;
-  cpuChartData: number[];
-  memChartData: number[];
-}
 
 const props = defineProps<{
   card: LayoutCard;
@@ -38,26 +26,6 @@ const operationForm = ref({
 });
 
 const { state } = useOverviewInfo();
-
-onMounted(async () => {});
-
-const computedNodes = computed(() => {
-  const newNodes = state.value?.remote as ComputedNodeInfo[] | undefined;
-  if (!newNodes) return [];
-  for (let node of newNodes) {
-    const free = Number(node.system.freemem / 1024 / 1024 / 1024).toFixed(1);
-    const total = Number(node.system.totalmem / 1024 / 1024 / 1024).toFixed(1);
-    const used = Number(Number(total) - Number(free)).toFixed(1);
-    node.platformText =
-      node?.system?.platform == "win32" ? "windows" : node?.system?.platform || "--";
-    node.instanceStatus = `${node.instance.running}/${node.instance.total}`;
-    node.cpuInfo = `${Number(node.system.cpuUsage * 100).toFixed(1)}%`;
-    node.memText = `${used}G/${total}G`;
-    node.cpuChartData = node?.cpuMemChart.map((v) => v.cpu);
-    node.memChartData = node?.cpuMemChart.map((v) => v.mem);
-  }
-  return newNodes;
-});
 
 const detailList = (node: ComputedNodeInfo) => {
   return [
@@ -163,7 +131,7 @@ const nodeOperations = [
         </a-typography-text>
       </a-col>
 
-      <a-col v-for="item in computedNodes" :key="item.uuid" :span="24" :lg="12">
+      <a-col v-for="item in state?.remote" :key="item.uuid" :span="24" :lg="12">
         <CardPanel style="height: 100%">
           <template #title>
             <ProfileOutlined />

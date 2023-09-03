@@ -1,12 +1,22 @@
 import { overviewInfo } from "@/services/apis";
-import { computed, onMounted, onUnmounted, type Ref } from "vue";
-import type { IPanelOverviewResponse } from "../../../common/global";
+import { onMounted, onUnmounted, ref, type Ref } from "vue";
+import type { IPanelOverviewRemoteResponse, IPanelOverviewResponse } from "../../../common/global";
 
-interface ComputedOverviewResponse extends IPanelOverviewResponse {
+export interface ComputedOverviewResponse extends IPanelOverviewResponse {
   totalInstance: number;
   runningInstance: number;
   cpu: number;
   mem: number;
+  remote: ComputedNodeInfo[];
+}
+
+export interface ComputedNodeInfo extends IPanelOverviewRemoteResponse {
+  platformText: string;
+  cpuInfo: string;
+  instanceStatus: string;
+  memText: string;
+  cpuChartData: number[];
+  memChartData: number[];
 }
 
 function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
@@ -29,16 +39,39 @@ function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
 
   currentState.cpu = Number(cpu);
   currentState.mem = Number(mem);
+
+  const newNodes = v.value?.remote as ComputedNodeInfo[] | undefined;
+  if (newNodes) {
+    for (let node of newNodes) {
+      const free = Number(node.system.freemem / 1024 / 1024 / 1024).toFixed(1);
+      const total = Number(node.system.totalmem / 1024 / 1024 / 1024).toFixed(1);
+      const used = Number(Number(total) - Number(free)).toFixed(1);
+      node.platformText =
+        node?.system?.platform == "win32" ? "windows" : node?.system?.platform || "--";
+      node.instanceStatus = `${node.instance.running}/${node.instance.total}`;
+      node.cpuInfo = `${Number(node.system.cpuUsage * 100).toFixed(1)}%`;
+      node.memText = `${used}G/${total}G`;
+      node.cpuChartData = node?.cpuMemChart.map((v) => v.cpu);
+      node.memChartData = node?.cpuMemChart.map((v) => v.mem);
+    }
+  }
+  return currentState;
 }
 
 export function useOverviewInfo() {
   const result = overviewInfo();
   let task: NodeJS.Timer | undefined;
 
+  const newState = ref<ComputedOverviewResponse>();
+
+  const refresh = async () => {
+    newState.value = computeResponseData(await result.execute());
+  };
+
   onMounted(async () => {
-    computeResponseData(await result.execute());
+    refresh();
     task = setInterval(async () => {
-      computeResponseData(await result.execute());
+      await refresh();
     }, 3000);
   });
 
@@ -51,7 +84,7 @@ export function useOverviewInfo() {
 
   return {
     ...result,
-    state: result.state as Ref<ComputedOverviewResponse | undefined>,
+    state: newState,
     execute: null
   };
 }

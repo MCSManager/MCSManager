@@ -1,6 +1,5 @@
 import { createGlobalState } from "@vueuse/core";
 import { overviewInfo } from "./apis";
-import { onMounted } from "vue";
 
 export const useAppToolsStore = createGlobalState(() => {
   const { execute, state } = overviewInfo();
