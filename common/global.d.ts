@@ -58,16 +58,16 @@ export interface IPanelResponseProtocol {
 
 export interface IPanelOverviewRemoteResponse {
   version: string;
-  process: {
+  process?: {
     cpu: number;
     memory: number;
     cwd: string;
   };
-  instance: {
+  instance?: {
     running: number;
     total: number;
   };
-  system: {
+  system?: {
     type: string;
     hostname: string;
     platform: string;
@@ -82,7 +82,7 @@ export interface IPanelOverviewRemoteResponse {
     processCpu: number;
     processMem: number;
   };
-  cpuMemChart: {
+  cpuMemChart?: {
     cpu: number;
     mem: number;
   }[];

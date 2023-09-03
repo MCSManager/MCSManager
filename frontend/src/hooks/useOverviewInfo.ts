@@ -11,12 +11,12 @@ export interface ComputedOverviewResponse extends IPanelOverviewResponse {
 }
 
 export interface ComputedNodeInfo extends IPanelOverviewRemoteResponse {
-  platformText: string;
-  cpuInfo: string;
-  instanceStatus: string;
-  memText: string;
-  cpuChartData: number[];
-  memChartData: number[];
+  platformText?: string;
+  cpuInfo?: string;
+  instanceStatus?: string;
+  memText?: string;
+  cpuChartData?: number[];
+  memChartData?: number[];
 }
 
 function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
@@ -43,6 +43,7 @@ function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
   const newNodes = v.value?.remote as ComputedNodeInfo[] | undefined;
   if (newNodes) {
     for (let node of newNodes) {
+      if (!node.system || !node.instance || !node.cpuMemChart) continue;
       const free = Number(node.system.freemem / 1024 / 1024 / 1024).toFixed(1);
       const total = Number(node.system.totalmem / 1024 / 1024 / 1024).toFixed(1);
       const used = Number(Number(total) - Number(free)).toFixed(1);

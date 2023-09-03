@@ -119,7 +119,7 @@ const fetchData = async () => {
 
 const reload = throttle(() => {
   fetchData();
-}, 2000);
+}, 600);
 
 const deleteUser = async (userList: string[]) => {
   try {

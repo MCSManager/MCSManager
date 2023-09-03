@@ -22,6 +22,7 @@ import { useInstanceInfo } from "@/hooks/useInstance";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
+import { throttle } from "lodash";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -52,7 +53,7 @@ const initNodes = async () => {
   if (!nodes.value?.length) {
     return message.error(t("面板未能链接到任何一个远程节点，请先前往节点界面添加远程节点"));
   }
-  if (nodes.value?.length === 1) {
+  if (nodes.value?.length > 0) {
     currentRemoteNode.value = nodes.value[0];
   }
 };
@@ -74,6 +75,10 @@ const initInstancesData = async () => {
 onMounted(async () => {
   await initInstancesData();
 });
+
+const handleQueryInstance = throttle(async () => {
+  await initInstancesData();
+}, 600);
 
 const toAppDetailPage = (daemonId: string, instanceId: string) => {
   router.push({
@@ -126,7 +131,8 @@ const handleChangeNode = () => {};
               <a-input
                 v-model:value="operationForm.instanceName"
                 :placeholder="t('根据应用名字搜索')"
-                @press-enter="initInstancesData"
+                @press-enter="handleQueryInstance"
+                @change="handleQueryInstance"
               >
                 <template #prefix>
                   <search-outlined />
@@ -147,7 +153,7 @@ const handleChangeNode = () => {};
           />
         </div>
       </a-col>
-      <template v-if="!isLoading">
+      <template v-if="instancesMoreInfo">
         <a-col v-for="item in instancesMoreInfo" :key="item" :span="24" :md="6">
           <CardPanel
             class="instance-card"
@@ -188,10 +194,6 @@ const handleChangeNode = () => {};
           </CardPanel>
         </a-col>
       </template>
-
-      <a-col v-if="isLoading" :span="24">
-        <Loading class="mt-24"></Loading>
-      </a-col>
     </a-row>
   </div>
 </template>

@@ -170,8 +170,8 @@ const nodeOperations = [
             </a-row>
             <NodeSimpleChart
               class="mt-24"
-              :cpu-data="item.cpuChartData"
-              :mem-data="item.memChartData"
+              :cpu-data="item.cpuChartData ?? []"
+              :mem-data="item.memChartData ?? []"
             ></NodeSimpleChart>
           </template>
         </CardPanel>
