@@ -10,8 +10,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "i18n": "i18next-scanner --config i18next-scaner.config.js"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",

@@ -1,0 +1,14 @@
+{
+  "name": "languages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "i18n": "i18next-scanner --config i18next-scaner.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "i18next-scanner": "^4.4.0"
+  }
+}
