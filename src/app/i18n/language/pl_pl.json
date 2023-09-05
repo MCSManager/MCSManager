@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Tytuł"
+  },
+  "app": {
+    "developInfo": "Nie można uruchomić! To jest projekt deweloperski używany przez deweloperów MCSManager.\nPrzejdź do https://mcsmanager.com/ aby uzyskać instrukcje instalacji.\nJeśli chcesz uruchomić ten projekt w trybie deweloperskim utwórz ręcznie następujący katalog: public, src/public, umieścić w nim statyczny plik frontendu do uruchomienia.",
+    "panelStarted": "Panel się uruchamia.",
+    "reference": "Odniesienie do projektu: https://github.com/mcsmanager",
+    "host": "Adres dostępu: http://localhost:{{port}}",
+    "portTip": "Musisz otworzyć port daemona i port {{port}} dla publicznego dostępu.",
+    "exitTip": "Użyj Ctrl+C, aby zamknąć ten program.",
+    "httpSetupError": "TPort może być już używany lub urządzenie sieciowe jest niedostępne."
+  },
+  "permission": {
+    "forbidden": "Niewystarczające uprawnienia",
+    "forbiddenTokenError": "Nie udało się zweryfikować tokena (Token), odmowa dostępu.",
+    "xmlhttprequestError": "Nie można znaleźć nagłówka żądania x-requested-with: xmlhttprequest",
+    "apiError": "Nieprawidłowy klucz",
+    "forbiddenInstance": "[Forbidden] [Middleware] Nieprawidłowe parametry lub nielegalny dostęp.",
+    "tooFast": "Zbyt wiele żądań w krótkim czasie, spróbuj ponownie później."
+  },
+  "systemRemoteService": {
+    "nodeCount": "Zdalne węzły: {{n}}",
+    "loadDaemonTitle": "Próba odczytania lokalnego demona {{localKeyFilePath}}",
+    "autoCheckDaemon": "Wykryto lokalnego demona, próba pobrania klucza i portu...",
+    "error": "Nie można załadować konfiguracji z lokalnego demona, należy skonfigurować demona ręcznie. Odwiedź https://docs.mcsmanager.com/, aby uzyskać więcej informacji."
+  },
+  "systemUser": {
+    "userCount": "Użytkownicy lokalni：{{n}}"
+  },
+  "router": {
+    "user": {
+      "invalidUserName": "Nieprawidłowy format nazwy użytkownika",
+      "invalidPassword": "Nieprawidłowy format hasła",
+      "existsUserName": "Nazwa użytkownika już istnieje",
+      "deleteFailure": "Nie można usunąć danych użytkownika",
+      "passwordCheck": "Hasło musi zawierać następujące elementy: wielka litera, mała litera, cyfry i długość od 9 do 36.",
+      "installed": "Nie można zainstalować panelu: już zainstalowany. W celu ponownej instalacji wykonaj kopię zapasową i usuń folder danych."
+    },
+    "instance": {
+      "createError": "Nie udało się utworzyć instancji".
+    },
+    "file": {
+      "off": "Administrator systemu zdecydował się ograniczyć funkcję zarządzania plikami dla wszystkich użytkowników."
+    },
+    "schedule": {
+      "invalidName": "Nieprawidłowa nazwa zadania"
+    },
+    "login": {
+      "ban": "Twój adres IP został zablokowany na 10 minut z powodu wielokrotnego niepowodzenia uwierzytelniania",
+      "nameOrPassError": "Nieprawidłowa nazwa użytkownika lub hasło",
+      "init": "[Instalacja] Inicjowanie konta administratora: {{userName}}",
+      "installed": "Nie można zainstalować panelu: już zainstalowany. W celu ponownej instalacji wykonaj kopię zapasową i usuń folder danych."
+    }
+  },
+  "daemonInfo": {
+    "connect": "Zdalny węzeł {{- v}} połączony",
+    "disconnect": "Zdalny węzeł {{- v}} rozłączony",
+    "connectError": "Błąd połączenia ze zdalnym węzłem:{{- v}} ",
+    "authSuccess": "Weryfikacja tokena zdalnego węzła {{- v}} powiodła się",
+    "authFailure": "Weryfikacja tokenu zdalnego węzła {{- v}} nie powiodła się.",
+    "authError": "Błąd weryfikacji tokenu w zdalnym węźle {{- v}}",
+    "closed": "Aktywnie rozłącz się ze zdalnym węzłem {{- v}} ",
+    "resetConnect": "Żądanie użytkownika o ponowne połączenie wszystkich dostępnych węzłów zdalnych, ponowne połączenie...",
+    "replaceConnect": "Użytkownik zainicjował żądanie zduplikowanego połączenia, resetując połączenie.",
+    "tryConnect": "Próba połączenia ze zdalnym węzłem...",
+    "setLanguage": "Ustaw język węzła".
+  }
+}
