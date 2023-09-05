@@ -1,10 +1,9 @@
-/* eslint-disable no-undef */
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   mode: "production",
-  entry: "./dist/app.js",
+  entry: "./dist/daemon/src/app.js",
   target: "node",
   externalsPresets: { node: true },
   externals: [nodeExternals()],
@@ -14,7 +13,6 @@ module.exports = {
   },
   resolve: {
     alias: {
-      // 创建别名
       "@languages": path.resolve(__dirname, "../languages")
     }
   }

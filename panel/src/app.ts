@@ -1,4 +1,4 @@
-import os from "os";
+import "module-alias/register";
 
 // Initialize the version manager & i18n
 import { $t, i18next } from "./app/i18n";

@@ -1,18 +1,21 @@
 {
   "name": "mcsmanager-daemon",
-  "version": "3.4.0",
+  "version": "4.0.0",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
-  "main": "src/app.js",
   "scripts": {
-    "start": "ts-node --project tsconfig.json src/app.ts",
+    "dev": "ts-node --project tsconfig.json src/app.ts",
     "build": "tsc --project tsconfig.json && webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
   "author": "https://github.com/unitwk",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MCSManager/MCSManager"
+  },
   "_moduleAliases": {
     "@languages": "../languages"
   },
-  "license": "Apache-2.0",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "@koa/router": "^10.0.0",
