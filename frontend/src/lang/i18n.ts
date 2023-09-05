@@ -1,7 +1,7 @@
 import { createI18n } from "vue-i18n";
 
-import enUS from "@languages/en_US.json";
-import zhCN from "@languages/zh_CN.json";
+import enUS from "languages/en_US.json";
+import zhCN from "languages/zh_CN.json";
 
 export const LANGUAGE_KEY = "LANGUAGE";
 

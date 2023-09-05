@@ -11,5 +11,11 @@ module.exports = {
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")
+  },
+  resolve: {
+    alias: {
+      // 创建别名
+      "@languages": path.resolve(__dirname, "../languages")
+    }
   }
 };
