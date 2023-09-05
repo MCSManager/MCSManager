@@ -4,3 +4,8 @@ declare module "properties" {
 
   export { parse, stringify };
 }
+
+declare module "*.json" {
+  const value: any;
+  export default value;
+}

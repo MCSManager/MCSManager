@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "resolveJsonModule": true,
-    "esModuleInterop": true,
     "allowJs": true,
     "module": "commonjs",
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2018",
     "noImplicitAny": true,
@@ -12,6 +12,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "@languages/*": ["../languages/*"],
       "*": ["node_modules/*", "src/types/*"]
     }
   },

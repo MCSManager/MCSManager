@@ -1,3 +1,4 @@
+import "module-alias/register";
 import http from "http";
 import fs from "fs-extra";
 import { $t, i18next } from "./i18n";
