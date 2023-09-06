@@ -4,7 +4,7 @@ const { crc32 } = require("crc");
 const FN_KEY = "TXT_CODE_";
 
 module.exports = {
-  input: ["src/**/*.{js,ts,vue}", "!src/i18n/**", "!**/node_modules/**"],
+  input: ["../**/*.{js,ts,vue}", "!**/node_modules/**"],
   output: "./",
   options: {
     debug: false,
@@ -13,18 +13,18 @@ module.exports = {
     lngs: ["zh_CN", "en_US"],
     defaultLng: "zh",
     resource: {
-      loadPath: "./src/lang/{{lng}}.json",
-      savePath: "./src/lang/{{lng}}.json",
+      loadPath: "./{{lng}}.json",
+      savePath: "./{{lng}}.json",
       jsonIndent: 2,
-      lineEnding: "\n",
+      lineEnding: "\n"
     },
     removeUnusedKeys: false,
     nsSeparator: false,
     keySeparator: false,
     interpolation: {
       prefix: "{{",
-      suffix: "}}",
-    },
+      suffix: "}}"
+    }
   },
 
   transform: function customTransform(file, enc, done) {
@@ -43,9 +43,8 @@ module.exports = {
       parser.set(hashKey, options);
     });
 
-    if (newCode != content)
-      fs.writeFileSync(file.path, newCode, { encoding: "utf-8" });
+    if (newCode != content) fs.writeFileSync(file.path, newCode, { encoding: "utf-8" });
 
     done();
-  },
+  }
 };
