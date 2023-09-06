@@ -4,17 +4,17 @@ const { crc32 } = require("crc");
 const FN_KEY = "TXT_CODE_";
 
 module.exports = {
-  input: ["../**/*.{js,ts,vue}", "!**/node_modules/**"],
+  input: ["./**/*.{ts,vue}", "!**/node_modules/**"],
   output: "./",
   options: {
-    debug: false,
+    debug: true,
     func: false,
     trans: false,
     lngs: ["zh_CN", "en_US"],
     defaultLng: "zh",
     resource: {
-      loadPath: "./{{lng}}.json",
-      savePath: "./{{lng}}.json",
+      loadPath: "./languages/{{lng}}.json",
+      savePath: "./languages/{{lng}}.json",
       jsonIndent: 2,
       lineEnding: "\n"
     },
