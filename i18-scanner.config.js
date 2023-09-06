@@ -3,11 +3,25 @@ const { crc32 } = require("crc");
 
 const FN_KEY = "TXT_CODE_";
 
+function sortObjectKeys(obj = {}) {
+  const sortedObj = {};
+  const sortedKeys = Object.keys(obj).sort();
+  for (let key of sortedKeys) {
+    const value = obj[key];
+    if (typeof value === "object" && value !== null) {
+      sortedObj[key] = sortObjectKeys(value);
+    } else {
+      sortedObj[key] = value;
+    }
+  }
+  return sortedObj;
+}
+
 module.exports = {
   input: ["./**/*.{ts,vue}", "!**/node_modules/**"],
   output: "./",
   options: {
-    debug: true,
+    debug: false,
     func: false,
     trans: false,
     lngs: ["zh_CN", "en_US"],
@@ -38,7 +52,7 @@ module.exports = {
 
       options.defaultValue = key;
       let hashKey = `${FN_KEY}${crc32(key).toString(16)}`;
-      console.log("transform(): TEXT:", key, "TO:", hashKey);
+      console.log("Transform text:", key, "->", hashKey);
       newCode = String(newCode).replace(key, hashKey);
       parser.set(hashKey, options);
     });
