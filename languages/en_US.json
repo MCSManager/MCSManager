@@ -456,5 +456,13 @@
   "TXT_CODE_db64faf6": "Number of panel logins",
   "TXT_CODE_eb880db2": "general user",
   "TXT_CODE_f54e6d1f": "panel time",
-  "TXT_CODE_e10c992a": "All users will see your new changes when they refresh the page."
+  "TXT_CODE_e10c992a": "All users will see your new changes when they refresh the page.",
+  "TXT_CODE_50d471b2": "reset",
+  "TXT_CODE_6215388a": "new directory",
+  "TXT_CODE_791c73e9": "create a new file",
+  "TXT_CODE_7ceebc05": "Enter text content, support Markdown syntax, and can wrap lines.\n\nDon’t use other people’s copywriting easily, otherwise malicious code may be injected to attack you.",
+  "TXT_CODE_88122886": "compression",
+  "TXT_CODE_95495db": "file operation",
+  "TXT_CODE_e00c858c": "upload files",
+  "TXT_CODE_f0260e51": "Paste file"
 }

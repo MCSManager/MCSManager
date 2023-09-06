@@ -145,20 +145,20 @@ breadcrumbs.push({
             </a-typography-title>
           </template>
           <template #right>
-            <a-button type="dashed" danger class="mr-8"> 粘贴文件 </a-button>
+            <a-button type="dashed" danger class="mr-8">{{ t("TXT_CODE_f0260e51") }}</a-button>
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="1"> 上传文件 </a-menu-item>
-                  <a-menu-item key="4"> 新建目录 </a-menu-item>
-                  <a-menu-item key="4"> 新建文件 </a-menu-item>
-                  <a-menu-item key="3"> 压缩 </a-menu-item>
-                  <a-menu-item key="4"> TXT_CODE_a64f3007 </a-menu-item>
-                  <a-menu-item key="2"> 批量TXT_CODE_ecbd7449 </a-menu-item>
+                  <a-menu-item key="1">{{ t("TXT_CODE_e00c858c") }}</a-menu-item>
+                  <a-menu-item key="2">{{ t("TXT_CODE_6215388a") }}</a-menu-item>
+                  <a-menu-item key="3">{{ t("TXT_CODE_791c73e9") }}</a-menu-item>
+                  <a-menu-item key="4">{{ t("TXT_CODE_88122886") }}</a-menu-item>
+                  <a-menu-item key="5">{{ t("TXT_CODE_13ae6a93") }}</a-menu-item>
+                  <a-menu-item key="6">{{ t("TXT_CODE_ecbd7449") }}</a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
-                文件操作
+                {{ t("TXT_CODE_95495db") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -201,7 +201,7 @@ breadcrumbs.push({
                           {{ t("TXT_CODE_c83551f5") }}
                         </a-menu-item>
                         <a-menu-item key="3">
-                          {{ t("解压") }}
+                          {{ t("TXT_CODE_a64f3007") }}
                         </a-menu-item>
                         <a-menu-item key="2">
                           {{ t("TXT_CODE_13ae6a93") }}
@@ -210,12 +210,12 @@ breadcrumbs.push({
                           {{ t("TXT_CODE_823f9d21") }}
                         </a-menu-item>
                         <a-menu-item key="4">
-                          {{ t("删除") }}
+                          {{ t("TXT_CODE_ecbd7449") }}
                         </a-menu-item>
                       </a-menu>
                     </template>
                     <a-button>
-                      {{ t("操作") }}
+                      {{ t("TXT_CODE_fe731dfc") }}
                       <DownOutlined />
                     </a-button>
                   </a-dropdown>

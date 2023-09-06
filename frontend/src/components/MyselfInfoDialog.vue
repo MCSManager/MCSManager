@@ -100,7 +100,7 @@ const handleChangePassword = async () => {
             danger
             @click="formState.resetPassword = true"
           >
-            {{ t("重置") }}
+            {{ t("TXT_CODE_50d471b2") }}
           </a-button>
           <div v-if="formState.resetPassword">
             <a-input
@@ -121,7 +121,7 @@ const handleChangePassword = async () => {
                 :loading="updatePasswordLoading"
                 @click="handleChangePassword"
               >
-                确定
+                {{ t("TXT_CODE_d507abff") }}
               </a-button>
             </div>
           </div>

@@ -63,11 +63,7 @@ const editTextContent = () => {
           v-model:value="textContent"
           class="h-100"
           style="resize: none"
-          :placeholder="
-            t(
-              `输入文本内容，支持 Markdown 语法，可换行。\n不要轻易使用其他人的文案，否则将有可能注入恶意代码对你进行攻击。`
-            )
-          "
+          :placeholder="t('TXT_CODE_7ceebc05')"
         />
       </div>
     </template>
