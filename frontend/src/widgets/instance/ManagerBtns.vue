@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const btns = arrayFilter([
   {
-    title: t("服务端配置文件"),
+    title: t("TXT_CODE_d07742fe"),
     icon: CloudServerOutlined,
     click: () => {
       toPage({
@@ -28,35 +28,35 @@ const btns = arrayFilter([
     }
   },
   {
-    title: t("文件管理"),
+    title: t("TXT_CODE_ae533703"),
     icon: CloudServerOutlined,
     click: () => {
       toPage({ path: "/instances/terminal/files" });
     }
   },
   {
-    title: t("终端设置"),
+    title: t("TXT_CODE_d23631cb"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
     }
   },
   {
-    title: t("计划任务"),
+    title: t("TXT_CODE_b7d026f8"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
     }
   },
   {
-    title: t("状态查询"),
+    title: t("TXT_CODE_3a406403"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
     }
   },
   {
-    title: t("事件任务"),
+    title: t("TXT_CODE_d341127b"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
@@ -64,7 +64,7 @@ const btns = arrayFilter([
   },
 
   {
-    title: t("应用高级参数设置"),
+    title: t("TXT_CODE_4f34fc28"),
     icon: CloudServerOutlined,
     click: () => {
       console.log(1);
@@ -95,7 +95,7 @@ const btns = arrayFilter([
               <template #body>
                 <a href="javascript:void(0);">
                   <span>
-                    {{ t("前往") }}
+                    {{ t("TXT_CODE_6c5985ca") }}
                     <ArrowRightOutlined style="font-size: 12px" />
                   </span>
                 </a>

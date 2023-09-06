@@ -127,13 +127,13 @@ export function getLayoutCardPool() {
     {
       id: getRandomId(),
       type: "StatusBlock",
-      title: t("节点在线数444"),
+      title: t("TXT_CODE_b4a9d04a"),
       meta: {
         title: "在线节点 / 总节点",
         type: "node"
       },
       width: 3,
-      description: t("用于显示面板的所有基本数据"),
+      description: t("TXT_CODE_55ade942"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     },
@@ -179,9 +179,9 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       meta: {},
       type: "ImageBox",
-      title: t("图片框"),
+      title: t("TXT_CODE_4d993ca4"),
       width: 4,
-      description: t("可以用来显示图片"),
+      description: t("TXT_CODE_6ef5195f"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     },
@@ -191,9 +191,9 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       meta: {},
       type: "IframeCard",
-      title: t("内嵌网页框"),
+      title: t("TXT_CODE_3ed96265"),
       width: 4,
-      description: t("可以用来显示外部网站"),
+      description: t("TXT_CODE_db9375a5"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     },
@@ -203,33 +203,33 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       meta: {},
       type: "TextCard",
-      title: t("自定义文本框"),
+      title: t("TXT_CODE_ddcca0b9"),
       width: 4,
-      description: t("显示指定文本，支持 Markdown 语法"),
+      description: t("TXT_CODE_2ca42b39"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // 超链接块卡片
+    // TXT_CODE_745d8a03卡片
     {
       id: getRandomId(),
       meta: {},
       type: "LinkCard",
       title: t("超链接块"),
       width: 4,
-      description: t("显示一组自定义超链接按钮"),
+      description: t("TXT_CODE_d6a96ea4"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // 时钟卡片
+    // TXT_CODE_af143e18卡片
     {
       id: getRandomId(),
       meta: {},
       type: "ClockCard",
       title: t("时钟"),
       width: 4,
-      description: t("显示当前时间"),
+      description: t("TXT_CODE_cf9e259c"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
     }

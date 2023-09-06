@@ -12,35 +12,35 @@ const { state, isLoading } = useOverviewInfo();
 
 const columns = [
   {
-    title: t("IP 地址"),
+    title: t("TXT_CODE_c7d0002e"),
     dataIndex: "ip"
   },
   {
-    title: t("端口"),
+    title: t("TXT_CODE_f49149d0"),
     dataIndex: "port"
   },
   {
-    title: t("昵称"),
+    title: t("TXT_CODE_3c8fd4c2"),
     dataIndex: "remark"
   },
   {
-    title: t("CPU"),
+    title: t("TXT_CODE_2c2712a4"),
     dataIndex: "cpu"
   },
   {
-    title: t("内存"),
+    title: t("TXT_CODE_593ee330"),
     dataIndex: "mem"
   },
   {
-    title: t("运行实例"),
+    title: t("TXT_CODE_eaed6901"),
     dataIndex: "instances"
   },
   {
-    title: t("远程节点版本"),
+    title: t("TXT_CODE_3f99f17f"),
     dataIndex: "version"
   },
   {
-    title: t("连接状态"),
+    title: t("TXT_CODE_f80e0786"),
     dataIndex: "status"
   }
 ];
@@ -56,7 +56,7 @@ const dataSource = computed(() => {
       mem: v.memText,
       instances: `${v.instance?.running ?? "--"}/${v.instance?.total ?? "--"}`,
       version: v.version,
-      status: v.available ? t("在线") : t("离线")
+      status: v.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
     };
   });
   return list;

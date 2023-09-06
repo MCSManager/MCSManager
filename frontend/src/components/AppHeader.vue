@@ -115,8 +115,8 @@ const appMenus = computed(() => {
         changeDesignMode(false);
         notification.success({
           placement: "top",
-          message: t("布局已保存"),
-          description: t("所有用户都将在刷新网页显示您的新更改。")
+          message: t("TXT_CODE_47c35915"),
+          description: t("TXT_CODE_e10c992a")
         });
       },
       conditions: containerState.isDesignMode,
@@ -124,7 +124,7 @@ const appMenus = computed(() => {
     },
 
     {
-      title: t("选择主题"),
+      title: t("TXT_CODE_f591e2fa"),
       icon: FormatPainterOutlined,
       click: (key: string) => {
         setTheme(key as THEME);
@@ -133,17 +133,17 @@ const appMenus = computed(() => {
       onlyPC: true,
       menus: [
         {
-          title: $t("浅色模式"),
+          title: $t("TXT_CODE_673eac8e"),
           value: THEME.LIGHT
         },
         {
-          title: $t("深色模式"),
+          title: $t("TXT_CODE_5e4a370d"),
           value: THEME.DARK
         }
       ]
     },
     {
-      title: t("语言（Language）"),
+      title: t("TXT_CODE_fa40177b"),
       icon: TranslationOutlined,
       click: (key: string) => {
         setLanguage(key);
@@ -169,9 +169,9 @@ const appMenus = computed(() => {
 
         notification.info({
           placement: "top",
-          message: t("界面设计模式"),
+          message: t("TXT_CODE_7b1adf35"),
           description: t(
-            "您可以自由设计出所想要的一切。过多的元素在同一个页面可能会导致性能下降，请合理分配。"
+            "TXT_CODE_6b6f1d3"
           )
         });
       },
@@ -192,7 +192,7 @@ const appMenus = computed(() => {
       icon: LogoutOutlined,
       click: () => {
         toPage({ path: "/" });
-        messageApi.success(t("成功退出"));
+        messageApi.success(t("TXT_CODE_e6856d81"));
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false

@@ -19,7 +19,7 @@ const imgSrc = ref(getMetaValue("image", ""));
 const { openInputDialog } = useAppToolsStore();
 
 const editImgSrc = async () => {
-  imgSrc.value = (await openInputDialog(t("请输入图片地址"))) as string;
+  imgSrc.value = (await openInputDialog(t("TXT_CODE_c8a51b2e"))) as string;
   setMetaValue("image", imgSrc.value);
 };
 </script>
@@ -28,7 +28,7 @@ const editImgSrc = async () => {
   <div style="width: 100%; position: relative">
     <div v-if="imgSrc !== '' && containerState.isDesignMode" class="mask">
       <a-button type="primary" @click="editImgSrc()">
-        {{ t("编辑图片") }}
+        {{ t("TXT_CODE_fd13f431") }}
       </a-button>
     </div>
     <img v-if="imgSrc !== ''" class="global-card-container-shadow" :src="imgSrc" />
@@ -36,10 +36,10 @@ const editImgSrc = async () => {
       <template #body>
         <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE">
           <template #description>
-            <span>{{ t("暂无图片") }}</span>
+            <span>{{ t("TXT_CODE_635d051") }}</span>
           </template>
           <a-button type="primary" @click="editImgSrc()">
-            {{ t("添加一张") }}
+            {{ t("TXT_CODE_589e091c") }}
           </a-button>
         </a-empty>
       </template>

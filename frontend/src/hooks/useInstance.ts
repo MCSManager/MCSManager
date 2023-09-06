@@ -4,11 +4,11 @@ import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { getInstanceInfo } from "@/services/apis/instance";
 
 export const INSTANCE_STATUS_TEXT: MapData<string> = {
-  "-1": t("维护中"),
-  "0": t("未运行"),
-  "1": t("停止中"),
-  "2": t("启动中"),
-  "3": t("运行中")
+  "-1": t("TXT_CODE_342a04a9"),
+  "0": t("TXT_CODE_15f2e564"),
+  "1": t("TXT_CODE_a409b8a9"),
+  "2": t("TXT_CODE_175b570d"),
+  "3": t("TXT_CODE_bdb620b9")
 };
 
 export const TYPE_UNIVERSAL = "universal";
@@ -92,10 +92,10 @@ export function useInstanceInfo(params: Params) {
   const isRunning = computed(() => finalState?.value?.status === 3);
   const isStopped = computed(() => finalState?.value?.status === 0);
   const instanceTypeText = computed(() => {
-    return INSTANCE_TYPE_TRANSLATION[String(finalState?.value?.config.type)] || t("未知类型");
+    return INSTANCE_TYPE_TRANSLATION[String(finalState?.value?.config.type)] || t("TXT_CODE_da7a0328");
   });
   const statusText = computed(
-    () => String(INSTANCE_STATUS_TEXT[String(finalState?.value?.status)]) || t("未知状态")
+    () => String(INSTANCE_STATUS_TEXT[String(finalState?.value?.status)]) || t("TXT_CODE_c8333afa")
   );
 
   onMounted(async () => {

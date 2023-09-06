@@ -30,31 +30,31 @@ const { state } = useOverviewInfo();
 const detailList = (node: ComputedNodeInfo) => {
   return [
     {
-      title: t("连接地址"),
+      title: t("TXT_CODE_f52079a0"),
       value: `${node.ip}:${node.port}`
     },
     {
-      title: t("内存"),
+      title: t("TXT_CODE_593ee330"),
       value: node.memText
     },
     {
-      title: t("CPU"),
+      title: t("TXT_CODE_2c2712a4"),
       value: node.cpuInfo
     },
     {
-      title: t("实例状态"),
+      title: t("TXT_CODE_3d602459"),
       value: node.instanceStatus
     },
     {
-      title: t("在线状态"),
-      value: node.available ? t("在线") : t("离线")
+      title: t("TXT_CODE_c9609785"),
+      value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
     },
     {
-      title: t("平台"),
+      title: t("TXT_CODE_3d0885c0"),
       value: node.platformText
     },
     {
-      title: t("版本"),
+      title: t("TXT_CODE_81634069"),
       value: node.version
     }
   ];
@@ -62,28 +62,28 @@ const detailList = (node: ComputedNodeInfo) => {
 
 const nodeOperations = [
   {
-    title: t("文件管理"),
+    title: t("TXT_CODE_ae533703"),
     icon: FolderOpenOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
-    title: t("终端"),
+    title: t("TXT_CODE_524e3036"),
     icon: CodeOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
-    title: t("镜像管理"),
+    title: t("TXT_CODE_e6c30866"),
     icon: BlockOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
-    title: t("设置"),
+    title: t("TXT_CODE_b5c7b82d"),
     icon: SettingOutlined,
     click: () => {
       console.log(3);
@@ -104,12 +104,12 @@ const nodeOperations = [
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-12" type="primary">{{ t("新增节点") }}</a-button>
-            <a-button>{{ t("使用手册") }}</a-button>
+            <a-button class="mr-12" type="primary">{{ t("TXT_CODE_15a381d5") }}</a-button>
+            <a-button>{{ t("TXT_CODE_3a302f23") }}</a-button>
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('根据节点名字搜索')">
+              <a-input v-model:value="operationForm.name" :placeholder="t('TXT_CODE_461d1a01')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -122,11 +122,11 @@ const nodeOperations = [
       <a-col :span="24">
         <a-typography-text type="secondary">
           {{
-            t("远程节点上的应用程序的控制台，文件上传，文件下载都需要网页能够直接连接远程节点。")
+            t("TXT_CODE_f9a92e38")
           }}
           <br />
           {{
-            t("因此必须避免使用除 localhost 外的局域网段任何 IP，必须使用外网 IP 或域名进行连接。")
+            t("TXT_CODE_a65c65c2")
           }}
         </a-typography-text>
       </a-col>

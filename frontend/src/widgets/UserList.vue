@@ -40,23 +40,23 @@ const operationForm = ref({
 });
 
 const permissionList = {
-  "1": t("普通用户"),
-  "10": t("管理员"),
-  "-1": t("被封禁")
+  "1": t("TXT_CODE_eb880db2"),
+  "10": t("TXT_CODE_cd978243"),
+  "-1": t("TXT_CODE_7c76dbf")
 };
 
 const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
-      title: t("用户名"),
+      title: t("TXT_CODE_eb9fcdad"),
       dataIndex: "userName",
       key: "userName",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: t("权限"),
+      title: t("TXT_CODE_511aea70"),
       dataIndex: "permission",
       key: "permission",
       minWidth: "200px",
@@ -66,7 +66,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("最后登录时间"),
+      title: t("TXT_CODE_6372e25c"),
       dataIndex: "loginTime",
       key: "loginTime",
       minWidth: "200px",
@@ -74,7 +74,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("注册时间"),
+      title: t("TXT_CODE_c5c56801"),
       dataIndex: "registerTime",
       key: "registerTime",
       minWidth: "200px",
@@ -82,7 +82,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("操作"),
+      title: t("TXT_CODE_fe731dfc"),
       key: "action",
       minWidth: "200px"
     }
@@ -127,7 +127,7 @@ const deleteUser = async (userList: string[]) => {
     await execute({
       data: userList
     });
-    message.success(t("删除成功"));
+    message.success(t("TXT_CODE_28190dbc"));
     await fetchData();
   } catch (error: any) {
     message.error(error.message);
@@ -140,7 +140,7 @@ const handleDeleteUser = async (user: UserInfo) => {
 
 const handleBatchDelete = async () => {
   if (selectedUsers.value.length === 0) {
-    return message.warn(t("请选择要删除的用户"));
+    return message.warn(t("TXT_CODE_d78ad17a"));
   }
   await deleteUser(selectedUsers.value);
 };
@@ -149,14 +149,14 @@ const { execute: addUserExecute, isLoading: addUserIsLoading } = addUserApi();
 
 const newUserDialog = ref({
   status: false,
-  title: t("新增用户"),
+  title: t("TXT_CODE_e83ffa03"),
   permissionList: [
     {
-      lable: t("普通权限"),
+      lable: t("TXT_CODE_a778451f"),
       value: 1
     },
     {
-      lable: t("最高权限"),
+      lable: t("TXT_CODE_b438b517"),
       value: 10
     }
   ],
@@ -181,16 +181,16 @@ const newUserDialog = ref({
   },
   resolve: async () => {
     if (newUserDialog.value.data.username == "" || newUserDialog.value.data.password == "")
-      return message.error(t("请正确填写表单"));
+      return message.error(t("TXT_CODE_633415e2"));
 
     try {
       await addUserExecute({
         data: newUserDialog.value.data
       });
-      message.success(t("新增用户成功"));
+      message.success(t("TXT_CODE_c855fc29"));
       newUserDialog.value.hidden();
     } catch (error: any) {
-      message.error(t("新增用户失败：") + error.message);
+      message.error(t("TXT_CODE_5246d704") + error.message);
     }
     fetchData();
   }
@@ -211,30 +211,30 @@ onMounted(async () => {
       @ok="newUserDialog.resolve()"
     >
       <div class="mb-20">
-        <a-typography-title :level="5">{{ t("用户名") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_eb9fcdad") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，6 到 12 个字符，支持中文，英文和字符") }}
+            {{ t("TXT_CODE_1987587b") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="newUserDialog.data.username" :placeholder="t('请输入内容')" />
+        <a-input v-model:value="newUserDialog.data.username" :placeholder="t('TXT_CODE_4ea93630')" />
       </div>
 
       <div class="mb-20">
-        <a-typography-title :level="5">{{ t("用户密码") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_5c605130") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，9 到 36 个字符，必须包含大小写字母和数字") }}
+            {{ t("TXT_CODE_1f2062c7") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="newUserDialog.data.password" :placeholder="t('请输入内容')" />
+        <a-input v-model:value="newUserDialog.data.password" :placeholder="t('TXT_CODE_4ea93630')" />
       </div>
 
       <div class="mb-20">
-        <a-typography-title :level="5">{{ t("权限") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_511aea70") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("普通权限适用于商业用户，最高权限适用于管理人员") }}
+            {{ t("TXT_CODE_21b8b71a") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-select v-model:value="newUserDialog.data.permission" style="max-width: 320px">
@@ -249,17 +249,17 @@ onMounted(async () => {
       </div>
 
       <div class="mb-20">
-        <a-typography-title :level="5">{{ t("注意事项") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_ef0ce2e") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{
               t(
-                "若您从事出租商业活动，请务必保证应用实例运行在 Linux 的 Docker 虚拟容器中，否则将有安全隐患。"
+                "TXT_CODE_9e9d3767"
               )
             }}
             <br />
             <a href="https://docs.mcsmanager.com/" target="_blank">
-              {{ t("了解更多") }}
+              {{ t("TXT_CODE_b01f8383") }}
             </a>
           </a-typography-text>
         </a-typography-paragraph>
@@ -281,16 +281,16 @@ onMounted(async () => {
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="1" @click="newUserDialog.show()">
-                    {{ t("新增用户") }}
+                    {{ t("TXT_CODE_e83ffa03") }}
                   </a-menu-item>
                   <a-menu-item key="2" @click="handleBatchDelete()">
-                    {{ t("删除用户") }}
+                    {{ t("TXT_CODE_760f00f5") }}
                   </a-menu-item>
-                  <!-- <a-menu-item key="3">{{ t("封禁用户") }}</a-menu-item> -->
+                  <!-- <a-menu-item key="3">{{ t("TXT_CODE_4d934e3a") }}</a-menu-item> -->
                 </a-menu>
               </template>
               <a-button type="primary">
-                {{ t("用户操作") }}
+                {{ t("TXT_CODE_f7084f84") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -299,7 +299,7 @@ onMounted(async () => {
             <div class="search-input">
               <a-input
                 v-model:value="operationForm.name"
-                :placeholder="t('根据用户名搜索')"
+                :placeholder="t('TXT_CODE_2471b9c')"
                 @change="reload()"
                 @press-enter="fetchData()"
               >
@@ -334,18 +334,18 @@ onMounted(async () => {
                     <template #overlay>
                       <a-menu>
                         <a-menu-item key="1" @click="handleToUserConfig(record)">
-                          {{ t("用户配置") }}
+                          {{ t("TXT_CODE_236f70aa") }}
                         </a-menu-item>
                         <a-menu-item key="2" @click="handleDeleteUser(record)">
-                          {{ t("删除用户") }}
+                          {{ t("TXT_CODE_760f00f5") }}
                         </a-menu-item>
                         <!-- <a-menu-item key="3">
-                          {{ t("封禁用户") }}
+                          {{ t("TXT_CODE_4d934e3a") }}
                         </a-menu-item> -->
                       </a-menu>
                     </template>
                     <a-button>
-                      {{ t("操作") }}
+                      {{ t("TXT_CODE_fe731dfc") }}
                       <DownOutlined />
                     </a-button>
                   </a-dropdown>

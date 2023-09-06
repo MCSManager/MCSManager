@@ -55,13 +55,13 @@ watch(props, () => {
     <a-row :gutter="[24, 24]">
       <a-col :span="12">
         <div>
-          {{ t("CPU 使用率（10min）") }}
+          {{ t("TXT_CODE_eca8f1b3") }}
         </div>
         <div :id="chartCpuDomId" style="width: 100%; height: 50px"></div>
       </a-col>
       <a-col :span="12">
         <div>
-          {{ t("内存使用率（10min）") }}
+          {{ t("TXT_CODE_6ca6667f") }}
         </div>
         <div :id="chartMemDomId" style="width: 100%; height: 50px"></div>
       </a-col>

@@ -86,11 +86,11 @@ const columns = computed(() => {
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
-              {{ t("应用访问权限") }}
+              {{ t("TXT_CODE_e1c9a6ac") }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button type="primary">{{ t("分配应用") }}</a-button>
+            <a-button type="primary">{{ t("TXT_CODE_a60466a1") }}</a-button>
           </template>
         </BetweenMenus>
       </a-col>
@@ -102,7 +102,7 @@ const columns = computed(() => {
               <template #bodyCell="{ column }">
                 <template v-if="column.key === 'action'">
                   <a-button danger>
-                    {{ t("删除") }}
+                    {{ t("TXT_CODE_ecbd7449") }}
                   </a-button>
                 </template>
               </template>

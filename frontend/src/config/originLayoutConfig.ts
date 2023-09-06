@@ -26,90 +26,90 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
       {
         id: getRandomId(),
         type: "StatusBlock",
-        title: t("节点在线数"),
+        title: t("TXT_CODE_e627e546"),
         meta: {
           type: "node"
         },
         width: 3,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         type: "StatusBlock",
-        title: t("实例运行状态"),
+        title: t("TXT_CODE_88e9361a"),
         meta: {
           type: "instance"
         },
         width: 3,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         type: "StatusBlock",
-        title: t("面板登录次数"),
+        title: t("TXT_CODE_db64faf6"),
         meta: {
           type: "users"
         },
         width: 3,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         type: "StatusBlock",
-        title: t("系统资源信息"),
+        title: t("TXT_CODE_66056676"),
         meta: {
           type: "system"
         },
         width: 3,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         meta: {},
         type: "DataOverview",
-        title: t("数据总览"),
+        title: t("TXT_CODE_721157a3"),
         width: 9,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.MEDIUM
       },
       {
         id: getRandomId(),
         meta: {},
         type: "QuickStart",
-        title: t("快速建立应用程序"),
+        title: t("TXT_CODE_2799a1dd"),
         width: 3,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.MEDIUM
       },
       {
         id: getRandomId(),
         meta: {},
         type: "RequestChart",
-        title: t("接口请求量趋势"),
+        title: t("TXT_CODE_a4037a98"),
         width: 6,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         meta: {},
         type: "InstanceChart",
-        title: t("应用程序运行趋势"),
+        title: t("TXT_CODE_d6d9c42c"),
         width: 6,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.SMALL
       },
       {
         id: getRandomId(),
         meta: {},
         type: "NodeOverview",
-        title: t("节点状态总览"),
+        title: t("TXT_CODE_bfb50126"),
         width: 12,
-        description: t("用于显示面板的所有基本数据"),
+        description: t("TXT_CODE_55ade942"),
         height: LayoutCardHeight.MEDIUM
       }
     ]
@@ -121,7 +121,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "InstanceList",
-        title: t("应用程序"),
+        title: t("TXT_CODE_e21473bc"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -145,7 +145,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
           viewType: "inner"
         },
         type: "Terminal",
-        title: t("控制台"),
+        title: t("TXT_CODE_4ccdd3a0"),
         width: 12,
         height: LayoutCardHeight.BIG,
         disableDelete: true
@@ -155,7 +155,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "InstanceBaseInfo",
-        title: t("基本信息"),
+        title: t("TXT_CODE_eadb4f60"),
         width: 4,
         height: LayoutCardHeight.SMALL
       },
@@ -163,7 +163,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "InstanceManagerBtns",
-        title: t("功能组"),
+        title: t("TXT_CODE_efd37c48"),
         width: 8,
         height: LayoutCardHeight.SMALL,
         disableDelete: true
@@ -279,7 +279,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "NodeList",
-        title: t("远程节点列表"),
+        title: t("TXT_CODE_20509fa0"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -301,7 +301,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "QuickStartFlow",
-        title: t("快速部署应用程序"),
+        title: t("TXT_CODE_9b99b72e"),
         width: 6,
         height: LayoutCardHeight.AUTO
       }

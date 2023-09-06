@@ -51,7 +51,7 @@ const instancesMoreInfo = computed(() => {
 const initNodes = async () => {
   await getNodes();
   if (!nodes.value?.length) {
-    return message.error(t("面板未能链接到任何一个远程节点，请先前往节点界面添加远程节点"));
+    return message.error(t("TXT_CODE_e3d96a26"));
   }
   if (nodes.value?.length > 0) {
     currentRemoteNode.value = nodes.value[0];
@@ -115,7 +115,7 @@ const handleChangeNode = () => {};
                   <a-menu-divider />
                   <a-menu-item key="toNodesPage">
                     <FormOutlined />
-                    {{ t("管理远程节点") }}
+                    {{ t("TXT_CODE_28e53fed") }}
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -124,13 +124,13 @@ const handleChangeNode = () => {};
                 <DownOutlined />
               </a-button>
             </a-dropdown>
-            <a-button type="primary">{{ t("新建应用") }}</a-button>
+            <a-button type="primary">{{ t("TXT_CODE_53408064") }}</a-button>
           </template>
           <template #center>
             <div class="search-input">
               <a-input
                 v-model:value="operationForm.instanceName"
-                :placeholder="t('根据应用名字搜索')"
+                :placeholder="t('TXT_CODE_ce132192')"
                 @press-enter="handleQueryInstance"
                 @change="handleQueryInstance"
               >
@@ -164,7 +164,7 @@ const handleChangeNode = () => {};
             <template #body>
               <a-typography-paragraph>
                 <div>
-                  {{ t("状态：") }}
+                  {{ t("TXT_CODE_e70a8e24") }}
                   <span v-if="item.moreInfo?.isRunning" class="color-success">
                     <CheckCircleOutlined />
                     {{ item.moreInfo?.statusText }}
@@ -178,15 +178,15 @@ const handleChangeNode = () => {};
                   </span>
                 </div>
                 <div>
-                  {{ t("类型：") }}
+                  {{ t("TXT_CODE_68831be6") }}
                   {{ item.moreInfo?.instanceTypeText }}
                 </div>
                 <div>
-                  {{ t("启动时间：") }}
+                  {{ t("TXT_CODE_d31a684c") }}
                   {{ item.config.lastDatetime }}
                 </div>
                 <div>
-                  {{ t("到期时间：") }}
+                  {{ t("TXT_CODE_ae747cc0") }}
                   {{ item.config.endTime }}
                 </div>
               </a-typography-paragraph>

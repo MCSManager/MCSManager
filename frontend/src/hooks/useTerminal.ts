@@ -64,7 +64,7 @@ export function useTerminal() {
       }
     });
     const remoteInfo = unref(res.value);
-    if (!remoteInfo) throw new Error(t("无法获取远程节点信息"));
+    if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
 
     const addr = parseForwardAddress(remoteInfo?.addr, "ws");
     const password = remoteInfo.password;
@@ -151,7 +151,7 @@ export function useTerminal() {
   });
 
   const sendCommand = (command: string) => {
-    if (!socket?.connected) throw new Error(t("实例没有在运行"));
+    if (!socket?.connected) throw new Error(t("TXT_CODE_74443c8f"));
     socket.emit("stream/input", {
       data: {
         command

@@ -96,7 +96,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: "操作",
+      title: "TXT_CODE_fe731dfc",
       key: "action",
       minWidth: "200px"
     }
@@ -153,8 +153,8 @@ breadcrumbs.push({
                   <a-menu-item key="4"> 新建目录 </a-menu-item>
                   <a-menu-item key="4"> 新建文件 </a-menu-item>
                   <a-menu-item key="3"> 压缩 </a-menu-item>
-                  <a-menu-item key="4"> 解压 </a-menu-item>
-                  <a-menu-item key="2"> 批量删除 </a-menu-item>
+                  <a-menu-item key="4"> TXT_CODE_a64f3007 </a-menu-item>
+                  <a-menu-item key="2"> 批量TXT_CODE_ecbd7449 </a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
@@ -165,7 +165,7 @@ breadcrumbs.push({
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('根据文件名搜索')">
+              <a-input v-model:value="operationForm.name" :placeholder="t('TXT_CODE_7cad42a5')">
                 <template #prefix>
                   <search-outlined />
                 </template>
@@ -195,19 +195,19 @@ breadcrumbs.push({
                     <template #overlay>
                       <a-menu>
                         <a-menu-item key="3">
-                          {{ t("更改权限") }}
+                          {{ t("TXT_CODE_16853efe") }}
                         </a-menu-item>
                         <a-menu-item key="1">
-                          {{ t("重命名") }}
+                          {{ t("TXT_CODE_c83551f5") }}
                         </a-menu-item>
                         <a-menu-item key="3">
                           {{ t("解压") }}
                         </a-menu-item>
                         <a-menu-item key="2">
-                          {{ t("复制") }}
+                          {{ t("TXT_CODE_13ae6a93") }}
                         </a-menu-item>
                         <a-menu-item key="3">
-                          {{ t("剪贴") }}
+                          {{ t("TXT_CODE_823f9d21") }}
                         </a-menu-item>
                         <a-menu-item key="4">
                           {{ t("删除") }}

@@ -56,7 +56,7 @@ let originRouterConfig = [
           },
           {
             path: "/instances/terminal/serverConfig",
-            name: t("服务端配置文件"),
+            name: t("TXT_CODE_d07742fe"),
             component: LayoutContainer,
             meta: {},
           },
@@ -66,7 +66,7 @@ let originRouterConfig = [
   },
   {
     path: "/users",
-    name: t("用户"),
+    name: t("TXT_CODE_1deaa2dd"),
     component: LayoutContainer,
     meta: {
       mainMenu: true,
@@ -74,7 +74,7 @@ let originRouterConfig = [
     children: [
       {
         path: "/users/config",
-        name: t("用户配置"),
+        name: t("TXT_CODE_236f70aa"),
         component: LayoutContainer,
         meta: {},
       },
@@ -122,7 +122,7 @@ let originRouterConfig = [
   },
   {
     path: "/quickstart",
-    name: t("快速建立应用程序"),
+    name: t("TXT_CODE_2799a1dd"),
     component: LayoutContainer,
     meta: {
       mainMenu: false,

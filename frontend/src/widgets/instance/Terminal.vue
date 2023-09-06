@@ -36,7 +36,7 @@ const commandInputValue = ref("");
 const quickOperations = computed(() =>
   arrayFilter([
     {
-      title: t("开启"),
+      title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
       click: () => {
         openInstance().execute({
@@ -49,7 +49,7 @@ const quickOperations = computed(() =>
       props: {}
     },
     {
-      title: t("关闭"),
+      title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
       click: () => {
         stopInstance().execute({
@@ -68,21 +68,21 @@ const quickOperations = computed(() =>
 
 const instanceOperations = arrayFilter([
   {
-    title: t("重启"),
+    title: t("TXT_CODE_47dcfa5"),
     icon: ReconciliationOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
-    title: t("终止"),
+    title: t("TXT_CODE_7b67813a"),
     icon: CloseOutlined,
     click: () => {
       console.log(3);
     }
   },
   {
-    title: t("更新"),
+    title: t("TXT_CODE_40ca4f2"),
     icon: CloudDownloadOutlined,
     click: () => {
       console.log(4);
@@ -124,7 +124,7 @@ const innerTerminalType = viewType === "inner";
         <template #left>
           <a-typography-title class="mb-0" :level="4">
             <CloudServerOutlined />
-            <span class="ml-8">{{ t("实例") }} {{ instanceInfo?.config.nickname }} </span>
+            <span class="ml-8">{{ t("TXT_CODE_cb043d10") }} {{ instanceInfo?.config.nickname }} </span>
           </a-typography-title>
         </template>
         <template #right>
@@ -142,7 +142,7 @@ const innerTerminalType = viewType === "inner";
               </a-menu>
             </template>
             <a-button type="primary">
-              {{ t("操作") }}
+              {{ t("TXT_CODE_fe731dfc") }}
               <DownOutlined />
             </a-button>
           </a-dropdown>
@@ -158,7 +158,7 @@ const innerTerminalType = viewType === "inner";
       <div class="command-input">
         <a-input
           v-model:value="commandInputValue"
-          :placeholder="t('在这里输入命令按回车键发送')"
+          :placeholder="t('TXT_CODE_b8108d4d')"
           @press-enter="handleSendCommand"
         >
           <template #prefix>
@@ -192,7 +192,7 @@ const innerTerminalType = viewType === "inner";
           </a-menu>
         </template>
         <span size="default" type="primary">
-          <IconBtn :icon="DownOutlined" :title="t('操作')"></IconBtn>
+          <IconBtn :icon="DownOutlined" :title="t('TXT_CODE_fe731dfc')"></IconBtn>
         </span>
       </a-dropdown>
     </template>
@@ -206,7 +206,7 @@ const innerTerminalType = viewType === "inner";
         <div class="command-input">
           <a-input
             v-model:value="commandInputValue"
-            :placeholder="t('在这里输入命令按回车键发送')"
+            :placeholder="t('TXT_CODE_b8108d4d')"
             @press-enter="handleSendCommand"
           >
             <template #prefix>

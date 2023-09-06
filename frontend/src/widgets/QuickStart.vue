@@ -19,7 +19,7 @@ const props = defineProps<{
 const actions = [
   {
     icon: BuildFilled,
-    title: t("建立 Minecraft 游戏服务器"),
+    title: t("TXT_CODE_68128434"),
     click: () => {
       router.push({
         path: "/quickstart",
@@ -31,7 +31,7 @@ const actions = [
   },
   {
     icon: SwitcherFilled,
-    title: t("建立 Steam 游戏服务器"),
+    title: t("TXT_CODE_46bb965"),
     click: () => {
       router.push({
         path: "/quickstart",
@@ -43,7 +43,7 @@ const actions = [
   },
   {
     icon: DropboxSquareFilled,
-    title: t("部署任意控制台应用程序"),
+    title: t("TXT_CODE_2ab3e9fd"),
     click: () => {
       router.push({
         path: "/quickstart",

@@ -19,7 +19,7 @@ const urlSrc = ref(getMetaValue("url", ""));
 const { openInputDialog } = useAppToolsStore();
 
 const editImgSrc = async () => {
-  urlSrc.value = (await openInputDialog(t("请输入Url链接"))) as string;
+  urlSrc.value = (await openInputDialog(t("TXT_CODE_45364559"))) as string;
   setMetaValue("url", urlSrc.value);
 };
 
@@ -50,7 +50,7 @@ onMounted(() => {
           size="small"
           @click="editImgSrc()"
         >
-          {{ t("编辑URL") }}
+          {{ t("TXT_CODE_78930f0f") }}
         </a-button>
       </template>
 
@@ -75,9 +75,9 @@ onMounted(() => {
       <template #body>
         <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE">
           <template #description>
-            <span>{{ t("暂无网页") }}</span>
+            <span>{{ t("TXT_CODE_6239c6b6") }}</span>
           </template>
-          <a-button type="primary" @click="editImgSrc()">{{ t("添加一个") }}</a-button>
+          <a-button type="primary" @click="editImgSrc()">{{ t("TXT_CODE_dde54f31") }}</a-button>
         </a-empty>
       </template>
     </CardPanel>

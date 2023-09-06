@@ -15,7 +15,7 @@ const overviewList = computed(() => {
   if (!state.value)
     return [
       {
-        title: t("数据加载中..."),
+        title: t("TXT_CODE_b197be11"),
         value: ""
       }
     ];
@@ -27,59 +27,59 @@ const overviewList = computed(() => {
 
   return [
     {
-      title: t("Node 环境版本"),
+      title: t("TXT_CODE_413b9c01"),
       value: system.node
     },
     {
-      title: t("面板版本"),
+      title: t("TXT_CODE_af21e6b"),
       value: version
     },
     {
-      title: t("对应的节点版本"),
+      title: t("TXT_CODE_a0e70887"),
       value: specifiedDaemonVersion
     },
     {
-      title: t("进程用户名"),
+      title: t("TXT_CODE_fdb6c369"),
       value: system.user.username
     },
     {
-      title: t("面板时间"),
+      title: t("TXT_CODE_f54e6d1f"),
       value: new Date(system.time).toLocaleString()
     },
     {
-      title: t("浏览器时间"),
+      title: t("TXT_CODE_4ab6a0b5"),
       value: new Date().toLocaleString()
     },
     {
-      title: t("临时封禁IP数"),
+      title: t("TXT_CODE_856bd2f3"),
       value: record.banips
     },
     {
-      title: t("已阻止的访问"),
+      title: t("TXT_CODE_da8f97a7"),
       value: record.illegalAccess
     },
     {
-      title: t("内存"),
+      title: t("TXT_CODE_593ee330"),
       value: `${used}GB/${total}GB`
     },
     {
-      title: t("Linux 负载"),
+      title: t("TXT_CODE_190ecd56"),
       value: system.loadavg.join("-")
     },
     {
-      title: t("面板端使用内存量"),
+      title: t("TXT_CODE_77d038f7"),
       value: `${(process.memory / 1024 / 1024).toFixed(1)}MB`
     },
     {
-      title: t("主机名"),
+      title: t("TXT_CODE_4df7e9bd"),
       value: system.hostname
     },
     {
-      title: t("系统版本"),
+      title: t("TXT_CODE_b4d8588"),
       value: `${system.version} ${system.release}`
     },
     {
-      title: t("系统类型"),
+      title: t("TXT_CODE_edf84830"),
       value: `${system.type} ${system.platform}`
     }
   ];

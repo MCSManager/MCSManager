@@ -10,19 +10,19 @@ const props = defineProps<{
 }>();
 
 const copy = async () => {
-  if (!navigator.clipboard) return message.error(t("您当前的浏览器不支持 Clipboard API"));
+  if (!navigator.clipboard) return message.error(t("TXT_CODE_ca07c84c"));
   try {
     await navigator.clipboard.writeText(props.value);
-    message.success(t("复制成功"));
+    message.success(t("TXT_CODE_b858d78a"));
   } catch (error) {
-    message.error(t("复制失败：") + error);
+    message.error(t("TXT_CODE_81b9b599") + error);
   }
 };
 </script>
 
 <template>
   <a-tooltip>
-    <template #title>{{ t("复制") }}</template>
+    <template #title>{{ t("TXT_CODE_13ae6a93") }}</template>
     <a-button :type="type" :size="size" @click="copy">
       <template #icon>
         <CopyOutlined />

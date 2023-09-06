@@ -49,10 +49,10 @@ const editTextContent = () => {
           size="small"
           @click="previewsTextContent()"
         >
-          {{ t("预览") }}
+          {{ t("TXT_CODE_4d81a657") }}
         </a-button>
         <a-button v-else type="primary" size="small" @click="editTextContent()">
-          {{ t("编辑") }}
+          {{ t("TXT_CODE_ad207008") }}
         </a-button>
       </div>
     </template>

@@ -138,16 +138,16 @@ const loginSuccess = () => {
               <template #body>
                 <div v-show="loginStep === 0" class="login-panel-body">
                   <a-typography-title :level="3" class="mb-20">
-                    {{ t("用户验证") }}
+                    {{ t("TXT_CODE_3ba5ad") }}
                   </a-typography-title>
                   <a-typography-paragraph class="mb-20">
-                    {{ t("使用服务器的 MCSManager 账号进入面板") }}
+                    {{ t("TXT_CODE_5b60ad00") }}
                   </a-typography-paragraph>
                   <div>
                     <form>
                       <a-input
                         v-model:value="formData.username"
-                        :placeholder="t('账号')"
+                        :placeholder="t('TXT_CODE_80a560a1')"
                         size="large"
                         autocomplete="off"
                       >
@@ -160,7 +160,7 @@ const loginSuccess = () => {
                         v-model:value="formData.password"
                         class="mt-20"
                         type="password"
-                        :placeholder="t('密码')"
+                        :placeholder="t('TXT_CODE_551b0348')"
                         size="large"
                         autocomplete="off"
                         @press-enter="handleLogin"
@@ -184,7 +184,7 @@ const loginSuccess = () => {
                         style="min-width: 95px"
                         @click="handleLogin"
                       >
-                        {{ t("验证") }}
+                        {{ t("TXT_CODE_940f7d5") }}
                       </a-button>
                     </div>
                   </div>

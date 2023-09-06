@@ -26,7 +26,7 @@ const { containerState } = useLayoutContainerStore();
 const cardData: Ref<LinkCardType[]> = ref(
   getMetaValue("linkCardData", [
     {
-      title: t("示例链接"),
+      title: t("TXT_CODE_458c34db"),
       link: "https://example.com/"
     }
   ])
@@ -43,13 +43,13 @@ const addLink = ref({
   finish: () => {
     console.log("finish");
     if (addLink.value.title == "" || addLink.value.link == "")
-      return message.error(t("请正确填写表单"));
+      return message.error(t("TXT_CODE_633415e2"));
     cardData.value.push({
       title: addLink.value.title,
       link: addLink.value.link
     });
     setMetaValue("linkCardData", cardData.value);
-    message.success(t("添加成功"));
+    message.success(t("TXT_CODE_db14fb46"));
     addLink.value.close();
     addLink.value.show = false;
   }
@@ -74,7 +74,7 @@ const deleteLink = (index: number) => {
     <template #operator>
       <div v-if="containerState.isDesignMode" class="btn-group ml-10">
         <a-button type="primary" size="small" @click="addLink.show = true">
-          {{ t("添加") }}
+          {{ t("TXT_CODE_a1d885c1") }}
         </a-button>
       </div>
     </template>
@@ -83,9 +83,9 @@ const deleteLink = (index: number) => {
       <a-row :gutter="[0, 16]">
         <div v-for="(item, index) in cardData" :key="item.title" class="h-100 w-100 button">
           <a-popconfirm
-            :title="t('你确定要删除这个超链接吗?')"
-            :ok-text="t('确定')"
-            :cancel-text="t('取消')"
+            :title="t('TXT_CODE_6f12aba3')"
+            :ok-text="t('TXT_CODE_d507abff')"
+            :cancel-text="t('TXT_CODE_a0451c97')"
             @confirm="deleteLink(index)"
           >
             <div v-if="containerState.isDesignMode" class="delete-button"><DeleteOutlined /></div>
@@ -98,17 +98,17 @@ const deleteLink = (index: number) => {
 
   <a-modal
     v-model:open="addLink.show"
-    :title="t('添加超链接')"
+    :title="t('TXT_CODE_a7c85e67')"
     @ok="addLink.finish()"
     @cancel="addLink.close()"
   >
     <a-textarea
       v-model:value="addLink.title"
-      :placeholder="t('标题')"
+      :placeholder="t('TXT_CODE_b5a0661a')"
       auto-size
       class="mt-10 mb-10"
     />
-    <a-textarea v-model:value="addLink.link" :placeholder="t('链接地址')" auto-size />
+    <a-textarea v-model:value="addLink.link" :placeholder="t('TXT_CODE_ad5e2b0f')" auto-size />
   </a-modal>
 </template>
 

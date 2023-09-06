@@ -41,23 +41,23 @@ const insertCardToLayout = async (card: LayoutCard) => {
 
 const cardCategoryList = [
   {
-    label: t("通用卡片"),
+    label: t("TXT_CODE_41406a5f"),
     value: NEW_CARD_TYPE.COMMON
   },
   {
-    label: t("应用程序相关"),
+    label: t("TXT_CODE_d941eb89"),
     value: NEW_CARD_TYPE.INSTANCE
   },
   {
-    label: t("用户相关"),
+    label: t("TXT_CODE_765d34e6"),
     value: NEW_CARD_TYPE.USER
   },
   {
-    label: t("节点相关"),
+    label: t("TXT_CODE_76b2a495"),
     value: NEW_CARD_TYPE.NODE
   },
   {
-    label: t("其他"),
+    label: t("TXT_CODE_6e23c48"),
     value: NEW_CARD_TYPE.OTHER
   }
 ];
@@ -87,7 +87,7 @@ const handleTabClick = (value: string) => {
 
         <a-tab-pane
           key="EXIT"
-          :tab="t('关闭')"
+          :tab="t('TXT_CODE_b1dedda3')"
           @click="() => (containerState.showNewCardDialog = false)"
         />
       </a-tabs>

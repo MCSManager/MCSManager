@@ -20,22 +20,22 @@ const computedStatusList = computed(() => {
   return [
     {
       type: "node",
-      title: t("在线节点 / 总节点"),
+      title: t("TXT_CODE_4b7eba50"),
       value: `${state.value?.remoteCount.available}/${state.value?.remoteCount.total}`
     },
     {
       type: "instance",
-      title: t("正在运行数 / 全部实例总数"),
+      title: t("TXT_CODE_8201d2c6"),
       value: `${state.value.runningInstance}/${state.value.totalInstance}`
     },
     {
       type: "users",
-      title: t("登录失败次数 : 登录成功次数"),
+      title: t("TXT_CODE_871fb0d6"),
       value: `${state.value.record.loginFailed}:${state.value.record.logined}`
     },
     {
       type: "system",
-      title: t("面板主机 CPU，RAM 使用率"),
+      title: t("TXT_CODE_f4244bbf"),
       value: `${state.value.cpu}% ${state.value.mem}%`
     }
   ];

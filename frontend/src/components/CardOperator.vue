@@ -53,7 +53,7 @@ let btns = arrayFilter([
     tipText: t("TXT_CODE_18cdc17f"),
     icon: EditOutlined,
     click: async (id: string) => {
-      const newName = await openInputDialog(t("请输入新的卡片标题"));
+      const newName = await openInputDialog(t("TXT_CODE_b128afa6"));
       editCardName(id, String(newName));
     }
   }
