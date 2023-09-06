@@ -78,14 +78,17 @@ class InstanceControlSubsystem {
       this.taskMap.set(key, []);
     }
     if (this.taskMap.get(key)?.length >= 8)
-      throw new Error($t("system_instance_control.execLimit"));
+      throw new Error($t("TXT_CODE_system_instance_control.execLimit"));
     if (!this.checkTask(key, task.name))
-      throw new Error($t("system_instance_control.existRepeatTask"));
+      throw new Error($t("TXT_CODE_system_instance_control.existRepeatTask"));
     if (!FileManager.checkFileName(task.name))
-      throw new Error($t("system_instance_control.illegalName"));
+      throw new Error($t("TXT_CODE_system_instance_control.illegalName"));
     if (needStore)
       logger.info(
-        $t("system_instance_control.crateTask", { name: task.name, task: JSON.stringify(task) })
+        $t("TXT_CODE_system_instance_control.crateTask", {
+          name: task.name,
+          task: JSON.stringify(task)
+        })
       );
 
     let job: IScheduleJob;
@@ -114,7 +117,10 @@ class InstanceControlSubsystem {
       checkIndex.forEach((item) => {
         if (isNaN(Number(timeArray[item])) && Number(timeArray[item]) >= 0) {
           throw new Error(
-            $t("system_instance_control.crateTaskErr", { name: task.name, timeArray: timeArray })
+            $t("TXT_CODE_system_instance_control.crateTaskErr", {
+              name: task.name,
+              timeArray: timeArray
+            })
           );
         }
       });
@@ -136,7 +142,8 @@ class InstanceControlSubsystem {
     if (needStore) {
       StorageSubsystem.store("TaskConfig", `${key}_${newTask.config.name}`, newTask.config);
     }
-    if (needStore) logger.info($t("system_instance_control.crateSuccess", { name: task.name }));
+    if (needStore)
+      logger.info($t("TXT_CODE_system_instance_control.crateSuccess", { name: task.name }));
   }
 
   public listScheduleJob(instanceUuid: string) {
@@ -185,7 +192,7 @@ class InstanceControlSubsystem {
       }
     } catch (error) {
       logger.error(
-        $t("system_instance_control.execCmdErr", {
+        $t("TXT_CODE_system_instance_control.execCmdErr", {
           uuid: task.instanceUuid,
           name: task.name,
           error: error

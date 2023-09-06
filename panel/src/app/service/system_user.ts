@@ -16,7 +16,7 @@ class UserSubsystem {
       const user = (await Storage.getStorage().load("User", User, uuid)) as User;
       this.objects.set(uuid, user);
     }
-    logger.info($t("systemUser.userCount", { n: this.objects.size }));
+    logger.info($t("TXT_CODE_systemUser.userCount", { n: this.objects.size }));
   }
 
   async create(config: IUser): Promise<User> {

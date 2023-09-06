@@ -68,7 +68,7 @@ export class QuickInstallTask extends AsyncTask {
     try {
       let result = await this.download();
       result = await fileManager.promiseUnzip(this.TMP_ZIP_NAME, ".", "UTF-8");
-      if (!result) throw new Error($t("quick_install.unzipError"));
+      if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
       const config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON)) as InstanceConfig;
 
       if (config.startCommand && config.startCommand.includes("{{java}}")) {

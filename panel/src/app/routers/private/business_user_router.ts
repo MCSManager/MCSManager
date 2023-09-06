@@ -17,8 +17,10 @@ router.post(
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
     const permission = Number(ctx.request.body.permission);
-    if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.invalidPassword"));
-    if (userSystem.existUserName(userName)) throw new Error($t("router.user.existsUserName"));
+    if (!userSystem.validatePassword(passWord))
+      throw new Error($t("TXT_CODE_router.user.invalidPassword"));
+    if (userSystem.existUserName(userName))
+      throw new Error($t("TXT_CODE_router.user.existsUserName"));
     ctx.body = await register(ctx, userName, passWord, permission);
   }
 );
@@ -32,7 +34,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
     }
     ctx.body = true;
   } catch (error) {
-    ctx.throw(500, $t("router.user.deleteFailure") as string);
+    ctx.throw(500, $t("TXT_CODE_router.user.deleteFailure") as string);
   }
 });
 

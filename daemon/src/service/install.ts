@@ -15,7 +15,7 @@ function ptyChmod() {
     fs.chmodSync(PTY_PATH, 0o755);
     return true;
   } catch (error) {
-    logger.warn($t("install.changeModeErr", { path: PTY_PATH }));
+    logger.warn($t("TXT_CODE_install.changeModeErr", { path: PTY_PATH }));
     fs.remove(PTY_PATH, () => {});
     return false;
   }
@@ -25,7 +25,7 @@ async function installPty(url: string): Promise<boolean> {
   if (!fs.existsSync(PTY_DIR_PATH)) fs.mkdirsSync(PTY_DIR_PATH);
   if (fs.existsSync(PTY_PATH) && fs.statSync(PTY_PATH)?.size > 1024) {
     if (!ptyChmod()) throw new Error("ptyChmod error");
-    logger.info($t("install.ptySupport"));
+    logger.info($t("TXT_CODE_install.ptySupport"));
     return true;
   }
   await downloadFileToLocalFile(url, PTY_PATH);
@@ -39,14 +39,14 @@ export function initDependent() {
   function setup(index = 0) {
     installPty(ptyUrls[index])
       .then(() => {
-        logger.info($t("install.installed"));
-        logger.info($t("install.guide"));
+        logger.info($t("TXT_CODE_install.installed"));
+        logger.info($t("TXT_CODE_install.guide"));
         ptyChmod();
       })
       .catch((err: Error) => {
         fs.remove(PTY_PATH, () => {});
         if (index === ptyUrls.length - 1) {
-          logger.warn($t("install.installErr"));
+          logger.warn($t("TXT_CODE_install.installErr"));
           logger.warn(err.message);
           return;
         }

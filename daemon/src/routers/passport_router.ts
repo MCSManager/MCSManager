@@ -16,7 +16,7 @@ routerApp.on("passport/register", (ctx, data) => {
   const count = data.count;
   const start = new Date().getTime();
   const end = start + ONE_HOUR_TIME * TASK_MAX_TIME;
-  if (!name || !password) throw new Error($t("passport_router.registerErr"));
+  if (!name || !password) throw new Error($t("TXT_CODE_passport_router.registerErr"));
   missionPassport.registerMission(password, {
     name,
     parameter,

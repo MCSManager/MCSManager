@@ -100,7 +100,7 @@ export async function decompress(
 
 async function _7zipCompress(zipPath: string, files: string[]) {
   const cmd = `7z.exe a ${zipPath} ${files.join(" ")}`.split(" ");
-  console.log($t("common._7zip"), `${cmd.join(" ")}`);
+  console.log($t("TXT_CODE_common._7zip"), `${cmd.join(" ")}`);
   return new Promise((resolve, reject) => {
     const p = cmd.splice(1);
     const process = child_process.spawn(cmd[0], [...p], {
@@ -117,7 +117,7 @@ async function _7zipCompress(zipPath: string, files: string[]) {
 async function _7zipDecompress(sourceZip: string, destDir: string) {
   // ./7z.exe x archive.zip -oD:\7-Zip
   const cmd = `7z.exe x ${sourceZip} -o${destDir}`.split(" ");
-  console.log($t("common._7unzip"), `${cmd.join(" ")}`);
+  console.log($t("TXT_CODE_common._7unzip"), `${cmd.join(" ")}`);
   return new Promise((resolve, reject) => {
     const process = child_process.spawn(cmd[0], [cmd[1], cmd[2], cmd[3]], {
       cwd: "./7zip/"

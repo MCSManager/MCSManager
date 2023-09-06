@@ -50,7 +50,7 @@ class InstanceSubsystem extends EventEmitter {
           .exec(new StartCommand())
           .then(() => {
             logger.info(
-              $t("system_instance.autoStart", {
+              $t("TXT_CODE_system_instance.autoStart", {
                 name: instance.config.nickname,
                 uuid: instance.instanceUuid
               })
@@ -58,7 +58,7 @@ class InstanceSubsystem extends EventEmitter {
           })
           .catch((reason) => {
             logger.error(
-              $t("system_instance.autoStartErr", {
+              $t("TXT_CODE_system_instance.autoStartErr", {
                 name: instance.config.nickname,
                 uuid: instance.instanceUuid,
                 reason: reason
@@ -89,9 +89,9 @@ class InstanceSubsystem extends EventEmitter {
         this.addInstance(instance);
       } catch (error) {
         logger.error(
-          $t("system_instance.readInstanceFailed", { uuid: uuid, error: error.message })
+          $t("TXT_CODE_system_instance.readInstanceFailed", { uuid: uuid, error: error.message })
         );
-        logger.error($t("system_instance.checkConf", { uuid: uuid }));
+        logger.error($t("TXT_CODE_system_instance.checkConf", { uuid: uuid }));
       }
     });
 
@@ -133,7 +133,7 @@ class InstanceSubsystem extends EventEmitter {
   }
 
   addInstance(instance: Instance) {
-    if (instance.instanceUuid == null) throw new Error($t("system_instance.uuidEmpty"));
+    if (instance.instanceUuid == null) throw new Error($t("TXT_CODE_system_instance.uuidEmpty"));
     if (this.instances.has(instance.instanceUuid)) {
       throw new Error(`The application instance ${instance.instanceUuid} already exists.`);
     }

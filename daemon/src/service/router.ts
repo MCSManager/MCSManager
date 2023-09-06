@@ -82,4 +82,4 @@ import "../routers/stream_router";
 import "../routers/environment_router";
 import "../routers/schedule_router";
 
-logger.info($t("router.initComplete"));
+logger.info($t("TXT_CODE_router.initComplete"));

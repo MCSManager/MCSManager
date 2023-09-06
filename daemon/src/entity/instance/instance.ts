@@ -66,7 +66,7 @@ export default class Instance extends EventEmitter {
   constructor(instanceUuid: string, config: InstanceConfig) {
     super();
 
-    if (!instanceUuid || !config) throw new Error($t("instanceConf.initInstanceErr"));
+    if (!instanceUuid || !config) throw new Error($t("TXT_CODE_instanceConf.initInstanceErr"));
 
     // Basic information
     this.instanceStatus = Instance.STATUS_STOP;
@@ -86,14 +86,14 @@ export default class Instance extends EventEmitter {
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
       if (this.status() != Instance.STATUS_STOP)
-        throw new Error($t("instanceConf.cantModifyInstanceType"));
+        throw new Error($t("TXT_CODE_instanceConf.cantModifyInstanceType"));
       configureEntityParams(this.config, cfg, "type", String);
       this.forceExec(new FunctionDispatcher());
     }
     // If the process type changes, the default commands and lifecycle events must be reset
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
       if (this.status() != Instance.STATUS_STOP)
-        throw new Error($t("instanceConf.cantModifyProcessType"));
+        throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());
     }
@@ -103,9 +103,9 @@ export default class Instance extends EventEmitter {
       cfg?.terminalOption?.pty !== this.config.terminalOption.pty
     ) {
       if (this.status() != Instance.STATUS_STOP)
-        throw new Error($t("instanceConf.cantModifyPtyModel"));
+        throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
       if (!fs.existsSync(PTY_PATH) && cfg?.terminalOption?.pty === true)
-        throw new Error($t("instanceConf.ptyNotExist", { path: PTY_PATH }));
+        throw new Error($t("TXT_CODE_instanceConf.ptyNotExist", { path: PTY_PATH }));
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "pty", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
@@ -183,8 +183,10 @@ export default class Instance extends EventEmitter {
 
   // Execute the corresponding command for this instance
   async execCommand(command: InstanceCommand) {
-    if (this.lock) throw new Error($t("instanceConf.instanceLock", { info: command.info }));
-    if (this.status() == Instance.STATUS_BUSY) throw new Error($t("instanceConf.instanceBusy"));
+    if (this.lock)
+      throw new Error($t("TXT_CODE_instanceConf.instanceLock", { info: command.info }));
+    if (this.status() == Instance.STATUS_BUSY)
+      throw new Error($t("TXT_CODE_instanceConf.instanceBusy"));
     return await command.exec(this);
   }
 
@@ -243,10 +245,13 @@ export default class Instance extends EventEmitter {
       if (!this.config.eventTask.ignore) {
         this.forceExec(new StartCommand("Event Task: Auto Restart"))
           .then(() => {
-            this.println($t("instanceConf.info"), $t("instanceConf.autoRestart"));
+            this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
           })
           .catch((err) => {
-            this.println($t("instanceConf.error"), $t("instanceConf.autoRestartErr", { err: err }));
+            this.println(
+              $t("TXT_CODE_instanceConf.error"),
+              $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+            );
           });
       }
       this.config.eventTask.ignore = false;
@@ -256,7 +261,7 @@ export default class Instance extends EventEmitter {
     const currentTimestamp = new Date().getTime();
     const startThreshold = 6 * 1000;
     if (currentTimestamp - this.startTimestamp < startThreshold) {
-      this.println("ERROR", $t("instanceConf.instantExit"));
+      this.println("ERROR", $t("TXT_CODE_instanceConf.instantExit"));
     }
   }
 

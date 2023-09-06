@@ -28,7 +28,11 @@ routerApp.use(async (event, ctx, _, next) => {
     return await next();
   }
   logger.warn(
-    $t("auth_router.notAccess", { id: socket.id, address: socket.handshake.address, event: event })
+    $t("TXT_CODE_auth_router.notAccess", {
+      id: socket.id,
+      address: socket.handshake.address,
+      event: event
+    })
   );
   return protocol.error(ctx, "error", IGNORE);
 });
@@ -51,7 +55,10 @@ routerApp.on("auth", (ctx, data) => {
   if (data === globalConfiguration.config.key) {
     // The authentication is passed, and the registered session is a trusted session
     logger.info(
-      $t("auth_router.access", { id: ctx.socket.id, address: ctx.socket.handshake.address })
+      $t("TXT_CODE_auth_router.access", {
+        id: ctx.socket.id,
+        address: ctx.socket.handshake.address
+      })
     );
     loginSuccessful(ctx, data);
     protocol.msg(ctx, "auth", true);
@@ -67,7 +74,10 @@ routerApp.on("connection", (ctx) => {
     if (!session.login) {
       ctx.socket.disconnect();
       logger.info(
-        $t("auth_router.disconnect", { id: ctx.socket.id, address: ctx.socket.handshake.address })
+        $t("TXT_CODE_auth_router.disconnect", {
+          id: ctx.socket.id,
+          address: ctx.socket.handshake.address
+        })
       );
     }
   }, AUTH_TIMEOUT);

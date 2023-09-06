@@ -11,7 +11,7 @@ export default class GeneralStopCommand extends InstanceCommand {
   async exec(instance: Instance) {
     const stopCommand = instance.config.stopCommand;
     if (instance.status() === Instance.STATUS_STOP || !instance.process)
-      return instance.failure(new Error($t("general_stop.notRunning")));
+      return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning")));
 
     instance.status(Instance.STATUS_STOPPING);
 
@@ -24,7 +24,7 @@ export default class GeneralStopCommand extends InstanceCommand {
       }
     }
 
-    instance.println("INFO", $t("general_stop.execCmd", { stopCommand }));
+    instance.println("INFO", $t("TXT_CODE_general_stop.execCmd", { stopCommand }));
     const cacheStartCount = instance.startCount;
 
     // If the instance is still in the stopped state after 10 minutes, restore the state
@@ -33,7 +33,7 @@ export default class GeneralStopCommand extends InstanceCommand {
         instance.status() === Instance.STATUS_STOPPING &&
         instance.startCount === cacheStartCount
       ) {
-        instance.println("ERROR", $t("general_stop.stopErr"));
+        instance.println("ERROR", $t("TXT_CODE_general_stop.stopErr"));
         instance.status(Instance.STATUS_RUNNING);
       }
     }, 1000 * 60 * 10);

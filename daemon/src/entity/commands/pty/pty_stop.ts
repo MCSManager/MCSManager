@@ -12,10 +12,10 @@ export default class PtyStopCommand extends InstanceCommand {
     let stopCommand = instance.config.stopCommand;
 
     if (instance.status() === Instance.STATUS_STOP || !instance.process)
-      return instance.failure(new Error($t("pty_stop.notRunning")));
+      return instance.failure(new Error($t("TXT_CODE_pty_stop.notRunning")));
     instance.status(Instance.STATUS_STOPPING);
 
-    instance.println("INFO", $t("pty_stop.execCmd", { stopCommand: stopCommand }));
+    instance.println("INFO", $t("TXT_CODE_pty_stop.execCmd", { stopCommand: stopCommand }));
 
     const stopCommandList = stopCommand.split("\n");
     for (const stopCommandColumn of stopCommandList) {
@@ -33,7 +33,7 @@ export default class PtyStopCommand extends InstanceCommand {
         instance.status() === Instance.STATUS_STOPPING &&
         instance.startCount === cacheStartCount
       ) {
-        instance.println("ERROR", $t("pty_stop.stopErr"));
+        instance.println("ERROR", $t("TXT_CODE_pty_stop.stopErr"));
         instance.status(Instance.STATUS_RUNNING);
       }
     }, 1000 * 60 * 10);

@@ -52,7 +52,7 @@ export function responseError(
 
   if (!config?.notPrintErr)
     logger.warn(
-      $t("protocol.socketErr", {
+      $t("TXT_CODE_protocol.socketErr", {
         id: ctx.socket.id,
         address: ctx.socket.handshake.address,
         event: ctx.event
@@ -73,7 +73,7 @@ export function error(ctx: RouterContext, event: string, err: any) {
   if (err.toString().includes(IGNORE)) return ctx.socket.emit(ctx.event, packet);
 
   logger.warn(
-    $t("protocol.socketErr", {
+    $t("TXT_CODE_protocol.socketErr", {
       id: ctx.socket.id,
       address: ctx.socket.handshake.address,
       event: ctx.event

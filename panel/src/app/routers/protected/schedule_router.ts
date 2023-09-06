@@ -18,7 +18,7 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = $t("permission.forbiddenInstance");
+    ctx.body = $t("TXT_CODE_permission.forbiddenInstance");
   }
 });
 
@@ -63,7 +63,7 @@ router.post(
       // Scheduled task name needs file name format check
       const name = String(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
-        if (name.includes(ch)) throw new Error($t("router.schedule.invalidName"));
+        if (name.includes(ch)) throw new Error($t("TXT_CODE_router.schedule.invalidName"));
       });
 
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(

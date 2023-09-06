@@ -34,7 +34,7 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
 
   httpServer.on("error", (err) => {
-    logger.error($t("app.httpSetupError"));
+    logger.error($t("TXT_CODE_app.httpSetupError"));
     logger.error(err);
     process.exit(1);
   });
@@ -44,11 +44,11 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
 
   httpServer.listen(port, host);
   logger.info("==================================");
-  logger.info($t("app.panelStarted"));
-  logger.info($t("app.reference"));
-  logger.info($t("app.host", { port }));
-  logger.info($t("app.portTip", { port }));
-  logger.info($t("app.exitTip", { port }));
+  logger.info($t("TXT_CODE_app.panelStarted"));
+  logger.info($t("TXT_CODE_app.reference"));
+  logger.info($t("TXT_CODE_app.host", { port }));
+  logger.info($t("TXT_CODE_app.portTip", { port }));
+  logger.info($t("TXT_CODE_app.exitTip", { port }));
   logger.info("==================================");
 
   // if (os.platform() == "win32") {
@@ -106,7 +106,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   // Development environment detection before startup
   // if (!fs.existsSync(path.join(__dirname, "public"))) {
-  //   console.log($t("app.developInfo"));
+  //   console.log($t("TXT_CODE_app.developInfo"));
   //   process.exit(0);
   // }
 

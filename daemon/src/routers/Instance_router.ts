@@ -179,7 +179,7 @@ routerApp.on("instance/forward", (ctx, data) => {
     // InstanceSubsystem.getInstance(targetInstanceUuid);
     if (isforward) {
       logger.info(
-        $t("Instance_router.requestIO", {
+        $t("TXT_CODE_Instance_router.requestIO", {
           id: ctx.socket.id,
           targetInstanceUuid: targetInstanceUuid
         })
@@ -187,7 +187,7 @@ routerApp.on("instance/forward", (ctx, data) => {
       InstanceSubsystem.forward(targetInstanceUuid, ctx.socket);
     } else {
       logger.info(
-        $t("Instance_router.cancelIO", {
+        $t("TXT_CODE_Instance_router.cancelIO", {
           id: ctx.socket.id,
           targetInstanceUuid: targetInstanceUuid
         })
@@ -210,7 +210,10 @@ routerApp.on("instance/open", async (ctx, data) => {
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
     } catch (err) {
       if (!disableResponse) {
-        logger.error($t("Instance_router.openInstanceErr", { instanceUuid: instanceUuid }), err);
+        logger.error(
+          $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }),
+          err
+        );
         protocol.error(ctx, "instance/open", { instanceUuid: instanceUuid, err: err.message });
       }
     }
@@ -299,7 +302,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   const instance = InstanceSubsystem.getInstance(instanceUuid);
 
   logger.info(
-    $t("Instance_router.performTasks", {
+    $t("TXT_CODE_Instance_router.performTasks", {
       id: ctx.socket.id,
       uuid: instanceUuid,
       taskName: taskName
@@ -312,7 +315,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
       .then(() => {})
       .catch((err) => {
         logger.error(
-          $t("Instance_router.performTasksErr", {
+          $t("TXT_CODE_Instance_router.performTasksErr", {
             uuid: instance.instanceUuid,
             taskName: taskName,
             err: err
@@ -353,7 +356,11 @@ routerApp.on("instance/stop_asynchronous", (ctx, data) => {
       .then(() => {})
       .catch((err) => {});
   } else {
-    return protocol.error(ctx, "instance/stop_asynchronous", $t("Instance_router.taskEmpty"));
+    return protocol.error(
+      ctx,
+      "instance/stop_asynchronous",
+      $t("TXT_CODE_Instance_router.taskEmpty")
+    );
   }
 
   protocol.response(ctx, true);
@@ -418,7 +425,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     const fileManager = new FileManager(instance.absoluteCwdPath());
-    if (!fileManager.check(fileName)) throw new Error($t("Instance_router.accessFileErr"));
+    if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
     const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
     const processConfig = new ProcessConfig({
       fileName: fileName,
@@ -449,7 +456,7 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
       const text = await fs.readFile(filePath, { encoding: "utf-8" });
       return protocol.response(ctx, text);
     }
-    protocol.responseError(ctx, new Error($t("Instance_router.terminalLogNotExist")), {
+    protocol.responseError(ctx, new Error($t("TXT_CODE_Instance_router.terminalLogNotExist")), {
       notPrintErr: true
     });
   } catch (err) {

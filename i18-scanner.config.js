@@ -31,7 +31,7 @@ module.exports = {
     const parser = this.parser;
     const content = fs.readFileSync(file.path, enc);
     let newCode = content;
-    parser.parseFuncFromString(content, { list: ["t"] }, (key, options) => {
+    parser.parseFuncFromString(content, { list: ["t", "$t"] }, (key, options) => {
       if (String(key).includes(FN_KEY)) {
         return;
       }

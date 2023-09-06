@@ -19,7 +19,7 @@ export class PresetCommandManager {
 
   async execPreset(action: string, p?: any) {
     const cmd = this.preset.get(action);
-    if (!cmd) throw new Error($t("preset.actionErr", { action: action }));
+    if (!cmd) throw new Error($t("TXT_CODE_preset.actionErr", { action: action }));
     return await cmd.exec(this.self, p);
   }
 

@@ -92,9 +92,9 @@ export default class DockerStartCommand extends InstanceCommand {
 
   async exec(instance: Instance, source = "Unknown") {
     if (!instance.config.cwd || !instance.config.ie || !instance.config.oe)
-      return instance.failure(new StartupDockerProcessError($t("instance.dirEmpty")));
+      return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirEmpty")));
     if (!fs.existsSync(instance.absoluteCwdPath()))
-      return instance.failure(new StartupDockerProcessError($t("instance.dirNoE")));
+      return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirNoE")));
 
     // command parsing
     const commandList = commandStringToArray(instance.config.startCommand);
@@ -168,7 +168,7 @@ export default class DockerStartCommand extends InstanceCommand {
     if (instance.config.docker.cpusetCpus) {
       const arr = instance.config.docker.cpusetCpus.split(",");
       arr.forEach((v) => {
-        if (isNaN(Number(v))) throw new Error($t("instance.invalidCpu", { v }));
+        if (isNaN(Number(v))) throw new Error($t("TXT_CODE_instance.invalidCpu", { v }));
       });
       cpusetCpus = instance.config.docker.cpusetCpus;
       // Note: check
@@ -177,7 +177,7 @@ export default class DockerStartCommand extends InstanceCommand {
     // container name check
     let containerName = instance.config.docker.containerName;
     if (containerName && (containerName.length > 64 || containerName.length < 2)) {
-      throw new Error($t("instance.invalidContainerName", { v: containerName }));
+      throw new Error($t("TXT_CODE_instance.invalidContainerName", { v: containerName }));
     }
 
     // output startup log
@@ -242,7 +242,9 @@ export default class DockerStartCommand extends InstanceCommand {
 
     instance.started(processAdapter);
     logger.info(
-      $t("instance.successful", { v: `${instance.config.nickname} ${instance.instanceUuid}` })
+      $t("TXT_CODE_instance.successful", {
+        v: `${instance.config.nickname} ${instance.instanceUuid}`
+      })
     );
   }
 }

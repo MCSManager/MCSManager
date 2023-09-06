@@ -15,7 +15,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-console.log($t("ui.help"));
+console.log($t("TXT_CODE_ui.help"));
 
 function stdin() {
   rl.question("> ", async (answer) => {

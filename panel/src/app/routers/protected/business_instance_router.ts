@@ -18,7 +18,7 @@ router.use(async (ctx, next) => {
     await next();
   } else {
     ctx.status = 403;
-    ctx.body = $t("permission.forbiddenInstance");
+    ctx.body = $t("TXT_CODE_permission.forbiddenInstance");
   }
 });
 

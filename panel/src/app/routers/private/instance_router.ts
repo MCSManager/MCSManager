@@ -65,7 +65,7 @@ router.post(
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
-      if (!newInstanceUuid) throw new Error($t("router.instance.createError"));
+      if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
       // Send a cross-end file upload task to the daemon
       const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
       const password = timeUuid();

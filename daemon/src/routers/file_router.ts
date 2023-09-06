@@ -19,7 +19,7 @@ routerApp.use((event, ctx, data, next) => {
     if (!InstanceSubsystem.exists(instanceUuid)) {
       return protocol.error(ctx, event, {
         instanceUuid: instanceUuid,
-        err: $t("file_router.instanceNotExist", { instanceUuid: instanceUuid })
+        err: $t("TXT_CODE_file_router.instanceNotExist", { instanceUuid: instanceUuid })
       });
     }
   }
@@ -164,7 +164,10 @@ routerApp.on("file/compress", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
     if (instance.info.fileLock >= maxFileTask) {
       throw new Error(
-        $t("file_router.unzipLimit", { maxFileTask: maxFileTask, fileLock: instance.info.fileLock })
+        $t("TXT_CODE_file_router.unzipLimit", {
+          maxFileTask: maxFileTask,
+          fileLock: instance.info.fileLock
+        })
       );
     }
     // Statistics of the number of tasks in a single instance file and the number of tasks in the entire daemon process

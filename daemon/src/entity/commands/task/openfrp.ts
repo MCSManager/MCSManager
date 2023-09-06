@@ -59,17 +59,17 @@ export default class OpenFrpTask implements ILifeCycleTask {
 
     if (!fs.existsSync(OpenFrpTask.FRP_EXE_PATH)) {
       const tmpTask = setInterval(() => {
-        instance.println("FRP", $t("frp.installing"));
+        instance.println("FRP", $t("TXT_CODE_frp.installing"));
       }, 2000);
       try {
         await downloadFileToLocalFile(
           OpenFrpTask.FRP_DOWNLOAD_ADDR + OpenFrpTask.FRP_EXE_NAME,
           OpenFrpTask.FRP_EXE_PATH
         );
-        instance.println("FRP", $t("frp.done"));
+        instance.println("FRP", $t("TXT_CODE_frp.done"));
       } catch (error) {
-        logger.error($t("frp.downloadErr"), error);
-        instance.println("ERROR", $t("frp.downloadErr") + `: ${error}`);
+        logger.error($t("TXT_CODE_frp.downloadErr"), error);
+        instance.println("ERROR", $t("TXT_CODE_frp.downloadErr") + `: ${error}`);
         fs.remove(OpenFrpTask.FRP_EXE_PATH, () => {});
         return;
       } finally {

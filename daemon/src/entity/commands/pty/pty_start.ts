@@ -107,18 +107,18 @@ export default class PtyStartCommand extends InstanceCommand {
       !instance.config.ie ||
       !instance.config.oe
     )
-      return instance.failure(new StartupError($t("pty_start.cmdErr")));
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdErr")));
     if (!fs.existsSync(instance.absoluteCwdPath()))
-      return instance.failure(new StartupError($t("pty_start.cwdNotExist")));
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cwdNotExist")));
     if (!path.isAbsolute(path.normalize(instance.config.cwd)))
-      return instance.failure(new StartupError($t("pty_start.mustAbsolutePath")));
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath")));
 
     // PTY mode correctness check
-    logger.info($t("pty_start.startPty", { source: source }));
+    logger.info($t("TXT_CODE_pty_start.startPty", { source: source }));
     let checkPtyEnv = true;
 
     if (!fs.existsSync(PTY_PATH)) {
-      instance.println("ERROR", $t("pty_start.startErr"));
+      instance.println("ERROR", $t("TXT_CODE_pty_start.startErr"));
       checkPtyEnv = false;
     }
 
@@ -145,7 +145,7 @@ export default class PtyStartCommand extends InstanceCommand {
     }
 
     if (commandList.length === 0)
-      return instance.failure(new StartupError($t("pty_start.cmdEmpty")));
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
     const ptyParameter = [
       "-dir",
       instance.config.cwd,
@@ -159,12 +159,12 @@ export default class PtyStartCommand extends InstanceCommand {
     ];
 
     logger.info("----------------");
-    logger.info($t("pty_start.sourceRequest", { source: source }));
-    logger.info($t("pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));
-    logger.info($t("pty_start.startCmd", { cmd: commandList.join(" ") }));
-    logger.info($t("pty_start.ptyPath", { path: PTY_PATH }));
-    logger.info($t("pty_start.ptyParams", { param: ptyParameter.join(" ") }));
-    logger.info($t("pty_start.ptyCwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: source }));
+    logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));
+    logger.info($t("TXT_CODE_pty_start.startCmd", { cmd: commandList.join(" ") }));
+    logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
+    logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
+    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.config.cwd }));
     logger.info("----------------");
 
     // create pty child process
@@ -179,13 +179,13 @@ export default class PtyStartCommand extends InstanceCommand {
     if (!subProcess || !subProcess.pid) {
       instance.println(
         "ERROR",
-        $t("pty_start.pidErr", {
+        $t("TXT_CODE_pty_start.pidErr", {
           startCommand: instance.config.startCommand,
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
         })
       );
-      throw new StartupError($t("pty_start.instanceStartErr"));
+      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr"));
     }
 
     // create process adapter
@@ -198,24 +198,24 @@ export default class PtyStartCommand extends InstanceCommand {
     if (subProcess.exitCode !== null || processAdapter.pid == null || processAdapter.pid === 0) {
       instance.println(
         "ERROR",
-        $t("pty_start.pidErr", {
+        $t("TXT_CODE_pty_start.pidErr", {
           startCommand: instance.config.startCommand,
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
         })
       );
-      throw new StartupError($t("pty_start.instanceStartErr"));
+      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr"));
     }
 
     // generate open event
     instance.started(processAdapter);
 
     logger.info(
-      $t("pty_start.startSuccess", {
+      $t("TXT_CODE_pty_start.startSuccess", {
         instanceUuid: instance.instanceUuid,
         pid: ptySubProcessCfg.pid
       })
     );
-    instance.println("INFO", $t("pty_start.startEmulatedTerminal"));
+    instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal"));
   }
 }

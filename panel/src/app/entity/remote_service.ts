@@ -30,26 +30,26 @@ export default class RemoteService {
     const daemonInfo = `[${this.uuid}] [${addr}/${this.config.remarks}]`;
 
     if (this.available) {
-      logger.info(`${$t("daemonInfo.resetConnect")}:${daemonInfo}`);
+      logger.info(`${$t("TXT_CODE_daemonInfo.resetConnect")}:${daemonInfo}`);
       this.disconnect();
     }
 
     // prevent duplicate registration of events
     if (this.socket && this.socket.hasListeners("connect")) {
-      logger.info(`${$t("daemonInfo.replaceConnect")}:${daemonInfo}`);
+      logger.info(`${$t("TXT_CODE_daemonInfo.replaceConnect")}:${daemonInfo}`);
       return this.refreshReconnect();
     }
 
-    logger.info(`${$t("daemonInfo.tryConnect")}:${daemonInfo}`);
+    logger.info(`${$t("TXT_CODE_daemonInfo.tryConnect")}:${daemonInfo}`);
     this.socket = io(addr, this.config.connectOpts);
 
     // register built-in events
     this.socket.on("connect", async () => {
-      logger.info($t("daemonInfo.connect", { v: daemonInfo }));
+      logger.info($t("TXT_CODE_daemonInfo.connect", { v: daemonInfo }));
       await this.onConnect();
     });
     this.socket.on("disconnect", async () => {
-      logger.info($t("daemonInfo.disconnect", { v: daemonInfo }));
+      logger.info($t("TXT_CODE_daemonInfo.disconnect", { v: daemonInfo }));
       await this.onDisconnect();
     });
     this.socket.on("connect_error", async (error: string) => {
@@ -60,7 +60,7 @@ export default class RemoteService {
   public async setLanguage(language?: string) {
     if (!language) language = i18next.language;
     logger.info(
-      `${$t("daemonInfo.setLanguage")} (${this.config.ip}:${this.config.port}/${
+      `${$t("TXT_CODE_daemonInfo.setLanguage")} (${this.config.ip}:${this.config.port}/${
         this.config.remarks
       }) language: ${language}`
     );
@@ -80,14 +80,14 @@ export default class RemoteService {
       if (res === true) {
         this.available = true;
         await this.setLanguage();
-        logger.info($t("daemonInfo.authSuccess", { v: daemonInfo }));
+        logger.info($t("TXT_CODE_daemonInfo.authSuccess", { v: daemonInfo }));
         return true;
       }
       this.available = false;
-      logger.warn($t("daemonInfo.authFailure", { v: daemonInfo }));
+      logger.warn($t("TXT_CODE_daemonInfo.authFailure", { v: daemonInfo }));
       return false;
     } catch (error) {
-      logger.warn($t("daemonInfo.authError", { v: daemonInfo }));
+      logger.warn($t("TXT_CODE_daemonInfo.authError", { v: daemonInfo }));
       logger.warn(error);
       return false;
     }
@@ -109,7 +109,7 @@ export default class RemoteService {
   disconnect() {
     if (this.socket) {
       const daemonInfo = `[${this.uuid}] [${this.config.ip}:${this.config.port}]`;
-      logger.info($t("daemonInfo.closed", { v: daemonInfo }));
+      logger.info($t("TXT_CODE_daemonInfo.closed", { v: daemonInfo }));
       this.socket.removeAllListeners();
       this.socket.disconnect();
       this.socket.close();

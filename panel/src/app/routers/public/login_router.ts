@@ -21,13 +21,13 @@ router.post(
   async (ctx: Koa.ParameterizedContext) => {
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
-    if (!checkBanIp(ctx)) throw new Error($t("router.login.ban"));
+    if (!checkBanIp(ctx)) throw new Error($t("TXT_CODE_router.login.ban"));
     if (check(ctx)) return (ctx.body = "Logined");
     let token = login(ctx, userName, passWord);
     if (token) {
       ctx.body = true;
     } else {
-      throw new Error($t("router.login.nameOrPassError"));
+      throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
     }
   }
 );
@@ -82,8 +82,9 @@ router.all(
     const userName = ctx.request.body.username;
     const passWord = ctx.request.body.password;
     if (userSystem.objects.size === 0) {
-      if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.passwordCheck"));
-      logger.info($t("router.login.init", { userName }));
+      if (!userSystem.validatePassword(passWord))
+        throw new Error($t("TXT_CODE_router.user.passwordCheck"));
+      logger.info($t("TXT_CODE_router.login.init", { userName }));
       await userSystem.create({
         userName,
         passWord,
@@ -92,7 +93,7 @@ router.all(
       login(ctx, userName, passWord);
       return (ctx.body = true);
     }
-    throw new Error($t("router.user.installed"));
+    throw new Error($t("TXT_CODE_router.user.installed"));
   }
 );
 

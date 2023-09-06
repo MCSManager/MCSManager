@@ -72,23 +72,23 @@ export default class GeneralStartCommand extends InstanceCommand {
       !instance.config.ie ||
       !instance.config.oe
     )
-      return instance.failure(new StartupError($t("general_start.instanceConfigErr")));
+      return instance.failure(new StartupError($t("TXT_CODE_general_start.instanceConfigErr")));
     if (!fs.existsSync(instance.absoluteCwdPath()))
-      return instance.failure(new StartupError($t("general_start.cwdPathNotExist")));
+      return instance.failure(new StartupError($t("TXT_CODE_general_start.cwdPathNotExist")));
 
     // command parsing
     const commandList = commandStringToArray(instance.config.startCommand);
     const commandExeFile = commandList[0];
     const commandParameters = commandList.slice(1);
     if (commandList.length === 0) {
-      return instance.failure(new StartupError($t("general_start.cmdEmpty")));
+      return instance.failure(new StartupError($t("TXT_CODE_general_start.cmdEmpty")));
     }
 
     logger.info("----------------");
-    logger.info($t("general_start.startInstance", { source: source }));
-    logger.info($t("general_start.instanceUuid", { uuid: instance.instanceUuid }));
-    logger.info($t("general_start.startCmd", { cmdList: JSON.stringify(commandList) }));
-    logger.info($t("general_start.cwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_general_start.startInstance", { source: source }));
+    logger.info($t("TXT_CODE_general_start.instanceUuid", { uuid: instance.instanceUuid }));
+    logger.info($t("TXT_CODE_general_start.startCmd", { cmdList: JSON.stringify(commandList) }));
+    logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.config.cwd }));
     logger.info("----------------");
 
     // create child process
@@ -103,13 +103,13 @@ export default class GeneralStartCommand extends InstanceCommand {
     if (!process || !process.pid) {
       instance.println(
         "ERROR",
-        $t("general_start.pidErr", {
+        $t("TXT_CODE_general_start.pidErr", {
           startCommand: instance.config.startCommand,
           commandExeFile: commandExeFile,
           commandParameters: JSON.stringify(commandParameters)
         })
       );
-      throw new StartupError($t("general_start.startErr"));
+      throw new StartupError($t("TXT_CODE_general_start.startErr"));
     }
 
     // create process adapter
@@ -118,8 +118,11 @@ export default class GeneralStartCommand extends InstanceCommand {
     // generate open event
     instance.started(processAdapter);
     logger.info(
-      $t("general_start.startSuccess", { instanceUuid: instance.instanceUuid, pid: process.pid })
+      $t("TXT_CODE_general_start.startSuccess", {
+        instanceUuid: instance.instanceUuid,
+        pid: process.pid
+      })
     );
-    instance.println("INFO", $t("general_start.startOrdinaryTerminal"));
+    instance.println("INFO", $t("TXT_CODE_general_start.startOrdinaryTerminal"));
   }
 }

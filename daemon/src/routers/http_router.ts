@@ -24,9 +24,9 @@ router.get("/download/:key/:fileName", async (ctx) => {
     const mission = missionPassport.getMission(key, "download");
     if (!mission) throw new Error((ctx.body = "Access denied: No task found"));
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
-    if (!instance) throw new Error($t("http_router.instanceNotExist"));
+    if (!instance) throw new Error($t("TXT_CODE_http_router.instanceNotExist"));
     if (!FileManager.checkFileName(paramsFileName))
-      throw new Error($t("http_router.fileNameNotSpec"));
+      throw new Error($t("TXT_CODE_http_router.fileNameNotSpec"));
 
     const cwd = instance.config.cwd;
     const fileRelativePath = mission.parameter.fileName;
@@ -43,7 +43,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
     ctx.set("Content-Type", "application/octet-stream");
     await send(ctx, fileName, { root: fileDir + "/", hidden: true });
   } catch (error) {
-    ctx.body = $t("http_router.downloadErr", { error: error.message });
+    ctx.body = $t("TXT_CODE_http_router.downloadErr", { error: error.message });
     ctx.status = 500;
   } finally {
     missionPassport.deleteMission(key);
@@ -96,7 +96,7 @@ router.post("/upload/:key", async (ctx) => {
       });
       return (ctx.body = "OK");
     }
-    ctx.body = $t("http_router.updateErr");
+    ctx.body = $t("TXT_CODE_http_router.updateErr");
     ctx.status = 500;
   } catch (error) {
     ctx.body = error.message;

@@ -120,7 +120,8 @@ router.put(
     if (userUuid) {
       const config = ctx.request.body;
       const { passWord, isInit } = config;
-      if (!userSystem.validatePassword(passWord)) throw new Error($t("router.user.passwordCheck"));
+      if (!userSystem.validatePassword(passWord))
+        throw new Error($t("TXT_CODE_router.user.passwordCheck"));
       await userSystem.edit(userUuid, { passWord, isInit });
       ctx.body = true;
     }

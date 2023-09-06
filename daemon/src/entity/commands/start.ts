@@ -30,7 +30,7 @@ export default class StartCommand extends InstanceCommand {
 
   async exec(instance: Instance) {
     if (instance.status() !== Instance.STATUS_STOP)
-      return instance.failure(new StartupError($t("start.instanceNotDown")));
+      return instance.failure(new StartupError($t("TXT_CODE_start.instanceNotDown")));
     try {
       instance.setLock(true);
       instance.status(Instance.STATUS_STARTING);
@@ -41,14 +41,14 @@ export default class StartCommand extends InstanceCommand {
       if (endTime) {
         const currentTime = new Date().getTime();
         if (endTime <= currentTime) {
-          throw new Error($t("start.instanceMaturity"));
+          throw new Error($t("TXT_CODE_start.instanceMaturity"));
         }
       }
 
       const currentTimestamp = new Date().getTime();
       instance.startTimestamp = currentTimestamp;
 
-      instance.println("INFO", $t("start.startInstance"));
+      instance.println("INFO", $t("TXT_CODE_start.startInstance"));
 
       // prevent the dead-loop from starting
       await this.sleep();

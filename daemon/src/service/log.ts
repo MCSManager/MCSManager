@@ -75,7 +75,7 @@ function systemInfoReport() {
     )}MB` + ` CPU: ${toInt(info.cpuUsage * 100)}%`;
   const selfInfo = `Heap: ${toInt(self.heapUsed / MB_SIZE)}MB/${toInt(self.heapTotal / MB_SIZE)}MB`;
   const selfInfo2 = `RSS: ${toInt(self.rss / MB_SIZE)}MB`;
-  const logTip = $t("app.sysinfo");
+  const logTip = $t("TXT_CODE_app.sysinfo");
   loggerSysInfo.info([`[${logTip}]`, sysInfo, selfInfo, selfInfo2].join(" "));
 }
 

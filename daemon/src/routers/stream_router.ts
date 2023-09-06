@@ -27,15 +27,18 @@ routerApp.on("stream/auth", (ctx, data) => {
   try {
     const password = data.password;
     const mission = missionPassport.getMission(password, "stream_channel");
-    if (!mission) throw new Error($t("stream_router.taskNotExist"));
+    if (!mission) throw new Error($t("TXT_CODE_stream_router.taskNotExist"));
 
     // The instance UUID parameter must come from the task parameter and cannot be used directly
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
-    if (!instance) throw new Error($t("stream_router.instanceNotExist"));
+    if (!instance) throw new Error($t("TXT_CODE_stream_router.instanceNotExist"));
 
     // Add the data stream authentication ID
     logger.info(
-      $t("stream_router.authSuccess", { id: ctx.socket.id, address: ctx.socket.handshake.address })
+      $t("TXT_CODE_stream_router.authSuccess", {
+        id: ctx.socket.id,
+        address: ctx.socket.handshake.address
+      })
     );
     ctx.session.id = ctx.socket.id;
     ctx.session.login = true;
@@ -48,7 +51,7 @@ routerApp.on("stream/auth", (ctx, data) => {
     // Start forwarding output stream data to this Socket
     InstanceSubsystem.forward(instance.instanceUuid, ctx.socket);
     logger.info(
-      $t("stream_router.establishConnection", {
+      $t("TXT_CODE_stream_router.establishConnection", {
         id: ctx.socket.id,
         address: ctx.socket.handshake.address,
         uuid: instance.instanceUuid
@@ -59,7 +62,7 @@ routerApp.on("stream/auth", (ctx, data) => {
     ctx.socket.on("disconnect", () => {
       InstanceSubsystem.stopForward(instance.instanceUuid, ctx.socket);
       logger.info(
-        $t("stream_router.disconnect", {
+        $t("TXT_CODE_stream_router.disconnect", {
           id: ctx.socket.id,
           address: ctx.socket.handshake.address,
           uuid: instance.instanceUuid

@@ -30,7 +30,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       await this.initConnectLocalhost("");
     }
 
-    logger.info($t("systemRemoteService.nodeCount", { n: this.services.size }));
+    logger.info($t("TXT_CODE_systemRemoteService.nodeCount", { n: this.services.size }));
 
     // Register for periodic connection status checks
     setInterval(() => this.connectionStatusCheckTask(), 1000 * 60);
@@ -89,9 +89,9 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     const localKeyFilePath = path.normalize(
       path.join(process.cwd(), "../daemon/data/Config/global.json")
     );
-    logger.info($t("systemRemoteService.loadDaemonTitle", { localKeyFilePath }));
+    logger.info($t("TXT_CODE_systemRemoteService.loadDaemonTitle", { localKeyFilePath }));
     if (fs.existsSync(localKeyFilePath)) {
-      logger.info($t("systemRemoteService.autoCheckDaemon"));
+      logger.info($t("TXT_CODE_systemRemoteService.autoCheckDaemon"));
       const localDaemonConfig = JSON.parse(
         fs.readFileSync(localKeyFilePath, { encoding: "utf-8" })
       );
@@ -102,7 +102,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
       const port = 24444;
       return await this.registerRemoteService({ apiKey: key, port, ip });
     }
-    logger.warn($t("systemRemoteService.error"));
+    logger.warn($t("TXT_CODE_systemRemoteService.error"));
 
     // After 5 seconds, determine whether the daemon has been connected until a daemon is connected
     setTimeout(() => {

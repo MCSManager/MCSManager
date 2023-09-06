@@ -22,15 +22,17 @@ export default class GeneralUpdateCommand extends InstanceCommand {
 
   async exec(instance: Instance) {
     if (instance.status() !== Instance.STATUS_STOP)
-      return instance.failure(new Error($t("general_update.statusErr_notStop")));
+      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
     if (instance.asynchronousTask !== null)
-      return instance.failure(new Error($t("general_update.statusErr_otherProgress")));
+      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress")));
     try {
       instance.setLock(true);
       let updateCommand = instance.config.updateCommand;
       updateCommand = updateCommand.replace(/\$\{mcsm_workspace\}/gm, instance.config.cwd);
-      logger.info($t("general_update.readyUpdate", { instanceUuid: instance.instanceUuid }));
-      logger.info($t("general_update.updateCmd", { instanceUuid: instance.instanceUuid }));
+      logger.info(
+        $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: instance.instanceUuid })
+      );
+      logger.info($t("TXT_CODE_general_update.updateCmd", { instanceUuid: instance.instanceUuid }));
       logger.info(updateCommand);
 
       // command parsing
@@ -38,7 +40,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       const commandExeFile = commandList[0];
       const commnadParameters = commandList.slice(1);
       if (commandList.length === 0) {
-        return instance.failure(new Error($t("general_update.cmdFormatErr")));
+        return instance.failure(new Error($t("TXT_CODE_general_update.cmdFormatErr")));
       }
 
       // start the update command
@@ -49,7 +51,10 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       });
       if (!process || !process.pid) {
         this.stopped(instance);
-        return instance.println($t("general_update.err"), $t("general_update.updateFailed"));
+        return instance.println(
+          $t("TXT_CODE_general_update.err"),
+          $t("TXT_CODE_general_update.updateFailed")
+        );
       }
 
       // process & pid
@@ -69,24 +74,38 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       process.on("exit", (code) => {
         this.stopped(instance);
         if (code === 0) {
-          instance.println($t("general_update.update"), $t("general_update.updateSuccess"));
+          instance.println(
+            $t("TXT_CODE_general_update.update"),
+            $t("TXT_CODE_general_update.updateSuccess")
+          );
         } else {
-          instance.println($t("general_update.update"), $t("general_update.updateErr"));
+          instance.println(
+            $t("TXT_CODE_general_update.update"),
+            $t("TXT_CODE_general_update.updateErr")
+          );
         }
       });
     } catch (err) {
       this.stopped(instance);
-      instance.println($t("general_update.update"), $t("general_update.error", { err: err }));
+      instance.println(
+        $t("TXT_CODE_general_update.update"),
+        $t("TXT_CODE_general_update.error", { err: err })
+      );
     }
   }
 
   async stop(instance: Instance): Promise<void> {
-    logger.info($t("general_update.terminateUpdate", { instanceUuid: instance.instanceUuid }));
-    instance.println(
-      $t("general_update.update"),
-      $t("general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
+    logger.info(
+      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
     );
-    instance.println($t("general_update.update"), $t("general_update.killProcess"));
+    instance.println(
+      $t("TXT_CODE_general_update.update"),
+      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
+    );
+    instance.println(
+      $t("TXT_CODE_general_update.update"),
+      $t("TXT_CODE_general_update.killProcess")
+    );
     killProcess(this.pid, this.process);
   }
 }

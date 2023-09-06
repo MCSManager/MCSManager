@@ -8,6 +8,6 @@ export default class MinecraftUpdateCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
-    console.log($t("mc_update.updateInstance"));
+    console.log($t("TXT_CODE_mc_update.updateInstance"));
   }
 }

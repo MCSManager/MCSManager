@@ -41,7 +41,7 @@ if (fs.existsSync(LOCAL_PRESET_LANG_PATH)) {
   logger.info(`LANGUAGE: ${lang}`);
   i18next.changeLanguage(lang);
 }
-logger.info($t("app.welcome"));
+logger.info($t("TXT_CODE_app.welcome"));
 
 import * as router from "./service/router";
 import * as koa from "./service/http";
@@ -63,7 +63,7 @@ koaApp.on("error", (error) => {
 
 const httpServer = http.createServer(koaApp.callback());
 httpServer.on("error", (err) => {
-  logger.error($t("app.httpSetupError"));
+  logger.error($t("TXT_CODE_app.httpSetupError"));
   logger.error(err);
   process.exit(1);
 });
@@ -88,15 +88,15 @@ initDependent();
 // Initialize application instance system
 try {
   InstanceSubsystem.loadInstances();
-  logger.info($t("app.instanceLoad", { n: InstanceSubsystem.getInstances().length }));
+  logger.info($t("TXT_CODE_app.instanceLoad", { n: InstanceSubsystem.getInstances().length }));
 } catch (err) {
-  logger.error($t("app.instanceLoadError"), err);
+  logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
 }
 
 // Initialize Websocket server
 io.on("connection", (socket: Socket) => {
-  logger.info($t("app.sessionConnect", { ip: socket.handshake.address, uuid: socket.id }));
+  logger.info($t("TXT_CODE_app.sessionConnect", { ip: socket.handshake.address, uuid: socket.id }));
 
   protocol.addGlobalSocket(socket);
   router.navigation(socket);
@@ -104,7 +104,9 @@ io.on("connection", (socket: Socket) => {
   socket.on("disconnect", () => {
     protocol.delGlobalSocket(socket);
     for (const name of socket.eventNames()) socket.removeAllListeners(name);
-    logger.info($t("app.sessionDisconnect", { ip: socket.handshake.address, uuid: socket.id }));
+    logger.info(
+      $t("TXT_CODE_app.sessionDisconnect", { ip: socket.handshake.address, uuid: socket.id })
+    );
   });
 });
 
@@ -117,13 +119,13 @@ process.on("unhandledRejection", (reason, p) => {
 });
 
 logger.info("----------------------------");
-logger.info($t("app.started"));
-logger.info($t("app.doc"));
-logger.info($t("app.addr", { port: config.port }));
-logger.info($t("app.configPathTip", { path: "" }));
-logger.info($t("app.password", { key: config.key }));
-logger.info($t("app.passwordTip"));
-logger.info($t("app.exitTip"));
+logger.info($t("TXT_CODE_app.started"));
+logger.info($t("TXT_CODE_app.doc"));
+logger.info($t("TXT_CODE_app.addr", { port: config.port }));
+logger.info($t("TXT_CODE_app.configPathTip", { path: "" }));
+logger.info($t("TXT_CODE_app.password", { key: config.key }));
+logger.info($t("TXT_CODE_app.passwordTip"));
+logger.info($t("TXT_CODE_app.exitTip"));
 logger.info("----------------------------");
 console.log("");
 
