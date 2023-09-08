@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import {
   ProfileOutlined,
@@ -91,8 +91,12 @@ const nodeOperations = [
   {
     title: t("TXT_CODE_b5c7b82d"),
     icon: SettingOutlined,
-    click: () => {
-      console.log(3);
+    click: (node: ComputedNodeInfo) => {
+      editDialog.value.uuid = node.uuid;
+      editDialog.value.data.ip = node.ip;
+      editDialog.value.data.port = node.port;
+      editDialog.value.data.remarks = node.remarks;
+      editDialog.value.showEdit();
     }
   }
 ];
@@ -114,50 +118,96 @@ const addNode = async () => {
   editDialog.value.loading = false;
 };
 
-const deleteNode = () => {
-  console.log(11);
+const deleteNode = async () => {
+  const { execute } = deleteNodeApi();
+  try {
+    await execute({
+      params: {
+        uuid: editDialog.value.uuid
+      }
+    });
+    message.success(t("删除节点成功"));
+    editDialog.value.hidden();
+  } catch (error) {
+    message.error(t("删除节点失败"));
+  }
+  editDialog.value.loading = false;
 };
 
-const editMode = false;
+const editNode = async () => {
+  const { apiKey, ...outherData } = editDialog.value.data;
+
+  const updatedData = apiKey == "" ? { ...outherData } : editDialog.value.data;
+  const { execute } = editNodeApi();
+  try {
+    await execute({
+      params: {
+        uuid: editDialog.value.uuid
+      },
+      data: {
+        ...updatedData
+      }
+    });
+    message.success(t("保存成功"));
+    editDialog.value.loading = false;
+    editDialog.value.hidden();
+  } catch (error) {
+    message.error(t("编辑节点失败"));
+  }
+};
+
+const editMode = ref(false);
 const editDialog = ref({
   status: false,
   loading: false,
-  title: editMode ? t("编辑节点信息") : t("新增节点"),
+  title: computed(() => (editMode.value ? t("编辑节点信息") : t("新增节点"))),
   data: {
     ip: "",
-    port: "",
+    port: 24444,
     remarks: "",
     apiKey: ""
   },
   uuid: "",
   check: () => {
-    if (!editDialog.value.data.apiKey || !editDialog.value.data.ip || !editDialog.value.data.port)
-      return false;
+    if (!editMode.value) {
+      if (!editDialog.value.data.apiKey) return false;
+    }
+    if (!editDialog.value.data.ip || !editDialog.value.data.port) return false;
   },
   show: () => {
+    editMode.value = false;
+    editDialog.value.status = true;
+  },
+  showEdit: () => {
+    editMode.value = true;
     editDialog.value.status = true;
   },
   clear: () => {
     editDialog.value.data = {
       ip: "",
-      port: "",
+      port: 24444,
       remarks: "",
       apiKey: ""
     };
+  },
+  delete: () => {
+    editDialog.value.loading = true;
+    deleteNode();
   },
   submit: () => {
     if (editDialog.value.check() === false) {
       return message.error(t("请正确填写表单"));
     }
     editDialog.value.loading = true;
-    if (editMode) {
-      // editNode();
+    if (editMode.value) {
+      editNode();
     } else {
       addNode();
     }
   },
   hidden: () => {
     editDialog.value.status = false;
+    editDialog.value.clear();
   }
 });
 </script>
@@ -217,7 +267,7 @@ const editDialog = ref({
               <IconBtn
                 :icon="operation.icon"
                 :title="operation.title"
-                @click="operation.click"
+                @click="operation.click(item)"
               ></IconBtn>
             </span>
           </template>
@@ -283,7 +333,10 @@ const editDialog = ref({
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("验证密钥") }}</a-typography-title>
+        <a-typography-title class="flex" :level="5">
+          {{ t("验证密钥") }}
+          <div v-if="editMode">{{ t("（留空则不修改）") }}</div>
+        </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ t("在远程节点启动时控制台上会输出显示，务必确保密钥安全") }}
@@ -309,7 +362,7 @@ const editDialog = ref({
           <a-button v-if="editMode" key="delete">{{ t("删除节点") }}</a-button>
         </a-popconfirm>
         <div class="right">
-          <a-button key="back">{{ t("取消") }}</a-button>
+          <a-button key="back" @click="editDialog.hidden()">{{ t("取消") }}</a-button>
           <a-button
             key="submit"
             type="primary"

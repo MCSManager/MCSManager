@@ -151,7 +151,7 @@ export const addNode = useDefineApi<
   {
     data: {
       ip: string;
-      port: string;
+      port: number;
       remarks: string;
       apiKey: string;
     };
