@@ -17,7 +17,7 @@ import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo"
 import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
@@ -105,7 +105,9 @@ const nodeOperations = [
           </template>
           <template #right>
             <a-button class="mr-12" type="primary">{{ t("TXT_CODE_15a381d5") }}</a-button>
-            <a-button>{{ t("TXT_CODE_3a302f23") }}</a-button>
+            <a-button href="https://docs.mcsmanager.com/" target="_black">
+              {{ t("TXT_CODE_3a302f23") }}
+            </a-button>
           </template>
           <template #center>
             <div class="search-input">
@@ -121,13 +123,9 @@ const nodeOperations = [
 
       <a-col :span="24">
         <a-typography-text type="secondary">
-          {{
-            t("TXT_CODE_f9a92e38")
-          }}
+          {{ t("TXT_CODE_f9a92e38") }}
           <br />
-          {{
-            t("TXT_CODE_a65c65c2")
-          }}
+          {{ t("TXT_CODE_a65c65c2") }}
         </a-typography-text>
       </a-col>
 

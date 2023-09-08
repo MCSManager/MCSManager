@@ -24,6 +24,12 @@ export const loginUser = useDefineApi<
   method: "POST"
 });
 
+// 用户登出
+export const logoutUser = useDefineApi<any, any>({
+  url: "/api/auth/logout",
+  method: "GET"
+});
+
 // 获取当前登录的用户信息
 export const userInfoApi = useDefineApi<any, BaseUserInfo>({
   url: "/api/auth/"

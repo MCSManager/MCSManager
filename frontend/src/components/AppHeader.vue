@@ -3,7 +3,7 @@ import { router, type RouterMetaInfo } from "@/config/router";
 import logo from "@/assets/logo.png";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useRoute } from "vue-router";
-import { computed, h, reactive } from "vue";
+import { computed, h } from "vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { notification } from "ant-design-vue";
 import {
@@ -14,24 +14,25 @@ import {
   UserOutlined,
   MenuUnfoldOutlined,
   FormatPainterOutlined,
-  FormatPainterFilled,
   TranslationOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
 import { $t, setLanguage, $t as t } from "@/lang/i18n";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
-
+import { logoutUser } from "@/services/apis/index";
 import { message } from "ant-design-vue";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
-const [messageApi] = message.useMessage();
+// const [messageApi] = message.useMessage();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
-const { setTheme, isDarkTheme } = useAppConfigStore();
+const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
+
+const { execute } = logoutUser();
 
 const handleToPage = (url: string) => {
   containerState.showPhoneMenu = false;
@@ -170,9 +171,7 @@ const appMenus = computed(() => {
         notification.info({
           placement: "top",
           message: t("TXT_CODE_7b1adf35"),
-          description: t(
-            "TXT_CODE_6b6f1d3"
-          )
+          description: t("TXT_CODE_6b6f1d3")
         });
       },
       conditions: !containerState.isDesignMode,
@@ -190,9 +189,12 @@ const appMenus = computed(() => {
     {
       title: t("TXT_CODE_2c69ab15"),
       icon: LogoutOutlined,
-      click: () => {
-        toPage({ path: "/" });
-        messageApi.success(t("TXT_CODE_e6856d81"));
+      click: async () => {
+        await execute();
+        message.success(t("成功退出登录"));
+        router.go(0);
+        // toPage({ path: "/" });
+        // messageApi.success(t("TXT_CODE_e6856d81"));
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false
