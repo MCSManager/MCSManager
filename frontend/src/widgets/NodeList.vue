@@ -111,7 +111,6 @@ const addNode = async () => {
     });
     editDialog.value.hidden();
     message.success(t("添加节点成功"));
-    editDialog.value.clear();
   } catch (error: any) {
     message.error(t("添加节点失败"));
   }
