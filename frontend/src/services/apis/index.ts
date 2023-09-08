@@ -125,3 +125,52 @@ export const addUser = useDefineApi<
 export const overviewInfo = useDefineApi<any, IPanelOverviewResponse>({
   url: "/api/overview"
 });
+
+// 节点管理
+// 修改秘钥
+export const editNode = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+    data: {
+      apiKey?: string;
+      ip?: string;
+      port?: number;
+      remarks?: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "PUT"
+});
+
+// 新建节点
+export const addNode = useDefineApi<
+  {
+    data: {
+      ip: string;
+      port: string;
+      remarks: string;
+      apiKey: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "POST"
+});
+
+// 删除节点
+export const deleteNode = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "DELETE"
+});

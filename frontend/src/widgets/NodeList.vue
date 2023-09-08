@@ -16,6 +16,12 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
+import {
+  editNode as editNodeApi,
+  addNode as addNodeApi,
+  deleteNode as deleteNodeApi
+} from "@/services/apis";
+import { message } from "ant-design-vue";
 
 defineProps<{
   card: LayoutCard;
@@ -90,6 +96,70 @@ const nodeOperations = [
     }
   }
 ];
+
+const addNode = async () => {
+  const { execute } = addNodeApi();
+  try {
+    await execute({
+      data: {
+        ...editDialog.value.data
+      }
+    });
+    editDialog.value.hidden();
+    message.success(t("添加节点成功"));
+    editDialog.value.clear();
+  } catch (error: any) {
+    message.error(t("添加节点失败"));
+  }
+  editDialog.value.loading = false;
+};
+
+const deleteNode = () => {
+  console.log(11);
+};
+
+const editMode = false;
+const editDialog = ref({
+  status: false,
+  loading: false,
+  title: editMode ? t("编辑节点信息") : t("新增节点"),
+  data: {
+    ip: "",
+    port: "",
+    remarks: "",
+    apiKey: ""
+  },
+  uuid: "",
+  check: () => {
+    if (!editDialog.value.data.apiKey || !editDialog.value.data.ip || !editDialog.value.data.port)
+      return false;
+  },
+  show: () => {
+    editDialog.value.status = true;
+  },
+  clear: () => {
+    editDialog.value.data = {
+      ip: "",
+      port: "",
+      remarks: "",
+      apiKey: ""
+    };
+  },
+  submit: () => {
+    if (editDialog.value.check() === false) {
+      return message.error(t("请正确填写表单"));
+    }
+    editDialog.value.loading = true;
+    if (editMode) {
+      // editNode();
+    } else {
+      addNode();
+    }
+  },
+  hidden: () => {
+    editDialog.value.status = false;
+  }
+});
 </script>
 
 <template>
@@ -104,7 +174,9 @@ const nodeOperations = [
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-12" type="primary">{{ t("TXT_CODE_15a381d5") }}</a-button>
+            <a-button class="mr-12" type="primary" @click="editDialog.show">
+              {{ t("TXT_CODE_15a381d5") }}
+            </a-button>
             <a-button href="https://docs.mcsmanager.com/" target="_black">
               {{ t("TXT_CODE_3a302f23") }}
             </a-button>
@@ -176,6 +248,80 @@ const nodeOperations = [
       </a-col>
     </a-row>
   </div>
+  <a-modal v-model:open="editDialog.status" :title="editDialog.title">
+    <a-form layout="vertical">
+      <a-form-item>
+        <a-typography-title :level="5">{{ t("备注信息") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("必填，支持中文，用于填写相关备注信息") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="editDialog.data.remarks" />
+      </a-form-item>
+
+      <a-form-item>
+        <a-typography-title :level="5">{{ t("远程节点所在主机的 IP 地址") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("必须使用外网地址或 localhost 地址，否则将导致远程实例无法连接") }}
+            <br />
+            {{ t("必填，例如 mcsmanager.com，43.123.211.12") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="editDialog.data.ip" />
+      </a-form-item>
+
+      <a-form-item>
+        <a-typography-title :level="5">{{ t("远程节点端口") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("必填，例如 24444") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="editDialog.data.port" />
+      </a-form-item>
+
+      <a-form-item>
+        <a-typography-title :level="5">{{ t("验证密钥") }}</a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("在远程节点启动时控制台上会输出显示，务必确保密钥安全") }}
+            <br />
+            {{ t("在 Linux 下，密钥一般在 /opt/mcsmanager/daemon/data/Config/global.json 中") }}
+            <br />
+            {{ t("必填，例如 6ff0fa1ef9a943f3c6f2fe0e4564a2fa383d35c4b78ccb5") }}
+            <br />
+            <a href="https://docs.mcsmanager.com/" target="_blank">{{ t("如何获取密钥？") }}</a>
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="editDialog.data.apiKey" />
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <div class="justify-space-between">
+        <a-popconfirm
+          :title="t('确定要永久删除该节点吗？')"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="deleteNode()"
+        >
+          <a-button v-if="editMode" key="delete">{{ t("删除节点") }}</a-button>
+        </a-popconfirm>
+        <div class="right">
+          <a-button key="back">{{ t("取消") }}</a-button>
+          <a-button
+            key="submit"
+            type="primary"
+            :loading="editDialog.loading"
+            @click="editDialog.submit()"
+          >
+            {{ t("确定") }}
+          </a-button>
+        </div>
+      </div>
+    </template>
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>
