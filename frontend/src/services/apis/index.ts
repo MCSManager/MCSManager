@@ -24,6 +24,12 @@ export const loginUser = useDefineApi<
   method: "POST"
 });
 
+// 用户登出
+export const logoutUser = useDefineApi<any, any>({
+  url: "/api/auth/logout",
+  method: "GET"
+});
+
 // 获取当前登录的用户信息
 export const userInfoApi = useDefineApi<any, BaseUserInfo>({
   url: "/api/auth/"
@@ -118,4 +124,53 @@ export const addUser = useDefineApi<
 // 获取设置信息
 export const overviewInfo = useDefineApi<any, IPanelOverviewResponse>({
   url: "/api/overview"
+});
+
+// 节点管理
+// 修改秘钥
+export const editNode = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+    data: {
+      apiKey?: string;
+      ip?: string;
+      port?: number;
+      remarks?: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "PUT"
+});
+
+// 新建节点
+export const addNode = useDefineApi<
+  {
+    data: {
+      ip: string;
+      port: number;
+      remarks: string;
+      apiKey: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "POST"
+});
+
+// 删除节点
+export const deleteNode = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/remote_service",
+  method: "DELETE"
 });
