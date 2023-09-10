@@ -48,7 +48,7 @@ export interface StdoutData {
 
 export function useTerminal() {
   const events = new EventEmitter();
-  let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+  let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
   const state = ref<InstanceDetail>();
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
@@ -71,7 +71,7 @@ export function useTerminal() {
 
     socket = io(addr, {});
     socket.on("connect", () => {
-      socket.emit("stream/auth", {
+      socket?.emit("stream/auth", {
         data: { password }
       });
     });
@@ -79,7 +79,7 @@ export function useTerminal() {
     socket.on("stream/auth", (packet) => {
       const data = packet.data;
       if (data === true) {
-        socket.emit("stream/detail", {});
+        socket?.emit("stream/detail", {});
         events.emit("connect");
         isReady.value = true;
       } else {
@@ -88,14 +88,14 @@ export function useTerminal() {
     });
 
     socket.on("reconnect", () => {
-      socket.emit("stream/auth", {
+      socket?.emit("stream/auth", {
         data: { password }
       });
     });
 
     socket.on("disconnect", () => {
       events.emit("disconnect");
-      socket.close();
+      socket?.close();
     });
 
     socket.on("instance/stdout", (packet) => events.emit("stdout", packet?.data));
@@ -133,7 +133,7 @@ export function useTerminal() {
 
     term.onData((data) => {
       console.debug("Termin OnData:", data);
-      socket.emit("stream/stdin", { data });
+      socket?.emit("stream/stdin", { data });
     });
     term.writeln(
       `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Instance app terminal.${TERM_COLOR.TERM_RESET}`
@@ -170,7 +170,7 @@ export function useTerminal() {
   onUnmounted(() => {
     events.removeAllListeners();
     // window.removeEventListener("resize", handleTerminalSizeChange);
-    socket.close();
+    socket?.close();
   });
 
   return {

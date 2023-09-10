@@ -29,7 +29,8 @@ const { execute, initTerminalWindow, sendCommand, state: instanceInfo } = useTer
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
-const viewType = getMetaOrRouteValue("viewType");
+const viewType = getMetaOrRouteValue("viewType", false);
+
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 const commandInputValue = ref("");
 
@@ -104,13 +105,17 @@ const initTerminal = () => {
 };
 
 onMounted(async () => {
-  if (instanceId && daemonId) {
-    await execute({
-      instanceId,
-      daemonId
-    });
+  try {
+    if (instanceId && daemonId) {
+      await execute({
+        instanceId,
+        daemonId
+      });
+    }
+    initTerminal();
+  } catch (error) {
+    throw new Error(t("初始化终端失败，可能是远程节点或实例已不存在，请刷新网页重试。"));
   }
-  initTerminal();
 });
 
 const innerTerminalType = viewType === "inner";
@@ -124,7 +129,9 @@ const innerTerminalType = viewType === "inner";
         <template #left>
           <a-typography-title class="mb-0" :level="4">
             <CloudServerOutlined />
-            <span class="ml-8">{{ t("TXT_CODE_cb043d10") }} {{ instanceInfo?.config.nickname }} </span>
+            <span class="ml-8">
+              {{ t("TXT_CODE_cb043d10") }} {{ instanceInfo?.config.nickname }}
+            </span>
           </a-typography-title>
         </template>
         <template #right>
