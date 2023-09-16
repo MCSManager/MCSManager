@@ -38,7 +38,7 @@ const columns = [
   {
     title: t("字节流编码"),
     dataIndex: "ie",
-    customRender: (e: any) => {
+    customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
       return `${e.text}/${e.record.oe}`;
     }
   },
@@ -69,7 +69,7 @@ const getInstanceList = async () => {
   });
 };
 
-const operate = (e: any) => {
+const operate = (e: { serviceUuid: string; instanceUuid: string }) => {
   router.push({
     path: "/instances/terminal",
     query: {
