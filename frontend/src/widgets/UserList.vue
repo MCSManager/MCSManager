@@ -217,7 +217,10 @@ onMounted(async () => {
             {{ t("TXT_CODE_1987587b") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="newUserDialog.data.username" :placeholder="t('TXT_CODE_4ea93630')" />
+        <a-input
+          v-model:value="newUserDialog.data.username"
+          :placeholder="t('TXT_CODE_4ea93630')"
+        />
       </div>
 
       <div class="mb-20">
@@ -227,7 +230,10 @@ onMounted(async () => {
             {{ t("TXT_CODE_1f2062c7") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="newUserDialog.data.password" :placeholder="t('TXT_CODE_4ea93630')" />
+        <a-input
+          v-model:value="newUserDialog.data.password"
+          :placeholder="t('TXT_CODE_4ea93630')"
+        />
       </div>
 
       <div class="mb-20">
@@ -252,11 +258,7 @@ onMounted(async () => {
         <a-typography-title :level="5">{{ t("TXT_CODE_ef0ce2e") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{
-              t(
-                "TXT_CODE_9e9d3767"
-              )
-            }}
+            {{ t("TXT_CODE_9e9d3767") }}
             <br />
             <a href="https://docs.mcsmanager.com/" target="_blank">
               {{ t("TXT_CODE_b01f8383") }}
