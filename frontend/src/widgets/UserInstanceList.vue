@@ -69,12 +69,12 @@ const getInstanceList = async () => {
   });
 };
 
-const operate = (e: { serviceUuid: string; instanceUuid: string }) => {
+const operate = (serviceUuid: string, instanceUuid: string) => {
   router.push({
     path: "/instances/terminal",
     query: {
-      daemonId: e.serviceUuid,
-      instanceId: e.instanceUuid
+      serviceUuid,
+      instanceUuid
     }
   });
 };
@@ -96,7 +96,7 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button @click="operate(record)">{{ t("管理") }}</a-button>
+            <a-button @click="operate(record.serviceUuid, record.uuid)">{{ t("管理") }}</a-button>
           </template>
         </template>
       </a-table>
