@@ -1,0 +1,107 @@
+<script setup lang="ts">
+import { t } from "@/lang/i18n";
+import { ref, onMounted } from "vue";
+import type { LayoutCard } from "@/types";
+import { userInfoApi } from "@/services/apis/index";
+import { useRouter } from "vue-router";
+
+defineProps<{
+  card: LayoutCard;
+}>();
+
+const router = useRouter();
+
+const { execute } = userInfoApi();
+
+const status = {
+  "-1": t("状态未知"),
+  "0": t("已停止"),
+  "1": t("正在停止"),
+  "2": t("正在启动"),
+  "3": t("正在运行")
+};
+
+const state = ref();
+const columns = [
+  {
+    title: t("实例名称"),
+    dataIndex: "nickname",
+    key: "nickname"
+  },
+  {
+    title: t("运行状态"),
+    dataIndex: "status",
+    key: "status",
+    customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
+      return status[e.text] || e.text;
+    }
+  },
+  {
+    title: t("字节流编码"),
+    dataIndex: "ie",
+    customRender: (e: any) => {
+      return `${e.text}/${e.record.oe}`;
+    }
+  },
+  {
+    title: t("最后启动"),
+    dataIndex: "lastDatetime",
+    key: "lastDatetime"
+  },
+  {
+    title: t("到期时间"),
+    dataIndex: "endTime",
+    key: "endTime",
+    customRender: (e: { text: string }) => {
+      return e.text || t("无期限");
+    }
+  },
+  {
+    title: t("操作"),
+    key: "operate"
+  }
+];
+
+const getInstanceList = async () => {
+  const res = await execute({
+    params: {
+      advanced: true
+    }
+  });
+  state.value = res.value?.instances;
+};
+
+const operate = (e: any) => {
+  router.push({
+    path: "/instances/terminal",
+    query: {
+      daemonId: e.serviceUuid,
+      instanceId: e.instanceUuid
+    }
+  });
+};
+
+onMounted(() => {
+  getInstanceList();
+});
+</script>
+
+<template>
+  <CardPanel>
+    <template #title>{{ card.title }}</template>
+    <template #body>
+      <a-table
+        :data-source="state"
+        :columns="columns"
+        :pagination="false"
+        :scroll="{ x: 'max-content' }"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'operate'">
+            <a-button @click="operate(record)">{{ t("管理") }}</a-button>
+          </template>
+        </template>
+      </a-table>
+    </template>
+  </CardPanel>
+</template>

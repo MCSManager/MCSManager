@@ -318,7 +318,8 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
           type: "instance_all"
         },
         width: 3,
-        height: LayoutCardHeight.SMALL
+        height: LayoutCardHeight.SMALL,
+        disableDelete: true
       },
       {
         id: getRandomId(),
@@ -328,7 +329,8 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
           type: "instance_running"
         },
         width: 3,
-        height: LayoutCardHeight.SMALL
+        height: LayoutCardHeight.SMALL,
+        disableDelete: true
       },
       {
         id: getRandomId(),
@@ -338,7 +340,8 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
           type: "instance_stop"
         },
         width: 3,
-        height: LayoutCardHeight.SMALL
+        height: LayoutCardHeight.SMALL,
+        disableDelete: true
       },
       {
         id: getRandomId(),
@@ -348,7 +351,19 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
           type: "instance_error"
         },
         width: 3,
-        height: LayoutCardHeight.SMALL
+        height: LayoutCardHeight.SMALL,
+        disableDelete: true
+      },
+      {
+        id: getRandomId(),
+        type: "UserInstanceList",
+        title: t("实例列表"),
+        meta: {
+          type: "instance_error"
+        },
+        width: 12,
+        height: LayoutCardHeight.AUTO,
+        disableDelete: true
       }
     ]
   },

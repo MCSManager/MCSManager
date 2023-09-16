@@ -30,6 +30,7 @@ import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
 import IframeCard from "@/widgets/others/IframeCard.vue";
 import ClockCard from "@/widgets/others/ClockCard.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
+import UserInstanceList from "@/widgets/UserInstanceList.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 
@@ -62,7 +63,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   TextCard,
   LinkCard,
   ClockCard,
-  UserStatusBlock
+  UserStatusBlock,
+  UserInstanceList
 };
 
 export interface NewCardItem extends LayoutCard {
