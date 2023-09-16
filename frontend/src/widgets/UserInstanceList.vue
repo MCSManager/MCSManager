@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 import type { LayoutCard } from "@/types";
 import { userInfoApi } from "@/services/apis/index";
 import { useRouter } from "vue-router";
@@ -11,7 +11,7 @@ defineProps<{
 
 const router = useRouter();
 
-const { execute } = userInfoApi();
+const { execute, state } = userInfoApi();
 
 const status = {
   "-1": t("状态未知"),
@@ -21,7 +21,6 @@ const status = {
   "3": t("正在运行")
 };
 
-const state = ref();
 const columns = [
   {
     title: t("实例名称"),
@@ -63,12 +62,11 @@ const columns = [
 ];
 
 const getInstanceList = async () => {
-  const res = await execute({
+  await execute({
     params: {
       advanced: true
     }
   });
-  state.value = res.value?.instances;
 };
 
 const operate = (e: any) => {
@@ -91,7 +89,7 @@ onMounted(() => {
     <template #title>{{ card.title }}</template>
     <template #body>
       <a-table
-        :data-source="state"
+        :data-source="state?.instances"
         :columns="columns"
         :pagination="false"
         :scroll="{ x: 'max-content' }"
