@@ -307,6 +307,51 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
       }
     ]
   },
+  {
+    page: "/consumer",
+    items: [
+      {
+        id: getRandomId(),
+        type: "UserStatusBlock",
+        title: t("实例总计"),
+        meta: {
+          type: "instance_all"
+        },
+        width: 3,
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "UserStatusBlock",
+        title: t("正在运行"),
+        meta: {
+          type: "instance_running"
+        },
+        width: 3,
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "UserStatusBlock",
+        title: t("未运行"),
+        meta: {
+          type: "instance_stop"
+        },
+        width: 3,
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "UserStatusBlock",
+        title: t("维护中"),
+        meta: {
+          type: "instance_error"
+        },
+        width: 3,
+        height: LayoutCardHeight.SMALL
+      }
+    ]
+  },
 
   {
     page: "/404",
