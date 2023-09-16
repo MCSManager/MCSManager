@@ -174,3 +174,16 @@ export const deleteNode = useDefineApi<
   url: "/api/service/remote_service",
   method: "DELETE"
 });
+
+// 尝试主动连接节点
+export const connectNode = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+  },
+  any
+>({
+  url: "/api/service/link_remote_service",
+  method: "GET"
+});

@@ -19,7 +19,8 @@ import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
 import {
   editNode as editNodeApi,
   addNode as addNodeApi,
-  deleteNode as deleteNodeApi
+  deleteNode as deleteNodeApi,
+  connectNode
 } from "@/services/apis";
 import { message } from "ant-design-vue";
 
@@ -31,7 +32,7 @@ const operationForm = ref({
   name: ""
 });
 
-const { state } = useOverviewInfo();
+const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
 
 const detailList = (node: ComputedNodeInfo) => {
   return [
@@ -138,6 +139,7 @@ const editNode = async () => {
 
   const updatedData = apiKey == "" ? { ...outherData } : editDialog.value.data;
   const { execute } = editNodeApi();
+  const { execute: tryConnectNode } = connectNode();
   try {
     await execute({
       params: {
@@ -145,6 +147,11 @@ const editNode = async () => {
       },
       data: {
         ...updatedData
+      }
+    });
+    await tryConnectNode({
+      params: {
+        uuid: editDialog.value.uuid
       }
     });
     message.success(t("保存成功"));
@@ -193,16 +200,17 @@ const editDialog = ref({
     editDialog.value.loading = true;
     deleteNode();
   },
-  submit: () => {
+  submit: async () => {
     if (editDialog.value.check() === false) {
       return message.error(t("请正确填写表单"));
     }
     editDialog.value.loading = true;
     if (editMode.value) {
-      editNode();
+      await editNode();
     } else {
-      addNode();
+      await addNode();
     }
+    await refreshOverviewInfo(true);
   },
   hidden: () => {
     editDialog.value.status = false;
@@ -315,7 +323,7 @@ const editDialog = ref({
           <a-typography-text type="secondary">
             {{ t("必须使用外网地址或 localhost 地址，否则将导致远程实例无法连接") }}
             <br />
-            {{ t("必填，例如 mcsmanager.com，43.123.211.12") }}
+            {{ t("可以是域名或者 IP 地址，例如 mcsmanager.com，43.123.211.12") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.ip" />
@@ -325,7 +333,7 @@ const editDialog = ref({
         <a-typography-title :level="5">{{ t("远程节点端口") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，例如 24444") }}
+            {{ t("默认情况下是 24444。") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.port" />
@@ -333,21 +341,19 @@ const editDialog = ref({
 
       <a-form-item>
         <a-typography-title class="flex" :level="5">
-          {{ t("验证密钥") }}
-          <div v-if="editMode">{{ t("（留空则不修改）") }}</div>
+          {{ t("远程节点密钥") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("在远程节点启动时控制台上会输出显示，务必确保密钥安全") }}
-            <br />
-            {{ t("在 Linux 下，密钥一般在 /opt/mcsmanager/daemon/data/Config/global.json 中") }}
-            <br />
-            {{ t("必填，例如 6ff0fa1ef9a943f3c6f2fe0e4564a2fa383d35c4b78ccb5") }}
-            <br />
+            {{ t("通过远程节点生成的密钥来认证身份，以确保多台机器集成工作的安全性。") }}
+
             <a href="https://docs.mcsmanager.com/" target="_blank">{{ t("如何获取密钥？") }}</a>
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="editDialog.data.apiKey" />
+        <a-input
+          v-model:value="editDialog.data.apiKey"
+          :placeholder="editMode ? t('留空表示不进行修改') : t('请输入密钥')"
+        />
       </a-form-item>
     </a-form>
     <template #footer>
@@ -358,7 +364,7 @@ const editDialog = ref({
           cancel-text="No"
           @confirm="deleteNode()"
         >
-          <a-button v-if="editMode" key="delete">{{ t("删除节点") }}</a-button>
+          <a-button danger v-if="editMode" key="delete">{{ t("删除节点") }}</a-button>
         </a-popconfirm>
         <div class="right">
           <a-button key="back" @click="editDialog.hidden()">{{ t("取消") }}</a-button>
