@@ -39,7 +39,7 @@ const columns = [
     title: t("字节流编码"),
     dataIndex: "ie",
     customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
-      return `${e.text}/${e.record.oe}`;
+      return `${e.text}/${e.record?.oe}`;
     }
   },
   {
