@@ -64,3 +64,29 @@ export const stopInstance = useDefineApi<
   url: "/api/protected_instance/stop",
   method: "GET"
 });
+
+// 更新终端设置
+export const updateTermConfig = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      terminalOption: {
+        haveColor: boolean;
+        pty: boolean;
+      };
+      crlf: number;
+      ie: string;
+      oe: string;
+      stopCommand: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/instance_update",
+  method: "PUT"
+});

@@ -18,8 +18,6 @@ export interface IGlobalInstanceConfig {
   terminalOption: {
     haveColor: boolean;
     pty: boolean;
-    ptyWindowCol: number;
-    ptyWindowRow: number;
   };
   eventTask: {
     autoStart: boolean;
