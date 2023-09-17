@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus, Settings, UserInfo } from "@/types";
+import type { InstanceDetail, NodeStatus, Settings, UserInfo, UserInstance } from "@/types";
 import type { BaseUserInfo } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
@@ -8,12 +8,12 @@ import type { IPanelOverviewResponse } from "../../../../common/global";
 // 用户登录
 export const loginUser = useDefineApi<
   | {
-      // Post
-      data: {
-        username: string;
-        password: string;
-      };
-    }
+  // Post
+  data: {
+    username: string;
+    password: string;
+  };
+}
   | undefined,
   // Response
   {
@@ -32,6 +32,16 @@ export const logoutUser = useDefineApi<any, any>({
 
 // 获取当前登录的用户信息
 export const userInfoApi = useDefineApi<any, BaseUserInfo>({
+  url: "/api/auth/"
+});
+
+export const userInfoApiAdvanced = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      advanced: boolean;
+    };
+  }, BaseUserInfo>({
   url: "/api/auth/"
 });
 
@@ -68,8 +78,8 @@ export const settingInfo = useDefineApi<any, Settings>({
 // 提交设置信息
 export const setSettingInfo = useDefineApi<
   | {
-      data: Settings;
-    }
+  data: Settings;
+}
   | undefined,
   string
 >({
@@ -117,6 +127,22 @@ export const addUser = useDefineApi<
 >({
   url: "/api/auth",
   method: "POST"
+});
+
+// 用户管理 用户配置
+export const updateUserInstance = useDefineApi<
+  {
+    data: {
+      config: {
+        instances: UserInstance[];
+      }
+      uuid: string
+    };
+  },
+  boolean
+>({
+  url: "/api/auth",
+  method: "PUT"
 });
 
 // 获取总览
