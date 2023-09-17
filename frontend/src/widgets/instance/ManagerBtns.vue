@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
@@ -7,7 +8,8 @@ import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { router } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
-
+import TermConfig from "./TermConfig.vue";
+const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
@@ -38,7 +40,7 @@ const btns = arrayFilter([
     title: t("TXT_CODE_d23631cb"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      terminalConfigDialog.value?.openDialog();
     }
   },
   {
@@ -106,6 +108,8 @@ const btns = arrayFilter([
       </div>
     </template>
   </CardPanel>
+
+  <TermConfig ref="terminalConfigDialog" />
 </template>
 
 <style lang="scss" scoped></style>
