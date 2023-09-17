@@ -70,7 +70,7 @@
   "TXT_CODE_daemonInfo.setLanguage": "设置节点语言",
   "TXT_CODE_daemonInfo.tryConnect": "正在尝试连接远程节点",
   "TXT_CODE_e076d90b": "节点",
-  "TXT_CODE_e21473bc": "应用程序",
+  "TXT_CODE_e21473bc": "应用实例",
   "TXT_CODE_e29b79df": "如果不填写任何参数，新增的卡片将自动根据地址去获取数据，但这不适用于所有页面，只有在特定页面中可以正常使用。",
   "TXT_CODE_e4c84088": "请完善卡片所需参数",
   "TXT_CODE_ebd2a6a1": "自定义布局",
