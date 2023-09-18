@@ -1,16 +1,28 @@
-<img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />
+<div align="center">
+  <a href="https://mcsmanager.com/" target="_blank">
+    <img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />    
+  </a>
 
-<br />
+  <br />
+  
+  <h1 id="mcsmanager">
+    <a href="https://mcsmanager.com/" target="_blank">MCSManager</a>
+  </h1>
 
+  
 [![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Web Project](https://github.com/MCSManager/MCSManager) | [UI Project](https://github.com/MCSManager/UI) | [Daemon Project](https://github.com/MCSManager/Daemon)
-
+[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/#/zh-cn/)
 
 [English](readme.md) | [简体中文](README_CN.md) 
+
+</div>
+
+<br />
+
 
 
 <br />
