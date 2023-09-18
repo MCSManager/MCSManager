@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
@@ -7,12 +8,38 @@ import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { router } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
-
+import { useLayoutCardTools } from "../../hooks/useCardTools";
+import { useInstanceInfo } from "@/hooks/useInstance";
+import TermConfig from "./TermConfig.vue";
+const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
+
+const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
+
+const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execute } =
+  useInstanceInfo({
+    instanceId,
+    daemonId,
+    autoRefresh: true
+  });
+
+onMounted(async () => {
+  if (instanceId && daemonId) {
+    await execute({
+      params: {
+        uuid: instanceId,
+        remote_uuid: daemonId
+      }
+    });
+  }
+});
 
 const btns = arrayFilter([
   {
@@ -38,7 +65,7 @@ const btns = arrayFilter([
     title: t("TXT_CODE_d23631cb"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      terminalConfigDialog.value?.openDialog();
     }
   },
   {
@@ -106,6 +133,13 @@ const btns = arrayFilter([
       </div>
     </template>
   </CardPanel>
+
+  <TermConfig
+    ref="terminalConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+  />
 </template>
 
 <style lang="scss" scoped></style>
