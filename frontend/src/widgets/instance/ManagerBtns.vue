@@ -10,7 +10,7 @@ import { router } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
-import TermConfig from "./TermConfig.vue";
+import TermConfig from "./dialogs/TermConfig.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const { toPage } = useAppRouters();
 
