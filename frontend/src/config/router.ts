@@ -126,10 +126,10 @@ let originRouterConfig = [
   },
   {
     path: "/consumer",
-    name: t("用户主页"),
+    name: t("我的应用"),
     component: LayoutContainer,
     meta: {
-      mainMenu: false
+      mainMenu: true
     }
   }
 ];

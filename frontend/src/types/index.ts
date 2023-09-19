@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import type { IGlobalInstanceConfig } from "./../../../common/global";
+import type { IGlobalInstanceConfig } from "../../../common/global";
 import type { LayoutCardHeight } from "@/config/originLayoutConfig";
 
 export interface JsonData {
@@ -95,6 +94,20 @@ export interface UserInfo {
   passWordType: number;
   loginTime: string;
   isInit: boolean;
-  instances: any[];
+  instances: UserInstance[];
   apiKey: string;
+}
+
+export interface UserInstance {
+  endTime: string;
+  hostIp: string;
+  ie: string;
+  instanceUuid: string;
+  lastDatetime: string;
+  nickname: string;
+  oe: string;
+  remarks: string;
+  serviceUuid: string;
+  status: number;
+  stopCommand: string;
 }
