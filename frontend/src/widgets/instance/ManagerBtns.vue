@@ -11,7 +11,9 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
+import EventConfig from "./dialogs/EventConfig.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
+const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
@@ -86,7 +88,7 @@ const btns = arrayFilter([
     title: t("TXT_CODE_d341127b"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      eventConfigDialog.value?.openDialog();
     }
   },
 
@@ -136,6 +138,13 @@ const btns = arrayFilter([
 
   <TermConfig
     ref="terminalConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+  />
+
+  <EventConfig
+    ref="eventConfigDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
