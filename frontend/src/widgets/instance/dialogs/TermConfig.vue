@@ -69,7 +69,7 @@ defineExpose({
     <a-form layout="vertical">
       <a-row :gutter="20">
         <a-col :xs="24" :md="12" :offset="0">
-          <a-form-ite1m>
+          <a-form-item>
             <a-typography-title :level="5">{{ t("仿真终端") }}</a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
@@ -81,7 +81,7 @@ defineExpose({
               </a-typography-text>
             </a-typography-paragraph>
             <a-switch v-model:checked="options.config.terminalOption.pty" />
-          </a-form-ite1m>
+          </a-form-item>
 
           <a-form-item>
             <a-typography-title :level="5">{{ t("网页颜色渲染") }}</a-typography-title>
