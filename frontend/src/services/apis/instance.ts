@@ -85,6 +85,11 @@ export const updateInstanceConfig = useDefineApi<
         autoRestart: boolean;
         autoStart: boolean;
       };
+      pingConfig?: {
+        ip?: string;
+        port?: number;
+        type?: number;
+      };
     };
   },
   {

@@ -12,8 +12,10 @@ import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
+import PingConfig from "./dialogs/PingConfig.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
+const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
@@ -81,7 +83,7 @@ const btns = arrayFilter([
     title: t("TXT_CODE_3a406403"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      pingConfigDialog.value?.openDialog();
     }
   },
   {
@@ -145,6 +147,13 @@ const btns = arrayFilter([
 
   <EventConfig
     ref="eventConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+  />
+
+  <PingConfig
+    ref="pingConfigDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
