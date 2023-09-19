@@ -11,7 +11,7 @@ const props = defineProps<{
   instanceId: string | undefined;
   daemonId: string | undefined;
 }>();
-let options = reactive<InstanceDetail>(props.instanceInfo!);
+let options = reactive<InstanceDetail>(props.instanceInfo ?? <InstanceDetail>{});
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
@@ -26,8 +26,8 @@ const submit = async () => {
   try {
     await execute({
       params: {
-        uuid: props.instanceId!,
-        remote_uuid: props.daemonId!
+        uuid: props.instanceId ?? "",
+        remote_uuid: props.daemonId ?? ""
       },
       data: {
         terminalOption: {
@@ -48,7 +48,7 @@ const submit = async () => {
 };
 
 watch(open, async () => {
-  options = props.instanceInfo!;
+  options = props.instanceInfo ?? <InstanceDetail>{};
 });
 
 defineExpose({
