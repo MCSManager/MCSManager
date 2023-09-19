@@ -11,6 +11,7 @@ const props = defineProps<{
   instanceId: string | undefined;
   daemonId: string | undefined;
 }>();
+const emit = defineEmits(["update"]);
 let options = reactive<InstanceDetail>(props.instanceInfo ?? <InstanceDetail>{});
 
 const screen = useScreen();
@@ -40,6 +41,7 @@ const submit = async () => {
         stopCommand: options.config.stopCommand
       }
     });
+    emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {

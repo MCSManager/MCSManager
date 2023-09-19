@@ -9,6 +9,7 @@ const props = defineProps<{
   instanceId: string | undefined;
   daemonId: string | undefined;
 }>();
+const emit = defineEmits(["update"]);
 let options = reactive<InstanceDetail>(props.instanceInfo ?? <InstanceDetail>{});
 
 const open = ref(false);
@@ -31,6 +32,7 @@ const submit = async () => {
         }
       }
     });
+    emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
