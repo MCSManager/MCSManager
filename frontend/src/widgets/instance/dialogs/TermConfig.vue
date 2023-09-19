@@ -3,7 +3,7 @@ import { ref, computed, reactive, watch } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
-import { updateTermConfig } from "@/services/apis/instance";
+import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 const props = defineProps<{
@@ -20,7 +20,7 @@ const openDialog = () => {
   open.value = true;
 };
 
-const { execute, isLoading } = updateTermConfig();
+const { execute, isLoading } = updateInstanceConfig();
 
 const submit = async () => {
   try {
