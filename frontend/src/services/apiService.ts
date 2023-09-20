@@ -59,7 +59,15 @@ class ApiService {
         }
       });
 
-      if (this.event.listenerCount(reqId) <= 1 || config.forceRequest) {
+      if (this.responseMap.has(reqId) && !config.forceRequest) {
+        const cache = this.responseMap.get(reqId) as ResponseDataRecord;
+        if (cache.timestamp + this.RESPONSE_CACHE_TIME > Date.now()) {
+          console.debug("[ApiService] Cache hit: ", config);
+          return this.event.emit(reqId, cache.data);
+        }
+      }
+
+      if (this.event.listenerCount(reqId) <= 1) {
         this.sendRequest(reqId, config);
       }
     });
@@ -68,14 +76,6 @@ class ApiService {
   private async sendRequest(reqId: string, config: RequestConfig) {
     try {
       const startTime = Date.now();
-
-      if (this.responseMap.has(reqId) && !config.forceRequest) {
-        const cache = this.responseMap.get(reqId) as ResponseDataRecord;
-        if (cache.timestamp + this.RESPONSE_CACHE_TIME > Date.now()) {
-          console.debug("[ApiService] Cache hit: ", config);
-          return this.event.emit(reqId, cache.data);
-        }
-      }
 
       console.debug(`[ApiService] Request: ${config.url} \n Full AxiosRequestConfig:`, config);
       if (!config.timeout) config.timeout = 1000 * 10;

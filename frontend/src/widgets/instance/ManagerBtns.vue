@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
 import { ArrowRightOutlined, CloudServerOutlined } from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
-import { router } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
@@ -27,27 +26,21 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
-const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execute } =
-  useInstanceInfo({
-    instanceId,
-    daemonId,
-    autoRefresh: false
-  });
-
-const getInstanceInfo = async () => {
-  if (instanceId && daemonId) {
-    await execute({
-      params: {
-        uuid: instanceId,
-        remote_uuid: daemonId
-      }
-    });
-  }
-};
-
-onMounted(async () => {
-  await getInstanceInfo();
+const { instanceInfo, execute } = useInstanceInfo({
+  instanceId,
+  daemonId,
+  autoRefresh: true
 });
+
+const refreshInstanceInfo = async () => {
+  await execute({
+    params: {
+      uuid: instanceId ?? "",
+      remote_uuid: daemonId ?? ""
+    },
+    forceRequest: true
+  });
+};
 
 const btns = arrayFilter([
   {
@@ -147,7 +140,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
-    @update="getInstanceInfo"
+    @update="refreshInstanceInfo"
   />
 
   <EventConfig
@@ -155,7 +148,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
-    @update="getInstanceInfo"
+    @update="refreshInstanceInfo"
   />
 
   <PingConfig
@@ -163,7 +156,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
-    @update="getInstanceInfo"
+    @update="refreshInstanceInfo"
   />
 </template>
 
