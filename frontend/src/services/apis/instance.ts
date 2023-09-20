@@ -65,22 +65,31 @@ export const stopInstance = useDefineApi<
   method: "GET"
 });
 
-// 更新终端设置
-export const updateTermConfig = useDefineApi<
+// 更新实例设置
+export const updateInstanceConfig = useDefineApi<
   {
     params: {
       uuid: string;
       remote_uuid: string;
     };
     data: {
-      terminalOption: {
+      terminalOption?: {
         haveColor: boolean;
         pty: boolean;
       };
-      crlf: number;
-      ie: string;
-      oe: string;
-      stopCommand: string;
+      crlf?: number;
+      ie?: string;
+      oe?: string;
+      stopCommand?: string;
+      eventTask?: {
+        autoRestart: boolean;
+        autoStart: boolean;
+      };
+      pingConfig?: {
+        ip?: string;
+        port?: number;
+        type?: number;
+      };
     };
   },
   {

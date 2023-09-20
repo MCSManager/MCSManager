@@ -1,55 +1,51 @@
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
-import { updateTermConfig } from "@/services/apis/instance";
+import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 const props = defineProps<{
-  instanceInfo: InstanceDetail | undefined;
-  instanceId: string | undefined;
-  daemonId: string | undefined;
+  instanceInfo?: InstanceDetail;
+  instanceId?: string;
+  daemonId?: string;
 }>();
-let options = reactive<InstanceDetail>(props.instanceInfo!);
+const emit = defineEmits(["update"]);
+let options = ref<InstanceDetail>()!;
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
 const open = ref(false);
 const openDialog = () => {
   open.value = true;
+  options.value = props.instanceInfo;
 };
 
-const { execute, isLoading } = updateTermConfig();
+const { execute, isLoading } = updateInstanceConfig();
 
 const submit = async () => {
   try {
     await execute({
       params: {
-        uuid: props.instanceId!,
-        remote_uuid: props.daemonId!
+        uuid: props.instanceId ?? "",
+        remote_uuid: props.daemonId ?? ""
       },
       data: {
-        terminalOption: {
-          haveColor: options.config.terminalOption.haveColor,
-          pty: options.config.terminalOption.pty
-        },
-        crlf: options.config.crlf,
-        ie: options.config.ie,
-        oe: options.config.oe,
-        stopCommand: options.config.stopCommand
+        terminalOption: options.value?.config.terminalOption,
+        crlf: options.value?.config.crlf,
+        ie: options.value?.config.ie,
+        oe: options.value?.config.oe,
+        stopCommand: options.value?.config.stopCommand
       }
     });
+    emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
     return message.error(err.message);
   }
 };
-
-watch(open, async () => {
-  options = props.instanceInfo!;
-});
 
 defineExpose({
   openDialog
@@ -66,10 +62,10 @@ defineExpose({
     :ok-text="t('保存')"
     @ok="submit"
   >
-    <a-form layout="vertical">
+    <a-form v-if="options" layout="vertical">
       <a-row :gutter="20">
         <a-col :xs="24" :md="12" :offset="0">
-          <a-form-ite1m>
+          <a-form-item>
             <a-typography-title :level="5">{{ t("仿真终端") }}</a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
@@ -81,7 +77,7 @@ defineExpose({
               </a-typography-text>
             </a-typography-paragraph>
             <a-switch v-model:checked="options.config.terminalOption.pty" />
-          </a-form-ite1m>
+          </a-form-item>
 
           <a-form-item>
             <a-typography-title :level="5">{{ t("网页颜色渲染") }}</a-typography-title>

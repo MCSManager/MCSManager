@@ -10,8 +10,12 @@ import { router } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
-import TermConfig from "./TermConfig.vue";
+import TermConfig from "./dialogs/TermConfig.vue";
+import EventConfig from "./dialogs/EventConfig.vue";
+import PingConfig from "./dialogs/PingConfig.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
+const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
+const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
@@ -27,10 +31,10 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
   useInstanceInfo({
     instanceId,
     daemonId,
-    autoRefresh: true
+    autoRefresh: false
   });
 
-onMounted(async () => {
+const getInstanceInfo = async () => {
   if (instanceId && daemonId) {
     await execute({
       params: {
@@ -39,6 +43,10 @@ onMounted(async () => {
       }
     });
   }
+};
+
+onMounted(async () => {
+  await getInstanceInfo();
 });
 
 const btns = arrayFilter([
@@ -79,14 +87,14 @@ const btns = arrayFilter([
     title: t("TXT_CODE_3a406403"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      pingConfigDialog.value?.openDialog();
     }
   },
   {
     title: t("TXT_CODE_d341127b"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      eventConfigDialog.value?.openDialog();
     }
   },
 
@@ -139,6 +147,23 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
+    @update="getInstanceInfo"
+  />
+
+  <EventConfig
+    ref="eventConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="getInstanceInfo"
+  />
+
+  <PingConfig
+    ref="pingConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="getInstanceInfo"
   />
 </template>
 
