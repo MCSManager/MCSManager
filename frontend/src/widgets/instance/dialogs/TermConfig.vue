@@ -12,7 +12,7 @@ const props = defineProps<{
   daemonId?: string;
 }>();
 const emit = defineEmits(["update"]);
-let options = ref<InstanceDetail>()!;
+const options = ref<InstanceDetail>();
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
