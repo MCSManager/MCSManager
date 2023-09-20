@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { t } from "@/lang/i18n";
 import type { InstanceDetail } from "@/types";
 import { updateInstanceConfig } from "@/services/apis/instance";
@@ -10,11 +10,12 @@ const props = defineProps<{
   daemonId?: string;
 }>();
 const emit = defineEmits(["update"]);
-let options: InstanceDetail;
+let options = ref<InstanceDetail>()!;
 
 const open = ref(false);
 const openDialog = () => {
   open.value = true;
+  options.value = props.instanceInfo;
 };
 
 const { execute, isLoading } = updateInstanceConfig();
@@ -27,7 +28,7 @@ const submit = async () => {
         remote_uuid: props.daemonId ?? ""
       },
       data: {
-        pingConfig: options.config.pingConfig
+        pingConfig: options.value?.config.pingConfig
       }
     });
     emit("update");
@@ -37,12 +38,6 @@ const submit = async () => {
     return message.error(err.message);
   }
 };
-
-watch(open, async () => {
-  if (props.instanceInfo !== undefined) {
-    options = props.instanceInfo;
-  }
-});
 
 defineExpose({
   openDialog
@@ -58,7 +53,7 @@ defineExpose({
     :ok-text="t('保存')"
     @ok="submit"
   >
-    <a-form layout="vertical">
+    <a-form v-if="options" layout="vertical">
       <a-form-item>
         <a-typography-title :level="5">{{ t("更好的监控服务端状态") }}</a-typography-title>
         <a-typography-paragraph>

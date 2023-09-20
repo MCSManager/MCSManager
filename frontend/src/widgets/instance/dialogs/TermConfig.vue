@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
@@ -12,13 +12,14 @@ const props = defineProps<{
   daemonId?: string;
 }>();
 const emit = defineEmits(["update"]);
-let options: InstanceDetail;
+let options = ref<InstanceDetail>()!;
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
 const open = ref(false);
 const openDialog = () => {
   open.value = true;
+  options.value = props.instanceInfo;
 };
 
 const { execute, isLoading } = updateInstanceConfig();
@@ -31,11 +32,11 @@ const submit = async () => {
         remote_uuid: props.daemonId ?? ""
       },
       data: {
-        terminalOption: options.config.terminalOption,
-        crlf: options.config.crlf,
-        ie: options.config.ie,
-        oe: options.config.oe,
-        stopCommand: options.config.stopCommand
+        terminalOption: options.value?.config.terminalOption,
+        crlf: options.value?.config.crlf,
+        ie: options.value?.config.ie,
+        oe: options.value?.config.oe,
+        stopCommand: options.value?.config.stopCommand
       }
     });
     emit("update");
@@ -45,12 +46,6 @@ const submit = async () => {
     return message.error(err.message);
   }
 };
-
-watch(open, async () => {
-  if (props.instanceInfo !== undefined) {
-    options = props.instanceInfo;
-  }
-});
 
 defineExpose({
   openDialog
@@ -67,7 +62,7 @@ defineExpose({
     :ok-text="t('保存')"
     @ok="submit"
   >
-    <a-form layout="vertical">
+    <a-form v-if="options" layout="vertical">
       <a-row :gutter="20">
         <a-col :xs="24" :md="12" :offset="0">
           <a-form-item>

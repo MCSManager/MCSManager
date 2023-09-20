@@ -31,10 +31,10 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
   useInstanceInfo({
     instanceId,
     daemonId,
-    autoRefresh: true
+    autoRefresh: false
   });
 
-onMounted(async () => {
+const getInstanceInfo = async () => {
   if (instanceId && daemonId) {
     await execute({
       params: {
@@ -43,6 +43,10 @@ onMounted(async () => {
       }
     });
   }
+};
+
+onMounted(async () => {
+  await getInstanceInfo();
 });
 
 const btns = arrayFilter([
@@ -143,6 +147,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
+    @update="getInstanceInfo"
   />
 
   <EventConfig
@@ -150,6 +155,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
+    @update="getInstanceInfo"
   />
 
   <PingConfig
@@ -157,6 +163,7 @@ const btns = arrayFilter([
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
+    @update="getInstanceInfo"
   />
 </template>
 
