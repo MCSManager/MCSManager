@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from "vue";
+import { ref, watch } from "vue";
 import { t } from "@/lang/i18n";
 import type { InstanceDetail } from "@/types";
 import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 const props = defineProps<{
-  instanceInfo: InstanceDetail | undefined;
-  instanceId: string | undefined;
-  daemonId: string | undefined;
+  instanceInfo?: InstanceDetail;
+  instanceId?: string;
+  daemonId?: string;
 }>();
 const emit = defineEmits(["update"]);
-let options = reactive<InstanceDetail>(props.instanceInfo ?? <InstanceDetail>{});
+let options: InstanceDetail;
 
 const open = ref(false);
 const openDialog = () => {
@@ -27,9 +27,7 @@ const submit = async () => {
         remote_uuid: props.daemonId ?? ""
       },
       data: {
-        eventTask: {
-          ...options.config.eventTask
-        }
+        eventTask: options.config.eventTask
       }
     });
     emit("update");
@@ -41,7 +39,9 @@ const submit = async () => {
 };
 
 watch(open, async () => {
-  options = props.instanceInfo ?? <InstanceDetail>{};
+  if (props.instanceInfo !== undefined) {
+    options = props.instanceInfo;
+  }
 });
 
 defineExpose({

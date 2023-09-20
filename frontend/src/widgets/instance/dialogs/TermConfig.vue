@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
@@ -7,12 +7,12 @@ import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 const props = defineProps<{
-  instanceInfo: InstanceDetail | undefined;
-  instanceId: string | undefined;
-  daemonId: string | undefined;
+  instanceInfo?: InstanceDetail;
+  instanceId?: string;
+  daemonId?: string;
 }>();
 const emit = defineEmits(["update"]);
-let options = reactive<InstanceDetail>(props.instanceInfo ?? <InstanceDetail>{});
+let options: InstanceDetail;
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
@@ -31,10 +31,7 @@ const submit = async () => {
         remote_uuid: props.daemonId ?? ""
       },
       data: {
-        terminalOption: {
-          haveColor: options.config.terminalOption.haveColor,
-          pty: options.config.terminalOption.pty
-        },
+        terminalOption: options.config.terminalOption,
         crlf: options.config.crlf,
         ie: options.config.ie,
         oe: options.config.oe,
@@ -50,7 +47,9 @@ const submit = async () => {
 };
 
 watch(open, async () => {
-  options = props.instanceInfo ?? <InstanceDetail>{};
+  if (props.instanceInfo !== undefined) {
+    options = props.instanceInfo;
+  }
 });
 
 defineExpose({
