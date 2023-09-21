@@ -36,6 +36,7 @@ export interface IGlobalInstanceConfig {
     networkMode?: string;
     networkAliases?: string[];
     cpusetCpus?: string;
+    cpuUsage: string;
   };
   pingConfig: {
     ip?: string;
