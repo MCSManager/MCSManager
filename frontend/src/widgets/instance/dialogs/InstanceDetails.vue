@@ -85,7 +85,9 @@ defineExpose({
         </a-col>
         <a-col :xs="24" :md="12" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("实例名称") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("实例名称") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                 {{ t("支持中文，尽可能保证唯一性") }}
@@ -96,7 +98,9 @@ defineExpose({
         </a-col>
         <a-col :xs="24" :md="12" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("实例类型") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("实例类型") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{
@@ -115,7 +119,9 @@ defineExpose({
 
         <a-col :xs="24" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("启动命令") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("启动命令") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{
@@ -137,7 +143,9 @@ defineExpose({
 
         <a-col :xs="24" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("工作目录") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("工作目录") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{ t("实例运行的工作目录，可填绝对路径与相对路径") }}
@@ -165,7 +173,9 @@ defineExpose({
       <a-row :gutter="20">
         <a-col :xs="24" :lg="6" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("文件管理编码") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("文件管理编码") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                 {{ t("文件管理功能的解压缩，编辑等编码") }}
@@ -219,7 +229,9 @@ defineExpose({
       <a-row v-if="options.config.processType === 'docker'" :gutter="20">
         <a-col :xs="24" :lg="6" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("环境镜像") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("环境镜像") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{ t("指定实例镜像") }}
@@ -299,7 +311,9 @@ defineExpose({
         </a-col>
         <a-col :xs="24" :lg="8" :offset="0">
           <a-form-item>
-            <a-typography-title :level="5">{{ t("网络模式") }}</a-typography-title>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("网络模式") }}
+            </a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{ t("选择容器接入的网络模式 如 bridge 网桥") }}

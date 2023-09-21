@@ -133,6 +133,14 @@
   float: left;
 }
 
+.require-field {
+  &::before {
+    content: '*';
+    color:red;
+    margin-right: 4px;
+  }
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;
