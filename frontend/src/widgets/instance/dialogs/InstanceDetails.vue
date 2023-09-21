@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
-import { updateInstanceConfig } from "@/services/apis/instance";
+import { updateAnyInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 const props = defineProps<{
@@ -22,17 +22,18 @@ const openDialog = () => {
   options.value = props.instanceInfo;
 };
 
-const { execute, isLoading } = updateInstanceConfig();
+const { execute, isLoading } = updateAnyInstanceConfig();
 
 const submit = async () => {
   try {
-    await execute({
-      params: {
-        uuid: props.instanceId ?? "",
-        remote_uuid: props.daemonId ?? ""
-      },
-      data: {}
-    });
+    options.value &&
+      (await execute({
+        params: {
+          uuid: props.instanceId ?? "",
+          remote_uuid: props.daemonId ?? ""
+        },
+        data: options.value.config
+      }));
     emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
