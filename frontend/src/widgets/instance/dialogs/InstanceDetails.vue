@@ -4,8 +4,12 @@ import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
+import { getImageList } from "@/services/apis/envImage";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
+import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { useAppRouters } from "@/hooks/useAppRouters";
+const { toPage } = useAppRouters();
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
   instanceId?: string;
@@ -20,6 +24,36 @@ const open = ref(false);
 const openDialog = () => {
   open.value = true;
   options.value = props.instanceInfo;
+};
+
+const { execute: executeGetImageList } = getImageList();
+const dockerImages = ref<string[]>([]);
+const loadImages = async () => {
+  try {
+    const images = await executeGetImageList({
+      params: {
+        remote_uuid: props.daemonId ?? ""
+      }
+    });
+    if (images.value) {
+      dockerImages.value = [t("--- 新建镜像 ---")];
+      for (const iterator of images.value) {
+        const repoTags = (iterator?.RepoTags ?? [])[0];
+        if (repoTags) dockerImages.value.push(repoTags);
+      }
+    }
+  } catch (err: any) {
+    return message.error(err.message);
+  }
+};
+
+const selectImage = (image: string) => {
+  if (typeof image === "string" && image.startsWith("---", 0)) {
+    // TODO: Docker image list page
+    toPage({
+      path: `/image/${props.daemonId}`
+    });
+  }
 };
 
 const { execute, isLoading } = updateAnyInstanceConfig();
@@ -51,6 +85,7 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
+    :mask-closable="false"
     :width="isPhone ? '100%' : 'calc(100% - 30vw)'"
     :title="t('实例详细信息设置')"
     :confirm-loading="isLoading"
@@ -77,8 +112,11 @@ defineExpose({
           <a-form-item>
             <a-typography-title :level="5">{{ t("分配给其他用户") }}</a-typography-title>
             <a-typography-paragraph>
-              <a-typography-text type="secondary">
-                {{ options.config.processType }}
+              <a-typography-text v-if="options.config.processType === 'docker'" type="success">
+                {{ t("可以，已启用容器隔离") }}
+              </a-typography-text>
+              <a-typography-text v-else type="danger">
+                {{ t("不推荐，可能会危害主机") }}
               </a-typography-text>
             </a-typography-paragraph>
           </a-form-item>
@@ -111,7 +149,12 @@ defineExpose({
               </a-typography-text>
             </a-typography-paragraph>
             <a-select v-model:value="options.config.type" :placeholder="t('请选择')">
-              <a-select-option v-for="item in TERMINAL_CODE" :key="item" :value="item">
+              <a-select-option
+                v-for="(item, key) in INSTANCE_TYPE_TRANSLATION"
+                :key="key"
+                :value="key"
+              >
+                {{ item }}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -199,7 +242,7 @@ defineExpose({
               v-model:value="options.config.endTime"
               size="large"
               style="width: 100%"
-              :placeholder="t('请选择')"
+              :placeholder="t('无限制')"
             />
           </a-form-item>
         </a-col>
@@ -242,7 +285,14 @@ defineExpose({
               size="large"
               style="width: 100%"
               :placeholder="t('请选择')"
+              @focus="loadImages"
+              @change="selectImage"
             >
+              <a-select-option
+                v-for="item in dockerImages"
+                :key="item"
+                :value="item"
+              ></a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -296,17 +346,13 @@ defineExpose({
                 {{ t("容器创建使用的名字，为空随机生成") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input-group compact>
-              <a-tooltip placement="bottom">
-                <template #title>{{ t("选填，无特殊需求不建议填写此项") }}</template>
-                <a-input
-                  v-model:value="options.config.docker.containerName"
-                  :placeholder="t('选填，示例 lobby-1')"
-                  style="width: calc(100% - 88px)"
-                />
-              </a-tooltip>
-              <a-button type="default">快速编辑</a-button>
-            </a-input-group>
+            <a-tooltip placement="bottom">
+              <template #title>{{ t("选填，无特殊需求不建议填写此项") }}</template>
+              <a-input
+                v-model:value="options.config.docker.containerName"
+                :placeholder="t('选填，示例 lobby-1')"
+              />
+            </a-tooltip>
           </a-form-item>
         </a-col>
         <a-col :xs="24" :lg="8" :offset="0">
