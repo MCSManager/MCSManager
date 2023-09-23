@@ -111,3 +111,52 @@ export interface UserInstance {
   status: number;
   stopCommand: string;
 }
+
+export interface ImageInfo {
+  Containers: number;
+  Created: number;
+  Id: string;
+  Labels: null;
+  ParentId: string;
+  RepoDigests: string[];
+  RepoTags: string[];
+  SharedSize: number;
+  Size: number;
+  VirtualSize: number;
+}
+
+export interface DockerNetworkModes {
+  Name: string;
+  Id: string;
+  Created: string;
+  Scope: string;
+  Driver: string;
+  EnableIPv6: boolean;
+  IPAM: {
+    Driver: string;
+    Options: null;
+    Config: [
+      {
+        Subnet: string;
+        Gateway: string;
+      }
+    ];
+  };
+  Internal: boolean;
+  Attachable: boolean;
+  Ingress: boolean;
+  ConfigFrom: {
+    Network: string;
+    [propName: string]: unknown;
+  };
+  ConfigOnly: boolean;
+  Containers: {
+    [propName: string]: unknown;
+  };
+  Options: {
+    [propName: string]: unknown;
+  };
+  Labels: {
+    [propName: string]: unknown;
+  };
+}

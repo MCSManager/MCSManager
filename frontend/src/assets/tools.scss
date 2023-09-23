@@ -133,6 +133,19 @@
   float: left;
 }
 
+.require-field {
+  &::before {
+    content: '*';
+    color:red;
+    margin-right: 4px;
+  }
+}
+
+.dialog-overflow-container {
+  height: 80vh;
+  overflow-x: hidden;
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;
