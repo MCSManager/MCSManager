@@ -141,6 +141,11 @@
   }
 }
 
+.dialog-overflow-container {
+  height: 80vh;
+  overflow-x: hidden;
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;
