@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
+import type { FormInstance } from "ant-design-vue";
+import type { Rule } from "ant-design-vue/es/form";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
 import { getImageList } from "@/services/apis/envImage";
 import { message } from "ant-design-vue";
@@ -56,10 +58,47 @@ const selectImage = (image: string) => {
   }
 };
 
+const formRef = ref<FormInstance>();
+const rules: Record<string, Rule[]> = {
+  nickname: [{ required: true, message: t("请输入实例名称") }],
+  startCommand: [
+    {
+      required: true,
+      validator: async (_rule: Rule, value: string) => {
+        if (value === "") throw new Error(t("请输入启动命令"));
+        if (value.includes("\n"))
+          throw new Error(t("启动命令中不可包含换行，这并非脚本文件，不可执行多条命令，请检查"));
+      },
+      trigger: "change"
+    }
+  ],
+  dockerImage: [
+    {
+      required: true,
+      validator: async () => {
+        if (
+          options.value?.config.processType === "docker" &&
+          options.value?.config.docker.image === ""
+        )
+          throw new Error(t("请选择实例镜像"));
+      },
+      trigger: "change"
+    }
+  ]
+};
+
 const { execute, isLoading } = updateAnyInstanceConfig();
 
 const submit = async () => {
   try {
+    await formRef.value?.validateFields();
+
+    // const postData: IGlobalInstanceConfig = JSON.parse(JSON.stringify(options.value?.config));
+    // TODO: endTime
+    // if (!options.value?.config.endTime) postData.endTime = "";
+    // else if (typeof options.value?.config.endTime === "object")
+    //   postData.endTime = (options.value?.config.endTime as Date).toLocaleDateString();
+
     options.value &&
       (await execute({
         params: {
@@ -92,7 +131,14 @@ defineExpose({
     :ok-text="t('保存')"
     @ok="submit"
   >
-    <a-form v-if="options" layout="vertical">
+    <a-form
+      v-if="options"
+      ref="formRef"
+      :model="options.config"
+      :rules="rules"
+      layout="vertical"
+      autocomplete="off"
+    >
       <a-row :gutter="20">
         <a-col :xs="24" :lg="18" :offset="0">
           <a-form-item>
@@ -122,7 +168,7 @@ defineExpose({
           </a-form-item>
         </a-col>
         <a-col :xs="24" :md="12" :offset="0">
-          <a-form-item>
+          <a-form-item name="nickname">
             <a-typography-title :level="5" class="require-field">
               {{ t("实例名称") }}
             </a-typography-title>
@@ -161,7 +207,7 @@ defineExpose({
         </a-col>
 
         <a-col :xs="24" :offset="0">
-          <a-form-item>
+          <a-form-item name="startCommand">
             <a-typography-title :level="5" class="require-field">
               {{ t("启动命令") }}
             </a-typography-title>
@@ -174,18 +220,19 @@ defineExpose({
                 }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input-group compact>
-              <a-input
+            <a-input-group compact style="display: flex">
+              <a-textarea
                 v-model:value="options.config.startCommand"
-                style="width: calc(100% - 88px)"
+                rows="2"
+                style="min-height: 40px"
               />
-              <a-button type="default">命令助手</a-button>
+              <a-button type="default" style="height: auto">命令助手</a-button>
             </a-input-group>
           </a-form-item>
         </a-col>
 
         <a-col :xs="24" :offset="0">
-          <a-form-item>
+          <a-form-item name="cwd">
             <a-typography-title :level="5" class="require-field">
               {{ t("工作目录") }}
             </a-typography-title>
@@ -271,7 +318,7 @@ defineExpose({
       </a-row>
       <a-row v-if="options.config.processType === 'docker'" :gutter="20">
         <a-col :xs="24" :lg="6" :offset="0">
-          <a-form-item>
+          <a-form-item name="dockerImage">
             <a-typography-title :level="5" class="require-field">
               {{ t("环境镜像") }}
             </a-typography-title>
