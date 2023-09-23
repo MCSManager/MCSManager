@@ -302,7 +302,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         meta: {},
         type: "QuickStartFlow",
         title: t("TXT_CODE_9b99b72e"),
-        width: 6,
+        width: 8,
         height: LayoutCardHeight.AUTO
       }
     ]

@@ -11,6 +11,7 @@ import {
   SwitcherFilled,
   UserOutlined
 } from "@ant-design/icons-vue";
+import { remoteNodeList } from "@/services/apis";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -65,7 +66,7 @@ const actions = [
           v-for="(action, key) in actions"
           :key="action.title"
           :title="action.title"
-          :action="actions[key].click"
+          :click="actions[key].click"
         />
       </a-row>
     </template>
