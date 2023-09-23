@@ -1,5 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail } from "@/types";
+import type { IGlobalInstanceConfig } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
@@ -65,7 +66,7 @@ export const stopInstance = useDefineApi<
   method: "GET"
 });
 
-// 更新实例设置
+// 更新实例设置（普通用户）
 export const updateInstanceConfig = useDefineApi<
   {
     params: {
@@ -97,5 +98,22 @@ export const updateInstanceConfig = useDefineApi<
   }
 >({
   url: "/api/protected_instance/instance_update",
+  method: "PUT"
+});
+
+// 更新实例设置（管理员）
+export const updateAnyInstanceConfig = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: IGlobalInstanceConfig;
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/instance",
   method: "PUT"
 });

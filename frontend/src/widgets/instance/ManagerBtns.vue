@@ -12,9 +12,11 @@ import { useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
+import InstanceDetails from "./dialogs/InstanceDetails.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
+const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetails>>();
 const { toPage } = useAppRouters();
 
 const props = defineProps<{
@@ -95,7 +97,7 @@ const btns = arrayFilter([
     title: t("TXT_CODE_4f34fc28"),
     icon: CloudServerOutlined,
     click: () => {
-      console.log(1);
+      instanceDetailsDialog.value?.openDialog();
     }
   }
 ]);
@@ -153,6 +155,14 @@ const btns = arrayFilter([
 
   <PingConfig
     ref="pingConfigDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <InstanceDetails
+    ref="instanceDetailsDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
