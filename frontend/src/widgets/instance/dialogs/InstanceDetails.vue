@@ -2,11 +2,11 @@
 import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
-import type { InstanceDetail } from "@/types";
+import type { InstanceDetail, DockerNetworkModes } from "@/types";
 import type { FormInstance } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
-import { getImageList } from "@/services/apis/envImage";
+import { getImageList, getNetworkModeList } from "@/services/apis/envImage";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
@@ -55,6 +55,21 @@ const selectImage = (image: string) => {
     toPage({
       path: `/image/${props.daemonId}`
     });
+  }
+};
+
+const { execute: executeGetNetworkModeList } = getNetworkModeList();
+const networkModes = ref<DockerNetworkModes[]>([]);
+const loadNetworkModes = async () => {
+  try {
+    const modes = await executeGetNetworkModeList({
+      params: {
+        remote_uuid: props.daemonId ?? ""
+      }
+    });
+    if (modes.value) networkModes.value = modes.value;
+  } catch (err: any) {
+    return message.error(err.message);
   }
 };
 
@@ -417,7 +432,13 @@ defineExpose({
               size="large"
               style="width: 100%"
               :placeholder="t('请选择')"
+              @focus="loadNetworkModes"
             >
+              <a-select-option
+                v-for="item in networkModes"
+                :key="item"
+                :value="item.Name"
+              ></a-select-option>
             </a-select>
           </a-form-item>
         </a-col>

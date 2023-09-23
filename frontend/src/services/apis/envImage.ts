@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { ImageInfo } from "@/types";
+import type { ImageInfo, DockerNetworkModes } from "@/types";
 
 // 获取镜像列表
 export const getImageList = useDefineApi<
@@ -11,5 +11,18 @@ export const getImageList = useDefineApi<
   ImageInfo[]
 >({
   url: "/api/environment/image",
+  method: "GET"
+});
+
+// 获取网络模式
+export const getNetworkModeList = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+    };
+  },
+  DockerNetworkModes[]
+>({
+  url: "/api/environment/networkModes",
   method: "GET"
 });
