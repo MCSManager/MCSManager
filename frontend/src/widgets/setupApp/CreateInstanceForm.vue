@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 
+// 这里需要根据创建的APP类型+创建方式两种来决定这个表单该如何实现
+// 具体参考 MCSM 9 的创建实例界面
 defineProps<{
-  appType: string;
-  createMethod: string;
+  appType: QUICKSTART_ACTION_TYPE;
+  createMethod: QUICKSTART_METHOD;
 }>();
 </script>
 

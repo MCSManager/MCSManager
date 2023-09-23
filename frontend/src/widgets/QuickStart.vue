@@ -12,6 +12,7 @@ import {
   UserOutlined
 } from "@ant-design/icons-vue";
 import { remoteNodeList } from "@/services/apis";
+import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -25,7 +26,7 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "minecraft"
+          appType: QUICKSTART_ACTION_TYPE.Minecraft
         }
       });
     }
@@ -37,7 +38,7 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "steam"
+          appType: QUICKSTART_ACTION_TYPE.SteamGameServer
         }
       });
     }
@@ -49,7 +50,7 @@ const actions = [
       router.push({
         path: "/quickstart",
         query: {
-          type: "console"
+          appType: QUICKSTART_ACTION_TYPE.AnyApp
         }
       });
     }

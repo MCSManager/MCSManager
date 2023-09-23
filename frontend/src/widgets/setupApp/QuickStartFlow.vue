@@ -9,8 +9,9 @@ import {
   useQuickStartFlow
 } from "@/hooks/widgets/quickStartFlow";
 import CreateInstanceForm from "./CreateInstanceForm.vue";
-
+import { useRoute } from "vue-router";
 const { isPhone } = useScreen();
+const route = useRoute();
 
 defineProps<{
   card: LayoutCard;
@@ -18,6 +19,11 @@ defineProps<{
 
 const { formData, toStep2, toStep3, toStep4, isReady, isFormStep, isNormalStep } =
   useQuickStartFlow();
+
+const presetAppType = String(route.query.appType);
+if (presetAppType in QUICKSTART_ACTION_TYPE) {
+  toStep2(presetAppType as QUICKSTART_ACTION_TYPE);
+}
 
 const handleNext = (key: string) => {
   if (formData.step === 1) {

@@ -26,10 +26,6 @@ export enum QUICKSTART_METHOD {
 export function useQuickStartFlow() {
   const { state: remoteNodes, execute, isReady, isLoading } = remoteNodeList();
 
-  onMounted(async () => {
-    await execute();
-  });
-
   interface ActionButtons {
     title: string;
     key: string;
@@ -66,9 +62,10 @@ export function useQuickStartFlow() {
     actions: step1
   });
 
-  const toStep2 = (appType: QUICKSTART_ACTION_TYPE) => {
+  const toStep2 = async (appType: QUICKSTART_ACTION_TYPE) => {
     formData.step = 2;
     formData.appType = appType;
+    await execute();
     formData.actions = remoteNodes.value?.map((v) => {
       return {
         title: `${v.ip}:${v.port} (${v.remarks})`,
