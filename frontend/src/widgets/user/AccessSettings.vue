@@ -9,7 +9,6 @@ import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { userInfoApiAdvanced } from "@/services/apis";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import ErrorCard from "@/components/ErrorCard.vue";
 import { updateUserInstance } from "@/services/apis";
 
 const props = defineProps<{
@@ -143,13 +142,6 @@ const columns = computed(() => {
             </template>
           </CardPanel>
         </a-col>
-      </div>
-      <div v-else class="h-100 w-100">
-        <ErrorCard
-          :title="t('缺少参数，组件无法运作')"
-          :details="t('请添加 get 参数 uuid')"
-          style="min-height: 600px"
-        />
       </div>
     </a-row>
   </div>
