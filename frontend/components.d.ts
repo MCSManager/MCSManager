@@ -43,6 +43,7 @@ declare module 'vue' {
     ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
+    CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
@@ -63,5 +64,6 @@ declare module 'vue' {
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    WidgetParamError: typeof import('./src/components/WidgetParamError.vue')['default']
   }
 }

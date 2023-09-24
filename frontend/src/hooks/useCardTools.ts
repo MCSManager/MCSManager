@@ -1,3 +1,4 @@
+import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useRoute } from "vue-router";
 
@@ -12,14 +13,19 @@ export function useLayoutCardTools(card: LayoutCard) {
     return card.meta[key] ?? def;
   };
 
-  const getMetaOrRouteValue = (key: string, def?: string): string | undefined => {
+  const getMetaOrRouteValue = (key: string, require = true): string | undefined => {
     if (card.meta[key] != null) {
       return card.meta[key];
     }
     if (route.query[key] != null) {
       return String(route.query[key]);
     }
-    return def;
+
+    if (require)
+      throw new Error(
+        [t("卡片所需参数"), `"${key}"`, t("不存在于 URL 地址或初始化设定中。")].join(" ")
+      );
+    return undefined;
   };
 
   return {
