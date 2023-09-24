@@ -63,7 +63,7 @@ export function useQuickStartFlow() {
     appType?: QUICKSTART_ACTION_TYPE;
     createMethod?: QUICKSTART_METHOD;
   }>({
-    title: t("您想部署一个什么应用程序？"),
+    title: t("您想部署一个什么应用实例？"),
     step: 1,
     actions: step1
   });
@@ -85,7 +85,7 @@ export function useQuickStartFlow() {
 
   const toStep3 = () => {
     formData.step = 3;
-    formData.title = t("请选择部署应用程序的方式？");
+    formData.title = t("请选择部署应用实例的方式？");
     currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
