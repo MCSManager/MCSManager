@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, toRaw, unref } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail, DockerNetworkModes } from "@/types";
@@ -11,25 +11,47 @@ import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
-const { toPage } = useAppRouters();
+import dayjs, { Dayjs } from "dayjs";
+import _ from "lodash";
+
+interface FormDetail extends InstanceDetail {
+  dayjsEndTime: Dayjs;
+}
+
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
   instanceId?: string;
   daemonId?: string;
 }>();
-const emit = defineEmits(["update"]);
-const options = ref<InstanceDetail>();
 
+const emit = defineEmits(["update"]);
+
+const { toPage } = useAppRouters();
+const options = ref<FormDetail>();
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
 const open = ref(false);
-const openDialog = () => {
-  open.value = true;
-  options.value = props.instanceInfo;
-};
-
+const { execute: executeGetNetworkModeList } = getNetworkModeList();
+const networkModes = ref<DockerNetworkModes[]>([]);
+const { execute, isLoading } = updateAnyInstanceConfig();
+const formRef = ref<FormInstance>();
 const { execute: executeGetImageList } = getImageList();
 const dockerImages = ref<string[]>([]);
+
+const openDialog = () => {
+  open.value = true;
+  initFormDetail();
+};
+
+const initFormDetail = () => {
+  if (props.instanceInfo) {
+    options.value = {
+      ...props.instanceInfo,
+      dayjsEndTime: dayjs(props.instanceInfo?.config?.endTime)
+    };
+  }
+};
+
 const loadImages = async () => {
   try {
     const images = await executeGetImageList({
@@ -58,8 +80,6 @@ const selectImage = (image: string) => {
   }
 };
 
-const { execute: executeGetNetworkModeList } = getNetworkModeList();
-const networkModes = ref<DockerNetworkModes[]>([]);
 const loadNetworkModes = async () => {
   try {
     const modes = await executeGetNetworkModeList({
@@ -73,7 +93,6 @@ const loadNetworkModes = async () => {
   }
 };
 
-const formRef = ref<FormInstance>();
 const rules: Record<string, Rule[]> = {
   nickname: [{ required: true, message: t("请输入实例名称") }],
   startCommand: [
@@ -82,7 +101,7 @@ const rules: Record<string, Rule[]> = {
       validator: async (_rule: Rule, value: string) => {
         if (value === "") throw new Error(t("请输入启动命令"));
         if (value.includes("\n"))
-          throw new Error(t("启动命令中不可包含换行，这并非脚本文件，不可执行多条命令，请检查"));
+          throw new Error(t("启动命令中不可包含换行，这并非脚本文件，不可执行多条命令"));
       },
       trigger: "change"
     }
@@ -102,32 +121,34 @@ const rules: Record<string, Rule[]> = {
   ]
 };
 
-const { execute, isLoading } = updateAnyInstanceConfig();
-
 const submit = async () => {
   try {
     await formRef.value?.validateFields();
-
-    // const postData: IGlobalInstanceConfig = JSON.parse(JSON.stringify(options.value?.config));
-    // TODO: endTime
-    // if (!options.value?.config.endTime) postData.endTime = "";
-    // else if (typeof options.value?.config.endTime === "object")
-    //   postData.endTime = (options.value?.config.endTime as Date).toLocaleDateString();
-
-    options.value &&
-      (await execute({
-        params: {
-          uuid: props.instanceId ?? "",
-          remote_uuid: props.daemonId ?? ""
-        },
-        data: options.value.config
-      }));
+    if (!options.value?.config) throw new Error("");
+    const postData = encodeFormData();
+    await execute({
+      params: {
+        uuid: props.instanceId ?? "",
+        remote_uuid: props.daemonId ?? ""
+      },
+      data: postData.config
+    });
     emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
-  } catch (err: any) {
-    return message.error(err.message);
+  } catch (error) {
+    console.error(error);
+    return message.error(t("提交失败，请检查表单数据"));
   }
+};
+
+const encodeFormData = () => {
+  const postData = _.cloneDeep(unref(options));
+  if (postData) {
+    postData.config.endTime = postData.dayjsEndTime.format("YYYY/MM/DD");
+    return postData;
+  }
+  throw new Error("Ref Options is null");
 };
 
 defineExpose({
@@ -156,33 +177,6 @@ defineExpose({
         autocomplete="off"
       >
         <a-row :gutter="20">
-          <a-col :xs="24" :lg="18" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("注意事项") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "当前界面所有设置只有管理员可以进行更改，应用实例拥有远程代码执行功能，请谨慎修改配置。"
-                    )
-                  }}
-                </a-typography-text>
-              </a-typography-paragraph>
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :lg="6" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("分配给其他用户") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text v-if="options.config.processType === 'docker'" type="success">
-                  {{ t("可以，已启用容器隔离") }}
-                </a-typography-text>
-                <a-typography-text v-else type="danger">
-                  {{ t("不推荐，可能会危害主机") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-            </a-form-item>
-          </a-col>
           <a-col :xs="24" :md="12" :offset="0">
             <a-form-item name="nickname">
               <a-typography-title :level="5" class="require-field">
@@ -239,7 +233,7 @@ defineExpose({
               <a-input-group compact style="display: flex">
                 <a-textarea
                   v-model:value="options.config.startCommand"
-                  rows="2"
+                  :rows="3"
                   style="min-height: 40px"
                 />
                 <a-button type="default" style="height: auto">命令助手</a-button>
@@ -302,7 +296,7 @@ defineExpose({
                 </a-typography-text>
               </a-typography-paragraph>
               <a-date-picker
-                v-model:value="options.config.endTime"
+                v-model:value="options.dayjsEndTime"
                 size="large"
                 style="width: 100%"
                 :placeholder="t('无限制')"
