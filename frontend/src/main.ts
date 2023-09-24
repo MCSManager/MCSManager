@@ -15,6 +15,10 @@ import App from "./App.vue";
 import { userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
 
+window.addEventListener("unhandledrejection", function (event) {
+  console.error("Unhandled promise rejection:", event.reason);
+});
+
 (async function () {
   try {
     const { updateUserInfo } = useAppStateStore();

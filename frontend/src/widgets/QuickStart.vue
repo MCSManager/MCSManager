@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons-vue";
 import { remoteNodeList } from "@/services/apis";
 import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
+import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -63,12 +64,15 @@ const actions = [
     <template #title>{{ card.title }}</template>
     <template #body>
       <a-row :gutter="[0, 16]">
-        <action-button
-          v-for="(action, key) in actions"
-          :key="action.title"
-          :title="action.title"
-          :click="actions[key].click"
-        />
+        <fade-up-animation>
+          <action-button
+            v-for="(action, index) in actions"
+            :key="action.title"
+            :title="action.title"
+            :click="actions[index].click"
+            :data-index="index"
+          />
+        </fade-up-animation>
       </a-row>
     </template>
   </card-panel>

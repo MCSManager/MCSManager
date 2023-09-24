@@ -58,12 +58,14 @@ html {
   transition: all 0.6s ease;
   opacity: 1 !important;
   transform: scale(1);
+  position: absolute;
 }
 
 .global-action-float-enter-from,
 .global-action-float-leave-to {
   opacity: 0 !important;
   transform: scale(0.96);
+  position: absolute;
 }
 
 .global-text-white-border {

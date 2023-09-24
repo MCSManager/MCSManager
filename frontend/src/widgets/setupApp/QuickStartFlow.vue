@@ -10,6 +10,7 @@ import {
 } from "@/hooks/widgets/quickStartFlow";
 import CreateInstanceForm from "./CreateInstanceForm.vue";
 import { useRoute } from "vue-router";
+import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 const { isPhone } = useScreen();
 const route = useRoute();
 
@@ -17,7 +18,7 @@ defineProps<{
   card: LayoutCard;
 }>();
 
-const { formData, toStep2, toStep3, toStep4, isReady, isFormStep, isNormalStep } =
+const { formData, toStep2, toStep3, toStep4, isReady, isFormStep, isNormalStep, currentIcon } =
   useQuickStartFlow();
 
 const presetAppType = String(route.query.appType);
@@ -41,12 +42,18 @@ const handleNext = (key: string) => {
 </script>
 
 <template>
-  <CardPanel class="CardWrapper" style="height: 100%">
+  <CardPanel class="card-wrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <div v-if="isReady" class="pd-24">
-        <a-row v-if="isNormalStep" :gutter="[24, 24]">
-          <a-col v-if="!isPhone" :lg="12"> A </a-col>
+      <div v-if="isReady" class="pd-24 h-100">
+        <a-row v-if="isNormalStep" :gutter="[24, 24]" class="h-100">
+          <a-col v-if="!isPhone" :lg="12">
+            <div class="quickstart-icon flex-center h-100">
+              <Transition name="global-action-float">
+                <component :is="currentIcon"></component>
+              </Transition>
+            </div>
+          </a-col>
           <a-col :lg="12">
             <div class="text-left" style="text-align: left">
               <a-typography-title :level="5" class="mb-24">
@@ -54,13 +61,16 @@ const handleNext = (key: string) => {
               </a-typography-title>
               <div>
                 <a-row :gutter="[12, 12]">
-                  <action-button
-                    v-for="action in formData.actions"
-                    :key="action.key"
-                    :title="action.title"
-                    :icon="action.icon"
-                    :click="() => handleNext(action.key)"
-                  />
+                  <fade-up-animation>
+                    <action-button
+                      v-for="(action, index) in formData.actions"
+                      :key="action.key"
+                      :data-index="index"
+                      :title="action.title"
+                      :icon="action.icon"
+                      :click="() => handleNext(action.key)"
+                    />
+                  </fade-up-animation>
                 </a-row>
               </div>
             </div>
@@ -78,12 +88,16 @@ const handleNext = (key: string) => {
 </template>
 
 <style lang="scss" scoped>
-.CardWrapper {
+.card-wrapper {
   min-height: 500px;
 }
 .btn-area {
   position: absolute;
   bottom: 16px;
   right: 16px;
+}
+
+.quickstart-icon {
+  font-size: 180px;
 }
 </style>

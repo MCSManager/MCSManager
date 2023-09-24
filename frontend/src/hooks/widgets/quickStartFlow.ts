@@ -5,11 +5,15 @@ import type { LayoutCard } from "@/types";
 import {
   AppstoreAddOutlined,
   AppstoreOutlined,
+  AppstoreTwoTone,
+  CalculatorTwoTone,
+  DatabaseTwoTone,
+  IdcardTwoTone,
   NodeIndexOutlined,
   ShoppingCartOutlined,
   TransactionOutlined
 } from "@ant-design/icons-vue";
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, ref, type FunctionalComponent } from "vue";
 
 export enum QUICKSTART_ACTION_TYPE {
   Minecraft = "Minecraft",
@@ -25,6 +29,8 @@ export enum QUICKSTART_METHOD {
 
 export function useQuickStartFlow() {
   const { state: remoteNodes, execute, isReady, isLoading } = remoteNodeList();
+
+  const currentIcon = ref<FunctionalComponent>(AppstoreTwoTone);
 
   interface ActionButtons {
     title: string;
@@ -65,6 +71,7 @@ export function useQuickStartFlow() {
   const toStep2 = async (appType: QUICKSTART_ACTION_TYPE) => {
     formData.step = 2;
     formData.appType = appType;
+    currentIcon.value = DatabaseTwoTone;
     await execute();
     formData.actions = remoteNodes.value?.map((v) => {
       return {
@@ -79,6 +86,7 @@ export function useQuickStartFlow() {
   const toStep3 = () => {
     formData.step = 3;
     formData.title = t("请选择部署应用程序的方式？");
+    currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
         title: "Minecraft 快速部署",
@@ -107,6 +115,7 @@ export function useQuickStartFlow() {
   const toStep4 = (key: QUICKSTART_METHOD) => {
     formData.step = 4;
     formData.createMethod = key;
+    currentIcon.value = IdcardTwoTone;
   };
 
   const isFormStep = computed(() => {
@@ -125,6 +134,7 @@ export function useQuickStartFlow() {
     isReady,
     isLoading,
     isFormStep,
-    isNormalStep
+    isNormalStep,
+    currentIcon
   };
 }

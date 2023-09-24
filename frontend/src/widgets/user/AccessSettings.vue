@@ -26,7 +26,10 @@ let userUuid: string | undefined = getMetaOrRouteValue("uuid");
 const handleDelete = async (deletedInstance: UserInstance) => {
   for (let valueKey = 0; valueKey < dataSource.value.length; valueKey++) {
     const instance = dataSource.value[valueKey];
-    if (deletedInstance.serviceUuid == instance.serviceUuid && deletedInstance.instanceUuid == instance.instanceUuid) {
+    if (
+      deletedInstance.serviceUuid == instance.serviceUuid &&
+      deletedInstance.instanceUuid == instance.instanceUuid
+    ) {
       dataSource.value.splice(valueKey, 1);
       await updateUserInstance().execute({
         data: {
@@ -45,12 +48,14 @@ async function refreshChart() {
   if (userUuid == null) {
     return;
   }
-  const rawUserInfo = (await userInfoApiAdvanced().execute({
-    params: {
-      uuid: <string>userUuid,
-      advanced: true
-    }
-  })).value;
+  const rawUserInfo = (
+    await userInfoApiAdvanced().execute({
+      params: {
+        uuid: <string>userUuid,
+        advanced: true
+      }
+    })
+  ).value;
   if (!rawUserInfo) {
     return;
   }
@@ -140,7 +145,11 @@ const columns = computed(() => {
         </a-col>
       </div>
       <div v-else class="h-100 w-100">
-        <ErrorCard :title="t('缺少参数，组件无法运作')" :details="t('请添加 get 参数 uuid')" style="min-height: 600px" />
+        <ErrorCard
+          :title="t('缺少参数，组件无法运作')"
+          :details="t('请添加 get 参数 uuid')"
+          style="min-height: 600px"
+        />
       </div>
     </a-row>
   </div>

@@ -31,7 +31,6 @@ const {
 
 <template>
   <main class="main-layout-container">
-    <!-- 新增卡片对话框 -->
     <NewCardList v-if="containerState.isDesignMode" ref="newCardList" />
 
     <!-- 调试代码 -->
