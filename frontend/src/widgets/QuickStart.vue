@@ -63,7 +63,7 @@ const actions = [
   <card-panel style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <a-row :gutter="[0, 16]">
+      <a-row :gutter="[0, 12]">
         <fade-up-animation>
           <action-button
             v-for="(action, index) in actions"

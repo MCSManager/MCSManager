@@ -11,11 +11,11 @@ import { systemConfig } from "../../setting";
 
 const router = new Router({ prefix: "/instance" });
 
-// [Top-level Permission]
+// [Low-level Permission]
 // Get the details of an instance
 router.get(
   "/",
-  permission({ level: 10 }),
+  permission({ level: 1 }),
   validator({ query: { remote_uuid: String, uuid: String } }),
   async (ctx) => {
     try {

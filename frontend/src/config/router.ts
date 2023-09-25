@@ -125,7 +125,7 @@ let originRouterConfig = [
     }
   },
   {
-    path: "/consumer",
+    path: "/customer",
     name: t("我的应用"),
     component: LayoutContainer,
     meta: {

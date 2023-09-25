@@ -308,7 +308,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
     ]
   },
   {
-    page: "/consumer",
+    page: "/customer",
     items: [
       {
         id: getRandomId(),
