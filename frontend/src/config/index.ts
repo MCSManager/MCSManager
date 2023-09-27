@@ -1,8 +1,5 @@
 import EmptyCard from "@/widgets/EmptyCard.vue";
-import ExampleCard from "@/widgets/ExampleCard.vue";
-import ExampleCard2 from "@/widgets/ExampleCard2.vue";
-import ExampleCard3 from "@/widgets/ExampleCard3.vue";
-import ExampleCard4 from "@/widgets/ExampleCard4.vue";
+import Page404 from "@/widgets/Page404.vue";
 import { getRandomId } from "@/tools/randId";
 import type { LayoutCard } from "@/types";
 import { LayoutCardHeight } from "./originLayoutConfig";
@@ -36,10 +33,7 @@ import { NEW_CARD_TYPE } from "../types/index";
 
 // Register specified Vue components for each card.
 export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
-  ExampleCard,
-  ExampleCard2,
-  ExampleCard3,
-  ExampleCard4,
+  Page404,
   EmptyCard,
   DataOverview,
   StatusBlock,

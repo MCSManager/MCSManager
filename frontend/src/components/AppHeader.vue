@@ -23,11 +23,13 @@ import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { logoutUser } from "@/services/apis/index";
 import { message } from "ant-design-vue";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 // const [messageApi] = message.useMessage();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
+const { isAdmin } = useAppStateStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -174,7 +176,7 @@ const appMenus = computed(() => {
           description: t("TXT_CODE_6b6f1d3")
         });
       },
-      conditions: !containerState.isDesignMode,
+      conditions: !containerState.isDesignMode && isAdmin.value,
       onlyPC: true
     },
     {

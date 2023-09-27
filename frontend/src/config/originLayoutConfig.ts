@@ -177,7 +177,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "InstanceFileManager",
-        title: "文件管理",
+        title: t("文件管理"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -199,7 +199,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "InstanceServerConfigOverview",
-        title: "服务端配置文件",
+        title: t("服务端配置文件"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -221,7 +221,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "UserList",
-        title: "用户列表",
+        title: t("用户列表"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -243,7 +243,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "UserAccessSettings",
-        title: "用户权限设定",
+        title: t("用户权限设定"),
         width: 12,
         height: LayoutCardHeight.AUTO,
         disableDelete: true
@@ -265,7 +265,7 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
         id: getRandomId(),
         meta: {},
         type: "Settings",
-        title: "系统设置",
+        title: t("系统设置"),
         width: 8,
         height: LayoutCardHeight.MEDIUM,
         disableDelete: true
@@ -374,8 +374,8 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
       {
         id: getRandomId(),
         meta: {},
-        type: "ExampleCard2",
-        title: "页面未找到",
+        type: "Page404",
+        title: t("页面未找到"),
         width: 6,
         height: LayoutCardHeight.MINI,
         disableDelete: true

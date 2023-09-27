@@ -22,6 +22,9 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
     autoRefresh: true
   });
 
+instanceInfo.value?.config.type
+
+
 onMounted(async () => {
   if (instanceId && daemonId) {
     await execute({

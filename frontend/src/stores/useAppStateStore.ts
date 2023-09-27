@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
 import _ from "lodash";
 import { userInfoApi } from "@/services/apis";
@@ -20,6 +20,8 @@ export const useAppStateStore = createGlobalState(() => {
     return reactive(tmp);
   };
 
+  const isAdmin = computed(() => state.userInfo?.permission === 10);
+
   const updateUserInfo = async (userInfo?: BaseUserInfo) => {
     if (userInfo) {
       state.userInfo = userInfo;
@@ -36,6 +38,7 @@ export const useAppStateStore = createGlobalState(() => {
   return {
     cloneState,
     updateUserInfo,
+    isAdmin,
     state
   };
 });

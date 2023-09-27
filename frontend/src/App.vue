@@ -14,7 +14,7 @@ import InputDialogProvider from "./components/InputDialogProvider.vue";
 import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-const { state } = useAppStateStore();
+const { state, isAdmin } = useAppStateStore();
 const locale = ref(enUS);
 
 if (getCurrentLanguage() === "zh_CN") {
@@ -50,6 +50,11 @@ import { closeAppLoading } from "./tools/dom";
 });
 
 onMounted(async () => {
+  if (state.userInfo?.token && !isAdmin.value) {
+    router.push({
+      path: "/customer"
+    });
+  }
   closeAppLoading();
   if (!state.userInfo?.token) {
     router.push({

@@ -2,8 +2,8 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/config/**/*", "src/lang/**/*.json"],
   "exclude": ["src/**/__tests__/*"],
-
   "compilerOptions": {
+    "files": ["../common/global.d.ts"],
     "composite": true,
     "baseUrl": ".",
     "paths": {

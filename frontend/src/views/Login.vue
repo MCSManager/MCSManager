@@ -20,7 +20,7 @@ const formData = reactive({
 });
 
 const { execute: login } = loginUser();
-const { updateUserInfo } = useAppStateStore();
+const { updateUserInfo, isAdmin } = useAppStateStore();
 
 const loginStep = ref(0);
 
@@ -36,8 +36,8 @@ const handleLogin = async () => {
     });
     loginStep.value++;
     await sleep(1200);
-    await loginSuccess();
     await updateUserInfo();
+    await loginSuccess();
   } catch (error: any) {
     console.log(error);
     message.error(error.message ? error.message : error);
@@ -47,9 +47,13 @@ const handleLogin = async () => {
 
 const loginSuccess = () => {
   loginStep.value++;
-  router.push({
-    path: "/"
-  });
+  if (isAdmin.value) {
+    router.push({
+      path: "/"
+    });
+  } else {
+    router.push({ path: "/customer" });
+  }
 };
 </script>
 

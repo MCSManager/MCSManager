@@ -1,11 +1,14 @@
-import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, type Router, type RouteRecordRaw } from "vue-router";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import { $t as t } from "@/lang/i18n";
 import LoginVue from "@/views/Login.vue";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 
 export interface RouterMetaInfo {
   icon?: string;
   mainMenu?: boolean;
+  permission?: number;
+  redirect?: string;
   breadcrumbs?: Array<{
     name: string;
     path: string;
@@ -21,13 +24,20 @@ export interface RouterConfig {
   meta: RouterMetaInfo;
 }
 
-let originRouterConfig = [
+export enum ROLE {
+  ADMIN = 10,
+  USER = 1,
+  GUEST = 0
+}
+
+let originRouterConfig: RouterConfig[] = [
   {
     path: "/",
     name: t("TXT_CODE_16d71239"),
     component: LayoutContainer,
     meta: {
-      mainMenu: true
+      mainMenu: true,
+      permission: ROLE.ADMIN
     }
   },
   {
@@ -35,26 +45,33 @@ let originRouterConfig = [
     name: t("TXT_CODE_e21473bc"),
     component: LayoutContainer,
     meta: {
-      mainMenu: true
+      mainMenu: true,
+      permission: ROLE.ADMIN
     },
     children: [
       {
         path: "/instances/terminal",
         name: t("TXT_CODE_524e3036"),
         component: LayoutContainer,
-        meta: {},
+        meta: {
+          permission: ROLE.USER
+        },
         children: [
           {
             path: "/instances/terminal/files",
             name: t("TXT_CODE_ae533703"),
             component: LayoutContainer,
-            meta: {}
+            meta: {
+              permission: ROLE.USER
+            }
           },
           {
             path: "/instances/terminal/serverConfig",
             name: t("TXT_CODE_d07742fe"),
             component: LayoutContainer,
-            meta: {}
+            meta: {
+              permission: ROLE.USER
+            }
           }
         ]
       }
@@ -65,14 +82,17 @@ let originRouterConfig = [
     name: t("TXT_CODE_1deaa2dd"),
     component: LayoutContainer,
     meta: {
-      mainMenu: true
+      mainMenu: true,
+      permission: ROLE.ADMIN
     },
     children: [
       {
         path: "/users/config",
         name: t("TXT_CODE_236f70aa"),
         component: LayoutContainer,
-        meta: {}
+        meta: {
+          permission: ROLE.ADMIN
+        }
       }
     ]
   },
@@ -81,6 +101,7 @@ let originRouterConfig = [
     name: t("TXT_CODE_e076d90b"),
     component: LayoutContainer,
     meta: {
+      permission: ROLE.ADMIN,
       mainMenu: true
     }
   },
@@ -89,6 +110,7 @@ let originRouterConfig = [
     name: t("TXT_CODE_b5c7b82d"),
     component: LayoutContainer,
     meta: {
+      permission: ROLE.ADMIN,
       mainMenu: true
     }
   },
@@ -97,6 +119,7 @@ let originRouterConfig = [
     name: t("TXT_CODE_8c3164c9"),
     component: LayoutContainer,
     meta: {
+      permission: ROLE.ADMIN,
       mainMenu: false
     }
   },
@@ -105,6 +128,7 @@ let originRouterConfig = [
     name: "404",
     component: LayoutContainer,
     meta: {
+      permission: ROLE.GUEST,
       mainMenu: false
     }
   },
@@ -113,6 +137,7 @@ let originRouterConfig = [
     name: "login",
     component: LoginVue,
     meta: {
+      permission: ROLE.GUEST,
       mainMenu: false
     }
   },
@@ -121,6 +146,7 @@ let originRouterConfig = [
     name: t("TXT_CODE_2799a1dd"),
     component: LayoutContainer,
     meta: {
+      permission: ROLE.ADMIN,
       mainMenu: false
     }
   },
@@ -129,6 +155,7 @@ let originRouterConfig = [
     name: t("我的应用"),
     component: LayoutContainer,
     meta: {
+      permission: ROLE.USER,
       mainMenu: true
     }
   }
@@ -154,4 +181,14 @@ const router = createRouter({
   routes: routersConfigOptimize(originRouterConfig) as RouteRecordRaw[]
 });
 
-export { router, originRouterConfig };
+router.beforeEach((to, from, next) => {
+  const { state } = useAppStateStore();
+  const permission = state.userInfo?.permission ?? 0;
+  if (Number(to.meta.permission ?? 0) <= permission) {
+    next();
+  } else {
+    next("/404");
+  }
+});
+
+export { originRouterConfig, router };
