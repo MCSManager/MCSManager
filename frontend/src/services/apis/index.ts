@@ -246,3 +246,23 @@ export const getFileList = useDefineApi<
   url: "/api/files/list",
   method: "GET"
 });
+
+// 获取文件状态
+export const getFileStatus = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceFileTask: number;
+    globalFileTask: number;
+    platform: string;
+    isGlobalInstance: boolean;
+    dist: string[];
+  }
+>({
+  url: "/api/files/status",
+  method: "GET"
+});

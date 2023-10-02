@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted } from "vue";
+import { ref, computed, reactive, onMounted, watch } from "vue";
 import { t } from "@/lang/i18n";
 // import type {table} from 'ant-design-vue'
+import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { getFileList as getFileListApi } from "@/services/apis";
+import { getFileList as getFileListApi, getFileStatus as getFileStatusApi } from "@/services/apis";
+import { throttle } from "lodash";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -28,6 +30,14 @@ const operationForm = ref({
   pageSize: 10,
   total: 0
 });
+
+const fileStatus = ref<{
+  instanceFileTask: number;
+  globalFileTask: number;
+  platform: string;
+  isGlobalInstance: boolean;
+  dist: string[];
+}>();
 
 const dataSource = ref<
   {
@@ -63,6 +73,8 @@ const columns = computed(() => {
       title: t("大小"),
       dataIndex: "size",
       key: "size",
+      customRender: (e: { text: number }) =>
+        e.text == 0 ? "--" : convertFileSize(e.text.toString()),
       minWidth: "200px",
       condition: () => !screen.isPhone.value
     },
@@ -91,7 +103,7 @@ const columns = computed(() => {
       dataIndex: "mode",
       key: "mode",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value
+      condition: () => !screen.isPhone.value && fileStatus.value?.platform !== "win32"
     },
     {
       align: "center",
@@ -139,14 +151,38 @@ breadcrumbs.push({
   disabled: false
 });
 
+watch(
+  () => operationForm.value.name,
+  throttle(() => {
+    getFileList();
+  }, 1000)
+);
+
 const handleTableChange = (e: { current: number; pageSize: number }) => {
   operationForm.value.current = e.current;
   operationForm.value.pageSize = e.pageSize;
   getFileList();
 };
 
+const { execute } = getFileStatusApi();
+
+setInterval(async () => {
+  await getFileStatus();
+}, 3000);
+
+const getFileStatus = async () => {
+  const res = await execute({
+    params: {
+      remote_uuid: daemonId || "",
+      uuid: instanceId || ""
+    }
+  });
+  fileStatus.value = res.value;
+};
+
 onMounted(() => {
   getFileList();
+  getFileStatus();
 });
 </script>
 
@@ -207,6 +243,9 @@ onMounted(() => {
               :row-selection="rowSelection"
               :data-source="dataSource"
               :columns="columns"
+              :scroll="{
+                x: 'max-content'
+              }"
               :pagination="{
                 current: operationForm.current,
                 pageSize: operationForm.pageSize,
