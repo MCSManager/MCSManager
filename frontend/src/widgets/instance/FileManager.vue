@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted, watch } from "vue";
+import { ref, computed, reactive, onMounted, watch, h } from "vue";
 import { t } from "@/lang/i18n";
 // import type {table} from 'ant-design-vue'
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
-import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import {
+  DownOutlined,
+  SearchOutlined,
+  FileOutlined,
+  FolderOutlined,
+  LoadingOutlined
+} from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getFileList as getFileListApi, getFileStatus as getFileStatusApi } from "@/services/apis";
 import { throttle } from "lodash";
+import { message } from "ant-design-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -23,6 +30,14 @@ const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
 const screen = useScreen();
+
+const spinning = ref(false);
+
+const indicator = h(LoadingOutlined, {
+  style: {
+    fontSize: "24px"
+  }
+});
 
 const operationForm = ref({
   name: "",
@@ -133,8 +148,31 @@ const getFileList = async () => {
 
 const rowSelection = () => {};
 
-const handleChangeDir = (dir: string) => {
-  console.log("前往：", dir);
+const rwoClickTable = async (item: string, type: number) => {
+  // files
+
+  // .....
+
+  if (type === 1) return;
+
+  // dirs
+  spinning.value = true;
+  breadcrumbs.push({
+    path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
+    name: item,
+    disabled: false
+  });
+  await getFileList();
+  spinning.value = false;
+};
+
+const handleChangeDir = async (dir: string) => {
+  console.log(breadcrumbs);
+  if (breadcrumbs.findIndex((e) => e.path === dir) === -1) return message.error(t("找不到路径"));
+  spinning.value = true;
+  breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
+  await getFileList();
+  spinning.value = false;
 };
 
 const breadcrumbs = reactive<
@@ -239,56 +277,72 @@ onMounted(() => {
                 </a-breadcrumb-item>
               </a-breadcrumb>
             </div>
-            <a-table
-              :row-selection="rowSelection"
-              :data-source="dataSource"
-              :columns="columns"
-              :scroll="{
-                x: 'max-content'
-              }"
-              :pagination="{
-                current: operationForm.current,
-                pageSize: operationForm.pageSize,
-                total: operationForm.total,
-                hideOnSinglePage: false,
-                showSizeChanger: true
-              }"
-              @change="handleTableChange($event)"
-            >
-              <!-- eslint-disable-next-line vue/no-unused-vars -->
-              <template #bodyCell="{ column, record }">
-                <template v-if="column.key === 'action'">
-                  <a-dropdown>
-                    <template #overlay>
-                      <a-menu>
-                        <a-menu-item key="3">
-                          {{ t("TXT_CODE_16853efe") }}
-                        </a-menu-item>
-                        <a-menu-item key="1">
-                          {{ t("TXT_CODE_c83551f5") }}
-                        </a-menu-item>
-                        <a-menu-item key="3">
-                          {{ t("TXT_CODE_a64f3007") }}
-                        </a-menu-item>
-                        <a-menu-item key="2">
-                          {{ t("TXT_CODE_13ae6a93") }}
-                        </a-menu-item>
-                        <a-menu-item key="3">
-                          {{ t("TXT_CODE_823f9d21") }}
-                        </a-menu-item>
-                        <a-menu-item key="4">
-                          {{ t("TXT_CODE_ecbd7449") }}
-                        </a-menu-item>
-                      </a-menu>
-                    </template>
-                    <a-button>
-                      {{ t("TXT_CODE_fe731dfc") }}
-                      <DownOutlined />
+            <a-spin :spinning="spinning" :indicator="indicator">
+              <a-table
+                :row-selection="rowSelection"
+                :data-source="dataSource"
+                :columns="columns"
+                :scroll="{
+                  x: 'max-content'
+                }"
+                :pagination="{
+                  current: operationForm.current,
+                  pageSize: operationForm.pageSize,
+                  total: operationForm.total,
+                  hideOnSinglePage: false,
+                  showSizeChanger: true
+                }"
+                @change="handleTableChange($event)"
+              >
+                <!-- eslint-disable-next-line vue/no-unused-vars -->
+                <template #bodyCell="{ column, record }">
+                  <template v-if="column.key === 'name'">
+                    <a-button
+                      type="link"
+                      class="file-name"
+                      @click="rwoClickTable(record.name, record.type)"
+                    >
+                      <span>
+                        <file-outlined v-if="record.type === 1" />
+                        <folder-outlined v-else />
+                        <!-- &nbsp; -->
+                      </span>
+                      {{ record.name }}
                     </a-button>
-                  </a-dropdown>
+                  </template>
+                  <template v-if="column.key === 'action'">
+                    <a-dropdown>
+                      <template #overlay>
+                        <a-menu>
+                          <a-menu-item key="3">
+                            {{ t("TXT_CODE_16853efe") }}
+                          </a-menu-item>
+                          <a-menu-item key="1">
+                            {{ t("TXT_CODE_c83551f5") }}
+                          </a-menu-item>
+                          <a-menu-item key="3">
+                            {{ t("TXT_CODE_a64f3007") }}
+                          </a-menu-item>
+                          <a-menu-item key="2">
+                            {{ t("TXT_CODE_13ae6a93") }}
+                          </a-menu-item>
+                          <a-menu-item key="3">
+                            {{ t("TXT_CODE_823f9d21") }}
+                          </a-menu-item>
+                          <a-menu-item key="4">
+                            {{ t("TXT_CODE_ecbd7449") }}
+                          </a-menu-item>
+                        </a-menu>
+                      </template>
+                      <a-button>
+                        {{ t("TXT_CODE_fe731dfc") }}
+                        <DownOutlined />
+                      </a-button>
+                    </a-dropdown>
+                  </template>
                 </template>
-              </template>
-            </a-table>
+              </a-table>
+            </a-spin>
           </template>
         </CardPanel>
       </a-col>
@@ -301,6 +355,16 @@ onMounted(() => {
   transition: all 0.4s;
   text-align: center;
   width: 50%;
+}
+
+.file-name {
+  color: initial;
+  &::v-deep span {
+    text-decoration: underline;
+  }
+  &:hover {
+    color: #1677ff;
+  }
 }
 
 @media (max-width: 992px) {
