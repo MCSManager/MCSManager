@@ -1,70 +1,66 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import { t } from "@/lang/i18n";
+// import type {table} from 'ant-design-vue'
+import dayjs from "dayjs";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { getFileList as getFileListApi } from "@/services/apis";
 
-defineProps<{
+const props = defineProps<{
   card: LayoutCard;
 }>();
+
+const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
 
 const screen = useScreen();
 
 const operationForm = ref({
-  name: ""
+  name: "",
+  current: 1,
+  pageSize: 10,
+  total: 0
 });
 
-const dataSource = [
+const dataSource = ref<
   {
-    key: "1",
-    name: "测试文件名1",
-    size: "1824 MB",
-    permission: 777,
-    modifyTime: new Date().getTime(),
-    createTime: new Date().getTime()
-  },
-  {
-    key: "1",
-    name: "测试文件名2",
-    size: "1824 MB",
-    permission: 777,
-    modifyTime: new Date().getTime(),
-    createTime: new Date().getTime()
-  },
-  {
-    key: "1",
-    name: "测试文件名3",
-    size: "1824 MB",
-    permission: 777,
-    modifyTime: new Date().getTime(),
-    createTime: new Date().getTime()
-  },
-  {
-    key: "1",
-    name: "测试文件名4",
-    size: "1824 MB",
-    permission: 777,
-    modifyTime: new Date().getTime(),
-    createTime: new Date().getTime()
-  }
-];
+    name: string;
+    type: number;
+    size: number;
+    time: string;
+    mode: number;
+  }[]
+>();
 
 const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
-      title: "文件名",
+      title: t("文件名"),
       dataIndex: "name",
       key: "name",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: "大小",
+      title: t("文件类型"),
+      dataIndex: "type",
+      key: "type",
+      customRender: (e: { text: number }) => {
+        return e.text == 1 ? t("文件") : t("目录");
+      },
+      minWidth: "200px"
+    },
+    {
+      align: "center",
+      title: t("大小"),
       dataIndex: "size",
       key: "size",
       minWidth: "200px",
@@ -72,36 +68,56 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: "修改时间",
-      dataIndex: "modifyTime",
-      key: "modifyTime",
+      title: t("修改时间"),
+      dataIndex: "time",
+      key: "time",
+      customRender: (e: { text: string }) => {
+        return dayjs(e.text).format("YYYY-MM-DD HH:mm:ss");
+      },
+      minWidth: "200px",
+      condition: () => !screen.isPhone.value
+    },
+    // {
+    //   align: "center",
+    //   title: t("创建时间"),
+    //   dataIndex: "createTime",
+    //   key: "createTime",
+    //   minWidth: "200px",
+    //   condition: () => !screen.isPhone.value
+    // },
+    {
+      align: "center",
+      title: t("权限"),
+      dataIndex: "mode",
+      key: "mode",
       minWidth: "200px",
       condition: () => !screen.isPhone.value
     },
     {
       align: "center",
-      title: "创建时间",
-      dataIndex: "createTime",
-      key: "createTime",
-      minWidth: "200px",
-      condition: () => !screen.isPhone.value
-    },
-    {
-      align: "center",
-      title: "权限",
-      dataIndex: "permission",
-      key: "permission",
-      minWidth: "200px",
-      condition: () => !screen.isPhone.value
-    },
-    {
-      align: "center",
-      title: "TXT_CODE_fe731dfc",
+      title: t("操作"),
+      dataIndex: "action",
       key: "action",
       minWidth: "200px"
     }
   ]);
 });
+
+const getFileList = async () => {
+  const { execute } = getFileListApi();
+  const res = await execute({
+    params: {
+      remote_uuid: daemonId || "",
+      uuid: instanceId || "",
+      page: operationForm.value.current - 1,
+      page_size: operationForm.value.pageSize,
+      file_name: operationForm.value.name,
+      target: encodeURI(breadcrumbs[breadcrumbs.length - 1].path)
+    }
+  });
+  dataSource.value = res.value?.items || [];
+  operationForm.value.total = res.value?.total || 0;
+};
 
 const rowSelection = () => {};
 
@@ -122,15 +138,15 @@ breadcrumbs.push({
   name: "/",
   disabled: false
 });
-breadcrumbs.push({
-  path: "/workspace",
-  name: "workspace",
-  disabled: false
-});
-breadcrumbs.push({
-  path: "/workspace/test files",
-  name: "test files",
-  disabled: false
+
+const handleTableChange = (e: { current: number; pageSize: number }) => {
+  operationForm.value.current = e.current;
+  operationForm.value.pageSize = e.pageSize;
+  getFileList();
+};
+
+onMounted(() => {
+  getFileList();
 });
 </script>
 
@@ -187,7 +203,19 @@ breadcrumbs.push({
                 </a-breadcrumb-item>
               </a-breadcrumb>
             </div>
-            <a-table :row-selection="rowSelection" :data-source="dataSource" :columns="columns">
+            <a-table
+              :row-selection="rowSelection"
+              :data-source="dataSource"
+              :columns="columns"
+              :pagination="{
+                current: operationForm.current,
+                pageSize: operationForm.pageSize,
+                total: operationForm.total,
+                hideOnSinglePage: false,
+                showSizeChanger: true
+              }"
+              @change="handleTableChange($event)"
+            >
               <!-- eslint-disable-next-line vue/no-unused-vars -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">

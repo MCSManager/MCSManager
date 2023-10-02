@@ -8,12 +8,12 @@ import type { IPanelOverviewResponse } from "../../../../common/global";
 // 用户登录
 export const loginUser = useDefineApi<
   | {
-  // Post
-  data: {
-    username: string;
-    password: string;
-  };
-}
+      // Post
+      data: {
+        username: string;
+        password: string;
+      };
+    }
   | undefined,
   // Response
   {
@@ -41,7 +41,9 @@ export const userInfoApiAdvanced = useDefineApi<
       uuid: string;
       advanced: boolean;
     };
-  }, BaseUserInfo>({
+  },
+  BaseUserInfo
+>({
   url: "/api/auth/"
 });
 
@@ -78,8 +80,8 @@ export const settingInfo = useDefineApi<any, Settings>({
 // 提交设置信息
 export const setSettingInfo = useDefineApi<
   | {
-  data: Settings;
-}
+      data: Settings;
+    }
   | undefined,
   string
 >({
@@ -135,8 +137,8 @@ export const updateUserInstance = useDefineApi<
     data: {
       config: {
         instances: UserInstance[];
-      }
-      uuid: string
+      };
+      uuid: string;
     };
   },
   boolean
@@ -211,5 +213,36 @@ export const connectNode = useDefineApi<
   any
 >({
   url: "/api/service/link_remote_service",
+  method: "GET"
+});
+
+// 文件管理
+// 获取文件列表
+export const getFileList = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+      target: string;
+      page: number;
+      page_size: number;
+      file_name: string;
+    };
+  },
+  {
+    items: {
+      name: string;
+      size: number;
+      time: string;
+      type: number;
+      mode: number;
+    }[];
+    page: number;
+    pageSize: number;
+    total: number;
+    absolutePath: string;
+  }
+>({
+  url: "/api/files/list",
   method: "GET"
 });
