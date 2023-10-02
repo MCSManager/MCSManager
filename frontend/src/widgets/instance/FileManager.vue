@@ -3,7 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed, reactive, onMounted, watch, h } from "vue";
 import { t } from "@/lang/i18n";
-// import type {table} from 'ant-design-vue'
+import type { TableProps } from "ant-design-vue";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
@@ -24,6 +24,14 @@ import { message } from "ant-design-vue";
 const props = defineProps<{
   card: LayoutCard;
 }>();
+
+interface DataType {
+  name: string;
+  type: number;
+  size: number;
+  time: string;
+  mode: number;
+}
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -54,15 +62,7 @@ const fileStatus = ref<{
   dist: string[];
 }>();
 
-const dataSource = ref<
-  {
-    name: string;
-    type: number;
-    size: number;
-    time: string;
-    mode: number;
-  }[]
->();
+const dataSource = ref<DataType[]>();
 
 const columns = computed(() => {
   return arrayFilter([
@@ -146,7 +146,15 @@ const getFileList = async () => {
   operationForm.value.total = res.value?.total || 0;
 };
 
-const rowSelection = () => {};
+const rowSelection: TableProps["rowSelection"] = {
+  onChange: (selectedRowKeys: any, selectedRows: any) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
+  },
+  getCheckboxProps: (record: DataType) => ({
+    disabled: record.name === "Disabled User", // Column configuration not to be checked
+    name: record.name
+  })
+};
 
 const rwoClickTable = async (item: string, type: number) => {
   // files
@@ -192,6 +200,7 @@ breadcrumbs.push({
 watch(
   () => operationForm.value.name,
   throttle(() => {
+    operationForm.value.current = 1;
     getFileList();
   }, 1000)
 );
@@ -280,6 +289,7 @@ onMounted(() => {
             <a-spin :spinning="spinning" :indicator="indicator">
               <a-table
                 :row-selection="rowSelection"
+                :row-key="(record: DataType) => record.name"
                 :data-source="dataSource"
                 :columns="columns"
                 :scroll="{
@@ -314,22 +324,22 @@ onMounted(() => {
                     <a-dropdown>
                       <template #overlay>
                         <a-menu>
-                          <a-menu-item key="3">
+                          <a-menu-item key="1">
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
-                          <a-menu-item key="1">
+                          <a-menu-item key="2">
                             {{ t("TXT_CODE_c83551f5") }}
                           </a-menu-item>
                           <a-menu-item key="3">
                             {{ t("TXT_CODE_a64f3007") }}
                           </a-menu-item>
-                          <a-menu-item key="2">
+                          <a-menu-item key="4">
                             {{ t("TXT_CODE_13ae6a93") }}
                           </a-menu-item>
-                          <a-menu-item key="3">
+                          <a-menu-item key="5">
                             {{ t("TXT_CODE_823f9d21") }}
                           </a-menu-item>
-                          <a-menu-item key="4">
+                          <a-menu-item key="6">
                             {{ t("TXT_CODE_ecbd7449") }}
                           </a-menu-item>
                         </a-menu>
