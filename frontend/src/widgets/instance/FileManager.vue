@@ -17,7 +17,11 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { getFileList as getFileListApi, getFileStatus as getFileStatusApi } from "@/services/apis";
+import {
+  getFileList as getFileListApi,
+  getFileStatus as getFileStatusApi,
+  addFolder as addFolderApi
+} from "@/services/apis";
 import { throttle } from "lodash";
 import { message } from "ant-design-vue";
 
@@ -146,6 +150,55 @@ const getFileList = async () => {
   operationForm.value.total = res.value?.total || 0;
 };
 
+const dialog = ref({
+  show: false,
+  title: "Dialog",
+  loading: false,
+  value: "",
+  info: "",
+  ok: () => {}
+});
+
+const openDialog = (title: string, info: string): Promise<string> => {
+  dialog.value.title = title;
+  dialog.value.info = info;
+  dialog.value.show = true;
+
+  return new Promise((resolve) => {
+    dialog.value.ok = () => {
+      if (dialog.value.value == "") {
+        return message.error(t("请输入内容"));
+      }
+      resolve(dialog.value.value);
+      dialog.value.show = false;
+      dialog.value.value = "";
+      dialog.value.info = "";
+      dialog.value.ok = () => {};
+    };
+  });
+};
+
+const mkdir = async () => {
+  const dirname = await openDialog(t("新建目录"), t("请输入目录名称"));
+
+  const { execute } = addFolderApi();
+
+  try {
+    await execute({
+      params: {
+        uuid: instanceId || "",
+        remote_uuid: daemonId || ""
+      },
+      data: {
+        target: breadcrumbs[breadcrumbs.length - 1].path + dirname
+      }
+    });
+    await getFileList();
+    message.success(t("创建成功"));
+  } catch (error: any) {
+    return message.error(error.message);
+  }
+};
 const rowSelection: TableProps["rowSelection"] = {
   onChange: (selectedRowKeys: any, selectedRows: any) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
@@ -249,7 +302,7 @@ onMounted(() => {
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="1">{{ t("TXT_CODE_e00c858c") }}</a-menu-item>
-                  <a-menu-item key="2">{{ t("TXT_CODE_6215388a") }}</a-menu-item>
+                  <a-menu-item key="2" @click="mkdir()">{{ t("TXT_CODE_6215388a") }}</a-menu-item>
                   <a-menu-item key="3">{{ t("TXT_CODE_791c73e9") }}</a-menu-item>
                   <a-menu-item key="4">{{ t("TXT_CODE_88122886") }}</a-menu-item>
                   <a-menu-item key="5">{{ t("TXT_CODE_13ae6a93") }}</a-menu-item>
@@ -358,6 +411,15 @@ onMounted(() => {
       </a-col>
     </a-row>
   </div>
+  <a-modal
+    v-model:open="dialog.show"
+    :title="dialog.title"
+    :confirm-loading="dialog.loading"
+    @ok="dialog.ok()"
+  >
+    <p>{{ dialog.info }}</p>
+    <a-input v-model:value="dialog.value" :placeholder="t('请输入内容')" />
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>

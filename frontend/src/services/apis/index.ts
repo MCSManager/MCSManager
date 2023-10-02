@@ -266,3 +266,20 @@ export const getFileStatus = useDefineApi<
   url: "/api/files/status",
   method: "GET"
 });
+
+// 新建文件夹
+export const addFolder = useDefineApi<
+  {
+    data: {
+      target: string;
+    };
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/files/mkdir",
+  method: "POST"
+});
