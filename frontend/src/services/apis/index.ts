@@ -283,3 +283,37 @@ export const addFolder = useDefineApi<
   url: "/api/files/mkdir",
   method: "POST"
 });
+
+// 新建文件
+export const touchFile = useDefineApi<
+  {
+    data: {
+      target: string;
+    };
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/files/touch",
+  method: "POST"
+});
+
+// 删除文件
+export const deleteFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      targets: string[];
+    };
+  },
+  boolean
+>({
+  url: "/api/files",
+  method: "DELETE"
+});

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted, watch, h } from "vue";
+import { ref, computed, reactive, onMounted, watch, h, createVNode } from "vue";
 import { t } from "@/lang/i18n";
 import type { TableProps } from "ant-design-vue";
 import { convertFileSize } from "@/tools/fileSize";
@@ -11,7 +11,8 @@ import {
   SearchOutlined,
   FileOutlined,
   FolderOutlined,
-  LoadingOutlined
+  LoadingOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -20,10 +21,12 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import {
   getFileList as getFileListApi,
   getFileStatus as getFileStatusApi,
-  addFolder as addFolderApi
+  addFolder as addFolderApi,
+  deleteFile as deleteFileApi,
+  touchFile as touchFileApi
 } from "@/services/apis";
 import { throttle } from "lodash";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -65,6 +68,8 @@ const fileStatus = ref<{
   isGlobalInstance: boolean;
   dist: string[];
 }>();
+
+const selectionData = ref<DataType[]>();
 
 const dataSource = ref<DataType[]>();
 
@@ -178,11 +183,16 @@ const openDialog = (title: string, info: string): Promise<string> => {
   });
 };
 
-const mkdir = async () => {
-  const dirname = await openDialog(t("新建目录"), t("请输入目录名称"));
-
-  const { execute } = addFolderApi();
-
+const touchFile = async (dir?: boolean) => {
+  let dirname;
+  let execute;
+  if (dir) {
+    dirname = await openDialog(t("新建目录"), t("请输入目录名称"));
+    execute = addFolderApi().execute;
+  } else {
+    dirname = await openDialog(t("新建文件"), t("请输入文件名"));
+    execute = touchFileApi().execute;
+  }
   try {
     await execute({
       params: {
@@ -199,9 +209,58 @@ const mkdir = async () => {
     return message.error(error.message);
   }
 };
+
+const deleteFile = async (file?: string) => {
+  const { execute } = deleteFileApi();
+  const useDeleteFileApi = async (files: string[]) => {
+    try {
+      await execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        },
+        data: {
+          targets: files
+        }
+      });
+      await getFileList();
+      message.success(t("文件删除任务开始，如果文件数量过多，则需要一定时间"));
+      if (dataSource?.value?.length === 0 && operationForm.value.current > 1) {
+        operationForm.value.current -= 1;
+        await getFileList();
+      }
+    } catch (error: any) {
+      message.error(error.message);
+    }
+  };
+
+  Modal.confirm({
+    title: t("你确定要删除吗?"),
+    icon: createVNode(ExclamationCircleOutlined),
+    content: createVNode("div", { style: "color:red;" }, t("删除后将无法恢复！")),
+    async onOk() {
+      if (file) {
+        // one file
+        await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
+      } else {
+        // more file
+        if (!selectionData.value) return message.error(t("请选择要删除的内容"));
+        await useDeleteFileApi(
+          selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
+        );
+      }
+    },
+    okType: "danger",
+    okText: t("确定"),
+    class: "test"
+  });
+  return;
+};
+
 const rowSelection: TableProps["rowSelection"] = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
+  onChange: (selectedRowKeys: any, selectedRows: DataType[]) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
+    selectionData.value = selectedRows;
   },
   getCheckboxProps: (record: DataType) => ({
     disabled: record.name === "Disabled User", // Column configuration not to be checked
@@ -281,8 +340,10 @@ const getFileStatus = async () => {
 };
 
 onMounted(() => {
-  getFileList();
   getFileStatus();
+  dialog.value.loading = true;
+  getFileList();
+  dialog.value.loading = false;
 });
 </script>
 
@@ -302,11 +363,17 @@ onMounted(() => {
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="1">{{ t("TXT_CODE_e00c858c") }}</a-menu-item>
-                  <a-menu-item key="2" @click="mkdir()">{{ t("TXT_CODE_6215388a") }}</a-menu-item>
-                  <a-menu-item key="3">{{ t("TXT_CODE_791c73e9") }}</a-menu-item>
+                  <a-menu-item key="2" @click="touchFile(true)">
+                    {{ t("TXT_CODE_6215388a") }}
+                  </a-menu-item>
+                  <a-menu-item key="3" @click="touchFile()">
+                    {{ t("TXT_CODE_791c73e9") }}
+                  </a-menu-item>
                   <a-menu-item key="4">{{ t("TXT_CODE_88122886") }}</a-menu-item>
                   <a-menu-item key="5">{{ t("TXT_CODE_13ae6a93") }}</a-menu-item>
-                  <a-menu-item key="6">{{ t("TXT_CODE_ecbd7449") }}</a-menu-item>
+                  <a-menu-item key="6" @click="deleteFile()">
+                    {{ t("TXT_CODE_ecbd7449") }}
+                  </a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
@@ -377,7 +444,7 @@ onMounted(() => {
                     <a-dropdown>
                       <template #overlay>
                         <a-menu>
-                          <a-menu-item key="1">
+                          <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
                           <a-menu-item key="2">
@@ -392,7 +459,7 @@ onMounted(() => {
                           <a-menu-item key="5">
                             {{ t("TXT_CODE_823f9d21") }}
                           </a-menu-item>
-                          <a-menu-item key="6">
+                          <a-menu-item key="6" @click="deleteFile(record.name)">
                             {{ t("TXT_CODE_ecbd7449") }}
                           </a-menu-item>
                         </a-menu>
