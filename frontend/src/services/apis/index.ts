@@ -317,3 +317,57 @@ export const deleteFile = useDefineApi<
   url: "/api/files",
   method: "DELETE"
 });
+
+// 复制文件
+export const copyFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      targets: string[][];
+    };
+  },
+  boolean
+>({
+  url: "/api/files/copy",
+  method: "POST"
+});
+
+// 移动文件
+export const moveFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      targets: string[][];
+    };
+  },
+  boolean
+>({
+  url: "/api/files/move",
+  method: "PUT"
+});
+
+// 解压缩
+export const compressFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      type: number;
+      targets: string[] | string;
+      source: string;
+      code: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/files/compress",
+  method: "POST"
+});
