@@ -719,9 +719,6 @@ onMounted(() => {
 
 .file-name {
   color: initial;
-  // &::v-deep span {
-  //   text-decoration: underline;
-  // }
   &:hover {
     color: #1677ff;
   }
