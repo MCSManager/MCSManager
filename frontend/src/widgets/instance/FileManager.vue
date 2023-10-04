@@ -152,7 +152,6 @@ const getFileList = async () => {
         page: operationForm.value.current - 1,
         page_size: operationForm.value.pageSize,
         file_name: operationForm.value.name,
-        // target: encodeURI(breadcrumbs[breadcrumbs.length - 1].path)
         target: breadcrumbs[breadcrumbs.length - 1].path
       }
     });
@@ -265,7 +264,6 @@ const setClipBoard = (type: "copy" | "move", file?: string) => {
     };
   }
   message.success(t("已保存至剪切板"));
-  console.log(clipboard.value);
 };
 
 const paste = async () => {
@@ -280,7 +278,6 @@ const paste = async () => {
       data: {
         targets: clipboard.value.value.map((e) => [
           e,
-          // breadcrumbs[breadcrumbs.length - 1].path.slice(1) + e.split("/")[e.split("/").length - 1]
           breadcrumbs[breadcrumbs.length - 1].path + e.split("/")[e.split("/").length - 1]
         ])
       }
@@ -392,15 +389,7 @@ const zipFile = async () => {
 
 const unzipFile = async (name: string) => {
   const dirname = await openDialog(t("解压文件"), "", "", "unzip");
-  console.log(name, dirname);
   const { execute } = compressFileApi();
-  console.log(
-    dialog.value.unzipmode == "0"
-      ? breadcrumbs[breadcrumbs.length - 1].path
-      : breadcrumbs[breadcrumbs.length - 1].path + dirname
-  );
-  console.log(dialog.value.unzipmode);
-  console.log(dialog.value.unzipmode == "0");
 
   try {
     await execute({
@@ -427,23 +416,13 @@ const unzipFile = async (name: string) => {
 
 const rowSelection: TableProps["rowSelection"] = {
   onChange: (selectedRowKeys: any, selectedRows: DataType[]) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
     selectionData.value = selectedRows;
-  },
-  getCheckboxProps: (record: DataType) => ({
-    disabled: record.name === "Disabled User", // Column configuration not to be checked
-    name: record.name
-  })
+  }
 };
 
 const rwoClickTable = async (item: string, type: number) => {
-  // files
-
-  // .....
-
   if (type === 1) return;
 
-  // dirs
   spinning.value = true;
   breadcrumbs.push({
     path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
@@ -455,7 +434,6 @@ const rwoClickTable = async (item: string, type: number) => {
 };
 
 const handleChangeDir = async (dir: string) => {
-  console.log(breadcrumbs);
   if (breadcrumbs.findIndex((e) => e.path === dir) === -1) return message.error(t("找不到路径"));
   spinning.value = true;
   breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
