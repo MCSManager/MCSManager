@@ -91,6 +91,12 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
 };
 
 const handleChangeNode = () => {};
+
+const toCreateAppPage = () => {
+  router.push({
+    path: `/quickstart`
+  });
+};
 </script>
 
 <template>
@@ -124,7 +130,9 @@ const handleChangeNode = () => {};
                 <DownOutlined />
               </a-button>
             </a-dropdown>
-            <a-button type="primary">{{ t("TXT_CODE_53408064") }}</a-button>
+            <a-button type="primary" @click="toCreateAppPage">
+              {{ t("TXT_CODE_53408064") }}
+            </a-button>
           </template>
           <template #center>
             <div class="search-input">
