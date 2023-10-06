@@ -18,7 +18,7 @@ defineProps<{
   card: LayoutCard;
 }>();
 
-const { formData, toStep2, toStep3, toStep4, isReady, isFormStep, isNormalStep, currentIcon } =
+const { formData, toStep2, toStep3, toStep4, isLoading, isFormStep, isNormalStep, currentIcon } =
   useQuickStartFlow();
 
 const presetAppType = String(route.query.appType);
@@ -45,7 +45,7 @@ const handleNext = (key: string) => {
   <CardPanel class="card-wrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <div v-if="isReady" class="pd-24 h-100">
+      <div v-if="!isLoading" class="pd-24 h-100">
         <a-row v-if="isNormalStep" :gutter="[24, 24]" class="h-100">
           <a-col v-if="!isPhone" :lg="12">
             <div class="quickstart-icon flex-center h-100">
