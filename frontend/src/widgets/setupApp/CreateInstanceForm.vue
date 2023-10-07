@@ -227,7 +227,7 @@ const createInstance = async () => {
         </a-input-group>
       </a-form-item>
 
-      <a-form-item name="cwd">
+      <a-form-item v-if="createMethod !== QUICKSTART_METHOD.EXIST" name="cwd">
         <a-typography-title :level="5">
           {{ t("服务端文件目录") }}
         </a-typography-title>

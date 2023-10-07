@@ -30,7 +30,8 @@ export enum QUICKSTART_ACTION_TYPE {
 export enum QUICKSTART_METHOD {
   FAST = "FAST",
   IMPORT = "IMPORT",
-  SELECT = "SELECT"
+  SELECT = "SELECT",
+  EXIST = "EXIST"
 }
 
 export function useQuickStartFlow() {
@@ -118,6 +119,11 @@ export function useQuickStartFlow() {
       {
         title: t("选择服务器现有目录"),
         key: QUICKSTART_METHOD.SELECT,
+        icon: TransactionOutlined
+      },
+      {
+        title: t("无需额外文件"),
+        key: QUICKSTART_METHOD.EXIST,
         icon: TransactionOutlined
       }
     ]);
