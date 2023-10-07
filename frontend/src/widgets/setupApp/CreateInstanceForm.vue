@@ -50,6 +50,11 @@ const formData = reactive<NewInstanceForm>({
 
 const zipCode = ref("gbk");
 
+enum UNZIP {
+  ON = 1,
+  OFF = 0
+}
+
 if (props.appType === QUICKSTART_ACTION_TYPE.Minecraft) {
   formData.startCommand =
     props.createMethod === QUICKSTART_METHOD.IMPORT ? "" : "java -jar ${ProgramName}";
@@ -144,7 +149,7 @@ const selectedFile = async () => {
 
     await uploadFile({
       params: {
-        unzip: 1,
+        unzip: UNZIP.ON,
         code: zipCode.value
       },
       data: uploadFormData,
