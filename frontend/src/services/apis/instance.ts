@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail } from "@/types";
+import type { InstanceDetail, NewInstanceForm } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -116,4 +116,56 @@ export const updateAnyInstanceConfig = useDefineApi<
 >({
   url: "/api/instance",
   method: "PUT"
+});
+
+// 获取上传地址
+export const uploadAddress = useDefineApi<
+  {
+    params: {
+      upload_dir: string;
+      remote_uuid: string;
+    };
+    data: NewInstanceForm;
+  },
+  {
+    instanceUuid: string;
+    password: string;
+    addr: string;
+  }
+>({
+  url: "/api/instance/upload",
+  method: "POST"
+});
+
+// 上传实例文件
+export const uploadInstanceFile = useDefineApi<
+  {
+    params: {
+      unzip: number;
+      code: string;
+    };
+    url: string;
+    onUploadProgress: Function;
+  },
+  {}
+>({
+  method: "POST",
+  headers: { "Content-Type": "multipart/form-data" }
+});
+
+// 新建实例
+export const createInstance = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+    };
+    data: NewInstanceForm;
+  },
+  {
+    instanceUuid: string;
+    config: IGlobalInstanceConfig;
+  }
+>({
+  method: "POST",
+  url: "/api/instance"
 });

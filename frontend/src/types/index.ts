@@ -160,3 +160,18 @@ export interface DockerNetworkModes {
     [propName: string]: unknown;
   };
 }
+
+export interface NewInstanceForm {
+  nickname: string;
+  startCommand: string;
+  stopCommand: string;
+  cwd: string;
+  ie: string;
+  oe: string;
+  createDatetime: string;
+  lastDatetime: string;
+  type: string;
+  tag: never[];
+  maxSpace: null;
+  endTime: string;
+}
