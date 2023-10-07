@@ -13,9 +13,10 @@ const zipCode = ref();
 
 const submit = async () => {
   try {
-    emit("selectCode", zipCode);
+    if (!zipCode.value) throw new Error(t("请选择解压编码"));
+    emit("selectCode", zipCode.value);
     open.value = false;
-    return message.success(t("TXT_CODE_d3de39b4"));
+    return message.success(t("设置成功"));
   } catch (err: any) {
     return message.error(err.message);
   }
