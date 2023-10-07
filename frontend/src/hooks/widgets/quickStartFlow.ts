@@ -47,22 +47,22 @@ export function useQuickStartFlow() {
 
   const step1: ActionButtons[] = [
     {
-      title: "Minecraft Java版游戏服务器",
+      title: t("Minecraft Java版游戏服务器"),
       key: QUICKSTART_ACTION_TYPE.Minecraft,
       icon: AppstoreAddOutlined
     },
     {
-      title: "Minecraft 基岩版游戏服务器",
+      title: t("Minecraft 基岩版游戏服务器"),
       key: QUICKSTART_ACTION_TYPE.Bedrock,
       icon: AppstoreAddOutlined
     },
     {
-      title: "Steam 游戏服务器",
+      title: t("Steam 游戏服务器"),
       key: QUICKSTART_ACTION_TYPE.SteamGameServer,
       icon: ShoppingCartOutlined
     },
     {
-      title: "部署任何控制台可执行程序",
+      title: t("部署任何控制台可执行程序"),
       key: QUICKSTART_ACTION_TYPE.AnyApp,
       icon: TransactionOutlined
     }
@@ -103,7 +103,7 @@ export function useQuickStartFlow() {
     currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
-        title: "Minecraft 快速部署",
+        title: t("Minecraft 快速部署"),
         key: QUICKSTART_METHOD.FAST,
         icon: AppstoreAddOutlined,
         condition: () =>
@@ -111,12 +111,12 @@ export function useQuickStartFlow() {
           formData.appType === QUICKSTART_ACTION_TYPE.Bedrock
       },
       {
-        title: "上传服务端文件压缩包",
+        title: t("上传服务端文件压缩包"),
         key: QUICKSTART_METHOD.IMPORT,
         icon: ShoppingCartOutlined
       },
       {
-        title: "选择服务器现有目录",
+        title: t("选择服务器现有目录"),
         key: QUICKSTART_METHOD.SELECT,
         icon: TransactionOutlined
       }
