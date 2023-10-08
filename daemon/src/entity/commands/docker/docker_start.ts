@@ -202,6 +202,7 @@ export default class DockerStartCommand extends InstanceCommand {
     const docker = new Docker();
     const container = await docker.createContainer({
       name: containerName,
+      Hostname: containerName,
       Image: instance.config.docker.image,
       AttachStdin: true,
       AttachStdout: true,
