@@ -69,6 +69,7 @@ if (props.appType === QUICKSTART_ACTION_TYPE.Bedrock) {
 }
 
 if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
+  formData.startCommand = isFileMode ? "${ProgramName}" : "";
   formData.type = TYPE_STEAM_SERVER_UNIVERSAL;
 }
 
@@ -119,9 +120,9 @@ const finalConfirm = async () => {
       : t("实例将创建，是否继续？"),
     okText: t("确定"),
     async onOk() {
+      thisModal.destroy();
       try {
         await formRef.value?.validateFields();
-        thisModal.destroy();
         needUpload ? await selectedFile() : await createInstance();
       } catch {
         return message.error(t("请先完善基本参数再进行上传文件操作"));
