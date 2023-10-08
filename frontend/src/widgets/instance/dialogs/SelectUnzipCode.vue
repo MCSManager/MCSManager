@@ -9,7 +9,7 @@ const openDialog = () => {
   open.value = true;
 };
 
-const zipCode = ref();
+const zipCode = ref<string>();
 
 const submit = async () => {
   try {
