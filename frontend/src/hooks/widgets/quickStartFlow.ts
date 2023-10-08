@@ -11,12 +11,18 @@ import {
   IdcardTwoTone,
   NodeIndexOutlined,
   ShoppingCartOutlined,
-  TransactionOutlined
+  TransactionOutlined,
+  SmileTwoTone,
+  CodeOutlined,
+  FolderOpenOutlined,
+  HomeOutlined
 } from "@ant-design/icons-vue";
 import { computed, onMounted, reactive, ref, type FunctionalComponent } from "vue";
+import { router } from "@/config/router";
 
 export enum QUICKSTART_ACTION_TYPE {
   Minecraft = "Minecraft",
+  Bedrock = "Bedrock",
   SteamGameServer = "SteamGameServer",
   AnyApp = "AnyApp"
 }
@@ -24,7 +30,8 @@ export enum QUICKSTART_ACTION_TYPE {
 export enum QUICKSTART_METHOD {
   FAST = "FAST",
   IMPORT = "IMPORT",
-  SELECT = "SELECT"
+  SELECT = "SELECT",
+  EXIST = "EXIST"
 }
 
 export function useQuickStartFlow() {
@@ -36,21 +43,27 @@ export function useQuickStartFlow() {
     title: string;
     key: string;
     icon: any;
+    click?: () => void;
   }
 
   const step1: ActionButtons[] = [
     {
-      title: "Minecraft 游戏服务器",
+      title: t("Minecraft Java版游戏服务器"),
       key: QUICKSTART_ACTION_TYPE.Minecraft,
       icon: AppstoreAddOutlined
     },
     {
-      title: "Steam 游戏服务器",
+      title: t("Minecraft 基岩版游戏服务器"),
+      key: QUICKSTART_ACTION_TYPE.Bedrock,
+      icon: AppstoreAddOutlined
+    },
+    {
+      title: t("Steam 游戏服务器"),
       key: QUICKSTART_ACTION_TYPE.SteamGameServer,
       icon: ShoppingCartOutlined
     },
     {
-      title: "部署任何控制台可执行程序",
+      title: t("部署任何控制台可执行程序"),
       key: QUICKSTART_ACTION_TYPE.AnyApp,
       icon: TransactionOutlined
     }
@@ -62,6 +75,7 @@ export function useQuickStartFlow() {
     actions?: ActionButtons[];
     appType?: QUICKSTART_ACTION_TYPE;
     createMethod?: QUICKSTART_METHOD;
+    remoteUuid?: string;
   }>({
     title: t("您想部署一个什么应用实例？"),
     step: 1,
@@ -83,30 +97,33 @@ export function useQuickStartFlow() {
     formData.title = t("新的程序部署在哪台机器？");
   };
 
-  const toStep3 = () => {
+  const toStep3 = (remoteUuid: string) => {
     formData.step = 3;
     formData.title = t("请选择部署应用实例的方式？");
+    formData.remoteUuid = remoteUuid;
     currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
-        title: "Minecraft 快速部署",
+        title: t("Minecraft 快速部署"),
         key: QUICKSTART_METHOD.FAST,
         icon: AppstoreAddOutlined,
-        condition: () => formData.appType === QUICKSTART_ACTION_TYPE.Minecraft
+        condition: () =>
+          formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
+          formData.appType === QUICKSTART_ACTION_TYPE.Bedrock
       },
       {
-        title: "上传服务端文件压缩包",
+        title: t("上传服务端文件压缩包"),
         key: QUICKSTART_METHOD.IMPORT,
         icon: ShoppingCartOutlined
       },
       {
-        title: "选择服务器现有目录",
+        title: t("选择服务器现有目录"),
         key: QUICKSTART_METHOD.SELECT,
         icon: TransactionOutlined
       },
       {
-        title: "无需额外文件",
-        key: QUICKSTART_METHOD.SELECT,
+        title: t("无需额外文件"),
+        key: QUICKSTART_METHOD.EXIST,
         icon: TransactionOutlined
       }
     ]);
@@ -116,6 +133,55 @@ export function useQuickStartFlow() {
     formData.step = 4;
     formData.createMethod = key;
     currentIcon.value = IdcardTwoTone;
+  };
+
+  const toStep5 = (instanceId?: string) => {
+    formData.step = 5;
+    formData.title = t("恭喜，实例创建成功");
+    currentIcon.value = SmileTwoTone;
+
+    formData.actions = arrayFilter<ActionButtons>([
+      {
+        title: t("前往实例控制台"),
+        key: "console",
+        icon: CodeOutlined,
+        click: () => {
+          const daemonId = formData.remoteUuid;
+          router.push({
+            path: "/instances/terminal",
+            query: {
+              daemonId,
+              instanceId
+            }
+          });
+        }
+      },
+      {
+        title: t("前往实例文件管理"),
+        key: "files",
+        icon: FolderOpenOutlined,
+        click: () => {
+          const daemonId = formData.remoteUuid;
+          router.push({
+            path: "/instances/terminal/files",
+            query: {
+              daemonId,
+              instanceId
+            }
+          });
+        }
+      },
+      {
+        title: t("返回面板首页"),
+        key: "main",
+        icon: HomeOutlined,
+        click: () => {
+          router.push({
+            path: "/"
+          });
+        }
+      }
+    ]);
   };
 
   const isFormStep = computed(() => {
@@ -131,6 +197,7 @@ export function useQuickStartFlow() {
     toStep2,
     toStep3,
     toStep4,
+    toStep5,
     isReady,
     isLoading,
     isFormStep,

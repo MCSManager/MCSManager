@@ -18,8 +18,17 @@ defineProps<{
   card: LayoutCard;
 }>();
 
-const { formData, toStep2, toStep3, toStep4, isLoading, isFormStep, isNormalStep, currentIcon } =
-  useQuickStartFlow();
+const {
+  formData,
+  toStep2,
+  toStep3,
+  toStep4,
+  toStep5,
+  isLoading,
+  isFormStep,
+  isNormalStep,
+  currentIcon
+} = useQuickStartFlow();
 
 const presetAppType = String(route.query.appType);
 if (presetAppType in QUICKSTART_ACTION_TYPE) {
@@ -32,11 +41,15 @@ const handleNext = (key: string) => {
   }
 
   if (formData.step === 2) {
-    return toStep3();
+    return toStep3(key);
   }
 
   if (formData.step === 3) {
     return toStep4(key as QUICKSTART_METHOD);
+  }
+
+  if (formData.step === 4) {
+    return toStep5(key);
   }
 };
 </script>
@@ -77,8 +90,43 @@ const handleNext = (key: string) => {
           </a-col>
         </a-row>
         <div v-else-if="isFormStep && formData.appType && formData.createMethod">
-          <CreateInstanceForm :app-type="formData.appType" :create-method="formData.createMethod" />
+          <CreateInstanceForm
+            :app-type="formData.appType"
+            :create-method="formData.createMethod"
+            :remote-uuid="formData.remoteUuid ? formData.remoteUuid : ''"
+            @next-step="handleNext"
+          />
         </div>
+        <a-row v-else :gutter="[24, 24]" class="h-100">
+          <a-col v-if="!isPhone" :lg="12">
+            <div class="quickstart-icon flex-center h-100">
+              <Transition name="global-action-float">
+                <component :is="currentIcon"></component>
+              </Transition>
+            </div>
+          </a-col>
+          <a-col :lg="12">
+            <div class="text-left" style="text-align: left">
+              <a-typography-title :level="5" class="mb-24">
+                {{ formData.title }}
+              </a-typography-title>
+              <div>
+                <a-row :gutter="[12, 12]">
+                  <fade-up-animation>
+                    <action-button
+                      v-for="(action, index) in formData.actions"
+                      :key="index"
+                      :data-index="index"
+                      :title="action.title"
+                      :icon="action.icon"
+                      :click="() => (action.click ? action.click() : undefined)"
+                    />
+                  </fade-up-animation>
+                </a-row>
+              </div>
+            </div>
+          </a-col>
+        </a-row>
       </div>
       <div v-else class="loading flex-center w-100 h-100">
         <Loading />
