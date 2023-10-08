@@ -144,6 +144,7 @@ export const uploadInstanceFile = useDefineApi<
       unzip: number;
       code: string;
     };
+    data: FormData;
     url: string;
     onUploadProgress: Function;
   },
