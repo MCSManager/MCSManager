@@ -21,25 +21,29 @@ import {
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 
+enum UNZIP {
+  ON = 1,
+  OFF = 0
+}
+
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
 const emit = defineEmits(["nextStep"]);
 
-// 这里需要根据创建的APP类型+创建方式两种来决定这个表单该如何实现
-// 具体参考 MCSM 9 的创建实例界面
 const props = defineProps<{
   appType: QUICKSTART_ACTION_TYPE;
   createMethod: QUICKSTART_METHOD;
   remoteUuid: string;
 }>();
 
+const zipCode = ref("utf-8");
 const formRef = ref<FormInstance>();
 const formData = reactive<NewInstanceForm>({
   nickname: "",
   startCommand: "",
   stopCommand: "^c",
   cwd: "",
-  ie: "GBK",
-  oe: "GBK",
+  ie: "utf-8",
+  oe: "utf-8",
   createDatetime: new Date().toDateString(),
   lastDatetime: "",
   type: TYPE_UNIVERSAL,
@@ -47,13 +51,6 @@ const formData = reactive<NewInstanceForm>({
   maxSpace: null,
   endTime: ""
 });
-
-const zipCode = ref("gbk");
-
-enum UNZIP {
-  ON = 1,
-  OFF = 0
-}
 
 if (props.appType === QUICKSTART_ACTION_TYPE.Minecraft) {
   formData.startCommand =
@@ -220,14 +217,14 @@ const createInstance = async () => {
         <a-input-group compact style="display: flex">
           <a-textarea
             v-model:value="formData.startCommand"
-            :rows="1"
+            :rows="3"
             :placeholder="t('如 java -jar server.jar，cmd.exe 等等')"
           />
           <a-button
             type="default"
             style="height: auto; border-top-left-radius: 0; border-bottom-left-radius: 0"
           >
-            命令助手
+            {{ t("命令助手") }}
           </a-button>
         </a-input-group>
       </a-form-item>
@@ -251,6 +248,8 @@ const createInstance = async () => {
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ t("仅支持 ZIP 格式，上传后压缩包会自动解压到 “文件目录”") }}
+            <br />
+            {{ t("上传文件后实例将自动创建并解压文件，可能需要一段时间才能完成解压任务") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
@@ -262,14 +261,9 @@ const createInstance = async () => {
         >
           <a-button type="primary" :loading="percentComplete > 0">
             <upload-outlined v-if="percentComplete === 0" />
-            {{ percentComplete > 0 ? t("正在上传：") + percentComplete + "%" : t("上传压缩包") }}
+            {{ percentComplete > 0 ? t("正在上传：") + percentComplete + "%" : t("选择 zip 文件") }}
           </a-button>
         </a-upload>
-        <a-typography-paragraph class="mt-10">
-          <a-typography-text>
-            {{ t("上传文件后实例将自动创建并解压文件，可能需要一段时间才能完成解压任务") }}
-          </a-typography-text>
-        </a-typography-paragraph>
       </a-form-item>
 
       <a-form-item v-else>
