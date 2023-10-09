@@ -84,7 +84,7 @@ const dataSource = ref<DataType[]>();
 const columns = computed(() => {
   return arrayFilter([
     {
-      align: "center",
+      align: "left",
       title: t("文件名"),
       dataIndex: "name",
       key: "name",
