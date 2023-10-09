@@ -34,6 +34,7 @@ import {
 import { throttle } from "lodash";
 import { message, Modal } from "ant-design-vue";
 import { parseForwardAddress } from "@/tools/protocol";
+import { getExtName } from "@/tools/fileManager";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -91,11 +92,11 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("文件类型"),
+      title: t("类型"),
       dataIndex: "type",
       key: "type",
-      customRender: (e: { text: number }) => {
-        return e.text == 1 ? t("文件") : t("目录");
+      customRender: (e: { text: number; record: { name: string } }) => {
+        return e.text == 1 ? getExtName(e.record.name) : t("文件夹");
       },
       minWidth: "200px"
     },
@@ -462,7 +463,7 @@ const rowSelection: TableProps["rowSelection"] = {
   }
 };
 
-const rwoClickTable = async (item: string, type: number) => {
+const rowClickTable = async (item: string, type: number) => {
   if (type === 1) return;
 
   spinning.value = true;
@@ -682,7 +683,7 @@ onMounted(() => {
                     <a-button
                       type="link"
                       class="file-name"
-                      @click="rwoClickTable(record.name, record.type)"
+                      @click="rowClickTable(record.name, record.type)"
                     >
                       <span class="mr-4">
                         <file-outlined v-if="record.type === 1" />
@@ -716,7 +717,7 @@ onMounted(() => {
                           </a-menu-item>
                         </a-menu>
                       </template>
-                      <a-button>
+                      <a-button size="">
                         {{ t("TXT_CODE_fe731dfc") }}
                         <DownOutlined />
                       </a-button>
