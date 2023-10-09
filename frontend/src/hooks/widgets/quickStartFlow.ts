@@ -11,6 +11,9 @@ import {
   IdcardTwoTone,
   NodeIndexOutlined,
   ShoppingCartOutlined,
+  CloudUploadOutlined,
+  FileZipOutlined,
+  FileExcelOutlined,
   TransactionOutlined,
   SmileTwoTone,
   CodeOutlined,
@@ -29,6 +32,7 @@ export enum QUICKSTART_ACTION_TYPE {
 
 export enum QUICKSTART_METHOD {
   FAST = "FAST",
+  FILE = "FILE",
   IMPORT = "IMPORT",
   SELECT = "SELECT",
   EXIST = "EXIST"
@@ -112,19 +116,24 @@ export function useQuickStartFlow() {
           formData.appType === QUICKSTART_ACTION_TYPE.Bedrock
       },
       {
+        title: t("上传单个服务端软件"),
+        key: QUICKSTART_METHOD.FILE,
+        icon: CloudUploadOutlined
+      },
+      {
         title: t("上传服务端文件压缩包"),
         key: QUICKSTART_METHOD.IMPORT,
-        icon: ShoppingCartOutlined
+        icon: FileZipOutlined
       },
       {
         title: t("选择服务器现有目录"),
         key: QUICKSTART_METHOD.SELECT,
-        icon: TransactionOutlined
+        icon: FolderOpenOutlined
       },
       {
         title: t("无需额外文件"),
         key: QUICKSTART_METHOD.EXIST,
-        icon: TransactionOutlined
+        icon: FileExcelOutlined
       }
     ]);
   };

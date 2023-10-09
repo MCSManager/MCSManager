@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
   DownOutlined,
   FormOutlined,
   DatabaseOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
+  FrownOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
 import { remoteInstances } from "@/services/apis";
 import { remoteNodeList } from "../services/apis";
 import type { NodeStatus } from "../types/index";
-import { message } from "ant-design-vue";
+import { message, type ItemType } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import Loading from "@/components/Loading.vue";
 import { useInstanceInfo } from "@/hooks/useInstance";
@@ -53,7 +54,9 @@ const initNodes = async () => {
   if (!nodes.value?.length) {
     return message.error(t("TXT_CODE_e3d96a26"));
   }
-  if (nodes.value?.length > 0) {
+  if (localStorage.getItem("pageSelectedRemote")) {
+    currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
+  } else {
     currentRemoteNode.value = nodes.value[0];
   }
 };
@@ -62,14 +65,18 @@ const initInstancesData = async () => {
   if (!currentRemoteNode.value) {
     await initNodes();
   }
-  await getInstances({
-    params: {
-      remote_uuid: currentRemoteNode.value?.uuid ?? "",
-      page: operationForm.value.currentPage,
-      page_size: operationForm.value.pageSize,
-      instance_name: operationForm.value.instanceName.trim()
-    }
-  });
+  try {
+    await getInstances({
+      params: {
+        remote_uuid: currentRemoteNode.value?.uuid ?? "",
+        page: operationForm.value.currentPage,
+        page_size: operationForm.value.pageSize,
+        instance_name: operationForm.value.instanceName.trim()
+      }
+    });
+  } catch (err) {
+    return message.error(t("访问远程节点异常"));
+  }
 };
 
 onMounted(async () => {
@@ -90,7 +97,15 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
   });
 };
 
-const handleChangeNode = () => {};
+const handleChangeNode = async (item: NodeStatus) => {
+  try {
+    currentRemoteNode.value = item;
+    await initInstancesData();
+    localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
+  } catch (err: any) {
+    console.error(err.message);
+  }
+};
 
 const toCreateAppPage = () => {
   router.push({
@@ -113,10 +128,15 @@ const toCreateAppPage = () => {
           <template #right>
             <a-dropdown>
               <template #overlay>
-                <a-menu @click="handleChangeNode">
-                  <a-menu-item v-for="item in nodes" :key="item.uuid">
-                    <DatabaseOutlined />
-                    {{ computeNodeName(item.ip, item.remarks) }}
+                <a-menu>
+                  <a-menu-item
+                    v-for="item in nodes"
+                    :key="item.uuid"
+                    @click="handleChangeNode(item)"
+                  >
+                    <DatabaseOutlined v-if="item.available" />
+                    <FrownOutlined v-else />
+                    {{ computeNodeName(item.ip, item.available, item.remarks) }}
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="toNodesPage">
@@ -126,7 +146,13 @@ const toCreateAppPage = () => {
                 </a-menu>
               </template>
               <a-button class="mr-12">
-                {{ computeNodeName(currentRemoteNode?.ip || "", currentRemoteNode?.remarks) }}
+                {{
+                  computeNodeName(
+                    currentRemoteNode?.ip || "",
+                    currentRemoteNode?.available || true,
+                    currentRemoteNode?.remarks
+                  )
+                }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>

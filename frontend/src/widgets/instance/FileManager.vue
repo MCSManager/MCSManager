@@ -3,7 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed, reactive, onMounted, watch, h, createVNode } from "vue";
 import { t } from "@/lang/i18n";
-import type { TableProps } from "ant-design-vue";
+import type { TableProps, UploadProps } from "ant-design-vue";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
@@ -12,7 +12,8 @@ import {
   FileOutlined,
   FolderOutlined,
   LoadingOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
+  UploadOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -26,10 +27,13 @@ import {
   touchFile as touchFileApi,
   copyFile as copyFileApi,
   moveFile as moveFileApi,
-  compressFile as compressFileApi
-} from "@/services/apis";
+  compressFile as compressFileApi,
+  uploadAddress,
+  uploadFile as uploadFileApi
+} from "@/services/apis/fileManager";
 import { throttle } from "lodash";
 import { message, Modal } from "ant-design-vue";
+import { parseForwardAddress } from "@/tools/protocol";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -414,6 +418,44 @@ const unzipFile = async (name: string) => {
   }
 };
 
+const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
+  await selectedFile(file);
+  return false;
+};
+
+const { state: cfg, execute: getCfg } = uploadAddress();
+const { execute: uploadFile } = uploadFileApi();
+const percentComplete = ref(0);
+const selectedFile = async (file: File) => {
+  try {
+    await getCfg({
+      params: {
+        upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
+        remote_uuid: daemonId!,
+        uuid: instanceId!
+      }
+    });
+    if (!cfg.value) throw new Error(t("获取上传地址失败"));
+
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+
+    await uploadFile({
+      data: uploadFormData,
+      url: `${parseForwardAddress(cfg.value.addr, "http")}/upload/${cfg.value.password}`,
+      onUploadProgress: (progressEvent: any) => {
+        percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      }
+    });
+    await getFileList();
+    percentComplete.value = 0;
+    return message.success(t("上传成功"));
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
+};
+
 const rowSelection: TableProps["rowSelection"] = {
   onChange: (selectedRowKeys: any, selectedRows: DataType[]) => {
     selectionData.value = selectedRows;
@@ -504,6 +546,22 @@ onMounted(() => {
             </a-typography-title>
           </template>
           <template #right>
+            <a-upload
+              v-if="!screen.isPhone.value"
+              :before-upload="beforeUpload"
+              :max-count="1"
+              :disabled="percentComplete > 0"
+              :show-upload-list="false"
+            >
+              <a-button class="mr-8" type="dashed" :loading="percentComplete > 0">
+                <upload-outlined v-if="percentComplete === 0" />
+                {{
+                  percentComplete > 0
+                    ? t("正在上传：") + percentComplete + "%"
+                    : t("TXT_CODE_e00c858c")
+                }}
+              </a-button>
+            </a-upload>
             <a-button
               v-if="clipboard?.value && clipboard.value.length > 0"
               type="dashed"
@@ -513,13 +571,26 @@ onMounted(() => {
             >
               {{ t("TXT_CODE_f0260e51") }}
             </a-button>
-            <a-button v-else class="mr-8" @click="reloadList()">
+            <a-button v-else class="mr-8" type="default" @click="reloadList()">
               {{ t("刷新列表") }}
             </a-button>
+
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="1">{{ t("TXT_CODE_e00c858c") }}</a-menu-item>
+                  <a-upload
+                    v-if="screen.isPhone.value"
+                    :before-upload="beforeUpload"
+                    :max-count="1"
+                    :disabled="percentComplete > 0"
+                    :show-upload-list="false"
+                  >
+                    <a-menu-item key="1" :disabled="percentComplete > 0">
+                      {{ percentComplete > 0 ? t("上传中...") : t("TXT_CODE_e00c858c") }}
+                    </a-menu-item>
+                    <template #itemRender=""></template>
+                  </a-upload>
+
                   <a-menu-item key="2" @click="touchFile(true)">
                     {{ t("TXT_CODE_6215388a") }}
                   </a-menu-item>
@@ -559,6 +630,15 @@ onMounted(() => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
+            <a-progress
+              v-if="percentComplete > 0"
+              :stroke-color="{
+                '0%': '#49b3ff',
+                '100%': '#25f5b9'
+              }"
+              :percent="percentComplete"
+              class="mb-20"
+            />
             <div class="file-breadcrumbs mb-20">
               <a-breadcrumb separator=">">
                 <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
@@ -586,6 +666,7 @@ onMounted(() => {
                 :scroll="{
                   x: 'max-content'
                 }"
+                size="small"
                 :pagination="{
                   current: operationForm.current,
                   pageSize: operationForm.pageSize,

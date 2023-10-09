@@ -52,21 +52,24 @@ const formData = reactive<NewInstanceForm>({
   endTime: ""
 });
 
+const isImportMode = props.createMethod === QUICKSTART_METHOD.IMPORT;
+const isFileMode = props.createMethod === QUICKSTART_METHOD.FILE;
+const needUpload = isImportMode || isFileMode;
+
 if (props.appType === QUICKSTART_ACTION_TYPE.Minecraft) {
-  formData.startCommand =
-    props.createMethod === QUICKSTART_METHOD.IMPORT ? "" : "java -jar ${ProgramName}";
+  formData.startCommand = isFileMode ? "java -jar ${ProgramName}" : "";
   formData.stopCommand = "stop";
   formData.type = TYPE_MINECRAFT_JAVA;
 }
 
 if (props.appType === QUICKSTART_ACTION_TYPE.Bedrock) {
-  formData.startCommand = props.createMethod === QUICKSTART_METHOD.IMPORT ? "" : "${ProgramName}";
+  formData.startCommand = isFileMode ? "${ProgramName}" : "";
   formData.stopCommand = "stop";
   formData.type = TYPE_MINECRAFT_BEDROCK;
 }
 
 if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
-  formData.startCommand = "${ProgramName}";
+  formData.startCommand = isFileMode ? "${ProgramName}" : "";
   formData.type = TYPE_STEAM_SERVER_UNIVERSAL;
 }
 
@@ -88,9 +91,16 @@ const rules: Record<string, Rule[]> = {
 const uFile = ref<File>();
 
 const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
-  if (file.type !== "application/x-zip-compressed") return message.error(t("只能上传zip压缩文件"));
   uFile.value = file;
-  selectUnzipCodeDialog.value?.openDialog();
+
+  if (isImportMode) {
+    if (file.type !== "application/x-zip-compressed")
+      return message.error(t("只能上传zip压缩文件"));
+    selectUnzipCodeDialog.value?.openDialog();
+  } else {
+    finalConfirm();
+  }
+
   return false;
 };
 
@@ -105,18 +115,15 @@ const finalConfirm = async () => {
   const thisModal = Modal.confirm({
     title: t("最终确认"),
     icon: createVNode(InfoCircleOutlined),
-    content:
-      props.createMethod === QUICKSTART_METHOD.IMPORT
-        ? t("上传文件时将同时创建实例，此操作不可逆，是否继续？")
-        : t("实例将创建，是否继续？"),
+    content: needUpload
+      ? t("上传文件时将同时创建实例，此操作不可逆，是否继续？")
+      : t("实例将创建，是否继续？"),
     okText: t("确定"),
     async onOk() {
+      thisModal.destroy();
       try {
         await formRef.value?.validateFields();
-        thisModal.destroy();
-        props.createMethod === QUICKSTART_METHOD.IMPORT
-          ? await selectedFile()
-          : await createInstance();
+        needUpload ? await selectedFile() : await createInstance();
       } catch {
         return message.error(t("请先完善基本参数再进行上传文件操作"));
       }
@@ -125,13 +132,16 @@ const finalConfirm = async () => {
   });
 };
 
-// 通过上传压缩包创建实例
+// 通过上传单个程序或者压缩包创建实例
 const { state: cfg, execute: getCfg } = uploadAddress();
 const { execute: uploadFile } = uploadInstanceFile();
 const percentComplete = ref(0);
 const selectedFile = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
+    if (isFileMode) {
+      formData.startCommand = formData.startCommand.replace("${ProgramName}", uFile.value!.name);
+    }
     await getCfg({
       params: {
         upload_dir: ".",
@@ -139,14 +149,14 @@ const selectedFile = async () => {
       },
       data: formData
     });
-    if (!cfg.value) return;
+    if (!cfg.value) throw new Error(t("获取上传地址失败"));
 
     const uploadFormData = new FormData();
     uploadFormData.append("file", uFile.value as any);
 
     await uploadFile({
       params: {
-        unzip: UNZIP.ON,
+        unzip: isImportMode ? UNZIP.ON : UNZIP.OFF,
         code: zipCode.value
       },
       data: uploadFormData,
@@ -219,6 +229,7 @@ const createInstance = async () => {
             v-model:value="formData.startCommand"
             :rows="3"
             :placeholder="t('如 java -jar server.jar，cmd.exe 等等')"
+            style="min-height: 40px"
           />
           <a-button
             type="default"
@@ -241,7 +252,29 @@ const createInstance = async () => {
         <a-input v-model:value="formData.cwd" />
       </a-form-item>
 
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.IMPORT">
+      <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
+        <a-typography-title :level="5" class="require-field">
+          {{ t("上传单个服务端软件") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("上传文件后实例将自动创建") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-upload
+          :before-upload="beforeUpload"
+          :max-count="1"
+          :change="selectedFile"
+          :disabled="percentComplete > 0"
+        >
+          <a-button type="primary" :loading="percentComplete > 0">
+            <upload-outlined v-if="percentComplete === 0" />
+            {{ percentComplete > 0 ? t("正在上传：") + percentComplete + "%" : t("选择文件") }}
+          </a-button>
+        </a-upload>
+      </a-form-item>
+
+      <a-form-item v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
         <a-typography-title :level="5" class="require-field">
           {{ t("上传服务端压缩包") }}
         </a-typography-title>
@@ -253,7 +286,6 @@ const createInstance = async () => {
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
-          action="/api/instance/upload"
           :before-upload="beforeUpload"
           :max-count="1"
           :change="selectedFile"
