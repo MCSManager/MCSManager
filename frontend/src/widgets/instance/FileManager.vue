@@ -637,6 +637,7 @@ onMounted(() => {
                 '100%': '#25f5b9'
               }"
               :percent="percentComplete"
+              class="mb-20"
             />
             <div class="file-breadcrumbs mb-20">
               <a-breadcrumb separator=">">
