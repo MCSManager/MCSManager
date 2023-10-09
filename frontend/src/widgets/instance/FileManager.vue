@@ -34,7 +34,7 @@ import {
 import { throttle } from "lodash";
 import { message, Modal } from "ant-design-vue";
 import { parseForwardAddress } from "@/tools/protocol";
-import { getExtName } from "@/tools/fileManager";
+import { getExtName, getFileIcon } from "@/tools/fileManager";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -686,8 +686,10 @@ onMounted(() => {
                       @click="rowClickTable(record.name, record.type)"
                     >
                       <span class="mr-4">
-                        <file-outlined v-if="record.type === 1" />
-                        <folder-outlined v-else />
+                        <component
+                          :is="getFileIcon(record.name, record.type)"
+                          style="font-size: 16px"
+                        />
                         <!-- &nbsp; -->
                       </span>
                       {{ record.name }}
