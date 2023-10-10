@@ -185,3 +185,21 @@ export const uploadFile = useDefineApi<
   method: "POST",
   headers: { "Content-Type": "multipart/form-data" }
 });
+
+// 获取文件下载地址
+export const downloadAddress = useDefineApi<
+  {
+    params: {
+      file_name: string;
+      remote_uuid: string;
+      uuid: string;
+    };
+  },
+  {
+    password: string;
+    addr: string;
+  }
+>({
+  url: "/api/files/download",
+  method: "POST"
+});

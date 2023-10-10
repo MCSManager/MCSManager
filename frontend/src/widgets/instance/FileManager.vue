@@ -29,7 +29,8 @@ import {
   moveFile as moveFileApi,
   compressFile as compressFileApi,
   uploadAddress,
-  uploadFile as uploadFileApi
+  uploadFile as uploadFileApi,
+  downloadAddress
 } from "@/services/apis/fileManager";
 import { throttle } from "lodash";
 import { message, Modal } from "ant-design-vue";
@@ -424,26 +425,28 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   return false;
 };
 
-const { state: cfg, execute: getCfg } = uploadAddress();
+const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
 const { execute: uploadFile } = uploadFileApi();
 const percentComplete = ref(0);
 const selectedFile = async (file: File) => {
   try {
-    await getCfg({
+    await getUploadCfg({
       params: {
         upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
         remote_uuid: daemonId!,
         uuid: instanceId!
       }
     });
-    if (!cfg.value) throw new Error(t("获取上传地址失败"));
+    if (!uploadCfg.value) throw new Error(t("获取上传地址失败"));
 
     const uploadFormData = new FormData();
     uploadFormData.append("file", file);
 
     await uploadFile({
       data: uploadFormData,
-      url: `${parseForwardAddress(cfg.value.addr, "http")}/upload/${cfg.value.password}`,
+      url: `${parseForwardAddress(uploadCfg.value.addr, "http")}/upload/${
+        uploadCfg.value.password
+      }`,
       onUploadProgress: (progressEvent: any) => {
         percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
       }
@@ -474,6 +477,28 @@ const rowClickTable = async (item: string, type: number) => {
   });
   await getFileList();
   spinning.value = false;
+};
+
+const { state: downloadCfg, execute: getDownloadCfg } = downloadAddress();
+const downloadFile = async (fileName: string) => {
+  try {
+    await getDownloadCfg({
+      params: {
+        file_name: fileName,
+        remote_uuid: daemonId!,
+        uuid: instanceId!
+      }
+    });
+    if (!downloadCfg.value) throw new Error(t("获取下载地址失败"));
+    window.open(
+      `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
+        downloadCfg.value.password
+      }/${fileName}`
+    );
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
 };
 
 const handleChangeDir = async (dir: string) => {
@@ -687,20 +712,21 @@ onMounted(() => {
                 <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'name'">
-                    <a-button
-                      type="link"
-                      class="file-name"
-                      @click="rowClickTable(record.name, record.type)"
-                    >
-                      <span class="mr-4">
-                        <component
-                          :is="getFileIcon(record.name, record.type)"
-                          style="font-size: 16px"
-                        />
-                        <!-- &nbsp; -->
-                      </span>
-                      {{ record.name }}
-                    </a-button>
+                    <a-popconfirm :title="t('下载此文件？')" @confirm="downloadFile(record.name)">
+                      <a-button
+                        type="link"
+                        class="file-name"
+                        @click="rowClickTable(record.name, record.type)"
+                      >
+                        <span class="mr-4">
+                          <component
+                            :is="getFileIcon(record.name, record.type)"
+                            style="font-size: 16px"
+                          />
+                        </span>
+                        {{ record.name }}
+                      </a-button>
+                    </a-popconfirm>
                   </template>
                   <template v-if="column.key === 'action'">
                     <a-dropdown>
@@ -709,23 +735,26 @@ onMounted(() => {
                           <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
-                          <a-menu-item key="7" @click="editFile(record.name)">
+                          <a-menu-item key="2" @click="editFile(record.name)">
                             {{ t("TXT_CODE_ad207008") }}
                           </a-menu-item>
-                          <a-menu-item key="2" @click="resetname(record.name)">
-                            {{ t("TXT_CODE_c83551f5") }}
-                          </a-menu-item>
-                          <a-menu-item key="3" @click="unzipFile(record.name)">
-                            {{ t("TXT_CODE_a64f3007") }}
-                          </a-menu-item>
-                          <a-menu-item key="4" @click="setClipBoard('copy', record.name)">
+                          <a-menu-item key="3" @click="setClipBoard('copy', record.name)">
                             {{ t("TXT_CODE_13ae6a93") }}
                           </a-menu-item>
-                          <a-menu-item key="5" @click="setClipBoard('move', record.name)">
+                          <a-menu-item key="4" @click="setClipBoard('move', record.name)">
                             {{ t("剪切") }}
+                          </a-menu-item>
+                          <a-menu-item key="5" @click="resetname(record.name)">
+                            {{ t("TXT_CODE_c83551f5") }}
                           </a-menu-item>
                           <a-menu-item key="6" @click="deleteFile(record.name)">
                             {{ t("TXT_CODE_ecbd7449") }}
+                          </a-menu-item>
+                          <a-menu-item key="7" @click="unzipFile(record.name)">
+                            {{ t("TXT_CODE_a64f3007") }}
+                          </a-menu-item>
+                          <a-menu-item key="8" @click="downloadFile(record.name)">
+                            {{ t("下载") }}
                           </a-menu-item>
                         </a-menu>
                       </template>
