@@ -198,7 +198,7 @@ export function useQuickStartFlow() {
   });
 
   const isNormalStep = computed(() => {
-    return formData.step < 4;
+    return formData.step !== 4;
   });
 
   return {
