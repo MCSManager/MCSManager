@@ -19,10 +19,12 @@
     "axios": "^1.4.0",
     "crc": "^4.3.2",
     "dayjs": "^1.11.9",
+    "echarts": "^5.4.3",
     "eventemitter3": "^5.0.1",
     "i18next-scanner": "^4.3.0",
     "lodash": "^4.17.21",
     "marked": "^7.0.3",
+    "monaco-editor": "^0.44.0",
     "pinia": "^2.1.4",
     "sanitize-html": "^2.11.0",
     "socket.io-client": "^4.7.2",
@@ -32,7 +34,6 @@
     "vue-router": "^4.2.4",
     "xterm": "^4.12.0",
     "xterm-addon-fit": "^0.5.0",
-    "echarts": "^5.4.3",
     "zrender": "^5.4.4"
   },
   "devDependencies": {

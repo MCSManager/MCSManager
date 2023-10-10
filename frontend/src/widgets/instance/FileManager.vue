@@ -34,6 +34,7 @@ import {
 import { throttle } from "lodash";
 import { message, Modal } from "ant-design-vue";
 import { parseForwardAddress } from "@/tools/protocol";
+import { getExtName, getFileIcon } from "@/tools/fileManager";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -83,7 +84,7 @@ const dataSource = ref<DataType[]>();
 const columns = computed(() => {
   return arrayFilter([
     {
-      align: "center",
+      align: "left",
       title: t("文件名"),
       dataIndex: "name",
       key: "name",
@@ -91,11 +92,11 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("文件类型"),
+      title: t("类型"),
       dataIndex: "type",
       key: "type",
-      customRender: (e: { text: number }) => {
-        return e.text == 1 ? t("文件") : t("目录");
+      customRender: (e: { text: number; record: { name: string } }) => {
+        return e.text == 1 ? getExtName(e.record.name) : t("文件夹");
       },
       minWidth: "200px"
     },
@@ -462,7 +463,7 @@ const rowSelection: TableProps["rowSelection"] = {
   }
 };
 
-const rwoClickTable = async (item: string, type: number) => {
+const rowClickTable = async (item: string, type: number) => {
   if (type === 1) return;
 
   spinning.value = true;
@@ -525,6 +526,13 @@ const getFileStatus = async () => {
     }
   });
   fileStatus.value = res.value;
+};
+
+import FileEditor from "./dialogs/FileEditor.vue";
+const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
+
+const editFile = (fileName: string) => {
+  FileEditorDialog.value?.openDialog();
 };
 
 onMounted(() => {
@@ -682,11 +690,13 @@ onMounted(() => {
                     <a-button
                       type="link"
                       class="file-name"
-                      @click="rwoClickTable(record.name, record.type)"
+                      @click="rowClickTable(record.name, record.type)"
                     >
                       <span class="mr-4">
-                        <file-outlined v-if="record.type === 1" />
-                        <folder-outlined v-else />
+                        <component
+                          :is="getFileIcon(record.name, record.type)"
+                          style="font-size: 16px"
+                        />
                         <!-- &nbsp; -->
                       </span>
                       {{ record.name }}
@@ -698,6 +708,9 @@ onMounted(() => {
                         <a-menu>
                           <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
                             {{ t("TXT_CODE_16853efe") }}
+                          </a-menu-item>
+                          <a-menu-item key="7" @click="editFile(record.name)">
+                            {{ t("TXT_CODE_ad207008") }}
                           </a-menu-item>
                           <a-menu-item key="2" @click="resetname(record.name)">
                             {{ t("TXT_CODE_c83551f5") }}
@@ -716,7 +729,7 @@ onMounted(() => {
                           </a-menu-item>
                         </a-menu>
                       </template>
-                      <a-button>
+                      <a-button size="">
                         {{ t("TXT_CODE_fe731dfc") }}
                         <DownOutlined />
                       </a-button>
@@ -789,6 +802,7 @@ onMounted(() => {
       </a-radio-group>
     </a-space>
   </a-modal>
+  <FileEditor ref="FileEditorDialog" />
 </template>
 
 <style lang="scss" scoped>
