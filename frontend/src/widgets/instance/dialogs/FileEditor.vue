@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
+import * as monaco from "monaco-editor";
 const emit = defineEmits([""]);
 
 const open = ref(false);
@@ -9,7 +10,16 @@ const openDialog = () => {
   open.value = true;
 };
 
-const editor = ref();
+const editorContainer = ref();
+
+const loadEditor = () => {
+  if (editorContainer.value) {
+    monaco.editor.create(editorContainer.value, {
+      value: 'function hello() {\n\tconsole.log("Hello, Monaco Editor!");\n}',
+      language: "javascript"
+    });
+  }
+};
 
 const submit = async () => {
   try {
@@ -37,6 +47,6 @@ onMounted(() => {});
     :ok-text="t('保存')"
     @ok="submit"
   >
-    <div ref="editor"></div>
+    <div ref="editorContainer" class="monaco-editor"></div>
   </a-modal>
 </template>
