@@ -196,7 +196,7 @@ defineExpose({
                 {{ t("实例类型") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                   {{
                     t(
                       "不同类型会导致功能不同，若无需求类型，可以选择较为抽象的通用类型，例如 Java 通用版服务端"
@@ -307,7 +307,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("进程启动方式（推荐）") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                   {{
                     t(
                       "通常默认即可，如果从事商业活动则应当使用虚拟化容器启动方式，否则主机将可能被入侵。"
