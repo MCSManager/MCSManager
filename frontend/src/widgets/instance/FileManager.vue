@@ -528,6 +528,13 @@ const getFileStatus = async () => {
   fileStatus.value = res.value;
 };
 
+import FileEditor from "./dialogs/FileEditor.vue";
+const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
+
+const editFile = (fileName: string) => {
+  FileEditorDialog.value?.openDialog();
+};
+
 onMounted(() => {
   getFileStatus();
   dialog.value.loading = true;
@@ -702,6 +709,9 @@ onMounted(() => {
                           <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
+                          <a-menu-item key="7" @click="editFile(record.name)">
+                            {{ t("TXT_CODE_ad207008") }}
+                          </a-menu-item>
                           <a-menu-item key="2" @click="resetname(record.name)">
                             {{ t("TXT_CODE_c83551f5") }}
                           </a-menu-item>
@@ -792,6 +802,7 @@ onMounted(() => {
       </a-radio-group>
     </a-space>
   </a-modal>
+  <FileEditor ref="FileEditorDialog" />
 </template>
 
 <style lang="scss" scoped>
