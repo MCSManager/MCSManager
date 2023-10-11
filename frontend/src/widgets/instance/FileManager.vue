@@ -532,7 +532,7 @@ import FileEditor from "./dialogs/FileEditor.vue";
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
 const editFile = (fileName: string) => {
-  FileEditorDialog.value?.openDialog();
+  FileEditorDialog.value?.openDialog(fileName);
 };
 
 onMounted(() => {
@@ -743,6 +743,7 @@ onMounted(() => {
       </a-col>
     </a-row>
   </div>
+
   <a-modal
     v-model:open="dialog.show"
     :title="dialog.title"
@@ -802,6 +803,7 @@ onMounted(() => {
       </a-radio-group>
     </a-space>
   </a-modal>
+
   <FileEditor ref="FileEditorDialog" />
 </template>
 
