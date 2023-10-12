@@ -308,6 +308,27 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
     ]
   },
   {
+    page: "/quickstart/minecraft",
+    items: [
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "McPreset",
+        title: "",
+        width: 12,
+        height: LayoutCardHeight.AUTO
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "EmptyCard",
+        title: "",
+        width: 12,
+        height: LayoutCardHeight.MINI
+      }
+    ]
+  },
+  {
     page: "/customer",
     items: [
       {

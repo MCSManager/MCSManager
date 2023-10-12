@@ -81,7 +81,7 @@ const handleNext = (key: string) => {
                       :data-index="index"
                       :title="action.title"
                       :icon="action.icon"
-                      :click="() => handleNext(action.key)"
+                      :click="() => (action.click ? action.click() : handleNext(action.key))"
                     />
                   </fade-up-animation>
                 </a-row>
@@ -97,36 +97,6 @@ const handleNext = (key: string) => {
             @next-step="handleNext"
           />
         </div>
-        <a-row v-else :gutter="[24, 24]" class="h-100">
-          <a-col v-if="!isPhone" :lg="12">
-            <div class="quickstart-icon flex-center h-100">
-              <Transition name="global-action-float">
-                <component :is="currentIcon"></component>
-              </Transition>
-            </div>
-          </a-col>
-          <a-col :lg="12">
-            <div class="text-left" style="text-align: left">
-              <a-typography-title :level="5" class="mb-24">
-                {{ formData.title }}
-              </a-typography-title>
-              <div>
-                <a-row :gutter="[12, 12]">
-                  <fade-up-animation>
-                    <action-button
-                      v-for="(action, index) in formData.actions"
-                      :key="index"
-                      :data-index="index"
-                      :title="action.title"
-                      :icon="action.icon"
-                      :click="() => (action.click ? action.click() : undefined)"
-                    />
-                  </fade-up-animation>
-                </a-row>
-              </div>
-            </div>
-          </a-col>
-        </a-row>
       </div>
       <div v-else class="loading flex-center w-100 h-100">
         <Loading />

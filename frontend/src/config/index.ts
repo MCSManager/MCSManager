@@ -24,6 +24,7 @@ import ImageBox from "@/widgets/others/ImageBox.vue";
 import TextCard from "@/widgets/others/TextCard.vue";
 import LinkCard from "@/widgets/others/LinkCard.vue";
 import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
+import McPreset from "@/widgets/setupApp/McPreset.vue";
 import IframeCard from "@/widgets/others/IframeCard.vue";
 import ClockCard from "@/widgets/others/ClockCard.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
@@ -53,6 +54,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   UserAccessSettings,
   ImageBox,
   QuickStartFlow,
+  McPreset,
   IframeCard,
   TextCard,
   LinkCard,
