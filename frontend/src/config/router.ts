@@ -148,7 +148,17 @@ let originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.ADMIN,
       mainMenu: false
-    }
+    },
+    children: [
+      {
+        path: "/quickstart/minecraft",
+        name: t("创建 Minecraft 实例"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
   },
   {
     path: "/customer",

@@ -113,7 +113,15 @@ export function useQuickStartFlow() {
         icon: AppstoreAddOutlined,
         condition: () =>
           formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
-          formData.appType === QUICKSTART_ACTION_TYPE.Bedrock
+          formData.appType === QUICKSTART_ACTION_TYPE.Bedrock,
+        click: () => {
+          router.push({
+            path: "/quickstart/minecraft",
+            query: {
+              remoteUuid
+            }
+          });
+        }
       },
       {
         title: t("上传单个服务端软件"),

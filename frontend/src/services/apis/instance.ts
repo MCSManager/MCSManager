@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NewInstanceForm } from "@/types";
+import type { InstanceDetail, NewInstanceForm, QuickStartTemplate } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
@@ -169,4 +169,64 @@ export const createInstance = useDefineApi<
 >({
   method: "POST",
   url: "/api/instance"
+});
+
+// 获取快速安装列表地址
+export const quickInstallListAddr = useDefineApi<any, QuickStartTemplate[]>({
+  url: "/api/instance/quick_install_list",
+  method: "GET"
+});
+
+// 创建实例安装异步任务
+export const createAsyncTask = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+      task_name: string;
+    };
+    data: {
+      time: number;
+      newInstanceName: string;
+      targetLink: string;
+    };
+  },
+  {
+    instanceConfig: IGlobalInstanceConfig;
+    instanceStatus: number;
+    instanceUuid: string;
+    status: number;
+    taskId: string;
+  }
+>({
+  url: "/api/protected_instance/asynchronous",
+  method: "POST"
+});
+
+// 获取安装进度
+export const queryAsyncTask = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+      task_name: string;
+    };
+    data: {
+      taskId: string;
+    };
+  },
+  {
+    taskId: string;
+    status: number;
+    detail: {
+      instanceConfig: IGlobalInstanceConfig;
+      instanceStatus: number;
+      instanceUuid: string;
+      status: number;
+      taskId: string;
+    };
+  }
+>({
+  url: "/api/protected_instance/query_asynchronous",
+  method: "POST"
 });

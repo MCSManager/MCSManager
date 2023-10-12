@@ -175,3 +175,13 @@ export interface NewInstanceForm {
   maxSpace: null;
   endTime: string;
 }
+
+export interface QuickStartTemplate {
+  info: string;
+  mc: string;
+  java: string;
+  size: number;
+  remark: string;
+  author: string;
+  targetLink: string;
+}
