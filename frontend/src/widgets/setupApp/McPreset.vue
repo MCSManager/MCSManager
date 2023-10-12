@@ -17,7 +17,7 @@ const props = defineProps<{
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { openInputDialog } = useAppToolsStore();
-const daemonId = getMetaOrRouteValue("remoteUuid");
+const daemonId = getMetaOrRouteValue("remoteUuid") ?? "";
 const dialog = reactive({
   show: false,
   title: "Dialog"
@@ -44,22 +44,18 @@ const init = async () => {
 };
 
 const installView = ref(false);
-const intervalTask = ref<any>(null);
+const intervalTask = ref<NodeJS.Timer>();
 const percentage = ref(0);
 const isInstalled = ref(false);
 
-const {
-  state: newTaskInfo,
-  execute: executeCreateAsyncTask,
-  isLoading: createAsyncTaskLoading
-} = createAsyncTask();
+const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
 
 const handleSelectTemplate = async (item: QuickStartTemplate) => {
   try {
-    const instanceName = await openInputDialog(t("请输入新建服务器的名字"));
+    const instanceName = await openInputDialog(t("请输入新实例的名字"));
     await executeCreateAsyncTask({
       params: {
-        remote_uuid: daemonId!,
+        remote_uuid: daemonId,
         uuid: "-",
         task_name: "quick_install"
       },
@@ -97,7 +93,7 @@ const queryStatus = async () => {
     if (!newTaskInfo.value) throw new Error("newTaskInfo is null");
     await queryAsyncTaskStatus({
       params: {
-        remote_uuid: daemonId!,
+        remote_uuid: daemonId,
         uuid: "-",
         task_name: "quick_install"
       },
