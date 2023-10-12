@@ -1,29 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import * as monaco from "monaco-editor";
-const emit = defineEmits([""]);
+import Editor from "@/components/Editor.vue";
 
 const open = ref(false);
-const openDialog = () => {
+const text = ref("");
+const fileName = ref("");
+
+const openDialog = (path: string) => {
   open.value = true;
-};
-
-const editorContainer = ref();
-
-const loadEditor = () => {
-  if (editorContainer.value) {
-    monaco.editor.create(editorContainer.value, {
-      value: 'function hello() {\n\tconsole.log("Hello, Monaco Editor!");\n}',
-      language: "javascript"
-    });
-  }
+  text.value = "你好世界\n123";
+  fileName.value = path;
 };
 
 const submit = async () => {
   try {
-    emit("");
     open.value = false;
     return message.success(t("更新成功"));
   } catch (err: any) {
@@ -31,11 +23,13 @@ const submit = async () => {
   }
 };
 
+const dialogTitle = computed(() => {
+  return `${t("编辑文件")} ${fileName.value}`;
+});
+
 defineExpose({
   openDialog
 });
-
-onMounted(() => {});
 </script>
 
 <template>
@@ -43,10 +37,12 @@ onMounted(() => {});
     v-model:open="open"
     centered
     :mask-closable="false"
-    :title="t('编辑文件')"
+    :title="dialogTitle"
     :ok-text="t('保存')"
+    width="1000px"
     @ok="submit"
   >
-    <div ref="editorContainer" class="monaco-editor"></div>
+    RT:{{ text }}
+    <Editor v-if="open" v-model:text="text" height="600px" />
   </a-modal>
 </template>

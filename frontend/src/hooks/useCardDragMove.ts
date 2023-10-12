@@ -1,9 +1,10 @@
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { findParentWithClass } from "@/tools/dom";
 
 export function useCardDragMove() {
   const { deleteLayoutItem, insertLayoutItem, getIndexById } = useLayoutConfigStore();
-
+  const { containerState } = useLayoutContainerStore();
   const addDragClass = (
     dom: HTMLElement,
     targetClassName = "layout-card-container",
@@ -43,15 +44,18 @@ export function useCardDragMove() {
   };
 
   const dragover = (e: DragEvent, id: string) => {
+    if (!containerState.isDesignMode) return;
     e.preventDefault();
   };
 
   const dragenter = (e: DragEvent, id: string) => {
+    if (!containerState.isDesignMode) return;
     addDragClass(e.currentTarget as HTMLElement);
     e.preventDefault();
   };
 
   const dragleave = (e: DragEvent, id: string) => {
+    if (!containerState.isDesignMode) return;
     if (!(e.currentTarget as HTMLElement)?.contains(e.relatedTarget as HTMLLIElement)) {
       removeDragClass(e.target as HTMLElement);
     }
@@ -59,10 +63,12 @@ export function useCardDragMove() {
   };
 
   const dragstart = (e: DragEvent, id: string) => {
+    if (!containerState.isDesignMode) return;
     e?.dataTransfer?.setData("text/plain", JSON.stringify({ id })); // 设置拖动数据
   };
 
   const drop = (e: DragEvent, myId: string) => {
+    if (!containerState.isDesignMode) return;
     e.preventDefault();
     removeDragClass(e.target as HTMLElement);
     const sourceConfig = JSON.parse(e?.dataTransfer?.getData("text/plain") || "{}");
@@ -71,6 +77,7 @@ export function useCardDragMove() {
   };
 
   const dropToNewArea = (e: DragEvent, followId: string) => {
+    if (!containerState.isDesignMode) return;
     e.preventDefault();
     removeDragClass(
       e.target as HTMLElement,
@@ -84,6 +91,7 @@ export function useCardDragMove() {
   };
 
   const newAreaDragenter = (e: DragEvent) => {
+    if (!containerState.isDesignMode) return;
     addDragClass(
       e.currentTarget as HTMLElement,
       "global-placeholder-card",

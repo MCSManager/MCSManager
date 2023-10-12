@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@codemirror/lang-javascript": "github:codemirror/lang-javascript",
     "@vueuse/core": "^10.3.0",
     "ant-design-vue": "^4.0.0",
     "axios": "^1.4.0",
+    "codemirror": "^6.0.1",
     "crc": "^4.3.2",
     "dayjs": "^1.11.9",
     "echarts": "^5.4.3",
