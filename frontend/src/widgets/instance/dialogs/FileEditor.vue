@@ -22,10 +22,10 @@ const openDialog = async (path_: string, fileName_: string) => {
   await render();
 };
 
-const { state: text, execute: getFileContent, isLoading } = fileContent();
+const { state: text, execute } = fileContent();
 const render = async () => {
   try {
-    await getFileContent({
+    await execute({
       params: {
         remote_uuid: daemonId,
         uuid: instanceId
@@ -48,16 +48,25 @@ const render = async () => {
 
 const submit = async () => {
   try {
-    openEditor.value = open.value = false;
-    return message.success(t("更新成功"));
+    await execute({
+      params: {
+        remote_uuid: daemonId,
+        uuid: instanceId
+      },
+      data: {
+        target: path.value,
+        text: editorText.value
+      }
+    });
+    return message.success(t("保存成功"));
   } catch (err: any) {
+    console.error(err.message);
     return message.error(err.message);
   }
 };
 
 const cancel = () => {
-  openEditor.value = false;
-  open.value = false;
+  open.value = openEditor.value = false;
 };
 
 const dialogTitle = computed(() => {
@@ -82,7 +91,7 @@ defineExpose({
     <a-space warp>
       <a-button @click="submit">保存</a-button>
     </a-space>
-    <a-skeleton v-if="isLoading" active />
-    <Editor v-else-if="openEditor" ref="EditorComponent" v-model:text="editorText" height="70vh" />
+    <Editor v-if="openEditor" ref="EditorComponent" v-model:text="editorText" height="70vh" />
+    <a-skeleton v-else active />
   </a-modal>
 </template>

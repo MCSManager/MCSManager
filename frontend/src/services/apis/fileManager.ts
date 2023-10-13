@@ -213,6 +213,7 @@ export const fileContent = useDefineApi<
     };
     data: {
       target: string;
+      text?: string;
     };
   },
   string
