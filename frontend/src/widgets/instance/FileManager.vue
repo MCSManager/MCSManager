@@ -296,7 +296,7 @@ const paste = async () => {
   }
 };
 
-const resetname = async (file: string) => {
+const resetName = async (file: string) => {
   const newname = await openDialog(t("重命名"), t("请输入新名称"), file);
   try {
     const { execute } = moveFileApi();
@@ -557,7 +557,8 @@ import FileEditor from "./dialogs/FileEditor.vue";
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
 const editFile = (fileName: string) => {
-  FileEditorDialog.value?.openDialog(fileName);
+  const path = breadcrumbs[breadcrumbs.length - 1].path + fileName;
+  FileEditorDialog.value?.openDialog(path, fileName);
 };
 
 onMounted(() => {
@@ -712,21 +713,19 @@ onMounted(() => {
                 <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'name'">
-                    <a-popconfirm :title="t('下载此文件？')" @confirm="downloadFile(record.name)">
-                      <a-button
-                        type="link"
-                        class="file-name"
-                        @click="rowClickTable(record.name, record.type)"
-                      >
-                        <span class="mr-4">
-                          <component
-                            :is="getFileIcon(record.name, record.type)"
-                            style="font-size: 16px"
-                          />
-                        </span>
-                        {{ record.name }}
-                      </a-button>
-                    </a-popconfirm>
+                    <a-button
+                      type="link"
+                      class="file-name"
+                      @click="rowClickTable(record.name, record.type)"
+                    >
+                      <span class="mr-4">
+                        <component
+                          :is="getFileIcon(record.name, record.type)"
+                          style="font-size: 16px"
+                        />
+                      </span>
+                      {{ record.name }}
+                    </a-button>
                   </template>
                   <template v-if="column.key === 'action'">
                     <a-dropdown>
@@ -744,7 +743,7 @@ onMounted(() => {
                           <a-menu-item key="4" @click="setClipBoard('move', record.name)">
                             {{ t("剪切") }}
                           </a-menu-item>
-                          <a-menu-item key="5" @click="resetname(record.name)">
+                          <a-menu-item key="5" @click="resetName(record.name)">
                             {{ t("TXT_CODE_c83551f5") }}
                           </a-menu-item>
                           <a-menu-item key="6" @click="deleteFile(record.name)">
