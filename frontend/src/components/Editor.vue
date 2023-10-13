@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { EditorState } from "@codemirror/state";
@@ -37,7 +37,7 @@ const initEditor = () => {
     doc: props.text,
     extensions: [
       basicSetup,
-      theme,
+      // theme,
       javascript(),
       EditorView.updateListener.of(function (e) {
         const text = e.view.state.doc.toString();
@@ -56,8 +56,8 @@ onMounted(() => {
   initEditor();
 });
 
-onUnmounted(() => {
-  editor.destroy();
+onBeforeUnmount(() => {
+  editor?.destroy();
 });
 </script>
 

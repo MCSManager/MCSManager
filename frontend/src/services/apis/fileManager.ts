@@ -203,3 +203,20 @@ export const downloadAddress = useDefineApi<
   url: "/api/files/download",
   method: "POST"
 });
+
+// 获取文件内容
+export const fileContent = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+    data: {
+      target: string;
+    };
+  },
+  string
+>({
+  url: "/api/files",
+  method: "PUT"
+});
