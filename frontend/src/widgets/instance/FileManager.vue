@@ -9,8 +9,6 @@ import dayjs from "dayjs";
 import {
   DownOutlined,
   SearchOutlined,
-  FileOutlined,
-  FolderOutlined,
   LoadingOutlined,
   ExclamationCircleOutlined,
   UploadOutlined
@@ -20,7 +18,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import {
-  getFileList as getFileListApi,
+  fileList as fileListApi,
   getFileStatus as getFileStatusApi,
   addFolder as addFolderApi,
   deleteFile as deleteFileApi,
@@ -149,9 +147,9 @@ const columns = computed(() => {
 });
 
 const getFileList = async () => {
-  const { execute } = getFileListApi();
+  const { state, execute } = fileListApi();
   try {
-    const res = await execute({
+    await execute({
       params: {
         remote_uuid: daemonId || "",
         uuid: instanceId || "",
@@ -161,8 +159,10 @@ const getFileList = async () => {
         target: breadcrumbs[breadcrumbs.length - 1].path
       }
     });
-    dataSource.value = res.value?.items || [];
-    operationForm.value.total = res.value?.total || 0;
+    if (state.value) {
+      dataSource.value = state.value.items || [];
+      operationForm.value.total = state.value.total || 0;
+    }
   } catch (error: any) {
     return message.error(error.message);
   }
@@ -537,20 +537,26 @@ const handleTableChange = (e: { current: number; pageSize: number }) => {
   getFileList();
 };
 
-const { execute } = getFileStatusApi();
-
 setInterval(async () => {
   await getFileStatus();
 }, 3000);
 
 const getFileStatus = async () => {
-  const res = await execute({
-    params: {
-      remote_uuid: daemonId || "",
-      uuid: instanceId || ""
+  const { state, execute } = getFileStatusApi();
+  try {
+    await execute({
+      params: {
+        remote_uuid: daemonId || "",
+        uuid: instanceId || ""
+      }
+    });
+    if (state.value) {
+      fileStatus.value = state.value;
     }
-  });
-  fileStatus.value = res.value;
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
 };
 
 import FileEditor from "./dialogs/FileEditor.vue";

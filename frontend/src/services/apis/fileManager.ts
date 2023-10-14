@@ -1,7 +1,7 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
 // 获取文件列表
-export const getFileList = useDefineApi<
+export const fileList = useDefineApi<
   {
     params: {
       remote_uuid: string;
