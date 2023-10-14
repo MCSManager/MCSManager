@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted, watch, h, createVNode } from "vue";
+import { ref, computed, reactive, onMounted, watch, createVNode } from "vue";
 import { t } from "@/lang/i18n";
 import type { TableProps, UploadProps } from "ant-design-vue";
 import { convertFileSize } from "@/tools/fileSize";
@@ -9,9 +9,7 @@ import dayjs from "dayjs";
 import {
   DownOutlined,
   SearchOutlined,
-  FileOutlined,
-  FolderOutlined,
-  LoadingOutlined,
+  // LoadingOutlined,
   ExclamationCircleOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
@@ -20,7 +18,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import {
-  getFileList as getFileListApi,
+  // getFileList as getFileListApi,
   getFileStatus as getFileStatusApi,
   addFolder as addFolderApi,
   deleteFile as deleteFileApi,
@@ -37,46 +35,32 @@ import { message, Modal } from "ant-design-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { getExtName, getFileIcon } from "@/tools/fileManager";
 
+import { useFileManager } from "@/hooks/usefileManager";
+
+import type { DataType, OperationForm, Breadcrumb, FileStatus } from "@/types/fileManager";
+
 const props = defineProps<{
   card: LayoutCard;
 }>();
-
-interface DataType {
-  name: string;
-  type: number;
-  size: number;
-  time: string;
-  mode: number;
-}
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
+const { indicator, getFileListHook } = useFileManager(instanceId, daemonId);
+
 const screen = useScreen();
 
 const spinning = ref(false);
 
-const indicator = h(LoadingOutlined, {
-  style: {
-    fontSize: "24px"
-  }
-});
-
-const operationForm = ref({
+const operationForm = ref<OperationForm>({
   name: "",
   current: 1,
   pageSize: 10,
   total: 0
 });
 
-const fileStatus = ref<{
-  instanceFileTask: number;
-  globalFileTask: number;
-  platform: string;
-  isGlobalInstance: boolean;
-  dist: string[];
-}>();
+const fileStatus = ref<FileStatus>();
 
 const selectionData = ref<DataType[]>();
 
@@ -122,14 +106,6 @@ const columns = computed(() => {
       minWidth: "200px",
       condition: () => !screen.isPhone.value
     },
-    // {
-    //   align: "center",
-    //   title: t("创建时间"),
-    //   dataIndex: "createTime",
-    //   key: "createTime",
-    //   minWidth: "200px",
-    //   condition: () => !screen.isPhone.value
-    // },
     {
       align: "center",
       title: t("权限"),
@@ -149,23 +125,7 @@ const columns = computed(() => {
 });
 
 const getFileList = async () => {
-  const { execute } = getFileListApi();
-  try {
-    const res = await execute({
-      params: {
-        remote_uuid: daemonId || "",
-        uuid: instanceId || "",
-        page: operationForm.value.current - 1,
-        page_size: operationForm.value.pageSize,
-        file_name: operationForm.value.name,
-        target: breadcrumbs[breadcrumbs.length - 1].path
-      }
-    });
-    dataSource.value = res.value?.items || [];
-    operationForm.value.total = res.value?.total || 0;
-  } catch (error: any) {
-    return message.error(error.message);
-  }
+  await getFileListHook(operationForm, breadcrumbs, dataSource);
 };
 
 const reloadList = async () => {
@@ -509,13 +469,7 @@ const handleChangeDir = async (dir: string) => {
   spinning.value = false;
 };
 
-const breadcrumbs = reactive<
-  {
-    path: string;
-    name: string;
-    disabled: boolean;
-  }[]
->([]);
+const breadcrumbs = reactive<Breadcrumb[]>([]);
 
 breadcrumbs.push({
   path: "/",
