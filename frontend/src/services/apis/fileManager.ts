@@ -1,7 +1,7 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
 // 获取文件列表
-export const getFileList = useDefineApi<
+export const fileList = useDefineApi<
   {
     params: {
       remote_uuid: string;
@@ -202,4 +202,22 @@ export const downloadAddress = useDefineApi<
 >({
   url: "/api/files/download",
   method: "POST"
+});
+
+// 获取文件内容
+export const fileContent = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+    data: {
+      target: string;
+      text?: string;
+    };
+  },
+  string
+>({
+  url: "/api/files",
+  method: "PUT"
 });
