@@ -847,7 +847,7 @@ onMounted(() => {
 }
 
 .file-name {
-  color: initial;
+  color: inherit;
   &:hover {
     color: #1677ff;
   }
