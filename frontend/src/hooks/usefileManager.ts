@@ -451,7 +451,21 @@ export const useFileManager = (
       everyone: []
     },
     deep: false,
-    loading: false
+    loading: false,
+    item: [
+      {
+        key: t("所有者"),
+        role: "owner"
+      },
+      {
+        key: t("用户组"),
+        role: "usergroup"
+      },
+      {
+        key: t("任何人"),
+        role: "everyone"
+      }
+    ]
   });
   const changePermission = async (name: string, mode: number) => {
     permission.loading = true;

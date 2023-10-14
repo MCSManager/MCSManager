@@ -444,53 +444,27 @@ onMounted(() => {
     <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
       <a-spin :spinning="permission.loading" :indicator="indicator" size="small">
         <div class="flex-around permission">
-          <a-checkbox-group v-model:value="permission.data.owner">
+          <a-checkbox-group
+            v-for="item in permission.item"
+            :key="item.key"
+            v-model:value="permission.data[item.role]"
+          >
             <a-row class="direction-column son">
-              <h3 class="m-0">所有者</h3>
+              <h3 class="m-0">{{ item.key }}</h3>
               <a-col class="m-5 options">
-                <a-checkbox value="4">读取</a-checkbox>
+                <a-checkbox value="4">{{ t("读取") }}</a-checkbox>
               </a-col>
               <a-col class="m-5 options">
-                <a-checkbox value="2">写入</a-checkbox>
+                <a-checkbox value="2">{{ t("写入") }}</a-checkbox>
               </a-col>
               <a-col class="m-5 options">
-                <a-checkbox value="1">执行</a-checkbox>
-              </a-col>
-            </a-row>
-          </a-checkbox-group>
-
-          <a-checkbox-group v-model:value="permission.data.usergroup">
-            <a-row class="direction-column son">
-              <h3 class="m-0">用户组</h3>
-              <a-col class="m-5 options">
-                <a-checkbox value="4">读取</a-checkbox>
-              </a-col>
-              <a-col class="m-5 options">
-                <a-checkbox value="2">写入</a-checkbox>
-              </a-col>
-              <a-col class="m-5 options">
-                <a-checkbox value="1">执行</a-checkbox>
-              </a-col>
-            </a-row>
-          </a-checkbox-group>
-
-          <a-checkbox-group v-model:value="permission.data.everyone">
-            <a-row class="direction-column son">
-              <h3 class="m-0">任何人</h3>
-              <a-col class="m-5 options">
-                <a-checkbox value="4">读取</a-checkbox>
-              </a-col>
-              <a-col class="m-5 options">
-                <a-checkbox value="2">写入</a-checkbox>
-              </a-col>
-              <a-col class="m-5 options">
-                <a-checkbox value="1">执行</a-checkbox>
+                <a-checkbox value="1">{{ t("执行") }}</a-checkbox>
               </a-col>
             </a-row>
           </a-checkbox-group>
         </div>
 
-        <a-checkbox v-model:checked="permission.deep">应用到子目录</a-checkbox>
+        <a-checkbox v-model:checked="permission.deep">{{ t("应用到子目录") }}</a-checkbox>
       </a-spin>
     </a-space>
   </a-modal>

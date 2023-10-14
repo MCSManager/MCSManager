@@ -35,4 +35,8 @@ export interface Permission {
   };
   deep: boolean;
   loading: boolean;
+  item: {
+    key: string;
+    role: "owner" | "usergroup" | "everyone";
+  }[];
 }
