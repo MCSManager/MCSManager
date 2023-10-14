@@ -14,6 +14,7 @@ import { throttle } from "lodash";
 import { getExtName, getFileIcon } from "@/tools/fileManager";
 
 import { useFileManager } from "@/hooks/usefileManager";
+import FileEditor from "./dialogs/FileEditor.vue";
 
 import type { DataType, OperationForm, Breadcrumb } from "@/types/fileManager";
 
@@ -153,7 +154,6 @@ setInterval(async () => {
   await getFileStatus();
 }, 3000);
 
-import FileEditor from "./dialogs/FileEditor.vue";
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
 const editFile = (fileName: string) => {
