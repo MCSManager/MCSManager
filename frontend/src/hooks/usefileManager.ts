@@ -1,11 +1,11 @@
-import { h, ref, createVNode, type Ref } from "vue";
+import { h, ref, createVNode, type Ref, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import type { TableProps, UploadProps } from "ant-design-vue";
 
 import { LoadingOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 
 import { parseForwardAddress } from "@/tools/protocol";
-
+import { number2permission, permission2number } from "@/tools/permission";
 import {
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
@@ -17,12 +17,19 @@ import {
   compressFile as compressFileApi,
   uploadAddress,
   uploadFile as uploadFileApi,
-  downloadAddress
+  downloadAddress,
+  changePermission as changePermissionApi
 } from "@/services/apis/fileManager";
 
 import { message, Modal } from "ant-design-vue";
 
-import type { DataType, OperationForm, Breadcrumb, FileStatus } from "@/types/fileManager";
+import type {
+  DataType,
+  OperationForm,
+  Breadcrumb,
+  FileStatus,
+  Permission
+} from "@/types/fileManager";
 
 export const useFileManager = (
   instanceId: string | undefined,
@@ -78,6 +85,9 @@ export const useFileManager = (
     if (mode == "unzip") {
       dialog.value.mode = "unzip";
     }
+    if (mode == "permission") {
+      dialog.value.mode = "permission";
+    }
 
     dialog.value.title = title;
     dialog.value.info = info;
@@ -88,7 +98,11 @@ export const useFileManager = (
 
     return new Promise((resolve) => {
       dialog.value.ok = () => {
-        if (dialog.value.value == "" && dialog.value.mode != "unzip") {
+        if (
+          dialog.value.value == "" &&
+          dialog.value.mode != "unzip" &&
+          dialog.value.mode != "permission"
+        ) {
           return message.error(t("请输入内容"));
         }
         resolve(dialog.value.value);
@@ -430,6 +444,46 @@ export const useFileManager = (
     }
   };
 
+  const permission = reactive<Permission>({
+    data: {
+      owner: [],
+      usergroup: [],
+      everyone: []
+    },
+    deep: false,
+    loading: false
+  });
+  const changePermission = async (name: string, mode: number) => {
+    permission.loading = true;
+    permission.data = number2permission(mode);
+    permission.loading = false;
+    await openDialog(t("更改权限"), "", "", "permission");
+    const { execute } = changePermissionApi();
+    try {
+      await execute({
+        params: {
+          remote_uuid: daemonId || "",
+          uuid: instanceId || ""
+        },
+        data: {
+          chmod: permission2number(
+            permission.data.owner,
+            permission.data.usergroup,
+            permission.data.everyone
+          ),
+          deep: permission.deep,
+          target: breadcrumbs[breadcrumbs.length - 1].path + name
+        }
+      });
+
+      message.success(t("更改权限成功"));
+      await getFileList();
+    } catch (err: any) {
+      return message.error(err.message);
+    }
+    permission.deep = false;
+  };
+
   return {
     fileStatus,
     indicator,
@@ -437,6 +491,7 @@ export const useFileManager = (
     percentComplete,
     spinning,
     rowSelection,
+    permission,
     openDialog,
     getFileList,
     touchFile,
@@ -453,6 +508,7 @@ export const useFileManager = (
     downloadFile,
     handleChangeDir,
     handleTableChange,
-    getFileStatus
+    getFileStatus,
+    changePermission
   };
 };

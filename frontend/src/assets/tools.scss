@@ -5,6 +5,21 @@
   justify-content: space-between;
 }
 
+.flex-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex-evenly {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.flex-warp {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .flex {
   display: flex;
 }

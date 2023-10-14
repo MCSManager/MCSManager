@@ -26,3 +26,13 @@ export interface FileStatus {
   isGlobalInstance: boolean;
   dist: string[];
 }
+
+export interface Permission {
+  data: {
+    owner: string[];
+    usergroup: string[];
+    everyone: string[];
+  };
+  deep: boolean;
+  loading: boolean;
+}

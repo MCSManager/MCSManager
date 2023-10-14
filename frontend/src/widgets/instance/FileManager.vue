@@ -117,6 +117,7 @@ const {
   rowSelection,
   spinning,
   fileStatus,
+  permission,
   getFileList,
   touchFile,
   reloadList,
@@ -131,7 +132,8 @@ const {
   handleChangeDir,
   rowClickTable,
   handleTableChange,
-  getFileStatus
+  getFileStatus,
+  changePermission
 } = useFileManager(
   instanceId,
   daemonId,
@@ -331,7 +333,11 @@ onMounted(() => {
                     <a-dropdown>
                       <template #overlay>
                         <a-menu>
-                          <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
+                          <a-menu-item
+                            v-if="fileStatus?.platform != 'win32'"
+                            key="1"
+                            @click="changePermission(record.name, record.mode)"
+                          >
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
                           <a-menu-item
@@ -434,6 +440,59 @@ onMounted(() => {
         <a-radio-button value="big5">big5</a-radio-button>
       </a-radio-group>
     </a-space>
+
+    <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
+      <a-spin :spinning="permission.loading" :indicator="indicator" size="small">
+        <div class="flex-around permission">
+          <a-checkbox-group v-model:value="permission.data.owner">
+            <a-row class="direction-column son">
+              <h3 class="m-0">所有者</h3>
+              <a-col class="m-5 options">
+                <a-checkbox value="4">读取</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="2">写入</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="1">执行</a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+
+          <a-checkbox-group v-model:value="permission.data.usergroup">
+            <a-row class="direction-column son">
+              <h3 class="m-0">用户组</h3>
+              <a-col class="m-5 options">
+                <a-checkbox value="4">读取</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="2">写入</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="1">执行</a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+
+          <a-checkbox-group v-model:value="permission.data.everyone">
+            <a-row class="direction-column son">
+              <h3 class="m-0">任何人</h3>
+              <a-col class="m-5 options">
+                <a-checkbox value="4">读取</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="2">写入</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="1">执行</a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+        </div>
+
+        <a-checkbox v-model:checked="permission.deep">应用到子目录</a-checkbox>
+      </a-spin>
+    </a-space>
   </a-modal>
 
   <FileEditor ref="FileEditorDialog" />
@@ -480,6 +539,24 @@ onMounted(() => {
 
   .file-breadcrumbs-item:hover {
     background-color: var(--color-gray-4);
+  }
+}
+
+.permission {
+  .son {
+    border: 1px solid #dcdfe6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: inset 0 0 0 1px #00000010;
+  }
+}
+
+@media (max-width: 350px) {
+  .permission {
+    flex-direction: column;
+    .son {
+      width: 100%;
+    }
   }
 }
 </style>
