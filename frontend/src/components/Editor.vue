@@ -1,7 +1,22 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+// import { cpp } from "@codemirror/lang-cpp";
+// import { css } from "@codemirror/lang-css";
+// import { html } from "@codemirror/lang-html";
+// import { java } from "@codemirror/lang-java";
+// import { json } from "@codemirror/lang-json";
+// import { less } from "@codemirror/lang-less";
+// import { markdown } from "@codemirror/lang-markdown";
+// import { php } from "@codemirror/lang-php";
+// import { python } from "@codemirror/lang-python";
+// import { sass } from "@codemirror/lang-sass";
+// import { sql } from "@codemirror/lang-sql";
+// import { vue } from "@codemirror/lang-vue";
+// import { xml } from "@codemirror/lang-xml";
+// import { getExtName } from "@/tools/fileManager";
+
 import { EditorState } from "@codemirror/state";
 import { getRandomId } from "@/tools/randId";
 
@@ -33,11 +48,11 @@ const theme = EditorView.theme({
 
 let editor: EditorView;
 const initEditor = () => {
-  let startState = EditorState.create({
+  const startState = EditorState.create({
     doc: props.text,
     extensions: [
       basicSetup,
-      theme,
+      // theme,
       javascript(),
       EditorView.updateListener.of(function (e) {
         const text = e.view.state.doc.toString();
@@ -56,8 +71,8 @@ onMounted(() => {
   initEditor();
 });
 
-onUnmounted(() => {
-  editor.destroy();
+onBeforeUnmount(() => {
+  editor?.destroy();
 });
 </script>
 

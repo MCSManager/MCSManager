@@ -1,26 +1,72 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import Editor from "@/components/Editor.vue";
+import { fileContent } from "@/services/apis/fileManager";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const open = ref(false);
-const text = ref("");
+const openEditor = ref(false);
+const editorText = ref("");
 const fileName = ref("");
+const path = ref("");
+const daemonId = String(route.query["daemonId"]) ?? "";
+const instanceId = String(route.query["instanceId"]) ?? "";
 
-const openDialog = (path: string) => {
+const openDialog = async (path_: string, fileName_: string) => {
   open.value = true;
-  text.value = "你好世界\n123";
-  fileName.value = path;
+  path.value = path_;
+  fileName.value = fileName_;
+  await render();
+};
+
+const { state: text, execute } = fileContent();
+const render = async () => {
+  try {
+    await execute({
+      params: {
+        remote_uuid: daemonId,
+        uuid: instanceId
+      },
+      data: {
+        target: path.value
+      }
+    });
+
+    if (text.value) {
+      typeof text.value === "boolean" ? (editorText.value = "") : (editorText.value = text.value);
+    }
+
+    openEditor.value = true;
+  } catch (err: any) {
+    console.error(err.message);
+    return message.error(err.message);
+  }
 };
 
 const submit = async () => {
   try {
-    open.value = false;
-    return message.success(t("更新成功"));
+    await execute({
+      params: {
+        remote_uuid: daemonId,
+        uuid: instanceId
+      },
+      data: {
+        target: path.value,
+        text: editorText.value
+      }
+    });
+    return message.success(t("保存成功"));
   } catch (err: any) {
+    console.error(err.message);
     return message.error(err.message);
   }
+};
+
+const cancel = () => {
+  open.value = openEditor.value = false;
 };
 
 const dialogTitle = computed(() => {
@@ -38,11 +84,14 @@ defineExpose({
     centered
     :mask-closable="false"
     :title="dialogTitle"
-    :ok-text="t('保存')"
     width="1000px"
-    @ok="submit"
+    :footer="null"
+    @cancel="cancel()"
   >
-    RT:{{ text }}
-    <Editor v-if="open" v-model:text="text" height="600px" />
+    <a-space warp>
+      <a-button @click="submit">保存</a-button>
+    </a-space>
+    <Editor v-if="openEditor" ref="EditorComponent" v-model:text="editorText" height="70vh" />
+    <a-skeleton v-else active />
   </a-modal>
 </template>
