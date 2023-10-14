@@ -1,15 +1,8 @@
-/* eslint-disable no-unused-vars */
 import { h, ref, createVNode, type Ref } from "vue";
 import { t } from "@/lang/i18n";
 import type { TableProps, UploadProps } from "ant-design-vue";
 
-import {
-  DownOutlined,
-  SearchOutlined,
-  LoadingOutlined,
-  ExclamationCircleOutlined,
-  UploadOutlined
-} from "@ant-design/icons-vue";
+import { LoadingOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 
 import { parseForwardAddress } from "@/tools/protocol";
 
