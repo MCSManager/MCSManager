@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import Editor from "@/components/Editor.vue";

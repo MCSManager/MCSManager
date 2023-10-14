@@ -734,7 +734,11 @@ onMounted(() => {
                           <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
-                          <a-menu-item key="2" @click="editFile(record.name)">
+                          <a-menu-item
+                            v-if="record.type === 1"
+                            key="2"
+                            @click="editFile(record.name)"
+                          >
                             {{ t("TXT_CODE_ad207008") }}
                           </a-menu-item>
                           <a-menu-item key="3" @click="setClipBoard('copy', record.name)">
