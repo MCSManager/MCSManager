@@ -67,6 +67,9 @@ export const useFileManager = (
     ok: () => {},
     cancel: () => {
       dialog.value.value = "";
+    },
+    style: {
+      maxWidth: "100%"
     }
   });
 
@@ -74,20 +77,12 @@ export const useFileManager = (
     title: string,
     info: string,
     defaultvalue?: string,
-    mode?: string
+    mode?: string,
+    maxWidth?: string
   ): Promise<string> => {
-    if (defaultvalue) {
-      dialog.value.value = defaultvalue;
-    }
-    if (mode == "zip") {
-      dialog.value.mode = "zip";
-    }
-    if (mode == "unzip") {
-      dialog.value.mode = "unzip";
-    }
-    if (mode == "permission") {
-      dialog.value.mode = "permission";
-    }
+    dialog.value.style.maxWidth = maxWidth || "100%";
+    dialog.value.value = defaultvalue || "";
+    dialog.value.mode = mode || "";
 
     dialog.value.title = title;
     dialog.value.info = info;
@@ -110,6 +105,7 @@ export const useFileManager = (
         dialog.value.value = "";
         dialog.value.info = "";
         dialog.value.mode = "";
+        dialog.value.style.maxWidth = "100%";
         dialog.value.ok = () => {};
       };
     });
@@ -471,7 +467,7 @@ export const useFileManager = (
     permission.loading = true;
     permission.data = number2permission(mode);
     permission.loading = false;
-    await openDialog(t("更改权限"), "", "", "permission");
+    await openDialog(t("更改权限"), "", "", "permission", "450px");
     const { execute } = changePermissionApi();
     try {
       await execute({
@@ -489,7 +485,6 @@ export const useFileManager = (
           target: breadcrumbs[breadcrumbs.length - 1].path + name
         }
       });
-
       message.success(t("更改权限成功"));
       await getFileList();
     } catch (err: any) {

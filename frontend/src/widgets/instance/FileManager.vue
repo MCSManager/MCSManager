@@ -386,6 +386,7 @@ onMounted(() => {
     v-model:open="dialog.show"
     :title="dialog.title"
     :confirm-loading="dialog.loading"
+    :style="dialog.style"
     @ok="dialog.ok()"
     @cancel="dialog.cancel()"
   >
@@ -443,7 +444,7 @@ onMounted(() => {
 
     <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
       <a-spin :spinning="permission.loading" :indicator="indicator" size="small">
-        <div class="flex-around permission">
+        <div class="flex-between permission">
           <a-checkbox-group
             v-for="item in permission.item"
             :key="item.key"
@@ -464,7 +465,7 @@ onMounted(() => {
           </a-checkbox-group>
         </div>
 
-        <a-checkbox v-model:checked="permission.deep" class="m-15">
+        <a-checkbox v-model:checked="permission.deep" class="mt-15">
           {{ t("应用到子目录") }}
         </a-checkbox>
       </a-spin>
