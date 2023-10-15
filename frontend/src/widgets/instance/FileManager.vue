@@ -464,7 +464,9 @@ onMounted(() => {
           </a-checkbox-group>
         </div>
 
-        <a-checkbox v-model:checked="permission.deep">{{ t("应用到子目录") }}</a-checkbox>
+        <a-checkbox v-model:checked="permission.deep" class="m-15">
+          {{ t("应用到子目录") }}
+        </a-checkbox>
       </a-spin>
     </a-space>
   </a-modal>
