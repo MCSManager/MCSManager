@@ -68,9 +68,7 @@ export const useFileManager = (
     cancel: () => {
       dialog.value.value = "";
     },
-    style: {
-      maxWidth: "100%"
-    }
+    style: {}
   });
 
   const openDialog = (
@@ -78,9 +76,9 @@ export const useFileManager = (
     info: string,
     defaultvalue?: string,
     mode?: string,
-    maxWidth?: string
+    style?: object
   ): Promise<string> => {
-    dialog.value.style.maxWidth = maxWidth || "100%";
+    dialog.value.style = style || {};
     dialog.value.value = defaultvalue || "";
     dialog.value.mode = mode || "";
 
@@ -105,7 +103,7 @@ export const useFileManager = (
         dialog.value.value = "";
         dialog.value.info = "";
         dialog.value.mode = "";
-        dialog.value.style.maxWidth = "100%";
+        dialog.value.style = {};
         dialog.value.ok = () => {};
       };
     });
@@ -467,7 +465,9 @@ export const useFileManager = (
     permission.loading = true;
     permission.data = number2permission(mode);
     permission.loading = false;
-    await openDialog(t("更改权限"), "", "", "permission", "450px");
+    await openDialog(t("更改权限"), "", "", "permission", {
+      maxWidth: "450px"
+    });
     const { execute } = changePermissionApi();
     try {
       await execute({
