@@ -135,13 +135,13 @@ const {
   getFileStatus,
   changePermission
 } = useFileManager(
-  instanceId,
-  daemonId,
   operationForm,
   breadcrumbs,
   dataSource,
   clipboard,
-  selectionData
+  selectionData,
+  instanceId,
+  daemonId
 );
 
 watch(

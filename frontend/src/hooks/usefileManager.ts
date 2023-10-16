@@ -32,8 +32,6 @@ import type {
 } from "@/types/fileManager";
 
 export const useFileManager = (
-  instanceId: string | undefined,
-  daemonId: string | undefined,
   operationForm: Ref<OperationForm>,
   breadcrumbs: Breadcrumb[],
   dataSource: Ref<DataType[] | undefined>,
@@ -44,7 +42,9 @@ export const useFileManager = (
       }
     | undefined
   >,
-  selectionData: Ref<DataType[] | undefined>
+  selectionData: Ref<DataType[] | undefined>,
+  instanceId?: string,
+  daemonId?: string
 ) => {
   const indicator = h(LoadingOutlined, {
     style: {
@@ -86,7 +86,6 @@ export const useFileManager = (
     dialog.value.info = info;
     dialog.value.show = true;
 
-    // TODO: focus is bad
     dialog.value?.ref?.focus();
 
     return new Promise((resolve) => {
