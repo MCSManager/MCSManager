@@ -69,5 +69,6 @@ declare module 'vue' {
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SelectInstances: typeof import('./src/components/SelectInstances.vue')['default']
   }
 }

@@ -99,17 +99,17 @@ export interface UserInfo {
 }
 
 export interface UserInstance {
-  endTime: string;
+  // endTime: string;
   hostIp: string;
-  ie: string;
+  // ie: string;
   instanceUuid: string;
-  lastDatetime: string;
+  // lastDatetime: string;
   nickname: string;
-  oe: string;
-  remarks: string;
+  // oe: string;
+  // remarks: string;
   serviceUuid: string;
   status: number;
-  stopCommand: string;
+  // stopCommand: string;
 }
 
 export interface ImageInfo {
