@@ -17,7 +17,18 @@ import { message } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import { throttle } from "lodash";
 
-const emit = defineEmits(["callback"]);
+const props = defineProps<{
+  destroyComponent: Function;
+  emitResult: Function;
+}>();
+
+const open = ref(false);
+
+const cancel = async () => {
+  open.value = false;
+  if (props.destroyComponent) props.destroyComponent(1000);
+};
+
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
@@ -91,7 +102,6 @@ const columns = [
 
 const selectItem = (item: UserInstance) => {
   selectedItems.value.push(item);
-  emit("callback", selectedItems.value);
 };
 
 const findItem = (record: UserInstance) => {
@@ -100,11 +110,16 @@ const findItem = (record: UserInstance) => {
 
 const removeItem = (item: UserInstance) => {
   selectedItems.value.splice(selectedItems.value.indexOf(item), 1);
-  emit("callback", selectedItems.value);
+};
+
+const submit = async () => {
+  if (props.emitResult) props.emitResult(selectedItems.value);
+  await cancel();
 };
 
 onMounted(async () => {
   await initInstancesData();
+  open.value = true;
 });
 
 const handleQueryInstance = throttle(async () => {
@@ -123,7 +138,21 @@ const handleChangeNode = async (item: NodeStatus) => {
 </script>
 
 <template>
-  <div style="height: 100%" class="container">
+  <a-modal
+    v-model:open="open"
+    centered
+    :mask-closable="false"
+    :title="t('请选择实例')"
+    :ok-text="t('保存')"
+    :cancel-text="t('取消')"
+    @ok="submit"
+    @cancel="cancel"
+  >
+    <a-typography-paragraph>
+      <a-typography-text type="secondary">
+        {{ t("利用远程主机地址与模糊查询来为此用户增加应用实例") }}
+      </a-typography-text>
+    </a-typography-paragraph>
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
@@ -212,7 +241,7 @@ const handleChangeNode = async (item: NodeStatus) => {
         </a-col>
       </template>
     </a-row>
-  </div>
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>

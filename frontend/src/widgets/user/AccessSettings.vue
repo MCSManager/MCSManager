@@ -10,7 +10,7 @@ import { arrayFilter } from "@/tools/array";
 import { userInfoApiAdvanced } from "@/services/apis";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
-import UserResources from "./dialog/UserResources.vue";
+import { useSelectInstances } from "@/hooks/useSelectInstances";
 import { message } from "ant-design-vue";
 import { INSTANCE_STATUS } from "@/types/const";
 
@@ -19,7 +19,6 @@ const props = defineProps<{
   uuid: string;
 }>();
 
-const userResourcesDialog = ref<InstanceType<typeof UserResources>>();
 const screen = useScreen();
 
 let dataSource: Ref<UserInstance[]> = ref([]);
@@ -39,8 +38,13 @@ const handleDelete = async (deletedInstance: UserInstance) => {
   }
 };
 
-const addAnotherInstances = (array: UserInstance) => {
-  dataSource.value = dataSource.value.concat(array);
+const assignApp = async () => {
+  try {
+    const selectedInstances = await useSelectInstances();
+    if (selectedInstances) dataSource.value = dataSource.value.concat(selectedInstances);
+  } catch (err: any) {
+    console.error(err);
+  }
 };
 
 const saveData = async () => {
@@ -147,7 +151,7 @@ const columns = computed(() => {
             <a-button class="mr-8" type="primary" ghost @click="saveData()">
               {{ t("保存数据") }}
             </a-button>
-            <a-button type="primary" @click="userResourcesDialog?.openDialog()">
+            <a-button type="primary" @click="assignApp">
               {{ t("TXT_CODE_a60466a1") }}
             </a-button>
           </template>
@@ -171,8 +175,6 @@ const columns = computed(() => {
       </a-col>
     </a-row>
   </div>
-
-  <UserResources ref="userResourcesDialog" @selected-instances="addAnotherInstances" />
 </template>
 
 <style lang="scss" scoped>
