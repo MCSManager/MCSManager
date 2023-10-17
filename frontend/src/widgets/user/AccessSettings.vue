@@ -12,6 +12,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
 import UserResources from "./dialog/UserResources.vue";
 import { message } from "ant-design-vue";
+import { INSTANCE_STATUS } from "@/types/const";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -113,6 +114,9 @@ const columns = computed(() => {
       dataIndex: "status",
       key: "status",
       minWidth: "200px",
+      customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
+        return INSTANCE_STATUS[e.text] || e.text;
+      },
       condition: () => !screen.isPhone.value
     },
     {
