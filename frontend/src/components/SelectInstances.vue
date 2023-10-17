@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import type { UserInstance } from "@/types";
+import type { UserInstance, MountComponent } from "@/types";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -17,10 +17,7 @@ import { message } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import { throttle } from "lodash";
 
-const props = defineProps<{
-  destroyComponent: Function;
-  emitResult: Function;
-}>();
+const props = defineProps<MountComponent>();
 
 const open = ref(false);
 
@@ -104,8 +101,8 @@ const selectItem = (item: UserInstance) => {
   selectedItems.value.push(item);
 };
 
-const findItem = (record: UserInstance) => {
-  return selectedItems.value.some((item) => JSON.stringify(item) === JSON.stringify(record));
+const findItem = (item: UserInstance) => {
+  return selectedItems.value.some((i) => JSON.stringify(i) === JSON.stringify(item));
 };
 
 const removeItem = (item: UserInstance) => {

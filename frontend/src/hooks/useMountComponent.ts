@@ -12,8 +12,6 @@ export function useMountComponent() {
 
       const app = createApp(component, {
         async destroyComponent(delay = 0) {
-          console.log(delay);
-
           await sleep(delay);
           app.unmount();
           div.remove();
