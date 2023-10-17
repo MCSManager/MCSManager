@@ -1,51 +1,26 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted, watch, h, createVNode } from "vue";
+import { ref, computed, reactive, onMounted, watch } from "vue";
 import { t } from "@/lang/i18n";
-import type { TableProps, UploadProps } from "ant-design-vue";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
-import {
-  DownOutlined,
-  SearchOutlined,
-  LoadingOutlined,
-  ExclamationCircleOutlined,
-  UploadOutlined
-} from "@ant-design/icons-vue";
+import { DownOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import {
-  fileList as fileListApi,
-  getFileStatus as getFileStatusApi,
-  addFolder as addFolderApi,
-  deleteFile as deleteFileApi,
-  touchFile as touchFileApi,
-  copyFile as copyFileApi,
-  moveFile as moveFileApi,
-  compressFile as compressFileApi,
-  uploadAddress,
-  uploadFile as uploadFileApi,
-  downloadAddress
-} from "@/services/apis/fileManager";
 import { throttle } from "lodash";
-import { message, Modal } from "ant-design-vue";
-import { parseForwardAddress } from "@/tools/protocol";
 import { getExtName, getFileIcon } from "@/tools/fileManager";
+
+import { useFileManager } from "@/hooks/usefileManager";
+import FileEditor from "./dialogs/FileEditor.vue";
+
+import type { DataType, OperationForm, Breadcrumb } from "@/types/fileManager";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
-
-interface DataType {
-  name: string;
-  type: number;
-  size: number;
-  time: string;
-  mode: number;
-}
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -53,32 +28,24 @@ const daemonId = getMetaOrRouteValue("daemonId");
 
 const screen = useScreen();
 
-const spinning = ref(false);
-
-const indicator = h(LoadingOutlined, {
-  style: {
-    fontSize: "24px"
-  }
-});
-
-const operationForm = ref({
+const operationForm = ref<OperationForm>({
   name: "",
   current: 1,
   pageSize: 10,
   total: 0
 });
 
-const fileStatus = ref<{
-  instanceFileTask: number;
-  globalFileTask: number;
-  platform: string;
-  isGlobalInstance: boolean;
-  dist: string[];
-}>();
-
 const selectionData = ref<DataType[]>();
 
 const dataSource = ref<DataType[]>();
+
+const breadcrumbs = reactive<Breadcrumb[]>([]);
+
+breadcrumbs.push({
+  path: "/",
+  name: "/",
+  disabled: false
+});
 
 const columns = computed(() => {
   return arrayFilter([
@@ -120,14 +87,6 @@ const columns = computed(() => {
       minWidth: "200px",
       condition: () => !screen.isPhone.value
     },
-    // {
-    //   align: "center",
-    //   title: t("创建时间"),
-    //   dataIndex: "createTime",
-    //   key: "createTime",
-    //   minWidth: "200px",
-    //   condition: () => !screen.isPhone.value
-    // },
     {
       align: "center",
       title: t("权限"),
@@ -146,382 +105,44 @@ const columns = computed(() => {
   ]);
 });
 
-const getFileList = async () => {
-  const { state, execute } = fileListApi();
-  try {
-    await execute({
-      params: {
-        remote_uuid: daemonId || "",
-        uuid: instanceId || "",
-        page: operationForm.value.current - 1,
-        page_size: operationForm.value.pageSize,
-        file_name: operationForm.value.name,
-        target: breadcrumbs[breadcrumbs.length - 1].path
-      }
-    });
-    if (state.value) {
-      dataSource.value = state.value.items || [];
-      operationForm.value.total = state.value.total || 0;
-    }
-  } catch (error: any) {
-    return message.error(error.message);
-  }
-};
-
-const reloadList = async () => {
-  await getFileList();
-  return message.success(t("刷新文件列表成功"));
-};
-
-const dialog = ref({
-  show: false,
-  title: "Dialog",
-  loading: false,
-  value: "",
-  info: "",
-  mode: "",
-  unzipmode: "0",
-  code: "utf-8",
-  ref: ref<HTMLInputElement | null>(null),
-  ok: () => {},
-  cancel: () => {
-    dialog.value.value = "";
-  }
-});
-
-const openDialog = (
-  title: string,
-  info: string,
-  defaultvalue?: string,
-  mode?: string
-): Promise<string> => {
-  if (defaultvalue) {
-    dialog.value.value = defaultvalue;
-  }
-  if (mode == "zip") {
-    dialog.value.mode = "zip";
-  }
-  if (mode == "unzip") {
-    dialog.value.mode = "unzip";
-  }
-
-  dialog.value.title = title;
-  dialog.value.info = info;
-  dialog.value.show = true;
-
-  // TODO: focus is bad
-  dialog.value?.ref?.focus();
-
-  return new Promise((resolve) => {
-    dialog.value.ok = () => {
-      if (dialog.value.value == "" && dialog.value.mode != "unzip") {
-        return message.error(t("请输入内容"));
-      }
-      resolve(dialog.value.value);
-      dialog.value.show = false;
-      dialog.value.value = "";
-      dialog.value.info = "";
-      dialog.value.mode = "";
-      dialog.value.ok = () => {};
-    };
-  });
-};
-
-const touchFile = async (dir?: boolean) => {
-  const dirname = dir
-    ? await openDialog(t("新建目录"), t("请输入目录名称"))
-    : await openDialog(t("新建文件"), t("请输入文件名"));
-  const execute = dir ? addFolderApi().execute : touchFileApi().execute;
-
-  try {
-    await execute({
-      params: {
-        uuid: instanceId || "",
-        remote_uuid: daemonId || ""
-      },
-      data: {
-        target: breadcrumbs[breadcrumbs.length - 1].path + dirname
-      }
-    });
-    await getFileList();
-    message.success(t("创建成功"));
-  } catch (error: any) {
-    return message.error(error.message);
-  }
-};
-
 const clipboard = ref<{
   type: "copy" | "move";
   value: string[];
 }>();
 
-const setClipBoard = (type: "copy" | "move", file?: string) => {
-  if (file) {
-    clipboard.value = {
-      type,
-      value: [breadcrumbs[breadcrumbs.length - 1].path + file]
-    };
-  } else {
-    if (!selectionData.value || selectionData.value.length === 0)
-      return message.error(t("请先选择文件"));
-    clipboard.value = {
-      type,
-      value: selectionData.value?.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
-    };
-  }
-  message.success(t("已保存至剪切板"));
-};
-
-const paste = async () => {
-  if (!clipboard?.value?.type || !clipboard.value.value) return message.error(t("请先选择文件"));
-  const execute = clipboard.value.type == "copy" ? copyFileApi().execute : moveFileApi().execute;
-  try {
-    await execute({
-      params: {
-        uuid: instanceId || "",
-        remote_uuid: daemonId || ""
-      },
-      data: {
-        targets: clipboard.value.value.map((e) => [
-          e,
-          breadcrumbs[breadcrumbs.length - 1].path + e.split("/")[e.split("/").length - 1]
-        ])
-      }
-    });
-    await getFileList();
-    message.success(t("文件操作任务开始，如果文件数量过多，则需要一定时间"));
-    clipboard.value.value = [];
-  } catch (error: any) {
-    message.error(error.message);
-  }
-};
-
-const resetName = async (file: string) => {
-  const newname = await openDialog(t("重命名"), t("请输入新名称"), file);
-  try {
-    const { execute } = moveFileApi();
-    await execute({
-      params: {
-        uuid: instanceId || "",
-        remote_uuid: daemonId || ""
-      },
-      data: {
-        targets: [
-          [
-            breadcrumbs[breadcrumbs.length - 1].path + file,
-            breadcrumbs[breadcrumbs.length - 1].path + newname
-          ]
-        ]
-      }
-    });
-    message.success(t("重命名成功"));
-    await getFileList();
-  } catch (error: any) {
-    return error.message;
-  }
-};
-
-const deleteFile = async (file?: string) => {
-  const { execute } = deleteFileApi();
-  const useDeleteFileApi = async (files: string[]) => {
-    try {
-      await execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || ""
-        },
-        data: {
-          targets: files
-        }
-      });
-      await getFileList();
-      message.success(t("文件删除任务开始，如果文件数量过多，则需要一定时间"));
-      if (dataSource?.value?.length === 0 && operationForm.value.current > 1) {
-        operationForm.value.current -= 1;
-        await getFileList();
-      }
-    } catch (error: any) {
-      message.error(error.message);
-    }
-  };
-
-  Modal.confirm({
-    title: t("你确定要删除吗?"),
-    icon: createVNode(ExclamationCircleOutlined),
-    content: createVNode("div", { style: "color:red;" }, t("删除后将无法恢复！")),
-    async onOk() {
-      if (file) {
-        // one file
-        await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
-      } else {
-        // more file
-        if (!selectionData.value) return message.error(t("请选择要删除的内容"));
-        await useDeleteFileApi(
-          selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
-        );
-      }
-    },
-    okType: "danger",
-    okText: t("确定"),
-    class: "test"
-  });
-  return;
-};
-
-const zipFile = async () => {
-  if (!selectionData.value || selectionData.value.length === 0)
-    return message.error(t("请先选择文件"));
-  const filename = await openDialog(t("压缩文件"), 't("请输入压缩后的文件名")', "", "zip");
-  const { execute } = compressFileApi();
-  try {
-    await execute({
-      params: {
-        uuid: instanceId || "",
-        remote_uuid: daemonId || ""
-      },
-      data: {
-        type: 1,
-        code: "utf-8",
-        source: breadcrumbs[breadcrumbs.length - 1].path + filename + ".zip",
-        targets: selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
-      }
-    });
-    message.success(t("文件压缩任务开始，如果文件数量过多，则需要一定时间"));
-    await getFileList();
-  } catch (error: any) {
-    message.error(error.message);
-  }
-};
-
-const unzipFile = async (name: string) => {
-  const dirname = await openDialog(t("解压文件"), "", "", "unzip");
-  const { execute } = compressFileApi();
-
-  try {
-    await execute({
-      params: {
-        uuid: instanceId || "",
-        remote_uuid: daemonId || ""
-      },
-      data: {
-        type: 2,
-        code: dialog.value.code,
-        source: breadcrumbs[breadcrumbs.length - 1].path + name,
-        targets:
-          dialog.value.unzipmode == "0"
-            ? breadcrumbs[breadcrumbs.length - 1].path
-            : breadcrumbs[breadcrumbs.length - 1].path + dirname
-      }
-    });
-    message.success(t("文件解压任务开始，如果文件数量过多，则需要一定时间"));
-    await getFileList();
-  } catch (error: any) {
-    message.error(error.message);
-  }
-};
-
-const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
-  await selectedFile(file);
-  return false;
-};
-
-const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
-const { execute: uploadFile } = uploadFileApi();
-const percentComplete = ref(0);
-const selectedFile = async (file: File) => {
-  try {
-    await getUploadCfg({
-      params: {
-        upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
-        remote_uuid: daemonId!,
-        uuid: instanceId!
-      }
-    });
-    if (!uploadCfg.value) throw new Error(t("获取上传地址失败"));
-
-    const uploadFormData = new FormData();
-    uploadFormData.append("file", file);
-
-    await uploadFile({
-      data: uploadFormData,
-      url: `${parseForwardAddress(uploadCfg.value.addr, "http")}/upload/${
-        uploadCfg.value.password
-      }`,
-      onUploadProgress: (progressEvent: any) => {
-        percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      }
-    });
-    await getFileList();
-    percentComplete.value = 0;
-    return message.success(t("上传成功"));
-  } catch (err: any) {
-    console.error(err);
-    return message.error(err.message);
-  }
-};
-
-const rowSelection: TableProps["rowSelection"] = {
-  onChange: (selectedRowKeys: any, selectedRows: DataType[]) => {
-    selectionData.value = selectedRows;
-  }
-};
-
-const rowClickTable = async (item: string, type: number) => {
-  if (type === 1) return;
-
-  spinning.value = true;
-  breadcrumbs.push({
-    path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
-    name: item,
-    disabled: false
-  });
-  await getFileList();
-  spinning.value = false;
-};
-
-const { state: downloadCfg, execute: getDownloadCfg } = downloadAddress();
-const downloadFile = async (fileName: string) => {
-  try {
-    await getDownloadCfg({
-      params: {
-        file_name: fileName,
-        remote_uuid: daemonId!,
-        uuid: instanceId!
-      }
-    });
-    if (!downloadCfg.value) throw new Error(t("获取下载地址失败"));
-    window.open(
-      `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
-        downloadCfg.value.password
-      }/${fileName}`
-    );
-  } catch (err: any) {
-    console.error(err);
-    return message.error(err.message);
-  }
-};
-
-const handleChangeDir = async (dir: string) => {
-  if (breadcrumbs.findIndex((e) => e.path === dir) === -1) return message.error(t("找不到路径"));
-  spinning.value = true;
-  breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
-  await getFileList();
-  spinning.value = false;
-};
-
-const breadcrumbs = reactive<
-  {
-    path: string;
-    name: string;
-    disabled: boolean;
-  }[]
->([]);
-
-breadcrumbs.push({
-  path: "/",
-  name: "/",
-  disabled: false
-});
+const {
+  indicator,
+  dialog,
+  percentComplete,
+  rowSelection,
+  spinning,
+  fileStatus,
+  permission,
+  getFileList,
+  touchFile,
+  reloadList,
+  setClipBoard,
+  paste,
+  resetName,
+  deleteFile,
+  zipFile,
+  unzipFile,
+  beforeUpload,
+  downloadFile,
+  handleChangeDir,
+  rowClickTable,
+  handleTableChange,
+  getFileStatus,
+  changePermission
+} = useFileManager(
+  operationForm,
+  breadcrumbs,
+  dataSource,
+  clipboard,
+  selectionData,
+  instanceId,
+  daemonId
+);
 
 watch(
   () => operationForm.value.name,
@@ -531,35 +152,10 @@ watch(
   }, 1000)
 );
 
-const handleTableChange = (e: { current: number; pageSize: number }) => {
-  operationForm.value.current = e.current;
-  operationForm.value.pageSize = e.pageSize;
-  getFileList();
-};
-
 setInterval(async () => {
   await getFileStatus();
 }, 3000);
 
-const getFileStatus = async () => {
-  const { state, execute } = getFileStatusApi();
-  try {
-    await execute({
-      params: {
-        remote_uuid: daemonId || "",
-        uuid: instanceId || ""
-      }
-    });
-    if (state.value) {
-      fileStatus.value = state.value;
-    }
-  } catch (err: any) {
-    console.error(err);
-    return message.error(err.message);
-  }
-};
-
-import FileEditor from "./dialogs/FileEditor.vue";
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
 const editFile = (fileName: string) => {
@@ -737,7 +333,11 @@ onMounted(() => {
                     <a-dropdown>
                       <template #overlay>
                         <a-menu>
-                          <a-menu-item v-if="fileStatus?.platform != 'win32'" key="1">
+                          <a-menu-item
+                            v-if="fileStatus?.platform != 'win32'"
+                            key="1"
+                            @click="changePermission(record.name, record.mode)"
+                          >
                             {{ t("TXT_CODE_16853efe") }}
                           </a-menu-item>
                           <a-menu-item
@@ -786,6 +386,7 @@ onMounted(() => {
     v-model:open="dialog.show"
     :title="dialog.title"
     :confirm-loading="dialog.loading"
+    :style="dialog.style"
     @ok="dialog.ok()"
     @cancel="dialog.cancel()"
   >
@@ -840,6 +441,35 @@ onMounted(() => {
         <a-radio-button value="big5">big5</a-radio-button>
       </a-radio-group>
     </a-space>
+
+    <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
+      <a-spin :spinning="permission.loading" :indicator="indicator" size="small">
+        <div class="flex-between permission">
+          <a-checkbox-group
+            v-for="item in permission.item"
+            :key="item.key"
+            v-model:value="permission.data[item.role]"
+          >
+            <a-row class="direction-column son">
+              <h3 class="m-0">{{ item.key }}</h3>
+              <a-col class="m-5 options">
+                <a-checkbox value="4">{{ t("读取") }}</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="2">{{ t("写入") }}</a-checkbox>
+              </a-col>
+              <a-col class="m-5 options">
+                <a-checkbox value="1">{{ t("执行") }}</a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+        </div>
+
+        <a-checkbox v-model:checked="permission.deep" class="mt-15">
+          {{ t("应用到子目录") }}
+        </a-checkbox>
+      </a-spin>
+    </a-space>
   </a-modal>
 
   <FileEditor ref="FileEditorDialog" />
@@ -886,6 +516,24 @@ onMounted(() => {
 
   .file-breadcrumbs-item:hover {
     background-color: var(--color-gray-4);
+  }
+}
+
+.permission {
+  .son {
+    border: 1px solid #dcdfe6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: inset 0 0 0 1px #00000010;
+  }
+}
+
+@media (max-width: 350px) {
+  .permission {
+    flex-direction: column;
+    .son {
+      width: 100%;
+    }
   }
 }
 </style>

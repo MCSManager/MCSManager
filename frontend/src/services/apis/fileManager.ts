@@ -221,3 +221,22 @@ export const fileContent = useDefineApi<
   url: "/api/files",
   method: "PUT"
 });
+
+// 修改权限
+export const changePermission = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+    data: {
+      chmod: number;
+      deep: boolean;
+      target: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/files/chmod",
+  method: "PUT"
+});
