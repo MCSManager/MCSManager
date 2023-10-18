@@ -98,8 +98,14 @@ const nodeOperations = [
   {
     title: t("TXT_CODE_e6c30866"),
     icon: BlockOutlined,
-    click: () => {
-      console.log(3);
+    click: (item: ComputedNodeInfo) => {
+      const daemonId = item.uuid;
+      toPage({
+        path: "/node/image",
+        query: {
+          daemonId
+        }
+      });
     }
   },
   {
