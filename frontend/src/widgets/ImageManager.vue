@@ -18,28 +18,21 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
 
+const { execute: getImageListApi, state: images, isLoading: ImageListLoading } = ImageList();
 const getImageList = async () => {
-  const { execute, state } = ImageList();
   try {
-    await execute({
+    await getImageListApi({
       params: {
         remote_uuid: daemonId ?? ""
       }
     });
-    if (state.value) dataSource.value = state.value;
+    if (images.value) dataSource.value = images.value;
   } catch (err: any) {
     console.error(err);
     return message.error(err.message);
   }
 };
 
-const operationForm = ref({
-  name: "",
-  currentPage: 1,
-  pageSize: 20
-});
-
-const total = ref(0);
 const dataSource = ref<ImageInfo[]>();
 const columns = computed(() => {
   return arrayFilter([
@@ -112,7 +105,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8">
+            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="getImageList">
               {{ t("刷新") }}
             </a-button>
             <a-button type="primary">
@@ -125,7 +118,18 @@ onMounted(async () => {
 
       <a-col :span="24">
         <CardPanel style="height: 100%">
+          <template #title>
+            {{ t("远程主机镜像列表") }}
+          </template>
           <template #body>
+            <a-typography-paragraph>
+              <a-typography-text>
+                {{
+                  t("镜像构建与容器运行依赖于 Docker 软件，物理主机上所有远程节点将共享所有镜像。")
+                }}
+              </a-typography-text>
+            </a-typography-paragraph>
+
             <a-table
               :data-source="dataSource"
               :columns="columns"
@@ -133,6 +137,7 @@ onMounted(async () => {
                 pageSize: 10,
                 showSizeChanger: true
               }"
+              :loading="ImageListLoading"
               size="small"
             >
               <template #bodyCell="{ column, record }">
@@ -152,19 +157,3 @@ onMounted(async () => {
     </a-row>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.search-input {
-  transition: all 0.4s;
-  text-align: center;
-  width: 50%;
-
-  &:hover {
-    width: 100%;
-  }
-
-  @media (max-width: 992px) {
-    width: 100% !important;
-  }
-}
-</style>
