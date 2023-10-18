@@ -6,7 +6,7 @@ import type { InstanceDetail, DockerNetworkModes } from "@/types";
 import type { FormInstance } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
-import { getImageList, getNetworkModeList } from "@/services/apis/envImage";
+import { ImageList, getNetworkModeList } from "@/services/apis/envImage";
 import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
@@ -35,7 +35,7 @@ const { execute: executeGetNetworkModeList } = getNetworkModeList();
 const networkModes = ref<DockerNetworkModes[]>([]);
 const { execute, isLoading } = updateAnyInstanceConfig();
 const formRef = ref<FormInstance>();
-const { execute: executeGetImageList } = getImageList();
+const { execute: getImageList } = ImageList();
 const dockerImages = ref<string[]>([]);
 
 const openDialog = () => {
@@ -54,7 +54,7 @@ const initFormDetail = () => {
 
 const loadImages = async () => {
   try {
-    const images = await executeGetImageList({
+    const images = await getImageList({
       params: {
         remote_uuid: props.daemonId ?? ""
       }

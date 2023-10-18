@@ -2,7 +2,7 @@ import { useDefineApi } from "@/stores/useDefineApi";
 import type { ImageInfo, DockerNetworkModes } from "@/types";
 
 // 获取镜像列表
-export const getImageList = useDefineApi<
+export const ImageList = useDefineApi<
   {
     params: {
       remote_uuid: string;
