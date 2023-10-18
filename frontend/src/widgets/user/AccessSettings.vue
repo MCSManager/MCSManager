@@ -10,6 +10,9 @@ import { arrayFilter } from "@/tools/array";
 import { userInfoApiAdvanced } from "@/services/apis";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
+import { useSelectInstances } from "@/hooks/useSelectInstances";
+import { message } from "ant-design-vue";
+import { INSTANCE_STATUS } from "@/types/const";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -30,16 +33,34 @@ const handleDelete = async (deletedInstance: UserInstance) => {
       deletedInstance.instanceUuid == instance.instanceUuid
     ) {
       dataSource.value.splice(valueKey, 1);
-      await updateUserInstance().execute({
-        data: {
-          config: {
-            instances: dataSource.value
-          },
-          uuid: <string>userUuid
-        }
-      });
       break;
     }
+  }
+};
+
+const assignApp = async () => {
+  try {
+    const selectedInstances = await useSelectInstances();
+    if (selectedInstances) dataSource.value = dataSource.value.concat(selectedInstances);
+  } catch (err: any) {
+    console.error(err);
+  }
+};
+
+const saveData = async () => {
+  try {
+    await updateUserInstance().execute({
+      data: {
+        config: {
+          instances: dataSource.value
+        },
+        uuid: <string>userUuid
+      }
+    });
+    return message.success(t("更新成功"));
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
   }
 };
 
@@ -97,6 +118,9 @@ const columns = computed(() => {
       dataIndex: "status",
       key: "status",
       minWidth: "200px",
+      customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
+        return INSTANCE_STATUS[e.text] || e.text;
+      },
       condition: () => !screen.isPhone.value
     },
     {
@@ -112,37 +136,43 @@ const columns = computed(() => {
 
 <template>
   <div style="height: 100%" class="container">
-    <a-row :gutter="[24, 24]" style="height: 100%">
-      <div v-if="userUuid" class="h-100 w-100">
-        <a-col :span="24">
-          <BetweenMenus>
-            <template #left>
-              <a-typography-title class="mb-0" :level="4">
-                {{ t("TXT_CODE_e1c9a6ac") }}
-              </a-typography-title>
-            </template>
-            <template #right>
-              <a-button type="primary">{{ t("TXT_CODE_a60466a1") }}</a-button>
-            </template>
-          </BetweenMenus>
-        </a-col>
+    <a-row v-if="userUuid" :gutter="[24, 24]" style="height: 100%">
+      <a-col :span="24">
+        <BetweenMenus>
+          <template #left>
+            <a-typography-title class="mb-0" :level="4">
+              {{ t("TXT_CODE_e1c9a6ac") }}
+            </a-typography-title>
+          </template>
+          <template #right>
+            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="refreshChart()">
+              {{ t("刷新") }}
+            </a-button>
+            <a-button class="mr-8" type="primary" ghost @click="saveData()">
+              {{ t("保存数据") }}
+            </a-button>
+            <a-button type="primary" @click="assignApp">
+              {{ t("TXT_CODE_a60466a1") }}
+            </a-button>
+          </template>
+        </BetweenMenus>
+      </a-col>
 
-        <a-col :span="24">
-          <CardPanel class="h-100">
-            <template #body>
-              <a-table :data-source="dataSource" :columns="columns">
-                <template #bodyCell="{ column, record }">
-                  <template v-if="column.key === 'operation'">
-                    <a-button danger @click="handleDelete(record)">
-                      {{ t("TXT_CODE_ecbd7449") }}
-                    </a-button>
-                  </template>
+      <a-col :span="24">
+        <CardPanel class="h-100">
+          <template #body>
+            <a-table :data-source="dataSource" :columns="columns">
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'operation'">
+                  <a-button danger size="" @click="handleDelete(record)">
+                    {{ t("TXT_CODE_ecbd7449") }}
+                  </a-button>
                 </template>
-              </a-table>
-            </template>
-          </CardPanel>
-        </a-col>
-      </div>
+              </template>
+            </a-table>
+          </template>
+        </CardPanel>
+      </a-col>
     </a-row>
   </div>
 </template>

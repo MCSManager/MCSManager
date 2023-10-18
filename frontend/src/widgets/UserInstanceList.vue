@@ -4,6 +4,7 @@ import { onMounted } from "vue";
 import type { LayoutCard } from "@/types";
 import { userInfoApi } from "@/services/apis/index";
 import { useRouter } from "vue-router";
+import { INSTANCE_STATUS } from "@/types/const";
 
 defineProps<{
   card: LayoutCard;
@@ -12,14 +13,6 @@ defineProps<{
 const router = useRouter();
 
 const { execute, state } = userInfoApi();
-
-const status = {
-  "-1": t("状态未知"),
-  "0": t("已停止"),
-  "1": t("正在停止"),
-  "2": t("正在启动"),
-  "3": t("正在运行")
-};
 
 const columns = [
   {
@@ -32,7 +25,7 @@ const columns = [
     dataIndex: "status",
     key: "status",
     customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
-      return status[e.text] || e.text;
+      return INSTANCE_STATUS[e.text] || e.text;
     }
   },
   {

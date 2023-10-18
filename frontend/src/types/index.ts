@@ -99,17 +99,11 @@ export interface UserInfo {
 }
 
 export interface UserInstance {
-  endTime: string;
   hostIp: string;
-  ie: string;
   instanceUuid: string;
-  lastDatetime: string;
   nickname: string;
-  oe: string;
-  remarks: string;
   serviceUuid: string;
   status: number;
-  stopCommand: string;
 }
 
 export interface ImageInfo {
@@ -184,4 +178,9 @@ export interface QuickStartTemplate {
   remark: string;
   author: string;
   targetLink: string;
+}
+
+export interface MountComponent {
+  destroyComponent: Function;
+  emitResult: Function;
 }

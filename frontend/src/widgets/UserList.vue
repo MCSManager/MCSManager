@@ -346,7 +346,7 @@ onMounted(async () => {
                         </a-menu-item> -->
                       </a-menu>
                     </template>
-                    <a-button>
+                    <a-button size="">
                       {{ t("TXT_CODE_fe731dfc") }}
                       <DownOutlined />
                     </a-button>
