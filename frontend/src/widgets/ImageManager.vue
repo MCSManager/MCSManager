@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from "vue";
 import { t } from "@/lang/i18n";
-import { Modal, message } from "ant-design-vue";
+import { Modal, message, notification } from "ant-design-vue";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -18,23 +18,24 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
 
-const { execute: getImageListApi, state: images, isLoading: ImageListLoading } = ImageList();
+const { execute: execImageList, state: images, isLoading: ImageListLoading } = ImageList();
 const getImageList = async () => {
   try {
-    await getImageListApi({
+    await execImageList({
       params: {
         remote_uuid: daemonId ?? ""
-      }
+      },
+      method: "GET"
     });
-    if (images.value) dataSource.value = images.value;
+    if (images.value) imageDataSource.value = images.value;
   } catch (err: any) {
     console.error(err);
     return message.error(err.message);
   }
 };
 
-const dataSource = ref<ImageInfo[]>();
-const columns = computed(() => {
+const imageDataSource = ref<ImageInfo[]>();
+const imageColumns = computed(() => {
   return arrayFilter([
     {
       align: "center",
@@ -89,6 +90,25 @@ const showDetail = (info: ImageInfo) => {
   });
 };
 
+const delImage = async (item: ImageInfo) => {
+  try {
+    await execImageList({
+      params: {
+        remote_uuid: daemonId ?? "",
+        imageId: item.RepoTags[0]
+      },
+      method: "DELETE"
+    });
+    notification["info"]({
+      message: t("删除指令已发出"),
+      description: t("请耐心等待，使用刷新功能加载列表，稍后此镜像预计将会被删除")
+    });
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
+};
+
 onMounted(async () => {
   await getImageList();
 });
@@ -129,10 +149,9 @@ onMounted(async () => {
                 }}
               </a-typography-text>
             </a-typography-paragraph>
-
             <a-table
-              :data-source="dataSource"
-              :columns="columns"
+              :data-source="imageDataSource"
+              :columns="imageColumns"
               :pagination="{
                 pageSize: 10,
                 showSizeChanger: true
@@ -145,9 +164,14 @@ onMounted(async () => {
                   <a-button class="mr-8" size="" @click="showDetail(record)">
                     {{ t("详情") }}
                   </a-button>
-                  <a-button size="" danger>
-                    {{ t("删除") }}
-                  </a-button>
+                  <a-popconfirm
+                    :title="t('此操作将永久删除该镜像, 是否继续?')"
+                    @confirm="delImage(record)"
+                  >
+                    <a-button size="" danger>
+                      {{ t("删除") }}
+                    </a-button>
+                  </a-popconfirm>
                 </template>
               </template>
             </a-table>

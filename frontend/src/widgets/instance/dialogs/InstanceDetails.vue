@@ -57,7 +57,8 @@ const loadImages = async () => {
     const images = await getImageList({
       params: {
         remote_uuid: props.daemonId ?? ""
-      }
+      },
+      method: "GET"
     });
     if (images.value) {
       dockerImages.value = [t("--- 新建镜像 ---")];

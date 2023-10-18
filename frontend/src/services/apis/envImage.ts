@@ -6,12 +6,13 @@ export const ImageList = useDefineApi<
   {
     params: {
       remote_uuid: string;
+      imageId?: string;
     };
+    method: string;
   },
   ImageInfo[]
 >({
-  url: "/api/environment/image",
-  method: "GET"
+  url: "/api/environment/image"
 });
 
 // 获取网络模式
