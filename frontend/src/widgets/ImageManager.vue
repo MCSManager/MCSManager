@@ -2,14 +2,14 @@
 import { ref, computed, onMounted, h } from "vue";
 import { t } from "@/lang/i18n";
 import { Modal, message, notification } from "ant-design-vue";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { ImageList } from "@/services/apis/envImage";
-import type { LayoutCard, ImageInfo } from "@/types";
+import { imageList, containerList } from "@/services/apis/envImage";
+import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -18,7 +18,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
 
-const { execute: execImageList, state: images, isLoading: ImageListLoading } = ImageList();
+const { execute: execImageList, state: images, isLoading: imageListLoading } = imageList();
 const getImageList = async () => {
   try {
     await execImageList({
@@ -109,8 +109,71 @@ const delImage = async (item: ImageInfo) => {
   }
 };
 
+const containerDataSource = ref<ContainerInfo[]>();
+const containerColumns = computed(() => {
+  return arrayFilter([
+    {
+      align: "center",
+      title: "ID",
+      dataIndex: "Id",
+      key: "Id",
+      minWidth: "200px"
+    },
+    {
+      align: "center",
+      title: t("启动命令"),
+      dataIndex: "Command",
+      key: "Command"
+    },
+    {
+      align: "center",
+      title: t("使用镜像"),
+      dataIndex: "Image",
+      key: "Image"
+    },
+    {
+      align: "center",
+      title: t("状态"),
+      dataIndex: "State",
+      key: "State"
+    },
+    {
+      align: "center",
+      title: t("情况"),
+      dataIndex: "Status",
+      key: "Status"
+    },
+    {
+      align: "center",
+      title: t("TXT_CODE_fe731dfc"),
+      key: "action",
+      minWidth: "200px"
+    }
+  ]);
+});
+
+const {
+  execute: execContainerList,
+  state: containers,
+  isLoading: containerListLoading
+} = containerList();
+const getContainerList = async () => {
+  try {
+    await execContainerList({
+      params: {
+        remote_uuid: daemonId ?? ""
+      }
+    });
+    if (containers.value) containerDataSource.value = containers.value;
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
+};
+
 onMounted(async () => {
   await getImageList();
+  await getContainerList();
 });
 </script>
 
@@ -156,7 +219,7 @@ onMounted(async () => {
                 pageSize: 10,
                 showSizeChanger: true
               }"
-              :loading="ImageListLoading"
+              :loading="imageListLoading"
               size="small"
             >
               <template #bodyCell="{ column, record }">
@@ -172,6 +235,43 @@ onMounted(async () => {
                       {{ t("删除") }}
                     </a-button>
                   </a-popconfirm>
+                </template>
+              </template>
+            </a-table>
+          </template>
+        </CardPanel>
+      </a-col>
+
+      <a-col :span="24">
+        <CardPanel style="height: 100%">
+          <template #title>
+            {{ t("远程主机容器列表") }}
+          </template>
+          <template #body>
+            <a-typography-paragraph>
+              <a-typography-text>
+                {{
+                  t(
+                    "容器列表代表所有正在独立镜像环境运行的应用实例，此处列表不仅仅包括面板所启动的容器。"
+                  )
+                }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-table
+              :data-source="containerDataSource"
+              :columns="containerColumns"
+              :pagination="{
+                pageSize: 10,
+                showSizeChanger: true
+              }"
+              :loading="containerListLoading"
+              size="small"
+            >
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'action'">
+                  <a-button class="mr-8" size="" @click="showDetail(record)">
+                    {{ t("详情") }}
+                  </a-button>
                 </template>
               </template>
             </a-table>
