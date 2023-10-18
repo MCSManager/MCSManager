@@ -23,10 +23,13 @@ import {
   connectNode
 } from "@/services/apis";
 import { message } from "ant-design-vue";
+import { useAppRouters } from "@/hooks/useAppRouters";
 
 defineProps<{
   card: LayoutCard;
 }>();
+
+const { toPage } = useAppRouters();
 
 const operationForm = ref({
   name: ""
@@ -72,14 +75,24 @@ const nodeOperations = [
     title: t("TXT_CODE_ae533703"),
     icon: FolderOpenOutlined,
     click: () => {
-      console.log(3);
+      toPage({
+        path: "/instances/terminal/files"
+      });
     }
   },
   {
     title: t("TXT_CODE_524e3036"),
     icon: CodeOutlined,
-    click: () => {
-      console.log(3);
+    click: (item: ComputedNodeInfo) => {
+      const daemonId = item.uuid;
+      const instanceId = "global0001";
+      toPage({
+        path: "/instances/terminal",
+        query: {
+          daemonId,
+          instanceId
+        }
+      });
     }
   },
   {
