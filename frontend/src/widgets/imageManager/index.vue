@@ -10,6 +10,7 @@ import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
+import CopyButton from "@/components/CopyButton.vue";
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -224,6 +225,10 @@ onMounted(async () => {
               size="small"
             >
               <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'Id'">
+                  {{ record.Id }}
+                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="" @click="showDetail(record)">
                     {{ t("详情") }}
@@ -269,6 +274,10 @@ onMounted(async () => {
               size="small"
             >
               <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'Id'">
+                  {{ record.Id }}
+                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="" @click="showDetail(record)">
                     {{ t("详情") }}
