@@ -30,6 +30,7 @@ import ClockCard from "@/widgets/others/ClockCard.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
 import UserInstanceList from "@/widgets/UserInstanceList.vue";
 import ImageManager from "@/widgets/imageManager/index.vue";
+import NewImage from "@/widgets/imageManager/NewImage.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 
@@ -62,7 +63,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   ClockCard,
   UserStatusBlock,
   UserInstanceList,
-  ImageManager
+  ImageManager,
+  NewImage
 };
 
 export interface NewCardItem extends LayoutCard {

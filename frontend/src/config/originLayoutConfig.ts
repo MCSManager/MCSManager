@@ -317,6 +317,28 @@ export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
     ]
   },
   {
+    page: "/node/image/new",
+    items: [
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "NewImage",
+        title: t("创建镜像"),
+        width: 12,
+        height: LayoutCardHeight.AUTO,
+        disableDelete: true
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "EmptyCard",
+        title: "",
+        width: 12,
+        height: LayoutCardHeight.MINI
+      }
+    ]
+  },
+  {
     page: "/quickstart",
     items: [
       {

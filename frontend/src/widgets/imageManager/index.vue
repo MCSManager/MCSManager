@@ -11,10 +11,12 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
 import CopyButton from "@/components/CopyButton.vue";
+import { useAppRouters } from "@/hooks/useAppRouters";
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
@@ -173,6 +175,15 @@ const getContainerList = async () => {
   }
 };
 
+const toNewImagePage = () => {
+  toPage({
+    path: "/node/image/new",
+    query: {
+      daemonId
+    }
+  });
+};
+
 onMounted(async () => {
   await getImageList();
   await getContainerList();
@@ -193,7 +204,7 @@ onMounted(async () => {
             <a-button v-show="!screen.isPhone.value" class="mr-8" @click="getImageList">
               {{ t("刷新") }}
             </a-button>
-            <a-button type="primary">
+            <a-button type="primary" @click="toNewImagePage">
               {{ t("新增镜像") }}
               <PlusOutlined />
             </a-button>
