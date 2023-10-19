@@ -5,6 +5,18 @@ import type { IPanelOverviewResponse } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
+// 面板状态
+export const panelStatus = useDefineApi<
+  any,
+  {
+    isInstall: boolean;
+    language: string;
+  }
+>({
+  url: "/api/auth/status",
+  method: "GET"
+});
+
 // 用户登录
 export const loginUser = useDefineApi<
   | {

@@ -6,13 +6,15 @@ import type { BaseUserInfo } from "@/types/user";
 
 interface AppStateInfo {
   userInfo: BaseUserInfo | null;
+  isInstall: boolean;
 }
 
 export const useAppStateStore = createGlobalState(() => {
   const { execute: reqUserInfo } = userInfoApi();
 
   const state: AppStateInfo = reactive<AppStateInfo>({
-    userInfo: null
+    userInfo: null,
+    isInstall: true
   });
 
   const cloneState = (): AppStateInfo => {

@@ -50,14 +50,15 @@ import { closeAppLoading } from "./tools/dom";
 });
 
 onMounted(async () => {
+  closeAppLoading();
   if (state.userInfo?.token && !isAdmin.value) {
     router.push({
       path: "/customer"
     });
   }
-  closeAppLoading();
+
   if (!state.userInfo?.token) {
-    router.push({
+    return router.push({
       path: "/login"
     });
   }

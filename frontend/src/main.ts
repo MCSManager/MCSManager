@@ -12,16 +12,27 @@ import { router } from "./config/router";
 import { i18n } from "@/lang/i18n";
 import App from "./App.vue";
 
-import { userInfoApi } from "./services/apis";
+import { panelStatus, userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
 
 window.addEventListener("unhandledrejection", function (event) {
   console.error("Unhandled promise rejection:", event.reason);
 });
 
-(async function () {
+const { updateUserInfo, state } = useAppStateStore();
+
+async function checkPanelStatus() {
+  const status = await panelStatus().execute();
+  state.isInstall = status.value?.isInstall ?? true;
+  if (!state.isInstall) {
+    return router.push({
+      path: "/init"
+    });
+  }
+}
+
+async function index() {
   try {
-    const { updateUserInfo } = useAppStateStore();
     const { execute: reqUserInfo } = userInfoApi();
     const info = await reqUserInfo();
     updateUserInfo(info.value);
@@ -34,4 +45,8 @@ window.addEventListener("unhandledrejection", function (event) {
     app.use(i18n);
     app.mount("#app");
   }
-})();
+
+  await checkPanelStatus();
+}
+
+index();

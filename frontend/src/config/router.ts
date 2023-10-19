@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, type Router, type RouteRecordRaw } from "vue-router";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import { $t as t } from "@/lang/i18n";
-import LoginVue from "@/views/Login.vue";
+import LoginPage from "@/views/Login.vue";
+import InstallPage from "@/views/Install.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 
 export interface RouterMetaInfo {
@@ -31,6 +32,24 @@ export enum ROLE {
 }
 
 let originRouterConfig: RouterConfig[] = [
+  {
+    path: "/login",
+    name: "login",
+    component: LoginPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
+  {
+    path: "/init",
+    name: "init",
+    component: InstallPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
   {
     path: "/",
     name: t("TXT_CODE_16d71239"),
@@ -132,15 +151,7 @@ let originRouterConfig: RouterConfig[] = [
       mainMenu: false
     }
   },
-  {
-    path: "/login",
-    name: "login",
-    component: LoginVue,
-    meta: {
-      permission: ROLE.GUEST,
-      mainMenu: false
-    }
-  },
+
   {
     path: "/quickstart",
     name: t("TXT_CODE_2799a1dd"),
