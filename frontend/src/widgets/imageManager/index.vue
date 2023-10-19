@@ -33,8 +33,12 @@ const getImageList = async () => {
     if (images.value) imageDataSource.value = images.value;
   } catch (err: any) {
     console.error(err);
-
-    return message.error(err.message);
+    return Modal.error({
+      centered: true,
+      closable: true,
+      content: err.message,
+      title: t("错误")
+    });
   }
 };
 
