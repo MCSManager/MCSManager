@@ -5,8 +5,8 @@ import { Modal, message, notification } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useScreen } from "../hooks/useScreen";
-import { arrayFilter } from "../tools/array";
+import { useScreen } from "@/hooks/useScreen";
+import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
@@ -30,6 +30,7 @@ const getImageList = async () => {
     if (images.value) imageDataSource.value = images.value;
   } catch (err: any) {
     console.error(err);
+
     return message.error(err.message);
   }
 };

@@ -29,7 +29,7 @@ import IframeCard from "@/widgets/others/IframeCard.vue";
 import ClockCard from "@/widgets/others/ClockCard.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
 import UserInstanceList from "@/widgets/UserInstanceList.vue";
-import ImageManager from "@/widgets/ImageManager.vue";
+import ImageManager from "@/widgets/imageManager/index.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 
