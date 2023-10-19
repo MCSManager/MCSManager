@@ -1,13 +1,26 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, h } from "vue";
+import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { Modal, message, notification } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import type { LayoutCard } from "@/types";
+import {
+  defaultDockerFile,
+  openjdk16,
+  openjdk16CN,
+  openjdk17,
+  openjdk17CN,
+  openjdk8,
+  openjdk8CN,
+  ubuntu22,
+  ubuntu22CN
+} from "@/types/const";
+import { getCurrentLang } from "@/lang/i18n";
+import DockerFileForm from "./DockerFileForm.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -17,13 +30,11 @@ const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
-
+const dockerFileDrawer = ref(false);
 const imageList = [
   {
     title: t("创建 OpenJDK 8 环境镜像"),
-    description: t(
-      "适用于需要 Java 8 的服务端软件，属于经典的 Java 运行时版本，适用于 Minecraft 1.17 以下的所有版本"
-    ),
+    description: t("内置 Java 16 运行时环境，适用于 Minecraft 1.7 ~ 1.16 版本的服务端"),
     type: 1
   },
   {
@@ -47,6 +58,43 @@ const imageList = [
     type: 5
   }
 ];
+
+const dockerFile = ref("");
+const name = ref("");
+const version = ref("");
+const isZH = getCurrentLang() === "zh_CN" ? true : false;
+const selectType = (type: number) => {
+  switch (type) {
+    case 1:
+      dockerFile.value = isZH ? openjdk8CN : openjdk8;
+      name.value = "mcsm-openjdk";
+      version.value = "8";
+      break;
+    case 2:
+      dockerFile.value = isZH ? openjdk16CN : openjdk16;
+      name.value = "mcsm-openjdk";
+      version.value = "16";
+      break;
+    case 3:
+      dockerFile.value = isZH ? openjdk17CN : openjdk17;
+      name.value = "mcsm-openjdk";
+      version.value = "17";
+      break;
+    case 4:
+      dockerFile.value = isZH ? ubuntu22CN : ubuntu22;
+      name.value = "mcsm-ubuntu";
+      version.value = "22.04";
+      break;
+    case 5:
+      dockerFile.value = defaultDockerFile;
+      name.value = "mcsm-custom";
+      version.value = "lasted";
+      break;
+    default:
+      return message.error(t("未知的环境类型"));
+  }
+  dockerFileDrawer.value = true;
+};
 
 const toImageListPage = () => {
   toPage({
@@ -113,7 +161,7 @@ onMounted(async () => {});
       </a-col>
 
       <a-col v-for="i in imageList" :key="i" :span="24" :lg="6" :md="8" :sm="12">
-        <CardPanel>
+        <CardPanel class="images-card" @click="selectType(i.type)">
           <template #title>{{ i.title }}</template>
           <template #body>
             <a-typography-text>
@@ -124,4 +172,35 @@ onMounted(async () => {});
       </a-col>
     </a-row>
   </div>
+
+  <a-drawer
+    v-model:open="dockerFileDrawer"
+    :width="screen.isPhone.value ? 'auto' : '768px'"
+    title="DockerFile"
+    placement="right"
+    destroy-on-close
+  >
+    <DockerFileForm
+      :docker-file="dockerFile"
+      :name="name"
+      :version="version"
+      :daemon-id="daemonId ?? ''"
+      @close="dockerFileDrawer = false"
+    />
+  </a-drawer>
 </template>
+
+<style lang="scss" scoped>
+.images-card {
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid var(--color-gray-8);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  }
+}
+
+.drawer {
+  width: 500px;
+}
+</style>
