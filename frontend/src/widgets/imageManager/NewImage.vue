@@ -21,6 +21,7 @@ import {
 } from "@/types/const";
 import { getCurrentLang } from "@/lang/i18n";
 import DockerFileForm from "./DockerFileForm.vue";
+import BuildProgress from "./BuildProgress.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -30,6 +31,7 @@ const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
+const buildProgressDialog = ref<InstanceType<typeof BuildProgress>>();
 const dockerFileDrawer = ref(false);
 const imageList = [
   {
@@ -122,7 +124,7 @@ onMounted(async () => {});
             <a-button v-show="!screen.isPhone.value" class="mr-8" @click="toImageListPage">
               {{ t("回到镜像列表") }}
             </a-button>
-            <a-button type="primary">
+            <a-button type="primary" @click="buildProgressDialog?.openDialog()">
               {{ t("查看构建进度") }}
             </a-button>
           </template>
@@ -188,6 +190,8 @@ onMounted(async () => {});
       @close="dockerFileDrawer = false"
     />
   </a-drawer>
+
+  <BuildProgress ref="buildProgressDialog" :daemon-id="daemonId ?? ''" />
 </template>
 
 <style lang="scss" scoped>

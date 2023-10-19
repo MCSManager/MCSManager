@@ -46,3 +46,18 @@ export const containerList = useDefineApi<
   url: "/api/environment/containers",
   method: "GET"
 });
+
+// 查看构建进度
+export const buildProgress = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+    };
+  },
+  {
+    [propsName: string]: number;
+  }
+>({
+  url: "/api/environment/progress",
+  method: "GET"
+});
