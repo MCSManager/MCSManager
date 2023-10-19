@@ -85,7 +85,9 @@ onMounted(async () => {
         <LeftMenusPanel :menus="menus">
           <template #baseInfo>
             <div style="max-height: 500px; overflow-y: auto">
-              <a-typography-title :level="4" class="mb-24">{{ t("TXT_CODE_5206cf41") }}</a-typography-title>
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_5206cf41") }}
+              </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
                   <a-form-item>
@@ -137,11 +139,7 @@ onMounted(async () => {
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_b2767aa2") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{
-                        t(
-                          "TXT_CODE_b1f833f3"
-                        )
-                      }}
+                      {{ t("TXT_CODE_b1f833f3") }}
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.quickInstallAddr"
@@ -152,11 +150,7 @@ onMounted(async () => {
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_514e064a") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{
-                        t(
-                          "TXT_CODE_328191e"
-                        )
-                      }}
+                      {{ t("TXT_CODE_328191e") }}
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.httpIp"
@@ -167,7 +161,7 @@ onMounted(async () => {
 
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      保存
+                      {{ t("保存") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -177,7 +171,9 @@ onMounted(async () => {
 
           <template #api>
             <div style="max-height: 500px; overflow-y: auto">
-              <a-typography-title :level="4" class="mb-24">{{ t("TXT_CODE_9c3ca8f") }}</a-typography-title>
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_9c3ca8f") }}
+              </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
                   <a-typography-title :level="5">
@@ -185,17 +181,9 @@ onMounted(async () => {
                   </a-typography-title>
                   <a-typography-paragraph>
                     <a-typography-text type="secondary">
-                      {{
-                        t(
-                          "TXT_CODE_fcde7b2e"
-                        )
-                      }}
+                      {{ t("TXT_CODE_fcde7b2e") }}
                       <br />
-                      {{
-                        t(
-                          "TXT_CODE_af19b7b5"
-                        )
-                      }}
+                      {{ t("TXT_CODE_af19b7b5") }}
                     </a-typography-text>
                   </a-typography-paragraph>
 
@@ -207,9 +195,7 @@ onMounted(async () => {
                       <a-typography-text type="secondary">
                         {{ t("TXT_CODE_ceb783a9") }}
                         <br />
-                        {{
-                          t("TXT_CODE_e5b7522d")
-                        }}
+                        {{ t("TXT_CODE_e5b7522d") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select v-model:value="formData.canFileManager" style="max-width: 320px">
@@ -229,11 +215,7 @@ onMounted(async () => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "TXT_CODE_6655c905"
-                          )
-                        }}
+                        {{ t("TXT_CODE_6655c905") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select v-model:value="formData.crossDomain" style="max-width: 320px">
@@ -253,11 +235,7 @@ onMounted(async () => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "TXT_CODE_745fc959"
-                          )
-                        }}
+                        {{ t("TXT_CODE_745fc959") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select v-model:value="formData.loginCheckIp" style="max-width: 320px">
@@ -272,7 +250,7 @@ onMounted(async () => {
                   </a-form-item>
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      保存
+                      {{ t("保存") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -282,7 +260,9 @@ onMounted(async () => {
 
           <template #password>
             <div style="max-height: 500px; overflow-y: auto">
-              <a-typography-title :level="4" class="mb-24">{{ t("TXT_CODE_3b4b656d") }}</a-typography-title>
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_3b4b656d") }}
+              </a-typography-title>
               <div style="text-align: left">
                 <a-form-item>
                   <a-typography-title :level="5">

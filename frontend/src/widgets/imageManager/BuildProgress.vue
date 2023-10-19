@@ -78,8 +78,8 @@ defineExpose({
     </a-row>
     <template #footer>
       <a-space>
-        <a-button :loading="isLoading" @click="getProgress">刷新</a-button>
-        <a-button type="primary" @click="open = false">关闭</a-button>
+        <a-button :loading="isLoading" @click="getProgress">{{ t("刷新") }}</a-button>
+        <a-button type="primary" @click="open = false">{{ t("关闭") }}</a-button>
       </a-space>
     </template>
   </a-modal>
