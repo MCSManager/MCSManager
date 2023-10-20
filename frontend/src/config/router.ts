@@ -122,7 +122,29 @@ let originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.ADMIN,
       mainMenu: true
-    }
+    },
+    children: [
+      {
+        path: "/node/image",
+        name: t("镜像管理"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN,
+          mainMenu: false
+        },
+        children: [
+          {
+            path: "/node/image/new",
+            name: t("创建镜像"),
+            component: LayoutContainer,
+            meta: {
+              permission: ROLE.ADMIN,
+              mainMenu: false
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     path: "/settings",

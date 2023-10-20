@@ -155,6 +155,61 @@ export interface DockerNetworkModes {
   };
 }
 
+export interface ContainerInfo {
+  Id: string;
+  Names: string[];
+  Image: string;
+  ImageID: string;
+  Command: string;
+  Created: number;
+  Ports: {
+    IP: string;
+    PrivatePort: number;
+    PublicPort: number;
+    Type: string;
+  }[];
+  Labels: {
+    [propName: string]: unknown;
+  };
+  State: string;
+  Status: string;
+  HostConfig: {
+    NetworkMode: string;
+    [propName: string]: unknown;
+  };
+  NetworkSettings: {
+    Networks: {
+      bridge: {
+        IPAMConfig: null;
+        Links: null;
+        Aliases: null;
+        NetworkID: string;
+        EndpointID: string;
+        Gateway: string;
+        IPAddress: string;
+        IPPrefixLen: number;
+        IPv6Gateway: string;
+        GlobalIPv6Address: string;
+        GlobalIPv6PrefixLen: number;
+        MacAddress: string;
+        DriverOpts: null;
+        [propName: string]: unknown;
+      };
+      [propName: string]: unknown;
+    };
+  };
+  Mounts: [
+    {
+      Type: string;
+      Source: string;
+      Destination: string;
+      Mode: string;
+      RW: true;
+      Propagation: string;
+    }
+  ];
+}
+
 export interface NewInstanceForm {
   nickname: string;
   startCommand: string;
