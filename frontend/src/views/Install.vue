@@ -163,7 +163,7 @@ onMounted(async () => {
         <a-button
           v-if="appState.isInstall"
           disabled
-          class="mt-50 mb-50"
+          class="mt-45 mb-45"
           type="primary"
           size="large"
           @click="step = 2"
