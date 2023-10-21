@@ -222,7 +222,8 @@ onMounted(async () => {
             :rules="[
               {
                 required: true,
-                message: t('请输入密码，9 到 36 个字符，必须包含大小写字母和数字')
+                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,36}$/,
+                message: t('密码必须是 9 到 36 个字符，并且包含大小写字母和数字')
               }
             ]"
           >
