@@ -2,7 +2,7 @@
 import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t, i18n } from "@/lang/i18n";
-import { panelInstall, updateSettings, loginUser } from "@/services/apis";
+import { panelInstall, updateSettings } from "@/services/apis";
 import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -19,7 +19,6 @@ const formData = reactive({
 });
 
 const { execute: createAdminUser } = panelInstall();
-const { execute: login } = loginUser();
 const installLoading = ref(false);
 const createUser = async () => {
   try {
@@ -29,12 +28,6 @@ const createUser = async () => {
       data: formData
     });
     await sleep(100);
-    await login({
-      data: {
-        ...formData
-      }
-    });
-    await sleep(200);
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
