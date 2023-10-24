@@ -7,7 +7,18 @@ import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-import { sleep } from "@/tools/commom";
+
+const skeletons = [
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 24, rows: 9 },
+  { span: 8, rows: 6 },
+  { span: 16, rows: 6 },
+  { span: 8, rows: 6 },
+  { span: 16, rows: 6 }
+];
 
 const { updateUserInfo, state: appState } = useAppStateStore();
 const step = ref(1);
@@ -27,7 +38,6 @@ const createUser = async () => {
     await createAdminUser({
       data: formData
     });
-    await sleep(100);
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
@@ -83,66 +93,10 @@ onMounted(async () => {
 
 <template>
   <a-row :gutter="[24, 24]">
-    <a-col :span="6">
+    <a-col v-for="i in skeletons" :key="i" :span="i.span">
       <CardPanel>
         <template #body>
-          <a-skeleton :paragraph="{ rows: 4 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="6">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 4 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="6">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 4 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="6">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 4 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="24">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 9 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="8">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 6 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="16">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 6 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="8">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 6 }" />
-        </template>
-      </CardPanel>
-    </a-col>
-    <a-col :span="16">
-      <CardPanel>
-        <template #body>
-          <a-skeleton :paragraph="{ rows: 6 }" />
+          <a-skeleton :paragraph="{ rows: i.rows }" />
         </template>
       </CardPanel>
     </a-col>
