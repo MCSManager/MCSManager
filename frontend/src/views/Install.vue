@@ -162,16 +162,15 @@ onMounted(async () => {
           </a-typography-paragraph>
         </a-typography>
         <a-form ref="formRef" :model="formData" :label-col="{ span: 4 }" autocomplete="off">
-          <a-form-item
-            :label="t('用户名')"
-            name="username"
-            :rules="[{ required: true, message: t('请输入用户名') }]"
-          >
-            <a-input v-model:value="formData.username" />
+          <a-form-item name="username" :rules="[{ required: true, message: t('请输入用户名') }]">
+            <a-input
+              v-model:value="formData.username"
+              autocomplete="off"
+              :placeholder="t('用户名')"
+            />
           </a-form-item>
 
           <a-form-item
-            :label="t('密码')"
             name="password"
             :rules="[
               {
@@ -181,10 +180,14 @@ onMounted(async () => {
               }
             ]"
           >
-            <a-input-password v-model:value="formData.password" />
+            <a-input-password
+              v-model:value="formData.password"
+              autocomplete="off"
+              :placeholder="t('密码')"
+            />
           </a-form-item>
 
-          <a-form-item :wrapper-col="{ offset: 4, span: 16 }">
+          <a-form-item :wrapper-col="{ span: 16 }">
             <a-button :loading="installLoading" type="primary" @click="createUser">
               {{ t("创建账号") }}
             </a-button>
