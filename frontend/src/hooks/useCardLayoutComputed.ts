@@ -9,7 +9,7 @@ export const DEFAULT_PLACE_HOLDER_CARD = {
   type: PLACE_HOLDER_CARD,
   title: "",
   width: 0,
-  height: LayoutCardHeight.SMALL,
+  height: LayoutCardHeight.SMALL
 };
 
 export function useCardLayoutComputed(currentLayoutConfig: LayoutCard[]) {
@@ -18,17 +18,13 @@ export function useCardLayoutComputed(currentLayoutConfig: LayoutCard[]) {
     let currentColNumber = 0;
 
     function lastLineCheck(currentLineWidth: number, i: number) {
-      if (
-        currentLineWidth != 12 &&
-        currentLineWidth != 0 &&
-        i + 1 == currentLayoutConfig.length
-      ) {
+      if (currentLineWidth != 12 && currentLineWidth != 0 && i + 1 == currentLayoutConfig.length) {
         newLayoutConfig.push({
           ...DEFAULT_PLACE_HOLDER_CARD,
           id: getRandomId(),
           width: 12 - currentLineWidth,
           followId: currentLayoutConfig[currentLayoutConfig.length - 1].id,
-          meta: {},
+          meta: {}
         });
       }
     }
@@ -49,7 +45,7 @@ export function useCardLayoutComputed(currentLayoutConfig: LayoutCard[]) {
           id: getRandomId(),
           width: 12 - currentColNumber,
           followId: lastID,
-          meta: {},
+          meta: {}
         });
         newLayoutConfig.push(config);
         currentColNumber = config.width;

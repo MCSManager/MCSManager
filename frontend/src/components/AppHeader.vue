@@ -24,7 +24,9 @@ import { logoutUser } from "@/services/apis/index";
 import { message } from "ant-design-vue";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-// const [messageApi] = message.useMessage();
+import { useLayoutConfigStore } from "../stores/useLayoutConfig";
+
+const { saveGlobalLayoutConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
@@ -114,8 +116,9 @@ const appMenus = computed(() => {
     {
       title: t("TXT_CODE_8145d82"),
       icon: SaveOutlined,
-      click: () => {
+      click: async () => {
         changeDesignMode(false);
+        await saveGlobalLayoutConfig();
         notification.success({
           placement: "top",
           message: t("TXT_CODE_47c35915"),

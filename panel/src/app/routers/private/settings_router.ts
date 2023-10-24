@@ -7,6 +7,7 @@ import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
 import userSystem from "../../service/system_user";
+import * as fs from "fs-extra";
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
@@ -63,6 +64,17 @@ router.put("/install", async (ctx) => {
     return;
   }
   ctx.body = new Error("The MCSManager has been installed");
+});
+
+router.get("/layout", permission({ level: 1 }), async (ctx) => {
+  const layoutConfig = fs.readFileSync("data/layout.json", "utf-8");
+  ctx.body = layoutConfig;
+});
+
+router.post("/layout", permission({ level: 10 }), async (ctx) => {
+  const config = ctx.request.body;
+  fs.writeFileSync("data/layout.json", JSON.stringify(config, null, 2), "utf-8");
+  ctx.body = true;
 });
 
 export default router;

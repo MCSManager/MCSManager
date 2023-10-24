@@ -3,6 +3,7 @@ import type { LayoutWithRouter, LayoutCard } from "@/types";
 import { useRouterParams } from "@/hooks/useRouterParams";
 import { ORIGIN_LAYOUT_CONFIG } from "@/config/originLayoutConfig";
 import { createGlobalState } from "@vueuse/core";
+import { getLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
 
 export const useLayoutConfigStore = createGlobalState(() => {
   const { currentRoutePath } = useRouterParams();
@@ -60,6 +61,19 @@ export const useLayoutConfigStore = createGlobalState(() => {
     return items.find((item) => item.id === id);
   };
 
+  const saveGlobalLayoutConfig = async () => {
+    return await setLayoutConfig().execute({
+      data: JSON.stringify(globalLayoutConfig)
+    });
+  };
+
+  const initConfig = async () => {
+    const { value } = await getLayoutConfig().execute();
+    try {
+      JSON.parse(value!);
+    } catch (error) {}
+  };
+
   return {
     getPageLayoutConfig,
     deleteLayoutItem,
@@ -67,6 +81,7 @@ export const useLayoutConfigStore = createGlobalState(() => {
     getIndexById,
     getCardById,
     moveCardItem,
+    saveGlobalLayoutConfig,
     globalLayoutConfig
   };
 });
