@@ -90,7 +90,7 @@ const selectType = (type: number) => {
     case 5:
       dockerFile.value = defaultDockerFile;
       name.value = "mcsm-custom";
-      version.value = "lasted";
+      version.value = "latest";
       break;
     default:
       return message.error(t("未知的环境类型"));

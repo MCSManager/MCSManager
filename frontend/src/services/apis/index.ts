@@ -4,6 +4,32 @@ import type { BaseUserInfo } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
+// 面板安装
+export const panelInstall = useDefineApi<
+  {
+    data: {
+      username: string;
+      password: string;
+    };
+  },
+  any
+>({
+  url: "/api/auth/install",
+  method: "POST"
+});
+
+// 安装前更新相关配置
+export const updateSettings = useDefineApi<
+  {
+    data: {
+      language: string;
+    };
+  },
+  any
+>({
+  url: "/api/overview/install",
+  method: "PUT"
+});
 
 // 面板状态
 export const panelStatus = useDefineApi<
