@@ -1,18 +1,17 @@
-import { reactive } from "vue";
+import { ref } from "vue";
 import type { LayoutWithRouter, LayoutCard } from "@/types";
 import { useRouterParams } from "@/hooks/useRouterParams";
-import { ORIGIN_LAYOUT_CONFIG } from "@/config/originLayoutConfig";
+import { getAllLayoutConfig } from "@/config/originLayoutConfig";
 import { createGlobalState } from "@vueuse/core";
-import { getLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
+import { setLayoutConfig } from "@/services/apis/layout";
 
 export const useLayoutConfigStore = createGlobalState(() => {
   const { currentRoutePath } = useRouterParams();
-
-  const globalLayoutConfig = reactive<LayoutWithRouter[]>(ORIGIN_LAYOUT_CONFIG);
+  const globalLayoutConfig = ref<LayoutWithRouter[]>(getAllLayoutConfig());
 
   const getPageLayoutConfig = (pageName: string) => {
     if (!pageName) pageName = currentRoutePath.value;
-    const res = globalLayoutConfig.find((item) => item.page === pageName)?.items;
+    const res = globalLayoutConfig.value.find((item) => item.page === pageName)?.items;
     return res ? res : [];
   };
 
@@ -63,15 +62,8 @@ export const useLayoutConfigStore = createGlobalState(() => {
 
   const saveGlobalLayoutConfig = async () => {
     return await setLayoutConfig().execute({
-      data: JSON.stringify(globalLayoutConfig)
+      data: JSON.stringify(globalLayoutConfig.value)
     });
-  };
-
-  const initConfig = async () => {
-    const { value } = await getLayoutConfig().execute();
-    try {
-      JSON.parse(value!);
-    } catch (error) {}
   };
 
   return {

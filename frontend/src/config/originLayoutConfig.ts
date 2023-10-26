@@ -17,9 +17,18 @@ export interface PageLayoutConfig {
   items: LayoutCard[];
 }
 
+export function setAllLayoutConfig(cfg: PageLayoutConfig[]) {
+  console.debug("设置布局配置：", cfg);
+  ORIGIN_LAYOUT_CONFIG = cfg;
+}
+
+export function getAllLayoutConfig() {
+  return ORIGIN_LAYOUT_CONFIG;
+}
+
 // 在 Web 端没有返回用户自定义布局时，使用默认的布局。
 // 这里是所有不同页面的默认的布局配置
-export const ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
+export let ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
   {
     page: "/",
     items: [

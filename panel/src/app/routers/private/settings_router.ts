@@ -8,7 +8,10 @@ import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
 import userSystem from "../../service/system_user";
 import * as fs from "fs-extra";
+import path from "path";
+
 const router = new Router({ prefix: "/overview" });
+const LAYOUT_CONFIG_PATH = path.normalize(path.join(process.cwd(), "data", "layout.json"));
 
 // [Top-level Permission]
 // Get panel configuration items
@@ -67,13 +70,13 @@ router.put("/install", async (ctx) => {
 });
 
 router.get("/layout", permission({ level: 1 }), async (ctx) => {
-  const layoutConfig = fs.readFileSync("data/layout.json", "utf-8");
+  const layoutConfig = fs.readFileSync(LAYOUT_CONFIG_PATH, "utf-8");
   ctx.body = layoutConfig;
 });
 
 router.post("/layout", permission({ level: 10 }), async (ctx) => {
   const config = ctx.request.body;
-  fs.writeFileSync("data/layout.json", JSON.stringify(config, null, 2), "utf-8");
+  fs.writeFileSync(LAYOUT_CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
   ctx.body = true;
 });
 

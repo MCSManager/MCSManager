@@ -6,7 +6,7 @@ import { $t } from "../i18n";
 
 function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
   const SESSION_REQ_TIME = "lastRequestTime";
-  const INV = 300;
+  const INV = 100;
   const currentTime = new Date().getTime();
   const LastTime = ctx.session?.[SESSION_REQ_TIME];
   if (!ctx.session) return false;

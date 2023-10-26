@@ -14,6 +14,7 @@ import App from "./App.vue";
 
 import { panelStatus, userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
+import { initLayoutConfig } from "./services/layout";
 
 window.addEventListener("unhandledrejection", function (event) {
   console.error("Unhandled promise rejection:", event.reason);
@@ -36,8 +37,9 @@ async function index() {
     const { execute: reqUserInfo } = userInfoApi();
     const info = await reqUserInfo();
     updateUserInfo(info.value);
+    await initLayoutConfig();
   } catch (err) {
-    console.warn("Failed to get user info: ", err);
+    console.error("Init user info Error:", err);
   } finally {
     const app = createApp(App);
     app.use(createPinia());
@@ -45,7 +47,6 @@ async function index() {
     app.use(i18n);
     app.mount("#app");
   }
-
   await checkPanelStatus();
 }
 
