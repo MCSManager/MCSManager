@@ -29,7 +29,6 @@ const toConsole = () => {
 };
 
 const InstanceConfigsList = ref<InstanceConfigs[]>([]);
-
 const { execute, state: realFiles, isLoading } = getConfigFileList();
 const render = async () => {
   try {
@@ -107,15 +106,28 @@ onMounted(async () => {
         <CardPanel style="height: 100%">
           <template #body>
             <a-list
+              v-if="realFiles && realFiles.length > 0"
               item-layout="horizontal"
               :data-source="InstanceConfigsList"
               :loading="isLoading"
             >
               <template #renderItem="{ item }">
                 <a-list-item v-if="item.check">
-                  <a-list-item-meta :description="item.info">
+                  <a-list-item-meta>
                     <template #title>
-                      <a href="javascript:;">{{ item.fileName }}</a>
+                      <a-tag v-if="item.conflict" color="warning">{{ t("存在同名文件") }}</a-tag>
+                      {{ item.fileName }}
+                    </template>
+                    <template #description>
+                      {{ item.info }}
+                      <br />
+                      <a-typography-text v-if="item.conflict" type="danger">
+                        {{
+                          t(
+                            "面板无法得知此配置文件是否兼容，请您自行根据类型进入相应配置文件界面。"
+                          )
+                        }}
+                      </a-typography-text>
                     </template>
                   </a-list-item-meta>
                   <template #actions>
@@ -124,6 +136,16 @@ onMounted(async () => {
                 </a-list-item>
               </template>
             </a-list>
+            <a-empty v-else>
+              <template #description>
+                {{ t("暂无任何配置文件") }}
+              </template>
+              {{
+                t(
+                  "经过特定实例类型(minecraft/java)并配合文件扫描未检测出有任何符合条件的配置文件，请进行进程配置初始化或更改实例类型来进行调整"
+                )
+              }}
+            </a-empty>
           </template>
         </CardPanel>
       </a-col>
