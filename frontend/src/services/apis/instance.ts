@@ -230,3 +230,23 @@ export const queryAsyncTask = useDefineApi<
   url: "/api/protected_instance/query_asynchronous",
   method: "POST"
 });
+
+// 获取配置文件列表
+export const getConfigFileList = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      files: string[];
+    };
+  },
+  {
+    check: boolean;
+    file: string;
+  }[]
+>({
+  method: "POST",
+  url: "/api/protected_instance/process_config/list"
+});

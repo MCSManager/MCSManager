@@ -1,16 +1,134 @@
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { t } from "@/lang/i18n";
+import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
+import { getConfigFileList } from "@/services/apis/instance";
+import { message } from "ant-design-vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
+import { useAppRouters } from "@/hooks/useAppRouters";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
+const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+const instanceId = getMetaOrRouteValue("instanceId");
+const daemonId = getMetaOrRouteValue("daemonId");
+const type = getMetaOrRouteValue("type");
+
+const { toPage } = useAppRouters();
+const toConsole = () => {
+  toPage({
+    path: "/instances/terminal",
+    query: {
+      daemonId,
+      instanceId
+    }
+  });
+};
+
+const InstanceConfigsList = ref<InstanceConfigs[]>([]);
+
+const { execute, state: realFiles, isLoading } = getConfigFileList();
+const render = async () => {
+  try {
+    const configFiles: InstanceConfigs[] = getInstanceConfigByType(type ?? "");
+    const files: string[] = [];
+    configFiles.forEach((v: InstanceConfigs) => {
+      files.push(v.path);
+    });
+    await execute({
+      params: {
+        uuid: instanceId ?? "",
+        remote_uuid: daemonId ?? ""
+      },
+      data: {
+        files: files
+      }
+    });
+    if (!realFiles.value) return message.error(t("获取配置文件列表失败"));
+    realFiles.value.forEach((v) => {
+      configFiles.forEach((z) => {
+        if (z.path === v.file) {
+          configFiles.forEach((p) => {
+            if (p.path == z.path && p.check) z.conflict = true;
+          });
+          z.check = true;
+        }
+      });
+    });
+    InstanceConfigsList.value = configFiles;
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
+};
+
+onMounted(async () => {
+  await render();
+});
 </script>
 
 <template>
-  <CardPanel class="ServerConfigOverview" style="height: 100%">
-    <template #title>{{ card.title }}</template>
-    <template #body> ServerConfigOverview </template>
-  </CardPanel>
+  <div style="height: 100%" class="container">
+    <a-row :gutter="[24, 24]" style="height: 100%">
+      <a-col :span="24">
+        <BetweenMenus>
+          <template #left>
+            <a-typography-title class="mb-0" :level="4">
+              {{ card.title }}
+            </a-typography-title>
+          </template>
+          <template #right>
+            <a-button class="mr-8" :loading="isLoading" @click="render">
+              {{ t("刷新") }}
+            </a-button>
+            <a-button @click="toConsole">
+              {{ t("回到控制台") }}
+            </a-button>
+          </template>
+        </BetweenMenus>
+      </a-col>
+
+      <a-col :span="24">
+        <a-typography-paragraph>
+          <a-typography-text>
+            {{
+              t(
+                "配置文件适配工作由开发团队与开源社区开发者共同开发。如果没有看见您需要的配置文件，请前往实例配置界面手动选择服务端/或衍生类服务端类型。"
+              )
+            }}
+          </a-typography-text>
+        </a-typography-paragraph>
+      </a-col>
+
+      <a-col :span="24">
+        <CardPanel style="height: 100%">
+          <template #body>
+            <a-list
+              item-layout="horizontal"
+              :data-source="InstanceConfigsList"
+              :loading="isLoading"
+            >
+              <template #renderItem="{ item }">
+                <a-list-item v-if="item.check">
+                  <a-list-item-meta :description="item.info">
+                    <template #title>
+                      <a href="javascript:;">{{ item.fileName }}</a>
+                    </template>
+                  </a-list-item-meta>
+                  <template #actions>
+                    <a-button size="">{{ t("编辑") }}</a-button>
+                  </template>
+                </a-list-item>
+              </template>
+            </a-list>
+          </template>
+        </CardPanel>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 
 <style lang="scss" scoped></style>
