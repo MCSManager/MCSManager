@@ -10,6 +10,7 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "punycode";
 
 import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
+import serverProperties from "@/components/mc_process_config/server.properties.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -25,7 +26,7 @@ const extName = getMetaOrRouteValue("extName");
 const type = getMetaOrRouteValue("type");
 
 const component: { [key: string]: Component } = {
-  // "common/server.properties": serverProperties,
+  "common/server.properties": serverProperties,
   "common/eula.txt": eulaTxt
   // "bukkit/spigot.yml": spigotYml,
   // "bukkit/bukkit.yml": bukkitYml,
