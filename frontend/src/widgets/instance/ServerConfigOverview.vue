@@ -64,6 +64,18 @@ const render = async () => {
   }
 };
 
+const toEdit = (configName: string, configPath: string, extName: string) => {
+  toPage({
+    path: "/instances/terminal/serverConfig/fileEdit",
+    query: {
+      type: type,
+      configName,
+      configPath,
+      extName
+    }
+  });
+};
+
 onMounted(async () => {
   await render();
 });
@@ -131,7 +143,9 @@ onMounted(async () => {
                     </template>
                   </a-list-item-meta>
                   <template #actions>
-                    <a-button size="">{{ t("编辑") }}</a-button>
+                    <a-button size="" @click="toEdit(item.redirect, item.path, item.type)">
+                      {{ t("编辑") }}
+                    </a-button>
                   </template>
                 </a-list-item>
               </template>

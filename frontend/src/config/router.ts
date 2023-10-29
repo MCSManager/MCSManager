@@ -90,7 +90,17 @@ let originRouterConfig: RouterConfig[] = [
             component: LayoutContainer,
             meta: {
               permission: ROLE.USER
-            }
+            },
+            children: [
+              {
+                path: "/instances/terminal/serverConfig/fileEdit",
+                name: t("编辑配置文件"),
+                component: LayoutContainer,
+                meta: {
+                  permission: ROLE.USER
+                }
+              }
+            ]
           }
         ]
       }
