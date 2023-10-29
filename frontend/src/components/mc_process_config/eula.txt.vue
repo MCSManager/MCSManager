@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import LineOption from "@/components/LineOption.vue";
-import { getDescriptionByTitle } from "@/tools/commom";
+import { getDescriptionByTitle } from "@/tools/common";
 
 const props = defineProps<{
   config: Object;
