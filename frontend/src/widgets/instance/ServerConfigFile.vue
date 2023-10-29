@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, type Component } from "vue";
 import { t } from "@/lang/i18n";
-import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 import { useScreen } from "@/hooks/useScreen";
-import { getConfigFile } from "@/services/apis/instance";
+import { getConfigFile, updateConfigFile } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
+import { toUnicode } from "punycode";
 
 import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
 
@@ -25,7 +24,7 @@ const configPath = getMetaOrRouteValue("configPath");
 const extName = getMetaOrRouteValue("extName");
 const type = getMetaOrRouteValue("type");
 
-const component: any = {
+const component: { [key: string]: Component } = {
   // "common/server.properties": serverProperties,
   "common/eula.txt": eulaTxt
   // "bukkit/spigot.yml": spigotYml,
@@ -53,10 +52,14 @@ const toConfigOverview = () => {
   });
 };
 
-const { execute, state, isLoading } = getConfigFile();
+const {
+  execute: reqConfigFile,
+  state: configFile,
+  isLoading: getConfigFileLoading
+} = getConfigFile();
 const render = async () => {
   try {
-    await execute({
+    await reqConfigFile({
       params: {
         uuid: instanceId ?? "",
         remote_uuid: daemonId ?? "",
@@ -64,14 +67,53 @@ const render = async () => {
         type: extName ?? ""
       }
     });
-    if (state.value) {
-      config.value = state.value;
+    if (configFile.value) {
+      config.value = configFile.value;
     }
   } catch (err: any) {
     console.error(err);
     isFailure.value = true;
     return message.error(err.message);
   }
+};
+
+const {
+  execute: execUpdateConfigFile,
+  state: isOK,
+  isLoading: updateConfigFileLoading
+} = updateConfigFile();
+const save = async () => {
+  const config_ = { ...config.value };
+  if (configPath == "server.properties" && type && type.startsWith("minecraft/java")) {
+    for (const key in config) {
+      const value = config_[key];
+      if (value && typeof value == "string") {
+        config_[key] = toUnicode(value);
+      }
+    }
+  }
+  try {
+    await execUpdateConfigFile({
+      params: {
+        uuid: instanceId ?? "",
+        remote_uuid: daemonId ?? "",
+        fileName: configPath ?? "",
+        type: extName ?? ""
+      },
+      data: config_
+    });
+    if (isOK.value) {
+      message.success("保存成功");
+    }
+  } catch (err: any) {
+    console.error(err);
+    return message.error(err.message);
+  }
+};
+
+const refresh = async () => {
+  await render();
+  message.success("刷新成功");
 };
 
 onMounted(async () => {
@@ -90,10 +132,10 @@ onMounted(async () => {
             </a-button>
           </template>
           <template #right>
-            <a-button type="primary" class="mr-8">
+            <a-button type="primary" :loading="updateConfigFileLoading" class="mr-8" @click="save">
               {{ t("保存文件") }}
             </a-button>
-            <a-button v-if="!isPhone" :loading="isLoading" class="mr-8" @click="render">
+            <a-button v-if="!isPhone" :loading="getConfigFileLoading" class="mr-8" @click="refresh">
               {{ t("重新加载") }}
             </a-button>
             <a-button v-if="!isPhone" type="dashed">
@@ -102,7 +144,7 @@ onMounted(async () => {
             <a-dropdown v-if="isPhone">
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="2">
+                  <a-menu-item key="2" @click="refresh">
                     {{ t("重新加载") }}
                   </a-menu-item>
                   <a-menu-item key="3">
