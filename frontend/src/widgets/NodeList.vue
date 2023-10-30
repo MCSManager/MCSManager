@@ -74,9 +74,15 @@ const nodeOperations = [
   {
     title: t("TXT_CODE_ae533703"),
     icon: FolderOpenOutlined,
-    click: () => {
+    click: (item: ComputedNodeInfo) => {
+      const daemonId = item.uuid;
+      const instanceId = "global0001";
       toPage({
-        path: "/instances/terminal/files"
+        path: "/instances/terminal/files",
+        query: {
+          daemonId,
+          instanceId
+        }
       });
     }
   },
