@@ -60,6 +60,7 @@ declare module 'vue' {
     'Bds_server.properties': typeof import('./src/components/mc_process_config/bds_server.properties.vue')['default']
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
     'Bukkit.yml': typeof import('./src/components/mc_process_config/bukkit.yml.vue')['default']
+    'Bungeecord.config.yml': typeof import('./src/components/mc_process_config/bungeecord.config.yml.vue')['default']
     CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
