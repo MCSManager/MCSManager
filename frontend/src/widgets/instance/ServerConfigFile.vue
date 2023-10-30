@@ -13,6 +13,7 @@ import Loading from "@/components/Loading.vue";
 import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
 import serverProperties from "@/components/mc_process_config/server.properties.vue";
 import bukkitYml from "@/components/mc_process_config/bukkit.yml.vue";
+import bdsServerProperties from "@/components/mc_process_config/bds_server.properties.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -31,9 +32,9 @@ const component: { [key: string]: Component } = {
   "common/server.properties": serverProperties,
   "common/eula.txt": eulaTxt,
   // "bukkit/spigot.yml": spigotYml,
-  "bukkit/bukkit.yml": bukkitYml
+  "bukkit/bukkit.yml": bukkitYml,
   // "bungeecord/config.yml": configYml,
-  // "bds/server.properties": bdsServerProperties,
+  "bds/server.properties": bdsServerProperties
   // "mohist/mohist.yml": mohistYml,
   // "paper/paper.yml": paperYml,
   // "paper/paper-global.yml": paperGlobalYml,

@@ -57,6 +57,7 @@ declare module 'vue' {
     ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     AUpload: typeof import('ant-design-vue/es')['Upload']
+    'Bds_server.properties': typeof import('./src/components/mc_process_config/bds_server.properties.vue')['default']
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
     'Bukkit.yml': typeof import('./src/components/mc_process_config/bukkit.yml.vue')['default']
     CardError: typeof import('./src/components/CardError.vue')['default']
