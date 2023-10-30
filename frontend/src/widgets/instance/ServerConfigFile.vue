@@ -7,10 +7,12 @@ import { getConfigFile, updateConfigFile } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { toUnicode } from "punycode";
+import { toUnicode } from "@/tools/common";
+import Loading from "@/components/Loading.vue";
 
 import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
 import serverProperties from "@/components/mc_process_config/server.properties.vue";
+import bukkitYml from "@/components/mc_process_config/bukkit.yml.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -27,9 +29,9 @@ const type = getMetaOrRouteValue("type");
 
 const component: { [key: string]: Component } = {
   "common/server.properties": serverProperties,
-  "common/eula.txt": eulaTxt
+  "common/eula.txt": eulaTxt,
   // "bukkit/spigot.yml": spigotYml,
-  // "bukkit/bukkit.yml": bukkitYml,
+  "bukkit/bukkit.yml": bukkitYml
   // "bungeecord/config.yml": configYml,
   // "bds/server.properties": bdsServerProperties,
   // "mohist/mohist.yml": mohistYml,
@@ -42,7 +44,6 @@ const component: { [key: string]: Component } = {
   // "velocity/velocity.toml": velocityToml
 };
 const isFailure = ref(false);
-const config = ref();
 const { toPage } = useAppRouters();
 const toConfigOverview = () => {
   toPage({
@@ -56,7 +57,8 @@ const toConfigOverview = () => {
 const {
   execute: reqConfigFile,
   state: configFile,
-  isLoading: getConfigFileLoading
+  isLoading: getConfigFileLoading,
+  isReady
 } = getConfigFile();
 const render = async () => {
   try {
@@ -68,9 +70,6 @@ const render = async () => {
         type: extName ?? ""
       }
     });
-    if (configFile.value) {
-      config.value = configFile.value;
-    }
   } catch (err: any) {
     console.error(err);
     isFailure.value = true;
@@ -84,9 +83,9 @@ const {
   isLoading: updateConfigFileLoading
 } = updateConfigFile();
 const save = async () => {
-  const config_ = { ...config.value };
+  const config_ = { ...configFile.value };
   if (configPath == "server.properties" && type && type.startsWith("minecraft/java")) {
-    for (const key in config) {
+    for (const key in configFile) {
       const value = config_[key];
       if (value && typeof value == "string") {
         config_[key] = toUnicode(value);
@@ -162,9 +161,12 @@ onMounted(async () => {
         </BetweenMenus>
       </a-col>
 
-      <component :is="component[configName ?? '']" v-if="!isFailure" :config="config" />
+      <component :is="component[configName ?? '']" v-if="isReady" :config="configFile" />
 
       <a-col v-else :span="24">
+        <Loading />
+      </a-col>
+      <a-col v-if="isFailure" :span="24">
         <a-result
           status="error"
           :title="t('错误')"
