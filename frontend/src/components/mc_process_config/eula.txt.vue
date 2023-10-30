@@ -18,16 +18,6 @@ const description = {
     <CardPanel style="height: 100%">
       <template #body>
         <a-typography>
-          <a-typography-title :level="5">{{ t("关于配置兼容与翻译") }}</a-typography-title>
-          <a-typography-paragraph>
-            {{
-              t(
-                "此界面由开源社区开发者开发与翻译，若翻译发现错误可前往开源社区进行反馈。配置文件部分设置因版本和服务端类型不同会有些许变化，某些配置文件子元素过于复杂，可能会导致配置项值无法正常显示，如遇到不正常的配置项值切勿进行修改。若对配置文件要进行更为详细的配置，建议前往文件在线管理功能进行文件编辑。"
-              )
-            }}
-          </a-typography-paragraph>
-        </a-typography>
-        <a-typography>
           <a-typography-title :level="5">{{ t("关于配置文件") }}</a-typography-title>
           <a-typography-paragraph>
             {{
