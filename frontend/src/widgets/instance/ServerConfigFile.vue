@@ -163,7 +163,7 @@ onMounted(async () => {
         </BetweenMenus>
       </a-col>
 
-      <component :is="component[configName ?? '']" v-if="isReady" :config="configFile" />
+      <component :is="component[configName]" v-if="configName && isReady" :config="configFile" />
 
       <a-col v-else :span="24">
         <Loading />
