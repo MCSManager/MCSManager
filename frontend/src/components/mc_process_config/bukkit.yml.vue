@@ -49,7 +49,7 @@ const description = {
   aliases: t("简化指令文件")
 };
 
-const config_ = jsonToMap(props.config);
+const parsedConfig = jsonToMap(props.config);
 </script>
 
 <template>
@@ -72,8 +72,8 @@ const config_ = jsonToMap(props.config);
   <a-col :span="24">
     <CardPanel style="height: 100%">
       <template #body>
-        <div v-for="(item, index) in config_" :key="index">
-          <LineOption :option-value="config_" :option-key="index">
+        <div v-for="(item, index) in parsedConfig" :key="index">
+          <LineOption :option-value="parsedConfig" :option-key="index">
             <template #title>{{ index }}</template>
             <template #info>{{ getDescriptionByTitle(description, index) }}</template>
           </LineOption>
