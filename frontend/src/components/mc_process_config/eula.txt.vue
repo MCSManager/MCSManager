@@ -5,7 +5,7 @@ import LineOption from "@/components/LineOption.vue";
 import { getDescriptionByTitle } from "@/tools/common";
 
 const props = defineProps<{
-  config: Object;
+  config: Record<string, any>;
 }>();
 
 const description = {

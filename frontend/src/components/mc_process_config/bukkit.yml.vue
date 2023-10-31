@@ -5,7 +5,7 @@ import { getDescriptionByTitle } from "@/tools/common";
 import { jsonToMap } from "@/tools/common";
 
 const props = defineProps<{
-  config: Object;
+  config: Record<string, any>;
 }>();
 
 const description = {
