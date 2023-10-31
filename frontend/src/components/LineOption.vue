@@ -1,25 +1,30 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { EditOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
-  optionValue?: { [key: string]: any };
+  optionValue?: Record<string, any>;
   optionKey?: any;
   custom?: boolean;
 }>();
 
-const value = ref();
-const key = ref();
-const type = ref(0);
+enum CONTROL {
+  SELECT = 1,
+  INPUT = 2
+}
 
-const valueType = (value: string) => {
-  if (typeof value === "object") return -1;
-  if (typeof value === "boolean") return 1;
-  if (typeof value === "number") return 2;
-  return 0;
-};
+const value = ref<Record<string, any>>({});
+const key = ref();
+const type = ref(2);
+
+const valueType = computed(() => {
+  if (typeof value.value[key.value] === "boolean") {
+    return CONTROL.SELECT;
+  }
+  return CONTROL.INPUT;
+});
 
 const forceType = () => {
   if (type.value >= 2) return (type.value = 1);
@@ -30,13 +35,7 @@ onMounted(() => {
   if (props.custom) return;
   if (props.optionValue) value.value = props.optionValue;
   if (props.optionKey) key.value = props.optionKey;
-
-  if (valueType(value.value[key.value]) == 1) {
-    type.value = 1;
-  }
-  if (valueType(value.value[key.value]) != 1) {
-    type.value = 2;
-  }
+  type.value = valueType.value;
 });
 </script>
 
@@ -56,9 +55,9 @@ onMounted(() => {
               <slot name="optionInput"></slot>
             </div>
             <div v-else class="flex">
-              <a-input v-if="type == 2" v-model:value="value[key]" />
+              <a-input v-if="type == CONTROL.INPUT" v-model:value="value[key]" />
               <a-select
-                v-if="type == 1"
+                v-if="type == CONTROL.SELECT"
                 v-model:value="value[key]"
                 style="width: 100%"
                 :placeholder="t('未选择')"
@@ -66,7 +65,7 @@ onMounted(() => {
                 <a-select-option :value="true">{{ t("是") }}</a-select-option>
                 <a-select-option :value="false">{{ t("否") }}</a-select-option>
               </a-select>
-              <a-button v-if="type == 1" @click="forceType"><EditOutlined /></a-button>
+              <a-button v-if="type == CONTROL.SELECT" @click="forceType"><EditOutlined /></a-button>
             </div>
           </a-col>
         </a-row>
