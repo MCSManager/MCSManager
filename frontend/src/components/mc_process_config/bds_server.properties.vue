@@ -114,13 +114,9 @@ const description = {
   <a-col :span="24">
     <CardPanel style="height: 100%">
       <template #body>
-        <!-- 根据一层 Map 对象遍历所有选项 -->
         <div v-for="(item, index) in config" :key="index">
-          <!-- 选项标题与选项传值,组件会自动判断其值类型采用不同组件  -->
           <LineOption :option-value="config" :option-key="index">
-            <!-- 选项标题 -->
             <template #title>{{ index }}</template>
-            <!-- 选项中文解释 -->
             <template #info>{{ getDescriptionByTitle(description, index) }}</template>
           </LineOption>
         </div>
