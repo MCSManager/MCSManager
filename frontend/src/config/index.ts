@@ -18,6 +18,7 @@ import Terminal from "@/widgets/instance/Terminal.vue";
 import InstanceManagerBtns from "@/widgets/instance/ManagerBtns.vue";
 import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
 import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
+import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
 import InstanceFileManager from "@/widgets/instance/FileManager.vue";
 import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
 import ImageBox from "@/widgets/others/ImageBox.vue";
@@ -52,6 +53,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   InstanceManagerBtns,
   InstanceBaseInfo,
   InstanceServerConfigOverview,
+  InstanceServerConfigFile,
   InstanceFileManager,
   UserAccessSettings,
   ImageBox,

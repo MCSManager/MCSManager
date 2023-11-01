@@ -10,7 +10,7 @@ import {
 import { reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginUser } from "@/services/apis";
-import { sleep } from "@/tools/commom";
+import { sleep } from "@/tools/common";
 import { message } from "ant-design-vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 

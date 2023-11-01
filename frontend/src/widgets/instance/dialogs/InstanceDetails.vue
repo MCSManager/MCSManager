@@ -137,9 +137,9 @@ const submit = async () => {
     emit("update");
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return message.error(t("提交失败，请检查表单数据"));
+    return message.error(error.message);
   }
 };
 

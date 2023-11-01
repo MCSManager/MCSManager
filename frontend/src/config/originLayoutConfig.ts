@@ -224,6 +224,28 @@ export let ORIGIN_LAYOUT_CONFIG: PageLayoutConfig[] = [
     ]
   },
   {
+    page: "/instances/terminal/serverConfig/fileEdit",
+    items: [
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "InstanceServerConfigFile",
+        title: t("编辑服务端配置文件"),
+        width: 12,
+        height: LayoutCardHeight.AUTO,
+        disableDelete: true
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "EmptyCard",
+        title: "",
+        width: 12,
+        height: LayoutCardHeight.MINI
+      }
+    ]
+  },
+  {
     page: "/users",
     items: [
       {

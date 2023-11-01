@@ -52,7 +52,7 @@ const btns = arrayFilter([
       toPage({
         path: "/instances/terminal/serverConfig",
         query: {
-          type: "Minecraft"
+          type: instanceInfo.value?.config.type
         }
       });
     }

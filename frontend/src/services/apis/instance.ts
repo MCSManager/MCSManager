@@ -230,3 +230,56 @@ export const queryAsyncTask = useDefineApi<
   url: "/api/protected_instance/query_asynchronous",
   method: "POST"
 });
+
+// 获取配置文件列表
+export const getConfigFileList = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+    data: {
+      files: string[];
+    };
+  },
+  {
+    check: boolean;
+    file: string;
+  }[]
+>({
+  method: "POST",
+  url: "/api/protected_instance/process_config/list"
+});
+
+// 获取配置文件内容
+export const getConfigFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+      fileName: string;
+      type: string;
+    };
+  },
+  any
+>({
+  method: "GET",
+  url: "/api/protected_instance/process_config/file"
+});
+
+// 更新配置文件内容
+export const updateConfigFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+      fileName: string;
+      type: string;
+    };
+    data: any;
+  },
+  boolean
+>({
+  method: "PUT",
+  url: "/api/protected_instance/process_config/file"
+});
