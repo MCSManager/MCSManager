@@ -9,14 +9,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
-
-// import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
-// import serverProperties from "@/components/mc_process_config/server.properties.vue";
-// import bukkitYml from "@/components/mc_process_config/bukkit.yml.vue";
-// import bungeecordConfigYml from "@/components/mc_process_config/bungeecord.config.yml.vue";
-// import bdsServerProperties from "@/components/mc_process_config/bds_server.properties.vue";
-
-import configComponent from "@/components/mc_process_config/default.vue";
+import configComponent from "@/mc_process_config.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -30,24 +23,6 @@ const configName = getMetaOrRouteValue("configName");
 const configPath = getMetaOrRouteValue("configPath");
 const extName = getMetaOrRouteValue("extName");
 const type = getMetaOrRouteValue("type");
-
-// const component: { [key: string]: Component } = {
-//   "common/server.properties": serverProperties,
-//   "common/eula.txt": eulaTxt,
-//   // "bukkit/spigot.yml": spigotYml,
-//   "bukkit/bukkit.yml": bukkitYml,
-//   "bungeecord/config.yml": bungeecordConfigYml,
-//   "bds/server.properties": bdsServerProperties
-//   // "mohist/mohist.yml": mohistYml,
-//   // "paper/paper.yml": paperYml,
-//   // "paper/paper-global.yml": paperGlobalYml,
-//   // "paper/paper-world-defaults.yml": paperWorldDefaultsYml,
-//   // "geyser/config.yml": geyserYml,
-//   // "mcdr/config.yml": mcdrConfigYml,
-//   // "mcdr/permission.yml": permissionYml,
-//   // "velocity/velocity.toml": velocityToml
-// };
-
 const isFailure = ref(false);
 const { toPage } = useAppRouters();
 const toConfigOverview = () => {
@@ -166,8 +141,6 @@ onMounted(async () => {
         </BetweenMenus>
       </a-col>
 
-      <!-- <component :is="component[configName]" v-if="configName && isReady" :config="configFile" /> -->
-
       <configComponent
         v-if="configName && isReady"
         :config="configFile"
@@ -181,7 +154,7 @@ onMounted(async () => {
         <a-result
           status="error"
           :title="t('暂不支持编辑此文件')"
-          :sub-title="t('可能是由于文件为空或权限不足。可尝试使用 “文件管理” 对本文件进行编辑。')"
+          :sub-title="t('可能是面板无权访问此文件，可尝试使用 “文件管理” 对本文件进行编辑。')"
         >
           <template #extra>
             <a-button type="primary" @click="toConfigOverview">
