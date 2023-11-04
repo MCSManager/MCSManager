@@ -230,7 +230,7 @@ export const configData: {
     }
   },
   "bukkit/spigot.yml": {
-    desc: t("此配置文件为 spigot 类或其他衍生类服务端常见的配置文件"),
+    desc: t("此配置文件为 Spigot 类或其他衍生类服务端常见的配置文件"),
     config: {
       settings: {
         debug: t("是否启用调试模式"),
@@ -469,7 +469,7 @@ export const configData: {
   },
   "paper/paper.yml": {
     desc: t(
-      "此配置文件为 paper 类或其他衍生类服务端常见的配置文件，他拓展了 spigot 配置文件上的不足之处。"
+      "此配置文件为 paper 类或其他衍生类服务端常见的配置文件，他拓展了 Spigot 配置文件上的不足之处。"
     ),
     config: {
       _version: t("配置文件版本，一般情况下不要修改，修改后可能影响服务器正常运行"),
@@ -614,7 +614,7 @@ export const configData: {
       }
     }
   },
-  "paper/config/paper-global.yml": {
+  "paper/paper-global.yml": {
     desc: t(
       "此配置文件为 paper 类或其他衍生类服务端常见的配置文件，他拓展了 spigot 配置文件上的不足之处。"
     ),
@@ -760,12 +760,351 @@ export const configData: {
         "early-warning-every": t("每隔多少时间发出一次预警")
       }
     }
+  },
+  "paper/paper-world-defaults.yml": {
+    desc: t(
+      "PaperSpigot 服务端软件全局配置文件，能够进一步的配置高级参数以及更具体化的游戏设置，对整体性能有极大的决定效果"
+    ),
+    config: {
+      _version: t("配置文件版本，一般情况下不要修改，修改后可能影响服务器正常运行"),
+      anticheat: {
+        "anti-xray": {
+          enabled: t("启用反透视功能"),
+          "engine-mode": t("反透视引擎模式"),
+          "hidden-blocks": t("反透视隐藏方块列表"),
+          "lava-obscures": t("岩浆遮挡视线"),
+          "max-block-height": t("最大方块高度"),
+          "replacement-blocks": t("替换方块列表"),
+          "update-radius": t("更新半径"),
+          "use-permission": t("使用权限控制")
+        },
+        obfuscation: {
+          items: {
+            "hide-durability": t("隐藏耐久度"),
+            "hide-itemmeta": t("隐藏物品元数据"),
+            "hide-itemmeta-with-visual-effects": t("隐藏带视觉效果的物品元数据")
+          }
+        }
+      },
+      chunks: {
+        "auto-save-interval": t("自动保存间隔"),
+        "delay-chunk-unloads-by": t("延迟区块卸载时间"),
+        "entity-per-chunk-save-limit": t("每区块实体保存数量限制"),
+        "fixed-chunk-inhabited-time": t("固定区块居住时间"),
+        "flush-regions-on-save": t("保存时刷新区域"),
+        "max-auto-save-chunks-per-tick": t("每tick最大自动保存区块数"),
+        "prevent-moving-into-unloaded-chunks": t("阻止移动到未加载的区块")
+      },
+      collisions: {
+        "allow-player-cramming-damage": t("允许玩家拥挤伤害"),
+        "allow-vehicle-collisions": t("允许载具碰撞"),
+        "fix-climbing-bypassing-cramming-rule": t("修复攀爬规则绕过拥挤限制"),
+        "max-entity-collisions": t("最大实体碰撞数"),
+        "only-players-collide": t("仅玩家碰撞")
+      },
+      entities: {
+        "armor-stands": {
+          "do-collision-entity-lookups": t("盔甲架碰撞实体查找"),
+          tick: t("盔甲架刻....（？我也不知道啥意思）")
+        },
+        behavior: {
+          "allow-spider-world-border-climbing": t("允许蜘蛛越过世界边界"),
+          "baby-zombie-movement-modifier": t("小僵尸移动修正"),
+          "disable-chest-cat-detection": t("禁用箱子上的猫检测"),
+          "disable-creeper-lingering-effect": t("禁用爬行者残留效果"),
+          "disable-player-crits": t("禁用玩家暴击"),
+          behavior: {
+            "door-breaking-difficulty": {
+              husk: t("尸壳在什么难度下会破门"),
+              vindicator: t("恶魂在什么难度下会破门"),
+              zombie: t("僵尸在什么难度下会破门"),
+              zombie_villager: t("僵尸村民在什么难度下会破门"),
+              zombified_piglin: t("僵尸化猪灵在什么难度下会破门")
+            },
+            "ender-dragons-death-always-places-dragon-egg": t("末影龙死亡总是生成龙蛋"),
+            "experience-merge-max-value": t("经验合并最大值"),
+            "mobs-can-always-pick-up-loot": {
+              skeletons: t("骷髅"),
+              zombies: t("僵尸")
+            },
+            "nerf-pigmen-from-nether-portals": t("通过下界传送门限制僵尸猪灵"),
+            "parrots-are-unaffected-by-player-movement": t("鹦鹉不受玩家移动影响"),
+            "phantoms-do-not-spawn-on-creative-players": t("创造模式玩家不受幻翼袭击"),
+            "phantoms-only-attack-insomniacs": t("幻翼仅攻击失眠者"),
+            "phantoms-spawn-attempt-max-seconds": t("幻翼产生最大秒数"),
+            "phantoms-spawn-attempt-min-seconds": t("幻翼产生最小秒数"),
+            "piglins-guard-chests": t("猪灵守卫箱子"),
+            "pillager-patrols": {
+              disable: t("是否禁用掠夺者"),
+              "spawn-chance": t("生成几率"),
+              "spawn-delay": {
+                "per-player": t("生成延迟-每玩家"),
+                ticks: t("生成延迟-刻")
+              },
+              start: {
+                day: t("开始时间-天"),
+                "per-player": t("开始-每玩家")
+              }
+            },
+            "player-insomnia-start-ticks": t("玩家失眠开始刻数"),
+            "should-remove-dragon": t("是否移除末影龙"),
+            "spawner-nerfed-mobs-should-jump": t("受限制刷怪笼的生物是否跳跃"),
+            "zombie-villager-infection-chance": t("僵尸村民感染几率"),
+            "zombies-target-turtle-eggs": t("僵尸是否攻击海龟蛋"),
+            entities: {
+              "armor-stands": {
+                "do-collision-entity-lookups": t("装甲架碰撞实体查询"),
+                tick: t("刻")
+              },
+              behavior: {
+                "allow-spider-world-border-climbing": t("允许蜘蛛越过世界边界攀爬"),
+                "baby-zombie-movement-modifier": t("婴儿僵尸移动调整"),
+                "disable-chest-cat-detection": t("禁用箱子猫检测"),
+                "disable-creeper-lingering-effect": t("禁用爬行者持续效果"),
+                "disable-player-crits": t("禁用玩家暴击")
+              },
+              "entities-target-with-follow-range": t("实体根据跟随范围选择目标"),
+              markers: {
+                tick: t("刻")
+              },
+              "mob-effects": {
+                "immune-to-wither-effect": {
+                  wither: t("凋零"),
+                  "wither-skeleton": t("凋零骷髅")
+                },
+                "spiders-immune-to-poison-effect": t("蜘蛛免疫中毒效果"),
+                "undead-immune-to-certain-effects": t("不死生物免疫特定效果")
+              },
+              sniffer: {
+                "boosted-hatch-time": t("提升孵化时间"),
+                "hatch-time": t("孵化时间")
+              },
+              spawning: {
+                "all-chunks-are-slime-chunks": t("所有区块都是史莱姆区块"),
+                "alt-item-despawn-rate": {
+                  enabled: t("启用"),
+                  items: {
+                    cobblestone: t("圆石")
+                  }
+                },
+                "count-all-mobs-for-spawning": t("计算所有生物用于生成"),
+                "creative-arrow-despawn-rate": t("创造模式箭矢消失速率"),
+                "despawn-ranges": {
+                  ambient: {
+                    hard: t("困难"),
+                    soft: t("简单")
+                  },
+                  axolotls: {
+                    hard: t("困难"),
+                    soft: t("简单")
+                  },
+                  creature: {
+                    hard: t("困难"),
+                    soft: t("简单")
+                  }
+                }
+              },
+              "tracking-range-y": {
+                animal: t("动物"),
+                display: t("显示"),
+                enabled: t("启用"),
+                misc: t("其他"),
+                monster: t("怪物"),
+                other: t("其他"),
+                player: t("玩家")
+              }
+            }
+          }
+        },
+        "entities-target-with-follow-range": t("跟随范围内的实体是否被目标选择器选中")
+      },
+      environment: {
+        "disable-explosion-knockback": t("禁用爆炸后退效果"),
+        "disable-ice-and-snow": t("禁用冰雪效果"),
+        "disable-teleportation-suffocation-check": t("禁用传送窒息检查")
+      },
+      scoreboards: {
+        "allow-non-player-entities-on-scoreboards": t("允许非玩家实体在记分板上"),
+        "use-vanilla-world-scoreboard-name-coloring": t("使用原版世界记分板名称颜色")
+      },
+      spawn: {
+        "allow-using-signs-inside-spawn-protection": t("允许在重生保护区域内使用告示牌"),
+        "keep-spawn-loaded": t("保持重生点加载"),
+        "keep-spawn-loaded-range": t("重生点加载范围")
+      },
+      "tick-rates": {
+        behavior: {
+          villager: {
+            validatenearbypoi: t("村民附近POI验证时间")
+          }
+        }
+      },
+      "unsupported-settings": {
+        "fix-invulnerable-end-crystal-exploit": t("修复无敌末影水晶漏洞")
+      }
+    }
+  },
+  "mohist/mohist.yml": {
+    desc: t("mohist.yml 服务端配置文件"),
+    config: {
+      mohist: {
+        lang: t("语言"),
+        check_update: t("检查更新"),
+        libraries: {
+          check: t("检查 libraries"),
+          downloadsource: t("libraries 下载源")
+        },
+        "installation-finished": t("是否安装完成")
+      }
+    }
+  },
+  "velocity/velocity.toml": {
+    desc: t(
+      "Velocity 群组服务端的重要配置文件，可以进行分布式管理，节点控制等，但此配置文件较为复杂，此处仅供简单的配置和操作"
+    ),
+    config: {
+      "config-version": t("配置版本。不要更改这个"),
+      bind: t("代理应绑定到哪个端口？默认情况下，我们将绑定到端口25577上的所有地址。"),
+      motd: t(
+        "应该是MOTD是什么？当玩家将您的服务器添加到服务器列表时，将显示此信息。仅接受MiniMessage格式。"
+      ),
+      "show-max-players": t("最大玩家数应该显示什么？（Velocity不支持在线玩家数上限。）"),
+      "online-mode": t("我们是否应该使用Mojang对玩家进行身份验证？默认情况下，此选项打开。"),
+      "force-key-authentication": t("代理是否应强制实施新的公钥安全标准？默认情况下，此选项打开。"),
+      "prevent-client-proxy-connections": t(
+        "如果此代理发送的客户端的ISP/AS与Mojang的身份验证服务器发送的不同，将踢出玩家。"
+      ),
+      "player-info-forwarding-mode": t("我们是否应将IP地址和其他数据转发到后端服务器？"),
+      "forwarding-secret-file": t(
+        "如果您使用modern或BungeeGuard IP转发，请在此处配置包含唯一密钥的文件。"
+      ),
+      "announce-forge": t("是否宣布您的服务器是否支持Forge。"),
+      "kick-existing-players": t(
+        "如果启用（默认为false）并且代理处于在线模式，则Velocity将踢出任何现有的在线玩家，如果尝试进行重复连接。"
+      ),
+      "ping-passthrough": t("应该将服务器列表ping请求传递到后端服务器吗？"),
+      "enable-player-address-logging": t(
+        "如果未启用（默认为true），则在日志中玩家的IP地址将被替换为<ip address withheld>。"
+      ),
+      servers: t("在此处配置您的服务器。每个键表示服务器的名称，值表示要连接的服务器的IP地址。"),
+      try: t("在玩家登录或被服务器踢出时，应尝试哪些服务器的顺序。"),
+      "forced-hosts": t("在此处配置您的强制主机。"),
+      advanced: t("高级选项"),
+      "compression-threshold": t(
+        "在我们压缩它之前，Minecraft数据包的大小必须是多大。将其设置为零将压缩所有数据包，将其设置为-1将完全禁用压缩。"
+      ),
+      "compression-level": t("应该执行多少压缩（从0-9）。默认值为-1，使用默认级别6。"),
+      "login-ratelimit": t(
+        "在最后一次连接后，客户端允许多快连接？默认情况下，这是三秒。通过将其设置为0来禁用此功能。"
+      ),
+      "connection-timeout": t("在此处为连接超时指定自定义超时。默认值为五秒。"),
+      "read-timeout": t("在此处为连接指定读取超时。默认值为30秒。"),
+      "haproxy-protocol": t(
+        "启用与HAProxy的PROXY协议的兼容性。如果您不知道这是用来做什么的，请不要启用它。"
+      ),
+      "tcp-fast-open": t("在代理上启用TCP快速打开支持。要求代理在Linux上运行。"),
+      "bungee-plugin-message-channel": t("在Velocity上启用BungeeCord插件消息通道支持。"),
+      "show-ping-requests": t("显示来自客户端的ping请求。"),
+      "failover-on-unexpected-server-disconnect": t(
+        "默认情况下，Velocity将尝试优雅地处理用户对服务器的连接意外丢失，而不是断开连接。"
+      ),
+      "announce-proxy-commands": t("声明1.13+客户端的代理命令。"),
+      "log-command-executions": t("启用命令的日志记录。"),
+      "log-player-connections": t("启用玩家连接的日志记录。"),
+      query: t("查询"),
+      enabled: t("是否启用响应GameSpy 4查询响应。"),
+      port: t("如果查询已启用，查询协议应监听的端口是多少？"),
+      map: t("报告给查询服务的地图名称。"),
+      "show-plugins": t("默认情况下，查询响应中是否应显示插件。")
+    }
+  },
+  "geyser/config.yml": {
+    desc: t(
+      "Geyser 独立版服务端软件配置文件，拥有基本的服务器参数设定（如端口，最大玩家数等）并且也可以设定服务端细节参数（区块缓存，线程数等）"
+    ),
+    config: {
+      bedrock: {
+        port: t("监听端口"),
+        "clone-remote-port": t("使用与 Java 版相同的端口"),
+        motd1: t("服务器的 MOTD。如果“passthrough-motd”设置为true，则无关紧要"),
+        motd2: t("第二行 MOTD"),
+        "server-name": t("将发送到JAVA客户端的服务器名称。这在暂停菜单和设置菜单中都可见。"),
+        "compression-level": t(
+          "压缩到基岩版客户端的网络流量。数字越高，CPU使用量越大，但使用的带宽越小。-1或9以下没有任何影响。设置为-1以禁用。"
+        ),
+        "enable-proxy-protocol": t(
+          "是否为客户端启用PROXY协议。除非在Geyser实例前面运行UDP反向代理，否则您不希望启用此功能。"
+        )
+      },
+
+      remote: {
+        address: t("Java服务器的IP地址"),
+        port: t("Java服务器的端口"),
+        "auth-type": t("服务器身份验证类型。可以是offline、online或floodgate。"),
+        "allow-password-authentication": t(
+          "通过Geyser允许基于密码的身份验证方法。仅在在线模式下有用。"
+        ),
+        "use-proxy-protocol": t("连接到服务器时是否启用PROXY协议。"),
+        "forward-hostname": t("将基岩版客户端用于连接到Java服务器的主机名转发")
+      },
+
+      "floodgate-key-file": t(
+        "Floodgate使用加密以确保从授权源使用。这应该指向Floodgate生成的公钥（BungeeCord、Spigot或Velocity）"
+      ),
+      "saved-user-logins": t(
+        "仅对在线模式身份验证类型。保存应在登录后保存其Java帐户的基岩版玩家列表。"
+      ),
+      "pending-authentication-timeout": t("在用户授权Geyser访问其Microsoft帐户时等待的秒数。"),
+      "command-suggestions": t(
+        "在第一次打开命令提示符时，基岩版客户端可能会冻结。禁用此功能将阻止发送命令建议并解决基岩版客户端的冻结。"
+      ),
+      "passthrough-motd": t("转发远程服务器的MOTD到基岩版玩家。"),
+      "passthrough-protocol-name": t("转发服务器协议名称（例如BungeeCord [X.X]，Paper 1.X）。"),
+      "passthrough-player-counts": t("转发远程服务器的玩家计数和最大玩家数到基岩版玩家。"),
+      "legacy-ping-passthrough": t(
+        "启用LEGACY ping passthrough。除非您的MOTD或玩家计数未正确显示，否则无需启用此选项。"
+      ),
+      "ping-passthrough-interval": t("以秒为单位的ping远程服务器的间隔。"),
+      "forward-player-ping": t(
+        "是否将玩家ping转发到服务器。启用此选项将允许基岩版玩家具有更准确的ping，但也可能导致玩家更容易超时。"
+      ),
+      "max-players": t("最大连接玩家数。"),
+      "debug-mode": t("是否通过控制台发送调试消息。"),
+      "allow-third-party-capes": t("允许第三方披风可见。"),
+      "allow-third-party-ears": t("允许第三方deadmau5耳朵可见。"),
+      "show-cooldown": t("是否发送虚假的冷却指示。"),
+      "show-coordinates": t("控制是否向玩家显示坐标。"),
+      "disable-bedrock-scaffolding": t("是否阻止基岩版玩家执行脚手架式搭桥。"),
+      "emote-offhand-workaround": t("执行任何表情时，是否将副手和主手物品互换。"),
+      "default-locale": t("如果我们没有客户端请求的语言，则使用的默认语言。"),
+      "cache-images": t("指定将图像缓存到磁盘以节省从互联网下载它们的时间的秒数。0表示禁用。"),
+      "allow-custom-skulls": t("允许显示自定义头颅。"),
+      "max-visible-custom-skulls": t("每个玩家显示的最大自定义头颅数。"),
+      "custom-skull-render-distance": t("在玩家周围以块为单位显示自定义头颅的半径。"),
+      "add-non-bedrock-items": t("是否添加在基岩版版中本来不存在的任何物品和方块。"),
+      "above-bedrock-nether-building": t(
+        "通过将Nether维度ID更改为End ID来解决基岩版无法在Y坐标127以上方建筑的问题。"
+      ),
+      "force-resource-packs": t("是否强制客户端加载所有资源包。"),
+      "xbox-achievements-enabled": t("是否启用Xbox成就。"),
+      "log-player-ip-addresses": t("服务器是否记录玩家的IP地址。"),
+      "notify-on-new-bedrock-update": t(
+        "是否提醒控制台和操作员有新的 Geyser 版本支持 Bedrock 版本而此 Geyser 版本不支持的 Bedrock 版本"
+      ),
+      "unusable-space-block": t("在基岩版玩家库存中标记不可用插槽的物品。"),
+
+      metrics: {
+        enabled: t("是否向 Geyser 上报匿名数据"),
+        uuid: t("此服务器的 UUID ，请勿修改")
+      },
+      "scoreboard-packet-threshold": t("更新积分板的阈值，每秒多少个Scoreboard数据包。"),
+      "enable-proxy-connections": t("允许来自ProxyPass和Waterdog的连接。"),
+      mtu: t("互联网支持的最大MTU为1492，但可能会导致数据包分段问题。"),
+      "use-direct-connection": t("是否连接到Java服务器而无需创建TCP连接。"),
+      "disable-compression": t("是否尝试为基岩版玩家禁用压缩。"),
+      "config-version": t("配置文件版本，修改后可能导致不可预测的问题。建议不要修改此项。")
+    }
   }
-  //   "velocity/velocity.toml": {},
   //   "mcdr/permission.yml": {},
   //   "mcdr/config.yml": {},
-  //   "geyser/config.yml": {},
-  //   "paper/paper-world-defaults.yml": {},
-  //   "paper/paper-global.yml": {},
-  //   "mohist/mohist.yml": {},
 };
