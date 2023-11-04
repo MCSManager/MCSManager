@@ -229,16 +229,187 @@ export const configData: {
       )
     }
   },
-
-  //   "velocity/velocity.toml": {},
-  //   "mcdr/permission.yml": {},
-  //   "mcdr/config.yml": {},
-  //   "geyser/config.yml": {},
-  //   "paper/paper-world-defaults.yml": {},
-  //   "paper/paper-global.yml": {},
-  //   "mohist/mohist.yml": {},
-  //   "paper/paper.yml": {},
-  //   "bukkit/spigot.yml": {},
+  "bukkit/spigot.yml": {
+    desc: "",
+    config: {
+      settings: {
+        debug: t("是否启用调试模式"),
+        "user-cache-size": t("用户缓存大小"),
+        "player-shuffle": t("玩家洗牌"),
+        "netty-threads": t("Netty线程数"),
+        "log-villager-deaths": t("记录村民死亡事件到日志"),
+        "log-named-deaths": t("记录具名实体死亡事件到日志"),
+        attribute: {
+          maxHealth: {
+            max: t("最大生命值")
+          },
+          movementSpeed: {
+            max: t("最大移动速度")
+          },
+          attackDamage: {
+            max: t("最大攻击伤害")
+          }
+        },
+        "save-user-cache-on-stop-only": t("仅在服务器停止时保存用户缓存"),
+        "moved-too-quickly-multiplier": t("过快移动的倍数"),
+        "moved-wrongly-threshold": t("错误移动的阈值"),
+        "sample-count": t("样本数量"),
+        bungeecord: t("是否启用BungeeCord支持"),
+        "timeout-time": t("超时时间"),
+        "restart-on-crash": t("服务器崩溃时是否自动重启"),
+        "restart-script": t("重启脚本路径")
+      },
+      messages: {
+        whitelist: t("您未被加入白名单！"),
+        "unknown-command": t('未知命令。输入 "/help" 获取帮助。'),
+        "server-full": t("服务器已满！"),
+        "outdated-client": t("客户端过旧！请使用 {0}"),
+        "outdated-server": t("服务器过旧！当前版本为 {0}"),
+        restart: t("服务器正在重新启动")
+      },
+      advancements: {
+        "disable-saving": t("是否禁用进度保存")
+      },
+      commands: {
+        log: t("是否记录命令到日志"),
+        "tab-complete": t("选项卡完成"),
+        "send-namespaced": t("是否发送命名空间命令"),
+        "silent-commandblock-console": t("是否静默命令方块控制台")
+      },
+      players: {
+        "disable-saving": t("是否禁用玩家数据保存")
+      },
+      "world-settings": {
+        default: {
+          "below-zero-generation-in-existing-chunks": t("在现有区块中生成零以下的地形"),
+          "end-portal-sound-radius": t("末地传送门音效半径"),
+          "wither-spawn-sound-radius": t("凋零生成音效半径"),
+          "zombie-aggressive-towards-villager": t("僵尸对村民敌对"),
+          "hanging-tick-frequency": t("悬挂方块更新频率"),
+          "enable-zombie-pigmen-portal-spawns": t("是否启用僵尸猪灵的传送门生成"),
+          "dragon-death-sound-radius": t("末影龙死亡音效半径"),
+          "merge-radius": {
+            item: t("物品合并半径"),
+            exp: t("经验球合并半径")
+          },
+          "nerf-spawner-mobs": t("减弱刷怪笼生成的生物"),
+          "simulation-distance": t("模拟距离"),
+          "mob-spawn-range": t("生物生成范围"),
+          "view-distance": t("视距"),
+          "item-despawn-rate": t("物品消失速度"),
+          "arrow-despawn-rate": t("箭消失速度"),
+          "trident-despawn-rate": t("三叉戟消失速度"),
+          "thunder-chance": t("雷击概率"),
+          growth: {
+            "cactus-modifier": t("仙人掌生长速度"),
+            "cane-modifier": t("甘蔗生长速度"),
+            "melon-modifier": t("西瓜生长速度"),
+            "mushroom-modifier": t("蘑菇生长速度"),
+            "pumpkin-modifier": t("南瓜生长速度"),
+            "sapling-modifier": t("树苗生长速度"),
+            "beetroot-modifier": t("甜菜根生长速度"),
+            "carrot-modifier": t("胡萝卜生长速度"),
+            "potato-modifier": t("土豆生长速度"),
+            "torchflower-modifier": t("火把花生长速度"),
+            "wheat-modifier": t("小麦生长速度"),
+            "netherwart-modifier": t("地狱疣生长速度"),
+            "vine-modifier": t("藤蔓生长速度"),
+            "cocoa-modifier": t("可可豆生长速度"),
+            "bamboo-modifier": t("竹子生长速度"),
+            "sweetberry-modifier": t("甜浆果生长速度"),
+            "kelp-modifier": t("海带生长速度"),
+            "twistingvines-modifier": t("扭曲藤蔓生长速度"),
+            "weepingvines-modifier": t("哭泣藤蔓生长速度"),
+            "cavevines-modifier": t("洞穴藤蔓生长速度"),
+            "glowberry-modifier": t("发光浆果生长速度"),
+            "pitcherplant-modifier": t("捕虫草生长速度")
+          },
+          "ticks-per": {
+            "hopper-transfer": t("漏斗传输刻度"),
+            "hopper-check": t("漏斗检查刻度")
+          },
+          "hopper-amount": t("漏斗数量"),
+          "hopper-can-load-chunks": t("漏斗是否可加载区块"),
+          "entity-tracking-range": {
+            players: t("玩家追踪范围"),
+            animals: t("动物追踪范围"),
+            monsters: t("怪物追踪范围"),
+            misc: t("其他实体追踪范围"),
+            display: t("显示实体追踪范围"),
+            other: t("其他追踪范围")
+          },
+          "entity-activation-range": {
+            animals: t("动物激活范围"),
+            monsters: t("怪物激活范围"),
+            raiders: t("袭击者激活范围"),
+            misc: t("其他实体激活范围"),
+            water: t("水中实体激活范围"),
+            villagers: t("村民激活范围"),
+            "flying-monsters": t("飞行怪物激活范围"),
+            "wake-up-inactive": {
+              "animals-max-per-tick": t("每tick唤醒的动物数量上限"),
+              "animals-every": t("每隔多少ticks唤醒一次动物"),
+              "animals-for": t("唤醒动物的持续ticks"),
+              "monsters-max-per-tick": t("每tick唤醒的怪物数量上限"),
+              "monsters-every": t("每隔多少ticks唤醒一次怪物"),
+              "monsters-for": t("唤醒怪物的持续ticks"),
+              "villagers-max-per-tick": t("每tick唤醒的村民数量上限"),
+              "villagers-every": t("每隔多少ticks唤醒一次村民"),
+              "villagers-for": t("唤醒村民的持续ticks"),
+              "flying-monsters-max-per-tick": t("每tick唤醒的飞行怪物数量上限"),
+              "flying-monsters-every": t("每隔多少ticks唤醒一次飞行怪物"),
+              "flying-monsters-for": t("唤醒飞行怪物的持续ticks")
+            },
+            "villagers-work-immunity-after": t("村民在工作后免疫时间"),
+            "villagers-work-immunity-for": t("村民免疫时间的持续ticks"),
+            "villagers-active-for-panic": t("村民激活时间以触发惊恐"),
+            "tick-inactive-villagers": t("是否tick非激活的村民"),
+            "ignore-spectators": t("忽略观众实体")
+          },
+          "seed-village": t("村庄种子"),
+          "seed-desert": t("沙漠种子"),
+          "seed-igloo": t("冰屋种子"),
+          "seed-jungle": t("丛林种子"),
+          "seed-swamp": t("沼泽种子"),
+          "seed-monument": t("海底神殿种子"),
+          "seed-shipwreck": t("沉船种子"),
+          "seed-ocean": t("海洋种子"),
+          "seed-outpost": t("哨站种子"),
+          "seed-endcity": t("末地城种子"),
+          "seed-slime": t("史莱姆块种子"),
+          "seed-nether": t("下界种子"),
+          "seed-mansion": t("森林府邸种子"),
+          "seed-fossil": t("化石种子"),
+          "seed-portal": t("传送门种子"),
+          "seed-ancientcity": t("古代城市种子"),
+          "seed-trailruins": t("痕迹废墟种子"),
+          "seed-buriedtreasure": t("埋藏宝藏种子"),
+          "seed-mineshaft": t("地牢种子"),
+          "seed-stronghold": t("要塞种子"),
+          "max-tnt-per-tick": t("每tick的TNT数量上限"),
+          hunger: {
+            "jump-walk-exhaustion": t("跳跃和行走的饥饿值耗尽"),
+            "jump-sprint-exhaustion": t("跳跃和奔跑的饥饿值耗尽"),
+            "combat-exhaustion": t("战斗的饥饿值耗尽"),
+            "regen-exhaustion": t("恢复的饥饿值耗尽"),
+            "swim-multiplier": t("游泳的饥饿值耗尽倍数"),
+            "sprint-multiplier": t("冲刺的饥饿值耗尽倍数"),
+            "other-multiplier": t("其他活动的饥饿值耗尽倍数")
+          },
+          "max-tick-time": {
+            tile: t("方块处理的最大ticks"),
+            entity: t("实体处理的最大ticks")
+          },
+          verbose: t("是否启用详细输出")
+        }
+      },
+      "config-version": t("配置版本"),
+      stats: {
+        "disable-saving": t("是否禁用统计数据保存"),
+        "forced-stats": t("强制统计数据")
+      }
+    }
+  },
 
   "bungeecord/config.yml": {
     desc: t(
@@ -296,4 +467,12 @@ export const configData: {
       servers: t("下游服务端设置，只有在此处设置过的下游服务器才可被连接")
     }
   }
+  //   "velocity/velocity.toml": {},
+  //   "mcdr/permission.yml": {},
+  //   "mcdr/config.yml": {},
+  //   "geyser/config.yml": {},
+  //   "paper/paper-world-defaults.yml": {},
+  //   "paper/paper-global.yml": {},
+  //   "mohist/mohist.yml": {},
+  //   "paper/paper.yml": {},
 };
