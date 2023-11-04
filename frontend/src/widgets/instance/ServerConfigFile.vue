@@ -9,7 +9,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
-import configComponent from "@/mc_process_config.vue";
+import configComponent from "@/components/mc_process_config.vue";
 
 const props = defineProps<{
   card: LayoutCard;

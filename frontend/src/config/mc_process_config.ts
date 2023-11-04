@@ -230,7 +230,7 @@ export const configData: {
     }
   },
   "bukkit/spigot.yml": {
-    desc: "",
+    desc: t("此配置文件为 spigot 类或其他衍生类服务端常见的配置文件"),
     config: {
       settings: {
         debug: t("是否启用调试模式"),
@@ -466,6 +466,300 @@ export const configData: {
       disabled_commands: t("禁用的指令"),
       servers: t("下游服务端设置，只有在此处设置过的下游服务器才可被连接")
     }
+  },
+  "paper/paper.yml": {
+    desc: t(
+      "此配置文件为 paper 类或其他衍生类服务端常见的配置文件，他拓展了 spigot 配置文件上的不足之处。"
+    ),
+    config: {
+      _version: t("配置文件版本，一般情况下不要修改，修改后可能影响服务器正常运行"),
+      "block-updates": {
+        "disable-chorus-plant-updates": t("禁用唱片植物更新"),
+        "disable-mushroom-block-updates": t("禁用蘑菇方块更新"),
+        "disable-noteblock-updates": t("禁用音符盒更新"),
+        "disable-tripwire-updates": t("禁用绊线更新")
+      },
+      "chunk-loading-advanced": {
+        "auto-config-send-distance": t("自动配置发送距离"),
+        "player-max-concurrent-chunk-generates": t("玩家最大同时生成区块数"),
+        "player-max-concurrent-chunk-loads": t("玩家最大同时加载区块数")
+      },
+      "chunk-loading-basic": {
+        "player-max-chunk-generate-rate": t("玩家最大区块生成速率"),
+        "player-max-chunk-load-rate": t("玩家最大区块加载速率"),
+        "player-max-chunk-send-rate": t("玩家最大区块发送速率")
+      },
+      "chunk-system": {
+        "gen-parallelism": t("生成并行度"),
+        "io-threads": t("IO线程数"),
+        "worker-threads": t("工作线程数")
+      },
+      collisions: {
+        "enable-player-collisions": t("启用玩家碰撞"),
+        "send-full-pos-for-hard-colliding-entities": t("对于硬碰撞实体发送完整位置信息")
+      },
+      commands: {
+        "fix-target-selector-tag-completion": t("修复目标选择器标签补全"),
+        "suggest-player-names-when-null-tab-completions": t("在Tab键补全为空时建议玩家名"),
+        "time-command-affects-all-worlds": t("时间命令是否影响所有世界")
+      },
+      console: {
+        "enable-brigadier-completions": t("启用Brigadier命令补全"),
+        "enable-brigadier-highlighting": t("启用Brigadier语法高亮"),
+        "has-all-permissions": t("是否拥有所有权限")
+      },
+      "item-validation": {
+        book: {
+          author: t("书籍作者ID"),
+          page: t("书籍页数ID"),
+          title: t("书籍标题ID")
+        },
+        "book-size": {
+          "page-max": t("书籍最大页数"),
+          "total-multiplier": t("书籍总体积乘数")
+        },
+        "display-name": t("物品显示名称ID"),
+        "lore-line": t("物品描述行数ID"),
+        "resolve-selectors-in-books": t("解析书籍中的选择器")
+      },
+      logging: {
+        "deobfuscate-stacktraces": t("反混淆堆栈跟踪信息")
+      },
+      messages: {
+        kick: {
+          "authentication-servers-down": t("认证服务器不可用提示"),
+          "connection-throttle": t("连接限速提示"),
+          "flying-player": t("飞行玩家踢出提示"),
+          "flying-vehicle": t("飞行载具踢出提示")
+        },
+        "no-permission": t("无权限执行命令提示"),
+        "use-display-name-in-quit-message": t("退出消息中使用显示名称")
+      },
+      misc: {
+        "chat-threads": {
+          "chat-executor-core-size": t("聊天执行核心线程数"),
+          "chat-executor-max-size": t("聊天执行最大线程数")
+        },
+        "compression-level": t("压缩等级"),
+        "fix-entity-position-desync": t("修复实体位置不同步问题"),
+        "load-permissions-yml-before-plugins": t("在插件之前加载permissions.yml"),
+        "max-joins-per-tick": t("每tick最大连接数"),
+        "region-file-cache-size": t("区块文件缓存大小"),
+        "strict-advancement-dimension-check": t("严格检查维度的进度"),
+        "use-alternative-luck-formula": t("使用替代的Luck计算公式"),
+        "use-dimension-type-for-custom-spawners": t("自定义刷怪笼是否使用维度类型")
+      },
+      "packet-limiter": {
+        "all-packets": {
+          action: t("所有数据包处理方式"),
+          interval: t("数据包处理时间间隔"),
+          "max-packet-rate": t("最大数据包处理速率")
+        },
+        "kick-message": t("超出数据包处理速率的踢出消息"),
+        overrides: {
+          ServerboundPlaceRecipePacket: {
+            action: t("PlaceRecipePacket数据包处理方式"),
+            interval: t("PlaceRecipePacket数据包处理时间间隔"),
+            "max-packet-rate": t("PlaceRecipePacket最大数据包处理速率")
+          }
+        }
+      },
+      "player-auto-save": {
+        "max-per-tick": t("每tick最大玩家自动保存数"),
+        rate: t("玩家自动保存速率")
+      },
+      proxies: {
+        "bungee-cord": {
+          "online-mode": t("BungeeCord是否启用在线模式")
+        },
+        "proxy-protocol": t("是否启用代理协议"),
+        velocity: {
+          enabled: t("Velocity是否启用"),
+          "online-mode": t("Velocity是否启用在线模式"),
+          secret: t("Velocity代理密钥")
+        }
+      },
+      scoreboards: {
+        "save-empty-scoreboard-teams": t("保存空记分板队伍"),
+        "track-plugin-scoreboards": t("跟踪插件记分板")
+      },
+      "spam-limiter": {
+        "incoming-packet-threshold": t("入站数据包阈值"),
+        "recipe-spam-increment": t("合成表滥用增量"),
+        "recipe-spam-limit": t("合成表滥用上限"),
+        "tab-spam-increment": t("Tab键滥用增量"),
+        "tab-spam-limit": t("Tab键滥用上限")
+      },
+      timings: {
+        enabled: t("是否启用Timings"),
+        "hidden-config-entries": t("隐藏的配置项"),
+        "history-interval": t("历史记录间隔"),
+        "history-length": t("历史记录长度"),
+        "server-name": t("服务器名称"),
+        "server-name-privacy": t("服务器名称隐私设置"),
+        url: t("Timings报告URL"),
+        verbose: t("Timings详细输出")
+      },
+      "unsupported-settings": {
+        "allow-grindstone-overstacking": t("允许磨砂机超出堆叠上限"),
+        "allow-headless-pistons": t("允许无头活塞"),
+        "allow-permanent-block-break-exploits": t("允许永久方块破坏漏洞"),
+        "allow-piston-duplication": t("允许活塞复制"),
+        "compression-format": t("压缩格式"),
+        "perform-username-validation": t("执行用户名验证")
+      },
+      watchdog: {
+        "early-warning-delay": t("预警延迟"),
+        "early-warning-every": t("每隔多少时间发出一次预警")
+      }
+    }
+  },
+  "paper/config/paper-global.yml": {
+    desc: t(
+      "此配置文件为 paper 类或其他衍生类服务端常见的配置文件，他拓展了 spigot 配置文件上的不足之处。"
+    ),
+    config: {
+      _version: t("配置文件版本，一般情况下不要修改，修改后可能影响服务器正常运行"),
+      "block-updates": {
+        "disable-chorus-plant-updates": t("禁用唱片植物更新"),
+        "disable-mushroom-block-updates": t("禁用蘑菇方块更新"),
+        "disable-noteblock-updates": t("禁用音符盒更新"),
+        "disable-tripwire-updates": t("禁用绊线更新")
+      },
+      "chunk-loading-advanced": {
+        "auto-config-send-distance": t("自动配置发送距离"),
+        "player-max-concurrent-chunk-generates": t("玩家最大同时生成区块数"),
+        "player-max-concurrent-chunk-loads": t("玩家最大同时加载区块数")
+      },
+      "chunk-loading-basic": {
+        "player-max-chunk-generate-rate": t("玩家最大区块生成速率"),
+        "player-max-chunk-load-rate": t("玩家最大区块加载速率"),
+        "player-max-chunk-send-rate": t("玩家最大区块发送速率")
+      },
+      "chunk-system": {
+        "gen-parallelism": t("生成并行度"),
+        "io-threads": t("IO线程数"),
+        "worker-threads": t("工作线程数")
+      },
+      collisions: {
+        "enable-player-collisions": t("启用玩家碰撞"),
+        "send-full-pos-for-hard-colliding-entities": t("对于硬碰撞实体发送完整位置信息")
+      },
+      commands: {
+        "fix-target-selector-tag-completion": t("修复目标选择器标签补全"),
+        "suggest-player-names-when-null-tab-completions": t("在Tab键补全为空时建议玩家名"),
+        "time-command-affects-all-worlds": t("时间命令是否影响所有世界")
+      },
+      console: {
+        "enable-brigadier-completions": t("启用Brigadier命令补全"),
+        "enable-brigadier-highlighting": t("启用Brigadier语法高亮"),
+        "has-all-permissions": t("是否拥有所有权限")
+      },
+      "item-validation": {
+        book: {
+          author: t("书籍作者ID"),
+          page: t("书籍页数ID"),
+          title: t("书籍标题ID")
+        },
+        "book-size": {
+          "page-max": t("书籍最大页数"),
+          "total-multiplier": t("书籍总体积乘数")
+        },
+        "display-name": t("物品显示名称ID"),
+        "lore-line": t("物品描述行数ID"),
+        "resolve-selectors-in-books": t("解析书籍中的选择器")
+      },
+      logging: {
+        "deobfuscate-stacktraces": t("反混淆堆栈跟踪信息")
+      },
+      messages: {
+        kick: {
+          "authentication-servers-down": t("认证服务器不可用提示"),
+          "connection-throttle": t("连接限速提示"),
+          "flying-player": t("飞行玩家踢出提示"),
+          "flying-vehicle": t("飞行载具踢出提示")
+        },
+        "no-permission": t("无权限执行命令提示"),
+        "use-display-name-in-quit-message": t("退出消息中使用显示名称")
+      },
+      misc: {
+        "chat-threads": {
+          "chat-executor-core-size": t("聊天执行核心线程数"),
+          "chat-executor-max-size": t("聊天执行最大线程数")
+        },
+        "compression-level": t("压缩等级"),
+        "fix-entity-position-desync": t("修复实体位置不同步问题"),
+        "load-permissions-yml-before-plugins": t("在插件之前加载permissions.yml"),
+        "max-joins-per-tick": t("每tick最大连接数"),
+        "region-file-cache-size": t("区块文件缓存大小"),
+        "strict-advancement-dimension-check": t("严格检查维度的进度"),
+        "use-alternative-luck-formula": t("使用替代的Luck计算公式"),
+        "use-dimension-type-for-custom-spawners": t("自定义刷怪笼是否使用维度类型")
+      },
+      "packet-limiter": {
+        "all-packets": {
+          action: t("所有数据包处理方式"),
+          interval: t("数据包处理时间间隔"),
+          "max-packet-rate": t("最大数据包处理速率")
+        },
+        "kick-message": t("超出数据包处理速率的踢出消息"),
+        overrides: {
+          ServerboundPlaceRecipePacket: {
+            action: t("PlaceRecipePacket数据包处理方式"),
+            interval: t("PlaceRecipePacket数据包处理时间间隔"),
+            "max-packet-rate": t("PlaceRecipePacket最大数据包处理速率")
+          }
+        }
+      },
+      "player-auto-save": {
+        "max-per-tick": t("每tick最大玩家自动保存数"),
+        rate: t("玩家自动保存速率")
+      },
+      proxies: {
+        "bungee-cord": {
+          "online-mode": t("BungeeCord是否启用在线模式")
+        },
+        "proxy-protocol": t("是否启用代理协议"),
+        velocity: {
+          enabled: t("Velocity是否启用"),
+          "online-mode": t("Velocity是否启用在线模式"),
+          secret: t("Velocity代理密钥")
+        }
+      },
+      scoreboards: {
+        "save-empty-scoreboard-teams": t("保存空记分板队伍"),
+        "track-plugin-scoreboards": t("跟踪插件记分板")
+      },
+      "spam-limiter": {
+        "incoming-packet-threshold": t("入站数据包阈值"),
+        "recipe-spam-increment": t("合成表滥用增量"),
+        "recipe-spam-limit": t("合成表滥用上限"),
+        "tab-spam-increment": t("Tab键滥用增量"),
+        "tab-spam-limit": t("Tab键滥用上限")
+      },
+      timings: {
+        enabled: t("是否启用Timings"),
+        "hidden-config-entries": t("隐藏的配置项"),
+        "history-interval": t("历史记录间隔"),
+        "history-length": t("历史记录长度"),
+        "server-name": t("服务器名称"),
+        "server-name-privacy": t("服务器名称隐私设置"),
+        url: t("Timings报告URL"),
+        verbose: t("Timings详细输出")
+      },
+      "unsupported-settings": {
+        "allow-grindstone-overstacking": t("允许磨砂机超出堆叠上限"),
+        "allow-headless-pistons": t("允许无头活塞"),
+        "allow-permanent-block-break-exploits": t("允许永久方块破坏漏洞"),
+        "allow-piston-duplication": t("允许活塞复制"),
+        "compression-format": t("压缩格式"),
+        "perform-username-validation": t("执行用户名验证")
+      },
+      watchdog: {
+        "early-warning-delay": t("预警延迟"),
+        "early-warning-every": t("每隔多少时间发出一次预警")
+      }
+    }
   }
   //   "velocity/velocity.toml": {},
   //   "mcdr/permission.yml": {},
@@ -474,5 +768,4 @@ export const configData: {
   //   "paper/paper-world-defaults.yml": {},
   //   "paper/paper-global.yml": {},
   //   "mohist/mohist.yml": {},
-  //   "paper/paper.yml": {},
 };
