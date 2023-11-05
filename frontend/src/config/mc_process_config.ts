@@ -3,7 +3,7 @@ import { t } from "@/lang/i18n";
 export const configData: {
   [key: string]: {
     desc: string;
-    config: object;
+    config: Record<string, any>;
   };
 } = {
   "common/server.properties": {
