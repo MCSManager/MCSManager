@@ -33,13 +33,7 @@ const parsedConfig = jsonToMap(props.config);
             {{ data?.desc }}
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
-            {{ t("我们将很快支持该文件，敬请期待") }}
-            <br />
-            {{ t("您可前往") }}
-            <a href="https://github.com/MCSManager/MCSManager" target="_blank">
-              https://github.com/MCSManager/MCSManager
-            </a>
-            {{ t("提交反馈") }}
+            {{ t("此配置文件暂不支持直接配置，请前往文件管理进行编辑。") }}
           </a-typography-paragraph>
         </a-typography>
       </template>
@@ -57,7 +51,7 @@ const parsedConfig = jsonToMap(props.config);
           </div>
         </div>
         <div v-else>
-          {{ t("配置文件内容为空，请检查文件是否正确，或点击上方 “编辑源文件” 按钮继续编辑") }}
+          {{ t("配置文件内容为空，请检查文件是否正确，或点击上方 “编辑源文件” 按钮继续编辑。") }}
         </div>
       </template>
     </CardPanel>
