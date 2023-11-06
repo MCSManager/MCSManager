@@ -4,7 +4,7 @@ import LineOption from "@/components/LineOption.vue";
 import { getDescriptionByTitle } from "@/tools/common";
 import { jsonToMap } from "@/tools/common";
 import isEmpty from "lodash/isEmpty";
-import { configData } from "@/config/mc_process_config";
+import { configData } from "@/config/instanceConfigMap";
 
 const props = defineProps<{
   config: Record<string, any>;

@@ -65,7 +65,9 @@ onMounted(() => {
                 <a-select-option :value="true">{{ t("是") }}</a-select-option>
                 <a-select-option :value="false">{{ t("否") }}</a-select-option>
               </a-select>
-              <a-button v-if="type == CONTROL.SELECT" @click="forceType"><EditOutlined /></a-button>
+              <a-button v-if="type == CONTROL.SELECT" class="ml-8" @click="forceType">
+                <EditOutlined />
+              </a-button>
             </div>
           </a-col>
         </a-row>

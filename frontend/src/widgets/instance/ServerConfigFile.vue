@@ -9,7 +9,8 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
-import configComponent from "@/components/mc_process_config.vue";
+import configComponent from "@/components/InstanceConfigEditor.vue";
+import { DownOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -132,10 +133,7 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button type="primary">
-                {{ t("更多操作") }}
-                <DownOutlined />
-              </a-button>
+              <a-button type="primary"> {{ t("更多操作") }}<DownOutlined /> </a-button>
             </a-dropdown>
           </template>
         </BetweenMenus>

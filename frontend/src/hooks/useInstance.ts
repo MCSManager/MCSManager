@@ -215,21 +215,6 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     ]
   },
   {
-    fileName: "[Spigot] spigot.yml",
-    path: "spigot.yml",
-    redirect: "spigot.yml",
-    type: "yml",
-    info: t(
-      "Spigot 配置文件，能够进一步的控制服务器的行为和具体参数，一些更为高级的限制都在此配置文件中，他拓展了 Bukkit 配置文件上的不足之处。"
-    ),
-    category: [
-      TYPE_MINECRAFT_SPIGOT,
-      TYPE_MINECRAFT_PAPER,
-      TYPE_MINECRAFT_JAVA,
-      TYPE_MINECRAFT_BUKKIT
-    ]
-  },
-  {
     fileName: "[Bukkit] bukkit.yml",
     path: "bukkit.yml",
     redirect: "bukkit/bukkit.yml",

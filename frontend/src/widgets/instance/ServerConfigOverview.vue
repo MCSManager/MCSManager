@@ -103,18 +103,6 @@ onMounted(async () => {
       </a-col>
 
       <a-col :span="24">
-        <a-typography-paragraph>
-          <a-typography-text>
-            {{
-              t(
-                "配置文件适配工作由开发团队与开源社区开发者共同开发。如果没有看见您需要的配置文件，请前往实例配置界面手动选择服务端/或衍生类服务端类型。"
-              )
-            }}
-          </a-typography-text>
-        </a-typography-paragraph>
-      </a-col>
-
-      <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
             <a-list
