@@ -157,7 +157,7 @@ const innerTerminalType = viewType === "inner";
       </BetweenMenus>
     </div>
     <div class="console-wrapper">
-      <div class="terminal-wrapper">
+      <div class="terminal-wrapper global-card-container-shadow">
         <div class="terminal-container">
           <div :id="terminalDomId"></div>
         </div>
@@ -229,7 +229,6 @@ const innerTerminalType = viewType === "inner";
 <style lang="scss" scoped>
 .console-wrapper {
   position: relative;
-  overflow: hidden;
 
   .terminal-wrapper {
     position: relative;
