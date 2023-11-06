@@ -7,7 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AAvatar: typeof import('ant-design-vue/es')['Avatar']
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
@@ -64,9 +63,9 @@ declare module 'vue' {
     CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
-    copy: typeof import('./src/components/mc_process_config/server.properties copy.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
+    Default: typeof import('./src/components/default.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     'Eula.txt': typeof import('./src/components/mc_process_config/eula.txt.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
@@ -78,6 +77,7 @@ declare module 'vue' {
     LeftMenusPanel: typeof import('./src/components/LeftMenusPanel.vue')['default']
     LineOption: typeof import('./src/components/LineOption.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
+    Mc_process_config: typeof import('./src/components/mc_process_config.vue')['default']
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
     NodeSimpleChart: typeof import('./src/components/NodeSimpleChart.vue')['default']

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, type Component } from "vue";
+import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useScreen } from "@/hooks/useScreen";
@@ -9,12 +9,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
-
-import eulaTxt from "@/components/mc_process_config/eula.txt.vue";
-import serverProperties from "@/components/mc_process_config/server.properties.vue";
-import bukkitYml from "@/components/mc_process_config/bukkit.yml.vue";
-import bungeecordConfigYml from "@/components/mc_process_config/bungeecord.config.yml.vue";
-import bdsServerProperties from "@/components/mc_process_config/bds_server.properties.vue";
+import configComponent from "@/components/mc_process_config.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -28,23 +23,6 @@ const configName = getMetaOrRouteValue("configName");
 const configPath = getMetaOrRouteValue("configPath");
 const extName = getMetaOrRouteValue("extName");
 const type = getMetaOrRouteValue("type");
-
-const component: { [key: string]: Component } = {
-  "common/server.properties": serverProperties,
-  "common/eula.txt": eulaTxt,
-  // "bukkit/spigot.yml": spigotYml,
-  "bukkit/bukkit.yml": bukkitYml,
-  "bungeecord/config.yml": bungeecordConfigYml,
-  "bds/server.properties": bdsServerProperties
-  // "mohist/mohist.yml": mohistYml,
-  // "paper/paper.yml": paperYml,
-  // "paper/paper-global.yml": paperGlobalYml,
-  // "paper/paper-world-defaults.yml": paperWorldDefaultsYml,
-  // "geyser/config.yml": geyserYml,
-  // "mcdr/config.yml": mcdrConfigYml,
-  // "mcdr/permission.yml": permissionYml,
-  // "velocity/velocity.toml": velocityToml
-};
 const isFailure = ref(false);
 const { toPage } = useAppRouters();
 const toConfigOverview = () => {
@@ -105,7 +83,7 @@ const save = async () => {
       data: config_
     });
     if (isOK.value) {
-      message.success("保存成功");
+      message.success(t("保存成功"));
     }
   } catch (err: any) {
     console.error(err);
@@ -115,7 +93,7 @@ const save = async () => {
 
 const refresh = async () => {
   await render();
-  message.success("刷新成功");
+  message.success(t("刷新成功"));
 };
 
 onMounted(async () => {
@@ -163,16 +141,20 @@ onMounted(async () => {
         </BetweenMenus>
       </a-col>
 
-      <component :is="component[configName]" v-if="configName && isReady" :config="configFile" />
+      <configComponent
+        v-if="configName && isReady"
+        :config="configFile"
+        :config-name="configName"
+      />
 
       <a-col v-else :span="24">
-        <Loading />
+        <Loading v-if="!isFailure" />
       </a-col>
       <a-col v-if="isFailure" :span="24">
         <a-result
           status="error"
-          :title="t('错误')"
-          :sub-title="'文件不存在或权限不正确，无法查看此文件的具体配置，您也许可以尝试到 “文件管理”功能在线编辑此文件，或尝试重启实例刷新此文件。'"
+          :title="t('暂不支持编辑此文件')"
+          :sub-title="t('可能是面板无权访问此文件，可尝试使用 “文件管理” 对本文件进行编辑。')"
         >
           <template #extra>
             <a-button type="primary" @click="toConfigOverview">

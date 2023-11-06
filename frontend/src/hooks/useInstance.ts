@@ -215,6 +215,21 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     ]
   },
   {
+    fileName: "[Spigot] spigot.yml",
+    path: "spigot.yml",
+    redirect: "spigot.yml",
+    type: "yml",
+    info: t(
+      "Spigot 配置文件，能够进一步的控制服务器的行为和具体参数，一些更为高级的限制都在此配置文件中，他拓展了 Bukkit 配置文件上的不足之处。"
+    ),
+    category: [
+      TYPE_MINECRAFT_SPIGOT,
+      TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_JAVA,
+      TYPE_MINECRAFT_BUKKIT
+    ]
+  },
+  {
     fileName: "[Bukkit] bukkit.yml",
     path: "bukkit.yml",
     redirect: "bukkit/bukkit.yml",
@@ -269,7 +284,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     fileName: "[Paper] paper.yml",
     type: "yml",
     info: t(
-      "PaperSpigot 服务端软件配置文件，能够进一步的配置高级参数以及更具体化的游戏设置，对整体性能有极大的决定效果"
+      "PaperSpigot 服务端软件配置文件，能够进一步的配置高级参数以及更具体化的游戏设置，对整体性能有极大的决定效果，他拓展了 Spigot 配置文件上的不足之处。"
     ),
     path: "paper.yml",
     redirect: "paper/paper.yml",
@@ -297,7 +312,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     fileName: "[Geyser] config.yml",
     type: "yml",
     info: t(
-      "Geyser 服务端软件配置文件，拥有基本的服务器参数设定（如端口，最大玩家数等）并且也可以设定服务端细节参数（区块缓存，线程数等）"
+      "Geyser 独立版服务端软件配置文件，拥有基本的服务器参数设定（如端口，最大玩家数等）并且也可以设定服务端细节参数（区块缓存，线程数等）"
     ),
     path: "config.yml",
     redirect: "geyser/config.yml",
