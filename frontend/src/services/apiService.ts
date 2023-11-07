@@ -76,8 +76,6 @@ class ApiService {
   private async sendRequest(reqId: string, config: RequestConfig) {
     try {
       const startTime = Date.now();
-
-      console.debug(`[ApiService] Request: ${config.url} \n Full AxiosRequestConfig:`, config);
       if (!config.timeout) config.timeout = 1000 * 10;
       const result = await axios(config);
       const endTime = Date.now();
@@ -90,8 +88,6 @@ class ApiService {
         timestamp: Date.now(),
         data: realData
       });
-
-      console.debug("请求响应缓存表长度：", this.responseMap.size);
 
       this.event.emit(reqId, realData);
     } catch (error: AxiosError | Error | any) {

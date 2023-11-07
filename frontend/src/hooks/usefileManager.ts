@@ -1,11 +1,11 @@
-import { h, ref, createVNode, type Ref, reactive } from "vue";
-import { t } from "@/lang/i18n";
-import type { TableProps, UploadProps } from "ant-design-vue";
-
+import { message, Modal } from "ant-design-vue";
+import type { UploadProps } from "ant-design-vue";
+import type { Key } from "ant-design-vue/es/table/interface";
+import { h, ref, createVNode, reactive } from "vue";
 import { LoadingOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
-
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
+import { t } from "@/lang/i18n";
 import {
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
@@ -20,9 +20,6 @@ import {
   downloadAddress,
   changePermission as changePermissionApi
 } from "@/services/apis/fileManager";
-
-import { message, Modal } from "ant-design-vue";
-
 import type {
   DataType,
   OperationForm,
@@ -31,28 +28,34 @@ import type {
   Permission
 } from "@/types/fileManager";
 
-export const useFileManager = (
-  operationForm: Ref<OperationForm>,
-  breadcrumbs: Breadcrumb[],
-  dataSource: Ref<DataType[] | undefined>,
-  clipboard: Ref<
-    | {
-        type: "copy" | "move";
-        value: string[];
-      }
-    | undefined
-  >,
-  selectionData: Ref<DataType[] | undefined>,
-  instanceId?: string,
-  daemonId?: string
-) => {
+export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const indicator = h(LoadingOutlined, {
     style: {
       fontSize: "24px"
     }
   });
-
+  const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
+  const selectedRowKeys = ref<Key[]>([]);
+  const selectionData = ref<DataType[]>();
+  const operationForm = ref<OperationForm>({
+    name: "",
+    current: 1,
+    pageSize: 100,
+    total: 0
+  });
+
+  const breadcrumbs = reactive<Breadcrumb[]>([]);
+  breadcrumbs.push({
+    path: "/",
+    name: "/",
+    disabled: false
+  });
+
+  const clipboard = ref<{
+    type: "copy" | "move";
+    value: string[];
+  }>();
 
   const dialog = ref({
     show: false,
@@ -272,7 +275,7 @@ export const useFileManager = (
   const zipFile = async () => {
     if (!selectionData.value || selectionData.value.length === 0)
       return message.error(t("请先选择文件"));
-    const filename = await openDialog(t("压缩文件"), 't("请输入压缩后的文件名")', "", "zip");
+    const filename = await openDialog(t("压缩文件"), t("请输入压缩后的文件名"), "", "zip");
     const { execute } = compressFileApi();
     try {
       await execute({
@@ -364,10 +367,9 @@ export const useFileManager = (
     return false;
   };
 
-  const rowSelection: TableProps["rowSelection"] = {
-    onChange: (selectedRowKeys: any, selectedRows: DataType[]) => {
-      selectionData.value = selectedRows;
-    }
+  const selectChanged = (_selectedRowKeys: Key[], selectedRows: DataType[]) => {
+    selectionData.value = selectedRows;
+    selectedRowKeys.value = _selectedRowKeys;
   };
 
   const rowClickTable = async (item: string, type: number) => {
@@ -414,6 +416,8 @@ export const useFileManager = (
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
+    selectedRowKeys.value = [];
+    selectionData.value = [];
     operationForm.value.current = e.current;
     operationForm.value.pageSize = e.pageSize;
     getFileList();
@@ -498,8 +502,13 @@ export const useFileManager = (
     dialog,
     percentComplete,
     spinning,
-    rowSelection,
+    operationForm,
+    dataSource,
+    breadcrumbs,
     permission,
+    clipboard,
+    selectedRowKeys,
+    selectChanged,
     openDialog,
     getFileList,
     touchFile,
