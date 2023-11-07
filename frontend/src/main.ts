@@ -25,6 +25,7 @@ const { updateUserInfo, state } = useAppStateStore();
 async function checkPanelStatus() {
   const status = await panelStatus().execute();
   state.isInstall = status.value?.isInstall ?? true;
+  state.versionChanged = status.value?.versionChange ? true : false;
   if (!state.isInstall) {
     return router.push({
       path: "/init"
