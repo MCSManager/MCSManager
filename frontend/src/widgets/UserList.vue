@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { DownOutlined } from "@ant-design/icons-vue";
+import { DownOutlined, UserOutlined } from "@ant-design/icons-vue";
 import { throttle } from "lodash";
 
 import CardPanel from "@/components/CardPanel.vue";
@@ -275,6 +275,7 @@ onMounted(async () => {
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
+              <UserOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
