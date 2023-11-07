@@ -1,6 +1,7 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail, NewInstanceForm, QuickStartTemplate } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
+import type { InstanceMoreDetail } from "@/hooks/useInstance";
 
 // 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
@@ -282,4 +283,63 @@ export const updateConfigFile = useDefineApi<
 >({
   method: "PUT",
   url: "/api/protected_instance/process_config/file"
+});
+
+// 批量开启
+export const batchStart = useDefineApi<
+  {
+    data: {
+      instanceUuid: string;
+      serviceUuid: string;
+    }[];
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/instance/multi_open"
+});
+
+// 批量停止
+export const batchStop = useDefineApi<
+  {
+    data: {
+      instanceUuid: string;
+      serviceUuid: string;
+    }[];
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/instance/multi_stop"
+});
+
+// 批量终止
+export const batchKill = useDefineApi<
+  {
+    data: {
+      instanceUuid: string;
+      serviceUuid: string;
+    }[];
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/instance/multi_kill"
+});
+
+// 批量删除
+export const batchDelete = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+    };
+    data: {
+      uuids: string[];
+      deleteFile: boolean;
+    };
+  },
+  string[]
+>({
+  method: "DELETE",
+  url: "/api/instance"
 });

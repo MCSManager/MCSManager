@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted, computed, reactive } from "vue";
+import { ref, onMounted, computed, h } from "vue";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -9,26 +9,35 @@ import {
   FormOutlined,
   DatabaseOutlined,
   AppstoreOutlined,
-  FrownOutlined
+  FrownOutlined,
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+  WarningOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
-import { remoteInstances } from "@/services/apis";
-import { remoteNodeList } from "../services/apis";
+import { remoteInstances, remoteNodeList } from "@/services/apis";
+import { batchStart, batchStop, batchKill, batchDelete } from "@/services/apis/instance";
 import type { NodeStatus } from "../types/index";
-import { message, type ItemType } from "ant-design-vue";
+import { message, notification, Modal } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import Loading from "@/components/Loading.vue";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
-import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
+import { useScreen } from "@/hooks/useScreen";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const { isPhone } = useScreen();
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
@@ -62,6 +71,7 @@ const initNodes = async () => {
 };
 
 const initInstancesData = async () => {
+  selectedInstance.value = [];
   if (!currentRemoteNode.value) {
     await initNodes();
   }
@@ -79,11 +89,8 @@ const initInstancesData = async () => {
   }
 };
 
-onMounted(async () => {
-  await initInstancesData();
-});
-
 const handleQueryInstance = throttle(async () => {
+  selectedInstance.value = [];
   await initInstancesData();
 }, 600);
 
@@ -100,6 +107,7 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
 const handleChangeNode = async (item: NodeStatus) => {
   try {
     currentRemoteNode.value = item;
+    selectedInstance.value = [];
     await initInstancesData();
     localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
   } catch (err: any) {
@@ -112,6 +120,156 @@ const toCreateAppPage = () => {
     path: `/quickstart`
   });
 };
+
+const multipleMode = ref(false);
+const selectedInstance = ref<InstanceMoreDetail[]>([]);
+
+const findInstance = (item: InstanceMoreDetail) => {
+  return selectedInstance.value.some((i) => JSON.stringify(i) === JSON.stringify(item));
+};
+
+const selectInstance = (item: InstanceMoreDetail) => {
+  if (findInstance(item)) {
+    selectedInstance.value.splice(selectedInstance.value.indexOf(item), 1);
+  } else {
+    selectedInstance.value.push(item);
+  }
+};
+
+const handleSelectInstance = (item: InstanceMoreDetail) => {
+  if (multipleMode.value) {
+    selectInstance(item);
+  } else {
+    toAppDetailPage(currentRemoteNode.value?.uuid || "", item.instanceUuid);
+  }
+};
+
+const selectAllInstances = () => {
+  if (instancesMoreInfo.value.length === selectedInstance.value.length) {
+    selectedInstance.value = [];
+  } else {
+    for (const item of instancesMoreInfo.value) {
+      selectedInstance.value.push(item);
+    }
+  }
+};
+
+const exitMultipleMode = () => {
+  multipleMode.value = false;
+  selectedInstance.value = [];
+};
+
+const instanceOperations = [
+  {
+    title: t("TXT_CODE_57245e94"),
+    icon: PlayCircleOutlined,
+    click: () => batchOperation("start")
+  },
+  {
+    title: t("TXT_CODE_b1dedda3"),
+    icon: PauseCircleOutlined,
+    click: () => batchOperation("stop")
+  },
+  {
+    title: t("TXT_CODE_7b67813a"),
+    icon: CloseOutlined,
+    click: () => {
+      batchOperation("kill");
+    }
+  },
+  {
+    title: t("删除"),
+    icon: DeleteOutlined,
+    click: () => batchDeleteInstance(false)
+  },
+  {
+    title: t("彻底删除"),
+    icon: WarningOutlined,
+    click: () => batchDeleteInstance(true)
+  }
+];
+
+const batchOperation = async (actName: "start" | "stop" | "kill") => {
+  if (selectedInstance.value.length === 0) return message.error(t("无法执行，请至少选择一个实例"));
+  const operationMap = {
+    start: async () => exec(batchStart().execute, t("开启命令已发出")),
+    stop: async () => exec(batchStop().execute, t("关闭命令已发出")),
+    kill: async () => exec(batchKill().execute, t("终止命令已发出"))
+  };
+
+  const exec = async (fn: Function, msg: string) => {
+    try {
+      const state = await fn({
+        data: selectedInstance.value.map((item) => ({
+          instanceUuid: item.instanceUuid,
+          serviceUuid: currentRemoteNode.value?.uuid ?? ""
+        }))
+      });
+      if (state.value) {
+        notification.success({
+          message: msg,
+          description: t(
+            "已成功向各个远程主机发布命令，具体操作可能略有延时，请稍等一段时间后查看结果"
+          )
+        });
+        exitMultipleMode();
+        await initInstancesData();
+      }
+    } catch (err: any) {
+      console.error(err);
+      message.error(err.message);
+    }
+  };
+
+  operationMap[actName]();
+};
+
+const batchDeleteInstance = async (deleteFile: boolean) => {
+  if (selectedInstance.value.length === 0) return message.error(t("无法执行，请至少选择一个实例"));
+  const { execute, state } = batchDelete();
+  const uuids = [""];
+  for (const i of selectedInstance.value) {
+    uuids.push(i.instanceUuid);
+  }
+  const thisModal = Modal.confirm({
+    title: t("最终确认"),
+    icon: h(InfoCircleOutlined),
+    content: deleteFile
+      ? t("确定要删除此实例和文件吗？此操作将会删除实例目录的所有文件，请谨慎操作")
+      : t("确定要进行批量移除吗？此操作不会删除实例实际文件，只会删除实例"),
+    okText: t("确定"),
+    async onOk() {
+      try {
+        await execute({
+          params: {
+            remote_uuid: currentRemoteNode.value?.uuid ?? ""
+          },
+          data: {
+            uuids: uuids,
+            deleteFile: deleteFile
+          }
+        });
+        if (state.value) {
+          thisModal.destroy();
+          exitMultipleMode();
+          notification.success({
+            message: t("批量删除成功"),
+            description: t("可能会存在一定延迟，文件删除需要一定的时间")
+          });
+          await initInstancesData();
+        }
+      } catch (err: any) {
+        console.error(err);
+        message.error(err.message);
+      }
+    },
+    onCancel() {}
+  });
+};
+
+onMounted(async () => {
+  await initInstancesData();
+});
 </script>
 
 <template>
@@ -177,24 +335,77 @@ const toCreateAppPage = () => {
         </BetweenMenus>
       </a-col>
       <a-col :span="24">
-        <div v-if="instances" class="flex justify-end">
-          <a-pagination
-            v-model:current="operationForm.currentPage"
-            v-model:pageSize="operationForm.pageSize"
-            :total="instances.maxPage * operationForm.pageSize"
-            show-size-changer
-            @change="initInstancesData"
-          />
-        </div>
+        <BetweenMenus>
+          <template v-if="instances" #left>
+            <div v-if="multipleMode">
+              <a-button class="mr-10" :class="{ 'mb-10': isPhone }" @click="exitMultipleMode">
+                退出批量操作
+              </a-button>
+
+              <a-button
+                v-if="instancesMoreInfo.length === selectedInstance.length"
+                class="mr-10"
+                :class="{ 'mb-10': isPhone }"
+                @click="selectedInstance = []"
+              >
+                取消全选
+              </a-button>
+              <a-button
+                v-else
+                class="mr-10"
+                :class="{ 'mb-10': isPhone }"
+                @click="selectAllInstances"
+              >
+                全选
+              </a-button>
+              <a-dropdown>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item
+                      v-for="item in instanceOperations"
+                      :key="item.title"
+                      @click="item.click"
+                    >
+                      <component :is="item.icon" />
+                      {{ item.title }}
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+                <a-button type="primary">
+                  {{ t("选中项") }}
+                  <DownOutlined />
+                </a-button>
+              </a-dropdown>
+            </div>
+            <div v-else>
+              <a-button @click="multipleMode = true">批量操作</a-button>
+            </div>
+          </template>
+          <template v-if="multipleMode" #center>
+            <a-typography-text> 已选择：{{ selectedInstance.length }} 项 </a-typography-text>
+          </template>
+          <template v-if="instances" #right>
+            <a-pagination
+              v-model:current="operationForm.currentPage"
+              v-model:pageSize="operationForm.pageSize"
+              :total="instances.maxPage * operationForm.pageSize"
+              show-size-changer
+              @change="initInstancesData"
+            />
+          </template>
+        </BetweenMenus>
       </a-col>
       <template v-if="instancesMoreInfo">
         <a-col v-for="item in instancesMoreInfo" :key="item" :span="24" :md="6">
           <CardPanel
             class="instance-card"
+            :class="{ selected: multipleMode && findInstance(item) }"
             style="height: 100%"
-            @click="toAppDetailPage(currentRemoteNode?.uuid || '', item.instanceUuid)"
+            @click="handleSelectInstance(item)"
           >
-            <template #title>{{ item.config.nickname }}</template>
+            <template #title>
+              {{ item.config.nickname }}
+            </template>
             <template #body>
               <a-typography-paragraph>
                 <div>
@@ -256,5 +467,13 @@ const toCreateAppPage = () => {
 .instance-card:hover {
   border: 1px solid var(--color-gray-8);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+
+.selected {
+  border: 3px solid var(--color-blue-6);
+  transition: all 0.1s;
+  &:hover {
+    border: 3px solid var(--color-blue-6);
+  }
 }
 </style>
