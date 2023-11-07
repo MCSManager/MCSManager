@@ -131,3 +131,39 @@ export interface IPanelOverviewResponse {
   };
   remote: IPanelOverviewRemoteResponse[];
 }
+
+export interface IJsonData {
+  [key: string]: any;
+}
+
+export interface IMapData<T> {
+  [key: string]: T;
+}
+
+export interface IPageLayoutConfig {
+  page: string;
+  items: ILayoutCard[];
+}
+
+export interface ILayoutCardParams {
+  field: string;
+  label: string;
+  type: "string" | "number" | "boolean" | "instanceId";
+}
+
+export interface ILayoutCard {
+  id: string;
+  type: string;
+  title: string;
+  width: number;
+  height: string;
+  meta: IJsonData;
+  disableAdd?: boolean;
+  onlyPath?: string[];
+  params?: ILayoutCardParams[];
+  followId?: string;
+  description?: string;
+  allowedPages?: Array<string> | null;
+  line?: number;
+  disableDelete?: boolean;
+}

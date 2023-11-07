@@ -35,10 +35,11 @@ async function checkPanelStatus() {
 
 async function index() {
   try {
+    await initLayoutConfig();
+
     const { execute: reqUserInfo } = userInfoApi();
     const info = await reqUserInfo();
     updateUserInfo(info.value);
-    await initLayoutConfig();
   } catch (err) {
     console.error("Init user info Error:", err);
   } finally {

@@ -2,10 +2,7 @@ import * as fs from "fs-extra";
 import GlobalVariable from "./common/global_variable";
 import { logger } from "./service/log";
 import path from "path";
-
-const PACKAGE_JSON = "package.json";
-let CURRENT_VERSION = "";
-const VERSION_LOG_TEXT_PATH = path.normalize(path.join(process.cwd(), "data/current-version.txt"));
+import storage from "./common/system_storage";
 
 interface PackageInfo {
   name: string;
@@ -14,6 +11,10 @@ interface PackageInfo {
   description: string;
 }
 
+const PACKAGE_JSON = "package.json";
+const VERSION_LOG_TEXT_NAME = "current-version.txt";
+let currentVersion = "";
+
 export function initVersionManager() {
   try {
     GlobalVariable.set("version", "Unknown");
@@ -21,21 +22,21 @@ export function initVersionManager() {
       const data: PackageInfo = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
       if (data.version) {
         GlobalVariable.set("version", data.version);
-        CURRENT_VERSION = String(data.version);
+        currentVersion = String(data.version);
       }
     }
   } catch (error) {
     logger.error("Version Check failure:", error);
   }
 
-  if (CURRENT_VERSION && fs.existsSync(VERSION_LOG_TEXT_PATH)) {
-    const LastLaunchedVersion = fs.readFileSync(VERSION_LOG_TEXT_PATH, { encoding: "utf-8" });
-    if (LastLaunchedVersion && LastLaunchedVersion != CURRENT_VERSION) {
-      logger.info(`Version changed from ${LastLaunchedVersion} to ${CURRENT_VERSION}`);
-      GlobalVariable.set("versionChange", CURRENT_VERSION);
+  if (currentVersion && storage.fileExists(VERSION_LOG_TEXT_NAME)) {
+    const LastLaunchedVersion = storage.readFile(VERSION_LOG_TEXT_NAME);
+    if (LastLaunchedVersion && LastLaunchedVersion != currentVersion) {
+      logger.info(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
+      GlobalVariable.set("versionChange", currentVersion);
     }
   }
-  fs.writeFileSync(VERSION_LOG_TEXT_PATH, CURRENT_VERSION, { encoding: "utf-8" });
+  storage.writeFile(VERSION_LOG_TEXT_NAME, currentVersion);
 }
 
 export function getVersion(): string {
