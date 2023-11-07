@@ -10,6 +10,7 @@ import userSystem from "../../service/system_user";
 import { logger } from "../../service/log";
 import { $t } from "../../i18n";
 import axios from "axios";
+import GlobalVariable from "../../common/global_variable";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
@@ -66,6 +67,7 @@ router.all(
       isInstall = false;
     }
     ctx.body = {
+      versionChange: GlobalVariable.get("versionChange", null),
       isInstall,
       language: systemConfig.language || null
     };

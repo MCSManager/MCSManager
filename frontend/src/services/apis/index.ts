@@ -37,6 +37,7 @@ export const panelStatus = useDefineApi<
   {
     isInstall: boolean;
     language: string;
+    versionChange?: string;
   }
 >({
   url: "/api/auth/status",

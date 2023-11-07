@@ -25,6 +25,7 @@ const { updateUserInfo, state } = useAppStateStore();
 async function checkPanelStatus() {
   const status = await panelStatus().execute();
   state.isInstall = status.value?.isInstall ?? true;
+  state.versionChanged = status.value?.versionChange ? true : false;
   if (!state.isInstall) {
     return router.push({
       path: "/init"
@@ -34,10 +35,11 @@ async function checkPanelStatus() {
 
 async function index() {
   try {
+    await initLayoutConfig();
+
     const { execute: reqUserInfo } = userInfoApi();
     const info = await reqUserInfo();
     updateUserInfo(info.value);
-    await initLayoutConfig();
   } catch (err) {
     console.error("Init user info Error:", err);
   } finally {

@@ -1,17 +1,14 @@
 import Router from "@koa/router";
 import remoteService from "../../service/system_remote_service";
-import { setImmediate } from "timers";
 import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
 import userSystem from "../../service/system_user";
-import * as fs from "fs-extra";
-import path from "path";
+import { getFrontendLayoutConfig, setFrontendLayoutConfig } from "../../service/frontend_layout";
 
 const router = new Router({ prefix: "/overview" });
-const LAYOUT_CONFIG_PATH = path.normalize(path.join(process.cwd(), "data", "layout.json"));
 
 // [Top-level Permission]
 // Get panel configuration items
@@ -69,14 +66,14 @@ router.put("/install", async (ctx) => {
   ctx.body = new Error("The MCSManager has been installed");
 });
 
-router.get("/layout", permission({ level: 1 }), async (ctx) => {
-  const layoutConfig = fs.readFileSync(LAYOUT_CONFIG_PATH, "utf-8");
-  ctx.body = layoutConfig;
+// [Public router]
+router.get("/layout", async (ctx) => {
+  ctx.body = getFrontendLayoutConfig();
 });
 
 router.post("/layout", permission({ level: 10 }), async (ctx) => {
   const config = ctx.request.body;
-  fs.writeFileSync(LAYOUT_CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+  setFrontendLayoutConfig(config);
   ctx.body = true;
 });
 

@@ -7,10 +7,8 @@ interface IClassz {
 }
 
 class FileStorageSubsystem implements IStorage {
-  public static readonly STIRAGE_DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
-  public static readonly STIRAGE_INDEX_PATH = path.normalize(
-    path.join(process.cwd(), "data", "index")
-  );
+  public static readonly DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
+  public static readonly INDEX_PATH = path.normalize(path.join(process.cwd(), "data", "index"));
 
   private checkFileName(name: string) {
     const blackList = ["\\", "/", ".."];
@@ -22,7 +20,7 @@ class FileStorageSubsystem implements IStorage {
 
   // Stored in local file based on class definition and identifier
   public async store(category: string, uuid: string, object: any) {
-    const dirPath = path.join(FileStorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(FileStorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     if (!this.checkFileName(uuid))
       throw new Error(`UUID ${uuid} does not conform to specification`);
@@ -53,7 +51,7 @@ class FileStorageSubsystem implements IStorage {
    * Instantiate an object based on the class definition and identifier
    */
   public async load(category: string, classz: any, uuid: string) {
-    const dirPath = path.join(FileStorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(FileStorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     if (!this.checkFileName(uuid))
       throw new Error(`UUID ${uuid} does not conform to specification`);
@@ -73,7 +71,7 @@ class FileStorageSubsystem implements IStorage {
    * Return all identifiers related to this class through the class definition
    */
   public async list(category: string) {
-    const dirPath = path.join(FileStorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(FileStorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     const files = fs.readdirSync(dirPath);
     const result = new Array<string>();
@@ -87,7 +85,7 @@ class FileStorageSubsystem implements IStorage {
    * Delete an identifier instance of the specified type through the class definition
    */
   public async delete(category: string, uuid: string) {
-    const filePath = path.join(FileStorageSubsystem.STIRAGE_DATA_PATH, category, `${uuid}.json`);
+    const filePath = path.join(FileStorageSubsystem.DATA_PATH, category, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return;
     fs.removeSync(filePath);
   }

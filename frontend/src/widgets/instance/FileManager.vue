@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
@@ -12,11 +12,9 @@ import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { throttle } from "lodash";
 import { getExtName, getFileIcon } from "@/tools/fileManager";
-
-import { useFileManager } from "@/hooks/usefileManager";
+import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
-
-import type { DataType, OperationForm, Breadcrumb } from "@/types/fileManager";
+import type { DataType } from "@/types/fileManager";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -28,24 +26,36 @@ const daemonId = getMetaOrRouteValue("daemonId");
 
 const screen = useScreen();
 
-const operationForm = ref<OperationForm>({
-  name: "",
-  current: 1,
-  pageSize: 10,
-  total: 0
-});
-
-const selectionData = ref<DataType[]>();
-
-const dataSource = ref<DataType[]>();
-
-const breadcrumbs = reactive<Breadcrumb[]>([]);
-
-breadcrumbs.push({
-  path: "/",
-  name: "/",
-  disabled: false
-});
+const {
+  indicator,
+  dialog,
+  percentComplete,
+  spinning,
+  fileStatus,
+  permission,
+  selectedRowKeys,
+  operationForm,
+  dataSource,
+  breadcrumbs,
+  clipboard,
+  selectChanged,
+  getFileList,
+  touchFile,
+  reloadList,
+  setClipBoard,
+  paste,
+  resetName,
+  deleteFile,
+  zipFile,
+  unzipFile,
+  beforeUpload,
+  downloadFile,
+  handleChangeDir,
+  rowClickTable,
+  handleTableChange,
+  getFileStatus,
+  changePermission
+} = useFileManager(instanceId, daemonId);
 
 const columns = computed(() => {
   return arrayFilter([
@@ -104,45 +114,6 @@ const columns = computed(() => {
     }
   ]);
 });
-
-const clipboard = ref<{
-  type: "copy" | "move";
-  value: string[];
-}>();
-
-const {
-  indicator,
-  dialog,
-  percentComplete,
-  rowSelection,
-  spinning,
-  fileStatus,
-  permission,
-  getFileList,
-  touchFile,
-  reloadList,
-  setClipBoard,
-  paste,
-  resetName,
-  deleteFile,
-  zipFile,
-  unzipFile,
-  beforeUpload,
-  downloadFile,
-  handleChangeDir,
-  rowClickTable,
-  handleTableChange,
-  getFileStatus,
-  changePermission
-} = useFileManager(
-  operationForm,
-  breadcrumbs,
-  dataSource,
-  clipboard,
-  selectionData,
-  instanceId,
-  daemonId
-);
 
 watch(
   () => operationForm.value.name,
@@ -295,7 +266,10 @@ onMounted(() => {
             </p>
             <a-spin :spinning="spinning" :indicator="indicator">
               <a-table
-                :row-selection="rowSelection"
+                :row-selection="{
+                  selectedRowKeys: selectedRowKeys,
+                  onChange: selectChanged
+                }"
                 :row-key="(record: DataType) => record.name"
                 :data-source="dataSource"
                 :columns="columns"

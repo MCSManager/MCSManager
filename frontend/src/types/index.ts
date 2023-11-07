@@ -1,36 +1,15 @@
-import type { IGlobalInstanceConfig } from "../../../common/global";
-import type { LayoutCardHeight } from "@/config/originLayoutConfig";
+import type {
+  IGlobalInstanceConfig,
+  ILayoutCard as GlobalLayoutCard,
+  ILayoutCardParams as GlobalLayoutCardParams,
+  IJsonData,
+  IMapData
+} from "../../../common/global";
 
-export interface JsonData {
-  [key: string]: any;
-}
-
-export interface MapData<T> {
-  [key: string]: T;
-}
-
-export interface LayoutCardParams {
-  field: string;
-  label: string;
-  type: "string" | "number" | "boolean" | "instanceId";
-}
-
-export interface LayoutCard {
-  id: string;
-  type: string;
-  title: string;
-  width: number;
-  height: LayoutCardHeight;
-  meta: JsonData;
-  disableAdd?: boolean;
-  onlyPath?: string[];
-  params?: LayoutCardParams[];
-  followId?: string;
-  description?: string;
-  allowedPages?: Array<string> | null;
-  line?: number;
-  disableDelete?: boolean;
-}
+export type JsonData = IJsonData;
+export type MapData<T> = IMapData<T>;
+export type LayoutCardParams = GlobalLayoutCardParams;
+export type LayoutCard = GlobalLayoutCard;
 
 export interface LayoutWithRouter {
   page: string;

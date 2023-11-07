@@ -1,15 +1,9 @@
 import path from "path";
 import fs from "fs-extra";
 
-interface IClassz {
-  name: string;
-}
-
 class StorageSubsystem {
-  public static readonly STIRAGE_DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
-  public static readonly STIRAGE_INDEX_PATH = path.normalize(
-    path.join(process.cwd(), "data", "index")
-  );
+  public static readonly DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
+  public static readonly INDEX_PATH = path.normalize(path.join(process.cwd(), "data", "index"));
 
   private checkFileName(name: string) {
     const blackList = ["\\", "/", ".."];
@@ -19,9 +13,24 @@ class StorageSubsystem {
     return true;
   }
 
+  public writeFile(name: string, data: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    fs.writeFileSync(targetPath, data, { encoding: "utf-8" });
+  }
+
+  public readFile(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    return fs.readFileSync(targetPath, { encoding: "utf-8" });
+  }
+
+  public fileExists(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    return fs.existsSync(targetPath);
+  }
+
   // Stored in local file based on class definition and identifier
   public store(category: string, uuid: string, object: any) {
-    const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(StorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     if (!this.checkFileName(uuid))
       throw new Error(`UUID ${uuid} does not conform to specification`);
@@ -52,7 +61,7 @@ class StorageSubsystem {
    * Instantiate an object based on the class definition and identifier
    */
   public load(category: string, classz: any, uuid: string) {
-    const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(StorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     if (!this.checkFileName(uuid))
       throw new Error(`UUID ${uuid} does not conform to specification`);
@@ -72,7 +81,7 @@ class StorageSubsystem {
    * Return all identifiers related to this class through the class definition
    */
   public list(category: string) {
-    const dirPath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category);
+    const dirPath = path.join(StorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     const files = fs.readdirSync(dirPath);
     const result = new Array<string>();
@@ -86,7 +95,7 @@ class StorageSubsystem {
    * Delete an identifier instance of the specified type through the class definition
    */
   public delete(category: string, uuid: string) {
-    const filePath = path.join(StorageSubsystem.STIRAGE_DATA_PATH, category, `${uuid}.json`);
+    const filePath = path.join(StorageSubsystem.DATA_PATH, category, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return;
     fs.removeSync(filePath);
   }
