@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AAvatar: typeof import('ant-design-vue/es')['Avatar']
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
@@ -56,13 +57,24 @@ declare module 'vue' {
     ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     AUpload: typeof import('ant-design-vue/es')['Upload']
+<<<<<<< Updated upstream
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
+=======
+    'Bds_server.properties': typeof import('./src/components/mc_process_config/bds_server.properties.vue')['default']
+    BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
+    'Bukkit.yml': typeof import('./src/components/mc_process_config/bukkit.yml.vue')['default']
+    'Bungeecord.config.yml': typeof import('./src/components/mc_process_config/bungeecord.config.yml.vue')['default']
+>>>>>>> Stashed changes
     CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
+<<<<<<< Updated upstream
+=======
+    'Eula.txt': typeof import('./src/components/mc_process_config/eula.txt.vue')['default']
+>>>>>>> Stashed changes
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     InnerCard: typeof import('./src/components/InnerCard.vue')['default']
@@ -81,5 +93,9 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/SelectInstances.vue')['default']
+<<<<<<< Updated upstream
+=======
+    'Server.properties': typeof import('./src/components/mc_process_config/server.properties.vue')['default']
+>>>>>>> Stashed changes
   }
 }
