@@ -225,11 +225,11 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
 const batchDeleteInstance = async (deleteFile: boolean) => {
   if (selectedInstance.value.length === 0) return message.error(t("无法执行，请至少选择一个实例"));
   const { execute, state } = batchDelete();
-  const uuids = [""];
+  const uuids: string[] = [];
   for (const i of selectedInstance.value) {
     uuids.push(i.instanceUuid);
   }
-  const thisModal = Modal.confirm({
+  const confirmDeleteInstanceModal = Modal.confirm({
     title: t("最终确认"),
     icon: h(InfoCircleOutlined),
     content: deleteFile
@@ -248,7 +248,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
           }
         });
         if (state.value) {
-          thisModal.destroy();
+          confirmDeleteInstanceModal.destroy();
           exitMultipleMode();
           notification.success({
             message: t("批量删除成功"),
