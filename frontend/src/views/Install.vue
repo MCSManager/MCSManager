@@ -49,22 +49,6 @@ const createUser = async () => {
   }
 };
 
-const { execute: execUpdateSettings, isLoading: nextStepLoading } = updateSettings();
-const selectLanguage = async (lang: string) => {
-  try {
-    await execUpdateSettings({
-      data: {
-        language: lang
-      }
-    });
-  } catch (err: any) {
-    console.error(err);
-    message.error(err.message);
-  } finally {
-    window.location.reload();
-  }
-};
-
 const toQuickStart = () => {
   toPage({
     path: "/quickstart",
@@ -83,16 +67,7 @@ const toOverview = () => {
   });
 };
 
-onMounted(async () => {
-  const language = window.navigator.language;
-  if (!localStorage.getItem(LANGUAGE_KEY)) {
-    if (language.includes("zh")) {
-      await selectLanguage("zh_CN");
-    } else {
-      await selectLanguage("en_US");
-    }
-  }
-});
+onMounted(async () => {});
 </script>
 
 <template>
@@ -128,14 +103,7 @@ onMounted(async () => {
         >
           {{ t("面板已安装，不可重复安装") }}
         </a-button>
-        <a-button
-          v-else
-          :loading="nextStepLoading"
-          class="mt-45 mb-45"
-          type="primary"
-          size="large"
-          @click="step = 2"
-        >
+        <a-button v-else class="mt-45 mb-45" type="primary" size="large" @click="step = 2">
           {{ t("开始使用") }}
         </a-button>
         <a-typography>

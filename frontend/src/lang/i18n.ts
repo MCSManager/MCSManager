@@ -5,34 +5,47 @@ import zhCN from "@languages/zh_CN.json";
 
 export const LANGUAGE_KEY = "LANGUAGE";
 
-const locale = localStorage.getItem(LANGUAGE_KEY) || "en_US";
+let i18n: any;
 
-const i18n = createI18n({
-  allowComposition: true,
-  globalInjection: true,
-  locale,
-  fallbackLocale: "en_US",
-  messages: {
-    en_US: enUS,
-    zh_CN: zhCN
-  }
-});
+function toFrontendLangFormatter(lang: string) {
+  return lang.toLowerCase();
+}
+
+function initI18n(lang: string) {
+  lang = toFrontendLangFormatter(lang);
+  i18n = createI18n({
+    allowComposition: true,
+    globalInjection: true,
+    locale: lang,
+    fallbackLocale: "en_US",
+    messages: {
+      en_us: enUS,
+      zh_cn: zhCN
+    }
+  });
+}
+
+export function getI18nInstance() {
+  return i18n;
+}
 
 const setLanguage = (lang: string) => {
-  if (lang.split("_").length === 2) {
-    lang = lang.split("_")[0] + "_" + lang.split("_")[1].toUpperCase();
-  }
+  lang = toFrontendLangFormatter(lang);
   localStorage.setItem(LANGUAGE_KEY, lang);
   window.location.reload();
 };
 
-const getCurrentLang = () => {
-  return i18n.global.locale;
+const getCurrentLang = (): string => {
+  return i18n.global.locale as string;
 };
 
-const $t = i18n.global.t;
-const t = i18n.global.t;
+const $t = (...args: string[]) => {
+  return (i18n.global.t as Function)(...args);
+};
+const t = (...args: string[]) => {
+  return (i18n.global.t as Function)(...args);
+};
 
 (window as any).setLang = setLanguage;
 
-export { i18n, setLanguage, getCurrentLang, $t, t };
+export { setLanguage, getCurrentLang, $t, t, initI18n };
