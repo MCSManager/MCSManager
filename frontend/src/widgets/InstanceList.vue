@@ -123,7 +123,7 @@ const multipleMode = ref(false);
 const selectedInstance = ref<InstanceMoreDetail[]>([]);
 
 const findInstance = (item: InstanceMoreDetail) => {
-  return selectedInstance.value.some((i) => JSON.stringify(i) === JSON.stringify(item));
+  return selectedInstance.value.find((i) => i.instanceUuid === item.instanceUuid);
 };
 
 const selectInstance = (item: InstanceMoreDetail) => {
