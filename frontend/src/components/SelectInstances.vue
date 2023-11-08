@@ -102,11 +102,11 @@ const selectItem = (item: UserInstance) => {
 };
 
 const findItem = (item: UserInstance) => {
-  return selectedItems.value.some((i) => JSON.stringify(i) === JSON.stringify(item));
+  return selectedItems.value.find((i) => i.instanceUuid === item.instanceUuid);
 };
 
 const removeItem = (item: UserInstance) => {
-  selectedItems.value.splice(selectedItems.value.indexOf(item), 1);
+  selectedItems.value = selectedItems.value.filter((i) => i.instanceUuid !== item.instanceUuid);
 };
 
 const submit = async () => {
