@@ -19,6 +19,9 @@ const i18n = createI18n({
 });
 
 const setLanguage = (lang: string) => {
+  if (lang.split("_").length === 2) {
+    lang = lang.split("_")[0] + "_" + lang.split("_")[1].toUpperCase();
+  }
   localStorage.setItem(LANGUAGE_KEY, lang);
   window.location.reload();
 };

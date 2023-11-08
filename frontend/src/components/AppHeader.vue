@@ -148,25 +148,25 @@ const appMenus = computed(() => {
         }
       ]
     },
-    {
-      title: t("TXT_CODE_fa40177b"),
-      icon: TranslationOutlined,
-      click: (key: string) => {
-        setLanguage(key);
-      },
-      conditions: !containerState.isDesignMode,
-      onlyPC: false,
-      menus: [
-        {
-          title: "English",
-          value: "en_US"
-        },
-        {
-          title: "简体中文",
-          value: "zh_CN"
-        }
-      ]
-    },
+    // {
+    //   title: t("TXT_CODE_fa40177b"),
+    //   icon: TranslationOutlined,
+    //   click: (key: string) => {
+    //     setLanguage(key);
+    //   },
+    //   conditions: !containerState.isDesignMode,
+    //   onlyPC: false,
+    //   menus: [
+    //     {
+    //       title: "English",
+    //       value: "en_US"
+    //     },
+    //     {
+    //       title: "简体中文",
+    //       value: "zh_CN"
+    //     }
+    //   ]
+    // },
     {
       title: t("TXT_CODE_ebd2a6a1"),
       icon: BuildOutlined,
@@ -379,6 +379,7 @@ const openPhoneMenu = (b = false) => {
   justify-content: center;
   align-items: center;
   background-color: var(--app-header-bg);
+  backdrop-filter: saturate(180%) blur(20px);
   color: var(--app-header-text-color);
 
   position: fixed;

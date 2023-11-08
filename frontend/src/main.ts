@@ -9,7 +9,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 
 import { router } from "./config/router";
-import { i18n } from "@/lang/i18n";
+import { getCurrentLang, i18n, setLanguage } from "@/lang/i18n";
 import App from "./App.vue";
 
 import { panelStatus, userInfoApi } from "./services/apis";
@@ -24,19 +24,18 @@ const { updateUserInfo, state } = useAppStateStore();
 
 async function checkPanelStatus() {
   const status = await panelStatus().execute();
+  state.language = status.value?.language || "en_us";
   state.isInstall = status.value?.isInstall ?? true;
   state.versionChanged = status.value?.versionChange ? true : false;
-  if (!state.isInstall) {
-    return router.push({
-      path: "/init"
-    });
+  if (getCurrentLang().toLowerCase() != state.language.toLowerCase()) {
+    setLanguage(state.language);
   }
 }
 
 async function index() {
   try {
     await initLayoutConfig();
-
+    await checkPanelStatus();
     const { execute: reqUserInfo } = userInfoApi();
     const info = await reqUserInfo();
     updateUserInfo(info.value);
@@ -49,7 +48,12 @@ async function index() {
     app.use(i18n);
     app.mount("#app");
   }
-  await checkPanelStatus();
+
+  if (!state.isInstall) {
+    return router.push({
+      path: "/init"
+    });
+  }
 }
 
 index();

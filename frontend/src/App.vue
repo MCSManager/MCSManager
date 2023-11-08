@@ -17,6 +17,8 @@ const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
 const { state, isAdmin } = useAppStateStore();
 const locale = ref(enUS);
 
+// Ant Design Vue i18n
+// This will also have to be changed if a new language is added.
 if (getCurrentLanguage() === "zh_CN") {
   dayjs.locale("zh-cn");
   locale.value = zhCN;

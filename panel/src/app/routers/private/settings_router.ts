@@ -38,7 +38,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async
     if (config.language != null) {
       logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
-      i18next.changeLanguage(systemConfig.language);
+      i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
     saveSystemConfig(systemConfig);
@@ -56,7 +56,7 @@ router.put("/install", async (ctx) => {
     if (config.language != null) {
       logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
-      i18next.changeLanguage(systemConfig.language);
+      i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
     saveSystemConfig(systemConfig);

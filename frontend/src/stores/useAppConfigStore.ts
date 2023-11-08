@@ -1,4 +1,4 @@
-import { LANGUAGE_KEY, setLanguage } from "@/lang/i18n";
+import { LANGUAGE_KEY, setLanguage, getCurrentLang } from "@/lang/i18n";
 import { reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
 
@@ -35,7 +35,7 @@ export const useAppConfigStore = createGlobalState(() => {
   };
 
   const getCurrentLanguage = () => {
-    return localStorage.getItem(LANGUAGE_KEY) || "en_US";
+    return localStorage.getItem(LANGUAGE_KEY) ?? getCurrentLang() ?? "en_US";
   };
 
   return {

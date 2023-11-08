@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import { t, i18n } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import { panelInstall, updateSettings } from "@/services/apis";
 import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { LANGUAGE_KEY } from "../lang/i18n";
 
 const skeletons = [
   { span: 6, rows: 4 },
@@ -49,17 +50,18 @@ const createUser = async () => {
 };
 
 const { execute: execUpdateSettings, isLoading: nextStepLoading } = updateSettings();
-const selectLanguage = async (lang: "en_US" | "zh_CN") => {
+const selectLanguage = async (lang: string) => {
   try {
     await execUpdateSettings({
       data: {
         language: lang
       }
     });
-    i18n.global.locale = lang;
   } catch (err: any) {
     console.error(err);
     message.error(err.message);
+  } finally {
+    window.location.reload();
   }
 };
 
@@ -83,10 +85,12 @@ const toOverview = () => {
 
 onMounted(async () => {
   const language = window.navigator.language;
-  if (language.includes("zh")) {
-    await selectLanguage("zh_CN");
-  } else {
-    await selectLanguage("en_US");
+  if (!localStorage.getItem(LANGUAGE_KEY)) {
+    if (language.includes("zh")) {
+      await selectLanguage("zh_CN");
+    } else {
+      await selectLanguage("en_US");
+    }
   }
 });
 </script>
@@ -106,7 +110,7 @@ onMounted(async () => {
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
-            {{ t("欢迎使用 MCSManager 管理面板") }}
+            {{ t("TXT_CODE_00000001") }}
           </a-typography-title>
           <a-typography-paragraph>
             <a-typography-text>
