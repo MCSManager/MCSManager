@@ -339,7 +339,7 @@ onMounted(async () => {
           <template v-if="instances" #left>
             <div v-if="multipleMode">
               <a-button class="mr-10" :class="{ 'mb-10': isPhone }" @click="exitMultipleMode">
-                退出批量操作
+                {{ t("退出批量操作") }}
               </a-button>
 
               <a-button
@@ -348,7 +348,7 @@ onMounted(async () => {
                 :class="{ 'mb-10': isPhone }"
                 @click="selectedInstance = []"
               >
-                取消全选
+                {{ t("取消全选") }}
               </a-button>
               <a-button
                 v-else
@@ -356,7 +356,7 @@ onMounted(async () => {
                 :class="{ 'mb-10': isPhone }"
                 @click="selectAllInstances"
               >
-                全选
+                {{ t("全选") }}
               </a-button>
               <a-dropdown>
                 <template #overlay>
@@ -378,11 +378,13 @@ onMounted(async () => {
               </a-dropdown>
             </div>
             <div v-else>
-              <a-button @click="multipleMode = true">批量操作</a-button>
+              <a-button @click="multipleMode = true">{{ t("批量操作") }}</a-button>
             </div>
           </template>
           <template v-if="multipleMode" #center>
-            <a-typography-text> 已选择：{{ selectedInstance.length }} 项 </a-typography-text>
+            <a-typography-text>
+              {{ t("已选择：") }}{{ selectedInstance.length }} {{ t("项") }}
+            </a-typography-text>
           </template>
           <template v-if="instances" #right>
             <a-pagination
