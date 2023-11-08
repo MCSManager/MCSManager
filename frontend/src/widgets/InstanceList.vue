@@ -26,8 +26,6 @@ import { batchStart, batchStop, batchKill, batchDelete } from "@/services/apis/i
 import type { NodeStatus } from "../types/index";
 import { message, notification, Modal } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
-import Loading from "@/components/Loading.vue";
-import { useInstanceInfo } from "@/hooks/useInstance";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
@@ -47,7 +45,7 @@ const operationForm = ref({
 const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes } = remoteNodeList();
-const { execute: getInstances, state: instances, isLoading } = remoteInstances();
+const { execute: getInstances, state: instances } = remoteInstances();
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceMoreDetail[] = [];
@@ -277,7 +275,7 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <AppstoreOutlined />
               {{ card.title }}
