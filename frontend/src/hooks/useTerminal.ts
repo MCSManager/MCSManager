@@ -1,6 +1,6 @@
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
-import { onMounted, onUnmounted, ref, unref } from "vue";
+import { computed, onMounted, onUnmounted, ref, unref } from "vue";
 import { io } from "socket.io-client";
 import type { Socket } from "socket.io-client";
 import { t } from "@/lang/i18n";
@@ -52,7 +52,6 @@ export function useTerminal() {
   const state = ref<InstanceDetail>();
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
-  const { isPhone } = useScreen();
   const termFitAddon = ref<FitAddon>();
 
   const execute = async (config: UseTerminalParams) => {
@@ -106,7 +105,6 @@ export function useTerminal() {
     });
 
     socket.connect();
-
     return socket;
   };
 
@@ -159,24 +157,29 @@ export function useTerminal() {
     });
   };
 
-  // const handleTerminalSizeChange = () => {
-  //   termFitAddon.value?.fit();
-  // };
-
+  let statusQueryTask: NodeJS.Timeout;
   onMounted(() => {
-    // window.addEventListener("resize", handleTerminalSizeChange);
+    statusQueryTask = setInterval(() => {
+      socket?.emit("stream/detail", {});
+    }, 1000);
   });
 
   onUnmounted(() => {
+    clearInterval(statusQueryTask);
     events.removeAllListeners();
-    // window.removeEventListener("resize", handleTerminalSizeChange);
+
     socket?.close();
   });
+
+  const isRunning = computed(() => state?.value?.status === 3);
+  const isStopped = computed(() => state?.value?.status === 0);
 
   return {
     execute,
     events,
     state,
+    isRunning,
+    isStopped,
     terminal,
     initTerminalWindow,
     sendCommand

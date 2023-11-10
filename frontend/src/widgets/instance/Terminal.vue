@@ -11,6 +11,7 @@ import {
   PlayCircleOutlined,
   ReconciliationOutlined
 } from "@ant-design/icons-vue";
+import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
 import { onMounted, computed, ref } from "vue";
@@ -20,20 +21,33 @@ import IconBtn from "@/components/IconBtn.vue";
 import { openInstance, stopInstance } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
+import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-const { execute, initTerminalWindow, sendCommand, state: instanceInfo } = useTerminal();
+const {
+  execute,
+  initTerminalWindow,
+  sendCommand,
+  state: instanceInfo,
+  isRunning,
+  isStopped
+} = useTerminal();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
 
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
+
 const commandInputValue = ref("");
+
+const instanceStatusText = computed(
+  () => String(INSTANCE_STATUS_TEXT[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
+);
 
 const quickOperations = computed(() =>
   arrayFilter([
@@ -136,12 +150,29 @@ const innerTerminalType = viewType === "inner";
     <div class="mb-24">
       <BetweenMenus>
         <template #left>
-          <a-typography-title class="mb-0" :level="4">
-            <CloudServerOutlined />
-            <span class="ml-8">
-              {{ getInstanceName }}
-            </span>
-          </a-typography-title>
+          <div class="align-center">
+            <a-typography-title class="mb-0 mr-10" :level="4">
+              <CloudServerOutlined />
+              <span class="ml-8">
+                {{ getInstanceName }}
+                {{ instanceInfo?.status }}
+              </span>
+            </a-typography-title>
+            <a-typography-paragraph class="mb-0">
+              <span v-if="isRunning" class="color-success">
+                <CheckCircleOutlined />
+                {{ instanceStatusText }}
+              </span>
+              <span v-else-if="isStopped" class="color-info">
+                <PauseCircleOutlined />
+                {{ instanceStatusText }}
+              </span>
+              <span v-else>
+                <ExclamationCircleOutlined />
+                {{ instanceStatusText }}
+              </span>
+            </a-typography-paragraph>
+          </div>
         </template>
         <template #right>
           <a-dropdown>

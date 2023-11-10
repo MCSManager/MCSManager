@@ -23,8 +23,6 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
     autoRefresh: true
   });
 
-instanceInfo.value?.config.type;
-
 const getInstanceName = computed(() => {
   if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
     return t("节点终端");
