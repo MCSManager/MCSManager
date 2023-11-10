@@ -12,7 +12,7 @@ import { router } from "./config/router";
 import { getI18nInstance } from "@/lang/i18n";
 import App from "./App.vue";
 
-import { panelStatus, userInfoApi } from "./services/apis";
+import { userInfoApi } from "./services/apis";
 import { useAppStateStore } from "./stores/useAppStateStore";
 
 window.addEventListener("unhandledrejection", function (event) {

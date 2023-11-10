@@ -19,6 +19,7 @@ import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
 import { openInstance, stopInstance } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
+import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -104,6 +105,14 @@ const initTerminal = () => {
   throw new Error("init terminal failed");
 };
 
+const getInstanceName = computed(() => {
+  if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
+    return t("节点终端");
+  } else {
+    return instanceInfo.value?.config.nickname;
+  }
+});
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -130,7 +139,7 @@ const innerTerminalType = viewType === "inner";
           <a-typography-title class="mb-0" :level="4">
             <CloudServerOutlined />
             <span class="ml-8">
-              {{ t("TXT_CODE_cb043d10") }} {{ instanceInfo?.config.nickname }}
+              {{ getInstanceName }}
             </span>
           </a-typography-title>
         </template>

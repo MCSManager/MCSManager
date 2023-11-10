@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { LayoutCard } from "@/types/index";
 import { LAYOUT_CARD_TYPES } from "@/config/index";
-import CardError from "./CardError.vue";
-import { onErrorCaptured, onUnmounted, ref } from "vue";
-import { useCategoryEvents } from "@/hooks/useCategoryEvents";
+import { onErrorCaptured, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -34,7 +32,7 @@ onErrorCaptured((error: Error) => {
       :card="props.card"
     ></component>
 
-    <CardError v-else :error="cardError" :title="card.title"></CardError>
+    <!-- <CardError v-else :error="cardError" :title="card.title"></CardError> -->
   </div>
 </template>
 

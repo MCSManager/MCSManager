@@ -19,7 +19,7 @@ const locale = ref(enUS);
 
 // Ant Design Vue i18n
 // This will also have to be changed if a new language is added.
-if (getCurrentLanguage() === "zh_CN") {
+if (getCurrentLanguage().toLowerCase() === "zh_cn") {
   dayjs.locale("zh-cn");
   locale.value = zhCN;
 } else {

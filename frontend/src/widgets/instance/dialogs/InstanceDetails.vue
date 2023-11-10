@@ -13,6 +13,7 @@ import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import dayjs, { Dayjs } from "dayjs";
 import _ from "lodash";
+import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime: Dayjs;
@@ -51,6 +52,10 @@ const initFormDetail = () => {
     };
   }
 };
+
+const isGlobalTerminal = computed(() => {
+  return props.instanceInfo?.config.nickname === GLOBAL_INSTANCE_NAME;
+});
 
 const loadImages = async () => {
   try {
@@ -188,7 +193,7 @@ defineExpose({
                   {{ t("支持中文，尽可能保证唯一性") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input v-model:value="options.config.nickname" />
+              <a-input v-model:value="options.config.nickname" :disabled="isGlobalTerminal" />
             </a-form-item>
           </a-col>
           <a-col :xs="24" :md="12" :offset="0">
@@ -205,7 +210,11 @@ defineExpose({
                   }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-select v-model:value="options.config.type" :placeholder="t('请选择')">
+              <a-select
+                v-model:value="options.config.type"
+                :placeholder="t('请选择')"
+                :disabled="isGlobalTerminal"
+              >
                 <a-select-option
                   v-for="(item, key) in INSTANCE_TYPE_TRANSLATION"
                   :key="key"
@@ -301,6 +310,7 @@ defineExpose({
                 size="large"
                 style="width: 100%"
                 :placeholder="t('无限制')"
+                :disabled="isGlobalTerminal"
               />
             </a-form-item>
           </a-col>
@@ -316,7 +326,7 @@ defineExpose({
                   }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-select v-model:value="options.config.processType">
+              <a-select v-model:value="options.config.processType" :disabled="isGlobalTerminal">
                 <a-select-option value="general">
                   {{ t("默认类型") }}
                 </a-select-option>

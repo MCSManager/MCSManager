@@ -1,0 +1,1 @@
+export const GLOBAL_INSTANCE_NAME = "__MCSM_GLOBAL_INSTANCE__";

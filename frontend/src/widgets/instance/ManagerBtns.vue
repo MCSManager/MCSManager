@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
@@ -13,6 +13,7 @@ import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import InstanceDetails from "./dialogs/InstanceDetails.vue";
+import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
@@ -44,63 +45,71 @@ const refreshInstanceInfo = async () => {
   });
 };
 
-const btns = arrayFilter([
-  {
-    title: t("TXT_CODE_d07742fe"),
-    icon: CloudServerOutlined,
-    click: () => {
-      toPage({
-        path: "/instances/terminal/serverConfig",
-        query: {
-          type: instanceInfo.value?.config.type
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_ae533703"),
-    icon: CloudServerOutlined,
-    click: () => {
-      toPage({ path: "/instances/terminal/files" });
-    }
-  },
-  {
-    title: t("TXT_CODE_d23631cb"),
-    icon: CloudServerOutlined,
-    click: () => {
-      terminalConfigDialog.value?.openDialog();
-    }
-  },
-  {
-    title: t("TXT_CODE_b7d026f8"),
-    icon: CloudServerOutlined,
-    click: () => {
-      console.log(1);
-    }
-  },
-  {
-    title: t("TXT_CODE_3a406403"),
-    icon: CloudServerOutlined,
-    click: () => {
-      pingConfigDialog.value?.openDialog();
-    }
-  },
-  {
-    title: t("TXT_CODE_d341127b"),
-    icon: CloudServerOutlined,
-    click: () => {
-      eventConfigDialog.value?.openDialog();
-    }
-  },
+const isGlobalTerminal = computed(() => {
+  return instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME;
+});
 
-  {
-    title: t("TXT_CODE_4f34fc28"),
-    icon: CloudServerOutlined,
-    click: () => {
-      instanceDetailsDialog.value?.openDialog();
+const btns = computed(() =>
+  arrayFilter([
+    {
+      title: t("TXT_CODE_d07742fe"),
+      icon: CloudServerOutlined,
+      condition: () => !isGlobalTerminal.value,
+      click: (): void => {
+        toPage({
+          path: "/instances/terminal/serverConfig",
+          query: {
+            type: instanceInfo.value?.config.type
+          }
+        });
+      }
+    },
+    {
+      title: t("TXT_CODE_ae533703"),
+      icon: CloudServerOutlined,
+      click: () => {
+        toPage({ path: "/instances/terminal/files" });
+      }
+    },
+    {
+      title: t("TXT_CODE_d23631cb"),
+      icon: CloudServerOutlined,
+      click: () => {
+        terminalConfigDialog.value?.openDialog();
+      }
+    },
+    {
+      title: t("TXT_CODE_b7d026f8"),
+      icon: CloudServerOutlined,
+      condition: () => !isGlobalTerminal.value,
+      click: () => {}
+    },
+    // 暂时删除
+    // {
+    //   title: t("TXT_CODE_3a406403"),
+    //   icon: CloudServerOutlined,
+    //   condition: () => !isGlobalTerminal.value,
+    //   click: () => {
+    //     pingConfigDialog.value?.openDialog();
+    //   }
+    // },
+    {
+      title: t("TXT_CODE_d341127b"),
+      icon: CloudServerOutlined,
+      click: () => {
+        eventConfigDialog.value?.openDialog();
+      }
+    },
+
+    {
+      title: t("TXT_CODE_4f34fc28"),
+      icon: CloudServerOutlined,
+      click: () => {
+        instanceDetailsDialog.value?.openDialog();
+      }
     }
-  }
-]);
+  ])
+);
 </script>
 
 <template>

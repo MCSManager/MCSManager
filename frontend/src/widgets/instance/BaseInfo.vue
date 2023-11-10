@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { LayoutCard } from "@/types";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -22,8 +23,15 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
     autoRefresh: true
   });
 
-instanceInfo.value?.config.type
+instanceInfo.value?.config.type;
 
+const getInstanceName = computed(() => {
+  if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
+    return t("节点终端");
+  } else {
+    return instanceInfo.value?.config.nickname;
+  }
+});
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -44,7 +52,7 @@ onMounted(async () => {
     </template>
     <template #body>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_7ec9c59c") }}{{ instanceInfo?.config.nickname }}
+        {{ t("TXT_CODE_7ec9c59c") }}{{ getInstanceName }}
       </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("TXT_CODE_68831be6") }}{{ instanceTypeText }}
