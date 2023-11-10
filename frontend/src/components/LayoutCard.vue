@@ -32,7 +32,7 @@ onErrorCaptured((error: Error) => {
       :card="props.card"
     ></component>
 
-    <!-- <CardError v-else :error="cardError" :title="card.title"></CardError> -->
+    <CardError v-else :error="cardError" :title="card.title"></CardError>
   </div>
 </template>
 

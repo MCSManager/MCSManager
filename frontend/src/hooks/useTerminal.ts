@@ -53,6 +53,8 @@ export function useTerminal() {
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
   const termFitAddon = ref<FitAddon>();
+  const isConnect = ref<boolean>(false);
+  const socketAddress = ref("");
 
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
@@ -66,13 +68,29 @@ export function useTerminal() {
     if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
 
     const addr = parseForwardAddress(remoteInfo?.addr, "ws");
+    socketAddress.value = addr;
     const password = remoteInfo.password;
 
     socket = io(addr, {});
+
     socket.on("connect", () => {
       socket?.emit("stream/auth", {
         data: { password }
       });
+      isConnect.value = true;
+    });
+
+    socket.on("connect_error", (error) => {
+      isConnect.value = false;
+      events.emit("error", error);
+    });
+
+    socket.on("instance/stopped", () => {
+      events.emit("stopped");
+    });
+
+    socket.on("instance/opened", () => {
+      events.emit("opened");
     });
 
     socket.on("stream/auth", (packet) => {
@@ -87,12 +105,14 @@ export function useTerminal() {
     });
 
     socket.on("reconnect", () => {
+      isConnect.value = true;
       socket?.emit("stream/auth", {
         data: { password }
       });
     });
 
     socket.on("disconnect", () => {
+      isConnect.value = false;
       events.emit("disconnect");
       socket?.close();
     });
@@ -175,12 +195,14 @@ export function useTerminal() {
   const isStopped = computed(() => state?.value?.status === 0);
 
   return {
-    execute,
     events,
     state,
     isRunning,
     isStopped,
     terminal,
+    socketAddress,
+    isConnect,
+    execute,
     initTerminalWindow,
     sendCommand
   };

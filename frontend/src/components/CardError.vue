@@ -30,7 +30,7 @@ defineProps<{
             <div>
               <a-typography-paragraph>
                 <ExclamationCircleOutlined />
-                {{ t("此卡片初始化失败，请尝试重新进入网页或者删除卡片重新添加。") }}
+                {{ t("此卡片运行错误，请刷新网页重试") }}
               </a-typography-paragraph>
 
               <a-typography-paragraph>

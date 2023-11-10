@@ -22,6 +22,8 @@ import { openInstance, stopInstance } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
+import { message } from "ant-design-vue";
+import connectErrorImage from "@/assets/daemon_connection_error.png";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -34,7 +36,10 @@ const {
   sendCommand,
   state: instanceInfo,
   isRunning,
-  isStopped
+  isStopped,
+  events,
+  isConnect,
+  socketAddress
 } = useTerminal();
 
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -44,6 +49,7 @@ const viewType = getMetaOrRouteValue("viewType", false);
 const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
 
 const commandInputValue = ref("");
+const socketError = ref<Error>();
 
 const instanceStatusText = computed(
   () => String(INSTANCE_STATUS_TEXT[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
@@ -127,6 +133,18 @@ const getInstanceName = computed(() => {
   }
 });
 
+events.on("opened", () => {
+  message.success(t("实例已运行"));
+});
+
+events.on("stopped", () => {
+  message.success(t("实例已停止运行"));
+});
+
+events.on("error", (error: Error) => {
+  socketError.value = error;
+});
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -145,17 +163,44 @@ const innerTerminalType = viewType === "inner";
 </script>
 
 <template>
+  <div v-if="socketError" class="error-card">
+    <div class="error-card-container">
+      <a-typography-title :level="5">{{ $t("无法连接到远程节点") }}</a-typography-title>
+      <a-typography-paragraph>
+        {{ $t("浏览器无法连接到地址：") + socketAddress }}
+      </a-typography-paragraph>
+      <div>
+        <img :src="connectErrorImage" style="width: 100%" />
+      </div>
+      <a-typography-title :level="5">{{ $t("解决方案：") }}</a-typography-title>
+      <a-typography-paragraph>
+        <ul>
+          <li>
+            {{ $t("如果您只是一名普通用户，请联系面板管理员。") }}
+          </li>
+          <li>
+            {{ $t("确保连接远程节点地址是公开IP，且节点端口正常开放。") }}
+          </li>
+          <li>
+            {{ $t("配置 SSL，反向代理等，需要额外支持 Websocket 协议。") }}
+          </li>
+          <li>
+            {{ $t("访问 https://docs.mcsmanager.com 了解更多。") }}
+          </li>
+        </ul>
+      </a-typography-paragraph>
+    </div>
+  </div>
   <!-- Terminal Page View -->
   <div v-if="innerTerminalType">
     <div class="mb-24">
       <BetweenMenus>
         <template #left>
           <div class="align-center">
-            <a-typography-title class="mb-0 mr-10" :level="4">
+            <a-typography-title class="mb-0 mr-12" :level="4">
               <CloudServerOutlined />
               <span class="ml-8">
                 {{ getInstanceName }}
-                {{ instanceInfo?.status }}
               </span>
             </a-typography-title>
             <a-typography-paragraph class="mb-0">
@@ -163,10 +208,7 @@ const innerTerminalType = viewType === "inner";
                 <CheckCircleOutlined />
                 {{ instanceStatusText }}
               </span>
-              <span v-else-if="isStopped" class="color-info">
-                <PauseCircleOutlined />
-                {{ instanceStatusText }}
-              </span>
+              <span v-else-if="isStopped"></span>
               <span v-else>
                 <ExclamationCircleOutlined />
                 {{ instanceStatusText }}
@@ -196,24 +238,26 @@ const innerTerminalType = viewType === "inner";
         </template>
       </BetweenMenus>
     </div>
-    <div class="console-wrapper">
-      <div class="terminal-wrapper global-card-container-shadow">
-        <div class="terminal-container">
-          <div :id="terminalDomId"></div>
+    <a-spin :spinning="!isConnect" tip="正在连接终端中...">
+      <div class="console-wrapper">
+        <div class="terminal-wrapper global-card-container-shadow">
+          <div class="terminal-container">
+            <div :id="terminalDomId"></div>
+          </div>
+        </div>
+        <div class="command-input">
+          <a-input
+            v-model:value="commandInputValue"
+            :placeholder="t('TXT_CODE_b8108d4d')"
+            @press-enter="handleSendCommand"
+          >
+            <template #prefix>
+              <CodeOutlined style="font-size: 18px" />
+            </template>
+          </a-input>
         </div>
       </div>
-      <div class="command-input">
-        <a-input
-          v-model:value="commandInputValue"
-          :placeholder="t('TXT_CODE_b8108d4d')"
-          @press-enter="handleSendCommand"
-        >
-          <template #prefix>
-            <CodeOutlined style="font-size: 18px" />
-          </template>
-        </a-input>
-      </div>
-    </div>
+    </a-spin>
   </div>
 
   <!-- Other Page View -->
@@ -267,6 +311,29 @@ const innerTerminalType = viewType === "inner";
 </template>
 
 <style lang="scss" scoped>
+.error-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  backdrop-filter: blur(1px);
+  z-index: 10;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .error-card-container {
+    overflow: hidden;
+    max-width: 500px;
+    background-color: var(--color-gray-1);
+
+    border-radius: 4px;
+    padding: 12px;
+  }
+}
 .console-wrapper {
   position: relative;
 
