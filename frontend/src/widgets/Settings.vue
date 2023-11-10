@@ -29,6 +29,9 @@ const submit = async () => {
       return message.success(t("TXT_CODE_a7907771"));
     }
     message.error(res.value);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 };
 

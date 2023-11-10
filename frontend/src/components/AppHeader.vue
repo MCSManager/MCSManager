@@ -47,16 +47,18 @@ const handleToPage = (url: string) => {
 
 const route = useRoute();
 
-const menus = router
-  .getRoutes()
-  .filter((v) => v.meta.mainMenu)
-  .map((r) => {
-    return {
-      name: r.name,
-      path: r.path,
-      meta: r.meta
-    };
-  });
+const menus = computed(() => {
+  return router
+    .getRoutes()
+    .filter((v) => v.meta.mainMenu)
+    .map((r) => {
+      return {
+        name: r.name,
+        path: r.path,
+        meta: r.meta
+      };
+    });
+});
 
 router.beforeEach((to, from) => {
   console.log("Router:", from, "->", to);
@@ -198,8 +200,6 @@ const appMenus = computed(() => {
         await execute();
         message.success(t("成功退出登录"));
         router.go(0);
-        // toPage({ path: "/" });
-        // messageApi.success(t("TXT_CODE_e6856d81"));
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false
@@ -218,7 +218,7 @@ const openPhoneMenu = (b = false) => {
 <template>
   <header class="app-header-wrapper">
     <div v-if="!isPhone" class="app-header-content">
-      <div class="btns">
+      <nav class="btns">
         <a href="/" style="margin-right: 12px">
           <div class="logo">
             <img :src="logo" style="height: 18px" />
@@ -233,7 +233,7 @@ const openPhoneMenu = (b = false) => {
         >
           <span>{{ item.name }}</span>
         </div>
-      </div>
+      </nav>
       <div class="btns">
         <div v-for="(item, index) in appMenus" :key="index">
           <a-dropdown v-if="item.menus && item.conditions" placement="bottom">

@@ -34,6 +34,7 @@ import ImageManager from "@/widgets/imageManager/index.vue";
 import NewImage from "@/widgets/imageManager/NewImage.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
+import { ROLE } from "./router";
 
 // Register specified Vue components for each card.
 export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
@@ -71,60 +72,44 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
 
 export interface NewCardItem extends LayoutCard {
   category: NEW_CARD_TYPE;
+  permission: ROLE;
 }
 
-// For create new card∂
 export function getLayoutCardPool() {
   const LAYOUT_CARD_POOL: NewCardItem[] = [
-    // 占位卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "EmptyCard",
-      title: "占位卡片",
+      title: t("占位卡片"),
       width: 2,
-      description: "此卡片没有任何内容，可以用来占位，实现居中等排版需求。",
+      description: t("此卡片没有任何内容，可以用来占位，实现居中等排版需求。"),
       height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // 只展示到个人资料的卡片（但是不推荐这样用）
     {
       id: getRandomId(),
-      meta: {},
-      type: "ExampleCard2",
-      title: "个人资料的卡片",
-      width: 6,
-      onlyPath: ["/user"],
-      description: "这个卡片只能在「个人资料」这种界面出现，不能在其他场景使用。",
-      height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.USER
-    },
-
-    // 一个新增时要求设置参数的卡片
-    {
-      id: getRandomId(),
+      permission: ROLE.USER,
       type: "Terminal",
-      title: "实例控制台",
-
+      title: t("实例控制台"),
       width: 6,
-      description: "用于显示和交互某个实例的控制台。",
+      description: t("用于显示和交互某个实例的控制台。"),
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.INSTANCE,
-
-      // 新增卡片时被要求填写的参数
       meta: {
         viewType: "card"
       },
       params: [
         {
           field: "instanceId",
-          label: "实例 ID",
+          label: t("实例 ID"),
           type: "string"
         },
         {
           field: "daemonId",
-          label: "节点 ID",
+          label: t("节点 ID"),
           type: "string"
         }
       ]
@@ -132,10 +117,11 @@ export function getLayoutCardPool() {
 
     {
       id: getRandomId(),
+      permission: ROLE.ADMIN,
       type: "StatusBlock",
       title: t("TXT_CODE_b4a9d04a"),
       meta: {
-        title: "在线节点 / 总节点",
+        title: t("在线节点 / 总节点"),
         type: "node"
       },
       width: 3,
@@ -144,45 +130,21 @@ export function getLayoutCardPool() {
       category: NEW_CARD_TYPE.COMMON
     },
 
-    // 一个正常的卡片
     {
       id: getRandomId(),
+      permission: ROLE.ADMIN,
       meta: {},
       type: "Settings",
-      title: "设置",
-      width: 4,
-      description: "卡片的详细说明以及使用方式。",
-      height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.COMMON
-    },
-
-    // 一个多个项目组合一起的卡片
-    {
-      id: getRandomId(),
-      meta: {},
-      type: "ExampleCard",
-      title: "多项目卡片",
-      width: 12,
-      description: "卡片的详细说明以及使用方式。",
-      height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.INSTANCE
-    },
-
-    // 包含上下布局的卡片
-    {
-      id: getRandomId(),
-      meta: {},
-      type: "ExampleCard3",
-      title: "上下布局的卡片",
-      width: 6,
-      description: "卡片的详细说明以及使用方式。",
+      title: t("设置"),
+      width: 8,
+      description: t("用于操作面板的全局设置"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.COMMON
     },
 
-    // 图片卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "ImageBox",
       title: t("TXT_CODE_4d993ca4"),
@@ -192,9 +154,9 @@ export function getLayoutCardPool() {
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // iframe卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "IframeCard",
       title: t("TXT_CODE_3ed96265"),
@@ -204,9 +166,9 @@ export function getLayoutCardPool() {
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // 自定义文本卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "TextCard",
       title: t("TXT_CODE_ddcca0b9"),
@@ -216,9 +178,9 @@ export function getLayoutCardPool() {
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // TXT_CODE_745d8a03卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "LinkCard",
       title: t("TXT_CODE_745d8a03"),
@@ -228,9 +190,9 @@ export function getLayoutCardPool() {
       category: NEW_CARD_TYPE.OTHER
     },
 
-    // TXT_CODE_af143e18卡片
     {
       id: getRandomId(),
+      permission: ROLE.GUEST,
       meta: {},
       type: "ClockCard",
       title: t("TXT_CODE_af143e18"),

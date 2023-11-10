@@ -9,6 +9,9 @@ import { useRoute } from "vue-router";
 import Params from "./params.vue";
 import CardPanel from "../CardPanel.vue";
 import { t } from "@/lang/i18n";
+import type { ROLE } from "@/config/router";
+import type { NewCardItem } from "../../config/index";
+import { message } from "ant-design-vue";
 
 const { getCardPool } = useCardPool();
 const { insertLayoutItem } = useLayoutConfigStore();
@@ -27,8 +30,13 @@ const display = computed(() => {
 const paramsDialog = ref<InstanceType<typeof Params>>();
 
 let cardPool = getCardPool();
+const currentPageRole = route.meta.permission as ROLE;
 
-const insertCardToLayout = async (card: LayoutCard) => {
+const insertCardToLayout = async (card: NewCardItem) => {
+  if (card.permission > currentPageRole) {
+    return message.warning(t("无法添加，此卡片只能放置在更高权限的页面中"));
+  }
+
   if (card.params) {
     const isParamsOk = await paramsDialog.value?.openDialog(card);
     if (!isParamsOk) return;
@@ -112,6 +120,13 @@ const handleTabClick = (value: string) => {
             </a-col>
             <a-col span="24" :md="24" :lg="card.width * 2">
               <div class="card-container-wrapper">
+                <div v-if="card.permission > currentPageRole" class="card-alert">
+                  <a-alert
+                    show-icon
+                    :message="t('此卡片只能放置在更高权限的页面中')"
+                    type="warning"
+                  />
+                </div>
                 <LayoutCardComponent
                   :id="'card-card-container-' + card.id"
                   class="card-list-container"
@@ -133,6 +148,14 @@ const handleTabClick = (value: string) => {
 
 <style lang="scss" scoped>
 @import "@/assets/global.scss";
+.card-alert {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
+  left: 20px;
+  z-index: 999;
+}
 .new-card-list-tabs {
   z-index: 999;
   position: fixed;

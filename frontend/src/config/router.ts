@@ -157,6 +157,15 @@ let originRouterConfig: RouterConfig[] = [
     ]
   },
   {
+    path: "/customer",
+    name: t("我的应用"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.USER,
+      mainMenu: true
+    }
+  },
+  {
     path: "/settings",
     name: t("TXT_CODE_b5c7b82d"),
     component: LayoutContainer,
@@ -202,15 +211,6 @@ let originRouterConfig: RouterConfig[] = [
         }
       }
     ]
-  },
-  {
-    path: "/customer",
-    name: t("我的应用"),
-    component: LayoutContainer,
-    meta: {
-      permission: ROLE.USER,
-      mainMenu: true
-    }
   }
 ];
 
