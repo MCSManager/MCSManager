@@ -58,7 +58,8 @@ const submit = async () => {
         text: editorText.value
       }
     });
-    return message.success(t("保存成功"));
+    message.success(t("保存成功"));
+    open.value = openEditor.value = false;
   } catch (err: any) {
     console.error(err.message);
     return message.error(err.message);
@@ -82,16 +83,21 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
+    :cancel-text="t('放弃')"
+    :ok-text="t('保存')"
     :mask-closable="false"
     :title="dialogTitle"
     width="1000px"
-    :footer="null"
+    @ok="submit()"
     @cancel="cancel()"
   >
-    <a-space warp>
-      <a-button @click="submit">保存</a-button>
-    </a-space>
-    <Editor v-if="openEditor" ref="EditorComponent" v-model:text="editorText" height="70vh" />
-    <a-skeleton v-else active />
+    <Editor
+      v-if="openEditor"
+      ref="EditorComponent"
+      v-model:text="editorText"
+      :filename="fileName"
+      height="70vh"
+    />
+    <a-skeleton v-else :paragraph="{ rows: 12 }" active />
   </a-modal>
 </template>

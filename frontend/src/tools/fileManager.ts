@@ -24,8 +24,8 @@ import {
   CustomerServiceOutlined
 } from "@ant-design/icons-vue";
 
-// 返回文件扩展名
-export const getExtName = (fileName: string, onlyExtname = false) => {
+// 文件管理显示文件类型
+export const filterFileName = (fileName: string, onlyExtname = false) => {
   const i = fileName.lastIndexOf(".");
   const suffix = fileName.substring(i + 1).toUpperCase();
   return i === -1
@@ -35,6 +35,14 @@ export const getExtName = (fileName: string, onlyExtname = false) => {
     : onlyExtname
     ? suffix
     : `${suffix} ${t("文件")}`;
+};
+
+// 返回文件扩展名
+export const getFileExtName = (fileName: string) => {
+  if (fileName.indexOf(".") === -1) return "";
+  const i = fileName.lastIndexOf(".");
+  const suffix = fileName.substring(i + 1).toLowerCase();
+  return suffix;
 };
 
 // 返回文件图标
@@ -117,7 +125,7 @@ const fileType = new Map([
   ["UNKNOWN", FileUnknownOutlined]
 ]);
 export const getFileIcon = (name: string, type: number) => {
-  name = getExtName(name, true);
+  name = filterFileName(name, true);
   if (type === 0) return FolderOutlined;
   return fileType.get(name) || FileOutlined;
 };

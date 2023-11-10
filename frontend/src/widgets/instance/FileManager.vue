@@ -11,7 +11,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { throttle } from "lodash";
-import { getExtName, getFileIcon } from "@/tools/fileManager";
+import { filterFileName, getFileIcon } from "@/tools/fileManager";
 import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
@@ -72,7 +72,7 @@ const columns = computed(() => {
       dataIndex: "type",
       key: "type",
       customRender: (e: { text: number; record: { name: string } }) => {
-        return e.text == 1 ? getExtName(e.record.name) : t("文件夹");
+        return e.text == 1 ? filterFileName(e.record.name) : t("文件夹");
       },
       minWidth: "200px"
     },
@@ -286,13 +286,16 @@ onMounted(() => {
                 }"
                 @change="handleTableChange($event)"
               >
-                <!-- eslint-disable-next-line vue/no-unused-vars -->
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'name'">
                     <a-button
                       type="link"
                       class="file-name"
-                      @click="rowClickTable(record.name, record.type)"
+                      @click="
+                        record.type !== 1
+                          ? rowClickTable(record.name, record.type)
+                          : editFile(record.name)
+                      "
                     >
                       <span class="mr-4">
                         <component
@@ -308,19 +311,20 @@ onMounted(() => {
                       <template #overlay>
                         <a-menu>
                           <a-menu-item
-                            v-if="fileStatus?.platform != 'win32'"
-                            key="1"
-                            @click="changePermission(record.name, record.mode)"
-                          >
-                            {{ t("TXT_CODE_16853efe") }}
-                          </a-menu-item>
-                          <a-menu-item
                             v-if="record.type === 1"
                             key="2"
                             @click="editFile(record.name)"
                           >
                             {{ t("TXT_CODE_ad207008") }}
                           </a-menu-item>
+                          <a-menu-item
+                            v-if="fileStatus?.platform != 'win32'"
+                            key="1"
+                            @click="changePermission(record.name, record.mode)"
+                          >
+                            {{ t("TXT_CODE_16853efe") }}
+                          </a-menu-item>
+
                           <a-menu-item key="3" @click="setClipBoard('copy', record.name)">
                             {{ t("TXT_CODE_13ae6a93") }}
                           </a-menu-item>
