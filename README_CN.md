@@ -70,7 +70,11 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 前往：[https://mcsmanager.com/](https://mcsmanager.com/)
 
+> 如果您需要将 MCSManager 面板注册到 Windows 系统服务，请点击[这里](https://github.com/bddjr/mcsmanager-services-for-windows)。
+
 <br />
+
+
 
 
 ### Linux
