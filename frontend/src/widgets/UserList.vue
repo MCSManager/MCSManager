@@ -34,7 +34,7 @@ const screen = useScreen();
 const operationForm = ref({
   name: "",
   currentPage: 1,
-  pageSize: 10
+  pageSize: 20
 });
 
 const permissionList = {
