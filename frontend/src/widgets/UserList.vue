@@ -28,9 +28,7 @@ interface dataType {
 }
 
 const { execute } = getUserInfo();
-
-// eslint-disable-next-line no-unused-vars
-const { getRouteParamsUrl, toPage } = useAppRouters();
+const { toPage } = useAppRouters();
 const screen = useScreen();
 
 const operationForm = ref({
