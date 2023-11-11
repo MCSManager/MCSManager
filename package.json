@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@koa/router": "^10.0.0",
-    "axios": "^0.27.2",
+    "axios": "^1.6.0",
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "i18n": "^0.15.0",
