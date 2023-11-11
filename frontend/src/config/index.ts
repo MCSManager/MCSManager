@@ -111,6 +111,11 @@ export function getLayoutCardPool() {
           field: "daemonId",
           label: t("节点 ID"),
           type: "string"
+        },
+        {
+          field: "instance",
+          label: t("实例"),
+          type: "instance"
         }
       ]
     },

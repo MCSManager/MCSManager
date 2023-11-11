@@ -148,7 +148,7 @@ export interface IPageLayoutConfig {
 export interface ILayoutCardParams {
   field: string;
   label: string;
-  type: "string" | "number" | "boolean" | "instanceId";
+  type: "string" | "number" | "boolean" | "instance";
 }
 
 export interface ILayoutCard {

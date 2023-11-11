@@ -24,11 +24,13 @@ import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
   execute,
@@ -239,7 +241,7 @@ const innerTerminalType = viewType === "inner";
       </BetweenMenus>
     </div>
     <a-spin :spinning="!isConnect" tip="正在连接终端中...">
-      <div class="console-wrapper">
+      <div v-if="!containerState.isDesignMode" class="console-wrapper">
         <div class="terminal-wrapper global-card-container-shadow">
           <div class="terminal-container">
             <div :id="terminalDomId"></div>
@@ -257,12 +259,20 @@ const innerTerminalType = viewType === "inner";
           </a-input>
         </div>
       </div>
+      <div v-else>
+        <a-skeleton :paragraph="{ rows: 8 }" />
+      </div>
     </a-spin>
   </div>
 
   <!-- Other Page View -->
   <CardPanel v-else class="containerWrapper" style="height: 100%">
-    <template #title>{{ card.title }}</template>
+    <template #title>
+      <CloudServerOutlined />
+      <span class="ml-8">
+        {{ getInstanceName }}
+      </span>
+    </template>
     <template #operator>
       <span
         v-for="item in quickOperations"
@@ -288,7 +298,7 @@ const innerTerminalType = viewType === "inner";
       </a-dropdown>
     </template>
     <template #body>
-      <div class="console-wrapper">
+      <div v-if="!containerState.isDesignMode" class="console-wrapper">
         <div class="terminal-wrapper">
           <div class="terminal-container">
             <div :id="terminalDomId"></div>
@@ -305,6 +315,9 @@ const innerTerminalType = viewType === "inner";
             </template>
           </a-input>
         </div>
+      </div>
+      <div v-else>
+        <a-skeleton :paragraph="{ rows: 8 }" />
       </div>
     </template>
   </CardPanel>

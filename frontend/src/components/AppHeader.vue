@@ -25,6 +25,7 @@ import { message } from "ant-design-vue";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
+import { Modal } from "ant-design-vue";
 
 const { saveGlobalLayoutConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
@@ -119,12 +120,25 @@ const appMenus = computed(() => {
       title: t("TXT_CODE_8145d82"),
       icon: SaveOutlined,
       click: async () => {
-        changeDesignMode(false);
-        await saveGlobalLayoutConfig();
-        notification.success({
-          placement: "top",
-          message: t("TXT_CODE_47c35915"),
-          description: t("TXT_CODE_e10c992a")
+        Modal.confirm({
+          title: "确定要保存布局吗？",
+          content:
+            "由于界面的高度可定制化，一旦保存布局后整个界面的语言将会被锁定，除非重置布局否则切换语言将无法很好的工作。如果您没有切换语言的需求，可以忽略这条建议。",
+          async onOk() {
+            changeDesignMode(false);
+            await saveGlobalLayoutConfig();
+            notification.success({
+              placement: "top",
+              message: t("TXT_CODE_47c35915"),
+              description: t("TXT_CODE_e10c992a")
+            });
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          },
+          onCancel() {
+            window.location.reload();
+          }
         });
       },
       conditions: containerState.isDesignMode,

@@ -82,28 +82,18 @@ const handleTabClick = (value: string) => {
 
 <template>
   <Transition name="global-action-float">
-    <div v-if="display" class="new-card-list-tabs">
-      <a-tabs
-        v-model:activeKey="currentCardCategory"
-        :tab-bar-gutter="0"
-        size="small"
-        tab-position="right"
-        animated
-        @change="handleTabClick"
-      >
-        <a-tab-pane v-for="item in cardCategoryList" :key="item.value" :tab="item.label" />
-
-        <a-tab-pane
-          key="EXIT"
-          :tab="t('TXT_CODE_b1dedda3')"
-          @click="() => (containerState.showNewCardDialog = false)"
-        />
-      </a-tabs>
-    </div>
-  </Transition>
-  <Transition name="global-action-float">
     <div v-if="display" class="new-card-list-container">
       <div class="new-card-list">
+        <div class="mb-24">
+          <a-radio-group v-model:value="currentCardCategory" size="large">
+            <a-radio-button v-for="item in cardCategoryList" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </a-radio-button>
+            <a-radio-button value="EXIT" @click="() => (containerState.showNewCardDialog = false)">
+              {{ t("TXT_CODE_b1dedda3") }}
+            </a-radio-button>
+          </a-radio-group>
+        </div>
         <div v-for="card in cardPool" :key="card.id + currentCardCategory">
           <a-row v-if="card.category === currentCardCategory" style="margin-bottom: 20px">
             <a-col span="24">

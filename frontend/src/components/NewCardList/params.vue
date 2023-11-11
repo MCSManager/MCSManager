@@ -5,6 +5,7 @@ import type { MapData } from "@/types/index";
 import type { FormInstance } from "ant-design-vue";
 import { BulbOutlined } from "@ant-design/icons-vue";
 import { $t as t } from "@/lang/i18n";
+import { useSelectInstances } from "@/hooks/useSelectInstances";
 
 const open = ref(false);
 const card = ref<LayoutCard>();
@@ -12,6 +13,18 @@ let resolveFn: (value: unknown) => void;
 
 const formData = ref<MapData<string>>({});
 const formRef = ref<FormInstance>();
+
+const openInstanceSelectDialog = async () => {
+  try {
+    const selectedInstances = await useSelectInstances();
+    if (selectedInstances) {
+      formData.value.instanceId = selectedInstances[0].instanceUuid;
+      formData.value.daemonId = selectedInstances[0].serviceUuid;
+    }
+  } catch (err: any) {
+    console.error(err);
+  }
+};
 
 const onClose = () => {
   open.value = false;
@@ -62,13 +75,20 @@ defineExpose({
           <a-col v-for="item in card.params" :key="item.field" :span="24" :md="12">
             <a-form-item :label="item.label" :name="item.field">
               <a-input v-if="item.type === 'string'" v-model:value="formData[item.field]" />
+              <a-button
+                v-if="item.type === 'instance'"
+                type="primary"
+                @click="openInstanceSelectDialog"
+              >
+                {{ t("选择实例") }}
+              </a-button>
             </a-form-item>
           </a-col>
         </a-row>
       </a-form>
       <p>
         <BulbOutlined />
-        <span>
+        <span class="ml-4">
           {{ t("TXT_CODE_e29b79df") }}
         </span>
       </p>

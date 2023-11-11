@@ -12,7 +12,6 @@ export enum LayoutCardHeight {
 export let ORIGIN_LAYOUT_CONFIG: IPageLayoutConfig[] = [];
 
 export function setAllLayoutConfig(cfg: IPageLayoutConfig[]) {
-  console.debug("设置布局配置：", cfg);
   ORIGIN_LAYOUT_CONFIG = cfg;
 }
 

@@ -4,5 +4,5 @@ import type { UserInstance } from "@/types";
 
 export function useSelectInstances() {
   const { mount } = useMountComponent();
-  return mount<UserInstance>(SelectInstances);
+  return mount<UserInstance[]>(SelectInstances);
 }
