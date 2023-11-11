@@ -82,5 +82,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/SelectInstances.vue')['default']
+    Spin: typeof import('./src/components/Spin.vue')['default']
   }
 }

@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { DownOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { DownOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { throttle } from "lodash";
 
 import CardPanel from "@/components/CardPanel.vue";
@@ -12,7 +12,6 @@ import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { getUserInfo, deleteUser as deleteUserApi, addUser as addUserApi } from "@/services/apis";
-
 import type { LayoutCard, UserInfo } from "@/types/index";
 
 defineProps<{
@@ -28,9 +27,7 @@ interface dataType {
 }
 
 const { execute } = getUserInfo();
-
-// eslint-disable-next-line no-unused-vars
-const { getRouteParamsUrl, toPage } = useAppRouters();
+const { toPage } = useAppRouters();
 const screen = useScreen();
 
 const operationForm = ref({
@@ -102,10 +99,17 @@ const handleToUserConfig = (user: any) => {
     }
   });
 };
+
+const handleTableChange = (e: { current: number; pageSize: number }) => {
+  operationForm.value.currentPage = e.current;
+  operationForm.value.pageSize = e.pageSize;
+  fetchData();
+};
 const fetchData = async () => {
   if (operationForm.value.currentPage < 1) {
     operationForm.value.currentPage = 1;
   }
+  data.value?.pageSize && (data.value.pageSize = 0);
   const res = await execute({
     params: {
       userName: operationForm.value.name,
@@ -113,7 +117,7 @@ const fetchData = async () => {
       page_size: operationForm.value.pageSize
     }
   });
-  data.value = res.value!;
+  data.value = res.value;
   total.value = res.value?.total ?? 0;
 };
 
@@ -205,7 +209,7 @@ onMounted(async () => {
   <div class="new">
     <a-modal
       v-model:open="newUserDialog.status"
-      destroy-on-close="true"
+      :destroy-on-close="true"
       :title="newUserDialog.title"
       :confirm-loading="addUserIsLoading"
       @ok="newUserDialog.resolve()"
@@ -314,56 +318,55 @@ onMounted(async () => {
           </template>
         </BetweenMenus>
       </a-col>
-
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-table
-              :row-selection="{
-                selectedRowKeys: selectedUsers,
-                onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
-                  selectedUsers = selectedRowKeys;
-                }
-              }"
-              :data-source="dataSource"
-              :columns="columns"
-              :pagination="false"
-              :preserve-selected-row-keys="true"
-              :row-key="(record: UserInfo) => record.uuid"
-            >
-              <template #bodyCell="{ column, record }">
-                <template v-if="column.key === 'action'">
-                  <a-dropdown>
-                    <template #overlay>
-                      <a-menu>
-                        <a-menu-item key="1" @click="handleToUserConfig(record)">
-                          {{ t("TXT_CODE_236f70aa") }}
-                        </a-menu-item>
-                        <a-menu-item key="2" @click="handleDeleteUser(record)">
-                          {{ t("TXT_CODE_760f00f5") }}
-                        </a-menu-item>
-                        <!-- <a-menu-item key="3">
+            <a-spin :spinning="data && data.pageSize == 0">
+              <a-table
+                :row-selection="{
+                  selectedRowKeys: selectedUsers,
+                  onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
+                    selectedUsers = selectedRowKeys;
+                  }
+                }"
+                :data-source="dataSource"
+                :columns="columns"
+                :preserve-selected-row-keys="true"
+                :row-key="(record: UserInfo) => record.uuid"
+                :pagination="{
+                  current: operationForm.currentPage,
+                  pageSize: operationForm.pageSize,
+                  hideOnSinglePage: false,
+                  total: total,
+                  showSizeChanger: true
+                }"
+                @change="handleTableChange($event)"
+              >
+                <template #bodyCell="{ column, record }">
+                  <template v-if="column.key === 'action'">
+                    <a-dropdown>
+                      <template #overlay>
+                        <a-menu>
+                          <a-menu-item key="1" @click="handleToUserConfig(record)">
+                            {{ t("TXT_CODE_236f70aa") }}
+                          </a-menu-item>
+                          <a-menu-item key="2" @click="handleDeleteUser(record)">
+                            {{ t("TXT_CODE_760f00f5") }}
+                          </a-menu-item>
+                          <!-- <a-menu-item key="3">
                           {{ t("TXT_CODE_4d934e3a") }}
                         </a-menu-item> -->
-                      </a-menu>
-                    </template>
-                    <a-button size="">
-                      {{ t("TXT_CODE_fe731dfc") }}
-                      <DownOutlined />
-                    </a-button>
-                  </a-dropdown>
+                        </a-menu>
+                      </template>
+                      <a-button size="">
+                        {{ t("TXT_CODE_fe731dfc") }}
+                        <DownOutlined />
+                      </a-button>
+                    </a-dropdown>
+                  </template>
                 </template>
-              </template>
-            </a-table>
-            <div class="flex justify-end mt-24">
-              <a-pagination
-                v-model:current="operationForm.currentPage"
-                v-model:pageSize="operationForm.pageSize"
-                :total="total"
-                show-size-changer
-                @change="fetchData"
-              />
-            </div>
+              </a-table>
+            </a-spin>
           </template>
         </CardPanel>
       </a-col>

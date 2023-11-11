@@ -2,6 +2,9 @@ import { initI18n } from "@/lang/i18n";
 import { useAppStateStore } from "./stores/useAppStateStore";
 import { panelStatus, updateSettings } from "./services/apis";
 import { initLayoutConfig } from "./services/layout";
+import { Spin } from "ant-design-vue";
+import { LoadingOutlined } from "@ant-design/icons-vue";
+import { h } from "vue";
 
 const { state } = useAppStateStore();
 const { execute: execUpdateSettings } = updateSettings();
@@ -42,3 +45,12 @@ async function index() {
 }
 
 index();
+
+Spin.setDefaultIndicator({
+  indicator: h(LoadingOutlined, {
+    style: {
+      fontSize: "24px"
+    },
+    spin: true
+  })
+});
