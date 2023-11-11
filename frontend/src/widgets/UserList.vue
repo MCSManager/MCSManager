@@ -12,7 +12,6 @@ import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { getUserInfo, deleteUser as deleteUserApi, addUser as addUserApi } from "@/services/apis";
-
 import type { LayoutCard, UserInfo } from "@/types/index";
 
 defineProps<{
@@ -325,7 +324,6 @@ onMounted(async () => {
           </template>
         </BetweenMenus>
       </a-col>
-
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>

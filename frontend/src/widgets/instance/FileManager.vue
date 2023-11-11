@@ -27,7 +27,6 @@ const daemonId = getMetaOrRouteValue("daemonId");
 const screen = useScreen();
 
 const {
-  indicator,
   dialog,
   percentComplete,
   spinning,
@@ -259,12 +258,12 @@ onMounted(() => {
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"
               style="color: #1677ff"
             >
-              <a-spin :indicator="indicator" size="small" />
+              <a-spin />
               {{
                 t("当前有 ") + fileStatus?.instanceFileTask + t(" 个压缩 / 解压任务正在运行中...")
               }}
             </p>
-            <a-spin :spinning="spinning" :indicator="indicator">
+            <a-spin :spinning="spinning">
               <a-table
                 :row-selection="{
                   selectedRowKeys: selectedRowKeys,
@@ -421,7 +420,7 @@ onMounted(() => {
     </a-space>
 
     <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
-      <a-spin :spinning="permission.loading" :indicator="indicator" size="small">
+      <a-spin :spinning="permission.loading">
         <div class="flex-between permission">
           <a-checkbox-group
             v-for="item in permission.item"

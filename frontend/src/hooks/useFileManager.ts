@@ -1,8 +1,8 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { h, ref, createVNode, reactive } from "vue";
-import { LoadingOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { ref, createVNode, reactive } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
 import { t } from "@/lang/i18n";
@@ -29,11 +29,6 @@ import type {
 } from "@/types/fileManager";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
-  const indicator = h(LoadingOutlined, {
-    style: {
-      fontSize: "24px"
-    }
-  });
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -498,7 +493,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   return {
     fileStatus,
-    indicator,
     dialog,
     percentComplete,
     spinning,
