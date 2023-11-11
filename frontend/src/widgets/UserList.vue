@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { DownOutlined, UserOutlined, SearchOutlined, LoadingOutlined } from "@ant-design/icons-vue";
+import { DownOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { throttle } from "lodash";
 
 import CardPanel from "@/components/CardPanel.vue";
@@ -41,12 +41,6 @@ const permissionList = {
   "10": t("TXT_CODE_cd978243"),
   "-1": t("TXT_CODE_7c76dbf")
 };
-
-const indicator = h(LoadingOutlined, {
-  style: {
-    fontSize: "24px"
-  }
-});
 
 const columns = computed(() => {
   return arrayFilter([
@@ -327,7 +321,7 @@ onMounted(async () => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-spin :spinning="data && data.pageSize == 0" :indicator="indicator" size="small">
+            <a-spin :spinning="data && data.pageSize == 0">
               <a-table
                 :row-selection="{
                   selectedRowKeys: selectedUsers,
