@@ -31,7 +31,7 @@ import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
