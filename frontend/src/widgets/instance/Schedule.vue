@@ -51,8 +51,8 @@ const type = {
   3: t("指定时间性任务")
 };
 
-const rendTime = (text: string, e: Schedule) => {
-  switch (e.type) {
+const rendTime = (text: string, schedule: Schedule) => {
+  switch (schedule.type) {
     case 1: {
       const time = Number(text);
       let s = time;
