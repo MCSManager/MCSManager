@@ -32,6 +32,7 @@ import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
 import UserInstanceList from "@/widgets/UserInstanceList.vue";
 import ImageManager from "@/widgets/imageManager/index.vue";
 import NewImage from "@/widgets/imageManager/NewImage.vue";
+import Schedule from "@/widgets/instance/schedule.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -67,7 +68,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   UserStatusBlock,
   UserInstanceList,
   ImageManager,
-  NewImage
+  NewImage,
+  Schedule
 };
 
 export interface NewCardItem extends LayoutCard {

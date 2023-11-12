@@ -255,6 +255,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/instances/schedule",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "Schedule",
+          title: t("计划任务"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
       page: "/users",
       items: [
         {

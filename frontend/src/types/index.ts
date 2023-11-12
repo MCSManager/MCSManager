@@ -218,3 +218,13 @@ export interface MountComponent {
   destroyComponent: Function;
   emitResult: Function;
 }
+
+export interface Schedule {
+  instanceUuid: string;
+  name: string;
+  count: number;
+  time: string;
+  action: string;
+  payload: string;
+  type: number;
+}

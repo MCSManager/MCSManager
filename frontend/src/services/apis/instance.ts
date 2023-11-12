@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NewInstanceForm, QuickStartTemplate } from "@/types";
+import type { InstanceDetail, NewInstanceForm, QuickStartTemplate, Schedule } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 import type { InstanceMoreDetail } from "@/hooks/useInstance";
 
@@ -342,4 +342,18 @@ export const batchDelete = useDefineApi<
 >({
   method: "DELETE",
   url: "/api/instance"
+});
+
+// 获取计划任务
+export const scheduleList = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+  },
+  Schedule[]
+>({
+  method: "GET",
+  url: "/api/protected_schedule"
 });
