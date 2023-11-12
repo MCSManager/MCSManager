@@ -35,7 +35,7 @@ export const useAppConfigStore = createGlobalState(() => {
   };
 
   const getCurrentLanguage = () => {
-    return localStorage.getItem(LANGUAGE_KEY) ?? getCurrentLang() ?? "en_US";
+    return getCurrentLang() ?? "en_us";
   };
 
   return {

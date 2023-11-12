@@ -41,7 +41,6 @@ const addLink = ref({
     addLink.value.link = "";
   },
   finish: () => {
-    console.log("finish");
     if (addLink.value.title == "" || addLink.value.link == "")
       return message.error(t("TXT_CODE_633415e2"));
     cardData.value.push({

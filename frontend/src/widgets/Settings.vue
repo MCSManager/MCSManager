@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { t } from "@/lang/i18n";
+import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref, h } from "vue";
 import { message } from "ant-design-vue";
-import { LockOutlined, ProjectOutlined, QuestionCircleOutlined } from "@ant-design/icons-vue";
+import {
+  BankOutlined,
+  BookOutlined,
+  CodepenOutlined,
+  GithubOutlined,
+  LockOutlined,
+  ProjectOutlined,
+  QuestionCircleOutlined
+} from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
 import Loading from "@/components/Loading.vue";
+import { computed } from "vue";
 
 defineProps<{
   card: LayoutCard;
@@ -52,6 +61,7 @@ const menus = [
   }
 ];
 
+// DO NOT I18N
 const allLanguages = [
   {
     label: "中文",
@@ -73,6 +83,33 @@ const allYesNo = [
     value: false
   }
 ];
+
+const aboutLinks = [
+  {
+    title: "GitHub",
+    icon: GithubOutlined,
+    url: "https://github.com/MCSManager/MCSManager"
+  },
+  {
+    title: t("官方网站"),
+    icon: BankOutlined,
+    url: "https://mcsmanager.com/"
+  },
+  {
+    title: t("官方文档"),
+    icon: BookOutlined,
+    url: "https://docs.mcsmanager.com/"
+  },
+  {
+    title: t("反馈问题"),
+    icon: BookOutlined,
+    url: "https://github.com/MCSManager/MCSManager/issues"
+  }
+];
+
+const isZhCN = computed(() => {
+  return getCurrentLang().toLowerCase() === "zh_cn";
+});
 
 onMounted(async () => {
   const res = await execute();
@@ -265,30 +302,29 @@ onMounted(async () => {
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>
-              <div style="text-align: left">
-                <a-form-item>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_f403308") }}
-                  </a-typography-title>
-                  <a-typography-paragraph>
-                    <a-typography-text type="secondary">
-                      {{ t("TXT_CODE_ede0f8d0") }}
-                    </a-typography-text>
-                  </a-typography-paragraph>
-                </a-form-item>
-
-                <a-form-item>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_81e4c509") }}
-                  </a-typography-title>
-                  <a-typography-paragraph>
-                    <a-typography-text type="secondary">
-                      {{ t("TXT_CODE_c266d3f7") }}
-                      <a href="https://mcsmanager.com/" target="_blank">MCSManager.com</a>&nbsp;.
-                    </a-typography-text>
-                  </a-typography-paragraph>
-                </a-form-item>
+              <div class="pb-4 flex">
+                <div v-for="item in aboutLinks" :key="item.url" class="mr-12 mb-12">
+                  <a :href="item.url" target="_blank">
+                    <a-button>
+                      <component :is="item.icon" />
+                      {{ item.title }}
+                    </a-button>
+                  </a>
+                </div>
               </div>
+              <a-typography-paragraph>
+                <p>
+                  {{ $t("MCSManager 管理面板的进步离不开贡献者们与赞助者们的无私奉献。") }}
+                </p>
+                <p v-if="isZhCN">
+                  <span>
+                    {{ $t("如果您愿意支持 MCSManager 后续发展，") }}
+                    <a href="https://github.com/MCSManager/MCSManager" target="_blank">
+                      {{ t("请点击这里。") }}
+                    </a>
+                  </span>
+                </p>
+              </a-typography-paragraph>
             </div>
           </template>
         </LeftMenusPanel>

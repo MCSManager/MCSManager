@@ -16,7 +16,8 @@ import {
   FormatPainterOutlined,
   TranslationOutlined,
   PicLeftOutlined,
-  RedoOutlined
+  RedoOutlined,
+  CloseCircleOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
@@ -139,6 +140,21 @@ const appMenus = computed(() => {
           },
           onCancel() {
             setTimeout(() => window.location.reload(), 400);
+          }
+        });
+      },
+      conditions: containerState.isDesignMode,
+      onlyPC: true
+    },
+    {
+      title: t("放弃保存布局"),
+      icon: CloseCircleOutlined,
+      click: async () => {
+        Modal.confirm({
+          title: $t("确定要放弃保存布局？"),
+          content: $t("当前布局将会丢失，是否继续?"),
+          async onOk() {
+            window.location.reload();
           }
         });
       },

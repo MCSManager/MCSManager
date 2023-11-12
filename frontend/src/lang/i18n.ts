@@ -36,7 +36,7 @@ const setLanguage = (lang: string) => {
 };
 
 const getCurrentLang = (): string => {
-  return i18n.global.locale as string;
+  return String(i18n.global.locale).toLowerCase();
 };
 
 const $t = (...args: string[]) => {

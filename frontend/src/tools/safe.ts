@@ -27,7 +27,11 @@ export function markdownToHTML(markdown: string) {
       "tbody",
       "tr",
       "th",
-      "td"
+      "td",
+      "hr",
+      "br",
+      "code",
+      "font"
     ],
     allowedAttributes: {
       a: ["href", "target"],

@@ -19,11 +19,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (timer) {
-    clearInterval(timer);
-  }
+  if (timer) clearInterval(timer);
+  timer = null;
 });
-
 </script>
 
 <template>
@@ -32,9 +30,7 @@ onUnmounted(() => {
       <template #title>{{ card.title }}</template>
       <template #body>
         <div class="h-100 items-center flex">
-          <div
-            class="value ml-auto mr-auto mb-8"
-          >
+          <div class="value ml-auto mr-auto mb-8">
             {{ time }}
           </div>
         </div>

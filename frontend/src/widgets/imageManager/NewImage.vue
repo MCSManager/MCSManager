@@ -64,7 +64,7 @@ const imageList = [
 const dockerFile = ref("");
 const name = ref("");
 const version = ref("");
-const isZH = getCurrentLang() === "zh_CN" ? true : false;
+const isZH = getCurrentLang() === "zh_cn" ? true : false;
 const selectType = (type: number) => {
   switch (type) {
     case 1:

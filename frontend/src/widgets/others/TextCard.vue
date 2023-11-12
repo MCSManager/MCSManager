@@ -4,7 +4,6 @@ import { $t as t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-
 import type { LayoutCard } from "@/types/index";
 import { markdownToHTML } from "../../tools/safe";
 

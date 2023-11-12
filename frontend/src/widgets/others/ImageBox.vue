@@ -19,8 +19,10 @@ const imgSrc = ref(getMetaValue("image", ""));
 const { openInputDialog } = useAppToolsStore();
 
 const editImgSrc = async () => {
-  imgSrc.value = (await openInputDialog(t("TXT_CODE_c8a51b2e"))) as string;
-  setMetaValue("image", imgSrc.value);
+  try {
+    imgSrc.value = (await openInputDialog(t("TXT_CODE_c8a51b2e"))) as string;
+    setMetaValue("image", imgSrc.value);
+  } catch (error) {}
 };
 </script>
 
