@@ -137,9 +137,6 @@ const appMenus = computed(() => {
               description: t("TXT_CODE_e10c992a")
             });
             setTimeout(() => window.location.reload(), 400);
-          },
-          onCancel() {
-            setTimeout(() => window.location.reload(), 400);
           }
         });
       },
@@ -176,9 +173,6 @@ const appMenus = computed(() => {
               description: t("TXT_CODE_e10c992a")
             });
             setTimeout(() => window.location.reload(), 400);
-          },
-          onCancel() {
-            window.location.reload();
           }
         });
       },
