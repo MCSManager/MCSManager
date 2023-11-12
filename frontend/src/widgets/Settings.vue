@@ -20,18 +20,17 @@ const formData = ref<Settings>();
 
 const submit = async () => {
   if (formData.value) {
-    const res = await submitExecute({
-      data: {
-        ...formData.value
-      }
-    });
-    if (res.value == "OK") {
-      return message.success(t("TXT_CODE_a7907771"));
+    try {
+      await submitExecute({
+        data: {
+          ...formData.value
+        }
+      });
+      message.success(t("TXT_CODE_a7907771"));
+      setTimeout(() => window.location.reload(), 600);
+    } catch (error: any) {
+      message.error(error);
     }
-    message.error(res.value);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
   }
 };
 

@@ -17,3 +17,8 @@ export const getLayoutConfig = useDefineApi<any, string>({
   url: "/api/overview/layout",
   method: "GET"
 });
+
+export const resetLayoutConfig = useDefineApi<any, void>({
+  url: "/api/overview/layout",
+  method: "DELETE"
+});

@@ -6,7 +6,11 @@ import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
 import userSystem from "../../service/system_user";
-import { getFrontendLayoutConfig, setFrontendLayoutConfig } from "../../service/frontend_layout";
+import {
+  getFrontendLayoutConfig,
+  resetFrontendLayoutConfig,
+  setFrontendLayoutConfig
+} from "../../service/frontend_layout";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -74,6 +78,11 @@ router.get("/layout", async (ctx) => {
 router.post("/layout", permission({ level: 10 }), async (ctx) => {
   const config = ctx.request.body;
   setFrontendLayoutConfig(config);
+  ctx.body = true;
+});
+
+router.delete("/layout", permission({ level: 10 }), async (ctx) => {
+  resetFrontendLayoutConfig();
   ctx.body = true;
 });
 

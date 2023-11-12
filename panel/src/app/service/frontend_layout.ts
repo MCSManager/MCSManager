@@ -1,8 +1,6 @@
 import { v4 } from "uuid";
 import { IPageLayoutConfig } from "../../../../common/global";
 import { $t as t } from "../i18n";
-import fs from "fs-extra";
-import path from "path";
 import storage from "../common/system_storage";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
@@ -25,6 +23,10 @@ export function getFrontendLayoutConfig(): string {
 
 export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
   storage.writeFile(LAYOUT_CONFIG_NAME, JSON.stringify(config, null, 2));
+}
+
+export function resetFrontendLayoutConfig() {
+  storage.deleteFile(LAYOUT_CONFIG_NAME);
 }
 
 export enum LayoutCardHeight {

@@ -14,7 +14,9 @@ import {
   UserOutlined,
   MenuUnfoldOutlined,
   FormatPainterOutlined,
-  TranslationOutlined
+  TranslationOutlined,
+  PicLeftOutlined,
+  RedoOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
@@ -27,7 +29,7 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { Modal } from "ant-design-vue";
 
-const { saveGlobalLayoutConfig } = useLayoutConfigStore();
+const { saveGlobalLayoutConfig, resetGlobalLayoutConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
@@ -121,9 +123,10 @@ const appMenus = computed(() => {
       icon: SaveOutlined,
       click: async () => {
         Modal.confirm({
-          title: "确定要保存布局吗？",
-          content:
-            "由于界面的高度可定制化，一旦保存布局后整个界面的语言将会被锁定，除非重置布局否则切换语言将无法很好的工作。如果您没有切换语言的需求，可以忽略这条建议。",
+          title: $t("确定要保存布局吗？"),
+          content: $t(
+            "由于界面的高度可定制化，一旦保存布局后整个界面的语言将会被锁定，除非重置布局否则切换语言将无法很好的工作。如果您没有切换语言的需求，可以忽略这条建议。"
+          ),
           async onOk() {
             changeDesignMode(false);
             await saveGlobalLayoutConfig();
@@ -132,9 +135,31 @@ const appMenus = computed(() => {
               message: t("TXT_CODE_47c35915"),
               description: t("TXT_CODE_e10c992a")
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            setTimeout(() => window.location.reload(), 400);
+          },
+          onCancel() {
+            setTimeout(() => window.location.reload(), 400);
+          }
+        });
+      },
+      conditions: containerState.isDesignMode,
+      onlyPC: true
+    },
+    {
+      title: t("重置卡片布局"),
+      icon: RedoOutlined,
+      click: async () => {
+        Modal.confirm({
+          title: $t("确定要重置布局吗？"),
+          content: $t("这将会导致所有网页恢复到默认状态，请谨慎操作。重置后页面可以自动切换语言。"),
+          async onOk() {
+            await resetGlobalLayoutConfig();
+            notification.success({
+              placement: "top",
+              message: t("重置成功"),
+              description: t("TXT_CODE_e10c992a")
+            });
+            setTimeout(() => window.location.reload(), 400);
           },
           onCancel() {
             window.location.reload();
