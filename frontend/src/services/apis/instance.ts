@@ -357,3 +357,18 @@ export const scheduleList = useDefineApi<
   method: "GET",
   url: "/api/protected_schedule"
 });
+
+// 删除计划任务
+export const scheduleDelete = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+      task_name: string;
+    };
+  },
+  boolean
+>({
+  method: "DELETE",
+  url: "/api/protected_schedule"
+});

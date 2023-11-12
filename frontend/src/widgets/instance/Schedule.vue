@@ -9,7 +9,7 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useScreen } from "@/hooks/useScreen";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { scheduleList } from "@/services/apis/instance";
+import { scheduleList, scheduleDelete } from "@/services/apis/instance";
 import type { LayoutCard, Schedule } from "@/types/index";
 
 const props = defineProps<{
@@ -31,6 +31,26 @@ const getScheduleList = async () => {
         uuid: instanceId ?? ""
       }
     });
+  } catch (err: any) {
+    console.error(err);
+    message.error(err.message);
+  }
+};
+
+const deleteSchedule = async (name: string) => {
+  const { execute, state } = scheduleDelete();
+  try {
+    await execute({
+      params: {
+        remote_uuid: daemonId ?? "",
+        uuid: instanceId ?? "",
+        task_name: name
+      }
+    });
+    if (state.value) {
+      message.success(t("删除成功"));
+      refresh();
+    }
   } catch (err: any) {
     console.error(err);
     message.error(err.message);
@@ -191,10 +211,15 @@ onMounted(async () => {
               <a-table :data-source="state" :columns="columns" :scroll="{ x: 'max-content' }">
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'actions'">
-                    <a-button size="" @click="console.log(record)">
-                      {{ t("删除") }}
-                      <DeleteOutlined />
-                    </a-button>
+                    <a-popconfirm
+                      :title="t('你确定要删除这条计划任务吗?')"
+                      @confirm="deleteSchedule(record.name)"
+                    >
+                      <a-button size="">
+                        {{ t("删除") }}
+                        <DeleteOutlined />
+                      </a-button>
+                    </a-popconfirm>
                   </template>
                 </template>
               </a-table>
