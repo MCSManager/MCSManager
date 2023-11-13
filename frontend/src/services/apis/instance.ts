@@ -73,6 +73,21 @@ export const stopInstance = useDefineApi<
   method: "GET"
 });
 
+export const restartInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/restart",
+  method: "GET"
+});
+
 // 更新实例设置（普通用户）
 export const updateInstanceConfig = useDefineApi<
   {
