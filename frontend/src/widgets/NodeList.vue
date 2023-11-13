@@ -348,7 +348,7 @@ const editDialog = ref({
           <a-typography-text type="secondary">
             {{ t("必须使用外网地址或 localhost 地址，否则将导致远程实例无法连接") }}
             <br />
-            {{ t("可以是域名或者 IP 地址，例如 mcsmanager.com，43.123.211.12") }}
+            {{ t("可以是域名或者 IP 地址，例如 mcsmanager.com，43.123.xx.x") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.ip" />
