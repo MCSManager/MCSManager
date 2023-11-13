@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
-import { ArrowRightOutlined, CloudServerOutlined } from "@ant-design/icons-vue";
+import { ArrowRightOutlined, CloudServerOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -80,9 +80,17 @@ const btns = computed(() =>
     },
     {
       title: t("TXT_CODE_b7d026f8"),
-      icon: CloudServerOutlined,
+      icon: FieldTimeOutlined,
       condition: () => !isGlobalTerminal.value,
-      click: () => {}
+      click: () => {
+        toPage({
+          path: "/instances/schedule",
+          query: {
+            instanceId,
+            daemonId
+          }
+        });
+      }
     },
     // 暂时删除
     // {

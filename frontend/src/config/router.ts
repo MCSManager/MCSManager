@@ -103,6 +103,14 @@ let originRouterConfig: RouterConfig[] = [
             ]
           }
         ]
+      },
+      {
+        path: "/instances/schedule",
+        name: t("计划任务"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.USER
+        }
       }
     ]
   },

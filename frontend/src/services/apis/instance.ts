@@ -1,5 +1,11 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NewInstanceForm, QuickStartTemplate } from "@/types";
+import type {
+  InstanceDetail,
+  NewInstanceForm,
+  QuickStartTemplate,
+  Schedule,
+  NewScheduleTask
+} from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 import type { InstanceMoreDetail } from "@/hooks/useInstance";
 
@@ -65,6 +71,53 @@ export const stopInstance = useDefineApi<
 >({
   url: "/api/protected_instance/stop",
   method: "GET"
+});
+
+export const restartInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/restart",
+  method: "GET"
+});
+
+export const killInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/kill",
+  method: "GET"
+});
+
+export const updateInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+      task_name: string;
+    };
+    data: {
+      time: number;
+    };
+  },
+  boolean
+>({
+  url: "/api/protected_instance/asynchronous",
+  method: "POST"
 });
 
 // 更新实例设置（普通用户）
@@ -342,4 +395,48 @@ export const batchDelete = useDefineApi<
 >({
   method: "DELETE",
   url: "/api/instance"
+});
+
+// 获取计划任务
+export const scheduleList = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+  },
+  Schedule[]
+>({
+  method: "GET",
+  url: "/api/protected_schedule"
+});
+
+// 删除计划任务
+export const scheduleDelete = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+      task_name: string;
+    };
+  },
+  boolean
+>({
+  method: "DELETE",
+  url: "/api/protected_schedule"
+});
+
+// 创建计划任务
+export const scheduleCreate = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+    data: NewScheduleTask;
+  },
+  boolean
+>({
+  url: "/api/protected_schedule",
+  method: "POST"
 });
