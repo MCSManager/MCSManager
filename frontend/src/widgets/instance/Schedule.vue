@@ -22,7 +22,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const { toPage } = useAppRouters();
-const screen = useScreen();
+const { isPhone } = useScreen();
 const newScheduleDialog = ref<InstanceType<typeof NewSchedule>>();
 
 const { state, execute, isLoading } = scheduleList();
@@ -52,7 +52,7 @@ const deleteSchedule = async (name: string) => {
     });
     if (state.value) {
       message.success(t("删除成功"));
-      refresh();
+      await getScheduleList();
     }
   } catch (err: any) {
     console.error(err);
@@ -120,9 +120,7 @@ const columns = [
     dataIndex: "count",
     key: "count",
     minWidth: "80px",
-    customRender: (e: { text: number }) => {
-      return e.text > 0 ? e.text : t("无限");
-    }
+    customRender: (e: { text: number }) => (e.text > 0 ? e.text : t("无限"))
   },
   {
     align: "center",
@@ -130,9 +128,8 @@ const columns = [
     dataIndex: "action",
     key: "action",
     minWidth: "180px",
-    customRender: (e: { text: "command" | "stop" | "start" | "restart" | "kill" }) => {
-      return ScheduleAction[e.text];
-    }
+    customRender: (e: { text: "command" | "stop" | "start" | "restart" | "kill" }) =>
+      ScheduleAction[e.text]
   },
   {
     align: "center",
@@ -140,9 +137,7 @@ const columns = [
     dataIndex: "type",
     key: "type",
     minWidth: "180px",
-    customRender: (e: { text: 1 | 2 | 3 }) => {
-      return ScheduleType[e.text];
-    }
+    customRender: (e: { text: 1 | 2 | 3 }) => ScheduleType[e.text]
   },
   {
     align: "center",
@@ -160,9 +155,10 @@ const columns = [
   }
 ];
 
-const refresh = throttle(() => {
-  getScheduleList();
-}, 100);
+const refresh = async () => {
+  await getScheduleList();
+  message.success(t("已刷新"));
+};
 
 const toConsole = () => {
   toPage({
@@ -184,7 +180,7 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <FieldTimeOutlined />
               {{ card.title }}
@@ -207,7 +203,14 @@ onMounted(async () => {
         <CardPanel style="height: 100%">
           <template #body>
             <a-spin :spinning="isLoading">
-              <a-table :data-source="state" :columns="columns" :scroll="{ x: 'max-content' }">
+              <a-table
+                :data-source="state"
+                :columns="columns"
+                :scroll="{ x: 'max-content' }"
+                :pagination="{
+                  pageSize: 15
+                }"
+              >
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'actions'">
                     <a-popconfirm
