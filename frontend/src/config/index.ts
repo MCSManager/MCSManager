@@ -84,9 +84,9 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "EmptyCard",
-      title: t("占位卡片"),
+      title: t("TXT_CODE_b23e2bab"),
       width: 2,
-      description: t("此卡片没有任何内容，可以用来占位，实现居中等排版需求。"),
+      description: t("TXT_CODE_b3e2f83e"),
       height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.OTHER
     },
@@ -95,9 +95,9 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.USER,
       type: "Terminal",
-      title: t("实例控制台"),
+      title: t("TXT_CODE_71a51d19"),
       width: 6,
-      description: t("用于显示和交互某个实例的控制台。"),
+      description: t("TXT_CODE_10a6d36f"),
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.INSTANCE,
       meta: {
@@ -106,17 +106,17 @@ export function getLayoutCardPool() {
       params: [
         {
           field: "instanceId",
-          label: t("实例 ID"),
+          label: t("TXT_CODE_e6a5c12b"),
           type: "string"
         },
         {
           field: "daemonId",
-          label: t("节点 ID"),
+          label: t("TXT_CODE_72cfab69"),
           type: "string"
         },
         {
           field: "instance",
-          label: t("实例"),
+          label: t("TXT_CODE_cb043d10"),
           type: "instance"
         }
       ]
@@ -128,7 +128,7 @@ export function getLayoutCardPool() {
       type: "StatusBlock",
       title: t("TXT_CODE_b4a9d04a"),
       meta: {
-        title: t("在线节点 / 总节点"),
+        title: t("TXT_CODE_4b7eba50"),
         type: "node"
       },
       width: 3,
@@ -142,9 +142,9 @@ export function getLayoutCardPool() {
       permission: ROLE.ADMIN,
       meta: {},
       type: "Settings",
-      title: t("设置"),
+      title: t("TXT_CODE_b5c7b82d"),
       width: 8,
-      description: t("用于操作面板的全局设置"),
+      description: t("TXT_CODE_e78047a5"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.COMMON
     },

@@ -24,18 +24,18 @@ defineProps<{
         <div class="">
           <a-typography-paragraph v-if="containerState.showNewCardDialog" :level="5">
             <ExclamationCircleOutlined />
-            {{ t("此卡片无法在新增时预览，请添加后填写相关参数卡片即可正常运作。") }}
+            {{ t("TXT_CODE_450481c5") }}
           </a-typography-paragraph>
           <template v-else>
             <div>
               <a-typography-paragraph>
                 <ExclamationCircleOutlined />
-                {{ t("此卡片运行错误，请刷新网页重试") }}
+                {{ t("TXT_CODE_4e627613") }}
               </a-typography-paragraph>
 
               <a-typography-paragraph>
                 <div>
-                  {{ t("错误信息：") }}
+                  {{ t("TXT_CODE_9c95b60f") }}
                 </div>
                 <pre>{{ error.message ? error.message : error }}</pre>
               </a-typography-paragraph>

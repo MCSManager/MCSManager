@@ -19,9 +19,9 @@ const openDialog = async () => {
 
 const progressList = ref<{ name: string; status: number }[]>([]);
 const statusType: { [propsName: string]: string } = {
-  "-1": t("构建失败"),
-  "1": t("正在构建"),
-  "2": t("构建完成")
+  "-1": t("TXT_CODE_20ce2aae"),
+  "1": t("TXT_CODE_978da1c1"),
+  "2": t("TXT_CODE_47e182a5")
 };
 
 const { execute, state, isLoading } = buildProgress();
@@ -57,7 +57,7 @@ defineExpose({
     v-model:open="open"
     centered
     :width="isPhone ? '100%' : 'calc(100% - 30vw)'"
-    :title="t('构建进度')"
+    :title="t('TXT_CODE_4bbd3fde')"
   >
     <a-row v-if="!isLoading" :gutter="[24, 24]">
       <a-col v-for="i in progressList" :key="i" :span="24" :lg="6" :md="8" :sm="12">
@@ -78,8 +78,8 @@ defineExpose({
     </a-row>
     <template #footer>
       <a-space>
-        <a-button :loading="isLoading" @click="getProgress">{{ t("刷新") }}</a-button>
-        <a-button type="primary" @click="open = false">{{ t("关闭") }}</a-button>
+        <a-button :loading="isLoading" @click="getProgress">{{ t("TXT_CODE_b76d94e0") }}</a-button>
+        <a-button type="primary" @click="open = false">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       </a-space>
     </template>
   </a-modal>

@@ -14,11 +14,11 @@ export const TERMINAL_CODE = [
 ];
 
 export const INSTANCE_STATUS = {
-  "-1": t("状态未知"),
-  "0": t("已停止"),
-  "1": t("正在停止"),
-  "2": t("正在启动"),
-  "3": t("正在运行")
+  "-1": t("TXT_CODE_6ffdeae8"),
+  "0": t("TXT_CODE_4ef6b040"),
+  "1": t("TXT_CODE_6bb63f94"),
+  "2": t("TXT_CODE_ecfe33cb"),
+  "3": t("TXT_CODE_f912fadc")
 };
 
 export const defaultDockerFile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
@@ -82,17 +82,17 @@ WORKDIR /workspace
 `;
 
 export const ScheduleAction = {
-  command: t("发送命令"),
-  stop: t("停止实例"),
-  start: t("开启实例"),
-  restart: t("重启实例"),
-  kill: t("终止实例")
+  command: t("TXT_CODE_b7cab91d"),
+  stop: t("TXT_CODE_148d6467"),
+  start: t("TXT_CODE_8c7318b3"),
+  restart: t("TXT_CODE_77cc12da"),
+  kill: t("TXT_CODE_1c36c8f2")
 };
 
 export const ScheduleType = {
-  1: t("间隔时间性任务"),
-  2: t("周期时间性任务"),
-  3: t("指定时间性任务")
+  1: t("TXT_CODE_ba497a8b"),
+  2: t("TXT_CODE_f17af923"),
+  3: t("TXT_CODE_c4f90da6")
 };
 
 export enum ScheduleCreateType {

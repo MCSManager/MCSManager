@@ -48,7 +48,7 @@ const deleteSchedule = async (name: string) => {
       }
     });
     if (state.value) {
-      message.success(t("删除成功"));
+      message.success(t("TXT_CODE_28190dbc"));
       await getScheduleList();
     }
   } catch (err: any) {
@@ -72,7 +72,9 @@ const rendTime = (text: string, schedule: Schedule) => {
         m -= 60;
         h += 1;
       }
-      return `${t("每隔")} ${h} ${t("小时")} ${m} ${t("分钟")} ${s} ${t("秒")}`;
+      return `${t("TXT_CODE_ec6d29f4")} ${h} ${t("TXT_CODE_e3db239d")} ${m} ${t(
+        "TXT_CODE_3b1bb444"
+      )} ${s} ${t("TXT_CODE_acabc771")}`;
     }
     case ScheduleCreateType.CYCLE: {
       const time = text;
@@ -81,7 +83,7 @@ const rendTime = (text: string, schedule: Schedule) => {
       const m = timeArr[1];
       const s = timeArr[0];
       const w = timeArr[5];
-      return `${t("每星期")} ${w} ${t("的")} ${h}:${m}:${s}`;
+      return `${t("TXT_CODE_76750199")} ${w} / ${h}:${m}:${s}`;
     }
     case ScheduleCreateType.SPECIFY: {
       const time = text;
@@ -91,7 +93,7 @@ const rendTime = (text: string, schedule: Schedule) => {
       const s = timeArr[0];
       const dd = timeArr[3];
       const mm = timeArr[4];
-      return `${mm} ${t("月")} ${dd} ${t("日")} ${h}:${m}:${s}`;
+      return `${mm} ${t("TXT_CODE_6cb9bb04")} ${dd} ${t("TXT_CODE_ca923eba")} ${h}:${m}:${s}`;
     }
     default:
       return "Unknown Time";
@@ -101,27 +103,27 @@ const rendTime = (text: string, schedule: Schedule) => {
 const columns = [
   {
     align: "center",
-    title: t("任务名"),
+    title: t("TXT_CODE_2d542e4c"),
     dataIndex: "name",
     key: "name"
   },
   {
     align: "center",
-    title: t("有效载荷"),
+    title: t("TXT_CODE_1544562"),
     dataIndex: "payload",
     key: "payload"
   },
   {
     align: "center",
-    title: t("剩余次数"),
+    title: t("TXT_CODE_485e2d41"),
     dataIndex: "count",
     key: "count",
     minWidth: "80px",
-    customRender: (e: { text: number }) => (e.text > 0 ? e.text : t("无限"))
+    customRender: (e: { text: number }) => (e.text > 0 ? e.text : t("TXT_CODE_a92df201"))
   },
   {
     align: "center",
-    title: t("动作"),
+    title: t("TXT_CODE_82fbc5ad"),
     dataIndex: "action",
     key: "action",
     minWidth: "180px",
@@ -130,7 +132,7 @@ const columns = [
   },
   {
     align: "center",
-    title: t("类型"),
+    title: t("TXT_CODE_67d68dd1"),
     dataIndex: "type",
     key: "type",
     minWidth: "180px",
@@ -138,7 +140,7 @@ const columns = [
   },
   {
     align: "center",
-    title: t("触发时间"),
+    title: t("TXT_CODE_3554dac0"),
     dataIndex: "time",
     key: "time",
     minWidth: "240px",
@@ -154,7 +156,7 @@ const columns = [
 
 const refresh = async () => {
   await getScheduleList();
-  message.success(t("已刷新"));
+  message.success(t("TXT_CODE_fbde647e"));
 };
 
 const toConsole = () => {
@@ -185,13 +187,13 @@ onMounted(async () => {
           </template>
           <template #right>
             <a-button class="mr-10" @click="toConsole()">
-              {{ t("返回") }}
+              {{ t("TXT_CODE_c14b2ea3") }}
             </a-button>
             <a-button class="mr-10" @click="refresh">
-              {{ t("刷新") }}
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="newScheduleDialog?.openDialog()">
-              {{ t("新增") }}
+              {{ t("TXT_CODE_1644b775") }}
             </a-button>
           </template>
         </BetweenMenus>
@@ -211,11 +213,11 @@ onMounted(async () => {
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'actions'">
                     <a-popconfirm
-                      :title="t('你确定要删除这条计划任务吗?')"
+                      :title="t('TXT_CODE_6ff0668f')"
                       @confirm="deleteSchedule(record.name)"
                     >
                       <a-button size="">
-                        {{ t("删除") }}
+                        {{ t("TXT_CODE_ecbd7449") }}
                         <DeleteOutlined />
                       </a-button>
                     </a-popconfirm>

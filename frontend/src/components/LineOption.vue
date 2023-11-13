@@ -60,10 +60,10 @@ onMounted(() => {
                 v-if="type == CONTROL.SELECT"
                 v-model:value="value[key]"
                 style="width: 100%"
-                :placeholder="t('未选择')"
+                :placeholder="t('TXT_CODE_fe3f34e6')"
               >
-                <a-select-option :value="true">{{ t("是") }}</a-select-option>
-                <a-select-option :value="false">{{ t("否") }}</a-select-option>
+                <a-select-option :value="true">{{ t("TXT_CODE_addfcb6b") }}</a-select-option>
+                <a-select-option :value="false">{{ t("TXT_CODE_1e9c479e") }}</a-select-option>
               </a-select>
               <a-button v-if="type == CONTROL.SELECT" class="ml-8" @click="forceType">
                 <EditOutlined />

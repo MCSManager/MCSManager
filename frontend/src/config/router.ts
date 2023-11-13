@@ -94,7 +94,7 @@ let originRouterConfig: RouterConfig[] = [
             children: [
               {
                 path: "/instances/terminal/serverConfig/fileEdit",
-                name: t("编辑配置文件"),
+                name: t("TXT_CODE_78019c60"),
                 component: LayoutContainer,
                 meta: {
                   permission: ROLE.USER
@@ -106,7 +106,7 @@ let originRouterConfig: RouterConfig[] = [
       },
       {
         path: "/instances/schedule",
-        name: t("计划任务"),
+        name: t("TXT_CODE_b7d026f8"),
         component: LayoutContainer,
         meta: {
           permission: ROLE.USER
@@ -144,7 +144,7 @@ let originRouterConfig: RouterConfig[] = [
     children: [
       {
         path: "/node/image",
-        name: t("镜像管理"),
+        name: t("TXT_CODE_e6c30866"),
         component: LayoutContainer,
         meta: {
           permission: ROLE.ADMIN,
@@ -153,7 +153,7 @@ let originRouterConfig: RouterConfig[] = [
         children: [
           {
             path: "/node/image/new",
-            name: t("创建镜像"),
+            name: t("TXT_CODE_3d09f0ac"),
             component: LayoutContainer,
             meta: {
               permission: ROLE.ADMIN,
@@ -166,7 +166,7 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/customer",
-    name: t("我的应用"),
+    name: t("TXT_CODE_ec299306"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.USER,
@@ -212,7 +212,7 @@ let originRouterConfig: RouterConfig[] = [
     children: [
       {
         path: "/quickstart/minecraft",
-        name: t("创建 Minecraft 实例"),
+        name: t("TXT_CODE_8d8b1d6a"),
         component: LayoutContainer,
         meta: {
           permission: ROLE.ADMIN

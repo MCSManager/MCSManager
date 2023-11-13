@@ -84,7 +84,7 @@ const save = async () => {
       data: config_
     });
     if (isOK.value) {
-      message.success(t("保存成功"));
+      message.success(t("TXT_CODE_a7907771"));
     }
   } catch (err: any) {
     console.error(err);
@@ -94,7 +94,7 @@ const save = async () => {
 
 const refresh = async () => {
   await render();
-  message.success(t("刷新成功"));
+  message.success(t("TXT_CODE_7863f28d"));
 };
 
 onMounted(async () => {
@@ -109,31 +109,31 @@ onMounted(async () => {
         <BetweenMenus>
           <template #left>
             <a-button class="mr-8" @click="toConfigOverview">
-              {{ t("返回配置文件列表") }}
+              {{ t("TXT_CODE_16ed68d") }}
             </a-button>
           </template>
           <template #right>
             <a-button type="primary" :loading="updateConfigFileLoading" class="mr-8" @click="save">
-              {{ t("保存文件") }}
+              {{ t("TXT_CODE_30a3c45d") }}
             </a-button>
             <a-button v-if="!isPhone" :loading="getConfigFileLoading" class="mr-8" @click="refresh">
-              {{ t("重新加载") }}
+              {{ t("TXT_CODE_d080f2d7") }}
             </a-button>
             <a-button v-if="!isPhone" type="dashed">
-              {{ t("编辑源文件") }}
+              {{ t("TXT_CODE_1f61e5a3") }}
             </a-button>
             <a-dropdown v-if="isPhone">
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="2" @click="refresh">
-                    {{ t("重新加载") }}
+                    {{ t("TXT_CODE_d080f2d7") }}
                   </a-menu-item>
                   <a-menu-item key="3">
-                    {{ t("编辑源文件") }}
+                    {{ t("TXT_CODE_1f61e5a3") }}
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button type="primary"> {{ t("更多操作") }}<DownOutlined /> </a-button>
+              <a-button type="primary"> {{ t("TXT_CODE_fbf985cb") }}<DownOutlined /> </a-button>
             </a-dropdown>
           </template>
         </BetweenMenus>
@@ -149,14 +149,10 @@ onMounted(async () => {
         <Loading v-if="!isFailure" />
       </a-col>
       <a-col v-if="isFailure" :span="24">
-        <a-result
-          status="error"
-          :title="t('暂不支持编辑此文件')"
-          :sub-title="t('可能是面板无权访问此文件，可尝试使用 “文件管理” 对本文件进行编辑。')"
-        >
+        <a-result status="error" :title="t('TXT_CODE_f859eac')" :sub-title="t('TXT_CODE_b8814f15')">
           <template #extra>
             <a-button type="primary" @click="toConfigOverview">
-              {{ t("回到配置文件列表") }}
+              {{ t("TXT_CODE_537cd5ad") }}
             </a-button>
           </template>
         </a-result>

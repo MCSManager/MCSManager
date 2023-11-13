@@ -34,7 +34,7 @@ const currentPageRole = route.meta.permission as ROLE;
 
 const insertCardToLayout = async (card: NewCardItem) => {
   if (card.permission > currentPageRole) {
-    return message.warning(t("无法添加，此卡片只能放置在更高权限的页面中"));
+    return message.warning(t("TXT_CODE_fb4cb9cb"));
   }
 
   if (card.params) {
@@ -111,11 +111,7 @@ const handleTabClick = (value: string) => {
             <a-col span="24" :md="24" :lg="card.width * 2">
               <div class="card-container-wrapper">
                 <div v-if="card.permission > currentPageRole" class="card-alert">
-                  <a-alert
-                    show-icon
-                    :message="t('此卡片只能放置在更高权限的页面中')"
-                    type="warning"
-                  />
+                  <a-alert show-icon :message="t('TXT_CODE_cd8cd5d2')" type="warning" />
                 </div>
                 <LayoutCardComponent
                   :id="'card-card-container-' + card.id"

@@ -93,7 +93,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           dialog.value.mode != "unzip" &&
           dialog.value.mode != "permission"
         ) {
-          return message.error(t("请输入内容"));
+          return message.error(t("TXT_CODE_4ea93630"));
         }
         resolve(dialog.value.value);
         dialog.value.show = false;
@@ -128,13 +128,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const reloadList = async () => {
     await getFileList();
-    return message.success(t("刷新文件列表成功"));
+    return message.success(t("TXT_CODE_8ccb5428"));
   };
 
   const touchFile = async (dir?: boolean) => {
     const dirname = dir
-      ? await openDialog(t("新建目录"), t("请输入目录名称"))
-      : await openDialog(t("新建文件"), t("请输入文件名"));
+      ? await openDialog(t("TXT_CODE_6215388a"), t("TXT_CODE_1b450b79"))
+      : await openDialog(t("TXT_CODE_791c73e9"), t("TXT_CODE_59cb16ff"));
     const execute = dir ? addFolderApi().execute : touchFileApi().execute;
 
     try {
@@ -148,7 +148,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       });
       await getFileList();
-      message.success(t("创建成功"));
+      message.success(t("TXT_CODE_d28c05df"));
     } catch (error: any) {
       return message.error(error.message);
     }
@@ -162,17 +162,18 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     } else {
       if (!selectionData.value || selectionData.value.length === 0)
-        return message.error(t("请先选择文件"));
+        return message.error(t("TXT_CODE_b152cd75"));
       clipboard.value = {
         type,
         value: selectionData.value?.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
       };
     }
-    message.success(t("已保存至剪切板"));
+    message.success(t("TXT_CODE_25cb04bb"));
   };
 
   const paste = async () => {
-    if (!clipboard?.value?.type || !clipboard.value.value) return message.error(t("请先选择文件"));
+    if (!clipboard?.value?.type || !clipboard.value.value)
+      return message.error(t("TXT_CODE_b152cd75"));
     const execute = clipboard.value.type == "copy" ? copyFileApi().execute : moveFileApi().execute;
     try {
       await execute({
@@ -188,7 +189,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       });
       await getFileList();
-      message.success(t("文件操作任务开始，如果文件数量过多，则需要一定时间"));
+      message.success(t("TXT_CODE_93d4b66a"));
       clipboard.value.value = [];
     } catch (error: any) {
       message.error(error.message);
@@ -196,7 +197,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   };
 
   const resetName = async (file: string) => {
-    const newname = await openDialog(t("重命名"), t("请输入新名称"), file);
+    const newname = await openDialog(t("TXT_CODE_c83551f5"), t("TXT_CODE_a5830778"), file);
     try {
       const { execute } = moveFileApi();
       await execute({
@@ -213,7 +214,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           ]
         }
       });
-      message.success(t("重命名成功"));
+      message.success(t("TXT_CODE_5b990e2e"));
       await getFileList();
     } catch (error: any) {
       return error.message;
@@ -234,7 +235,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           }
         });
         await getFileList();
-        message.success(t("文件删除任务开始，如果文件数量过多，则需要一定时间"));
+        message.success(t("TXT_CODE_cae10a08"));
         if (dataSource?.value?.length === 0 && operationForm.value.current > 1) {
           operationForm.value.current -= 1;
           await getFileList();
@@ -245,23 +246,23 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     };
 
     Modal.confirm({
-      title: t("你确定要删除吗?"),
+      title: t("TXT_CODE_71155575"),
       icon: createVNode(ExclamationCircleOutlined),
-      content: createVNode("div", { style: "color:red;" }, t("删除后将无法恢复！")),
+      content: createVNode("div", { style: "color:red;" }, t("TXT_CODE_6a10302d")),
       async onOk() {
         if (file) {
           // one file
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
           // more file
-          if (!selectionData.value) return message.error(t("请选择要删除的内容"));
+          if (!selectionData.value) return message.error(t("TXT_CODE_f41ad30a"));
           await useDeleteFileApi(
             selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
           );
         }
       },
       okType: "danger",
-      okText: t("确定"),
+      okText: t("TXT_CODE_d507abff"),
       class: "test"
     });
     return;
@@ -269,8 +270,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const zipFile = async () => {
     if (!selectionData.value || selectionData.value.length === 0)
-      return message.error(t("请先选择文件"));
-    const filename = await openDialog(t("压缩文件"), t("请输入压缩后的文件名"), "", "zip");
+      return message.error(t("TXT_CODE_b152cd75"));
+    const filename = await openDialog(t("TXT_CODE_f8a15a94"), t("TXT_CODE_366bad15"), "", "zip");
     const { execute } = compressFileApi();
     try {
       await execute({
@@ -285,7 +286,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           targets: selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
         }
       });
-      message.success(t("文件压缩任务开始，如果文件数量过多，则需要一定时间"));
+      message.success(t("TXT_CODE_377e142"));
       await getFileList();
     } catch (error: any) {
       message.error(error.message);
@@ -293,7 +294,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   };
 
   const unzipFile = async (name: string) => {
-    const dirname = await openDialog(t("解压文件"), "", "", "unzip");
+    const dirname = await openDialog(t("TXT_CODE_7669fd3f"), "", "", "unzip");
     const { execute } = compressFileApi();
 
     try {
@@ -312,7 +313,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
               : breadcrumbs[breadcrumbs.length - 1].path + dirname
         }
       });
-      message.success(t("文件解压任务开始，如果文件数量过多，则需要一定时间"));
+      message.success(t("TXT_CODE_16f55a9b"));
       await getFileList();
     } catch (error: any) {
       message.error(error.message);
@@ -334,7 +335,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           uuid: instanceId!
         }
       });
-      if (!uploadCfg.value) throw new Error(t("获取上传地址失败"));
+      if (!uploadCfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
@@ -350,7 +351,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       });
       await getFileList();
       percentComplete.value = 0;
-      return message.success(t("上传成功"));
+      return message.success(t("TXT_CODE_773f36a0"));
     } catch (err: any) {
       console.error(err);
       return message.error(err.message);
@@ -390,7 +391,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           uuid: instanceId!
         }
       });
-      if (!downloadCfg.value) throw new Error(t("获取下载地址失败"));
+      if (!downloadCfg.value) throw new Error(t("TXT_CODE_6d772765"));
       window.open(
         `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
           downloadCfg.value.password
@@ -403,7 +404,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   };
 
   const handleChangeDir = async (dir: string) => {
-    if (breadcrumbs.findIndex((e) => e.path === dir) === -1) return message.error(t("找不到路径"));
+    if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
+      return message.error(t("TXT_CODE_96281410"));
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     await getFileList();
@@ -446,15 +448,15 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     loading: false,
     item: [
       {
-        key: t("所有者"),
+        key: t("TXT_CODE_2e5d3d0f"),
         role: "owner"
       },
       {
-        key: t("用户组"),
+        key: t("TXT_CODE_e7b75c0e"),
         role: "usergroup"
       },
       {
-        key: t("任何人"),
+        key: t("TXT_CODE_5c54f599"),
         role: "everyone"
       }
     ]
@@ -463,7 +465,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.loading = true;
     permission.data = number2permission(mode);
     permission.loading = false;
-    await openDialog(t("更改权限"), "", "", "permission", {
+    await openDialog(t("TXT_CODE_16853efe"), "", "", "permission", {
       maxWidth: "450px"
     });
     const { execute } = changePermissionApi();
@@ -483,7 +485,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           target: breadcrumbs[breadcrumbs.length - 1].path + name
         }
       });
-      message.success(t("更改权限成功"));
+      message.success(t("TXT_CODE_b05948d1"));
       await getFileList();
     } catch (err: any) {
       return message.error(err.message);

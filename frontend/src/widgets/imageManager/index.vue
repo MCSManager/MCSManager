@@ -37,7 +37,7 @@ const getImageList = async () => {
       centered: true,
       closable: true,
       content: err.message,
-      title: t("错误")
+      title: t("TXT_CODE_ac405b50")
     });
   }
 };
@@ -54,14 +54,14 @@ const imageColumns = computed(() => {
     },
     {
       align: "center",
-      title: t("名称"),
+      title: t("TXT_CODE_bff43de3"),
       dataIndex: "RepoTags",
       key: "RepoTags",
       customRender: (e: { text: string[] }) => e.text[0]
     },
     {
       align: "center",
-      title: t("占用空间"),
+      title: t("TXT_CODE_6f91f3ba"),
       dataIndex: "Size",
       key: "Size",
       customRender: (e: { text: number }) => `${parseInt((e.text / 1024 / 1024).toString())} MB`
@@ -80,11 +80,8 @@ const showDetail = (info: ImageInfo) => {
     centered: true,
     closable: true,
     content: [
-      h("b", t("关于详情信息")),
-      h(
-        "p",
-        t("Docker 镜像与容器等详细信息建议由技术人员阅读，此处提供完整的 JSON 格式信息内容。")
-      ),
+      h("b", t("TXT_CODE_c372cef8")),
+      h("p", t("TXT_CODE_bbd7d448")),
       h("pre", {
         innerHTML: JSON.stringify(info, null, 4),
         style: {
@@ -93,7 +90,7 @@ const showDetail = (info: ImageInfo) => {
         }
       })
     ],
-    title: t("信息详情"),
+    title: t("TXT_CODE_9d820cb4"),
     width: 666
   });
 };
@@ -108,8 +105,8 @@ const delImage = async (item: ImageInfo) => {
       method: "DELETE"
     });
     notification["info"]({
-      message: t("删除指令已发出"),
-      description: t("请耐心等待，使用刷新功能加载列表，稍后此镜像预计将会被删除")
+      message: t("TXT_CODE_638bca20"),
+      description: t("TXT_CODE_d11bf156")
     });
   } catch (err: any) {
     console.error(err);
@@ -129,25 +126,25 @@ const containerColumns = computed(() => {
     },
     {
       align: "center",
-      title: t("启动命令"),
+      title: t("TXT_CODE_d12fa808"),
       dataIndex: "Command",
       key: "Command"
     },
     {
       align: "center",
-      title: t("使用镜像"),
+      title: t("TXT_CODE_47c62dac"),
       dataIndex: "Image",
       key: "Image"
     },
     {
       align: "center",
-      title: t("状态"),
+      title: t("TXT_CODE_759fb403"),
       dataIndex: "State",
       key: "State"
     },
     {
       align: "center",
-      title: t("情况"),
+      title: t("TXT_CODE_24e5bff2"),
       dataIndex: "Status",
       key: "Status"
     },
@@ -206,10 +203,10 @@ onMounted(async () => {
           </template>
           <template #right>
             <a-button v-show="!screen.isPhone.value" class="mr-8" @click="getImageList">
-              {{ t("刷新") }}
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="toNewImagePage">
-              {{ t("新增镜像") }}
+              {{ t("TXT_CODE_59ac0239") }}
               <PlusOutlined />
             </a-button>
           </template>
@@ -219,14 +216,12 @@ onMounted(async () => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #title>
-            {{ t("远程主机镜像列表") }}
+            {{ t("TXT_CODE_8b62abb2") }}
           </template>
           <template #body>
             <a-typography-paragraph>
               <a-typography-text>
-                {{
-                  t("镜像构建与容器运行依赖于 Docker 软件，物理主机上所有远程节点将共享所有镜像。")
-                }}
+                {{ t("TXT_CODE_ba82dddb") }}
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
@@ -246,14 +241,11 @@ onMounted(async () => {
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="" @click="showDetail(record)">
-                    {{ t("详情") }}
+                    {{ t("TXT_CODE_f1b166e7") }}
                   </a-button>
-                  <a-popconfirm
-                    :title="t('此操作将永久删除该镜像, 是否继续?')"
-                    @confirm="delImage(record)"
-                  >
+                  <a-popconfirm :title="t('TXT_CODE_dfa17b2d')" @confirm="delImage(record)">
                     <a-button size="" danger>
-                      {{ t("删除") }}
+                      {{ t("TXT_CODE_ecbd7449") }}
                     </a-button>
                   </a-popconfirm>
                 </template>
@@ -266,16 +258,12 @@ onMounted(async () => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #title>
-            {{ t("远程主机容器列表") }}
+            {{ t("TXT_CODE_cb36c80e") }}
           </template>
           <template #body>
             <a-typography-paragraph>
               <a-typography-text>
-                {{
-                  t(
-                    "容器列表代表所有正在独立镜像环境运行的应用实例，此处列表不仅仅包括面板所启动的容器。"
-                  )
-                }}
+                {{ t("TXT_CODE_b34efc1") }}
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
@@ -295,7 +283,7 @@ onMounted(async () => {
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="" @click="showDetail(record)">
-                    {{ t("详情") }}
+                    {{ t("TXT_CODE_f1b166e7") }}
                   </a-button>
                 </template>
               </template>

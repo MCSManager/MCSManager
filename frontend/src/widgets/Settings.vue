@@ -91,17 +91,17 @@ const aboutLinks = [
     url: "https://github.com/MCSManager/MCSManager"
   },
   {
-    title: t("官方网站"),
+    title: t("TXT_CODE_41dd4d19"),
     icon: BankOutlined,
     url: "https://mcsmanager.com/"
   },
   {
-    title: t("官方文档"),
+    title: t("TXT_CODE_74c3d3e5"),
     icon: BookOutlined,
     url: "https://docs.mcsmanager.com/"
   },
   {
-    title: t("反馈问题"),
+    title: t("TXT_CODE_26407d1f"),
     icon: BookOutlined,
     url: "https://github.com/MCSManager/MCSManager/issues"
   }
@@ -200,7 +200,7 @@ onMounted(async () => {
 
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      {{ t("保存") }}
+                      {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -289,7 +289,7 @@ onMounted(async () => {
                   </a-form-item>
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      {{ t("保存") }}
+                      {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -314,13 +314,13 @@ onMounted(async () => {
               </div>
               <a-typography-paragraph>
                 <p>
-                  {{ $t("MCSManager 管理面板的进步离不开贡献者们与赞助者们的无私奉献。") }}
+                  {{ $t("TXT_CODE_d0c670df") }}
                 </p>
                 <p v-if="isZhCN">
                   <span>
-                    {{ $t("如果您愿意支持 MCSManager 后续发展，") }}
+                    {{ $t("TXT_CODE_d2c79249") }}
                     <a href="https://github.com/MCSManager/MCSManager" target="_blank">
-                      {{ t("请点击这里。") }}
+                      {{ t("TXT_CODE_e4794d20") }}
                     </a>
                   </span>
                 </p>

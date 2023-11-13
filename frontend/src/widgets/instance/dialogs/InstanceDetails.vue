@@ -66,7 +66,7 @@ const loadImages = async () => {
       method: "GET"
     });
     if (images.value) {
-      dockerImages.value = [t("--- 新建镜像 ---")];
+      dockerImages.value = [t("TXT_CODE_3362d4b7")];
       for (const iterator of images.value) {
         const repoTags = (iterator?.RepoTags ?? [])[0];
         if (repoTags) dockerImages.value.push(repoTags);
@@ -100,14 +100,13 @@ const loadNetworkModes = async () => {
 };
 
 const rules: Record<string, Rule[]> = {
-  nickname: [{ required: true, message: t("请输入实例名称") }],
+  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   startCommand: [
     {
       required: true,
       validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("请输入启动命令"));
-        if (value.includes("\n"))
-          throw new Error(t("启动命令中不可包含换行，这并非脚本文件，不可执行多条命令"));
+        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
+        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
       },
       trigger: "change"
     }
@@ -120,7 +119,7 @@ const rules: Record<string, Rule[]> = {
           options.value?.config.processType === "docker" &&
           options.value?.config.docker.image === ""
         )
-          throw new Error(t("请选择实例镜像"));
+          throw new Error(t("TXT_CODE_be6484f7"));
       },
       trigger: "change"
     }
@@ -168,9 +167,9 @@ defineExpose({
     centered
     :mask-closable="false"
     :width="isPhone ? '100%' : 'calc(100% - 30vw)'"
-    :title="t('实例详细信息设置')"
+    :title="t('TXT_CODE_aac98b2a')"
     :confirm-loading="isLoading"
-    :ok-text="t('保存')"
+    :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
   >
     <div class="dialog-overflow-container">
@@ -186,11 +185,11 @@ defineExpose({
           <a-col :xs="24" :md="12" :offset="0">
             <a-form-item name="nickname">
               <a-typography-title :level="5" class="require-field">
-                {{ t("实例名称") }}
+                {{ t("TXT_CODE_f70badb9") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("支持中文，尽可能保证唯一性") }}
+                  {{ t("TXT_CODE_818928ba") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input v-model:value="options.config.nickname" :disabled="isGlobalTerminal" />
@@ -199,20 +198,16 @@ defineExpose({
           <a-col :xs="24" :md="12" :offset="0">
             <a-form-item>
               <a-typography-title :level="5" class="require-field">
-                {{ t("实例类型") }}
+                {{ t("TXT_CODE_2f291d8b") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{
-                    t(
-                      "不同类型会导致功能不同，若无需求类型，可以选择较为抽象的通用类型，例如 Java 通用版服务端"
-                    )
-                  }}
+                  {{ t("TXT_CODE_1e1dfbbe") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
                 v-model:value="options.config.type"
-                :placeholder="t('请选择')"
+                :placeholder="t('TXT_CODE_3bb646e4')"
                 :disabled="isGlobalTerminal"
               >
                 <a-select-option
@@ -229,15 +224,11 @@ defineExpose({
           <a-col :xs="24" :offset="0">
             <a-form-item name="startCommand">
               <a-typography-title :level="5" class="require-field">
-                {{ t("启动命令") }}
+                {{ t("TXT_CODE_d12fa808") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "适用于任何程序命令，若程序路径或附加参数中含有空格可使用引号作为边界，包含的文本将视作一段整体。整条命令不可有换行。如果您输入命令无反应，或者终端排版错乱，可以开启 控制台-终端设置-伪终端进行尝试。不同类型会导致功能不同，若无需求类型，可以选择较为抽象的通用类型，例如 Java 通用版服务端通常情况下，建议使用命令助手生成启动命令，如果有额外需求可以自定义启动命令。列如 C: \Program Files\Java\bin\java.exe -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui"
-                    )
-                  }}
+                  {{ t("TXT_CODE_A0000001") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact style="display: flex">
@@ -254,11 +245,11 @@ defineExpose({
           <a-col :xs="24" :offset="0">
             <a-form-item name="cwd">
               <a-typography-title :level="5" class="require-field">
-                {{ t("工作目录") }}
+                {{ t("TXT_CODE_ee67e1a3") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("实例运行的工作目录，可填绝对路径与相对路径") }}
+                  {{ t("TXT_CODE_962d9320") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input v-model:value="options.config.cwd" />
@@ -266,14 +257,10 @@ defineExpose({
           </a-col>
           <a-col :xs="24" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("更新/安装程序文件命令") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "当用户执行更新/安装操作时，将会执行此命令，${mcsm_workspace} 代表工作目录，为空则不提供此功能"
-                    )
-                  }}
+                  {{ t("TXT_CODE_41763172") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input v-model:value="options.config.updateCommand" />
@@ -284,14 +271,17 @@ defineExpose({
           <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item>
               <a-typography-title :level="5" class="require-field">
-                {{ t("文件管理编码") }}
+                {{ t("TXT_CODE_f041de90") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("文件管理功能的解压缩，编辑等编码") }}
+                  {{ t("TXT_CODE_6e69b5a5") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-select v-model:value="options.config.fileCode" :placeholder="t('请选择')">
+              <a-select
+                v-model:value="options.config.fileCode"
+                :placeholder="t('TXT_CODE_3bb646e4')"
+              >
                 <a-select-option v-for="item in TERMINAL_CODE" :key="item" :value="item">
                 </a-select-option>
               </a-select>
@@ -299,39 +289,35 @@ defineExpose({
           </a-col>
           <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("到期时间") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_fa920c0") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("到期后实例将无法启动") }}
+                  {{ t("TXT_CODE_b029a155") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-date-picker
                 v-model:value="options.dayjsEndTime"
                 size="large"
                 style="width: 100%"
-                :placeholder="t('无限制')"
+                :placeholder="t('TXT_CODE_e3a77a77')"
                 :disabled="isGlobalTerminal"
               />
             </a-form-item>
           </a-col>
           <a-col :xs="24" :lg="12" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("进程启动方式（推荐）") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_9eacb622") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{
-                    t(
-                      "通常默认即可，如果从事商业活动则应当使用虚拟化容器启动方式，否则主机将可能被入侵。"
-                    )
-                  }}
+                  {{ t("TXT_CODE_9278b7b0") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select v-model:value="options.config.processType" :disabled="isGlobalTerminal">
                 <a-select-option value="general">
-                  {{ t("默认类型") }}
+                  {{ t("TXT_CODE_5be6c38e") }}
                 </a-select-option>
                 <a-select-option value="docker">
-                  {{ t("虚拟化容器（Linux Docker）") }}
+                  {{ t("TXT_CODE_6c87dd18") }}
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -341,18 +327,18 @@ defineExpose({
           <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
-                {{ t("环境镜像") }}
+                {{ t("TXT_CODE_6904cb3") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("指定实例镜像") }}
+                  {{ t("TXT_CODE_a584cb71") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
                 v-model:value="options.config.docker.image"
                 size="large"
                 style="width: 100%"
-                :placeholder="t('请选择')"
+                :placeholder="t('TXT_CODE_3bb646e4')"
                 @focus="loadImages"
                 @change="selectImage"
               >
@@ -366,14 +352,10 @@ defineExpose({
           </a-col>
           <a-col :xs="24" :lg="18" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("开放端口") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "多个以空格分割，冒号左边为宿主机暴露端口，右边为容器暴露端口，通常保持一致即可"
-                    )
-                  }}
+                  {{ t("TXT_CODE_c7b95258") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
@@ -381,20 +363,16 @@ defineExpose({
                   v-model:value="options.config.docker.ports"
                   style="width: calc(100% - 88px)"
                 />
-                <a-button type="default">快速编辑</a-button>
+                <a-button type="default">{{ t("快速编辑") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("额外挂载路径") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_3e68ca00") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "向容器内挂载除工作目录外的其他目录，多个以空格分割，冒号左边为宿主机路径，右边为容器路径"
-                    )
-                  }}
+                  {{ t("TXT_CODE_29c2884") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
@@ -402,23 +380,23 @@ defineExpose({
                   v-model:value="options.config.docker.extraVolumes"
                   style="width: calc(100% - 88px)"
                 />
-                <a-button type="default">快速编辑</a-button>
+                <a-button type="default">{{ t("快速编辑") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("容器名") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_c3a3b6b1") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("容器创建使用的名字，为空随机生成") }}
+                  {{ t("TXT_CODE_d1c78fbf") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-tooltip placement="bottom">
-                <template #title>{{ t("选填，无特殊需求不建议填写此项") }}</template>
+                <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
                 <a-input
                   v-model:value="options.config.docker.containerName"
-                  :placeholder="t('选填，示例 lobby-1')"
+                  :placeholder="t('TXT_CODE_f6047384')"
                 />
               </a-tooltip>
             </a-form-item>
@@ -426,18 +404,18 @@ defineExpose({
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5" class="require-field">
-                {{ t("网络模式") }}
+                {{ t("TXT_CODE_efcef926") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("选择容器接入的网络模式 如 bridge 网桥") }}
+                  {{ t("TXT_CODE_38a430d8") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
                 v-model:value="options.config.docker.networkMode"
                 size="large"
                 style="width: 100%"
-                :placeholder="t('请选择')"
+                :placeholder="t('TXT_CODE_3bb646e4')"
                 @focus="loadNetworkModes"
               >
                 <a-select-option
@@ -450,77 +428,67 @@ defineExpose({
           </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("网络别名") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_10194e6a") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("用于在自定义网络中容器互相访问，空格分隔") }}
+                  {{ t("TXT_CODE_97655c5d") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.networkAliases"
-                :placeholder="t('选填，无特殊需求不建议填写此项')"
+                :placeholder="t('TXT_CODE_8d4882b0')"
               />
             </a-form-item>
           </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{
-                t("限制 CPU 使用率（百分比）")
-              }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_53046822") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("限制所有 CPU 总和使用率，会有少许偏差") }}
+                  {{ t("TXT_CODE_750ab5c6") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-tooltip placement="bottom">
                 <template #title>
-                  {{
-                    t(
-                      "填写 50 代表所有核心使用率和限制在 50%，若填写 200 则代表准许使用所有核心使用率总和为 200%"
-                    )
-                  }}
+                  {{ t("TXT_CODE_dce87e42") }}
                 </template>
                 <a-input
                   v-model:value="options.config.docker.cpuUsage"
-                  :placeholder="t('选填，0 到 无限大')"
+                  :placeholder="t('TXT_CODE_91d857f5')"
                 />
               </a-tooltip>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("指定 CPU 计算核心") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_b0c4e4ae") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("限制容器在指定的 CPU 核心上运行") }}
+                  {{ t("TXT_CODE_2b9e9b5") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-tooltip placement="bottom">
                 <template #title>
-                  {{
-                    t(
-                      "指定进程在某些核心上运行，合理分配可以更好的利用您的系统硬件资源，例如 0,1 代表在第1，2核心上运作，逗号隔开"
-                    )
-                  }}
+                  {{ t("TXT_CODE_67c765be") }}
                 </template>
                 <a-input
                   v-model:value="options.config.docker.cpusetCpus"
-                  :placeholder="t('选填，例如 0,1,2,3')"
+                  :placeholder="t('TXT_CODE_30fe1717')"
                 />
               </a-tooltip>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("最大内存（单位 MB）") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_6fe24924") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("例如 1024，2048 等，请勿加单位") }}
+                  {{ t("TXT_CODE_a0d214ac") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.memory"
-                :placeholder="t('选填，例如 1024')"
+                :placeholder="t('TXT_CODE_80790069')"
               />
             </a-form-item>
           </a-col>

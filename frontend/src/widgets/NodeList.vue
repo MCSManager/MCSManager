@@ -136,9 +136,9 @@ const addNode = async () => {
       }
     });
     editDialog.value.hidden();
-    message.success(t("添加节点成功"));
+    message.success(t("TXT_CODE_38c6392f"));
   } catch (error: any) {
-    message.error(t("添加节点失败"));
+    message.error(t("TXT_CODE_2dfc1043"));
   }
   editDialog.value.loading = false;
 };
@@ -151,10 +151,10 @@ const deleteNode = async () => {
         uuid: editDialog.value.uuid
       }
     });
-    message.success(t("删除节点成功"));
+    message.success(t("TXT_CODE_e53b3f9"));
     editDialog.value.hidden();
   } catch (error) {
-    message.error(t("删除节点失败"));
+    message.error(t("TXT_CODE_1b699a95"));
   }
   editDialog.value.loading = false;
 };
@@ -179,11 +179,11 @@ const editNode = async () => {
         uuid: editDialog.value.uuid
       }
     });
-    message.success(t("保存成功"));
+    message.success(t("TXT_CODE_a7907771"));
     editDialog.value.loading = false;
     editDialog.value.hidden();
   } catch (error) {
-    message.error(t("编辑节点失败"));
+    message.error(t("TXT_CODE_fdca0695"));
   }
 };
 
@@ -191,7 +191,7 @@ const editMode = ref(false);
 const editDialog = ref({
   status: false,
   loading: false,
-  title: computed(() => (editMode.value ? t("编辑节点信息") : t("新增节点"))),
+  title: computed(() => (editMode.value ? t("TXT_CODE_39c5229e") : t("TXT_CODE_15a381d5"))),
   data: {
     ip: "",
     port: 24444,
@@ -227,7 +227,7 @@ const editDialog = ref({
   },
   submit: async () => {
     if (editDialog.value.check() === false) {
-      return message.error(t("请正确填写表单"));
+      return message.error(t("TXT_CODE_633415e2"));
     }
     editDialog.value.loading = true;
     if (editMode.value) {
@@ -333,32 +333,32 @@ const editDialog = ref({
   <a-modal v-model:open="editDialog.status" :title="editDialog.title">
     <a-form layout="vertical">
       <a-form-item>
-        <a-typography-title :level="5">{{ t("备注信息") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_a884de59") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，支持中文，用于填写相关备注信息") }}
+            {{ t("TXT_CODE_4b1d5199") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.remarks" />
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("远程节点所在主机的 IP 地址") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_93f9b02a") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必须使用外网地址或 localhost 地址，否则将导致远程实例无法连接") }}
+            {{ t("TXT_CODE_be7a689a") }}
             <br />
-            {{ t("可以是域名或者 IP 地址，例如 mcsmanager.com，43.123.211.12") }}
+            {{ t("TXT_CODE_c82a51b0") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.ip" />
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("远程节点端口") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_4a6bf8c6") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("默认情况下是 24444。") }}
+            {{ t("TXT_CODE_df455795") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="editDialog.data.port" />
@@ -366,40 +366,40 @@ const editDialog = ref({
 
       <a-form-item>
         <a-typography-title class="flex" :level="5">
-          {{ t("远程节点密钥") }}
+          {{ t("TXT_CODE_300c2ff4") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("通过远程节点生成的密钥来认证身份，以确保多台机器集成工作的安全性。") }}
+            {{ t("TXT_CODE_5ef2cf20") }}
 
-            <a href="https://docs.mcsmanager.com/" target="_blank">{{ t("如何获取密钥？") }}</a>
+            <a href="https://docs.mcsmanager.com/" target="_blank">{{ t("TXT_CODE_be1351ce") }}</a>
           </a-typography-text>
         </a-typography-paragraph>
         <a-input
           v-model:value="editDialog.data.apiKey"
-          :placeholder="editMode ? t('留空表示不进行修改') : t('请输入密钥')"
+          :placeholder="editMode ? t('TXT_CODE_dc570cf2') : t('TXT_CODE_fe25087f')"
         />
       </a-form-item>
     </a-form>
     <template #footer>
       <div class="justify-space-between">
         <a-popconfirm
-          :title="t('确定要永久删除该节点吗？')"
+          :title="t('TXT_CODE_fb267b0b')"
           ok-text="Yes"
           cancel-text="No"
           @confirm="deleteNode()"
         >
-          <a-button danger v-if="editMode" key="delete">{{ t("删除节点") }}</a-button>
+          <a-button danger v-if="editMode" key="delete">{{ t("TXT_CODE_8b937b23") }}</a-button>
         </a-popconfirm>
         <div class="right">
-          <a-button key="back" @click="editDialog.hidden()">{{ t("取消") }}</a-button>
+          <a-button key="back" @click="editDialog.hidden()">{{ t("TXT_CODE_a0451c97") }}</a-button>
           <a-button
             key="submit"
             type="primary"
             :loading="editDialog.loading"
             @click="editDialog.submit()"
           >
-            {{ t("确定") }}
+            {{ t("TXT_CODE_d507abff") }}
           </a-button>
         </div>
       </div>

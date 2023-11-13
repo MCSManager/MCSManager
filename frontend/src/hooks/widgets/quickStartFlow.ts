@@ -52,22 +52,22 @@ export function useQuickStartFlow() {
 
   const step1: ActionButtons[] = [
     {
-      title: t("Minecraft Java版游戏服务器"),
+      title: t("TXT_CODE_9e3f25e0"),
       key: QUICKSTART_ACTION_TYPE.Minecraft,
       icon: AppstoreAddOutlined
     },
     {
-      title: t("Minecraft 基岩版游戏服务器"),
+      title: t("TXT_CODE_c8261c85"),
       key: QUICKSTART_ACTION_TYPE.Bedrock,
       icon: AppstoreAddOutlined
     },
     {
-      title: t("Steam 游戏服务器"),
+      title: t("TXT_CODE_dd8d27ce"),
       key: QUICKSTART_ACTION_TYPE.SteamGameServer,
       icon: ShoppingCartOutlined
     },
     {
-      title: t("部署任何控制台可执行程序"),
+      title: t("TXT_CODE_e08e63b5"),
       key: QUICKSTART_ACTION_TYPE.AnyApp,
       icon: TransactionOutlined
     }
@@ -81,7 +81,7 @@ export function useQuickStartFlow() {
     createMethod?: QUICKSTART_METHOD;
     remoteUuid?: string;
   }>({
-    title: t("您想部署一个什么应用实例？"),
+    title: t("TXT_CODE_724ce74d"),
     step: 1,
     actions: step1
   });
@@ -98,17 +98,17 @@ export function useQuickStartFlow() {
         icon: NodeIndexOutlined
       };
     });
-    formData.title = t("新的程序部署在哪台机器？");
+    formData.title = t("TXT_CODE_d182c422");
   };
 
   const toStep3 = (remoteUuid: string) => {
     formData.step = 3;
-    formData.title = t("请选择部署应用实例的方式？");
+    formData.title = t("TXT_CODE_49981cb9");
     formData.remoteUuid = remoteUuid;
     currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
-        title: t("Minecraft 快速部署"),
+        title: t("TXT_CODE_266b7246"),
         key: QUICKSTART_METHOD.FAST,
         icon: AppstoreAddOutlined,
         condition: () =>
@@ -124,22 +124,22 @@ export function useQuickStartFlow() {
         }
       },
       {
-        title: t("上传单个服务端软件"),
+        title: t("TXT_CODE_444db70f"),
         key: QUICKSTART_METHOD.FILE,
         icon: CloudUploadOutlined
       },
       {
-        title: t("上传服务端文件压缩包"),
+        title: t("TXT_CODE_f2a58270"),
         key: QUICKSTART_METHOD.IMPORT,
         icon: FileZipOutlined
       },
       {
-        title: t("选择服务器现有目录"),
+        title: t("TXT_CODE_1baf656e"),
         key: QUICKSTART_METHOD.SELECT,
         icon: FolderOpenOutlined
       },
       {
-        title: t("无需额外文件"),
+        title: t("TXT_CODE_c14caab"),
         key: QUICKSTART_METHOD.EXIST,
         icon: FileExcelOutlined
       }
@@ -154,12 +154,12 @@ export function useQuickStartFlow() {
 
   const toStep5 = (instanceId?: string) => {
     formData.step = 5;
-    formData.title = t("恭喜，实例创建成功");
+    formData.title = t("TXT_CODE_2958a0f8");
     currentIcon.value = SmileTwoTone;
 
     formData.actions = arrayFilter<ActionButtons>([
       {
-        title: t("前往实例控制台"),
+        title: t("TXT_CODE_36417656"),
         key: "console",
         icon: CodeOutlined,
         click: () => {
@@ -174,7 +174,7 @@ export function useQuickStartFlow() {
         }
       },
       {
-        title: t("前往实例文件管理"),
+        title: t("TXT_CODE_2864bfbc"),
         key: "files",
         icon: FolderOpenOutlined,
         click: () => {
@@ -189,7 +189,7 @@ export function useQuickStartFlow() {
         }
       },
       {
-        title: t("返回面板首页"),
+        title: t("TXT_CODE_d4146944"),
         key: "main",
         icon: HomeOutlined,
         click: () => {

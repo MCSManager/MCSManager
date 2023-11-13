@@ -124,10 +124,8 @@ const appMenus = computed(() => {
       icon: SaveOutlined,
       click: async () => {
         Modal.confirm({
-          title: $t("确定要保存布局吗？"),
-          content: $t(
-            "由于界面的高度可定制化，一旦保存布局后整个界面的语言将会被锁定，除非重置布局否则切换语言将无法很好的工作。如果您没有切换语言的需求，可以忽略这条建议。"
-          ),
+          title: $t("TXT_CODE_d73c8510"),
+          content: $t("TXT_CODE_6d9b9f22"),
           async onOk() {
             changeDesignMode(false);
             await saveGlobalLayoutConfig();
@@ -144,12 +142,12 @@ const appMenus = computed(() => {
       onlyPC: true
     },
     {
-      title: t("放弃保存布局"),
+      title: t("TXT_CODE_5b5d6f04"),
       icon: CloseCircleOutlined,
       click: async () => {
         Modal.confirm({
-          title: $t("确定要放弃保存布局？"),
-          content: $t("当前布局将会丢失，是否继续?"),
+          title: $t("TXT_CODE_8f20c21c"),
+          content: $t("TXT_CODE_9740f199"),
           async onOk() {
             window.location.reload();
           }
@@ -159,17 +157,17 @@ const appMenus = computed(() => {
       onlyPC: true
     },
     {
-      title: t("重置卡片布局"),
+      title: t("TXT_CODE_abd2f7e1"),
       icon: RedoOutlined,
       click: async () => {
         Modal.confirm({
-          title: $t("确定要重置布局吗？"),
-          content: $t("这将会导致所有网页恢复到默认状态，请谨慎操作。重置后页面可以自动切换语言。"),
+          title: $t("TXT_CODE_74fa2f73"),
+          content: $t("TXT_CODE_f63bfe78"),
           async onOk() {
             await resetGlobalLayoutConfig();
             notification.success({
               placement: "top",
-              message: t("重置成功"),
+              message: t("TXT_CODE_15c6d4eb"),
               description: t("TXT_CODE_e10c992a")
             });
             setTimeout(() => window.location.reload(), 400);
@@ -247,7 +245,7 @@ const appMenus = computed(() => {
       icon: LogoutOutlined,
       click: async () => {
         await execute();
-        message.success(t("成功退出登录"));
+        message.success(t("TXT_CODE_11673d8c"));
         router.go(0);
       },
       conditions: !containerState.isDesignMode,

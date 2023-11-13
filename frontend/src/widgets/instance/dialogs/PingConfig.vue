@@ -48,40 +48,36 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :title="t('实例状态查询协议配置')"
+    :title="t('TXT_CODE_23b02a65')"
     :confirm-loading="isLoading"
-    :ok-text="t('保存')"
+    :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
   >
     <a-form v-if="options" layout="vertical">
       <a-form-item>
-        <a-typography-title :level="5">{{ t("更好的监控服务端状态") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_2498e4ed") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{
-              t(
-                "此功能将根据管理员设置的实例类型自动选择相应协议，获取服务端进程的具体信息和参数（如：游戏人数，版本等）"
-              )
-            }}
+            {{ t("TXT_CODE_e7335483") }}
           </a-typography-text>
         </a-typography-paragraph>
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("服务端访问地址") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_8e632796") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，支持域名与 IP 地址，不填写则不会查询服务端信息，人数，版本等。") }}
+            {{ t("TXT_CODE_c93f32f8") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="options.config.pingConfig.ip" />
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("服务端访问端口") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_243a463") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("必填，仅可输入数字端口号") }}
+            {{ t("TXT_CODE_e9935066") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="options.config.pingConfig.port" type="number" />

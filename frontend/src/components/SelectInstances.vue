@@ -77,7 +77,7 @@ const initInstancesData = async () => {
       }
     });
   } catch (err) {
-    return message.error(t("访问远程节点异常"));
+    return message.error(t("TXT_CODE_e109c091"));
   }
 };
 
@@ -86,13 +86,13 @@ const selectedItems = ref<UserInstance[]>([]);
 const columns = [
   {
     align: "center",
-    title: t("实例名称"),
+    title: t("TXT_CODE_f70badb9"),
     dataIndex: "nickname",
     key: "instanceUuid"
   },
   {
     align: "center",
-    title: t("操作"),
+    title: t("TXT_CODE_fe731dfc"),
     key: "operation"
   }
 ];
@@ -139,15 +139,15 @@ const handleChangeNode = async (item: NodeStatus) => {
     v-model:open="open"
     centered
     :mask-closable="false"
-    :title="t('请选择实例')"
-    :ok-text="t('保存')"
-    :cancel-text="t('取消')"
+    :title="t('TXT_CODE_8145d25a')"
+    :ok-text="t('TXT_CODE_abfe9512')"
+    :cancel-text="t('TXT_CODE_a0451c97')"
     @ok="submit"
     @cancel="cancel"
   >
     <a-typography-paragraph>
       <a-typography-text type="secondary">
-        {{ t("利用远程主机地址与模糊查询来为此用户增加应用实例") }}
+        {{ t("TXT_CODE_50697989") }}
       </a-typography-text>
     </a-typography-paragraph>
     <a-row :gutter="[24, 24]" style="height: 100%">
@@ -204,7 +204,7 @@ const handleChangeNode = async (item: NodeStatus) => {
       <a-col :span="24">
         <div v-if="instances" class="flex-between align-center">
           <a-typography-text>
-            {{ t("已选择") }} {{ selectedItems.length }} {{ t("项") }}
+            {{ t("TXT_CODE_379fa48a") }} {{ selectedItems.length }} {{ t("TXT_CODE_5cd3b4bd") }}
           </a-typography-text>
           <a-pagination
             v-model:current="operationForm.currentPage"
@@ -227,10 +227,10 @@ const handleChangeNode = async (item: NodeStatus) => {
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'operation'">
                 <a-button v-if="findItem(record)" danger size="" @click="removeItem(record)">
-                  {{ t("移除") }}
+                  {{ t("TXT_CODE_65fcbd09") }}
                 </a-button>
                 <a-button v-else size="" @click="selectItem(record)">
-                  {{ t("选择") }}
+                  {{ t("TXT_CODE_7b2c5414") }}
                 </a-button>
               </template>
             </template>
