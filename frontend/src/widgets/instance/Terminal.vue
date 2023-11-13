@@ -22,7 +22,8 @@ import {
   openInstance,
   stopInstance,
   restartInstance,
-  killInstance
+  killInstance,
+  updateInstance
 } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
@@ -124,7 +125,16 @@ const instanceOperations = arrayFilter([
     title: t("TXT_CODE_40ca4f2"),
     icon: CloudDownloadOutlined,
     click: () => {
-      console.log(4);
+      updateInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || "",
+          task_name: "update"
+        },
+        data: {
+          time: new Date().getTime()
+        }
+      });
     }
   }
 ]);

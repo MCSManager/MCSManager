@@ -103,6 +103,23 @@ export const killInstance = useDefineApi<
   method: "GET"
 });
 
+export const updateInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+      task_name: string;
+    };
+    data: {
+      time: number;
+    };
+  },
+  boolean
+>({
+  url: "/api/protected_instance/asynchronous",
+  method: "POST"
+});
+
 // 更新实例设置（普通用户）
 export const updateInstanceConfig = useDefineApi<
   {
