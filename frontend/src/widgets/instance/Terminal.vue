@@ -76,7 +76,8 @@ const quickOperations = computed(() =>
           }
         });
       },
-      props: {}
+      props: {},
+      condition: () => isStopped.value
     },
     {
       title: t("TXT_CODE_b1dedda3"),
@@ -91,53 +92,59 @@ const quickOperations = computed(() =>
       },
       props: {
         danger: true
-      }
+      },
+      condition: () => isRunning.value
     }
   ])
 );
 
-const instanceOperations = arrayFilter([
-  {
-    title: t("TXT_CODE_47dcfa5"),
-    icon: ReconciliationOutlined,
-    click: () => {
-      restartInstance().execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || ""
-        }
-      });
+const instanceOperations = computed(() =>
+  arrayFilter([
+    {
+      title: t("TXT_CODE_47dcfa5"),
+      icon: ReconciliationOutlined,
+      click: () => {
+        restartInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      condition: () => isRunning.value
+    },
+    {
+      title: t("TXT_CODE_7b67813a"),
+      icon: CloseOutlined,
+      click: () => {
+        killInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || ""
+          }
+        });
+      },
+      condition: () => isRunning.value
+    },
+    {
+      title: t("TXT_CODE_40ca4f2"),
+      icon: CloudDownloadOutlined,
+      click: () => {
+        updateInstance().execute({
+          params: {
+            uuid: instanceId || "",
+            remote_uuid: daemonId || "",
+            task_name: "update"
+          },
+          data: {
+            time: new Date().getTime()
+          }
+        });
+      },
+      condition: () => isStopped.value
     }
-  },
-  {
-    title: t("TXT_CODE_7b67813a"),
-    icon: CloseOutlined,
-    click: () => {
-      killInstance().execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || ""
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_40ca4f2"),
-    icon: CloudDownloadOutlined,
-    click: () => {
-      updateInstance().execute({
-        params: {
-          uuid: instanceId || "",
-          remote_uuid: daemonId || "",
-          task_name: "update"
-        },
-        data: {
-          time: new Date().getTime()
-        }
-      });
-    }
-  }
-]);
+  ])
+);
 
 const handleSendCommand = () => {
   sendCommand(commandInputValue.value);
@@ -265,7 +272,7 @@ const innerTerminalType = viewType === "inner";
         </template>
       </BetweenMenus>
     </div>
-    <a-spin :spinning="!isConnect" tip="正在连接终端中...">
+    <a-spin :spinning="!isConnect" :tip="t('正在连接终端中...')">
       <div v-if="!containerState.isDesignMode" class="console-wrapper">
         <div class="terminal-wrapper global-card-container-shadow">
           <div class="terminal-container">
