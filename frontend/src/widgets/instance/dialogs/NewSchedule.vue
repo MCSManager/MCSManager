@@ -37,7 +37,7 @@ interface NewTask extends NewScheduleTask {
   objTime: string;
 }
 
-const newTaskOrigin = {
+const newTaskOrigin: NewTask = {
   name: "",
   action: "command",
   count: "",
@@ -49,7 +49,7 @@ const newTaskOrigin = {
   objTime: ""
 };
 
-let newTask = reactive(_.cloneDeep(newTaskOrigin));
+let newTask = reactive<NewTask>(_.cloneDeep(newTaskOrigin));
 
 const createTaskTypeInterval = async () => {
   const arr = newTask.cycle;

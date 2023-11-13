@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import { DeleteOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
-import { throttle } from "lodash";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useScreen } from "@/hooks/useScreen";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { scheduleList, scheduleDelete } from "@/services/apis/instance";
 import type { LayoutCard, Schedule } from "@/types/index";
-import { ScheduleAction, ScheduleType } from "@/types/const";
+import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
 
 const props = defineProps<{
@@ -22,7 +20,6 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const { toPage } = useAppRouters();
-const { isPhone } = useScreen();
 const newScheduleDialog = ref<InstanceType<typeof NewSchedule>>();
 
 const { state, execute, isLoading } = scheduleList();
@@ -61,8 +58,8 @@ const deleteSchedule = async (name: string) => {
 };
 
 const rendTime = (text: string, schedule: Schedule) => {
-  switch (schedule.type) {
-    case 1: {
+  switch (schedule.type.toString()) {
+    case ScheduleCreateType.INTERVAL: {
       const time = Number(text);
       let s = time;
       let m = 0;
@@ -77,7 +74,7 @@ const rendTime = (text: string, schedule: Schedule) => {
       }
       return `${t("每隔")} ${h} ${t("小时")} ${m} ${t("分钟")} ${s} ${t("秒")}`;
     }
-    case 2: {
+    case ScheduleCreateType.CYCLE: {
       const time = text;
       const timeArr = time.split(" ");
       const h = timeArr[2];
@@ -86,7 +83,7 @@ const rendTime = (text: string, schedule: Schedule) => {
       const w = timeArr[5];
       return `${t("每星期")} ${w} ${t("的")} ${h}:${m}:${s}`;
     }
-    case 3: {
+    case ScheduleCreateType.SPECIFY: {
       const time = text;
       const timeArr = time.split(" ");
       const h = timeArr[2];
