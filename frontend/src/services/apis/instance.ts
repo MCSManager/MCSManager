@@ -88,6 +88,21 @@ export const restartInstance = useDefineApi<
   method: "GET"
 });
 
+export const killInstance = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      remote_uuid: string;
+    };
+  },
+  {
+    instanceUuid: string;
+  }
+>({
+  url: "/api/protected_instance/kill",
+  method: "GET"
+});
+
 // 更新实例设置（普通用户）
 export const updateInstanceConfig = useDefineApi<
   {

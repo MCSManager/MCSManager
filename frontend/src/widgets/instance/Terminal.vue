@@ -18,7 +18,12 @@ import { onMounted, computed, ref } from "vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
-import { openInstance, stopInstance, restartInstance } from "@/services/apis/instance";
+import {
+  openInstance,
+  stopInstance,
+  restartInstance,
+  killInstance
+} from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
@@ -107,7 +112,12 @@ const instanceOperations = arrayFilter([
     title: t("TXT_CODE_7b67813a"),
     icon: CloseOutlined,
     click: () => {
-      console.log(3);
+      killInstance().execute({
+        params: {
+          uuid: instanceId || "",
+          remote_uuid: daemonId || ""
+        }
+      });
     }
   },
   {
