@@ -94,3 +94,9 @@ export const ScheduleType = {
   2: t("周期时间性任务"),
   3: t("指定时间性任务")
 };
+
+export enum ScheduleCreateType {
+  INTERVAL = "1",
+  CYCLE = "2",
+  SPECIFY = "3"
+}

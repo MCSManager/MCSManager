@@ -180,7 +180,7 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template v-if="!isPhone" #left>
+          <template #left>
             <a-typography-title class="mb-0" :level="4">
               <FieldTimeOutlined />
               {{ card.title }}
@@ -188,13 +188,13 @@ onMounted(async () => {
           </template>
           <template #right>
             <a-button class="mr-10" @click="toConsole()">
-              {{ t("返回控制台") }}
+              {{ t("返回") }}
             </a-button>
             <a-button class="mr-10" @click="refresh">
               {{ t("刷新") }}
             </a-button>
             <a-button type="primary" @click="newScheduleDialog?.openDialog()">
-              {{ t("新增计划任务") }}
+              {{ t("新增") }}
             </a-button>
           </template>
         </BetweenMenus>

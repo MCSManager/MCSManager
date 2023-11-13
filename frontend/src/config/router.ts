@@ -111,16 +111,6 @@ let originRouterConfig: RouterConfig[] = [
         meta: {
           permission: ROLE.USER
         }
-        // children: [
-        //   {
-        //     path: "/instances/schedule/new",
-        //     name: t("新增计划任务"),
-        //     component: LayoutContainer,
-        //     meta: {
-        //       permission: ROLE.USER
-        //     }
-        //   }
-        // ]
       }
     ]
   },

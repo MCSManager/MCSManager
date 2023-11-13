@@ -2,7 +2,7 @@
 import { ref, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import { message, notification } from "ant-design-vue";
-import { ScheduleAction, ScheduleType } from "@/types/const";
+import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import type { NewScheduleTask } from "@/types";
 import { scheduleCreate } from "@/services/apis/instance";
 import { useScreen } from "@/hooks/useScreen";
@@ -30,12 +30,6 @@ const weeks = [
   { label: t("周日"), value: 7 }
 ];
 
-enum TYPE {
-  INTERVAL = "1",
-  CYCLE = "2",
-  SPECIFY = "3"
-}
-
 interface NewTask extends NewScheduleTask {
   payload: string;
   weekend: string[];
@@ -43,17 +37,17 @@ interface NewTask extends NewScheduleTask {
   objTime: string;
 }
 
-const newTaskOrigin = reactive<NewTask>({
+const newTaskOrigin = {
   name: "",
   action: "command",
   count: "",
-  type: TYPE.INTERVAL,
+  type: ScheduleCreateType.INTERVAL,
   time: "",
   payload: "",
   weekend: [],
   cycle: ["0", "0", "0"],
   objTime: ""
-});
+};
 
 let newTask = reactive(_.cloneDeep(newTaskOrigin));
 
@@ -118,9 +112,9 @@ const createRequest = async () => {
 
 const submit = async () => {
   try {
-    if (newTask.type === TYPE.INTERVAL) await createTaskTypeInterval();
-    if (newTask.type === TYPE.CYCLE) await createTaskTypeCycle();
-    if (newTask.type === TYPE.SPECIFY) await createTaskTypeSpecify();
+    if (newTask.type === ScheduleCreateType.INTERVAL) await createTaskTypeInterval();
+    if (newTask.type === ScheduleCreateType.CYCLE) await createTaskTypeCycle();
+    if (newTask.type === ScheduleCreateType.SPECIFY) await createTaskTypeSpecify();
   } catch (err: any) {
     return message.error(err.message);
   }
@@ -180,7 +174,7 @@ defineExpose({
       </a-row>
     </a-form-item>
 
-    <a-form-item v-if="newTask.type === TYPE.INTERVAL">
+    <a-form-item v-if="newTask.type === ScheduleCreateType.INTERVAL">
       <a-typography-paragraph>
         <a-typography-text>
           {{ t("每隔一定时间将执行一次，具体间隔可以仔细设置") }}
@@ -214,7 +208,7 @@ defineExpose({
       </a-row>
     </a-form-item>
 
-    <div v-if="newTask.type === TYPE.CYCLE">
+    <div v-if="newTask.type === ScheduleCreateType.CYCLE">
       <a-form-item>
         <a-typography-title :level="5">{{ t("触发时间") }}</a-typography-title>
         <a-time-picker
@@ -234,7 +228,7 @@ defineExpose({
       </a-form-item>
     </div>
 
-    <a-form-item v-if="newTask.type === TYPE.SPECIFY">
+    <a-form-item v-if="newTask.type === ScheduleCreateType.SPECIFY">
       <a-typography-title :level="5">{{ t("请选择日期和时间") }}</a-typography-title>
       <a-date-picker v-model:value="newTask.objTime" show-time size="large" class="w-100" />
     </a-form-item>
