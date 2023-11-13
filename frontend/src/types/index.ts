@@ -228,3 +228,11 @@ export interface Schedule {
   payload: string;
   type: number;
 }
+
+export interface NewScheduleTask {
+  name: String;
+  count: String;
+  time: String;
+  action: String;
+  type: String;
+}

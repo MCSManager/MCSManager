@@ -11,6 +11,8 @@ import { useScreen } from "@/hooks/useScreen";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { scheduleList, scheduleDelete } from "@/services/apis/instance";
 import type { LayoutCard, Schedule } from "@/types/index";
+import { ScheduleAction, ScheduleType } from "@/types/const";
+import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -21,6 +23,7 @@ const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const { toPage } = useAppRouters();
 const screen = useScreen();
+const newScheduleDialog = ref<InstanceType<typeof NewSchedule>>();
 
 const { state, execute, isLoading } = scheduleList();
 const getScheduleList = async () => {
@@ -57,20 +60,6 @@ const deleteSchedule = async (name: string) => {
   }
 };
 
-const action = {
-  command: t("发送命令"),
-  stop: t("停止实例"),
-  start: t("开启实例"),
-  restart: t("重启实例"),
-  kill: t("终止实例")
-};
-
-const type = {
-  1: t("间隔时间性任务"),
-  2: t("周期时间性任务"),
-  3: t("指定时间性任务")
-};
-
 const rendTime = (text: string, schedule: Schedule) => {
   switch (schedule.type) {
     case 1: {
@@ -105,7 +94,7 @@ const rendTime = (text: string, schedule: Schedule) => {
       const s = timeArr[0];
       const dd = timeArr[3];
       const mm = timeArr[4];
-      return `${mm} ${t("每隔")} ${dd} ${t("每隔")} ${h}:${m}:${s}`;
+      return `${mm} ${t("月")} ${dd} ${t("日")} ${h}:${m}:${s}`;
     }
     default:
       return "Unknown Time";
@@ -142,7 +131,7 @@ const columns = [
     key: "action",
     minWidth: "180px",
     customRender: (e: { text: "command" | "stop" | "start" | "restart" | "kill" }) => {
-      return action[e.text];
+      return ScheduleAction[e.text];
     }
   },
   {
@@ -152,7 +141,7 @@ const columns = [
     key: "type",
     minWidth: "180px",
     customRender: (e: { text: 1 | 2 | 3 }) => {
-      return type[e.text];
+      return ScheduleType[e.text];
     }
   },
   {
@@ -173,7 +162,17 @@ const columns = [
 
 const refresh = throttle(() => {
   getScheduleList();
-}, 600);
+}, 100);
+
+const toConsole = () => {
+  toPage({
+    path: "/instances/terminal",
+    query: {
+      daemonId,
+      instanceId
+    }
+  });
+};
 
 onMounted(async () => {
   getScheduleList();
@@ -192,13 +191,13 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-10">
+            <a-button class="mr-10" @click="toConsole()">
               {{ t("返回控制台") }}
             </a-button>
             <a-button class="mr-10" @click="refresh">
               {{ t("刷新") }}
             </a-button>
-            <a-button type="primary">
+            <a-button type="primary" @click="newScheduleDialog?.openDialog()">
               {{ t("新增计划任务") }}
             </a-button>
           </template>
@@ -229,6 +228,13 @@ onMounted(async () => {
       </a-col>
     </a-row>
   </div>
+
+  <NewSchedule
+    ref="newScheduleDialog"
+    :daemon-id="daemonId ?? ''"
+    :instance-id="instanceId ?? ''"
+    @get-schedule-list="getScheduleList()"
+  />
 </template>
 
 <style lang="scss" scoped>

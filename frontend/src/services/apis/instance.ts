@@ -1,5 +1,11 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NewInstanceForm, QuickStartTemplate, Schedule } from "@/types";
+import type {
+  InstanceDetail,
+  NewInstanceForm,
+  QuickStartTemplate,
+  Schedule,
+  NewScheduleTask
+} from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 import type { InstanceMoreDetail } from "@/hooks/useInstance";
 
@@ -371,4 +377,19 @@ export const scheduleDelete = useDefineApi<
 >({
   method: "DELETE",
   url: "/api/protected_schedule"
+});
+
+// 创建计划任务
+export const scheduleCreate = useDefineApi<
+  {
+    params: {
+      remote_uuid: string;
+      uuid: string;
+    };
+    data: NewScheduleTask;
+  },
+  boolean
+>({
+  url: "/api/protected_schedule",
+  method: "POST"
 });

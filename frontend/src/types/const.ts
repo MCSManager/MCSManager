@@ -80,3 +80,17 @@ ENV LC_ALL=zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 WORKDIR /workspace
 `;
+
+export const ScheduleAction = {
+  command: t("发送命令"),
+  stop: t("停止实例"),
+  start: t("开启实例"),
+  restart: t("重启实例"),
+  kill: t("终止实例")
+};
+
+export const ScheduleType = {
+  1: t("间隔时间性任务"),
+  2: t("周期时间性任务"),
+  3: t("指定时间性任务")
+};
