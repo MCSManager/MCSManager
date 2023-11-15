@@ -1,10 +1,6 @@
 import path from "path";
 import fs from "fs-extra";
 
-interface IClassz {
-  name: string;
-}
-
 class StorageSubsystem {
   public static readonly DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
   public static readonly INDEX_PATH = path.normalize(path.join(process.cwd(), "data", "index"));
@@ -15,6 +11,26 @@ class StorageSubsystem {
       if (name.includes(ch)) return false;
     }
     return true;
+  }
+
+  public writeFile(name: string, data: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    fs.writeFileSync(targetPath, data, { encoding: "utf-8" });
+  }
+
+  public readFile(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    return fs.readFileSync(targetPath, { encoding: "utf-8" });
+  }
+
+  public deleteFile(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    fs.removeSync(targetPath);
+  }
+
+  public fileExists(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    return fs.existsSync(targetPath);
   }
 
   // Stored in local file based on class definition and identifier

@@ -11,7 +11,6 @@ interface Page<T> {
   data: T[];
 }
 
-// This design can be used to connect to MYSQL, SQLITE and other databases
 // Provide the MAP query interface used by the routing layer
 export class QueryMapWrapper {
   constructor(public map: IMap) {}
