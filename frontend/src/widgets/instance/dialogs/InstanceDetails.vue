@@ -238,7 +238,9 @@ defineExpose({
                   :rows="3"
                   style="min-height: 40px"
                 />
-                <a-button type="default" style="height: auto">命令助手</a-button>
+                <a-button type="default" style="height: auto">
+                  {{ t("TXT_CODE_2728d0d4") }}
+                </a-button>
               </a-input-group>
             </a-form-item>
           </a-col>

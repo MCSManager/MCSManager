@@ -1484,5 +1484,8 @@
   "TXT_CODE_f6e4ace0": "快速编辑",
   "TXT_CODE_feeea328": "通过仿真终端转发程序来获得终端完全交互能力。包括使用 Tab，Ctrl 功能键等。",
   "TXT_CODE_365aabd4": "换行符",
-  "TXT_CODE_20cec54": "回车换行符"
+  "TXT_CODE_20cec54": "回车换行符",
+  "TXT_CODE_b19bf004": "必填，请输入内容",
+  "TXT_CODE_5a09ed37": "中文",
+  "TXT_CODE_e246e5b": "英语"
 }

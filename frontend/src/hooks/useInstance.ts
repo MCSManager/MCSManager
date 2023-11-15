@@ -155,23 +155,17 @@ export function getInstanceConfigByType(type: string) {
   INSTANCE_CONFIGS.forEach((v) => {
     if (v.category.includes(type)) result.push(v);
   });
-  // 返回副本以避免干扰原始数据
+  // Return a copy to avoid interfering with the original data
   return JSON.parse(JSON.stringify(result));
 }
 
 export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   {
-    // 配置文件显示名
     fileName: t("TXT_CODE_9b36d5a2"),
-    // 配置文件对应的实际路径（相对于实例根目录）
     path: "server.properties",
-    // 配置文件用于显示界面的组件名
     redirect: "common/server.properties",
-    // 配置文件解析类型，支持 yml,json,txt,properties
     type: "properties",
-    // 配置文件中文解释
     info: t("TXT_CODE_12e3afa9"),
-    // 在哪些服务端类型下此配置文件可见
     category: [
       TYPE_MINECRAFT_SPIGOT,
       TYPE_MINECRAFT_PAPER,

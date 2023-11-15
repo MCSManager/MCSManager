@@ -70,7 +70,7 @@ onMounted(() => {
   </a-typography>
 
   <a-form-item>
-    <a-textarea v-model:value="options.dockerFile" placeholder="必填，请输入内容" :rows="8" />
+    <a-textarea v-model:value="options.dockerFile" :rows="8" />
   </a-form-item>
 
   <a-form-item>

@@ -1,6 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
-// 设置用户APIKey
 export const setUserApiKey = useDefineApi<
   {
     data: {
@@ -13,7 +12,6 @@ export const setUserApiKey = useDefineApi<
   method: "PUT"
 });
 
-// 更新密码
 export const updatePassword = useDefineApi<
   {
     data: {

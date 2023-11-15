@@ -211,7 +211,7 @@ const appMenus = computed(() => {
     //       value: "en_US"
     //     },
     //     {
-    //       title: "简体中文",
+    //       title: "Chinese",
     //       value: "zh_CN"
     //     }
     //   ]

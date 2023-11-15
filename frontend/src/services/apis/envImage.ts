@@ -1,7 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { ImageInfo, DockerNetworkModes, ContainerInfo } from "@/types";
 
-// 镜像相关
 export const imageList = useDefineApi<
   {
     params: {
@@ -20,7 +19,6 @@ export const imageList = useDefineApi<
   url: "/api/environment/image"
 });
 
-// 获取网络模式
 export const getNetworkModeList = useDefineApi<
   {
     params: {
@@ -33,7 +31,6 @@ export const getNetworkModeList = useDefineApi<
   method: "GET"
 });
 
-// 获取容器列表
 export const containerList = useDefineApi<
   {
     params: {
@@ -47,7 +44,6 @@ export const containerList = useDefineApi<
   method: "GET"
 });
 
-// 查看构建进度
 export const buildProgress = useDefineApi<
   {
     params: {

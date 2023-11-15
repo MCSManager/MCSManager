@@ -38,7 +38,7 @@ export function useCardLayoutComputed(currentLayoutConfig: LayoutCard[]) {
         continue;
       }
       if (currentColNumber + config.width > 12) {
-        // i - 1 一定大于 0，因为前面已经有元素
+        // i - 1 must be greater than 0 because there is already an element in front of it
         const lastID = currentLayoutConfig[i - 1].id;
         newLayoutConfig.push({
           ...DEFAULT_PLACE_HOLDER_CARD,

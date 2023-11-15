@@ -17,7 +17,6 @@ const { getCardPool } = useCardPool();
 const { insertLayoutItem } = useLayoutConfigStore();
 const { containerState } = useLayoutContainerStore();
 
-// 获取当前 router
 const route = useRoute();
 
 const display = computed(() => {

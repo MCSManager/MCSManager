@@ -7,16 +7,12 @@ import type {
   NewScheduleTask
 } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
-import type { InstanceMoreDetail } from "@/hooks/useInstance";
-
-// 此处 API 接口可以用中文写注释，后期再统一翻译成英语。
 
 export interface MissionPassportResponse {
   addr: string;
   password: string;
 }
 
-// 请求建立终端 Socket 连接
 export const setUpTerminalStreamChannel = useDefineApi<
   {
     params: {
@@ -120,7 +116,6 @@ export const updateInstance = useDefineApi<
   method: "POST"
 });
 
-// 更新实例设置（普通用户）
 export const updateInstanceConfig = useDefineApi<
   {
     params: {
@@ -155,7 +150,6 @@ export const updateInstanceConfig = useDefineApi<
   method: "PUT"
 });
 
-// 更新实例设置（管理员）
 export const updateAnyInstanceConfig = useDefineApi<
   {
     params: {
@@ -172,7 +166,6 @@ export const updateAnyInstanceConfig = useDefineApi<
   method: "PUT"
 });
 
-// 获取上传地址
 export const uploadAddress = useDefineApi<
   {
     params: {
@@ -191,7 +184,6 @@ export const uploadAddress = useDefineApi<
   method: "POST"
 });
 
-// 上传实例文件
 export const uploadInstanceFile = useDefineApi<
   {
     params: {
@@ -208,7 +200,6 @@ export const uploadInstanceFile = useDefineApi<
   headers: { "Content-Type": "multipart/form-data" }
 });
 
-// 新建实例
 export const createInstance = useDefineApi<
   {
     params: {
@@ -225,13 +216,11 @@ export const createInstance = useDefineApi<
   url: "/api/instance"
 });
 
-// 获取快速安装列表地址
 export const quickInstallListAddr = useDefineApi<any, QuickStartTemplate[]>({
   url: "/api/instance/quick_install_list",
   method: "GET"
 });
 
-// 创建实例安装异步任务
 export const createAsyncTask = useDefineApi<
   {
     params: {
@@ -257,7 +246,6 @@ export const createAsyncTask = useDefineApi<
   method: "POST"
 });
 
-// 获取安装进度
 export const queryAsyncTask = useDefineApi<
   {
     params: {
@@ -285,7 +273,6 @@ export const queryAsyncTask = useDefineApi<
   method: "POST"
 });
 
-// 获取配置文件列表
 export const getConfigFileList = useDefineApi<
   {
     params: {
@@ -305,7 +292,6 @@ export const getConfigFileList = useDefineApi<
   url: "/api/protected_instance/process_config/list"
 });
 
-// 获取配置文件内容
 export const getConfigFile = useDefineApi<
   {
     params: {
@@ -321,7 +307,6 @@ export const getConfigFile = useDefineApi<
   url: "/api/protected_instance/process_config/file"
 });
 
-// 更新配置文件内容
 export const updateConfigFile = useDefineApi<
   {
     params: {
@@ -338,7 +323,6 @@ export const updateConfigFile = useDefineApi<
   url: "/api/protected_instance/process_config/file"
 });
 
-// 批量开启
 export const batchStart = useDefineApi<
   {
     data: {
@@ -352,7 +336,6 @@ export const batchStart = useDefineApi<
   url: "/api/instance/multi_open"
 });
 
-// 批量停止
 export const batchStop = useDefineApi<
   {
     data: {
@@ -366,7 +349,6 @@ export const batchStop = useDefineApi<
   url: "/api/instance/multi_stop"
 });
 
-// 批量终止
 export const batchKill = useDefineApi<
   {
     data: {
@@ -380,7 +362,6 @@ export const batchKill = useDefineApi<
   url: "/api/instance/multi_kill"
 });
 
-// 批量删除
 export const batchDelete = useDefineApi<
   {
     params: {
@@ -397,7 +378,6 @@ export const batchDelete = useDefineApi<
   url: "/api/instance"
 });
 
-// 获取计划任务
 export const scheduleList = useDefineApi<
   {
     params: {
@@ -411,7 +391,6 @@ export const scheduleList = useDefineApi<
   url: "/api/protected_schedule"
 });
 
-// 删除计划任务
 export const scheduleDelete = useDefineApi<
   {
     params: {
@@ -426,7 +405,6 @@ export const scheduleDelete = useDefineApi<
   url: "/api/protected_schedule"
 });
 
-// 创建计划任务
 export const scheduleCreate = useDefineApi<
   {
     params: {

@@ -24,7 +24,6 @@ import {
   CustomerServiceOutlined
 } from "@ant-design/icons-vue";
 
-// 文件管理显示文件类型
 export const filterFileName = (fileName: string, onlyExtname = false) => {
   const i = fileName.lastIndexOf(".");
   const suffix = fileName.substring(i + 1).toUpperCase();
@@ -37,7 +36,6 @@ export const filterFileName = (fileName: string, onlyExtname = false) => {
     : `${suffix} ${t("TXT_CODE_d4cf1cb8")}`;
 };
 
-// 返回文件扩展名
 export const getFileExtName = (fileName: string) => {
   if (fileName.indexOf(".") === -1) return "";
   const i = fileName.lastIndexOf(".");
@@ -45,7 +43,6 @@ export const getFileExtName = (fileName: string) => {
   return suffix;
 };
 
-// 返回文件图标
 const fileType = new Map([
   ["DOC", FileWordOutlined],
   ["DOCX", FileWordOutlined],

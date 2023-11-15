@@ -102,7 +102,6 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   return false;
 };
 
-// 设置解压缩编码
 const setUnzipCode = async (code: string) => {
   zipCode.value = code;
   finalConfirm();
@@ -127,7 +126,6 @@ const finalConfirm = async () => {
   });
 };
 
-// 通过上传单个程序或者压缩包
 const { state: cfg, execute: getCfg } = uploadAddress();
 const { execute: uploadFile } = uploadInstanceFile();
 const percentComplete = ref(0);
@@ -168,7 +166,6 @@ const selectedFile = async () => {
   }
 };
 
-// 直接新建实例
 const {
   state: newInstanceInfo,
   execute: executeCreateInstance,

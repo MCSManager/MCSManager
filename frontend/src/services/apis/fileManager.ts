@@ -1,6 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
-// 获取文件列表
 export const fileList = useDefineApi<
   {
     params: {
@@ -30,7 +29,6 @@ export const fileList = useDefineApi<
   method: "GET"
 });
 
-// 获取文件状态
 export const getFileStatus = useDefineApi<
   {
     params: {
@@ -50,7 +48,6 @@ export const getFileStatus = useDefineApi<
   method: "GET"
 });
 
-// 新建文件夹
 export const addFolder = useDefineApi<
   {
     data: {
@@ -67,7 +64,6 @@ export const addFolder = useDefineApi<
   method: "POST"
 });
 
-// 新建文件
 export const touchFile = useDefineApi<
   {
     data: {
@@ -84,7 +80,6 @@ export const touchFile = useDefineApi<
   method: "POST"
 });
 
-// 删除文件
 export const deleteFile = useDefineApi<
   {
     params: {
@@ -101,7 +96,6 @@ export const deleteFile = useDefineApi<
   method: "DELETE"
 });
 
-// 复制文件
 export const copyFile = useDefineApi<
   {
     params: {
@@ -118,7 +112,6 @@ export const copyFile = useDefineApi<
   method: "POST"
 });
 
-// 移动文件
 export const moveFile = useDefineApi<
   {
     params: {
@@ -135,7 +128,6 @@ export const moveFile = useDefineApi<
   method: "PUT"
 });
 
-// 解压缩
 export const compressFile = useDefineApi<
   {
     params: {
@@ -155,7 +147,6 @@ export const compressFile = useDefineApi<
   method: "POST"
 });
 
-// 获取文件上传地址
 export const uploadAddress = useDefineApi<
   {
     params: {
@@ -173,7 +164,6 @@ export const uploadAddress = useDefineApi<
   method: "POST"
 });
 
-// 上传文件
 export const uploadFile = useDefineApi<
   {
     data: FormData;
@@ -186,7 +176,6 @@ export const uploadFile = useDefineApi<
   headers: { "Content-Type": "multipart/form-data" }
 });
 
-// 获取文件下载地址
 export const downloadAddress = useDefineApi<
   {
     params: {
@@ -204,7 +193,6 @@ export const downloadAddress = useDefineApi<
   method: "POST"
 });
 
-// 获取文件内容
 export const fileContent = useDefineApi<
   {
     params: {
@@ -222,7 +210,6 @@ export const fileContent = useDefineApi<
   method: "PUT"
 });
 
-// 修改权限
 export const changePermission = useDefineApi<
   {
     params: {

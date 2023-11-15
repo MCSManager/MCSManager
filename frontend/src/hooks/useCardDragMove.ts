@@ -30,7 +30,7 @@ export function useCardDragMove() {
       const checkIndex = getIndexById("", sourceId);
       let newIndex = getIndexById("", targetId);
       if (checkIndex != -1) {
-        // 从布局池中移动
+        // Move from layout pool
         const item = deleteLayoutItem("", sourceId);
         if (!item) return;
         if (!newArea) {
@@ -64,7 +64,7 @@ export function useCardDragMove() {
 
   const dragstart = (e: DragEvent, id: string) => {
     if (!containerState.isDesignMode) return;
-    e?.dataTransfer?.setData("text/plain", JSON.stringify({ id })); // 设置拖动数据
+    e?.dataTransfer?.setData("text/plain", JSON.stringify({ id })); // Set drag data
   };
 
   const drop = (e: DragEvent, myId: string) => {
@@ -86,7 +86,6 @@ export function useCardDragMove() {
     );
     const sourceConfig = JSON.parse(e?.dataTransfer?.getData("text/plain") || "{}");
     const sourceId = sourceConfig?.id;
-    console.log("拖动到新区域", e, sourceId, "--->", followId);
     moveCardItem(sourceId, followId, true);
   };
 

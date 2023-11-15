@@ -64,11 +64,11 @@ const menus = [
 // DO NOT I18N
 const allLanguages = [
   {
-    label: "中文",
+    label: t("TXT_CODE_5a09ed37"),
     value: "zh_cn"
   },
   {
-    label: "English",
+    label: t("TXT_CODE_e246e5b"),
     value: "en_us"
   }
 ];
