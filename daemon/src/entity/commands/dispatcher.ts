@@ -11,7 +11,6 @@ import GeneralKillCommand from "./general/general_kill";
 import GeneralSendCommand from "./general/general_command";
 import GeneralRestartCommand from "./general/general_restart";
 import DockerStartCommand from "./docker/docker_start";
-import DockerResizeCommand from "./docker/docker_resize";
 import TimeCheck from "./task/time";
 import MinecraftBedrockGetPlayersCommand from "../minecraft/mc_getplayer_bedrock";
 import GeneralUpdateCommand from "./general/general_update";

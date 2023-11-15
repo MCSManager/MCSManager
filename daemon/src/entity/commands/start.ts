@@ -37,15 +37,17 @@ export default class StartCommand extends InstanceCommand {
       instance.startCount++;
 
       // expiration time check
-      const endTime = new Date(instance.config.endTime).getTime();
-      if (endTime) {
-        const currentTime = new Date().getTime();
-        if (endTime <= currentTime) {
-          throw new Error($t("TXT_CODE_start.instanceMaturity"));
+      if (instance.config.endTime) {
+        const endTime = instance.config.endTime;
+        if (endTime) {
+          const currentTime = Date.now();
+          if (endTime <= currentTime) {
+            throw new Error($t("TXT_CODE_start.instanceMaturity"));
+          }
         }
       }
 
-      const currentTimestamp = new Date().getTime();
+      const currentTimestamp = Date.now();
       instance.startTimestamp = currentTimestamp;
 
       instance.println("INFO", $t("TXT_CODE_start.startInstance"));

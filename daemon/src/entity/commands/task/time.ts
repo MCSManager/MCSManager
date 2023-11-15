@@ -11,13 +11,15 @@ export default class TimeCheck implements ILifeCycleTask {
 
   async start(instance: Instance) {
     this.task = setInterval(async () => {
-      const endTime = new Date(instance.config.endTime).getTime();
-      if (endTime) {
-        const currentTime = new Date().getTime();
-        if (endTime <= currentTime) {
-          // Expired, execute the end process command
-          await instance.exec(new KillCommand());
-          clearInterval(this.task);
+      if (instance.config.endTime) {
+        const endTime = instance.config.endTime;
+        if (endTime) {
+          const currentTime = Date.now();
+          if (endTime <= currentTime) {
+            // Expired, execute the end process command
+            await instance.exec(new KillCommand());
+            clearInterval(this.task);
+          }
         }
       }
     }, 1000 * 60 * 60);

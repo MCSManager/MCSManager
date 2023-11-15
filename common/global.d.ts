@@ -5,11 +5,11 @@ export interface IGlobalInstanceConfig {
   cwd: string;
   ie: string;
   oe: string;
-  createDatetime: string;
-  lastDatetime: string;
+  createDatetime: number;
+  lastDatetime: number;
   type: string;
   tag: string[];
-  endTime: string;
+  endTime: number;
   fileCode: string;
   processType: string;
   updateCommand: string;

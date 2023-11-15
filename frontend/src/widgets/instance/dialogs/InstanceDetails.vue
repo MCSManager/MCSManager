@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, toRaw, unref } from "vue";
+import { ref, computed, unref } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail, DockerNetworkModes } from "@/types";
@@ -14,9 +14,10 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import dayjs, { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
+import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 
 interface FormDetail extends InstanceDetail {
-  dayjsEndTime: Dayjs;
+  dayjsEndTime?: Dayjs;
 }
 
 const props = defineProps<{
@@ -48,7 +49,7 @@ const initFormDetail = () => {
   if (props.instanceInfo) {
     options.value = {
       ...props.instanceInfo,
-      dayjsEndTime: dayjs(props.instanceInfo?.config?.endTime)
+      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime)
     };
   }
 };
@@ -150,7 +151,7 @@ const submit = async () => {
 const encodeFormData = () => {
   const postData = _.cloneDeep(unref(options));
   if (postData) {
-    postData.config.endTime = postData.dayjsEndTime.format("YYYY/MM/DD");
+    postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
     return postData;
   }
   throw new Error("Ref Options is null");

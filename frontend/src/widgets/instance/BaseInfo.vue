@@ -6,6 +6,7 @@ import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
+import { parseTimestamp } from "../../tools/time";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -70,13 +71,13 @@ onMounted(async () => {
         </span>
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_46f575ae") }}{{ instanceInfo?.config.lastDatetime }}
+        {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_ae747cc0") }}{{ instanceInfo?.config.endTime || "--" }}
+        {{ t("TXT_CODE_ae747cc0") }}{{ parseTimestamp(instanceInfo?.config.endTime) }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_8b8e08a6") }}{{ instanceInfo?.config.createDatetime }}
+        {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}

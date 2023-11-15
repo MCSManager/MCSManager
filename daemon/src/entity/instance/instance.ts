@@ -143,7 +143,7 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "ie", String);
     configureEntityParams(this.config, cfg, "oe", String);
     configureEntityParams(this.config, cfg, "crlf", Number);
-    configureEntityParams(this.config, cfg, "endTime", String);
+    configureEntityParams(this.config, cfg, "endTime", Number);
     configureEntityParams(this.config, cfg, "fileCode", String);
     configureEntityParams(this.config, cfg, "updateCommand", String);
     if (cfg.docker) {
@@ -209,7 +209,7 @@ export default class Instance extends EventEmitter {
   // function that must be executed after the instance starts
   // Trigger the open event and bind the data and exit events, etc.
   started(process: IInstanceProcess) {
-    this.config.lastDatetime = this.fullTime();
+    this.config.lastDatetime = Date.now();
     const outputCode = this.config.terminalOption.pty ? "utf-8" : this.config.oe;
     process.on("data", (text) => this.emit("data", iconv.decode(text, outputCode)));
     process.on("exit", (code) => this.stopped(code));

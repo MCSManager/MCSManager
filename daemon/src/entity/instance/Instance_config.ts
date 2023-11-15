@@ -17,11 +17,11 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public cwd = ".";
   public ie = "utf-8";
   public oe = "utf-8";
-  public createDatetime = new Date().toLocaleDateString();
-  public lastDatetime = "--";
+  public createDatetime = Date.now();
+  public lastDatetime = Date.now();
   public type = Instance.TYPE_UNIVERSAL;
   public tag: string[] = [];
-  public endTime: string = "";
+  public endTime: number = 0;
   public fileCode: string = "utf-8";
   public processType: ProcessType = "general";
   public updateCommand: string = "";
