@@ -152,7 +152,6 @@ export function useTerminal() {
     termFitAddon.value = fitAddon;
 
     term.onData((data) => {
-      console.debug("Termin OnData:", data);
       socket?.emit("stream/stdin", { data });
     });
     term.writeln(

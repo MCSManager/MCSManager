@@ -103,8 +103,8 @@ defineExpose({
               :placeholder="t('TXT_CODE_3bb646e4')"
               :style="'width: ' + (isPhone ? '100%' : '220px')"
             >
-              <a-select-option :value="1"> {{ t("换行符（\\n）") }}</a-select-option>
-              <a-select-option :value="2">{{ t("回车换行符（\\r\\n）") }}</a-select-option>
+              <a-select-option :value="1"> {{ t("换行符") }}</a-select-option>
+              <a-select-option :value="2">{{ t("回车换行符") }}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
