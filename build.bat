@@ -1,3 +1,5 @@
+npm run preview-build
+
 rd /s /q "production-code"
 rd /s /q ".\daemon\dist"
 rd /s /q ".\daemon\production"

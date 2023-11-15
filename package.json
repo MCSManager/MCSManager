@@ -2,7 +2,8 @@
   "name": "mcsmanager-root",
   "version": "1.0.0",
   "scripts": {
-    "i18n": "i18next-scanner --config i18-scanner.config.js"
+    "i18n": "i18next-scanner --config i18-scanner.config.js",
+    "preview-build": "cd common && npm install && npm run build"
   },
   "dependencies": {
     "crc": "^4.3.2",
