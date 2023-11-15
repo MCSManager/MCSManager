@@ -115,9 +115,9 @@ onMounted(async () => {
                 <a-list-item v-if="item.check">
                   <a-list-item-meta>
                     <template #title>
-                      <a-tag v-if="item.conflict" color="warning">{{
-                        t("TXT_CODE_1af148fe")
-                      }}</a-tag>
+                      <a-tag v-if="item.conflict" color="warning">
+                        {{ t("TXT_CODE_1af148fe") }}
+                      </a-tag>
                       {{ item.fileName }}
                     </template>
                     <template #description>

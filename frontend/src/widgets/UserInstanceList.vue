@@ -89,9 +89,9 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button @click="operate(record.serviceUuid, record.uuid)">{{
-              t("TXT_CODE_5974bf24")
-            }}</a-button>
+            <a-button @click="operate(record.serviceUuid, record.uuid)">
+              {{ t("TXT_CODE_5974bf24") }}
+            </a-button>
           </template>
         </template>
       </a-table>

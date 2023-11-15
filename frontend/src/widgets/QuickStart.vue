@@ -3,19 +3,11 @@ import ActionButton from "@/components/ActionButton.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { router } from "@/config/router";
-import {
-  BuildFilled,
-  DropboxOutlined,
-  DropboxSquareFilled,
-  GoldFilled,
-  SwitcherFilled,
-  UserOutlined
-} from "@ant-design/icons-vue";
-import { remoteNodeList } from "@/services/apis";
+import { BuildFilled, DropboxSquareFilled, SwitcherFilled } from "@ant-design/icons-vue";
 import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 

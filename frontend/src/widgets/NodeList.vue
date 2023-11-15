@@ -389,7 +389,7 @@ const editDialog = ref({
           cancel-text="No"
           @confirm="deleteNode()"
         >
-          <a-button danger v-if="editMode" key="delete">{{ t("TXT_CODE_8b937b23") }}</a-button>
+          <a-button v-if="editMode" key="delete" danger>{{ t("TXT_CODE_8b937b23") }}</a-button>
         </a-popconfirm>
         <div class="right">
           <a-button key="back" @click="editDialog.hidden()">{{ t("TXT_CODE_a0451c97") }}</a-button>

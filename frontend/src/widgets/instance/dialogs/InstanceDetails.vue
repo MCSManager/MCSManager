@@ -11,7 +11,7 @@ import { message } from "ant-design-vue";
 import { TERMINAL_CODE } from "@/types/const";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";

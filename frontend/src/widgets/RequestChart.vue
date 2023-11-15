@@ -6,7 +6,7 @@ import { watch } from "vue";
 import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import type { JsonData } from "../types/index";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 

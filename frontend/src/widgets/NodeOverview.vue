@@ -4,11 +4,11 @@ import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { computed } from "vue";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
-const { state, isLoading } = useOverviewInfo();
+const { state } = useOverviewInfo();
 
 const columns = [
   {

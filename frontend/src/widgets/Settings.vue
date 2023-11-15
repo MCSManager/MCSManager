@@ -2,12 +2,11 @@
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
-import { onMounted, ref, h } from "vue";
+import { onMounted, ref } from "vue";
 import { message } from "ant-design-vue";
 import {
   BankOutlined,
   BookOutlined,
-  CodepenOutlined,
   GithubOutlined,
   LockOutlined,
   ProjectOutlined,

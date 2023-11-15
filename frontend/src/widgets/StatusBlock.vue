@@ -2,7 +2,7 @@
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import { t } from "@/lang/i18n";
-import type { JsonData, LayoutCard } from "@/types";
+import type { LayoutCard } from "@/types";
 import { computed } from "vue";
 
 const props = defineProps<{
