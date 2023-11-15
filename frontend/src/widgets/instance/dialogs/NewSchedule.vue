@@ -21,13 +21,13 @@ const openDialog = () => {
 const { isPhone } = useScreen();
 
 const weeks = [
-  { label: t("周一"), value: 1 },
-  { label: t("周二"), value: 2 },
-  { label: t("周三"), value: 3 },
-  { label: t("周四"), value: 4 },
-  { label: t("周五"), value: 5 },
-  { label: t("周六"), value: 6 },
-  { label: t("周日"), value: 7 }
+  { label: t("TXT_CODE_fcbdcb34"), value: 1 },
+  { label: t("TXT_CODE_c73de59d"), value: 2 },
+  { label: t("TXT_CODE_85617390"), value: 3 },
+  { label: t("TXT_CODE_c9b31f8e"), value: 4 },
+  { label: t("TXT_CODE_d4517dcb"), value: 5 },
+  { label: t("TXT_CODE_d248b5c8"), value: 6 },
+  { label: t("TXT_CODE_a621f370"), value: 7 }
 ];
 
 interface NewTask extends NewScheduleTask {
@@ -63,8 +63,8 @@ const createTaskTypeInterval = async () => {
 
 const createTaskTypeCycle = async () => {
   const weekend = newTask.weekend;
-  if (newTask.objTime === "") throw new Error(t("请选择时间"));
-  if (weekend.length === 0) throw new Error(t("请选择星期"));
+  if (newTask.objTime === "") throw new Error(t("TXT_CODE_349edc57"));
+  if (weekend.length === 0) throw new Error(t("TXT_CODE_2fe0cc84"));
   const time = new Date(newTask.objTime);
   const h = time.getHours();
   const m = time.getMinutes();
@@ -74,7 +74,7 @@ const createTaskTypeCycle = async () => {
 };
 
 const createTaskTypeSpecify = async () => {
-  if (newTask.objTime === "") throw new Error(t("请选择时间"));
+  if (newTask.objTime === "") throw new Error(t("TXT_CODE_349edc57"));
   const time = newTask.objTime as unknown as Dayjs;
   const mm = time.month() + 1;
   const dd = time.date();
@@ -99,7 +99,7 @@ const createRequest = async () => {
     if (state.value) {
       emit("getScheduleList");
       notification.success({
-        message: t("创建成功")
+        message: t("TXT_CODE_d28c05df")
       });
       newTask = reactive(_.cloneDeep(newTaskOrigin));
       open.value = false;
@@ -130,29 +130,29 @@ defineExpose({
     v-model:open="open"
     centered
     :mask-closable="false"
-    :title="t('新增计划任务')"
+    :title="t('TXT_CODE_3502273d')"
     :confirm-loading="isLoading"
     :destroy-on-close="true"
-    :ok-text="t('保存')"
+    :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
   >
     <a-form-item>
-      <a-typography-title :level="5">{{ t("计划任务名字") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_b290a4b0") }}</a-typography-title>
       <a-typography-paragraph>
         <a-typography-text type="secondary">
-          {{ t("必填，且必须唯一") }}
+          {{ t("TXT_CODE_b72d638d") }}
         </a-typography-text>
       </a-typography-paragraph>
       <a-input v-model:value="newTask.name" />
     </a-form-item>
 
     <a-form-item>
-      <a-typography-title :level="5">{{ t("任务动作 / 类型") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_fcd641db") }}</a-typography-title>
       <a-row :gutter="20">
         <a-col :xs="24" :md="12" :offset="0" :class="{ 'mb-10': isPhone }">
           <a-select
             v-model:value="newTask.action"
-            :placeholder="t('请选择')"
+            :placeholder="t('TXT_CODE_3bb646e4')"
             :dropdown-match-select-width="false"
           >
             <a-select-option v-for="(action, i) in ScheduleAction" :key="i" :value="i">
@@ -163,7 +163,7 @@ defineExpose({
         <a-col :xs="24" :md="12" :offset="0">
           <a-select
             v-model:value="newTask.type"
-            :placeholder="t('请选择')"
+            :placeholder="t('TXT_CODE_3bb646e4')"
             :dropdown-match-select-width="false"
           >
             <a-select-option v-for="(type, i) in ScheduleType" :key="i" :value="i">
@@ -177,44 +177,44 @@ defineExpose({
     <a-form-item v-if="newTask.type === ScheduleCreateType.INTERVAL">
       <a-typography-paragraph>
         <a-typography-text>
-          {{ t("每隔一定时间将执行一次，具体间隔可以仔细设置") }}
+          {{ t("TXT_CODE_f17889f4") }}
         </a-typography-text>
       </a-typography-paragraph>
       <a-row :gutter="20">
         <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
           <a-input
             v-model:value="newTask.cycle[2]"
-            :placeholder="t('不可为空，请写 0 代表每隔 0 时')"
-            :addon-after="t('时')"
+            :placeholder="t('TXT_CODE_ba8ebc7')"
+            :addon-after="t('TXT_CODE_4e2c7f64')"
           />
         </a-col>
         <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
           <a-input
             v-model:value="newTask.cycle[1]"
-            :placeholder="t('不可为空，请写 0 代表每隔 0 时')"
-            :addon-after="t('分')"
+            :placeholder="t('TXT_CODE_ba8ebc7')"
+            :addon-after="t('TXT_CODE_a7e9ff0f')"
           />
         </a-col>
         <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
           <a-input
             v-model:value="newTask.cycle[0]"
-            :placeholder="t('不可为空，请写 0 代表每隔 0 时')"
-            :addon-after="t('秒')"
+            :placeholder="t('TXT_CODE_ba8ebc7')"
+            :addon-after="t('TXT_CODE_acabc771')"
           />
         </a-col>
         <a-col :xs="24" :md="6" :offset="0">
-          <a-input v-model:value="newTask.count" :placeholder="t('执行次数，留空无限')" />
+          <a-input v-model:value="newTask.count" :placeholder="t('TXT_CODE_9156fbc')" />
         </a-col>
       </a-row>
     </a-form-item>
 
     <div v-if="newTask.type === ScheduleCreateType.CYCLE">
       <a-form-item>
-        <a-typography-title :level="5">{{ t("触发时间") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_3554dac0") }}</a-typography-title>
         <a-time-picker
           v-model:value="newTask.objTime"
           size="large"
-          :placeholder="$t('具体时间点')"
+          :placeholder="$t('TXT_CODE_38591f72')"
           class="w-100"
         />
       </a-form-item>
@@ -223,21 +223,21 @@ defineExpose({
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("执行次数") }}</a-typography-title>
-        <a-input v-model:value="newTask.count" :placeholder="t('留空无限')" />
+        <a-typography-title :level="5">{{ t("TXT_CODE_d9cfab1b") }}</a-typography-title>
+        <a-input v-model:value="newTask.count" :placeholder="t('TXT_CODE_a59981f4')" />
       </a-form-item>
     </div>
 
     <a-form-item v-if="newTask.type === ScheduleCreateType.SPECIFY">
-      <a-typography-title :level="5">{{ t("请选择日期和时间") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_f3fe5c8e") }}</a-typography-title>
       <a-date-picker v-model:value="newTask.objTime" show-time size="large" class="w-100" />
     </a-form-item>
 
     <a-form-item>
-      <a-typography-title :level="5">{{ t("任务有效负载") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_61811ac") }}</a-typography-title>
       <a-typography-paragraph>
         <a-typography-text type="secondary">
-          {{ t("比如命令，文件名或其他参数等") }}
+          {{ t("TXT_CODE_81297804") }}
         </a-typography-text>
       </a-typography-paragraph>
       <a-input v-model:value="newTask.payload" />

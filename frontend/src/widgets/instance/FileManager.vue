@@ -2,7 +2,7 @@
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed, onMounted, watch } from "vue";
-import { t } from "@/lang/i18n";
+import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import { DownOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons-vue";
@@ -60,24 +60,24 @@ const columns = computed(() => {
   return arrayFilter([
     {
       align: "left",
-      title: t("文件名"),
+      title: t("TXT_CODE_94c193de"),
       dataIndex: "name",
       key: "name",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: t("类型"),
+      title: t("TXT_CODE_67d68dd1"),
       dataIndex: "type",
       key: "type",
       customRender: (e: { text: number; record: { name: string } }) => {
-        return e.text == 1 ? filterFileName(e.record.name) : t("文件夹");
+        return e.text == 1 ? filterFileName(e.record.name) : t("TXT_CODE_e5f949c");
       },
       minWidth: "200px"
     },
     {
       align: "center",
-      title: t("大小"),
+      title: t("TXT_CODE_94bb113a"),
       dataIndex: "size",
       key: "size",
       customRender: (e: { text: number }) =>
@@ -87,7 +87,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("修改时间"),
+      title: t("TXT_CODE_d3b29478"),
       dataIndex: "time",
       key: "time",
       customRender: (e: { text: string }) => {
@@ -98,7 +98,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("权限"),
+      title: t("TXT_CODE_511aea70"),
       dataIndex: "mode",
       key: "mode",
       minWidth: "200px",
@@ -106,7 +106,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("操作"),
+      title: t("TXT_CODE_fe731dfc"),
       dataIndex: "action",
       key: "action",
       minWidth: "200px"
@@ -163,7 +163,7 @@ onMounted(() => {
                 <upload-outlined v-if="percentComplete === 0" />
                 {{
                   percentComplete > 0
-                    ? t("正在上传：") + percentComplete + "%"
+                    ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
                     : t("TXT_CODE_e00c858c")
                 }}
               </a-button>
@@ -178,7 +178,7 @@ onMounted(() => {
               {{ t("TXT_CODE_f0260e51") }}
             </a-button>
             <a-button v-else class="mr-8" type="default" @click="reloadList()">
-              {{ t("刷新列表") }}
+              {{ t("TXT_CODE_a53573af") }}
             </a-button>
 
             <a-dropdown>
@@ -192,7 +192,7 @@ onMounted(() => {
                     :show-upload-list="false"
                   >
                     <a-menu-item key="1" :disabled="percentComplete > 0">
-                      {{ percentComplete > 0 ? t("上传中...") : t("TXT_CODE_e00c858c") }}
+                      {{ percentComplete > 0 ? t("TXT_CODE_72608c07") : t("TXT_CODE_e00c858c") }}
                     </a-menu-item>
                     <template #itemRender=""></template>
                   </a-upload>
@@ -208,7 +208,7 @@ onMounted(() => {
                     {{ t("TXT_CODE_13ae6a93") }}
                   </a-menu-item>
                   <a-menu-item key="6" @click="setClipBoard('move')">
-                    {{ t("剪切") }}
+                    {{ t("TXT_CODE_46c4169b") }}
                   </a-menu-item>
                   <a-menu-item key="7" @click="deleteFile()">
                     {{ t("TXT_CODE_ecbd7449") }}
@@ -259,9 +259,7 @@ onMounted(() => {
               style="color: #1677ff"
             >
               <a-spin />
-              {{
-                t("当前有 ") + fileStatus?.instanceFileTask + t(" 个压缩 / 解压任务正在运行中...")
-              }}
+              {{ t("TXT_CODE_dd06dea2") + fileStatus?.instanceFileTask + t("TXT_CODE_3e959ce7") }}
             </p>
             <a-spin :spinning="spinning">
               <a-table
@@ -328,7 +326,7 @@ onMounted(() => {
                             {{ t("TXT_CODE_13ae6a93") }}
                           </a-menu-item>
                           <a-menu-item key="4" @click="setClipBoard('move', record.name)">
-                            {{ t("剪切") }}
+                            {{ t("TXT_CODE_46c4169b") }}
                           </a-menu-item>
                           <a-menu-item key="5" @click="resetName(record.name)">
                             {{ t("TXT_CODE_c83551f5") }}
@@ -340,7 +338,7 @@ onMounted(() => {
                             {{ t("TXT_CODE_a64f3007") }}
                           </a-menu-item>
                           <a-menu-item key="8" @click="downloadFile(record.name)">
-                            {{ t("下载") }}
+                            {{ t("TXT_CODE_65b21404") }}
                           </a-menu-item>
                         </a-menu>
                       </template>
@@ -373,20 +371,20 @@ onMounted(() => {
       v-if="dialog.mode == ''"
       :ref="dialog.ref"
       v-model:value="dialog.value"
-      :placeholder="t('请输入内容')"
+      :placeholder="t('TXT_CODE_4ea93630')"
     />
 
     <a-space v-if="dialog.mode == 'unzip'" direction="vertical" class="w-100">
-      <a-typography-title :level="5">{{ t("请选择解压模式") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_a6453188") }}</a-typography-title>
       <a-radio-group v-model:value="dialog.unzipmode">
-        <a-radio-button value="0">{{ t("解压到当前目录") }}</a-radio-button>
-        <a-radio-button value="1">{{ t("解压到新文件夹") }}</a-radio-button>
+        <a-radio-button value="0">{{ t("TXT_CODE_7907c99") }}</a-radio-button>
+        <a-radio-button value="1">{{ t("TXT_CODE_329fb904") }}</a-radio-button>
       </a-radio-group>
 
       <a-input
         v-if="dialog.unzipmode == '1'"
         v-model:value="dialog.value"
-        :placeholder="t('请输入文件夹名')"
+        :placeholder="t('TXT_CODE_377e5535')"
       />
     </a-space>
 
@@ -394,7 +392,7 @@ onMounted(() => {
       <a-input
         :ref="dialog.ref"
         v-model:value="dialog.value"
-        :placeholder="t('请输入压缩后的文件名')"
+        :placeholder="t('TXT_CODE_366bad15')"
         addon-after=". zip"
       />
     </a-space>
@@ -404,13 +402,13 @@ onMounted(() => {
       direction="vertical"
       class="w-100 mt-16"
     >
-      <a-typography-title :level="5">{{ t("请选择压缩文件的格式") }}</a-typography-title>
-      <a-typography-text type="secondary">
-        {{ t("在解压/压缩文件时发现文件名存在乱码现象时，可以修改此选项解决。") }}
+      <a-typography-title :level="5">{{ t("TXT_CODE_2841f4a") }}</a-typography-title>
+      <a-typography-text v-if="getCurrentLang() == 'zh_cn'" type="secondary">
+        {{ t("TXT_CODE_b278707d") }}
         <br />
-        {{ t("如果压缩包来源是中国大陆，一般可选 GBK;") }}
+        {{ t("TXT_CODE_48044fc2") }}
         <br />
-        {{ t("如果是来自台湾，香港地区，可以选择BIG5，如果来自其他地区可以选择 UTF-8。") }}
+        {{ t("TXT_CODE_76a82338") }}
       </a-typography-text>
       <a-radio-group v-model:value="dialog.code">
         <a-radio-button value="utf-8">utf-8</a-radio-button>
@@ -430,20 +428,20 @@ onMounted(() => {
             <a-row class="direction-column son">
               <h3 class="m-0">{{ item.key }}</h3>
               <a-col class="m-5 options">
-                <a-checkbox value="4">{{ t("读取") }}</a-checkbox>
+                <a-checkbox value="4">{{ t("TXT_CODE_798f592e") }}</a-checkbox>
               </a-col>
               <a-col class="m-5 options">
-                <a-checkbox value="2">{{ t("写入") }}</a-checkbox>
+                <a-checkbox value="2">{{ t("TXT_CODE_46c4e9ac") }}</a-checkbox>
               </a-col>
               <a-col class="m-5 options">
-                <a-checkbox value="1">{{ t("执行") }}</a-checkbox>
+                <a-checkbox value="1">{{ t("TXT_CODE_e97669d8") }}</a-checkbox>
               </a-col>
             </a-row>
           </a-checkbox-group>
         </div>
 
         <a-checkbox v-model:checked="permission.deep" class="mt-15">
-          {{ t("应用到子目录") }}
+          {{ t("TXT_CODE_74fd665e") }}
         </a-checkbox>
       </a-spin>
     </a-space>

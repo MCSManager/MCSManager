@@ -46,7 +46,7 @@ const render = async () => {
         files: files
       }
     });
-    if (!realFiles.value) return message.error(t("获取配置文件列表失败"));
+    if (!realFiles.value) return message.error(t("TXT_CODE_83e553fc"));
     realFiles.value.forEach((v) => {
       configFiles.forEach((z) => {
         if (z.path === v.file) {
@@ -93,10 +93,10 @@ onMounted(async () => {
           </template>
           <template #right>
             <a-button class="mr-8" :loading="isLoading" @click="render">
-              {{ t("刷新") }}
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button @click="toConsole">
-              {{ t("回到控制台") }}
+              {{ t("TXT_CODE_95b9833f") }}
             </a-button>
           </template>
         </BetweenMenus>
@@ -115,24 +115,22 @@ onMounted(async () => {
                 <a-list-item v-if="item.check">
                   <a-list-item-meta>
                     <template #title>
-                      <a-tag v-if="item.conflict" color="warning">{{ t("存在同名文件") }}</a-tag>
+                      <a-tag v-if="item.conflict" color="warning">{{
+                        t("TXT_CODE_1af148fe")
+                      }}</a-tag>
                       {{ item.fileName }}
                     </template>
                     <template #description>
                       {{ item.info }}
                       <br />
                       <a-typography-text v-if="item.conflict" type="danger">
-                        {{
-                          t(
-                            "面板无法得知此配置文件是否兼容，请您自行根据类型进入相应配置文件界面。"
-                          )
-                        }}
+                        {{ t("TXT_CODE_91b3fa98") }}
                       </a-typography-text>
                     </template>
                   </a-list-item-meta>
                   <template #actions>
                     <a-button size="" @click="toEdit(item.redirect, item.path, item.type)">
-                      {{ t("编辑") }}
+                      {{ t("TXT_CODE_ad207008") }}
                     </a-button>
                   </template>
                 </a-list-item>
@@ -140,13 +138,9 @@ onMounted(async () => {
             </a-list>
             <a-empty v-else>
               <template #description>
-                {{ t("暂无任何配置文件") }}
+                {{ t("TXT_CODE_432cfb62") }}
               </template>
-              {{
-                t(
-                  "经过特定实例类型(minecraft/java)并配合文件扫描未检测出有任何符合条件的配置文件，请进行进程配置初始化或更改实例类型来进行调整"
-                )
-              }}
+              {{ t("TXT_CODE_70a2613b") }}
             </a-empty>
           </template>
         </CardPanel>

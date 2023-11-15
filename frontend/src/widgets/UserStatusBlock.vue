@@ -31,22 +31,22 @@ const computedStatusList = computed(() => {
   return [
     {
       type: "instance_all",
-      title: t("管理员所分配给您的所有实例总数"),
+      title: t("TXT_CODE_53745cc0"),
       value: state.value.instances.length
     },
     {
       type: "instance_running",
-      title: t("实例正在运行中的数量"),
+      title: t("TXT_CODE_7638590c"),
       value: state.value.instances.filter((e) => e.status == 3).length
     },
     {
       type: "instance_stop",
-      title: t("实例未处于运行中的数量"),
+      title: t("TXT_CODE_9bc7f49e"),
       value: state.value.instances.filter((e) => e.status == 0).length
     },
     {
       type: "instance_error",
-      title: t("暂时不可使用的实例数"),
+      title: t("TXT_CODE_ecf17071"),
       value: state.value.instances.filter((e) => e.status == -1 || e.status == 1 || e.status == 2)
         .length
     }

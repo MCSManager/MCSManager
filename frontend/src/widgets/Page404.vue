@@ -7,7 +7,7 @@ import { ExclamationCircleTwoTone } from "@ant-design/icons-vue";
   <div style="height: 100%">
     <ExclamationCircleTwoTone style="font-size: 70px" />
     <a-typography-title class="mt-24" :level="3">
-      {{ t("当前地址不存在网页") }}
+      {{ t("TXT_CODE_fd63a181") }}
     </a-typography-title>
   </div>
 </template>

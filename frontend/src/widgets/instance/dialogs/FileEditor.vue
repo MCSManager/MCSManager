@@ -58,7 +58,7 @@ const submit = async () => {
         text: editorText.value
       }
     });
-    message.success(t("保存成功"));
+    message.success(t("TXT_CODE_a7907771"));
     open.value = openEditor.value = false;
   } catch (err: any) {
     console.error(err.message);
@@ -71,7 +71,7 @@ const cancel = () => {
 };
 
 const dialogTitle = computed(() => {
-  return `${t("编辑文件")} ${fileName.value}`;
+  return `${t("TXT_CODE_b0dc1f17")} ${fileName.value}`;
 });
 
 defineExpose({
@@ -83,8 +83,8 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :cancel-text="t('放弃')"
-    :ok-text="t('保存')"
+    :cancel-text="t('TXT_CODE_3b1cc020')"
+    :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
     :title="dialogTitle"
     width="1000px"

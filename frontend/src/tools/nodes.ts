@@ -1,6 +1,6 @@
 import { t } from "@/lang/i18n";
 
 export function computeNodeName(ip: string, available: boolean, remark?: string) {
-  const online = available ? "" : t("(离线)");
+  const online = available ? "" : t("TXT_CODE_836addb9");
   return remark ? `${remark} - ${ip} ${online}` : `${ip} ${online}`;
 }

@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { t } from "@/lang/i18n";
+import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref, h } from "vue";
 import { message } from "ant-design-vue";
-import { LockOutlined, ProjectOutlined, QuestionCircleOutlined } from "@ant-design/icons-vue";
+import {
+  BankOutlined,
+  BookOutlined,
+  CodepenOutlined,
+  GithubOutlined,
+  LockOutlined,
+  ProjectOutlined,
+  QuestionCircleOutlined
+} from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
 import Loading from "@/components/Loading.vue";
+import { computed } from "vue";
 
 defineProps<{
   card: LayoutCard;
@@ -20,18 +29,17 @@ const formData = ref<Settings>();
 
 const submit = async () => {
   if (formData.value) {
-    const res = await submitExecute({
-      data: {
-        ...formData.value
-      }
-    });
-    if (res.value == "OK") {
-      return message.success(t("TXT_CODE_a7907771"));
+    try {
+      await submitExecute({
+        data: {
+          ...formData.value
+        }
+      });
+      message.success(t("TXT_CODE_a7907771"));
+      setTimeout(() => window.location.reload(), 600);
+    } catch (error: any) {
+      message.error(error);
     }
-    message.error(res.value);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
   }
 };
 
@@ -53,6 +61,7 @@ const menus = [
   }
 ];
 
+// DO NOT I18N
 const allLanguages = [
   {
     label: "中文",
@@ -74,6 +83,33 @@ const allYesNo = [
     value: false
   }
 ];
+
+const aboutLinks = [
+  {
+    title: "GitHub",
+    icon: GithubOutlined,
+    url: "https://github.com/MCSManager/MCSManager"
+  },
+  {
+    title: t("TXT_CODE_41dd4d19"),
+    icon: BankOutlined,
+    url: "https://mcsmanager.com/"
+  },
+  {
+    title: t("TXT_CODE_74c3d3e5"),
+    icon: BookOutlined,
+    url: "https://docs.mcsmanager.com/"
+  },
+  {
+    title: t("TXT_CODE_26407d1f"),
+    icon: BookOutlined,
+    url: "https://github.com/MCSManager/MCSManager/issues"
+  }
+];
+
+const isZhCN = computed(() => {
+  return getCurrentLang().toLowerCase() === "zh_cn";
+});
 
 onMounted(async () => {
   const res = await execute();
@@ -164,7 +200,7 @@ onMounted(async () => {
 
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      {{ t("保存") }}
+                      {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -253,7 +289,7 @@ onMounted(async () => {
                   </a-form-item>
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
-                      {{ t("保存") }}
+                      {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
@@ -266,30 +302,29 @@ onMounted(async () => {
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>
-              <div style="text-align: left">
-                <a-form-item>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_f403308") }}
-                  </a-typography-title>
-                  <a-typography-paragraph>
-                    <a-typography-text type="secondary">
-                      {{ t("TXT_CODE_ede0f8d0") }}
-                    </a-typography-text>
-                  </a-typography-paragraph>
-                </a-form-item>
-
-                <a-form-item>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_81e4c509") }}
-                  </a-typography-title>
-                  <a-typography-paragraph>
-                    <a-typography-text type="secondary">
-                      {{ t("TXT_CODE_c266d3f7") }}
-                      <a href="https://mcsmanager.com/" target="_blank">MCSManager.com</a>&nbsp;.
-                    </a-typography-text>
-                  </a-typography-paragraph>
-                </a-form-item>
+              <div class="pb-4 flex">
+                <div v-for="item in aboutLinks" :key="item.url" class="mr-12 mb-12">
+                  <a :href="item.url" target="_blank">
+                    <a-button>
+                      <component :is="item.icon" />
+                      {{ item.title }}
+                    </a-button>
+                  </a>
+                </div>
               </div>
+              <a-typography-paragraph>
+                <p>
+                  {{ $t("TXT_CODE_d0c670df") }}
+                </p>
+                <p v-if="isZhCN">
+                  <span>
+                    {{ $t("TXT_CODE_d2c79249") }}
+                    <a href="https://github.com/MCSManager/MCSManager" target="_blank">
+                      {{ t("TXT_CODE_e4794d20") }}
+                    </a>
+                  </span>
+                </p>
+              </a-typography-paragraph>
             </div>
           </template>
         </LeftMenusPanel>

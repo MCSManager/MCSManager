@@ -19,8 +19,10 @@ const urlSrc = ref(getMetaValue("url", ""));
 const { openInputDialog } = useAppToolsStore();
 
 const editImgSrc = async () => {
-  urlSrc.value = (await openInputDialog(t("TXT_CODE_45364559"))) as string;
-  setMetaValue("url", urlSrc.value);
+  try {
+    urlSrc.value = (await openInputDialog(t("TXT_CODE_45364559"))) as string;
+    setMetaValue("url", urlSrc.value);
+  } catch (error) {}
 };
 
 const myIframe = ref<HTMLIFrameElement | null>(null);
@@ -28,11 +30,15 @@ const myIframeLoading = ref(false);
 
 onMounted(() => {
   watch([urlSrc, myIframe], () => {
-    myIframeLoading.value = true;
-    if (myIframe.value) {
-      myIframe.value.onload = () => {
-        myIframeLoading.value = false;
-      };
+    try {
+      myIframeLoading.value = true;
+      if (myIframe.value) {
+        myIframe.value.onload = () => {
+          myIframeLoading.value = false;
+        };
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 });

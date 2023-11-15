@@ -48,31 +48,31 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :title="t('事件触发型任务')"
+    :title="t('TXT_CODE_10150756')"
     :confirm-loading="isLoading"
-    :ok-text="t('保存')"
+    :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
   >
     <a-form v-if="options" layout="vertical">
       <a-form-item>
-        <a-typography-title :level="5">{{ t("自动重启") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_a64da7c4") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("若实例状态在未经面板操作的情况下变为非运行状态将立刻发起启动实例操作。") }}
+            {{ t("TXT_CODE_619faab6") }}
             <br />
-            {{ t("可用于崩溃后自动重启功能。") }}
+            {{ t("TXT_CODE_3eb58633") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-switch v-model:checked="options.config.eventTask.autoRestart" />
       </a-form-item>
 
       <a-form-item>
-        <a-typography-title :level="5">{{ t("自动启动") }}</a-typography-title>
+        <a-typography-title :level="5">{{ t("TXT_CODE_273d24e0") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("只要远程节点（远程节点）运行，就自动发起一次启动实例操作。") }}
+            {{ t("TXT_CODE_8d9f5a4e") }}
             <br />
-            {{ t("如果将远程节点开机自启则可用于开机自启实例。") }}
+            {{ t("TXT_CODE_64bf4386") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-switch v-model:checked="options.config.eventTask.autoStart" />

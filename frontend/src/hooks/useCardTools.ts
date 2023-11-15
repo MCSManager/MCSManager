@@ -22,9 +22,7 @@ export function useLayoutCardTools(card: LayoutCard) {
     }
 
     if (require)
-      throw new Error(
-        [t("卡片所需参数"), `"${key}"`, t("不存在于 URL 地址或初始化设定中。")].join(" ")
-      );
+      throw new Error([t("TXT_CODE_93a70cda"), `"${key}"`, t("TXT_CODE_2222777e")].join(" "));
     return undefined;
   };
 

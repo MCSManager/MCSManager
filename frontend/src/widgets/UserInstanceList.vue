@@ -16,12 +16,12 @@ const { execute, state } = userInfoApi();
 
 const columns = [
   {
-    title: t("实例名称"),
+    title: t("TXT_CODE_f70badb9"),
     dataIndex: "nickname",
     key: "nickname"
   },
   {
-    title: t("运行状态"),
+    title: t("TXT_CODE_5476e012"),
     dataIndex: "status",
     key: "status",
     customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
@@ -29,27 +29,27 @@ const columns = [
     }
   },
   {
-    title: t("字节流编码"),
+    title: t("TXT_CODE_662ad338"),
     dataIndex: "ie",
     customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
       return `${e.text}/${e.record?.oe}`;
     }
   },
   {
-    title: t("最后启动"),
+    title: t("TXT_CODE_5ab2062d"),
     dataIndex: "lastDatetime",
     key: "lastDatetime"
   },
   {
-    title: t("到期时间"),
+    title: t("TXT_CODE_fa920c0"),
     dataIndex: "endTime",
     key: "endTime",
     customRender: (e: { text: string }) => {
-      return e.text || t("无期限");
+      return e.text || t("TXT_CODE_abc080d");
     }
   },
   {
-    title: t("操作"),
+    title: t("TXT_CODE_fe731dfc"),
     key: "operate"
   }
 ];
@@ -89,7 +89,9 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button @click="operate(record.serviceUuid, record.uuid)">{{ t("管理") }}</a-button>
+            <a-button @click="operate(record.serviceUuid, record.uuid)">{{
+              t("TXT_CODE_5974bf24")
+            }}</a-button>
           </template>
         </template>
       </a-table>

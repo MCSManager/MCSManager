@@ -57,7 +57,7 @@ const saveData = async () => {
         uuid: <string>userUuid
       }
     });
-    return message.success(t("更新成功"));
+    return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
     console.error(err);
     return message.error(err.message);
@@ -92,21 +92,21 @@ const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
-      title: t("所属节点"),
+      title: t("TXT_CODE_b26a0528"),
       dataIndex: "serviceUuid",
       key: "daemon",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: t("实例名称"),
+      title: t("TXT_CODE_f70badb9"),
       dataIndex: "nickname",
       key: "name",
       minWidth: "200px"
     },
     {
       align: "center",
-      title: t("到期时间"),
+      title: t("TXT_CODE_fa920c0"),
       dataIndex: "lastDatetime",
       key: "limitTime",
       minWidth: "200px",
@@ -114,7 +114,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("实例状态"),
+      title: t("TXT_CODE_3d602459"),
       dataIndex: "status",
       key: "status",
       minWidth: "200px",
@@ -125,7 +125,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("操作"),
+      title: t("TXT_CODE_fe731dfc"),
       key: "operation",
       minWidth: "200px",
       scopedSlots: { customRender: "operation" }
@@ -146,10 +146,10 @@ const columns = computed(() => {
           </template>
           <template #right>
             <a-button v-show="!screen.isPhone.value" class="mr-8" @click="refreshChart()">
-              {{ t("刷新") }}
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button class="mr-8" type="primary" ghost @click="saveData()">
-              {{ t("保存数据") }}
+              {{ t("TXT_CODE_830ba3d8") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
               {{ t("TXT_CODE_a60466a1") }}

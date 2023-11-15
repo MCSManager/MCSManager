@@ -25,7 +25,7 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, execut
 
 const getInstanceName = computed(() => {
   if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
-    return t("节点终端");
+    return t("TXT_CODE_5bdaf23d");
   } else {
     return instanceInfo.value?.config.nickname;
   }
@@ -79,7 +79,7 @@ onMounted(async () => {
         {{ t("TXT_CODE_8b8e08a6") }}{{ instanceInfo?.config.createDatetime }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("启动次数：") }}{{ instanceInfo?.started }}
+        {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
       </a-typography-paragraph>
       <a-typography-paragraph>
         <span>{{ t("TXT_CODE_cec321b4") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>

@@ -74,14 +74,13 @@ if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
 }
 
 const rules: Record<string, Rule[]> = {
-  nickname: [{ required: true, message: t("请输入实例名称") }],
+  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   startCommand: [
     {
       required: true,
       validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("请输入启动命令"));
-        if (value.includes("\n"))
-          throw new Error(t("启动命令中不可包含换行，这并非脚本文件，不可执行多条命令"));
+        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
+        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
       },
       trigger: "change"
     }
@@ -94,8 +93,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uFile.value = file;
 
   if (isImportMode) {
-    if (file.type !== "application/x-zip-compressed")
-      return message.error(t("只能上传zip压缩文件"));
+    if (file.type !== "application/x-zip-compressed") return message.error(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
   } else {
     finalConfirm();
@@ -110,29 +108,26 @@ const setUnzipCode = async (code: string) => {
   finalConfirm();
 };
 
-// 最终确认
 const finalConfirm = async () => {
   const thisModal = Modal.confirm({
     title: t("最终确认"),
     icon: createVNode(InfoCircleOutlined),
-    content: needUpload
-      ? t("上传文件时将同时创建实例，此操作不可逆，是否继续？")
-      : t("实例将创建，是否继续？"),
-    okText: t("确定"),
+    content: needUpload ? t("TXT_CODE_e06841b5") : t("TXT_CODE_5deeefb5"),
+    okText: t("TXT_CODE_d507abff"),
     async onOk() {
       thisModal.destroy();
       try {
         await formRef.value?.validateFields();
         needUpload ? await selectedFile() : await createInstance();
       } catch {
-        return message.error(t("请先完善基本参数再进行上传文件操作"));
+        return message.error(t("TXT_CODE_47e21c80"));
       }
     },
     onCancel() {}
   });
 };
 
-// 通过上传单个程序或者压缩包创建实例
+// 通过上传单个程序或者压缩包
 const { state: cfg, execute: getCfg } = uploadAddress();
 const { execute: uploadFile } = uploadInstanceFile();
 const percentComplete = ref(0);
@@ -149,7 +144,7 @@ const selectedFile = async () => {
       },
       data: formData
     });
-    if (!cfg.value) throw new Error(t("获取上传地址失败"));
+    if (!cfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
     const uploadFormData = new FormData();
     uploadFormData.append("file", uFile.value as any);
@@ -166,7 +161,7 @@ const selectedFile = async () => {
       }
     });
     emit("nextStep", cfg.value.instanceUuid);
-    return message.success(t("创建成功"));
+    return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
     console.error(err);
     return message.error(err.message);
@@ -189,7 +184,7 @@ const createInstance = async () => {
       data: formData
     });
     if (newInstanceInfo.value) emit("nextStep", newInstanceInfo.value.instanceUuid);
-    return message.success(t("创建成功"));
+    return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
     return message.error(err.message);
   }
@@ -201,11 +196,11 @@ const createInstance = async () => {
     <a-form ref="formRef" :rules="rules" :model="formData" layout="vertical" autocomplete="off">
       <a-form-item name="nickname">
         <a-typography-title :level="5" class="require-field">
-          {{ t("实例名称") }}
+          {{ t("TXT_CODE_f70badb9") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("支持中文，尽可能保证唯一性") }}
+            {{ t("TXT_CODE_818928ba") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.nickname" />
@@ -213,14 +208,14 @@ const createInstance = async () => {
 
       <a-form-item name="startCommand">
         <a-typography-title :level="5" class="require-field">
-          {{ t("启动命令") }}
+          {{ t("TXT_CODE_d12fa808") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{
               createMethod === QUICKSTART_METHOD.IMPORT
-                ? t("因为无法识别压缩包中的服务端文件名，请您自行填写启动命令")
-                : t("请您自行填写启动命令")
+                ? t("TXT_CODE_17544b7b")
+                : t("TXT_CODE_8c0db3f4")
             }}
           </a-typography-text>
         </a-typography-paragraph>
@@ -228,25 +223,25 @@ const createInstance = async () => {
           <a-textarea
             v-model:value="formData.startCommand"
             :rows="3"
-            :placeholder="t('如 java -jar server.jar，cmd.exe 等等')"
+            :placeholder="t('TXT_CODE_619d74d3')"
             style="min-height: 40px"
           />
           <a-button
             type="default"
             style="height: auto; border-top-left-radius: 0; border-bottom-left-radius: 0"
           >
-            {{ t("命令助手") }}
+            {{ t("TXT_CODE_2728d0d4") }}
           </a-button>
         </a-input-group>
       </a-form-item>
 
       <a-form-item v-if="createMethod !== QUICKSTART_METHOD.EXIST" name="cwd">
         <a-typography-title :level="5">
-          {{ t("服务端文件目录") }}
+          {{ t("TXT_CODE_320f4304") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("选填，默认自动创建与管理，如需填写请写完整绝对路径，如: C:/Servers/MyServer") }}
+            {{ t("TXT_CODE_877eea45") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.cwd" />
@@ -254,11 +249,11 @@ const createInstance = async () => {
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
         <a-typography-title :level="5" class="require-field">
-          {{ t("上传单个服务端软件") }}
+          {{ t("TXT_CODE_444db70f") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("上传文件后实例将自动创建") }}
+            {{ t("TXT_CODE_fc4e2173") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
@@ -269,20 +264,24 @@ const createInstance = async () => {
         >
           <a-button type="primary" :loading="percentComplete > 0">
             <upload-outlined v-if="percentComplete === 0" />
-            {{ percentComplete > 0 ? t("正在上传：") + percentComplete + "%" : t("选择文件") }}
+            {{
+              percentComplete > 0
+                ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
+                : t("TXT_CODE_335ba209")
+            }}
           </a-button>
         </a-upload>
       </a-form-item>
 
       <a-form-item v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
         <a-typography-title :level="5" class="require-field">
-          {{ t("上传服务端压缩包") }}
+          {{ t("TXT_CODE_f9b6e61b") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("仅支持 ZIP 格式，上传后压缩包会自动解压到 “文件目录”") }}
+            {{ t("TXT_CODE_510bd294") }}
             <br />
-            {{ t("上传文件后实例将自动创建并解压文件，可能需要一段时间才能完成解压任务") }}
+            {{ t("TXT_CODE_1561198c") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
@@ -293,7 +292,11 @@ const createInstance = async () => {
         >
           <a-button type="primary" :loading="percentComplete > 0">
             <upload-outlined v-if="percentComplete === 0" />
-            {{ percentComplete > 0 ? t("正在上传：") + percentComplete + "%" : t("选择 zip 文件") }}
+            {{
+              percentComplete > 0
+                ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
+                : t("TXT_CODE_c17f6488")
+            }}
           </a-button>
         </a-upload>
       </a-form-item>
@@ -301,7 +304,7 @@ const createInstance = async () => {
       <a-form-item v-else>
         <a-typography-paragraph class="mt-10">
           <a-typography-text>
-            {{ t("填写好服务端软件文件名后，再前往文件管理上传服务端软件即可开启实例。") }}
+            {{ t("TXT_CODE_cbbc779f") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">

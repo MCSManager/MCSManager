@@ -161,18 +161,18 @@ const initTerminal = () => {
 
 const getInstanceName = computed(() => {
   if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
-    return t("节点终端");
+    return t("TXT_CODE_5bdaf23d");
   } else {
     return instanceInfo.value?.config.nickname;
   }
 });
 
 events.on("opened", () => {
-  message.success(t("实例已运行"));
+  message.success(t("TXT_CODE_e13abbb1"));
 });
 
 events.on("stopped", () => {
-  message.success(t("实例已停止运行"));
+  message.success(t("TXT_CODE_efb6d377"));
 });
 
 events.on("error", (error: Error) => {
@@ -189,7 +189,7 @@ onMounted(async () => {
     }
     initTerminal();
   } catch (error) {
-    throw new Error(t("初始化终端失败，可能是远程节点或实例已不存在，请刷新网页重试。"));
+    throw new Error(t("TXT_CODE_9885543f"));
   }
 });
 
@@ -199,27 +199,27 @@ const innerTerminalType = viewType === "inner";
 <template>
   <div v-if="socketError" class="error-card">
     <div class="error-card-container">
-      <a-typography-title :level="5">{{ $t("无法连接到远程节点") }}</a-typography-title>
+      <a-typography-title :level="5">{{ $t("TXT_CODE_6929b0b2") }}</a-typography-title>
       <a-typography-paragraph>
-        {{ $t("浏览器无法连接到地址：") + socketAddress }}
+        {{ $t("TXT_CODE_812a629e") + socketAddress }}
       </a-typography-paragraph>
       <div>
         <img :src="connectErrorImage" style="width: 100%" />
       </div>
-      <a-typography-title :level="5">{{ $t("解决方案：") }}</a-typography-title>
+      <a-typography-title :level="5">{{ $t("TXT_CODE_f1c96d8a") }}</a-typography-title>
       <a-typography-paragraph>
         <ul>
           <li>
-            {{ $t("如果您只是一名普通用户，请联系面板管理员。") }}
+            {{ $t("TXT_CODE_ceba9262") }}
           </li>
           <li>
-            {{ $t("确保连接远程节点地址是公开IP，且节点端口正常开放。") }}
+            {{ $t("TXT_CODE_84099e5") }}
           </li>
           <li>
-            {{ $t("配置 SSL，反向代理等，需要额外支持 Websocket 协议。") }}
+            {{ $t("TXT_CODE_86ff658a") }}
           </li>
           <li>
-            {{ $t("访问 https://docs.mcsmanager.com 了解更多。") }}
+            {{ $t("TXT_CODE_9c188ec8") }}
           </li>
         </ul>
       </a-typography-paragraph>
@@ -272,7 +272,7 @@ const innerTerminalType = viewType === "inner";
         </template>
       </BetweenMenus>
     </div>
-    <a-spin :spinning="!isConnect" :tip="t('正在连接终端中...')">
+    <a-spin :spinning="!isConnect" :tip="t('TXT_CODE_686c9ca9')">
       <div v-if="!containerState.isDesignMode" class="console-wrapper">
         <div class="terminal-wrapper global-card-container-shadow">
           <div class="terminal-container">

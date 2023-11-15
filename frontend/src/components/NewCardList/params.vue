@@ -80,7 +80,7 @@ defineExpose({
                 type="primary"
                 @click="openInstanceSelectDialog"
               >
-                {{ t("选择实例") }}
+                {{ t("TXT_CODE_2c9083a1") }}
               </a-button>
             </a-form-item>
           </a-col>

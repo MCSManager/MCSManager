@@ -3,7 +3,7 @@ import type { LayoutWithRouter, LayoutCard } from "@/types";
 import { useRouterParams } from "@/hooks/useRouterParams";
 import { getAllLayoutConfig } from "@/config/originLayoutConfig";
 import { createGlobalState } from "@vueuse/core";
-import { setLayoutConfig } from "@/services/apis/layout";
+import { resetLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
 
 export const useLayoutConfigStore = createGlobalState(() => {
   const { currentRoutePath } = useRouterParams();
@@ -66,7 +66,12 @@ export const useLayoutConfigStore = createGlobalState(() => {
     });
   };
 
+  const resetGlobalLayoutConfig = async () => {
+    return await resetLayoutConfig().execute();
+  };
+
   return {
+    resetGlobalLayoutConfig,
     getPageLayoutConfig,
     deleteLayoutItem,
     insertLayoutItem,

@@ -1,8 +1,6 @@
 import { v4 } from "uuid";
 import { IPageLayoutConfig } from "../../../../common/global";
 import { $t as t } from "../i18n";
-import fs from "fs-extra";
-import path from "path";
 import storage from "../common/system_storage";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
@@ -25,6 +23,10 @@ export function getFrontendLayoutConfig(): string {
 
 export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
   storage.writeFile(LAYOUT_CONFIG_NAME, JSON.stringify(config, null, 2));
+}
+
+export function resetFrontendLayoutConfig() {
+  storage.deleteFile(LAYOUT_CONFIG_NAME);
 }
 
 export enum LayoutCardHeight {
@@ -195,7 +197,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "InstanceFileManager",
-          title: t("文件管理"),
+          title: t("TXT_CODE_ae533703"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -217,7 +219,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "InstanceServerConfigOverview",
-          title: t("服务端配置文件"),
+          title: t("TXT_CODE_d07742fe"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -239,7 +241,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "InstanceServerConfigFile",
-          title: t("编辑服务端配置文件"),
+          title: t("TXT_CODE_1c45f7fe"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -261,7 +263,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "Schedule",
-          title: t("计划任务"),
+          title: t("TXT_CODE_b7d026f8"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -283,7 +285,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "UserList",
-          title: t("用户列表"),
+          title: t("TXT_CODE_97d17cce"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -305,7 +307,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "UserAccessSettings",
-          title: t("用户权限设定"),
+          title: t("TXT_CODE_dbc9f7b2"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -327,7 +329,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "Settings",
-          title: t("系统设置"),
+          title: t("TXT_CODE_3fe97dcc"),
           width: 8,
           height: LayoutCardHeight.MEDIUM,
           disableDelete: true
@@ -363,7 +365,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "ImageManager",
-          title: t("镜像管理"),
+          title: t("TXT_CODE_e6c30866"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -385,7 +387,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "NewImage",
-          title: t("创建镜像"),
+          title: t("TXT_CODE_3d09f0ac"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -440,7 +442,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           type: "UserStatusBlock",
-          title: t("实例总计"),
+          title: t("TXT_CODE_7411336e"),
           meta: {
             type: "instance_all"
           },
@@ -451,7 +453,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           type: "UserStatusBlock",
-          title: t("正在运行"),
+          title: t("TXT_CODE_f912fadc"),
           meta: {
             type: "instance_running"
           },
@@ -462,7 +464,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           type: "UserStatusBlock",
-          title: t("未运行"),
+          title: t("TXT_CODE_15f2e564"),
           meta: {
             type: "instance_stop"
           },
@@ -473,7 +475,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           type: "UserStatusBlock",
-          title: t("维护中"),
+          title: t("TXT_CODE_342a04a9"),
           meta: {
             type: "instance_error"
           },
@@ -484,7 +486,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           type: "UserInstanceList",
-          title: t("实例列表"),
+          title: t("TXT_CODE_d655beec"),
           meta: {
             type: "instance_error"
           },
@@ -502,7 +504,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "Page404",
-          title: t("页面未找到"),
+          title: t("TXT_CODE_6aa286df"),
           width: 6,
           height: LayoutCardHeight.MINI,
           disableDelete: true

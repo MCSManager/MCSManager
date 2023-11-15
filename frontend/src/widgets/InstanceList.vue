@@ -83,7 +83,7 @@ const initInstancesData = async () => {
       }
     });
   } catch (err) {
-    return message.error(t("访问远程节点异常"));
+    return message.error(t("TXT_CODE_e109c091"));
   }
 };
 
@@ -176,23 +176,23 @@ const instanceOperations = [
     }
   },
   {
-    title: t("删除"),
+    title: t("TXT_CODE_ecbd7449"),
     icon: DeleteOutlined,
     click: () => batchDeleteInstance(false)
   },
   {
-    title: t("彻底删除"),
+    title: t("TXT_CODE_9ef27367"),
     icon: WarningOutlined,
     click: () => batchDeleteInstance(true)
   }
 ];
 
 const batchOperation = async (actName: "start" | "stop" | "kill") => {
-  if (selectedInstance.value.length === 0) return message.error(t("无法执行，请至少选择一个实例"));
+  if (selectedInstance.value.length === 0) return message.error(t("TXT_CODE_a0a77be5"));
   const operationMap = {
-    start: async () => exec(batchStart().execute, t("开启命令已发出")),
-    stop: async () => exec(batchStop().execute, t("关闭命令已发出")),
-    kill: async () => exec(batchKill().execute, t("终止命令已发出"))
+    start: async () => exec(batchStart().execute, t("TXT_CODE_2b5fd76e")),
+    stop: async () => exec(batchStop().execute, t("TXT_CODE_4822a21")),
+    kill: async () => exec(batchKill().execute, t("TXT_CODE_effefaab"))
   };
 
   const exec = async (fn: Function, msg: string) => {
@@ -206,9 +206,7 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
       if (state.value) {
         notification.success({
           message: msg,
-          description: t(
-            "已成功向各个远程主机发布命令，具体操作可能略有延时，请稍等一段时间后查看结果"
-          )
+          description: t("TXT_CODE_1514d08f")
         });
         exitMultipleMode();
         await initInstancesData();
@@ -223,19 +221,17 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
 };
 
 const batchDeleteInstance = async (deleteFile: boolean) => {
-  if (selectedInstance.value.length === 0) return message.error(t("无法执行，请至少选择一个实例"));
+  if (selectedInstance.value.length === 0) return message.error(t("TXT_CODE_a0a77be5"));
   const { execute, state } = batchDelete();
   const uuids: string[] = [];
   for (const i of selectedInstance.value) {
     uuids.push(i.instanceUuid);
   }
   const confirmDeleteInstanceModal = Modal.confirm({
-    title: t("最终确认"),
+    title: t("TXT_CODE_2a3b0c17"),
     icon: h(InfoCircleOutlined),
-    content: deleteFile
-      ? t("确定要删除此实例和文件吗？此操作将会删除实例目录的所有文件，请谨慎操作")
-      : t("确定要进行批量移除吗？此操作不会删除实例实际文件，只会删除实例"),
-    okText: t("确定"),
+    content: deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a"),
+    okText: t("TXT_CODE_d507abff"),
     async onOk() {
       try {
         await execute({
@@ -251,8 +247,8 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
           confirmDeleteInstanceModal.destroy();
           exitMultipleMode();
           notification.success({
-            message: t("批量删除成功"),
-            description: t("可能会存在一定延迟，文件删除需要一定的时间")
+            message: t("TXT_CODE_c3c06801"),
+            description: t("TXT_CODE_50075e02")
           });
           await initInstancesData();
         }
@@ -338,7 +334,7 @@ onMounted(async () => {
           <template v-if="instances" #left>
             <div v-if="multipleMode">
               <a-button class="mr-10" :class="{ 'mb-10': isPhone }" @click="exitMultipleMode">
-                {{ t("退出批量操作") }}
+                {{ t("TXT_CODE_5366af54") }}
               </a-button>
 
               <a-button
@@ -347,7 +343,7 @@ onMounted(async () => {
                 :class="{ 'mb-10': isPhone }"
                 @click="selectedInstance = []"
               >
-                {{ t("取消全选") }}
+                {{ t("TXT_CODE_df87c46d") }}
               </a-button>
               <a-button
                 v-else
@@ -355,7 +351,7 @@ onMounted(async () => {
                 :class="{ 'mb-10': isPhone }"
                 @click="selectAllInstances"
               >
-                {{ t("全选") }}
+                {{ t("TXT_CODE_f466d7a") }}
               </a-button>
               <a-dropdown>
                 <template #overlay>
@@ -371,18 +367,18 @@ onMounted(async () => {
                   </a-menu>
                 </template>
                 <a-button type="primary">
-                  {{ t("选中项") }}
+                  {{ t("TXT_CODE_8fd8bfd3") }}
                   <DownOutlined />
                 </a-button>
               </a-dropdown>
             </div>
             <div v-else>
-              <a-button @click="multipleMode = true">{{ t("批量操作") }}</a-button>
+              <a-button @click="multipleMode = true">{{ t("TXT_CODE_5cb656b9") }}</a-button>
             </div>
           </template>
           <template v-if="multipleMode" #center>
             <a-typography-text>
-              {{ t("已选择：") }}{{ selectedInstance.length }} {{ t("项") }}
+              {{ t("TXT_CODE_432cbc38") }}{{ selectedInstance.length }} {{ t("TXT_CODE_5cd3b4bd") }}
             </a-typography-text>
           </template>
           <template v-if="instances" #right>

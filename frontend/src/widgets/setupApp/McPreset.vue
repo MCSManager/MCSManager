@@ -34,7 +34,7 @@ const init = async () => {
     await getQuickInstallListAddr();
 
     if (!appList.value || appList.value.length === 0) {
-      dialog.title = t("正在维护中");
+      dialog.title = t("TXT_CODE_c534ca49");
       dialog.show = true;
     }
   } catch (err: any) {
@@ -52,7 +52,7 @@ const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask(
 
 const handleSelectTemplate = async (item: QuickStartTemplate) => {
   try {
-    const instanceName = await openInputDialog(t("请输入新实例的名字"));
+    const instanceName = await openInputDialog(t("TXT_CODE_c237192c"));
     await executeCreateAsyncTask({
       params: {
         remote_uuid: daemonId,
@@ -77,7 +77,7 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
 
 const startDownloadTask = async () => {
   if (intervalTask.value) clearInterval(intervalTask.value);
-  dialog.title = t("正在安装中");
+  dialog.title = t("TXT_CODE_f878fd4c");
   dialog.show = true;
   await queryStatus();
   intervalTask.value = setInterval(async () => {
@@ -103,7 +103,7 @@ const queryStatus = async () => {
     });
     if (taskInfo.value?.status === -1) {
       percentage.value = 100;
-      dialog.title = t("安装错误");
+      dialog.title = t("TXT_CODE_7078fd28");
       installView.value = true;
       isInstalled.value = false;
       clearInterval(intervalTask.value);
@@ -111,7 +111,7 @@ const queryStatus = async () => {
 
     if (taskInfo.value?.status === 0) {
       percentage.value = 100;
-      dialog.title = t("安装完毕");
+      dialog.title = t("TXT_CODE_477ece61");
       installView.value = false;
       isInstalled.value = true;
       clearInterval(intervalTask.value);
@@ -156,18 +156,18 @@ onMounted(async () => {
     <a-row v-else :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24" :md="24">
         <CardPanel style="height: 100%">
-          <template #title>{{ t("注意事项") }}</template>
+          <template #title>{{ t("TXT_CODE_ef0ce2e") }}</template>
           <template #body>
             <a-typography-paragraph>
               <a-typography-text>
-                {{ t("安装预设整合包将视作你已同意并阅读")
+                {{ t("TXT_CODE_eec3c1d7")
                 }}<a href="https://aka.ms/MinecraftEULA" target="_blank" rel="noopener noreferrer">
-                  {{ t("Minecraft 最终用户协议（EULA)") }}
+                  {{ t("TXT_CODE_1e58bb5e") }}
                 </a>
               </a-typography-text>
               <br />
               <a-typography-text class="color-info">
-                {{ t("快速安装服务由独醉科技提供文件下载支持") }}
+                {{ t("TXT_CODE_7153951e") }}
               </a-typography-text>
             </a-typography-paragraph>
           </template>
@@ -180,17 +180,17 @@ onMounted(async () => {
             <template #body>
               <div style="height: 13em">
                 <a-typography-paragraph
-                  :ellipsis="{ rows: 3, expandable: true, symbol: t('查看更多') }"
+                  :ellipsis="{ rows: 3, expandable: true, symbol: t('TXT_CODE_f4c9715b') }"
                   :content="item.info"
                 >
                 </a-typography-paragraph>
                 <a-typography-paragraph>
                   <a-typography-text class="color-info">
-                    {{ t("Java版本要求") }}: {{ item.java }}
+                    {{ t("TXT_CODE_7b92d98d") }}: {{ item.java }}
                   </a-typography-text>
                   <br />
                   <a-typography-text class="color-info">
-                    {{ t("整合包大小") }}: {{ item.size }} MB
+                    {{ t("TXT_CODE_88c990a4") }}: {{ item.size }} MB
                   </a-typography-text>
                   <br />
                   <a-typography-text class="color-info">
@@ -203,7 +203,7 @@ onMounted(async () => {
                 <template #icon>
                   <DownloadOutlined />
                 </template>
-                {{ t("安装") }}
+                {{ t("TXT_CODE_1704ea49") }}
               </a-button>
             </template>
           </CardPanel>
@@ -221,9 +221,9 @@ onMounted(async () => {
     >
       <div v-if="!appList || appList.length === 0">
         <a-typography-text>
-          {{ t("很抱歉，无法获取最新预设整合包列表，可能是您的网络问题或服务器正在维护中。") }}
+          {{ t("TXT_CODE_bcfaf14d") }}
         </a-typography-text>
-        <a-button @click="toCreateInstancePage()">{{ t("返回手动安装") }}</a-button>
+        <a-button @click="toCreateInstancePage()">{{ t("TXT_CODE_bc883bbb") }}</a-button>
       </div>
       <div v-if="installView || isInstalled" style="text-align: center">
         <a-progress
@@ -235,39 +235,35 @@ onMounted(async () => {
         <div v-if="installView">
           <div v-if="taskInfo?.status !== -1">
             <a-typography-paragraph>
-              <a-typography-title :level="5">{{ t("正在下载文件...") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_32cd41d5") }}</a-typography-title>
               <a-typography-text>
-                {{ t("实际所需时间与网速，处理器运行速度有关，请务必耐心等待。") }}
+                {{ t("TXT_CODE_147a2f87") }}
               </a-typography-text>
             </a-typography-paragraph>
           </div>
           <div v-if="taskInfo?.status === -1">
             <a-typography-paragraph>
-              <a-typography-title :level="5">{{ t("安装错误") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_7078fd28") }}</a-typography-title>
               <a-typography-text>
-                {{
-                  t(
-                    "可能是因为网络不通畅或服务器正在维护中，请等待一段时间后再进行尝试，或使用其他安装包尝试。"
-                  )
-                }}
+                {{ t("TXT_CODE_57cd2d04") }}
               </a-typography-text>
             </a-typography-paragraph>
             <a-button size="" class="mr-10" @click="toCreateInstancePage()">
-              {{ t("返回手动安装") }}
+              {{ t("TXT_CODE_bc883bbb") }}
             </a-button>
             <a-button type="primary" size="" danger @click="dialog.show = false">
-              {{ t("关闭") }}
+              {{ t("TXT_CODE_b1dedda3") }}
             </a-button>
           </div>
         </div>
         <div v-if="isInstalled">
           <a-typography-paragraph>
-            <a-typography-title :level="5">{{ t("安装完毕") }}</a-typography-title>
+            <a-typography-title :level="5">{{ t("TXT_CODE_477ece61") }}</a-typography-title>
             <a-typography-text>
-              {{ t("大功告成！接下来您只需要进入“实例控制台”，轻点“启动实例”即可。") }}
+              {{ t("TXT_CODE_ce917b27") }}
             </a-typography-text>
           </a-typography-paragraph>
-          <a-button @click="toAppDetailPage()">{{ t("前往实例控制台") }}</a-button>
+          <a-button @click="toAppDetailPage()">{{ t("TXT_CODE_36417656") }}</a-button>
         </div>
       </div>
     </a-modal>

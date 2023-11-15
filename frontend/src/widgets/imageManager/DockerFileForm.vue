@@ -23,7 +23,7 @@ const { execute } = imageList();
 const submit = async () => {
   try {
     if (!options.dockerFile || !options.name || !options.version)
-      return message.error(t("请填写表单完整"));
+      return message.error(t("TXT_CODE_2764f197"));
     await execute({
       params: {
         remote_uuid: props.daemonId
@@ -36,8 +36,8 @@ const submit = async () => {
       method: "POST"
     });
     notification["info"]({
-      message: t("创建镜像任务已经开始"),
-      description: t("请耐心等待")
+      message: t("TXT_CODE_55edf44d"),
+      description: t("TXT_CODE_b340c04a")
     });
     emit("close");
   } catch (err: any) {
@@ -56,15 +56,15 @@ onMounted(() => {
 <template>
   <a-typography>
     <a-typography-paragraph>
-      <a-typography-title :level="5">{{ t("关于 DockerFile 文件") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_868df02c") }}</a-typography-title>
       <a-typography-text>
-        {{ t("官方参考文档：https://docs.docker.com/engine/reference/builder/") }}
+        {{ t("TXT_CODE_77d93d7d") }}
       </a-typography-text>
     </a-typography-paragraph>
     <a-typography-paragraph>
-      <a-typography-title :level="5">{{ t("注意事项") }}</a-typography-title>
+      <a-typography-title :level="5">{{ t("TXT_CODE_ef0ce2e") }}</a-typography-title>
       <a-typography-text>
-        {{ t("必须创建 /workspace 目录，此目录将自动挂载到实例的文件根目录") }}
+        {{ t("TXT_CODE_5024d817") }}
       </a-typography-text>
     </a-typography-paragraph>
   </a-typography>
@@ -75,7 +75,7 @@ onMounted(() => {
 
   <a-form-item>
     <a-typography-text>
-      {{ t("创建后的镜像名与版本标识") }}
+      {{ t("TXT_CODE_7cf078e8") }}
     </a-typography-text>
     <a-input-group compact>
       <a-input v-model:value="options.name" style="width: 65%" />
@@ -83,10 +83,7 @@ onMounted(() => {
     </a-input-group>
   </a-form-item>
 
-  <a-popconfirm
-    :title="t('此构建过程可能需要几分钟时间，请确保网络畅通，是否继续？')"
-    @confirm="submit"
-  >
-    <a-button type="primary">{{ t("创建镜像") }}</a-button>
+  <a-popconfirm :title="t('TXT_CODE_4e4b52a0')" @confirm="submit">
+    <a-button type="primary">{{ t("TXT_CODE_3d09f0ac") }}</a-button>
   </a-popconfirm>
 </template>

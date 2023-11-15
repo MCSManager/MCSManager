@@ -27,13 +27,13 @@ const parsedConfig = jsonToMap(props.config);
       <template #body>
         <a-typography>
           <a-typography-title :level="5">
-            {{ data ? t("关于此配置文件") : t("未知配置文件") }}
+            {{ data ? t("TXT_CODE_fb2df398") : t("TXT_CODE_2ce953da") }}
           </a-typography-title>
           <a-typography-paragraph v-if="data">
             {{ data?.desc }}
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
-            {{ t("此配置文件暂不支持直接配置，请前往文件管理进行编辑。") }}
+            {{ t("TXT_CODE_75e5af9b") }}
           </a-typography-paragraph>
         </a-typography>
       </template>
@@ -51,7 +51,7 @@ const parsedConfig = jsonToMap(props.config);
           </div>
         </div>
         <div v-else>
-          {{ t("配置文件内容为空，请检查文件是否正确，或点击上方 “编辑源文件” 按钮继续编辑。") }}
+          {{ t("TXT_CODE_1a730d48") }}
         </div>
       </template>
     </CardPanel>

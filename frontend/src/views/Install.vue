@@ -89,7 +89,7 @@ onMounted(async () => {});
           </a-typography-title>
           <a-typography-paragraph>
             <a-typography-text>
-              {{ t("开源，分布式，开箱即用，支持 Minecraft 游戏服务端和所有控制台程序的管理面板") }}
+              {{ t("TXT_CODE_81d7e7c5") }}
             </a-typography-text>
           </a-typography-paragraph>
         </a-typography>
@@ -101,10 +101,10 @@ onMounted(async () => {});
           size="large"
           @click="step = 2"
         >
-          {{ t("面板已安装，不可重复安装") }}
+          {{ t("TXT_CODE_3371000d") }}
         </a-button>
         <a-button v-else class="mt-45 mb-45" type="primary" size="large" @click="step = 2">
-          {{ t("开始使用") }}
+          {{ t("TXT_CODE_351aaf7") }}
         </a-button>
         <a-typography>
           <a-typography-paragraph>
@@ -114,7 +114,7 @@ onMounted(async () => {});
               </a>
             </a-typography-text>
             <br />
-            <a-typography-text> Released under the Apache-2.0 License. </a-typography-text>
+            <a-typography-text>Released under the Apache-2.0 License.</a-typography-text>
           </a-typography-paragraph>
         </a-typography>
       </template>
@@ -125,20 +125,23 @@ onMounted(async () => {});
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
-            {{ t("创建一个访问面板的管理员账号") }}
+            {{ t("TXT_CODE_f880b5ad") }}
           </a-typography-title>
           <a-typography-paragraph>
             <a-typography-text>
-              {{ t("用户名支持任何语言，请务必保证您的密码安全。") }}
+              {{ t("TXT_CODE_3a056dc8") }}
             </a-typography-text>
           </a-typography-paragraph>
         </a-typography>
         <a-form ref="formRef" :model="formData" :label-col="{ span: 4 }" autocomplete="off">
-          <a-form-item name="username" :rules="[{ required: true, message: t('请输入用户名') }]">
+          <a-form-item
+            name="username"
+            :rules="[{ required: true, message: t('TXT_CODE_2695488c') }]"
+          >
             <a-input
               v-model:value="formData.username"
               autocomplete="off"
-              :placeholder="t('用户名')"
+              :placeholder="t('TXT_CODE_eb9fcdad')"
             />
           </a-form-item>
 
@@ -148,20 +151,20 @@ onMounted(async () => {});
               {
                 required: true,
                 pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,36}$/,
-                message: t('密码必须是 9 到 36 个字符，并且包含大小写字母和数字')
+                message: t('TXT_CODE_ad533c70')
               }
             ]"
           >
             <a-input-password
               v-model:value="formData.password"
               autocomplete="off"
-              :placeholder="t('密码')"
+              :placeholder="t('TXT_CODE_551b0348')"
             />
           </a-form-item>
 
           <a-form-item :wrapper-col="{ span: 16 }">
             <a-button :loading="installLoading" type="primary" @click="createUser">
-              {{ t("创建账号") }}
+              {{ t("TXT_CODE_11d5caea") }}
             </a-button>
           </a-form-item>
         </a-form>
@@ -173,28 +176,28 @@ onMounted(async () => {});
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
-            {{ t("大功告成！") }}
+            {{ t("TXT_CODE_97be50a8") }}
           </a-typography-title>
           <a-typography-paragraph>
             <a-typography-text>
-              {{ t("最后，您是第一次使用此软件吗？") }}
+              {{ t("TXT_CODE_cd923ade") }}
             </a-typography-text>
           </a-typography-paragraph>
         </a-typography>
         <div class="final-btn mb-15" @click="toQuickStart">
           <a-typography-title :level="5">
-            {{ t("首次使用") }}
+            {{ t("TXT_CODE_6f98ccd7") }}
           </a-typography-title>
           <a-typography-text>
-            {{ t("我们将引导你使用并部署你的应用程序。") }}
+            {{ t("TXT_CODE_b5ca0563") }}
           </a-typography-text>
         </div>
         <div class="final-btn" @click="toOverview">
           <a-typography-title :level="5">
-            {{ t("老用户") }}
+            {{ t("TXT_CODE_b69550bf") }}
           </a-typography-title>
           <a-typography-text>
-            {{ t("以更专业化的界面供你使用。") }}
+            {{ t("TXT_CODE_95df80df") }}
           </a-typography-text>
         </div>
       </template>

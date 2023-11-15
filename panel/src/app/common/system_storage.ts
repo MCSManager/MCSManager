@@ -23,6 +23,11 @@ class StorageSubsystem {
     return fs.readFileSync(targetPath, { encoding: "utf-8" });
   }
 
+  public deleteFile(name: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
+    fs.removeSync(targetPath);
+  }
+
   public fileExists(name: string) {
     const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
     return fs.existsSync(targetPath);
