@@ -6,6 +6,8 @@ import path from "path";
 import { missionPassport } from "../service/mission_passport";
 import InstanceSubsystem from "../service/system_instance";
 import FileManager from "../service/system_file";
+import formidable from "formidable";
+import { clearUploadFiles } from "../tools/filepath";
 
 const router = new Router();
 
@@ -55,6 +57,7 @@ router.post("/upload/:key", async (ctx) => {
   const key = ctx.params.key;
   const unzip = ctx.query.unzip;
   const zipCode = String(ctx.query.code);
+  let tmpFiles: formidable.File | formidable.File[] = null;
   try {
     // Get the task & check the task & check if the instance exists
     const mission = missionPassport.getMission(key, "upload");
@@ -64,10 +67,10 @@ router.post("/upload/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.config.cwd;
 
-    const file = ctx.request.files.file;
-    if (file && !(file instanceof Array)) {
+    tmpFiles = ctx.request.files.file;
+    if (tmpFiles && !(tmpFiles instanceof Array)) {
       // Confirm storage location
-      const fullFileName = file.name;
+      const fullFileName = tmpFiles.name;
       const fileSaveRelativePath = path.normalize(path.join(uploadDir, fullFileName));
 
       // File name special character filtering (to prevent any cross-directory intrusion)
@@ -80,11 +83,8 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Invalid destination");
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
 
-      // prohibit overwriting the original file
-      // if (fs.existsSync(fileSaveAbsolutePath)) throw new Error("The file exists and cannot be overwritten");
-
       // Copy the file from the temporary folder to the specified directory
-      const reader = fs.createReadStream(file.path);
+      const reader = fs.createReadStream(tmpFiles.path);
       const upStream = fs.createWriteStream(fileSaveAbsolutePath);
       reader.pipe(upStream);
       reader.on("close", () => {
@@ -94,7 +94,8 @@ router.post("/upload/:key", async (ctx) => {
           filemanager.unzip(fullFileName, "", zipCode);
         }
       });
-      return (ctx.body = "OK");
+      ctx.body = "OK";
+      return;
     }
     ctx.body = $t("TXT_CODE_http_router.updateErr");
     ctx.status = 500;
@@ -103,6 +104,7 @@ router.post("/upload/:key", async (ctx) => {
     ctx.status = 500;
   } finally {
     missionPassport.deleteMission(key);
+    clearUploadFiles(tmpFiles);
   }
 });
 
