@@ -10,7 +10,7 @@ import userSystem from "../../service/system_user";
 import { logger } from "../../service/log";
 import { $t } from "../../i18n";
 import axios from "axios";
-import GlobalVariable from "../../common/global_variable";
+import { GlobalVariable } from "common";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]

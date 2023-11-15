@@ -7,7 +7,7 @@ import RemoteRequest from "../../service/remote_command";
 import os from "os";
 import { systemInfo } from "common";
 import { getVersion, specifiedDaemonVersion } from "../../version";
-import GlobalVariable from "../../common/global_variable";
+import { GlobalVariable } from "common";
 import {
   LOGIN_FAILED_KEY,
   ILLEGAL_ACCESS_KEY,

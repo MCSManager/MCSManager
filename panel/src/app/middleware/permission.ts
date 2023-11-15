@@ -1,5 +1,5 @@
 import Koa from "koa";
-import GlobalVariable from "../common/global_variable";
+import { GlobalVariable } from "common";
 import userSystem from "../service/system_user";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";
