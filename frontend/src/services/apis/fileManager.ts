@@ -43,7 +43,7 @@ export const getFileStatus = useDefineApi<
     globalFileTask: number;
     platform: string;
     isGlobalInstance: boolean;
-    dist: string[];
+    disks: string[];
   }
 >({
   url: "/api/files/status",

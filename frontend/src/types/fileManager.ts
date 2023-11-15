@@ -24,7 +24,7 @@ export interface FileStatus {
   globalFileTask: number;
   platform: string;
   isGlobalInstance: boolean;
-  dist: string[];
+  disks: string[];
 }
 
 export interface Permission {

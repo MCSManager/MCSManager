@@ -15,7 +15,7 @@
   justify-content: space-evenly;
 }
 
-.flex-warp {
+.flex-wrap {
   display: flex;
   flex-wrap: wrap;
 }
@@ -118,6 +118,10 @@
 
 .items-center {
   align-items: center;
+}
+
+.items-flex-start {
+  align-items: flex-start;
 }
 
 .m-auto {
