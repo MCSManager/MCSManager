@@ -1,0 +1,23 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --project tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.9.0",
+    "@types/os-utils": "^0.0.4",
+    "archiver": "^6.0.1",
+    "compressing": "^1.10.0",
+    "fs-extra": "^11.1.1",
+    "node-stream-zip": "^1.15.0",
+    "os-utils": "^0.0.14",
+    "socket.io": "^4.7.2"
+  }
+}

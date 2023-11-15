@@ -8,6 +8,10 @@ import { Server, Socket } from "socket.io";
 import { LOCAL_PRESET_LANG_PATH } from "./const";
 import logger from "./service/log";
 
+import { StorageSubsystem } from "common";
+const a = new StorageSubsystem();
+console.log("XZXZXZX:", a);
+
 initVersionManager();
 const VERSION = getVersion();
 
