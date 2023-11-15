@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import { compress, decompress } from "../common/compress";
 import iconv from "iconv-lite";
 import { globalConfiguration } from "../entity/config";
-import { processWrapper } from "../common/process_tools";
+import { processWrapper } from "common";
 import os from "os";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");

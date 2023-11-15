@@ -1,6 +1,6 @@
 import { $t } from "../i18n";
 import * as fs from "fs-extra";
-import GlobalVariable from "../common/global_variable";
+import { GlobalVariable } from "common";
 import logger from "./log";
 
 const PACKAGE_JSON = "package.json";

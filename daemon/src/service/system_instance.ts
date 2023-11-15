@@ -2,18 +2,15 @@ import { $t } from "../i18n";
 import fs from "fs-extra";
 import path from "path";
 import os from "os";
-
 import Instance from "../entity/instance/instance";
 import EventEmitter from "events";
 import KillCommand from "../entity/commands/kill";
 import logger from "./log";
-
 import { v4 } from "uuid";
 import { Socket } from "socket.io";
 import StorageSubsystem from "../common/system_storage";
 import InstanceConfig from "../entity/instance/Instance_config";
-import InstanceStreamListener from "../common/instance_stream";
-import { QueryMapWrapper } from "common";
+import { QueryMapWrapper, InstanceStreamListener } from "common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import InstanceControl from "./system_instance_control";
 import StartCommand from "../entity/commands/start";
@@ -203,7 +200,7 @@ class InstanceSubsystem extends EventEmitter {
   }
 
   forEachForward(instanceUuid: string, callback: (socket: Socket) => void) {
-    this.instanceStream.forwardViaCallback(instanceUuid, (_socket) => {
+    this.instanceStream.forwardViaCallback(instanceUuid, (_socket: Socket) => {
       callback(_socket);
     });
   }

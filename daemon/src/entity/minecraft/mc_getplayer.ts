@@ -1,6 +1,6 @@
 import Instance from "../instance/instance";
 import InstanceCommand from "../commands/base/command";
-import MCServerStatus from "../../common/mcping";
+import { MCServerStatus } from "common";
 
 export default class MinecraftGetPlayersCommand extends InstanceCommand {
   constructor() {

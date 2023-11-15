@@ -3,6 +3,7 @@ import GlobalVariable from "./global_variable";
 import InstanceStreamListener from "./instance_stream";
 import { processWrapper, killProcess } from "./process_tools";
 import { systemInfo } from "./system_info";
+import MCServerStatus from "./mcping";
 import {
   QueryMapWrapper,
   IDataSource,
@@ -20,6 +21,7 @@ import {
 } from "./typecheck";
 
 export {
+  MCServerStatus,
   StorageSubsystem,
   GlobalVariable,
   InstanceStreamListener,
