@@ -13,7 +13,7 @@ import { Socket } from "socket.io";
 import StorageSubsystem from "../common/system_storage";
 import InstanceConfig from "../entity/instance/Instance_config";
 import InstanceStreamListener from "../common/instance_stream";
-import { QueryMapWrapper } from "../common/query_wrapper";
+import { QueryMapWrapper } from "common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import InstanceControl from "./system_instance_control";
 import StartCommand from "../entity/commands/start";

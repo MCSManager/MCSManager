@@ -1,5 +1,5 @@
 import { logger } from "./log";
-import { systemInfo } from "../common/system_info";
+import { systemInfo } from "common";
 import RemoteServiceSubsystem from "../service/system_remote_service";
 import RemoteRequest from "./remote_command";
 

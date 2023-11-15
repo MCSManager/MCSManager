@@ -6,7 +6,7 @@ import child_process from "child_process";
 import os from "os";
 import archiver from "archiver";
 import StreamZip, { async } from "node-stream-zip";
-import { processWrapper } from "./process_tools";
+import { processWrapper } from "common";
 import { PTY_PATH } from "../const";
 // const StreamZip = require('node-stream-zip');
 

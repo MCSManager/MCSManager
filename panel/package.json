@@ -21,6 +21,7 @@
     "@koa/router": "^10.0.0",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
+    "common": "file:../common/dist",
     "crypto": "^1.0.1",
     "i18n": "^0.15.0",
     "i18next": "^21.8.14",

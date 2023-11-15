@@ -12,7 +12,7 @@ import { PresetCommandManager } from "./preset";
 import FunctionDispatcher from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
-import { configureEntityParams } from "../../common/typecheck";
+import { configureEntityParams } from "common";
 import { PTY_PATH } from "../../const";
 import { OpenFrp } from "../commands/task/openfrp";
 
