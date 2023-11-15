@@ -461,6 +461,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       }
     ]
   });
+
   const changePermission = async (name: string, mode: number) => {
     permission.loading = true;
     permission.data = number2permission(mode);
@@ -493,6 +494,20 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.deep = false;
   };
 
+  const currentDisk = ref(t("程序根目录"));
+
+  const toDisk = async (disk: string) => {
+    breadcrumbs.splice(0, breadcrumbs.length);
+    breadcrumbs.push({
+      path: disk + ":\\",
+      name: "/",
+      disabled: false
+    });
+    spinning.value = true;
+    await getFileList();
+    spinning.value = false;
+  };
+
   return {
     fileStatus,
     dialog,
@@ -504,6 +519,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission,
     clipboard,
     selectedRowKeys,
+    currentDisk,
     selectChanged,
     openDialog,
     getFileList,
@@ -522,6 +538,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     handleChangeDir,
     handleTableChange,
     getFileStatus,
-    changePermission
+    changePermission,
+    toDisk
   };
 };

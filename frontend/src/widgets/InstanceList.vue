@@ -284,6 +284,7 @@ onMounted(async () => {
                   <a-menu-item
                     v-for="item in nodes"
                     :key="item.uuid"
+                    :disabled="!item.available"
                     @click="handleChangeNode(item)"
                   >
                     <DatabaseOutlined v-if="item.available" />

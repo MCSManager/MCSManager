@@ -24,7 +24,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
-const screen = useScreen();
+const { isPhone } = useScreen();
 
 const {
   dialog,
@@ -37,6 +37,7 @@ const {
   dataSource,
   breadcrumbs,
   clipboard,
+  currentDisk,
   selectChanged,
   getFileList,
   touchFile,
@@ -53,7 +54,8 @@ const {
   rowClickTable,
   handleTableChange,
   getFileStatus,
-  changePermission
+  changePermission,
+  toDisk
 } = useFileManager(instanceId, daemonId);
 
 const columns = computed(() => {
@@ -83,7 +85,7 @@ const columns = computed(() => {
       customRender: (e: { text: number }) =>
         e.text == 0 ? "--" : convertFileSize(e.text.toString()),
       minWidth: "200px",
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -94,7 +96,7 @@ const columns = computed(() => {
         return dayjs(e.text).format("YYYY-MM-DD HH:mm:ss");
       },
       minWidth: "200px",
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -102,7 +104,7 @@ const columns = computed(() => {
       dataIndex: "mode",
       key: "mode",
       minWidth: "200px",
-      condition: () => !screen.isPhone.value && fileStatus.value?.platform !== "win32"
+      condition: () => !isPhone.value && fileStatus.value?.platform !== "win32"
     },
     {
       align: "center",
@@ -153,7 +155,7 @@ onMounted(() => {
           </template>
           <template #right>
             <a-upload
-              v-if="!screen.isPhone.value"
+              v-if="!isPhone"
               :before-upload="beforeUpload"
               :max-count="1"
               :disabled="percentComplete > 0"
@@ -185,7 +187,7 @@ onMounted(() => {
               <template #overlay>
                 <a-menu>
                   <a-upload
-                    v-if="screen.isPhone.value"
+                    v-if="isPhone"
                     :before-upload="beforeUpload"
                     :max-count="1"
                     :disabled="percentComplete > 0"
@@ -245,15 +247,33 @@ onMounted(() => {
               :percent="percentComplete"
               class="mb-20"
             />
-            <div class="file-breadcrumbs mb-20">
-              <a-breadcrumb separator=">">
-                <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
-                  <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
-                    {{ item.name }}
-                  </div>
-                </a-breadcrumb-item>
-              </a-breadcrumb>
+            <div class="flex-wrap items-flex-start">
+              <a-select
+                v-if="fileStatus?.disks.length"
+                v-model:value="currentDisk"
+                :class="isPhone ? 'w-100 mb-10' : 'mr-10'"
+                style="width: 125px"
+                @change="toDisk(currentDisk)"
+              >
+                <a-select-option value="/">{{ t("程序根目录") }}</a-select-option>
+                <a-select-option v-for="disk in fileStatus?.disks" :key="disk" :value="disk">
+                  {{ disk }}
+                </a-select-option>
+              </a-select>
+              <div
+                class="file-breadcrumbs mb-20"
+                :style="{ width: isPhone ? '100%' : 'calc(100% - 135px)' }"
+              >
+                <a-breadcrumb separator=">">
+                  <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
+                    <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
+                      {{ item.name }}
+                    </div>
+                  </a-breadcrumb-item>
+                </a-breadcrumb>
+              </div>
             </div>
+
             <p
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"
               style="color: #1677ff"
@@ -481,7 +501,7 @@ onMounted(() => {
   border-radius: 6px;
 
   .file-breadcrumbs-item {
-    padding: 6px;
+    padding: 8px;
     cursor: pointer;
     display: inline-block;
     transition: all 0.4s;
