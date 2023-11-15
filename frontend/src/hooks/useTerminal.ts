@@ -143,7 +143,7 @@ export function useTerminal() {
       // The backend needs to be consistent.
       // See "/daemon/src/entity/instance/Instance_config.ts"
       rows: 40,
-      cols: 140
+      cols: 164
     });
     const fitAddon = new FitAddon();
     // term.loadAddon(fitAddon);
