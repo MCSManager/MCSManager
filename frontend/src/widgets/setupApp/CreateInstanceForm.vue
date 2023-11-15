@@ -110,7 +110,7 @@ const setUnzipCode = async (code: string) => {
 
 const finalConfirm = async () => {
   const thisModal = Modal.confirm({
-    title: t("最终确认"),
+    title: t("TXT_CODE_2a3b0c17"),
     icon: createVNode(InfoCircleOutlined),
     content: needUpload ? t("TXT_CODE_e06841b5") : t("TXT_CODE_5deeefb5"),
     okText: t("TXT_CODE_d507abff"),
@@ -308,7 +308,7 @@ const createInstance = async () => {
           </a-typography-text>
         </a-typography-paragraph>
         <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">
-          {{ t("创建实例") }}
+          {{ t("TXT_CODE_5a74975b") }}
         </a-button>
       </a-form-item>
     </a-form>

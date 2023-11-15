@@ -69,7 +69,7 @@ defineExpose({
             <a-typography-title :level="5">{{ t("TXT_CODE_ef650d57") }}</a-typography-title>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("通过仿真终端转发程序来获得终端完全交互能力。包括使用 Tab，Ctrl 功能键等。") }}
+                {{ t("TXT_CODE_feeea328") }}
                 <br />
                 {{ t("TXT_CODE_d6e7f572") }}
               </a-typography-text>
@@ -103,8 +103,8 @@ defineExpose({
               :placeholder="t('TXT_CODE_3bb646e4')"
               :style="'width: ' + (isPhone ? '100%' : '220px')"
             >
-              <a-select-option :value="1"> {{ t("换行符") }}</a-select-option>
-              <a-select-option :value="2">{{ t("回车换行符") }}</a-select-option>
+              <a-select-option :value="1"> {{ t("TXT_CODE_365aabd4") }}</a-select-option>
+              <a-select-option :value="2">{{ t("TXT_CODE_20cec54") }}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>

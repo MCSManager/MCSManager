@@ -2,20 +2,7 @@ const fs = require("fs");
 const { crc32 } = require("crc");
 
 const FN_KEY = "TXT_CODE_";
-
-function sortObjectKeys(obj = {}) {
-  const sortedObj = {};
-  const sortedKeys = Object.keys(obj).sort();
-  for (let key of sortedKeys) {
-    const value = obj[key];
-    if (typeof value === "object" && value !== null) {
-      sortedObj[key] = sortObjectKeys(value);
-    } else {
-      sortedObj[key] = value;
-    }
-  }
-  return sortedObj;
-}
+const LANGUAGES = ["zh_CN", "en_US"];
 
 module.exports = {
   input: ["./**/*.{ts,vue}", "!**/node_modules/**"],
@@ -24,7 +11,7 @@ module.exports = {
     debug: false,
     func: false,
     trans: false,
-    lngs: ["zh_CN", "en_US"],
+    lngs: LANGUAGES,
     defaultLng: "zh",
     resource: {
       loadPath: "./languages/{{lng}}.json",
@@ -46,14 +33,11 @@ module.exports = {
     const content = fs.readFileSync(file.path, enc);
     let newCode = content;
     parser.parseFuncFromString(content, { list: ["t", "$t"] }, (key, options) => {
-      if (String(key).includes(FN_KEY)) {
-        return;
-      }
-
+      if (String(key).includes(FN_KEY)) return;
       options.defaultValue = key;
       let hashKey = `${FN_KEY}${crc32(key).toString(16)}`;
       console.log("Transform text:", key, "->", hashKey);
-      newCode = String(newCode).replace(key, hashKey);
+      newCode = String(newCode).replace(`t("${key}")`, `t("${hashKey}")`);
       parser.set(hashKey, options);
     });
 

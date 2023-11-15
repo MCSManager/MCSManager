@@ -1479,5 +1479,10 @@
   "TXT_CODE_3fe97dcc": "系统设置",
   "TXT_CODE_7411336e": "实例总计",
   "TXT_CODE_d655beec": "实例列表",
-  "TXT_CODE_6aa286df": "页面未找到"
+  "TXT_CODE_6aa286df": "页面未找到",
+  "TXT_CODE_28124988": "程序根目录",
+  "TXT_CODE_f6e4ace0": "快速编辑",
+  "TXT_CODE_feeea328": "通过仿真终端转发程序来获得终端完全交互能力。包括使用 Tab，Ctrl 功能键等。",
+  "TXT_CODE_365aabd4": "换行符",
+  "TXT_CODE_20cec54": "回车换行符"
 }

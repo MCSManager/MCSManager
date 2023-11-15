@@ -31,10 +31,10 @@ export const filterFileName = (fileName: string, onlyExtname = false) => {
   return i === -1
     ? onlyExtname
       ? "UNKNOWN"
-      : t("文件")
+      : t("TXT_CODE_d4cf1cb8")
     : onlyExtname
     ? suffix
-    : `${suffix} ${t("文件")}`;
+    : `${suffix} ${t("TXT_CODE_d4cf1cb8")}`;
 };
 
 // 返回文件扩展名

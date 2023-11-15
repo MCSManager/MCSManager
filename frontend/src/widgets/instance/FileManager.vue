@@ -255,7 +255,7 @@ onMounted(() => {
                 style="width: 125px"
                 @change="toDisk(currentDisk)"
               >
-                <a-select-option value="/">{{ t("程序根目录") }}</a-select-option>
+                <a-select-option value="/">{{ t("TXT_CODE_28124988") }}</a-select-option>
                 <a-select-option v-for="disk in fileStatus?.disks" :key="disk" :value="disk">
                   {{ disk }}
                 </a-select-option>

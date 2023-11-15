@@ -494,7 +494,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.deep = false;
   };
 
-  const currentDisk = ref(t("程序根目录"));
+  const currentDisk = ref(t("TXT_CODE_28124988"));
 
   const toDisk = async (disk: string) => {
     breadcrumbs.splice(0, breadcrumbs.length);

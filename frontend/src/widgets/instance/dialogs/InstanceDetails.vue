@@ -364,7 +364,7 @@ defineExpose({
                   v-model:value="options.config.docker.ports"
                   style="width: calc(100% - 88px)"
                 />
-                <a-button type="default">{{ t("快速编辑") }}</a-button>
+                <a-button type="default">{{ t("TXT_CODE_f6e4ace0") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
@@ -381,7 +381,7 @@ defineExpose({
                   v-model:value="options.config.docker.extraVolumes"
                   style="width: calc(100% - 88px)"
                 />
-                <a-button type="default">{{ t("快速编辑") }}</a-button>
+                <a-button type="default">{{ t("TXT_CODE_f6e4ace0") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
