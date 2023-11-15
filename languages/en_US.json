@@ -382,7 +382,6 @@
   "TXT_CODE_b858d78a": "copy successfully",
   "TXT_CODE_bdb620b9": "running",
   "TXT_CODE_bfb50126": "Node status overview",
-  "TXT_CODE_c266d3f7": "Only the first 40 sponsors are included. To view the complete list of sponsors or to support sponsorship, please go to",
   "TXT_CODE_c26e5fb7": "Support Markdown format",
   "TXT_CODE_c5c56801": "Registration time",
   "TXT_CODE_c7d0002e": "IP address",
@@ -1480,5 +1479,13 @@
   "TXT_CODE_ff8431c1": "Number of Netty threads",
   "TXT_CODE_ffca72ed": "Makes the server appear online in the server list. \nIf set to No, it will suppress replies from the client. \nThis means it will appear offline but will still accept connections.",
   "TXT_CODE_ffe9366a": "Whether to add any items and blocks that do not exist in Bedrock Edition.",
-  "TXT_CODE_ffebf0bf": "Broadcast RCON information to OP"
+  "TXT_CODE_ffebf0bf": "Broadcast RCON information to OP",
+  "TXT_CODE_20cec54": "carriage return line feed",
+  "TXT_CODE_28124988": "Program root directory",
+  "TXT_CODE_365aabd4": "newline character",
+  "TXT_CODE_5a09ed37": "Chinese",
+  "TXT_CODE_b19bf004": "Required, please enter the content",
+  "TXT_CODE_e246e5b": "English",
+  "TXT_CODE_f6e4ace0": "Quick edit",
+  "TXT_CODE_feeea328": "Obtain full interactive capabilities of the terminal by simulating the terminal forwarding program. \nIncluding using Tab, Ctrl function keys, etc."
 }
