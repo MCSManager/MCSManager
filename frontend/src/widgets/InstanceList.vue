@@ -30,6 +30,7 @@ import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
+import { parseTimestamp } from "../tools/time";
 
 defineProps<{
   card: LayoutCard;
@@ -425,11 +426,11 @@ onMounted(async () => {
                 </div>
                 <div>
                   {{ t("TXT_CODE_d31a684c") }}
-                  {{ item.config.lastDatetime }}
+                  {{ parseTimestamp(item.config.lastDatetime) }}
                 </div>
                 <div>
                   {{ t("TXT_CODE_ae747cc0") }}
-                  {{ item.config.endTime }}
+                  {{ parseTimestamp(item.config.endTime) }}
                 </div>
               </a-typography-paragraph>
             </template>

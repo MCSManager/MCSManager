@@ -9,7 +9,7 @@ import type { DefaultEventsMap } from "@socket.io/component-emitter";
 import type { InstanceDetail } from "@/types";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
-import { useScreen } from "./useScreen";
+import { INSTANCE_STATUS_CODE } from "@/types/const";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -140,8 +140,10 @@ export function useTerminal() {
       },
       allowProposedApi: true,
       rendererType: "canvas",
+      // The backend needs to be consistent.
+      // See "/daemon/src/entity/instance/Instance_config.ts"
       rows: 40,
-      cols: 160
+      cols: 140
     });
     const fitAddon = new FitAddon();
     // term.loadAddon(fitAddon);
@@ -191,8 +193,10 @@ export function useTerminal() {
     socket?.close();
   });
 
-  const isRunning = computed(() => state?.value?.status === 3);
-  const isStopped = computed(() => state?.value?.status === 0);
+  const isStopped = computed(() =>
+    [INSTANCE_STATUS_CODE.STOPPED, INSTANCE_STATUS_CODE.UNKNOWN].includes(state?.value?.status ?? 0)
+  );
+  const isRunning = computed(() => !isStopped.value);
 
   return {
     events,

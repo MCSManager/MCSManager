@@ -4,10 +4,10 @@ import InstanceCommand from "../commands/base/command";
 
 export default class MinecraftUpdateCommand extends InstanceCommand {
   constructor() {
-    super("UpdateCommand");
+    super("MinecraftUpdateCommand");
   }
 
   async exec(instance: Instance) {
-    console.log($t("TXT_CODE_mc_update.updateInstance"));
+    // Not supported yet
   }
 }

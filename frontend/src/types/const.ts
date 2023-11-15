@@ -21,6 +21,14 @@ export const INSTANCE_STATUS = {
   "3": t("TXT_CODE_f912fadc")
 };
 
+export enum INSTANCE_STATUS_CODE {
+  UNKNOWN = -1,
+  STOPPED = 0,
+  STOPPING = 1,
+  STARTING = 2,
+  RUNNING = 3
+}
+
 export const defaultDockerFile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
 
 export const openjdk8 = `FROM openjdk:8-jre
