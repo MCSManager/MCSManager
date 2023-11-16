@@ -8,10 +8,6 @@ import { Server, Socket } from "socket.io";
 import { LOCAL_PRESET_LANG_PATH } from "./const";
 import logger from "./service/log";
 
-import { StorageSubsystem } from "common";
-const a = new StorageSubsystem();
-console.log("XZXZXZX:", a);
-
 initVersionManager();
 const VERSION = getVersion();
 
@@ -29,7 +25,7 @@ _  /_/ // /_/ //  __/  / / / / / /_/ /  / / /
 /_____/ \\__,_/ \\___//_/ /_/ /_/\\____//_/ /_/                                 
                                                                              
 
- + Copyright 2022 MCSManager Dev <https://github.com/MCSManager>
+ + Copyright ${new Date().getFullYear()} MCSManager Dev <https://github.com/MCSManager>
  + Version ${VERSION}
 `);
 

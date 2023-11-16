@@ -1,7 +1,7 @@
 import "module-alias/register";
 
 // Initialize the version manager & i18n
-import { $t, i18next } from "./app/i18n";
+import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
 
 // Storage
@@ -11,8 +11,6 @@ import Storage from "./app/common/storage/sys_storage";
 import { initSystemConfig, systemConfig } from "./app/setting";
 import SystemUser from "./app/service/system_user";
 import SystemRemoteService from "./app/service/system_remote_service";
-
-import fs from "fs";
 
 // Http server requirements
 import Koa from "koa";
@@ -41,7 +39,6 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
 
   // The Socket service is not required
   // SocketService.setUpSocketIO(httpServer);
-
   httpServer.listen(port, host);
   logger.info("==================================");
   logger.info($t("TXT_CODE_app.panelStarted"));
