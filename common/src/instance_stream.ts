@@ -1,10 +1,10 @@
 import { Socket } from "socket.io";
 
 // Application instance data stream forwarding adapter
-
 export default class InstanceStreamListener {
-  // Instance uuid -> Socket[]
   public readonly listenMap = new Map<string, Socket[]>();
+
+  public constructor() {}
 
   public requestForward(socket: Socket, instanceUuid: string) {
     if (this.listenMap.has(instanceUuid)) {

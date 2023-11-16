@@ -10,7 +10,7 @@ import EventEmitter from "events";
 import { IInstanceProcess } from "../../instance/interface";
 import { ChildProcess, ChildProcessWithoutNullStreams, exec, spawn } from "child_process";
 import { commandStringToArray } from "../base/command_parser";
-import { killProcess } from "../../../common/process_tools";
+import { killProcess } from "common";
 import GeneralStartCommand from "../general/general_start";
 import FunctionDispatcher from "../dispatcher";
 import StartCommand from "../start";

@@ -1,5 +1,5 @@
 import { $t } from "../../../i18n";
-import { killProcess } from "../../../common/process_tools";
+import { killProcess } from "common";
 import { ChildProcess, exec, spawn } from "child_process";
 import logger from "../../../service/log";
 import Instance from "../../instance/instance";

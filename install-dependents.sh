@@ -1,4 +1,5 @@
 #!/bin/sh
+npm run preview-build
 
 cd daemon
 npm install

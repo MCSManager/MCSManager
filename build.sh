@@ -1,4 +1,5 @@
 #!/bin/sh
+npm run preview-build
 
 rm -rf production-code
 rm -rf ./daemon/dist ./daemon/production

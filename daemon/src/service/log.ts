@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import * as log4js from "log4js";
 import os from "os";
-import { systemInfo } from "../common/system_info";
+import { systemInfo } from "common";
 import { $t } from "../i18n";
 
 const LOG_FILE_PATH = "logs/current.log";

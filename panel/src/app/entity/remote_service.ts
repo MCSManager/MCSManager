@@ -2,7 +2,7 @@ import { io, Socket, SocketOptions, ManagerOptions } from "socket.io-client";
 import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
-import InstanceStreamListener from "../common/instance_stream";
+import { InstanceStreamListener } from "common";
 import { $t, i18next } from "../i18n";
 
 export default class RemoteService {
@@ -52,7 +52,7 @@ export default class RemoteService {
       logger.info($t("TXT_CODE_daemonInfo.disconnect", { v: daemonInfo }));
       await this.onDisconnect();
     });
-    this.socket.on("connect_error", async (error: string) => {
+    this.socket.on("connect_error", async (error: Error) => {
       await this.onDisconnect();
     });
   }

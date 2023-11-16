@@ -1,5 +1,5 @@
 import * as fs from "fs-extra";
-import GlobalVariable from "./common/global_variable";
+import { GlobalVariable } from "common";
 import { logger } from "./service/log";
 import path from "path";
 import storage from "./common/system_storage";

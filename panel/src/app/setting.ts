@@ -2,7 +2,7 @@
 
 import SystemConfig from "./entity/setting";
 import StorageSystem from "./common/system_storage";
-import GlobalVariable from "./common/global_variable";
+import { GlobalVariable } from "common";
 import { $t, i18next } from "./i18n";
 let systemConfig: SystemConfig = null;
 

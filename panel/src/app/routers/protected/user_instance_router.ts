@@ -8,9 +8,7 @@ import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { $t } from "../../i18n";
 import { isTopPermissionByUuid } from "../../service/permission_service";
-import { isEmpty, toText } from "../../../app/common/typecheck";
-import { toBoolean } from "../../../app/common/typecheck";
-import { toNumber } from "../../../app/common/typecheck";
+import { isEmpty, toText, toBoolean, toNumber } from "common";
 
 const router = new Router({ prefix: "/protected_instance" });
 

@@ -1,7 +1,7 @@
 import Koa from "koa";
 import userSystem from "./system_user";
 import { timeUuid } from "./password";
-import GlobalVariable from "../common/global_variable";
+import { GlobalVariable } from "common";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
 import { User } from "../entity/user";

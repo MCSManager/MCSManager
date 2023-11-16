@@ -5,9 +5,9 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import VisualDataSubsystem from "../../service/system_visual_data";
 import RemoteRequest from "../../service/remote_command";
 import os from "os";
-import { systemInfo } from "../../common/system_info";
+import { systemInfo } from "common";
 import { getVersion, specifiedDaemonVersion } from "../../version";
-import GlobalVariable from "../../common/global_variable";
+import { GlobalVariable } from "common";
 import {
   LOGIN_FAILED_KEY,
   ILLEGAL_ACCESS_KEY,

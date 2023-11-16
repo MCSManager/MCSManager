@@ -12,7 +12,7 @@ import StopCommand from "../entity/commands/stop";
 import SendCommand from "../entity/commands/cmd";
 import KillCommand from "../entity/commands/kill";
 import { IInstanceDetail, IJson } from "../service/interfaces";
-import { QueryMapWrapper } from "../common/query_wrapper";
+import { QueryMapWrapper } from "common";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import FileManager from "../service/system_file";
 import { ProcessConfig } from "../entity/instance/process_config";

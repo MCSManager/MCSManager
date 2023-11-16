@@ -1,4 +1,3 @@
-import { $t } from "../i18n";
 import { ChildProcess, exec, execSync, SpawnOptionsWithoutStdio } from "child_process";
 import os from "os";
 import child_process from "child_process";
@@ -108,12 +107,10 @@ export function killProcess(pid: string | number, process: ChildProcess, signal?
   try {
     if (os.platform() === "win32") {
       execSync(`taskkill /PID ${pid} /T /F`);
-      console.log($t("TXT_CODE_common.killProcess", { pid: pid }));
       return true;
     }
     if (os.platform() === "linux") {
       execSync(`kill -s 9 ${pid}`);
-      console.log($t("TXT_CODE_common.killProcess", { pid: pid }));
       return true;
     }
   } catch (err) {
