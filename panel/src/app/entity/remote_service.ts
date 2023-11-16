@@ -52,7 +52,7 @@ export default class RemoteService {
       logger.info($t("TXT_CODE_daemonInfo.disconnect", { v: daemonInfo }));
       await this.onDisconnect();
     });
-    this.socket.on("connect_error", async (error: string) => {
+    this.socket.on("connect_error", async (error: Error) => {
       await this.onDisconnect();
     });
   }

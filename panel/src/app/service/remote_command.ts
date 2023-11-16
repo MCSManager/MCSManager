@@ -44,7 +44,7 @@ export default class RemoteRequest {
           clearTimeout(countdownTask);
           // Whenever a message is returned, match the ID to ensure that the response corresponds to the request,
           // then delete its own event listener
-          this.rService.socket.removeEventListener(event, fn);
+          this.rService.socket.removeListener(event, fn);
           if (msg.status == RemoteService.STATUS_OK) resolve(msg.data);
           else if (msg.data.err) {
             reject(new RemoteError(msg.data.err));
