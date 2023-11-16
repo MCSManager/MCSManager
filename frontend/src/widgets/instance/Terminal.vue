@@ -9,7 +9,7 @@ import {
   DownOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
-  ReconciliationOutlined
+  RedoOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -102,7 +102,7 @@ const instanceOperations = computed(() =>
   arrayFilter([
     {
       title: t("TXT_CODE_47dcfa5"),
-      icon: ReconciliationOutlined,
+      icon: RedoOutlined,
       click: () => {
         restartInstance().execute({
           params: {
