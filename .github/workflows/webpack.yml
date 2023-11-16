@@ -22,11 +22,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build Frontend
-        run: cd frontend && npm install && npm run build
-
-      - name: Build Daemon
-        run: cd daemon && npm install && npm run build
-
-      - name: Build Panel
-        run: cd panel && npm install && npm run build
+      - name: Run Build Script
+        run: | 
+          chmod a+x ./install-dependents.sh
+          chmod a+x ./build.sh
+          ./install-dependents.sh
+          ./build.sh
+        
