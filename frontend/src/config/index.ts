@@ -219,7 +219,7 @@ export function getLayoutCardPool() {
       title: t("实例快捷方式"),
       width: 3,
       description: t("显示实例状态"),
-      height: LayoutCardHeight.MINI,
+      height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
         {
