@@ -3,7 +3,20 @@ import { ref, computed } from "vue";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "../../tools/array";
 import { t } from "@/lang/i18n";
-import { ArrowRightOutlined, CloudServerOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
+import {
+  AppstoreAddOutlined,
+  ArrowRightOutlined,
+  CloudServerOutlined,
+  CodeOutlined,
+  ControlOutlined,
+  DashboardOutlined,
+  FieldTimeOutlined,
+  FolderOpenOutlined,
+  FolderViewOutlined,
+  NodeExpandOutlined,
+  RadiusSettingOutlined,
+  UngroupOutlined
+} from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -53,7 +66,7 @@ const btns = computed(() =>
   arrayFilter([
     {
       title: t("TXT_CODE_d07742fe"),
-      icon: CloudServerOutlined,
+      icon: ControlOutlined,
       condition: () => !isGlobalTerminal.value,
       click: (): void => {
         toPage({
@@ -66,14 +79,14 @@ const btns = computed(() =>
     },
     {
       title: t("TXT_CODE_ae533703"),
-      icon: CloudServerOutlined,
+      icon: FolderOpenOutlined,
       click: () => {
         toPage({ path: "/instances/terminal/files" });
       }
     },
     {
       title: t("TXT_CODE_d23631cb"),
-      icon: CloudServerOutlined,
+      icon: CodeOutlined,
       click: () => {
         terminalConfigDialog.value?.openDialog();
       }
@@ -103,7 +116,7 @@ const btns = computed(() =>
     // },
     {
       title: t("TXT_CODE_d341127b"),
-      icon: CloudServerOutlined,
+      icon: DashboardOutlined,
       click: () => {
         eventConfigDialog.value?.openDialog();
       }
@@ -111,7 +124,7 @@ const btns = computed(() =>
 
     {
       title: t("TXT_CODE_4f34fc28"),
-      icon: CloudServerOutlined,
+      icon: AppstoreAddOutlined,
       click: () => {
         instanceDetailsDialog.value?.openDialog();
       }
@@ -134,9 +147,12 @@ const btns = computed(() =>
             :lg="6"
             style="height: 100%"
           >
-            <InnerCard :style="{ height: LayoutCardHeight.MINI }" @click="btn.click">
+            <InnerCard
+              :style="{ height: LayoutCardHeight.MINI }"
+              :icon="btn.icon"
+              @click="btn.click"
+            >
               <template #title>
-                <component :is="btn.icon"></component>
                 {{ btn.title }}
               </template>
               <template #body>

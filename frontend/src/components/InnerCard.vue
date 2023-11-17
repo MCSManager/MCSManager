@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { FunctionalComponent } from "vue";
+
+const props = defineProps<{
+  icon?: FunctionalComponent;
+}>();
+</script>
 
 <template>
   <div class="inner-card-wrapper">
@@ -10,13 +16,27 @@
         <a-typography-text>
           <slot name="body"></slot>
         </a-typography-text>
+
+        <div v-if="props.icon" class="bg-icon">
+          <component :is="props.icon"></component>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.bg-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 42px;
+  bottom: 10px;
+  color: var(--color-gray-12);
+  opacity: 0.06;
+}
 .inner-card-wrapper {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--color-gray-2);
   background-color: var(--color-gray-2);
   padding: 12px;
