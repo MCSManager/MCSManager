@@ -47,7 +47,7 @@ const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo } = use
 const operationConfig = {
   params: {
     uuid: instanceId || "",
-    remote_uuid: daemonId || ""
+    daemonId: daemonId || ""
   }
 };
 
@@ -106,7 +106,7 @@ const instanceOperations = computed(() =>
         await executeUpdate({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || "",
+            daemonId: daemonId || "",
             task_name: "update"
           },
           data: {
