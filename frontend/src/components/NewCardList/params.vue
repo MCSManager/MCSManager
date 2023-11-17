@@ -17,7 +17,7 @@ const formRef = ref<FormInstance>();
 const openInstanceSelectDialog = async () => {
   try {
     const selectedInstances = await useSelectInstances();
-    if (selectedInstances) {
+    if (selectedInstances && selectedInstances.length > 0) {
       formData.value.instanceId = selectedInstances[0].instanceUuid;
       formData.value.daemonId = selectedInstances[0].daemonId;
     }
