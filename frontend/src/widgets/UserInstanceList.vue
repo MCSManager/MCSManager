@@ -24,7 +24,7 @@ const columns = [
     title: t("TXT_CODE_5476e012"),
     dataIndex: "status",
     key: "status",
-    customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
+    customRender: (e: { text: string }) => {
       return INSTANCE_STATUS[e.text] || e.text;
     }
   },
@@ -32,7 +32,7 @@ const columns = [
     title: t("TXT_CODE_662ad338"),
     dataIndex: "ie",
     customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
-      return `${e.text}/${e.record?.oe}`;
+      return `Output:${e.record.oe} Input:${e.record.ie}`;
     }
   },
   {
@@ -62,11 +62,11 @@ const getInstanceList = async () => {
   });
 };
 
-const operate = (serviceUuid: string, instanceUuid: string) => {
+const operate = (daemonId: string, instanceUuid: string) => {
   router.push({
     path: "/instances/terminal",
     query: {
-      serviceUuid,
+      daemonId,
       instanceUuid
     }
   });
@@ -89,7 +89,7 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button @click="operate(record.serviceUuid, record.uuid)">
+            <a-button @click="operate(record.daemonId, record.instanceUuid)">
               {{ t("TXT_CODE_5974bf24") }}
             </a-button>
           </template>

@@ -25,7 +25,7 @@ const submit = async () => {
     await execute({
       params: {
         uuid: props.instanceId ?? "",
-        remote_uuid: props.daemonId ?? ""
+        daemonId: props.daemonId ?? ""
       },
       data: {
         pingConfig: options.value?.config.pingConfig

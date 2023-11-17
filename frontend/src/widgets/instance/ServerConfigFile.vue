@@ -46,7 +46,7 @@ const render = async () => {
     await reqConfigFile({
       params: {
         uuid: instanceId ?? "",
-        remote_uuid: daemonId ?? "",
+        daemonId: daemonId ?? "",
         fileName: configPath ?? "",
         type: extName ?? ""
       }
@@ -77,7 +77,7 @@ const save = async () => {
     await execUpdateConfigFile({
       params: {
         uuid: instanceId ?? "",
-        remote_uuid: daemonId ?? "",
+        daemonId: daemonId ?? "",
         fileName: configPath ?? "",
         type: extName ?? ""
       },

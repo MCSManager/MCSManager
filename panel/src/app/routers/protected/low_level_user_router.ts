@@ -49,13 +49,13 @@ router.get("/", permission({ level: 1, token: false, speedLimit: false }), async
     if (advanced) {
       const instances = user.instances;
       for (const iterator of instances) {
-        const remoteService = RemoteServiceSubsystem.getInstance(iterator.serviceUuid);
+        const remoteService = RemoteServiceSubsystem.getInstance(iterator.daemonId);
         // If the remote service doesn't exist at all, load a deleted prompt
         if (!remoteService) {
           resInstances.push({
             hostIp: "-- Unknown --",
             instanceUuid: iterator.instanceUuid,
-            serviceUuid: iterator.serviceUuid,
+            daemonId: iterator.daemonId,
             status: -1,
             nickname: "--",
             remarks: "--"
@@ -72,7 +72,7 @@ router.get("/", permission({ level: 1, token: false, speedLimit: false }), async
             hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
             remarks: remoteService.config.remarks,
             instanceUuid: instancesInfo.instanceUuid,
-            serviceUuid: remoteService.uuid,
+            daemonId: remoteService.uuid,
             status: instancesInfo.status,
             nickname: instancesInfo.config.nickname,
             ie: instancesInfo.config.ie,
@@ -85,7 +85,7 @@ router.get("/", permission({ level: 1, token: false, speedLimit: false }), async
           resInstances.push({
             hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
             instanceUuid: iterator.instanceUuid,
-            serviceUuid: iterator.serviceUuid,
+            daemonId: iterator.daemonId,
             status: -1,
             nickname: "--"
           });

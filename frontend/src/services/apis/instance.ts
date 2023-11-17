@@ -16,7 +16,7 @@ export interface MissionPassportResponse {
 export const setUpTerminalStreamChannel = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
   },
@@ -30,7 +30,7 @@ export const getInstanceInfo = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   InstanceDetail
@@ -43,7 +43,7 @@ export const openInstance = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {
@@ -58,7 +58,7 @@ export const stopInstance = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {
@@ -73,7 +73,7 @@ export const restartInstance = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {
@@ -88,7 +88,7 @@ export const killInstance = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {
@@ -103,7 +103,7 @@ export const updateInstance = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
       task_name: string;
     };
     data: {
@@ -120,7 +120,7 @@ export const updateInstanceConfig = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       terminalOption?: {
@@ -154,7 +154,7 @@ export const updateAnyInstanceConfig = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: IGlobalInstanceConfig;
   },
@@ -170,7 +170,7 @@ export const uploadAddress = useDefineApi<
   {
     params: {
       upload_dir: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: NewInstanceForm;
   },
@@ -203,7 +203,7 @@ export const uploadInstanceFile = useDefineApi<
 export const createInstance = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
     };
     data: NewInstanceForm;
   },
@@ -224,7 +224,7 @@ export const quickInstallListAddr = useDefineApi<any, QuickStartTemplate[]>({
 export const createAsyncTask = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
       task_name: string;
     };
@@ -249,7 +249,7 @@ export const createAsyncTask = useDefineApi<
 export const queryAsyncTask = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
       task_name: string;
     };
@@ -277,7 +277,7 @@ export const getConfigFileList = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       files: string[];
@@ -296,7 +296,7 @@ export const getConfigFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
       fileName: string;
       type: string;
     };
@@ -311,7 +311,7 @@ export const updateConfigFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
       fileName: string;
       type: string;
     };
@@ -327,7 +327,7 @@ export const batchStart = useDefineApi<
   {
     data: {
       instanceUuid: string;
-      serviceUuid: string;
+      daemonId: string;
     }[];
   },
   boolean
@@ -340,7 +340,7 @@ export const batchStop = useDefineApi<
   {
     data: {
       instanceUuid: string;
-      serviceUuid: string;
+      daemonId: string;
     }[];
   },
   boolean
@@ -353,7 +353,7 @@ export const batchKill = useDefineApi<
   {
     data: {
       instanceUuid: string;
-      serviceUuid: string;
+      daemonId: string;
     }[];
   },
   boolean
@@ -365,7 +365,7 @@ export const batchKill = useDefineApi<
 export const batchDelete = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       uuids: string[];
@@ -381,7 +381,7 @@ export const batchDelete = useDefineApi<
 export const scheduleList = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
   },
@@ -394,7 +394,7 @@ export const scheduleList = useDefineApi<
 export const scheduleDelete = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
       task_name: string;
     };
@@ -408,7 +408,7 @@ export const scheduleDelete = useDefineApi<
 export const scheduleCreate = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
     data: NewScheduleTask;

@@ -29,7 +29,7 @@ const submit = async () => {
     await execute({
       params: {
         uuid: props.instanceId ?? "",
-        remote_uuid: props.daemonId ?? ""
+        daemonId: props.daemonId ?? ""
       },
       data: {
         terminalOption: options.value?.config.terminalOption,

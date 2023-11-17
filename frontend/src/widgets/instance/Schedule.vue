@@ -27,7 +27,7 @@ const getScheduleList = async () => {
   try {
     await execute({
       params: {
-        remote_uuid: daemonId ?? "",
+        daemonId: daemonId ?? "",
         uuid: instanceId ?? ""
       }
     });
@@ -42,7 +42,7 @@ const deleteSchedule = async (name: string) => {
   try {
     await execute({
       params: {
-        remote_uuid: daemonId ?? "",
+        daemonId: daemonId ?? "",
         uuid: instanceId ?? "",
         task_name: name
       }

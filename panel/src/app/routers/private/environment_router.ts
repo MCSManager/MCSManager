@@ -11,11 +11,11 @@ const router = new Router({ prefix: "/environment" });
 router.get(
   "/image",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const daemonId = String(ctx.query.daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("environment/images", {});
       ctx.body = result;
     } catch (err) {
@@ -29,12 +29,12 @@ router.get(
 router.post(
   "/image",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const config = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request(
         "environment/new_image",
         config
@@ -51,12 +51,12 @@ router.post(
 router.delete(
   "/image",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String, imageId: String } }),
+  validator({ query: { daemonId: String, imageId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const imageId = String(ctx.query.imageId);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("environment/del_image", {
         imageId
       });
@@ -72,11 +72,11 @@ router.delete(
 router.get(
   "/containers",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const daemonId = String(ctx.query.daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("environment/containers", {});
       ctx.body = result;
     } catch (err) {
@@ -90,11 +90,11 @@ router.get(
 router.get(
   "/networkModes",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const daemonId = String(ctx.query.daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("environment/networkModes", {});
       ctx.body = result;
     } catch (err) {
@@ -108,11 +108,11 @@ router.get(
 router.get(
   "/progress",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const daemonId = String(ctx.query.daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("environment/progress", {});
       ctx.body = result;
     } catch (err) {

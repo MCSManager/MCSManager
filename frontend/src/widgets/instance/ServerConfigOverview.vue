@@ -40,7 +40,7 @@ const render = async () => {
     await execute({
       params: {
         uuid: instanceId ?? "",
-        remote_uuid: daemonId ?? ""
+        daemonId: daemonId ?? ""
       },
       data: {
         files: files

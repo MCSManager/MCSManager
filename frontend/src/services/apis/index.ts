@@ -86,7 +86,7 @@ export const remoteNodeList = useDefineApi<any, NodeStatus[]>({
 export const remoteInstances = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       page: number;
       page_size: number;
       instance_name?: string;

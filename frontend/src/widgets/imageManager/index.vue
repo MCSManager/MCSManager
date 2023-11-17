@@ -26,7 +26,7 @@ const getImageList = async () => {
   try {
     await execImageList({
       params: {
-        remote_uuid: daemonId ?? ""
+        daemonId: daemonId ?? ""
       },
       method: "GET"
     });
@@ -99,7 +99,7 @@ const delImage = async (item: ImageInfo) => {
   try {
     await execImageList({
       params: {
-        remote_uuid: daemonId ?? "",
+        daemonId: daemonId ?? "",
         imageId: item.RepoTags[0]
       },
       method: "DELETE"
@@ -166,7 +166,7 @@ const getContainerList = async () => {
   try {
     await execContainerList({
       params: {
-        remote_uuid: daemonId ?? ""
+        daemonId: daemonId ?? ""
       }
     });
     if (containers.value) containerDataSource.value = containers.value;

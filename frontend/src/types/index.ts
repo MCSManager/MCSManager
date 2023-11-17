@@ -81,7 +81,7 @@ export interface UserInstance {
   hostIp: string;
   instanceUuid: string;
   nickname: string;
-  serviceUuid: string;
+  daemonId: string;
   status: number;
 }
 

@@ -30,7 +30,7 @@ const getProgress = async () => {
   try {
     await execute({
       params: {
-        remote_uuid: props.daemonId
+        daemonId: props.daemonId
       }
     });
     if (state.value) {

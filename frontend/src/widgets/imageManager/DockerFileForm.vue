@@ -26,7 +26,7 @@ const submit = async () => {
       return message.error(t("TXT_CODE_2764f197"));
     await execute({
       params: {
-        remote_uuid: props.daemonId
+        daemonId: props.daemonId
       },
       data: {
         dockerFile: options.dockerFile,

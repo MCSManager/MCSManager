@@ -42,7 +42,7 @@ const instancesList = computed(() => {
   for (const instance of instances.value?.data || []) {
     newInstances.push({
       instanceUuid: instance.instanceUuid,
-      serviceUuid: currentRemoteNode.value?.uuid ?? "",
+      daemonId: currentRemoteNode.value?.uuid ?? "",
       nickname: instance.config.nickname,
       status: instance.status,
       hostIp: `${currentRemoteNode.value?.ip}:${currentRemoteNode.value?.port}`
@@ -70,7 +70,7 @@ const initInstancesData = async () => {
   try {
     await getInstances({
       params: {
-        remote_uuid: currentRemoteNode.value?.uuid ?? "",
+        daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
         instance_name: operationForm.value.instanceName.trim()

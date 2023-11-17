@@ -7,7 +7,7 @@ export enum UserPassWordType {
 
 export interface IUserApp {
   instanceUuid: string;
-  serviceUuid: string;
+  daemonId: string;
   instanceInfo?: any;
 }
 

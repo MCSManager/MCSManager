@@ -1,11 +1,11 @@
 import userSystem from "./system_user";
 import { User } from "../entity/user";
 
-export function isHaveInstance(user: User, serviceUuid: string, instanceUuid: string) {
+export function isHaveInstance(user: User, daemonId: string, instanceUuid: string) {
   if (isTopPermission(user)) return true;
   if (user && user.instances) {
     for (const v of user.instances) {
-      if (serviceUuid === v.serviceUuid && instanceUuid === v.instanceUuid) return true;
+      if (daemonId === v.daemonId && instanceUuid === v.instanceUuid) return true;
     }
   }
   return false;
@@ -21,7 +21,7 @@ export function isTopPermissionByUuid(uuid: string) {
   return isTopPermission(user);
 }
 
-export function isHaveInstanceByUuid(uuid: string, serviceUuid: string, instanceUuid: string) {
+export function isHaveInstanceByUuid(uuid: string, daemonId: string, instanceUuid: string) {
   const user = userSystem.getInstance(uuid);
-  return isHaveInstance(user, serviceUuid, instanceUuid);
+  return isHaveInstance(user, daemonId, instanceUuid);
 }

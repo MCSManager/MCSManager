@@ -60,7 +60,7 @@ export function useTerminal() {
     isReady.value = false;
     const res = await setUpTerminalStreamChannel().execute({
       params: {
-        remote_uuid: config.daemonId,
+        daemonId: config.daemonId,
         uuid: config.instanceId
       }
     });

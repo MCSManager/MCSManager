@@ -77,7 +77,7 @@ const initInstancesData = async () => {
   try {
     await getInstances({
       params: {
-        remote_uuid: currentRemoteNode.value?.uuid ?? "",
+        daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
         instance_name: operationForm.value.instanceName.trim()
@@ -201,7 +201,7 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
       const state = await fn({
         data: selectedInstance.value.map((item) => ({
           instanceUuid: item.instanceUuid,
-          serviceUuid: currentRemoteNode.value?.uuid ?? ""
+          daemonId: currentRemoteNode.value?.uuid ?? ""
         }))
       });
       if (state.value) {
@@ -237,7 +237,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
       try {
         await execute({
           params: {
-            remote_uuid: currentRemoteNode.value?.uuid ?? ""
+            daemonId: currentRemoteNode.value?.uuid ?? ""
           },
           data: {
             uuids: uuids,

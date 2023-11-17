@@ -39,10 +39,10 @@ const getCurrentLang = (): string => {
   return String(i18n.global.locale).toLowerCase();
 };
 
-const $t = (...args: string[]) => {
+const $t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);
 };
-const t = (...args: string[]) => {
+const t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);
 };
 

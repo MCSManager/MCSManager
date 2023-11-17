@@ -12,9 +12,9 @@ const router = new Router({ prefix: "/protected_instance" });
 // Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
-  const serviceUuid = String(ctx.query.remote_uuid);
+  const daemonId = String(ctx.query.daemonId);
   const userUuid = getUserUuid(ctx);
-  if (isHaveInstanceByUuid(userUuid, serviceUuid, instanceUuid)) {
+  if (isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {
     await next();
   } else {
     ctx.status = 403;
@@ -26,10 +26,10 @@ router.use(async (ctx, next) => {
 router.put(
   "/low_permission",
   permission({ level: 1 }),
-  validator({ query: { uuid: String, remote_uuid: String } }),
+  validator({ query: { uuid: String, daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const config = ctx.request.body;
       // User data filter
@@ -38,7 +38,7 @@ router.put(
         oe: String(config.oe),
         stopCommand: String(config.stopCommand)
       };
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       ctx.body = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: believableConfig

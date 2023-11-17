@@ -3,7 +3,7 @@ import { useDefineApi } from "@/stores/useDefineApi";
 export const fileList = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
       target: string;
       page: number;
@@ -33,7 +33,7 @@ export const getFileStatus = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {
@@ -55,7 +55,7 @@ export const addFolder = useDefineApi<
     };
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   boolean
@@ -71,7 +71,7 @@ export const touchFile = useDefineApi<
     };
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   boolean
@@ -84,7 +84,7 @@ export const deleteFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       targets: string[];
@@ -100,7 +100,7 @@ export const copyFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       targets: string[][];
@@ -116,7 +116,7 @@ export const moveFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       targets: string[][];
@@ -132,7 +132,7 @@ export const compressFile = useDefineApi<
   {
     params: {
       uuid: string;
-      remote_uuid: string;
+      daemonId: string;
     };
     data: {
       type: number;
@@ -151,7 +151,7 @@ export const uploadAddress = useDefineApi<
   {
     params: {
       upload_dir: string;
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
   },
@@ -180,7 +180,7 @@ export const downloadAddress = useDefineApi<
   {
     params: {
       file_name: string;
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
   },
@@ -196,7 +196,7 @@ export const downloadAddress = useDefineApi<
 export const fileContent = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
     data: {
@@ -213,7 +213,7 @@ export const fileContent = useDefineApi<
 export const changePermission = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       uuid: string;
     };
     data: {

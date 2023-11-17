@@ -111,7 +111,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     try {
       const res = await execute({
         params: {
-          remote_uuid: daemonId || "",
+          daemonId: daemonId || "",
           uuid: instanceId || "",
           page: operationForm.value.current - 1,
           page_size: operationForm.value.pageSize,
@@ -141,7 +141,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await execute({
         params: {
           uuid: instanceId || "",
-          remote_uuid: daemonId || ""
+          daemonId: daemonId || ""
         },
         data: {
           target: breadcrumbs[breadcrumbs.length - 1].path + dirname
@@ -179,7 +179,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await execute({
         params: {
           uuid: instanceId || "",
-          remote_uuid: daemonId || ""
+          daemonId: daemonId || ""
         },
         data: {
           targets: clipboard.value.value.map((e) => [
@@ -203,7 +203,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await execute({
         params: {
           uuid: instanceId || "",
-          remote_uuid: daemonId || ""
+          daemonId: daemonId || ""
         },
         data: {
           targets: [
@@ -228,7 +228,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         await execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || ""
+            daemonId: daemonId || ""
           },
           data: {
             targets: files
@@ -277,7 +277,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await execute({
         params: {
           uuid: instanceId || "",
-          remote_uuid: daemonId || ""
+          daemonId: daemonId || ""
         },
         data: {
           type: 1,
@@ -301,7 +301,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await execute({
         params: {
           uuid: instanceId || "",
-          remote_uuid: daemonId || ""
+          daemonId: daemonId || ""
         },
         data: {
           type: 2,
@@ -331,7 +331,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getUploadCfg({
         params: {
           upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
-          remote_uuid: daemonId!,
+          daemonId: daemonId!,
           uuid: instanceId!
         }
       });
@@ -387,7 +387,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getDownloadCfg({
         params: {
           file_name: fileName,
-          remote_uuid: daemonId!,
+          daemonId: daemonId!,
           uuid: instanceId!
         }
       });
@@ -425,7 +425,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     try {
       await execute({
         params: {
-          remote_uuid: daemonId || "",
+          daemonId: daemonId || "",
           uuid: instanceId || ""
         }
       });
@@ -473,7 +473,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     try {
       await execute({
         params: {
-          remote_uuid: daemonId || "",
+          daemonId: daemonId || "",
           uuid: instanceId || ""
         },
         data: {

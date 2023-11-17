@@ -32,7 +32,7 @@ const emit = defineEmits(["nextStep"]);
 const props = defineProps<{
   appType: QUICKSTART_ACTION_TYPE;
   createMethod: QUICKSTART_METHOD;
-  remoteUuid: string;
+  daemonId: string;
 }>();
 
 const zipCode = ref("utf-8");
@@ -138,7 +138,7 @@ const selectedFile = async () => {
     await getCfg({
       params: {
         upload_dir: ".",
-        remote_uuid: props.remoteUuid
+        daemonId: props.daemonId
       },
       data: formData
     });
@@ -176,7 +176,7 @@ const createInstance = async () => {
     if (!formData.cwd) formData.cwd = ".";
     await executeCreateInstance({
       params: {
-        remote_uuid: props.remoteUuid
+        daemonId: props.daemonId
       },
       data: formData
     });

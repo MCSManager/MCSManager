@@ -93,7 +93,7 @@ const handleNext = (key: string) => {
           <CreateInstanceForm
             :app-type="formData.appType"
             :create-method="formData.createMethod"
-            :remote-uuid="formData.remoteUuid ? formData.remoteUuid : ''"
+            :daemon-id="formData.daemonId ? formData.daemonId : ''"
             @next-step="handleNext"
           />
         </div>

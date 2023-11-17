@@ -18,13 +18,13 @@ const router = new Router({ prefix: "/instance" });
 router.get(
   "/",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      if (!isHaveInstanceByUuid(getUserUuid(ctx), serviceUuid, instanceUuid)) return;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      if (!isHaveInstanceByUuid(getUserUuid(ctx), daemonId, instanceUuid)) return;
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/detail", {
         instanceUuid
       });
@@ -40,12 +40,12 @@ router.get(
 router.post(
   "/",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String } }),
+  validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const config = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       ctx.body = result;
     } catch (err) {
@@ -59,13 +59,13 @@ router.post(
 router.post(
   "/upload",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String, upload_dir: String } }),
+  validator({ query: { daemonId: String, upload_dir: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       // const uploadDir = String(ctx.query.upload_dir);
       const config = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
@@ -96,13 +96,13 @@ router.post(
 router.put(
   "/",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const config = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config
@@ -119,13 +119,13 @@ router.put(
 router.delete(
   "/",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String }, body: { uuids: Object, deleteFile: Boolean } }),
+  validator({ query: { daemonId: String }, body: { uuids: Object, deleteFile: Boolean } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuids = ctx.request.body.uuids;
       const deleteFile = ctx.request.body.deleteFile;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/delete", {
         instanceUuids,
         deleteFile
@@ -142,8 +142,8 @@ router.delete(
 router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
-    multiOperationForwarding(instances, async (remoteUuid: string, instanceUuids: string[]) => {
-      const remoteService = RemoteServiceSubsystem.getInstance(remoteUuid);
+    multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/open", {
           instanceUuids
@@ -161,8 +161,8 @@ router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
 router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
-    multiOperationForwarding(instances, async (remoteUuid: string, instanceUuids: string[]) => {
-      const remoteService = RemoteServiceSubsystem.getInstance(remoteUuid);
+    multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/stop", {
           instanceUuids
@@ -180,8 +180,8 @@ router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
 router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
   try {
     const instances = ctx.request.body;
-    multiOperationForwarding(instances, async (remoteUuid: string, instanceUuids: string[]) => {
-      const remoteService = RemoteServiceSubsystem.getInstance(remoteUuid);
+    multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/kill", { instanceUuids })
         .catch((err) => {});

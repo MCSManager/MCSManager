@@ -15,9 +15,9 @@ const router = new Router({ prefix: "/protected_instance" });
 // Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
-  const serviceUuid = String(ctx.query.remote_uuid);
+  const daemonId = String(ctx.query.daemonId);
   const userUuid = getUserUuid(ctx);
-  if (isHaveInstanceByUuid(userUuid, serviceUuid, instanceUuid)) {
+  if (isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {
     await next();
   } else {
     ctx.status = 403;
@@ -30,12 +30,12 @@ router.use(async (ctx, next) => {
 router.all(
   "/open",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/open", {
         instanceUuids: [instanceUuid]
       });
@@ -51,12 +51,12 @@ router.all(
 router.all(
   "/stop",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/stop", {
         instanceUuids: [instanceUuid]
       });
@@ -73,13 +73,13 @@ router.all(
 router.all(
   "/command",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String, command: String } }),
+  validator({ query: { daemonId: String, uuid: String, command: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const command = String(ctx.query.command);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/command", {
         instanceUuid,
         command
@@ -96,12 +96,12 @@ router.all(
 router.all(
   "/restart",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/restart", {
         instanceUuids: [instanceUuid]
       });
@@ -117,12 +117,12 @@ router.all(
 router.all(
   "/kill",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/kill", {
         instanceUuids: [instanceUuid]
       });
@@ -139,12 +139,12 @@ router.post(
   "/asynchronous",
   permission({ level: 1 }),
   validator({
-    query: { remote_uuid: String, uuid: String, task_name: String },
+    query: { daemonId: String, uuid: String, task_name: String },
     body: {}
   }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const taskName = String(ctx.query.task_name).toLowerCase().trim();
       const parameter = ctx.request.body;
@@ -155,7 +155,7 @@ router.post(
         throw new Error("illegal access");
       }
 
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
         instanceUuid,
         taskName,
@@ -174,14 +174,14 @@ router.all(
   "/stop_asynchronous",
   permission({ level: 1 }),
   validator({
-    query: { remote_uuid: String, uuid: String }
+    query: { daemonId: String, uuid: String }
   }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const parameter = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       // No permission check is required because "Parameter.TaskId" is not easily obtained.
       const result = await new RemoteRequest(remoteService).request("instance/stop_asynchronous", {
         instanceUuid,
@@ -200,11 +200,11 @@ router.all(
   "/query_asynchronous",
   permission({ level: 10, speedLimit: false }),
   validator({
-    query: { remote_uuid: String, uuid: String }
+    query: { daemonId: String, uuid: String }
   }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const taskName = String(ctx.query.task_name);
       const parameter = ctx.request.body;
@@ -213,7 +213,7 @@ router.all(
       if (!taskId && !isTopPermissionByUuid(getUserUuid(ctx))) {
         throw new Error("Unauthorized access");
       }
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       ctx.body = await new RemoteRequest(remoteService).request("instance/query_asynchronous", {
         instanceUuid,
         taskName,
@@ -230,12 +230,12 @@ router.all(
 router.post(
   "/stream_channel",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
@@ -260,13 +260,13 @@ router.post(
 router.post(
   "/process_config/list",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const files = ctx.request.body.files;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request(
         "instance/process_config/list",
         {
@@ -286,14 +286,14 @@ router.post(
 router.get(
   "/process_config/file",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String, fileName: String } }),
+  validator({ query: { daemonId: String, uuid: String, fileName: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.fileName);
       const type = String(ctx.query.type);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request(
         "instance/process_config/file",
         {
@@ -315,15 +315,15 @@ router.get(
 router.put(
   "/process_config/file",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String, fileName: String } }),
+  validator({ query: { daemonId: String, uuid: String, fileName: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.fileName);
       const type = String(ctx.query.type);
       const config = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request(
         "instance/process_config/file",
         {
@@ -346,14 +346,14 @@ router.put(
   "/instance_update",
   permission({ level: 1 }),
   validator({
-    query: { uuid: String, remote_uuid: String },
+    query: { uuid: String, daemonId: String },
     body: {}
   }),
   async (ctx) => {
     try {
       // Here is the low-privileged user configuration setting interface,
       // in order to prevent data injection, a layer of filtering must be performed
-      const serviceUuid = toText(ctx.query.remote_uuid);
+      const daemonId = toText(ctx.query.daemonId);
       const instanceUuid = toText(ctx.query.uuid);
       const config = ctx.request.body;
 
@@ -388,7 +388,7 @@ router.put(
       const ie = !isEmpty(config.ie) ? toText(config?.ie) : null;
       const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
 
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
@@ -413,12 +413,12 @@ router.put(
 router.get(
   "/outputlog",
   permission({ level: 1, speedLimit: false }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       let result = await new RemoteRequest(remoteService).request("instance/outputlog", {
         instanceUuid
       });

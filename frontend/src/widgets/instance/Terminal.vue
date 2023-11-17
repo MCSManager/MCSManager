@@ -72,7 +72,7 @@ const quickOperations = computed(() =>
         openInstance().execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || ""
+            daemonId: daemonId || ""
           }
         });
       },
@@ -86,7 +86,7 @@ const quickOperations = computed(() =>
         stopInstance().execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || ""
+            daemonId: daemonId || ""
           }
         });
       },
@@ -107,7 +107,7 @@ const instanceOperations = computed(() =>
         restartInstance().execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || ""
+            daemonId: daemonId || ""
           }
         });
       },
@@ -120,7 +120,7 @@ const instanceOperations = computed(() =>
         killInstance().execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || ""
+            daemonId: daemonId || ""
           }
         });
       },
@@ -133,7 +133,7 @@ const instanceOperations = computed(() =>
         updateInstance().execute({
           params: {
             uuid: instanceId || "",
-            remote_uuid: daemonId || "",
+            daemonId: daemonId || "",
             task_name: "update"
           },
           data: {

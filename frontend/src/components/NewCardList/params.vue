@@ -19,7 +19,7 @@ const openInstanceSelectDialog = async () => {
     const selectedInstances = await useSelectInstances();
     if (selectedInstances) {
       formData.value.instanceId = selectedInstances[0].instanceUuid;
-      formData.value.daemonId = selectedInstances[0].serviceUuid;
+      formData.value.daemonId = selectedInstances[0].daemonId;
     }
   } catch (err: any) {
     console.error(err);

@@ -17,7 +17,7 @@ const props = defineProps<{
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { openInputDialog } = useAppToolsStore();
-const daemonId = getMetaOrRouteValue("remoteUuid") ?? "";
+const daemonId = getMetaOrRouteValue("daemonId") ?? "";
 const dialog = reactive({
   show: false,
   title: "Dialog"
@@ -55,7 +55,7 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
     const instanceName = await openInputDialog(t("TXT_CODE_c237192c"));
     await executeCreateAsyncTask({
       params: {
-        remote_uuid: daemonId,
+        daemonId: daemonId,
         uuid: "-",
         task_name: "quick_install"
       },
@@ -93,7 +93,7 @@ const queryStatus = async () => {
     if (!newTaskInfo.value) throw new Error("newTaskInfo is null");
     await queryAsyncTaskStatus({
       params: {
-        remote_uuid: daemonId,
+        daemonId: daemonId,
         uuid: "-",
         task_name: "quick_install"
       },

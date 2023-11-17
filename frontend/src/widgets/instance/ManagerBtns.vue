@@ -39,7 +39,7 @@ const refreshInstanceInfo = async () => {
   await execute({
     params: {
       uuid: instanceId ?? "",
-      remote_uuid: daemonId ?? ""
+      daemonId: daemonId ?? ""
     },
     forceRequest: true
   });

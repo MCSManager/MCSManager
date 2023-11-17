@@ -79,14 +79,14 @@ class UserSubsystem {
   setUserInstances(uuid: string, instanceIds: IUserApp[]) {
     const instance = this.getInstance(uuid);
     instanceIds.forEach((value) => {
-      if (!value.serviceUuid || !value.instanceUuid)
+      if (!value.daemonId || !value.instanceUuid)
         throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
     });
     instance.instances = [];
     instanceIds.forEach((value) => {
       instance.instances.push({
         instanceUuid: String(value.instanceUuid),
-        serviceUuid: String(value.serviceUuid)
+        daemonId: String(value.daemonId)
       });
     });
   }

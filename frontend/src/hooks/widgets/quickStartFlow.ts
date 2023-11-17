@@ -79,7 +79,7 @@ export function useQuickStartFlow() {
     actions?: ActionButtons[];
     appType?: QUICKSTART_ACTION_TYPE;
     createMethod?: QUICKSTART_METHOD;
-    remoteUuid?: string;
+    daemonId?: string;
   }>({
     title: t("TXT_CODE_724ce74d"),
     step: 1,
@@ -101,10 +101,10 @@ export function useQuickStartFlow() {
     formData.title = t("TXT_CODE_d182c422");
   };
 
-  const toStep3 = (remoteUuid: string) => {
+  const toStep3 = (daemonId: string) => {
     formData.step = 3;
     formData.title = t("TXT_CODE_49981cb9");
-    formData.remoteUuid = remoteUuid;
+    formData.daemonId = daemonId;
     currentIcon.value = CalculatorTwoTone;
     formData.actions = arrayFilter<ActionButtons>([
       {
@@ -118,7 +118,7 @@ export function useQuickStartFlow() {
           router.push({
             path: "/quickstart/minecraft",
             query: {
-              remoteUuid
+              daemonId
             }
           });
         }
@@ -163,7 +163,7 @@ export function useQuickStartFlow() {
         key: "console",
         icon: CodeOutlined,
         click: () => {
-          const daemonId = formData.remoteUuid;
+          const daemonId = formData.daemonId;
           router.push({
             path: "/instances/terminal",
             query: {
@@ -178,7 +178,7 @@ export function useQuickStartFlow() {
         key: "files",
         icon: FolderOpenOutlined,
         click: () => {
-          const daemonId = formData.remoteUuid;
+          const daemonId = formData.daemonId;
           router.push({
             path: "/instances/terminal/files",
             query: {

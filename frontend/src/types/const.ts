@@ -13,7 +13,7 @@ export const TERMINAL_CODE = [
   "UTF-16"
 ];
 
-export const INSTANCE_STATUS = {
+export const INSTANCE_STATUS: Record<string, string> = {
   "-1": t("TXT_CODE_6ffdeae8"),
   "0": t("TXT_CODE_4ef6b040"),
   "1": t("TXT_CODE_6bb63f94"),

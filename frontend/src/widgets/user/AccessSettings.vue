@@ -29,7 +29,7 @@ const handleDelete = async (deletedInstance: UserInstance) => {
   for (let valueKey = 0; valueKey < dataSource.value.length; valueKey++) {
     const instance = dataSource.value[valueKey];
     if (
-      deletedInstance.serviceUuid == instance.serviceUuid &&
+      deletedInstance.daemonId == instance.daemonId &&
       deletedInstance.instanceUuid == instance.instanceUuid
     ) {
       dataSource.value.splice(valueKey, 1);
@@ -93,7 +93,7 @@ const columns = computed(() => {
     {
       align: "center",
       title: t("TXT_CODE_b26a0528"),
-      dataIndex: "serviceUuid",
+      dataIndex: "daemonId",
       key: "daemon",
       minWidth: "200px"
     },

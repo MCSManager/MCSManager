@@ -91,7 +91,7 @@ const createRequest = async () => {
     if (!newTask.count) newTask.count = "-1";
     await execute({
       params: {
-        remote_uuid: props.daemonId,
+        daemonId: props.daemonId,
         uuid: props.instanceId
       },
       data: newTask

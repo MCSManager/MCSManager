@@ -29,13 +29,13 @@ router.get("/remote_services_list", permission({ level: 10 }), async (ctx) => {
 router.get(
   "/remote_service_instances",
   permission({ level: 10 }),
-  validator({ query: { remote_uuid: String, page: Number, page_size: Number } }),
+  validator({ query: { daemonId: String, page: Number, page_size: Number } }),
   async (ctx) => {
-    const serviceUuid = String(ctx.query.remote_uuid);
+    const daemonId = String(ctx.query.daemonId);
     const page = Number(ctx.query.page);
     const pageSize = Number(ctx.query.page_size);
     const instanceName = ctx.query.instance_name;
-    const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
+    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
     const result = await new RemoteRequest(remoteService).request("instance/select", {
       page,
       pageSize,

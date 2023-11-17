@@ -4,7 +4,7 @@ import type { ImageInfo, DockerNetworkModes, ContainerInfo } from "@/types";
 export const imageList = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       imageId?: string;
     };
     data?: {
@@ -22,7 +22,7 @@ export const imageList = useDefineApi<
 export const getNetworkModeList = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   DockerNetworkModes[]
@@ -34,7 +34,7 @@ export const getNetworkModeList = useDefineApi<
 export const containerList = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
       imageId?: string;
     };
   },
@@ -47,7 +47,7 @@ export const containerList = useDefineApi<
 export const buildProgress = useDefineApi<
   {
     params: {
-      remote_uuid: string;
+      daemonId: string;
     };
   },
   {

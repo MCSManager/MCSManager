@@ -62,7 +62,7 @@ const loadImages = async () => {
   try {
     const images = await getImageList({
       params: {
-        remote_uuid: props.daemonId ?? ""
+        daemonId: props.daemonId ?? ""
       },
       method: "GET"
     });
@@ -91,7 +91,7 @@ const loadNetworkModes = async () => {
   try {
     const modes = await executeGetNetworkModeList({
       params: {
-        remote_uuid: props.daemonId ?? ""
+        daemonId: props.daemonId ?? ""
       }
     });
     if (modes.value) networkModes.value = modes.value;
@@ -135,7 +135,7 @@ const submit = async () => {
     await execute({
       params: {
         uuid: props.instanceId ?? "",
-        remote_uuid: props.daemonId ?? ""
+        daemonId: props.daemonId ?? ""
       },
       data: postData.config
     });

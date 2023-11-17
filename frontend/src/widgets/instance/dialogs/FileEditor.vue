@@ -27,7 +27,7 @@ const render = async () => {
   try {
     await execute({
       params: {
-        remote_uuid: daemonId,
+        daemonId: daemonId,
         uuid: instanceId
       },
       data: {
@@ -50,7 +50,7 @@ const submit = async () => {
   try {
     await execute({
       params: {
-        remote_uuid: daemonId,
+        daemonId: daemonId,
         uuid: instanceId
       },
       data: {

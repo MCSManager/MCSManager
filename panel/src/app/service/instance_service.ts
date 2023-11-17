@@ -1,24 +1,24 @@
 // Multi-forward operation method
 export function multiOperationForwarding(
   instances: any[],
-  callback: (remoteUuid: string, instanceUuids: string[]) => void
+  callback: (daemonId: string, instanceUuids: string[]) => void
 ) {
   // classification table
   const map = new Map<string, string[]>();
   // Classify remote hosts and instance IDs based on information
   for (const instanceInfo of instances) {
-    const remoteUuid: string = instanceInfo.serviceUuid;
+    const daemonId: string = instanceInfo.daemonId;
     const instanceUuid: string = instanceInfo.instanceUuid;
-    if (map.has(remoteUuid)) {
-      map.get(remoteUuid).push(instanceUuid);
+    if (map.has(daemonId)) {
+      map.get(daemonId).push(instanceUuid);
     } else {
-      map.set(remoteUuid, [instanceUuid]);
+      map.set(daemonId, [instanceUuid]);
     }
   }
   // Pack and forward the classified data separately
   for (const iterator of map) {
-    const remoteUuid = iterator[0];
+    const daemonId = iterator[0];
     const instanceUuids = iterator[1];
-    callback(remoteUuid, instanceUuids);
+    callback(daemonId, instanceUuids);
   }
 }

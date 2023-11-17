@@ -12,9 +12,9 @@ const router = new Router({ prefix: "/protected_schedule" });
 // Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
-  const serviceUuid = String(ctx.query.remote_uuid);
+  const daemonId = String(ctx.query.daemonId);
   const userUuid = getUserUuid(ctx);
-  if (isHaveInstanceByUuid(userUuid, serviceUuid, instanceUuid)) {
+  if (isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {
     await next();
   } else {
     ctx.status = 403;
@@ -27,12 +27,12 @@ router.use(async (ctx, next) => {
 router.get(
   "/",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const list = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(
+      const list = await new RemoteRequest(RemoteServiceSubsystem.getInstance(daemonId)).request(
         "schedule/list",
         {
           instanceUuid
@@ -51,12 +51,12 @@ router.post(
   "/",
   permission({ level: 1 }),
   validator({
-    query: { remote_uuid: String, uuid: String },
+    query: { daemonId: String, uuid: String },
     body: { name: String, count: Number, time: String, action: String, type: Number }
   }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const task = ctx.request.body;
 
@@ -66,7 +66,7 @@ router.post(
         if (name.includes(ch)) throw new Error($t("TXT_CODE_router.schedule.invalidName"));
       });
 
-      ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(
+      ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(daemonId)).request(
         "schedule/register",
         {
           instanceUuid,
@@ -89,13 +89,13 @@ router.post(
 router.delete(
   "/",
   permission({ level: 1 }),
-  validator({ query: { remote_uuid: String, uuid: String } }),
+  validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
-      const serviceUuid = String(ctx.query.remote_uuid);
+      const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const name = String(ctx.query.task_name);
-      ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(serviceUuid)).request(
+      ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(daemonId)).request(
         "schedule/delete",
         {
           instanceUuid,
