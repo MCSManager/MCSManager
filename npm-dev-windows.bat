@@ -1,4 +1,5 @@
-start start-daemon.bat
-start start-panel.bat
-start-frontend.bat
+start npm run start-daemon
+start npm run start-panel
+npm run start-frontend
+
 

@@ -1,5 +1,5 @@
 #!/bin/sh
 
-open -a Terminal.app "start-daemon.sh"
-open -a Terminal.app "start-panel.sh"
-./start-frontend.sh
+open -a Terminal.app "npm run start-daemon"
+open -a Terminal.app "npm run start-panel"
+npm run start-frontend
