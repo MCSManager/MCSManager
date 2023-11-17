@@ -67,6 +67,7 @@ const instanceOperations = computed(() =>
         message.success(t("TXT_CODE_e13abbb1"));
       },
       loading: openLoading.value,
+      disabled: containerState.isDesignMode,
       condition: () => isStopped.value
     },
     {
@@ -77,6 +78,7 @@ const instanceOperations = computed(() =>
         message.success(t("TXT_CODE_efb6d377"));
       },
       loading: stopLoading.value,
+      disabled: containerState.isDesignMode,
       condition: () => isRunning.value
     },
     {
@@ -87,6 +89,7 @@ const instanceOperations = computed(() =>
         message.success(t("实例正在重启"));
       },
       loading: restartLoading.value,
+      disabled: containerState.isDesignMode,
       condition: () => isRunning.value
     },
     {
@@ -97,6 +100,7 @@ const instanceOperations = computed(() =>
         message.success(t("TXT_CODE_efb6d377"));
       },
       loading: killLoading.value,
+      disabled: containerState.isDesignMode,
       condition: () => isRunning.value
     },
     {
@@ -116,6 +120,7 @@ const instanceOperations = computed(() =>
         message.success(t("实例正在更新"));
       },
       loading: updateLoading.value,
+      disabled: containerState.isDesignMode,
       condition: () => isStopped.value
     },
     {
@@ -129,7 +134,8 @@ const instanceOperations = computed(() =>
             instanceId
           }
         });
-      }
+      },
+      disabled: containerState.isDesignMode
     }
   ])
 );
@@ -137,12 +143,7 @@ const instanceOperations = computed(() =>
 
 <template>
   <div style="width: 100%; position: relative">
-    <CardPanel v-if="containerState.isDesignMode" class="instance-card">
-      <template #body>
-        <a-skeleton :paragraph="{ rows: 4 }" />
-      </template>
-    </CardPanel>
-    <CardPanel v-else class="instance-card">
+    <CardPanel>
       <template #title>
         {{ instanceInfo?.config.nickname }}
       </template>
@@ -177,19 +178,15 @@ const instanceOperations = computed(() =>
         </a-typography-paragraph>
         <a-space warp :size="15">
           <a-tooltip v-for="item in instanceOperations" :key="item.title" :title="item.title">
-            <a-button :icon="h(item.icon)" :loading="item.loading" @click="item.click" />
+            <a-button
+              :icon="h(item.icon)"
+              :loading="item.loading"
+              :disabled="item.disabled"
+              @click="item.click"
+            />
           </a-tooltip>
         </a-space>
       </template>
     </CardPanel>
   </div>
 </template>
-
-<style scoped lang="scss">
-.instance-card {
-  &:hover {
-    border: 1px solid var(--color-gray-8);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-  }
-}
-</style>
