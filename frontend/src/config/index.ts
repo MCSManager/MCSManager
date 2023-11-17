@@ -33,6 +33,7 @@ import UserInstanceList from "@/widgets/UserInstanceList.vue";
 import ImageManager from "@/widgets/imageManager/index.vue";
 import NewImage from "@/widgets/imageManager/NewImage.vue";
 import Schedule from "@/widgets/instance/Schedule.vue";
+import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -69,7 +70,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   UserInstanceList,
   ImageManager,
   NewImage,
-  Schedule
+  Schedule,
+  InstanceShortcut
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -207,6 +209,35 @@ export function getLayoutCardPool() {
       description: t("TXT_CODE_cf9e259c"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.OTHER
+    },
+
+    {
+      id: getRandomId(),
+      permission: ROLE.USER,
+      meta: {},
+      type: "InstanceShortcut",
+      title: t("实例快捷方式"),
+      width: 3,
+      description: t("显示实例状态"),
+      height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.INSTANCE,
+      params: [
+        {
+          field: "instanceId",
+          label: t("TXT_CODE_e6a5c12b"),
+          type: "string"
+        },
+        {
+          field: "daemonId",
+          label: t("TXT_CODE_72cfab69"),
+          type: "string"
+        },
+        {
+          field: "instance",
+          label: t("TXT_CODE_cb043d10"),
+          type: "instance"
+        }
+      ]
     }
   ];
   return LAYOUT_CARD_POOL;
