@@ -8,6 +8,8 @@ import { timeUuid } from "../../service/password";
 import { $t } from "../../i18n";
 import axios from "axios";
 import { systemConfig } from "../../setting";
+import { getUserUuid } from "../../service/passport_service";
+import { isHaveInstanceByUuid } from "../../service/permission_service";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -21,6 +23,7 @@ router.get(
     try {
       const serviceUuid = String(ctx.query.remote_uuid);
       const instanceUuid = String(ctx.query.uuid);
+      if (!isHaveInstanceByUuid(getUserUuid(ctx), serviceUuid, instanceUuid)) return;
       const remoteService = RemoteServiceSubsystem.getInstance(serviceUuid);
       const result = await new RemoteRequest(remoteService).request("instance/detail", {
         instanceUuid
