@@ -29,10 +29,10 @@ const props = defineProps<{
 .bg-icon {
   position: absolute;
   right: 12px;
-  font-size: 42px;
+  font-size: 40px;
   bottom: 10px;
   color: var(--color-gray-12);
-  opacity: 0.06;
+  opacity: 0.04;
 }
 .inner-card-wrapper {
   position: relative;
