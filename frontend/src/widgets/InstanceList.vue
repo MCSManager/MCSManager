@@ -120,6 +120,12 @@ const toCreateAppPage = () => {
   });
 };
 
+const toNodesPage = () => {
+  router.push({
+    path: "node"
+  });
+};
+
 const multipleMode = ref(false);
 const selectedInstance = ref<InstanceMoreDetail[]>([]);
 
@@ -293,7 +299,7 @@ onMounted(async () => {
                     {{ computeNodeName(item.ip, item.available, item.remarks) }}
                   </a-menu-item>
                   <a-menu-divider />
-                  <a-menu-item key="toNodesPage">
+                  <a-menu-item key="toNodesPage" @click="toNodesPage()">
                     <FormOutlined />
                     {{ t("TXT_CODE_28e53fed") }}
                   </a-menu-item>
