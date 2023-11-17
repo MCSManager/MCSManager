@@ -116,13 +116,13 @@ const handleChangeNode = async (item: NodeStatus) => {
 
 const toCreateAppPage = () => {
   router.push({
-    path: `/quickstart`
+    path: "/quickstart"
   });
 };
 
 const toNodesPage = () => {
   router.push({
-    path: "node"
+    path: "/node"
   });
 };
 
