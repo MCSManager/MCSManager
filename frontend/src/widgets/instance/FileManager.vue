@@ -58,6 +58,13 @@ const {
   toDisk
 } = useFileManager(instanceId, daemonId);
 
+const isShowDiskList = computed(
+  () =>
+    fileStatus.value?.disks.length &&
+    fileStatus.value?.platform === "win32" &&
+    fileStatus.value?.isGlobalInstance
+);
+
 const columns = computed(() => {
   return arrayFilter([
     {
@@ -249,7 +256,7 @@ onMounted(() => {
             />
             <div class="flex-wrap items-flex-start">
               <a-select
-                v-if="fileStatus?.disks.length"
+                v-if="isShowDiskList"
                 v-model:value="currentDisk"
                 :class="isPhone ? 'w-100 mb-10' : 'mr-10'"
                 style="width: 125px"
