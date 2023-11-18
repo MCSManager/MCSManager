@@ -474,10 +474,17 @@ onMounted(async () => {
 }
 
 .selected {
-  border: 3px solid var(--color-blue-6);
-  transition: all 0.1s;
+  border: none;
+  outline: 3px solid var(--color-blue-6);
+  transition: all 0.3s;
+  user-select: none;
   &:hover {
-    border: 3px solid var(--color-blue-6);
+    border: none;
+    outline: 3px solid var(--color-blue-6);
+    transition: all 0.3s;
+    box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
+    background-color: var(--color-gray-5);
+    opacity: 0.8;
   }
 }
 </style>
