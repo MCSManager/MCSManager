@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import { IPageLayoutConfig } from "../../../../common/global";
 import { $t as t } from "../i18n";
 import storage from "../common/system_storage";
+import { GlobalVariable } from "common";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
 
@@ -15,6 +16,18 @@ export function getFrontendLayoutConfig(): string {
     layoutConfig = storage.readFile(LAYOUT_CONFIG_NAME);
   }
   if (layoutConfig) {
+    if (GlobalVariable.get("versionChange")) {
+      const latestLayoutConfig = getDefaultFrontendLayoutConfig();
+      const currentLayoutConfig = JSON.parse(layoutConfig) as IPageLayoutConfig[];
+      for (const page of latestLayoutConfig) {
+        if (!currentLayoutConfig.find((item) => item.page === page.page)) {
+          currentLayoutConfig.push(page);
+        }
+      }
+      GlobalVariable.set("versionChange", null);
+      setFrontendLayoutConfig(currentLayoutConfig);
+      return JSON.stringify(currentLayoutConfig);
+    }
     return layoutConfig as string;
   } else {
     return JSON.stringify(getDefaultFrontendLayoutConfig());

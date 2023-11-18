@@ -32,7 +32,7 @@ export function initVersionManager() {
   if (currentVersion && storage.fileExists(VERSION_LOG_TEXT_NAME)) {
     const LastLaunchedVersion = storage.readFile(VERSION_LOG_TEXT_NAME);
     if (LastLaunchedVersion && LastLaunchedVersion != currentVersion) {
-      logger.info(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
+      logger.warn(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
       GlobalVariable.set("versionChange", currentVersion);
     }
   }
