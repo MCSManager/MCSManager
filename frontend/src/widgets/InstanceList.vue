@@ -482,7 +482,6 @@ onMounted(async () => {
     outline: 3px solid var(--color-blue-6);
     transition: all 0.3s;
     box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
-    // opacity: 0.8;
   }
 }
 </style>
