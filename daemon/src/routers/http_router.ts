@@ -52,52 +52,38 @@ router.get("/download/:key/:fileName", async (ctx) => {
   }
 });
 
-// file upload route
+// File upload route
 router.post("/upload/:key", async (ctx) => {
   const key = ctx.params.key;
   const unzip = ctx.query.unzip;
   const zipCode = String(ctx.query.code);
   let tmpFiles: formidable.File | formidable.File[] = null;
   try {
-    // Get the task & check the task & check if the instance exists
     const mission = missionPassport.getMission(key, "upload");
     if (!mission) throw new Error("Access denied: No task found");
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.config.cwd;
-
-    tmpFiles = ctx.request.files.file;
+    const tmpFiles = ctx.request.files.file;
     if (tmpFiles && !(tmpFiles instanceof Array)) {
-      // Confirm storage location
       const fullFileName = tmpFiles.name;
       const fileSaveRelativePath = path.normalize(path.join(uploadDir, fullFileName));
-
-      // File name special character filtering (to prevent any cross-directory intrusion)
       if (!FileManager.checkFileName(fullFileName))
         throw new Error("Access denied: Malformed file name");
-
-      // Check for file cross-directory security risks
       const fileManager = new FileManager(cwd);
       if (!fileManager.checkPath(fileSaveRelativePath))
         throw new Error("Access denied: Invalid destination");
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
-
-      // Copy the file from the temporary folder to the specified directory
-      const reader = fs.createReadStream(tmpFiles.path);
-      const upStream = fs.createWriteStream(fileSaveAbsolutePath);
-      reader.pipe(upStream);
-      reader.on("close", () => {
-        if (unzip) {
-          // If decompression is required, perform the decompression task
-          const filemanager = new FileManager(instance.config.cwd);
-          filemanager.unzip(fullFileName, "", zipCode);
-        }
-      });
+      await fs.move(tmpFiles.path, fileSaveAbsolutePath);
+      if (unzip) {
+        const filemanager = new FileManager(instance.config.cwd);
+        filemanager.unzip(fullFileName, "", zipCode);
+      }
       ctx.body = "OK";
       return;
     }
-    ctx.body = $t("TXT_CODE_http_router.updateErr");
+    ctx.body = "Access denied: No file found";
     ctx.status = 500;
   } catch (error) {
     ctx.body = error.message;
@@ -107,5 +93,4 @@ router.post("/upload/:key", async (ctx) => {
     clearUploadFiles(tmpFiles);
   }
 });
-
 export default router;

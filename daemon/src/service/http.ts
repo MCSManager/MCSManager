@@ -1,21 +1,22 @@
 import Koa from "koa";
 import koaBody from "koa-body";
-
-// Load the HTTP service route
 import koaRouter from "../routers/http_router";
+import logger from "./log";
 
 export function initKoa() {
-  // Initialize the Koa framework
   const koaApp = new Koa();
   koaApp.use(
     koaBody({
       multipart: true,
       formidable: {
-        maxFileSize: 1024 * 1024 * 1024 * 1000
+        maxFieldsSize: Number.MAX_VALUE,
+        maxFileSize: Number.MAX_VALUE
+      },
+      onError(err, ctx) {
+        logger.error("koaBody Lib Error:", err);
       }
     })
   );
-
   // Load Koa top-level middleware
   koaApp.use(async (ctx, next) => {
     await next();
@@ -29,8 +30,6 @@ export function initKoa() {
     );
     ctx.response.set("X-Power-by", "MCSManager");
   });
-
   koaApp.use(koaRouter.routes()).use(koaRouter.allowedMethods());
-
   return koaApp;
 }
