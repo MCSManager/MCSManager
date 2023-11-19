@@ -9,7 +9,6 @@ import {
   FormOutlined,
   DatabaseOutlined,
   AppstoreOutlined,
-  FrownOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   CloseOutlined,
@@ -59,6 +58,7 @@ const instancesMoreInfo = computed(() => {
 
 const initNodes = async () => {
   await getNodes();
+  nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
   if (!nodes.value?.length) {
     return message.error(t("TXT_CODE_e3d96a26"));
   }
@@ -294,8 +294,7 @@ onMounted(async () => {
                     :disabled="!item.available"
                     @click="handleChangeNode(item)"
                   >
-                    <DatabaseOutlined v-if="item.available" />
-                    <FrownOutlined v-else />
+                    <DatabaseOutlined />
                     {{ computeNodeName(item.ip, item.available, item.remarks) }}
                   </a-menu-item>
                   <a-menu-divider />
@@ -474,10 +473,15 @@ onMounted(async () => {
 }
 
 .selected {
-  border: 3px solid var(--color-blue-6);
-  transition: all 0.1s;
+  border: none;
+  outline: 3px solid var(--color-blue-6);
+  transition: all 0.3s;
+  user-select: none;
   &:hover {
-    border: 3px solid var(--color-blue-6);
+    border: none;
+    outline: 3px solid var(--color-blue-6);
+    transition: all 0.3s;
+    box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
   }
 }
 </style>
