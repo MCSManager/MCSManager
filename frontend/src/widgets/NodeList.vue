@@ -1,21 +1,10 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
-import {
-  ProfileOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  CodeOutlined,
-  ClusterOutlined,
-  BlockOutlined,
-  FolderOpenOutlined
-} from "@ant-design/icons-vue";
+import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
-import IconBtn from "@/components/IconBtn.vue";
-import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
+import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import {
   editNode as editNodeApi,
   addNode as addNodeApi,
@@ -23,109 +12,17 @@ import {
   connectNode
 } from "@/services/apis";
 import { message } from "ant-design-vue";
-import { useAppRouters } from "@/hooks/useAppRouters";
+import NodeItem from "./node/NodeItem.vue";
 
 defineProps<{
   card: LayoutCard;
 }>();
-
-const { toPage } = useAppRouters();
 
 const operationForm = ref({
   name: ""
 });
 
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
-
-const detailList = (node: ComputedNodeInfo) => {
-  return [
-    {
-      title: t("TXT_CODE_f52079a0"),
-      value: `${node.ip}:${node.port}`
-    },
-    {
-      title: t("TXT_CODE_593ee330"),
-      value: node.memText
-    },
-    {
-      title: t("TXT_CODE_2c2712a4"),
-      value: node.cpuInfo
-    },
-    {
-      title: t("TXT_CODE_3d602459"),
-      value: node.instanceStatus
-    },
-    {
-      title: t("TXT_CODE_c9609785"),
-      value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
-    },
-    {
-      title: t("TXT_CODE_3d0885c0"),
-      value: node.platformText
-    },
-    {
-      title: t("TXT_CODE_81634069"),
-      value: node.version
-    }
-  ];
-};
-
-const nodeOperations = [
-  {
-    title: t("TXT_CODE_ae533703"),
-    icon: FolderOpenOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      const instanceId = "global0001";
-      toPage({
-        path: "/instances/terminal/files",
-        query: {
-          daemonId,
-          instanceId
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_524e3036"),
-    icon: CodeOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      const instanceId = "global0001";
-      toPage({
-        path: "/instances/terminal",
-        query: {
-          daemonId,
-          instanceId
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_e6c30866"),
-    icon: BlockOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      toPage({
-        path: "/node/image",
-        query: {
-          daemonId
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_b5c7b82d"),
-    icon: SettingOutlined,
-    click: (node: ComputedNodeInfo) => {
-      editDialog.value.uuid = node.uuid;
-      editDialog.value.data.ip = node.ip;
-      editDialog.value.data.port = node.port;
-      editDialog.value.data.remarks = node.remarks;
-      editDialog.value.showEdit();
-    }
-  }
-];
 
 const addNode = async () => {
   const { execute } = addNodeApi();
@@ -282,51 +179,8 @@ const editDialog = ref({
           {{ t("TXT_CODE_a65c65c2") }}
         </a-typography-text>
       </a-col>
-
       <a-col v-for="item in state?.remote" :key="item.uuid" :span="24" :lg="12">
-        <CardPanel style="height: 100%">
-          <template #title>
-            <ProfileOutlined />
-            {{ item.remarks || item.ip }}
-          </template>
-          <template #operator>
-            <span
-              v-for="operation in nodeOperations"
-              :key="operation.title"
-              size="default"
-              class="mr-2"
-            >
-              <IconBtn
-                :icon="operation.icon"
-                :title="operation.title"
-                @click="operation.click(item)"
-              ></IconBtn>
-            </span>
-          </template>
-          <template #body>
-            <a-row :gutter="[24, 24]" class="mt-2">
-              <a-col
-                v-for="detail in detailList(item)"
-                :key="detail.title + detail.value"
-                :span="6"
-              >
-                <a-typography-paragraph>
-                  <div>
-                    {{ detail.title }}
-                  </div>
-                  <div>
-                    {{ detail.value }}
-                  </div>
-                </a-typography-paragraph>
-              </a-col>
-            </a-row>
-            <NodeSimpleChart
-              class="mt-24"
-              :cpu-data="item.cpuChartData ?? []"
-              :mem-data="item.memChartData ?? []"
-            ></NodeSimpleChart>
-          </template>
-        </CardPanel>
+        <NodeItem :item="item"></NodeItem>
       </a-col>
     </a-row>
   </div>

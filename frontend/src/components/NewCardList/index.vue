@@ -9,7 +9,7 @@ import { useRoute } from "vue-router";
 import Params from "./params.vue";
 import CardPanel from "../CardPanel.vue";
 import { t } from "@/lang/i18n";
-import type { ROLE } from "@/config/router";
+import { ROLE } from "@/config/router";
 import type { NewCardItem } from "../../config/index";
 import { message } from "ant-design-vue";
 
@@ -48,8 +48,12 @@ const insertCardToLayout = async (card: NewCardItem) => {
 
 const cardCategoryList = [
   {
-    label: t("TXT_CODE_41406a5f"),
+    label: t("TXT_CODE_6e23c48"),
     value: NEW_CARD_TYPE.COMMON
+  },
+  {
+    label: t("TXT_CODE_41406a5f"),
+    value: NEW_CARD_TYPE.DATA
   },
   {
     label: t("TXT_CODE_d941eb89"),
@@ -61,10 +65,6 @@ const cardCategoryList = [
   },
   {
     label: t("TXT_CODE_76b2a495"),
-    value: NEW_CARD_TYPE.NODE
-  },
-  {
-    label: t("TXT_CODE_6e23c48"),
     value: NEW_CARD_TYPE.OTHER
   }
 ];
@@ -88,10 +88,10 @@ const handleTabClick = (value: string) => {
             <a-radio-button v-for="item in cardCategoryList" :key="item.value" :value="item.value">
               {{ item.label }}
             </a-radio-button>
-            <a-radio-button value="EXIT" @click="() => (containerState.showNewCardDialog = false)">
-              {{ t("TXT_CODE_b1dedda3") }}
-            </a-radio-button>
           </a-radio-group>
+          <a-button class="ml-8" @click="() => (containerState.showNewCardDialog = false)">
+            {{ t("TXT_CODE_b1dedda3") }}
+          </a-button>
         </div>
         <div v-for="card in cardPool" :key="card.id + currentCardCategory">
           <a-row v-if="card.category === currentCardCategory" style="margin-bottom: 20px">
@@ -103,7 +103,22 @@ const handleTabClick = (value: string) => {
                   </span>
                 </a-typography-title>
                 <a-typography-paragraph>
-                  {{ card.description }}
+                  <div>
+                    {{ t("权限：") }}
+                    <a-tag v-if="card.permission >= ROLE.ADMIN" color="red">
+                      {{ t("管理员") }}
+                    </a-tag>
+                    <a-tag v-else-if="card.permission >= ROLE.USER" color="green">
+                      {{ t("所有用户") }}
+                    </a-tag>
+                    <a-tag v-else color="green">
+                      {{ t("所有人") }}
+                    </a-tag>
+                  </div>
+                  <div>
+                    {{ t("描述：") }}
+                    {{ card.description }}
+                  </div>
                 </a-typography-paragraph>
               </a-typography>
             </a-col>

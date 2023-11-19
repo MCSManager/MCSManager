@@ -474,7 +474,12 @@ onMounted(() => {
     </a-space>
   </a-modal>
 
-  <FileEditor ref="FileEditorDialog" />
+  <FileEditor
+    v-if="daemonId && instanceId"
+    ref="FileEditorDialog"
+    :daemon-id="daemonId"
+    :instance-id="instanceId"
+  />
 </template>
 
 <style lang="scss" scoped>

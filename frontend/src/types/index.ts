@@ -19,8 +19,8 @@ export interface LayoutWithRouter {
 export enum NEW_CARD_TYPE {
   COMMON = "COMMON",
   INSTANCE = "INSTANCE",
+  DATA = "DATA",
   USER = "USER",
-  NODE = "NODE",
   OTHER = "OTHER"
 }
 

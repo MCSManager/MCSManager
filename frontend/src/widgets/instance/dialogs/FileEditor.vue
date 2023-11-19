@@ -12,8 +12,13 @@ const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
-const daemonId = String(route.query["daemonId"]) ?? "";
-const instanceId = String(route.query["instanceId"]) ?? "";
+// const daemonId = String(route.query["daemonId"]) ?? "";
+// const instanceId = String(route.query["instanceId"]) ?? "";
+
+const props = defineProps<{
+  daemonId: string;
+  instanceId: string;
+}>();
 
 const openDialog = async (path_: string, fileName_: string) => {
   open.value = true;
@@ -27,8 +32,8 @@ const render = async () => {
   try {
     await execute({
       params: {
-        daemonId: daemonId,
-        uuid: instanceId
+        daemonId: props.daemonId,
+        uuid: props.instanceId
       },
       data: {
         target: path.value
@@ -50,8 +55,8 @@ const submit = async () => {
   try {
     await execute({
       params: {
-        daemonId: daemonId,
-        uuid: instanceId
+        daemonId: props.daemonId,
+        uuid: props.instanceId
       },
       data: {
         target: path.value,

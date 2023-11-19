@@ -27,11 +27,12 @@ import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import InstanceDetails from "./dialogs/InstanceDetails.vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
+import type { RouteLocationPathRaw } from "vue-router";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetails>>();
-const { toPage } = useAppRouters();
+const { toPage: toOtherPager } = useAppRouters();
 
 const props = defineProps<{
   card: LayoutCard;
@@ -47,6 +48,16 @@ const { instanceInfo, execute } = useInstanceInfo({
   daemonId,
   autoRefresh: true
 });
+
+const toPage = (params: RouteLocationPathRaw) => {
+  if (!params.query) params.query = {};
+  params.query = {
+    ...params.query,
+    instanceId,
+    daemonId
+  };
+  toOtherPager(params);
+};
 
 const refreshInstanceInfo = async () => {
   await execute({
