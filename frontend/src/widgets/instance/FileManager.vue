@@ -437,7 +437,7 @@ onMounted(() => {
       </a-radio-group>
     </a-space>
 
-    <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100">
+    <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100 select-none">
       <a-spin :spinning="permission.loading">
         <div class="flex-between permission">
           <a-checkbox-group
