@@ -9,6 +9,8 @@ import { useCardLayoutComputed, PLACE_HOLDER_CARD } from "@/hooks/useCardLayoutC
 import { useRouterParams } from "../hooks/useRouterParams";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useScreen } from "@/hooks/useScreen";
+import { useMouseEnter } from "@/hooks/useMouseEnter";
+import type { ILayoutCard } from "../../../common/global";
 
 const { containerState } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();
@@ -27,6 +29,14 @@ const {
   newAreaDragenter,
   newAreaDragleave
 } = useCardDragMove();
+
+const { targetId, handleMouseEnter, handleMouseLeave } = useMouseEnter();
+
+const showCardOperator = (card: ILayoutCard) => {
+  return (
+    card.type != PLACE_HOLDER_CARD && containerState.isDesignMode && targetId.value === card.id
+  );
+};
 </script>
 
 <template>
@@ -48,11 +58,10 @@ const {
         :class="{ 'is-order-mode': containerState.isDesignMode }"
         :data-card-type="card.type"
         :style="{ minHeight: card.height }"
+        @mouseenter="() => handleMouseEnter(card.id)"
+        @mouseleave="() => handleMouseLeave(card.id)"
       >
-        <CardOperator
-          v-if="card.type != PLACE_HOLDER_CARD && containerState.isDesignMode"
-          :card="card"
-        />
+        <CardOperator v-if="showCardOperator(card)" :card="card" />
         <LayoutCardComponent
           v-if="card.type != PLACE_HOLDER_CARD"
           :card="card"

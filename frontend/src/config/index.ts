@@ -35,6 +35,7 @@ import NewImage from "@/widgets/imageManager/NewImage.vue";
 import Schedule from "@/widgets/instance/Schedule.vue";
 import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
+import TitleCard from "@/widgets/TitleCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -42,6 +43,7 @@ import { ROLE } from "./router";
 // Register specified Vue components for each card.
 export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Page404,
+  TitleCard,
   EmptyCard,
   DataOverview,
   StatusBlock,
@@ -92,6 +94,17 @@ export function getLayoutCardPool() {
       width: 2,
       description: t("TXT_CODE_b3e2f83e"),
       height: LayoutCardHeight.MINI,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "TitleCard",
+      title: t("未命名标题栏"),
+      width: 12,
+      description: t("此卡片可用于栏目分段，类似于编写文章中的标题一样，可以用于排版。"),
+      height: LayoutCardHeight.AUTO,
       category: NEW_CARD_TYPE.COMMON
     },
 

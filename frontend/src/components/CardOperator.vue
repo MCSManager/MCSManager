@@ -6,6 +6,7 @@ import { h } from "vue";
 import { $t as t } from "@/lang/i18n";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { arrayFilter } from "@/tools/array";
+import { LayoutCardHeight } from "@/config/originLayoutConfig";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -29,13 +30,19 @@ let btns = arrayFilter([
     tipText: t("TXT_CODE_fd5ca298"),
     icon: VerticalAlignTopOutlined,
     click: reduceCardHeight,
-    style: "transform: rotate(0deg);"
+    style: "transform: rotate(0deg);",
+    condition: () => {
+      return props.card.height !== LayoutCardHeight.AUTO;
+    }
   },
   {
     tipText: t("TXT_CODE_5db4e96b"),
     icon: VerticalAlignTopOutlined,
     click: addCardHeight,
-    style: "transform: rotate(180deg);"
+    style: "transform: rotate(180deg);",
+    condition: () => {
+      return props.card.height !== LayoutCardHeight.AUTO;
+    }
   },
   {
     tipText: t("TXT_CODE_d356cf9d"),
