@@ -22,7 +22,7 @@ import koaStatic from "koa-static";
 import http from "http";
 import open from "open";
 
-import { logger } from "./app/service/log";
+import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 
 // Routes
@@ -157,8 +157,8 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     for (const iterator of ignoreUrls) {
       if (ctx.URL.pathname.includes(iterator)) return await next();
     }
-    logger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
-    logger.info(`[HTTP] IP: ${ctx.ip} USER: ${ctx.session.userName} UUID: ${ctx.session.uuid}`);
+    fileLogger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
+    fileLogger.info(`[HTTP] IP: ${ctx.ip} USER: ${ctx.session.userName} UUID: ${ctx.session.uuid}`);
     await next();
   });
 

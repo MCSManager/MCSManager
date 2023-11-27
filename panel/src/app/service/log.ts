@@ -21,7 +21,7 @@ log4js.configure({
         pattern: "[%d{MM/dd hh:mm:ss}] [%[%p%]] %m"
       }
     },
-    app: {
+    file: {
       type: "file",
       filename: LOG_FILE_PATH,
       layout: {
@@ -32,13 +32,18 @@ log4js.configure({
   },
   categories: {
     default: {
-      appenders: ["out", "app"],
+      appenders: ["out", "file"],
+      level: "info"
+    },
+    file: {
+      appenders: ["file"],
       level: "info"
     }
   }
 });
 
 const logger = log4js.getLogger("default");
+const fileLogger = log4js.getLogger("file");
 
 function fullTime(): string {
   const date = new Date();
@@ -49,4 +54,4 @@ function fullLocalTime(): string {
   return new Date().toLocaleTimeString();
 }
 
-export { logger, fullTime, fullLocalTime };
+export { logger, fileLogger, fullTime, fullLocalTime };
