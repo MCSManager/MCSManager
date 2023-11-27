@@ -1,5 +1,3 @@
-// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
-
 import Koa from "koa";
 import Router from "@koa/router";
 import validator from "../../middleware/validator";
@@ -11,6 +9,7 @@ import { logger } from "../../service/log";
 import { $t } from "../../i18n";
 import axios from "axios";
 import { GlobalVariable } from "common";
+import { ROLE } from "../../entity/user";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
@@ -102,7 +101,7 @@ router.all(
 router.all(
   "/proxy",
   validator({ query: { target: String } }),
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   async (ctx) => {
     try {
       const response = await axios.request({

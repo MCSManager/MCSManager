@@ -10,6 +10,7 @@ import axios from "axios";
 import { systemConfig } from "../../setting";
 import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -17,7 +18,7 @@ const router = new Router({ prefix: "/instance" });
 // Get the details of an instance
 router.get(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -39,7 +40,7 @@ router.get(
 // create instance
 router.post(
   "/",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
@@ -58,7 +59,7 @@ router.post(
 // upload the file when creating the instance
 router.post(
   "/upload",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String, upload_dir: String } }),
   async (ctx) => {
     try {
@@ -95,7 +96,7 @@ router.post(
 // Update instance information (manage users)
 router.put(
   "/",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -118,7 +119,7 @@ router.put(
 // delete instance
 router.delete(
   "/",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String }, body: { uuids: Object, deleteFile: Boolean } }),
   async (ctx) => {
     try {
@@ -139,7 +140,7 @@ router.delete(
 
 // [Top-level Permission]
 // Open instance routing in batches
-router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
+router.post("/multi_open", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
@@ -158,7 +159,7 @@ router.post("/multi_open", permission({ level: 10 }), async (ctx) => {
 
 // [Top-level Permission]
 //Close instance routing in batches
-router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
+router.post("/multi_stop", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
@@ -177,7 +178,7 @@ router.post("/multi_stop", permission({ level: 10 }), async (ctx) => {
 
 // [Top-level Permission]
 // batch terminate instance routing
-router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
+router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
@@ -194,7 +195,7 @@ router.post("/multi_kill", permission({ level: 10 }), async (ctx) => {
 
 // [Top-level Permission]
 // Get quick install list
-router.get("/quick_install_list", permission({ level: 10 }), async (ctx) => {
+router.get("/quick_install_list", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const ADDR = systemConfig.quickInstallAddr;
   try {
     const response = await axios.request({
@@ -212,7 +213,7 @@ router.get("/quick_install_list", permission({ level: 10 }), async (ctx) => {
 // forward request
 router.all(
   "/forward",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { target: String } }),
   async (ctx) => {
     const ADDR = String(ctx.query.target);

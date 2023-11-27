@@ -1,5 +1,3 @@
-// Copyright (C) 2023 MCSManager <mcsmanager-dev@outlook.com>
-
 import { systemInfo } from "common";
 
 // Visual data subsystem: responsible for collecting system data and event data, and providing some methods to display them

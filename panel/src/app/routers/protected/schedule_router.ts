@@ -7,6 +7,7 @@ import { getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { FILENAME_BLACKLIST } from "../../const";
 import { $t } from "../../i18n";
+import { ROLE } from "../../entity/user";
 const router = new Router({ prefix: "/protected_schedule" });
 
 // Routing permission verification middleware
@@ -26,7 +27,7 @@ router.use(async (ctx, next) => {
 // Get the list of scheduled tasks
 router.get(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -49,7 +50,7 @@ router.get(
 // create a scheduled task
 router.post(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String },
     body: { name: String, count: Number, time: String, action: String, type: Number }
@@ -88,7 +89,7 @@ router.post(
 // delete scheduled task
 router.delete(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {

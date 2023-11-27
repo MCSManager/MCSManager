@@ -3,13 +3,14 @@ import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/service" });
 
 // [Top-level Permission]
 // Get the list of remote services
 // Contains only service information, not a list of instance information
-router.get("/remote_services_list", permission({ level: 10 }), async (ctx) => {
+router.get("/remote_services_list", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
     const remoteService = iterator[1];
@@ -28,7 +29,7 @@ router.get("/remote_services_list", permission({ level: 10 }), async (ctx) => {
 // Query the daemon for the specified instance
 router.get(
   "/remote_service_instances",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String, page: Number, page_size: Number } }),
   async (ctx) => {
     const daemonId = String(ctx.query.daemonId);
@@ -49,7 +50,7 @@ router.get(
 
 // [Top-level Permission]
 // Get remote server system information
-router.get("/remote_services_system", permission({ level: 10 }), async (ctx) => {
+router.get("/remote_services_system", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
     const remoteService = iterator[1];
@@ -66,7 +67,7 @@ router.get("/remote_services_system", permission({ level: 10 }), async (ctx) => 
 
 // [Top-level Permission]
 // Get remote server instance information (browse too large)
-router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
+router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const result = new Array();
   for (const iterator of RemoteServiceSubsystem.services.entries()) {
     const remoteService = iterator[1];
@@ -93,7 +94,7 @@ router.get("/remote_services", permission({ level: 10 }), async (ctx) => {
 // add remote service
 router.post(
   "/remote_service",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
@@ -112,7 +113,7 @@ router.post(
 // Modify remote service parameters
 router.put(
   "/remote_service",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
@@ -132,7 +133,7 @@ router.put(
 // delete remote service
 router.delete(
   "/remote_service",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
@@ -146,7 +147,7 @@ router.delete(
 // connect to remote instance
 router.get(
   "/link_remote_service",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);

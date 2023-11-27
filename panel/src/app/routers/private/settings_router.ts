@@ -14,18 +14,19 @@ import {
   resetFrontendLayoutConfig,
   setFrontendLayoutConfig
 } from "../../service/frontend_layout";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/overview" });
 
 // [Top-level Permission]
 // Get panel configuration items
-router.get("/setting", permission({ level: 10 }), async (ctx) => {
+router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
   ctx.body = systemConfig;
 });
 
 // [Top-level Permission]
 // Update panel configuration items
-router.put("/setting", validator({ body: {} }), permission({ level: 10 }), async (ctx) => {
+router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }), async (ctx) => {
   const config = ctx.request.body;
   if (config) {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
@@ -78,18 +79,24 @@ router.get("/layout", async (ctx) => {
   ctx.body = getFrontendLayoutConfig();
 });
 
-router.post("/layout", permission({ level: 10 }), async (ctx) => {
+// [Top-level Permission]
+// Set frontend layout
+router.post("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const config = ctx.request.body;
   setFrontendLayoutConfig(config);
   ctx.body = true;
 });
 
-router.delete("/layout", permission({ level: 10 }), async (ctx) => {
+// [Top-level Permission]
+// Reset frontend layout
+router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
   resetFrontendLayoutConfig();
   ctx.body = true;
 });
 
-router.post("/upload_assets", permission({ level: 10 }), async (ctx) => {
+// [Top-level Permission]
+// Upload file to asserts directory, only administrator can upload
+router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const tmpFiles = ctx.request.files.file;
   if (!tmpFiles || tmpFiles instanceof Array) throw new Error("The body is incorrect");
   if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error("The file does not exist");

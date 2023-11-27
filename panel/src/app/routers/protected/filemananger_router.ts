@@ -8,6 +8,7 @@ import { getUserPermission, getUserUuid } from "../../service/passport_service";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../../service/permission_service";
 import { systemConfig } from "../../setting";
 import { $t } from "../../i18n";
+import { ROLE } from "../../entity/user";
 const router = new Router({ prefix: "/files" });
 
 router.use(async (ctx, next) => {
@@ -29,7 +30,7 @@ router.use(async (ctx, next) => {
 
 router.get(
   "/status",
-  permission({ level: 1, speedLimit: false }),
+  permission({ level: ROLE.USER, speedLimit: false }),
   validator({
     query: { daemonId: String, uuid: String }
   }),
@@ -51,7 +52,7 @@ router.get(
 
 router.get(
   "/list",
-  permission({ level: 1, speedLimit: false }),
+  permission({ level: ROLE.USER, speedLimit: false }),
   validator({
     query: { daemonId: String, uuid: String, target: String, page: Number, page_size: Number }
   }),
@@ -80,7 +81,7 @@ router.get(
 
 router.put(
   "/chmod",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String },
     body: { target: String, chmod: Number, deep: Boolean }
@@ -108,7 +109,7 @@ router.put(
 
 router.post(
   "/touch",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
@@ -129,7 +130,7 @@ router.post(
 
 router.post(
   "/mkdir",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
@@ -150,7 +151,7 @@ router.post(
 
 router.put(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
@@ -173,7 +174,7 @@ router.put(
 
 router.post(
   "/copy",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
@@ -194,7 +195,7 @@ router.post(
 
 router.put(
   "/move",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
@@ -215,7 +216,7 @@ router.put(
 
 router.delete(
   "/",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Object } }),
   async (ctx) => {
     try {
@@ -236,7 +237,7 @@ router.delete(
 
 router.post(
   "/compress",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String },
     body: { source: String, targets: Object, type: Number, code: String }
@@ -266,7 +267,7 @@ router.post(
 
 router.all(
   "/download",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { uuid: String, daemonId: String, file_name: String } }),
   async (ctx) => {
     try {
@@ -296,7 +297,7 @@ router.all(
 
 router.all(
   "/upload",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { uuid: String, daemonId: String, upload_dir: String } }),
   async (ctx) => {
     try {

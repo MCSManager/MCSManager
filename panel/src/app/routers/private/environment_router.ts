@@ -3,6 +3,7 @@ import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/environment" });
 
@@ -10,7 +11,7 @@ const router = new Router({ prefix: "/environment" });
 // Get the specified remote service mirror list
 router.get(
   "/image",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
@@ -28,7 +29,7 @@ router.get(
 // create image
 router.post(
   "/image",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
@@ -50,7 +51,7 @@ router.post(
 // delete the specified image
 router.delete(
   "/image",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String, imageId: String } }),
   async (ctx) => {
     try {
@@ -71,7 +72,7 @@ router.delete(
 // Get the list of existing containers of the specified remote service
 router.get(
   "/containers",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
@@ -89,7 +90,7 @@ router.get(
 // Get the list of existing networks for the specified remote service
 router.get(
   "/networkModes",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {
@@ -107,7 +108,7 @@ router.get(
 // Get the image creation progress of the specified remote service
 router.get(
   "/progress",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     try {

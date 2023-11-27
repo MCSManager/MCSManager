@@ -1,21 +1,18 @@
-// Copyright (C) 2023 MCSManager <mcsmanager-dev@outlook.com>
-
-import { createClient} from "redis";
+import { createClient } from "redis";
 import { IStorage } from "./storage_interface";
 import Storage from "./sys_storage";
 import { logger } from "../../service/log";
 
 class RedisStorageSubsystem implements IStorage {
-
-  private client = createClient()
+  private client = createClient();
 
   private async connect() {
     try {
       await this.client.connect();
     } catch (e) {
       logger.error("Error occurred while trying to dial redis\n" + e);
-      logger.warn("Due to an unrecoverable error, daemon will temporarily store data in files.")
-      Storage.setStorageType(0)
+      logger.warn("Due to an unrecoverable error, daemon will temporarily store data in files.");
+      Storage.setStorageType(0);
     }
   }
 
@@ -58,7 +55,8 @@ class RedisStorageSubsystem implements IStorage {
    * Stored in local file based on class definition and identifier
    */
   public async store(category: string, uuid: string, object: any) {
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     await this.set(category + ":" + uuid, JSON.stringify(object));
   }
 
@@ -66,8 +64,9 @@ class RedisStorageSubsystem implements IStorage {
    * Instantiate an object based on the class definition and identifier
    */
   public async load(category: string, classz: any, uuid: string) {
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
-    let result = await this.get(category + ":" + uuid)
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
+    let result = await this.get(category + ":" + uuid);
     if (result == null) {
       return null;
     }
@@ -82,7 +81,7 @@ class RedisStorageSubsystem implements IStorage {
   public async list(category: string) {
     let result: string[] = [];
     let m = Array<string>();
-    result = await this.keys(category + "*")
+    result = await this.keys(category + "*");
     if (result != null && result.length != 0) {
       for (let i of result) m.push(i.replace(category + ":", ""));
     }
@@ -93,7 +92,8 @@ class RedisStorageSubsystem implements IStorage {
    * Delete an identifier instance of the specified type through the class definition
    */
   public async delete(category: string, uuid: string) {
-    if (!this.checkFileName(uuid)) throw new Error(`UUID ${uuid} does not conform to specification`);
+    if (!this.checkFileName(uuid))
+      throw new Error(`UUID ${uuid} does not conform to specification`);
     await this.del(category + ":" + uuid);
   }
 

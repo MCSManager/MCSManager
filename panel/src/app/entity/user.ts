@@ -24,3 +24,10 @@ export class User implements IUser {
   apiKey: string = "";
   isInit: boolean = false;
 }
+
+export enum ROLE {
+  ADMIN = 10,
+  USER = 1,
+  GUEST = 0,
+  BAN = -1
+}

@@ -1,8 +1,8 @@
 import Koa from "koa";
-import { logger } from "../service/log";
 import { Stream } from "stream";
 import VisualDataSubsystem from "../service/system_visual_data";
 import { systemConfig } from "../setting";
+import { getVersion } from "../version";
 
 // Define standard response data format middleware
 export async function middleware(
@@ -30,9 +30,10 @@ export async function middleware(
     );
   }
 
-  // Product information ID
-  ctx.cookies.set("MCSManager", "Copyright 2022 https://github.com/mcsmanager");
-  ctx.response.set("X-Powered-By", "https://github.com/mcsmanager");
+  // This is to let more people know about this software
+  // and check whether it violates the open source agreement.
+  ctx.response.set("X-Powered-By", "MCSManager");
+  ctx.response.set("X-Version", getVersion());
 
   // Serialize and display when sending Error class
   if (ctx.body instanceof Error) {

@@ -6,6 +6,7 @@ import RemoteServiceSubsystem from "../../service/system_remote_service";
 import RemoteRequest from "../../service/remote_command";
 import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { $t } from "../../i18n";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -25,7 +26,7 @@ router.use(async (ctx, next) => {
 // Update limited instance information (normal users)
 router.put(
   "/low_permission",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { uuid: String, daemonId: String } }),
   async (ctx) => {
     try {

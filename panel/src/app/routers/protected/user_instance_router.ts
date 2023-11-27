@@ -9,6 +9,7 @@ import { isHaveInstanceByUuid } from "../../service/permission_service";
 import { $t } from "../../i18n";
 import { isTopPermissionByUuid } from "../../service/permission_service";
 import { isEmpty, toText, toBoolean, toNumber } from "common";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -29,7 +30,7 @@ router.use(async (ctx, next) => {
 // Enable instance routing
 router.all(
   "/open",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -50,7 +51,7 @@ router.all(
 // The instance closes the route
 router.all(
   "/stop",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -72,7 +73,7 @@ router.all(
 // At this stage, WS cross-panel command transfer has been implemented, and this interface is reserved as an API interface
 router.all(
   "/command",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String, command: String } }),
   async (ctx) => {
     try {
@@ -95,7 +96,7 @@ router.all(
 // restart the instance
 router.all(
   "/restart",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -116,7 +117,7 @@ router.all(
 // terminate the instance
 router.all(
   "/kill",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -137,7 +138,7 @@ router.all(
 // start asynchronous task
 router.post(
   "/asynchronous",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String, task_name: String },
     body: {}
@@ -172,7 +173,7 @@ router.post(
 // stop an asynchronous task
 router.all(
   "/stop_asynchronous",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String }
   }),
@@ -198,7 +199,7 @@ router.all(
 // query asynchronous task status
 router.all(
   "/query_asynchronous",
-  permission({ level: 10, speedLimit: false }),
+  permission({ level: ROLE.ADMIN, speedLimit: false }),
   validator({
     query: { daemonId: String, uuid: String }
   }),
@@ -229,7 +230,7 @@ router.all(
 // Request to establish a data stream dedicated channel with the daemon
 router.post(
   "/stream_channel",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -259,7 +260,7 @@ router.post(
 // Get the instance configuration file list based on the file list
 router.post(
   "/process_config/list",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {
@@ -285,7 +286,7 @@ router.post(
 // Get the content of the specified configuration file
 router.get(
   "/process_config/file",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String, fileName: String } }),
   async (ctx) => {
     try {
@@ -314,7 +315,7 @@ router.get(
 // Update the content of the specified configuration file
 router.put(
   "/process_config/file",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String, fileName: String } }),
   async (ctx) => {
     try {
@@ -344,7 +345,7 @@ router.put(
 // Update instance low-privilege configuration data (normal user)
 router.put(
   "/instance_update",
-  permission({ level: 1 }),
+  permission({ level: ROLE.USER }),
   validator({
     query: { uuid: String, daemonId: String },
     body: {}
@@ -412,7 +413,7 @@ router.put(
 // Get the terminal log of an instance
 router.get(
   "/outputlog",
-  permission({ level: 1, speedLimit: false }),
+  permission({ level: ROLE.USER, speedLimit: false }),
   validator({ query: { daemonId: String, uuid: String } }),
   async (ctx) => {
     try {

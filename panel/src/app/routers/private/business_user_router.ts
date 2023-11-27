@@ -5,13 +5,14 @@ import validator from "../../middleware/validator";
 import { register } from "../../service/passport_service";
 import userSystem from "../../service/system_user";
 import { $t } from "../../i18n";
+import { ROLE } from "../../entity/user";
 
 const router = new Router({ prefix: "/auth" });
 
 // Add user
 router.post(
   "/",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ body: { username: String, password: String, permission: Number } }),
   async (ctx: Koa.ParameterizedContext) => {
     const userName = String(ctx.request.body.username);
@@ -26,7 +27,7 @@ router.post(
 );
 
 // Delete user
-router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext) => {
+router.del("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.ParameterizedContext) => {
   const uuids = ctx.request.body;
   try {
     for (const iterator of uuids) {
@@ -41,7 +42,7 @@ router.del("/", permission({ level: 10 }), async (ctx: Koa.ParameterizedContext)
 // User search function
 router.get(
   "/search",
-  permission({ level: 10 }),
+  permission({ level: ROLE.ADMIN }),
   validator({ query: { page: Number, page_size: Number } }),
   async (ctx: Koa.ParameterizedContext) => {
     const userName = ctx.query.userName as string;

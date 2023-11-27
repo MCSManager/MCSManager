@@ -1,5 +1,3 @@
-// Copyright (C) 2022 MCSManager Team <mcsmanager-dev@outlook.com>
-
 import { Socket } from "socket.io";
 
 // Routing for WebSocket, based on Socket.io (useless for now)
