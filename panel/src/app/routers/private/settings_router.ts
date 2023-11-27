@@ -6,6 +6,9 @@ import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
 import { i18next } from "../../i18n";
 import userSystem from "../../service/system_user";
+import { v4 } from "uuid";
+import path from "path";
+import * as fs from "fs-extra";
 import {
   getFrontendLayoutConfig,
   resetFrontendLayoutConfig,
@@ -84,6 +87,18 @@ router.post("/layout", permission({ level: 10 }), async (ctx) => {
 router.delete("/layout", permission({ level: 10 }), async (ctx) => {
   resetFrontendLayoutConfig();
   ctx.body = true;
+});
+
+router.post("/upload_assets", permission({ level: 10 }), async (ctx) => {
+  const tmpFiles = ctx.request.files.file;
+  if (!tmpFiles || tmpFiles instanceof Array) throw new Error("The body is incorrect");
+  if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error("The file does not exist");
+  const tmpFile = tmpFiles;
+  const newFileName = v4() + path.extname(tmpFile.name);
+  const saveDirPath = path.join(process.cwd(), "public/upload_files/");
+  if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
+  await fs.move(tmpFile.path, path.join(saveDirPath, newFileName));
+  ctx.body = newFileName;
 });
 
 export default router;

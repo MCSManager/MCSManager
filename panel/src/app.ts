@@ -123,7 +123,14 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   app.use(
     koaBody({
       multipart: true,
-      parsedMethods: ["POST", "PUT", "DELETE", "GET"]
+      parsedMethods: ["POST", "PUT", "DELETE", "GET"],
+      formidable: {
+        maxFieldsSize: Number.MAX_VALUE,
+        maxFileSize: Number.MAX_VALUE
+      },
+      onError(err, ctx) {
+        logger.error("koaBody Lib Error:", err);
+      }
     })
   );
 
