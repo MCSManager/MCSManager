@@ -101,9 +101,9 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "TitleCard",
-      title: t("未命名标题栏"),
+      title: t("TXT_CODE_8981d724"),
       width: 12,
-      description: t("此卡片可用于栏目分段，类似于编写文章中的标题一样，可以用于排版。"),
+      description: t("TXT_CODE_9466852b"),
       height: LayoutCardHeight.AUTO,
       category: NEW_CARD_TYPE.COMMON
     },
@@ -269,9 +269,9 @@ export function getLayoutCardPool() {
       permission: ROLE.USER,
       meta: {},
       type: "InstanceShortcut",
-      title: t("实例快捷方式"),
+      title: t("TXT_CODE_ea0840c9"),
       width: 3,
-      description: t("显示实例状态，前提是这个用户有权限能进入这个实例"),
+      description: t("TXT_CODE_3fce7ccb"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
@@ -297,9 +297,9 @@ export function getLayoutCardPool() {
       permission: ROLE.USER,
       meta: {},
       type: "InstanceFileManager",
-      title: t("实例文件管理"),
+      title: t("TXT_CODE_72cce10b"),
       width: 12,
-      description: t("用于管理指定应用实例的文件"),
+      description: t("TXT_CODE_f49b2787"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
@@ -325,9 +325,9 @@ export function getLayoutCardPool() {
       permission: ROLE.USER,
       meta: {},
       type: "InstanceBaseInfo",
-      title: t("基本信息"),
+      title: t("TXT_CODE_eadb4f60"),
       width: 4,
-      description: t("用于展示指定实例的详细信息"),
+      description: t("TXT_CODE_97e5eccb"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
@@ -355,7 +355,7 @@ export function getLayoutCardPool() {
       title: t("TXT_CODE_a4037a98"),
       meta: {},
       width: 6,
-      description: t("用于分析面板近段时间的趋势图"),
+      description: t("TXT_CODE_6f659da2"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.DATA
     },
@@ -366,7 +366,7 @@ export function getLayoutCardPool() {
       title: t("TXT_CODE_d6d9c42c"),
       meta: {},
       width: 6,
-      description: t("用于分析面板近段时间的趋势图"),
+      description: t("TXT_CODE_6f659da2"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.DATA
     },
@@ -374,10 +374,10 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "NodeOverview",
-      title: t("所有节点"),
+      title: t("TXT_CODE_4bedec2a"),
       meta: {},
       width: 12,
-      description: t("用于查看与面板连接的所有远程节点的状态"),
+      description: t("TXT_CODE_2a8dc13f"),
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.DATA
     },
@@ -385,7 +385,7 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "DataOverview",
-      title: t("数据总览"),
+      title: t("TXT_CODE_721157a3"),
       meta: {},
       width: 8,
       description: t("TXT_CODE_55ade942"),
@@ -396,10 +396,10 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "QuickStart",
-      title: t("快速建立应用实例"),
+      title: t("TXT_CODE_e01539f1"),
       meta: {},
       width: 4,
-      description: t("用于快速新建实例"),
+      description: t("TXT_CODE_d628e631"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE
     },
@@ -408,9 +408,9 @@ export function getLayoutCardPool() {
       permission: ROLE.ADMIN,
       meta: {},
       type: "NodeItem",
-      title: t("远程节点"),
+      title: t("TXT_CODE_def287e0"),
       width: 6,
-      description: t("用于展示远程节点的详细信息和状态"),
+      description: t("TXT_CODE_abe0862e"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
@@ -421,7 +421,7 @@ export function getLayoutCardPool() {
         },
         {
           field: "instance",
-          label: t("请选择一个实例让我们获取节点信息"),
+          label: t("TXT_CODE_e7cad65f"),
           type: "instance"
         }
       ]
@@ -431,9 +431,9 @@ export function getLayoutCardPool() {
       permission: ROLE.ADMIN,
       meta: {},
       type: "InstanceManagerBtns",
-      title: t("实例功能组"),
+      title: t("TXT_CODE_d2bbb2f1"),
       width: 8,
-      description: t("应用实例的配置编辑，终端设置和其他功能的入口功能卡片"),
+      description: t("TXT_CODE_1934114b"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [

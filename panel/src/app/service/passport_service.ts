@@ -5,6 +5,7 @@ import { GlobalVariable } from "common";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
 import { User } from "../entity/user";
+import { $t } from "../i18n";
 
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
@@ -29,8 +30,10 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     ctx.session["uuid"] = user.uuid;
     ctx.session["token"] = timeUuid();
     ctx.session.save();
+    logger.info($t("TXT_CODE_42036f92"));
     logger.info(`[LOGIN] IP: ${ip} Login ${userName} successful!`);
     logger.info(`[LOGIN] Token: ${ctx.session["token"]}`);
+    logger.info($t("TXT_CODE_42036f92"));
     return ctx.session["token"];
   } else {
     // record the number of login failures
@@ -38,7 +41,7 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     ctx.session["login"] = null;
     ctx.session["token"] = null;
     ctx.session.save();
-    logger.info(`[LOGIN] IP: ${ip} login ${userName} failed!`);
+    logger.info(`[LOGIN] IP: ${ip}, Try login ${userName} failed!`);
     return null;
   }
 }

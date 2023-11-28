@@ -4,7 +4,7 @@ import permission from "../../middleware/permission";
 import validator from "../../middleware/validator";
 import { saveSystemConfig, systemConfig } from "../../setting";
 import { logger } from "../../service/log";
-import { i18next } from "../../i18n";
+import { i18next, $t } from "../../i18n";
 import userSystem from "../../service/system_user";
 import { v4 } from "uuid";
 import path from "path";
@@ -53,7 +53,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
     ctx.body = "OK";
     return;
   }
-  ctx.body = new Error("The body is incorrect");
+  ctx.body = new Error($t("TXT_CODE_e4d6cc20"));
 });
 
 // [Public Permission]
@@ -71,7 +71,7 @@ router.put("/install", async (ctx) => {
     ctx.body = "OK";
     return;
   }
-  ctx.body = new Error("The MCSManager has been installed");
+  ctx.body = new Error($t("TXT_CODE_d37f0418"));
 });
 
 // [Public router]
@@ -98,8 +98,8 @@ router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // Upload file to asserts directory, only administrator can upload
 router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const tmpFiles = ctx.request.files.file;
-  if (!tmpFiles || tmpFiles instanceof Array) throw new Error("The body is incorrect");
-  if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error("The file does not exist");
+  if (!tmpFiles || tmpFiles instanceof Array) throw new Error($t("TXT_CODE_e4d6cc20"));
+  if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error($t("TXT_CODE_1a499109"));
   const tmpFile = tmpFiles;
   const newFileName = v4() + path.extname(tmpFile.name);
   const saveDirPath = path.join(process.cwd(), "public/upload_files/");

@@ -104,19 +104,19 @@ const handleTabClick = (value: string) => {
                 </a-typography-title>
                 <a-typography-paragraph>
                   <div>
-                    {{ t("权限：") }}
+                    {{ t("TXT_CODE_8575f7c") }}
                     <a-tag v-if="card.permission >= ROLE.ADMIN" color="red">
-                      {{ t("管理员") }}
+                      {{ t("TXT_CODE_cd978243") }}
                     </a-tag>
                     <a-tag v-else-if="card.permission >= ROLE.USER" color="green">
-                      {{ t("所有用户") }}
+                      {{ t("TXT_CODE_b67197fc") }}
                     </a-tag>
                     <a-tag v-else color="green">
-                      {{ t("所有人") }}
+                      {{ t("TXT_CODE_b488372f") }}
                     </a-tag>
                   </div>
                   <div>
-                    {{ t("描述：") }}
+                    {{ t("TXT_CODE_d486a561") }}
                     {{ card.description }}
                   </div>
                 </a-typography-paragraph>

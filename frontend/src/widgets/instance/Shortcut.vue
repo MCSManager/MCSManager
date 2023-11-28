@@ -86,7 +86,7 @@ const instanceOperations = computed(() =>
       icon: RedoOutlined,
       click: async () => {
         await executeRestart(operationConfig);
-        message.success(t("实例正在重启"));
+        message.success(t("TXT_CODE_b11166e7"));
       },
       loading: restartLoading.value,
       disabled: containerState.isDesignMode,
@@ -117,14 +117,14 @@ const instanceOperations = computed(() =>
             time: new Date().getTime()
           }
         });
-        message.success(t("实例正在更新"));
+        message.success(t("TXT_CODE_b1600db0"));
       },
       loading: updateLoading.value,
       disabled: containerState.isDesignMode,
       condition: () => isStopped.value
     },
     {
-      title: t("终端"),
+      title: t("TXT_CODE_524e3036"),
       icon: CodeOutlined,
       click: () => {
         toPage({
