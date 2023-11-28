@@ -115,8 +115,8 @@ const submit = async () => {
 };
 
 onMounted(async () => {
-  await initInstancesData();
   open.value = true;
+  await initInstancesData();
 });
 
 const handleQueryInstance = throttle(async () => {
