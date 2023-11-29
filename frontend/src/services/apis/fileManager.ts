@@ -167,10 +167,8 @@ export const uploadAddress = useDefineApi<
 export const uploadFile = useDefineApi<
   {
     data: FormData;
-    url: string;
-    onUploadProgress: Function;
   },
-  {}
+  any
 >({
   method: "POST",
   headers: { "Content-Type": "multipart/form-data" }

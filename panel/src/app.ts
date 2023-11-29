@@ -169,7 +169,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   const koaStaticOptions = {
     maxAge: 10 * 24 * 60 * 60 //Cache for ten days. Changed files will not be load from cache.
   };
-  app.use(koaStatic(path.join(BASE_PATH, "public"), koaStaticOptions));
+  app.use(koaStatic(path.join(process.cwd(), "public"), koaStaticOptions));
 
   // Websocket routing (useless for now)
   // import SocketService from "./app/service/socket_service";
