@@ -3,6 +3,8 @@ import { IPageLayoutConfig } from "../../../../common/global";
 import { $t as t } from "../i18n";
 import storage from "../common/system_storage";
 import { GlobalVariable } from "common";
+import path from "path";
+import fs from "fs-extra";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
 
@@ -40,6 +42,10 @@ export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
 
 export function resetFrontendLayoutConfig() {
   storage.deleteFile(LAYOUT_CONFIG_NAME);
+  const filesDir = path.join(process.cwd(), "public/upload_files/");
+  for (const fileName of fs.readdirSync(filesDir)) {
+    fs.remove(path.join(filesDir, fileName), () => {});
+  }
 }
 
 export enum LayoutCardHeight {
