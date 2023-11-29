@@ -269,7 +269,7 @@ onMounted(() => {
               </a-select>
               <div
                 class="file-breadcrumbs mb-20"
-                :style="{ width: isPhone ? '100%' : 'calc(100% - 135px)' }"
+                :style="{ width: isPhone ? '100%' : isShowDiskList ? 'calc(100% - 135px)' : '100%' }"
               >
                 <a-breadcrumb separator=">">
                   <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
