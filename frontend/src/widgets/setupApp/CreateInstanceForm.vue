@@ -152,6 +152,7 @@ const selectedFile = async () => {
         unzip: isImportMode ? UNZIP.ON : UNZIP.OFF,
         code: zipCode.value
       },
+      timeout: Number.MAX_VALUE,
       data: uploadFormData,
       url: `${parseForwardAddress(cfg.value.addr, "http")}/upload/${cfg.value.password}`,
       onUploadProgress: (progressEvent: any) => {

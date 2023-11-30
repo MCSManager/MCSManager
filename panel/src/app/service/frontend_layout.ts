@@ -8,6 +8,8 @@ import fs from "fs-extra";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
 
+export const SAVE_DIR_PATH = "public/upload_files/";
+
 function getRandomId() {
   return v4();
 }
@@ -42,7 +44,7 @@ export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
 
 export function resetFrontendLayoutConfig() {
   storage.deleteFile(LAYOUT_CONFIG_NAME);
-  const filesDir = path.join(process.cwd(), "public/upload_files/");
+  const filesDir = path.join(process.cwd(), SAVE_DIR_PATH);
   for (const fileName of fs.readdirSync(filesDir)) {
     fs.remove(path.join(filesDir, fileName), () => {});
   }

@@ -342,6 +342,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
       await uploadFile({
         data: uploadFormData,
+        timeout: Number.MAX_VALUE,
         url: `${parseForwardAddress(uploadCfg.value.addr, "http")}/upload/${
           uploadCfg.value.password
         }`,

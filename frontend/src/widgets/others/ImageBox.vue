@@ -28,7 +28,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uploadFormData.append("file", file);
   await execute({
     data: uploadFormData,
-    timeout: 60 * 60 * 1000,
+    timeout: Number.MAX_VALUE,
     onUploadProgress: (progressEvent: any) => {
       percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
     }
