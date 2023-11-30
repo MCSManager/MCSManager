@@ -110,8 +110,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   await SystemUser.initialize();
   await SystemRemoteService.initialize();
 
-  const BASE_PATH = __dirname;
-
   const app = new Koa();
 
   // Listen for Koa errors
