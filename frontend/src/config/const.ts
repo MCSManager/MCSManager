@@ -1,1 +1,3 @@
 export const GLOBAL_INSTANCE_NAME = "__MCSM_GLOBAL_INSTANCE__";
+
+export const GLOBAL_INSTANCE_UUID = "global0001";

@@ -23,6 +23,7 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
+import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 
 const props = defineProps<{
   item?: ComputedNodeInfo;
@@ -89,7 +90,7 @@ const nodeOperations = computed(() =>
       icon: FolderOpenOutlined,
       click: (item: ComputedNodeInfo) => {
         const daemonId = item.uuid;
-        const instanceId = "global0001";
+        const instanceId = GLOBAL_INSTANCE_UUID;
         toPage({
           path: "/instances/terminal/files",
           query: {
@@ -105,7 +106,7 @@ const nodeOperations = computed(() =>
       icon: CodeOutlined,
       click: (item: ComputedNodeInfo) => {
         const daemonId = item.uuid;
-        const instanceId = "global0001";
+        const instanceId = GLOBAL_INSTANCE_UUID;
         toPage({
           path: "/instances/terminal",
           query: {
