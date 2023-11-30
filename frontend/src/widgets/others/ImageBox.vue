@@ -21,6 +21,7 @@ const imgSrc = ref(getMetaValue("image", ""));
 const open = ref(false);
 const activeKey = ref("upload");
 const percentComplete = ref(0);
+const uploadControl = new AbortController();
 
 const { state, execute } = uploadFile();
 const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
@@ -29,6 +30,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   await execute({
     data: uploadFormData,
     timeout: Number.MAX_VALUE,
+    signal: uploadControl.signal,
     onUploadProgress: (progressEvent: any) => {
       percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
     }
@@ -50,6 +52,14 @@ const save = async () => {
 
 const editImgSrc = async () => {
   open.value = true;
+};
+
+const close = () => {
+  if (percentComplete.value !== 0) {
+    percentComplete.value = 0;
+    uploadControl.abort();
+  }
+  open.value = false;
 };
 </script>
 
@@ -111,6 +121,7 @@ const editImgSrc = async () => {
           <a-typography-paragraph>
             <ol>
               <li>{{ t("上传后将自动保存") }}</li>
+              <li>{{ t("点击关闭按钮可取消上传") }}</li>
               <li>{{ t("你可以通过 “重置布局” 来清空你上传的所有文件") }}</li>
             </ol>
           </a-typography-paragraph>
@@ -121,7 +132,7 @@ const editImgSrc = async () => {
       </a-tab-pane>
     </a-tabs>
     <template #footer>
-      <a-button @click="open = false">{{ t("关闭") }}</a-button>
+      <a-button @click="close()">{{ t("关闭") }}</a-button>
       <a-button v-if="activeKey === 'url'" type="primary" @click="save">
         {{ t("保存") }}
       </a-button>
