@@ -4,7 +4,7 @@ import { onMounted } from "vue";
 import type { LayoutCard } from "@/types";
 import { userInfoApi } from "@/services/apis/index";
 import { useRouter } from "vue-router";
-import { INSTANCE_STATUS } from "@/types/const";
+import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 
 defineProps<{
   card: LayoutCard;
@@ -89,7 +89,7 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button @click="operate(record.daemonId, record.instanceUuid)">
+            <a-button :disabled="record.status === INSTANCE_STATUS_CODE.UNKNOWN" @click="operate(record.daemonId, record.instanceUuid)">
               {{ t("TXT_CODE_5974bf24") }}
             </a-button>
           </template>

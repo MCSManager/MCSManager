@@ -11,7 +11,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { throttle } from "lodash";
-import { filterFileName, getFileIcon } from "@/tools/fileManager";
+import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
 import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
@@ -267,10 +267,7 @@ onMounted(() => {
                   {{ disk }}
                 </a-select-option>
               </a-select>
-              <div
-                class="file-breadcrumbs mb-20"
-                :style="{ width: isPhone ? '100%' : 'calc(100% - 135px)' }"
-              >
+              <div class="file-breadcrumbs mb-20">
                 <a-breadcrumb separator=">">
                   <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
                     <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
@@ -361,10 +358,18 @@ onMounted(() => {
                           <a-menu-item key="6" @click="deleteFile(record.name)">
                             {{ t("TXT_CODE_ecbd7449") }}
                           </a-menu-item>
-                          <a-menu-item key="7" @click="unzipFile(record.name)">
+                          <a-menu-item
+                            v-if="record.type === 1 && getFileExtName(record.name) === 'zip'"
+                            key="7"
+                            @click="unzipFile(record.name)"
+                          >
                             {{ t("TXT_CODE_a64f3007") }}
                           </a-menu-item>
-                          <a-menu-item key="8" @click="downloadFile(record.name)">
+                          <a-menu-item
+                            v-if="record.type === 1"
+                            key="8"
+                            @click="downloadFile(record.name)"
+                          >
                             {{ t("TXT_CODE_65b21404") }}
                           </a-menu-item>
                         </a-menu>
@@ -511,6 +516,7 @@ onMounted(() => {
 .file-breadcrumbs {
   border: 1px solid var(--color-gray-5);
   border-radius: 6px;
+  flex: 1;
 
   .file-breadcrumbs-item {
     padding: 8px;

@@ -14,7 +14,10 @@ export default defineConfig({
         target: "http://localhost:23333",
         changeOrigin: true,
         ws: true
-        // rewrite: (path) => path.replace(/^\/api/, "")
+      },
+      "/upload_files": {
+        target: "http://localhost:23333",
+        changeOrigin: true
       },
       "/socket.io": {
         target: "ws://localhost:23333",

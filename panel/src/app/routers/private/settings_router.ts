@@ -15,6 +15,7 @@ import {
   setFrontendLayoutConfig
 } from "../../service/frontend_layout";
 import { ROLE } from "../../entity/user";
+import { SAVE_DIR_PATH } from "../../service/frontend_layout";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -102,7 +103,7 @@ router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => 
   if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error($t("TXT_CODE_1a499109"));
   const tmpFile = tmpFiles;
   const newFileName = v4() + path.extname(tmpFile.name);
-  const saveDirPath = path.join(process.cwd(), "public/upload_files/");
+  const saveDirPath = path.join(process.cwd(), SAVE_DIR_PATH);
   if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
   await fs.move(tmpFile.path, path.join(saveDirPath, newFileName));
   ctx.body = newFileName;

@@ -191,10 +191,8 @@ export const uploadInstanceFile = useDefineApi<
       code: string;
     };
     data: FormData;
-    url: string;
-    onUploadProgress: Function;
   },
-  {}
+  any
 >({
   method: "POST",
   headers: { "Content-Type": "multipart/form-data" }
