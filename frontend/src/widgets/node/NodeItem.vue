@@ -22,6 +22,7 @@ import { message } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
+import { arrayFilter } from "@/tools/array";
 
 const props = defineProps<{
   item?: ComputedNodeInfo;
@@ -81,62 +82,67 @@ const detailList = (node: ComputedNodeInfo) => {
   ];
 };
 
-const nodeOperations = [
-  {
-    title: t("TXT_CODE_ae533703"),
-    icon: FolderOpenOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      const instanceId = "global0001";
-      toPage({
-        path: "/instances/terminal/files",
-        query: {
-          daemonId,
-          instanceId
-        }
-      });
+const nodeOperations = computed(() =>
+  arrayFilter([
+    {
+      title: t("TXT_CODE_ae533703"),
+      icon: FolderOpenOutlined,
+      click: (item: ComputedNodeInfo) => {
+        const daemonId = item.uuid;
+        const instanceId = "global0001";
+        toPage({
+          path: "/instances/terminal/files",
+          query: {
+            daemonId,
+            instanceId
+          }
+        });
+      },
+      condition: () => item.value!.available
+    },
+    {
+      title: t("TXT_CODE_524e3036"),
+      icon: CodeOutlined,
+      click: (item: ComputedNodeInfo) => {
+        const daemonId = item.uuid;
+        const instanceId = "global0001";
+        toPage({
+          path: "/instances/terminal",
+          query: {
+            daemonId,
+            instanceId
+          }
+        });
+      },
+      condition: () => item.value!.available
+    },
+    {
+      title: t("TXT_CODE_e6c30866"),
+      icon: BlockOutlined,
+      click: (item: ComputedNodeInfo) => {
+        const daemonId = item.uuid;
+        toPage({
+          path: "/node/image",
+          query: {
+            daemonId
+          }
+        });
+      },
+      condition: () => item.value!.available
+    },
+    {
+      title: t("TXT_CODE_b5c7b82d"),
+      icon: SettingOutlined,
+      click: (node: ComputedNodeInfo) => {
+        editDialog.value.uuid = node.uuid;
+        editDialog.value.data.ip = node.ip;
+        editDialog.value.data.port = node.port;
+        editDialog.value.data.remarks = node.remarks;
+        editDialog.value.showEdit();
+      }
     }
-  },
-  {
-    title: t("TXT_CODE_524e3036"),
-    icon: CodeOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      const instanceId = "global0001";
-      toPage({
-        path: "/instances/terminal",
-        query: {
-          daemonId,
-          instanceId
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_e6c30866"),
-    icon: BlockOutlined,
-    click: (item: ComputedNodeInfo) => {
-      const daemonId = item.uuid;
-      toPage({
-        path: "/node/image",
-        query: {
-          daemonId
-        }
-      });
-    }
-  },
-  {
-    title: t("TXT_CODE_b5c7b82d"),
-    icon: SettingOutlined,
-    click: (node: ComputedNodeInfo) => {
-      editDialog.value.uuid = node.uuid;
-      editDialog.value.data.ip = node.ip;
-      editDialog.value.data.port = node.port;
-      editDialog.value.data.remarks = node.remarks;
-      editDialog.value.showEdit();
-    }
-  }
-];
+  ])
+);
 
 const deleteNode = async () => {
   const { execute } = deleteNodeApi();
