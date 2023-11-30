@@ -1,3 +1,4 @@
+call npm install
 call npm run preview-build
 
 cd daemon
