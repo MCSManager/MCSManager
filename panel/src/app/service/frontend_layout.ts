@@ -45,8 +45,10 @@ export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
 export function resetFrontendLayoutConfig() {
   storage.deleteFile(LAYOUT_CONFIG_NAME);
   const filesDir = path.join(process.cwd(), SAVE_DIR_PATH);
-  for (const fileName of fs.readdirSync(filesDir)) {
-    fs.remove(path.join(filesDir, fileName), () => {});
+  if (fs.existsSync(filesDir)) {
+    for (const fileName of fs.readdirSync(filesDir)) {
+      fs.remove(path.join(filesDir, fileName), () => {});
+    }
   }
 }
 
