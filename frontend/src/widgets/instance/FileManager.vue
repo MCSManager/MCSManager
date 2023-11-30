@@ -267,10 +267,7 @@ onMounted(() => {
                   {{ disk }}
                 </a-select-option>
               </a-select>
-              <div
-                class="file-breadcrumbs mb-20"
-                :style="{ width: isPhone ? '100%' : isShowDiskList ? 'calc(100% - 135px)' : '100%' }"
-              >
+              <div class="file-breadcrumbs mb-20">
                 <a-breadcrumb separator=">">
                   <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
                     <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
@@ -511,6 +508,7 @@ onMounted(() => {
 .file-breadcrumbs {
   border: 1px solid var(--color-gray-5);
   border-radius: 6px;
+  flex: 1;
 
   .file-breadcrumbs-item {
     padding: 8px;
