@@ -1,6 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus, Settings, UserInfo, UserInstance } from "@/types";
-import type { BaseUserInfo } from "@/types/user";
+import type { InstanceDetail, NodeStatus, Settings } from "@/types";
+import type { BaseUserInfo, UserInstance } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
 export const panelInstall = useDefineApi<
@@ -125,7 +125,7 @@ export const getUserInfo = useDefineApi<
       page_size: number;
     };
   },
-  { total: number; pageSize: number; page: number; maxPage: number; data: UserInfo[] }
+  { total: number; pageSize: number; page: number; maxPage: number; data: BaseUserInfo[] }
 >({
   url: "/api/auth/search",
   method: "GET"

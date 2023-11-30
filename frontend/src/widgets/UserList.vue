@@ -4,15 +4,13 @@ import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import { DownOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { throttle } from "lodash";
-
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { getUserInfo, deleteUser as deleteUserApi, addUser as addUserApi } from "@/services/apis";
-import type { LayoutCard, UserInfo } from "@/types/index";
+import type { LayoutCard } from "@/types/index";
 import type { BaseUserInfo } from "@/types/user";
 
 defineProps<{
@@ -24,7 +22,7 @@ interface dataType {
   pageSize: number;
   page: number;
   maxPage: number;
-  data: UserInfo[];
+  data: BaseUserInfo[];
 }
 
 const { execute } = getUserInfo();
@@ -92,7 +90,9 @@ const data = ref<dataType>();
 const dataSource = computed(() => data?.value?.data);
 const selectedUsers = ref<string[]>([]);
 
-const handleToUserConfig = (user: BaseUserInfo) => {
+const handleEditUserConfig = (user: BaseUserInfo) => {
+  console.log(user);
+
   // TXT_CODE_dbc9f7b2
 };
 
@@ -144,7 +144,7 @@ const deleteUser = async (userList: string[]) => {
   }
 };
 
-const handleDeleteUser = async (user: UserInfo) => {
+const handleDeleteUser = async (user: BaseUserInfo) => {
   await deleteUser([user.uuid]);
 };
 
@@ -330,14 +330,14 @@ onMounted(async () => {
               <a-table
                 :row-selection="{
                   selectedRowKeys: selectedUsers,
-                  onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
+                  onChange: (selectedRowKeys: string[], selectedRows: BaseUserInfo[]) => {
                     selectedUsers = selectedRowKeys;
                   }
                 }"
                 :data-source="dataSource"
                 :columns="columns"
                 :preserve-selected-row-keys="true"
-                :row-key="(record: UserInfo) => record.uuid"
+                :row-key="(record: BaseUserInfo) => record.uuid"
                 :pagination="{
                   current: operationForm.currentPage,
                   pageSize: operationForm.pageSize,
@@ -352,7 +352,7 @@ onMounted(async () => {
                     <a-dropdown>
                       <template #overlay>
                         <a-menu>
-                          <a-menu-item key="1" @click="handleToUserConfig(record)">
+                          <a-menu-item key="1" @click="handleEditUserConfig(record)">
                             {{ t("TXT_CODE_236f70aa") }}
                           </a-menu-item>
                           <a-menu-item key="2" @click="handleToUserResources(record)">

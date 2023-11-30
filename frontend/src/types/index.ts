@@ -65,26 +65,6 @@ export interface Settings {
   redisUrl: string;
 }
 
-export interface UserInfo {
-  uuid: string;
-  userName: string;
-  registerTime: string;
-  permission: number;
-  passWordType: number;
-  loginTime: string;
-  isInit: boolean;
-  instances: UserInstance[];
-  apiKey: string;
-}
-
-export interface UserInstance {
-  hostIp: string;
-  instanceUuid: string;
-  nickname: string;
-  daemonId: string;
-  status: number;
-}
-
 export interface ImageInfo {
   Containers: number;
   Created: number;

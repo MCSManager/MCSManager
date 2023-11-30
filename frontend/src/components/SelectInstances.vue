@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import type { UserInstance, MountComponent } from "@/types";
+import type { MountComponent, NodeStatus } from "@/types";
+import type { UserInstance } from "@/types/user";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -10,11 +11,9 @@ import {
   FrownOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { remoteInstances } from "@/services/apis";
-import { remoteNodeList } from "../services/apis";
-import type { NodeStatus } from "../types/index";
+import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { message } from "ant-design-vue";
-import { computeNodeName } from "../tools/nodes";
+import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
 
 const props = defineProps<MountComponent>();

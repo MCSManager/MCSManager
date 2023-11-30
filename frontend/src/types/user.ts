@@ -1,4 +1,10 @@
-import type { UserInstance } from "@/types/index";
+export interface UserInstance {
+  hostIp: string;
+  instanceUuid: string;
+  nickname: string;
+  daemonId: string;
+  status: number;
+}
 
 export interface BaseUserInfo {
   uuid: string;

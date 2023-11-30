@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard, UserInstance } from "@/types";
+import type { LayoutCard } from "@/types";
+import type { UserInstance } from "@/types/user";
 import { computed, ref } from "vue";
 import type { Ref } from "vue";
 import { t } from "@/lang/i18n";
