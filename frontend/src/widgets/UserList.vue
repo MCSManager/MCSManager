@@ -13,6 +13,7 @@ import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { getUserInfo, deleteUser as deleteUserApi, addUser as addUserApi } from "@/services/apis";
 import type { LayoutCard, UserInfo } from "@/types/index";
+import type { BaseUserInfo } from "@/types/user";
 
 defineProps<{
   card: LayoutCard;
@@ -91,9 +92,13 @@ const data = ref<dataType>();
 const dataSource = computed(() => data?.value?.data);
 const selectedUsers = ref<string[]>([]);
 
-const handleToUserConfig = (user: any) => {
+const handleToUserConfig = (user: BaseUserInfo) => {
+  // TXT_CODE_dbc9f7b2
+};
+
+const handleToUserResources = (user: BaseUserInfo) => {
   toPage({
-    path: "/users/config",
+    path: "/users/resources",
     query: {
       uuid: user.uuid
     }
@@ -105,6 +110,7 @@ const handleTableChange = (e: { current: number; pageSize: number }) => {
   operationForm.value.pageSize = e.pageSize;
   fetchData();
 };
+
 const fetchData = async () => {
   if (operationForm.value.currentPage < 1) {
     operationForm.value.currentPage = 1;
@@ -293,7 +299,6 @@ onMounted(async () => {
                   <a-menu-item key="2" @click="handleBatchDelete()">
                     {{ t("TXT_CODE_760f00f5") }}
                   </a-menu-item>
-                  <!-- <a-menu-item key="3">{{ t("TXT_CODE_4d934e3a") }}</a-menu-item> -->
                 </a-menu>
               </template>
               <a-button type="primary">
@@ -350,12 +355,12 @@ onMounted(async () => {
                           <a-menu-item key="1" @click="handleToUserConfig(record)">
                             {{ t("TXT_CODE_236f70aa") }}
                           </a-menu-item>
-                          <a-menu-item key="2" @click="handleDeleteUser(record)">
+                          <a-menu-item key="2" @click="handleToUserResources(record)">
+                            {{ t("TXT_CODE_4d934e3a") }}
+                          </a-menu-item>
+                          <a-menu-item key="3" @click="handleDeleteUser(record)">
                             {{ t("TXT_CODE_760f00f5") }}
                           </a-menu-item>
-                          <!-- <a-menu-item key="3">
-                          {{ t("TXT_CODE_4d934e3a") }}
-                        </a-menu-item> -->
                         </a-menu>
                       </template>
                       <a-button size="">

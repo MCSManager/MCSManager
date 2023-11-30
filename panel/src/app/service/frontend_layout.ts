@@ -324,13 +324,13 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
-      page: "/users/config",
+      page: "/users/resources",
       items: [
         {
           id: getRandomId(),
           meta: {},
           type: "UserAccessSettings",
-          title: t("TXT_CODE_dbc9f7b2"),
+          title: t("用户资源管理"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
