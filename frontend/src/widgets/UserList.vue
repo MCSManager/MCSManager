@@ -172,7 +172,7 @@ const userDialog = ref({
         await addUserApi().execute({
           data: {
             username: formData.value.userName,
-            password: formData.value.password!,
+            password: formData.value.passWord!,
             permission: formData.value.permission
           }
         });
@@ -200,7 +200,7 @@ const userDialog = ref({
 const formDataOrigin: EditUserInfo = {
   uuid: "",
   userName: "",
-  password: "",
+  passWord: "",
   loginTime: "",
   registerTime: "",
   instances: [],
@@ -220,7 +220,7 @@ const baseRules: Record<string, Rule[]> = {
 };
 const addUserRules: Record<string, Rule[]> = {
   ...baseRules,
-  password: [
+  passWord: [
     {
       required: true,
       message: t("请输入密码")
@@ -229,7 +229,7 @@ const addUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{12,}$/.test(value))
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
           throw new Error(t("9 到 36 个字符，必须包含大小写字母和数字"));
       },
       trigger: "blur"
@@ -238,7 +238,7 @@ const addUserRules: Record<string, Rule[]> = {
 };
 const editUserRules: Record<string, Rule[]> = {
   ...baseRules,
-  password: [
+  passWord: [
     {
       required: false
     },
@@ -246,7 +246,7 @@ const editUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (value && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{12,}$/.test(value))
+        if (value && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
           throw new Error(t("9 到 36 个字符，必须包含大小写字母和数字"));
       },
       trigger: "blur"
@@ -300,14 +300,14 @@ onMounted(async () => {
         <a-input v-model:value="formData.userName" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
 
-      <a-form-item name="password">
+      <a-form-item name="passWord">
         <a-typography-title :level="5">{{ t("TXT_CODE_5c605130") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ !isAddMode ? t("不填写则不更变原有值") : t("TXT_CODE_1f2062c7") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.password" :placeholder="t('TXT_CODE_4ea93630')" />
+        <a-input v-model:value="formData.passWord" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
 
       <a-form-item name="permission">

@@ -18,7 +18,7 @@ export interface BaseUserInfo {
 }
 
 export interface EditUserInfo extends BaseUserInfo {
-  password?: string;
+  passWord?: string;
 }
 
 export interface LoginUserInfo extends BaseUserInfo {
