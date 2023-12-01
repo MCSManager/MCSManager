@@ -32,7 +32,7 @@ interface dataType {
   data: BaseUserInfo[];
 }
 
-const { execute } = getUserInfo();
+const { execute, isLoading: getUserInfoLoading } = getUserInfo();
 const { toPage } = useAppRouters();
 const screen = useScreen();
 
@@ -355,6 +355,9 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
+            <a-button class="mr-8" type="default" :loading="getUserInfoLoading" @click="fetchData">
+              {{ t("TXT_CODE_b76d94e0") }}
+            </a-button>
             <a-dropdown>
               <template #overlay>
                 <a-menu>
