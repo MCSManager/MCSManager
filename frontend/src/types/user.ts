@@ -13,7 +13,14 @@ export interface BaseUserInfo {
   registerTime: string;
   instances: UserInstance[];
   permission: number;
-  token: string;
   apiKey: string;
   isInit: boolean;
+}
+
+export interface EditUserInfo extends BaseUserInfo {
+  password?: string;
+}
+
+export interface LoginUserInfo extends BaseUserInfo {
+  token: string;
 }

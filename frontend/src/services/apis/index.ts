@@ -1,6 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail, NodeStatus, Settings } from "@/types";
-import type { BaseUserInfo, UserInstance } from "@/types/user";
+import type { BaseUserInfo, LoginUserInfo, EditUserInfo, UserInstance } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
 export const panelInstall = useDefineApi<
@@ -63,7 +63,7 @@ export const logoutUser = useDefineApi<any, any>({
   method: "GET"
 });
 
-export const userInfoApi = useDefineApi<any, BaseUserInfo>({
+export const userInfoApi = useDefineApi<any, LoginUserInfo>({
   url: "/api/auth/"
 });
 
@@ -153,6 +153,19 @@ export const addUser = useDefineApi<
 >({
   url: "/api/auth",
   method: "POST"
+});
+
+export const editUserInfo = useDefineApi<
+  {
+    data: {
+      config: EditUserInfo;
+      uuid: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth",
+  method: "PUT"
 });
 
 export const updateUserInstance = useDefineApi<
