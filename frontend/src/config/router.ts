@@ -124,7 +124,7 @@ let originRouterConfig: RouterConfig[] = [
     },
     children: [
       {
-        path: "/users/config",
+        path: "/users/resources",
         name: t("TXT_CODE_236f70aa"),
         component: LayoutContainer,
         meta: {

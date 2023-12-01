@@ -45,8 +45,10 @@ export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
 export function resetFrontendLayoutConfig() {
   storage.deleteFile(LAYOUT_CONFIG_NAME);
   const filesDir = path.join(process.cwd(), SAVE_DIR_PATH);
-  for (const fileName of fs.readdirSync(filesDir)) {
-    fs.remove(path.join(filesDir, fileName), () => {});
+  if (fs.existsSync(filesDir)) {
+    for (const fileName of fs.readdirSync(filesDir)) {
+      fs.remove(path.join(filesDir, fileName), () => {});
+    }
   }
 }
 
@@ -322,13 +324,13 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
-      page: "/users/config",
+      page: "/users/resources",
       items: [
         {
           id: getRandomId(),
           meta: {},
           type: "UserAccessSettings",
-          title: t("TXT_CODE_dbc9f7b2"),
+          title: t("用户资源管理"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

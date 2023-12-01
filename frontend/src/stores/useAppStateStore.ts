@@ -2,10 +2,10 @@ import { computed, reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
 import _ from "lodash";
 import { userInfoApi } from "@/services/apis";
-import type { BaseUserInfo } from "@/types/user";
+import type { LoginUserInfo } from "@/types/user";
 
 interface AppStateInfo {
-  userInfo: BaseUserInfo | null;
+  userInfo: LoginUserInfo | null;
   language: string;
   isInstall: boolean;
   versionChanged: boolean;
@@ -28,7 +28,7 @@ export const useAppStateStore = createGlobalState(() => {
 
   const isAdmin = computed(() => state.userInfo?.permission === 10);
 
-  const updateUserInfo = async (userInfo?: BaseUserInfo) => {
+  const updateUserInfo = async (userInfo?: LoginUserInfo) => {
     if (userInfo) {
       state.userInfo = userInfo;
     } else {

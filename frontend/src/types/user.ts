@@ -1,4 +1,10 @@
-import type { UserInstance } from "@/types/index";
+export interface UserInstance {
+  hostIp: string;
+  instanceUuid: string;
+  nickname: string;
+  daemonId: string;
+  status: number;
+}
 
 export interface BaseUserInfo {
   uuid: string;
@@ -7,7 +13,14 @@ export interface BaseUserInfo {
   registerTime: string;
   instances: UserInstance[];
   permission: number;
-  token: string;
   apiKey: string;
   isInit: boolean;
+}
+
+export interface EditUserInfo extends BaseUserInfo {
+  passWord?: string;
+}
+
+export interface LoginUserInfo extends BaseUserInfo {
+  token: string;
 }
