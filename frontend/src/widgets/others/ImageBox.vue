@@ -36,7 +36,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
     }
   });
   if (state.value) {
-    imgSrc.value = `${window.location.origin}/upload_files/${state.value}`;
+    imgSrc.value = `/upload_files/${state.value}`;
     setMetaValue("image", imgSrc.value);
     percentComplete.value = 0;
     message.success(t("TXT_CODE_773f36a0"));
