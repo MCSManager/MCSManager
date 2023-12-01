@@ -14,6 +14,7 @@ export interface RouterMetaInfo {
     name: string;
     path: string;
     mainMenu?: boolean;
+    permission: number;
   }>;
 }
 
@@ -69,7 +70,7 @@ let originRouterConfig: RouterConfig[] = [
     },
     children: [
       {
-        path: "/instances/terminal",
+        path: `/instances/terminal`,
         name: t("TXT_CODE_524e3036"),
         component: LayoutContainer,
         meta: {
@@ -77,7 +78,7 @@ let originRouterConfig: RouterConfig[] = [
         },
         children: [
           {
-            path: "/instances/terminal/files",
+            path: `/instances/terminal/files`,
             name: t("TXT_CODE_ae533703"),
             component: LayoutContainer,
             meta: {
@@ -85,7 +86,7 @@ let originRouterConfig: RouterConfig[] = [
             }
           },
           {
-            path: "/instances/terminal/serverConfig",
+            path: `/instances/terminal/serverConfig`,
             name: t("TXT_CODE_d07742fe"),
             component: LayoutContainer,
             meta: {
@@ -93,7 +94,7 @@ let originRouterConfig: RouterConfig[] = [
             },
             children: [
               {
-                path: "/instances/terminal/serverConfig/fileEdit",
+                path: `/instances/terminal/serverConfig/fileEdit`,
                 name: t("TXT_CODE_78019c60"),
                 component: LayoutContainer,
                 meta: {
@@ -101,16 +102,16 @@ let originRouterConfig: RouterConfig[] = [
                 }
               }
             ]
+          },
+          {
+            path: `/instances/schedule`,
+            name: t("TXT_CODE_b7d026f8"),
+            component: LayoutContainer,
+            meta: {
+              permission: ROLE.USER
+            }
           }
         ]
-      },
-      {
-        path: "/instances/schedule",
-        name: t("TXT_CODE_b7d026f8"),
-        component: LayoutContainer,
-        meta: {
-          permission: ROLE.USER
-        }
       }
     ]
   },
@@ -224,13 +225,18 @@ let originRouterConfig: RouterConfig[] = [
 
 function routersConfigOptimize(
   config: RouterConfig[],
-  list: Array<{ name: string; path: string }> = []
+  list: Array<{ name: string; path: string; permission: number }> = []
 ) {
   for (const r of config) {
     r.meta.breadcrumbs = list;
     if (r.children && r.children instanceof Array) {
       const newList = JSON.parse(JSON.stringify(list));
-      newList.push({ name: r.name, path: r.path, mainMenu: r.meta.mainMenu });
+      newList.push({
+        name: r.name,
+        path: r.path,
+        mainMenu: r.meta.mainMenu,
+        permission: r.meta.permission
+      });
       routersConfigOptimize(r.children, newList);
     }
   }

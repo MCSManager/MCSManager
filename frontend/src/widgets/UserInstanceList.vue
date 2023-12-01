@@ -62,12 +62,12 @@ const getInstanceList = async () => {
   });
 };
 
-const operate = (daemonId: string, instanceUuid: string) => {
+const operate = (daemonId: string, instanceId: string) => {
   router.push({
     path: "/instances/terminal",
     query: {
       daemonId,
-      instanceUuid
+      instanceId
     }
   });
 };
@@ -89,7 +89,10 @@ onMounted(() => {
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
-            <a-button :disabled="record.status === INSTANCE_STATUS_CODE.UNKNOWN" @click="operate(record.daemonId, record.instanceUuid)">
+            <a-button
+              :disabled="record.status === INSTANCE_STATUS_CODE.UNKNOWN"
+              @click="operate(record.daemonId, record.instanceUuid)"
+            >
               {{ t("TXT_CODE_5974bf24") }}
             </a-button>
           </template>

@@ -35,7 +35,7 @@ const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
-const { isAdmin } = useAppStateStore();
+const { isAdmin, state: appState } = useAppStateStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -54,7 +54,9 @@ const route = useRoute();
 const menus = computed(() => {
   return router
     .getRoutes()
-    .filter((v) => v.meta.mainMenu)
+    .filter((v) => {
+      return v.meta.mainMenu && (appState.userInfo?.permission || 0) >= Number(v.meta.permission);
+    })
     .map((r) => {
       return {
         name: r.name,
@@ -93,6 +95,7 @@ const breadcrumbs = computed(() => {
     const meta = route.meta as RouterMetaInfo;
     meta.breadcrumbs?.forEach((v) => {
       const params = queryUrl && !v.mainMenu ? `?${queryUrl}` : "";
+      if ((appState.userInfo?.permission || 0) < v.permission) return;
       arr.push({
         title: v.name,
         disabled: false,
