@@ -106,13 +106,17 @@ defineProps<{
   left: 0px;
   right: 0px;
   bottom: 0px;
-  top: 60px;
+  top: 0px;
+
   background-color: #29292957;
   backdrop-filter: saturate(120%) blur(10px);
   transition: all 0.8s;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .login-page-body {
     padding-top: 24px;
+    padding: 12px;
     max-width: 1260px !important;
     margin: 0 auto;
     height: 100%;

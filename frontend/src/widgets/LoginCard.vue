@@ -161,12 +161,11 @@ const loginSuccess = () => {
   min-width: 356px;
   width: 100%;
   background-color: var(--login-panel-bg);
-  backdrop-filter: saturate(120%) blur(12px);
+  // backdrop-filter: saturate(120%) blur(12px);
 
   .login-panel-body {
     padding: 32px 24px;
     min-height: 322px;
-    min-width: 386px;
   }
 }
 
