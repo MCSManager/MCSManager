@@ -63,27 +63,9 @@ const beforeUpload = async (file: FileType, imgItem: ImgList) => {
 };
 
 const cancelUpload = (item: ImgList) => {
+  if (!(item.uploadControl instanceof AbortController)) return;
   item.uploadPercent = 0;
-  item.uploadControl?.abort();
-};
-
-const save = async () => {
-  try {
-    await formRef.value?.validate();
-    setMetaValue("images", imgList.value);
-    open.value = false;
-  } catch (err: any) {
-    return message.error(err.message);
-  }
-};
-
-const editImgSrc = async () => {
-  open.value = true;
-};
-
-const close = () => {
-  imgList.value.forEach((item) => cancelUpload(item));
-  open.value = false;
+  item.uploadControl.abort();
 };
 
 const formRef = ref<FormInstance>();
@@ -116,6 +98,26 @@ const addImgSrc = () => {
     key: Date.now(),
     uploadPercent: 0
   });
+};
+
+const editImgSrc = async () => {
+  open.value = true;
+};
+
+const close = () => {
+  imgList.value.forEach((item) => cancelUpload(item));
+  open.value = false;
+};
+
+const save = async () => {
+  try {
+    await formRef.value?.validate();
+    setMetaValue("images", imgList.value);
+    displayImgList.value = _.cloneDeep(imgList.value);
+    open.value = false;
+  } catch (err: any) {
+    return message.error(err.message);
+  }
 };
 </script>
 
