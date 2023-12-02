@@ -106,13 +106,13 @@ defineProps<{
   left: 0px;
   right: 0px;
   bottom: 0px;
-  top: 0px;
+  top: 60px;
   background-color: #29292957;
   backdrop-filter: saturate(120%) blur(10px);
   transition: all 0.8s;
 
   .login-page-body {
-    padding-top: 84px;
+    padding-top: 24px;
     max-width: 1260px !important;
     margin: 0 auto;
     height: 100%;

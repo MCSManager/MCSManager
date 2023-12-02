@@ -35,16 +35,6 @@ export enum ROLE {
 
 let originRouterConfig: RouterConfig[] = [
   {
-    path: "/login",
-    name: "登录页面",
-    component: LoginPage,
-    meta: {
-      permission: ROLE.GUEST,
-      mainMenu: true,
-      onlyDisplayEditMode: true
-    }
-  },
-  {
     path: "/init",
     name: "init",
     component: InstallPage,
@@ -167,15 +157,7 @@ let originRouterConfig: RouterConfig[] = [
       }
     ]
   },
-  {
-    path: "/customer",
-    name: t("TXT_CODE_ec299306"),
-    component: LayoutContainer,
-    meta: {
-      permission: ROLE.USER,
-      mainMenu: true
-    }
-  },
+
   {
     path: "/settings",
     name: t("TXT_CODE_b5c7b82d"),
@@ -201,6 +183,26 @@ let originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.GUEST,
       mainMenu: false
+    }
+  },
+  {
+    path: "/customer",
+    name: t("TXT_CODE_ec299306"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.USER,
+      mainMenu: true,
+      onlyDisplayEditMode: true
+    }
+  },
+  {
+    path: "/login",
+    name: "登录页面",
+    component: LoginPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: true,
+      onlyDisplayEditMode: true
     }
   },
 

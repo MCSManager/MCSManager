@@ -35,7 +35,7 @@ const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
-const { isAdmin, state: appState } = useAppStateStore();
+const { isAdmin, state: appState, isLogged } = useAppStateStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -55,7 +55,11 @@ const menus = computed(() => {
   return router
     .getRoutes()
     .filter((v) => {
-      return v.meta.mainMenu && (appState.userInfo?.permission || 0) >= Number(v.meta.permission);
+      return v.meta.mainMenu && isLogged.value;
+    })
+    .filter((v) => {
+      if (v.meta.onlyDisplayEditMode) return containerState.isDesignMode;
+      return true;
     })
     .map((r) => {
       return {
@@ -200,25 +204,6 @@ const appMenus = computed(() => {
         }
       ]
     },
-    // {
-    //   title: t("TXT_CODE_fa40177b"),
-    //   icon: TranslationOutlined,
-    //   click: (key: string) => {
-    //     setLanguage(key);
-    //   },
-    //   conditions: !containerState.isDesignMode,
-    //   onlyPC: false,
-    //   menus: [
-    //     {
-    //       title: "English",
-    //       value: "en_US"
-    //     },
-    //     {
-    //       title: "Chinese",
-    //       value: "zh_CN"
-    //     }
-    //   ]
-    // },
     {
       title: t("TXT_CODE_ebd2a6a1"),
       icon: BuildOutlined,
@@ -240,7 +225,7 @@ const appMenus = computed(() => {
       click: () => {
         appTools.showUserInfoDialog = true;
       },
-      conditions: !containerState.isDesignMode,
+      conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     },
     {
@@ -251,7 +236,7 @@ const appMenus = computed(() => {
         message.success(t("TXT_CODE_11673d8c"));
         router.go(0);
       },
-      conditions: !containerState.isDesignMode,
+      conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     }
   ];

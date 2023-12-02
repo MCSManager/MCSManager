@@ -13,6 +13,11 @@ import { loginUser } from "@/services/apis";
 import { sleep } from "@/tools/common";
 import { message } from "ant-design-vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import type { LayoutCard } from "@/types";
+
+const props = defineProps<{
+  card: LayoutCard;
+}>();
 
 const formData = reactive({
   username: "",
@@ -58,12 +63,20 @@ const loginSuccess = () => {
 </script>
 
 <template>
-  <div class="w-100 h-100" style="min-width: 356px">
+  <div
+    :class="{
+      logging: loginStep === 1,
+      loginDone: loginStep === 3,
+      'w-100': true,
+      'h-100': true
+    }"
+    style="min-width: 356px"
+  >
     <CardPanel class="login-panel">
       <template #body>
-        <div class="login-panel-body">
+        <div v-show="loginStep === 0" class="login-panel-body">
           <a-typography-title :level="3" class="mb-20">
-            {{ t("TXT_CODE_3ba5ad") }}
+            {{ props.card.title ? props.card.title : t("TXT_CODE_3ba5ad") }}
           </a-typography-title>
           <a-typography-paragraph class="mb-20">
             {{ t("TXT_CODE_5b60ad00") }}
@@ -80,7 +93,6 @@ const loginSuccess = () => {
                   <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
                 </template>
               </a-input>
-
               <a-input
                 v-model:value="formData.password"
                 class="mt-20"
@@ -130,10 +142,22 @@ const loginSuccess = () => {
 </template>
 
 <style lang="scss" scoped>
+.loginDone {
+  .login-page-container {
+    opacity: 0;
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(0);
+    transform: scale(0.8) !important;
+  }
+}
+.logging {
+  .login-panel {
+    transform: scale(0.8);
+  }
+}
 .login-panel {
   margin: 0 auto;
   transition: all 0.6s;
-  // max-width: 420px;
   min-width: 356px;
   width: 100%;
   background-color: var(--login-panel-bg);
