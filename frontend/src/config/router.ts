@@ -10,6 +10,7 @@ export interface RouterMetaInfo {
   mainMenu?: boolean;
   permission?: number;
   redirect?: string;
+  onlyDisplayEditMode?: boolean;
   breadcrumbs?: Array<{
     name: string;
     path: string;
@@ -35,11 +36,12 @@ export enum ROLE {
 let originRouterConfig: RouterConfig[] = [
   {
     path: "/login",
-    name: "login",
+    name: "登录页面",
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
-      mainMenu: false
+      mainMenu: true,
+      onlyDisplayEditMode: true
     }
   },
   {

@@ -519,7 +519,20 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         }
       ]
     },
-
+    {
+      page: "/login",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "LoginCard",
+          title: t("登录页面"),
+          width: 4,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        }
+      ]
+    },
     {
       page: "/404",
       items: [
