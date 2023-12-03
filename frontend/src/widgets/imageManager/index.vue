@@ -225,6 +225,7 @@ onMounted(async () => {
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
+              :scroll="{ x: 960 }"
               :data-source="imageDataSource"
               :columns="imageColumns"
               :pagination="{
@@ -267,6 +268,7 @@ onMounted(async () => {
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
+              :scroll="{ x: 960 }"
               :data-source="containerDataSource"
               :columns="containerColumns"
               :pagination="{

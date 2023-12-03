@@ -14,14 +14,12 @@ import {
   UserOutlined,
   MenuUnfoldOutlined,
   FormatPainterOutlined,
-  TranslationOutlined,
-  PicLeftOutlined,
   RedoOutlined,
   CloseCircleOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
-import { $t, setLanguage, $t as t } from "@/lang/i18n";
+import { $t, $t as t } from "@/lang/i18n";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { logoutUser } from "@/services/apis/index";
 import { message } from "ant-design-vue";
@@ -329,6 +327,7 @@ const openPhoneMenu = (b = false) => {
             <div v-for="(item, index) in appMenus" :key="index">
               <a-button
                 v-if="item.conditions && !item.onlyPC && !item.menus"
+                class="phone-nav-button"
                 type="text"
                 :icon="h(item.icon)"
                 size="small"
@@ -395,6 +394,10 @@ const openPhoneMenu = (b = false) => {
     button {
       color: var(--color-gray-4);
     }
+  }
+
+  .phone-nav-button {
+    margin: 0px 6px;
   }
 }
 

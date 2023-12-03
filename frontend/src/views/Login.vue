@@ -115,8 +115,8 @@ defineProps<{
   overflow-x: hidden;
 
   .login-page-body {
-    padding-top: 24px;
     padding: 12px;
+    padding-top: 84px;
     max-width: 1260px !important;
     margin: 0 auto;
     height: 100%;
