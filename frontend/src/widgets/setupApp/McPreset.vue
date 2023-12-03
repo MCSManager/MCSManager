@@ -220,9 +220,11 @@ onMounted(async () => {
       centered
     >
       <div v-if="!appList || appList.length === 0">
-        <a-typography-text>
-          {{ t("TXT_CODE_bcfaf14d") }}
-        </a-typography-text>
+        <a-typography-paragraph>
+          <a-typography-text>
+            {{ t("TXT_CODE_bcfaf14d") }}
+          </a-typography-text>
+        </a-typography-paragraph>
         <a-button @click="toCreateInstancePage()">{{ t("TXT_CODE_bc883bbb") }}</a-button>
       </div>
       <div v-if="installView || isInstalled" style="text-align: center">
