@@ -38,6 +38,7 @@ import NodeItem from "@/widgets/node/NodeItem.vue";
 import TitleCard from "@/widgets/TitleCard.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
 import DefaultCard from "@/widgets/DefaultCard.vue";
+import Carousel from "@/widgets/others/Carousel.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -79,7 +80,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   NewImage,
   Schedule,
   InstanceShortcut,
-  DefaultCard
+  DefaultCard,
+  Carousel
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -215,6 +217,18 @@ export function getLayoutCardPool() {
       meta: {},
       type: "ImageBox",
       title: t("TXT_CODE_4d993ca4"),
+      width: 4,
+      description: t("TXT_CODE_6ef5195f"),
+      height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.COMMON
+    },
+
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "Carousel",
+      title: t("走马灯"),
       width: 4,
       description: t("TXT_CODE_6ef5195f"),
       height: LayoutCardHeight.SMALL,
