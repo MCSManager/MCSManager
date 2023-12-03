@@ -277,6 +277,8 @@ router.beforeEach((to, from, next) => {
     toPagePermission
   );
 
+  if (!to.name) return next("/404");
+
   if (toRoutePath.includes("_open_page") || toRoutePath === "/login") {
     return next();
   }
@@ -289,7 +291,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.name && toPagePermission <= userPermission) {
+  if (toPagePermission <= userPermission) {
     next();
   } else {
     next("/404");
