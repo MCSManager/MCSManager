@@ -10,13 +10,14 @@ import {
   DatabaseOutlined,
   FrownOutlined
 } from "@ant-design/icons-vue";
-import BetweenMenus from "@/components/BetweenMenus.vue";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { message } from "ant-design-vue";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
+import { useScreen } from "../hooks/useScreen";
 
 const props = defineProps<MountComponent>();
+const { isPhone } = useScreen();
 
 const open = ref(false);
 
@@ -151,54 +152,46 @@ const handleChangeNode = async (item: NodeStatus) => {
     </a-typography-paragraph>
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
-        <BetweenMenus>
-          <template #left>
-            <a-dropdown>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item
-                    v-for="item in nodes"
-                    :key="item.uuid"
-                    @click="handleChangeNode(item)"
-                  >
-                    <DatabaseOutlined v-if="item.available" />
-                    <FrownOutlined v-else />
-                    {{ computeNodeName(item.ip, item.available, item.remarks) }}
-                  </a-menu-item>
-                  <a-menu-divider />
-                  <a-menu-item key="toNodesPage">
-                    <FormOutlined />
-                    {{ t("TXT_CODE_28e53fed") }}
-                  </a-menu-item>
-                </a-menu>
+        <div class="flex-between flex-wrap align-center">
+          <a-dropdown>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item v-for="item in nodes" :key="item.uuid" @click="handleChangeNode(item)">
+                  <DatabaseOutlined v-if="item.available" />
+                  <FrownOutlined v-else />
+                  {{ computeNodeName(item.ip, item.available, item.remarks) }}
+                </a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="toNodesPage">
+                  <FormOutlined />
+                  {{ t("TXT_CODE_28e53fed") }}
+                </a-menu-item>
+              </a-menu>
+            </template>
+            <a-button :class="isPhone && 'mb-10 w-100'">
+              {{
+                computeNodeName(
+                  currentRemoteNode?.ip || "",
+                  currentRemoteNode?.available || true,
+                  currentRemoteNode?.remarks
+                )
+              }}
+              <DownOutlined />
+            </a-button>
+          </a-dropdown>
+          <div class="search-input" :class="isPhone && 'w-100'">
+            <a-input
+              v-model:value="operationForm.instanceName"
+              :placeholder="t('TXT_CODE_ce132192')"
+              @press-enter="handleQueryInstance"
+              @change="handleQueryInstance"
+            >
+              <template #prefix>
+                <search-outlined />
               </template>
-              <a-button class="mr-12">
-                {{
-                  computeNodeName(
-                    currentRemoteNode?.ip || "",
-                    currentRemoteNode?.available || true,
-                    currentRemoteNode?.remarks
-                  )
-                }}
-                <DownOutlined />
-              </a-button>
-            </a-dropdown>
-          </template>
-          <template #right>
-            <div class="search-input">
-              <a-input
-                v-model:value="operationForm.instanceName"
-                :placeholder="t('TXT_CODE_ce132192')"
-                @press-enter="handleQueryInstance"
-                @change="handleQueryInstance"
-              >
-                <template #prefix>
-                  <search-outlined />
-                </template>
-              </a-input>
-            </div>
-          </template>
-        </BetweenMenus>
+            </a-input>
+          </div>
+        </div>
       </a-col>
       <a-col :span="24">
         <div v-if="instances" class="flex-between align-center">
