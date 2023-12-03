@@ -53,20 +53,6 @@ import { closeAppLoading } from "./tools/dom";
 
 onMounted(async () => {
   closeAppLoading();
-
-  if (["", "/"].includes(router.currentRoute.value.path.trim())) {
-    if (state.userInfo?.token && !isAdmin.value) {
-      router.push({
-        path: "/customer"
-      });
-    }
-  }
-
-  if (!state.userInfo?.token) {
-    return router.push({
-      path: "/login"
-    });
-  }
 });
 </script>
 

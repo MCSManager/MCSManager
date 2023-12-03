@@ -37,6 +37,7 @@ import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import TitleCard from "@/widgets/TitleCard.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
+import DefaultCard from "@/widgets/DefaultCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -77,7 +78,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   ImageManager,
   NewImage,
   Schedule,
-  InstanceShortcut
+  InstanceShortcut,
+  DefaultCard
 };
 
 export interface NewCardItem extends LayoutCard {

@@ -546,6 +546,19 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           disableDelete: true
         }
       ]
+    },
+    {
+      page: "/_open_page",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "DefaultCard",
+          title: t("关于本页面"),
+          width: 6,
+          height: LayoutCardHeight.SMALL
+        }
+      ]
     }
   ];
 }

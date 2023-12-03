@@ -44,6 +44,25 @@ let originRouterConfig: RouterConfig[] = [
     }
   },
   {
+    path: "/quickstart",
+    name: t("TXT_CODE_2799a1dd"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.ADMIN,
+      mainMenu: false
+    },
+    children: [
+      {
+        path: "/quickstart/minecraft",
+        name: t("TXT_CODE_8d8b1d6a"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
+  },
+  {
     path: "/",
     name: t("TXT_CODE_16d71239"),
     component: LayoutContainer,
@@ -178,7 +197,7 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/404",
-    name: "404",
+    name: t("页面不存在"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
@@ -197,33 +216,22 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/login",
-    name: "登录页面",
+    name: t("登录页"),
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
-      mainMenu: true,
       onlyDisplayEditMode: true
     }
   },
-
   {
-    path: "/quickstart",
-    name: t("TXT_CODE_2799a1dd"),
+    path: "/_open_page",
+    name: t("开放页"),
     component: LayoutContainer,
     meta: {
-      permission: ROLE.ADMIN,
-      mainMenu: false
-    },
-    children: [
-      {
-        path: "/quickstart/minecraft",
-        name: t("TXT_CODE_8d8b1d6a"),
-        component: LayoutContainer,
-        meta: {
-          permission: ROLE.ADMIN
-        }
-      }
-    ]
+      permission: ROLE.ADMIN, // open page without permission
+      mainMenu: true,
+      onlyDisplayEditMode: true
+    }
   }
 ];
 
@@ -254,8 +262,34 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
-  const permission = state.userInfo?.permission ?? 0;
-  if (Number(to.meta.permission ?? 0) <= permission) {
+  const userPermission = state.userInfo?.permission ?? 0;
+  const toPagePermission = Number(to.meta.permission ?? 0);
+  const fromRoutePath = router.currentRoute.value.path.trim();
+  const toRoutePath = to.path.trim();
+  console.info(
+    "Router Changed:",
+    from,
+    "--->",
+    to,
+    "MyPermission:",
+    userPermission,
+    "toPagePermission:",
+    toPagePermission
+  );
+
+  if (toRoutePath.includes("_open_page") || toRoutePath === "/login") {
+    return next();
+  }
+
+  if (!state.userInfo?.token) return next("/login");
+
+  if (["", "/"].includes(fromRoutePath) && toRoutePath !== "/customer") {
+    if (userPermission === ROLE.USER) {
+      return next("/customer");
+    }
+  }
+
+  if (to.name && toPagePermission <= userPermission) {
     next();
   } else {
     next("/404");

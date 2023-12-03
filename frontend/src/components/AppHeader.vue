@@ -53,11 +53,17 @@ const menus = computed(() => {
   return router
     .getRoutes()
     .filter((v) => {
-      return v.meta.mainMenu && isLogged.value;
-    })
-    .filter((v) => {
-      if (v.meta.onlyDisplayEditMode) return containerState.isDesignMode;
-      return true;
+      if (containerState.isDesignMode) {
+        return v.meta.onlyDisplayEditMode || v.meta.mainMenu;
+      }
+      if (isAdmin.value) {
+        return v.meta.mainMenu === true && v.meta.onlyDisplayEditMode !== true;
+      }
+      return (
+        v.meta.mainMenu === true &&
+        isLogged.value &&
+        Number(appState.userInfo?.permission) >= Number(v.meta.permission)
+      );
     })
     .map((r) => {
       return {
@@ -66,20 +72,6 @@ const menus = computed(() => {
         meta: r.meta
       };
     });
-});
-
-router.beforeEach((to, from) => {
-  console.log("Router:", from, "->", to);
-  if (to.name == null) {
-    router.push({
-      path: "/404",
-      query: {
-        redirect: to.fullPath
-      }
-    });
-    return false;
-  }
-  return true;
 });
 
 const breadcrumbs = computed(() => {
@@ -207,9 +199,9 @@ const appMenus = computed(() => {
       icon: BuildOutlined,
       click: () => {
         changeDesignMode(true);
-
-        notification.info({
-          placement: "top",
+        notification.warning({
+          placement: "bottom",
+          type: "warning",
           message: t("TXT_CODE_7b1adf35"),
           description: t("TXT_CODE_6b6f1d3")
         });

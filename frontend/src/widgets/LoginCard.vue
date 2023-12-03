@@ -7,14 +7,20 @@ import {
   LockOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { router } from "@/config/router";
-import { loginUser } from "@/services/apis";
+import { loginPageInfo, loginUser } from "@/services/apis";
 import { sleep } from "@/tools/common";
 import { message } from "ant-design-vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
+import { markdownToHTML } from "@/tools/safe";
 
+const { state: pageInfoResult, execute } = loginPageInfo();
+
+onMounted(async () => {
+  await execute();
+});
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -110,6 +116,11 @@ const loginSuccess = () => {
 
             <div class="mt-24 flex-between align-center">
               <div class="mcsmanager-link">
+                <div
+                  v-if="pageInfoResult?.loginInfo"
+                  class="global-markdown-html"
+                  v-html="markdownToHTML(pageInfoResult?.loginInfo || '')"
+                ></div>
                 Powered by
                 <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
                   MCSManager
@@ -140,6 +151,17 @@ const loginSuccess = () => {
     </CardPanel>
   </div>
 </template>
+
+<style>
+.mcsmanager-link {
+  .global-markdown-html {
+    text-align: left !important;
+    p {
+      margin: 0px !important;
+    }
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 .loginDone {
