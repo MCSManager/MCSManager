@@ -68,7 +68,9 @@ const dataSource = computed(() => {
     <template #title>{{ card.title }}</template>
     <template #body>
       <a-table
-        :scroll="{ x: 1360 }"
+        :scroll="{
+          x: 'max-content'
+        }"
         :columns="columns"
         :data-source="dataSource"
         :pagination="false"
