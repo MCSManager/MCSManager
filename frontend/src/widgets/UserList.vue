@@ -351,7 +351,7 @@ onMounted(async () => {
           <template #left>
             <a-typography-title class="mb-0" :level="4">
               <UserOutlined />
-              {{ card.title }}
+              {{ card.title }} ({{ total }})
             </a-typography-title>
           </template>
           <template #right>
