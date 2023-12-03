@@ -58,6 +58,16 @@ export const loginUser = useDefineApi<
   method: "POST"
 });
 
+export const loginPageInfo = useDefineApi<
+  any,
+  {
+    loginInfo: string;
+  }
+>({
+  url: "/api/auth/login_info",
+  method: "GET"
+});
+
 export const logoutUser = useDefineApi<any, any>({
   url: "/api/auth/logout",
   method: "GET"

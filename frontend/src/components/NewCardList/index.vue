@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useCardPool } from "@/stores/useCardPool";
 import LayoutCardComponent from "@/components//LayoutCard.vue";
-import { ref, computed, type Ref } from "vue";
-import { type LayoutCard, NEW_CARD_TYPE } from "@/types";
+import { ref, computed } from "vue";
+import { NEW_CARD_TYPE } from "@/types";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useRoute } from "vue-router";
 import Params from "./params.vue";
-import CardPanel from "../CardPanel.vue";
 import { t } from "@/lang/i18n";
 import { ROLE } from "@/config/router";
 import type { NewCardItem } from "../../config/index";
@@ -177,7 +176,7 @@ const handleTabClick = (value: string) => {
   position: fixed;
   right: 0px;
   bottom: 0px;
-  top: 0px;
+  top: 60px;
   left: 0px;
   padding: 24px;
 

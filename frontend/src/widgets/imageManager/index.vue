@@ -225,6 +225,9 @@ onMounted(async () => {
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
+              :scroll="{
+                x: 'max-content'
+              }"
               :data-source="imageDataSource"
               :columns="imageColumns"
               :pagination="{
@@ -267,6 +270,9 @@ onMounted(async () => {
               </a-typography-text>
             </a-typography-paragraph>
             <a-table
+              :scroll="{
+                x: 'max-content'
+              }"
               :data-source="containerDataSource"
               :columns="containerColumns"
               :pagination="{

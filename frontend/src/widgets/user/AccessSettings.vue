@@ -96,7 +96,8 @@ const columns = computed(() => {
       title: t("TXT_CODE_b26a0528"),
       dataIndex: "daemonId",
       key: "daemon",
-      minWidth: "200px"
+      minWidth: "200px",
+      condition: () => !screen.isPhone.value
     },
     {
       align: "center",
@@ -162,7 +163,7 @@ const columns = computed(() => {
       <a-col :span="24">
         <CardPanel class="h-100">
           <template #body>
-            <a-table :data-source="dataSource" :columns="columns">
+            <a-table :scroll="{ x: 'max-content' }" :data-source="dataSource" :columns="columns">
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'operation'">
                   <a-button danger size="" @click="handleDelete(record)">

@@ -215,6 +215,9 @@ const handleChangeNode = async (item: NodeStatus) => {
             :columns="columns"
             :pagination="false"
             size="small"
+            :scroll="{
+              x: 'max-content'
+            }"
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'operation'">

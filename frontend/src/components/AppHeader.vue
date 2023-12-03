@@ -14,14 +14,12 @@ import {
   UserOutlined,
   MenuUnfoldOutlined,
   FormatPainterOutlined,
-  TranslationOutlined,
-  PicLeftOutlined,
   RedoOutlined,
   CloseCircleOutlined
 } from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
 import CardPanel from "./CardPanel.vue";
-import { $t, setLanguage, $t as t } from "@/lang/i18n";
+import { $t, $t as t } from "@/lang/i18n";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { logoutUser } from "@/services/apis/index";
 import { message } from "ant-design-vue";
@@ -35,7 +33,7 @@ const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
-const { isAdmin, state: appState } = useAppStateStore();
+const { isAdmin, state: appState, isLogged } = useAppStateStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -55,7 +53,17 @@ const menus = computed(() => {
   return router
     .getRoutes()
     .filter((v) => {
-      return v.meta.mainMenu && (appState.userInfo?.permission || 0) >= Number(v.meta.permission);
+      if (containerState.isDesignMode) {
+        return v.meta.onlyDisplayEditMode || v.meta.mainMenu;
+      }
+      if (isAdmin.value) {
+        return v.meta.mainMenu === true && v.meta.onlyDisplayEditMode !== true;
+      }
+      return (
+        v.meta.mainMenu === true &&
+        isLogged.value &&
+        Number(appState.userInfo?.permission) >= Number(v.meta.permission)
+      );
     })
     .map((r) => {
       return {
@@ -64,20 +72,6 @@ const menus = computed(() => {
         meta: r.meta
       };
     });
-});
-
-router.beforeEach((to, from) => {
-  console.log("Router:", from, "->", to);
-  if (to.name == null) {
-    router.push({
-      path: "/404",
-      query: {
-        redirect: to.fullPath
-      }
-    });
-    return false;
-  }
-  return true;
 });
 
 const breadcrumbs = computed(() => {
@@ -200,33 +194,14 @@ const appMenus = computed(() => {
         }
       ]
     },
-    // {
-    //   title: t("TXT_CODE_fa40177b"),
-    //   icon: TranslationOutlined,
-    //   click: (key: string) => {
-    //     setLanguage(key);
-    //   },
-    //   conditions: !containerState.isDesignMode,
-    //   onlyPC: false,
-    //   menus: [
-    //     {
-    //       title: "English",
-    //       value: "en_US"
-    //     },
-    //     {
-    //       title: "Chinese",
-    //       value: "zh_CN"
-    //     }
-    //   ]
-    // },
     {
       title: t("TXT_CODE_ebd2a6a1"),
       icon: BuildOutlined,
       click: () => {
         changeDesignMode(true);
-
-        notification.info({
-          placement: "top",
+        notification.warning({
+          placement: "bottom",
+          type: "warning",
           message: t("TXT_CODE_7b1adf35"),
           description: t("TXT_CODE_6b6f1d3")
         });
@@ -240,7 +215,7 @@ const appMenus = computed(() => {
       click: () => {
         appTools.showUserInfoDialog = true;
       },
-      conditions: !containerState.isDesignMode,
+      conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     },
     {
@@ -251,7 +226,7 @@ const appMenus = computed(() => {
         message.success(t("TXT_CODE_11673d8c"));
         router.go(0);
       },
-      conditions: !containerState.isDesignMode,
+      conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     }
   ];
@@ -344,6 +319,7 @@ const openPhoneMenu = (b = false) => {
             <div v-for="(item, index) in appMenus" :key="index">
               <a-button
                 v-if="item.conditions && !item.onlyPC && !item.menus"
+                class="phone-nav-button"
                 type="text"
                 :icon="h(item.icon)"
                 size="small"
@@ -410,6 +386,10 @@ const openPhoneMenu = (b = false) => {
     button {
       color: var(--color-gray-4);
     }
+  }
+
+  .phone-nav-button {
+    margin: 0px 6px;
   }
 }
 

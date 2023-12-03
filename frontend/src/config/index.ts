@@ -36,6 +36,8 @@ import Schedule from "@/widgets/instance/Schedule.vue";
 import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import TitleCard from "@/widgets/TitleCard.vue";
+import LoginCard from "@/widgets/LoginCard.vue";
+import DefaultCard from "@/widgets/DefaultCard.vue";
 import Carousel from "@/widgets/others/Carousel.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
@@ -43,6 +45,7 @@ import { ROLE } from "./router";
 
 // Register specified Vue components for each card.
 export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
+  LoginCard,
   Page404,
   TitleCard,
   EmptyCard,
@@ -77,6 +80,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   NewImage,
   Schedule,
   InstanceShortcut,
+  DefaultCard,
   Carousel
 };
 

@@ -10,6 +10,7 @@ export interface RouterMetaInfo {
   mainMenu?: boolean;
   permission?: number;
   redirect?: string;
+  onlyDisplayEditMode?: boolean;
   breadcrumbs?: Array<{
     name: string;
     path: string;
@@ -34,15 +35,6 @@ export enum ROLE {
 
 let originRouterConfig: RouterConfig[] = [
   {
-    path: "/login",
-    name: "login",
-    component: LoginPage,
-    meta: {
-      permission: ROLE.GUEST,
-      mainMenu: false
-    }
-  },
-  {
     path: "/init",
     name: "init",
     component: InstallPage,
@@ -50,6 +42,25 @@ let originRouterConfig: RouterConfig[] = [
       permission: ROLE.GUEST,
       mainMenu: false
     }
+  },
+  {
+    path: "/quickstart",
+    name: t("TXT_CODE_2799a1dd"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.ADMIN,
+      mainMenu: false
+    },
+    children: [
+      {
+        path: "/quickstart/minecraft",
+        name: t("TXT_CODE_8d8b1d6a"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
   },
   {
     path: "/",
@@ -165,15 +176,7 @@ let originRouterConfig: RouterConfig[] = [
       }
     ]
   },
-  {
-    path: "/customer",
-    name: t("TXT_CODE_ec299306"),
-    component: LayoutContainer,
-    meta: {
-      permission: ROLE.USER,
-      mainMenu: true
-    }
-  },
+
   {
     path: "/settings",
     name: t("TXT_CODE_b5c7b82d"),
@@ -194,32 +197,41 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/404",
-    name: "404",
+    name: t("页面不存在"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
       mainMenu: false
     }
   },
-
   {
-    path: "/quickstart",
-    name: t("TXT_CODE_2799a1dd"),
+    path: "/customer",
+    name: t("TXT_CODE_ec299306"),
     component: LayoutContainer,
     meta: {
-      permission: ROLE.ADMIN,
-      mainMenu: false
-    },
-    children: [
-      {
-        path: "/quickstart/minecraft",
-        name: t("TXT_CODE_8d8b1d6a"),
-        component: LayoutContainer,
-        meta: {
-          permission: ROLE.ADMIN
-        }
-      }
-    ]
+      permission: ROLE.USER,
+      mainMenu: true,
+      onlyDisplayEditMode: true
+    }
+  },
+  {
+    path: "/login",
+    name: t("登录页"),
+    component: LoginPage,
+    meta: {
+      permission: ROLE.GUEST,
+      onlyDisplayEditMode: true
+    }
+  },
+  {
+    path: "/_open_page",
+    name: t("开放页"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.ADMIN, // open page without permission
+      mainMenu: true,
+      onlyDisplayEditMode: true
+    }
   }
 ];
 
@@ -250,8 +262,36 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
-  const permission = state.userInfo?.permission ?? 0;
-  if (Number(to.meta.permission ?? 0) <= permission) {
+  const userPermission = state.userInfo?.permission ?? 0;
+  const toPagePermission = Number(to.meta.permission ?? 0);
+  const fromRoutePath = router.currentRoute.value.path.trim();
+  const toRoutePath = to.path.trim();
+  console.info(
+    "Router Changed:",
+    from,
+    "--->",
+    to,
+    "MyPermission:",
+    userPermission,
+    "toPagePermission:",
+    toPagePermission
+  );
+
+  if (!to.name) return next("/404");
+
+  if (toRoutePath.includes("_open_page") || toRoutePath === "/login") {
+    return next();
+  }
+
+  if (!state.userInfo?.token) return next("/login");
+
+  if (["", "/"].includes(fromRoutePath) && toRoutePath !== "/customer") {
+    if (userPermission === ROLE.USER) {
+      return next("/customer");
+    }
+  }
+
+  if (toPagePermission <= userPermission) {
     next();
   } else {
     next("/404");

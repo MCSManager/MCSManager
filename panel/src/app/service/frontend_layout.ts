@@ -519,7 +519,20 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         }
       ]
     },
-
+    {
+      page: "/login",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "LoginCard",
+          title: t("登录页面"),
+          width: 4,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        }
+      ]
+    },
     {
       page: "/404",
       items: [
@@ -531,6 +544,19 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           width: 6,
           height: LayoutCardHeight.MINI,
           disableDelete: true
+        }
+      ]
+    },
+    {
+      page: "/_open_page",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "DefaultCard",
+          title: t("关于本页面"),
+          width: 6,
+          height: LayoutCardHeight.SMALL
         }
       ]
     }

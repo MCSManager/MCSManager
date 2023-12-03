@@ -27,6 +27,7 @@ export const useAppStateStore = createGlobalState(() => {
   };
 
   const isAdmin = computed(() => state.userInfo?.permission === 10);
+  const isLogged = computed(() => Number(state.userInfo?.permission) > 0);
 
   const updateUserInfo = async (userInfo?: LoginUserInfo) => {
     if (userInfo) {
@@ -45,6 +46,7 @@ export const useAppStateStore = createGlobalState(() => {
     cloneState,
     updateUserInfo,
     isAdmin,
+    isLogged,
     state
   };
 });
