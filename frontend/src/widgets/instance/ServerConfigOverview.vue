@@ -92,11 +92,11 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-8" :loading="isLoading" @click="render">
-              {{ t("TXT_CODE_b76d94e0") }}
-            </a-button>
-            <a-button @click="toConsole">
+            <a-button class="mr-8" @click="toConsole">
               {{ t("TXT_CODE_95b9833f") }}
+            </a-button>
+            <a-button :loading="isLoading" @click="render">
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
           </template>
         </BetweenMenus>
