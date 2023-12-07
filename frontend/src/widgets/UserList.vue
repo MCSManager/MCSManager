@@ -96,6 +96,7 @@ const total = ref(0);
 const data = ref<dataType>();
 const dataSource = computed(() => data?.value?.data);
 const selectedUsers = ref<string[]>([]);
+const currentFilter = ref("");
 
 const handleToUserResources = (user: BaseUserInfo) => {
   toPage({
@@ -377,16 +378,26 @@ onMounted(async () => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.name"
-                :placeholder="t('TXT_CODE_2471b9c')"
-                @change="reload()"
-                @press-enter="fetchData()"
-              >
-                <template #prefix>
-                  <search-outlined />
-                </template>
-              </a-input>
+              <a-input-group compact>
+                <a-select v-model:value="currentFilter" style="width: 100px">
+                  <a-select-option value="">
+                    {{ t("所有") }}
+                  </a-select-option>
+                  <a-select-option v-for="(p, i) in permissionList" :key="i" :value="i">
+                    {{ p }}
+                  </a-select-option>
+                </a-select>
+                <a-input
+                  v-model:value.trim="operationForm.name"
+                  :placeholder="t('TXT_CODE_2471b9c')"
+                  style="width: 50%"
+                  @change="reload()"
+                >
+                  <template #suffix>
+                    <search-outlined />
+                  </template>
+                </a-input>
+              </a-input-group>
             </div>
           </template>
         </BetweenMenus>
@@ -451,7 +462,7 @@ onMounted(async () => {
 .search-input {
   transition: all 0.4s;
   text-align: center;
-  width: 50%;
+  width: 80%;
 
   &:hover {
     width: 100%;
