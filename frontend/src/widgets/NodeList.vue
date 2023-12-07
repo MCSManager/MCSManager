@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useOverviewInfo } from "@/hooks/useOverviewInfo";
+import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import {
   editNode as editNodeApi,
   addNode as addNodeApi,
@@ -24,11 +24,18 @@ const operationForm = ref({
 const currentStatus = ref<boolean | string>("all");
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
 
-const remotes = computed(() =>
-  currentStatus.value === "all"
-    ? state.value?.remote
-    : state.value?.remote.filter((node) => node.available === currentStatus.value)
-);
+const remotes = computed(() => {
+  const filterByName = (node: ComputedNodeInfo) =>
+    operationForm.value.name !== ""
+      ? node.remarks.toLowerCase().includes(operationForm.value.name.toLowerCase())
+      : true;
+
+  return state.value?.remote.filter(
+    (node) =>
+      (currentStatus.value === "all" || node.available === currentStatus.value) &&
+      filterByName(node)
+  );
+});
 
 const addNode = async () => {
   const { execute } = addNodeApi();
