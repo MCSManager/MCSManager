@@ -96,7 +96,7 @@ const total = ref(0);
 const data = ref<dataType>();
 const dataSource = computed(() => data?.value?.data);
 const selectedUsers = ref<string[]>([]);
-const currentFilter = ref("");
+const currentRole = ref("");
 
 const handleToUserResources = (user: BaseUserInfo) => {
   toPage({
@@ -122,7 +122,8 @@ const fetchData = async () => {
     params: {
       userName: operationForm.value.name,
       page: operationForm.value.currentPage,
-      page_size: operationForm.value.pageSize
+      page_size: operationForm.value.pageSize,
+      role: currentRole.value
     }
   });
   data.value = res.value;
@@ -379,7 +380,7 @@ onMounted(async () => {
           <template #center>
             <div class="search-input">
               <a-input-group compact>
-                <a-select v-model:value="currentFilter" style="width: 100px">
+                <a-select v-model:value="currentRole" style="width: 100px" @change="reload()">
                   <a-select-option value="">
                     {{ t("所有") }}
                   </a-select-option>

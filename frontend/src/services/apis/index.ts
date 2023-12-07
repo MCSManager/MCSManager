@@ -133,6 +133,7 @@ export const getUserInfo = useDefineApi<
       userName: string;
       page: number;
       page_size: number;
+      role: string;
     };
   },
   { total: number; pageSize: number; page: number; maxPage: number; data: BaseUserInfo[] }
