@@ -21,7 +21,8 @@ defineProps<{
 const operationForm = ref({
   name: ""
 });
-const currentStatus = ref<boolean | string>("all");
+const ALL = "all";
+const currentStatus = ref<boolean | string>(ALL);
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
 
 const remotes = computed(() => {
@@ -32,8 +33,7 @@ const remotes = computed(() => {
 
   return state.value?.remote.filter(
     (node) =>
-      (currentStatus.value === "all" || node.available === currentStatus.value) &&
-      filterByName(node)
+      (currentStatus.value === ALL || node.available === currentStatus.value) && filterByName(node)
   );
 });
 
