@@ -12,12 +12,7 @@ import {
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
-import {
-  editNode as editNodeApi,
-  addNode as addNodeApi,
-  deleteNode as deleteNodeApi,
-  connectNode
-} from "@/services/apis";
+import { editNode as editNodeApi, deleteNode as deleteNodeApi, connectNode } from "@/services/apis";
 import { message } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
