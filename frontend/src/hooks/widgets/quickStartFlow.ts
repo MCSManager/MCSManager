@@ -26,6 +26,7 @@ import { router } from "@/config/router";
 export enum QUICKSTART_ACTION_TYPE {
   Minecraft = "Minecraft",
   Bedrock = "Bedrock",
+  Terraria = "Terraria",
   SteamGameServer = "SteamGameServer",
   AnyApp = "AnyApp"
 }
@@ -59,6 +60,11 @@ export function useQuickStartFlow() {
     {
       title: t("TXT_CODE_c8261c85"),
       key: QUICKSTART_ACTION_TYPE.Bedrock,
+      icon: AppstoreAddOutlined
+    },
+    {
+      title: t("泰拉瑞亚游戏服务器"),
+      key: QUICKSTART_ACTION_TYPE.Terraria,
       icon: AppstoreAddOutlined
     },
     {
