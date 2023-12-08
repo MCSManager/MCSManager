@@ -63,7 +63,7 @@ export function useQuickStartFlow() {
       icon: AppstoreAddOutlined
     },
     {
-      title: t("泰拉瑞亚游戏服务器"),
+      title: t("TXT_CODE_dbefcc6c"),
       key: QUICKSTART_ACTION_TYPE.Terraria,
       icon: AppstoreAddOutlined
     },

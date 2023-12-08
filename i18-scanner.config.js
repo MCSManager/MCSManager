@@ -37,7 +37,8 @@ module.exports = {
       options.defaultValue = key;
       let hashKey = `${FN_KEY}${crc32(key).toString(16)}`;
       console.log("Transform text:", key, "->", hashKey);
-      newCode = String(newCode).replace(`t("${key}")`, `t("${hashKey}")`);
+      newCode = String(newCode).replace(`"${key}"`, `"${hashKey}"`);
+      newCode = String(newCode).replace(`'${key}'`, `'${hashKey}'`);
       parser.set(hashKey, options);
     });
 

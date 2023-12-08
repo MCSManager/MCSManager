@@ -162,7 +162,7 @@ const save = async () => {
   </div>
   <a-modal
     v-model:open="open"
-    :title="t('设置图片列表')"
+    :title="t('TXT_CODE_4a56836d')"
     :closable="false"
     :destroy-on-close="true"
   >
@@ -171,7 +171,7 @@ const save = async () => {
         v-for="(imgItem, index) in imgList"
         :key="imgItem.url + imgItem.key"
         v-bind="formItemLayout"
-        :label="`${t('图片')} ${index + 1}`"
+        :label="`${t('TXT_CODE_9900f79e')} ${index + 1}`"
         :name="[index, 'url']"
         :rules="{
           required: true,
@@ -200,7 +200,7 @@ const save = async () => {
 
         <div v-else style="display: inline-flex; width: 80%">
           <a-input :value="`${t('TXT_CODE_b625dbf0') + imgItem.uploadPercent}%`" disabled />
-          <a-tooltip :title="t('取消上传')">
+          <a-tooltip :title="t('TXT_CODE_7ec87e8a')">
             <a-button type="link" @click="cancelUpload(imgItem)">
               <CloseOutlined />
             </a-button>
@@ -219,9 +219,9 @@ const save = async () => {
       </a-form-item>
     </a-form>
     <template #footer>
-      <a-button @click="close">{{ t("关闭") }}</a-button>
+      <a-button @click="close">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       <a-button type="primary" @click="save">
-        {{ t("保存") }}
+        {{ t("TXT_CODE_abfe9512") }}
       </a-button>
     </template>
   </a-modal>

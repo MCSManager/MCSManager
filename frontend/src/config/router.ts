@@ -33,10 +33,10 @@ export enum ROLE {
   GUEST = 0
 }
 
-let originRouterConfig: RouterConfig[] = [
+const originRouterConfig: RouterConfig[] = [
   {
-    path: "/init",
-    name: "init",
+    path: "/install",
+    name: t("TXT_CODE_82d650be"),
     component: InstallPage,
     meta: {
       permission: ROLE.GUEST,
@@ -197,7 +197,7 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/404",
-    name: t("页面不存在"),
+    name: t("TXT_CODE_393c816c"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
@@ -216,7 +216,7 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/login",
-    name: t("登录页"),
+    name: t("TXT_CODE_24873a8a"),
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
@@ -225,7 +225,7 @@ let originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/_open_page",
-    name: t("开放页"),
+    name: t("TXT_CODE_2cf59872"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.ADMIN, // open page without permission
@@ -268,20 +268,24 @@ router.beforeEach((to, from, next) => {
   const toRoutePath = to.path.trim();
   console.info(
     "Router Changed:",
-    from,
-    "--->",
-    to,
-    "MyPermission:",
+    from.path,
+    "->",
+    to.path,
+    "\nMyPermission:",
     userPermission,
     "toPagePermission:",
     toPagePermission
   );
 
-  if (!to.name) return next("/404");
-
-  if (toRoutePath.includes("_open_page") || toRoutePath === "/login") {
+  if (toRoutePath.includes("_open_page") || ["/login", "/install", "/404"].includes(toRoutePath)) {
     return next();
   }
+
+  if (!state.isInstall) {
+    return next("/install");
+  }
+
+  if (!to.name) return next("/404");
 
   if (!state.userInfo?.token) return next("/login");
 

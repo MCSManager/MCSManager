@@ -178,13 +178,13 @@ const editDialog = ref({
               <a-input-group compact>
                 <a-select v-model:value="currentStatus" style="width: 100px">
                   <a-select-option value="all">
-                    {{ t("所有") }}
+                    {{ t("TXT_CODE_c48f6f64") }}
                   </a-select-option>
                   <a-select-option :value="true">
-                    {{ t("在线") }}
+                    {{ t("TXT_CODE_823bfe63") }}
                   </a-select-option>
                   <a-select-option :value="false">
-                    {{ t("离线") }}
+                    {{ t("TXT_CODE_66ce073e") }}
                   </a-select-option>
                 </a-select>
                 <a-input

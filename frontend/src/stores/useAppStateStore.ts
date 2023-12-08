@@ -1,8 +1,9 @@
 import { computed, reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
 import _ from "lodash";
-import { userInfoApi } from "@/services/apis";
+import { panelStatus, userInfoApi } from "@/services/apis";
 import type { LoginUserInfo } from "@/types/user";
+import { initInstallPageFlow, toStandardLang } from "@/lang/i18n";
 
 interface AppStateInfo {
   userInfo: LoginUserInfo | null;
@@ -42,9 +43,23 @@ export const useAppStateStore = createGlobalState(() => {
     }
   };
 
+  const updatePanelStatus = async () => {
+    const { state } = useAppStateStore();
+    const status = await panelStatus().execute();
+    state.isInstall = status.value?.isInstall ?? true;
+    state.versionChanged = status.value?.versionChange ? true : false;
+    if (state.isInstall) {
+      state.language = toStandardLang(status.value?.language);
+    } else {
+      state.language = toStandardLang(window.navigator.language);
+      await initInstallPageFlow();
+    }
+  };
+
   return {
     cloneState,
     updateUserInfo,
+    updatePanelStatus,
     isAdmin,
     isLogged,
     state
