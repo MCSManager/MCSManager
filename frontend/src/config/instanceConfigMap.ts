@@ -1006,7 +1006,172 @@ export const configData: {
       "disable-compression": t("TXT_CODE_c7362d3d"),
       "config-version": t("TXT_CODE_c8cdeeee")
     }
-  }
+  },
   //   "mcdr/permission.yml": {},
   //   "mcdr/config.yml": {},
+  "tshock/config.json": {
+    desc: t("此配置文件为 Tshock 服务端常见的配置文件。"),
+    config: {
+      Settings: {
+        ServerPassword: t("加入服务器所需的密码"),
+        ServerPort: t("服务器端口"),
+        MaxSlots: t(
+          "最大同时连接数。如果你想让玩家被踢出“服务器已满”的设定，请将其设置为你设置的最大玩家数，然后将泰拉瑞亚的最大玩家设置为2个或以上"
+        ),
+        ReservedSlots: t("预留插槽。超过最大服务器插槽数的保留玩家可以加入的保留插槽数"),
+        ServerName: t("服务器名称。如果 UseServerName 为 true，则在会话期间替换世界名称"),
+        UseServerName: t("是否使用 ServerName 代替世界名称"),
+        LogPath: t("日志路径"),
+        DebugLogs: t("启用调试日志"),
+        DisableLoginBeforeJoin: t("阻止用户在完成连接之前登录"),
+        IgnoreChestStacksOnLoad: t("允许箱子中物品的堆叠在世界加载期间超出堆叠限制"),
+        WorldTileProvider: "",
+        AutoSave: t("自动保存"),
+        AnnounceSave: t("保存时是否发出公告"),
+        ShowBackupAutosaveMessages: t("显示备份自动保存消息"),
+        BackupInterval: t("备份之间的间隔（以分钟为单位）。备份存储在 tshock/backups 文件夹中"),
+        BackupKeepFor: t("备份的保留时间（以分钟为单位）"),
+        SaveWorldOnCrash: t("如果服务器因未经处理的异常而崩溃，是否保存世界"),
+        SaveWorldOnLastPlayerExit: t("在最后一个玩家断开连接时保存世界"),
+        InvasionMultiplier: t("入侵事件的大小"),
+        DefaultMaximumSpawns: t("每波生成的默认最大生物数。越高意味着那一波中的生物更多"),
+        DefaultSpawnRate: t("波之间的延迟。值越低，生物越多"),
+        InfiniteInvasion: t("启用永无止境的入侵事件"),
+        PvPMode: t("设置 PvP 模式。有效类型为：“normal”、“always”和“disabled”"),
+        SpawnProtection: t("防止默认瓷砖生成在生成保护半径内"),
+        SpawnProtectionRadius: t("生成保护半径"),
+        RangeChecks: t("根据玩家与其瓷砖位置之间的距离启用或禁用反作弊范围检查"),
+        HardcoreOnly: t("仅允许 hardcore 玩家连接"),
+        MediumcoreOnly: t("阻止 softcore 玩家连接"),
+        SoftcoreOnly: t("阻止 non-softcore 玩家连接"),
+        DisableBuild: t("禁用放置、移动瓷砖"),
+        DisableHardmode: t("禁用困难模式"),
+        DisableDungeonGuardian: t("防止地牢守卫在将玩家送往其出生点时生成"),
+        DisableClownBombs: t("禁用小丑炸弹生成"),
+        DisableSnowBalls: t("禁用雪球生成"),
+        DisableTombstones: t("禁用玩家死亡时掉落墓碑"),
+        DisablePrimeBombs: t("禁用 PrimeBombs"),
+        ForceTime: t("强制世界时间为正常时间，白天或黑"),
+        DisableInvisPvP: t("禁用隐身药水的效果"),
+        MaxRangeForDisabled: t("禁止玩家可以移动的最大距离（以瓷砖为单位）"),
+        RegionProtectChests: t("区域保护是否应适用于箱子"),
+        RegionProtectGemLocks: t("区域保护是否适用于钻石宝石锁"),
+        IgnoreProjUpdate: t("忽略检查以查看玩家是否“可以”更新射弹"),
+        IgnoreProjKill: t("忽略检查玩家是否“可以”杀死射弹"),
+        AllowCutTilesAndBreakables: t("允许玩家打破无法建造的临时瓷砖（草、花盆等）"),
+        AllowIce: t("允许玩家在无法建造的地方放置冰"),
+        AllowCrimsonCreep: t("当世界处于困难模式时，允许 CrimsonCreep"),
+        AllowCorruptionCreep: t("当世界处于困难模式时，允许腐败蔓延"),
+        AllowHallowCreep: "",
+        StatueSpawn200: t("在停止生成之前，雕像可以在 200 像素内生成多少个 NPC。默认值 3"),
+        StatueSpawn600: t("在停止生成之前，雕像可以在 600 像素内生成多少个 NPC。默认值 6"),
+        StatueSpawnWorld: t("雕像在停止生成之前可以生成多少个 NPC。默认值 10。"),
+        PreventBannedItemSpawn: t("阻止违禁物品生成或通过命令调出"),
+        PreventDeadModification: t("阻止玩家在死亡时与世界互动"),
+        PreventInvalidPlaceStyle: t("防止玩家放置样式无效的瓷砖"),
+        ForceXmas: t("强制全年举办仅限圣诞节的活动"),
+        ForceHalloween: t("强制全年举办仅限万圣节的活动"),
+        AllowAllowedGroupsToSpawnBannedItems: t(
+          "允许禁止项目允许列表中的组生成被禁止的项目，即使 PreventBannedItemSpawn 设置为 true"
+        ),
+        RespawnSeconds: t(
+          "玩家在重生之前必须等待的秒数。有效范围：0（默认值）到 15 秒。使用风险自负"
+        ),
+        RespawnBossSeconds: t(
+          "如果附近有 Boss，玩家在重生之前必须等待的秒数。有效范围：0（默认值）到 30 秒。使用风险自负"
+        ),
+        AnonymousBossInvasions: t("是否广播 Boss 生成或入侵开始"),
+        MaxHP: t("在装备增益之前，玩家可以拥有的最大生命值"),
+        MaxMP: t("在装备增益之前，玩家可以拥有的最大 MP"),
+        BombExplosionRadius: t("炸弹从爆炸点开始可以影响瓷砖的射程（以格为单位）"),
+        GiveItemsDirectly: t(
+          "如果设置为 true，则给予玩家的物品将直接插入到他们的物品栏中。否则，给予玩家的物品将作为掉落的物品生成。实验性功能，可能无法正常工作或导致物品丢失"
+        ),
+        DefaultRegistrationGroupName: t("新注册玩家的默认组名称"),
+        DefaultGuestGroupName: t("未注册玩家的默认组名称"),
+        RememberLeavePos: t("根据玩家的 IP 记录玩家下线的地方。服务器重新启动后会清空"),
+        MaximumLoginAttempts: t("玩家登录失败次数，超过则直接踢"),
+        KickOnMediumcoreDeath: "",
+        MediumcoreKickReason: "",
+        BanOnMediumcoreDeath: "",
+        MediumcoreBanReason: "",
+        DisableDefaultIPBan: t("如果未向 ban 命令传递任何参数，则取消 IP 封禁"),
+        EnableWhitelist: t("启用白名单"),
+        WhitelistKickReason: t("玩家不在白名单上时被踢出的原因"),
+        ServerFullReason: t("服务器人满时加入提示"),
+        ServerFullNoReservedReason: t(
+          "在服务器已满且没有可用预留插槽的情况下踢出试图加入的玩家时给出的原因"
+        ),
+        KickOnHardcoreDeath: t("是否踢出硬核玩家"),
+        HardcoreKickReason: t("踢出硬核玩家的原因"),
+        BanOnHardcoreDeath: t("禁止硬核玩家死亡"),
+        HardcoreBanReason: t("禁止硬核玩家死亡的原因"),
+        KickProxyUsers: t("如果启用了 GeoIP，将踢出被标识为使用代理的玩家"),
+        RequireLogin: t("所有玩家在游戏之前必须注册或登录"),
+        AllowLoginAnyUsername: t("允许玩家登录任何帐户，即使用户名与其角色名称不匹配"),
+        AllowRegisterAnyUsername: t("允许玩家注册与其角色名称不一定匹配"),
+        MinimumPasswordLength: t("新玩家帐户的最小密码长度。不能低于 4"),
+        BCryptWorkFactor: "",
+        DisableUUIDLogin: t("阻止玩家使用其客户端 UUID 登录"),
+        KickEmptyUUID: t("踢出不向服务器发送 UUID 的客户端"),
+        TilePaintThreshold: t("如果在 1 秒内绘制了此数量的瓷砖，则封禁玩家"),
+        KickOnTilePaintThresholdBroken: t("当玩家超过 TilePaint 阈值时，是否踢出"),
+        MaxDamage: t("玩家 / NPC 可以造成的最大伤害"),
+        MaxProjDamage: t("射弹可以造成的最大伤害"),
+        KickOnDamageThresholdBroken: t("当玩家超过 MaxDamage 阈值时是否踢出"),
+        TileKillThreshold: t("如果 1 秒内破坏超过此数量的瓷砖，则封禁玩家并恢复其操作"),
+        KickOnTileKillThresholdBroken: t("当玩家超过 TileKill 阈值时是否踢出玩家"),
+        TilePlaceThreshold: t("如果在 1 秒内放置了此数量的瓷砖，则封禁玩家"),
+        KickOnTilePlaceThresholdBroken: t("当玩家超过 TilePlace 阈值时是否踢出玩家"),
+        TileLiquidThreshold: "",
+        KickOnTileLiquidThresholdBroken: t("当玩家超过 TileLiquid 阈值时是否踢出玩家"),
+        ProjIgnoreShrapnel: t("是否忽略水晶子弹的弹片以计算弹丸阈值"),
+        ProjectileThreshold: t("如果在 1 秒内创建了此数量的射弹，则封禁玩家"),
+        KickOnProjectileThresholdBroken: t("当玩家超过投射物阈值时是否踢出玩家"),
+        HealOtherThreshold: t("如果在 1 秒内发送了此数量的 HealOtherPlayer 数据包，则禁用玩家"),
+        KickOnHealOtherThresholdBroken: t("当玩家超过 HealOther 阈值时是否踢出玩家"),
+        SuppressPermissionFailureNotices: t(
+          "禁止来自区域、重生点或服务器编辑失败的生成权限失败的警告"
+        ),
+        DisableModifiedZenith: t("禁止将Zenith射弹与不同的物体一起使用，而不是武器"),
+        DisableCustomDeathMessages: t("防止创建带有死亡信息的自定义消息的保护机制"),
+        CommandSpecifier: t(
+          "指定哪个字符串作为命令的起始部分。如果长度大于1，则可能无法正常工作。"
+        ),
+        CommandSilentSpecifier: t("服务器是否应输出与系统操作相关的调试级别消息"),
+        DisableSpewLogs: t("禁止将日志作为消息发送给具有日志权限的玩家"),
+        DisableSecondUpdateLogs: t("阻止 OnSecondUpdate 检查将内容写入日志文件"),
+        SuperAdminChatRGB: t("超级管理员组的聊天颜色"),
+        SuperAdminChatPrefix: t("超级管理员组聊天前缀"),
+        SuperAdminChatSuffix: t("超级管理员组聊天后缀"),
+        EnableGeoIP: t("在加入时根据玩家的 IP 广播玩家的地理位置"),
+        DisplayIPToAdmins: t("向具有日志权限的玩家显示玩家加入时的 IP"),
+        ChatFormat: t(
+          "更改游戏内聊天格式：{0} = 群组名称，{1} = 群组前缀，{2} = 玩家名称，{3} = 群组后缀，{4} = 聊天消息。"
+        ),
+        ChatAboveHeadsFormat: t(
+          "更改在头顶聊天时使用的玩家名称。以方括号包裹的玩家名称开头，格式与 Terraria 的一致。与 ChatFormat 相同的格式，但不包括消息。"
+        ),
+        EnableChatAboveHeads: t("是否在玩家头顶上方显示聊天消息"),
+        BroadcastRGB: t("用于广播消息颜色的 RGB 值"),
+        StorageType: t("存储数据时使用的数据库类型（sqlite或mysql）"),
+        SqliteDBPath: t("sqlite db 的路径"),
+        MySqlHost: t("MySQL 数据库地址"),
+        MySqlDbName: t("MySQL 数据库名称"),
+        MySqlUsername: t("MySQL 数据库用户名"),
+        MySqlPassword: t("MySQL 数据库密码"),
+        UseSqlLogs: t("将日志保存到 SQL 数据库而不是文本文件。默认 false"),
+        RevertToTextLogsOnSqlFailures: t("SQL日志在插入记录失败多少次后，将回退到文本日志"),
+        RestApiEnabled: t("启用或禁用 REST API"),
+        RestApiPort: t("REST API 使用的端口"),
+        LogRest: t("记录 REST API 连接信息"),
+        EnableTokenEndpointAuthentication: t("要求使用公共REST API端点时进行令牌身份验证"),
+        RESTMaximumRequestsPerInterval: t("在拒绝请求之前，存储桶中的最大 REST 请求数。最小值为 5"),
+        RESTRequestBucketDecreaseIntervalMinutes: t(
+          "REST 请求存储桶减少 1 的频率（以分钟为单位）。最小值为 1 分钟"
+        ),
+        ApplicationRestTokens: t("外部应用程序可用于对服务器进行查询的 REST 令牌字典")
+      }
+    }
+  }
 };
