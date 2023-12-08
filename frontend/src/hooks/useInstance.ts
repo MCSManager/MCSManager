@@ -29,6 +29,7 @@ export const TYPE_MINECRAFT_BEDROCK = "minecraft/bedrock";
 export const TYPE_MINECRAFT_BDS = "minecraft/bedrock/bds";
 export const TYPE_MINECRAFT_NUKKIT = "minecraft/bedrock/nukkit";
 export const TYPE_STEAM_SERVER_UNIVERSAL = "steam/universal";
+export const TYPE_TERRARIA = "steam/terraria";
 
 export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_UNIVERSAL]: "General Console Application",
@@ -46,7 +47,8 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_MINECRAFT_BUKKIT]: "MC Bukkit",
   [TYPE_MINECRAFT_GEYSER]: "MC Geyser",
   [TYPE_MINECRAFT_MCDR]: "MC MCDR",
-  [TYPE_WEB_SHELL]: "Web Shell"
+  [TYPE_WEB_SHELL]: "Web Shell",
+  [TYPE_TERRARIA]: "Terraria"
 };
 
 interface Params {
@@ -296,5 +298,13 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     path: "permission.yml",
     redirect: "mcdr/permission.yml",
     category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_MCDR]
+  },
+  {
+    fileName: "[Tshock] config.json",
+    type: "yml",
+    info: t("Tshock 服务端配置文件"),
+    path: "tshock/config.json",
+    redirect: "tshock/config.json",
+    category: [TYPE_TERRARIA]
   }
 ];

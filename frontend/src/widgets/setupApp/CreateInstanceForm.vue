@@ -11,7 +11,8 @@ import {
   TYPE_MINECRAFT_JAVA,
   TYPE_MINECRAFT_BEDROCK,
   TYPE_STEAM_SERVER_UNIVERSAL,
-  TYPE_UNIVERSAL
+  TYPE_UNIVERSAL,
+  TYPE_TERRARIA
 } from "@/hooks/useInstance";
 import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
 import {
@@ -66,6 +67,12 @@ if (props.appType === QUICKSTART_ACTION_TYPE.Bedrock) {
   formData.startCommand = isFileMode ? "${ProgramName}" : "";
   formData.stopCommand = "stop";
   formData.type = TYPE_MINECRAFT_BEDROCK;
+}
+
+if (props.appType === QUICKSTART_ACTION_TYPE.Terraria) {
+  formData.startCommand = isFileMode ? "${ProgramName}" : "";
+  formData.stopCommand = "stop";
+  formData.type = TYPE_TERRARIA;
 }
 
 if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
