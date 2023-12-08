@@ -162,7 +162,6 @@ onMounted(() => {
           </template>
           <template #right>
             <a-upload
-              v-if="!isPhone"
               :before-upload="beforeUpload"
               :max-count="1"
               :disabled="percentComplete > 0"
@@ -193,19 +192,6 @@ onMounted(() => {
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-upload
-                    v-if="isPhone"
-                    :before-upload="beforeUpload"
-                    :max-count="1"
-                    :disabled="percentComplete > 0"
-                    :show-upload-list="false"
-                  >
-                    <a-menu-item key="1" :disabled="percentComplete > 0">
-                      {{ percentComplete > 0 ? t("TXT_CODE_72608c07") : t("TXT_CODE_e00c858c") }}
-                    </a-menu-item>
-                    <template #itemRender=""></template>
-                  </a-upload>
-
                   <a-menu-item key="2" @click="touchFile(true)">
                     {{ t("TXT_CODE_6215388a") }}
                   </a-menu-item>

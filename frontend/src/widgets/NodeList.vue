@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useOverviewInfo } from "@/hooks/useOverviewInfo";
+import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import {
   editNode as editNodeApi,
   addNode as addNodeApi,
@@ -21,8 +21,21 @@ defineProps<{
 const operationForm = ref({
   name: ""
 });
-
+const ALL = "all";
+const currentStatus = ref<boolean | string>(ALL);
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
+
+const remotes = computed(() => {
+  const filterByName = (node: ComputedNodeInfo) =>
+    operationForm.value.name !== ""
+      ? node.remarks.toLowerCase().includes(operationForm.value.name.toLowerCase())
+      : true;
+
+  return state.value?.remote.filter(
+    (node) =>
+      (currentStatus.value === ALL || node.available === currentStatus.value) && filterByName(node)
+  );
+});
 
 const addNode = async () => {
   const { execute } = addNodeApi();
@@ -162,11 +175,28 @@ const editDialog = ref({
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('TXT_CODE_461d1a01')">
-                <template #prefix>
-                  <search-outlined />
-                </template>
-              </a-input>
+              <a-input-group compact>
+                <a-select v-model:value="currentStatus" style="width: 100px">
+                  <a-select-option value="all">
+                    {{ t("所有") }}
+                  </a-select-option>
+                  <a-select-option :value="true">
+                    {{ t("在线") }}
+                  </a-select-option>
+                  <a-select-option :value="false">
+                    {{ t("离线") }}
+                  </a-select-option>
+                </a-select>
+                <a-input
+                  v-model:value.trim="operationForm.name"
+                  :placeholder="t('TXT_CODE_461d1a01')"
+                  style="width: 50%"
+                >
+                  <template #suffix>
+                    <search-outlined />
+                  </template>
+                </a-input>
+              </a-input-group>
             </div>
           </template>
         </BetweenMenus>
@@ -179,7 +209,7 @@ const editDialog = ref({
           {{ t("TXT_CODE_a65c65c2") }}
         </a-typography-text>
       </a-col>
-      <a-col v-for="item in state?.remote" :key="item.uuid" :span="24" :lg="12">
+      <a-col v-for="item in remotes" :key="item.uuid" :span="24" :lg="12">
         <NodeItem :item="item"></NodeItem>
       </a-col>
     </a-row>
@@ -265,7 +295,11 @@ const editDialog = ref({
 .search-input {
   transition: all 0.4s;
   text-align: center;
-  width: 50%;
+  width: 80%;
+
+  &:hover {
+    width: 100%;
+  }
 }
 
 @media (max-width: 992px) {
@@ -274,9 +308,5 @@ const editDialog = ref({
     text-align: center;
     width: 100% !important;
   }
-}
-
-.search-input:hover {
-  width: 100%;
 }
 </style>
