@@ -186,7 +186,7 @@ const userDialog = ref({
             uuid: formData.value.uuid
           }
         });
-        message.success(t("编辑成功"));
+        message.success(t("TXT_CODE_27efac3b"));
       }
       userDialog.value.status = false;
       formData.value = _.cloneDeep(formDataOrigin);
@@ -215,8 +215,8 @@ const formRef = ref<FormInstance>();
 const formData = ref<EditUserInfo>(_.cloneDeep(formDataOrigin));
 const baseRules: Record<string, Rule[]> = {
   userName: [
-    { required: true, message: t("请输入用户名") },
-    { min: 3, max: 12, message: t("长度只能 3 ~ 12 个字符"), trigger: "blur" }
+    { required: true, message: t("TXT_CODE_2695488c") },
+    { min: 3, max: 12, message: t("TXT_CODE_3f477ec"), trigger: "blur" }
   ],
   permission: [{ required: true, message: t("TXT_CODE_3bb646e4") }]
 };
@@ -225,14 +225,14 @@ const addUserRules: Record<string, Rule[]> = {
   passWord: [
     {
       required: true,
-      message: t("请输入密码")
+      message: t("TXT_CODE_25c895d5")
     },
     {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
         if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
-          throw new Error(t("9 到 36 个字符，必须包含大小写字母和数字"));
+          throw new Error(t("TXT_CODE_6032f5a3"));
       },
       trigger: "blur"
     }
@@ -249,7 +249,7 @@ const editUserRules: Record<string, Rule[]> = {
       max: 36,
       validator: async (_rule: Rule, value: string) => {
         if (value && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
-          throw new Error(t("9 到 36 个字符，必须包含大小写字母和数字"));
+          throw new Error(t("TXT_CODE_6032f5a3"));
       },
       trigger: "blur"
     }
@@ -266,7 +266,7 @@ const handleAddUser = async () => {
 
 // Edit user
 const handleEditUser = (user: BaseUserInfo) => {
-  userDialog.value.title = t("编辑用户");
+  userDialog.value.title = t("TXT_CODE_79f9a172");
   formData.value = _.cloneDeep(user);
   isAddMode.value = false;
   userDialog.value.show();
@@ -306,7 +306,7 @@ onMounted(async () => {
         <a-typography-title :level="5">{{ t("TXT_CODE_5c605130") }}</a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ !isAddMode ? t("不填写则不更变原有值") : t("TXT_CODE_1f2062c7") }}
+            {{ !isAddMode ? t("TXT_CODE_af1f921d") : t("TXT_CODE_1f2062c7") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.passWord" :placeholder="t('TXT_CODE_4ea93630')" />
@@ -382,7 +382,7 @@ onMounted(async () => {
               <a-input-group compact>
                 <a-select v-model:value="currentRole" style="width: 100px" @change="reload()">
                   <a-select-option value="">
-                    {{ t("所有") }}
+                    {{ t("TXT_CODE_c48f6f64") }}
                   </a-select-option>
                   <a-select-option v-for="(p, i) in permissionList" :key="i" :value="i">
                     {{ p }}

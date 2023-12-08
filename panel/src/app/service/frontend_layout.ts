@@ -330,7 +330,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "UserAccessSettings",
-          title: t("用户资源管理"),
+          title: t("TXT_CODE_eb579d63"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -526,7 +526,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "LoginCard",
-          title: t("登录页面"),
+          title: t("TXT_CODE_1f925226"),
           width: 4,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
@@ -554,7 +554,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "DefaultCard",
-          title: t("关于本页面"),
+          title: t("TXT_CODE_463375d2"),
           width: 6,
           height: LayoutCardHeight.SMALL
         }

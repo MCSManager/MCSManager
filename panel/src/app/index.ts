@@ -32,7 +32,7 @@ import scheduleRouter from "./routers/protected/schedule_router";
 import environmentRouter from "./routers/private/environment_router";
 
 // all routes load entry points
-export function index(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
+export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   // API router
   const apiRouter = new Router({ prefix: "/api" });
   apiRouter.use(overviewRouter.routes()).use(overviewRouter.allowedMethods());

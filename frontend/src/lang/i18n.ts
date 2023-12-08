@@ -2,22 +2,34 @@ import { createI18n } from "vue-i18n";
 
 import enUS from "@languages/en_US.json";
 import zhCN from "@languages/zh_CN.json";
+import { updateSettings } from "@/services/apis";
 
 export const LANGUAGE_KEY = "LANGUAGE";
 
 let i18n: any;
 
-function toFrontendLangFormatter(lang: string) {
-  return lang.toLowerCase();
+export function toStandardLang(lang?: string) {
+  if (!lang) return "en_us";
+  return lang.replace("-", "_").toLowerCase();
+}
+
+export async function initInstallPageFlow() {
+  const language = toStandardLang(window.navigator.language);
+  await updateSettings().execute({
+    data: {
+      language
+    }
+  });
+  return language;
 }
 
 function initI18n(lang: string) {
-  lang = toFrontendLangFormatter(lang);
+  lang = toStandardLang(lang);
   i18n = createI18n({
     allowComposition: true,
     globalInjection: true,
     locale: lang,
-    fallbackLocale: "en_US",
+    fallbackLocale: toStandardLang("en_us"),
     messages: {
       en_us: enUS,
       zh_cn: zhCN
@@ -30,7 +42,7 @@ export function getI18nInstance() {
 }
 
 const setLanguage = (lang: string) => {
-  lang = toFrontendLangFormatter(lang);
+  lang = toStandardLang(lang);
   localStorage.setItem(LANGUAGE_KEY, lang);
   window.location.reload();
 };

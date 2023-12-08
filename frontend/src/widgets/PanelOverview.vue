@@ -64,7 +64,7 @@ const overviewList = computed(() => {
     },
     {
       title: t("TXT_CODE_190ecd56"),
-      value: system.loadavg.join("-")
+      value: system.loadavg.map((v) => Number(v).toFixed(2)).join("-")
     },
     {
       title: t("TXT_CODE_77d038f7"),

@@ -228,7 +228,7 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "Carousel",
-      title: t("走马灯"),
+      title: t("TXT_CODE_5a196078"),
       width: 4,
       description: t("TXT_CODE_6ef5195f"),
       height: LayoutCardHeight.SMALL,

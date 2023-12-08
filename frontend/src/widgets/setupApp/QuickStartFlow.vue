@@ -72,7 +72,7 @@ const handleNext = (key: string) => {
               <a-typography-title :level="5" class="mb-24">
                 {{ formData.title }}
               </a-typography-title>
-              <div>
+              <div style="max-height: 400px; overflow-x: hidden">
                 <a-row :gutter="[12, 12]">
                   <fade-up-animation>
                     <action-button
