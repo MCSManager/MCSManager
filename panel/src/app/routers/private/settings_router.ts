@@ -47,7 +47,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
     if (config.language != null) {
       logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
-      i18next.changeLanguage(systemConfig.language.toLowerCase());
+      await i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
     saveSystemConfig(systemConfig);

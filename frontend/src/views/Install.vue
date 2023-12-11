@@ -2,12 +2,11 @@
 import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
-import { panelInstall, updateSettings } from "@/services/apis";
+import { panelInstall } from "@/services/apis";
 import { message } from "ant-design-vue";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-import { LANGUAGE_KEY } from "../lang/i18n";
 
 const skeletons = [
   { span: 6, rows: 4 },
@@ -21,7 +20,8 @@ const skeletons = [
   { span: 16, rows: 6 }
 ];
 
-const { updateUserInfo, state: appState } = useAppStateStore();
+const { updateUserInfo, updatePanelStatus, state: appState } = useAppStateStore();
+
 const step = ref(1);
 const { toPage } = useAppRouters();
 const formRef = ref<FormInstance>();
@@ -39,6 +39,7 @@ const createUser = async () => {
     await createAdminUser({
       data: formData
     });
+    await updatePanelStatus();
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
@@ -222,8 +223,8 @@ onMounted(async () => {});
 
   .install-panel {
     transition: all 0.6s;
-    max-width: 460px;
-    max-height: 360px;
+    max-width: 480px;
+    max-height: 420px;
     width: 100%;
     background-color: var(--login-panel-bg);
     backdrop-filter: saturate(120%) blur(12px);

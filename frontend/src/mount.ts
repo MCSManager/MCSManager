@@ -5,6 +5,8 @@ import "@/assets/variables.scss";
 import "@/assets/variables-dark.scss";
 import "@/assets/global.scss";
 
+import "./initLib";
+
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 
@@ -34,11 +36,5 @@ export async function mountApp() {
     app.use(router);
     app.use(getI18nInstance());
     app.mount("#app");
-  }
-
-  if (!state.isInstall) {
-    return router.push({
-      path: "/init"
-    });
   }
 }

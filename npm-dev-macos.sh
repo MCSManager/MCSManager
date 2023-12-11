@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# open -a Terminal.app -n "npm run start-daemon"
-# open -a Terminal.app -n "npm run start-panel"
-# npm run start-frontend
-
-npm run start-daemon &
-npm run start-panel &
-npm run start-frontend
+currentPath="$(pwd)"
+for action in "daemon" "panel" "frontend"
+do
+    terminalCmd="tell app \"Terminal\" to do script \"cd $currentPath && npm run start-$action\""
+    echo "Run: $terminalCmd"
+    osascript -e "$terminalCmd"
+done

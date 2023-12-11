@@ -33,10 +33,10 @@ export enum ROLE {
   GUEST = 0
 }
 
-let originRouterConfig: RouterConfig[] = [
+const originRouterConfig: RouterConfig[] = [
   {
-    path: "/init",
-    name: "init",
+    path: "/install",
+    name: t("安装界面"),
     component: InstallPage,
     meta: {
       permission: ROLE.GUEST,
@@ -260,6 +260,8 @@ const router = createRouter({
   routes: routersConfigOptimize(originRouterConfig) as RouteRecordRaw[]
 });
 
+console.log("routers:", router.getRoutes());
+
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
   const userPermission = state.userInfo?.permission ?? 0;
@@ -271,17 +273,21 @@ router.beforeEach((to, from, next) => {
     from,
     "--->",
     to,
-    "MyPermission:",
+    "\nMyPermission:",
     userPermission,
     "toPagePermission:",
     toPagePermission
   );
 
-  if (!to.name) return next("/404");
-
-  if (toRoutePath.includes("_open_page") || toRoutePath === "/login") {
+  if (toRoutePath.includes("_open_page") || ["/login", "/install", "/404"].includes(toRoutePath)) {
     return next();
   }
+
+  if (!state.isInstall) {
+    return next("/install");
+  }
+
+  if (!to.name) return next("/404");
 
   if (!state.userInfo?.token) return next("/login");
 
