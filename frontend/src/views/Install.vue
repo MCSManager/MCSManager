@@ -74,7 +74,7 @@ onMounted(async () => {});
 <template>
   <a-row :gutter="[24, 24]">
     <a-col v-for="i in skeletons" :key="i" :span="i.span">
-      <CardPanel>
+      <CardPanel :full-height="false">
         <template #body>
           <a-skeleton :paragraph="{ rows: i.rows }" />
         </template>
@@ -82,7 +82,7 @@ onMounted(async () => {});
     </a-col>
   </a-row>
   <div v-if="step === 1" class="install-page-container" style="text-align: center">
-    <CardPanel class="install-panel">
+    <CardPanel :full-height="false" class="install-panel">
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
@@ -122,7 +122,7 @@ onMounted(async () => {});
     </CardPanel>
   </div>
   <div v-if="step === 2" class="install-page-container">
-    <CardPanel class="install-panel">
+    <CardPanel :full-height="false" class="install-panel">
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
@@ -173,7 +173,7 @@ onMounted(async () => {});
     </CardPanel>
   </div>
   <div v-if="step === 3" class="install-page-container">
-    <CardPanel class="install-panel">
+    <CardPanel :full-height="false" class="install-panel">
       <template #body>
         <a-typography>
           <a-typography-title :level="3">
@@ -224,7 +224,7 @@ onMounted(async () => {});
   .install-panel {
     transition: all 0.6s;
     max-width: 480px;
-    max-height: 420px;
+    // max-height: 420px;
     width: 100%;
     background-color: var(--login-panel-bg);
     backdrop-filter: saturate(120%) blur(12px);

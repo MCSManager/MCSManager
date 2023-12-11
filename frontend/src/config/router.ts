@@ -260,8 +260,6 @@ const router = createRouter({
   routes: routersConfigOptimize(originRouterConfig) as RouteRecordRaw[]
 });
 
-console.log("routers:", router.getRoutes());
-
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
   const userPermission = state.userInfo?.permission ?? 0;
@@ -270,9 +268,9 @@ router.beforeEach((to, from, next) => {
   const toRoutePath = to.path.trim();
   console.info(
     "Router Changed:",
-    from,
-    "--->",
-    to,
+    from.path,
+    "->",
+    to.path,
     "\nMyPermission:",
     userPermission,
     "toPagePermission:",
