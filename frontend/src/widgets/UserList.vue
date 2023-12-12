@@ -52,6 +52,13 @@ const columns = computed(() => {
   return arrayFilter([
     {
       align: "center",
+      title: "UUID",
+      dataIndex: "uuid",
+      key: "uuid",
+      condition: () => !screen.isPhone.value
+    },
+    {
+      align: "center",
       title: t("TXT_CODE_eb9fcdad"),
       dataIndex: "userName",
       key: "userName",
