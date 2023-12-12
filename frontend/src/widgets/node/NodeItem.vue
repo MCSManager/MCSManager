@@ -20,6 +20,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
+import CopyButton from "@/components/CopyButton.vue";
 
 const props = defineProps<{
   item?: ComputedNodeInfo;
@@ -46,39 +47,41 @@ if (props.card) {
 
 const { toPage } = useAppRouters();
 
-const detailList = (node: ComputedNodeInfo) => {
-  return [
-    {
-      title: t("TXT_CODE_f52079a0"),
-      value: `${node.ip}:${node.port}`
-    },
-    {
-      title: t("TXT_CODE_593ee330"),
-      value: node.memText
-    },
-    {
-      title: t("TXT_CODE_2c2712a4"),
-      value: node.cpuInfo
-    },
-    {
-      title: t("TXT_CODE_3d602459"),
-      value: node.instanceStatus
-    },
-    {
-      title: t("TXT_CODE_c9609785"),
-      value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
-    },
-    {
-      title: t("TXT_CODE_3d0885c0"),
-      value: node.platformText
-    },
-    {
-      title: t("TXT_CODE_81634069"),
-      value: node.version
-    }
-  ];
-};
-
+const detailList = (node: ComputedNodeInfo) => [
+  {
+    title: t("TXT_CODE_f52079a0"),
+    value: `${node.ip}:${node.port}`
+  },
+  {
+    title: t("TXT_CODE_593ee330"),
+    value: node.memText
+  },
+  {
+    title: t("TXT_CODE_2c2712a4"),
+    value: node.cpuInfo
+  },
+  {
+    title: t("TXT_CODE_3d602459"),
+    value: node.instanceStatus
+  },
+  {
+    title: t("TXT_CODE_c9609785"),
+    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
+  },
+  {
+    title: t("TXT_CODE_3d0885c0"),
+    value: node.platformText
+  },
+  {
+    title: t("TXT_CODE_81634069"),
+    value: node.version
+  },
+  {
+    title: "Daemon ID",
+    value: node.uuid,
+    onlyCopy: true
+  }
+];
 const nodeOperations = computed(() =>
   arrayFilter([
     {
@@ -283,7 +286,10 @@ const editDialog = ref({
               <div>
                 {{ detail.title }}
               </div>
-              <div>
+              <div v-if="detail.onlyCopy">
+                <CopyButton type="link" size="small" :value="detail.value ?? ''" />
+              </div>
+              <div v-else>
                 {{ detail.value }}
               </div>
             </a-typography-paragraph>
