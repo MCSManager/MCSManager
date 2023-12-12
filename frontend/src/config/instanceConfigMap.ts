@@ -1015,9 +1015,7 @@ export const configData: {
       Settings: {
         ServerPassword: t("TXT_CODE_448df2bd"),
         ServerPort: t("TXT_CODE_a379038f"),
-        MaxSlots: t(
-          "最大同时连接数。如果你想让玩家被踢出“服务器已满”的设定，请将其设置为你设置的最大玩家数，然后将泰拉瑞亚的最大玩家设置为2个或以上"
-        ),
+        MaxSlots: t("TXT_CODE_e304faa"),
         ReservedSlots: t("TXT_CODE_369a4a22"),
         ServerName: t("TXT_CODE_60e3c342"),
         UseServerName: t("TXT_CODE_8a924345"),
@@ -1071,22 +1069,14 @@ export const configData: {
         PreventInvalidPlaceStyle: t("TXT_CODE_fe82609a"),
         ForceXmas: t("TXT_CODE_b649a71a"),
         ForceHalloween: t("TXT_CODE_ac52ad06"),
-        AllowAllowedGroupsToSpawnBannedItems: t(
-          "允许禁止项目允许列表中的组生成被禁止的项目，即使 PreventBannedItemSpawn 设置为 true"
-        ),
-        RespawnSeconds: t(
-          "玩家在重生之前必须等待的秒数。有效范围：0（默认值）到 15 秒。使用风险自负"
-        ),
-        RespawnBossSeconds: t(
-          "如果附近有 Boss，玩家在重生之前必须等待的秒数。有效范围：0（默认值）到 30 秒。使用风险自负"
-        ),
+        AllowAllowedGroupsToSpawnBannedItems: t("TXT_CODE_3f3e734b"),
+        RespawnSeconds: t("TXT_CODE_288830f4"),
+        RespawnBossSeconds: t("TXT_CODE_b45e73fb"),
         AnonymousBossInvasions: t("TXT_CODE_87e18bb5"),
         MaxHP: t("TXT_CODE_3f470950"),
         MaxMP: t("TXT_CODE_95dfd5bd"),
         BombExplosionRadius: t("TXT_CODE_f71475e2"),
-        GiveItemsDirectly: t(
-          "如果设置为 true，则给予玩家的物品将直接插入到他们的物品栏中。否则，给予玩家的物品将作为掉落的物品生成。实验性功能，可能无法正常工作或导致物品丢失"
-        ),
+        GiveItemsDirectly: t("TXT_CODE_260d96a0"),
         DefaultRegistrationGroupName: t("TXT_CODE_cfd64e73"),
         DefaultGuestGroupName: t("TXT_CODE_90896d08"),
         RememberLeavePos: t("TXT_CODE_52b31aef"),
@@ -1099,9 +1089,7 @@ export const configData: {
         EnableWhitelist: t("TXT_CODE_d0e37f20"),
         WhitelistKickReason: t("TXT_CODE_f160d877"),
         ServerFullReason: t("TXT_CODE_4ff6a125"),
-        ServerFullNoReservedReason: t(
-          "在服务器已满且没有可用预留插槽的情况下踢出试图加入的玩家时给出的原因"
-        ),
+        ServerFullNoReservedReason: t("TXT_CODE_5f23008"),
         KickOnHardcoreDeath: t("TXT_CODE_95340802"),
         HardcoreKickReason: t("TXT_CODE_129475a7"),
         BanOnHardcoreDeath: t("TXT_CODE_8ab0cc1a"),
@@ -1130,14 +1118,10 @@ export const configData: {
         KickOnProjectileThresholdBroken: t("TXT_CODE_946d4401"),
         HealOtherThreshold: t("TXT_CODE_449efd26"),
         KickOnHealOtherThresholdBroken: t("TXT_CODE_e0643e6f"),
-        SuppressPermissionFailureNotices: t(
-          "禁止来自区域、重生点或服务器编辑失败的生成权限失败的警告"
-        ),
+        SuppressPermissionFailureNotices: t("TXT_CODE_decf21ee"),
         DisableModifiedZenith: t("TXT_CODE_d4b058a9"),
         DisableCustomDeathMessages: t("TXT_CODE_5143c584"),
-        CommandSpecifier: t(
-          "指定哪个字符串作为命令的起始部分。如果长度大于1，则可能无法正常工作。"
-        ),
+        CommandSpecifier: t("TXT_CODE_235cd293"),
         CommandSilentSpecifier: t("TXT_CODE_1049cbd1"),
         DisableSpewLogs: t("TXT_CODE_f29d5d2"),
         DisableSecondUpdateLogs: t("TXT_CODE_ef97db20"),
@@ -1146,12 +1130,8 @@ export const configData: {
         SuperAdminChatSuffix: t("TXT_CODE_5bc16b9a"),
         EnableGeoIP: t("TXT_CODE_6bf4665b"),
         DisplayIPToAdmins: t("TXT_CODE_1b763e24"),
-        ChatFormat: t(
-          "更改游戏内聊天格式：{0} = 群组名称，{1} = 群组前缀，{2} = 玩家名称，{3} = 群组后缀，{4} = 聊天消息。"
-        ),
-        ChatAboveHeadsFormat: t(
-          "更改在头顶聊天时使用的玩家名称。以方括号包裹的玩家名称开头，格式与 Terraria 的一致。与 ChatFormat 相同的格式，但不包括消息。"
-        ),
+        ChatFormat: t("TXT_CODE_2374966e"),
+        ChatAboveHeadsFormat: t("TXT_CODE_97535446"),
         EnableChatAboveHeads: t("TXT_CODE_9c39c7ae"),
         BroadcastRGB: t("TXT_CODE_11d2ab6b"),
         StorageType: t("TXT_CODE_8e5f865e"),
@@ -1167,9 +1147,7 @@ export const configData: {
         LogRest: t("TXT_CODE_fdd1a61"),
         EnableTokenEndpointAuthentication: t("TXT_CODE_b9d7fe43"),
         RESTMaximumRequestsPerInterval: t("TXT_CODE_8298bfde"),
-        RESTRequestBucketDecreaseIntervalMinutes: t(
-          "REST 请求存储桶减少 1 的频率（以分钟为单位）。最小值为 1 分钟"
-        ),
+        RESTRequestBucketDecreaseIntervalMinutes: t("TXT_CODE_5b190bc4"),
         ApplicationRestTokens: t("TXT_CODE_f0ca2761")
       }
     }

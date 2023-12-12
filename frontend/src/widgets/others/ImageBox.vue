@@ -127,7 +127,7 @@ const close = () => {
           </a-typography-paragraph>
         </a-typography>
       </a-tab-pane>
-      <a-tab-pane key="url" :tab="t('网络URL')" force-render>
+      <a-tab-pane key="url" :tab="t('TXT_CODE_ba42d467')" force-render>
         <a-input v-model:value.lazy.trim="imgSrc" autofocus :placeholder="t('TXT_CODE_c8a51b2e')" />
       </a-tab-pane>
     </a-tabs>
