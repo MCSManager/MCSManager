@@ -398,7 +398,7 @@ onMounted(async () => {
                 <a-input
                   v-model:value.trim="operationForm.name"
                   :placeholder="t('TXT_CODE_2471b9c')"
-                  style="width: 50%"
+                  style="width: calc(100% - 100px)"
                   @change="reload()"
                 >
                   <template #suffix>

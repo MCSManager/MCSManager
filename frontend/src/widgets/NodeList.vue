@@ -192,7 +192,7 @@ const editDialog = ref({
           <template #center>
             <div class="search-input">
               <a-input-group compact>
-                <a-select v-model:value="currentStatus" style="width: 100px">
+                <a-select v-model:value="currentStatus" style="width: 80px">
                   <a-select-option value="all">
                     {{ t("TXT_CODE_c48f6f64") }}
                   </a-select-option>
@@ -206,7 +206,7 @@ const editDialog = ref({
                 <a-input
                   v-model:value.trim="operationForm.name"
                   :placeholder="t('TXT_CODE_461d1a01')"
-                  style="width: 50%"
+                  style="width: calc(100% - 80px)"
                 >
                   <template #suffix>
                     <search-outlined />
@@ -320,8 +320,6 @@ const editDialog = ref({
 
 @media (max-width: 992px) {
   .search-input {
-    transition: all 0.4s;
-    text-align: center;
     width: 100% !important;
   }
 }
