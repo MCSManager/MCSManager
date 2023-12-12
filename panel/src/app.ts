@@ -21,12 +21,9 @@ import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
 import open from "open";
-
 import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
-
-// Routes
-import { index } from "./app/index";
+import { mountRouters } from "./app/index";
 
 function setupHttp(koaApp: Koa, port: number, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
@@ -37,8 +34,6 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
     process.exit(1);
   });
 
-  // The Socket service is not required
-  // SocketService.setUpSocketIO(httpServer);
   httpServer.listen(port, host);
   logger.info("==================================");
   logger.info($t("TXT_CODE_app.panelStarted"));
@@ -88,7 +83,6 @@ async function main() {
   initVersionManager();
   const VERSION = getVersion();
 
-  // show product Logo
   console.log(`______  _______________________  ___                                         
 ___   |/  /_  ____/_  ___/__   |/  /_____ _____________ _______ _____________
 __  /|_/ /_  /    _____ \\__  /|_/ /_  __ \`/_  __ \\  __ \`/_  __ \`/  _ \\_  ___/
@@ -99,12 +93,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
  + Copyright (C) ${new Date().getFullYear()} MCSManager <mcsmanager-dev@outlook.com>
  + Version ${VERSION}
 `);
-
-  // Development environment detection before startup
-  // if (!fs.existsSync(path.join(__dirname, "public"))) {
-  //   console.log($t("TXT_CODE_app.developInfo"));
-  //   process.exit(0);
-  // }
 
   await SystemUser.initialize();
   await SystemRemoteService.initialize();
@@ -148,7 +136,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     )
   );
 
-  // Http log and print
   app.use(async (ctx, next) => {
     const ignoreUrls = ["/api/overview", "/api/files/status"];
     for (const iterator of ignoreUrls) {
@@ -159,30 +146,23 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     await next();
   });
 
-  // Protocol middleware
   app.use(protocolMiddleware);
+  app.use(
+    koaStatic(path.join(process.cwd(), "public"), {
+      maxAge: 10 * 24 * 60 * 60
+    })
+  );
 
-  // static file routing
-  const koaStaticOptions = {
-    maxAge: 10 * 24 * 60 * 60 //Cache for ten days. Changed files will not be load from cache.
-  };
-  app.use(koaStatic(path.join(process.cwd(), "public"), koaStaticOptions));
+  mountRouters(app);
 
-  // Websocket routing (useless for now)
-  // import SocketService from "./app/service/socket_service";
-  index(app);
-
-  // Error reporting
   process.on("uncaughtException", function (err) {
     logger.error(`ERROR (uncaughtException):`, err);
   });
 
-  // Error reporting
   process.on("unhandledRejection", (reason, p) => {
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-  // start the HTTP service
   setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
 }
 
