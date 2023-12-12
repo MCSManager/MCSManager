@@ -117,12 +117,12 @@ const close = () => {
           </a-button>
         </a-upload>
         <a-typography class="mt-20">
-          <a-typography-title :level="5">{{ t("温馨提示") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_e112412a") }}</a-typography-title>
           <a-typography-paragraph>
             <ol>
-              <li>{{ t("上传后将自动保存") }}</li>
-              <li>{{ t("点击关闭按钮可取消上传") }}</li>
-              <li>{{ t("你可以通过 “重置布局” 来清空你上传的所有文件") }}</li>
+              <li>{{ t("TXT_CODE_2bcc4e34") }}</li>
+              <li>{{ t("TXT_CODE_498cd5c5") }}</li>
+              <li>{{ t("TXT_CODE_c1320e08") }}</li>
             </ol>
           </a-typography-paragraph>
         </a-typography>
@@ -132,9 +132,9 @@ const close = () => {
       </a-tab-pane>
     </a-tabs>
     <template #footer>
-      <a-button @click="close()">{{ t("关闭") }}</a-button>
+      <a-button @click="close()">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       <a-button v-if="activeKey === 'url'" type="primary" @click="save">
-        {{ t("保存") }}
+        {{ t("TXT_CODE_abfe9512") }}
       </a-button>
     </template>
   </a-modal>

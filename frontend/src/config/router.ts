@@ -36,7 +36,7 @@ export enum ROLE {
 const originRouterConfig: RouterConfig[] = [
   {
     path: "/install",
-    name: t("安装界面"),
+    name: t("TXT_CODE_82d650be"),
     component: InstallPage,
     meta: {
       permission: ROLE.GUEST,
@@ -197,7 +197,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/404",
-    name: t("页面不存在"),
+    name: t("TXT_CODE_393c816c"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
@@ -216,7 +216,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/login",
-    name: t("登录页"),
+    name: t("TXT_CODE_24873a8a"),
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
@@ -225,7 +225,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/_open_page",
-    name: t("开放页"),
+    name: t("TXT_CODE_2cf59872"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.ADMIN, // open page without permission

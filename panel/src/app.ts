@@ -55,11 +55,10 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
 
 async function processExit() {
   try {
-    console.log("");
-    logger.warn("Program received EXIT command.");
-    logger.info("Exit.");
+    logger.warn($t("TXT_CODE_cea5dba1"));
+    logger.warn($t("TXT_CODE_b0aa2db9"));
   } catch (err) {
-    logger.error("ERROR:", err);
+    logger.error(err);
   } finally {
     process.exit(0);
   }

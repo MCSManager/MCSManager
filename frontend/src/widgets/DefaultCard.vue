@@ -24,13 +24,13 @@ const myAddr = `${window.location.href}`;
             <div v-if="isAdmin" class="admin-text">
               <a-typography-paragraph>
                 <p>
-                  {{ t("1. 此页面所有人均可以访问，您也可以放置任何权限的卡片。") }}
+                  {{ t("TXT_CODE_2c7bcdfa") }}
                 </p>
                 <p>
-                  {{ t("2. 访问者没有登录或者权限不足，依然会无法加载卡片。") }}
+                  {{ t("TXT_CODE_da579edc") }}
                 </p>
                 <p>
-                  {{ t("3. 设计完成后，您可以使用已登录的状态直接访问。") }}
+                  {{ t("TXT_CODE_4d50f316") }}
                 </p>
 
                 <pre>{{ myAddr }}</pre>
@@ -39,7 +39,7 @@ const myAddr = `${window.location.href}`;
             <div v-else>
               <a-typography-paragraph>
                 <p>
-                  {{ t("此页面无内容。") }}
+                  {{ t("TXT_CODE_e15e5006") }}
                 </p>
               </a-typography-paragraph>
             </div>

@@ -219,9 +219,9 @@ const save = async () => {
       </a-form-item>
     </a-form>
     <template #footer>
-      <a-button @click="close">{{ t("关闭") }}</a-button>
+      <a-button @click="close">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       <a-button type="primary" @click="save">
-        {{ t("保存") }}
+        {{ t("TXT_CODE_abfe9512") }}
       </a-button>
     </template>
   </a-modal>

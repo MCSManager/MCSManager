@@ -302,7 +302,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   {
     fileName: "[Tshock] config.json",
     type: "yml",
-    info: t("Tshock 服务端配置文件"),
+    info: t("TXT_CODE_1cd8f9d2"),
     path: "tshock/config.json",
     redirect: "tshock/config.json",
     category: [TYPE_TERRARIA]
