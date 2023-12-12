@@ -17,7 +17,7 @@ const props = defineProps<MountComponent>();
 const open = ref(true);
 const activeKey = ref(1);
 const step = ref<STEP>(STEP.SELECT_TYPE);
-const appType = ref<QUICKSTART_ACTION_TYPE>(QUICKSTART_ACTION_TYPE.Minecraft);
+const appType = ref<QUICKSTART_ACTION_TYPE>();
 
 const cancel = async () => {
   open.value = false;
@@ -93,10 +93,20 @@ const actions = [
           </fade-up-animation>
         </a-row>
       </div>
-      <div v-if="step === STEP.SELECT_SOFTWARE">
+      <div v-if="appType === QUICKSTART_ACTION_TYPE.Minecraft">
         <a-tabs v-model:activeKey="activeKey">
-          <a-tab-pane :key="1" :tab="t('Java 版 Minecraft 服务器')"></a-tab-pane>
-          <a-tab-pane :key="2" :tab="t('基岩版 Minecraft 服务器')"></a-tab-pane>
+          <a-tab-pane :key="1" :tab="t('Java 版 Minecraft 服务器')">A</a-tab-pane>
+          <a-tab-pane :key="2" :tab="t('基岩版 Minecraft 服务器')">B</a-tab-pane>
+        </a-tabs>
+      </div>
+      <div v-else-if="appType === QUICKSTART_ACTION_TYPE.SteamGameServer">
+        <a-tabs v-model:activeKey="activeKey">
+          <a-tab-pane :key="1" :tab="t('全部类型')">C</a-tab-pane>
+        </a-tabs>
+      </div>
+      <div v-else-if="appType != null">
+        <a-tabs v-model:activeKey="activeKey">
+          <a-tab-pane :key="1" :tab="t('全部类型')">D</a-tab-pane>
         </a-tabs>
       </div>
     </div>
