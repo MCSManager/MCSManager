@@ -195,8 +195,8 @@ export interface QuickStartTemplate {
 }
 
 export interface MountComponent {
-  destroyComponent: Function;
-  emitResult: Function;
+  destroyComponent(delay?: number): void;
+  emitResult(data?: any): void;
 }
 
 export interface Schedule {

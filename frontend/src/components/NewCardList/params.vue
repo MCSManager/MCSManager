@@ -5,7 +5,7 @@ import type { MapData } from "@/types/index";
 import type { FormInstance } from "ant-design-vue";
 import { BulbOutlined } from "@ant-design/icons-vue";
 import { $t as t } from "@/lang/i18n";
-import { useSelectInstances } from "@/hooks/useSelectInstances";
+import { useSelectInstances } from "@/components/fc";
 
 const open = ref(false);
 const card = ref<LayoutCard>();
