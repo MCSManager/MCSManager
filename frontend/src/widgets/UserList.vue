@@ -438,9 +438,14 @@ onMounted(async () => {
                           <a-menu-item key="2" @click="handleToUserResources(record)">
                             {{ t("TXT_CODE_4d934e3a") }}
                           </a-menu-item>
-                          <a-menu-item key="3" @click="handleDeleteUser(record)">
-                            {{ t("TXT_CODE_760f00f5") }}
-                          </a-menu-item>
+                          <a-popconfirm
+                            :title="t('你确定要删除这个用户吗？')"
+                            @confirm="handleDeleteUser(record)"
+                          >
+                            <a-menu-item key="3">
+                              {{ t("TXT_CODE_760f00f5") }}
+                            </a-menu-item>
+                          </a-popconfirm>
                         </a-menu>
                       </template>
                       <a-button size="">
