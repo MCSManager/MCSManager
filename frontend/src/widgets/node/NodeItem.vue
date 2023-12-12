@@ -7,7 +7,8 @@ import {
   SettingOutlined,
   CodeOutlined,
   BlockOutlined,
-  FolderOpenOutlined
+  FolderOpenOutlined,
+  ReloadOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -127,6 +128,14 @@ const nodeOperations = computed(() =>
       condition: () => item.value!.available
     },
     {
+      title: t("重新连接"),
+      icon: ReloadOutlined,
+      click: async (node: ComputedNodeInfo) => {
+        await tryConnectNode(node.uuid);
+      },
+      condition: () => !item.value!.available
+    },
+    {
       title: t("TXT_CODE_b5c7b82d"),
       icon: SettingOutlined,
       click: (node: ComputedNodeInfo) => {
@@ -156,11 +165,24 @@ const deleteNode = async () => {
   editDialog.value.loading = false;
 };
 
+const tryConnectNode = async (uuid: string, showMsg = true) => {
+  const { execute } = connectNode();
+  try {
+    await execute({
+      params: {
+        uuid: uuid
+      }
+    });
+    if (showMsg) message.success(t("操作成功"));
+  } catch (error) {
+    message.error(t("操作失败"));
+  }
+};
+
 const editNode = async () => {
   const { apiKey, ...outherData } = editDialog.value.data;
   const updatedData = apiKey == "" ? { ...outherData } : editDialog.value.data;
   const { execute } = editNodeApi();
-  const { execute: tryConnectNode } = connectNode();
   try {
     await execute({
       params: {
@@ -170,11 +192,7 @@ const editNode = async () => {
         ...updatedData
       }
     });
-    await tryConnectNode({
-      params: {
-        uuid: editDialog.value.uuid
-      }
-    });
+    await tryConnectNode(editDialog.value.uuid, false);
     message.success(t("TXT_CODE_a7907771"));
     editDialog.value.loading = false;
     editDialog.value.hidden();
