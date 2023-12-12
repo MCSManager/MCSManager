@@ -24,6 +24,7 @@ const operationForm = ref({
 const ALL = "all";
 const currentStatus = ref<boolean | string>(ALL);
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
+const refreshLoading = ref(false);
 
 const remotes = computed(() => {
   const filterByName = (node: ComputedNodeInfo) =>
@@ -97,6 +98,18 @@ const editNode = async () => {
   }
 };
 
+const refresh = async () => {
+  try {
+    refreshLoading.value = true;
+    await refreshOverviewInfo(true);
+    message.success(t("TXT_CODE_fbde647e"));
+  } catch (error: any) {
+    message.error(error.message);
+  } finally {
+    refreshLoading.value = false;
+  }
+};
+
 const editMode = ref(false);
 const editDialog = ref({
   status: false,
@@ -166,6 +179,9 @@ const editDialog = ref({
             </a-typography-title>
           </template>
           <template #right>
+            <a-button class="mr-12" :loading="refreshLoading" @click="refresh">
+              {{ t("TXT_CODE_b76d94e0") }}
+            </a-button>
             <a-button class="mr-12" type="primary" @click="editDialog.show">
               {{ t("TXT_CODE_15a381d5") }}
             </a-button>
