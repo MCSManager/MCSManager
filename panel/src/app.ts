@@ -1,18 +1,11 @@
 import "module-alias/register";
-
-// Initialize the version manager & i18n
 import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
-
-// Storage
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
-
 import { initSystemConfig, systemConfig } from "./app/setting";
 import SystemUser from "./app/service/system_user";
 import SystemRemoteService from "./app/service/system_remote_service";
-
-// Http server requirements
 import Koa from "koa";
 import { v4 } from "uuid";
 import path from "path";
@@ -20,7 +13,7 @@ import koaBody from "koa-body";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
-import open from "open";
+// import open from "open";
 import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";

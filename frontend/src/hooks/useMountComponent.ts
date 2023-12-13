@@ -1,7 +1,7 @@
 import { createApp, type Component } from "vue";
 import { sleep } from "@/tools/common";
 
-export function useMountComponent() {
+export function useMountComponent(data: Record<string, any> = {}) {
   let isOpen = false;
   const mount = <T>(component: Component) => {
     if (isOpen) return;
@@ -9,9 +9,9 @@ export function useMountComponent() {
     return new Promise<T>((resolve, reject) => {
       const div = document.createElement("div");
       document.body.appendChild(div);
-
       const app = createApp(component, {
-        async destroyComponent(delay = 0) {
+        ...data,
+        async destroyComponent(delay = 1000) {
           await sleep(delay);
           app.unmount();
           div.remove();

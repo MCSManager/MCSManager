@@ -14,7 +14,7 @@ import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { message } from "ant-design-vue";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
-import { useScreen } from "../hooks/useScreen";
+import { useScreen } from "@/hooks/useScreen";
 
 const props = defineProps<MountComponent>();
 const { isPhone } = useScreen();
