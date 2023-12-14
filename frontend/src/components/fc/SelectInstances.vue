@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import BetweenMenus from "../BetweenMenus.vue";
 import type { MountComponent, NodeStatus } from "@/types";
 import type { UserInstance } from "@/types/user";
 import { t } from "@/lang/i18n";
@@ -53,6 +54,7 @@ const instancesList = computed(() => {
 
 const initNodes = async () => {
   await getNodes();
+  nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
   if (!nodes.value?.length) {
     return message.error(t("TXT_CODE_e3d96a26"));
   }
@@ -125,6 +127,7 @@ const handleQueryInstance = throttle(async () => {
 
 const handleChangeNode = async (item: NodeStatus) => {
   try {
+    operationForm.value.currentPage = 1;
     currentRemoteNode.value = item;
     await initInstancesData();
     localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
@@ -152,46 +155,55 @@ const handleChangeNode = async (item: NodeStatus) => {
     </a-typography-paragraph>
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
-        <div class="flex-between flex-wrap align-center">
-          <a-dropdown>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item v-for="item in nodes" :key="item.uuid" @click="handleChangeNode(item)">
-                  <DatabaseOutlined v-if="item.available" />
-                  <FrownOutlined v-else />
-                  {{ computeNodeName(item.ip, item.available, item.remarks) }}
-                </a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="toNodesPage">
-                  <FormOutlined />
-                  {{ t("TXT_CODE_28e53fed") }}
-                </a-menu-item>
-              </a-menu>
-            </template>
-            <a-button :class="isPhone && 'mb-10 w-100'">
-              {{
-                computeNodeName(
-                  currentRemoteNode?.ip || "",
-                  currentRemoteNode?.available || true,
-                  currentRemoteNode?.remarks
-                )
-              }}
-              <DownOutlined />
-            </a-button>
-          </a-dropdown>
-          <div class="search-input" :class="isPhone && 'w-100'">
-            <a-input
-              v-model:value="operationForm.instanceName"
-              :placeholder="t('TXT_CODE_ce132192')"
-              @press-enter="handleQueryInstance"
-              @change="handleQueryInstance"
-            >
-              <template #prefix>
-                <search-outlined />
+        <BetweenMenus>
+          <template #left>
+            <a-dropdown>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item
+                    v-for="item in nodes"
+                    :key="item.uuid"
+                    :disabled="!item.available"
+                    @click="handleChangeNode(item)"
+                  >
+                    <DatabaseOutlined v-if="item.available" />
+                    <FrownOutlined v-else />
+                    {{ computeNodeName(item.ip, item.available, item.remarks) }}
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="toNodesPage">
+                    <FormOutlined />
+                    {{ t("TXT_CODE_28e53fed") }}
+                  </a-menu-item>
+                </a-menu>
               </template>
-            </a-input>
-          </div>
-        </div>
+              <a-button :class="isPhone && 'mb-10 w-100'">
+                {{
+                  computeNodeName(
+                    currentRemoteNode?.ip || "",
+                    currentRemoteNode?.available || true,
+                    currentRemoteNode?.remarks
+                  )
+                }}
+                <DownOutlined />
+              </a-button>
+            </a-dropdown>
+          </template>
+          <template #right>
+            <div class="search-input" :class="isPhone && 'w-100'">
+              <a-input
+                v-model:value="operationForm.instanceName"
+                :placeholder="t('TXT_CODE_ce132192')"
+                @press-enter="handleQueryInstance"
+                @change="handleQueryInstance"
+              >
+                <template #prefix>
+                  <search-outlined />
+                </template>
+              </a-input>
+            </div>
+          </template>
+        </BetweenMenus>
       </a-col>
       <a-col :span="24">
         <div v-if="instances" class="flex-between align-center">

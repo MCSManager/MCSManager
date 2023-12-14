@@ -16,7 +16,8 @@ import {
   ExclamationCircleOutlined,
   DeleteOutlined,
   WarningOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  FrownOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
@@ -294,7 +295,8 @@ onMounted(async () => {
                     :disabled="!item.available"
                     @click="handleChangeNode(item)"
                   >
-                    <DatabaseOutlined />
+                    <DatabaseOutlined v-if="item.available" />
+                    <FrownOutlined v-else />
                     {{ computeNodeName(item.ip, item.available, item.remarks) }}
                   </a-menu-item>
                   <a-menu-divider />
