@@ -11,6 +11,7 @@ import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
 import configComponent from "@/components/InstanceConfigEditor.vue";
 import { DownOutlined } from "@ant-design/icons-vue";
+import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -92,6 +93,11 @@ const save = async () => {
   }
 };
 
+const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
+const toEditRawFile = () => {
+  FileEditorDialog.value?.openDialog(configPath ?? "", configName ?? "");
+};
+
 const refresh = async () => {
   await render();
   message.success(t("TXT_CODE_7863f28d"));
@@ -119,16 +125,16 @@ onMounted(async () => {
             <a-button v-if="!isPhone" :loading="getConfigFileLoading" class="mr-8" @click="refresh">
               {{ t("TXT_CODE_d080f2d7") }}
             </a-button>
-            <a-button v-if="!isPhone" type="dashed">
+            <a-button v-if="!isPhone" type="dashed" @click="toEditRawFile">
               {{ t("TXT_CODE_1f61e5a3") }}
             </a-button>
             <a-dropdown v-if="isPhone">
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="2" @click="refresh">
+                  <a-menu-item key="1" @click="refresh">
                     {{ t("TXT_CODE_d080f2d7") }}
                   </a-menu-item>
-                  <a-menu-item key="3">
+                  <a-menu-item key="2" @click="toEditRawFile">
                     {{ t("TXT_CODE_1f61e5a3") }}
                   </a-menu-item>
                 </a-menu>
@@ -159,6 +165,13 @@ onMounted(async () => {
       </a-col>
     </a-row>
   </div>
+
+  <FileEditor
+    v-if="daemonId && instanceId"
+    ref="FileEditorDialog"
+    :daemon-id="daemonId"
+    :instance-id="instanceId"
+  />
 </template>
 
 <style lang="scss" scoped></style>
