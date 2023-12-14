@@ -15,6 +15,7 @@ import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
+import { useCmdAssistantDialog } from "@/components/fc";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -157,6 +158,11 @@ const encodeFormData = () => {
   throw new Error("Ref Options is null");
 };
 
+const openCmdAssistDialog = async () => {
+  const cmd = useCmdAssistantDialog();
+  console.debug("cmd:", cmd);
+};
+
 defineExpose({
   openDialog
 });
@@ -238,7 +244,7 @@ defineExpose({
                   :rows="3"
                   style="min-height: 40px"
                 />
-                <a-button type="default" style="height: auto">
+                <a-button type="default" style="height: auto" @click="openCmdAssistDialog">
                   {{ t("TXT_CODE_2728d0d4") }}
                 </a-button>
               </a-input-group>

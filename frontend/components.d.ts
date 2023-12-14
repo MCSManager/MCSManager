@@ -64,6 +64,8 @@ declare module 'vue' {
     CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
+    CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog.vue')['default']
+    CommandDialog: typeof import('./src/components/commandDialog.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
@@ -84,6 +86,6 @@ declare module 'vue' {
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SelectInstances: typeof import('./src/components/SelectInstances.vue')['default']
+    SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
   }
 }

@@ -11,7 +11,7 @@ import { arrayFilter } from "@/tools/array";
 import { userInfoApiAdvanced } from "@/services/apis";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
-import { useSelectInstances } from "@/hooks/useSelectInstances";
+import { useSelectInstances } from "@/components/fc";
 import { message } from "ant-design-vue";
 import { INSTANCE_STATUS } from "@/types/const";
 

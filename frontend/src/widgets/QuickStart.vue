@@ -62,6 +62,7 @@ const actions = [
             :key="action.title"
             :title="action.title"
             :click="actions[index].click"
+            :icon="action.icon"
             :data-index="index"
           />
         </fade-up-animation>
