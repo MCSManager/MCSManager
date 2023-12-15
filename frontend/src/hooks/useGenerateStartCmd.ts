@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { QUICKSTART_ACTION_TYPE } from "./widgets/quickStartFlow";
-import { TYPE_MINECRAFT_JAVA } from "./useInstance";
+import { TYPE_MINECRAFT_JAVA, TYPE_STEAM_SERVER_UNIVERSAL, TYPE_UNIVERSAL } from "./useInstance";
 
 type SystemType = "win32" | "linux";
 
@@ -24,6 +24,11 @@ export function useStartCmdBuilder() {
     additional: additionalArray.join(" ")
   });
 
+  const anyAppForm = ref({
+    softwarePath: "",
+    params: ""
+  });
+
   const setSystem = (type: SystemType) => {
     systemType.value = type;
   };
@@ -34,6 +39,13 @@ export function useStartCmdBuilder() {
 
   const setGameType = (type: QUICKSTART_ACTION_TYPE) => {
     gameType.value = type;
+    if (type === QUICKSTART_ACTION_TYPE.Minecraft) {
+      return setAppType(TYPE_MINECRAFT_JAVA);
+    }
+    if (type === QUICKSTART_ACTION_TYPE.SteamGameServer) {
+      return setAppType(TYPE_STEAM_SERVER_UNIVERSAL);
+    }
+    setAppType(TYPE_UNIVERSAL);
   };
 
   const buildCmd = () => {
@@ -44,8 +56,17 @@ export function useStartCmdBuilder() {
       const config = minecraftJava.value;
       const javaPath = config.javaPath ? `"${config.javaPath}"` : "java";
       const jarName = config.jarName.includes(" ") ? `"${config.jarName}"` : config.jarName;
-      return `${javaPath} -Xms${config.minMemory} -Xmx${config.maxMemory} ${additionalArray} -jar "${jarName}" ${config.suffix}`;
+      const memArray = [];
+      if (config.minMemory) memArray.push(`-Xms${config.minMemory}`);
+      if (config.maxMemory) memArray.push(`-Xms${config.maxMemory}`);
+      const cmd = [javaPath, ...memArray, ...additionalArray, "-jar", jarName, config.suffix];
+      return cmd.join(" ");
     }
+    const config = anyAppForm.value;
+    const softPath = config.softwarePath.includes(" ")
+      ? `"${config.softwarePath}"`
+      : config.softwarePath;
+    return `${softPath} ${config.params}`;
   };
 
   return {
@@ -55,6 +76,7 @@ export function useStartCmdBuilder() {
     setGameType,
     gameType,
     appType,
-    minecraftJava
+    minecraftJava,
+    anyAppForm
   };
 }
