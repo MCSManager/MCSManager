@@ -11,7 +11,7 @@ defineEmits(["click"]);
 </script>
 
 <template>
-  <a-tooltip :placement="placement ? placement : 'top'">
+  <a-tooltip :placement="<any>(placement ? placement : 'top')">
     <template #title>
       <span>{{ title }}</span>
     </template>

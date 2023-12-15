@@ -154,7 +154,14 @@ onMounted(async () => {});
         </CardPanel>
       </a-col>
 
-      <a-col v-for="i in imageList" :key="i" :span="24" :lg="6" :md="8" :sm="12">
+      <a-col
+        v-for="i in imageList"
+        :key="i.title + i.description + i.type"
+        :span="24"
+        :lg="6"
+        :md="8"
+        :sm="12"
+      >
         <CardPanel class="images-card" @click="selectType(i.type)">
           <template #title>{{ i.title }}</template>
           <template #body>

@@ -12,6 +12,8 @@ import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
 import CopyButton from "@/components/CopyButton.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
+
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -44,13 +46,13 @@ const getImageList = async () => {
 
 const imageDataSource = ref<ImageInfo[]>();
 const imageColumns = computed(() => {
-  return arrayFilter([
+  return arrayFilter<AntColumnsType>([
     {
       align: "center",
       title: "ID",
       dataIndex: "Id",
       key: "Id",
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
@@ -70,7 +72,7 @@ const imageColumns = computed(() => {
       align: "center",
       title: t("TXT_CODE_fe731dfc"),
       key: "action",
-      minWidth: "200px"
+      minWidth: 200
     }
   ]);
 });
@@ -116,13 +118,13 @@ const delImage = async (item: ImageInfo) => {
 
 const containerDataSource = ref<ContainerInfo[]>();
 const containerColumns = computed(() => {
-  return arrayFilter([
+  return arrayFilter<AntColumnsType>([
     {
       align: "center",
       title: "ID",
       dataIndex: "Id",
       key: "Id",
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
@@ -152,7 +154,7 @@ const containerColumns = computed(() => {
       align: "center",
       title: t("TXT_CODE_fe731dfc"),
       key: "action",
-      minWidth: "200px"
+      minWidth: 200
     }
   ]);
 });
@@ -237,17 +239,17 @@ onMounted(async () => {
               :loading="imageListLoading"
               size="small"
             >
-              <template #bodyCell="{ column, record }">
+              <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
                   {{ record.Id }}
                   <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
                 </template>
                 <template v-if="column.key === 'action'">
-                  <a-button class="mr-8" size="" @click="showDetail(record)">
+                  <a-button class="mr-8" size="large" @click="showDetail(record)">
                     {{ t("TXT_CODE_f1b166e7") }}
                   </a-button>
                   <a-popconfirm :title="t('TXT_CODE_dfa17b2d')" @confirm="delImage(record)">
-                    <a-button size="" danger>
+                    <a-button size="large" danger>
                       {{ t("TXT_CODE_ecbd7449") }}
                     </a-button>
                   </a-popconfirm>
@@ -282,13 +284,13 @@ onMounted(async () => {
               :loading="containerListLoading"
               size="small"
             >
-              <template #bodyCell="{ column, record }">
+              <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
                   {{ record.Id }}
                   <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
                 </template>
                 <template v-if="column.key === 'action'">
-                  <a-button class="mr-8" size="" @click="showDetail(record)">
+                  <a-button class="mr-8" size="large" @click="showDetail(record)">
                     {{ t("TXT_CODE_f1b166e7") }}
                   </a-button>
                 </template>

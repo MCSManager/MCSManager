@@ -23,7 +23,7 @@ defineExpose({ validate });
 
 <template>
   <a-form ref="formRef" layout="vertical" :model="form">
-    <a-form-item name="softwarePath" :label="t('需要启动的程序')" required="true">
+    <a-form-item name="softwarePath" :label="t('需要启动的程序')" required>
       <a-input
         v-model:value="form.softwarePath"
         :placeholder="t('列如：server.exe，app.exe，或使用绝对路径等')"

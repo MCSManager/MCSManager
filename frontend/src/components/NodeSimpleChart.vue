@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getRandomId } from "@/tools/randId";
-import { useOverviewChart, useSimpleChart } from "../hooks/useOverviewChart";
-import { watch, unref, onMounted } from "vue";
+import { useSimpleChart } from "../hooks/useOverviewChart";
+import { watch, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 
 const props = defineProps<{

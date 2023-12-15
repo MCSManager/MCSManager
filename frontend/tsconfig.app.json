@@ -5,8 +5,8 @@
     "src/**/*",
     "src/**/*.vue",
     "src/config/**/*",
-    "src/lang/**/*.json"
-    // "components.d.ts"
+    "src/lang/**/*.json",
+    "components.d.ts"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {

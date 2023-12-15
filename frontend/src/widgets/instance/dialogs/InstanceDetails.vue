@@ -349,7 +349,7 @@ defineExpose({
                 style="width: 100%"
                 :placeholder="t('TXT_CODE_3bb646e4')"
                 @focus="loadImages"
-                @change="selectImage"
+                @change="(e) => selectImage(String(e))"
               >
                 <a-select-option
                   v-for="item in dockerImages"
@@ -367,7 +367,7 @@ defineExpose({
                   {{ t("TXT_CODE_c7b95258") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input-group compact>
+              <a-input-group v-if="options.config.docker.ports" compact>
                 <a-input
                   v-model:value="options.config.docker.ports"
                   style="width: calc(100% - 88px)"
