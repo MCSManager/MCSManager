@@ -166,7 +166,11 @@ export function useTerminal() {
   };
 
   events.on("stdout", (v: StdoutData) => {
-    terminal.value?.write(v.text);
+    if (state.value?.config?.terminalOption?.haveColor) {
+      terminal.value?.write(encodeConsoleColor(v.text));
+    } else {
+      terminal.value?.write(v.text);
+    }
   });
 
   const sendCommand = (command: string) => {
@@ -205,8 +209,96 @@ export function useTerminal() {
     terminal,
     socketAddress,
     isConnect,
+
     execute,
     initTerminalWindow,
     sendCommand
   };
+}
+
+export function encodeConsoleColor(text: string) {
+  text = text.replace(/(\x1B[^m]*m)/gm, "$1;");
+  text = text.replace(/ \[([A-Za-z0-9 _\-\\.]+)]/gim, " [§3$1§r]");
+  text = text.replace(/^\[([A-Za-z0-9 _\-\\.]+)]/gim, "[§3$1§r]");
+  text = text.replace(/((["'])(.*?)\1)/gm, "§e$1§r");
+  text = text.replace(/([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2})/gim, "§6$1§r");
+  text = text.replace(/([0-9]{2,4}[\/\-][0-9]{2,4}[\/\-][0-9]{2,4})/gim, "§6$1§r");
+  text = text.replace(/(\x1B[^m]*m);/gm, "$1");
+  // ["](.*?)["];
+  text = text.replace(/§0/gim, TERM_COLOR.TERM_TEXT_BLACK);
+  text = text.replace(/§1/gim, TERM_COLOR.TERM_TEXT_DARK_BLUE);
+  text = text.replace(/§2/gim, TERM_COLOR.TERM_TEXT_DARK_GREEN);
+  text = text.replace(/§3/gim, TERM_COLOR.TERM_TEXT_DARK_AQUA);
+  text = text.replace(/§4/gim, TERM_COLOR.TERM_TEXT_DARK_RED);
+  text = text.replace(/§5/gim, TERM_COLOR.TERM_TEXT_DARK_PURPLE);
+  text = text.replace(/§6/gim, TERM_COLOR.TERM_TEXT_GOLD);
+  text = text.replace(/§7/gim, TERM_COLOR.TERM_TEXT_GRAY);
+  text = text.replace(/§8/gim, TERM_COLOR.TERM_TEXT_DARK_GRAY);
+  text = text.replace(/§9/gim, TERM_COLOR.TERM_TEXT_BLUE);
+  text = text.replace(/§a/gim, TERM_COLOR.TERM_TEXT_GREEN);
+  text = text.replace(/§b/gim, TERM_COLOR.TERM_TEXT_AQUA);
+  text = text.replace(/§c/gim, TERM_COLOR.TERM_TEXT_RED);
+  text = text.replace(/§d/gim, TERM_COLOR.TERM_TEXT_LIGHT_PURPLE);
+  text = text.replace(/§e/gim, TERM_COLOR.TERM_TEXT_YELLOW);
+  text = text.replace(/§f/gim, TERM_COLOR.TERM_TEXT_WHITE);
+  text = text.replace(/§k/gim, TERM_COLOR.TERM_TEXT_OBFUSCATED);
+  text = text.replace(/§l/gim, TERM_COLOR.TERM_TEXT_BOLD);
+  text = text.replace(/§m/gim, TERM_COLOR.TERM_TEXT_STRIKETHROUGH);
+  text = text.replace(/§n/gim, TERM_COLOR.TERM_TEXT_UNDERLINE);
+  text = text.replace(/§o/gim, TERM_COLOR.TERM_TEXT_ITALIC);
+  text = text.replace(/§r/gim, TERM_COLOR.TERM_RESET);
+
+  text = text.replace(/&0/gim, TERM_COLOR.TERM_TEXT_BLACK);
+  text = text.replace(/&1/gim, TERM_COLOR.TERM_TEXT_DARK_BLUE);
+  text = text.replace(/&2/gim, TERM_COLOR.TERM_TEXT_DARK_GREEN);
+  text = text.replace(/&3/gim, TERM_COLOR.TERM_TEXT_DARK_AQUA);
+  text = text.replace(/&4/gim, TERM_COLOR.TERM_TEXT_DARK_RED);
+  text = text.replace(/&5/gim, TERM_COLOR.TERM_TEXT_DARK_PURPLE);
+  text = text.replace(/&6/gim, TERM_COLOR.TERM_TEXT_GOLD);
+  text = text.replace(/&7/gim, TERM_COLOR.TERM_TEXT_GRAY);
+  text = text.replace(/&8/gim, TERM_COLOR.TERM_TEXT_DARK_GRAY);
+  text = text.replace(/&9/gim, TERM_COLOR.TERM_TEXT_BLUE);
+  text = text.replace(/&a/gim, TERM_COLOR.TERM_TEXT_GREEN);
+  text = text.replace(/&b/gim, TERM_COLOR.TERM_TEXT_AQUA);
+  text = text.replace(/&c/gim, TERM_COLOR.TERM_TEXT_RED);
+  text = text.replace(/&d/gim, TERM_COLOR.TERM_TEXT_LIGHT_PURPLE);
+  text = text.replace(/&e/gim, TERM_COLOR.TERM_TEXT_YELLOW);
+  text = text.replace(/&f/gim, TERM_COLOR.TERM_TEXT_WHITE);
+  text = text.replace(/&k/gim, TERM_COLOR.TERM_TEXT_OBFUSCATED);
+  text = text.replace(/&l/gim, TERM_COLOR.TERM_TEXT_BOLD);
+  text = text.replace(/&m/gim, TERM_COLOR.TERM_TEXT_STRIKETHROUGH);
+  text = text.replace(/&n/gim, TERM_COLOR.TERM_TEXT_UNDERLINE);
+  text = text.replace(/&o/gim, TERM_COLOR.TERM_TEXT_ITALIC);
+  text = text.replace(/&r/gim, TERM_COLOR.TERM_RESET);
+
+  const RegExpStringArr = [
+    //blue
+    ["\\d{1,3}%", "true", "false"],
+    //green
+    ["information", "info", "\\(", "\\)", "\\{", "\\}", '\\"', "&lt;", "&gt;", "-->", "->", ">>>"],
+    //red
+    ["Error", "Caused by", "panic"],
+    //yellow
+    ["WARNING", "Warn"]
+  ];
+  for (const k in RegExpStringArr) {
+    for (const y in RegExpStringArr[k]) {
+      const reg = new RegExp("(" + RegExpStringArr[k][y].replace(/ /gim, "&nbsp;") + ")", "igm");
+      if (k === "0")
+        //blue
+        text = text.replace(reg, TERM_COLOR.TERM_TEXT_BLUE + "$1" + TERM_COLOR.TERM_RESET);
+      if (k === "1")
+        //green
+        text = text.replace(reg, TERM_COLOR.TERM_TEXT_DARK_GREEN + "$1" + TERM_COLOR.TERM_RESET);
+      if (k === "2")
+        //red
+        text = text.replace(reg, TERM_COLOR.TERM_TEXT_RED + "$1" + TERM_COLOR.TERM_RESET);
+      if (k === "3")
+        //yellow
+        text = text.replace(reg, TERM_COLOR.TERM_TEXT_GOLD + "$1" + TERM_COLOR.TERM_RESET);
+    }
+  }
+  // line ending symbol substitution
+  text = text.replace(/\r\n/gm, TERM_COLOR.TERM_RESET + "\r\n");
+  return text;
 }
