@@ -26,7 +26,7 @@ defineProps<{
 <style scoped lang="scss">
 .btn {
   padding: 20px 12px;
-  border: 1px solid var(--color-gray-2);
+  border: 1px solid var(--color-gray-3);
   background-color: var(--color-gray-2);
 
   cursor: pointer;

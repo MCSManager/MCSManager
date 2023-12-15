@@ -37,7 +37,7 @@ const props = defineProps<{
 .inner-card-wrapper {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--color-gray-2);
+  border: 1px solid var(--color-gray-3);
   background-color: var(--color-gray-2);
   padding: 12px;
   cursor: pointer;

@@ -6,16 +6,11 @@ import { t } from "@/lang/i18n";
 import {
   AppstoreAddOutlined,
   ArrowRightOutlined,
-  CloudServerOutlined,
   CodeOutlined,
   ControlOutlined,
   DashboardOutlined,
   FieldTimeOutlined,
-  FolderOpenOutlined,
-  FolderViewOutlined,
-  NodeExpandOutlined,
-  RadiusSettingOutlined,
-  UngroupOutlined
+  FolderOpenOutlined
 } from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
@@ -149,7 +144,7 @@ const btns = computed(() =>
     <template #title>{{ card.title }}</template>
     <template #body>
       <div class="pb-4">
-        <a-row :gutter="[24, 24]" style="height: 100%">
+        <a-row :gutter="[16, 16]" style="height: 100%">
           <a-col
             v-for="btn in btns"
             :key="btn.title"

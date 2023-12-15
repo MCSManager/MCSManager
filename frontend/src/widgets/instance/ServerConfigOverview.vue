@@ -118,7 +118,7 @@ onMounted(async () => {
                       <a-tag v-if="item.conflict" color="warning">
                         {{ t("TXT_CODE_1af148fe") }}
                       </a-tag>
-                      {{ item.fileName }}
+                      <a-typography-title :level="5">{{ item.fileName }}</a-typography-title>
                     </template>
                     <template #description>
                       {{ item.info }}
