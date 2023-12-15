@@ -4,6 +4,7 @@ import { t } from "@/lang/i18n";
 import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import type { LayoutCard } from "@/types";
 import { computed } from "vue";
+import { arrayFilter } from "@/tools/array";
 
 defineProps<{
   card: LayoutCard;
@@ -25,7 +26,7 @@ const overviewList = computed(() => {
   const total = Number((system.totalmem / 1024 / 1024 / 1024).toFixed(1));
   const used = Number(total - free).toFixed(1);
 
-  return [
+  return arrayFilter([
     {
       title: t("TXT_CODE_413b9c01"),
       value: system.node
@@ -64,7 +65,8 @@ const overviewList = computed(() => {
     },
     {
       title: t("TXT_CODE_190ecd56"),
-      value: system.loadavg.map((v) => Number(v).toFixed(2)).join("-")
+      value: system.loadavg.map((v) => Number(v).toFixed(2)).join("-"),
+      condition: () => !system.type.toLowerCase().includes("windows")
     },
     {
       title: t("TXT_CODE_77d038f7"),
@@ -82,7 +84,7 @@ const overviewList = computed(() => {
       title: t("TXT_CODE_edf84830"),
       value: `${system.type} ${system.platform}`
     }
-  ];
+  ]);
 });
 </script>
 

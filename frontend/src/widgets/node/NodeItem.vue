@@ -7,7 +7,8 @@ import {
   SettingOutlined,
   CodeOutlined,
   BlockOutlined,
-  FolderOpenOutlined
+  FolderOpenOutlined,
+  ReloadOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -19,6 +20,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
+import CopyButton from "@/components/CopyButton.vue";
 
 const props = defineProps<{
   item?: ComputedNodeInfo;
@@ -45,39 +47,41 @@ if (props.card) {
 
 const { toPage } = useAppRouters();
 
-const detailList = (node: ComputedNodeInfo) => {
-  return [
-    {
-      title: t("TXT_CODE_f52079a0"),
-      value: `${node.ip}:${node.port}`
-    },
-    {
-      title: t("TXT_CODE_593ee330"),
-      value: node.memText
-    },
-    {
-      title: t("TXT_CODE_2c2712a4"),
-      value: node.cpuInfo
-    },
-    {
-      title: t("TXT_CODE_3d602459"),
-      value: node.instanceStatus
-    },
-    {
-      title: t("TXT_CODE_c9609785"),
-      value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
-    },
-    {
-      title: t("TXT_CODE_3d0885c0"),
-      value: node.platformText
-    },
-    {
-      title: t("TXT_CODE_81634069"),
-      value: node.version
-    }
-  ];
-};
-
+const detailList = (node: ComputedNodeInfo) => [
+  {
+    title: t("TXT_CODE_f52079a0"),
+    value: `${node.ip}:${node.port}`
+  },
+  {
+    title: t("TXT_CODE_593ee330"),
+    value: node.memText
+  },
+  {
+    title: t("TXT_CODE_2c2712a4"),
+    value: node.cpuInfo
+  },
+  {
+    title: t("TXT_CODE_3d602459"),
+    value: node.instanceStatus
+  },
+  {
+    title: t("TXT_CODE_c9609785"),
+    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
+  },
+  {
+    title: t("TXT_CODE_3d0885c0"),
+    value: node.platformText
+  },
+  {
+    title: t("TXT_CODE_81634069"),
+    value: node.version
+  },
+  {
+    title: "Daemon ID",
+    value: node.uuid,
+    onlyCopy: true
+  }
+];
 const nodeOperations = computed(() =>
   arrayFilter([
     {
@@ -127,6 +131,14 @@ const nodeOperations = computed(() =>
       condition: () => item.value!.available
     },
     {
+      title: t("重新连接"),
+      icon: ReloadOutlined,
+      click: async (node: ComputedNodeInfo) => {
+        await tryConnectNode(node.uuid);
+      },
+      condition: () => !item.value!.available
+    },
+    {
       title: t("TXT_CODE_b5c7b82d"),
       icon: SettingOutlined,
       click: (node: ComputedNodeInfo) => {
@@ -156,11 +168,24 @@ const deleteNode = async () => {
   editDialog.value.loading = false;
 };
 
+const tryConnectNode = async (uuid: string, showMsg = true) => {
+  const { execute } = connectNode();
+  try {
+    await execute({
+      params: {
+        uuid: uuid
+      }
+    });
+    if (showMsg) message.success(t("操作成功"));
+  } catch (error) {
+    message.error(t("操作失败"));
+  }
+};
+
 const editNode = async () => {
   const { apiKey, ...outherData } = editDialog.value.data;
   const updatedData = apiKey == "" ? { ...outherData } : editDialog.value.data;
   const { execute } = editNodeApi();
-  const { execute: tryConnectNode } = connectNode();
   try {
     await execute({
       params: {
@@ -170,11 +195,7 @@ const editNode = async () => {
         ...updatedData
       }
     });
-    await tryConnectNode({
-      params: {
-        uuid: editDialog.value.uuid
-      }
-    });
+    await tryConnectNode(editDialog.value.uuid, false);
     message.success(t("TXT_CODE_a7907771"));
     editDialog.value.loading = false;
     editDialog.value.hidden();
@@ -265,7 +286,10 @@ const editDialog = ref({
               <div>
                 {{ detail.title }}
               </div>
-              <div>
+              <div v-if="detail.onlyCopy">
+                <CopyButton type="link" size="small" :value="detail.value ?? ''" />
+              </div>
+              <div v-else>
                 {{ detail.value }}
               </div>
             </a-typography-paragraph>
