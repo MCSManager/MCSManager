@@ -182,7 +182,7 @@ const appMenus = computed(() => {
         setTheme(key as THEME);
       },
       conditions: !containerState.isDesignMode,
-      onlyPC: true,
+      onlyPC: false,
       menus: [
         {
           title: $t("TXT_CODE_673eac8e"),
@@ -300,7 +300,11 @@ const openPhoneMenu = (b = false) => {
               @click="openPhoneMenu(true)"
             ></a-button>
             <div v-for="(item, index) in appMenus" :key="index">
-              <a-dropdown v-if="item.menus && item.conditions && !item.onlyPC" placement="bottom">
+              <a-dropdown
+                v-if="item.menus && item.conditions && !item.onlyPC"
+                class="phone-nav-button"
+                placement="bottom"
+              >
                 <a-button type="text" :icon="h(item.icon)" size="small" @click.prevent></a-button>
                 <template #overlay>
                   <a-menu @click="(e: any) => item.click(String(e.key))">

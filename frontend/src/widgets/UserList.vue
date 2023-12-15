@@ -223,7 +223,7 @@ const formData = ref<EditUserInfo>(_.cloneDeep(formDataOrigin));
 const baseRules: Record<string, Rule[]> = {
   userName: [
     { required: true, message: t("TXT_CODE_2695488c") },
-    { min: 3, max: 12, message: t("TXT_CODE_3f477ec"), trigger: "blur" }
+    { min: 3, max: 20, message: t("TXT_CODE_3f477ec"), trigger: "blur" }
   ],
   permission: [{ required: true, message: t("TXT_CODE_3bb646e4") }]
 };
@@ -278,6 +278,11 @@ const handleEditUser = (user: BaseUserInfo) => {
   isAddMode.value = false;
   userDialog.value.show();
 };
+
+const search = throttle(async () => {
+  operationForm.value.currentPage = 1;
+  await fetchData();
+}, 600);
 
 onMounted(async () => {
   fetchData();
@@ -364,7 +369,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-8" type="default" :loading="getUserInfoLoading" @click="fetchData">
+            <a-button class="mr-8" type="default" :loading="getUserInfoLoading" @click="reload">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-dropdown>
@@ -387,7 +392,7 @@ onMounted(async () => {
           <template #center>
             <div class="search-input">
               <a-input-group compact>
-                <a-select v-model:value="currentRole" style="width: 100px" @change="reload()">
+                <a-select v-model:value="currentRole" style="width: 100px" @change="search()">
                   <a-select-option value="">
                     {{ t("TXT_CODE_c48f6f64") }}
                   </a-select-option>
@@ -399,7 +404,7 @@ onMounted(async () => {
                   v-model:value.trim="operationForm.name"
                   :placeholder="t('TXT_CODE_2471b9c')"
                   style="width: calc(100% - 100px)"
-                  @change="reload()"
+                  @change="search()"
                 >
                   <template #suffix>
                     <search-outlined />
