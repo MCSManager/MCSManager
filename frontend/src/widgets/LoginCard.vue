@@ -91,9 +91,15 @@ const loginSuccess = () => {
             <form>
               <a-input
                 v-model:value="formData.username"
-                :placeholder="t('TXT_CODE_80a560a1')"
+                class="account"
                 size="large"
                 autocomplete="off"
+                name="mcsm-name-input"
+                :placeholder="t('TXT_CODE_80a560a1')"
+                style="background-color: var(--color-gray-1) !important"
+                readonly
+                onfocus="this.removeAttribute('readonly');"
+                onblur="this.setAttribute('readonly',true);"
               >
                 <template #suffix>
                   <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
@@ -101,11 +107,12 @@ const loginSuccess = () => {
               </a-input>
               <a-input
                 v-model:value="formData.password"
-                class="mt-20"
+                class="mt-20 account"
                 type="password"
                 :placeholder="t('TXT_CODE_551b0348')"
                 size="large"
                 autocomplete="off"
+                name="mcsm-pw-input"
                 @press-enter="handleLogin"
               >
                 <template #suffix>

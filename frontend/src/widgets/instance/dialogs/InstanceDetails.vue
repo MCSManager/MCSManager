@@ -159,8 +159,8 @@ const encodeFormData = () => {
 };
 
 const openCmdAssistDialog = async () => {
-  const cmd = useCmdAssistantDialog();
-  console.debug("cmd:", cmd);
+  const cmd = await useCmdAssistantDialog();
+  if (options.value && cmd) options.value.config.startCommand = cmd;
 };
 
 defineExpose({
