@@ -94,8 +94,9 @@ const save = async () => {
 };
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
-const toEditRawFile = () => {
-  FileEditorDialog.value?.openDialog(configPath ?? "", configName ?? "");
+const toEditRawFile = async () => {
+  await FileEditorDialog.value?.openDialog(configPath ?? "", configName ?? "");
+  await render();
 };
 
 const refresh = async () => {
@@ -115,32 +116,19 @@ onMounted(async () => {
         <BetweenMenus>
           <template #left>
             <a-button class="mr-8" @click="toConfigOverview">
-              {{ t("TXT_CODE_16ed68d") }}
+              {{ t("返回") }}
             </a-button>
           </template>
           <template #right>
             <a-button type="primary" :loading="updateConfigFileLoading" class="mr-8" @click="save">
-              {{ t("TXT_CODE_30a3c45d") }}
+              {{ t("保存") }}
             </a-button>
-            <a-button v-if="!isPhone" :loading="getConfigFileLoading" class="mr-8" @click="refresh">
-              {{ t("TXT_CODE_d080f2d7") }}
+            <a-button :loading="getConfigFileLoading" class="mr-8" @click="refresh">
+              {{ t("刷新") }}
             </a-button>
-            <a-button v-if="!isPhone" type="dashed" @click="toEditRawFile">
+            <a-button type="dashed" @click="toEditRawFile">
               {{ t("TXT_CODE_1f61e5a3") }}
             </a-button>
-            <a-dropdown v-if="isPhone">
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item key="1" @click="refresh">
-                    {{ t("TXT_CODE_d080f2d7") }}
-                  </a-menu-item>
-                  <a-menu-item key="2" @click="toEditRawFile">
-                    {{ t("TXT_CODE_1f61e5a3") }}
-                  </a-menu-item>
-                </a-menu>
-              </template>
-              <a-button type="primary"> {{ t("TXT_CODE_fbf985cb") }}<DownOutlined /> </a-button>
-            </a-dropdown>
           </template>
         </BetweenMenus>
       </a-col>

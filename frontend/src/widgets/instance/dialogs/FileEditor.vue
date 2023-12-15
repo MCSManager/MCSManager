@@ -12,19 +12,23 @@ const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
-// const daemonId = String(route.query["daemonId"]) ?? "";
-// const instanceId = String(route.query["instanceId"]) ?? "";
+let resolve: (t: string) => void;
+let reject: (e: Error) => void;
 
 const props = defineProps<{
   daemonId: string;
   instanceId: string;
 }>();
 
-const openDialog = async (path_: string, fileName_: string) => {
+const openDialog = (path_: string, fileName_: string) => {
   open.value = true;
   path.value = path_;
   fileName.value = fileName_;
-  await render();
+  return new Promise(async (_resolve, _reject) => {
+    await render();
+    resolve = _resolve;
+    reject = _reject;
+  });
 };
 
 const { state: text, execute } = fileContent();
@@ -65,8 +69,10 @@ const submit = async () => {
     });
     message.success(t("TXT_CODE_a7907771"));
     open.value = openEditor.value = false;
+    resolve(editorText.value);
   } catch (err: any) {
     console.error(err.message);
+    reject(err);
     return message.error(err.message);
   }
 };

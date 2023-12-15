@@ -27,7 +27,7 @@ const parsedConfig = jsonToMap(props.config);
       <template #body>
         <a-typography>
           <a-typography-title :level="5">
-            {{ data ? t("TXT_CODE_fb2df398") : t("TXT_CODE_2ce953da") }}
+            {{ data ? t("配置文件说明") : t("TXT_CODE_2ce953da") }}
           </a-typography-title>
           <a-typography-paragraph v-if="data">
             {{ data?.desc }}
@@ -43,7 +43,7 @@ const parsedConfig = jsonToMap(props.config);
     <CardPanel style="height: 100%">
       <template #body>
         <div v-if="!isEmpty(props.config)">
-          <div v-for="(item, index) in parsedConfig" :key="index">
+          <div v-for="(item, index) in parsedConfig" :key="index" class="p-1">
             <LineOption :option-value="parsedConfig" :option-key="index">
               <template #title>{{ index }}</template>
               <template #info>{{ getDescriptionByTitle(data?.config, index) }}</template>

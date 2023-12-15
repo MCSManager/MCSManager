@@ -14,7 +14,7 @@ import {
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
-import { onMounted, computed, ref, watch } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";

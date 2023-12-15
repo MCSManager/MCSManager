@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
@@ -41,16 +40,16 @@ onMounted(() => {
 
 <template>
   <div class="line-option-wrapper">
-    <a-card :body-style="{ padding: '10px' }">
+    <a-card class="line-option-card" :body-style="{ padding: '10px' }">
       <div v-if="!custom">
-        <a-row :gutter="20" align="middle" :wrap="true">
-          <a-col :sm="7">
+        <a-row :gutter="[10, 10]" align="middle">
+          <a-col :md="7" :span="24">
             <slot name="title"></slot>
           </a-col>
-          <a-col :sm="11">
+          <a-col :md="11" :span="24">
             <slot name="info"></slot>
           </a-col>
-          <a-col :sm="6">
+          <a-col :md="6" :span="24">
             <div v-if="$slots.optionInput">
               <slot name="optionInput"></slot>
             </div>
@@ -82,6 +81,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 .line-option-wrapper {
   width: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  .line-option-card {
+    transition: all 0.4s;
+    border-radius: 6px;
+  }
+  .line-option-card:hover {
+    border: 1px solid var(--color-gray-6) !important;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  }
 }
 </style>
