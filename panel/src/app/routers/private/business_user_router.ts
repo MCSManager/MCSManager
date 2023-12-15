@@ -45,8 +45,8 @@ router.get(
   permission({ level: ROLE.ADMIN }),
   validator({ query: { page: Number, page_size: Number } }),
   async (ctx: Koa.ParameterizedContext) => {
-    const userName = ctx.query.userName;
-    const role = ctx.query.role;
+    const userName = String(ctx.query.userName);
+    const role = String(ctx.query.role);
     const page = Number(ctx.query.page);
     const pageSize = Number(ctx.query.page_size);
     const condition: any = {};
