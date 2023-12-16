@@ -26,6 +26,19 @@ export const setUpTerminalStreamChannel = useDefineApi<
   method: "POST"
 });
 
+export const getInstanceOutputLog = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      daemonId: string;
+    };
+  },
+  string
+>({
+  url: "/api/protected_instance/outputlog",
+  method: "GET"
+});
+
 export const getInstanceInfo = useDefineApi<
   {
     params: {

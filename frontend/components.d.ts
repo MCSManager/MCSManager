@@ -65,12 +65,10 @@ declare module 'vue' {
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
-    CommandDialog: typeof import('./src/components/commandDialog.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
-    Fc: typeof import('./src/components/fc/index.vue')['default']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     InnerCard: typeof import('./src/components/InnerCard.vue')['default']
     InputDialogProvider: typeof import('./src/components/InputDialogProvider.vue')['default']
@@ -89,6 +87,5 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
-    UniversalForm: typeof import('./src/components/fc/CmdAssistantDialog/UniversalForm.vue')['default']
   }
 }

@@ -9,7 +9,8 @@ import {
   DownOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
-  RedoOutlined
+  RedoOutlined,
+  DeleteOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -23,7 +24,8 @@ import {
   stopInstance,
   restartInstance,
   killInstance,
-  updateInstance
+  updateInstance,
+  getInstanceOutputLog
 } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
@@ -31,6 +33,7 @@ import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { Terminal } from "xterm";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -151,10 +154,18 @@ const handleSendCommand = () => {
   commandInputValue.value = "";
 };
 
-const initTerminal = () => {
+const initTerminal = async () => {
   const dom = document.getElementById(terminalDomId.value);
   if (dom) {
-    return initTerminalWindow(dom);
+    const term = initTerminalWindow(dom);
+    term.write(
+      (await getInstanceOutputLog()
+        .execute({
+          params: { uuid: instanceId || "", daemonId: daemonId || "" }
+        })
+        .then((res) => res.value)) || ""
+    );
+    return term;
   }
   throw new Error("init terminal failed");
 };
@@ -179,6 +190,12 @@ events.on("error", (error: Error) => {
   socketError.value = error;
 });
 
+let term: Terminal | null = null;
+
+const clearTerminal = () => {
+  term && term.clear();
+};
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -187,7 +204,7 @@ onMounted(async () => {
         daemonId
       });
     }
-    initTerminal();
+    term = await initTerminal();
   } catch (error) {
     throw new Error(t("TXT_CODE_9885543f"));
   }
@@ -274,7 +291,19 @@ const innerTerminalType = viewType === "inner";
     </div>
     <a-spin :spinning="!isConnect" :tip="t('TXT_CODE_686c9ca9')">
       <div v-if="!containerState.isDesignMode" class="console-wrapper">
-        <div class="terminal-wrapper global-card-container-shadow">
+        <div class="terminal-button-group position-absolute-right position-absolute-top">
+          <ul>
+            <li @click="clearTerminal()">
+              <a-tooltip placement="top">
+                <template #title>
+                  <span>{{ t("清空终端输出内容") }}</span>
+                </template>
+                <delete-outlined />
+              </a-tooltip>
+            </li>
+          </ul>
+        </div>
+        <div class="terminal-wrapper global-card-container-shadow position-relative">
           <div class="terminal-container">
             <div :id="terminalDomId"></div>
           </div>
@@ -381,6 +410,39 @@ const innerTerminalType = viewType === "inner";
 }
 .console-wrapper {
   position: relative;
+
+  .terminal-button-group {
+    z-index: 11;
+    padding-bottom: 50px;
+    padding-left: 50px;
+    border-radius: 6px;
+    color: #fff;
+
+    &:hover {
+      ul {
+        transition: all 1s;
+        opacity: 0.8;
+      }
+    }
+
+    ul {
+      display: flex;
+      opacity: 0;
+
+      li {
+        cursor: pointer;
+        list-style: none;
+        padding: 5px;
+        margin-left: 5px;
+        border-radius: 6px;
+        // background-color: #111111;
+        font-size: 20px;
+        &:hover {
+          background-color: #3e3e3e;
+        }
+      }
+    }
+  }
 
   .terminal-wrapper {
     position: relative;
