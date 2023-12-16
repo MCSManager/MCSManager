@@ -30,6 +30,34 @@
   justify-content: center;
 }
 
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.position-absolute-right {
+  position: absolute;
+  right: 0;
+}
+
+.position-absolute-left {
+  position: absolute;
+  left: 0;
+}
+
+.position-absolute-top {
+  position: absolute;
+  top: 0;
+}
+
+.position-absolute-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
 .direction-column {
   flex-direction: column;
 }
