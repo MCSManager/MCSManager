@@ -295,8 +295,8 @@ const innerTerminalType = viewType === "inner";
       <div v-if="!containerState.isDesignMode" class="console-wrapper">
         <div class="terminal-button-group position-absolute-right position-absolute-top">
           <ul>
-            <li>
-              <a-tooltip placement="top" @click="clearTerminal()">
+            <li @click="clearTerminal()">
+              <a-tooltip placement="top">
                 <template #title>
                   <span>{{ t("清空终端输出内容") }}</span>
                 </template>
