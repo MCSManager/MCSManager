@@ -23,7 +23,8 @@ import {
   stopInstance,
   restartInstance,
   killInstance,
-  updateInstance
+  updateInstance,
+  getInstanceOutputLog
 } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
@@ -151,10 +152,18 @@ const handleSendCommand = () => {
   commandInputValue.value = "";
 };
 
-const initTerminal = () => {
+const initTerminal = async () => {
   const dom = document.getElementById(terminalDomId.value);
   if (dom) {
-    return initTerminalWindow(dom);
+    const term = initTerminalWindow(dom);
+    term.writeln(
+      (await getInstanceOutputLog()
+        .execute({
+          params: { uuid: instanceId || "", daemonId: daemonId || "" }
+        })
+        .then((res) => res.value)) || ""
+    );
+    return term;
   }
   throw new Error("init terminal failed");
 };
