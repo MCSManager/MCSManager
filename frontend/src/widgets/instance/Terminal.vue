@@ -34,7 +34,6 @@ import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { Terminal } from "xterm";
-import { group } from "console";
 
 const props = defineProps<{
   card: LayoutCard;
