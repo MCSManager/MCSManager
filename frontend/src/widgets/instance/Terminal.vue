@@ -193,9 +193,7 @@ events.on("error", (error: Error) => {
 let term: Terminal | null = null;
 
 const clearTerminal = () => {
-  if (term) {
-    term.clear();
-  }
+  term && term.clear();
 };
 
 onMounted(async () => {
