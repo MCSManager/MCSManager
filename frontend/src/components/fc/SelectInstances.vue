@@ -16,6 +16,8 @@ import { message } from "ant-design-vue";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
+import type { ColumnsType } from "ant-design-vue/es/table";
+import type { AntTableCell } from "../../types/ant";
 
 const props = defineProps<MountComponent>();
 const { isPhone } = useScreen();
@@ -85,7 +87,7 @@ const initInstancesData = async () => {
 
 const selectedItems = ref<UserInstance[]>([]);
 
-const columns = [
+const columns: ColumnsType = [
   {
     align: "center",
     title: t("TXT_CODE_f70badb9"),
@@ -231,12 +233,12 @@ const handleChangeNode = async (item: NodeStatus) => {
               x: 'max-content'
             }"
           >
-            <template #bodyCell="{ column, record }">
+            <template #bodyCell="{ column, record }: AntTableCell">
               <template v-if="column.key === 'operation'">
-                <a-button v-if="findItem(record)" danger size="" @click="removeItem(record)">
+                <a-button v-if="findItem(record)" danger size="middle" @click="removeItem(record)">
                   {{ t("TXT_CODE_65fcbd09") }}
                 </a-button>
-                <a-button v-else size="" @click="selectItem(record)">
+                <a-button v-else size="middle" @click="selectItem(record)">
                   {{ t("TXT_CODE_7b2c5414") }}
                 </a-button>
               </template>

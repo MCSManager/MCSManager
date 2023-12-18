@@ -94,33 +94,22 @@ const handleChangePassword = async () => {
         </a-form-item>
 
         <a-form-item :label="t('TXT_CODE_551b0348')">
-          <a-button
-            v-if="!formState.resetPassword"
-            size="default"
-            danger
-            @click="formState.resetPassword = true"
-          >
+          <a-button v-if="!formState.resetPassword" danger @click="formState.resetPassword = true">
             {{ t("TXT_CODE_50d471b2") }}
           </a-button>
           <div v-if="formState.resetPassword">
             <a-input
               v-model:value="formState.password1"
-              size="default"
               class="mb-12"
               :placeholder="t('TXT_CODE_4f6c39d3')"
             />
             <a-input
               v-model:value="formState.password2"
-              size="default"
               class="mb-12"
               :placeholder="t('TXT_CODE_37924654')"
             />
             <div>
-              <a-button
-                size="default"
-                :loading="updatePasswordLoading"
-                @click="handleChangePassword"
-              >
+              <a-button :loading="updatePasswordLoading" @click="handleChangePassword">
                 {{ t("TXT_CODE_d507abff") }}
               </a-button>
             </div>
@@ -140,7 +129,6 @@ const handleChangePassword = async () => {
           </a-typography-paragraph>
           <a-button
             class="mr-10"
-            size="default"
             :loading="setUserApiKeyLoading"
             @click="handleGenerateApiKey(true)"
           >
@@ -151,7 +139,7 @@ const handleChangePassword = async () => {
             :title="t('TXT_CODE_6819de18')"
             @confirm="handleGenerateApiKey(false)"
           >
-            <a-button size="default" danger> {{ t("TXT_CODE_b1dedda3") }} </a-button>
+            <a-button danger> {{ t("TXT_CODE_b1dedda3") }} </a-button>
           </a-popconfirm>
         </a-form-item>
       </a-form>

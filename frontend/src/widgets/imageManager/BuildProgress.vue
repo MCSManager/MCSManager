@@ -60,7 +60,7 @@ defineExpose({
     :title="t('TXT_CODE_4bbd3fde')"
   >
     <a-row v-if="!isLoading" :gutter="[24, 24]">
-      <a-col v-for="i in progressList" :key="i" :span="24" :lg="6" :md="8" :sm="12">
+      <a-col v-for="i in progressList" :key="i.name + i.status" :span="24" :lg="6" :md="8" :sm="12">
         <CardPanel>
           <template #title>{{ i.name }}</template>
           <template #body>

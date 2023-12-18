@@ -76,7 +76,7 @@ let btns = arrayFilter([
       <a-button
         :style="item.style"
         type="text"
-        size="mini"
+        size="small"
         :icon="h(item.icon)"
         @click="() => item.click(card.id)"
       />

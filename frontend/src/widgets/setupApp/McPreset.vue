@@ -232,7 +232,7 @@ onMounted(async () => {
           style="display: block; margin-bottom: 10px"
           type="circle"
           :percent="percentage"
-          :status="taskInfo?.status === -1 ? 'exception' : ''"
+          :status="taskInfo?.status === -1 ? 'exception' : 'normal'"
         />
         <div v-if="installView">
           <div v-if="taskInfo?.status !== -1">
@@ -250,10 +250,10 @@ onMounted(async () => {
                 {{ t("TXT_CODE_57cd2d04") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-button size="" class="mr-10" @click="toCreateInstancePage()">
+            <a-button size="large" class="mr-10" @click="toCreateInstancePage()">
               {{ t("TXT_CODE_bc883bbb") }}
             </a-button>
-            <a-button type="primary" size="" danger @click="dialog.show = false">
+            <a-button type="primary" size="large" danger @click="dialog.show = false">
               {{ t("TXT_CODE_b1dedda3") }}
             </a-button>
           </div>

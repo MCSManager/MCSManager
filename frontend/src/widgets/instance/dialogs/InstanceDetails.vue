@@ -19,6 +19,7 @@ import { useCmdAssistantDialog } from "@/components/fc";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
+  networkAliasesText: string;
 }
 
 const props = defineProps<{
@@ -50,7 +51,8 @@ const initFormDetail = () => {
   if (props.instanceInfo) {
     options.value = {
       ...props.instanceInfo,
-      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime)
+      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
+      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || ""
     };
   }
 };
@@ -349,7 +351,7 @@ defineExpose({
                 style="width: 100%"
                 :placeholder="t('TXT_CODE_3bb646e4')"
                 @focus="loadImages"
-                @change="selectImage"
+                @change="(e: any) => selectImage(String(e))"
               >
                 <a-select-option
                   v-for="item in dockerImages"
@@ -367,12 +369,8 @@ defineExpose({
                   {{ t("TXT_CODE_c7b95258") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input-group compact>
-                <a-input
-                  v-model:value="options.config.docker.ports"
-                  style="width: calc(100% - 88px)"
-                />
-                <a-button type="default">{{ t("TXT_CODE_f6e4ace0") }}</a-button>
+              <a-input-group v-if="options.config.docker.ports" compact>
+                <a-button type="default">{{ t("编辑") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
@@ -385,11 +383,7 @@ defineExpose({
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
-                <a-input
-                  v-model:value="options.config.docker.extraVolumes"
-                  style="width: calc(100% - 88px)"
-                />
-                <a-button type="default">{{ t("TXT_CODE_f6e4ace0") }}</a-button>
+                <a-button type="default">{{ t("编辑") }}</a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
@@ -444,7 +438,7 @@ defineExpose({
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
-                v-model:value="options.config.docker.networkAliases"
+                v-model:value="options.networkAliasesText"
                 :placeholder="t('TXT_CODE_8d4882b0')"
               />
             </a-form-item>

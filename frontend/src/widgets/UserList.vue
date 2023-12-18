@@ -19,6 +19,8 @@ import {
 import type { LayoutCard } from "@/types/index";
 import type { BaseUserInfo, EditUserInfo } from "@/types/user";
 import _ from "lodash";
+import type { AntColumnsType, AntTableCell } from "../types/ant";
+import type { Key } from "ant-design-vue/es/_util/type";
 
 defineProps<{
   card: LayoutCard;
@@ -49,7 +51,7 @@ const permissionList = {
 };
 
 const columns = computed(() => {
-  return arrayFilter([
+  return arrayFilter<AntColumnsType>([
     {
       align: "center",
       title: "UUID",
@@ -62,14 +64,14 @@ const columns = computed(() => {
       title: t("TXT_CODE_eb9fcdad"),
       dataIndex: "userName",
       key: "userName",
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
       title: t("TXT_CODE_511aea70"),
       dataIndex: "permission",
       key: "permission",
-      minWidth: "200px",
+      minWidth: 200,
       customRender: (e: { text: "1" | "10" | "-1" }) => {
         return permissionList[e.text] || e.text;
       }
@@ -79,7 +81,7 @@ const columns = computed(() => {
       title: t("TXT_CODE_6372e25c"),
       dataIndex: "loginTime",
       key: "loginTime",
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !screen.isPhone.value
     },
     {
@@ -87,14 +89,14 @@ const columns = computed(() => {
       title: t("TXT_CODE_c5c56801"),
       dataIndex: "registerTime",
       key: "registerTime",
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !screen.isPhone.value
     },
     {
       align: "center",
       title: t("TXT_CODE_fe731dfc"),
       key: "action",
-      minWidth: "200px"
+      minWidth: 200
     }
   ]);
 });
@@ -422,8 +424,8 @@ onMounted(async () => {
               <a-table
                 :row-selection="{
                   selectedRowKeys: selectedUsers,
-                  onChange: (selectedRowKeys: string[], selectedRows: BaseUserInfo[]) => {
-                    selectedUsers = selectedRowKeys;
+                  onChange: (selectedRowKeys: Key[]) => {
+                    selectedUsers = selectedRowKeys as string[];
                   }
                 }"
                 :data-source="dataSource"
@@ -437,9 +439,14 @@ onMounted(async () => {
                   total: total,
                   showSizeChanger: true
                 }"
-                @change="handleTableChange($event)"
+                @change="
+                  handleTableChange({
+                    current: $event.current || 0,
+                    pageSize: $event.pageSize || 0
+                  })
+                "
               >
-                <template #bodyCell="{ column, record }">
+                <template #bodyCell="{ column, record }: AntTableCell">
                   <template v-if="column.key === 'action'">
                     <a-dropdown>
                       <template #overlay>
@@ -460,7 +467,7 @@ onMounted(async () => {
                           </a-popconfirm>
                         </a-menu>
                       </template>
-                      <a-button size="">
+                      <a-button size="large">
                         {{ t("TXT_CODE_fe731dfc") }}
                         <DownOutlined />
                       </a-button>

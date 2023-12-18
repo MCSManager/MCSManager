@@ -236,7 +236,7 @@ onMounted(async () => {
                         {{ t("TXT_CODE_e5b7522d") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.canFileManager" style="max-width: 320px">
+                    <a-select v-model:value.prop="formData.canFileManager" style="max-width: 320px">
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -256,7 +256,8 @@ onMounted(async () => {
                         {{ t("TXT_CODE_6655c905") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.crossDomain" style="max-width: 320px">
+
+                    <a-select v-model:value.prop="formData.crossDomain" style="max-width: 320px">
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -276,7 +277,8 @@ onMounted(async () => {
                         {{ t("TXT_CODE_745fc959") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value="formData.loginCheckIp" style="max-width: 320px">
+
+                    <a-select v-model:value.prop="formData.loginCheckIp" style="max-width: 320px">
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"

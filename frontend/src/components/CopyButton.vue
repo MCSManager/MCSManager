@@ -2,6 +2,8 @@
 import { t } from "@/lang/i18n";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import type { ButtonType } from "ant-design-vue/es/button";
+import type { SizeType } from "ant-design-vue/es/config-provider";
 
 const props = defineProps<{
   size?: string;
@@ -23,7 +25,7 @@ const copy = async () => {
 <template>
   <a-tooltip>
     <template #title>{{ t("TXT_CODE_13ae6a93") }}</template>
-    <a-button :type="type" :size="size" @click="copy">
+    <a-button :type="<ButtonType>type" :size="<SizeType>size" @click="copy">
       <template #icon>
         <CopyOutlined />
       </template>

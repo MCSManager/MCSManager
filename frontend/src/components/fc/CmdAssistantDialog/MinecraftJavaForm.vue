@@ -28,13 +28,13 @@ defineExpose({ validate });
 
 <template>
   <a-form ref="formRef" layout="vertical" :model="form">
-    <a-form-item name="jarName" :label="t('服务端软件文件名')" required="true">
+    <a-form-item name="jarName" :label="t('服务端软件文件名')" required>
       <a-input
         v-model:value="form.jarName"
         :placeholder="t('一般为 .jar 文件，列如 paper.jar 等')"
       />
     </a-form-item>
-    <a-row gutter="24">
+    <a-row :gutter="[24, 24]">
       <a-col :span="12">
         <a-form-item name="maxMemory" :label="t('最大内存')">
           <a-input v-model:value="form.maxMemory" :placeholder="t('选填，-Xmx 参数，如：1024M')" />
