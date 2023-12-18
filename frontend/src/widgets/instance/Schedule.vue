@@ -11,6 +11,7 @@ import { scheduleList, scheduleDelete } from "@/services/apis/instance";
 import type { LayoutCard, Schedule } from "@/types/index";
 import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
+import type { AntColumnsType } from "../../types/ant";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -100,7 +101,7 @@ const rendTime = (text: string, schedule: Schedule) => {
   }
 };
 
-const columns = [
+const columns: AntColumnsType[] = [
   {
     align: "center",
     title: t("TXT_CODE_2d542e4c"),
@@ -118,7 +119,7 @@ const columns = [
     title: t("TXT_CODE_485e2d41"),
     dataIndex: "count",
     key: "count",
-    minWidth: "80px",
+    minWidth: 80,
     customRender: (e: { text: number }) => (e.text > 0 ? e.text : t("TXT_CODE_a92df201"))
   },
   {
@@ -126,7 +127,7 @@ const columns = [
     title: t("TXT_CODE_82fbc5ad"),
     dataIndex: "action",
     key: "action",
-    minWidth: "180px",
+    minWidth: 180,
     customRender: (e: { text: "command" | "stop" | "start" | "restart" | "kill" }) =>
       ScheduleAction[e.text]
   },
@@ -135,7 +136,7 @@ const columns = [
     title: t("TXT_CODE_67d68dd1"),
     dataIndex: "type",
     key: "type",
-    minWidth: "180px",
+    minWidth: 180,
     customRender: (e: { text: 1 | 2 | 3 }) => ScheduleType[e.text]
   },
   {
@@ -143,14 +144,14 @@ const columns = [
     title: t("TXT_CODE_3554dac0"),
     dataIndex: "time",
     key: "time",
-    minWidth: "240px",
+    minWidth: 240,
     customRender: (e: { text: string; record: Schedule }) => rendTime(e.text, e.record)
   },
   {
     align: "center",
     title: t("TXT_CODE_fe731dfc"),
     key: "actions",
-    minWidth: "180px"
+    minWidth: 180
   }
 ];
 
@@ -216,7 +217,7 @@ onMounted(async () => {
                       :title="t('TXT_CODE_6ff0668f')"
                       @confirm="deleteSchedule(record.name)"
                     >
-                      <a-button size="">
+                      <a-button size="large">
                         {{ t("TXT_CODE_ecbd7449") }}
                         <DeleteOutlined />
                       </a-button>

@@ -22,7 +22,7 @@ const operationForm = ref({
   name: ""
 });
 const ALL = "all";
-const currentStatus = ref<boolean | string>(ALL);
+const currentStatus = ref<any>(ALL);
 const { state, refresh: refreshOverviewInfo } = useOverviewInfo();
 const refreshLoading = ref(false);
 

@@ -14,6 +14,7 @@ import { updateUserInstance } from "@/services/apis";
 import { useSelectInstances } from "@/components/fc";
 import { message } from "ant-design-vue";
 import { INSTANCE_STATUS } from "@/types/const";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -90,13 +91,13 @@ async function refreshChart() {
 refreshChart();
 
 const columns = computed(() => {
-  return arrayFilter([
+  return arrayFilter<AntColumnsType>([
     {
       align: "center",
       title: t("TXT_CODE_b26a0528"),
       dataIndex: "daemonId",
       key: "daemon",
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !screen.isPhone.value
     },
     {
@@ -104,14 +105,14 @@ const columns = computed(() => {
       title: t("TXT_CODE_f70badb9"),
       dataIndex: "nickname",
       key: "name",
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
       title: t("TXT_CODE_fa920c0"),
       dataIndex: "lastDatetime",
       key: "limitTime",
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !screen.isPhone.value
     },
     {
@@ -119,7 +120,7 @@ const columns = computed(() => {
       title: t("TXT_CODE_3d602459"),
       dataIndex: "status",
       key: "status",
-      minWidth: "200px",
+      minWidth: 200,
       customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
         return INSTANCE_STATUS[e.text] || e.text;
       },
@@ -129,7 +130,7 @@ const columns = computed(() => {
       align: "center",
       title: t("TXT_CODE_fe731dfc"),
       key: "operation",
-      minWidth: "200px",
+      minWidth: 200,
       scopedSlots: { customRender: "operation" }
     }
   ]);
@@ -164,9 +165,9 @@ const columns = computed(() => {
         <CardPanel class="h-100">
           <template #body>
             <a-table :scroll="{ x: 'max-content' }" :data-source="dataSource" :columns="columns">
-              <template #bodyCell="{ column, record }">
+              <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'operation'">
-                  <a-button danger size="" @click="handleDelete(record)">
+                  <a-button danger size="large" @click="handleDelete(record)">
                     {{ t("TXT_CODE_ecbd7449") }}
                   </a-button>
                 </template>

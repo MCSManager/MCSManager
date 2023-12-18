@@ -401,7 +401,7 @@ onMounted(async () => {
         </BetweenMenus>
       </a-col>
       <template v-if="instancesMoreInfo">
-        <a-col v-for="item in instancesMoreInfo" :key="item" :span="24" :md="6">
+        <a-col v-for="item in instancesMoreInfo" :key="item.instanceUuid" :span="24" :md="6">
           <CardPanel
             class="instance-card"
             :class="{ selected: multipleMode && findInstance(item) }"

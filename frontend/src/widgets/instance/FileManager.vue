@@ -15,6 +15,7 @@ import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager
 import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
+import type { AntColumnsType } from "@/types/ant";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -66,13 +67,13 @@ const isShowDiskList = computed(
 );
 
 const columns = computed(() => {
-  return arrayFilter([
+  return arrayFilter<AntColumnsType>([
     {
       align: "left",
       title: t("TXT_CODE_94c193de"),
       dataIndex: "name",
       key: "name",
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
@@ -82,7 +83,7 @@ const columns = computed(() => {
       customRender: (e: { text: number; record: { name: string } }) => {
         return e.text == 1 ? filterFileName(e.record.name) : t("TXT_CODE_e5f949c");
       },
-      minWidth: "200px"
+      minWidth: 200
     },
     {
       align: "center",
@@ -91,7 +92,7 @@ const columns = computed(() => {
       key: "size",
       customRender: (e: { text: number }) =>
         e.text == 0 ? "--" : convertFileSize(e.text.toString()),
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !isPhone.value
     },
     {
@@ -102,7 +103,7 @@ const columns = computed(() => {
       customRender: (e: { text: string }) => {
         return dayjs(e.text).format("YYYY-MM-DD HH:mm:ss");
       },
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !isPhone.value
     },
     {
@@ -110,7 +111,7 @@ const columns = computed(() => {
       title: t("TXT_CODE_511aea70"),
       dataIndex: "mode",
       key: "mode",
-      minWidth: "200px",
+      minWidth: 200,
       condition: () => !isPhone.value && fileStatus.value?.platform !== "win32"
     },
     {
@@ -118,7 +119,7 @@ const columns = computed(() => {
       title: t("TXT_CODE_fe731dfc"),
       dataIndex: "action",
       key: "action",
-      minWidth: "200px"
+      minWidth: 200
     }
   ]);
 });
@@ -291,7 +292,9 @@ onMounted(() => {
                   hideOnSinglePage: false,
                   showSizeChanger: true
                 }"
-                @change="handleTableChange($event)"
+                @change="
+                  (e) => handleTableChange({ current: e.current || 0, pageSize: e.pageSize || 0 })
+                "
               >
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'name'">
@@ -360,7 +363,7 @@ onMounted(() => {
                           </a-menu-item>
                         </a-menu>
                       </template>
-                      <a-button size="">
+                      <a-button size="large">
                         {{ t("TXT_CODE_fe731dfc") }}
                         <DownOutlined />
                       </a-button>

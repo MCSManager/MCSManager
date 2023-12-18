@@ -73,7 +73,7 @@ onMounted(async () => {});
 
 <template>
   <a-row :gutter="[24, 24]">
-    <a-col v-for="i in skeletons" :key="i" :span="i.span">
+    <a-col v-for="i in skeletons" :key="i.span + i.rows" :span="i.span">
       <CardPanel :full-height="false">
         <template #body>
           <a-skeleton :paragraph="{ rows: i.rows }" />

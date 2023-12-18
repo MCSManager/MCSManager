@@ -210,9 +210,9 @@ export interface Schedule {
 }
 
 export interface NewScheduleTask {
-  name: String;
-  count: String;
-  time: String;
-  action: String;
-  type: String;
+  name: string;
+  count: string;
+  time: string;
+  action: string;
+  type: string;
 }

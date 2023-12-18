@@ -1,7 +1,7 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive } from "vue";
+import { ref, createVNode, reactive, type VNodeRef } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
@@ -61,7 +61,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     mode: "",
     unzipmode: "0",
     code: "utf-8",
-    ref: ref<HTMLInputElement | null>(null),
+    ref: ref<VNodeRef>(),
     ok: () => {},
     cancel: () => {
       dialog.value.value = "";
@@ -84,7 +84,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     dialog.value.info = info;
     dialog.value.show = true;
 
-    dialog.value?.ref?.focus();
+    (dialog.value?.ref as any)?.focus();
 
     return new Promise((resolve) => {
       dialog.value.ok = () => {

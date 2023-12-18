@@ -129,7 +129,7 @@ onMounted(async () => {
                     </template>
                   </a-list-item-meta>
                   <template #actions>
-                    <a-button size="" @click="toEdit(item.redirect, item.path, item.type)">
+                    <a-button size="middle" @click="toEdit(item.redirect, item.path, item.type)">
                       {{ t("TXT_CODE_ad207008") }}
                     </a-button>
                   </template>

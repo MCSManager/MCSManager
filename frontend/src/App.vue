@@ -8,13 +8,10 @@ import "dayjs/locale/zh-cn";
 import "dayjs/locale/en";
 import { onMounted, ref } from "vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import { useAppStateStore } from "@/stores/useAppStateStore";
 import { theme } from "ant-design-vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
-import { router } from "./config/router";
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-const { state, isAdmin } = useAppStateStore();
 const locale = ref(enUS);
 
 // Ant Design Vue i18n
