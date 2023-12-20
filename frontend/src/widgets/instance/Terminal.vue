@@ -158,13 +158,12 @@ const initTerminal = async () => {
   const dom = document.getElementById(terminalDomId.value);
   if (dom) {
     const term = initTerminalWindow(dom);
-    term.write(
-      (await getInstanceOutputLog()
-        .execute({
-          params: { uuid: instanceId || "", daemonId: daemonId || "" }
-        })
-        .then((res) => res.value)) || ""
-    );
+    try {
+      const { value } = await getInstanceOutputLog().execute({
+        params: { uuid: instanceId || "", daemonId: daemonId || "" }
+      });
+      if (value) term.write(value);
+    } catch (error) {}
     return term;
   }
   throw new Error("init terminal failed");

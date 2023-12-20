@@ -147,7 +147,7 @@ const submit = async () => {
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (error: any) {
     console.error(error);
-    return message.error(error.message);
+    return message.error(error.message ?? t("保存失败，请检查配置项"));
   }
 };
 
