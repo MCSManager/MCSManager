@@ -82,18 +82,17 @@ const showDetail = (info: ImageInfo) => {
     centered: true,
     closable: true,
     content: [
-      h("b", t("TXT_CODE_c372cef8")),
       h("p", t("TXT_CODE_bbd7d448")),
       h("pre", {
         innerHTML: JSON.stringify(info, null, 4),
         style: {
           maxHeight: "460px",
-          overflowY: "auto"
+          overflow: "auto"
         }
       })
     ],
     title: t("TXT_CODE_9d820cb4"),
-    width: 666
+    width: 500
   });
 };
 
@@ -208,8 +207,7 @@ onMounted(async () => {
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="toNewImagePage">
-              {{ t("TXT_CODE_59ac0239") }}
-              <PlusOutlined />
+              <span>{{ t("TXT_CODE_59ac0239") }}</span>
             </a-button>
           </template>
         </BetweenMenus>
@@ -237,7 +235,6 @@ onMounted(async () => {
                 showSizeChanger: true
               }"
               :loading="imageListLoading"
-              size="small"
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
@@ -282,7 +279,6 @@ onMounted(async () => {
                 showSizeChanger: true
               }"
               :loading="containerListLoading"
-              size="small"
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">

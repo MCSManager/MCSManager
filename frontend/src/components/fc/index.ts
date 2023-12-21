@@ -7,9 +7,11 @@ import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 
-interface PortConfigItem {
+interface DockerConfigItem {
   host: string;
   container: string;
+}
+interface PortConfigItem extends DockerConfigItem {
   protocol: string;
 }
 
@@ -26,8 +28,6 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
     (await useMountComponent({
       data,
       title: t("容器端口映射配置"),
-      keyTitle: t("主机端口"),
-      valueTitle: t("容器端口"),
       columns: [
         {
           align: "center",
@@ -46,5 +46,26 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
         }
       ] as AntColumnsType[]
     }).mount<PortConfigItem[]>(KvOptionsDialogVue)) || []
+  );
+}
+
+export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("挂载目录到容器"),
+      columns: [
+        {
+          align: "center",
+          dataIndex: "host",
+          title: t("主机目录")
+        },
+        {
+          align: "center",
+          dataIndex: "container",
+          title: t("容器目录")
+        }
+      ] as AntColumnsType[]
+    }).mount<DockerConfigItem[]>(KvOptionsDialogVue)) || []
   );
 }

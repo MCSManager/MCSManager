@@ -9,8 +9,8 @@ import _ from "lodash";
 
 interface Props extends MountComponent {
   title: string;
-  keyTitle: string;
-  valueTitle: string;
+  keyTitle?: string;
+  valueTitle?: string;
   data: any[];
   columns?: AntColumnsType[];
 }

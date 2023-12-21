@@ -15,7 +15,7 @@ import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
-import { useCmdAssistantDialog, usePortEditDialog } from "@/components/fc";
+import { useCmdAssistantDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -82,10 +82,9 @@ const loadImages = async () => {
 };
 
 const selectImage = (image: string) => {
-  if (typeof image === "string" && image.startsWith("---", 0)) {
-    // TODO: Docker image list page
+  if (typeof image === "string" && image === t("TXT_CODE_3362d4b7")) {
     toPage({
-      path: `/image/${props.daemonId}`
+      path: `/node/image?daemonId=${props.daemonId}`
     });
   }
 };
@@ -165,7 +164,7 @@ const openCmdAssistDialog = async () => {
   if (options.value && cmd) options.value.config.startCommand = cmd;
 };
 
-const handleEditDockerConfig = async (type: "port" | "network") => {
+const handleEditDockerConfig = async (type: "port" | "volume") => {
   if (type === "port" && options.value?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
     const portArray = (options.value?.config.docker.ports || []).map((iterator) => {
@@ -182,8 +181,20 @@ const handleEditDockerConfig = async (type: "port" | "network") => {
     });
     const result = await usePortEditDialog(portArray);
     const portsArray = result.map((v) => `${v.host}:${v.container}/${v.protocol}`);
-    options.value!.config.docker.ports = portsArray;
-    console.log("结根：", portArray);
+    options.value.config.docker.ports = portsArray;
+  }
+
+  if (type === "volume" && options.value?.config) {
+    const volumes = options.value.config.docker.extraVolumes?.map((v) => {
+      const tmp = v.split(":");
+      return {
+        host: tmp[0] || "",
+        container: tmp[1] || ""
+      };
+    });
+    const result = await useVolumeEditDialog(volumes);
+    const volumesArray = result.map((v) => `${v.host}:${v.container}`);
+    options.value.config.docker.extraVolumes = volumesArray;
   }
 };
 
@@ -407,7 +418,9 @@ defineExpose({
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
-                <a-button type="default">{{ t("编辑") }}</a-button>
+                <a-button type="default" @click="() => handleEditDockerConfig('volume')">
+                  {{ t("编辑") }}
+                </a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
