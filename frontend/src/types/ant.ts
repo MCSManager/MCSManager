@@ -17,6 +17,6 @@ export interface AntTableCell {
 }
 
 export interface AntColumnsType extends ColumnType, Record<string, any> {
-  key: string;
+  key?: string;
   align: any;
 }

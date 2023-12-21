@@ -182,14 +182,14 @@
 
 .require-field {
   &::before {
-    content: '*';
-    color:red;
+    content: "*";
+    color: red;
     margin-right: 4px;
   }
 }
 
 .dialog-overflow-container {
-  height: 80vh;
+  max-height: 80vh;
   overflow-x: hidden;
 }
 

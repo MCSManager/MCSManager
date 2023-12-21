@@ -15,7 +15,7 @@ import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
-import { useCmdAssistantDialog } from "@/components/fc";
+import { useCmdAssistantDialog, usePortEditDialog } from "@/components/fc";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -163,6 +163,28 @@ const encodeFormData = () => {
 const openCmdAssistDialog = async () => {
   const cmd = await useCmdAssistantDialog();
   if (options.value && cmd) options.value.config.startCommand = cmd;
+};
+
+const handleEditDockerConfig = async (type: "port" | "network") => {
+  if (type === "port" && options.value?.config) {
+    // "25565:25565/tcp 8080:8080/tcp" -> Array
+    const portArray = (options.value?.config.docker.ports || []).map((iterator) => {
+      const pad = iterator.split("/");
+      const ports = pad[0];
+      const protocol = pad[1];
+      const port1 = ports.split(":")[0];
+      const port2 = ports.split(":")[1];
+      return {
+        host: port1,
+        container: port2,
+        protocol
+      };
+    });
+    const result = await usePortEditDialog(portArray);
+    const portsArray = result.map((v) => `${v.host}:${v.container}/${v.protocol}`);
+    options.value!.config.docker.ports = portsArray;
+    console.log("结根：", portArray);
+  }
 };
 
 defineExpose({
@@ -335,7 +357,7 @@ defineExpose({
           </a-col>
         </a-row>
         <a-row v-if="options.config.processType === 'docker'" :gutter="20">
-          <a-col :xs="24" :lg="6" :offset="0">
+          <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_6904cb3") }}
@@ -361,25 +383,27 @@ defineExpose({
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :lg="18" :offset="0">
+          <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_c7b95258") }}
+                  {{ t("通过映射让容器进程使用主机的真实端口") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input-group v-if="options.config.docker.ports" compact>
-                <a-button type="default">{{ t("编辑") }}</a-button>
+              <a-input-group compact>
+                <a-button type="default" @click="() => handleEditDockerConfig('port')">
+                  {{ t("编辑") }}
+                </a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :offset="0">
+          <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_3e68ca00") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_29c2884") }}
+                  {{ t("挂载额外路径到容器中") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
