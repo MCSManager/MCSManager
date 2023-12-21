@@ -66,7 +66,11 @@ export function useOverviewInfo() {
   const newState = ref<ComputedOverviewResponse>();
 
   const refresh = async (forceRequest = false) => {
-    newState.value = computeResponseData(await result.execute({ forceRequest }));
+    newState.value = computeResponseData(
+      await result.execute({
+        forceRequest
+      })
+    );
   };
 
   onMounted(async () => {

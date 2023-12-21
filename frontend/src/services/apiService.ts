@@ -23,6 +23,12 @@ interface ResponseDataRecord {
   data: any;
 }
 
+interface PacketProtocol<T> {
+  data: T;
+  status: number;
+  time: number;
+}
+
 class ApiService {
   private readonly event = new EventEmitter();
   private readonly responseMap = new Map<string, ResponseDataRecord>();
@@ -30,12 +36,19 @@ class ApiService {
   private readonly REQUEST_CACHE_TIME = 100;
 
   public async subscribe<T>(config: RequestConfig): Promise<T | undefined> {
+    config = _.cloneDeep(config);
     // filter and clean up expired cache tables
     this.responseMap.forEach((value, key) => {
       if (value.timestamp + this.RESPONSE_CACHE_TIME < Date.now()) {
         this.responseMap.delete(key);
       }
     });
+
+    if (config.forceRequest === true) {
+      config.params = config?.params || {};
+      config.params._force = Date.now();
+      return await this.sendRequest<T>(config);
+    }
 
     const reqId = encodeURIComponent(
       [
@@ -62,33 +75,36 @@ class ApiService {
       if (this.responseMap.has(reqId) && !config.forceRequest) {
         const cache = this.responseMap.get(reqId) as ResponseDataRecord;
         if (cache.timestamp + this.RESPONSE_CACHE_TIME > Date.now()) {
-          console.debug("[ApiService] Cache hit: ", config);
           return this.event.emit(reqId, cache.data);
         }
       }
 
-      if (this.event.listenerCount(reqId) <= 1) {
-        this.sendRequest(reqId, config);
+      if (this.event.listenerCount(reqId) <= 1 || config.forceRequest === true) {
+        this.sendRequest(config, reqId);
       }
     });
   }
 
-  private async sendRequest(reqId: string, config: RequestConfig) {
+  private async sendRequest<T>(config: RequestConfig, reqId?: string) {
     try {
+      // Force request!
+      if (!reqId) {
+        const { data: result } = await axios<PacketProtocol<T>>(config);
+        return result?.data;
+      }
+
+      // Request cache
       const startTime = Date.now();
       if (!config.timeout) config.timeout = 1000 * 10;
-      const result = await axios(config);
+      const { data: result } = await axios<PacketProtocol<T>>(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;
       if (reqSpeed < this.REQUEST_CACHE_TIME) await this.wait(this.REQUEST_CACHE_TIME - reqSpeed);
-      let realData = result.data;
-      if (realData.data) realData = realData.data;
-
+      const realData = result.data;
       this.responseMap.set(reqId, {
         timestamp: Date.now(),
         data: realData
       });
-
       this.event.emit(reqId, realData);
     } catch (error: AxiosError | Error | any) {
       const axiosErr = error as AxiosError;
@@ -96,15 +112,21 @@ class ApiService {
       if (axiosErr?.response?.data) {
         const protocol = axiosErr?.response?.data as IPanelResponseProtocol;
         if (protocol.data && protocol.status !== 200) {
-          this.event.emit(reqId, new Error(String(protocol.data)));
+          this.throwRequestError(reqId, String(protocol.data));
           return;
         }
       }
-      if (otherErr instanceof Error) {
-        this.event.emit(reqId, otherErr);
-      } else {
-        this.event.emit(reqId, new Error(String(otherErr)));
-      }
+      this.throwRequestError(reqId, otherErr);
+    }
+  }
+
+  private throwRequestError(reqId?: string, error?: any) {
+    if (!(error instanceof Error)) error = new Error(error);
+
+    if (reqId) {
+      this.event.emit(reqId, error);
+    } else {
+      throw error;
     }
   }
 
