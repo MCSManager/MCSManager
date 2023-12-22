@@ -2,7 +2,7 @@
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 import type { UserInstance } from "@/types/user";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import type { Ref } from "vue";
 import { t } from "@/lang/i18n";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -16,6 +16,7 @@ import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
+import dayjs from "dayjs";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -29,15 +30,20 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 let userUuid: string | undefined = getMetaOrRouteValue("uuid");
 
 const handleDelete = async (deletedInstance: UserInstance) => {
-  for (let valueKey = 0; valueKey < dataSource.value.length; valueKey++) {
-    const instance = dataSource.value[valueKey];
-    if (
-      deletedInstance.daemonId == instance.daemonId &&
-      deletedInstance.instanceUuid == instance.instanceUuid
-    ) {
-      dataSource.value.splice(valueKey, 1);
-      break;
+  try {
+    for (let valueKey = 0; valueKey < dataSource.value.length; valueKey++) {
+      const instance = dataSource.value[valueKey];
+      if (
+        deletedInstance.daemonId == instance.daemonId &&
+        deletedInstance.instanceUuid == instance.instanceUuid
+      ) {
+        dataSource.value.splice(valueKey, 1);
+        break;
+      }
     }
+    await saveData();
+  } catch (error) {
+    reportError(error);
   }
 };
 
@@ -45,8 +51,9 @@ const assignApp = async () => {
   try {
     const selectedInstances = await useSelectInstances();
     if (selectedInstances) dataSource.value = dataSource.value.concat(selectedInstances);
+    await saveData();
   } catch (err: any) {
-    console.error(err);
+    reportError(err);
   }
 };
 
@@ -60,14 +67,16 @@ const saveData = async () => {
         uuid: <string>userUuid
       }
     });
-    return message.success(t("TXT_CODE_d3de39b4"));
+    message.success(t("TXT_CODE_d3de39b4"));
+    refreshTableData().catch(() => {
+      // ignore
+    });
   } catch (err: any) {
-    console.error(err);
-    return reportError(err.message);
+    reportError(err.message);
   }
 };
 
-async function refreshChart() {
+async function refreshTableData() {
   if (userUuid == null) {
     return;
   }
@@ -76,7 +85,8 @@ async function refreshChart() {
       params: {
         uuid: <string>userUuid,
         advanced: true
-      }
+      },
+      forceRequest: true
     })
   ).value;
   if (!rawUserInfo) {
@@ -89,17 +99,22 @@ async function refreshChart() {
   dataSource.value = newDataSource;
 }
 
-refreshChart();
+onMounted(() => {
+  refreshTableData();
+});
 
 const columns = computed(() => {
   return arrayFilter<AntColumnsType>([
     {
       align: "center",
       title: t("TXT_CODE_b26a0528"),
-      dataIndex: "daemonId",
-      key: "daemon",
+      dataIndex: "remarks",
+      key: "remarks",
       minWidth: 200,
-      condition: () => !screen.isPhone.value
+      condition: () => !screen.isPhone.value,
+      customRender: (row) => {
+        return row.record.hostIp + ` (${row.record.remarks})`;
+      }
     },
     {
       align: "center",
@@ -111,10 +126,15 @@ const columns = computed(() => {
     {
       align: "center",
       title: t("TXT_CODE_fa920c0"),
-      dataIndex: "lastDatetime",
-      key: "limitTime",
+      dataIndex: "endTime",
+      key: "endTime",
       minWidth: 200,
-      condition: () => !screen.isPhone.value
+      condition: () => !screen.isPhone.value,
+      customRender: (row: { text: string | number }) => {
+        if (Number(row.text) === 0) return t("无限期");
+        if (!isNaN(Number(row.text))) return dayjs(Number(row.text)).format("YYYY-MM-DD HH:mm:ss");
+        return row.text;
+      }
     },
     {
       align: "center",
@@ -149,11 +169,8 @@ const columns = computed(() => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="refreshChart()">
+            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="refreshTableData()">
               {{ t("TXT_CODE_b76d94e0") }}
-            </a-button>
-            <a-button class="mr-8" type="primary" ghost @click="saveData()">
-              {{ t("TXT_CODE_830ba3d8") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
               {{ t("TXT_CODE_a60466a1") }}

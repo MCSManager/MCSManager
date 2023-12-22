@@ -26,9 +26,11 @@ export function getValidatorErrorMsg(error: any, def: string = "") {
 }
 
 export function reportValidatorError(error: any) {
+  console.error("Function reportValidatorError():", error);
   message.error(getValidatorErrorMsg(error, t("操作失败")));
 }
 
 export function reportError(error: any = {}) {
+  console.error("Function reportError():", error);
   message.error(getValidatorErrorMsg(error, t("操作失败")));
 }
