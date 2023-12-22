@@ -18,6 +18,7 @@ import { uploadFile } from "@/services/apis/layout";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { FileType } from "ant-design-vue/es/upload/interface";
 import _ from "lodash";
+import { reportValidatorError } from "../../tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -116,7 +117,7 @@ const save = async () => {
     displayImgList.value = _.cloneDeep(imgList.value);
     open.value = false;
   } catch (err: any) {
-    return message.error(err.message);
+    return reportValidatorError(err);
   }
 };
 </script>

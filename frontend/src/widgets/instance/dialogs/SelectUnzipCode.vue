@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 const emit = defineEmits(["selectCode"]);
 
 const open = ref(false);
@@ -18,7 +19,7 @@ const submit = async () => {
     open.value = false;
     return message.success(t("TXT_CODE_f07610ed"));
   } catch (err: any) {
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

@@ -4,6 +4,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import { panelInstall } from "@/services/apis";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useAppStateStore } from "@/stores/useAppStateStore";
@@ -43,8 +44,7 @@ const createUser = async () => {
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
-    console.error(err);
-    message.error(err.message);
+    reportError(err.message);
   } finally {
     installLoading.value = false;
   }

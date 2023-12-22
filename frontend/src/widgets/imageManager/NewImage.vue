@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -93,7 +94,7 @@ const selectType = (type: number) => {
       version.value = "latest";
       break;
     default:
-      return message.error(t("TXT_CODE_fb1ff943"));
+      return reportError(t("TXT_CODE_fb1ff943"));
   }
   dockerFileDrawer.value = true;
 };

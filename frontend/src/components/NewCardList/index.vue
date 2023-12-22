@@ -12,6 +12,8 @@ import { ROLE } from "@/config/router";
 import type { NewCardItem } from "../../config/index";
 import { message } from "ant-design-vue";
 
+import { reportError } from "@/tools/validator";
+
 const { getCardPool } = useCardPool();
 const { insertLayoutItem } = useLayoutConfigStore();
 const { containerState } = useLayoutContainerStore();
@@ -32,7 +34,7 @@ const currentPageRole = route.meta.permission as ROLE;
 
 const insertCardToLayout = async (card: NewCardItem) => {
   if (card.permission > currentPageRole) {
-    return message.warning(t("TXT_CODE_fb4cb9cb"));
+    return reportError(t("TXT_CODE_fb4cb9cb"));
   }
 
   if (card.params) {

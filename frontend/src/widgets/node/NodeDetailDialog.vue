@@ -80,7 +80,7 @@ const dialog = reactive({
       message.success(t("已保存"));
       dialog.close();
     } catch (error: any) {
-      message.error(error.message ?? t("请完善表单内容"));
+      reportError(error.message ?? t("请完善表单内容"));
     }
   },
   hidden: () => {

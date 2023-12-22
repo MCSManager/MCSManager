@@ -4,7 +4,7 @@ import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types/index";
 import { DownloadOutlined } from "@ant-design/icons-vue";
 import { quickInstallListAddr, createAsyncTask, queryAsyncTask } from "@/services/apis/instance";
-import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import Loading from "@/components/Loading.vue";
 import type { QuickStartTemplate } from "@/types";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
@@ -39,7 +39,7 @@ const init = async () => {
     }
   } catch (err: any) {
     console.error(err.message);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -71,7 +71,7 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
     await startDownloadTask();
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -118,7 +118,7 @@ const queryStatus = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

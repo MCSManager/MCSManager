@@ -11,8 +11,8 @@ import {
   DatabaseOutlined,
   FrownOutlined
 } from "@ant-design/icons-vue";
+import { reportError } from "@/tools/validator";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
-import { message } from "ant-design-vue";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
@@ -58,7 +58,7 @@ const initNodes = async () => {
   await getNodes();
   nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
   if (!nodes.value?.length) {
-    return message.error(t("TXT_CODE_e3d96a26"));
+    return reportError(t("TXT_CODE_e3d96a26"));
   }
   if (localStorage.getItem("pageSelectedRemote")) {
     currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
@@ -81,7 +81,7 @@ const initInstancesData = async () => {
       }
     });
   } catch (err) {
-    return message.error(t("TXT_CODE_e109c091"));
+    return reportError(t("TXT_CODE_e109c091"));
   }
 };
 

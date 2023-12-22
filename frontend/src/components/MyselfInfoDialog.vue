@@ -5,6 +5,7 @@ import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, ref } from "vue";
 import { setUserApiKey, updatePassword } from "@/services/apis/user";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
 const { state, updateUserInfo } = useAppStateStore();
@@ -35,9 +36,9 @@ const handleGenerateApiKey = async (enable: boolean) => {
 
 const handleChangePassword = async () => {
   formRef.value?.validateFields().then(async () => {
-    if (formState.password1 !== formState.password2) return message.error(t("TXT_CODE_d51f5d6"));
+    if (formState.password1 !== formState.password2) return reportError(t("TXT_CODE_d51f5d6"));
     if (formState.password1.length < 6 || formState.password1.length > 36)
-      return message.error(t("TXT_CODE_cc5a3aea"));
+      return reportError(t("TXT_CODE_cc5a3aea"));
     try {
       await executeUpdatePassword({
         data: {
@@ -47,7 +48,7 @@ const handleChangePassword = async () => {
       updateUserInfo();
       return message.success(t("TXT_CODE_d3de39b4"));
     } catch (error: any) {
-      return message.error(error.message);
+      return reportError(error.message);
     }
   });
 };
@@ -121,8 +122,9 @@ const handleChangePassword = async () => {
             {{ t("TXT_CODE_b2dbf778") }}
           </a-typography-paragraph>
           <a-typography-paragraph v-if="state.userInfo?.apiKey">
-            <pre
-              class="flex flex-between">{{ state.userInfo.apiKey }}<CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
+            <pre class="flex flex-between">
+              {{ state.userInfo.apiKey }}
+              <CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
             <pre>{{ t("TXT_CODE_d7dbc7c2") }}</pre>

@@ -11,7 +11,7 @@ import { onMounted, reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginPageInfo, loginUser } from "@/services/apis";
 import { sleep } from "@/tools/common";
-import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
@@ -51,7 +51,7 @@ const handleLogin = async () => {
     await loginSuccess();
   } catch (error: any) {
     console.log(error);
-    message.error(error.message ? error.message : error);
+    reportError(error.message ? error.message : error);
     loginStep.value--;
   }
 };
@@ -123,6 +123,7 @@ const loginSuccess = () => {
 
             <div class="mt-24 flex-between align-center">
               <div class="mcsmanager-link">
+                <!--  eslint-disable-next-line vue/no-v-html -->
                 <div
                   v-if="pageInfoResult?.loginInfo"
                   class="global-markdown-html"

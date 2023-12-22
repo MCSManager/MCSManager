@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { DeleteOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -34,7 +35,7 @@ const getScheduleList = async () => {
     });
   } catch (err: any) {
     console.error(err);
-    message.error(err.message);
+    reportError(err.message);
   }
 };
 
@@ -54,7 +55,7 @@ const deleteSchedule = async (name: string) => {
     }
   } catch (err: any) {
     console.error(err);
-    message.error(err.message);
+    reportError(err.message);
   }
 };
 

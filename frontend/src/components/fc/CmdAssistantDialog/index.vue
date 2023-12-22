@@ -7,7 +7,7 @@ import { BuildFilled, DropboxSquareFilled, SwitcherFilled } from "@ant-design/ic
 import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 import { useStartCmdBuilder } from "@/hooks/useGenerateStartCmd";
-import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import {
   TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
@@ -60,11 +60,10 @@ const cancel = async () => {
 };
 
 const submit = async () => {
-  console.log("formRef:", formRef.value);
   try {
     await formRef.value.validate();
   } catch (error) {
-    return message.warning(t("请完善表单中的必填项！"));
+    return reportError(t("请完善表单中的必填项！"));
   }
   const command = buildCmd();
 

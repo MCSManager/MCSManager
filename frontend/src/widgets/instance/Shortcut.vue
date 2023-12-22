@@ -4,6 +4,7 @@ import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import {
   CheckCircleOutlined,
   ExclamationCircleOutlined,

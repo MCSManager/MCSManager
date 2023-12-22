@@ -5,6 +5,7 @@ import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail } from "@/types";
 import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { TERMINAL_CODE } from "@/types/const";
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
@@ -43,7 +44,7 @@ const submit = async () => {
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

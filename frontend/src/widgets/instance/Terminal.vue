@@ -31,6 +31,7 @@ import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { Terminal } from "xterm";

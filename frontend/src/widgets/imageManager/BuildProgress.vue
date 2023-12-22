@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { buildProgress } from "@/services/apis/envImage";
 import Loading from "@/components/Loading.vue";
 const props = defineProps<{
@@ -43,7 +44,7 @@ const getProgress = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

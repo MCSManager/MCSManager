@@ -6,6 +6,8 @@ import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons-vue";
 import { h } from "vue";
 import _ from "lodash";
+import { emptyValueValidator, reportValidatorError } from "../../tools/validator";
+import { type FormInstance } from "ant-design-vue";
 
 interface Props extends MountComponent {
   title: string;
@@ -19,6 +21,7 @@ const props = defineProps<Props>();
 const dataSource = ref<any[]>(props.data instanceof Array ? _.cloneDeep(props.data) : []);
 
 const open = ref(true);
+const formInstance = ref<FormInstance>();
 
 const cancel = async () => {
   open.value = false;
@@ -26,6 +29,11 @@ const cancel = async () => {
 };
 
 const submit = async () => {
+  try {
+    await formInstance.value?.validate();
+  } catch (error: any) {
+    return reportValidatorError(error);
+  }
   if (props.emitResult) props.emitResult(dataSource.value);
   await cancel();
 };
@@ -97,29 +105,43 @@ const operation = (type: "add" | "del", index = 0) => {
           {{ t("新增配置") }}
         </a-button>
       </div>
-      <a-table :data-source="dataSource" :columns="columns" :pagination="false">
-        <template #bodyCell="{ column, record, index }: AntTableCell">
-          <template v-if="column.dataIndex === 'operation'">
-            <div class="flex-center flex-between">
-              <div>
-                <a-button
-                  :icon="h(MinusCircleOutlined)"
-                  danger
-                  @click="operation('del', index)"
-                ></a-button>
+      <a-form ref="formInstance" :model="dataSource" name="validate_other">
+        <a-table :data-source="dataSource" :columns="columns" :pagination="false">
+          <template #bodyCell="{ column, record, index }: AntTableCell">
+            <template v-if="column.dataIndex === 'operation'">
+              <div class="flex-center flex-between">
+                <div>
+                  <a-button
+                    :icon="h(MinusCircleOutlined)"
+                    danger
+                    @click="operation('del', index)"
+                  ></a-button>
+                </div>
               </div>
-            </div>
+            </template>
+            <template v-else>
+              <a-form-item
+                :name="String(column.dataIndex)"
+                no-style
+                :rules="[
+                  {
+                    validator: () => emptyValueValidator(record[String(column.dataIndex)]),
+                    trigger: 'change'
+                  }
+                ]"
+              >
+                <a-input
+                  v-model:value="record[String(column.dataIndex)]"
+                  :placeholder="t('请输入内容')"
+                />
+              </a-form-item>
+            </template>
           </template>
-          <template v-else>
-            <a-input
-              v-model:value="record[String(column.dataIndex)]"
-              :placeholder="t('请输入内容')"
-            />
-          </template>
-        </template>
-      </a-table>
+        </a-table>
+      </a-form>
     </div>
   </a-modal>
 </template>
 
 <style lang="scss" scoped></style>
+../../tools/formV

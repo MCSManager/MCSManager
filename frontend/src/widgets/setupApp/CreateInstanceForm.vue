@@ -100,7 +100,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uFile.value = file;
 
   if (isImportMode) {
-    if (file.type !== "application/x-zip-compressed") return message.error(t("TXT_CODE_808e5ad9"));
+    if (file.type !== "application/x-zip-compressed") return reportError(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
   } else {
     finalConfirm();
@@ -126,7 +126,7 @@ const finalConfirm = async () => {
         await formRef.value?.validateFields();
         needUpload ? await selectedFile() : await createInstance();
       } catch {
-        return message.error(t("TXT_CODE_47e21c80"));
+        return reportError(t("TXT_CODE_47e21c80"));
       }
     },
     onCancel() {}
@@ -170,7 +170,7 @@ const selectedFile = async () => {
     return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -191,7 +191,7 @@ const createInstance = async () => {
     if (newInstanceInfo.value) emit("nextStep", newInstanceInfo.value.instanceUuid);
     return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 </script>

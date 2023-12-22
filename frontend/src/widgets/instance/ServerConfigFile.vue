@@ -55,7 +55,7 @@ const render = async () => {
   } catch (err: any) {
     console.error(err);
     isFailure.value = true;
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -89,7 +89,7 @@ const save = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

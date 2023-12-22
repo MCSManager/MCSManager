@@ -13,6 +13,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
 import { useSelectInstances } from "@/components/fc";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 
@@ -62,7 +63,7 @@ const saveData = async () => {
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

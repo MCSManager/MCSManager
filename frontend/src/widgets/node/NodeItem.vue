@@ -15,6 +15,7 @@ import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
 import { connectNode } from "@/services/apis";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
@@ -58,7 +59,7 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
     });
     if (showMsg) message.success(t("操作成功"));
   } catch (error) {
-    message.error(t("操作失败"));
+    reportError(t("操作失败"));
   }
 };
 

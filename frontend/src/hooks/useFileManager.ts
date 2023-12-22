@@ -93,7 +93,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           dialog.value.mode != "unzip" &&
           dialog.value.mode != "permission"
         ) {
-          return message.error(t("TXT_CODE_4ea93630"));
+          return reportError(t("TXT_CODE_4ea93630"));
         }
         resolve(dialog.value.value);
         dialog.value.show = false;
@@ -122,7 +122,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       dataSource.value = res.value?.items || [];
       operationForm.value.total = res.value?.total || 0;
     } catch (error: any) {
-      return message.error(error.message);
+      return reportError(error.message);
     }
   };
 
@@ -150,7 +150,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getFileList();
       message.success(t("TXT_CODE_d28c05df"));
     } catch (error: any) {
-      return message.error(error.message);
+      return reportError(error.message);
     }
   };
 
@@ -162,7 +162,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     } else {
       if (!selectionData.value || selectionData.value.length === 0)
-        return message.error(t("TXT_CODE_b152cd75"));
+        return reportError(t("TXT_CODE_b152cd75"));
       clipboard.value = {
         type,
         value: selectionData.value?.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
@@ -173,7 +173,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const paste = async () => {
     if (!clipboard?.value?.type || !clipboard.value.value)
-      return message.error(t("TXT_CODE_b152cd75"));
+      return reportError(t("TXT_CODE_b152cd75"));
     const execute = clipboard.value.type == "copy" ? copyFileApi().execute : moveFileApi().execute;
     try {
       await execute({
@@ -192,7 +192,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       message.success(t("TXT_CODE_93d4b66a"));
       clipboard.value.value = [];
     } catch (error: any) {
-      message.error(error.message);
+      reportError(error.message);
     }
   };
 
@@ -241,7 +241,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           await getFileList();
         }
       } catch (error: any) {
-        message.error(error.message);
+        reportError(error.message);
       }
     };
 
@@ -255,7 +255,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
           // more file
-          if (!selectionData.value) return message.error(t("TXT_CODE_f41ad30a"));
+          if (!selectionData.value) return reportError(t("TXT_CODE_f41ad30a"));
           await useDeleteFileApi(
             selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
           );
@@ -270,7 +270,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const zipFile = async () => {
     if (!selectionData.value || selectionData.value.length === 0)
-      return message.error(t("TXT_CODE_b152cd75"));
+      return reportError(t("TXT_CODE_b152cd75"));
     const filename = await openDialog(t("TXT_CODE_f8a15a94"), t("TXT_CODE_366bad15"), "", "zip");
     const { execute } = compressFileApi();
     try {
@@ -289,7 +289,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       message.success(t("TXT_CODE_377e142"));
       await getFileList();
     } catch (error: any) {
-      message.error(error.message);
+      reportError(error.message);
     }
   };
 
@@ -316,7 +316,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       message.success(t("TXT_CODE_16f55a9b"));
       await getFileList();
     } catch (error: any) {
-      message.error(error.message);
+      reportError(error.message);
     }
   };
 
@@ -355,7 +355,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       return message.success(t("TXT_CODE_773f36a0"));
     } catch (err: any) {
       console.error(err);
-      return message.error(err.message);
+      return reportError(err.message);
     }
   };
 
@@ -400,13 +400,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       );
     } catch (err: any) {
       console.error(err);
-      return message.error(err.message);
+      return reportError(err.message);
     }
   };
 
   const handleChangeDir = async (dir: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
-      return message.error(t("TXT_CODE_96281410"));
+      return reportError(t("TXT_CODE_96281410"));
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     await getFileList();
@@ -435,7 +435,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       }
     } catch (err: any) {
       console.error(err);
-      return message.error(err.message);
+      return reportError(err.message);
     }
   };
 
@@ -490,7 +490,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       message.success(t("TXT_CODE_b05948d1"));
       await getFileList();
     } catch (err: any) {
-      return message.error(err.message);
+      return reportError(err.message);
     }
     permission.deep = false;
   };

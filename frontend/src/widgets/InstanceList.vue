@@ -61,7 +61,7 @@ const initNodes = async () => {
   await getNodes();
   nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
   if (!nodes.value?.length) {
-    return message.error(t("TXT_CODE_e3d96a26"));
+    return reportError(t("TXT_CODE_e3d96a26"));
   }
   if (localStorage.getItem("pageSelectedRemote")) {
     currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
@@ -85,7 +85,7 @@ const initInstancesData = async () => {
       }
     });
   } catch (err) {
-    return message.error(t("TXT_CODE_e109c091"));
+    return reportError(t("TXT_CODE_e109c091"));
   }
 };
 
@@ -196,7 +196,7 @@ const instanceOperations = [
 ];
 
 const batchOperation = async (actName: "start" | "stop" | "kill") => {
-  if (selectedInstance.value.length === 0) return message.error(t("TXT_CODE_a0a77be5"));
+  if (selectedInstance.value.length === 0) return reportError(t("TXT_CODE_a0a77be5"));
   const operationMap = {
     start: async () => exec(batchStart().execute, t("TXT_CODE_2b5fd76e")),
     stop: async () => exec(batchStop().execute, t("TXT_CODE_4822a21")),
@@ -221,7 +221,7 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
       }
     } catch (err: any) {
       console.error(err);
-      message.error(err.message);
+      reportError(err.message);
     }
   };
 
@@ -229,7 +229,7 @@ const batchOperation = async (actName: "start" | "stop" | "kill") => {
 };
 
 const batchDeleteInstance = async (deleteFile: boolean) => {
-  if (selectedInstance.value.length === 0) return message.error(t("TXT_CODE_a0a77be5"));
+  if (selectedInstance.value.length === 0) return reportError(t("TXT_CODE_a0a77be5"));
   const { execute, state } = batchDelete();
   const uuids: string[] = [];
   for (const i of selectedInstance.value) {
@@ -262,7 +262,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
         }
       } catch (err: any) {
         console.error(err);
-        message.error(err.message);
+        reportError(err.message);
       }
     },
     onCancel() {}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { t } from "@/lang/i18n";
-import { message, notification } from "ant-design-vue";
+import { notification } from "ant-design-vue";
 import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import type { NewScheduleTask } from "@/types";
 import { scheduleCreate } from "@/services/apis/instance";
@@ -106,7 +106,7 @@ const createRequest = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    message.error(err.message);
+    reportError(err.message);
   }
 };
 
@@ -116,7 +116,7 @@ const submit = async () => {
     if (newTask.type === ScheduleCreateType.CYCLE) await createTaskTypeCycle();
     if (newTask.type === ScheduleCreateType.SPECIFY) await createTaskTypeSpecify();
   } catch (err: any) {
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

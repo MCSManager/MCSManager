@@ -23,7 +23,7 @@ const { execute } = imageList();
 const submit = async () => {
   try {
     if (!options.dockerFile || !options.name || !options.version)
-      return message.error(t("TXT_CODE_2764f197"));
+      return reportError(t("TXT_CODE_2764f197"));
     await execute({
       params: {
         daemonId: props.daemonId
@@ -42,7 +42,7 @@ const submit = async () => {
     emit("close");
   } catch (err: any) {
     console.error(err.message);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

@@ -152,7 +152,7 @@ const deleteUser = async (userList: string[]) => {
     message.success(t("TXT_CODE_28190dbc"));
     await fetchData();
   } catch (error: any) {
-    message.error(error.message);
+    reportError(error.message);
   }
 };
 
@@ -200,7 +200,7 @@ const userDialog = ref({
       userDialog.value.status = false;
       formData.value = _.cloneDeep(formDataOrigin);
     } catch (error: any) {
-      return message.error(error.message);
+      return reportError(error.message);
     } finally {
       fetchData();
       userDialog.value.confirmBtnLoading = false;

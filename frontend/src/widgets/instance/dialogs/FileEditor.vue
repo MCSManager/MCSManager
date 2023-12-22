@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
 import { useRoute } from "vue-router";
@@ -51,7 +52,7 @@ const render = async () => {
     openEditor.value = true;
   } catch (err: any) {
     console.error(err.message);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -73,7 +74,7 @@ const submit = async () => {
   } catch (err: any) {
     console.error(err.message);
     reject(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

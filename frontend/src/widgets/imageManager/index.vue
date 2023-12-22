@@ -111,7 +111,7 @@ const delImage = async (item: ImageInfo) => {
     });
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 
@@ -173,7 +173,7 @@ const getContainerList = async () => {
     if (containers.value) containerDataSource.value = containers.value;
   } catch (err: any) {
     console.error(err);
-    return message.error(err.message);
+    return reportError(err.message);
   }
 };
 

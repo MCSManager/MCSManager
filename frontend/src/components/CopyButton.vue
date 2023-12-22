@@ -2,6 +2,7 @@
 import { t } from "@/lang/i18n";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import type { ButtonType } from "ant-design-vue/es/button";
 import type { SizeType } from "ant-design-vue/es/config-provider";
 
@@ -12,12 +13,12 @@ const props = defineProps<{
 }>();
 
 const copy = async () => {
-  if (!navigator.clipboard) return message.error(t("TXT_CODE_ca07c84c"));
+  if (!navigator.clipboard) return reportError(t("TXT_CODE_ca07c84c"));
   try {
     await navigator.clipboard.writeText(props.value);
     message.success(t("TXT_CODE_b858d78a"));
   } catch (error) {
-    message.error(t("TXT_CODE_81b9b599") + error);
+    reportError(t("TXT_CODE_81b9b599") + error);
   }
 };
 </script>

@@ -4,6 +4,7 @@ import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { message } from "ant-design-vue";
+import { reportError } from "@/tools/validator";
 import {
   BankOutlined,
   BookOutlined,
@@ -37,7 +38,7 @@ const submit = async () => {
       message.success(t("TXT_CODE_a7907771"));
       setTimeout(() => window.location.reload(), 600);
     } catch (error: any) {
-      message.error(error);
+      reportError(error);
     }
   }
 };
