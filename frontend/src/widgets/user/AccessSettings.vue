@@ -165,7 +165,7 @@ const columns = computed(() => {
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
-              {{ t("TXT_CODE_e1c9a6ac") }}
+              {{ t("用户所有实例") }}
             </a-typography-title>
           </template>
           <template #right>
@@ -173,7 +173,7 @@ const columns = computed(() => {
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
-              {{ t("TXT_CODE_a60466a1") }}
+              {{ t("分配实例") }}
             </a-button>
           </template>
         </BetweenMenus>
