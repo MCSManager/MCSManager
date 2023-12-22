@@ -233,10 +233,6 @@ const addUserRules: Record<string, Rule[]> = {
   ...baseRules,
   passWord: [
     {
-      required: true,
-      message: t("TXT_CODE_25c895d5")
-    },
-    {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
@@ -306,28 +302,7 @@ onMounted(async () => {
       :model="formData"
       layout="vertical"
     >
-      <a-form-item name="userName">
-        <a-typography-title :level="5">{{ t("TXT_CODE_eb9fcdad") }}</a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_1987587b") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.userName" :placeholder="t('TXT_CODE_4ea93630')" />
-      </a-form-item>
-
-      <a-form-item name="passWord">
-        <a-typography-title :level="5">{{ t("TXT_CODE_5c605130") }}</a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ !isAddMode ? t("TXT_CODE_af1f921d") : t("TXT_CODE_1f2062c7") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.passWord" :placeholder="t('TXT_CODE_4ea93630')" />
-      </a-form-item>
-
-      <a-form-item name="permission">
-        <a-typography-title :level="5">{{ t("TXT_CODE_511aea70") }}</a-typography-title>
+      <a-form-item required name="permission" :label="t('TXT_CODE_511aea70')">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ t("TXT_CODE_21b8b71a") }}
@@ -340,13 +315,32 @@ onMounted(async () => {
         </a-select>
       </a-form-item>
 
-      <a-form-item v-if="!isAddMode">
-        <a-typography-title :level="5">APIKEY</a-typography-title>
-        <a-input v-model:value="formData.apiKey" :placeholder="t('TXT_CODE_d7dbc7c2')" />
+      <a-form-item required name="userName" :label="t('TXT_CODE_eb9fcdad')">
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("TXT_CODE_1987587b") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="formData.userName" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
 
-      <a-form-item v-if="isAddMode">
-        <a-typography-title :level="5">{{ t("TXT_CODE_ef0ce2e") }}</a-typography-title>
+      <a-form-item :required="isAddMode" name="passWord" :label="t('TXT_CODE_5c605130')">
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ !isAddMode ? t("TXT_CODE_af1f921d") : t("TXT_CODE_1f2062c7") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="formData.passWord" :placeholder="t('TXT_CODE_4ea93630')" />
+      </a-form-item>
+
+      <a-form-item v-if="!isAddMode" label="APIKEY">
+        <a-typography-paragraph v-if="!formData.apiKey">
+          {{ t("此用户没有开启 APIKEY 功能。") }}
+        </a-typography-paragraph>
+        <a-input v-else v-model:value="formData.apiKey" :readonly="true" />
+      </a-form-item>
+
+      <a-form-item v-if="isAddMode" required :label="t('TXT_CODE_ef0ce2e')">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ t("TXT_CODE_9e9d3767") }}
