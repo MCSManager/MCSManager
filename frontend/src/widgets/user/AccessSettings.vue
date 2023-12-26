@@ -131,7 +131,7 @@ const columns = computed(() => {
       minWidth: 200,
       condition: () => !screen.isPhone.value,
       customRender: (row: { text: string | number }) => {
-        if (Number(row.text) === 0) return t("无限期");
+        if (Number(row.text) === 0) return t("TXT_CODE_8dfd8b17");
         if (!isNaN(Number(row.text))) return dayjs(Number(row.text)).format("YYYY-MM-DD HH:mm:ss");
         return row.text;
       }
@@ -165,7 +165,7 @@ const columns = computed(() => {
         <BetweenMenus>
           <template #left>
             <a-typography-title class="mb-0" :level="4">
-              {{ t("用户所有实例") }}
+              {{ t("TXT_CODE_76d20724") }}
             </a-typography-title>
           </template>
           <template #right>
@@ -173,7 +173,7 @@ const columns = computed(() => {
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
-              {{ t("分配实例") }}
+              {{ t("TXT_CODE_9393b484") }}
             </a-button>
           </template>
         </BetweenMenus>

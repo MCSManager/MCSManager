@@ -27,7 +27,7 @@ const parsedConfig = jsonToMap(props.config);
       <template #body>
         <a-typography>
           <a-typography-title :level="5">
-            {{ data ? t("配置文件说明") : t("TXT_CODE_2ce953da") }}
+            {{ data ? t("TXT_CODE_958fd70c") : t("TXT_CODE_2ce953da") }}
           </a-typography-title>
           <a-typography-paragraph v-if="data">
             {{ data?.desc }}

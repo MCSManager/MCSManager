@@ -8,11 +8,11 @@ function readCategoryConfig(configCategory: string, callback: (config: any) => b
     try {
       const config = JSON.parse(StorageSubsystem.readFile(configPath));
       if (callback(config)) {
-        logger.info(t("已将旧版本配置升级为新版本配置："), configPath);
+        logger.info(t("TXT_CODE_6b2a9cab"), configPath);
         StorageSubsystem.writeFile(configPath, JSON.stringify(config, null, 4));
       }
     } catch (error) {
-      logger.error(t("[配置升级机制] 解析配置文件错误，已自动忽略："), error);
+      logger.error(t("TXT_CODE_fb75aba9"), error);
     }
   }
 }

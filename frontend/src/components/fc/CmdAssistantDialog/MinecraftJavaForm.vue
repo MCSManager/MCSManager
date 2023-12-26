@@ -28,45 +28,36 @@ defineExpose({ validate });
 
 <template>
   <a-form ref="formRef" layout="vertical" :model="form">
-    <a-form-item name="jarName" :label="t('服务端软件文件名')" required>
-      <a-input
-        v-model:value="form.jarName"
-        :placeholder="t('一般为 .jar 文件，列如 paper.jar 等')"
-      />
+    <a-form-item name="jarName" :label="t('TXT_CODE_58508fb7')" required>
+      <a-input v-model:value="form.jarName" :placeholder="t('TXT_CODE_84f760fa')" />
     </a-form-item>
     <a-row :gutter="[24, 24]">
       <a-col :span="12">
-        <a-form-item name="maxMemory" :label="t('最大内存')">
-          <a-input v-model:value="form.maxMemory" :placeholder="t('选填，-Xmx 参数，如：1024M')" />
+        <a-form-item name="maxMemory" :label="t('TXT_CODE_dd238854')">
+          <a-input v-model:value="form.maxMemory" :placeholder="t('TXT_CODE_d7fa3be3')" />
         </a-form-item>
       </a-col>
       <a-col :span="12">
-        <a-form-item name="minMemory" :label="t('初始内存')">
-          <a-input v-model:value="form.minMemory" :placeholder="t('选填，-Xms 参数，如：1024M')" />
+        <a-form-item name="minMemory" :label="t('TXT_CODE_e050b3be')">
+          <a-input v-model:value="form.minMemory" :placeholder="t('TXT_CODE_57c1b0a3')" />
         </a-form-item>
       </a-col>
 
       <a-col :span="24">
-        <a-form-item name="javaPath" :label="t('Java 路径')">
-          <a-input
-            v-model:value="form.javaPath"
-            :placeholder="t('选填，请输入 Java 绝对路径，不填默认取环境变量')"
-          />
+        <a-form-item name="javaPath" :label="t('TXT_CODE_43422ed3')">
+          <a-input v-model:value="form.javaPath" :placeholder="t('TXT_CODE_7f9b6758')" />
         </a-form-item>
       </a-col>
 
       <a-col :span="24">
-        <a-form-item name="additional" :label="t('附加参数')">
-          <a-input v-model:value="form.additional" :placeholder="t('选填，在 -jar 之前的参数')" />
+        <a-form-item name="additional" :label="t('TXT_CODE_4efba567')">
+          <a-input v-model:value="form.additional" :placeholder="t('TXT_CODE_f79563ef')" />
         </a-form-item>
       </a-col>
 
       <a-col :span="24">
-        <a-form-item name="suffix" :label="t('后缀参数')">
-          <a-input
-            v-model:value="form.suffix"
-            :placeholder="t('选填，Java 程序之后的附加参数，如 -nogui 等，多个参数用空格分隔')"
-          />
+        <a-form-item name="suffix" :label="t('TXT_CODE_85770d4a')">
+          <a-input v-model:value="form.suffix" :placeholder="t('TXT_CODE_6e3da823')" />
         </a-form-item>
       </a-col>
     </a-row>

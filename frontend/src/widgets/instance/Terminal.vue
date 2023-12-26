@@ -296,7 +296,7 @@ const innerTerminalType = viewType === "inner";
             <li @click="clearTerminal()">
               <a-tooltip placement="top">
                 <template #title>
-                  <span>{{ t("清空终端输出内容") }}</span>
+                  <span>{{ t("TXT_CODE_b1e2e1b4") }}</span>
                 </template>
                 <delete-outlined />
               </a-tooltip>

@@ -63,7 +63,7 @@ const dialog = reactive({
     try {
       dialog.loading = true;
       await deleteNode(dialog.uuid);
-      message.success(t("已删除"));
+      message.success(t("TXT_CODE_a00e84d7"));
     } catch (error: any) {
       message.success(error.message ?? error);
     }
@@ -77,10 +77,10 @@ const dialog = reactive({
       } else {
         await addNode(dialog.data);
       }
-      message.success(t("已保存"));
+      message.success(t("TXT_CODE_e74d658c"));
       dialog.close();
     } catch (error: any) {
-      reportError(error.message ?? t("请完善表单内容"));
+      reportError(error.message ?? t("TXT_CODE_5245bd11"));
     }
   },
   hidden: () => {

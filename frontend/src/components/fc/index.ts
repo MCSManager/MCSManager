@@ -27,22 +27,22 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      title: t("容器端口映射配置"),
+      title: t("TXT_CODE_c4435af9"),
       columns: [
         {
           align: "center",
           dataIndex: "host",
-          title: t("主机端口")
+          title: t("TXT_CODE_534db0b2")
         },
         {
           align: "center",
           dataIndex: "container",
-          title: t("容器端口")
+          title: t("TXT_CODE_b729d2e")
         },
         {
           align: "center",
           dataIndex: "protocol",
-          title: t("协议")
+          title: t("TXT_CODE_ad1c674c")
         }
       ] as AntColumnsType[]
     }).mount<PortConfigItem[]>(KvOptionsDialogVue)) || []
@@ -53,17 +53,17 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      title: t("挂载目录到容器"),
+      title: t("TXT_CODE_820ebc92"),
       columns: [
         {
           align: "center",
           dataIndex: "host",
-          title: t("主机目录")
+          title: t("TXT_CODE_681aaeb9")
         },
         {
           align: "center",
           dataIndex: "container",
-          title: t("容器目录")
+          title: t("TXT_CODE_30258325")
         }
       ] as AntColumnsType[]
     }).mount<DockerConfigItem[]>(KvOptionsDialogVue)) || []

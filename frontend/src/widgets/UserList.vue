@@ -335,7 +335,7 @@ onMounted(async () => {
 
       <a-form-item v-if="!isAddMode" label="APIKEY">
         <a-typography-paragraph v-if="!formData.apiKey">
-          {{ t("此用户没有开启 APIKEY 功能。") }}
+          {{ t("TXT_CODE_6c274bdc") }}
         </a-typography-paragraph>
         <a-input v-else v-model:value="formData.apiKey" :readonly="true" />
       </a-form-item>
@@ -452,7 +452,7 @@ onMounted(async () => {
                             {{ t("TXT_CODE_4d934e3a") }}
                           </a-menu-item>
                           <a-popconfirm
-                            :title="t('你确定要删除这个用户吗？')"
+                            :title="t('TXT_CODE_e99ab99a')"
                             @confirm="handleDeleteUser(record)"
                           >
                             <a-menu-item key="3">

@@ -147,7 +147,7 @@ const submit = async () => {
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (error: any) {
     console.error(error);
-    return reportError(error.message ?? t("保存失败，请检查配置项"));
+    return reportError(error.message ?? t("TXT_CODE_9911ac11"));
   }
 };
 
@@ -400,12 +400,12 @@ defineExpose({
               <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("通过映射让容器进程使用主机的真实端口") }}
+                  {{ t("TXT_CODE_1a37f514") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
                 <a-button type="default" @click="() => handleEditDockerConfig('port')">
-                  {{ t("编辑") }}
+                  {{ t("TXT_CODE_ad207008") }}
                 </a-button>
               </a-input-group>
             </a-form-item>
@@ -415,12 +415,12 @@ defineExpose({
               <a-typography-title :level="5">{{ t("TXT_CODE_3e68ca00") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("挂载额外路径到容器中") }}
+                  {{ t("TXT_CODE_828ea87f") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>
                 <a-button type="default" @click="() => handleEditDockerConfig('volume')">
-                  {{ t("编辑") }}
+                  {{ t("TXT_CODE_ad207008") }}
                 </a-button>
               </a-input-group>
             </a-form-item>

@@ -116,15 +116,15 @@ onMounted(async () => {
         <BetweenMenus>
           <template #left>
             <a-button class="mr-8" @click="toConfigOverview">
-              {{ t("返回") }}
+              {{ t("TXT_CODE_c14b2ea3") }}
             </a-button>
           </template>
           <template #right>
             <a-button type="primary" :loading="updateConfigFileLoading" class="mr-8" @click="save">
-              {{ t("保存") }}
+              {{ t("TXT_CODE_abfe9512") }}
             </a-button>
             <a-button :loading="getConfigFileLoading" class="mr-8" @click="refresh">
-              {{ t("刷新") }}
+              {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="dashed" @click="toEditRawFile">
               {{ t("TXT_CODE_1f61e5a3") }}

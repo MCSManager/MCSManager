@@ -46,7 +46,7 @@ const columns = computed<AntColumnsType[]>(() => {
         align: "center",
         key: "operation",
         dataIndex: "operation",
-        title: t("操作")
+        title: t("TXT_CODE_fe731dfc")
       }
     ];
   }
@@ -67,7 +67,7 @@ const columns = computed<AntColumnsType[]>(() => {
       align: "center",
       key: "operation",
       dataIndex: "operation",
-      title: t("操作")
+      title: t("TXT_CODE_fe731dfc")
     }
   ];
 });
@@ -94,7 +94,7 @@ const operation = (type: "add" | "del", index = 0) => {
     width="600px"
     :mask-closable="false"
     :title="props.title"
-    :ok-text="t('确定')"
+    :ok-text="t('TXT_CODE_d507abff')"
     :cancel-text="t('TXT_CODE_a0451c97')"
     @ok="submit"
     @cancel="cancel"
@@ -102,7 +102,7 @@ const operation = (type: "add" | "del", index = 0) => {
     <div class="dialog-overflow-container">
       <div class="flex justify-end mb-20">
         <a-button :icon="h(PlusCircleOutlined)" @click="operation('add')">
-          {{ t("新增配置") }}
+          {{ t("TXT_CODE_dfc17a0c") }}
         </a-button>
       </div>
       <a-form ref="formInstance" :model="dataSource" name="validate_other">
@@ -132,7 +132,7 @@ const operation = (type: "add" | "del", index = 0) => {
               >
                 <a-input
                   v-model:value="record[String(column.dataIndex)]"
-                  :placeholder="t('请输入内容')"
+                  :placeholder="t('TXT_CODE_4ea93630')"
                 />
               </a-form-item>
             </template>

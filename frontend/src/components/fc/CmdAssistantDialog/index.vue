@@ -34,22 +34,22 @@ const formRef = ref();
 const tabFormComponent: Record<string, { component: Component; title: string; form: any }> = {
   [TYPE_MINECRAFT_JAVA]: {
     component: MinecraftJavaForm,
-    title: t("Java 版 Minecraft 服务器"),
+    title: t("TXT_CODE_95583336"),
     form: minecraftJava
   },
   [TYPE_MINECRAFT_BEDROCK]: {
     component: AnyAppFormComponent,
-    title: t("Bedrock 版 Minecraft 服务器"),
+    title: t("TXT_CODE_28116f29"),
     form: anyAppForm
   },
   [TYPE_STEAM_SERVER_UNIVERSAL]: {
     component: AnyAppFormComponent,
-    title: t("Steam 游戏服务器"),
+    title: t("TXT_CODE_dd8d27ce"),
     form: anyAppForm
   },
   [TYPE_UNIVERSAL]: {
     component: AnyAppFormComponent,
-    title: t("任何程序"),
+    title: t("TXT_CODE_10693964"),
     form: anyAppForm
   }
 };
@@ -63,7 +63,7 @@ const submit = async () => {
   try {
     await formRef.value.validate();
   } catch (error) {
-    return reportError(t("请完善表单中的必填项！"));
+    return reportError(t("TXT_CODE_d6c5a7f8"));
   }
   const command = buildCmd();
 
@@ -80,7 +80,7 @@ const handleNext = () => {
 const actions = [
   {
     icon: BuildFilled,
-    title: t("Minecraft 游戏服务器"),
+    title: t("TXT_CODE_f2deb1d0"),
     click: () => {
       setGameType(QUICKSTART_ACTION_TYPE.Minecraft);
       handleNext();
@@ -88,7 +88,7 @@ const actions = [
   },
   {
     icon: SwitcherFilled,
-    title: t("Steam 游戏服务器"),
+    title: t("TXT_CODE_dd8d27ce"),
     click: () => {
       setGameType(QUICKSTART_ACTION_TYPE.SteamGameServer);
       handleNext();
@@ -96,7 +96,7 @@ const actions = [
   },
   {
     icon: DropboxSquareFilled,
-    title: t("任何控制台程序"),
+    title: t("TXT_CODE_4600deb7"),
     click: () => {
       setGameType(QUICKSTART_ACTION_TYPE.AnyApp);
       handleNext();
@@ -111,8 +111,8 @@ const actions = [
     centered
     width="800px"
     :mask-closable="false"
-    :title="t('命令助手')"
-    :ok-text="t('确定')"
+    :title="t('TXT_CODE_2728d0d4')"
+    :ok-text="t('TXT_CODE_d507abff')"
     :cancel-text="t('TXT_CODE_a0451c97')"
     :ok-button-props="{ disabled: step !== STEP.SELECT_SOFTWARE }"
     @ok="submit"
@@ -122,7 +122,7 @@ const actions = [
       <div v-if="step === STEP.SELECT_TYPE">
         <a-row :gutter="[0, 12]">
           <a-typography-text>
-            {{ t("请选择你的服务器程序类别") }}
+            {{ t("TXT_CODE_18df7f10") }}
           </a-typography-text>
           <fade-up-animation>
             <action-button
@@ -147,12 +147,13 @@ const actions = [
       </div>
       <div v-else-if="gameType === QUICKSTART_ACTION_TYPE.SteamGameServer">
         <a-tabs v-model:activeKey="appType">
-          <a-tab-pane :key="TYPE_STEAM_SERVER_UNIVERSAL" :tab="t('Steam 游戏服务器')"> </a-tab-pane>
+          <a-tab-pane :key="TYPE_STEAM_SERVER_UNIVERSAL" :tab="t('TXT_CODE_dd8d27ce')">
+          </a-tab-pane>
         </a-tabs>
       </div>
       <div v-else-if="gameType != null">
         <a-tabs v-model:activeKey="appType">
-          <a-tab-pane :key="TYPE_UNIVERSAL" :tab="t('全部类型')">D</a-tab-pane>
+          <a-tab-pane :key="TYPE_UNIVERSAL" :tab="t('TXT_CODE_feab659d')">D</a-tab-pane>
         </a-tabs>
       </div>
       <component

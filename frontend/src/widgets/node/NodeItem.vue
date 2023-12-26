@@ -57,9 +57,9 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
         uuid: uuid
       }
     });
-    if (showMsg) message.success(t("操作成功"));
+    if (showMsg) message.success(t("TXT_CODE_7f0c746d"));
   } catch (error) {
-    reportError(t("操作失败"));
+    reportError(t("TXT_CODE_6a365d01"));
   }
 };
 
@@ -150,7 +150,7 @@ const nodeOperations = computed(() =>
       condition: () => item.value!.available
     },
     {
-      title: t("重新连接"),
+      title: t("TXT_CODE_f8b28901"),
       icon: ReloadOutlined,
       click: async (node: ComputedNodeInfo) => {
         await tryConnectNode(node.uuid);
