@@ -23,6 +23,13 @@ export default class StorageSubsystem {
     return fs.readFileSync(targetPath, { encoding: "utf-8" });
   }
 
+  public readDir(dirName: string) {
+    const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, dirName));
+    if (!fs.existsSync(targetPath)) return [];
+    const files = fs.readdirSync(targetPath).map((v) => path.normalize(path.join(dirName, v)));
+    return files;
+  }
+
   public deleteFile(name: string) {
     const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
     fs.removeSync(targetPath);

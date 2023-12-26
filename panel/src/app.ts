@@ -17,6 +17,7 @@ import open from "open";
 import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
+import versionAdapter from "./app/service/version_adapter";
 
 function setupHttp(koaApp: Koa, port: number, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
@@ -87,6 +88,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
  + Version ${VERSION}
 `);
 
+  // Detect whether the configuration file is from an older version and update it if so.
+  versionAdapter.detectConfig();
+
+  // Initialize services
   await SystemUser.initialize();
   await SystemRemoteService.initialize();
 
