@@ -23,6 +23,7 @@ import PingConfig from "./dialogs/PingConfig.vue";
 import InstanceDetails from "./dialogs/InstanceDetails.vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import type { RouteLocationPathRaw } from "vue-router";
+import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
@@ -73,7 +74,12 @@ const btns = computed(() =>
     {
       title: t("TXT_CODE_d07742fe"),
       icon: ControlOutlined,
-      condition: () => !isGlobalTerminal.value,
+      condition: () => {
+        return (
+          !isGlobalTerminal.value &&
+          ![TYPE_UNIVERSAL, TYPE_WEB_SHELL].includes(instanceInfo.value?.config.type || "")
+        );
+      },
       click: (): void => {
         toPage({
           path: "/instances/terminal/serverConfig",

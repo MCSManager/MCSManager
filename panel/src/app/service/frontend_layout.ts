@@ -526,7 +526,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "LoginCard",
-          title: t("TXT_CODE_1f925226"),
+          title: t("身份验证"),
           width: 4,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

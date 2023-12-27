@@ -152,8 +152,13 @@ export function useTerminal() {
     termFitAddon.value = fitAddon;
 
     term.onData((data) => {
-      socket?.emit("stream/stdin", { data });
+      socket?.emit("stream/write", {
+        data: {
+          input: data
+        }
+      });
     });
+
     term.writeln(
       `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Instance app terminal.${TERM_COLOR.TERM_RESET}`
     );

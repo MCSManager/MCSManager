@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { t } from "@/lang/i18n";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import {
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  InfoCircleOutlined
-} from "@ant-design/icons-vue";
+import { CloseCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 
 const { containerState } = useLayoutContainerStore();
 CloseCircleOutlined;

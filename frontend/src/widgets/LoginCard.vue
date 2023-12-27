@@ -15,6 +15,7 @@ import { reportError } from "@/tools/validator";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
+import { message } from "ant-design-vue";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
 
@@ -36,6 +37,10 @@ const { updateUserInfo, isAdmin } = useAppStateStore();
 const loginStep = ref(0);
 
 const handleLogin = async () => {
+  if (!formData.username.trim() || !formData.password.trim()) {
+    return message.error(t("请完善账号信息！"));
+  }
+
   loginStep.value++;
   await sleep(1500);
 
@@ -50,7 +55,6 @@ const handleLogin = async () => {
     await updateUserInfo();
     await loginSuccess();
   } catch (error: any) {
-    console.log(error);
     reportError(error.message ? error.message : error);
     loginStep.value--;
   }
@@ -135,21 +139,22 @@ const loginSuccess = () => {
                 </a>
               </div>
               <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                {{ t("TXT_CODE_940f7d5") }}
+                {{ t("确定") }}
               </a-button>
             </div>
           </div>
         </div>
         <div v-show="loginStep === 1" class="login-panel-body flex-center">
           <div style="text-align: center">
-            <LoadingOutlined :style="{ fontSize: '50px' }" />
+            <LoadingOutlined class="logging-icon" :style="{ fontSize: '62px', fontWeight: 800 }" />
           </div>
         </div>
         <div v-show="loginStep >= 2" class="login-panel-body flex-center">
           <div style="text-align: center">
             <CheckCircleOutlined
+              class="login-success-icon"
               :style="{
-                fontSize: '40px',
+                fontSize: '68px',
                 color: 'var(--color-green-6)'
               }"
             />
@@ -173,16 +178,10 @@ const loginSuccess = () => {
 
 <style lang="scss" scoped>
 .loginDone {
-  .login-page-container {
-    opacity: 0;
-    background-color: rgba(255, 255, 255, 0);
-    backdrop-filter: blur(0);
-    transform: scale(0.8) !important;
-  }
 }
 .logging {
   .login-panel {
-    transform: scale(0.8);
+    transform: scale(0.96);
   }
 }
 .login-panel {
@@ -206,6 +205,30 @@ const loginSuccess = () => {
   a {
     color: var(--color-gray-7) !important;
     text-decoration: underline;
+  }
+}
+.logging-icon {
+  animation: opacityAnimation 0.6s;
+}
+.login-success-icon {
+  animation: scaleAnimation 0.6s;
+}
+
+@keyframes opacityAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleAnimation {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
