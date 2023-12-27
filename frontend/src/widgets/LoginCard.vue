@@ -154,7 +154,7 @@ const loginSuccess = () => {
             <CheckCircleOutlined
               class="login-success-icon"
               :style="{
-                fontSize: '68px',
+                fontSize: '62px',
                 color: 'var(--color-green-6)'
               }"
             />
