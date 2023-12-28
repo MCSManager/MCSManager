@@ -1,4 +1,4 @@
-npm run preview-build
+call npm run preview-build
 
 rd /s /q "production-code"
 rd /s /q ".\daemon\dist"
