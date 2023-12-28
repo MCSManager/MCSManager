@@ -258,6 +258,12 @@ const openPhoneMenu = (b = false) => {
         >
           <span>{{ item.name }}</span>
         </div>
+
+        <span>|</span>
+
+        <div class="nav-button">
+          <span>开发版本</span>
+        </div>
       </nav>
       <div class="btns">
         <div v-for="(item, index) in appMenus" :key="index">
