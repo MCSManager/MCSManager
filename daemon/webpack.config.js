@@ -6,7 +6,11 @@ module.exports = {
   entry: "./dist/daemon/src/app.js",
   target: "node",
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      allowlist: ["common"]
+    })
+  ],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")
