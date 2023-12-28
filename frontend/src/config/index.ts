@@ -39,6 +39,7 @@ import TitleCard from "@/widgets/TitleCard.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
 import DefaultCard from "@/widgets/DefaultCard.vue";
 import Carousel from "@/widgets/others/Carousel.vue";
+import PluginCard from "@/widgets/others/PluginCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -81,7 +82,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Schedule,
   InstanceShortcut,
   DefaultCard,
-  Carousel
+  Carousel,
+  PluginCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -471,6 +473,19 @@ export function getLayoutCardPool() {
           type: "instance"
         }
       ]
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "PluginCard",
+      title: t("扩展页面卡片"),
+      width: 6,
+      description: t(
+        "此卡片可以上传自定义 HTML 页面并直接执行 Javascript 脚本，可以直接使用网页上所有元素，适用于 Web 前端开发人员。"
+      ),
+      height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.COMMON
     }
   ];
   return LAYOUT_CARD_POOL;

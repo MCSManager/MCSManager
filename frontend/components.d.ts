@@ -88,5 +88,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
+    UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
   }
 }

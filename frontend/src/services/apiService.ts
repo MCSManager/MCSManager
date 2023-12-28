@@ -37,6 +37,8 @@ class ApiService {
   private readonly REQUEST_CACHE_TIME = 100;
 
   public async subscribe<T>(config: RequestConfig): Promise<T | undefined> {
+    if (!config.url) throw new Error("ApiService: RequestConfig: 'url' is empty!");
+
     config = _.cloneDeep(config);
     // filter and clean up expired cache tables
     this.responseMap.forEach((value, key) => {

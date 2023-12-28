@@ -6,6 +6,7 @@ import CmdAssistantDialog from "@/components/fc/CmdAssistantDialog/index.vue";
 import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
+import UploadFileDialogVue from "./UploadFileDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -13,6 +14,10 @@ interface DockerConfigItem {
 }
 interface PortConfigItem extends DockerConfigItem {
   protocol: string;
+}
+
+export async function useUploadFileDialog() {
+  return (await useMountComponent().mount<string>(UploadFileDialogVue)) || "";
 }
 
 export async function useSelectInstances() {

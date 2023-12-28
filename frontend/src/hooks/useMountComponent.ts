@@ -1,3 +1,5 @@
+/* eslint-disable vue/one-component-per-file */
+
 import { createApp, type Component } from "vue";
 import { sleep } from "@/tools/common";
 
@@ -30,3 +32,20 @@ export function useMountComponent(data: Record<string, any> = {}) {
     mount
   };
 }
+
+// export function useFcComponent<T>(component: Component, data: Record<string, any> = {}): T {
+//   const div = document.createElement("div");
+//   document.body.appendChild(div);
+//   const app = createApp(component, {
+//     ...data,
+//     async destroyComponent(delay = 1000) {
+//       await sleep(delay);
+//       app.unmount();
+//       div.remove();
+//     }
+//   });
+//   console.debug("XZXZ:", component);
+//   app.mount(div);
+
+//   return app._instance?.exposed as T;
+// }
