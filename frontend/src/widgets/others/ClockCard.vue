@@ -14,8 +14,6 @@ const getDate = () => dayjs().format("YYYY/MM/DD dddd");
 
 const time = ref(getTime());
 const date = ref(getDate());
-const sizeTime = ref(`font-size: 60px;`);
-const sizeDate = ref(`font-size: 10px;`);
 
 let timer: NodeJS.Timer | null;
 
@@ -23,8 +21,6 @@ onMounted(() => {
   timer = setInterval(() => {
     time.value = getTime();
   }, 1000);
-  sizeTime.value = (`font-size: ${(<HTMLDivElement>getCurrentInstance()?.refs.boxTime).offsetHeight * .6}px;`);
-  sizeDate.value = (`font-size: ${(<HTMLDivElement>getCurrentInstance()?.refs.boxTime).offsetHeight * .1}px;`);
 });
 
 onUnmounted(() => {
@@ -38,11 +34,14 @@ onUnmounted(() => {
     <CardPanel>
       <template #title>{{ card.title }}</template>
       <template #body>
-        <div ref="boxTime" class="h-100 items-center flex flex-wrap">
-          <div class="value ml-auto mr-auto mb-2" :style="sizeTime">
+        <div class="h-100 flex-center">
+          <div class="value pb-40" style="font-size: 60px">
             {{ time }}
           </div>
-          <div ref="boxDate" class="ml-auto" :style="sizeDate">
+          <div
+            class="ml-auto"
+            style="font-size: 10px; position: absolute; right: 40px; bottom: 20px"
+          >
             {{ date }}
           </div>
         </div>
