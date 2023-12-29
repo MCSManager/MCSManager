@@ -306,14 +306,17 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button class="mr-12">
-                {{
-                  computeNodeName(
-                    currentRemoteNode?.ip || "",
-                    currentRemoteNode?.available || true,
-                    currentRemoteNode?.remarks
-                  )
-                }}
+              <a-button class="mr-12" style="max-width: 200px; overflow: hidden">
+                <a-typography-paragraph
+                  :ellipsis="{ rows: 1, expandable: false }"
+                  :content="
+                    computeNodeName(
+                      currentRemoteNode?.ip || '',
+                      currentRemoteNode?.available || true,
+                      currentRemoteNode?.remarks
+                    )
+                  "
+                />
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -452,7 +455,7 @@ onMounted(async () => {
 .search-input {
   transition: all 0.6s;
   text-align: center;
-  width: 50%;
+  width: 80%;
 }
 
 @media (max-width: 992px) {

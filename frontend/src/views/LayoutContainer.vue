@@ -127,14 +127,6 @@ const showCardOperator = (card: ILayoutCard) => {
     display: none;
   }
 }
-.is-order-mode[data-card-type="EmptyCard"] {
-  .layout-card-container {
-    border: 1px dashed var(--gray-border-color);
-    background-color: var(--drag-background-color);
-    border-radius: 6px;
-    height: 100%;
-  }
-}
 </style>
 
 <style lang="scss" scoped>

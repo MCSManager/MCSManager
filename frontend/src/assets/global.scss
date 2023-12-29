@@ -68,14 +68,6 @@ html {
   position: absolute;
 }
 
-.global-text-white-border {
-  text-shadow:
-    -1px -1px 0 #ffffff75,
-    1px -1px 0 #ffffff75,
-    -1px 1px 0 #ffffff75,
-    1px 1px 0 #ffffff75;
-}
-
 .global-app-container {
   max-width: var(--app-max-width);
   margin: auto;

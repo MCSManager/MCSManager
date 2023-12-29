@@ -23,6 +23,11 @@
   .app-header-wrapper {
     border-bottom: 1px solid var(--color-gray-5);
   }
+
+  // Antdv for dark mode
+  .ant-btn-default {
+    background-color: var(--vscode-bg-color);
+  }
 }
 
 .app-dark-base-color {

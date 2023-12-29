@@ -18,21 +18,37 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 
   .menus-item-center {
     display: flex;
     justify-content: center;
     width: 30%;
+    flex: 1;
+  }
+  .menus-item-left {
+    flex: 1;
+  }
+  .menus-item-right {
+    text-align: right;
+    flex: 1;
   }
 }
 
 @media (max-width: 585px) {
+  .between-menus-container {
+    display: block;
+  }
+  .menus-item-center {
+    margin-bottom: 12px;
+  }
   .menus-item-left {
     display: none;
   }
-  .menus-item-center {
+  .menus-item-center,
+  .menus-item-right {
     width: 100% !important;
+    text-align: left !important;
   }
 }
 </style>

@@ -445,6 +445,7 @@ const innerTerminalType = viewType === "inner";
   }
 
   .terminal-wrapper {
+    border: 1px solid var(--card-border-color);
     position: relative;
     overflow: hidden;
     height: 100%;

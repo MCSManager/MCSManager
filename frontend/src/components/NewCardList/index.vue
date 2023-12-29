@@ -13,6 +13,7 @@ import type { NewCardItem } from "../../config/index";
 import { message } from "ant-design-vue";
 
 import { reportError } from "@/tools/validator";
+import { AppstoreOutlined, BarsOutlined } from "@ant-design/icons-vue";
 
 const { getCardPool } = useCardPool();
 const { insertLayoutItem } = useLayoutConfigStore();
@@ -60,10 +61,10 @@ const cardCategoryList = [
     label: t("TXT_CODE_d941eb89"),
     value: NEW_CARD_TYPE.INSTANCE
   },
-  {
-    label: t("TXT_CODE_765d34e6"),
-    value: NEW_CARD_TYPE.USER
-  },
+  // {
+  //   label: t("TXT_CODE_765d34e6"),
+  //   value: NEW_CARD_TYPE.USER
+  // },
   {
     label: t("TXT_CODE_76b2a495"),
     value: NEW_CARD_TYPE.OTHER
@@ -95,11 +96,12 @@ const handleTabClick = (value: string) => {
           </a-button>
         </div>
         <div v-for="card in cardPool" :key="card.id + currentCardCategory">
-          <a-row v-if="card.category === currentCardCategory" style="margin-bottom: 20px">
+          <a-row v-if="card.category === currentCardCategory" style="margin-bottom: 48px">
             <a-col span="24">
               <a-typography>
                 <a-typography-title :level="4">
-                  <span class="global-text-white-border">
+                  <AppstoreOutlined />
+                  <span class="ml-4">
                     {{ card.title }}
                   </span>
                 </a-typography-title>

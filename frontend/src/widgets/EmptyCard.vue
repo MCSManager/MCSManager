@@ -10,3 +10,14 @@
   height: 100%;
 }
 </style>
+
+<style lang="less">
+.is-order-mode[data-card-type="EmptyCard"] {
+  .layout-card-container {
+    border: 1px dashed var(--gray-border-color);
+    background-color: var(--color-gray-3);
+    border-radius: 6px;
+    height: 100%;
+  }
+}
+</style>

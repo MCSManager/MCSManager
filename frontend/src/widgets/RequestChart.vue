@@ -21,7 +21,7 @@ watch(state, () => {
   const MAX_TIME = source.length - 1;
   for (const key in source) {
     const v = source[key] as JsonData;
-    v.time = `${MAX_TIME - Number(key) * 1} MIN`;
+    v.time = `${MAX_TIME - Number(key) * 1}s`;
   }
   const max = Math.max(...source.map((v) => v.value));
   chart.setOption({
