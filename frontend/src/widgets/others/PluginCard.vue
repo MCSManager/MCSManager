@@ -81,7 +81,7 @@ onUnmounted(() => {
             </p>
             <div v-if="originUrl">{{ t("HTML 文件:") }}</div>
             <div v-if="originUrl" class="mt-16 mb-16">
-              <code class="p-8"> {{ originUrl }}</code>
+              <a :href="originUrl" target="_blank" rel="noopener noreferrer">{{ originUrl }}</a>
             </div>
             <a-button class="mt-8" type="primary" @click="uploadHtmlFile">
               {{ t("上传 HTML 文件") }}

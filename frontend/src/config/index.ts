@@ -480,11 +480,11 @@ export function getLayoutCardPool() {
       meta: {},
       type: "PluginCard",
       title: t("扩展页面卡片"),
-      width: 6,
+      width: 4,
       description: t(
         "此卡片可以上传自定义 HTML 页面并直接执行 Javascript 脚本，可以直接使用网页上所有元素，适用于 Web 前端开发人员。"
       ),
-      height: LayoutCardHeight.MEDIUM,
+      height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }
   ];
