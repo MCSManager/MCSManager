@@ -1,4 +1,5 @@
 import "module-alias/register";
+import os from "os";
 import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
 import RedisStorage from "./app/common/storage/redis_storage";
@@ -37,9 +38,9 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   logger.info($t("TXT_CODE_app.exitTip", { port }));
   logger.info("==================================");
 
-  // if (os.platform() == "win32") {
-  //   open(`http://localhost:${port}/`).then(() => {});
-  // }
+  if (os.platform() == "win32") {
+    open(`http://localhost:${port}/`).then(() => {});
+  }
 }
 
 async function processExit() {
