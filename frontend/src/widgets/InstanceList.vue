@@ -31,6 +31,7 @@ import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import { parseTimestamp } from "../tools/time";
+import { reportError } from "@/tools/validator";
 
 defineProps<{
   card: LayoutCard;
@@ -46,7 +47,7 @@ const operationForm = ref({
 const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes } = remoteNodeList();
-const { execute: getInstances, state: instances } = remoteInstances();
+const { execute: getInstances, state: instances, isLoading } = remoteInstances();
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceMoreDetail[] = [];
@@ -60,22 +61,25 @@ const instancesMoreInfo = computed(() => {
 const initNodes = async () => {
   await getNodes();
   nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
-  if (!nodes.value?.length) {
+  if (nodes.value?.length === 0) {
     return reportError(t("TXT_CODE_e3d96a26"));
   }
   if (localStorage.getItem("pageSelectedRemote")) {
     currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
+    if (!nodes.value?.some((item) => item.uuid === currentRemoteNode.value?.uuid)) {
+      currentRemoteNode.value = undefined;
+    }
   } else {
-    currentRemoteNode.value = nodes.value[0];
+    currentRemoteNode.value = nodes.value?.[0];
   }
 };
 
 const initInstancesData = async () => {
-  selectedInstance.value = [];
-  if (!currentRemoteNode.value) {
-    await initNodes();
-  }
   try {
+    selectedInstance.value = [];
+    if (!currentRemoteNode.value) {
+      await initNodes();
+    }
     await getInstances({
       params: {
         daemonId: currentRemoteNode.value?.uuid ?? "",
@@ -306,7 +310,7 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button class="mr-12" style="max-width: 200px; overflow: hidden">
+              <a-button class="mr-12" style="max-width: 200px; min-width: 180px; overflow: hidden">
                 <a-typography-paragraph
                   :ellipsis="{ rows: 1, expandable: false }"
                   :content="
@@ -403,6 +407,9 @@ onMounted(async () => {
           </template>
         </BetweenMenus>
       </a-col>
+      <template v-if="isLoading">
+        <Loading></Loading>
+      </template>
       <template v-if="instancesMoreInfo">
         <a-col v-for="item in instancesMoreInfo" :key="item.instanceUuid" :span="24" :md="6">
           <CardPanel
@@ -447,6 +454,12 @@ onMounted(async () => {
           </CardPanel>
         </a-col>
       </template>
+      <div
+        v-if="!instancesMoreInfo || instancesMoreInfo.length === 0"
+        class="flex align-center justify-center h-100 w-100"
+      >
+        <a-empty :description="t('无内容，请在右上角下拉框选择节点')" />
+      </div>
     </a-row>
   </div>
 </template>
