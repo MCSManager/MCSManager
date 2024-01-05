@@ -16,6 +16,7 @@ import overviewRouter from "./routers/private/overview_router";
 
 import userRouter from "./routers/private/top_user_router";
 import loginRouter from "./routers/public/login_router";
+import registerRouter from "./routers/public/register_router";
 import lowUserRouter from "./routers/protected/low_level_user_router";
 
 import settingsRouter from "./routers/private/settings_router";
@@ -45,6 +46,7 @@ export function index(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   apiRouter.use(businessInstanceRouter.routes()).use(businessInstanceRouter.allowedMethods());
   apiRouter.use(businessUserRouter.routes()).use(businessUserRouter.allowedMethods());
   apiRouter.use(loginRouter.routes()).use(loginRouter.allowedMethods());
+  apiRouter.use(registerRouter.routes()).use(registerRouter.allowedMethods());
   apiRouter.use(lowUserRouter.routes()).use(lowUserRouter.allowedMethods());
   apiRouter.use(userRouter.routes()).use(userRouter.allowedMethods());
   apiRouter.use(scheduleRouter.routes()).use(scheduleRouter.allowedMethods());
