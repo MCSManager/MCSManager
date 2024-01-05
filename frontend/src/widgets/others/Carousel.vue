@@ -124,7 +124,7 @@ const save = async () => {
 
 <template>
   <div style="width: 100%; height: 100%; position: relative">
-    <a-carousel v-if="imgList.length !== 0" arrows autoplay>
+    <a-carousel v-if="imgList.length !== 0" class="h-100" arrows autoplay :adaptive-height="false">
       <template #prevArrow>
         <div class="custom-slick-arrow" style="left: 10px; z-index: 1">
           <left-circle-outlined />
@@ -135,8 +135,8 @@ const save = async () => {
           <right-circle-outlined />
         </div>
       </template>
-      <div v-for="item in displayImgList" :key="item.url">
-        <img :src="item.url" />
+      <div v-for="item in displayImgList" :key="item.url" class="h-100">
+        <img :src="item.url" :style="{ height: '100%' }" />
       </div>
     </a-carousel>
     <div v-if="imgList.length !== 0 && containerState.isDesignMode" class="mask">
@@ -296,5 +296,15 @@ img {
 
 :deep(.slick-slide h3) {
   color: #fff;
+}
+</style>
+
+<style lang="scss">
+// For antdv carousel
+.ant-carousel {
+  height: 100% !important;
+  div {
+    height: 100% !important;
+  }
 }
 </style>

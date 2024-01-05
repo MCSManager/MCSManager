@@ -63,6 +63,7 @@ const props = defineProps({
   .card-panel-content {
     flex-grow: 1;
     color: var(--text-color);
+    position: relative;
   }
 }
 
