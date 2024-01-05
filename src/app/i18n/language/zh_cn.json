@@ -51,6 +51,10 @@
       "nameOrPassError": "账号或密码错误",
       "init": "[安装面板] 正在初始化面板管理员账号: {{userName}}",
       "installed": "面板已安装，无法重新安装，请备份并删除 data 文件夹以实现全新安装"
+    },
+    "register": {
+      "disableRegister": "注册已被禁用",
+      "passwordNotTheSame": "两次输入的密码不相同"
     }
   },
   "daemonInfo": {
