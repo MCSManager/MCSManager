@@ -24,7 +24,7 @@ import { router } from "@/config/router";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { batchStart, batchStop, batchKill, batchDelete } from "@/services/apis/instance";
 import type { NodeStatus } from "../types/index";
-import { message, notification, Modal } from "ant-design-vue";
+import { notification, Modal } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
@@ -55,7 +55,7 @@ const instancesMoreInfo = computed(() => {
     const instanceMoreInfo = useInstanceMoreDetail(instance);
     newInstances.push(instanceMoreInfo);
   }
-  return newInstances;
+  return newInstances || [];
 });
 
 const initNodes = async () => {
@@ -324,7 +324,11 @@ onMounted(async () => {
                 <DownOutlined />
               </a-button>
             </a-dropdown>
-            <a-button type="primary" @click="toCreateAppPage">
+            <a-button
+              type="primary"
+              :disabled="!currentRemoteNode?.available"
+              @click="toCreateAppPage"
+            >
               {{ t("TXT_CODE_53408064") }}
             </a-button>
           </template>
@@ -410,7 +414,7 @@ onMounted(async () => {
       <template v-if="isLoading">
         <Loading></Loading>
       </template>
-      <template v-if="instancesMoreInfo">
+      <template v-else-if="instancesMoreInfo.length > 0">
         <a-col v-for="item in instancesMoreInfo" :key="item.instanceUuid" :span="24" :md="6">
           <CardPanel
             class="instance-card"
@@ -455,10 +459,10 @@ onMounted(async () => {
         </a-col>
       </template>
       <div
-        v-if="!instancesMoreInfo || instancesMoreInfo.length === 0"
+        v-else-if="instancesMoreInfo.length === 0"
         class="flex align-center justify-center h-100 w-100"
       >
-        <a-empty :description="t('无内容，请在右上角下拉框选择节点')" />
+        <Empty :description="t('无内容，请在右上角下拉框选择节点，或点击新建应用')" />
       </div>
     </a-row>
   </div>
