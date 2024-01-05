@@ -47,7 +47,7 @@ const computedStatusList = computed(() => {
     {
       type: "system",
       title: t("TXT_CODE_f4244bbf"),
-      value: `${state.value.cpu}% ${state.value.mem}%`,
+      value: `${state.value.cpu}% ${100 - Number(state.value.mem)}%`,
       icon: HddOutlined
     }
   ];
