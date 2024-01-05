@@ -12,6 +12,9 @@ export default class SystemConfig {
   // Distributed forwarding mode
   forwardType: number = 1;
 
+  // Whether registration is allowed
+  canRegister: boolean = false;
+
   // Whether to allow cross-domain requests
   crossDomain: boolean = false;
   // Whether to use Gzip compression for HTTP return information
