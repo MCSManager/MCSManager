@@ -83,6 +83,7 @@ const columns = computed(() => {
       customRender: (e: { text: number; record: { name: string } }) => {
         return e.text == 1 ? filterFileName(e.record.name) : t("TXT_CODE_e5f949c");
       },
+      condition: () => !isPhone.value,
       minWidth: 200
     },
     {

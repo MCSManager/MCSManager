@@ -58,7 +58,7 @@ export function useStartCmdBuilder() {
       const jarName = config.jarName.includes(" ") ? `"${config.jarName}"` : config.jarName;
       const memArray = [];
       if (config.minMemory) memArray.push(`-Xms${config.minMemory}`);
-      if (config.maxMemory) memArray.push(`-Xms${config.maxMemory}`);
+      if (config.maxMemory) memArray.push(`-Xmx${config.maxMemory}`);
       const cmd = [javaPath, ...memArray, ...additionalArray, "-jar", jarName, config.suffix];
       return cmd.join(" ");
     }

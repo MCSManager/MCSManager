@@ -13,11 +13,14 @@ import { getRandomId } from "@/tools/randId";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
+import { useScreen } from "../hooks/useScreen";
 
 const emit = defineEmits(["update:text"]);
 
 const uuid = getRandomId();
 const DOM_ID = `file-editor-${uuid}`;
+
+const { isPhone } = useScreen();
 
 const props = defineProps<{
   text: string;
@@ -26,15 +29,21 @@ const props = defineProps<{
 }>();
 
 const theme = EditorView.theme({
+  $: {
+    fontSize: "12px"
+  },
   ".cm-gutters": {
-    height: props.height
+    "background-color": "var(--color-gray-4)",
+    display: isPhone.value ? "none" : "block",
+    "border-right": "1px solid var(--color-gray-5)"
   },
   ".cm-scroller": {
-    overflow: "hidden"
+    overflow: "auto",
+    height: props.height
+  },
+  ".cm-content": {
+    "background-color": "var(--color-gray-4)"
   }
-  // ".cm-content": {
-  //   height: props.height
-  // },
   // ".cm-wrap": {
   //   height: props.height,
   //   border: "1px solid silver"
@@ -115,13 +124,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="editor-container" :style="{ height }">
+  <div class="editor-container">
     <div :id="DOM_ID" class="file-editor"></div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.editor-container {
-  overflow: auto;
-}
-</style>
+<style lang="scss" scoped></style>
