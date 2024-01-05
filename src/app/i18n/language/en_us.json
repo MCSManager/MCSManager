@@ -51,6 +51,10 @@
       "nameOrPassError": "Incorrect username or password.",
       "init": "[Installation] Initializing administrator account: {{userName}}",
       "installed": "Unable to install panel: already installed. For reinstallation, backup and delete data folder."
+    },
+    "register": {
+      "disableRegister": "Registration has been disabled",
+      "passwordNotTheSame": "The password entered twice is not the same"
     }
   },
   "daemonInfo": {
