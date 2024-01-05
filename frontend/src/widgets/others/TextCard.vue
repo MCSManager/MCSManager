@@ -36,7 +36,7 @@ const editTextContent = () => {
 <template>
   <CardPanel>
     <template #title>
-      <div class="flex">{{ card.title }} card.height:{{ card.height }}</div>
+      <div class="flex">{{ card.title }}</div>
     </template>
     <template #operator>
       <div v-if="containerState.isDesignMode" class="ml-10">
@@ -66,7 +66,7 @@ const editTextContent = () => {
     </template>
 
     <template v-else #body>
-      <div class="full-card-body-wrapper">
+      <div class="full-card-body-container">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="previews global-markdown-html h-100" v-html="markdownToHTML(textContent)"></div>
       </div>
