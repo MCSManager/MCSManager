@@ -14,7 +14,6 @@ export function useLayoutCardTools(card: LayoutCard) {
   };
 
   const getMetaOrRouteValue = (key: string, require = true): string | undefined => {
-    console.debug("route.queryroute.query:", route.query, key, route.query[key]);
     if (card.meta[key] != null) {
       return card.meta[key];
     }

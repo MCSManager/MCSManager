@@ -34,3 +34,5 @@ export function reportError(error: any = {}) {
   console.error("Function reportError():", error);
   message.error(getValidatorErrorMsg(error, t("TXT_CODE_6a365d01")));
 }
+
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x00-\x7F]{9,36}$/;

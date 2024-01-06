@@ -21,6 +21,7 @@ import type { BaseUserInfo, EditUserInfo } from "@/types/user";
 import _ from "lodash";
 import type { AntColumnsType, AntTableCell } from "../types/ant";
 import type { Key } from "ant-design-vue/es/_util/type";
+import { PASSWORD_REGEX } from "../tools/validator";
 
 defineProps<{
   card: LayoutCard;
@@ -236,8 +237,7 @@ const addUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
-          throw new Error(t("TXT_CODE_6032f5a3"));
+        if (!PASSWORD_REGEX.test(value)) throw new Error(t("TXT_CODE_6032f5a3"));
       },
       trigger: "blur"
     }
@@ -253,8 +253,7 @@ const editUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (value && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[0-9A-Za-z]{9,}$/.test(value))
-          throw new Error(t("TXT_CODE_6032f5a3"));
+        if (value && !PASSWORD_REGEX.test(value)) throw new Error(t("TXT_CODE_6032f5a3"));
       },
       trigger: "blur"
     }

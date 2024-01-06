@@ -8,7 +8,8 @@ import {
   CodeOutlined,
   BlockOutlined,
   FolderOpenOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -33,6 +34,7 @@ const props = defineProps<{
 
 const { state: AllDaemonData } = useOverviewInfo();
 const itemDaemonId = ref<string>();
+const specifiedDaemonVersion = computed(() => AllDaemonData.value?.specifiedDaemonVersion);
 
 const item = computed(() => {
   const myDaemon = AllDaemonData.value?.remote.find((node) => {
@@ -92,7 +94,8 @@ const detailList = (node: ComputedNodeInfo) => [
   },
   {
     title: t("TXT_CODE_81634069"),
-    value: node.version
+    value: node.version,
+    warn: specifiedDaemonVersion.value !== node.version
   },
   {
     title: "Daemon ID",
@@ -200,7 +203,17 @@ const nodeOperations = computed(() =>
                 <CopyButton type="link" size="small" :value="detail.value ?? ''" />
               </div>
               <div v-else>
-                {{ detail.value }}
+                <a-tooltip v-if="detail.warn && detail.value">
+                  <template #title>
+                    {{
+                      t(
+                        "远程节点版本与面板端所需版本不一致，这可能会导致工作异常，请立即更新远程节点！"
+                      )
+                    }}
+                  </template>
+                  <span class="color-danger"><InfoCircleOutlined /> {{ detail.value }}</span>
+                </a-tooltip>
+                <span v-else>{{ detail.value }}</span>
               </div>
             </a-typography-paragraph>
           </a-col>

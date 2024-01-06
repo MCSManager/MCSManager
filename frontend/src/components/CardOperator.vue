@@ -101,7 +101,7 @@ let btns = arrayFilter([
 
 .base {
   @extend .global-text-color;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -101,9 +101,6 @@ const loginSuccess = () => {
                 name="mcsm-name-input"
                 :placeholder="t('TXT_CODE_80a560a1')"
                 style="background-color: var(--color-gray-1) !important"
-                readonly
-                onfocus="this.removeAttribute('readonly');"
-                onblur="this.setAttribute('readonly',true);"
               >
                 <template #suffix>
                   <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />

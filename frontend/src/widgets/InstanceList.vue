@@ -24,13 +24,14 @@ import { router } from "@/config/router";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { batchStart, batchStop, batchKill, batchDelete } from "@/services/apis/instance";
 import type { NodeStatus } from "../types/index";
-import { message, notification, Modal } from "ant-design-vue";
+import { notification, Modal } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import { parseTimestamp } from "../tools/time";
+import { reportError } from "@/tools/validator";
 
 defineProps<{
   card: LayoutCard;
@@ -46,7 +47,7 @@ const operationForm = ref({
 const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes } = remoteNodeList();
-const { execute: getInstances, state: instances } = remoteInstances();
+const { execute: getInstances, state: instances, isLoading } = remoteInstances();
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceMoreDetail[] = [];
@@ -54,28 +55,31 @@ const instancesMoreInfo = computed(() => {
     const instanceMoreInfo = useInstanceMoreDetail(instance);
     newInstances.push(instanceMoreInfo);
   }
-  return newInstances;
+  return newInstances || [];
 });
 
 const initNodes = async () => {
   await getNodes();
   nodes?.value?.sort((a, b) => (a.available === b.available ? 0 : a.available ? -1 : 1));
-  if (!nodes.value?.length) {
+  if (nodes.value?.length === 0) {
     return reportError(t("TXT_CODE_e3d96a26"));
   }
   if (localStorage.getItem("pageSelectedRemote")) {
     currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
+    if (!nodes.value?.some((item) => item.uuid === currentRemoteNode.value?.uuid)) {
+      currentRemoteNode.value = undefined;
+    }
   } else {
-    currentRemoteNode.value = nodes.value[0];
+    currentRemoteNode.value = nodes.value?.[0];
   }
 };
 
 const initInstancesData = async () => {
-  selectedInstance.value = [];
-  if (!currentRemoteNode.value) {
-    await initNodes();
-  }
   try {
+    selectedInstance.value = [];
+    if (!currentRemoteNode.value) {
+      await initNodes();
+    }
     await getInstances({
       params: {
         daemonId: currentRemoteNode.value?.uuid ?? "",
@@ -306,7 +310,7 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button class="mr-12" style="max-width: 200px; overflow: hidden">
+              <a-button class="mr-12" style="max-width: 200px; min-width: 180px; overflow: hidden">
                 <a-typography-paragraph
                   :ellipsis="{ rows: 1, expandable: false }"
                   :content="
@@ -320,7 +324,11 @@ onMounted(async () => {
                 <DownOutlined />
               </a-button>
             </a-dropdown>
-            <a-button type="primary" @click="toCreateAppPage">
+            <a-button
+              type="primary"
+              :disabled="!currentRemoteNode?.available"
+              @click="toCreateAppPage"
+            >
               {{ t("TXT_CODE_53408064") }}
             </a-button>
           </template>
@@ -403,7 +411,10 @@ onMounted(async () => {
           </template>
         </BetweenMenus>
       </a-col>
-      <template v-if="instancesMoreInfo">
+      <template v-if="isLoading">
+        <Loading></Loading>
+      </template>
+      <template v-else-if="instancesMoreInfo.length > 0">
         <a-col v-for="item in instancesMoreInfo" :key="item.instanceUuid" :span="24" :md="6">
           <CardPanel
             class="instance-card"
@@ -447,6 +458,12 @@ onMounted(async () => {
           </CardPanel>
         </a-col>
       </template>
+      <div
+        v-else-if="instancesMoreInfo.length === 0"
+        class="flex align-center justify-center h-100 w-100"
+      >
+        <Empty :description="t('无内容，请在右上角下拉框选择节点，或点击新建应用')" />
+      </div>
     </a-row>
   </div>
 </template>

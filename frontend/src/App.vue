@@ -1,48 +1,21 @@
 <script setup lang="ts">
+import AppConfigProvider from "./components/AppConfigProvider.vue";
 import { RouterView } from "vue-router";
 import AppHeader from "./components/AppHeader.vue";
-import zhCN from "ant-design-vue/es/locale/zh_CN";
-import enUS from "ant-design-vue/es/locale/en_US";
-import dayjs from "dayjs";
-import "dayjs/locale/zh-cn";
-import "dayjs/locale/en";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import { theme } from "ant-design-vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
+import { Button, Select, Input, Table } from "ant-design-vue";
+import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
+import { closeAppLoading } from "./tools/dom";
 
-const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
-const locale = ref(enUS);
+const { isDarkTheme } = useAppConfigStore();
 
-// Ant Design Vue i18n
-// This will also have to be changed if a new language is added.
-if (getCurrentLanguage().toLowerCase() === "zh_cn") {
-  dayjs.locale("zh-cn");
-  locale.value = zhCN;
-} else {
-  dayjs.locale("en-us");
-}
-
-const isDarkUI = isDarkTheme();
-const appTheme = {
-  algorithm: theme.defaultAlgorithm,
-  token: {
-    fontSizeLG: 14,
-    fontSizeSM: 12,
-    fontSizeXL: 18
-  }
-};
-
-if (isDarkUI) {
+if (isDarkTheme()) {
   document.body.classList.add("app-dark-theme");
-  appTheme.algorithm = theme.darkAlgorithm;
 } else {
   document.body.classList.add("app-light-theme");
 }
-
-import { Button, Select, Input, Table, ConfigProvider } from "ant-design-vue";
-import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
-import { closeAppLoading } from "./tools/dom";
 
 [Button, Select, Input, Table].forEach((element) => {
   element.props.size.default = "large";
@@ -54,7 +27,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ConfigProvider :theme="appTheme" :locale="locale">
+  <AppConfigProvider>
     <div class="global-app-container">
       <AppHeader></AppHeader>
       <RouterView :key="$route.fullPath" />
@@ -63,5 +36,5 @@ onMounted(async () => {
     <!-- Global Components -->
     <InputDialogProvider></InputDialogProvider>
     <MyselfInfoDialog></MyselfInfoDialog>
-  </ConfigProvider>
+  </AppConfigProvider>
 </template>

@@ -123,7 +123,7 @@ onMounted(async () => {
       <template #body>
         <LeftMenusPanel :menus="menus">
           <template #baseInfo>
-            <div style="max-height: 500px; overflow-y: auto">
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_5206cf41") }}
               </a-typography-title>
@@ -209,7 +209,7 @@ onMounted(async () => {
           </template>
 
           <template #api>
-            <div style="max-height: 500px; overflow-y: auto">
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_9c3ca8f") }}
               </a-typography-title>
@@ -300,7 +300,7 @@ onMounted(async () => {
           </template>
 
           <template #password>
-            <div style="max-height: 500px; overflow-y: auto">
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>

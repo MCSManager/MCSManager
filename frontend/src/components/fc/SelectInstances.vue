@@ -18,6 +18,7 @@ import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import type { ColumnsType } from "ant-design-vue/es/table";
 import type { AntTableCell } from "../../types/ant";
+import AppConfigProvider from "../AppConfigProvider.vue";
 
 const props = defineProps<MountComponent>();
 const { isPhone } = useScreen();
@@ -140,114 +141,121 @@ const handleChangeNode = async (item: NodeStatus) => {
 </script>
 
 <template>
-  <a-modal
-    v-model:open="open"
-    centered
-    :mask-closable="false"
-    :title="t('TXT_CODE_8145d25a')"
-    :ok-text="t('TXT_CODE_abfe9512')"
-    :cancel-text="t('TXT_CODE_a0451c97')"
-    @ok="submit"
-    @cancel="cancel"
-  >
-    <a-typography-paragraph>
-      <a-typography-text type="secondary">
-        {{ t("TXT_CODE_50697989") }}
-      </a-typography-text>
-    </a-typography-paragraph>
-    <a-row :gutter="[24, 24]" style="height: 100%">
-      <a-col :span="24">
-        <BetweenMenus>
-          <template #left>
-            <a-dropdown>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item
-                    v-for="item in nodes"
-                    :key="item.uuid"
-                    :disabled="!item.available"
-                    @click="handleChangeNode(item)"
-                  >
-                    <DatabaseOutlined v-if="item.available" />
-                    <FrownOutlined v-else />
-                    {{ computeNodeName(item.ip, item.available, item.remarks) }}
-                  </a-menu-item>
-                  <a-menu-divider />
-                  <a-menu-item key="toNodesPage">
-                    <FormOutlined />
-                    {{ t("TXT_CODE_28e53fed") }}
-                  </a-menu-item>
-                </a-menu>
-              </template>
-              <a-button :class="isPhone && 'mb-10 w-100'">
-                {{
-                  computeNodeName(
-                    currentRemoteNode?.ip || "",
-                    currentRemoteNode?.available || true,
-                    currentRemoteNode?.remarks
-                  )
-                }}
-                <DownOutlined />
-              </a-button>
-            </a-dropdown>
-          </template>
-          <template #right>
-            <div class="search-input" :class="isPhone && 'w-100'">
-              <a-input
-                v-model:value="operationForm.instanceName"
-                :placeholder="t('TXT_CODE_ce132192')"
-                @press-enter="handleQueryInstance"
-                @change="handleQueryInstance"
-              >
-                <template #prefix>
-                  <search-outlined />
-                </template>
-              </a-input>
-            </div>
-          </template>
-        </BetweenMenus>
-      </a-col>
-      <a-col :span="24">
-        <div v-if="instances" class="flex-between align-center">
-          <a-typography-text>
-            {{ t("TXT_CODE_379fa48a") }} {{ selectedItems.length }} {{ t("TXT_CODE_5cd3b4bd") }}
-          </a-typography-text>
-          <a-pagination
-            v-model:current="operationForm.currentPage"
-            v-model:pageSize="operationForm.pageSize"
-            :total="instances.maxPage * operationForm.pageSize"
-            show-size-changer
-            @change="initInstancesData"
-          />
-        </div>
-      </a-col>
-      <template v-if="instancesList">
+  <AppConfigProvider>
+    <a-modal
+      v-model:open="open"
+      centered
+      :mask-closable="false"
+      :title="t('TXT_CODE_8145d25a')"
+      :ok-text="t('TXT_CODE_abfe9512')"
+      :cancel-text="t('TXT_CODE_a0451c97')"
+      @ok="submit"
+      @cancel="cancel"
+    >
+      <a-typography-paragraph>
+        <a-typography-text type="secondary">
+          {{ t("TXT_CODE_50697989") }}
+        </a-typography-text>
+      </a-typography-paragraph>
+      <a-row :gutter="[24, 24]" style="height: 100%">
         <a-col :span="24">
-          <a-table
-            :loading="isLoading"
-            :data-source="instancesList"
-            :columns="columns"
-            :pagination="false"
-            size="small"
-            :scroll="{
-              x: 'max-content'
-            }"
-          >
-            <template #bodyCell="{ column, record }: AntTableCell">
-              <template v-if="column.key === 'operation'">
-                <a-button v-if="findItem(record)" danger size="middle" @click="removeItem(record)">
-                  {{ t("TXT_CODE_65fcbd09") }}
+          <BetweenMenus>
+            <template #left>
+              <a-dropdown>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item
+                      v-for="item in nodes"
+                      :key="item.uuid"
+                      :disabled="!item.available"
+                      @click="handleChangeNode(item)"
+                    >
+                      <DatabaseOutlined v-if="item.available" />
+                      <FrownOutlined v-else />
+                      {{ computeNodeName(item.ip, item.available, item.remarks) }}
+                    </a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="toNodesPage">
+                      <FormOutlined />
+                      {{ t("TXT_CODE_28e53fed") }}
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+                <a-button :class="isPhone && 'mb-10 w-100'">
+                  {{
+                    computeNodeName(
+                      currentRemoteNode?.ip || "",
+                      currentRemoteNode?.available || true,
+                      currentRemoteNode?.remarks
+                    )
+                  }}
+                  <DownOutlined />
                 </a-button>
-                <a-button v-else size="middle" @click="selectItem(record)">
-                  {{ t("TXT_CODE_7b2c5414") }}
-                </a-button>
-              </template>
+              </a-dropdown>
             </template>
-          </a-table>
+            <template #right>
+              <div class="search-input" :class="isPhone && 'w-100'">
+                <a-input
+                  v-model:value="operationForm.instanceName"
+                  :placeholder="t('TXT_CODE_ce132192')"
+                  @press-enter="handleQueryInstance"
+                  @change="handleQueryInstance"
+                >
+                  <template #prefix>
+                    <search-outlined />
+                  </template>
+                </a-input>
+              </div>
+            </template>
+          </BetweenMenus>
         </a-col>
-      </template>
-    </a-row>
-  </a-modal>
+        <a-col :span="24">
+          <div v-if="instances" class="flex-between align-center">
+            <a-typography-text>
+              {{ t("TXT_CODE_379fa48a") }} {{ selectedItems.length }} {{ t("TXT_CODE_5cd3b4bd") }}
+            </a-typography-text>
+            <a-pagination
+              v-model:current="operationForm.currentPage"
+              v-model:pageSize="operationForm.pageSize"
+              :total="instances.maxPage * operationForm.pageSize"
+              show-size-changer
+              @change="initInstancesData"
+            />
+          </div>
+        </a-col>
+        <template v-if="instancesList">
+          <a-col :span="24">
+            <a-table
+              :loading="isLoading"
+              :data-source="instancesList"
+              :columns="columns"
+              :pagination="false"
+              size="small"
+              :scroll="{
+                x: 'max-content'
+              }"
+            >
+              <template #bodyCell="{ column, record }: AntTableCell">
+                <template v-if="column.key === 'operation'">
+                  <a-button
+                    v-if="findItem(record)"
+                    danger
+                    size="middle"
+                    @click="removeItem(record)"
+                  >
+                    {{ t("TXT_CODE_65fcbd09") }}
+                  </a-button>
+                  <a-button v-else size="middle" @click="selectItem(record)">
+                    {{ t("TXT_CODE_7b2c5414") }}
+                  </a-button>
+                </template>
+              </template>
+            </a-table>
+          </a-col>
+        </template>
+      </a-row>
+    </a-modal>
+  </AppConfigProvider>
 </template>
 
 <style lang="scss" scoped>

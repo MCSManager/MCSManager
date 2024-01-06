@@ -83,7 +83,7 @@ const cancel = () => {
 };
 
 const dialogTitle = computed(() => {
-  return `${t("TXT_CODE_b0dc1f17")} ${fileName.value}`;
+  return fileName.value;
 });
 
 defineExpose({
@@ -99,7 +99,7 @@ defineExpose({
     :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
     :title="dialogTitle"
-    width="1000px"
+    width="1300px"
     @ok="submit()"
     @cancel="cancel()"
   >
@@ -108,7 +108,7 @@ defineExpose({
       ref="EditorComponent"
       v-model:text="editorText"
       :filename="fileName"
-      height="70vh"
+      height="80vh"
     />
     <a-skeleton v-else :paragraph="{ rows: 12 }" active />
   </a-modal>

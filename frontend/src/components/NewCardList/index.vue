@@ -10,10 +10,8 @@ import Params from "./params.vue";
 import { t } from "@/lang/i18n";
 import { ROLE } from "@/config/router";
 import type { NewCardItem } from "../../config/index";
-import { message } from "ant-design-vue";
-
 import { reportError } from "@/tools/validator";
-import { AppstoreOutlined, BarsOutlined } from "@ant-design/icons-vue";
+import { AppstoreOutlined } from "@ant-design/icons-vue";
 
 const { getCardPool } = useCardPool();
 const { insertLayoutItem } = useLayoutConfigStore();
@@ -118,6 +116,8 @@ const handleTabClick = (value: string) => {
                       {{ t("TXT_CODE_b488372f") }}
                     </a-tag>
                   </div>
+                </a-typography-paragraph>
+                <a-typography-paragraph>
                   <div>
                     {{ t("TXT_CODE_d486a561") }}
                     {{ card.description }}

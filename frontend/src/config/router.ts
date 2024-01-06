@@ -268,9 +268,9 @@ router.beforeEach((to, from, next) => {
   const toRoutePath = to.path.trim();
   console.info(
     "Router Changed:",
-    from.path,
+    fromRoutePath,
     "->",
-    to.path,
+    toRoutePath,
     "\nMyPermission:",
     userPermission,
     "toPagePermission:",
@@ -289,10 +289,8 @@ router.beforeEach((to, from, next) => {
 
   if (!state.userInfo?.token) return next("/login");
 
-  if (["", "/"].includes(fromRoutePath) && toRoutePath !== "/customer") {
-    if (userPermission === ROLE.USER) {
-      return next("/customer");
-    }
+  if (toPagePermission > userPermission && userPermission !== ROLE.ADMIN) {
+    return next("/customer");
   }
 
   if (toPagePermission <= userPermission) {

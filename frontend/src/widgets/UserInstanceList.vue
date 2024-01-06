@@ -5,6 +5,8 @@ import type { LayoutCard } from "@/types";
 import { userInfoApi } from "@/services/apis/index";
 import { useRouter } from "vue-router";
 import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
+import { parseTimestamp } from "../tools/time";
+import { text } from "stream/consumers";
 
 defineProps<{
   card: LayoutCard;
@@ -32,13 +34,19 @@ const columns = [
     title: t("TXT_CODE_662ad338"),
     dataIndex: "ie",
     customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
+      if (!e.record.oe && !e.record.ie) {
+        return "--";
+      }
       return `Output:${e.record.oe} Input:${e.record.ie}`;
     }
   },
   {
     title: t("TXT_CODE_5ab2062d"),
     dataIndex: "lastDatetime",
-    key: "lastDatetime"
+    key: "lastDatetime",
+    customRender: (e: { text: number }) => {
+      return parseTimestamp(e.text);
+    }
   },
   {
     title: t("TXT_CODE_fa920c0"),
