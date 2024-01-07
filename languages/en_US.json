@@ -238,7 +238,7 @@
   "TXT_CODE_1987587b": "Required, 3 to 12 characters, supports Chinese, English and characters",
   "TXT_CODE_1d67c9c6": "Limit on the number of logins with the same IP",
   "TXT_CODE_1d9d0746": "User ID",
-  "TXT_CODE_1deaa2dd": "user",
+  "TXT_CODE_1deaa2dd": "User",
   "TXT_CODE_1f2062c7": "Required, 9 to 36 characters, must contain uppercase and lowercase letters and numbers",
   "TXT_CODE_20509fa0": "Remote node list",
   "TXT_CODE_21b8b71a": "Normal permissions are for business users, and the highest permissions are for managers.",
