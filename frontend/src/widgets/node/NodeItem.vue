@@ -77,7 +77,7 @@ const detailList = (node: ComputedNodeInfo) => [
     value: node.memText
   },
   {
-    title: t("TXT_CODE_2c2712a4"),
+    title: "CPU",
     value: node.cpuInfo
   },
   {

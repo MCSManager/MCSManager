@@ -24,7 +24,7 @@ const columns = [
     dataIndex: "remark"
   },
   {
-    title: t("TXT_CODE_2c2712a4"),
+    title: "CPU",
     dataIndex: "cpu"
   },
   {
