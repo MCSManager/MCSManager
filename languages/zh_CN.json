@@ -235,7 +235,7 @@
   "TXT_CODE_6b6f1d3": "您可以自由设计出所想要的一切。过多的元素在同一个页面可能会导致性能下降，请合理分配。",
   "TXT_CODE_e6856d81": "成功退出",
   "TXT_CODE_b128afa6": "请输入新的卡片标题",
-  "TXT_CODE_ca07c84c": "您当前的浏览器不支持 Clipboard API",
+  "TXT_CODE_ca07c84c": "您当前的浏览器不支持自动复制",
   "TXT_CODE_b858d78a": "复制成功",
   "TXT_CODE_81b9b599": "复制失败：",
   "TXT_CODE_13ae6a93": "复制",
