@@ -291,7 +291,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-dropdown>
+            <a-dropdown class="mr-12">
               <template #overlay>
                 <a-menu>
                   <a-menu-item
@@ -311,9 +311,10 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button class="mr-12" style="max-width: 200px; min-width: 180px; overflow: hidden">
-                <a-typography-paragraph
-                  :ellipsis="{ rows: 1, expandable: false }"
+              <a-button style="max-width: 200px; min-width: 180px; overflow: hidden">
+                <a-typography-text
+                  style="max-width: 145px"
+                  :ellipsis="{ rows: 1, ellipsis: true, expandable: false }"
                   :content="
                     computeNodeName(
                       currentRemoteNode?.ip || '',
