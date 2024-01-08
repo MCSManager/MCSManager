@@ -74,9 +74,10 @@ const initNodes = async () => {
   }
 };
 
-const initInstancesData = async () => {
+const initInstancesData = async (resetPage?: boolean) => {
   try {
     selectedInstance.value = [];
+    if (resetPage) operationForm.value.currentPage = 1;
     if (!currentRemoteNode.value) {
       await initNodes();
     }
@@ -112,7 +113,7 @@ const handleChangeNode = async (item: NodeStatus) => {
   try {
     currentRemoteNode.value = item;
     selectedInstance.value = [];
-    await initInstancesData();
+    await initInstancesData(true);
     localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
   } catch (err: any) {
     console.error(err.message);
@@ -262,7 +263,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
             message: t("TXT_CODE_c3c06801"),
             description: t("TXT_CODE_50075e02")
           });
-          await initInstancesData();
+          await initInstancesData(true);
         }
       } catch (err: any) {
         console.error(err);
@@ -406,7 +407,7 @@ onMounted(async () => {
               v-model:pageSize="operationForm.pageSize"
               :total="instances.maxPage * operationForm.pageSize"
               show-size-changer
-              @change="initInstancesData"
+              @change="initInstancesData()"
             />
           </template>
         </BetweenMenus>
