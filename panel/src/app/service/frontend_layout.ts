@@ -354,7 +354,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           type: "Settings",
           title: t("TXT_CODE_3fe97dcc"),
           width: 8,
-          height: LayoutCardHeight.MEDIUM,
+          height: LayoutCardHeight.LARGE,
           disableDelete: true
         }
       ]

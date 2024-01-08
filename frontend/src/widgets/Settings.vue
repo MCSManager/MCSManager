@@ -208,7 +208,7 @@ onMounted(async () => {
             </div>
           </template>
 
-          <template #api>
+          <template #security>
             <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_9c3ca8f") }}
@@ -299,7 +299,7 @@ onMounted(async () => {
             </div>
           </template>
 
-          <template #password>
+          <template #about>
             <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
