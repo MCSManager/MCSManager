@@ -1623,7 +1623,7 @@
   "TXT_CODE_24843187": "Chat prefix for the SuperAdmin group.",
   "TXT_CODE_5bc16b9a": "Chat suffix for the SuperAdmin group.",
   "TXT_CODE_6bf4665b": "Broadcast the player's geographical location above their head upon joining based on their IP.",
-  "TXT_CODE_1b763e24": "Display the player's IP upon joining to players with log permissions.", 
+  "TXT_CODE_1b763e24": "Display the player's IP upon joining to players with log permissions.",
   "TXT_CODE_2374966e": "Change in-game chat format: {0} = group name, {1} = group prefix, {2} = player name, {3} = group suffix, {4} = chat message.",
   "TXT_CODE_97535446": "Change the player name used when chatting above the head. Start with player names enclosed in square brackets, following the Terraria format. Same format as ChatFormat but excluding the message.",
   "TXT_CODE_9c39c7ae": "Display chat messages above player heads.",

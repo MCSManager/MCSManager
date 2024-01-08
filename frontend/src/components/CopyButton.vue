@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
 import { CopyOutlined } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import type { ButtonType } from "ant-design-vue/es/button";
 import type { SizeType } from "ant-design-vue/es/config-provider";
+import { h } from "vue";
 
 const props = defineProps<{
   size?: string;
@@ -13,7 +14,13 @@ const props = defineProps<{
 }>();
 
 const copy = async () => {
-  if (!navigator.clipboard) return reportError(t("TXT_CODE_ca07c84c"));
+  if (!navigator.clipboard) {
+    Modal.warning({
+      title: t("TXT_CODE_ca07c84c"),
+      content: [h("span", t("请手动复制以下内容")), h("br"), h("span", props.value)]
+    });
+    return;
+  }
   try {
     await navigator.clipboard.writeText(props.value);
     message.success(t("TXT_CODE_b858d78a"));

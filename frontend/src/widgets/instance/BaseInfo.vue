@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { LayoutCard } from "@/types";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { onMounted, computed } from "vue";
@@ -7,11 +8,14 @@ import { useInstanceInfo } from "@/hooks/useInstance";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
+import { dockerPortsParse } from "@/tools/common";
+import DockerInfo from "./dialogs/DockerInfo.vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const DockerInfoDialog = ref<InstanceType<typeof DockerInfo>>();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -73,6 +77,29 @@ onMounted(async () => {
       <a-typography-paragraph>
         {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
+        {{ t("资源限制：") }}
+        <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">查看</a>
+      </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
+        {{ t("可用端口：") }}
+        <div style="padding: 10px 0px 0px 16px">
+          <div
+            v-for="(item, index) in dockerPortsParse(instanceInfo?.config.docker.ports ?? [])"
+            :key="index"
+            style="margin-bottom: 2px"
+          >
+            <template v-if="!item.more">
+              <span>{{ t("主机") }}: {{ item.p1 }}</span>
+              <span style="margin-left: 6px">{{ t("容器") }}: {{ item.p2 }}</span>
+              <span style="margin-left: 8px">
+                <a-tag color="green">{{ item.protocol }}</a-tag>
+              </span>
+            </template>
+            <template v-else>...</template>
+          </div>
+        </div>
+      </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("TXT_CODE_ae747cc0") }}{{ parseTimestamp(instanceInfo?.config.endTime) }}
       </a-typography-paragraph>
@@ -90,4 +117,6 @@ onMounted(async () => {
       </a-typography-paragraph>
     </template>
   </CardPanel>
+
+  <DockerInfo ref="DockerInfoDialog" :docker-info="instanceInfo?.config.docker" />
 </template>

@@ -122,9 +122,8 @@ const handleChangePassword = async () => {
             {{ t("TXT_CODE_b2dbf778") }}
           </a-typography-paragraph>
           <a-typography-paragraph v-if="state.userInfo?.apiKey">
-            <pre class="flex flex-between">
-              {{ state.userInfo.apiKey }}
-              <CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
+            <pre
+              class="flex flex-between align-center">{{ state.userInfo.apiKey }}<CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
             <pre>{{ t("TXT_CODE_d7dbc7c2") }}</pre>

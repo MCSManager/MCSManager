@@ -18,6 +18,8 @@ declare module 'vue' {
     ACol: typeof import('ant-design-vue/es')['Col']
     ActionButton: typeof import('./src/components/ActionButton.vue')['default']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
+    ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
+    ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
     ADrawer: typeof import('ant-design-vue/es')['Drawer']
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AEmpty: typeof import('ant-design-vue/es')['Empty']

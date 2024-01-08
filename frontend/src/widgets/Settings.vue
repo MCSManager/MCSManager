@@ -51,12 +51,12 @@ const menus = [
   },
   {
     title: t("TXT_CODE_9c3ca8f"),
-    key: "api",
+    key: "security",
     icon: LockOutlined
   },
   {
     title: t("TXT_CODE_3b4b656d"),
-    key: "password",
+    key: "about",
     icon: QuestionCircleOutlined
   }
 ];
@@ -64,11 +64,11 @@ const menus = [
 // DO NOT I18N
 const allLanguages = [
   {
-    label: t("TXT_CODE_5a09ed37"),
+    label: "中文",
     value: "zh_cn"
   },
   {
-    label: t("TXT_CODE_e246e5b"),
+    label: "English",
     value: "en_us"
   }
 ];
