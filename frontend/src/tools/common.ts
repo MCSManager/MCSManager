@@ -101,29 +101,49 @@ function leftZero4(str: string) {
   return str || "";
 }
 
-export const dockerPortsParse = (list: string[]) => {
-  let line = [];
-  list.forEach((v, index) => {
-    if (index >= 50) return;
-    const tmp = v.split("/");
-    if (tmp.length != 2) return;
-    const protocol = tmp[1];
-    const p = tmp[0].split(":");
-    if (p.length >= 2) {
-      line.push({
-        p1: p[0],
-        p2: p[1],
-        protocol: String(protocol).toUpperCase()
-      });
+export const dockerPortsParse = (ports: string[]) => {
+  let p1 = [];
+  let p2 = [];
+
+  for (let i = 0; i < ports.length; i++) {
+    if (
+      (isInt(ports[0]) && ports.length === 3 && i < 1) ||
+      (!isInt(ports[0]) && ports.length === 3 && i < 2) ||
+      (ports.length === 4 && i < 2)
+    ) {
+      p1.push(ports[i]);
+    } else {
+      p2.push(ports[i]);
     }
-  });
-  if (list.length >= 50) {
-    line.push({
-      p1: null,
-      p2: null,
-      protocol: null,
-      more: true
-    });
   }
-  return line;
+
+  return { port1: p1.join(":"), port2: p2.join(":") };
+};
+
+export const dockerPortsArray = (ports: string[]) => {
+  const portArray = ports.map((iterator) => {
+    const pad = iterator.split("/");
+    const ports = pad[0];
+    const protocol = pad[1];
+    const { port1, port2 } = dockerPortsParse(ports.split(":"));
+    return {
+      host: port1,
+      container: port2,
+      protocol
+    };
+  });
+  return portArray;
+};
+
+export const isInt = (x: any) => {
+  if (x === null || x === "") {
+    return false;
+  }
+  for (let i = 0; i < x.length; i++) {
+    const char = x[i];
+    if (char < "0" || char > "9") {
+      return false;
+    }
+  }
+  return true;
 };

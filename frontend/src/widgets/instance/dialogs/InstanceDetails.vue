@@ -17,6 +17,7 @@ import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 import { useCmdAssistantDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
+import { dockerPortsArray } from "@/tools/common";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -164,22 +165,10 @@ const openCmdAssistDialog = async () => {
   const cmd = await useCmdAssistantDialog();
   if (options.value && cmd) options.value.config.startCommand = cmd;
 };
-
 const handleEditDockerConfig = async (type: "port" | "volume") => {
   if (type === "port" && options.value?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
-    const portArray = (options.value?.config.docker.ports || []).map((iterator) => {
-      const pad = iterator.split("/");
-      const ports = pad[0];
-      const protocol = pad[1];
-      const port1 = ports.split(":")[0];
-      const port2 = ports.split(":")[1];
-      return {
-        host: port1,
-        container: port2,
-        protocol
-      };
-    });
+    const portArray = dockerPortsArray(options.value?.config.docker.ports || []);
     const result = await usePortEditDialog(portArray);
     const portsArray = result.map((v) => `${v.host}:${v.container}/${v.protocol}`);
     options.value.config.docker.ports = portsArray;

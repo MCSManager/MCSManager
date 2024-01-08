@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { t } from "@/lang/i18n";
 import type { IGlobalInstanceDockerConfig } from "../../../../../common/global";
-import { dockerPortsParse } from "@/tools/common";
+import { dockerPortsArray } from "@/tools/common";
 const props = defineProps<{
   dockerInfo?: IGlobalInstanceDockerConfig;
 }>();
@@ -35,18 +35,15 @@ defineExpose({
       <a-descriptions-item v-if="props.dockerInfo?.ports" :label="t('可用端口')">
         <div>
           <div
-            v-for="(item, index) in dockerPortsParse(props.dockerInfo.ports)"
+            v-for="(item, index) in dockerPortsArray(props?.dockerInfo.ports ?? [])"
             :key="index"
             style="margin-bottom: 2px"
           >
-            <template v-if="!item.more">
-              <span>{{ t("主机") }}: {{ item.p1 }}</span>
-              <span style="margin-left: 6px">{{ t("容器") }}: {{ item.p2 }}</span>
-              <span style="margin-left: 8px">
-                <a-tag color="green">{{ item.protocol }}</a-tag>
-              </span>
-            </template>
-            <template v-else>...</template>
+            <span>{{ t("主机") }}: {{ item.host }}</span>
+            <span style="margin-left: 6px">{{ t("容器") }}: {{ item.container }}</span>
+            <span style="margin-left: 8px">
+              <a-tag color="green">{{ item.protocol }}</a-tag>
+            </span>
           </div>
         </div>
       </a-descriptions-item>
