@@ -21,7 +21,7 @@ const props = defineProps<{
 const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
-const screen = useScreen();
+const { isPhone } = useScreen();
 
 const { execute: execImageList, state: images, isLoading: imageListLoading } = imageList();
 const getImageList = async () => {
@@ -197,13 +197,13 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="getImageList">
+            <a-button @click="getImageList">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="toNewImagePage">

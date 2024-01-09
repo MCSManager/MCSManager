@@ -13,11 +13,13 @@ import type { LayoutCard, Schedule } from "@/types/index";
 import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
 import type { AntColumnsType } from "../../types/ant";
+import { useScreen } from "@/hooks/useScreen";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const { isPhone } = useScreen();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
@@ -181,17 +183,17 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <FieldTimeOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-10" @click="toConsole()">
+            <a-button @click="toConsole">
               {{ t("TXT_CODE_c14b2ea3") }}
             </a-button>
-            <a-button class="mr-10" @click="refresh">
+            <a-button @click="refresh">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="newScheduleDialog?.openDialog()">

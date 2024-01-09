@@ -164,7 +164,7 @@ onUnmounted(() => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
@@ -176,7 +176,7 @@ onUnmounted(() => {
               :disabled="percentComplete > 0"
               :show-upload-list="false"
             >
-              <a-button class="mr-8" type="dashed" :loading="percentComplete > 0">
+              <a-button type="dashed" :loading="percentComplete > 0">
                 <upload-outlined v-if="percentComplete === 0" />
                 {{
                   percentComplete > 0
@@ -189,12 +189,11 @@ onUnmounted(() => {
               v-if="clipboard?.value && clipboard.value.length > 0"
               type="dashed"
               danger
-              class="mr-8"
               @click="paste()"
             >
               {{ t("TXT_CODE_f0260e51") }}
             </a-button>
-            <a-button v-else class="mr-8" type="default" @click="reloadList()">
+            <a-button v-else type="default" @click="reloadList()">
               {{ t("TXT_CODE_a53573af") }}
             </a-button>
 

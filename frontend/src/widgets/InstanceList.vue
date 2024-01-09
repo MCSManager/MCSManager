@@ -287,14 +287,14 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <AppstoreOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-dropdown class="mr-12">
+            <a-dropdown>
               <template #overlay>
                 <a-menu>
                   <a-menu-item
@@ -355,7 +355,7 @@ onMounted(async () => {
                 <a-input
                   v-model:value.trim="operationForm.instanceName"
                   :placeholder="t('TXT_CODE_ce132192')"
-                  style="width: calc(100% - 100px)"
+                  style="width: calc(100% - 80px)"
                   @press-enter="handleQueryInstance"
                   @change="handleQueryInstance"
                 >
@@ -372,24 +372,18 @@ onMounted(async () => {
         <BetweenMenus>
           <template v-if="instances" #left>
             <div v-if="multipleMode">
-              <a-button class="mr-10" :class="{ 'mb-10': isPhone }" @click="exitMultipleMode">
+              <a-button class="mr-10" @click="exitMultipleMode">
                 {{ t("TXT_CODE_5366af54") }}
               </a-button>
 
               <a-button
                 v-if="instancesMoreInfo.length === selectedInstance.length"
                 class="mr-10"
-                :class="{ 'mb-10': isPhone }"
                 @click="selectedInstance = []"
               >
                 {{ t("TXT_CODE_df87c46d") }}
               </a-button>
-              <a-button
-                v-else
-                class="mr-10"
-                :class="{ 'mb-10': isPhone }"
-                @click="selectAllInstances"
-              >
+              <a-button v-else class="mr-10" @click="selectAllInstances">
                 {{ t("TXT_CODE_f466d7a") }}
               </a-button>
               <a-dropdown>

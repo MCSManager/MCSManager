@@ -114,16 +114,16 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col v-if="!isFailure" :span="24">
         <BetweenMenus>
-          <template #left>
-            <a-button class="mr-8" @click="toConfigOverview">
+          <template v-if="!isPhone" #left>
+            <a-button @click="toConfigOverview">
               {{ t("TXT_CODE_c14b2ea3") }}
             </a-button>
           </template>
           <template #right>
-            <a-button type="primary" :loading="updateConfigFileLoading" class="mr-8" @click="save">
+            <a-button type="primary" :loading="updateConfigFileLoading" @click="save">
               {{ t("TXT_CODE_abfe9512") }}
             </a-button>
-            <a-button :loading="getConfigFileLoading" class="mr-8" @click="refresh">
+            <a-button :loading="getConfigFileLoading" @click="refresh">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="dashed" @click="toEditRawFile">

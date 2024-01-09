@@ -9,11 +9,13 @@ import { reportError } from "@/tools/validator";
 import NodeItem from "./node/NodeItem.vue";
 import { useRemoteNode } from "../hooks/useRemoteNode";
 import NodeDetailDialog from "./node/NodeDetailDialog.vue";
+import { useScreen } from "@/hooks/useScreen";
 
 defineProps<{
   card: LayoutCard;
 }>();
 
+const { isPhone } = useScreen();
 const nodeDetailDialog = ref<InstanceType<typeof NodeDetailDialog>>();
 
 const {
@@ -46,17 +48,17 @@ const handleOpenDetailDialog = async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <ClusterOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-12" :loading="refreshLoading" @click="refresh">
+            <a-button :loading="refreshLoading" @click="refresh">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
-            <a-button class="mr-12" type="primary" @click="handleOpenDetailDialog">
+            <a-button type="primary" @click="handleOpenDetailDialog">
               {{ t("TXT_CODE_15a381d5") }}
             </a-button>
             <a-button href="https://docs.mcsmanager.com/" target="_black">
