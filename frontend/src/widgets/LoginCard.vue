@@ -38,7 +38,7 @@ const loginStep = ref(0);
 
 const handleLogin = async () => {
   if (!formData.username.trim() || !formData.password.trim()) {
-    return message.error(t("请完善账号信息！"));
+    return message.error(t("TXT_CODE_c846074d"));
   }
 
   loginStep.value++;
@@ -136,7 +136,7 @@ const loginSuccess = () => {
                 </a>
               </div>
               <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                {{ t("确定") }}
+                {{ t("TXT_CODE_d507abff") }}
               </a-button>
             </div>
           </div>

@@ -78,11 +78,11 @@ onMounted(async () => {
         {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
-        {{ t("资源限制：") }}
+        {{ t("TXT_CODE_4f917a65") }}
         <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">查看</a>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
-        {{ t("可用端口：") }}
+        {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div
             v-for="(item, index) in dockerPortsParse(instanceInfo?.config.docker.ports ?? [])"
@@ -90,8 +90,8 @@ onMounted(async () => {
             style="margin-bottom: 2px"
           >
             <template v-if="!item.more">
-              <span>{{ t("主机") }}: {{ item.p1 }}</span>
-              <span style="margin-left: 6px">{{ t("容器") }}: {{ item.p2 }}</span>
+              <span>{{ t("TXT_CODE_8dfc41ef") }}: {{ item.p1 }}</span>
+              <span style="margin-left: 6px">{{ t("TXT_CODE_8f8103b7") }}: {{ item.p2 }}</span>
               <span style="margin-left: 8px">
                 <a-tag color="green">{{ item.protocol }}</a-tag>
               </span>

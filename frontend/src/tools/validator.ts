@@ -7,7 +7,7 @@ export function emptyValueValidator(value: string | number) {
 }
 
 export function isNumberValidator(value: any) {
-  if (!value || isNaN(Number(value))) throw new Error(t("字段必须是数字"));
+  if (!value || isNaN(Number(value))) throw new Error(t("TXT_CODE_a9bcbde9"));
   return Promise.resolve();
 }
 

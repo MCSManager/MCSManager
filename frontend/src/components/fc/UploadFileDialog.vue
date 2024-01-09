@@ -70,7 +70,7 @@ onMounted(() => {
 <template>
   <a-modal
     v-model:open="open"
-    :title="t('上传文件')"
+    :title="t('TXT_CODE_e00c858c')"
     :closable="false"
     :destroy-on-close="true"
     width="400px"
@@ -85,7 +85,7 @@ onMounted(() => {
       >
         <a-button type="primary" :loading="percentComplete > 0">
           <FolderOpenOutlined v-if="percentComplete === 0" />
-          {{ percentComplete > 0 ? t("TXT_CODE_b625dbf0") + percentComplete + "%" : t("选择文件") }}
+          {{ percentComplete > 0 ? t("TXT_CODE_b625dbf0") + percentComplete + "%" : t("TXT_CODE_335ba209") }}
         </a-button>
       </a-upload>
       <a-button class="ml-16" @click="cancel">{{ t("TXT_CODE_a0451c97") }}</a-button>
