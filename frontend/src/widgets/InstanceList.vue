@@ -74,9 +74,10 @@ const initNodes = async () => {
   }
 };
 
-const initInstancesData = async () => {
+const initInstancesData = async (resetPage?: boolean) => {
   try {
     selectedInstance.value = [];
+    if (resetPage) operationForm.value.currentPage = 1;
     if (!currentRemoteNode.value) {
       await initNodes();
     }
@@ -112,7 +113,7 @@ const handleChangeNode = async (item: NodeStatus) => {
   try {
     currentRemoteNode.value = item;
     selectedInstance.value = [];
-    await initInstancesData();
+    await initInstancesData(true);
     localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
   } catch (err: any) {
     console.error(err.message);
@@ -262,7 +263,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
             message: t("TXT_CODE_c3c06801"),
             description: t("TXT_CODE_50075e02")
           });
-          await initInstancesData();
+          await initInstancesData(true);
         }
       } catch (err: any) {
         console.error(err);
@@ -290,7 +291,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-dropdown>
+            <a-dropdown class="mr-12">
               <template #overlay>
                 <a-menu>
                   <a-menu-item
@@ -310,9 +311,10 @@ onMounted(async () => {
                   </a-menu-item>
                 </a-menu>
               </template>
-              <a-button class="mr-12" style="max-width: 200px; min-width: 180px; overflow: hidden">
-                <a-typography-paragraph
-                  :ellipsis="{ rows: 1, expandable: false }"
+              <a-button style="max-width: 200px; min-width: 180px; overflow: hidden">
+                <a-typography-text
+                  style="max-width: 145px"
+                  :ellipsis="{ rows: 1, ellipsis: true, expandable: false }"
                   :content="
                     computeNodeName(
                       currentRemoteNode?.ip || '',
@@ -406,7 +408,7 @@ onMounted(async () => {
               v-model:pageSize="operationForm.pageSize"
               :total="instances.maxPage * operationForm.pageSize"
               show-size-changer
-              @change="initInstancesData"
+              @change="initInstancesData()"
             />
           </template>
         </BetweenMenus>

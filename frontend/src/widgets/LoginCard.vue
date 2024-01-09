@@ -80,7 +80,6 @@ const loginSuccess = () => {
       'w-100': true,
       'h-100': true
     }"
-    style="min-width: 356px"
   >
     <CardPanel class="login-panel">
       <template #body>
@@ -184,7 +183,6 @@ const loginSuccess = () => {
 .login-panel {
   margin: 0 auto;
   transition: all 0.6s;
-  min-width: 346px;
   width: 100%;
   // backdrop-filter: saturate(120%) blur(12px);
   background-color: var(--login-panel-bg);

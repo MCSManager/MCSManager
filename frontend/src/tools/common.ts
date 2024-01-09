@@ -101,29 +101,76 @@ function leftZero4(str: string) {
   return str || "";
 }
 
-export const dockerPortsParse = (list: string[]) => {
-  let line = [];
-  list.forEach((v, index) => {
-    if (index >= 50) return;
-    const tmp = v.split("/");
-    if (tmp.length != 2) return;
-    const protocol = tmp[1];
-    const p = tmp[0].split(":");
-    if (p.length >= 2) {
-      line.push({
-        p1: p[0],
-        p2: p[1],
-        protocol: String(protocol).toUpperCase()
-      });
+const isIPv6 = (str: string) => {
+  return /\[([0-9a-fA-F:]+)\]/g.test(str);
+};
+
+export const dockerPortsParse = (ports: string[]) => {
+  let joinArr = ports.join(":");
+  let tempAddr: RegExpMatchArray | null;
+  const ipMaps = new Map();
+
+  if (isIPv6(joinArr)) {
+    tempAddr = joinArr.match(/\[([0-9a-fA-F:]+)\]/g);
+    for (let i = 0; i < tempAddr!.length; i++) {
+      joinArr = joinArr.replace(tempAddr![i], "IPv6_" + i);
+      ipMaps.set("IPv6_" + i, tempAddr![i]);
     }
-  });
-  if (list.length >= 50) {
-    line.push({
-      p1: null,
-      p2: null,
-      protocol: null,
-      more: true
-    });
   }
-  return line;
+
+  let p = isIPv6(ports.join(":")) ? joinArr.split(":") : ports;
+
+  let p1 = [],
+    p2 = [];
+
+  for (let i = 0; i < p.length; i++) {
+    if (
+      (isInt(p[0]) && p.length === 3 && i < 1) ||
+      (!isInt(p[0]) && p.length === 3 && i < 2) ||
+      (p.length === 4 && i < 2)
+    ) {
+      p1.push(p[i]);
+    } else if (p.length === 2) {
+      return { port1: p[0], port2: p[1] };
+    } else {
+      p2.push(p[i]);
+    }
+  }
+
+  const v4 = { port1: p1.join(":"), port2: p2.join(":") };
+
+  const v6 = {
+    port1: p1.length === 1 ? p1[0] : p1.join(":").replace(p1[0], ipMaps.get(p1[0])),
+    port2: p2.length === 1 ? p2[0] : p2.join(":").replace(p2[0], ipMaps.get(p2[0]))
+  };
+
+  return isIPv6(ports.join(":")) ? v6 : v4;
+};
+
+export const dockerPortsArray = (ports: string[]) => {
+  const portArray = ports.map((iterator) => {
+    const pad = iterator.split("/");
+    const ports = pad[0];
+    const protocol = pad[1];
+    const { port1, port2 } = dockerPortsParse(ports.split(":"));
+    return {
+      host: port1,
+      container: port2,
+      protocol
+    };
+  });
+  return portArray;
+};
+
+export const isInt = (x: any) => {
+  if (x === null || x === "") {
+    return false;
+  }
+  for (let i = 0; i < x.length; i++) {
+    const char = x[i];
+    if (char < "0" || char > "9") {
+      return false;
+    }
+  }
+  return true;
 };

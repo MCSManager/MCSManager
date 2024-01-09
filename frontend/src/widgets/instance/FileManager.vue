@@ -16,6 +16,7 @@ import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
+import { onUnmounted } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -133,7 +134,8 @@ watch(
   }, 1000)
 );
 
-setInterval(async () => {
+let task: NodeJS.Timer | undefined;
+task = setInterval(async () => {
   await getFileStatus();
 }, 3000);
 
@@ -149,6 +151,11 @@ onMounted(() => {
   dialog.value.loading = true;
   getFileList();
   dialog.value.loading = false;
+});
+
+onUnmounted(() => {
+  if (task) clearInterval(task);
+  task = undefined;
 });
 </script>
 

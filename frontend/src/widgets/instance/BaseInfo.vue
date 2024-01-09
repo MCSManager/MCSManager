@@ -8,7 +8,7 @@ import { useInstanceInfo } from "@/hooks/useInstance";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
-import { dockerPortsParse } from "@/tools/common";
+import { dockerPortsArray } from "@/tools/common";
 import DockerInfo from "./dialogs/DockerInfo.vue";
 
 const props = defineProps<{
@@ -85,18 +85,15 @@ onMounted(async () => {
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div
-            v-for="(item, index) in dockerPortsParse(instanceInfo?.config.docker.ports ?? [])"
+            v-for="(item, index) in dockerPortsArray(instanceInfo?.config.docker.ports ?? [])"
             :key="index"
             style="margin-bottom: 2px"
           >
-            <template v-if="!item.more">
-              <span>{{ t("TXT_CODE_8dfc41ef") }}: {{ item.p1 }}</span>
-              <span style="margin-left: 6px">{{ t("TXT_CODE_8f8103b7") }}: {{ item.p2 }}</span>
-              <span style="margin-left: 8px">
-                <a-tag color="green">{{ item.protocol }}</a-tag>
-              </span>
-            </template>
-            <template v-else>...</template>
+            <span>{{ t("主机") }}: {{ item.host }}</span>
+            <span style="margin-left: 6px">{{ t("容器") }}: {{ item.container }}</span>
+            <span style="margin-left: 8px">
+              <a-tag color="green">{{ item.protocol }}</a-tag>
+            </span>
           </div>
         </div>
       </a-typography-paragraph>
