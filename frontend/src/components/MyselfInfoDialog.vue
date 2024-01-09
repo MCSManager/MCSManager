@@ -140,7 +140,7 @@ const handleChangePassword = async () => {
             :title="t('TXT_CODE_6819de18')"
             @confirm="handleGenerateApiKey(false)"
           >
-            <a-button danger> {{ t("TXT_CODE_b1dedda3") }} </a-button>
+            <a-button danger> {{ t("TXT_CODE_718c9310") }} </a-button>
           </a-popconfirm>
         </a-form-item>
       </a-form>

@@ -21,6 +21,7 @@ import {
   createInstance as createInstanceApi
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
+import { useCmdAssistantDialog } from "@/components/fc";
 
 enum UNZIP {
   ON = 1,
@@ -92,6 +93,11 @@ const rules: Record<string, Rule[]> = {
       trigger: "change"
     }
   ]
+};
+
+const openCmdAssistDialog = async () => {
+  const cmd = await useCmdAssistantDialog();
+  if (cmd) formData.startCommand = cmd;
 };
 
 const uFile = ref<File>();
@@ -234,6 +240,7 @@ const createInstance = async () => {
           <a-button
             type="default"
             style="height: auto; border-top-left-radius: 0; border-bottom-left-radius: 0"
+            @click="openCmdAssistDialog"
           >
             {{ t("TXT_CODE_2728d0d4") }}
           </a-button>

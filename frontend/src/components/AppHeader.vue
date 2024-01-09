@@ -179,7 +179,19 @@ const appMenus = computed(() => {
       title: t("TXT_CODE_f591e2fa"),
       icon: FormatPainterOutlined,
       click: (key: string) => {
-        setTheme(key as THEME);
+        if (key === THEME.DARK) {
+          Modal.confirm({
+            title: $t("确定要切换到深色模式吗？"),
+            content: $t(
+              "MCSManager 优先确保浅色模式的用户体验，深色模式对于某些界面可能较差的用户体验。"
+            ),
+            async onOk() {
+              setTheme(THEME.DARK);
+            }
+          });
+        } else {
+          setTheme(THEME.LIGHT);
+        }
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false,

@@ -28,6 +28,10 @@
   .ant-btn-default {
     background-color: var(--vscode-bg-color);
   }
+  .ant-modal-content {
+    border: 1px solid var(--color-gray-5);
+    border-radius: 8px;
+  }
 }
 
 .app-dark-base-color {

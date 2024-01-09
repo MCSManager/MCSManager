@@ -1,4 +1,4 @@
-import { t } from "@/lang/i18n";
+import { isCN, t } from "@/lang/i18n";
 import { remoteNodeList } from "@/services/apis";
 import { arrayFilter } from "@/tools/array";
 import type { LayoutCard } from "@/types";
@@ -97,13 +97,16 @@ export function useQuickStartFlow() {
     formData.appType = appType;
     currentIcon.value = DatabaseTwoTone;
     await execute();
-    formData.actions = remoteNodes.value?.map((v) => {
-      return {
-        title: `${v.ip}:${v.port} (${v.remarks})`,
-        key: v.uuid,
-        icon: NodeIndexOutlined
-      };
-    });
+    formData.actions = remoteNodes.value
+      ?.filter((v) => v.available)
+      ?.map((v) => {
+        return {
+          title: `${v.ip}:${v.port} (${v.remarks})`,
+          key: v.uuid,
+          icon: NodeIndexOutlined
+        };
+      });
+
     formData.title = t("TXT_CODE_d182c422");
   };
 
@@ -118,8 +121,9 @@ export function useQuickStartFlow() {
         key: QUICKSTART_METHOD.FAST,
         icon: AppstoreAddOutlined,
         condition: () =>
-          formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
-          formData.appType === QUICKSTART_ACTION_TYPE.Bedrock,
+          isCN() &&
+          (formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
+            formData.appType === QUICKSTART_ACTION_TYPE.Bedrock),
         click: () => {
           router.push({
             path: "/quickstart/minecraft",

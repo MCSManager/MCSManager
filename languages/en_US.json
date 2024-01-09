@@ -5,7 +5,7 @@
   "TXT_CODE_153f705d": "Remove Card",
   "TXT_CODE_16d71239": "Dashboard",
   "TXT_CODE_18cdc17f": "Edit Title",
-  "TXT_CODE_1f246be3": "Minimum Height:",
+  "TXT_CODE_1f246be3": "Min Height:",
   "TXT_CODE_2c69ab15": "Logout",
   "TXT_CODE_3efe364e": "Block",
   "TXT_CODE_46913a7f": "Jesus 123",
@@ -260,7 +260,7 @@
   "TXT_CODE_6819de18": "Are you sure you want to disable the API Key?",
   "TXT_CODE_b1dedda3": "Stop",
   "TXT_CODE_41406a5f": "Data",
-  "TXT_CODE_d941eb89": "Instance Operation",
+  "TXT_CODE_d941eb89": "Operation",
   "TXT_CODE_765d34e6": "User",
   "TXT_CODE_76b2a495": "Other",
   "TXT_CODE_6e23c48": "General",
@@ -1675,7 +1675,7 @@
   "TXT_CODE_463375d2": "About This Page",
   "TXT_CODE_6b2a9cab": "Upgraded configuration to new version:",
   "TXT_CODE_fb75aba9": "[Configuration Upgrade] Configuration file parsing error, ignored:",
-  "TXT_CODE_c7b1b8d0": "Program to start",
+  "TXT_CODE_c7b1b8d0": "Program",
   "TXT_CODE_a2a0e054": "For example: server.exe, app.exe, or use an absolute path, etc.",
   "TXT_CODE_b9442311": "Additional parameters",
   "TXT_CODE_2a379a13": "Optional, fill in according to your program, such as: -server -XXX -ZZZ, etc.",
@@ -1744,5 +1744,6 @@
   "TXT_CODE_6750d9d3": "Using files shared by others may compromise the panel.",
   "TXT_CODE_6345aa71": "HTML file:",
   "TXT_CODE_40a87804": "Upload HTML File",
-  "TXT_CODE_ccb60658": "Authentication"
+  "TXT_CODE_ccb60658": "Authentication",
+  "TXT_CODE_a7e9d4e": "Close"
 }

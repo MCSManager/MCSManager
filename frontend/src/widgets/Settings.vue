@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { getCurrentLang, t } from "@/lang/i18n";
+import { getCurrentLang, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { message } from "ant-design-vue";
@@ -175,7 +175,7 @@ onMounted(async () => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
+                  <a-form-item v-if="isCN()">
                     <a-typography-title :level="5">{{ t("TXT_CODE_b2767aa2") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_b1f833f3") }}

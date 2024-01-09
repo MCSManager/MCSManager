@@ -51,6 +51,14 @@ const getCurrentLang = (): string => {
   return String(i18n.global.locale).toLowerCase();
 };
 
+const isCN = () => {
+  return getCurrentLang() === "zh_cn";
+};
+
+const isEN = () => {
+  return getCurrentLang() === "en_us";
+};
+
 const $t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);
 };
@@ -60,4 +68,4 @@ const t = (...args: string[]): string => {
 
 (window as any).setLang = setLanguage;
 
-export { setLanguage, getCurrentLang, $t, t, initI18n };
+export { setLanguage, getCurrentLang, $t, t, initI18n, isCN, isEN };

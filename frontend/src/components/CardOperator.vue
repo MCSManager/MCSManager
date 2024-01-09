@@ -123,7 +123,7 @@ let btns = arrayFilter([
   z-index: 10;
   display: flex;
   > div {
-    min-width: 110px;
+    min-width: 120px;
     margin: 0px 6px;
     margin-bottom: 8px;
     padding: 2px 4px;

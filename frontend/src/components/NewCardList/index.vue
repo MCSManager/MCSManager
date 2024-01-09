@@ -70,13 +70,6 @@ const cardCategoryList = [
 ];
 
 const currentCardCategory = ref<NEW_CARD_TYPE>(NEW_CARD_TYPE.COMMON);
-
-const handleTabClick = (value: string) => {
-  if (value === "EXIT") {
-    containerState.showNewCardDialog = false;
-    currentCardCategory.value = NEW_CARD_TYPE.COMMON;
-  }
-};
 </script>
 
 <template>
@@ -90,7 +83,7 @@ const handleTabClick = (value: string) => {
             </a-radio-button>
           </a-radio-group>
           <a-button class="ml-8" @click="() => (containerState.showNewCardDialog = false)">
-            {{ t("TXT_CODE_b1dedda3") }}
+            {{ t("TXT_CODE_a7e9d4e") }}
           </a-button>
         </div>
         <div v-for="card in cardPool" :key="card.id + currentCardCategory">

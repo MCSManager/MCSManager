@@ -257,7 +257,7 @@
   "TXT_CODE_6819de18": "你确定要关闭APIKey吗",
   "TXT_CODE_b1dedda3": "关闭",
   "TXT_CODE_41406a5f": "数据型卡片",
-  "TXT_CODE_d941eb89": "实例操作型卡片",
+  "TXT_CODE_d941eb89": "操作型卡片",
   "TXT_CODE_765d34e6": "用户型卡片",
   "TXT_CODE_76b2a495": "其他",
   "TXT_CODE_6e23c48": "通用型卡片",
@@ -1734,5 +1734,6 @@
   "TXT_CODE_6750d9d3": "使用其他人分享的文件可能会导致面板被入侵。",
   "TXT_CODE_6345aa71": "HTML 文件:",
   "TXT_CODE_40a87804": "上传 HTML 文件",
-  "TXT_CODE_ccb60658": "身份验证"
+  "TXT_CODE_ccb60658": "身份验证",
+  "TXT_CODE_a7e9d4e": "关闭此窗口"
 }
