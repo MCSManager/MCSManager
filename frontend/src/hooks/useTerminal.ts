@@ -198,7 +198,8 @@ export function useTerminal() {
     clearInterval(statusQueryTask);
     events.removeAllListeners();
 
-    socket?.close();
+    socket?.disconnect();
+    socket?.removeAllListeners();
   });
 
   const isStopped = computed(() =>
