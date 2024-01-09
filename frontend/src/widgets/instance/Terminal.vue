@@ -29,7 +29,7 @@ import {
 } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
-import { INSTANCE_STATUS_TEXT } from "../../hooks/useInstance";
+import { INSTANCE_STATUS } from "@/types/const";
 import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
@@ -64,7 +64,7 @@ const commandInputValue = ref("");
 const socketError = ref<Error>();
 
 const instanceStatusText = computed(
-  () => String(INSTANCE_STATUS_TEXT[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
+  () => String(INSTANCE_STATUS[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
 );
 
 const quickOperations = computed(() =>
