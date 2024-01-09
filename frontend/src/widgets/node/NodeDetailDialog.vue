@@ -61,8 +61,8 @@ const dialog = reactive({
   },
   delete: async () => {
     try {
-      dialog.loading = true;
       await deleteNode(dialog.uuid);
+      dialog.close();
       message.success(t("TXT_CODE_a00e84d7"));
     } catch (error: any) {
       message.success(error.message ?? error);
@@ -139,7 +139,7 @@ defineExpose({ openDialog });
           :title="t('TXT_CODE_fb267b0b')"
           ok-text="Yes"
           cancel-text="No"
-          @confirm="deleteNode(dialog.uuid)"
+          @confirm="dialog.delete()"
         >
           <a-button v-if="editMode" key="delete" danger>{{ t("TXT_CODE_8b937b23") }}</a-button>
         </a-popconfirm>

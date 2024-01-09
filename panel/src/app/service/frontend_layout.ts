@@ -354,7 +354,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           type: "Settings",
           title: t("TXT_CODE_3fe97dcc"),
           width: 8,
-          height: LayoutCardHeight.MEDIUM,
+          height: LayoutCardHeight.LARGE,
           disableDelete: true
         }
       ]
@@ -526,7 +526,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "LoginCard",
-          title: t("身份验证"),
+          title: t("TXT_CODE_ccb60658"),
           width: 4,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

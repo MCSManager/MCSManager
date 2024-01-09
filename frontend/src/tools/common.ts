@@ -100,3 +100,30 @@ function leftZero4(str: string) {
   }
   return str || "";
 }
+
+export const dockerPortsParse = (list: string[]) => {
+  let line = [];
+  list.forEach((v, index) => {
+    if (index >= 50) return;
+    const tmp = v.split("/");
+    if (tmp.length != 2) return;
+    const protocol = tmp[1];
+    const p = tmp[0].split(":");
+    if (p.length >= 2) {
+      line.push({
+        p1: p[0],
+        p2: p[1],
+        protocol: String(protocol).toUpperCase()
+      });
+    }
+  });
+  if (list.length >= 50) {
+    line.push({
+      p1: null,
+      p2: null,
+      protocol: null,
+      more: true
+    });
+  }
+  return line;
+};

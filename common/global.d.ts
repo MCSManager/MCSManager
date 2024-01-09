@@ -24,20 +24,7 @@ export interface IGlobalInstanceConfig {
     autoRestart: boolean;
     ignore: boolean;
   };
-  docker: {
-    containerName?: string;
-    image?: string;
-    memory?: number;
-    ports?: string[];
-    extraVolumes?: string[];
-    maxSpace?: number;
-    network?: number;
-    io?: number;
-    networkMode?: string;
-    networkAliases?: string[];
-    cpusetCpus?: string;
-    cpuUsage?: number;
-  };
+  docker: IGlobalInstanceDockerConfig;
   pingConfig: {
     ip?: string;
     port?: number;
@@ -47,6 +34,21 @@ export interface IGlobalInstanceConfig {
     openFrpTunnelId?: string;
     openFrpToken?: string;
   };
+}
+
+export interface IGlobalInstanceDockerConfig {
+  containerName?: string;
+  image?: string;
+  memory?: number;
+  ports?: string[];
+  extraVolumes?: string[];
+  maxSpace?: number;
+  network?: number;
+  io?: number;
+  networkMode?: string;
+  networkAliases?: string[];
+  cpusetCpus?: string;
+  cpuUsage?: number;
 }
 
 export interface IPanelResponseProtocol {

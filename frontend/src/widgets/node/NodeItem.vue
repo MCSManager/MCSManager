@@ -77,7 +77,7 @@ const detailList = (node: ComputedNodeInfo) => [
     value: node.memText
   },
   {
-    title: t("TXT_CODE_2c2712a4"),
+    title: "CPU",
     value: node.cpuInfo
   },
   {
@@ -207,7 +207,7 @@ const nodeOperations = computed(() =>
                   <template #title>
                     {{
                       t(
-                        "远程节点版本与面板端所需版本不一致，这可能会导致工作异常，请立即更新远程节点！"
+                        "TXT_CODE_e520908a"
                       )
                     }}
                   </template>

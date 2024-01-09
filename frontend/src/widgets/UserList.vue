@@ -79,7 +79,7 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("TXT_CODE_6372e25c"),
+      title: t("TXT_CODE_d7ee9ba"),
       dataIndex: "loginTime",
       key: "loginTime",
       minWidth: 200,
@@ -323,7 +323,7 @@ onMounted(async () => {
         <a-input v-model:value="formData.userName" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
 
-      <a-form-item :required="isAddMode" name="passWord" :label="t('TXT_CODE_5c605130')">
+      <a-form-item :required="isAddMode" name="passWord" :label="t('TXT_CODE_551b0348')">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ !isAddMode ? t("TXT_CODE_af1f921d") : t("TXT_CODE_1f2062c7") }}
@@ -374,7 +374,7 @@ onMounted(async () => {
                     {{ t("TXT_CODE_e83ffa03") }}
                   </a-menu-item>
                   <a-menu-item key="2" @click="handleBatchDelete()">
-                    {{ t("TXT_CODE_760f00f5") }}
+                    {{ t("TXT_CODE_ecbd7449") }}
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -455,7 +455,7 @@ onMounted(async () => {
                             @confirm="handleDeleteUser(record)"
                           >
                             <a-menu-item key="3">
-                              {{ t("TXT_CODE_760f00f5") }}
+                              {{ t("TXT_CODE_ecbd7449") }}
                             </a-menu-item>
                           </a-popconfirm>
                         </a-menu>
