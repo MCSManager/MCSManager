@@ -36,12 +36,14 @@ router.get(
     const page = Number(ctx.query.page);
     const pageSize = Number(ctx.query.page_size);
     const instanceName = ctx.query.instance_name;
+    const status = String(ctx.query.status);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
     const result = await new RemoteRequest(remoteService).request("instance/select", {
       page,
       pageSize,
       condition: {
-        instanceName
+        instanceName,
+        status
       }
     });
     ctx.body = result;

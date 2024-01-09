@@ -14,11 +14,11 @@ export const TERMINAL_CODE = [
 ];
 
 export const INSTANCE_STATUS: Record<string, string> = {
-  "-1": t("TXT_CODE_6ffdeae8"),
+  "-1": t("TXT_CODE_342a04a9"),
   "0": t("TXT_CODE_4ef6b040"),
-  "1": t("TXT_CODE_6bb63f94"),
-  "2": t("TXT_CODE_ecfe33cb"),
-  "3": t("TXT_CODE_f912fadc")
+  "1": t("TXT_CODE_a409b8a9"),
+  "2": t("TXT_CODE_175b570d"),
+  "3": t("TXT_CODE_bdb620b9")
 };
 
 export enum INSTANCE_STATUS_CODE {
