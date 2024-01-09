@@ -17,7 +17,7 @@ const copy = async () => {
   if (!navigator.clipboard) {
     Modal.warning({
       title: t("TXT_CODE_ca07c84c"),
-      content: [h("span", t("请手动复制以下内容")), h("br"), h("span", props.value)]
+      content: [h("span", t("TXT_CODE_2452016e")), h("br"), h("span", props.value)]
     });
     return;
   }

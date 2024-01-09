@@ -464,7 +464,7 @@ onMounted(async () => {
         v-else-if="instancesMoreInfo.length === 0"
         class="flex align-center justify-center h-100 w-100"
       >
-        <Empty :description="t('无内容，请在右上角下拉框选择节点，或点击新建应用')" />
+        <Empty :description="t('TXT_CODE_5415f009')" />
       </div>
     </a-row>
   </div>

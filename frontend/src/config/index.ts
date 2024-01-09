@@ -479,10 +479,10 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "PluginCard",
-      title: t("扩展页面卡片"),
+      title: t("TXT_CODE_5ebec0db"),
       width: 4,
       description: t(
-        "此卡片可以上传自定义 HTML 页面并直接执行 Javascript 脚本，可以直接使用网页上所有元素，适用于 Web 前端开发人员。"
+        "TXT_CODE_cb84b22"
       ),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON

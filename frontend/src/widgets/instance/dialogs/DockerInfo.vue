@@ -18,21 +18,21 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:open="open" centered :title="t('容器资源限制信息')">
+  <a-modal v-model:open="open" centered :title="t('TXT_CODE_a7f6b0e0')">
     <a-descriptions :column="{ md: 2, sm: 2, xs: 1 }">
-      <a-descriptions-item :label="t('最大内存')">
+      <a-descriptions-item :label="t('TXT_CODE_dd238854')">
         {{ props.dockerInfo?.memory }} MB
       </a-descriptions-item>
-      <a-descriptions-item :label="t('网络模式')">
+      <a-descriptions-item :label="t('TXT_CODE_efcef926')">
         {{ props.dockerInfo?.networkMode }}
       </a-descriptions-item>
-      <a-descriptions-item :label="t('镜像名')">
+      <a-descriptions-item :label="t('TXT_CODE_77000411')">
         {{ props.dockerInfo?.image }}
       </a-descriptions-item>
-      <a-descriptions-item :label="t('容器名')">
+      <a-descriptions-item :label="t('TXT_CODE_c3a3b6b1')">
         {{ props.dockerInfo?.containerName }}
       </a-descriptions-item>
-      <a-descriptions-item v-if="props.dockerInfo?.ports" :label="t('可用端口')">
+      <a-descriptions-item v-if="props.dockerInfo?.ports" :label="t('TXT_CODE_d32301c1')">
         <div>
           <div
             v-for="(item, index) in dockerPortsArray(props?.dockerInfo.ports ?? [])"

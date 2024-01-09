@@ -75,16 +75,16 @@ onUnmounted(() => {
         <div v-if="containerState.isDesignMode">
           <a-typography-paragraph>
             <p>
-              {{ t("支持上传 HTML 文件，此卡片会加载 HTML 并运行 Javascript 代码。") }}
+              {{ t("TXT_CODE_c565b2e0") }}
               <br />
-              {{ t("使用其他人分享的文件可能会导致面板被入侵。") }}
+              {{ t("TXT_CODE_6750d9d3") }}
             </p>
-            <div v-if="originUrl">{{ t("HTML 文件:") }}</div>
+            <div v-if="originUrl">{{ t("TXT_CODE_6345aa71") }}</div>
             <div v-if="originUrl" class="mt-16 mb-16">
               <a :href="originUrl" target="_blank" rel="noopener noreferrer">{{ originUrl }}</a>
             </div>
             <a-button class="mt-8" type="primary" @click="uploadHtmlFile">
-              {{ t("上传 HTML 文件") }}
+              {{ t("TXT_CODE_40a87804") }}
             </a-button>
           </a-typography-paragraph>
         </div>
