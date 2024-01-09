@@ -89,8 +89,8 @@ onMounted(async () => {
             :key="index"
             style="margin-bottom: 2px"
           >
-            <span>{{ t("主机") }}: {{ item.host }}</span>
-            <span style="margin-left: 6px">{{ t("容器") }}: {{ item.container }}</span>
+            <span>{{ t("TXT_CODE_8dfc41ef") }}: {{ item.host }}</span>
+            <span style="margin-left: 6px">{{ t("TXT_CODE_8f8103b7") }}: {{ item.container }}</span>
             <span style="margin-left: 8px">
               <a-tag color="green">{{ item.protocol }}</a-tag>
             </span>
