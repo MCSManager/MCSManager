@@ -163,6 +163,7 @@ const selectAllInstances = () => {
     selectedInstance.value = [];
   } else {
     for (const item of instancesMoreInfo.value) {
+      if (findInstance(item)) continue;
       selectedInstance.value.push(item);
     }
   }
