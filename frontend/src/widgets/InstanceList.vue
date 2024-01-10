@@ -343,7 +343,7 @@ onMounted(async () => {
               <a-input-group compact>
                 <a-select
                   v-model:value="currentStatus"
-                  style="width: 80px"
+                  style="width: 90px"
                   @change="handleQueryInstance"
                 >
                   <a-select-option value="">
@@ -356,7 +356,7 @@ onMounted(async () => {
                 <a-input
                   v-model:value.trim="operationForm.instanceName"
                   :placeholder="t('TXT_CODE_ce132192')"
-                  style="width: calc(100% - 80px)"
+                  style="width: calc(100% - 90px)"
                   @press-enter="handleQueryInstance"
                   @change="handleQueryInstance"
                 >
