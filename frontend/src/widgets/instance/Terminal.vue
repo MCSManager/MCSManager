@@ -303,7 +303,7 @@ onMounted(async () => {
         </div>
         <div class="terminal-wrapper global-card-container-shadow position-relative">
           <div class="terminal-container">
-            <div :id="terminalDomId"></div>
+            <div :id="terminalDomId" :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
@@ -357,7 +357,7 @@ onMounted(async () => {
       <div class="console-wrapper">
         <div class="terminal-wrapper">
           <div class="terminal-container">
-            <div :id="terminalDomId"></div>
+            <div :id="terminalDomId" :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
@@ -444,7 +444,7 @@ onMounted(async () => {
     background-color: #1e1e1e;
     padding: 8px;
     border-radius: 6px;
-    overflow-x: auto !important;
+    // overflow-x: auto !important;
     // overflow-y: auto !important;
     display: flex;
     flex-direction: column;

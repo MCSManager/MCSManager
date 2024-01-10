@@ -52,9 +52,9 @@ export function useTerminal() {
   const state = ref<InstanceDetail>();
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
-  const termFitAddon = ref<FitAddon>();
   const isConnect = ref<boolean>(false);
   const socketAddress = ref("");
+  let fitAddonTask: NodeJS.Timer;
 
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
@@ -139,17 +139,19 @@ export function useTerminal() {
         background: "#1e1e1e"
       },
       allowProposedApi: true,
-      rendererType: "canvas",
+      rendererType: "canvas"
       // The backend needs to be consistent.
       // See "/daemon/src/entity/instance/Instance_config.ts"
-      rows: 40,
-      cols: 164
+      // rows: 40,
+      // cols: 164
     });
     const fitAddon = new FitAddon();
-    // term.loadAddon(fitAddon);
+    term.loadAddon(fitAddon);
     term.open(element);
-    // fitAddon.fit();
-    termFitAddon.value = fitAddon;
+    fitAddon.fit();
+    fitAddonTask = setInterval(() => {
+      fitAddon.fit();
+    }, 1000);
 
     term.onData((data) => {
       socket?.emit("stream/write", {
@@ -190,14 +192,14 @@ export function useTerminal() {
   let statusQueryTask: NodeJS.Timeout;
   onMounted(() => {
     statusQueryTask = setInterval(() => {
-      socket?.emit("stream/detail", {});
+      if (socket?.connected) socket?.emit("stream/detail", {});
     }, 1000);
   });
 
   onUnmounted(() => {
+    clearInterval(fitAddonTask);
     clearInterval(statusQueryTask);
     events.removeAllListeners();
-
     socket?.disconnect();
     socket?.removeAllListeners();
   });
