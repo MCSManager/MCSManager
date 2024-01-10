@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from "vue";
 import { t } from "@/lang/i18n";
-import { Modal, message, notification } from "ant-design-vue";
-import { PlusOutlined } from "@ant-design/icons-vue";
+import { Modal, notification } from "ant-design-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -10,7 +9,6 @@ import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
-import CopyButton from "@/components/CopyButton.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 
@@ -51,8 +49,7 @@ const imageColumns = computed(() => {
       align: "center",
       title: "ID",
       dataIndex: "Id",
-      key: "Id",
-      minWidth: 200
+      key: "Id"
     },
     {
       align: "center",
@@ -122,8 +119,7 @@ const containerColumns = computed(() => {
       align: "center",
       title: "ID",
       dataIndex: "Id",
-      key: "Id",
-      minWidth: 200
+      key: "Id"
     },
     {
       align: "center",
@@ -238,8 +234,15 @@ onMounted(async () => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
-                  {{ record.Id }}
-                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                  <a-typography-paragraph
+                    class="mb-0"
+                    :copyable="{
+                      text: record.Id
+                    }"
+                    :ellipsis="{ rows: 1, expandable: false }"
+                  >
+                    {{ isPhone ? "" : record.Id }}
+                  </a-typography-paragraph>
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">
@@ -282,8 +285,15 @@ onMounted(async () => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
-                  {{ record.Id }}
-                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                  <a-typography-paragraph
+                    class="mb-0"
+                    :copyable="{
+                      text: record.Id
+                    }"
+                    :ellipsis="{ rows: 1, expandable: false }"
+                  >
+                    {{ isPhone ? "" : record.Id }}
+                  </a-typography-paragraph>
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">

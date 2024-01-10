@@ -22,7 +22,6 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
-import CopyButton from "@/components/CopyButton.vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 
 const nodeDetailDialog = ref<InstanceType<typeof NodeDetailDialog>>();
@@ -200,16 +199,12 @@ const nodeOperations = computed(() =>
                 {{ detail.title }}
               </div>
               <div v-if="detail.onlyCopy">
-                <CopyButton type="link" size="small" :value="detail.value ?? ''" />
+                <a-typography-text :copyable="{ text: detail.value ?? '' }"></a-typography-text>
               </div>
               <div v-else>
                 <a-tooltip v-if="detail.warn && detail.value">
                   <template #title>
-                    {{
-                      t(
-                        "TXT_CODE_e520908a"
-                      )
-                    }}
+                    {{ t("TXT_CODE_e520908a") }}
                   </template>
                   <span class="color-danger"><InfoCircleOutlined /> {{ detail.value }}</span>
                 </a-tooltip>
