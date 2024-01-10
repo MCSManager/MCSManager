@@ -37,7 +37,7 @@ interface dataType {
 
 const { execute, isLoading: getUserInfoLoading } = getUserInfo();
 const { toPage } = useAppRouters();
-const screen = useScreen();
+const { isPhone } = useScreen();
 
 const operationForm = ref({
   name: "",
@@ -58,7 +58,7 @@ const columns = computed(() => {
       title: "UUID",
       dataIndex: "uuid",
       key: "uuid",
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -83,7 +83,7 @@ const columns = computed(() => {
       dataIndex: "loginTime",
       key: "loginTime",
       minWidth: 200,
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -91,7 +91,7 @@ const columns = computed(() => {
       dataIndex: "registerTime",
       key: "registerTime",
       minWidth: 200,
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -357,14 +357,14 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <UserOutlined />
               {{ card.title }} ({{ total }})
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-8" type="default" :loading="getUserInfoLoading" @click="reload">
+            <a-button type="default" :loading="getUserInfoLoading" @click="reload">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-dropdown>

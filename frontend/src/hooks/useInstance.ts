@@ -2,14 +2,7 @@ import type { InstanceDetail, MapData } from "@/types";
 import { t } from "@/lang/i18n";
 import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { getInstanceInfo } from "@/services/apis/instance";
-
-export const INSTANCE_STATUS_TEXT: MapData<string> = {
-  "-1": t("TXT_CODE_342a04a9"),
-  "0": t("TXT_CODE_15f2e564"),
-  "1": t("TXT_CODE_a409b8a9"),
-  "2": t("TXT_CODE_175b570d"),
-  "3": t("TXT_CODE_bdb620b9")
-};
+import { INSTANCE_STATUS } from "@/types/const";
 
 export const TYPE_UNIVERSAL = "universal";
 export const TYPE_WEB_SHELL = "universal/web_shell";
@@ -99,7 +92,7 @@ export function useInstanceInfo(params: Params) {
     );
   });
   const statusText = computed(
-    () => String(INSTANCE_STATUS_TEXT[String(finalState?.value?.status)]) || t("TXT_CODE_c8333afa")
+    () => String(INSTANCE_STATUS[String(finalState?.value?.status)]) || t("TXT_CODE_c8333afa")
   );
 
   onMounted(async () => {

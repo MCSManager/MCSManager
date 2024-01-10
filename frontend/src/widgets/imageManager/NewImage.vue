@@ -31,7 +31,7 @@ const props = defineProps<{
 const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
-const screen = useScreen();
+const { isPhone } = useScreen();
 const buildProgressDialog = ref<InstanceType<typeof BuildProgress>>();
 const dockerFileDrawer = ref(false);
 const imageList = [
@@ -116,13 +116,13 @@ onMounted(async () => {});
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="toImageListPage">
+            <a-button @click="toImageListPage">
               {{ t("TXT_CODE_3a818e91") }}
             </a-button>
             <a-button type="primary" @click="buildProgressDialog?.openDialog()">
@@ -177,7 +177,7 @@ onMounted(async () => {});
 
   <a-drawer
     v-model:open="dockerFileDrawer"
-    :width="screen.isPhone.value ? 'auto' : '768px'"
+    :width="isPhone ? 'auto' : '768px'"
     title="DockerFile"
     placement="right"
     destroy-on-close

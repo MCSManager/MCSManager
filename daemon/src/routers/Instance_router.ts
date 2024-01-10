@@ -55,6 +55,7 @@ routerApp.on("instance/select", (ctx, data) => {
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
     if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
+    if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
     return true;
   });
   result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));

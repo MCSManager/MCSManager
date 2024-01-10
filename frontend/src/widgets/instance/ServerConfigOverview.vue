@@ -4,15 +4,17 @@ import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 import { getConfigFileList } from "@/services/apis/instance";
-import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
+import { useScreen } from "@/hooks/useScreen";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
+
+const { isPhone } = useScreen();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
@@ -87,13 +89,13 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button class="mr-8" @click="toConsole">
+            <a-button @click="toConsole">
               {{ t("TXT_CODE_95b9833f") }}
             </a-button>
             <a-button :loading="isLoading" @click="render">

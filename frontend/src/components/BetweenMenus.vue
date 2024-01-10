@@ -1,54 +1,56 @@
 <template>
   <div style="height: 100%" class="between-menus-container">
-    <div class="menus-item-left">
+    <div v-if="$slots.left" class="menus-item-left">
       <slot name="left"></slot>
     </div>
-    <div class="menus-item-center">
+    <div v-if="$slots.center" class="menus-item-center">
       <slot name="center"></slot>
     </div>
-    <div class="menus-item-right">
+    <div
+      v-if="$slots.right"
+      class="menus-item-right"
+      :class="{ 'phone-menus-item-right': $slots.center }"
+    >
       <slot name="right"></slot>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.between-menus-container {
+.between-menus-container,
+.menus-item-center,
+.menus-item-left,
+.menus-item-right {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
+  flex: 1;
+}
 
-  .menus-item-center {
-    display: flex;
-    justify-content: center;
-    width: 30%;
-    flex: 1;
-  }
-  .menus-item-left {
-    flex: 1;
-  }
-  .menus-item-right {
-    text-align: right;
-    flex: 1;
-  }
+.between-menus-container {
+  flex: unset !important;
+  justify-content: space-between;
+}
+
+.menus-item-center {
+  justify-content: center;
+  width: 30%;
+}
+.menus-item-left {
+  justify-content: flex-start;
+}
+.menus-item-right {
+  justify-content: flex-end;
 }
 
 @media (max-width: 585px) {
-  .between-menus-container {
-    display: block;
-  }
   .menus-item-center {
-    margin-bottom: 12px;
-  }
-  .menus-item-left {
-    display: none;
-  }
-  .menus-item-center,
-  .menus-item-right {
+    flex: unset !important;
     width: 100% !important;
-    text-align: left !important;
+  }
+  .phone-menus-item-right {
+    justify-content: flex-start !important;
   }
 }
 </style>

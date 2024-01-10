@@ -181,7 +181,7 @@ const handleChangeNode = async (item: NodeStatus) => {
                     </a-menu-item>
                   </a-menu>
                 </template>
-                <a-button :class="isPhone && 'mb-10 w-100'">
+                <a-button :class="isPhone && 'w-100'">
                   {{
                     computeNodeName(
                       currentRemoteNode?.ip || "",

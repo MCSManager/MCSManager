@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from "vue";
 import { t } from "@/lang/i18n";
-import { Modal, message, notification } from "ant-design-vue";
-import { PlusOutlined } from "@ant-design/icons-vue";
+import { Modal, notification } from "ant-design-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -10,7 +9,6 @@ import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
-import CopyButton from "@/components/CopyButton.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 
@@ -21,7 +19,7 @@ const props = defineProps<{
 const { toPage } = useAppRouters();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId: string | undefined = getMetaOrRouteValue("daemonId");
-const screen = useScreen();
+const { isPhone } = useScreen();
 
 const { execute: execImageList, state: images, isLoading: imageListLoading } = imageList();
 const getImageList = async () => {
@@ -51,8 +49,7 @@ const imageColumns = computed(() => {
       align: "center",
       title: "ID",
       dataIndex: "Id",
-      key: "Id",
-      minWidth: 200
+      key: "Id"
     },
     {
       align: "center",
@@ -122,8 +119,7 @@ const containerColumns = computed(() => {
       align: "center",
       title: "ID",
       dataIndex: "Id",
-      key: "Id",
-      minWidth: 200
+      key: "Id"
     },
     {
       align: "center",
@@ -197,13 +193,13 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="getImageList">
+            <a-button @click="getImageList">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="toNewImagePage">
@@ -238,8 +234,15 @@ onMounted(async () => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
-                  {{ record.Id }}
-                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                  <a-typography-paragraph
+                    class="mb-0"
+                    :copyable="{
+                      text: record.Id
+                    }"
+                    :ellipsis="{ rows: 1, expandable: false }"
+                  >
+                    {{ isPhone ? "" : record.Id }}
+                  </a-typography-paragraph>
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">
@@ -282,8 +285,15 @@ onMounted(async () => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'Id'">
-                  {{ record.Id }}
-                  <CopyButton :value="record.Id" class="ml-4" type="text" size="small" />
+                  <a-typography-paragraph
+                    class="mb-0"
+                    :copyable="{
+                      text: record.Id
+                    }"
+                    :ellipsis="{ rows: 1, expandable: false }"
+                  >
+                    {{ isPhone ? "" : record.Id }}
+                  </a-typography-paragraph>
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">

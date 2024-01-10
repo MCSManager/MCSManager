@@ -32,6 +32,7 @@ import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import { parseTimestamp } from "../tools/time";
 import { reportError } from "@/tools/validator";
+import { INSTANCE_STATUS } from "@/types/const";
 
 defineProps<{
   card: LayoutCard;
@@ -86,6 +87,7 @@ const initInstancesData = async (resetPage?: boolean) => {
         daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
+        status: currentStatus.value,
         instance_name: operationForm.value.instanceName.trim()
       }
     });
@@ -134,6 +136,7 @@ const toNodesPage = () => {
 
 const multipleMode = ref(false);
 const selectedInstance = ref<InstanceMoreDetail[]>([]);
+const currentStatus = ref("");
 
 const findInstance = (item: InstanceMoreDetail) => {
   return selectedInstance.value.find((i) => i.instanceUuid === item.instanceUuid);
@@ -160,6 +163,7 @@ const selectAllInstances = () => {
     selectedInstance.value = [];
   } else {
     for (const item of instancesMoreInfo.value) {
+      if (findInstance(item)) continue;
       selectedInstance.value.push(item);
     }
   }
@@ -284,14 +288,14 @@ onMounted(async () => {
     <a-row :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               <AppstoreOutlined />
               {{ card.title }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-dropdown class="mr-12">
+            <a-dropdown>
               <template #overlay>
                 <a-menu>
                   <a-menu-item
@@ -314,7 +318,7 @@ onMounted(async () => {
               <a-button style="max-width: 200px; min-width: 180px; overflow: hidden">
                 <a-typography-text
                   style="max-width: 145px"
-                  :ellipsis="{ rows: 1, ellipsis: true, expandable: false }"
+                  :ellipsis="{ ellipsis: true }"
                   :content="
                     computeNodeName(
                       currentRemoteNode?.ip || '',
@@ -336,16 +340,31 @@ onMounted(async () => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input
-                v-model:value="operationForm.instanceName"
-                :placeholder="t('TXT_CODE_ce132192')"
-                @press-enter="handleQueryInstance"
-                @change="handleQueryInstance"
-              >
-                <template #prefix>
-                  <search-outlined />
-                </template>
-              </a-input>
+              <a-input-group compact>
+                <a-select
+                  v-model:value="currentStatus"
+                  style="width: 90px"
+                  @change="handleQueryInstance"
+                >
+                  <a-select-option value="">
+                    {{ t("TXT_CODE_c48f6f64") }}
+                  </a-select-option>
+                  <a-select-option v-for="(p, i) in INSTANCE_STATUS" :key="i" :value="i">
+                    {{ p }}
+                  </a-select-option>
+                </a-select>
+                <a-input
+                  v-model:value.trim="operationForm.instanceName"
+                  :placeholder="t('TXT_CODE_ce132192')"
+                  style="width: calc(100% - 90px)"
+                  @press-enter="handleQueryInstance"
+                  @change="handleQueryInstance"
+                >
+                  <template #suffix>
+                    <search-outlined />
+                  </template>
+                </a-input>
+              </a-input-group>
             </div>
           </template>
         </BetweenMenus>
@@ -354,24 +373,18 @@ onMounted(async () => {
         <BetweenMenus>
           <template v-if="instances" #left>
             <div v-if="multipleMode">
-              <a-button class="mr-10" :class="{ 'mb-10': isPhone }" @click="exitMultipleMode">
+              <a-button class="mr-10" @click="exitMultipleMode">
                 {{ t("TXT_CODE_5366af54") }}
               </a-button>
 
               <a-button
                 v-if="instancesMoreInfo.length === selectedInstance.length"
                 class="mr-10"
-                :class="{ 'mb-10': isPhone }"
                 @click="selectedInstance = []"
               >
                 {{ t("TXT_CODE_df87c46d") }}
               </a-button>
-              <a-button
-                v-else
-                class="mr-10"
-                :class="{ 'mb-10': isPhone }"
-                @click="selectAllInstances"
-              >
+              <a-button v-else class="mr-10" @click="selectAllInstances">
                 {{ t("TXT_CODE_f466d7a") }}
               </a-button>
               <a-dropdown>

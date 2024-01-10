@@ -23,7 +23,7 @@ const props = defineProps<{
   uuid: string;
 }>();
 
-const screen = useScreen();
+const { isPhone } = useScreen();
 
 let dataSource: Ref<UserInstance[]> = ref([]);
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
@@ -111,7 +111,7 @@ const columns = computed(() => {
       dataIndex: "remarks",
       key: "remarks",
       minWidth: 200,
-      condition: () => !screen.isPhone.value,
+      condition: () => !isPhone.value,
       customRender: (row) => {
         return row.record.hostIp + ` (${row.record.remarks})`;
       }
@@ -129,7 +129,7 @@ const columns = computed(() => {
       dataIndex: "endTime",
       key: "endTime",
       minWidth: 200,
-      condition: () => !screen.isPhone.value,
+      condition: () => !isPhone.value,
       customRender: (row: { text: string | number }) => {
         if (Number(row.text) === 0) return t("TXT_CODE_8dfd8b17");
         if (!isNaN(Number(row.text))) return dayjs(Number(row.text)).format("YYYY-MM-DD HH:mm:ss");
@@ -145,7 +145,7 @@ const columns = computed(() => {
       customRender: (e: { text: "-1" | "1" | "2" | "3" }) => {
         return INSTANCE_STATUS[e.text] || e.text;
       },
-      condition: () => !screen.isPhone.value
+      condition: () => !isPhone.value
     },
     {
       align: "center",
@@ -163,13 +163,13 @@ const columns = computed(() => {
     <a-row v-if="userUuid" :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24">
         <BetweenMenus>
-          <template #left>
+          <template v-if="!isPhone" #left>
             <a-typography-title class="mb-0" :level="4">
               {{ t("TXT_CODE_76d20724") }}
             </a-typography-title>
           </template>
           <template #right>
-            <a-button v-show="!screen.isPhone.value" class="mr-8" @click="refreshTableData()">
+            <a-button @click="refreshTableData()">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
