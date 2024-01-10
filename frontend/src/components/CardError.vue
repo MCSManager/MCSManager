@@ -18,7 +18,11 @@ defineProps<{
     <template #body>
       <div class="flex justify-center align-center h-100">
         <div class="">
-          <a-typography-paragraph v-if="containerState.showNewCardDialog" :level="5">
+          <a-typography-paragraph
+            v-if="containerState.showNewCardDialog"
+            :level="5"
+            style="max-width: 320px; margin: auto; text-align: center"
+          >
             <ExclamationCircleOutlined />
             {{ t("TXT_CODE_450481c5") }}
           </a-typography-paragraph>

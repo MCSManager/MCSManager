@@ -87,6 +87,8 @@ declare module 'vue' {
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
     NodeSimpleChart: typeof import('./src/components/NodeSimpleChart.vue')['default']
+    NoPreview: typeof import('./src/components/NoPreview.vue')['default']
+    NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

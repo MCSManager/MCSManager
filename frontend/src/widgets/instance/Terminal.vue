@@ -31,16 +31,13 @@ import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { Terminal } from "xterm";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
   execute,
@@ -58,7 +55,8 @@ const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
 
-const terminalDomId = computed(() => `terminal-window-${getRandomId()}`);
+const innerTerminalType = viewType === "inner";
+const terminalDomId = `terminal-window-${getRandomId()}`;
 
 const commandInputValue = ref("");
 const socketError = ref<Error>();
@@ -156,7 +154,7 @@ const handleSendCommand = () => {
 };
 
 const initTerminal = async () => {
-  const dom = document.getElementById(terminalDomId.value);
+  const dom = document.getElementById(terminalDomId);
   if (dom) {
     const term = initTerminalWindow(dom);
     try {
@@ -193,7 +191,7 @@ events.on("error", (error: Error) => {
 let term: Terminal | null = null;
 
 const clearTerminal = () => {
-  term && term.clear();
+  term?.clear();
 };
 
 onMounted(async () => {
@@ -206,11 +204,11 @@ onMounted(async () => {
     }
     term = await initTerminal();
   } catch (error) {
-    throw new Error(t("TXT_CODE_9885543f"));
+    console.error(error);
+    throw error;
+    // throw new Error(t("TXT_CODE_9885543f"));
   }
 });
-
-const innerTerminalType = viewType === "inner";
 </script>
 
 <template>
@@ -290,7 +288,7 @@ const innerTerminalType = viewType === "inner";
       </BetweenMenus>
     </div>
     <a-spin :spinning="!isConnect" :tip="t('TXT_CODE_686c9ca9')">
-      <div v-if="!containerState.isDesignMode" class="console-wrapper">
+      <div class="console-wrapper">
         <div class="terminal-button-group position-absolute-right position-absolute-top">
           <ul>
             <li @click="clearTerminal()">
@@ -305,7 +303,7 @@ const innerTerminalType = viewType === "inner";
         </div>
         <div class="terminal-wrapper global-card-container-shadow position-relative">
           <div class="terminal-container">
-            <div :id="terminalDomId"></div>
+            <div :id="terminalDomId" :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
@@ -319,9 +317,6 @@ const innerTerminalType = viewType === "inner";
             </template>
           </a-input>
         </div>
-      </div>
-      <div v-else>
-        <a-skeleton :paragraph="{ rows: 8 }" />
       </div>
     </a-spin>
   </div>
@@ -359,10 +354,10 @@ const innerTerminalType = viewType === "inner";
       </a-dropdown>
     </template>
     <template #body>
-      <div v-if="!containerState.isDesignMode" class="console-wrapper">
+      <div class="console-wrapper">
         <div class="terminal-wrapper">
           <div class="terminal-container">
-            <div :id="terminalDomId"></div>
+            <div :id="terminalDomId" :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
@@ -376,9 +371,6 @@ const innerTerminalType = viewType === "inner";
             </template>
           </a-input>
         </div>
-      </div>
-      <div v-else>
-        <a-skeleton :paragraph="{ rows: 8 }" />
       </div>
     </template>
   </CardPanel>
@@ -452,8 +444,8 @@ const innerTerminalType = viewType === "inner";
     background-color: #1e1e1e;
     padding: 8px;
     border-radius: 6px;
-    overflow-x: auto !important;
-    overflow-y: hidden;
+    // overflow-x: auto !important;
+    // overflow-y: auto !important;
     display: flex;
     flex-direction: column;
     .terminal-container {
