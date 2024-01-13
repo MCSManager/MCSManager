@@ -42,7 +42,8 @@ const { isPhone } = useScreen();
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
-  pageSize: 20
+  pageSize: 20,
+  status: ""
 });
 
 const currentRemoteNode = ref<NodeStatus>();
@@ -87,7 +88,7 @@ const initInstancesData = async (resetPage?: boolean) => {
         daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
-        status: currentStatus.value,
+        status: operationForm.value.status,
         instance_name: operationForm.value.instanceName.trim()
       }
     });
@@ -136,7 +137,6 @@ const toNodesPage = () => {
 
 const multipleMode = ref(false);
 const selectedInstance = ref<InstanceMoreDetail[]>([]);
-const currentStatus = ref("");
 
 const findInstance = (item: InstanceMoreDetail) => {
   return selectedInstance.value.find((i) => i.instanceUuid === item.instanceUuid);
@@ -342,7 +342,7 @@ onMounted(async () => {
             <div class="search-input">
               <a-input-group compact>
                 <a-select
-                  v-model:value="currentStatus"
+                  v-model:value="operationForm.status"
                   style="width: 90px"
                   @change="handleQueryInstance"
                 >

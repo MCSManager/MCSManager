@@ -19,6 +19,7 @@ import { useScreen } from "@/hooks/useScreen";
 import type { ColumnsType } from "ant-design-vue/es/table";
 import type { AntTableCell } from "../../types/ant";
 import AppConfigProvider from "../AppConfigProvider.vue";
+import { INSTANCE_STATUS } from "@/types/const";
 
 const props = defineProps<MountComponent>();
 const { isPhone } = useScreen();
@@ -33,7 +34,8 @@ const cancel = async () => {
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
-  pageSize: 10
+  pageSize: 10,
+  status: ""
 });
 
 const currentRemoteNode = ref<NodeStatus>();
@@ -78,6 +80,7 @@ const initInstancesData = async () => {
         daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
+        status: "",
         instance_name: operationForm.value.instanceName.trim()
       }
     });
@@ -194,17 +197,32 @@ const handleChangeNode = async (item: NodeStatus) => {
               </a-dropdown>
             </template>
             <template #right>
-              <div class="search-input" :class="isPhone && 'w-100'">
-                <a-input
-                  v-model:value="operationForm.instanceName"
-                  :placeholder="t('TXT_CODE_ce132192')"
-                  @press-enter="handleQueryInstance"
-                  @change="handleQueryInstance"
-                >
-                  <template #prefix>
-                    <search-outlined />
-                  </template>
-                </a-input>
+              <div class="search-input w-100">
+                <a-input-group compact style="min-width: 175px">
+                  <a-select
+                    v-model:value="operationForm.status"
+                    style="width: 90px"
+                    @change="handleQueryInstance"
+                  >
+                    <a-select-option value="">
+                      {{ t("TXT_CODE_c48f6f64") }}
+                    </a-select-option>
+                    <a-select-option v-for="(p, i) in INSTANCE_STATUS" :key="i" :value="i">
+                      {{ p }}
+                    </a-select-option>
+                  </a-select>
+                  <a-input
+                    v-model:value.trim="operationForm.instanceName"
+                    :placeholder="t('TXT_CODE_ce132192')"
+                    style="width: calc(100% - 90px)"
+                    @press-enter="handleQueryInstance"
+                    @change="handleQueryInstance"
+                  >
+                    <template #suffix>
+                      <search-outlined />
+                    </template>
+                  </a-input>
+                </a-input-group>
               </div>
             </template>
           </BetweenMenus>
