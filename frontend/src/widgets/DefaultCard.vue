@@ -6,8 +6,8 @@ import type { LayoutCard } from "@/types";
 defineProps<{
   card: LayoutCard;
 }>();
-const { state, isAdmin } = useAppStateStore();
-const myAddr = `${window.location.href}`;
+const { isAdmin } = useAppStateStore();
+const myAddr = `${window.location.origin}`;
 </script>
 
 <template>
