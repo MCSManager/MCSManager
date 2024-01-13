@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import BetweenMenus from "../BetweenMenus.vue";
 import type { MountComponent, NodeStatus } from "@/types";
 import type { UserInstance } from "@/types/user";
+import { INSTANCE_STATUS } from "@/types/const";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -15,11 +16,9 @@ import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import { reportError } from "@/tools/validator";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { computeNodeName } from "@/tools/nodes";
-import { throttle } from "lodash";
+import _, { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import AppConfigProvider from "../AppConfigProvider.vue";
-import { INSTANCE_STATUS } from "@/types/const";
-import _ from "lodash";
 
 interface Props extends MountComponent {
   title: string;
@@ -113,6 +112,8 @@ const removeItem = (item: UserInstance) => {
   selectedItems.value = selectedItems.value.filter((i) => i.instanceUuid !== item.instanceUuid);
 };
 
+const clearAll = () => (selectedItems.value = []);
+
 const submit = async () => {
   if (props.emitResult) props.emitResult(selectedItems.value);
   await cancel();
@@ -141,16 +142,7 @@ const handleChangeNode = async (item: NodeStatus) => {
 
 <template>
   <AppConfigProvider>
-    <a-modal
-      v-model:open="open"
-      centered
-      :mask-closable="false"
-      :title="props.title"
-      :ok-text="t('TXT_CODE_abfe9512')"
-      :cancel-text="t('TXT_CODE_a0451c97')"
-      @ok="submit"
-      @cancel="cancel"
-    >
+    <a-modal v-model:open="open" centered :mask-closable="false" :title="props.title">
       <a-typography-paragraph>
         <a-typography-text type="secondary">
           {{ t("TXT_CODE_50697989") }}
@@ -268,6 +260,26 @@ const handleChangeNode = async (item: NodeStatus) => {
           </a-col>
         </template>
       </a-row>
+      <template #footer>
+        <div class="flex">
+          <a-popconfirm
+            v-if="selectedItems.length > 0"
+            :title="t('你确定要清空所有已选择的实例吗？')"
+            @confirm="clearAll"
+          >
+            <a-button>
+              {{ t("清空所有选中") }}
+            </a-button>
+          </a-popconfirm>
+
+          <div style="margin-left: auto">
+            <a-button @click="cancel">{{ t("TXT_CODE_a0451c97") }}</a-button>
+            <a-button type="primary" @click="submit">
+              {{ t("TXT_CODE_abfe9512") }}
+            </a-button>
+          </div>
+        </div>
+      </template>
     </a-modal>
   </AppConfigProvider>
 </template>

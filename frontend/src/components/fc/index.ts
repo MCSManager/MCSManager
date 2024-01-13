@@ -20,7 +20,7 @@ export async function useUploadFileDialog() {
   return (await useMountComponent().mount<string>(UploadFileDialogVue)) || "";
 }
 
-export async function useSelectInstances(data: UserInstance[]) {
+export async function useSelectInstances(data: UserInstance[] = []) {
   return await useMountComponent({
     data,
     title: t("TXT_CODE_8145d25a"),
