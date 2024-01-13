@@ -31,15 +31,20 @@ export const useAppStateStore = createGlobalState(() => {
   const isLogged = computed(() => Number(state.userInfo?.permission) > 0);
 
   const updateUserInfo = async (userInfo?: LoginUserInfo) => {
-    if (userInfo) {
-      state.userInfo = userInfo;
-    } else {
-      const info = await reqUserInfo();
-      if (info.value) {
-        state.userInfo = info.value;
+    try {
+      if (userInfo) {
+        state.userInfo = userInfo;
       } else {
-        throw new Error("Failed to get user information from server!");
+        const info = await reqUserInfo();
+        if (info.value) {
+          state.userInfo = info.value;
+        } else {
+          throw new Error("Failed to get user information from server!");
+        }
       }
+    } catch (err: any) {
+      console.error(err);
+      throw new Error(err.message);
     }
   };
 
