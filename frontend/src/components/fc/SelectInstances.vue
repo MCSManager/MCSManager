@@ -17,8 +17,6 @@ import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
-import type { ColumnsType } from "ant-design-vue/es/table";
-// import type { AntTableCell } from "../../types/ant";
 import AppConfigProvider from "../AppConfigProvider.vue";
 import { INSTANCE_STATUS } from "@/types/const";
 import _ from "lodash";

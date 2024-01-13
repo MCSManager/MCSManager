@@ -40,6 +40,7 @@ const handleDelete = async (deletedInstance: UserInstance) => {
         break;
       }
     }
+    await saveData();
   } catch (error) {
     reportError(error);
   }
@@ -49,6 +50,7 @@ const assignApp = async () => {
   try {
     const selectedInstances = await useSelectInstances(dataSource.value);
     if (selectedInstances) dataSource.value = selectedInstances;
+    await saveData();
   } catch (err: any) {
     reportError(err);
   }
@@ -169,9 +171,6 @@ const columns = computed(() => {
             <a-button @click="refreshTableData()">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
-            <a-button ghost @click="saveData()">
-              {{ t("TXT_CODE_abfe9512") }}
-            </a-button>
             <a-button type="primary" @click="assignApp">
               {{ t("TXT_CODE_9393b484") }}
             </a-button>
@@ -185,9 +184,11 @@ const columns = computed(() => {
             <a-table :scroll="{ x: 'max-content' }" :data-source="dataSource" :columns="columns">
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'operation'">
-                  <a-button danger size="large" @click="handleDelete(record)">
-                    {{ t("TXT_CODE_ecbd7449") }}
-                  </a-button>
+                  <a-popconfirm :title="t('TXT_CODE_71155575')" @confirm="handleDelete(record)">
+                    <a-button danger size="large">
+                      {{ t("TXT_CODE_ecbd7449") }}
+                    </a-button>
+                  </a-popconfirm>
                 </template>
               </template>
             </a-table>
