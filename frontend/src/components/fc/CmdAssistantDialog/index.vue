@@ -153,7 +153,7 @@ const actions = [
       </div>
       <div v-else-if="gameType != null">
         <a-tabs v-model:activeKey="appType">
-          <a-tab-pane :key="TYPE_UNIVERSAL" :tab="t('TXT_CODE_feab659d')">D</a-tab-pane>
+          <a-tab-pane :key="TYPE_UNIVERSAL" :tab="t('TXT_CODE_feab659d')"></a-tab-pane>
         </a-tabs>
       </div>
       <component
