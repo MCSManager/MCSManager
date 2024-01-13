@@ -11,17 +11,27 @@ import {
   DatabaseOutlined,
   FrownOutlined
 } from "@ant-design/icons-vue";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import { reportError } from "@/tools/validator";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { computeNodeName } from "@/tools/nodes";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
 import type { ColumnsType } from "ant-design-vue/es/table";
-import type { AntTableCell } from "../../types/ant";
+// import type { AntTableCell } from "../../types/ant";
 import AppConfigProvider from "../AppConfigProvider.vue";
 import { INSTANCE_STATUS } from "@/types/const";
+import _ from "lodash";
 
-const props = defineProps<MountComponent>();
+interface Props extends MountComponent {
+  title: string;
+  keyTitle?: string;
+  valueTitle?: string;
+  data: UserInstance[];
+  columns?: AntColumnsType[];
+}
+
+const props = defineProps<Props>();
 const { isPhone } = useScreen();
 
 const open = ref(false);
@@ -80,7 +90,7 @@ const initInstancesData = async () => {
         daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
-        status: "",
+        status: operationForm.value.status,
         instance_name: operationForm.value.instanceName.trim()
       }
     });
@@ -89,21 +99,9 @@ const initInstancesData = async () => {
   }
 };
 
-const selectedItems = ref<UserInstance[]>([]);
-
-const columns: ColumnsType = [
-  {
-    align: "center",
-    title: t("TXT_CODE_f70badb9"),
-    dataIndex: "nickname",
-    key: "instanceUuid"
-  },
-  {
-    align: "center",
-    title: t("TXT_CODE_fe731dfc"),
-    key: "operation"
-  }
-];
+const selectedItems = ref<UserInstance[]>(
+  props.data instanceof Array ? _.cloneDeep(props.data) : []
+);
 
 const selectItem = (item: UserInstance) => {
   selectedItems.value.push(item);
@@ -149,7 +147,7 @@ const handleChangeNode = async (item: NodeStatus) => {
       v-model:open="open"
       centered
       :mask-closable="false"
-      :title="t('TXT_CODE_8145d25a')"
+      :title="props.title"
       :ok-text="t('TXT_CODE_abfe9512')"
       :cancel-text="t('TXT_CODE_a0451c97')"
       @ok="submit"

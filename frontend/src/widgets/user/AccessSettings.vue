@@ -3,7 +3,6 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 import type { UserInstance } from "@/types/user";
 import { computed, ref, onMounted } from "vue";
-import type { Ref } from "vue";
 import { t } from "@/lang/i18n";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
@@ -25,9 +24,9 @@ const props = defineProps<{
 
 const { isPhone } = useScreen();
 
-let dataSource: Ref<UserInstance[]> = ref([]);
+const dataSource = ref<UserInstance[]>([]);
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-let userUuid: string | undefined = getMetaOrRouteValue("uuid");
+const userUuid = getMetaOrRouteValue("uuid");
 
 const handleDelete = async (deletedInstance: UserInstance) => {
   try {
@@ -41,7 +40,6 @@ const handleDelete = async (deletedInstance: UserInstance) => {
         break;
       }
     }
-    await saveData();
   } catch (error) {
     reportError(error);
   }
@@ -49,9 +47,8 @@ const handleDelete = async (deletedInstance: UserInstance) => {
 
 const assignApp = async () => {
   try {
-    const selectedInstances = await useSelectInstances();
-    if (selectedInstances) dataSource.value = dataSource.value.concat(selectedInstances);
-    await saveData();
+    const selectedInstances = await useSelectInstances(dataSource.value);
+    if (selectedInstances) dataSource.value = selectedInstances;
   } catch (err: any) {
     reportError(err);
   }
@@ -171,6 +168,9 @@ const columns = computed(() => {
           <template #right>
             <a-button @click="refreshTableData()">
               {{ t("TXT_CODE_b76d94e0") }}
+            </a-button>
+            <a-button ghost @click="saveData()">
+              {{ t("TXT_CODE_abfe9512") }}
             </a-button>
             <a-button type="primary" @click="assignApp">
               {{ t("TXT_CODE_9393b484") }}

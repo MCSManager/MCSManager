@@ -20,8 +20,24 @@ export async function useUploadFileDialog() {
   return (await useMountComponent().mount<string>(UploadFileDialogVue)) || "";
 }
 
-export async function useSelectInstances() {
-  return await useMountComponent().mount<UserInstance[]>(SelectInstances);
+export async function useSelectInstances(data: UserInstance[]) {
+  return await useMountComponent({
+    data,
+    title: t("TXT_CODE_8145d25a"),
+    columns: [
+      {
+        align: "center",
+        title: t("TXT_CODE_f70badb9"),
+        dataIndex: "nickname",
+        key: "instanceUuid"
+      },
+      {
+        align: "center",
+        title: t("TXT_CODE_fe731dfc"),
+        key: "operation"
+      }
+    ]
+  }).mount<UserInstance[]>(SelectInstances);
 }
 
 export async function useCmdAssistantDialog() {
