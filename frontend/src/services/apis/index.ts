@@ -100,6 +100,7 @@ export const remoteInstances = useDefineApi<
       page: number;
       page_size: number;
       instance_name?: string;
+      status: string;
     };
   },
   {

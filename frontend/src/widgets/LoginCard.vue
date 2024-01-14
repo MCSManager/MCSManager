@@ -7,6 +7,7 @@ import {
   LockOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
+import { Modal } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginPageInfo, loginUser } from "@/services/apis";
@@ -50,12 +51,25 @@ const handleLogin = async () => {
         ...formData
       }
     });
-    loginStep.value++;
-    await sleep(1200);
-    await updateUserInfo();
-    await loginSuccess();
+    await handleNext();
   } catch (error: any) {
     reportError(error.message ? error.message : error);
+    loginStep.value--;
+  }
+};
+
+const handleNext = async () => {
+  try {
+    await updateUserInfo();
+    loginStep.value++;
+    await sleep(1200);
+    loginSuccess();
+  } catch (error: any) {
+    console.error(error);
+    Modal.error({
+      title: t("网页无法正确运作"),
+      content: t("无法获取身份数据，可能是您已被封禁，或者网络问题，请尝试刷新页面	")
+    });
     loginStep.value--;
   }
 };
