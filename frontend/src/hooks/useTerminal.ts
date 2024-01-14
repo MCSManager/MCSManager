@@ -172,13 +172,6 @@ export function useTerminal() {
       });
     });
 
-    term.writeln(
-      `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Instance app terminal.${TERM_COLOR.TERM_RESET}`
-    );
-    term.writeln(
-      `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Terminal is ready.${TERM_COLOR.TERM_RESET}\r\n`
-    );
-
     terminal.value = term;
     return term;
   };
