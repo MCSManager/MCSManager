@@ -54,6 +54,7 @@ const {
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
+const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 
 const innerTerminalType = viewType === "inner";
 const terminalDomId = `terminal-window-${getRandomId()}`;
@@ -143,7 +144,7 @@ const instanceOperations = computed(() =>
           }
         });
       },
-      condition: () => isStopped.value
+      condition: () => isStopped.value && updateCmd.value
     }
   ])
 );
