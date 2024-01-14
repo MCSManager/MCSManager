@@ -59,6 +59,7 @@ declare module 'vue' {
     ATimePicker: typeof import('ant-design-vue/es')['TimePicker']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ATypography: typeof import('ant-design-vue/es')['Typography']
+    ATypographyLink: typeof import('ant-design-vue/es')['TypographyLink']
     ATypographyParagraph: typeof import('ant-design-vue/es')['TypographyParagraph']
     ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']

@@ -21,7 +21,7 @@ window.addEventListener("unhandledrejection", function (event) {
   console.error("Unhandled promise rejection:", event.reason);
 });
 
-const { updateUserInfo, state } = useAppStateStore();
+const { updateUserInfo } = useAppStateStore();
 
 export async function mountApp() {
   try {
@@ -35,6 +35,6 @@ export async function mountApp() {
     app.use(createPinia());
     app.use(router);
     app.use(getI18nInstance());
-    app.mount("#app");
+    app.mount("#app-mount-point");
   }
 }

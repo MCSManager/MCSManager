@@ -66,6 +66,8 @@ const instanceStatusText = computed(
   () => String(INSTANCE_STATUS[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
 );
 
+let term: Terminal | null = null;
+
 const quickOperations = computed(() =>
   arrayFilter([
     {
@@ -189,10 +191,12 @@ events.on("error", (error: Error) => {
   socketError.value = error;
 });
 
-let term: Terminal | null = null;
-
 const clearTerminal = () => {
   term?.clear();
+};
+
+const refreshPage = () => {
+  window.location.reload();
 };
 
 onMounted(async () => {
@@ -220,8 +224,12 @@ onMounted(async () => {
         {{ $t("TXT_CODE_812a629e") + socketAddress }}
       </a-typography-paragraph>
       <div>
-        <img :src="connectErrorImage" style="width: 100%" />
+        <img :src="connectErrorImage" style="width: 100%; height: 110px" />
       </div>
+      <a-typography-title :level="5">{{ $t("错误信息：") }}</a-typography-title>
+      <a-typography-paragraph>
+        <pre style="font-size: 12px"><code>{{ socketError.message }}</code></pre>
+      </a-typography-paragraph>
       <a-typography-title :level="5">{{ $t("TXT_CODE_f1c96d8a") }}</a-typography-title>
       <a-typography-paragraph>
         <ul>
@@ -238,6 +246,9 @@ onMounted(async () => {
             {{ $t("TXT_CODE_9c188ec8") }}
           </li>
         </ul>
+        <div class="flex flex-center">
+          <a-typography-link @click="refreshPage">{{ $t("重新连接") }}</a-typography-link>
+        </div>
       </a-typography-paragraph>
     </div>
   </div>
@@ -394,11 +405,18 @@ onMounted(async () => {
 
   .error-card-container {
     overflow: hidden;
-    max-width: 500px;
+    max-width: 440px;
+    border: 1px solid var(--color-gray-6) !important;
     background-color: var(--color-gray-1);
-
     border-radius: 4px;
     padding: 12px;
+    box-shadow: 0px 0px 2px var(--color-gray-7);
+  }
+
+  @media (max-width: 992px) {
+    .error-card-container {
+      max-width: 90vw !important;
+    }
   }
 }
 .console-wrapper {
@@ -445,12 +463,12 @@ onMounted(async () => {
     background-color: #1e1e1e;
     padding: 8px;
     border-radius: 6px;
-    // overflow-x: auto !important;
+    overflow-x: auto !important;
     // overflow-y: auto !important;
     display: flex;
     flex-direction: column;
     .terminal-container {
-      min-width: 680px;
+      min-width: 1200px;
       height: 100%;
     }
 

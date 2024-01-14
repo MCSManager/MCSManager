@@ -234,9 +234,15 @@ const appMenus = computed(() => {
       title: t("TXT_CODE_2c69ab15"),
       icon: LogoutOutlined,
       click: async () => {
-        await execute();
-        message.success(t("TXT_CODE_11673d8c"));
-        router.go(0);
+        Modal.confirm({
+          title: $t("确定要退出当前用户吗？"),
+          async onOk() {
+            await execute();
+            message.success(t("TXT_CODE_11673d8c"));
+            window.localStorage.clear();
+            setTimeout(() => (window.location.href = "/"), 400);
+          }
+        });
       },
       conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false

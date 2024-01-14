@@ -53,6 +53,7 @@ export function useTerminal() {
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
+  const isLoading = ref<boolean>(false);
   const socketAddress = ref("");
   let fitAddonTask: NodeJS.Timer;
 
@@ -71,9 +72,17 @@ export function useTerminal() {
     socketAddress.value = addr;
     const password = remoteInfo.password;
 
-    socket = io(addr, {});
+    socket = io(addr, {
+      multiplex: false,
+      reconnectionDelayMax: 1000 * 10,
+      timeout: 1000 * 10,
+      reconnection: true,
+      reconnectionAttempts: 3,
+      rejectUnauthorized: false
+    });
 
     socket.on("connect", () => {
+      console.info("[Socket.io] connecting:", addr);
       socket?.emit("stream/auth", {
         data: { password }
       });
@@ -81,6 +90,7 @@ export function useTerminal() {
     });
 
     socket.on("connect_error", (error) => {
+      console.error("[Socket.io] Connect error: ", addr, error);
       isConnect.value = false;
       events.emit("error", error);
     });
@@ -105,6 +115,7 @@ export function useTerminal() {
     });
 
     socket.on("reconnect", () => {
+      console.warn("[Socket.io] reconnect:", addr);
       isConnect.value = true;
       socket?.emit("stream/auth", {
         data: { password }
@@ -112,9 +123,9 @@ export function useTerminal() {
     });
 
     socket.on("disconnect", () => {
+      console.warn("[Socket.io] disconnect:", addr);
       isConnect.value = false;
       events.emit("disconnect");
-      socket?.close();
     });
 
     socket.on("instance/stdout", (packet) => events.emit("stdout", packet?.data));
@@ -160,13 +171,6 @@ export function useTerminal() {
         }
       });
     });
-
-    term.writeln(
-      `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Instance app terminal.${TERM_COLOR.TERM_RESET}`
-    );
-    term.writeln(
-      `${TERM_COLOR.TERM_TEXT_GREEN}[MCSManager] ${TERM_COLOR.TERM_TEXT_GRAY}Terminal is ready.${TERM_COLOR.TERM_RESET}\r\n`
-    );
 
     terminal.value = term;
     return term;
