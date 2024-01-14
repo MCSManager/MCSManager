@@ -53,6 +53,7 @@ export function useTerminal() {
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
+  const isLoading = ref<boolean>(false);
   const socketAddress = ref("");
   let fitAddonTask: NodeJS.Timer;
 
@@ -71,7 +72,12 @@ export function useTerminal() {
     socketAddress.value = addr;
     const password = remoteInfo.password;
 
-    socket = io(addr, {});
+    socket = io(addr, {
+      multiplex: false,
+      timeout: 1000 * 10,
+      reconnection: false,
+      rejectUnauthorized: false
+    });
 
     socket.on("connect", () => {
       socket?.emit("stream/auth", {
