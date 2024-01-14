@@ -45,7 +45,18 @@ export function jsonToMap(json: JsonData, topTitle = "", map = {}) {
       title = `${key}`;
     }
     const value = json[key];
-    if (value instanceof Array) {
+    if (value === null || value === "") {
+      Object.defineProperty(map, title, {
+        enumerable: true,
+        configurable: true,
+        get() {
+          return json[key] ?? "";
+        },
+        set(v) {
+          json[key] = v;
+        }
+      });
+    } else if (value instanceof Array) {
       if (typeof value[0] === "object") {
         jsonToMap(value, title, map);
       } else {
