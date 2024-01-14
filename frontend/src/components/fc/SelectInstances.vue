@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import BetweenMenus from "../BetweenMenus.vue";
 import type { MountComponent, NodeStatus } from "@/types";
 import type { UserInstance } from "@/types/user";
+import { INSTANCE_STATUS } from "@/types/const";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -11,16 +12,23 @@ import {
   DatabaseOutlined,
   FrownOutlined
 } from "@ant-design/icons-vue";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import { reportError } from "@/tools/validator";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { computeNodeName } from "@/tools/nodes";
-import { throttle } from "lodash";
+import _, { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
-import type { ColumnsType } from "ant-design-vue/es/table";
-import type { AntTableCell } from "../../types/ant";
 import AppConfigProvider from "../AppConfigProvider.vue";
 
-const props = defineProps<MountComponent>();
+interface Props extends MountComponent {
+  title: string;
+  keyTitle?: string;
+  valueTitle?: string;
+  data: UserInstance[];
+  columns?: AntColumnsType[];
+}
+
+const props = defineProps<Props>();
 const { isPhone } = useScreen();
 
 const open = ref(false);
@@ -33,7 +41,8 @@ const cancel = async () => {
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
-  pageSize: 10
+  pageSize: 10,
+  status: ""
 });
 
 const currentRemoteNode = ref<NodeStatus>();
@@ -78,6 +87,7 @@ const initInstancesData = async () => {
         daemonId: currentRemoteNode.value?.uuid ?? "",
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
+        status: operationForm.value.status,
         instance_name: operationForm.value.instanceName.trim()
       }
     });
@@ -86,21 +96,9 @@ const initInstancesData = async () => {
   }
 };
 
-const selectedItems = ref<UserInstance[]>([]);
-
-const columns: ColumnsType = [
-  {
-    align: "center",
-    title: t("TXT_CODE_f70badb9"),
-    dataIndex: "nickname",
-    key: "instanceUuid"
-  },
-  {
-    align: "center",
-    title: t("TXT_CODE_fe731dfc"),
-    key: "operation"
-  }
-];
+const selectedItems = ref<UserInstance[]>(
+  props.data instanceof Array ? _.cloneDeep(props.data) : []
+);
 
 const selectItem = (item: UserInstance) => {
   selectedItems.value.push(item);
@@ -113,6 +111,8 @@ const findItem = (item: UserInstance) => {
 const removeItem = (item: UserInstance) => {
   selectedItems.value = selectedItems.value.filter((i) => i.instanceUuid !== item.instanceUuid);
 };
+
+const clearAll = () => (selectedItems.value = []);
 
 const submit = async () => {
   if (props.emitResult) props.emitResult(selectedItems.value);
@@ -142,16 +142,7 @@ const handleChangeNode = async (item: NodeStatus) => {
 
 <template>
   <AppConfigProvider>
-    <a-modal
-      v-model:open="open"
-      centered
-      :mask-closable="false"
-      :title="t('TXT_CODE_8145d25a')"
-      :ok-text="t('TXT_CODE_abfe9512')"
-      :cancel-text="t('TXT_CODE_a0451c97')"
-      @ok="submit"
-      @cancel="cancel"
-    >
+    <a-modal v-model:open="open" centered :mask-closable="false" :title="props.title">
       <a-typography-paragraph>
         <a-typography-text type="secondary">
           {{ t("TXT_CODE_50697989") }}
@@ -194,17 +185,32 @@ const handleChangeNode = async (item: NodeStatus) => {
               </a-dropdown>
             </template>
             <template #right>
-              <div class="search-input" :class="isPhone && 'w-100'">
-                <a-input
-                  v-model:value="operationForm.instanceName"
-                  :placeholder="t('TXT_CODE_ce132192')"
-                  @press-enter="handleQueryInstance"
-                  @change="handleQueryInstance"
-                >
-                  <template #prefix>
-                    <search-outlined />
-                  </template>
-                </a-input>
+              <div class="search-input w-100">
+                <a-input-group compact style="min-width: 175px">
+                  <a-select
+                    v-model:value="operationForm.status"
+                    style="width: 90px"
+                    @change="handleQueryInstance"
+                  >
+                    <a-select-option value="">
+                      {{ t("TXT_CODE_c48f6f64") }}
+                    </a-select-option>
+                    <a-select-option v-for="(p, i) in INSTANCE_STATUS" :key="i" :value="i">
+                      {{ p }}
+                    </a-select-option>
+                  </a-select>
+                  <a-input
+                    v-model:value.trim="operationForm.instanceName"
+                    :placeholder="t('TXT_CODE_ce132192')"
+                    style="width: calc(100% - 90px)"
+                    @press-enter="handleQueryInstance"
+                    @change="handleQueryInstance"
+                  >
+                    <template #suffix>
+                      <search-outlined />
+                    </template>
+                  </a-input>
+                </a-input-group>
               </div>
             </template>
           </BetweenMenus>
@@ -254,6 +260,26 @@ const handleChangeNode = async (item: NodeStatus) => {
           </a-col>
         </template>
       </a-row>
+      <template #footer>
+        <div class="flex">
+          <a-popconfirm
+            v-if="selectedItems.length > 0"
+            :title="t('你确定要清空所有已选择的实例吗？')"
+            @confirm="clearAll"
+          >
+            <a-button>
+              {{ t("清空所有选中") }}
+            </a-button>
+          </a-popconfirm>
+
+          <div style="margin-left: auto">
+            <a-button @click="cancel">{{ t("TXT_CODE_a0451c97") }}</a-button>
+            <a-button type="primary" @click="submit">
+              {{ t("TXT_CODE_abfe9512") }}
+            </a-button>
+          </div>
+        </div>
+      </template>
     </a-modal>
   </AppConfigProvider>
 </template>
