@@ -29,11 +29,15 @@ const { containerState } = useLayoutContainerStore();
 
 const isSpinning = ref(false);
 
+let timekeeping: NodeJS.Timeout | null = null;
 const spin = (time: number) => {
   isSpinning.value = true;
-  setTimeout(() => {
-    isSpinning.value = false;
-  }, time);
+  if (timekeeping === null) {
+    timekeeping = setTimeout(() => {
+      isSpinning.value = false;
+      timekeeping = null;
+    }, time);
+  }
 };
 
 const getTime = () => dayjs().format("HH:mm:ss");
