@@ -39,9 +39,9 @@ const uploadMusic = async (type: UploadType) => {
       musicUrl.value =
         ((await openInputDialog(t("请输入文件 URL 地址"))) as string) || musicUrl.value;
     }
+    setMetaValue("musicUrl", musicUrl.value);
+    message.success(t("设置成功，保存以应用更改"));
   } catch (error) {}
-  setMetaValue("musicUrl", musicUrl.value);
-  message.success(t("设置成功，保存以应用更改"));
 };
 
 let time: null | HTMLAreaElement = null;
