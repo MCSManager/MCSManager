@@ -33,14 +33,15 @@ enum UploadType {
 const uploadMusic = async (type: UploadType) => {
   try {
     if (type === UploadType.File) {
-      musicUrl.value = (await useUploadFileDialog()) || musicUrl.value;
+      const path = await useUploadFileDialog();
+      if (path) (musicUrl.value = path) && message.success(t("设置成功，保存以应用更改"));
     }
     if (type === UploadType.Url) {
       musicUrl.value =
         ((await openInputDialog(t("请输入文件 URL 地址"))) as string) || musicUrl.value;
+      message.success(t("设置成功，保存以应用更改"));
     }
     setMetaValue("musicUrl", musicUrl.value);
-    message.success(t("设置成功，保存以应用更改"));
   } catch (error) {}
 };
 
