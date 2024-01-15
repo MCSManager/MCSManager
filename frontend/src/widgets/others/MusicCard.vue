@@ -74,7 +74,7 @@ const changePlayerStatis = (setStatus?: PlayerStatus) => {
 const playTime = ref("0:00");
 const maxTime = ref("0:00");
 
-const s2m = (s: number = 0) => {
+const processingTime = (s: number = 0) => {
   const duration = dayjs.duration(s, "seconds");
   return duration.asHours() >= 1 ? duration.format("H:mm:ss") : duration.format("m:ss");
 };
@@ -93,7 +93,7 @@ onMounted(() => {
     });
 
     wavesurfer.on("ready", function () {
-      maxTime.value = s2m(wavesurfer?.getDuration());
+      maxTime.value = processingTime(wavesurfer?.getDuration());
     });
     wavesurfer.on("click", () => {
       changePlayerStatis(PlayerStatus.Play);
@@ -105,7 +105,7 @@ onMounted(() => {
       changePlayerStatis(PlayerStatus.Play);
     });
     wavesurfer.on("timeupdate", (currentTime) => {
-      playTime.value = s2m(currentTime);
+      playTime.value = processingTime(currentTime);
     });
   }
 });
