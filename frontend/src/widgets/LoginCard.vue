@@ -24,7 +24,7 @@ onMounted(async () => {
   await execute();
 });
 const props = defineProps<{
-  card: LayoutCard;
+  card?: LayoutCard;
 }>();
 
 const formData = reactive({
@@ -99,7 +99,7 @@ const loginSuccess = () => {
       <template #body>
         <div v-show="loginStep === 0" class="login-panel-body">
           <a-typography-title :level="3" class="mb-20">
-            {{ props.card.title ? props.card.title : t("TXT_CODE_3ba5ad") }}
+            {{ props.card?.title ? props.card?.title : t("TXT_CODE_3ba5ad") }}
           </a-typography-title>
           <a-typography-paragraph class="mb-20">
             {{ t("TXT_CODE_5b60ad00") }}
