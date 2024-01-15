@@ -69,6 +69,7 @@ declare module 'vue' {
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
+    copy: typeof import('./src/components/time/Style2 copy.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
@@ -94,6 +95,10 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
+    Style1: typeof import('./src/components/time/Style1.vue')['default']
+    Style2: typeof import('./src/components/time/Style2.vue')['default']
+    'Style2 copy': typeof import('./src/components/time/Style2 copy.vue')['default']
+    Test: typeof import('./src/components/time/test.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
   }
 }
