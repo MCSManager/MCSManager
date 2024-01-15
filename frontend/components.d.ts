@@ -97,6 +97,7 @@ declare module 'vue' {
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
     Style1: typeof import('./src/components/time/Style1.vue')['default']
     Style2: typeof import('./src/components/time/Style2.vue')['default']
+    Style3: typeof import('./src/components/time/Style3.vue')['default']
     Test: typeof import('./src/components/time/test.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
   }

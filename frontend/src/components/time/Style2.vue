@@ -29,7 +29,7 @@ onUnmounted(() => {
           <span>2</span>
         </div>
         <div class="right" :style="{ '--n': Number(time[1]) }">
-          <span v-for="i in 9" :key="i">{{ i }}</span>
+          <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
         </div>
       </div>
       :
@@ -77,7 +77,7 @@ onUnmounted(() => {
       transform: translateY(calc(var(--n) * -22px));
 
       span {
-        height: 20px;
+        height: 22px;
       }
     }
   }
