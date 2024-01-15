@@ -29,6 +29,7 @@ const handleOk = (e: MouseEvent) => {
 };
 
 const handleCancel = (e: MouseEvent) => {
+  state.inputDialog.reject(new Error("Dialog closed by user"));
   state.inputDialog.show = false;
   inputValue.value = "";
 };

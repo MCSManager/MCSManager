@@ -71,6 +71,7 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
     await startDownloadTask();
   } catch (err: any) {
     console.error(err);
+    if (err.message === "Dialog closed by user") return;
     return reportError(err.message);
   }
 };
