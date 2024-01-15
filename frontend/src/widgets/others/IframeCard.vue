@@ -32,18 +32,11 @@ const editImgSrc = async () => {
 const myIframe = ref<HTMLIFrameElement | null>(null);
 const myIframeLoading = ref(false);
 
-const initFullCard = () =>
-  fullCard.value
-    ? myIframe.value?.classList.add("full-card-iframe")
-    : myIframe.value?.classList.remove("full-card-iframe");
-
 const toggleFullCard = () => {
   setMetaValue("full", !fullCard.value);
-  initFullCard();
 };
 
 onMounted(() => {
-  initFullCard();
   watch([urlSrc, myIframe], () => {
     try {
       myIframeLoading.value = true;
@@ -86,17 +79,18 @@ onMounted(() => {
         <a-skeleton
           v-show="myIframeLoading"
           active
-          :paragraph="{ rows: Number(card.height[0]) * 2 }"
+          :paragraph="{ rows: parseInt(card.height[0]) * 2 }"
         />
         <iframe
           v-show="!myIframeLoading"
           ref="myIframe"
           :src="urlSrc"
           :style="{
-            height: parseInt(card.height) + 'px',
+            height: card.height,
             width: '100%',
             'z-index': containerState.isDesignMode ? -1 : 1
           }"
+          :class="{ 'full-card-iframe': fullCard }"
           frameborder="0"
           marginwidth="0"
           marginheight="0"
