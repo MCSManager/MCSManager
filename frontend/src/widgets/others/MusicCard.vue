@@ -71,8 +71,8 @@ const changePlayerStatis = (setStatus?: PlayerStatus) => {
     playerButtonIcon.value = h(PlayCircleOutlined);
   }
 };
-const playTime = ref("0");
-const maxTime = ref("0");
+const playTime = ref("0:00");
+const maxTime = ref("0:00");
 
 const s2m = (s: number = 0) => {
   const duration = dayjs.duration(s, "seconds");
@@ -121,17 +121,20 @@ onMounted(() => {
       <template #body>
         <div v-if="musicUrl" class="h-100 flex-center">
           <div class="player">
-            <div class="button">
-              <a-button
-                type="primary"
-                shape="circle"
-                :icon="playerButtonIcon"
-                @click="changePlayerStatis()"
-              />
-            </div>
             <div class="time-line">
               <div ref="time" class="time"></div>
-              {{ playTime }}&nbsp;/&nbsp;{{ maxTime }}
+            </div>
+            <div class="button">
+              <a-button
+                type="link"
+                size="large"
+                shape="circle"
+                :icon="playerButtonIcon"
+                style="width: auto; height: auto; font-size: 1.8em"
+                class="mr-10"
+                @click="changePlayerStatis()"
+              />
+              <span>{{ playTime }}&nbsp;/&nbsp;{{ maxTime }}</span>
             </div>
           </div>
         </div>
@@ -189,15 +192,16 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-
-  .button {
-    margin-right: 10px;
-  }
-
   .time-line {
-    flex: 1;
+    width: 100%;
+  }
+  .button {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
   }
 }
 </style>
