@@ -6,21 +6,23 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { UndoOutlined } from "@ant-design/icons-vue";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import dayjs from "dayjs";
-
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 import Style1 from "@/components/time/Style1.vue";
 import Style2 from "@/components/time/Style2.vue";
 
-defineProps<{
+const prop = defineProps<{
   card: LayoutCard;
 }>();
 
-const showStyle = ref(1);
+const { getMetaValue, setMetaValue } = useLayoutCardTools(prop.card);
+
+const showStyle = ref(getMetaValue("style", 1));
 const styleList = [Style1, Style2];
 const maxStyle = styleList.length;
 
 const changeStyle = () => {
   spin(1050);
-  showStyle.value = showStyle.value === maxStyle ? 1 : showStyle.value + 1;
+  setMetaValue("style", (showStyle.value = showStyle.value === maxStyle ? 1 : showStyle.value + 1));
 };
 
 const { containerState } = useLayoutContainerStore();
