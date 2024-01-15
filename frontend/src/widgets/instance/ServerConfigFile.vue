@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useScreen } from "@/hooks/useScreen";
@@ -10,7 +10,6 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
 import configComponent from "@/components/InstanceConfigEditor.vue";
-import { DownOutlined } from "@ant-design/icons-vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
@@ -104,8 +103,20 @@ const refresh = async () => {
   message.success(t("TXT_CODE_7863f28d"));
 };
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.ctrlKey && e.key.toLocaleLowerCase() === "s") {
+    e.preventDefault();
+    save();
+  }
+};
+
 onMounted(async () => {
   await render();
+  document.addEventListener("keydown", handleKeydown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("keydown", handleKeydown);
 });
 </script>
 
