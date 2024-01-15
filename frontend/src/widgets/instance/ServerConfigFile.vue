@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useScreen } from "@/hooks/useScreen";
@@ -10,8 +10,8 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
 import configComponent from "@/components/InstanceConfigEditor.vue";
-import { DownOutlined } from "@ant-design/icons-vue";
 import FileEditor from "./dialogs/FileEditor.vue";
+import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -104,6 +104,8 @@ const refresh = async () => {
   message.success(t("TXT_CODE_7863f28d"));
 };
 
+useKeyboardEvents({ ctrl: true, alt: false, caseSensitive: false, key: "s" }, save);
+
 onMounted(async () => {
   await render();
 });
@@ -123,7 +125,7 @@ onMounted(async () => {
             <a-button type="primary" :loading="updateConfigFileLoading" @click="save">
               {{ t("TXT_CODE_abfe9512") }}
             </a-button>
-            <a-button :loading="getConfigFileLoading" @click="refresh">
+            <a-button :loading="getConfigFileLoading" @click="refresh()">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="dashed" @click="toEditRawFile">

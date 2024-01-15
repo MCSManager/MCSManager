@@ -34,7 +34,7 @@ const theme = EditorView.theme({
   },
   ".cm-gutters": {
     "background-color": "var(--color-gray-4)",
-    display: isPhone.value ? "none" : "block",
+    display: isPhone.value ? "none" : "flex",
     "border-right": "1px solid var(--color-gray-5)"
   },
   ".cm-scroller": {

@@ -78,9 +78,22 @@ export function jsonToMap(json: JsonData, topTitle = "", map = {}) {
         enumerable: true,
         configurable: true,
         get() {
+          const value = json[key];
+          if (
+            (typeof value === "number" && value >= Number.MAX_SAFE_INTEGER) ||
+            value <= Number.MIN_SAFE_INTEGER
+          ) {
+            return BigInt(value).toString();
+          }
           return json[key];
         },
         set(v) {
+          if (
+            (typeof value === "number" && value >= Number.MAX_SAFE_INTEGER) ||
+            value <= Number.MIN_SAFE_INTEGER
+          ) {
+            json[key] = BigInt(value).toString();
+          }
           const preValue = json[key];
           if (typeof preValue === "number" && !isNaN(Number(v))) return (json[key] = Number(v));
           json[key] = v;
