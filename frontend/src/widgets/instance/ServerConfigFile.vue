@@ -11,6 +11,7 @@ import { toUnicode } from "@/tools/common";
 import Loading from "@/components/Loading.vue";
 import configComponent from "@/components/InstanceConfigEditor.vue";
 import FileEditor from "./dialogs/FileEditor.vue";
+import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -103,20 +104,10 @@ const refresh = async () => {
   message.success(t("TXT_CODE_7863f28d"));
 };
 
-const handleKeydown = (e: KeyboardEvent) => {
-  if (e.ctrlKey && e.key.toLocaleLowerCase() === "s") {
-    e.preventDefault();
-    save();
-  }
-};
+useKeyboardEvents({ ctrl: true, alt: false, caseSensitive: false, key: "s" }, save);
 
 onMounted(async () => {
   await render();
-  document.addEventListener("keydown", handleKeydown);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("keydown", handleKeydown);
 });
 </script>
 
@@ -134,7 +125,7 @@ onUnmounted(() => {
             <a-button type="primary" :loading="updateConfigFileLoading" @click="save">
               {{ t("TXT_CODE_abfe9512") }}
             </a-button>
-            <a-button :loading="getConfigFileLoading" @click="refresh">
+            <a-button :loading="getConfigFileLoading" @click="refresh()">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="dashed" @click="toEditRawFile">
@@ -174,3 +165,4 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped></style>
+@/hooks/useKeyboardEvents
