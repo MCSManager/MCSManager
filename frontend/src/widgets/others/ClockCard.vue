@@ -4,7 +4,6 @@ import { $t as t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { onMounted, onUnmounted, ref } from "vue";
 import { UndoOutlined } from "@ant-design/icons-vue";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import dayjs from "dayjs";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import Style1 from "@/components/time/Style1.vue";
@@ -24,8 +23,6 @@ const changeStyle = () => {
   spin(1050);
   setMetaValue("style", (showStyle.value = showStyle.value === maxStyle ? 1 : showStyle.value + 1));
 };
-
-const { containerState } = useLayoutContainerStore();
 
 const isSpinning = ref(false);
 
@@ -63,19 +60,17 @@ onUnmounted(() => {
 <template>
   <div class="h-100">
     <card-panel>
-      <template #operator>
-        <div v-if="containerState.isDesignMode" class="ml-10">
-          <a-button type="link" size="small" @click="changeStyle()">
-            <template #icon>
-              <a-tooltip placement="top">
-                <template #title>
-                  <span>{{ t("更换样式") }}</span>
-                </template>
-                <undo-outlined :rotate="45" :spin="isSpinning" />
-              </a-tooltip>
-            </template>
-          </a-button>
-        </div>
+      <template #operator-design>
+        <a-button type="link" size="small" class="ml-10" @click="changeStyle()">
+          <template #icon>
+            <a-tooltip placement="top">
+              <template #title>
+                <span>{{ t("更换样式") }}</span>
+              </template>
+              <undo-outlined :rotate="45" :spin="isSpinning" />
+            </a-tooltip>
+          </template>
+        </a-button>
       </template>
       <template #title>{{ card.title }}</template>
       <template #body>

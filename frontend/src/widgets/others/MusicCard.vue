@@ -1,77 +1,203 @@
+<!-- eslint-disable no-unused-vars -->
 <script setup lang="ts">
-import { ref } from "vue";
-import { $t as t } from "@/lang/i18n";
-import CardPanel from "@/components/CardPanel.vue";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { ref, h } from "vue";
+import { Empty, message } from "ant-design-vue";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons-vue";
+import { t } from "@/lang/i18n";
+import { useUploadFileDialog } from "@/components/fc";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import type { LayoutCard } from "@/types/index";
+import WaveSurfer from "wavesurfer.js";
+import type { LayoutCard } from "@/types";
+import { onMounted } from "vue";
 
-// eslint-disable-next-line no-unused-vars
-enum EDIT_MODE {
-  // eslint-disable-next-line no-unused-vars
-  PREVIEW = "PREVIEW",
-  // eslint-disable-next-line no-unused-vars
-  EDIT = "EDIT"
-}
+dayjs.extend(duration);
 
-const props = defineProps<{
+const prop = defineProps<{
   card: LayoutCard;
 }>();
 
-const { getMetaValue, setMetaValue } = useLayoutCardTools(props.card);
-const { containerState } = useLayoutContainerStore();
+const { openInputDialog } = useAppToolsStore();
 
-const textContent = ref<string>(getMetaValue("textContent", ""));
-const status = ref(EDIT_MODE.PREVIEW);
+const { getMetaValue, setMetaValue } = useLayoutCardTools(prop.card);
 
-// function
-const previewsTextContent = () => {
-  setMetaValue("textContent", textContent.value);
-  status.value = EDIT_MODE.PREVIEW;
+const musicUrl = ref(getMetaValue<string>("musicUrl", ""));
+
+enum UploadType {
+  File = "FILE",
+  Url = "URL"
+}
+
+const uploadMusic = async (type: UploadType) => {
+  try {
+    if (type === UploadType.File) {
+      musicUrl.value = (await useUploadFileDialog()) || musicUrl.value;
+    }
+    if (type === UploadType.Url) {
+      musicUrl.value =
+        ((await openInputDialog(t("请输入文件 URL 地址"))) as string) || musicUrl.value;
+    }
+  } catch (error) {}
+  setMetaValue("musicUrl", musicUrl.value);
+  message.success(t("设置成功，保存以应用更改"));
 };
 
-const editTextContent = () => {
-  status.value = EDIT_MODE.EDIT;
+let time: null | HTMLAreaElement = null;
+
+let wavesurfer: WaveSurfer | null = null;
+
+enum PlayerStatus {
+  Play = "PLAY",
+  Pause = "PAUSE"
+}
+
+const playerStatus = ref(PlayerStatus.Pause);
+const playerButtonIcon = ref(h(PlayCircleOutlined));
+const changePlayerStatis = (setStatus?: PlayerStatus) => {
+  if (setStatus) {
+    playerStatus.value = setStatus;
+  } else {
+    playerStatus.value =
+      playerStatus.value === PlayerStatus.Play ? PlayerStatus.Pause : PlayerStatus.Play;
+  }
+
+  if (playerStatus.value === PlayerStatus.Play) {
+    wavesurfer?.play();
+    playerButtonIcon.value = h(PauseCircleOutlined);
+  } else {
+    wavesurfer?.pause();
+    playerButtonIcon.value = h(PlayCircleOutlined);
+  }
 };
+const playTime = ref("0");
+const maxTime = ref("0");
+
+const s2m = (s: number = 0) => {
+  const duration = dayjs.duration(s, "seconds");
+  return duration.asHours() >= 1 ? duration.format("H:mm:ss") : duration.format("m:ss");
+};
+
+onMounted(() => {
+  if (time) {
+    wavesurfer = WaveSurfer.create({
+      container: time || "",
+      waveColor: "#7a7a7a",
+      progressColor: "#000",
+      url: musicUrl.value,
+      height: 50,
+      barWidth: 2,
+      barGap: 1,
+      barRadius: 2
+    });
+
+    wavesurfer.on("ready", function () {
+      maxTime.value = s2m(wavesurfer?.getDuration());
+    });
+    wavesurfer.on("click", () => {
+      changePlayerStatis(PlayerStatus.Play);
+    });
+    wavesurfer.on("pause", () => {
+      changePlayerStatis(PlayerStatus.Pause);
+    });
+    wavesurfer.on("finish", () => {
+      changePlayerStatis(PlayerStatus.Play);
+    });
+    wavesurfer.on("timeupdate", (currentTime) => {
+      playTime.value = s2m(currentTime);
+    });
+  }
+});
 </script>
 
 <template>
-  <CardPanel>
-    <template #title>
-      <div class="flex">{{ card.title }}</div>
-    </template>
-    <template #operator>
-      <div v-if="containerState.isDesignMode" class="ml-10">
-        <a-button
-          v-if="status !== EDIT_MODE.PREVIEW"
-          type="primary"
-          size="small"
-          @click="previewsTextContent()"
-        >
-          {{ t("TXT_CODE_4d81a657") }}
-        </a-button>
-        <a-button v-else type="primary" size="small" @click="editTextContent()">
-          {{ t("TXT_CODE_ad207008") }}
-        </a-button>
-      </div>
-    </template>
+  <div class="h-100 position-relative">
+    <card-panel>
+      <template #title>
+        {{ card.title }}
+      </template>
 
-    <template v-if="containerState.isDesignMode && status == EDIT_MODE.EDIT" #body>
-      <div class="edit h-100">
-        <a-textarea
-          v-model:value="textContent"
-          class="h-100"
-          style="resize: none"
-          :placeholder="t('TXT_CODE_7ceebc05')"
-        />
-      </div>
-    </template>
-
-    <template v-else #body>
-      <div class="full-card-body-container">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="previews global-markdown-html h-100" v-html="markdownToHTML(textContent)"></div>
-      </div>
-    </template>
-  </CardPanel>
+      <template #body>
+        <div v-if="musicUrl" class="h-100 flex-center">
+          <div class="player">
+            <div class="button">
+              <a-button
+                type="primary"
+                shape="circle"
+                :icon="playerButtonIcon"
+                @click="changePlayerStatis()"
+              />
+            </div>
+            <div class="time-line">
+              <div ref="time" class="time"></div>
+              {{ playTime }}&nbsp;/&nbsp;{{ maxTime }}
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <a-empty class="h-100" :image="Empty.PRESENTED_IMAGE_SIMPLE">
+            <template #description>
+              <span>{{ t("暂无音乐") }}</span>
+              <br />
+              <span>{{ t("使用设计模式将鼠标移动到此处以进行编辑") }}</span>
+            </template>
+          </a-empty>
+        </div>
+      </template>
+      <template #body-design>
+        <a-space align="center" direction="vertical" class="w-100 h-100 edit">
+          <h1>修改曲目</h1>
+          <a-space>
+            <a-button type="primary" @click="uploadMusic(UploadType.File)">
+              {{ t("上传音乐文件") }}
+            </a-button>
+            <a-button type="primary" @click="uploadMusic(UploadType.Url)">
+              {{ t("填写音乐 URL") }}
+            </a-button>
+          </a-space>
+        </a-space>
+      </template>
+    </card-panel>
+  </div>
 </template>
+
+<style lang="less" scoped>
+.edit {
+  z-index: 5;
+  opacity: 0;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 0 10px #000;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .button {
+    margin-right: 10px;
+  }
+
+  .time-line {
+    flex: 1;
+  }
+}
+</style>
