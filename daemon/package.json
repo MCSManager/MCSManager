@@ -21,7 +21,6 @@
     "@koa/router": "^10.0.0",
     "archiver": "^5.3.1",
     "axios": "^1.1.3",
-    "common": "file:../common",
     "compressing": "^1.5.1",
     "crypto": "^1.0.1",
     "dockerode": "3.1.0",
@@ -32,7 +31,6 @@
     "koa-body": "^4.2.0",
     "koa-send": "^5.0.1",
     "log4js": "^6.4.0",
-    "mcsmanager-common": "file:../common/dist",
     "module-alias": "^2.2.3",
     "node-disk-info": "^1.3.0",
     "node-schedule": "^2.0.0",
@@ -46,6 +44,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
+    "common": "file:../common",
     "@types/archiver": "^5.3.1",
     "@types/axios": "^0.14.0",
     "@types/dockerode": "^3.2.7",

@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import type { LayoutCard } from "@/types";
 import LayoutContainer from "./LayoutContainer.vue";
+import { useScreen } from "../hooks/useScreen";
+import LoginCard from "@/widgets/LoginCard.vue";
 
 defineProps<{
   card: LayoutCard;
 }>();
+
+const { isPhone } = useScreen();
 </script>
 
 <template>
-  <div>
+  <div v-if="!isPhone">
     <div class="login-page-bg">
       <a-row :gutter="[24, 24]">
         <a-col :span="6">
@@ -81,6 +85,9 @@ defineProps<{
         <LayoutContainer></LayoutContainer>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <LoginCard></LoginCard>
   </div>
 </template>
 
