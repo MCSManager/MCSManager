@@ -20,6 +20,10 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 
+function hasParams(name: string) {
+  return process.argv.includes(name);
+}
+
 function setupHttp(koaApp: Koa, port: number, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
 
@@ -38,8 +42,8 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   logger.info($t("TXT_CODE_app.exitTip", { port }));
   logger.info("==================================");
 
-  if (os.platform() == "win32") {
-    open(`http://localhost:${port}/`).then(() => {});
+  if (os.platform() == "win32" && hasParams("--open")) {
+    open(`http://localhost:${port}/`);
   }
 }
 

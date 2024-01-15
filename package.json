@@ -4,9 +4,9 @@
   "scripts": {
     "i18n": "i18next-scanner --config i18-scanner.config.js",
     "preview-build": "cd common && npm install && npm run build",
-    "start-daemon": "cd daemon &&  npm run dev",
-    "start-frontend": "cd frontend && npm run dev",
-    "start-panel": "cd panel && npm run dev"
+    "daemon": "cd daemon &&  npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "panel": "cd panel && npm run dev"
   },
   "dependencies": {
     "crc": "^4.3.2",
