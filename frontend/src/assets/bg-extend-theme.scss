@@ -1,0 +1,161 @@
+.app-light-extend-theme {
+  --background-color-white: #ffffffae;
+  .card-panel {
+    backdrop-filter: blur(10px);
+  }
+}
+
+.app-dark-extend-theme {
+  --level-1-bg-color: #000000af;
+  --level-2-bg-color: #0000006b;
+  --background-color-white: var(--level-1-bg-color);
+  .card-panel {
+    backdrop-filter: blur(10px);
+  }
+  .menu-body {
+    .left-menu {
+      background-color: var(--level-2-bg-color) !important;
+    }
+  }
+  .action-btn-item {
+    background-color: var(--level-2-bg-color) !important;
+  }
+  .ant-table-thead,
+  .ant-table {
+    background-color: var(--level-2-bg-color) !important;
+  }
+
+  //   --color-red-1: rgba(42, 18, 21, 0.8);
+  //   --color-red-2: rgba(67, 20, 24, 0.8);
+  //   --color-red-3: rgba(88, 24, 28, 0.8);
+  //   --color-red-4: rgba(121, 26, 31, 0.8);
+  //   --color-red-5: rgba(166, 29, 36, 0.8);
+  //   --color-red-6: rgba(211, 32, 41, 0.8);
+  //   --color-red-7: rgba(232, 71, 73, 0.8);
+  //   --color-red-8: rgba(243, 115, 115, 0.8);
+  //   --color-red-9: rgba(248, 159, 154, 0.8);
+  //   --color-red-10: rgba(250, 200, 195, 0.8);
+  //   --color-volcano-1: rgba(43, 22, 17, 0.8);
+  //   --color-volcano-2: rgba(68, 29, 18, 0.8);
+  //   --color-volcano-3: rgba(89, 39, 22, 0.8);
+  //   --color-volcano-4: rgba(124, 49, 24, 0.8);
+  //   --color-volcano-5: rgba(170, 62, 25, 0.8);
+  //   --color-volcano-6: rgba(216, 74, 27, 0.8);
+  //   --color-volcano-7: rgba(232, 112, 64, 0.8);
+  //   --color-volcano-8: rgba(243, 147, 106, 0.8);
+  //   --color-volcano-9: rgba(248, 182, 146, 0.8);
+  //   --color-volcano-10: rgba(250, 212, 188, 0.8);
+  //   --color-orange-1: rgba(43, 29, 17, 0.8);
+  //   --color-orange-2: rgba(68, 42, 17, 0.8);
+  //   --color-orange-3: rgba(89, 56, 21, 0.8);
+  //   --color-orange-4: rgba(124, 74, 21, 0.8);
+  //   --color-orange-5: rgba(170, 98, 21, 0.8);
+  //   --color-orange-6: rgba(216, 122, 22, 0.8);
+  //   --color-orange-7: rgba(232, 154, 60, 0.8);
+  //   --color-orange-8: rgba(243, 183, 101, 0.8);
+  //   --color-orange-9: rgba(248, 207, 141, 0.8);
+  //   --color-orange-10: rgba(250, 227, 183, 0.8);
+  //   --color-gold-1: rgba(43, 33, 17, 0.8);
+  //   --color-gold-2: rgba(68, 49, 17, 0.8);
+  //   --color-gold-3: rgba(89, 66, 20, 0.8);
+  //   --color-gold-4: rgba(124, 89, 20, 0.8);
+  //   --color-gold-5: rgba(170, 119, 20, 0.8);
+  //   --color-gold-6: rgba(216, 150, 20, 0.8);
+  //   --color-gold-7: rgba(232, 179, 57, 0.8);
+  //   --color-gold-8: rgba(243, 204, 98, 0.8);
+  //   --color-gold-9: rgba(248, 223, 139, 0.8);
+  //   --color-gold-10: rgba(250, 237, 181, 0.8);
+  //   --color-yellow-1: rgba(43, 38, 17, 0.8);
+  //   --color-yellow-2: rgba(68, 59, 17, 0.8);
+  //   --color-yellow-3: rgba(89, 80, 20, 0.8);
+  //   --color-yellow-4: rgba(124, 110, 20, 0.8);
+  //   --color-yellow-5: rgba(170, 149, 20, 0.8);
+  //   --color-yellow-6: rgba(216, 189, 20, 0.8);
+  //   --color-yellow-7: rgba(232, 214, 57, 0.8);
+  //   --color-yellow-8: rgba(243, 234, 98, 0.8);
+  //   --color-yellow-9: rgba(248, 244, 139, 0.8);
+  //   --color-yellow-10: rgba(250, 250, 181, 0.8);
+  //   --color-lime-1: rgba(31, 38, 17, 0.8);
+  //   --color-lime-2: rgba(46, 60, 16, 0.8);
+  //   --color-lime-3: rgba(62, 79, 19, 0.8);
+  //   --color-lime-4: rgba(83, 109, 19, 0.8);
+  //   --color-lime-5: rgba(111, 148, 18, 0.8);
+  //   --color-lime-6: rgba(139, 187, 17, 0.8);
+  //   --color-lime-7: rgba(169, 209, 52, 0.8);
+  //   --color-lime-8: rgba(201, 231, 81, 0.8);
+  //   --color-lime-9: rgba(228, 248, 143, 0.8);
+  //   --color-lime-10: rgba(240, 250, 181, 0.8);
+  //   --color-green-1: rgba(22, 35, 18, 0.8);
+  //   --color-green-2: rgba(29, 55, 18, 0.8);
+  //   --color-green-3: rgba(39, 73, 25, 0.8);
+  //   --color-green-4: rgba(48, 99, 23, 0.8);
+  //   --color-green-5: rgba(60, 134, 24, 0.8);
+  //   --color-green-6: rgba(73, 170, 25, 0.8);
+  //   --color-green-7: rgba(106, 190, 57, 0.8);
+  //   --color-green-8: rgba(143, 212, 100, 0.8);
+  //   --color-green-9: rgba(178, 229, 139, 0.8);
+  //   --color-green-10: rgba(213, 242, 187, 0.8);
+  //   --color-cyan-1: rgba(17, 33, 35, 0.8);
+  //   --color-cyan-2: rgba(17, 53, 54, 0.8);
+  //   --color-cyan-3: rgba(20, 72, 72, 0.8);
+  //   --color-cyan-4: rgba(20, 98, 98, 0.8);
+  //   --color-cyan-5: rgba(19, 133, 133, 0.8);
+  //   --color-cyan-6: rgba(19, 168, 168, 0.8);
+  //   --color-cyan-7: rgba(51, 188, 183, 0.8);
+  //   --color-cyan-8: rgba(86, 209, 201, 0.8);
+  //   --color-cyan-9: rgba(132, 226, 216, 0.8);
+  //   --color-cyan-10: rgba(178, 241, 232, 0.8);
+  //   --color-blue-1: rgba(17, 26, 44, 0.8);
+  //   --color-blue-2: rgba(17, 37, 69, 0.8);
+  //   --color-blue-3: rgba(21, 50, 91, 0.8);
+  //   --color-blue-4: rgba(21, 65, 126, 0.8);
+  //   --color-blue-5: rgba(21, 84, 173, 0.8);
+  //   --color-blue-6: rgba(22, 104, 220, 0.8);
+  //   --color-blue-7: rgba(60, 137, 232, 0.8);
+  //   --color-blue-8: rgba(105, 169, 243, 0.8);
+  //   --color-blue-9: rgba(141, 197, 248, 0.8);
+  //   --color-blue-10: rgba(183, 220, 250, 0.8);
+  //   --color-geekblue-1: rgba(19, 22, 41, 0.8);
+  //   --color-geekblue-2: rgba(22, 29, 64, 0.8);
+  //   --color-geekblue-3: rgba(28, 39, 85, 0.8);
+  //   --color-geekblue-4: rgba(32, 49, 117, 0.8);
+  //   --color-geekblue-5: rgba(38, 62, 160, 0.8);
+  //   --color-geekblue-6: rgba(43, 74, 202, 0.8);
+  //   --color-geekblue-7: rgba(82, 115, 224, 0.8);
+  //   --color-geekblue-8: rgba(127, 159, 243, 0.8);
+  //   --color-geekblue-9: rgba(168, 193, 248, 0.8);
+  //   --color-geekblue-10: rgba(210, 224, 250, 0.8);
+  //   --color-purple-1: rgba(26, 19, 37, 0.8);
+  //   --color-purple-2: rgba(36, 22, 58, 0.8);
+  //   --color-purple-3: rgba(48, 28, 76, 0.8);
+  //   --color-purple-4: rgba(62, 32, 94, 0.8);
+  //   --color-purple-5: rgba(81, 37, 143, 0.8);
+  //   --color-purple-6: rgba(100, 42, 181, 0.8);
+  //   --color-purple-7: rgba(133, 78, 202, 0.8);
+  //   --color-purple-8: rgba(171, 122, 224, 0.8);
+  //   --color-purple-9: rgba(204, 168, 240, 0.8);
+  //   --color-purple-10: rgba(235, 215, 250, 0.8);
+  //   --color-magenta-1: rgba(41, 19, 33, 0.8);
+  //   --color-magenta-2: rgba(64, 22, 49, 0.8);
+  //   --color-magenta-3: rgba(85, 28, 59, 0.8);
+  //   --color-magenta-4: rgba(117, 32, 79, 0.8);
+  //   --color-magenta-5: rgba(160, 38, 105, 0.8);
+  //   --color-magenta-6: rgba(203, 43, 131, 0.8);
+  //   --color-magenta-7: rgba(224, 82, 156, 0.8);
+  //   --color-magenta-8: rgba(243, 127, 183, 0.8);
+  //   --color-magenta-9: rgba(248, 168, 204, 0.8);
+  //   --color-magenta-10: rgba(250, 210, 227, 0.8);
+  //   --color-gray-13: rgba(255, 255, 255, 0.8);
+  //   --color-gray-12: rgba(250, 250, 250, 0.8);
+  //   --color-gray-11: rgba(245, 245, 245, 0.8);
+  //   --color-gray-10: rgba(240, 240, 240, 0.8);
+  //   --color-gray-9: rgba(217, 217, 217, 0.8);
+  //   --color-gray-8: rgba(191, 191, 191, 0.8);
+  //   --color-gray-7: rgba(140, 140, 140, 0.8);
+  //   --color-gray-6: rgba(89, 89, 89, 0.8);
+  //   --color-gray-5: rgba(67, 67, 67, 0.8);
+  //   --color-gray-4: rgba(38, 38, 38, 0.8);
+  //   --color-gray-3: rgba(31, 31, 31, 0.8);
+  //   --color-gray-2: rgba(20, 20, 20, 0.8);
+  //   --color-gray-1: rgba(0, 0, 0, 0.8);
+}

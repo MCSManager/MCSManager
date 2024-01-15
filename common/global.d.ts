@@ -145,6 +145,9 @@ export interface IMapData<T> {
 export interface IPageLayoutConfig {
   page: string;
   items: ILayoutCard[];
+  theme?: {
+    backgroundImage: string;
+  };
 }
 
 export interface ILayoutCardParams {

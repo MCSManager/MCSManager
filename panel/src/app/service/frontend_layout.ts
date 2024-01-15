@@ -64,6 +64,13 @@ export enum LayoutCardHeight {
 function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
   return [
     {
+      page: "__settings__",
+      items: [],
+      theme: {
+        backgroundImage: ""
+      }
+    },
+    {
       page: "/",
       items: [
         {

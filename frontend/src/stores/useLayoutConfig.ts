@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import type { LayoutWithRouter, LayoutCard } from "@/types";
 import { useRouterParams } from "@/hooks/useRouterParams";
-import { getAllLayoutConfig } from "@/config/originLayoutConfig";
+import { getAllLayoutConfig, setAllLayoutConfig } from "@/config/originLayoutConfig";
 import { createGlobalState } from "@vueuse/core";
 import { resetLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
+import type { IPageLayoutConfig } from "../../../common/global";
 
 export const useLayoutConfigStore = createGlobalState(() => {
   const { currentRoutePath } = useRouterParams();
@@ -70,7 +71,26 @@ export const useLayoutConfigStore = createGlobalState(() => {
     return await resetLayoutConfig().execute();
   };
 
+  const getSettingsConfig = async () => {
+    return getAllLayoutConfig().find((v) => v.page === "__settings__");
+  };
+
+  const setSettingsConfig = async (config: IPageLayoutConfig) => {
+    const layout = getAllLayoutConfig();
+    const curIndex = layout.findIndex((v) => v.page === "__settings__");
+    if (curIndex >= 0) {
+      layout[curIndex] = config;
+    } else {
+      layout.push(config);
+    }
+    setAllLayoutConfig(layout);
+    await saveGlobalLayoutConfig();
+    setTimeout(() => window.location.reload(), 200);
+  };
+
   return {
+    setSettingsConfig,
+    getSettingsConfig,
     resetGlobalLayoutConfig,
     getPageLayoutConfig,
     deleteLayoutItem,

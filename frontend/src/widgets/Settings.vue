@@ -10,6 +10,7 @@ import {
   BookOutlined,
   GithubOutlined,
   LockOutlined,
+  PicLeftOutlined,
   ProjectOutlined,
   QuestionCircleOutlined
 } from "@ant-design/icons-vue";
@@ -17,6 +18,8 @@ import {
 import { settingInfo, setSettingInfo } from "@/services/apis";
 import Loading from "@/components/Loading.vue";
 import { computed } from "vue";
+import { useUploadFileDialog } from "@/components/fc";
+import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 
 defineProps<{
   card: LayoutCard;
@@ -24,8 +27,13 @@ defineProps<{
 
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
+const { getSettingsConfig, setSettingsConfig } = useLayoutConfigStore();
 
-const formData = ref<Settings>();
+interface MySettings extends Settings {
+  bgUrl?: string;
+}
+
+const formData = ref<MySettings>();
 
 const submit = async () => {
   if (formData.value) {
@@ -48,6 +56,11 @@ const menus = [
     title: t("TXT_CODE_cdd555be"),
     key: "baseInfo",
     icon: ProjectOutlined
+  },
+  {
+    title: t("外观设置"),
+    key: "ui",
+    icon: PicLeftOutlined
   },
   {
     title: t("TXT_CODE_9c3ca8f"),
@@ -111,9 +124,26 @@ const isZhCN = computed(() => {
   return getCurrentLang().toLowerCase() === "zh_cn";
 });
 
+const uploadBackground = async () => {
+  if (formData.value) formData.value.bgUrl = await useUploadFileDialog();
+};
+
+const handleSaveBgUrl = async (url?: string) => {
+  const cfg = await getSettingsConfig();
+  if (!cfg?.theme) {
+    return reportError(t("配置文件版本不正确，无法设置背景图，请尝试重启面板或重置自定义布局！"));
+  }
+  cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
+  await setSettingsConfig(cfg);
+};
+
 onMounted(async () => {
   const res = await execute();
+  const cfg = await getSettingsConfig();
   formData.value = res.value!;
+  if (cfg?.theme?.backgroundImage) {
+    formData.value.bgUrl = cfg.theme.backgroundImage;
+  }
 });
 </script>
 
@@ -161,20 +191,6 @@ onMounted(async () => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
-                    <a-typography-title :level="5">{{ t("TXT_CODE_b5b33dd4") }}</a-typography-title>
-                    <a-typography-paragraph>
-                      <a-typography-text type="secondary">
-                        {{ t("TXT_CODE_c26e5fb7") }}
-                      </a-typography-text>
-                    </a-typography-paragraph>
-                    <a-textarea
-                      v-model:value="formData.loginInfo"
-                      :rows="4"
-                      :placeholder="t('TXT_CODE_4ea93630')"
-                    />
-                  </a-form-item>
-
                   <a-form-item v-if="isCN()">
                     <a-typography-title :level="5">{{ t("TXT_CODE_b2767aa2") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
@@ -203,6 +219,60 @@ onMounted(async () => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #ui>
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("外观设置") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_b5b33dd4") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_c26e5fb7") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-textarea
+                      v-model:value="formData.loginInfo"
+                      :rows="4"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
+                  </a-form-item>
+
+                  <div class="button mb-24">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("界面背景图片") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "上传背景图片后，面板将设置深色主题且模糊半透明，你可以随时再切换回来。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                      <a-input
+                        v-model:value="formData.bgUrl"
+                        style="max-width: 320px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                      />
+                      <a-button class="ml-6" @click="() => uploadBackground()">上传</a-button>
+                    </a-typography-paragraph>
+                    <a-button type="primary" class="mr-6" @click="handleSaveBgUrl()">保存</a-button>
+                    <a-button danger @click="handleSaveBgUrl('')">重置</a-button>
+                  </a-form-item>
                 </a-form>
               </div>
             </div>

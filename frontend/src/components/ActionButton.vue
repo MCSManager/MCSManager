@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div class="actions-button w-100">
     <a-col :span="24">
-      <div class="btn w-100 flex" @click="click">
+      <div class="action-btn-item w-100 flex" @click="click">
         <div>
           <component :is="icon || LinkOutlined" />
         </div>
@@ -24,7 +24,7 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
-.btn {
+.action-btn-item {
   padding: 20px 12px;
   border: 1px solid var(--color-gray-3);
   background-color: var(--color-gray-2);
