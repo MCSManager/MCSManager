@@ -4,9 +4,12 @@ import { $t as t } from "@/lang/i18n";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import CardPanel from "@/components/CardPanel.vue";
+import IconBtn from "@/components/IconBtn.vue";
 import type { LayoutCard } from "@/types/index";
 import { Empty } from "ant-design-vue";
+import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { computed } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -16,6 +19,7 @@ const { getMetaValue, setMetaValue } = useLayoutCardTools(props.card);
 
 const { containerState } = useLayoutContainerStore();
 const urlSrc = ref(getMetaValue("url", ""));
+const fullCard = computed(() => getMetaValue("full"));
 const { openInputDialog } = useAppToolsStore();
 
 const editImgSrc = async () => {
@@ -28,7 +32,18 @@ const editImgSrc = async () => {
 const myIframe = ref<HTMLIFrameElement | null>(null);
 const myIframeLoading = ref(false);
 
+const initFullCard = () =>
+  fullCard.value
+    ? myIframe.value?.classList.add("full-card-iframe")
+    : myIframe.value?.classList.remove("full-card-iframe");
+
+const toggleFullCard = () => {
+  setMetaValue("full", !fullCard.value);
+  initFullCard();
+};
+
 onMounted(() => {
+  initFullCard();
   watch([urlSrc, myIframe], () => {
     try {
       myIframeLoading.value = true;
@@ -59,6 +74,13 @@ onMounted(() => {
           {{ t("TXT_CODE_78930f0f") }}
         </a-button>
       </template>
+      <template v-if="containerState.isDesignMode" #operator>
+        <IconBtn
+          :icon="fullCard ? FullscreenExitOutlined : FullscreenOutlined"
+          :title="fullCard ? t('取消占满') : t('占满卡片')"
+          @click="toggleFullCard"
+        ></IconBtn>
+      </template>
 
       <template #body>
         <a-skeleton
@@ -70,7 +92,11 @@ onMounted(() => {
           v-show="!myIframeLoading"
           ref="myIframe"
           :src="urlSrc"
-          :style="{ height: parseInt(card.height) + 'px', width: '100%' }"
+          :style="{
+            height: parseInt(card.height) + 'px',
+            width: '100%',
+            'z-index': containerState.isDesignMode ? -1 : 1
+          }"
           frameborder="0"
           marginwidth="0"
           marginheight="0"
@@ -91,7 +117,12 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-// iframe {
-//   width: 100%;
-// }
+.full-card-iframe {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 6px;
+}
 </style>
