@@ -1,9 +1,8 @@
-<!-- eslint-disable no-unused-vars -->
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { $t as t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { UndoOutlined } from "@ant-design/icons-vue";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import dayjs from "dayjs";
@@ -11,19 +10,17 @@ import dayjs from "dayjs";
 import Style1 from "@/components/time/Style1.vue";
 import Style2 from "@/components/time/Style2.vue";
 
-const props = defineProps<{
+defineProps<{
   card: LayoutCard;
 }>();
 
-const maxStyle = 2;
 const showStyle = ref(1);
-
-const TimeComputed = computed(() => `Style${showStyle.value}`);
+const styleList = [Style1, Style2];
+const maxStyle = styleList.length;
 
 const changeStyle = () => {
   spin(1050);
   showStyle.value = showStyle.value === maxStyle ? 1 : showStyle.value + 1;
-  console.log(showStyle.value, TimeComputed);
 };
 
 const { containerState } = useLayoutContainerStore();
@@ -76,8 +73,7 @@ onUnmounted(() => {
       </template>
       <template #title>{{ card.title }}</template>
       <template #body>
-        {{ TimeComputed }}
-        <component :is="TimeComputed" :key="TimeComputed" :date="date" :time="time" :card="card" />
+        <component :is="styleList[showStyle - 1]" :date="date" :time="time" :card="card" />
       </template>
     </card-panel>
   </div>
