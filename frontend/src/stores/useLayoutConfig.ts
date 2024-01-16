@@ -7,6 +7,7 @@ import { resetLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
 import type { IPageLayoutConfig } from "../../../common/global";
 
 export const useLayoutConfigStore = createGlobalState(() => {
+  const hasBgImage = ref(false);
   const { currentRoutePath } = useRouterParams();
   const globalLayoutConfig = ref<LayoutWithRouter[]>(getAllLayoutConfig());
 
@@ -89,6 +90,7 @@ export const useLayoutConfigStore = createGlobalState(() => {
   };
 
   return {
+    hasBgImage,
     setSettingsConfig,
     getSettingsConfig,
     resetGlobalLayoutConfig,

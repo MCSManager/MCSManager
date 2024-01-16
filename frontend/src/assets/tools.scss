@@ -9,6 +9,12 @@
   overflow-y: auto;
 }
 
+.text-black-shadow {
+  text-shadow:
+    6px -4px 15px #303030,
+    -7px 7px 15px #161616;
+}
+
 .flex-between {
   display: flex;
   justify-content: space-between;

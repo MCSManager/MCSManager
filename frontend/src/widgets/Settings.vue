@@ -263,12 +263,14 @@ onMounted(async () => {
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-typography-paragraph>
-                      <a-input
-                        v-model:value="formData.bgUrl"
-                        style="max-width: 320px"
-                        :placeholder="t('TXT_CODE_4ea93630')"
-                      />
-                      <a-button class="ml-6" @click="() => uploadBackground()">上传</a-button>
+                      <div class="flex">
+                        <a-input
+                          v-model:value="formData.bgUrl"
+                          style="max-width: 320px"
+                          :placeholder="t('TXT_CODE_4ea93630')"
+                        />
+                        <a-button class="ml-6" @click="() => uploadBackground()">上传</a-button>
+                      </div>
                     </a-typography-paragraph>
                     <a-button type="primary" class="mr-6" @click="handleSaveBgUrl()">保存</a-button>
                     <a-button danger @click="handleSaveBgUrl('')">重置</a-button>

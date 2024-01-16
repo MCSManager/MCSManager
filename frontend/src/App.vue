@@ -10,10 +10,8 @@ import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import { closeAppLoading } from "./tools/dom";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
 
-const { isDarkTheme, setTheme } = useAppConfigStore();
-const { getSettingsConfig } = useLayoutConfigStore();
-
-const hasBgImage = ref(false);
+const { isDarkTheme } = useAppConfigStore();
+const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
 
 function setBackground(url: string) {
   const body = document.querySelector("body");

@@ -1,6 +1,7 @@
 import { LANGUAGE_KEY, setLanguage, getCurrentLang } from "@/lang/i18n";
 import { reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
+import { useLayoutConfigStore } from "./useLayoutConfig";
 
 export enum THEME {
   LIGHT = "light",
@@ -12,6 +13,8 @@ export const THEME_KEY = "THEME_KEY";
 const defaultTheme = localStorage.getItem(THEME_KEY) || THEME.LIGHT;
 
 export const useAppConfigStore = createGlobalState(() => {
+  // const { hasBgImage } = useLayoutConfigStore();
+
   const appConfig = reactive({
     theme: defaultTheme as THEME
   });

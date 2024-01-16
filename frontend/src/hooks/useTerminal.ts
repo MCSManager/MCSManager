@@ -10,6 +10,7 @@ import type { InstanceDetail } from "@/types";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -47,13 +48,14 @@ export interface StdoutData {
 }
 
 export function useTerminal() {
+  const { hasBgImage } = useLayoutConfigStore();
+
   const events = new EventEmitter();
   let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
   const state = ref<InstanceDetail>();
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
-  const isLoading = ref<boolean>(false);
   const socketAddress = ref("");
   let fitAddonTask: NodeJS.Timer;
 
@@ -140,6 +142,7 @@ export function useTerminal() {
   };
 
   const initTerminalWindow = (element: HTMLElement) => {
+    const background = hasBgImage.value ? "#00000000" : "#1e1e1e";
     const term = new Terminal({
       convertEol: true,
       disableStdin: false,
@@ -147,9 +150,10 @@ export function useTerminal() {
       cursorBlink: true,
       fontSize: 14,
       theme: {
-        background: "#1e1e1e"
+        background
       },
       allowProposedApi: true,
+      allowTransparency: true,
       rendererType: "canvas"
       // The backend needs to be consistent.
       // See "/daemon/src/entity/instance/Instance_config.ts"
