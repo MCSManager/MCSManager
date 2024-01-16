@@ -5,10 +5,8 @@ import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import {
   AppstoreOutlined,
-  CloudServerOutlined,
   FlagOutlined,
   HddOutlined,
-  LoginOutlined,
   NodeExpandOutlined
 } from "@ant-design/icons-vue";
 import { computed } from "vue";

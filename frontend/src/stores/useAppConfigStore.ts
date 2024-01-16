@@ -1,7 +1,7 @@
-import { LANGUAGE_KEY, setLanguage, getCurrentLang } from "@/lang/i18n";
+/* eslint-disable no-unused-vars */
+import { setLanguage, getCurrentLang } from "@/lang/i18n";
 import { reactive } from "vue";
 import { createGlobalState } from "@vueuse/core";
-import { useLayoutConfigStore } from "./useLayoutConfig";
 
 export enum THEME {
   LIGHT = "light",
