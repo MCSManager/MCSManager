@@ -3,15 +3,22 @@ import dayjs from "dayjs";
 import { onUnmounted } from "vue";
 import { onMounted } from "vue";
 import { ref } from "vue";
+import { t } from "@/lang/i18n";
+
+defineProps<{
+  date: string;
+}>();
 
 const time = ref("");
+const st = ref(0);
 
 let timer: NodeJS.Timer | null = null;
 
 onMounted(() => {
   timer = setInterval(() => {
     time.value = dayjs().format("HHmmss");
-  }, 1000);
+    st.value = Date.now();
+  }, 500);
 });
 
 onUnmounted(() => {
@@ -21,63 +28,92 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-100 flex-center overflow-hidden">
-    <div class="time">
-      <div class="h">
-        <div class="left" :style="{ '--n': Number(time[0]) - 1 }">
-          <span>1</span>
-          <span>2</span>
+  <div class="time-wrapper h-100 flex-center overflow-hidden">
+    <div class="time mb-40">
+      <div class="time-container">
+        <div class="h">
+          <div class="left" :style="{ '--n': Number(time[0]) }">
+            <span>0</span>
+            <span>1</span>
+            <span>2</span>
+          </div>
+          <div class="right" :style="{ '--n': Number(time[1]) }">
+            <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
+          </div>
         </div>
-        <div class="right" :style="{ '--n': Number(time[1]) }">
-          <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
+        :
+        <div class="m">
+          <div class="left" :style="{ '--n': Number(time[2]) }">
+            <span v-for="i in 7" :key="i">{{ i - 1 }}</span>
+          </div>
+          <div class="right" :style="{ '--n': Number(time[3]) }">
+            <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
+          </div>
+        </div>
+        :
+        <div class="s">
+          <div class="left" :style="{ '--n': Number(time[4]) }">
+            <span v-for="i in 7" :key="i" class="second-item">{{ i - 1 }}</span>
+          </div>
+          <div class="right" :style="{ '--n': Number(time[5]) }">
+            <span v-for="i in 10" :key="i" class="second-item">{{ i - 1 }}</span>
+          </div>
         </div>
       </div>
-      :
-      <div class="m">
-        <div class="left" :style="{ '--n': Number(time[2]) }">
-          <span v-for="i in 7" :key="i">{{ i - 1 }}</span>
-        </div>
-        <div class="right" :style="{ '--n': Number(time[3]) }">
-          <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
-        </div>
-      </div>
-      :
-      <div class="s">
-        <div class="left" :style="{ '--n': Number(time[4]) }">
-          <span v-for="i in 7" :key="i">{{ i - 1 }}</span>
-        </div>
-        <div class="right" :style="{ '--n': Number(time[5]) }">
-          <span v-for="i in 10" :key="i">{{ i - 1 }}</span>
+
+      <div class="flex-center mt-12 date">
+        <div>
+          <div class="flex-center">
+            <span>Timestamp: {{ st }}</span>
+          </div>
+          <div class="flex-center">
+            {{ date }}
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <div>{{ date }}</div>
 </template>
 
 <style lang="less" scoped>
-.time {
-  display: flex;
-  font-size: 20px;
-  align-items: flex-start;
+.time-wrapper {
+  --size: 60px;
 
-  .h,
-  .m,
-  .s {
-    display: flex;
-    margin: 0 10px;
-    align-items: flex-start;
-
-    .left,
-    .right {
-      margin: 0 10px;
+  .time {
+    .date {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .time-container {
+      height: var(--size);
+      overflow: hidden;
       display: flex;
+      font-size: var(--size);
       align-items: flex-start;
-      flex-direction: column;
-      transition: all 0.3s;
-      transform: translateY(calc(var(--n) * -22px));
 
-      span {
-        height: 22px;
+      .h,
+      .m,
+      .s {
+        font-weight: 600;
+        display: flex;
+        margin: 0 6px;
+        align-items: flex-start;
+
+        .left,
+        .right {
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          transition: all 0.9s;
+          transform: translateY(calc(var(--n) * -60px));
+          span {
+            height: var(--size);
+          }
+        }
+      }
+      .second-item {
+        opacity: 0.8;
       }
     }
   }
