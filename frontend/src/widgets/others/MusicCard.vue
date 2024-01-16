@@ -3,7 +3,7 @@
 import { ref, h } from "vue";
 import { Empty, message } from "ant-design-vue";
 import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
+
 import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons-vue";
 import { t } from "@/lang/i18n";
 import { useUploadFileDialog } from "@/components/fc";
@@ -12,8 +12,9 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import WaveSurfer from "wavesurfer.js";
 import type { LayoutCard } from "@/types";
 import { onMounted } from "vue";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 
-dayjs.extend(duration);
+const { isDarkTheme } = useAppConfigStore();
 
 const prop = defineProps<{
   card: LayoutCard;
@@ -84,13 +85,15 @@ onMounted(() => {
   if (time) {
     wavesurfer = WaveSurfer.create({
       container: time || "",
-      waveColor: "#7a7a7a",
-      progressColor: "#000",
+      waveColor: isDarkTheme() ? "#707070" : "#7a7a7a",
+      progressColor: isDarkTheme() ? "#bababa" : "#000",
+      cursorColor: "#8f8f8f",
       url: musicUrl.value,
       height: 50,
-      barWidth: 2,
-      barGap: 1,
-      barRadius: 2
+      barWidth: 4,
+      barGap: 6,
+      barRadius: 8,
+      cursorWidth: 2
     });
 
     wavesurfer.on("ready", function () {
@@ -131,8 +134,7 @@ onMounted(() => {
                 size="large"
                 shape="circle"
                 :icon="playerButtonIcon"
-                style="width: auto; height: auto; font-size: 1.8em"
-                class="mr-10"
+                style="width: auto; height: auto; font-size: 14px"
                 @click="changePlayerStatis()"
               />
               <span>{{ playTime }}&nbsp;/&nbsp;{{ maxTime }}</span>
@@ -151,7 +153,7 @@ onMounted(() => {
       </template>
       <template #body-design>
         <a-space align="center" direction="vertical" class="w-100 h-100 edit">
-          <h1>修改曲目</h1>
+          <h2>修改曲目</h2>
           <a-space>
             <a-button type="primary" @click="uploadMusic(UploadType.File)">
               {{ t("上传音乐文件") }}
@@ -190,16 +192,18 @@ onMounted(() => {
 }
 
 .player {
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
+  width: 86%;
   height: 100%;
   .time-line {
     width: 100%;
   }
   .button {
+    margin-left: -20px;
     margin-top: 5px;
     display: flex;
     align-items: center;

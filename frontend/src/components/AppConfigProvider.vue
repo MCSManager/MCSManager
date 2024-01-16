@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import enUS from "ant-design-vue/es/locale/en_US";
+import duration from "dayjs/plugin/duration";
 import "dayjs/locale/zh-cn";
 import "dayjs/locale/en";
 import dayjs from "dayjs";
@@ -8,6 +9,8 @@ import { ref } from "vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { theme } from "ant-design-vue";
 import { ConfigProvider } from "ant-design-vue";
+
+dayjs.extend(duration);
 
 const { getCurrentLanguage, isDarkTheme } = useAppConfigStore();
 const locale = ref(enUS);
