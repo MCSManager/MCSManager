@@ -152,12 +152,12 @@ const showCardOperator = (card: ILayoutCard) => {
 @keyframes scaleAnimation {
   0% {
     opacity: 0;
-    // transform: scale(0.96);
+    transform: scale(0.98);
   }
 
   100% {
     opacity: 1;
-    // transform: scale(1);
+    transform: scale(1);
   }
 }
 </style>

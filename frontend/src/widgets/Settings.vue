@@ -3,7 +3,7 @@ import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { getCurrentLang, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
-import { message } from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import {
   BankOutlined,
@@ -129,12 +129,20 @@ const uploadBackground = async () => {
 };
 
 const handleSaveBgUrl = async (url?: string) => {
-  const cfg = await getSettingsConfig();
-  if (!cfg?.theme) {
-    return reportError(t("配置文件版本不正确，无法设置背景图，请尝试重启面板或重置自定义布局！"));
-  }
-  cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
-  await setSettingsConfig(cfg);
+  Modal.confirm({
+    title: t("确定要设置背景图片吗？"),
+    content: t("此功能有一定的不稳定性，无法保证界面用户体验依然保持最佳。"),
+    async onOk() {
+      const cfg = await getSettingsConfig();
+      if (!cfg?.theme) {
+        return reportError(
+          t("配置文件版本不正确，无法设置背景图，请尝试重启面板或重置自定义布局！")
+        );
+      }
+      cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
+      await setSettingsConfig(cfg);
+    }
+  });
 };
 
 onMounted(async () => {
@@ -255,11 +263,16 @@ onMounted(async () => {
                     <a-typography-title :level="5">{{ t("界面背景图片") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "上传背景图片后，面板将设置深色主题且模糊半透明，你可以随时再切换回来。"
-                          )
-                        }}
+                        <div>
+                          {{
+                            t(
+                              "上传背景图片后，面板将设置深色主题且模糊半透明，你可以随时再切换回来。"
+                            )
+                          }}
+                        </div>
+                        <div>
+                          {{ t("此功能有一定的不稳定性，无法保证界面用户体验依然保持最佳。") }}
+                        </div>
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-typography-paragraph>
@@ -393,7 +406,7 @@ onMounted(async () => {
                 <p v-if="isZhCN">
                   <span>
                     {{ $t("TXT_CODE_d2c79249") }}
-                    <a href="https://github.com/MCSManager/MCSManager" target="_blank">
+                    <a href="https://afdian.net/a/mcsmanager" target="_blank">
                       {{ t("TXT_CODE_e4794d20") }}
                     </a>
                   </span>
