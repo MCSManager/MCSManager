@@ -40,6 +40,7 @@ import LoginCard from "@/widgets/LoginCard.vue";
 import DefaultCard from "@/widgets/DefaultCard.vue";
 import Carousel from "@/widgets/others/Carousel.vue";
 import PluginCard from "@/widgets/others/PluginCard.vue";
+import MusicCard from "@/widgets/others/MusicCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -83,7 +84,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   InstanceShortcut,
   DefaultCard,
   Carousel,
-  PluginCard
+  PluginCard,
+  MusicCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -272,7 +274,6 @@ export function getLayoutCardPool() {
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     },
-
     {
       id: getRandomId(),
       permission: ROLE.GUEST,
@@ -281,6 +282,17 @@ export function getLayoutCardPool() {
       title: t("TXT_CODE_af143e18"),
       width: 4,
       description: t("TXT_CODE_cf9e259c"),
+      height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "MusicCard",
+      title: t("音乐播放器"),
+      width: 4,
+      description: t("音乐播放器卡片"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     },
@@ -481,9 +493,7 @@ export function getLayoutCardPool() {
       type: "PluginCard",
       title: t("TXT_CODE_5ebec0db"),
       width: 4,
-      description: t(
-        "TXT_CODE_cb84b22"
-      ),
+      description: t("TXT_CODE_cb84b22"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }
