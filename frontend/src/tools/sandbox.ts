@@ -69,7 +69,11 @@ export class ProxySandBox {
 
   public executeJavascript(code: string) {
     const proxyFunc = Function("window", `"use strict";\n${code}`);
-    proxyFunc?.call(this.proxyWindow, this.proxyWindow);
+    try {
+      proxyFunc?.bind(this.proxyWindow)(this.proxyWindow);
+    } catch (err) {
+      console.error("Plugin HTML card Error:\n", err);
+    }
   }
 
   public destroy() {
