@@ -87,6 +87,7 @@ const loginSuccess = () => {
 </script>
 
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <div
     :class="{
       logging: loginStep === 1,
@@ -137,7 +138,6 @@ const loginSuccess = () => {
 
             <div class="mt-24 flex-between align-center">
               <div class="mcsmanager-link">
-                <!--  eslint-disable-next-line vue/no-v-html -->
                 <div
                   v-if="pageInfoResult?.loginInfo"
                   class="global-markdown-html"
@@ -187,8 +187,6 @@ const loginSuccess = () => {
 </style>
 
 <style lang="scss" scoped>
-.loginDone {
-}
 .logging {
   .login-panel {
     transform: scale(0.96);

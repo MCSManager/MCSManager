@@ -5,15 +5,16 @@ import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
-import { useRoute } from "vue-router";
 
-const route = useRoute();
 const open = ref(false);
 const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
+
+// eslint-disable-next-line no-unused-vars
 let resolve: (t: string) => void;
+// eslint-disable-next-line no-unused-vars
 let reject: (e: Error) => void;
 
 const props = defineProps<{

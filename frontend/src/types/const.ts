@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { t } from "@/lang/i18n";
 export const CARD_FIXED_HEIGHT = 200;
 

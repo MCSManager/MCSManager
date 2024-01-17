@@ -1,4 +1,3 @@
-import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import type { IPanelResponseProtocol } from "./../../../common/global.d";
 import { useAppStateStore } from "@/stores/useAppStateStore";

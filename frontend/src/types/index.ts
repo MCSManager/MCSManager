@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import type {
   IGlobalInstanceConfig,
   ILayoutCard as GlobalLayoutCard,

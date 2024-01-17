@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { onUnmounted } from "vue";
 import { onMounted } from "vue";
 import { ref } from "vue";
-import { t } from "@/lang/i18n";
 
 defineProps<{
   date: string;

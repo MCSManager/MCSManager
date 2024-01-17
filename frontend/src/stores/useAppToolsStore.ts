@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createGlobalState } from "@vueuse/core";
 import { reactive } from "vue";
 

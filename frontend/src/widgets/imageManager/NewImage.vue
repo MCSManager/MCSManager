@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";

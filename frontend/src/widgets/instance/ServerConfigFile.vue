@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useScreen } from "@/hooks/useScreen";

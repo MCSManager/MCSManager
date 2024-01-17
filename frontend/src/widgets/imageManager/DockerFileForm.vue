@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { reactive, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { message, notification } from "ant-design-vue";
+import { notification } from "ant-design-vue";
 import { imageList } from "@/services/apis/envImage";
 
 const props = defineProps<{

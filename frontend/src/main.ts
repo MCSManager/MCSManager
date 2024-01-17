@@ -1,6 +1,5 @@
-import { initI18n, initInstallPageFlow, toStandardLang } from "@/lang/i18n";
+import { initI18n } from "@/lang/i18n";
 import { useAppStateStore } from "./stores/useAppStateStore";
-import { panelStatus } from "./services/apis";
 import { initLayoutConfig } from "./services/layout";
 
 (async function () {
