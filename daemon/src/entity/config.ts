@@ -15,7 +15,7 @@ class Config {
   public port = 24444;
   public key = builderPassword();
   public maxFileTask = 2;
-  public maxZipFileSize = 60;
+  public maxZipFileSize = 200;
   public language = "en_us";
   public defaultInstancePath = "";
 }
