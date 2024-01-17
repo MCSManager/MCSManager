@@ -153,7 +153,7 @@ onMounted(() => {
       </template>
       <template #body-design>
         <a-space align="center" direction="vertical" class="w-100 h-100 edit">
-          <h2>修改曲目</h2>
+          <h2>{{ t("修改曲目") }}</h2>
           <a-space>
             <a-button type="primary" @click="uploadMusic(UploadType.File)">
               {{ t("上传音乐文件") }}
