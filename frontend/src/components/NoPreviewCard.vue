@@ -15,7 +15,7 @@ defineProps<{
       <div class="flex justify-center align-center h-100">
         <a-typography-paragraph style="max-width: 320px; margin: auto; text-align: center">
           <ExclamationCircleOutlined />
-          {{ t("此卡片无法在设计模式下预览。") }}
+          {{ t("TXT_CODE_5ec10cc8") }}
         </a-typography-paragraph>
       </div>
     </template>

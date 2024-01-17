@@ -264,11 +264,11 @@ const handleChangeNode = async (item: NodeStatus) => {
         <div class="flex">
           <a-popconfirm
             v-if="selectedItems.length > 0"
-            :title="t('你确定要清空所有已选择的实例吗？')"
+            :title="t('TXT_CODE_647ea2ec')"
             @confirm="clearAll"
           >
             <a-button>
-              {{ t("清空所有选中") }}
+              {{ t("TXT_CODE_d258ec31") }}
             </a-button>
           </a-popconfirm>
 

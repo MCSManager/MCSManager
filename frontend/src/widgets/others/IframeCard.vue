@@ -70,7 +70,7 @@ onMounted(() => {
       <template v-if="containerState.isDesignMode" #operator>
         <IconBtn
           :icon="fullCard ? FullscreenExitOutlined : FullscreenOutlined"
-          :title="fullCard ? t('取消占满') : t('占满卡片')"
+          :title="fullCard ? t('TXT_CODE_2818a7bc') : t('TXT_CODE_52ba5942')"
           @click="toggleFullCard"
         ></IconBtn>
       </template>

@@ -67,8 +67,8 @@ const handleNext = async () => {
   } catch (error: any) {
     console.error(error);
     Modal.error({
-      title: t("网页无法正确运作"),
-      content: t("无法获取身份数据，可能是您已被封禁，或者网络问题，请尝试刷新页面	")
+      title: t("TXT_CODE_da2fb99a"),
+      content: t("TXT_CODE_6e718abe")
     });
     loginStep.value--;
   }

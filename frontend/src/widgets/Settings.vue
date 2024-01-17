@@ -58,7 +58,7 @@ const menus = [
     icon: ProjectOutlined
   },
   {
-    title: t("外观设置"),
+    title: t("TXT_CODE_1c18acc0"),
     key: "ui",
     icon: PicLeftOutlined
   },
@@ -130,14 +130,12 @@ const uploadBackground = async () => {
 
 const handleSaveBgUrl = async (url?: string) => {
   Modal.confirm({
-    title: t("确定要设置背景图片吗？"),
-    content: t("此功能有一定的不稳定性，无法保证界面用户体验依然保持最佳。"),
+    title: t("TXT_CODE_c0606ef4"),
+    content: t("TXT_CODE_cf95364f"),
     async onOk() {
       const cfg = await getSettingsConfig();
       if (!cfg?.theme) {
-        return reportError(
-          t("配置文件版本不正确，无法设置背景图，请尝试重启面板或重置自定义布局！")
-        );
+        return reportError(t("TXT_CODE_b89780e2"));
       }
       cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
       await setSettingsConfig(cfg);
@@ -235,7 +233,7 @@ onMounted(async () => {
           <template #ui>
             <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
-                {{ t("外观设置") }}
+                {{ t("TXT_CODE_1c18acc0") }}
               </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
@@ -260,18 +258,14 @@ onMounted(async () => {
                   </div>
 
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("界面背景图片") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_8ae0dc90") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         <div>
-                          {{
-                            t(
-                              "上传背景图片后，面板将设置深色主题且模糊半透明，你可以随时再切换回来。"
-                            )
-                          }}
+                          {{ t("TXT_CODE_434786c9") }}
                         </div>
                         <div>
-                          {{ t("此功能有一定的不稳定性，无法保证界面用户体验依然保持最佳。") }}
+                          {{ t("TXT_CODE_cf95364f") }}
                         </div>
                       </a-typography-text>
                     </a-typography-paragraph>

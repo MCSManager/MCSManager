@@ -290,9 +290,9 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "MusicCard",
-      title: t("音乐播放器"),
+      title: t("TXT_CODE_660e2341"),
       width: 4,
-      description: t("音乐播放器卡片"),
+      description: t("TXT_CODE_903a9ec9"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     },

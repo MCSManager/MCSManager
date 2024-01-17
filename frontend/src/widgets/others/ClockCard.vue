@@ -66,7 +66,7 @@ onUnmounted(() => {
           <template #icon>
             <a-tooltip placement="top">
               <template #title>
-                <span>{{ t("更换样式") }}</span>
+                <span>{{ t("TXT_CODE_5ab1eb7d") }}</span>
               </template>
               <undo-outlined :rotate="45" :spin="isSpinning" />
             </a-tooltip>

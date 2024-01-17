@@ -181,10 +181,8 @@ const appMenus = computed(() => {
       click: (key: string) => {
         if (key === THEME.DARK) {
           Modal.confirm({
-            title: $t("确定要切换到深色模式吗？"),
-            content: $t(
-              "MCSManager 优先确保浅色模式的用户体验，深色模式对于某些界面可能较差的用户体验。"
-            ),
+            title: $t("TXT_CODE_9775ccb"),
+            content: $t("TXT_CODE_90b2ae00"),
             async onOk() {
               setTheme(THEME.DARK);
             }
@@ -235,7 +233,7 @@ const appMenus = computed(() => {
       icon: LogoutOutlined,
       click: async () => {
         Modal.confirm({
-          title: $t("确定要退出当前用户吗？"),
+          title: $t("TXT_CODE_9654b91c"),
           async onOk() {
             await execute();
             message.success(t("TXT_CODE_11673d8c"));

@@ -35,12 +35,12 @@ const uploadMusic = async (type: UploadType) => {
   try {
     if (type === UploadType.File) {
       const path = await useUploadFileDialog();
-      if (path) (musicUrl.value = path) && message.success(t("设置成功，保存以应用更改"));
+      if (path) (musicUrl.value = path) && message.success(t("TXT_CODE_9d498b20"));
     }
     if (type === UploadType.Url) {
       musicUrl.value =
-        ((await openInputDialog(t("请输入文件 URL 地址"))) as string) || musicUrl.value;
-      message.success(t("设置成功，保存以应用更改"));
+        ((await openInputDialog(t("TXT_CODE_f4617d31"))) as string) || musicUrl.value;
+      message.success(t("TXT_CODE_9d498b20"));
     }
     setMetaValue("musicUrl", musicUrl.value);
   } catch (error) {}
@@ -144,22 +144,22 @@ onMounted(() => {
         <div v-else>
           <a-empty class="h-100" :image="Empty.PRESENTED_IMAGE_SIMPLE">
             <template #description>
-              <span>{{ t("暂无音乐") }}</span>
+              <span>{{ t("TXT_CODE_28ce635a") }}</span>
               <br />
-              <span>{{ t("使用设计模式将鼠标移动到此处以进行编辑") }}</span>
+              <span>{{ t("TXT_CODE_be1354f5") }}</span>
             </template>
           </a-empty>
         </div>
       </template>
       <template #body-design>
         <a-space align="center" direction="vertical" class="w-100 h-100 edit">
-          <h2>{{ t("修改曲目") }}</h2>
+          <h2>{{ t("TXT_CODE_c2697552") }}</h2>
           <a-space>
             <a-button type="primary" @click="uploadMusic(UploadType.File)">
-              {{ t("上传音乐文件") }}
+              {{ t("TXT_CODE_a106108c") }}
             </a-button>
             <a-button type="primary" @click="uploadMusic(UploadType.Url)">
-              {{ t("填写音乐 URL") }}
+              {{ t("TXT_CODE_b3f2ea10") }}
             </a-button>
           </a-space>
         </a-space>

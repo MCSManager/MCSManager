@@ -226,7 +226,7 @@ onMounted(async () => {
       <div>
         <img :src="connectErrorImage" style="width: 100%; height: 110px" />
       </div>
-      <a-typography-title :level="5">{{ $t("错误信息：") }}</a-typography-title>
+      <a-typography-title :level="5">{{ $t("TXT_CODE_9c95b60f") }}</a-typography-title>
       <a-typography-paragraph>
         <pre style="font-size: 12px"><code>{{ socketError.message }}</code></pre>
       </a-typography-paragraph>
@@ -247,7 +247,7 @@ onMounted(async () => {
           </li>
         </ul>
         <div class="flex flex-center">
-          <a-typography-link @click="refreshPage">{{ $t("重新连接") }}</a-typography-link>
+          <a-typography-link @click="refreshPage">{{ $t("TXT_CODE_f8b28901") }}</a-typography-link>
         </div>
       </a-typography-paragraph>
     </div>
