@@ -47,11 +47,13 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ## 配置/数据文件
 
-配置文件： `data/SystemConfig/config.json`
+配置文件： `mcsmanager/web/data/SystemConfig/config.json`
 
-用户数据文件：`data/User/*.json`
+用户数据文件：`mcsmanager/web/data/User/*.json`
 
-远程守护进程配置：`data/RemoteServiceConfig/*.json`
+远程守护进程配置：`mcsmanager/web/data/RemoteServiceConfig/*.json`
+
+具体以实际安装目录为主
 
 <br />
 
@@ -65,7 +67,7 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ### Windows
 
-对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
+对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（管理员权限运行）:
 
 前往：[mcsmanager.com](https://mcsmanager.com/)
 
