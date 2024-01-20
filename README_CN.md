@@ -21,7 +21,7 @@
 
 **MCSManager 面板（简称：MCSM 面板）**
 
-一款开源，分布式，轻量级，快速部署，支持大部分游戏服务端和控制台程序的管理面板
+一款开源，分布式，轻量级，快速部署，支持大部分游戏服务端和控制台程序的管理面板。
 
 <br />
 
@@ -227,7 +227,7 @@ npm run start
 
 ## 国际化
 
-MCSManager 已支持`中文``英文`两种语言，实现国际化基本全面覆盖。
+MCSManager 已支持 `中文` `英文` 两种语言，实现国际化基本全面覆盖。
 
 软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
