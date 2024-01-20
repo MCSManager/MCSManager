@@ -53,7 +53,7 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 远程守护进程配置：`mcsmanager/web/data/RemoteServiceConfig/*.json`
 
-具体以实际安装目录为主
+> 具体以实际安装目录为主
 
 <br />
 
@@ -101,6 +101,7 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
 
+
 # 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
 wget https://nodejs.org/dist/v14.19.1/node-v14.19.1-linux-x64.tar.gz
 
@@ -111,6 +112,7 @@ tar -zxvf node-v14.19.1-linux-x64.tar.gz
 ln -s /opt/node-v14.19.1-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v14.19.1-linux-x64/bin/npm /usr/bin/npm
 
+
 # 准备好安装目录
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
@@ -119,8 +121,10 @@ cd /opt/mcsmanager/
 wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
 tar -zxf mcsmanager_linux_release.tar.gz
 
+
 # 安装依赖库
 ./install-dependency.sh
+
 
 # 请打开两个终端或屏幕
 # 启动守护进程
@@ -129,7 +133,9 @@ tar -zxf mcsmanager_linux_release.tar.gz
 # 启动面板前端(在第二个终端)
 ./start-web.sh
 ```
-> 浏览器访问面板进行初始化 http://localhost:23333/
+
+浏览器访问面板进行初始化 http://localhost:23333/
+
 > 一般来说，面板前端会自动扫描并连接到本地守护进程。
 
 - 注意，这种安装方式不会自动注册面板前端和守护进进程到系统服务（systemd），所以一旦关闭终端则程序会被终止。
@@ -219,7 +225,7 @@ npm run start
 
 ## 国际化
 
-MCSManager 已支持中文，英文两种语言，实现国际化基本全面覆盖。
+MCSManager 已支持`中文``英文`两种语言，实现国际化基本全面覆盖。
 
 软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
@@ -251,7 +257,7 @@ MCSManager 已支持中文，英文两种语言，实现国际化基本全面覆
 
 <br />
 
-##
+## 
 
 感谢您对 MCSManager 项目的支持
 
