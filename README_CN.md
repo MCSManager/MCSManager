@@ -77,7 +77,7 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ### Linux
 
-**一行命令快速安装**
+**命令快速安装**
 
 ```bash
 // 国内专用 gitee 加速源
@@ -100,10 +100,13 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 ```bash
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
+
 # 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
 wget https://nodejs.org/dist/v14.19.1/node-v14.19.1-linux-x64.tar.gz
+
 # 解压档案
 tar -zxvf node-v14.19.1-linux-x64.tar.gz
+
 # 添加系统环境变量
 ln -s /opt/node-v14.19.1-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v14.19.1-linux-x64/bin/npm /usr/bin/npm
@@ -125,10 +128,9 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 # 启动面板前端(在第二个终端)
 ./start-web.sh
-
-# 浏览器访问面板进行初始化 http://localhost:23333/
-# 一般来说，面板前端会自动扫描并连接到本地守护进程。
 ```
+> 浏览器访问面板进行初始化 http://localhost:23333/
+> 一般来说，面板前端会自动扫描并连接到本地守护进程。
 
 - 注意，这种安装方式不会自动注册面板前端和守护进进程到系统服务（systemd），所以一旦关闭终端则程序会被终止。
 - 因此请阁下务必使用 `screen` 软件来管理。
@@ -177,9 +179,10 @@ git clone https://github.com/MCSManager/MCSManager.git
 cd MCSManager
 npm install
 npm run start
-# 默认将采用 ts-node 直接执行 Typescript 代码
-# 默认运行在 23333 端口
 ```
+
+默认将采用 ts-node 直接执行 Typescript 代码
+默认运行在 23333 端口
 
 **网页前端（UI）**
 
@@ -188,9 +191,10 @@ git clone https://github.com/MCSManager/UI.git
 cd UI
 npm install
 npm run serve
-# 访问 http://localhost:8080/ 即可预览界面
-# 所有 API 请求将自动转发到 23333 端口
 ```
+
+访问 http://localhost:8080/ 即可预览界面
+所有 API 请求将自动转发到 23333 端口
 
 **守护进程（Daemon）**
 
@@ -199,9 +203,10 @@ git clone https://github.com/MCSManager/Daemon.git
 cd Daemon
 npm install
 npm run start
-# 运行后请在控制面板端连接本守护进程
-# 默认运行在 24444 端口
 ```
+
+运行后请在控制面板端连接本守护进程
+默认运行在 24444 端口
 
 <br />
 
@@ -214,7 +219,7 @@ npm run start
 
 ## 国际化
 
-MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆盖。
+MCSManager 已支持中文，英文两种语言，实现国际化基本全面覆盖。
 
 软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
