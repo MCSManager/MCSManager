@@ -103,12 +103,12 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
 # 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
-wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+wget https://nodejs.org/dist/v14.19.1/node-v14.19.1-linux-x64.tar.gz
 # 解压档案
-tar -zxvf node-v14.17.6-linux-x64.tar.gz
+tar -zxvf node-v14.19.1-linux-x64.tar.gz
 # 添加系统环境变量
-ln -s /opt/node-v14.17.6-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v14.19.1-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v14.19.1-linux-x64/bin/npm /usr/bin/npm
 
 # 准备好安装目录
 mkdir /opt/mcsmanager/
