@@ -2,8 +2,8 @@
 
 <br />
 
-[![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/npm-v6.14.16-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/node-v14.19.1-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/) | [团队主页](https://github.com/MCSManager) | [面板端项目](https://github.com/MCSManager/MCSManager) | [网页前端项目](https://github.com/MCSManager/UI) | [守护进程项目](https://github.com/MCSManager/Daemon)
@@ -27,10 +27,10 @@
 
 ## 软件特性
 
-可以帮助你
+可以帮助您
 
-- 集中管理多个服务器节点，
-- 动态在任何主机上创建游戏服务端，
+- 集中管理多个服务器，
+- 在任何主机上创建游戏服务端，
 - 提供安全可靠的多用户权限系统，
 - 很轻松的管理多个节点上的实例，
 - 为 Minecraft，Terraria，Steam 等游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
@@ -61,7 +61,7 @@
 
 远程守护进程配置：`mcsmanager/web/data/RemoteServiceConfig/*.json`
 
-> 具体以实际安装目录为主
+> 具体以实际安装目录为主。
 
 <br />
 
@@ -71,13 +71,15 @@
 
 <br />
 
-## 安装
+## 快速安装
 
 ### Windows
 
-对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（管理员权限运行）:
+对于 Windows 系统，**已整合成直接运行版本，下载即可运行**:
 
 前往：[mcsmanager.com](https://mcsmanager.com/)
+
+下载后解压档案，以**管理员权限**运行 `start.bat`
 
 > 如果您需要将 MCSManager 面板注册到 Windows 系统服务，请点击[这里](https://github.com/bddjr/mcsmanager-services-for-windows)。
 
@@ -85,7 +87,7 @@
 
 ### Linux
 
-**命令快速安装**
+**一行命令快速安装**
 
 ```bash
 // 国内专用 gitee 加速源
@@ -95,15 +97,16 @@ wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup_cn.sh | bash
 wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
 ```
 
-- 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
+- 脚本适用于 x86_64 架构 Ubuntu/Centos/Debian/Archlinux 系统
 - 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
 - 面板代码与运行环境自动安装在 `/opt/` 目录下。
 
 <br />
 
-**Linux 手动安装**
+### 手动安装
 
-- 若一键安装不起作用，则可以尝试此步骤手动安装。
+**Linux**
+- 若安装脚本不起作用，则可以尝试以下步骤手动安装。
 
 ```bash
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
@@ -142,7 +145,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 ./start-web.sh
 ```
 
-浏览器访问面板进行初始化 http://localhost:23333/
+浏览器访问面板进行初始化 http://localhost:23333/ 或者 http://*youraddress*:23333/
 
 > 一般来说，面板前端会自动扫描并连接到本地守护进程。
 
@@ -182,7 +185,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 ## 搭建开发环境（面向开发人员）
 
-**普通用户无需关注也无需执行。**
+***普通用户无需关注也无需执行。***
 
 所有项目全部以开发环境运行后，便可以进行开发与预览，请务必遵循开源协议。
 
