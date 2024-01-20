@@ -19,14 +19,13 @@
 
 ## 这是什么？
 
-
 MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量级，快速部署，支持大部分游戏服务端和控制台程序的管理面板
 
 <br />
 
 ## 软件特性
 
-软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 Minecraft，Terraria，Steam 游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
+此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 Minecraft，Terraria，Steam 游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
 
 
 ![截图.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
@@ -58,7 +57,7 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ## 软件文档
 
-地址：[https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
+地址：[docs.mcsmanager.com](https://docs.mcsmanager.com/)
 
 <br />
 
@@ -68,14 +67,11 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
 
-前往：[https://mcsmanager.com/](https://mcsmanager.com/)
+前往：[mcsmanager.com](https://mcsmanager.com/)
 
 > 如果您需要将 MCSManager 面板注册到 Windows 系统服务，请点击[这里](https://github.com/bddjr/mcsmanager-services-for-windows)。
 
 <br />
-
-
-
 
 ### Linux
 
@@ -166,9 +162,9 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 <br />
 
-## 搭建开发环境
+## 搭建开发环境（面向开发人员）
 
-此段落面向开发人员，普通用户无需关注也无需执行。
+**普通用户无需关注也无需执行。**
 
 所有项目全部以开发环境运行后，便可以进行开发与预览，请务必遵循开源协议。
 
@@ -232,17 +228,24 @@ MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆
 
 ## 问题报告
 
-欢迎发现的任何问题进行反馈，必当及时修复。
+欢迎报告发现的任何问题进行反馈，必当及时修复。:-)
 
-若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com。
+若发现严重安全漏洞又不便发布，请发送邮件至: mcsmanager-dev@outlook.com。
 
 安全问题修复后将在代码中附加漏洞发现者姓名。
 
 <br />
-
 
 ## 源代码协议
 
 源代码遵循 Apache-2.0 协议。
 
 版权所有 2022 MCSManager 开发团队。
+
+<br />
+
+##
+
+感谢您对 MCSManager 项目的支持
+
+<br />
