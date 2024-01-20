@@ -4,6 +4,8 @@ import i18next from "i18next";
 
 import zh_cn from "./language/zh_cn.json";
 import en_us from "./language/en_us.json";
+import ru_ru from "./language/ru_ru.json";
+import pl_pl from "./language/pl_pl.json";
 
 i18next.init({
   lng: "en_us",
@@ -14,6 +16,12 @@ i18next.init({
     },
     en_us: {
       translation: en_us
+    },
+    ru_ru: {
+      translation: ru_ru
+    },
+    pl_pl: {
+      translation: pl_pl
     }
   }
 });
