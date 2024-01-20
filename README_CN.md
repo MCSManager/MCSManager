@@ -27,7 +27,13 @@
 
 ## 软件特性
 
-此软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 Minecraft，Terraria，Steam 游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
+可以帮助你
+
+- 集中管理多个服务器节点，
+- 动态在任何主机上创建游戏服务端，
+- 提供安全可靠的多用户权限系统，
+- 很轻松的管理多个节点上的实例，
+- 为 Minecraft，Terraria，Steam 等游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
 
 
 ![截图.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
@@ -41,7 +47,7 @@
 
 ## 运行环境
 
-控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行，属于轻量级的 Minecraft 服务端控制面板。
+控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行。
 
 必须 `Node 14.17.0` 以上，无需数据库和更改任何系统配置，开箱即可运行。
 
@@ -227,7 +233,7 @@ npm run start
 
 ## 国际化
 
-MCSManager 已支持 `中文` `英文` 两种语言，实现国际化基本全面覆盖。
+MCSManager 已支持 中文, 英文 两种语言，实现国际化基本全面覆盖。
 
 软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
 
