@@ -36,7 +36,7 @@ const columns = [
       if (!e.record.oe && !e.record.ie) {
         return "--";
       }
-      return `Output:${e.record.oe} Input:${e.record.ie}`;
+      return `${t("输出")}:${e.record.oe} ${t("输入")}:${e.record.ie}`;
     }
   },
   {
@@ -51,8 +51,8 @@ const columns = [
     title: t("TXT_CODE_fa920c0"),
     dataIndex: "endTime",
     key: "endTime",
-    customRender: (e: { text: string }) => {
-      return e.text || t("TXT_CODE_abc080d");
+    customRender: (e: { text: number }) => {
+      return parseTimestamp(e.text) || t("TXT_CODE_abc080d");
     }
   },
   {
