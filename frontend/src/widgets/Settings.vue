@@ -276,11 +276,15 @@ onMounted(async () => {
                           style="max-width: 320px"
                           :placeholder="t('TXT_CODE_4ea93630')"
                         />
-                        <a-button class="ml-6" @click="() => uploadBackground()">上传</a-button>
+                        <a-button class="ml-6" @click="() => uploadBackground()">
+                          {{ t("上传") }}
+                        </a-button>
                       </div>
                     </a-typography-paragraph>
-                    <a-button type="primary" class="mr-6" @click="handleSaveBgUrl()">保存</a-button>
-                    <a-button danger @click="handleSaveBgUrl('')">重置</a-button>
+                    <a-button type="primary" class="mr-6" @click="handleSaveBgUrl()">
+                      {{ t("保存") }}
+                    </a-button>
+                    <a-button danger @click="handleSaveBgUrl('')"> {{ t("重置") }}</a-button>
                   </a-form-item>
                 </a-form>
               </div>

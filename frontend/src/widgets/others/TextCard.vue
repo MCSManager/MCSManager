@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <!-- eslint-disable no-unused-vars -->
 <script setup lang="ts">
 import { ref } from "vue";
@@ -6,6 +7,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types/index";
+import { markdownToHTML as mdToHTML } from "@/tools/safe";
 
 enum EDIT_MODE {
   PREVIEW = "PREVIEW",
@@ -30,6 +32,10 @@ const previewsTextContent = () => {
 
 const editTextContent = () => {
   status.value = EDIT_MODE.EDIT;
+};
+
+const markdownTextToHTML = (md: string) => {
+  return mdToHTML(md);
 };
 </script>
 
@@ -67,8 +73,10 @@ const editTextContent = () => {
 
     <template v-else #body>
       <div class="full-card-body-container">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="previews global-markdown-html h-100" v-html="markdownToHTML(textContent)"></div>
+        <div
+          class="previews global-markdown-html h-100"
+          v-html="markdownTextToHTML(textContent)"
+        ></div>
       </div>
     </template>
   </CardPanel>
