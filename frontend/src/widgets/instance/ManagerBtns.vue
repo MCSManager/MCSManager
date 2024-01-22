@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
@@ -33,6 +34,8 @@ const { toPage: toOtherPager } = useAppRouters();
 const props = defineProps<{
   card: LayoutCard;
 }>();
+
+const { isAdmin } = useAppStateStore();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
@@ -137,6 +140,7 @@ const btns = computed(() =>
     {
       title: t("TXT_CODE_4f34fc28"),
       icon: AppstoreAddOutlined,
+      condition: () => isAdmin.value,
       click: () => {
         instanceDetailsDialog.value?.openDialog();
       }

@@ -3,7 +3,7 @@
 import { ref, h } from "vue";
 import { Empty, message } from "ant-design-vue";
 import dayjs from "dayjs";
-
+import { getRandomId } from "@/tools/randId";
 import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons-vue";
 import { t } from "@/lang/i18n";
 import { useUploadFileDialog } from "@/components/fc";
@@ -26,6 +26,8 @@ const { getMetaValue, setMetaValue } = useLayoutCardTools(prop.card);
 
 const musicUrl = ref(getMetaValue<string>("musicUrl", ""));
 
+const timeLineId = `timeline-${getRandomId()}`;
+
 enum UploadType {
   File = "FILE",
   Url = "URL"
@@ -45,8 +47,6 @@ const uploadMusic = async (type: UploadType) => {
     setMetaValue("musicUrl", musicUrl.value);
   } catch (error) {}
 };
-
-let time: null | HTMLAreaElement = null;
 
 let wavesurfer: WaveSurfer | null = null;
 
@@ -82,6 +82,8 @@ const processingTime = (s: number = 0) => {
 };
 
 onMounted(() => {
+  const time = document.getElementById(timeLineId);
+
   if (time) {
     wavesurfer = WaveSurfer.create({
       container: time || "",
@@ -126,7 +128,7 @@ onMounted(() => {
         <div v-if="musicUrl" class="h-100 flex-center">
           <div class="player">
             <div class="time-line">
-              <div ref="time" class="time"></div>
+              <div :id="timeLineId" class="time"></div>
             </div>
             <div class="button">
               <a-button
