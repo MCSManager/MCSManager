@@ -44,6 +44,10 @@ const formRef = ref<FormInstance>();
 const { execute: getImageList } = imageList();
 const dockerImages = ref<string[]>([]);
 
+const UPDATE_CMD_TEMPLATE =
+  t("列如: ") +
+  `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
+
 const openDialog = () => {
   open.value = true;
   initFormDetail();
@@ -260,7 +264,8 @@ defineExpose({
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_A0000001") }}
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="t('TXT_CODE_A0000001')"></span>
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact style="display: flex">
@@ -294,10 +299,15 @@ defineExpose({
               <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_41763172") }}
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="t('TXT_CODE_41763172')"></span>
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input v-model:value="options.config.updateCommand" />
+              <!-- eslint-disable-next-line vue/html-quotes -->
+              <a-input
+                v-model:value="options.config.updateCommand"
+                :placeholder="UPDATE_CMD_TEMPLATE"
+              />
             </a-form-item>
           </a-col>
         </a-row>

@@ -16,7 +16,7 @@ const prop = defineProps<{
 
 const { getMetaValue, setMetaValue } = useLayoutCardTools(prop.card);
 
-const showStyle = ref(getMetaValue("style", 1));
+const showStyle = ref(getMetaValue("style", 2));
 const styleList = [Style1, Style2];
 const maxStyle = styleList.length;
 

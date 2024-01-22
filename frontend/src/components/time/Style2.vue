@@ -17,7 +17,7 @@ onMounted(() => {
   timer = setInterval(() => {
     time.value = dayjs().format("HHmmss");
     st.value = Date.now();
-  }, 500);
+  }, 1000);
 });
 
 onUnmounted(() => {
@@ -82,7 +82,7 @@ onUnmounted(() => {
   .time {
     .date {
       font-size: 12px;
-      opacity: 0.8;
+      opacity: 0.76;
     }
     .time-container {
       height: var(--size);
@@ -104,7 +104,7 @@ onUnmounted(() => {
           display: flex;
           align-items: flex-start;
           flex-direction: column;
-          transition: all 0.9s;
+          transition: all 0.8s;
           transform: translateY(calc(var(--n) * -60px));
           span {
             height: var(--size);

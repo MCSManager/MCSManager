@@ -28,7 +28,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
     try {
       instance.setLock(true);
       let updateCommand = instance.config.updateCommand;
-      updateCommand = updateCommand.replace(/\$\{mcsm_workspace\}/gm, instance.config.cwd);
+      updateCommand = updateCommand.replace(/\{mcsm_workspace\}/gm, instance.config.cwd);
       logger.info(
         $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: instance.instanceUuid })
       );
