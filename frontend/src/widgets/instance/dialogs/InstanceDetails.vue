@@ -45,7 +45,7 @@ const { execute: getImageList } = imageList();
 const dockerImages = ref<string[]>([]);
 
 const UPDATE_CMD_TEMPLATE =
-  t("列如: ") +
+  t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
 
 const openDialog = () => {

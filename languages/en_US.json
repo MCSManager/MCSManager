@@ -1720,5 +1720,10 @@
   "TXT_CODE_cf95364f": "This feature may be unstable, cannot guarantee best user experience.",
   "TXT_CODE_b89780e2": "Incorrect profile version, unable to set background image, please try restarting the panel or resetting custom layout!",
   "TXT_CODE_8ae0dc90": "UI background image",
-  "TXT_CODE_434786c9": "After uploading a background image, the panel will switch to dark theme with a blurred translucent effect, you can switch back anytime."
+  "TXT_CODE_434786c9": "After uploading a background image, the panel will switch to dark theme with a blurred translucent effect, you can switch back anytime.",
+  "TXT_CODE_7ceebc05": "Enter text content, support Markdown syntax, and can wrap lines.\n\nDon’t use other people’s copywriting easily, otherwise malicious code may be injected to attack you.",
+  "TXT_CODE_4b6e951": "Input",
+  "TXT_CODE_61ca492b": "Example:",
+  "TXT_CODE_ae09d79d": "Upload",
+  "TXT_CODE_bb888626": "Output"
 }

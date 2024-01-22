@@ -36,7 +36,7 @@ const columns = [
       if (!e.record.oe && !e.record.ie) {
         return "--";
       }
-      return `${t("输出")}:${e.record.oe} ${t("输入")}:${e.record.ie}`;
+      return `${t("TXT_CODE_bb888626")}:${e.record.oe} ${t("TXT_CODE_4b6e951")}:${e.record.ie}`;
     }
   },
   {
