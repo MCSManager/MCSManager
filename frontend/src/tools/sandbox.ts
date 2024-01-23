@@ -1,5 +1,7 @@
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import axios from "axios";
 
+const { getTheme } = useAppConfigStore();
 class SandboxBridge {
   [key: string | symbol | number]: any;
 
@@ -8,6 +10,7 @@ class SandboxBridge {
   // API
   public $axios = axios;
   public $realWindow = window;
+  public $theme = getTheme();
 
   public $onMounted(callback: Function) {
     this._addCallback("onMounted", callback);
