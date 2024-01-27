@@ -387,7 +387,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     try {
       await getDownloadCfg({
         params: {
-          file_name: fileName,
+          file_name: breadcrumbs[breadcrumbs.length - 1].path + fileName,
           daemonId: daemonId!,
           uuid: instanceId!
         }
