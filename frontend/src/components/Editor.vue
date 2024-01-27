@@ -14,6 +14,9 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
 import { useScreen } from "../hooks/useScreen";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+
+const { isDarkTheme } = useAppConfigStore();
 
 const emit = defineEmits(["update:text"]);
 
@@ -42,7 +45,7 @@ const theme = EditorView.theme({
     height: props.height
   },
   ".cm-content": {
-    "background-color": "var(--color-gray-4)"
+    "background-color": `rgba($color:var(--color-gray-4),$alpha:${isDarkTheme() ? 0.8 : 0.5})`
   }
   // ".cm-wrap": {
   //   height: props.height,
