@@ -8,6 +8,41 @@ import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/ant-design-vue/es")) {
+            return "ant-es";
+          }
+          if (id.includes("node_modules/ant-design-vue")) {
+            return "ant";
+          }
+          if (id.includes("node_modules/echarts")) {
+            return "echart";
+          }
+          if (id.includes("node_modules/zrender")) {
+            return "zrender";
+          }
+          if (id.includes("node_modules/vue")||id.includes("node_modules/@vue")) {
+            return "vue";
+          }
+          if (id.includes("node_modules/xterm")) {
+            return "xterm";
+          }
+          if (id.includes("node_modules/@codemirror")) {
+            return "codemirror";
+          }
+          if (id.includes("node_modules/monaco")) {
+            return "monaco";
+          }
+          if (id.includes("languages")) {
+            return "lang";
+          }
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       "/api": {
