@@ -187,7 +187,8 @@ router.post(
     const enable = ctx.request.body.enable;
     const userUuid = getUserUuid(ctx);
     await userSystem.edit(userUuid, {
-      open2FA: enable
+      open2FA: enable,
+      secret: enable ? null : ""
     });
     ctx.body = true;
   }

@@ -73,6 +73,17 @@ const confirm2FACode = async () => {
   await updateUserInfo();
   formState.qrcode = "";
 };
+
+const disable2FACode = async () => {
+  await confirm2FA().execute({
+    data: {
+      enable: false
+    }
+  });
+  message.success(t("TXT_CODE_d3de39b4"));
+  await updateUserInfo();
+  formState.qrcode = "";
+};
 </script>
 
 <template>
@@ -138,26 +149,28 @@ const confirm2FACode = async () => {
           </div>
         </a-form-item>
 
-        <a-form-item :label="t('双重验证')">
+        <a-form-item :label="t('双重登录验证（2FA）')">
           <div v-if="!formState?.qrcode">
-            <a-button
-              :danger="state.userInfo?.open2FA"
-              :loading="setUserApiKeyLoading"
-              @click="handleBind2FA"
-            >
+            <a-button class="mr-8" @click="handleBind2FA">
               {{ state.userInfo?.open2FA ? t("重新绑定") : t("开始绑定") }}
+            </a-button>
+            <a-button danger @click="disable2FACode">
+              {{ t("停用") }}
             </a-button>
           </div>
           <div v-if="formState?.qrcode">
             <p>
-              1. {{ t("使用 Google Authentication 扫描二维码。 ") }}<br />
-              2. {{ t("点击 “绑定” 按钮。") }}<br />
+              1. {{ t("使用 Google Authentication 或其他通用二次验证工具扫描二维码。 ") }}<br />
+              2. {{ t("点击 “我已扫描完毕” 按钮。") }}<br />
             </p>
             <div>
-              <img :src="formState.qrcode" style="height: 180px" />
+              <img
+                :src="formState.qrcode"
+                style="height: 180px; margin-left: -10px; margin-top: -10px"
+              />
             </div>
             <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
-              {{ t("我已扫描并绑定完毕") }}
+              {{ t("我已扫描完毕") }}
             </a-button>
           </div>
         </a-form-item>
