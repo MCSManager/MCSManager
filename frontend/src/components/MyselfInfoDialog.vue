@@ -3,11 +3,12 @@ import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, ref } from "vue";
-import { setUserApiKey, updatePassword } from "@/services/apis/user";
+import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
 import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
+import { bind2FA } from "../services/apis/user";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -17,7 +18,8 @@ const { execute: executeUpdatePassword, isLoading: updatePasswordLoading } = upd
 const formState = reactive({
   resetPassword: false,
   password1: "",
-  password2: ""
+  password2: "",
+  qrcode: ""
 });
 
 const formRef = ref<FormInstance>();
@@ -51,6 +53,25 @@ const handleChangePassword = async () => {
       return reportError(error.message);
     }
   });
+};
+
+const handleBind2FA = async () => {
+  const qrcode = await bind2FA().execute();
+  if (qrcode.value) {
+    formState.qrcode = String(qrcode.value);
+    await updateUserInfo();
+  }
+};
+
+const confirm2FACode = async () => {
+  await confirm2FA().execute({
+    data: {
+      enable: true
+    }
+  });
+  message.success(t("TXT_CODE_d3de39b4"));
+  await updateUserInfo();
+  formState.qrcode = "";
 };
 </script>
 
@@ -114,6 +135,30 @@ const handleChangePassword = async () => {
                 {{ t("TXT_CODE_d507abff") }}
               </a-button>
             </div>
+          </div>
+        </a-form-item>
+
+        <a-form-item :label="t('双重验证')">
+          <div v-if="!formState?.qrcode">
+            <a-button
+              :danger="state.userInfo?.open2FA"
+              :loading="setUserApiKeyLoading"
+              @click="handleBind2FA"
+            >
+              {{ state.userInfo?.open2FA ? t("重新绑定") : t("开始绑定") }}
+            </a-button>
+          </div>
+          <div v-if="formState?.qrcode">
+            <p>
+              1. {{ t("使用 Google Authentication 扫描二维码。 ") }}<br />
+              2. {{ t("点击 “绑定” 按钮。") }}<br />
+            </p>
+            <div>
+              <img :src="formState.qrcode" style="height: 180px" />
+            </div>
+            <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
+              {{ t("我已扫描并绑定完毕") }}
+            </a-button>
           </div>
         </a-form-item>
 

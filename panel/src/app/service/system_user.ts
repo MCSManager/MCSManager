@@ -33,6 +33,7 @@ class UserSubsystem {
     return instance;
   }
 
+  // Update user detail
   async edit(uuid: string, config: any) {
     const instance = this.getInstance(uuid);
     if (config.userName) instance.userName = config.userName;
@@ -40,12 +41,14 @@ class UserSubsystem {
     if (config.permission) instance.permission = config.permission;
     if (config.registerTime) instance.registerTime = config.registerTime;
     if (config.loginTime) instance.loginTime = config.loginTime;
+    if (config.apiKey != null) instance.apiKey = config.apiKey;
+    if (config.secret != null) instance.secret = String(config.secret);
+    if (config.open2FA != null) instance.open2FA = Boolean(config.open2FA);
+    if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.passWord) {
       instance.passWordType = UserPassWordType.bcrypt;
       instance.passWord = bcrypt.hashSync(config.passWord, 10);
     }
-    if (config.instances) this.setUserInstances(uuid, config.instances);
-    if (config.apiKey != null) instance.apiKey = config.apiKey;
     await Storage.getStorage().store("User", uuid, instance);
   }
 

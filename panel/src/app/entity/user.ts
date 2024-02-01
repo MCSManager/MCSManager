@@ -23,6 +23,8 @@ export class User implements IUser {
   instances: Array<IUserApp> = [];
   apiKey: string = "";
   isInit: boolean = false;
+  secret = "";
+  open2FA = false;
 }
 
 export enum ROLE {

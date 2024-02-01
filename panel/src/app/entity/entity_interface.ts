@@ -22,6 +22,8 @@ export interface IUser {
   instances?: Array<any>;
   isInit?: boolean;
   passWordType?: number;
+  secret?: string;
+  open2FA?: boolean;
 }
 
 export interface ICompleteUser {

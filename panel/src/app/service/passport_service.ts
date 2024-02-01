@@ -7,6 +7,10 @@ import { logger } from "./log";
 import { User } from "../entity/user";
 import { $t } from "../i18n";
 
+import { authenticator } from "otplib";
+import QRCode from "qrcode";
+import Storage from "../common/storage/sys_storage";
+
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
 export const ILLEGAL_ACCESS_KEY = "illegalAccess";
@@ -43,6 +47,21 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     ctx.session.save();
     logger.info(`[LOGIN] IP: ${ip}, Try login ${userName} failed!`);
     return null;
+  }
+}
+
+export async function bind2FA(ctx: Koa.ParameterizedContext) {
+  const userName = ctx.session["userName"];
+  const user = userSystem.getUserByUserName(userName);
+  try {
+    const secret = authenticator.generateSecret();
+    const qrCode = await QRCode.toDataURL(
+      authenticator.keyuri(userName, "MCSManager Panel", secret)
+    );
+    userSystem.edit(user.uuid, { secret });
+    return qrCode;
+  } catch (err) {
+    user.secret = "";
   }
 }
 

@@ -1,7 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
-import { getUserUuid } from "../../service/passport_service";
+import { bind2FA, getUserUuid } from "../../service/passport_service";
 import userSystem from "../../service/system_user";
 import { getToken, isAjax } from "../../service/passport_service";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
@@ -105,7 +105,9 @@ router.get("/", permission({ level: ROLE.USER, token: false, speedLimit: false }
       permission: user.permission,
       token: getToken(ctx),
       apiKey: user.apiKey,
-      isInit: user.isInit
+      isInit: user.isInit,
+      open2FA: user.open2FA,
+      secret: user.secret
     };
   }
 });
@@ -157,6 +159,37 @@ router.put(
     } catch (error) {
       ctx.body = error;
     }
+  }
+);
+
+// [Low-level Permission]
+// 2FA
+router.post(
+  "/bind2fa",
+  permission({ level: 1 }),
+  validator({ body: {} }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const userUuid = getUserUuid(ctx);
+    if (userUuid) {
+      const qrcode = await bind2FA(ctx);
+      ctx.body = qrcode;
+    }
+  }
+);
+
+// [Low-level Permission]
+// 2FA
+router.post(
+  "/confirm2fa",
+  permission({ level: 1 }),
+  validator({ body: { enable: Boolean } }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const enable = ctx.request.body.enable;
+    const userUuid = getUserUuid(ctx);
+    await userSystem.edit(userUuid, {
+      open2FA: enable
+    });
+    ctx.body = true;
   }
 );
 

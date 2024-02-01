@@ -15,6 +15,8 @@ export interface BaseUserInfo {
   permission: number;
   apiKey: string;
   isInit: boolean;
+  secret: string;
+  open2FA: boolean;
 }
 
 export interface EditUserInfo extends BaseUserInfo {
