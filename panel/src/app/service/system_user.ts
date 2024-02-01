@@ -7,6 +7,10 @@ import Storage from "../common/storage/sys_storage";
 import { QueryWrapper, LocalFileSource } from "common";
 import { $t } from "../i18n";
 import bcrypt from "bcryptjs";
+import { authenticator } from "otplib";
+import { t } from "i18next";
+
+export class TwoFactorError extends Error {}
 
 class UserSubsystem {
   public readonly objects: Map<string, User> = new Map();
@@ -58,17 +62,23 @@ class UserSubsystem {
     return reg.test(password);
   }
 
-  checkUser(info: IUser): boolean {
+  check2FA(code: string, user: IUser) {
+    return authenticator.check(code, user.secret);
+  }
+
+  checkUser(info: IUser, code2FA?: string) {
     for (const [uuid, user] of this.objects) {
       if (user.userName === info.userName) {
+        if (user.open2FA && user.secret && !this.check2FA(code2FA, user))
+          throw new TwoFactorError(t("双重验证代码错误"));
         if (user.passWordType === UserPassWordType.bcrypt) {
-          return bcrypt.compareSync(info.passWord, user.passWord);
+          if (!bcrypt.compareSync(info.passWord, user.passWord))
+            throw new Error($t("账号或密码错误"));
         } else {
-          return md5(info.passWord) === user.passWord;
+          if (!(md5(info.passWord) === user.passWord)) throw new Error($t("账号或密码错误"));
         }
       }
     }
-    return false;
   }
 
   existUserName(userName: string): boolean {

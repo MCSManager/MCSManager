@@ -22,7 +22,8 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
   const ip = ctx.socket.remoteAddress;
   // check user information
-  if (userSystem.checkUser({ userName, passWord })) {
+  try {
+    userSystem.checkUser({ userName, passWord });
     // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
     if (ipMap) delete ipMap[ip];
@@ -39,14 +40,14 @@ export function login(ctx: Koa.ParameterizedContext, userName: string, passWord:
     logger.info(`[LOGIN] Token: ${ctx.session["token"]}`);
     logger.info($t("TXT_CODE_42036f92"));
     return ctx.session["token"];
-  } else {
+  } catch (err) {
     // record the number of login failures
     GlobalVariable.set(LOGIN_FAILED_COUNT_KEY, GlobalVariable.get(LOGIN_FAILED_COUNT_KEY, 0) + 1);
     ctx.session["login"] = null;
     ctx.session["token"] = null;
     ctx.session.save();
     logger.info(`[LOGIN] IP: ${ip}, Try login ${userName} failed!`);
-    return null;
+    throw err;
   }
 }
 

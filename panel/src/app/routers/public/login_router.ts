@@ -4,7 +4,7 @@ import validator from "../../middleware/validator";
 import permission from "../../middleware/permission";
 import { check, login, logout, checkBanIp } from "../../service/passport_service";
 import { systemConfig } from "../../setting";
-import userSystem from "../../service/system_user";
+import userSystem, { TwoFactorError } from "../../service/system_user";
 import { logger } from "../../service/log";
 import { $t } from "../../i18n";
 import axios from "axios";
@@ -21,13 +21,17 @@ router.post(
   async (ctx: Koa.ParameterizedContext) => {
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
+    const code = String(ctx.request.body.code);
     if (!checkBanIp(ctx)) throw new Error($t("TXT_CODE_router.login.ban"));
     if (check(ctx)) return (ctx.body = "Logined");
-    let token = login(ctx, userName, passWord);
-    if (token) {
-      ctx.body = true;
-    } else {
-      throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
+    try {
+      ctx.body = login(ctx, userName, passWord);
+    } catch (error) {
+      if (error instanceof TwoFactorError && !code) {
+        ctx.body = "NEED_2FA";
+        return;
+      }
+      ctx.body = error;
     }
   }
 );

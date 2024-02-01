@@ -29,32 +29,34 @@ const props = defineProps<{
 
 const formData = reactive({
   username: "",
-  password: ""
+  password: "",
+  code: ""
 });
 
 const { execute: login } = loginUser();
 const { updateUserInfo, isAdmin } = useAppStateStore();
 
 const loginStep = ref(0);
+const is2Fa = ref(false);
 
 const handleLogin = async () => {
   if (!formData.username.trim() || !formData.password.trim()) {
     return message.error(t("TXT_CODE_c846074d"));
   }
-
-  loginStep.value++;
-  await sleep(1500);
-
   try {
-    await login({
-      data: {
-        ...formData
-      }
+    const result = await login({
+      data: formData
     });
+    if (result.value === "NEED_2FA") {
+      is2Fa.value = true;
+      return;
+    }
+    is2Fa.value = false;
+    loginStep.value++;
+    await sleep(1500);
     await handleNext();
   } catch (error: any) {
     reportError(error.message ? error.message : error);
-    loginStep.value--;
   }
 };
 
@@ -107,33 +109,51 @@ const loginSuccess = () => {
           </a-typography-paragraph>
           <div>
             <form>
-              <a-input
-                v-model:value="formData.username"
-                class="account"
-                size="large"
-                autocomplete="off"
-                name="mcsm-name-input"
-                :placeholder="t('TXT_CODE_80a560a1')"
-                style="background-color: var(--color-gray-1) !important"
-              >
-                <template #suffix>
-                  <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                </template>
-              </a-input>
-              <a-input
-                v-model:value="formData.password"
-                class="mt-20 account"
-                type="password"
-                :placeholder="t('TXT_CODE_551b0348')"
-                size="large"
-                autocomplete="off"
-                name="mcsm-pw-input"
-                @press-enter="handleLogin"
-              >
-                <template #suffix>
-                  <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                </template>
-              </a-input>
+              <div v-if="!is2Fa">
+                <a-input
+                  v-model:value="formData.username"
+                  class="account"
+                  size="large"
+                  autocomplete="off"
+                  name="mcsm-name-input"
+                  :placeholder="t('TXT_CODE_80a560a1')"
+                  style="background-color: var(--color-gray-1) !important"
+                >
+                  <template #suffix>
+                    <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                  </template>
+                </a-input>
+                <a-input
+                  v-model:value="formData.password"
+                  class="mt-20 account"
+                  type="password"
+                  :placeholder="t('TXT_CODE_551b0348')"
+                  size="large"
+                  autocomplete="off"
+                  name="mcsm-pw-input"
+                  @press-enter="handleLogin"
+                >
+                  <template #suffix>
+                    <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                  </template>
+                </a-input>
+              </div>
+              <div v-else>
+                <a-input
+                  v-model:value="formData.code"
+                  class="mt-20 mb-20 account"
+                  type="text"
+                  :placeholder="t('请输入双重验证代码')"
+                  size="large"
+                  autocomplete="off"
+                  name="mcsm-pw-2fa"
+                  @press-enter="handleLogin"
+                >
+                  <template #suffix>
+                    <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                  </template>
+                </a-input>
+              </div>
             </form>
 
             <div class="mt-24 flex-between align-center">

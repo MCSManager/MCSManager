@@ -50,9 +50,7 @@ export const loginUser = useDefineApi<
     }
   | undefined,
   // Response
-  {
-    id: number;
-  }
+  string
 >({
   url: "/api/auth/login",
   method: "POST"
