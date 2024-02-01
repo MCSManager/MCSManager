@@ -5,6 +5,7 @@ import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
+import { useKeyboardEvents } from "../../../hooks/useKeyboardEvents";
 
 const open = ref(false);
 const openEditor = ref(false);
@@ -22,10 +23,25 @@ const props = defineProps<{
   instanceId: string;
 }>();
 
-const openDialog = (path_: string, fileName_: string) => {
+let useKeyboardEventsHooks: ReturnType<typeof useKeyboardEvents> | null = null;
+
+const initKeydownListener = () => {
+  console.debug("初始化：快捷键");
+  useKeyboardEventsHooks = useKeyboardEvents(
+    { ctrl: true, alt: false, caseSensitive: false, key: "s" },
+    async () => {
+      await submitRequest();
+      message.success(t("已通过快捷键保存！"));
+    }
+  );
+  useKeyboardEventsHooks.startKeydownListener();
+};
+
+const openDialog = (_path: string, _fileName: string) => {
   open.value = true;
-  path.value = path_;
-  fileName.value = fileName_;
+  path.value = _path;
+  fileName.value = _fileName;
+  initKeydownListener();
   return new Promise(async (_resolve, _reject) => {
     await render();
     resolve = _resolve;
@@ -57,7 +73,7 @@ const render = async () => {
   }
 };
 
-const submit = async () => {
+const submitRequest = async () => {
   try {
     await execute({
       params: {
@@ -69,8 +85,16 @@ const submit = async () => {
         text: editorText.value
       }
     });
+  } catch (err: any) {
+    return reportError(err.message);
+  }
+};
+
+const submit = async () => {
+  try {
+    await submitRequest();
     message.success(t("TXT_CODE_a7907771"));
-    open.value = openEditor.value = false;
+    cancel();
     resolve(editorText.value);
   } catch (err: any) {
     console.error(err.message);
@@ -80,7 +104,9 @@ const submit = async () => {
 };
 
 const cancel = () => {
+  useKeyboardEventsHooks?.removeKeydownListener();
   open.value = openEditor.value = false;
+  resolve(editorText.value);
 };
 
 const dialogTitle = computed(() => {

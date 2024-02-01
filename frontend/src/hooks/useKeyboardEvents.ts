@@ -5,8 +5,8 @@ export function useKeyboardEvents(
   fn: Function
 ) {
   const handleKeydown = (e: KeyboardEvent) => {
-    const ctrl = keyCombination.ctrl === e.ctrlKey;
-    const alt = keyCombination.alt === e.altKey;
+    const ctrl = keyCombination.ctrl && (e.ctrlKey || e.metaKey);
+    const alt = keyCombination.alt && e.altKey;
     const key = keyCombination.caseSensitive
       ? keyCombination.key
       : keyCombination.key.toLocaleLowerCase();
@@ -17,6 +17,7 @@ export function useKeyboardEvents(
       if (ctrl && alt) return eKey === key;
       if (ctrl) return eKey === key;
       if (alt) return eKey === key;
+      return false;
     };
 
     if (isCombo()) {
@@ -25,11 +26,24 @@ export function useKeyboardEvents(
     }
   };
 
-  onMounted(() => {
+  const removeKeydownListener = () => {
+    document.removeEventListener("keydown", handleKeydown);
+  };
+
+  const startKeydownListener = () => {
     document.addEventListener("keydown", handleKeydown);
+  };
+
+  onMounted(() => {
+    startKeydownListener();
   });
 
   onUnmounted(() => {
-    document.removeEventListener("keydown", handleKeydown);
+    removeKeydownListener();
   });
+
+  return {
+    removeKeydownListener,
+    startKeydownListener
+  };
 }

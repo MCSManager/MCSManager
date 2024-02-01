@@ -93,18 +93,26 @@ const save = async () => {
   }
 };
 
+const { removeKeydownListener, startKeydownListener } = useKeyboardEvents(
+  { ctrl: true, alt: false, caseSensitive: false, key: "s" },
+  save
+);
+
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 const toEditRawFile = async () => {
-  await FileEditorDialog.value?.openDialog(configPath ?? "", configName ?? "");
-  await render();
+  try {
+    removeKeydownListener();
+    await FileEditorDialog.value?.openDialog(configPath ?? "", configName ?? "");
+  } finally {
+    startKeydownListener();
+    await render();
+  }
 };
 
 const refresh = async () => {
   await render();
   message.success(t("TXT_CODE_7863f28d"));
 };
-
-useKeyboardEvents({ ctrl: true, alt: false, caseSensitive: false, key: "s" }, save);
 
 onMounted(async () => {
   await render();
