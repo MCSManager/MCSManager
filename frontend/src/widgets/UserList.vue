@@ -22,6 +22,7 @@ import _ from "lodash";
 import type { AntColumnsType, AntTableCell } from "../types/ant";
 import type { Key } from "ant-design-vue/es/_util/type";
 import { PASSWORD_REGEX } from "../tools/validator";
+import { PERMISSION_MAP } from "@/config/const";
 
 defineProps<{
   card: LayoutCard;
@@ -44,12 +45,6 @@ const operationForm = ref({
   currentPage: 1,
   pageSize: 20
 });
-
-const permissionList = {
-  "1": t("TXT_CODE_eb880db2"),
-  "10": t("TXT_CODE_cd978243"),
-  "-1": t("TXT_CODE_7c76dbf")
-};
 
 const columns = computed(() => {
   return arrayFilter<AntColumnsType>([
@@ -74,7 +69,7 @@ const columns = computed(() => {
       key: "permission",
       minWidth: 200,
       customRender: (e: { text: "1" | "10" | "-1" }) => {
-        return permissionList[e.text] || e.text;
+        return PERMISSION_MAP[e.text] || e.text;
       }
     },
     {
@@ -218,7 +213,9 @@ const formDataOrigin: EditUserInfo = {
   instances: [],
   permission: 1,
   apiKey: "",
-  isInit: false
+  isInit: false,
+  secret: "",
+  open2FA: false
 };
 
 const formRef = ref<FormInstance>();
@@ -308,7 +305,7 @@ onMounted(async () => {
           </a-typography-text>
         </a-typography-paragraph>
         <a-select v-model:value="formData.permission">
-          <a-select-option v-for="(item, key, i) in permissionList" :key="i" :value="Number(key)">
+          <a-select-option v-for="(item, key, i) in PERMISSION_MAP" :key="i" :value="Number(key)">
             {{ item }}
           </a-select-option>
         </a-select>
@@ -391,7 +388,7 @@ onMounted(async () => {
                   <a-select-option value="">
                     {{ t("TXT_CODE_c48f6f64") }}
                   </a-select-option>
-                  <a-select-option v-for="(p, i) in permissionList" :key="i" :value="i">
+                  <a-select-option v-for="(p, i) in PERMISSION_MAP" :key="i" :value="i">
                     {{ p }}
                   </a-select-option>
                 </a-select>

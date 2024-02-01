@@ -9,6 +9,7 @@ import { reportError } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
 import { bind2FA } from "../services/apis/user";
+import { PERMISSION_MAP } from "@/config/const";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -104,7 +105,7 @@ const disable2FACode = async () => {
           </a-col>
           <a-col>
             <a-form-item :label="t('TXT_CODE_63ccbf90')">
-              <span>{{ state.userInfo?.permission }}</span>
+              <span>{{ PERMISSION_MAP[String(state.userInfo?.permission)] }}</span>
             </a-form-item>
           </a-col>
         </a-row>
