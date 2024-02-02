@@ -38,13 +38,13 @@
     "os-utils": "0.0.14",
     "pidusage": "^2.0.21",
     "properties": "^1.2.1",
+    "rcon-srcds": "^2.1.0",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
     "uuid": "^8.3.2",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "common": "file:../common",
     "@types/archiver": "^5.3.1",
     "@types/axios": "^0.14.0",
     "@types/dockerode": "^3.2.7",
@@ -61,6 +61,7 @@
     "@types/pidusage": "^2.0.1",
     "@types/ssh2": "^1.11.7",
     "@types/uuid": "^8.3.0",
+    "common": "file:../common",
     "eslint": "^7.13.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4",

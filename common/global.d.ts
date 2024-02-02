@@ -1,3 +1,17 @@
+/* 
+  Please ensure that all NEW fields cannot be divided again,
+  and the old configuration will be ignored.
+
+  Do not write:
+  steamOptions: {
+    ip: boolean;
+    port: boolean;
+  };
+
+  Write:
+  steamIp: ""
+  steamPort: 8080
+ */
 export interface IGlobalInstanceConfig {
   nickname: string;
   startCommand: string;
@@ -15,6 +29,12 @@ export interface IGlobalInstanceConfig {
   updateCommand: string;
   actionCommandList: any[];
   crlf: number;
+
+  // Steam RCON
+  rconPassword?: string;
+  rconPort?: number;
+  rconIp?: string;
+
   terminalOption: {
     haveColor: boolean;
     pty: boolean;

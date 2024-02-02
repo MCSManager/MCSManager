@@ -27,6 +27,11 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public updateCommand: string = "";
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
 
+  // Steam RCON protocol
+  public rconPassword = "";
+  public rconPort: number = null;
+  public rconIp = "";
+
   // custom command list
   public actionCommandList: IActionCommand[] = [];
 

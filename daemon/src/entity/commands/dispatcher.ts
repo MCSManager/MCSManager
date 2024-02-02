@@ -12,6 +12,7 @@ import GeneralUpdateCommand from "./general/general_update";
 import PtyStartCommand from "./pty/pty_start";
 import PtyStopCommand from "./pty/pty_stop";
 import OpenFrpTask from "./task/openfrp";
+import RconCommand from "./steam/rcon_command";
 
 // Instance function dispatcher
 // Dispatch and assign different functions according to different types
@@ -57,6 +58,9 @@ export default class FunctionDispatcher extends InstanceCommand {
     if (instance.config.processType === "docker") {
       instance.setPreset("start", new DockerStartCommand());
       instance.setPreset("resize", new NullCommand());
+    }
+    if (instance.config.rconPort && instance.config.rconPassword) {
+      instance.setPreset("command", new RconCommand());
     }
 
     // Set different preset functions and functions according to different types
