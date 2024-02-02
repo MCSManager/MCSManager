@@ -1,4 +1,6 @@
 import Koa from "koa";
+import { authenticator } from "otplib";
+import QRCode from "qrcode";
 import userSystem from "./system_user";
 import { timeUuid } from "./password";
 import { GlobalVariable } from "common";
@@ -7,23 +9,24 @@ import { logger } from "./log";
 import { User } from "../entity/user";
 import { $t } from "../i18n";
 
-import { authenticator } from "otplib";
-import QRCode from "qrcode";
-import Storage from "../common/storage/sys_storage";
-
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
 export const ILLEGAL_ACCESS_KEY = "illegalAccess";
 export const LOGIN_COUNT = "loginCount";
 export const LOGIN_FAILED_COUNT_KEY = "loginFailedCount";
 
-export function login(ctx: Koa.ParameterizedContext, userName: string, passWord: string): string {
+export function login(
+  ctx: Koa.ParameterizedContext,
+  userName: string,
+  passWord: string,
+  twoFACode?: string
+): string {
   // record the number of login requests
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
   const ip = ctx.socket.remoteAddress;
   // check user information
   try {
-    userSystem.checkUser({ userName, passWord });
+    userSystem.checkUser({ userName, passWord }, twoFACode);
     // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
     if (ipMap) delete ipMap[ip];
@@ -59,11 +62,17 @@ export async function bind2FA(ctx: Koa.ParameterizedContext) {
     const qrCode = await QRCode.toDataURL(
       authenticator.keyuri(userName, "MCSManager Panel", secret)
     );
-    userSystem.edit(user.uuid, { secret });
+    userSystem.edit(user.uuid, { secret, open2FA: false });
     return qrCode;
   } catch (err) {
     user.secret = "";
   }
+}
+
+export async function confirm2FaQRCode(userUuid: string, isEnable: boolean) {
+  await userSystem.edit(userUuid, {
+    open2FA: isEnable
+  });
 }
 
 export function check(ctx: Koa.ParameterizedContext) {

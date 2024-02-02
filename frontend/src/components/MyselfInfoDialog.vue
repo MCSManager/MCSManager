@@ -155,7 +155,7 @@ const disable2FACode = async () => {
             <a-button class="mr-8" @click="handleBind2FA">
               {{ state.userInfo?.open2FA ? t("重新绑定") : t("开始绑定") }}
             </a-button>
-            <a-button danger @click="disable2FACode">
+            <a-button v-if="state.userInfo?.open2FA" danger @click="disable2FACode">
               {{ t("停用") }}
             </a-button>
           </div>

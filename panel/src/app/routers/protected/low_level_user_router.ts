@@ -1,7 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../../middleware/permission";
-import { bind2FA, getUserUuid } from "../../service/passport_service";
+import { bind2FA, confirm2FaQRCode, getUserUuid } from "../../service/passport_service";
 import userSystem from "../../service/system_user";
 import { getToken, isAjax } from "../../service/passport_service";
 import RemoteServiceSubsystem from "../../service/system_remote_service";
@@ -184,12 +184,9 @@ router.post(
   permission({ level: 1 }),
   validator({ body: { enable: Boolean } }),
   async (ctx: Koa.ParameterizedContext) => {
-    const enable = ctx.request.body.enable;
+    const enable = Boolean(ctx.request.body.enable);
     const userUuid = getUserUuid(ctx);
-    await userSystem.edit(userUuid, {
-      open2FA: enable,
-      secret: enable ? null : ""
-    });
+    await confirm2FaQRCode(userUuid, enable);
     ctx.body = true;
   }
 );
