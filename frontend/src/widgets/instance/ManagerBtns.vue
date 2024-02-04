@@ -6,6 +6,7 @@ import { t } from "@/lang/i18n";
 import {
   AppstoreAddOutlined,
   ArrowRightOutlined,
+  BuildOutlined,
   CodeOutlined,
   ControlOutlined,
   DashboardOutlined,
@@ -21,14 +22,18 @@ import { useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
+import RconSettings from "./dialogs/RconSettings.vue";
 import InstanceDetails from "./dialogs/InstanceDetails.vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import type { RouteLocationPathRaw } from "vue-router";
 import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
+
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
+const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetails>>();
+
 const { toPage: toOtherPager } = useAppRouters();
 
 const props = defineProps<{
@@ -100,6 +105,13 @@ const btns = computed(() =>
       }
     },
     {
+      title: t("Steam Rcon 协议"),
+      icon: BuildOutlined,
+      click: () => {
+        rconSettingsDialog.value?.openDialog();
+      }
+    },
+    {
       title: t("TXT_CODE_d23631cb"),
       icon: CodeOutlined,
       click: () => {
@@ -120,15 +132,6 @@ const btns = computed(() =>
         });
       }
     },
-
-    // {
-    //   title: t("TXT_CODE_3a406403"),
-    //   icon: CloudServerOutlined,
-    //   condition: () => !isGlobalTerminal.value,
-    //   click: () => {
-    //     pingConfigDialog.value?.openDialog();
-    //   }
-    // },
     {
       title: t("TXT_CODE_d341127b"),
       icon: DashboardOutlined,
@@ -145,6 +148,14 @@ const btns = computed(() =>
         instanceDetailsDialog.value?.openDialog();
       }
     }
+    // {
+    //   title: t("TXT_CODE_3a406403"),
+    //   icon: CloudServerOutlined,
+    //   condition: () => !isGlobalTerminal.value,
+    //   click: () => {
+    //     pingConfigDialog.value?.openDialog();
+    //   }
+    // },
   ])
 );
 </script>
@@ -212,6 +223,14 @@ const btns = computed(() =>
 
   <InstanceDetails
     ref="instanceDetailsDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <RconSettings
+    ref="rconSettingsDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"

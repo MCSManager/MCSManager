@@ -59,7 +59,7 @@ export default class FunctionDispatcher extends InstanceCommand {
       instance.setPreset("start", new DockerStartCommand());
       instance.setPreset("resize", new NullCommand());
     }
-    if (instance.config.rconPort && instance.config.rconPassword) {
+    if (instance.config.enableRcon) {
       instance.setPreset("command", new RconCommand());
     }
 

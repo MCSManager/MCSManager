@@ -47,7 +47,7 @@ export function initDependent() {
         fs.remove(PTY_PATH, () => {});
         if (index === ptyUrls.length - 1) {
           logger.warn($t("TXT_CODE_install.installErr"));
-          logger.warn(err.message);
+          if (err?.message) logger.warn(err.message);
           return;
         }
         return setup(index + 1);

@@ -358,6 +358,12 @@ router.put(
       const instanceUuid = toText(ctx.query.uuid);
       const config = ctx.request.body;
 
+      // Steam Rcon configuration
+      const rconIp = toText(config.rconIp);
+      const rconPort = toNumber(config.rconPort);
+      const rconPassword = toText(config.rconPassword);
+      const enableRcon = toBoolean(config.enableRcon);
+
       // Ping protocol configuration
       const pingConfig = {
         ip: toText(config.pingConfig?.ip),
@@ -379,6 +385,7 @@ router.put(
         ptyWindowRow: toNumber(config.terminalOption?.ptyWindowRow)
       };
 
+      // extra service
       const extraServiceConfig = {
         openFrpTunnelId: toText(config.extraServiceConfig?.openFrpTunnelId),
         openFrpToken: toText(config.extraServiceConfig?.openFrpToken)
@@ -400,7 +407,11 @@ router.put(
           crlf,
           oe,
           ie,
-          stopCommand
+          stopCommand,
+          rconIp,
+          rconPort,
+          rconPassword,
+          enableRcon
         }
       });
       ctx.body = result;

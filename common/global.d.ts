@@ -31,6 +31,7 @@ export interface IGlobalInstanceConfig {
   crlf: number;
 
   // Steam RCON
+  enableRcon?: boolean;
   rconPassword?: string;
   rconPort?: number;
   rconIp?: string;

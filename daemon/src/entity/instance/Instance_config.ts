@@ -28,6 +28,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
 
   // Steam RCON protocol
+  public enableRcon = false;
   public rconPassword = "";
   public rconPort: number = null;
   public rconIp = "";

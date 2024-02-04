@@ -90,13 +90,21 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config, cfg, "type", String);
       this.forceExec(new FunctionDispatcher());
     }
-    // If the process type changes, the default commands and lifecycle events must be reset
+
+    if (cfg?.enableRcon !== this.config.enableRcon) {
+      if (this.status() != Instance.STATUS_STOP)
+        throw new Error($t("运行中状态无法启用或关闭 RCON 协议"));
+      configureEntityParams(this.config, cfg, "enableRcon", Boolean);
+      this.forceExec(new FunctionDispatcher());
+    }
+
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
       if (this.status() != Instance.STATUS_STOP)
         throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());
     }
+
     // If the terminal type is changed, the default command must be reset
     if (
       cfg?.terminalOption?.pty != null &&
@@ -145,7 +153,10 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "crlf", Number);
     configureEntityParams(this.config, cfg, "endTime", Number);
     configureEntityParams(this.config, cfg, "fileCode", String);
-    configureEntityParams(this.config, cfg, "updateCommand", String);
+    configureEntityParams(this.config, cfg, "rconPassword", String);
+    configureEntityParams(this.config, cfg, "rconPort", Number);
+    configureEntityParams(this.config, cfg, "rconIp", String);
+
     if (cfg.docker) {
       configureEntityParams(this.config.docker, cfg.docker, "containerName", String);
       configureEntityParams(this.config.docker, cfg.docker, "image", String);
