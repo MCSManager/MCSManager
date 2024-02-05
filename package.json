@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "crc": "^4.3.2",
-    "i18next-scanner": "^4.4.0",
-    "wavesurfer.js": "^7.6.4"
+    "i18next-scanner": "^4.4.0"
   }
 }
