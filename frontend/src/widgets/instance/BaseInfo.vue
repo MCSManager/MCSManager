@@ -117,9 +117,9 @@ onMounted(async () => {
         </span>
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <a-typography-text> {{ t("实例ID：") }} </a-typography-text>
+        <a-typography-text> {{ t("TXT_CODE_30051f9b") }} </a-typography-text>
         <a-typography-text :copyable="{ text: instanceInfo?.instanceUuid }"> </a-typography-text>
-        <a-typography-text class="ml-10"> {{ t("节点ID：") }} </a-typography-text>
+        <a-typography-text class="ml-10"> {{ t("TXT_CODE_5f2d2e30") }} </a-typography-text>
         <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
     </template>

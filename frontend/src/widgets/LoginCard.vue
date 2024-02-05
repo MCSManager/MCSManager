@@ -143,7 +143,7 @@ const loginSuccess = () => {
                   v-model:value="formData.code"
                   class="mt-20 mb-20 account"
                   type="text"
-                  :placeholder="t('请输入双重验证代码')"
+                  :placeholder="t('TXT_CODE_7ac8b1d3')"
                   size="large"
                   autocomplete="off"
                   name="mcsm-pw-2fa"

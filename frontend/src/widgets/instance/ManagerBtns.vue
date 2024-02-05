@@ -105,7 +105,7 @@ const btns = computed(() =>
       }
     },
     {
-      title: t("Steam Rcon 协议"),
+      title: t("TXT_CODE_656a85d8"),
       icon: BuildOutlined,
       click: () => {
         rconSettingsDialog.value?.openDialog();

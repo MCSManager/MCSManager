@@ -13,16 +13,14 @@ async function sendRconCommand(instance: Instance, command: string) {
   });
   await rconServer.authenticate(instance.config.rconPassword);
   if (!rconServer.isAuthenticated()) {
-    throw new Error(
-      t("因密码错误导致发送 RCON 命令失败，请检查 Steam Rcon 协议中设置的访问密码！")
-    );
+    throw new Error(t("TXT_CODE_1b1b2934"));
   }
   return new Promise((resolve, reject) => {
     let hasResult = false;
     setTimeout(() => {
       if (!hasResult) {
         rconServer.disconnect().catch(() => {});
-        instance.print(`[RCON] ${t("命令已送达，但没有任何响应，请在游戏中查看。")}\n`);
+        instance.print(`[RCON] ${t("TXT_CODE_386f2d66")}\n`);
         resolve("");
       }
     }, 1000 * 10);

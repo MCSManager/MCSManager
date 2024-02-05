@@ -150,19 +150,19 @@ const disable2FACode = async () => {
           </div>
         </a-form-item>
 
-        <a-form-item :label="t('双重登录验证（2FA）')">
+        <a-form-item :label="t('TXT_CODE_61eae8a6')">
           <div v-if="!formState?.qrcode">
             <a-button class="mr-8" @click="handleBind2FA">
-              {{ state.userInfo?.open2FA ? t("重新绑定") : t("开始绑定") }}
+              {{ state.userInfo?.open2FA ? t("TXT_CODE_85a33a84") : t("TXT_CODE_a492ae63") }}
             </a-button>
             <a-button v-if="state.userInfo?.open2FA" danger @click="disable2FACode">
-              {{ t("停用") }}
+              {{ t("TXT_CODE_edd64e4d") }}
             </a-button>
           </div>
           <div v-if="formState?.qrcode">
             <p>
-              1. {{ t("使用 Google Authentication 或其他通用二次验证工具扫描二维码。 ") }}<br />
-              2. {{ t("点击 “我已扫描完毕” 按钮。") }}<br />
+              1. {{ t("TXT_CODE_cc561947") }}<br />
+              2. {{ t("TXT_CODE_af2a6972") }}<br />
             </p>
             <div>
               <img
@@ -171,7 +171,7 @@ const disable2FACode = async () => {
               />
             </div>
             <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
-              {{ t("我已扫描完毕") }}
+              {{ t("TXT_CODE_b0a18c20") }}
             </a-button>
           </div>
         </a-form-item>

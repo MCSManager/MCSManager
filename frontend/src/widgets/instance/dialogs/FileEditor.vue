@@ -26,12 +26,11 @@ const props = defineProps<{
 let useKeyboardEventsHooks: ReturnType<typeof useKeyboardEvents> | null = null;
 
 const initKeydownListener = () => {
-  console.debug("初始化：快捷键");
   useKeyboardEventsHooks = useKeyboardEvents(
     { ctrl: true, alt: false, caseSensitive: false, key: "s" },
     async () => {
       await submitRequest();
-      message.success(t("已通过快捷键保存！"));
+      message.success(t("TXT_CODE_8f47d95"));
     }
   );
   useKeyboardEventsHooks.startKeydownListener();

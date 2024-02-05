@@ -65,7 +65,7 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :title="t('Steam Rcon 协议设置')"
+    :title="t('TXT_CODE_282b0721')"
     :confirm-loading="isLoading"
     :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
@@ -73,57 +73,46 @@ defineExpose({
     <div>
       <a-typography-paragraph>
         <a-typography-text type="secondary">
-          {{
-            t(
-              "大部分 Steam 游戏服务器都需要 RCON 协议来支持命令的执行，同时也支持 Minecraft 游戏服务器，如果你在运行 Steam 游戏服务器时发现自带的控制台无法执行命令，可以尝试配置 RCON 协议来支持命令执行。"
-            )
-          }}
+          {{ t("TXT_CODE_32d87bf1") }}
         </a-typography-text>
       </a-typography-paragraph>
       <a-form ref="formRef" :model="formData" layout="vertical">
         <a-form-item>
-          <a-typography-title :level="5">{{ t("启用 Rcon 协议") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_179d7be4") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{
-                t(
-                  "一旦启用 Rcon 协议，那么接下来在控制台处输入的所有命令都将以 RCON 的方式发送，不再兼容原本的控制台程序。"
-                )
-              }}
+              {{ t("TXT_CODE_a8839b35") }}
             </a-typography-text>
           </a-typography-paragraph>
           <a-switch v-model:checked="formData.enableRcon" />
         </a-form-item>
 
         <a-form-item name="rconIp">
-          <a-typography-title :level="5">{{ t("游戏服务器 IP") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_d629fa48") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{ t("请输入游戏服务器IP地址，不填写则默认为守护进程本地主机（localhost）") }}
+              {{ t("TXT_CODE_8e2be926") }}
             </a-typography-text>
           </a-typography-paragraph>
-          <a-input
-            v-model:value="formData.rconIp"
-            :placeholder="t('不填写则自动使用 localhost 本地主机地址')"
-          />
+          <a-input v-model:value="formData.rconIp" :placeholder="t('TXT_CODE_47129a5b')" />
         </a-form-item>
         <a-form-item name="rconPort">
-          <a-typography-title :level="5">{{ t("RCON 端口") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_890aa44c") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{ t("请输入游戏服务器 RCON 协议端口，这通常在配置文件存在相关内容。") }}
+              {{ t("TXT_CODE_a4748cb0") }}
             </a-typography-text>
           </a-typography-paragraph>
-          <a-input v-model:value="formData.rconPort" :placeholder="t('列如：25565')" />
+          <a-input v-model:value="formData.rconPort" :placeholder="t('TXT_CODE_e2dc0156')" />
         </a-form-item>
         <a-form-item name="rconPassword">
-          <a-typography-title :level="5">{{ t("RCON 密码") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_2880eed4") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{ t("请输入游戏服务器 RCON 协议访问密码，这通常在配置文件存在相关内容。") }}
+              {{ t("TXT_CODE_3ae0276b") }}
             </a-typography-text>
           </a-typography-paragraph>
-          <a-input v-model:value="formData.rconPassword" :placeholder="t('RCON 访问密码')" />
+          <a-input v-model:value="formData.rconPassword" :placeholder="t('TXT_CODE_25af3af3')" />
         </a-form-item>
       </a-form>
     </div>

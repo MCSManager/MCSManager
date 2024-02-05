@@ -12,7 +12,6 @@ export function isNumberValidator(value: any) {
 }
 
 export function getValidatorErrorMsg(error: any, def: string = "") {
-  console.debug("ERR:", error);
   if (error === null || error === undefined || Object.keys(error).length === 0) {
     return def;
   }
