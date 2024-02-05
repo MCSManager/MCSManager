@@ -1,63 +1,53 @@
-<img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />
+<div align="center">
+  <a href="https://mcsmanager.com/" target="_blank">
+    <img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />    
+  </a>
 
-<br />
+  <br />
+  
+  <h1 id="mcsmanager">
+    <a href="https://mcsmanager.com/" target="_blank">MCSManager Panel</a>
+  </h1>
 
+[![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[官方网站](https://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/)
+[官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
 
-中文 QQ 群：https://jq.qq.com/?_wv=1027&k=Pgl9ScGw
+[English](README.md) | [简体中文](README_CN.md)
 
-中文 TG 群：https://t.me/MCSManager_dev
-
-爱发电赞助：https://afdian.net/a/mcsmanager
+</div>
 
 <br />
 
 ## 这是什么？
 
+**MCSManager 面板**（或简称：MCSM 面板）是一款开源，分布式，轻量级，快速部署，支持大部分游戏服务端和控制台程序的管理面板。
 
-MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量级，快速部署，支持大部分游戏服务端和控制台程序的管理面板
+此软件在 `Minecraft` 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，实现在任何主机上创建游戏服务器，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 `Minecraft`，`Terraria` 和 `Steam` 游戏服务器的管理员，运维人员和个人开发者提供健康的软件支持。
+
+![截图加载失败.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
 
 <br />
 
-## 软件特性
+## 功能特性
 
-软件在 Minecraft 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，动态在任何主机上创建游戏服务端，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 Minecraft，Terraria，Steam 游戏服务器管理员，运维人员和个人开发者提供健康的软件支持。
-
-
-![截图.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
-
-![Screenshot.png](https://mcsmanager.com/main2.png)
-
-<img width="1322" alt="QQ20221207-174328@2x" src="https://user-images.githubusercontent.com/18360009/206144481-7f57b40d-f71b-4d7e-a617-846da69ca1a3.png">
-
+1. 支持一键架设 `Minecraft` Java 版/基岩版游戏服务器。
+2. 兼容大部分 `Steam` 游戏服务器，列如 `幻兽帕鲁`，`战术小队`，`僵尸毁灭工程` 和 `泰拉瑞亚` 等。
+3. 可自定义网页 UI 界面设计，打造自己喜欢的界面样式。
+4. 支持 `Docker` 虚拟化，支持多用户，支持商业出租行为。
+5. 支持分布式，一个网页即可同时管理数台机器。
+6. 更多...
 
 <br />
 
 ## 运行环境
 
-控制面板可运行在 Windows 与 Linux 平台，无需数据库与任何系统配置，只需安装 node 环境即可快速运行，属于轻量级的 Minecraft 服务端控制面板。
+控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `NodeJS` 环境和几个**用于解压缩**的命令。
 
-必须 `Node 14.17.0` 以上，无需数据库和更改任何系统配置，开箱即可运行。
-
-<br />
-
-## 配置/数据文件
-
-配置文件： `data/SystemConfig/config.json`
-
-用户数据文件：`data/User/*.json`
-
-远程守护进程配置：`data/RemoteServiceConfig/*.json`
-
-<br />
-
-## 软件文档
-
-地址：[https://docs.mcsmanager.com/](https://docs.mcsmanager.com/)
+必须 [NodeJS 16.20.2](https://nodejs.org/en) 以上。
 
 <br />
 
@@ -65,12 +55,11 @@ MCSManager 面板（简称：MCSM 面板）是一款开源，分布式，轻量�
 
 ### Windows
 
-对于 Windows 系统，**已整合成直接运行版本，下载即可运行**（使用管理员权限运行）:
+对于 Windows 系统，**已整合成直接运行版本，下载即可运行**:
 
 前往：[https://mcsmanager.com/](https://mcsmanager.com/)
 
 <br />
-
 
 ### Linux
 
@@ -98,12 +87,12 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
 # 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
-wget https://nodejs.org/dist/v14.17.6/node-v14.17.6-linux-x64.tar.gz
+wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
 # 解压档案
-tar -zxvf node-v14.17.6-linux-x64.tar.gz
+tar -xvf node-v20.11.0-linux-x64.tar.xz
 # 添加程序到系统环境变量
-ln -s /opt/node-v14.17.6-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v14.17.6-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
 
 # 准备好安装目录
 mkdir /opt/mcsmanager/
@@ -128,77 +117,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 # 一般来说，网络应用会自动扫描并连接到本地守护进程。
 ```
 
-- 注意，这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理。
-
-<br />
-
-## 更新版本
-
-参考: https://github.com/MCSManager/MCSManager/wiki/Update-MCSManager
-
-> 如果你不是特别需要新版本的功能，或者不是为了修复安全隐患，那就不建议更新。
-
-<br />
-
-## 项目体系
-
-整个软件运行需要三个项目的互相配合才可运行，您普通安装的代码是编译再整合后的产物。
-
-[**控制面板端**](https://github.com/MCSManager/MCSManager)
-
-- 角色：控制中心
-- 责任：负责提供网页前端的后端接口，提供 API 接口，用户数据管理和对守护进程进行通信和授权。
-
-[**网页前端**](https://github.com/MCSManager/UI)
-
-- 角色：控制中心的用户交互界面
-- 责任：以网页形式展示数据，发送请求，并且拥有与守护进程通信的能力，此项目最终产物是纯静态文件。
-
-[**守护进程**](https://github.com/MCSManager/Daemon)
-
-- 角色：被控端
-- 责任：控制本地主机的所有实例，真实进程的实际管理者，拥有与任何对象的通信能力。
-
-<br />
-
-## 搭建开发环境
-
-此段落面向开发人员，普通用户无需关注也无需执行。
-
-所有项目全部以开发环境运行后，便可以进行开发与预览，请务必遵循开源协议。
-
-**控制面板端（MCSManager）**
-
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
-cd MCSManager
-npm install
-npm run start
-# 默认将采用 ts-node 直接执行 Typescript 代码
-# 默认运行在 23333 端口
-```
-
-**网页前端（UI）**
-
-```bash
-git clone https://github.com/MCSManager/UI.git
-cd UI
-npm install
-npm run serve
-# 访问 http://localhost:8080/ 即可预览界面
-# 所有 API 请求将自动转发到 23333 端口
-```
-
-**守护进程（Daemon）**
-
-```bash
-git clone https://github.com/MCSManager/Daemon.git
-cd Daemon
-npm install
-npm run start
-# 运行后请在控制面板端连接本守护进程
-# 默认运行在 24444 端口
-```
+这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理，如果你希望由系统服务来接管 MCSManager，请参考文档。
 
 <br />
 
@@ -211,13 +130,43 @@ npm run start
 
 ## 国际化
 
-MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆盖。
+MCSManager 已支持中文，英文两种语言，后期可以兼容更多语言，已经实现国际化全面覆盖。
 
-软件国际化由 [Lazy](https://github.com/LazyCreeper)，[KevinLu2000](https://github.com/KevinLu2000)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成
+翻译和软件国际化由 [KevinLu2000](https://github.com/KevinLu2000)，[Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成，在此感谢这些贡献者们。
 
 <br />
 
-## 贡献
+## 搭建开发环境
+
+此段落面向开发人员，普通用户无需关注也无需执行。
+
+### MacOS
+
+```bash
+git clone https://github.com/MCSManager/MCSManager.git
+./install-dependents.sh
+./npm-dev-macos.sh
+```
+
+### Windows
+
+```bash
+git clone https://github.com/MCSManager/MCSManager.git
+./install-dependents.bat
+./npm-dev-windows.bat
+```
+
+### 构建生产环境版本
+
+```bash
+./build.bat
+# 或者
+./build.sh
+```
+
+<br />
+
+## 贡献代码
 
 如果你在使用过程中发现任何问题，可以 [提交 Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) 或自行 Fork 修改后提交 Pull Request。
 
@@ -225,19 +174,16 @@ MCSManager 已支持中文，英文两种语言，已经实现国际化全面覆
 
 <br />
 
-## 问题报告
+## BUG 报告
 
 欢迎发现的任何问题进行反馈，必当及时修复。
 
-若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com。
-
-安全问题修复后将在代码中附加漏洞发现者姓名。
+若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com，安全问题修复后将在代码中附加漏洞发现者姓名。
 
 <br />
-
 
 ## 源代码协议
 
 源代码遵循 Apache-2.0 协议。
 
-版权所有 2022 MCSManager 开发团队。
+Copyright 2024 MCSManager.
