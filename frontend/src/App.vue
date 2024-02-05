@@ -9,7 +9,6 @@ import { Button, Select, Input, Table } from "ant-design-vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import { closeAppLoading } from "./tools/dom";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
-import BgWrap from "./components/BgWrap.vue";
 
 const { isDarkTheme } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
@@ -19,13 +18,16 @@ const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
 function setBackground(url: string) {
   const body = document.querySelector("body");
   if (body) {
-    body.style.backgroundImage = `url(${url})`;
     body.style.backgroundSize = "cover";
     body.style.backgroundPosition = "center";
     body.style.backgroundRepeat = "no-repeat";
-    isDarkTheme()
-      ? body.classList.add("app-dark-extend-theme")
-      : body.classList.add("app-light-extend-theme");
+    if (isDarkTheme()) {
+      body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3) 100%), url(${url})`;
+      body.classList.add("app-dark-extend-theme");
+    } else {
+      body.style.backgroundImage = `linear-gradient(135deg, rgba(220,220,220,0.3), rgba(53,53,53,0.3) 100%), url(${url})`;
+      body.classList.add("app-light-extend-theme");
+    }
   }
   hasBgImage.value = true;
 }
@@ -49,7 +51,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BgWrap v-if="hasBgImage" />
   <AppConfigProvider :has-bg-image="hasBgImage">
     <!-- App Container -->
     <div class="global-app-container">
