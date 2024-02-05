@@ -10,7 +10,7 @@ import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import { closeAppLoading } from "./tools/dom";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
 
-const { isDarkTheme } = useAppConfigStore();
+const { isDarkTheme, setBackgroundImage } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
 
 const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
@@ -18,16 +18,10 @@ const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
 function setBackground(url: string) {
   const body = document.querySelector("body");
   if (body) {
-    body.style.backgroundSize = "cover";
-    body.style.backgroundPosition = "center";
-    body.style.backgroundRepeat = "no-repeat";
-    if (isDarkTheme()) {
-      body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3) 100%), url(${url})`;
-      body.classList.add("app-dark-extend-theme");
-    } else {
-      body.style.backgroundImage = `linear-gradient(135deg, rgba(220,220,220,0.3), rgba(53,53,53,0.3) 100%), url(${url})`;
-      body.classList.add("app-light-extend-theme");
-    }
+    setBackgroundImage(url);
+    isDarkTheme()
+      ? body.classList.add("app-dark-extend-theme")
+      : body.classList.add("app-light-extend-theme");
   }
   hasBgImage.value = true;
 }
