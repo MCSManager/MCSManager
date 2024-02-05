@@ -237,7 +237,6 @@ const appMenus = computed(() => {
           async onOk() {
             await execute();
             message.success(t("TXT_CODE_11673d8c"));
-            window.localStorage.clear();
             setTimeout(() => (window.location.href = "/"), 400);
           }
         });
