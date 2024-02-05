@@ -61,18 +61,25 @@ onMounted(async () => {
         {{ t("TXT_CODE_68831be6") }}{{ instanceTypeText }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <span>{{ t("TXT_CODE_e70a8e24") }}</span>
-        <span v-if="isRunning" class="color-success">
-          <CheckCircleOutlined />
-          {{ statusText }}
-        </span>
-        <span v-else-if="isStopped" class="color-info">
-          <ExclamationCircleOutlined />
-          {{ statusText }}
-        </span>
-        <span v-else>
-          {{ statusText }}
-        </span>
+        <div style="display: flex; gap: 10px">
+          <div>
+            <span>{{ t("TXT_CODE_e70a8e24") }}</span>
+            <span v-if="isRunning" class="color-success">
+              <CheckCircleOutlined />
+              {{ statusText }}
+            </span>
+            <span v-else-if="isStopped" class="color-info">
+              <ExclamationCircleOutlined />
+              {{ statusText }}
+            </span>
+            <span v-else>
+              {{ statusText }}
+            </span>
+          </div>
+          <div>
+            <span> {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }} </span>
+          </div>
+        </div>
       </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
@@ -104,13 +111,16 @@ onMounted(async () => {
         {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
-      </a-typography-paragraph>
-      <a-typography-paragraph>
         <span>{{ t("TXT_CODE_cec321b4") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>
         <span class="ml-6">
           {{ t("TXT_CODE_400a4210") }}{{ instanceInfo?.config.ie.toUpperCase() }}
         </span>
+      </a-typography-paragraph>
+      <a-typography-paragraph>
+        <a-typography-text> {{ t("实例ID：") }} </a-typography-text>
+        <a-typography-text :copyable="{ text: instanceInfo?.instanceUuid }"> </a-typography-text>
+        <a-typography-text class="ml-10"> {{ t("节点ID：") }} </a-typography-text>
+        <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
     </template>
   </CardPanel>

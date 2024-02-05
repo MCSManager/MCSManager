@@ -9,9 +9,12 @@ import { Button, Select, Input, Table } from "ant-design-vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import { closeAppLoading } from "./tools/dom";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
+import BgWrap from "./components/BgWrap.vue";
 
 const { isDarkTheme } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
+
+const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
 
 function setBackground(url: string) {
   const body = document.querySelector("body");
@@ -46,14 +49,15 @@ onMounted(async () => {
 </script>
 
 <template>
+  <BgWrap v-if="hasBgImage" />
   <AppConfigProvider :has-bg-image="hasBgImage">
+    <!-- App Container -->
     <div class="global-app-container">
-      <AppHeader></AppHeader>
+      <AppHeader />
       <RouterView :key="$route.fullPath" />
     </div>
 
     <!-- Global Components -->
-    <InputDialogProvider></InputDialogProvider>
-    <MyselfInfoDialog></MyselfInfoDialog>
+    <component :is="component" v-for="(component, index) in GLOBAL_COMPONENTS" :key="index" />
   </AppConfigProvider>
 </template>

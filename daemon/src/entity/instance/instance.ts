@@ -91,7 +91,7 @@ export default class Instance extends EventEmitter {
       this.forceExec(new FunctionDispatcher());
     }
 
-    if (cfg?.enableRcon !== this.config.enableRcon) {
+    if (cfg?.enableRcon != null && cfg?.enableRcon !== this.config.enableRcon) {
       if (this.status() != Instance.STATUS_STOP)
         throw new Error($t("运行中状态无法启用或关闭 RCON 协议"));
       configureEntityParams(this.config, cfg, "enableRcon", Boolean);
