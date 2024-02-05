@@ -130,8 +130,10 @@ const uploadBackground = async () => {
   const body = document.querySelector("body");
   if (formData.value && body) {
     const url = await useUploadFileDialog();
-    formData.value.bgUrl = url;
-    setBackgroundImage(url);
+    if (url) {
+      formData.value.bgUrl = url;
+      setBackgroundImage(url);
+    }
   }
 };
 
