@@ -20,6 +20,7 @@ import Loading from "@/components/Loading.vue";
 import { computed } from "vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 
 defineProps<{
   card: LayoutCard;
@@ -28,6 +29,7 @@ defineProps<{
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
 const { getSettingsConfig, setSettingsConfig } = useLayoutConfigStore();
+const { setBackgroundImage } = useAppConfigStore();
 
 interface MySettings extends Settings {
   bgUrl?: string;
@@ -125,7 +127,14 @@ const isZhCN = computed(() => {
 });
 
 const uploadBackground = async () => {
-  if (formData.value) formData.value.bgUrl = await useUploadFileDialog();
+  const body = document.querySelector("body");
+  if (formData.value && body) {
+    const url = await useUploadFileDialog();
+    if (url) {
+      formData.value.bgUrl = url;
+      setBackgroundImage(url);
+    }
+  }
 };
 
 const handleSaveBgUrl = async (url?: string) => {
@@ -284,7 +293,9 @@ onMounted(async () => {
                     <a-button type="primary" class="mr-6" @click="handleSaveBgUrl()">
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
-                    <a-button danger @click="handleSaveBgUrl('')"> {{ t("TXT_CODE_50d471b2") }}</a-button>
+                    <a-button danger @click="handleSaveBgUrl('')">
+                      {{ t("TXT_CODE_50d471b2") }}</a-button
+                    >
                   </a-form-item>
                 </a-form>
               </div>

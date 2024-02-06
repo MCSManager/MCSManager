@@ -108,7 +108,7 @@ const loginSuccess = () => {
             {{ t("TXT_CODE_5b60ad00") }}
           </a-typography-paragraph>
           <div>
-            <form>
+            <form @submit.prevent>
               <div v-if="!is2Fa">
                 <a-input
                   v-model:value="formData.username"

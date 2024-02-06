@@ -5,13 +5,17 @@ import { message } from "ant-design-vue";
 import { reportError } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
-import { useKeyboardEvents } from "../../../hooks/useKeyboardEvents";
+import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
+import { useScreen } from "@/hooks/useScreen";
+import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
 
 const open = ref(false);
 const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
+
+const { isPhone } = useScreen();
 
 // eslint-disable-next-line no-unused-vars
 let resolve: (t: string) => void;
@@ -47,6 +51,8 @@ const openDialog = (_path: string, _fileName: string) => {
     reject = _reject;
   });
 };
+
+const fullScreen = ref(false);
 
 const { state: text, execute } = fileContent();
 const render = async () => {
@@ -124,11 +130,19 @@ defineExpose({
     :cancel-text="t('TXT_CODE_3b1cc020')"
     :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
-    :title="dialogTitle"
-    width="1300px"
+    :width="fullScreen ? '100%' : '1300px'"
     @ok="submit()"
     @cancel="cancel()"
   >
+    <template #title>
+      {{ dialogTitle }}
+      <a-button v-if="!isPhone" type="text" size="small" @click="fullScreen = !fullScreen">
+        <template #icon>
+          <FullscreenExitOutlined v-if="fullScreen" />
+          <FullscreenOutlined v-else />
+        </template>
+      </a-button>
+    </template>
     <Editor
       v-if="openEditor"
       ref="EditorComponent"
