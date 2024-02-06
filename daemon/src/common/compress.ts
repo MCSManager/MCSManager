@@ -114,14 +114,15 @@ async function useZip(distZip: string, files: string[]): Promise<boolean> {
 }
 
 async function use7zipCompress(zipPath: string, files: string[]): Promise<boolean> {
-  const cmd = `7z.exe a ${zipPath} ${files.join(" ")}`.split(" ");
+  const cmd = ["7z.exe", "a", "-aoa", zipPath, ...files];
   console.log($t("TXT_CODE_common._7zip"), `${cmd.join(" ")}`);
   return new Promise((resolve, reject) => {
-    const p = cmd.splice(1);
-    const subProcess = child_process.spawn(cmd[0], [...p], {
-      cwd: path.normalize(path.join(process.cwd(), "7zip")),
+    const subProcess = child_process.spawn(cmd[0], cmd.splice(1), {
+      cwd: path.normalize(path.join(process.cwd(), "lib")),
       stdio: "pipe"
     });
+    subProcess.stdout.on("data", (text) => {});
+    subProcess.stderr.on("data", (text) => {});
     if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
     subProcess.on("exit", (code) => {
       if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
@@ -133,13 +134,15 @@ async function use7zipCompress(zipPath: string, files: string[]): Promise<boolea
 
 // ./7z.exe x archive.zip -oD:\7-Zip
 async function use7zipDecompress(sourceZip: string, destDir: string): Promise<boolean> {
-  const cmd = `7z.exe x ${sourceZip} -o${destDir}`.split(" ");
+  const cmd = [`7z.exe`, `x`, "-aoa", sourceZip, `-o${destDir}`];
   console.log($t("TXT_CODE_common._7unzip"), `${cmd.join(" ")}`);
   return new Promise((resolve, reject) => {
-    const subProcess = child_process.spawn(cmd[0], [cmd[1], cmd[2], cmd[3]], {
-      cwd: path.normalize(path.join(process.cwd(), "7zip")),
+    const subProcess = child_process.spawn(cmd[0], cmd.splice(1), {
+      cwd: path.normalize(path.join(process.cwd(), "lib")),
       stdio: "pipe"
     });
+    subProcess.stdout.on("data", (text) => {});
+    subProcess.stderr.on("data", (text) => {});
     if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
     subProcess.on("exit", (code) => {
       if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
