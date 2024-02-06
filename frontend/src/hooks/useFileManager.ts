@@ -74,12 +74,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const openDialog = (
     title: string,
     info: string,
-    defaultvalue?: string,
+    defaultValue?: string,
     mode?: string,
     style?: object
   ): Promise<string> => {
     dialog.value.style = style || {};
-    dialog.value.value = defaultvalue || "";
+    dialog.value.value = defaultValue || "";
     dialog.value.mode = mode || "";
 
     dialog.value.title = title;
@@ -111,6 +111,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const getFileList = async () => {
     const { execute } = getFileListApi();
     try {
+      clearSelected();
       const res = await execute({
         params: {
           daemonId: daemonId || "",
@@ -134,6 +135,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   };
 
   const touchFile = async (dir?: boolean) => {
+    clearSelected();
     const dirname = dir
       ? await openDialog(t("TXT_CODE_6215388a"), t("TXT_CODE_1b450b79"))
       : await openDialog(t("TXT_CODE_791c73e9"), t("TXT_CODE_59cb16ff"));
@@ -171,6 +173,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     }
     message.success(t("TXT_CODE_25cb04bb"));
+    clearSelected();
   };
 
   const paste = async () => {
@@ -192,6 +195,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       });
       await getFileList();
       message.success(t("TXT_CODE_93d4b66a"));
+      clearSelected();
       clipboard.value.value = [];
     } catch (error: any) {
       reportError(error.message);
@@ -386,6 +390,11 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectedRowKeys.value = _selectedRowKeys;
   };
 
+  const clearSelected = () => {
+    selectionData.value = [];
+    selectedRowKeys.value = [];
+  };
+
   const rowClickTable = async (item: string, type: number) => {
     if (type === 1) return;
 
@@ -485,7 +494,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.data = number2permission(mode);
     permission.loading = false;
     await openDialog(t("TXT_CODE_16853efe"), "", "", "permission", {
-      maxWidth: "450px"
+      maxWidth: "400px"
     });
     const { execute } = changePermissionApi();
     try {

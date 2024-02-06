@@ -454,20 +454,21 @@ onUnmounted(() => {
             v-model:value="permission.data[item.role]"
           >
             <a-row class="direction-column son">
-              <h3 class="m-0">{{ item.key }}</h3>
-              <a-col class="m-5 options">
+              <a-typography-text class="mb-10">
+                <strong>{{ item.key }}</strong>
+              </a-typography-text>
+              <a-col class="mb-10 options">
                 <a-checkbox value="4">{{ t("TXT_CODE_798f592e") }}</a-checkbox>
               </a-col>
-              <a-col class="m-5 options">
+              <a-col class="mb-10 options">
                 <a-checkbox value="2">{{ t("TXT_CODE_46c4e9ac") }}</a-checkbox>
               </a-col>
-              <a-col class="m-5 options">
+              <a-col class="mb-10 options">
                 <a-checkbox value="1">{{ t("TXT_CODE_e97669d8") }}</a-checkbox>
               </a-col>
             </a-row>
           </a-checkbox-group>
         </div>
-
         <a-checkbox v-model:checked="permission.deep" class="mt-15">
           {{ t("TXT_CODE_74fd665e") }}
         </a-checkbox>
@@ -530,10 +531,6 @@ onUnmounted(() => {
 
 .permission {
   .son {
-    border: 1px solid #dcdfe6;
-    border-radius: 10px;
-    padding: 10px 20px;
-    box-shadow: inset 0 0 0 1px #00000010;
   }
 }
 
