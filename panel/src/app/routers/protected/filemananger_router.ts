@@ -251,14 +251,18 @@ router.post(
       const type = Number(ctx.request.body.type);
       const code = String(ctx.request.body.code);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      await new RemoteRequest(remoteService).request("file/compress", {
-        instanceUuid,
-        targets,
-        source,
-        type,
-        code
-      });
-      ctx.body = true;
+      const res = await new RemoteRequest(remoteService).request(
+        "file/compress",
+        {
+          instanceUuid,
+          targets,
+          source,
+          type,
+          code
+        },
+        0
+      );
+      ctx.body = res;
     } catch (err) {
       ctx.body = err;
     }

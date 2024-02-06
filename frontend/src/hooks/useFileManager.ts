@@ -1,7 +1,7 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive, type VNodeRef } from "vue";
+import { ref, createVNode, reactive, type VNodeRef, onMounted } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
@@ -27,6 +27,8 @@ import type {
   FileStatus,
   Permission
 } from "@/types/fileManager";
+import { reportError } from "@/tools/validator";
+import { openLoadingDialog } from "@/components/fc";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -273,6 +275,11 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       return reportError(t("TXT_CODE_b152cd75"));
     const filename = await openDialog(t("TXT_CODE_f8a15a94"), t("TXT_CODE_366bad15"), "", "zip");
     const { execute } = compressFileApi();
+    const loadingDialog = await openLoadingDialog(
+      t("处理中.."),
+      t("正在压缩文件，请耐心等待..."),
+      t("我们正在全力处理文件，但是解压缩程序最多运行运行 40 分钟，超时将自动终止解压缩子进程。")
+    );
     try {
       await execute({
         params: {
@@ -286,17 +293,24 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           targets: selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
         }
       });
-      message.success(t("TXT_CODE_377e142"));
+      message.success(t("任务执行完毕！"));
       await getFileList();
     } catch (error: any) {
+      message.error(t("压缩任务执行失败！"));
       reportError(error.message);
+    } finally {
+      loadingDialog.cancel();
     }
   };
 
   const unzipFile = async (name: string) => {
     const dirname = await openDialog(t("TXT_CODE_7669fd3f"), "", "", "unzip");
     const { execute } = compressFileApi();
-
+    const loadingDialog = await openLoadingDialog(
+      t("处理中.."),
+      t("正在解压文件，请耐心等待..."),
+      t("我们正在全力处理文件，但是解压缩程序最多运行运行 40 分钟，超时将自动终止解压缩子进程。")
+    );
     try {
       await execute({
         params: {
@@ -313,10 +327,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
               : breadcrumbs[breadcrumbs.length - 1].path + dirname
         }
       });
-      message.success(t("TXT_CODE_16f55a9b"));
+      message.success(t("任务执行完毕！"));
       await getFileList();
     } catch (error: any) {
+      message.error(t("解压任务执行失败！"));
       reportError(error.message);
+    } finally {
+      loadingDialog.cancel();
     }
   };
 

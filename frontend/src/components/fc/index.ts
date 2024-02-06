@@ -7,6 +7,7 @@ import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 import UploadFileDialogVue from "./UploadFileDialog.vue";
+import TaskLoadingDialog from "./TaskLoadingDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -89,4 +90,15 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
       ] as AntColumnsType[]
     }).mount<DockerConfigItem[]>(KvOptionsDialogVue)) || []
   );
+}
+
+export async function openLoadingDialog(title: string, text: string, subTitle?: string) {
+  const component = (
+    await useMountComponent({
+      title,
+      text,
+      subTitle
+    })
+  ).load<InstanceType<typeof TaskLoadingDialog>>(TaskLoadingDialog);
+  return component;
 }

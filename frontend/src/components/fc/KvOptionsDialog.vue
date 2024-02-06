@@ -144,4 +144,3 @@ const operation = (type: "add" | "del", index = 0) => {
 </template>
 
 <style lang="scss" scoped></style>
-../../tools/formV

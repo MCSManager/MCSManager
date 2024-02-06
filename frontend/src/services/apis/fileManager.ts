@@ -144,7 +144,8 @@ export const compressFile = useDefineApi<
   boolean
 >({
   url: "/api/files/compress",
-  method: "POST"
+  method: "POST",
+  timeout: Number.MAX_SAFE_INTEGER
 });
 
 export const uploadAddress = useDefineApi<

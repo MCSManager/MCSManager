@@ -32,16 +32,21 @@ export default class RemoteRequest {
       const protocolData: IRequestPacket = { uuid, data };
 
       // Start countdown
-      const countdownTask = setTimeout(
-        () =>
-          reject(new RemoteError(`Request daemon:(${this.rService.config.ip}) [${event}] timeout`)),
-        timeout
-      );
+      let countdownTask: NodeJS.Timeout;
+      if (timeout) {
+        countdownTask = setTimeout(
+          () =>
+            reject(
+              new RemoteError(`Request daemon:(${this.rService.config.ip}) [${event}] timeout`)
+            ),
+          timeout
+        );
+      }
 
       // define event function
       const fn = (msg: IPacket) => {
         if (msg.uuid === uuid) {
-          clearTimeout(countdownTask);
+          if (countdownTask) clearTimeout(countdownTask);
           // Whenever a message is returned, match the ID to ensure that the response corresponds to the request,
           // then delete its own event listener
           this.rService.socket.removeListener(event, fn);

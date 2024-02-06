@@ -370,7 +370,7 @@ onUnmounted(() => {
                           </a-menu-item>
                         </a-menu>
                       </template>
-                      <a-button size="large">
+                      <a-button size="middle">
                         {{ t("TXT_CODE_fe731dfc") }}
                         <DownOutlined />
                       </a-button>
@@ -439,9 +439,9 @@ onUnmounted(() => {
         {{ t("TXT_CODE_76a82338") }}
       </a-typography-text>
       <a-radio-group v-model:value="dialog.code">
-        <a-radio-button value="utf-8">utf-8</a-radio-button>
-        <a-radio-button value="gbk">gbk</a-radio-button>
-        <a-radio-button value="big5">big5</a-radio-button>
+        <a-radio-button value="utf-8">UTF-8</a-radio-button>
+        <a-radio-button value="gbk">GBK</a-radio-button>
+        <a-radio-button value="big5">BIG5</a-radio-button>
       </a-radio-group>
     </a-space>
 

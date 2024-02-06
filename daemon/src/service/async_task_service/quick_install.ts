@@ -67,7 +67,7 @@ export class QuickInstallTask extends AsyncTask {
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
       let result = await this.download();
-      result = await fileManager.promiseUnzip(this.TMP_ZIP_NAME, ".", "UTF-8");
+      result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
       if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
       const config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON)) as InstanceConfig;
 

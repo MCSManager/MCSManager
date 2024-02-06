@@ -1,79 +1,27 @@
 import { $t } from "../i18n";
-import fs from "fs-extra";
 import path from "path";
-import * as compressing from "compressing";
 import child_process from "child_process";
 import os from "os";
-import archiver from "archiver";
-import StreamZip, { async } from "node-stream-zip";
-import { processWrapper } from "common";
-import { PTY_PATH } from "../const";
-// const StreamZip = require('node-stream-zip');
+import { t } from "i18next";
+import logger from "../service/log";
 
-// Cross-platform high-efficiency/low-efficiency decompression scheme
 const system = os.platform();
 
+const COMPRESS_ERROR_MSG = {
+  invalidName: t("压缩或解压的文件名中包含非法字符，请重命名更改文件！"),
+  exitErr: t("解压/压缩程序执行结果不正确，请检查文件权限并重试！"),
+  startErr: t(
+    "解压/压缩程序启动失败，请确保系统已安装 zip 和 unzip 命令并作用到 MCSManager 的节点！"
+  ),
+  timeoutErr: t("解压/压缩任务超时，已自动结束！")
+};
+
 function checkFileName(fileName: string) {
-  const disableList = ['"', "/", "\\", "?", "|"];
+  const disableList = ['"', "?", "|", "&"];
   for (const iterator of disableList) {
     if (fileName.includes(iterator)) return false;
   }
   return true;
-}
-
-function archiveZip(
-  zipPath: string,
-  files: string[],
-  fileCode: string = "utf-8"
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(zipPath);
-    const archive = archiver("zip", {
-      zlib: { level: 9 }
-      // encoding: fileCode
-    });
-    files.forEach((v) => {
-      const basename = path.normalize(path.basename(v));
-      if (!fs.existsSync(v)) return;
-      if (fs.statSync(v)?.isDirectory()) {
-        archive.directory(v, basename);
-      } else {
-        archive.file(v, { name: basename });
-      }
-    });
-    output.on("close", function () {
-      resolve(true);
-    });
-    archive.on("warning", function (err) {
-      reject(err);
-    });
-    archive.on("error", function (err) {
-      reject(err);
-    });
-    archive.pipe(output);
-    archive.finalize();
-  });
-}
-
-function archiveUnZip(
-  sourceZip: string,
-  destDir: string,
-  fileCode: string = "utf-8"
-): Promise<boolean> {
-  return new Promise(async (resolve, reject) => {
-    const zip = new StreamZip.async({ file: sourceZip, nameEncoding: fileCode });
-    if (!fs.existsSync(destDir)) fs.mkdirsSync(destDir);
-    try {
-      await zip.extract(null, destDir);
-      return resolve(true);
-    } catch (error) {
-      reject(error);
-    }
-    zip
-      .close()
-      .then(() => {})
-      .catch(() => {});
-  });
 }
 
 export async function compress(
@@ -81,10 +29,10 @@ export async function compress(
   files: string[],
   fileCode?: string
 ): Promise<boolean> {
-  // if (system === "linux" && haveLinuxZip()) return await linuxZip(sourceZip, files);
-  // return await nodeCompress(sourceZip, files, fileCode);
-  if (hasGolangProcess()) return golangProcessZip(files, sourceZip, fileCode);
-  return await archiveZip(sourceZip, files, fileCode);
+  if (!checkFileName(sourceZip) || files.some((v) => !checkFileName(v)))
+    throw new Error(COMPRESS_ERROR_MSG.invalidName);
+  if (system === "win32") return await use7zipCompress(sourceZip, files);
+  return await useZip(sourceZip, files);
 }
 
 export async function decompress(
@@ -92,155 +40,111 @@ export async function decompress(
   dest: string,
   fileCode?: string
 ): Promise<boolean> {
-  // if (system === "linux" && haveLinuxUnzip()) return await linuxUnzip(zipPath, dest);
-  // return await nodeDecompress(zipPath, dest, fileCode);
-  if (hasGolangProcess()) return await golangProcessUnzip(zipPath, dest, fileCode);
-  return await archiveUnZip(zipPath, dest, fileCode);
+  if (!checkFileName(zipPath) || !checkFileName(dest))
+    throw new Error(COMPRESS_ERROR_MSG.invalidName);
+  if (system === "win32") return await use7zipDecompress(zipPath, dest);
+  return await useUnzip(zipPath, dest);
 }
 
-async function _7zipCompress(zipPath: string, files: string[]) {
-  const cmd = `7z.exe a ${zipPath} ${files.join(" ")}`.split(" ");
-  console.log($t("TXT_CODE_common._7zip"), `${cmd.join(" ")}`);
+function setTimeoutTask(
+  subProcess: child_process.ChildProcessWithoutNullStreams,
+  target: string | string[],
+  reject: (b: any) => void,
+  id: number | string
+) {
+  setTimeout(() => {
+    if (!subProcess.exitCode && subProcess.exitCode !== 0) {
+      subProcess.kill("SIGKILL");
+      logger.error(
+        `[ZIP] ID: ${id} ${JSON.stringify(target)} Task timeout, exitCode: ${subProcess.exitCode}`
+      );
+      reject(new Error(COMPRESS_ERROR_MSG.timeoutErr));
+    } else {
+      reject(new Error(COMPRESS_ERROR_MSG.exitErr));
+    }
+  }, 1000 * 60);
+}
+
+async function useUnzip(sourceZip: string, destDir: string): Promise<boolean> {
+  const id = Date.now();
   return new Promise((resolve, reject) => {
-    const p = cmd.splice(1);
-    const process = child_process.spawn(cmd[0], [...p], {
-      cwd: "./7zip/"
+    logger.info(
+      `ID: ${id} Function useUnzip(): Command: unzip ${["-o", sourceZip, "-d", destDir].join(" ")}}`
+    );
+    const subProcess = child_process.spawn("unzip", ["-o", sourceZip, "-d", destDir], {
+      cwd: path.normalize(path.dirname(sourceZip)),
+      stdio: "pipe",
+      windowsHide: true
     });
-    if (!process || !process.pid) return reject(false);
-    process.on("exit", (code) => {
-      if (code) return reject(false);
+    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
+    subProcess.stdout.on("data", (text) => {});
+    subProcess.stderr.on("data", (text) => {});
+    subProcess.on("exit", (code) => {
+      logger.info(`ID: ${id} Function useUnzip() Done, return code: ${code}`);
+      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
       return resolve(true);
     });
-  });
-}
-
-async function _7zipDecompress(sourceZip: string, destDir: string) {
-  // ./7z.exe x archive.zip -oD:\7-Zip
-  const cmd = `7z.exe x ${sourceZip} -o${destDir}`.split(" ");
-  console.log($t("TXT_CODE_common._7unzip"), `${cmd.join(" ")}`);
-  return new Promise((resolve, reject) => {
-    const process = child_process.spawn(cmd[0], [cmd[1], cmd[2], cmd[3]], {
-      cwd: "./7zip/"
-    });
-    if (!process || !process.pid) return reject(false);
-    process.on("exit", (code) => {
-      if (code) return reject(false);
-      return resolve(true);
-    });
-  });
-}
-
-function haveLinuxUnzip() {
-  try {
-    const result = child_process.execSync("unzip -hh");
-    return result?.toString("utf-8").toLowerCase().includes("extended help for unzip");
-  } catch (error) {
-    return false;
-  }
-}
-
-function haveLinuxZip() {
-  try {
-    const result = child_process.execSync("zip -h2");
-    return result?.toString("utf-8").toLowerCase().includes("extended help for zip");
-  } catch (error) {
-    return false;
-  }
-}
-
-async function linuxUnzip(sourceZip: string, destDir: string) {
-  return new Promise((resolve, reject) => {
-    let end = false;
-    const process = child_process.spawn("unzip", ["-o", sourceZip, "-d", destDir], {
-      cwd: path.normalize(path.dirname(sourceZip))
-    });
-    if (!process || !process.pid) return reject(false);
-    process.on("exit", (code) => {
-      end = true;
-      if (code) return reject(false);
-      return resolve(true);
-    });
-    // timeout, terminate the task
-    setTimeout(() => {
-      if (end) return;
-      process.kill("SIGKILL");
-      reject(false);
-    }, 1000 * 60 * 60);
+    setTimeoutTask(subProcess, sourceZip, reject, id);
   });
 }
 
 // zip -r a.zip css css_v1 js
 // The ZIP file compressed by this function and the directory where the file is located must be in the same directory
-async function linuxZip(sourceZip: string, files: string[]) {
+async function useZip(distZip: string, files: string[]): Promise<boolean> {
+  const id = Date.now();
   if (!files || files.length == 0) return false;
+  files = files.map((v) => path.basename(v));
   return new Promise((resolve, reject) => {
-    let end = false;
-    files = files.map((v) => path.normalize(path.basename(v)));
-    const process = child_process.spawn("zip", ["-r", sourceZip, ...files], {
-      cwd: path.normalize(path.dirname(sourceZip))
+    logger.info(`ID: ${id} Function useZip(): Command: zip ${["-r", distZip, ...files].join(" ")}`);
+    const subProcess = child_process.spawn("zip", ["-r", distZip, ...files], {
+      cwd: path.normalize(path.dirname(distZip)),
+      stdio: "pipe",
+      windowsHide: true
     });
-    if (!process || !process.pid) return reject(false);
-    process.on("exit", (code) => {
-      end = true;
-      if (code) return reject(false);
+    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
+    subProcess.stdout.on("data", (text) => {});
+    subProcess.stderr.on("data", (text) => {});
+    subProcess.on("exit", (code) => {
+      logger.info(`ID: ${id} Function useZip() Done, return code: ${code}`);
+      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
       return resolve(true);
     });
-    // timeout, terminate the task
-    setTimeout(() => {
-      if (end) return;
-      process.kill("SIGKILL");
-      reject(false);
-    }, 1000 * 60 * 60);
+    setTimeoutTask(subProcess, files, reject, id);
   });
 }
 
-async function nodeCompress(zipPath: string, files: string[], fileCode: string = "utf-8") {
-  const stream = new compressing.zip.Stream();
-  files.forEach((v) => {
-    stream.addEntry(v, {});
+async function use7zipCompress(zipPath: string, files: string[]): Promise<boolean> {
+  const cmd = `7z.exe a ${zipPath} ${files.join(" ")}`.split(" ");
+  console.log($t("TXT_CODE_common._7zip"), `${cmd.join(" ")}`);
+  return new Promise((resolve, reject) => {
+    const p = cmd.splice(1);
+    const subProcess = child_process.spawn(cmd[0], [...p], {
+      cwd: path.normalize(path.join(process.cwd(), "7zip")),
+      stdio: "pipe"
+    });
+    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
+    subProcess.on("exit", (code) => {
+      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
+      return resolve(true);
+    });
+    setTimeoutTask(subProcess, files, reject, "");
   });
-  const destStream = fs.createWriteStream(zipPath);
-  stream.pipe(destStream);
 }
 
-async function nodeDecompress(sourceZip: string, destDir: string, fileCode: string = "utf-8") {
-  return await compressing.zip.uncompress(sourceZip, destDir, {
-    zipFileNameEncoding: fileCode
+// ./7z.exe x archive.zip -oD:\7-Zip
+async function use7zipDecompress(sourceZip: string, destDir: string): Promise<boolean> {
+  const cmd = `7z.exe x ${sourceZip} -o${destDir}`.split(" ");
+  console.log($t("TXT_CODE_common._7unzip"), `${cmd.join(" ")}`);
+  return new Promise((resolve, reject) => {
+    const subProcess = child_process.spawn(cmd[0], [cmd[1], cmd[2], cmd[3]], {
+      cwd: path.normalize(path.join(process.cwd(), "7zip")),
+      stdio: "pipe"
+    });
+    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
+    subProcess.on("exit", (code) => {
+      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
+      return resolve(true);
+    });
+    setTimeoutTask(subProcess, sourceZip, reject, "");
   });
 }
-
-function hasGolangProcess() {
-  return fs.existsSync(PTY_PATH);
-}
-
-// ./pty_linux_arm64 -m unzip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996/tmp.zip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996
-async function golangProcessUnzip(zipPath: string, destDir: string, fileCode: string = "utf-8") {
-  console.log("GO Zip Params", zipPath, destDir, fileCode);
-  return await new processWrapper(
-    PTY_PATH,
-    ["-coder", fileCode, "-m", "unzip", zipPath, destDir],
-    ".",
-    60 * 30
-  ).start();
-}
-
-async function golangProcessZip(files: string[], destZip: string, fileCode: string = "utf-8") {
-  let p = ["-coder", fileCode, "-m", "zip"];
-  p = p.concat(files);
-  p.push(destZip);
-  console.log("GO Unzip Params", p);
-  return await new processWrapper(PTY_PATH, p, ".", 60 * 30).start();
-}
-
-// async function test() {
-//   console.log(
-//     "UNZIP::",
-//     await golangProcessUnzip(
-//       "/Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159d255b042da8cb3fd2012b0a996/tmp.zip",
-//       "/Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996",
-//       "utf-8"
-//     )
-//   );
-// }
-
-// test();
