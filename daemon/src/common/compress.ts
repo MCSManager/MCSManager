@@ -4,8 +4,14 @@ import child_process from "child_process";
 import os from "os";
 import { t } from "i18next";
 import logger from "../service/log";
+import { ProcessWrapper } from "common";
 
 const system = os.platform();
+
+const LINUX_ZIP = "zip";
+const LINUX_UNZIP = "unzip";
+const WIN_7ZIP = "7z.exe";
+const ZIP_TIMEOUT_SECONDS = 60 * 40;
 
 const COMPRESS_ERROR_MSG = {
   invalidName: t("压缩或解压的文件名中包含非法字符，请重命名更改文件！"),
@@ -17,7 +23,7 @@ const COMPRESS_ERROR_MSG = {
 };
 
 function checkFileName(fileName: string) {
-  const disableList = ['"', "?", "|", "&"];
+  const disableList = ['"', "'", "?", "|", "&"];
   for (const iterator of disableList) {
     if (fileName.includes(iterator)) return false;
   }
@@ -46,108 +52,57 @@ export async function decompress(
   return await useUnzip(zipPath, dest);
 }
 
-function setTimeoutTask(
-  subProcess: child_process.ChildProcessWithoutNullStreams,
-  target: string | string[],
-  reject: (b: any) => void,
-  id: number | string
-) {
-  setTimeout(() => {
-    if (!subProcess.exitCode && subProcess.exitCode !== 0) {
-      subProcess.kill("SIGKILL");
-      logger.error(
-        `[ZIP] ID: ${id} ${JSON.stringify(target)} Task timeout, exitCode: ${subProcess.exitCode}`
-      );
-      reject(new Error(COMPRESS_ERROR_MSG.timeoutErr));
-    } else {
-      reject(new Error(COMPRESS_ERROR_MSG.exitErr));
-    }
-  }, 1000 * 60);
-}
-
-async function useUnzip(sourceZip: string, destDir: string): Promise<boolean> {
-  const id = Date.now();
-  return new Promise((resolve, reject) => {
-    logger.info(
-      `ID: ${id} Function useUnzip(): Command: unzip ${["-o", sourceZip, "-d", destDir].join(" ")}}`
-    );
-    const subProcess = child_process.spawn("unzip", ["-o", sourceZip, "-d", destDir], {
-      cwd: path.normalize(path.dirname(sourceZip)),
-      stdio: "pipe",
-      windowsHide: true
-    });
-    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
-    subProcess.stdout.on("data", (text) => {});
-    subProcess.stderr.on("data", (text) => {});
-    subProcess.on("exit", (code) => {
-      logger.info(`ID: ${id} Function useUnzip() Done, return code: ${code}`);
-      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
-      return resolve(true);
-    });
-    setTimeoutTask(subProcess, sourceZip, reject, id);
-  });
+async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Promise<boolean> {
+  const params = ["-o", path.basename(sourceZip), "-d", path.basename(destDir)];
+  logger.info(`Function useUnzip(): Command: zip ${params.join(" ")}`);
+  const subProcess = new ProcessWrapper(
+    LINUX_UNZIP,
+    params,
+    path.dirname(sourceZip),
+    ZIP_TIMEOUT_SECONDS,
+    code
+  );
+  subProcess.setErrMsg(COMPRESS_ERROR_MSG);
+  return subProcess.start();
 }
 
 // zip -r a.zip css css_v1 js
 // The ZIP file compressed by this function and the directory where the file is located must be in the same directory
-async function useZip(distZip: string, files: string[]): Promise<boolean> {
-  const id = Date.now();
-  if (!files || files.length == 0) return false;
+async function useZip(distZip: string, files: string[], code = "utf-8"): Promise<boolean> {
+  if (!files || files.length == 0) throw new Error(t("请至少选择一个文件！"));
   files = files.map((v) => path.basename(v));
-  return new Promise((resolve, reject) => {
-    logger.info(`ID: ${id} Function useZip(): Command: zip ${["-r", distZip, ...files].join(" ")}`);
-    const subProcess = child_process.spawn("zip", ["-r", distZip, ...files], {
-      cwd: path.normalize(path.dirname(distZip)),
-      stdio: "pipe",
-      windowsHide: true
-    });
-    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
-    subProcess.stdout.on("data", (text) => {});
-    subProcess.stderr.on("data", (text) => {});
-    subProcess.on("exit", (code) => {
-      logger.info(`ID: ${id} Function useZip() Done, return code: ${code}`);
-      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
-      return resolve(true);
-    });
-    setTimeoutTask(subProcess, files, reject, id);
-  });
+  const params = ["-r", path.basename(distZip), ...files];
+  logger.info(`Function useZip(): Command: zip ${params.join(" ")}`);
+  const subProcess = new ProcessWrapper(
+    LINUX_ZIP,
+    params,
+    path.dirname(distZip),
+    ZIP_TIMEOUT_SECONDS,
+    code
+  );
+  subProcess.setErrMsg(COMPRESS_ERROR_MSG);
+  return subProcess.start();
 }
 
-async function use7zipCompress(zipPath: string, files: string[]): Promise<boolean> {
-  const cmd = ["7z.exe", "a", "-aoa", zipPath, ...files];
-  console.log($t("TXT_CODE_common._7zip"), `${cmd.join(" ")}`);
-  return new Promise((resolve, reject) => {
-    const subProcess = child_process.spawn(cmd[0], cmd.splice(1), {
-      cwd: path.normalize(path.join(process.cwd(), "lib")),
-      stdio: "pipe"
-    });
-    subProcess.stdout.on("data", (text) => {});
-    subProcess.stderr.on("data", (text) => {});
-    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
-    subProcess.on("exit", (code) => {
-      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
-      return resolve(true);
-    });
-    setTimeoutTask(subProcess, files, reject, "");
-  });
+async function use7zipCompress(zipPath: string, files: string[], code = "utf-8"): Promise<boolean> {
+  const params = ["a", "-aoa", zipPath, ...files];
+  const cwd = path.normalize(path.join(process.cwd(), "lib"));
+  console.log($t("TXT_CODE_common._7zip"), `${WIN_7ZIP} ${params.join(" ")}`);
+  const subProcess = new ProcessWrapper(WIN_7ZIP, params, cwd, ZIP_TIMEOUT_SECONDS, code);
+  subProcess.setErrMsg(COMPRESS_ERROR_MSG);
+  return subProcess.start();
 }
 
 // ./7z.exe x archive.zip -oD:\7-Zip
-async function use7zipDecompress(sourceZip: string, destDir: string): Promise<boolean> {
-  const cmd = [`7z.exe`, `x`, "-aoa", sourceZip, `-o${destDir}`];
-  console.log($t("TXT_CODE_common._7unzip"), `${cmd.join(" ")}`);
-  return new Promise((resolve, reject) => {
-    const subProcess = child_process.spawn(cmd[0], cmd.splice(1), {
-      cwd: path.normalize(path.join(process.cwd(), "lib")),
-      stdio: "pipe"
-    });
-    subProcess.stdout.on("data", (text) => {});
-    subProcess.stderr.on("data", (text) => {});
-    if (!subProcess || !subProcess.pid) return reject(new Error(COMPRESS_ERROR_MSG.startErr));
-    subProcess.on("exit", (code) => {
-      if (code) return reject(new Error(COMPRESS_ERROR_MSG.exitErr));
-      return resolve(true);
-    });
-    setTimeoutTask(subProcess, sourceZip, reject, "");
-  });
+async function use7zipDecompress(
+  sourceZip: string,
+  destDir: string,
+  code = "utf-8"
+): Promise<boolean> {
+  const params = [`x`, "-aoa", sourceZip, `-o${destDir}`];
+  console.log($t("TXT_CODE_common._7unzip"), `${params.join(" ")}`);
+  const cwd = path.normalize(path.join(process.cwd(), "lib"));
+  const subProcess = new ProcessWrapper(WIN_7ZIP, params, cwd, ZIP_TIMEOUT_SECONDS, code);
+  subProcess.setErrMsg(COMPRESS_ERROR_MSG);
+  return subProcess.start();
 }

@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import { compress, decompress } from "../common/compress";
 import iconv from "iconv-lite";
 import { globalConfiguration } from "../entity/config";
-import { processWrapper } from "common";
+import { ProcessWrapper } from "common";
 import os from "os";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
@@ -123,7 +123,7 @@ export default class FileManager {
     if (deep) params.push("-R");
     params.push(String(chmodValue));
     params.push(absPath);
-    return await new processWrapper(file, params, ".", 60 * 10).start();
+    return await new ProcessWrapper(file, params, ".", 60 * 10).start();
   }
 
   async readFile(fileName: string) {

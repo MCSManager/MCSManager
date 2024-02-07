@@ -9,15 +9,15 @@ import Instance from "../../instance/instance";
 import KillCommand from "../kill";
 import logger from "../../../service/log";
 import { $t } from "../../../i18n";
-import { processWrapper } from "common";
+import { ProcessWrapper } from "common";
 import { FRPC_PATH } from "../../../const";
 import { downloadFileToLocalFile } from "../../../service/download";
 export class OpenFrp {
-  public processWrapper: processWrapper;
+  public processWrapper: ProcessWrapper;
 
   constructor(public readonly token: string, public readonly tunnelId: string) {
     // ./frpc -u <passowrd> -p <channel id>
-    this.processWrapper = new processWrapper(
+    this.processWrapper = new ProcessWrapper(
       FRPC_PATH,
       ["-u", this.token, "-p", this.tunnelId],
       path.dirname(FRPC_PATH)

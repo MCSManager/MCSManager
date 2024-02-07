@@ -5,9 +5,17 @@ import path from "path";
 import EventEmitter from "events";
 import iconv from "iconv-lite";
 
-export class processWrapper extends EventEmitter {
+export class StartError extends Error {}
+
+export class ProcessWrapper extends EventEmitter {
   public process: ChildProcess;
   public pid: number;
+
+  public errMsg = {
+    timeoutErr: "task timeout!",
+    exitErr: "task error!",
+    startErr: "task start error!"
+  };
 
   constructor(
     public readonly file: string,
@@ -20,24 +28,28 @@ export class processWrapper extends EventEmitter {
     super();
   }
 
+  public setErrMsg(errMsg: { timeoutErr: string; exitErr: string; startErr: string }) {
+    this.errMsg = errMsg;
+  }
+
   public start(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let timeTask: NodeJS.Timeout = null;
-      const process = child_process.spawn(this.file, this.args, {
+      const subProcess = child_process.spawn(this.file, this.args, {
         stdio: "pipe",
         windowsHide: true,
         cwd: path.normalize(this.cwd),
         ...this.option
       });
-      this.process = process;
-      this.pid = process.pid;
+      this.process = subProcess;
+      this.pid = subProcess.pid;
 
-      this.emit("start", process.pid);
-      if (!process || !process.pid) return reject(false);
+      this.emit("start", subProcess.pid);
+      if (!subProcess || !subProcess.pid) return reject(new Error(this.errMsg.startErr));
 
-      process.stdout.on("data", (text) => this.emit("data", iconv.decode(text, this.code)));
-      process.stderr.on("data", (text) => this.emit("data", iconv.decode(text, this.code)));
-      process.on("exit", (code) => {
+      subProcess.stdout.on("data", (text) => this.emit("data", iconv.decode(text, this.code)));
+      subProcess.stderr.on("data", (text) => this.emit("data", iconv.decode(text, this.code)));
+      subProcess.on("exit", (code) => {
         try {
           this.emit("exit", code);
           this.destroy();
@@ -50,8 +62,12 @@ export class processWrapper extends EventEmitter {
       // timeout, terminate the task
       if (this.timeout) {
         timeTask = setTimeout(() => {
-          killProcess(process.pid, process);
-          reject(false);
+          if (!subProcess.exitCode && subProcess.exitCode !== 0) {
+            killProcess(subProcess.pid, subProcess);
+            reject(new Error(this.errMsg.timeoutErr));
+          } else {
+            reject(new Error(this.errMsg.exitErr));
+          }
         }, 1000 * this.timeout);
       }
     });
