@@ -5,6 +5,8 @@ import os from "os";
 import { t } from "i18next";
 import logger from "../service/log";
 import { ProcessWrapper } from "common";
+import { PTY_PATH } from "../const";
+import * as fs from "fs-extra";
 
 const system = os.platform();
 
@@ -38,6 +40,7 @@ export async function compress(
   if (!checkFileName(sourceZip) || files.some((v) => !checkFileName(v)))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
   if (system === "win32") return await use7zipCompress(sourceZip, files);
+  if (hasGolangProcess()) return await golangProcessZip(files, sourceZip, fileCode);
   return await useZip(sourceZip, files);
 }
 
@@ -49,7 +52,31 @@ export async function decompress(
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
   if (system === "win32") return await use7zipDecompress(zipPath, dest);
+  if (hasGolangProcess()) return await golangProcessUnzip(zipPath, dest, fileCode);
   return await useUnzip(zipPath, dest);
+}
+
+function hasGolangProcess() {
+  return fs.existsSync(PTY_PATH);
+}
+
+// ./pty_linux_arm64 -m unzip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996/tmp.zip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996
+async function golangProcessUnzip(zipPath: string, destDir: string, fileCode: string = "utf-8") {
+  logger.info("GO Zip Params", zipPath, destDir, fileCode);
+  return await new ProcessWrapper(
+    PTY_PATH,
+    ["-coder", fileCode, "-m", "unzip", zipPath, destDir],
+    process.cwd(),
+    ZIP_TIMEOUT_SECONDS
+  ).start();
+}
+
+async function golangProcessZip(files: string[], destZip: string, fileCode: string = "utf-8") {
+  let p = ["-coder", fileCode, "-m", "zip"];
+  p = p.concat(files);
+  p.push(destZip);
+  logger.info("GO Unzip Params", p);
+  return await new ProcessWrapper(PTY_PATH, p, process.cwd(), ZIP_TIMEOUT_SECONDS).start();
 }
 
 async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Promise<boolean> {
