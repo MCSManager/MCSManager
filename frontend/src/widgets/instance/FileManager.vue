@@ -425,11 +425,7 @@ onUnmounted(() => {
       />
     </a-space>
 
-    <a-space
-      v-if="dialog.mode == 'zip' || dialog.mode == 'unzip'"
-      direction="vertical"
-      class="w-100 mt-16"
-    >
+    <a-space v-if="dialog.mode == 'unzip'" direction="vertical" class="w-100 mt-16">
       <a-typography-title :level="5">{{ t("TXT_CODE_2841f4a") }}</a-typography-title>
       <a-typography-text v-if="getCurrentLang() == 'zh_cn'" type="secondary">
         {{ t("TXT_CODE_b278707d") }}
@@ -443,6 +439,16 @@ onUnmounted(() => {
         <a-radio-button value="gbk">GBK</a-radio-button>
         <a-radio-button value="big5">BIG5</a-radio-button>
       </a-radio-group>
+    </a-space>
+
+    <a-space v-if="dialog.mode == 'zip'" direction="vertical" class="w-100 mt-16">
+      <a-typography-text type="secondary">
+        {{
+          t(
+            "压缩后的 ZIP 文件的编码在 Linux 下通常是 UTF-8，Windows 下一般会根据您的国家标准来进行文件编码。"
+          )
+        }}
+      </a-typography-text>
     </a-space>
 
     <a-space v-if="dialog.mode == 'permission'" direction="vertical" class="w-100 select-none">

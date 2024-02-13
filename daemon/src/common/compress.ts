@@ -1,14 +1,22 @@
 import { $t } from "../i18n";
 import path from "path";
-import child_process from "child_process";
 import os from "os";
 import { t } from "i18next";
 import logger from "../service/log";
 import { ProcessWrapper } from "common";
-import { PTY_PATH } from "../const";
 import * as fs from "fs-extra";
+import compressing from "compressing";
+import { pipeline } from "stream";
 
-const system = os.platform();
+const SYSTEM_TYPE = os.platform();
+
+const supportCode: Record<string, string> = {
+  gbk: "gbk",
+  "utf-8": "utf-8",
+  utf8: "utf-8",
+  big5: "big5",
+  sjis: "sjis"
+};
 
 const LINUX_ZIP = "zip";
 const LINUX_UNZIP = "unzip";
@@ -39,9 +47,9 @@ export async function compress(
 ): Promise<boolean> {
   if (!checkFileName(sourceZip) || files.some((v) => !checkFileName(v)))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
-  if (system === "win32") return await use7zipCompress(sourceZip, files);
-  if (hasGolangProcess()) return await golangProcessZip(files, sourceZip, fileCode);
-  return await useZip(sourceZip, files);
+  // if (has7zip()) return await use7zipCompress(sourceZip, files);
+  await useCompressing(files, sourceZip);
+  return true;
 }
 
 export async function decompress(
@@ -51,32 +59,33 @@ export async function decompress(
 ): Promise<boolean> {
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
-  if (system === "win32") return await use7zipDecompress(zipPath, dest);
-  if (hasGolangProcess()) return await golangProcessUnzip(zipPath, dest, fileCode);
-  return await useUnzip(zipPath, dest);
+  // if (has7zip()) return await use7zipDecompress(zipPath, dest);
+  await useUnCompressing(zipPath, dest, fileCode);
+  return true;
 }
 
-function hasGolangProcess() {
-  return fs.existsSync(PTY_PATH);
+export async function useCompressing(files: string[], sourceZip: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const tarStream = new compressing.zip.Stream();
+    for (const filePath of files) tarStream.addEntry(filePath);
+    if (fs.existsSync(sourceZip)) fs.removeSync(sourceZip);
+    const destStream = fs.createWriteStream(sourceZip);
+    tarStream.on("error", (err) => reject(err));
+    destStream.on("error", (err) => reject(err));
+    pipeline(tarStream, destStream, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    }).on("error", (err) => reject(err));
+  });
 }
 
-// ./pty_linux_arm64 -m unzip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996/tmp.zip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996
-async function golangProcessUnzip(zipPath: string, destDir: string, fileCode: string = "utf-8") {
-  logger.info("GO Zip Params", zipPath, destDir, fileCode);
-  return await new ProcessWrapper(
-    PTY_PATH,
-    ["-coder", fileCode, "-m", "unzip", zipPath, destDir],
-    process.cwd(),
-    ZIP_TIMEOUT_SECONDS
-  ).start();
-}
-
-async function golangProcessZip(files: string[], destZip: string, fileCode: string = "utf-8") {
-  let p = ["-coder", fileCode, "-m", "zip"];
-  p = p.concat(files);
-  p.push(destZip);
-  logger.info("GO Unzip Params", p);
-  return await new ProcessWrapper(PTY_PATH, p, process.cwd(), ZIP_TIMEOUT_SECONDS).start();
+export async function useUnCompressing(sourceZip: string, target: string, fileCode: string) {
+  return await compressing.zip.uncompress(sourceZip, target, {
+    zipFileNameEncoding: supportCode[fileCode.toLowerCase()] ?? "utf-8"
+  });
 }
 
 async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Promise<boolean> {
@@ -91,6 +100,13 @@ async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Pro
   );
   subProcess.setErrMsg(COMPRESS_ERROR_MSG);
   return subProcess.start();
+}
+
+function has7zip() {
+  return (
+    fs.existsSync(path.normalize(path.join(process.cwd(), "lib", WIN_7ZIP))) &&
+    SYSTEM_TYPE === "win32"
+  );
 }
 
 // zip -r a.zip css css_v1 js
@@ -133,3 +149,26 @@ async function use7zipDecompress(
   subProcess.setErrMsg(COMPRESS_ERROR_MSG);
   return subProcess.start();
 }
+
+// function hasGolangProcess() {
+//   return fs.existsSync(PTY_PATH);
+// }
+
+// // ./pty_linux_arm64 -m unzip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996/tmp.zip /Users/wangkun/Documents/OtherWork/MCSM-Daemon/data/InstanceData/3832159255b042da8cb3fd2012b0a996
+// async function golangProcessUnzip(zipPath: string, destDir: string, fileCode: string = "utf-8") {
+//   logger.info("GO Zip Params", zipPath, destDir, fileCode);
+//   return await new ProcessWrapper(
+//     PTY_PATH,
+//     ["-coder", fileCode, "-m", "unzip", zipPath, destDir],
+//     process.cwd(),
+//     ZIP_TIMEOUT_SECONDS
+//   ).start();
+// }
+
+// async function golangProcessZip(files: string[], destZip: string, fileCode: string = "utf-8") {
+//   let p = ["-coder", fileCode, "-m", "zip"];
+//   p = p.concat(files);
+//   p.push(destZip);
+//   logger.info("GO Unzip Params", p);
+//   return await new ProcessWrapper(PTY_PATH, p, process.cwd(), ZIP_TIMEOUT_SECONDS).start();
+// }

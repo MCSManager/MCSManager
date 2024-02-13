@@ -282,7 +282,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const loadingDialog = await openLoadingDialog(
       t("处理中.."),
       t("正在压缩文件，请耐心等待..."),
-      t("我们正在全力处理文件，但是解压缩程序最多运行运行 40 分钟，超时将自动终止解压缩子进程。")
+      t("我们正在全力处理文件中！")
     );
     try {
       await execute({
@@ -313,7 +313,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const loadingDialog = await openLoadingDialog(
       t("处理中.."),
       t("正在解压文件，请耐心等待..."),
-      t("我们正在全力处理文件，但是解压缩程序最多运行运行 40 分钟，超时将自动终止解压缩子进程。")
+      t("我们正在全力处理文件！")
     );
     try {
       await execute({
