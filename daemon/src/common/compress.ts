@@ -24,12 +24,12 @@ const WIN_7ZIP = "7z.exe";
 const ZIP_TIMEOUT_SECONDS = 60 * 40;
 
 const COMPRESS_ERROR_MSG = {
-  invalidName: t("压缩或解压的文件名中包含非法字符，请重命名更改文件！"),
-  exitErr: t("解压/压缩程序执行结果不正确，请检查文件权限并重试！"),
+  invalidName: t("TXT_CODE_3aa9f36"),
+  exitErr: t("TXT_CODE_2be83d36"),
   startErr: t(
-    "解压/压缩程序启动失败，请确保系统已安装 zip 和 unzip 命令并作用到 MCSManager 的节点！"
+    "TXT_CODE_37d839a4"
   ),
-  timeoutErr: t("解压/压缩任务超时，已自动结束！")
+  timeoutErr: t("TXT_CODE_15c07350")
 };
 
 function checkFileName(fileName: string) {
@@ -112,7 +112,7 @@ function has7zip() {
 // zip -r a.zip css css_v1 js
 // The ZIP file compressed by this function and the directory where the file is located must be in the same directory
 async function useZip(distZip: string, files: string[], code = "utf-8"): Promise<boolean> {
-  if (!files || files.length == 0) throw new Error(t("请至少选择一个文件！"));
+  if (!files || files.length == 0) throw new Error(t("TXT_CODE_2038ec2c"));
   files = files.map((v) => path.basename(v));
   const params = ["-r", path.basename(distZip), ...files];
   logger.info(`Function useZip(): Command: zip ${params.join(" ")}`);

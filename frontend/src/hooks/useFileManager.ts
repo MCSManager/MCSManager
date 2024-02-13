@@ -280,9 +280,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const filename = await openDialog(t("TXT_CODE_f8a15a94"), t("TXT_CODE_366bad15"), "", "zip");
     const { execute } = compressFileApi();
     const loadingDialog = await openLoadingDialog(
-      t("处理中.."),
-      t("正在压缩文件，请耐心等待..."),
-      t("我们正在全力处理文件中！")
+      t("TXT_CODE_b3825da"),
+      t("TXT_CODE_ba027d6c"),
+      t("TXT_CODE_e1070b52")
     );
     try {
       await execute({
@@ -297,10 +297,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           targets: selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
         }
       });
-      message.success(t("任务执行完毕！"));
+      message.success(t("TXT_CODE_c3a933d3"));
       await getFileList();
     } catch (error: any) {
-      message.error(t("压缩任务执行失败！"));
+      message.error(t("TXT_CODE_dba9bf61"));
       reportError(error.message);
     } finally {
       loadingDialog.cancel();
@@ -311,9 +311,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const dirname = await openDialog(t("TXT_CODE_7669fd3f"), "", "", "unzip");
     const { execute } = compressFileApi();
     const loadingDialog = await openLoadingDialog(
-      t("处理中.."),
-      t("正在解压文件，请耐心等待..."),
-      t("我们正在全力处理文件！")
+      t("TXT_CODE_b3825da"),
+      t("TXT_CODE_b82225c3"),
+      t("TXT_CODE_6f038f25")
     );
     try {
       await execute({
@@ -331,10 +331,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
               : breadcrumbs[breadcrumbs.length - 1].path + dirname
         }
       });
-      message.success(t("任务执行完毕！"));
+      message.success(t("TXT_CODE_c3a933d3"));
       await getFileList();
     } catch (error: any) {
-      message.error(t("解压任务执行失败！"));
+      message.error(t("TXT_CODE_26d7316f"));
       reportError(error.message);
     } finally {
       loadingDialog.cancel();

@@ -445,7 +445,7 @@ onUnmounted(() => {
       <a-typography-text type="secondary">
         {{
           t(
-            "压缩后的 ZIP 文件的编码在 Linux 下通常是 UTF-8，Windows 下一般会根据您的国家标准来进行文件编码。"
+            "TXT_CODE_92ebdc7f"
           )
         }}
       </a-typography-text>
