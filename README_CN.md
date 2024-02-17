@@ -10,8 +10,8 @@
   </h1>
 
 [![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
-[![Status](https://img.shields.io/badge/npm-v6.14.15-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/npm-v8.9.14-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
@@ -45,9 +45,9 @@
 
 ## 运行环境
 
-控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `NodeJS` 环境和几个**用于解压缩**的命令。
+控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `Node.js` 环境和几个**用于解压缩**的命令。
 
-必须 [NodeJS 16.20.2](https://nodejs.org/en) 以上。
+必须使用 [Node.js 16.20.2](https://nodejs.org/en) 以上。
 
 <br />
 
@@ -73,7 +73,7 @@ wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup_cn.sh | bash
 wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
 ```
 
-- 脚本仅适用于 AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
+- 脚本仅适用于 x86_64/AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
 - 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
 - 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
 
@@ -86,7 +86,7 @@ wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | 
 ```bash
 # 切换到安装目录。如果不存在，请提前用'mkdir /opt/'创建它。
 cd /opt/
-# 下载运行时环境（Node.js）。如果你已经安装了Node.js 14+，请忽略此步骤。
+# 下载运行时环境（Node.js）。如果你已经安装了Node.js 16+，请忽略此步骤。
 wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
 # 解压档案
 tar -xvf node-v20.11.0-linux-x64.tar.xz
@@ -105,12 +105,12 @@ tar -zxf mcsmanager_linux_release.tar.gz
 # 安装依赖库
 ./install-dependency.sh
 
-# 请打开两个终端或屏幕
+# 请打开两个终端或screen
 
-# 先启动守护程序
+# 先启动节点程序
 ./start-daemon.sh
 
-# 启动网络服务(在第二个终端)
+# 启动网络服务(在第二个终端或screen)
 ./start-web.sh
 
 # 为网络界面访问http://localhost:23333/
@@ -184,6 +184,6 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ## 源代码协议
 
-源代码遵循 Apache-2.0 协议。
+源代码遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议。
 
-Copyright 2024 MCSManager.
+Copyright ©2024 MCSManager.
