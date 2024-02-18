@@ -14,7 +14,7 @@
 [![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/#/zh-cn/) | [Telegram](https://t.me/MCSManager_dev) | [Support this Project](https://afdian.net/a/mcsmanager)
+[Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/)
 
 [English](README.md) | [简体中文](README_CN.md)
 
@@ -66,11 +66,10 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 **One-Command Deployment**
 
 ```bash
-// GitHub Source
 wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
 ```
 
-- Only supports x86_64/AMD64 architecture Ubuntu/Centos/Debian/Archlinux.
+- Only supports x86_64 architecture Ubuntu/Centos/Debian/Archlinux.
 - After installation, use command `systemctl start mcsm-{web,daemon}` to start MCSM.
 - Installation directory: `/opt/mcsmanager/`.
 
@@ -122,7 +121,7 @@ This installation method does not automatically register the panel as a system s
 
 ## Browser Compatibility
 
-- Support `Chrome` `Firefox` `Safari` `Opera` or any modern browser.
+- Support `Chrome` `Firefox` `Safari` modern browser.
 - Support for `IE` has been discontinued.
 
 <br />
