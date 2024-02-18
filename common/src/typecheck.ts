@@ -33,15 +33,6 @@ export function configureEntityParams(self: any, args: any, key: string, typeFn?
     return;
   }
 
-  if (typeFn === Array) {
-    if (v == null) return (self[key] = null);
-    if (!(v instanceof Array))
-      throw new Error(
-        `ConfigureEntityParams Error: Expected type to be Array, but got ${typeof v}`
-      );
-    return;
-  }
-
   if (typeFn) {
     self[key] = typeFn(v);
   } else {

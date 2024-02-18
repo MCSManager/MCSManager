@@ -8,6 +8,7 @@ import { IInstanceProcess } from "../../instance/interface";
 import fs from "fs-extra";
 import { commandStringToArray } from "../base/command_parser";
 import path from "path";
+import { t } from "i18next";
 
 // user identity function
 const processUserUid = process.getuid ? process.getuid : () => 0;
@@ -121,13 +122,14 @@ export default class DockerStartCommand extends InstanceCommand {
     const publicPortArray: any = {};
     const exposedPorts: any = {};
     for (const iterator of portMap) {
-      const elemt = iterator.split("/");
-      if (elemt.length != 2) continue;
-      const ports = elemt[0];
-      const protocol = elemt[1];
+      const elem = iterator.split("/");
+      if (elem.length != 2) throw new Error(t("此容器的开放端口配置有误！"));
+      const ports = elem[0];
+      const protocol = elem[1];
       //Host (host) port: container port
       const publicAndPrivatePort = ports.split(":");
-      if (publicAndPrivatePort.length != 2) continue;
+      if (publicAndPrivatePort.length != 2)
+        throw new Error(t("此容器的开放端口配置有误，分隔符号左右两边不存在值！"));
       publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
         { HostPort: publicAndPrivatePort[0] }
       ];
@@ -138,9 +140,9 @@ export default class DockerStartCommand extends InstanceCommand {
     const extraVolumes = instance.config.docker.extraVolumes;
     const extraBinds = [];
     for (const item of extraVolumes) {
-      if (!item) continue;
+      if (!item) throw new Error("实例容器额外挂载路径配置错误！请检查！");
       const paths = item.split(":");
-      if (paths.length < 2) continue;
+      if (paths.length < 2) throw new Error("实例容器额外挂载路径配置错误！请检查！");
       const hostPath = path.normalize(paths[0]);
       const containerPath = path.normalize(paths.slice(1).join(":"));
       extraBinds.push(`${hostPath}:${containerPath}`);
@@ -170,7 +172,8 @@ export default class DockerStartCommand extends InstanceCommand {
     }
 
     // container name check
-    let containerName = instance.config.docker.containerName;
+    let containerName =
+      instance.config.docker.containerName || `MCSM-${instance.instanceUuid.slice(0, 6)}`;
     if (containerName && (containerName.length > 64 || containerName.length < 2)) {
       throw new Error($t("TXT_CODE_instance.invalidContainerName", { v: containerName }));
     }
@@ -185,7 +188,7 @@ export default class DockerStartCommand extends InstanceCommand {
     logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
     logger.info(`NAME: [${containerName}]`);
     logger.info(`COMMAND: ${commandList.join(" ")}`);
-    logger.info(`CWD: ${cwd}`);
+    logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
     logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(`BINDS: ${JSON.stringify([`${cwd}:${workingDir}`, ...extraBinds])}`);
@@ -210,6 +213,7 @@ export default class DockerStartCommand extends InstanceCommand {
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
+      Env: instance.config.docker?.env || [],
       HostConfig: {
         Memory: maxMemory,
         Binds: [`${cwd}:${workingDir}`, ...extraBinds],
@@ -237,6 +241,7 @@ export default class DockerStartCommand extends InstanceCommand {
       h: instance.config.terminalOption.ptyWindowCol
     });
 
+    instance.println("Container", t("已挂载工作目录：") + workingDir);
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_instance.successful", {

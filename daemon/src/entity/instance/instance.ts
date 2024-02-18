@@ -92,8 +92,7 @@ export default class Instance extends EventEmitter {
     }
 
     if (cfg?.enableRcon != null && cfg?.enableRcon !== this.config.enableRcon) {
-      if (this.status() != Instance.STATUS_STOP)
-        throw new Error($t("TXT_CODE_bdfa3457"));
+      if (this.status() != Instance.STATUS_STOP) throw new Error($t("TXT_CODE_bdfa3457"));
       configureEntityParams(this.config, cfg, "enableRcon", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
@@ -170,6 +169,8 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "networkAliases");
       configureEntityParams(this.config.docker, cfg.docker, "cpusetCpus", String);
       configureEntityParams(this.config.docker, cfg.docker, "cpuUsage", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "env");
+      configureEntityParams(this.config.docker, cfg.docker, "workingDir", String);
     }
     if (cfg.pingConfig) {
       configureEntityParams(this.config.pingConfig, cfg.pingConfig, "ip", String);

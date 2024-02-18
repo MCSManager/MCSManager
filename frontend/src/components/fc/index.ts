@@ -17,6 +17,11 @@ interface PortConfigItem extends DockerConfigItem {
   protocol: string;
 }
 
+interface DockerEnvItem {
+  label: string;
+  value: string;
+}
+
 export async function useUploadFileDialog() {
   return (await useMountComponent().mount<string>(UploadFileDialogVue)) || "";
 }
@@ -89,6 +94,27 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
         }
       ] as AntColumnsType[]
     }).mount<DockerConfigItem[]>(KvOptionsDialogVue)) || []
+  );
+}
+
+export async function useDockerEnvEditDialog(data: DockerEnvItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("容器环境变量"),
+      columns: [
+        {
+          align: "center",
+          dataIndex: "label",
+          title: t("变量名")
+        },
+        {
+          align: "center",
+          dataIndex: "value",
+          title: t("变量值")
+        }
+      ] as AntColumnsType[]
+    }).mount<DockerEnvItem[]>(KvOptionsDialogVue)) || []
   );
 }
 

@@ -16,7 +16,12 @@ import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
-import { useCmdAssistantDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
+import {
+  useCmdAssistantDialog,
+  useDockerEnvEditDialog,
+  usePortEditDialog,
+  useVolumeEditDialog
+} from "@/components/fc";
 import { dockerPortsArray } from "@/tools/common";
 
 interface FormDetail extends InstanceDetail {
@@ -69,12 +74,14 @@ const isGlobalTerminal = computed(() => {
 
 const loadImages = async () => {
   try {
+    dockerImages.value = ["TEST"];
     const images = await getImageList({
       params: {
         daemonId: props.daemonId ?? ""
       },
       method: "GET"
     });
+
     if (images.value) {
       dockerImages.value = [t("TXT_CODE_3362d4b7")];
       for (const iterator of images.value) {
@@ -169,7 +176,7 @@ const openCmdAssistDialog = async () => {
   const cmd = await useCmdAssistantDialog();
   if (options.value && cmd) options.value.config.startCommand = cmd;
 };
-const handleEditDockerConfig = async (type: "port" | "volume") => {
+const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
   if (type === "port" && options.value?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
     const portArray = dockerPortsArray(options.value?.config.docker.ports || []);
@@ -189,6 +196,19 @@ const handleEditDockerConfig = async (type: "port" | "volume") => {
     const result = await useVolumeEditDialog(volumes);
     const volumesArray = result.map((v) => `${v.host}:${v.container}`);
     options.value.config.docker.extraVolumes = volumesArray;
+  }
+
+  if (type === "env" && options.value?.config) {
+    const envs = options.value.config.docker.env?.map((v) => {
+      const tmp = v.split("=");
+      return {
+        label: tmp[0] || "",
+        value: tmp[1] || ""
+      };
+    });
+    const result = await useDockerEnvEditDialog(envs);
+    const envsArray = result.map((v) => `${v.label}=${v.value}`);
+    options.value.config.docker.env = envsArray;
   }
 };
 
@@ -218,6 +238,7 @@ defineExpose({
         autocomplete="off"
       >
         <a-row :gutter="20">
+          AAAAA: {{ options?.config.docker.env }}
           <a-col :xs="24" :md="12" :offset="0">
             <a-form-item name="nickname">
               <a-typography-title :level="5" class="require-field">
@@ -419,6 +440,21 @@ defineExpose({
               </a-typography-paragraph>
               <a-input-group compact>
                 <a-button type="default" @click="() => handleEditDockerConfig('port')">
+                  {{ t("TXT_CODE_ad207008") }}
+                </a-button>
+              </a-input-group>
+            </a-form-item>
+          </a-col>
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("环境变量") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("为容器传递环境变量") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input-group compact>
+                <a-button type="default" @click="() => handleEditDockerConfig('env')">
                   {{ t("TXT_CODE_ad207008") }}
                 </a-button>
               </a-input-group>
