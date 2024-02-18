@@ -97,7 +97,13 @@ export default class DockerStartCommand extends InstanceCommand {
       return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirNoE")));
 
     // command parsing
-    const commandList = commandStringToArray(instance.config.startCommand);
+    let commandList: string[] = [];
+    if (instance.config.startCommand.trim()) {
+      commandList = commandStringToArray(instance.config.startCommand);
+    } else {
+      commandList = [];
+    }
+
     const cwd = instance.absoluteCwdPath();
 
     // parsing port open
@@ -180,23 +186,24 @@ export default class DockerStartCommand extends InstanceCommand {
       throw new Error($t("TXT_CODE_instance.invalidContainerName", { v: containerName }));
     }
 
+    // Whether to use TTY mode
+    const isTty = instance.config.terminalOption.pty;
+    const workingDir = instance.config.docker.workingDir ?? "/workspace/";
+
     // output startup log
     logger.info("----------------");
     logger.info(`Session ${source}: Request to start an instance`);
     logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
     logger.info(`NAME: [${containerName}]`);
     logger.info(`COMMAND: ${commandList.join(" ")}`);
-    logger.info(`WORKSPACE: ${cwd}`);
+    logger.info(`CWD: ${cwd}`);
     logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
-    logger.info(`EXT_MOUNT: ${JSON.stringify(extraBinds)}`);
+    logger.info(`BINDS: ${JSON.stringify([`${cwd}:${workingDir}`, ...extraBinds])}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
-    logger.info(`MEM_LIMIT: ${maxMemory} MB`);
+    logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
     logger.info("----------------");
-
-    // Whether to use TTY mode
-    const isTty = instance.config.terminalOption.pty;
 
     // Start Docker container creation and running
     const docker = new Docker();
@@ -209,14 +216,14 @@ export default class DockerStartCommand extends InstanceCommand {
       AttachStderr: true,
       Tty: isTty,
       User: `${processUserUid()}:${processGroupGid()}`,
-      WorkingDir: "/workspace/",
-      Cmd: commandList,
+      WorkingDir: workingDir,
+      Cmd: commandList ? commandList : undefined,
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
       HostConfig: {
         Memory: maxMemory,
-        Binds: [`${cwd}:/workspace/`, ...extraBinds],
+        Binds: [`${cwd}:${workingDir}`, ...extraBinds],
         AutoRemove: true,
         CpusetCpus: cpusetCpus,
         CpuPeriod: cpuPeriod,

@@ -36,6 +36,7 @@ export interface IGlobalInstanceConfig {
   rconPort?: number;
   rconIp?: string;
 
+  // Old fields
   terminalOption: {
     haveColor: boolean;
     pty: boolean;

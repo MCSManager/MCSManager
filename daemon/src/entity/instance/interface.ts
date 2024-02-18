@@ -14,6 +14,7 @@ export interface IDockerConfig {
   networkAliases: string[];
   cpusetCpus: string; // CPU allowed to execute (eg 0-3, , 0, 1)
   cpuUsage: number;
+  workingDir: string;
 }
 
 // Instance specific process interface

@@ -64,7 +64,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     cpuUsage: null,
     maxSpace: null,
     io: null,
-    network: null
+    network: null,
+    workingDir: "/workspace/"
   };
 
   public pingConfig = {

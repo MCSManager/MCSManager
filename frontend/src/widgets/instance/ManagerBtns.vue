@@ -23,7 +23,7 @@ import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import RconSettings from "./dialogs/RconSettings.vue";
-import InstanceDetails from "./dialogs/InstanceDetails.vue";
+import InstanceDetail from "./dialogs/InstanceDetail.vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import type { RouteLocationPathRaw } from "vue-router";
 import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
@@ -32,7 +32,7 @@ const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
-const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetails>>();
+const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetail>>();
 
 const { toPage: toOtherPager } = useAppRouters();
 
@@ -221,7 +221,7 @@ const btns = computed(() =>
     @update="refreshInstanceInfo"
   />
 
-  <InstanceDetails
+  <InstanceDetail
     ref="instanceDetailsDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
