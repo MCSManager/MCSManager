@@ -1206,7 +1206,7 @@
   "TXT_CODE_9eacb622": "Process Startup Method (Recommended)",
   "TXT_CODE_9278b7b0": "If engaged in commercial activities, consider using container to protect the host.",
   "TXT_CODE_5be6c38e": "Default Type",
-  "TXT_CODE_6c87dd18": "Virtualization Container (Linux Docker)",
+  "TXT_CODE_6c87dd18": "Linux Docker",
   "TXT_CODE_6904cb3": "Docker Image",
   "TXT_CODE_a584cb71": "Specify the instance image.",
   "TXT_CODE_cf88c936": "Open Ports",

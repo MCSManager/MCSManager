@@ -279,7 +279,7 @@ export default class Instance extends EventEmitter {
 
   // custom output method, formatting
   println(level: string, text: string) {
-    const str = `\n[MCSMANAGER] [${level}] ${text}\n`;
+    const str = `[${level}] ${text}\n`;
     this.emit("data", str);
   }
 

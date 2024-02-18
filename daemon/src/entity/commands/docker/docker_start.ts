@@ -9,6 +9,7 @@ import fs from "fs-extra";
 import { commandStringToArray } from "../base/command_parser";
 import path from "path";
 import { t } from "i18next";
+import DockerPullCommand from "./docker_pull";
 
 // user identity function
 const processUserUid = process.getuid ? process.getuid : () => 0;
@@ -97,7 +98,14 @@ export default class DockerStartCommand extends InstanceCommand {
     if (!fs.existsSync(instance.absoluteCwdPath()))
       return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirNoE")));
 
-    // command parsing
+    // Docker Image check
+    try {
+      instance.forceExec(new DockerPullCommand());
+    } catch (error) {
+      return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirEmpty")));
+    }
+
+    // Command text parsing
     let commandList: string[] = [];
     if (instance.config.startCommand.trim()) {
       commandList = commandStringToArray(instance.config.startCommand);
@@ -107,16 +115,7 @@ export default class DockerStartCommand extends InstanceCommand {
 
     const cwd = instance.absoluteCwdPath();
 
-    // parsing port open
-    // {
-    // "PortBindings": {
-    // "22/tcp": [
-    // {
-    // "HostPort": "11022"
-    // }
-    // ]
-    // }
-    // }
+    // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
     const portMap = instance.config.docker.ports;
     const publicPortArray: any = {};

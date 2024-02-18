@@ -27,6 +27,7 @@ import { dockerPortsArray } from "@/tools/common";
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
   networkAliasesText: string;
+  imageSelectMethod: "SELECT" | "EDIT";
 }
 
 const props = defineProps<{
@@ -48,6 +49,16 @@ const { execute, isLoading } = updateAnyInstanceConfig();
 const formRef = ref<FormInstance>();
 const { execute: getImageList } = imageList();
 const dockerImages = ref<string[]>([]);
+const imageMethods = [
+  {
+    label: t("使用已有镜像"),
+    value: "SELECT"
+  },
+  {
+    label: t("使用 DockerHub 中的镜像"),
+    value: "EDIT"
+  }
+];
 
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
@@ -63,7 +74,8 @@ const initFormDetail = () => {
     options.value = {
       ...props.instanceInfo,
       dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
-      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || ""
+      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
+      imageSelectMethod: "SELECT"
     };
   }
 };
@@ -238,7 +250,6 @@ defineExpose({
         autocomplete="off"
       >
         <a-row :gutter="20">
-          AAAAA: {{ options?.config.docker.env }}
           <a-col :xs="24" :md="12" :offset="0">
             <a-form-item name="nickname">
               <a-typography-title :level="5" class="require-field">
@@ -392,6 +403,45 @@ defineExpose({
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
+                {{ t("镜像使用方式") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("请指示实例要如何使用某个镜像") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-select
+                v-model:value="options.imageSelectMethod"
+                size="large"
+                style="width: 100%"
+                :placeholder="t('TXT_CODE_3bb646e4')"
+              >
+                <a-select-option v-for="item in imageMethods" :key="item.value" :value="item.value">
+                  {{ item.label }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="8" :offset="0">
+            <a-form-item name="dockerImage">
+              <a-typography-title :level="5" class="require-field">
+                {{ t("完整镜像名") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("需要携带 tag 等信息") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.docker.image"
+                :placeholder="t('列如：python:3.11')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
+            <a-form-item name="dockerImage">
+              <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_6904cb3") }}
               </a-typography-title>
               <a-typography-paragraph>
@@ -415,21 +465,6 @@ defineExpose({
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :lg="16" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "实例工作目录中的所有文件将会挂载到容器内部的此目录中，不填写则默认 /workspace/"
-                    )
-                  }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-input v-model:value="options.config.docker.workingDir" />
-            </a-form-item>
-          </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
@@ -445,6 +480,22 @@ defineExpose({
               </a-input-group>
             </a-form-item>
           </a-col>
+          <a-col :xs="24" :lg="16" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{
+                    t(
+                      "实例工作目录中的所有文件将会挂载到容器内部的此目录中，不填写则默认 /workspace/"
+                    )
+                  }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input v-model:value="options.config.docker.workingDir" />
+            </a-form-item>
+          </a-col>
+
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("环境变量") }}</a-typography-title>
