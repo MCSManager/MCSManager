@@ -71,6 +71,7 @@ export interface IGlobalInstanceDockerConfig {
   networkAliases?: string[];
   cpusetCpus?: string;
   cpuUsage?: number;
+  workingDir?: string;
 }
 
 export interface IPanelResponseProtocol {

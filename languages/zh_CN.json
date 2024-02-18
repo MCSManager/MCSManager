@@ -1208,7 +1208,7 @@
   "TXT_CODE_9278b7b0": "通常默认即可，如果从事商业活动则应当使用虚拟化容器启动方式，否则主机将可能被入侵。",
   "TXT_CODE_5be6c38e": "默认类型",
   "TXT_CODE_6c87dd18": "虚拟化容器（Linux Docker）",
-  "TXT_CODE_6904cb3": "环境镜像",
+  "TXT_CODE_6904cb3": "Docker 镜像",
   "TXT_CODE_a584cb71": "指定实例镜像",
   "TXT_CODE_cf88c936": "开放端口",
   "TXT_CODE_3e68ca00": "额外挂载路径",

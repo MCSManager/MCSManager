@@ -1,7 +1,6 @@
 import Instance from "./instance";
-import { IDockerConfig } from "./interface";
 import os from "os";
-import { IGlobalInstanceConfig } from "../../../../common/global";
+import { IGlobalInstanceConfig, IGlobalInstanceDockerConfig } from "common/global";
 interface IActionCommand {
   name: string;
   command: string;
@@ -52,7 +51,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   };
 
   // Extend
-  public docker: IDockerConfig = {
+  public docker: IGlobalInstanceDockerConfig = {
     containerName: "",
     image: "",
     ports: [],

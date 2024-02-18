@@ -394,6 +394,21 @@ defineExpose({
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xs="24" :lg="16" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{
+                    t(
+                      "实例工作目录中的所有文件将会挂载到容器内部的此目录中，不填写则默认 /workspace/"
+                    )
+                  }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input v-model:value="options.config.docker.workingDir" />
+            </a-form-item>
+          </a-col>
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>

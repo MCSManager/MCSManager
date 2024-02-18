@@ -137,23 +137,12 @@ export default class DockerStartCommand extends InstanceCommand {
     // resolve extra path mounts
     const extraVolumes = instance.config.docker.extraVolumes;
     const extraBinds = [];
-    for (const it of extraVolumes) {
-      if (!it) continue;
-      const element = it.split(":");
-      if (element.length < 2) continue;
-      let hostPath = element[0];
-      let containerPath = element.slice(1).join(":");
-
-      if (path.isAbsolute(containerPath)) {
-        containerPath = path.normalize(containerPath);
-      } else {
-        containerPath = path.normalize(path.join("/workspace/", containerPath));
-      }
-      if (path.isAbsolute(hostPath)) {
-        hostPath = path.normalize(hostPath);
-      } else {
-        hostPath = path.normalize(path.join(process.cwd(), hostPath));
-      }
+    for (const item of extraVolumes) {
+      if (!item) continue;
+      const paths = item.split(":");
+      if (paths.length < 2) continue;
+      const hostPath = path.normalize(paths[0]);
+      const containerPath = path.normalize(paths.slice(1).join(":"));
       extraBinds.push(`${hostPath}:${containerPath}`);
     }
 
