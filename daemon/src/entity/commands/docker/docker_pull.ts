@@ -67,8 +67,7 @@ export default class DockerPullCommand extends InstanceCommand {
       instance.println("Container", t("镜像下载完毕！"));
     } catch (err) {
       if (cachedStartCount !== instance.startCount) return;
-      instance.println(
-        "Container",
+      throw new Error(
         [
           t(
             "镜像下载错误，请确保此镜像名正确，或者在节点管理的终端处手动通过 docker pull 拉取你需要的镜像，错误信息："
@@ -76,7 +75,6 @@ export default class DockerPullCommand extends InstanceCommand {
           err.message
         ].join("\n")
       );
-      throw err;
     } finally {
       this.stopped(instance);
     }

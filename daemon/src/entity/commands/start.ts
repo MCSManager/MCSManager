@@ -50,7 +50,8 @@ export default class StartCommand extends InstanceCommand {
       const currentTimestamp = Date.now();
       instance.startTimestamp = currentTimestamp;
 
-      instance.println("INFO", "\n\n" + $t("TXT_CODE_start.startInstance"));
+      instance.print("\n\n");
+      instance.println("INFO", $t("TXT_CODE_start.startInstance"));
 
       // prevent the dead-loop from starting
       await this.sleep();
