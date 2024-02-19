@@ -23,6 +23,7 @@ import {
   useVolumeEditDialog
 } from "@/components/fc";
 import { dockerPortsArray } from "@/tools/common";
+import type { DefaultOptionType } from "ant-design-vue/es/select";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -48,17 +49,12 @@ const networkModes = ref<DockerNetworkModes[]>([]);
 const { execute, isLoading } = updateAnyInstanceConfig();
 const formRef = ref<FormInstance>();
 const { execute: getImageList } = imageList();
-const dockerImages = ref<string[]>([]);
-const imageMethods = [
-  {
-    label: t("使用已有镜像"),
-    value: "SELECT"
-  },
-  {
-    label: t("使用 DockerHub 中的镜像"),
-    value: "EDIT"
-  }
-];
+const dockerImages = ref<{ label: string; value: string }[]>([]);
+
+const IMAGE_DEFINE = {
+  NEW: "__MCSM_NEW_IMAGE__",
+  EDIT: "__MCSM_EDIT_IMAGE__"
+};
 
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
@@ -85,8 +81,19 @@ const isGlobalTerminal = computed(() => {
 });
 
 const loadImages = async () => {
+  // Init options
+  dockerImages.value = [
+    {
+      label: t("TXT_CODE_3362d4b7"),
+      value: IMAGE_DEFINE.NEW
+    },
+    {
+      label: t("使用 Docker Hub 中的镜像"),
+      value: IMAGE_DEFINE.EDIT
+    }
+  ];
+
   try {
-    dockerImages.value = ["TEST"];
     const images = await getImageList({
       params: {
         daemonId: props.daemonId ?? ""
@@ -95,10 +102,13 @@ const loadImages = async () => {
     });
 
     if (images.value) {
-      dockerImages.value = [t("TXT_CODE_3362d4b7")];
       for (const iterator of images.value) {
         const repoTags = (iterator?.RepoTags ?? [])[0];
-        if (repoTags) dockerImages.value.push(repoTags);
+        if (repoTags)
+          dockerImages.value.push({
+            label: repoTags,
+            value: repoTags
+          });
       }
     }
   } catch (err: any) {
@@ -106,11 +116,18 @@ const loadImages = async () => {
   }
 };
 
-const selectImage = (image: string) => {
-  if (typeof image === "string" && image === t("TXT_CODE_3362d4b7")) {
+const selectImage = (row: DefaultOptionType) => {
+  const image = row.value;
+  if (typeof image === "string" && image === IMAGE_DEFINE.NEW) {
     toPage({
       path: `/node/image?daemonId=${props.daemonId}`
     });
+    return;
+  }
+  if (image === IMAGE_DEFINE.EDIT && options.value) {
+    options.value.config.docker.image = "";
+    options.value.imageSelectMethod = "EDIT";
+    return;
   }
 };
 
@@ -400,28 +417,31 @@ defineExpose({
           </a-col>
         </a-row>
         <a-row v-if="options.config.processType === 'docker'" :gutter="20">
-          <a-col :xs="24" :lg="8" :offset="0">
+          <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
-                {{ t("镜像使用方式") }}
+                {{ t("TXT_CODE_6904cb3") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("请指示实例要如何使用某个镜像") }}
+                  {{ t("TXT_CODE_a584cb71") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
-                v-model:value="options.imageSelectMethod"
+                v-model:value="options.config.docker.image"
                 size="large"
                 style="width: 100%"
                 :placeholder="t('TXT_CODE_3bb646e4')"
+                @focus="loadImages"
+                @change="(e, option: DefaultOptionType) => selectImage(option)"
               >
-                <a-select-option v-for="item in imageMethods" :key="item.value" :value="item.value">
+                <a-select-option v-for="item in dockerImages" :key="item.value" :value="item.value">
                   {{ item.label }}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
+
           <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
@@ -439,47 +459,6 @@ defineExpose({
             </a-form-item>
           </a-col>
 
-          <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
-            <a-form-item name="dockerImage">
-              <a-typography-title :level="5" class="require-field">
-                {{ t("TXT_CODE_6904cb3") }}
-              </a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_a584cb71") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-select
-                v-model:value="options.config.docker.image"
-                size="large"
-                style="width: 100%"
-                :placeholder="t('TXT_CODE_3bb646e4')"
-                @focus="loadImages"
-                @change="(e: any) => selectImage(String(e))"
-              >
-                <a-select-option
-                  v-for="item in dockerImages"
-                  :key="item"
-                  :value="item"
-                ></a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_1a37f514") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-input-group compact>
-                <a-button type="default" @click="() => handleEditDockerConfig('port')">
-                  {{ t("TXT_CODE_ad207008") }}
-                </a-button>
-              </a-input-group>
-            </a-form-item>
-          </a-col>
           <a-col :xs="24" :lg="16" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
@@ -493,6 +472,22 @@ defineExpose({
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input v-model:value="options.config.docker.workingDir" />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_1a37f514") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input-group compact>
+                <a-button type="default" @click="() => handleEditDockerConfig('port')">
+                  {{ t("TXT_CODE_ad207008") }}
+                </a-button>
+              </a-input-group>
             </a-form-item>
           </a-col>
 

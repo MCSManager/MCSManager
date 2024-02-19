@@ -20,8 +20,6 @@ export default class DockerPullCommand extends InstanceCommand {
 
   async exec(instance: Instance) {
     const imageName = instance.config.docker.image;
-    if (instance.status() !== Instance.STATUS_STOP)
-      throw new Error(t("必须先停止实例才能拉取镜像！"));
     if (!imageName) throw new Error(t("镜像名字不能为空！"));
 
     // If the image exists, there is no need to pull again.

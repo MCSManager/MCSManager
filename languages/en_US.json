@@ -1184,7 +1184,7 @@
   "TXT_CODE_8d9f5a4e": "Initiates the instance start operation as long as the remote daemon is running.",
   "TXT_CODE_64bf4386": "Can be used for instance to start as the remote daemon boots.",
   "TXT_CODE_3b1cc020": "Cancel",
-  "TXT_CODE_3362d4b7": "--- Create New Image ---",
+  "TXT_CODE_3362d4b7": "Create New Image",
   "TXT_CODE_68a504b3": "Please enter the instance name",
   "TXT_CODE_4e810102": "Please enter the startup command",
   "TXT_CODE_bbbda29": "The startup command cannot contain line breaks, as this is not a script file and cannot execute multiple commands",
