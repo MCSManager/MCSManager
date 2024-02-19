@@ -23,6 +23,7 @@ export default class DockerPullCommand extends InstanceCommand {
 
   private stopped(instance: Instance) {
     this.stopFlag = true;
+    instance.asynchronousTask = null;
   }
 
   private awaitImageDone(instance: Instance, name: string) {
@@ -43,7 +44,7 @@ export default class DockerPullCommand extends InstanceCommand {
           clearInterval(task);
           reject(new Error(t("镜像下载终止！")));
         }
-      }, 5 * 1000);
+      }, 1 * 1000);
     });
   }
 
@@ -57,9 +58,9 @@ export default class DockerPullCommand extends InstanceCommand {
     try {
       const docker = new Docker();
       instance.println("Container", t("正在下载镜像文件，请耐心等待。镜像名：") + imageName);
+      instance.asynchronousTask = this;
 
       await docker.pull(imageName, {});
-      instance.asynchronousTask = this;
 
       await this.awaitImageDone(instance, imageName);
       if (cachedStartCount !== instance.startCount) return;
