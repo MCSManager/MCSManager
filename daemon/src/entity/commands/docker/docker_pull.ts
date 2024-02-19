@@ -15,20 +15,25 @@ export async function checkImage(name: string) {
   }
 }
 
-function awaitImageDone(name: string) {
+function awaitImageDone(instance: Instance, name: string) {
   return new Promise((resolve, reject) => {
     let count = 0;
     const task = setInterval(async () => {
       count++;
+      instance.println("Container", t("正在下载镜像文件中..."));
       if (await checkImage(name)) {
         clearInterval(task);
         resolve(true);
       }
-      if (count >= 60 * 15 * 2) {
+      if (count >= 6 * 15) {
         clearInterval(task);
-        reject(new Error(t("镜像下载超时！")));
+        reject(new Error(t("镜像下载超时！我们最多只能等待 15 分钟，请检查您的网络！")));
       }
-    }, 5 * 1000);
+      if (instance.status() !== Instance.STATUS_STARTING) {
+        clearInterval(task);
+        reject(new Error(t("镜像下载被终止！")));
+      }
+    }, 10 * 1000);
   });
 }
 
@@ -48,15 +53,23 @@ export default class DockerPullCommand extends InstanceCommand {
       instance.setLock(true);
 
       const docker = new Docker();
-      instance.println(t("镜像管理"), t("我们正在下载镜像，请耐心等待。镜像名：") + imageName);
+      instance.println("Container", t("正在下载镜像文件，请耐心等待。镜像名：") + imageName);
       await docker.pull(imageName, {});
-      await awaitImageDone(imageName);
+      await awaitImageDone(instance, imageName);
 
       if (cachedStartCount !== instance.startCount) return;
-      instance.println(t("镜像管理"), t("镜像下载完毕！"));
+      instance.println("Container", t("镜像下载完毕！"));
     } catch (err) {
       if (cachedStartCount !== instance.startCount) return;
-      instance.println(t("镜像管理"), t("镜像下载错误：") + err.message);
+      instance.println(
+        "Container",
+        [
+          t(
+            "镜像下载错误，请确保此镜像名正确，或者在节点管理的终端处手动通过 docker pull 拉取你需要的镜像，错误信息："
+          ),
+          err.message
+        ].join("\n")
+      );
       throw err;
     } finally {
       instance.setLock(false);
