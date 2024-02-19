@@ -4,7 +4,8 @@ import type {
   ILayoutCard as GlobalLayoutCard,
   ILayoutCardParams as GlobalLayoutCardParams,
   IJsonData,
-  IMapData
+  IMapData,
+  IGlobalInstanceDockerConfig
 } from "../../../common/global";
 
 export type JsonData = IJsonData;
@@ -172,6 +173,7 @@ export interface ContainerInfo {
 
 export interface NewInstanceForm {
   nickname: string;
+  processType: string;
   startCommand: string;
   stopCommand: string;
   cwd: string;
@@ -183,6 +185,7 @@ export interface NewInstanceForm {
   tag: never[];
   maxSpace: null;
   endTime: string;
+  docker: IGlobalInstanceDockerConfig;
 }
 
 export interface QuickStartTemplate {

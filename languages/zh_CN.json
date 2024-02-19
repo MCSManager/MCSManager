@@ -1392,7 +1392,7 @@
   "TXT_CODE_619d74d3": "如 java -jar server.jar，cmd.exe 等等",
   "TXT_CODE_2728d0d4": "命令助手",
   "TXT_CODE_320f4304": "服务端文件目录",
-  "TXT_CODE_877eea45": "选填，默认自动创建与管理，如需填写请写完整绝对路径，如: C:/Servers/MyServer",
+  "TXT_CODE_877eea45": "选填，默认自动创建与管理，如需填写请写完整绝对路径",
   "TXT_CODE_fc4e2173": "上传文件后实例将自动创建",
   "TXT_CODE_335ba209": "选择文件",
   "TXT_CODE_f9b6e61b": "上传服务端压缩包",

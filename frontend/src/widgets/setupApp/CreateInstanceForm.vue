@@ -23,6 +23,7 @@ import {
 import { parseForwardAddress } from "@/tools/protocol";
 import { useCmdAssistantDialog } from "@/components/fc";
 
+// eslint-disable-next-line no-unused-vars
 enum UNZIP {
   ON = 1,
   OFF = 0
@@ -46,12 +47,29 @@ const formData = reactive<NewInstanceForm>({
   cwd: "",
   ie: "utf-8",
   oe: "utf-8",
+  processType: "general",
   createDatetime: new Date().toDateString(),
   lastDatetime: "",
   type: TYPE_UNIVERSAL,
   tag: [],
   maxSpace: null,
-  endTime: ""
+  endTime: "",
+  docker: {
+    containerName: "",
+    image: "",
+    ports: [],
+    extraVolumes: [],
+    networkMode: "bridge",
+    networkAliases: [],
+    cpusetCpus: "",
+    workingDir: "/workspace/",
+    memory: undefined,
+    cpuUsage: undefined,
+    maxSpace: undefined,
+    io: undefined,
+    network: undefined,
+    env: []
+  }
 });
 
 const isImportMode = props.createMethod === QUICKSTART_METHOD.IMPORT;
@@ -82,17 +100,7 @@ if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
 }
 
 const rules: Record<string, Rule[]> = {
-  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
-  startCommand: [
-    {
-      required: true,
-      validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
-        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
-      },
-      trigger: "change"
-    }
-  ]
+  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }]
 };
 
 const openCmdAssistDialog = async () => {
@@ -145,9 +153,9 @@ const percentComplete = ref(0);
 const selectedFile = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
-    if (isFileMode) {
+    if (formData.docker.image) formData.processType = "docker";
+    if (isFileMode)
       formData.startCommand = formData.startCommand.replace("${ProgramName}", uFile.value!.name);
-    }
     await getCfg({
       params: {
         upload_dir: ".",
@@ -188,6 +196,7 @@ const {
 const createInstance = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
+    if (formData.docker.image) formData.processType = "docker";
     await executeCreateInstance({
       params: {
         daemonId: props.daemonId
@@ -214,20 +223,55 @@ const createInstance = async () => {
             {{ t("TXT_CODE_818928ba") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.nickname" />
+        <a-input v-model:value="formData.nickname" :placeholder="t('列如：我的第一个服务器')" />
+      </a-form-item>
+
+      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
+        <a-typography-title :level="5" class="require-field">
+          {{ t("请填写镜像名称") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("实例将在运行时拉取镜像，并且使用镜像创建容器，此镜像名必须存在云端或本地") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input
+          v-model:value="formData.docker.image"
+          :placeholder="t('请输入镜像名称，列如：openjdk:17')"
+        />
+      </a-form-item>
+
+      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
+        <a-typography-title :level="5">
+          {{ t("挂载工作目录") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("文件管理功能下的目录将挂载到容器的此目录") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('默认：/workspace/')" />
       </a-form-item>
 
       <a-form-item name="startCommand">
-        <a-typography-title :level="5" class="require-field">
+        <a-typography-title :level="5">
           {{ t("TXT_CODE_d12fa808") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{
-              createMethod === QUICKSTART_METHOD.IMPORT
-                ? t("TXT_CODE_17544b7b")
-                : t("TXT_CODE_8c0db3f4")
-            }}
+            <span v-if="createMethod === QUICKSTART_METHOD.IMPORT">
+              {{ t("TXT_CODE_17544b7b") }}
+            </span>
+            <span v-else-if="createMethod === QUICKSTART_METHOD.DOCKER">
+              {{
+                t(
+                  "可以填写启动命令，如 java -jar demo.jar，不填写启动命令将以镜像内部定义的命令为准。"
+                )
+              }}
+            </span>
+            <span v-else>
+              {{ t("TXT_CODE_8c0db3f4") }}
+            </span>
           </a-typography-text>
         </a-typography-paragraph>
         <a-input-group compact style="display: flex">
@@ -256,7 +300,7 @@ const createInstance = async () => {
             {{ t("TXT_CODE_877eea45") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.cwd" />
+        <a-input v-model:value="formData.cwd" :placeholder="t('默认自动分配')" />
       </a-form-item>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
@@ -316,7 +360,9 @@ const createInstance = async () => {
       <a-form-item v-else>
         <a-typography-paragraph class="mt-10">
           <a-typography-text>
-            {{ t("TXT_CODE_cbbc779f") }}
+            <span>{{
+              t("完善所有必填项后即可创建，更多其他设置请创建完成后，在应用实例设置中可以编辑！")
+            }}</span>
           </a-typography-text>
         </a-typography-paragraph>
         <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">

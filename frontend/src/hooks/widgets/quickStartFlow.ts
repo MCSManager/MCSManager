@@ -28,6 +28,7 @@ export enum QUICKSTART_ACTION_TYPE {
   Bedrock = "Bedrock",
   Terraria = "Terraria",
   SteamGameServer = "SteamGameServer",
+  Docker = "Docker",
   AnyApp = "AnyApp"
 }
 
@@ -36,7 +37,8 @@ export enum QUICKSTART_METHOD {
   FILE = "FILE",
   IMPORT = "IMPORT",
   SELECT = "SELECT",
-  EXIST = "EXIST"
+  EXIST = "EXIST",
+  DOCKER = "DOCKER"
 }
 
 export function useQuickStartFlow() {
@@ -67,6 +69,7 @@ export function useQuickStartFlow() {
       key: QUICKSTART_ACTION_TYPE.Terraria,
       icon: AppstoreAddOutlined
     },
+
     {
       title: t("TXT_CODE_dd8d27ce"),
       key: QUICKSTART_ACTION_TYPE.SteamGameServer,
@@ -132,6 +135,11 @@ export function useQuickStartFlow() {
             }
           });
         }
+      },
+      {
+        title: t("使用 Docker 镜像快速建立"),
+        key: QUICKSTART_METHOD.DOCKER,
+        icon: CodeOutlined
       },
       {
         title: t("TXT_CODE_444db70f"),
