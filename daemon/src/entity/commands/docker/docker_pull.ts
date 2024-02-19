@@ -29,7 +29,6 @@ export default class DockerPullCommand extends InstanceCommand {
 
     try {
       instance.setLock(true);
-      instance.status(Instance.STATUS_BUSY);
 
       const docker = new Docker();
 
@@ -42,7 +41,6 @@ export default class DockerPullCommand extends InstanceCommand {
       instance.println(t("镜像管理"), t("镜像下载错误：") + err.message);
       throw err;
     } finally {
-      instance.status(Instance.STATUS_STOP);
       instance.setLock(false);
     }
   }
