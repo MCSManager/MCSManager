@@ -3,11 +3,13 @@ import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import { t } from "i18next";
 
-export function checkImage(name: string) {
+export async function checkImage(name: string) {
   const docker = new Docker();
   try {
     const image = docker.getImage(name);
-    return image.id ? true : false;
+    const info = await image.inspect();
+    console.debug("得到信息：", info.Size, info.Id);
+    return info.Size > 0 ? true : false;
   } catch (error) {
     return false;
   }
@@ -33,6 +35,8 @@ export default class DockerPullCommand extends InstanceCommand {
 
       instance.println(t("镜像管理"), t("我们正在下载镜像，请耐心等待。镜像名：") + imageName);
       await docker.pull(imageName, {});
+      const image = docker.getImage(imageName);
+      await image.inspect();
       instance.println(t("镜像管理"), t("镜像下载完毕！"));
     } catch (err) {
       instance.println(t("镜像管理"), t("镜像下载错误：") + err.message);
