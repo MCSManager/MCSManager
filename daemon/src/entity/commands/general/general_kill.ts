@@ -10,7 +10,6 @@ export default class GeneralKillCommand extends InstanceCommand {
   async exec(instance: Instance) {
     const task = instance?.asynchronousTask;
     if (task && task.stop) {
-      console.debug("正则杀死进程");
       task
         .stop(instance)
         .then(() => {})
