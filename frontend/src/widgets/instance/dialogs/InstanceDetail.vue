@@ -224,14 +224,14 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
 
   if (type === "volume" && options.value?.config) {
     const volumes = options.value.config.docker.extraVolumes?.map((v) => {
-      const tmp = v.split(":");
+      const tmp = v.split("|");
       return {
         host: tmp[0] || "",
         container: tmp[1] || ""
       };
     });
     const result = await useVolumeEditDialog(volumes);
-    const volumesArray = result.map((v) => `${v.host}:${v.container}`);
+    const volumesArray = result.map((v) => `${v.host}|${v.container}`);
     options.value.config.docker.extraVolumes = volumesArray;
   }
 

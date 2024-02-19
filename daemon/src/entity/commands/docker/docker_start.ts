@@ -137,14 +137,14 @@ export default class DockerStartCommand extends InstanceCommand {
 
     // resolve extra path mounts
     const extraVolumes = instance.config.docker.extraVolumes;
-    const extraBinds = [];
+    const extraBinds: { hostPath: string; containerPath: string }[] = [];
     for (const item of extraVolumes) {
       if (!item) throw new Error("实例容器额外挂载路径配置错误！请检查！");
-      const paths = item.split(":");
+      const paths = item.split("|");
       if (paths.length < 2) throw new Error("实例容器额外挂载路径配置错误！请检查！");
       const hostPath = path.normalize(paths[0]);
-      const containerPath = path.normalize(paths.slice(1).join(":"));
-      extraBinds.push(`${hostPath}:${containerPath}`);
+      const containerPath = path.normalize(paths[1]);
+      extraBinds.push({ hostPath, containerPath });
     }
 
     // memory limit
@@ -190,7 +190,7 @@ export default class DockerStartCommand extends InstanceCommand {
     logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
     logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
-    logger.info(`BINDS: ${JSON.stringify([`${cwd}:${workingDir}`, ...extraBinds])}`);
+    logger.info(`BINDS: ${JSON.stringify([`${cwd}->${workingDir}`, ...extraBinds])}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
     logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
@@ -215,13 +215,26 @@ export default class DockerStartCommand extends InstanceCommand {
       Env: instance.config.docker?.env || [],
       HostConfig: {
         Memory: maxMemory,
-        Binds: [`${cwd}:${workingDir}`, ...extraBinds],
         AutoRemove: true,
         CpusetCpus: cpusetCpus,
         CpuPeriod: cpuPeriod,
         CpuQuota: cpuQuota,
         PortBindings: publicPortArray,
-        NetworkMode: instance.config.docker.networkMode
+        NetworkMode: instance.config.docker.networkMode,
+        Mounts: [
+          {
+            Type: "bind",
+            Source: cwd,
+            Target: workingDir
+          },
+          ...extraBinds.map((v) => {
+            return {
+              Type: "bind" as Docker.MountType,
+              Source: v.hostPath,
+              Target: v.containerPath
+            };
+          })
+        ]
       },
       NetworkingConfig: {
         EndpointsConfig: {
