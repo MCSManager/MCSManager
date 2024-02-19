@@ -25,7 +25,7 @@ export default class DockerPullCommand extends InstanceCommand {
     if (!imageName) throw new Error(t("镜像名字不能为空！"));
 
     // If the image exists, there is no need to pull again.
-    if (checkImage(imageName)) return;
+    if (await checkImage(imageName)) return;
 
     try {
       instance.setLock(true);
