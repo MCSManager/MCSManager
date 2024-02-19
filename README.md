@@ -15,7 +15,7 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/#/zh-cn/) | [Discord](https://discord.com/channels/1005286077474557982/1005326325185261588)
+[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/#/zh-cn/) | [Discord](https://discord.gg/9UgPGDFH)
 
 [English](readme.md) | [简体中文](README_CN.md) 
 
