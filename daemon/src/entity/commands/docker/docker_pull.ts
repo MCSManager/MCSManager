@@ -31,20 +31,20 @@ export default class DockerPullCommand extends InstanceCommand {
       let count = 0;
       const task = setInterval(async () => {
         count++;
-        instance.println("Container", t("正在下载镜像文件中..."));
+        instance.println("Container", t("等待下载完毕事件中..."));
         if (await checkImage(name)) {
           clearInterval(task);
           resolve(true);
         }
-        if (count >= 12 * 15) {
+        if (count >= 20 * 15) {
           clearInterval(task);
           reject(new Error(t("镜像下载超时！我们最多只能等待 15 分钟，请检查您的网络！")));
         }
         if (this.stopFlag) {
           clearInterval(task);
-          reject(new Error(t("镜像下载终止！")));
+          reject(new Error(t("镜像下载已终止！")));
         }
-      }, 1 * 1000);
+      }, 3 * 1000);
     });
   }
 

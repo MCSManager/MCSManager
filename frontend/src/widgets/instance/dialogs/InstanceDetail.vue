@@ -485,7 +485,7 @@ defineExpose({
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.image"
-                :placeholder="t('必填，列如：python:3.11')"
+                :placeholder="t('必填，列如：openjdk:23-slim')"
               />
             </a-form-item>
           </a-col>
