@@ -1203,7 +1203,7 @@
   "TXT_CODE_fa920c0": "Expiration Time",
   "TXT_CODE_b029a155": "The instance will not be able to start after expiration.",
   "TXT_CODE_e3a77a77": "Unlimited",
-  "TXT_CODE_9eacb622": "Process Startup Method (Recommended)",
+  "TXT_CODE_9eacb622": "Process Startup Method",
   "TXT_CODE_9278b7b0": "If engaged in commercial activities, consider using container to protect the host.",
   "TXT_CODE_5be6c38e": "Default Type",
   "TXT_CODE_6c87dd18": "Linux Docker",

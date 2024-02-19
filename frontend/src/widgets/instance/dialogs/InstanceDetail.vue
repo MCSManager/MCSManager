@@ -37,9 +37,17 @@ const props = defineProps<{
   daemonId?: string;
 }>();
 
+// eslint-disable-next-line no-unused-vars
+enum TabSettings {
+  Basic = "Basic",
+  Docker = "Docker",
+  Advanced = "Advanced"
+}
+
 const emit = defineEmits(["update"]);
 
 const { toPage } = useAppRouters();
+const activeKey = ref<TabSettings>(TabSettings.Basic);
 const options = ref<FormDetail>();
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
@@ -258,6 +266,17 @@ defineExpose({
     @ok="submit"
   >
     <div class="dialog-overflow-container">
+      <div>
+        <a-tabs v-model:activeKey="activeKey">
+          <a-tab-pane :key="TabSettings.Basic" :tab="t('基础设置')"></a-tab-pane>
+          <a-tab-pane :key="TabSettings.Advanced" :tab="t('高级设置')"></a-tab-pane>
+          <a-tab-pane
+            v-if="!isGlobalTerminal"
+            :key="TabSettings.Docker"
+            :tab="t('容器隔离')"
+          ></a-tab-pane>
+        </a-tabs>
+      </div>
       <a-form
         v-if="options"
         ref="formRef"
@@ -266,8 +285,8 @@ defineExpose({
         layout="vertical"
         autocomplete="off"
       >
-        <a-row :gutter="20">
-          <a-col :xs="24" :md="12" :offset="0">
+        <a-row v-if="activeKey === TabSettings.Basic" :gutter="20">
+          <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item name="nickname">
               <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_f70badb9") }}
@@ -280,7 +299,7 @@ defineExpose({
               <a-input v-model:value="options.config.nickname" :disabled="isGlobalTerminal" />
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :md="12" :offset="0">
+          <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_2f291d8b") }}
@@ -306,6 +325,24 @@ defineExpose({
             </a-form-item>
           </a-col>
 
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_fa920c0") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("TXT_CODE_b029a155") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-date-picker
+                v-model:value="options.dayjsEndTime"
+                size="large"
+                style="width: 100%"
+                :placeholder="t('TXT_CODE_e3a77a77')"
+                :disabled="isGlobalTerminal"
+              />
+            </a-form-item>
+          </a-col>
+
           <a-col :xs="24" :offset="0">
             <a-form-item name="startCommand">
               <a-typography-title :level="5" class="require-field">
@@ -320,7 +357,7 @@ defineExpose({
               <a-input-group compact style="display: flex">
                 <a-textarea
                   v-model:value="options.config.startCommand"
-                  :rows="3"
+                  :rows="5"
                   style="min-height: 40px"
                 />
                 <a-button type="default" style="height: auto" @click="openCmdAssistDialog">
@@ -329,7 +366,8 @@ defineExpose({
               </a-input-group>
             </a-form-item>
           </a-col>
-
+        </a-row>
+        <a-row v-if="activeKey === TabSettings.Advanced" :gutter="20">
           <a-col :xs="24" :offset="0">
             <a-form-item name="cwd">
               <a-typography-title :level="5" class="require-field">
@@ -350,24 +388,29 @@ defineExpose({
                 <a-typography-text type="secondary">
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="t('TXT_CODE_41763172')"></span>
+                  <br />
+                  <span>{{
+                    t(
+                      "配置更新命令后，可以在开关实例按钮处找到更新操作，点击后将会在宿主机上执行此处编写的命令"
+                    )
+                  }}</span>
                 </a-typography-text>
               </a-typography-paragraph>
               <!-- eslint-disable-next-line vue/html-quotes -->
               <a-input
                 v-model:value="options.config.updateCommand"
                 :placeholder="UPDATE_CMD_TEMPLATE"
+                :disabled="isGlobalTerminal"
               />
             </a-form-item>
           </a-col>
-        </a-row>
-        <a-row :gutter="20">
           <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item>
               <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_f041de90") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_6e69b5a5") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -380,51 +423,39 @@ defineExpose({
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :lg="6" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_fa920c0") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("TXT_CODE_b029a155") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-date-picker
-                v-model:value="options.dayjsEndTime"
-                size="large"
-                style="width: 100%"
-                :placeholder="t('TXT_CODE_e3a77a77')"
-                :disabled="isGlobalTerminal"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :lg="12" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_9eacb622") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("TXT_CODE_9278b7b0") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-select v-model:value="options.config.processType" :disabled="isGlobalTerminal">
-                <a-select-option value="general">
-                  {{ t("TXT_CODE_5be6c38e") }}
-                </a-select-option>
-                <a-select-option value="docker">
-                  {{ t("TXT_CODE_6c87dd18") }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
         </a-row>
-        <a-row v-if="options.config.processType === 'docker'" :gutter="20">
+        <a-row v-if="activeKey === TabSettings.Docker" :gutter="20">
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">
+                {{ t("Docker 容器隔离") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("启用后，实例将在“沙盒”环境中运行，大部分操作不会影响到宿主机安全") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <div class="ml-4">
+                <a-switch
+                  v-model:checked="options.config.processType"
+                  :disabled="isGlobalTerminal"
+                  checked-value="docker"
+                  un-checked-value="general"
+                >
+                  <template #checkedChildren><check-outlined /></template>
+                  <template #unCheckedChildren><close-outlined /></template>
+                </a-switch>
+              </div>
+            </a-form-item>
+          </a-col>
           <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
                 {{ t("TXT_CODE_6904cb3") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_a584cb71") }}
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("指定容器使用哪个镜像运行") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
@@ -448,14 +479,32 @@ defineExpose({
                 {{ t("完整镜像名") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("需要携带 tag 等信息") }}
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("请自行确保此镜像存在，且需要携带 tag 等信息，实例运行前将自动拉取此镜像") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.image"
-                :placeholder="t('列如：python:3.11')"
+                :placeholder="t('必填，列如：python:3.11')"
               />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_c3a3b6b1") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("TXT_CODE_d1c78fbf") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-tooltip placement="bottom">
+                <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
+                <a-input
+                  v-model:value="options.config.docker.containerName"
+                  :placeholder="t('TXT_CODE_f6047384')"
+                />
+              </a-tooltip>
             </a-form-item>
           </a-col>
 
@@ -464,14 +513,39 @@ defineExpose({
               <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "实例工作目录中的所有文件将会挂载到容器内部的此目录中，不填写则默认 /workspace/"
-                    )
-                  }}
+                  {{ t("实例工作目录中的所有文件将会挂载到容器内部的此目录中") }}
                 </a-typography-text>
               </a-typography-paragraph>
-              <a-input v-model:value="options.config.docker.workingDir" />
+              <a-input
+                v-model:value="options.config.docker.workingDir"
+                :placeholder="t('选填，不填写默认值：/workspace/')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5" class="require-field">
+                {{ t("TXT_CODE_efcef926") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_38a430d8") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-select
+                v-model:value="options.config.docker.networkMode"
+                size="large"
+                style="width: 100%"
+                :placeholder="t('TXT_CODE_3bb646e4')"
+                @focus="loadNetworkModes"
+              >
+                <a-select-option
+                  v-for="item in networkModes"
+                  :key="item"
+                  :value="item.Name"
+                ></a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
 
@@ -521,62 +595,7 @@ defineExpose({
               </a-input-group>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_c3a3b6b1") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_d1c78fbf") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-tooltip placement="bottom">
-                <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
-                <a-input
-                  v-model:value="options.config.docker.containerName"
-                  :placeholder="t('TXT_CODE_f6047384')"
-                />
-              </a-tooltip>
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5" class="require-field">
-                {{ t("TXT_CODE_efcef926") }}
-              </a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_38a430d8") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-select
-                v-model:value="options.config.docker.networkMode"
-                size="large"
-                style="width: 100%"
-                :placeholder="t('TXT_CODE_3bb646e4')"
-                @focus="loadNetworkModes"
-              >
-                <a-select-option
-                  v-for="item in networkModes"
-                  :key="item"
-                  :value="item.Name"
-                ></a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_10194e6a") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_97655c5d") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-input
-                v-model:value="options.networkAliasesText"
-                :placeholder="t('TXT_CODE_8d4882b0')"
-              />
-            </a-form-item>
-          </a-col>
+
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_53046822") }}</a-typography-title>
@@ -626,6 +645,21 @@ defineExpose({
               <a-input
                 v-model:value="options.config.docker.memory"
                 :placeholder="t('TXT_CODE_80790069')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_10194e6a") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_97655c5d") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.networkAliasesText"
+                :placeholder="t('TXT_CODE_8d4882b0')"
               />
             </a-form-item>
           </a-col>
