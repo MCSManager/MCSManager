@@ -273,7 +273,7 @@ defineExpose({
           <a-tab-pane
             v-if="!isGlobalTerminal"
             :key="TabSettings.Docker"
-            :tab="t('容器隔离')"
+            :tab="t('容器化')"
           ></a-tab-pane>
         </a-tabs>
       </div>
@@ -428,7 +428,7 @@ defineExpose({
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">
-                {{ t("Docker 容器隔离") }}
+                {{ t("启用 Docker 容器") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
