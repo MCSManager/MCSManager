@@ -15,6 +15,23 @@ export async function checkImage(name: string) {
   }
 }
 
+function awaitImageDone(name: string) {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    const task = setInterval(async () => {
+      count++;
+      if (await checkImage(name)) {
+        clearInterval(task);
+        resolve(true);
+      }
+      if (count >= 60 * 15 * 2) {
+        clearInterval(task);
+        reject(new Error(t("镜像下载超时！")));
+      }
+    }, 5 * 1000);
+  });
+}
+
 export default class DockerPullCommand extends InstanceCommand {
   constructor() {
     super("DockerPullCommand");
@@ -23,7 +40,7 @@ export default class DockerPullCommand extends InstanceCommand {
   async exec(instance: Instance) {
     const imageName = instance.config.docker.image;
     if (!imageName) throw new Error(t("镜像名字不能为空！"));
-
+    const cachedStartCount = instance.startCount;
     // If the image exists, there is no need to pull again.
     if (await checkImage(imageName)) return;
 
@@ -31,13 +48,14 @@ export default class DockerPullCommand extends InstanceCommand {
       instance.setLock(true);
 
       const docker = new Docker();
-
       instance.println(t("镜像管理"), t("我们正在下载镜像，请耐心等待。镜像名：") + imageName);
       await docker.pull(imageName, {});
-      const image = docker.getImage(imageName);
-      await image.inspect();
+      await awaitImageDone(imageName);
+
+      if (cachedStartCount !== instance.startCount) return;
       instance.println(t("镜像管理"), t("镜像下载完毕！"));
     } catch (err) {
+      if (cachedStartCount !== instance.startCount) return;
       instance.println(t("镜像管理"), t("镜像下载错误：") + err.message);
       throw err;
     } finally {
