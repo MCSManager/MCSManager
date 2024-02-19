@@ -100,7 +100,7 @@ export default class DockerStartCommand extends InstanceCommand {
 
     // Docker Image check
     try {
-      instance.forceExec(new DockerPullCommand());
+      await instance.forceExec(new DockerPullCommand());
     } catch (error) {
       return instance.failure(new StartupDockerProcessError($t("TXT_CODE_instance.dirEmpty")));
     }
