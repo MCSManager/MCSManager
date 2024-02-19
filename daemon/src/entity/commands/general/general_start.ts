@@ -72,16 +72,16 @@ export default class GeneralStartCommand extends InstanceCommand {
       !instance.config.ie ||
       !instance.config.oe
     )
-      return instance.failure(new StartupError($t("TXT_CODE_general_start.instanceConfigErr")));
+      throw new StartupError($t("TXT_CODE_general_start.instanceConfigErr"));
     if (!fs.existsSync(instance.absoluteCwdPath()))
-      return instance.failure(new StartupError($t("TXT_CODE_general_start.cwdPathNotExist")));
+      throw new StartupError($t("TXT_CODE_general_start.cwdPathNotExist"));
 
     // command parsing
     const commandList = commandStringToArray(instance.config.startCommand);
     const commandExeFile = commandList[0];
     const commandParameters = commandList.slice(1);
     if (commandList.length === 0) {
-      return instance.failure(new StartupError($t("TXT_CODE_general_start.cmdEmpty")));
+      throw new StartupError($t("TXT_CODE_general_start.cmdEmpty"));
     }
 
     logger.info("----------------");

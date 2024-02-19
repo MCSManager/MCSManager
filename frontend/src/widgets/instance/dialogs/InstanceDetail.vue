@@ -154,16 +154,16 @@ const loadNetworkModes = async () => {
 
 const rules: Record<string, Rule[]> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
-  startCommand: [
-    {
-      required: true,
-      validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
-        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
-      },
-      trigger: "change"
-    }
-  ],
+  // startCommand: [
+  //   {
+  //     required: true,
+  //     validator: async (_rule: Rule, value: string) => {
+  //       if (value === "") throw new Error(t("TXT_CODE_4e810102"));
+  //       if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
+  //     },
+  //     trigger: "change"
+  //   }
+  // ],
   dockerImage: [
     {
       required: true,
@@ -345,7 +345,7 @@ defineExpose({
 
           <a-col :xs="24" :offset="0">
             <a-form-item name="startCommand">
-              <a-typography-title :level="5" class="require-field">
+              <a-typography-title :level="5">
                 {{ t("TXT_CODE_d12fa808") }}
               </a-typography-title>
               <a-typography-paragraph>

@@ -445,7 +445,7 @@
   "TXT_CODE_95495db": "文件操作",
   "TXT_CODE_f0260e51": "粘贴文件",
   "TXT_CODE_7ceebc05": "输入文本内容，支持 Markdown 语法，可换行。\n不要轻易使用其他人的文案，否则将有可能注入恶意代码对你进行攻击。",
-  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui",
+  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件；<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui <br/>如果使用 Docker 容器，则可以不填写启动命令，将已镜像定义的命令启动",
   "TXT_CODE_d73c8510": "确定要保存布局吗？",
   "TXT_CODE_6d9b9f22": "由于界面的高度可定制化，一旦保存布局后整个界面的语言将会被锁定，除非重置布局否则切换语言将无法很好的工作。如果您没有切换语言的需求，可以忽略这条建议。",
   "TXT_CODE_5b5d6f04": "放弃保存布局",

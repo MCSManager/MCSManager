@@ -236,7 +236,7 @@ export default class Instance extends EventEmitter {
   // trigger failure event
   failure(error: Error) {
     this.emit("failure", error);
-    this.println("Error", error.message ?? String(error));
+    this.println("Operation Error", error.message ?? String(error));
     throw error;
   }
 
