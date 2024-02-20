@@ -23,7 +23,7 @@
 
 <br />
 
-🌍 Want to know the latest progress? Or have any ideas?
+🌍 Want to know the Beta Version? Or have any ideas?
 
 Join the [Discord](https://discord.gg/9UgPGDFH) now!
 
