@@ -232,12 +232,16 @@ const createInstance = async () => {
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("实例将在运行时拉取镜像，并且使用镜像创建容器，此镜像名必须存在云端或本地") }}
+            <span>
+              {{ t("实例将在运行时拉取镜像，并且使用镜像创建容器，此镜像名必须存在云端或本地") }}
+            </span>
+            <br />
+            <span>{{ t("务必确保你的这台机器已成功安装 Docker！") }}</span>
           </a-typography-text>
         </a-typography-paragraph>
         <a-input
           v-model:value="formData.docker.image"
-          :placeholder="t('请输入镜像名称，列如：openjdk:17')"
+          :placeholder="t('镜像完整名，列如：openjdk:17')"
         />
       </a-form-item>
 
@@ -247,7 +251,7 @@ const createInstance = async () => {
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("文件管理功能下的目录将挂载到容器的此目录") }}
+            {{ t("文件管理功能下的目录将挂载到容器内的此目录") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.docker.workingDir" :placeholder="t('默认：/workspace/')" />
@@ -265,7 +269,7 @@ const createInstance = async () => {
             <span v-else-if="createMethod === QUICKSTART_METHOD.DOCKER">
               {{
                 t(
-                  "可以填写启动命令，如 java -jar demo.jar，不填写启动命令将以镜像内部定义的命令为准。"
+                  "可以填写启动命令，如 java -jar demo.jar，不填写启动命令将以镜像内部定义的命令为准"
                 )
               }}
             </span>
