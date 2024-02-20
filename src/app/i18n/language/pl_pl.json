@@ -38,7 +38,7 @@
       "installed": "Nie można zainstalować panelu: już zainstalowany. W celu ponownej instalacji wykonaj kopię zapasową i usuń folder danych."
     },
     "instance": {
-      "createError": "Nie udało się utworzyć instancji".
+      "createError": "Nie udało się utworzyć instancji"
     },
     "file": {
       "off": "Administrator systemu zdecydował się ograniczyć funkcję zarządzania plikami dla wszystkich użytkowników."
@@ -64,6 +64,6 @@
     "resetConnect": "Żądanie użytkownika o ponowne połączenie wszystkich dostępnych węzłów zdalnych, ponowne połączenie...",
     "replaceConnect": "Użytkownik zainicjował żądanie zduplikowanego połączenia, resetując połączenie.",
     "tryConnect": "Próba połączenia ze zdalnym węzłem...",
-    "setLanguage": "Ustaw język węzła".
+    "setLanguage": "Ustaw język węzła"
   }
 }
