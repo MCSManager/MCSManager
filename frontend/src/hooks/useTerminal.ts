@@ -210,6 +210,13 @@ export function useTerminal() {
     events.removeAllListeners();
     socket?.disconnect();
     socket?.removeAllListeners();
+    document.removeEventListener("keydown", {
+      handleEvent: function (e: KeyboardEvent) {
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          e.preventDefault();
+        }
+      }
+    });
   });
 
   const isStopped = computed(() =>
