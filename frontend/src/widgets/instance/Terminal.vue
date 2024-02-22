@@ -354,7 +354,7 @@ onMounted(async () => {
           <a-input
             ref="inputRef"
             v-model:value="commandInputValue"
-            :placeholder="t('TXT_CODE_b8108d4d')"
+            :placeholder="t('在这里输入命令按回车发送 使用上下键选择历史命令')"
             autofocus
             @press-enter="handleSendCommand"
             @keydown="handleHistorySelect"
@@ -519,13 +519,14 @@ onMounted(async () => {
       overflow: scroll;
       z-index: 10;
       position: absolute;
-      top: -20px;
+      top: -35px;
       left: 0;
       // background-color: pink;
 
       li {
         list-style: none;
         span {
+          padding: 3px 20px;
           max-width: 300px;
           overflow: hidden;
           text-overflow: ellipsis;

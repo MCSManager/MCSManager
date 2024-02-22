@@ -189,6 +189,7 @@ export function useTerminal() {
   });
 
   const sendCommand = (command: string) => {
+    setHistory(command);
     if (!socket?.connected) throw new Error(t("TXT_CODE_74443c8f"));
     socket.emit("stream/input", {
       data: {
@@ -210,13 +211,6 @@ export function useTerminal() {
     events.removeAllListeners();
     socket?.disconnect();
     socket?.removeAllListeners();
-    document.removeEventListener("keydown", {
-      handleEvent: function (e: KeyboardEvent) {
-        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-          e.preventDefault();
-        }
-      }
-    });
   });
 
   const isStopped = computed(() =>
@@ -236,28 +230,17 @@ export function useTerminal() {
 
   const getHistory = () => {
     const history = JSON.parse(localStorage.getItem("terminalHistory") || "[]") as string[];
-    return history.filter((item) => item.startsWith(commandInputValue.value));
+    return history.filter((item) => item.startsWith(commandInputValue.value)).splice(0, 4);
   };
 
   const openHistoryList = () => {
     history.value = getHistory();
     focusHistoryList.value = true;
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        e.preventDefault();
-      }
-    });
+    selectLocation.value = 0;
   };
 
   const closeHistoryList = () => {
     focusHistoryList.value = false;
-    document.removeEventListener("keydown", {
-      handleEvent: function (e: KeyboardEvent) {
-        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-          e.preventDefault();
-        }
-      }
-    });
   };
 
   const commandInputValue = ref<string>("");
@@ -283,13 +266,7 @@ export function useTerminal() {
     if (e.key === "Escape") return closeHistoryList();
     if (e.key === "Enter" && focusHistoryList.value === false) return;
     if (focusHistoryList.value === false) {
-      if (e.key === "ArrowUp") {
-        openHistoryList();
-        selectLocation.value = history.value.length - 1;
-      } else if (e.key === "ArrowDown") {
-        openHistoryList();
-        selectLocation.value = 0;
-      }
+      return openHistoryList();
     }
     const body = document.querySelector("body");
     if (body) body.style.overflowY = "hidden";
@@ -310,7 +287,6 @@ export function useTerminal() {
     if (e.key === "Enter") {
       commandInputValue.value = history.value[selectLocation.value];
       closeHistoryList();
-      setHistory(commandInputValue.value);
     }
 
     document.querySelector("#Terminal-History-Select-Item")?.scrollIntoView({
