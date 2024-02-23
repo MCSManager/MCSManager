@@ -12,16 +12,16 @@ import "./service/user_statistics";
 // Load routes
 import overviewRouter from "./routers/overview_router";
 
-import userRouter from "./routers/top_user_router";
+import userRouter from "./routers/user_overview_router";
 import loginRouter from "./routers/login_router";
 import lowUserRouter from "./routers/general_user_router";
 
 import settingsRouter from "./routers/settings_router";
 
-import instanceRouter from "./routers/instance_router";
+import instanceRouter from "./routers/instance_admin_router";
 import userInstanceRouter from "./routers/instance_operate_router";
 
-import serviceRouter from "./routers/service_router";
+import serviceRouter from "./routers/daemon_router";
 import filemanager_router from "./routers/filemananger_router";
 
 import businessInstanceRouter from "./routers/business_instance_router";
