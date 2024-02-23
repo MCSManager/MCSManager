@@ -33,6 +33,7 @@ import { INSTANCE_STATUS } from "@/types/const";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { Terminal } from "xterm";
+import { useCommandHistory } from "@/hooks/useCommandHistory";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -40,15 +41,18 @@ const props = defineProps<{
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
+  focusHistoryList,
+  selectLocation,
+  history,
+  commandInputValue,
+  handleHistorySelect,
+  clickHistoryItem
+} = useCommandHistory();
+const {
   execute,
   initTerminalWindow,
   sendCommand,
-  handleHistorySelect,
-  clickHistoryItem,
-  history,
-  selectLocation,
-  commandInputValue,
-  focusHistoryList,
+
   state: instanceInfo,
   isRunning,
   isStopped,
@@ -332,6 +336,7 @@ onMounted(async () => {
           </div>
         </div>
         <div class="command-input">
+          {{ commandInputValue }}
           <div v-show="focusHistoryList" class="history">
             <li v-for="(item, key) in history" :key="item">
               <a-tag
