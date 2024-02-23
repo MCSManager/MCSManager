@@ -306,7 +306,7 @@ defineExpose({
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("TXT_CODE_1e1dfbbe") }}
+                  {{ t("不同的类型会在某些功能上有细微的差别") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select

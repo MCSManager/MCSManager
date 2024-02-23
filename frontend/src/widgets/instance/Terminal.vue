@@ -33,6 +33,7 @@ import { INSTANCE_STATUS } from "@/types/const";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { Terminal } from "xterm";
+import { reportError } from "@/tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -73,13 +74,17 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
-      click: () => {
-        openInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
+      click: async () => {
+        try {
+          await openInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       props: {},
       condition: () => isStopped.value
@@ -87,13 +92,17 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
-      click: () => {
-        stopInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
+      click: async () => {
+        try {
+          await stopInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       props: {
         danger: true

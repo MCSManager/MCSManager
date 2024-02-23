@@ -5,11 +5,10 @@ import { globalConfiguration } from "../entity/config";
 import logger from "../service/log";
 import RouterContext from "../entity/ctx";
 import { IGNORE } from "../const";
+import { LOGIN_BY_TOP_LEVEL, loginSuccessful } from "../service/mission_passport";
 
 // latest verification time
 const AUTH_TIMEOUT = 6000;
-// authentication type identifier
-const TOP_LEVEL = "TOP_LEVEL";
 
 // Top-level authority authentication middleware (this is the first place for any authority authentication middleware)
 routerApp.use(async (event, ctx, _, next) => {
@@ -21,7 +20,7 @@ routerApp.use(async (event, ctx, _, next) => {
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
   if (
     ctx.session.key === globalConfiguration.config.key &&
-    ctx.session.type === TOP_LEVEL &&
+    ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
     ctx.session.id
   ) {
@@ -36,19 +35,6 @@ routerApp.use(async (event, ctx, _, next) => {
   );
   return protocol.error(ctx, "error", IGNORE);
 });
-
-// log output middleware
-// routerApp.use((event, ctx, data, next) => {
-// try {
-// const socket = ctx.socket;
-// logger.info(`Received ${event} command from ${socket.id}(${socket.handshake.address}).`);
-// logger.info(` - data: ${JSON.stringify(data)}.`);
-// } catch (err) {
-// logger.error("Logging error:", err);
-// } finally {
-// next();
-// }
-// });
 
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
@@ -82,12 +68,3 @@ routerApp.on("connection", (ctx) => {
     }
   }, AUTH_TIMEOUT);
 });
-
-// This function must be executed after successful login
-function loginSuccessful(ctx: RouterContext, data: string) {
-  ctx.session.key = data;
-  ctx.session.login = true;
-  ctx.session.id = ctx.socket.id;
-  ctx.session.type = TOP_LEVEL;
-  return ctx.session;
-}
