@@ -1,4 +1,4 @@
-import userSystem from "./system_user";
+import userSystem from "./user_service";
 import { User } from "../entity/user";
 
 export function isHaveInstance(user: User, daemonId: string, instanceUuid: string) {

@@ -1,15 +1,15 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import validator from "../../middleware/validator";
-import permission from "../../middleware/permission";
-import { check, login, logout, checkBanIp } from "../../service/passport_service";
-import { systemConfig } from "../../setting";
-import userSystem, { TwoFactorError } from "../../service/system_user";
-import { logger } from "../../service/log";
-import { $t } from "../../i18n";
+import validator from "../middleware/validator";
+import permission from "../middleware/permission";
+import { check, login, logout, checkBanIp } from "../service/passport_service";
+import { systemConfig } from "../setting";
+import userSystem, { TwoFactorError } from "../service/user_service";
+import { logger } from "../service/log";
+import { $t } from "../i18n";
 import axios from "axios";
 import { GlobalVariable } from "common";
-import { ROLE } from "../../entity/user";
+import { ROLE } from "../entity/user";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]

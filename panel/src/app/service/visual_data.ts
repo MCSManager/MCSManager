@@ -1,6 +1,6 @@
 import { logger } from "./log";
 import { systemInfo } from "common";
-import RemoteServiceSubsystem from "../service/system_remote_service";
+import RemoteServiceSubsystem from "./remote_service";
 import RemoteRequest from "./remote_command";
 
 // Visual data subsystem: responsible for collecting system data and event data, and providing some methods to display them

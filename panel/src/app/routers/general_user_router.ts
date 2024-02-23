@@ -1,16 +1,16 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import { bind2FA, confirm2FaQRCode, getUserUuid } from "../../service/passport_service";
-import userSystem from "../../service/system_user";
-import { getToken, isAjax } from "../../service/passport_service";
-import RemoteServiceSubsystem from "../../service/system_remote_service";
-import RemoteRequest from "../../service/remote_command";
-import { isTopPermissionByUuid } from "../../service/permission_service";
-import validator from "../../middleware/validator";
+import permission from "../middleware/permission";
+import { bind2FA, confirm2FaQRCode, getUserUuid } from "../service/passport_service";
+import userSystem from "../service/user_service";
+import { getToken, isAjax } from "../service/passport_service";
+import RemoteServiceSubsystem from "../service/remote_service";
+import RemoteRequest from "../service/remote_command";
+import { isTopPermissionByUuid } from "../service/permission_service";
+import validator from "../middleware/validator";
 import { v4 } from "uuid";
-import { $t } from "../../i18n";
-import { ROLE } from "../../entity/user";
+import { $t } from "../i18n";
+import { ROLE } from "../entity/user";
 
 const router = new Router({ prefix: "/auth" });
 

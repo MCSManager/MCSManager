@@ -1,6 +1,6 @@
 import Koa from "koa";
 import { GlobalVariable } from "common";
-import userSystem from "../service/system_user";
+import userSystem from "../service/user_service";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";
 

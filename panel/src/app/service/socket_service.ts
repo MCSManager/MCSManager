@@ -1,6 +1,6 @@
 import http from "http";
 import { Server, Socket } from "socket.io";
-import WebSocketRouter from "../routers/public/socket_router";
+import WebSocketRouter from "../routers/socket_router";
 import { logger } from "./log";
 
 export default class SocketService {

@@ -1,6 +1,6 @@
 import Koa from "koa";
 import { Stream } from "stream";
-import VisualDataSubsystem from "../service/system_visual_data";
+import VisualDataSubsystem from "../service/visual_data";
 import { systemConfig } from "../setting";
 import { getVersion } from "../version";
 
