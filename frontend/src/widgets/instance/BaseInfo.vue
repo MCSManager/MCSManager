@@ -84,11 +84,16 @@ onMounted(async () => {
       <a-typography-paragraph>
         {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
+      <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
         {{ t("TXT_CODE_4f917a65") }}
         <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">查看</a>
       </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.config.docker.image">
+      <a-typography-paragraph
+        v-if="
+          instanceInfo?.config.processType === 'docker' &&
+          Number(instanceInfo?.config.docker.ports?.length) > 0
+        "
+      >
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div

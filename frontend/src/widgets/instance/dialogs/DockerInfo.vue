@@ -18,10 +18,10 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:open="open" centered :title="t('TXT_CODE_a7f6b0e0')">
+  <a-modal v-model:open="open" centered :title="t('TXT_CODE_a7f6b0e0')" @ok="open = false">
     <a-descriptions :column="{ md: 2, sm: 2, xs: 1 }">
       <a-descriptions-item :label="t('TXT_CODE_dd238854')">
-        {{ props.dockerInfo?.memory }} MB
+        {{ props.dockerInfo?.memory }}MB
       </a-descriptions-item>
       <a-descriptions-item :label="t('TXT_CODE_efcef926')">
         {{ props.dockerInfo?.networkMode }}
