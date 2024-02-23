@@ -107,5 +107,6 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       $t("TXT_CODE_general_update.killProcess")
     );
     killProcess(this.pid, this.process);
+    instance.asynchronousTask = null;
   }
 }
