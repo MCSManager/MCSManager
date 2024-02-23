@@ -17,6 +17,7 @@ import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { onUnmounted } from "vue";
+import { useRightClickMenu } from "../../hooks/useRightClickMenu";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -146,11 +147,16 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
+const { openRightClickMenu } = useRightClickMenu([]);
+
 onMounted(() => {
   getFileStatus();
   dialog.value.loading = true;
   getFileList();
   dialog.value.loading = false;
+  // setTimeout(() => {
+  //   openRightClickMenu();
+  // }, 2000);
 });
 
 onUnmounted(() => {
@@ -443,11 +449,7 @@ onUnmounted(() => {
 
     <a-space v-if="dialog.mode == 'zip'" direction="vertical" class="w-100 mt-16">
       <a-typography-text type="secondary">
-        {{
-          t(
-            "TXT_CODE_92ebdc7f"
-          )
-        }}
+        {{ t("TXT_CODE_92ebdc7f") }}
       </a-typography-text>
     </a-space>
 
