@@ -336,7 +336,6 @@ onMounted(async () => {
           </div>
         </div>
         <div class="command-input">
-          {{ commandInputValue }}
           <div v-show="focusHistoryList" class="history">
             <li v-for="(item, key) in history" :key="item">
               <a-tag
