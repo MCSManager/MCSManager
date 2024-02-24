@@ -359,26 +359,17 @@ onMounted(async () => {
           <div v-show="focusHistoryList" class="history">
             <li v-for="(item, key) in history" :key="item">
               <a-tag
-                v-if="key !== selectLocation"
-                color="blue"
+                :color="key !== selectLocation ? 'blue' : '#108ee9'"
                 @click="handleClickHistoryItem(item)"
               >
-                {{ item }}
-              </a-tag>
-              <a-tag
-                v-else
-                id="Terminal-History-Select-Item"
-                color="#108ee9"
-                @click="handleClickHistoryItem(item)"
-              >
-                {{ item }}
+                {{ item.length > 14 ? item.slice(0, 14) + "..." : item }}
               </a-tag>
             </li>
           </div>
           <a-input
             ref="inputRef"
             v-model:value="commandInputValue"
-            :placeholder="t('在这里输入命令按回车发送 使用上下键选择历史命令')"
+            :placeholder="t('输入命令按回车发送，使用上下键选择历史命令')"
             autofocus
             @press-enter="handleSendCommand"
             @keydown="handleHistorySelect"

@@ -1,5 +1,7 @@
 import { ref } from "vue";
 
+const TERMINAL_HISTORY_KEY = "TERMINAL_HISTORY_KEY";
+
 export const useCommandHistory = () => {
   const commandInputValue = ref<string>("");
 
@@ -11,17 +13,17 @@ export const useCommandHistory = () => {
 
   const setHistory = (text: string) => {
     if (!text) return;
-    const history = JSON.parse(localStorage.getItem("terminalHistory") || "[]") as string[];
+    const history = JSON.parse(localStorage.getItem(TERMINAL_HISTORY_KEY) || "[]") as string[];
     const index = history.indexOf(text);
     if (index !== -1) history.splice(index, 1);
     history.unshift(text);
     if (history.length > 30) history.pop();
-    localStorage.setItem("terminalHistory", JSON.stringify(history));
+    localStorage.setItem(TERMINAL_HISTORY_KEY, JSON.stringify(history));
   };
 
   const getHistory = () => {
-    const history = JSON.parse(localStorage.getItem("terminalHistory") || "[]") as string[];
-    return history.filter((item) => item.startsWith(commandInputValue.value)).splice(0, 4);
+    const history = JSON.parse(localStorage.getItem(TERMINAL_HISTORY_KEY) || "[]") as string[];
+    return history.filter((item) => item.startsWith(commandInputValue.value)).splice(0, 10);
   };
 
   history.value = getHistory();
@@ -72,10 +74,10 @@ export const useCommandHistory = () => {
       closeHistoryList();
     }
 
-    document.querySelector("#Terminal-History-Select-Item")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
+    // document.querySelector("#Terminal-History-Select-Item")?.scrollIntoView({
+    //   behavior: "smooth",
+    //   block: "center"
+    // });
     if (body) body.style.overflowY = "auto";
   };
 
