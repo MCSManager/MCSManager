@@ -33,6 +33,7 @@ import { INSTANCE_STATUS } from "@/types/const";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { Terminal } from "xterm";
+import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { reportError } from "@/tools/validator";
 
 const props = defineProps<{
@@ -41,9 +42,18 @@ const props = defineProps<{
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
+  focusHistoryList,
+  selectLocation,
+  history,
+  commandInputValue,
+  handleHistorySelect,
+  clickHistoryItem
+} = useCommandHistory();
+const {
   execute,
   initTerminalWindow,
   sendCommand,
+
   state: instanceInfo,
   isRunning,
   isStopped,
@@ -60,7 +70,6 @@ const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? tru
 const innerTerminalType = viewType === "inner";
 const terminalDomId = `terminal-window-${getRandomId()}`;
 
-const commandInputValue = ref("");
 const socketError = ref<Error>();
 
 const instanceStatusText = computed(
@@ -68,6 +77,8 @@ const instanceStatusText = computed(
 );
 
 let term: Terminal | null = null;
+
+let inputRef = ref<HTMLElement | null>(null);
 
 const quickOperations = computed(() =>
   arrayFilter([
@@ -172,8 +183,14 @@ const instanceOperations = computed(() =>
 );
 
 const handleSendCommand = () => {
-  sendCommand(commandInputValue.value);
+  if (focusHistoryList.value) return;
+  sendCommand(commandInputValue.value || "");
   commandInputValue.value = "";
+};
+
+const handleClickHistoryItem = (item: string) => {
+  clickHistoryItem(item);
+  inputRef.value?.focus();
 };
 
 const initTerminal = async () => {
@@ -339,10 +356,32 @@ onMounted(async () => {
           </div>
         </div>
         <div class="command-input">
+          <div v-show="focusHistoryList" class="history">
+            <li v-for="(item, key) in history" :key="item">
+              <a-tag
+                v-if="key !== selectLocation"
+                color="blue"
+                @click="handleClickHistoryItem(item)"
+              >
+                {{ item }}
+              </a-tag>
+              <a-tag
+                v-else
+                id="Terminal-History-Select-Item"
+                color="#108ee9"
+                @click="handleClickHistoryItem(item)"
+              >
+                {{ item }}
+              </a-tag>
+            </li>
+          </div>
           <a-input
+            ref="inputRef"
             v-model:value="commandInputValue"
-            :placeholder="t('TXT_CODE_b8108d4d')"
+            :placeholder="t('在这里输入命令按回车发送 使用上下键选择历史命令')"
+            autofocus
             @press-enter="handleSendCommand"
+            @keydown="handleHistorySelect"
           >
             <template #prefix>
               <CodeOutlined style="font-size: 18px" />
@@ -497,6 +536,33 @@ onMounted(async () => {
 
   .command-input {
     position: relative;
+
+    .history {
+      display: flex;
+      max-width: 100%;
+      overflow: scroll;
+      z-index: 10;
+      position: absolute;
+      top: -35px;
+      left: 0;
+      // background-color: pink;
+
+      li {
+        list-style: none;
+        span {
+          padding: 3px 20px;
+          max-width: 300px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+        }
+      }
+
+      &::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+      }
+    }
   }
 }
 </style>

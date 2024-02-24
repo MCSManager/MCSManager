@@ -11,6 +11,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { useCommandHistory } from "@/hooks/useCommandHistory";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -46,6 +47,8 @@ export interface StdoutData {
   instanceUuid: string;
   text: string;
 }
+
+const { setHistory } = useCommandHistory();
 
 export function useTerminal() {
   const { hasBgImage } = useLayoutConfigStore();
@@ -189,6 +192,7 @@ export function useTerminal() {
   });
 
   const sendCommand = (command: string) => {
+    setHistory(command);
     if (!socket?.connected) throw new Error(t("TXT_CODE_74443c8f"));
     socket.emit("stream/input", {
       data: {
