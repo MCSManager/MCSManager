@@ -34,6 +34,7 @@ import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { Terminal } from "xterm";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
+import { reportError } from "@/tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -84,13 +85,17 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
-      click: () => {
-        openInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
+      click: async () => {
+        try {
+          await openInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       props: {},
       condition: () => isStopped.value
@@ -98,13 +103,17 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
-      click: () => {
-        stopInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
+      click: async () => {
+        try {
+          await stopInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       props: {
         danger: true
@@ -119,43 +128,54 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
-      click: () => {
-        restartInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
+      click: async () => {
+        try {
+          await restartInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       condition: () => isRunning.value
     },
     {
       title: t("TXT_CODE_7b67813a"),
       icon: CloseOutlined,
-      click: () => {
-        killInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || ""
-          }
-        });
-      },
-      condition: () => isRunning.value
+      click: async () => {
+        try {
+          await killInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || ""
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
+      }
     },
     {
       title: t("TXT_CODE_40ca4f2"),
       icon: CloudDownloadOutlined,
-      click: () => {
-        updateInstance().execute({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || "",
-            task_name: "update"
-          },
-          data: {
-            time: new Date().getTime()
-          }
-        });
+      click: async () => {
+        try {
+          await updateInstance().execute({
+            params: {
+              uuid: instanceId || "",
+              daemonId: daemonId || "",
+              task_name: "update"
+            },
+            data: {
+              time: new Date().getTime()
+            }
+          });
+        } catch (error) {
+          reportError(error);
+        }
       },
       condition: () => isStopped.value && updateCmd.value
     }

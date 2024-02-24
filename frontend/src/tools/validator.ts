@@ -12,14 +12,14 @@ export function isNumberValidator(value: any) {
 }
 
 export function getValidatorErrorMsg(error: any, def: string = "") {
-  if (error === null || error === undefined || Object.keys(error).length === 0) {
-    return def;
-  }
-  if (error instanceof Error) {
-    return String(error.message);
+  if (error.message) {
+    return error.message;
   }
   if (error.errorFields instanceof Array) {
     return String(error.errorFields[0]?.errors[0] || "");
+  }
+  if (error === null || error === undefined) {
+    return def;
   }
   return String(error);
 }

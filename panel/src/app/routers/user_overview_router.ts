@@ -1,10 +1,10 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import userSystem from "../../service/system_user";
-import { ICompleteUser } from "../../entity/entity_interface";
-import { $t } from "../../i18n";
-import { ROLE } from "../../entity/user";
+import permission from "../middleware/permission";
+import userSystem from "../service/user_service";
+import { ICompleteUser } from "../entity/entity_interface";
+import { $t } from "../i18n";
+import { ROLE } from "../entity/user";
 
 const router = new Router({ prefix: "/auth" });
 

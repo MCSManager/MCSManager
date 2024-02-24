@@ -1,21 +1,21 @@
-import { IPanelOverviewResponse } from "./../../../../../common/global.d";
+import { IPanelOverviewResponse } from "common/global";
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import RemoteServiceSubsystem from "../../service/system_remote_service";
-import VisualDataSubsystem from "../../service/system_visual_data";
-import RemoteRequest from "../../service/remote_command";
+import permission from "../middleware/permission";
+import RemoteServiceSubsystem from "../service/remote_service";
+import VisualDataSubsystem from "../service/visual_data";
+import RemoteRequest from "../service/remote_command";
 import os from "os";
 import { systemInfo } from "common";
-import { getVersion, specifiedDaemonVersion } from "../../version";
+import { getVersion, specifiedDaemonVersion } from "../version";
 import { GlobalVariable } from "common";
-import { ROLE } from "../../entity/user";
+import { ROLE } from "../entity/user";
 import {
   LOGIN_FAILED_KEY,
   ILLEGAL_ACCESS_KEY,
   LOGIN_COUNT,
   LOGIN_FAILED_COUNT_KEY,
   BAN_IP_COUNT
-} from "../../service/passport_service";
+} from "../service/passport_service";
 
 const router = new Router({ prefix: "/overview" });
 

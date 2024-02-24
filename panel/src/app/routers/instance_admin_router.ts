@@ -1,16 +1,16 @@
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import validator from "../../middleware/validator";
-import RemoteServiceSubsystem from "../../service/system_remote_service";
-import RemoteRequest from "../../service/remote_command";
-import { multiOperationForwarding } from "../../service/instance_service";
-import { timeUuid } from "../../service/password";
-import { $t } from "../../i18n";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import RemoteServiceSubsystem from "../service/remote_service";
+import RemoteRequest from "../service/remote_command";
+import { multiOperationForwarding } from "../service/instance_service";
+import { timeUuid } from "../service/password";
+import { $t } from "../i18n";
 import axios from "axios";
-import { systemConfig } from "../../setting";
-import { getUserUuid } from "../../service/passport_service";
-import { isHaveInstanceByUuid } from "../../service/permission_service";
-import { ROLE } from "../../entity/user";
+import { systemConfig } from "../setting";
+import { getUserUuid } from "../service/passport_service";
+import { isHaveInstanceByUuid } from "../service/permission_service";
+import { ROLE } from "../entity/user";
 
 const router = new Router({ prefix: "/instance" });
 

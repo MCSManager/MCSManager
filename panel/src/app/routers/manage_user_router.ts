@@ -1,11 +1,11 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import validator from "../../middleware/validator";
-import { register } from "../../service/passport_service";
-import userSystem from "../../service/system_user";
-import { $t } from "../../i18n";
-import { ROLE } from "../../entity/user";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import { register } from "../service/passport_service";
+import userSystem from "../service/user_service";
+import { $t } from "../i18n";
+import { ROLE } from "../entity/user";
 
 const router = new Router({ prefix: "/auth" });
 

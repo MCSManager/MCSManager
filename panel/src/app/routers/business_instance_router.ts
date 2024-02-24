@@ -1,12 +1,12 @@
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import validator from "../../middleware/validator";
-import { getUserUuid } from "../../service/passport_service";
-import RemoteServiceSubsystem from "../../service/system_remote_service";
-import RemoteRequest from "../../service/remote_command";
-import { isHaveInstanceByUuid } from "../../service/permission_service";
-import { $t } from "../../i18n";
-import { ROLE } from "../../entity/user";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import { getUserUuid } from "../service/passport_service";
+import RemoteServiceSubsystem from "../service/remote_service";
+import RemoteRequest from "../service/remote_command";
+import { isHaveInstanceByUuid } from "../service/permission_service";
+import { $t } from "../i18n";
+import { ROLE } from "../entity/user";
 
 const router = new Router({ prefix: "/protected_instance" });
 

@@ -1,7 +1,7 @@
 import Koa from "koa";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
-import userSystem from "./system_user";
+import userSystem from "./user_service";
 import { timeUuid } from "./password";
 import { GlobalVariable } from "common";
 import { systemConfig } from "../setting";

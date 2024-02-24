@@ -4,32 +4,32 @@ import Koa from "koa";
 import Router from "@koa/router";
 
 // Load subsystem
-import "./service/system_user";
-import "./service/system_visual_data";
-import "./service/system_remote_service";
+import "./service/user_service";
+import "./service/visual_data";
+import "./service/remote_service";
 import "./service/user_statistics";
 
 // Load routes
-import overviewRouter from "./routers/private/overview_router";
+import overviewRouter from "./routers/overview_router";
 
-import userRouter from "./routers/private/top_user_router";
-import loginRouter from "./routers/public/login_router";
-import lowUserRouter from "./routers/protected/low_level_user_router";
+import userRouter from "./routers/user_overview_router";
+import loginRouter from "./routers/login_router";
+import lowUserRouter from "./routers/general_user_router";
 
-import settingsRouter from "./routers/private/settings_router";
+import settingsRouter from "./routers/settings_router";
 
-import instanceRouter from "./routers/private/instance_router";
-import userInstanceRouter from "./routers/protected/user_instance_router";
+import instanceRouter from "./routers/instance_admin_router";
+import userInstanceRouter from "./routers/instance_operate_router";
 
-import serviceRouter from "./routers/private/service_router";
-import filemanager_router from "./routers/protected/filemananger_router";
+import serviceRouter from "./routers/daemon_router";
+import filemanager_router from "./routers/filemananger_router";
 
-import businessInstanceRouter from "./routers/protected/business_instance_router";
-import businessUserRouter from "./routers/private/business_user_router";
+import businessInstanceRouter from "./routers/business_instance_router";
+import businessUserRouter from "./routers/manage_user_router";
 
-import scheduleRouter from "./routers/protected/schedule_router";
+import scheduleRouter from "./routers/schedule_router";
 
-import environmentRouter from "./routers/private/environment_router";
+import environmentRouter from "./routers/environment_router";
 
 // all routes load entry points
 export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {

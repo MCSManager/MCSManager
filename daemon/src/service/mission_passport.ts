@@ -1,3 +1,5 @@
+import RouterContext from "../entity/ctx";
+
 // task interface
 interface IMission {
   name: string;
@@ -42,6 +44,37 @@ class MissionPassport {
   }
 }
 
+const LOGIN_BY_TOP_LEVEL = "TOP_LEVEL";
+const LOGIN_FROM_STREAM = "STREAM";
+
+// This function must be executed after successful login
+function loginSuccessful(ctx: RouterContext, key: string) {
+  ctx.session.key = key;
+  ctx.session.login = true;
+  ctx.session.id = ctx.socket.id;
+  ctx.session.type = LOGIN_BY_TOP_LEVEL;
+  ctx.session.stream = {};
+  return ctx.session;
+}
+
+function streamLoginSuccessful(ctx: RouterContext, instanceUuid: string) {
+  ctx.session.id = ctx.socket.id;
+  ctx.session.login = true;
+  ctx.session.type = LOGIN_FROM_STREAM;
+  ctx.session.stream = {
+    check: true,
+    instanceUuid
+  };
+  return ctx.session;
+}
+
 const missionPassport = new MissionPassport();
 
-export { missionPassport, IMission };
+export {
+  missionPassport,
+  IMission,
+  LOGIN_BY_TOP_LEVEL,
+  LOGIN_FROM_STREAM,
+  loginSuccessful,
+  streamLoginSuccessful
+};

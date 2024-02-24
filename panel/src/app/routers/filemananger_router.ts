@@ -1,14 +1,14 @@
 import Router from "@koa/router";
-import permission from "../../middleware/permission";
-import validator from "../../middleware/validator";
-import RemoteServiceSubsystem from "../../service/system_remote_service";
-import RemoteRequest from "../../service/remote_command";
-import { timeUuid } from "../../service/password";
-import { getUserPermission, getUserUuid } from "../../service/passport_service";
-import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../../service/permission_service";
-import { systemConfig } from "../../setting";
-import { $t } from "../../i18n";
-import { ROLE } from "../../entity/user";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import RemoteServiceSubsystem from "../service/remote_service";
+import RemoteRequest from "../service/remote_command";
+import { timeUuid } from "../service/password";
+import { getUserPermission, getUserUuid } from "../service/passport_service";
+import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
+import { systemConfig } from "../setting";
+import { $t } from "../i18n";
+import { ROLE } from "../entity/user";
 const router = new Router({ prefix: "/files" });
 
 router.use(async (ctx, next) => {
