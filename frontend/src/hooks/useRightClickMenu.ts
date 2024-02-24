@@ -1,25 +1,59 @@
 import RightMenuVue from "@/components/fc/RightMenu.vue";
 import { useMountComponent } from "./useMountComponent";
-import { useMouse } from "@vueuse/core";
+import { nextTick } from "vue";
+import type { App } from "vue";
 
 export interface RightClickMenuItem {
   label: string;
   value: string;
-  callback: (value: string) => void;
+  width?: number;
+  onClick: (value: string) => void;
 }
 
-export function useRightClickMenu(options: RightClickMenuItem[]) {
-  const openRightClickMenu = async () => {
-    const { x: mouseX, y: mouseY } = useMouse();
+export function useRightClickMenu() {
+  let loadedMenu: {
+    app: App;
+    destroyFc: () => void;
+  };
+
+  const openRightClickMenu = async (
+    mouseX: number,
+    mouseY: number,
+    options: RightClickMenuItem[]
+  ) => {
+    if (loadedMenu) {
+      loadedMenu.destroyFc();
+    }
+
     const fcHook = await useMountComponent({
       options,
-      mouseX: mouseX.value,
-      mouseY: mouseY.value
+      mouseX: mouseX,
+      mouseY: mouseY
     });
+    const { component, app, destroyFc } = await fcHook.loadApp<InstanceType<typeof RightMenuVue>>(
+      RightMenuVue
+    );
 
-    const component = await fcHook.load<InstanceType<typeof RightMenuVue>>(RightMenuVue);
-    console.debug("openRightClickMenu", component);
-    component.openMenu();
+    loadedMenu = {
+      app,
+      destroyFc
+    };
+
+    await component.openMenu();
+
+    nextTick(() => {
+      const destroyMenu = (e: Event) => {
+        e.preventDefault();
+        document.body.removeEventListener("click", destroyMenu);
+        document.body.removeEventListener("contextmenu", destroyMenu);
+        document.body.removeEventListener("scroll", destroyMenu);
+        destroyFc();
+      };
+
+      document.body.addEventListener("click", destroyMenu);
+      document.body.addEventListener("contextmenu", destroyMenu);
+      document.body.addEventListener("scroll", destroyMenu);
+    });
   };
 
   return {

@@ -29,6 +29,13 @@ export function useMountComponent(data: Record<string, any> = {}) {
   };
 
   const load = <T extends Component>(component: Component): T => {
+    const { component: mountedComponent } = loadApp<T>(component);
+    return mountedComponent;
+  };
+
+  const loadApp = <T extends Component>(
+    component: Component
+  ): { component: T; app: App; div: HTMLDivElement; destroyFc: () => void } => {
     const div = document.createElement("div");
     document.body.appendChild(div);
     const app = createApp(component, {
@@ -40,11 +47,20 @@ export function useMountComponent(data: Record<string, any> = {}) {
       }
     });
     const mountedComponent = app.mount(div);
-    return mountedComponent as any;
+    return {
+      component: mountedComponent as any,
+      app: app,
+      div,
+      destroyFc: () => {
+        app.unmount();
+        div.remove();
+      }
+    };
   };
 
   return {
     mount,
-    load
+    load,
+    loadApp
   };
 }

@@ -61,6 +61,8 @@ const {
   toDisk
 } = useFileManager(instanceId, daemonId);
 
+const { openRightClickMenu } = useRightClickMenu();
+
 const isShowDiskList = computed(
   () =>
     fileStatus.value?.disks.length &&
@@ -147,16 +149,24 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
-const { openRightClickMenu } = useRightClickMenu([]);
+const handleRightClickRow = (e: MouseEvent, record: DataType) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openRightClickMenu(e.clientX, e.clientY, [
+    {
+      label: "下载",
+      value: "download",
+      onClick: () => downloadFile(record.name)
+    }
+  ]);
+  return false;
+};
 
 onMounted(() => {
   getFileStatus();
   dialog.value.loading = true;
   getFileList();
   dialog.value.loading = false;
-  // setTimeout(() => {
-  //   openRightClickMenu();
-  // }, 2000);
 });
 
 onUnmounted(() => {
@@ -305,6 +315,13 @@ onUnmounted(() => {
                   hideOnSinglePage: false,
                   showSizeChanger: true
                 }"
+                :custom-row="
+                  (record: DataType) => {
+                    return {
+                      onContextmenu: (e) => handleRightClickRow(e, record)
+                    };
+                  }
+                "
                 @change="
                   (e) => handleTableChange({ current: e.current || 0, pageSize: e.pageSize || 0 })
                 "
