@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
@@ -16,8 +16,8 @@ import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
-import { onUnmounted } from "vue";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
+import { message } from "ant-design-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -54,6 +54,7 @@ const {
   beforeUpload,
   downloadFile,
   handleChangeDir,
+  selectedFile,
   rowClickTable,
   handleTableChange,
   getFileStatus,
@@ -143,6 +144,28 @@ task = setInterval(async () => {
 }, 3000);
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
+
+const opacity = ref(false);
+const dragover = (e: DragEvent) => {
+  e.preventDefault();
+  opacity.value = true;
+};
+const dragleave = (e: DragEvent) => {
+  e.preventDefault();
+  opacity.value = false;
+};
+
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault();
+  const files = e.dataTransfer?.files;
+  opacity.value = false;
+  if (!files) return;
+  if (files.length === 0) return;
+  if (files.length > 1) return message.error(t("只能同时选择一个文件"));
+  if (percentComplete.value > 0) return message.error(t("请等待当前文件上传完成"));
+
+  selectedFile(files[0]);
+};
 
 const editFile = (fileName: string) => {
   const path = breadcrumbs[breadcrumbs.length - 1].path + fileName;
@@ -253,7 +276,13 @@ onUnmounted(() => {
       </a-col>
 
       <a-col :span="24">
-        <CardPanel style="height: 100%">
+        <CardPanel
+          style="height: 100%"
+          :style="opacity && 'opacity: 0.7'"
+          @dragover="dragover"
+          @dragleave="dragleave"
+          @drop="handleDrop"
+        >
           <template #body>
             <a-progress
               v-if="percentComplete > 0"

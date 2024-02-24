@@ -377,7 +377,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     } catch (err: any) {
       console.error(err);
       percentComplete.value = 0;
-      return reportError(err.response.data || err.message);
+      return reportError(err.response?.data || err.message);
     }
   };
 
