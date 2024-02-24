@@ -17,7 +17,7 @@ import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
-import { message } from "ant-design-vue";
+import { message, type ItemType } from "ant-design-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -174,63 +174,85 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
+const isMultiple = computed(() =>
+  selectionData.value && selectionData.value.length > 1 ? true : false
+);
+
 const menuList = (record: DataType) =>
-  arrayFilter([
+  arrayFilter<ItemType>([
+    {
+      label: t("新建"),
+      key: "new",
+      children: [
+        {
+          label: t("空白文件"),
+          key: "newFile",
+          onClick: () => touchFile()
+        },
+        {
+          label: t("目录"),
+          key: "newFolder",
+          onClick: () => touchFile(true)
+        }
+      ],
+      condition: () => !isMultiple.value
+    },
+
     {
       label: t("TXT_CODE_ad207008"),
-      value: "edit",
+      key: "edit",
       onClick: () => editFile(record.name),
-      condition: () => record.type === 1
+      condition: () => !isMultiple.value && record.type === 1
     },
     {
       label: t("TXT_CODE_46c4169b"),
-      value: "cut",
+      key: "cut",
       onClick: () => setClipBoard("move", record.name)
     },
     {
       label: t("TXT_CODE_13ae6a93"),
-      value: "copy",
+      key: "copy",
       onClick: () => setClipBoard("copy", record.name)
     },
     {
       label: t("粘贴"),
-      value: "edit",
+      key: "edit",
       onClick: () => paste(),
       condition: () => (clipboard.value ? (clipboard.value.value.length > 0 ? true : false) : false)
     },
     {
       label: t("TXT_CODE_c83551f5"),
-      value: "rename",
-      onClick: () => resetName(record.name)
+      key: "rename",
+      onClick: () => resetName(record.name),
+      condition: () => !isMultiple.value
     },
     {
       label: t("TXT_CODE_ecbd7449"),
-      value: "delete",
+      key: "delete",
       onClick: () => deleteFile(record.name)
     },
     {
       label: t("TXT_CODE_16853efe"),
-      value: "changePermission",
+      key: "changePermission",
       onClick: () => changePermission(record.name, record.mode),
-      condition: () => fileStatus.value?.platform !== "win32"
+      condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
     },
     {
       label: t("TXT_CODE_88122886"),
-      value: "edit",
-      onClick: () => zipFile(),
-      condition: () => selectionData.value?.length !== 0
+      key: "zip",
+      onClick: () => zipFile()
     },
     {
       label: t("TXT_CODE_a64f3007"),
-      value: "edit",
+      key: "unzip",
       onClick: () => unzipFile(record.name),
       condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
     },
     {
       label: t("TXT_CODE_65b21404"),
-      value: "download",
+      key: "download",
       onClick: () => downloadFile(record.name),
-      condition: () => record.type === 1
+      condition: () => !isMultiple.value && record.type === 1
     }
   ]);
 
@@ -292,29 +314,41 @@ onUnmounted(() => {
               {{ t("TXT_CODE_a53573af") }}
             </a-button>
 
-            <a-dropdown>
+            <a-dropdown v-if="isMultiple">
+              <template #overlay>
+                <a-menu
+                  mode="vertical"
+                  :items="
+                    menuList({
+                      name: '',
+                      type: 0,
+                      size: 0,
+                      time: '',
+                      mode: 0
+                    })
+                  "
+                >
+                </a-menu>
+              </template>
+              <a-button type="primary">
+                {{ t("批量操作") }}
+                <DownOutlined />
+              </a-button>
+            </a-dropdown>
+
+            <a-dropdown v-else>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="2" @click="touchFile(true)">
-                    {{ t("TXT_CODE_6215388a") }}
+                  <a-menu-item key="newFile" @click="touchFile()">
+                    {{ t("空白文件") }}
                   </a-menu-item>
-                  <a-menu-item key="3" @click="touchFile()">
-                    {{ t("TXT_CODE_791c73e9") }}
-                  </a-menu-item>
-                  <a-menu-item key="4" @click="zipFile()">{{ t("TXT_CODE_88122886") }}</a-menu-item>
-                  <a-menu-item key="5" @click="setClipBoard('copy')">
-                    {{ t("TXT_CODE_13ae6a93") }}
-                  </a-menu-item>
-                  <a-menu-item key="6" @click="setClipBoard('move')">
-                    {{ t("TXT_CODE_46c4169b") }}
-                  </a-menu-item>
-                  <a-menu-item key="7" @click="deleteFile()">
-                    {{ t("TXT_CODE_ecbd7449") }}
+                  <a-menu-item key="newFolder" @click="touchFile(true)">
+                    {{ t("目录") }}
                   </a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
-                {{ t("TXT_CODE_95495db") }}
+                {{ t("新建") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -434,15 +468,7 @@ onUnmounted(() => {
                   <template v-if="column.key === 'action'">
                     <a-dropdown>
                       <template #overlay>
-                        <a-menu>
-                          <a-menu-item
-                            v-for="(item, i) in menuList(record as DataType)"
-                            :key="i"
-                            @click="item.onClick"
-                          >
-                            {{ item.label }}
-                          </a-menu-item>
-                        </a-menu>
+                        <a-menu mode="vertical" :items="menuList(record as DataType)"> </a-menu>
                       </template>
                       <a-button size="middle">
                         {{ t("TXT_CODE_fe731dfc") }}
