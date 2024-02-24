@@ -146,11 +146,12 @@ task = setInterval(async () => {
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
 const opacity = ref(false);
-const dragover = (e: DragEvent) => {
+const handleDragover = (e: DragEvent) => {
   e.preventDefault();
   opacity.value = true;
 };
-const dragleave = (e: DragEvent) => {
+
+const handleDragleave = (e: DragEvent) => {
   e.preventDefault();
   opacity.value = false;
 };
@@ -279,8 +280,8 @@ onUnmounted(() => {
         <CardPanel
           style="height: 100%"
           :style="opacity && 'opacity: 0.7'"
-          @dragover="dragover"
-          @dragleave="dragleave"
+          @dragover="handleDragover"
+          @dragleave="handleDragleave"
           @drop="handleDrop"
         >
           <template #body>
