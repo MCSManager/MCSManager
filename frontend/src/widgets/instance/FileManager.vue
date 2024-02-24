@@ -41,6 +41,7 @@ const {
   breadcrumbs,
   clipboard,
   currentDisk,
+  selectionData,
   selectChanged,
   getFileList,
   touchFile,
@@ -173,16 +174,70 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
+const menuList = (record: DataType) =>
+  arrayFilter([
+    {
+      label: t("TXT_CODE_ad207008"),
+      value: "edit",
+      onClick: () => editFile(record.name),
+      condition: () => record.type === 1
+    },
+    {
+      label: t("TXT_CODE_46c4169b"),
+      value: "cut",
+      onClick: () => setClipBoard("move", record.name)
+    },
+    {
+      label: t("TXT_CODE_13ae6a93"),
+      value: "copy",
+      onClick: () => setClipBoard("copy", record.name)
+    },
+    {
+      label: t("粘贴"),
+      value: "edit",
+      onClick: () => paste(),
+      condition: () => (clipboard.value ? (clipboard.value.value.length > 0 ? true : false) : false)
+    },
+    {
+      label: t("TXT_CODE_c83551f5"),
+      value: "rename",
+      onClick: () => resetName(record.name)
+    },
+    {
+      label: t("TXT_CODE_ecbd7449"),
+      value: "delete",
+      onClick: () => deleteFile(record.name)
+    },
+    {
+      label: t("TXT_CODE_16853efe"),
+      value: "changePermission",
+      onClick: () => changePermission(record.name, record.mode),
+      condition: () => fileStatus.value?.platform !== "win32"
+    },
+    {
+      label: t("TXT_CODE_88122886"),
+      value: "edit",
+      onClick: () => zipFile(),
+      condition: () => selectionData.value?.length !== 0
+    },
+    {
+      label: t("TXT_CODE_a64f3007"),
+      value: "edit",
+      onClick: () => unzipFile(record.name),
+      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
+    },
+    {
+      label: t("TXT_CODE_65b21404"),
+      value: "download",
+      onClick: () => downloadFile(record.name),
+      condition: () => record.type === 1
+    }
+  ]);
+
 const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   e.preventDefault();
   e.stopPropagation();
-  openRightClickMenu(e.clientX, e.clientY, [
-    {
-      label: "下载",
-      value: "download",
-      onClick: () => downloadFile(record.name)
-    }
-  ]);
+  openRightClickMenu(e.clientX, e.clientY, menuList(record));
   return false;
 };
 
@@ -381,45 +436,11 @@ onUnmounted(() => {
                       <template #overlay>
                         <a-menu>
                           <a-menu-item
-                            v-if="record.type === 1"
-                            key="2"
-                            @click="editFile(record.name)"
+                            v-for="(item, i) in menuList(record as DataType)"
+                            :key="i"
+                            @click="item.onClick"
                           >
-                            {{ t("TXT_CODE_ad207008") }}
-                          </a-menu-item>
-                          <a-menu-item
-                            v-if="fileStatus?.platform != 'win32'"
-                            key="1"
-                            @click="changePermission(record.name, record.mode)"
-                          >
-                            {{ t("TXT_CODE_16853efe") }}
-                          </a-menu-item>
-
-                          <a-menu-item key="3" @click="setClipBoard('copy', record.name)">
-                            {{ t("TXT_CODE_13ae6a93") }}
-                          </a-menu-item>
-                          <a-menu-item key="4" @click="setClipBoard('move', record.name)">
-                            {{ t("TXT_CODE_46c4169b") }}
-                          </a-menu-item>
-                          <a-menu-item key="5" @click="resetName(record.name)">
-                            {{ t("TXT_CODE_c83551f5") }}
-                          </a-menu-item>
-                          <a-menu-item key="6" @click="deleteFile(record.name)">
-                            {{ t("TXT_CODE_ecbd7449") }}
-                          </a-menu-item>
-                          <a-menu-item
-                            v-if="record.type === 1 && getFileExtName(record.name) === 'zip'"
-                            key="7"
-                            @click="unzipFile(record.name)"
-                          >
-                            {{ t("TXT_CODE_a64f3007") }}
-                          </a-menu-item>
-                          <a-menu-item
-                            v-if="record.type === 1"
-                            key="8"
-                            @click="downloadFile(record.name)"
-                          >
-                            {{ t("TXT_CODE_65b21404") }}
+                            {{ item.label }}
                           </a-menu-item>
                         </a-menu>
                       </template>

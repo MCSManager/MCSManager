@@ -548,6 +548,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     clipboard,
     selectedRowKeys,
     currentDisk,
+    selectionData,
     selectChanged,
     openDialog,
     getFileList,
