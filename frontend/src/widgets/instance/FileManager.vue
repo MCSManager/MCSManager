@@ -5,7 +5,12 @@ import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
-import { DownOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons-vue";
+import {
+  DownOutlined,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  UploadOutlined
+} from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
@@ -17,7 +22,8 @@ import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
-import { message, type ItemType } from "ant-design-vue";
+import { message, type ItemType, Modal } from "ant-design-vue";
+import { h } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -165,8 +171,14 @@ const handleDrop = (e: DragEvent) => {
   if (files.length === 0) return;
   if (files.length > 1) return message.error(t("只能同时选择一个文件"));
   if (percentComplete.value > 0) return message.error(t("请等待当前文件上传完成"));
-
-  selectedFile(files[0]);
+  Modal.confirm({
+    title: t("确认上传") + ` ${files[0].name} ?`,
+    icon: h(ExclamationCircleOutlined),
+    content: `${t("大小")} ${(files[0].size / 1024).toFixed(2)}MB, ${t("上传过程中不可取消！")}`,
+    onOk() {
+      selectedFile(files[0]);
+    }
+  });
 };
 
 const editFile = (fileName: string) => {
