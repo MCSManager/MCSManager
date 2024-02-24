@@ -265,7 +265,7 @@ onMounted(async () => {
       </div>
       <a-typography-title :level="5">{{ $t("TXT_CODE_9c95b60f") }}</a-typography-title>
       <a-typography-paragraph>
-        <pre style="font-size: 12px"><code>{{ socketError.message }}</code></pre>
+        <pre style="font-size: 12px"><code>{{ socketError?.message||"" }}</code></pre>
       </a-typography-paragraph>
       <a-typography-title :level="5">{{ $t("TXT_CODE_f1c96d8a") }}</a-typography-title>
       <a-typography-paragraph>
@@ -445,7 +445,6 @@ onMounted(async () => {
   right: 0;
   bottom: 0;
   top: 0;
-  backdrop-filter: blur(1px);
   z-index: 10;
   border-radius: 20px;
 
