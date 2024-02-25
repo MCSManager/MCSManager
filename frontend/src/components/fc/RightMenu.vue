@@ -21,8 +21,6 @@ const menuStyle = computed<CSSProperties>(() => {
     position: "fixed",
     top: `${y.value}px`,
     left: `${x.value}px`
-    // top: `100px`,
-    // left: `100px`
   };
 });
 
@@ -45,15 +43,15 @@ defineExpose({
 </script>
 <template>
   <div ref="rightMenu" class="right-menu" :style="menuStyle">
-    <a-menu mode="vertical" :items="props.options"> </a-menu>
+    <a-menu mode="vertical" style="width: 160px" :items="props.options"> </a-menu>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .right-menu {
   z-index: 9999;
-  border: 1px solid var(--color-gray-5);
-  border-radius: 8px;
+  box-shadow: 0px 0px 12px var(--color-gray-4);
+  border-radius: 10px;
   overflow: hidden;
   visibility: hidden;
 }

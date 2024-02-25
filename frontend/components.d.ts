@@ -64,7 +64,6 @@ declare module 'vue' {
     ATypographyText: typeof import('ant-design-vue/es')['TypographyText']
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     AUpload: typeof import('ant-design-vue/es')['Upload']
-    AUploadDragger: typeof import('ant-design-vue/es')['UploadDragger']
     BetweenMenus: typeof import('./src/components/BetweenMenus.vue')['default']
     CardError: typeof import('./src/components/CardError.vue')['default']
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']

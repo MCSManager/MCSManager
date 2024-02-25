@@ -391,6 +391,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectedRowKeys.value = _selectedRowKeys;
   };
 
+  const pushSelected = (key: Key, row: DataType) => {
+    const index = selectedRowKeys.value.indexOf(key);
+    if (index > -1) return;
+    selectionData.value?.push(row);
+    selectedRowKeys.value.push(key);
+  };
+
   const clearSelected = () => {
     selectionData.value = [];
     selectedRowKeys.value = [];
@@ -568,6 +575,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     handleTableChange,
     getFileStatus,
     changePermission,
-    toDisk
+    toDisk,
+    pushSelected
   };
 };

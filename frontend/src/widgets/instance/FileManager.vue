@@ -66,7 +66,8 @@ const {
   handleTableChange,
   getFileStatus,
   changePermission,
-  toDisk
+  toDisk,
+  pushSelected
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -271,6 +272,7 @@ const menuList = (record: DataType) =>
 const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   e.preventDefault();
   e.stopPropagation();
+  pushSelected(record.name, record);
   openRightClickMenu(e.clientX, e.clientY, menuList(record));
   return false;
 };
@@ -380,7 +382,7 @@ onUnmounted(() => {
       <a-col :span="24">
         <CardPanel
           style="height: 100%"
-          :style="opacity && 'opacity: 0.7'"
+          :style="opacity && 'opacity: 0.4'"
           @dragover="handleDragover"
           @dragleave="handleDragleave"
           @drop="handleDrop"
@@ -610,6 +612,14 @@ onUnmounted(() => {
   &:hover {
     color: #1677ff;
   }
+}
+
+.upload-tip {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
 @media (max-width: 992px) {
