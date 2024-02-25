@@ -2,13 +2,7 @@ import RightMenuVue from "@/components/fc/RightMenu.vue";
 import { useMountComponent } from "./useMountComponent";
 import { nextTick } from "vue";
 import type { App } from "vue";
-
-export interface RightClickMenuItem {
-  label: string;
-  value: string;
-  width?: number;
-  onClick: (value: string) => void;
-}
+import type { ItemType } from "ant-design-vue/es/menu/src/interface";
 
 export function useRightClickMenu() {
   let loadedMenu: {
@@ -16,11 +10,7 @@ export function useRightClickMenu() {
     destroyFc: () => void;
   };
 
-  const openRightClickMenu = async (
-    mouseX: number,
-    mouseY: number,
-    options: RightClickMenuItem[]
-  ) => {
+  const openRightClickMenu = async (mouseX: number, mouseY: number, options: ItemType[]) => {
     if (loadedMenu) {
       loadedMenu.destroyFc();
     }

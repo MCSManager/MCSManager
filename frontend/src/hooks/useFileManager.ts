@@ -376,7 +376,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       return message.success(t("TXT_CODE_773f36a0"));
     } catch (err: any) {
       console.error(err);
-      return reportError(err.message);
+      percentComplete.value = 0;
+      return reportError(err.response?.data || err.message);
     }
   };
 
@@ -547,6 +548,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     clipboard,
     selectedRowKeys,
     currentDisk,
+    selectionData,
     selectChanged,
     openDialog,
     getFileList,
