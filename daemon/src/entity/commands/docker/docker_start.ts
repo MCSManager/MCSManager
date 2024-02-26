@@ -122,13 +122,12 @@ export default class DockerStartCommand extends InstanceCommand {
     const exposedPorts: any = {};
     for (const iterator of portMap) {
       const elem = iterator.split("/");
-      if (elem.length != 2) throw new Error(t("此容器的开放端口配置有误！"));
+      if (elem.length != 2) throw new Error(t("TXT_CODE_1cf6fc4b"));
       const ports = elem[0];
       const protocol = elem[1];
       //Host (host) port: container port
       const publicAndPrivatePort = ports.split(":");
-      if (publicAndPrivatePort.length != 2)
-        throw new Error(t("此容器的开放端口配置有误，分隔符号左右两边不存在值！"));
+      if (publicAndPrivatePort.length != 2) throw new Error(t("TXT_CODE_2029027e"));
       publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
         { HostPort: publicAndPrivatePort[0] }
       ];
@@ -253,7 +252,7 @@ export default class DockerStartCommand extends InstanceCommand {
       h: instance.config.terminalOption.ptyWindowCol
     });
 
-    instance.println("Container", t("已挂载工作目录：") + workingDir);
+    instance.println("Container", t("TXT_CODE_e76e49e9") + workingDir);
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_instance.successful", {

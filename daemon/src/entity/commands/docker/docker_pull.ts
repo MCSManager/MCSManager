@@ -31,18 +31,18 @@ export default class DockerPullCommand extends InstanceCommand {
       let count = 0;
       const task = setInterval(async () => {
         count++;
-        instance.println("Container", t("等待下载完毕事件中..."));
+        instance.println("Container", t("TXT_CODE_977cb449"));
         if (await checkImage(name)) {
           clearInterval(task);
           resolve(true);
         }
         if (count >= 20 * 15) {
           clearInterval(task);
-          reject(new Error(t("镜像下载超时！我们最多只能等待 15 分钟，请检查您的网络！")));
+          reject(new Error(t("TXT_CODE_9cae6f92")));
         }
         if (this.stopFlag) {
           clearInterval(task);
-          reject(new Error(t("镜像下载已终止！")));
+          reject(new Error(t("TXT_CODE_361a79c6")));
         }
       }, 3 * 1000);
     });
@@ -50,31 +50,24 @@ export default class DockerPullCommand extends InstanceCommand {
 
   async exec(instance: Instance) {
     const imageName = instance.config.docker.image;
-    if (!imageName) throw new Error(t("镜像名字不能为空！"));
+    if (!imageName) throw new Error(t("TXT_CODE_17be5f70"));
     const cachedStartCount = instance.startCount;
     // If the image exists, there is no need to pull again.
     if (await checkImage(imageName)) return;
 
     try {
       const docker = new Docker();
-      instance.println("Container", t("正在下载镜像文件，请耐心等待。镜像名：") + imageName);
+      instance.println("Container", t("TXT_CODE_2fa46b8c") + imageName);
       instance.asynchronousTask = this;
 
       await docker.pull(imageName, {});
 
       await this.awaitImageDone(instance, imageName);
       if (cachedStartCount !== instance.startCount) return;
-      instance.println("Container", t("镜像下载完毕！"));
+      instance.println("Container", t("TXT_CODE_c68b0bef"));
     } catch (err) {
       if (cachedStartCount !== instance.startCount) return;
-      throw new Error(
-        [
-          t(
-            "镜像下载错误，请确保此镜像名正确，或者在节点管理的终端处手动通过 docker pull 拉取你需要的镜像，错误信息："
-          ),
-          err.message
-        ].join("\n")
-      );
+      throw new Error([t("TXT_CODE_db37b7f9"), err.message].join("\n"));
     } finally {
       this.stopped(instance);
     }

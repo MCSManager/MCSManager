@@ -170,12 +170,14 @@ const handleDrop = (e: DragEvent) => {
   opacity.value = false;
   if (!files) return;
   if (files.length === 0) return;
-  if (files.length > 1) return message.error(t("只能同时选择一个文件"));
-  if (percentComplete.value > 0) return message.error(t("请等待当前文件上传完成"));
+  if (files.length > 1) return message.error(t("TXT_CODE_f125d699"));
+  if (percentComplete.value > 0) return message.error(t("TXT_CODE_4f6a2959"));
   Modal.confirm({
-    title: t("确认上传") + ` ${files[0].name} ?`,
+    title: t("TXT_CODE_52bc24ec") + ` ${files[0].name} ?`,
     icon: h(ExclamationCircleOutlined),
-    content: `${t("大小")} ${(files[0].size / 1024).toFixed(2)}MB, ${t("上传过程中不可取消！")}`,
+    content: `${t("TXT_CODE_94bb113a")} ${(files[0].size / 1024).toFixed(2)}MB, ${t(
+      "TXT_CODE_fffaeb16"
+    )}`,
     onOk() {
       selectedFile(files[0]);
     }
@@ -194,16 +196,16 @@ const isMultiple = computed(() =>
 const menuList = (record: DataType) =>
   arrayFilter<ItemType>([
     {
-      label: t("新建"),
+      label: t("TXT_CODE_b147fabc"),
       key: "new",
       children: [
         {
-          label: t("空白文件"),
+          label: t("TXT_CODE_1e0b63b6"),
           key: "newFile",
           onClick: () => touchFile()
         },
         {
-          label: t("目录"),
+          label: t("TXT_CODE_cfc657db"),
           key: "newFolder",
           onClick: () => touchFile(true)
         }
@@ -228,7 +230,7 @@ const menuList = (record: DataType) =>
       onClick: () => setClipBoard("copy", record.name)
     },
     {
-      label: t("粘贴"),
+      label: t("TXT_CODE_43248597"),
       key: "edit",
       onClick: () => paste(),
       condition: () => (clipboard.value ? (clipboard.value.value.length > 0 ? true : false) : false)
@@ -345,7 +347,7 @@ onUnmounted(() => {
                 </a-menu>
               </template>
               <a-button type="primary">
-                {{ t("批量操作") }}
+                {{ t("TXT_CODE_5cb656b9") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>
@@ -354,15 +356,15 @@ onUnmounted(() => {
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="newFile" @click="touchFile()">
-                    {{ t("空白文件") }}
+                    {{ t("TXT_CODE_1e0b63b6") }}
                   </a-menu-item>
                   <a-menu-item key="newFolder" @click="touchFile(true)">
-                    {{ t("目录") }}
+                    {{ t("TXT_CODE_cfc657db") }}
                   </a-menu-item>
                 </a-menu>
               </template>
               <a-button type="primary">
-                {{ t("新建") }}
+                {{ t("TXT_CODE_b147fabc") }}
                 <DownOutlined />
               </a-button>
             </a-dropdown>

@@ -96,7 +96,7 @@ const loadImages = async () => {
       value: IMAGE_DEFINE.NEW
     },
     {
-      label: t("使用 Docker Hub 中的镜像"),
+      label: t("TXT_CODE_435f4975"),
       value: IMAGE_DEFINE.EDIT
     }
   ];
@@ -268,12 +268,12 @@ defineExpose({
     <div class="dialog-overflow-container">
       <div>
         <a-tabs v-model:activeKey="activeKey">
-          <a-tab-pane :key="TabSettings.Basic" :tab="t('基础设置')"></a-tab-pane>
-          <a-tab-pane :key="TabSettings.Advanced" :tab="t('高级设置')"></a-tab-pane>
+          <a-tab-pane :key="TabSettings.Basic" :tab="t('TXT_CODE_cc7b54b9')"></a-tab-pane>
+          <a-tab-pane :key="TabSettings.Advanced" :tab="t('TXT_CODE_31a1d824')"></a-tab-pane>
           <a-tab-pane
             v-if="!isGlobalTerminal"
             :key="TabSettings.Docker"
-            :tab="t('容器化')"
+            :tab="t('TXT_CODE_afb12200')"
           ></a-tab-pane>
         </a-tabs>
       </div>
@@ -306,7 +306,7 @@ defineExpose({
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("不同的类型会在某些功能上有细微的差别") }}
+                  {{ t("TXT_CODE_be608c82") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
@@ -389,11 +389,7 @@ defineExpose({
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="t('TXT_CODE_41763172')"></span>
                   <br />
-                  <span>{{
-                    t(
-                      "配置更新命令后，可以在开关实例按钮处找到更新操作，点击后将会在宿主机上执行此处编写的命令"
-                    )
-                  }}</span>
+                  <span>{{ t("TXT_CODE_4f387c5a") }}</span>
                 </a-typography-text>
               </a-typography-paragraph>
               <!-- eslint-disable-next-line vue/html-quotes -->
@@ -428,11 +424,11 @@ defineExpose({
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">
-                {{ t("启用 Docker 容器") }}
+                {{ t("TXT_CODE_61a8296e") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("启用后，实例将在“沙盒”环境中运行，大部分操作不会影响到宿主机安全") }}
+                  {{ t("TXT_CODE_2b221e02") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <div class="ml-4">
@@ -455,7 +451,7 @@ defineExpose({
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("指定容器使用哪个镜像运行") }}
+                  {{ t("TXT_CODE_ec734b5c") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-select
@@ -476,16 +472,16 @@ defineExpose({
           <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="8" :offset="0">
             <a-form-item name="dockerImage">
               <a-typography-title :level="5" class="require-field">
-                {{ t("完整镜像名") }}
+                {{ t("TXT_CODE_4e4d9680") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("请自行确保此镜像存在，且需要携带 tag 等信息，实例运行前将自动拉取此镜像") }}
+                  {{ t("TXT_CODE_4a570d32") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.image"
-                :placeholder="t('必填，列如：openjdk:23-slim')"
+                :placeholder="t('TXT_CODE_d7638d7b')"
               />
             </a-form-item>
           </a-col>
@@ -510,15 +506,15 @@ defineExpose({
 
           <a-col :xs="24" :lg="16" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("容器工作目录挂载") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_9c247f6") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("实例工作目录中的所有文件将会挂载到容器内部的此目录中") }}
+                  {{ t("TXT_CODE_df3fdec") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.workingDir"
-                :placeholder="t('选填，不填写默认值：/workspace/')"
+                :placeholder="t('TXT_CODE_b23cc3e')"
               />
             </a-form-item>
           </a-col>
@@ -567,10 +563,10 @@ defineExpose({
 
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("环境变量") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_b916a8dc") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{ t("为容器传递环境变量") }}
+                  {{ t("TXT_CODE_33ce1c5c") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input-group compact>

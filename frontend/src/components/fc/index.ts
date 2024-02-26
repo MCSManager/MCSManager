@@ -101,17 +101,17 @@ export async function useDockerEnvEditDialog(data: DockerEnvItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      title: t("容器环境变量"),
+      title: t("TXT_CODE_90a9d317"),
       columns: [
         {
           align: "center",
           dataIndex: "label",
-          title: t("变量名")
+          title: t("TXT_CODE_a42984e")
         },
         {
           align: "center",
           dataIndex: "value",
-          title: t("变量值")
+          title: t("TXT_CODE_115e8a25")
         }
       ] as AntColumnsType[]
     }).mount<DockerEnvItem[]>(KvOptionsDialogVue)) || []

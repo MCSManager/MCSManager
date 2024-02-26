@@ -223,38 +223,38 @@ const createInstance = async () => {
             {{ t("TXT_CODE_818928ba") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.nickname" :placeholder="t('列如：我的第一个服务器')" />
+        <a-input v-model:value="formData.nickname" :placeholder="t('TXT_CODE_475c5890')" />
       </a-form-item>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
         <a-typography-title :level="5" class="require-field">
-          {{ t("请填写镜像名称") }}
+          {{ t("TXT_CODE_de3ced4b") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             <span>
-              {{ t("实例将在运行时拉取镜像，并且使用镜像创建容器，此镜像名必须存在云端或本地") }}
+              {{ t("TXT_CODE_c7a43089") }}
             </span>
             <br />
-            <span>{{ t("务必确保你的这台机器已成功安装 Docker！") }}</span>
+            <span>{{ t("TXT_CODE_8fd7a9a1") }}</span>
           </a-typography-text>
         </a-typography-paragraph>
         <a-input
           v-model:value="formData.docker.image"
-          :placeholder="t('镜像完整名，列如：openjdk:17')"
+          :placeholder="t('TXT_CODE_95c5e900')"
         />
       </a-form-item>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
         <a-typography-title :level="5">
-          {{ t("挂载工作目录") }}
+          {{ t("TXT_CODE_fdec1b6f") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("文件管理功能下的目录将挂载到容器内的此目录") }}
+            {{ t("TXT_CODE_3c37583b") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('默认：/workspace/')" />
+        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('TXT_CODE_2082f653')" />
       </a-form-item>
 
       <a-form-item name="startCommand">
@@ -269,7 +269,7 @@ const createInstance = async () => {
             <span v-else-if="createMethod === QUICKSTART_METHOD.DOCKER">
               {{
                 t(
-                  "可以填写启动命令，如 java -jar demo.jar，不填写启动命令将以镜像内部定义的命令为准"
+                  "TXT_CODE_26495d02"
                 )
               }}
             </span>
@@ -304,7 +304,7 @@ const createInstance = async () => {
             {{ t("TXT_CODE_877eea45") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.cwd" :placeholder="t('默认自动分配')" />
+        <a-input v-model:value="formData.cwd" :placeholder="t('TXT_CODE_a85091a4')" />
       </a-form-item>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
@@ -365,7 +365,7 @@ const createInstance = async () => {
         <a-typography-paragraph class="mt-10">
           <a-typography-text>
             <span>{{
-              t("完善所有必填项后即可创建，更多其他设置请创建完成后，在应用实例设置中可以编辑！")
+              t("TXT_CODE_7da6e84")
             }}</span>
           </a-typography-text>
         </a-typography-paragraph>

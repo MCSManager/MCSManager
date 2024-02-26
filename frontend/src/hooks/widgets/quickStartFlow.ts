@@ -137,7 +137,7 @@ export function useQuickStartFlow() {
         }
       },
       {
-        title: t("使用 Docker 镜像快速建立"),
+        title: t("TXT_CODE_acd4abda"),
         key: QUICKSTART_METHOD.DOCKER,
         icon: CodeOutlined
       },

@@ -369,7 +369,7 @@ onMounted(async () => {
           <a-input
             ref="inputRef"
             v-model:value="commandInputValue"
-            :placeholder="t('输入命令按回车发送，使用上下键选择历史命令')"
+            :placeholder="t('TXT_CODE_555e2c1b')"
             autofocus
             @press-enter="handleSendCommand"
             @keydown="handleHistorySelect"
