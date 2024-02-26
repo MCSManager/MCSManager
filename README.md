@@ -15,7 +15,7 @@
 [![Status](https://img.shields.io/badge/node-v14.17.6-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/#/zh-cn/) | [Discord](https://discord.gg/rXC7gDzK)
+[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/#/zh-cn/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
 [English](readme.md) | [简体中文](README_CN.md) 
 
@@ -25,7 +25,7 @@
 
 🌍 Want to know the Beta Version? Or have any ideas?
 
-Join the [Discord](https://discord.gg/rXC7gDzK) now!
+Join the [Discord](https://discord.gg/BNpYMVX7Cd) now!
 
 <br />
 
