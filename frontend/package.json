@@ -34,7 +34,7 @@
     "marked": "^7.0.3",
     "monaco-editor": "^0.44.0",
     "pinia": "^2.1.4",
-    "sanitize-html": "^2.11.0",
+    "sanitize-html": "^2.12.1",
     "socket.io-client": "^4.7.2",
     "uuid": "^9.0.0",
     "vue": "^3.3.4",
