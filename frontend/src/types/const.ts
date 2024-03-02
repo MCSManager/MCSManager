@@ -14,14 +14,6 @@ export const TERMINAL_CODE = [
   "UTF-16"
 ];
 
-export const INSTANCE_STATUS: Record<string, string> = {
-  "-1": t("TXT_CODE_342a04a9"),
-  "0": t("TXT_CODE_4ef6b040"),
-  "1": t("TXT_CODE_a409b8a9"),
-  "2": t("TXT_CODE_175b570d"),
-  "3": t("TXT_CODE_bdb620b9")
-};
-
 export enum INSTANCE_STATUS_CODE {
   UNKNOWN = -1,
   STOPPED = 0,
@@ -29,6 +21,14 @@ export enum INSTANCE_STATUS_CODE {
   STARTING = 2,
   RUNNING = 3
 }
+
+export const INSTANCE_STATUS: Record<INSTANCE_STATUS_CODE, string> = {
+  [INSTANCE_STATUS_CODE.UNKNOWN]: t("TXT_CODE_342a04a9"),
+  [INSTANCE_STATUS_CODE.STOPPED]: t("TXT_CODE_4ef6b040"),
+  [INSTANCE_STATUS_CODE.STOPPING]: t("TXT_CODE_a409b8a9"),
+  [INSTANCE_STATUS_CODE.STARTING]: t("TXT_CODE_175b570d"),
+  [INSTANCE_STATUS_CODE.RUNNING]: t("TXT_CODE_bdb620b9")
+};
 
 export const defaultDockerFile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
 

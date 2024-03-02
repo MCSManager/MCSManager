@@ -216,10 +216,8 @@ export function useTerminal() {
     socket?.removeAllListeners();
   });
 
-  const isStopped = computed(() =>
-    [INSTANCE_STATUS_CODE.STOPPED, INSTANCE_STATUS_CODE.UNKNOWN].includes(state?.value?.status ?? 0)
-  );
-  const isRunning = computed(() => !isStopped.value);
+  const isStopped = computed(() => state?.value?.status === INSTANCE_STATUS_CODE.STOPPED);
+  const isRunning = computed(() => state?.value?.status === INSTANCE_STATUS_CODE.RUNNING);
 
   return {
     events,
