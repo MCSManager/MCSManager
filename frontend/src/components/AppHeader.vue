@@ -247,8 +247,7 @@ const appMenus = computed(() => {
   ];
 });
 
-const screen = useScreen();
-const isPhone = computed(() => screen.isPhone.value);
+const { isPhone } = useScreen();
 
 const openPhoneMenu = (b = false) => {
   containerState.showPhoneMenu = b;
