@@ -55,8 +55,11 @@ const {
   sendCommand,
 
   state: instanceInfo,
-  isRunning,
+  // isUnknown,
   isStopped,
+  // isStopping,
+  // isStarting,
+  isRunning,
   events,
   isConnect,
   socketAddress
@@ -71,11 +74,7 @@ const innerTerminalType = viewType === "inner";
 const terminalDomId = `terminal-window-${getRandomId()}`;
 
 const socketError = ref<Error>();
-
-const instanceStatusText = computed(
-  () => String(INSTANCE_STATUS[String(instanceInfo?.value?.status)]) || t("TXT_CODE_c8333afa")
-);
-
+const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
 let term: Terminal | null = null;
 
 let inputRef = ref<HTMLElement | null>(null);
@@ -297,16 +296,13 @@ onMounted(async () => {
           <div class="align-center">
             <a-typography-title class="mb-0 mr-12" :level="4">
               <CloudServerOutlined />
-              <span class="ml-8">
-                {{ getInstanceName }}
-              </span>
+              <span class="ml-8"> {{ getInstanceName }} </span>
             </a-typography-title>
             <a-typography-paragraph class="mb-0">
               <span v-if="isRunning" class="color-success">
                 <CheckCircleOutlined />
                 {{ instanceStatusText }}
               </span>
-              <span v-else-if="isStopped"></span>
               <span v-else>
                 <ExclamationCircleOutlined />
                 {{ instanceStatusText }}
