@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, computed, ref } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
@@ -15,8 +16,8 @@ import {
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
-import { onMounted, computed, ref } from "vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { useScreen } from "@/hooks/useScreen";
 import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
 import {
@@ -40,6 +41,8 @@ const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const { isPhone } = useScreen();
+
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
   focusHistoryList,
@@ -55,10 +58,7 @@ const {
   sendCommand,
 
   state: instanceInfo,
-  // isUnknown,
   isStopped,
-  // isStopping,
-  // isStarting,
   isRunning,
   events,
   isConnect,
@@ -155,7 +155,8 @@ const instanceOperations = computed(() =>
         } catch (error) {
           reportError(error);
         }
-      }
+      },
+      condition: () => !isStopped.value
     },
     {
       title: t("TXT_CODE_40ca4f2"),
@@ -311,7 +312,21 @@ onMounted(async () => {
           </div>
         </template>
         <template #right>
-          <a-dropdown>
+          <div v-if="!isPhone">
+            <a-popconfirm
+              v-for="item in [...quickOperations, ...instanceOperations]"
+              :key="item.title"
+              :title="t('你确定要执行此操作吗？')"
+              @confirm="item.click"
+            >
+              <a-button class="mr-8">
+                <component :is="item.icon" />
+                {{ item.title }}
+              </a-button>
+            </a-popconfirm>
+          </div>
+
+          <a-dropdown v-else>
             <template #overlay>
               <a-menu>
                 <a-menu-item
