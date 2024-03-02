@@ -299,7 +299,7 @@ onMounted(async () => {
               <CloudServerOutlined />
               <span class="ml-8"> {{ getInstanceName }} </span>
             </a-typography-title>
-            <a-typography-paragraph class="mb-0">
+            <a-typography-paragraph v-if="!isPhone" class="mb-0">
               <span v-if="isRunning" class="color-success">
                 <CheckCircleOutlined />
                 {{ instanceStatusText }}
