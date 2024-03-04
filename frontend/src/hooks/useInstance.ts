@@ -2,7 +2,7 @@ import type { InstanceDetail, MapData } from "@/types";
 import { t } from "@/lang/i18n";
 import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { getInstanceInfo } from "@/services/apis/instance";
-import { INSTANCE_STATUS } from "@/types/const";
+import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 
 export const TYPE_UNIVERSAL = "universal";
 export const TYPE_WEB_SHELL = "universal/web_shell";
@@ -84,15 +84,19 @@ export function useInstanceInfo(params: Params) {
   let finalState = state;
   if (instanceInfo) finalState = instanceInfo;
 
-  const isRunning = computed(() => finalState?.value?.status === 3);
-  const isStopped = computed(() => finalState?.value?.status === 0);
+  const isUnknown = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.UNKNOWN);
+  const isStopped = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STOPPED);
+  const isStopping = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STOPPING);
+  const isStarting = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STARTING);
+  const isRunning = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.RUNNING);
+
   const instanceTypeText = computed(() => {
     return (
       INSTANCE_TYPE_TRANSLATION[String(finalState?.value?.config.type)] || t("TXT_CODE_da7a0328")
     );
   });
   const statusText = computed(
-    () => String(INSTANCE_STATUS[String(finalState?.value?.status)]) || t("TXT_CODE_c8333afa")
+    () => String(INSTANCE_STATUS[finalState.value?.status ?? -1]) || t("TXT_CODE_c8333afa")
   );
 
   onMounted(async () => {
@@ -128,8 +132,11 @@ export function useInstanceInfo(params: Params) {
     instanceInfo: state,
     execute,
     statusText,
-    isRunning,
+    isUnknown,
     isStopped,
+    isStopping,
+    isStarting,
+    isRunning,
     instanceTypeText
   };
 }

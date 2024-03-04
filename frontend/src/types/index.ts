@@ -7,6 +7,7 @@ import type {
   IMapData,
   IGlobalInstanceDockerConfig
 } from "../../../common/global";
+import type { INSTANCE_STATUS_CODE } from "./const";
 
 export type JsonData = IJsonData;
 export type MapData<T> = IMapData<T>;
@@ -29,7 +30,7 @@ export enum NEW_CARD_TYPE {
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
-  status: number;
+  status: INSTANCE_STATUS_CODE;
   info: {
     currentPlayers: number;
     fileLock: number;
