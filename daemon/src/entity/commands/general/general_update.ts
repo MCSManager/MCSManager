@@ -35,6 +35,11 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       logger.info($t("TXT_CODE_general_update.updateCmd", { instanceUuid: instance.instanceUuid }));
       logger.info(updateCommand);
 
+      instance.println(
+        $t("TXT_CODE_general_update.update"),
+        $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: instance.instanceUuid })
+      );
+
       // command parsing
       const commandList = commandStringToArray(updateCommand);
       const commandExeFile = commandList[0];

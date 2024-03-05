@@ -1820,5 +1820,9 @@
   "TXT_CODE_2082f653": "Default: /workspace/",
   "TXT_CODE_26495d02": "You can enter a startup command, such as java -jar demo.jar. If no startup command is entered, the command defined inside the image will be used.",
   "TXT_CODE_a85091a4": "Automatically assigned by default",
-  "TXT_CODE_7da6e84": "Complete all required fields to create. For more options, please go to instance settings after creation."
+  "TXT_CODE_7da6e84": "Complete all required fields to create. For more options, please go to instance settings after creation.",
+  "TXT_CODE_276756b2": "Are you sure?",
+  "TXT_CODE_51a1fffb": "Filter",
+  "TXT_CODE_18b94497": "System Requirements",
+  "TXT_CODE_683e3033": "Hardware Requirements"
 }

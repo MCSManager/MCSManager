@@ -319,7 +319,7 @@ onMounted(async () => {
             <a-popconfirm
               v-for="item in [...quickOperations, ...instanceOperations]"
               :key="item.title"
-              :title="t('你确定要执行此操作吗？')"
+              :title="t('TXT_CODE_276756b2')"
               @confirm="item.click"
             >
               <a-button class="ml-8" :danger="item.type === 'danger'">

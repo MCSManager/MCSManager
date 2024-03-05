@@ -166,12 +166,6 @@ onMounted(async () => {
     </a-row>
     <a-row v-else :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24" :md="24">
-        <!-- <CardPanel style="height: 100%">
-          <template #title>{{ t("筛选") }}</template>
-          <template #body>
-            
-          </template>
-        </CardPanel> -->
         <a-form layout="horizontal" :model="searchForm">
           <a-form-item class="mb-0">
             <a-radio-group v-model:value="searchForm.language">
@@ -199,9 +193,9 @@ onMounted(async () => {
                 </a-typography-paragraph>
                 <a-typography-paragraph>
                   <a-typography-text class="color-info">
-                    <div>{{ t("环境要求") }}: {{ item.runtime }}</div>
-                    <div>{{ t("硬件要求") }}: {{ item.hardware }}</div>
-                    <div>{{ t("大小") }}: {{ item.size }}</div>
+                    <div>{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
+                    <div>{{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}</div>
+                    <div>{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
                   </a-typography-text>
                   <br />
                   <a-typography-text class="color-info"> </a-typography-text>
