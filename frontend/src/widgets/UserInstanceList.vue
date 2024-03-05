@@ -25,7 +25,7 @@ const columns = [
     title: t("TXT_CODE_5476e012"),
     dataIndex: "status",
     key: "status",
-    customRender: (e: { text: string }) => {
+    customRender: (e: { text: INSTANCE_STATUS_CODE }) => {
       return INSTANCE_STATUS[e.text] || e.text;
     }
   },
