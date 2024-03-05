@@ -36,13 +36,14 @@ import connectErrorImage from "@/assets/daemon_connection_error.png";
 import { Terminal } from "xterm";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { reportError } from "@/tools/validator";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { isPhone } = useScreen();
-
+const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const {
   focusHistoryList,
@@ -74,7 +75,7 @@ const terminalDomId = `terminal-window-${getRandomId()}`;
 
 const socketError = ref<Error>();
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
-let term: Terminal | null = null;
+let term: Terminal | undefined;
 
 let inputRef = ref<HTMLElement | null>(null);
 const quickOperations = computed(() =>
@@ -197,6 +198,7 @@ const handleClickHistoryItem = (item: string) => {
 };
 
 const initTerminal = async () => {
+  if (containerState.isDesignMode) return;
   const dom = document.getElementById(terminalDomId);
   if (dom) {
     const term = initTerminalWindow(dom);
@@ -208,7 +210,7 @@ const initTerminal = async () => {
     } catch (error) {}
     return term;
   }
-  throw new Error("init terminal failed");
+  throw new Error(t("终端初始化失败，请刷新网页重试！"));
 };
 
 const getInstanceName = computed(() => {
@@ -251,7 +253,6 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
     throw error;
-    // throw new Error(t("TXT_CODE_9885543f"));
   }
 });
 </script>
@@ -366,7 +367,12 @@ onMounted(async () => {
         </div>
         <div class="terminal-wrapper global-card-container-shadow position-relative">
           <div class="terminal-container">
-            <div :id="terminalDomId" :style="{ height: card.height }"></div>
+            <div
+              v-if="!containerState.isDesignMode"
+              :id="terminalDomId"
+              :style="{ height: card.height }"
+            ></div>
+            <div v-else :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
@@ -385,6 +391,7 @@ onMounted(async () => {
             v-model:value="commandInputValue"
             :placeholder="t('TXT_CODE_555e2c1b')"
             autofocus
+            :disabled="containerState.isDesignMode"
             @press-enter="handleSendCommand"
             @keydown="handleHistorySelect"
           >
@@ -401,9 +408,7 @@ onMounted(async () => {
   <CardPanel v-else class="containerWrapper" style="height: 100%">
     <template #title>
       <CloudServerOutlined />
-      <span class="ml-8">
-        {{ getInstanceName }}
-      </span>
+      <span class="ml-8"> {{ getInstanceName }} </span>
     </template>
     <template #operator>
       <span
@@ -433,13 +438,19 @@ onMounted(async () => {
       <div class="console-wrapper">
         <div class="terminal-wrapper">
           <div class="terminal-container">
-            <div :id="terminalDomId" :style="{ height: card.height }"></div>
+            <div
+              v-if="!containerState.isDesignMode"
+              :id="terminalDomId"
+              :style="{ height: card.height }"
+            ></div>
+            <div v-else :style="{ height: card.height }"></div>
           </div>
         </div>
         <div class="command-input">
           <a-input
             v-model:value="commandInputValue"
             :placeholder="t('TXT_CODE_b8108d4d')"
+            :disabled="containerState.isDesignMode"
             @press-enter="handleSendCommand"
           >
             <template #prefix>
