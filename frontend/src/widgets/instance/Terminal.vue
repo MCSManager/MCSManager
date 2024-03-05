@@ -13,7 +13,7 @@ import {
   RedoOutlined,
   DeleteOutlined
 } from "@ant-design/icons-vue";
-import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
@@ -56,7 +56,6 @@ const {
   execute,
   initTerminalWindow,
   sendCommand,
-
   state: instanceInfo,
   isStopped,
   isRunning,
@@ -309,7 +308,7 @@ onMounted(async () => {
                 {{ instanceStatusText }}
               </span>
               <span v-else>
-                <ExclamationCircleOutlined />
+                <InfoCircleOutlined />
                 {{ instanceStatusText }}
               </span>
             </a-typography-paragraph>
@@ -510,7 +509,6 @@ onMounted(async () => {
         padding: 5px;
         margin-left: 5px;
         border-radius: 6px;
-        // background-color: #111111;
         font-size: 20px;
         &:hover {
           background-color: #3e3e3e;
@@ -527,12 +525,11 @@ onMounted(async () => {
     background-color: #1e1e1e;
     padding: 8px;
     border-radius: 6px;
-    overflow-x: auto !important;
-    // overflow-y: auto !important;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     .terminal-container {
-      min-width: 1200px;
+      // min-width: 1200px;
       height: 100%;
     }
 
@@ -550,7 +547,6 @@ onMounted(async () => {
       position: absolute;
       top: -35px;
       left: 0;
-      // background-color: pink;
 
       li {
         list-style: none;
