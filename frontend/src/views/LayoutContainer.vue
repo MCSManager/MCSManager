@@ -54,7 +54,7 @@ const showCardOperator = (card: ILayoutCard) => {
         :span="24"
         :md="24"
         :lg="card.width * 2"
-        class="layout-card-col transition-all-6"
+        class="layout-card-col"
         :class="{ 'is-order-mode': containerState.isDesignMode }"
         :data-card-type="card.type"
         :style="{ minHeight: card.height }"
@@ -151,7 +151,7 @@ const showCardOperator = (card: ILayoutCard) => {
 
 @keyframes scaleAnimation {
   0% {
-    opacity: 0.1;
+    opacity: 0.02;
     // transform: scale(0.98);
   }
 

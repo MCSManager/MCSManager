@@ -22,6 +22,7 @@ import {
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 import { useCmdAssistantDialog } from "@/components/fc";
+import { reportError } from "@/tools/validator";
 
 // eslint-disable-next-line no-unused-vars
 enum UNZIP {
@@ -114,7 +115,8 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uFile.value = file;
 
   if (isImportMode) {
-    if (file.type !== "application/x-zip-compressed") return reportError(t("TXT_CODE_808e5ad9"));
+    const extName = file.name.split(".").pop()?.toLowerCase() || "";
+    if (!["zip", "jar"].includes(extName)) return reportError(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
   } else {
     finalConfirm();
@@ -239,10 +241,7 @@ const createInstance = async () => {
             <span>{{ t("TXT_CODE_8fd7a9a1") }}</span>
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input
-          v-model:value="formData.docker.image"
-          :placeholder="t('TXT_CODE_95c5e900')"
-        />
+        <a-input v-model:value="formData.docker.image" :placeholder="t('TXT_CODE_95c5e900')" />
       </a-form-item>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
@@ -267,11 +266,7 @@ const createInstance = async () => {
               {{ t("TXT_CODE_17544b7b") }}
             </span>
             <span v-else-if="createMethod === QUICKSTART_METHOD.DOCKER">
-              {{
-                t(
-                  "TXT_CODE_26495d02"
-                )
-              }}
+              {{ t("TXT_CODE_26495d02") }}
             </span>
             <span v-else>
               {{ t("TXT_CODE_8c0db3f4") }}
@@ -317,6 +312,7 @@ const createInstance = async () => {
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
+          accept=".jar"
           :before-upload="beforeUpload"
           :max-count="1"
           :change="selectedFile"
@@ -345,6 +341,7 @@ const createInstance = async () => {
           </a-typography-text>
         </a-typography-paragraph>
         <a-upload
+          accept=".zip"
           :before-upload="beforeUpload"
           :max-count="1"
           :change="selectedFile"
@@ -364,9 +361,7 @@ const createInstance = async () => {
       <a-form-item v-else>
         <a-typography-paragraph class="mt-10">
           <a-typography-text>
-            <span>{{
-              t("TXT_CODE_7da6e84")
-            }}</span>
+            <span>{{ t("TXT_CODE_7da6e84") }}</span>
           </a-typography-text>
         </a-typography-paragraph>
         <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">

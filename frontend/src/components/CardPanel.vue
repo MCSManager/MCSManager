@@ -54,7 +54,6 @@ const { containerState } = useLayoutContainerStore();
   background-color: var(--background-color-white);
   display: flex;
   flex-direction: column;
-  transition: all 0.4s;
   position: relative;
 
   .card-panel-title {

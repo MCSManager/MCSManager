@@ -430,55 +430,57 @@ onMounted(async () => {
         <Loading></Loading>
       </template>
       <template v-else-if="instancesMoreInfo.length > 0">
-        <a-col
-          v-for="item in instancesMoreInfo"
-          :key="item.instanceUuid"
-          :span="24"
-          :xl="6"
-          :lg="8"
-          :sm="12"
-        >
-          <CardPanel
-            class="instance-card"
-            :class="{ selected: multipleMode && findInstance(item) }"
-            style="height: 100%"
-            @click="handleSelectInstance(item)"
+        <fade-up-animation>
+          <a-col
+            v-for="item in instancesMoreInfo"
+            :key="item.instanceUuid"
+            :span="24"
+            :xl="6"
+            :lg="8"
+            :sm="12"
           >
-            <template #title>
-              {{ item.config.nickname }}
-            </template>
-            <template #body>
-              <a-typography-paragraph>
-                <div>
-                  {{ t("TXT_CODE_e70a8e24") }}
-                  <span v-if="item.moreInfo?.isRunning" class="color-success">
-                    <CheckCircleOutlined />
-                    {{ item.moreInfo?.statusText }}
-                  </span>
-                  <span v-else-if="item.moreInfo?.isStopped" class="color-info">
-                    {{ item.moreInfo?.statusText }}
-                  </span>
-                  <span v-else>
-                    <ExclamationCircleOutlined />
-                    {{ item.moreInfo?.statusText }}
-                  </span>
-                </div>
-                <div>
-                  {{ t("TXT_CODE_68831be6") }}
-                  {{ item.moreInfo?.instanceTypeText }}
-                </div>
-                <div>
-                  {{ t("TXT_CODE_d31a684c") }}
-                  {{ parseTimestamp(item.config.lastDatetime) }}
-                </div>
-                <div>
-                  {{ t("TXT_CODE_ae747cc0") }}
-                  {{ parseTimestamp(item.config.endTime) }}
-                </div>
-              </a-typography-paragraph>
-            </template>
-          </CardPanel>
-        </a-col>
+            <CardPanel
+              class="instance-card"
+              :class="{ selected: multipleMode && findInstance(item) }"
+              style="height: 100%"
+              @click="handleSelectInstance(item)"
+            >
+              <template #title>
+                {{ item.config.nickname }}
+              </template>
+              <template #body>
+                <a-typography-paragraph>
+                  <div>
+                    {{ t("TXT_CODE_e70a8e24") }}
+                    <span v-if="item.moreInfo?.isRunning" class="color-success">
+                      <CheckCircleOutlined />
+                      {{ item.moreInfo?.statusText }}
+                    </span>
+                    <span v-else-if="item.moreInfo?.isStopped" class="color-info">
+                      {{ item.moreInfo?.statusText }}
+                    </span>
+                    <span v-else>
+                      <ExclamationCircleOutlined />
+                      {{ item.moreInfo?.statusText }}
+                    </span>
+                  </div>
+                  <div>
+                    {{ t("TXT_CODE_68831be6") }}
+                    {{ item.moreInfo?.instanceTypeText }}
+                  </div>
+                  <div>
+                    {{ t("TXT_CODE_d31a684c") }}
+                    {{ parseTimestamp(item.config.lastDatetime) }}
+                  </div>
+                  <div>
+                    {{ t("TXT_CODE_ae747cc0") }}
+                    {{ parseTimestamp(item.config.endTime) }}
+                  </div>
+                </a-typography-paragraph>
+              </template>
+            </CardPanel>
+          </a-col>
+        </fade-up-animation>
       </template>
       <div
         v-else-if="instancesMoreInfo.length === 0"

@@ -101,9 +101,11 @@ const handleOpenDetailDialog = async () => {
           {{ t("TXT_CODE_a65c65c2") }}
         </a-typography-text>
       </a-col>
-      <a-col v-for="item in remotes" :key="item.uuid" :span="24" :lg="12">
-        <NodeItem :item="item"></NodeItem>
-      </a-col>
+      <fade-up-animation :delay="3000">
+        <a-col v-for="item in remotes" :key="item.uuid" :span="24" :lg="12">
+          <NodeItem :item="item"></NodeItem>
+        </a-col>
+      </fade-up-animation>
     </a-row>
   </div>
   <NodeDetailDialog ref="nodeDetailDialog"></NodeDetailDialog>

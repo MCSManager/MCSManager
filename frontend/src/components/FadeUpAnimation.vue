@@ -19,7 +19,13 @@ const enter = (el: any, done: () => void) => {
 </script>
 
 <template>
-  <transition-group name="more" :css="false" @before-enter="beforeEnter" @enter="enter">
+  <transition-group
+    :appear="true"
+    name="more"
+    :css="false"
+    @before-enter="beforeEnter"
+    @enter="enter"
+  >
     <slot></slot>
   </transition-group>
 </template>

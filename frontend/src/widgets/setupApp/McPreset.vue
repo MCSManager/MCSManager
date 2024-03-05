@@ -30,7 +30,11 @@ const {
 } = quickInstallListAddr();
 
 const appList = computed(() => {
-  let list = presetList.value?.packages || [];
+  // backward compatibility
+  if (!presetList.value?.packages || !presetList.value?.languages) {
+    return [];
+  }
+  let list = presetList.value?.packages;
   if (searchForm.language) list = list.filter((item) => item.language === searchForm.language);
   return list;
 });
@@ -39,7 +43,6 @@ const appLangList = computed(() => presetList.value?.languages || []);
 const init = async () => {
   try {
     await getQuickInstallListAddr();
-
     if (!appList.value || appList.value.length === 0) {
       dialog.title = t("TXT_CODE_c534ca49");
       dialog.show = true;
@@ -176,61 +179,70 @@ onMounted(async () => {
           </a-form-item>
         </a-form>
       </a-col>
-      <a-col v-for="(item, i) in appList" :key="i" :span="24" :xl="6" :lg="8" :sm="12">
-        <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
-          <CardPanel style="flex-grow: 1">
-            <template #title>
-              <div class="ellipsis-text" style="max-width: 280px">
-                {{ item.title }}
-              </div>
-            </template>
-            <template #body>
-              <div style="min-height: 220px; position: relative">
-                <a-typography-paragraph
-                  :ellipsis="{ rows: 3, expandable: true }"
-                  :content="item.description"
-                >
-                </a-typography-paragraph>
-                <a-typography-paragraph>
-                  <a-typography-text class="color-info">
-                    <div>{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
-                    <div>{{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}</div>
-                    <div>{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
-                  </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                </a-typography-paragraph>
-              </div>
+      <fade-up-animation>
+        <a-col
+          v-for="item in appList"
+          :key="item.targetLink + item.title"
+          :span="24"
+          :xl="6"
+          :lg="8"
+          :sm="12"
+        >
+          <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
+            <CardPanel style="flex-grow: 1">
+              <template #title>
+                <div class="ellipsis-text" style="max-width: 280px">
+                  {{ item.title }}
+                </div>
+              </template>
+              <template #body>
+                <div style="min-height: 220px; position: relative">
+                  <a-typography-paragraph
+                    :ellipsis="{ rows: 3, expandable: true }"
+                    :content="item.description"
+                  >
+                  </a-typography-paragraph>
+                  <a-typography-paragraph>
+                    <a-typography-text class="color-info">
+                      <div>{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
+                      <div>{{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}</div>
+                      <div>{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
+                    </a-typography-text>
+                    <br />
+                    <a-typography-text class="color-info"> </a-typography-text>
+                    <br />
+                    <a-typography-text class="color-info"> </a-typography-text>
+                  </a-typography-paragraph>
+                </div>
 
-              <div
-                style="
-                  position: absolute;
-                  bottom: 0;
-                  left: 0;
-                  right: 0;
-                  display: flex;
-                  justify-content: center;
-                "
-              >
-                <a-button
-                  block
-                  type="primary"
-                  ghost
-                  style="max-width: 180px"
-                  @click="handleSelectTemplate(item)"
+                <div
+                  style="
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    display: flex;
+                    justify-content: center;
+                  "
                 >
-                  <template #icon>
-                    <DownloadOutlined />
-                  </template>
-                  <span>{{ t("TXT_CODE_1704ea49") }}</span>
-                </a-button>
-              </div>
-            </template>
-          </CardPanel>
-        </div>
-      </a-col>
+                  <a-button
+                    block
+                    type="primary"
+                    ghost
+                    style="max-width: 180px"
+                    @click="handleSelectTemplate(item)"
+                  >
+                    <template #icon>
+                      <DownloadOutlined />
+                    </template>
+                    <span>{{ t("TXT_CODE_1704ea49") }}</span>
+                  </a-button>
+                </div>
+              </template>
+            </CardPanel>
+          </div>
+        </a-col>
+      </fade-up-animation>
     </a-row>
 
     <a-modal
