@@ -218,6 +218,12 @@
   overflow-x: hidden;
 }
 
+.ellipsis-text {
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;

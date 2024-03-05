@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from "vue";
-import { t } from "@/lang/i18n";
+import { ref, onMounted, reactive, computed } from "vue";
+import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types/index";
 import { DownloadOutlined } from "@ant-design/icons-vue";
 import { quickInstallListAddr, createAsyncTask, queryAsyncTask } from "@/services/apis/instance";
@@ -24,10 +24,17 @@ const dialog = reactive({
 });
 
 const {
-  state: appList,
+  state: presetList,
   execute: getQuickInstallListAddr,
   isLoading: appListLoading
 } = quickInstallListAddr();
+
+const appList = computed(() => {
+  let list = presetList.value?.packages || [];
+  if (searchForm.language) list = list.filter((item) => item.language === searchForm.language);
+  return list;
+});
+const appLangList = computed(() => presetList.value?.languages || []);
 
 const init = async () => {
   try {
@@ -47,6 +54,9 @@ const installView = ref(false);
 const intervalTask = ref<NodeJS.Timer>();
 const percentage = ref(0);
 const isInstalled = ref(false);
+const searchForm = reactive({
+  language: getCurrentLang()
+});
 
 const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
 
@@ -156,56 +166,73 @@ onMounted(async () => {
     </a-row>
     <a-row v-else :gutter="[24, 24]" style="height: 100%">
       <a-col :span="24" :md="24">
-        <CardPanel style="height: 100%">
-          <template #title>{{ t("TXT_CODE_ef0ce2e") }}</template>
+        <!-- <CardPanel style="height: 100%">
+          <template #title>{{ t("筛选") }}</template>
           <template #body>
-            <a-typography-paragraph>
-              <a-typography-text>
-                {{ t("TXT_CODE_eec3c1d7")
-                }}<a href="https://aka.ms/MinecraftEULA" target="_blank" rel="noopener noreferrer">
-                  {{ t("TXT_CODE_1e58bb5e") }}
-                </a>
-              </a-typography-text>
-              <br />
-              <a-typography-text class="color-info">
-                {{ t("TXT_CODE_7153951e") }}
-              </a-typography-text>
-            </a-typography-paragraph>
+            
           </template>
-        </CardPanel>
+        </CardPanel> -->
+        <a-form layout="horizontal" :model="searchForm">
+          <a-form-item class="mb-0">
+            <a-radio-group v-model:value="searchForm.language">
+              <a-radio-button v-for="item in appLangList" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </a-radio-button>
+            </a-radio-group>
+          </a-form-item>
+        </a-form>
       </a-col>
       <a-col v-for="(item, i) in appList" :key="i" :span="24" :xl="6" :lg="8" :sm="12">
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
           <CardPanel style="flex-grow: 1">
-            <template #title>{{ item.mc }}</template>
+            <template #title>
+              <div class="ellipsis-text" style="max-width: 280px">
+                {{ item.title }}
+              </div>
+            </template>
             <template #body>
-              <div style="height: 13em">
+              <div style="min-height: 220px; position: relative">
                 <a-typography-paragraph
-                  :ellipsis="{ rows: 3, expandable: true, symbol: t('TXT_CODE_f4c9715b') }"
-                  :content="item.info"
+                  :ellipsis="{ rows: 3, expandable: true }"
+                  :content="item.description"
                 >
                 </a-typography-paragraph>
                 <a-typography-paragraph>
                   <a-typography-text class="color-info">
-                    {{ t("TXT_CODE_7b92d98d") }}: {{ item.java }}
+                    <div>{{ t("环境要求") }}: {{ item.runtime }}</div>
+                    <div>{{ t("硬件要求") }}: {{ item.hardware }}</div>
+                    <div>{{ t("大小") }}: {{ item.size }}</div>
                   </a-typography-text>
                   <br />
-                  <a-typography-text class="color-info">
-                    {{ t("TXT_CODE_88c990a4") }}: {{ item.size }} MB
-                  </a-typography-text>
+                  <a-typography-text class="color-info"> </a-typography-text>
                   <br />
-                  <a-typography-text class="color-info">
-                    {{ item.remark }}
-                  </a-typography-text>
+                  <a-typography-text class="color-info"> </a-typography-text>
                 </a-typography-paragraph>
               </div>
 
-              <a-button block @click="handleSelectTemplate(item)">
-                <template #icon>
-                  <DownloadOutlined />
-                </template>
-                {{ t("TXT_CODE_1704ea49") }}
-              </a-button>
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  display: flex;
+                  justify-content: center;
+                "
+              >
+                <a-button
+                  block
+                  type="primary"
+                  ghost
+                  style="max-width: 180px"
+                  @click="handleSelectTemplate(item)"
+                >
+                  <template #icon>
+                    <DownloadOutlined />
+                  </template>
+                  <span>{{ t("TXT_CODE_1704ea49") }}</span>
+                </a-button>
+              </div>
             </template>
           </CardPanel>
         </div>

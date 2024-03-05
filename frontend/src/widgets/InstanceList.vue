@@ -430,7 +430,14 @@ onMounted(async () => {
         <Loading></Loading>
       </template>
       <template v-else-if="instancesMoreInfo.length > 0">
-        <a-col v-for="item in instancesMoreInfo" :key="item.instanceUuid" :span="24" :md="6">
+        <a-col
+          v-for="item in instancesMoreInfo"
+          :key="item.instanceUuid"
+          :span="24"
+          :xl="6"
+          :lg="8"
+          :sm="12"
+        >
           <CardPanel
             class="instance-card"
             :class="{ selected: multipleMode && findInstance(item) }"

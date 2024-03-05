@@ -4,7 +4,8 @@ import type {
   NewInstanceForm,
   QuickStartTemplate,
   Schedule,
-  NewScheduleTask
+  NewScheduleTask,
+  LabelValueOption
 } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 
@@ -227,7 +228,13 @@ export const createInstance = useDefineApi<
   url: "/api/instance"
 });
 
-export const quickInstallListAddr = useDefineApi<any, QuickStartTemplate[]>({
+export const quickInstallListAddr = useDefineApi<
+  any,
+  {
+    languages: LabelValueOption[];
+    packages: QuickStartTemplate[];
+  }
+>({
   url: "/api/instance/quick_install_list",
   method: "GET"
 });

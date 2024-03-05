@@ -190,13 +190,20 @@ export interface NewInstanceForm {
 }
 
 export interface QuickStartTemplate {
-  info: string;
-  mc: string;
-  java: string;
-  size: number;
+  language: string;
+  description: string;
+  title: string;
+  runtime: string;
+  size: string;
+  hardware: string;
   remark: string;
-  author: string;
   targetLink: string;
+  author: string;
+}
+
+export interface LabelValueOption {
+  label: string;
+  value: string;
 }
 
 export interface MountComponent {

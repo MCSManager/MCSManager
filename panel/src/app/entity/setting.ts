@@ -30,7 +30,7 @@ export default class SystemConfig {
   // i18n
   language = "en_us";
 
-  // Quick installation address for the Chinese market
-  quickInstallAddr = "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/quick_install.json";
+  // Quick installation address
+  quickInstallAddr = "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/mcsmanager_packages.json";
   redisUrl = "";
 }
