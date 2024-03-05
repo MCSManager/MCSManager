@@ -78,12 +78,12 @@ const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.st
 let term: Terminal | null = null;
 
 let inputRef = ref<HTMLElement | null>(null);
-
 const quickOperations = computed(() =>
   arrayFilter([
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
+      type: "default",
       click: async () => {
         try {
           await openInstance().execute({
@@ -102,6 +102,7 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
+      type: "default",
       click: async () => {
         try {
           await stopInstance().execute({
@@ -127,6 +128,7 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
+      type: "default",
       click: async () => {
         try {
           await restartInstance().execute({
@@ -144,6 +146,7 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_7b67813a"),
       icon: CloseOutlined,
+      type: "danger",
       click: async () => {
         try {
           await killInstance().execute({
@@ -160,6 +163,7 @@ const instanceOperations = computed(() =>
     },
     {
       title: t("TXT_CODE_40ca4f2"),
+      type: "default",
       icon: CloudDownloadOutlined,
       click: async () => {
         try {
@@ -319,7 +323,7 @@ onMounted(async () => {
               :title="t('你确定要执行此操作吗？')"
               @confirm="item.click"
             >
-              <a-button class="mr-8">
+              <a-button class="ml-8" :danger="item.type === 'danger'">
                 <component :is="item.icon" />
                 {{ item.title }}
               </a-button>
