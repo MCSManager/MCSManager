@@ -108,7 +108,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     });
   };
 
-  const getFileList = async () => {
+  const getFileList = async (throwErr = false) => {
     const { execute } = getFileListApi();
     try {
       clearSelected();
@@ -125,6 +125,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       dataSource.value = res.value?.items || [];
       operationForm.value.total = res.value?.total || 0;
     } catch (error: any) {
+      if (throwErr) throw error;
       return reportError(error.message);
     }
   };
@@ -405,15 +406,20 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const rowClickTable = async (item: string, type: number) => {
     if (type === 1) return;
-
-    spinning.value = true;
-    breadcrumbs.push({
-      path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
-      name: item,
-      disabled: false
-    });
-    await getFileList();
-    spinning.value = false;
+    try {
+      spinning.value = true;
+      breadcrumbs.push({
+        path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
+        name: item,
+        disabled: false
+      });
+      await getFileList(true);
+    } catch (error: any) {
+      breadcrumbs.splice(breadcrumbs.length - 1, 1);
+      return reportError(error.message);
+    } finally {
+      spinning.value = false;
+    }
   };
 
   const downloadFile = async (fileName: string) => {

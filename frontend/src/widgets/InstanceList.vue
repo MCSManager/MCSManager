@@ -419,7 +419,7 @@ onMounted(async () => {
             <a-pagination
               v-model:current="operationForm.currentPage"
               v-model:pageSize="operationForm.pageSize"
-              :total="instances.maxPage * operationForm.pageSize"
+              :total="(instances?.maxPage || 0) * operationForm.pageSize"
               show-size-changer
               @change="initInstancesData()"
             />
