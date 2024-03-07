@@ -21,6 +21,7 @@
     "@codemirror/language": "^6.9.2",
     "@codemirror/legacy-modes": "^6.3.3",
     "@codemirror/stream-parser": "^0.19.9",
+    "@uiw/codemirror-theme-dracula": "^4.21.24",
     "@vueuse/core": "^10.3.0",
     "ant-design-vue": "^4.0.7",
     "axios": "^1.4.0",

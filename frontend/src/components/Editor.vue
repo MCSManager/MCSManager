@@ -15,6 +15,7 @@ import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
 import { useScreen } from "../hooks/useScreen";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { dracula, draculaInit } from "@uiw/codemirror-theme-dracula";
 
 const { isDarkTheme } = useAppConfigStore();
 
@@ -103,6 +104,7 @@ const initEditor = () => {
     extensions: [
       basicSetup,
       theme,
+      dracula,
       extLang ? extLang : javascript(),
       EditorView.updateListener.of(function (e) {
         const text = e.view.state.doc.toString();
