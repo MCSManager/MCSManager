@@ -1248,7 +1248,7 @@
   "TXT_CODE_4e2c7f64": "Hr",
   "TXT_CODE_a7e9ff0f": "Min",
   "TXT_CODE_acabc771": "Sec",
-  "TXT_CODE_9156fbc": "Execution count, leave blank for unlimited",
+  "TXT_CODE_9156fbc": "Execution count, Empty means unlimited times",
   "TXT_CODE_3554dac0": "Trigger Time",
   "TXT_CODE_38591f72": "Specific Time",
   "TXT_CODE_d9cfab1b": "Execution Count",

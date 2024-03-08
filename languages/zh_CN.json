@@ -1249,7 +1249,7 @@
   "TXT_CODE_4e2c7f64": "时",
   "TXT_CODE_a7e9ff0f": "分",
   "TXT_CODE_acabc771": "秒",
-  "TXT_CODE_9156fbc": "执行次数，留空无限",
+  "TXT_CODE_9156fbc": "执行次数，留空代表无限次",
   "TXT_CODE_3554dac0": "触发时间",
   "TXT_CODE_38591f72": "具体时间点",
   "TXT_CODE_d9cfab1b": "执行次数",

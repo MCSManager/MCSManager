@@ -135,6 +135,7 @@ defineExpose({
     :destroy-on-close="true"
     :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
+    width="660px"
   >
     <a-form-item>
       <a-typography-title :level="5">{{ t("TXT_CODE_b290a4b0") }}</a-typography-title>
@@ -148,8 +149,8 @@ defineExpose({
 
     <a-form-item>
       <a-typography-title :level="5">{{ t("TXT_CODE_fcd641db") }}</a-typography-title>
-      <a-row :gutter="20">
-        <a-col :xs="24" :md="12" :offset="0" :class="{ 'mb-10': isPhone }">
+      <a-row :gutter="[24, 24]">
+        <a-col :xs="24" :md="12" :offset="0">
           <a-select
             v-model:value="newTask.action"
             :placeholder="t('TXT_CODE_3bb646e4')"
@@ -180,32 +181,33 @@ defineExpose({
           {{ t("TXT_CODE_f17889f4") }}
         </a-typography-text>
       </a-typography-paragraph>
-      <a-row :gutter="20">
-        <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
+      <a-row :gutter="[24, 24]">
+        <a-col :xs="24" :md="6" :offset="0">
           <a-input
             v-model:value="newTask.cycle[2]"
             :placeholder="t('TXT_CODE_ba8ebc7')"
             :addon-after="t('TXT_CODE_4e2c7f64')"
           />
         </a-col>
-        <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
+        <a-col :xs="24" :md="6" :offset="0">
           <a-input
             v-model:value="newTask.cycle[1]"
             :placeholder="t('TXT_CODE_ba8ebc7')"
             :addon-after="t('TXT_CODE_a7e9ff0f')"
           />
         </a-col>
-        <a-col :xs="24" :md="6" :offset="0" :class="{ 'mb-10': isPhone }">
+        <a-col :xs="24" :md="6" :offset="0">
           <a-input
             v-model:value="newTask.cycle[0]"
             :placeholder="t('TXT_CODE_ba8ebc7')"
             :addon-after="t('TXT_CODE_acabc771')"
           />
         </a-col>
-        <a-col :xs="24" :md="6" :offset="0">
+        <a-col :xs="24" :md="12" :offset="0">
           <a-input v-model:value="newTask.count" :placeholder="t('TXT_CODE_9156fbc')" />
         </a-col>
       </a-row>
+      <a-row :gutter="[24, 24]"> </a-row>
     </a-form-item>
 
     <div v-if="newTask.type === ScheduleCreateType.CYCLE">

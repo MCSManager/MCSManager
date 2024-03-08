@@ -64,7 +64,7 @@ defineExpose({
     @ok="submit"
   >
     <a-form v-if="options" layout="vertical">
-      <a-row :gutter="20">
+      <a-row :gutter="[24, 24]">
         <a-col :xs="24" :md="12" :offset="0">
           <a-form-item>
             <a-typography-title :level="5">{{ t("TXT_CODE_ef650d57") }}</a-typography-title>
