@@ -127,9 +127,10 @@ routerApp.on("stream/write", async (ctx, data) => {
 // handle terminal resize
 routerApp.on("stream/resize", async (ctx, data) => {
   try {
+    console.debug("REV:", data);
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
-    if (instance.config.processType === "docker") await instance.execPreset("resize", data);
+    if (instance) await instance.execPreset("resize", data);
   } catch (error) {
     // protocol.responseError(ctx, error);
   }

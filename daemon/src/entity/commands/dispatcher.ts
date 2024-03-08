@@ -14,6 +14,8 @@ import PtyStopCommand from "./pty/pty_stop";
 import OpenFrpTask from "./task/openfrp";
 import RconCommand from "./steam/rcon_command";
 import NodePtyStartCommand from "./pty/node_pty_start";
+import DockerResizeCommand from "./docker/docker_pty_resize";
+import NodePtyResizeCommand from "./pty/node_pty_resize";
 
 // Instance function dispatcher
 // Dispatch and assign different functions according to different types
@@ -49,12 +51,12 @@ export default class FunctionDispatcher extends InstanceCommand {
       // instance.setPreset("start", new PtyStartCommand());
       instance.setPreset("start", new NodePtyStartCommand());
       instance.setPreset("stop", new PtyStopCommand());
-      instance.setPreset("resize", new NullCommand());
+      instance.setPreset("resize", new NodePtyResizeCommand());
     }
     // Whether to enable Docker PTY mode
     if (instance.config.processType === "docker") {
       instance.setPreset("start", new DockerStartCommand());
-      instance.setPreset("resize", new NullCommand());
+      instance.setPreset("resize", new DockerResizeCommand());
     }
     if (instance.config.enableRcon) {
       instance.setPreset("command", new RconCommand());
