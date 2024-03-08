@@ -25,7 +25,7 @@ class StartupError extends Error {
 }
 
 // process adapter
-class ProcessAdapter extends EventEmitter implements IInstanceProcess {
+export class NodeProcessAdapter extends EventEmitter implements IInstanceProcess {
   public pid?: number;
   public exitCode: number;
 
@@ -37,6 +37,10 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
       this.exitCode = info.exitCode;
       this.emit("exit", info.exitCode);
     });
+  }
+
+  public resize(w: number, h: number) {
+    this.process.resize(w, h);
   }
 
   public write(data?: string) {
@@ -157,7 +161,7 @@ export default class NodePtyStartCommand extends InstanceCommand {
       throw new StartupError($t("TXT_CODE_general_start.startErr"));
     }
 
-    const processAdapter = new ProcessAdapter(ptyProcess);
+    const processAdapter = new NodeProcessAdapter(ptyProcess);
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_pty_start.startSuccess", {
