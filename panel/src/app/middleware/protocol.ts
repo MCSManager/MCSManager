@@ -13,6 +13,10 @@ export async function middleware(
   if (ctx.url.startsWith("/api/")) {
     VisualDataSubsystem.addRequestCount();
   }
+
+  // Compatible with version 9.X API parameters
+  if (ctx.query?.remote_uuid) ctx.query.daemonId = ctx.query.remote_uuid;
+
   // Pass the next middleware, any errors and return data will be processed according to the response protocol
   try {
     await next();
@@ -20,7 +24,6 @@ export async function middleware(
     ctx.body = error;
   }
 
-  // set public header
   if (systemConfig.crossDomain) {
     ctx.response.set("Access-Control-Allow-Origin", "*");
     ctx.response.set("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
@@ -29,9 +32,6 @@ export async function middleware(
       "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
     );
   }
-
-  // This is to let more people know about this software
-  // and check whether it violates the open source agreement.
   ctx.response.set("X-Powered-By", "MCSManager");
   ctx.response.set("X-Version", getVersion());
 

@@ -319,9 +319,9 @@ onMounted(async () => {
                 class="ml-16"
               >
                 <a-tooltip>
-                  <template #title>{{
-                    $t("已连接到此终端的网页数量，这可能会影响到你的终端宽度和高度")
-                  }}</template>
+                  <template #title>
+                    {{ $t("已连接到此终端的网页数量，这可能会影响到你的终端宽度和高度") }}
+                  </template>
                   <LaptopOutlined />
                 </a-tooltip>
                 <span class="ml-6" style="opacity: 0.8">
