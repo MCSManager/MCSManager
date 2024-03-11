@@ -11,7 +11,8 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
   RedoOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  LaptopOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -301,9 +302,9 @@ onMounted(async () => {
           <div class="align-center">
             <a-typography-title class="mb-0 mr-12" :level="4">
               <CloudServerOutlined />
-              <span class="ml-8"> {{ getInstanceName }} </span>
+              <span class="ml-6"> {{ getInstanceName }} </span>
             </a-typography-title>
-            <a-typography-paragraph v-if="!isPhone" class="mb-0">
+            <a-typography-paragraph v-if="!isPhone" class="mb-0 ml-4">
               <span v-if="isRunning" class="color-success">
                 <CheckCircleOutlined />
                 {{ instanceStatusText }}
@@ -311,6 +312,21 @@ onMounted(async () => {
               <span v-else>
                 <InfoCircleOutlined />
                 {{ instanceStatusText }}
+              </span>
+
+              <span
+                v-if="instanceInfo?.watcher && instanceInfo?.watcher > 1 && !isPhone"
+                class="ml-16"
+              >
+                <a-tooltip>
+                  <template #title>{{
+                    $t("已连接到此终端的网页数量，这可能会影响到你的终端宽度和高度")
+                  }}</template>
+                  <LaptopOutlined />
+                </a-tooltip>
+                <span class="ml-6" style="opacity: 0.8">
+                  {{ instanceInfo?.watcher }}
+                </span>
               </span>
             </a-typography-paragraph>
           </div>

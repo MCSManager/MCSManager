@@ -40,6 +40,7 @@ export interface InstanceDetail {
     version: string;
   };
   config: IGlobalInstanceConfig;
+  watcher?: number;
 }
 
 export interface NodeStatus {

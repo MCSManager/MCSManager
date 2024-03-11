@@ -64,7 +64,8 @@ routerApp.on("stream/detail", async (ctx) => {
       started: instance.startCount,
       status: instance.status(),
       config: instance.config,
-      info: instance.info
+      info: instance.info,
+      watcher: instance.watchers.size
       // processInfo
     });
   } catch (error) {

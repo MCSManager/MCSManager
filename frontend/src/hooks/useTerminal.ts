@@ -173,10 +173,6 @@ export function useTerminal() {
       allowProposedApi: true,
       allowTransparency: true,
       rendererType: "canvas"
-      // The backend needs to be consistent.
-      // See "/daemon/src/entity/instance/Instance_config.ts"
-      // rows: 40,
-      // cols: 164
     });
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
