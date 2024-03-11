@@ -60,7 +60,12 @@ export function useTerminal() {
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
   const socketAddress = ref("");
+
   let fitAddonTask: NodeJS.Timer;
+  let cachedSize = {
+    w: 160,
+    h: 40
+  };
 
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
@@ -144,6 +149,18 @@ export function useTerminal() {
     return socket;
   };
 
+  const refreshWindowSize = (w: number, h: number) => {
+    if (cachedSize.h !== h || cachedSize.w !== w) {
+      cachedSize = {
+        w,
+        h
+      };
+      socket?.emit("stream/resize", {
+        data: cachedSize
+      });
+    }
+  };
+
   const initTerminalWindow = (element: HTMLElement) => {
     const background = hasBgImage.value ? "#00000000" : "#1e1e1e";
     const term = new Terminal({
@@ -167,8 +184,11 @@ export function useTerminal() {
     term.loadAddon(fitAddon);
     term.open(element);
     fitAddon.fit();
+    refreshWindowSize(term.cols - 1, term.rows - 1);
     fitAddonTask = setInterval(() => {
       fitAddon.fit();
+      refreshWindowSize(term.cols - 1, term.rows - 1);
+      // Auto resize pty win size
     }, 1000);
 
     term.onData((data) => {

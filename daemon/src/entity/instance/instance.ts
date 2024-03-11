@@ -111,8 +111,8 @@ export default class Instance extends EventEmitter {
     ) {
       if (this.status() != Instance.STATUS_STOP)
         throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
-      if (!fs.existsSync(PTY_PATH) && cfg?.terminalOption?.pty === true)
-        throw new Error($t("TXT_CODE_instanceConf.ptyNotExist", { path: PTY_PATH }));
+      // if (!fs.existsSync(PTY_PATH) && cfg?.terminalOption?.pty === true)
+      //   throw new Error($t("TXT_CODE_instanceConf.ptyNotExist", { path: PTY_PATH }));
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "pty", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
@@ -224,8 +224,10 @@ export default class Instance extends EventEmitter {
   started(process: IInstanceProcess) {
     this.config.lastDatetime = Date.now();
     const outputCode = this.config.terminalOption.pty ? "utf-8" : this.config.oe;
-    process.on("data", (text) => this.emit("data", iconv.decode(text, outputCode)));
-    process.on("exit", (code) => this.stopped(code));
+    process.on("data", (text: any) => {
+      this.emit("data", iconv.decode(text, outputCode));
+    });
+    process.on("exit", (code: number) => this.stopped(code));
     this.process = process;
     this.instanceStatus = Instance.STATUS_RUNNING;
     this.emit("open", this);

@@ -119,7 +119,11 @@ export class ProcessWrapper extends EventEmitter {
   }
 }
 
-export function killProcess(pid: string | number, process: ChildProcess, signal?: any) {
+export function killProcess(
+  pid: string | number,
+  process: { kill(signal?: any): any },
+  signal?: any
+) {
   try {
     if (os.platform() === "win32") {
       execSync(`taskkill /PID ${pid} /T /F`);
