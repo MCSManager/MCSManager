@@ -1,6 +1,5 @@
 import fs from "fs-extra";
 import * as log4js from "log4js";
-import os from "os";
 import { systemInfo } from "common";
 import { $t } from "../i18n";
 
