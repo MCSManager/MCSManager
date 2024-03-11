@@ -93,14 +93,15 @@ export default class GeneralStartCommand extends InstanceCommand {
 
     // create child process
     // Parameter 1 directly passes the process name or path (including spaces) without double quotes
-    const process = spawn(commandExeFile, commandParameters, {
+    const subProcess = spawn(commandExeFile, commandParameters, {
       cwd: instance.config.cwd,
       stdio: "pipe",
-      windowsHide: true
+      windowsHide: true,
+      env: process.env
     });
 
     // child process creation result check
-    if (!process || !process.pid) {
+    if (!subProcess || !subProcess.pid) {
       instance.println(
         "ERROR",
         $t("TXT_CODE_general_start.pidErr", {
@@ -113,14 +114,14 @@ export default class GeneralStartCommand extends InstanceCommand {
     }
 
     // create process adapter
-    const processAdapter = new ProcessAdapter(process);
+    const processAdapter = new ProcessAdapter(subProcess);
 
     // generate open event
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_general_start.startSuccess", {
         instanceUuid: instance.instanceUuid,
-        pid: process.pid
+        pid: subProcess.pid
       })
     );
     instance.println("INFO", $t("TXT_CODE_general_start.startOrdinaryTerminal"));

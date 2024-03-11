@@ -215,7 +215,11 @@ export default class PtyStartCommand extends InstanceCommand {
     const subProcess = spawn(PTY_PATH, ptyParameter, {
       cwd: path.dirname(PTY_PATH),
       stdio: "pipe",
-      windowsHide: true
+      windowsHide: true,
+      env: {
+        ...process.env,
+        TERM: "xterm-256color"
+      }
     });
 
     // pty child process creation result check
