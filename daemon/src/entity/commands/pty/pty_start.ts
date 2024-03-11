@@ -11,10 +11,9 @@ import { IInstanceProcess } from "../../instance/interface";
 import { ChildProcess, ChildProcessWithoutNullStreams, exec, spawn } from "child_process";
 import { commandStringToArray } from "../base/command_parser";
 import { killProcess } from "common";
-import GeneralStartCommand from "../general/general_start";
 import FunctionDispatcher from "../dispatcher";
-import StartCommand from "../start";
 import { PTY_PATH } from "../../../const";
+import { Writable } from "stream";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -27,16 +26,47 @@ class StartupError extends Error {
   }
 }
 
+const GO_PTY_MSG_TYPE = {
+  RESIZE: 0x04
+};
+
 // process adapter
 export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProcess {
-  pid?: number | string;
+  private pipeClient: Writable;
 
-  constructor(private process: ChildProcess, ptySubProcessPid: number) {
+  constructor(private process: ChildProcess, public pid: number, public pipeName: string) {
     super();
-    this.pid = ptySubProcessPid;
     process.stdout.on("data", (text) => this.emit("data", text));
     process.stderr.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
+    this.initNamedPipe();
+  }
+
+  private initNamedPipe() {
+    const fd = fs.openSync(this.pipeName, "w");
+    const writePipe = fs.createWriteStream(null, { fd });
+    writePipe.on("close", () => {});
+    writePipe.on("end", () => {});
+    writePipe.on("error", (err) => {
+      logger.error("Pipe error:", this.pipeName, err);
+    });
+    this.pipeClient = writePipe;
+  }
+
+  public resize(w: number, h: number) {
+    const MAX_W = 900;
+    if (w > MAX_W) w = MAX_W;
+    if (h > MAX_W) h = MAX_W;
+    const resizeStruct = JSON.stringify({ width: Number(w), height: Number(h) });
+    const len = resizeStruct.length;
+    const lenBuff = Buffer.alloc(2);
+    lenBuff.writeInt16BE(len, 0);
+    const buf = Buffer.from([GO_PTY_MSG_TYPE.RESIZE, ...lenBuff, ...Buffer.from(resizeStruct)]);
+    this.writeToNamedPipe(buf);
+  }
+
+  public writeToNamedPipe(data: Buffer) {
+    this.pipeClient.write(data);
   }
 
   public write(data?: string) {
@@ -60,6 +90,10 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
       if (this.process)
         for (const eventName of this.process.eventNames())
           this.process.stdout.removeAllListeners(eventName);
+      if (this.pipeClient)
+        for (const eventName of this.pipeClient.eventNames())
+          this.pipeClient.removeAllListeners(eventName);
+      this.pipeClient?.destroy();
       this.process?.stdout?.destroy();
       this.process?.stderr?.destroy();
       if (this.process?.exitCode === null) {
@@ -146,16 +180,25 @@ export default class PtyStartCommand extends InstanceCommand {
 
     if (commandList.length === 0)
       return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
+
+    const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
+    if (!fs.existsSync(pipeLinuxDir)) fs.mkdirsSync(pipeLinuxDir);
+    let pipeName = `${pipeLinuxDir}/pipe-${instance.instanceUuid}`;
+    if (os.platform() === "win32") {
+      pipeName = `\\\\.\\pipe\\${pipeName}`;
+    }
+
     const ptyParameter = [
-      "-dir",
-      instance.config.cwd,
-      "-cmd",
-      JSON.stringify(commandList),
       "-size",
       `${instance.config.terminalOption.ptyWindowCol},${instance.config.terminalOption.ptyWindowRow}`,
-      "-color",
       "-coder",
-      instance.config.oe
+      instance.config.oe,
+      "-dir",
+      instance.config.cwd,
+      "-fifo",
+      pipeName,
+      "-cmd",
+      JSON.stringify(commandList)
     ];
 
     logger.info("----------------");
@@ -190,7 +233,7 @@ export default class PtyStartCommand extends InstanceCommand {
 
     // create process adapter
     const ptySubProcessCfg = await this.readPtySubProcessConfig(subProcess);
-    const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid);
+    const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid, pipeName);
     logger.info(`pty.exe response: ${JSON.stringify(ptySubProcessCfg)}`);
 
     // After reading the configuration, Need to check the process status

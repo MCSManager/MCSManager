@@ -13,9 +13,8 @@ import PtyStartCommand from "./pty/pty_start";
 import PtyStopCommand from "./pty/pty_stop";
 import OpenFrpTask from "./task/openfrp";
 import RconCommand from "./steam/rcon_command";
-import NodePtyStartCommand from "./pty/node_pty_start";
 import DockerResizeCommand from "./docker/docker_pty_resize";
-import NodePtyResizeCommand from "./pty/node_pty_resize";
+import PtyResizeCommand from "./pty/pty_resize";
 
 // Instance function dispatcher
 // Dispatch and assign different functions according to different types
@@ -48,10 +47,9 @@ export default class FunctionDispatcher extends InstanceCommand {
 
     // Enable emulated terminal mode
     if (instance.config.terminalOption.pty && instance.config.processType === "general") {
-      // instance.setPreset("start", new PtyStartCommand());
-      instance.setPreset("start", new NodePtyStartCommand());
+      instance.setPreset("start", new PtyStartCommand());
       instance.setPreset("stop", new PtyStopCommand());
-      instance.setPreset("resize", new NodePtyResizeCommand());
+      instance.setPreset("resize", new PtyResizeCommand());
     }
     // Whether to enable Docker PTY mode
     if (instance.config.processType === "docker") {
