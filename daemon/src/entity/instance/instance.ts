@@ -13,7 +13,6 @@ import FunctionDispatcher from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
 import { configureEntityParams } from "common";
-import { PTY_PATH } from "../../const";
 import { OpenFrp } from "../commands/task/openfrp";
 
 // The instance does not need to store additional information persistently
@@ -24,6 +23,13 @@ interface IInstanceInfo {
   fileLock: number;
   playersChart: Array<{ value: string }>;
   openFrpStatus: boolean;
+}
+
+interface IWatcherInfo {
+  terminalSize: {
+    w: number;
+    h: number;
+  };
 }
 
 // instance class
@@ -59,6 +65,8 @@ export default class Instance extends EventEmitter {
     playersChart: [],
     openFrpStatus: false
   };
+
+  public watchers: Map<string, IWatcherInfo> = new Map();
 
   public process: IInstanceProcess;
 
@@ -351,5 +359,21 @@ export default class Instance extends EventEmitter {
 
   clearPreset() {
     this.presetCommandManager.clearPreset();
+  }
+
+  computeTerminalSize() {
+    let minW = this.config.terminalOption.ptyWindowCol;
+    let minH = this.config.terminalOption.ptyWindowRow;
+    for (const iterator of this.watchers.values()) {
+      const { w, h } = iterator.terminalSize;
+      if (w && h) {
+        if (w < minW) minW = w;
+        if (h < minH) minH = h;
+      }
+    }
+    return {
+      w: minW,
+      h: minH
+    };
   }
 }

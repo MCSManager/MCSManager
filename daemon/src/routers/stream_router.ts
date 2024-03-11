@@ -125,11 +125,21 @@ routerApp.on("stream/write", async (ctx, data) => {
 });
 
 // handle terminal resize
+// interface IResizeOptions {
+//   h: number;
+//   w: number;
+// }
 routerApp.on("stream/resize", async (ctx, data) => {
   try {
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
-    if (instance) await instance.execPreset("resize", data);
+    instance.watchers.set(ctx.socket.id, {
+      terminalSize: {
+        w: Number(data.w) || 0,
+        h: Number(data.h) || 0
+      }
+    });
+    if (instance) await instance.execPreset("resize");
   } catch (error) {
     // protocol.responseError(ctx, error);
   }

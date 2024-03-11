@@ -150,15 +150,13 @@ export function useTerminal() {
   };
 
   const refreshWindowSize = (w: number, h: number) => {
-    if (cachedSize.h !== h || cachedSize.w !== w) {
-      cachedSize = {
-        w,
-        h
-      };
-      socket?.emit("stream/resize", {
-        data: cachedSize
-      });
-    }
+    cachedSize = {
+      w,
+      h
+    };
+    socket?.emit("stream/resize", {
+      data: cachedSize
+    });
   };
 
   const initTerminalWindow = (element: HTMLElement) => {
@@ -183,13 +181,14 @@ export function useTerminal() {
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
     term.open(element);
+
+    // Auto resize pty win size
     fitAddon.fit();
     refreshWindowSize(term.cols - 1, term.rows - 1);
     fitAddonTask = setInterval(() => {
       fitAddon.fit();
       refreshWindowSize(term.cols - 1, term.rows - 1);
-      // Auto resize pty win size
-    }, 1000);
+    }, 2000);
 
     term.onData((data) => {
       socket?.emit("stream/write", {

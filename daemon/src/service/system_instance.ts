@@ -195,6 +195,8 @@ class InstanceSubsystem extends EventEmitter {
 
   stopForward(targetInstanceUuid: string, socket: Socket) {
     try {
+      const instance = this.getInstance(targetInstanceUuid);
+      instance.watchers.delete(socket.id);
       this.instanceStream.cannelForward(socket, targetInstanceUuid);
     } catch (err) {}
   }
