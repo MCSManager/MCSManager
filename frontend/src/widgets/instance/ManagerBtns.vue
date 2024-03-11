@@ -77,8 +77,9 @@ const isGlobalTerminal = computed(() => {
   return instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME;
 });
 
-const btns = computed(() =>
-  arrayFilter([
+const btns = computed(() => {
+  if (!instanceInfo.value) return [];
+  return arrayFilter([
     {
       title: t("TXT_CODE_d07742fe"),
       icon: ControlOutlined,
@@ -156,8 +157,8 @@ const btns = computed(() =>
     //     pingConfigDialog.value?.openDialog();
     //   }
     // },
-  ])
-);
+  ]);
+});
 </script>
 
 <template>

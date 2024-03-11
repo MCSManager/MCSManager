@@ -28,7 +28,7 @@ class StartupError extends Error {
 }
 
 // process adapter
-class ProcessAdapter extends EventEmitter implements IInstanceProcess {
+export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProcess {
   pid?: number | string;
 
   constructor(private process: ChildProcess, ptySubProcessPid: number) {
@@ -190,7 +190,7 @@ export default class PtyStartCommand extends InstanceCommand {
 
     // create process adapter
     const ptySubProcessCfg = await this.readPtySubProcessConfig(subProcess);
-    const processAdapter = new ProcessAdapter(subProcess, ptySubProcessCfg.pid);
+    const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid);
     logger.info(`pty.exe response: ${JSON.stringify(ptySubProcessCfg)}`);
 
     // After reading the configuration, Need to check the process status

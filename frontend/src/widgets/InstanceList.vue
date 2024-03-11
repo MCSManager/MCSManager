@@ -48,8 +48,10 @@ const operationForm = ref({
 
 const currentRemoteNode = ref<NodeStatus>();
 
-const { execute: getNodes, state: nodes } = remoteNodeList();
-const { execute: getInstances, state: instances, isLoading } = remoteInstances();
+const { execute: getNodes, state: nodes, isLoading: isLoading1 } = remoteNodeList();
+const { execute: getInstances, state: instances, isLoading: isLoading2 } = remoteInstances();
+
+const isLoading = computed(() => isLoading1.value || isLoading2.value);
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceMoreDetail[] = [];
