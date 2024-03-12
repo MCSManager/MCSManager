@@ -66,7 +66,7 @@ const initTerminal = async () => {
     } catch (error) {}
     return term;
   }
-  throw new Error(t("终端初始化失败，请刷新网页重试！"));
+  throw new Error(t("TXT_CODE_42bcfe0c"));
 };
 
 events.on("opened", () => {
@@ -131,7 +131,7 @@ onMounted(async () => {
           :style="{ height: props.height }"
         ></div>
         <div v-else :style="{ height: props.height }">
-          <p class="terminal-design-tip">{{ $t("设计模式下不支持展示终端。") }}</p>
+          <p class="terminal-design-tip">{{ $t("TXT_CODE_7ac6f85c") }}</p>
         </div>
       </div>
     </div>

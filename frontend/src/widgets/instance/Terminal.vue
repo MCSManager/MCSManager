@@ -204,7 +204,7 @@ onMounted(async () => {
               >
                 <a-tooltip>
                   <template #title>
-                    {{ $t("已连接到此终端的网页数量，这可能会影响到你的终端宽度和高度") }}
+                    {{ $t("TXT_CODE_4a37ec9c") }}
                   </template>
                   <LaptopOutlined />
                 </a-tooltip>
