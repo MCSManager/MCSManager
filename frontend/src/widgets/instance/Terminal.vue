@@ -6,12 +6,10 @@ import type { LayoutCard } from "@/types";
 import {
   CloudDownloadOutlined,
   CloudServerOutlined,
-  CodeOutlined,
   DownOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   RedoOutlined,
-  DeleteOutlined,
   LaptopOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
@@ -19,66 +17,35 @@ import { arrayFilter } from "../../tools/array";
 import { useTerminal } from "../../hooks/useTerminal";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useScreen } from "@/hooks/useScreen";
-import { getRandomId } from "../../tools/randId";
 import IconBtn from "@/components/IconBtn.vue";
 import {
   openInstance,
   stopInstance,
   restartInstance,
   killInstance,
-  updateInstance,
-  getInstanceOutputLog
+  updateInstance
 } from "@/services/apis/instance";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
-import { message } from "ant-design-vue";
-import connectErrorImage from "@/assets/daemon_connection_error.png";
-import { Terminal } from "xterm";
-import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { reportError } from "@/tools/validator";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import TerminalCore from "@/components/TerminalCore.vue";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { isPhone } = useScreen();
-const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-const {
-  focusHistoryList,
-  selectLocation,
-  history,
-  commandInputValue,
-  handleHistorySelect,
-  clickHistoryItem
-} = useCommandHistory();
-const {
-  execute,
-  initTerminalWindow,
-  sendCommand,
-  state: instanceInfo,
-  isStopped,
-  isRunning,
-  events,
-  isConnect,
-  socketAddress
-} = useTerminal();
+const { execute, state: instanceInfo, isStopped, isRunning } = useTerminal();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
+const innerTerminalType = viewType === "inner";
 const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 
-const innerTerminalType = viewType === "inner";
-const terminalDomId = `terminal-window-${getRandomId()}`;
-
-const socketError = ref<Error>();
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
-let term: Terminal | undefined;
-
-let inputRef = ref<HTMLElement | null>(null);
 const quickOperations = computed(() =>
   arrayFilter([
     {
@@ -187,33 +154,6 @@ const instanceOperations = computed(() =>
   ])
 );
 
-const handleSendCommand = () => {
-  if (focusHistoryList.value) return;
-  sendCommand(commandInputValue.value || "");
-  commandInputValue.value = "";
-};
-
-const handleClickHistoryItem = (item: string) => {
-  clickHistoryItem(item);
-  inputRef.value?.focus();
-};
-
-const initTerminal = async () => {
-  if (containerState.isDesignMode) return;
-  const dom = document.getElementById(terminalDomId);
-  if (dom) {
-    const term = initTerminalWindow(dom);
-    try {
-      const { value } = await getInstanceOutputLog().execute({
-        params: { uuid: instanceId || "", daemonId: daemonId || "" }
-      });
-      if (value) term.write(value);
-    } catch (error) {}
-    return term;
-  }
-  throw new Error(t("终端初始化失败，请刷新网页重试！"));
-};
-
 const getInstanceName = computed(() => {
   if (instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME) {
     return t("TXT_CODE_5bdaf23d");
@@ -221,26 +161,6 @@ const getInstanceName = computed(() => {
     return instanceInfo.value?.config.nickname;
   }
 });
-
-events.on("opened", () => {
-  message.success(t("TXT_CODE_e13abbb1"));
-});
-
-events.on("stopped", () => {
-  message.success(t("TXT_CODE_efb6d377"));
-});
-
-events.on("error", (error: Error) => {
-  socketError.value = error;
-});
-
-const clearTerminal = () => {
-  term?.clear();
-};
-
-const refreshPage = () => {
-  window.location.reload();
-};
 
 onMounted(async () => {
   try {
@@ -250,7 +170,6 @@ onMounted(async () => {
         daemonId
       });
     }
-    term = await initTerminal();
   } catch (error) {
     console.error(error);
     throw error;
@@ -259,41 +178,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="socketError" class="error-card">
-    <div class="error-card-container">
-      <a-typography-title :level="5">{{ $t("TXT_CODE_6929b0b2") }}</a-typography-title>
-      <a-typography-paragraph>
-        {{ $t("TXT_CODE_812a629e") + socketAddress }}
-      </a-typography-paragraph>
-      <div>
-        <img :src="connectErrorImage" style="width: 100%; height: 110px" />
-      </div>
-      <a-typography-title :level="5">{{ $t("TXT_CODE_9c95b60f") }}</a-typography-title>
-      <a-typography-paragraph>
-        <pre style="font-size: 12px"><code>{{ socketError?.message||"" }}</code></pre>
-      </a-typography-paragraph>
-      <a-typography-title :level="5">{{ $t("TXT_CODE_f1c96d8a") }}</a-typography-title>
-      <a-typography-paragraph>
-        <ul>
-          <li>
-            {{ $t("TXT_CODE_ceba9262") }}
-          </li>
-          <li>
-            {{ $t("TXT_CODE_84099e5") }}
-          </li>
-          <li>
-            {{ $t("TXT_CODE_86ff658a") }}
-          </li>
-          <li>
-            {{ $t("TXT_CODE_9c188ec8") }}
-          </li>
-        </ul>
-        <div class="flex flex-center">
-          <a-typography-link @click="refreshPage">{{ $t("TXT_CODE_f8b28901") }}</a-typography-link>
-        </div>
-      </a-typography-paragraph>
-    </div>
-  </div>
   <!-- Terminal Page View -->
   <div v-if="innerTerminalType">
     <div class="mb-24">
@@ -367,57 +251,12 @@ onMounted(async () => {
         </template>
       </BetweenMenus>
     </div>
-    <a-spin :spinning="!isConnect" :tip="t('TXT_CODE_686c9ca9')">
-      <div class="console-wrapper">
-        <div class="terminal-button-group position-absolute-right position-absolute-top">
-          <ul>
-            <li @click="clearTerminal()">
-              <a-tooltip placement="top">
-                <template #title>
-                  <span>{{ t("TXT_CODE_b1e2e1b4") }}</span>
-                </template>
-                <delete-outlined />
-              </a-tooltip>
-            </li>
-          </ul>
-        </div>
-        <div class="terminal-wrapper global-card-container-shadow position-relative">
-          <div class="terminal-container">
-            <div
-              v-if="!containerState.isDesignMode"
-              :id="terminalDomId"
-              :style="{ height: card.height }"
-            ></div>
-            <div v-else :style="{ height: card.height }"></div>
-          </div>
-        </div>
-        <div class="command-input">
-          <div v-show="focusHistoryList" class="history">
-            <li v-for="(item, key) in history" :key="item">
-              <a-tag
-                :color="key !== selectLocation ? 'blue' : '#108ee9'"
-                @click="handleClickHistoryItem(item)"
-              >
-                {{ item.length > 14 ? item.slice(0, 14) + "..." : item }}
-              </a-tag>
-            </li>
-          </div>
-          <a-input
-            ref="inputRef"
-            v-model:value="commandInputValue"
-            :placeholder="t('TXT_CODE_555e2c1b')"
-            autofocus
-            :disabled="containerState.isDesignMode"
-            @press-enter="handleSendCommand"
-            @keydown="handleHistorySelect"
-          >
-            <template #prefix>
-              <CodeOutlined style="font-size: 18px" />
-            </template>
-          </a-input>
-        </div>
-      </div>
-    </a-spin>
+    <TerminalCore
+      v-if="instanceId && daemonId"
+      :instance-id="instanceId"
+      :daemon-id="daemonId"
+      :height="card.height"
+    />
   </div>
 
   <!-- Other Page View -->
@@ -451,30 +290,12 @@ onMounted(async () => {
       </a-dropdown>
     </template>
     <template #body>
-      <div class="console-wrapper">
-        <div class="terminal-wrapper">
-          <div class="terminal-container">
-            <div
-              v-if="!containerState.isDesignMode"
-              :id="terminalDomId"
-              :style="{ height: card.height }"
-            ></div>
-            <div v-else :style="{ height: card.height }"></div>
-          </div>
-        </div>
-        <div class="command-input">
-          <a-input
-            v-model:value="commandInputValue"
-            :placeholder="t('TXT_CODE_b8108d4d')"
-            :disabled="containerState.isDesignMode"
-            @press-enter="handleSendCommand"
-          >
-            <template #prefix>
-              <CodeOutlined style="font-size: 18px" />
-            </template>
-          </a-input>
-        </div>
-      </div>
+      <TerminalCore
+        v-if="instanceId && daemonId"
+        :instance-id="instanceId"
+        :daemon-id="daemonId"
+        :height="card.height"
+      />
     </template>
   </CardPanel>
 </template>
@@ -511,6 +332,14 @@ onMounted(async () => {
 }
 .console-wrapper {
   position: relative;
+
+  .terminal-loading {
+    z-index: 12;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   .terminal-button-group {
     z-index: 11;

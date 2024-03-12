@@ -100,17 +100,12 @@ try {
 
 // Initialize Websocket server
 io.on("connection", (socket: Socket) => {
-  logger.info($t("TXT_CODE_app.sessionConnect", { ip: socket.handshake.address, uuid: socket.id }));
-
   protocol.addGlobalSocket(socket);
   router.navigation(socket);
 
   socket.on("disconnect", () => {
     protocol.delGlobalSocket(socket);
     for (const name of socket.eventNames()) socket.removeAllListeners(name);
-    logger.info(
-      $t("TXT_CODE_app.sessionDisconnect", { ip: socket.handshake.address, uuid: socket.id })
-    );
   });
 });
 

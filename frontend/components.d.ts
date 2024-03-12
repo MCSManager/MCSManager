@@ -98,6 +98,7 @@ declare module 'vue' {
     Style1: typeof import('./src/components/time/Style1.vue')['default']
     Style2: typeof import('./src/components/time/Style2.vue')['default']
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
+    TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
   }
 }

@@ -92,7 +92,7 @@ export function useTerminal() {
     });
 
     socket.on("connect", () => {
-      console.info("[Socket.io] connecting:", addr);
+      console.log("[Socket.io] connect:", addr);
       socket?.emit("stream/auth", {
         data: { password }
       });
