@@ -38,25 +38,22 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
   }
 
   public async destroy() {
-    try {
-      // remove all dynamically added event listeners
-      for (const n of this.eventNames()) this.removeAllListeners(n);
-      if (this.process.stdout)
-        for (const eventName of this.process.stdout.eventNames())
-          this.process.stdout.removeAllListeners(eventName);
-      if (this.process.stderr)
-        for (const eventName of this.process.stderr.eventNames())
-          this.process.stderr.removeAllListeners(eventName);
-      if (this.process)
-        for (const eventName of this.process.eventNames())
-          this.process.removeAllListeners(eventName);
-      this.process?.stdout?.destroy();
-      this.process?.stderr?.destroy();
-      if (this.process?.exitCode === null) {
-        this.process.kill("SIGTERM");
-        this.process.kill("SIGKILL");
-      }
-    } catch (error) {}
+    // remove all dynamically added event listeners
+    for (const n of this.eventNames()) this.removeAllListeners(n);
+    if (this.process.stdout)
+      for (const eventName of this.process.stdout.eventNames())
+        this.process.stdout.removeAllListeners(eventName);
+    if (this.process.stderr)
+      for (const eventName of this.process.stderr.eventNames())
+        this.process.stderr.removeAllListeners(eventName);
+    if (this.process)
+      for (const eventName of this.process.eventNames()) this.process.removeAllListeners(eventName);
+    this.process?.stdout?.destroy();
+    this.process?.stderr?.destroy();
+    if (this.process?.exitCode === null) {
+      this.process.kill("SIGTERM");
+      this.process.kill("SIGKILL");
+    }
   }
 }
 

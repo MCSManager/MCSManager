@@ -7,7 +7,7 @@ defineProps<{
   card: LayoutCard;
 }>();
 const { isAdmin } = useAppStateStore();
-const myAddr = `${window.location.origin}`;
+const myAddr = `${window.location.origin}/#/_open_page`;
 </script>
 
 <template>
@@ -33,7 +33,10 @@ const myAddr = `${window.location.origin}`;
                   {{ t("TXT_CODE_4d50f316") }}
                 </p>
 
-                <pre>{{ myAddr }}</pre>
+                <p>
+                  {{ t("TXT_CODE_d324bb21") }}
+                  <a :href="myAddr" target="_blank" rel="noopener noreferrer">{{ myAddr }}</a>
+                </p>
               </a-typography-paragraph>
             </div>
             <div v-else>

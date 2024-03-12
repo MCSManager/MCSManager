@@ -1827,5 +1827,7 @@
   "TXT_CODE_683e3033": "Hardware Requirements",
   "TXT_CODE_42bcfe0c": "Terminal initialization failed, please refresh the web page and try again!",
   "TXT_CODE_7ac6f85c": "Terminal is not supported in design mode.",
-  "TXT_CODE_4a37ec9c": "The number of web pages connected to this terminal, which may affect your terminal width and height"
+  "TXT_CODE_4a37ec9c": "The number of web pages connected to this terminal, which may affect your terminal width and height",
+  "TXT_CODE_d58ffa0f": "The instance is not running!",
+  "TXT_CODE_d324bb21": "Address:"
 }

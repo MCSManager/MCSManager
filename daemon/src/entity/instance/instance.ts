@@ -1,7 +1,6 @@
 import { $t } from "../../i18n";
 import iconv from "iconv-lite";
 import path from "path";
-import fs from "fs-extra";
 import { EventEmitter } from "events";
 import { IExecutable } from "./preset";
 import InstanceCommand from "../commands/base/command";
@@ -14,6 +13,7 @@ import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
 import { configureEntityParams } from "common";
 import { OpenFrp } from "../commands/task/openfrp";
+import logger from "../../service/log";
 
 // The instance does not need to store additional information persistently
 interface IInstanceInfo {
@@ -301,8 +301,13 @@ export default class Instance extends EventEmitter {
 
   // Release resources (mainly release process-related resources)
   releaseResources() {
-    if (this.process) this.process.destroy();
-    this.process = null;
+    try {
+      this.process?.destroy();
+    } catch (error) {
+      logger.error(`Instance ${this.instanceUuid}, Release resources error: ${error}`);
+    } finally {
+      this.process = null;
+    }
   }
 
   // destroy this instance
