@@ -130,7 +130,9 @@ onMounted(async () => {
           :id="terminalDomId"
           :style="{ height: props.height }"
         ></div>
-        <div v-else :style="{ height: props.height }"></div>
+        <div v-else :style="{ height: props.height }">
+          <p class="terminal-design-tip">{{ $t("设计模式下不支持展示终端。") }}</p>
+        </div>
       </div>
     </div>
     <div class="command-input">
@@ -320,6 +322,10 @@ onMounted(async () => {
         height: 0 !important;
       }
     }
+  }
+
+  .terminal-design-tip {
+    color: rgba(255, 255, 255, 0.584);
   }
 }
 </style>
