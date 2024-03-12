@@ -215,6 +215,10 @@ const createInstance = async () => {
 
 <template>
   <div style="text-align: left">
+    <a-typography-paragraph v-if="createMethod === QUICKSTART_METHOD.DOCKER" :level="5">
+      <InfoCircleOutlined />
+      {{ t("TXT_CODE_b51bac6f") }}
+    </a-typography-paragraph>
     <a-form ref="formRef" :rules="rules" :model="formData" layout="vertical" autocomplete="off">
       <a-form-item name="nickname">
         <a-typography-title :level="5" class="require-field">
