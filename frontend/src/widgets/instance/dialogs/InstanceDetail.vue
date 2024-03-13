@@ -266,6 +266,9 @@ defineExpose({
     @ok="submit"
   >
     <div class="dialog-overflow-container">
+      <a-typography-text type="secondary">
+        {{ t("TXT_CODE_cdf7c16a") }}
+      </a-typography-text>
       <div>
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane :key="TabSettings.Basic" :tab="t('TXT_CODE_cc7b54b9')"></a-tab-pane>

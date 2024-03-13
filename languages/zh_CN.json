@@ -1829,5 +1829,7 @@
   "TXT_CODE_7ac6f85c": "设计模式下不支持展示终端。",
   "TXT_CODE_4a37ec9c": "已连接到此终端的网页数量，这可能会影响到你的终端宽度和高度",
   "TXT_CODE_d58ffa0f": "实例未处于运行中状态！",
-  "TXT_CODE_d324bb21": "访问地址："
+  "TXT_CODE_d324bb21": "访问地址：",
+  "TXT_CODE_cdf7c16a": "这些设置只有管理员能够查看与更改",
+  "TXT_CODE_b51bac6f": "使用 Docker 镜像创建实例，您必须确保 Docker 已正确安装！"
 }

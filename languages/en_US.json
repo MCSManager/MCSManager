@@ -1829,5 +1829,7 @@
   "TXT_CODE_7ac6f85c": "Terminal is not supported in design mode.",
   "TXT_CODE_4a37ec9c": "The number of web pages connected to this terminal, which may affect your terminal width and height",
   "TXT_CODE_d58ffa0f": "The instance is not running!",
-  "TXT_CODE_d324bb21": "Address:"
+  "TXT_CODE_d324bb21": "Address:",
+  "TXT_CODE_cdf7c16a": "Only Admin can view and change these settings",
+  "TXT_CODE_b51bac6f": "To create an instance using a Docker image, you must ensure that Docker is installed correctly!"
 }
