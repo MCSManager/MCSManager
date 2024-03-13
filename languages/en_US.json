@@ -1831,5 +1831,12 @@
   "TXT_CODE_d58ffa0f": "The instance is not running!",
   "TXT_CODE_d324bb21": "Address:",
   "TXT_CODE_cdf7c16a": "Only Admin can view and change these settings",
-  "TXT_CODE_b51bac6f": "To create an instance using a Docker image, you must ensure that Docker is installed correctly!"
+  "TXT_CODE_b51bac6f": "To create an instance using a Docker image, you must ensure that Docker is installed correctly!",
+  "TXT_CODE_3bfb9e04": "The target instance does not exist!",
+  "TXT_CODE_3d94ea16": "The node Socket is abnormal, please try to reconnect in the node management!",
+  "TXT_CODE_7c650d80": "Node connection failed, please contact the administrator to check the status of the remote node!",
+  "TXT_CODE_b7d38e78": "The remote node is unavailable! \nPlease contact the administrator to go to the node list to check the status of the remote node!",
+  "TXT_CODE_bd99b64e": "Request timeout! \nPlease contact the administrator to check the node network status, IP:",
+  "TXT_CODE_ca8072bd": "Initialization failed, the remote node does not exist!",
+  "TXT_CODE_fb547313": "Please make sure the instance is stopped before deleting it!"
 }
