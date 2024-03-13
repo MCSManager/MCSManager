@@ -160,7 +160,7 @@
   "TXT_CODE_pty_start.instanceUuid": "实例标识符: [{{instanceUuid}}]",
   "TXT_CODE_pty_start.mustAbsolutePath": "仿真终端启动工作目录必须使用绝对路径，请前往实例设置界面重新设置工作路径为绝对路径",
   "TXT_CODE_pty_start.notSupportPty": "仿真终端模式失败，无法支持的架构或系统，已自动降级到普通终端模式...",
-  "TXT_CODE_pty_start.pidErr": "检测到实例进程/容器启动失败（PID 为空），其可能的原因是：\n1. 实例启动命令编写错误，请前往实例设置界面检查启动命令与参数。\n2. 系统主机环境不正确或缺少环境，如 Java 环境等。\n\n原生启动命令：\n{{startCommand}}\n\n仿真终端中转命令:\n程序：{{path}}\n参数：{{params}}\n\n请将此信息报告给管理员，技术人员或自行排查故障。\n如果您认为是面板仿真终端导致的问题，请在左侧终端设置中关闭“仿真终端”选项，我们将会采用原始输入输出流的方式监听程序。",
+  "TXT_CODE_pty_start.pidErr": "检测到进程启动失败，其可能的原因是：\n1. 实例启动命令编写错误，请前往实例设置界面检查启动命令与参数。\n2. 系统主机环境不正确或缺少环境，比如缺少 Java 环境等。\n\n启动命令：\n{{startCommand}}\n\n请将此信息报告给管理员，技术人员或自行排查故障。",
   "TXT_CODE_pty_start.ptyCwd": "工作目录: {{cwd}}",
   "TXT_CODE_pty_start.ptyParams": "PTY 参数: {{param}}",
   "TXT_CODE_pty_start.ptyPath": "PTY 路径: {{path}}",
