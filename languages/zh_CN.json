@@ -1378,8 +1378,8 @@
   "TXT_CODE_8b937b23": "删除节点",
   "TXT_CODE_fd63a181": "当前地址不存在网页",
   "TXT_CODE_41dd4d19": "官方网站",
-  "TXT_CODE_74c3d3e5": "官方文档",
-  "TXT_CODE_26407d1f": "反馈问题",
+  "TXT_CODE_74c3d3e5": "文档",
+  "TXT_CODE_26407d1f": "反馈 BUG",
   "TXT_CODE_d0c670df": "MCSManager 管理面板的进步离不开贡献者们与赞助者们的无私奉献。",
   "TXT_CODE_d2c79249": "如果您愿意支持 MCSManager 后续发展，",
   "TXT_CODE_e4794d20": "请点击这里。",
@@ -1838,5 +1838,8 @@
   "TXT_CODE_3d94ea16": "节点 Socket 异常，请尝试在节点管理中重新连接！",
   "TXT_CODE_b7d38e78": "远程节点不可用！请联系管理员前往节点列表检查远程节点状态！",
   "TXT_CODE_7c650d80": "节点连接失败，请联系管理员检查远程节点状态！",
-  "TXT_CODE_bd99b64e": "请求超时！请联系管理员检查节点网络状态，节点IP："
+  "TXT_CODE_bd99b64e": "请求超时！请联系管理员检查节点网络状态，节点IP：",
+  "TXT_CODE_46cb40d5": "成为赞助者",
+  "TXT_CODE_97433ac4": "更多信息",
+  "TXT_CODE_e57bd50f": "开源协议"
 }

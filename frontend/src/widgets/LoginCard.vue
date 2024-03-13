@@ -195,9 +195,6 @@ const loginSuccess = () => {
   </div>
 </template>
 
-
-</style>
-
 <style lang="scss" scoped>
 .logging {
   .login-panel {
