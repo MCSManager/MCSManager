@@ -9,7 +9,8 @@ import {
   BlockOutlined,
   FolderOpenOutlined,
   ReloadOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  CloudServerOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -72,6 +73,11 @@ const detailList = (node: ComputedNodeInfo) => [
     value: `${node.ip}:${node.port}`
   },
   {
+    title: t("TXT_CODE_c9609785"),
+    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
+    warn: node.available === false
+  },
+  {
     title: t("TXT_CODE_593ee330"),
     value: node.memText
   },
@@ -83,10 +89,7 @@ const detailList = (node: ComputedNodeInfo) => [
     title: t("TXT_CODE_3d602459"),
     value: node.instanceStatus
   },
-  {
-    title: t("TXT_CODE_c9609785"),
-    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
-  },
+
   {
     title: t("TXT_CODE_3d0885c0"),
     value: node.platformText
@@ -174,8 +177,12 @@ const nodeOperations = computed(() =>
   <div style="height: 100%" class="container">
     <CardPanel style="height: 100%">
       <template #title>
-        <ProfileOutlined />
-        {{ item?.remarks || item?.ip }}
+        <div class="flex-center">
+          <span :class="{ 'color-danger': !item?.available }">
+            <CloudServerOutlined />
+            {{ item?.remarks || item?.ip }}
+          </span>
+        </div>
       </template>
       <template v-if="item" #operator>
         <span
