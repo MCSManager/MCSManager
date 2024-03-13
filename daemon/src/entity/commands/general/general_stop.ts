@@ -24,6 +24,7 @@ export default class GeneralStopCommand extends InstanceCommand {
       }
     }
 
+    instance.print("\n");
     instance.println("INFO", $t("TXT_CODE_general_stop.execCmd", { stopCommand }));
     const cacheStartCount = instance.startCount;
 
