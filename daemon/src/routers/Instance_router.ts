@@ -20,7 +20,6 @@ import RestartCommand from "../entity/commands/restart";
 import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask } from "../service/async_task_service/quick_install";
 import { QuickInstallTask } from "../service/async_task_service/quick_install";
-import { RemoteRequestTimeoutError } from "../../../panel/src/app/service/remote_command";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -211,10 +210,6 @@ routerApp.on("instance/open", async (ctx, data) => {
       await instance.exec(new StartCommand(ctx.socket.id));
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
     } catch (err) {
-      if (err instanceof RemoteRequestTimeoutError) {
-        if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
-        return;
-      }
       if (!disableResponse) {
         logger.error(
           $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }),
