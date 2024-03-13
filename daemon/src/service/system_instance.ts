@@ -174,17 +174,16 @@ class InstanceSubsystem extends EventEmitter {
   removeInstance(instanceUuid: string, deleteFile: boolean) {
     const instance = this.getInstance(instanceUuid);
     if (instance) {
+      if (instance.status() !== Instance.STATUS_STOP)
+        throw new Error($t("请确保实例处于停止状态再删除！"));
       instance.destroy();
-      // destroy record
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
-      // delete scheduled task
       InstanceControl.deleteInstanceAllTask(instanceUuid);
-      // delete the file asynchronously
       if (deleteFile) fs.remove(instance.config.cwd, (err) => {});
       return true;
     }
-    throw new Error("Instance does not exist");
+    throw new Error($t("目标实例不存在！"));
   }
 
   forward(targetInstanceUuid: string, socket: Socket) {

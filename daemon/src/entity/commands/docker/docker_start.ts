@@ -74,7 +74,9 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   public async destroy() {
-    await this.container.remove();
+    try {
+      await this.container.remove();
+    } catch (error) {}
   }
 
   private wait() {
