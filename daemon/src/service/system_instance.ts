@@ -175,7 +175,7 @@ class InstanceSubsystem extends EventEmitter {
     const instance = this.getInstance(instanceUuid);
     if (instance) {
       if (instance.status() !== Instance.STATUS_STOP)
-        throw new Error($t("请确保实例处于停止状态再删除！"));
+        throw new Error($t("TXT_CODE_fb547313"));
       instance.destroy();
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
@@ -183,7 +183,7 @@ class InstanceSubsystem extends EventEmitter {
       if (deleteFile) fs.remove(instance.config.cwd, (err) => {});
       return true;
     }
-    throw new Error($t("目标实例不存在！"));
+    throw new Error($t("TXT_CODE_3bfb9e04"));
   }
 
   forward(targetInstanceUuid: string, socket: Socket) {

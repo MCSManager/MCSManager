@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { IPacket, IRequestPacket } from "../entity/entity_interface";
 import RemoteService from "../entity/remote_service";
+import { $t } from "../i18n";
 
 class RemoteError extends Error {
   constructor(msg: string) {
@@ -12,33 +13,26 @@ class RemoteError extends Error {
 // and support synchronous response data (such as HTTP).
 export default class RemoteRequest {
   constructor(public readonly rService: RemoteService) {
-    if (!this.rService || !this.rService.socket)
-      throw new Error("Unable to complete initialization, remote service does not exist.");
+    if (!this.rService || !this.rService.socket) throw new Error($t("TXT_CODE_ca8072bd"));
   }
 
   // request to remote daemon
   public async request(event: string, data?: any, timeout = 6000, force = false): Promise<any> {
-    if (!this.rService.socket)
-      throw new Error("The Socket must be SocketIOClient.Socket, Not null.");
+    if (!this.rService.socket) throw new Error($t("TXT_CODE_3d94ea16"));
     if (!this.rService.available && !force)
-      throw new Error(
-        "The remote daemon is not available. Try reconnecting to the remote daemon or check the configuration"
-      );
+      throw new Error($t("TXT_CODE_b7d38e78") + ` IP: ${this.rService.config.ip}`);
     if (!this.rService.socket.connected && !force)
-      throw new Error("The remote daemon connection is unavailable");
+      throw new Error($t("TXT_CODE_7c650d80") + ` IP: ${this.rService.config.ip}`);
 
     return new Promise((resolve, reject) => {
       const uuid = [v4(), new Date().getTime()].join("");
       const protocolData: IRequestPacket = { uuid, data };
 
-      // Start countdown
       let countdownTask: NodeJS.Timeout;
       if (timeout) {
         countdownTask = setTimeout(
           () =>
-            reject(
-              new RemoteError(`Request daemon:(${this.rService.config.ip}) [${event}] timeout`)
-            ),
+            reject(new RemoteError([$t("TXT_CODE_bd99b64e"), this.rService.config.ip].join(" "))),
           timeout
         );
       }
