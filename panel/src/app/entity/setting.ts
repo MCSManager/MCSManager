@@ -31,6 +31,6 @@ export default class SystemConfig {
   language = "en_us";
 
   // Quick installation address
-  quickInstallAddr = "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/mcsmanager_packages.json";
+  quickInstallAddr = "https://mcsmanager.com/mcsmanager-packages.json";
   redisUrl = "";
 }
