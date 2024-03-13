@@ -30,7 +30,32 @@ const {
 } = quickInstallListAddr();
 
 const appList = computed(() => {
-  // backward compatibility
+  // For MCSManager v9
+  const v9List: any[] = presetList.value as unknown as any[];
+  if (v9List?.[0]?.info && v9List?.[0]?.mc) {
+    const list = v9List.map((v) => {
+      return {
+        ...v,
+        language: "all",
+        title: v.mc,
+        runtime: `Java ${v.java}+`,
+        description: v.info,
+        hardware: v.remark,
+        size: `${v.size}MB`
+      };
+    });
+    presetList.value = {
+      languages: [
+        {
+          label: "ALL",
+          value: "all"
+        }
+      ],
+      packages: list
+    };
+    return list as unknown as QuickStartTemplate[];
+  }
+  // Check
   if (!presetList.value?.packages || !presetList.value?.languages) {
     return [];
   }

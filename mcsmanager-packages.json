@@ -1,0 +1,37 @@
+{
+  "remark": "This file is only used for quick deployment.",
+  "languages": [
+    {
+      "label": "English",
+      "value": "en_us"
+    },
+    {
+      "label": "简体中文",
+      "value": "zh_cn"
+    }
+  ],
+  "packages": [
+    {
+      "language": "en_us",
+      "description": "[Original Survival] Recommendation for friends with multiple players, fast setup.",
+      "title": "Minecraft 1.19.2 Java",
+      "runtime": "Java 17+",
+      "hardware": "RAM 8G",
+      "size": "140MB",
+      "remark": "Support Plugins, RAM 4GB+",
+      "targetLink": "http://oss.duzuii.com/d/MCSManager/Minecraft-Server-Software/paper-1.19.2.zip",
+      "author": "mcsmanager.com"
+    },
+    {
+      "language": "zh_cn",
+      "description": "[原版生存] 朋友联机推荐，1.19.2 版本，快速开服，享受原汁原味的极致生存与探索。",
+      "title": "Minecraft 1.19.2 Java 原版",
+      "runtime": "Java 17+",
+      "hardware": "RAM 8G",
+      "size": "140MB",
+      "remark": "支持插件，最低 4GB 内存要求",
+      "targetLink": "http://oss.duzuii.com/d/MCSManager/Minecraft-Server-Software/paper-1.19.2.zip",
+      "author": "mcsmanager.com"
+    }
+  ]
+}
