@@ -12,7 +12,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { updateUserInstance } from "@/services/apis";
 import { useSelectInstances } from "@/components/fc";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import dayjs from "dayjs";
@@ -42,7 +42,7 @@ const handleDelete = async (deletedInstance: UserInstance) => {
     }
     await saveData();
   } catch (error) {
-    reportError(error);
+    reportErrorMsg(error);
   }
 };
 
@@ -52,7 +52,7 @@ const assignApp = async () => {
     if (selectedInstances) dataSource.value = selectedInstances;
     await saveData();
   } catch (err: any) {
-    reportError(err);
+    reportErrorMsg(err);
   }
 };
 
@@ -71,7 +71,7 @@ const saveData = async () => {
       // ignore
     });
   } catch (err: any) {
-    reportError(err.message);
+    reportErrorMsg(err.message);
   }
 };
 

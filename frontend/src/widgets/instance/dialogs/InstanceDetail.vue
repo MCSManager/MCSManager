@@ -8,7 +8,7 @@ import type { Rule } from "ant-design-vue/es/form";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
 import { imageList, getNetworkModeList } from "@/services/apis/envImage";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { TERMINAL_CODE } from "@/types/const";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -120,7 +120,7 @@ const loadImages = async () => {
       }
     }
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -148,7 +148,7 @@ const loadNetworkModes = async () => {
     });
     if (modes.value) networkModes.value = modes.value;
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -196,7 +196,7 @@ const submit = async () => {
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (error: any) {
     console.error(error);
-    return reportError(error.message ?? t("TXT_CODE_9911ac11"));
+    return reportErrorMsg(error.message ?? t("TXT_CODE_9911ac11"));
   }
 };
 

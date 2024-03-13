@@ -5,7 +5,7 @@ import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reactive, ref } from "vue";
 import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
 import { bind2FA } from "../services/apis/user";
@@ -39,9 +39,9 @@ const handleGenerateApiKey = async (enable: boolean) => {
 
 const handleChangePassword = async () => {
   formRef.value?.validateFields().then(async () => {
-    if (formState.password1 !== formState.password2) return reportError(t("TXT_CODE_d51f5d6"));
+    if (formState.password1 !== formState.password2) return reportErrorMsg(t("TXT_CODE_d51f5d6"));
     if (formState.password1.length < 6 || formState.password1.length > 36)
-      return reportError(t("TXT_CODE_cc5a3aea"));
+      return reportErrorMsg(t("TXT_CODE_cc5a3aea"));
     try {
       await executeUpdatePassword({
         data: {
@@ -51,7 +51,7 @@ const handleChangePassword = async () => {
       updateUserInfo();
       return message.success(t("TXT_CODE_d3de39b4"));
     } catch (error: any) {
-      return reportError(error.message);
+      return reportErrorMsg(error.message);
     }
   });
 };

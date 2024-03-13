@@ -7,7 +7,7 @@ import { BuildFilled, DropboxSquareFilled, SwitcherFilled } from "@ant-design/ic
 import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 import { useStartCmdBuilder } from "@/hooks/useGenerateStartCmd";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import {
   TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
@@ -63,7 +63,7 @@ const submit = async () => {
   try {
     await formRef.value.validate();
   } catch (error) {
-    return reportError(t("TXT_CODE_d6c5a7f8"));
+    return reportErrorMsg(t("TXT_CODE_d6c5a7f8"));
   }
   const command = buildCmd();
 

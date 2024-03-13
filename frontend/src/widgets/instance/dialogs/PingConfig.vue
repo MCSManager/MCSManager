@@ -4,7 +4,8 @@ import { t } from "@/lang/i18n";
 import type { InstanceDetail } from "@/types";
 import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
+
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
   instanceId?: string;
@@ -36,7 +37,7 @@ const submit = async () => {
     open.value = false;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

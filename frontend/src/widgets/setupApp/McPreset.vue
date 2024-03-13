@@ -4,7 +4,7 @@ import { getCurrentLang, t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types/index";
 import { DownloadOutlined } from "@ant-design/icons-vue";
 import { quickInstallListAddr, createAsyncTask, queryAsyncTask } from "@/services/apis/instance";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import Loading from "@/components/Loading.vue";
 import type { QuickStartTemplate } from "@/types";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
@@ -49,7 +49,7 @@ const init = async () => {
     }
   } catch (err: any) {
     console.error(err.message);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -85,7 +85,7 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
   } catch (err: any) {
     console.error(err);
     if (err.message === "Dialog closed by user") return;
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -132,7 +132,7 @@ const queryStatus = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

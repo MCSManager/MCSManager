@@ -2,12 +2,13 @@
 import { ref, onMounted } from "vue";
 import type { UploadProps } from "ant-design-vue";
 import { t } from "@/lang/i18n";
-import { FolderOpenOutlined, UploadOutlined } from "@ant-design/icons-vue";
+import { FolderOpenOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { uploadFile } from "@/services/apis/layout";
 import type { MountComponent } from "../../types/index";
+import { reportErrorMsg } from "@/tools/validator";
 
-const { state, execute } = uploadFile();
+const { execute } = uploadFile();
 
 const props = defineProps<MountComponent>();
 const uploadControl = new AbortController();
@@ -52,7 +53,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
       submit("");
     }
   } catch (error) {
-    reportError(error);
+    reportErrorMsg(error);
   }
   return false;
 };
@@ -85,7 +86,11 @@ onMounted(() => {
       >
         <a-button type="primary" :loading="percentComplete > 0">
           <FolderOpenOutlined v-if="percentComplete === 0" />
-          {{ percentComplete > 0 ? t("TXT_CODE_b625dbf0") + percentComplete + "%" : t("TXT_CODE_335ba209") }}
+          {{
+            percentComplete > 0
+              ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
+              : t("TXT_CODE_335ba209")
+          }}
         </a-button>
       </a-upload>
       <a-button class="ml-16" @click="cancel">{{ t("TXT_CODE_a0451c97") }}</a-button>

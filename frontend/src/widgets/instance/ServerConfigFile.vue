@@ -12,6 +12,7 @@ import Loading from "@/components/Loading.vue";
 import configComponent from "@/components/InstanceConfigEditor.vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
+import { reportErrorMsg } from "@/tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -55,7 +56,7 @@ const render = async () => {
   } catch (err: any) {
     console.error(err);
     isFailure.value = true;
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -89,7 +90,7 @@ const save = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

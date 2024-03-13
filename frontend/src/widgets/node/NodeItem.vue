@@ -16,7 +16,7 @@ import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
 import { connectNode } from "@/services/apis";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
@@ -60,7 +60,7 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
     });
     if (showMsg) message.success(t("TXT_CODE_7f0c746d"));
   } catch (error) {
-    reportError(t("TXT_CODE_6a365d01"));
+    reportErrorMsg(t("TXT_CODE_6a365d01"));
   }
 };
 
@@ -217,7 +217,7 @@ const nodeOperations = computed(() =>
           class="mt-24"
           :cpu-data="item.cpuChartData ?? []"
           :mem-data="item.memChartData ?? []"
-        ></NodeSimpleChart>
+        />
       </template>
     </CardPanel>
   </div>

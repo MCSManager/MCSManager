@@ -28,7 +28,7 @@ import {
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
 
 const props = defineProps<{
@@ -61,7 +61,7 @@ const quickOperations = computed(() =>
             }
           });
         } catch (error) {
-          reportError(error);
+          reportErrorMsg(error);
         }
       },
       props: {},
@@ -80,7 +80,7 @@ const quickOperations = computed(() =>
             }
           });
         } catch (error) {
-          reportError(error);
+          reportErrorMsg(error);
         }
       },
       props: {
@@ -106,7 +106,7 @@ const instanceOperations = computed(() =>
             }
           });
         } catch (error) {
-          reportError(error);
+          reportErrorMsg(error);
         }
       },
       condition: () => isRunning.value
@@ -124,7 +124,7 @@ const instanceOperations = computed(() =>
             }
           });
         } catch (error) {
-          reportError(error);
+          reportErrorMsg(error);
         }
       },
       condition: () => !isStopped.value
@@ -146,7 +146,7 @@ const instanceOperations = computed(() =>
             }
           });
         } catch (error) {
-          reportError(error);
+          reportErrorMsg(error);
         }
       },
       condition: () => isStopped.value && updateCmd.value

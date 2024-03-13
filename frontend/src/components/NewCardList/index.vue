@@ -10,7 +10,7 @@ import Params from "./params.vue";
 import { t } from "@/lang/i18n";
 import { ROLE } from "@/config/router";
 import type { NewCardItem } from "../../config/index";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
 
 const { getCardPool } = useCardPool();
@@ -33,7 +33,7 @@ const currentPageRole = route.meta.permission as ROLE;
 
 const insertCardToLayout = async (card: NewCardItem) => {
   if (card.permission > currentPageRole) {
-    return reportError(t("TXT_CODE_fb4cb9cb"));
+    return reportErrorMsg(t("TXT_CODE_fb4cb9cb"));
   }
 
   if (card.params) {

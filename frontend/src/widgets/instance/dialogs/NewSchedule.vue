@@ -6,6 +6,7 @@ import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const"
 import type { NewScheduleTask } from "@/types";
 import { scheduleCreate } from "@/services/apis/instance";
 import { useScreen } from "@/hooks/useScreen";
+import { reportErrorMsg } from "@/tools/validator";
 import type { Dayjs } from "dayjs";
 import _ from "lodash";
 
@@ -106,7 +107,7 @@ const createRequest = async () => {
     }
   } catch (err: any) {
     console.error(err);
-    reportError(err.message);
+    reportErrorMsg(err.message);
   }
 };
 
@@ -116,7 +117,7 @@ const submit = async () => {
     if (newTask.type === ScheduleCreateType.CYCLE) await createTaskTypeCycle();
     if (newTask.type === ScheduleCreateType.SPECIFY) await createTaskTypeSpecify();
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

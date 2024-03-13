@@ -4,7 +4,7 @@ import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 import { getConfigFileList } from "@/services/apis/instance";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -49,7 +49,7 @@ const render = async () => {
         files: files
       }
     });
-    if (!realFiles.value) return reportError(t("TXT_CODE_83e553fc"));
+    if (!realFiles.value) return reportErrorMsg(t("TXT_CODE_83e553fc"));
     realFiles.value.forEach((v) => {
       configFiles.forEach((z) => {
         if (z.path === v.file) {
@@ -63,7 +63,7 @@ const render = async () => {
     InstanceConfigsList.value = configFiles;
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

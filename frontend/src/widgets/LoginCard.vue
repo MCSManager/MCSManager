@@ -12,7 +12,7 @@ import { onMounted, reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginPageInfo, loginUser } from "@/services/apis";
 import { sleep } from "@/tools/common";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
@@ -56,7 +56,7 @@ const handleLogin = async () => {
     await sleep(1500);
     await handleNext();
   } catch (error: any) {
-    reportError(error.message ? error.message : error);
+    reportErrorMsg(error.message ? error.message : error);
   }
 };
 
@@ -195,15 +195,7 @@ const loginSuccess = () => {
   </div>
 </template>
 
-<style>
-.mcsmanager-link {
-  .global-markdown-html {
-    text-align: left !important;
-    p {
-      margin: 0px !important;
-    }
-  }
-}
+
 </style>
 
 <style lang="scss" scoped>

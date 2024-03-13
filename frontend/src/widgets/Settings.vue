@@ -4,7 +4,7 @@ import { getCurrentLang, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { Modal, message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import {
   BankOutlined,
   BookOutlined,
@@ -48,7 +48,7 @@ const submit = async () => {
       message.success(t("TXT_CODE_a7907771"));
       setTimeout(() => window.location.reload(), 600);
     } catch (error: any) {
-      reportError(error);
+      reportErrorMsg(error);
     }
   }
 };
@@ -144,7 +144,7 @@ const handleSaveBgUrl = async (url?: string) => {
     async onOk() {
       const cfg = await getSettingsConfig();
       if (!cfg?.theme) {
-        return reportError(t("TXT_CODE_b89780e2"));
+        return reportErrorMsg(t("TXT_CODE_b89780e2"));
       }
       cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
       await setSettingsConfig(cfg);

@@ -23,6 +23,7 @@ import type { AntColumnsType, AntTableCell } from "../types/ant";
 import type { Key } from "ant-design-vue/es/_util/type";
 import { PASSWORD_REGEX } from "../tools/validator";
 import { PERMISSION_MAP } from "@/config/const";
+import { reportErrorMsg } from "@/tools/validator";
 
 defineProps<{
   card: LayoutCard;
@@ -148,7 +149,7 @@ const deleteUser = async (userList: string[]) => {
     message.success(t("TXT_CODE_28190dbc"));
     await fetchData();
   } catch (error: any) {
-    reportError(error.message);
+    reportErrorMsg(error.message);
   }
 };
 
@@ -196,7 +197,7 @@ const userDialog = ref({
       userDialog.value.status = false;
       formData.value = _.cloneDeep(formDataOrigin);
     } catch (error: any) {
-      return reportError(error.message);
+      return reportErrorMsg(error.message);
     } finally {
       fetchData();
       userDialog.value.confirmBtnLoading = false;

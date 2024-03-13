@@ -2,7 +2,7 @@
 import { t } from "@/lang/i18n";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { Modal, message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import type { ButtonType } from "ant-design-vue/es/button";
 import type { SizeType } from "ant-design-vue/es/config-provider";
 import { h } from "vue";
@@ -25,7 +25,7 @@ const copy = async () => {
     await navigator.clipboard.writeText(props.value);
     message.success(t("TXT_CODE_b858d78a"));
   } catch (error) {
-    reportError(t("TXT_CODE_81b9b599") + error);
+    reportErrorMsg(t("TXT_CODE_81b9b599") + error);
   }
 };
 </script>

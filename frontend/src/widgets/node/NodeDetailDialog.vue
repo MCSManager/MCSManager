@@ -4,6 +4,7 @@ import { t } from "@/lang/i18n";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { message, type FormInstance } from "ant-design-vue";
 import { type RemoteNodeDetail } from "@/hooks/useRemoteNode";
+import { reportErrorMsg } from "@/tools/validator";
 
 const { addNode, deleteNode, updateNode } = useRemoteNode();
 
@@ -80,7 +81,7 @@ const dialog = reactive({
       message.success(t("TXT_CODE_e74d658c"));
       dialog.close();
     } catch (error: any) {
-      reportError(error.message ?? t("TXT_CODE_5245bd11"));
+      reportErrorMsg(error.message ?? t("TXT_CODE_5245bd11"));
     }
   },
   hidden: () => {
