@@ -48,8 +48,10 @@ const handleChangePassword = async () => {
           passWord: formState.password1
         }
       });
-      updateUserInfo();
-      return message.success(t("TXT_CODE_d3de39b4"));
+      message.success(t("TXT_CODE_d3de39b4"));
+      setTimeout(() => {
+        window.location.reload();
+      }, 600);
     } catch (error: any) {
       return reportErrorMsg(error.message);
     }
