@@ -52,7 +52,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
     } else {
       submit("");
     }
-  } catch (error) {
+  } catch (error: any) {
     reportErrorMsg(error);
   }
   return false;

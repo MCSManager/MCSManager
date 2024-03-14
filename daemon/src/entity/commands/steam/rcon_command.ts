@@ -46,8 +46,8 @@ export default class RconCommand extends InstanceCommand {
 
   async exec(instance: Instance, text?: string): Promise<any> {
     try {
-      await sendRconCommand(instance, text);
-    } catch (error) {
+      if (text) await sendRconCommand(instance, text);
+    } catch (error: any) {
       instance.println("RCON ERROR", error?.message || error);
     }
   }

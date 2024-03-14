@@ -44,19 +44,19 @@ stdin();
 async function command(cmd: string, p1: string, p2: string, p3: string) {
   if (cmd === "instance") {
     if (p1 === "start") {
-      InstanceSubsystem.getInstance(p2).exec(new StartCommand("Terminal"));
+      InstanceSubsystem?.getInstance(p2)?.exec(new StartCommand("Terminal"));
       return "Done.";
     }
     if (p1 === "stop") {
-      InstanceSubsystem.getInstance(p2).exec(new StopCommand());
+      InstanceSubsystem?.getInstance(p2)?.exec(new StopCommand());
       return "Done.";
     }
     if (p1 === "kill") {
-      InstanceSubsystem.getInstance(p2).exec(new KillCommand());
+      InstanceSubsystem?.getInstance(p2)?.exec(new KillCommand());
       return "Done.";
     }
     if (p1 === "send") {
-      InstanceSubsystem.getInstance(p2).exec(new SendCommand(p3));
+      InstanceSubsystem?.getInstance(p2)?.exec(new SendCommand(p3));
       return "Done.";
     }
     return "Parameter error";

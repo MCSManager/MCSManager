@@ -8,7 +8,7 @@ export async function initLayoutConfig() {
     if (cfg instanceof Array) {
       setAllLayoutConfig(cfg);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("init layout config error:", error);
   }
 }

@@ -175,6 +175,10 @@ const userDialog = ref({
   resolve: async () => {
     try {
       await formRef.value?.validateFields();
+    } catch (err) {
+      return;
+    }
+    try {
       userDialog.value.confirmBtnLoading = true;
       if (isAddMode.value) {
         await addUserApi().execute({

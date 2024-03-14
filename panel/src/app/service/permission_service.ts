@@ -18,10 +18,12 @@ export function isTopPermission(user: User) {
 
 export function isTopPermissionByUuid(uuid: string) {
   const user = userSystem.getInstance(uuid);
+  if (!user) return false;
   return isTopPermission(user);
 }
 
 export function isHaveInstanceByUuid(uuid: string, daemonId: string, instanceUuid: string) {
   const user = userSystem.getInstance(uuid);
+  if (!user) return false;
   return isHaveInstance(user, daemonId, instanceUuid);
 }

@@ -20,11 +20,11 @@ export async function middleware(
   // Pass the next middleware, any errors and return data will be processed according to the response protocol
   try {
     await next();
-  } catch (error) {
+  } catch (error: any) {
     ctx.body = error;
   }
 
-  if (systemConfig.crossDomain) {
+  if (systemConfig?.crossDomain) {
     ctx.response.set("Access-Control-Allow-Origin", "*");
     ctx.response.set("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
     ctx.response.set(

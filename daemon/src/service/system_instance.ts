@@ -84,7 +84,7 @@ class InstanceSubsystem extends EventEmitter {
           .then((v) => {})
           .catch((v) => {});
         this.addInstance(instance);
-      } catch (error) {
+      } catch (error: any) {
         logger.error(
           $t("TXT_CODE_system_instance.readInstanceFailed", { uuid: uuid, error: error.message })
         );
@@ -174,8 +174,7 @@ class InstanceSubsystem extends EventEmitter {
   removeInstance(instanceUuid: string, deleteFile: boolean) {
     const instance = this.getInstance(instanceUuid);
     if (instance) {
-      if (instance.status() !== Instance.STATUS_STOP)
-        throw new Error($t("TXT_CODE_fb547313"));
+      if (instance.status() !== Instance.STATUS_STOP) throw new Error($t("TXT_CODE_fb547313"));
       instance.destroy();
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
@@ -195,6 +194,7 @@ class InstanceSubsystem extends EventEmitter {
   stopForward(targetInstanceUuid: string, socket: Socket) {
     try {
       const instance = this.getInstance(targetInstanceUuid);
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       instance.watchers.delete(socket.id);
       this.instanceStream.cannelForward(socket, targetInstanceUuid);
     } catch (err) {}

@@ -11,9 +11,9 @@ const STATUS_ERR = 500;
 
 // packet format definition
 export interface IPacket {
-  uuid?: string;
+  uuid: string | null;
   status: number;
-  event: string;
+  event: string | null;
   data: any;
 }
 
@@ -26,16 +26,18 @@ const globalSocket = new Map<String, Socket>();
 
 export class Packet implements IPacket {
   constructor(
-    public uuid: string = null,
+    public uuid: string | null = null,
     public status = 200,
-    public event: string = null,
+    public event: string | null = null,
     public data: any = null
   ) {}
 }
 
 export function response(ctx: RouterContext, data: any) {
-  const packet = new Packet(ctx.uuid, STATUS_OK, ctx.event, data);
-  ctx.socket.emit(ctx.event, packet);
+  if (ctx.event) {
+    const packet = new Packet(ctx.uuid, STATUS_OK, ctx.event, data);
+    ctx.socket.emit(ctx.event, packet);
+  }
 }
 
 export function responseError(
@@ -48,7 +50,7 @@ export function responseError(
   else errinfo = err;
   const packet = new Packet(ctx.uuid, STATUS_ERR, ctx.event, errinfo);
   // Ignore
-  if (err.toString().includes(IGNORE)) return ctx.socket.emit(ctx.event, packet);
+  if (err.toString().includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
 
   if (!config?.notPrintErr)
     logger.warn(
@@ -59,7 +61,7 @@ export function responseError(
       }),
       err
     );
-  ctx.socket.emit(ctx.event, packet);
+  if (ctx.event) ctx.socket.emit(ctx.event, packet);
 }
 
 export function msg(ctx: RouterContext, event: string, data: any) {
@@ -70,7 +72,7 @@ export function msg(ctx: RouterContext, event: string, data: any) {
 export function error(ctx: RouterContext, event: string, err: any) {
   const packet = new Packet(ctx.uuid, STATUS_ERR, event, err);
   // Ignore
-  if (err.toString().includes(IGNORE)) return ctx.socket.emit(ctx.event, packet);
+  if (err.toString().includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
 
   logger.warn(
     $t("TXT_CODE_protocol.socketErr", {

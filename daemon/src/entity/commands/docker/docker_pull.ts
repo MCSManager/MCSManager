@@ -9,7 +9,7 @@ export async function checkImage(name: string) {
     const image = docker.getImage(name);
     const info = await image.inspect();
     return info.Size > 0 ? true : false;
-  } catch (error) {
+  } catch (error: any) {
     return false;
   }
 }
@@ -23,7 +23,7 @@ export default class DockerPullCommand extends InstanceCommand {
 
   private stopped(instance: Instance) {
     this.stopFlag = true;
-    instance.asynchronousTask = null;
+    instance.asynchronousTask = undefined;
   }
 
   private awaitImageDone(instance: Instance, name: string) {
@@ -65,9 +65,9 @@ export default class DockerPullCommand extends InstanceCommand {
       await this.awaitImageDone(instance, imageName);
       if (cachedStartCount !== instance.startCount) return;
       instance.println("CONTAINER", t("TXT_CODE_c68b0bef"));
-    } catch (err) {
+    } catch (err: any) {
       if (cachedStartCount !== instance.startCount) return;
-      throw new Error([t("TXT_CODE_db37b7f9"), err.message].join("\n"));
+      throw new Error([t("TXT_CODE_db37b7f9"), err?.message].join("\n"));
     } finally {
       this.stopped(instance);
     }

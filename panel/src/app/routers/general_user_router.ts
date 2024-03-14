@@ -82,7 +82,7 @@ router.get("/", permission({ level: ROLE.USER, token: false, speedLimit: false }
             lastDatetime: instancesInfo.config.lastDatetime,
             stopCommand: instancesInfo.config.stopCommand
           });
-        } catch (error) {
+        } catch (error: any) {
           resInstances.push({
             hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
             instanceUuid: iterator.instanceUuid,
@@ -156,7 +156,7 @@ router.put(
         }
       }
       ctx.body = newKey;
-    } catch (error) {
+    } catch (error: any) {
       ctx.body = error;
     }
   }

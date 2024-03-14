@@ -26,7 +26,7 @@ const editImgSrc = async () => {
   try {
     urlSrc.value = (await openInputDialog(t("TXT_CODE_45364559"))) as string;
     setMetaValue("url", urlSrc.value);
-  } catch (error) {}
+  } catch (error: any) {}
 };
 
 const myIframe = ref<HTMLIFrameElement | null>(null);
@@ -45,7 +45,7 @@ onMounted(() => {
           myIframeLoading.value = false;
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
     }
   });

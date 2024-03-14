@@ -156,7 +156,10 @@ router.post(
 
       // some asynchronous tasks are only allowed for administrators
       const needTopPermissionTask = ["quick_install"];
-      if (needTopPermissionTask.includes(taskName) && !isTopPermissionByUuid(ctx.session["uuid"])) {
+      if (
+        needTopPermissionTask.includes(taskName) &&
+        !isTopPermissionByUuid(ctx.session?.["uuid"])
+      ) {
         throw new Error("illegal access");
       }
 
@@ -241,7 +244,7 @@ router.post(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "stream_channel",
@@ -400,7 +403,7 @@ router.put(
       const ie = !isEmpty(config.ie) ? toText(config?.ie) : null;
       const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
 
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {

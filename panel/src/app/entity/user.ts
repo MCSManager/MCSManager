@@ -15,7 +15,7 @@ export class User implements IUser {
   uuid: string = "";
   userName: string = "";
   passWord: string = "";
-  passWordType: number = null;
+  passWordType: number = UserPassWordType.bcrypt;
   salt: string = "";
   permission: number = 0;
   registerTime: string = "";

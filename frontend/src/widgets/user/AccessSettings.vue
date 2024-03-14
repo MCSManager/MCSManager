@@ -41,7 +41,7 @@ const handleDelete = async (deletedInstance: UserInstance) => {
       }
     }
     await saveData();
-  } catch (error) {
+  } catch (error: any) {
     reportErrorMsg(error);
   }
 };

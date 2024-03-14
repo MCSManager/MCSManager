@@ -40,6 +40,7 @@ class UserSubsystem {
   // Update user detail
   async edit(uuid: string, config: any) {
     const instance = this.getInstance(uuid);
+    if (!instance) return;
     if (config.userName) instance.userName = config.userName;
     if (config.isInit != null) instance.isInit = Boolean(config.isInit);
     if (config.permission) instance.permission = config.permission;
@@ -63,19 +64,22 @@ class UserSubsystem {
   }
 
   check2FA(code: string, user: IUser) {
-    return authenticator.check(code, user.secret);
+    if (!user.secret)
+      throw new Error("Please contact the administrator to reset the account password");
+    return authenticator.check(code, user?.secret);
   }
 
   checkUser(info: IUser, code2FA?: string) {
+    const inputPassword = info.passWord || "";
     for (const [uuid, user] of this.objects) {
       if (user.userName === info.userName) {
-        if (user.open2FA && user.secret && !this.check2FA(code2FA, user))
+        if (user.open2FA && user.secret && !this.check2FA(code2FA || "", user))
           throw new TwoFactorError(t("TXT_CODE_3d68e43b"));
         if (user.passWordType === UserPassWordType.bcrypt) {
-          if (!bcrypt.compareSync(info.passWord, user.passWord))
+          if (!bcrypt.compareSync(inputPassword, user.passWord))
             throw new Error($t("TXT_CODE_fefbb457"));
         } else {
-          if (!(md5(info.passWord) === user.passWord)) throw new Error($t("TXT_CODE_fefbb457"));
+          if (!(md5(inputPassword) === user.passWord)) throw new Error($t("TXT_CODE_fefbb457"));
         }
       }
     }
@@ -90,21 +94,22 @@ class UserSubsystem {
   }
 
   setUserInstances(uuid: string, instanceIds: IUserApp[]) {
-    const instance = this.getInstance(uuid);
+    const user = this.getInstance(uuid);
+    if (!user) return;
     instanceIds.forEach((value) => {
       if (!value.daemonId || !value.instanceUuid)
         throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
     });
-    instance.instances = [];
+    user.instances = [];
     instanceIds.forEach((value) => {
-      instance.instances.push({
+      user.instances.push({
         instanceUuid: String(value.instanceUuid),
         daemonId: String(value.daemonId)
       });
     });
   }
 
-  getUserByUserName(userName: string): User {
+  getUserByUserName(userName: string) {
     for (const map of this.objects) {
       const user = map[1];
       if (user.userName === userName) return user;

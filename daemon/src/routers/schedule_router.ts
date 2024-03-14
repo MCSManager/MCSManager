@@ -7,7 +7,7 @@ routerApp.on("schedule/register", (ctx, data) => {
   try {
     InstanceControlSubsystem.registerScheduleJob(data);
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });

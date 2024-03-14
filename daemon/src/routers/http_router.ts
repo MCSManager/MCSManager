@@ -44,7 +44,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
     const fileName = path.basename(fileAbsPath);
     ctx.set("Content-Type", "application/octet-stream");
     await send(ctx, fileName, { root: fileDir + "/", hidden: true });
-  } catch (error) {
+  } catch (error: any) {
     ctx.body = $t("TXT_CODE_http_router.downloadErr", { error: error.message });
     ctx.status = 500;
   } finally {
@@ -57,7 +57,7 @@ router.post("/upload/:key", async (ctx) => {
   const key = ctx.params.key;
   const unzip = ctx.query.unzip;
   const zipCode = String(ctx.query.code);
-  let tmpFiles: formidable.File | formidable.File[] = null;
+  let tmpFiles: undefined | formidable.File | formidable.File[] = undefined;
   try {
     const mission = missionPassport.getMission(key, "upload");
     if (!mission) throw new Error("Access denied: No task found");
@@ -65,9 +65,9 @@ router.post("/upload/:key", async (ctx) => {
     if (!instance) throw new Error("Access denied: No instance found");
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.config.cwd;
-    const tmpFiles = ctx.request.files.file;
+    const tmpFiles = ctx.request.files?.file;
     if (tmpFiles && !(tmpFiles instanceof Array)) {
-      const fullFileName = tmpFiles.name;
+      const fullFileName = tmpFiles.name || "";
       const fileSaveRelativePath = path.normalize(path.join(uploadDir, fullFileName));
       if (!FileManager.checkFileName(fullFileName))
         throw new Error("Access denied: Malformed file name");
@@ -85,12 +85,12 @@ router.post("/upload/:key", async (ctx) => {
     }
     ctx.body = "Access denied: No file found";
     ctx.status = 500;
-  } catch (error) {
+  } catch (error: any) {
     ctx.body = error.message;
     ctx.status = 500;
   } finally {
     missionPassport.deleteMission(key);
-    clearUploadFiles(tmpFiles);
+    if (tmpFiles) clearUploadFiles(tmpFiles);
   }
 });
 export default router;

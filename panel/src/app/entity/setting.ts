@@ -2,7 +2,7 @@
 export default class SystemConfig {
   // HTTP service port and IP
   httpPort: number = 23333;
-  httpIp: string = null;
+  httpIp: string = "";
 
   // data transfer port
   dataPort: number = 23334;

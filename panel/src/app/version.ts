@@ -25,7 +25,7 @@ export function initVersionManager() {
         currentVersion = String(data.version);
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error("Version Check failure:", error);
   }
 
@@ -47,7 +47,7 @@ export function specifiedDaemonVersion() {
   try {
     const data: any = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
     return data.daemonVersion ?? "1.0.0";
-  } catch (error) {
+  } catch (error: any) {
     return "1.0.0";
   }
 }

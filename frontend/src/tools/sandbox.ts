@@ -27,7 +27,7 @@ class SandboxBridge {
       callbacks.forEach((callback) => {
         try {
           callback.call(null, ...args);
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       });

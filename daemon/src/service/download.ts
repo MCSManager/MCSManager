@@ -24,7 +24,7 @@ export function downloadFileToLocalFile(url: string, localFilePath: string): Pro
           resolve(true);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       reject(error.message);
     }
   });

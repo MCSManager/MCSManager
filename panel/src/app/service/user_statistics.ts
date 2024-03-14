@@ -22,7 +22,7 @@ async function statistics() {
 setInterval(async () => {
   try {
     return await statistics();
-  } catch (error) {
+  } catch (error: any) {
     // ignore
   }
 }, 1000 * 60 * 60 * 24);

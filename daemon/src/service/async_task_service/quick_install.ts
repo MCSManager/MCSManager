@@ -20,7 +20,7 @@ export class QuickInstallTask extends AsyncTask {
   public readonly ZIP_CONFIG_JSON = "mcsmanager-config.json";
   public zipPath = "";
 
-  private downloadStream: fs.WriteStream = null;
+  private downloadStream?: fs.WriteStream;
   private JAVA_17_PATH = path.normalize(
     path.join(process.cwd(), "lib", "jre17", "bin", "java.exe")
   );
@@ -29,7 +29,7 @@ export class QuickInstallTask extends AsyncTask {
     super();
     const config = new InstanceConfig();
     config.nickname = instanceName;
-    config.cwd = null;
+    config.cwd = "";
     config.stopCommand = "stop";
     config.type = Instance.TYPE_MINECRAFT_JAVA;
     this.instance = InstanceSubsystem.createInstance(config);
@@ -53,7 +53,7 @@ export class QuickInstallTask extends AsyncTask {
             resolve(true);
           }
         });
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     });
@@ -81,7 +81,7 @@ export class QuickInstallTask extends AsyncTask {
 
       this.instance.parameters(config);
       this.stop();
-    } catch (error) {
+    } catch (error: any) {
       this.error(error);
     } finally {
       fs.remove(fileManager.toAbsolutePath(this.TMP_ZIP_NAME), () => {});
@@ -91,7 +91,7 @@ export class QuickInstallTask extends AsyncTask {
   async onStopped(): Promise<boolean | void> {
     try {
       if (this.downloadStream) this.downloadStream.destroy(new Error("STOP TASK"));
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   onError(): void {}

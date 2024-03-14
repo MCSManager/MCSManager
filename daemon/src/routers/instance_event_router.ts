@@ -16,7 +16,7 @@ setInterval(() => {
     try {
       const fileInfo = fs.statSync(logFilePath);
       if (fileInfo && fileInfo.size > 1024 * MAX_LOG_SIZE) fs.removeSync(logFilePath);
-    } catch (err) {}
+    } catch (err: any) {}
     fs.writeFile(logFilePath, buf, { encoding: "utf-8", flag: "a" }, () => {
       buffer.set(instanceUuid, "");
     });

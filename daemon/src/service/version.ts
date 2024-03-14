@@ -14,7 +14,7 @@ export function initVersionManager() {
         GlobalVariable.set("version", data.version);
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error($t("TXT_CODE_version.versionDetectErr"), error);
   }
 }

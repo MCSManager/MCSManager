@@ -3,7 +3,7 @@ import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import userSystem from "./user_service";
 import { timeUuid } from "./password";
-import { GlobalVariable } from "common";
+import { GlobalVariable, toText } from "common";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
 import { User } from "../entity/user";
@@ -29,9 +29,13 @@ export function login(
     userSystem.checkUser({ userName, passWord }, twoFACode);
     // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-    if (ipMap) delete ipMap[ip];
+    if (ipMap) delete ipMap[ip || ""];
+
     // Session Session state changes to logged in
     const user = userSystem.getUserByUserName(userName);
+    if (!user) throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
+    if (!ctx.session) throw new Error("Session is Null!");
+
     user.loginTime = new Date().toLocaleString();
     ctx.session["login"] = true;
     ctx.session["userName"] = userName;
@@ -46,17 +50,21 @@ export function login(
   } catch (err) {
     // record the number of login failures
     GlobalVariable.set(LOGIN_FAILED_COUNT_KEY, GlobalVariable.get(LOGIN_FAILED_COUNT_KEY, 0) + 1);
-    ctx.session["login"] = null;
-    ctx.session["token"] = null;
-    ctx.session.save();
+    if (ctx.session) {
+      ctx.session["login"] = null;
+      ctx.session["token"] = null;
+      ctx.session.save();
+    }
     logger.info(`[LOGIN] IP: ${ip}, Try login ${userName} failed!`);
     throw err;
   }
 }
 
 export async function bind2FA(ctx: Koa.ParameterizedContext) {
+  if (!ctx.session) throw new Error("Session is Null!");
   const userName = ctx.session["userName"];
   const user = userSystem.getUserByUserName(userName);
+  if (!user) throw new Error("User is Null!");
   try {
     const secret = authenticator.generateSecret();
     const qrCode = await QRCode.toDataURL(
@@ -76,11 +84,13 @@ export async function confirm2FaQRCode(userUuid: string, isEnable: boolean) {
 }
 
 export function check(ctx: Koa.ParameterizedContext) {
+  if (!ctx.session) return false;
   if (ctx.session["login"] && ctx.session["userName"] && ctx.session["token"]) return true;
   return false;
 }
 
 export function logout(ctx: Koa.ParameterizedContext): boolean {
+  if (!ctx.session) return false;
   ctx.session["login"] = null;
   ctx.session["userName"] = null;
   ctx.session["uuid"] = null;
@@ -113,11 +123,11 @@ export async function register(
 }
 
 export function getUserPermission(ctx: Koa.ParameterizedContext): number {
-  let user: User = null;
+  let user: User | undefined | null = undefined;
   if (isApiRequest(ctx)) {
     user = getUuidByApiKey(getApiKey(ctx));
   } else {
-    user = userSystem.getInstance(ctx.session["uuid"]);
+    user = userSystem.getInstance(ctx.session?.["uuid"] || "");
   }
   if (!user) return 0;
   return user.permission ?? 0;
@@ -126,21 +136,25 @@ export function getUserPermission(ctx: Koa.ParameterizedContext): number {
 export function getUserNameBySession(ctx: Koa.ParameterizedContext): string {
   if (isApiRequest(ctx)) {
     const user = getUuidByApiKey(getApiKey(ctx));
-    return user ? user.userName : null;
+    return user ? user.userName : "";
   }
-  return ctx.session["userName"];
+  return ctx.session?.["userName"];
 }
 
 export function getUserUuid(ctx: Koa.ParameterizedContext): string {
   if (isApiRequest(ctx)) {
     const user = getUuidByApiKey(getApiKey(ctx));
-    return user ? user.uuid : null;
+    if (user && user.uuid) {
+      return user.userName;
+    } else {
+      return "";
+    }
   }
-  return ctx.session["uuid"];
+  return ctx.session?.["uuid"] || "";
 }
 
 export function getToken(ctx: Koa.ParameterizedContext): string {
-  return ctx.session["token"];
+  return ctx.session?.["token"] || "";
 }
 
 export function isAjax(ctx: Koa.ParameterizedContext) {
@@ -154,8 +168,8 @@ export function checkBanIp(ctx: Koa.ParameterizedContext) {
   if (!GlobalVariable.map.has(LOGIN_FAILED_KEY)) GlobalVariable.set(LOGIN_FAILED_KEY, {});
   // This IpMap also needs to be used when logging in
   const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-  const ip = ctx.socket.remoteAddress;
-  if (ipMap[ip] > 10 && systemConfig.loginCheckIp === true) {
+  const ip = toText(ctx.socket.remoteAddress) || "";
+  if (ipMap[ip] > 10 && systemConfig?.loginCheckIp === true) {
     if (ipMap[ip] != 999) {
       // record the number of bans
       GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 0) + 1);

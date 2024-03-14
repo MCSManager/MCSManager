@@ -34,7 +34,7 @@ router.del("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.Parameterized
       await userSystem.deleteInstance(iterator);
     }
     ctx.body = true;
-  } catch (error) {
+  } catch (error: any) {
     ctx.throw(500, $t("TXT_CODE_router.user.deleteFailure") as string);
   }
 });
@@ -56,8 +56,8 @@ router.get(
     // make a copy, delete redundant
     resultPage = JSON.parse(JSON.stringify(resultPage));
     resultPage.data.forEach((v) => {
-      delete v.passWord;
-      delete v.salt;
+      v.passWord = "";
+      v.salt = "";
     });
     ctx.body = resultPage;
   }

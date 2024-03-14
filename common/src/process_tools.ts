@@ -8,8 +8,8 @@ import iconv from "iconv-lite";
 export class StartError extends Error {}
 
 export class ProcessWrapper extends EventEmitter {
-  public process: ChildProcess;
-  public pid: number;
+  public process?: ChildProcess;
+  public pid?: number;
 
   public errMsg = {
     timeoutErr: "task timeout!",
@@ -21,7 +21,7 @@ export class ProcessWrapper extends EventEmitter {
     public readonly file: string,
     public readonly args: string[],
     public readonly cwd: string,
-    public readonly timeout: number = null,
+    public readonly timeout: number = 0,
     public readonly code = "utf-8",
     public readonly option: SpawnOptionsWithoutStdio = {}
   ) {
@@ -34,7 +34,7 @@ export class ProcessWrapper extends EventEmitter {
 
   public start(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let timeTask: NodeJS.Timeout = null;
+      let timeTask: NodeJS.Timeout;
       const subProcess = child_process.spawn(this.file, this.args, {
         stdio: "pipe",
         windowsHide: true,
@@ -53,7 +53,7 @@ export class ProcessWrapper extends EventEmitter {
         try {
           this.emit("exit", code);
           this.destroy();
-        } catch (error) {}
+        } catch (error: any) {}
         if (timeTask) clearTimeout(timeTask);
         if (code != 0) return resolve(false);
         return resolve(true);
@@ -62,7 +62,7 @@ export class ProcessWrapper extends EventEmitter {
       // timeout, terminate the task
       if (this.timeout) {
         timeTask = setTimeout(() => {
-          if (!subProcess.exitCode && subProcess.exitCode !== 0) {
+          if (subProcess?.pid && !subProcess.exitCode && subProcess.exitCode !== 0) {
             killProcess(subProcess.pid, subProcess);
             reject(new Error(this.errMsg.timeoutErr));
           } else {
@@ -74,32 +74,32 @@ export class ProcessWrapper extends EventEmitter {
   }
 
   public getPid() {
-    return this.process.pid;
+    return this.process?.pid;
   }
 
-  public write(data?: string) {
-    return this.process.stdin.write(iconv.encode(data, this.code));
+  public write(data?: any) {
+    return this.process?.stdin?.write(iconv.encode(data, this.code));
   }
 
   public kill() {
-    killProcess(this.process.pid, this.process);
+    if (this.process?.pid) killProcess(this.process?.pid, this.process);
   }
 
   public status() {
-    return this.process.exitCode == null;
+    return !!this.process?.exitCode;
   }
 
   public exitCode() {
-    return this.process.exitCode;
+    return this.process?.exitCode;
   }
 
   private async destroy() {
     try {
       for (const n of this.eventNames()) this.removeAllListeners(n);
-      if (this.process.stdout)
+      if (this.process?.stdout)
         for (const eventName of this.process.stdout.eventNames())
           this.process.stdout.removeAllListeners(eventName);
-      if (this.process.stderr)
+      if (this.process?.stderr)
         for (const eventName of this.process.stderr.eventNames())
           this.process.stderr.removeAllListeners(eventName);
       if (this.process)
@@ -111,10 +111,10 @@ export class ProcessWrapper extends EventEmitter {
         this.process.kill("SIGTERM");
         this.process.kill("SIGKILL");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("[ProcessWrapper destroy() Error]", error);
     } finally {
-      this.process = null;
+      this.process = undefined;
     }
   }
 }

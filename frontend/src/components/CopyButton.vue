@@ -24,7 +24,7 @@ const copy = async () => {
   try {
     await navigator.clipboard.writeText(props.value);
     message.success(t("TXT_CODE_b858d78a"));
-  } catch (error) {
+  } catch (error: any) {
     reportErrorMsg(t("TXT_CODE_81b9b599") + error);
   }
 };
