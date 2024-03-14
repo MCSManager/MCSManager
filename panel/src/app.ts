@@ -74,7 +74,7 @@ async function main() {
   // load global configuration file
   initSystemConfig();
 
-  if (systemConfig.redisUrl.length != 0) {
+  if (systemConfig && systemConfig?.redisUrl?.length != 0) {
     await RedisStorage.initialize(systemConfig.redisUrl);
     Storage.setStorageType(Storage.TYPE.REDIS);
   }
@@ -145,7 +145,9 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
       if (ctx.URL.pathname.includes(iterator)) return await next();
     }
     fileLogger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
-    fileLogger.info(`[HTTP] IP: ${ctx.ip} USER: ${ctx.session.userName} UUID: ${ctx.session.uuid}`);
+    fileLogger.info(
+      `[HTTP] IP: ${ctx.ip} USER: ${ctx.session?.userName} UUID: ${ctx.session?.uuid}`
+    );
     await next();
   });
 
@@ -166,7 +168,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-  setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
+  if (systemConfig) setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
 }
 
 main().catch((err) => {

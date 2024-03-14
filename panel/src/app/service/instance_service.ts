@@ -10,7 +10,7 @@ export function multiOperationForwarding(
     const daemonId: string = instanceInfo.daemonId;
     const instanceUuid: string = instanceInfo.instanceUuid;
     if (map.has(daemonId)) {
-      map.get(daemonId).push(instanceUuid);
+      map.get(daemonId)?.push(instanceUuid);
     } else {
       map.set(daemonId, [instanceUuid]);
     }

@@ -9,9 +9,9 @@ export default class RemoteService {
   public static readonly STATUS_OK = 200;
   public static readonly STATUS_ERR = 500;
 
-  public uuid: string = null;
+  public uuid: string = "";
   public available: boolean = false;
-  public socket: Socket = null;
+  public socket?: Socket;
   public readonly instanceStream = new InstanceStreamListener();
   public config: RemoteServiceConfig;
 
@@ -94,7 +94,7 @@ export default class RemoteService {
   }
 
   public emit(event: string, data?: any) {
-    return this.socket.emit(event, data);
+    return this.socket?.emit(event, data);
   }
 
   private async onDisconnect() {
@@ -115,7 +115,7 @@ export default class RemoteService {
       this.socket.close();
       delete this.socket;
     }
-    this.socket = null;
+    this.socket = undefined;
     this.available = false;
   }
 

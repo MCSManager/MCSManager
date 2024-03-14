@@ -24,7 +24,7 @@ export async function middleware(
     ctx.body = error;
   }
 
-  if (systemConfig.crossDomain) {
+  if (systemConfig?.crossDomain) {
     ctx.response.set("Access-Control-Allow-Origin", "*");
     ctx.response.set("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
     ctx.response.set(

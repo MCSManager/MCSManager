@@ -48,7 +48,7 @@ function tooFast(ctx: Koa.ParameterizedContext) {
 
 interface IPermissionCfg {
   token?: boolean;
-  level?: number;
+  level?: number | null;
   speedLimit?: boolean;
 }
 

@@ -155,7 +155,7 @@ router.get(
     const uuid = String(ctx.request.query.uuid);
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     try {
-      RemoteServiceSubsystem.getInstance(uuid).connect();
+      RemoteServiceSubsystem.getInstance(uuid)?.connect();
       ctx.body = true;
     } catch (error: any) {
       ctx.body = error;

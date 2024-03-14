@@ -56,8 +56,8 @@ router.get(
     // make a copy, delete redundant
     resultPage = JSON.parse(JSON.stringify(resultPage));
     resultPage.data.forEach((v) => {
-      delete v.passWord;
-      delete v.salt;
+      v.passWord = "";
+      v.salt = "";
     });
     ctx.body = resultPage;
   }

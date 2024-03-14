@@ -44,6 +44,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   // });
   async registerRemoteService(config: IRemoteService) {
     const instance = await this.newInstance(config);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
     instance.connect();
     return instance;
@@ -52,7 +53,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   // Delete the specified remote service based on UUID
   async deleteRemoteService(uuid: string) {
     if (this.getInstance(uuid)) {
-      this.getInstance(uuid).disconnect();
+      this.getInstance(uuid)?.disconnect();
       this.deleteInstance(uuid);
       await Storage.getStorage().delete("RemoteServiceConfig", uuid);
     }
@@ -73,6 +74,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   // Edit the configuration file of the instance
   async edit(uuid: string, config: IRemoteService) {
     const instance = this.getInstance(uuid);
+    if (!instance) return;
     if (config.remarks) instance.config.remarks = config.remarks;
     if (config.ip) instance.config.ip = config.ip;
     if (config.port) instance.config.port = config.port;
@@ -84,7 +86,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
   // First use, need to scan the local host
   // Note: Every time you execute "initConnectLocalhost",
   // it will be managed by the subsystem (regardless of whether the target exists).
-  async initConnectLocalhost(key?: string): Promise<RemoteService> {
+  async initConnectLocalhost(key?: string) {
     const ip = "localhost";
     const localKeyFilePath = path.normalize(
       path.join(process.cwd(), "../daemon/data/Config/global.json")
