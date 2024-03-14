@@ -52,11 +52,22 @@ export interface IDataSource<T> {
 
 // MYSQL data source
 export class MySqlSource<T> implements IDataSource<T> {
-  selectPage: (condition: any, page: number, pageSize: number) => Page<T>;
-  select: (condition: any) => any[];
-  update: (condition: any, data: any) => void;
-  delete: (condition: any) => void;
-  insert: (data: any) => void;
+  constructor(public data: any) {}
+  selectPage(condition: any, page: number, pageSize: number) {
+    return {
+      page,
+      pageSize,
+      maxPage: 0,
+      total: 0,
+      data: []
+    };
+  }
+  select(condition: any) {
+    return [];
+  }
+  update(condition: any, data: any) {}
+  delete(condition: any) {}
+  insert(data: any) {}
 }
 
 // local file data source (embedded microdatabase)
@@ -99,7 +110,7 @@ export class LocalFileSource<T> implements IDataSource<T> {
   }
 
   select(condition: any): any[] {
-    return null;
+    return [];
   }
   update(condition: any, data: any) {}
   delete(condition: any) {}
