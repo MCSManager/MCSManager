@@ -1617,7 +1617,7 @@
   "TXT_CODE_3f477ec": "Length must be 3 to 20 characters",
   "TXT_CODE_6032f5a3": "9 to 36 characters, must include uppercase, lowercase letters, and numbers",
   "TXT_CODE_79f9a172": "Edit User",
-  "TXT_CODE_af1f921d": "Leave blank to keep the value unchanged",
+  "TXT_CODE_af1f921d": "Leave blank to keep the value unchanged, Two-step verification will also be reset.",
   "TXT_CODE_cea5dba1": "Program has received the shutdown signal, preparing to stop...",
   "TXT_CODE_b0aa2db9": "Stopped!",
   "TXT_CODE_eb579d63": "User Resource Management",

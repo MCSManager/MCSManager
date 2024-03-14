@@ -15,6 +15,11 @@ router.put("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.Parameterized
   if (passWord && !userSystem.validatePassword(passWord))
     throw new Error($t("TXT_CODE_router.user.passwordCheck"));
   try {
+    // If the administrator resets the user's password, 2FA is automatically turned off.
+    if (passWord) {
+      config.secret = "";
+      config.open2FA = false;
+    }
     await userSystem.edit(uuid, config);
     ctx.body = true;
   } catch (error: any) {
