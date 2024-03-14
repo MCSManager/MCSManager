@@ -6,7 +6,6 @@
     "noImplicitThis": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-
     "resolveJsonModule": true,
     "module": "commonjs",
     "esModuleInterop": true,
