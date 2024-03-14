@@ -24,17 +24,17 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
   constructor(private process: ChildProcess) {
     super();
     this.pid = this.process.pid;
-    process.stdout.on("data", (text) => this.emit("data", text));
-    process.stderr.on("data", (text) => this.emit("data", text));
+    process.stdout?.on("data", (text) => this.emit("data", text));
+    process.stderr?.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
   }
 
   public write(data?: string) {
-    return this.process.stdin.write(data);
+    return this.process.stdin?.write(data);
   }
 
   public kill(s?: any) {
-    return killProcess(this.pid, this.process, s);
+    if (this.pid) return killProcess(this.pid, this.process, s);
   }
 
   public async destroy() {

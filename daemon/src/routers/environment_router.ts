@@ -14,7 +14,7 @@ routerApp.on("environment/images", async (ctx, data) => {
     const docker = new DockerManager().getDocker();
     const result = await docker.listImages();
     protocol.response(ctx, result);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, $t("TXT_CODE_environment_router.dockerInfoErr"));
   }
 });
@@ -25,7 +25,7 @@ routerApp.on("environment/containers", async (ctx, data) => {
     const docker = new DockerManager().getDocker();
     const result = await docker.listContainers();
     protocol.response(ctx, result);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -36,7 +36,7 @@ routerApp.on("environment/networkModes", async (ctx, data) => {
     const docker = new DockerManager().getDocker();
     const result = await docker.listNetworks();
     protocol.response(ctx, result);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -72,12 +72,12 @@ routerApp.on("environment/new_image", async (ctx, data) => {
     try {
       await new DockerManager().startBuildImage(dockerFileDir, dockerImageName);
       logger.info($t("TXT_CODE_environment_router.crateSuccess", { name: name, tag: tag }));
-    } catch (error) {
+    } catch (error: any) {
       logger.info(
         $t("TXT_CODE_environment_router.crateErr", { name: name, tag: tag, error: error })
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -95,7 +95,7 @@ routerApp.on("environment/del_image", async (ctx, data) => {
       throw new Error("Image does not exist");
     }
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -108,7 +108,7 @@ routerApp.on("environment/progress", async (ctx) => {
       data[k] = v;
     });
     protocol.response(ctx, data);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });

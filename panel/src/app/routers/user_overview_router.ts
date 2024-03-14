@@ -17,7 +17,7 @@ router.put("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.Parameterized
   try {
     await userSystem.edit(uuid, config);
     ctx.body = true;
-  } catch (error) {
+  } catch (error: any) {
     ctx.throw(500, error.message);
   }
 });

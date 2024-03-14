@@ -63,7 +63,7 @@ const initTerminal = async () => {
         params: { uuid: instanceId || "", daemonId: daemonId || "" }
       });
       if (value) term.write(value);
-    } catch (error) {}
+    } catch (error: any) {}
     return term;
   }
   throw new Error(t("TXT_CODE_42bcfe0c"));
@@ -98,7 +98,7 @@ onMounted(async () => {
       });
     }
     term = await initTerminal();
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     throw error;
   }

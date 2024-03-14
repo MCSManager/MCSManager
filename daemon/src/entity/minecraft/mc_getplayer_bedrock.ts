@@ -46,7 +46,7 @@ async function request(ip: string, port: number) {
       j("request timeout");
       try {
         client.close();
-      } catch (error) {}
+      } catch (error: any) {}
     }, 3000);
   });
 }
@@ -70,7 +70,7 @@ export default class MinecraftBedrockGetPlayersCommand extends InstanceCommand {
           current_players: info[4],
           max_players: info[5]
         };
-      } catch (error) {}
+      } catch (error: any) {}
     }
     return null;
   }

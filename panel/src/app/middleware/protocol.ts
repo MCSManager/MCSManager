@@ -20,7 +20,7 @@ export async function middleware(
   // Pass the next middleware, any errors and return data will be processed according to the response protocol
   try {
     await next();
-  } catch (error) {
+  } catch (error: any) {
     ctx.body = error;
   }
 

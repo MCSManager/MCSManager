@@ -88,7 +88,7 @@ function setLinuxSystemInfo() {
     info.totalmem = memTotal * 1024;
     info.memUsage = (info.totalmem - info.freemem) / info.totalmem;
     osUtils.cpuUsage((p) => (info.cpuUsage = p));
-  } catch (error) {
+  } catch (error: any) {
     // If the reading is wrong, the default general reading method is automatically used
     otherSystemInfo();
   }

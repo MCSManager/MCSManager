@@ -157,7 +157,7 @@ router.get(
     try {
       RemoteServiceSubsystem.getInstance(uuid).connect();
       ctx.body = true;
-    } catch (error) {
+    } catch (error: any) {
       ctx.body = error;
     }
   }

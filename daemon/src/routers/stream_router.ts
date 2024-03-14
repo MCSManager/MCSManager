@@ -37,7 +37,6 @@ routerApp.on("stream/auth", (ctx, data) => {
     if (!mission) throw new Error($t("TXT_CODE_stream_router.taskNotExist"));
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_stream_router.instanceNotExist"));
-
     // Auth success!
     streamLoginSuccessful(ctx, instance.instanceUuid);
     // Start forwarding output stream data to this Socket
@@ -47,7 +46,7 @@ routerApp.on("stream/auth", (ctx, data) => {
       InstanceSubsystem.stopForward(instance.instanceUuid, ctx.socket);
     });
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error, {
       notPrintErr: true
     });
@@ -59,6 +58,7 @@ routerApp.on("stream/detail", async (ctx) => {
   try {
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     protocol.response(ctx, {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -66,9 +66,8 @@ routerApp.on("stream/detail", async (ctx) => {
       config: instance.config,
       info: instance.info,
       watcher: instance.watchers.size
-      // processInfo
     });
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -79,8 +78,8 @@ routerApp.on("stream/input", async (ctx, data) => {
     const command = data.command;
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
-    await instance.exec(new SendCommand(command));
-  } catch (error) {
+    await instance?.exec(new SendCommand(command));
+  } catch (error: any) {
     // Ignore potential high frequency exceptions here
     // protocol.responseError(ctx, error);
   }
@@ -93,8 +92,8 @@ routerApp.on("stream/write", async (ctx, data) => {
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     // run without command execution
-    if (instance.process) instance.process.write(buf);
-  } catch (error) {
+    if (instance?.process) instance.process.write(buf);
+  } catch (error: any) {
     // Ignore potential high frequency exceptions here
     // protocol.responseError(ctx, error);
   }
@@ -109,14 +108,14 @@ routerApp.on("stream/resize", async (ctx, data) => {
   try {
     const instanceUuid = ctx.session?.stream?.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
-    instance.watchers.set(ctx.socket.id, {
+    instance?.watchers.set(ctx.socket.id, {
       terminalSize: {
         w: Number(data.w) || 0,
         h: Number(data.h) || 0
       }
     });
     if (instance) await instance.execPreset("resize");
-  } catch (error) {
+  } catch (error: any) {
     // protocol.responseError(ctx, error);
   }
 });

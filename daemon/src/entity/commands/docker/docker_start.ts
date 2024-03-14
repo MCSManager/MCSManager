@@ -32,14 +32,14 @@ interface IDockerProcessAdapterStartParam {
 export class DockerProcessAdapter extends EventEmitter implements IInstanceProcess {
   pid?: number | string;
 
-  private stream: NodeJS.ReadWriteStream;
+  private stream?: NodeJS.ReadWriteStream;
 
   constructor(public container: Docker.Container) {
     super();
   }
 
   // Once the program is actually started, no errors can block the next startup process
-  public async start(param?: IDockerProcessAdapterStartParam) {
+  public async start(param: IDockerProcessAdapterStartParam) {
     try {
       await this.container.start();
 
@@ -58,14 +58,14 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
       stream.on("data", (data) => this.emit("data", data));
       stream.on("error", (data) => this.emit("data", data));
       this.wait();
-    } catch (error) {
+    } catch (error: any) {
       this.kill();
       throw error;
     }
   }
 
   public write(data?: string) {
-    if (this.stream) this.stream.write(data);
+    if (this.stream && data) this.stream.write(data);
   }
 
   public async kill(s?: string) {
@@ -76,7 +76,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   public async destroy() {
     try {
       await this.container.remove();
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   private wait() {
@@ -101,7 +101,7 @@ export default class DockerStartCommand extends InstanceCommand {
     // Docker Image check
     try {
       await instance.forceExec(new DockerPullCommand());
-    } catch (error) {
+    } catch (error: any) {
       throw error;
     }
 
@@ -117,7 +117,7 @@ export default class DockerStartCommand extends InstanceCommand {
 
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
-    const portMap = instance.config.docker.ports;
+    const portMap = instance.config.docker.ports || [];
     const publicPortArray: any = {};
     const exposedPorts: any = {};
     for (const iterator of portMap) {
@@ -135,7 +135,7 @@ export default class DockerStartCommand extends InstanceCommand {
     }
 
     // resolve extra path mounts
-    const extraVolumes = instance.config.docker.extraVolumes;
+    const extraVolumes = instance.config.docker.extraVolumes || [];
     const extraBinds: { hostPath: string; containerPath: string }[] = [];
     for (const item of extraVolumes) {
       if (!item) throw new Error("实例容器额外挂载路径配置错误！请检查！");
@@ -237,7 +237,7 @@ export default class DockerStartCommand extends InstanceCommand {
       },
       NetworkingConfig: {
         EndpointsConfig: {
-          [instance.config.docker.networkMode]: {
+          [instance.config.docker.networkMode || "bridge"]: {
             Aliases: instance.config.docker.networkAliases
           }
         }

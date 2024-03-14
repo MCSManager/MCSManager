@@ -53,7 +53,7 @@ export class ProcessWrapper extends EventEmitter {
         try {
           this.emit("exit", code);
           this.destroy();
-        } catch (error) {}
+        } catch (error: any) {}
         if (timeTask) clearTimeout(timeTask);
         if (code != 0) return resolve(false);
         return resolve(true);
@@ -111,7 +111,7 @@ export class ProcessWrapper extends EventEmitter {
         this.process.kill("SIGTERM");
         this.process.kill("SIGKILL");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("[ProcessWrapper destroy() Error]", error);
     } finally {
       this.process = null;

@@ -60,7 +60,7 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
       }
     });
     if (showMsg) message.success(t("TXT_CODE_7f0c746d"));
-  } catch (error) {
+  } catch (error: any) {
     reportErrorMsg(t("TXT_CODE_6a365d01"));
   }
 };

@@ -45,7 +45,7 @@ const uploadMusic = async (type: UploadType) => {
       message.success(t("TXT_CODE_9d498b20"));
     }
     setMetaValue("musicUrl", musicUrl.value);
-  } catch (error) {}
+  } catch (error: any) {}
 };
 
 let wavesurfer: WaveSurfer | null = null;

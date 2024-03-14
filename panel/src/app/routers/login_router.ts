@@ -26,7 +26,7 @@ router.post(
     if (check(ctx)) return (ctx.body = "Logined");
     try {
       ctx.body = login(ctx, userName, passWord, code);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof TwoFactorError && !code) {
         ctx.body = "NEED_2FA";
         return;

@@ -86,7 +86,7 @@ export default class RemoteService {
       this.available = false;
       logger.warn($t("TXT_CODE_daemonInfo.authFailure", { v: daemonInfo }));
       return false;
-    } catch (error) {
+    } catch (error: any) {
       logger.warn($t("TXT_CODE_daemonInfo.authError", { v: daemonInfo }));
       logger.warn(error);
       return false;

@@ -11,10 +11,10 @@ export interface IProcessConfig {
   fileName: string;
   path: string;
   type: string;
-  info: string;
+  info: string | null;
   redirect: string;
   from?: string;
-  fromLink?: string;
+  fromLink?: string | null;
 }
 
 export class ProcessConfig {

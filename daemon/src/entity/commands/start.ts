@@ -51,7 +51,7 @@ export default class StartCommand extends InstanceCommand {
       await this.sleep();
 
       return await instance.execPreset("start", this.source);
-    } catch (error) {
+    } catch (error: any) {
       try {
         await instance.execPreset("kill");
       } catch (ignore) {}

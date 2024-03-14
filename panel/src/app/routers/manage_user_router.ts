@@ -34,7 +34,7 @@ router.del("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.Parameterized
       await userSystem.deleteInstance(iterator);
     }
     ctx.body = true;
-  } catch (error) {
+  } catch (error: any) {
     ctx.throw(500, $t("TXT_CODE_router.user.deleteFailure") as string);
   }
 });

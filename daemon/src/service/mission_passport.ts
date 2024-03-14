@@ -35,7 +35,7 @@ class MissionPassport {
   public getMission(password: string, missionName: string) {
     if (!this.missions.has(password)) return null;
     const m = this.missions.get(password);
-    if (m.name === missionName) return m;
+    if (m?.name === missionName) return m;
     return null;
   }
 

@@ -7,15 +7,15 @@ import InstanceCommand from "../base/command";
 import { commandStringToArray } from "../base/command_parser";
 import iconv from "iconv-lite";
 export default class GeneralUpdateCommand extends InstanceCommand {
-  private pid: number = null;
-  private process: ChildProcess = null;
+  private pid?: number;
+  private process?: ChildProcess;
 
   constructor() {
     super("GeneralUpdateCommand");
   }
 
   private stopped(instance: Instance) {
-    instance.asynchronousTask = null;
+    instance.asynchronousTask = undefined;
     instance.setLock(false);
     instance.status(Instance.STATUS_STOP);
   }
@@ -90,7 +90,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
           );
         }
       });
-    } catch (err) {
+    } catch (err: any) {
       this.stopped(instance);
       instance.println(
         $t("TXT_CODE_general_update.update"),
@@ -111,7 +111,9 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.killProcess")
     );
-    killProcess(this.pid, this.process);
-    instance.asynchronousTask = null;
+    if (this.pid && this.process) {
+      killProcess(this.pid, this.process);
+    }
+    instance.asynchronousTask = undefined;
   }
 }

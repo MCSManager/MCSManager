@@ -60,7 +60,7 @@ const quickOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       },
@@ -79,7 +79,7 @@ const quickOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       },
@@ -105,7 +105,7 @@ const instanceOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       },
@@ -123,7 +123,7 @@ const instanceOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       },
@@ -145,7 +145,7 @@ const instanceOperations = computed(() =>
               time: new Date().getTime()
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           reportErrorMsg(error);
         }
       },
@@ -170,7 +170,7 @@ onMounted(async () => {
         daemonId
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     throw error;
   }
