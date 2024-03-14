@@ -252,7 +252,7 @@ export default class DockerStartCommand extends InstanceCommand {
       h: instance.config.terminalOption.ptyWindowCol
     });
 
-    instance.println("Container", t("TXT_CODE_e76e49e9") + workingDir);
+    instance.println("CONTAINER", t("TXT_CODE_e76e49e9") + workingDir);
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_instance.successful", {

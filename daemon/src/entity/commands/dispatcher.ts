@@ -16,6 +16,17 @@ import RconCommand from "./steam/rcon_command";
 import DockerResizeCommand from "./docker/docker_pty_resize";
 import PtyResizeCommand from "./pty/pty_resize";
 
+// If you add a new "Preset", Please add the definition here.
+export type IPresetCommand =
+  | "start"
+  | "stop"
+  | "restart"
+  | "kill"
+  | "update"
+  | "getPlayer"
+  | "command"
+  | "resize";
+
 // Instance function dispatcher
 // Dispatch and assign different functions according to different types
 export default class FunctionDispatcher extends InstanceCommand {

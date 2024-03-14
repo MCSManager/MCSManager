@@ -39,7 +39,11 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
     process.stdout.on("data", (text) => this.emit("data", text));
     process.stderr.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
-    this.initNamedPipe();
+    try {
+      this.initNamedPipe();
+    } catch (error) {
+      logger.error(`Init Pipe Err: ${pipeName}, ${error}`);
+    }
   }
 
   private initNamedPipe() {

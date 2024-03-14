@@ -1,12 +1,6 @@
 import { $t } from "../../i18n";
 import Instance from "../instance/instance";
-import logger from "../../service/log";
-import fs from "fs-extra";
-
 import InstanceCommand from "./base/command";
-import * as childProcess from "child_process";
-import FunctionDispatcher from "./dispatcher";
-import { start } from "repl";
 
 class StartupError extends Error {
   constructor(msg: string) {
@@ -50,7 +44,7 @@ export default class StartCommand extends InstanceCommand {
       const currentTimestamp = Date.now();
       instance.startTimestamp = currentTimestamp;
 
-      instance.print("\n\n");
+      instance.print("\n");
       instance.println("INFO", $t("TXT_CODE_start.startInstance"));
 
       // prevent the dead-loop from starting
@@ -58,6 +52,9 @@ export default class StartCommand extends InstanceCommand {
 
       return await instance.execPreset("start", this.source);
     } catch (error) {
+      try {
+        await instance.execPreset("kill");
+      } catch (ignore) {}
       instance.releaseResources();
       instance.status(Instance.STATUS_STOP);
       instance.failure(error);

@@ -8,7 +8,7 @@ import InstanceConfig from "./Instance_config";
 import StorageSubsystem from "../../common/system_storage";
 import { LifeCycleTaskManager } from "./life_cycle";
 import { PresetCommandManager } from "./preset";
-import FunctionDispatcher from "../commands/dispatcher";
+import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
 import { configureEntityParams } from "common";
@@ -347,18 +347,18 @@ export default class Instance extends EventEmitter {
   }
 
   // execute the preset command action
-  async execPreset(action: string, p?: any) {
+  async execPreset(action: IPresetCommand, p?: any) {
     if (this.presetCommandManager) {
       return await this.presetCommandManager.execPreset(action, p);
     }
     throw new Error(`Preset Manager does not exist`);
   }
 
-  setPreset(action: string, cmd: InstanceCommand) {
+  setPreset(action: IPresetCommand, cmd: InstanceCommand) {
     this.presetCommandManager.setPreset(action, cmd);
   }
 
-  getPreset(action: string) {
+  getPreset(action: IPresetCommand) {
     return this.presetCommandManager.getPreset(action);
   }
 

@@ -195,7 +195,7 @@
   "TXT_CODE_router.user.passwordCheck": "密码不规范，必须为拥有大小写字母，数字，长度在9到36之间",
   "TXT_CODE_start.instanceMaturity": "实例使用到期时间已到，无法再启动实例",
   "TXT_CODE_start.instanceNotDown": "实例未处于关闭状态，无法再进行启动",
-  "TXT_CODE_start.startInstance": "正在准备启动实例...",
+  "TXT_CODE_start.startInstance": "正在启动...",
   "TXT_CODE_stream_router.IGNOREAccess": "非法访问",
   "TXT_CODE_stream_router.authSuccess": "会话 {{id}} {{address}} 数据流通道身份验证成功",
   "TXT_CODE_stream_router.disconnect": "会话 {{id}} {{address}} 已与 {{uuid}} 断开数据通道",
