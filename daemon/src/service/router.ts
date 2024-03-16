@@ -17,7 +17,7 @@ class RouterApp extends EventEmitter {
     try {
       // service logic routing trigger point
       super.emit(event, ctx, data);
-    } catch (error) {
+    } catch (error: any) {
       responseError(ctx, error);
     }
     return this;

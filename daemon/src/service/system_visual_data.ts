@@ -4,7 +4,7 @@ import { systemInfo } from "common";
 class LineQueue<T> {
   private readonly arr = new Array<T>();
 
-  constructor(public readonly maxSize: number, defaultValue?: T) {
+  constructor(public readonly maxSize: number, defaultValue: T) {
     for (let index = 0; index < maxSize; index++) {
       this.arr.push(defaultValue);
     }

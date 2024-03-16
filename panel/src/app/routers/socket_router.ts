@@ -9,7 +9,7 @@ export default class WebSocketRouter {
   private routers(socket: Socket) {
     socket.use((event, next) => {
       socket.disconnect(); // temporarily disable Websocket
-      return next(null);
+      return next();
     });
   }
 }

@@ -3,6 +3,7 @@ import { reactive, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import { notification } from "ant-design-vue";
 import { imageList } from "@/services/apis/envImage";
+import { reportErrorMsg } from "@/tools/validator";
 
 const props = defineProps<{
   dockerFile: string;
@@ -23,7 +24,7 @@ const { execute } = imageList();
 const submit = async () => {
   try {
     if (!options.dockerFile || !options.name || !options.version)
-      return reportError(t("TXT_CODE_2764f197"));
+      return reportErrorMsg(t("TXT_CODE_2764f197"));
     await execute({
       params: {
         daemonId: props.daemonId
@@ -42,7 +43,7 @@ const submit = async () => {
     emit("close");
   } catch (err: any) {
     console.error(err.message);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

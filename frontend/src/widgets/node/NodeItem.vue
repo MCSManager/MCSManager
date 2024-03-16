@@ -9,14 +9,15 @@ import {
   BlockOutlined,
   FolderOpenOutlined,
   ReloadOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  CloudServerOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
 import { connectNode } from "@/services/apis";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { LayoutCard } from "@/types";
@@ -59,8 +60,8 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
       }
     });
     if (showMsg) message.success(t("TXT_CODE_7f0c746d"));
-  } catch (error) {
-    reportError(t("TXT_CODE_6a365d01"));
+  } catch (error: any) {
+    reportErrorMsg(t("TXT_CODE_6a365d01"));
   }
 };
 
@@ -70,6 +71,11 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_f52079a0"),
     value: `${node.ip}:${node.port}`
+  },
+  {
+    title: t("TXT_CODE_c9609785"),
+    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
+    warn: node.available === false
   },
   {
     title: t("TXT_CODE_593ee330"),
@@ -83,10 +89,7 @@ const detailList = (node: ComputedNodeInfo) => [
     title: t("TXT_CODE_3d602459"),
     value: node.instanceStatus
   },
-  {
-    title: t("TXT_CODE_c9609785"),
-    value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e")
-  },
+
   {
     title: t("TXT_CODE_3d0885c0"),
     value: node.platformText
@@ -174,8 +177,12 @@ const nodeOperations = computed(() =>
   <div style="height: 100%" class="container">
     <CardPanel style="height: 100%">
       <template #title>
-        <ProfileOutlined />
-        {{ item?.remarks || item?.ip }}
+        <div class="flex-center">
+          <span :class="{ 'color-danger': !item?.available }">
+            <CloudServerOutlined />
+            {{ item?.remarks || item?.ip }}
+          </span>
+        </div>
       </template>
       <template v-if="item" #operator>
         <span
@@ -217,7 +224,7 @@ const nodeOperations = computed(() =>
           class="mt-24"
           :cpu-data="item.cpuChartData ?? []"
           :mem-data="item.memChartData ?? []"
-        ></NodeSimpleChart>
+        />
       </template>
     </CardPanel>
   </div>

@@ -3,7 +3,7 @@ import { ref } from "vue";
 import type { Ref } from "vue";
 import ActionButton from "@/components/ActionButton.vue";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 
 import { $t as t } from "@/lang/i18n";
@@ -43,7 +43,7 @@ const addLink = ref({
   },
   finish: () => {
     if (addLink.value.title == "" || addLink.value.link == "")
-      return reportError(t("TXT_CODE_633415e2"));
+      return reportErrorMsg(t("TXT_CODE_633415e2"));
     cardData.value.push({
       title: addLink.value.title,
       link: addLink.value.link

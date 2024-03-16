@@ -1,11 +1,10 @@
-import dockerode from "dockerode";
 import Docker from "dockerode";
 
 export class DockerManager {
   // 1=creating 2=creating completed -1=creating error
   public static readonly builderProgress = new Map<string, number>();
 
-  public docker: Docker = null;
+  public docker: Docker;
 
   constructor(p?: any) {
     this.docker = new Docker(p);
@@ -41,7 +40,7 @@ export class DockerManager {
       });
       // Set the current image creation progress
       DockerManager.setBuilderProgress(dockerImageName, 2);
-    } catch (error) {
+    } catch (error: any) {
       // Set the current image creation progress
       DockerManager.setBuilderProgress(dockerImageName, -1);
     }

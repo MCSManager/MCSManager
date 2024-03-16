@@ -47,7 +47,7 @@ routerApp.on("info/setting", async (ctx, data) => {
     globalConfiguration.config.language = language;
     globalConfiguration.store();
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });

@@ -96,7 +96,7 @@ export default class FileManager {
         } else {
           dirs.push(commonInfo);
         }
-      } catch (error) {
+      } catch (error: any) {
         // Ignore a file information retrieval error to prevent an overall error
       }
     });
@@ -130,14 +130,14 @@ export default class FileManager {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
     const buf = await fs.readFile(absPath);
-    const text = iconv.decode(buf, this.fileCode);
+    const text = iconv.decode(buf, this.fileCode || "utf-8");
     return text;
   }
 
   async writeFile(fileName: string, data: string) {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
-    const buf = iconv.encode(data, this.fileCode);
+    const buf = iconv.encode(data, this.fileCode || "utf-8");
     return await fs.writeFile(absPath, buf);
   }
 
@@ -207,7 +207,7 @@ export default class FileManager {
         filesPath.push(this.toAbsolutePath(iterator));
         try {
           totalSize += fs.statSync(this.toAbsolutePath(iterator))?.size;
-        } catch (error) {}
+        } catch (error: any) {}
       }
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)

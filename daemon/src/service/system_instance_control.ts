@@ -65,7 +65,7 @@ class InstanceControlSubsystem {
       const config = StorageSubsystem.load("TaskConfig", TaskConfig, uuid) as TaskConfig;
       try {
         this.registerScheduleJob(config, false);
-      } catch (error) {
+      } catch (error: any) {
         // Some scheduled tasks may be left, but the upper limit will not change
         // Ignore the scheduled task registration at startup
       }
@@ -77,7 +77,8 @@ class InstanceControlSubsystem {
     if (!this.taskMap.has(key)) {
       this.taskMap.set(key, []);
     }
-    if (this.taskMap.get(key)?.length >= 8)
+    const registeredTask = this.taskMap.get(key);
+    if (registeredTask && registeredTask?.length >= 8)
       throw new Error($t("TXT_CODE_system_instance_control.execLimit"));
     if (!this.checkTask(key, task.name))
       throw new Error($t("TXT_CODE_system_instance_control.existRepeatTask"));
@@ -138,7 +139,7 @@ class InstanceControlSubsystem {
       });
     }
     const newTask = new Task(task, job);
-    this.taskMap.get(key).push(newTask);
+    this.taskMap.get(key)?.push(newTask);
     if (needStore) {
       StorageSubsystem.store("TaskConfig", `${key}_${newTask.config.name}`, newTask.config);
     }
@@ -190,7 +191,7 @@ class InstanceControlSubsystem {
       if (task.action === "kill") {
         return await instance.exec(new KillCommand());
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error(
         $t("TXT_CODE_system_instance_control.execCmdErr", {
           uuid: task.instanceUuid,
@@ -215,9 +216,9 @@ class InstanceControlSubsystem {
   }
 
   private deleteTask(key: string, name: string) {
-    this.taskMap.get(key).forEach((v, index, arr) => {
-      if (v.config.name === name) {
-        v.job.cancel();
+    this.taskMap.get(key)?.forEach((v, index, arr) => {
+      if (v?.config?.name === name) {
+        v?.job?.cancel();
         arr.splice(index, 1);
       }
     });
@@ -226,7 +227,7 @@ class InstanceControlSubsystem {
 
   private checkTask(key: string, name: string) {
     let f = true;
-    this.taskMap.get(key).forEach((v, index, arr) => {
+    this.taskMap?.get(key)?.forEach((v, index, arr) => {
       if (v.config.name === name) f = false;
     });
     return f;
@@ -235,9 +236,9 @@ class InstanceControlSubsystem {
   private updateTaskConfig(key: string, name: string, data: IScheduleTask) {
     const list = this.taskMap.get(key);
     for (const index in list) {
-      const t = list[index];
+      const t = list[index as any];
       if (t.config.name === name) {
-        list[index].config = data;
+        list[index as any].config = data;
         break;
       }
     }

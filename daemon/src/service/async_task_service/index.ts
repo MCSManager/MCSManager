@@ -19,8 +19,8 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
     super();
   }
 
-  public taskId: string;
-  public type: string;
+  public taskId: string = "";
+  public type: string = "";
 
   // 0=stop 1=running -1=error
   protected _status = 0;

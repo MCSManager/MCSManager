@@ -125,13 +125,14 @@ routerApp.on("instance/detail", async (ctx, data) => {
   try {
     const instanceUuid = data.instanceUuid;
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     let processInfo = null;
     let space = null;
     try {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
-      space = await instance.usedSpace(null, 2);
-    } catch (err) {}
+      space = await instance.usedSpace();
+    } catch (err: any) {}
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -141,7 +142,7 @@ routerApp.on("instance/detail", async (ctx, data) => {
       space,
       processInfo
     });
-  } catch (err) {
+  } catch (err: any) {
     protocol.error(ctx, "instance/detail", { err: err.message });
   }
 });
@@ -155,7 +156,7 @@ routerApp.on("instance/new", (ctx, data) => {
       instanceUuid: newInstance.instanceUuid,
       config: newInstance.config
     });
-  } catch (err) {
+  } catch (err: any) {
     protocol.error(ctx, "instance/new", { instanceUuid: null, err: err.message });
   }
 });
@@ -165,9 +166,9 @@ routerApp.on("instance/update", (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   const config = data.config;
   try {
-    InstanceSubsystem.getInstance(instanceUuid).parameters(config);
+    InstanceSubsystem.getInstance(instanceUuid)?.parameters(config);
     protocol.msg(ctx, "instance/update", { instanceUuid });
-  } catch (err) {
+  } catch (err: any) {
     protocol.error(ctx, "instance/update", { instanceUuid: instanceUuid, err: err.message });
   }
 });
@@ -196,7 +197,7 @@ routerApp.on("instance/forward", (ctx, data) => {
       InstanceSubsystem.stopForward(targetInstanceUuid, ctx.socket);
     }
     protocol.msg(ctx, "instance/forward", { instanceUuid: targetInstanceUuid });
-  } catch (err) {
+  } catch (err: any) {
     protocol.error(ctx, "instance/forward", { instanceUuid: targetInstanceUuid, err: err.message });
   }
 });
@@ -207,9 +208,9 @@ routerApp.on("instance/open", async (ctx, data) => {
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
-      await instance.exec(new StartCommand(ctx.socket.id));
+      await instance!.exec(new StartCommand(ctx.socket.id));
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
-    } catch (err) {
+    } catch (err: any) {
       if (!disableResponse) {
         logger.error(
           $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }),
@@ -227,10 +228,11 @@ routerApp.on("instance/stop", async (ctx, data) => {
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       await instance.exec(new StopCommand());
       //Note: Removing this reply will cause the front-end response to be slow, because the front-end will wait for the panel-side message to be forwarded
       if (!disableResponse) protocol.msg(ctx, "instance/stop", { instanceUuid });
-    } catch (err) {
+    } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/stop", { instanceUuid: instanceUuid, err: err.message });
     }
@@ -243,9 +245,10 @@ routerApp.on("instance/restart", async (ctx, data) => {
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       await instance.exec(new RestartCommand());
       if (!disableResponse) protocol.msg(ctx, "instance/restart", { instanceUuid });
-    } catch (err) {
+    } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/restart", { instanceUuid: instanceUuid, err: err.message });
     }
@@ -261,7 +264,7 @@ routerApp.on("instance/kill", async (ctx, data) => {
     try {
       await instance.forceExec(new KillCommand());
       if (!disableResponse) protocol.msg(ctx, "instance/kill", { instanceUuid });
-    } catch (err) {
+    } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/kill", { instanceUuid: instanceUuid, err: err.message });
     }
@@ -275,9 +278,10 @@ routerApp.on("instance/command", async (ctx, data) => {
   const command = data.command || "";
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   try {
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     await instance.exec(new SendCommand(command));
     if (!disableResponse) protocol.msg(ctx, "instance/command", { instanceUuid });
-  } catch (err) {
+  } catch (err: any) {
     if (!disableResponse)
       protocol.error(ctx, "instance/command", { instanceUuid: instanceUuid, err: err.message });
   }
@@ -290,7 +294,7 @@ routerApp.on("instance/delete", (ctx, data) => {
   for (const instanceUuid of instanceUuids) {
     try {
       InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
-    } catch (err) {}
+    } catch (err: any) {}
   }
   protocol.msg(ctx, "instance/delete", instanceUuids);
 });
@@ -402,6 +406,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
   const result: any[] = [];
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     const fileManager = new FileManager(instance.absoluteCwdPath());
     for (const filePath of files) {
       if (fileManager.check(filePath)) {
@@ -412,7 +417,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
       }
     }
     protocol.response(ctx, result);
-  } catch (err) {
+  } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });
@@ -425,6 +430,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   const fileType = data.type;
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     const fileManager = new FileManager(instance.absoluteCwdPath());
     if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
     const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
@@ -443,7 +449,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
       const json = processConfig.read();
       return protocol.response(ctx, json);
     }
-  } catch (err) {
+  } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });
@@ -460,7 +466,7 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
     protocol.responseError(ctx, new Error($t("TXT_CODE_Instance_router.terminalLogNotExist")), {
       notPrintErr: true
     });
-  } catch (err) {
+  } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });

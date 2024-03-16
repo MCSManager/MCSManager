@@ -29,7 +29,7 @@ router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // Update panel configuration items
 router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }), async (ctx) => {
   const config = ctx.request.body;
-  if (config) {
+  if (config && systemConfig) {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
     if (config.crossDomain != null) systemConfig.crossDomain = config.crossDomain;
@@ -61,7 +61,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
 // Update config when install
 router.put("/install", async (ctx) => {
   const config = ctx.request.body;
-  if (userSystem.objects.size === 0) {
+  if (userSystem.objects.size === 0 && systemConfig) {
     if (config.language != null) {
       logger.warn("Language change:", config.language);
       systemConfig.language = String(config.language);
@@ -98,11 +98,11 @@ router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Upload file to asserts directory, only administrator can upload
 router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  const tmpFiles = ctx.request.files.file;
+  const tmpFiles = ctx.request.files?.file;
   if (!tmpFiles || tmpFiles instanceof Array) throw new Error($t("TXT_CODE_e4d6cc20"));
   if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error($t("TXT_CODE_1a499109"));
   const tmpFile = tmpFiles;
-  const newFileName = v4() + path.extname(tmpFile.name);
+  const newFileName = v4() + path.extname(tmpFile?.name || "");
   const saveDirPath = path.join(process.cwd(), SAVE_DIR_PATH);
   if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
   await fs.move(tmpFile.path, path.join(saveDirPath, newFileName));

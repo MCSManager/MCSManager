@@ -5,7 +5,7 @@ import { t } from "@/lang/i18n";
 import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import NodeItem from "./node/NodeItem.vue";
 import { useRemoteNode } from "../hooks/useRemoteNode";
 import NodeDetailDialog from "./node/NodeDetailDialog.vue";
@@ -32,7 +32,7 @@ const refresh = async () => {
     await refreshOverviewInfo();
     message.success(t("TXT_CODE_fbde647e"));
   } catch (error: any) {
-    reportError(error.message);
+    reportErrorMsg(error.message);
   } finally {
     refreshLoading.value = false;
   }

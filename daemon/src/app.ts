@@ -51,7 +51,6 @@ import * as router from "./service/router";
 import * as koa from "./service/http";
 import * as protocol from "./service/protocol";
 import InstanceSubsystem from "./service/system_instance";
-import { initDependent } from "./service/install";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
 import "./service/system_visual_data";
@@ -85,9 +84,6 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
 });
-
-// Initialize optional dependencies
-initDependent();
 
 // Initialize application instance system
 try {

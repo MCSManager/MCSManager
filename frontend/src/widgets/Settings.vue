@@ -4,12 +4,15 @@ import { getCurrentLang, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { Modal, message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import {
   BankOutlined,
   BookOutlined,
+  BugOutlined,
   GithubOutlined,
   LockOutlined,
+  MessageOutlined,
+  MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
   QuestionCircleOutlined
@@ -21,6 +24,7 @@ import { computed } from "vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { arrayFilter } from "../tools/array";
 
 defineProps<{
   card: LayoutCard;
@@ -48,7 +52,7 @@ const submit = async () => {
       message.success(t("TXT_CODE_a7907771"));
       setTimeout(() => window.location.reload(), 600);
     } catch (error: any) {
-      reportError(error);
+      reportErrorMsg(error);
     }
   }
 };
@@ -99,12 +103,28 @@ const allYesNo = [
   }
 ];
 
-const aboutLinks = [
+const aboutLinks = arrayFilter([
   {
     title: "GitHub",
     icon: GithubOutlined,
     url: "https://github.com/MCSManager/MCSManager"
   },
+
+  {
+    title: t("TXT_CODE_46cb40d5"),
+    icon: MoneyCollectOutlined,
+    url: "https://afdian.net/a/mcsmanager",
+    condition: () => isCN()
+  },
+  {
+    title: t("TXT_CODE_46cb40d5"),
+    icon: MoneyCollectOutlined,
+    url: "https://www.patreon.com/mcsmanager",
+    condition: () => !isCN()
+  }
+]);
+
+const contacts = arrayFilter([
   {
     title: t("TXT_CODE_41dd4d19"),
     icon: BankOutlined,
@@ -117,14 +137,15 @@ const aboutLinks = [
   },
   {
     title: t("TXT_CODE_26407d1f"),
-    icon: BookOutlined,
+    icon: BugOutlined,
     url: "https://github.com/MCSManager/MCSManager/issues"
+  },
+  {
+    title: "Discord",
+    icon: MessageOutlined,
+    url: "https://discord.gg/BNpYMVX7Cd"
   }
-];
-
-const isZhCN = computed(() => {
-  return getCurrentLang().toLowerCase() === "zh_cn";
-});
+]);
 
 const uploadBackground = async () => {
   const body = document.querySelector("body");
@@ -144,7 +165,7 @@ const handleSaveBgUrl = async (url?: string) => {
     async onOk() {
       const cfg = await getSettingsConfig();
       if (!cfg?.theme) {
-        return reportError(t("TXT_CODE_b89780e2"));
+        return reportErrorMsg(t("TXT_CODE_b89780e2"));
       }
       cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
       await setSettingsConfig(cfg);
@@ -398,6 +419,11 @@ onMounted(async () => {
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>
+              <a-typography-paragraph>
+                <p>
+                  {{ $t("TXT_CODE_d0c670df") }}
+                </p>
+              </a-typography-paragraph>
               <div class="pb-4 flex">
                 <div v-for="item in aboutLinks" :key="item.url" class="mr-12 mb-12">
                   <a :href="item.url" target="_blank">
@@ -410,16 +436,38 @@ onMounted(async () => {
               </div>
               <a-typography-paragraph>
                 <p>
-                  {{ $t("TXT_CODE_d0c670df") }}
+                  {{ $t("TXT_CODE_97433ac4") }}
                 </p>
-                <p v-if="isZhCN">
-                  <span>
-                    {{ $t("TXT_CODE_d2c79249") }}
-                    <a href="https://afdian.net/a/mcsmanager" target="_blank">
-                      {{ t("TXT_CODE_e4794d20") }}
-                    </a>
-                  </span>
+              </a-typography-paragraph>
+              <div class="pb-4 flex">
+                <div v-for="item in contacts" :key="item.url" class="mr-12 mb-12">
+                  <a :href="item.url" target="_blank">
+                    <a-button>
+                      <component :is="item.icon" />
+                      {{ item.title }}
+                    </a-button>
+                  </a>
+                </div>
+              </div>
+              <a-typography-paragraph>
+                <p>
+                  {{ $t("TXT_CODE_e57bd50f") }}
                 </p>
+                <pre style="font-size: 13px">
+Copyright 2024 MCSManager Dev
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</pre
+                >
               </a-typography-paragraph>
             </div>
           </template>

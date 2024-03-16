@@ -3,7 +3,7 @@ import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import { panelInstall } from "@/services/apis";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useAppStateStore } from "@/stores/useAppStateStore";
@@ -43,7 +43,7 @@ const createUser = async () => {
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
-    reportError(err.message);
+    reportErrorMsg(err.message);
   } finally {
     installLoading.value = false;
   }

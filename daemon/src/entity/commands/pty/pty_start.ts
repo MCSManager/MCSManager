@@ -32,19 +32,23 @@ const GO_PTY_MSG_TYPE = {
 
 // process adapter
 export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProcess {
-  private pipeClient: Writable;
+  private pipeClient?: Writable;
 
   constructor(private process: ChildProcess, public pid: number, public pipeName: string) {
     super();
-    process.stdout.on("data", (text) => this.emit("data", text));
-    process.stderr.on("data", (text) => this.emit("data", text));
+    process.stdout?.on("data", (text) => this.emit("data", text));
+    process.stderr?.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
-    this.initNamedPipe();
+    try {
+      this.initNamedPipe();
+    } catch (error: any) {
+      logger.error(`Init Pipe Err: ${pipeName}, ${error}`);
+    }
   }
 
   private initNamedPipe() {
     const fd = fs.openSync(this.pipeName, "w");
-    const writePipe = fs.createWriteStream(null, { fd });
+    const writePipe = fs.createWriteStream("", { fd });
     writePipe.on("close", () => {});
     writePipe.on("end", () => {});
     writePipe.on("error", (err) => {
@@ -66,11 +70,11 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
   }
 
   public writeToNamedPipe(data: Buffer) {
-    this.pipeClient.write(data);
+    this.pipeClient?.write(data);
   }
 
   public write(data?: string) {
-    return this.process.stdin.write(data);
+    return this.process.stdin?.write(data);
   }
 
   public kill(s?: any) {
@@ -87,7 +91,7 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
         this.process.stderr.removeAllListeners(eventName);
     if (this.process)
       for (const eventName of this.process.eventNames())
-        this.process.stdout.removeAllListeners(eventName);
+        this.process.stdout?.removeAllListeners(eventName);
     if (this.pipeClient)
       for (const eventName of this.pipeClient.eventNames())
         this.pipeClient.removeAllListeners(eventName);
@@ -122,7 +126,7 @@ export default class PtyStartCommand extends InstanceCommand {
           const cfg = JSON.parse(line) as IPtySubProcessCfg;
           if (cfg.pid == null) throw new Error("Error");
           r(cfg);
-        } catch (error) {
+        } catch (error: any) {
           r(errConfig);
         }
       });

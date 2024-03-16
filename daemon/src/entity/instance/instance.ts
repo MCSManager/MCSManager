@@ -8,7 +8,7 @@ import InstanceConfig from "./Instance_config";
 import StorageSubsystem from "../../common/system_storage";
 import { LifeCycleTaskManager } from "./life_cycle";
 import { PresetCommandManager } from "./preset";
-import FunctionDispatcher from "../commands/dispatcher";
+import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
 import { configureEntityParams } from "common";
@@ -44,13 +44,13 @@ export default class Instance extends EventEmitter {
   public static readonly TYPE_MINECRAFT_JAVA = "minecraft/java";
   public static readonly TYPE_MINECRAFT_BEDROCK = "minecraft/bedrock";
 
-  public instanceStatus: number;
-  public instanceUuid: string;
-  public lock: boolean;
-  public startCount: number;
+  public instanceStatus: number = Instance.STATUS_STOP;
+  public instanceUuid: string = "";
+  public lock: boolean = false;
+  public startCount: number = 0;
   public startTimestamp: number = 0;
-  public asynchronousTask: IExecutable = null;
-  public openFrp: OpenFrp;
+  public asynchronousTask?: IExecutable;
+  public openFrp?: OpenFrp;
 
   public readonly lifeCycleTaskManager = new LifeCycleTaskManager(this);
   public readonly presetCommandManager = new PresetCommandManager(this);
@@ -68,7 +68,7 @@ export default class Instance extends EventEmitter {
 
   public watchers: Map<string, IWatcherInfo> = new Map();
 
-  public process: IInstanceProcess;
+  public process?: IInstanceProcess;
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
@@ -85,7 +85,7 @@ export default class Instance extends EventEmitter {
 
     this.config = config;
 
-    this.process = null;
+    this.process = undefined;
     this.startCount = 0;
   }
 
@@ -303,10 +303,10 @@ export default class Instance extends EventEmitter {
   releaseResources() {
     try {
       this.process?.destroy();
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Instance ${this.instanceUuid}, Release resources error: ${error}`);
     } finally {
-      this.process = null;
+      this.process = undefined;
     }
   }
 
@@ -315,7 +315,7 @@ export default class Instance extends EventEmitter {
     if (this.process && this.process.pid) {
       this.process.kill("SIGKILL");
     }
-    this.process = null;
+    this.process = undefined;
   }
 
   fullTime() {
@@ -324,7 +324,7 @@ export default class Instance extends EventEmitter {
   }
 
   absoluteCwdPath() {
-    if (!this.config || !this.config.cwd) return null;
+    if (!this.config || !this.config.cwd) throw new Error("Instance config error, cwd is Null!");
     if (path.isAbsolute(this.config.cwd)) return path.normalize(this.config.cwd);
     return path.normalize(path.join(process.cwd(), this.config.cwd));
   }
@@ -347,18 +347,18 @@ export default class Instance extends EventEmitter {
   }
 
   // execute the preset command action
-  async execPreset(action: string, p?: any) {
+  async execPreset(action: IPresetCommand, p?: any) {
     if (this.presetCommandManager) {
       return await this.presetCommandManager.execPreset(action, p);
     }
     throw new Error(`Preset Manager does not exist`);
   }
 
-  setPreset(action: string, cmd: InstanceCommand) {
+  setPreset(action: IPresetCommand, cmd: InstanceCommand) {
     this.presetCommandManager.setPreset(action, cmd);
   }
 
-  getPreset(action: string) {
+  getPreset(action: IPresetCommand) {
     return this.presetCommandManager.getPreset(action);
   }
 

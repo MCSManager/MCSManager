@@ -12,7 +12,7 @@ export class UniversalRemoteSubsystem<T> {
     this.services.set(uuid, object);
   }
 
-  getInstance(uuid: string): T {
+  getInstance(uuid: string) {
     return this.services.get(uuid);
   }
 

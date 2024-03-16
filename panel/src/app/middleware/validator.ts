@@ -67,7 +67,7 @@ export default function (parameter: IParam) {
       if (parameter["body"] && !check(ctx.request.body, parameter["body"])) checkBool = false;
       if (checkBool) return await next();
       return verificationFailed(ctx);
-    } catch (err) {
+    } catch (err: any) {
       const error: Error = err;
       ctx.status = 500;
       ctx.body = `${error.message}`;

@@ -27,7 +27,7 @@ import type {
   FileStatus,
   Permission
 } from "@/types/fileManager";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
@@ -95,7 +95,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           dialog.value.mode != "unzip" &&
           dialog.value.mode != "permission"
         ) {
-          return reportError(t("TXT_CODE_4ea93630"));
+          return reportErrorMsg(t("TXT_CODE_4ea93630"));
         }
         resolve(dialog.value.value);
         dialog.value.show = false;
@@ -126,7 +126,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       operationForm.value.total = res.value?.total || 0;
     } catch (error: any) {
       if (throwErr) throw error;
-      return reportError(error.message);
+      return reportErrorMsg(error.message);
     }
   };
 
@@ -155,7 +155,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getFileList();
       message.success(t("TXT_CODE_d28c05df"));
     } catch (error: any) {
-      return reportError(error.message);
+      return reportErrorMsg(error.message);
     }
   };
 
@@ -167,7 +167,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     } else {
       if (!selectionData.value || selectionData.value.length === 0)
-        return reportError(t("TXT_CODE_b152cd75"));
+        return reportErrorMsg(t("TXT_CODE_b152cd75"));
       clipboard.value = {
         type,
         value: selectionData.value?.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
@@ -179,7 +179,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const paste = async () => {
     if (!clipboard?.value?.type || !clipboard.value.value)
-      return reportError(t("TXT_CODE_b152cd75"));
+      return reportErrorMsg(t("TXT_CODE_b152cd75"));
     const execute = clipboard.value.type == "copy" ? copyFileApi().execute : moveFileApi().execute;
     try {
       await execute({
@@ -199,7 +199,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       clearSelected();
       clipboard.value.value = [];
     } catch (error: any) {
-      reportError(error.message);
+      reportErrorMsg(error.message);
     }
   };
 
@@ -248,7 +248,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           await getFileList();
         }
       } catch (error: any) {
-        reportError(error.message);
+        reportErrorMsg(error.message);
       }
     };
 
@@ -262,7 +262,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
           // more file
-          if (!selectionData.value) return reportError(t("TXT_CODE_f41ad30a"));
+          if (!selectionData.value) return reportErrorMsg(t("TXT_CODE_f41ad30a"));
           await useDeleteFileApi(
             selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
           );
@@ -277,7 +277,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const zipFile = async () => {
     if (!selectionData.value || selectionData.value.length === 0)
-      return reportError(t("TXT_CODE_b152cd75"));
+      return reportErrorMsg(t("TXT_CODE_b152cd75"));
     const filename = await openDialog(t("TXT_CODE_f8a15a94"), t("TXT_CODE_366bad15"), "", "zip");
     const { execute } = compressFileApi();
     const loadingDialog = await openLoadingDialog(
@@ -302,7 +302,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getFileList();
     } catch (error: any) {
       message.error(t("TXT_CODE_dba9bf61"));
-      reportError(error.message);
+      reportErrorMsg(error.message);
     } finally {
       loadingDialog.cancel();
     }
@@ -336,7 +336,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getFileList();
     } catch (error: any) {
       message.error(t("TXT_CODE_26d7316f"));
-      reportError(error.message);
+      reportErrorMsg(error.message);
     } finally {
       loadingDialog.cancel();
     }
@@ -378,7 +378,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     } catch (err: any) {
       console.error(err);
       percentComplete.value = 0;
-      return reportError(err.response?.data || err.message);
+      return reportErrorMsg(err.response?.data || err.message);
     }
   };
 
@@ -416,7 +416,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       await getFileList(true);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
-      return reportError(error.message);
+      return reportErrorMsg(error.message);
     } finally {
       spinning.value = false;
     }
@@ -440,13 +440,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       );
     } catch (err: any) {
       console.error(err);
-      return reportError(err.message);
+      return reportErrorMsg(err.message);
     }
   };
 
   const handleChangeDir = async (dir: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
-      return reportError(t("TXT_CODE_96281410"));
+      return reportErrorMsg(t("TXT_CODE_96281410"));
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     await getFileList();
@@ -475,7 +475,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       }
     } catch (err: any) {
       console.error(err);
-      return reportError(err.message);
+      return reportErrorMsg(err.message);
     }
   };
 
@@ -530,7 +530,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       message.success(t("TXT_CODE_b05948d1"));
       await getFileList();
     } catch (err: any) {
-      return reportError(err.message);
+      return reportErrorMsg(err.message);
     }
     permission.deep = false;
   };

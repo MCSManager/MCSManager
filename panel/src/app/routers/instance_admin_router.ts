@@ -71,7 +71,7 @@ router.post(
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
       // Send a cross-end file upload task to the daemon
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -196,7 +196,7 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Get quick install list
 router.get("/quick_install_list", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  const ADDR = systemConfig.quickInstallAddr;
+  const ADDR = systemConfig?.quickInstallAddr;
   try {
     const response = await axios.request({
       method: "GET",

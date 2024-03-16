@@ -32,13 +32,13 @@ export default class GeneralRestartCommand extends InstanceCommand {
             instance.setLock(false);
             clearInterval(task);
           }
-        } catch (error) {
+        } catch (error: any) {
           clearInterval(task);
           instance.setLock(false);
           instance.failure(error);
         }
       }, 1000);
-    } catch (error) {
+    } catch (error: any) {
       instance.setLock(false);
       instance.failure(error);
     }

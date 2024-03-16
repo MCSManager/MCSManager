@@ -26,9 +26,7 @@ const ZIP_TIMEOUT_SECONDS = 60 * 40;
 const COMPRESS_ERROR_MSG = {
   invalidName: t("TXT_CODE_3aa9f36"),
   exitErr: t("TXT_CODE_2be83d36"),
-  startErr: t(
-    "TXT_CODE_37d839a4"
-  ),
+  startErr: t("TXT_CODE_37d839a4"),
   timeoutErr: t("TXT_CODE_15c07350")
 };
 
@@ -60,7 +58,7 @@ export async function decompress(
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
   // if (has7zip()) return await use7zipDecompress(zipPath, dest);
-  await useUnCompressing(zipPath, dest, fileCode);
+  await useUnCompressing(zipPath, dest, fileCode || "utf-8");
   return true;
 }
 

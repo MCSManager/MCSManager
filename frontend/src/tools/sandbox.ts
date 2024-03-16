@@ -1,5 +1,6 @@
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import axios from "axios";
+import { reportErrorMsg } from "@/tools/validator";
 
 const { getTheme } = useAppConfigStore();
 class SandboxBridge {
@@ -26,8 +27,8 @@ class SandboxBridge {
       callbacks.forEach((callback) => {
         try {
           callback.call(null, ...args);
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       });
     }

@@ -29,7 +29,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   // Steam RCON protocol
   public enableRcon = false;
   public rconPassword = "";
-  public rconPort: number = null;
+  public rconPort = 0;
   public rconIp = "";
 
   // custom command list
@@ -56,14 +56,14 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     image: "",
     ports: [],
     extraVolumes: [],
-    memory: null,
+    memory: 0,
     networkMode: "bridge",
     networkAliases: [],
     cpusetCpus: "",
-    cpuUsage: null,
-    maxSpace: null,
-    io: null,
-    network: null,
+    cpuUsage: 0,
+    maxSpace: 0,
+    io: 0,
+    network: 0,
     workingDir: "/workspace/",
     env: []
   };

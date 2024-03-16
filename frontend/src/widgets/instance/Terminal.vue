@@ -28,7 +28,7 @@ import {
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
 
 const props = defineProps<{
@@ -60,8 +60,8 @@ const quickOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       },
       props: {},
@@ -79,8 +79,8 @@ const quickOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       },
       props: {
@@ -105,8 +105,8 @@ const instanceOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       },
       condition: () => isRunning.value
@@ -123,8 +123,8 @@ const instanceOperations = computed(() =>
               daemonId: daemonId || ""
             }
           });
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       },
       condition: () => !isStopped.value
@@ -145,8 +145,8 @@ const instanceOperations = computed(() =>
               time: new Date().getTime()
             }
           });
-        } catch (error) {
-          reportError(error);
+        } catch (error: any) {
+          reportErrorMsg(error);
         }
       },
       condition: () => isStopped.value && updateCmd.value
@@ -170,7 +170,7 @@ onMounted(async () => {
         daemonId
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     throw error;
   }

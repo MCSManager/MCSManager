@@ -60,7 +60,7 @@ export function isEmpty(v: any): boolean {
   return v === null || v === undefined;
 }
 
-export function supposeValue<T>(v: any, def: T = null): T {
+export function supposeValue<T>(v: any, def?: T) {
   if (isEmpty(v)) return def;
   return v;
 }

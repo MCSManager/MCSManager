@@ -26,7 +26,7 @@ router.post(
     if (check(ctx)) return (ctx.body = "Logined");
     try {
       ctx.body = login(ctx, userName, passWord, code);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof TwoFactorError && !code) {
         ctx.body = "NEED_2FA";
         return;
@@ -54,7 +54,7 @@ router.all(
   permission({ token: false, level: null, speedLimit: false }),
   async (ctx: Koa.ParameterizedContext) => {
     ctx.body = {
-      loginInfo: systemConfig.loginInfo
+      loginInfo: systemConfig?.loginInfo
     };
   }
 );
@@ -72,7 +72,7 @@ router.all(
     ctx.body = {
       versionChange: GlobalVariable.get("versionChange", null),
       isInstall,
-      language: systemConfig.language || null
+      language: systemConfig?.language || null
     };
   }
 );

@@ -22,7 +22,7 @@ import {
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 import { useCmdAssistantDialog } from "@/components/fc";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 
 // eslint-disable-next-line no-unused-vars
 enum UNZIP {
@@ -116,7 +116,7 @@ const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
 
   if (isImportMode) {
     const extName = file.name.split(".").pop()?.toLowerCase() || "";
-    if (!["zip", "jar"].includes(extName)) return reportError(t("TXT_CODE_808e5ad9"));
+    if (!["zip", "jar"].includes(extName)) return reportErrorMsg(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
   } else {
     finalConfirm();
@@ -142,7 +142,7 @@ const finalConfirm = async () => {
         await formRef.value?.validateFields();
         needUpload ? await selectedFile() : await createInstance();
       } catch {
-        return reportError(t("TXT_CODE_47e21c80"));
+        return reportErrorMsg(t("TXT_CODE_47e21c80"));
       }
     },
     onCancel() {}
@@ -186,7 +186,7 @@ const selectedFile = async () => {
     return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -208,7 +208,7 @@ const createInstance = async () => {
     if (newInstanceInfo.value) emit("nextStep", newInstanceInfo.value.instanceUuid);
     return message.success(t("TXT_CODE_d28c05df"));
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 </script>

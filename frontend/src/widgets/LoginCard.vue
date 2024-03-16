@@ -12,7 +12,7 @@ import { onMounted, reactive, ref } from "vue";
 import { router } from "@/config/router";
 import { loginPageInfo, loginUser } from "@/services/apis";
 import { sleep } from "@/tools/common";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
@@ -44,19 +44,22 @@ const handleLogin = async () => {
     return message.error(t("TXT_CODE_c846074d"));
   }
   try {
+    loginStep.value++;
+    await sleep(600);
     const result = await login({
       data: formData
     });
     if (result.value === "NEED_2FA") {
+      loginStep.value = 0;
       is2Fa.value = true;
       return;
     }
     is2Fa.value = false;
-    loginStep.value++;
-    await sleep(1500);
+    await sleep(600);
     await handleNext();
   } catch (error: any) {
-    reportError(error.message ? error.message : error);
+    loginStep.value = 0;
+    reportErrorMsg(error);
   }
 };
 
@@ -64,15 +67,15 @@ const handleNext = async () => {
   try {
     await updateUserInfo();
     loginStep.value++;
-    await sleep(1200);
+    await sleep(1000);
     loginSuccess();
   } catch (error: any) {
     console.error(error);
+    loginStep.value = 0;
     Modal.error({
       title: t("TXT_CODE_da2fb99a"),
       content: t("TXT_CODE_6e718abe")
     });
-    loginStep.value--;
   }
 };
 
@@ -194,17 +197,6 @@ const loginSuccess = () => {
     </CardPanel>
   </div>
 </template>
-
-<style>
-.mcsmanager-link {
-  .global-markdown-html {
-    text-align: left !important;
-    p {
-      margin: 0px !important;
-    }
-  }
-}
-</style>
 
 <style lang="scss" scoped>
 .logging {

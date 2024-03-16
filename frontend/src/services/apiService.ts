@@ -1,4 +1,4 @@
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import type { IPanelResponseProtocol } from "./../../../common/global.d";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { AxiosError, AxiosRequestConfig } from "axios";
@@ -65,7 +65,7 @@ class ApiService {
       this.event.once(reqId, (data: any) => {
         if (data instanceof Error) {
           if (config.errorAlert === true) {
-            reportError(data.message);
+            reportErrorMsg(data.message);
           }
           reject(data);
         } else {

@@ -34,7 +34,7 @@ routerApp.on("file/list", (ctx, data) => {
     fileManager.cd(target);
     const overview = fileManager.list(page, pageSize, fileName);
     protocol.response(ctx, overview);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -46,7 +46,7 @@ routerApp.on("file/chmod", async (ctx, data) => {
     const { chmod, target, deep } = data;
     await fileManager.chmod(target, chmod, deep);
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -55,7 +55,7 @@ routerApp.on("file/chmod", async (ctx, data) => {
 routerApp.on("file/status", async (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
-
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     protocol.response(ctx, {
       instanceFileTask: instance.info.fileLock ?? 0,
       globalFileTask: globalEnv.fileTaskCount ?? 0,
@@ -65,7 +65,7 @@ routerApp.on("file/status", async (ctx, data) => {
         return String(v._mounted).replace(":", "");
       })
     });
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -77,7 +77,7 @@ routerApp.on("file/touch", (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.newFile(target);
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -89,7 +89,7 @@ routerApp.on("file/mkdir", (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.mkdir(target);
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -104,7 +104,7 @@ routerApp.on("file/copy", async (ctx, data) => {
       fileManager.copy(target[0], target[1]);
     }
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -119,7 +119,7 @@ routerApp.on("file/move", async (ctx, data) => {
       await fileManager.move(target[0], target[1]);
     }
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -134,7 +134,7 @@ routerApp.on("file/delete", async (ctx, data) => {
       fileManager.delete(target);
     }
     protocol.response(ctx, true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -147,7 +147,7 @@ routerApp.on("file/edit", async (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     const result = await fileManager.edit(target, text);
     protocol.response(ctx, result ? result : true);
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });
@@ -162,6 +162,7 @@ routerApp.on("file/compress", async (ctx, data) => {
     const code = data.code;
     const fileManager = getFileManager(data.instanceUuid);
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     if (instance.info.fileLock >= maxFileTask) {
       throw new Error(
         $t("TXT_CODE_file_router.unzipLimit", {
@@ -172,12 +173,16 @@ routerApp.on("file/compress", async (ctx, data) => {
     }
     // Statistics of the number of tasks in a single instance file and the number of tasks in the entire daemon process
     function fileTaskStart() {
-      instance.info.fileLock++;
-      globalEnv.fileTaskCount++;
+      if (instance) {
+        instance.info.fileLock++;
+        globalEnv.fileTaskCount++;
+      }
     }
     function fileTaskEnd() {
-      instance.info.fileLock--;
-      globalEnv.fileTaskCount--;
+      if (instance) {
+        instance.info.fileLock--;
+        globalEnv.fileTaskCount--;
+      }
     }
 
     // start decompressing or compressing the file
@@ -189,12 +194,12 @@ routerApp.on("file/compress", async (ctx, data) => {
         await fileManager.unzip(source, targets, code);
       }
       protocol.response(ctx, true);
-    } catch (error) {
+    } catch (error: any) {
       throw error;
     } finally {
       fileTaskEnd();
     }
-  } catch (error) {
+  } catch (error: any) {
     protocol.responseError(ctx, error);
   }
 });

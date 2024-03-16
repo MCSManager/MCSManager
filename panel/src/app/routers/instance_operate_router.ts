@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
+import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
 import { timeUuid } from "../service/password";
 import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
@@ -42,6 +42,10 @@ router.all(
       });
       ctx.body = result;
     } catch (err) {
+      if (err instanceof RemoteRequestTimeoutError) {
+        ctx.body = {};
+        return;
+      }
       ctx.body = err;
     }
   }
@@ -152,7 +156,10 @@ router.post(
 
       // some asynchronous tasks are only allowed for administrators
       const needTopPermissionTask = ["quick_install"];
-      if (needTopPermissionTask.includes(taskName) && !isTopPermissionByUuid(ctx.session["uuid"])) {
+      if (
+        needTopPermissionTask.includes(taskName) &&
+        !isTopPermissionByUuid(ctx.session?.["uuid"])
+      ) {
         throw new Error("illegal access");
       }
 
@@ -237,7 +244,7 @@ router.post(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "stream_channel",
@@ -396,7 +403,7 @@ router.put(
       const ie = !isEmpty(config.ie) ? toText(config?.ie) : null;
       const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
 
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {

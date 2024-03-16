@@ -29,8 +29,8 @@ export function reportValidatorError(error: any) {
   message.error(getValidatorErrorMsg(error, t("TXT_CODE_6a365d01")));
 }
 
-export function reportError(error: any = {}) {
-  console.error("Function reportError():", error);
+export function reportErrorMsg(error: any = {}) {
+  console.error("Function reportErrorMsg():", error);
   message.error(getValidatorErrorMsg(error, t("TXT_CODE_6a365d01")));
 }
 

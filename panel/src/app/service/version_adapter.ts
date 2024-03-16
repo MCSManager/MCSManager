@@ -11,7 +11,7 @@ function readCategoryConfig(configCategory: string, callback: (config: any) => b
         logger.info(t("TXT_CODE_6b2a9cab"), configPath);
         StorageSubsystem.writeFile(configPath, JSON.stringify(config, null, 4));
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error(t("TXT_CODE_fb75aba9"), error);
     }
   }

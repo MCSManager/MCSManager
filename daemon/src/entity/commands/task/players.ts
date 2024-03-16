@@ -33,7 +33,7 @@ export default class RefreshPlayer implements ILifeCycleTask {
         if (this.playersChart.length === 0) {
           this.initPlayersChart(instance);
         }
-      } catch (error) {}
+      } catch (error: any) {}
     }, 3000);
 
     // Start the timer for querying the online population report data
@@ -57,7 +57,7 @@ export default class RefreshPlayer implements ILifeCycleTask {
         value: String(instance.info.currentPlayers) ?? "0"
       });
       instance.info.playersChart = this.playersChart;
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   async stop(instance: Instance) {

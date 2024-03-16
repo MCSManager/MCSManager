@@ -2,7 +2,7 @@
 export default class SystemConfig {
   // HTTP service port and IP
   httpPort: number = 23333;
-  httpIp: string = null;
+  httpIp: string = "";
 
   // data transfer port
   dataPort: number = 23334;
@@ -31,6 +31,6 @@ export default class SystemConfig {
   language = "en_us";
 
   // Quick installation address
-  quickInstallAddr = "https://mcsmanager.oss-cn-guangzhou.aliyuncs.com/mcsmanager_packages.json";
+  quickInstallAddr = "https://mcsmanager.com/mcsmanager-packages.json";
   redisUrl = "";
 }

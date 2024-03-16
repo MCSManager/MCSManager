@@ -1,7 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../middleware/permission";
-import { bind2FA, confirm2FaQRCode, getUserUuid } from "../service/passport_service";
+import { bind2FA, confirm2FaQRCode, getUserUuid, logout } from "../service/passport_service";
 import userSystem from "../service/user_service";
 import { getToken, isAjax } from "../service/passport_service";
 import RemoteServiceSubsystem from "../service/remote_service";
@@ -82,7 +82,7 @@ router.get("/", permission({ level: ROLE.USER, token: false, speedLimit: false }
             lastDatetime: instancesInfo.config.lastDatetime,
             stopCommand: instancesInfo.config.stopCommand
           });
-        } catch (error) {
+        } catch (error: any) {
           resInstances.push({
             hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
             instanceUuid: iterator.instanceUuid,
@@ -126,7 +126,7 @@ router.put(
       if (!userSystem.validatePassword(passWord))
         throw new Error($t("TXT_CODE_router.user.passwordCheck"));
       await userSystem.edit(userUuid, { passWord, isInit });
-      ctx.body = true;
+      ctx.body = logout(ctx);
     }
   }
 );
@@ -156,7 +156,7 @@ router.put(
         }
       }
       ctx.body = newKey;
-    } catch (error) {
+    } catch (error: any) {
       ctx.body = error;
     }
   }

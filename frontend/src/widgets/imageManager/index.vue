@@ -11,6 +11,7 @@ import { imageList, containerList } from "@/services/apis/envImage";
 import type { LayoutCard, ImageInfo, ContainerInfo } from "@/types";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
+import { reportErrorMsg } from "@/tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -108,7 +109,7 @@ const delImage = async (item: ImageInfo) => {
     });
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -169,7 +170,7 @@ const getContainerList = async () => {
     if (containers.value) containerDataSource.value = containers.value;
   } catch (err: any) {
     console.error(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

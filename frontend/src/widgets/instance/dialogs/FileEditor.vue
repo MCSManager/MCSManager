@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { reportError } from "@/tools/validator";
+import { reportErrorMsg } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
 import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
@@ -74,7 +74,7 @@ const render = async () => {
     openEditor.value = true;
   } catch (err: any) {
     console.error(err.message);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -91,7 +91,7 @@ const submitRequest = async () => {
       }
     });
   } catch (err: any) {
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 
@@ -104,7 +104,7 @@ const submit = async () => {
   } catch (err: any) {
     console.error(err.message);
     reject(err);
-    return reportError(err.message);
+    return reportErrorMsg(err.message);
   }
 };
 

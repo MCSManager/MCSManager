@@ -15,7 +15,7 @@ router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const daemonId = String(ctx.query.daemonId);
   const userUuid = getUserUuid(ctx);
-  if (systemConfig.canFileManager === false && getUserPermission(ctx) < 10) {
+  if (systemConfig?.canFileManager === false && getUserPermission(ctx) < 10) {
     ctx.status = 403;
     ctx.body = new Error($t("TXT_CODE_router.file.off"));
     return;
@@ -279,7 +279,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "download",
@@ -309,7 +309,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",

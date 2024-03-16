@@ -9,7 +9,7 @@ export async function checkImage(name: string) {
     const image = docker.getImage(name);
     const info = await image.inspect();
     return info.Size > 0 ? true : false;
-  } catch (error) {
+  } catch (error: any) {
     return false;
   }
 }
@@ -23,7 +23,7 @@ export default class DockerPullCommand extends InstanceCommand {
 
   private stopped(instance: Instance) {
     this.stopFlag = true;
-    instance.asynchronousTask = null;
+    instance.asynchronousTask = undefined;
   }
 
   private awaitImageDone(instance: Instance, name: string) {
@@ -31,7 +31,7 @@ export default class DockerPullCommand extends InstanceCommand {
       let count = 0;
       const task = setInterval(async () => {
         count++;
-        instance.println("Container", t("TXT_CODE_977cb449"));
+        instance.println("CONTAINER", t("TXT_CODE_977cb449"));
         if (await checkImage(name)) {
           clearInterval(task);
           resolve(true);
@@ -57,17 +57,17 @@ export default class DockerPullCommand extends InstanceCommand {
 
     try {
       const docker = new Docker();
-      instance.println("Container", t("TXT_CODE_2fa46b8c") + imageName);
+      instance.println("CONTAINER", t("TXT_CODE_2fa46b8c") + imageName);
       instance.asynchronousTask = this;
 
       await docker.pull(imageName, {});
 
       await this.awaitImageDone(instance, imageName);
       if (cachedStartCount !== instance.startCount) return;
-      instance.println("Container", t("TXT_CODE_c68b0bef"));
-    } catch (err) {
+      instance.println("CONTAINER", t("TXT_CODE_c68b0bef"));
+    } catch (err: any) {
       if (cachedStartCount !== instance.startCount) return;
-      throw new Error([t("TXT_CODE_db37b7f9"), err.message].join("\n"));
+      throw new Error([t("TXT_CODE_db37b7f9"), err?.message].join("\n"));
     } finally {
       this.stopped(instance);
     }

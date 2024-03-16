@@ -15,7 +15,7 @@ function getRandomId() {
 }
 
 export function getFrontendLayoutConfig(): string {
-  let layoutConfig: string;
+  let layoutConfig: string = "";
   if (storage.fileExists(LAYOUT_CONFIG_NAME)) {
     layoutConfig = storage.readFile(LAYOUT_CONFIG_NAME);
   }
