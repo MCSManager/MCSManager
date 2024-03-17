@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "제목"
+  },
+  "app": {
+    "developInfo": "실행 할수 없습니다，이것은 MCSManager 개발자 전용입니다，일반 사용자는 사용이 불가 합니다.\n https://mcsmanager.com/ 에서 최신 버전의 설치 방법을 알아보세요。\n만약에 개발모드로 구동 하신다면，public 폴더를 만드시고，src/public 폴더를 만들고 프론트 엔드 정적 파일을 배치한 후 다시 실행합니다.",
+    "panelStarted": "패널 구동됨",
+    "reference": "프로젝트참조: https://github.com/mcsmanager",
+    "host": "패널 주소: http://localhost:{{port}}",
+    "portTip": "액세스를 위해 데몬 포트와 포트  {{port}}를 열어야 합니다.",
+    "exitTip": "작업을 끝내시려면 Ctrl+C 을 눌러 종료하세요.",
+    "httpSetupError": "HTTP/Socket 구동 실패，아마도 다른 프로세스에서 포트를 사용하거나 권한 부족, 혹은 네트워크 오류 일수도 있습니다."
+  },
+  "permission": {
+    "forbidden": "권한 없음",
+    "forbiddenTokenError": "토큰(Token)을 확인하지 못했습니다. 액세스가 거부되었습니다.",
+    "xmlhttprequestError": "헤드 요청 x-requested-with: xmlhttprequest 을 찾을 수 없습니다.",
+    "apiError": "비밀번호 틀림",
+    "forbiddenInstance": "[Forbidden] [Middleware] 잘못된 매개변수 또는 허락 되지 않은 연결.",
+    "tooFast": "요청 횟수가 너무 많습니다，잠시후 다시 시도해주세요."
+  },
+  "systemRemoteService": {
+    "nodeCount": "원격 nodes: {{n}}",
+    "loadDaemonTitle": "로컬 데몬 읽기 시도 중 {{localKeyFilePath}}",
+    "autoCheckDaemon": "로컬 데몬이 감지되어 자동으로 키와 포트를 가져오는 중입니다...",
+    "error": "로컬 데몬 프로필을 가져올 수 없습니다. 패널에서 데몬을 수동으로 연결하고 https://docs.mcsmanager.com/ 에서 더 많은 정보를 얻으세요."
+  },
+  "systemUser": {
+    "userCount": "로컬 사용자：{{n}}"
+  },
+  "router": {
+    "user": {
+      "invalidUserName": "잘못된 사용자 아이디 형식.",
+      "invalidPassword": "잘못된 사용자 비밀번호 형식.",
+      "existsUserName": "해당 아이디는 이미 사용중입니다!",
+      "deleteFailure": "사용자 데이터 삭제를 완료할 수 없음",
+      "passwordCheck": "비밀번호 형식에 맞게 입력해주세요!. 대문자, 소문자, 숫자가 포함되어야 하고 길이가 9에서 36 사이여야 합니다.",
+      "installed": "관리자 계정이 생성되었습니다, 다시 생성할 수 없습니다."
+    },
+    "instance": {
+      "createError": "새로운 인스턴스 생성 실패"
+    },
+    "file": {
+      "off": "관리자가 모든 사용자의 파일 관리 기능 사용을 제한했습니다."
+    },
+    "schedule": {
+      "invalidName": "잘못된 작업명"
+    },
+    "login": {
+      "ban": "잘못된 아이디 또는 암호로 로그인을 너무 많이 시도했습니다 ，10분 동안 해당 IP는 접속이 불가합니다.",
+      "nameOrPassError": "아이디 혹은 비밀번호가 틀렸습니다",
+      "init": "[설치] 패널 관리자 계정 {{userName}} 을 초기화하는 중...",
+      "installed": "이미 패널이 설치되어 있어서 설치가 불가합니다，새로 설치 하기위해선 data 폴더를 백업후 삭제해주세요."
+    }
+  },
+  "daemonInfo": {
+    "connect": "원격 노드 {{- v}} 연결 완료",
+    "disconnect": "원격 노드 {{- v}} 연결 끊김",
+    "connectError": "원격 노드에 연결하는 중 오류 발생하였습니다：{{- v}} ",
+    "authSuccess": "원격 노드 {{- v}} 토큰 확인에 성공했습니다.",
+    "authFailure": "원격 노드 {{- v}} 토큰 검증에 실패했습니다.",
+    "authError": "원격 노드 {{- v}} 토큰 인증 오류.",
+    "closed": "자동으로 원격 노드 {{- v}} 연결을 끊었습니다. ",
+    "resetConnect": "사용자가 사용 가능한 상태의 원격 노드에 재연결을 시도 하였습니다. 연결 채널을 재설정하는 중...",
+    "replaceConnect": "사용자가 중복 연결을 요청하여 연결 설정을 초기화합니다.",
+    "tryConnect": "원격 노드 연결 시도 중...",
+    "setLanguage": "노드 언어 설정"
+  }
+}
