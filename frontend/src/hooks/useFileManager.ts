@@ -1,7 +1,7 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive, type VNodeRef, onMounted } from "vue";
+import { ref, createVNode, reactive, type VNodeRef } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
@@ -126,8 +126,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       operationForm.value.total = res.value?.total || 0;
     } catch (error: any) {
       if (throwErr) throw error;
-      return reportErrorMsg(error.message);
+      reportErrorMsg(error.message);
+      return false;
     }
+    return true;
   };
 
   const reloadList = async () => {
@@ -448,8 +450,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
       return reportErrorMsg(t("TXT_CODE_96281410"));
     spinning.value = true;
-    breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
-    await getFileList();
+    if (await getFileList()) {
+      breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
+    }
+
     spinning.value = false;
   };
 
