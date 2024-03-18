@@ -16,6 +16,7 @@ export async function middleware(
 
   // Compatible with version 9.X API parameters
   if (ctx.query?.remote_uuid) ctx.query.daemonId = ctx.query.remote_uuid;
+  if (ctx.query?.daemon_id) ctx.query.daemonId = ctx.query.daemon_id;
 
   // Pass the next middleware, any errors and return data will be processed according to the response protocol
   try {
