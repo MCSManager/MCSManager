@@ -126,10 +126,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       operationForm.value.total = res.value?.total || 0;
     } catch (error: any) {
       if (throwErr) throw error;
-      reportErrorMsg(error.message);
-      return false;
+      return reportErrorMsg(error.message);
     }
-    return true;
   };
 
   const reloadList = async () => {
@@ -450,9 +448,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
       return reportErrorMsg(t("TXT_CODE_96281410"));
     spinning.value = true;
-    if (await getFileList()) {
-      breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
-    }
+    breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
+    await getFileList();
 
     spinning.value = false;
   };
