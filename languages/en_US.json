@@ -1842,7 +1842,7 @@
   "TXT_CODE_46cb40d5": "Sponsor",
   "TXT_CODE_97433ac4": "More",
   "TXT_CODE_e57bd50f": "License",
-  "TXT_CODE_ae441ea3": "实例容器额外挂载路径配置错误！请检查！",
-  "TXT_CODE_dca030b8": "实例容器额外挂载路径配置长度不正确！请检查！",
-  "TXT_CODE_530f5951": "查看"
+  "TXT_CODE_530f5951": "Check",
+  "TXT_CODE_ae441ea3": "The additional mounting path of the instance container is configured incorrectly!",
+  "TXT_CODE_dca030b8": "The configuration length of the additional mounting path for the instance container is incorrect!"
 }
