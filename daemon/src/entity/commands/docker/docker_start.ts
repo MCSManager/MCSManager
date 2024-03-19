@@ -10,6 +10,7 @@ import { commandStringToArray } from "../base/command_parser";
 import path from "path";
 import { t } from "i18next";
 import DockerPullCommand from "./docker_pull";
+import os from "os";
 
 // user identity function
 const processUserUid = process.getuid ? process.getuid : () => 0;
@@ -205,7 +206,6 @@ export default class DockerStartCommand extends InstanceCommand {
       AttachStdout: true,
       AttachStderr: true,
       Tty: isTty,
-      User: `${processUserUid()}:${processGroupGid()}`,
       WorkingDir: workingDir,
       Cmd: commandList ? commandList : undefined,
       OpenStdin: true,
