@@ -1841,5 +1841,8 @@
   "TXT_CODE_fb547313": "Please make sure the instance is stopped before deleting it!",
   "TXT_CODE_46cb40d5": "Sponsor",
   "TXT_CODE_97433ac4": "More",
-  "TXT_CODE_e57bd50f": "License"
+  "TXT_CODE_e57bd50f": "License",
+  "TXT_CODE_ae441ea3": "实例容器额外挂载路径配置错误！请检查！",
+  "TXT_CODE_dca030b8": "实例容器额外挂载路径配置长度不正确！请检查！",
+  "TXT_CODE_530f5951": "查看"
 }

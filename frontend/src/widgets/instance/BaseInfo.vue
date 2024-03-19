@@ -86,7 +86,9 @@ onMounted(async () => {
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
         {{ t("TXT_CODE_4f917a65") }}
-        <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">查看</a>
+        <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
+          {{ t("TXT_CODE_530f5951") }}
+        </a>
       </a-typography-paragraph>
       <a-typography-paragraph
         v-if="

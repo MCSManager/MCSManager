@@ -83,7 +83,7 @@ const menus = [
 // DO NOT I18N
 const allLanguages = [
   {
-    label: "中文",
+    label: `简体中文`,
     value: "zh_cn"
   },
   {

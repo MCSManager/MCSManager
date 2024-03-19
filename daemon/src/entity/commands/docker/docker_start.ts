@@ -138,9 +138,9 @@ export default class DockerStartCommand extends InstanceCommand {
     const extraVolumes = instance.config.docker.extraVolumes || [];
     const extraBinds: { hostPath: string; containerPath: string }[] = [];
     for (const item of extraVolumes) {
-      if (!item) throw new Error("实例容器额外挂载路径配置错误！请检查！");
+      if (!item) throw new Error($t("TXT_CODE_ae441ea3"));
       const paths = item.split("|");
-      if (paths.length < 2) throw new Error("实例容器额外挂载路径配置错误！请检查！");
+      if (paths.length < 2) throw new Error($t("TXT_CODE_dca030b8"));
       const hostPath = path.normalize(paths[0]);
       const containerPath = path.normalize(paths[1]);
       extraBinds.push({ hostPath, containerPath });
