@@ -66,7 +66,7 @@ const dialog = reactive({
       dialog.close();
       message.success(t("TXT_CODE_a00e84d7"));
     } catch (error: any) {
-      message.success(error.message ?? error);
+      message.error(error.message ?? error);
     }
   },
   submit: async () => {

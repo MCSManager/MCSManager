@@ -655,11 +655,6 @@ onUnmounted(() => {
   }
 }
 
-.permission {
-  .son {
-  }
-}
-
 @media (max-width: 350px) {
   .permission {
     flex-direction: column;
