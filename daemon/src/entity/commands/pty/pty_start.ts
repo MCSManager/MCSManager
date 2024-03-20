@@ -187,7 +187,7 @@ export default class PtyStartCommand extends InstanceCommand {
     if (!fs.existsSync(pipeLinuxDir)) fs.mkdirsSync(pipeLinuxDir);
     let pipeName = `${pipeLinuxDir}/pipe-${instance.instanceUuid}`;
     if (os.platform() === "win32") {
-      pipeName = `\\\\.\\pipe\\${pipeName}`;
+      pipeName = `\\\\.\\pipe\\${instance.instanceUuid}`;
     }
 
     const ptyParameter = [
