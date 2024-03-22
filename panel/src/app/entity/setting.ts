@@ -4,6 +4,9 @@ export default class SystemConfig {
   httpPort: number = 23333;
   httpIp: string = "";
 
+  // reverse proxy mode
+  reverseProxyMode: boolean = false;
+
   // data transfer port
   dataPort: number = 23334;
 
