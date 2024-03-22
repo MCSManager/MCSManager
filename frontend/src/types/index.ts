@@ -54,6 +54,7 @@ export interface NodeStatus {
 export interface Settings {
   httpPort: number;
   httpIp: any;
+  reverseProxyMode: boolean;
   dataPort: number;
   forwardType: number;
   crossDomain: boolean;

@@ -23,7 +23,10 @@ export function login(
 ): string {
   // record the number of login requests
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
-  const ip = toText(ctx.header["x-forwarded-for"]) || ctx.socket.remoteAddress;
+  const ip = systemConfig?.reverseProxyMode
+    ? toText(ctx.header["x-real-ip"])
+    : ctx.socket.remoteAddress;
+
   // check user information
   try {
     userSystem.checkUser({ userName, passWord }, twoFACode);
@@ -168,7 +171,11 @@ export function checkBanIp(ctx: Koa.ParameterizedContext) {
   if (!GlobalVariable.map.has(LOGIN_FAILED_KEY)) GlobalVariable.set(LOGIN_FAILED_KEY, {});
   // This IpMap also needs to be used when logging in
   const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-  const ip = toText(ctx.header["x-forwarded-for"]) || ctx.socket.remoteAddress || "";
+
+  const ip =
+    (systemConfig?.reverseProxyMode ? toText(ctx.header["x-real-ip"]) : ctx.socket.remoteAddress) ||
+    "";
+
   if (ipMap[ip] > 10 && systemConfig?.loginCheckIp === true) {
     if (ipMap[ip] != 999) {
       // record the number of bans
