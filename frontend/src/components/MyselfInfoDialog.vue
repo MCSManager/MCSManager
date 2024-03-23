@@ -40,7 +40,7 @@ const handleGenerateApiKey = async (enable: boolean) => {
 const handleChangePassword = async () => {
   formRef.value?.validateFields().then(async () => {
     if (formState.password1 !== formState.password2) return reportErrorMsg(t("TXT_CODE_d51f5d6"));
-    if (formState.password1.length < 6 || formState.password1.length > 36)
+    if (formState.password1.length < 9 || formState.password1.length > 36)
       return reportErrorMsg(t("TXT_CODE_cc5a3aea"));
     try {
       await executeUpdatePassword({
