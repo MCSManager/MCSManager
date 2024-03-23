@@ -1,7 +1,7 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive, type VNodeRef, onMounted } from "vue";
+import { ref, createVNode, reactive, type VNodeRef } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
@@ -450,6 +450,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     await getFileList();
+
     spinning.value = false;
   };
 

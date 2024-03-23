@@ -10,6 +10,7 @@ import { commandStringToArray } from "../base/command_parser";
 import path from "path";
 import { t } from "i18next";
 import DockerPullCommand from "./docker_pull";
+import os from "os";
 
 // user identity function
 const processUserUid = process.getuid ? process.getuid : () => 0;
@@ -138,9 +139,9 @@ export default class DockerStartCommand extends InstanceCommand {
     const extraVolumes = instance.config.docker.extraVolumes || [];
     const extraBinds: { hostPath: string; containerPath: string }[] = [];
     for (const item of extraVolumes) {
-      if (!item) throw new Error("实例容器额外挂载路径配置错误！请检查！");
+      if (!item) throw new Error($t("TXT_CODE_ae441ea3"));
       const paths = item.split("|");
-      if (paths.length < 2) throw new Error("实例容器额外挂载路径配置错误！请检查！");
+      if (paths.length < 2) throw new Error($t("TXT_CODE_dca030b8"));
       const hostPath = path.normalize(paths[0]);
       const containerPath = path.normalize(paths[1]);
       extraBinds.push({ hostPath, containerPath });
@@ -205,7 +206,6 @@ export default class DockerStartCommand extends InstanceCommand {
       AttachStdout: true,
       AttachStderr: true,
       Tty: isTty,
-      User: `${processUserUid()}:${processGroupGid()}`,
       WorkingDir: workingDir,
       Cmd: commandList ? commandList : undefined,
       OpenStdin: true,

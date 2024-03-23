@@ -83,7 +83,7 @@ const menus = [
 // DO NOT I18N
 const allLanguages = [
   {
-    label: "中文",
+    label: `简体中文`,
     value: "zh_cn"
   },
   {
@@ -374,6 +374,34 @@ onMounted(async () => {
                     </a-typography-paragraph>
 
                     <a-select v-model:value.prop="formData.crossDomain" style="max-width: 320px">
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("反向代理模式") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "如果您正在使用反向代理访问面板，请开启此选项。面板将会从请求头的“X-Real-IP”来获取真实IP。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value.prop="formData.reverseProxyMode"
+                      style="max-width: 320px"
+                    >
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
