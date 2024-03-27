@@ -350,6 +350,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const { execute: uploadFile } = uploadFileApi();
     const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
     try {
+      percentComplete.value = 1;
       await getUploadCfg({
         params: {
           upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
@@ -357,7 +358,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           uuid: instanceId!
         }
       });
-      if (!uploadCfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
+      if (!uploadCfg.value) {
+        percentComplete.value = 0;
+        throw new Error(t("TXT_CODE_e8ce38c2"));
+      }
 
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
@@ -369,7 +373,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           uploadCfg.value.password
         }`,
         onUploadProgress: (progressEvent: any) => {
-          percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          const p = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          if (p >= 1) percentComplete.value = p;
         }
       });
       await getFileList();
