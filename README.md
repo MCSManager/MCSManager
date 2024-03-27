@@ -14,9 +14,9 @@
 [![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Official Website](http://mcsmanager.com/) | [Documentation](https://docs.mcsmanager.com/)
+[Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_CN.md)
+English | [简体中文](README_ZH.md)
 
 </div>
 
@@ -24,11 +24,13 @@
 
 ## What is MCSManager?
 
-**MCSManager Panel** (or simply MCSM) is an open-source, distributed, lightweight control panel that can be deployed within minutes and supports most game servers or console programs.
+**MCSManager Panel** (or simply MCSM Panel) is an Free, distributed, lightweight control panel that can be deployed within minutes and supports most game servers or console programs.
 
 MCSM has already gained a certain level of popularity within the community, specifically Minecraft. It provides one-stop management for instances across multiple servers and provides a secure and reliable multi-user permission system. In addition, MCSM continuously offers support to server administrators of Minecraft, Terraria, and Steam games, aiming to provide a healthy and prosperous community.
 
-![failed_to_load_screenshot.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
+![failed_to_load_screenshot.png](/.github/panel-image.png)
+
+![failed_to_load_screenshot.png](/.github/panel-instances.png)
 
 <br />
 
@@ -45,7 +47,7 @@ MCSM has already gained a certain level of popularity within the community, spec
 
 ## Runtime Environment
 
-MCSM supports both `Windows` and `Linux`. The only requirement is  `Node.js` and several libraries **used for decompression**.
+MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and several libraries **used for decompression**.
 
 Require [Node.js 16.20.2](https://nodejs.org/en) or above.
 
@@ -112,7 +114,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 ./start-web.sh
 
 # For web access, go to http://localhost:23333/
-# In general, the web interface will automatically scan and add the local daemon. 
+# In general, the web interface will automatically scan and add the local daemon.
 ```
 
 This installation method does not automatically register the panel as a system service. Therefore, it is necessary to use the screen software for management. If you want to use the system service to manage MCSManager, please refer to the documentation.

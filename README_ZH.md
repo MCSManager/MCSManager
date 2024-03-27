@@ -16,7 +16,7 @@
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
 
-[English](README.md) | [简体中文](README_CN.md)
+[English](README.md) | 简体中文
 
 </div>
 
@@ -28,15 +28,17 @@
 
 此软件在 `Minecraft` 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，实现在任何主机上创建游戏服务器，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 `Minecraft`，`Terraria` 和 `Steam` 游戏服务器的管理员，运维人员和个人开发者提供健康的软件支持。
 
-![截图加载失败.png](https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/MCSM9.png)
+![截图加载失败，请科学上网.png](/.github/panel-image.png)
+
+![截图加载失败，请科学上网.png](/.github/panel-instances.png)
 
 <br />
 
 ## 功能特性
 
-1. 支持一键架设 `Minecraft` Java 版/基岩版游戏服务器。
+1. 支持一键开服！轻松部署 `Minecraft` Java 版/基岩版游戏服务器。
 2. 兼容大部分 `Steam` 游戏服务器，列如 `幻兽帕鲁`，`战术小队`，`僵尸毁灭工程` 和 `泰拉瑞亚` 等。
-3. 可自定义网页 UI 界面设计，打造自己喜欢的界面样式。
+3. 网页支持拖拽式的小卡片布局，打造自己喜欢的界面布局。
 4. 支持 `Docker` 虚拟化，支持多用户，支持商业出租行为。
 5. 支持分布式，一个网页即可同时管理数台机器。
 6. 更多...
