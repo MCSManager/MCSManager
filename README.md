@@ -26,7 +26,7 @@ English | [简体中文](README_ZH.md)
 
 **MCSManager Panel** (MCSM) is a modern, secure, and distributed control panel designed for managing Minecraft and Steam game servers. 
 
-MCSManager has already gained a certain level of popularity within the community, specifically Minecraft. MCSM excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, MCSManager is committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
+MCSM has already gained a certain level of popularity within the community, specifically Minecraft. MCSM excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, We are committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
 
 ![failed_to_load_screenshot.png](/.github/panel-image.png)
 
@@ -47,7 +47,7 @@ MCSManager has already gained a certain level of popularity within the community
 
 ## Runtime Environment
 
-MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and some libraries **used for decompression**.
+MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and some libraries **for decompression**.
 
 Require [Node.js 16.20.2](https://nodejs.org/en) or above.
 
@@ -117,7 +117,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 # In general, the web interface will automatically scan and add the local daemon.
 ```
 
-This installation method does not automatically register the panel as a system service. Therefore, it is necessary to use the screen software for management. If you want to use the system service to manage MCSManager, please refer to the documentation.
+This installation approach does not automatically set up MCSManager as a system service. Therefore, it is necessary to use `screen` for management. For those interested in managing MCSManager through a system service, please refer to our wiki/documentation.
 
 <br />
 
@@ -138,7 +138,7 @@ The translation and software internationalization were completed together by [Ke
 
 ## Setting Up the Development Environment
 
-This section is intended for developers. General users can safely ignore this section.
+This section is specifically designed for developers. General users may disregard this portion without concern.
 
 ### MacOS
 
