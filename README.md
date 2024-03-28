@@ -24,9 +24,9 @@ English | [简体中文](README_ZH.md)
 
 ## What is MCSManager?
 
-**MCSManager Panel** (Simply MCSM Panel) is an Free, Secure, Distributed, Modern Control Panel for Minecraft and Steam Game Servers.
+**MCSManager Panel** (MCSM) is a modern, secure, and distributed control panel designed for managing Minecraft and Steam game servers. 
 
-MCSManager has already gained a certain level of popularity within the community, specifically Minecraft. It provides one-stop management for instances across multiple servers and provides a secure and reliable multi-user permission system. In addition, MCSM continuously offers support to server administrators of Minecraft, Terraria, and Steam games, aiming to provide a healthy and prosperous community.
+MCSManager has already gained a certain level of popularity within the community, specifically Minecraft. MCSM excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, MCSManager is committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
 
 ![failed_to_load_screenshot.png](/.github/panel-image.png)
 
@@ -39,15 +39,15 @@ MCSManager has already gained a certain level of popularity within the community
 1. One-click deployment of `Minecraft` Java/Bedrock Server
 2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.)
 3. Customizable UI, create your own layout
-4. Support `Docker` virtualization, multiuser, and commercial services.
-5. Manage multiple servers with a single web interface.
+4. Support `Docker` virtualization, multiuser, and commercial services
+5. Manage multiple servers with a single web interface
 6. More...
 
 <br />
 
 ## Runtime Environment
 
-MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and several libraries **used for decompression**.
+MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and some libraries **used for decompression**.
 
 Require [Node.js 16.20.2](https://nodejs.org/en) or above.
 
@@ -123,14 +123,14 @@ This installation method does not automatically register the panel as a system s
 
 ## Browser Compatibility
 
-- Support `Chrome` `Firefox` `Safari` modern browser.
+- Supported on modern browsers including `Chrome`, `Firefox`, and `Safari`.
 - Support for `IE` has been discontinued.
 
 <br />
 
 ## Internationalization (i18n)
 
-MCSManager currently supports English and Simplified Chinese and is capable of supporting more languages in the future.
+MCSManager is currently available in English and Simplified Chinese, with plans to expand support for additional languages in the future.
 
 The translation and software internationalization were completed together by [KevinLu2000](https://github.com/KevinLu2000), [Lazy](https://github.com/LazyCreeper), [zijiren233](https://github.com/zijiren233), and [Unitwk](https://github.com/unitwk). Many thanks for their contributions!
 
@@ -168,22 +168,22 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ## Code Contributing
 
-If you encounter any issues during use, feel free to [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) or fork them yourself and submit a Pull Request.
+If you experience any problems while using MCSManager, you are welcome to [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose). Alternatively, you can fork the project and contribute directly by submitting a Pull Request. 
 
-Submitted code needs to maintain the same coding style. For more information, please refer to [this issue](https://github.com/MCSManager/MCSManager/issues/544).
+Please ensure that any submitted code adheres to our existing coding style. For more details, refer to the guidelines provided in [this issue](https://github.com/MCSManager/MCSManager/issues/544).
 
 <br />
 
 ## BUG Reporting
 
-Reporting any bug or issue is welcomed and much appreciated. We will fix any issue promptly and your help will make MCSM better :-D
+We welcome and greatly appreciate reports of any bugs or issues with MCSManager. Prompt action will be taken to address them, and your assistance plays a crucial role in improving MCSM. :-D
 
-In case of a severe vulnerability, when it is not appropriate to disclose to the public, please send an email to: mcsmanager-dev@outlook.com. Your name and contribution will be added to the code after the bug is fixed.
+For reporting severe vulnerabilities that should not be publicly disclosed, please email us at : mcsmanager-dev@outlook.com. We will acknowledge your contribution by adding your name to the code after the bug is resolved.
 
 <br />
 
 ## License
 
-The source code follows the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) License.
+The source code of MCSManager is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) License.
 
 Copyright ©2024 MCSManager.
