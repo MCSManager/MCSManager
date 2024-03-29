@@ -32,6 +32,7 @@ defineExpose({
     :mask-closable="false"
     :closable="false"
     :footer="null"
+    @cancel="cancel"
   >
     <div class="dialog-overflow-container">
       <div class="flex flex-center">

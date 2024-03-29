@@ -1,9 +1,12 @@
+import type { IGlobalInstanceConfig } from "../../../common/global.d.ts";
+
 export interface UserInstance {
   hostIp: string;
   instanceUuid: string;
   nickname: string;
   daemonId: string;
   status: number;
+  config?: IGlobalInstanceConfig;
 }
 
 export interface BaseUserInfo {

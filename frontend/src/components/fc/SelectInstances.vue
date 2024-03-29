@@ -58,7 +58,8 @@ const instancesList = computed(() => {
       daemonId: currentRemoteNode.value?.uuid ?? "",
       nickname: instance.config.nickname,
       status: instance.status,
-      hostIp: `${currentRemoteNode.value?.ip}:${currentRemoteNode.value?.port}`
+      hostIp: `${currentRemoteNode.value?.ip}:${currentRemoteNode.value?.port}`,
+      config: instance.config
     });
   }
   return newInstances;
@@ -242,6 +243,12 @@ const handleChangeNode = async (item: NodeStatus) => {
               }"
             >
               <template #bodyCell="{ column, record }: AntTableCell">
+                <template v-if="column.key === 'safe'">
+                  <span v-if="record?.config?.docker?.image" style="color: var(--color-green-6)">
+                    {{ t("容器保护") }}
+                  </span>
+                  <span v-else class="color-danger">{{ t("无保护") }}</span>
+                </template>
                 <template v-if="column.key === 'operation'">
                   <a-button
                     v-if="findItem(record)"

@@ -94,11 +94,13 @@ declare module 'vue' {
     RightMenu: typeof import('./src/components/fc/RightMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SafeWarning: typeof import('./src/components/fc/SafeWarning.vue')['default']
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
     Style1: typeof import('./src/components/time/Style1.vue')['default']
     Style2: typeof import('./src/components/time/Style2.vue')['default']
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
+    WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }
 }

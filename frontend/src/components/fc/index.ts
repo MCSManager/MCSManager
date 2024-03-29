@@ -39,6 +39,11 @@ export async function useSelectInstances(data: UserInstance[] = []) {
       },
       {
         align: "center",
+        title: t("安全性"),
+        key: "safe"
+      },
+      {
+        align: "center",
         title: t("TXT_CODE_fe731dfc"),
         key: "operation"
       }

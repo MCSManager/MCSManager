@@ -16,6 +16,8 @@ import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import dayjs from "dayjs";
+import WarningDialog from "@/components/fc/WarningDialog.vue";
+import { useMountComponent } from "@/hooks/useMountComponent";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -49,6 +51,24 @@ const handleDelete = async (deletedInstance: UserInstance) => {
 const assignApp = async () => {
   try {
     const selectedInstances = await useSelectInstances(dataSource.value);
+    let warningInstances: string[] = [];
+    for (const instance of selectedInstances || []) {
+      if (typeof instance.config?.docker?.image == "string" && !instance.config?.docker?.image)
+        warningInstances.push(instance.nickname);
+    }
+    if (warningInstances.length > 0) {
+      const component = (
+        await useMountComponent({
+          title: t("安全警告"),
+          subTitle:
+            t(
+              "你所分配的实例中包含一些没有启用 “容器保护” 的实例，MCSManager 将无法控制此用户的行为，被分配的用户可以通过这些实例上传恶意软件入侵你的主机，请确保子用户是您信任的人。\n\n有安全风险的实例名字如下："
+            ) + warningInstances.join(", "),
+          checkText: t("我已知晓我可能会被入侵！忽略风险！")
+        })
+      ).load<InstanceType<typeof WarningDialog>>(WarningDialog);
+      await component.openDialog();
+    }
     if (selectedInstances) dataSource.value = selectedInstances;
     await saveData();
   } catch (err: any) {
