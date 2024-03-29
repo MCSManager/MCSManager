@@ -38,16 +38,21 @@ export default class FileManager {
   }
 
   toAbsolutePath(fileName: string = "") {
+    const topAbsolutePath = this.topPath;
+    let finalPath: string = "";
     if (os.platform() === "win32") {
       const reg = new RegExp("^[A-Za-z]{1}:[\\\\/]{1}");
       if (reg.test(this.cwd)) {
-        return path.normalize(path.join(this.cwd, fileName));
-      }
-      if (reg.test(fileName)) {
-        return path.normalize(fileName);
+        finalPath = path.normalize(path.join(this.cwd, fileName));
+      } else if (reg.test(fileName)) {
+        finalPath = path.normalize(fileName);
       }
     }
-    return path.normalize(path.join(this.topPath, this.cwd, fileName));
+    if (!finalPath) {
+      finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
+    }
+    if (finalPath.indexOf(topAbsolutePath) !== 0) throw new Error(ERROR_MSG_01);
+    return finalPath;
   }
 
   checkPath(fileNameOrPath: string) {
