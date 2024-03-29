@@ -55,7 +55,7 @@ export class ProcessWrapper extends EventEmitter {
           this.destroy();
         } catch (error: any) {}
         if (timeTask) clearTimeout(timeTask);
-        if (code != 0) return resolve(false);
+        if (code !== 0) return reject(new Error(this.errMsg.exitErr));
         return resolve(true);
       });
 

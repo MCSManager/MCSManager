@@ -8,6 +8,14 @@ import { globalConfiguration } from "./entity/config";
 import { Server, Socket } from "socket.io";
 import { LOCAL_PRESET_LANG_PATH } from "./const";
 import logger from "./service/log";
+import { GOLANG_ZIP_PATH, PTY_PATH } from "./const";
+import * as router from "./service/router";
+import * as koa from "./service/http";
+import * as protocol from "./service/protocol";
+import InstanceSubsystem from "./service/system_instance";
+import "./service/async_task_service";
+import "./service/async_task_service/quick_install";
+import "./service/system_visual_data";
 
 initVersionManager();
 const VERSION = getVersion();
@@ -47,14 +55,6 @@ if (fs.existsSync(LOCAL_PRESET_LANG_PATH)) {
 }
 logger.info($t("TXT_CODE_app.welcome"));
 
-import * as router from "./service/router";
-import * as koa from "./service/http";
-import * as protocol from "./service/protocol";
-import InstanceSubsystem from "./service/system_instance";
-import "./service/async_task_service";
-import "./service/async_task_service/quick_install";
-import "./service/system_visual_data";
-
 // Initialize HTTP service
 const koaApp = koa.initKoa();
 
@@ -93,6 +93,16 @@ try {
   logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
 }
+
+(function initCompressModule() {
+  try {
+    fs.chmodSync(GOLANG_ZIP_PATH, 0o755);
+    fs.chmodSync(PTY_PATH, 0o755);
+  } catch (error: any) {
+    logger.error(error?.message);
+    logger.error($t("初始化部分模块失败，请检查 daemon/lib 下的文件是否存在或权限是否正常！"));
+  }
+})();
 
 // Initialize Websocket server
 io.on("connection", (socket: Socket) => {
