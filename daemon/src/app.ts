@@ -100,7 +100,7 @@ try {
     fs.chmodSync(PTY_PATH, 0o755);
   } catch (error: any) {
     logger.error(error?.message);
-    logger.error($t("初始化部分模块失败，请检查 daemon/lib 下的文件是否存在或权限是否正常！"));
+    logger.error($t("TXT_CODE_a8b245fa"));
   }
 })();
 

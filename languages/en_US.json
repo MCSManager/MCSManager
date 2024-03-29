@@ -1844,5 +1844,15 @@
   "TXT_CODE_e57bd50f": "License",
   "TXT_CODE_530f5951": "Check",
   "TXT_CODE_ae441ea3": "The additional mounting path of the instance container is configured incorrectly!",
-  "TXT_CODE_dca030b8": "The configuration length of the additional mounting path for the instance container is incorrect!"
+  "TXT_CODE_dca030b8": "The configuration length of the additional mounting path for the instance container is incorrect!",
+  "TXT_CODE_19f697f3": "I'm aware that I might be hacked! \nIgnore the risks!",
+  "TXT_CODE_1b7a8832": "Operation Canceled!",
+  "TXT_CODE_201bc643": "No Protection",
+  "TXT_CODE_57e86edb": "The instances you have assigned include some instances that do not have \"Container Protection\" enabled. MCSManager will not be able to control the behavior of this user. The assigned user can upload malware through these instances to invade your host. Please make sure that the sub-user is one you trust. \npeople.\n\n\nThe names of instances with security risks are as follows:",
+  "TXT_CODE_5def0cbe": "Safety",
+  "TXT_CODE_a3f13157": "Container Protection",
+  "TXT_CODE_a8b245fa": "Initialization of some modules failed. Please check whether the files under daemon/lib exist or whether the permissions are normal!",
+  "TXT_CODE_ae575e12": "If you are using a reverse proxy to access the panel, turn this option on. \nThe panel will obtain the real IP from the \"X-Real-IP\" in the request header.",
+  "TXT_CODE_dd78943e": "Safety warning",
+  "TXT_CODE_f0789d81": "Reverse proxy mode"
 }

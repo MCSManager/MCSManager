@@ -25,7 +25,7 @@ const openDialog = () => {
 
 const cancel = () => {
   open.value = false;
-  reject(new Error(t("已取消操作！")));
+  reject(new Error(t("TXT_CODE_1b7a8832")));
   if (props.destroyComponent) props.destroyComponent();
 };
 
@@ -73,9 +73,9 @@ defineExpose({
           </div>
           <div class="flex justify-center">
             <a-button class="mr-12" danger :disabled="!checkbox" @click="confirm">
-              {{ t("确定") }}
+              {{ t("TXT_CODE_d507abff") }}
             </a-button>
-            <a-button @click="cancel">{{ t("取消") }}</a-button>
+            <a-button @click="cancel">{{ t("TXT_CODE_a0451c97") }}</a-button>
           </div>
         </div>
       </div>

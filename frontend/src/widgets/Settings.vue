@@ -386,13 +386,13 @@ onMounted(async () => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("反向代理模式") }}
+                      {{ t("TXT_CODE_f0789d81") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         {{
                           t(
-                            "如果您正在使用反向代理访问面板，请开启此选项。面板将会从请求头的“X-Real-IP”来获取真实IP。"
+                            "TXT_CODE_ae575e12"
                           )
                         }}
                       </a-typography-text>
