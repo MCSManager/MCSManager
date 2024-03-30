@@ -67,7 +67,7 @@ const {
   getFileStatus,
   changePermission,
   toDisk,
-  pushSelected
+  oneSelected
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -244,7 +244,7 @@ const menuList = (record: DataType) =>
     {
       label: t("TXT_CODE_ecbd7449"),
       key: "delete",
-      onClick: () => deleteFile(record.name)
+      onClick: () => deleteFile()
     },
     {
       label: t("TXT_CODE_16853efe"),
@@ -274,7 +274,7 @@ const menuList = (record: DataType) =>
 const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   e.preventDefault();
   e.stopPropagation();
-  pushSelected(record.name, record);
+  oneSelected(record.name, record);
   openRightClickMenu(e.clientX, e.clientY, menuList(record));
   return false;
 };
@@ -558,7 +558,7 @@ onUnmounted(() => {
     </a-space>
 
     <a-space v-if="dialog.mode == 'zip'" direction="vertical" class="w-100 mt-16">
-      <a-typography-text type="secondary">
+      <a-typography-text>
         {{ t("TXT_CODE_92ebdc7f") }}
       </a-typography-text>
     </a-space>

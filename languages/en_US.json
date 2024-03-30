@@ -1769,7 +1769,7 @@
   "TXT_CODE_b82225c3": "Decompressing, please wait patiently...",
   "TXT_CODE_6f038f25": "We are processing the files with all our might!",
   "TXT_CODE_26d7316f": "Decompression failed!",
-  "TXT_CODE_92ebdc7f": "The encoding of the ZIP file after compression is usually UTF-8 on Linux, and on Windows, it will generally follow your country's standards for file encoding.",
+  "TXT_CODE_92ebdc7f": "The ZIP files compressed by the panel will all be packaged in UTF-8 encoding. If you need to decompress, please select UTF-8 encoding to decompress!",
   "TXT_CODE_977cb449": "Waiting for download...",
   "TXT_CODE_9cae6f92": "Image download timeout! Max: 15 minutes. Please check your network!",
   "TXT_CODE_361a79c6": "Image download terminated!",
