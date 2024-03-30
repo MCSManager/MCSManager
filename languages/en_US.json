@@ -1757,7 +1757,7 @@
   "TXT_CODE_3d68e43b": "Two-factor authentication code is incorrect",
   "TXT_CODE_fefbb457": "Incorrect account or password",
   "TXT_CODE_3aa9f36": "Illegal characters detected in the file name for compression or decompression, please rename and change the file!",
-  "TXT_CODE_2be83d36": "Incorrect result from compression/decompression program, please check file permissions and retry!",
+  "TXT_CODE_2be83d36": "The decompression and compression program is abnormal. Make sure the file you want to process exists and is legal. Please try again later!",
   "TXT_CODE_37d839a4": "The decompression/compression program failed to start! Please make sure the files in the daemon/lib directory exist and have correct permissions! If it still doesn't work, please reinstall the panel",
   "TXT_CODE_15c07350": "Compression/decompression task timed out, terminated!",
   "TXT_CODE_2038ec2c": "Please select at least one file!",
