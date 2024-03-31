@@ -24,7 +24,7 @@ English | [简体中文](README_ZH.md)
 
 ## What is MCSManager?
 
-**MCSManager Panel** (MCSM) is a modern, secure, and distributed control panel designed for managing Minecraft and Steam game servers. 
+**MCSManager Panel** (MCSM) is a modern, secure, and distributed control panel designed for managing Minecraft and Steam game servers.
 
 MCSM has already gained a certain level of popularity within the community, specifically Minecraft. MCSM excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, We are committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
 
@@ -103,7 +103,7 @@ wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanage
 tar -zxf mcsmanager_linux_release.tar.gz
 
 # Install dependencies
-./install-dependency.sh
+./install.sh
 
 # Please open two terminals or screens.
 
@@ -168,7 +168,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ## Code Contributing
 
-If you experience any problems while using MCSManager, you are welcome to [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose). Alternatively, you can fork the project and contribute directly by submitting a Pull Request. 
+If you experience any problems while using MCSManager, you are welcome to [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose). Alternatively, you can fork the project and contribute directly by submitting a Pull Request.
 
 Please ensure that any submitted code adheres to our existing coding style. For more details, refer to the guidelines provided in [this issue](https://github.com/MCSManager/MCSManager/issues/544).
 
