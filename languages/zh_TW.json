@@ -202,7 +202,7 @@
   "TXT_CODE_stream_router.establishConnection": "會話 {{id}} {{address}} 已與 {{uuid}} 建立資料通道",
   "TXT_CODE_stream_router.instanceNotExist": "實例不存在",
   "TXT_CODE_stream_router.taskNotExist": "任務不存在",
-  "TXT_CODE_stream_router.unauthorizedAccess": "不合規範存取",
+  "TXT_CODE_stream_router.unauthorizedAccess": "不合規範的存取",
   "TXT_CODE_systemRemoteService.autoCheckDaemon": "偵測到本機守護進程，正在自動取得金鑰和連接端口...",
   "TXT_CODE_systemRemoteService.error": "無法自動取得本機守護程式設定文件，請前往面板手動連線守護程式，前往 https://docs.mcsmanager.com/ 了解更多。",
   "TXT_CODE_systemRemoteService.loadDaemonTitle": "正在嘗試讀取本機守護程式 {{localKeyFilePath}}",
