@@ -89,6 +89,10 @@ const allLanguages = [
   {
     label: "English",
     value: "en_us"
+  },
+  {
+    label: "繁體中文",
+    value: "zh_tw"
   }
 ];
 
