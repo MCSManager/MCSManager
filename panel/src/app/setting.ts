@@ -2,8 +2,7 @@
 
 import SystemConfig from "./entity/setting";
 import StorageSystem from "./common/system_storage";
-import { GlobalVariable } from "common";
-import { $t, i18next } from "./i18n";
+import { i18next } from "./i18n";
 let systemConfig: SystemConfig | null = null;
 
 // System persistence configuration table

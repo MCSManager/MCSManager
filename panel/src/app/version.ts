@@ -1,7 +1,6 @@
 import * as fs from "fs-extra";
 import { GlobalVariable } from "common";
 import { logger } from "./service/log";
-import path from "path";
 import storage from "./common/system_storage";
 
 interface PackageInfo {
