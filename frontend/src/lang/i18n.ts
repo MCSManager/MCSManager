@@ -2,6 +2,7 @@ import { createI18n } from "vue-i18n";
 
 import enUS from "@languages/en_US.json";
 import zhCN from "@languages/zh_CN.json";
+import zhTW from "@languages/zh_TW.json";
 import { updateSettings } from "@/services/apis";
 
 export const LANGUAGE_KEY = "LANGUAGE";
@@ -32,7 +33,8 @@ function initI18n(lang: string) {
     fallbackLocale: toStandardLang("en_us"),
     messages: {
       en_us: enUS,
-      zh_cn: zhCN
+      zh_cn: zhCN,
+      zh_tw: zhTW
     }
   });
 }
@@ -59,6 +61,10 @@ const isEN = () => {
   return getCurrentLang() === "en_us";
 };
 
+const isTW = () => {
+  return getCurrentLang() === "zh_tw";
+}
+
 const $t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);
 };
@@ -68,4 +74,4 @@ const t = (...args: string[]): string => {
 
 (window as any).setLang = setLanguage;
 
-export { setLanguage, getCurrentLang, $t, t, initI18n, isCN, isEN };
+export { setLanguage, getCurrentLang, $t, t, initI18n, isCN, isEN, isTW };
