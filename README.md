@@ -36,12 +36,13 @@ MCSM has already gained a certain level of popularity within the community, spec
 
 ## Features
 
-1. One-click deployment of `Minecraft` Java/Bedrock Server
-2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.)
-3. Customizable UI, create your own layout
-4. Support `Docker` virtualization, multiuser, and commercial services
-5. Manage multiple servers with a single web interface
-6. More...
+1. Supports `Minecraft` and `Steam Game Server` (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.).
+2. Centralized Management for Multiple Machines.
+3. Fully Customizable UI!
+4. Supports all Docker Images.
+5. Require Node.js and No More.
+6. Simple Permission System / Multi-User Support!
+7. More...
 
 <br />
 
