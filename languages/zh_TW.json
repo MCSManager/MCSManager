@@ -32,7 +32,7 @@
   "TXT_CODE_app.httpSetupError": "HTTP/Socket 服務啟動錯誤，可能是連接端口被佔用，權限不足或網路卡設備不可用。",
   "TXT_CODE_app.instanceLoad": "所有應用實例已加載，總計 {{n}} 個",
   "TXT_CODE_app.instanceLoadError": "讀取本機實例檔案失敗:",
-  "TXT_CODE_app.panelStarted": "控制台端已啟動",
+  "TXT_CODE_app.panelStarted": "面板端已啟動",
   "TXT_CODE_app.password": "存取金鑰：{{key}}",
   "TXT_CODE_app.passwordTip": "金鑰作為唯一認證方式，請使用 MCSManager 面板的節點功能連接程式",
   "TXT_CODE_app.portTip": "軟體公網存取需開放端口 {{port}} 與守護程式連接端口",
