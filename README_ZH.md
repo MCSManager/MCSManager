@@ -69,15 +69,17 @@
 **一行命令快速安装**
 
 ```bash
-// 国内用户专用 gitee 加速源
-wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup_cn.sh | bash
-
-// 或原始源（科学上网）
-wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
+sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
 ```
 
-- 脚本仅适用于 x86_64/AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
-- 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
+**安装后的使用方法**
+
+```bash
+systemctl start mcsm-{web,daemon} # 开启面板
+systemctl stop mcsm-{web,daemon}  # 关闭面板
+```
+
+- 脚本仅适用于 Ubuntu/Centos/Debian/Archlinux。
 - 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
 
 <br />

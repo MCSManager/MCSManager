@@ -32,17 +32,14 @@ MCSM has already gained a certain level of popularity within the community, spec
 
 ![failed_to_load_screenshot.png](/.github/panel-instances.png)
 
-<br />
-
 ## Features
 
-1. Supports `Minecraft` and `Steam Game Server` (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.).
-2. Centralized Management for Multiple Machines.
-3. Fully Customizable UI!
-4. Supports all Docker Images.
-5. Require Node.js and No More.
-6. Simple Permission System / Multi-User Support!
-7. More...
+1. One-click deployment of `Minecraft` Java/Bedrock Server
+2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.)
+3. Customizable UI, create your own layout
+4. Support `Docker` virtualization, multiuser, and commercial services
+5. Manage multiple servers with a single web interface
+6. More...
 
 <br />
 
@@ -68,12 +65,20 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 **One-Command Deployment**
 
+> Script needs to register system services, it requires root permissions.
+
 ```bash
-wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
+sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
 ```
 
-- Only supports x86_64 architecture Ubuntu/Centos/Debian/Archlinux.
-- After installation, use command `systemctl start mcsm-{web,daemon}` to start MCSM.
+**Usage**
+
+```bash
+systemctl start mcsm-{web,daemon}
+systemctl stop mcsm-{web,daemon}
+```
+
+- Only supports Ubuntu/Centos/Debian/Archlinux.
 - Installation directory: `/opt/mcsmanager/`.
 
 <br />
