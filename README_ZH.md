@@ -16,7 +16,7 @@
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
 
-[English](README.md) | 简体中文
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md)
 
 </div>
 
@@ -69,15 +69,17 @@
 **一行命令快速安装**
 
 ```bash
-// 国内用户专用 gitee 加速源
-wget -qO- https://gitee.com/mcsmanager/script/raw/master/setup_cn.sh | bash
-
-// 或原始源（科学上网）
-wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
+sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
 ```
 
-- 脚本仅适用于 x86_64/AMD64 架构 Ubuntu/Centos/Debian/Archlinux。
-- 执行完成后，使用 `systemctl start mcsm-{web,daemon}` 即可启动面板服务。
+**安装后的使用方法**
+
+```bash
+systemctl start mcsm-{web,daemon} # 开启面板
+systemctl stop mcsm-{web,daemon}  # 关闭面板
+```
+
+- 脚本仅适用于 Ubuntu/Centos/Debian/Archlinux。
 - 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
 
 <br />
@@ -131,14 +133,6 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 <br />
 
-## 国际化
-
-MCSManager 已支持中文，英文两种语言，后期可以兼容更多语言，已经实现国际化全面覆盖。
-
-翻译和软件国际化由 [KevinLu2000](https://github.com/KevinLu2000)，[Lazy](https://github.com/LazyCreeper)，[zijiren233](https://github.com/zijiren233) 和 [Unitwk](https://github.com/unitwk) 共同完成，在此感谢这些贡献者们。
-
-<br />
-
 ## 搭建开发环境
 
 此段落面向开发人员，普通用户无需关注也无需执行。
@@ -162,10 +156,11 @@ git clone https://github.com/MCSManager/MCSManager.git
 ### 构建生产环境版本
 
 ```bash
-./build.bat
-# 或者
-./build.sh
+./build.bat # Windows
+./build.sh  # MacOS
 ```
+
+接下来你还需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 两个项目下载对应的二进制文件，将他们存放到 `daemon/lib` 目录下，以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
 
 <br />
 
@@ -182,6 +177,17 @@ git clone https://github.com/MCSManager/MCSManager.git
 欢迎发现的任何问题进行反馈，必当及时修复。
 
 若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com，安全问题修复后将在代码中附加漏洞发现者姓名。
+
+<br />
+
+## 国际化
+
+感谢下列成员提供的**大量**翻译文件：
+
+- [KevinLu2000](https://github.com/KevinLu2000)
+- [Unitwk](https://github.com/unitwk)
+- [JianyueLab](https://github.com/JianyueLab)
+- [IceBrick](https://github.com/IceBrick01)
 
 <br />
 

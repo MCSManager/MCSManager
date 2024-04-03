@@ -16,7 +16,7 @@
 
 [Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-English | [简体中文](README_ZH.md)
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md)
 
 </div>
 
@@ -32,17 +32,14 @@ MCSM has already gained a certain level of popularity within the community, spec
 
 ![failed_to_load_screenshot.png](/.github/panel-instances.png)
 
-<br />
-
 ## Features
 
-1. Supports `Minecraft` and `Steam Game Server` (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.).
-2. Centralized Management for Multiple Machines.
-3. Fully Customizable UI!
-4. Supports all Docker Images.
-5. Require Node.js and No More.
-6. Simple Permission System / Multi-User Support!
-7. More...
+1. One-click deployment of `Minecraft` Java/Bedrock Server
+2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.)
+3. Customizable UI, create your own layout
+4. Support `Docker` virtualization, multiuser, and commercial services
+5. Manage multiple servers with a single web interface
+6. More...
 
 <br />
 
@@ -58,7 +55,7 @@ Require [Node.js 16.20.2](https://nodejs.org/en) or above.
 
 ### Windows
 
-For Windows systems, **download the binary from MCSM's official website**:
+For Windows, We provides packaged executable files:
 
 Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
@@ -68,12 +65,20 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 **One-Command Deployment**
 
+> Script needs to register system services, it requires root permissions.
+
 ```bash
-wget -qO- https://raw.githubusercontent.com/mcsmanager/Script/master/setup.sh | bash
+sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
 ```
 
-- Only supports x86_64 architecture Ubuntu/Centos/Debian/Archlinux.
-- After installation, use command `systemctl start mcsm-{web,daemon}` to start MCSM.
+**Usage**
+
+```bash
+systemctl start mcsm-{web,daemon}
+systemctl stop mcsm-{web,daemon}
+```
+
+- Only supports Ubuntu/Centos/Debian/Archlinux.
 - Installation directory: `/opt/mcsmanager/`.
 
 <br />
@@ -129,15 +134,7 @@ This installation approach does not automatically set up MCSManager as a system 
 
 <br />
 
-## Internationalization (i18n)
-
-MCSManager is currently available in English and Simplified Chinese, with plans to expand support for additional languages in the future.
-
-The translation and software internationalization were completed together by [KevinLu2000](https://github.com/KevinLu2000), [Lazy](https://github.com/LazyCreeper), [zijiren233](https://github.com/zijiren233), and [Unitwk](https://github.com/unitwk). Many thanks for their contributions!
-
-<br />
-
-## Setting Up the Development Environment
+## Development
 
 This section is specifically designed for developers. General users may disregard this portion without concern.
 
@@ -157,13 +154,14 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./npm-dev-windows.bat
 ```
 
-### Build the Compiled Version
+### Build Production Version
 
 ```bash
-./build.bat
-# Or
-./build.sh
+./build.bat # Windows
+./build.sh  # MacOS
 ```
+
+Next, you'll need to go to the [PTY](https://github.com/MCSManager/PTY) and [Zip-Tools](https://github.com/MCSManager/Zip-Tools) projects to download the corresponding binary files and place them in the `daemon/lib` directory to ensure the proper functioning of the `Emulation Terminal` and `File Decompression`.
 
 <br />
 
@@ -180,6 +178,17 @@ Please ensure that any submitted code adheres to our existing coding style. For 
 We welcome and greatly appreciate reports of any bugs or issues with MCSManager. Prompt action will be taken to address them, and your assistance plays a crucial role in improving MCSM. :-D
 
 For reporting severe vulnerabilities that should not be publicly disclosed, please email us at : mcsmanager-dev@outlook.com. We will acknowledge your contribution by adding your name to the code after the bug is resolved.
+
+<br />
+
+## Internationalization (i18n)
+
+Thanks to these contributors for providing a substantial amount of translation:
+
+- [KevinLu2000](https://github.com/KevinLu2000)
+- [Unitwk](https://github.com/unitwk)
+- [JianyueLab](https://github.com/JianyueLab)
+- [IceBrick](https://github.com/IceBrick01)
 
 <br />
 
