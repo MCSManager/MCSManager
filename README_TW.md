@@ -14,9 +14,9 @@
 [![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[官方網站](http://mcsmanager.com/) | [使用文件](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群組](https://jq.qq .com/?\_wv=1027&k=Pgl9ScGw) | [TG 群組](https://t.me/MCSManager_dev) | [成為贊助者](https://afdian.net/a/mcsmanager)
+[官方網站](http://mcsmanager.com/) | [使用文件](https://docs.mcsmanager.com/#/zh-cn/) | [TG 群組](https://t.me/MCSManager_dev) | [成為贊助者](https://afdian.net/a/mcsmanager)
 
-[English](README.md) | [简体中文](README_ZH.md) | 繁體中文
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md)
 
 </div>
 
