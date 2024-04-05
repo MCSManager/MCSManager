@@ -175,7 +175,7 @@ const handleDrop = (e: DragEvent) => {
   Modal.confirm({
     title: t("TXT_CODE_52bc24ec") + ` ${files[0].name} ?`,
     icon: h(ExclamationCircleOutlined),
-    content: `${t("TXT_CODE_94bb113a")} ${(files[0].size / 1024).toFixed(2)}MB, ${t(
+    content: `${t("TXT_CODE_94bb113a")} ${(files[0].size / 1024 / 1024).toFixed(2)}MB, ${t(
       "TXT_CODE_fffaeb16"
     )}`,
     onOk() {
