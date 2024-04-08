@@ -245,6 +245,7 @@ onMounted(async () => {
 
   .terminal-button-group {
     z-index: 11;
+    margin-right: 20px;
     padding-bottom: 50px;
     padding-left: 50px;
     border-radius: 6px;
@@ -268,6 +269,7 @@ onMounted(async () => {
         margin-left: 5px;
         border-radius: 6px;
         font-size: 20px;
+
         &:hover {
           background-color: #3e3e3e;
         }
