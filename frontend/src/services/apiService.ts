@@ -52,6 +52,10 @@ class ApiService {
       return await this.sendRequest<T>(config);
     }
 
+    if (config.url?.startsWith("/")) {
+      config.url = "." + config.url;
+    }
+
     const reqId = encodeURIComponent(
       [
         String(config.method),
