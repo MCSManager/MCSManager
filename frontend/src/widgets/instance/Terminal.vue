@@ -341,38 +341,6 @@ onMounted(async () => {
     transform: translate(-50%, -50%);
   }
 
-  .terminal-button-group {
-    z-index: 11;
-    padding-bottom: 50px;
-    padding-left: 50px;
-    border-radius: 6px;
-    color: #fff;
-
-    &:hover {
-      ul {
-        transition: all 1s;
-        opacity: 0.8;
-      }
-    }
-
-    ul {
-      display: flex;
-      opacity: 0;
-
-      li {
-        cursor: pointer;
-        list-style: none;
-        padding: 5px;
-        margin-left: 5px;
-        border-radius: 6px;
-        font-size: 20px;
-        &:hover {
-          background-color: #3e3e3e;
-        }
-      }
-    }
-  }
-
   .terminal-wrapper {
     border: 1px solid var(--card-border-color);
     position: relative;
