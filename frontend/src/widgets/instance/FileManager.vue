@@ -6,9 +6,21 @@ import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
+  CopyOutlined,
+  DeleteOutlined,
   DownOutlined,
+  DownloadOutlined,
+  EditOutlined,
   ExclamationCircleOutlined,
+  FileOutlined,
+  FileZipOutlined,
+  FolderOutlined,
+  FormOutlined,
+  KeyOutlined,
+  PlusOutlined,
+  ScissorOutlined,
   SearchOutlined,
+  SnippetsOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -22,6 +34,7 @@ import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
 import { message, type ItemType, Modal } from "ant-design-vue";
+import type { CSSProperties } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -127,11 +140,12 @@ const columns = computed(() => {
       condition: () => !isPhone.value && fileStatus.value?.platform !== "win32"
     },
     {
-      align: "center",
+      align: isPhone.value ? "center" : "right",
       title: t("TXT_CODE_fe731dfc"),
       dataIndex: "action",
       key: "action",
-      minWidth: 200
+      minWidth: 200,
+      condition: () => !isMultiple()
     }
   ]);
 });
@@ -180,80 +194,89 @@ const editFile = (fileName: string) => {
 };
 
 const menuList = (record: DataType) =>
-  arrayFilter<ItemType>([
+  arrayFilter<ItemType & { style?: CSSProperties }>([
     {
       label: t("TXT_CODE_b147fabc"),
       key: "new",
+      icon: h(PlusOutlined),
       children: [
         {
           label: t("TXT_CODE_1e0b63b6"),
           key: "newFile",
+          icon: h(FileOutlined),
           onClick: () => touchFile()
         },
         {
           label: t("TXT_CODE_cfc657db"),
           key: "newFolder",
+          icon: h(FolderOutlined),
           onClick: () => touchFile(true)
         }
       ],
       condition: () => !isMultiple()
     },
-
+    {
+      label: t("TXT_CODE_88122886"),
+      key: "zip",
+      icon: h(FileZipOutlined),
+      onClick: () => zipFile(),
+      condition: () => !!isMultiple()
+    },
+    {
+      label: t("TXT_CODE_a64f3007"),
+      key: "unzip",
+      icon: h(FileZipOutlined),
+      onClick: () => unzipFile(record.name),
+      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
+    },
     {
       label: t("TXT_CODE_ad207008"),
       key: "edit",
+      icon: h(EditOutlined),
       onClick: () => editFile(record.name),
+      condition: () => !isMultiple() && record.type === 1
+    },
+    {
+      label: t("TXT_CODE_65b21404"),
+      key: "download",
+      icon: h(DownloadOutlined),
+      onClick: () => downloadFile(record.name),
       condition: () => !isMultiple() && record.type === 1
     },
     {
       label: t("TXT_CODE_46c4169b"),
       key: "cut",
+      icon: h(ScissorOutlined),
       onClick: () => setClipBoard("move", record.name)
     },
     {
       label: t("TXT_CODE_13ae6a93"),
       key: "copy",
+      icon: h(CopyOutlined),
       onClick: () => setClipBoard("copy", record.name)
-    },
-    {
-      label: t("TXT_CODE_43248597"),
-      key: "edit",
-      onClick: () => paste(),
-      condition: () => (clipboard.value ? (clipboard.value.value.length > 0 ? true : false) : false)
     },
     {
       label: t("TXT_CODE_c83551f5"),
       key: "rename",
+      icon: h(FormOutlined),
       onClick: () => resetName(record.name),
       condition: () => !isMultiple()
     },
     {
-      label: t("TXT_CODE_ecbd7449"),
-      key: "delete",
-      onClick: () => deleteFile(record.name)
-    },
-    {
       label: t("TXT_CODE_16853efe"),
       key: "changePermission",
+      icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
       condition: () => !isMultiple() && fileStatus.value?.platform !== "win32"
     },
     {
-      label: t("TXT_CODE_88122886"),
-      key: "zip",
-      onClick: () => zipFile()
-    },
-    {
-      label: t("TXT_CODE_a64f3007"),
-      key: "unzip",
-      onClick: () => unzipFile(record.name),
-      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
-    },
-    {
-      label: t("TXT_CODE_65b21404"),
-      key: "download",
-      onClick: () => downloadFile(record.name),
-      condition: () => !isMultiple() && record.type === 1
+      label: t("TXT_CODE_ecbd7449"),
+      key: "delete",
+      icon: h(DeleteOutlined),
+      style: {
+        color: "var(--color-red-5)"
+      },
+      onClick: () => deleteFile(record.name)
     }
   ]);
 
@@ -265,10 +288,10 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   return false;
 };
 
-onMounted(() => {
-  getFileStatus();
+onMounted(async () => {
+  await getFileStatus();
   dialog.value.loading = true;
-  getFileList();
+  await getFileList();
   dialog.value.loading = false;
 });
 
@@ -473,7 +496,7 @@ onUnmounted(() => {
                     </a-button>
                   </template>
                   <template v-if="column.key === 'action'">
-                    <a-dropdown>
+                    <a-dropdown v-if="isPhone">
                       <template #overlay>
                         <a-menu mode="vertical" :items="menuList(record as DataType)"> </a-menu>
                       </template>
@@ -482,6 +505,24 @@ onUnmounted(() => {
                         <DownOutlined />
                       </a-button>
                     </a-dropdown>
+                    <a-space v-else>
+                      <a-tooltip
+                        v-for="(item, i) in (menuList(record as DataType) as any).filter(
+                          (menu: any) => !menu.children
+                        )"
+                        :key="i"
+                        :title="item.label"
+                      >
+                        <a-button
+                          :icon="item.icon"
+                          type="text"
+                          size="small"
+                          :style="item.style"
+                          @click="item.onClick"
+                        >
+                        </a-button>
+                      </a-tooltip>
+                    </a-space>
                   </template>
                 </template>
               </a-table>
