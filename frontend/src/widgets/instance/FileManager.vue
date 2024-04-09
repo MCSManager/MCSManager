@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, h } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
@@ -15,7 +15,6 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { throttle } from "lodash";
 import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
 import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
@@ -23,7 +22,6 @@ import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
 import { message, type ItemType, Modal } from "ant-design-vue";
-import { h } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -365,11 +363,9 @@ onUnmounted(() => {
             <div class="search-input">
               <a-input
                 v-model:value.trim.lazy="operationForm.name"
-                :loading="permission.loading"
                 :placeholder="t('TXT_CODE_7cad42a5')"
-                :enter-button="false"
                 allow-clear
-                @change="getFileList"
+                @change="getFileList()"
               >
                 <template #suffix>
                   <search-outlined />
@@ -452,7 +448,7 @@ onUnmounted(() => {
                 :custom-row="
                   (record: DataType) => {
                     return {
-                      onContextmenu: (e) => handleRightClickRow(e, record)
+                      onContextmenu: (e: MouseEvent) => handleRightClickRow(e, record)
                     };
                   }
                 "
