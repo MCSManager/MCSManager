@@ -35,6 +35,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
   const selectionData = ref<DataType[]>();
+  const isMultiple = () => selectionData.value && selectionData.value.length > 1;
   const operationForm = ref<OperationForm>({
     name: "",
     current: 1,
@@ -257,7 +258,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       icon: createVNode(ExclamationCircleOutlined),
       content: createVNode("div", { style: "color:red;" }, t("TXT_CODE_6a10302d")),
       async onOk() {
-        if (file) {
+        if (!isMultiple()) {
           // one file
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
@@ -579,6 +580,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     currentDisk,
     selectionData,
     selectChanged,
+    isMultiple,
     openDialog,
     getFileList,
     touchFile,

@@ -45,7 +45,7 @@ const {
   breadcrumbs,
   clipboard,
   currentDisk,
-  selectionData,
+  isMultiple,
   selectChanged,
   getFileList,
   touchFile,
@@ -179,10 +179,6 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
-const isMultiple = computed(() =>
-  selectionData.value && selectionData.value.length > 1 ? true : false
-);
-
 const menuList = (record: DataType) =>
   arrayFilter<ItemType>([
     {
@@ -200,14 +196,14 @@ const menuList = (record: DataType) =>
           onClick: () => touchFile(true)
         }
       ],
-      condition: () => !isMultiple.value
+      condition: () => !isMultiple()
     },
 
     {
       label: t("TXT_CODE_ad207008"),
       key: "edit",
       onClick: () => editFile(record.name),
-      condition: () => !isMultiple.value && record.type === 1
+      condition: () => !isMultiple() && record.type === 1
     },
     {
       label: t("TXT_CODE_46c4169b"),
@@ -229,18 +225,18 @@ const menuList = (record: DataType) =>
       label: t("TXT_CODE_c83551f5"),
       key: "rename",
       onClick: () => resetName(record.name),
-      condition: () => !isMultiple.value
+      condition: () => !isMultiple()
     },
     {
       label: t("TXT_CODE_ecbd7449"),
       key: "delete",
-      onClick: () => deleteFile()
+      onClick: () => deleteFile(record.name)
     },
     {
       label: t("TXT_CODE_16853efe"),
       key: "changePermission",
       onClick: () => changePermission(record.name, record.mode),
-      condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
+      condition: () => !isMultiple() && fileStatus.value?.platform !== "win32"
     },
     {
       label: t("TXT_CODE_88122886"),
@@ -257,7 +253,7 @@ const menuList = (record: DataType) =>
       label: t("TXT_CODE_65b21404"),
       key: "download",
       onClick: () => downloadFile(record.name),
-      condition: () => !isMultiple.value && record.type === 1
+      condition: () => !isMultiple() && record.type === 1
     }
   ]);
 
@@ -320,7 +316,7 @@ onUnmounted(() => {
               {{ t("TXT_CODE_a53573af") }}
             </a-button>
 
-            <a-dropdown v-if="isMultiple">
+            <a-dropdown v-if="isMultiple()">
               <template #overlay>
                 <a-menu
                   mode="vertical"
