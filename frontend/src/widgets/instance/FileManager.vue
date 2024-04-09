@@ -138,14 +138,6 @@ const columns = computed(() => {
   ]);
 });
 
-watch(
-  () => operationForm.value.name,
-  throttle(() => {
-    operationForm.value.current = 1;
-    getFileList();
-  }, 1000)
-);
-
 let task: NodeJS.Timer | undefined;
 task = setInterval(async () => {
   await getFileStatus();
@@ -371,8 +363,15 @@ onUnmounted(() => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('TXT_CODE_7cad42a5')">
-                <template #prefix>
+              <a-input
+                v-model:value.trim.lazy="operationForm.name"
+                :loading="permission.loading"
+                :placeholder="t('TXT_CODE_7cad42a5')"
+                :enter-button="false"
+                allow-clear
+                @change="getFileList"
+              >
+                <template #suffix>
                   <search-outlined />
                 </template>
               </a-input>

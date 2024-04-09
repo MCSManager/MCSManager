@@ -425,6 +425,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         name: item,
         disabled: false
       });
+      operationForm.value.name = "";
       await getFileList(true);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
@@ -461,14 +462,15 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       return reportErrorMsg(t("TXT_CODE_96281410"));
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
+    operationForm.value.name = "";
     await getFileList();
-
     spinning.value = false;
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
     selectedRowKeys.value = [];
     selectionData.value = [];
+    operationForm.value.name = "";
     operationForm.value.current = e.current;
     operationForm.value.pageSize = e.pageSize;
     getFileList();
@@ -558,6 +560,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       disabled: false
     });
     spinning.value = true;
+    operationForm.value.name = "";
     await getFileList();
     spinning.value = false;
   };
