@@ -1,5 +1,5 @@
 name: Bug Report
-description: Create a report to help us improve.
+description: Create a report to help us improve
 title: "[Bug Report] "
 labels: BUG
 body:
@@ -12,7 +12,7 @@ body:
     validations:
       required: true
   - type: input
-    id: Panel Version
+    id: panel-version
     attributes:
       label: Panel Version
       description: MCSManager Panel Version
@@ -20,7 +20,7 @@ body:
     validations:
       required: true
   - type: input
-    id: Daemon Version
+    id: daemon-version
     attributes:
       label: Daemon Version (Optional)
       description: MCSManager Daemon Version
@@ -28,7 +28,7 @@ body:
     validations:
       required: false
   - type: input
-    id: Recurrence Probability
+    id: recurrence-probability
     attributes:
       label: Recurrence Probability
       description: Recurrence Probability
@@ -36,9 +36,9 @@ body:
     validations:
       required: true
   - type: textarea
-    id: bug-report
+    id: bug-description
     attributes:
-      label: BUG Description
+      label: Bug Description
       description: Please describe the problem you met in as much detail as possible. Besides, please describe how to trigger this problem again.
       placeholder: |
         1. Click a button named ...
