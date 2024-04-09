@@ -1855,10 +1855,10 @@
   "TXT_CODE_dd78943e": "安全警告",
   "TXT_CODE_57e86edb": "你所指派的實例中包含一些沒有啟用「容器保護」的實例，MCSManager 將無法控制此使用者的行為，被指派的使用者可以透過這些實例上傳惡意軟體入侵你的主機，請確保子 使用者是您信任的人。\n\n有安全風險的實例名稱如下：",
   "TXT_CODE_19f697f3": "我知道我可能會被入侵！忽略風險！",
-  "TXT_CODE_a92a4aa1": "General Console Application",
-  "TXT_CODE_3d7fbe30": "Steam Game Server",
-  "TXT_CODE_97f779b3": "MC Java Edition",
-  "TXT_CODE_7f1aef9f": "MC Bedrock Edition",
+  "TXT_CODE_a92a4aa1": "通用控制台應用程式",
+  "TXT_CODE_3d7fbe30": "Steam 遊戲伺服器",
+  "TXT_CODE_97f779b3": "MC Java版伺服器",
+  "TXT_CODE_7f1aef9f": "MC Bedrock版伺服器",
   "TXT_CODE_6c08319b": "MC Spigot",
   "TXT_CODE_ec0cda88": "MC Paper",
   "TXT_CODE_ba86f4a": "MC BungeeCord",
@@ -1870,6 +1870,6 @@
   "TXT_CODE_992bf9bc": "MC Bukkit",
   "TXT_CODE_4f57868": "MC Geyser",
   "TXT_CODE_fa6f95a1": "MC MCDR",
-  "TXT_CODE_31c5a4d0": "Web Shell",
+  "TXT_CODE_31c5a4d0": "網頁控制台",
   "TXT_CODE_f25df30a": "Terraria"
 }
