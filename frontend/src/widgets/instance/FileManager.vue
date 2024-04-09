@@ -199,16 +199,16 @@ const menuList = (record: DataType) =>
       icon: h(PlusOutlined),
       children: [
         {
-          label: t("TXT_CODE_1e0b63b6"),
-          key: "newFile",
-          icon: h(FileOutlined),
-          onClick: () => touchFile()
-        },
-        {
           label: t("TXT_CODE_cfc657db"),
           key: "newFolder",
           icon: h(FolderOutlined),
           onClick: () => touchFile(true)
+        },
+        {
+          label: t("TXT_CODE_1e0b63b6"),
+          key: "newFile",
+          icon: h(FileOutlined),
+          onClick: () => touchFile()
         }
       ],
       condition: () => !isMultiple.value
