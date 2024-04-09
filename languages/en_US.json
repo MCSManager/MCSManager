@@ -1854,5 +1854,22 @@
   "TXT_CODE_a8b245fa": "Initialization of some modules failed. Please check whether the files under daemon/lib exist or whether the permissions are normal!",
   "TXT_CODE_ae575e12": "If you are using a reverse proxy to access the panel, turn this option on. \nThe panel will obtain the real IP from the \"X-Real-IP\" in the request header.",
   "TXT_CODE_dd78943e": "Safety warning",
-  "TXT_CODE_f0789d81": "Reverse proxy mode"
+  "TXT_CODE_f0789d81": "Reverse proxy mode",
+  "TXT_CODE_a92a4aa1": "General Console Application",
+  "TXT_CODE_3d7fbe30": "Steam Game Server",
+  "TXT_CODE_97f779b3": "MC Java Edition",
+  "TXT_CODE_7f1aef9f": "MC Bedrock Edition",
+  "TXT_CODE_6c08319b": "MC Spigot",
+  "TXT_CODE_ec0cda88": "MC Paper",
+  "TXT_CODE_ba86f4a": "MC BungeeCord",
+  "TXT_CODE_a3abb092": "MC Velocity",
+  "TXT_CODE_67b5f678": "MC Bedrock",
+  "TXT_CODE_e4dbff32": "MC Sponge",
+  "TXT_CODE_5112fcb2": "MC Forge",
+  "TXT_CODE_7af6d85a": "MC Fabric",
+  "TXT_CODE_992bf9bc": "MC Bukkit",
+  "TXT_CODE_4f57868": "MC Geyser",
+  "TXT_CODE_fa6f95a1": "MC MCDR",
+  "TXT_CODE_31c5a4d0": "Web Shell",
+  "TXT_CODE_f25df30a": "Terraria"
 }
