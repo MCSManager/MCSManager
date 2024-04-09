@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, onMounted, onUnmounted, h } from "vue";
+import { ref, computed, onMounted, onUnmounted, h, type CSSProperties } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
@@ -20,7 +20,6 @@ import {
   PlusOutlined,
   ScissorOutlined,
   SearchOutlined,
-  SnippetsOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -34,7 +33,6 @@ import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
 import { message, type ItemType, Modal } from "ant-design-vue";
-import type { CSSProperties } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -145,7 +143,7 @@ const columns = computed(() => {
       dataIndex: "action",
       key: "action",
       minWidth: 200,
-      condition: () => !isMultiple()
+      condition: () => !isMultiple.value
     }
   ]);
 });
@@ -213,14 +211,14 @@ const menuList = (record: DataType) =>
           onClick: () => touchFile(true)
         }
       ],
-      condition: () => !isMultiple()
+      condition: () => !isMultiple.value
     },
     {
       label: t("TXT_CODE_88122886"),
       key: "zip",
       icon: h(FileZipOutlined),
       onClick: () => zipFile(),
-      condition: () => !!isMultiple()
+      condition: () => !!isMultiple.value
     },
     {
       label: t("TXT_CODE_a64f3007"),
@@ -234,14 +232,14 @@ const menuList = (record: DataType) =>
       key: "edit",
       icon: h(EditOutlined),
       onClick: () => editFile(record.name),
-      condition: () => !isMultiple() && record.type === 1
+      condition: () => !isMultiple.value && record.type === 1
     },
     {
       label: t("TXT_CODE_65b21404"),
       key: "download",
       icon: h(DownloadOutlined),
       onClick: () => downloadFile(record.name),
-      condition: () => !isMultiple() && record.type === 1
+      condition: () => !isMultiple.value && record.type === 1
     },
     {
       label: t("TXT_CODE_46c4169b"),
@@ -260,14 +258,14 @@ const menuList = (record: DataType) =>
       key: "rename",
       icon: h(FormOutlined),
       onClick: () => resetName(record.name),
-      condition: () => !isMultiple()
+      condition: () => !isMultiple.value
     },
     {
       label: t("TXT_CODE_16853efe"),
       key: "changePermission",
       icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
-      condition: () => !isMultiple() && fileStatus.value?.platform !== "win32"
+      condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
     },
     {
       label: t("TXT_CODE_ecbd7449"),
@@ -339,7 +337,7 @@ onUnmounted(() => {
               {{ t("TXT_CODE_a53573af") }}
             </a-button>
 
-            <a-dropdown v-if="isMultiple()">
+            <a-dropdown v-if="isMultiple">
               <template #overlay>
                 <a-menu
                   mode="vertical"
