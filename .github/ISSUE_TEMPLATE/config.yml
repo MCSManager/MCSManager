@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Discord Channel
+  - name: English | Discord Channel
     url: https://discord.gg/BNpYMVX7Cd
     about: The official Discord channel of MCSManager!
+  - name: 中文用户 | QQ Group
+    url: http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=6ryJRaHMaAM9aSeSdRWn6qm9gQ3lI8vu&authKey=BMZ5gA9Rqw%2B5714yAW1ZxiWnFbkk2KRKgBF%2BMiIaOw0VVsSR7tsP10cFwhmDdlgU&noverify=0&group_code=198646856
+    about: The official QQ Group of MCSManager!
+  - name: 中文用户 | Telegram Group
+    url: https://t.me/MCSManager_dev
+    about: The official QQ Group of MCSManager!
