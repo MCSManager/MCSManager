@@ -1,7 +1,7 @@
 import { message, Modal } from "ant-design-vue";
 import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive, type VNodeRef } from "vue";
+import { ref, createVNode, reactive, type VNodeRef, computed } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { parseForwardAddress } from "@/tools/protocol";
 import { number2permission, permission2number } from "@/tools/permission";
@@ -35,6 +35,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
   const selectionData = ref<DataType[]>();
+  const isMultiple = computed(() => selectionData.value && selectionData.value.length > 1);
   const operationForm = ref<OperationForm>({
     name: "",
     current: 1,
@@ -257,7 +258,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       icon: createVNode(ExclamationCircleOutlined),
       content: createVNode("div", { style: "color:red;" }, t("TXT_CODE_6a10302d")),
       async onOk() {
-        if (file) {
+        if (!isMultiple.value) {
           // one file
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
@@ -425,6 +426,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         name: item,
         disabled: false
       });
+      operationForm.value.name = "";
       await getFileList(true);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
@@ -461,14 +463,15 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       return reportErrorMsg(t("TXT_CODE_96281410"));
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
+    operationForm.value.name = "";
     await getFileList();
-
     spinning.value = false;
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
     selectedRowKeys.value = [];
     selectionData.value = [];
+    operationForm.value.name = "";
     operationForm.value.current = e.current;
     operationForm.value.pageSize = e.pageSize;
     getFileList();
@@ -558,6 +561,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       disabled: false
     });
     spinning.value = true;
+    operationForm.value.name = "";
     await getFileList();
     spinning.value = false;
   };
@@ -576,6 +580,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     currentDisk,
     selectionData,
     selectChanged,
+    isMultiple,
     openDialog,
     getFileList,
     touchFile,

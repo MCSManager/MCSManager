@@ -398,8 +398,9 @@ onMounted(async () => {
                   </a-select-option>
                 </a-select>
                 <a-input
-                  v-model:value.trim="operationForm.name"
+                  v-model:value.trim.lazy="operationForm.name"
                   :placeholder="t('TXT_CODE_2471b9c')"
+                  allow-clear
                   style="width: calc(100% - 100px)"
                   @change="search()"
                 >

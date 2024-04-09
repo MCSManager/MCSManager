@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, h, type CSSProperties } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
+  CopyOutlined,
+  DeleteOutlined,
   DownOutlined,
+  DownloadOutlined,
+  EditOutlined,
   ExclamationCircleOutlined,
+  FileOutlined,
+  FileZipOutlined,
+  FolderOutlined,
+  FormOutlined,
+  KeyOutlined,
+  PlusOutlined,
+  ScissorOutlined,
   SearchOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
@@ -15,7 +26,6 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { throttle } from "lodash";
 import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
 import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
@@ -23,7 +33,6 @@ import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
 import { message, type ItemType, Modal } from "ant-design-vue";
-import { h } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -47,7 +56,7 @@ const {
   breadcrumbs,
   clipboard,
   currentDisk,
-  selectionData,
+  isMultiple,
   selectChanged,
   getFileList,
   touchFile,
@@ -129,22 +138,15 @@ const columns = computed(() => {
       condition: () => !isPhone.value && fileStatus.value?.platform !== "win32"
     },
     {
-      align: "center",
+      align: isPhone.value ? "center" : "right",
       title: t("TXT_CODE_fe731dfc"),
       dataIndex: "action",
       key: "action",
-      minWidth: 200
+      minWidth: 200,
+      condition: () => !isMultiple.value
     }
   ]);
 });
-
-watch(
-  () => operationForm.value.name,
-  throttle(() => {
-    operationForm.value.current = 1;
-    getFileList();
-  }, 1000)
-);
 
 let task: NodeJS.Timer | undefined;
 task = setInterval(async () => {
@@ -189,85 +191,90 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
-const isMultiple = computed(() =>
-  selectionData.value && selectionData.value.length > 1 ? true : false
-);
-
 const menuList = (record: DataType) =>
-  arrayFilter<ItemType>([
+  arrayFilter<ItemType & { style?: CSSProperties }>([
     {
       label: t("TXT_CODE_b147fabc"),
       key: "new",
+      icon: h(PlusOutlined),
       children: [
-        {
-          label: t("TXT_CODE_1e0b63b6"),
-          key: "newFile",
-          onClick: () => touchFile()
-        },
         {
           label: t("TXT_CODE_cfc657db"),
           key: "newFolder",
+          icon: h(FolderOutlined),
           onClick: () => touchFile(true)
+        },
+        {
+          label: t("TXT_CODE_1e0b63b6"),
+          key: "newFile",
+          icon: h(FileOutlined),
+          onClick: () => touchFile()
         }
       ],
       condition: () => !isMultiple.value
     },
-
+    {
+      label: t("TXT_CODE_88122886"),
+      key: "zip",
+      icon: h(FileZipOutlined),
+      onClick: () => zipFile(),
+      condition: () => !!isMultiple.value
+    },
+    {
+      label: t("TXT_CODE_a64f3007"),
+      key: "unzip",
+      icon: h(FileZipOutlined),
+      onClick: () => unzipFile(record.name),
+      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
+    },
     {
       label: t("TXT_CODE_ad207008"),
       key: "edit",
+      icon: h(EditOutlined),
       onClick: () => editFile(record.name),
+      condition: () => !isMultiple.value && record.type === 1
+    },
+    {
+      label: t("TXT_CODE_65b21404"),
+      key: "download",
+      icon: h(DownloadOutlined),
+      onClick: () => downloadFile(record.name),
       condition: () => !isMultiple.value && record.type === 1
     },
     {
       label: t("TXT_CODE_46c4169b"),
       key: "cut",
+      icon: h(ScissorOutlined),
       onClick: () => setClipBoard("move", record.name)
     },
     {
       label: t("TXT_CODE_13ae6a93"),
       key: "copy",
+      icon: h(CopyOutlined),
       onClick: () => setClipBoard("copy", record.name)
-    },
-    {
-      label: t("TXT_CODE_43248597"),
-      key: "edit",
-      onClick: () => paste(),
-      condition: () => (clipboard.value ? (clipboard.value.value.length > 0 ? true : false) : false)
     },
     {
       label: t("TXT_CODE_c83551f5"),
       key: "rename",
+      icon: h(FormOutlined),
       onClick: () => resetName(record.name),
       condition: () => !isMultiple.value
     },
     {
-      label: t("TXT_CODE_ecbd7449"),
-      key: "delete",
-      onClick: () => deleteFile()
-    },
-    {
       label: t("TXT_CODE_16853efe"),
       key: "changePermission",
+      icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
       condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
     },
     {
-      label: t("TXT_CODE_88122886"),
-      key: "zip",
-      onClick: () => zipFile()
-    },
-    {
-      label: t("TXT_CODE_a64f3007"),
-      key: "unzip",
-      onClick: () => unzipFile(record.name),
-      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
-    },
-    {
-      label: t("TXT_CODE_65b21404"),
-      key: "download",
-      onClick: () => downloadFile(record.name),
-      condition: () => !isMultiple.value && record.type === 1
+      label: t("TXT_CODE_ecbd7449"),
+      key: "delete",
+      icon: h(DeleteOutlined),
+      style: {
+        color: "var(--color-red-5)"
+      },
+      onClick: () => deleteFile(record.name)
     }
   ]);
 
@@ -279,10 +286,10 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   return false;
 };
 
-onMounted(() => {
-  getFileStatus();
+onMounted(async () => {
+  await getFileStatus();
   dialog.value.loading = true;
-  getFileList();
+  await getFileList();
   dialog.value.loading = false;
 });
 
@@ -371,8 +378,13 @@ onUnmounted(() => {
           </template>
           <template #center>
             <div class="search-input">
-              <a-input v-model:value="operationForm.name" :placeholder="t('TXT_CODE_7cad42a5')">
-                <template #prefix>
+              <a-input
+                v-model:value.trim.lazy="operationForm.name"
+                :placeholder="t('TXT_CODE_7cad42a5')"
+                allow-clear
+                @change="getFileList()"
+              >
+                <template #suffix>
                   <search-outlined />
                 </template>
               </a-input>
@@ -453,7 +465,7 @@ onUnmounted(() => {
                 :custom-row="
                   (record: DataType) => {
                     return {
-                      onContextmenu: (e) => handleRightClickRow(e, record)
+                      onContextmenu: (e: MouseEvent) => handleRightClickRow(e, record)
                     };
                   }
                 "
@@ -482,7 +494,7 @@ onUnmounted(() => {
                     </a-button>
                   </template>
                   <template v-if="column.key === 'action'">
-                    <a-dropdown>
+                    <a-dropdown v-if="isPhone">
                       <template #overlay>
                         <a-menu mode="vertical" :items="menuList(record as DataType)"> </a-menu>
                       </template>
@@ -491,6 +503,24 @@ onUnmounted(() => {
                         <DownOutlined />
                       </a-button>
                     </a-dropdown>
+                    <a-space v-else>
+                      <a-tooltip
+                        v-for="(item, i) in (menuList(record as DataType) as any).filter(
+                          (menu: any) => !menu.children
+                        )"
+                        :key="i"
+                        :title="item.label"
+                      >
+                        <a-button
+                          :icon="item.icon"
+                          type="text"
+                          size="small"
+                          :style="item.style"
+                          @click="item.onClick"
+                        >
+                        </a-button>
+                      </a-tooltip>
+                    </a-space>
                   </template>
                 </template>
               </a-table>
