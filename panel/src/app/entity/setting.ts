@@ -1,8 +1,9 @@
 // @Entity
 export default class SystemConfig {
-  // HTTP service port and IP
+  // HTTP service port, IP and path prefix
   httpPort: number = 23333;
   httpIp: string = "";
+  prefix: string = "";
 
   // reverse proxy mode
   reverseProxyMode: boolean = false;

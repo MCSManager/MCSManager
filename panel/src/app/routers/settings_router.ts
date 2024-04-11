@@ -32,6 +32,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
   if (config && systemConfig) {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
+    if (config.prefix != null) systemConfig.prefix = config.prefix;
     if (config.reverseProxyMode != null)
       systemConfig.reverseProxyMode = Boolean(config.reverseProxyMode);
     if (config.crossDomain != null) systemConfig.crossDomain = config.crossDomain;

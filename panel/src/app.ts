@@ -151,6 +151,24 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     await next();
   });
 
+  if (systemConfig && systemConfig.prefix != "") {
+    const prefix = systemConfig.prefix;
+    app.use(async (ctx, next) => {
+      if (ctx.url.startsWith(prefix)) {
+        const orig = ctx.url;
+        ctx.url = ctx.url.slice(prefix.length);
+        if (!ctx.url.startsWith("/")) {
+          ctx.url = "/" + ctx.url;
+        }
+        await next().then(() => {
+          ctx.url = orig;
+        });
+      } else {
+        console.log(prefix, ctx.url);
+        ctx.redirect((prefix.endsWith("/") ? prefix.slice(0, prefix.length - 1) : prefix) + ctx.url);
+      }
+    });
+  }
   app.use(protocolMiddleware);
   app.use(
     koaStatic(path.join(process.cwd(), "public"), {
