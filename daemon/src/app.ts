@@ -78,7 +78,7 @@ const io = new Server(httpServer, {
   pingInterval: 5000,
   pingTimeout: 5000,
   cookie: false,
-  path: "/socket.io",
+  path: (config.prefix.endsWith("/") ? config.prefix.slice(0, config.prefix.length) : config.prefix) + "/socket.io",
   cors: {
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"]
@@ -115,7 +115,7 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-process.on("uncaughtException", function (err) {
+process.on("uncaughtException", function(err) {
   logger.error(`Error: UncaughtException:`, err);
 });
 
@@ -147,7 +147,7 @@ async function processExit() {
   }
 }
 
-["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function(sig) {
   process.on(sig, () => {
     logger.warn(`${sig} close process signal detected.`);
     processExit();

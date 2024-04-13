@@ -38,6 +38,7 @@ export const TERM_COLOR = {
   TERM_TEXT_ITALIC: "\x1B[3m", // Italic §o
   TERM_TEXT_B: "\x1B[1m"
 };
+
 export interface UseTerminalParams {
   instanceId: string;
   daemonId: string;
@@ -83,6 +84,12 @@ export function useTerminal() {
     const password = remoteInfo.password;
 
     socket = io(addr, {
+      path:
+        (!!remoteInfo.prefix
+          ? remoteInfo.prefix.endsWith("/")
+            ? remoteInfo.prefix.slice(0, remoteInfo.prefix.length)
+            : remoteInfo.prefix
+          : "") + "/socket.io",
       multiplex: false,
       reconnectionDelayMax: 1000 * 10,
       timeout: 1000 * 10,

@@ -9,6 +9,7 @@ import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permissi
 import { systemConfig } from "../setting";
 import { $t } from "../i18n";
 import { ROLE } from "../entity/user";
+
 const router = new Router({ prefix: "/files" });
 
 router.use(async (ctx, next) => {
@@ -279,7 +280,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${remoteService?.config.prefix ?? ""}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "download",
@@ -309,7 +310,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${remoteService?.config.prefix ?? ""}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",

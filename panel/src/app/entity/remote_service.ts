@@ -41,7 +41,10 @@ export default class RemoteService {
     }
 
     logger.info(`${$t("TXT_CODE_daemonInfo.tryConnect")}:${daemonInfo}`);
-    this.socket = io(addr, this.config.connectOpts);
+    this.socket = io(addr, {
+      ...this.config.connectOpts,
+      path: (this.config.prefix.endsWith("/") ? this.config.prefix.slice(0, this.config.prefix.length) : this.config.prefix) + "/socket.io"
+    });
 
     // register built-in events
     this.socket.on("connect", async () => {

@@ -28,19 +28,26 @@ export function parseForwardAddress(addr: string, require: "http" | "ws") {
   let onlyAddr = null;
   if (addr.split(":").length === 2) {
     onlyAddr = addr.split(":")[0];
-    daemonPort = parseInt(addr.split(":")[1]);
+    daemonPort = parseInt(addr.split(":")[1].split("/")[0]);
     if (isNaN(daemonPort))
       throw new Error(`The address ${addr} failed to resolve, the port is incorrect`);
   } else {
     onlyAddr = addr;
   }
 
+  let path = null;
+  if (addr.indexOf("/") != -1) {
+    path = addr.slice(addr.indexOf("/"));
+  }
+
   // Reassemble the address based on the separated port and ip
   const checkAddr = onlyAddr.toLocaleLowerCase();
   if (checkAddr.indexOf("localhost") === 0 || checkAddr.indexOf("127.0.0.") === 0) {
-    addr = `${protocol}${window.location.hostname}${daemonPort ? `:${daemonPort}` : ""}`;
+    addr = `${protocol}${window.location.hostname}${daemonPort ? `:${daemonPort}` : ""}${
+      path ?? ""
+    }`;
   } else {
-    addr = `${protocol}${onlyAddr}${daemonPort ? `:${daemonPort}` : ""}`;
+    addr = `${protocol}${onlyAddr}${daemonPort ? `:${daemonPort}` : ""}${path ?? ""}`;
   }
   return addr;
 }

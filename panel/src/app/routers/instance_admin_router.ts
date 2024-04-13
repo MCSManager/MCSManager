@@ -71,7 +71,7 @@ router.post(
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
       // Send a cross-end file upload task to the daemon
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${remoteService?.config.prefix ?? ""}`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -149,7 +149,8 @@ router.post("/multi_open", permission({ level: ROLE.ADMIN }), async (ctx) => {
         .request("instance/open", {
           instanceUuids
         })
-        .catch(() => {});
+        .catch(() => {
+        });
     });
     ctx.body = true;
   } catch (err) {
@@ -168,7 +169,8 @@ router.post("/multi_stop", permission({ level: ROLE.ADMIN }), async (ctx) => {
         .request("instance/stop", {
           instanceUuids
         })
-        .catch(() => {});
+        .catch(() => {
+        });
     });
     ctx.body = true;
   } catch (err) {
@@ -185,7 +187,8 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/kill", { instanceUuids })
-        .catch((err) => {});
+        .catch((err) => {
+        });
     });
     ctx.body = true;
   } catch (err) {

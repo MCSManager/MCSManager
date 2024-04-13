@@ -12,6 +12,7 @@ import type { IGlobalInstanceConfig } from "../../../../common/global";
 export interface MissionPassportResponse {
   addr: string;
   password: string;
+  prefix: string;
 }
 
 export const setUpTerminalStreamChannel = useDefineApi<

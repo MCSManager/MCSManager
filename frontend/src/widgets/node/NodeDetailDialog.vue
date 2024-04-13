@@ -24,6 +24,7 @@ const openDialog = (data?: RemoteNodeDetail, uuid?: string) => {
     dialog.data = {
       ip: "",
       port: 24444,
+      prefix: "",
       remarks: "",
       apiKey: ""
     };
@@ -39,6 +40,7 @@ const dialog = reactive({
   data: {
     ip: "",
     port: 24444,
+    prefix:"",
     remarks: "",
     apiKey: ""
   },
@@ -56,6 +58,7 @@ const dialog = reactive({
     dialog.data = {
       ip: "",
       port: 24444,
+      prefix:"",
       remarks: "",
       apiKey: ""
     };
@@ -118,6 +121,15 @@ defineExpose({ openDialog });
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="dialog.data.port" />
+      </a-form-item>
+
+      <a-form-item :label="t('TXT_CODE_693f31d6')" name="prefix">
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("TXT_CODE_3e93e31e") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input v-model:value="dialog.data.prefix" />
       </a-form-item>
 
       <a-form-item :label="t('TXT_CODE_300c2ff4')" name="apiKey" :required="!editMode">

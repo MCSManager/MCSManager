@@ -58,7 +58,7 @@ async function processExit() {
   }
 }
 
-["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function(sig) {
   process.on(sig, () => {
     logger.warn(`${sig} close process signal detected.`);
     processExit();
@@ -160,11 +160,9 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         if (!ctx.url.startsWith("/")) {
           ctx.url = "/" + ctx.url;
         }
-        await next().then(() => {
-          ctx.url = orig;
-        });
+        await next();
+        ctx.url = orig;
       } else {
-        console.log(prefix, ctx.url);
         ctx.redirect((prefix.endsWith("/") ? prefix.slice(0, prefix.length - 1) : prefix) + ctx.url);
       }
     });
@@ -178,7 +176,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   mountRouters(app);
 
-  process.on("uncaughtException", function (err) {
+  process.on("uncaughtException", function(err) {
     logger.error(`ERROR (uncaughtException):`, err);
   });
 
