@@ -91,7 +91,7 @@ const getLanguageExtension = () => {
       plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
     },
     {
-      name: ["py", "pyi"],
+      name: ["py", "pyi", "pyw"],
       plugin: () => python()
     }
   ];
