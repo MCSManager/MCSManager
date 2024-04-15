@@ -2,7 +2,7 @@ import { io, Socket, SocketOptions, ManagerOptions } from "socket.io-client";
 import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
-import { InstanceStreamListener } from "common";
+import { InstanceStreamListener, removeTrail } from "common";
 import { $t, i18next } from "../i18n";
 
 export default class RemoteService {
@@ -43,7 +43,7 @@ export default class RemoteService {
     logger.info(`${$t("TXT_CODE_daemonInfo.tryConnect")}:${daemonInfo}`);
     this.socket = io(addr, {
       ...this.config.connectOpts,
-      path: (this.config.prefix.endsWith("/") ? this.config.prefix.slice(0, this.config.prefix.length) : this.config.prefix) + "/socket.io"
+      path: removeTrail(this.config.prefix, "/") + "/socket.io"
     });
 
     // register built-in events

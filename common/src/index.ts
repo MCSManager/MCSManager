@@ -20,6 +20,8 @@ import {
   supposeValue
 } from "./typecheck";
 
+export { removeTrail } from "./string_utils";
+
 export {
   MCServerStatus,
   StorageSubsystem,

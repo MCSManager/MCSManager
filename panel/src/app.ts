@@ -19,6 +19,7 @@ import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
+import { removeTrail } from "common";
 
 function hasParams(name: string) {
   return process.argv.includes(name);
@@ -58,7 +59,7 @@ async function processExit() {
   }
 }
 
-["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function(sig) {
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
   process.on(sig, () => {
     logger.warn(`${sig} close process signal detected.`);
     processExit();
@@ -163,7 +164,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         await next();
         ctx.url = orig;
       } else {
-        ctx.redirect((prefix.endsWith("/") ? prefix.slice(0, prefix.length - 1) : prefix) + ctx.url);
+        ctx.redirect(removeTrail(prefix, "/") + ctx.url);
       }
     });
   }
@@ -176,7 +177,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   mountRouters(app);
 
-  process.on("uncaughtException", function(err) {
+  process.on("uncaughtException", function (err) {
     logger.error(`ERROR (uncaughtException):`, err);
   });
 

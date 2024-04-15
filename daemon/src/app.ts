@@ -16,6 +16,7 @@ import InstanceSubsystem from "./service/system_instance";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
 import "./service/system_visual_data";
+import { removeTrail } from "common";
 
 initVersionManager();
 const VERSION = getVersion();
@@ -78,7 +79,7 @@ const io = new Server(httpServer, {
   pingInterval: 5000,
   pingTimeout: 5000,
   cookie: false,
-  path: (config.prefix.endsWith("/") ? config.prefix.slice(0, config.prefix.length) : config.prefix) + "/socket.io",
+  path: removeTrail(config.prefix, "/") + "/socket.io",
   cors: {
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"]
@@ -115,7 +116,7 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-process.on("uncaughtException", function(err) {
+process.on("uncaughtException", function (err) {
   logger.error(`Error: UncaughtException:`, err);
 });
 
@@ -147,7 +148,7 @@ async function processExit() {
   }
 }
 
-["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function(sig) {
+["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
   process.on(sig, () => {
     logger.warn(`${sig} close process signal detected.`);
     processExit();

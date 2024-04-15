@@ -3,6 +3,7 @@ import koaBody from "koa-body";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
 import { globalConfiguration } from "../entity/config";
+import { removeTrail } from "common";
 
 export function initKoa() {
   const koaApp = new Koa();
@@ -28,7 +29,7 @@ export function initKoa() {
     ctx.response.set(
       "Access-Control-Allow-Headers",
       "Content-Type, Cookie, Accept-Encoding, User-Agent, Host, Referer, " +
-      "X-Requested-With, Accept, Accept-Language, Cache-Control, Connection"
+        "X-Requested-With, Accept, Accept-Language, Cache-Control, Connection"
     );
     ctx.response.set("X-Power-by", "MCSManager");
   });
@@ -45,7 +46,7 @@ export function initKoa() {
         await next();
         ctx.url = orig;
       } else {
-        ctx.redirect((prefix.endsWith("/") ? prefix.slice(0, prefix.length - 1) : prefix) + ctx.url);
+        ctx.redirect(removeTrail(prefix, "/") + ctx.url);
       }
     });
   }
