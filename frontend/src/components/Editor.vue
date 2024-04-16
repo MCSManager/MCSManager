@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted } from "vue";
 import { EditorView, basicSetup } from "codemirror";
 import { StreamLanguage, LanguageSupport } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
 import { json } from "@codemirror/lang-json";
 import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
@@ -88,6 +89,10 @@ const getLanguageExtension = () => {
     {
       name: ["shell", "sh", "bat", "cmd"],
       plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
+    },
+    {
+      name: ["py", "pyi", "pyw"],
+      plugin: () => python()
     }
   ];
 
