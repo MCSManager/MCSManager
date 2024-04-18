@@ -12,6 +12,7 @@ import { FitAddon } from "xterm-addon-fit";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
+import { removeTrail } from "@/tools/string";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -38,6 +39,7 @@ export const TERM_COLOR = {
   TERM_TEXT_ITALIC: "\x1B[3m", // Italic §o
   TERM_TEXT_B: "\x1B[1m"
 };
+
 export interface UseTerminalParams {
   instanceId: string;
   daemonId: string;
@@ -83,6 +85,7 @@ export function useTerminal() {
     const password = remoteInfo.password;
 
     socket = io(addr, {
+      path: (!!remoteInfo.prefix ? removeTrail(remoteInfo.prefix, "/") : "") + "/socket.io",
       multiplex: false,
       reconnectionDelayMax: 1000 * 10,
       timeout: 1000 * 10,

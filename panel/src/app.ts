@@ -19,6 +19,7 @@ import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
+import { removeTrail } from "common";
 
 function hasParams(name: string) {
   return process.argv.includes(name);
@@ -151,6 +152,22 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     await next();
   });
 
+  if (systemConfig && systemConfig.prefix != "") {
+    const prefix = systemConfig.prefix;
+    app.use(async (ctx, next) => {
+      if (ctx.url.startsWith(prefix)) {
+        const orig = ctx.url;
+        ctx.url = ctx.url.slice(prefix.length);
+        if (!ctx.url.startsWith("/")) {
+          ctx.url = "/" + ctx.url;
+        }
+        await next();
+        ctx.url = orig;
+      } else {
+        ctx.redirect(removeTrail(prefix, "/") + ctx.url);
+      }
+    });
+  }
   app.use(protocolMiddleware);
   app.use(
     koaStatic(path.join(process.cwd(), "public"), {

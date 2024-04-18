@@ -18,6 +18,7 @@ router.get("/remote_services_list", permission({ level: ROLE.ADMIN }), async (ct
       uuid: remoteService.uuid,
       ip: remoteService.config.ip,
       port: remoteService.config.port,
+      prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks
     });
@@ -84,6 +85,7 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
       uuid: remoteService.uuid,
       ip: remoteService.config.ip,
       port: remoteService.config.port,
+      prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks,
       instances: instancesInfo
@@ -97,7 +99,7 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
 router.post(
   "/remote_service",
   permission({ level: ROLE.ADMIN }),
-  validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
+  validator({ body: { apiKey: String, port: Number, ip: String, prefix: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
     // do asynchronous registration
@@ -105,6 +107,7 @@ router.post(
       apiKey: parameter.apiKey,
       port: parameter.port,
       ip: parameter.ip,
+      prefix: parameter.prefix ?? "",
       remarks: parameter.remarks || ""
     });
     ctx.body = instance.uuid;
@@ -124,6 +127,7 @@ router.put(
     await RemoteServiceSubsystem.edit(uuid, {
       port: parameter.port,
       ip: parameter.ip,
+      prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
       remarks: parameter.remarks
     });

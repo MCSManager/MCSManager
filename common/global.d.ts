@@ -114,6 +114,7 @@ export interface IPanelOverviewRemoteResponse {
   uuid: string;
   ip: string;
   port: number;
+  prefix: string;
   available: boolean;
   remarks: string;
 }

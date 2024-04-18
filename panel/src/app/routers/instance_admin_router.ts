@@ -11,6 +11,7 @@ import { systemConfig } from "../setting";
 import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
 import { ROLE } from "../entity/user";
+import { removeTrail } from "common";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -72,7 +73,9 @@ router.post(
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
       // Send a cross-end file upload task to the daemon
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
+      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
+        remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
+      }`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
