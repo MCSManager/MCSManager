@@ -176,7 +176,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 欢迎发现的任何问题进行反馈，必当及时修复。
 
-若发现严重安全漏洞又不便公开发布，请发送邮件至: mcsmanager-dev@outlook.com，安全问题修复后将在代码中附加漏洞发现者姓名。
+若发现严重安全漏洞又不便公开发布，请发送邮件至: support@mcsmanager.com，安全问题修复后将在代码中附加漏洞发现者姓名。
 
 <br />
 

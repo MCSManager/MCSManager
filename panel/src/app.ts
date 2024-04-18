@@ -90,7 +90,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 /_/  /_/  \\____/  /____/ /_/  /_/  \\__,_/ /_/ /_/\\__,_/ _\\__, / \\___//_/     
                                                         /____/     
 
- + Copyright (C) ${new Date().getFullYear()} MCSManager <mcsmanager-dev@outlook.com>
+ + Copyright ${new Date().getFullYear()} MCSManager Dev <https://github.com/MCSManager>
  + Version ${VERSION}
 `);
 
