@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -e
+
 npm run preview-build
 
 rm -rf production-code
@@ -42,5 +45,6 @@ rm -rf ./panel/dist ./panel/production
 rm -rf ./frontend/dist
 
 echo "------------"
-echo "Done!"
+echo "Compilation completed!"
+echo "Output Directory: ./production-code/"
 echo "------------"

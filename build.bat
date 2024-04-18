@@ -50,7 +50,9 @@ cd "../web"
 call npm install --production
 cd "../../"
 
-echo "--------"
-echo "Done!"
+echo "------------"
+echo "Compilation completed!"
+echo "Output Directory: ./production-code/"
+echo "------------"
 
 pause
