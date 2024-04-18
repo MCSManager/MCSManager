@@ -1,8 +1,11 @@
-# BUG Reporting
+## Security Vulnerability Reporting
 
-We welcome and greatly appreciate reports of any bugs or issues with MCSManager. Prompt action will be taken to address them, and your assistance plays a crucial role in improving MCSM. :-D
+If you discover a security vulnerability in MCSManager and believe it may harm other users, and you are willing to help us fix it but do not wish to disclose the details publicly.
 
-For reporting severe vulnerabilities that should not be publicly disclosed, please Email: support@mcsmanager.com.
+**Please send detailed information to our email: support@mcsmanager.com.**
 
-We will acknowledge your contribution by adding your name to the code after the bug is resolved.
+The email subject format should be: `[Security Vulnerability] <Title>`
 
+Please provide detailed steps to reproduce the security vulnerability, its impact, and we will reply and express our gratitude upon receiving your email.
+
+We will acknowledge your contribution by adding your name to the `readme.md` and `code`!

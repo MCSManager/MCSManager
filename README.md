@@ -175,13 +175,13 @@ Please ensure that any submitted code adheres to our existing coding style. For 
 
 ## BUG Reporting
 
-We welcome and greatly appreciate reports of any bugs or issues with MCSManager. Prompt action will be taken to address them, and your assistance plays a crucial role in improving MCSM. :-D
+**Open Issue:** [Click here](https://github.com/MCSManager/MCSManager/issues/new/choose)
 
-For reporting severe vulnerabilities that should not be publicly disclosed, please email us at: `support@mcsmanager.com` . We will acknowledge your contribution by adding your name to the code after the bug is resolved.
+**Security Vulnerability Report:** [SECURITY.md](SECURITY.md)
 
 <br />
 
-## Internationalization (i18n)
+## Internationalization
 
 Thanks to these contributors for providing a substantial amount of translation:
 
