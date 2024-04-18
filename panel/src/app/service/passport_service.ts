@@ -148,7 +148,7 @@ export function getUserUuid(ctx: Koa.ParameterizedContext): string {
   if (isApiRequest(ctx)) {
     const user = getUuidByApiKey(getApiKey(ctx));
     if (user && user.uuid) {
-      return user.userName;
+      return user.uuid;
     } else {
       return "";
     }

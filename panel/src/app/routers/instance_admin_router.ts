@@ -24,7 +24,8 @@ router.get(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      if (!isHaveInstanceByUuid(getUserUuid(ctx), daemonId, instanceUuid)) return;
+      if (!isHaveInstanceByUuid(getUserUuid(ctx), daemonId, instanceUuid))
+        throw new Error($t("TXT_CODE_permission.forbidden"));
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/detail", {
         instanceUuid
