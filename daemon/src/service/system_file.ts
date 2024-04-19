@@ -222,15 +222,15 @@ export default class FileManager {
 
   async edit(target: string, data?: string) {
     if (!this.check(target)) throw new Error(ERROR_MSG_01);
-    if (!data) {
+    if (data || typeof data === "string") {
+      return await this.writeFile(target, data);
+    } else {
       const absPath = this.toAbsolutePath(target);
       const info = fs.statSync(absPath);
       if (info.size > MAX_EDIT_SIZE) {
         throw new Error($t("TXT_CODE_system_file.execLimit"));
       }
       return await this.readFile(target);
-    } else {
-      return await this.writeFile(target, data);
     }
   }
 
