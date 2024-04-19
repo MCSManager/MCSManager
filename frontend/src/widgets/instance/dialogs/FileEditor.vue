@@ -38,6 +38,7 @@ const initKeydownListener = () => {
       try {
         await submitRequest();
         message.success(t("TXT_CODE_8f47d95"));
+        emit("getFileList");
       } catch (err: any) {
         return reportErrorMsg(err.message);
       }
@@ -103,6 +104,7 @@ const submit = async () => {
     message.success(t("TXT_CODE_a7907771"));
     cancel();
     resolve(editorText.value);
+    emit("getFileList");
   } catch (err: any) {
     console.error(err.message);
     reject(err);
@@ -113,7 +115,6 @@ const submit = async () => {
 const cancel = async () => {
   useKeyboardEventsHooks?.removeKeydownListener();
   open.value = openEditor.value = false;
-  emit("getFileList");
   resolve(editorText.value);
 };
 
