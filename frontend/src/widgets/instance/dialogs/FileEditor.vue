@@ -9,6 +9,8 @@ import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { useScreen } from "@/hooks/useScreen";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
 
+const emit = defineEmits(["getFileList"]);
+
 const open = ref(false);
 const openEditor = ref(false);
 const editorText = ref("");
@@ -108,9 +110,10 @@ const submit = async () => {
   }
 };
 
-const cancel = () => {
+const cancel = async () => {
   useKeyboardEventsHooks?.removeKeydownListener();
   open.value = openEditor.value = false;
+  emit("getFileList");
   resolve(editorText.value);
 };
 
