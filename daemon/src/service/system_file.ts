@@ -8,7 +8,7 @@ import { ProcessWrapper } from "common";
 import os from "os";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
-const MAX_EDIT_SIZE = 1024 * 1024 * 4;
+const MAX_EDIT_SIZE = 1024 * 1024 * 5;
 
 interface IFile {
   name: string;

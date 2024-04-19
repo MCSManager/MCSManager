@@ -117,6 +117,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         maxFieldsSize: Number.MAX_VALUE,
         maxFileSize: Number.MAX_VALUE
       },
+      jsonLimit: "5mb",
       onError(err, ctx) {
         logger.error("koaBody Lib Error:", err);
       }

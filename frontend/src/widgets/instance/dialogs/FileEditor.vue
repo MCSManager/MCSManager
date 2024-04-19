@@ -91,8 +91,7 @@ const submitRequest = async () => {
     data: {
       target: path.value,
       text: editorText.value
-    },
-    timeout: Number.MAX_VALUE
+    }
   });
 };
 

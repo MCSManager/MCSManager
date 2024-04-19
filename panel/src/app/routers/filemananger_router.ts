@@ -162,11 +162,15 @@ router.put(
       const target = String(ctx.request.body.target);
       const text = ctx.request.body.text;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("file/edit", {
-        instanceUuid,
-        target,
-        text
-      });
+      const result = await new RemoteRequest(remoteService).request(
+        "file/edit",
+        {
+          instanceUuid,
+          target,
+          text
+        },
+        100000
+      );
       ctx.body = result;
     } catch (err) {
       ctx.body = err;

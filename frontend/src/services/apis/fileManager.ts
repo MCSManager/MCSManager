@@ -206,7 +206,8 @@ export const fileContent = useDefineApi<
   string
 >({
   url: "/api/files",
-  method: "PUT"
+  method: "PUT",
+  timeout: Number.MAX_SAFE_INTEGER
 });
 
 export const changePermission = useDefineApi<
