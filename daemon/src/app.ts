@@ -2,6 +2,7 @@ import "module-alias/register";
 import http from "http";
 import fs from "fs-extra";
 import versionAdapter from "./service/version_adapter";
+import { checkDependencies } from "./service/dependencies";
 import { $t, i18next } from "./i18n";
 import { getVersion, initVersionManager } from "./service/version";
 import { globalConfiguration } from "./entity/config";
@@ -45,6 +46,8 @@ const config = globalConfiguration.config;
 
 // Detect whether the configuration file is from an older version and update it if so.
 versionAdapter.detectConfig();
+
+checkDependencies();
 
 // Set language
 if (fs.existsSync(LOCAL_PRESET_LANG_PATH)) {

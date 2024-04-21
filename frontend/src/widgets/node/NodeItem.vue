@@ -3,14 +3,14 @@ import CardPanel from "@/components/CardPanel.vue";
 import { ref, computed } from "vue";
 import { t } from "@/lang/i18n";
 import {
-  ProfileOutlined,
   SettingOutlined,
   CodeOutlined,
   BlockOutlined,
   FolderOpenOutlined,
   ReloadOutlined,
   InfoCircleOutlined,
-  CloudServerOutlined
+  CloudServerOutlined,
+  CheckCircleOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -75,7 +75,9 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_c9609785"),
     value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
-    warn: node.available === false
+    warn: node.available === false,
+    success: node.available === true,
+    warnText: t("无法与远程节点建立网络连接，请检查远程节点是否运行正常？网络是否正确配置？")
   },
   {
     title: t("TXT_CODE_593ee330"),
@@ -97,7 +99,8 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    warn: specifiedDaemonVersion.value !== node.version
+    warn: specifiedDaemonVersion.value !== node.version,
+    warnText: t("TXT_CODE_e520908a")
   },
   {
     title: "Daemon ID",
@@ -211,10 +214,13 @@ const nodeOperations = computed(() =>
               <div v-else>
                 <a-tooltip v-if="detail.warn && detail.value">
                   <template #title>
-                    {{ t("TXT_CODE_e520908a") }}
+                    {{ detail.warnText }}
                   </template>
                   <span class="color-danger"><InfoCircleOutlined /> {{ detail.value }}</span>
                 </a-tooltip>
+                <span v-else-if="detail.success">
+                  <span class="color-success"><CheckCircleOutlined /> {{ detail.value }}</span>
+                </span>
                 <span v-else>{{ detail.value }}</span>
               </div>
             </a-typography-paragraph>

@@ -40,7 +40,7 @@ const dialog = reactive({
   data: {
     ip: "",
     port: 24444,
-    prefix:"",
+    prefix: "",
     remarks: "",
     apiKey: ""
   },
@@ -58,7 +58,7 @@ const dialog = reactive({
     dialog.data = {
       ip: "",
       port: 24444,
-      prefix:"",
+      prefix: "",
       remarks: "",
       apiKey: ""
     };
@@ -123,6 +123,22 @@ defineExpose({ openDialog });
         <a-input v-model:value="dialog.data.port" />
       </a-form-item>
 
+      <a-form-item :label="t('TXT_CODE_300c2ff4')" name="apiKey" :required="!editMode">
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("TXT_CODE_5ef2cf20") }}
+
+            <a href="https://docs.mcsmanager.com/advanced/distributed.html" target="_blank">
+              {{ t("TXT_CODE_be1351ce") }}
+            </a>
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-input
+          v-model:value="dialog.data.apiKey"
+          :placeholder="editMode ? t('TXT_CODE_dc570cf2') : t('TXT_CODE_fe25087f')"
+        />
+      </a-form-item>
+
       <a-form-item :label="t('TXT_CODE_693f31d6')" name="prefix">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
@@ -130,20 +146,6 @@ defineExpose({ openDialog });
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="dialog.data.prefix" />
-      </a-form-item>
-
-      <a-form-item :label="t('TXT_CODE_300c2ff4')" name="apiKey" :required="!editMode">
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_5ef2cf20") }}
-
-            <a href="https://docs.mcsmanager.com/" target="_blank">{{ t("TXT_CODE_be1351ce") }}</a>
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input
-          v-model:value="dialog.data.apiKey"
-          :placeholder="editMode ? t('TXT_CODE_dc570cf2') : t('TXT_CODE_fe25087f')"
-        />
       </a-form-item>
     </a-form>
     <template #footer>
