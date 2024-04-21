@@ -49,7 +49,7 @@ export default class Instance extends EventEmitter {
   public lock: boolean = false;
   public startCount: number = 0;
   public startTimestamp: number = 0;
-  public asynchronousTask?: IExecutable;
+  public asynchronousTask?: IExecutable | null;
   public openFrp?: OpenFrp;
 
   public readonly lifeCycleTaskManager = new LifeCycleTaskManager(this);

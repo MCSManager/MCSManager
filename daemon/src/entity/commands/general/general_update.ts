@@ -23,7 +23,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   async exec(instance: Instance) {
     if (instance.status() !== Instance.STATUS_STOP)
       return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
-    if (instance.asynchronousTask !== null)
+    if (instance.asynchronousTask)
       return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress")));
     try {
       instance.setLock(true);
@@ -100,6 +100,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   }
 
   async stop(instance: Instance): Promise<void> {
+    instance.asynchronousTask = undefined;
     logger.info(
       $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
     );
@@ -114,6 +115,5 @@ export default class GeneralUpdateCommand extends InstanceCommand {
     if (this.pid && this.process) {
       killProcess(this.pid, this.process);
     }
-    instance.asynchronousTask = undefined;
   }
 }

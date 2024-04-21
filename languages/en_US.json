@@ -1873,5 +1873,5 @@
   "TXT_CODE_31c5a4d0": "Web Shell",
   "TXT_CODE_f25df30a": "Terraria",
   "TXT_CODE_693f31d6": "Path Prefix",
-  "TXT_CODE_3e93e31e": "Leave it blank if not set."
+  "TXT_CODE_3e93e31e": "Used when reusing ports. In most cases, no configuration is required here"
 }
