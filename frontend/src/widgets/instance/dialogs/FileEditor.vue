@@ -9,7 +9,7 @@ import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { useScreen } from "@/hooks/useScreen";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
 
-const emit = defineEmits(["getFileList"]);
+const emit = defineEmits(["save"]);
 
 const open = ref(false);
 const openEditor = ref(false);
@@ -38,7 +38,7 @@ const initKeydownListener = () => {
       try {
         await submitRequest();
         message.success(t("TXT_CODE_8f47d95"));
-        emit("getFileList");
+        emit("save");
       } catch (err: any) {
         return reportErrorMsg(err.message);
       }
@@ -104,7 +104,7 @@ const submit = async () => {
     message.success(t("TXT_CODE_a7907771"));
     cancel();
     resolve(editorText.value);
-    emit("getFileList");
+    emit("save");
   } catch (err: any) {
     console.error(err.message);
     reject(err);
