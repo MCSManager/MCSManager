@@ -6,7 +6,7 @@ export function checkDependencies() {
   const dependencies = [GOLANG_ZIP_PATH];
   dependencies.forEach((path) => {
     if (!fs.existsSync(path)) {
-      throw new Error(t("缺少依赖文件，无法启动，请重新安装此程序：") + path);
+      throw new Error(t("TXT_CODE_6915f2a") + path);
     }
   });
 }

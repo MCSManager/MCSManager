@@ -77,7 +77,7 @@ const detailList = (node: ComputedNodeInfo) => [
     value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
     warn: node.available === false,
     success: node.available === true,
-    warnText: t("无法与远程节点建立网络连接，请检查远程节点是否运行正常？网络是否正确配置？")
+    warnText: t("TXT_CODE_1c2efd38")
   },
   {
     title: t("TXT_CODE_593ee330"),

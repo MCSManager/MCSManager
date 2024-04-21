@@ -1873,5 +1873,8 @@
   "TXT_CODE_31c5a4d0": "Web Shell",
   "TXT_CODE_f25df30a": "Terraria",
   "TXT_CODE_693f31d6": "Path Prefix",
-  "TXT_CODE_3e93e31e": "Used when reusing ports. In most cases, no configuration is required here"
+  "TXT_CODE_3e93e31e": "Used when reusing ports. In most cases, no configuration is required here",
+  "TXT_CODE_1c2efd38": "The network connection cannot be established with the remote node. Please check whether the remote node is running normally? \nIs the network configured correctly?",
+  "TXT_CODE_6915f2a": "Dependency files are missing and cannot be started. Please reinstall the program:",
+  "TXT_CODE_9337bed1": "It doesn't look like there are any remote nodes here. Maybe there was a problem during the installation process. Restarting your panel and daemon will solve it!"
 }
