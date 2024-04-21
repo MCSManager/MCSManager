@@ -89,6 +89,8 @@ export function useQuickStartFlow() {
     appType?: QUICKSTART_ACTION_TYPE;
     createMethod?: QUICKSTART_METHOD;
     daemonId?: string;
+    emptyActionsText?: string;
+    emptyActionsLink?: string;
   }>({
     title: t("TXT_CODE_724ce74d"),
     step: 1,
@@ -98,6 +100,9 @@ export function useQuickStartFlow() {
   const toStep2 = async (appType: QUICKSTART_ACTION_TYPE) => {
     formData.step = 2;
     formData.appType = appType;
+    formData.emptyActionsText = t(
+      "看起来此处没有任何远程节点，也许在安装流程出现了问题，重启你的面板和守护进程即可解决！"
+    );
     currentIcon.value = DatabaseTwoTone;
     await execute();
     formData.actions = remoteNodes.value
@@ -124,9 +129,8 @@ export function useQuickStartFlow() {
         key: QUICKSTART_METHOD.FAST,
         icon: AppstoreAddOutlined,
         condition: () =>
-          isCN() &&
-          (formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
-            formData.appType === QUICKSTART_ACTION_TYPE.Bedrock),
+          formData.appType === QUICKSTART_ACTION_TYPE.Minecraft ||
+          formData.appType === QUICKSTART_ACTION_TYPE.Bedrock,
         click: () => {
           router.push({
             path: "/quickstart/minecraft",

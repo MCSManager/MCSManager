@@ -73,6 +73,9 @@ const handleNext = (key: string) => {
                 {{ formData.title }}
               </a-typography-title>
               <div style="max-height: 400px; overflow-x: hidden">
+                <a-typography-paragraph v-if="formData.actions?.length === 0">
+                  {{ formData.emptyActionsText }}
+                </a-typography-paragraph>
                 <a-row :gutter="[12, 12]">
                   <fade-up-animation>
                     <action-button

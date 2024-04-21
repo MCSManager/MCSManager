@@ -231,7 +231,7 @@ onMounted(async () => {
                     />
                   </a-form-item>
 
-                  <a-form-item v-if="isCN()">
+                  <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_b2767aa2") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_b1f833f3") }}
@@ -394,11 +394,7 @@ onMounted(async () => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "TXT_CODE_ae575e12"
-                          )
-                        }}
+                        {{ t("TXT_CODE_ae575e12") }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
