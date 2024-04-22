@@ -629,6 +629,7 @@ onUnmounted(() => {
     ref="FileEditorDialog"
     :daemon-id="daemonId"
     :instance-id="instanceId"
+    @save="getFileList"
   />
 </template>
 

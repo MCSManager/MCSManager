@@ -86,7 +86,8 @@ const io = new Server(httpServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"]
-  }
+  },
+  maxHttpBufferSize: 1e8
 });
 
 // Initialize application instance system

@@ -9,6 +9,8 @@ import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { useScreen } from "@/hooks/useScreen";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
 
+const emit = defineEmits(["save"]);
+
 const open = ref(false);
 const openEditor = ref(false);
 const editorText = ref("");
@@ -33,8 +35,13 @@ const initKeydownListener = () => {
   useKeyboardEventsHooks = useKeyboardEvents(
     { ctrl: true, alt: false, caseSensitive: false, key: "s" },
     async () => {
-      await submitRequest();
-      message.success(t("TXT_CODE_8f47d95"));
+      try {
+        await submitRequest();
+        message.success(t("TXT_CODE_8f47d95"));
+        emit("save");
+      } catch (err: any) {
+        return reportErrorMsg(err.message);
+      }
     }
   );
   useKeyboardEventsHooks.startKeydownListener();
@@ -54,7 +61,7 @@ const openDialog = (_path: string, _fileName: string) => {
 
 const fullScreen = ref(false);
 
-const { state: text, execute } = fileContent();
+const { state: text, execute, isLoading } = fileContent();
 const render = async () => {
   try {
     await execute({
@@ -79,20 +86,16 @@ const render = async () => {
 };
 
 const submitRequest = async () => {
-  try {
-    await execute({
-      params: {
-        daemonId: props.daemonId,
-        uuid: props.instanceId
-      },
-      data: {
-        target: path.value,
-        text: editorText.value
-      }
-    });
-  } catch (err: any) {
-    return reportErrorMsg(err.message);
-  }
+  await execute({
+    params: {
+      daemonId: props.daemonId,
+      uuid: props.instanceId
+    },
+    data: {
+      target: path.value,
+      text: editorText.value
+    }
+  });
 };
 
 const submit = async () => {
@@ -101,6 +104,7 @@ const submit = async () => {
     message.success(t("TXT_CODE_a7907771"));
     cancel();
     resolve(editorText.value);
+    emit("save");
   } catch (err: any) {
     console.error(err.message);
     reject(err);
@@ -108,7 +112,7 @@ const submit = async () => {
   }
 };
 
-const cancel = () => {
+const cancel = async () => {
   useKeyboardEventsHooks?.removeKeydownListener();
   open.value = openEditor.value = false;
   resolve(editorText.value);
@@ -131,8 +135,9 @@ defineExpose({
     :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
     :width="fullScreen ? '100%' : '1300px'"
-    @ok="submit()"
-    @cancel="cancel()"
+    :confirm-loading="isLoading"
+    @ok="submit"
+    @cancel="cancel"
   >
     <template #title>
       {{ dialogTitle }}
