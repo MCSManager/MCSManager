@@ -29,6 +29,8 @@ const {
   isLoading: appListLoading
 } = quickInstallListAddr();
 
+const ALL_LANG_KEY = "all";
+
 const appList = computed(() => {
   // For MCSManager v9
   const v9List: any[] = presetList.value as unknown as any[];
@@ -36,7 +38,7 @@ const appList = computed(() => {
     const list = v9List.map((v) => {
       return {
         ...v,
-        language: "all",
+        language: ALL_LANG_KEY,
         title: v.mc,
         runtime: `Java ${v.java}+`,
         description: v.info,
@@ -44,15 +46,6 @@ const appList = computed(() => {
         size: `${v.size}MB`
       };
     });
-    presetList.value = {
-      languages: [
-        {
-          label: "ALL",
-          value: "all"
-        }
-      ],
-      packages: list
-    };
     return list as unknown as QuickStartTemplate[];
   }
   // Check
@@ -60,10 +53,23 @@ const appList = computed(() => {
     return [];
   }
   let list = presetList.value?.packages;
-  if (searchForm.language) list = list.filter((item) => item.language === searchForm.language);
+  if (searchForm.language)
+    list = list.filter(
+      (item) => item.language === searchForm.language || searchForm.language === ALL_LANG_KEY
+    );
   return list;
 });
-const appLangList = computed(() => presetList.value?.languages || []);
+const appLangList = computed(() => {
+  if (presetList.value?.languages instanceof Array) {
+    return presetList.value?.languages;
+  }
+  return [
+    {
+      label: t("所有包"),
+      value: ALL_LANG_KEY
+    }
+  ];
+});
 
 const init = async () => {
   try {
@@ -98,9 +104,10 @@ const handleSelectTemplate = async (item: QuickStartTemplate) => {
         task_name: "quick_install"
       },
       data: {
-        time: new Date().getTime(),
-        newInstanceName: instanceName as string,
-        targetLink: item.targetLink
+        time: Date.now(),
+        newInstanceName: instanceName,
+        targetLink: item.targetLink,
+        setupInfo: item.setupInfo
       }
     });
     installView.value = true;

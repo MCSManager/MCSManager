@@ -8,9 +8,9 @@ import InstanceConfig from "../../entity/instance/Instance_config";
 import { $t, i18next } from "../../i18n";
 import path from "path";
 import { getFileManager } from "../file_router_service";
-import EventEmitter from "events";
-import { IAsyncTask, IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
+import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
+import { t } from "i18next";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -25,7 +25,11 @@ export class QuickInstallTask extends AsyncTask {
     path.join(process.cwd(), "lib", "jre17", "bin", "java.exe")
   );
 
-  constructor(public instanceName: string, public targetLink: string) {
+  constructor(
+    public instanceName: string,
+    public targetLink: string,
+    public buildParams?: Partial<InstanceConfig>
+  ) {
     super();
     const config = new InstanceConfig();
     config.nickname = instanceName;
@@ -69,7 +73,13 @@ export class QuickInstallTask extends AsyncTask {
       let result = await this.download();
       result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
       if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
-      const config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON)) as InstanceConfig;
+
+      let config: Partial<InstanceConfig>;
+      if (this.buildParams?.startCommand) {
+        config = this.buildParams;
+      } else {
+        config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
+      }
 
       if (config.startCommand && config.startCommand.includes("{{java}}")) {
         if (this.hasJava17()) {
@@ -78,6 +88,15 @@ export class QuickInstallTask extends AsyncTask {
           config.startCommand = config.startCommand.replace("{{java}}", "java");
         }
       }
+
+      logger.info(
+        t("正在以预设包的方式构建服务器："),
+        this.instance.config.nickname,
+        this.instance.instanceUuid,
+        "URL:",
+        this.targetLink
+      );
+      logger.info(t("构建包实例参数：") + JSON.stringify(config));
 
       this.instance.parameters(config);
       this.stop();
@@ -109,9 +128,13 @@ export class QuickInstallTask extends AsyncTask {
   }
 }
 
-export function createQuickInstallTask(targetLink: string, instanceName: string) {
+export function createQuickInstallTask(
+  targetLink: string,
+  instanceName: string,
+  buildParams?: any
+) {
   if (!targetLink || !instanceName) throw new Error("targetLink or instanceName is null!");
-  const task = new QuickInstallTask(instanceName, targetLink);
+  const task = new QuickInstallTask(instanceName, targetLink, buildParams);
   TaskCenter.addTask(task);
   return task;
 }

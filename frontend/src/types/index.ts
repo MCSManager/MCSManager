@@ -201,6 +201,7 @@ export interface QuickStartTemplate {
   remark: string;
   targetLink: string;
   author: string;
+  setupInfo?: JsonData;
 }
 
 export interface LabelValueOption {

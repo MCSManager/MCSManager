@@ -5,7 +5,8 @@ import type {
   QuickStartTemplate,
   Schedule,
   NewScheduleTask,
-  LabelValueOption
+  LabelValueOption,
+  JsonData
 } from "@/types";
 import type { IGlobalInstanceConfig } from "../../../../common/global";
 
@@ -251,6 +252,7 @@ export const createAsyncTask = useDefineApi<
       time: number;
       newInstanceName: string;
       targetLink: string;
+      setupInfo?: JsonData;
     };
   },
   {
