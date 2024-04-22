@@ -1876,5 +1876,8 @@
   "TXT_CODE_3e93e31e": "Used when reusing ports. In most cases, no configuration is required here",
   "TXT_CODE_1c2efd38": "The network connection cannot be established with the remote node. Please check whether the remote node is running normally? \nIs the network configured correctly?",
   "TXT_CODE_6915f2a": "Dependency files are missing and cannot be started. Please reinstall the program:",
-  "TXT_CODE_9337bed1": "It doesn't look like there are any remote nodes here. Maybe there was a problem during the installation process. Restarting your panel and daemon will solve it!"
+  "TXT_CODE_9337bed1": "It doesn't look like there are any remote nodes here. Maybe there was a problem during the installation process. Restarting your panel and daemon will solve it!",
+  "TXT_CODE_8a30e150": "All Packages",
+  "TXT_CODE_ac225d07": "Build instance parameters:",
+  "TXT_CODE_e5ba712d": "Building the server as a preset package:"
 }

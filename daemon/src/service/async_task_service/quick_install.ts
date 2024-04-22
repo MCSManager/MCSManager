@@ -90,13 +90,13 @@ export class QuickInstallTask extends AsyncTask {
       }
 
       logger.info(
-        t("正在以预设包的方式构建服务器："),
+        t("TXT_CODE_e5ba712d"),
         this.instance.config.nickname,
         this.instance.instanceUuid,
         "URL:",
         this.targetLink
       );
-      logger.info(t("构建包实例参数：") + JSON.stringify(config));
+      logger.info(t("TXT_CODE_ac225d07") + JSON.stringify(config));
 
       this.instance.parameters(config);
       this.stop();

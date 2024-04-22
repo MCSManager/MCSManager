@@ -65,7 +65,7 @@ const appLangList = computed(() => {
   }
   return [
     {
-      label: t("所有包"),
+      label: t("TXT_CODE_8a30e150"),
       value: ALL_LANG_KEY
     }
   ];
