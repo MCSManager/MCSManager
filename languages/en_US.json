@@ -1791,7 +1791,7 @@
   "TXT_CODE_be608c82": "Different types may have slightly differences in some functions",
   "TXT_CODE_4f387c5a": "After configuring the update command, you can find the update button at the instance actions menu, which will execute the command written here on the host machine.",
   "TXT_CODE_61a8296e": "Enable Docker Container",
-  "TXT_CODE_2b221e02": "Once enabled, the instance will run in a 'sandbox' environment, and most operations will not affect the security of the host.",
+  "TXT_CODE_2b221e02": "Instance will run in a \"sandbox\".",
   "TXT_CODE_ec734b5c": "Specify which image the container runs on",
   "TXT_CODE_4e4d9680": "Complete Image Name",
   "TXT_CODE_4a570d32": "Ensure this image exists and includes necessary information like tags. The instance will automatically pull this image before running",
