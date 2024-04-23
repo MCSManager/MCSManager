@@ -28,15 +28,20 @@ export class QuickInstallTask extends AsyncTask {
   constructor(
     public instanceName: string,
     public targetLink: string,
-    public buildParams?: Partial<InstanceConfig>
+    public buildParams?: Partial<InstanceConfig>,
+    curInstance?: Instance
   ) {
     super();
     const config = new InstanceConfig();
     config.nickname = instanceName;
     config.cwd = "";
-    config.stopCommand = "stop";
+    config.stopCommand = "^c";
     config.type = Instance.TYPE_MINECRAFT_JAVA;
-    this.instance = InstanceSubsystem.createInstance(config);
+    if (!curInstance) {
+      this.instance = InstanceSubsystem.createInstance(config);
+    } else {
+      this.instance = curInstance;
+    }
     this.taskId = `${QuickInstallTask.TYPE}-${this.instance.instanceUuid}-${v4()}`;
     this.type = QuickInstallTask.TYPE;
   }
@@ -109,7 +114,8 @@ export class QuickInstallTask extends AsyncTask {
 
   async onStopped(): Promise<boolean | void> {
     try {
-      if (this.downloadStream) this.downloadStream.destroy(new Error("STOP TASK"));
+      if (this.downloadStream && typeof this.downloadStream.destroy === "function")
+        this.downloadStream.destroy(new Error("STOP TASK"));
     } catch (error: any) {}
   }
 

@@ -7,6 +7,7 @@ import { quickInstallListAddr, createAsyncTask, queryAsyncTask } from "@/service
 import { reportErrorMsg } from "@/tools/validator";
 import Loading from "@/components/Loading.vue";
 import type { QuickStartTemplate } from "@/types";
+
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { router } from "@/config/router";

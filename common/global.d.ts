@@ -197,3 +197,16 @@ export interface ILayoutCard {
   line?: number;
   disableDelete?: boolean;
 }
+
+export interface IQuickStartTemplate {
+  language: string;
+  description: string;
+  title: string;
+  runtime: string;
+  size: string;
+  hardware: string;
+  remark: string;
+  targetLink: string;
+  author: string;
+  setupInfo?: IJsonData;
+}
