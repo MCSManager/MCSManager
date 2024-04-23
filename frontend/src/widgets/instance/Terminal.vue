@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
@@ -10,7 +10,8 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
   RedoOutlined,
-  LaptopOutlined
+  LaptopOutlined,
+  InteractionOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -30,6 +31,7 @@ import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
 import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
+import Reinstall from "./dialogs/Reinstall.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -38,6 +40,7 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { execute, state: instanceInfo, isStopped, isRunning } = useTerminal();
+const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
@@ -48,6 +51,14 @@ const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? tru
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
 const quickOperations = computed(() =>
   arrayFilter([
+    {
+      title: t("重装"),
+      icon: InteractionOutlined,
+      type: "danger",
+      click: () => reinstallDialog.value?.openDialog(),
+      props: {},
+      condition: () => isStopped.value
+    },
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
@@ -298,6 +309,8 @@ onMounted(async () => {
       />
     </template>
   </CardPanel>
+
+  <Reinstall ref="reinstallDialog" :daemon-id="daemonId ?? ''" :instance-id="instanceId ?? ''" />
 </template>
 
 <style lang="scss" scoped>

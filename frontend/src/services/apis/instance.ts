@@ -230,13 +230,7 @@ export const createInstance = useDefineApi<
   url: "/api/instance"
 });
 
-export const quickInstallListAddr = useDefineApi<
-  any,
-  {
-    languages: LabelValueOption[];
-    packages: QuickStartTemplate[];
-  }
->({
+export const quickInstallListAddr = useDefineApi<any, QuickStartTemplate>({
   url: "/api/instance/quick_install_list",
   method: "GET"
 });
@@ -437,5 +431,21 @@ export const scheduleCreate = useDefineApi<
   boolean
 >({
   url: "/api/protected_schedule",
+  method: "POST"
+});
+
+export const reinstallInstance = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      targetUrl: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/protected_instance/install_instance",
   method: "POST"
 });
