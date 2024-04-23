@@ -14,8 +14,8 @@ export const useAppToolsStore = createGlobalState(() => {
     inputDialog: {
       title: "",
       show: false,
-      resolve: (value: string) => {},
-      reject: (value: string) => {}
+      resolve: (value: any) => {},
+      reject: (value: any) => {}
     },
     showUserInfoDialog: false
   });
@@ -23,7 +23,7 @@ export const useAppToolsStore = createGlobalState(() => {
   const openInputDialog = (title: string) => {
     state.inputDialog.title = title;
     state.inputDialog.show = true;
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       state.inputDialog.resolve = resolve;
       state.inputDialog.reject = reject;
     });
