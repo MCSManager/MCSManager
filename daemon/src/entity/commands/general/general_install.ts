@@ -3,7 +3,7 @@ import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import fs from "fs-extra";
 import { QuickInstallTask } from "../../../service/async_task_service/quick_install";
-import { IQuickStartTemplate } from "common/global";
+import { IQuickStartPackages } from "common/global";
 
 export default class GeneralInstallCommand extends InstanceCommand {
   private process?: QuickInstallTask;
@@ -18,7 +18,7 @@ export default class GeneralInstallCommand extends InstanceCommand {
     instance.status(Instance.STATUS_STOP);
   }
 
-  async exec(instance: Instance, params?: IQuickStartTemplate) {
+  async exec(instance: Instance, params?: IQuickStartPackages) {
     if (instance.status() !== Instance.STATUS_STOP)
       return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
     if (instance.asynchronousTask)
@@ -26,8 +26,12 @@ export default class GeneralInstallCommand extends InstanceCommand {
     if (!params) throw new Error("GeneralInstallCommand: No params");
     try {
       instance.setLock(true);
+      instance.status(Instance.STATUS_BUSY);
       instance.println($t("安装"), $t("正在清空实例现有文件，请耐心等待..."));
-      if (instance.config.cwd.length > 1) fs.removeSync(instance.config.cwd);
+      if (instance.config.cwd.length > 1) {
+        fs.removeSync(instance.config.cwd);
+        fs.mkdirsSync(instance.config.cwd);
+      }
       instance.println($t("安装"), $t("删除完成！"));
       this.process = new QuickInstallTask(
         instance.config.nickname,

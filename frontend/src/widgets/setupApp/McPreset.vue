@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
-import type { LayoutCard } from "@/types/index";
+import type { LayoutCard, QuickStartPackages } from "@/types";
 import { DownloadOutlined } from "@ant-design/icons-vue";
 import { quickInstallListAddr, createAsyncTask, queryAsyncTask } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
 import Loading from "@/components/Loading.vue";
-import type { QuickStartTemplate } from "@/types";
 
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
@@ -47,7 +46,7 @@ const appList = computed(() => {
         size: `${v.size}MB`
       };
     });
-    return list as unknown as QuickStartTemplate[];
+    return list as unknown as QuickStartPackages[];
   }
   // Check
   if (!presetList.value?.packages || !presetList.value?.languages) {
@@ -95,7 +94,7 @@ const searchForm = reactive({
 
 const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
 
-const handleSelectTemplate = async (item: QuickStartTemplate) => {
+const handleSelectTemplate = async (item: QuickStartPackages) => {
   try {
     const instanceName = await openInputDialog(t("TXT_CODE_c237192c"));
     await executeCreateAsyncTask({

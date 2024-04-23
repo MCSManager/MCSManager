@@ -6,7 +6,8 @@ import type {
   IJsonData,
   IMapData,
   IGlobalInstanceDockerConfig,
-  IQuickStartTemplate
+  IQuickStartTemplate,
+  IQuickStartPackages
 } from "../../../common/global";
 import type { INSTANCE_STATUS_CODE } from "./const";
 
@@ -193,6 +194,7 @@ export interface NewInstanceForm {
 }
 
 export type QuickStartTemplate = IQuickStartTemplate;
+export type QuickStartPackages = IQuickStartPackages;
 
 export interface LabelValueOption {
   label: string;

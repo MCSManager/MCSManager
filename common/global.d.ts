@@ -198,7 +198,7 @@ export interface ILayoutCard {
   disableDelete?: boolean;
 }
 
-export interface IQuickStartTemplate {
+export interface IQuickStartPackages {
   language: string;
   description: string;
   title: string;
@@ -209,4 +209,13 @@ export interface IQuickStartTemplate {
   targetLink: string;
   author: string;
   setupInfo?: IJsonData;
+}
+
+export interface IQuickStartTemplate {
+  remark: string;
+  languages: {
+    label: string;
+    value: string;
+  }[];
+  packages: IQuickStartPackages[];
 }

@@ -482,13 +482,15 @@ router.post(
       const presetUrl = systemConfig?.quickInstallAddr;
       if (!presetUrl) throw new Error("Preset Addr is empty!");
 
-      const { data: presetConfig } = await axios<IQuickStartTemplate[]>({
+      const { data: presetConfig } = await axios<IQuickStartTemplate>({
         url: presetUrl,
         method: "GET"
       });
 
-      if (!(presetConfig instanceof Array)) throw new Error("Preset Config is not array!");
-      const targetPresetConfig = presetConfig.find((v) => v.targetLink === targetUrl);
+      const packages = presetConfig.packages;
+
+      if (!(packages instanceof Array)) throw new Error("Preset Config is not array!");
+      const targetPresetConfig = packages.find((v) => v.targetLink === targetUrl);
       if (!targetPresetConfig) throw new Error("Preset Config is not found!");
 
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
