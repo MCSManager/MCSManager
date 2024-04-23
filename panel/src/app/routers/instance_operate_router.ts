@@ -472,7 +472,7 @@ router.get(
 router.post(
   "/install_instance",
   permission({ level: ROLE.USER, speedLimit: true }),
-  validator({ query: { daemonId: String, uuid: String, body: Object } }),
+  validator({ query: { daemonId: String, uuid: String }, body: { targetUrl: String } }),
   async (ctx) => {
     try {
       const daemonId = String(ctx.query.daemonId);
