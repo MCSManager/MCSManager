@@ -16,6 +16,7 @@ import {
 } from "../service/frontend_layout";
 import { ROLE } from "../entity/user";
 import { SAVE_DIR_PATH } from "../service/frontend_layout";
+import FileManager from "../../../../daemon/src/service/system_file";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -102,14 +103,23 @@ router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // Upload file to asserts directory, only administrator can upload
 router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const tmpFiles = ctx.request.files?.file;
-  if (!tmpFiles || tmpFiles instanceof Array) throw new Error($t("TXT_CODE_e4d6cc20"));
-  if (!tmpFiles.path || !fs.existsSync(tmpFiles.path)) throw new Error($t("TXT_CODE_1a499109"));
-  const tmpFile = tmpFiles;
-  const newFileName = v4() + path.extname(tmpFile?.name || "");
-  const saveDirPath = path.join(process.cwd(), SAVE_DIR_PATH);
-  if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
-  await fs.move(tmpFile.path, path.join(saveDirPath, newFileName));
-  ctx.body = newFileName;
+  try {
+    if (!tmpFiles || !(tmpFiles instanceof Array)) throw new Error($t("TXT_CODE_e4d6cc20"));
+    if (!tmpFiles[0].filepath || !fs.existsSync(tmpFiles[0].filepath))
+      throw new Error($t("TXT_CODE_1a499109"));
+    const tmpFile = tmpFiles[0];
+    const newFileName = v4() + path.extname(tmpFile.originalFilename || "");
+    if (!FileManager.checkFileName(newFileName))
+      throw new Error("Access denied: Malformed file name");
+    const saveDirPath = path.join(process.cwd(), SAVE_DIR_PATH);
+    if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
+    await fs.move(tmpFile.filepath, path.join(saveDirPath, newFileName));
+    ctx.body = newFileName;
+  } finally {
+    tmpFiles?.forEach((v) => {
+      if (v?.filepath) fs.remove(v.filepath, () => {});
+    });
+  }
 });
 
 export default router;
