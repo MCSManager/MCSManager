@@ -52,7 +52,7 @@ const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.st
 const quickOperations = computed(() =>
   arrayFilter([
     {
-      title: t("重装"),
+      title: t("TXT_CODE_b19ed1dd"),
       icon: InteractionOutlined,
       type: "danger",
       click: () => reinstallDialog.value?.openDialog(),

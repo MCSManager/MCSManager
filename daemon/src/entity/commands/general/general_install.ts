@@ -27,12 +27,12 @@ export default class GeneralInstallCommand extends InstanceCommand {
     try {
       instance.setLock(true);
       instance.status(Instance.STATUS_BUSY);
-      instance.println($t("安装"), $t("正在清空实例现有文件，请耐心等待..."));
+      instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_cbc235ad"));
       if (instance.config.cwd.length > 1) {
         fs.removeSync(instance.config.cwd);
         fs.mkdirsSync(instance.config.cwd);
       }
-      instance.println($t("安装"), $t("删除完成！"));
+      instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_906c5d6a"));
       this.process = new QuickInstallTask(
         instance.config.nickname,
         params.targetLink,
@@ -40,9 +40,9 @@ export default class GeneralInstallCommand extends InstanceCommand {
         instance
       );
       instance.asynchronousTask = this;
-      instance.println($t("安装"), $t("正在安装实例文件，请耐心等待..."));
+      instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_b9ca022b"));
       await this.process.start();
-      instance.println($t("安装"), $t("安装已完成！"));
+      instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_f220ed78"));
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),

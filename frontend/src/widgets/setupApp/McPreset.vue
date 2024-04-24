@@ -122,7 +122,7 @@ const toCreateInstancePage = () => {
 };
 
 onMounted(() => {
-  if (!daemonId) throw new Error(t("缺少远程节点ID"));
+  if (!daemonId) throw new Error(t("TXT_CODE_e4878221"));
 });
 </script>
 

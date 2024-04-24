@@ -27,9 +27,11 @@ const openDialog = async () => {
 
 const handleSelectTemplate = (item: QuickStartPackages) => {
   Modal.confirm({
-    title: t("警告"),
-    content: t("选择此模板后，该实例的所有数据将会被删除，是否继续？"),
-    okText: t("继续"),
+    title: t("TXT_CODE_617ce69c"),
+    content: t(
+      "选择此模板后，该实例的所有数据将会被删除，请先在文件管理中压缩并下载文件备份，是否继续？"
+    ),
+    okText: t("TXT_CODE_ed3fc23"),
     async onOk() {
       try {
         await reinstallInstance().execute({
@@ -70,7 +72,7 @@ defineExpose({
     :footer="null"
     @cancel="cancel"
   >
-    <template #title> {{ t("选择实例模板") }} </template>
+    <template #title> {{ t("TXT_CODE_5e10537a") }} </template>
     <AppPackages ref="appPackages" @handle-select-template="handleSelectTemplate" />
   </a-modal>
 </template>
