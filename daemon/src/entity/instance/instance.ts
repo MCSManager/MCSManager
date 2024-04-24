@@ -106,7 +106,7 @@ export default class Instance extends EventEmitter {
     }
 
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
-      if (this.status() != Instance.STATUS_STOP)
+      if (this.status() !== Instance.STATUS_STOP && this.status() !== Instance.STATUS_BUSY)
         throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());

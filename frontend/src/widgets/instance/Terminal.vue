@@ -52,16 +52,9 @@ const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.st
 const quickOperations = computed(() =>
   arrayFilter([
     {
-      title: t("TXT_CODE_b19ed1dd"),
-      icon: InteractionOutlined,
-      type: "danger",
-      click: () => reinstallDialog.value?.openDialog(),
-      props: {},
-      condition: () => isStopped.value
-    },
-    {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
+      noConfirm: false,
       type: "default",
       click: async () => {
         try {
@@ -108,6 +101,7 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
       type: "default",
+      noConfirm: false,
       click: async () => {
         try {
           await restartInstance().execute({
@@ -161,6 +155,14 @@ const instanceOperations = computed(() =>
         }
       },
       condition: () => isStopped.value && updateCmd.value
+    },
+    {
+      title: t("TXT_CODE_b19ed1dd"),
+      icon: InteractionOutlined,
+      noConfirm: true,
+      click: () => reinstallDialog.value?.openDialog(),
+      props: {},
+      condition: () => isStopped.value
     }
   ])
 );
@@ -228,17 +230,28 @@ onMounted(async () => {
         </template>
         <template #right>
           <div v-if="!isPhone">
-            <a-popconfirm
-              v-for="item in [...quickOperations, ...instanceOperations]"
-              :key="item.title"
-              :title="t('TXT_CODE_276756b2')"
-              @confirm="item.click"
-            >
-              <a-button class="ml-8" :danger="item.type === 'danger'">
+            <template v-for="item in [...quickOperations, ...instanceOperations]" :key="item.title">
+              <a-button
+                v-if="item.noConfirm"
+                class="ml-8"
+                :danger="item.type === 'danger'"
+                @click="item.click"
+              >
                 <component :is="item.icon" />
                 {{ item.title }}
               </a-button>
-            </a-popconfirm>
+              <a-popconfirm
+                v-else
+                :key="item.title"
+                :title="t('TXT_CODE_276756b2')"
+                @confirm="item.click"
+              >
+                <a-button class="ml-8" :danger="item.type === 'danger'">
+                  <component :is="item.icon" />
+                  {{ item.title }}
+                </a-button>
+              </a-popconfirm>
+            </template>
           </div>
 
           <a-dropdown v-else>

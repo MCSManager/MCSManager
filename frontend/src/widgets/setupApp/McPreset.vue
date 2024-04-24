@@ -42,7 +42,7 @@ const handleSelectTemplate = async (item: QuickStartPackages) => {
       data: {
         time: Date.now(),
         newInstanceName: instanceName,
-        targetLink: item.targetLink,
+        targetLink: item.targetLink || "",
         setupInfo: item.setupInfo
       }
     });

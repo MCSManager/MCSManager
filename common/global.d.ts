@@ -206,7 +206,7 @@ export interface IQuickStartPackages {
   size: string;
   hardware: string;
   remark: string;
-  targetLink: string;
+  targetLink?: string;
   author: string;
   setupInfo?: IJsonData;
 }

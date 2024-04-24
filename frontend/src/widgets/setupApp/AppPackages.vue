@@ -127,7 +127,7 @@ onMounted(() => {
               </div>
             </template>
             <template #body>
-              <div style="min-height: 220px; position: relative">
+              <div style="min-height: 120px; position: relative">
                 <a-typography-paragraph
                   :ellipsis="{ rows: 3, expandable: true }"
                   :content="item.description"
@@ -135,9 +135,11 @@ onMounted(() => {
                 </a-typography-paragraph>
                 <a-typography-paragraph>
                   <a-typography-text class="color-info">
-                    <div>{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
-                    <div>{{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}</div>
-                    <div>{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
+                    <div v-if="item.runtime">{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
+                    <div v-if="item.hardware">
+                      {{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}
+                    </div>
+                    <div v-if="item.size">{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
                   </a-typography-text>
                   <br />
                   <a-typography-text class="color-info"> </a-typography-text>
@@ -160,7 +162,7 @@ onMounted(() => {
                   block
                   type="primary"
                   ghost
-                  style="max-width: 180px"
+                  style="max-width: 120px"
                   @click="emit('handleSelectTemplate', item)"
                 >
                   <template #icon>

@@ -27,20 +27,21 @@ export class QuickInstallTask extends AsyncTask {
 
   constructor(
     public instanceName: string,
-    public targetLink: string,
+    public targetLink?: string,
     public buildParams?: Partial<InstanceConfig>,
     curInstance?: Instance
   ) {
     super();
     const config = new InstanceConfig();
     config.nickname = instanceName;
-    config.cwd = "";
     config.stopCommand = "^c";
-    config.type = Instance.TYPE_MINECRAFT_JAVA;
     if (!curInstance) {
+      config.cwd = "";
       this.instance = InstanceSubsystem.createInstance(config);
     } else {
       this.instance = curInstance;
+      config.cwd = this.instance.config.cwd;
+      this.instance.config = config;
     }
     this.taskId = `${QuickInstallTask.TYPE}-${this.instance.instanceUuid}-${v4()}`;
     this.type = QuickInstallTask.TYPE;
@@ -49,6 +50,7 @@ export class QuickInstallTask extends AsyncTask {
   private download(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
+        if (!this.targetLink) reject(new Error("No targetLink!"));
         this.zipPath = path.normalize(path.join(this.instance.config.cwd, this.TMP_ZIP_NAME));
         const writeStream = fs.createWriteStream(this.zipPath);
         const response = await axios<Readable>({
@@ -75,13 +77,15 @@ export class QuickInstallTask extends AsyncTask {
   async onStarted() {
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
-      let result = await this.download();
-      result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
-      if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
+      if (this.targetLink) {
+        let result = await this.download();
+        result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
+        if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
+      }
 
       let config: Partial<InstanceConfig>;
-      if (this.buildParams?.startCommand) {
-        config = this.buildParams;
+      if (this.buildParams?.startCommand || !fs.existsSync(this.ZIP_CONFIG_JSON)) {
+        config = this.buildParams || {};
       } else {
         config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
       }
@@ -135,11 +139,11 @@ export class QuickInstallTask extends AsyncTask {
 }
 
 export function createQuickInstallTask(
-  targetLink: string,
-  instanceName: string,
+  targetLink?: string,
+  instanceName?: string,
   buildParams?: any
 ) {
-  if (!targetLink || !instanceName) throw new Error("targetLink or instanceName is null!");
+  if (!instanceName) throw new Error("Instance name is empty!");
   const task = new QuickInstallTask(instanceName, targetLink, buildParams);
   TaskCenter.addTask(task);
   return task;

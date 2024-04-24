@@ -40,7 +40,9 @@ const handleSelectTemplate = (item: QuickStartPackages) => {
             uuid: props.instanceId
           },
           data: {
-            targetUrl: item.targetLink
+            targetUrl: item.targetLink,
+            title: item.title,
+            description: item.description
           }
         });
         cancel();
@@ -65,7 +67,7 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    width="100%"
+    width="95%"
     :cancel-text="t('TXT_CODE_3b1cc020')"
     :mask-closable="false"
     :confirm-loading="false"
@@ -73,6 +75,8 @@ defineExpose({
     @cancel="cancel"
   >
     <template #title> {{ t("TXT_CODE_5e10537a") }} </template>
-    <AppPackages ref="appPackages" @handle-select-template="handleSelectTemplate" />
+    <div class="mt-20">
+      <AppPackages ref="appPackages" @handle-select-template="handleSelectTemplate" />
+    </div>
   </a-modal>
 </template>

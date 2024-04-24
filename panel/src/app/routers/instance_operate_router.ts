@@ -472,12 +472,16 @@ router.get(
 router.post(
   "/install_instance",
   permission({ level: ROLE.USER, speedLimit: true }),
-  validator({ query: { daemonId: String, uuid: String }, body: { targetUrl: String } }),
+  validator({
+    query: { daemonId: String, uuid: String },
+    body: { description: String, title: String }
+  }),
   async (ctx) => {
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const targetUrl = String(ctx.request.body.targetUrl);
+      const description = String(ctx.request.body.description);
+      const title = String(ctx.request.body.title);
 
       const presetUrl = systemConfig?.quickInstallAddr;
       if (!presetUrl) throw new Error("Preset Addr is empty!");
@@ -490,7 +494,9 @@ router.post(
       const packages = presetConfig.packages;
 
       if (!(packages instanceof Array)) throw new Error("Preset Config is not array!");
-      const targetPresetConfig = packages.find((v) => v.targetLink === targetUrl);
+      const targetPresetConfig = packages.find(
+        (v) => v.title === title && v.description === description
+      );
       if (!targetPresetConfig) throw new Error("Preset Config is not found!");
 
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);

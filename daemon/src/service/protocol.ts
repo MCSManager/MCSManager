@@ -18,7 +18,7 @@ export interface IPacket {
 }
 
 export interface IResponseErrorConfig {
-  notPrintErr: boolean;
+  disablePrint: boolean;
 }
 
 // global socket storage
@@ -50,9 +50,8 @@ export function responseError(
   else errinfo = err;
   const packet = new Packet(ctx.uuid, STATUS_ERR, ctx.event, errinfo);
   // Ignore
-  if (err.toString().includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
-
-  if (!config?.notPrintErr)
+  if (String(err).includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
+  if (!config?.disablePrint)
     logger.warn(
       $t("TXT_CODE_protocol.socketErr", {
         id: ctx.socket.id,
@@ -69,19 +68,20 @@ export function msg(ctx: RouterContext, event: string, data: any) {
   ctx.socket.emit(event, packet);
 }
 
-export function error(ctx: RouterContext, event: string, err: any) {
+export function error(ctx: RouterContext, event: string, err: any, config?: IResponseErrorConfig) {
   const packet = new Packet(ctx.uuid, STATUS_ERR, event, err);
   // Ignore
-  if (err.toString().includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
+  if (String(err).includes(IGNORE) && ctx.event) return ctx.socket.emit(ctx.event, packet);
+  if (!config?.disablePrint)
+    logger.warn(
+      $t("TXT_CODE_protocol.socketErr", {
+        id: ctx.socket.id,
+        address: ctx.socket.handshake.address,
+        event: ctx.event
+      }),
+      err
+    );
 
-  logger.warn(
-    $t("TXT_CODE_protocol.socketErr", {
-      id: ctx.socket.id,
-      address: ctx.socket.handshake.address,
-      event: ctx.event
-    }),
-    err
-  );
   ctx.socket.emit(event, packet);
 }
 

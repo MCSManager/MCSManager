@@ -245,7 +245,7 @@ export const createAsyncTask = useDefineApi<
     data: {
       time: number;
       newInstanceName: string;
-      targetLink: string;
+      targetLink?: string;
       setupInfo?: JsonData;
     };
   },
@@ -441,7 +441,9 @@ export const reinstallInstance = useDefineApi<
       uuid: string;
     };
     data: {
-      targetUrl: string;
+      targetUrl?: string;
+      title: string;
+      description: string;
     };
   },
   boolean

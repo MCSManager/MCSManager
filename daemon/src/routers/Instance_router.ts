@@ -482,7 +482,7 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
       return protocol.response(ctx, text);
     }
     protocol.responseError(ctx, new Error($t("TXT_CODE_Instance_router.terminalLogNotExist")), {
-      notPrintErr: true
+      disablePrint: true
     });
   } catch (err: any) {
     protocol.responseError(ctx, err);

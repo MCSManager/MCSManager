@@ -33,7 +33,9 @@ routerApp.use(async (event, ctx, _, next) => {
       event: event
     })
   );
-  return protocol.error(ctx, "error", IGNORE);
+  return protocol.error(ctx, "error", IGNORE, {
+    disablePrint: true
+  });
 });
 
 // authentication controller
