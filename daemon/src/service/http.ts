@@ -1,5 +1,5 @@
 import Koa from "koa";
-import koaBody from "koa-body";
+import koaBody from "koa-body-patch";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
 import { globalConfiguration } from "../entity/config";
@@ -12,8 +12,9 @@ export function initKoa() {
     koaBody({
       multipart: true,
       formidable: {
-        maxFieldsSize: Number.MAX_VALUE,
-        maxFileSize: Number.MAX_VALUE
+        maxFieldsSize: Number.MAX_SAFE_INTEGER,
+        maxFileSize: Number.MAX_SAFE_INTEGER,
+        maxFiles: 1
       },
       onError(err, ctx) {
         logger.error("koaBody Lib Error:", err);

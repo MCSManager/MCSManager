@@ -13,9 +13,9 @@ export function clearUploadFiles(file?: formidable.File | formidable.File[]) {
   if (!file) return;
   if (file instanceof Array) {
     file.forEach((v) => {
-      fs.remove(v.path, () => {});
+      fs.remove(v.filepath, () => {});
     });
   } else {
-    fs.remove(file.path, () => {});
+    fs.remove(file.filepath, () => {});
   }
 }

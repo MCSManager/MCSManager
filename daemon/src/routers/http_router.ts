@@ -57,7 +57,7 @@ router.post("/upload/:key", async (ctx) => {
   const key = ctx.params.key;
   const unzip = ctx.query.unzip;
   const zipCode = String(ctx.query.code);
-  let tmpFiles: undefined | formidable.File | formidable.File[] = undefined;
+  let tmpFiles: formidable.File | formidable.File[] | undefined;
   try {
     const mission = missionPassport.getMission(key, "upload");
     if (!mission) throw new Error("Access denied: No task found");
@@ -66,19 +66,26 @@ router.post("/upload/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.config.cwd;
     const tmpFiles = ctx.request.files?.file;
-    if (tmpFiles && !(tmpFiles instanceof Array)) {
-      const fullFileName = tmpFiles.name || "";
-      const fileSaveRelativePath = path.normalize(path.join(uploadDir, fullFileName));
-      if (!FileManager.checkFileName(fullFileName))
+    if (tmpFiles) {
+      let uploadedFile: formidable.File;
+      if (tmpFiles instanceof Array) {
+        uploadedFile = tmpFiles[0];
+      } else {
+        throw new Error("Access denied: Files must a array!");
+      }
+      const originFileName = uploadedFile.originalFilename || "";
+      const originFilePath = uploadedFile.filepath || "";
+      const fileSaveRelativePath = path.normalize(path.join(uploadDir, originFileName));
+      if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
       const fileManager = new FileManager(cwd);
       if (!fileManager.checkPath(fileSaveRelativePath))
         throw new Error("Access denied: Invalid destination");
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
-      await fs.move(tmpFiles.path, fileSaveAbsolutePath);
+      await fs.move(uploadedFile.filepath, fileSaveAbsolutePath);
       if (unzip) {
-        const filemanager = new FileManager(instance.config.cwd);
-        filemanager.unzip(fullFileName, "", zipCode);
+        const fileManager = new FileManager(instance.config.cwd);
+        fileManager.unzip(originFilePath, "", zipCode);
       }
       ctx.body = "OK";
       return;

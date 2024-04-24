@@ -242,7 +242,8 @@ export default class FileManager {
     fs.renameSync(targetPath, newPath);
   }
 
-  public static checkFileName(fileName: string) {
+  public static checkFileName(fileName?: string): boolean {
+    if (!fileName) return false;
     const blackKeys = ["/", "\\", "|", "?", "*", ">", "<", ";", '"'];
     for (const ch of blackKeys) {
       if (fileName.includes(ch)) return false;
