@@ -53,15 +53,16 @@ const appList = computed(() => {
 });
 
 const appLangList = computed(() => {
-  if (presetList.value?.languages instanceof Array) {
-    return presetList.value?.languages;
-  }
-  return [
+  let all = [
     {
       label: t("TXT_CODE_8a30e150"),
       value: ALL_LANG_KEY
     }
   ];
+  if (presetList.value?.languages instanceof Array) {
+    all = all.concat(presetList.value?.languages);
+  }
+  return all;
 });
 
 const init = async () => {
