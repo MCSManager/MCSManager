@@ -15,6 +15,7 @@ import OpenFrpTask from "./task/openfrp";
 import RconCommand from "./steam/rcon_command";
 import DockerResizeCommand from "./docker/docker_pty_resize";
 import PtyResizeCommand from "./pty/pty_resize";
+import GeneralInstallCommand from "./general/general_install";
 
 // If you add a new "Preset", Please add the definition here.
 export type IPresetCommand =
@@ -25,7 +26,8 @@ export type IPresetCommand =
   | "update"
   | "getPlayer"
   | "command"
-  | "resize";
+  | "resize"
+  | "install";
 
 // Instance function dispatcher
 // Dispatch and assign different functions according to different types
@@ -50,6 +52,7 @@ export default class FunctionDispatcher extends InstanceCommand {
     instance.setPreset("restart", new GeneralRestartCommand());
     instance.setPreset("update", new GeneralUpdateCommand());
     instance.setPreset("getPlayer", new NullCommand());
+    instance.setPreset("install", new GeneralInstallCommand());
 
     // Preset the basic operation mode according to the instance startup type
     if (!instance.config.processType || instance.config.processType === "general") {

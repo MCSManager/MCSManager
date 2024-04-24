@@ -24,7 +24,9 @@ routerApp.use(async (event, ctx, data, next) => {
     ) {
       return await next();
     }
-    return protocol.error(ctx, "error", IGNORE);
+    return protocol.error(ctx, "error", IGNORE, {
+      disablePrint: true
+    });
   }
   return await next();
 });
@@ -48,7 +50,7 @@ routerApp.on("stream/auth", (ctx, data) => {
     protocol.response(ctx, true);
   } catch (error: any) {
     protocol.responseError(ctx, error, {
-      notPrintErr: true
+      disablePrint: true
     });
   }
 });

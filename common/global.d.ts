@@ -197,3 +197,25 @@ export interface ILayoutCard {
   line?: number;
   disableDelete?: boolean;
 }
+
+export interface IQuickStartPackages {
+  language: string;
+  description: string;
+  title: string;
+  runtime: string;
+  size: string;
+  hardware: string;
+  remark: string;
+  targetLink?: string;
+  author: string;
+  setupInfo?: IJsonData;
+}
+
+export interface IQuickStartTemplate {
+  remark: string;
+  languages: {
+    label: string;
+    value: string;
+  }[];
+  packages: IQuickStartPackages[];
+}

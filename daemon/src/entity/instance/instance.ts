@@ -93,7 +93,7 @@ export default class Instance extends EventEmitter {
   parameters(cfg: any, persistence = true) {
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
-      if (this.status() != Instance.STATUS_STOP)
+      if (this.status() !== Instance.STATUS_STOP && this.status() !== Instance.STATUS_BUSY)
         throw new Error($t("TXT_CODE_instanceConf.cantModifyInstanceType"));
       configureEntityParams(this.config, cfg, "type", String);
       this.forceExec(new FunctionDispatcher());
@@ -106,7 +106,7 @@ export default class Instance extends EventEmitter {
     }
 
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
-      if (this.status() != Instance.STATUS_STOP)
+      if (this.status() !== Instance.STATUS_STOP && this.status() !== Instance.STATUS_BUSY)
         throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());

@@ -403,7 +403,7 @@
   "TXT_CODE_4ea93630": "Please enter content",
   "TXT_CODE_b5b33dd4": "Custom Text on the Login Page",
   "TXT_CODE_c26e5fb7": "Support Markdown format",
-  "TXT_CODE_b2767aa2": "Preset Packages",
+  "TXT_CODE_b2767aa2": "Template Packages Config",
   "TXT_CODE_b1f833f3": "Source for the quick install function. This can be modified to support custom predefined server packages. ",
   "TXT_CODE_514e064a": "Panel Binding IP",
   "TXT_CODE_328191e": "Maybe useful in a multi-IP environment.  If there's only one IP available on the host, please leave it empty.",
@@ -1877,7 +1877,17 @@
   "TXT_CODE_1c2efd38": "The network connection cannot be established with the remote node. Please check whether the remote node is running normally? \nIs the network configured correctly?",
   "TXT_CODE_6915f2a": "Dependency files are missing and cannot be started. Please reinstall the program:",
   "TXT_CODE_9337bed1": "It doesn't look like there are any remote nodes here. Maybe there was a problem during the installation process. Restarting your panel and daemon will solve it!",
-  "TXT_CODE_8a30e150": "All Packages",
+  "TXT_CODE_8a30e150": "All Languages",
   "TXT_CODE_ac225d07": "Build instance parameters:",
-  "TXT_CODE_e5ba712d": "Building the server as a preset package:"
+  "TXT_CODE_e5ba712d": "Building the server as a preset package:",
+  "TXT_CODE_2375f010": "Reinstall",
+  "TXT_CODE_5e10537a": "Change Instance Template",
+  "TXT_CODE_617ce69c": "Warn",
+  "TXT_CODE_906c5d6a": "Deletion Completed!",
+  "TXT_CODE_b19ed1dd": "Change Template",
+  "TXT_CODE_b9ca022b": "Installing instance files, please wait patiently...",
+  "TXT_CODE_cbc235ad": "Clearing the existing files of the instance, please wait patiently...",
+  "TXT_CODE_e4878221": "Missing remote node ID",
+  "TXT_CODE_ed3fc23": "Continue",
+  "TXT_CODE_f220ed78": "Installation is complete!"
 }
