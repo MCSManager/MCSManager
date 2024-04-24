@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard, QuickStartPackages } from "@/types";
 import { createAsyncTask, queryAsyncTask } from "@/services/apis/instance";
@@ -120,11 +120,15 @@ const toCreateInstancePage = () => {
     path: "/quickstart"
   });
 };
+
+onMounted(() => {
+  if (!daemonId) throw new Error(t("缺少远程节点ID"));
+});
 </script>
 
 <template>
   <div style="height: 100%">
-    <AppPackages ref="appPackages" @handle-select-template="handleSelectTemplate" />
+    <AppPackages v-if="daemonId" ref="appPackages" @handle-select-template="handleSelectTemplate" />
 
     <a-modal
       v-model:open="dialog.show"
