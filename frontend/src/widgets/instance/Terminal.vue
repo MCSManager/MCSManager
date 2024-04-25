@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
@@ -10,7 +10,8 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
   RedoOutlined,
-  LaptopOutlined
+  LaptopOutlined,
+  InteractionOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -30,6 +31,7 @@ import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { INSTANCE_STATUS } from "@/types/const";
 import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
+import Reinstall from "./dialogs/Reinstall.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -38,6 +40,7 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { execute, state: instanceInfo, isStopped, isRunning } = useTerminal();
+const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
@@ -51,6 +54,7 @@ const quickOperations = computed(() =>
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
+      noConfirm: false,
       type: "default",
       click: async () => {
         try {
@@ -97,6 +101,7 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
       type: "default",
+      noConfirm: false,
       click: async () => {
         try {
           await restartInstance().execute({
@@ -150,6 +155,14 @@ const instanceOperations = computed(() =>
         }
       },
       condition: () => isStopped.value && updateCmd.value
+    },
+    {
+      title: t("TXT_CODE_b19ed1dd"),
+      icon: InteractionOutlined,
+      noConfirm: true,
+      click: () => reinstallDialog.value?.openDialog(),
+      props: {},
+      condition: () => isStopped.value
     }
   ])
 );
@@ -217,17 +230,28 @@ onMounted(async () => {
         </template>
         <template #right>
           <div v-if="!isPhone">
-            <a-popconfirm
-              v-for="item in [...quickOperations, ...instanceOperations]"
-              :key="item.title"
-              :title="t('TXT_CODE_276756b2')"
-              @confirm="item.click"
-            >
-              <a-button class="ml-8" :danger="item.type === 'danger'">
+            <template v-for="item in [...quickOperations, ...instanceOperations]" :key="item.title">
+              <a-button
+                v-if="item.noConfirm"
+                class="ml-8"
+                :danger="item.type === 'danger'"
+                @click="item.click"
+              >
                 <component :is="item.icon" />
                 {{ item.title }}
               </a-button>
-            </a-popconfirm>
+              <a-popconfirm
+                v-else
+                :key="item.title"
+                :title="t('TXT_CODE_276756b2')"
+                @confirm="item.click"
+              >
+                <a-button class="ml-8" :danger="item.type === 'danger'">
+                  <component :is="item.icon" />
+                  {{ item.title }}
+                </a-button>
+              </a-popconfirm>
+            </template>
           </div>
 
           <a-dropdown v-else>
@@ -298,6 +322,8 @@ onMounted(async () => {
       />
     </template>
   </CardPanel>
+
+  <Reinstall ref="reinstallDialog" :daemon-id="daemonId ?? ''" :instance-id="instanceId ?? ''" />
 </template>
 
 <style lang="scss" scoped>

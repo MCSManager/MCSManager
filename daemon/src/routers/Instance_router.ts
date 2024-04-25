@@ -313,7 +313,24 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
       taskName: taskName
     })
   );
-  // Instance software update task
+
+  // Install instance via preset package
+  if (taskName === "install_instance" && instance) {
+    instance
+      .execPreset("install", parameter)
+      .then(() => {})
+      .catch((err) => {
+        logger.error(
+          $t("TXT_CODE_Instance_router.performTasksErr", {
+            uuid: instance.instanceUuid,
+            taskName: taskName,
+            err: err
+          })
+        );
+      });
+  }
+
+  // Instance software update via Command
   if (taskName === "update" && instance) {
     instance
       .execPreset("update", parameter)
@@ -336,6 +353,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
     const task = createQuickInstallTask(targetLink, newInstanceName, parameter.setupInfo);
     return protocol.response(ctx, task.toObject());
   }
+
   protocol.response(ctx, true);
 });
 
@@ -464,7 +482,7 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
       return protocol.response(ctx, text);
     }
     protocol.responseError(ctx, new Error($t("TXT_CODE_Instance_router.terminalLogNotExist")), {
-      notPrintErr: true
+      disablePrint: true
     });
   } catch (err: any) {
     protocol.responseError(ctx, err);

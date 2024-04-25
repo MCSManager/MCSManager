@@ -10,6 +10,9 @@ import { $t } from "../i18n";
 import { isTopPermissionByUuid } from "../service/permission_service";
 import { isEmpty, toText, toBoolean, toNumber } from "common";
 import { ROLE } from "../entity/user";
+import axios from "axios";
+import { systemConfig } from "../setting";
+import { IQuickStartTemplate } from "common/global";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -430,6 +433,7 @@ router.put(
   }
 );
 
+// [Low-level Permission]
 // Get the terminal log of an instance
 router.get(
   "/outputlog",
@@ -457,6 +461,50 @@ router.get(
           result = result.slice(-size);
         }
       }
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+router.post(
+  "/install_instance",
+  permission({ level: ROLE.USER, speedLimit: true }),
+  validator({
+    query: { daemonId: String, uuid: String },
+    body: { description: String, title: String }
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const description = String(ctx.request.body.description);
+      const title = String(ctx.request.body.title);
+
+      const presetUrl = systemConfig?.quickInstallAddr;
+      if (!presetUrl) throw new Error("Preset Addr is empty!");
+
+      const { data: presetConfig } = await axios<IQuickStartTemplate>({
+        url: presetUrl,
+        method: "GET"
+      });
+
+      const packages = presetConfig.packages;
+
+      if (!(packages instanceof Array)) throw new Error("Preset Config is not array!");
+      const targetPresetConfig = packages.find(
+        (v) => v.title === title && v.description === description
+      );
+      if (!targetPresetConfig) throw new Error("Preset Config is not found!");
+
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
+        taskName: "install_instance",
+        instanceUuid,
+        parameter: targetPresetConfig
+      });
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
