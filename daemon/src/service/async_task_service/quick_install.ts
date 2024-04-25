@@ -82,23 +82,6 @@ export class QuickInstallTask extends AsyncTask {
         config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
       }
 
-      if (config.startCommand) {
-        const ENV_MAP: IJsonData = {
-          java: "java",
-          cwd: this.instance.config.cwd,
-          rconIp: this.instance.config.rconIp,
-          rconPort: String(this.instance.config.rconPort),
-          rconPassword: this.instance.config.rconPassword,
-          nickname: this.instance.config.nickname,
-          instanceUuid: this.instance.instanceUuid
-        };
-        for (const key in ENV_MAP) {
-          const varDefine = `{{${key}}}`;
-          while (config.startCommand.includes(varDefine))
-            config.startCommand = config.startCommand?.replace(varDefine, ENV_MAP[key] || "");
-        }
-      }
-
       logger.info(
         t("TXT_CODE_e5ba712d"),
         this.instance.config.nickname,
@@ -109,6 +92,29 @@ export class QuickInstallTask extends AsyncTask {
       logger.info(t("TXT_CODE_ac225d07") + JSON.stringify(config));
 
       this.instance.parameters(config);
+
+      // Render startCommand with ENV
+      if (this.instance.config.startCommand) {
+        let startCommand = this.instance.config.startCommand;
+        const ENV_MAP: IJsonData = {
+          java: "java",
+          cwd: this.instance.config.cwd,
+          rconIp: this.instance.config.rconIp || "localhost",
+          rconPort: String(this.instance.config.rconPort),
+          rconPassword: this.instance.config.rconPassword,
+          nickname: this.instance.config.nickname,
+          instanceUuid: this.instance.instanceUuid
+        };
+        for (const key in ENV_MAP) {
+          const varDefine = `{{${key}}}`;
+          while (startCommand.includes(varDefine))
+            startCommand = startCommand?.replace(varDefine, ENV_MAP[key] || "");
+        }
+        this.instance.parameters({
+          startCommand
+        });
+      }
+
       this.stop();
     } catch (error: any) {
       this.error(error);
