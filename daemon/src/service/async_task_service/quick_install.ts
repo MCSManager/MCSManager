@@ -11,6 +11,7 @@ import { getFileManager } from "../file_router_service";
 import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
+import type { IJsonData } from "common/global";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -21,9 +22,6 @@ export class QuickInstallTask extends AsyncTask {
   public zipPath = "";
 
   private downloadStream?: fs.WriteStream;
-  private JAVA_17_PATH = path.normalize(
-    path.join(process.cwd(), "lib", "jre17", "bin", "java.exe")
-  );
 
   constructor(
     public instanceName: string,
@@ -40,8 +38,6 @@ export class QuickInstallTask extends AsyncTask {
       this.instance = InstanceSubsystem.createInstance(config);
     } else {
       this.instance = curInstance;
-      config.cwd = this.instance.config.cwd;
-      this.instance.config = config;
     }
     this.taskId = `${QuickInstallTask.TYPE}-${this.instance.instanceUuid}-${v4()}`;
     this.type = QuickInstallTask.TYPE;
@@ -70,10 +66,6 @@ export class QuickInstallTask extends AsyncTask {
     });
   }
 
-  private hasJava17() {
-    return fs.existsSync(this.JAVA_17_PATH);
-  }
-
   async onStarted() {
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
@@ -90,11 +82,20 @@ export class QuickInstallTask extends AsyncTask {
         config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
       }
 
-      if (config.startCommand && config.startCommand.includes("{{java}}")) {
-        if (this.hasJava17()) {
-          config.startCommand = config.startCommand.replace("{{java}}", `"${this.JAVA_17_PATH}"`);
-        } else {
-          config.startCommand = config.startCommand.replace("{{java}}", "java");
+      if (config.startCommand) {
+        const ENV_MAP: IJsonData = {
+          java: "java",
+          cwd: this.instance.config.cwd,
+          rconIp: this.instance.config.rconIp,
+          rconPort: String(this.instance.config.rconPort),
+          rconPassword: this.instance.config.rconPassword,
+          nickname: this.instance.config.nickname,
+          instanceUuid: this.instance.instanceUuid
+        };
+        for (const key in ENV_MAP) {
+          const varDefine = `{{${key}}}`;
+          while (config.startCommand.includes(varDefine))
+            config.startCommand = config.startCommand?.replace(varDefine, ENV_MAP[key] || "");
         }
       }
 

@@ -89,24 +89,28 @@ export default class Instance extends EventEmitter {
     this.startCount = 0;
   }
 
+  isStoppedOrBusy() {
+    return [Instance.STATUS_STOP, Instance.STATUS_BUSY].includes(this.status());
+  }
+
   // Pass in instance configuration, loosely and dynamically set configuration items for instance parameters
   parameters(cfg: any, persistence = true) {
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
-      if (this.status() !== Instance.STATUS_STOP && this.status() !== Instance.STATUS_BUSY)
+      if (!this.isStoppedOrBusy())
         throw new Error($t("TXT_CODE_instanceConf.cantModifyInstanceType"));
       configureEntityParams(this.config, cfg, "type", String);
       this.forceExec(new FunctionDispatcher());
     }
 
     if (cfg?.enableRcon != null && cfg?.enableRcon !== this.config.enableRcon) {
-      if (this.status() != Instance.STATUS_STOP) throw new Error($t("TXT_CODE_bdfa3457"));
+      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_bdfa3457"));
       configureEntityParams(this.config, cfg, "enableRcon", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
 
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
-      if (this.status() !== Instance.STATUS_STOP && this.status() !== Instance.STATUS_BUSY)
+      if (!this.isStoppedOrBusy())
         throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());
@@ -117,15 +121,14 @@ export default class Instance extends EventEmitter {
       cfg?.terminalOption?.pty != null &&
       cfg?.terminalOption?.pty !== this.config.terminalOption.pty
     ) {
-      if (this.status() != Instance.STATUS_STOP)
-        throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
+      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
       // if (!fs.existsSync(PTY_PATH) && cfg?.terminalOption?.pty === true)
       //   throw new Error($t("TXT_CODE_instanceConf.ptyNotExist", { path: PTY_PATH }));
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "pty", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
     // Only allow some configuration items to be modified when the server is stopped
-    if (this.status() === Instance.STATUS_STOP && cfg.terminalOption) {
+    if (this.isStoppedOrBusy() && cfg.terminalOption) {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "ptyWindowCol", Number);
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "ptyWindowRow", Number);
     }
