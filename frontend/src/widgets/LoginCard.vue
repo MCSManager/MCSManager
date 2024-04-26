@@ -110,17 +110,15 @@ const loginSuccess = () => {
           <a-typography-paragraph class="mb-20">
             {{ t("TXT_CODE_5b60ad00") }}
           </a-typography-paragraph>
-          <div>
+          <div class="account-input-container">
             <form @submit.prevent>
               <div v-if="!is2Fa">
                 <a-input
                   v-model:value="formData.username"
                   class="account"
                   size="large"
-                  autocomplete="off"
                   name="mcsm-name-input"
                   :placeholder="t('TXT_CODE_80a560a1')"
-                  style="background-color: var(--color-gray-1) !important"
                 >
                   <template #suffix>
                     <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
@@ -132,7 +130,6 @@ const loginSuccess = () => {
                   type="password"
                   :placeholder="t('TXT_CODE_551b0348')"
                   size="large"
-                  autocomplete="off"
                   name="mcsm-pw-input"
                   @press-enter="handleLogin"
                 >
@@ -197,6 +194,22 @@ const loginSuccess = () => {
     </CardPanel>
   </div>
 </template>
+
+<style lang="scss">
+.account-input-container {
+  input:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-gray-8) !important;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    background-color: transparent !important;
+    background-image: none;
+    transition: background-color 99999s ease-in-out 0s;
+  }
+  input {
+    background-color: transparent;
+    caret-color: #fff; // 光标颜色
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 .logging {
