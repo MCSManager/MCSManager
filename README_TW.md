@@ -69,8 +69,7 @@
 **一行指令快速安裝**
 
 ```bash
-sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
-
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **安裝後的使用方法**
