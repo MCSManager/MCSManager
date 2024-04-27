@@ -68,7 +68,7 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 > Script needs to register system services, it requires root permissions.
 
 ```bash
-sudo su -c "wget -qO- https://mcsmanager.com/install-v10.sh | bash"
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **Usage**
