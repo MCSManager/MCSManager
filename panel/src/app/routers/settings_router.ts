@@ -46,6 +46,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
+    if (config.allowUsePreset != null) systemConfig.allowUsePreset = Boolean(config.allowUsePreset);
     if (config.quickInstallAddr != null)
       systemConfig.quickInstallAddr = String(config.quickInstallAddr);
     if (config.language != null) {

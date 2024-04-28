@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { getCurrentLang, isCN, t } from "@/lang/i18n";
+import { isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { Modal, message } from "ant-design-vue";
@@ -20,7 +20,6 @@ import {
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
 import Loading from "@/components/Loading.vue";
-import { computed } from "vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
@@ -357,6 +356,26 @@ onMounted(async () => {
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select v-model:value.prop="formData.canFileManager" style="max-width: 320px">
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("准许普通用户使用实例模板功能") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("该功能允许普通用户使用“快速部署”里面的预设包来进行重装实例。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select v-model:value.prop="formData.allowUsePreset" style="max-width: 320px">
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"

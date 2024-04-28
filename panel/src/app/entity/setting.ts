@@ -31,6 +31,8 @@ export default class SystemConfig {
   // Whether to open the file management function for ordinary users
   canFileManager = true;
 
+  allowUsePreset = true;
+
   // i18n
   language = "en_us";
 

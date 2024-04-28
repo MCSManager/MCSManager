@@ -40,7 +40,7 @@ const props = defineProps<{
   card: LayoutCard;
 }>();
 
-const { isAdmin } = useAppStateStore();
+const { isAdmin, state } = useAppStateStore();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 
@@ -103,7 +103,8 @@ const btns = computed(() => {
       icon: FolderOpenOutlined,
       click: () => {
         toPage({ path: "/instances/terminal/files" });
-      }
+      },
+      condition: () => isAdmin.value || state.settings.canFileManager
     },
     {
       title: t("TXT_CODE_656a85d8"),

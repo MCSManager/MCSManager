@@ -10,6 +10,10 @@ interface AppStateInfo {
   language: string;
   isInstall: boolean;
   versionChanged: boolean;
+  settings: {
+    canFileManager: boolean;
+    allowUsePreset: boolean;
+  };
 }
 
 export const useAppStateStore = createGlobalState(() => {
@@ -19,7 +23,11 @@ export const useAppStateStore = createGlobalState(() => {
     userInfo: null,
     isInstall: true,
     versionChanged: false,
-    language: "en_us"
+    language: "en_us",
+    settings: {
+      canFileManager: false,
+      allowUsePreset: false
+    }
   });
 
   const cloneState = (): AppStateInfo => {

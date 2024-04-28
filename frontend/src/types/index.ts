@@ -70,6 +70,7 @@ export interface Settings {
   language: string;
   quickInstallAddr: string;
   redisUrl: string;
+  allowUsePreset: boolean;
 }
 
 export interface ImageInfo {
