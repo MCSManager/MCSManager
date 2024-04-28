@@ -179,7 +179,7 @@
   "TXT_CODE_restart.error2": "重新啟動實例狀態錯誤，實例狀態應該為停止中狀態，現在變成正在運行，重新啟動計畫取消",
   "TXT_CODE_restart.restarting": "偵測到伺服器已停止，正在重新啟動實例...",
   "TXT_CODE_restart.start": "重新啟動實例計畫開始執行",
-  "TXT_CODE_router.file.off": "管理者已限制全部使用者使用檔案管理功能",
+  "TXT_CODE_router.file.off": "管理者已限制使用者使用檔案管理功能",
   "TXT_CODE_router.initComplete": "所有功能模組與權限防火牆已初始化完畢",
   "TXT_CODE_router.instance.createError": "建立實例失敗",
   "TXT_CODE_router.login.ban": "驗證次數過多，您的 IP 位址已鎖定 10 分鐘",
