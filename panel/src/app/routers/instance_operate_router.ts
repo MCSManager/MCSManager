@@ -4,7 +4,7 @@ import validator from "../middleware/validator";
 import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
 import { timeUuid } from "../service/password";
-import { getUserPermission, getUserUuid } from "../service/passport_service";
+import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
 import { $t } from "../i18n";
 import { isTopPermissionByUuid } from "../service/permission_service";
@@ -477,7 +477,7 @@ router.post(
     body: { description: String, title: String }
   }),
   async (ctx) => {
-    if (systemConfig?.allowUsePreset === false && getUserPermission(ctx) < ROLE.ADMIN) {
+    if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
       ctx.status = 403;
       ctx.body = new Error($t("管理员已限制普通用户使用实例重装功能"));
       return;

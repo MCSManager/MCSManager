@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { InstanceDetail, NodeStatus, Settings } from "@/types";
+import type { InstanceDetail, NodeStatus, PanelStatus, Settings } from "@/types";
 import type { BaseUserInfo, LoginUserInfo, EditUserInfo, UserInstance } from "@/types/user";
 import type { IPanelOverviewResponse } from "../../../../common/global";
 
@@ -28,14 +28,7 @@ export const updateSettings = useDefineApi<
   method: "PUT"
 });
 
-export const panelStatus = useDefineApi<
-  any,
-  {
-    isInstall: boolean;
-    language: string;
-    versionChange?: string;
-  }
->({
+export const panelStatus = useDefineApi<any, PanelStatus>({
   url: "/api/auth/status",
   method: "GET"
 });

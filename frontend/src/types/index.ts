@@ -224,3 +224,13 @@ export interface NewScheduleTask {
   action: string;
   type: string;
 }
+
+export interface PanelStatus {
+  isInstall: boolean;
+  language: string;
+  versionChange?: boolean;
+  settings: {
+    canFileManager: boolean;
+    allowUsePreset: boolean;
+  };
+}

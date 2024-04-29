@@ -8,8 +8,8 @@ import { timeUuid } from "../service/password";
 import { $t } from "../i18n";
 import axios from "axios";
 import { systemConfig } from "../setting";
-import { getUserPermission, getUserUuid } from "../service/passport_service";
-import { isHaveInstanceByUuid } from "../service/permission_service";
+import { getUserUuid } from "../service/passport_service";
+import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
 import { ROLE } from "../entity/user";
 import { removeTrail } from "common";
 
@@ -200,7 +200,7 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Get quick install list
 router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) => {
-  if (systemConfig?.allowUsePreset === false && getUserPermission(ctx) < ROLE.ADMIN) {
+  if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
     ctx.status = 403;
     ctx.body = new Error($t("管理员已限制普通用户使用实例重装功能"));
     return;

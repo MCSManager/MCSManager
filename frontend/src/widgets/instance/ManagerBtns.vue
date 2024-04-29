@@ -104,7 +104,7 @@ const btns = computed(() => {
       click: () => {
         toPage({ path: "/instances/terminal/files" });
       },
-      condition: () => isAdmin.value || state.settings.canFileManager
+      condition: () => state.settings.canFileManager || isAdmin.value
     },
     {
       title: t("TXT_CODE_656a85d8"),
