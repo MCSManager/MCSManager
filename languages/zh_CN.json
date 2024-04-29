@@ -179,7 +179,7 @@
   "TXT_CODE_restart.error2": "重启实例状态错误，实例状态应该为停止中状态，现在变为正在运行，重启计划取消",
   "TXT_CODE_restart.restarting": "检测到服务器已停止，正在重启实例...",
   "TXT_CODE_restart.start": "重启实例计划开始执行",
-  "TXT_CODE_router.file.off": "管理员已限制全部用户使用文件管理功能",
+  "TXT_CODE_router.file.off": "管理员已限制普通用户使用文件管理功能",
   "TXT_CODE_router.initComplete": "所有功能模块与权限防火墙已初始化完毕",
   "TXT_CODE_router.instance.createError": "创建实例失败",
   "TXT_CODE_router.login.ban": "身份验证次数过多，您的 IP 地址已被锁定 10 分钟",

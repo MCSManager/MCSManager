@@ -179,7 +179,7 @@
   "TXT_CODE_restart.error2": "Instance restart error.The instance should have been in a stopping state but is now running. The restart plan is canceled.",
   "TXT_CODE_restart.restarting": "Server stopped, restarting the instance...",
   "TXT_CODE_restart.start": "Starting to execute the restart event.",
-  "TXT_CODE_router.file.off": "Administrator has restricted file management functionality for all users",
+  "TXT_CODE_router.file.off": "Administrator has restricted file management functionality for default users",
   "TXT_CODE_router.initComplete": "All feature modules and permission firewalls have been initialized successfully",
   "TXT_CODE_router.instance.createError": "Failed to create instance",
   "TXT_CODE_router.login.ban": "Too many attempts, your IP address has been banned for 10 minutes",

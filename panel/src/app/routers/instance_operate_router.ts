@@ -477,6 +477,11 @@ router.post(
     body: { description: String, title: String }
   }),
   async (ctx) => {
+    if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
+      ctx.status = 403;
+      ctx.body = new Error($t("管理员已限制普通用户使用实例重装功能"));
+      return;
+    }
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);

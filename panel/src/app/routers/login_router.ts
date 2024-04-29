@@ -72,7 +72,11 @@ router.all(
     ctx.body = {
       versionChange: GlobalVariable.get("versionChange", null),
       isInstall,
-      language: systemConfig?.language || null
+      language: systemConfig?.language || null,
+      settings: {
+        canFileManager: systemConfig?.canFileManager || false,
+        allowUsePreset: systemConfig?.allowUsePreset || false
+      }
     };
   }
 );

@@ -32,12 +32,14 @@ import { INSTANCE_STATUS } from "@/types/const";
 import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
 import Reinstall from "./dialogs/Reinstall.vue";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 
 const props = defineProps<{
   card: LayoutCard;
 }>();
 
 const { isPhone } = useScreen();
+const { state, isAdmin } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { execute, state: instanceInfo, isStopped, isRunning } = useTerminal();
 const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
@@ -162,7 +164,7 @@ const instanceOperations = computed(() =>
       noConfirm: true,
       click: () => reinstallDialog.value?.openDialog(),
       props: {},
-      condition: () => isStopped.value
+      condition: () => isStopped.value && (state.settings.allowUsePreset || isAdmin.value)
     }
   ])
 );

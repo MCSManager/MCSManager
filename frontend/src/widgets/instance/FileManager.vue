@@ -243,13 +243,13 @@ const menuList = (record: DataType) =>
       label: t("TXT_CODE_46c4169b"),
       key: "cut",
       icon: h(ScissorOutlined),
-      onClick: () => setClipBoard("move", record.name)
+      onClick: () => setClipBoard("move")
     },
     {
       label: t("TXT_CODE_13ae6a93"),
       key: "copy",
       icon: h(CopyOutlined),
-      onClick: () => setClipBoard("copy", record.name)
+      onClick: () => setClipBoard("copy")
     },
     {
       label: t("TXT_CODE_c83551f5"),

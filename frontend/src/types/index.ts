@@ -70,6 +70,7 @@ export interface Settings {
   language: string;
   quickInstallAddr: string;
   redisUrl: string;
+  allowUsePreset: boolean;
 }
 
 export interface ImageInfo {
@@ -222,4 +223,14 @@ export interface NewScheduleTask {
   time: string;
   action: string;
   type: string;
+}
+
+export interface PanelStatus {
+  isInstall: boolean;
+  language: string;
+  versionChange?: boolean;
+  settings: {
+    canFileManager: boolean;
+    allowUsePreset: boolean;
+  };
 }

@@ -4,12 +4,10 @@ import _ from "lodash";
 import { panelStatus, userInfoApi } from "@/services/apis";
 import type { LoginUserInfo } from "@/types/user";
 import { initInstallPageFlow, toStandardLang } from "@/lang/i18n";
+import type { PanelStatus } from "@/types";
 
-interface AppStateInfo {
+interface AppStateInfo extends PanelStatus {
   userInfo: LoginUserInfo | null;
-  language: string;
-  isInstall: boolean;
-  versionChanged: boolean;
 }
 
 export const useAppStateStore = createGlobalState(() => {
@@ -18,8 +16,12 @@ export const useAppStateStore = createGlobalState(() => {
   const state: AppStateInfo = reactive<AppStateInfo>({
     userInfo: null,
     isInstall: true,
-    versionChanged: false,
-    language: "en_us"
+    versionChange: false,
+    language: "en_us",
+    settings: {
+      canFileManager: false,
+      allowUsePreset: false
+    }
   });
 
   const cloneState = (): AppStateInfo => {
@@ -52,7 +54,11 @@ export const useAppStateStore = createGlobalState(() => {
     const { state } = useAppStateStore();
     const status = await panelStatus().execute();
     state.isInstall = status.value?.isInstall ?? true;
-    state.versionChanged = status.value?.versionChange ? true : false;
+    state.versionChange = status.value?.versionChange ? true : false;
+    state.settings = status.value?.settings ?? {
+      canFileManager: false,
+      allowUsePreset: false
+    };
     if (state.isInstall) {
       state.language = toStandardLang(status.value?.language);
     } else {
