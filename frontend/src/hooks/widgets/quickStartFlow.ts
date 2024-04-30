@@ -1,10 +1,8 @@
-import { isCN, t } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import { remoteNodeList } from "@/services/apis";
 import { arrayFilter } from "@/tools/array";
-import type { LayoutCard } from "@/types";
 import {
   AppstoreAddOutlined,
-  AppstoreOutlined,
   AppstoreTwoTone,
   CalculatorTwoTone,
   DatabaseTwoTone,
@@ -97,12 +95,16 @@ export function useQuickStartFlow() {
     actions: step1
   });
 
-  const toStep2 = async (appType: QUICKSTART_ACTION_TYPE) => {
-    formData.step = 2;
+  const toStep2 = async (appType: QUICKSTART_ACTION_TYPE, daemonId?: string) => {
     formData.appType = appType;
-    formData.emptyActionsText = t(
-      "TXT_CODE_9337bed1"
-    );
+
+    if (daemonId) {
+      toStep3(daemonId);
+      return;
+    }
+
+    formData.step = 2;
+    formData.emptyActionsText = t("TXT_CODE_9337bed1");
     currentIcon.value = DatabaseTwoTone;
     await execute();
     formData.actions = remoteNodes.value
