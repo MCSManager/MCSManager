@@ -202,7 +202,7 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
 router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) => {
   if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
     ctx.status = 403;
-    ctx.body = new Error($t("管理员已限制普通用户使用实例重装功能"));
+    ctx.body = new Error($t("TXT_CODE_b5a47731"));
     return;
   }
 

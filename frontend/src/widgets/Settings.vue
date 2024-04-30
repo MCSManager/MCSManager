@@ -368,11 +368,11 @@ onMounted(async () => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("准许普通用户使用实例模板功能") }}
+                      {{ t("TXT_CODE_a5f01916") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("该功能允许普通用户使用“快速部署”里面的预设包来进行重装实例。") }}
+                        {{ t("TXT_CODE_f5f9664") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select v-model:value.prop="formData.allowUsePreset" style="max-width: 320px">

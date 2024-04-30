@@ -28,9 +28,7 @@ const openDialog = async () => {
 const handleSelectTemplate = (item: QuickStartPackages) => {
   Modal.confirm({
     title: t("TXT_CODE_617ce69c"),
-    content: t(
-      "选择此模板后，该实例的所有数据将会被删除，请先在文件管理中压缩并下载文件备份，是否继续？"
-    ),
+    content: t("TXT_CODE_94f1ba3"),
     okText: t("TXT_CODE_ed3fc23"),
     async onOk() {
       try {
