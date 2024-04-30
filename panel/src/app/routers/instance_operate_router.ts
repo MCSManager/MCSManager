@@ -477,7 +477,7 @@ router.post(
     body: { description: String, title: String }
   }),
   async (ctx) => {
-    if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
+    if (systemConfig?.allowUsePreset === false && !isTopPermissionByUuid(getUserUuid(ctx))) {
       ctx.status = 403;
       ctx.body = new Error($t("TXT_CODE_b5a47731"));
       return;

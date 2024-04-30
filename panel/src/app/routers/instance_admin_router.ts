@@ -200,7 +200,7 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Get quick install list
 router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) => {
-  if (systemConfig?.allowUsePreset === false && isTopPermissionByUuid(getUserUuid(ctx))) {
+  if (systemConfig?.allowUsePreset === false && !isTopPermissionByUuid(getUserUuid(ctx))) {
     ctx.status = 403;
     ctx.body = new Error($t("TXT_CODE_b5a47731"));
     return;

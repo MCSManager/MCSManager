@@ -1891,7 +1891,7 @@
   "TXT_CODE_ed3fc23": "Continue",
   "TXT_CODE_f220ed78": "Installation is complete!",
   "TXT_CODE_94f1ba3": "After selecting this template, all data of this instance will be deleted. Please compress and download the file backup in file management first. Do you want to continue?",
-  "TXT_CODE_a5f01916": "Allow general users to use the instance template function",
+  "TXT_CODE_a5f01916": "Allow Instance Reset",
   "TXT_CODE_b5a47731": "The administrator has restricted general users from using the instance reinstallation function.",
   "TXT_CODE_f5f9664": "This feature allows general users to use the default packages in \"Quick Deployment\" to reinstall instances."
 }
