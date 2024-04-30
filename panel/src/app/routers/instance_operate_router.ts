@@ -488,7 +488,7 @@ router.post(
       const description = String(ctx.request.body.description);
       const title = String(ctx.request.body.title);
 
-      const presetUrl = systemConfig?.quickInstallAddr;
+      const presetUrl = systemConfig?.presetPackAddr;
       if (!presetUrl) throw new Error("Preset Addr is empty!");
 
       const { data: presetConfig } = await axios<IQuickStartTemplate>({

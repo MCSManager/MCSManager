@@ -236,7 +236,7 @@ onMounted(async () => {
                       {{ t("TXT_CODE_b1f833f3") }}
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="formData.quickInstallAddr"
+                      v-model:value="formData.presetPackAddr"
                       :placeholder="t('TXT_CODE_4ea93630')"
                     />
                   </a-form-item>

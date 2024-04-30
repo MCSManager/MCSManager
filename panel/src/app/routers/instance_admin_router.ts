@@ -206,7 +206,7 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
     return;
   }
 
-  const ADDR = systemConfig?.quickInstallAddr;
+  const ADDR = systemConfig?.presetPackAddr;
   try {
     const response = await axios.request({
       method: "GET",

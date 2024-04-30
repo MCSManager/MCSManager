@@ -68,7 +68,7 @@ export interface Settings {
   loginInfo: string;
   canFileManager: boolean;
   language: string;
-  quickInstallAddr: string;
+  presetPackAddr: string;
   redisUrl: string;
   allowUsePreset: boolean;
 }

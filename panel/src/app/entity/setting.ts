@@ -37,6 +37,6 @@ export default class SystemConfig {
   language = "en_us";
 
   // Quick installation address
-  quickInstallAddr = "https://mcsmanager.com/mcsmanager-packages.json";
+  presetPackAddr = "https://script.mcsmanager.com/templates.json";
   redisUrl = "";
 }
