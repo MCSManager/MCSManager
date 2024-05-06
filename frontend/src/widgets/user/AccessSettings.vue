@@ -60,10 +60,7 @@ const assignApp = async () => {
       const component = (
         await useMountComponent({
           title: t("TXT_CODE_dd78943e"),
-          subTitle:
-            t(
-              "你所分配的实例中包含一些没有启用 “容器保护” 的实例，MCSManager 将无法控制此用户的行为，被分配的用户可以通过这些实例上传恶意软件入侵你的主机，请确保子用户是您信任的人。\n\n有安全风险的实例名字如下："
-            ) + warningInstances.join(", "),
+          subTitle: t("TXT_CODE_57e86edb") + warningInstances.join(", "),
           checkText: t("TXT_CODE_19f697f3")
         })
       ).load<InstanceType<typeof WarningDialog>>(WarningDialog);
