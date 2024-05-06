@@ -8,6 +8,7 @@ import esES from "@languages/es_ES.json";
 import frFR from "@languages/fr_FR.json";
 import ruRU from "@languages/ru_RU.json";
 import koKR from "@languages/ko_KR.json";
+import deDE from "@languages/de_DE.json";
 
 import { updateSettings } from "@/services/apis";
 
@@ -45,7 +46,8 @@ function initI18n(lang: string) {
       es_es: esES,
       fr_fr: frFR,
       ru_ru: ruRU,
-      ko_kr: koKR
+      ko_kr: koKR,
+      de_de: deDE
     }
   });
 }

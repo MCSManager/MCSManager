@@ -8,6 +8,7 @@ import es_ES from "@languages/es_ES.json";
 import fr_FR from "@languages/fr_FR.json";
 import ru_RU from "@languages/ru_RU.json";
 import ko_KR from "@languages/ko_KR.json";
+import de_DE from "@languages/de_DE.json";
 
 i18next.init({
   interpolation: {
@@ -39,6 +40,9 @@ i18next.init({
     },
     ko_kr: {
       translation: ko_KR
+    },
+    de_de: {
+      translation: de_DE
     }
   }
 });
