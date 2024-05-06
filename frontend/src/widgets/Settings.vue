@@ -82,16 +82,36 @@ const menus = [
 // DO NOT I18N
 const allLanguages = [
   {
+    label: `English`,
+    value: "en_us"
+  },
+  {
     label: `简体中文`,
     value: "zh_cn"
   },
   {
-    label: "English",
-    value: "en_us"
+    label: `繁體中文`,
+    value: "zh_tw"
   },
   {
-    label: "繁體中文",
-    value: "zh_tw"
+    label: `Français`,
+    value: "fr_FR"
+  },
+  {
+    label: `Русский`,
+    value: "ru_RU"
+  },
+  {
+    label: `Español`,
+    value: "es_ES"
+  },
+  {
+    label: `日本語`,
+    value: "jp_JP"
+  },
+  {
+    label: `한국어`,
+    value: "ko_KR"
   }
 ];
 

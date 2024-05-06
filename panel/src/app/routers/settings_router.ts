@@ -49,7 +49,7 @@ router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }
     if (config.allowUsePreset != null) systemConfig.allowUsePreset = Boolean(config.allowUsePreset);
     if (config.presetPackAddr != null) systemConfig.presetPackAddr = String(config.presetPackAddr);
     if (config.language != null) {
-      logger.warn("Language change:", config.language);
+      logger.warn($t("TXT_CODE_e29a9317"), config.language);
       systemConfig.language = String(config.language);
       await i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
@@ -67,7 +67,7 @@ router.put("/install", async (ctx) => {
   const config = ctx.request.body;
   if (userSystem.objects.size === 0 && systemConfig) {
     if (config.language != null) {
-      logger.warn("Language change:", config.language);
+      logger.warn($t("TXT_CODE_e29a9317"), config.language);
       systemConfig.language = String(config.language);
       i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
