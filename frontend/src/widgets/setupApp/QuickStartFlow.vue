@@ -31,13 +31,15 @@ const {
 } = useQuickStartFlow();
 
 const presetAppType = String(route.query.appType);
+const fromDaemonId = String(route.query.daemonId);
+
 if (presetAppType in QUICKSTART_ACTION_TYPE) {
   toStep2(presetAppType as QUICKSTART_ACTION_TYPE);
 }
 
 const handleNext = (key: string) => {
   if (formData.step === 1) {
-    return toStep2(key as QUICKSTART_ACTION_TYPE);
+    return toStep2(key as QUICKSTART_ACTION_TYPE, fromDaemonId);
   }
 
   if (formData.step === 2) {

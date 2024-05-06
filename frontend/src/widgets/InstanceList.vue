@@ -127,7 +127,10 @@ const handleChangeNode = async (item: NodeStatus) => {
 
 const toCreateAppPage = () => {
   router.push({
-    path: "/quickstart"
+    path: "/quickstart",
+    query: {
+      daemonId: currentRemoteNode.value?.uuid
+    }
   });
 };
 
