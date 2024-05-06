@@ -95,23 +95,27 @@ const allLanguages = [
   },
   {
     label: `Français (Google Translation)`,
-    value: "fr_FR"
+    value: "fr_fr"
   },
   {
     label: `Русский (Google Translation)`,
-    value: "ru_RU"
+    value: "ru_ru"
   },
   {
     label: `Español (Google Translation)`,
-    value: "es_ES"
+    value: "es_es"
+  },
+  {
+    label: `Deutsch (Google Translation)`,
+    value: "de_de"
   },
   {
     label: `日本語 (Google Translation)`,
-    value: "ja_JP"
+    value: "ja_jp"
   },
   {
     label: `한국어 (Google Translation)`,
-    value: "ko_KR"
+    value: "ko_kr"
   }
 ];
 
