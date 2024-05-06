@@ -34,8 +34,14 @@ defineProps<{
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.6s;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 
   .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--color-gray-9);
   }
 

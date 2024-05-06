@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type CardPanel from "./CardPanel.vue";
 import { ref, type FunctionalComponent, onMounted } from "vue";
 import LeftMenuBtn from "./LeftMenuBtn.vue";
 import { useScreen } from "@/hooks/useScreen";

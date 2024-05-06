@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
-import { getCurrentLang, t } from "@/lang/i18n";
+import { getCurrentLang, isCN, t } from "@/lang/i18n";
 import { quickInstallListAddr } from "@/services/apis/instance";
 import type { QuickStartPackages } from "@/types";
 import { reportErrorMsg } from "@/tools/validator";
@@ -20,7 +20,7 @@ const {
 
 const ALL_LANG_KEY = "all";
 const searchForm = reactive({
-  language: getCurrentLang()
+  language: isCN() ? getCurrentLang() : "en_us"
 });
 
 const appList = computed(() => {

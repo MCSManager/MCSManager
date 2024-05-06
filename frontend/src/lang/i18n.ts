@@ -3,6 +3,12 @@ import { createI18n } from "vue-i18n";
 import enUS from "@languages/en_US.json";
 import zhCN from "@languages/zh_CN.json";
 import zhTW from "@languages/zh_TW.json";
+import jaJP from "@languages/ja_JP.json";
+import esES from "@languages/es_ES.json";
+import frFR from "@languages/fr_FR.json";
+import ruRU from "@languages/ru_RU.json";
+import koKR from "@languages/ko_KR.json";
+
 import { updateSettings } from "@/services/apis";
 
 export const LANGUAGE_KEY = "LANGUAGE";
@@ -34,7 +40,12 @@ function initI18n(lang: string) {
     messages: {
       en_us: enUS,
       zh_cn: zhCN,
-      zh_tw: zhTW
+      zh_tw: zhTW,
+      ja_jp: jaJP,
+      es_es: esES,
+      fr_fr: frFR,
+      ru_ru: ruRU,
+      ko_kr: koKR
     }
   });
 }
@@ -63,7 +74,7 @@ const isEN = () => {
 
 const isTW = () => {
   return getCurrentLang() === "zh_tw";
-}
+};
 
 const $t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);

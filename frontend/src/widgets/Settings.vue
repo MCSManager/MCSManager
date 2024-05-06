@@ -94,23 +94,23 @@ const allLanguages = [
     value: "zh_tw"
   },
   {
-    label: `Français`,
+    label: `Français (Google Translation)`,
     value: "fr_FR"
   },
   {
-    label: `Русский`,
+    label: `Русский (Google Translation)`,
     value: "ru_RU"
   },
   {
-    label: `Español`,
+    label: `Español (Google Translation)`,
     value: "es_ES"
   },
   {
-    label: `日本語`,
-    value: "jp_JP"
+    label: `日本語 (Google Translation)`,
+    value: "ja_JP"
   },
   {
-    label: `한국어`,
+    label: `한국어 (Google Translation)`,
     value: "ko_KR"
   }
 ];
