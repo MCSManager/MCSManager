@@ -83,39 +83,39 @@ const menus = [
 const allLanguages = [
   {
     label: `English`,
-    value: "en_us"
+    value: `en_us`
   },
   {
     label: `简体中文`,
-    value: "zh_cn"
+    value: `zh_cn`
   },
   {
     label: `繁體中文`,
-    value: "zh_tw"
+    value: `zh_tw`
   },
   {
     label: `Français (Google Translation)`,
-    value: "fr_fr"
-  },
-  {
-    label: `Русский (Google Translation)`,
-    value: "ru_ru"
+    value: `fr_fr`
   },
   {
     label: `Español (Google Translation)`,
-    value: "es_es"
+    value: `es_es`
   },
   {
     label: `Deutsch (Google Translation)`,
-    value: "de_de"
+    value: `de_de`
+  },
+  {
+    label: `Русский (Google Translation)`,
+    value: `ru_ru`
   },
   {
     label: `日本語 (Google Translation)`,
-    value: "ja_jp"
+    value: `ja_jp`
   },
   {
     label: `한국어 (Google Translation)`,
-    value: "ko_kr"
+    value: `ko_kr`
   }
 ];
 
