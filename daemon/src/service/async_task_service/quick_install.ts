@@ -19,7 +19,8 @@ export class QuickInstallTask extends AsyncTask {
   public instance: Instance;
   public readonly TMP_ZIP_NAME = "mcsm_install_package.zip";
   public readonly ZIP_CONFIG_JSON = "mcsmanager-config.json";
-  public zipPath = "";
+  public filePath = "";
+  public extName = "";
 
   private downloadStream?: fs.WriteStream;
 
@@ -41,14 +42,20 @@ export class QuickInstallTask extends AsyncTask {
     }
     this.taskId = `${QuickInstallTask.TYPE}-${this.instance.instanceUuid}-${v4()}`;
     this.type = QuickInstallTask.TYPE;
+    this.extName = path.extname(this.targetLink ?? "") || ".zip";
   }
 
   private download(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
-        if (!this.targetLink) reject(new Error("No targetLink!"));
-        this.zipPath = path.normalize(path.join(this.instance.config.cwd, this.TMP_ZIP_NAME));
-        const writeStream = fs.createWriteStream(this.zipPath);
+        if (!this.targetLink) return reject(new Error("No targetLink!"));
+        let downloadFileName = this.TMP_ZIP_NAME;
+        if (this.extName !== ".zip") {
+          const url = new URL(this.targetLink);
+          downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
+        }
+        this.filePath = path.normalize(path.join(this.instance.config.cwd, downloadFileName));
+        const writeStream = fs.createWriteStream(this.filePath);
         const response = await axios<Readable>({
           url: this.targetLink,
           responseType: "stream"
@@ -71,7 +78,8 @@ export class QuickInstallTask extends AsyncTask {
     try {
       if (this.targetLink) {
         let result = await this.download();
-        result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
+        if (this.extName === ".zip")
+          result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
         if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
       }
 
@@ -115,11 +123,19 @@ export class QuickInstallTask extends AsyncTask {
         });
       }
 
+      if (this.instance?.config?.updateCommand) {
+        this.instance
+          .execPreset("update")
+          .then(() => {})
+          .catch((err) => {});
+      }
+
       this.stop();
     } catch (error: any) {
       this.error(error);
     } finally {
-      fs.remove(fileManager.toAbsolutePath(this.TMP_ZIP_NAME), () => {});
+      if (fs.existsSync(fileManager.toAbsolutePath(this.TMP_ZIP_NAME)))
+        fs.remove(fileManager.toAbsolutePath(this.TMP_ZIP_NAME), () => {});
     }
   }
 
