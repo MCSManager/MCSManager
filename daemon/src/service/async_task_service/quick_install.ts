@@ -12,6 +12,7 @@ import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
 import type { IJsonData } from "common/global";
+import GeneralUpdateCommand from "../../entity/commands/general/general_update";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -125,7 +126,7 @@ export class QuickInstallTask extends AsyncTask {
 
       if (this.instance?.config?.updateCommand) {
         this.instance
-          .execPreset("update")
+          .forceExec(new GeneralUpdateCommand(false))
           .then(() => {})
           .catch((err) => {});
       }

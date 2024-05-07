@@ -10,7 +10,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   private pid?: number;
   private process?: ChildProcess;
 
-  constructor() {
+  constructor(public readonly statusCheck: boolean = true) {
     super("GeneralUpdateCommand");
   }
 
@@ -21,10 +21,12 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
-    if (instance.status() !== Instance.STATUS_STOP)
-      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
-    if (instance.asynchronousTask)
-      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress")));
+    if (this.statusCheck) {
+      if (instance.status() !== Instance.STATUS_STOP && instance.status() !== Instance.STATUS_BUSY)
+        return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
+      if (instance.asynchronousTask)
+        return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress")));
+    }
     try {
       instance.setLock(true);
       let updateCommand = instance.config.updateCommand;

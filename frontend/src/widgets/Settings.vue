@@ -342,8 +342,8 @@ onMounted(async () => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                     <a-button danger @click="handleSaveBgUrl('')">
-                      {{ t("TXT_CODE_50d471b2") }}</a-button
-                    >
+                      {{ t("TXT_CODE_50d471b2") }}
+                    </a-button>
                   </a-form-item>
                 </a-form>
               </div>

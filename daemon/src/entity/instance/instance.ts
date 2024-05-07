@@ -122,11 +122,10 @@ export default class Instance extends EventEmitter {
       cfg?.terminalOption?.pty !== this.config.terminalOption.pty
     ) {
       if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
-      // if (!fs.existsSync(PTY_PATH) && cfg?.terminalOption?.pty === true)
-      //   throw new Error($t("TXT_CODE_instanceConf.ptyNotExist", { path: PTY_PATH }));
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "pty", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
+
     // Only allow some configuration items to be modified when the server is stopped
     if (this.isStoppedOrBusy() && cfg.terminalOption) {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "ptyWindowCol", Number);
