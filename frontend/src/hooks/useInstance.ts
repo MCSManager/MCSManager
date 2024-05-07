@@ -84,7 +84,7 @@ export function useInstanceInfo(params: Params) {
   let finalState = state;
   if (instanceInfo) finalState = instanceInfo;
 
-  const isUnknown = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.UNKNOWN);
+  const isUnknown = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.BUSY);
   const isStopped = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STOPPED);
   const isStopping = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STOPPING);
   const isStarting = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STARTING);

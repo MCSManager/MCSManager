@@ -236,11 +236,13 @@ export function useTerminal() {
 
   const isStopped = computed(() => state?.value?.status === INSTANCE_STATUS_CODE.STOPPED);
   const isRunning = computed(() => state?.value?.status === INSTANCE_STATUS_CODE.RUNNING);
+  const isBuys = computed(() => state?.value?.status === INSTANCE_STATUS_CODE.BUSY);
 
   return {
     events,
     state,
     isRunning,
+    isBuys,
     isStopped,
     terminal,
     socketAddress,

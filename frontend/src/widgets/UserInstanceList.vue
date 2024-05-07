@@ -97,7 +97,7 @@ onMounted(() => {
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'operate'">
             <a-button
-              :disabled="record.status === INSTANCE_STATUS_CODE.UNKNOWN"
+              :disabled="record.status === INSTANCE_STATUS_CODE.BUSY"
               @click="operate(record.daemonId, record.instanceUuid)"
             >
               {{ t("TXT_CODE_5974bf24") }}

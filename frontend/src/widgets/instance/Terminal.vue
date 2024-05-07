@@ -11,7 +11,8 @@ import {
   PlayCircleOutlined,
   RedoOutlined,
   LaptopOutlined,
-  InteractionOutlined
+  InteractionOutlined,
+  LoadingOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -41,7 +42,7 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { state, isAdmin } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-const { execute, state: instanceInfo, isStopped, isRunning } = useTerminal();
+const { execute, state: instanceInfo, isStopped, isRunning, isBuys } = useTerminal();
 const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -208,7 +209,11 @@ onMounted(async () => {
                 <CheckCircleOutlined />
                 {{ instanceStatusText }}
               </span>
-              <span v-else>
+              <span v-else-if="isBuys">
+                <LoadingOutlined />
+                {{ instanceStatusText }}
+              </span>
+              <span v-else class="color-info">
                 <InfoCircleOutlined />
                 {{ instanceStatusText }}
               </span>

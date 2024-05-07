@@ -12,7 +12,9 @@ import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
 import type { IJsonData } from "common/global";
-import GeneralUpdateCommand from "../../entity/commands/general/general_update";
+import GeneralUpdateCommand, {
+  InstanceUpdateAction
+} from "../../entity/commands/general/general_update";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -74,7 +76,7 @@ export class QuickInstallTask extends AsyncTask {
     });
   }
 
-  async onStarted() {
+  async onStart() {
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
       if (this.targetLink) {
@@ -125,10 +127,11 @@ export class QuickInstallTask extends AsyncTask {
       }
 
       if (this.instance?.config?.updateCommand) {
-        this.instance
-          .forceExec(new GeneralUpdateCommand(false))
-          .then(() => {})
-          .catch((err) => {});
+        try {
+          const updateAction = new InstanceUpdateAction(this.instance);
+          await updateAction.start();
+          await updateAction.wait();
+        } catch (error) {}
       }
 
       this.stop();
@@ -140,7 +143,7 @@ export class QuickInstallTask extends AsyncTask {
     }
   }
 
-  async onStopped(): Promise<boolean | void> {
+  async onStop() {
     try {
       if (this.downloadStream && typeof this.downloadStream.destroy === "function")
         this.downloadStream.destroy(new Error("STOP TASK"));

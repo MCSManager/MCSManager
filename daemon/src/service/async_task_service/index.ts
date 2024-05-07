@@ -15,45 +15,69 @@ export interface IAsyncTask extends EventEmitter {
 }
 
 export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
-  constructor() {
-    super();
-  }
+  public static readonly STATUS_STOP = 0;
+  public static readonly STATUS_RUNNING = 1;
+  public static readonly STATUS_ERROR = -1;
 
   public taskId: string = "";
   public type: string = "";
 
-  // 0=stop 1=running -1=error
-  protected _status = 0;
+  protected _status = AsyncTask.STATUS_STOP;
+
+  constructor() {
+    super();
+  }
 
   public start() {
-    this._status = 1;
-    const r = this.onStarted();
-    this.emit("started");
-    return r;
+    this._status = AsyncTask.STATUS_RUNNING;
+    try {
+      const r = this.onStart();
+      this.emit("started");
+      return r;
+    } catch (error: any) {
+      this.error(error);
+      return Promise.reject(error);
+    }
   }
 
   public stop() {
-    if (this._status !== -1) this._status = 0;
-    const r = this.onStopped();
-    this.emit("stopped");
-    return r;
+    if (this._status === AsyncTask.STATUS_STOP) return Promise.resolve();
+    try {
+      const r = this.onStop();
+      return r;
+    } catch (error) {
+      return Promise.reject(error);
+    } finally {
+      if (this._status !== AsyncTask.STATUS_ERROR) this._status = AsyncTask.STATUS_STOP;
+      this.emit("stopped");
+    }
   }
 
   public error(err: Error) {
-    this._status = -1;
+    this._status = AsyncTask.STATUS_ERROR;
     logger.error(`AsyncTask - ID: ${this.taskId} TYPE: ${this.type} Error:`, err);
     this.onError(err);
     this.emit("error", err);
-
     this.stop();
+  }
+
+  public wait() {
+    return new Promise<void>((resolve, reject) => {
+      this.once("stopped", () => {
+        resolve();
+      });
+      this.once("error", (err) => {
+        reject(err);
+      });
+    });
   }
 
   status(): number {
     return this._status;
   }
 
-  public abstract onStarted(): Promise<boolean | void>;
-  public abstract onStopped(): Promise<boolean | void>;
+  public abstract onStart(): Promise<void>;
+  public abstract onStop(): Promise<void>;
   public abstract onError(err: Error): void;
   public abstract toObject(): IAsyncTaskJSON;
 }
