@@ -206,7 +206,7 @@ const loginSuccess = () => {
   }
   input {
     background-color: transparent;
-    caret-color: #fff; // 光标颜色
+    caret-color: #fff;
   }
 }
 </style>
