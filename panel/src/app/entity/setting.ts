@@ -31,7 +31,9 @@ export default class SystemConfig {
   // Whether to open the file management function for ordinary users
   canFileManager = true;
 
-  allowUsePreset = true;
+  // Whether to allow template-based instance reset, which may pose a security risk.
+  // If you use Docker and need commercial functionality, you can try turning this feature on and testing it.
+  allowUsePreset = false;
 
   // i18n
   language = "en_us";
