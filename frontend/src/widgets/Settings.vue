@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { isCN, t } from "@/lang/i18n";
+import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { Modal, message } from "ant-design-vue";
@@ -80,44 +80,7 @@ const menus = [
 ];
 
 // DO NOT I18N
-const allLanguages = [
-  {
-    label: `English`,
-    value: `en_us`
-  },
-  {
-    label: `简体中文`,
-    value: `zh_cn`
-  },
-  {
-    label: `繁體中文`,
-    value: `zh_tw`
-  },
-  {
-    label: `Français (Google Translation)`,
-    value: `fr_fr`
-  },
-  {
-    label: `Español (Google Translation)`,
-    value: `es_es`
-  },
-  {
-    label: `Deutsch (Google Translation)`,
-    value: `de_de`
-  },
-  {
-    label: `Русский (Google Translation)`,
-    value: `ru_ru`
-  },
-  {
-    label: `日本語 (Google Translation)`,
-    value: `ja_jp`
-  },
-  {
-    label: `한국어 (Google Translation)`,
-    value: `ko_kr`
-  }
-];
+const allLanguages = SUPPORTED_LANGS;
 
 const allYesNo = [
   {

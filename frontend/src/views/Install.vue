@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import { t } from "@/lang/i18n";
-import { panelInstall } from "@/services/apis";
+import { SUPPORTED_LANGS, getCurrentLang, setLanguage, t } from "@/lang/i18n";
+import { panelInstall, updateSettings } from "@/services/apis";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
@@ -27,7 +27,8 @@ const { toPage } = useAppRouters();
 const formRef = ref<FormInstance>();
 const formData = reactive({
   username: "",
-  password: ""
+  password: "",
+  language: getCurrentLang()
 });
 
 const { execute: createAdminUser } = panelInstall();
@@ -106,17 +107,13 @@ onMounted(async () => {});
         <a-button v-else class="mt-45 mb-45" type="primary" size="large" @click="step = 2">
           {{ t("TXT_CODE_351aaf7") }}
         </a-button>
-        <a-typography>
-          <a-typography-paragraph>
-            <a-typography-text>
-              <a href="https://mcsmanager.com/" target="_blank" rel="noopener noreferrer">
-                Reference: https://mcsmanager.com/
-              </a>
-            </a-typography-text>
-            <br />
-            <a-typography-text>Released under the Apache-2.0 License.</a-typography-text>
-          </a-typography-paragraph>
-        </a-typography>
+        <!-- <div style="flex">
+          <a-select v-model:value="formData.language" class="mr-6" :style="{ minWidth: '200px' }">
+            <a-select-option v-for="item in SUPPORTED_LANGS" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </div> -->
       </template>
     </CardPanel>
   </div>

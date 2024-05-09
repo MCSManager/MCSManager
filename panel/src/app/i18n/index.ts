@@ -1,3 +1,6 @@
+// I18n init configuration (Web Panel)
+// If you want to add the language of your own country, you need to add the code here.
+
 import i18next from "i18next";
 
 import zh_cn from "@languages/zh_CN.json";
