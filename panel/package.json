@@ -5,7 +5,7 @@
   "description": "Provide MCSManager with the ability to connect and control all Daemons, and provide API services for the front end.",
   "scripts": {
     "dev": "ts-node --project tsconfig.json src/app.ts",
-    "build": "tsc --project tsconfig.json && webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
   "author": "https://github.com/unitwk",
@@ -23,6 +23,7 @@
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
+    "formidable": "^3.5.1",
     "i18n": "^0.15.0",
     "i18next": "^21.8.14",
     "koa": "^2.13.1",
@@ -41,12 +42,11 @@
     "redis": "^4.5.1",
     "socket.io": "^4.5.3",
     "socket.io-client": "^4.7.2",
-    "uuid": "^8.3.2",
-    "formidable": "^3.5.1"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/formidable": "^3.4.5",
     "@types/bcryptjs": "^2.4.2",
+    "@types/formidable": "^3.4.5",
     "@types/fs-extra": "^9.0.11",
     "@types/koa": "^2.13.1",
     "@types/koa__router": "^8.0.4",
@@ -59,8 +59,9 @@
     "@types/uuid": "^8.3.0",
     "common": "file:../common",
     "eslint": "^7.23.0",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4",
+    "typescript": "^4.9.5",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0"
