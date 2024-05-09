@@ -5,10 +5,12 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import Components from "unplugin-vue-components/vite";
 import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -24,7 +26,7 @@ export default defineConfig({
           if (id.includes("node_modules/zrender")) {
             return "zrender";
           }
-          if (id.includes("node_modules/vue")||id.includes("node_modules/@vue")) {
+          if (id.includes("node_modules/vue") || id.includes("node_modules/@vue")) {
             return "vue";
           }
           if (id.includes("node_modules/xterm")) {
@@ -36,8 +38,8 @@ export default defineConfig({
           if (id.includes("node_modules/monaco")) {
             return "monaco";
           }
-          if (id.includes("languages")) {
-            return "lang";
+          if (id.includes("node_modules/htmlparser2")) {
+            return "htmlparser2";
           }
         }
       }
@@ -70,7 +72,8 @@ export default defineConfig({
           importStyle: false // css in js
         })
       ]
-    })
+    }),
+    visualizer()
   ],
   resolve: {
     alias: {

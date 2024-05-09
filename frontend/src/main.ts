@@ -5,7 +5,7 @@ import { initLayoutConfig } from "./services/layout";
 (async function () {
   const { state, updatePanelStatus } = useAppStateStore();
   await updatePanelStatus();
-  initI18n(state.language);
+  await initI18n(state.language);
   await initLayoutConfig();
   const module = await import("./mount");
   await module.mountApp();

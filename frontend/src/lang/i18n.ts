@@ -4,14 +4,6 @@ import { createI18n } from "vue-i18n";
 import { updateSettings } from "@/services/apis";
 
 import enUS from "@languages/en_US.json";
-import zhCN from "@languages/zh_CN.json";
-import zhTW from "@languages/zh_TW.json";
-import jaJP from "@languages/ja_JP.json";
-import esES from "@languages/es_ES.json";
-import frFR from "@languages/fr_FR.json";
-import ruRU from "@languages/ru_RU.json";
-import koKR from "@languages/ko_KR.json";
-import deDE from "@languages/de_DE.json";
 
 // DO NOT I18N
 // If you want to add the language of your own country, you need to add the code here.
@@ -74,24 +66,29 @@ export async function initInstallPageFlow(language: string) {
 
 // I18n init configuration
 // If you want to add the language of your own country, you need to add the code here.
-function initI18n(lang: string) {
+async function initI18n(lang: string) {
   lang = toStandardLang(lang);
+
+  const messages: Record<string, any> = {
+    en_us: enUS
+  };
+  const langFiles = import.meta.glob("../../../languages/*.json");
+  for (const path in langFiles) {
+    if (
+      lang !== "en_us" &&
+      toStandardLang(path).includes(lang) &&
+      typeof langFiles[path] === "function"
+    ) {
+      messages[lang] = await langFiles[path]();
+    }
+  }
+
   i18n = createI18n({
     allowComposition: true,
     globalInjection: true,
     locale: lang,
     fallbackLocale: toStandardLang("en_us"),
-    messages: {
-      en_us: enUS,
-      zh_cn: zhCN,
-      zh_tw: zhTW,
-      ja_jp: jaJP,
-      es_es: esES,
-      fr_fr: frFR,
-      ru_ru: ruRU,
-      ko_kr: koKR,
-      de_de: deDE
-    }
+    messages: messages
   });
 }
 
