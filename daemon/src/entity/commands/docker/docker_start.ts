@@ -1,10 +1,7 @@
 import { $t } from "../../../i18n";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import Docker from "dockerode";
 import logger from "../../../service/log";
-import { EventEmitter } from "events";
-import { IInstanceProcess } from "../../instance/interface";
 import fs from "fs-extra";
 import { t } from "i18next";
 import DockerPullCommand from "./docker_pull";
@@ -32,13 +29,10 @@ export default class DockerStartCommand extends InstanceCommand {
       throw error;
     }
 
-    const containerWrapper = new SetupDockerContainer(instance);
-    await containerWrapper.start();
-
     // Docker docks to the process adapter
     const isTty = instance.config.terminalOption.pty;
     const workingDir = instance.config.docker.workingDir ?? "/workspace/";
-    const processAdapter = new DockerProcessAdapter(containerWrapper.getContainer());
+    const processAdapter = new DockerProcessAdapter(new SetupDockerContainer(instance));
     await processAdapter.start({
       isTty,
       w: instance.config.terminalOption.ptyWindowCol,

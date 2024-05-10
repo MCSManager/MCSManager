@@ -180,6 +180,8 @@ export class SetupDockerContainer extends AsyncTask {
       }
     });
 
+    await this.container.start();
+
     // Listen to events
     this.container.wait(async (v) => {
       this.stop();
@@ -204,7 +206,6 @@ export class SetupDockerContainer extends AsyncTask {
     const container = this.container;
     if (!container) throw new Error("Attach Failed, Container is Null!");
     try {
-      await container.start();
       const stream = await container.attach({
         stream: true,
         stdout: true,
@@ -213,9 +214,8 @@ export class SetupDockerContainer extends AsyncTask {
       });
       stream.on("data", (text: any) => instance.print(iconv.decode(text, outputCode)));
       stream.on("error", (text: any) => instance.print(iconv.decode(text, outputCode)));
-      await container.wait();
-    } catch (error) {
-      container.remove().catch(() => {});
+    } catch (error: any) {
+      this.error(error);
       throw error;
     }
   }
@@ -230,15 +230,17 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   pid?: number | string;
 
   private stream?: NodeJS.ReadWriteStream;
+  public container?: Docker.Container;
 
-  constructor(public container: Docker.Container) {
+  constructor(public readonly containerWrapper: SetupDockerContainer) {
     super();
   }
 
   // Once the program is actually started, no errors can block the next startup process
   public async start(param: IDockerProcessAdapterStartParam) {
     try {
-      await this.container.start();
+      await this.containerWrapper.start();
+      this.container = this.containerWrapper.getContainer();
 
       const { isTty, h, w } = param;
       if (isTty) {
@@ -246,14 +248,14 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
       }
 
       this.pid = this.container.id;
-      const stream = (this.stream = await this.container.attach({
+      this.stream = await this.container.attach({
         stream: true,
         stdout: true,
         stderr: true,
         stdin: true
-      }));
-      stream.on("data", (data) => this.emit("data", data));
-      stream.on("error", (data) => this.emit("data", data));
+      });
+      this.stream.on("data", (data) => this.emit("data", data));
+      this.stream.on("error", (data) => this.emit("data", data));
       this.wait();
     } catch (error: any) {
       this.kill();
@@ -266,18 +268,18 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   public async kill(s?: string) {
-    await this.container.kill();
+    await this.container?.kill();
     return true;
   }
 
   public async destroy() {
     try {
-      await this.container.remove();
+      await this.container?.remove();
     } catch (error: any) {}
   }
 
   private wait() {
-    this.container.wait(async (v) => {
+    this.container?.wait(async (v) => {
       await this.destroy();
       this.emit("exit", v);
     });
