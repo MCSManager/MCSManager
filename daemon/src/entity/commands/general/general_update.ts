@@ -34,18 +34,9 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       instance.asynchronousTask = this;
       instance.status(Instance.STATUS_BUSY);
 
-      if (instance.config.docker.image) {
-        // Docker Update Command Mode
-        const containerWrapper = new SetupDockerContainer(instance);
-        await containerWrapper.start();
-        await containerWrapper.attach(instance);
-        await containerWrapper.wait();
-      } else {
-        // Host Update Command Mode
-        const instanceUpdateAction = new InstanceUpdateAction(instance);
-        await instanceUpdateAction.start();
-        await instanceUpdateAction.wait();
-      }
+      const task = new InstanceUpdateAction(instance);
+      await task.start();
+      await task.wait();
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),

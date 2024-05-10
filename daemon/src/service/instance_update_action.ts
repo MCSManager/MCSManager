@@ -6,6 +6,7 @@ import Instance from "../entity/instance/instance";
 import { commandStringToArray } from "../entity/commands/base/command_parser";
 import iconv from "iconv-lite";
 import { AsyncTask, IAsyncTaskJSON } from "../service/async_task_service";
+import { SetupDockerContainer } from "./docker_process_service";
 
 export class InstanceUpdateAction extends AsyncTask {
   public pid?: number;
@@ -30,6 +31,16 @@ export class InstanceUpdateAction extends AsyncTask {
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
     );
+
+    // Docker Update Command Mode
+    if (this.instance.config.processType === "docker" && this.instance.config.docker?.image) {
+      const containerWrapper = new SetupDockerContainer(this.instance);
+      await containerWrapper.start();
+      await containerWrapper.attach(this.instance);
+      await containerWrapper.wait();
+      this.stop();
+      return;
+    }
 
     // command parsing
     const commandList = commandStringToArray(updateCommand);
