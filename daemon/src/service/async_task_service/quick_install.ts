@@ -5,16 +5,14 @@ import fs from "fs-extra";
 import Instance from "../../entity/instance/instance";
 import InstanceSubsystem from "../system_instance";
 import InstanceConfig from "../../entity/instance/Instance_config";
-import { $t, i18next } from "../../i18n";
+import { $t } from "../../i18n";
 import path from "path";
 import { getFileManager } from "../file_router_service";
 import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
 import type { IJsonData } from "common/global";
-import GeneralUpdateCommand, {
-  InstanceUpdateAction
-} from "../../entity/commands/general/general_update";
+import { InstanceUpdateAction } from "../instance_update_action";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -150,8 +148,6 @@ export class QuickInstallTask extends AsyncTask {
     } catch (error: any) {}
   }
 
-  onError(): void {}
-
   toObject(): IAsyncTaskJSON {
     return JSON.parse(
       JSON.stringify({
@@ -163,6 +159,8 @@ export class QuickInstallTask extends AsyncTask {
       })
     );
   }
+
+  async onError() {}
 }
 
 export function createQuickInstallTask(
