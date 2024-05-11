@@ -36,7 +36,10 @@ export class InstanceUpdateAction extends AsyncTask {
 
     // Docker Update Command Mode
     if (this.instance.config.processType === "docker" && this.instance.config.docker?.image) {
-      this.containerWrapper = new SetupDockerContainer(this.instance);
+      this.containerWrapper = new SetupDockerContainer(
+        this.instance,
+        this.instance.config.updateCommand
+      );
       await this.containerWrapper.start();
       await this.containerWrapper.attach(this.instance);
       await this.containerWrapper.wait();

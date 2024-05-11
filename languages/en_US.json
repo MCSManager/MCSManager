@@ -1794,7 +1794,7 @@
   "TXT_CODE_2b221e02": "Instance will run in a \"sandbox\".",
   "TXT_CODE_ec734b5c": "Specify which image the container runs on",
   "TXT_CODE_4e4d9680": "Complete Image Name",
-  "TXT_CODE_4a570d32": "Ensure this image exists and includes necessary information like tags. The instance will automatically pull this image before running",
+  "TXT_CODE_4a570d32": "Ensure this image exists and includes necessary information like tags.",
   "TXT_CODE_d7638d7b": "Required, e.g. openjdk:23-slim",
   "TXT_CODE_9c247f6": "Container Working Directory Mount",
   "TXT_CODE_df3fdec": "All files in the instance's working directory will be mounted to this directory inside the container",
