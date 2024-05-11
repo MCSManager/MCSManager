@@ -12,6 +12,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   private pid?: number;
   private process?: ChildProcess;
   private container?: Docker.Container;
+  private updateTask?: InstanceUpdateAction;
 
   constructor() {
     super("GeneralUpdateCommand");
@@ -34,9 +35,9 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       instance.asynchronousTask = this;
       instance.status(Instance.STATUS_BUSY);
 
-      const task = new InstanceUpdateAction(instance);
-      await task.start();
-      await task.wait();
+      this.updateTask = new InstanceUpdateAction(instance);
+      await this.updateTask.start();
+      await this.updateTask.wait();
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),
@@ -61,14 +62,6 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       $t("TXT_CODE_general_update.killProcess")
     );
 
-    if (instance.config.docker.image) {
-      try {
-        await this.container?.kill();
-      } catch (error) {}
-      return await this.container?.remove();
-    }
-    if (this.pid && this.process) {
-      return killProcess(this.pid, this.process);
-    }
+    await this.updateTask?.stop();
   }
 }
