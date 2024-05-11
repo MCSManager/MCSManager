@@ -10,7 +10,9 @@ import { SetupDockerContainer } from "./docker_process_service";
 
 export class InstanceUpdateAction extends AsyncTask {
   public pid?: number;
-  public process?: ChildProcessWithoutNullStreams;
+
+  private process?: ChildProcessWithoutNullStreams;
+  private containerWrapper?: SetupDockerContainer;
 
   constructor(public readonly instance: Instance) {
     super();
@@ -34,10 +36,10 @@ export class InstanceUpdateAction extends AsyncTask {
 
     // Docker Update Command Mode
     if (this.instance.config.processType === "docker" && this.instance.config.docker?.image) {
-      const containerWrapper = new SetupDockerContainer(this.instance);
-      await containerWrapper.start();
-      await containerWrapper.attach(this.instance);
-      await containerWrapper.wait();
+      this.containerWrapper = new SetupDockerContainer(this.instance);
+      await this.containerWrapper.start();
+      await this.containerWrapper.attach(this.instance);
+      await this.containerWrapper.wait();
       this.stop();
       return;
     }
@@ -84,6 +86,9 @@ export class InstanceUpdateAction extends AsyncTask {
   }
 
   public async onStop() {
+    if (this.containerWrapper) {
+      await this.containerWrapper.stop();
+    }
     if (this.pid && this.process) {
       killProcess(this.pid, this.process);
     }

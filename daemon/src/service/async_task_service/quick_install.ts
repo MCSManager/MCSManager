@@ -24,6 +24,7 @@ export class QuickInstallTask extends AsyncTask {
   public extName = "";
 
   private downloadStream?: fs.WriteStream;
+  private updateTask?: InstanceUpdateAction;
 
   constructor(
     public instanceName: string,
@@ -126,9 +127,9 @@ export class QuickInstallTask extends AsyncTask {
 
       if (this.instance?.config?.updateCommand) {
         try {
-          const updateAction = new InstanceUpdateAction(this.instance);
-          await updateAction.start();
-          await updateAction.wait();
+          this.updateTask = new InstanceUpdateAction(this.instance);
+          await this.updateTask.start();
+          await this.updateTask.wait();
         } catch (error) {}
       }
 
@@ -142,6 +143,10 @@ export class QuickInstallTask extends AsyncTask {
   }
 
   async onStop() {
+    try {
+      await this.updateTask?.stop();
+    } catch (error: any) {}
+
     try {
       if (this.downloadStream && typeof this.downloadStream.destroy === "function")
         this.downloadStream.destroy(new Error("STOP TASK"));

@@ -99,7 +99,7 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
 router.post(
   "/remote_service",
   permission({ level: ROLE.ADMIN }),
-  validator({ body: { apiKey: String, port: Number, ip: String, prefix: String, remarks: String } }),
+  validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
     // do asynchronous registration
@@ -108,7 +108,7 @@ router.post(
       port: parameter.port,
       ip: parameter.ip,
       prefix: parameter.prefix ?? "",
-      remarks: parameter.remarks || ""
+      remarks: parameter.remarks ?? ""
     });
     ctx.body = instance.uuid;
   }
