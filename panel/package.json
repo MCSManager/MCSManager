@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
-  "version": "10.2.0",
-  "daemonVersion": "4.4.0",
+  "version": "10.2.1",
+  "daemonVersion": "4.4.1",
   "description": "Provide MCSManager with the ability to connect and control all Daemons, and provide API services for the front end.",
   "scripts": {
     "dev": "ts-node --project tsconfig.json src/app.ts",
