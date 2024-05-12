@@ -42,11 +42,13 @@ export default class GeneralInstallCommand extends InstanceCommand {
       instance.asynchronousTask = this;
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_b9ca022b"));
       await this.process.start();
+      await this.process.wait();
+
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_f220ed78"));
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),
-        $t("TXT_CODE_general_update.error", { err: err })
+        $t("TXT_CODE_general_update.error", { err })
       );
     } finally {
       this.stopped(instance);

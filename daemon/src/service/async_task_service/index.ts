@@ -1,15 +1,14 @@
 import EventEmitter from "events";
 import logger from "../log";
-export interface IAsyncTaskJSON {
-  [key: string]: any;
-}
+
+export type IAsyncTaskJSON = any;
 
 export interface IAsyncTask extends EventEmitter {
   // The taskId must be complex enough to prevent other users from accessing the information
   taskId: string;
   type: string;
-  start(): Promise<boolean | void>;
-  stop(): Promise<boolean | void>;
+  start(): Promise<void>;
+  stop(): Promise<void>;
   status(): number;
   toObject(): IAsyncTaskJSON;
 }
@@ -22,47 +21,52 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
   public taskId: string = "";
   public type: string = "";
 
+  public errorInfo?: Error;
+
   protected _status = AsyncTask.STATUS_STOP;
 
   constructor() {
     super();
   }
 
-  public start() {
+  public async start() {
     this._status = AsyncTask.STATUS_RUNNING;
     try {
-      const r = this.onStart();
+      await this.onStart();
       this.emit("started");
-      return r;
     } catch (error: any) {
       this.error(error);
-      return Promise.reject(error);
+      throw error;
     }
   }
 
-  public stop() {
+  public async stop() {
     if (this._status === AsyncTask.STATUS_STOP) return Promise.resolve();
     try {
-      const r = this.onStop();
-      return r;
-    } catch (error) {
-      return Promise.reject(error);
+      await this.onStop();
     } finally {
       if (this._status !== AsyncTask.STATUS_ERROR) this._status = AsyncTask.STATUS_STOP;
       this.emit("stopped");
     }
   }
 
-  public error(err: Error) {
+  public async error(err: Error) {
     this._status = AsyncTask.STATUS_ERROR;
+    this.errorInfo = err;
     logger.error(`AsyncTask - ID: ${this.taskId} TYPE: ${this.type} Error:`, err);
-    this.onError(err);
+    await this.onError(err);
     this.emit("error", err);
     this.stop();
   }
 
   public wait() {
     return new Promise<void>((resolve, reject) => {
+      if (this._status === AsyncTask.STATUS_STOP) {
+        return resolve();
+      }
+      if (this._status === AsyncTask.STATUS_ERROR) {
+        return reject(this.errorInfo);
+      }
       this.once("stopped", () => {
         resolve();
       });
@@ -78,7 +82,7 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
 
   public abstract onStart(): Promise<void>;
   public abstract onStop(): Promise<void>;
-  public abstract onError(err: Error): void;
+  public abstract onError(err: Error): Promise<void>;
   public abstract toObject(): IAsyncTaskJSON;
 }
 

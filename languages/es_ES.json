@@ -468,7 +468,7 @@
   "TXT_CODE_4f0b822b": "¿Cuánto tiempo en milisegundos intentará BungeeCord hacer ping al servidor para obtener la cantidad de jugadores antes de cancelar la conexión?",
   "TXT_CODE_4f225afd": "Solo para el tipo de verificación en modo en línea. \nGuarda una lista de reproductores Bedrock Edition cuyas cuentas Java deben guardarse después de iniciar sesión.",
   "TXT_CODE_4f34fc28": "Aplicar configuración de instancia",
-  "TXT_CODE_4f387c5a": "Después de configurar el comando de actualización, puede encontrar la operación de actualización en el botón de instancia del interruptor. Después de hacer clic, el comando escrito aquí se ejecutará en la máquina host.",
+  "TXT_CODE_4f387c5a": "Después de configurar el comando de actualización, puede encontrar la operación de actualización en el botón de instancia de cambio. Después de hacer clic, el comando escrito aquí se ejecutará en el host (o en Docker).",
   "TXT_CODE_4f57868": "MC Géiser",
   "TXT_CODE_4f6a2959": "Espere hasta que se complete la carga del archivo actual.",
   "TXT_CODE_4f6c39d3": "Por favor ingrese una nueva contraseña",

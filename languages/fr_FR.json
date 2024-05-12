@@ -468,7 +468,7 @@
   "TXT_CODE_4f0b822b": "Combien de temps en millisecondes BungeeCord essaiera d'envoyer une requête ping au serveur pour obtenir le nombre de joueurs avant d'annuler la connexion",
   "TXT_CODE_4f225afd": "Uniquement pour le type de vérification en mode en ligne. \nEnregistre une liste des lecteurs Bedrock Edition dont les comptes Java doivent être enregistrés après la connexion.",
   "TXT_CODE_4f34fc28": "Appliquer les paramètres de l'instance",
-  "TXT_CODE_4f387c5a": "Après avoir configuré la commande de mise à jour, vous pouvez trouver l'opération de mise à jour sur le bouton de changement d'instance. Après avoir cliqué, la commande écrite ici sera exécutée sur la machine hôte.",
+  "TXT_CODE_4f387c5a": "Après avoir configuré la commande de mise à jour, vous pouvez trouver l'opération de mise à jour sur le bouton de changement d'instance. Après avoir cliqué, la commande écrite ici sera exécutée sur l'hôte (ou dans Docker).",
   "TXT_CODE_4f57868": "MC Geyser",
   "TXT_CODE_4f6a2959": "Veuillez attendre que le téléchargement du fichier en cours soit terminé",
   "TXT_CODE_4f6c39d3": "Veuillez entrer un nouveau mot de passe",

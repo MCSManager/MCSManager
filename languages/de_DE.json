@@ -468,7 +468,7 @@
   "TXT_CODE_4f0b822b": "Wie lange in Millisekunden BungeeCord versucht, den Server anzupingen, um die Anzahl der Spieler zu ermitteln, bevor die Verbindung abgebrochen wird",
   "TXT_CODE_4f225afd": "Nur für den Verifizierungstyp Online-Modus. \nSpeichert eine Liste der Bedrock Edition-Spieler, deren Java-Konten nach dem Anmelden gespeichert werden sollen.",
   "TXT_CODE_4f34fc28": "Instanzeinstellungen anwenden",
-  "TXT_CODE_4f387c5a": "Nachdem Sie den Update-Befehl konfiguriert haben, finden Sie den Update-Vorgang auf der Schaltfläche „Instanz wechseln“. Nach dem Klicken wird der hier geschriebene Befehl auf dem Host-Computer ausgeführt.",
+  "TXT_CODE_4f387c5a": "Nachdem Sie den Update-Befehl konfiguriert haben, finden Sie den Update-Vorgang auf der Schaltfläche „Instanz wechseln“. Nach dem Klicken wird der hier geschriebene Befehl auf dem Host (oder in Docker) ausgeführt.",
   "TXT_CODE_4f57868": "MC Geyser",
   "TXT_CODE_4f6a2959": "Bitte warten Sie, bis der aktuelle Datei-Upload abgeschlossen ist",
   "TXT_CODE_4f6c39d3": "Bitte geben Sie ein neues Passwort ein",

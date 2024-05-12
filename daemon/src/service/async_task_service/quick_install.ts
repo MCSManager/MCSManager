@@ -5,16 +5,14 @@ import fs from "fs-extra";
 import Instance from "../../entity/instance/instance";
 import InstanceSubsystem from "../system_instance";
 import InstanceConfig from "../../entity/instance/Instance_config";
-import { $t, i18next } from "../../i18n";
+import { $t } from "../../i18n";
 import path from "path";
 import { getFileManager } from "../file_router_service";
 import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
 import type { IJsonData } from "common/global";
-import GeneralUpdateCommand, {
-  InstanceUpdateAction
-} from "../../entity/commands/general/general_update";
+import { InstanceUpdateAction } from "../instance_update_action";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -26,6 +24,8 @@ export class QuickInstallTask extends AsyncTask {
   public extName = "";
 
   private downloadStream?: fs.WriteStream;
+  private writeStream?: fs.WriteStream;
+  private updateTask?: InstanceUpdateAction;
 
   constructor(
     public instanceName: string,
@@ -58,12 +58,12 @@ export class QuickInstallTask extends AsyncTask {
           downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
         }
         this.filePath = path.normalize(path.join(this.instance.config.cwd, downloadFileName));
-        const writeStream = fs.createWriteStream(this.filePath);
+        this.writeStream = fs.createWriteStream(this.filePath);
         const response = await axios<Readable>({
           url: this.targetLink,
           responseType: "stream"
         });
-        this.downloadStream = pipeline(response.data, writeStream, (err) => {
+        this.downloadStream = pipeline(response.data, this.writeStream, (err) => {
           if (err) {
             reject(err);
           } else {
@@ -128,9 +128,9 @@ export class QuickInstallTask extends AsyncTask {
 
       if (this.instance?.config?.updateCommand) {
         try {
-          const updateAction = new InstanceUpdateAction(this.instance);
-          await updateAction.start();
-          await updateAction.wait();
+          this.updateTask = new InstanceUpdateAction(this.instance);
+          await this.updateTask.start();
+          await this.updateTask.wait();
         } catch (error) {}
       }
 
@@ -145,12 +145,21 @@ export class QuickInstallTask extends AsyncTask {
 
   async onStop() {
     try {
-      if (this.downloadStream && typeof this.downloadStream.destroy === "function")
-        this.downloadStream.destroy(new Error("STOP TASK"));
-    } catch (error: any) {}
-  }
+      this.writeStream?.destroy();
+      this.writeStream = undefined;
+      this.downloadStream?.destroy();
+      this.downloadStream = undefined;
+    } catch (error) {
+      logger.error("QuickInstallTask -> onStop(): destroy download stream error:", error);
+    }
 
-  onError(): void {}
+    try {
+      await this.updateTask?.stop();
+      this.updateTask = undefined;
+    } catch (error: any) {
+      logger.error("QuickInstallTask -> onStop(): updateTask stop error:", error);
+    }
+  }
 
   toObject(): IAsyncTaskJSON {
     return JSON.parse(
@@ -163,6 +172,8 @@ export class QuickInstallTask extends AsyncTask {
       })
     );
   }
+
+  async onError() {}
 }
 
 export function createQuickInstallTask(

@@ -1,6 +1,6 @@
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import { DockerProcessAdapter } from "./docker_start";
+import { DockerProcessAdapter } from "../../../service/docker_process_service";
 
 export default class DockerResizeCommand extends InstanceCommand {
   constructor() {
