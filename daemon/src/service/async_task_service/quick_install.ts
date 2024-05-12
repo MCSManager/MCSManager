@@ -24,6 +24,7 @@ export class QuickInstallTask extends AsyncTask {
   public extName = "";
 
   private downloadStream?: fs.WriteStream;
+  private writeStream?: fs.WriteStream;
   private updateTask?: InstanceUpdateAction;
 
   constructor(
@@ -57,12 +58,12 @@ export class QuickInstallTask extends AsyncTask {
           downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
         }
         this.filePath = path.normalize(path.join(this.instance.config.cwd, downloadFileName));
-        const writeStream = fs.createWriteStream(this.filePath);
+        this.writeStream = fs.createWriteStream(this.filePath);
         const response = await axios<Readable>({
           url: this.targetLink,
           responseType: "stream"
         });
-        this.downloadStream = pipeline(response.data, writeStream, (err) => {
+        this.downloadStream = pipeline(response.data, this.writeStream, (err) => {
           if (err) {
             reject(err);
           } else {
@@ -144,14 +145,19 @@ export class QuickInstallTask extends AsyncTask {
 
   async onStop() {
     try {
+      this.writeStream?.destroy();
+      this.writeStream = undefined;
+      this.downloadStream?.destroy();
+      this.downloadStream = undefined;
+    } catch (error) {
+      logger.error("QuickInstallTask -> onStop(): destroy download stream error:", error);
+    }
+
+    try {
       await this.updateTask?.stop();
+      this.updateTask = undefined;
     } catch (error: any) {
       logger.error("QuickInstallTask -> onStop(): updateTask stop error:", error);
-    }
-    if (this.downloadStream) {
-      this.downloadStream.close((err) => {
-        logger.error("QuickInstallTask -> onStop(): destroy downloadStream error:", err);
-      });
     }
   }
 
