@@ -46,7 +46,7 @@ export default class GeneralInstallCommand extends InstanceCommand {
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),
-        $t("TXT_CODE_general_update.error", { err: err })
+        $t("TXT_CODE_general_update.error", { err })
       );
     } finally {
       this.stopped(instance);

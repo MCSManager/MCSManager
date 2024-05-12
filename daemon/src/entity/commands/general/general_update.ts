@@ -1,17 +1,10 @@
 import { $t } from "../../../i18n";
-import { killProcess } from "common";
-import { ChildProcess } from "child_process";
 import logger from "../../../service/log";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import Docker from "dockerode";
-import { SetupDockerContainer } from "../../../service/docker_process_service";
 import { InstanceUpdateAction } from "../../../service/instance_update_action";
 
 export default class GeneralUpdateCommand extends InstanceCommand {
-  private pid?: number;
-  private process?: ChildProcess;
-  private container?: Docker.Container;
   private updateTask?: InstanceUpdateAction;
 
   constructor() {
