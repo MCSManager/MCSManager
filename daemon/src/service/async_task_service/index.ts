@@ -21,6 +21,8 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
   public taskId: string = "";
   public type: string = "";
 
+  public errorInfo?: Error;
+
   protected _status = AsyncTask.STATUS_STOP;
 
   constructor() {
@@ -50,6 +52,7 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
 
   public async error(err: Error) {
     this._status = AsyncTask.STATUS_ERROR;
+    this.errorInfo = err;
     logger.error(`AsyncTask - ID: ${this.taskId} TYPE: ${this.type} Error:`, err);
     await this.onError(err);
     this.emit("error", err);
@@ -58,6 +61,12 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
 
   public wait() {
     return new Promise<void>((resolve, reject) => {
+      if (this._status === AsyncTask.STATUS_STOP) {
+        return resolve();
+      }
+      if (this._status === AsyncTask.STATUS_ERROR) {
+        return reject(this.errorInfo);
+      }
       this.once("stopped", () => {
         resolve();
       });
