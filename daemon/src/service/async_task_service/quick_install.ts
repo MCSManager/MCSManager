@@ -145,12 +145,14 @@ export class QuickInstallTask extends AsyncTask {
   async onStop() {
     try {
       await this.updateTask?.stop();
-    } catch (error: any) {}
-
-    try {
-      if (this.downloadStream && typeof this.downloadStream.destroy === "function")
-        this.downloadStream.destroy(new Error("STOP TASK"));
-    } catch (error: any) {}
+    } catch (error: any) {
+      logger.error("QuickInstallTask -> onStop(): updateTask stop error:", error);
+    }
+    if (this.downloadStream) {
+      this.downloadStream.close((err) => {
+        logger.error("QuickInstallTask -> onStop(): destroy downloadStream error:", err);
+      });
+    }
   }
 
   toObject(): IAsyncTaskJSON {
