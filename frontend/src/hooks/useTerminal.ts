@@ -13,6 +13,7 @@ import { INSTANCE_STATUS_CODE } from "@/types/const";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { removeTrail } from "@/tools/string";
+import { GLOBAL_INSTANCE_NAME } from "@/config/const";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -62,6 +63,10 @@ export function useTerminal() {
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
   const socketAddress = ref("");
+
+  const isGlobalTerminal = computed(() => {
+    return state.value?.config.nickname === GLOBAL_INSTANCE_NAME;
+  });
 
   let fitAddonTask: NodeJS.Timer;
   let cachedSize = {
@@ -247,6 +252,7 @@ export function useTerminal() {
     terminal,
     socketAddress,
     isConnect,
+    isGlobalTerminal,
 
     execute,
     initTerminalWindow,

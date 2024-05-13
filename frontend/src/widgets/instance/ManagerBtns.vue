@@ -47,7 +47,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
-const { instanceInfo, execute } = useInstanceInfo({
+const { instanceInfo, execute, isGlobalTerminal } = useInstanceInfo({
   instanceId,
   daemonId,
   autoRefresh: true
@@ -72,10 +72,6 @@ const refreshInstanceInfo = async () => {
     forceRequest: true
   });
 };
-
-const isGlobalTerminal = computed(() => {
-  return instanceInfo.value?.config.nickname === GLOBAL_INSTANCE_NAME;
-});
 
 const btns = computed(() => {
   if (!instanceInfo.value) return [];

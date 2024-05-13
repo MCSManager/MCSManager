@@ -42,15 +42,22 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { state, isAdmin } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-const { execute, state: instanceInfo, isStopped, isRunning, isBuys } = useTerminal();
+const {
+  execute,
+  state: instanceInfo,
+  isStopped,
+  isRunning,
+  isBuys,
+  isGlobalTerminal
+} = useTerminal();
 const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
 const innerTerminalType = viewType === "inner";
-const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 
+const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
 const quickOperations = computed(() =>
   arrayFilter([
@@ -97,7 +104,6 @@ const quickOperations = computed(() =>
     }
   ])
 );
-
 const instanceOperations = computed(() =>
   arrayFilter([
     {
@@ -165,7 +171,10 @@ const instanceOperations = computed(() =>
       noConfirm: true,
       click: () => reinstallDialog.value?.openDialog(),
       props: {},
-      condition: () => isStopped.value && (state.settings.allowUsePreset || isAdmin.value)
+      condition: () =>
+        isStopped.value &&
+        (state.settings.allowUsePreset || isAdmin.value) &&
+        !isGlobalTerminal.value
     }
   ])
 );

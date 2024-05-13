@@ -3,6 +3,7 @@ import { t } from "@/lang/i18n";
 import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { getInstanceInfo } from "@/services/apis/instance";
 import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
+import { GLOBAL_INSTANCE_NAME } from "@/config/const";
 
 export const TYPE_UNIVERSAL = "universal";
 export const TYPE_WEB_SHELL = "universal/web_shell";
@@ -89,6 +90,9 @@ export function useInstanceInfo(params: Params) {
   const isStopping = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STOPPING);
   const isStarting = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.STARTING);
   const isRunning = computed(() => finalState?.value?.status === INSTANCE_STATUS_CODE.RUNNING);
+  const isGlobalTerminal = computed(() => {
+    return state.value?.config.nickname === GLOBAL_INSTANCE_NAME;
+  });
 
   const instanceTypeText = computed(() => {
     return (
@@ -137,7 +141,8 @@ export function useInstanceInfo(params: Params) {
     isStopping,
     isStarting,
     isRunning,
-    instanceTypeText
+    instanceTypeText,
+    isGlobalTerminal
   };
 }
 
