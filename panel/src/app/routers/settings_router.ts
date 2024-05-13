@@ -28,7 +28,7 @@ router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
 // [Top-level Permission]
 // Update panel configuration items
-router.put("/setting", validator({ body: {} }), permission({ level: ROLE.ADMIN }), async (ctx) => {
+router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const config = ctx.request.body;
   if (config && systemConfig) {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;

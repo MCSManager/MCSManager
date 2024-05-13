@@ -114,68 +114,53 @@ router.get("/", permission({ level: ROLE.USER, token: false, speedLimit: false }
 
 // [Low-level Permission]
 // Modify personal user information
-router.put(
-  "/update",
-  permission({ level: ROLE.USER }),
-  validator({ body: {} }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userUuid = getUserUuid(ctx);
-    if (userUuid) {
-      const config = ctx.request.body;
-      const { passWord, isInit } = config;
-      if (!userSystem.validatePassword(passWord))
-        throw new Error($t("TXT_CODE_router.user.passwordCheck"));
-      await userSystem.edit(userUuid, { passWord, isInit });
-      ctx.body = logout(ctx);
-    }
+router.put("/update", permission({ level: ROLE.USER }), async (ctx: Koa.ParameterizedContext) => {
+  const userUuid = getUserUuid(ctx);
+  if (userUuid) {
+    const config = ctx.request.body;
+    const { passWord, isInit } = config;
+    if (!userSystem.validatePassword(passWord))
+      throw new Error($t("TXT_CODE_router.user.passwordCheck"));
+    await userSystem.edit(userUuid, { passWord, isInit });
+    ctx.body = logout(ctx);
   }
-);
+});
 
 // [Low-level Permission]
 // API generation and shutdown
-router.put(
-  "/api",
-  permission({ level: ROLE.USER }),
-  validator({ body: {} }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userUuid = getUserUuid(ctx);
-    const enable = ctx.request.body.enable;
-    const user = userSystem.getInstance(userUuid);
-    let newKey = "";
-    try {
-      if (user) {
-        if (enable) {
-          newKey = v4().replace(/-/gim, "");
-          await userSystem.edit(userUuid, {
-            apiKey: newKey
-          });
-        } else {
-          await userSystem.edit(userUuid, {
-            apiKey: ""
-          });
-        }
+router.put("/api", permission({ level: ROLE.USER }), async (ctx: Koa.ParameterizedContext) => {
+  const userUuid = getUserUuid(ctx);
+  const enable = ctx.request.body.enable;
+  const user = userSystem.getInstance(userUuid);
+  let newKey = "";
+  try {
+    if (user) {
+      if (enable) {
+        newKey = v4().replace(/-/gim, "");
+        await userSystem.edit(userUuid, {
+          apiKey: newKey
+        });
+      } else {
+        await userSystem.edit(userUuid, {
+          apiKey: ""
+        });
       }
-      ctx.body = newKey;
-    } catch (error: any) {
-      ctx.body = error;
     }
+    ctx.body = newKey;
+  } catch (error: any) {
+    ctx.body = error;
   }
-);
+});
 
 // [Low-level Permission]
 // 2FA
-router.post(
-  "/bind2fa",
-  permission({ level: 1 }),
-  validator({ body: {} }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userUuid = getUserUuid(ctx);
-    if (userUuid) {
-      const qrcode = await bind2FA(ctx);
-      ctx.body = qrcode;
-    }
+router.post("/bind2fa", permission({ level: 1 }), async (ctx: Koa.ParameterizedContext) => {
+  const userUuid = getUserUuid(ctx);
+  if (userUuid) {
+    const qrcode = await bind2FA(ctx);
+    ctx.body = qrcode;
   }
-);
+});
 
 // [Low-level Permission]
 // 2FA
