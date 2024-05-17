@@ -514,7 +514,12 @@ onUnmounted(() => {
                           type="text"
                           size="small"
                           :style="item.style"
-                          @click="item.onClick"
+                          @click="
+                            () => {
+                              oneSelected(record.name, record as DataType);
+                              item.onClick();
+                            }
+                          "
                         >
                         </a-button>
                       </a-tooltip>
