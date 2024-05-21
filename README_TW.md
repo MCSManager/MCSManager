@@ -26,7 +26,7 @@
 
 **MCSManager 面板**（簡稱：MCSM 面板）是一款免費，開源，分散式，輕量級，快速部署，支援 Minecraft 和 Steam 遊戲伺服器的 Web 管理面板。
 
-此軟體在`Minecraft` 和其他遊戲社群內中已有一定的流行程度，它可以幫助你集中管理多個實體伺服器，實現在任何主機上建立遊戲伺服器，並且提供安全可靠的多使用者權限系統，可以很輕鬆的幫助你管理多個伺服器，一直在為`Minecraft`，`Terraria` 和`Steam` 遊戲伺服器的管理員，維護人員和個人開發者提供健康的軟體支援。
+此軟體在 `Minecraft` 和其他遊戲社群內中已有一定的流行程度，它可以幫助你集中管理多個實體伺服器，實現在任何主機上建立遊戲伺服器，並且提供安全可靠的多使用者權限系統，可以很輕鬆的幫助你管理多個伺服器，一直在為 `Minecraft`，`Terraria` 和 `Steam` 遊戲伺服器的管理員，維護人員和個人開發者提供健康的軟體支援。
 
 ![截圖載入失敗，請科學上網.png](/.github/panel-image.png)
 
@@ -91,7 +91,7 @@ systemctl stop mcsm-{web,daemon} # 關閉面板
 
 ```bash
 
-# 切換到安裝資料夾。 如果不存在，請提前用'mkdir /opt/'新增它。
+# 切換到安裝資料夾。 如果沒有這個資料夾，請先輸入 mkdir /opt/ 新增它。
 
 cd /opt/
 
@@ -128,13 +128,13 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 ./start-daemon.sh
 
-# 啟動網路服務(在第二個終端機或 screen)
+# 啟動網頁服務(在第二個終端機或 screen)
 
 ./start-web.sh
 
 # 進入 http://localhost:23333/ 開始使用
 
-# 一般來說，網路應用會自動掃描並連接到本機守護行程。
+# 一般來說，網頁服務會自動掃描並連接到本機節點。
 
 ```
 
@@ -179,7 +179,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ```
 
-接下來你還需要前往[PTY](https://github.com/MCSManager/PTY) 和[Zip-Tools](https://github.com/MCSManager/Zip-Tools) 兩個專案下載對應的檔案，將他們存放到`daemon/lib` 目錄下，以確保`模擬終端機` 和`解壓縮檔案` 正常運作。
+接下來你還需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 兩個專案下載對應的檔案，將他們存放到 `daemon/lib` 目錄下，以確保 `模擬終端機` 和 `解壓縮檔案` 正常運作。
 
 <br />
 
@@ -191,9 +191,9 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 <br />
 
-## BUG 報告
+## 回報 BUG
 
-歡迎回饋發現到的任何問題，將會快速修復。
+歡迎回報發現到的任何問題，將會快速修復。
 
 若發現嚴重安全漏洞又不方便公開發布，請 E-mail 至: support@mcsmanager.com，安全問題修復後將在程式碼中附加漏洞發現者姓名。
 
@@ -201,7 +201,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ## 國際化
 
-感謝下列成員提供的**大量**翻譯文件：
+感謝下列成員提供的**大量**翻譯檔案：
 
 - [KevinLu2000](https://github.com/KevinLu2000)
 - [Unitwk](https://github.com/unitwk)
