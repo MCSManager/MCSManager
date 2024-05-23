@@ -526,7 +526,7 @@
   "TXT_CODE_738bc836": "最大世界大小",
   "TXT_CODE_791a4c9b": "设定函数的默认权限等级",
   "TXT_CODE_61dd421d": "设置每个 Tick 花费的最大毫秒数",
-  "TXT_CODE_b16fc7a6": "是否允许玩家使用网络代理进入服务器",
+  "TXT_CODE_b16fc7a6": "是否阻止玩家使用网络代理进入服务器",
   "TXT_CODE_2a1fc6cc": "设置 RCON 远程访问的端口号",
   "TXT_CODE_1a0ab98b": "设置 RCON 远程访问的密码（参见 enable-rcon）",
   "TXT_CODE_e60567a8": "设置监听服务器的端口号（参见 enable-rcon）",
