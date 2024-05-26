@@ -79,7 +79,7 @@ const breadcrumbs = computed(() => {
     {
       title: t("TXT_CODE_f5b9d58f"),
       disabled: false,
-      href: "/"
+      href: `.`
     }
   ];
 
@@ -93,7 +93,7 @@ const breadcrumbs = computed(() => {
       arr.push({
         title: v.name,
         disabled: false,
-        href: `/#${v.path}${params}`
+        href: `./#${v.path}${params}`
       });
     });
   }
@@ -101,7 +101,7 @@ const breadcrumbs = computed(() => {
   arr.push({
     title: String(route.name),
     disabled: true,
-    href: `/#${route.fullPath}`
+    href: `./#${route.fullPath}`
   });
 
   return arr;
