@@ -212,13 +212,6 @@ const menuList = (record: DataType) =>
       condition: () => !isMultiple.value
     },
     {
-      label: t("TXT_CODE_88122886"),
-      key: "zip",
-      icon: h(FileZipOutlined),
-      onClick: () => zipFile(),
-      condition: () => !!isMultiple.value
-    },
-    {
       label: t("TXT_CODE_a64f3007"),
       key: "unzip",
       icon: h(FileZipOutlined),
@@ -264,6 +257,12 @@ const menuList = (record: DataType) =>
       icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
       condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
+    },
+    {
+      label: t("TXT_CODE_88122886"),
+      key: "zip",
+      icon: h(FileZipOutlined),
+      onClick: () => zipFile()
     },
     {
       label: t("TXT_CODE_ecbd7449"),
