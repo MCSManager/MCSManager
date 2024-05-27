@@ -307,6 +307,10 @@ onUnmounted(() => {
             </a-typography-title>
           </template>
           <template #right>
+            <a-typography-text v-if="selectedRowKeys.length">
+              {{ t("TXT_CODE_7b2c5414") + ` ${String(selectedRowKeys.length)} ` + t("TXT_CODE_5cd3b4bd") }}
+            </a-typography-text>
+
             <a-upload
               :before-upload="beforeUpload"
               :max-count="1"
