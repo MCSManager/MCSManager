@@ -59,7 +59,9 @@ const handleChangePassword = async () => {
 };
 
 const handleBind2FA = async () => {
-  const qrcode = await bind2FA().execute();
+  const qrcode = await bind2FA().execute({
+    data: {}
+  });
   if (qrcode.value) {
     formState.qrcode = String(qrcode.value);
     await updateUserInfo();
