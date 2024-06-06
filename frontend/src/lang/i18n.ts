@@ -21,6 +21,10 @@ export const SUPPORTED_LANGS = [
     value: `zh_tw`
   },
   {
+    label: `Português`,
+    value: `pt_br`
+  },
+  {
     label: `Français (Google Translation)`,
     value: `fr_fr`
   },
@@ -129,6 +133,10 @@ const isTW = () => {
   return getCurrentLang() === "zh_tw";
 };
 
+const isPT = () => {
+  return getCurrentLang() === "pt_br";
+};
+
 const $t = (...args: string[]): string => {
   return (i18n.global.t as Function)(...args);
 };
@@ -148,5 +156,6 @@ export {
   isCN,
   isEN,
   isTW,
+  isPT,
   getSupportLanguages
 };
