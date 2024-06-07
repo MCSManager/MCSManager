@@ -21,6 +21,10 @@ export const SUPPORTED_LANGS = [
     value: `zh_tw`
   },
   {
+    label: `Português Brasileiro`,
+    value: `pt_br`
+  },
+  {
     label: `Français (Google Translation)`,
     value: `fr_fr`
   },
@@ -43,10 +47,6 @@ export const SUPPORTED_LANGS = [
   {
     label: `한국어 (Google Translation)`,
     value: `ko_kr`
-  },
-  {
-    label: `Português Brasileiro`,
-    value: `pt_br`
   }
 ];
 
