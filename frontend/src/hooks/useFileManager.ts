@@ -427,6 +427,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         disabled: false
       });
       operationForm.value.name = "";
+      operationForm.value.current = 1;
       await getFileList(true);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
