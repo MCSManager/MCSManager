@@ -152,7 +152,9 @@ export const addUser = useDefineApi<
       permission: number;
     };
   },
-  boolean
+  {
+    uuid: string;
+  }
 >({
   url: "/api/auth",
   method: "POST"

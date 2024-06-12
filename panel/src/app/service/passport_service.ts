@@ -115,12 +115,15 @@ export async function register(
   });
   if (f) {
     // Next. UUID and other data will be automatically generated.
-    await userSystem.create({
+    const { uuid } = await userSystem.create({
       userName,
       passWord,
       permission
     });
-    return true;
+
+    return {
+      uuid
+    };
   }
   return false;
 }
