@@ -12,7 +12,6 @@ import StopCommand from "../entity/commands/stop";
 import SendCommand from "../entity/commands/cmd";
 import KillCommand from "../entity/commands/kill";
 import { IInstanceDetail, IJson } from "../service/interfaces";
-import { QueryMapWrapper } from "common";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import FileManager from "../service/system_file";
 import { ProcessConfig } from "../entity/instance/process_config";
@@ -30,7 +29,6 @@ routerApp.use((event, ctx, data, next) => {
   if (event === "instance/query_asynchronous") return next();
   if (event === "instance/stop_asynchronous") return next();
   if (event.startsWith("instance")) {
-    // class AOP
     if (data.instanceUuids) return next();
     const instanceUuid = data.instanceUuid;
     if (!InstanceSubsystem.exists(instanceUuid)) {

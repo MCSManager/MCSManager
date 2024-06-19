@@ -1,6 +1,5 @@
 import RouterContext from "../entity/ctx";
 
-// task interface
 interface IMission {
   name: string;
   parameter: any;

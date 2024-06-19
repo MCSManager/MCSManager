@@ -9,7 +9,6 @@ import {
 import InstanceSubsystem from "../service/system_instance";
 import SendCommand from "../entity/commands/cmd";
 import { IGNORE } from "../const";
-import logger from "../service/log";
 
 // Authorization authentication middleware
 routerApp.use(async (event, ctx, data, next) => {
@@ -83,7 +82,6 @@ routerApp.on("stream/input", async (ctx, data) => {
     await instance?.exec(new SendCommand(command));
   } catch (error: any) {
     // Ignore potential high frequency exceptions here
-    // protocol.responseError(ctx, error);
   }
 });
 
@@ -97,11 +95,10 @@ routerApp.on("stream/write", async (ctx, data) => {
     if (instance?.process) instance.process.write(buf);
   } catch (error: any) {
     // Ignore potential high frequency exceptions here
-    // protocol.responseError(ctx, error);
   }
 });
 
-// handle terminal resize
+// Handle terminal resize
 // interface IResizeOptions {
 //   h: number;
 //   w: number;
@@ -118,6 +115,6 @@ routerApp.on("stream/resize", async (ctx, data) => {
     });
     if (instance) await instance.execPreset("resize");
   } catch (error: any) {
-    // protocol.responseError(ctx, error);
+    // Ignore potential high frequency exceptions here
   }
 });
