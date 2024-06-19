@@ -1894,5 +1894,11 @@
   "TXT_CODE_a5f01916": "Allow Instance Reset",
   "TXT_CODE_b5a47731": "The administrator has restricted general users from using the instance reinstallation function.",
   "TXT_CODE_f5f9664": "This feature allows general users to use the default packages in \"Quick Deployment\" to reinstall instances.",
-  "TXT_CODE_e29a9317": "Programming language changed"
+  "TXT_CODE_e29a9317": "Programming language changed",
+  "TXT_CODE_23a3bd72": "abnormal",
+  "TXT_CODE_6b4a27dd": "The web front end cannot establish a WebSocket connection with the node, please check the network proxy configuration or firewall configuration!",
+  "TXT_CODE_7c0b7608": "Node status",
+  "TXT_CODE_930d2524": "Direct connection to web page",
+  "TXT_CODE_e039b9b5": "normal",
+  "TXT_CODE_a788e3eb": "Memory/Processor"
 }

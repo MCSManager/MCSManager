@@ -56,7 +56,7 @@
   "TXT_CODE_common.killProcess": "O processo {{pid}} foi encerrado usando comandos do sistema",
   "TXT_CODE_common.title": "Título",
   "TXT_CODE_common.uuidIrregular": "UUID {{uuid}} não está em conformidade com os padrões",
-  "TXT_CODE_d356cf9d": "Diminuir Largura", 
+  "TXT_CODE_d356cf9d": "Diminuir Largura",
   "TXT_CODE_d507abff": "Confirmar",
   "TXT_CODE_daemonInfo.authError": "Erro de validação da chave do daemon remoto {{- v}}",
   "TXT_CODE_daemonInfo.authFailure": "Validação da chave do daemon remoto {{- v}} negada",
@@ -1893,5 +1893,12 @@
   "TXT_CODE_a5f01916": "Permitir Reset da Instância",
   "TXT_CODE_b5a47731": "O administrador restringiu os usuários gerais de usar a função de reinstalação de instância.",
   "TXT_CODE_f5f9664": "Esta função permite que os usuários gerais usem os pacotes padrão em \"Implantação Rápida\" para reinstalar instâncias.",
-  "TXT_CODE_e29a9317": "Linguagem de Programação Modificada"
+  "TXT_CODE_e29a9317": "Linguagem de Programação Modificada",
+  "TXT_CODE_23a3bd72": "anormal",
+  "TXT_CODE_3d09f0ac": "Criar imagem",
+  "TXT_CODE_6b4a27dd": "O front-end da web não pode estabelecer uma conexão WebSocket com o nó. Verifique a configuração do proxy de rede ou a configuração do firewall!",
+  "TXT_CODE_7c0b7608": "Status do nó",
+  "TXT_CODE_930d2524": "Conexão direta com a página da web",
+  "TXT_CODE_e039b9b5": "normal",
+  "TXT_CODE_a788e3eb": "Memória/Processador"
 }

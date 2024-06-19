@@ -1894,5 +1894,11 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
+  "TXT_CODE_23a3bd72": "anormal",
+  "TXT_CODE_6b4a27dd": "La interfaz web no puede establecer una conexión WebSocket con el nodo. Verifique la configuración del proxy de red o la configuración del firewall.",
+  "TXT_CODE_7c0b7608": "Estado del nodo",
+  "TXT_CODE_930d2524": "Conexión directa a la página web.",
+  "TXT_CODE_e039b9b5": "normal",
+  "TXT_CODE_a788e3eb": "Memoria/Procesador"
 }

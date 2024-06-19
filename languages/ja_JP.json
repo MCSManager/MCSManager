@@ -1894,5 +1894,11 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "重複したタスクがすでに存在します",
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
-  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました"
+  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
+  "TXT_CODE_23a3bd72": "異常な",
+  "TXT_CODE_6b4a27dd": "Web フロントエンドはノードとの WebSocket 接続を確立できません。ネットワーク プロキシ構成またはファイアウォール構成を確認してください。",
+  "TXT_CODE_7c0b7608": "ノードのステータス",
+  "TXT_CODE_930d2524": "Webページへの直接接続",
+  "TXT_CODE_e039b9b5": "普通",
+  "TXT_CODE_a788e3eb": "メモリ/プロセッサ"
 }

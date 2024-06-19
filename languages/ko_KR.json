@@ -1894,5 +1894,11 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
+  "TXT_CODE_23a3bd72": "이상",
+  "TXT_CODE_6b4a27dd": "웹 프런트 엔드가 노드와의 WebSocket 연결을 설정할 수 없습니다. 네트워크 프록시 구성이나 방화벽 구성을 확인하세요!",
+  "TXT_CODE_7c0b7608": "노드 상태",
+  "TXT_CODE_930d2524": "웹페이지에 직접 연결",
+  "TXT_CODE_e039b9b5": "정상",
+  "TXT_CODE_a788e3eb": "메모리/프로세서"
 }

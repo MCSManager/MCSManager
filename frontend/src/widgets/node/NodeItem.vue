@@ -86,22 +86,25 @@ const detailList = (node: ComputedNodeInfo) => [
     value: `${node.ip}:${node.port}`
   },
   {
-    title: t("节点状态"),
+    title: t("TXT_CODE_7c0b7608"),
     value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
     warn: node.available === false,
     success: node.available === true,
     warnText: t("TXT_CODE_1c2efd38")
   },
   {
-    title: t("网页直连"),
-    value: socketStatus.value === SocketStatus.Connected ? t("正常") : t("异常"),
+    title: t("TXT_CODE_930d2524"),
+    value:
+      socketStatus.value === SocketStatus.Connected
+        ? t("TXT_CODE_e039b9b5")
+        : t("TXT_CODE_23a3bd72"),
     warn: socketStatus.value === SocketStatus.Error,
     success: socketStatus.value === SocketStatus.Connected,
     loading: socketStatus.value === SocketStatus.Connecting,
-    warnText: t("网页前端无法与节点建立 WebSocket 连接，请检查网络代理配置或防火墙配置！")
+    warnText: t("TXT_CODE_6b4a27dd")
   },
   {
-    title: t("内存 & 处理器"),
+    title: t("TXT_CODE_a788e3eb"),
     value: (node.memText || "") + "\n" + (node.cpuInfo || "")
   },
 

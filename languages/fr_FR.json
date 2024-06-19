@@ -1894,5 +1894,11 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Des tâches en double existent déjà",
   "TXT_CODE_system_instance_control.illegalName": "Nom de projet incorrect, ne prend en charge que les traits de soulignement, les chiffres, les lettres et certaines langues locales",
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
-  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué"
+  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
+  "TXT_CODE_23a3bd72": "anormal",
+  "TXT_CODE_6b4a27dd": "Le frontal Web ne peut pas établir de connexion WebSocket avec le nœud, veuillez vérifier la configuration du proxy réseau ou la configuration du pare-feu !",
+  "TXT_CODE_7c0b7608": "Statut du nœud",
+  "TXT_CODE_930d2524": "Connexion directe à la page Web",
+  "TXT_CODE_e039b9b5": "normale",
+  "TXT_CODE_a788e3eb": "Mémoire/Processeur"
 }

@@ -1894,5 +1894,11 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
+  "TXT_CODE_23a3bd72": "abnormal",
+  "TXT_CODE_6b4a27dd": "Das Web-Frontend kann keine WebSocket-Verbindung mit dem Knoten herstellen, bitte überprüfen Sie die Netzwerk-Proxy-Konfiguration oder Firewall-Konfiguration!",
+  "TXT_CODE_7c0b7608": "Knotenstatus",
+  "TXT_CODE_930d2524": "Direkte Verbindung zur Webseite",
+  "TXT_CODE_e039b9b5": "normal",
+  "TXT_CODE_a788e3eb": "Speicher/Prozessor"
 }
