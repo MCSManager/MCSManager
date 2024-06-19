@@ -377,6 +377,19 @@ export const batchKill = useDefineApi<
   url: "/api/instance/multi_kill"
 });
 
+export const batchRestart = useDefineApi<
+  {
+    data: {
+      instanceUuid: string;
+      daemonId: string;
+    }[];
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/instance/multi_restart"
+});
+
 export const batchDelete = useDefineApi<
   {
     params: {
