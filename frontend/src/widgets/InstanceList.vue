@@ -17,12 +17,19 @@ import {
   DeleteOutlined,
   WarningOutlined,
   InfoCircleOutlined,
-  FrownOutlined
+  FrownOutlined,
+  RedoOutlined
 } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
-import { batchStart, batchStop, batchKill, batchDelete } from "@/services/apis/instance";
+import {
+  batchStart,
+  batchStop,
+  batchKill,
+  batchDelete,
+  batchRestart
+} from "@/services/apis/instance";
 import type { NodeStatus } from "../types/index";
 import { notification, Modal } from "ant-design-vue";
 import { computeNodeName } from "../tools/nodes";
@@ -191,6 +198,11 @@ const instanceOperations = [
     click: () => batchOperation("stop")
   },
   {
+    title: t("TXT_CODE_47dcfa5"),
+    icon: RedoOutlined,
+    click: () => batchOperation("restart")
+  },
+  {
     title: t("TXT_CODE_7b67813a"),
     icon: CloseOutlined,
     click: () => {
@@ -209,12 +221,13 @@ const instanceOperations = [
   }
 ];
 
-const batchOperation = async (actName: "start" | "stop" | "kill") => {
+const batchOperation = async (actName: "start" | "stop" | "kill" | "restart") => {
   if (selectedInstance.value.length === 0) return reportErrorMsg(t("TXT_CODE_a0a77be5"));
   const operationMap = {
     start: async () => exec(batchStart().execute, t("TXT_CODE_2b5fd76e")),
     stop: async () => exec(batchStop().execute, t("TXT_CODE_4822a21")),
-    kill: async () => exec(batchKill().execute, t("TXT_CODE_effefaab"))
+    kill: async () => exec(batchKill().execute, t("TXT_CODE_effefaab")),
+    restart: async () => exec(batchRestart().execute, t("TXT_CODE_effefaab"))
   };
 
   const exec = async (fn: Function, msg: string) => {
