@@ -51,22 +51,29 @@ watch(props, () => {
 </script>
 
 <template>
-  <div style="width: 100%">
+  <div class="node-simple-chart" style="width: 100%">
     <a-row :gutter="[24, 24]">
       <a-col :span="12">
         <div>
           {{ t("TXT_CODE_eca8f1b3") }}
         </div>
-        <div :id="chartCpuDomId" style="width: 100%; height: 50px"></div>
+        <div :id="chartCpuDomId" class="node-chart-container"></div>
       </a-col>
       <a-col :span="12">
         <div>
           {{ t("TXT_CODE_6ca6667f") }}
         </div>
-        <div :id="chartMemDomId" style="width: 100%; height: 50px"></div>
+        <div :id="chartMemDomId" class="node-chart-container"></div>
       </a-col>
     </a-row>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.node-simple-chart {
+  .node-chart-container {
+    height: 60px;
+    width: 100%;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
 import {
   SettingOutlined,
@@ -10,7 +10,8 @@ import {
   ReloadOutlined,
   InfoCircleOutlined,
   CloudServerOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  LoadingOutlined
 } from "@ant-design/icons-vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
@@ -24,6 +25,17 @@ import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
+import { useSocketIoClient } from "@/hooks/useSocketIo";
+import { removeTrail } from "@/tools/string";
+
+// eslint-disable-next-line no-unused-vars
+enum SocketStatus {
+  Connected = 1,
+  Connecting = 2,
+  Error = 0
+}
+
+const { testConnect } = useSocketIoClient();
 
 const nodeDetailDialog = ref<InstanceType<typeof NodeDetailDialog>>();
 
@@ -34,9 +46,10 @@ const props = defineProps<{
 
 const { state: AllDaemonData } = useOverviewInfo();
 const itemDaemonId = ref<string>();
+const socketStatus = ref<SocketStatus>(SocketStatus.Connecting);
 const specifiedDaemonVersion = computed(() => AllDaemonData.value?.specifiedDaemonVersion);
 
-const item = computed(() => {
+const remoteNode = computed(() => {
   const myDaemon = AllDaemonData.value?.remote.find((node) => {
     return node.uuid === itemDaemonId.value;
   });
@@ -73,20 +86,25 @@ const detailList = (node: ComputedNodeInfo) => [
     value: `${node.ip}:${node.port}`
   },
   {
-    title: t("TXT_CODE_c9609785"),
+    title: t("节点状态"),
     value: node.available ? t("TXT_CODE_823bfe63") : t("TXT_CODE_66ce073e"),
     warn: node.available === false,
     success: node.available === true,
     warnText: t("TXT_CODE_1c2efd38")
   },
   {
-    title: t("TXT_CODE_593ee330"),
-    value: node.memText
+    title: t("网页直连"),
+    value: socketStatus.value === SocketStatus.Connected ? t("正常") : t("异常"),
+    warn: socketStatus.value === SocketStatus.Error,
+    success: socketStatus.value === SocketStatus.Connected,
+    loading: socketStatus.value === SocketStatus.Connecting,
+    warnText: t("网页前端无法与节点建立 WebSocket 连接，请检查网络代理配置或防火墙配置！")
   },
   {
-    title: "CPU",
-    value: node.cpuInfo
+    title: t("内存 & 处理器"),
+    value: (node.memText || "") + "\n" + (node.cpuInfo || "")
   },
+
   {
     title: t("TXT_CODE_3d602459"),
     value: node.instanceStatus
@@ -99,7 +117,8 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    warn: specifiedDaemonVersion.value !== node.version,
+    success: specifiedDaemonVersion.value === node.version,
+    warn: specifiedDaemonVersion.value !== node.version && node.available,
     warnText: t("TXT_CODE_e520908a")
   },
   {
@@ -125,7 +144,7 @@ const nodeOperations = computed(() =>
           }
         });
       },
-      condition: () => item.value!.available
+      condition: () => remoteNode.value!.available
     },
     {
       title: t("TXT_CODE_524e3036"),
@@ -141,7 +160,7 @@ const nodeOperations = computed(() =>
           }
         });
       },
-      condition: () => item.value!.available
+      condition: () => remoteNode.value!.available
     },
     {
       title: t("TXT_CODE_e6c30866"),
@@ -155,7 +174,7 @@ const nodeOperations = computed(() =>
           }
         });
       },
-      condition: () => item.value!.available
+      condition: () => remoteNode.value!.available
     },
     {
       title: t("TXT_CODE_f8b28901"),
@@ -163,7 +182,7 @@ const nodeOperations = computed(() =>
       click: async (node: ComputedNodeInfo) => {
         await tryConnectNode(node.uuid);
       },
-      condition: () => !item.value!.available
+      condition: () => !remoteNode.value!.available
     },
     {
       title: t("TXT_CODE_b5c7b82d"),
@@ -174,6 +193,29 @@ const nodeOperations = computed(() =>
     }
   ])
 );
+
+const testFrontendSocket = async () => {
+  const nodeCfg = remoteNode.value;
+  if (!nodeCfg?.available) {
+    socketStatus.value = SocketStatus.Error;
+  } else {
+    try {
+      socketStatus.value = SocketStatus.Connecting;
+      await testConnect(
+        nodeCfg.ip + ":" + nodeCfg.port,
+        removeTrail(nodeCfg.prefix, "/") + "/socket.io"
+      );
+      socketStatus.value = SocketStatus.Connected;
+    } catch (error) {
+      console.error("Socket error: ", error);
+      socketStatus.value = SocketStatus.Error;
+    }
+  }
+};
+
+onMounted(() => {
+  testFrontendSocket();
+});
 </script>
 
 <template>
@@ -181,13 +223,13 @@ const nodeOperations = computed(() =>
     <CardPanel style="height: 100%">
       <template #title>
         <div class="flex-center">
-          <span :class="{ 'color-danger': !item?.available }">
+          <span :class="{ 'color-danger': !remoteNode?.available }">
             <CloudServerOutlined />
-            {{ item?.remarks || item?.ip }}
+            {{ remoteNode?.remarks || remoteNode?.ip }}
           </span>
         </div>
       </template>
-      <template v-if="item" #operator>
+      <template v-if="remoteNode" #operator>
         <span
           v-for="operation in nodeOperations"
           :key="operation.title"
@@ -197,39 +239,51 @@ const nodeOperations = computed(() =>
           <IconBtn
             :icon="operation.icon"
             :title="operation.title"
-            @click="operation.click(item)"
+            @click="operation.click(remoteNode)"
           ></IconBtn>
         </span>
       </template>
-      <template v-if="item" #body>
+      <template v-if="remoteNode" #body>
         <a-row :gutter="[24, 24]" class="mt-2">
-          <a-col v-for="detail in detailList(item)" :key="detail.title + detail.value" :span="6">
+          <a-col
+            v-for="detail in detailList(remoteNode)"
+            :key="detail.title + detail.value"
+            :span="6"
+          >
             <a-typography-paragraph>
               <div>
                 {{ detail.title }}
               </div>
+
               <div v-if="detail.onlyCopy">
                 <a-typography-text :copyable="{ text: detail.value ?? '' }"></a-typography-text>
               </div>
-              <div v-else>
+              <div v-else style="font-size: 13px">
                 <a-tooltip v-if="detail.warn && detail.value">
                   <template #title>
                     {{ detail.warnText }}
                   </template>
                   <span class="color-danger"><InfoCircleOutlined /> {{ detail.value }}</span>
                 </a-tooltip>
+                <span v-else-if="detail.loading">
+                  <div class="flex mt-4">
+                    <LoadingOutlined style="font-size: 18px" />
+                  </div>
+                </span>
                 <span v-else-if="detail.success">
                   <span class="color-success"><CheckCircleOutlined /> {{ detail.value }}</span>
                 </span>
-                <span v-else>{{ detail.value }}</span>
+                <span v-else style="white-space: pre-wrap">{{
+                  String(detail.value ?? "").trim() ? detail.value : "--"
+                }}</span>
               </div>
             </a-typography-paragraph>
           </a-col>
         </a-row>
         <NodeSimpleChart
           class="mt-24"
-          :cpu-data="item.cpuChartData ?? []"
-          :mem-data="item.memChartData ?? []"
+          :cpu-data="remoteNode.cpuChartData ?? []"
+          :mem-data="remoteNode.memChartData ?? []"
         />
       </template>
     </CardPanel>

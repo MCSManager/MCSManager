@@ -4,7 +4,6 @@ import { ref } from "vue";
 import { t } from "@/lang/i18n";
 import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { message } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
 import NodeItem from "./node/NodeItem.vue";
 import { useRemoteNode } from "../hooks/useRemoteNode";
@@ -30,7 +29,6 @@ const refresh = async () => {
   try {
     refreshLoading.value = true;
     await refreshOverviewInfo();
-    message.success(t("TXT_CODE_fbde647e"));
   } catch (error: any) {
     reportErrorMsg(error.message);
   } finally {
@@ -39,7 +37,7 @@ const refresh = async () => {
 };
 
 const handleOpenDetailDialog = async () => {
-  await nodeDetailDialog.value?.openDialog();
+  nodeDetailDialog.value?.openDialog();
 };
 </script>
 
@@ -55,7 +53,7 @@ const handleOpenDetailDialog = async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-button :loading="refreshLoading" @click="refresh">
+            <a-button :disabled="refreshLoading" :loading="refreshLoading" @click="refresh">
               {{ t("TXT_CODE_b76d94e0") }}
             </a-button>
             <a-button type="primary" @click="handleOpenDetailDialog">
@@ -101,8 +99,13 @@ const handleOpenDetailDialog = async () => {
           {{ t("TXT_CODE_a65c65c2") }}
         </a-typography-text>
       </a-col>
-      <fade-up-animation :delay="3000">
-        <a-col v-for="item in remotes" :key="item.uuid" :span="24" :lg="12">
+      <fade-up-animation v-if="!refreshLoading" :delay="3000">
+        <a-col
+          v-for="item in remotes"
+          :key="item.uuid + item.available + item.ip"
+          :span="24"
+          :lg="12"
+        >
           <NodeItem :item="item"></NodeItem>
         </a-col>
       </fade-up-animation>

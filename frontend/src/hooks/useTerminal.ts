@@ -93,7 +93,7 @@ export function useTerminal() {
       path: (!!remoteInfo.prefix ? removeTrail(remoteInfo.prefix, "/") : "") + "/socket.io",
       multiplex: false,
       reconnectionDelayMax: 1000 * 10,
-      timeout: 1000 * 10,
+      timeout: 1000 * 30,
       reconnection: true,
       reconnectionAttempts: 3,
       rejectUnauthorized: false
