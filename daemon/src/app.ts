@@ -114,6 +114,10 @@ io.on("connection", (socket: Socket) => {
   protocol.addGlobalSocket(socket);
   router.navigation(socket);
 
+  socket.on("error", (err) => {
+    logger.error("Connection(): Socket.io Error:", err);
+  });
+
   socket.on("disconnect", () => {
     protocol.delGlobalSocket(socket);
     for (const name of socket.eventNames()) socket.removeAllListeners(name);
