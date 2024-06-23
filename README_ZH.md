@@ -108,7 +108,7 @@ wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanage
 tar -zxf mcsmanager_linux_release.tar.gz
 
 # 安装依赖库
-./install-dependency.sh
+./install.sh
 
 # 请打开两个终端或screen
 
