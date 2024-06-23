@@ -118,9 +118,9 @@ cd /opt/mcsmanager/
 wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
 tar -zxf mcsmanager_linux_release.tar.gz
 
-# 安裝依賴函式庫
+# 安裝函式庫
 
-./install-dependency.sh
+./install.sh
 
 # 請開啟兩個終端機或 screen
 
@@ -138,7 +138,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 ```
 
-這種安裝方式不會自動註冊面板到系統服務（Service），所以必須使用 `screen` 軟體來管理，如果你希望由系統服務來接管 MCSManager，請參考文件。
+這種安裝方式不會自動註冊系統服務(Service)，所以必須使用 `screen` 軟體來管理，如果你希望由系統服務來接管 MCSManager，請參考文件。
 
 <br />
 
@@ -151,7 +151,7 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 ## 建立開發環境
 
-給開發人員使用，一般使用者無需關注也無需執行。
+這是給開發人員使用的，一般使用者可直接跳過這個環節。
 
 ### MacOS
 
@@ -171,7 +171,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ```
 
-### 建構生產環境版本
+### 編譯正式環境版本
 
 ```bash
 ./build.bat # Windows
