@@ -41,7 +41,7 @@
     "properties": "^1.2.1",
     "rcon-srcds": "^2.1.0",
     "socket.io": "^4.6.1",
-    "socket.io-client": "^4.6.1",
+    "socket.io-client": "^4.7.5",
     "uuid": "^8.3.2",
     "yaml": "^1.10.2"
   },
