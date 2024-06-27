@@ -2,12 +2,13 @@
 import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
+import { removeTrail } from "@/tools/string";
 
 defineProps<{
   card: LayoutCard;
 }>();
 const { isAdmin } = useAppStateStore();
-const myAddr = `${window.location.origin}/#/_open_page`;
+const myAddr = `${removeTrail(window.location.pathname, "/")}/#/_open_page`;
 </script>
 
 <template>
