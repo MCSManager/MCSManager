@@ -74,7 +74,7 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Files must a array!");
       }
       const originFileName = uploadedFile.originalFilename || "";
-      const originFilePath = uploadedFile.filepath || "";
+      // const originFilePath = uploadedFile.filepath || "";
       const fileSaveRelativePath = path.normalize(path.join(uploadDir, originFileName));
       if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
@@ -83,9 +83,10 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Invalid destination");
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
       await fs.move(uploadedFile.filepath, fileSaveAbsolutePath);
+
       if (unzip) {
         const fileManager = new FileManager(instance.config.cwd);
-        fileManager.unzip(originFilePath, "", zipCode);
+        fileManager.unzip(fileSaveAbsolutePath, "", zipCode);
       }
       ctx.body = "OK";
       return;
