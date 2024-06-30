@@ -74,7 +74,6 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Files must a array!");
       }
       const originFileName = uploadedFile.originalFilename || "";
-      // const originFilePath = uploadedFile.filepath || "";
       const fileSaveRelativePath = path.normalize(path.join(uploadDir, originFileName));
       if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
