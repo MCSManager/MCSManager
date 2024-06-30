@@ -56,6 +56,7 @@ export default class RemoteService {
       await this.onDisconnect();
     });
     this.socket.on("connect_error", async (error: Error) => {
+      logger.info($t("TXT_CODE_daemonInfo.connectError", { v: daemonInfo, error: error }));
       await this.onDisconnect();
     });
   }

@@ -1481,7 +1481,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "Проверка ключа удаленного узла {{- v}} прошла успешно",
   "TXT_CODE_daemonInfo.closed": "Активно отключить удаленный узел {{- v}}",
   "TXT_CODE_daemonInfo.connect": "Удаленный узел {{- v}} подключен.",
-  "TXT_CODE_daemonInfo.connectError": "Ошибка подключения к удаленному узлу: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "Ошибка подключения к удаленному узлу {{- v}}: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "Удаленный узел {{- v}} не работает",
   "TXT_CODE_daemonInfo.replaceConnect": "Пользователь инициировал повторный запрос на подключение и теперь сбрасывает конфигурацию подключения.",
   "TXT_CODE_daemonInfo.resetConnect": "Пользователь инициирует переподключение к уже доступному удаленному узлу, при этом канал подключения сбрасывается.",

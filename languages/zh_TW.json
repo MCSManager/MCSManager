@@ -63,7 +63,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "遠端節點 {{- v}} 金鑰驗證成功",
   "TXT_CODE_daemonInfo.closed": "主動斷開遠端節點 {{- v}} ",
   "TXT_CODE_daemonInfo.connect": "遠端節點 {{- v}} 已連接",
-  "TXT_CODE_daemonInfo.connectError": "連接遠端節點錯誤：{{- v}} ",
+  "TXT_CODE_daemonInfo.connectError": "連接遠端節點 {{- v}} 錯誤： {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "遠端節點 {{- v}} 已中斷",
   "TXT_CODE_daemonInfo.replaceConnect": "使用者啟動重複連線請求，現進行重設連線配置",
   "TXT_CODE_daemonInfo.resetConnect": "使用者啟動重連已可用狀態的遠端節點，正在重設連線通道",

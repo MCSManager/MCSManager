@@ -63,7 +63,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "Validação da chave do daemon remoto {{- v}} bem-sucedida",
   "TXT_CODE_daemonInfo.closed": "Daemon remoto {{- v}} desconectado",
   "TXT_CODE_daemonInfo.connect": "Conectado ao daemon remoto {{- v}}",
-  "TXT_CODE_daemonInfo.connectError": "Erro ao conectar ao daemon remoto: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "Erro ao conectar ao daemon remoto {{- v}}: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "Desconectado do daemon remoto {{- v}}",
   "TXT_CODE_daemonInfo.replaceConnect": "Usuário iniciou uma solicitação de conexão duplicada, redefinindo a configuração da conexão",
   "TXT_CODE_daemonInfo.resetConnect": "Usuário iniciou a reconexão a um daemon remoto já disponível, redefinindo o canal de conexão",

@@ -63,7 +63,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "远程节点 {{- v}} 密钥验证通过",
   "TXT_CODE_daemonInfo.closed": "主动断开远程节点 {{- v}} ",
   "TXT_CODE_daemonInfo.connect": "远程节点 {{- v}} 已连接",
-  "TXT_CODE_daemonInfo.connectError": "连接远程节点错误：{{- v}} ",
+  "TXT_CODE_daemonInfo.connectError": "连接远程节点 {{- v}} 错误： {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "远程节点 {{- v}} 已断开",
   "TXT_CODE_daemonInfo.replaceConnect": "用户发起重复连接请求，现进行重置连接配置",
   "TXT_CODE_daemonInfo.resetConnect": "用户发起重连已可用状态的远程节点，正在重置连接通道",

@@ -1481,7 +1481,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "Vérification de la clé du nœud distant {{- v}} réussie",
   "TXT_CODE_daemonInfo.closed": "Déconnectez activement le nœud distant {{- v}}",
   "TXT_CODE_daemonInfo.connect": "Le nœud distant {{- v}} est connecté",
-  "TXT_CODE_daemonInfo.connectError": "Erreur de connexion au nœud distant : {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "Erreur de connexion au nœud distant {{- v}}: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "Le nœud distant {{- v}} est en panne",
   "TXT_CODE_daemonInfo.replaceConnect": "L'utilisateur a lancé une demande de connexion répétée et réinitialise désormais la configuration de la connexion.",
   "TXT_CODE_daemonInfo.resetConnect": "L'utilisateur initie la reconnexion au nœud distant déjà disponible et le canal de connexion est en cours de réinitialisation.",
