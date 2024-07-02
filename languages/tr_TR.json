@@ -63,7 +63,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "Uzak daemon {{- v}} anahtar doğrulaması başarılı",
   "TXT_CODE_daemonInfo.closed": "Bağlantısı kesilen uzak arka plan programı {{- v}}",
   "TXT_CODE_daemonInfo.connect": "Uzak arka plan programına bağlandı {{- v}}",
-  "TXT_CODE_daemonInfo.connectError": "Uzak daemon'a bağlanırken hata oluştu: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "Uzak daemon'a bağlanırken hata oluştu {{- v}}: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "Uzak arka plan programıyla bağlantı kesildi {{- v}}",
   "TXT_CODE_daemonInfo.replaceConnect": "Kullanıcı yinelenen bir bağlantı isteği başlattı, bağlantı yapılandırması sıfırlanıyor",
   "TXT_CODE_daemonInfo.resetConnect": "Kullanıcı zaten mevcut olan bir uzak daemon'a yeniden bağlanmayı başlattı, bağlantı kanalını sıfırlıyor",

@@ -1481,7 +1481,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "Schlüsselüberprüfung des Remote-Knotens {{- v}} erfolgreich",
   "TXT_CODE_daemonInfo.closed": "Trennen Sie aktiv den Remote-Knoten {{- v}}",
   "TXT_CODE_daemonInfo.connect": "Der Remote-Knoten {{- v}} ist verbunden",
-  "TXT_CODE_daemonInfo.connectError": "Fehler beim Herstellen der Verbindung zum Remote-Knoten: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "Fehler beim Herstellen der Verbindung zum Remote-Knoten {{- v}}: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "Der Remote-Knoten {{- v}} ist ausgefallen",
   "TXT_CODE_daemonInfo.replaceConnect": "Der Benutzer hat eine wiederholte Verbindungsanfrage initiiert und setzt nun die Verbindungskonfiguration zurück.",
   "TXT_CODE_daemonInfo.resetConnect": "Der Benutzer initiiert die erneute Verbindung zum bereits verfügbaren Remote-Knoten und der Verbindungskanal wird zurückgesetzt.",

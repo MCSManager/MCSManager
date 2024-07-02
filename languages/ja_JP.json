@@ -1481,7 +1481,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "リモートノード {{- v}} キーの検証が成功しました",
   "TXT_CODE_daemonInfo.closed": "リモート ノードをアクティブに切断します {{- v}}",
   "TXT_CODE_daemonInfo.connect": "リモートノード {{- v}} が接続されています",
-  "TXT_CODE_daemonInfo.connectError": "リモート ノードへの接続エラー: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "リモート ノード {{- v}} への接続エラー: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "リモート ノード {{- v}} がダウンしています",
   "TXT_CODE_daemonInfo.replaceConnect": "ユーザーは繰り返しの接続要求を開始し、接続構成をリセットしました。",
   "TXT_CODE_daemonInfo.resetConnect": "ユーザーはすでに使用可能なリモート ノードへの再接続を開始し、接続チャネルがリセットされます。",

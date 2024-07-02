@@ -1481,7 +1481,7 @@
   "TXT_CODE_daemonInfo.authSuccess": "원격 노드 {{- v}} 키 확인 성공",
   "TXT_CODE_daemonInfo.closed": "원격 노드 {{- v}}를 적극적으로 연결 해제합니다.",
   "TXT_CODE_daemonInfo.connect": "원격 노드 {{- v}}가 연결되었습니다",
-  "TXT_CODE_daemonInfo.connectError": "원격 노드 연결 오류: {{- v}}",
+  "TXT_CODE_daemonInfo.connectError": "원격 노드 {{- v}} 연결 오류: {{error}}",
   "TXT_CODE_daemonInfo.disconnect": "원격 노드 {{- v}}이(가) 다운되었습니다",
   "TXT_CODE_daemonInfo.replaceConnect": "사용자가 반복적인 연결 요청을 시작했으며 이제 연결 구성을 재설정합니다.",
   "TXT_CODE_daemonInfo.resetConnect": "사용자가 이미 사용 가능한 원격 노드에 대한 재연결을 시작하고 연결 채널이 재설정됩니다.",
