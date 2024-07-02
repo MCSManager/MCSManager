@@ -242,7 +242,7 @@ onMounted(() => {
           <IconBtn
             :icon="operation.icon"
             :title="operation.title"
-            @click="operation.click(remoteNode)"
+            @click="remoteNode && operation.click(remoteNode)"
           ></IconBtn>
         </span>
       </template>
