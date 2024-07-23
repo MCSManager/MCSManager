@@ -79,7 +79,7 @@ const getLanguageExtension = () => {
       plugin: () => html()
     },
     {
-      name: ["yaml", "yml"],
+      name: ["yaml", "yml", "toml"],
       plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
     },
     {
