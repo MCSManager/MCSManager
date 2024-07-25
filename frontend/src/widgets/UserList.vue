@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { t } from "@/lang/i18n";
-import { message, type FormInstance } from "ant-design-vue";
+import { message, Modal, type FormInstance } from "ant-design-vue";
 import { DownOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { throttle } from "lodash";
@@ -162,6 +162,15 @@ const handleBatchDelete = async () => {
     return message.warn(t("TXT_CODE_d78ad17a"));
   }
   await deleteUser(selectedUsers.value);
+};
+
+const showDeleteConfirm = (user: BaseUserInfo) => {
+  Modal.confirm({
+    title: () => t('TXT_CODE_e99ab99a'),
+    okType: 'danger',
+    onOk: () => handleDeleteUser(user),
+    maskClosable: true
+  });
 };
 
 const isAddMode = ref(true);
@@ -453,14 +462,9 @@ onMounted(async () => {
                           <a-menu-item key="2" @click="handleToUserResources(record)">
                             {{ t("TXT_CODE_4d934e3a") }}
                           </a-menu-item>
-                          <a-popconfirm
-                            :title="t('TXT_CODE_e99ab99a')"
-                            @confirm="handleDeleteUser(record)"
-                          >
-                            <a-menu-item key="3">
-                              {{ t("TXT_CODE_ecbd7449") }}
-                            </a-menu-item>
-                          </a-popconfirm>
+                          <a-menu-item key="3" @click="showDeleteConfirm(record)">
+                            {{ t("TXT_CODE_ecbd7449") }}
+                          </a-menu-item>
                         </a-menu>
                       </template>
                       <a-button size="large">
