@@ -1,4 +1,4 @@
-import Koa from "koa";
+import Koa, { Context } from "koa";
 import koaBody from "koa-body-patch";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
@@ -16,7 +16,7 @@ export function initKoa() {
         maxFileSize: Number.MAX_SAFE_INTEGER,
         maxFiles: 1
       },
-      onError(err, ctx) {
+      onError(err: Error, ctx: Context) {
         logger.error("koaBody Lib Error:", err);
       }
     })

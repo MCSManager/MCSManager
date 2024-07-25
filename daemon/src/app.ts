@@ -7,6 +7,7 @@ import { $t, i18next } from "./i18n";
 import { getVersion, initVersionManager } from "./service/version";
 import { globalConfiguration } from "./entity/config";
 import { Server, Socket } from "socket.io";
+import { ServerOptions } from "engine.io";
 import { LOCAL_PRESET_LANG_PATH } from "./const";
 import logger from "./service/log";
 import { GOLANG_ZIP_PATH, PTY_PATH } from "./const";
@@ -88,7 +89,7 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST", "PUT", "DELETE"]
   },
   maxHttpBufferSize: 1e8
-});
+} as ServerOptions);
 
 // Initialize application instance system
 try {

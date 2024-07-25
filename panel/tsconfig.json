@@ -10,7 +10,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2020",
+    "target": "ES2018",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",

@@ -1,4 +1,6 @@
-import { SocketOptions, ManagerOptions } from "socket.io-client";
+import { ManagerOptions } from "socket.io-client";
+import { SocketOptions } from "engine.io-client";
+
 export interface IPacket {
   uuid: string;
   status: number;

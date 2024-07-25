@@ -1,13 +1,13 @@
 import "module-alias/register";
 import os from "os";
-import { $t } from "./app/i18n";
+import { $t } from "languages";
 import { initVersionManager, getVersion } from "./app/version";
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
 import { initSystemConfig, systemConfig } from "./app/setting";
 import SystemUser from "./app/service/user_service";
 import SystemRemoteService from "./app/service/remote_service";
-import Koa from "koa";
+import Koa, { Context } from "koa";
 import { v4 } from "uuid";
 import path from "path";
 import koaBody, { HttpMethodEnum } from "koa-body-patch";
@@ -20,6 +20,7 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 import { removeTrail } from "common";
+import { KoaBodyMiddlewareOptions } from "koa-body-patch/lib/types";
 
 function hasParams(name: string) {
   return process.argv.includes(name);
@@ -124,10 +125,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         maxFiles: 1
       },
       jsonLimit: "10mb",
-      onError(err, ctx) {
+      onError(err: Error, ctx: Context) {
         logger.error("koaBody Lib Error:", err);
       }
-    })
+    } satisfies KoaBodyMiddlewareOptions)
   );
 
   app.keys = [v4()];

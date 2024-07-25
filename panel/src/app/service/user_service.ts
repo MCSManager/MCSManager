@@ -7,6 +7,7 @@ import Storage from "../common/storage/sys_storage";
 import { QueryWrapper, LocalFileSource } from "common";
 import { $t } from "../i18n";
 import bcrypt from "bcryptjs";
+// @ts-ignore
 import { authenticator } from "otplib";
 import { t } from "i18next";
 

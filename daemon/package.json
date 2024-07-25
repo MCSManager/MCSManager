@@ -25,6 +25,7 @@
     "compressing": "^1.10.0",
     "crypto": "^1.0.1",
     "dockerode": "3.1.0",
+    "engine.io": "^6.6.0",
     "formidable": "^3.5.1",
     "fs-extra": "^9.0.1",
     "i18next": "^21.8.14",
