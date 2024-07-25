@@ -10,5 +10,8 @@
     "type": "git",
     "url": "https://github.com/AH-dark/MCSManager.git"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "i18next": "^21.8.14"
+  }
 }

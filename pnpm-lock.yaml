@@ -423,7 +423,11 @@ importers:
         specifier: ^1.8.6
         version: 1.8.27(typescript@5.1.6)
 
-  languages: {}
+  languages:
+    dependencies:
+      i18next:
+        specifier: ^21.8.14
+        version: 21.10.0
 
   panel:
     dependencies:
