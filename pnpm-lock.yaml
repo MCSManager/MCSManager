@@ -455,6 +455,9 @@ importers:
       crypto:
         specifier: ^1.0.1
         version: 1.0.1
+      engine.io:
+        specifier: ^6.6.0
+        version: 6.6.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       engine.io-client:
         specifier: ^6.6.0
         version: 6.6.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
