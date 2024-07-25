@@ -14,7 +14,7 @@
     "@ant-design/icons-vue": "^6.1.0",
     "@codemirror/lang-css": "^6.2.1",
     "@codemirror/lang-html": "^6.4.6",
-    "@codemirror/lang-javascript": "github:codemirror/lang-javascript",
+    "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-python": "^6.1.5",
     "@codemirror/lang-xml": "^6.0.2",

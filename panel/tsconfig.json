@@ -10,18 +10,11 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2018",
+    "target": "ES2020",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@languages/*": ["../languages/*"],
-      "*": ["node_modules/*", "src/types/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src/**/*"],
-  "exclude": [
-    "../node_modules/*"
-  ]
+  "include": ["src/**/*"]
 }
