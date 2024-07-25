@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-workspace",
   "version": "1.0.0",
-  "packageManager": "npm@10.5.0",
+  "packageManager": "bun@1.1.0",
   "workspaces": [
     "common",
     "daemon",
