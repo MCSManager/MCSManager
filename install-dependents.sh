@@ -1,13 +1,6 @@
 #!/bin/sh
-npm install
-npm run preview-build
-
-cd daemon
-npm install
-cd ../panel
-npm install
-cd ../frontend
-npm install
+pnpm install
+pnpm run preview-build
 
 echo "------------"
 echo "Done!"

@@ -2,28 +2,13 @@
 
 set -e
 
-npm run preview-build
+pnpm run preview-build
 
 rm -rf production-code
 rm -rf ./daemon/dist ./daemon/production
 rm -rf ./panel/dist ./panel/production
 
-echo "Build daemon..."
-cd daemon
-npm run build
-
-echo "Build panel..."
-cd ..
-cd panel
-npm run build
-
-echo "Build frontend..."
-cd ..
-cd frontend
-npm run build
-
-echo "Collecting files..."
-cd ..
+pnpm run build
 
 mkdir production-code
 mkdir production-code/daemon

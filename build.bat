@@ -1,4 +1,4 @@
-call npm run preview-build
+call pnpm run preview-build
 
 rd /s /q "production-code"
 rd /s /q ".\daemon\dist"
@@ -6,22 +6,7 @@ rd /s /q ".\daemon\production"
 rd /s /q ".\panel\dist"
 rd /s /q ".\panel\production"
 
-echo "Build daemon..."
-cd daemon
-call npm run build
-
-echo "Build panel..."
-cd ..
-cd panel
-call npm run build
-
-echo "Build frontend..."
-cd ..
-cd frontend
-call npm run build
-
-echo "Collecting files..."
-cd ..
+call pnpm run build
 
 mkdir "production-code"
 mkdir "production-code\daemon"
