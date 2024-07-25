@@ -11,7 +11,8 @@
     "url": "https://github.com/MCSManager/MCSManager"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "postinstall": "tsc --project tsconfig.json"
   },
   "dependencies": {
     "@types/fs-extra": "^11.0.4",
