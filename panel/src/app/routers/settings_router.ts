@@ -16,7 +16,7 @@ import {
 } from "../service/frontend_layout";
 import { ROLE } from "../entity/user";
 import { SAVE_DIR_PATH } from "../service/frontend_layout";
-import FileManager from "../../../../daemon/src/service/system_file";
+import FileManager from "mcsmanager-daemon/src/service/system_file";
 
 const router = new Router({ prefix: "/overview" });
 

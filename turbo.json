@@ -3,6 +3,9 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"]
+    },
+    "dev": {
+      "persistent": true
     }
   }
 }

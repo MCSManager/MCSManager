@@ -1,6 +1,6 @@
 import { overviewInfo } from "@/services/apis";
 import { onMounted, onUnmounted, ref, type Ref } from "vue";
-import type { IPanelOverviewRemoteResponse, IPanelOverviewResponse } from "../../../common/global";
+import type { IPanelOverviewRemoteResponse, IPanelOverviewResponse } from "common/global";
 
 export interface ComputedOverviewResponse extends IPanelOverviewResponse {
   totalInstance: number;

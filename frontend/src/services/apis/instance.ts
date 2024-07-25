@@ -5,10 +5,9 @@ import type {
   QuickStartTemplate,
   Schedule,
   NewScheduleTask,
-  LabelValueOption,
   JsonData
 } from "@/types";
-import type { IGlobalInstanceConfig } from "../../../../common/global";
+import type { IGlobalInstanceConfig } from "common/global";
 
 export interface MissionPassportResponse {
   addr: string;

@@ -1,0 +1,6 @@
+packages:
+  - "common"
+  - "daemon"
+  - "frontend"
+  - "languages"
+  - "panel"

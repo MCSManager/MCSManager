@@ -1,16 +1,18 @@
 {
   "name": "mcsmanager-workspace",
   "version": "1.0.0",
-  "packageManager": "bun@1.1.0",
+  "packageManager": "pnpm@9.6.0",
   "workspaces": [
     "common",
     "daemon",
     "frontend",
-    "panel"
+    "panel",
+    "languages"
   ],
   "scripts": {
     "i18n": "i18next-scanner --config i18-scanner.config.js",
     "build": "turbo build",
+    "dev": "turbo dev",
     "preview-build": "turbo build --filter=common",
     "daemon": "turbo dev --filter=mcsmanager-daemon",
     "frontend": "turbo dev --filter=mcsmanager-ui",

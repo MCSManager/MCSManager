@@ -6,11 +6,11 @@ import PlaceHolderCard from "@/components//PlaceHolderCard.vue";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useCardDragMove } from "@/hooks/useCardDragMove";
 import { useCardLayoutComputed, PLACE_HOLDER_CARD } from "@/hooks/useCardLayoutComputed";
-import { useRouterParams } from "../hooks/useRouterParams";
+import { useRouterParams } from "@/hooks/useRouterParams";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useScreen } from "@/hooks/useScreen";
 import { useMouseEnter } from "@/hooks/useMouseEnter";
-import type { ILayoutCard } from "../../../common/global";
+import type { ILayoutCard } from "common/global";
 
 const { containerState } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();

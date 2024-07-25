@@ -8,7 +8,7 @@ import type {
   IGlobalInstanceDockerConfig,
   IQuickStartTemplate,
   IQuickStartPackages
-} from "../../../common/global";
+} from "common/global";
 import type { INSTANCE_STATUS_CODE } from "./const";
 
 export type JsonData = IJsonData;

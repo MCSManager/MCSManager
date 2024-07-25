@@ -25,19 +25,11 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [
-    nodeExternals({
-      allowlist: ["common"]
-    })
-  ],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")
   },
   resolve: {
-    extensions: [".ts", ".js"],
-    alias: {
-      "@languages": path.resolve(__dirname, "../languages")
-    }
+    extensions: [".ts", ".js"]
   }
 };

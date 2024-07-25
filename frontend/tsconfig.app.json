@@ -12,12 +12,11 @@
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
+    "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@languages": ["../languages/*"]
+      "@/*": ["./src/*"]
     },
-    "moduleResolution": "node",
     "types": ["node"]
   }
 }

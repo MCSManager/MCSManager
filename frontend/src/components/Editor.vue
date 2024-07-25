@@ -14,7 +14,7 @@ import { getRandomId } from "@/tools/randId";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
-import { useScreen } from "../hooks/useScreen";
+import { useScreen } from "@/hooks/useScreen";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { dracula, draculaInit } from "@uiw/codemirror-theme-dracula";
 
