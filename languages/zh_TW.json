@@ -1674,7 +1674,7 @@
   "TXT_CODE_76d20724": "使用者所有實例",
   "TXT_CODE_9393b484": "指派實例",
   "TXT_CODE_6c274bdc": "此使用者沒有開啟 APIKEY 功能。",
-  "TXT_CODE_e99ab99a": "你確定要刪除這個使用者嗎？",
+  "TXT_CODE_e99ab99a": "你確定要刪除使用者 {userName} 嗎？",
   "TXT_CODE_2452016e": "請手動複製下列內容",
   "TXT_CODE_5ebec0db": "擴充頁面卡",
   "TXT_CODE_cb84b22": "此卡片可以上傳自訂 HTML 頁面並直接執行 Javascript 腳本，可以直接使用網頁上所有元素，適用於 Web 前端開發人員。",

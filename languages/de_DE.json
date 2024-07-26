@@ -1595,7 +1595,7 @@
   "TXT_CODE_e97669d8": "implementieren",
   "TXT_CODE_e98816c2": "Die Dauer der Immunität der Dorfbewohner tickt",
   "TXT_CODE_e9935066": "Erforderlich, geben Sie nur numerische Portnummern ein",
-  "TXT_CODE_e99ab99a": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
+  "TXT_CODE_e99ab99a": "Sind Sie sicher, dass Sie den Benutzer {userName} löschen möchten?",
   "TXT_CODE_e9dcbfe4": "Die wichtige Konfigurationsdatei des Bungeecord-Gruppenservers kann für die verteilte Verwaltung, Knotensteuerung usw. verwendet werden. Diese Konfigurationsdatei ist jedoch komplizierter und dient nur einfachen Einstellungen und Vorgängen.",
   "TXT_CODE_ea0840c9": "Instanzverknüpfung",
   "TXT_CODE_ea46baee": "Anderer Entitätsverfolgungsbereich",

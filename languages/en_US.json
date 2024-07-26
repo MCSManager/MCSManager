@@ -1673,7 +1673,7 @@
   "TXT_CODE_76d20724": "Assigned Instances",
   "TXT_CODE_9393b484": "Assign",
   "TXT_CODE_6c274bdc": "This user does not enable the APIKEY.",
-  "TXT_CODE_e99ab99a": "Are you sure you want to delete this user?",
+  "TXT_CODE_e99ab99a": "Are you sure you want to delete the user {userName}?",
   "TXT_CODE_2452016e": "Please manually copy the following content",
   "TXT_CODE_5ebec0db": "Extend Page Card",
   "TXT_CODE_cb84b22": "This card allows custom HTML pages and direct execution of Javascript scripts. It can use all elements on the webpage, and is for Web developers.",
