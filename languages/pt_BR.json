@@ -1672,7 +1672,7 @@
   "TXT_CODE_76d20724": "Instâncias Atribuídas",
   "TXT_CODE_9393b484": "Atribuir",
   "TXT_CODE_6c274bdc": "Este usuário não habilitou a APIKEY.",
-  "TXT_CODE_e99ab99a": "Tem certeza de que deseja excluir este usuário?",
+  "TXT_CODE_e99ab99a": "Tem certeza de que deseja excluir o usuário {userName}?",
   "TXT_CODE_2452016e": "Por favor, copie manualmente o seguinte conteúdo",
   "TXT_CODE_5ebec0db": "Ampliar Cartão da Página",
   "TXT_CODE_cb84b22": "Este cartão permite páginas HTML personalizadas e execução direta de scripts Javascript. Ele pode usar todos os elementos na página da web e é para desenvolvedores da Web.",

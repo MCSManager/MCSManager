@@ -166,8 +166,8 @@ const handleBatchDelete = async () => {
 
 const showDeleteConfirm = (user: BaseUserInfo) => {
   Modal.confirm({
-    title: () => t('TXT_CODE_e99ab99a'),
-    okType: 'danger',
+    title: () => t("TXT_CODE_e99ab99a", { userName: user.userName } as any),
+    okType: "danger",
     onOk: () => handleDeleteUser(user),
     maskClosable: true
   });

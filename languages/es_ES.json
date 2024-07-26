@@ -1595,7 +1595,7 @@
   "TXT_CODE_e97669d8": "implementar",
   "TXT_CODE_e98816c2": "La duración de la inmunidad de los aldeanos marca tics",
   "TXT_CODE_e9935066": "Obligatorio, ingrese solo números de puerto numéricos",
-  "TXT_CODE_e99ab99a": "¿Estás seguro de que deseas eliminar este usuario?",
+  "TXT_CODE_e99ab99a": "¿Estás seguro de que deseas eliminar al usuario {userName}?",
   "TXT_CODE_e9dcbfe4": "El importante archivo de configuración del servidor del grupo Bungeecord se puede utilizar para administración distribuida, control de nodos, etc. Sin embargo, este archivo de configuración es más complicado y es solo para configuraciones y operaciones simples.",
   "TXT_CODE_ea0840c9": "atajo de instancia",
   "TXT_CODE_ea46baee": "Otro alcance de seguimiento de entidades",

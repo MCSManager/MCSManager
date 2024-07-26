@@ -1673,7 +1673,7 @@
   "TXT_CODE_76d20724": "Atanmış Örnekler",
   "TXT_CODE_9393b484": "Assign",
   "TXT_CODE_6c274bdc": "Bu kullanıcı APIKEY'i etkinleştirmiyor.",
-  "TXT_CODE_e99ab99a": "Bu kullanıcıyı silmek istediğinizden emin misiniz?",
+  "TXT_CODE_e99ab99a": "{userName} adlı kullanıcıyı silmek istediğinizden emin misiniz?",
   "TXT_CODE_2452016e": "Lütfen aşağıdaki içeriği manuel olarak kopyalayın",
   "TXT_CODE_5ebec0db": "Sayfa Kartını Genişlet",
   "TXT_CODE_cb84b22": "Bu kart, özel HTML sayfalarına ve Javascript komut dosyalarının doğrudan yürütülmesine izin verir. Web sayfasındaki tüm öğeleri kullanabilir ve Web geliştiricileri içindir.",

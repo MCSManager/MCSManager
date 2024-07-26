@@ -1674,7 +1674,7 @@
   "TXT_CODE_76d20724": "用户所有实例",
   "TXT_CODE_9393b484": "分配实例",
   "TXT_CODE_6c274bdc": "此用户没有开启 APIKEY 功能。",
-  "TXT_CODE_e99ab99a": "你确定要删除这个用户吗？",
+  "TXT_CODE_e99ab99a": "你确定要删除用户 {userName} 吗？",
   "TXT_CODE_2452016e": "请手动复制以下内容",
   "TXT_CODE_5ebec0db": "扩展页面卡片",
   "TXT_CODE_cb84b22": "此卡片可以上传自定义 HTML 页面并直接执行 Javascript 脚本，可以直接使用网页上所有元素，适用于 Web 前端开发人员。",
