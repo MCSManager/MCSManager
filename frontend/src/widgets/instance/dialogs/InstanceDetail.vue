@@ -111,7 +111,7 @@ const loadImages = async () => {
 
     if (images.value) {
       for (const iterator of images.value) {
-        const repoTags = (iterator?.RepoTags ?? [])[0];
+        const repoTags = iterator?.RepoTags?.[0];
         if (repoTags)
           dockerImages.value.push({
             label: repoTags,

@@ -57,7 +57,7 @@ const imageColumns = computed(() => {
       title: t("TXT_CODE_bff43de3"),
       dataIndex: "RepoTags",
       key: "RepoTags",
-      customRender: (e: { text: string[] }) => e.text[0]
+      customRender: (e: { text: string[] }) => e?.text?.[0] || "<none>"
     },
     {
       align: "center",
@@ -99,7 +99,7 @@ const delImage = async (item: ImageInfo) => {
     await execImageList({
       params: {
         daemonId: daemonId ?? "",
-        imageId: item.RepoTags[0]
+        imageId: item?.RepoTags?.[0] || ""
       },
       method: "DELETE"
     });
