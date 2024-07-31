@@ -2,6 +2,7 @@ import { t } from "i18next";
 import { commandStringToArray } from "../entity/commands/base/command_parser";
 import DockerPullCommand from "../entity/commands/docker/docker_pull";
 import Instance from "../entity/instance/instance";
+import { DefaultDocker } from "./docker_service"
 
 import path from "path";
 import { $t } from "../i18n";
@@ -133,7 +134,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info("----------------");
 
     // Start Docker container creation and running
-    const docker = new Docker();
+    const docker = new DefaultDocker();
     this.container = await docker.createContainer({
       name: containerName,
       Hostname: containerName,

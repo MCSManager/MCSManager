@@ -1,5 +1,15 @@
 import Docker from "dockerode";
 
+export class DefaultDocker extends Docker {
+  public static readonly defaultConfig: Docker.DockerOptions = {
+    socketPath: process.env.DOCKER_HOST ?? '/var/run/docker.sock'
+  };
+
+  constructor(p?: Docker.DockerOptions) {
+    super(Object.assign(p ?? {}, DefaultDocker.defaultConfig));
+  }
+}
+
 export class DockerManager {
   // 1=creating 2=creating completed -1=creating error
   public static readonly builderProgress = new Map<string, number>();
@@ -7,7 +17,7 @@ export class DockerManager {
   public docker: Docker;
 
   constructor(p?: any) {
-    this.docker = new Docker(p);
+    this.docker = new DefaultDocker(p);
   }
 
   public getDocker() {
