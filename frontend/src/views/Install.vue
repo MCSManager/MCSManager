@@ -44,8 +44,8 @@ const createUser = async () => {
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
-    err.errorFields.forEach(field => {
-      field.errors.forEach(error => {
+    err.errorFields?.forEach((field: any) => {
+      field?.errors?.forEach((error: any) => {
         reportErrorMsg(error);
       });
     });
