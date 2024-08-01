@@ -150,7 +150,7 @@ const loadNetworkModes = async () => {
 const openDialog = async () => {
   open.value = true;
   initFormDetail();
-  await awaitPromise.all([loadImages(), loadNetworkModes()]);
+  await Promise.all([loadImages(), loadNetworkModes()]);
 };
 
 const rules: Record<string, Rule[]> = {
