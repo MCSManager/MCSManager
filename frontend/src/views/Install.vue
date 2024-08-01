@@ -44,7 +44,11 @@ const createUser = async () => {
     await updateUserInfo();
     step.value++;
   } catch (err: any) {
-    reportErrorMsg(err.message);
+    err.errorFields.forEach(field => {
+      field.errors.forEach(error => {
+        reportErrorMsg(error);
+      });
+    });
   } finally {
     installLoading.value = false;
   }
