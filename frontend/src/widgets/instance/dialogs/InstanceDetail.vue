@@ -68,11 +68,6 @@ const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
 
-const openDialog = () => {
-  open.value = true;
-  initFormDetail();
-};
-
 const initFormDetail = () => {
   if (props.instanceInfo) {
     options.value = {
@@ -150,6 +145,12 @@ const loadNetworkModes = async () => {
   } catch (err: any) {
     return reportErrorMsg(err.message);
   }
+};
+
+const openDialog = async () => {
+  open.value = true;
+  initFormDetail();
+  await Promise.all([loadImages(), loadNetworkModes()]);
 };
 
 const rules: Record<string, Rule[]> = {

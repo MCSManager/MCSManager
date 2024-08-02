@@ -2,9 +2,10 @@ import Docker from "dockerode";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import { t } from "i18next";
+import { DefaultDocker } from "../../../service/docker_service"
 
 export async function checkImage(name: string) {
-  const docker = new Docker();
+  const docker = new DefaultDocker();
   try {
     const image = docker.getImage(name);
     const info = await image.inspect();
@@ -56,7 +57,7 @@ export default class DockerPullCommand extends InstanceCommand {
     if (await checkImage(imageName)) return;
 
     try {
-      const docker = new Docker();
+      const docker = new DefaultDocker();
       instance.println("CONTAINER", t("TXT_CODE_2fa46b8c") + imageName);
       instance.asynchronousTask = this;
 
