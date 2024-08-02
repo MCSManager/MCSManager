@@ -98,6 +98,7 @@ export function logout(ctx: Koa.ParameterizedContext): boolean {
   ctx.session["userName"] = null;
   ctx.session["uuid"] = null;
   ctx.session["token"] = null;
+  ctx.session.maxAge = 0;
   ctx.session.save();
   return true;
 }
@@ -122,7 +123,9 @@ export async function register(
     });
 
     return {
-      uuid
+      uuid,
+      userName,
+      permission
     };
   }
   return false;
