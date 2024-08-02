@@ -291,7 +291,7 @@ const openPhoneMenu = (b = false) => {
             <template #title>
               <span>{{ item.title }}</span>
             </template>
-            <div class="nav-button" type="text" @click="item.click">
+            <div class="nav-button" type="text" @click="(e: any) => item.click(e.key)">
               <component :is="item.icon"></component>
             </div>
           </a-tooltip>
