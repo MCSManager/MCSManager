@@ -14,6 +14,7 @@ import StartCommand from "../commands/start";
 import { configureEntityParams } from "common";
 import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
+import { t } from "i18next";
 
 // The instance does not need to store additional information persistently
 interface IInstanceInfo {
@@ -31,6 +32,21 @@ interface IWatcherInfo {
     h: number;
   };
 }
+
+const LINE_MAX_SIZE = 1024;
+const TERM_TEXT_YELLOW = "\x1B[0;33;1m";
+const TERM_TEXT_GOLD = "\x1B[0;33m"; // Gold §6
+const TERM_RESET = "\x1B[0m";
+const IGNORE_TEXT = [
+  "\n\n",
+  TERM_TEXT_GOLD,
+  "[MCSManager] ",
+  TERM_RESET,
+  TERM_TEXT_YELLOW,
+  t("TXT_CODE_c5ed896f"),
+  TERM_RESET,
+  "\n\n"
+].join("");
 
 // instance class
 export default class Instance extends EventEmitter {
@@ -69,6 +85,9 @@ export default class Instance extends EventEmitter {
   public watchers: Map<string, IWatcherInfo> = new Map();
 
   public process?: IInstanceProcess;
+
+  private outputStack: string[] = [];
+  private outputLoopTask?: NodeJS.Timer;
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
@@ -235,14 +254,16 @@ export default class Instance extends EventEmitter {
     this.config.lastDatetime = Date.now();
     const outputCode = this.config.terminalOption.pty ? "utf-8" : this.config.oe;
     process.on("data", (text: any) => {
-      this.emit("data", iconv.decode(text, outputCode));
+      this.pushOutput(iconv.decode(text, outputCode));
     });
     process.on("exit", (code: number) => this.stopped(code));
     this.process = process;
     this.instanceStatus = Instance.STATUS_RUNNING;
     this.emit("open", this);
+
     // start all lifecycle tasks
     this.lifeCycleTaskManager.execLifeCycleTask(1);
+    this.startOutputLoop();
   }
 
   // If the instance performs any operation exception, it must throw an exception through this function
@@ -262,7 +283,9 @@ export default class Instance extends EventEmitter {
       this.emit("exit", code);
       StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
     }
+
     // Close all lifecycle tasks
+    this.stopOutputLoop();
     this.lifeCycleTaskManager.execLifeCycleTask(0);
 
     // If automatic restart is enabled, the startup operation is performed immediately
@@ -382,5 +405,37 @@ export default class Instance extends EventEmitter {
       w: minW,
       h: minH
     };
+  }
+
+  private pushOutput(data: string) {
+    if (data.length > LINE_MAX_SIZE * 100) {
+      this.outputStack.push(IGNORE_TEXT);
+    } else if (data.length > LINE_MAX_SIZE) {
+      for (let index = 0; index < Math.ceil(data.length / LINE_MAX_SIZE); index++) {
+        const tmp = data.slice(index * LINE_MAX_SIZE, (index + 1) * LINE_MAX_SIZE);
+        if (tmp) this.outputStack.push(tmp);
+      }
+    } else {
+      this.outputStack.push(data);
+    }
+    if (this.outputStack.length >= 100) {
+      this.outputStack.splice(0, 50);
+      this.outputStack.splice(0, 0, IGNORE_TEXT);
+    }
+  }
+
+  private startOutputLoop() {
+    this.stopOutputLoop();
+    this.outputLoopTask = setInterval(() => {
+      if (this.outputStack.length > 0) {
+        const buf = this.outputStack.splice(0, 10);
+        this.emit("data", buf.join(""));
+      }
+    }, 50);
+  }
+
+  private stopOutputLoop() {
+    if (this.outputLoopTask) clearInterval(this.outputLoopTask);
+    this.outputLoopTask = undefined;
   }
 }
