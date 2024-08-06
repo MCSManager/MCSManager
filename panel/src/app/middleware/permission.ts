@@ -66,8 +66,13 @@ export default (parameter: IPermissionCfg) => {
     }
 
     // If it is an API request, perform API-level permission judgment
-    if (ctx.query.apikey) {
-      const apiKey = String(ctx.query.apikey);
+    /**
+     * @date update time: 2024-08-06
+     * @description Added a new "API-KEY" filling method
+     */
+    const key = ctx.request?.header["x-request-api-key"] || ctx.query.apikey;
+    if (key) {
+      const apiKey = String(key);
       const user = getUuidByApiKey(apiKey);
       if (user && user.permission >= Number(parameter.level)) {
         return await next();
