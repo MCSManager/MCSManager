@@ -81,7 +81,9 @@ router.post("/upload/:key", async (ctx) => {
       if (!fileManager.checkPath(fileSaveRelativePath))
         throw new Error("Access denied: Invalid destination");
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
-      await fs.move(uploadedFile.filepath, fileSaveAbsolutePath);
+      await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
+        overwrite: ctx.query.overwrite === "true"
+      });
 
       if (unzip) {
         const fileManager = new FileManager(instance.config.cwd);

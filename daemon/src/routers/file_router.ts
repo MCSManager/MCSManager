@@ -203,3 +203,18 @@ routerApp.on("file/compress", async (ctx, data) => {
     protocol.responseError(ctx, error);
   }
 });
+
+// Check file is exists in path
+routerApp.on("file/exists", async (ctx, data) => {
+  try {
+    const fileName = data.uploadFilename;
+    const dir = data.uploadDir;
+    const fileManager = getFileManager(data.instanceUuid);
+    
+    const exists = fileManager.exists(dir, fileName);
+    protocol.response(ctx, exists);
+  } catch (error: any) {
+    console.log(error);
+    protocol.responseError(ctx, error);
+  }
+});

@@ -161,7 +161,8 @@ const selectedFile = async () => {
     await getCfg({
       params: {
         upload_dir: ".",
-        daemonId: props.daemonId
+        daemonId: props.daemonId,
+        file_name: uFile.value?.name
       },
       data: formData
     });

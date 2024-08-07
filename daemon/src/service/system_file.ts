@@ -251,4 +251,14 @@ export default class FileManager {
     }
     return true;
   }
+
+  exists(uploadDir: string, fileName: string): boolean {
+    const fileSaveRelativePath = path.normalize(path.join(uploadDir, fileName));
+    if (!FileManager.checkFileName(path.basename(fileName)))
+      throw new Error("Access denied: Malformed file name");
+    if (!this.checkPath(fileSaveRelativePath))
+      throw new Error("Access denied: Invalid destination");
+    const fileSaveAbsolutePath = this.toAbsolutePath(fileSaveRelativePath);
+    return fs.existsSync(fileSaveAbsolutePath)
+  }
 }

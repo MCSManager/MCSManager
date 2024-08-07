@@ -316,6 +316,7 @@ router.all(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const uploadDir = String(ctx.query.upload_dir);
+      const uploadFilename = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
         remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
@@ -326,12 +327,40 @@ router.all(
         password: password,
         parameter: {
           uploadDir,
-          instanceUuid
+          instanceUuid,
+          uploadFilename
         }
       });
       ctx.body = {
         password,
         addr
+      };
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.get(
+  "/pre_upload",
+  permission({ level: ROLE.USER }),
+  validator({
+    query: { daemonId: String, uuid: String, uploadDir: String, uploadFilename: String },
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const uploadDir = String(ctx.query.uploadDir);
+      const uploadFilename = String(ctx.query.uploadFilename);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("file/exists", {
+        instanceUuid,
+        uploadDir,
+        uploadFilename
+      });
+      ctx.body = {
+        exists: result
       };
     } catch (err) {
       ctx.body = err;
