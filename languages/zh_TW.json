@@ -1899,5 +1899,6 @@
   "TXT_CODE_e039b9b5": "正常",
   "TXT_CODE_23a3bd72": "異常",
   "TXT_CODE_6b4a27dd": "網頁無法與節點建立 WebSocket 連線，請檢查網路代理或防火牆設定！",
-  "TXT_CODE_a788e3eb": "記憶體 & 處理器"
+  "TXT_CODE_a788e3eb": "記憶體 & 處理器",
+  "TXT_CODE_c5ed896f": "瞬間輸出內容太長，已拒絕顯示..."
 }
