@@ -29,7 +29,7 @@ export async function buyOrRenewInstance(
 
   const remoteService = RemoteServiceSubsystem.getInstance(node_id || "");
   if (!remoteService?.available) {
-    throw new Error(t("远程节点处于离线状态，请联系管理员检查面板在线状态！"));
+    throw new Error(t("TXT_CODE_bed32084"));
   }
 
   const { request: remoteRequest } = new RemoteRequest(remoteService);
@@ -40,7 +40,7 @@ export async function buyOrRenewInstance(
       "instance/new",
       payload
     );
-    if (!newInstanceId) throw new Error(t("创建实例失败，请稍后重试"));
+    if (!newInstanceId) throw new Error(t("TXT_CODE_728fdabf"));
     const newPassword = getNanoId(12);
     const newUser = await user_service.create({
       userName: username + "-" + getNanoId(6),
@@ -68,7 +68,7 @@ export async function buyOrRenewInstance(
     const instanceInfo = await remoteRequest("instance/detail", {
       instanceUuid: instance_id
     });
-    if (!instanceInfo.config) throw new Error(t("获取指定实例详情失败，请重试！"));
+    if (!instanceInfo.config) throw new Error(t("TXT_CODE_348c9098"));
     instanceInfo.config.endTime =
       (instanceInfo.config?.endTime ? instanceInfo.config.endTime : Date.now()) +
       hours * 3600 * 1000;
@@ -86,12 +86,12 @@ export async function buyOrRenewInstance(
     };
   }
 
-  throw new Error(t("请求类型错误，请重试！"));
+  throw new Error(t("TXT_CODE_4aaec75c"));
 }
 
 export async function queryInstanceByUserId(params: Record<string, any>) {
   const uuid = toText(params.uuid) || "";
   const user = user_service.getInstance(uuid);
-  if (!user) throw new Error(t("用户不存在，请重试"));
+  if (!user) throw new Error(t("TXT_CODE_903b6c50"));
   return await getInstancesByUuid(uuid, false);
 }
