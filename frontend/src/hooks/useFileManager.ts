@@ -369,23 +369,19 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       let shouldOverwrite = false;
 
       if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
-        var complete: (value: boolean) => void, reject: (reason?: any) => void;
-        var promise: Promise<boolean> = new Promise((onComplete, onReject) => {
-          complete = onComplete;
-          reject = onReject;
-        });
-
-        Modal.confirm({
-          title: t("TXT_CODE_99ca8563"),
-          icon: createVNode(ExclamationCircleOutlined),
-          content: t("TXT_CODE_ec99ddaa") + ` ${file.name} ` + t("TXT_CODE_8bd1f5d2"),
-          onOk() {
-            complete(true);
-          },
-          onCancel() {
-            complete(false);
-            percentComplete.value = 0;
-          }
+        let promise: Promise<boolean> = new Promise((onComplete, onReject) => {
+          Modal.confirm({
+            title: t("TXT_CODE_99ca8563"),
+            icon: createVNode(ExclamationCircleOutlined),
+            content: t("TXT_CODE_ec99ddaa") + ` ${file.name} ` + t("TXT_CODE_8bd1f5d2"),
+            onOk() {
+              onComplete(true);
+            },
+            onCancel() {
+              onComplete(false);
+              percentComplete.value = 0;
+            }
+          });
         });
 
         shouldOverwrite = await promise;
