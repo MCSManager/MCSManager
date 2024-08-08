@@ -23,7 +23,12 @@ export default class RemoteRequest {
   }
 
   // request to remote daemon
-  public async request(event: string, data?: any, timeout = 6000, force = false): Promise<any> {
+  public async request<T = any>(
+    event: string,
+    data?: any,
+    timeout = 6000,
+    force = false
+  ): Promise<T> {
     if (!this.rService || !this.rService.socket) throw new Error($t("TXT_CODE_3d94ea16"));
     if (!this.rService.available && !force)
       throw new Error($t("TXT_CODE_b7d38e78") + ` IP: ${this.rService.config.ip}`);
