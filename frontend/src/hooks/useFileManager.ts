@@ -18,8 +18,7 @@ import {
   uploadAddress,
   uploadFile as uploadFileApi,
   downloadAddress,
-  changePermission as changePermissionApi,
-  prepareUploadFile as prepareUploadFileApi
+  changePermission as changePermissionApi
 } from "@/services/apis/fileManager";
 import type {
   DataType,
@@ -350,7 +349,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const selectedFile = async (file: File) => {
     const { execute: uploadFile } = uploadFileApi();
-    const { state: prepareUploadFileResp, execute: prepareUploadFile } = prepareUploadFileApi();
     const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
     try {
       percentComplete.value = 1;
@@ -368,29 +366,14 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         throw new Error(t("TXT_CODE_e8ce38c2"));
       }
 
-      var shouldOverwrite = false;
+      let shouldOverwrite = false;
 
-      await prepareUploadFile({
-        params: {
-          daemonId: daemonId!,
-          uuid: instanceId!,
-          uploadDir: uploadDir,
-          uploadFilename: file.name
-        }
-      }).then((bl) => {
-        console.log(bl);
-      });
-
-      console.log(prepareUploadFileResp.value);
-      if (prepareUploadFileResp.value == undefined) {
-        percentComplete.value = 0;
-        throw new Error(t("TXT_CODE_4caa5237"));
-      } else if (prepareUploadFileResp.value.exists) {
+      if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
         var complete: (value: boolean) => void, reject: (reason?: any) => void;
         var promise: Promise<boolean> = new Promise((onComplete, onReject) => {
           complete = onComplete;
           reject = onReject;
-        })
+        });
 
         Modal.confirm({
           title: t("TXT_CODE_99ca8563"),
@@ -399,15 +382,17 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           onOk() {
             complete(true);
           },
-          onCancel()  {
+          onCancel() {
             complete(false);
             percentComplete.value = 0;
           }
         });
+
         shouldOverwrite = await promise;
-        if (!shouldOverwrite) {
-          return reportErrorMsg(t("TXT_CODE_8b14426e"));
-        }
+      }
+
+      if (!shouldOverwrite) {
+        return reportErrorMsg(t("TXT_CODE_8b14426e"));
       }
 
       const uploadFormData = new FormData();

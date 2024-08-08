@@ -1902,7 +1902,6 @@
   "TXT_CODE_6b4a27dd": "网页前端无法与节点建立 WebSocket 连接，请检查网络代理配置或防火墙配置！",
   "TXT_CODE_a788e3eb": "内存 & 处理器",
   "TXT_CODE_c5ed896f": "此刻瞬时输出内容过长，已拒绝显示...",
-  "TXT_CODE_4caa5237": "获取文件存在状态失败",
   "TXT_CODE_99ca8563": "覆盖文件",
   "TXT_CODE_ec99ddaa": "您上传的文件",
   "TXT_CODE_8bd1f5d2": "已经在目录中存在, 是否覆盖原文件?",

@@ -153,8 +153,7 @@ export const uploadAddress = useDefineApi<
     params: {
       upload_dir: string;
       daemonId: string;
-      uuid: string,
-      file_name: string;
+      uuid: string;
     };
   },
   {
@@ -230,21 +229,4 @@ export const changePermission = useDefineApi<
 >({
   url: "/api/files/chmod",
   method: "PUT"
-});
-
-export const prepareUploadFile = useDefineApi<
-  {
-    params: {
-      daemonId: string;
-      uuid: string,
-      uploadDir: string,
-      uploadFilename: string;
-    };
-  },
-  {
-    exists: boolean
-  }
->({
-  url: "/api/files/pre_upload",
-  method: "GET"
 });
