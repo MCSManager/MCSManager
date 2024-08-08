@@ -352,16 +352,43 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
     try {
       percentComplete.value = 1;
+      const uploadDir = breadcrumbs[breadcrumbs.length - 1].path;
       await getUploadCfg({
         params: {
-          upload_dir: breadcrumbs[breadcrumbs.length - 1].path,
+          upload_dir: uploadDir,
           daemonId: daemonId!,
-          uuid: instanceId!
+          uuid: instanceId!,
+          file_name: file.name
         }
       });
       if (!uploadCfg.value) {
         percentComplete.value = 0;
         throw new Error(t("TXT_CODE_e8ce38c2"));
+      }
+
+      let shouldOverwrite = false;
+
+      if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
+        let promise: Promise<boolean> = new Promise((onComplete, onReject) => {
+          Modal.confirm({
+            title: t("TXT_CODE_99ca8563"),
+            icon: createVNode(ExclamationCircleOutlined),
+            content: t("TXT_CODE_ec99ddaa") + ` ${file.name} ` + t("TXT_CODE_8bd1f5d2"),
+            onOk() {
+              onComplete(true);
+            },
+            onCancel() {
+              onComplete(false);
+              percentComplete.value = 0;
+            }
+          });
+        });
+
+        shouldOverwrite = await promise;
+      }
+
+      if (!shouldOverwrite) {
+        return reportErrorMsg(t("TXT_CODE_8b14426e"));
       }
 
       const uploadFormData = new FormData();
@@ -376,6 +403,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         onUploadProgress: (progressEvent: any) => {
           const p = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           if (p >= 1) percentComplete.value = p;
+        },
+        params: {
+          overwrite: shouldOverwrite
         }
       });
       await getFileList();
