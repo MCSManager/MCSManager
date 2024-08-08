@@ -1,3 +1,7 @@
+import userSystem from "../service/user_service";
+import RemoteServiceSubsystem from "../service/remote_service";
+import RemoteRequest from "../service/remote_command";
+
 // Multi-forward operation method
 export function multiOperationForwarding(
   instances: any[],
@@ -21,4 +25,74 @@ export function multiOperationForwarding(
     const instanceUuids = iterator[1];
     callback(daemonId, instanceUuids);
   }
+}
+
+export async function getInstancesByUuid(uuid: string, advanced: boolean = false) {
+  const user = userSystem.getInstance(uuid);
+  if (!user) throw new Error("The UID does not exist");
+
+  // Advanced functions are optional, analyze each instance data
+  let resInstances = [];
+  if (advanced) {
+    const instances = user.instances;
+    for (const iterator of instances) {
+      const remoteService = RemoteServiceSubsystem.getInstance(iterator.daemonId);
+      // If the remote service doesn't exist at all, load a deleted prompt
+      if (!remoteService) {
+        resInstances.push({
+          hostIp: "-- Unknown --",
+          instanceUuid: iterator.instanceUuid,
+          daemonId: iterator.daemonId,
+          status: -1,
+          nickname: "--",
+          remarks: "--"
+        });
+        continue;
+      }
+      try {
+        // Note: UUID can be integrated here to save the returned traffic, and this optimization will not be done for the time being
+        let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
+          instanceUuids: [iterator.instanceUuid]
+        });
+        instancesInfo = instancesInfo[0];
+        resInstances.push({
+          hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
+          remarks: remoteService.config.remarks,
+          instanceUuid: instancesInfo.instanceUuid,
+          daemonId: remoteService.uuid,
+          status: instancesInfo.status,
+          nickname: instancesInfo.config.nickname,
+          ie: instancesInfo.config.ie,
+          oe: instancesInfo.config.oe,
+          endTime: instancesInfo.config.endTime,
+          lastDatetime: instancesInfo.config.lastDatetime,
+          stopCommand: instancesInfo.config.stopCommand
+        });
+      } catch (error: any) {
+        resInstances.push({
+          hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
+          instanceUuid: iterator.instanceUuid,
+          daemonId: iterator.daemonId,
+          status: -1,
+          nickname: "--"
+        });
+      }
+    }
+  } else {
+    resInstances = user.instances;
+  }
+  // respond to user data
+  return {
+    uuid: user.uuid,
+    userName: user.userName,
+    loginTime: user.loginTime,
+    registerTime: user.registerTime,
+    instances: resInstances,
+    permission: user.permission,
+    apiKey: user.apiKey,
+    isInit: user.isInit,
+    open2FA: user.open2FA,
+    secret: user.secret,
+    token: ""
+  };
 }
