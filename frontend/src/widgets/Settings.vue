@@ -3,7 +3,7 @@ import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
-import { Modal, message } from "ant-design-vue";
+import { Modal, message, notification } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
 import {
   BankOutlined,
@@ -24,6 +24,7 @@ import { useUploadFileDialog } from "@/components/fc";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { arrayFilter } from "../tools/array";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 
 defineProps<{
   card: LayoutCard;
@@ -33,6 +34,7 @@ const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
 const { getSettingsConfig, setSettingsConfig } = useLayoutConfigStore();
 const { setBackgroundImage } = useAppConfigStore();
+const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
   bgUrl?: string;
@@ -56,7 +58,7 @@ const submit = async () => {
   }
 };
 
-const menus = [
+const menus = arrayFilter([
   {
     title: t("TXT_CODE_cdd555be"),
     key: "baseInfo",
@@ -76,8 +78,18 @@ const menus = [
     title: t("TXT_CODE_3b4b656d"),
     key: "about",
     icon: QuestionCircleOutlined
+  },
+  {
+    title: t("TXT_CODE_46cb40d5"),
+    key: "sponsor",
+    icon: MoneyCollectOutlined,
+    click: () => {
+      let url = "https://www.patreon.com/mcsmanager";
+      if (isCN()) url = "https://afdian.com/a/mcsmanager";
+      window.open(url, "_blank");
+    }
   }
-];
+]);
 
 // DO NOT I18N
 const allLanguages = SUPPORTED_LANGS;
@@ -99,18 +111,10 @@ const aboutLinks = arrayFilter([
     icon: GithubOutlined,
     url: "https://github.com/MCSManager/MCSManager"
   },
-
   {
-    title: t("TXT_CODE_46cb40d5"),
-    icon: MoneyCollectOutlined,
-    url: "https://afdian.net/a/mcsmanager",
-    condition: () => isCN()
-  },
-  {
-    title: t("TXT_CODE_46cb40d5"),
-    icon: MoneyCollectOutlined,
-    url: "https://www.patreon.com/mcsmanager",
-    condition: () => !isCN()
+    title: "Discord",
+    icon: MessageOutlined,
+    url: "https://discord.gg/BNpYMVX7Cd"
   }
 ]);
 
@@ -129,11 +133,6 @@ const contacts = arrayFilter([
     title: t("TXT_CODE_26407d1f"),
     icon: BugOutlined,
     url: "https://github.com/MCSManager/MCSManager/issues"
-  },
-  {
-    title: "Discord",
-    icon: MessageOutlined,
-    url: "https://discord.gg/BNpYMVX7Cd"
   }
 ]);
 
@@ -160,6 +159,16 @@ const handleSaveBgUrl = async (url?: string) => {
       cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
       await setSettingsConfig(cfg);
     }
+  });
+};
+
+const startDesignUI = async () => {
+  changeDesignMode(true);
+  notification.warning({
+    placement: "bottom",
+    type: "warning",
+    message: t("TXT_CODE_7b1adf35"),
+    description: t("TXT_CODE_6b6f1d3")
   });
 };
 
@@ -257,6 +266,28 @@ onMounted(async () => {
               </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("自定义布局") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>
+                          {{ t("你可以自由的设计网页上大部分元素的排版，顺序以及展示方式。") }}
+                        </div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-button
+                      v-if="!containerState.isDesignMode"
+                      type="default"
+                      :loading="submitIsLoading"
+                      @click="startDesignUI()"
+                    >
+                      {{ t("开始设计") }}
+                    </a-button>
+                    <p v-if="containerState.isDesignMode">
+                      {{ t("点击右上角的保存按钮即可保存布局设计。") }}
+                    </p>
+                  </a-form-item>
+
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_b5b33dd4") }}</a-typography-title>
                     <a-typography-paragraph>
@@ -502,6 +533,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</pre
                 >
+              </a-typography-paragraph>
+            </div>
+          </template>
+
+          <template #sponsor>
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("成为赞助者") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <p>
+                  {{ $t("TXT_CODE_d0c670df") }}
+                </p>
               </a-typography-paragraph>
             </div>
           </template>

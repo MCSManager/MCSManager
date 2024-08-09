@@ -9,6 +9,7 @@ interface LeftMenuItem {
   title: string;
   key: string;
   icon?: FunctionalComponent;
+  click?: () => void;
 }
 
 const props = defineProps<{
@@ -18,6 +19,9 @@ const props = defineProps<{
 const activeKey = ref<string>();
 
 const handleChangeMenu = (item: LeftMenuItem) => {
+  if (item.click) {
+    return item.click();
+  }
   activeKey.value = item.key;
 };
 
