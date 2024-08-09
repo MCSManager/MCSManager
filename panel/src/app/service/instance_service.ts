@@ -1,6 +1,39 @@
 import userSystem from "../service/user_service";
 import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest from "../service/remote_command";
+import { t } from "i18next";
+
+export enum INSTANCE_STATUS {
+  BUSY = -1,
+  STOP = 0,
+  STOPPING = 1,
+  STARTING = 2,
+  RUNNING = 3
+}
+export const INSTANCE_STATUS_TEXT: Record<number, string> = {
+  [INSTANCE_STATUS.BUSY]: t("TXT_CODE_342a04a9"),
+  [INSTANCE_STATUS.STOP]: t("TXT_CODE_15f2e564"),
+  [INSTANCE_STATUS.STOPPING]: t("TXT_CODE_a409b8a9"),
+  [INSTANCE_STATUS.STARTING]: t("TXT_CODE_175b570d"),
+  [INSTANCE_STATUS.RUNNING]: t("TXT_CODE_bdb620b9")
+};
+
+export interface AdvancedInstanceInfo {
+  instanceUuid: string;
+  daemonId: string;
+  hostIp?: string;
+  remarks?: string;
+  status?: number;
+  nickname?: string;
+  ie?: string;
+  oe?: string;
+  endTime?: number;
+  lastDatetime?: number;
+  stopCommand?: string;
+  processType?: string;
+  docker?: Record<string, any>;
+  info?: Record<string, any>;
+}
 
 // Multi-forward operation method
 export function multiOperationForwarding(
@@ -32,7 +65,7 @@ export async function getInstancesByUuid(uuid: string, advanced: boolean = false
   if (!user) throw new Error("The UID does not exist");
 
   // Advanced functions are optional, analyze each instance data
-  let resInstances = [];
+  let resInstances: AdvancedInstanceInfo[] = [];
   if (advanced) {
     const instances = user.instances;
     for (const iterator of instances) {
@@ -44,8 +77,16 @@ export async function getInstancesByUuid(uuid: string, advanced: boolean = false
           instanceUuid: iterator.instanceUuid,
           daemonId: iterator.daemonId,
           status: -1,
-          nickname: "--",
-          remarks: "--"
+          nickname: "-- Unknown --",
+          remarks: "",
+          ie: "",
+          oe: "",
+          endTime: 0,
+          lastDatetime: 0,
+          stopCommand: "",
+          processType: "",
+          docker: {},
+          info: {}
         });
         continue;
       }
@@ -66,7 +107,10 @@ export async function getInstancesByUuid(uuid: string, advanced: boolean = false
           oe: instancesInfo.config.oe,
           endTime: instancesInfo.config.endTime,
           lastDatetime: instancesInfo.config.lastDatetime,
-          stopCommand: instancesInfo.config.stopCommand
+          stopCommand: instancesInfo.config.stopCommand,
+          processType: instancesInfo.config.processType,
+          docker: instancesInfo.config.docker || {},
+          info: instancesInfo.info || {}
         });
       } catch (error: any) {
         resInstances.push({
@@ -74,7 +118,16 @@ export async function getInstancesByUuid(uuid: string, advanced: boolean = false
           instanceUuid: iterator.instanceUuid,
           daemonId: iterator.daemonId,
           status: -1,
-          nickname: "--"
+          nickname: "--",
+          remarks: remoteService.config.remarks,
+          ie: "",
+          oe: "",
+          endTime: 0,
+          lastDatetime: 0,
+          stopCommand: "",
+          processType: "",
+          docker: {},
+          info: {}
         });
       }
     }

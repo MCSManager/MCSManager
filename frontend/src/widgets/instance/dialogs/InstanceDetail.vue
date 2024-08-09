@@ -340,6 +340,7 @@ defineExpose({
               <a-date-picker
                 v-model:value="options.dayjsEndTime"
                 size="large"
+                show-time
                 style="width: 100%"
                 :placeholder="t('TXT_CODE_e3a77a77')"
                 :disabled="isGlobalTerminal"

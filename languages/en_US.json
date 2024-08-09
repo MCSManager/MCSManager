@@ -1910,5 +1910,6 @@
   "TXT_CODE_728fdabf": "Failed to create the instance, please try again later",
   "TXT_CODE_348c9098": "Failed to obtain the details of the specified instance, please try again!",
   "TXT_CODE_4aaec75c": "Wrong request type, please try again!",
-  "TXT_CODE_903b6c50": "User does not exist, please try again"
+  "TXT_CODE_903b6c50": "User does not exist, please try again",
+  "TXT_CODE_7e9727bd": "Players"
 }

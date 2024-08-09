@@ -22,12 +22,17 @@ router.post(
     try {
       const requestAction = ctx.request.body.request_action;
       const params = ctx.request.body.data ?? {};
+      if (requestAction === RequestAction.PING) {
+        ctx.body = "OK";
+        return;
+      }
       if ([RequestAction.RENEW, RequestAction.BUY].includes(requestAction)) {
         ctx.body = await buyOrRenewInstance(requestAction, params);
         return;
       }
       if (requestAction === RequestAction.QUERY_INSTANCE) {
         ctx.body = await queryInstanceByUserId(params);
+        return;
       }
     } catch (err) {
       ctx.body = err;

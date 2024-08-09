@@ -4,7 +4,7 @@ import user_service from "../service/user_service";
 import { customAlphabet } from "nanoid";
 import { t } from "i18next";
 import { toNumber, toText } from "common";
-import { getInstancesByUuid } from "./instance_service";
+import { getInstancesByUuid, INSTANCE_STATUS_TEXT } from "./instance_service";
 
 const getNanoId = customAlphabet(
   "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
@@ -13,8 +13,15 @@ const getNanoId = customAlphabet(
 
 export enum RequestAction {
   BUY = "buy",
-  RENEW = "sell",
-  QUERY_INSTANCE = "query_instance"
+  RENEW = "renew",
+  QUERY_INSTANCE = "query_instance",
+  PING = "ping"
+}
+
+export function parseUserName(t?: string) {
+  if (!t || typeof t !== "string") return "";
+  if (t.startsWith("User-")) return t;
+  return `User-${toText(t) ?? ""}`;
 }
 
 export async function buyOrRenewInstance(
@@ -23,7 +30,7 @@ export async function buyOrRenewInstance(
 ) {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
-  const username = toText(params.username) ?? "";
+  const username = parseUserName(params.username);
   const hours = toNumber(params.hours) ?? 0;
   const payload = params.payload ?? {};
 
@@ -32,47 +39,63 @@ export async function buyOrRenewInstance(
     throw new Error(t("TXT_CODE_bed32084"));
   }
 
-  const { request: remoteRequest } = new RemoteRequest(remoteService);
+  const remoteRequest = new RemoteRequest(remoteService);
 
   if (request_action === RequestAction.BUY) {
     payload.endTime = (payload.endTime ? payload.endTime : Date.now()) + hours * 3600 * 1000;
-    const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest(
+    payload.nickname = payload.nickname + "-" + getNanoId(6);
+    const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
       payload
     );
     if (!newInstanceId) throw new Error(t("TXT_CODE_728fdabf"));
-    const newPassword = getNanoId(12);
-    const newUser = await user_service.create({
-      userName: username + "-" + getNanoId(6),
-      passWord: newPassword,
-      permission: 1,
-      instances: [
-        {
-          instanceUuid: newInstanceId,
-          daemonId: node_id
-        }
-      ]
-    });
 
+    let user = user_service.getUserByUserName(username);
+    let newPassword = "";
+
+    if (user) {
+      await user_service.edit(user.uuid, {
+        instances: [
+          ...user.instances,
+          {
+            instanceUuid: newInstanceId,
+            daemonId: node_id
+          }
+        ]
+      });
+    } else {
+      newPassword = getNanoId(12);
+      user = await user_service.create({
+        userName: username,
+        passWord: newPassword,
+        permission: 1,
+        instances: [
+          {
+            instanceUuid: newInstanceId,
+            daemonId: node_id
+          }
+        ]
+      });
+    }
     return {
       instance_id: newInstanceId,
       instance_config: newInstanceConfig,
-      username: newUser.userName,
+      username: user.userName,
       password: newPassword,
-      uuid: newUser.uuid,
+      uuid: user.uuid,
       expire: toNumber(newInstanceConfig.endTime)
     };
   }
 
   if (request_action === RequestAction.RENEW) {
-    const instanceInfo = await remoteRequest("instance/detail", {
+    const instanceInfo = await remoteRequest.request("instance/detail", {
       instanceUuid: instance_id
     });
     if (!instanceInfo.config) throw new Error(t("TXT_CODE_348c9098"));
     instanceInfo.config.endTime =
       (instanceInfo.config?.endTime ? instanceInfo.config.endTime : Date.now()) +
       hours * 3600 * 1000;
-    await remoteRequest("instance/update", {
+    await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,
       config: instanceInfo.config
     });
@@ -90,8 +113,27 @@ export async function buyOrRenewInstance(
 }
 
 export async function queryInstanceByUserId(params: Record<string, any>) {
-  const uuid = toText(params.uuid) || "";
-  const user = user_service.getInstance(uuid);
+  const name = parseUserName(params.username) || "";
+  const user = user_service.getUserByUserName(name);
   if (!user) throw new Error(t("TXT_CODE_903b6c50"));
-  return await getInstancesByUuid(uuid, false);
+
+  const { instances = [] } = await getInstancesByUuid(user.uuid, true);
+  const newInstancesInfo = instances.map((v) => {
+    return {
+      name: v.nickname,
+      expire: v.endTime,
+      status: v.status,
+      lines: [
+        {
+          title: t("TXT_CODE_7e9727bd"),
+          value: `${v.info?.currentPlayers}/${v.info?.maxPlayers}`
+        },
+        {
+          title: t("TXT_CODE_f49149d0"),
+          value: v.docker?.ports
+        }
+      ]
+    };
+  });
+  return newInstancesInfo;
 }
