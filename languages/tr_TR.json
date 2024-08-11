@@ -1900,5 +1900,16 @@
   "TXT_CODE_7c0b7608": "Düğüm durumu",
   "TXT_CODE_930d2524": "Web sayfasına doğrudan bağlantı",
   "TXT_CODE_e039b9b5": "normal",
-  "TXT_CODE_a788e3eb": "Bellek/İşlemci"
+  "TXT_CODE_a788e3eb": "Bellek/İşlemci",
+  "TXT_CODE_348c9098": "Belirtilen örnek ayrıntıları alınamadı, lütfen tekrar deneyin!",
+  "TXT_CODE_4aaec75c": "Yanlış istek türü, lütfen tekrar deneyin!",
+  "TXT_CODE_728fdabf": "Örnek oluşturulamadı, lütfen daha sonra tekrar deneyin",
+  "TXT_CODE_7e9727bd": "Oyuncu sayısı",
+  "TXT_CODE_8b14426e": "Dosya zaten mevcut, yüklemeyi atlayın",
+  "TXT_CODE_8bd1f5d2": "Dizinde zaten mevcut, orijinal dosyanın üzerine yazmak istiyor musunuz?",
+  "TXT_CODE_903b6c50": "Kullanıcı mevcut değil, lütfen tekrar deneyin",
+  "TXT_CODE_99ca8563": "dosyanın üzerine yaz",
+  "TXT_CODE_bed32084": "Uzak düğüm çevrimdışı, panelin çevrimiçi durumunu kontrol etmek için lütfen yöneticiyle iletişime geçin!",
+  "TXT_CODE_c5ed896f": "Anlık çıktı içeriği çok uzun ve görüntülenmesi reddedildi...",
+  "TXT_CODE_ec99ddaa": "Yüklediğiniz dosyalar"
 }

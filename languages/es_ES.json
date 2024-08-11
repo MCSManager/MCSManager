@@ -1900,5 +1900,16 @@
   "TXT_CODE_7c0b7608": "Estado del nodo",
   "TXT_CODE_930d2524": "Conexión directa a la página web.",
   "TXT_CODE_e039b9b5": "normal",
-  "TXT_CODE_a788e3eb": "Memoria/Procesador"
+  "TXT_CODE_a788e3eb": "Memoria/Procesador",
+  "TXT_CODE_348c9098": "No se pudieron obtener los detalles de la instancia especificada. ¡Inténtelo de nuevo!",
+  "TXT_CODE_4aaec75c": "Tipo de solicitud incorrecto, ¡inténtelo de nuevo!",
+  "TXT_CODE_728fdabf": "No se pudo crear la instancia. Vuelva a intentarlo más tarde.",
+  "TXT_CODE_7e9727bd": "Número de jugadores",
+  "TXT_CODE_8b14426e": "El archivo ya existe, omita la carga.",
+  "TXT_CODE_8bd1f5d2": "Ya existe en el directorio. ¿Quieres sobrescribir el archivo original?",
+  "TXT_CODE_903b6c50": "El usuario no existe, por favor inténtalo de nuevo.",
+  "TXT_CODE_99ca8563": "sobrescribir archivo",
+  "TXT_CODE_bed32084": "El nodo remoto está fuera de línea, comuníquese con el administrador para verificar el estado en línea del panel.",
+  "TXT_CODE_c5ed896f": "El contenido de la salida instantánea es demasiado largo y se ha negado a mostrarse...",
+  "TXT_CODE_ec99ddaa": "Archivos que subiste"
 }

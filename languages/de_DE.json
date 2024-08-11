@@ -1900,5 +1900,16 @@
   "TXT_CODE_7c0b7608": "Knotenstatus",
   "TXT_CODE_930d2524": "Direkte Verbindung zur Webseite",
   "TXT_CODE_e039b9b5": "normal",
-  "TXT_CODE_a788e3eb": "Speicher/Prozessor"
+  "TXT_CODE_a788e3eb": "Speicher/Prozessor",
+  "TXT_CODE_ec99ddaa": "Von Ihnen hochgeladene Dateien",
+  "TXT_CODE_348c9098": "Die angegebenen Instanzdetails konnten nicht abgerufen werden. Bitte versuchen Sie es erneut!",
+  "TXT_CODE_4aaec75c": "Falscher Anfragetyp, bitte versuchen Sie es erneut!",
+  "TXT_CODE_728fdabf": "Die Instanz konnte nicht erstellt werden. Bitte versuchen Sie es später noch einmal",
+  "TXT_CODE_7e9727bd": "Anzahl der Spieler",
+  "TXT_CODE_8b14426e": "Die Datei existiert bereits. Überspringen Sie das Hochladen",
+  "TXT_CODE_8bd1f5d2": "Existiert bereits im Verzeichnis. Möchten Sie die Originaldatei überschreiben?",
+  "TXT_CODE_903b6c50": "Der Benutzer existiert nicht. Bitte versuchen Sie es erneut",
+  "TXT_CODE_99ca8563": "Datei überschreiben",
+  "TXT_CODE_bed32084": "Der Remote-Knoten ist offline. Bitte wenden Sie sich an den Administrator, um den Online-Status des Panels zu überprüfen!",
+  "TXT_CODE_c5ed896f": "Der Inhalt der Sofortausgabe ist zu lang und die Anzeige wurde verweigert ..."
 }
