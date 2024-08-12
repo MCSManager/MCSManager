@@ -40,13 +40,15 @@ async function sendRconCommand(instance: Instance, command: string) {
 }
 
 export default class RconCommand extends InstanceCommand {
-  constructor() {
+  constructor(public readonly cmd?: string) {
     super("RconSendCommand");
   }
 
   async exec(instance: Instance, text?: string): Promise<any> {
     try {
-      if (text) await sendRconCommand(instance, text);
+      if (text || this.cmd) {
+        await sendRconCommand(instance, String(text ?? this.cmd));
+      }
     } catch (error: any) {
       instance.println("RCON ERROR", error?.message || error);
     }

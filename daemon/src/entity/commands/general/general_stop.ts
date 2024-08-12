@@ -2,6 +2,7 @@ import { $t } from "../../../i18n";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import SendCommand from "../cmd";
+import RconCommand from "../steam/rcon_command";
 
 export default class GeneralStopCommand extends InstanceCommand {
   constructor() {
@@ -16,11 +17,13 @@ export default class GeneralStopCommand extends InstanceCommand {
     instance.status(Instance.STATUS_STOPPING);
 
     const stopCommandList = stopCommand.split("\n");
-    for (const stopCommandColumn of stopCommandList) {
-      if (stopCommandColumn.toLocaleLowerCase() == "^c") {
+    for (const stopCommand of stopCommandList) {
+      if (stopCommand.toLowerCase() == "^c") {
         instance.process.kill("SIGINT");
+      } else if (instance.config.enableRcon) {
+        await instance.exec(new RconCommand(stopCommand));
       } else {
-        await instance.exec(new SendCommand(stopCommandColumn));
+        await instance.exec(new SendCommand(stopCommand));
       }
     }
 
