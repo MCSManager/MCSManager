@@ -167,10 +167,7 @@ export const uploadAddress = useDefineApi<
 
 export const uploadFile = useDefineApi<
   {
-    data: FormData,
-    params: {
-      overwrite: boolean;
-    };
+    data: FormData;
   },
   any
 >({

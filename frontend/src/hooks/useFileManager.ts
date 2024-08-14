@@ -366,14 +366,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         throw new Error(t("TXT_CODE_e8ce38c2"));
       }
 
-      let shouldOverwrite = false;
-
       if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
-        let promise: Promise<boolean> = new Promise((onComplete, onReject) => {
+        const confirmPromise = new Promise<boolean>((onComplete) => {
           Modal.confirm({
             title: t("TXT_CODE_99ca8563"),
             icon: createVNode(ExclamationCircleOutlined),
-            content: t("TXT_CODE_ec99ddaa") + ` ${file.name} ` + t("TXT_CODE_8bd1f5d2"),
+            content: [t("TXT_CODE_ec99ddaa"), file.name, t("TXT_CODE_8bd1f5d2")].join(" "),
             onOk() {
               onComplete(true);
             },
@@ -383,12 +381,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             }
           });
         });
-
-        shouldOverwrite = await promise;
-      }
-
-      if (!shouldOverwrite) {
-        return reportErrorMsg(t("TXT_CODE_8b14426e"));
+        if (!(await confirmPromise)) return reportErrorMsg(t("TXT_CODE_8b14426e"));
       }
 
       const uploadFormData = new FormData();
@@ -403,9 +396,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         onUploadProgress: (progressEvent: any) => {
           const p = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           if (p >= 1) percentComplete.value = p;
-        },
-        params: {
-          overwrite: shouldOverwrite
         }
       });
       await getFileList();
