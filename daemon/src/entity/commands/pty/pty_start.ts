@@ -14,6 +14,7 @@ import { killProcess } from "common";
 import FunctionDispatcher from "../dispatcher";
 import { PTY_PATH } from "../../../const";
 import { Writable } from "stream";
+import { v4 } from "uuid";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -34,7 +35,11 @@ const GO_PTY_MSG_TYPE = {
 export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProcess {
   private pipeClient?: Writable;
 
-  constructor(private process: ChildProcess, public pid: number, public pipeName: string) {
+  constructor(
+    private readonly process: ChildProcess,
+    public readonly pid: number,
+    public readonly pipeName: string
+  ) {
     super();
     process.stdout?.on("data", (text) => this.emit("data", text));
     process.stderr?.on("data", (text) => this.emit("data", text));
@@ -183,11 +188,12 @@ export default class PtyStartCommand extends InstanceCommand {
     if (commandList.length === 0)
       return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
 
+    const pipeId = v4();
     const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
     if (!fs.existsSync(pipeLinuxDir)) fs.mkdirsSync(pipeLinuxDir);
-    let pipeName = `${pipeLinuxDir}/pipe-${instance.instanceUuid}`;
+    let pipeName = `${pipeLinuxDir}/pipe-${pipeId}`;
     if (os.platform() === "win32") {
-      pipeName = `\\\\.\\pipe\\mcsmanager-${instance.instanceUuid}`;
+      pipeName = `\\\\.\\pipe\\mcsmanager-${pipeId}`;
     }
 
     const ptyParameter = [
@@ -240,7 +246,7 @@ export default class PtyStartCommand extends InstanceCommand {
     // create process adapter
     const ptySubProcessCfg = await this.readPtySubProcessConfig(subProcess);
     const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid, pipeName);
-    logger.info(`pty.exe response: ${JSON.stringify(ptySubProcessCfg)}`);
+    logger.info(`pty.exe subprocess PID: ${JSON.stringify(ptySubProcessCfg)}`);
 
     // After reading the configuration, Need to check the process status
     // The "processAdapter.pid" here represents the process created by the PTY process
