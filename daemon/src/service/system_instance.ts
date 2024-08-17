@@ -17,6 +17,7 @@ import StartCommand from "../entity/commands/start";
 import { globalConfiguration } from "../entity/config";
 
 // init instance default install path
+globalConfiguration.load();
 let INSTANCE_DATA_DIR = path.join(process.cwd(), "data/InstanceData");
 if (globalConfiguration.config.defaultInstancePath) {
   INSTANCE_DATA_DIR = path.normalize(globalConfiguration.config.defaultInstancePath);
