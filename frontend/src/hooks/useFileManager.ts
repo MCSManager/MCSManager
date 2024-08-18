@@ -366,6 +366,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         throw new Error(t("TXT_CODE_e8ce38c2"));
       }
 
+      let shouldOverwrite = true;
       if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
         const confirmPromise = new Promise<boolean>((onComplete) => {
           Modal.confirm({
@@ -381,7 +382,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             }
           });
         });
-        if (!(await confirmPromise)) return reportErrorMsg(t("TXT_CODE_8b14426e"));
+        if (!(await confirmPromise)) {
+          shouldOverwrite = false;
+          //return reportErrorMsg(t("TXT_CODE_8b14426e"));
+        }
       }
 
       const uploadFormData = new FormData();
@@ -396,6 +400,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         onUploadProgress: (progressEvent: any) => {
           const p = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           if (p >= 1) percentComplete.value = p;
+        },
+        params: {
+          overwrite: shouldOverwrite
         }
       });
       await getFileList();
