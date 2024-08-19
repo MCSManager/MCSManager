@@ -2,15 +2,9 @@ import { $t } from "../i18n";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import { getFileManager } from "../service/file_router_service";
+import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import { globalConfiguration, globalEnv } from "../entity/config";
 import os from "os";
-import * as nodeDiskInfo from "node-disk-info";
-
-let diskInfos: any[] = [];
-if (os.platform() === "win32") {
-  diskInfos = nodeDiskInfo.getDiskInfoSync();
-}
 
 // Some routers operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -61,9 +55,7 @@ routerApp.on("file/status", async (ctx, data) => {
       globalFileTask: globalEnv.fileTaskCount ?? 0,
       platform: os.platform(),
       isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
-      disks: diskInfos.map((v) => {
-        return String(v._mounted).replace(":", "");
-      })
+      disks: getWindowsDisks()
     });
   } catch (error: any) {
     protocol.responseError(ctx, error);

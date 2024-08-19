@@ -1,6 +1,8 @@
+import fs from "fs-extra";
 import { $t } from "../i18n";
 import InstanceSubsystem from "../service/system_instance";
 import FileManager from "./system_file";
+import os from "os";
 
 export function getFileManager(instanceUuid: string) {
   // Initialize a file manager for the instance, and assign codes, restrictions, etc.
@@ -10,4 +12,19 @@ export function getFileManager(instanceUuid: string) {
   const fileCode = instance.config?.fileCode;
   const cwd = instance.config.cwd;
   return new FileManager(cwd, fileCode);
+}
+
+let cacheDisks: string[] = [];
+
+export function getWindowsDisks() {
+  if (os.platform() !== "win32") return [];
+  if (cacheDisks.length > 0) return cacheDisks;
+  const res: string[] = [];
+  // A - Z
+  for (let i = 65; i <= 90; i++) {
+    const letter = String.fromCharCode(i);
+    if (fs.existsSync(`${letter}:\\`)) res.push(letter);
+  }
+  cacheDisks = res;
+  return res;
 }
