@@ -17,7 +17,7 @@ export class LifeCycleTaskManager {
     this.lifeCycleTask.push(task);
   }
 
-  execLifeCycleTask(type: number) {
+  execLifeCycleTask(type: 1 | 0) {
     if (type == 1) {
       this.lifeCycleTask.forEach((v) => {
         if (v.status === 0) v.start(this.self);

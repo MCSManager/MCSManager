@@ -16,6 +16,8 @@ import RconCommand from "./steam/rcon_command";
 import DockerResizeCommand from "./docker/docker_pty_resize";
 import PtyResizeCommand from "./pty/pty_resize";
 import GeneralInstallCommand from "./general/general_install";
+import PingJavaMinecraftServerCommand from "./minecraft/mc_ping";
+import PingMinecraftServerTask from "./task/mc_players";
 
 // If you add a new "Preset", Please add the definition here.
 export type IPresetCommand =
@@ -24,7 +26,7 @@ export type IPresetCommand =
   | "restart"
   | "kill"
   | "update"
-  | "getPlayer"
+  | "refreshPlayers"
   | "command"
   | "resize"
   | "install";
@@ -51,7 +53,7 @@ export default class FunctionDispatcher extends InstanceCommand {
     instance.setPreset("kill", new GeneralKillCommand());
     instance.setPreset("restart", new GeneralRestartCommand());
     instance.setPreset("update", new GeneralUpdateCommand());
-    instance.setPreset("getPlayer", new NullCommand());
+    instance.setPreset("refreshPlayers", new NullCommand());
     instance.setPreset("install", new GeneralInstallCommand());
 
     // Preset the basic operation mode according to the instance startup type
@@ -74,18 +76,10 @@ export default class FunctionDispatcher extends InstanceCommand {
       instance.setPreset("command", new RconCommand());
     }
 
-    // Set different preset functions and functions according to different types
-    // No suitable implementation solution found, not supported for the time being.
-    // if (instance.config.type.includes(Instance.TYPE_UNIVERSAL)) {
-    //   instance.setPreset("getPlayer", new NullCommand());
-    // }
-    // if (instance.config.type.includes(Instance.TYPE_MINECRAFT_JAVA)) {
-    //   instance.setPreset("getPlayer", new MinecraftGetPlayersCommand());
-    //   instance.lifeCycleTaskManager.registerLifeCycleTask(new RefreshPlayer());
-    // }
-    // if (instance.config.type.includes(Instance.TYPE_MINECRAFT_BEDROCK)) {
-    //   instance.setPreset("getPlayer", new MinecraftBedrockGetPlayersCommand());
-    //   instance.lifeCycleTaskManager.registerLifeCycleTask(new RefreshPlayer());
-    // }
+    // Minecraft Ping
+    if (instance.config.type.includes(Instance.TYPE_MINECRAFT_JAVA)) {
+      instance.setPreset("refreshPlayers", new PingJavaMinecraftServerCommand());
+      instance.lifeCycleTaskManager.registerLifeCycleTask(new PingMinecraftServerTask());
+    }
   }
 }

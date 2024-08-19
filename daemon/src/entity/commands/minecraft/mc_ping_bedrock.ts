@@ -1,6 +1,6 @@
 import dgram from "dgram";
-import Instance from "../instance/instance";
-import InstanceCommand from "../commands/base/command";
+import Instance from "../../instance/instance";
+import InstanceCommand from "../base/command";
 
 // Get Minecraft Bedrock server MOTD information
 // Author: https://github.com/Mcayear

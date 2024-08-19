@@ -18,12 +18,14 @@ import { t } from "i18next";
 
 // The instance does not need to store additional information persistently
 interface IInstanceInfo {
+  mcPingOnline: boolean;
   currentPlayers: number;
   maxPlayers: number;
   version: string;
   fileLock: number;
   playersChart: Array<{ value: string }>;
   openFrpStatus: boolean;
+  latency: number;
 }
 
 interface IWatcherInfo {
@@ -74,12 +76,14 @@ export default class Instance extends EventEmitter {
   public config: InstanceConfig;
 
   public info: IInstanceInfo = {
-    currentPlayers: -1,
-    maxPlayers: -1,
+    mcPingOnline: false,
+    currentPlayers: 0,
+    maxPlayers: 0,
     version: "",
     fileLock: 0,
     playersChart: [],
-    openFrpStatus: false
+    openFrpStatus: false,
+    latency: 0
   };
 
   public watchers: Map<string, IWatcherInfo> = new Map();
@@ -405,6 +409,14 @@ export default class Instance extends EventEmitter {
       w: minW,
       h: minH
     };
+  }
+
+  public resetPingInfo() {
+    this.info.mcPingOnline = false;
+    this.info.currentPlayers = 0;
+    this.info.maxPlayers = 0;
+    this.info.version = "";
+    this.info.latency = 0;
   }
 
   private pushOutput(data: string) {
