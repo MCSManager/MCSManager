@@ -1,6 +1,6 @@
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import { MCServerStatus } from "common";
+import { MCServerStatus, toNumber } from "common";
 
 export default class PingJavaMinecraftServerCommand extends InstanceCommand {
   constructor() {
@@ -14,15 +14,17 @@ export default class PingJavaMinecraftServerCommand extends InstanceCommand {
         const result = await new MCServerStatus(instance.config.pingConfig.port, host).getStatus();
         if (result.online) {
           instance.info.mcPingOnline = true;
-          instance.info.currentPlayers = result.current_players;
-          instance.info.maxPlayers = result.max_players;
+          instance.info.currentPlayers = toNumber(result.current_players) ?? 0;
+          instance.info.maxPlayers = toNumber(result.max_players) ?? 0;
           instance.info.version = result.version;
+          instance.info.latency = toNumber(result.latency) ?? 0;
         } else {
           instance.resetPingInfo();
         }
         return result;
       }
     } catch (error) {
+      instance.resetPingInfo();
       // ignore error
     }
     return null;

@@ -34,12 +34,14 @@ export interface InstanceDetail {
   started: number;
   status: INSTANCE_STATUS_CODE;
   info: {
+    mcPingOnline: boolean;
     currentPlayers: number;
-    fileLock: number;
     maxPlayers: number;
-    openFrpStatus: boolean;
-    playersChart: any[];
     version: string;
+    fileLock: number;
+    playersChart: Array<{ value: string }>;
+    openFrpStatus: boolean;
+    latency: number;
   };
   config: IGlobalInstanceConfig;
   watcher?: number;

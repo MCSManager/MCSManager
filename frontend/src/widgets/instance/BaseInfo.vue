@@ -36,6 +36,17 @@ const getInstanceName = computed(() => {
   }
 });
 
+const instanceGameServerInfo = computed(() => {
+  if (instanceInfo.value?.info?.mcPingOnline) {
+    return {
+      players: `${instanceInfo.value?.info.currentPlayers} / ${instanceInfo.value?.info.maxPlayers}`,
+      version: instanceInfo.value?.info.version
+    };
+  } else {
+    return null;
+  }
+});
+
 onMounted(async () => {
   if (instanceId && daemonId) {
     await execute({
@@ -59,6 +70,12 @@ onMounted(async () => {
       </a-typography-paragraph>
       <a-typography-paragraph>
         {{ t("TXT_CODE_68831be6") }}{{ instanceTypeText }}
+      </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceGameServerInfo">
+        {{ t("玩家数：") }}{{ instanceGameServerInfo.players }}
+      </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceGameServerInfo">
+        {{ t("游戏版本：") }}{{ instanceGameServerInfo.version }}
       </a-typography-paragraph>
       <a-typography-paragraph>
         <div style="display: flex; gap: 10px">
@@ -112,12 +129,13 @@ onMounted(async () => {
         </div>
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_ae747cc0") }}{{ parseTimestamp(instanceInfo?.config.endTime) }}
+        <span>{{ t("TXT_CODE_ae747cc0") }}</span>
+        <span>{{ parseTimestamp(instanceInfo?.config.endTime) || t("无限制") }}</span>
       </a-typography-paragraph>
-      <a-typography-paragraph>
+      <a-typography-paragraph v-if="!instanceGameServerInfo">
         {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
       </a-typography-paragraph>
-      <a-typography-paragraph>
+      <a-typography-paragraph v-if="!instanceGameServerInfo">
         <span>{{ t("TXT_CODE_cec321b4") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>
         <span class="ml-6">
           {{ t("TXT_CODE_400a4210") }}{{ instanceInfo?.config.ie.toUpperCase() }}
@@ -126,7 +144,7 @@ onMounted(async () => {
       <a-typography-paragraph>
         <a-typography-text> {{ t("TXT_CODE_30051f9b") }} </a-typography-text>
         <a-typography-text :copyable="{ text: instanceInfo?.instanceUuid }"> </a-typography-text>
-        <a-typography-text class="ml-10"> {{ t("TXT_CODE_5f2d2e30") }} </a-typography-text>
+        <a-typography-text class="ml-20"> {{ t("TXT_CODE_5f2d2e30") }} </a-typography-text>
         <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
     </template>

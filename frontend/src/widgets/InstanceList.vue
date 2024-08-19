@@ -18,8 +18,10 @@ import {
   WarningOutlined,
   InfoCircleOutlined,
   FrownOutlined,
-  RedoOutlined
+  RedoOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
+
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
@@ -468,23 +470,24 @@ onMounted(async () => {
               </template>
               <template #body>
                 <a-typography-paragraph>
-                  <div>
-                    {{ t("TXT_CODE_e70a8e24") }}
-                    <span v-if="item.moreInfo?.isRunning" class="color-success">
-                      <CheckCircleOutlined />
-                      {{ item.moreInfo?.statusText }}
-                    </span>
-                    <span v-else-if="item.moreInfo?.isStopped" class="color-info">
-                      {{ item.moreInfo?.statusText }}
-                    </span>
-                    <span v-else>
-                      <ExclamationCircleOutlined />
-                      {{ item.moreInfo?.statusText }}
-                    </span>
-                  </div>
-                  <div>
-                    {{ t("TXT_CODE_68831be6") }}
-                    {{ item.moreInfo?.instanceTypeText }}
+                  <div class="mb-6">
+                    <a-tag :color="item.moreInfo?.isRunning ? 'green' : ''">
+                      <span v-if="item.moreInfo?.isRunning">
+                        <CheckCircleOutlined />
+                        {{ item.moreInfo?.statusText }}
+                      </span>
+                      <span v-else-if="item.moreInfo?.isStopped" class="color-info">
+                        <ExclamationCircleOutlined />
+                        {{ item.moreInfo?.statusText }}
+                      </span>
+                      <span v-else>
+                        <ExclamationCircleOutlined />
+                        {{ item.moreInfo?.statusText }}
+                      </span>
+                    </a-tag>
+                    <a-tag>
+                      {{ item.moreInfo?.instanceTypeText }}
+                    </a-tag>
                   </div>
                   <div>
                     {{ t("TXT_CODE_d31a684c") }}
@@ -493,6 +496,13 @@ onMounted(async () => {
                   <div>
                     {{ t("TXT_CODE_ae747cc0") }}
                     {{ parseTimestamp(item.config.endTime) }}
+                  </div>
+                  <div v-if="item.info.mcPingOnline">
+                    <span>{{ t("在线数：") }}</span>
+                    <span style="vertical-align: middle">
+                      <UserOutlined />
+                      {{ item.info.currentPlayers }} / {{ item.info.maxPlayers }}
+                    </span>
                   </div>
                 </a-typography-paragraph>
               </template>
@@ -530,6 +540,7 @@ onMounted(async () => {
 }
 .instance-card {
   cursor: pointer;
+  min-height: 170px;
 }
 .instance-card:hover {
   border: 1px solid var(--color-gray-8);

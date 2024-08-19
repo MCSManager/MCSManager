@@ -115,7 +115,7 @@ const loadImages = async () => {
       }
     }
   } catch (err: any) {
-    return reportErrorMsg(err.message);
+    // ignore
   }
 };
 
@@ -143,7 +143,7 @@ const loadNetworkModes = async () => {
     });
     if (modes.value) networkModes.value = modes.value;
   } catch (err: any) {
-    return reportErrorMsg(err.message);
+    // ignore
   }
 };
 

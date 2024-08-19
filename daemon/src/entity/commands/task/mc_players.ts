@@ -18,5 +18,6 @@ export default class PingMinecraftServerTask implements ILifeCycleTask {
   async stop(instance: Instance) {
     instance.resetPingInfo();
     clearInterval(this.task);
+    this.task = undefined;
   }
 }

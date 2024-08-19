@@ -11,25 +11,27 @@ import {
   ControlOutlined,
   DashboardOutlined,
   FieldTimeOutlined,
-  FolderOpenOutlined
+  FolderOpenOutlined,
+  UsergroupDeleteOutlined
 } from "@ant-design/icons-vue";
 import InnerCard from "@/components/InnerCard.vue";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { useInstanceInfo } from "@/hooks/useInstance";
+import { TYPE_MINECRAFT_JAVA, useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import RconSettings from "./dialogs/RconSettings.vue";
 import InstanceDetail from "./dialogs/InstanceDetail.vue";
-import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import type { RouteLocationPathRaw } from "vue-router";
 import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
+import McPingSettings from "./dialogs/McPingSettings.vue";
 
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
+const mcSettingsDialog = ref<InstanceType<typeof McPingSettings>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetail>>();
@@ -101,6 +103,14 @@ const btns = computed(() => {
         toPage({ path: "/instances/terminal/files" });
       },
       condition: () => state.settings.canFileManager || isAdmin.value
+    },
+    {
+      title: t("Minecraft 状态获取"),
+      icon: UsergroupDeleteOutlined,
+      click: () => {
+        mcSettingsDialog.value?.openDialog();
+      },
+      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
     },
     {
       title: t("TXT_CODE_656a85d8"),
@@ -229,6 +239,14 @@ const btns = computed(() => {
 
   <RconSettings
     ref="rconSettingsDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <McPingSettings
+    ref="mcSettingsDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
