@@ -24,7 +24,7 @@
     "@uiw/codemirror-theme-dracula": "^4.21.24",
     "@vueuse/core": "^10.3.0",
     "ant-design-vue": "^4.0.7",
-    "axios": "^1.4.0",
+    "axios": "^1.7.4",
     "codemirror": "^6.0.1",
     "crc": "^4.3.2",
     "dayjs": "^1.11.9",
