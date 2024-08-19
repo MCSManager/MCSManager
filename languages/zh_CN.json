@@ -1911,5 +1911,16 @@
   "TXT_CODE_348c9098": "获取指定实例详情失败，请重试！",
   "TXT_CODE_4aaec75c": "请求类型错误，请重试！",
   "TXT_CODE_903b6c50": "用户不存在，请重试",
-  "TXT_CODE_7e9727bd": "玩家数"
+  "TXT_CODE_7e9727bd": "玩家数",
+  "TXT_CODE_855c4a1c": "玩家数：",
+  "TXT_CODE_e260a220": "游戏版本：",
+  "TXT_CODE_40241d8e": "Minecraft 状态获取",
+  "TXT_CODE_57d1929e": "MCSManager 将使用 Minecraft Ping 协议尝试获取服务器在线人数，版本，延迟等信息。",
+  "TXT_CODE_6b175558": "完成配置后，实例运行时，每分钟刷新一次服务器状态。",
+  "TXT_CODE_2f59807a": "服务器地址",
+  "TXT_CODE_ddc2de99": "默认值：localhost",
+  "TXT_CODE_33a09033": "在线数：",
+  "TXT_CODE_ba717ff3": "你可以自由的设计网页上大部分元素的排版，顺序以及展示方式。",
+  "TXT_CODE_bc46c15b": "开始设计",
+  "TXT_CODE_3b24a247": "点击右上角的保存按钮即可保存布局设计。"
 }

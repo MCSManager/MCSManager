@@ -498,7 +498,7 @@ onMounted(async () => {
                     {{ parseTimestamp(item.config.endTime) }}
                   </div>
                   <div v-if="item.info.mcPingOnline">
-                    <span>{{ t("在线数：") }}</span>
+                    <span>{{ t("TXT_CODE_33a09033") }}</span>
                     <span style="vertical-align: middle">
                       <UserOutlined />
                       {{ item.info.currentPlayers }} / {{ item.info.maxPlayers }}

@@ -267,11 +267,11 @@ onMounted(async () => {
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("自定义布局") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_ebd2a6a1") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         <div>
-                          {{ t("你可以自由的设计网页上大部分元素的排版，顺序以及展示方式。") }}
+                          {{ t("TXT_CODE_ba717ff3") }}
                         </div>
                       </a-typography-text>
                     </a-typography-paragraph>
@@ -281,10 +281,10 @@ onMounted(async () => {
                       :loading="submitIsLoading"
                       @click="startDesignUI()"
                     >
-                      {{ t("开始设计") }}
+                      {{ t("TXT_CODE_bc46c15b") }}
                     </a-button>
                     <p v-if="containerState.isDesignMode">
-                      {{ t("点击右上角的保存按钮即可保存布局设计。") }}
+                      {{ t("TXT_CODE_3b24a247") }}
                     </p>
                   </a-form-item>
 
@@ -540,7 +540,7 @@ limitations under the License.</pre
           <template #sponsor>
             <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
               <a-typography-title :level="4" class="mb-24">
-                {{ t("成为赞助者") }}
+                {{ t("TXT_CODE_46cb40d5") }}
               </a-typography-title>
               <a-typography-paragraph>
                 <p>

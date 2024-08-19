@@ -105,7 +105,7 @@ const btns = computed(() => {
       condition: () => state.settings.canFileManager || isAdmin.value
     },
     {
-      title: t("Minecraft 状态获取"),
+      title: t("TXT_CODE_40241d8e"),
       icon: UsergroupDeleteOutlined,
       click: () => {
         mcSettingsDialog.value?.openDialog();

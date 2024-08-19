@@ -64,7 +64,7 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :title="t('Minecraft 状态获取')"
+    :title="t('TXT_CODE_40241d8e')"
     :confirm-loading="isLoading"
     :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
@@ -72,9 +72,9 @@ defineExpose({
     <div>
       <a-typography-paragraph>
         <a-typography-text type="secondary">
-          {{ t("MCSManager 将使用 Minecraft Ping 协议尝试获取服务器在线人数，版本，延迟等信息。") }}
+          {{ t("TXT_CODE_57d1929e") }}
           <br />
-          {{ t("完成配置后，实例运行时，每分钟刷新一次服务器状态。") }}
+          {{ t("TXT_CODE_6b175558") }}
         </a-typography-text>
       </a-typography-paragraph>
       <a-form ref="formRef" :model="formData" layout="vertical">
@@ -88,13 +88,13 @@ defineExpose({
           <a-input v-model:value="formData.port" :placeholder="t('TXT_CODE_e2dc0156')" />
         </a-form-item>
         <a-form-item name="ip">
-          <a-typography-title :level="5">{{ t("服务器地址") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_2f59807a") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
               {{ t("TXT_CODE_8e2be926") }}
             </a-typography-text>
           </a-typography-paragraph>
-          <a-input v-model:value="formData.ip" :placeholder="t('默认值：localhost')" />
+          <a-input v-model:value="formData.ip" :placeholder="t('TXT_CODE_ddc2de99')" />
         </a-form-item>
       </a-form>
     </div>

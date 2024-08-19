@@ -72,10 +72,10 @@ onMounted(async () => {
         {{ t("TXT_CODE_68831be6") }}{{ instanceTypeText }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceGameServerInfo">
-        {{ t("玩家数：") }}{{ instanceGameServerInfo.players }}
+        {{ t("TXT_CODE_855c4a1c") }}{{ instanceGameServerInfo.players }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceGameServerInfo">
-        {{ t("游戏版本：") }}{{ instanceGameServerInfo.version }}
+        {{ t("TXT_CODE_e260a220") }}{{ instanceGameServerInfo.version }}
       </a-typography-paragraph>
       <a-typography-paragraph>
         <div style="display: flex; gap: 10px">
@@ -130,7 +130,7 @@ onMounted(async () => {
       </a-typography-paragraph>
       <a-typography-paragraph>
         <span>{{ t("TXT_CODE_ae747cc0") }}</span>
-        <span>{{ parseTimestamp(instanceInfo?.config.endTime) || t("无限制") }}</span>
+        <span>{{ parseTimestamp(instanceInfo?.config.endTime) || t("TXT_CODE_e3a77a77") }}</span>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="!instanceGameServerInfo">
         {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
