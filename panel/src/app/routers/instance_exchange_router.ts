@@ -8,6 +8,7 @@ import {
   queryInstanceByUserId,
   RequestAction
 } from "../service/exchange_service";
+import { toText } from "common";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -21,7 +22,7 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const requestAction = ctx.request.body.request_action;
+      const requestAction = toText(ctx.request.body.request_action) as RequestAction;
       const params = ctx.request.body.data ?? {};
       if (requestAction === RequestAction.PING) {
         ctx.body = await getNodeStatus(params);
