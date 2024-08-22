@@ -6,10 +6,32 @@ import { t } from "i18next";
 import { toNumber, toText } from "common";
 import { getInstancesByUuid, INSTANCE_STATUS_TEXT } from "./instance_service";
 
-const getNanoId = customAlphabet(
-  "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-  6
-);
+// ------- Protocol Define -------
+export interface DaemonStatusProtocol {
+  name: string;
+  id: string;
+  ip: string;
+  port: number;
+  available: boolean;
+  running: number;
+  instances: number;
+}
+
+export interface InstanceInfoProtocol {
+  name: string;
+  expire: number;
+  status: number;
+  lines: Array<{ title: string; value: any }>;
+}
+
+export interface BuyResponseProtocol {
+  instance_id: string;
+  instance_config: any;
+  username: string;
+  password: string;
+  uuid: string;
+  expire: number;
+}
 
 export enum RequestAction {
   BUY = "buy",
@@ -17,6 +39,13 @@ export enum RequestAction {
   QUERY_INSTANCE = "query_instance",
   PING = "ping"
 }
+
+// ------- Define End ------
+
+const getNanoId = customAlphabet(
+  "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  6
+);
 
 export function parseUserName(t?: string) {
   if (!t || typeof t !== "string") return "";
@@ -27,7 +56,7 @@ export function parseUserName(t?: string) {
 export async function buyOrRenewInstance(
   request_action: RequestAction,
   params: Record<string, any>
-) {
+): Promise<BuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
   const username = parseUserName(params.username);
@@ -83,7 +112,7 @@ export async function buyOrRenewInstance(
       username: user.userName,
       password: newPassword,
       uuid: user.uuid,
-      expire: toNumber(newInstanceConfig.endTime)
+      expire: toNumber(newInstanceConfig.endTime) || 0
     };
   }
 
@@ -102,7 +131,7 @@ export async function buyOrRenewInstance(
     return {
       instance_id,
       instance_config: instanceInfo.config,
-      expire: toNumber(instanceInfo.config.endTime),
+      expire: toNumber(instanceInfo.config.endTime) || 0,
       username: "",
       password: "",
       uuid: ""
@@ -112,7 +141,9 @@ export async function buyOrRenewInstance(
   throw new Error(t("TXT_CODE_4aaec75c"));
 }
 
-export async function queryInstanceByUserId(params: Record<string, any>) {
+export async function queryInstanceByUserId(
+  params: Record<string, any>
+): Promise<InstanceInfoProtocol[]> {
   const name = parseUserName(params.username) || "";
   const user = user_service.getUserByUserName(name);
   if (!user) throw new Error(t("TXT_CODE_903b6c50"));
@@ -132,16 +163,16 @@ export async function queryInstanceByUserId(params: Record<string, any>) {
       });
     }
     return {
-      name: v.nickname,
-      expire: v.endTime,
-      status: v.status,
+      name: v.nickname || "",
+      expire: v.endTime || 0,
+      status: v.status || 0,
       lines
     };
   });
   return newInstancesInfo;
 }
 
-export async function getNodeStatus(params: Record<string, any>) {
+export async function getNodeStatus(params: Record<string, any>): Promise<DaemonStatusProtocol> {
   const nodeId = toText(params.node_id) ?? "";
   const remoteService = RemoteServiceSubsystem.getInstance(nodeId);
   if (!remoteService?.available) {
