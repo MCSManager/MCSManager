@@ -4,7 +4,7 @@ import user_service from "../service/user_service";
 import { customAlphabet } from "nanoid";
 import { t } from "i18next";
 import { toNumber, toText } from "common";
-import { getInstancesByUuid, INSTANCE_STATUS_TEXT } from "./instance_service";
+import { AdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 
 // ------- Protocol Define -------
 export interface DaemonStatusProtocol {
@@ -18,10 +18,12 @@ export interface DaemonStatusProtocol {
 }
 
 export interface InstanceInfoProtocol {
+  instance_id: string;
   name: string;
   expire: number;
   status: number;
   lines: Array<{ title: string; value: any }>;
+  ports: PortInfo[];
 }
 
 export interface BuyResponseProtocol {
@@ -31,6 +33,7 @@ export interface BuyResponseProtocol {
   password: string;
   uuid: string;
   expire: number;
+  instance_info?: InstanceInfoProtocol;
 }
 
 export enum RequestAction {
@@ -40,12 +43,52 @@ export enum RequestAction {
   PING = "ping"
 }
 
+export interface PortInfo {
+  host: number;
+  container: number;
+  protocol: string;
+}
+
 // ------- Define End ------
 
 const getNanoId = customAlphabet(
   "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   6
 );
+
+function formatInstanceData(instance: AdvancedInstanceInfo): InstanceInfoProtocol {
+  let ports: string[] = instance.docker?.ports ?? [];
+  let portRules: Array<PortInfo> = [];
+  if (ports?.length > 0) {
+    ports.forEach((line: string) => {
+      // line = "23333:24444/tcp"
+      const [ports, protocol] = line.split("/");
+      if (!ports || !protocol) return;
+      const [host, container] = ports.split(":");
+      if (isNaN(Number(container)) || isNaN(Number(host))) return;
+      portRules.push({
+        protocol,
+        container: Number(container),
+        host: Number(host)
+      });
+    });
+  }
+  const lines = [];
+  if (instance.info?.maxPlayers && Number(instance.info?.maxPlayers) != -1) {
+    lines.push({
+      title: t("TXT_CODE_7e9727bd"),
+      value: `${instance.info?.currentPlayers}/${instance.info?.maxPlayers}`
+    });
+  }
+  return {
+    instance_id: instance.instanceUuid,
+    name: instance.nickname || "",
+    status: instance.status || 0,
+    ports: portRules,
+    expire: instance.endTime || 0,
+    lines
+  };
+}
 
 export function parseUserName(t?: string) {
   if (!t || typeof t !== "string") return "";
@@ -112,7 +155,8 @@ export async function buyOrRenewInstance(
       username: user.userName,
       password: newPassword,
       uuid: user.uuid,
-      expire: toNumber(newInstanceConfig.endTime) || 0
+      expire: toNumber(newInstanceConfig.endTime) || 0,
+      instance_info: formatInstanceData(newInstanceConfig)
     };
   }
 
@@ -150,24 +194,7 @@ export async function queryInstanceByUserId(
 
   const { instances = [] } = await getInstancesByUuid(user.uuid, true);
   const newInstancesInfo = instances.map((v) => {
-    const lines = [
-      {
-        title: t("TXT_CODE_f49149d0"),
-        value: v.docker?.ports
-      }
-    ];
-    if (v.info?.maxPlayers && Number(v.info?.maxPlayers) != -1) {
-      lines.push({
-        title: t("TXT_CODE_7e9727bd"),
-        value: `${v.info?.currentPlayers}/${v.info?.maxPlayers}`
-      });
-    }
-    return {
-      name: v.nickname || "",
-      expire: v.endTime || 0,
-      status: v.status || 0,
-      lines
-    };
+    return formatInstanceData(v);
   });
   return newInstancesInfo;
 }
