@@ -1916,7 +1916,7 @@
   "TXT_CODE_40241d8e": "Minecraft 狀態獲取",
   "TXT_CODE_57d1929e": "MCSManager 將使用 Minecraft Ping 協議嘗試取得伺服器線上人數，版本，延遲等資訊。",
   "TXT_CODE_6b175558": "完成配置后，实例运行时，每分钟刷新一次服务器状态。",
-  "TXT_CODE_2f59807a": "服務器地址",
+  "TXT_CODE_2f59807a": "伺服器地址",
   "TXT_CODE_ddc2de99": "默認值：localhost",
   "TXT_CODE_33a09033": "在綫數：",
   "TXT_CODE_ba717ff3": "你可以自由的設計網頁上大部分元素的排版，順序以及展示方式。",
@@ -1924,5 +1924,6 @@
   "TXT_CODE_3b24a247": "點擊右上角的儲存按鈕即可儲存佈局設計。",
   "TXT_CODE_71c948a9": "請輸入工作目錄",
   "TXT_CODE_9fed23ab": "請輸入鏡像名稱",
-  "TXT_CODE_b52cb76c": "請選擇網絡模式"
+  "TXT_CODE_b52cb76c": "請選擇網絡模式",
+  "TXT_CODE_2ab036a4": "請輸入遊戲伺服器端口"
 }

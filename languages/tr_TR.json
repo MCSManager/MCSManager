@@ -1912,5 +1912,12 @@
   "TXT_CODE_bed32084": "Uzak düğüm çevrimdışı, panelin çevrimiçi durumunu kontrol etmek için lütfen yöneticiyle iletişime geçin!",
   "TXT_CODE_c5ed896f": "Anlık çıktı içeriği çok uzun ve görüntülenmesi reddedildi...",
   "TXT_CODE_ec99ddaa": "Yüklediğiniz dosyalar",
-  "TXT_CODE_b52cb76c": "Lütfen ağ modunu seçin"
+  "TXT_CODE_b52cb76c": "Lütfen ağ modunu seçin",
+  "TXT_CODE_71c948a9": "Lütfen çalışma dizinini girin",
+  "TXT_CODE_9fed23ab": "Lütfen resim adını girin",
+  "TXT_CODE_2ab036a4": "Lütfen oyun sunucusu bağlantı noktasını girin",
+  "TXT_CODE_40241d8e": "Minecraft durum edinimi",
+  "TXT_CODE_57d1929e": "MCSManager, sunucudaki çevrimiçi kişi sayısını, sürümü, gecikmeyi ve diğer bilgileri elde etmeye çalışmak için Minecraft Ping protokolünü kullanacaktır.",
+  "TXT_CODE_6b175558": "Yapılandırma tamamlandıktan sonra örnek çalışırken sunucu durumu her dakika yenilenir.",
+  "TXT_CODE_e260a220": "Oyun sürümü:"
 }

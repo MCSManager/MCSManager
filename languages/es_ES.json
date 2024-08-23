@@ -1912,5 +1912,12 @@
   "TXT_CODE_bed32084": "El nodo remoto está fuera de línea, comuníquese con el administrador para verificar el estado en línea del panel.",
   "TXT_CODE_c5ed896f": "El contenido de la salida instantánea es demasiado largo y se ha negado a mostrarse...",
   "TXT_CODE_ec99ddaa": "Archivos que subiste",
-  "TXT_CODE_b52cb76c": "Por favor seleccione el modo de red"
+  "TXT_CODE_b52cb76c": "Por favor seleccione el modo de red",
+  "TXT_CODE_9fed23ab": "Por favor ingresa el nombre de la imagen",
+  "TXT_CODE_71c948a9": "Por favor ingrese al directorio de trabajo",
+  "TXT_CODE_2ab036a4": "Por favor ingresa el puerto del servidor del juego",
+  "TXT_CODE_40241d8e": "Adquisición de estado de Minecraft",
+  "TXT_CODE_57d1929e": "MCSManager utilizará el protocolo Minecraft Ping para intentar obtener la cantidad de personas en línea en el servidor, la versión, la latencia y otra información.",
+  "TXT_CODE_6b175558": "Después de completar la configuración, cuando la instancia se está ejecutando, el estado del servidor se actualiza cada minuto.",
+  "TXT_CODE_e260a220": "Versión del juego:"
 }

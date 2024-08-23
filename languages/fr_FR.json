@@ -1912,5 +1912,12 @@
   "TXT_CODE_bed32084": "Le nœud distant est hors ligne, veuillez contacter l'administrateur pour vérifier l'état en ligne du panneau !",
   "TXT_CODE_c5ed896f": "Le contenu de la sortie instantanée est trop long et son affichage a été refusé...",
   "TXT_CODE_ec99ddaa": "Fichiers que vous avez téléchargés",
-  "TXT_CODE_b52cb76c": "Veuillez sélectionner le mode réseau"
+  "TXT_CODE_b52cb76c": "Veuillez sélectionner le mode réseau",
+  "TXT_CODE_9fed23ab": "Veuillez entrer le nom de l'image",
+  "TXT_CODE_71c948a9": "Veuillez entrer le répertoire de travail",
+  "TXT_CODE_2ab036a4": "Veuillez entrer le port du serveur de jeu",
+  "TXT_CODE_40241d8e": "Acquisition du statut Minecraft",
+  "TXT_CODE_57d1929e": "MCSManager utilisera le protocole Minecraft Ping pour tenter d'obtenir le nombre de personnes en ligne sur le serveur, la version, la latence et d'autres informations.",
+  "TXT_CODE_6b175558": "Une fois la configuration terminée, lorsque l'instance est en cours d'exécution, l'état du serveur est actualisé toutes les minutes.",
+  "TXT_CODE_e260a220": "Version du jeu :"
 }
