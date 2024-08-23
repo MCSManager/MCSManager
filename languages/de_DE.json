@@ -1911,5 +1911,6 @@
   "TXT_CODE_903b6c50": "Der Benutzer existiert nicht. Bitte versuchen Sie es erneut",
   "TXT_CODE_99ca8563": "Datei überschreiben",
   "TXT_CODE_bed32084": "Der Remote-Knoten ist offline. Bitte wenden Sie sich an den Administrator, um den Online-Status des Panels zu überprüfen!",
-  "TXT_CODE_c5ed896f": "Der Inhalt der Sofortausgabe ist zu lang und die Anzeige wurde verweigert ..."
+  "TXT_CODE_c5ed896f": "Der Inhalt der Sofortausgabe ist zu lang und die Anzeige wurde verweigert ...",
+  "TXT_CODE_b52cb76c": "Bitte wählen Sie den Netzwerkmodus aus"
 }

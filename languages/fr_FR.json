@@ -1911,5 +1911,6 @@
   "TXT_CODE_99ca8563": "écraser le fichier",
   "TXT_CODE_bed32084": "Le nœud distant est hors ligne, veuillez contacter l'administrateur pour vérifier l'état en ligne du panneau !",
   "TXT_CODE_c5ed896f": "Le contenu de la sortie instantanée est trop long et son affichage a été refusé...",
-  "TXT_CODE_ec99ddaa": "Fichiers que vous avez téléchargés"
+  "TXT_CODE_ec99ddaa": "Fichiers que vous avez téléchargés",
+  "TXT_CODE_b52cb76c": "Veuillez sélectionner le mode réseau"
 }
