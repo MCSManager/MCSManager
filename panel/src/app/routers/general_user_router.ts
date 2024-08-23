@@ -42,7 +42,7 @@ router.get("/", permission({ level: ROLE.USER, token: false, speedLimit: false }
 
   // Some and only Ajax requests grant access
   if (isAjax(ctx)) {
-    const res = await getInstancesByUuid(uuid, toBoolean(advanced) || false);
+    const res = await getInstancesByUuid(uuid, undefined, toBoolean(advanced) || false);
     res.token = getToken(ctx);
     ctx.body = res;
   }

@@ -115,7 +115,7 @@ export async function buyOrRenewInstance(
 
   if (request_action === RequestAction.BUY) {
     payload.endTime = (payload.endTime ? payload.endTime : Date.now()) + hours * 3600 * 1000;
-    payload.nickname = payload.nickname + "-" + getNanoId(6);
+    payload.nickname = username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
       payload
@@ -189,10 +189,11 @@ export async function queryInstanceByUserId(
   params: Record<string, any>
 ): Promise<InstanceInfoProtocol[]> {
   const name = parseUserName(params.username) || "";
+  const targetDaemonId = toText(params.node_id) ?? undefined;
   const user = user_service.getUserByUserName(name);
   if (!user) throw new Error(t("TXT_CODE_903b6c50"));
 
-  const { instances = [] } = await getInstancesByUuid(user.uuid, true);
+  const { instances = [] } = await getInstancesByUuid(user.uuid, targetDaemonId, true);
   const newInstancesInfo = instances.map((v) => {
     return formatInstanceData(v);
   });

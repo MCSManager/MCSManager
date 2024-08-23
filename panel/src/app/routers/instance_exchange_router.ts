@@ -9,6 +9,7 @@ import {
   RequestAction
 } from "../service/exchange_service";
 import { toText } from "common";
+import { logger } from "../service/log";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -24,6 +25,7 @@ router.post(
     try {
       const requestAction = toText(ctx.request.body.request_action) as RequestAction;
       const params = ctx.request.body.data ?? {};
+      logger.info("Get exchange request, action: %s, params: %j", requestAction, params);
       if (requestAction === RequestAction.PING) {
         ctx.body = await getNodeStatus(params);
         return;
@@ -37,6 +39,7 @@ router.post(
         return;
       }
     } catch (err) {
+      logger.error("Exchange request error: " + err);
       ctx.body = err;
     }
   }

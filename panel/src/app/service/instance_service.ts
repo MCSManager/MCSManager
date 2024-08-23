@@ -60,7 +60,11 @@ export function multiOperationForwarding(
   }
 }
 
-export async function getInstancesByUuid(uuid: string, advanced: boolean = false) {
+export async function getInstancesByUuid(
+  uuid: string,
+  targetDaemonId?: string,
+  advanced: boolean = false
+) {
   const user = userSystem.getInstance(uuid);
   if (!user) throw new Error("The UID does not exist");
 
@@ -69,9 +73,10 @@ export async function getInstancesByUuid(uuid: string, advanced: boolean = false
   if (advanced) {
     const instances = user.instances;
     for (const iterator of instances) {
+      if (targetDaemonId && targetDaemonId !== iterator.daemonId) continue;
       const remoteService = RemoteServiceSubsystem.getInstance(iterator.daemonId);
-      // If the remote service doesn't exist at all, load a deleted prompt
       if (!remoteService) {
+        // If the remote service doesn't exist at all, load a deleted prompt
         resInstances.push({
           hostIp: "-- Unknown --",
           instanceUuid: iterator.instanceUuid,
