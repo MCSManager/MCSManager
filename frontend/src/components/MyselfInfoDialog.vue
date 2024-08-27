@@ -122,7 +122,7 @@ const disable2FACode = async () => {
           </a-col>
           <a-col>
             <a-form-item :label="t('TXT_CODE_d7ee9ba')">
-              <span>{{ state.userInfo?.registerTime }}</span>
+              <span>{{ state.userInfo?.loginTime }}</span>
             </a-form-item>
           </a-col>
         </a-row>
