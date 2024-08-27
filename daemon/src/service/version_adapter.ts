@@ -18,6 +18,7 @@ function readCategoryConfig(configCategory: string, callback: (config: any) => b
 }
 
 function refactorInstanceConfig(config: any) {
+  if (isNaN(config.passWordType)) config.passWordType = 0;
   if (typeof config.endTime === "string") {
     config.endTime = new Date(config.endTime).getTime();
     return true;
