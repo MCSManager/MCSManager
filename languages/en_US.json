@@ -1926,5 +1926,6 @@
   "TXT_CODE_71c948a9": "Please enter working directory",
   "TXT_CODE_9fed23ab": "Please enter the image name",
   "TXT_CODE_b52cb76c": "Please select network mode",
-  "TXT_CODE_2ab036a4": "Please enter the game server port"
+  "TXT_CODE_2ab036a4": "Please enter the game server port",
+  "TXT_CODE_c5b38d90": "The instance specifications for renewal do not match, and the renewal operation cannot be completed!"
 }

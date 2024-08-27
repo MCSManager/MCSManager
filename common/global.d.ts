@@ -29,6 +29,7 @@ export interface IGlobalInstanceConfig {
   updateCommand: string;
   actionCommandList: any[];
   crlf: number;
+  category: number;
 
   // Steam RCON
   enableRcon?: boolean;

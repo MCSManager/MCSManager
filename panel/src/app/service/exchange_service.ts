@@ -5,6 +5,7 @@ import { customAlphabet } from "nanoid";
 import { t } from "i18next";
 import { toNumber, toText } from "common";
 import { AdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
+import type { IGlobalInstanceConfig } from "common/global";
 
 // ------- Protocol Define -------
 export interface DaemonStatusProtocol {
@@ -34,6 +35,16 @@ export interface BuyResponseProtocol {
   uuid: string;
   expire: number;
   instance_info?: InstanceInfoProtocol;
+}
+
+export interface BuyRequestProtocol {
+  category_id: number;
+  node_id: string;
+  username: string;
+  hours: number;
+  payload: any;
+  code?: string;
+  instance_id?: string;
 }
 
 export enum RequestAction {
@@ -98,13 +109,13 @@ export function parseUserName(t?: string) {
 
 export async function buyOrRenewInstance(
   request_action: RequestAction,
-  params: Record<string, any>
+  params: BuyRequestProtocol
 ): Promise<BuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
   const username = parseUserName(params.username);
   const hours = toNumber(params.hours) ?? 0;
-  const payload = params.payload ?? {};
+  const payload: Partial<IGlobalInstanceConfig> = params.payload ?? {};
 
   const remoteService = RemoteServiceSubsystem.getInstance(node_id || "");
   if (!remoteService?.available) {
@@ -114,6 +125,7 @@ export async function buyOrRenewInstance(
   const remoteRequest = new RemoteRequest(remoteService);
 
   if (request_action === RequestAction.BUY) {
+    payload.category = params.category_id || 0;
     payload.endTime = (payload.endTime ? payload.endTime : Date.now()) + hours * 3600 * 1000;
     payload.nickname = username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
@@ -164,18 +176,23 @@ export async function buyOrRenewInstance(
     const instanceInfo = await remoteRequest.request("instance/detail", {
       instanceUuid: instance_id
     });
-    if (!instanceInfo.config) throw new Error(t("TXT_CODE_348c9098"));
-    instanceInfo.config.endTime =
-      (instanceInfo.config?.endTime ? instanceInfo.config.endTime : Date.now()) +
-      hours * 3600 * 1000;
+
+    const config: IGlobalInstanceConfig = instanceInfo.config || {};
+
+    if (config.category && config.category != params.category_id) {
+      throw new Error(t("TXT_CODE_c5b38d90"));
+    }
+
+    if (!config) throw new Error(t("TXT_CODE_348c9098"));
+    config.endTime = (config?.endTime ? config.endTime : Date.now()) + hours * 3600 * 1000;
     await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,
-      config: instanceInfo.config
+      config: config
     });
     return {
       instance_id,
-      instance_config: instanceInfo.config,
-      expire: toNumber(instanceInfo.config.endTime) || 0,
+      instance_config: config,
+      expire: toNumber(config.endTime) || 0,
       username: "",
       password: "",
       uuid: ""
