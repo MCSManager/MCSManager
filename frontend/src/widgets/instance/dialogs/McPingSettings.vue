@@ -79,10 +79,10 @@ defineExpose({
       </a-typography-paragraph>
       <a-form ref="formRef" :model="formData" layout="vertical">
         <a-form-item name="port">
-          <a-typography-title :level="5">{{ t("TXT_CODE_890aa44c") }}</a-typography-title>
+          <a-typography-title :level="5">{{ t("TXT_CODE_f49149d0") }}</a-typography-title>
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{ t("TXT_CODE_a4748cb0") }}
+              {{ t("TXT_CODE_2ab036a4") }}
             </a-typography-text>
           </a-typography-paragraph>
           <a-input v-model:value="formData.port" :placeholder="t('TXT_CODE_e2dc0156')" />

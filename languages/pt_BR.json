@@ -1911,5 +1911,13 @@
   "TXT_CODE_99ca8563": "substituir arquivo",
   "TXT_CODE_bed32084": "O nó remoto está offline, entre em contato com o administrador para verificar o status online do painel!",
   "TXT_CODE_c5ed896f": "O conteúdo da saída instantânea é muito longo e sua exibição foi recusada...",
-  "TXT_CODE_ec99ddaa": "Arquivos que você enviou"
+  "TXT_CODE_ec99ddaa": "Arquivos que você enviou",
+  "TXT_CODE_b52cb76c": "Selecione o modo de rede",
+  "TXT_CODE_9fed23ab": "Por favor insira o nome da imagem",
+  "TXT_CODE_71c948a9": "Por favor insira o diretório de trabalho",
+  "TXT_CODE_2ab036a4": "Por favor insira a porta do servidor do jogo",
+  "TXT_CODE_40241d8e": "Aquisição de status do Minecraft",
+  "TXT_CODE_57d1929e": "O MCSManager utilizará o protocolo Minecraft Ping para tentar obter a quantidade de pessoas online no servidor, versão, latência e outras informações.",
+  "TXT_CODE_6b175558": "Após concluir a configuração, quando a instância estiver em execução, o status do servidor será atualizado a cada minuto.",
+  "TXT_CODE_e260a220": "Versão do jogo:"
 }

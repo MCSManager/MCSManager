@@ -153,7 +153,8 @@ const openDialog = async () => {
   await Promise.all([loadImages(), loadNetworkModes()]);
 };
 
-const rules: Record<string, Rule[]> = {
+const isDocker = computed(() => options.value?.config.processType === "docker");
+const rules: Record<string, any> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   startCommand: [
     {
@@ -165,19 +166,32 @@ const rules: Record<string, Rule[]> = {
       trigger: "change"
     }
   ],
-  dockerImage: [
-    {
-      required: true,
-      validator: async () => {
-        if (
-          options.value?.config.processType === "docker" &&
-          options.value?.config.docker.image === ""
-        )
-          throw new Error(t("TXT_CODE_be6484f7"));
-      },
-      trigger: "change"
-    }
-  ]
+  cwd: [{ required: true, message: t("TXT_CODE_71c948a9") }],
+  docker: {
+    image: [
+      {
+        required: true,
+        validator: async (_rule: Rule, value: string) => {
+          if (!isDocker.value) return;
+          const ErrMsg =
+            options.value?.imageSelectMethod === "EDIT"
+              ? t("TXT_CODE_9fed23ab")
+              : t("TXT_CODE_be6484f7");
+          if (value === "") throw new Error(ErrMsg);
+        },
+        trigger: "change"
+      }
+    ],
+    networkMode: [
+      {
+        validator: async (_rule: Rule, value: string) => {
+          if (!isDocker.value) return;
+          if (value === "") throw new Error(t("TXT_CODE_b52cb76c"));
+        }
+      }
+    ]
+  },
+  dockerImage: []
 };
 
 const submit = async () => {
@@ -296,7 +310,7 @@ defineExpose({
                 {{ t("TXT_CODE_f70badb9") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_818928ba") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -309,7 +323,7 @@ defineExpose({
                 {{ t("TXT_CODE_2f291d8b") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_be608c82") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -333,7 +347,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_fa920c0") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_b029a155") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -450,8 +464,8 @@ defineExpose({
             </a-form-item>
           </a-col>
           <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
-            <a-form-item name="dockerImage">
-              <a-typography-title :level="5" class="require-field">
+            <a-form-item :name="['docker', 'image']">
+              <a-typography-title :level="5" :class="{ 'require-field': isDocker }">
                 {{ t("TXT_CODE_6904cb3") }}
               </a-typography-title>
               <a-typography-paragraph>
@@ -475,8 +489,8 @@ defineExpose({
           </a-col>
 
           <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="8" :offset="0">
-            <a-form-item name="dockerImage">
-              <a-typography-title :level="5" class="require-field">
+            <a-form-item :name="['docker', 'image']">
+              <a-typography-title :level="5" :class="{ 'require-field': isDocker }">
                 {{ t("TXT_CODE_4e4d9680") }}
               </a-typography-title>
               <a-typography-paragraph>
@@ -513,7 +527,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_9c247f6") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_df3fdec") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -525,8 +539,8 @@ defineExpose({
           </a-col>
 
           <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5" class="require-field">
+            <a-form-item :name="['docker', 'networkMode']">
+              <a-typography-title :level="5" :class="{ 'require-field': isDocker }">
                 {{ t("TXT_CODE_efcef926") }}
               </a-typography-title>
               <a-typography-paragraph>
@@ -554,7 +568,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_cf88c936") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_1a37f514") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -570,7 +584,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_b916a8dc") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_33ce1c5c") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -585,7 +599,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_3e68ca00") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_828ea87f") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -601,7 +615,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_53046822") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_750ab5c6") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -620,7 +634,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_b0c4e4ae") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_2b9e9b5") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -639,7 +653,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_6fe24924") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_a0d214ac") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -654,7 +668,7 @@ defineExpose({
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_10194e6a") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary" class="two-line-height">
+                <a-typography-text type="secondary">
                   {{ t("TXT_CODE_97655c5d") }}
                 </a-typography-text>
               </a-typography-paragraph>
