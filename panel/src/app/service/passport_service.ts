@@ -23,10 +23,7 @@ export function login(
 ): string {
   // record the number of login requests
   GlobalVariable.set(LOGIN_COUNT, GlobalVariable.get(LOGIN_COUNT, 0) + 1);
-  const ip = systemConfig?.reverseProxyMode
-    ? toText(ctx.header["x-real-ip"])
-    : ctx.socket.remoteAddress;
-
+  const ip = getLoginIp(ctx);
   // check user information
   try {
     userSystem.checkUser({ userName, passWord }, twoFACode);
@@ -35,21 +32,7 @@ export function login(
     if (ipMap) delete ipMap[ip || ""];
 
     // Session Session state changes to logged in
-    const user = userSystem.getUserByUserName(userName);
-    if (!user) throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
-    if (!ctx.session) throw new Error("Session is Null!");
-
-    user.loginTime = new Date().toLocaleString();
-    ctx.session["login"] = true;
-    ctx.session["userName"] = userName;
-    ctx.session["uuid"] = user.uuid;
-    ctx.session["token"] = timeUuid();
-    ctx.session.save();
-    logger.info($t("TXT_CODE_42036f92"));
-    logger.info(`[LOGIN] IP: ${ip} Login ${userName} successful!`);
-    logger.info(`[LOGIN] Token: ${ctx.session["token"]}`);
-    logger.info($t("TXT_CODE_42036f92"));
-    return ctx.session["token"];
+    return loginSuccess(ctx, userName);
   } catch (err) {
     // record the number of login failures
     GlobalVariable.set(LOGIN_FAILED_COUNT_KEY, GlobalVariable.get(LOGIN_FAILED_COUNT_KEY, 0) + 1);
@@ -61,6 +44,33 @@ export function login(
     logger.info(`[LOGIN] IP: ${ip}, Try login ${userName} failed!`);
     throw err;
   }
+}
+
+export function loginSuccess(ctx: Koa.ParameterizedContext, userName: string) {
+  const ip = getLoginIp(ctx);
+  const user = userSystem.getUserByUserName(userName);
+  if (!user) throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
+  if (!ctx.session) throw new Error("Session is Null!");
+
+  user.loginTime = new Date().toLocaleString();
+  ctx.session["login"] = true;
+  ctx.session["userName"] = userName;
+  ctx.session["uuid"] = user.uuid;
+  ctx.session["token"] = timeUuid();
+  ctx.session.save();
+
+  logger.info($t("TXT_CODE_42036f92"));
+  logger.info(`[LOGIN] IP: ${ip} Login ${userName} successful!`);
+  logger.info(`[LOGIN] Token: ${ctx.session["token"]}`);
+  logger.info($t("TXT_CODE_42036f92"));
+
+  return String(ctx.session["token"]);
+}
+
+export function getLoginIp(ctx: Koa.ParameterizedContext) {
+  return systemConfig?.reverseProxyMode
+    ? toText(ctx.header["x-real-ip"])
+    : ctx.socket.remoteAddress;
 }
 
 export async function bind2FA(ctx: Koa.ParameterizedContext) {

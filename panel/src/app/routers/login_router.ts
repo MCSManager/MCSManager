@@ -2,7 +2,7 @@ import Koa from "koa";
 import Router from "@koa/router";
 import validator from "../middleware/validator";
 import permission from "../middleware/permission";
-import { check, login, logout, checkBanIp } from "../service/passport_service";
+import { check, login, logout, checkBanIp, loginSuccess } from "../service/passport_service";
 import { systemConfig } from "../setting";
 import userSystem, { TwoFactorError } from "../service/user_service";
 import { logger } from "../service/log";
@@ -10,6 +10,7 @@ import { $t } from "../i18n";
 import axios from "axios";
 import { GlobalVariable } from "common";
 import { ROLE } from "../entity/user";
+import UserSSOService from "../service/user_sso_service";
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
@@ -32,6 +33,35 @@ router.post(
         return;
       }
       ctx.body = error;
+    }
+  }
+);
+
+// [Admin Permission]
+router.get(
+  "/generate_sso_token",
+  permission({ level: ROLE.ADMIN }),
+  validator({ query: { username: String } }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const userName = String(ctx.request.body.username);
+    ctx.body = UserSSOService.generateSSOToken(userName);
+  }
+);
+
+// [Public Permission]
+router.get(
+  "/sso_login",
+  permission({ token: false, level: null }),
+  validator({ query: { username: String, code: String, redirect: String } }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const userName = String(ctx.request.body.username);
+    const code = String(ctx.request.body.code);
+    const redirect = decodeURIComponent(String(ctx.request.body.redirect));
+    if (UserSSOService.verifySSOToken(userName, code)) {
+      loginSuccess(ctx, userName);
+      return ctx.redirect(redirect);
+    } else {
+      throw new Error($t("SSO 登录失败，请重新回到原页面尝试重新跳转登录！"));
     }
   }
 );
