@@ -61,7 +61,7 @@ router.get(
       loginSuccess(ctx, userName);
       return ctx.redirect(redirect);
     } else {
-      throw new Error($t("SSO 登录失败，请重新回到原页面尝试重新跳转登录！"));
+      throw new Error($t("TXT_CODE_13411df7"));
     }
   }
 );
