@@ -10,6 +10,10 @@ import {
 } from "../service/exchange_service";
 import { toText } from "common";
 import { logger } from "../service/log";
+import Koa from "koa";
+import UserSSOService from "../service/user_sso_service";
+import { loginSuccess } from "../service/passport_service";
+import { $t } from "../i18n";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -38,9 +42,30 @@ router.post(
         ctx.body = await queryInstanceByUserId(params);
         return;
       }
+      if (requestAction === RequestAction.SSO_TOKEN) {
+        ctx.body = UserSSOService.generateSSOToken(params?.username);
+        return;
+      }
     } catch (err) {
       logger.error("Exchange request error: " + err);
       ctx.body = err;
+    }
+  }
+);
+
+router.get(
+  "/sso",
+  permission({ token: false, level: null }),
+  validator({ query: { username: String, token: String, redirect: String } }),
+  async (ctx: Koa.ParameterizedContext) => {
+    const userName = String(ctx.request.body.username);
+    const token = String(ctx.request.body.token);
+    const redirect = decodeURIComponent(String(ctx.request.body.redirect));
+    if (UserSSOService.verifySSOToken(userName, token)) {
+      loginSuccess(ctx, userName);
+      return ctx.redirect(redirect);
+    } else {
+      throw new Error($t("TXT_CODE_13411df7"));
     }
   }
 );

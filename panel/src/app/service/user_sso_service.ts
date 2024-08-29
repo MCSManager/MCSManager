@@ -6,6 +6,7 @@ export default class UserSSOService {
   constructor() {}
 
   public static generateSSOToken(username: string) {
+    if (!username || typeof username !== "string") throw new Error("username is required!");
     const token = v4();
     UserSSOService.tokens.set(token, username);
     return token;

@@ -46,12 +46,12 @@ export interface BuyRequestProtocol {
   code?: string;
   instance_id?: string;
 }
-
 export enum RequestAction {
   BUY = "buy",
   RENEW = "renew",
   QUERY_INSTANCE = "query_instance",
-  PING = "ping"
+  PING = "ping",
+  SSO_TOKEN = "sso_token"
 }
 
 export interface PortInfo {

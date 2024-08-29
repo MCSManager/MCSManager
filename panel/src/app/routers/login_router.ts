@@ -37,35 +37,6 @@ router.post(
   }
 );
 
-// [Admin Permission]
-router.get(
-  "/generate_sso_token",
-  permission({ level: ROLE.ADMIN }),
-  validator({ query: { username: String } }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userName = String(ctx.request.body.username);
-    ctx.body = UserSSOService.generateSSOToken(userName);
-  }
-);
-
-// [Public Permission]
-router.get(
-  "/sso_login",
-  permission({ token: false, level: null }),
-  validator({ query: { username: String, code: String, redirect: String } }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userName = String(ctx.request.body.username);
-    const code = String(ctx.request.body.code);
-    const redirect = decodeURIComponent(String(ctx.request.body.redirect));
-    if (UserSSOService.verifySSOToken(userName, code)) {
-      loginSuccess(ctx, userName);
-      return ctx.redirect(redirect);
-    } else {
-      throw new Error($t("TXT_CODE_13411df7"));
-    }
-  }
-);
-
 // [Public Permission]
 // exit route
 router.get(
