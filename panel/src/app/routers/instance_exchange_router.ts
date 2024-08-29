@@ -5,6 +5,7 @@ import { ROLE } from "../entity/user";
 import {
   buyOrRenewInstance,
   getNodeStatus,
+  parseUserName,
   queryInstanceByUserId,
   RequestAction
 } from "../service/exchange_service";
@@ -43,7 +44,7 @@ router.post(
         return;
       }
       if (requestAction === RequestAction.SSO_TOKEN) {
-        ctx.body = UserSSOService.generateSSOToken(params?.username);
+        ctx.body = UserSSOService.generateSSOToken(parseUserName(params?.username));
         return;
       }
     } catch (err) {
@@ -56,12 +57,19 @@ router.post(
 router.get(
   "/sso",
   permission({ token: false, level: null }),
-  validator({ query: { username: String, token: String, redirect: String } }),
+  validator({
+    query: { username: String, token: String, instanceId: String, daemonId: String, origin: String }
+  }),
   async (ctx: Koa.ParameterizedContext) => {
-    const userName = String(ctx.request.body.username);
-    const token = String(ctx.request.body.token);
-    const redirect = decodeURIComponent(String(ctx.request.body.redirect));
+    const userName = parseUserName(String(ctx.request.query.username));
+    const token = String(ctx.request.query.token);
+    const redirect = `${decodeURIComponent(
+      String(ctx.request.query.origin)
+    )}/#/instances/terminal?daemonId=${ctx.request.query.daemonId}&instanceId=${
+      ctx.request.query.instanceId
+    }&from=sso`;
     if (UserSSOService.verifySSOToken(userName, token)) {
+      logger.warn("SSO login: username: %s, token: %s, redirect: %s", userName, token, redirect);
       loginSuccess(ctx, userName);
       return ctx.redirect(redirect);
     } else {
