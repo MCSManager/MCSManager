@@ -9,6 +9,9 @@ export default class UserSSOService {
     if (!username || typeof username !== "string") throw new Error("username is required!");
     const token = v4();
     UserSSOService.tokens.set(token, username);
+    if (UserSSOService.tokens.size > 1000) {
+      UserSSOService.tokens.delete(UserSSOService.tokens.keys().next().value);
+    }
     return token;
   }
 
