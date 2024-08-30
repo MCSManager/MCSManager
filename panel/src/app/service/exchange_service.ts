@@ -8,7 +8,7 @@ import { AdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 import type { IGlobalInstanceConfig } from "common/global";
 
 // ------- Protocol Define -------
-export interface DaemonStatusProtocol {
+export interface NodeStatusProtocol {
   name: string;
   id: string;
   ip: string;
@@ -217,7 +217,7 @@ export async function queryInstanceByUserId(
   return newInstancesInfo;
 }
 
-export async function getNodeStatus(params: Record<string, any>): Promise<DaemonStatusProtocol> {
+export async function getNodeStatus(params: Record<string, any>): Promise<NodeStatusProtocol> {
   const nodeId = toText(params.node_id) ?? "";
   const remoteService = RemoteServiceSubsystem.getInstance(nodeId);
   if (!remoteService?.available) {
@@ -226,11 +226,13 @@ export async function getNodeStatus(params: Record<string, any>): Promise<Daemon
   const remoteRequest = new RemoteRequest(remoteService);
   const remoteInfo = await remoteRequest.request("info/overview");
   remoteInfo.uuid = remoteService.uuid;
-  remoteInfo.ip = remoteService.config.ip;
-  remoteInfo.port = remoteService.config.port;
-  remoteInfo.prefix = remoteService.config.prefix;
   remoteInfo.available = remoteService.available;
-  remoteInfo.remarks = remoteService.config.remarks;
+
+  remoteInfo.ip = remoteService.config?.ip;
+  remoteInfo.port = remoteService.config?.port;
+  remoteInfo.prefix = remoteService.config?.prefix;
+  remoteInfo.remarks = remoteService.config?.remarks;
+
   return {
     name: String(remoteInfo.remarks),
     id: String(remoteInfo.uuid),
