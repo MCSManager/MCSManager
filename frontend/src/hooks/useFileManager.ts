@@ -584,7 +584,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const toDisk = async (disk: string) => {
     breadcrumbs.splice(0, breadcrumbs.length);
     breadcrumbs.push({
-      path: disk + ":\\",
+      path: disk === "/" ? disk : disk + ":\\",
       name: "/",
       disabled: false
     });
