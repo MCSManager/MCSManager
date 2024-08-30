@@ -126,7 +126,8 @@ export async function buyOrRenewInstance(
 
   if (request_action === RequestAction.BUY) {
     payload.category = params.category_id || 0;
-    payload.endTime = (payload.endTime ? payload.endTime : Date.now()) + hours * 3600 * 1000;
+    payload.endTime =
+      (payload.endTime ? Number(payload.endTime) : Date.now()) + hours * 3600 * 1000;
     payload.nickname = username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
@@ -184,11 +185,19 @@ export async function buyOrRenewInstance(
     }
 
     if (!config) throw new Error(t("TXT_CODE_348c9098"));
-    config.endTime = (config?.endTime ? config.endTime : Date.now()) + hours * 3600 * 1000;
+
+    const curExpireTime = Number(config.endTime);
+    if (!curExpireTime || isNaN(curExpireTime) || curExpireTime < Date.now()) {
+      config.endTime = Date.now() + hours * 3600 * 1000;
+    } else {
+      config.endTime = curExpireTime + hours * 3600 * 1000;
+    }
+
     await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,
       config: config
     });
+
     return {
       instance_id,
       instance_config: config,
