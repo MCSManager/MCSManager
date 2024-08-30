@@ -23,7 +23,11 @@ export function getWindowsDisks() {
   // A - Z
   for (let i = 65; i <= 90; i++) {
     const letter = String.fromCharCode(i);
-    if (fs.existsSync(`${letter}:\\`)) res.push(letter);
+    try {
+      if (fs.existsSync(`${letter}:\\`)) res.push(letter);
+    } catch (error) {
+      // ignore error
+    }
   }
   cacheDisks = res;
   return res;
