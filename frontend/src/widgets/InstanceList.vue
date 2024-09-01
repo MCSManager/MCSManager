@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types/index";
 import { ref, onMounted, computed, h } from "vue";
 import { t } from "@/lang/i18n";
@@ -12,14 +11,11 @@ import {
   PlayCircleOutlined,
   PauseCircleOutlined,
   CloseOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
   DeleteOutlined,
   WarningOutlined,
   InfoCircleOutlined,
   FrownOutlined,
-  RedoOutlined,
-  UserOutlined
+  RedoOutlined
 } from "@ant-design/icons-vue";
 
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -39,7 +35,6 @@ import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { throttle } from "lodash";
 import { useScreen } from "@/hooks/useScreen";
-import { parseTimestamp } from "../tools/time";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import Shortcut from "./instance/Shortcut.vue";

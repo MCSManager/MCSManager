@@ -13,7 +13,8 @@ import {
   CloseOutlined,
   CloudDownloadOutlined,
   CodeOutlined,
-  UserOutlined
+  UserOutlined,
+  TagsOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -30,6 +31,7 @@ import { parseTimestamp } from "@/tools/time";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
+import { openInstanceTagsEditor } from "@/components/fc/index";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -44,8 +46,6 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { toPage } = useAppRouters();
 const instanceId = props.targetInstanceInfo?.instanceUuid || getMetaOrRouteValue("instanceId");
 const daemonId = props.targetDaemonId || getMetaOrRouteValue("daemonId");
-
-console.debug("XXX:", instanceId, daemonId, props.targetInstanceInfo);
 
 const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo } = useInstanceInfo({
   instanceId: props.targetInstanceInfo ? undefined : instanceId,
@@ -102,15 +102,18 @@ const actions = {
       }
     });
     message.success(t("TXT_CODE_b1600db0"));
-    refreshList();
   }
 };
 
-const execInstanceAction = async (actName: "start" | "stop" | "restart" | "kill" | "update") => {
+const execInstanceAction = async (
+  event: MouseEvent,
+  actName: "start" | "stop" | "restart" | "kill" | "update"
+) => {
   const action = actions[actName];
   try {
     if (action) {
       await action();
+      refreshList();
     }
   } catch (error) {
     reportErrorMsg(error);
@@ -122,8 +125,9 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
-      click: async () => {
-        execInstanceAction("start");
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
+        await execInstanceAction(event, "start");
       },
       loading: openLoading.value,
       disabled: containerState.isDesignMode,
@@ -132,14 +136,16 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
-      click: async () => {
+      click: (event: MouseEvent) => {
+        event.stopPropagation();
         Modal.confirm({
           title: t("二次确认"),
           content: t("确定向实例发出关闭指令吗？"),
           onOk: async () => {
-            execInstanceAction("stop");
+            execInstanceAction(event, "stop");
           }
         });
+        return false;
       },
       loading: stopLoading.value,
       disabled: containerState.isDesignMode,
@@ -148,12 +154,13 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
-      click: async () => {
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
         Modal.confirm({
           title: t("二次确认"),
           content: t("确定重启实例吗？"),
           onOk: async () => {
-            execInstanceAction("restart");
+            execInstanceAction(event, "restart");
           }
         });
       },
@@ -164,8 +171,9 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_40ca4f2"),
       icon: CloudDownloadOutlined,
-      click: async () => {
-        execInstanceAction("update");
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
+        execInstanceAction(event, "update");
       },
       loading: updateLoading.value,
       disabled: containerState.isDesignMode,
@@ -174,24 +182,37 @@ const instanceOperations = computed(() =>
     {
       title: t("TXT_CODE_7b67813a"),
       icon: CloseOutlined,
-      click: async () => {
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
         Modal.confirm({
           title: t("二次确认"),
           content: t("确认强制终止运行实例吗？这可能会造成实例数据损坏。"),
           onOk: async () => {
-            execInstanceAction("kill");
+            execInstanceAction(event, "kill");
           }
         });
       },
       loading: killLoading.value,
       disabled: containerState.isDesignMode,
-      condition: () => isRunning.value,
       danger: true
+    },
+    {
+      area: true
+    },
+    {
+      title: t("标签分组"),
+      icon: TagsOutlined,
+      click: (event: MouseEvent) => {
+        event.stopPropagation();
+        if (instanceId) openInstanceTagsEditor(instanceId, []);
+      },
+      disabled: containerState.isDesignMode
     },
     {
       title: t("TXT_CODE_524e3036"),
       icon: CodeOutlined,
-      click: () => {
+      click: (event: MouseEvent) => {
+        event.stopPropagation();
         toPage({
           path: "/instances/terminal",
           query: {
@@ -250,18 +271,21 @@ const instanceOperations = computed(() =>
           </span>
         </div>
       </a-typography-paragraph>
-      <a-space warp :size="10">
-        <a-tooltip v-for="item in instanceOperations" :key="item.title" :title="item.title">
-          <a-button
-            size="small"
-            :loading="item.loading"
-            :disabled="item.disabled"
-            @click="item.click"
-            :danger="item.danger"
-          >
-            <component :is="item.icon" style="font-size: 13px"></component>
-          </a-button>
-        </a-tooltip>
+      <a-space warp :size="6" class="mb-4">
+        <div v-for="item in instanceOperations" :key="item.title">
+          <a-divider v-if="item.area" type="vertical" />
+          <a-tooltip v-else :title="item.title">
+            <a-button
+              size="small"
+              :loading="item.loading"
+              :disabled="item.disabled"
+              :danger="item.danger"
+              @click="item.click"
+            >
+              <component :is="item.icon" style="font-size: 13px"></component>
+            </a-button>
+          </a-tooltip>
+        </div>
       </a-space>
     </template>
   </CardPanel>
