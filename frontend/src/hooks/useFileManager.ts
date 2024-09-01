@@ -590,6 +590,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     });
     spinning.value = true;
     operationForm.value.name = "";
+    operationForm.value.current = 1;
     await getFileList();
     spinning.value = false;
   };

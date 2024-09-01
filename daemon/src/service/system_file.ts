@@ -52,7 +52,12 @@ export default class FileManager {
       finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
     }
 
-    if (finalPath.indexOf(topAbsolutePath) !== 0) throw new Error(ERROR_MSG_01);
+    if (
+      finalPath.indexOf(topAbsolutePath) !== 0 &&
+      topAbsolutePath !== "/" &&
+      topAbsolutePath !== "\\"
+    )
+      throw new Error(ERROR_MSG_01);
     return finalPath;
   }
 
