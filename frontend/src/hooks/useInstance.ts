@@ -133,7 +133,7 @@ export function useInstanceInfo(params: Params) {
   return {
     isLoading,
     isReady,
-    instanceInfo: state,
+    instanceInfo: finalState,
     execute,
     statusText,
     isUnknown,

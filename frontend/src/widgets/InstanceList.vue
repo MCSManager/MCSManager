@@ -42,6 +42,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { parseTimestamp } from "../tools/time";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
+import Shortcut from "./instance/Shortcut.vue";
 
 defineProps<{
   card: LayoutCard;
@@ -428,6 +429,9 @@ onMounted(async () => {
             </div>
             <div v-else>
               <a-button @click="multipleMode = true">{{ t("TXT_CODE_5cb656b9") }}</a-button>
+              <a-button class="ml-10" @click="handleQueryInstance">
+                {{ t("TXT_CODE_b76d94e0") }}
+              </a-button>
             </div>
           </template>
           <template v-if="multipleMode" #center>
@@ -459,54 +463,16 @@ onMounted(async () => {
             :lg="8"
             :sm="12"
           >
-            <CardPanel
+            <Shortcut
               class="instance-card"
               :class="{ selected: multipleMode && findInstance(item) }"
               style="height: 100%"
+              :card="card"
+              :target-instance-info="item"
+              :target-daemon-id="currentRemoteNode?.uuid"
               @click="handleSelectInstance(item)"
-            >
-              <template #title>
-                {{ item.config.nickname }}
-              </template>
-              <template #body>
-                <a-typography-paragraph>
-                  <div class="mb-6">
-                    <a-tag :color="item.moreInfo?.isRunning ? 'green' : ''">
-                      <span v-if="item.moreInfo?.isRunning">
-                        <CheckCircleOutlined />
-                        {{ item.moreInfo?.statusText }}
-                      </span>
-                      <span v-else-if="item.moreInfo?.isStopped" class="color-info">
-                        <ExclamationCircleOutlined />
-                        {{ item.moreInfo?.statusText }}
-                      </span>
-                      <span v-else>
-                        <ExclamationCircleOutlined />
-                        {{ item.moreInfo?.statusText }}
-                      </span>
-                    </a-tag>
-                    <a-tag>
-                      {{ item.moreInfo?.instanceTypeText }}
-                    </a-tag>
-                  </div>
-                  <div>
-                    {{ t("TXT_CODE_d31a684c") }}
-                    {{ parseTimestamp(item.config.lastDatetime) }}
-                  </div>
-                  <div>
-                    {{ t("TXT_CODE_ae747cc0") }}
-                    {{ parseTimestamp(item.config.endTime) }}
-                  </div>
-                  <div v-if="item.info.mcPingOnline">
-                    <span>{{ t("TXT_CODE_33a09033") }}</span>
-                    <span style="vertical-align: middle">
-                      <UserOutlined />
-                      {{ item.info.currentPlayers }} / {{ item.info.maxPlayers }}
-                    </span>
-                  </div>
-                </a-typography-paragraph>
-              </template>
-            </CardPanel>
+              @refrsh-list="initInstancesData()"
+            />
           </a-col>
         </fade-up-animation>
       </template>
@@ -538,23 +504,12 @@ onMounted(async () => {
 .search-input:hover {
   width: 100%;
 }
-.instance-card {
-  cursor: pointer;
-  min-height: 170px;
-}
-.instance-card:hover {
-  border: 1px solid var(--color-gray-8);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-}
 
 .selected {
-  border: none;
-  outline: 3px solid var(--color-blue-6);
-  transition: all 0.3s;
+  border: 1px solid var(--color-blue-6);
   user-select: none;
   &:hover {
-    border: none;
-    outline: 3px solid var(--color-blue-6);
+    border: 1px solid var(--color-blue-6);
     transition: all 0.3s;
     box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
   }

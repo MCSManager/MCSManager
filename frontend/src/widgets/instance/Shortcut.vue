@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { h, computed } from "vue";
+import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types/index";
+import type { InstanceDetail, LayoutCard } from "@/types/index";
 import { message } from "ant-design-vue";
 import {
   CheckCircleOutlined,
@@ -12,7 +12,8 @@ import {
   RedoOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
-  CodeOutlined
+  CodeOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -21,27 +22,36 @@ import {
   killInstance,
   updateInstance
 } from "@/services/apis/instance";
+import { Modal } from "ant-design-vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { parseTimestamp } from "@/tools/time";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { reportErrorMsg } from "@/tools/validator";
 
 const props = defineProps<{
   card: LayoutCard;
+  targetInstanceInfo?: InstanceDetail;
+  targetDaemonId?: string;
 }>();
+
+const emits = defineEmits(["refrshList"]);
 
 const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const { toPage } = useAppRouters();
-const instanceId = getMetaOrRouteValue("instanceId");
-const daemonId = getMetaOrRouteValue("daemonId");
+const instanceId = props.targetInstanceInfo?.instanceUuid || getMetaOrRouteValue("instanceId");
+const daemonId = props.targetDaemonId || getMetaOrRouteValue("daemonId");
+
+console.debug("XXX:", instanceId, daemonId, props.targetInstanceInfo);
 
 const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo } = useInstanceInfo({
-  instanceId,
-  daemonId,
-  autoRefresh: true
+  instanceId: props.targetInstanceInfo ? undefined : instanceId,
+  daemonId: props.targetInstanceInfo ? undefined : daemonId,
+  autoRefresh: props.targetInstanceInfo ? false : true,
+  instanceInfo: props.targetInstanceInfo ? ref(props.targetInstanceInfo) : undefined
 });
 
 const operationConfig = {
@@ -57,14 +67,63 @@ const { isLoading: restartLoading, execute: executeRestart } = restartInstance()
 const { isLoading: killLoading, execute: executeKill } = killInstance();
 const { isLoading: updateLoading, execute: executeUpdate } = updateInstance();
 
+const refreshList = () => {
+  setTimeout(() => {
+    emits("refrshList");
+  }, 500);
+};
+
+const actions = {
+  start: async () => {
+    await executeOpen(operationConfig);
+    message.success(t("TXT_CODE_e13abbb1"));
+  },
+  stop: async () => {
+    await executeStop(operationConfig);
+    message.success(t("TXT_CODE_efb6d377"));
+  },
+  restart: async () => {
+    await executeRestart(operationConfig);
+    message.success(t("TXT_CODE_efb6d377"));
+  },
+  kill: async () => {
+    await executeKill(operationConfig);
+    message.success(t("TXT_CODE_efb6d377"));
+  },
+  update: async () => {
+    await executeUpdate({
+      params: {
+        uuid: instanceId || "",
+        daemonId: daemonId || "",
+        task_name: "update"
+      },
+      data: {
+        time: new Date().getTime()
+      }
+    });
+    message.success(t("TXT_CODE_b1600db0"));
+    refreshList();
+  }
+};
+
+const execInstanceAction = async (actName: "start" | "stop" | "restart" | "kill" | "update") => {
+  const action = actions[actName];
+  try {
+    if (action) {
+      await action();
+    }
+  } catch (error) {
+    reportErrorMsg(error);
+  }
+};
+
 const instanceOperations = computed(() =>
   arrayFilter([
     {
       title: t("TXT_CODE_57245e94"),
       icon: PlayCircleOutlined,
       click: async () => {
-        await executeOpen(operationConfig);
-        message.success(t("TXT_CODE_e13abbb1"));
+        execInstanceAction("start");
       },
       loading: openLoading.value,
       disabled: containerState.isDesignMode,
@@ -74,8 +133,13 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_b1dedda3"),
       icon: PauseCircleOutlined,
       click: async () => {
-        await executeStop(operationConfig);
-        message.success(t("TXT_CODE_efb6d377"));
+        Modal.confirm({
+          title: t("二次确认"),
+          content: t("确定向实例发出关闭指令吗？"),
+          onOk: async () => {
+            execInstanceAction("stop");
+          }
+        });
       },
       loading: stopLoading.value,
       disabled: containerState.isDesignMode,
@@ -85,21 +149,15 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_47dcfa5"),
       icon: RedoOutlined,
       click: async () => {
-        await executeRestart(operationConfig);
-        message.success(t("TXT_CODE_b11166e7"));
+        Modal.confirm({
+          title: t("二次确认"),
+          content: t("确定重启实例吗？"),
+          onOk: async () => {
+            execInstanceAction("restart");
+          }
+        });
       },
       loading: restartLoading.value,
-      disabled: containerState.isDesignMode,
-      condition: () => isRunning.value
-    },
-    {
-      title: t("TXT_CODE_7b67813a"),
-      icon: CloseOutlined,
-      click: async () => {
-        await executeKill(operationConfig);
-        message.success(t("TXT_CODE_efb6d377"));
-      },
-      loading: killLoading.value,
       disabled: containerState.isDesignMode,
       condition: () => isRunning.value
     },
@@ -107,21 +165,28 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_40ca4f2"),
       icon: CloudDownloadOutlined,
       click: async () => {
-        await executeUpdate({
-          params: {
-            uuid: instanceId || "",
-            daemonId: daemonId || "",
-            task_name: "update"
-          },
-          data: {
-            time: new Date().getTime()
-          }
-        });
-        message.success(t("TXT_CODE_b1600db0"));
+        execInstanceAction("update");
       },
       loading: updateLoading.value,
       disabled: containerState.isDesignMode,
       condition: () => isStopped.value
+    },
+    {
+      title: t("TXT_CODE_7b67813a"),
+      icon: CloseOutlined,
+      click: async () => {
+        Modal.confirm({
+          title: t("二次确认"),
+          content: t("确认强制终止运行实例吗？这可能会造成实例数据损坏。"),
+          onOk: async () => {
+            execInstanceAction("kill");
+          }
+        });
+      },
+      loading: killLoading.value,
+      disabled: containerState.isDesignMode,
+      condition: () => isRunning.value,
+      danger: true
     },
     {
       title: t("TXT_CODE_524e3036"),
@@ -142,51 +207,73 @@ const instanceOperations = computed(() =>
 </script>
 
 <template>
-  <div style="width: 100%; position: relative">
-    <CardPanel>
-      <template #title>
-        {{ instanceInfo?.config.nickname }}
-      </template>
-      <template #body>
-        <a-typography-paragraph>
-          <div>
-            {{ t("TXT_CODE_e70a8e24") }}
-            <span v-if="isRunning" class="color-success">
+  <CardPanel style="width: 100%; height: 100%; position: relative">
+    <template #title>
+      {{ instanceInfo?.config.nickname }}
+    </template>
+    <template #operator> </template>
+    <template #body>
+      <a-typography-paragraph>
+        <div class="mb-6">
+          <a-tag :color="isRunning ? 'green' : ''">
+            <span v-if="isRunning">
               <CheckCircleOutlined />
               {{ statusText }}
             </span>
             <span v-else-if="isStopped" class="color-info">
+              <ExclamationCircleOutlined />
               {{ statusText }}
             </span>
             <span v-else>
               <ExclamationCircleOutlined />
               {{ statusText }}
             </span>
-          </div>
-          <div>
-            {{ t("TXT_CODE_68831be6") }}
+          </a-tag>
+          <a-tag>
             {{ instanceTypeText }}
-          </div>
-          <div>
-            {{ t("TXT_CODE_d31a684c") }}
-            {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
-          </div>
-          <div>
-            {{ t("TXT_CODE_ae747cc0") }}
-            {{ parseTimestamp(instanceInfo?.config.endTime) }}
-          </div>
-        </a-typography-paragraph>
-        <a-space warp :size="15">
-          <a-tooltip v-for="item in instanceOperations" :key="item.title" :title="item.title">
-            <a-button
-              :icon="h(item.icon)"
-              :loading="item.loading"
-              :disabled="item.disabled"
-              @click="item.click"
-            />
-          </a-tooltip>
-        </a-space>
-      </template>
-    </CardPanel>
-  </div>
+          </a-tag>
+        </div>
+
+        <div>
+          {{ t("TXT_CODE_d31a684c") }}
+          {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
+        </div>
+        <div>
+          {{ t("TXT_CODE_ae747cc0") }}
+          {{ parseTimestamp(instanceInfo?.config.endTime) }}
+        </div>
+        <div v-if="instanceInfo?.info.mcPingOnline">
+          <span>{{ t("TXT_CODE_33a09033") }}</span>
+          <span style="vertical-align: middle">
+            <UserOutlined />
+            {{ instanceInfo?.info.currentPlayers }} / {{ instanceInfo?.info.maxPlayers }}
+          </span>
+        </div>
+      </a-typography-paragraph>
+      <a-space warp :size="10">
+        <a-tooltip v-for="item in instanceOperations" :key="item.title" :title="item.title">
+          <a-button
+            size="small"
+            :loading="item.loading"
+            :disabled="item.disabled"
+            @click="item.click"
+            :danger="item.danger"
+          >
+            <component :is="item.icon" style="font-size: 13px"></component>
+          </a-button>
+        </a-tooltip>
+      </a-space>
+    </template>
+  </CardPanel>
 </template>
+
+<style clang="scss" scoped>
+.instance-card {
+  cursor: pointer;
+  min-height: 170px;
+}
+.instance-card:hover {
+  border: 1px solid var(--color-gray-8);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+</style>
