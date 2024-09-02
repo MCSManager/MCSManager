@@ -1928,5 +1928,20 @@
   "TXT_CODE_b52cb76c": "Please select network mode",
   "TXT_CODE_2ab036a4": "Please enter the game server port",
   "TXT_CODE_c5b38d90": "The instance specifications for renewal do not match, and the renewal operation cannot be completed!",
-  "TXT_CODE_13411df7": "SSO login failed, please return to the original page and try to log in again!"
+  "TXT_CODE_13411df7": "SSO login failed, please return to the original page and try to log in again!",
+  "TXT_CODE_a2544278": "Instance tag",
+  "TXT_CODE_f84ae54f": "After an instance has a tag, MCSManager will automatically classify the instance by tag name for users to filter when displaying these instances. Tag names support any language.",
+  "TXT_CODE_2c1337d": "Tag list of this instance",
+  "TXT_CODE_e26d53d5": "Do not create too many new tags, which may cause confusion of elements on the interface and degrade panel performance.",
+  "TXT_CODE_3dd66d98": "New tag",
+  "TXT_CODE_67d1ea21": "Some optional tags",
+  "TXT_CODE_3ecee271": "These selectable tags are calculated from the instance list of the current page and do not include all existing tags. A maximum of 30 are displayed here",
+  "TXT_CODE_893567ac": "Second confirmation",
+  "TXT_CODE_6da85509": "Are you sure you want to send a shutdown command to the instance?",
+  "TXT_CODE_f6bd907d": "Are you sure you want to restart the instance?",
+  "TXT_CODE_ec08484": "Are you sure you want to forcefully terminate the running instance? This may cause instance data corruption.",
+  "TXT_CODE_78e88c3f": "Tag grouping",
+  "TXT_CODE_7333c7f7": "Clear",
+  "TXT_CODE_6d8bc58d": "Failed to save. A single tag only supports up to 9 characters!",
+  "TXT_CODE_dc9fb6ce": "Failed to save. A single instance only supports up to 6 tags!"
 }

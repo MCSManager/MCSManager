@@ -55,7 +55,7 @@ const cancel = async () => {
 const submit = async () => {
   try {
     await saveTags();
-    message.success(t("保存成功"));
+    message.success(t("TXT_CODE_a7907771"));
     await cancel();
   } catch (error) {
     reportErrorMsg(error);
@@ -76,7 +76,7 @@ defineExpose({ openDialog });
   <AppConfigProvider>
     <a-modal
       v-model:open="open"
-      :title="t('实例标签')"
+      :title="t('TXT_CODE_a2544278')"
       centered
       :confirm-loading="saveLoading"
       @ok="submit"
@@ -88,7 +88,7 @@ defineExpose({ openDialog });
             <a-typography-text type="secondary">
               {{
                 t(
-                  "实例拥有标签之后，MCSManager 在显示这些实例时，将自动按照标签名字对实例进行分类供用户筛选，标签名字支持任何语言。"
+                  "TXT_CODE_f84ae54f"
                 )
               }}
             </a-typography-text>
@@ -96,12 +96,12 @@ defineExpose({ openDialog });
           <div>
             <a-typography-paragraph>
               <a-typography-text>
-                {{ t("此实例的标签列表") }}
+                {{ t("TXT_CODE_2c1337d") }}
               </a-typography-text>
             </a-typography-paragraph>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("请勿创建过多新标签，这可能会导致界面上元素混乱和面板性能下降。") }}
+                {{ t("TXT_CODE_e26d53d5") }}
               </a-typography-text>
             </a-typography-paragraph>
             <div class="tag-container">
@@ -128,7 +128,7 @@ defineExpose({ openDialog });
               />
               <a-tag v-else class="m-4 my-tag" style="border-style: dashed" @click="showInput">
                 <plus-outlined />
-                {{ t("新标签") }}
+                {{ t("TXT_CODE_3dd66d98") }}
               </a-tag>
             </div>
           </div>
@@ -136,14 +136,14 @@ defineExpose({ openDialog });
           <div v-if="instanceTagsTips?.length > 0" class="mt-20">
             <a-typography-paragraph>
               <a-typography-text>
-                {{ t("部分可选标签") }}
+                {{ t("TXT_CODE_67d1ea21") }}
               </a-typography-text>
             </a-typography-paragraph>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{
                   t(
-                    "这些可选择的标签由当前页实例列表计算而来，并不包含所有已存在的标签，此处最多展示 30 个"
+                    "TXT_CODE_3ecee271"
                   )
                 }}
               </a-typography-text>

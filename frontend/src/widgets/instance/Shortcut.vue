@@ -139,8 +139,8 @@ const instanceOperations = computed(() =>
       click: (event: MouseEvent) => {
         event.stopPropagation();
         Modal.confirm({
-          title: t("二次确认"),
-          content: t("确定向实例发出关闭指令吗？"),
+          title: t("TXT_CODE_893567ac"),
+          content: t("TXT_CODE_6da85509"),
           onOk: async () => {
             execInstanceAction(event, "stop");
           }
@@ -157,8 +157,8 @@ const instanceOperations = computed(() =>
       click: async (event: MouseEvent) => {
         event.stopPropagation();
         Modal.confirm({
-          title: t("二次确认"),
-          content: t("确定重启实例吗？"),
+          title: t("TXT_CODE_893567ac"),
+          content: t("TXT_CODE_f6bd907d"),
           onOk: async () => {
             execInstanceAction(event, "restart");
           }
@@ -185,8 +185,8 @@ const instanceOperations = computed(() =>
       click: async (event: MouseEvent) => {
         event.stopPropagation();
         Modal.confirm({
-          title: t("二次确认"),
-          content: t("确认强制终止运行实例吗？这可能会造成实例数据损坏。"),
+          title: t("TXT_CODE_893567ac"),
+          content: t("TXT_CODE_ec08484"),
           onOk: async () => {
             execInstanceAction(event, "kill");
           }
@@ -200,7 +200,7 @@ const instanceOperations = computed(() =>
       area: true
     },
     {
-      title: t("标签分组"),
+      title: t("TXT_CODE_78e88c3f"),
       icon: TagsOutlined,
       click: async (event: MouseEvent) => {
         event.stopPropagation();

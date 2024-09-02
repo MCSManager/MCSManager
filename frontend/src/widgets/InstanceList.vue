@@ -461,7 +461,7 @@ onMounted(async () => {
       <a-col :span="24">
         <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
           <a-tag v-if="selectedTags.length > 0" color="red" class="my-tag" @click="clearTags">
-            {{ t("清空") }}
+            {{ t("TXT_CODE_7333c7f7") }}
           </a-tag>
           <a-tag
             v-for="item in tagTips"
