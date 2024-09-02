@@ -101,7 +101,7 @@ defineExpose({ openDialog });
             </a-typography-paragraph>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("单个实例最多支持 6 个标签，每个标签不可超过 9 个字符。") }}
+                {{ t("请勿创建过多新标签，这可能会导致界面上元素混乱和面板性能下降。") }}
               </a-typography-text>
             </a-typography-paragraph>
             <div class="tag-container">

@@ -69,35 +69,41 @@ onMounted(async () => {
         {{ t("TXT_CODE_7ec9c59c") }}{{ getInstanceName }}
       </a-typography-paragraph>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_68831be6") }}{{ instanceTypeText }}
+        <div class="flex flex-wrap instance-tag">
+          <!-- instance status -->
+          <a-tag v-if="isRunning" color="green" class="tag">
+            <CheckCircleOutlined />
+            {{ statusText }}
+          </a-tag>
+          <a-tag v-else-if="isStopped" class="tag">
+            <ExclamationCircleOutlined />
+            {{ statusText }}
+          </a-tag>
+          <a-tag v-else class="tag" color="pink">
+            {{ statusText }}
+          </a-tag>
+
+          <!-- instance type -->
+          <a-tag class="tag" color="purple"> {{ instanceTypeText }}</a-tag>
+
+          <a-tag color="purple" class="tag">
+            {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
+          </a-tag>
+
+          <!-- real tags -->
+          <a-tag v-for="tag in instanceInfo?.config.tag" :key="tag" class="tag" color="blue">
+            {{ tag }}
+          </a-tag>
+        </div>
       </a-typography-paragraph>
+
       <a-typography-paragraph v-if="instanceGameServerInfo">
         {{ t("TXT_CODE_855c4a1c") }}{{ instanceGameServerInfo.players }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceGameServerInfo">
         {{ t("TXT_CODE_e260a220") }}{{ instanceGameServerInfo.version }}
       </a-typography-paragraph>
-      <a-typography-paragraph>
-        <div style="display: flex; gap: 10px">
-          <div>
-            <span>{{ t("TXT_CODE_e70a8e24") }}</span>
-            <span v-if="isRunning" class="color-success">
-              <CheckCircleOutlined />
-              {{ statusText }}
-            </span>
-            <span v-else-if="isStopped" class="color-info">
-              <ExclamationCircleOutlined />
-              {{ statusText }}
-            </span>
-            <span v-else>
-              {{ statusText }}
-            </span>
-          </div>
-          <div>
-            <span> {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }} </span>
-          </div>
-        </div>
-      </a-typography-paragraph>
+
       <a-typography-paragraph>
         {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
@@ -152,3 +158,13 @@ onMounted(async () => {
 
   <DockerInfo ref="DockerInfoDialog" :docker-info="instanceInfo?.config.docker" />
 </template>
+
+<style lang="scss" scoped>
+.instance-tag {
+  margin-left: -4px;
+  margin-right: -4px;
+  .tag {
+    margin: 4px;
+  }
+}
+</style>

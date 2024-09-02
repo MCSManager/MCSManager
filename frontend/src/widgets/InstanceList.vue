@@ -58,11 +58,12 @@ const { execute: getNodes, state: nodes, isLoading: isLoading1 } = remoteNodeLis
 const { execute: getInstances, state: instances, isLoading: isLoading2 } = remoteInstances();
 const { updateTagTips, tagTips } = useInstanceTagTips();
 const {
-  tags: searchTags,
+  tags: selectedTags,
   setRefreshFn,
   selectTag,
   removeTag,
-  isTagSelected
+  isTagSelected,
+  clearTags
 } = useInstanceTagSearch();
 
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
@@ -106,7 +107,7 @@ const initInstancesData = async (resetPage?: boolean) => {
         page_size: operationForm.value.pageSize,
         status: operationForm.value.status,
         instance_name: operationForm.value.instanceName.trim(),
-        tag: JSON.stringify(searchTags.value)
+        tag: JSON.stringify(selectedTags.value)
       }
     });
     updateTagTips(instances.value?.allTags || []);
@@ -459,8 +460,11 @@ onMounted(async () => {
       </a-col>
       <a-col :span="24">
         <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
+          <a-tag v-if="selectedTags.length > 0" color="red" class="my-tag" @click="clearTags">
+            {{ t("清空") }}
+          </a-tag>
           <a-tag
-            v-for="item in [...tagTips, ...tagTips, ...tagTips, ...tagTips, ...tagTips]"
+            v-for="item in tagTips"
             :key="item"
             class="my-tag"
             :color="isTagSelected(item) ? 'purple' : ''"

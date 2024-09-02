@@ -94,8 +94,14 @@ export function useInstanceTagSearch() {
     return _.includes(tags.value, tag);
   };
 
+  const clearTags = () => {
+    tags.value = [];
+    searchFn();
+  };
+
   return {
     tags,
+    clearTags,
     selectTag,
     removeTag,
     setRefreshFn,
