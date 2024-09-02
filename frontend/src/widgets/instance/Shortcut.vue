@@ -204,7 +204,10 @@ const instanceOperations = computed(() =>
       icon: TagsOutlined,
       click: (event: MouseEvent) => {
         event.stopPropagation();
-        if (instanceId) openInstanceTagsEditor(instanceId, []);
+        if (instanceId && daemonId) {
+          const tags = instanceInfo.value?.config.tag || [];
+          openInstanceTagsEditor(instanceId, daemonId, tags);
+        }
       },
       disabled: containerState.isDesignMode
     },
@@ -252,6 +255,15 @@ const instanceOperations = computed(() =>
           </a-tag>
           <a-tag>
             {{ instanceTypeText }}
+          </a-tag>
+        </div>
+
+        <div
+          v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0"
+          class="instance-tag-container mb-6"
+        >
+          <a-tag v-for="item in instanceInfo?.config.tag" :key="item" class="my-tag" color="blue">
+            {{ item }}
           </a-tag>
         </div>
 

@@ -133,9 +133,16 @@ export async function openLoadingDialog(title: string, text: string, subTitle?: 
   return component;
 }
 
-export async function openInstanceTagsEditor(instanceId: string, tags: string[]) {
+export async function openInstanceTagsEditor(
+  instanceId: string,
+  daemonId: string,
+  tags: string[],
+  tagsTips?: string[]
+) {
   return useMountComponent({
     instanceId,
+    daemonId,
+    tagsTips,
     tags
   }).load<InstanceType<typeof TagsDialog>>(TagsDialog);
 }

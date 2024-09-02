@@ -146,6 +146,7 @@ export const updateInstanceConfig = useDefineApi<
       crlf?: number;
       ie?: string;
       oe?: string;
+      tag?: string[];
       stopCommand?: string;
       eventTask?: {
         autoRestart: boolean;

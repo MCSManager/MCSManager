@@ -16,7 +16,6 @@ import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
 import { t } from "i18next";
 
-// The instance does not need to store additional information persistently
 interface IInstanceInfo {
   mcPingOnline: boolean;
   currentPlayers: number;
@@ -42,7 +41,7 @@ const TERM_RESET = "\x1B[0m";
 const IGNORE_TEXT = [
   "\n\n",
   TERM_TEXT_GOLD,
-  "[MCSManager] ",
+  "[MCSMANAGER] ",
   TERM_RESET,
   TERM_TEXT_YELLOW,
   t("TXT_CODE_c5ed896f"),
@@ -50,7 +49,6 @@ const IGNORE_TEXT = [
   "\n\n"
 ].join("");
 
-// instance class
 export default class Instance extends EventEmitter {
   public static readonly STATUS_BUSY = -1;
   public static readonly STATUS_STOP = 0;
@@ -153,6 +151,11 @@ export default class Instance extends EventEmitter {
     if (this.isStoppedOrBusy() && cfg.terminalOption) {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "ptyWindowCol", Number);
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "ptyWindowRow", Number);
+    }
+
+    if (cfg.tag instanceof Array) {
+      cfg.tag = cfg.tag.map((tag: any) => String(tag).trim());
+      this.config.tag = cfg.tag;
     }
 
     if (cfg?.extraServiceConfig) {
@@ -357,23 +360,6 @@ export default class Instance extends EventEmitter {
     if (!this.config || !this.config.cwd) throw new Error("Instance config error, cwd is Null!");
     if (path.isAbsolute(this.config.cwd)) return path.normalize(this.config.cwd);
     return path.normalize(path.join(process.cwd(), this.config.cwd));
-  }
-
-  async usedSpace(tmp?: string, maxDeep = 4, deep = 0) {
-    // if (deep >= maxDeep) return 0;
-    // let size = 0;
-    // const topPath = tmp ? tmp : this.absoluteCwdPath();
-    // const files = await fs.readdir(topPath);
-    // for (const fileName of files) {
-    // const absPath = path.join(topPath, fileName);
-    // const info = await fs.stat(absPath);
-    // if (info.isDirectory()) {
-    // size += await this.usedSpace(absPath, maxDeep, deep + 1);
-    // } else {
-    // size += info.size;
-    // }
-    // }
-    return 0;
   }
 
   // execute the preset command action

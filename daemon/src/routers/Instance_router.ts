@@ -125,11 +125,10 @@ routerApp.on("instance/detail", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     let processInfo = null;
-    let space = null;
+    let space = 0;
     try {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
-      space = await instance.usedSpace();
     } catch (err: any) {}
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,

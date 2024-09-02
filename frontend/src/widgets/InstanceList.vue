@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LayoutCard } from "@/types/index";
-import { ref, onMounted, computed, h } from "vue";
+import { ref, onMounted, computed, h, unref } from "vue";
 import { t } from "@/lang/i18n";
 import {
   SearchOutlined,
@@ -38,6 +38,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import Shortcut from "./instance/Shortcut.vue";
+import { useInstanceTagTips } from "@/hooks/useInstanceTag";
 
 defineProps<{
   card: LayoutCard;
@@ -55,6 +56,7 @@ const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes, isLoading: isLoading1 } = remoteNodeList();
 const { execute: getInstances, state: instances, isLoading: isLoading2 } = remoteInstances();
+const { updateTagTips, tagTips } = useInstanceTagTips();
 
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
 
@@ -99,6 +101,7 @@ const initInstancesData = async (resetPage?: boolean) => {
         instance_name: operationForm.value.instanceName.trim()
       }
     });
+    updateTagTips(unref(instancesMoreInfo));
   } catch (err) {
     return reportErrorMsg(t("TXT_CODE_e109c091"));
   }
@@ -445,6 +448,13 @@ onMounted(async () => {
           </template>
         </BetweenMenus>
       </a-col>
+      <a-col :span="24">
+        <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
+          <a-tag v-for="item in tagTips" :key="item" class="my-tag" color="purple">
+            {{ item }}
+          </a-tag>
+        </div>
+      </a-col>
       <template v-if="isLoading">
         <Loading></Loading>
       </template>
@@ -454,7 +464,7 @@ onMounted(async () => {
             v-for="item in instancesMoreInfo"
             :key="item.instanceUuid"
             :span="24"
-            :xl="6"
+            :xl="8"
             :lg="8"
             :sm="12"
           >
@@ -507,6 +517,21 @@ onMounted(async () => {
     border: 1px solid var(--color-blue-6);
     transition: all 0.3s;
     box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
+  }
+}
+
+.instances-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  .my-tag {
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      border-color: var(--color-gray-9);
+    }
   }
 }
 </style>

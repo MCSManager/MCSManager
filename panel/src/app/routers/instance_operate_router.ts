@@ -5,7 +5,7 @@ import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
 import { timeUuid } from "../service/password";
 import { getUserUuid } from "../service/passport_service";
-import { isHaveInstanceByUuid } from "../service/permission_service";
+import { isHaveInstanceByUuid, isTopPermission } from "../service/permission_service";
 import { $t } from "../i18n";
 import { isTopPermissionByUuid } from "../service/permission_service";
 import { isEmpty, toText, toBoolean, toNumber } from "common";
@@ -370,6 +370,15 @@ router.put(
       const instanceUuid = toText(ctx.query.uuid);
       const config = ctx.request.body;
 
+      let instanceTags: string[] | null = null;
+
+      if (isTopPermissionByUuid(getUserUuid(ctx))) {
+        instanceTags =
+          config?.tag instanceof Array
+            ? (config.tag as any[]).map((tag: any) => String(tag).trim())
+            : null;
+      }
+
       // Steam Rcon configuration
       const rconIp = toText(config.rconIp);
       const rconPort = toNumber(config.rconPort);
@@ -423,7 +432,8 @@ router.put(
           rconIp,
           rconPort,
           rconPassword,
-          enableRcon
+          enableRcon,
+          tag: instanceTags
         }
       });
       ctx.body = result;
