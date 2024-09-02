@@ -60,6 +60,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- eslint-disable vue/html-indent -->
   <CardPanel class="containerWrapper" style="height: 100%">
     <template #title>
       {{ card.title }}
@@ -113,6 +114,7 @@ onMounted(async () => {
           {{ t("TXT_CODE_530f5951") }}
         </a>
       </a-typography-paragraph>
+
       <a-typography-paragraph
         v-if="
           instanceInfo?.config.processType === 'docker' &&

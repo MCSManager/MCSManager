@@ -54,9 +54,9 @@ routerApp.on("instance/select", (ctx, data) => {
   const queryWrapper = InstanceSubsystem.getQueryMapWrapper();
   const allTags: string[] = [];
 
-  let tagText = "";
+  let searchTags: string[] = [];
   if (targetTag instanceof Array && targetTag.length > 0) {
-    tagText = targetTag.sort((a, b) => (a > b ? 1 : -1)).join(",");
+    searchTags = targetTag.map((v) => String(v).trim());
   }
 
   let result = queryWrapper.select<Instance>((v) => {
@@ -65,7 +65,10 @@ routerApp.on("instance/select", (ctx, data) => {
     if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
-    if (tagText && !v.config.tag.join(",").includes(tagText)) return false;
+
+    const curInstanceTagText = v.config.tag.join(",");
+    if (searchTags.length > 0 && searchTags.some((v) => !curInstanceTagText.includes(v)))
+      return false;
     return true;
   });
   result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));

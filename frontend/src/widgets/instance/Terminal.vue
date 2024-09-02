@@ -34,6 +34,7 @@ import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
 import Reinstall from "./dialogs/Reinstall.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -55,7 +56,10 @@ const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const viewType = getMetaOrRouteValue("viewType", false);
-const innerTerminalType = viewType === "inner";
+const innerTerminalType = computed(() => props.card.width === 12 && viewType === "inner");
+const instanceTypeText = computed(
+  () => INSTANCE_TYPE_TRANSLATION[instanceInfo.value?.config.type ?? -1]
+);
 
 const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
@@ -214,18 +218,22 @@ onMounted(async () => {
               <span class="ml-6"> {{ getInstanceName }} </span>
             </a-typography-title>
             <a-typography-paragraph v-if="!isPhone" class="mb-0 ml-4">
-              <span v-if="isRunning" class="color-success">
-                <CheckCircleOutlined />
-                {{ instanceStatusText }}
+              <span class="ml-6">
+                <a-tag v-if="isRunning" color="green">
+                  <CheckCircleOutlined />
+                  {{ instanceStatusText }}
+                </a-tag>
+                <a-tag v-else-if="isBuys" color="red">
+                  <LoadingOutlined />
+                  {{ instanceStatusText }}
+                </a-tag>
+                <a-tag v-else>
+                  <InfoCircleOutlined />
+                  {{ instanceStatusText }}
+                </a-tag>
               </span>
-              <span v-else-if="isBuys">
-                <LoadingOutlined />
-                {{ instanceStatusText }}
-              </span>
-              <span v-else class="color-info">
-                <InfoCircleOutlined />
-                {{ instanceStatusText }}
-              </span>
+
+              <a-tag color="purple"> {{ instanceTypeText }} </a-tag>
 
               <span
                 v-if="instanceInfo?.watcher && instanceInfo?.watcher > 1 && !isPhone"
@@ -304,6 +312,21 @@ onMounted(async () => {
     <template #title>
       <CloudServerOutlined />
       <span class="ml-8"> {{ getInstanceName }} </span>
+      <span class="ml-8">
+        <a-tag v-if="isRunning" color="green">
+          <CheckCircleOutlined />
+          {{ instanceStatusText }}
+        </a-tag>
+        <a-tag v-else-if="isBuys" color="red">
+          <LoadingOutlined />
+          {{ instanceStatusText }}
+        </a-tag>
+        <a-tag v-else>
+          <InfoCircleOutlined />
+          {{ instanceStatusText }}
+        </a-tag>
+        <a-tag color="purple"> {{ instanceTypeText }} </a-tag>
+      </span>
     </template>
     <template #operator>
       <span
