@@ -16,43 +16,33 @@
 
     <style>
       #before-app-mounted {
+        --loading-bg-color: #f3efef;
+        --loading-color: #0e0e0e;
+        --loading-subtitle-color: #3b3939;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #before-app-mounted {
+          --loading-bg-color: #242323;
+          --loading-color: #f3efef;
+          --loading-subtitle-color: #9d9999;
+        }
+      }
+
+      #before-app-mounted {
+        background: var(--loading-bg-color);
+        color: var(--loading-color);
         position: fixed;
         left: 0;
         right: 0;
         top: 0;
         bottom: 0;
-        background-color: rgba(239, 239, 239, 0.801);
         z-index: 9999;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      #before-app-mounted .loading {
-        display: block;
-        position: relative;
-        width: 6px;
-        height: 10px;
-        text-align: center;
-        left: 0px;
-        animation: rectangle infinite 1s ease-in-out -0.2s;
-        background-color: #000;
-      }
-      #before-app-mounted .loading:after,
-      #before-app-mounted .loading:before {
-        position: absolute;
-        width: 6px;
-        height: 10px;
-        content: "";
-        background-color: #000;
-      }
-      #before-app-mounted .loading:before {
-        left: -14px;
-        animation: rectangle infinite 1s ease-in-out -0.4s;
-      }
-      #before-app-mounted .loading:after {
-        right: -14px;
-        animation: rectangle infinite 1s ease-in-out;
-      }
+
       #before-app-mounted .loading-box {
         text-align: center;
         display: flex;
@@ -60,16 +50,49 @@
         flex-direction: column;
         align-items: center;
       }
-      @keyframes rectangle {
-        0%,
-        100%,
-        80% {
-          height: 20px;
-          box-shadow: 0 0 #000;
+
+      #before-app-mounted .loading {
+        margin: 20px;
+        position: relative;
+        width: 1px;
+        height: 1px;
+      }
+
+      #before-app-mounted .loading:before,
+      #before-app-mounted .loading:after {
+        position: absolute;
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        content: "";
+        border-radius: 100%;
+        background-color: var(--loading-color);
+      }
+
+      #before-app-mounted .loading:before {
+        left: -15px;
+        animation: ball-pulse infinite 0.75s -0.4s cubic-bezier(0.2, 0.68, 0.18, 1.08);
+      }
+
+      #before-app-mounted .loading:after {
+        right: -15px;
+        animation: ball-pulse infinite 0.75s cubic-bezier(0.2, 0.68, 0.18, 1.08);
+      }
+
+      @keyframes ball-pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
         }
-        40% {
-          height: 30px;
-          box-shadow: 0 -20px #000;
+
+        50% {
+          transform: scale(0.1);
+          opacity: 0.6;
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
         }
       }
     </style>
@@ -84,9 +107,7 @@
     <div id="before-app-mounted">
       <noscript>You need to enable JavaScript to run this Website.</noscript>
       <div class="loading-box">
-        <div style="min-height: 50px">
-          <div class="loading"></div>
-        </div>
+        <div class="loading"></div>
       </div>
     </div>
     <div id="app-mount-point" style="width: 100vw"></div>
