@@ -460,10 +460,10 @@ onMounted(async () => {
       <a-col :span="24">
         <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
           <a-tag
-            v-for="item in tagTips"
+            v-for="item in [...tagTips, ...tagTips, ...tagTips, ...tagTips, ...tagTips]"
             :key="item"
             class="my-tag"
-            :color="isTagSelected(item) ? 'blue' : ''"
+            :color="isTagSelected(item) ? 'purple' : ''"
             @click="isTagSelected(item) ? removeTag(item) : selectTag(item)"
           >
             {{ item }}
@@ -539,8 +539,13 @@ onMounted(async () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 4px;
+  margin-right: -4px;
+  margin-left: -4px;
+  max-height: 114px;
+  overflow-y: auto;
+
   .my-tag {
+    margin: 4px;
     padding: 4px 8px;
     cursor: pointer;
     transition: all 0.3s;

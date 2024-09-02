@@ -65,9 +65,7 @@ routerApp.on("instance/select", (ctx, data) => {
     if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
-    if (tagText) {
-      if (!v.config.tag.join(",").includes(tagText)) return false;
-    }
+    if (tagText && !v.config.tag.join(",").includes(tagText)) return false;
     return true;
   });
   result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));
@@ -92,7 +90,7 @@ routerApp.on("instance/select", (ctx, data) => {
     page: pageResult.page,
     pageSize: pageResult.pageSize,
     maxPage: pageResult.maxPage,
-    allTags: arrayUnique(allTags),
+    allTags: arrayUnique(allTags).slice(0, 60),
     data: overview
   });
 });
