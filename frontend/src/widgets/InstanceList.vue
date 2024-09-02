@@ -38,7 +38,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
 import Shortcut from "./instance/Shortcut.vue";
-import { useInstanceTagTips } from "@/hooks/useInstanceTag";
+import { useInstanceTagSearch, useInstanceTagTips } from "@/hooks/useInstanceTag";
 
 defineProps<{
   card: LayoutCard;
@@ -57,6 +57,13 @@ const currentRemoteNode = ref<NodeStatus>();
 const { execute: getNodes, state: nodes, isLoading: isLoading1 } = remoteNodeList();
 const { execute: getInstances, state: instances, isLoading: isLoading2 } = remoteInstances();
 const { updateTagTips, tagTips } = useInstanceTagTips();
+const {
+  tags: searchTags,
+  setRefreshFn,
+  selectTag,
+  removeTag,
+  isTagSelected
+} = useInstanceTagSearch();
 
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
 
@@ -98,10 +105,11 @@ const initInstancesData = async (resetPage?: boolean) => {
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
         status: operationForm.value.status,
-        instance_name: operationForm.value.instanceName.trim()
+        instance_name: operationForm.value.instanceName.trim(),
+        tag: JSON.stringify(searchTags.value)
       }
     });
-    updateTagTips(unref(instancesMoreInfo));
+    updateTagTips(instances.value?.allTags || []);
   } catch (err) {
     return reportErrorMsg(t("TXT_CODE_e109c091"));
   }
@@ -299,6 +307,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
 
 onMounted(async () => {
   await initInstancesData();
+  setRefreshFn(initInstancesData);
 });
 </script>
 
@@ -450,7 +459,13 @@ onMounted(async () => {
       </a-col>
       <a-col :span="24">
         <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
-          <a-tag v-for="item in tagTips" :key="item" class="my-tag" color="purple">
+          <a-tag
+            v-for="item in tagTips"
+            :key="item"
+            class="my-tag"
+            :color="isTagSelected(item) ? 'blue' : ''"
+            @click="isTagSelected(item) ? removeTag(item) : selectTag(item)"
+          >
             {{ item }}
           </a-tag>
         </div>

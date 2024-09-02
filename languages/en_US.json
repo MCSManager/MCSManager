@@ -1686,7 +1686,7 @@
   "TXT_CODE_a7f6b0e0": "Container Resource Limitation",
   "TXT_CODE_77000411": "Image Name",
   "TXT_CODE_d32301c1": "Available Ports",
-  "TXT_CODE_5415f009": "No content. Please select a daemon from the dropdown in the upper right corner, or create a new instance",
+  "TXT_CODE_5415f009": "No content, please try changing the node or search criteria",
   "TXT_CODE_c846074d": "Please complete your account profile!",
   "TXT_CODE_e520908a": "The version of the remote daemon is inconsistent with the version required by the panel. This may cause critical issues. Please update the remote daemon immediately!",
   "TXT_CODE_c565b2e0": "Allows uploading HTML files. This card will load the HTML and run Javascript code.",

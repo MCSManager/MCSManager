@@ -19,6 +19,8 @@ import RestartCommand from "../entity/commands/restart";
 import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask } from "../service/async_task_service/quick_install";
 import { QuickInstallTask } from "../service/async_task_service/quick_install";
+import { toNumber, toText } from "common";
+import { arrayUnique } from "common";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -43,17 +45,29 @@ routerApp.use((event, ctx, data, next) => {
 
 // Get the list of instances of this daemon (query)
 routerApp.on("instance/select", (ctx, data) => {
-  const page = data.page || 1;
-  const pageSize = data.pageSize || 1;
+  const page = toNumber(data.page) ?? 1;
+  const pageSize = toNumber(data.pageSize) ?? 1;
   const condition = data.condition;
+  const targetTag = data.condition.tag;
   const overview: IInstanceDetail[] = [];
   // keyword condition query
   const queryWrapper = InstanceSubsystem.getQueryMapWrapper();
+  const allTags: string[] = [];
+
+  let tagText = "";
+  if (targetTag instanceof Array && targetTag.length > 0) {
+    tagText = targetTag.sort((a, b) => (a > b ? 1 : -1)).join(",");
+  }
+
   let result = queryWrapper.select<Instance>((v) => {
+    if (v.config.tag) allTags.push(...v.config.tag);
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
     if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
+    if (tagText) {
+      if (!v.config.tag.join(",").includes(tagText)) return false;
+    }
     return true;
   });
   result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));
@@ -78,6 +92,7 @@ routerApp.on("instance/select", (ctx, data) => {
     page: pageResult.page,
     pageSize: pageResult.pageSize,
     maxPage: pageResult.maxPage,
+    allTags: arrayUnique(allTags),
     data: overview
   });
 });

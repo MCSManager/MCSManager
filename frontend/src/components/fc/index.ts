@@ -139,10 +139,12 @@ export async function openInstanceTagsEditor(
   tags: string[],
   tagsTips?: string[]
 ) {
-  return useMountComponent({
+  return await useMountComponent({
     instanceId,
     daemonId,
     tagsTips,
     tags
-  }).load<InstanceType<typeof TagsDialog>>(TagsDialog);
+  })
+    .load<InstanceType<typeof TagsDialog>>(TagsDialog)
+    .openDialog();
 }

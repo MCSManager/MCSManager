@@ -92,6 +92,7 @@ export const remoteInstances = useDefineApi<
       page_size: number;
       instance_name?: string;
       status: string;
+      tag?: string;
     };
   },
   {
@@ -99,6 +100,7 @@ export const remoteInstances = useDefineApi<
     page: 1;
     pageSize: 10;
     data: InstanceDetail[];
+    allTags: string[];
   }
 >({
   url: "/api/service/remote_service_instances"

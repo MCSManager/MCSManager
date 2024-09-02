@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive, nextTick, unref } from "vue";
+import { ref, reactive, nextTick } from "vue";
 import type { MountComponent } from "@/types";
 import { t } from "@/lang/i18n";
 
@@ -23,10 +23,13 @@ const state = reactive({
   inputValue: ""
 });
 
-const open = ref(false);
 const { tagTips } = useInstanceTagTips();
 const { removeTag, addTag, instanceTags, saveTags, saveLoading, instanceTagsTips } =
   useInstanceTags(props.instanceId, props.daemonId, props.tags, tagTips.value);
+
+// eslint-disable-next-line no-unused-vars
+let resolve: (tags: string[]) => void;
+const open = ref(false);
 
 const handleInputConfirm = () => {
   if (state.inputValue) {
@@ -45,6 +48,7 @@ const showInput = () => {
 
 const cancel = async () => {
   open.value = false;
+  resolve(instanceTags.value);
   if (props.destroyComponent) props.destroyComponent(1000);
 };
 
@@ -52,15 +56,20 @@ const submit = async () => {
   try {
     await saveTags();
     message.success(t("保存成功"));
+    await cancel();
   } catch (error) {
     reportErrorMsg(error);
   }
-  await cancel();
 };
 
-onMounted(async () => {
+const openDialog = () => {
   open.value = true;
-});
+  return new Promise<string[]>((_resolve) => {
+    resolve = _resolve;
+  });
+};
+
+defineExpose({ openDialog });
 </script>
 
 <template>
@@ -88,6 +97,11 @@ onMounted(async () => {
             <a-typography-paragraph>
               <a-typography-text>
                 {{ t("此实例的标签列表") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("单个实例最多支持 6 个标签，每个标签不可超过 9 个字符。") }}
               </a-typography-text>
             </a-typography-paragraph>
             <div class="tag-container">
@@ -129,7 +143,7 @@ onMounted(async () => {
               <a-typography-text type="secondary">
                 {{
                   t(
-                    "这些可选择的标签由当前页实例列表计算而来，并不包含所有已存在的标签，此处最多展示 20 个"
+                    "这些可选择的标签由当前页实例列表计算而来，并不包含所有已存在的标签，此处最多展示 30 个"
                   )
                 }}
               </a-typography-text>

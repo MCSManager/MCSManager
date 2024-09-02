@@ -372,11 +372,16 @@ router.put(
 
       let instanceTags: string[] | null = null;
 
-      if (isTopPermissionByUuid(getUserUuid(ctx))) {
-        instanceTags =
-          config?.tag instanceof Array
-            ? (config.tag as any[]).map((tag: any) => String(tag).trim())
-            : null;
+      if (config.tag instanceof Array && isTopPermissionByUuid(getUserUuid(ctx))) {
+        instanceTags = (config.tag as any[]).map((tag: any) => {
+          const tmp = String(tag).trim();
+          if (tmp.length > 9) throw new Error($t("保存失败，单个标签最多只支持9个字符！"));
+          return tmp;
+        });
+        if (instanceTags.length > 6) {
+          throw new Error($t("保存失败，单个实例最多只支持6个标签！"));
+        }
+        instanceTags = instanceTags!.sort((a, b) => (a > b ? 1 : -1));
       }
 
       // Steam Rcon configuration

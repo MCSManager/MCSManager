@@ -202,11 +202,12 @@ const instanceOperations = computed(() =>
     {
       title: t("标签分组"),
       icon: TagsOutlined,
-      click: (event: MouseEvent) => {
+      click: async (event: MouseEvent) => {
         event.stopPropagation();
         if (instanceId && daemonId) {
           const tags = instanceInfo.value?.config.tag || [];
-          openInstanceTagsEditor(instanceId, daemonId, tags);
+          await openInstanceTagsEditor(instanceId, daemonId, tags);
+          refreshList();
         }
       },
       disabled: containerState.isDesignMode
@@ -311,5 +312,12 @@ const instanceOperations = computed(() =>
 .instance-card:hover {
   border: 1px solid var(--color-gray-8);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+.instance-tag-container {
+  margin-left: -4px;
+  margin-right: -4px;
+  .my-tag {
+    margin: 4px;
+  }
 }
 </style>

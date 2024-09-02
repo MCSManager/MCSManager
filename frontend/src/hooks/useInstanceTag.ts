@@ -2,7 +2,6 @@ import _ from "lodash";
 import { computed, ref } from "vue";
 import { updateInstanceConfig } from "@/services/apis/instance";
 import { arrayUnique } from "@/tools/array";
-import type { InstanceDetail } from "@/types";
 import { createGlobalState } from "@vueuse/core";
 
 export function useInstanceTags(
@@ -16,7 +15,7 @@ export function useInstanceTags(
     if (tagsTips) {
       const tmp = tagsTips.filter((tag) => !_.includes(instanceTags.value, tag));
       return arrayUnique(tmp)
-        .slice(0, 20)
+        .slice(0, 30)
         .sort((a, b) => (a > b ? 1 : -1));
     }
     return [];
@@ -25,7 +24,10 @@ export function useInstanceTags(
 
   const removeTag = (tag: string) => {
     tag = tag.trim();
-    instanceTags.value.splice(tags.indexOf(tag), 1);
+    instanceTags.value.splice(
+      instanceTags.value.findIndex((v) => v === tag),
+      1
+    );
   };
 
   const addTag = (tag: string) => {
@@ -33,6 +35,7 @@ export function useInstanceTags(
     if (!_.includes(instanceTags.value, tag)) {
       instanceTags.value.push(tag);
     }
+    instanceTags.value = instanceTags.value.sort((a, b) => (a > b ? 1 : -1));
   };
 
   const saveTags = async () => {
@@ -59,10 +62,8 @@ export function useInstanceTags(
 
 export const useInstanceTagTips = createGlobalState(() => {
   const tags = ref<string[]>([]);
-  const updateTagTips = (instances: InstanceDetail[]) => {
-    instances.forEach((instance) => {
-      tags.value = arrayUnique(tags.value.concat(instance?.config?.tag || []));
-    });
+  const updateTagTips = (allTags: string[]) => {
+    tags.value = allTags;
   };
 
   return {
@@ -70,3 +71,34 @@ export const useInstanceTagTips = createGlobalState(() => {
     updateTagTips
   };
 });
+
+export function useInstanceTagSearch() {
+  const tags = ref<string[]>([]);
+  let searchFn: Function = () => {};
+
+  const selectTag = (tag: string) => {
+    tags.value.push(tag);
+    searchFn();
+  };
+
+  const removeTag = (tag: string) => {
+    tags.value = tags.value.filter((v) => v !== tag);
+    searchFn();
+  };
+
+  const setRefreshFn = (fn: Function) => {
+    searchFn = fn;
+  };
+
+  const isTagSelected = (tag: string) => {
+    return _.includes(tags.value, tag);
+  };
+
+  return {
+    tags,
+    selectTag,
+    removeTag,
+    setRefreshFn,
+    isTagSelected
+  };
+}
