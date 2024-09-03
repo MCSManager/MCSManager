@@ -40,13 +40,19 @@ router.get(
     const status = String(ctx.query.status);
     const tag = String(ctx.query.tag);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+    let tagList: string[] = [];
+    try {
+      tagList = JSON.parse(tag);
+    } catch (error) {
+      // ignore
+    }
     const result = await new RemoteRequest(remoteService).request("instance/select", {
       page,
       pageSize,
       condition: {
         instanceName,
         status,
-        tag: tag ? JSON.parse(tag) : null
+        tag: tagList.length > 0 ? tagList : null
       }
     });
     ctx.body = result;
