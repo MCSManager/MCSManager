@@ -39,9 +39,11 @@ MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Si
 ## Features
 
 1. One-click deployment of `Minecraft` Java/Bedrock Server
-2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Teraria`, etc.)
+2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Terraria`, etc.)
 3. Customizable UI, create your own layout
 4. Support `Docker` virtualization, multiuser, and commercial services
+
+
 5. Manage multiple servers with a single web interface
 6. More...
 
