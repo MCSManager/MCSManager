@@ -86,11 +86,7 @@ defineExpose({ openDialog });
         <div class="flex direction-column">
           <a-typography-paragraph>
             <a-typography-text type="secondary">
-              {{
-                t(
-                  "TXT_CODE_f84ae54f"
-                )
-              }}
+              {{ t("TXT_CODE_f84ae54f") }}
             </a-typography-text>
           </a-typography-paragraph>
           <div>
@@ -141,11 +137,7 @@ defineExpose({ openDialog });
             </a-typography-paragraph>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{
-                  t(
-                    "TXT_CODE_3ecee271"
-                  )
-                }}
+                {{ t("TXT_CODE_3ecee271") }}
               </a-typography-text>
             </a-typography-paragraph>
             <div class="tag-container">
@@ -171,7 +163,7 @@ defineExpose({ openDialog });
   margin-right: -4px;
 }
 
-.my-tag {
+.group-name-tag {
   height: 26px;
   line-height: 24px;
 }

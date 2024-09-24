@@ -48,8 +48,8 @@ html {
 
   &:hover {
     box-shadow:
-      0 4px 8px 0 var(--card-shadow-color),
-      0 1px 2px 1px var(--card-shadow-color);
+      0 4px 8px 0 var(--card-shadow-extend-color),
+      0 1px 2px 1px var(--card-shadow-extend-color);
   }
 }
 

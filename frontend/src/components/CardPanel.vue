@@ -46,9 +46,11 @@ const { containerState } = useLayoutContainerStore();
 
 <style lang="scss" scoped>
 @import "@/assets/global.scss";
+
 .padding {
   padding: 16px;
 }
+
 .card-panel {
   border: 1px solid var(--card-border-color);
   background-color: var(--background-color-white);

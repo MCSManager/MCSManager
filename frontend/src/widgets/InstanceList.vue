@@ -460,14 +460,19 @@ onMounted(async () => {
       </a-col>
       <a-col :span="24">
         <div v-if="tagTips && tagTips?.length > 0" class="instances-tag-container">
-          <a-tag v-if="selectedTags.length > 0" color="red" class="my-tag" @click="clearTags">
+          <a-tag
+            v-if="selectedTags.length > 0"
+            color="red"
+            class="group-name-tag"
+            @click="clearTags"
+          >
             {{ t("TXT_CODE_7333c7f7") }}
           </a-tag>
           <a-tag
             v-for="item in tagTips"
             :key="item"
-            class="my-tag"
-            :color="isTagSelected(item) ? 'purple' : ''"
+            class="group-name-tag"
+            :class="{ 'group-name-tag-active': isTagSelected(item) }"
             @click="isTagSelected(item) ? removeTag(item) : selectTag(item)"
           >
             {{ item }}
@@ -532,6 +537,7 @@ onMounted(async () => {
 .selected {
   border: 1px solid var(--color-blue-6);
   user-select: none;
+
   &:hover {
     border: 1px solid var(--color-blue-6);
     transition: all 0.3s;
@@ -548,14 +554,21 @@ onMounted(async () => {
   max-height: 114px;
   overflow-y: auto;
 
-  .my-tag {
+  .group-name-tag {
+    background-color: var(--color-gray-4);
     margin: 4px;
     padding: 4px 8px;
     cursor: pointer;
     transition: all 0.3s;
     &:hover {
-      border-color: var(--color-gray-9);
+      border-color: var(--color-gray-8);
     }
+  }
+
+  .group-name-tag-active {
+    background-color: var(--color-green-1) !important;
+    border-color: var(--color-green-3);
+    color: var(--color-green-7);
   }
 }
 </style>

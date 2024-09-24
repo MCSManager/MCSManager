@@ -263,7 +263,12 @@ const instanceOperations = computed(() =>
           v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0"
           class="instance-tag-container mb-6"
         >
-          <a-tag v-for="item in instanceInfo?.config.tag" :key="item" class="my-tag" color="blue">
+          <a-tag
+            v-for="item in instanceInfo?.config.tag"
+            :key="item"
+            class="group-name-tag"
+            color="blue"
+          >
             {{ item }}
           </a-tag>
         </div>
@@ -316,7 +321,7 @@ const instanceOperations = computed(() =>
 .instance-tag-container {
   margin-left: -4px;
   margin-right: -4px;
-  .my-tag {
+  .group-name-tag {
     margin: 4px;
   }
 }

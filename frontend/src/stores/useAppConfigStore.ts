@@ -51,7 +51,7 @@ export const useAppConfigStore = createGlobalState(() => {
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
       isDarkTheme()
-        ? (body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3) 100%), url(${url})`)
+        ? (body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65) 100%), url(${url})`)
         : (body.style.backgroundImage = `linear-gradient(135deg, rgba(220,220,220,0.3), rgba(53,53,53,0.3) 100%), url(${url})`);
     }
   };

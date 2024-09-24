@@ -20,8 +20,9 @@
 
   --text-color: var(--color-gray-8);
 
-  --card-border-color: rgba(215, 215, 215, 0.257);
-  --card-shadow-color: rgba(255, 255, 255, 0);
+  --card-border-color: rgba(196, 196, 196, 0.257);
+  --card-shadow-color: rgba(0, 0, 0, 0.135);
+  --card-shadow-extend-color: rgba(0, 0, 0, 0.3);
 
   .app-header-wrapper {
     border-bottom: 1px solid var(--color-gray-5);
@@ -29,11 +30,14 @@
 
   // Antdv for dark mode
   .ant-btn-default {
-    background-color: var(--blue-frontend-color);
+    background-color: var(--background-color-white);
   }
   .ant-modal-content {
     border: 1px solid var(--color-gray-5);
     border-radius: 8px;
+  }
+  .ant-tag-purple {
+    border: 1px solid var(--color-purple-5) !important;
   }
 }
 

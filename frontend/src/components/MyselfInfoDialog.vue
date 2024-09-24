@@ -104,12 +104,12 @@ const disable2FACode = async () => {
         <a-row>
           <a-col :span="12">
             <a-form-item :label="t('TXT_CODE_eb9fcdad')">
-              <span>{{ state.userInfo?.userName }}</span>
+              <a-tag>{{ state.userInfo?.userName }}</a-tag>
             </a-form-item>
           </a-col>
           <a-col>
             <a-form-item :label="t('TXT_CODE_63ccbf90')">
-              <span>{{ PERMISSION_MAP[String(state.userInfo?.permission)] }}</span>
+              <a-tag>{{ PERMISSION_MAP[String(state.userInfo?.permission)] }}</a-tag>
             </a-form-item>
           </a-col>
         </a-row>
@@ -117,18 +117,18 @@ const disable2FACode = async () => {
         <a-row>
           <a-col :span="12">
             <a-form-item :label="t('TXT_CODE_c5c56801')">
-              <span>{{ state.userInfo?.registerTime }}</span>
+              <a-tag>{{ state.userInfo?.registerTime }}</a-tag>
             </a-form-item>
           </a-col>
           <a-col>
             <a-form-item :label="t('TXT_CODE_d7ee9ba')">
-              <span>{{ state.userInfo?.loginTime }}</span>
+              <a-tag>{{ state.userInfo?.loginTime }}</a-tag>
             </a-form-item>
           </a-col>
         </a-row>
 
         <a-form-item :label="t('TXT_CODE_1d9d0746')">
-          <span>{{ state.userInfo?.uuid }}</span>
+          <a-tag>{{ state.userInfo?.uuid }}</a-tag>
         </a-form-item>
 
         <a-form-item :label="t('TXT_CODE_551b0348')">
@@ -168,11 +168,8 @@ const disable2FACode = async () => {
               1. {{ t("TXT_CODE_cc561947") }}<br />
               2. {{ t("TXT_CODE_af2a6972") }}<br />
             </p>
-            <div>
-              <img
-                :src="formState.qrcode"
-                style="height: 180px; margin-left: -10px; margin-top: -10px"
-              />
+            <div class="mb-20">
+              <img :src="formState.qrcode" style="height: 180px; border-radius: 6px" />
             </div>
             <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
               {{ t("TXT_CODE_b0a18c20") }}

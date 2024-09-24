@@ -30,8 +30,11 @@ import { removeTrail } from "@/tools/string";
 
 // eslint-disable-next-line no-unused-vars
 enum SocketStatus {
+  // eslint-disable-next-line no-unused-vars
   Connected = 1,
+  // eslint-disable-next-line no-unused-vars
   Connecting = 2,
+  // eslint-disable-next-line no-unused-vars
   Error = 0
 }
 

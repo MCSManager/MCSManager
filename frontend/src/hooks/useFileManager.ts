@@ -492,6 +492,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     spinning.value = true;
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     operationForm.value.name = "";
+    operationForm.value.current = 1;
     await getFileList();
     spinning.value = false;
   };
