@@ -1817,7 +1817,6 @@
   "TXT_CODE_95c5e900": "Tam görüntü adı, örneğin openjdk:17",
   "TXT_CODE_fdec1b6f": "Çalışma Dizinini Bağla",
   "TXT_CODE_3c37583b": "Dosya yönetimi altındaki dizinler konteyner içindeki bu dizine bağlanacaktır",
-  "TXT_CODE_2082f653": "Varsayılan: /workspace/",
   "TXT_CODE_26495d02": "java -jar demo.jar gibi bir başlangıç komutu girebilirsiniz. Herhangi bir başlangıç komutu girilmezse, görüntünün içinde tanımlanan komut kullanılır.",
   "TXT_CODE_a85091a4": "Varsayılan olarak otomatik olarak atanır",
   "TXT_CODE_7da6e84": "Oluşturmak için gerekli tüm alanları doldurun. Daha fazla seçenek için lütfen oluşturduktan sonra örnek ayarlarına gidin.",

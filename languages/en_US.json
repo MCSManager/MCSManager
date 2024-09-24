@@ -1817,7 +1817,6 @@
   "TXT_CODE_95c5e900": "Complete image name, e.g. openjdk:17",
   "TXT_CODE_fdec1b6f": "Mount Working Directory",
   "TXT_CODE_3c37583b": "Directories under file management will be mounted to this directory inside the container",
-  "TXT_CODE_2082f653": "Default: /workspace/",
   "TXT_CODE_26495d02": "You can enter a startup command, such as java -jar demo.jar. If no startup command is entered, the command defined inside the image will be used.",
   "TXT_CODE_a85091a4": "Automatically assigned by default",
   "TXT_CODE_7da6e84": "Complete all required fields to create. For more options, please go to instance settings after creation.",

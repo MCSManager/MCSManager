@@ -1816,7 +1816,6 @@
   "TXT_CODE_95c5e900": "Nome completo da imagem, por exemplo: openjdk:17",
   "TXT_CODE_fdec1b6f": "Montar Diretório de Trabalho",
   "TXT_CODE_3c37583b": "Diretórios sob gerenciamento de arquivos serão montados neste diretório dentro do contêiner",
-  "TXT_CODE_2082f653": "Padrão: /workspace/",
   "TXT_CODE_26495d02": "Você pode inserir um comando de inicialização, como java -jar demo.jar. Se nenhum comando de inicialização for inserido, o comando definido dentro da imagem será usado.",
   "TXT_CODE_a85091a4": "Atribuído automaticamente por padrão",
   "TXT_CODE_7da6e84": "Complete todos os campos obrigatórios para criar. Para mais opções, por favor, vá para as configurações da instância após a criação.",

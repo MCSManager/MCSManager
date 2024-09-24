@@ -533,7 +533,7 @@ defineExpose({
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.workingDir"
-                :placeholder="t('TXT_CODE_b23cc3e')"
+                :placeholder="t('TXT_CODE_2082f659')"
               />
             </a-form-item>
           </a-col>

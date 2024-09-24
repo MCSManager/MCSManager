@@ -26,7 +26,9 @@ import { reportErrorMsg } from "@/tools/validator";
 
 // eslint-disable-next-line no-unused-vars
 enum UNZIP {
+  // eslint-disable-next-line no-unused-vars
   ON = 1,
+  // eslint-disable-next-line no-unused-vars
   OFF = 0
 }
 
@@ -257,7 +259,7 @@ const createInstance = async () => {
             {{ t("TXT_CODE_3c37583b") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('TXT_CODE_2082f653')" />
+        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('TXT_CODE_2082f659')" />
       </a-form-item>
 
       <a-form-item name="startCommand">

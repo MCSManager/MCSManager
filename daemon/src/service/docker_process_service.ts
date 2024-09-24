@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { commandStringToArray } from "../entity/commands/base/command_parser";
 import DockerPullCommand from "../entity/commands/docker/docker_pull";
 import Instance from "../entity/instance/instance";
-import { DefaultDocker } from "./docker_service"
+import { DefaultDocker } from "./docker_service";
 
 import path from "path";
 import { $t } from "../i18n";
@@ -116,7 +116,8 @@ export class SetupDockerContainer extends AsyncTask {
 
     // Whether to use TTY mode
     const isTty = instance.config.terminalOption.pty;
-    const workingDir = instance.config.docker.workingDir ?? "/workspace/";
+
+    const workingDir = instance.config.docker.workingDir ?? "";
 
     // output startup log
     logger.info("----------------");
@@ -127,7 +128,12 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
     logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
-    logger.info(`BINDS: ${JSON.stringify([`${cwd}->${workingDir}`, ...extraBinds])}`);
+    logger.info(
+      `BINDS: ${JSON.stringify([
+        workingDir ? `${cwd}->${workingDir}` : "<No WorkSpace>",
+        ...extraBinds
+      ])}`
+    );
     logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
     logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
