@@ -28,6 +28,7 @@ import InstanceDetail from "./dialogs/InstanceDetail.vue";
 import type { RouteLocationPathRaw } from "vue-router";
 import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
 import McPingSettings from "./dialogs/McPingSettings.vue";
+import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
 
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
@@ -156,14 +157,6 @@ const btns = computed(() => {
         instanceDetailsDialog.value?.openDialog();
       }
     }
-    // {
-    //   title: t("TXT_CODE_3a406403"),
-    //   icon: CloudServerOutlined,
-    //   condition: () => !isGlobalTerminal.value,
-    //   click: () => {
-    //     pingConfigDialog.value?.openDialog();
-    //   }
-    // },
   ]);
 });
 </script>
@@ -172,36 +165,27 @@ const btns = computed(() => {
   <CardPanel class="containerWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <div class="pb-4">
-        <a-row :gutter="[16, 16]" style="height: 100%">
-          <a-col
-            v-for="btn in btns"
-            :key="btn.title"
-            :span="24"
-            :md="12"
-            :lg="6"
-            style="height: 100%"
+      <ResponsiveLayoutGroup class="function-btns-container" :items="btns">
+        <template #default="{ item }">
+          <InnerCard
+            :style="{ height: LayoutCardHeight.MINI }"
+            :icon="item.icon"
+            @click="item.click"
           >
-            <InnerCard
-              :style="{ height: LayoutCardHeight.MINI }"
-              :icon="btn.icon"
-              @click="btn.click"
-            >
-              <template #title>
-                {{ btn.title }}
-              </template>
-              <template #body>
-                <a href="javascript:void(0);">
-                  <span>
-                    {{ t("TXT_CODE_6c5985ca") }}
-                    <ArrowRightOutlined style="font-size: 12px" />
-                  </span>
-                </a>
-              </template>
-            </InnerCard>
-          </a-col>
-        </a-row>
-      </div>
+            <template #title>
+              {{ item.title }}
+            </template>
+            <template #body>
+              <a href="javascript:void(0);">
+                <span>
+                  {{ t("TXT_CODE_6c5985ca") }}
+                  <ArrowRightOutlined style="font-size: 12px" />
+                </span>
+              </a>
+            </template>
+          </InnerCard>
+        </template>
+      </ResponsiveLayoutGroup>
     </template>
   </CardPanel>
 
@@ -254,4 +238,12 @@ const btns = computed(() => {
   />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.function-btns-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+</style>

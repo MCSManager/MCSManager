@@ -94,6 +94,7 @@ declare module 'vue' {
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
+    ResponsiveLayoutGroup: typeof import('./src/components/ResponsiveLayoutGroup.vue')['default']
     RightMenu: typeof import('./src/components/fc/RightMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

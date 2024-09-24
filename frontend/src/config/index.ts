@@ -460,7 +460,7 @@ export function getLayoutCardPool() {
     },
     {
       id: getRandomId(),
-      permission: ROLE.ADMIN,
+      permission: ROLE.USER,
       meta: {},
       type: "InstanceManagerBtns",
       title: t("TXT_CODE_d2bbb2f1"),
