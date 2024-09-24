@@ -10,11 +10,14 @@ export enum THEME {
 
 export const THEME_KEY = "THEME_KEY";
 
-const defaultTheme = localStorage.getItem(THEME_KEY) || THEME.LIGHT;
+export function getSystemTheme() {
+  const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  return darkModeMediaQuery.matches ? THEME.DARK : THEME.LIGHT;
+}
+
+const defaultTheme = localStorage.getItem(THEME_KEY) || getSystemTheme();
 
 export const useAppConfigStore = createGlobalState(() => {
-  // const { hasBgImage } = useLayoutConfigStore();
-
   const appConfig = reactive({
     theme: defaultTheme as THEME
   });
