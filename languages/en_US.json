@@ -1913,7 +1913,7 @@
   "TXT_CODE_7e9727bd": "Players",
   "TXT_CODE_855c4a1c": "Players:",
   "TXT_CODE_e260a220": "Version:",
-  "TXT_CODE_40241d8e": "Minecraft status acquisition",
+  "TXT_CODE_40241d8e": "Minecraft Players Query",
   "TXT_CODE_57d1929e": "MCSManager will use the \"Minecraft Ping protocol\" to try to obtain the number of online servers, versions, delays and other information.",
   "TXT_CODE_6b175558": "After completing the configuration, the server status will be refreshed every minute when the instance is running.",
   "TXT_CODE_2f59807a": "Server address",
