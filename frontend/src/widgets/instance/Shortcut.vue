@@ -282,7 +282,7 @@ const instanceOperations = computed(() =>
           {{ parseTimestamp(instanceInfo?.config.endTime) }}
         </div>
         <div v-if="instanceInfo?.info.mcPingOnline">
-          <span>{{ t("TXT_CODE_33a09033") }}</span>
+          <span class="mr-2">{{ t("TXT_CODE_33a09033") }}</span>
           <span style="vertical-align: middle">
             <UserOutlined />
             {{ instanceInfo?.info.currentPlayers }} / {{ instanceInfo?.info.maxPlayers }}
