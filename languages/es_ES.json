@@ -1943,5 +1943,10 @@
   "TXT_CODE_e26d53d5": "No cree demasiadas pestañas nuevas, ya que esto puede provocar un desorden de elementos en la interfaz y un rendimiento deficiente del panel.",
   "TXT_CODE_ec08484": "¿Está seguro de que desea forzar la finalización de la instancia en ejecución? \nEsto puede provocar daños en los datos de la instancia.",
   "TXT_CODE_f6bd907d": "¿Está seguro de que desea reiniciar la instancia?",
-  "TXT_CODE_f84ae54f": "Después de que las instancias tengan etiquetas, MCSManager clasificará automáticamente las instancias según los nombres de las etiquetas para que los usuarios las filtren cuando muestren que estos nombres de etiquetas admiten cualquier idioma."
+  "TXT_CODE_f84ae54f": "Después de que las instancias tengan etiquetas, MCSManager clasificará automáticamente las instancias según los nombres de las etiquetas para que los usuarios las filtren cuando muestren que estos nombres de etiquetas admiten cualquier idioma.",
+  "TXT_CODE_10cc2794": "Descripción de la arquitectura de red",
+  "TXT_CODE_2fb14927": "Este error generalmente significa que la página web no puede conectarse directamente al proceso backend. \nSi tiene reenvío de puertos, mapeo o proxy inverso, verifique la configuración.",
+  "TXT_CODE_46c48969": "Parece que está intentando utilizar HTTPS, pero no podemos conectarnos al demonio mediante el protocolo WSS. \nIntente conectarse al demonio utilizando el protocolo WSS://.",
+  "TXT_CODE_9b3ce825": "Descripción del proxy inverso",
+  "TXT_CODE_d4c8fb3b": "Documentos relacionados:"
 }

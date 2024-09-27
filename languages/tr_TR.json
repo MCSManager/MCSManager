@@ -1943,5 +1943,10 @@
   "TXT_CODE_e26d53d5": "Çok fazla yeni sekme oluşturmayın; bu, arayüzdeki öğelerin dağınıklığına ve panel performansının düşmesine neden olabilir.",
   "TXT_CODE_ec08484": "Çalışan örneği zorla sonlandırmak istediğinizden emin misiniz? \nBu, örnek verilerinin bozulmasına neden olabilir.",
   "TXT_CODE_f6bd907d": "Örneği yeniden başlatmak istediğinizden emin misiniz?",
-  "TXT_CODE_f84ae54f": "Örneklerin etiketleri olduktan sonra, MCSManager, kullanıcıların bu örnekleri görüntülerken filtrelemesi için örnekleri etiket adlarına göre otomatik olarak sınıflandıracaktır. Etiket adları herhangi bir dili destekler."
+  "TXT_CODE_f84ae54f": "Örneklerin etiketleri olduktan sonra, MCSManager, kullanıcıların bu örnekleri görüntülerken filtrelemesi için örnekleri etiket adlarına göre otomatik olarak sınıflandıracaktır. Etiket adları herhangi bir dili destekler.",
+  "TXT_CODE_10cc2794": "Ağ mimarisi açıklaması",
+  "TXT_CODE_2fb14927": "Bu hata genellikle web sayfasının doğrudan arka uç işlemine bağlanamadığı anlamına gelir. \nBağlantı noktası yönlendirme, eşleme, ters proxy'niz varsa lütfen yapılandırmayı kontrol edin!",
+  "TXT_CODE_46c48969": "Görünüşe göre HTTPS kullanmaya çalışıyorsunuz ancak arka plan programına WSS protokolünü kullanarak bağlanamıyoruz. \nLütfen WSS:// protokolünü kullanarak arka plan programına bağlanmayı deneyin.",
+  "TXT_CODE_9b3ce825": "Ters proxy açıklaması",
+  "TXT_CODE_d4c8fb3b": "İlgili belgeler:"
 }

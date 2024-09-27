@@ -10,6 +10,7 @@ import { Terminal } from "xterm";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { getRandomId } from "../tools/randId";
+import { useXhrPollError } from "@/hooks/useXhrPollError";
 
 const props = defineProps<{
   instanceId: string;
@@ -37,6 +38,7 @@ const daemonId = props.daemonId;
 const terminalDomId = `terminal-window-${getRandomId()}`;
 
 const socketError = ref<Error>();
+const { isXhrPollError, xhrPollErrorReason } = useXhrPollError(socketError);
 
 let term: Terminal | undefined;
 
@@ -174,6 +176,32 @@ onMounted(async () => {
         <a-typography-title :level="5">{{ $t("TXT_CODE_9c95b60f") }}</a-typography-title>
         <a-typography-paragraph>
           <pre style="font-size: 12px"><code>{{ socketError?.message||"" }}</code></pre>
+
+          <div v-if="isXhrPollError" style="font-size: 12px">
+            <span> {{ xhrPollErrorReason }}</span>
+          </div>
+        </a-typography-paragraph>
+        <a-typography-paragraph v-if="isXhrPollError">
+          <div class="flex" style="gap: 8px; font-size: 12px">
+            <span>
+              <strong>{{ $t("TXT_CODE_d4c8fb3b") }}</strong>
+            </span>
+            <a
+              href="https://docs.mcsmanager.com/ops/proxy_https.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t("TXT_CODE_9b3ce825") }}
+            </a>
+            <span>|</span>
+            <a
+              href="https://docs.mcsmanager.com/ops/mcsm_network.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t("TXT_CODE_10cc2794") }}
+            </a>
+          </div>
         </a-typography-paragraph>
         <a-typography-title :level="5">{{ $t("TXT_CODE_f1c96d8a") }}</a-typography-title>
         <a-typography-paragraph>
@@ -186,9 +214,6 @@ onMounted(async () => {
             </li>
             <li>
               {{ $t("TXT_CODE_86ff658a") }}
-            </li>
-            <li>
-              {{ $t("TXT_CODE_9c188ec8") }}
             </li>
           </ul>
           <div class="flex flex-center">

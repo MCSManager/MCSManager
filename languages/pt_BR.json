@@ -1943,5 +1943,10 @@
   "TXT_CODE_e26d53d5": "Não crie muitas guias novas, pois isso pode causar confusão de elementos na interface e baixo desempenho do painel.",
   "TXT_CODE_ec08484": "Tem certeza de que deseja forçar o encerramento da instância em execução? \nIsso pode causar corrupção de dados da instância.",
   "TXT_CODE_f6bd907d": "Tem certeza de que deseja reiniciar a instância?",
-  "TXT_CODE_f84ae54f": "Depois que as instâncias tiverem tags, o MCSManager classificará automaticamente as instâncias de acordo com os nomes das tags para os usuários filtrarem ao exibir essas instâncias. Os nomes das tags suportam qualquer idioma."
+  "TXT_CODE_f84ae54f": "Depois que as instâncias tiverem tags, o MCSManager classificará automaticamente as instâncias de acordo com os nomes das tags para os usuários filtrarem ao exibir essas instâncias. Os nomes das tags suportam qualquer idioma.",
+  "TXT_CODE_10cc2794": "Descrição da arquitetura de rede",
+  "TXT_CODE_2fb14927": "Este erro geralmente significa que a página da web não pode se conectar diretamente ao processo de back-end. \nSe você possui encaminhamento de porta, mapeamento, proxy reverso, verifique a configuração!",
+  "TXT_CODE_46c48969": "Parece que você está tentando usar HTTPS, mas não conseguimos nos conectar ao daemon usando o protocolo WSS. \nTente se conectar ao daemon usando o protocolo WSS://.",
+  "TXT_CODE_9b3ce825": "Descrição do proxy reverso",
+  "TXT_CODE_d4c8fb3b": "Documentos relacionados:"
 }
