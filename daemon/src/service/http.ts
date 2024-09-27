@@ -12,7 +12,6 @@ export function initKoa() {
     koaBody({
       multipart: true,
       formidable: {
-        maxFieldsSize: Number.MAX_SAFE_INTEGER,
         maxFileSize: Number.MAX_SAFE_INTEGER,
         maxFiles: 1
       },

@@ -8,6 +8,7 @@ import InstanceSubsystem from "../service/system_instance";
 import FileManager from "../service/system_file";
 import formidable from "formidable";
 import { clearUploadFiles } from "../tools/filepath";
+import logger from "../service/log";
 
 const router = new Router();
 
@@ -73,6 +74,7 @@ router.post("/upload/:key", async (ctx) => {
       } else {
         throw new Error("Access denied: Files must a array!");
       }
+
       const originFileName = uploadedFile.originalFilename || "";
       if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
@@ -84,11 +86,16 @@ router.post("/upload/:key", async (ctx) => {
       let tempFileSaveName = basename + ext;
       let counter = 1;
 
-      while (fs.existsSync(fileManager.toAbsolutePath(path.normalize(path.join(uploadDir, tempFileSaveName)))) && ctx.query.overwrite === "false") {
+      while (
+        fs.existsSync(
+          fileManager.toAbsolutePath(path.normalize(path.join(uploadDir, tempFileSaveName)))
+        ) &&
+        ctx.query.overwrite === "false"
+      ) {
         if (counter == 1) {
-          tempFileSaveName = `${basename}-copy${ext}`
+          tempFileSaveName = `${basename}-copy${ext}`;
         } else {
-          tempFileSaveName = `${basename}-copy-${counter}${ext}`
+          tempFileSaveName = `${basename}-copy-${counter}${ext}`;
         }
         counter++;
       }
@@ -99,6 +106,14 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Invalid destination");
 
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
+
+      logger.info(
+        "Browser Upload File:",
+        fileSaveAbsolutePath,
+        "File size:",
+        Number(uploadedFile.size / 1024 / 1024).toFixed(0),
+        "MB"
+      );
 
       await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
         overwrite: true
