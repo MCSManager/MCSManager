@@ -21,32 +21,32 @@ export const SUPPORTED_LANGS = [
     value: `zh_tw`
   },
   {
+    label: `日本語`,
+    value: `ja_jp`
+  },
+  {
+    label: `한국어`,
+    value: `ko_kr`
+  },
+  {
+    label: `Русский`,
+    value: `ru_ru`
+  },
+  {
     label: `Português Brasileiro`,
     value: `pt_br`
   },
   {
-    label: `Français (Google Translation)`,
+    label: `Français`,
     value: `fr_fr`
   },
   {
-    label: `Español (Google Translation)`,
+    label: `Español`,
     value: `es_es`
   },
   {
-    label: `Deutsch (Google Translation)`,
+    label: `Deutsch`,
     value: `de_de`
-  },
-  {
-    label: `Русский (Google Translation)`,
-    value: `ru_ru`
-  },
-  {
-    label: `日本語 (Google Translation)`,
-    value: `ja_jp`
-  },
-  {
-    label: `한국어 (Google Translation)`,
-    value: `ko_kr`
   }
 ];
 

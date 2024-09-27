@@ -534,7 +534,7 @@
   "TXT_CODE_ffebf0bf": "Broadcast RCON to Operators",
   "TXT_CODE_ed0e3963": "Broadcast Server Console to Operators",
   "TXT_CODE_1fc10e3b": "Enable Whitelist",
-  "TXT_CODE_a8b0dfab": "Spawn Protection Radius (radius is calculated by 2x+1, set to 0 to protect only the block under spawn point)",
+  "TXT_CODE_a8b0dfab": "Spawn Protection Radius (radius is calculated by 2x+1, set to 0 to protect only the block under spawn point). Since version 1.5, setting to 0 or a negative value disables spawn protection.",
   "TXT_CODE_a6878a01": "Limit how many consecutive chunk updates can be done before skipping the rest. Negative values remove the limit.",
   "TXT_CODE_ffca72ed": "Make the server appear as 'Online' on the server list. If set to 'false,' it will suppress responses from the client. This means it will appear as 'Offline' but still accept connections.",
   "TXT_CODE_b37e6938": "Optional, adds a custom message that shows in the Resource Pack prompt when using 'require-resource-pack.'",
@@ -1942,5 +1942,6 @@
   "TXT_CODE_78e88c3f": "Tag grouping",
   "TXT_CODE_7333c7f7": "Clear",
   "TXT_CODE_6d8bc58d": "Failed to save. A single tag only supports up to 9 characters!",
-  "TXT_CODE_dc9fb6ce": "Failed to save. A single instance only supports up to 6 tags!"
+  "TXT_CODE_dc9fb6ce": "Failed to save. A single instance only supports up to 6 tags!",
+  "TXT_CODE_2082f659": "Note: If this is empty, the files in the file management will not be bound to the container!"
 }

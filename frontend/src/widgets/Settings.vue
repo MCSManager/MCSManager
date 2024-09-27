@@ -40,6 +40,20 @@ interface MySettings extends Settings {
   bgUrl?: string;
 }
 
+const ApacheLicense = `Copyright 2024 MCSManager Dev
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.`;
+
 const formData = ref<MySettings>();
 
 const submit = async () => {
@@ -518,21 +532,7 @@ onMounted(async () => {
                 <p>
                   {{ $t("TXT_CODE_e57bd50f") }}
                 </p>
-                <pre style="font-size: 13px">
-Copyright 2024 MCSManager Dev
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</pre
-                >
+                <pre style="font-size: 13px">{{ ApacheLicense }}</pre>
               </a-typography-paragraph>
             </div>
           </template>
