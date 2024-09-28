@@ -95,13 +95,8 @@ export function useQuickStartFlow() {
     actions: step1
   });
 
-  const toStep2 = async (appType: QUICKSTART_ACTION_TYPE, daemonId?: string) => {
+  const toStep2 = async (appType: QUICKSTART_ACTION_TYPE) => {
     formData.appType = appType;
-
-    if (daemonId) {
-      toStep3(daemonId);
-      return;
-    }
 
     formData.step = 2;
     formData.emptyActionsText = t("TXT_CODE_9337bed1");
