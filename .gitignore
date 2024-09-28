@@ -12,7 +12,7 @@ vscode/
 data/
 dist/
 out/
-
+lib/
 production/
 .DS_Store
 production-code/

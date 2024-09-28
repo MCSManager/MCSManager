@@ -1,7 +1,0 @@
-pty: 
-https://github.com/MCSManager/pty
-
-file_zip:
-https://github.com/MCSManager/file-zip
- 
-If you need more CPU architectures, please go to these repositories to build them yourself and name them here.
