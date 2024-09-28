@@ -46,8 +46,6 @@ rm -rf ./daemon/dist ./daemon/production
 rm -rf ./panel/dist ./panel/production
 rm -rf ./frontend/dist
 
-cp -r -f ./daemon/lib ./production-code/daemon/lib
-
 echo "------------"
 echo "Compilation completed!"
 echo "Output Directory: ./production-code/"
