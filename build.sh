@@ -46,6 +46,13 @@ rm -rf ./daemon/dist ./daemon/production
 rm -rf ./panel/dist ./panel/production
 rm -rf ./frontend/dist
 
+echo "npm install..."
+cd production-code/daemon
+npm install --production --no-fund --no-audit
+cd ../web
+npm install --production --no-fund --no-audit
+cd ..
+
 echo "------------"
 echo "Compilation completed!"
 echo "Output Directory: ./production-code/"
