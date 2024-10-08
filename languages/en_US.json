@@ -1948,5 +1948,7 @@
   "TXT_CODE_9b3ce825": "Reverse proxy description",
   "TXT_CODE_10cc2794": "Network architecture description",
   "TXT_CODE_46c48969": "It looks like you are trying to use HTTPS, but we cannot connect to the daemon using the WSS protocol. Please try to connect to the daemon using the WSS:// protocol.",
-  "TXT_CODE_2fb14927": "This error usually means that the web page cannot connect directly to the backend process. If you have port forwarding, mapping, reverse proxy, please check the configuration!"
+  "TXT_CODE_2fb14927": "This error usually means that the web page cannot connect directly to the backend process. If you have port forwarding, mapping, reverse proxy, please check the configuration!",
+  "TXT_CODE_a6424dcc": "The working directory or startup command cannot be empty",
+  "TXT_CODE_ffa884f9": "Warning: The working directory is not mounted to the container, and the container will not be able to access files in the instance's working directory"
 }

@@ -1948,5 +1948,7 @@
   "TXT_CODE_2fb14927": "Bu hata genellikle web sayfasının doğrudan arka uç işlemine bağlanamadığı anlamına gelir. \nBağlantı noktası yönlendirme, eşleme, ters proxy'niz varsa lütfen yapılandırmayı kontrol edin!",
   "TXT_CODE_46c48969": "Görünüşe göre HTTPS kullanmaya çalışıyorsunuz ancak arka plan programına WSS protokolünü kullanarak bağlanamıyoruz. \nLütfen WSS:// protokolünü kullanarak arka plan programına bağlanmayı deneyin.",
   "TXT_CODE_9b3ce825": "Ters proxy açıklaması",
-  "TXT_CODE_d4c8fb3b": "İlgili belgeler:"
+  "TXT_CODE_d4c8fb3b": "İlgili belgeler:",
+  "TXT_CODE_a6424dcc": "Çalışma dizini veya başlatma komutu boş olamaz",
+  "TXT_CODE_ffa884f9": "Uyarı: Çalışma dizini kapsayıcıya bağlanmamıştır ve kapsayıcı, örneğin çalışma dizinindeki dosyalara erişemeyecektir."
 }

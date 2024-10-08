@@ -118,6 +118,14 @@ export class SetupDockerContainer extends AsyncTask {
     const isTty = instance.config.terminalOption.pty;
 
     const workingDir = instance.config.docker.workingDir ?? "";
+    if (workingDir) {
+      instance.println(
+        "CONTAINER",
+        $t("TXT_CODE_e76e49e9") + instance.config.cwd + " --> " + workingDir + "\n"
+      );
+    } else {
+      instance.println("CONTAINER", $t("TXT_CODE_ffa884f9"));
+    }
 
     // output startup log
     logger.info("----------------");
@@ -130,7 +138,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(
       `BINDS: ${JSON.stringify([
-        workingDir ? `${cwd}->${workingDir}` : "<No WorkSpace>",
+        workingDir ? `${cwd} --> ${workingDir}` : "<Working directory not mounted>",
         ...extraBinds
       ])}`
     );

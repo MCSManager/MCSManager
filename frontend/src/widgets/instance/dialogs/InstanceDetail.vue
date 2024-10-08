@@ -39,8 +39,11 @@ const props = defineProps<{
 
 // eslint-disable-next-line no-unused-vars
 enum TabSettings {
+  // eslint-disable-next-line no-unused-vars
   Basic = "Basic",
+  // eslint-disable-next-line no-unused-vars
   Docker = "Docker",
+  // eslint-disable-next-line no-unused-vars
   Advanced = "Advanced"
 }
 
@@ -160,7 +163,6 @@ const rules: Record<string, any> = {
     {
       required: true,
       validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
         if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
       },
       trigger: "change"

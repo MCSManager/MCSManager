@@ -1948,5 +1948,7 @@
   "TXT_CODE_2fb14927": "Este erro geralmente significa que a página da web não pode se conectar diretamente ao processo de back-end. \nSe você possui encaminhamento de porta, mapeamento, proxy reverso, verifique a configuração!",
   "TXT_CODE_46c48969": "Parece que você está tentando usar HTTPS, mas não conseguimos nos conectar ao daemon usando o protocolo WSS. \nTente se conectar ao daemon usando o protocolo WSS://.",
   "TXT_CODE_9b3ce825": "Descrição do proxy reverso",
-  "TXT_CODE_d4c8fb3b": "Documentos relacionados:"
+  "TXT_CODE_d4c8fb3b": "Documentos relacionados:",
+  "TXT_CODE_a6424dcc": "O diretório de trabalho ou comando de inicialização não pode estar vazio",
+  "TXT_CODE_ffa884f9": "Aviso: o diretório de trabalho não está montado no contêiner e o contêiner não poderá acessar arquivos no diretório de trabalho da instância"
 }

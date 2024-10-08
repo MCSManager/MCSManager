@@ -1948,5 +1948,7 @@
   "TXT_CODE_2fb14927": "Cette erreur signifie généralement que la page Web ne peut pas se connecter directement au processus backend. \nSi vous disposez d'une redirection de port, d'un mappage, d'un proxy inverse, veuillez vérifier la configuration !",
   "TXT_CODE_46c48969": "Il semble que vous essayez d'utiliser HTTPS, mais nous ne parvenons pas à nous connecter au démon à l'aide du protocole WSS. \nVeuillez essayer de vous connecter au démon en utilisant le protocole WSS://.",
   "TXT_CODE_9b3ce825": "Description du proxy inverse",
-  "TXT_CODE_d4c8fb3b": "Documents associés :"
+  "TXT_CODE_d4c8fb3b": "Documents associés :",
+  "TXT_CODE_a6424dcc": "Le répertoire de travail ou la commande de démarrage ne peut pas être vide",
+  "TXT_CODE_ffa884f9": "Avertissement : Le répertoire de travail n'est pas monté sur le conteneur et le conteneur ne pourra pas accéder aux fichiers du répertoire de travail de l'instance."
 }

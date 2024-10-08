@@ -1948,5 +1948,7 @@
   "TXT_CODE_2fb14927": "Dieser Fehler bedeutet normalerweise, dass die Webseite keine direkte Verbindung zum Backend-Prozess herstellen kann. \nWenn Sie Portweiterleitung, Mapping, Reverse-Proxy haben, überprüfen Sie bitte die Konfiguration!",
   "TXT_CODE_46c48969": "Anscheinend versuchen Sie, HTTPS zu verwenden, aber wir können über das WSS-Protokoll keine Verbindung zum Daemon herstellen. \nBitte versuchen Sie, über das WSS://-Protokoll eine Verbindung zum Daemon herzustellen.",
   "TXT_CODE_9b3ce825": "Beschreibung des Reverse-Proxys",
-  "TXT_CODE_d4c8fb3b": "Zugehörige Dokumente:"
+  "TXT_CODE_d4c8fb3b": "Zugehörige Dokumente:",
+  "TXT_CODE_a6424dcc": "Das Arbeitsverzeichnis oder der Startbefehl darf nicht leer sein",
+  "TXT_CODE_ffa884f9": "Warnung: Das Arbeitsverzeichnis ist nicht im Container gemountet und der Container kann nicht auf Dateien im Arbeitsverzeichnis der Instanz zugreifen"
 }
