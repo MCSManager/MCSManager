@@ -144,14 +144,14 @@ export default class PtyStartCommand extends InstanceCommand {
   async exec(instance: Instance, source = "Unknown") {
     if (
       !instance.config.startCommand ||
-      !instance.config.cwd ||
+      !instance.hasCwdPath() ||
       !instance.config.ie ||
       !instance.config.oe
     )
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
     if (!fs.existsSync(instance.absoluteCwdPath()))
       throw new StartupError($t("TXT_CODE_pty_start.cwdNotExist"));
-    if (!path.isAbsolute(path.normalize(instance.config.cwd)))
+    if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))
       throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath"));
 
     // PTY mode correctness check
@@ -202,7 +202,7 @@ export default class PtyStartCommand extends InstanceCommand {
       "-coder",
       instance.config.oe,
       "-dir",
-      instance.config.cwd,
+      instance.absoluteCwdPath(),
       "-fifo",
       pipeName,
       "-cmd",
@@ -215,7 +215,7 @@ export default class PtyStartCommand extends InstanceCommand {
     logger.info($t("TXT_CODE_pty_start.startCmd", { cmd: commandList.join(" ") }));
     logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
     logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
-    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }));
     logger.info("----------------");
 
     // create pty child process

@@ -16,7 +16,7 @@ export default class DockerStartCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance, source = "Unknown") {
-    if (!instance.config.cwd || !instance.config.ie || !instance.config.oe)
+    if (!instance.hasCwdPath() || !instance.config.ie || !instance.config.oe)
       throw new StartupDockerProcessError($t("TXT_CODE_a6424dcc"));
     if (!fs.existsSync(instance.absoluteCwdPath()))
       throw new StartupDockerProcessError($t("TXT_CODE_instance.dirNoE"));

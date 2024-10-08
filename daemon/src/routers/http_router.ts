@@ -31,7 +31,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
     if (!FileManager.checkFileName(paramsFileName))
       throw new Error($t("TXT_CODE_http_router.fileNameNotSpec"));
 
-    const cwd = instance.config.cwd;
+    const cwd = instance.absoluteCwdPath();
     const fileRelativePath = mission.parameter.fileName;
 
     // Check for file cross-directory security risks
@@ -65,7 +65,7 @@ router.post("/upload/:key", async (ctx) => {
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
     const uploadDir = mission.parameter.uploadDir;
-    const cwd = instance.config.cwd;
+    const cwd = instance.absoluteCwdPath();
     const tmpFiles = ctx.request.files?.file;
     if (tmpFiles) {
       let uploadedFile: formidable.File;
@@ -120,7 +120,7 @@ router.post("/upload/:key", async (ctx) => {
       });
 
       if (unzip) {
-        const fileManager = new FileManager(instance.config.cwd);
+        const fileManager = new FileManager(instance.absoluteCwdPath());
         fileManager.unzip(fileSaveAbsolutePath, "", zipCode);
       }
       ctx.body = "OK";

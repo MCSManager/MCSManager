@@ -65,7 +65,7 @@ export default class GeneralStartCommand extends InstanceCommand {
   async exec(instance: Instance, source = "Unknown") {
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||
-      !instance.config.cwd ||
+      !instance.hasCwdPath() ||
       !instance.config.ie ||
       !instance.config.oe
     )
@@ -85,13 +85,13 @@ export default class GeneralStartCommand extends InstanceCommand {
     logger.info($t("TXT_CODE_general_start.startInstance", { source: source }));
     logger.info($t("TXT_CODE_general_start.instanceUuid", { uuid: instance.instanceUuid }));
     logger.info($t("TXT_CODE_general_start.startCmd", { cmdList: JSON.stringify(commandList) }));
-    logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.absoluteCwdPath() }));
     logger.info("----------------");
 
     // create child process
     // Parameter 1 directly passes the process name or path (including spaces) without double quotes
     const subProcess = spawn(commandExeFile, commandParameters, {
-      cwd: instance.config.cwd,
+      cwd: instance.absoluteCwdPath(),
       stdio: "pipe",
       windowsHide: true,
       env: process.env

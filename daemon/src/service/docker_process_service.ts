@@ -51,8 +51,6 @@ export class SetupDockerContainer extends AsyncTask {
       commandList = [];
     }
 
-    const cwd = instance.absoluteCwdPath();
-
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
     const portMap = instance.config.docker.ports || [];
@@ -118,11 +116,10 @@ export class SetupDockerContainer extends AsyncTask {
     const isTty = instance.config.terminalOption.pty;
 
     const workingDir = instance.config.docker.workingDir ?? "";
+    const cwd = instance.absoluteCwdPath();
+
     if (workingDir) {
-      instance.println(
-        "CONTAINER",
-        $t("TXT_CODE_e76e49e9") + instance.config.cwd + " --> " + workingDir + "\n"
-      );
+      instance.println("CONTAINER", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
     } else {
       instance.println("CONTAINER", $t("TXT_CODE_ffa884f9"));
     }
@@ -146,6 +143,22 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
     logger.info("----------------");
+
+    const mounts: Docker.MountConfig =
+      extraBinds.map((v) => {
+        return {
+          Type: "bind",
+          Source: v.hostPath,
+          Target: v.containerPath
+        };
+      }) || [];
+    if (workingDir && cwd) {
+      mounts.push({
+        Type: "bind",
+        Source: cwd,
+        Target: workingDir
+      });
+    }
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
@@ -171,20 +184,7 @@ export class SetupDockerContainer extends AsyncTask {
         CpuQuota: cpuQuota,
         PortBindings: publicPortArray,
         NetworkMode: instance.config.docker.networkMode,
-        Mounts: [
-          {
-            Type: "bind",
-            Source: cwd,
-            Target: workingDir
-          },
-          ...extraBinds.map((v) => {
-            return {
-              Type: "bind" as Docker.MountType,
-              Source: v.hostPath,
-              Target: v.containerPath
-            };
-          })
-        ]
+        Mounts: mounts
       },
       NetworkingConfig: {
         EndpointsConfig: {

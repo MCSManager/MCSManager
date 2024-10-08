@@ -11,7 +11,7 @@ import { PresetCommandManager } from "./preset";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
-import { configureEntityParams } from "common";
+import { configureEntityParams, toText } from "common";
 import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
 import { t } from "i18next";
@@ -356,7 +356,14 @@ export default class Instance extends EventEmitter {
     return date.toLocaleDateString() + " " + date.getHours() + ":" + date.getMinutes();
   }
 
+  hasCwdPath() {
+    return !!this.config.cwd;
+  }
+
   absoluteCwdPath() {
+    const envInstancesBasePath = toText(process.env.MCSM_INSTANCES_BASE_PATH);
+    if (envInstancesBasePath)
+      return path.normalize(path.join(envInstancesBasePath, this.instanceUuid));
     if (!this.config || !this.config.cwd) throw new Error("Instance config error, cwd is Null!");
     if (path.isAbsolute(this.config.cwd)) return path.normalize(this.config.cwd);
     return path.normalize(path.join(process.cwd(), this.config.cwd));

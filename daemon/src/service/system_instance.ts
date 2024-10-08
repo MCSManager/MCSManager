@@ -180,7 +180,7 @@ class InstanceSubsystem extends EventEmitter {
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
       InstanceControl.deleteInstanceAllTask(instanceUuid);
-      if (deleteFile) fs.remove(instance.config.cwd, (err) => {});
+      if (deleteFile) fs.remove(instance.absoluteCwdPath(), (err) => {});
       return true;
     }
     throw new Error($t("TXT_CODE_3bfb9e04"));
