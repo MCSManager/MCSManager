@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: dockerfile/web.dockerfile
-    image: ghcr.io/MCSManager/MCSManager-web:latest
+    image: ghcr.io/mcsmanager/mcsmanager-web:latest
     ports:
       - "80:23333"
     volumes:
@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: dockerfile/daemon.dockerfile
-    image: ghcr.io/MCSManager/MCSManager-daemon:latest
+    image: ghcr.io/mcsmanager/mcsmanager-daemon:latest
     restart: unless-stopped
     ports:
       - "24444:24444"
