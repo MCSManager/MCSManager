@@ -8,7 +8,8 @@ RUN chmod a+x ./install-dependents.sh &&\
     ./install-dependents.sh &&\
     ./build.sh
 
-RUN wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
+RUN wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
+    chmod a+x production-code/daemon/lib/*
 
 FROM node:lts
 
