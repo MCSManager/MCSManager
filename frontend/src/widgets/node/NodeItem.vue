@@ -26,6 +26,7 @@ import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
+import { hasVersionUpdate } from "@/tools/version";
 
 const { testFrontendSocket, socketStatus } = useSocketIoClient();
 
@@ -112,8 +113,8 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    success: specifiedDaemonVersion.value === node.version,
-    warn: specifiedDaemonVersion.value !== node.version && node.available,
+    success: !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
+    warn: hasVersionUpdate(specifiedDaemonVersion.value, node.version) && node.available,
     warnText: t("TXT_CODE_e520908a")
   },
   {
