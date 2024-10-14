@@ -16,7 +16,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            name=githubyumao/mcsmanager-web
+            name=ghcr.io/${{ github.repository }}-web
             name=mcsmanager-web
 
       - name: Docker meta daemon
@@ -24,7 +24,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            name=githubyumao/mcsmanager-daemon
+            name=ghcr.io/${{ github.repository }}-daemon
             name=mcsmanager-daemon
 
       - name: Set up Docker Buildx
