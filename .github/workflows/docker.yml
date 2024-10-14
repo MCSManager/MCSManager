@@ -17,7 +17,7 @@ jobs:
         with:
           images: |
             name=ghcr.io/${{ github.repository }}-web
-            name=mcsmanager-web
+            name=githubyumao/mcsmanager-web
 
       - name: Docker meta daemon
         id: meta_daemon
@@ -25,7 +25,7 @@ jobs:
         with:
           images: |
             name=ghcr.io/${{ github.repository }}-daemon
-            name=mcsmanager-daemon
+            name=githubyumao/mcsmanager-daemon
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
