@@ -12,6 +12,7 @@ import { EventEmitter } from "stream";
 import { IInstanceProcess } from "../entity/instance/interface";
 import { AsyncTask } from "./async_task_service";
 import iconv from "iconv-lite";
+import { toText } from "common";
 
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
@@ -116,7 +117,12 @@ export class SetupDockerContainer extends AsyncTask {
     const isTty = instance.config.terminalOption.pty;
 
     const workingDir = instance.config.docker.workingDir ?? "";
-    const cwd = instance.absoluteCwdPath();
+
+    let cwd = instance.absoluteCwdPath();
+    const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
+    if (hostRealPath) {
+      cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
+    }
 
     if (workingDir) {
       instance.println("CONTAINER", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
@@ -124,7 +130,6 @@ export class SetupDockerContainer extends AsyncTask {
       instance.println("CONTAINER", $t("TXT_CODE_ffa884f9"));
     }
 
-    // output startup log
     logger.info("----------------");
     logger.info(`[SetupDockerContainer]`);
     logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
