@@ -361,9 +361,6 @@ export default class Instance extends EventEmitter {
   }
 
   absoluteCwdPath() {
-    const envInstancesBasePath = toText(process.env.MCSM_INSTANCES_BASE_PATH);
-    if (envInstancesBasePath)
-      return path.normalize(path.join(envInstancesBasePath, this.instanceUuid));
     if (!this.config || !this.config.cwd) throw new Error("Instance config error, cwd is Null!");
     if (path.isAbsolute(this.config.cwd)) return path.normalize(this.config.cwd);
     return path.normalize(path.join(process.cwd(), this.config.cwd));
