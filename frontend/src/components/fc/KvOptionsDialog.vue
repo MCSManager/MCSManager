@@ -137,7 +137,7 @@ const operation = (type: "add" | "del", index = 0) => {
               >
                 <a-input
                   v-model:value="record[String(column.dataIndex)]"
-                  :placeholder="t('TXT_CODE_4ea93630')"
+                  :placeholder="(column as any).placeholder"
                 />
               </a-form-item>
             </template>

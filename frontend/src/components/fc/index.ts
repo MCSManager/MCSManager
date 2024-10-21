@@ -65,17 +65,20 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
         {
           align: "center",
           dataIndex: "host",
-          title: t("TXT_CODE_534db0b2")
+          title: t("TXT_CODE_534db0b2"),
+          placeholder: "eg: 8080"
         },
         {
           align: "center",
           dataIndex: "container",
-          title: t("TXT_CODE_b729d2e")
+          title: t("TXT_CODE_b729d2e"),
+          placeholder: "eg: 25565"
         },
         {
           align: "center",
           dataIndex: "protocol",
-          title: t("TXT_CODE_ad1c674c")
+          title: t("TXT_CODE_ad1c674c"),
+          placeholder: "tcp/udp"
         }
       ] as AntColumnsType[]
     }).mount<PortConfigItem[]>(KvOptionsDialogVue)) || []
@@ -86,9 +89,7 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      subTitle: t(
-        "TXT_CODE_6c232c9c"
-      ),
+      subTitle: t("TXT_CODE_6c232c9c"),
       title: t("TXT_CODE_820ebc92"),
       columns: [
         {
