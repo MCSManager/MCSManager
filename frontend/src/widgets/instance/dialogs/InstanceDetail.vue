@@ -67,6 +67,7 @@ const IMAGE_DEFINE = {
   EDIT: "__MCSM_EDIT_IMAGE__"
 };
 
+const updateCommandDesc = $t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
@@ -266,10 +267,6 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
   }
 };
 
-const updateCommandDesc = $t(
-  "提供以下变量字符串：{mcsm_instance_id} = 实例ID，{mcsm_workspace} = 实例安装目录"
-);
-
 defineExpose({
   openDialog
 });
@@ -414,7 +411,7 @@ defineExpose({
                   <span>{{ t("TXT_CODE_4f387c5a") }}</span>
                   <br />
                   <!-- eslint-disable-next-line vue/no-v-html -->
-                  <span v-html="updateCommandDesc"></span>
+                  <span v-html="updateCommandDesc"> </span>
                 </a-typography-text>
               </a-typography-paragraph>
               <!-- eslint-disable-next-line vue/html-quotes -->

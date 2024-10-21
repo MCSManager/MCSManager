@@ -102,7 +102,8 @@ const operation = (type: "add" | "del", index = 0) => {
   >
     <div class="dialog-overflow-container">
       <div v-if="props.subTitle" style="font-size: 13px" class="text-gray-400 mb-4">
-        {{ props.subTitle }}
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <span v-html="props.subTitle"></span>
       </div>
       <div class="flex justify-end mb-20">
         <a-button :icon="h(PlusCircleOutlined)" @click="operation('add')">

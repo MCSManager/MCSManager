@@ -87,7 +87,7 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
     (await useMountComponent({
       data,
       subTitle: t(
-        "用于挂载主机上额外的文件夹到容器中，支持 {mcsm_workspace}（工作目录）和 {mcsm_instance_id}（实例ID）两个变量字符串。"
+        "TXT_CODE_6c232c9c"
       ),
       title: t("TXT_CODE_820ebc92"),
       columns: [
