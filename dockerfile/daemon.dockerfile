@@ -1,3 +1,5 @@
+ARG EMBEDDED_JAVA_VERSION=21
+
 FROM node:lts AS builder
 
 WORKDIR /src
@@ -11,7 +13,12 @@ RUN chmod a+x ./install-dependents.sh &&\
 RUN wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
     chmod a+x production-code/daemon/lib/*
 
-FROM node:lts
+FROM eclipse-temurin:${EMBEDDED_JAVA_VERSION}-jdk
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y curl &&\
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash &&\
+    apt-get update && apt-get install -y nodejs && apt-get clean
 
 WORKDIR /opt/mcsmanager/daemon
 
@@ -25,4 +32,4 @@ ENV MCSM_INSTANCES_BASE_PATH=/opt/mcsmanager/daemon/data/InstanceData
 
 VOLUME ["/opt/mcsmanager/daemon/data", "/opt/mcsmanager/daemon/logs"]
 
-CMD [ "app.js", "--max-old-space-size=8192" ]
+CMD [ "node", "app.js", "--max-old-space-size=8192" ]
