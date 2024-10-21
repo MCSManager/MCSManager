@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, unref } from "vue";
-import { t } from "@/lang/i18n";
+import { $t, t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail, DockerNetworkModes } from "@/types";
 import type { FormInstance } from "ant-design-vue";
@@ -266,6 +266,10 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
   }
 };
 
+const updateCommandDesc = $t(
+  "提供以下变量字符串：{mcsm_instance_id} = 实例ID，{mcsm_workspace} = 实例安装目录"
+);
+
 defineExpose({
   openDialog
 });
@@ -407,10 +411,10 @@ defineExpose({
               <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  <!-- eslint-disable-next-line vue/no-v-html -->
-                  <span v-html="t('TXT_CODE_41763172')"></span>
-                  <br />
                   <span>{{ t("TXT_CODE_4f387c5a") }}</span>
+                  <br />
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="updateCommandDesc"></span>
                 </a-typography-text>
               </a-typography-paragraph>
               <!-- eslint-disable-next-line vue/html-quotes -->

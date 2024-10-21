@@ -1198,7 +1198,6 @@
   "TXT_CODE_ee67e1a3": "工作目录",
   "TXT_CODE_962d9320": "实例运行的工作目录，可填绝对路径与相对路径",
   "TXT_CODE_bb0b9711": "更新或安装命令",
-  "TXT_CODE_41763172": "当用户执行更新/安装操作时，将会执行此系统命令，&lbrace;mcsm_workspace&rbrace; 代表工作目录",
   "TXT_CODE_f041de90": "文件管理编码",
   "TXT_CODE_6e69b5a5": "文件管理功能的解压缩，编辑等编码",
   "TXT_CODE_fa920c0": "到期时间",

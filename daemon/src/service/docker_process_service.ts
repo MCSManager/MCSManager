@@ -153,8 +153,8 @@ export class SetupDockerContainer extends AsyncTask {
       extraBinds.map((v) => {
         return {
           Type: "bind",
-          Source: v.hostPath,
-          Target: v.containerPath
+          Source: instance.parseTextParams(v.hostPath),
+          Target: instance.parseTextParams(v.containerPath)
         };
       }) || [];
     if (workingDir && cwd) {

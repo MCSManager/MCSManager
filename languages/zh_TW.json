@@ -1198,7 +1198,6 @@
   "TXT_CODE_ee67e1a3": "工作目錄",
   "TXT_CODE_962d9320": "實例運行的工作目錄，可填入絕對路徑與相對路徑",
   "TXT_CODE_bb0b9711": "更新或安裝指令",
-  "TXT_CODE_41763172": "當使用者執行更新/安裝作業時，將會執行此系統指令，&lbrace;mcsm_workspace&rbrace; 代表工作目錄",
   "TXT_CODE_f041de90": "檔案管理編碼",
   "TXT_CODE_6e69b5a5": "檔案管理功能的解壓縮，編輯等編碼",
   "TXT_CODE_fa920c0": "到期時間",

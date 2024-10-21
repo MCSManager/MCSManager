@@ -19,8 +19,7 @@ export class InstanceUpdateAction extends AsyncTask {
   }
 
   public async onStart() {
-    let updateCommand = this.instance.config.updateCommand;
-    updateCommand = updateCommand.replace(/\{mcsm_workspace\}/gm, this.instance.absoluteCwdPath());
+    const updateCommand = this.instance.parseTextParams(this.instance.config.updateCommand);
     logger.info(
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
     );

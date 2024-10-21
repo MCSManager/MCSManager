@@ -1197,7 +1197,6 @@
   "TXT_CODE_ee67e1a3": "Working Directory",
   "TXT_CODE_962d9320": "The working directory where the instance runs. You can provide either an absolute or relative path.",
   "TXT_CODE_bb0b9711": "Update or Install Command",
-  "TXT_CODE_41763172": "This system command will be executed when the user performs an update/installation operation, &lbrace;mcsm_workspace&rbrace; represents the working directory.",
   "TXT_CODE_f041de90": "File Encoding",
   "TXT_CODE_6e69b5a5": "For file management functions.",
   "TXT_CODE_fa920c0": "Expiration Time",

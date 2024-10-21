@@ -1195,7 +1195,6 @@
   "TXT_CODE_ee67e1a3": "Diretório de Trabalho",
   "TXT_CODE_962d9320": "O diretório de trabalho onde a instância é executada. Você pode fornecer um caminho absoluto ou relativo.",
   "TXT_CODE_bb0b9711": "Comando de Atualização ou Instalação",
-  "TXT_CODE_41763172": "Este comando do sistema será executado quando o usuário realizar uma operação de atualização/instalação, &lbrace;mcsm_workspace&rbrace; representa o diretório de trabalho.",
   "TXT_CODE_f041de90": "Codificação de Arquivo",
   "TXT_CODE_6e69b5a5": "Para funções de gerenciamento de arquivos.",
   "TXT_CODE_fa920c0": "Tempo de Expiração",

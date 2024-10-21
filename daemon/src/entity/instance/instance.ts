@@ -410,6 +410,13 @@ export default class Instance extends EventEmitter {
     this.info.latency = 0;
   }
 
+  public parseTextParams(text: string) {
+    text = text.replace(/\{mcsm_workspace\}/gim, this.absoluteCwdPath());
+    text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
+    text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
+    return text;
+  }
+
   private pushOutput(data: string) {
     if (data.length > LINE_MAX_SIZE * 100) {
       this.outputStack.push(IGNORE_TEXT);
