@@ -506,6 +506,11 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     getFileList();
   };
 
+  const handleSearchChange = () =>{
+    operationForm.value.current = 1;
+    getFileList();
+  }
+
   const getFileStatus = async () => {
     const { state, execute } = getFileStatusApi();
     try {
@@ -627,6 +632,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     downloadFile,
     handleChangeDir,
     handleTableChange,
+    handleSearchChange,
     getFileStatus,
     changePermission,
     toDisk,
