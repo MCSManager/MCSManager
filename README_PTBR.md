@@ -16,8 +16,8 @@
 
 [Website Oficial](http://mcsmanager.com/) | [Documentação](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
-[日本語](README_JP.md)
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | 
+[日本語](README_JP.md) | [Spanish](README_ES.md)
 
 </div>
 
