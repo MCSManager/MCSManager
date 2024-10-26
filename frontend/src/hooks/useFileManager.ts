@@ -500,11 +500,16 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const handleTableChange = (e: { current: number; pageSize: number }) => {
     selectedRowKeys.value = [];
     selectionData.value = [];
-    operationForm.value.name = "";
+    // operationForm.value.name = "";
     operationForm.value.current = e.current;
     operationForm.value.pageSize = e.pageSize;
     getFileList();
   };
+
+  const handleSearchChange = () =>{
+    operationForm.value.current = 1;
+    getFileList();
+  }
 
   const getFileStatus = async () => {
     const { state, execute } = getFileStatusApi();
@@ -627,6 +632,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     downloadFile,
     handleChangeDir,
     handleTableChange,
+    handleSearchChange,
     getFileStatus,
     changePermission,
     toDisk,
