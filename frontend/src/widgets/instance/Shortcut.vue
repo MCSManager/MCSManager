@@ -14,7 +14,8 @@ import {
   CloudDownloadOutlined,
   CodeOutlined,
   UserOutlined,
-  TagsOutlined
+  TagsOutlined,
+  DeleteOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -194,7 +195,8 @@ const instanceOperations = computed(() =>
       },
       loading: killLoading.value,
       disabled: containerState.isDesignMode,
-      danger: true
+      danger: true,
+      condition: () => !isStopped.value
     },
     {
       area: true
