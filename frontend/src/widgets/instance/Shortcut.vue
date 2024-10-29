@@ -33,6 +33,7 @@ import { arrayFilter } from "@/tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
 import { openInstanceTagsEditor } from "@/components/fc/index";
+import _ from "lodash";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -208,8 +209,8 @@ const instanceOperations = computed(() =>
         event.stopPropagation();
         if (instanceId && daemonId) {
           const tags = instanceInfo.value?.config.tag || [];
-          await openInstanceTagsEditor(instanceId, daemonId, tags);
-          refreshList();
+          const newTags = await openInstanceTagsEditor(instanceId, daemonId, tags);
+          if (!_.isEqual(newTags, tags)) refreshList();
         }
       },
       disabled: containerState.isDesignMode
