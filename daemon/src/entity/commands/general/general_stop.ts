@@ -18,13 +18,7 @@ export default class GeneralStopCommand extends InstanceCommand {
 
     const stopCommandList = stopCommand.split("\n");
     for (const stopCommand of stopCommandList) {
-      if (stopCommand.toLowerCase() == "^c") {
-        instance.process.kill("SIGINT");
-      } else if (instance.config.enableRcon) {
-        await instance.exec(new RconCommand(stopCommand));
-      } else {
-        await instance.exec(new SendCommand(stopCommand));
-      }
+      await instance.exec(new SendCommand(stopCommand));
     }
 
     instance.print("\n");
