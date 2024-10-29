@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { CodeOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons-vue";
-import { useTerminal } from "../hooks/useTerminal";
+import { encodeConsoleColor, useTerminal } from "../hooks/useTerminal";
 import { getInstanceOutputLog } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
@@ -29,7 +29,7 @@ const {
   clickHistoryItem
 } = useCommandHistory();
 
-const { execute, initTerminalWindow, sendCommand, events, isConnect, socketAddress } =
+const { execute, initTerminalWindow, sendCommand, state, events, isConnect, socketAddress } =
   useTerminal();
 
 const instanceId = props.instanceId;
@@ -64,7 +64,14 @@ const initTerminal = async () => {
       const { value } = await getInstanceOutputLog().execute({
         params: { uuid: instanceId || "", daemonId: daemonId || "" }
       });
-      if (value) term.write(value);
+
+      if (value) {
+        if (state.value?.config?.terminalOption?.haveColor) {
+          term.write(encodeConsoleColor(value));
+        } else {
+          term.write(value);
+        }
+      }
     } catch (error: any) {}
     return term;
   }
