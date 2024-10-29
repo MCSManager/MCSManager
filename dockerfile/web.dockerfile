@@ -1,4 +1,4 @@
-FROM node:lts AS builder
+FROM --platform=amd64 node:lts AS builder
 
 WORKDIR /src
 COPY . /src
