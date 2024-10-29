@@ -1930,7 +1930,7 @@
   "TXT_CODE_6da85509": "Êtes-vous sûr de vouloir émettre une commande d'arrêt sur l'instance ?",
   "TXT_CODE_7333c7f7": "Clair",
   "TXT_CODE_78e88c3f": "Regroupement d'étiquettes",
-  "TXT_CODE_855c4a1c": "Nombre de joueurs :",
+  "TXT_CODE_855c4a1c": "Nombre de joueurs: ",
   "TXT_CODE_893567ac": "Deuxième confirmation",
   "TXT_CODE_a2544278": "Étiquette d'instance",
   "TXT_CODE_a8b0dfab": "Effectuez un calcul 2x 1 sur cette valeur pour déterminer le rayon de protection du point d'apparition. Le régler sur 0 ne protégera que le bloc situé en dessous du point d'apparition. \nÀ partir de la version 1.5, la définition sur 0 ou sur une valeur négative désactive la protection de build.",

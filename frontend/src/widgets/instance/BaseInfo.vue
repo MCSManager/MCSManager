@@ -99,10 +99,16 @@ onMounted(async () => {
       </a-typography-paragraph>
 
       <a-typography-paragraph v-if="instanceGameServerInfo">
-        {{ t("TXT_CODE_855c4a1c") }}{{ instanceGameServerInfo.players }}
+        <span>{{ t("TXT_CODE_855c4a1c") }}</span>
+        <span>{{ instanceGameServerInfo.players }}</span>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceGameServerInfo">
-        {{ t("TXT_CODE_e260a220") }}{{ instanceGameServerInfo.version }}
+        <span>
+          {{ t("TXT_CODE_e260a220") }}
+        </span>
+        <span>
+          {{ instanceGameServerInfo.version }}
+        </span>
       </a-typography-paragraph>
 
       <a-typography-paragraph>

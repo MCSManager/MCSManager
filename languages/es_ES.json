@@ -1916,7 +1916,7 @@
   "TXT_CODE_40241d8e": "Adquisición de estado de Minecraft",
   "TXT_CODE_57d1929e": "MCSManager utilizará el protocolo Minecraft Ping para intentar obtener la cantidad de personas en línea en el servidor, la versión, la latencia y otra información.",
   "TXT_CODE_6b175558": "Después de completar la configuración, cuando la instancia se está ejecutando, el estado del servidor se actualiza cada minuto.",
-  "TXT_CODE_e260a220": "Versión del juego:",
+  "TXT_CODE_e260a220": "Versión del juego: ",
   "TXT_CODE_13411df7": "Error al iniciar sesión en SSO. Vuelva a la página original e intente iniciar sesión nuevamente.",
   "TXT_CODE_2082f659": "Nota: Si está vacío, los archivos en la administración de archivos no estarán vinculados al contenedor.",
   "TXT_CODE_2c1337d": "Lista de etiquetas para esta instancia",
@@ -1930,7 +1930,7 @@
   "TXT_CODE_6da85509": "¿Está seguro de que desea emitir un comando de apagado para la instancia?",
   "TXT_CODE_7333c7f7": "Claro",
   "TXT_CODE_78e88c3f": "Agrupación de etiquetas",
-  "TXT_CODE_855c4a1c": "Número de jugadores:",
+  "TXT_CODE_855c4a1c": "Número de jugadores: ",
   "TXT_CODE_893567ac": "Segunda confirmación",
   "TXT_CODE_a2544278": "etiqueta de instancia",
   "TXT_CODE_a8b0dfab": "Realice un cálculo de 2x 1 en este valor para determinar el radio de protección del punto de generación. Establecerlo en 0 solo protegerá el bloque debajo del punto de generación. \nA partir de la versión 1.5, establecer en 0 o un valor negativo deshabilita la protección de compilación.",
@@ -1947,7 +1947,7 @@
   "TXT_CODE_2fb14927": "Este error generalmente significa que la página web no puede conectarse directamente al proceso backend. \nSi tiene reenvío de puertos, mapeo o proxy inverso, verifique la configuración.",
   "TXT_CODE_46c48969": "Parece que está intentando utilizar HTTPS, pero no podemos conectarnos al demonio mediante el protocolo WSS. \nIntente conectarse al demonio utilizando el protocolo WSS://.",
   "TXT_CODE_9b3ce825": "Descripción del proxy inverso",
-  "TXT_CODE_d4c8fb3b": "Documentos relacionados:",
+  "TXT_CODE_d4c8fb3b": "Documentos relacionados: ",
   "TXT_CODE_a6424dcc": "El directorio de trabajo o el comando de inicio no pueden estar vacíos",
   "TXT_CODE_ffa884f9": "Advertencia: el directorio de trabajo no está montado en el contenedor y el contenedor no podrá acceder a los archivos en el directorio de trabajo de la instancia."
 }

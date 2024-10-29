@@ -1916,7 +1916,7 @@
   "TXT_CODE_40241d8e": "Erwerb des Minecraft-Status",
   "TXT_CODE_57d1929e": "MCSManager verwendet das Minecraft-Ping-Protokoll, um die Anzahl der Personen, die auf dem Server online sind, die Version, die Latenz und andere Informationen zu ermitteln.",
   "TXT_CODE_6b175558": "Nach Abschluss der Konfiguration wird der Serverstatus jede Minute aktualisiert, wenn die Instanz ausgeführt wird.",
-  "TXT_CODE_e260a220": "Spielversion:",
+  "TXT_CODE_e260a220": "Spielversion: ",
   "TXT_CODE_13411df7": "Die SSO-Anmeldung ist fehlgeschlagen. Bitte kehren Sie zur ursprünglichen Seite zurück und versuchen Sie erneut, sich anzumelden!",
   "TXT_CODE_2082f659": "Hinweis: Ist dieser leer, werden die Dateien in der Dateiverwaltung nicht an den Container gebunden!",
   "TXT_CODE_2c1337d": "Liste der Tags für diese Instanz",
@@ -1930,7 +1930,7 @@
   "TXT_CODE_6da85509": "Sind Sie sicher, dass Sie der Instanz einen Befehl zum Herunterfahren erteilen möchten?",
   "TXT_CODE_7333c7f7": "Klar",
   "TXT_CODE_78e88c3f": "Etikettengruppierung",
-  "TXT_CODE_855c4a1c": "Anzahl Spieler:",
+  "TXT_CODE_855c4a1c": "Anzahl Spieler: ",
   "TXT_CODE_893567ac": "Zweite Bestätigung",
   "TXT_CODE_a2544278": "Instanzbezeichnung",
   "TXT_CODE_a8b0dfab": "Führen Sie eine 2x1-Berechnung für diesen Wert durch, um den Schutzradius des Spawnpunkts zu bestimmen. Wenn Sie ihn auf 0 setzen, wird nur der Block unterhalb des Spawnpunkts geschützt. \nAb Version 1.5 deaktiviert die Einstellung auf 0 oder einen negativen Wert den Build-Schutz.",
@@ -1947,7 +1947,7 @@
   "TXT_CODE_2fb14927": "Dieser Fehler bedeutet normalerweise, dass die Webseite keine direkte Verbindung zum Backend-Prozess herstellen kann. \nWenn Sie Portweiterleitung, Mapping, Reverse-Proxy haben, überprüfen Sie bitte die Konfiguration!",
   "TXT_CODE_46c48969": "Anscheinend versuchen Sie, HTTPS zu verwenden, aber wir können über das WSS-Protokoll keine Verbindung zum Daemon herstellen. \nBitte versuchen Sie, über das WSS://-Protokoll eine Verbindung zum Daemon herzustellen.",
   "TXT_CODE_9b3ce825": "Beschreibung des Reverse-Proxys",
-  "TXT_CODE_d4c8fb3b": "Zugehörige Dokumente:",
+  "TXT_CODE_d4c8fb3b": "Zugehörige Dokumente: ",
   "TXT_CODE_a6424dcc": "Das Arbeitsverzeichnis oder der Startbefehl darf nicht leer sein",
   "TXT_CODE_ffa884f9": "Warnung: Das Arbeitsverzeichnis ist nicht im Container gemountet und der Container kann nicht auf Dateien im Arbeitsverzeichnis der Instanz zugreifen"
 }
