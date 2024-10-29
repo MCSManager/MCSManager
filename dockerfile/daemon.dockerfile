@@ -1,6 +1,7 @@
 ARG EMBEDDED_JAVA_VERSION=21
+ARG BUILDPLATFORM=linux/amd64
 
-FROM --platform=amd64 node:lts AS builder
+FROM --platform=${BUILDPLATFORM} node:lts AS builder
 
 WORKDIR /src
 COPY . /src

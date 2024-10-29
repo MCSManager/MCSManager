@@ -47,6 +47,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
+          build-args: |
+            BUILDPLATFORM=linux/amd64
 
   build-daemon:
     runs-on: ubuntu-latest
@@ -96,4 +98,5 @@ jobs:
           tags: ${{ steps.meta_daemon.outputs.tags }}
           labels: ${{ steps.meta_daemon.outputs.labels }}
           build-args: |
+            BUILDPLATFORM=linux/amd64
             JAVA_RUNTIME=${{ matrix.java_version }}
