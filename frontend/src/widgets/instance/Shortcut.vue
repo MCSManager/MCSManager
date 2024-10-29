@@ -14,8 +14,7 @@ import {
   CloudDownloadOutlined,
   CodeOutlined,
   UserOutlined,
-  TagsOutlined,
-  DeleteOutlined
+  TagsOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -41,7 +40,7 @@ const props = defineProps<{
   targetDaemonId?: string;
 }>();
 
-const emits = defineEmits(["refrshList"]);
+const emits = defineEmits(["refreshList"]);
 
 const { containerState } = useLayoutContainerStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
@@ -71,7 +70,7 @@ const { isLoading: updateLoading, execute: executeUpdate } = updateInstance();
 
 const refreshList = () => {
   setTimeout(() => {
-    emits("refrshList");
+    emits("refreshList");
   }, 500);
 };
 

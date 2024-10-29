@@ -500,7 +500,7 @@ onMounted(async () => {
               :target-instance-info="item"
               :target-daemon-id="currentRemoteNode?.uuid"
               @click="handleSelectInstance(item)"
-              @refrsh-list="initInstancesData()"
+              @refresh-list="initInstancesData()"
             />
           </a-col>
         </fade-up-animation>
