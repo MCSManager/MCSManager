@@ -50,7 +50,7 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
   private initNamedPipe() {
     if (!fs.existsSync(this.pipeName)) {
       throw new Error(
-        $t("程序启动失败，输入输出流不可读：{{pipeName}}", {
+        $t("TXT_CODE_9d1d244f", {
           pipeName: this.pipeName
         })
       );

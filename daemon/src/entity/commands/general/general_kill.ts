@@ -16,7 +16,7 @@ export default class GeneralKillCommand extends InstanceCommand {
       return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning")));
     }
     if (instance.startTimestamp + 6 * 1000 > Date.now()) {
-      return instance.failure(new Error($t("程序必须运行超过6秒才能被强制停止！")));
+      return instance.failure(new Error($t("TXT_CODE_6259357c")));
     }
 
     const task = instance?.asynchronousTask;

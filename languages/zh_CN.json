@@ -1951,5 +1951,9 @@
   "TXT_CODE_a6424dcc": "工作目录和启动命令不可为空",
   "TXT_CODE_ffa884f9": "警告：工作目录没有挂载到容器中，容器将无法访问到实例工作目录中的文件",
   "TXT_CODE_6c232c9c": "用于挂载主机上额外的文件夹到容器中，支持 &lbrace;mcsm_workspace&rbrace;（工作目录）和 &lbrace;mcsm_instance_id&rbrace;（实例ID）两个变量字符串。",
-  "TXT_CODE_fa487a47": "提供以下变量字符串：&lbrace;mcsm_instance_id&rbrace; = 实例ID，&lbrace;mcsm_workspace&rbrace; = 实例安装目录"
+  "TXT_CODE_fa487a47": "提供以下变量字符串：&lbrace;mcsm_instance_id&rbrace; = 实例ID，&lbrace;mcsm_workspace&rbrace; = 实例安装目录",
+  "TXT_CODE_6259357c": "程序必须运行超过6秒才能被强制停止！",
+  "TXT_CODE_9d1d244f": "程序启动失败，输入输出流不可读：{{pipeName}}",
+  "TXT_CODE_ca030197": "实例有其他任务正在进行中，无法进行此操作！",
+  "TXT_CODE_aae2918f": "实例进程启动失败，请检查启动命令和运行环境等配置！"
 }

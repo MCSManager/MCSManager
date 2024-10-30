@@ -1951,5 +1951,9 @@
   "TXT_CODE_a6424dcc": "The working directory or startup command cannot be empty",
   "TXT_CODE_ffa884f9": "Warning: The working directory is not mounted to the container, and the container will not be able to access files in the instance's working directory",
   "TXT_CODE_6c232c9c": "Used to mount additional folders on the host into the container, supports two variable strings: &lbrace;mcsm_workspace&rbrace; (working directory) and &lbrace;mcsm_instance_id&rbrace; (instance ID).",
-  "TXT_CODE_fa487a47": "Provide the following variable strings: &lbrace;mcsm_instance_id&rbrace; = instance ID, &lbrace;mcsm_workspace&rbrace; = instance installation directory"
+  "TXT_CODE_fa487a47": "Provide the following variable strings: &lbrace;mcsm_instance_id&rbrace; = instance ID, &lbrace;mcsm_workspace&rbrace; = instance installation directory",
+  "TXT_CODE_6259357c": "The program must run for more than 6 seconds before it can be forced to stop!",
+  "TXT_CODE_9d1d244f": "Program startup failed, input and output streams are unreadable: {{pipeName}}",
+  "TXT_CODE_ca030197": "The instance has other tasks in progress, and this operation cannot be performed!",
+  "TXT_CODE_aae2918f": "The instance process failed to start, please check the startup command and operating environment configuration!"
 }

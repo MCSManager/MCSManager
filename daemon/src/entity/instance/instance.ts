@@ -229,7 +229,7 @@ export default class Instance extends EventEmitter {
 
   setLock(bool: boolean) {
     if (this.lock === true && bool === true) {
-      throw new Error($t("实例有其他任务正在进行中，无法进行此操作！"));
+      throw new Error($t("TXT_CODE_ca030197"));
     }
     this.lock = bool;
   }
@@ -306,7 +306,7 @@ export default class Instance extends EventEmitter {
     const currentTimestamp = new Date().getTime();
     const startThreshold = 2 * 1000;
     if (currentTimestamp - this.startTimestamp < startThreshold) {
-      this.println("ERROR", $t("实例进程启动失败，请检查启动命令和运行环境等配置！"));
+      this.println("ERROR", $t("TXT_CODE_aae2918f"));
     }
   }
 
