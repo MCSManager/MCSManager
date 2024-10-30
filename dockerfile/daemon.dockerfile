@@ -1,17 +1,17 @@
 ARG EMBEDDED_JAVA_VERSION=21
 ARG BUILDPLATFORM=linux/amd64
 
-FROM --platform=${BUILDPLATFORM} node:lts AS builder
+FROM --platform=${BUILDPLATFORM} node:lts-alpine AS builder
 
 WORKDIR /src
 COPY . /src
 
-RUN chmod a+x ./install-dependents.sh &&\
+RUN apk add --no-cache wget &&\
+    chmod a+x ./install-dependents.sh &&\
     chmod a+x ./build.sh &&\
     ./install-dependents.sh &&\
-    ./build.sh
-
-RUN wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
+    ./build.sh &&\
+    wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
     chmod a+x production-code/daemon/lib/*
 
 FROM eclipse-temurin:${EMBEDDED_JAVA_VERSION}-jdk
