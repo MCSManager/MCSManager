@@ -109,6 +109,27 @@ class UserSubsystem {
     });
   }
 
+  deleteUserInstances(uuid: string, instanceIds: IUserApp[], allUsers: false): void;
+  deleteUserInstances(uuid: null, instanceIds: IUserApp[], allUsers: true): void;
+  deleteUserInstances(uuid: string | null, instanceIds: IUserApp[], allUsers = false) {
+    const users = allUsers ? Array.from(this.objects.values()) : [this.getInstance(uuid!)];
+    if (!users || users.length === 0) return;
+    instanceIds.forEach((value) => {
+      if (!value.daemonId || !value.instanceUuid)
+        throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
+    });
+    users.forEach((user) => {
+      if (!user) return;
+      user.instances = user.instances.filter((value) => {
+        for (const instance of instanceIds) {
+          if (instance.daemonId === value.daemonId && instance.instanceUuid === value.instanceUuid)
+            return false;
+        }
+        return true;
+      });
+    });
+  }
+
   getUserByUserName(userName: string) {
     for (const map of this.objects) {
       const user = map[1];
