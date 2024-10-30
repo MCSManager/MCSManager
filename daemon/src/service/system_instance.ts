@@ -4,7 +4,6 @@ import path from "path";
 import os from "os";
 import Instance from "../entity/instance/instance";
 import EventEmitter from "events";
-import KillCommand from "../entity/commands/kill";
 import logger from "./log";
 import { v4 } from "uuid";
 import { Socket } from "socket.io";
@@ -45,7 +44,7 @@ class InstanceSubsystem extends EventEmitter {
     this.instances.forEach((instance) => {
       if (instance.config.eventTask.autoStart) {
         instance
-          .exec(new StartCommand())
+          .execPreset("start")
           .then(() => {
             logger.info(
               $t("TXT_CODE_system_instance.autoStart", {
@@ -228,7 +227,7 @@ class InstanceSubsystem extends EventEmitter {
           `Instance ${instance.config.nickname} (${instance.instanceUuid}) is running or busy, and is being forced to end.`
         );
         promises.push(
-          instance.execCommand(new KillCommand()).then(() => {
+          instance.execPreset("kill").then(() => {
             if (!this.isGlobalInstance(instance))
               StorageSubsystem.store("InstanceConfig", instance.instanceUuid, instance.config);
             logger.info(

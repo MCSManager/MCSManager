@@ -1,8 +1,6 @@
 import { $t } from "../../../i18n";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import SendCommand from "../cmd";
-import RconCommand from "../steam/rcon_command";
 
 export default class GeneralStopCommand extends InstanceCommand {
   constructor() {
@@ -10,6 +8,10 @@ export default class GeneralStopCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
+    // If the automatic restart function is enabled, the setting is ignored once
+    if (instance.config.eventTask && instance.config.eventTask.autoRestart)
+      instance.config.eventTask.ignore = true;
+
     const stopCommand = instance.config.stopCommand;
     if (instance.status() === Instance.STATUS_STOP || !instance.process)
       return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning")));
@@ -18,7 +20,7 @@ export default class GeneralStopCommand extends InstanceCommand {
 
     const stopCommandList = stopCommand.split("\n");
     for (const stopCommand of stopCommandList) {
-      await instance.exec(new SendCommand(stopCommand));
+      await instance.execPreset("command", stopCommand);
     }
 
     instance.print("\n");

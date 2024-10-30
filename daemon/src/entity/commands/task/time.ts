@@ -1,6 +1,5 @@
 import { ILifeCycleTask } from "../../instance/life_cycle";
 import Instance from "../../instance/instance";
-import KillCommand from "../kill";
 
 // When the instance is running, continue to check the expiration time
 export default class TimeCheck implements ILifeCycleTask {
@@ -17,7 +16,7 @@ export default class TimeCheck implements ILifeCycleTask {
           const currentTime = Date.now();
           if (endTime <= currentTime) {
             // Expired, execute the end process command
-            await instance.exec(new KillCommand());
+            await instance.execPreset("kill");
             clearInterval(this.task);
           }
         }

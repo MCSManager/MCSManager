@@ -1,7 +1,6 @@
 import { $t } from "../../../i18n";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import SendCommand from "../cmd";
 
 export default class PtyStopCommand extends InstanceCommand {
   constructor() {
@@ -19,11 +18,7 @@ export default class PtyStopCommand extends InstanceCommand {
 
     const stopCommandList = stopCommand.split("\n");
     for (const stopCommand of stopCommandList) {
-      if (stopCommand.toLocaleLowerCase() == "^c") {
-        await instance.exec(new SendCommand(SendCommand.CTRL_C));
-      } else {
-        await instance.exec(new SendCommand(stopCommand));
-      }
+      await instance.execPreset("command", stopCommand);
     }
 
     // If the instance is still in the stopped state after 10 minutes, restore the state

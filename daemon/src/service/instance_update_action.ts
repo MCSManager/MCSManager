@@ -28,6 +28,7 @@ export class InstanceUpdateAction extends AsyncTask {
     );
     logger.info(updateCommand);
 
+    this.instance.print("\n");
     this.instance.println(
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })

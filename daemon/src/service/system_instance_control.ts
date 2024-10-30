@@ -3,11 +3,6 @@ import schedule from "node-schedule";
 import InstanceSubsystem from "./system_instance";
 import StorageSubsystem from "../common/system_storage";
 import logger from "./log";
-import StartCommand from "../entity/commands/start";
-import StopCommand from "../entity/commands/stop";
-import SendCommand from "../entity/commands/cmd";
-import RestartCommand from "../entity/commands/restart";
-import KillCommand from "../entity/commands/kill";
 import FileManager from "./system_file";
 
 // Scheduled task configuration item interface
@@ -170,26 +165,26 @@ class InstanceControlSubsystem {
       // logger.info(`Execute scheduled task: ${task.name} ${task.action} ${task.time} ${task.count} `);
       if (task.action === "start") {
         if (instanceStatus === 0) {
-          return await instance.exec(new StartCommand("ScheduleJob"));
+          return await instance.execPreset("start");
         }
       }
       if (task.action === "stop") {
         if (instanceStatus === 3) {
-          return await instance.exec(new StopCommand());
+          return await instance.execPreset("stop");
         }
       }
       if (task.action === "restart") {
         if (instanceStatus === 3) {
-          return await instance.exec(new RestartCommand());
+          return await instance.execPreset("restart");
         }
       }
       if (task.action === "command") {
         if (instanceStatus === 3) {
-          return await instance.exec(new SendCommand(payload));
+          return await instance.execPreset("command", payload);
         }
       }
       if (task.action === "kill") {
-        return await instance.exec(new KillCommand());
+        return await instance.execPreset("kill");
       }
     } catch (error: any) {
       logger.error(

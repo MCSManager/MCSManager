@@ -8,10 +8,14 @@ export default class GeneralRestartCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
+    // If the automatic restart function is enabled, the setting is ignored once
+    if (instance.config.eventTask && instance.config.eventTask.autoRestart)
+      instance.config.eventTask.ignore = true;
+
     try {
       instance.println("INFO", $t("TXT_CODE_restart.start"));
-      await instance.execPreset("stop");
       instance.setLock(true);
+      await instance.execPreset("stop");
       const startCount = instance.startCount;
       // Check the instance status every second,
       // if the instance status is stopped, restart the server immediately
@@ -28,9 +32,9 @@ export default class GeneralRestartCommand extends InstanceCommand {
           }
           if (instance.status() === Instance.STATUS_STOP) {
             instance.println("INFO", $t("TXT_CODE_restart.restarting"));
-            await instance.execPreset("start");
             instance.setLock(false);
             clearInterval(task);
+            await instance.execPreset("start");
           }
         } catch (error: any) {
           clearInterval(task);

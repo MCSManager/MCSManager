@@ -2,6 +2,7 @@ import { t } from "i18next";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import Rcon from "rcon-srcds";
+import { isExitCommand } from "../general/general_command";
 
 async function sendRconCommand(instance: Instance, command: string) {
   const targetIp = instance.config.rconIp || "localhost";
@@ -45,6 +46,7 @@ export default class RconCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance, text?: string): Promise<any> {
+    if (isExitCommand(instance, text)) return;
     try {
       if (text || this.cmd) {
         await sendRconCommand(instance, String(text ?? this.cmd));

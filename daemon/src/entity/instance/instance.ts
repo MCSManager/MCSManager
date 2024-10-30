@@ -228,21 +228,10 @@ export default class Instance extends EventEmitter {
   }
 
   setLock(bool: boolean) {
+    if (this.lock === true && bool === true) {
+      throw new Error($t("实例有其他任务正在进行中，无法进行此操作！"));
+    }
     this.lock = bool;
-  }
-
-  // Execute the corresponding command for this instance
-  async execCommand(command: InstanceCommand) {
-    if (this.lock)
-      throw new Error($t("TXT_CODE_instanceConf.instanceLock", { info: command.info }));
-    if (this.status() == Instance.STATUS_BUSY)
-      throw new Error($t("TXT_CODE_instanceConf.instanceBusy"));
-    return await command.exec(this);
-  }
-
-  // Execute the corresponding command for this instance Alias
-  async exec(command: InstanceCommand) {
-    return await this.execCommand(command);
   }
 
   // force the command to execute
@@ -299,7 +288,7 @@ export default class Instance extends EventEmitter {
     // If automatic restart is enabled, the startup operation is performed immediately
     if (this.config.eventTask.autoRestart) {
       if (!this.config.eventTask.ignore) {
-        this.forceExec(new StartCommand("Event Task: Auto Restart"))
+        this.execPreset("start")
           .then(() => {
             this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
           })
@@ -315,9 +304,9 @@ export default class Instance extends EventEmitter {
 
     // Turn off the warning immediately after startup, usually the startup command is written incorrectly
     const currentTimestamp = new Date().getTime();
-    const startThreshold = 6 * 1000;
+    const startThreshold = 2 * 1000;
     if (currentTimestamp - this.startTimestamp < startThreshold) {
-      this.println("ERROR", $t("TXT_CODE_instanceConf.instantExit"));
+      this.println("ERROR", $t("实例进程启动失败，请检查启动命令和运行环境等配置！"));
     }
   }
 
