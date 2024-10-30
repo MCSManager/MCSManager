@@ -132,6 +132,8 @@ router.delete(
       const instanceUuids = ctx.request.body.uuids;
       const deleteFile = ctx.request.body.deleteFile;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!instanceUuids || !Array.isArray(instanceUuids))
+        throw new Error("Type error, invalid uuids or daemonId");
       const instanceIds = instanceUuids.map((uuid: string) => {
         return { instanceUuid: uuid, daemonId };
       });
