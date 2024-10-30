@@ -6,7 +6,8 @@ FROM --platform=${BUILDPLATFORM} node:lts-alpine AS builder
 WORKDIR /src
 COPY . /src
 
-RUN chmod a+x ./install-dependents.sh &&\
+RUN apk add --no-cache wget &&\
+    chmod a+x ./install-dependents.sh &&\
     chmod a+x ./build.sh &&\
     ./install-dependents.sh &&\
     ./build.sh &&\
