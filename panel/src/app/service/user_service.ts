@@ -108,10 +108,10 @@ class UserSubsystem {
       });
     });
   }
-
-  deleteUserInstances(uuid: string, instanceIds: IUserApp[], allUsers: false): void;
-  deleteUserInstances(uuid: null, instanceIds: IUserApp[], allUsers: true): void;
   deleteUserInstances(uuid: string | null, instanceIds: IUserApp[], allUsers = false) {
+    if (uuid && allUsers) {
+      throw new Error("Type error, The uuid and allUsers cannot be true at the same time.");
+    }
     const users = allUsers ? Array.from(this.objects.values()) : [this.getInstance(uuid!)];
     if (!users || users.length === 0) return;
     instanceIds.forEach((value) => {
