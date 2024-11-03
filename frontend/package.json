@@ -23,6 +23,7 @@
     "@codemirror/stream-parser": "^0.19.9",
     "@uiw/codemirror-theme-dracula": "^4.21.24",
     "@vueuse/core": "^10.3.0",
+    "ace-builds": "^1.36.3",
     "ant-design-vue": "^4.0.7",
     "axios": "^1.7.4",
     "codemirror": "^6.0.1",
