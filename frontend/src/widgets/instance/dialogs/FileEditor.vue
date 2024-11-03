@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { t } from "@/lang/i18n";
-import { message } from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
-import Editor from "@/components/Editor.vue";
 import { fileContent } from "@/services/apis/fileManager";
-import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { useScreen } from "@/hooks/useScreen";
 import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
+import AceEditor from "@/components/AceEditor.vue";
 
 const emit = defineEmits(["save"]);
 
@@ -16,6 +15,7 @@ const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
+const editorComponent = ref<InstanceType<typeof AceEditor>>();
 
 const { isPhone } = useScreen();
 
@@ -29,29 +29,10 @@ const props = defineProps<{
   instanceId: string;
 }>();
 
-let useKeyboardEventsHooks: ReturnType<typeof useKeyboardEvents> | null = null;
-
-const initKeydownListener = () => {
-  useKeyboardEventsHooks = useKeyboardEvents(
-    { ctrl: true, alt: false, caseSensitive: false, key: "s" },
-    async () => {
-      try {
-        await submitRequest();
-        message.success(t("TXT_CODE_8f47d95"));
-        emit("save");
-      } catch (err: any) {
-        return reportErrorMsg(err.message);
-      }
-    }
-  );
-  useKeyboardEventsHooks.startKeydownListener();
-};
-
 const openDialog = (_path: string, _fileName: string) => {
   open.value = true;
   path.value = _path;
   fileName.value = _fileName;
-  initKeydownListener();
   return new Promise(async (_resolve, _reject) => {
     await render();
     resolve = _resolve;
@@ -85,25 +66,29 @@ const render = async () => {
   }
 };
 
-const submitRequest = async () => {
-  await execute({
-    params: {
-      daemonId: props.daemonId,
-      uuid: props.instanceId
-    },
-    data: {
-      target: path.value,
-      text: editorText.value
-    }
-  });
-};
-
-const submit = async () => {
+const submit = async (options?: {
+  fromHotkey?: boolean;
+  needClose?: boolean;
+  getText?: boolean;
+}) => {
   try {
-    await submitRequest();
-    message.success(t("TXT_CODE_a7907771"));
-    cancel();
-    resolve(editorText.value);
+    const { fromHotkey, needClose, getText } = options || {};
+    if (getText) editorComponent.value?.updateText();
+    await execute({
+      params: {
+        daemonId: props.daemonId,
+        uuid: props.instanceId
+      },
+      data: {
+        target: path.value,
+        text: editorText.value
+      }
+    });
+    message.success(fromHotkey ? t("TXT_CODE_8f47d95") : t("TXT_CODE_a7907771"));
+    if (needClose) {
+      cancel();
+      resolve(editorText.value);
+    }
     emit("save");
   } catch (err: any) {
     console.error(err.message);
@@ -112,8 +97,17 @@ const submit = async () => {
   }
 };
 
+const beforeCancel = () => {
+  if (editorComponent.value?.isEditing)
+    Modal.confirm({
+      title: t("TXT_CODE_617ce69c"),
+      content: t("TXT_CODE_2c0700cb"),
+      onOk: () => cancel()
+    });
+  else cancel();
+};
+
 const cancel = async () => {
-  useKeyboardEventsHooks?.removeKeydownListener();
   open.value = openEditor.value = false;
   resolve(editorText.value);
 };
@@ -131,13 +125,8 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
-    :cancel-text="t('TXT_CODE_3b1cc020')"
-    :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
     :width="fullScreen ? '100%' : '1300px'"
-    :confirm-loading="isLoading"
-    @ok="submit"
-    @cancel="cancel"
   >
     <template #title>
       {{ dialogTitle }}
@@ -148,13 +137,25 @@ defineExpose({
         </template>
       </a-button>
     </template>
-    <Editor
+    <AceEditor
       v-if="openEditor"
-      ref="EditorComponent"
+      ref="editorComponent"
       v-model:text="editorText"
       :filename="fileName"
-      height="80vh"
+      height="80svh"
+      @save-file="submit"
     />
     <a-skeleton v-else :paragraph="{ rows: 12 }" active />
+    <template #footer>
+      <a-button key="back" @click="beforeCancel"> {{ t("TXT_CODE_3b1cc020") }}</a-button>
+      <a-button
+        key="submit"
+        type="primary"
+        :loading="isLoading"
+        @click="submit({ needClose: true, getText: true })"
+      >
+        {{ t("TXT_CODE_abfe9512") }}
+      </a-button>
+    </template>
   </a-modal>
 </template>

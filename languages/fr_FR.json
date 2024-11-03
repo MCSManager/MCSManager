@@ -1949,5 +1949,21 @@
   "TXT_CODE_9b3ce825": "Description du proxy inverse",
   "TXT_CODE_d4c8fb3b": "Documents associés :",
   "TXT_CODE_a6424dcc": "Le répertoire de travail ou la commande de démarrage ne peut pas être vide",
-  "TXT_CODE_ffa884f9": "Avertissement : Le répertoire de travail n'est pas monté sur le conteneur et le conteneur ne pourra pas accéder aux fichiers du répertoire de travail de l'instance."
+  "TXT_CODE_ffa884f9": "Avertissement : Le répertoire de travail n'est pas monté sur le conteneur et le conteneur ne pourra pas accéder aux fichiers du répertoire de travail de l'instance.",
+  "TXT_CODE_8918574b": "Retour à la ligne automatique",
+  "TXT_CODE_efc75aa3": "saisie semi-automatique",
+  "TXT_CODE_8cedf1ad": "Formater lors de l'enregistrement",
+  "TXT_CODE_51a2e7a9": "Mettre en surbrillance la ligne actuelle",
+  "TXT_CODE_34f6be8a": "mode lecture seule",
+  "TXT_CODE_31fb3585": "Afficher les caractères cachés",
+  "TXT_CODE_629d3605": "Sélectionnez plusieurs lignes",
+  "TXT_CODE_8d2b48ec": "Afficher le numéro de ligne",
+  "TXT_CODE_d7e538a": "Toutes les modifications actuelles seront ignorées. Voulez-vous continuer ?",
+  "TXT_CODE_1172896": "Refaire",
+  "TXT_CODE_ab91f373": "Paramètres de l'éditeur",
+  "TXT_CODE_5844b301": "Veuillez sélectionner un sujet",
+  "TXT_CODE_12055c4b": "thème",
+  "TXT_CODE_60752a40": "Veuillez sélectionner la langue",
+  "TXT_CODE_630d19e1": "taille de la police",
+  "TXT_CODE_2eedf5e0": "non enregistré"
 }

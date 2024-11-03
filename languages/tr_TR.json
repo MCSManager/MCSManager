@@ -1949,5 +1949,21 @@
   "TXT_CODE_9b3ce825": "Ters proxy açıklaması",
   "TXT_CODE_d4c8fb3b": "İlgili belgeler:",
   "TXT_CODE_a6424dcc": "Çalışma dizini veya başlatma komutu boş olamaz",
-  "TXT_CODE_ffa884f9": "Uyarı: Çalışma dizini kapsayıcıya bağlanmamıştır ve kapsayıcı, örneğin çalışma dizinindeki dosyalara erişemeyecektir."
+  "TXT_CODE_ffa884f9": "Uyarı: Çalışma dizini kapsayıcıya bağlanmamıştır ve kapsayıcı, örneğin çalışma dizinindeki dosyalara erişemeyecektir.",
+  "TXT_CODE_8918574b": "Otomatik satır sarma",
+  "TXT_CODE_efc75aa3": "otomatik tamamlama",
+  "TXT_CODE_8cedf1ad": "Kaydederken biçimlendir",
+  "TXT_CODE_51a2e7a9": "Geçerli satırı vurgula",
+  "TXT_CODE_34f6be8a": "salt okunur mod",
+  "TXT_CODE_31fb3585": "Gizli karakterleri göster",
+  "TXT_CODE_629d3605": "Birden fazla satır seç",
+  "TXT_CODE_8d2b48ec": "Satır numarasını göster",
+  "TXT_CODE_d7e538a": "Mevcut değişikliklerin tümü silinecek, devam edilsin mi?",
+  "TXT_CODE_1172896": "Yinele",
+  "TXT_CODE_ab91f373": "Düzenleyici ayarları",
+  "TXT_CODE_5844b301": "Lütfen bir konu seçin",
+  "TXT_CODE_12055c4b": "tema",
+  "TXT_CODE_60752a40": "Lütfen dili seçin",
+  "TXT_CODE_630d19e1": "yazı tipi boyutu",
+  "TXT_CODE_2eedf5e0": "kaydedilmedi"
 }

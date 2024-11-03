@@ -1955,5 +1955,22 @@
   "TXT_CODE_6259357c": "The program must run for more than 6 seconds before it can be forced to stop!",
   "TXT_CODE_9d1d244f": "Program startup failed, input and output streams are unreadable: {{pipeName}}",
   "TXT_CODE_ca030197": "The instance has other tasks in progress, and this operation cannot be performed!",
-  "TXT_CODE_aae2918f": "The instance process failed to start, please check the startup command and operating environment configuration!"
+  "TXT_CODE_aae2918f": "The instance process failed to start, please check the startup command and operating environment configuration!",
+  "TXT_CODE_8918574b": "Automatic line wrapping",
+  "TXT_CODE_efc75aa3": "AutoComplete",
+  "TXT_CODE_8cedf1ad": "Format on save",
+  "TXT_CODE_51a2e7a9": "Highlight active line",
+  "TXT_CODE_34f6be8a": "Read only mode",
+  "TXT_CODE_31fb3585": "Show invisibles",
+  "TXT_CODE_629d3605": "Enable multi select",
+  "TXT_CODE_8d2b48ec": "Show line numbers",
+  "TXT_CODE_d7e538a": "All current changes will be discarded, continue?",
+  "TXT_CODE_1172896": "Redo",
+  "TXT_CODE_ab91f373": "Editor settings",
+  "TXT_CODE_5844b301": "Please select a topic",
+  "TXT_CODE_12055c4b": "Theme",
+  "TXT_CODE_60752a40": "Please select language",
+  "TXT_CODE_630d19e1": "Font size",
+  "TXT_CODE_2eedf5e0": "Not saved",
+  "TXT_CODE_2c0700cb": "文件未保存，是否退出？"
 }

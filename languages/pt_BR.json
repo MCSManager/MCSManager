@@ -1949,5 +1949,21 @@
   "TXT_CODE_9b3ce825": "Descrição do proxy reverso",
   "TXT_CODE_d4c8fb3b": "Documentos relacionados:",
   "TXT_CODE_a6424dcc": "O diretório de trabalho ou comando de inicialização não pode estar vazio",
-  "TXT_CODE_ffa884f9": "Aviso: o diretório de trabalho não está montado no contêiner e o contêiner não poderá acessar arquivos no diretório de trabalho da instância"
+  "TXT_CODE_ffa884f9": "Aviso: o diretório de trabalho não está montado no contêiner e o contêiner não poderá acessar arquivos no diretório de trabalho da instância",
+  "TXT_CODE_8918574b": "Quebra automática de linha",
+  "TXT_CODE_efc75aa3": "preenchimento automático",
+  "TXT_CODE_8cedf1ad": "Formatar ao salvar",
+  "TXT_CODE_51a2e7a9": "Destacar a linha atual",
+  "TXT_CODE_34f6be8a": "modo somente leitura",
+  "TXT_CODE_31fb3585": "Mostrar caracteres ocultos",
+  "TXT_CODE_629d3605": "Selecione várias linhas",
+  "TXT_CODE_8d2b48ec": "Mostrar número da linha",
+  "TXT_CODE_d7e538a": "Todas as alterações atuais serão descartadas, continuar?",
+  "TXT_CODE_1172896": "Refazer",
+  "TXT_CODE_ab91f373": "Configurações do editor",
+  "TXT_CODE_5844b301": "Selecione um tópico",
+  "TXT_CODE_12055c4b": "tema",
+  "TXT_CODE_60752a40": "Selecione o idioma",
+  "TXT_CODE_630d19e1": "tamanho da fonte",
+  "TXT_CODE_2eedf5e0": "não salvo"
 }

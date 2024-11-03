@@ -1949,5 +1949,21 @@
   "TXT_CODE_9b3ce825": "Beschreibung des Reverse-Proxys",
   "TXT_CODE_d4c8fb3b": "Zugehörige Dokumente: ",
   "TXT_CODE_a6424dcc": "Das Arbeitsverzeichnis oder der Startbefehl darf nicht leer sein",
-  "TXT_CODE_ffa884f9": "Warnung: Das Arbeitsverzeichnis ist nicht im Container gemountet und der Container kann nicht auf Dateien im Arbeitsverzeichnis der Instanz zugreifen"
+  "TXT_CODE_ffa884f9": "Warnung: Das Arbeitsverzeichnis ist nicht im Container gemountet und der Container kann nicht auf Dateien im Arbeitsverzeichnis der Instanz zugreifen",
+  "TXT_CODE_8918574b": "Automatischer Zeilenumbruch",
+  "TXT_CODE_efc75aa3": "automatische Vervollständigung",
+  "TXT_CODE_8cedf1ad": "Beim Speichern formatieren",
+  "TXT_CODE_51a2e7a9": "Aktuelle Zeile hervorheben",
+  "TXT_CODE_34f6be8a": "Nur-Lese-Modus",
+  "TXT_CODE_31fb3585": "Versteckte Zeichen anzeigen",
+  "TXT_CODE_629d3605": "Wählen Sie mehrere Zeilen aus",
+  "TXT_CODE_8d2b48ec": "Zeilennummer anzeigen",
+  "TXT_CODE_d7e538a": "Alle aktuellen Änderungen werden verworfen. Fortfahren?",
+  "TXT_CODE_1172896": "Wiederholen",
+  "TXT_CODE_ab91f373": "Editor-Einstellungen",
+  "TXT_CODE_5844b301": "Bitte wählen Sie ein Thema aus",
+  "TXT_CODE_12055c4b": "Thema",
+  "TXT_CODE_60752a40": "Bitte Sprache auswählen",
+  "TXT_CODE_630d19e1": "Schriftgröße",
+  "TXT_CODE_2eedf5e0": "nicht gespeichert"
 }

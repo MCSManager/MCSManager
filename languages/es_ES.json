@@ -1949,5 +1949,21 @@
   "TXT_CODE_9b3ce825": "Descripción del proxy inverso",
   "TXT_CODE_d4c8fb3b": "Documentos relacionados: ",
   "TXT_CODE_a6424dcc": "El directorio de trabajo o el comando de inicio no pueden estar vacíos",
-  "TXT_CODE_ffa884f9": "Advertencia: el directorio de trabajo no está montado en el contenedor y el contenedor no podrá acceder a los archivos en el directorio de trabajo de la instancia."
+  "TXT_CODE_ffa884f9": "Advertencia: el directorio de trabajo no está montado en el contenedor y el contenedor no podrá acceder a los archivos en el directorio de trabajo de la instancia.",
+  "TXT_CODE_8918574b": "Ajuste automático de línea",
+  "TXT_CODE_efc75aa3": "autocompletar",
+  "TXT_CODE_8cedf1ad": "Formatear al guardar",
+  "TXT_CODE_51a2e7a9": "Resaltar la línea actual",
+  "TXT_CODE_34f6be8a": "modo de solo lectura",
+  "TXT_CODE_31fb3585": "Mostrar personajes ocultos",
+  "TXT_CODE_629d3605": "Seleccionar varias líneas",
+  "TXT_CODE_8d2b48ec": "Mostrar número de línea",
+  "TXT_CODE_d7e538a": "Todos los cambios actuales serán descartados, ¿continuar?",
+  "TXT_CODE_1172896": "Rehacer",
+  "TXT_CODE_ab91f373": "Configuración del editor",
+  "TXT_CODE_5844b301": "Por favor seleccione un tema",
+  "TXT_CODE_12055c4b": "tema",
+  "TXT_CODE_60752a40": "Por favor seleccione idioma",
+  "TXT_CODE_630d19e1": "tamaño de fuente",
+  "TXT_CODE_2eedf5e0": "no salvo"
 }
