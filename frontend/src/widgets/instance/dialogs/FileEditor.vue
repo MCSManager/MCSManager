@@ -127,6 +127,7 @@ defineExpose({
     centered
     :mask-closable="false"
     :width="fullScreen ? '100%' : '1300px'"
+    :closable="false"
   >
     <template #title>
       {{ dialogTitle }}
@@ -147,9 +148,8 @@ defineExpose({
     />
     <a-skeleton v-else :paragraph="{ rows: 12 }" active />
     <template #footer>
-      <a-button key="back" @click="beforeCancel"> {{ t("TXT_CODE_3b1cc020") }}</a-button>
+      <a-button @click="beforeCancel"> {{ t("TXT_CODE_3b1cc020") }}</a-button>
       <a-button
-        key="submit"
         type="primary"
         :loading="isLoading"
         @click="submit({ needClose: true, getText: true })"
