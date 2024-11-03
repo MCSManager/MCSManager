@@ -171,9 +171,11 @@ const disable2FACode = async () => {
             <div class="mb-20">
               <img :src="formState.qrcode" style="height: 180px; border-radius: 6px" />
             </div>
-            <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
-              {{ t("TXT_CODE_b0a18c20") }}
-            </a-button>
+            <a-popconfirm :title="t('TXT_CODE_276756b2')" @confirm="confirm2FACode">
+              <a-button>
+                {{ t("TXT_CODE_b0a18c20") }}
+              </a-button>
+            </a-popconfirm>
           </div>
         </a-form-item>
 
