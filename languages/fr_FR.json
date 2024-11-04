@@ -1965,5 +1965,12 @@
   "TXT_CODE_12055c4b": "thème",
   "TXT_CODE_60752a40": "Veuillez sélectionner la langue",
   "TXT_CODE_630d19e1": "taille de la police",
-  "TXT_CODE_2eedf5e0": "non enregistré"
+  "TXT_CODE_2eedf5e0": "non enregistré",
+  "TXT_CODE_2c0700cb": "Le fichier n'a pas été enregistré, souhaitez-vous quitter ?",
+  "TXT_CODE_6259357c": "Le programme doit s'exécuter pendant plus de 6 secondes avant de pouvoir être forcé à s'arrêter !",
+  "TXT_CODE_6c232c9c": "Utilisé pour monter des dossiers supplémentaires sur l'hôte dans le conteneur, pris en charge",
+  "TXT_CODE_9d1d244f": "Le programme n'a pas pu démarrer et les flux d'entrée et de sortie étaient illisibles : {{pipeName}}",
+  "TXT_CODE_aae2918f": "Le processus d'instance n'a pas pu démarrer. Veuillez vérifier la commande de démarrage et la configuration de l'environnement d'exécution !",
+  "TXT_CODE_ca030197": "L'instance a d'autres tâches en cours et cette opération ne peut pas être effectuée !",
+  "TXT_CODE_fa487a47": "Fournissez les chaînes de variables suivantes :"
 }

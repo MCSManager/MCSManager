@@ -1965,5 +1965,12 @@
   "TXT_CODE_12055c4b": "tema",
   "TXT_CODE_60752a40": "Lütfen dili seçin",
   "TXT_CODE_630d19e1": "yazı tipi boyutu",
-  "TXT_CODE_2eedf5e0": "kaydedilmedi"
+  "TXT_CODE_2eedf5e0": "kaydedilmedi",
+  "TXT_CODE_2c0700cb": "Dosya kaydedilmedi, çıkmak istiyor musunuz?",
+  "TXT_CODE_6259357c": "Programın durmaya zorlanabilmesi için 6 saniyeden fazla çalışması gerekir!",
+  "TXT_CODE_6c232c9c": "Ana bilgisayardaki ek klasörleri kapsayıcıya eklemek için kullanılır, desteklenir",
+  "TXT_CODE_9d1d244f": "Program başlatılamadı ve giriş ve çıkış akışları okunamıyordu: {{pipeName}}",
+  "TXT_CODE_aae2918f": "Örnek işlemi başlatılamadı. Lütfen başlatma komutunu ve çalışma ortamı yapılandırmasını kontrol edin!",
+  "TXT_CODE_ca030197": "Örnekte devam eden başka görevler var ve bu işlem gerçekleştirilemiyor!",
+  "TXT_CODE_fa487a47": "Aşağıdaki değişken dizelerini sağlayın:"
 }

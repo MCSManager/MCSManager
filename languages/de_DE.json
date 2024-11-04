@@ -1965,5 +1965,12 @@
   "TXT_CODE_12055c4b": "Thema",
   "TXT_CODE_60752a40": "Bitte Sprache auswählen",
   "TXT_CODE_630d19e1": "Schriftgröße",
-  "TXT_CODE_2eedf5e0": "nicht gespeichert"
+  "TXT_CODE_2eedf5e0": "nicht gespeichert",
+  "TXT_CODE_2c0700cb": "Die Datei wurde nicht gespeichert. Möchten Sie den Vorgang beenden?",
+  "TXT_CODE_6259357c": "Das Programm muss länger als 6 Sekunden laufen, bevor ein Stopp erzwungen werden kann!",
+  "TXT_CODE_6c232c9c": "Wird zum Mounten zusätzlicher Ordner auf dem Host im Container verwendet (unterstützt).",
+  "TXT_CODE_9d1d244f": "Das Programm konnte nicht gestartet werden und die Eingabe- und Ausgabestreams waren nicht lesbar: {{pipeName}}",
+  "TXT_CODE_aae2918f": "Der Instanzprozess konnte nicht gestartet werden. Bitte überprüfen Sie den Startbefehl und die Konfiguration der laufenden Umgebung!",
+  "TXT_CODE_ca030197": "Die Instanz hat andere Aufgaben in Bearbeitung und dieser Vorgang kann nicht ausgeführt werden!",
+  "TXT_CODE_fa487a47": "Geben Sie die folgenden variablen Zeichenfolgen an:"
 }

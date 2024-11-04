@@ -1965,5 +1965,12 @@
   "TXT_CODE_12055c4b": "tema",
   "TXT_CODE_60752a40": "Por favor seleccione idioma",
   "TXT_CODE_630d19e1": "tamaño de fuente",
-  "TXT_CODE_2eedf5e0": "no salvo"
+  "TXT_CODE_2eedf5e0": "no salvo",
+  "TXT_CODE_2c0700cb": "El archivo no se guardó, ¿quieres salir?",
+  "TXT_CODE_6259357c": "¡El programa debe ejecutarse durante más de 6 segundos antes de que se pueda forzar su detención!",
+  "TXT_CODE_6c232c9c": "Se utiliza para montar carpetas adicionales en el host en el contenedor, compatible",
+  "TXT_CODE_9d1d244f": "El programa no pudo iniciarse y los flujos de entrada y salida eran ilegibles: {{pipeName}}",
+  "TXT_CODE_aae2918f": "El proceso de instancia no pudo iniciarse. Verifique el comando de inicio y la configuración del entorno de ejecución.",
+  "TXT_CODE_ca030197": "¡La instancia tiene otras tareas en progreso y esta operación no se puede realizar!",
+  "TXT_CODE_fa487a47": "Proporcione las siguientes cadenas de variables:"
 }

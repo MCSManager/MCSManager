@@ -1965,5 +1965,12 @@
   "TXT_CODE_12055c4b": "tema",
   "TXT_CODE_60752a40": "Selecione o idioma",
   "TXT_CODE_630d19e1": "tamanho da fonte",
-  "TXT_CODE_2eedf5e0": "não salvo"
+  "TXT_CODE_2eedf5e0": "não salvo",
+  "TXT_CODE_2c0700cb": "O arquivo não foi salvo, deseja sair?",
+  "TXT_CODE_6259357c": "O programa deve ser executado por mais de 6 segundos antes de poder ser forçado a parar!",
+  "TXT_CODE_6c232c9c": "Usado para montar pastas adicionais no host no contêiner, com suporte",
+  "TXT_CODE_9d1d244f": "O programa falhou ao iniciar e os fluxos de entrada e saída estavam ilegíveis: {{pipeName}}",
+  "TXT_CODE_aae2918f": "O processo da instância falhou ao iniciar. Verifique o comando de inicialização e a configuração do ambiente em execução!",
+  "TXT_CODE_ca030197": "A instância possui outras tarefas em andamento e esta operação não pode ser executada!",
+  "TXT_CODE_fa487a47": "Forneça as seguintes strings variáveis:"
 }
