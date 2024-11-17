@@ -1,0 +1,57 @@
+name: Release Build
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: |
+          chmod a+x ./install-dependents.sh
+          chmod a+x ./build.sh
+          ./install-dependents.sh
+          ./build.sh
+
+      - name: Add binaries to production files
+        run: wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
+
+      - name: Create linux and windows build
+        run: |
+          cp -r production-code dist_linux
+          mv production-code dist_windows
+
+      - name: Copy startup scripts
+        run: |
+          cp prod-scripts/linux/* dist_linux/
+          cp prod-scripts/windows/* dist_windows/
+
+      - name: Copy node runtime to windows build
+        run: |
+          wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe
+          cp dist_windows/daemon/node_app.exe dist_windows/web/node_app.exe
+
+      - name: Create archive
+        run: |
+          mv dist_linux/ mcsmanager/
+          tar czf mcsmanager_linux_release.tar.gz mcsmanager/
+          rm -rf mcsmanager/
+          mv dist_windows/ mcsmanager/
+          zip -r mcsmanager_windows_release.zip mcsmanager/
+
+      - name: Upload assets to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            mcsmanager_windows_release.zip
+            mcsmanager_linux_release.tar.gz

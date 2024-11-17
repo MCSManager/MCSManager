@@ -7,19 +7,14 @@ import Instance from "../entity/instance/instance";
 import logger from "../service/log";
 import path from "path";
 
-import StartCommand from "../entity/commands/start";
-import StopCommand from "../entity/commands/stop";
-import SendCommand from "../entity/commands/cmd";
-import KillCommand from "../entity/commands/kill";
 import { IInstanceDetail, IJson } from "../service/interfaces";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import FileManager from "../service/system_file";
 import { ProcessConfig } from "../entity/instance/process_config";
-import RestartCommand from "../entity/commands/restart";
 import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask } from "../service/async_task_service/quick_install";
 import { QuickInstallTask } from "../service/async_task_service/quick_install";
-import { toNumber, toText } from "common";
+import { toNumber } from "common";
 import { arrayUnique } from "common";
 
 // Some instances operate router authentication middleware
@@ -221,7 +216,7 @@ routerApp.on("instance/open", async (ctx, data) => {
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
-      await instance!.exec(new StartCommand(ctx.socket.id));
+      await instance!.execPreset("start");
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
     } catch (err: any) {
       if (!disableResponse) {
@@ -242,7 +237,7 @@ routerApp.on("instance/stop", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-      await instance.exec(new StopCommand());
+      await instance.execPreset("stop");
       //Note: Removing this reply will cause the front-end response to be slow, because the front-end will wait for the panel-side message to be forwarded
       if (!disableResponse) protocol.msg(ctx, "instance/stop", { instanceUuid });
     } catch (err: any) {
@@ -259,7 +254,7 @@ routerApp.on("instance/restart", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     try {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-      await instance.exec(new RestartCommand());
+      await instance.execPreset("restart");
       if (!disableResponse) protocol.msg(ctx, "instance/restart", { instanceUuid });
     } catch (err: any) {
       if (!disableResponse)
@@ -275,7 +270,7 @@ routerApp.on("instance/kill", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) continue;
     try {
-      await instance.forceExec(new KillCommand());
+      await instance.execPreset("kill");
       if (!disableResponse) protocol.msg(ctx, "instance/kill", { instanceUuid });
     } catch (err: any) {
       if (!disableResponse)
@@ -292,7 +287,7 @@ routerApp.on("instance/command", async (ctx, data) => {
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   try {
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    await instance.exec(new SendCommand(command));
+    await instance.execPreset("command", command);
     if (!disableResponse) protocol.msg(ctx, "instance/command", { instanceUuid });
   } catch (err: any) {
     if (!disableResponse)

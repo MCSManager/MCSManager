@@ -19,8 +19,7 @@ export class InstanceUpdateAction extends AsyncTask {
   }
 
   public async onStart() {
-    let updateCommand = this.instance.config.updateCommand;
-    updateCommand = updateCommand.replace(/\{mcsm_workspace\}/gm, this.instance.config.cwd);
+    const updateCommand = this.instance.parseTextParams(this.instance.config.updateCommand);
     logger.info(
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
     );
@@ -29,6 +28,7 @@ export class InstanceUpdateAction extends AsyncTask {
     );
     logger.info(updateCommand);
 
+    this.instance.print("\n");
     this.instance.println(
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
@@ -57,7 +57,7 @@ export class InstanceUpdateAction extends AsyncTask {
 
     // start the update command
     const process = spawn(commandExeFile, commandParameters, {
-      cwd: this.instance.config.cwd,
+      cwd: this.instance.absoluteCwdPath(),
       stdio: "pipe",
       windowsHide: true
     });

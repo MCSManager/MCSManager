@@ -1,0 +1,24 @@
+# docker-compose.yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    network_mode: host # if you want run instance in daemon container
+    # ports:
+    #   - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock

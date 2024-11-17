@@ -12,6 +12,7 @@ import { EventEmitter } from "stream";
 import { IInstanceProcess } from "../entity/instance/interface";
 import { AsyncTask } from "./async_task_service";
 import iconv from "iconv-lite";
+import { toText } from "common";
 
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
@@ -50,8 +51,6 @@ export class SetupDockerContainer extends AsyncTask {
     } else {
       commandList = [];
     }
-
-    const cwd = instance.absoluteCwdPath();
 
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
@@ -119,7 +118,18 @@ export class SetupDockerContainer extends AsyncTask {
 
     const workingDir = instance.config.docker.workingDir ?? "";
 
-    // output startup log
+    let cwd = instance.absoluteCwdPath();
+    const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
+    if (hostRealPath) {
+      cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
+    }
+
+    if (workingDir) {
+      instance.println("CONTAINER", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
+    } else {
+      instance.println("CONTAINER", $t("TXT_CODE_ffa884f9"));
+    }
+
     logger.info("----------------");
     logger.info(`[SetupDockerContainer]`);
     logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
@@ -130,7 +140,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(
       `BINDS: ${JSON.stringify([
-        workingDir ? `${cwd}->${workingDir}` : "<No WorkSpace>",
+        workingDir ? `${cwd} --> ${workingDir}` : "<Working directory not mounted>",
         ...extraBinds
       ])}`
     );
@@ -138,6 +148,22 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
     logger.info("----------------");
+
+    const mounts: Docker.MountConfig =
+      extraBinds.map((v) => {
+        return {
+          Type: "bind",
+          Source: instance.parseTextParams(v.hostPath),
+          Target: instance.parseTextParams(v.containerPath)
+        };
+      }) || [];
+    if (workingDir && cwd) {
+      mounts.push({
+        Type: "bind",
+        Source: cwd,
+        Target: workingDir
+      });
+    }
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
@@ -163,20 +189,7 @@ export class SetupDockerContainer extends AsyncTask {
         CpuQuota: cpuQuota,
         PortBindings: publicPortArray,
         NetworkMode: instance.config.docker.networkMode,
-        Mounts: [
-          {
-            Type: "bind",
-            Source: cwd,
-            Target: workingDir
-          },
-          ...extraBinds.map((v) => {
-            return {
-              Type: "bind" as Docker.MountType,
-              Source: v.hostPath,
-              Target: v.containerPath
-            };
-          })
-        ]
+        Mounts: mounts
       },
       NetworkingConfig: {
         EndpointsConfig: {

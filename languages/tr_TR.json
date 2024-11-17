@@ -1196,7 +1196,6 @@
   "TXT_CODE_ee67e1a3": "Çalışma Dizini",
   "TXT_CODE_962d9320": "Örneğin çalıştığı çalışma dizini. Mutlak veya göreli bir yol sağlayabilirsiniz.",
   "TXT_CODE_bb0b9711": "Güncelleme veya Yükleme Komutu",
-  "TXT_CODE_41763172": "Bu sistem komutu, kullanıcı bir güncelleme/kurulum işlemi gerçekleştirdiğinde çalıştırılacaktır, &lbrace;mcsm_workspace&rbrace; çalışma dizinini temsil eder.",
   "TXT_CODE_f041de90": "Dosya Kodlaması",
   "TXT_CODE_6e69b5a5": "Dosya yönetimi işlevleri için.",
   "TXT_CODE_fa920c0": "Son Kullanma Süresi",
@@ -1948,5 +1947,7 @@
   "TXT_CODE_2fb14927": "Bu hata genellikle web sayfasının doğrudan arka uç işlemine bağlanamadığı anlamına gelir. \nBağlantı noktası yönlendirme, eşleme, ters proxy'niz varsa lütfen yapılandırmayı kontrol edin!",
   "TXT_CODE_46c48969": "Görünüşe göre HTTPS kullanmaya çalışıyorsunuz ancak arka plan programına WSS protokolünü kullanarak bağlanamıyoruz. \nLütfen WSS:// protokolünü kullanarak arka plan programına bağlanmayı deneyin.",
   "TXT_CODE_9b3ce825": "Ters proxy açıklaması",
-  "TXT_CODE_d4c8fb3b": "İlgili belgeler:"
+  "TXT_CODE_d4c8fb3b": "İlgili belgeler:",
+  "TXT_CODE_a6424dcc": "Çalışma dizini veya başlatma komutu boş olamaz",
+  "TXT_CODE_ffa884f9": "Uyarı: Çalışma dizini kapsayıcıya bağlanmamıştır ve kapsayıcı, örneğin çalışma dizinindeki dosyalara erişemeyecektir."
 }

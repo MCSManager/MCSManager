@@ -70,6 +70,7 @@ const {
   beforeUpload,
   downloadFile,
   handleChangeDir,
+  handleSearchChange,
   selectedFile,
   rowClickTable,
   handleTableChange,
@@ -383,7 +384,7 @@ onUnmounted(() => {
                 v-model:value.trim.lazy="operationForm.name"
                 :placeholder="t('TXT_CODE_7cad42a5')"
                 allow-clear
-                @change="getFileList()"
+                @change="handleSearchChange()"
               >
                 <template #suffix>
                   <search-outlined />

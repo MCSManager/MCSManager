@@ -16,8 +16,8 @@
 
 [Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
-[日本語](README_JP.md)
+[简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
+[日本語](README_JP.md) | [Spanish](README_ES.md)
 </div>
 
 <br />
@@ -32,9 +32,20 @@ MCSManager has already gained a certain level of popularity within the community
 
 MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
 
+
+**Terminal**
+
 ![failed_to_load_screenshot.png](/.github/panel-image.png)
 
+**Instance List**
+
 ![failed_to_load_screenshot.png](/.github/panel-instances.png)
+
+**Custom Layout**
+
+![failed_to_load_screenshot.png](/.github/panel-custom-layout.gif)
+
+
 
 ## Features
 

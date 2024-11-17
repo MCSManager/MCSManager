@@ -5,7 +5,6 @@ import logger from "../../../service/log";
 import fs from "fs-extra";
 import path from "path";
 import readline from "readline";
-import InstanceCommand from "../base/command";
 import EventEmitter from "events";
 import { IInstanceProcess } from "../../instance/interface";
 import { ChildProcess, ChildProcessWithoutNullStreams, exec, spawn } from "child_process";
@@ -15,6 +14,7 @@ import FunctionDispatcher from "../dispatcher";
 import { PTY_PATH } from "../../../const";
 import { Writable } from "stream";
 import { v4 } from "uuid";
+import AbsStartCommand from "../start";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -44,14 +44,17 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
     process.stdout?.on("data", (text) => this.emit("data", text));
     process.stderr?.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
-    try {
-      this.initNamedPipe();
-    } catch (error: any) {
-      logger.error(`Init Pipe Err: ${pipeName}, ${error}`);
-    }
+    this.initNamedPipe();
   }
 
   private initNamedPipe() {
+    if (!fs.existsSync(this.pipeName)) {
+      throw new Error(
+        $t("TXT_CODE_9d1d244f", {
+          pipeName: this.pipeName
+        })
+      );
+    }
     const fd = fs.openSync(this.pipeName, "w");
     const writePipe = fs.createWriteStream("", { fd });
     writePipe.on("close", () => {});
@@ -111,7 +114,7 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
   }
 }
 
-export default class PtyStartCommand extends InstanceCommand {
+export default class PtyStartCommand extends AbsStartCommand {
   constructor() {
     super("PtyStartCommand");
   }
@@ -141,21 +144,21 @@ export default class PtyStartCommand extends InstanceCommand {
     });
   }
 
-  async exec(instance: Instance, source = "Unknown") {
+  async createProcess(instance: Instance) {
     if (
       !instance.config.startCommand ||
-      !instance.config.cwd ||
+      !instance.hasCwdPath() ||
       !instance.config.ie ||
       !instance.config.oe
     )
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
     if (!fs.existsSync(instance.absoluteCwdPath()))
       throw new StartupError($t("TXT_CODE_pty_start.cwdNotExist"));
-    if (!path.isAbsolute(path.normalize(instance.config.cwd)))
+    if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))
       throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath"));
 
     // PTY mode correctness check
-    logger.info($t("TXT_CODE_pty_start.startPty", { source: source }));
+    logger.info($t("TXT_CODE_pty_start.startPty", { source: "" }));
     let checkPtyEnv = true;
 
     if (!fs.existsSync(PTY_PATH)) {
@@ -167,12 +170,11 @@ export default class PtyStartCommand extends InstanceCommand {
       // Close the PTY type, reconfigure the instance function group, and restart the instance
       instance.config.terminalOption.pty = false;
       await instance.forceExec(new FunctionDispatcher());
-      await instance.execPreset("start", source); // execute the preset command directly
+      await instance.execPreset("start"); // execute the preset command directly
       return;
     }
 
     // Set the startup state & increase the number of startups
-    instance.setLock(true);
     instance.status(Instance.STATUS_STARTING);
     instance.startCount++;
 
@@ -202,7 +204,7 @@ export default class PtyStartCommand extends InstanceCommand {
       "-coder",
       instance.config.oe,
       "-dir",
-      instance.config.cwd,
+      instance.absoluteCwdPath(),
       "-fifo",
       pipeName,
       "-cmd",
@@ -210,12 +212,12 @@ export default class PtyStartCommand extends InstanceCommand {
     ];
 
     logger.info("----------------");
-    logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: source }));
+    logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: "" }));
     logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));
     logger.info($t("TXT_CODE_pty_start.startCmd", { cmd: commandList.join(" ") }));
     logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
     logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
-    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }));
     logger.info("----------------");
 
     // create pty child process
@@ -246,7 +248,6 @@ export default class PtyStartCommand extends InstanceCommand {
     // create process adapter
     const ptySubProcessCfg = await this.readPtySubProcessConfig(subProcess);
     const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid, pipeName);
-    logger.info(`pty.exe subprocess PID: ${JSON.stringify(ptySubProcessCfg)}`);
 
     // After reading the configuration, Need to check the process status
     // The "processAdapter.pid" here represents the process created by the PTY process

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, unref } from "vue";
-import { t } from "@/lang/i18n";
+import { $t, t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail, DockerNetworkModes } from "@/types";
 import type { FormInstance } from "ant-design-vue";
@@ -39,8 +39,11 @@ const props = defineProps<{
 
 // eslint-disable-next-line no-unused-vars
 enum TabSettings {
+  // eslint-disable-next-line no-unused-vars
   Basic = "Basic",
+  // eslint-disable-next-line no-unused-vars
   Docker = "Docker",
+  // eslint-disable-next-line no-unused-vars
   Advanced = "Advanced"
 }
 
@@ -64,6 +67,7 @@ const IMAGE_DEFINE = {
   EDIT: "__MCSM_EDIT_IMAGE__"
 };
 
+const updateCommandDesc = $t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
@@ -160,7 +164,6 @@ const rules: Record<string, any> = {
     {
       required: true,
       validator: async (_rule: Rule, value: string) => {
-        if (value === "") throw new Error(t("TXT_CODE_4e810102"));
         if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
       },
       trigger: "change"
@@ -405,10 +408,10 @@ defineExpose({
               <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  <!-- eslint-disable-next-line vue/no-v-html -->
-                  <span v-html="t('TXT_CODE_41763172')"></span>
-                  <br />
                   <span>{{ t("TXT_CODE_4f387c5a") }}</span>
+                  <br />
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="updateCommandDesc"> </span>
                 </a-typography-text>
               </a-typography-paragraph>
               <!-- eslint-disable-next-line vue/html-quotes -->

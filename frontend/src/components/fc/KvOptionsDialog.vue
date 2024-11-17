@@ -14,6 +14,7 @@ interface Props extends MountComponent {
   keyTitle?: string;
   valueTitle?: string;
   data: any[];
+  subTitle?: string;
   columns?: AntColumnsType[];
 }
 
@@ -100,6 +101,10 @@ const operation = (type: "add" | "del", index = 0) => {
     @cancel="cancel"
   >
     <div class="dialog-overflow-container">
+      <div v-if="props.subTitle" style="font-size: 13px" class="text-gray-400 mb-4">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <span v-html="props.subTitle"></span>
+      </div>
       <div class="flex justify-end mb-20">
         <a-button :icon="h(PlusCircleOutlined)" @click="operation('add')">
           {{ t("TXT_CODE_dfc17a0c") }}
@@ -132,7 +137,7 @@ const operation = (type: "add" | "del", index = 0) => {
               >
                 <a-input
                   v-model:value="record[String(column.dataIndex)]"
-                  :placeholder="t('TXT_CODE_4ea93630')"
+                  :placeholder="(column as any).placeholder"
                 />
               </a-form-item>
             </template>

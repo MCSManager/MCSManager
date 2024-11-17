@@ -1,8 +1,7 @@
-import Docker from "dockerode";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import { t } from "i18next";
-import { DefaultDocker } from "../../../service/docker_service"
+import { DefaultDocker } from "../../../service/docker_service";
 
 export async function checkImage(name: string) {
   const docker = new DefaultDocker();

@@ -1195,7 +1195,6 @@
   "TXT_CODE_ee67e1a3": "Diretório de Trabalho",
   "TXT_CODE_962d9320": "O diretório de trabalho onde a instância é executada. Você pode fornecer um caminho absoluto ou relativo.",
   "TXT_CODE_bb0b9711": "Comando de Atualização ou Instalação",
-  "TXT_CODE_41763172": "Este comando do sistema será executado quando o usuário realizar uma operação de atualização/instalação, &lbrace;mcsm_workspace&rbrace; representa o diretório de trabalho.",
   "TXT_CODE_f041de90": "Codificação de Arquivo",
   "TXT_CODE_6e69b5a5": "Para funções de gerenciamento de arquivos.",
   "TXT_CODE_fa920c0": "Tempo de Expiração",
@@ -1948,5 +1947,7 @@
   "TXT_CODE_2fb14927": "Este erro geralmente significa que a página da web não pode se conectar diretamente ao processo de back-end. \nSe você possui encaminhamento de porta, mapeamento, proxy reverso, verifique a configuração!",
   "TXT_CODE_46c48969": "Parece que você está tentando usar HTTPS, mas não conseguimos nos conectar ao daemon usando o protocolo WSS. \nTente se conectar ao daemon usando o protocolo WSS://.",
   "TXT_CODE_9b3ce825": "Descrição do proxy reverso",
-  "TXT_CODE_d4c8fb3b": "Documentos relacionados:"
+  "TXT_CODE_d4c8fb3b": "Documentos relacionados:",
+  "TXT_CODE_a6424dcc": "O diretório de trabalho ou comando de inicialização não pode estar vazio",
+  "TXT_CODE_ffa884f9": "Aviso: o diretório de trabalho não está montado no contêiner e o contêiner não poderá acessar arquivos no diretório de trabalho da instância"
 }

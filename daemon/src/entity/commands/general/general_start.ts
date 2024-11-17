@@ -1,14 +1,13 @@
 import { $t } from "../../../i18n";
-import os from "os";
 import Instance from "../../instance/instance";
 import logger from "../../../service/log";
 import fs from "fs-extra";
-import InstanceCommand from "../base/command";
 import EventEmitter from "events";
 import { IInstanceProcess } from "../../instance/interface";
-import { ChildProcess, exec, spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 import { commandStringToArray } from "../base/command_parser";
 import { killProcess } from "common";
+import AbsStartCommand from "../start";
 
 // Error exception at startup
 class StartupError extends Error {
@@ -57,15 +56,15 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
   }
 }
 
-export default class GeneralStartCommand extends InstanceCommand {
+export default class GeneralStartCommand extends AbsStartCommand {
   constructor() {
     super("StartCommand");
   }
 
-  async exec(instance: Instance, source = "Unknown") {
+  async createProcess(instance: Instance, source = "") {
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||
-      !instance.config.cwd ||
+      !instance.hasCwdPath() ||
       !instance.config.ie ||
       !instance.config.oe
     )
@@ -85,13 +84,13 @@ export default class GeneralStartCommand extends InstanceCommand {
     logger.info($t("TXT_CODE_general_start.startInstance", { source: source }));
     logger.info($t("TXT_CODE_general_start.instanceUuid", { uuid: instance.instanceUuid }));
     logger.info($t("TXT_CODE_general_start.startCmd", { cmdList: JSON.stringify(commandList) }));
-    logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.config.cwd }));
+    logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.absoluteCwdPath() }));
     logger.info("----------------");
 
     // create child process
     // Parameter 1 directly passes the process name or path (including spaces) without double quotes
     const subProcess = spawn(commandExeFile, commandParameters, {
-      cwd: instance.config.cwd,
+      cwd: instance.absoluteCwdPath(),
       stdio: "pipe",
       windowsHide: true,
       env: process.env

@@ -25,20 +25,10 @@ import type { LayoutCard } from "@/types";
 import { arrayFilter } from "@/tools/array";
 import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
-import { useSocketIoClient } from "@/hooks/useSocketIo";
-import { removeTrail } from "@/tools/string";
+import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
+import { hasVersionUpdate } from "@/tools/version";
 
-// eslint-disable-next-line no-unused-vars
-enum SocketStatus {
-  // eslint-disable-next-line no-unused-vars
-  Connected = 1,
-  // eslint-disable-next-line no-unused-vars
-  Connecting = 2,
-  // eslint-disable-next-line no-unused-vars
-  Error = 0
-}
-
-const { testConnect } = useSocketIoClient();
+const { testFrontendSocket, socketStatus } = useSocketIoClient();
 
 const nodeDetailDialog = ref<InstanceType<typeof NodeDetailDialog>>();
 
@@ -48,8 +38,8 @@ const props = defineProps<{
 }>();
 
 const { state: AllDaemonData } = useOverviewInfo();
+
 const itemDaemonId = ref<string>();
-const socketStatus = ref<SocketStatus>(SocketStatus.Connecting);
 const specifiedDaemonVersion = computed(() => AllDaemonData.value?.specifiedDaemonVersion);
 
 const remoteNode = computed(() => {
@@ -123,8 +113,8 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    success: specifiedDaemonVersion.value === node.version,
-    warn: specifiedDaemonVersion.value !== node.version && node.available,
+    success: !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
+    warn: hasVersionUpdate(specifiedDaemonVersion.value, node.version) && node.available,
     warnText: t("TXT_CODE_e520908a")
   },
   {
@@ -200,27 +190,8 @@ const nodeOperations = computed(() =>
   ])
 );
 
-const testFrontendSocket = async () => {
-  const nodeCfg = remoteNode.value;
-  if (!nodeCfg?.available) {
-    socketStatus.value = SocketStatus.Error;
-  } else {
-    try {
-      socketStatus.value = SocketStatus.Connecting;
-      await testConnect(
-        nodeCfg.ip + ":" + nodeCfg.port,
-        removeTrail(nodeCfg.prefix, "/") + "/socket.io"
-      );
-      socketStatus.value = SocketStatus.Connected;
-    } catch (error) {
-      console.error("Socket error: ", error);
-      socketStatus.value = SocketStatus.Error;
-    }
-  }
-};
-
 onMounted(() => {
-  testFrontendSocket();
+  testFrontendSocket(remoteNode.value);
 });
 </script>
 
