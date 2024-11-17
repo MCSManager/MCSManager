@@ -95,46 +95,28 @@ export async function getInstancesByUuid(
         });
         continue;
       }
-      try {
-        // Note: UUID can be integrated here to save the returned traffic, and this optimization will not be done for the time being
-        let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
-          instanceUuids: [iterator.instanceUuid]
-        });
-        instancesInfo = instancesInfo[0];
-        resInstances.push({
-          hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
-          remarks: remoteService.config.remarks,
-          instanceUuid: instancesInfo.instanceUuid,
-          daemonId: remoteService.uuid,
-          status: instancesInfo.status,
-          nickname: instancesInfo.config.nickname,
-          ie: instancesInfo.config.ie,
-          oe: instancesInfo.config.oe,
-          endTime: instancesInfo.config.endTime,
-          lastDatetime: instancesInfo.config.lastDatetime,
-          stopCommand: instancesInfo.config.stopCommand,
-          processType: instancesInfo.config.processType,
-          docker: instancesInfo.config.docker || {},
-          info: instancesInfo.info || {}
-        });
-      } catch (error: any) {
-        resInstances.push({
-          hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
-          instanceUuid: iterator.instanceUuid,
-          daemonId: iterator.daemonId,
-          status: -1,
-          nickname: "--",
-          remarks: remoteService.config.remarks,
-          ie: "",
-          oe: "",
-          endTime: 0,
-          lastDatetime: 0,
-          stopCommand: "",
-          processType: "",
-          docker: {},
-          info: {}
-        });
-      }
+      // Note: UUID can be integrated here to save the returned traffic, and this optimization will not be done for the time being
+      let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
+        instanceUuids: [iterator.instanceUuid]
+      });
+      if (!instancesInfo || instancesInfo.length === 0) continue;
+      instancesInfo = instancesInfo[0];
+      resInstances.push({
+        hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
+        remarks: remoteService.config.remarks,
+        instanceUuid: instancesInfo.instanceUuid,
+        daemonId: remoteService.uuid,
+        status: instancesInfo.status,
+        nickname: instancesInfo.config.nickname,
+        ie: instancesInfo.config.ie,
+        oe: instancesInfo.config.oe,
+        endTime: instancesInfo.config.endTime,
+        lastDatetime: instancesInfo.config.lastDatetime,
+        stopCommand: instancesInfo.config.stopCommand,
+        processType: instancesInfo.config.processType,
+        docker: instancesInfo.config.docker || {},
+        info: instancesInfo.info || {}
+      });
     }
   } else {
     resInstances = user.instances;
