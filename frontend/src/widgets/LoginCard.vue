@@ -93,7 +93,8 @@ const loginSuccess = () => {
 };
 
 const openBuyInstanceDialog = async () => {
-  await useMountComponent().mount(LoginBusiness);
+  router.push({ path: "/shop" });
+  // await useMountComponent().mount(LoginBusiness);
 };
 </script>
 

@@ -541,6 +541,31 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/shop",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "ShelvesCard",
+          title: t("商品列表"),
+          width: 8,
+          height: LayoutCardHeight.LARGE,
+          disableDelete: true
+        }
+        // {
+        //   id: getRandomId(),
+        //   meta: {
+        //     textContent: t("暂无公告内容，管理员可以在右上角点击“设计模式”对此卡片进行编辑。")
+        //   },
+        //   type: "TextCard",
+        //   title: t("店铺公告"),
+        //   width: 4,
+        //   height: LayoutCardHeight.MEDIUM,
+        //   disableDelete: false
+        // }
+      ]
+    },
+    {
       page: "/404",
       items: [
         {

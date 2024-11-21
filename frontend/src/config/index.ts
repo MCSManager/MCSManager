@@ -41,6 +41,7 @@ import DefaultCard from "@/widgets/DefaultCard.vue";
 import Carousel from "@/widgets/others/Carousel.vue";
 import PluginCard from "@/widgets/others/PluginCard.vue";
 import MusicCard from "@/widgets/others/MusicCard.vue";
+import ShelvesCard from "@/widgets/ShelvesCard.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
@@ -85,7 +86,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   DefaultCard,
   Carousel,
   PluginCard,
-  MusicCard
+  MusicCard,
+  ShelvesCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -495,6 +497,17 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("TXT_CODE_cb84b22"),
       height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "ShelvesCard",
+      title: t("售卖商品"),
+      width: 8,
+      description: t("开启商家模式时，使用此卡片可以展示您正在售卖的实例产品规格"),
+      height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.COMMON
     }
   ];

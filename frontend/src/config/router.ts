@@ -232,6 +232,16 @@ const originRouterConfig: RouterConfig[] = [
       mainMenu: true,
       onlyDisplayEditMode: true
     }
+  },
+  {
+    path: "/shop",
+    name: t("店铺"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: true,
+      onlyDisplayEditMode: true
+    }
   }
 ];
 
@@ -277,7 +287,10 @@ router.beforeEach((to, from, next) => {
     toPagePermission
   );
 
-  if (toRoutePath.includes("_open_page") || ["/login", "/install", "/404"].includes(toRoutePath)) {
+  if (
+    toRoutePath.includes("_open_page") ||
+    ["/shop", "/login", "/install", "/404"].includes(toRoutePath)
+  ) {
     return next();
   }
 

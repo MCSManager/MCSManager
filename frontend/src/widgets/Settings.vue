@@ -26,7 +26,6 @@ import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { arrayFilter } from "../tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { sub } from "zrender/lib/core/vector";
 
 defineProps<{
   card: LayoutCard;
