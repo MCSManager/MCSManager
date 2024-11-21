@@ -8,7 +8,7 @@ export function useMountComponent(data: Record<string, any> = {}) {
   const mount = <T>(component: Component) => {
     if (isOpen) return;
     isOpen = true;
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<T>((resolve) => {
       const div = document.createElement("div");
       document.body.appendChild(div);
       const app = createApp(component, {

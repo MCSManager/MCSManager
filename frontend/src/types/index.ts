@@ -73,6 +73,7 @@ export interface Settings {
   presetPackAddr: string;
   redisUrl: string;
   allowUsePreset: boolean;
+  businessMode: boolean;
 }
 
 export interface ImageInfo {
@@ -234,5 +235,6 @@ export interface PanelStatus {
   settings: {
     canFileManager: boolean;
     allowUsePreset: boolean;
+    businessMode: boolean;
   };
 }

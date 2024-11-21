@@ -16,18 +16,25 @@ export default class SystemConfig {
 
   // Whether to allow cross-domain requests
   crossDomain: boolean = false;
+
   // Whether to use Gzip compression for HTTP return information
   gzip: boolean = false;
+
   // Maximum simultaneous compression tasks
   maxCompress: number = 1;
+
   // Maximum simultaneous download tasks
   maxDownload: number = 10;
+
   // Decompression implementation form
   zipType: number = 1;
+
   // Login times IP limit
   loginCheckIp: boolean = true;
-  // login interface copy
+
+  // login Copyright Information
   loginInfo: string = "";
+
   // Whether to open the file management function for ordinary users
   canFileManager = true;
 
@@ -35,10 +42,17 @@ export default class SystemConfig {
   // If you use Docker and need commercial functionality, you can try turning this feature on and testing it.
   allowUsePreset = false;
 
-  // i18n
+  // Panel display language
   language = "en_us";
 
   // Quick installation address
   presetPackAddr = "https://script.mcsmanager.com/templates.json";
+
+  // Redis address (Experimental Features)
   redisUrl = "";
+
+  // After it is enabled, you can connect to the redeem.mcsmanager.com platform
+  // to sell instances based on redeem
+  // (this feature may not be available in some countries)
+  businessMode = false;
 }

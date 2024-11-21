@@ -17,6 +17,8 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
 import { message } from "ant-design-vue";
+import LoginBusiness from "@/components/LoginBusiness.vue";
+import { useMountComponent } from "@/hooks/useMountComponent";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
 
@@ -34,7 +36,7 @@ const formData = reactive({
 });
 
 const { execute: login } = loginUser();
-const { updateUserInfo, isAdmin } = useAppStateStore();
+const { updateUserInfo, isAdmin, state: appConfig } = useAppStateStore();
 
 const loginStep = ref(0);
 const is2Fa = ref(false);
@@ -88,6 +90,10 @@ const loginSuccess = () => {
   } else {
     router.push({ path: "/customer" });
   }
+};
+
+const openBuyInstanceDialog = async () => {
+  await useMountComponent().mount(LoginBusiness);
 };
 </script>
 
@@ -157,7 +163,7 @@ const loginSuccess = () => {
             </form>
 
             <div class="mt-24 flex-between align-center">
-              <div class="mcsmanager-link">
+              <div v-if="!appConfig.settings.businessMode" class="mcsmanager-link">
                 <div
                   v-if="pageInfoResult?.loginInfo"
                   class="global-markdown-html"
@@ -168,9 +174,21 @@ const loginSuccess = () => {
                   MCSManager
                 </a>
               </div>
-              <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                {{ t("TXT_CODE_d507abff") }}
-              </a-button>
+              <div v-else></div>
+              <div class="justify-end" style="gap: 10px">
+                <a-button
+                  v-if="appConfig.settings.businessMode"
+                  size="large"
+                  class="green"
+                  style="min-width: 95px"
+                  @click="openBuyInstanceDialog"
+                >
+                  {{ t("激活实例") }}
+                </a-button>
+                <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
+                  {{ t("登录") }}
+                </a-button>
+              </div>
             </div>
           </div>
         </div>

@@ -10,7 +10,8 @@ import { $t } from "../i18n";
 import axios from "axios";
 import { GlobalVariable } from "common";
 import { ROLE } from "../entity/user";
-import UserSSOService from "../service/user_sso_service";
+import SystemConfig from "../entity/setting";
+
 const router = new Router({ prefix: "/auth" });
 
 // [Public Permission]
@@ -76,8 +77,9 @@ router.all(
       language: systemConfig?.language || null,
       settings: {
         canFileManager: systemConfig?.canFileManager || false,
-        allowUsePreset: systemConfig?.allowUsePreset || false
-      }
+        allowUsePreset: systemConfig?.allowUsePreset || false,
+        businessMode: systemConfig?.businessMode || false
+      } as Partial<SystemConfig>
     };
   }
 );
@@ -89,8 +91,8 @@ router.all(
   permission({ token: false, level: null }),
   validator({ body: { username: String, password: String } }),
   async (ctx: Koa.ParameterizedContext) => {
-    const userName = ctx.request.body.username;
-    const passWord = ctx.request.body.password;
+    const userName = String(ctx.request.body.username);
+    const passWord = String(ctx.request.body.password);
     if (userSystem.objects.size === 0) {
       if (!userSystem.validatePassword(passWord))
         throw new Error($t("TXT_CODE_router.user.passwordCheck"));

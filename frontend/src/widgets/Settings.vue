@@ -10,6 +10,7 @@ import {
   BookOutlined,
   BugOutlined,
   GithubOutlined,
+  KeyOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
@@ -25,6 +26,7 @@ import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { arrayFilter } from "../tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { sub } from "zrender/lib/core/vector";
 
 defineProps<{
   card: LayoutCard;
@@ -56,7 +58,7 @@ limitations under the License.`;
 
 const formData = ref<MySettings>();
 
-const submit = async () => {
+const submit = async (needReload: boolean = true) => {
   if (formData.value) {
     try {
       await submitExecute({
@@ -65,7 +67,7 @@ const submit = async () => {
         }
       });
       message.success(t("TXT_CODE_a7907771"));
-      setTimeout(() => window.location.reload(), 600);
+      if (needReload) setTimeout(() => window.location.reload(), 600);
     } catch (error: any) {
       reportErrorMsg(error);
     }
@@ -87,6 +89,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_9c3ca8f"),
     key: "security",
     icon: LockOutlined
+  },
+  {
+    title: t("商家模式"),
+    key: "business",
+    icon: KeyOutlined
   },
   {
     title: t("TXT_CODE_3b4b656d"),
@@ -184,6 +191,10 @@ const startDesignUI = async () => {
     message: t("TXT_CODE_7b1adf35"),
     description: t("TXT_CODE_6b6f1d3")
   });
+};
+
+const gotoBusinessCenter = () => {
+  window.open("https://redeem.mcsmanager.com/", "_blank");
 };
 
 onMounted(async () => {
@@ -484,11 +495,60 @@ onMounted(async () => {
                     </a-select>
                   </a-form-item>
                   <div class="button">
-                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #business>
+            <div
+              :style="{
+                maxHeight: card.height,
+                overflowY: 'auto'
+              }"
+            >
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("商家模式") }}
+              </a-typography-title>
+              <div class="mb-24">
+                <a-typography-paragraph>
+                  <a-typography-title :level="5">
+                    {{ t("是否开启商家模式") }}
+                  </a-typography-title>
+                  <a-typography-text type="secondary">
+                    {{
+                      t(
+                        "开启商家模式后，面板将被允许对接到 MCSManager 商家控制台，支持通过在线平台定制套餐，并使用卡密的形式出售给用户"
+                      )
+                    }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <div>
+                  <a-switch v-model:checked="formData.businessMode" @change="submit(false)" />
+                </div>
+              </div>
+              <div>
+                <a-typography-paragraph>
+                  <a-typography-title :level="5">
+                    {{ t("商家控制台") }}
+                  </a-typography-title>
+                  <a-typography-text type="secondary">
+                    {{ t("MCSManager 兑换中心将协助你完成你的商业计划。") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <div>
+                  <a-button
+                    type="primary"
+                    :disabled="!formData.businessMode"
+                    @click="gotoBusinessCenter()"
+                  >
+                    进入商家控制台
+                  </a-button>
+                </div>
               </div>
             </div>
           </template>
