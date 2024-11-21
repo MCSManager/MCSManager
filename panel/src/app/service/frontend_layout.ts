@@ -546,23 +546,53 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "ShopInfoCard",
+          title: t("商家信息"),
+          width: 8,
+          height: LayoutCardHeight.SMALL,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
           type: "ShelvesCard",
           title: t("商品列表"),
           width: 8,
           height: LayoutCardHeight.LARGE,
           disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
         }
-        // {
-        //   id: getRandomId(),
-        //   meta: {
-        //     textContent: t("暂无公告内容，管理员可以在右上角点击“设计模式”对此卡片进行编辑。")
-        //   },
-        //   type: "TextCard",
-        //   title: t("店铺公告"),
-        //   width: 4,
-        //   height: LayoutCardHeight.MEDIUM,
-        //   disableDelete: false
-        // }
       ]
     },
     {

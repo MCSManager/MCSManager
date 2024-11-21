@@ -42,7 +42,7 @@ import Carousel from "@/widgets/others/Carousel.vue";
 import PluginCard from "@/widgets/others/PluginCard.vue";
 import MusicCard from "@/widgets/others/MusicCard.vue";
 import ShelvesCard from "@/widgets/ShelvesCard.vue";
-
+import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
 
@@ -87,7 +87,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Carousel,
   PluginCard,
   MusicCard,
-  ShelvesCard
+  ShelvesCard,
+  ShopInfoCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -508,6 +509,17 @@ export function getLayoutCardPool() {
       width: 8,
       description: t("开启商家模式时，使用此卡片可以展示您正在售卖的实例产品规格"),
       height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "ShopInfoCard",
+      title: t("商家信息卡片"),
+      width: 8,
+      description: t("开启商家模式时，使用此卡片可以展示您的商家信息"),
+      height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }
   ];
