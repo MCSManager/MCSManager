@@ -1,4 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import { computed, onMounted, type Ref } from "vue";
 
 export interface ShopItem {
   productId: number;
@@ -19,6 +20,11 @@ export interface ShopInfo {
   afterSalesGroup: string;
 }
 
+export interface ShopInfoResponse {
+  ispInfo: ShopInfo;
+  products: ShopItem[];
+}
+
 export const requestRedeemPlatform = useDefineApi<
   {
     data: {
@@ -34,3 +40,26 @@ export const requestRedeemPlatform = useDefineApi<
   method: "POST",
   timeout: 1000 * 40
 });
+
+export function useShopInfo() {
+  const config = requestRedeemPlatform();
+
+  onMounted(() => {
+    config.execute({
+      data: {
+        targetUrl: "/api/instances/products",
+        method: "GET",
+        params: {
+          ispId: 1
+        }
+      }
+    });
+  });
+
+  return {
+    ...config,
+    state: config.state as Ref<ShopInfoResponse>,
+    shopInfo: computed<ShopInfo>(() => config.state.value?.ispInfo),
+    products: computed<ShopItem[]>(() => config.state.value?.products)
+  };
+}

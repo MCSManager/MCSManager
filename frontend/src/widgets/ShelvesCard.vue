@@ -1,62 +1,14 @@
 <script setup lang="ts">
 import InnerCard from "@/components/InnerCard.vue";
 import { t } from "@/lang/i18n";
-import type { ShopItem } from "@/services/apis/redeem";
+import { useShopInfo } from "@/services/apis/redeem";
 import type { LayoutCard } from "@/types";
-import { ref } from "vue";
 
 defineProps<{
   card: LayoutCard;
 }>();
 
-const shopItems = ref<ShopItem[]>([
-  {
-    productId: 1,
-    title: "测试服务器",
-    price: 199,
-    ispId: 1,
-    daemonId: 5,
-    payload: "",
-    remark:
-      "测试服务器测试服务器测试服务器测试服\n务器测试服务器测试服务器测试服务器测试服务器测s试服务器测试服务器测试服务器测试服务器测\n试服务器测试服务器测试服务器测试服务器测试服务器测试服务器测试服务器测试服务器测试服务器测试服务器测试服务器sdasdasd"
-  },
-  {
-    productId: 7,
-    title: "套餐2",
-    price: 10,
-    ispId: 1,
-    daemonId: 5,
-    payload: "",
-    remark: "套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2"
-  },
-  {
-    productId: 7,
-    title: "套餐2",
-    price: 19,
-    ispId: 1,
-    daemonId: 5,
-    payload: "",
-    remark: "套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2"
-  },
-  {
-    productId: 7,
-    title: "套餐2",
-    price: 20,
-    ispId: 1,
-    daemonId: 5,
-    payload: "",
-    remark: "套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2套餐2"
-  },
-  {
-    productId: 15,
-    title: "Localhost 主机套餐",
-    price: 2222,
-    ispId: 399,
-    daemonId: 16,
-    payload: "",
-    remark: "ASZ扥as大赛as"
-  }
-]);
+const { products: shopItems } = useShopInfo();
 </script>
 
 <template>

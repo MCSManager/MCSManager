@@ -1,44 +1,21 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
-import type { ShopInfo } from "@/services/apis/redeem";
 import type { LayoutCard } from "@/types";
-import { onMounted, ref } from "vue";
-import { requestRedeemPlatform } from "@/services/apis/redeem";
+import { useShopInfo } from "@/services/apis/redeem";
 defineProps<{
   card: LayoutCard;
 }>();
 
-const { execute: request, state } = requestRedeemPlatform();
-
-onMounted(async () => {
-  await request({
-    data: {
-      targetUrl: "/api/instances/products",
-      method: "GET",
-      ispId: 1
-    }
-  });
-});
-
-const shopInfo = ref<ShopInfo>({
-  uid: 1,
-  nickname: "双羽的小店",
-  username: "951092158@qq.com",
-  lastTime: 1732007818032,
-  introduction:
-    "因为没有大家的支持，《原神》没有获得 2024TGA 中获得关键奖项。我们将于 12 月 11 日至 12 月 14 日，扣除大家账户上的 1600 的原石作为惩罚，感谢一路相伴！",
-  afterSalesGroup: "QQ 群 951092158"
-});
+const { shopInfo } = useShopInfo();
 </script>
 
 <template>
   <CardPanel class="card-wrapper h-100 w-100" :style="{ maxHeight: card.height }">
     <template #title>
-      {{ shopInfo.nickname }}
+      {{ shopInfo?.nickname }}
     </template>
     <template #body>
-      state:{{ state }}
-      <div class="shop-item-container">
+      <div v-if="shopInfo" class="shop-item-container">
         <div class="container flex flex-between mb-20" style="gap: 40px">
           <div>
             <a-typography-paragraph>

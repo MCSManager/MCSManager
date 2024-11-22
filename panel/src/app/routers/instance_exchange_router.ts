@@ -110,7 +110,8 @@ router.post(
           "X-MCSManager-Panel": "true"
         }
       });
-      ctx.body = res.data;
+      const realData = res.data;
+      ctx.body = realData?.data;
     } catch (error) {
       logger.error("Request redeem platform error: " + error);
       ctx.body = error;
