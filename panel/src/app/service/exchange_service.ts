@@ -7,6 +7,11 @@ import { toNumber, toText } from "common";
 import { AdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 import type { IGlobalInstanceConfig } from "common/global";
 
+// A commercial platform for selling instances released by the MCSManager Dev Team.
+// Currently, it only supports some countries and regions.
+// If you do not turn on "Commercial Mode", MCSManager will not send any data.
+export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+
 // ------- Protocol Define -------
 export interface NodeStatusProtocol {
   name: string;

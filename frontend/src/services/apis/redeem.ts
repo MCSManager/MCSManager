@@ -1,3 +1,5 @@
+import { useDefineApi } from "@/stores/useDefineApi";
+
 export interface ShopItem {
   productId: number;
   title: string;
@@ -16,3 +18,19 @@ export interface ShopInfo {
   introduction: string;
   afterSalesGroup: string;
 }
+
+export const requestRedeemPlatform = useDefineApi<
+  {
+    data: {
+      targetUrl: string;
+      method: string;
+      data?: object;
+      params?: object;
+    };
+  },
+  any
+>({
+  url: "/api/exchange/request_redeem_platform",
+  method: "POST",
+  timeout: 1000 * 40
+});

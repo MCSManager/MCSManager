@@ -27,3 +27,7 @@ export function isHaveInstanceByUuid(uuid: string, daemonId: string, instanceUui
   if (!user) return false;
   return isHaveInstance(user, daemonId, instanceUuid);
 }
+
+export function getUserByUserName(userName: string) {
+  return userSystem.getUserByUserName(userName);
+}

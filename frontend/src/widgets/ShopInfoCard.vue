@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import InnerCard from "@/components/InnerCard.vue";
 import { t } from "@/lang/i18n";
-import type { ShopInfo, ShopItem } from "@/services/apis/redeem";
+import type { ShopInfo } from "@/services/apis/redeem";
 import type { LayoutCard } from "@/types";
-import { ref } from "vue";
-
+import { onMounted, ref } from "vue";
+import { requestRedeemPlatform } from "@/services/apis/redeem";
 defineProps<{
   card: LayoutCard;
 }>();
+
+const { execute: request, state } = requestRedeemPlatform();
+
+onMounted(async () => {
+  await request({
+    data: {
+      targetUrl: "/api/instances/products",
+      method: "GET",
+      ispId: 1
+    }
+  });
+});
 
 const shopInfo = ref<ShopInfo>({
   uid: 1,
@@ -26,6 +37,7 @@ const shopInfo = ref<ShopInfo>({
       {{ shopInfo.nickname }}
     </template>
     <template #body>
+      state:{{ state }}
       <div class="shop-item-container">
         <div class="container flex flex-between mb-20" style="gap: 40px">
           <div>
