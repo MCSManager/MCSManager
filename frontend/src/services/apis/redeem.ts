@@ -36,7 +36,9 @@ export interface BuyInstanceResponse {
   uuid: string;
 }
 
-export const CURRENT_PANEL_ADDR = `${window.location.protocol}//${window.location.host}/`;
+export const CURRENT_PANEL_ADDR = window.location.host.includes("localhost")
+  ? "http://localhost:23333/"
+  : `${window.location.protocol}//${window.location.host}/`;
 
 export const requestRedeemPlatform = useDefineApi<
   {
