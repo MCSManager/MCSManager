@@ -137,10 +137,10 @@ const isPT = () => {
   return getCurrentLang() === "pt_br";
 };
 
-const $t = (...args: string[]): string => {
+const $t = (...args: any[]): string => {
   return (i18n.global.t as Function)(...args);
 };
-const t = (...args: string[]): string => {
+const t = (...args: any[]): string => {
   return (i18n.global.t as Function)(...args);
 };
 

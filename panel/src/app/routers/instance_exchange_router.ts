@@ -110,8 +110,12 @@ router.post(
           "X-MCSManager-Panel": "true"
         }
       });
+      logger.info("Request redeem platform response: %j", JSON.stringify(res.data));
       const realData = res.data;
-      ctx.body = realData?.data;
+      if (Number(realData.code) !== 200) {
+        throw new Error(realData?.message ?? "Unknown error");
+      }
+      ctx.body = realData?.data ?? "";
     } catch (error) {
       logger.error("Request redeem platform error: " + error);
       ctx.body = error;

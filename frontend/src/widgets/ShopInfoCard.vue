@@ -2,11 +2,17 @@
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useShopInfo } from "@/services/apis/redeem";
+import { useMountComponent } from "@/hooks/useMountComponent";
+import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 defineProps<{
   card: LayoutCard;
 }>();
 
 const { shopInfo } = useShopInfo();
+
+const openDialog = async () => {
+  useMountComponent().mount(UseRedeemDialog);
+};
 </script>
 
 <template>
@@ -30,7 +36,7 @@ const { shopInfo } = useShopInfo();
               </a-typography-text>
             </a-typography-paragraph>
           </div>
-          <a-button type="primary">
+          <a-button type="primary" @click="openDialog">
             {{ t("使用兑换码") }}
           </a-button>
         </div>

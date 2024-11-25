@@ -25,8 +25,8 @@ export function useDialog<T = any>(props: any) {
   };
 }
 
-export function usePromiseDialog(props: any) {
-  const { isVisible, ...rest } = useDialog(props);
+export function usePromiseDialog<T = any>(props: any) {
+  const { isVisible, ...rest } = useDialog<T>(props);
   isVisible.value = true;
   return {
     isVisible,

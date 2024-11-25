@@ -123,7 +123,10 @@ router.get(
     const userName = String(ctx.request.query.username);
     const user = getUserByUserName(userName);
     if (!user) {
-      ctx.body = null;
+      ctx.body = {
+        uuid: null,
+        userName: null
+      };
     } else {
       ctx.body = {
         uuid: user?.uuid,
