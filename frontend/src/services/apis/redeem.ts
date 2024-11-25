@@ -108,20 +108,20 @@ export function useRedeem() {
         .execute({ params: { username } })
         .then((res) => {
           Modal.confirm({
-            title: t("二次确认"),
+            title: t("TXT_CODE_893567ac"),
             content: res.value?.uuid
-              ? `${username} ${t("此用户名已存在，请确定这是你的账号吗？")}`
-              : `${username} ${t("此用户名不存在，我们将创建一个新账号，确定吗？")}`,
+              ? `${username} ${t("TXT_CODE_c684d8b2")}`
+              : `${username} ${t("TXT_CODE_4c72565d")}`,
             onOk: () => {
               resolve(true);
             },
             onCancel: () => {
-              reject(t("用户已取消"));
+              reject(t("TXT_CODE_f94e428a"));
             }
           });
         })
         .catch(() => {
-          reject(t("网络错误"));
+          reject(t("TXT_CODE_1d8f3c33"));
         })
         .finally(() => {
           isLoading.value = false;

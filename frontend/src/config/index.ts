@@ -505,9 +505,9 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "ShelvesCard",
-      title: t("售卖商品"),
+      title: t("TXT_CODE_b99cae18"),
       width: 8,
-      description: t("开启商家模式时，使用此卡片可以展示您正在售卖的实例产品规格"),
+      description: t("TXT_CODE_163e2d0a"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.COMMON
     },
@@ -516,9 +516,9 @@ export function getLayoutCardPool() {
       permission: ROLE.GUEST,
       meta: {},
       type: "ShopInfoCard",
-      title: t("商家信息卡片"),
+      title: t("TXT_CODE_48261ab7"),
       width: 8,
-      description: t("开启商家模式时，使用此卡片可以展示您的商家信息"),
+      description: t("TXT_CODE_1648c9ea"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }

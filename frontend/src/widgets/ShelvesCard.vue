@@ -42,13 +42,13 @@ const openLoginPage = () => {
       <div v-if="isError" class="error-container">
         <a-result
           status="error"
-          :title="t('无法获取商家信息')"
+          :title="t('TXT_CODE_84cf0951')"
           :icon="null"
           :sub-title="isError.message"
         >
           <template #extra>
             <a-button type="primary" @click="reloadPage">
-              {{ t("重新加载") }}
+              {{ t("TXT_CODE_d080f2d7") }}
             </a-button>
           </template>
         </a-result>
@@ -59,13 +59,13 @@ const openLoginPage = () => {
       <div v-if="shopItems" class="shop-item-container">
         <div class="flex justify-end mb-20" style="gap: 10px">
           <a-button type="primary" @click="openDialog">
-            {{ t("使用兑换码") }}
+            {{ t("TXT_CODE_75bf9192") }}
           </a-button>
           <a-button v-if="!isLogged" @click="openLoginPage">
-            {{ t("登录账号") }}
+            {{ t("TXT_CODE_22510c5c") }}
           </a-button>
           <a-button @click="openPurchaseQueryDialog">
-            {{ t("查询购买历史") }}
+            {{ t("TXT_CODE_17b3748b") }}
           </a-button>
         </div>
         <InnerCard
@@ -88,9 +88,10 @@ const openLoginPage = () => {
                 </div>
                 <div class="shelves-card-item-price">
                   <div>
-                    <div class="shelves-card-item-price-label">{{ t("参考价") }}</div>
+                    <div class="shelves-card-item-price-label">{{ t("TXT_CODE_4bf8a52f") }}</div>
                     <div>
-                      <span class="price-text"> {{ item.price }} </span><span>/{{ t("月") }}</span>
+                      <span class="price-text"> {{ item.price }} </span
+                      ><span>/{{ t("TXT_CODE_6cb9bb04") }}</span>
                     </div>
                   </div>
                 </div>

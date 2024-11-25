@@ -32,13 +32,13 @@ const { isAdmin } = useAppStateStore();
             </a-typography-paragraph>
             <a-typography-paragraph>
               <a-typography-text v-if="shopInfo.afterSalesGroup">
-                <span>{{ t("售后渠道：") }}</span>
+                <span>{{ t("TXT_CODE_ef27fda1") }}</span>
                 <a-tag>{{ shopInfo.afterSalesGroup }}</a-tag>
               </a-typography-text>
             </a-typography-paragraph>
             <a-typography-paragraph v-if="isAdmin">
               <a-typography-text>
-                {{ t("您可以将此页面地址复制通过互联网分享给用户，用户无需登录即可访问此页面。") }}
+                {{ t("TXT_CODE_ec0b25f5") }}
               </a-typography-text>
             </a-typography-paragraph>
           </div>
@@ -48,12 +48,10 @@ const { isAdmin } = useAppStateStore();
       <div v-if="isError" class="error-container">
         <div>
           <p>
-            {{ t("暂时无法获取商家信息，可能服务器正在维护中，请稍后再稍后再尝试！") }}
+            {{ t("TXT_CODE_e5bf0df1") }}
           </p>
           <p>
-            {{
-              t("如果您是商家，请留言 https://redeem.mcsmanager.com 或官网网站的公告以获取帮助。")
-            }}
+            {{ t("TXT_CODE_4ef3f800") }}
           </p>
         </div>
       </div>

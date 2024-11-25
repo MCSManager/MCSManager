@@ -184,7 +184,7 @@ const instanceOperations = computed(() =>
         !isGlobalTerminal.value
     },
     {
-      title: t("续费"),
+      title: t("TXT_CODE_f77093c8"),
       icon: MoneyCollectOutlined,
       noConfirm: true,
       click: () => {

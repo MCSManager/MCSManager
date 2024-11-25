@@ -235,7 +235,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/shop",
-    name: t("店铺"),
+    name: t("TXT_CODE_5a408a5e"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,

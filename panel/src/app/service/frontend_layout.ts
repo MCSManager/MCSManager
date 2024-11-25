@@ -555,7 +555,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "ShopInfoCard",
-          title: t("商家信息"),
+          title: t("TXT_CODE_4770de17"),
           width: 8,
           height: LayoutCardHeight.SMALL,
           disableDelete: true
@@ -580,7 +580,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "ShelvesCard",
-          title: t("商品列表"),
+          title: t("TXT_CODE_381f8f22"),
           width: 8,
           height: LayoutCardHeight.LARGE,
           disableDelete: true

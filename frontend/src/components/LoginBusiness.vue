@@ -14,8 +14,8 @@ const { isVisible, cancel, submit } = usePromiseDialog(props);
     centered
     width="600px"
     :mask-closable="false"
-    :title="t('套餐列表')"
-    :ok-text="t('关闭')"
+    :title="t('TXT_CODE_708c10e2')"
+    :ok-text="t('TXT_CODE_b1dedda3')"
     :footer="null"
     @ok="submit"
     @close="cancel"

@@ -41,8 +41,9 @@ const handleSubmit = async () => {
       );
       operateResult.value = res;
       Modal.success({
-        title: t("续费成功！"),
-        content: t("新的到期时间：") + new Date(operateResult.value?.expire ?? 0).toLocaleString()
+        title: t("TXT_CODE_ae51f93b"),
+        content:
+          t("TXT_CODE_8074a178") + new Date(operateResult.value?.expire ?? 0).toLocaleString()
       });
       submit(operateResult.value);
     }
@@ -58,7 +59,7 @@ const handleSubmit = async () => {
     centered
     width="500px"
     :mask-closable="false"
-    :title="t('使用兑换码')"
+    :title="t('TXT_CODE_75bf9192')"
     :footer="null"
     @cancel="cancel"
   >
@@ -68,32 +69,32 @@ const handleSubmit = async () => {
           <a-form-item
             v-if="!isRenewalMode"
             name="username"
-            :label="t('账号用户名')"
-            :rules="[{ required: true, message: t('请输入用户名') }]"
+            :label="t('TXT_CODE_c38813a8')"
+            :rules="[{ required: true, message: t('TXT_CODE_2695488c') }]"
           >
             <a-input
               v-model:value="formData.username"
               name="mcsm-redeem-username"
-              :placeholder="t('请填写你在此面板上的账号用户名，如果不存在则自动创建')"
+              :placeholder="t('TXT_CODE_8028e95b')"
               autocomplete="off"
             />
           </a-form-item>
           <a-form-item
             name="code"
-            :label="t('实例兑换码')"
-            :rules="[{ required: true, message: t('请输入兑换码') }]"
+            :label="t('TXT_CODE_fb87ccd')"
+            :rules="[{ required: true, message: t('TXT_CODE_ffda3755') }]"
           >
             <a-input
               v-model:value="formData.code"
               name="mcsm-redeem-code"
-              :placeholder="t('请输入兑换码，列如：2WJBUHJUD0VV5SYMC0F3HFFH')"
+              :placeholder="t('TXT_CODE_a95c0f85')"
               autocomplete="off"
             />
           </a-form-item>
           <div class="text-center flex justify-center">
             <div>
               <a-typography-paragraph type="secondary">
-                {{ t("兑换码使用后即刻生效，自动绑定到用户名一致的账号上") }}
+                {{ t("TXT_CODE_b90e9abd") }}
               </a-typography-paragraph>
               <div class="flex justify-center">
                 <a-button
@@ -103,7 +104,7 @@ const handleSubmit = async () => {
                   style="width: 100px"
                   @click="handleSubmit"
                 >
-                  {{ t("确定") }}
+                  {{ t("TXT_CODE_d507abff") }}
                 </a-button>
               </div>
             </div>
@@ -115,27 +116,27 @@ const handleSubmit = async () => {
         <a-typography-paragraph>
           <div class="text-red-600">
             <InfoCircleOutlined />
-            <span v-if="!isRenewalMode">{{ t("兑换成功，请牢记以下信息") }}</span>
-            <span v-else>{{ t("续费成功！") }}</span>
+            <span v-if="!isRenewalMode">{{ t("TXT_CODE_3ee20639") }}</span>
+            <span v-else>{{ t("TXT_CODE_ae51f93b") }}</span>
           </div>
         </a-typography-paragraph>
         <a-descriptions bordered size="small" :column="1">
-          <a-descriptions-item :label="t('用户名')">
+          <a-descriptions-item :label="t('TXT_CODE_eb9fcdad')">
             <a-typography-text copyable :content="operateResult?.username"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-if="operateResult?.password" :label="t('密码')">
+          <a-descriptions-item v-if="operateResult?.password" :label="t('TXT_CODE_551b0348')">
             <a-typography-text copyable :content="operateResult?.password"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-else :label="t('密码')">
-            <a-typography-text type="secondary">{{ t("密码无更改") }}</a-typography-text>
+          <a-descriptions-item v-else :label="t('TXT_CODE_551b0348')">
+            <a-typography-text type="secondary">{{ t("TXT_CODE_e1b0aab2") }}</a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-if="operateResult?.expire" :label="t('到期时间')">
+          <a-descriptions-item v-if="operateResult?.expire" :label="t('TXT_CODE_fa920c0')">
             {{ new Date(operateResult.expire).toLocaleString() }}
           </a-descriptions-item>
         </a-descriptions>
         <div class="text-center mt-20 flex justify-center">
           <a-button type="primary" @click="submit(operateResult)">
-            {{ t("我已记住以上信息") }}
+            {{ t("TXT_CODE_a676f2da") }}
           </a-button>
         </div>
       </template>

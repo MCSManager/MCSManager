@@ -181,10 +181,10 @@ const openBuyInstanceDialog = async () => {
                   style="min-width: 95px"
                   @click="openBuyInstanceDialog"
                 >
-                  {{ t("店铺") }}
+                  {{ t("TXT_CODE_5a408a5e") }}
                 </a-button>
                 <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                  {{ t("登录") }}
+                  {{ t("TXT_CODE_d2c1a316") }}
                 </a-button>
               </div>
             </div>

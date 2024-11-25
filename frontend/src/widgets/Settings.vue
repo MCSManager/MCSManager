@@ -90,7 +90,7 @@ const menus = arrayFilter([
     icon: LockOutlined
   },
   {
-    title: t("商家模式"),
+    title: t("TXT_CODE_8bb8e2a1"),
     key: "business",
     icon: KeyOutlined
   },
@@ -511,19 +511,15 @@ onMounted(async () => {
               }"
             >
               <a-typography-title :level="4" class="mb-24">
-                {{ t("商家模式") }}
+                {{ t("TXT_CODE_8bb8e2a1") }}
               </a-typography-title>
               <div class="mb-24">
                 <a-typography-paragraph>
                   <a-typography-title :level="5">
-                    {{ t("是否开启商家模式") }}
+                    {{ t("TXT_CODE_180884da") }}
                   </a-typography-title>
                   <a-typography-text type="secondary">
-                    {{
-                      t(
-                        "开启商家模式后，面板将被允许对接到 MCSManager 商家控制台，支持通过在线平台定制套餐，并使用卡密的形式出售给用户"
-                      )
-                    }}
+                    {{ t("TXT_CODE_3f227bcf") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <div>
@@ -533,10 +529,10 @@ onMounted(async () => {
               <div>
                 <a-typography-paragraph>
                   <a-typography-title :level="5">
-                    {{ t("商家控制台") }}
+                    {{ t("TXT_CODE_d31196db") }}
                   </a-typography-title>
                   <a-typography-text type="secondary">
-                    {{ t("MCSManager 兑换中心将协助你完成你的商业计划。") }}
+                    {{ t("TXT_CODE_59c39e03") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <div>
@@ -545,7 +541,7 @@ onMounted(async () => {
                     :disabled="!formData.businessMode"
                     @click="gotoBusinessCenter()"
                   >
-                    进入商家控制台
+                    {{ t("进入商家控制台") }}
                   </a-button>
                 </div>
               </div>

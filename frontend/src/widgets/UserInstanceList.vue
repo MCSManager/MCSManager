@@ -90,7 +90,7 @@ onMounted(() => {
               :disabled="record.status === INSTANCE_STATUS_CODE.BUSY"
               @click="operate(record.daemonId, record.instanceUuid)"
             >
-              {{ t("进入控制台") }}
+              {{ t("TXT_CODE_aa43b248") }}
             </a-button>
           </template>
         </template>
