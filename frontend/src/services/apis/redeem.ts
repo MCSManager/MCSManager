@@ -36,6 +36,18 @@ export interface BuyInstanceResponse {
   uuid: string;
 }
 
+export interface PurchaseQueryResponse {
+  id: number;
+  uid: number;
+  nodeId: number;
+  productId: number;
+  panelAddr: string;
+  username: string;
+  password: string;
+  activeTime?: number;
+  code: string;
+}
+
 export const CURRENT_PANEL_ADDR = window.location.host.includes("localhost")
   ? "http://localhost:23333/"
   : `${window.location.protocol}//${window.location.host}/`;
@@ -133,9 +145,21 @@ export function useRedeem() {
     return res.value as BuyInstanceResponse;
   };
 
+  const queryPurchase = async (code: string) => {
+    const res = await execute({
+      data: {
+        targetUrl: "/api/instances/purchase_history",
+        method: "GET",
+        params: { code }
+      }
+    });
+    return res.value as PurchaseQueryResponse;
+  };
+
   return {
     isLoading,
     buyInstance,
+    queryPurchase,
     renewInstance: renewalInstance
   };
 }

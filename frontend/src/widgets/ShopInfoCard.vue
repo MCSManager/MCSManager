@@ -5,6 +5,7 @@ import { useShopInfo } from "@/services/apis/redeem";
 import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import PurchaseQueryDialog from "@/components/fc/PurchaseQueryDialog.vue";
 defineProps<{
   card: LayoutCard;
 }>();
@@ -14,6 +15,10 @@ const { isAdmin } = useAppStateStore();
 
 const openDialog = async () => {
   useMountComponent().mount(UseRedeemDialog);
+};
+
+const openPurchaseQueryDialog = async () => {
+  useMountComponent().mount(PurchaseQueryDialog);
 };
 </script>
 
@@ -39,13 +44,22 @@ const openDialog = async () => {
             </a-typography-paragraph>
             <a-typography-paragraph v-if="isAdmin">
               <a-typography-text>
-                您可以将此页面地址复制通过互联网分享给用户，用户无需登录即可访问此页面。
+                {{ t("您可以将此页面地址复制通过互联网分享给用户，用户无需登录即可访问此页面。") }}
               </a-typography-text>
             </a-typography-paragraph>
           </div>
-          <a-button type="primary" @click="openDialog">
-            {{ t("使用兑换码") }}
-          </a-button>
+          <div style="text-align: right">
+            <div>
+              <a-button type="primary" @click="openDialog">
+                {{ t("使用兑换码") }}
+              </a-button>
+            </div>
+            <div class="mt-10">
+              <a-button @click="openPurchaseQueryDialog">
+                {{ t("购买历史查询") }}
+              </a-button>
+            </div>
+          </div>
         </div>
       </div>
     </template>

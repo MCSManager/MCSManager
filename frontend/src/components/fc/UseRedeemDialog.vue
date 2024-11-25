@@ -42,7 +42,7 @@ const handleSubmit = async () => {
       instanceItem.value = res;
       Modal.success({
         title: "续费成功！",
-        content: "新到期时间：" + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
+        content: "新的到期时间：" + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
       });
       submit(instanceItem.value);
     }
@@ -56,7 +56,7 @@ const handleSubmit = async () => {
   <a-modal
     v-model:open="isVisible"
     centered
-    width="600px"
+    width="500px"
     :mask-closable="false"
     :title="t('使用兑换码')"
     :footer="null"
@@ -64,14 +64,11 @@ const handleSubmit = async () => {
   >
     <div class="dialog-overflow-container">
       <template v-if="!instanceItem">
-        <a-typography-paragraph>
-          请输入商家提供给您的兑换码以自动兑换相应的物品
-        </a-typography-paragraph>
         <a-form ref="formRef" :model="formData" layout="vertical">
           <a-form-item
             v-if="!isRenewalMode"
             name="username"
-            label="用户名"
+            label="账号用户名"
             :rules="[{ required: true, message: '请输入用户名' }]"
           >
             <a-input
@@ -83,23 +80,33 @@ const handleSubmit = async () => {
           </a-form-item>
           <a-form-item
             name="code"
-            label="兑换码"
+            label="实例兑换码"
             :rules="[{ required: true, message: '请输入兑换码' }]"
           >
             <a-input
               v-model:value="formData.code"
               name="mcsm-redeem-code"
-              placeholder="请输入兑换码"
+              placeholder="请输入兑换码，列如：2WJBUHJUD0VV5SYMC0F3HFFH"
               autocomplete="off"
             />
           </a-form-item>
-          <div class="mt-2 text-center">
-            <a-typography-paragraph type="secondary">
-              兑换码使用后即刻生效，与账号自动绑定
-            </a-typography-paragraph>
-            <a-button class="w-28" type="primary" :loading="isLoading" @click="handleSubmit">
-              确定
-            </a-button>
+          <div class="text-center flex justify-center">
+            <div>
+              <a-typography-paragraph type="secondary">
+                兑换码使用后即刻生效，自动绑定到用户名一致的账号上
+              </a-typography-paragraph>
+              <div class="flex justify-center">
+                <a-button
+                  class="w-28"
+                  type="primary"
+                  :loading="isLoading"
+                  style="width: 100px"
+                  @click="handleSubmit"
+                >
+                  确定
+                </a-button>
+              </div>
+            </div>
           </div>
         </a-form>
       </template>
