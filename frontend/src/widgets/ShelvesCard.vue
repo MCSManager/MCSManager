@@ -59,7 +59,7 @@ const reloadPage = () => {
                 </div>
                 <div class="shelves-card-item-price">
                   <div>
-                    <div class="shelves-card-item-price-label">参考价</div>
+                    <div class="shelves-card-item-price-label">{{ t("参考价") }}</div>
                     <div>
                       <span class="price-text"> {{ item.price }} </span><span>/{{ t("月") }}</span>
                     </div>

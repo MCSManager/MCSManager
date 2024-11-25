@@ -41,8 +41,8 @@ const handleSubmit = async () => {
       );
       instanceItem.value = res;
       Modal.success({
-        title: "续费成功！",
-        content: "新的到期时间：" + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
+        title: t("续费成功！"),
+        content: t("新的到期时间：") + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
       });
       submit(instanceItem.value);
     }
@@ -68,32 +68,32 @@ const handleSubmit = async () => {
           <a-form-item
             v-if="!isRenewalMode"
             name="username"
-            label="账号用户名"
-            :rules="[{ required: true, message: '请输入用户名' }]"
+            :label="t('账号用户名')"
+            :rules="[{ required: true, message: t('请输入用户名') }]"
           >
             <a-input
               v-model:value="formData.username"
               name="mcsm-redeem-username"
-              placeholder="请填写你在此面板上的账号用户名，如果不存在则自动创建"
+              :placeholder="t('请填写你在此面板上的账号用户名，如果不存在则自动创建')"
               autocomplete="off"
             />
           </a-form-item>
           <a-form-item
             name="code"
-            label="实例兑换码"
-            :rules="[{ required: true, message: '请输入兑换码' }]"
+            :label="t('实例兑换码')"
+            :rules="[{ required: true, message: t('请输入兑换码') }]"
           >
             <a-input
               v-model:value="formData.code"
               name="mcsm-redeem-code"
-              placeholder="请输入兑换码，列如：2WJBUHJUD0VV5SYMC0F3HFFH"
+              :placeholder="t('请输入兑换码，列如：2WJBUHJUD0VV5SYMC0F3HFFH')"
               autocomplete="off"
             />
           </a-form-item>
           <div class="text-center flex justify-center">
             <div>
               <a-typography-paragraph type="secondary">
-                兑换码使用后即刻生效，自动绑定到用户名一致的账号上
+                {{ t("兑换码使用后即刻生效，自动绑定到用户名一致的账号上") }}
               </a-typography-paragraph>
               <div class="flex justify-center">
                 <a-button
@@ -103,7 +103,7 @@ const handleSubmit = async () => {
                   style="width: 100px"
                   @click="handleSubmit"
                 >
-                  确定
+                  {{ t("确定") }}
                 </a-button>
               </div>
             </div>
@@ -115,26 +115,28 @@ const handleSubmit = async () => {
         <a-typography-paragraph>
           <div class="text-red-600">
             <InfoCircleOutlined />
-            <span v-if="!isRenewalMode">兑换成功，请牢记以下信息</span>
-            <span v-else>续费成功！</span>
+            <span v-if="!isRenewalMode">{{ t("兑换成功，请牢记以下信息") }}</span>
+            <span v-else>{{ t("续费成功！") }}</span>
           </div>
         </a-typography-paragraph>
         <a-descriptions bordered size="small" :column="1">
-          <a-descriptions-item label="用户名">
+          <a-descriptions-item :label="t('用户名')">
             <a-typography-text copyable :content="instanceItem?.username"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-if="instanceItem?.password" label="密码">
+          <a-descriptions-item v-if="instanceItem?.password" :label="t('密码')">
             <a-typography-text copyable :content="instanceItem?.password"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-else label="密码">
-            <a-typography-text type="secondary">密码无更改</a-typography-text>
+          <a-descriptions-item v-else :label="t('密码')">
+            <a-typography-text type="secondary">{{ t("密码无更改") }}</a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item label="到期时间">
+          <a-descriptions-item :label="t('到期时间')">
             {{ new Date(instanceItem?.expire ?? 0).toLocaleString() }}
           </a-descriptions-item>
         </a-descriptions>
         <div class="text-center mt-20 flex justify-center">
-          <a-button type="primary" @click="submit(instanceItem)">我已记住以上消息</a-button>
+          <a-button type="primary" @click="submit(instanceItem)">
+            {{ t("我已记住以上消息") }}
+          </a-button>
         </div>
       </template>
     </div>

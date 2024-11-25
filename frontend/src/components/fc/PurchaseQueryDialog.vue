@@ -47,32 +47,32 @@ const handleSubmit = async () => {
       <a-form ref="formRef" :model="formData" layout="vertical">
         <a-form-item
           name="code"
-          label="请输入购买时使用的兑换码"
-          :rules="[{ required: true, message: '请输入兑换码' }]"
+          :label="t('请输入购买时使用的兑换码')"
+          :rules="[{ required: true, message: t('请输入兑换码') }]"
         >
           <a-input
             v-model:value="formData.code"
             name="mcsm-redeem-code"
-            placeholder="请输入兑换码"
+            :placeholder="t('请输入兑换码')"
             autocomplete="off"
           />
         </a-form-item>
         <div class="text-center mt-20 flex justify-center">
-          <a-button type="primary" @click="handleSubmit">查询</a-button>
+          <a-button type="primary" @click="handleSubmit">{{ t("查询") }}</a-button>
         </div>
       </a-form>
 
       <div v-if="instanceItem" class="mt-20">
         <a-descriptions bordered size="small" :column="1">
-          <a-descriptions-item label="面板地址">
+          <a-descriptions-item :label="t('面板地址')">
             <a-typography-text>
               <a :href="instanceItem.panelAddr" target="_blank">{{ instanceItem.panelAddr }}</a>
             </a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item label="用户名">
+          <a-descriptions-item :label="t('用户名')">
             <a-typography-text copyable :content="instanceItem?.username"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item label="初始密码">
+          <a-descriptions-item :label="t('初始密码')">
             <a-typography-text copyable :content="instanceItem?.password"></a-typography-text>
           </a-descriptions-item>
         </a-descriptions>
