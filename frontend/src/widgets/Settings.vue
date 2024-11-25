@@ -541,7 +541,7 @@ onMounted(async () => {
                     :disabled="!formData.businessMode"
                     @click="gotoBusinessCenter()"
                   >
-                    {{ t("进入商家控制台") }}
+                    {{ t("TXT_CODE_2dbd3cd3") }}
                   </a-button>
                 </div>
               </div>
