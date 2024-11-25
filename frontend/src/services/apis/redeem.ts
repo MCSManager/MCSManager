@@ -3,7 +3,6 @@ import { computed, onMounted, type Ref } from "vue";
 import { queryUsername } from "./user";
 import { Modal } from "ant-design-vue";
 import { t } from "@/lang/i18n";
-import { reportErrorMsg } from "@/tools/validator";
 
 export interface ShopItem {
   productId: number;
@@ -31,7 +30,7 @@ export interface ShopInfoResponse {
 
 export interface BuyInstanceResponse {
   instanceId: string;
-  endTime: number;
+  expire: number;
   username: string;
   password: string;
   uuid: string;

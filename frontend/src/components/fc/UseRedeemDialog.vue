@@ -95,11 +95,14 @@ const handleSubmit = async () => {
           <a-descriptions-item label="用户名">
             <a-typography-text copyable :content="instanceItem?.username"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item label="密码">
+          <a-descriptions-item v-if="instanceItem?.password" label="密码">
             <a-typography-text copyable :content="instanceItem?.password"></a-typography-text>
           </a-descriptions-item>
+          <a-descriptions-item v-else label="密码">
+            <a-typography-text type="secondary">密码无更改</a-typography-text>
+          </a-descriptions-item>
           <a-descriptions-item label="到期时间">
-            {{ new Date(instanceItem?.endTime ?? 0).toLocaleString() }}
+            {{ new Date(instanceItem?.expire ?? 0).toLocaleString() }}
           </a-descriptions-item>
         </a-descriptions>
         <div class="text-center mt-20 flex justify-center">

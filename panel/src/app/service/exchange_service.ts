@@ -10,7 +10,8 @@ import type { IGlobalInstanceConfig } from "common/global";
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+export const REDEEM_PLATFORM_ADDR = "http://localhost:5174";
+// export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
 
 // ------- Protocol Define -------
 export interface NodeStatusProtocol {
@@ -108,8 +109,7 @@ function formatInstanceData(instance: AdvancedInstanceInfo): InstanceInfoProtoco
 
 export function parseUserName(t?: string) {
   if (!t || typeof t !== "string") return "";
-  if (t.startsWith("User-")) return t;
-  return `User-${toText(t) ?? ""}`;
+  return toText(t) ?? "";
 }
 
 export async function buyOrRenewInstance(
@@ -133,7 +133,7 @@ export async function buyOrRenewInstance(
     payload.category = params.category_id || 0;
     payload.endTime =
       (payload.endTime ? Number(payload.endTime) : Date.now()) + hours * 3600 * 1000;
-    payload.nickname = username + "-" + getNanoId(6);
+    payload.nickname = "App-" + username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
       payload
