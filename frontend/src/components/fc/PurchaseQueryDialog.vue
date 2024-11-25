@@ -20,14 +20,14 @@ const formData = ref({
   code: ""
 });
 
-const instanceItem = ref<PurchaseQueryResponse>();
+const queryResult = ref<PurchaseQueryResponse>();
 
 const handleSubmit = async () => {
   await formRef.value!.validate();
   try {
-    instanceItem.value = await queryPurchase(formData.value.code);
+    queryResult.value = await queryPurchase(formData.value.code);
   } catch (error) {
-    instanceItem.value = undefined;
+    queryResult.value = undefined;
     reportErrorMsg(error);
   }
 };
@@ -62,23 +62,26 @@ const handleSubmit = async () => {
         </div>
       </a-form>
 
-      <div v-if="instanceItem" class="mt-20">
+      <div v-if="queryResult" class="mt-20">
         <a-descriptions bordered size="small" :column="1">
           <a-descriptions-item :label="t('面板地址')">
             <a-typography-text>
-              <a :href="instanceItem.panelAddr" target="_blank">{{ instanceItem.panelAddr }}</a>
+              <a :href="queryResult.panelAddr" target="_blank">{{ queryResult.panelAddr }}</a>
             </a-typography-text>
           </a-descriptions-item>
           <a-descriptions-item :label="t('用户名')">
-            <a-typography-text copyable :content="instanceItem?.username"></a-typography-text>
+            <a-typography-text copyable :content="queryResult?.username"></a-typography-text>
           </a-descriptions-item>
           <a-descriptions-item :label="t('初始密码')">
-            <a-typography-text copyable :content="instanceItem?.password"></a-typography-text>
+            <a-typography-text
+              v-if="queryResult?.password"
+              copyable
+              :content="queryResult?.password"
+            ></a-typography-text>
+            <a-typography-text v-else type="secondary">{{ t("无法查看") }}</a-typography-text>
           </a-descriptions-item>
         </a-descriptions>
       </div>
     </div>
   </a-modal>
 </template>
-
-<style lang="scss" scoped></style>

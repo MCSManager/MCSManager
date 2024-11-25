@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import PurchaseQueryDialog from "@/components/fc/PurchaseQueryDialog.vue";
+import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 import InnerCard from "@/components/InnerCard.vue";
+import { router } from "@/config/router";
+import { useMountComponent } from "@/hooks/useMountComponent";
 import { t } from "@/lang/i18n";
 import { useShopInfo } from "@/services/apis/redeem";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 
 defineProps<{
@@ -9,9 +14,22 @@ defineProps<{
 }>();
 
 const { products: shopItems, isLoading, isError } = useShopInfo();
+const { isLogged } = useAppStateStore();
 
 const reloadPage = () => {
   window.location.reload();
+};
+
+const openDialog = async () => {
+  useMountComponent().mount(UseRedeemDialog);
+};
+
+const openPurchaseQueryDialog = async () => {
+  useMountComponent().mount(PurchaseQueryDialog);
+};
+
+const openLoginPage = () => {
+  router.push("/login");
 };
 </script>
 
@@ -39,6 +57,17 @@ const reloadPage = () => {
         <Loading />
       </div>
       <div v-if="shopItems" class="shop-item-container">
+        <div class="flex justify-end mb-20" style="gap: 10px">
+          <a-button type="primary" @click="openDialog">
+            {{ t("使用兑换码") }}
+          </a-button>
+          <a-button v-if="!isLogged" @click="openLoginPage">
+            {{ t("登录账号") }}
+          </a-button>
+          <a-button @click="openPurchaseQueryDialog">
+            {{ t("查询购买历史") }}
+          </a-button>
+        </div>
         <InnerCard
           v-for="item in shopItems"
           :key="item.productId"

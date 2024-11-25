@@ -2,10 +2,7 @@
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import { useShopInfo } from "@/services/apis/redeem";
-import { useMountComponent } from "@/hooks/useMountComponent";
-import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-import PurchaseQueryDialog from "@/components/fc/PurchaseQueryDialog.vue";
 import Loading from "@/components/Loading.vue";
 
 defineProps<{
@@ -14,14 +11,6 @@ defineProps<{
 
 const { shopInfo, isLoading, isError } = useShopInfo();
 const { isAdmin } = useAppStateStore();
-
-const openDialog = async () => {
-  useMountComponent().mount(UseRedeemDialog);
-};
-
-const openPurchaseQueryDialog = async () => {
-  useMountComponent().mount(PurchaseQueryDialog);
-};
 </script>
 
 <template>
@@ -34,7 +23,7 @@ const openPurchaseQueryDialog = async () => {
         <Loading />
       </div>
       <div v-if="shopInfo" class="shop-item-container">
-        <div class="container flex flex-between mb-20" style="gap: 40px">
+        <div class="container flex flex-between mb-20" style="gap: 20px">
           <div>
             <a-typography-paragraph>
               <a-typography-text v-if="shopInfo.nickname" type="secondary">
@@ -53,20 +42,9 @@ const openPurchaseQueryDialog = async () => {
               </a-typography-text>
             </a-typography-paragraph>
           </div>
-          <div style="text-align: right">
-            <div>
-              <a-button type="primary" @click="openDialog">
-                {{ t("使用兑换码") }}
-              </a-button>
-            </div>
-            <div class="mt-10">
-              <a-button @click="openPurchaseQueryDialog">
-                {{ t("购买历史查询") }}
-              </a-button>
-            </div>
-          </div>
         </div>
       </div>
+
       <div v-if="isError" class="error-container">
         <div>
           <p>

@@ -25,26 +25,26 @@ const formData = ref({
   username: appState.userInfo?.userName || ""
 });
 
-const instanceItem = ref<BuyInstanceResponse>();
+const operateResult = ref<BuyInstanceResponse>();
 
 const handleSubmit = async () => {
   await formRef.value!.validate();
   try {
     if (!isRenewalMode.value) {
       const res = await buyInstance(formData.value.username, formData.value.code);
-      instanceItem.value = res;
+      operateResult.value = res;
     } else {
       const res = await renewInstance(
         formData.value.username,
         formData.value.code,
         props.instanceId!
       );
-      instanceItem.value = res;
+      operateResult.value = res;
       Modal.success({
         title: t("续费成功！"),
-        content: t("新的到期时间：") + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
+        content: t("新的到期时间：") + new Date(operateResult.value?.expire ?? 0).toLocaleString()
       });
-      submit(instanceItem.value);
+      submit(operateResult.value);
     }
   } catch (error) {
     reportErrorMsg(error);
@@ -63,7 +63,7 @@ const handleSubmit = async () => {
     @cancel="cancel"
   >
     <div class="dialog-overflow-container">
-      <template v-if="!instanceItem">
+      <template v-if="!operateResult">
         <a-form ref="formRef" :model="formData" layout="vertical">
           <a-form-item
             v-if="!isRenewalMode"
@@ -121,21 +121,21 @@ const handleSubmit = async () => {
         </a-typography-paragraph>
         <a-descriptions bordered size="small" :column="1">
           <a-descriptions-item :label="t('用户名')">
-            <a-typography-text copyable :content="instanceItem?.username"></a-typography-text>
+            <a-typography-text copyable :content="operateResult?.username"></a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item v-if="instanceItem?.password" :label="t('密码')">
-            <a-typography-text copyable :content="instanceItem?.password"></a-typography-text>
+          <a-descriptions-item v-if="operateResult?.password" :label="t('密码')">
+            <a-typography-text copyable :content="operateResult?.password"></a-typography-text>
           </a-descriptions-item>
           <a-descriptions-item v-else :label="t('密码')">
             <a-typography-text type="secondary">{{ t("密码无更改") }}</a-typography-text>
           </a-descriptions-item>
-          <a-descriptions-item :label="t('到期时间')">
-            {{ new Date(instanceItem?.expire ?? 0).toLocaleString() }}
+          <a-descriptions-item v-if="operateResult?.expire" :label="t('到期时间')">
+            {{ new Date(operateResult.expire).toLocaleString() }}
           </a-descriptions-item>
         </a-descriptions>
         <div class="text-center mt-20 flex justify-center">
-          <a-button type="primary" @click="submit(instanceItem)">
-            {{ t("我已记住以上消息") }}
+          <a-button type="primary" @click="submit(operateResult)">
+            {{ t("我已记住以上信息") }}
           </a-button>
         </div>
       </template>
