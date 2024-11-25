@@ -118,8 +118,20 @@ export function useRedeem() {
     return res.value as BuyInstanceResponse;
   };
 
+  const renewalInstance = async (username: string, code: string, instanceId: string) => {
+    const res = await execute({
+      data: {
+        targetUrl: "/api/instances/use_redeem",
+        method: "POST",
+        data: { code, instanceId, username }
+      }
+    });
+    return res.value as BuyInstanceResponse;
+  };
+
   return {
     isLoading,
-    buyInstance
+    buyInstance,
+    renewInstance: renewalInstance
   };
 }

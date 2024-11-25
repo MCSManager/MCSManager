@@ -17,8 +17,6 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
 import { message } from "ant-design-vue";
-import LoginBusiness from "@/components/LoginBusiness.vue";
-import { useMountComponent } from "@/hooks/useMountComponent";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
 
@@ -94,7 +92,6 @@ const loginSuccess = () => {
 
 const openBuyInstanceDialog = async () => {
   router.push({ path: "/shop" });
-  // await useMountComponent().mount(LoginBusiness);
 };
 </script>
 

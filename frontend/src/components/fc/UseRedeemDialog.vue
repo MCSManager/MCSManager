@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { MountComponent } from "@/types";
 import { t } from "@/lang/i18n";
 import { usePromiseDialog } from "@/hooks/useDialog";
 import { useRedeem, type BuyInstanceResponse } from "@/services/apis/redeem";
-import { type FormInstance } from "ant-design-vue";
+import { Modal, type FormInstance } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 
-const props = defineProps<MountComponent>();
+interface Props extends MountComponent {
+  instanceId?: string;
+}
+const props = defineProps<Props>();
 const formRef = ref<FormInstance>();
 
-const { isVisible, cancel, submit } = usePromiseDialog<BuyInstanceResponse>(props);
+const isRenewalMode = computed(() => !!props.instanceId);
+const { state: appState } = useAppStateStore();
 
-const { isLoading, buyInstance } = useRedeem();
+const { isVisible, cancel, submit } = usePromiseDialog<BuyInstanceResponse>(props);
+const { isLoading, buyInstance, renewInstance } = useRedeem();
 
 const formData = ref({
   code: "",
-  instanceId: "",
-  username: ""
+  username: appState.userInfo?.userName || ""
 });
 
 const instanceItem = ref<BuyInstanceResponse>();
@@ -25,8 +30,22 @@ const instanceItem = ref<BuyInstanceResponse>();
 const handleSubmit = async () => {
   await formRef.value!.validate();
   try {
-    const res = await buyInstance(formData.value.username, formData.value.code);
-    instanceItem.value = res;
+    if (!isRenewalMode.value) {
+      const res = await buyInstance(formData.value.username, formData.value.code);
+      instanceItem.value = res;
+    } else {
+      const res = await renewInstance(
+        formData.value.username,
+        formData.value.code,
+        props.instanceId!
+      );
+      instanceItem.value = res;
+      Modal.success({
+        title: "续费成功！",
+        content: "新到期时间：" + new Date(instanceItem.value?.expire ?? 0).toLocaleString()
+      });
+      submit(instanceItem.value);
+    }
   } catch (error) {
     reportErrorMsg(error);
   }
@@ -39,17 +58,18 @@ const handleSubmit = async () => {
     centered
     width="600px"
     :mask-closable="false"
-    :title="t('兑换卡密')"
+    :title="t('使用兑换码')"
     :footer="null"
     @cancel="cancel"
   >
     <div class="dialog-overflow-container">
       <template v-if="!instanceItem">
         <a-typography-paragraph>
-          请输入供应方提供给您的兑换码以自动兑换相应的物品
+          请输入商家提供给您的兑换码以自动兑换相应的物品
         </a-typography-paragraph>
         <a-form ref="formRef" :model="formData" layout="vertical">
           <a-form-item
+            v-if="!isRenewalMode"
             name="username"
             label="用户名"
             :rules="[{ required: true, message: '请输入用户名' }]"
@@ -75,7 +95,7 @@ const handleSubmit = async () => {
           </a-form-item>
           <div class="mt-2 text-center">
             <a-typography-paragraph type="secondary">
-              兑换码使用后即刻生效，与当前登录的账号绑定
+              兑换码使用后即刻生效，与账号自动绑定
             </a-typography-paragraph>
             <a-button class="w-28" type="primary" :loading="isLoading" @click="handleSubmit">
               确定
@@ -88,7 +108,8 @@ const handleSubmit = async () => {
         <a-typography-paragraph>
           <div class="text-red-600">
             <InfoCircleOutlined />
-            兑换成功，请牢记以下信息
+            <span v-if="!isRenewalMode">兑换成功，请牢记以下信息</span>
+            <span v-else>续费成功！</span>
           </div>
         </a-typography-paragraph>
         <a-descriptions bordered size="small" :column="1">
