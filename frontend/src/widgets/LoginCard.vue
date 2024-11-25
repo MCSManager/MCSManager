@@ -181,7 +181,7 @@ const openBuyInstanceDialog = async () => {
                   style="min-width: 95px"
                   @click="openBuyInstanceDialog"
                 >
-                  {{ t("激活实例") }}
+                  {{ t("店铺") }}
                 </a-button>
                 <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
                   {{ t("登录") }}

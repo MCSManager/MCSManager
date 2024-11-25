@@ -36,6 +36,8 @@ export interface BuyInstanceResponse {
   uuid: string;
 }
 
+export const CURRENT_PANEL_ADDR = `${window.location.protocol}//${window.location.host}/`;
+
 export const requestRedeemPlatform = useDefineApi<
   {
     data: {
@@ -58,10 +60,10 @@ export function useShopInfo() {
   onMounted(() => {
     config.execute({
       data: {
-        targetUrl: "/api/instances/products",
+        targetUrl: "/api/instances/query_products",
         method: "GET",
         params: {
-          ispId: 1
+          addr: CURRENT_PANEL_ADDR
         }
       }
     });
