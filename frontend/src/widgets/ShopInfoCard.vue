@@ -4,11 +4,13 @@ import type { LayoutCard } from "@/types";
 import { useShopInfo } from "@/services/apis/redeem";
 import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 defineProps<{
   card: LayoutCard;
 }>();
 
 const { shopInfo } = useShopInfo();
+const { isAdmin } = useAppStateStore();
 
 const openDialog = async () => {
   useMountComponent().mount(UseRedeemDialog);
@@ -33,6 +35,11 @@ const openDialog = async () => {
               <a-typography-text v-if="shopInfo.afterSalesGroup">
                 <span>{{ t("售后渠道：") }}</span>
                 <a-tag>{{ shopInfo.afterSalesGroup }}</a-tag>
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-typography-paragraph v-if="isAdmin">
+              <a-typography-text>
+                您可以将此页面地址复制通过互联网分享给用户，用户无需登录即可访问此页面。
               </a-typography-text>
             </a-typography-paragraph>
           </div>

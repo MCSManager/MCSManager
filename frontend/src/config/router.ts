@@ -239,8 +239,7 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
-      mainMenu: true,
-      onlyDisplayEditMode: true
+      mainMenu: true
     }
   }
 ];
