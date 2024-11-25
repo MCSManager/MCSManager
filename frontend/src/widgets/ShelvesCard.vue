@@ -8,7 +8,11 @@ defineProps<{
   card: LayoutCard;
 }>();
 
-const { products: shopItems } = useShopInfo();
+const { products: shopItems, isLoading, isError } = useShopInfo();
+
+const reloadPage = () => {
+  window.location.reload();
+};
 </script>
 
 <template>
@@ -17,7 +21,24 @@ const { products: shopItems } = useShopInfo();
       {{ card.title }}
     </template>
     <template #body>
-      <div class="shop-item-container">
+      <div v-if="isError" class="error-container">
+        <a-result
+          status="error"
+          :title="t('无法获取商家信息')"
+          :icon="null"
+          :sub-title="isError.message"
+        >
+          <template #extra>
+            <a-button type="primary" @click="reloadPage">
+              {{ t("重新加载") }}
+            </a-button>
+          </template>
+        </a-result>
+      </div>
+      <div v-if="isLoading">
+        <Loading />
+      </div>
+      <div v-if="shopItems" class="shop-item-container">
         <InnerCard
           v-for="item in shopItems"
           :key="item.productId"

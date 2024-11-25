@@ -6,11 +6,13 @@ import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import PurchaseQueryDialog from "@/components/fc/PurchaseQueryDialog.vue";
+import Loading from "@/components/Loading.vue";
+
 defineProps<{
   card: LayoutCard;
 }>();
 
-const { shopInfo } = useShopInfo();
+const { shopInfo, isLoading, isError } = useShopInfo();
 const { isAdmin } = useAppStateStore();
 
 const openDialog = async () => {
@@ -28,6 +30,9 @@ const openPurchaseQueryDialog = async () => {
       {{ shopInfo?.nickname }}
     </template>
     <template #body>
+      <div v-if="isLoading">
+        <Loading />
+      </div>
       <div v-if="shopInfo" class="shop-item-container">
         <div class="container flex flex-between mb-20" style="gap: 40px">
           <div>
@@ -62,6 +67,18 @@ const openPurchaseQueryDialog = async () => {
           </div>
         </div>
       </div>
+      <div v-if="isError" class="error-container">
+        <div>
+          <p>
+            {{ t("暂时无法获取商家信息，可能服务器正在维护中，请稍后再稍后再尝试！") }}
+          </p>
+          <p>
+            {{
+              t("如果您是商家，请留言 https://redeem.mcsmanager.com 或官网网站的公告以获取帮助。")
+            }}
+          </p>
+        </div>
+      </div>
     </template>
   </CardPanel>
 </template>
@@ -76,5 +93,14 @@ const openPurchaseQueryDialog = async () => {
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
 }
 </style>

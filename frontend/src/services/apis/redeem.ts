@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import { computed, onMounted, type Ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import { queryUsername } from "./user";
 import { Modal } from "ant-design-vue";
 import { t } from "@/lang/i18n";
@@ -70,21 +70,28 @@ export const requestRedeemPlatform = useDefineApi<
 
 export function useShopInfo() {
   const config = requestRedeemPlatform();
+  const isError = ref<Error>();
 
-  onMounted(() => {
-    config.execute({
-      data: {
-        targetUrl: "/api/instances/query_products",
-        method: "GET",
-        params: {
-          addr: CURRENT_PANEL_ADDR
+  onMounted(async () => {
+    try {
+      isError.value = undefined;
+      await config.execute({
+        data: {
+          targetUrl: "/api/instances/query_products",
+          method: "GET",
+          params: {
+            addr: CURRENT_PANEL_ADDR
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      isError.value = error as Error;
+    }
   });
 
   return {
     ...config,
+    isError,
     state: config.state as Ref<ShopInfoResponse>,
     shopInfo: computed<ShopInfo>(() => config.state.value?.ispInfo),
     products: computed<ShopItem[]>(() => config.state.value?.products)
