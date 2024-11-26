@@ -116,7 +116,7 @@ export class SetupDockerContainer extends AsyncTask {
     // Whether to use TTY mode
     const isTty = instance.config.terminalOption.pty;
 
-    const workingDir = instance.config.docker.workingDir ?? "";
+    const workingDir = instance.config.docker.workingDir || undefined;
 
     let cwd = instance.absoluteCwdPath();
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
@@ -176,7 +176,7 @@ export class SetupDockerContainer extends AsyncTask {
       AttachStderr: true,
       Tty: isTty,
       WorkingDir: workingDir,
-      Cmd: commandList ? commandList : undefined,
+      Cmd: commandList.length > 0 ? commandList : undefined,
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
