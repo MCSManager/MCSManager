@@ -65,7 +65,7 @@ const formData = reactive<NewInstanceForm>({
     networkMode: "bridge",
     networkAliases: [],
     cpusetCpus: "",
-    workingDir: "/workspace",
+    workingDir: "/data",
     changeWorkdir: false,
     memory: undefined,
     cpuUsage: undefined,

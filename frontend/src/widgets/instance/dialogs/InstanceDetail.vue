@@ -495,7 +495,7 @@ defineExpose({
               </a-form-item>
             </a-col>
 
-            <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="8" :offset="0">
+            <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="16" :offset="0">
               <a-form-item :name="['docker', 'image']">
                 <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
                   {{ t("TXT_CODE_4e4d9680") }}
