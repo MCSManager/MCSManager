@@ -175,7 +175,7 @@ export class SetupDockerContainer extends AsyncTask {
       AttachStdout: true,
       AttachStderr: true,
       Tty: isTty,
-      WorkingDir: workingDir,
+      WorkingDir: instance.config.docker.changeWorkdir ? workingDir : undefined,
       Cmd: commandList.length > 0 ? commandList : undefined,
       OpenStdin: true,
       StdinOnce: false,

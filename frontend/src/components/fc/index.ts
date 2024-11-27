@@ -80,7 +80,8 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
           title: t("TXT_CODE_ad1c674c"),
           placeholder: "tcp/udp"
         }
-      ] as AntColumnsType[]
+      ] as AntColumnsType[],
+      textarea: false
     }).mount<PortConfigItem[]>(KvOptionsDialogVue)) || []
   );
 }
@@ -102,7 +103,8 @@ export async function useVolumeEditDialog(data: DockerConfigItem[] = []) {
           dataIndex: "container",
           title: t("TXT_CODE_30258325")
         }
-      ] as AntColumnsType[]
+      ] as AntColumnsType[],
+      textarea: true
     }).mount<DockerConfigItem[]>(KvOptionsDialogVue)) || []
   );
 }
@@ -123,7 +125,8 @@ export async function useDockerEnvEditDialog(data: DockerEnvItem[] = []) {
           dataIndex: "value",
           title: t("TXT_CODE_115e8a25")
         }
-      ] as AntColumnsType[]
+      ] as AntColumnsType[],
+      textarea: true
     }).mount<DockerEnvItem[]>(KvOptionsDialogVue)) || []
   );
 }

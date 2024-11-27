@@ -227,10 +227,6 @@ const encodeFormData = () => {
   throw new Error("Ref Options is null");
 };
 
-const openCmdAssistDialog = async () => {
-  const cmd = await useCmdAssistantDialog();
-  if (options.value && cmd) options.value.config.startCommand = cmd;
-};
 const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
   if (type === "port" && options.value?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
@@ -277,7 +273,7 @@ defineExpose({
     v-model:open="open"
     centered
     :mask-closable="false"
-    :width="isPhone ? '100%' : 'calc(100% - 30vw)'"
+    :width="isPhone ? '100%' : '1600px'"
     :title="t('TXT_CODE_aac98b2a')"
     :confirm-loading="isLoading"
     :ok-text="t('TXT_CODE_abfe9512')"
@@ -381,10 +377,12 @@ defineExpose({
                   v-model:value="options.config.startCommand"
                   :rows="5"
                   style="min-height: 40px"
+                  :placeholder="
+                    options.config.docker.image
+                      ? t('留空将使用 Docker 镜像自带命令启动')
+                      : t('请填写启动命令')
+                  "
                 />
-                <a-button type="default" style="height: auto" @click="openCmdAssistDialog">
-                  {{ t("TXT_CODE_2728d0d4") }}
-                </a-button>
               </a-input-group>
             </a-form-item>
           </a-col>
@@ -466,7 +464,7 @@ defineExpose({
               </div>
             </a-form-item>
           </a-col>
-          <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="8" :offset="0">
+          <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="16" :offset="0">
             <a-form-item :name="['docker', 'image']">
               <a-typography-title :level="5" :class="{ 'require-field': isDocker }">
                 {{ t("TXT_CODE_6904cb3") }}
@@ -508,36 +506,44 @@ defineExpose({
             </a-form-item>
           </a-col>
 
-          <a-col :xs="24" :lg="8" :offset="0">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_c3a3b6b1") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                  {{ t("TXT_CODE_d1c78fbf") }}
-                </a-typography-text>
-              </a-typography-paragraph>
-              <a-tooltip placement="bottom">
-                <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
-                <a-input
-                  v-model:value="options.config.docker.containerName"
-                  :placeholder="t('TXT_CODE_f6047384')"
-                />
-              </a-tooltip>
-            </a-form-item>
-          </a-col>
-
           <a-col :xs="24" :lg="16" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_9c247f6") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("挂载文件管理中的文件") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
-                  {{ t("TXT_CODE_df3fdec") }}
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{
+                    t(
+                      "填写一个容器内的文件路径，设置后，文件管理中的所有文件将挂载到填写的路径中。"
+                    )
+                  }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.workingDir"
                 :placeholder="t('TXT_CODE_2082f659')"
               />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item name="changeWorkdir">
+              <a-typography-title :level="5" :class="{ 'require-field': isDocker }">
+                {{ t("自动切换工作路径") }}
+              </a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("启动容器时，自动将当前目录切换到工作目录，某些情况下可能需要这类功能") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-switch
+                v-model:checked="options.config.docker.changeWorkdir"
+                :disabled="isGlobalTerminal"
+                checked-value="docker"
+                un-checked-value="general"
+              >
+                <template #checkedChildren><check-outlined /></template>
+                <template #unCheckedChildren><close-outlined /></template>
+              </a-switch>
             </a-form-item>
           </a-col>
 
@@ -679,6 +685,24 @@ defineExpose({
                 v-model:value="options.networkAliasesText"
                 :placeholder="t('TXT_CODE_8d4882b0')"
               />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_c3a3b6b1") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_d1c78fbf") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-tooltip placement="bottom">
+                <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
+                <a-input
+                  v-model:value="options.config.docker.containerName"
+                  :placeholder="t('TXT_CODE_f6047384')"
+                />
+              </a-tooltip>
             </a-form-item>
           </a-col>
         </a-row>
