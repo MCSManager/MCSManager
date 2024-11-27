@@ -374,9 +374,7 @@ defineExpose({
                   :rows="5"
                   style="min-height: 40px"
                   :placeholder="
-                    options.config.docker.image
-                      ? t('留空将使用 Docker 镜像自带命令启动')
-                      : t('请填写启动命令')
+                    isDockerMode ? t('留空将使用 Docker 镜像自带命令启动') : t('请填写启动命令')
                   "
                 />
               </a-input-group>

@@ -81,6 +81,9 @@ routerApp.on("instance/select", (ctx, data) => {
   });
 
   overview.sort((a, b) => {
+    if (a.status !== b.status) {
+      return b.status - a.status;
+    }
     return a.config.nickname >= b.config.nickname ? 1 : -1;
   });
 
