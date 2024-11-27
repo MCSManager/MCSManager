@@ -9,7 +9,7 @@ import type { AntColumnsType } from "@/types/ant";
 import UploadFileDialogVue from "./UploadFileDialog.vue";
 import TaskLoadingDialog from "./TaskLoadingDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
-import DeleteInstanceDialog from "@/components/fc/DeleteInstanceDialog.vue";
+import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 
 interface DockerConfigItem {
   host: string;
