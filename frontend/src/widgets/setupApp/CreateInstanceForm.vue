@@ -260,7 +260,7 @@ const createInstance = async () => {
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
         <a-typography-title :level="5" class="require-field">
-          {{ t("自动切换到数据储存目录") }}
+          {{ t("更变容器默认工作目录") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">

@@ -534,7 +534,7 @@ defineExpose({
             <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item name="changeWorkdir">
                 <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
-                  {{ t("自动切换到数据储存目录") }}
+                  {{ t("更变容器默认工作目录") }}
                 </a-typography-title>
                 <a-typography-paragraph>
                   <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">

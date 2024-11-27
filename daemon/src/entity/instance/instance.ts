@@ -278,6 +278,7 @@ export default class Instance extends EventEmitter {
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
+      this.startTimestamp = 0;
       this.emit("exit", code);
       StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
     }
