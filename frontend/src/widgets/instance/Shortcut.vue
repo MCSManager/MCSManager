@@ -14,7 +14,8 @@ import {
   CloudDownloadOutlined,
   CodeOutlined,
   UserOutlined,
-  TagsOutlined
+  TagsOutlined,
+  DeleteOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -31,8 +32,9 @@ import { parseTimestamp } from "@/tools/time";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
-import { openInstanceTagsEditor } from "@/components/fc/index";
+import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
 import _ from "lodash";
+import { batchDelete } from "@/services/apis/instance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -228,9 +230,39 @@ const instanceOperations = computed(() =>
         });
       },
       disabled: containerState.isDesignMode
+    },
+    {
+      title: t("删除实例"),
+      icon: DeleteOutlined,
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
+        const deleteFiles = await useDeleteInstanceDialog();
+        if (deleteFiles === undefined || deleteFiles === null) return;
+        await deleteInstance(deleteFiles);
+        message.success(t("实例删除成功"));
+        refreshList();
+      },
+      disabled: containerState.isDesignMode
     }
   ])
 );
+
+const deleteInstance = async (deleteFiles: boolean) => {
+  const { execute } = batchDelete();
+  try {
+    await execute({
+      params: {
+        daemonId: daemonId || ""
+      },
+      data: {
+        uuids: [instanceId || ""],
+        deleteFile: deleteFiles
+      }
+    });
+  } catch (error) {
+    reportErrorMsg(error);
+  }
+};
 </script>
 
 <template>
