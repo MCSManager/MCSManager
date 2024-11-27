@@ -21,7 +21,6 @@ import {
   createInstance as createInstanceApi
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
-import { useCmdAssistantDialog } from "@/components/fc";
 import { reportErrorMsg } from "@/tools/validator";
 
 // eslint-disable-next-line no-unused-vars

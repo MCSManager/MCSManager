@@ -16,12 +16,7 @@ import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
-import {
-  useCmdAssistantDialog,
-  useDockerEnvEditDialog,
-  usePortEditDialog,
-  useVolumeEditDialog
-} from "@/components/fc";
+import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 import { dockerPortsArray } from "@/tools/common";
 import type { DefaultOptionType } from "ant-design-vue/es/select";
 
