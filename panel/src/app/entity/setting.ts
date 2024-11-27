@@ -26,7 +26,7 @@ export default class SystemConfig {
   zipType: number = 1;
   // Login times IP limit
   loginCheckIp: boolean = true;
-  // login interface copy
+  // login UI copy
   loginInfo: string = "";
   // Whether to open the file management function for ordinary users
   canFileManager = true;

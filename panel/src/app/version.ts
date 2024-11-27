@@ -3,7 +3,7 @@ import { GlobalVariable } from "common";
 import { logger } from "./service/log";
 import storage from "./common/system_storage";
 
-interface PackageInfo {
+interface IPackageInfo {
   name: string;
   version: string;
   daemonVersion: string;
@@ -18,7 +18,7 @@ export function initVersionManager() {
   try {
     GlobalVariable.set("version", "Unknown");
     if (fs.existsSync(PACKAGE_JSON)) {
-      const data: PackageInfo = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
+      const data: IPackageInfo = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
       if (data.version) {
         GlobalVariable.set("version", data.version);
         currentVersion = String(data.version);

@@ -4,11 +4,11 @@ import user_service from "../service/user_service";
 import { customAlphabet } from "nanoid";
 import { t } from "i18next";
 import { toNumber, toText } from "common";
-import { AdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
+import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 import type { IGlobalInstanceConfig } from "common/global";
 
 // ------- Protocol Define -------
-export interface NodeStatusProtocol {
+export interface INodeStatusProtocol {
   name: string;
   id: string;
   ip: string;
@@ -18,26 +18,26 @@ export interface NodeStatusProtocol {
   instances: number;
 }
 
-export interface InstanceInfoProtocol {
+export interface IInstanceInfoProtocol {
   instance_id: string;
   name: string;
   expire: number;
   status: number;
   lines: Array<{ title: string; value: any }>;
-  ports: PortInfo[];
+  ports: IPortInfo[];
 }
 
-export interface BuyResponseProtocol {
+export interface IBuyResponseProtocol {
   instance_id: string;
   instance_config: any;
   username: string;
   password: string;
   uuid: string;
   expire: number;
-  instance_info?: InstanceInfoProtocol;
+  instance_info?: IInstanceInfoProtocol;
 }
 
-export interface BuyRequestProtocol {
+export interface IBuyRequestProtocol {
   category_id: number;
   node_id: string;
   username: string;
@@ -46,6 +46,7 @@ export interface BuyRequestProtocol {
   code?: string;
   instance_id?: string;
 }
+
 export enum RequestAction {
   BUY = "buy",
   RENEW = "renew",
@@ -54,7 +55,7 @@ export enum RequestAction {
   SSO_TOKEN = "sso_token"
 }
 
-export interface PortInfo {
+export interface IPortInfo {
   host: number;
   container: number;
   protocol: string;
@@ -67,9 +68,9 @@ const getNanoId = customAlphabet(
   6
 );
 
-function formatInstanceData(instance: AdvancedInstanceInfo): InstanceInfoProtocol {
+function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProtocol {
   let ports: string[] = instance.docker?.ports ?? [];
-  let portRules: Array<PortInfo> = [];
+  let portRules: Array<IPortInfo> = [];
   if (ports?.length > 0) {
     ports.forEach((line: string) => {
       // line = "23333:24444/tcp"
@@ -109,8 +110,8 @@ export function parseUserName(t?: string) {
 
 export async function buyOrRenewInstance(
   request_action: RequestAction,
-  params: BuyRequestProtocol
-): Promise<BuyResponseProtocol> {
+  params: IBuyRequestProtocol
+): Promise<IBuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
   const username = parseUserName(params.username);
@@ -213,7 +214,7 @@ export async function buyOrRenewInstance(
 
 export async function queryInstanceByUserId(
   params: Record<string, any>
-): Promise<InstanceInfoProtocol[]> {
+): Promise<IInstanceInfoProtocol[]> {
   const name = parseUserName(params.username) || "";
   const targetDaemonId = toText(params.node_id) ?? undefined;
   const user = user_service.getUserByUserName(name);
@@ -226,7 +227,7 @@ export async function queryInstanceByUserId(
   return newInstancesInfo;
 }
 
-export async function getNodeStatus(params: Record<string, any>): Promise<NodeStatusProtocol> {
+export async function getNodeStatus(params: Record<string, any>): Promise<INodeStatusProtocol> {
   const nodeId = toText(params.node_id) ?? "";
   const remoteService = RemoteServiceSubsystem.getInstance(nodeId);
   if (!remoteService?.available) {
