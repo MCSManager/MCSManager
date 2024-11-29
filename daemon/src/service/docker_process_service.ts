@@ -13,6 +13,7 @@ import { IInstanceProcess } from "../entity/instance/interface";
 import { AsyncTask } from "./async_task_service";
 import iconv from "iconv-lite";
 import { toText } from "common";
+import fs from "fs-extra";
 
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
@@ -84,19 +85,19 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     // memory limit
-    let maxMemory = undefined;
+    let maxMemory: number | undefined = undefined;
     if (instance.config.docker.memory) maxMemory = instance.config.docker.memory * 1024 * 1024;
 
     // CPU usage calculation
-    let cpuQuota = undefined;
-    let cpuPeriod = undefined;
+    let cpuQuota: number | undefined = undefined;
+    let cpuPeriod: number | undefined = undefined;
     if (instance.config.docker.cpuUsage) {
       cpuQuota = instance.config.docker.cpuUsage * 10 * 1000;
       cpuPeriod = 1000 * 1000;
     }
 
     // Check the number of CPU cores
-    let cpusetCpus = undefined;
+    let cpusetCpus: string | undefined = undefined;
     if (instance.config.docker.cpusetCpus) {
       const arr = instance.config.docker.cpusetCpus.split(",");
       arr.forEach((v) => {
@@ -151,9 +152,11 @@ export class SetupDockerContainer extends AsyncTask {
 
     const mounts: Docker.MountConfig =
       extraBinds.map((v) => {
+        const hostPath = instance.parseTextParams(v.hostPath);
+        if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
         return {
           Type: "bind",
-          Source: instance.parseTextParams(v.hostPath),
+          Source: hostPath,
           Target: instance.parseTextParams(v.containerPath)
         };
       }) || [];
@@ -181,6 +184,7 @@ export class SetupDockerContainer extends AsyncTask {
       StdinOnce: false,
       ExposedPorts: exposedPorts,
       Env: instance.config.docker?.env || [],
+
       HostConfig: {
         Memory: maxMemory,
         AutoRemove: true,
