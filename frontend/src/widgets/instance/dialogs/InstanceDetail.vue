@@ -373,9 +373,7 @@ defineExpose({
                   v-model:value="options.config.startCommand"
                   :rows="5"
                   style="min-height: 40px"
-                  :placeholder="
-                    isDockerMode ? t('留空将使用 Docker 镜像自带命令启动') : t('请填写启动命令')
-                  "
+                  :placeholder="isDockerMode ? t('TXT_CODE_98e7c829') : t('TXT_CODE_f50cfe2')"
                 />
               </a-input-group>
             </a-form-item>
@@ -507,14 +505,10 @@ defineExpose({
 
             <a-col :xs="24" :lg="16" :offset="0">
               <a-form-item>
-                <a-typography-title :level="5">{{ t("数据储存目录") }}</a-typography-title>
+                <a-typography-title :level="5">{{ t("TXT_CODE_81979d0f") }}</a-typography-title>
                 <a-typography-paragraph>
                   <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                    {{
-                      t(
-                        "请填写容器内部的目录路径，设置后，“文件管理”中的所有文件将挂载到填写的路径目录内"
-                      )
-                    }}
+                    {{ t("TXT_CODE_c800cb31") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-input
@@ -527,15 +521,11 @@ defineExpose({
             <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item name="changeWorkdir">
                 <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
-                  {{ t("更变容器默认工作目录") }}
+                  {{ t("TXT_CODE_5484094a") }}
                 </a-typography-title>
                 <a-typography-paragraph>
                   <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                    {{
-                      t(
-                        "启动容器时，将自动忽略镜像默认的工作目录，强制切换到当前目录到“数据储存目录”"
-                      )
-                    }}
+                    {{ t("TXT_CODE_60dd05d5") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-switch
@@ -552,7 +542,7 @@ defineExpose({
 
             <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item>
-                <a-typography-title :level="5">{{ t("挂载更多目录") }}</a-typography-title>
+                <a-typography-title :level="5">{{ t("TXT_CODE_d9c73520") }}</a-typography-title>
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
                     {{ t("TXT_CODE_828ea87f") }}

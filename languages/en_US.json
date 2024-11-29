@@ -2002,5 +2002,14 @@
   "TXT_CODE_aa43b248": "Enter Console",
   "TXT_CODE_4770de17": "Merchant Info",
   "TXT_CODE_381f8f22": "Product List",
-  "TXT_CODE_2dbd3cd3": "Enter the merchant console"
+  "TXT_CODE_2dbd3cd3": "Enter the merchant console",
+  "TXT_CODE_98e7c829": "Leave empty to use default Docker image command",
+  "TXT_CODE_f50cfe2": "Enter startup command",
+  "TXT_CODE_81979d0f": "Data storage directory",
+  "TXT_CODE_c800cb31": "Enter container directory path. All files in File Manager will be mounted here",
+  "TXT_CODE_5484094a": "Change container working directory",
+  "TXT_CODE_60dd05d5": "Override default image working directory with data storage directory",
+  "TXT_CODE_d9c73520": "Mount additional directories",
+  "TXT_CODE_3407250a": "Mount host instance directory to container for data persistence",
+  "TXT_CODE_d4ad1dd": "Optional. Uses image default command if empty, otherwise runs specified command"
 }
