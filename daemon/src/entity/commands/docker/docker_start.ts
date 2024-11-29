@@ -9,13 +9,10 @@ import {
   SetupDockerContainer,
   StartupDockerProcessError
 } from "../../../service/docker_process_service";
+import AbsStartCommand from "../start";
 
-export default class DockerStartCommand extends InstanceCommand {
-  constructor() {
-    super("DockerStartCommand");
-  }
-
-  async exec(instance: Instance, source = "Unknown") {
+export default class DockerStartCommand extends AbsStartCommand {
+  protected async createProcess(instance: Instance) {
     if (!instance.hasCwdPath() || !instance.config.ie || !instance.config.oe)
       throw new StartupDockerProcessError($t("TXT_CODE_a6424dcc"));
     if (!fs.existsSync(instance.absoluteCwdPath()))

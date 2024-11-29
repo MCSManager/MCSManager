@@ -74,6 +74,7 @@ export interface IGlobalInstanceDockerConfig {
   cpuUsage?: number;
   workingDir?: string;
   env?: string[];
+  changeWorkdir?: boolean;
 }
 
 export interface IPanelResponseProtocol {

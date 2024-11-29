@@ -18,7 +18,7 @@ export const INSTANCE_STATUS_TEXT: Record<number, string> = {
   [INSTANCE_STATUS.RUNNING]: t("TXT_CODE_bdb620b9")
 };
 
-export interface AdvancedInstanceInfo {
+export interface IAdvancedInstanceInfo {
   instanceUuid: string;
   daemonId: string;
   hostIp?: string;
@@ -69,7 +69,7 @@ export async function getInstancesByUuid(
   if (!user) throw new Error("The UID does not exist");
 
   // Advanced functions are optional, analyze each instance data
-  let resInstances: AdvancedInstanceInfo[] = [];
+  let resInstances: IAdvancedInstanceInfo[] = [];
   if (advanced) {
     const instances = user.instances;
     for (const iterator of instances) {

@@ -9,13 +9,9 @@ export default class GeneralKillCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
-    if (
-      instance.status() === Instance.STATUS_STOP ||
-      instance.status() === Instance.STATUS_STARTING
-    ) {
-      return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning")));
-    }
-    if (instance.startTimestamp + 6 * 1000 > Date.now()) {
+    if (instance.status() === Instance.STATUS_STOP) return;
+
+    if (instance.startTimestamp && instance.startTimestamp + 6 * 1000 > Date.now()) {
       return instance.failure(new Error($t("TXT_CODE_6259357c")));
     }
 
@@ -28,6 +24,7 @@ export default class GeneralKillCommand extends InstanceCommand {
           logger.error(`Instance ${instance.config.nickname} asynchronousTask stop error:`, err);
         });
     }
+
     if (instance.process) {
       await instance.process.kill("SIGKILL");
     }

@@ -115,10 +115,6 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
 }
 
 export default class PtyStartCommand extends AbsStartCommand {
-  constructor() {
-    super("PtyStartCommand");
-  }
-
   readPtySubProcessConfig(subProcess: ChildProcessWithoutNullStreams): Promise<IPtySubProcessCfg> {
     return new Promise((r, j) => {
       const errConfig = {
