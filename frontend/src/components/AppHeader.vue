@@ -53,16 +53,21 @@ const menus = computed(() => {
   return router
     .getRoutes()
     .filter((v) => {
+      const metaInfo = v.meta as RouterMetaInfo;
+      if (metaInfo.condition && !metaInfo.condition()) {
+        return false;
+      }
       if (containerState.isDesignMode) {
-        return v.meta.onlyDisplayEditMode || v.meta.mainMenu;
+        return metaInfo.onlyDisplayEditMode || metaInfo.mainMenu;
       }
       if (isAdmin.value) {
-        return v.meta.mainMenu === true && v.meta.onlyDisplayEditMode !== true;
+        return metaInfo.mainMenu === true && metaInfo.onlyDisplayEditMode !== true;
       }
+
       return (
-        v.meta.mainMenu === true &&
+        metaInfo.mainMenu === true &&
         isLogged.value &&
-        Number(appState.userInfo?.permission) >= Number(v.meta.permission)
+        Number(appState.userInfo?.permission) >= Number(metaInfo.permission)
       );
     })
     .map((r) => {

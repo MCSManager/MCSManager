@@ -92,7 +92,8 @@ const menus = arrayFilter([
   {
     title: t("TXT_CODE_8bb8e2a1"),
     key: "business",
-    icon: KeyOutlined
+    icon: KeyOutlined,
+    condition: () => isCN()
   },
   {
     title: t("TXT_CODE_3b4b656d"),

@@ -11,6 +11,7 @@ export interface RouterMetaInfo {
   permission?: number;
   redirect?: string;
   onlyDisplayEditMode?: boolean;
+  condition?: () => boolean;
   breadcrumbs?: Array<{
     name: string;
     path: string;
@@ -28,8 +29,11 @@ export interface RouterConfig {
 }
 
 export enum ROLE {
+  // eslint-disable-next-line no-unused-vars
   ADMIN = 10,
+  // eslint-disable-next-line no-unused-vars
   USER = 1,
+  // eslint-disable-next-line no-unused-vars
   GUEST = 0
 }
 
@@ -239,7 +243,11 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       permission: ROLE.GUEST,
-      mainMenu: true
+      mainMenu: true,
+      condition: () => {
+        const { state: appConfig } = useAppStateStore();
+        return appConfig.settings.businessMode;
+      }
     }
   }
 ];
