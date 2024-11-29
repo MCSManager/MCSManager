@@ -46,15 +46,15 @@ const onCancel = () => {
   props.destroyComponent();
 };
 
-const onDelete = () => {
-  if (!deleteFiles.value) return submit();
+const onDelete = async () => {
+  if (!deleteFiles.value) return await submit();
   Modal.confirm({
     title: t("删除实例及相关文件"),
     content: t("该操作会直接删除实例所在的整个目录，且文件无法恢复，是否继续？"),
     okText: t("确认删除"),
-    onOk: () => {
+    onOk: async () => {
+      await submit();
       Modal.destroyAll();
-      submit();
     },
     okType: "danger"
   });
