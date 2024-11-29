@@ -236,9 +236,11 @@ const instanceOperations = computed(() =>
       icon: DeleteOutlined,
       click: async (event: MouseEvent) => {
         event.stopPropagation();
-        const deleteFiles = await useDeleteInstanceDialog();
-        if (deleteFiles === undefined || deleteFiles === null) return;
-        await deleteInstance(deleteFiles);
+        const deleteInstanceResult = await useDeleteInstanceDialog(
+          instanceId || "",
+          daemonId || ""
+        );
+        if (!deleteInstanceResult) return;
         message.success(t("实例删除成功"));
         refreshList();
       },
@@ -246,23 +248,6 @@ const instanceOperations = computed(() =>
     }
   ])
 );
-
-const deleteInstance = async (deleteFiles: boolean) => {
-  const { execute } = batchDelete();
-  try {
-    await execute({
-      params: {
-        daemonId: daemonId || ""
-      },
-      data: {
-        uuids: [instanceId || ""],
-        deleteFile: deleteFiles
-      }
-    });
-  } catch (error) {
-    reportErrorMsg(error);
-  }
-};
 </script>
 
 <template>

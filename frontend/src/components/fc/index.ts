@@ -157,6 +157,6 @@ export async function openInstanceTagsEditor(
     .openDialog();
 }
 
-export async function useDeleteInstanceDialog() {
-  return await useMountComponent().mount<boolean | null>(DeleteInstanceDialog);
+export async function useDeleteInstanceDialog(instanceId: string, daemonId: string) {
+  return await useMountComponent({ instanceId, daemonId }).mount<boolean>(DeleteInstanceDialog);
 }
