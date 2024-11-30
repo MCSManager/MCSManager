@@ -9,6 +9,7 @@ import type { AntColumnsType } from "@/types/ant";
 import UploadFileDialogVue from "./UploadFileDialog.vue";
 import TaskLoadingDialog from "./TaskLoadingDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
+import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -154,4 +155,8 @@ export async function openInstanceTagsEditor(
   })
     .load<InstanceType<typeof TagsDialog>>(TagsDialog)
     .openDialog();
+}
+
+export async function useDeleteInstanceDialog(instanceId: string, daemonId: string) {
+  return await useMountComponent({ instanceId, daemonId }).mount<boolean>(DeleteInstanceDialog);
 }

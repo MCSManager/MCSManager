@@ -72,6 +72,8 @@ declare module 'vue' {
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
+    DeleteInstance: typeof import("./src/components/fc/DeleteInstance.vue")["default"]
+    DeleteInstanceDialog: typeof import("./src/widgets/instance/dialogs/DeleteInstanceDialog.vue")["default"]
     Editor: typeof import('./src/components/Editor.vue')['default']
     Empty: typeof import('./src/components/Empty.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
