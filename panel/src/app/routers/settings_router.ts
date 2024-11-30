@@ -17,6 +17,7 @@ import {
 import { ROLE } from "../entity/user";
 import { SAVE_DIR_PATH } from "../service/frontend_layout";
 import FileManager from "../../../../daemon/src/service/system_file";
+import SystemConfig from "../entity/setting";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -29,7 +30,7 @@ router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Update panel configuration items
 router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  const config = ctx.request.body;
+  const config = ctx.request.body as Partial<SystemConfig>;
   if (config && systemConfig) {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
@@ -48,6 +49,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
     if (config.allowUsePreset != null) systemConfig.allowUsePreset = Boolean(config.allowUsePreset);
     if (config.presetPackAddr != null) systemConfig.presetPackAddr = String(config.presetPackAddr);
+    if (config.businessMode != null) systemConfig.businessMode = Boolean(config.businessMode);
     if (config.language != null) {
       logger.warn($t("TXT_CODE_e29a9317"), config.language);
       systemConfig.language = String(config.language);

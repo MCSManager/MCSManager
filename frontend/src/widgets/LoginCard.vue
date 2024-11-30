@@ -34,7 +34,7 @@ const formData = reactive({
 });
 
 const { execute: login } = loginUser();
-const { updateUserInfo, isAdmin } = useAppStateStore();
+const { updateUserInfo, isAdmin, state: appConfig } = useAppStateStore();
 
 const loginStep = ref(0);
 const is2Fa = ref(false);
@@ -88,6 +88,10 @@ const loginSuccess = () => {
   } else {
     router.push({ path: "/customer" });
   }
+};
+
+const openBuyInstanceDialog = async () => {
+  router.push({ path: "/shop" });
 };
 </script>
 
@@ -157,7 +161,7 @@ const loginSuccess = () => {
             </form>
 
             <div class="mt-24 flex-between align-center">
-              <div class="mcsmanager-link">
+              <div v-if="!appConfig.settings.businessMode" class="mcsmanager-link">
                 <div
                   v-if="pageInfoResult?.loginInfo"
                   class="global-markdown-html"
@@ -168,9 +172,21 @@ const loginSuccess = () => {
                   MCSManager
                 </a>
               </div>
-              <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                {{ t("TXT_CODE_d507abff") }}
-              </a-button>
+              <div v-else></div>
+              <div class="justify-end" style="gap: 10px">
+                <a-button
+                  v-if="appConfig.settings.businessMode"
+                  size="large"
+                  class="green"
+                  style="min-width: 95px"
+                  @click="openBuyInstanceDialog"
+                >
+                  {{ t("TXT_CODE_5a408a5e") }}
+                </a-button>
+                <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
+                  {{ t("TXT_CODE_d2c1a316") }}
+                </a-button>
+              </div>
             </div>
           </div>
         </div>

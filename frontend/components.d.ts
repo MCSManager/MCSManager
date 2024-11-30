@@ -70,6 +70,7 @@ declare module 'vue' {
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
+    copy: typeof import('./src/components/fc/UseRedeemDialog copy.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     DeleteInstance: typeof import("./src/components/fc/DeleteInstance.vue")["default"]
@@ -87,6 +88,7 @@ declare module 'vue' {
     LeftMenusPanel: typeof import('./src/components/LeftMenusPanel.vue')['default']
     LineOption: typeof import('./src/components/LineOption.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
+    LoginBusiness: typeof import('./src/components/LoginBusiness.vue')['default']
     MinecraftJavaForm: typeof import('./src/components/fc/CmdAssistantDialog/MinecraftJavaForm.vue')['default']
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
@@ -94,6 +96,7 @@ declare module 'vue' {
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
+    PurchaseQueryDialog: typeof import('./src/components/fc/PurchaseQueryDialog.vue')['default']
     ResponsiveLayoutGroup: typeof import('./src/components/ResponsiveLayoutGroup.vue')['default']
     RightMenu: typeof import('./src/components/fc/RightMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -105,6 +108,7 @@ declare module 'vue' {
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
+    UseRedeemDialog: typeof import('./src/components/fc/UseRedeemDialog.vue')['default']
     WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }
 }

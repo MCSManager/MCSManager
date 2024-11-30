@@ -10,6 +10,7 @@ import {
   BookOutlined,
   BugOutlined,
   GithubOutlined,
+  KeyOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
@@ -56,7 +57,7 @@ limitations under the License.`;
 
 const formData = ref<MySettings>();
 
-const submit = async () => {
+const submit = async (needReload: boolean = true) => {
   if (formData.value) {
     try {
       await submitExecute({
@@ -65,7 +66,7 @@ const submit = async () => {
         }
       });
       message.success(t("TXT_CODE_a7907771"));
-      setTimeout(() => window.location.reload(), 600);
+      if (needReload) setTimeout(() => window.location.reload(), 600);
     } catch (error: any) {
       reportErrorMsg(error);
     }
@@ -87,6 +88,12 @@ const menus = arrayFilter([
     title: t("TXT_CODE_9c3ca8f"),
     key: "security",
     icon: LockOutlined
+  },
+  {
+    title: t("TXT_CODE_8bb8e2a1"),
+    key: "business",
+    icon: KeyOutlined,
+    condition: () => isCN()
   },
   {
     title: t("TXT_CODE_3b4b656d"),
@@ -184,6 +191,10 @@ const startDesignUI = async () => {
     message: t("TXT_CODE_7b1adf35"),
     description: t("TXT_CODE_6b6f1d3")
   });
+};
+
+const gotoBusinessCenter = () => {
+  window.open("https://redeem.mcsmanager.com/", "_blank");
 };
 
 onMounted(async () => {
@@ -484,11 +495,56 @@ onMounted(async () => {
                     </a-select>
                   </a-form-item>
                   <div class="button">
-                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
                 </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #business>
+            <div
+              :style="{
+                maxHeight: card.height,
+                overflowY: 'auto'
+              }"
+            >
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_8bb8e2a1") }}
+              </a-typography-title>
+              <div class="mb-24">
+                <a-typography-paragraph>
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_180884da") }}
+                  </a-typography-title>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_3f227bcf") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <div>
+                  <a-switch v-model:checked="formData.businessMode" @change="submit(false)" />
+                </div>
+              </div>
+              <div>
+                <a-typography-paragraph>
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_d31196db") }}
+                  </a-typography-title>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_59c39e03") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <div>
+                  <a-button
+                    type="primary"
+                    :disabled="!formData.businessMode"
+                    @click="gotoBusinessCenter()"
+                  >
+                    {{ t("TXT_CODE_2dbd3cd3") }}
+                  </a-button>
+                </div>
               </div>
             </div>
           </template>

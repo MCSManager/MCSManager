@@ -12,7 +12,8 @@ import {
   RedoOutlined,
   LaptopOutlined,
   InteractionOutlined,
-  LoadingOutlined
+  LoadingOutlined,
+  MoneyCollectOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -35,6 +36,8 @@ import TerminalCore from "@/components/TerminalCore.vue";
 import Reinstall from "./dialogs/Reinstall.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { useMountComponent } from "@/hooks/useMountComponent";
+import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -179,6 +182,18 @@ const instanceOperations = computed(() =>
         isStopped.value &&
         (state.settings.allowUsePreset || isAdmin.value) &&
         !isGlobalTerminal.value
+    },
+    {
+      title: t("TXT_CODE_f77093c8"),
+      icon: MoneyCollectOutlined,
+      noConfirm: true,
+      click: () => {
+        useMountComponent({
+          instanceId: instanceId
+        }).mount(UseRedeemDialog);
+      },
+      props: {},
+      condition: () => state.settings.businessMode
     }
   ])
 );

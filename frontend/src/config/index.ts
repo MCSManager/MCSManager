@@ -41,7 +41,8 @@ import DefaultCard from "@/widgets/DefaultCard.vue";
 import Carousel from "@/widgets/others/Carousel.vue";
 import PluginCard from "@/widgets/others/PluginCard.vue";
 import MusicCard from "@/widgets/others/MusicCard.vue";
-
+import ShelvesCard from "@/widgets/ShelvesCard.vue";
+import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
 
@@ -85,7 +86,9 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   DefaultCard,
   Carousel,
   PluginCard,
-  MusicCard
+  MusicCard,
+  ShelvesCard,
+  ShopInfoCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -494,6 +497,28 @@ export function getLayoutCardPool() {
       title: t("TXT_CODE_5ebec0db"),
       width: 4,
       description: t("TXT_CODE_cb84b22"),
+      height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "ShelvesCard",
+      title: t("TXT_CODE_b99cae18"),
+      width: 8,
+      description: t("TXT_CODE_163e2d0a"),
+      height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.GUEST,
+      meta: {},
+      type: "ShopInfoCard",
+      title: t("TXT_CODE_48261ab7"),
+      width: 8,
+      description: t("TXT_CODE_1648c9ea"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }

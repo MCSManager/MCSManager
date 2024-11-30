@@ -132,13 +132,15 @@ onMounted(async () => {
           <div
             v-for="(item, index) in dockerPortsArray(instanceInfo?.config.docker.ports ?? [])"
             :key="index"
-            style="margin-bottom: 2px"
+            class="mb-4"
           >
-            <span>{{ t("TXT_CODE_8dfc41ef") }}: {{ item.host }}</span>
-            <span style="margin-left: 6px">{{ t("TXT_CODE_8f8103b7") }}: {{ item.container }}</span>
-            <span style="margin-left: 8px">
+            <span>
               <a-tag color="green">{{ item.protocol.toUpperCase() }}</a-tag>
             </span>
+            <a-tag>
+              <span>{{ t("TXT_CODE_8dfc41ef") }}: {{ item.host }}</span>
+              <span class="ml-4"> {{ t("TXT_CODE_8f8103b7") }}: {{ item.container }} </span>
+            </a-tag>
           </div>
         </div>
       </a-typography-paragraph>
