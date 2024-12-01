@@ -34,7 +34,6 @@ import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
 import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
 import _ from "lodash";
-import { batchDelete } from "@/services/apis/instance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -244,6 +243,7 @@ const instanceOperations = computed(() =>
         message.success(t("实例删除成功"));
         refreshList();
       },
+      danger: true,
       disabled: containerState.isDesignMode
     }
   ])
