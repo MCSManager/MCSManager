@@ -187,7 +187,7 @@ export async function buyOrRenewInstance(
     const config: IGlobalInstanceConfig = instanceInfo.config || {};
 
     if (!config.category || isNaN(Number(config.category))) {
-      throw new Error(t("此实例并不是从商店购买的，无法进行续费，请联系商家处理！"));
+      throw new Error(t("TXT_CODE_ed81f72d"));
     }
 
     if (config.category !== Number(params.category_id)) {

@@ -49,9 +49,9 @@ const onCancel = () => {
 const onDelete = async () => {
   if (!deleteFiles.value) return await submit();
   Modal.confirm({
-    title: t("删除实例及相关文件"),
-    content: t("该操作会直接删除实例所在的整个目录，且文件无法恢复，是否继续？"),
-    okText: t("确认删除"),
+    title: t("TXT_CODE_584d786d"),
+    content: t("TXT_CODE_90508729"),
+    okText: t("TXT_CODE_10088738"),
     onOk: async () => {
       await submit();
       Modal.destroyAll();
@@ -62,20 +62,20 @@ const onDelete = async () => {
 </script>
 
 <template>
-  <a-modal :visible="isOpen" :title="t('删除实例')" @cancel="onCancel">
+  <a-modal :visible="isOpen" :title="t('TXT_CODE_a0e19f38')" @cancel="onCancel">
     <a-typography-paragraph>
       <a-typography-text>
-        {{ t("若选择同时删除实例相关文件，则会直接删除实例所在的整个目录。") }}
+        {{ t("TXT_CODE_1981470a") }}
       </a-typography-text>
     </a-typography-paragraph>
 
     <a-checkbox v-model:checked="deleteFiles">
-      {{ t("同时删除实例相关文件") }}
+      {{ t("TXT_CODE_7542201a") }}
     </a-checkbox>
 
     <template #footer>
       <a-button key="back" @click="onCancel">
-        {{ t("取消") }}
+        {{ t("TXT_CODE_a0451c97") }}
       </a-button>
       <a-button
         key="submit"
@@ -84,7 +84,7 @@ const onDelete = async () => {
         type="primary"
         @click="onDelete"
       >
-        {{ deleteFiles ? t("删除实例及相关文件") : t("删除实例") }}
+        {{ deleteFiles ? t("TXT_CODE_584d786d") : t("TXT_CODE_a0e19f38") }}
       </a-button>
     </template>
   </a-modal>

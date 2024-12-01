@@ -231,7 +231,7 @@ const instanceOperations = computed(() =>
       disabled: containerState.isDesignMode
     },
     {
-      title: t("删除实例"),
+      title: t("TXT_CODE_a0e19f38"),
       icon: DeleteOutlined,
       click: async (event: MouseEvent) => {
         event.stopPropagation();
@@ -240,7 +240,7 @@ const instanceOperations = computed(() =>
           daemonId || ""
         );
         if (!deleteInstanceResult) return;
-        message.success(t("实例删除成功"));
+        message.success(t("TXT_CODE_f486dbb4"));
         refreshList();
       },
       danger: true,

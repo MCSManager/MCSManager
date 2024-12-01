@@ -2011,5 +2011,13 @@
   "TXT_CODE_60dd05d5": "Override default image working directory with data storage directory",
   "TXT_CODE_d9c73520": "Mount additional directories",
   "TXT_CODE_3407250a": "Mount host instance directory to container for data persistence",
-  "TXT_CODE_d4ad1dd": "Optional. Uses image default command if empty, otherwise runs specified command"
+  "TXT_CODE_d4ad1dd": "Optional. Uses image default command if empty, otherwise runs specified command",
+  "TXT_CODE_584d786d": "Delete instance and related files",
+  "TXT_CODE_90508729": "This operation will directly delete the entire directory where the instance is located, and the files cannot be recovered. Do you want to continue?",
+  "TXT_CODE_10088738": "Confirm deletion",
+  "TXT_CODE_a0e19f38": "Delete instance",
+  "TXT_CODE_1981470a": "If you choose to delete the instance-related files at the same time, the entire directory where the instance is located will be directly deleted.",
+  "TXT_CODE_7542201a": "Delete instance-related files simultaneously",
+  "TXT_CODE_f486dbb4": "Instance deleted successfully",
+  "TXT_CODE_ed81f72d": "This instance was not purchased from the store and cannot be renewed. Please contact the merchant for processing!"
 }
