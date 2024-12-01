@@ -14,5 +14,6 @@
     "panel/src/app/i18n"
   ],
   "i18n-ally.keystyle": "flat",
-  "i18n-ally.enabledFrameworks": ["vue"]
+  "i18n-ally.enabledFrameworks": ["vue"],
+  "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 }
