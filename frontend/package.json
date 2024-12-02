@@ -39,7 +39,7 @@
     "socket.io-client": "^4.7.2",
     "uuid": "^9.0.0",
     "vue": "^3.3.4",
-    "vue-i18n": "^9.6.5",
+    "vue-i18n": "^9.14.2",
     "vue-router": "^4.2.4",
     "wavesurfer.js": "^7.7.1",
     "xterm": "^4.12.0",
