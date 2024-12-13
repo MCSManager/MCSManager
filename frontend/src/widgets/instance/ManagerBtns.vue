@@ -19,7 +19,7 @@ import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { TYPE_MINECRAFT_JAVA, useInstanceInfo } from "@/hooks/useInstance";
+import { TYPE_MINECRAFT_JAVA, TYPE_STEAM_SERVER_UNIVERSAL, useInstanceInfo } from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
@@ -118,7 +118,8 @@ const btns = computed(() => {
       icon: BuildOutlined,
       click: () => {
         rconSettingsDialog.value?.openDialog();
-      }
+      },
+      condition: () => instanceInfo.value?.config.type.includes(TYPE_STEAM_SERVER_UNIVERSAL) ?? false
     },
     {
       title: t("TXT_CODE_d23631cb"),
