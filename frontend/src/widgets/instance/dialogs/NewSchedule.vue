@@ -112,7 +112,7 @@ defineExpose({
     centered
     width="660px"
     :mask-closable="false"
-    :title="editMode ? t('编辑计划任务') : t('TXT_CODE_3502273d')"
+    :title="editMode ? t('TXT_CODE_1548649e') : t('TXT_CODE_3502273d')"
     :confirm-loading="isLoading"
     :destroy-on-close="true"
     :ok-text="t('TXT_CODE_abfe9512')"

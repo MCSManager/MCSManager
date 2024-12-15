@@ -2019,5 +2019,6 @@
   "TXT_CODE_1981470a": "If you choose to delete the instance-related files at the same time, the entire directory where the instance is located will be directly deleted.",
   "TXT_CODE_7542201a": "Delete instance-related files simultaneously",
   "TXT_CODE_f486dbb4": "Instance deleted successfully",
-  "TXT_CODE_ed81f72d": "This instance was not purchased from the store and cannot be renewed. Please contact the merchant for processing!"
+  "TXT_CODE_ed81f72d": "This instance was not purchased from the store and cannot be renewed. Please contact the merchant for processing!",
+  "TXT_CODE_afabf3ca": "Parsing time failed"
 }

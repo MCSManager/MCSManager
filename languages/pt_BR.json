@@ -2011,5 +2011,15 @@
   "TXT_CODE_f94e428a": "Usuário cancelado",
   "TXT_CODE_fa487a47": "Forneça as seguintes strings variáveis:",
   "TXT_CODE_fb87ccd": "Código da Instância",
-  "TXT_CODE_ffda3755": "Insira o código"
+  "TXT_CODE_ffda3755": "Insira o código",
+  "TXT_CODE_afabf3ca": "Falha na análise do tempo",
+  "TXT_CODE_10088738": "Confirmar exclusão",
+  "TXT_CODE_1548649e": "Editar tarefas agendadas",
+  "TXT_CODE_1981470a": "Se você optar por excluir os arquivos relacionados à instância ao mesmo tempo, todo o diretório onde a instância está localizada será excluído diretamente.",
+  "TXT_CODE_584d786d": "Exclua a instância e os arquivos relacionados",
+  "TXT_CODE_7542201a": "Exclua também os arquivos relacionados à instância",
+  "TXT_CODE_90508729": "Esta operação excluirá diretamente todo o diretório onde a instância está localizada e os arquivos não poderão ser restaurados. Deseja continuar?",
+  "TXT_CODE_a0e19f38": "Excluir instância",
+  "TXT_CODE_ed81f72d": "Esta instância não foi comprada em uma loja e não pode ser renovada. Entre em contato com o comerciante para processamento!",
+  "TXT_CODE_f486dbb4": "Instância excluída com sucesso"
 }

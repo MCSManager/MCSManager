@@ -66,7 +66,7 @@ export function useSchedule(instanceId: string, daemonId: string) {
       objTime = dayjs(now);
       weekend = w;
     } else {
-      notification.error({ message: t("解析时间失败") });
+      notification.error({ message: t("TXT_CODE_afabf3ca") });
     }
 
     return {
@@ -94,7 +94,7 @@ export function useSchedule(instanceId: string, daemonId: string) {
       now.setMonth(mm);
       objTime = dayjs(now);
     } else {
-      notification.error({ message: t("解析时间失败") });
+      notification.error({ message: t("TXT_CODE_afabf3ca") });
     }
 
     return objTime;

@@ -2011,5 +2011,14 @@
   "TXT_CODE_f94e428a": "Usuario cancelado",
   "TXT_CODE_fa487a47": "Proporcione las siguientes cadenas de variables:",
   "TXT_CODE_fb87ccd": "Código de instancia",
-  "TXT_CODE_ffda3755": "Introduce el código"
+  "TXT_CODE_ffda3755": "Introduce el código",
+  "TXT_CODE_afabf3ca": "Error en el tiempo de análisis",
+  "TXT_CODE_10088738": "Confirmar eliminación",
+  "TXT_CODE_1548649e": "Editar tareas programadas",
+  "TXT_CODE_1981470a": "Si elige eliminar archivos relacionados con la instancia al mismo tiempo, todo el directorio donde se encuentra la instancia se eliminará directamente.",
+  "TXT_CODE_584d786d": "Eliminar la instancia y los archivos relacionados.",
+  "TXT_CODE_7542201a": "Eliminar también archivos relacionados con la instancia",
+  "TXT_CODE_90508729": "Esta operación eliminará directamente todo el directorio donde se encuentra la instancia y los archivos no se podrán restaurar. ¿Quiere continuar?",
+  "TXT_CODE_a0e19f38": "Eliminar instancia",
+  "TXT_CODE_f486dbb4": "Instancia eliminada exitosamente"
 }

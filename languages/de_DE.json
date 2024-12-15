@@ -2011,5 +2011,15 @@
   "TXT_CODE_f94e428a": "Benutzer hat abgesagt",
   "TXT_CODE_fa487a47": "Geben Sie die folgenden variablen Zeichenfolgen an:",
   "TXT_CODE_fb87ccd": "Instanzcode",
-  "TXT_CODE_ffda3755": "Code eingeben"
+  "TXT_CODE_ffda3755": "Code eingeben",
+  "TXT_CODE_afabf3ca": "Die Analysezeit ist fehlgeschlagen",
+  "TXT_CODE_10088738": "Bestätigen Sie den Löschvorgang",
+  "TXT_CODE_1548649e": "Bearbeiten Sie geplante Aufgaben",
+  "TXT_CODE_1981470a": "Wenn Sie instanzbezogene Dateien gleichzeitig löschen, wird das gesamte Verzeichnis, in dem sich die Instanz befindet, direkt gelöscht.",
+  "TXT_CODE_584d786d": "Löschen Sie die Instanz und die zugehörigen Dateien",
+  "TXT_CODE_7542201a": "Löschen Sie auch instanzbezogene Dateien",
+  "TXT_CODE_90508729": "Durch diesen Vorgang wird das gesamte Verzeichnis, in dem sich die Instanz befindet, direkt gelöscht und die Dateien können nicht wiederhergestellt werden. Möchten Sie fortfahren?",
+  "TXT_CODE_a0e19f38": "Instanz löschen",
+  "TXT_CODE_ed81f72d": "Diese Instanz wurde nicht in einem Geschäft gekauft und kann nicht verlängert werden. Bitte kontaktieren Sie den Händler zur Bearbeitung!",
+  "TXT_CODE_f486dbb4": "Instanz erfolgreich gelöscht"
 }
