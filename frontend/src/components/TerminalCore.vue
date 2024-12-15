@@ -60,19 +60,6 @@ const initTerminal = async () => {
   const dom = document.getElementById(terminalDomId);
   if (dom) {
     const term = initTerminalWindow(dom);
-    try {
-      const { value } = await getInstanceOutputLog().execute({
-        params: { uuid: instanceId || "", daemonId: daemonId || "" }
-      });
-
-      if (value) {
-        if (state.value?.config?.terminalOption?.haveColor) {
-          term.write(encodeConsoleColor(value));
-        } else {
-          term.write(value);
-        }
-      }
-    } catch (error: any) {}
     return term;
   }
   throw new Error(t("TXT_CODE_42bcfe0c"));
@@ -88,6 +75,23 @@ events.on("stopped", () => {
 
 events.on("error", (error: Error) => {
   socketError.value = error;
+});
+
+events.once("detail", async () => {
+  term = await initTerminal();
+  try {
+    const { value } = await getInstanceOutputLog().execute({
+      params: { uuid: instanceId || "", daemonId: daemonId || "" }
+    });
+
+    if (value) {
+      if (state.value?.config?.terminalOption?.haveColor) {
+        term?.write(encodeConsoleColor(value));
+      } else {
+        term?.write(value);
+      }
+    }
+  } catch (error: any) {}
 });
 
 const clearTerminal = () => {
@@ -106,7 +110,6 @@ onMounted(async () => {
         daemonId
       });
     }
-    term = await initTerminal();
   } catch (error: any) {
     console.error(error);
     throw error;
