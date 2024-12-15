@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import type { Dayjs } from "dayjs";
 import type {
   IGlobalInstanceConfig,
   ILayoutCard as GlobalLayoutCard,
@@ -9,7 +10,7 @@ import type {
   IQuickStartTemplate,
   IQuickStartPackages
 } from "../../../common/global";
-import type { INSTANCE_STATUS_CODE } from "./const";
+import type { INSTANCE_STATUS_CODE, ScheduleCreateType } from "./const";
 
 export type JsonData = IJsonData;
 export type MapData<T> = IMapData<T>;
@@ -222,10 +223,17 @@ export interface Schedule {
 
 export interface NewScheduleTask {
   name: string;
-  count: string;
+  count: number;
   time: string;
   action: string;
-  type: string;
+  type: ScheduleCreateType;
+}
+
+export interface ScheduleTaskForm extends NewScheduleTask {
+  payload: string;
+  weekend: number[];
+  cycle: string[];
+  objTime: Dayjs;
 }
 
 export interface PanelStatus {

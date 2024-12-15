@@ -309,7 +309,11 @@ onUnmounted(() => {
           </template>
           <template #right>
             <a-typography-text v-if="selectedRowKeys.length">
-              {{ t("TXT_CODE_7b2c5414") + ` ${String(selectedRowKeys.length)} ` + t("TXT_CODE_5cd3b4bd") }}
+              {{
+                t("TXT_CODE_7b2c5414") +
+                ` ${String(selectedRowKeys.length)} ` +
+                t("TXT_CODE_5cd3b4bd")
+              }}
             </a-typography-text>
 
             <a-upload
@@ -472,7 +476,8 @@ onUnmounted(() => {
                   }
                 "
                 @change="
-                  (e) => handleTableChange({ current: e.current || 0, pageSize: e.pageSize || 0 })
+                  (e: any) =>
+                    handleTableChange({ current: e.current || 0, pageSize: e.pageSize || 0 })
                 "
               >
                 <template #bodyCell="{ column, record }">
