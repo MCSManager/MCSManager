@@ -198,3 +198,5 @@ export const isInt = (x: any) => {
   }
   return true;
 };
+
+export const padZero = (num: string) => (num === "0" ? num : num.padStart(2, "0"));

@@ -1343,7 +1343,6 @@
   "TXT_CODE_ca07c84c": "Votre navigateur actuel ne prend pas en charge la copie automatique",
   "TXT_CODE_ca500df8": "Ce fichier de configuration est un fichier de configuration courant pour les serveurs de la catégorie papier ou d'autres catégories dérivées. Il étend les lacunes du fichier de configuration spigot.",
   "TXT_CODE_ca8072bd": "L'initialisation a échoué, le nœud distant n'existe pas !",
-  "TXT_CODE_ca923eba": "jour",
   "TXT_CODE_cad62df3": "Stocker le cache utilisateur uniquement lorsque le serveur est en panne",
   "TXT_CODE_cae10a08": "La tâche de suppression de fichiers démarre s'il y a trop de fichiers, cela prendra un certain temps.",
   "TXT_CODE_caf10268": "Si le serveur renvoie une liste de plug-ins lors de l'interrogation de la console intégrée MCSM",
@@ -2011,5 +2010,15 @@
   "TXT_CODE_f94e428a": "Utilisateur annulé",
   "TXT_CODE_fa487a47": "Fournissez les chaînes de variables suivantes :",
   "TXT_CODE_fb87ccd": "Code d'instance",
-  "TXT_CODE_ffda3755": "Entrez le code"
+  "TXT_CODE_ffda3755": "Entrez le code",
+  "TXT_CODE_afabf3ca": "Le temps d'analyse a échoué",
+  "TXT_CODE_10088738": "Confirmer la suppression",
+  "TXT_CODE_1548649e": "Modifier les tâches planifiées",
+  "TXT_CODE_1981470a": "Si vous choisissez de supprimer les fichiers liés à l'instance en même temps, l'intégralité du répertoire où se trouve l'instance sera directement supprimée.",
+  "TXT_CODE_584d786d": "Supprimer l'instance et les fichiers associés",
+  "TXT_CODE_7542201a": "Supprimez également les fichiers liés à l'instance",
+  "TXT_CODE_90508729": "Cette opération supprimera directement l'intégralité du répertoire où se trouve l'instance et les fichiers ne pourront pas être restaurés. Voulez-vous continuer ?",
+  "TXT_CODE_a0e19f38": "Supprimer l'instance",
+  "TXT_CODE_ed81f72d": "Cette instance n'a pas été achetée dans un magasin et ne peut pas être renouvelée. Veuillez contacter le marchand pour le traitement !",
+  "TXT_CODE_f486dbb4": "Instance supprimée avec succès"
 }

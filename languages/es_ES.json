@@ -1343,7 +1343,6 @@
   "TXT_CODE_ca07c84c": "Su navegador actual no admite la copia automática",
   "TXT_CODE_ca500df8": "Este archivo de configuración es un archivo de configuración común para servidores de la categoría papel u otras categorías derivadas. Amplía las deficiencias del archivo de configuración spigot.",
   "TXT_CODE_ca8072bd": "La inicialización falló, ¡el nodo remoto no existe!",
-  "TXT_CODE_ca923eba": "día",
   "TXT_CODE_cad62df3": "Solo almacene el caché del usuario cuando el servidor esté inactivo",
   "TXT_CODE_cae10a08": "Se inicia la tarea de eliminación de archivos. Si hay demasiados archivos, llevará algún tiempo.",
   "TXT_CODE_caf10268": "Si el servidor devuelve una lista de complementos al consultar la consola integrada MCSM",
@@ -2011,5 +2010,14 @@
   "TXT_CODE_f94e428a": "Usuario cancelado",
   "TXT_CODE_fa487a47": "Proporcione las siguientes cadenas de variables:",
   "TXT_CODE_fb87ccd": "Código de instancia",
-  "TXT_CODE_ffda3755": "Introduce el código"
+  "TXT_CODE_ffda3755": "Introduce el código",
+  "TXT_CODE_afabf3ca": "Error en el tiempo de análisis",
+  "TXT_CODE_10088738": "Confirmar eliminación",
+  "TXT_CODE_1548649e": "Editar tareas programadas",
+  "TXT_CODE_1981470a": "Si elige eliminar archivos relacionados con la instancia al mismo tiempo, todo el directorio donde se encuentra la instancia se eliminará directamente.",
+  "TXT_CODE_584d786d": "Eliminar la instancia y los archivos relacionados.",
+  "TXT_CODE_7542201a": "Eliminar también archivos relacionados con la instancia",
+  "TXT_CODE_90508729": "Esta operación eliminará directamente todo el directorio donde se encuentra la instancia y los archivos no se podrán restaurar. ¿Quiere continuar?",
+  "TXT_CODE_a0e19f38": "Eliminar instancia",
+  "TXT_CODE_f486dbb4": "Instancia eliminada exitosamente"
 }

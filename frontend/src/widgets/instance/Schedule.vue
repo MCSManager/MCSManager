@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { t } from "@/lang/i18n";
+import { t, $t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
-import { reportErrorMsg } from "@/tools/validator";
-import { DeleteOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
+import { DeleteOutlined, EditOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { scheduleList, scheduleDelete } from "@/services/apis/instance";
 import type { LayoutCard, Schedule } from "@/types/index";
 import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
 import type { AntColumnsType } from "../../types/ant";
 import { useScreen } from "@/hooks/useScreen";
+import { useSchedule } from "@/hooks/useSchedule";
+import { padZero } from "@/tools/common";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -25,83 +25,34 @@ const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 const { toPage } = useAppRouters();
 const newScheduleDialog = ref<InstanceType<typeof NewSchedule>>();
+const { getScheduleList, schedules, scheduleListLoading, deleteSchedule } = useSchedule(
+  String(instanceId),
+  String(daemonId)
+);
 
-const { state, execute, isLoading } = scheduleList();
-const getScheduleList = async () => {
-  try {
-    await execute({
-      params: {
-        daemonId: daemonId ?? "",
-        uuid: instanceId ?? ""
-      }
-    });
-  } catch (err: any) {
-    console.error(err);
-    reportErrorMsg(err.message);
-  }
-};
-
-const deleteSchedule = async (name: string) => {
-  const { execute, state } = scheduleDelete();
-  try {
-    await execute({
-      params: {
-        daemonId: daemonId ?? "",
-        uuid: instanceId ?? "",
-        task_name: name
-      }
-    });
-    if (state.value) {
-      message.success(t("TXT_CODE_28190dbc"));
-      await getScheduleList();
-    }
-  } catch (err: any) {
-    console.error(err);
-    reportErrorMsg(err.message);
-  }
-};
-
-const rendTime = (text: string, schedule: Schedule) => {
-  switch (schedule.type.toString()) {
-    case ScheduleCreateType.INTERVAL: {
-      const time = Number(text);
-      let s = time;
-      let m = 0;
-      let h = 0;
-      while (s >= 60) {
-        s -= 60;
-        m += 1;
-      }
-      while (m >= 60) {
-        m -= 60;
-        h += 1;
-      }
-      return `${t("TXT_CODE_ec6d29f4")} ${h} ${t("TXT_CODE_e3db239d")} ${m} ${t(
+const timeRender = (text: string, schedule: Schedule) => {
+  const formatFunctions = {
+    [ScheduleCreateType.INTERVAL]: (t: string) => {
+      const time = Number(t);
+      const h = padZero(Math.floor(time / 3600).toString());
+      const m = padZero(Math.floor((time % 3600) / 60).toString());
+      const s = padZero((time % 60).toString());
+      return `${$t("TXT_CODE_ec6d29f4")} ${h} ${$t("TXT_CODE_e3db239d")} ${m} ${$t(
         "TXT_CODE_3b1bb444"
-      )} ${s} ${t("TXT_CODE_acabc771")}`;
+      )} ${s} ${$t("TXT_CODE_acabc771")}`;
+    },
+    [ScheduleCreateType.CYCLE]: (time: string) => {
+      const [s, m, h, , , w] = time.split(" ");
+      return `${t("TXT_CODE_76750199")} ${w} / ${padZero(h)}:${padZero(m)}:${padZero(s)}`;
+    },
+    [ScheduleCreateType.SPECIFY]: (time: string) => {
+      const [s, m, h, dd, mm] = time.split(" ");
+      return `${mm}/${dd} ${padZero(h)}:${padZero(m)}:${padZero(s)}`;
     }
-    case ScheduleCreateType.CYCLE: {
-      const time = text;
-      const timeArr = time.split(" ");
-      const h = timeArr[2];
-      const m = timeArr[1];
-      const s = timeArr[0];
-      const w = timeArr[5];
-      return `${t("TXT_CODE_76750199")} ${w} / ${h}:${m}:${s}`;
-    }
-    case ScheduleCreateType.SPECIFY: {
-      const time = text;
-      const timeArr = time.split(" ");
-      const h = timeArr[2];
-      const m = timeArr[1];
-      const s = timeArr[0];
-      const dd = timeArr[3];
-      const mm = timeArr[4];
-      return `${mm} ${t("TXT_CODE_6cb9bb04")} ${dd} ${t("TXT_CODE_ca923eba")} ${h}:${m}:${s}`;
-    }
-    default:
-      return "Unknown Time";
-  }
+  };
+
+  const formatFunction = formatFunctions[schedule.type as ScheduleCreateType];
+  return formatFunction(text) ?? "Unknown Time";
 };
 
 const columns: AntColumnsType[] = [
@@ -148,7 +99,7 @@ const columns: AntColumnsType[] = [
     dataIndex: "time",
     key: "time",
     minWidth: 240,
-    customRender: (e: { text: string; record: Schedule }) => rendTime(e.text, e.record)
+    customRender: (e: { text: string; record: Schedule }) => timeRender(e.text, e.record)
   },
   {
     align: "center",
@@ -205,9 +156,9 @@ onMounted(async () => {
       <a-col :span="24">
         <CardPanel style="height: 100%">
           <template #body>
-            <a-spin :spinning="isLoading">
+            <a-spin :spinning="scheduleListLoading">
               <a-table
-                :data-source="state"
+                :data-source="schedules"
                 :columns="columns"
                 :scroll="{ x: 'max-content' }"
                 :pagination="{
@@ -216,11 +167,19 @@ onMounted(async () => {
               >
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'actions'">
+                    <a-button
+                      class="mr-8"
+                      size="large"
+                      @click="newScheduleDialog?.openDialog(record as Schedule)"
+                    >
+                      {{ t("TXT_CODE_ad207008") }}
+                      <EditOutlined />
+                    </a-button>
                     <a-popconfirm
                       :title="t('TXT_CODE_6ff0668f')"
                       @confirm="deleteSchedule(record.name)"
                     >
-                      <a-button size="large">
+                      <a-button danger size="large">
                         {{ t("TXT_CODE_ecbd7449") }}
                         <DeleteOutlined />
                       </a-button>

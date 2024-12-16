@@ -1343,7 +1343,6 @@
   "TXT_CODE_ca07c84c": "Ihr aktueller Browser unterstützt kein automatisches Kopieren",
   "TXT_CODE_ca500df8": "Diese Konfigurationsdatei ist eine allgemeine Konfigurationsdatei für Server der Papierkategorie oder anderer abgeleiteter Kategorien. Sie erweitert die Mängel der Spigot-Konfigurationsdatei.",
   "TXT_CODE_ca8072bd": "Die Initialisierung ist fehlgeschlagen, der Remote-Knoten existiert nicht!",
-  "TXT_CODE_ca923eba": "Tag",
   "TXT_CODE_cad62df3": "Speichern Sie den Benutzercache nur, wenn der Server ausgefallen ist",
   "TXT_CODE_cae10a08": "Die Aufgabe zum Löschen von Dateien wird gestartet. Wenn zu viele Dateien vorhanden sind, dauert es einige Zeit.",
   "TXT_CODE_caf10268": "Ob der Server beim Abfragen der integrierten MCSM-Konsole eine Liste von Plug-Ins zurückgibt",
@@ -2011,5 +2010,15 @@
   "TXT_CODE_f94e428a": "Benutzer hat abgesagt",
   "TXT_CODE_fa487a47": "Geben Sie die folgenden variablen Zeichenfolgen an:",
   "TXT_CODE_fb87ccd": "Instanzcode",
-  "TXT_CODE_ffda3755": "Code eingeben"
+  "TXT_CODE_ffda3755": "Code eingeben",
+  "TXT_CODE_afabf3ca": "Die Analysezeit ist fehlgeschlagen",
+  "TXT_CODE_10088738": "Bestätigen Sie den Löschvorgang",
+  "TXT_CODE_1548649e": "Bearbeiten Sie geplante Aufgaben",
+  "TXT_CODE_1981470a": "Wenn Sie instanzbezogene Dateien gleichzeitig löschen, wird das gesamte Verzeichnis, in dem sich die Instanz befindet, direkt gelöscht.",
+  "TXT_CODE_584d786d": "Löschen Sie die Instanz und die zugehörigen Dateien",
+  "TXT_CODE_7542201a": "Löschen Sie auch instanzbezogene Dateien",
+  "TXT_CODE_90508729": "Durch diesen Vorgang wird das gesamte Verzeichnis, in dem sich die Instanz befindet, direkt gelöscht und die Dateien können nicht wiederhergestellt werden. Möchten Sie fortfahren?",
+  "TXT_CODE_a0e19f38": "Instanz löschen",
+  "TXT_CODE_ed81f72d": "Diese Instanz wurde nicht in einem Geschäft gekauft und kann nicht verlängert werden. Bitte kontaktieren Sie den Händler zur Bearbeitung!",
+  "TXT_CODE_f486dbb4": "Instanz erfolgreich gelöscht"
 }

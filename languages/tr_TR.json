@@ -1309,7 +1309,6 @@
   "TXT_CODE_3b1bb444": "Min",
   "TXT_CODE_76750199": "Her Hafta",
   "TXT_CODE_6cb9bb04": "Ay",
-  "TXT_CODE_ca923eba": "Gün",
   "TXT_CODE_2d542e4c": "Görev Adı",
   "TXT_CODE_1544562": "Payload",
   "TXT_CODE_485e2d41": "Kalan Sayı",
@@ -2011,5 +2010,15 @@
   "TXT_CODE_f94e428a": "Kullanıcı iptal edildi",
   "TXT_CODE_fa487a47": "Aşağıdaki değişken dizelerini sağlayın:",
   "TXT_CODE_fb87ccd": "Örnek Kodu",
-  "TXT_CODE_ffda3755": "Kodu girin"
+  "TXT_CODE_ffda3755": "Kodu girin",
+  "TXT_CODE_afabf3ca": "Ayrıştırma süresi başarısız oldu",
+  "TXT_CODE_1548649e": "Zamanlanmış görevleri düzenle",
+  "TXT_CODE_1981470a": "Örnekle ilgili dosyaları aynı anda silmeyi seçerseniz örneğin bulunduğu dizinin tamamı doğrudan silinecektir.",
+  "TXT_CODE_584d786d": "Örneği ve ilgili dosyaları silin",
+  "TXT_CODE_7542201a": "Örnekle ilgili dosyaları da silin",
+  "TXT_CODE_90508729": "Bu işlem, örneğin bulunduğu dizinin tamamını doğrudan siler ve dosyalar geri yüklenemez. Devam etmek istiyor musunuz?",
+  "TXT_CODE_a0e19f38": "Örneği sil",
+  "TXT_CODE_ed81f72d": "Bu örnek bir mağazadan satın alınmadı ve yenilenemiyor. İşleme için lütfen satıcıyla iletişime geçin!",
+  "TXT_CODE_f486dbb4": "Örnek başarıyla silindi",
+  "TXT_CODE_10088738": "Silmeyi onayla"
 }
