@@ -6,7 +6,8 @@
     "preview-build": "cd common && npm install && npm run build",
     "daemon": "cd daemon &&  npm run dev",
     "frontend": "cd frontend && npm run dev",
-    "panel": "cd panel && npm run dev"
+    "panel": "cd panel && npm run dev",
+    "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\""
   },
   "dependencies": {
     "crc": "^4.3.2",

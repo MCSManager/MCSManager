@@ -19,27 +19,48 @@ class Database {
   keysMap = new Map();
 
   /** @type {Object<string, string>} */
-  sourceLangFile = {};
+  sourceLangMap = {};
+
+  languageDir = "";
 
   constructor(languageDir = "", languageSourceFileName = "") {
-    this.sourceLangFile = JSON.parse(
+    this.languageDir = languageDir;
+    this.sourceLangMap = JSON.parse(
       fs.readFileSync(path.join(languageDir, languageSourceFileName), "utf-8")
     );
-    for (const key in this.sourceLangFile) {
+    for (const key in this.sourceLangMap) {
       this.keysMap.set(key, false);
     }
   }
 
-  rewriteSourceLangFile() {
+  async rewriteSourceLangFile() {
     for (const [key, value] of this.keysMap) {
       if (!value) {
-        delete this.sourceLangFile[key];
+        delete this.sourceLangMap[key];
       }
     }
+    console.log("Rewrite file:", path.join(LANGUAGE_DIR, LANGUAGE_SOURCE_FILE_NAME));
     fs.writeFileSync(
       path.join(LANGUAGE_DIR, LANGUAGE_SOURCE_FILE_NAME),
-      JSON.stringify(this.sourceLangFile, null, 2)
+      JSON.stringify(this.sourceLangMap, null, 2)
     );
+    for (const filename of await fs.promises.readdir(this.languageDir)) {
+      if (filename.endsWith(".json")) {
+        const otherLangMap = JSON.parse(
+          fs.readFileSync(path.join(this.languageDir, filename), "utf-8")
+        );
+        for (const key in otherLangMap) {
+          if (!this.sourceLangMap[key]) {
+            delete otherLangMap[key];
+          }
+        }
+        console.log("Rewrite other lang file:", path.join(this.languageDir, filename));
+        fs.writeFileSync(
+          path.join(this.languageDir, filename),
+          JSON.stringify(otherLangMap, null, 2)
+        );
+      }
+    }
   }
 }
 
@@ -85,7 +106,7 @@ function startThread(langKeys, filesPath, database) {
         database.keysMap.set(data, true);
       }
       if (type === "exit") {
-        console.log(`Thread ${data} scan finished!`);
+        console.log(`Thread ID: ${data} \tScan finished!`);
         resolve(null);
       }
     });
@@ -96,7 +117,7 @@ async function mainThread() {
   console.log("process.argv:", process.argv);
   const database = new Database(LANGUAGE_DIR, LANGUAGE_SOURCE_FILE_NAME);
   const scannedFiles = await scanCodeFiles(CODE_DIR, [], EXCLUDE_FILES);
-
+  console.log(`Scanned files (${INCLUDE_EXT_NAMES}):`, scannedFiles.length);
   const promises = [];
   for (let i = 0; i < scannedFiles.length; i += CONCURRENT_COUNT) {
     const filesPath = scannedFiles.slice(i, i + CONCURRENT_COUNT);
@@ -104,9 +125,9 @@ async function mainThread() {
   }
   await Promise.all(promises);
   console.log("Rewrite source lang file...");
-  database.rewriteSourceLangFile();
+  await database.rewriteSourceLangFile();
   console.log("Rewrite source lang file finished!");
-  const langDir = path.dirname(LANGUAGE_DIR);
+  process.exit(0);
 }
 
 async function worker() {
@@ -115,14 +136,7 @@ async function worker() {
   /** @type {Map<string, boolean>} */
   const langKeys = workerData.langKeys;
 
-  console.log(
-    "New Thread ID:",
-    threadId,
-    "Scan queue size:",
-    filesPath.length,
-    "Lang keys size:",
-    langKeys.size
-  );
+  console.log("Create new thread ID:", threadId, "\tFiles:", filesPath.length);
 
   async function readOneFile(filePath = "") {
     const fileContent = await fs.promises.readFile(filePath, "utf-8");
