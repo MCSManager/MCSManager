@@ -78,7 +78,6 @@ events.on("error", (error: Error) => {
 });
 
 events.once("detail", async () => {
-  term = await initTerminal();
   try {
     const { value } = await getInstanceOutputLog().execute({
       params: { uuid: instanceId || "", daemonId: daemonId || "" }
@@ -110,6 +109,7 @@ onMounted(async () => {
         daemonId
       });
     }
+    term = await initTerminal();
   } catch (error: any) {
     console.error(error);
     throw error;
