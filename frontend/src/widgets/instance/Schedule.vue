@@ -30,7 +30,7 @@ const { getScheduleList, schedules, scheduleListLoading, deleteSchedule } = useS
   String(daemonId)
 );
 
-const rendTime = (text: string, schedule: Schedule) => {
+const timeRender = (text: string, schedule: Schedule) => {
   const formatFunctions = {
     [ScheduleCreateType.INTERVAL]: (t: string) => {
       const time = Number(t);
@@ -47,9 +47,7 @@ const rendTime = (text: string, schedule: Schedule) => {
     },
     [ScheduleCreateType.SPECIFY]: (time: string) => {
       const [s, m, h, dd, mm] = time.split(" ");
-      return `${mm} ${t("TXT_CODE_6cb9bb04")} ${dd} ${t("TXT_CODE_ca923eba")} ${padZero(
-        h
-      )}:${padZero(m)}:${padZero(s)}`;
+      return `${mm}/${dd} ${padZero(h)}:${padZero(m)}:${padZero(s)}`;
     }
   };
 
@@ -101,7 +99,7 @@ const columns: AntColumnsType[] = [
     dataIndex: "time",
     key: "time",
     minWidth: 240,
-    customRender: (e: { text: string; record: Schedule }) => rendTime(e.text, e.record)
+    customRender: (e: { text: string; record: Schedule }) => timeRender(e.text, e.record)
   },
   {
     align: "center",
@@ -181,7 +179,7 @@ onMounted(async () => {
                       :title="t('TXT_CODE_6ff0668f')"
                       @confirm="deleteSchedule(record.name)"
                     >
-                      <a-button size="large">
+                      <a-button danger size="large">
                         {{ t("TXT_CODE_ecbd7449") }}
                         <DeleteOutlined />
                       </a-button>
