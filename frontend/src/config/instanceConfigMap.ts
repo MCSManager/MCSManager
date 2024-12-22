@@ -888,6 +888,41 @@ export const configData: {
       }
     }
   },
+  "pufferfish/pufferfish.yml": {
+    desc: t("TXT_CODE_9213f8e3"),
+    config: {
+      info: {
+        version: t("TXT_CODE_7214ead7"),
+      },
+      "sentry-dsn": t("TXT_CODE_2e0e1dfa"),
+      projectile: {
+        "max-loads-per-tick": t("TXT_CODE_e66bfef9"),
+        "max-loads-per-projectile": t("TXT_CODE_b47dbe7d")
+      },
+      misc: {
+        "disable-method-profiler": t("TXT_CODE_90865a4")
+      },
+      flare: {
+        url: t("TXT_CODE_a7aa53a3")
+      },
+      "enable-async-mob-spawning": t("TXT_CODE_41813325"),
+      "tps-catchup": t("TXT_CODE_32eb350b"),
+      "inactive-goal-selector-throttle": t("TXT_CODE_b5022f5d"),
+      "enable-books": t("TXT_CODE_33d91ef6"),
+      "allow-end-crystal-respawn": t("TXT_CODE_e707d042"),
+      dab: {
+        "enabled": t("TXT_CODE_f738c45c"),
+        "start-distance": t("TXT_CODE_bd2534da"),
+        "max-tick-freq": t("TXT_CODE_a02a0849"),
+        "activation-dist-mod": t("TXT_CODE_cfe187b0"),
+        "blacklisted-entities": t("TXT_CODE_2e660675")
+      },
+      "web-services": {
+        token: t("TXT_CODE_779553fb")
+      },
+      "enable-suffocation-optimization": t("TXT_CODE_ae566b56")
+    }
+  },
   "mohist/mohist.yml": {
     desc: t("TXT_CODE_6eead111"),
     config: {
