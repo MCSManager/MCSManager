@@ -298,7 +298,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_98e50717"),
     path: "purpur.yml",
     redirect: "purpur/purpur.yml",
-    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PURPUR, TYPE_MINECRAFT_PUFFERFISH]
+    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PURPUR]
   },
   {
     fileName: "[Pufferfish] pufferfish.yml",
