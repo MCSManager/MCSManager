@@ -105,7 +105,7 @@ export const ScheduleType = {
 };
 
 export enum ScheduleCreateType {
-  INTERVAL = "1",
-  CYCLE = "2",
-  SPECIFY = "3"
+  INTERVAL = 1,
+  CYCLE,
+  SPECIFY
 }

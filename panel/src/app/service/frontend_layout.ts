@@ -541,6 +541,61 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/shop",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "ShopInfoCard",
+          title: t("TXT_CODE_4770de17"),
+          width: 8,
+          height: LayoutCardHeight.SMALL,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "ShelvesCard",
+          title: t("TXT_CODE_381f8f22"),
+          width: 8,
+          height: LayoutCardHeight.LARGE,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 2,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
       page: "/404",
       items: [
         {

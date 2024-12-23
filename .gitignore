@@ -7,8 +7,6 @@ yarn-error.log*
 lerna-debug.log*
 panel/public/
 *.code-workspace
-vscode/
-.vscode/
 data/
 dist/
 out/

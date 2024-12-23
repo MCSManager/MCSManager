@@ -16,6 +16,7 @@ interface Props extends MountComponent {
   data: any[];
   subTitle?: string;
   columns?: AntColumnsType[];
+  textarea?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -92,7 +93,7 @@ const operation = (type: "add" | "del", index = 0) => {
   <a-modal
     v-model:open="open"
     centered
-    width="600px"
+    width="1300px"
     :mask-closable="false"
     :title="props.title"
     :ok-text="t('TXT_CODE_d507abff')"
@@ -135,7 +136,15 @@ const operation = (type: "add" | "del", index = 0) => {
                   }
                 ]"
               >
+                <a-textarea
+                  v-if="props.textarea"
+                  v-model:value="record[String(column.dataIndex)]"
+                  :placeholder="(column as any).placeholder"
+                  :rows="3"
+                  :auto-size="false"
+                />
                 <a-input
+                  v-else
                   v-model:value="record[String(column.dataIndex)]"
                   :placeholder="(column as any).placeholder"
                 />

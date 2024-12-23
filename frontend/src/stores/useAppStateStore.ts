@@ -20,7 +20,8 @@ export const useAppStateStore = createGlobalState(() => {
     language: "en_us",
     settings: {
       canFileManager: false,
-      allowUsePreset: false
+      allowUsePreset: false,
+      businessMode: false
     }
   });
 
@@ -52,15 +53,14 @@ export const useAppStateStore = createGlobalState(() => {
 
   const updatePanelStatus = async () => {
     const { state } = useAppStateStore();
-    const status = await panelStatus().execute();
-    state.isInstall = status.value?.isInstall ?? true;
-    state.versionChange = status.value?.versionChange ? true : false;
-    state.settings = status.value?.settings ?? {
-      canFileManager: false,
-      allowUsePreset: false
-    };
+    const panelStatusRes = await panelStatus().execute();
+    state.isInstall = panelStatusRes.value?.isInstall ?? true;
+    state.versionChange = panelStatusRes.value?.versionChange ? true : false;
+    if (panelStatusRes.value?.settings) {
+      state.settings = panelStatusRes.value?.settings;
+    }
     if (state.isInstall) {
-      state.language = toStandardLang(status.value?.language);
+      state.language = toStandardLang(panelStatusRes.value?.language);
     } else {
       state.language = searchSupportLanguage(window.navigator.language);
       await initInstallPageFlow(state.language);

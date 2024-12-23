@@ -30,8 +30,14 @@
 
   // Antdv for dark mode
   .ant-btn-default {
-    background-color: var(--background-color-white);
+    background-color: var(--color-gray-4);
+    box-shadow: 0 2px 0 rgba(55, 55, 55, 0.15);
   }
+
+  .ant-btn-primary {
+    border: 1px solid #424242;
+  }
+
   .ant-modal-content {
     border: 1px solid var(--color-gray-5);
     border-radius: 8px;

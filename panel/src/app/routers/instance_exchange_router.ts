@@ -7,6 +7,7 @@ import {
   getNodeStatus,
   parseUserName,
   queryInstanceByUserId,
+  REDEEM_PLATFORM_ADDR,
   RequestAction
 } from "../service/exchange_service";
 import { toText } from "common";
@@ -15,6 +16,7 @@ import Koa from "koa";
 import UserSSOService from "../service/user_sso_service";
 import { loginSuccess } from "../service/passport_service";
 import { $t } from "../i18n";
+import axios from "axios";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -74,6 +76,49 @@ router.get(
       return ctx.redirect(redirect);
     } else {
       throw new Error($t("TXT_CODE_13411df7"));
+    }
+  }
+);
+
+router.post(
+  "/request_redeem_platform",
+  permission({ token: false, level: null }),
+  validator({
+    body: { targetUrl: String, method: String }
+  }),
+  async (ctx) => {
+    try {
+      const url = REDEEM_PLATFORM_ADDR + String(ctx.request.body.targetUrl);
+      const method = ctx.request.body.method;
+      const data = ctx.request.body.data;
+      const params = ctx.request.body.params;
+      logger.info(
+        "Request redeem platform, url: %s, method: %s, data: %j, params: %j",
+        url,
+        method,
+        data,
+        params
+      );
+      const res = await axios.request({
+        url,
+        method,
+        data,
+        params,
+        timeout: 1000 * 30,
+        headers: {
+          "Content-Type": "application/json",
+          "X-MCSManager-Panel": "true"
+        }
+      });
+      logger.info("Request redeem platform response: %j", JSON.stringify(res.data));
+      const realData = res.data;
+      if (Number(realData.code) !== 200) {
+        throw new Error(realData?.message ?? "Unknown error");
+      }
+      ctx.body = realData?.data ?? "";
+    } catch (error) {
+      logger.error("Request redeem platform error: " + error);
+      ctx.body = error;
     }
   }
 );

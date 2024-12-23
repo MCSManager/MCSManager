@@ -209,6 +209,7 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "cpuUsage", Number);
       configureEntityParams(this.config.docker, cfg.docker, "env");
       configureEntityParams(this.config.docker, cfg.docker, "workingDir", String);
+      configureEntityParams(this.config.docker, cfg.docker, "changeWorkdir", Boolean);
     }
     if (cfg.pingConfig) {
       configureEntityParams(this.config.pingConfig, cfg.pingConfig, "ip", String);
@@ -277,6 +278,7 @@ export default class Instance extends EventEmitter {
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
+      this.startTimestamp = 0;
       this.emit("exit", code);
       StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
     }

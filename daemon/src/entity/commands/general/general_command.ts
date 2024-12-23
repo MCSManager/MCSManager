@@ -28,7 +28,7 @@ export default class GeneralSendCommand extends InstanceCommand {
     // The server shutdown command needs to send a command, but before the server shutdown command is executed, the status will be set to the shutdown state.
     // So here the command can only be executed by whether the process exists or not
     if (instance?.process) {
-      instance.process.write(encode(buf, instance.config.oe));
+      instance.process.write(encode(buf, instance.config.ie));
       if (instance.config.crlf === 2) return instance.process.write("\r\n");
       return instance.process.write("\n");
     } else {

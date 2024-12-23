@@ -57,10 +57,6 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
 }
 
 export default class GeneralStartCommand extends AbsStartCommand {
-  constructor() {
-    super("StartCommand");
-  }
-
   async createProcess(instance: Instance, source = "") {
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||

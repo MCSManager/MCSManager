@@ -115,7 +115,6 @@ const showCardOperator = (card: ILayoutCard) => {
 </template>
 
 <style lang="scss">
-// Gloabl
 @import "../assets/variables.scss";
 
 // Hide the EmptyCard component when mobile device.
@@ -152,12 +151,10 @@ const showCardOperator = (card: ILayoutCard) => {
 @keyframes scaleAnimation {
   0% {
     opacity: 0.02;
-    // transform: scale(0.98);
   }
 
   100% {
     opacity: 1;
-    // transform: scale(1);
   }
 }
 </style>

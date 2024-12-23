@@ -21,7 +21,6 @@ import {
   createInstance as createInstanceApi
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
-import { useCmdAssistantDialog } from "@/components/fc";
 import { reportErrorMsg } from "@/tools/validator";
 
 // eslint-disable-next-line no-unused-vars
@@ -65,7 +64,8 @@ const formData = reactive<NewInstanceForm>({
     networkMode: "bridge",
     networkAliases: [],
     cpusetCpus: "",
-    workingDir: "/workspace/",
+    workingDir: "/data",
+    changeWorkdir: false,
     memory: undefined,
     cpuUsage: undefined,
     maxSpace: undefined,
@@ -104,11 +104,6 @@ if (props.appType === QUICKSTART_ACTION_TYPE.SteamGameServer) {
 
 const rules: Record<string, Rule[]> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }]
-};
-
-const openCmdAssistDialog = async () => {
-  const cmd = await useCmdAssistantDialog();
-  if (cmd) formData.startCommand = cmd;
 };
 
 const uFile = ref<File>();
@@ -252,14 +247,33 @@ const createInstance = async () => {
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
         <a-typography-title :level="5">
-          {{ t("TXT_CODE_fdec1b6f") }}
+          {{ t("TXT_CODE_81979d0f") }}
         </a-typography-title>
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("TXT_CODE_3c37583b") }}
+            {{ t("TXT_CODE_3407250a") }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.docker.workingDir" :placeholder="t('TXT_CODE_2082f659')" />
+      </a-form-item>
+
+      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
+        <a-typography-title :level="5" class="require-field">
+          {{ t("TXT_CODE_5484094a") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("TXT_CODE_60dd05d5") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-switch
+          v-model:checked="formData.docker.changeWorkdir"
+          :checked-value="true"
+          :un-checked-value="false"
+        >
+          <template #checkedChildren><check-outlined /></template>
+          <template #unCheckedChildren><close-outlined /></template>
+        </a-switch>
       </a-form-item>
 
       <a-form-item name="startCommand">
@@ -283,16 +297,9 @@ const createInstance = async () => {
           <a-textarea
             v-model:value="formData.startCommand"
             :rows="3"
-            :placeholder="t('TXT_CODE_619d74d3')"
+            :placeholder="t('TXT_CODE_d4ad1dd')"
             style="min-height: 40px"
           />
-          <a-button
-            type="default"
-            style="height: auto; border-top-left-radius: 0; border-bottom-left-radius: 0"
-            @click="openCmdAssistDialog"
-          >
-            {{ t("TXT_CODE_2728d0d4") }}
-          </a-button>
         </a-input-group>
       </a-form-item>
 

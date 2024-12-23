@@ -134,7 +134,7 @@ defineExpose({
     :cancel-text="t('TXT_CODE_3b1cc020')"
     :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
-    :width="fullScreen ? '100%' : '1300px'"
+    :width="fullScreen ? '100%' : '1600px'"
     :confirm-loading="isLoading"
     @ok="submit"
     @cancel="cancel"

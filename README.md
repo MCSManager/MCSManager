@@ -18,11 +18,10 @@
 
 [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md)
+
 </div>
 
 <br />
-
-
 
 ## What is MCSManager?
 
@@ -31,7 +30,6 @@
 MCSManager has already gained a certain level of popularity within the community, specifically Minecraft. MCSManager excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, We are committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
 
 MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
-
 
 **Terminal**
 
@@ -45,18 +43,15 @@ MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Si
 
 ![failed_to_load_screenshot.png](/.github/panel-custom-layout.gif)
 
-
-
 ## Features
 
 1. One-click deployment of `Minecraft` Java/Bedrock Server
 2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Terraria`, etc.)
 3. Customizable UI, create your own layout
-4. Support `Docker` virtualization, multiuser, and commercial services
-
-
+4. Supports all images on `Docker Hub`, supports multiple users, and supports commercial services!
 5. Manage multiple servers with a single web interface
-6. More...
+6. The technology stack is simple, and you only need to be good at Typescript to complete the entire MCSManager development
+7. More...
 
 <br />
 
@@ -144,16 +139,18 @@ This installation approach does not automatically set up MCSManager as a system 
 
 <br />
 
-## Browser Compatibility
-
-- Supported on modern browsers including `Chrome`, `Firefox`, and `Safari`.
-- Support for `IE` has been discontinued.
-
-<br />
-
 ## Development
 
 This section is specifically designed for developers. General users may disregard this portion without concern.
+
+### Plugins
+
+We use "VS Code" to develop MCSManager. You may need to install these plugins:
+
+- i18n display support (I18n Ally)
+- Code formatter (Prettier)
+- Vue - Offcial
+- ESLint
 
 ### MacOS
 
@@ -171,6 +168,10 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./npm-dev-windows.bat
 ```
 
+### Dependency Files
+
+You'll need to go to the [PTY](https://github.com/MCSManager/PTY) and [Zip-Tools](https://github.com/MCSManager/Zip-Tools) projects to download the corresponding binary files and place them in the `daemon/lib` directory to ensure the proper functioning of the `Emulation Terminal` and `File Decompression`.
+
 ### Build Production Version
 
 ```bash
@@ -178,7 +179,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./build.sh  # MacOS
 ```
 
-Next, you'll need to go to the [PTY](https://github.com/MCSManager/PTY) and [Zip-Tools](https://github.com/MCSManager/Zip-Tools) projects to download the corresponding binary files and place them in the `daemon/lib` directory to ensure the proper functioning of the `Emulation Terminal` and `File Decompression`.
+Output Directory: "production-code"
 
 <br />
 
@@ -187,6 +188,13 @@ Next, you'll need to go to the [PTY](https://github.com/MCSManager/PTY) and [Zip
 If you experience any problems while using MCSManager, you are welcome to [submit an Issue](https://github.com/MCSManager/MCSManager/issues/new/choose). Alternatively, you can fork the project and contribute directly by submitting a Pull Request.
 
 Please ensure that any submitted code adheres to our existing coding style. For more details, refer to the guidelines provided in [this issue](https://github.com/MCSManager/MCSManager/issues/544).
+
+<br />
+
+## Browser Compatibility
+
+- Supported on modern browsers including `Chrome`, `Firefox`, and `Safari`.
+- Support for `IE` has been discontinued.
 
 <br />
 

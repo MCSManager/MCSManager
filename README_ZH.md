@@ -40,9 +40,9 @@
 1. 支持一键开服！轻松部署 `Minecraft` Java 版/基岩版游戏服务器。
 2. 兼容大部分 `Steam` 游戏服务器，列如 `幻兽帕鲁`，`战术小队`，`僵尸毁灭工程` 和 `泰拉瑞亚` 等。
 3. 网页支持拖拽式的小卡片布局，打造自己喜欢的界面布局。
-4. 支持 `Docker` 虚拟化，支持多用户，支持商业出租行为。
-5. 支持所有 `Docker` 镜像，轻松打造预设！
-6. 支持分布式，一个网页即可同时管理数台机器。
+4. 支持 `Docker Hub` 上的所有镜像，支持多用户，支持商业服务。
+5. 支持分布式，一个网页即可同时管理数台机器。
+6. 技术栈简单，仅需擅长 Typescript 即可完成整个 MCSManager 开发！
 7. 更多...
 
 <br />
@@ -127,16 +127,18 @@ tar -zxf mcsmanager_linux_release.tar.gz
 
 <br />
 
-## 浏览器兼容性
-
-- 支持 `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器。
-- 已放弃支持 `IE` 浏览器。
-
-<br />
-
 ## 搭建开发环境
 
 此段落面向开发人员，普通用户无需关注也无需执行。
+
+### 必备插件
+
+我们使用 “VS Code” 开发 MCSManager，你可能需要安装这些插件：
+
+- i18n 文案显示支持（I18n Ally）
+- 代码格式化（Prettier）
+- Vue - Offcial
+- ESLint
 
 ### MacOS
 
@@ -154,6 +156,10 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./npm-dev-windows.bat
 ```
 
+### 依赖文件
+
+接下来你还需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 两个项目下载对应的二进制文件，将他们存放到 `daemon/lib` 目录下，以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+
 ### 构建生产环境版本
 
 ```bash
@@ -161,7 +167,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./build.sh  # MacOS
 ```
 
-接下来你还需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 两个项目下载对应的二进制文件，将他们存放到 `daemon/lib` 目录下，以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+最终产物目录: "production-code"
 
 <br />
 
@@ -170,6 +176,13 @@ git clone https://github.com/MCSManager/MCSManager.git
 如果你在使用过程中发现任何问题，可以 [提交 Issue](https://github.com/MCSManager/MCSManager/issues/new/choose) 或自行 Fork 修改后提交 Pull Request。
 
 代码需要保持现有格式，不得格式化多余代码，具体可[参考这里](https://github.com/MCSManager/MCSManager/issues/544)。
+
+<br />
+
+## 浏览器兼容性
+
+- 支持 `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器。
+- 已放弃支持 `IE` 浏览器。
 
 <br />
 

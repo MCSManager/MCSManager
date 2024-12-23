@@ -11,6 +11,7 @@ export interface RouterMetaInfo {
   permission?: number;
   redirect?: string;
   onlyDisplayEditMode?: boolean;
+  condition?: () => boolean;
   breadcrumbs?: Array<{
     name: string;
     path: string;
@@ -28,8 +29,11 @@ export interface RouterConfig {
 }
 
 export enum ROLE {
+  // eslint-disable-next-line no-unused-vars
   ADMIN = 10,
+  // eslint-disable-next-line no-unused-vars
   USER = 1,
+  // eslint-disable-next-line no-unused-vars
   GUEST = 0
 }
 
@@ -232,6 +236,19 @@ const originRouterConfig: RouterConfig[] = [
       mainMenu: true,
       onlyDisplayEditMode: true
     }
+  },
+  {
+    path: "/shop",
+    name: t("TXT_CODE_5a408a5e"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: true,
+      condition: () => {
+        const { state: appConfig } = useAppStateStore();
+        return appConfig.settings.businessMode;
+      }
+    }
   }
 ];
 
@@ -277,7 +294,10 @@ router.beforeEach((to, from, next) => {
     toPagePermission
   );
 
-  if (toRoutePath.includes("_open_page") || ["/login", "/install", "/404"].includes(toRoutePath)) {
+  if (
+    toRoutePath.includes("_open_page") ||
+    ["/shop", "/login", "/install", "/404"].includes(toRoutePath)
+  ) {
     return next();
   }
 

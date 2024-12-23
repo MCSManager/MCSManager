@@ -1,0 +1,19 @@
+// Please do not commit changes to this file.
+// You need to install the "i18n ally" VSCode plugin.
+{
+  // Change this to your language, available options: "languages/*.json"
+  // "i18n-ally.displayLanguage": "en_US"
+
+  "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.extract.keyMaxLength": 10000,
+  "cSpell.words": ["BUKKIT", "BUNGEECORD", "MINECRAFT"],
+  "i18n-ally.localesPaths": [
+    "languages",
+    "frontend/src/lang",
+    "daemon/src/i18n",
+    "panel/src/app/i18n"
+  ],
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.enabledFrameworks": ["vue"],
+  "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+}

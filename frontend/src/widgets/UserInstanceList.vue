@@ -30,16 +30,6 @@ const columns = [
     }
   },
   {
-    title: t("TXT_CODE_662ad338"),
-    dataIndex: "ie",
-    customRender: (e: { text: string; record: { oe: string; ie: string } }) => {
-      if (!e.record.oe && !e.record.ie) {
-        return "--";
-      }
-      return `${t("TXT_CODE_bb888626")}:${e.record.oe} ${t("TXT_CODE_4b6e951")}:${e.record.ie}`;
-    }
-  },
-  {
     title: t("TXT_CODE_5ab2062d"),
     dataIndex: "lastDatetime",
     key: "lastDatetime",
@@ -100,7 +90,7 @@ onMounted(() => {
               :disabled="record.status === INSTANCE_STATUS_CODE.BUSY"
               @click="operate(record.daemonId, record.instanceUuid)"
             >
-              {{ t("TXT_CODE_5974bf24") }}
+              {{ t("TXT_CODE_aa43b248") }}
             </a-button>
           </template>
         </template>

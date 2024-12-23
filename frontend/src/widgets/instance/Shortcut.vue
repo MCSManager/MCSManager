@@ -14,7 +14,8 @@ import {
   CloudDownloadOutlined,
   CodeOutlined,
   UserOutlined,
-  TagsOutlined
+  TagsOutlined,
+  DeleteOutlined
 } from "@ant-design/icons-vue";
 import {
   openInstance,
@@ -31,7 +32,7 @@ import { parseTimestamp } from "@/tools/time";
 import { arrayFilter } from "@/tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
-import { openInstanceTagsEditor } from "@/components/fc/index";
+import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
 import _ from "lodash";
 
 const props = defineProps<{
@@ -227,6 +228,22 @@ const instanceOperations = computed(() =>
           }
         });
       },
+      disabled: containerState.isDesignMode
+    },
+    {
+      title: t("TXT_CODE_a0e19f38"),
+      icon: DeleteOutlined,
+      click: async (event: MouseEvent) => {
+        event.stopPropagation();
+        const deleteInstanceResult = await useDeleteInstanceDialog(
+          instanceId || "",
+          daemonId || ""
+        );
+        if (!deleteInstanceResult) return;
+        message.success(t("TXT_CODE_f486dbb4"));
+        refreshList();
+      },
+      danger: true,
       disabled: containerState.isDesignMode
     }
   ])

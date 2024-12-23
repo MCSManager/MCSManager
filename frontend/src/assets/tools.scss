@@ -45,6 +45,22 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -219,9 +235,9 @@
 }
 
 .ellipsis-text {
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @mixin generate-styles($depth) {
