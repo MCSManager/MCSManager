@@ -562,6 +562,1837 @@ export const configData: {
       }
     }
   },
+  "purpur/purpur.yml": {
+    desc: t("TXT_CODE_da76ea07"),
+    config: {
+      verbose: t("TXT_CODE_81cabec"),
+      "config-version": t("TXT_CODE_c32eb04a"),
+      settings: {
+        "block-fall-multipliers": {
+          "minecraft:brown_bed": {
+            distance: t("TXT_CODE_e40ddc99")
+          },
+          "minecraft:lime_bed": {
+            distance: t("TXT_CODE_1b518dd0")
+          },
+          "minecraft:yellow_bed": {
+            distance: t("TXT_CODE_8175818c")
+          },
+          "minecraft:black_bed": {
+            distance: t("TXT_CODE_8da44b20")
+          },
+          "minecraft:orange_bed": {
+            distance: t("TXT_CODE_998d1dec")
+          },
+          "minecraft:green_bed": {
+            distance: t("TXT_CODE_44f46508")
+          },
+          "minecraft:blue_bed": {
+            distance: t("TXT_CODE_b36630b3")
+          },
+          "minecraft:cyan_bed": {
+            distance: t("TXT_CODE_a5bdf2d8")
+          },
+          "minecraft:gray_bed": {
+            distance: t("TXT_CODE_f130e34a")
+          },
+          "minecraft:white_bed": {
+            distance: t("TXT_CODE_7db580c1")
+          },
+          "minecraft:hay_block": {
+            distance: t("TXT_CODE_4c9dd2b4")
+          },
+          "minecraft:red_bed": {
+            distance: t("TXT_CODE_f5e3c97e")
+          },
+          "minecraft:pink_bed": {
+            distance: t("TXT_CODE_9e1657b")
+          },
+          "minecraft:light_blue_bed": {
+            distance: t("TXT_CODE_6253ecce")
+          },
+          "minecraft:purple_bed": {
+            distance: t("TXT_CODE_845b8bd8")
+          },
+          "minecraft:magenta_bed": {
+            distance: t("TXT_CODE_9eb5dd12")
+          },
+          "minecraft:light_gray_bed": {
+            distance: t("TXT_CODE_20053f37")
+          }
+        },
+        command: {
+          uptime: {
+            format: t("TXT_CODE_b75e6388"),
+            day: t("TXT_CODE_2de4c590"),
+            days: t("TXT_CODE_816ae222"),
+            hour: t("TXT_CODE_3752d436"),
+            hours: t("TXT_CODE_bec552ee"),
+            minute: t("TXT_CODE_80747f11"),
+            minutes: t("TXT_CODE_1b78c12e"),
+            second: t("TXT_CODE_b3796a8"),
+            seconds: t("TXT_CODE_a94e89ef")
+          },
+          gamemode: {
+            "requires-specific-permission": t("TXT_CODE_2b524bbf")
+          },
+          tpsbar: {
+            title: t("TXT_CODE_e4cf9ca3"),
+            overlay: t("TXT_CODE_dc370276"),
+            "fill-mode": t("TXT_CODE_f021f43a"),
+            "progress-color": {
+              good: t("TXT_CODE_7d3d97ec"),
+              medium: t("TXT_CODE_47491a7e"),
+              low: t("TXT_CODE_8fac22fc")
+            },
+            "text-color": {
+              good: t("TXT_CODE_52f96ff0"),
+              medium: t("TXT_CODE_125812c9"),
+              low: t("TXT_CODE_2428b9c0")
+            },
+            "tick-interval": t("TXT_CODE_fe592df1")
+          },
+          rambar: {
+            title: t("TXT_CODE_90b596a8"),
+            overlay: t("TXT_CODE_dc370276"),
+            "progress-color": {
+              good: t("TXT_CODE_82b18ea4"),
+              medium: t("TXT_CODE_1b82883f"),
+              low: t("TXT_CODE_cdf1a25")
+            },
+            "text-color": {
+              good: t("TXT_CODE_27ee6bf8"),
+              medium: t("TXT_CODE_ddec29cf"),
+              low: t("TXT_CODE_598f2d02")
+            },
+            "tick-interval": t("TXT_CODE_fe592df1")
+          },
+          compass: {
+            title: t("TXT_CODE_a463be37"),
+            overlay: t("TXT_CODE_dc370276"),
+            "progress-color": t("TXT_CODE_98742e5f"),
+            percent: t("TXT_CODE_e8293f96"),
+            "tick-interval": t("TXT_CODE_fe592df1")
+          },
+          "hide-hidden-players-from-entity-selector": t("TXT_CODE_7eb0f9fd"),
+          "allow-water-placement-in-the-end": t("TXT_CODE_55a62de"),
+          "use-alternate-keepalive": t("TXT_CODE_c42a1b9b")
+        },
+        "tps-catchup": t("TXT_CODE_b8c40ce0"),
+        "server-mod-name": t("TXT_CODE_b89285d3"),
+        "fix-projectile-looting-transfer": t("TXT_CODE_93afb039"),
+        "blast-resistance-overrides": t("TXT_CODE_7a318185"),
+        "clamp-attributes": t("TXT_CODE_fd9d9eeb"),
+        "limit-armor": t("TXT_CODE_8631c629"),
+        "username-valid-characters": t("TXT_CODE_f0de6bb8"),
+        "lagging-threshold": t("TXT_CODE_fe463ea3"),
+        "fix-network-serialized-items-in-creative": t("TXT_CODE_9c2250b7"),
+        "disable-give-dropping": t("TXT_CODE_51ff8e5b"),
+        "player-deaths-always-show-item": t("TXT_CODE_b36320e1"),
+        "register-minecraft-debug-commands": t("TXT_CODE_3ef08433"),
+        "startup-commands": t("TXT_CODE_4d8e959e"),
+        "bee-count-payload": t("TXT_CODE_5f1ae9ca"),
+        messages: {
+          "afk-broadcast-away": t("TXT_CODE_478717e2"),
+          "afk-broadcast-back": t("TXT_CODE_7dd469fa"),
+          "afk-broadcast-use-display-name": t("TXT_CODE_6546b287"),
+          "afk-tab-list-prefix": t("TXT_CODE_56c42793"),
+          "afk-tab-list-suffix": t("TXT_CODE_42a7759b"),
+          "cannot-ride-mob": t("TXT_CODE_4f21b52"),
+          "dont-run-with-scissors": t("TXT_CODE_f5689a76"),
+          "ping-command-output": t("TXT_CODE_669eb0ff"),
+          "uptime-command-output": t("TXT_CODE_57a3aae"),
+          "demo-command-output": t("TXT_CODE_53761955"),
+          "credits-command-output": t("TXT_CODE_c20e5d16"),
+          "tpsbar-command-output": t("TXT_CODE_a725a5b1"),
+          "ram-command-output": t("TXT_CODE_d42566ff"),
+          "rambar-command-output": t("TXT_CODE_fabfaadc"),
+          "unverified-username": t("TXT_CODE_39bb14c1"),
+          "sleep-skipping-night": t("TXT_CODE_87c5dcb4"),
+          "sleeping-players-percent": t("TXT_CODE_49c48e0a"),
+          "sleep-not-possible": t("TXT_CODE_1dc0000f"),
+          "death-message": {
+            stonecutter: t("TXT_CODE_16e2615"),
+            "run-with-scissors": t("TXT_CODE_53e8e5af"),
+          }
+        },
+        network: {
+          "kick-for-out-of-order-chat": t("TXT_CODE_d33e975f"),
+          "upnp-port-forwarding": t("TXT_CODE_d372d72"),
+          "max-joins-per-second": t("TXT_CODE_20d107f1")
+        },
+        blocks: {
+          barrel: {
+            rows: t("TXT_CODE_8cb5a1e6")
+          },
+          beehive: {
+            "max-bees-inside": t("TXT_CODE_249df6f2")
+          },
+          grindstone: {
+            "ignored-enchants": t("TXT_CODE_7a2b969f"),
+            "remove-attributes": t("TXT_CODE_c15dcfec"),
+            "remove-name-and-lore": t("TXT_CODE_f085ce38")
+          },
+          "ender_chest": {
+            "six-rows": t("TXT_CODE_c97dd046"),
+            "use-permissions-for-rows": t("TXT_CODE_3489786b")
+          },
+          "crying_obsidian": {
+            "valid-for-portal-frame": t("TXT_CODE_41ae3d88")
+          },
+          "twisting_vines": {
+            "max-growth-age": t("TXT_CODE_442c0649")
+          },
+          "weeping_vines": {
+            "max-growth-age": t("TXT_CODE_442c0649")
+          },
+          "cave_vines": {
+            "max-growth-age": t("TXT_CODE_442c0649")
+          },
+          "kelp": {
+            "max-growth-age": t("TXT_CODE_442c0649")
+          },
+          "anvil": {
+            "cumulative-cost": t("TXT_CODE_4a70853b")
+          },
+          "lightning_rod": {
+            range: t("TXT_CODE_b7f19227")
+          },
+          "magma-block": {
+            "reverse-bubble-column-flow": t("TXT_CODE_19140a89")
+          },
+          "soul-sand": {
+            "reverse-bubble-column-flow": t("TXT_CODE_76d59e8")
+          }
+        },
+        broadcasts: {
+          advancement: {
+            "only-broadcast-to-affected-player": t("TXT_CODE_5af5838a")
+          },
+          death: {
+            "only-broadcast-to-affected-player": t("TXT_CODE_93191a82")
+          }
+        },
+        logger: {
+          "suppress-init-legacy-material-errors": t("TXT_CODE_559f4b1d"),
+          "suppress-ignored-advancement-warnings": t("TXT_CODE_68928779"),
+          "supress-unrecognized-recipe-errors": t("TXT_CODE_4c82f760"),
+          "suppress-setblock-in-far-chunk-errors": t("TXT_CODE_4140aa4b"),
+          "supress-library-loader": t("TXT_CODE_6623dde0")
+        },
+        "food-properties": {
+          default: t("TXT_CODE_b1d19033")
+        },
+        entity: {
+          enderman: {
+            "short-height": t("TXT_CODE_7898c2b4")
+          }
+        },
+        enchantment: {
+          "allow-looting-on-shears": t("TXT_CODE_18de069c"),
+          "allow-unsafe-enchant-command": t("TXT_CODE_a1e4c720"),
+          "clamp-levels": t("TXT_CODE_9066472a"),
+          anvil: {
+            "allow-inapplicable-enchants": t("TXT_CODE_3579ab7d"),
+            "allow-incompatible-enchants": t("TXT_CODE_1cafa176"),
+            "allow-higher-enchants-levels": t("TXT_CODE_172c745e"),
+            "replace-incompatible-enchants": t("TXT_CODE_2415440f")
+          }
+        }
+      },
+      "world-settings": {
+        default: {
+          hunger: {
+            "starvation-damage": t("TXT_CODE_65a780a2")
+          },
+          settings: {
+            entity: {
+              "shared-random": t("TXT_CODE_42e25bc2")
+            }
+          },
+          blocks: {
+            anvil: {
+              "use-mini-message": t("TXT_CODE_4c566219"),
+              "allow-colors": t("TXT_CODE_69dbb08"),
+              "iron-ingots-used-for-repair": t("TXT_CODE_b329418"),
+              "obsidian-used-for-damage": t("TXT_CODE_1770c716")
+            },
+            azalea: {
+              "growth-chance": t("TXT_CODE_fe46ac12")
+            },
+            beacon: {
+              "allow-effects-with-tinted-glass": t("TXT_CODE_3da5e4e"),
+              "effect-range": {
+                "level-1": t("TXT_CODE_a48bdb09"),
+                "level-2": t("TXT_CODE_a48bdb09"),
+                "level-3": t("TXT_CODE_a48bdb09"),
+                "level-4": t("TXT_CODE_a48bdb09")
+              }
+            },
+            bed: {
+              explode: t("TXT_CODE_786e2280"),
+              "explode-on-villager-sleep": t("TXT_CODE_18b3d541"),
+              "explosion-power": t("TXT_CODE_d1509da0"),
+              "explosion-fire": t("TXT_CODE_3be23278"),
+              "explosion-effect": t("TXT_CODE_7e0b9953")
+            },
+            "big_dripleaf": {
+              "tilt-delay": {
+                FULL: t("TXT_CODE_2541ce4d"),
+                UNSTABLE: t("TXT_CODE_9e9c0179"),
+                PARTIAL: t("TXT_CODE_9e9c0179"),
+              }
+              },
+            "blue_ice": {
+              "allow-mob-spawns": t("TXT_CODE_e3116bba"),
+              "allow-snow-formation": t("TXT_CODE_66ac4611")
+            },
+            cactus: {
+              "breaks-from-solid-neighbors": t("TXT_CODE_1396f33c"),
+              "affected-by-bonemeal": t("TXT_CODE_bb35dc39")
+            },
+            campfire: {
+              "lit-when-placed": t("TXT_CODE_a9c9d05e")
+            },
+            cauldron: {
+              "fill-chances": {
+                rain: t("TXT_CODE_931e4c8"),
+                "powder-snow": t("TXT_CODE_beacbdc"),
+                "dripstone-water": t("TXT_CODE_5e56a7a5"),
+                "dripstone-lava": t("TXT_CODE_edd8458c")
+              }
+            },
+            chest: {
+              "open-with-solid-block-on-top": t("TXT_CODE_5d589988")
+            },
+            composter: {
+              "sneak-to-bulk-process": t("TXT_CODE_6ac327b4")
+            },
+            conduit: {
+              "valid-ring-blocks": t("TXT_CODE_6f9d4bb7"),
+              "effect-distance": t("TXT_CODE_3a24c7a3"),
+              "mob-damage": {
+                distance: t("TXT_CODE_dbc9b3e3"),
+                "damage-amount": t("TXT_CODE_abadb770")
+              }
+            },
+            coral: {
+              "die-outside-water": t("TXT_CODE_10efed7c")
+            },
+            dispenser: {
+              "apply-cursed-to-armor-slots": t("TXT_CODE_7b0b38e6"),
+              "place-anvils": t("TXT_CODE_d149e3e6")
+            },
+            door: {
+              "requires-redstone": t("TXT_CODE_8a7c57b9")
+            },
+            "dragon_egg": {
+              teleport: t("TXT_CODE_1348332a")
+            },
+            "enchantment-table": {
+              "lapis-persists": t("TXT_CODE_3a5c9779")
+            },
+            "end-crystal": {
+              "cramming-amount": t("TXT_CODE_7d28d924"),
+              baseless: {
+                explode: t("TXT_CODE_d8d6dca8"),
+                "explosion-power": t("TXT_CODE_f2168ca9"),
+                "explosion-fire": t("TXT_CODE_377a62dc"),
+                "explosion-effect": t("TXT_CODE_7e0b9953")
+              },
+              base: {
+                explode: t("TXT_CODE_d8d6dca8"),
+                "explosion-power": t("TXT_CODE_f2168ca9"),
+                "explosion-fire": t("TXT_CODE_377a62dc"),
+                "explosion-effect": t("TXT_CODE_7e0b9953")
+              }
+            },
+            farmland: {
+              "gets-moist-from-below": t("TXT_CODE_ab483b69"),
+              "use-alpha-farmland:": t("TXT_CODE_3a8fdbf1"),
+              "bypass-mob-griefing": t("TXT_CODE_e948602a"),
+              "only-players-trample": t("TXT_CODE_f309e464"),
+              "disable-trampling": t("TXT_CODE_ab90dc44"),
+              "trample-height": t("TXT_CODE_f287f6dd"),
+              "feather-fall-distance-affects-trampling": t("TXT_CODE_6526494a")
+            },
+            flowering_azalea: {
+              "growth-chance": t("TXT_CODE_35d52619")
+            },
+            furnace: {
+              "use-lava-from-underneath": t("TXT_CODE_72c8d0bf")
+            },
+            lava: {
+              "infinite-required-sources": t("TXT_CODE_22b5f37d"),
+              speed: {
+                nether: t("TXT_CODE_15c747a6"),
+                "not-nether": t("TXT_CODE_15c747a6")
+              }
+            },
+            "magma-block": {
+              "damage-when-sneaking": t("TXT_CODE_55c91a9b"),
+              "damage-with-frost-walker": t("TXT_CODE_5635dd6b")
+            },
+            "nether_wart": {
+              "affected-by-bonemeal": t("TXT_CODE_553c6ed2")
+            },
+            observer: {
+              "disable-clock": t("TXT_CODE_5ddf3123")
+            },
+            "packed_ice": {
+              "allow-mob-spawns": t("TXT_CODE_e9da0615")
+            },
+            piston: {
+              "block-push-limit": t("TXT_CODE_d15dc89c")
+            },
+            "powder_snow": {
+              "bypass-mob-griefing": t("TXT_CODE_9dc4ee75")
+            },
+            "powered-rail": {
+              "activation-range": t("TXT_CODE_b3581555")
+            },
+            "respawn_anchor": {
+              explode: t("TXT_CODE_99fab05d"),
+              "explosion-power": t("TXT_CODE_d1509da0"),
+              "explosion-fire": t("TXT_CODE_3be23278"),
+              "explosion-effect": t("TXT_CODE_7e0b9953")
+            },
+            "sculk_shrieker": {
+              "can-summon-default": t("TXT_CODE_99f8edf0")
+            },
+            "shulker_box": {
+              "allow-oversized-stacks": t("TXT_CODE_a8a375ae")
+            },
+            sign: {
+              "allow-colors": t("TXT_CODE_479389a")
+            },
+            slab: {
+             "break-individual-slabs-when-sneaking": t("TXT_CODE_2a370f1c")
+            },
+            spawner: {
+              "deactivate-by-redstone": t("TXT_CODE_a4efbd21"),
+              "fix-mc-238526": t("TXT_CODE_144caddf")
+            },
+            sponge: {
+              "absorbs-lava": t("TXT_CODE_b2e9a60"),
+              "absorbs-water-from-mud": t("TXT_CODE_d29be029"),
+              absorption: {
+                area: t("TXT_CODE_a3f8313f"),
+                radius: t("TXT_CODE_79ccdee0")
+              }
+            },
+            stonecutter: {
+              damage: t("TXT_CODE_e4895a21")
+            },
+            "sugar_cane": {
+              "affected-by-bonemeal": t("TXT_CODE_fe402f41")
+            },
+            "turtle_egg": {
+              "break-from-exp-orbs": t("TXT_CODE_a132c796"),
+              "break-from-items": t("TXT_CODE_b5253fae"),
+              "break-from-minecarts": t("TXT_CODE_a0a00fc0"),
+              "bypass-mob-griefing": t("TXT_CODE_3dee9250"),
+              "random-tick-crack-chance": t("TXT_CODE_849c3911"),
+              "feather-fall-distance-affects-trampling": t("TXT_CODE_6526494a")
+            },
+            water: {
+              "infinite-required-sources": t("TXT_CODE_3247f016")
+            }
+          },
+          mobs: {
+            allay: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_facd4d3c"),
+              "respect-nbt": t("TXT_CODE_5d488270"),
+              attributes: {
+                "max_health": t("TXT_CODE_ce4a3230"),
+                scale: t("TXT_CODE_2f87036a")
+              }
+            },
+            armadillo: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_ce4a3230"),
+                scale: t("TXT_CODE_2f87036a")
+              }
+            },
+            axolotl: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_ce4a3230"),
+                scale: t("TXT_CODE_2f87036a")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            bat: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              attributes: {
+                "follow_range": t("TXT_CODE_6f0a5984"),
+                "knockback_resistance": t("TXT_CODE_dd0a8173"),
+                "movement_speed": t("TXT_CODE_66b7b26e"),
+                "flying_speed": t("TXT_CODE_91ebfa75"),
+                armor: t("TXT_CODE_49ab8e74"),
+                "armor_toughness": t("TXT_CODE_37931fa9"),
+                "attack_knockback": t("TXT_CODE_ed510830"),
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            bee: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "can-work-at-night": t("TXT_CODE_67509ff2"),
+              "can-work-in-rain": t("TXT_CODE_ac0754f7"),
+              "dies-after-sting": t("TXT_CODE_9fd05002"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8"),
+            },
+            blaze: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "takes-damage-from-water": t("TXT_CODE_6cfeb776"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            bogged: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              }
+            },
+            camel: {
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                max_health: {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                jump_strength: {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                movement_speed: {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              }
+            },
+            cat: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "default-collar-color": t("TXT_CODE_dad61ed8"),
+              "spawn-delay": t("TXT_CODE_e14b32b"),
+              "scan-range-for-other-cats": {
+                "swamp-hut": t("TXT_CODE_fbe67333"),
+                village: t("TXT_CODE_fbe67333")
+              },
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            cave_spider: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            chicken: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              retaliate: t("TXT_CODE_11cba563"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            cod: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            cow: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "feed-mushrooms-for-mooshroom": t("TXT_CODE_1c6e2cd"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "naturally-aggressive-to-players": {
+                chance: t("TXT_CODE_96c02044"),
+                damage: t("TXT_CODE_7bcf35c1")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            creaking: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              }
+            },
+            creeper: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "encircle-target": t("TXT_CODE_deb2d85d"),
+              "allow-griefing": t("TXT_CODE_9535104c"),
+              "bypass-mob-griefing": t("TXT_CODE_57c09778"),
+              "naturally-charged-chance": t("TXT_CODE_6b1984c0"),
+              "explode-when-killed": t("TXT_CODE_95b08ec3"),
+              "health-impacts-explosion": t("TXT_CODE_f1ed28e6"),
+                attributes: {
+                  "max_health": t("TXT_CODE_e08dfec5"),
+                  scale: t("TXT_CODE_341bc7f3")
+                },
+              "head-visibility-percent": t("TXT_CODE_952c2697"),
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            dolphin: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "naturally-aggressive-to-players-chance": t("TXT_CODE_96c02044"),
+              "disable-treasure-searching": t("TXT_CODE_846683e4"),
+              spit: {
+                cooldown: t("TXT_CODE_154cd636"),
+                speed: t("TXT_CODE_7a464bb4"),
+                damage: t("TXT_CODE_342d5959")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            }, 
+            donkey: {
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            drowned: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "can-break-doors": t("TXT_CODE_eb5fe3b6"),
+              jockey: {
+                "only-babies": t("TXT_CODE_eefcc58b"),
+                chance: t("TXT_CODE_e29be84c"),
+                "try-existing-chickens": t("TXT_CODE_9e5eb2a")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "spawn_reinforcements": t("TXT_CODE_b18c34fd")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            elder_guardian: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            ender_dragon: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "always-drop-full-exp": t("TXT_CODE_77816ef3"),
+              "bypass-mob-griefing": t("TXT_CODE_a7813c72"),
+              "can-ride-vehicles": t("TXT_CODE_1b858414"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              }
+            },
+            enderman: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "allow-griefing": t("TXT_CODE_3816e0d9"),
+              "can-despawn-with-held-block": t("TXT_CODE_4b971ef4"),
+              "ignore-projectiles": t("TXT_CODE_3d07fa74"),
+              "bypass-mob-griefing": t("TXT_CODE_662ae77"),
+              "takes-damage-from-water": t("TXT_CODE_6cfeb776"),
+              "aggressive-towards-endermites": t("TXT_CODE_f8501690"),
+              "aggressive-towards-endermites-only-spawned-by-player-thrown-ender-pearls": t("TXT_CODE_7bdd0634"),
+              "ignore-players-wearing-dragon-head": t("TXT_CODE_193605ab"),
+              "disable-player-stare-aggression": t("TXT_CODE_fcb08d61"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            endermite: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            evoker: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_88f7082"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            fox: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "tulip-change-type": t("TXT_CODE_f728ba8"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "bypass-mob-griefing": t("TXT_CODE_1471ac98"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            frog: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "ridable-jump-height": t("TXT_CODE_c30a5f37"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843")
+            },
+            ghast: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            giant: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "step-height": t("TXT_CODE_66968dc0"),
+              "jump-height": t("TXT_CODE_a8f82885"),
+              "movement-speed": t("TXT_CODE_66b7b26e"),
+              "attack-damage": t("TXT_CODE_7f52e10d"),
+              "have-ai": t("TXT_CODE_e35de72b"),
+              "have-hostile-ai": t("TXT_CODE_7d81030f"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            glow_squid: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "can-fly": t("TXT_CODE_e95f3a9f"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            goat: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            guardian: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            hoglin: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            horse: {
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            husk: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              jokey: {
+                "only-babies": t("TXT_CODE_eefcc58b"),
+                chance: t("TXT_CODE_e29be84c"),
+                "try-existing-chickens": t("TXT_CODE_9e5eb2a")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "spawn_reinforcements": t("TXT_CODE_b18c34fd")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            illusioner: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_fc5c0e2e"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "naturally-spawn": t("TXT_CODE_ab4504ca"),
+              "movement-speed": t("TXT_CODE_66b7b26e"),
+              "follow-range": t("TXT_CODE_6f0a5984"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            iron_golem: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "healing-calms-anger": t("TXT_CODE_de1ece3c"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "can-spawn-in-air": t("TXT_CODE_8cba8d40"),
+              "can-swim": t("TXT_CODE_860e2ce"),
+              "poppy-calms-anger": t("TXT_CODE_8deb2054"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            llama: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"), 
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "join-caravans": t("TXT_CODE_ccc0fec7"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            magma_cube: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_20bf7fdd"),
+                "attack_damage": t("TXT_CODE_a1833a27"),
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            mooshroom: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            mule: {
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            ocelot: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "spawn-below-sea-level": t("TXT_CODE_f8bb9f10"),
+              "breeeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            panda: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            parrot: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "can-breed": t("TXT_CODE_a0a99beb"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            phantom: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "attacked-by-crystal-range": t("TXT_CODE_ab9f8bfb"),
+              "attacked-by-crystal-damage": t("TXT_CODE_772c4961"),
+              "orbit-crystal-radius": t("TXT_CODE_cc446b0c"),
+              "burn-in-light": t("TXT_CODE_43eedf83"),
+              "burn-in-daylight": t("TXT_CODE_ef1f63d2"),
+              "flames-on-swoop": t("TXT_CODE_3e4e61b3"),
+              "ignore-players-with-torch": t("TXT_CODE_46410888"),
+              "allow-griefing": t("TXT_CODE_c536b7c7"),
+              flames: {
+                damage: t("TXT_CODE_c91c29cd"),
+                "fire-time": t("TXT_CODE_cdbd12d2")
+              },
+              size: {
+                min: t("TXT_CODE_7b477c3"),
+                max: t("TXT_CODE_e9839f54")
+              },
+              spawn: {
+                "min-sky-darkness": t("TXT_CODE_3a51d817"),
+                "only-above-sea-level": t("TXT_CODE_67b57086"),
+                "only-with-visible-sky": t("TXT_CODE_e5d3b1a"),
+                "local-difficulty-chance": t("TXT_CODE_afde4995"),
+                "per-attempt": {
+                  min: t("TXT_CODE_dfaa82f3"),
+                  max: t("TXT_CODE_870b392e")
+                }
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "attack_damage": t("TXT_CODE_b0794aeb")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            pig: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "give-saddle-back": t("TXT_CODE_806441b5"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            piglin: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_20e4ab72"),
+              "portal-spawn-modifier": t("TXT_CODE_5020d183"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "head-visibility-percent": t("TXT_CODE_952c2697"),
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            piglin_brute: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            pillager: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_aae43e39"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            polar_bear: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breedable-item": t("TXT_CODE_c7952636"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_22c68314")
+            },
+            pufferfish: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            rabbit: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "spawn-killer-rabbit-chance": t("TXT_CODE_91a8d35c"),
+              "spawn-toast-chance": t("TXT_CODE_cff4286"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "bypass-mob-griefing": t("TXT_CODE_b5e19c1"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            ravager: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_e2be1e70"),
+              "griefable-blocks": t("TXT_CODE_c840ab37"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8"),
+              "avoid-rabbits": t("TXT_CODE_65e33205")
+            },
+            salmon: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            sheep: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "bypass-mob-griefing": t("TXT_CODE_95c65dc1"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            shulker: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "change-color-with-dye": t("TXT_CODE_1f62022c"),
+              "spawn-from-bullet": {
+                "base-cahnce": t("TXT_CODE_d0e78c58"),
+                "require-open-lid": t("TXT_CODE_58aa8491"),
+                "nearby-range": t("TXT_CODE_8259b3db"),
+                "nearby-equation": t("TXT_CODE_196d6257"),
+                "random-color": t("TXT_CODE_c51b86ff")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            silverfish: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_1c38439b"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "movement_speed": t("TXT_CODE_66b7b26e"),
+                "attack_damage": t("TXT_CODE_73c7b4b")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            skeleton: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "head-visibility-percent": t("TXT_CODE_952c2697"),
+              "always-drop-exp": t("TXT_CODE_c535fb8"),
+              "feed-wither-roses": t("TXT_CODE_9e33445e"),
+              "bow-accuracy": t("TXT_CODE_a3991784")
+            },
+            skeleton_horse: {
+              ridable: t("TXT_CODE_6c94f562"),
+              "can-swim": t("TXT_CODE_8aa7f7a0"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            slime: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              attributes: {
+                "max_health": t("TXT_CODE_20bf7fdd"),
+                "attack_damage": t("TXT_CODE_8cc8e9e2")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            sniffer: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "breeeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5")
+              }
+            },
+            snow_golem: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "leave-trail-when-ridden": t("TXT_CODE_2266908"),
+              "pumpkin-can-be-added-back": t("TXT_CODE_d9a5c0c2"),
+              "min-shoot-interval-ticks": t("TXT_CODE_b9af1460"),
+              "max-shoot-interval-ticks": t("TXT_CODE_3549ea82"),
+              "snow-ball-modifier": t("TXT_CODE_37658aab"),
+              "attack-distance": t("TXT_CODE_1732276b"),
+              "bypass-mob-griefing": t("TXT_CODE_238c4c01"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            spider: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            squid: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "immune-to-EAR": t("TXT_CODE_24c2172c"),
+              "water-offset-check": t("TXT_CODE_56197d09"),
+              "can-fly": t("TXT_CODE_e95f3a9f"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            stray: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            strider: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "give-saddle-back": t("TXT_CODE_7702d818"),
+              "breeeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            tadpole: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+            },
+            trader_llama: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_71f715e2"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            tropical_fish: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            turtle: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            vex: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            villager: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "bypass-mob-griefing": t("TXT_CODE_d572c313"),
+              "can-be-leashed": t("TXT_CODE_9d8e6107"),
+              "follow-emerald-blocks": t("TXT_CODE_4745436a"),
+              "allow-trading": t("TXT_CODE_e612a8a2"),
+              "display-trade-item": t("TXT_CODE_34100777"),
+              lobotomize: {
+                "enabled": t("TXT_CODE_e679197e"),
+                "check-interval": t("TXT_CODE_34999278"),
+                "wait-until-trade-locked": t("TXT_CODE_adcce2c7")
+              },
+              "minimum-demand": t("TXT_CODE_2f09a53c"),
+              "can-breed": t("TXT_CODE_e812e21d"),
+              "breeding-delay-ticks": t("TXT_CODE_f0127843"),
+              "clerics-farm-warts": t("TXT_CODE_743c6bf3"),
+              "cleric-wart-farmers-thow-warts-at-villagers": t("TXT_CODE_247f6613"),
+              "spawn-iron-golem": {
+                radius: t("TXT_CODE_2cfbaa90"),
+                limit: t("TXT_CODE_ed38c8ae")
+              },
+              "search-radius": {
+                "aquire-poi": t("TXT_CODE_5bba3e38"),
+                "nearest-bed-sensor": t("TXT_CODE_6ac61ca1")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_f6dacecc")
+            },
+            vindicator: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              johnny: {
+                "spawn-chance": t("TXT_CODE_877ef60c")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            wandering_trader: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "can-be-leashed": t("TXT_CODE_347ff81c"),
+              "allow-trading": t("TXT_CODE_c0fcee47"),
+              "follow-emerald-blocks": t("TXT_CODE_7d25f076"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            warden: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08")
+            },
+            witch: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            wither: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "ridable-max-y": t("TXT_CODE_3dbf8890"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "can-ride-vehicles": t("TXT_CODE_b0e39fd"),
+              "play-spawn-sound": t("TXT_CODE_6c945cf8"),
+              "explosion-radius": t("TXT_CODE_7f5ee413"),
+              "health-regen-amount": t("TXT_CODE_d3d88894"),
+              "health-regen-delay": t("TXT_CODE_233dd4f8"),
+              "bypass-mob-griefing": t("TXT_CODE_f6468fe8"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            wither_skeleton: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            wolf: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "milk-cures-rabid-wolves": t("TXT_CODE_7818efd1"),
+              "spawn-rabid-chancs": t("TXT_CODE_1c84154f"),
+              "default-collar-color": t("TXT_CODE_feaa97d4"),
+              "breeeding-delay-ticks": t("TXT_CODE_f0127843"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            zoglin: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            zombie: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              jockey: {
+                "only-babies": t("TXT_CODE_eefcc58b"),
+                chance: t("TXT_CODE_e29be84c"),
+                "try-existing-chickens": t("TXT_CODE_9e5eb2a")
+              },
+              "aggressive-towards-villager-when-lagging": t("TXT_CODE_e95ee23f"),
+              "bypass-mob-griefing": t("TXT_CODE_c709edac"),
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "spawn_reinforcements": t("TXT_CODE_b18c34fd")
+              },
+              "head-visibility-percent": t("TXT_CODE_952c2697"),
+              "always-drop-exp": t("TXT_CODE_c535fb8"),
+            },
+            zombie_horse: {
+              ridable: t("TXT_CODE_6c94f562"),
+              "can-swim": t("TXT_CODE_a1cc8b68"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "spawn-chance": t("TXT_CODE_4d5432bd"),
+              attributes: {
+                "max_health": {
+                  min: t("TXT_CODE_c9f303dd"),
+                  max: t("TXT_CODE_e08dfec5")
+                },
+                "jump_strength": {
+                  min: t("TXT_CODE_e1276b33"),
+                  max: t("TXT_CODE_87c20d47")
+                },
+                "movement_speed": {
+                  min: t("TXT_CODE_fff00e2b"),
+                  max: t("TXT_CODE_a8fe5e68")
+                }
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            zombie_villager: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              cure: t("TXT_CODE_83d5cbbe"),
+              "curing_time": {
+                min: t("TXT_CODE_382ec256"),
+                max: t("TXT_CODE_1a77954")
+              },
+              jockey: {
+                "only-babies": t("TXT_CODE_eefcc58b"),
+                chance: t("TXT_CODE_e29be84c"),
+                "try-existing-chickens": t("TXT_CODE_9e5eb2a")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "spawn_reinforcements": t("TXT_CODE_b18c34fd")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            },
+            zombified_piglin: {
+              ridable: t("TXT_CODE_6c94f562"),
+              controllable: t("TXT_CODE_4f64db47"),
+              "ridable-in-water": t("TXT_CODE_93610b08"),
+              "takes-damage-from-water": t("TXT_CODE_61700077"),
+              "count-as-player-kill-when-angry": t("TXT_CODE_31edf78"),
+              jockey: {
+                "only-babies": t("TXT_CODE_eefcc58b"),
+                chance: t("TXT_CODE_e29be84c"),
+                "try-existing-chickens": t("TXT_CODE_9e5eb2a")
+              },
+              attributes: {
+                "max_health": t("TXT_CODE_e08dfec5"),
+                scale: t("TXT_CODE_341bc7f3"),
+                "spawn_reinforcements": t("TXT_CODE_b18c34fd")
+              },
+              "always-drop-exp": t("TXT_CODE_c535fb8")
+            }
+          }
+        },
+        "gameplay-mechanics": {
+          "always-tame-in-creative": t("TXT_CODE_5d41afbf"),
+          "animal-breeding-cooldown-seconds": t("TXT_CODE_8504218"),
+          armorstand: {
+            "step-height": t("TXT_CODE_aa47f5ed"),
+            "set-name-visible-when-placing-with-custom-name": t("TXT_CODE_b1b30b86"),
+            "fix-nametags": t("TXT_CODE_4f2f381b"),
+            "place-with-arms-visible": t("TXT_CODE_1eea2726"),
+            "can-movement-tick": t("TXT_CODE_46ba576a"),
+            "can-move-in-water": t("TXT_CODE_81c2f4ae"),
+            "can-move-in-water-over-fence": t("TXT_CODE_bf6bec1a")
+          },
+          arrow: {
+            "movement-resets-despawn-counter": t("TXT_CODE_1a124d6")
+          },
+          boat: {
+            "eject-players-on-land": t("TXT_CODE_57358a8b"),
+            "do-fall-damage": t("TXT_CODE_c9d34339")
+          },
+          "clamp-explosion-radius": t("TXT_CODE_c59f077d"),
+            "daylight-cycle-ticks": {
+            daytime: t("TXT_CODE_3beb6e5c"),
+            nighttime: t("TXT_CODE_d928da57")
+          },
+          "disable-drops-on-cramming-death": t("TXT_CODE_f9c65693"),
+          "disable-oxidation-proximity-penalty": t("TXT_CODE_d245f00d"),
+          drowning: {
+            "air-ticks": t("TXT_CODE_6a826e8b"),
+            "ticks-per-damage": t("TXT_CODE_8be0e39b"),
+            "damage-from-drowning": t("TXT_CODE_d01532d")
+          },
+          elytra: {
+            "damage-per-second": t("TXT_CODE_ebc235d5"),
+            "damage-multiplied-by-speed": t("TXT_CODE_9651d0b3"),
+            "kinetic-damage": t("TXT_CODE_e5a52cee"),
+            "ignore-unbreaking": t("TXT_CODE_70fe20dd"),
+            "damage-per-boost": {
+              firework: t("TXT_CODE_eb9584d"),
+              trident: t("TXT_CODE_6ed13fd")
+            }
+          },
+          "entities-can-use-portals": t("TXT_CODE_e88884ba"),
+          "entities-pick-up-loot-bypass-mob-griefing": t("TXT_CODE_c132a726"),
+          "entity-blindness-multiplier": t("TXT_CODE_86076132"),
+          "entity-left-handed-chance": t("TXT_CODE_2a82b720"),
+          "entity-lifespan": t("TXT_CODE_3f810f66"),
+          "fireballs-bypass-mob-griefing": t("TXT_CODE_8a71a4d7"),
+          halloween: {
+            force: t("TXT_CODE_f0e6cbc"),
+            "head-chance": t("TXT_CODE_59f7c3a2")
+          },
+          "impose-teleport-restrictions-on-end-portals": t("TXT_CODE_448d08eb"),
+          "impose-teleport-restrictions-on-gateways": t("TXT_CODE_59976e2c"),
+          "impose-teleport-restrictions-on-nether-portals": t("TXT_CODE_8eb1ae3e"),
+          "infinity-bow": {
+            "works-without-arrows": t("TXT_CODE_f02ff9cc")
+          },
+          item: {
+            "end-crystal": {
+              "place-anywhere": t("TXT_CODE_74788d9e")
+            },
+            shears: {
+              "damage-if-sprinting": t("TXT_CODE_ef61e06a"),
+              "ignore-in-water": t("TXT_CODE_f9d92e18"),
+              "ignore-in-lava": t("TXT_CODE_1f600912"),
+              "sprinting-damage": t("TXT_CODE_1f991d"),
+              "defuse-tnt-chance": t("TXT_CODE_d47ff7e5")
+            },
+            snowball: {
+              extinguish: {
+                fire: t("TXT_CODE_53d04392"),
+                candles: t("TXT_CODE_88405298"),
+                campfires: t("TXT_CODE_4a9822f")
+              }
+            },
+            "shulker_box": {
+              "drop-contents-when-destroyed": t("TXT_CODE_d4dafc41")
+            },
+            compass: {
+              "holding-shows-bossbar": t("TXT_CODE_4126fc53")
+            },
+            "glow_berries": {
+              "eat-glow-duration": t("TXT_CODE_bea85b64")
+            },
+            "ender-pearl": {
+              damage: t("TXT_CODE_a7e1976"),
+              cooldown: t("TXT_CODE_f255aee0"),
+              "creative-cooldown": t("TXT_CODE_ebf479f2"),
+              "endermite-spawn-chance": t("TXT_CODE_4d3b4548")
+            },
+            immune: {
+              explosion: t("TXT_CODE_cdb213a3"),
+              fire: t("TXT_CODE_e3efef30"),
+              lightning: t("TXT_CODE_9aa1872c"),
+              cactus: t("TXT_CODE_a092b6f0")
+            }
+          },
+          "mending-multiplier": t("TXT_CODE_9c7f8eb8"),
+          "milk-clears-beneficial-effects": t("TXT_CODE_3f65b1f2"),
+          "milk-cures-bad-omen": t("TXT_CODE_e9cee11e"),
+          minecart: {
+            "max-speed": t("TXT_CODE_8638bb65"),
+            "place-anywhere": t("TXT_CODE_97b80a79"),
+            "powered-rail": {
+              "boost-modifier": t("TXT_CODE_da521b59")
+            },
+            controllable: {
+              enabled: t("TXT_CODE_99167cda"),
+              "fall-damage": t("TXT_CODE_79b77e31"),
+              "step-height": t("TXT_CODE_15e80e9d"),
+              "hop-boost": t("TXT_CODE_d2e3b565"),
+              "base-speed": t("TXT_CODE_837501b0"),
+              "block-speed": t("TXT_CODE_aaecb7ff")
+            }
+          },
+          "mob-effects": {
+            "health-regen-amount": t("TXT_CODE_2c19f3b2"),
+            "minimal-health-poison-amount": t("TXT_CODE_2c19f3b2"),
+            "poison-degeneration-amount": t("TXT_CODE_2c19f3b2"),
+            "wither-degeneration-amount": t("TXT_CODE_2c19f3b2"),
+            "hunger-exhaustion-amount": t("TXT_CODE_2c19f3b2"),
+            "saturation-regen-amount": t("TXT_CODE_2c19f3b2")
+          },
+          "mob-last-hurt-by-player-time": t("TXT_CODE_be769e64"),
+          "mob-spawning": {
+            "village-cats": t("TXT_CODE_6b313c"),
+            "raid-patrols:": t("TXT_CODE_6b313c"),
+            phantoms: t("TXT_CODE_6b313c"),
+            "wandering-traders": t("TXT_CODE_6b313c"),
+            "village-sieges": t("TXT_CODE_6b313c"),
+            "ignore-creative-players": t("TXT_CODE_1bc41425")
+          },
+          "mobs-ignore-rails": t("TXT_CODE_bd84e700"),
+          "note-block-ignore-above": t("TXT_CODE_b6ba38a4"),
+          "persistent-droppable-entity-display-names": t("TXT_CODE_bd0aa3c7"),
+          "persistent-tileentity-display-name": t("TXT_CODE_8bf86cbc"),
+          "persistent-tileentity-lore": t("TXT_CODE_5eb49cd"),
+          player: {
+            "exp-pickup-delay-ticks": t("TXT_CODE_bb729416"),
+            "shift-right-click-repairs-mending-points": t("TXT_CODE_d3ddefb5"),
+            "spawn-invulnerable-ticks": t("TXT_CODE_14688b70"),
+            "invulnerable-while-accepting-resource-pack": t("TXT_CODE_f0be5e98"),
+            "teleport-if-outside-border": t("TXT_CODE_db07cf9e"),
+            "teleport-on-nether-ceiling-damage": t("TXT_CODE_d6e124c1"),
+            "allow-void-trading": t("TXT_CODE_d73c037b"),
+            "totem-of-undying-works-in-inventory": t("TXT_CODE_b6d926ab"),
+            "ridable-in-water": t("TXT_CODE_aaba7ab8"),
+            "fix-stuck-in-portal": t("TXT_CODE_2fe6e00e"),
+            "one-punch-in-creative": t("TXT_CODE_fa301a5"),
+            "sleep-ignore-nearby-mobs": t("TXT_CODE_5b719d7b"),
+            "can-skip-night": t("TXT_CODE_11dd341b"),
+            "critical-damage-multiplier": t("TXT_CODE_3f59b48"),
+            "burp-when-full": t("TXT_CODE_116db655"),
+            "burp-delay": t("TXT_CODE_5e4c9793"),
+            "curse-of-binding": {
+              "remove-with-weakness": t("TXT_CODE_25023ad0")
+            },
+            "idle-timeout": {
+              "kick-if-idle": t("TXT_CODE_67b4d0ba"),
+              "tick-nearby-entities": t("TXT_CODE_7546cc5"),
+              "mobs-target": t("TXT_CODE_ec9dec9d"),
+              "count-as-sleeping": t("TXT_CODE_6d32ea04"),
+              "update-tab-list": t("TXT_CODE_b0ae5b42")
+            },
+            "exp-dropped-on-death": {
+              equation: t("TXT_CODE_9e090ff6"),
+              maximum: t("TXT_CODE_9095d186")
+            },
+            "netherite-fire-resistance": {
+              duration: t("TXT_CODE_f73a2ad2"),
+              amplifier: t("TXT_CODE_ac7a5f17"),
+              ambient: t("TXT_CODE_34148d2b"),
+              "show-particles": t("TXT_CODE_31c10b14"),
+              "show-icon": t("TXT_CODE_5aa330f0")
+            },
+            "projectile-damage": {
+              snowball: t("TXT_CODE_21077dc4")
+            }
+          },
+          "projectile-offset": {
+            bow: t("TXT_CODE_8c18a6ac"),
+            crossbow: t("TXT_CODE_1b7f826e"),
+            egg: t("TXT_CODE_4fb30d0a"),
+            "ender-pearl": t("TXT_CODE_abac12f6"),
+            "throwable-potion": t("TXT_CODE_195215f7"),
+            trident: t("TXT_CODE_afc104e0"),
+            snowball: t("TXT_CODE_7991f7b3")
+          },
+          "projectiles-bypass-mob-griefing": t("TXT_CODE_5936d79"),
+          "raid-cooldown-seconds": t("TXT_CODE_f801a9d2"),
+          "rain-stops-after-sleep": t("TXT_CODE_e576a340"),
+          "shovel-turns-block-to-grass-path": t("TXT_CODE_543356c1"),
+          "silk-touch": {
+            enabled: t("TXT_CODE_e9712ce1"),
+            "minimal-level": t("TXT_CODE_95d43994"),
+            tools: t("TXT_CODE_710a2e6c"),
+            "spawner-name": t("TXT_CODE_4b39143b"),
+            "spawner-lore": t("TXT_CODE_f773aaeb")
+          },
+          "thunder-stops-after-sleep": t("TXT_CODE_8677ef57"),
+          "tick-fluids": t("TXT_CODE_28013340"),
+          "trident-loyalty-void-return-height": t("TXT_CODE_f1f9ff1c"),
+          "use-better-mending": t("TXT_CODE_1d8746ed")
+        },
+        "ridable-settings": {
+          "babies-are-ridable": t("TXT_CODE_9fb9e6a8"),
+          "untamed-tamables-are-ridable": t("TXT_CODE_ae0e0126"),
+          "use-dismounts-underwater-tag": t("TXT_CODE_1f2d95eb"),
+          "use-night-vision": t("TXT_CODE_36622cee")
+        }
+      }
+    }
+  },
   "paper/paper-global.yml": {
     desc: t("TXT_CODE_ca500df8"),
     config: {
