@@ -20,6 +20,7 @@ export const TYPE_MINECRAFT_VELOCITY = "minecraft/java/velocity";
 export const TYPE_MINECRAFT_GEYSER = "minecraft/java/geyser";
 export const TYPE_MINECRAFT_SPONGE = "minecraft/java/sponge";
 export const TYPE_MINECRAFT_MOHIST = "minecraft/java/mohist";
+export const TYPE_MINECRAFT_PURPUR = "minecraft/java/purpur";
 export const TYPE_MINECRAFT_BEDROCK = "minecraft/bedrock";
 export const TYPE_MINECRAFT_BDS = "minecraft/bedrock/bds";
 export const TYPE_MINECRAFT_NUKKIT = "minecraft/bedrock/nukkit";
@@ -36,6 +37,7 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_MINECRAFT_PUFFERFISH]: t("TXT_CODE_c6d3bd8"),
   [TYPE_MINECRAFT_BUNGEECORD]: t("TXT_CODE_ba86f4a"),
   [TYPE_MINECRAFT_VELOCITY]: t("TXT_CODE_a3abb092"),
+  [TYPE_MINECRAFT_PURPUR]: t("TXT_CODE_e543f6c0"),
   [TYPE_MINECRAFT_BDS]: t("TXT_CODE_67b5f678"),
   [TYPE_MINECRAFT_SPONGE]: t("TXT_CODE_e4dbff32"),
   [TYPE_MINECRAFT_FORGE]: t("TXT_CODE_5112fcb2"),
@@ -183,6 +185,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_FORGE,
       TYPE_MINECRAFT_FABRIC,
       TYPE_MINECRAFT_SPONGE,
+      TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH
     ]
   },
@@ -199,6 +202,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_FABRIC,
       TYPE_MINECRAFT_SPONGE,
+      TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH
     ]
   },
@@ -213,6 +217,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_PAPER,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
+      TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH
     ]
   },
@@ -227,6 +232,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_PAPER,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
+      TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH
     ]
   },
@@ -276,7 +282,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_2931127f"),
     path: "config/paper-global.yml",
     redirect: "paper/paper-global.yml",
-    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH]
+    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH, TYPE_MINECRAFT_PURPUR]
   },
   {
     fileName: "[Paper] paper-world-defaults.yml",
@@ -284,7 +290,15 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_4880ef77"),
     path: "config/paper-world-defaults.yml",
     redirect: "paper/paper-world-defaults.yml",
-    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH]
+    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH, TYPE_MINECRAFT_PURPUR]
+  },
+  {
+    fileName: "[Purpur] pupur.yml",
+    type: "yml",
+    info: t("TXT_CODE_98e50717"),
+    path: "purpur.yml",
+    redirect: "purpur/purpur.yml",
+    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PURPUR]
   },
   {
     fileName: "[Pufferfish] pufferfish.yml",
