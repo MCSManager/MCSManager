@@ -101,7 +101,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   await SystemUser.initialize();
   await SystemRemoteService.initialize();
 
-  const app = new Koa();
+  const app = new Koa({
+    proxy: systemConfig?.reverseProxyMode || false,
+    proxyIpHeader: "X-Real-IP"
+  });
 
   // Listen for Koa errors
   app.on("error", (error) => {

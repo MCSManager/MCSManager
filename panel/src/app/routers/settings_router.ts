@@ -35,8 +35,10 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
     if (config.prefix != null) systemConfig.prefix = config.prefix;
-    if (config.reverseProxyMode != null)
+    if (config.reverseProxyMode != null) {
       systemConfig.reverseProxyMode = Boolean(config.reverseProxyMode);
+      ctx.app.proxy = systemConfig.reverseProxyMode;
+    }
     if (config.crossDomain != null) systemConfig.crossDomain = config.crossDomain;
     if (config.gzip != null) systemConfig.gzip = config.gzip;
     if (config.maxCompress != null) systemConfig.maxCompress = config.maxCompress;
