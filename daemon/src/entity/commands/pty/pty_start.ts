@@ -47,15 +47,23 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
     this.initNamedPipe();
   }
 
-  private initNamedPipe() {
-    const fd = fs.openSync(this.pipeName, "w");
-    const writePipe = fs.createWriteStream("", { fd });
-    writePipe.on("close", () => {});
-    writePipe.on("end", () => {});
-    writePipe.on("error", (err) => {
-      logger.error("Pipe error:", this.pipeName, err);
-    });
-    this.pipeClient = writePipe;
+  private async initNamedPipe() {
+    try {
+      const fd = await fs.open(this.pipeName, "w");
+      const writePipe = fs.createWriteStream("", { fd });
+      writePipe.on("close", () => {});
+      writePipe.on("end", () => {});
+      writePipe.on("error", (err) => {
+        logger.error("Pipe error:", this.pipeName, err);
+      });
+      this.pipeClient = writePipe;
+    } catch (error) {
+      throw new Error(
+        $t("TXT_CODE_9d1d244f", {
+          pipeName: error
+        })
+      );
+    }
   }
 
   public resize(w: number, h: number) {
