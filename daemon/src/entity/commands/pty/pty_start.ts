@@ -48,13 +48,6 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
   }
 
   private initNamedPipe() {
-    if (!fs.existsSync(this.pipeName)) {
-      throw new Error(
-        $t("TXT_CODE_9d1d244f", {
-          pipeName: this.pipeName
-        })
-      );
-    }
     const fd = fs.openSync(this.pipeName, "w");
     const writePipe = fs.createWriteStream("", { fd });
     writePipe.on("close", () => {});
