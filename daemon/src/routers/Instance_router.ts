@@ -61,9 +61,11 @@ routerApp.on("instance/select", (ctx, data) => {
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
 
-    const curInstanceTagText = v.config.tag.join(",");
-    if (searchTags.length > 0 && searchTags.some((v) => !curInstanceTagText.includes(v)))
-      return false;
+    if (searchTags.length > 0) {
+      const myTags = v.config.tag || [];
+      const res = myTags.filter((v) => searchTags.includes(v));
+      if (res.length === 0 || res.length !== searchTags.length) return false;
+    }
     return true;
   });
   result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));
