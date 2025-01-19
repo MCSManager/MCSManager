@@ -39,6 +39,9 @@ export default class FileManager {
 
   toAbsolutePath(fileName: string = "") {
     const topAbsolutePath = this.topPath;
+
+    if (path.normalize(fileName).indexOf(topAbsolutePath) === 0) return fileName;
+
     let finalPath = "";
     if (os.platform() === "win32") {
       const reg = new RegExp("^[A-Za-z]{1}:[\\\\/]{1}");
@@ -47,11 +50,8 @@ export default class FileManager {
       } else if (reg.test(fileName)) {
         finalPath = path.normalize(fileName);
       }
-    } else {
-      if (path.isAbsolute(fileName)) {
-        finalPath = path.normalize(fileName);
-      }
     }
+
     if (!finalPath) {
       finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
     }

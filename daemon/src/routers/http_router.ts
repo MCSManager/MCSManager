@@ -121,7 +121,7 @@ router.post("/upload/:key", async (ctx) => {
 
       if (unzip) {
         const instanceFiles = new FileManager(instance.absoluteCwdPath());
-        instanceFiles.unzip(fileSaveAbsolutePath, path.dirname(fileSaveAbsolutePath), zipCode);
+        instanceFiles.unzip(fileSaveAbsolutePath, ".", zipCode);
       }
       ctx.body = "OK";
       return;
