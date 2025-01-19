@@ -85,12 +85,7 @@ const isGlobalTerminal = computed(() => {
 const isDockerMode = computed(() => options.value?.config.processType === "docker");
 
 const loadImages = async () => {
-  // Init options
   dockerImages.value = [
-    {
-      label: t("TXT_CODE_3362d4b7"),
-      value: IMAGE_DEFINE.NEW
-    },
     {
       label: t("TXT_CODE_435f4975"),
       value: IMAGE_DEFINE.EDIT
@@ -269,7 +264,7 @@ defineExpose({
     v-model:open="open"
     centered
     :mask-closable="false"
-    :width="isPhone ? '100%' : '1600px'"
+    :width="isPhone ? '100%' : '1200px'"
     :title="t('TXT_CODE_aac98b2a')"
     :confirm-loading="isLoading"
     :ok-text="t('TXT_CODE_abfe9512')"
