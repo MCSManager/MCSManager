@@ -498,21 +498,6 @@ defineExpose({
               </a-form-item>
             </a-col>
 
-            <a-col :xs="24" :lg="16" :offset="0">
-              <a-form-item>
-                <a-typography-title :level="5">{{ t("TXT_CODE_81979d0f") }}</a-typography-title>
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
-                    {{ t("TXT_CODE_c800cb31") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <a-input
-                  v-model:value="options.config.docker.workingDir"
-                  :placeholder="t('TXT_CODE_2082f659')"
-                />
-              </a-form-item>
-            </a-col>
-
             <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item name="changeWorkdir">
                 <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
@@ -532,6 +517,21 @@ defineExpose({
                   <template #checkedChildren><check-outlined /></template>
                   <template #unCheckedChildren><close-outlined /></template>
                 </a-switch>
+              </a-form-item>
+            </a-col>
+
+            <a-col :xs="24" :lg="16" :offset="0">
+              <a-form-item>
+                <a-typography-title :level="5">{{ t("TXT_CODE_81979d0f") }}</a-typography-title>
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                    {{ t("TXT_CODE_c800cb31") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-input
+                  v-model:value="options.config.docker.workingDir"
+                  :placeholder="t('TXT_CODE_2082f659')"
+                />
               </a-form-item>
             </a-col>
 
