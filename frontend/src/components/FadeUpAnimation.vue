@@ -8,11 +8,11 @@ const beforeEnter = (el: any) => {
 };
 
 const enter = (el: any, done: () => void) => {
-  let delay = el.dataset.index * Number(props.delay ?? 200);
+  let delay = el.dataset.index * Number(props.delay ?? 100);
   setTimeout(() => {
-    el.style.transition = "opacity 0.4s";
+    el.style.transition = "opacity 0.2s";
     el.style.opacity = 1;
-    el.style.animation = "global-fade-up-animation 0.4s 1";
+    el.style.animation = "global-fade-up-animation 0.2s 1";
     done();
   }, delay);
 };
