@@ -68,9 +68,7 @@ export function loginSuccess(ctx: Koa.ParameterizedContext, userName: string) {
 }
 
 export function getLoginIp(ctx: Koa.ParameterizedContext) {
-  return systemConfig?.reverseProxyMode
-    ? toText(ctx.header["x-real-ip"])
-    : ctx.socket.remoteAddress;
+  return ctx.ip ?? "";
 }
 
 export async function bind2FA(ctx: Koa.ParameterizedContext) {
@@ -188,9 +186,7 @@ export function checkBanIp(ctx: Koa.ParameterizedContext) {
   // This IpMap also needs to be used when logging in
   const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
 
-  const ip =
-    (systemConfig?.reverseProxyMode ? toText(ctx.header["x-real-ip"]) : ctx.socket.remoteAddress) ||
-    "";
+  const ip = getLoginIp(ctx);
 
   if (ipMap[ip] > 10 && systemConfig?.loginCheckIp === true) {
     if (ipMap[ip] != 999) {
