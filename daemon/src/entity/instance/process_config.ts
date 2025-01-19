@@ -61,7 +61,7 @@ export class ProcessConfig {
       }
     }
     if (this.iProcessConfig.type === "json") {
-      text = JSON.stringify(object);
+      text = JSON.stringify(object, null, 4);
     }
     if (this.iProcessConfig.type === "txt") {
       text = object.toString();

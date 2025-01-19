@@ -282,7 +282,12 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_2931127f"),
     path: "config/paper-global.yml",
     redirect: "paper/paper-global.yml",
-    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH, TYPE_MINECRAFT_PURPUR]
+    category: [
+      TYPE_MINECRAFT_JAVA,
+      TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_PUFFERFISH,
+      TYPE_MINECRAFT_PURPUR
+    ]
   },
   {
     fileName: "[Paper] paper-world-defaults.yml",
@@ -290,7 +295,12 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_4880ef77"),
     path: "config/paper-world-defaults.yml",
     redirect: "paper/paper-world-defaults.yml",
-    category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_PAPER, TYPE_MINECRAFT_PUFFERFISH, TYPE_MINECRAFT_PURPUR]
+    category: [
+      TYPE_MINECRAFT_JAVA,
+      TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_PUFFERFISH,
+      TYPE_MINECRAFT_PURPUR
+    ]
   },
   {
     fileName: "[Purpur] pupur.yml",
@@ -334,7 +344,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   },
   {
     fileName: "[Tshock] config.json",
-    type: "yml",
+    type: "json",
     info: t("TXT_CODE_1cd8f9d2"),
     path: "tshock/config.json",
     redirect: "tshock/config.json",
