@@ -72,6 +72,9 @@ const handleSubmit = async () => {
             :label="t('TXT_CODE_c38813a8')"
             :rules="[{ required: true, message: t('TXT_CODE_2695488c') }]"
           >
+            <a-typography-paragraph type="secondary">
+              {{ t("TXT_CODE_b90e9abd") }}
+            </a-typography-paragraph>
             <a-input
               v-model:value="formData.username"
               name="mcsm-redeem-username"
@@ -93,9 +96,6 @@ const handleSubmit = async () => {
           </a-form-item>
           <div class="text-center flex justify-center">
             <div>
-              <a-typography-paragraph type="secondary">
-                {{ t("TXT_CODE_b90e9abd") }}
-              </a-typography-paragraph>
               <div class="flex justify-center">
                 <a-button
                   class="w-28"

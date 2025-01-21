@@ -75,6 +75,7 @@ export interface Settings {
   redisUrl: string;
   allowUsePreset: boolean;
   businessMode: boolean;
+  businessId: string;
 }
 
 export interface ImageInfo {
@@ -244,5 +245,6 @@ export interface PanelStatus {
     canFileManager: boolean;
     allowUsePreset: boolean;
     businessMode: boolean;
+    businessId: string;
   };
 }

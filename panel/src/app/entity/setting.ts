@@ -55,4 +55,6 @@ export default class SystemConfig {
   // to sell instances based on redeem
   // (this feature may not be available in some countries)
   businessMode = false;
+
+  businessId = "";
 }

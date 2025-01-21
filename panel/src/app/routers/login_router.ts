@@ -78,7 +78,8 @@ router.all(
       settings: {
         canFileManager: systemConfig?.canFileManager || false,
         allowUsePreset: systemConfig?.allowUsePreset || false,
-        businessMode: systemConfig?.businessMode || false
+        businessMode: systemConfig?.businessMode || false,
+        businessId: systemConfig?.businessId || null
       } as Partial<SystemConfig>
     };
   }

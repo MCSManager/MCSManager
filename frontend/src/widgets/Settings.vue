@@ -41,7 +41,7 @@ interface MySettings extends Settings {
   bgUrl?: string;
 }
 
-const ApacheLicense = `Copyright 2024 MCSManager Dev
+const ApacheLicense = `Copyright ${new Date().getFullYear()} MCSManager Dev
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -398,7 +398,10 @@ onMounted(async () => {
                         {{ t("TXT_CODE_e5b7522d") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value.prop="formData.canFileManager" style="max-width: 320px">
+                    <a-select
+                      v-model:value.prop="(formData as any).canFileManager"
+                      style="max-width: 320px"
+                    >
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -418,7 +421,10 @@ onMounted(async () => {
                         {{ t("TXT_CODE_f5f9664") }}
                       </a-typography-text>
                     </a-typography-paragraph>
-                    <a-select v-model:value.prop="formData.allowUsePreset" style="max-width: 320px">
+                    <a-select
+                      v-model:value.prop="(formData as any).allowUsePreset"
+                      style="max-width: 320px"
+                    >
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -439,7 +445,10 @@ onMounted(async () => {
                       </a-typography-text>
                     </a-typography-paragraph>
 
-                    <a-select v-model:value.prop="formData.crossDomain" style="max-width: 320px">
+                    <a-select
+                      v-model:value.prop="(formData as any).crossDomain"
+                      style="max-width: 320px"
+                    >
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -461,7 +470,7 @@ onMounted(async () => {
                     </a-typography-paragraph>
 
                     <a-select
-                      v-model:value.prop="formData.reverseProxyMode"
+                      v-model:value.prop="(formData as any).reverseProxyMode"
                       style="max-width: 320px"
                     >
                       <a-select-option
@@ -484,7 +493,10 @@ onMounted(async () => {
                       </a-typography-text>
                     </a-typography-paragraph>
 
-                    <a-select v-model:value.prop="formData.loginCheckIp" style="max-width: 320px">
+                    <a-select
+                      v-model:value.prop="(formData as any).loginCheckIp"
+                      style="max-width: 320px"
+                    >
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
@@ -527,7 +539,7 @@ onMounted(async () => {
                   <a-switch v-model:checked="formData.businessMode" @change="submit(false)" />
                 </div>
               </div>
-              <div>
+              <div class="mb-24">
                 <a-typography-paragraph>
                   <a-typography-title :level="5">
                     {{ t("TXT_CODE_d31196db") }}
@@ -537,14 +549,30 @@ onMounted(async () => {
                   </a-typography-text>
                 </a-typography-paragraph>
                 <div>
-                  <a-button
-                    type="primary"
-                    :disabled="!formData.businessMode"
-                    @click="gotoBusinessCenter()"
-                  >
+                  <a-button :disabled="!formData.businessMode" @click="gotoBusinessCenter()">
                     {{ t("TXT_CODE_2dbd3cd3") }}
                   </a-button>
                 </div>
+              </div>
+              <div v-if="formData.businessMode" class="mb-24">
+                <a-typography-paragraph>
+                  <a-typography-title :level="5">节点ID</a-typography-title>
+                  <a-typography-text type="secondary">
+                    在 “商家控制台 - 节点列表” 中可以找到节点ID
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <div>
+                  <a-input
+                    v-model:value="formData.businessId"
+                    style="max-width: 200px"
+                    placeholder="eg: 123"
+                  />
+                </div>
+              </div>
+              <div>
+                <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                  保存
+                </a-button>
               </div>
             </div>
           </template>

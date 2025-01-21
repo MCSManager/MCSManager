@@ -3,6 +3,7 @@ import { computed, onMounted, ref, type Ref } from "vue";
 import { queryUsername } from "./user";
 import { Modal } from "ant-design-vue";
 import { t } from "@/lang/i18n";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 
 export interface ShopItem {
   productId: number;
@@ -71,8 +72,9 @@ export const requestRedeemPlatform = useDefineApi<
 export function useShopInfo() {
   const config = requestRedeemPlatform();
   const isError = ref<Error>();
+  const { state: appState } = useAppStateStore();
 
-  onMounted(async () => {
+  const loadProducts = async (businessId?: string) => {
     try {
       isError.value = undefined;
       await config.execute({
@@ -80,18 +82,25 @@ export function useShopInfo() {
           targetUrl: "/api/instances/query_products",
           method: "GET",
           params: {
-            addr: CURRENT_PANEL_ADDR
+            addr: CURRENT_PANEL_ADDR,
+            businessId: businessId || appState.settings.businessId
           }
         }
       });
     } catch (error) {
       isError.value = error as Error;
     }
+  };
+
+  onMounted(async () => {
+    await loadProducts();
   });
 
   return {
     ...config,
     isError,
+    loadProducts,
+    isLoading: config.isLoading,
     state: config.state as Ref<ShopInfoResponse>,
     shopInfo: computed<ShopInfo>(() => config.state.value?.ispInfo),
     products: computed<ShopItem[]>(() => config.state.value?.products)
@@ -99,6 +108,7 @@ export function useShopInfo() {
 }
 
 export function useRedeem() {
+  const { state: appState } = useAppStateStore();
   const { execute, isLoading } = requestRedeemPlatform();
 
   const preCheckUsername = (username: string) => {
@@ -135,7 +145,7 @@ export function useRedeem() {
       data: {
         targetUrl: "/api/instances/use_redeem",
         method: "POST",
-        data: { code, username }
+        data: { code, username, businessId: appState.settings.businessId }
       }
     });
     return res.value as BuyInstanceResponse;
@@ -146,7 +156,7 @@ export function useRedeem() {
       data: {
         targetUrl: "/api/instances/use_redeem",
         method: "POST",
-        data: { code, instanceId, username }
+        data: { code, instanceId, username, businessId: appState.settings.businessId }
       }
     });
     return res.value as BuyInstanceResponse;
@@ -157,7 +167,7 @@ export function useRedeem() {
       data: {
         targetUrl: "/api/instances/purchase_history",
         method: "GET",
-        params: { code }
+        params: { code, businessId: appState.settings.businessId }
       }
     });
     return res.value as PurchaseQueryResponse;

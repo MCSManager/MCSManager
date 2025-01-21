@@ -8,7 +8,6 @@ import { t } from "@/lang/i18n";
 import { useShopInfo } from "@/services/apis/redeem";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
-
 defineProps<{
   card: LayoutCard;
 }>();
@@ -56,6 +55,7 @@ const openLoginPage = () => {
       <div v-if="isLoading">
         <Loading />
       </div>
+
       <div v-if="shopItems" class="shop-item-container">
         <div class="flex justify-end mb-20" style="gap: 10px">
           <a-button type="primary" @click="openDialog">
@@ -90,8 +90,8 @@ const openLoginPage = () => {
                   <div>
                     <div class="shelves-card-item-price-label">{{ t("TXT_CODE_4bf8a52f") }}</div>
                     <div>
-                      <span class="price-text"> {{ item.price }} </span
-                      ><span>/{{ t("TXT_CODE_6cb9bb04") }}</span>
+                      <span class="price-text"> {{ item.price }} </span>
+                      <span>/{{ t("TXT_CODE_6cb9bb04") }}</span>
                     </div>
                   </div>
                 </div>
