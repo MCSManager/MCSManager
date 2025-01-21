@@ -149,8 +149,7 @@ export default class PtyStartCommand extends AbsStartCommand {
       !instance.config.oe
     )
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
-    if (!fs.existsSync(instance.absoluteCwdPath()))
-      throw new StartupError($t("TXT_CODE_pty_start.cwdNotExist"));
+    if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
     if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))
       throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath"));
 

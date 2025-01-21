@@ -15,8 +15,7 @@ export default class DockerStartCommand extends AbsStartCommand {
   protected async createProcess(instance: Instance) {
     if (!instance.hasCwdPath() || !instance.config.ie || !instance.config.oe)
       throw new StartupDockerProcessError($t("TXT_CODE_a6424dcc"));
-    if (!fs.existsSync(instance.absoluteCwdPath()))
-      throw new StartupDockerProcessError($t("TXT_CODE_instance.dirNoE"));
+    if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
 
     // Docker Image check
     try {
