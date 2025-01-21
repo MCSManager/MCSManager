@@ -506,10 +506,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     getFileList();
   };
 
-  const handleSearchChange = () =>{
+  const handleSearchChange = () => {
     operationForm.value.current = 1;
     getFileList();
-  }
+  };
 
   const getFileStatus = async () => {
     const { state, execute } = getFileStatusApi();
@@ -601,6 +601,14 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     spinning.value = false;
   };
 
+  const isImage = (extName: string) => {
+    return ["JPG", "JPEG", "PNG", "GIF", "BMP", "WEBP", "ICO"].includes(extName.toUpperCase());
+  };
+
+  const showImage = (file: Record<string, any>) => {
+    if (!isImage(file.ext)) return;
+  };
+
   return {
     fileStatus,
     dialog,
@@ -637,6 +645,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     changePermission,
     toDisk,
     pushSelected,
-    oneSelected
+    oneSelected,
+    isImage,
+    showImage
   };
 };
