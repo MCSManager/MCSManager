@@ -127,28 +127,7 @@ export class SetupDockerContainer extends AsyncTask {
 
     if (workingDir) {
       instance.println("CONTAINER", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
-    } else {
-      instance.println("CONTAINER", $t("TXT_CODE_ffa884f9"));
     }
-
-    logger.info("----------------");
-    logger.info(`[SetupDockerContainer]`);
-    logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
-    logger.info(`NAME: [${containerName}]`);
-    logger.info(`COMMAND: ${commandList.join(" ")}`);
-    logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
-    logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
-    logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
-    logger.info(
-      `BINDS: ${JSON.stringify([
-        workingDir ? `${cwd} --> ${workingDir}` : "<Working directory not mounted>",
-        ...extraBinds
-      ])}`
-    );
-    logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
-    logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
-    logger.info(`TYPE: Docker Container`);
-    logger.info("----------------");
 
     const mounts: Docker.MountConfig =
       extraBinds.map((v) => {
@@ -164,9 +143,23 @@ export class SetupDockerContainer extends AsyncTask {
       mounts.push({
         Type: "bind",
         Source: cwd,
-        Target: workingDir
+        Target: instance.parseTextParams(workingDir)
       });
     }
+
+    logger.info("----------------");
+    logger.info(`[SetupDockerContainer]`);
+    logger.info(`UUID: [${instance.instanceUuid}] [${instance.config.nickname}]`);
+    logger.info(`NAME: [${containerName}]`);
+    logger.info(`COMMAND: ${commandList.join(" ")}`);
+    logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
+    logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
+    logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
+    logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
+    logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
+    logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
+    logger.info(`TYPE: Docker Container`);
+    logger.info("----------------");
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
@@ -207,7 +200,7 @@ export class SetupDockerContainer extends AsyncTask {
     await this.container.start();
 
     // Listen to events
-    this.container.wait(async (v) => {
+    this.container.wait(() => {
       this.stop();
     });
   }
