@@ -10,6 +10,7 @@ import UploadFileDialogVue from "./UploadFileDialog.vue";
 import TaskLoadingDialog from "./TaskLoadingDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
+import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -159,4 +160,15 @@ export async function openInstanceTagsEditor(
 
 export async function useDeleteInstanceDialog(instanceId: string, daemonId: string) {
   return await useMountComponent({ instanceId, daemonId }).mount<boolean>(DeleteInstanceDialog);
+}
+
+export async function useImageViewerDialog(
+  instanceId: string,
+  daemonId: string,
+  fileName: string,
+  frontDir: string
+) {
+  return await useMountComponent({ instanceId, daemonId, fileName, frontDir }).mount(
+    ImageViewerDialog
+  );
 }

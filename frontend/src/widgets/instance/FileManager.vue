@@ -192,12 +192,10 @@ const editFile = (fileName: string) => {
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 
-const handleClickFile = async (file: Record<string, any>) => {
+const handleClickFile = async (file: DataType) => {
   if (file.type === 0) return rowClickTable(file.name, file.type);
   const fileExtName = getFileExtName(file.name);
-
   if (isImage(fileExtName)) return showImage(file);
-
   return editFile(file.name);
 };
 
@@ -482,7 +480,7 @@ onUnmounted(() => {
                 :custom-row="
                   (record: DataType) => {
                     return {
-                      onContextmenu: (e: MouseEvent) => handleRightClickRow(e, record)
+                      onContextmenu: (e: MouseEvent) => handleRightClickRow(e, record as DataType)
                     };
                   }
                 "
@@ -493,7 +491,11 @@ onUnmounted(() => {
               >
                 <template #bodyCell="{ column, record }">
                   <template v-if="column.key === 'name'">
-                    <a-button type="link" class="file-name" @click="handleClickFile(record)">
+                    <a-button
+                      type="link"
+                      class="file-name"
+                      @click="handleClickFile(record as DataType)"
+                    >
                       <span class="mr-4">
                         <component
                           :is="getFileIcon(record.name, record.type)"
