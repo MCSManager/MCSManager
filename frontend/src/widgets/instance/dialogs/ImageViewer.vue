@@ -18,7 +18,7 @@ const isOpen = ref(true);
 const imgLink = ref("");
 const downloadBtnLoading = ref(false);
 
-const onOk = () => {
+const onClose = () => {
   isOpen.value = false;
   props.emitResult();
   props.destroyComponent();
@@ -37,17 +37,30 @@ onMounted(async () => {
 </script>
 
 <template>
-  <a-modal :visible="isOpen" :title="t('图片查看器')" @ok="onOk" @cancel="onOk">
-    <a-spin :spinning="!imgLink">
-      <a-image :src="imgLink" />
-    </a-spin>
+  <a-modal :visible="isOpen" :title="t('图像预览')" @ok="onClose" @cancel="onClose">
+    <div class="image-view">
+      <a-spin :spinning="!imgLink">
+        <a-image :src="imgLink" />
+      </a-spin>
+    </div>
+    <div class="image-name">
+      {{ props.fileName }}
+    </div>
     <template #footer>
-      <div class="justify-space-between">
-        <a-button :loading="downloadBtnLoading" @click="onDownload">下载</a-button>
-        <div class="right">
-          <a-button type="primary" @click="onOk">关闭</a-button>
-        </div>
-      </div>
+      <a-button @click="onClose">关闭</a-button>
+      <a-button type="primary" :loading="downloadBtnLoading" @click="onDownload"> 下载 </a-button>
     </template>
   </a-modal>
 </template>
+
+<style scoped>
+.image-view {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.image-name {
+  text-align: center;
+}
+</style>
