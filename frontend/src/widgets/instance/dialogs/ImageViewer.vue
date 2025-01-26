@@ -47,8 +47,10 @@ onMounted(async () => {
       {{ props.fileName }}
     </div>
     <template #footer>
-      <a-button @click="onClose">关闭</a-button>
-      <a-button type="primary" :loading="downloadBtnLoading" @click="onDownload"> 下载 </a-button>
+      <a-button @click="onClose">{{ t("关闭") }}</a-button>
+      <a-button type="primary" :loading="downloadBtnLoading" @click="onDownload">
+        {{ t("下载") }}
+      </a-button>
     </template>
   </a-modal>
 </template>
