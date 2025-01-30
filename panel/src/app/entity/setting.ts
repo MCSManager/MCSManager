@@ -58,3 +58,9 @@ export default class SystemConfig {
 
   businessId = "";
 }
+
+// @Entity
+export class EnvConfig {
+  sessionRedisUrl = "";
+  sessionKey = "";
+}

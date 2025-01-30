@@ -4,7 +4,7 @@ import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
-import { initSystemConfig, systemConfig } from "./app/setting";
+import { initEnvConfig, initSystemConfig, systemConfig,envConfig } from "./app/setting";
 import SystemUser from "./app/service/user_service";
 import SystemRemoteService from "./app/service/remote_service";
 import Koa from "koa";
@@ -12,6 +12,8 @@ import { v4 } from "uuid";
 import path from "path";
 import koaBody, { HttpMethodEnum } from "koa-body-patch";
 import session from "koa-session";
+import sessionRedis from "koa-generic-session";
+import Redis from "koa-redis";
 import koaStatic from "koa-static";
 import http from "http";
 import open from "open";
@@ -74,6 +76,7 @@ process.stdin.on("data", (v) => {
 async function main() {
   // load global configuration file
   initSystemConfig();
+  initEnvConfig();
 
   if (systemConfig && systemConfig?.redisUrl?.length != 0) {
     await RedisStorage.initialize(systemConfig.redisUrl);
@@ -133,22 +136,39 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     })
   );
 
-  app.keys = [v4()];
-  app.use(
-    session(
-      {
-        key: v4(),
-        maxAge: 86400000,
-        overwrite: true,
+  if (envConfig && envConfig?.sessionRedisUrl?.length != 0) {
+    app.keys = [envConfig.sessionKey];  //session的密码
+    app.use(sessionRedis({
+      key: 'mcsm.sid',          //浏览器 cookie 的名字
+      prefix: 'mcsm:sess:',     //redis key 的前缀
+      cookie: {
+        path: '/',
         httpOnly: true,
-        signed: true,
-        rolling: false,
-        renew: false,
-        secure: false
+        maxAge: 86400 * 1000,
+        sameSite: 'lax',
       },
-      app
-    )
-  );
+      store: Redis({         //redis的储存
+        all: envConfig.sessionRedisUrl
+      })
+    }))
+  }else{
+    app.keys = [v4()];
+    app.use(
+      session(
+        {
+          key: v4(),
+          maxAge: 86400000,
+          overwrite: true,
+          httpOnly: true,
+          signed: true,
+          rolling: false,
+          renew: false,
+          secure: false
+        },
+        app
+      )
+    );
+  }
 
   app.use(async (ctx, next) => {
     const ignoreUrls = ["/api/overview", "/api/files/status"];
