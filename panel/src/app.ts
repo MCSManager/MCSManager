@@ -12,9 +12,8 @@ import { v4 } from "uuid";
 import path from "path";
 import koaBody, { HttpMethodEnum } from "koa-body-patch";
 import session from "koa-session";
-import sessionRedis from "koa-generic-session";
-import Redis from "koa-redis";
 import koaStatic from "koa-static";
+import RedisStore from './app/common/storage/redis_session_store'
 import http from "http";
 import open from "open";
 import { fileLogger, logger } from "./app/service/log";
@@ -138,19 +137,20 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   if (envConfig && envConfig?.sessionRedisUrl?.length != 0) {
     app.keys = [envConfig.sessionKey];  //session的密码
-    app.use(sessionRedis({
-      key: 'mcsm.sid',          //浏览器 cookie 的名字
-      prefix: 'mcsm:sess:',     //redis key 的前缀
-      cookie: {
-        path: '/',
-        httpOnly: true,
-        maxAge: 86400 * 1000,
-        sameSite: 'lax',
-      },
-      store: Redis({         //redis的储存
-        all: envConfig.sessionRedisUrl
+    app.use(session({
+      key: 'mcsm.sid',
+      maxAge: 86400000,
+      overwrite: true,
+      httpOnly: true,
+      signed: true,
+      rolling: false,
+      renew: false,
+      secure: false,
+      store: new RedisStore({
+        url:envConfig.sessionRedisUrl,
+        prefix: "mcsm:sess:",
       })
-    }))
+    },app))
   }else{
     app.keys = [v4()];
     app.use(
