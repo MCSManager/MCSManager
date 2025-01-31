@@ -29,6 +29,7 @@ import type {
 } from "@/types/fileManager";
 import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
+import { useImageViewerDialog } from "@/components/fc";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -464,26 +465,32 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     }
   };
 
-  const downloadFile = async (fileName: string) => {
+  const getFileLink = async (fileName: string, frontDir?: string) => {
+    frontDir = frontDir || breadcrumbs[breadcrumbs.length - 1].path;
     const { state: downloadCfg, execute: getDownloadCfg } = downloadAddress();
+
     try {
       await getDownloadCfg({
         params: {
-          file_name: breadcrumbs[breadcrumbs.length - 1].path + fileName,
-          daemonId: daemonId!,
-          uuid: instanceId!
+          file_name: frontDir + fileName,
+          daemonId: daemonId || "",
+          uuid: instanceId || ""
         }
       });
-      if (!downloadCfg.value) throw new Error(t("TXT_CODE_6d772765"));
-      window.open(
-        `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
-          downloadCfg.value.password
-        }/${fileName}`
-      );
+      if (!downloadCfg.value) return null;
+      return `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
+        downloadCfg.value.password
+      }/${fileName}`;
     } catch (err: any) {
       console.error(err);
       return reportErrorMsg(err.message);
     }
+  };
+
+  const downloadFile = async (fileName: string) => {
+    const link = await getFileLink(fileName);
+    if (!link) throw new Error(t("TXT_CODE_6d772765"));
+    window.open(link);
   };
 
   const handleChangeDir = async (dir: string) => {
@@ -506,10 +513,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     getFileList();
   };
 
-  const handleSearchChange = () =>{
+  const handleSearchChange = () => {
     operationForm.value.current = 1;
     getFileList();
-  }
+  };
 
   const getFileStatus = async () => {
     const { state, execute } = getFileStatusApi();
@@ -601,6 +608,16 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     spinning.value = false;
   };
 
+  const isImage = (extName: string) => {
+    if (!extName) return;
+    return ["JPG", "JPEG", "PNG", "GIF", "BMP", "WEBP", "ICO"].includes(extName.toUpperCase());
+  };
+
+  const showImage = (file: DataType) => {
+    const frontDir = breadcrumbs[breadcrumbs.length - 1].path;
+    useImageViewerDialog(instanceId || "", daemonId || "", file.name, frontDir);
+  };
+
   return {
     fileStatus,
     dialog,
@@ -630,6 +647,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectedFile,
     rowClickTable,
     downloadFile,
+    getFileLink,
     handleChangeDir,
     handleTableChange,
     handleSearchChange,
@@ -637,6 +655,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     changePermission,
     toDisk,
     pushSelected,
-    oneSelected
+    oneSelected,
+    isImage,
+    showImage
   };
 };
