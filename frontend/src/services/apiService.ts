@@ -128,9 +128,16 @@ class ApiService {
 
   private throwRequestError(reqId?: string, error?: any) {
     if (!(error instanceof Error)) error = new Error(error);
-
     if (reqId) {
       this.event.emit(reqId, error);
+
+      //login Expire
+      if(String(error).includes('[Forbidden]')){
+        const { state } = useAppStateStore();
+        if(state.router?.currentRoute?.path!="/login"){
+          state.router.replace({path:'/login'})
+        }
+      }
     } else {
       throw error;
     }

@@ -22,6 +22,8 @@ import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 import { removeTrail } from "common";
 
+export let COOKIE_KEY = ''
+
 function hasParams(name: string) {
   return process.argv.includes(name);
 }
@@ -137,14 +139,15 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   if (envConfig && envConfig?.sessionRedisUrl?.length != 0) {
     app.keys = [envConfig.sessionKey];  //session的密码
+    COOKIE_KEY = 'mcsm.sid'
     app.use(session({
-      key: 'mcsm.sid',
+      key: COOKIE_KEY,
       maxAge: 86400000,
       overwrite: true,
       httpOnly: true,
       signed: true,
       rolling: false,
-      renew: false,
+      renew: true,
       secure: false,
       store: new RedisStore({
         url:envConfig.sessionRedisUrl,
@@ -153,10 +156,11 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     },app))
   }else{
     app.keys = [v4()];
+    COOKIE_KEY = v4()
     app.use(
       session(
         {
-          key: v4(),
+          key: COOKIE_KEY,
           maxAge: 86400000,
           overwrite: true,
           httpOnly: true,

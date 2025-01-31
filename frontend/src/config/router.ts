@@ -5,6 +5,7 @@ import LoginPage from "@/views/Login.vue";
 import InstallPage from "@/views/Install.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 
+
 export interface RouterMetaInfo {
   icon?: string;
   mainMenu?: boolean;
@@ -319,5 +320,8 @@ router.beforeEach((to, from, next) => {
     next("/404");
   }
 });
+
+const { updateRouter } = useAppStateStore();
+updateRouter(router)
 
 export { originRouterConfig, router };

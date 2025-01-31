@@ -1,7 +1,6 @@
 // global configuration initialization
 
-import SystemConfig from "./entity/setting";
-import {EnvConfig} from "./entity/setting";
+import SystemConfig,{ EnvConfig } from "./entity/setting";
 import StorageSystem from "./common/system_storage";
 import { i18next } from "./i18n";
 let systemConfig: SystemConfig | null = null;
@@ -18,7 +17,7 @@ export function initSystemConfig() {
 }
 
 export function initEnvConfig() {
-  envConfig = StorageSystem.load("EnvConfig", envConfig, "config");
+  envConfig = StorageSystem.load("EnvConfig", EnvConfig, "config");
   if (!envConfig) {
     envConfig = new EnvConfig();
     StorageSystem.store("EnvConfig", "config", envConfig);

@@ -8,6 +8,7 @@ import { systemConfig } from "../setting";
 import { logger } from "./log";
 import { User } from "../entity/user";
 import { $t } from "../i18n";
+import { COOKIE_KEY } from "../../app";
 
 export const BAN_IP_COUNT = "banip";
 export const LOGIN_FAILED_KEY = "loginFailed";
@@ -102,12 +103,18 @@ export function check(ctx: Koa.ParameterizedContext) {
 
 export function logout(ctx: Koa.ParameterizedContext): boolean {
   if (!ctx.session) return false;
-  ctx.session["login"] = null;
-  ctx.session["userName"] = null;
-  ctx.session["uuid"] = null;
-  ctx.session["token"] = null;
-  ctx.session.maxAge = 0;
-  ctx.session.save();
+  ctx.session = null
+  // 清除cookie
+  ctx.cookies.set(COOKIE_KEY, null, {
+    expires: new Date(0),
+    httpOnly: true
+  });
+  if (ctx.sessionStore) {
+    ctx.sessionStore.destroy(ctx.sessionId);
+  }
+
+  // ctx.session.maxAge = 0;
+  // ctx.session.save();
   return true;
 }
 

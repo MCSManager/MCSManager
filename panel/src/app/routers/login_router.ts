@@ -25,7 +25,13 @@ router.post(
     const passWord = String(ctx.request.body.password);
     const code = String(ctx.request.body.code);
     if (!checkBanIp(ctx)) throw new Error($t("TXT_CODE_router.login.ban"));
-    if (check(ctx)) return (ctx.body = "Logined");
+    // 现在已允许重复登陆
+    if (check(ctx)){
+      //return (ctx.body = "Logined");
+      logout(ctx)
+      ctx.body = "LOG_OUTED";
+      return;
+    }
     try {
       ctx.body = login(ctx, userName, passWord, code);
     } catch (error: any) {

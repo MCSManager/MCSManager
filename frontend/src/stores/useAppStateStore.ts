@@ -8,6 +8,7 @@ import type { PanelStatus } from "@/types";
 
 interface AppStateInfo extends PanelStatus {
   userInfo: LoginUserInfo | null;
+  router: any;
 }
 
 export const useAppStateStore = createGlobalState(() => {
@@ -15,6 +16,7 @@ export const useAppStateStore = createGlobalState(() => {
 
   const state: AppStateInfo = reactive<AppStateInfo>({
     userInfo: null,
+    router: null,
     isInstall: true,
     versionChange: false,
     language: "en_us",
@@ -70,10 +72,15 @@ export const useAppStateStore = createGlobalState(() => {
     console.info("Panel Language:", state.language);
   };
 
+  const updateRouter = async (router?: any) => {
+      state.router = router;
+  };
+
   return {
     cloneState,
     updateUserInfo,
     updatePanelStatus,
+    updateRouter,
     isAdmin,
     isLogged,
     state

@@ -17,11 +17,23 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import { markdownToHTML } from "@/tools/safe";
 import { message } from "ant-design-vue";
+import { useRoute } from "vue-router";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
 
+const route = useRoute()
+
 onMounted(async () => {
   await execute();
+  if(route.query.rdt){ //自动重定向 url参数rdt
+    rdt.value=String(route.query.rdt)
+  }
+  if(route.query.usr){ //自动登陆 url参数usr和pwd
+    formData.username=String(route.query.usr)
+    formData.password=String(route.query.pwd)
+    await router.replace({ ...route, query: {} })
+    await handleLogin()
+  }
 });
 const props = defineProps<{
   card?: LayoutCard;
@@ -38,6 +50,7 @@ const { updateUserInfo, isAdmin, state: appConfig } = useAppStateStore();
 
 const loginStep = ref(0);
 const is2Fa = ref(false);
+const rdt = ref('');
 
 const handleLogin = async () => {
   if (!formData.username.trim() || !formData.password.trim()) {
@@ -52,6 +65,11 @@ const handleLogin = async () => {
     if (result.value === "NEED_2FA") {
       loginStep.value = 0;
       is2Fa.value = true;
+      return;
+    }
+    if (result.value === "LOG_OUTED") {
+      loginStep.value = 0;
+      await handleLogin()
       return;
     }
     is2Fa.value = false;
@@ -81,12 +99,16 @@ const handleNext = async () => {
 
 const loginSuccess = () => {
   loginStep.value++;
-  if (isAdmin.value) {
-    router.push({
-      path: "/"
-    });
-  } else {
-    router.push({ path: "/customer" });
+  if(rdt.value!=''){
+    location.href=rdt.value
+  }else{
+    if (isAdmin.value) {
+      router.push({
+        path: "/"
+      });
+    } else {
+      router.push({ path: "/customer" });
+    }
   }
 };
 
