@@ -16,7 +16,7 @@
 
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
 
-[English](README.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
+[English](README.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md)
 
 </div>
