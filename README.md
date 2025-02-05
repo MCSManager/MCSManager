@@ -221,4 +221,4 @@ Thanks to these contributors for providing a substantial amount of translation:
 
 The source code of MCSManager is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) License.
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

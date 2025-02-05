@@ -202,4 +202,4 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ソースコードは、 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)ライセンス使っています。
 
-Copyright ©2024 MCSManager.x
+Copyright ©2025 MCSManager.

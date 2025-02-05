@@ -196,4 +196,4 @@ Gracias a estos colaboradores por proporcionar una gran cantidad de traducciones
 ## Licencia
 El código fuente de MCSManager está licenciado bajo la [Licencia Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

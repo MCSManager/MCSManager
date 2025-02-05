@@ -215,4 +215,4 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 原始碼遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 協定。
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

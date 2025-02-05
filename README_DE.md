@@ -221,4 +221,4 @@ Vielen Dank an diese Mitwirkenden für die Bereitstellung einer beträchtlichen 
 
 Der Quellcode von MCSManager ist unter der [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) Lizenz lizenziert.
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.
