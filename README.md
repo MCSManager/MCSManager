@@ -16,7 +16,7 @@
 
 [Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) |
+[简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md)
 
 </div>
@@ -27,7 +27,7 @@
 
 **MCSManager Panel** (MCSM) is a **modern, secure, and distributed control panel** designed for managing Minecraft and Steam game servers.
 
-MCSManager has already gained a certain level of popularity within the community, specifically Minecraft. MCSManager excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, We are committed to supporting server administrators not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
+MCSManager has already gained a certain level of popularity within the community, specifically because of Minecraft. MCSManager excels in offering a centralized management solution for multiple server instances and provides a secure and reliable multi-user permission system. In addition, we are committed to support server administrators, not only for Minecraft but also for Terraria and various Steam games. Our goal is to foster a thriving and supportive community for game server management.
 
 MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
 
@@ -48,10 +48,10 @@ MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Si
 1. One-click deployment of `Minecraft` Java/Bedrock Server
 2. Compatible with most `Steam` game servers. (e.g. `Palworld`, `Squad`, `Project Zomboid`, `Terraria`, etc.)
 3. Customizable UI, create your own layout
-4. Supports all images on `Docker Hub`, supports multiple users, and supports commercial services!
+4. Supports all images on `Docker Hub`, supports multiple users and supports commercial services!
 5. Manage multiple servers with a single web interface
-6. The technology stack is simple, and you only need to be good at Typescript to complete the entire MCSManager development
-7. More...
+6. The technology stack is simple, and you only need to be good at Typescript to complete the entire MCSManager development.
+7. And More!
 
 <br />
 
@@ -59,7 +59,7 @@ MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Si
 
 MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and some libraries **for decompression**.
 
-Require [Node.js 16.20.2](https://nodejs.org/en) or above.
+Requires [Node.js 16.20.2](https://nodejs.org/en) or above.
 
 <br />
 
@@ -67,7 +67,7 @@ Require [Node.js 16.20.2](https://nodejs.org/en) or above.
 
 ### Windows
 
-For Windows, We provides packaged executable files:
+For Windows, we provide packaged executable files:
 
 Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
@@ -77,7 +77,7 @@ Go to: [https://mcsmanager.com/](https://mcsmanager.com/)
 
 **One-Command Deployment**
 
-> Script needs to register system services, it requires root permissions.
+> The script needs to register system services and requires root permissions because of that.
 
 ```bash
 sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
@@ -97,7 +97,7 @@ systemctl stop mcsm-{web,daemon}
 
 **Linux Manual Installation**
 
-- If the installation script failed to execute correctly, you can try install it manually.
+- If the installation script fails to execute correctly, you can try to install it manually.
 
 ```bash
 # Create /opt directory if not already
@@ -221,4 +221,4 @@ Thanks to these contributors for providing a substantial amount of translation:
 
 The source code of MCSManager is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) License.
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

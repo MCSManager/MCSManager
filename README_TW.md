@@ -16,7 +16,7 @@
 
 [官方網站](http://mcsmanager.com/) | [教學說明](https://docs.mcsmanager.com/#/zh-cn/) | [TG 群組](https://t.me/MCSManager_dev) | [成為贊助者](https://afdian.net/a/mcsmanager)
 
-[English](README.md) | [简体中文](README_ZH.md) | [Português BR](README_PTBR.md) |
+[English](README.md) | [简体中文](README_ZH.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md)
 
 </div>
@@ -215,4 +215,4 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 原始碼遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 協定。
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

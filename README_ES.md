@@ -16,7 +16,7 @@
 
 [Sitio Oficial](http://mcsmanager.com/) | [Documentación](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[Inglés](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Português BR](README_PTBR.md) | [日本語](README_JP.md)
+[Inglés](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [日本語](README_JP.md)
 </div>
 
 <br />
@@ -196,4 +196,4 @@ Gracias a estos colaboradores por proporcionar una gran cantidad de traducciones
 ## Licencia
 El código fuente de MCSManager está licenciado bajo la [Licencia Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.

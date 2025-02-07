@@ -16,7 +16,7 @@
 
 [Website Oficial](http://mcsmanager.com/) | [Documentação](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | 
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md)
 
 </div>
@@ -201,4 +201,4 @@ Agradecemos aos seguintes colaboradores por fornecerem uma quantidade substancia
 
 O código-fonte do MCSManager é licenciado sob a Licença [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright ©2024 MCSManager.
+Copyright ©2025 MCSManager.
