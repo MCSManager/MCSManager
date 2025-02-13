@@ -21,7 +21,7 @@ function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
 }
 
 // Failed callback
-function verificationFailed(ctx: Koa.ParameterizedContext) {
+export function verificationFailed(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
   ctx.body = `[Forbidden] ${$t("TXT_CODE_permission.forbidden")}`;
 }
