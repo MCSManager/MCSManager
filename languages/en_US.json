@@ -2549,5 +2549,7 @@
   "TXT_CODE_2e660675": "A list of entities to ignore for activation",
   "TXT_CODE_779553fb": "Web Service token",
   "TXT_CODE_ae566b56": "Optimizes the suffocation check by selectively skipping the check in a way that still appears vanilla. This should be left enabled on most servers, but is provided as a configuration option if the vanilla deviation is undesirable.",
-  "TXT_CODE_c6d3bd8": "MC Pufferfish"
+  "TXT_CODE_c6d3bd8": "MC Pufferfish",
+  "TXT_CODE_eee2a47f": "Image preview",
+  "TXT_CODE_66f38b2e": "Normal users can only modify part of the settings"
 }

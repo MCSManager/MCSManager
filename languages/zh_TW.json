@@ -2039,5 +2039,7 @@
   "TXT_CODE_2e660675": "啟動時要忽略的實體清單",
   "TXT_CODE_779553fb": "網路服務權杖",
   "TXT_CODE_ae566b56": "透過選擇性地跳過檢查來改善窒息檢查。大多數伺服器都建議使用，但如果不希望出現誤差時可關閉。",
-  "TXT_CODE_c6d3bd8": "MC Pufferfish"
+  "TXT_CODE_c6d3bd8": "MC Pufferfish",
+  "TXT_CODE_eee2a47f": "圖像預覽",
+  "TXT_CODE_66f38b2e": "普通用戶僅可修改部分設置"
 }

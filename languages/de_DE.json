@@ -2549,5 +2549,7 @@
   "TXT_CODE_195215f7": "Der Projektilversatz eines Wurftranks",
   "TXT_CODE_196d6257": "Die Gleichung, die zur Berechnung eines Shulkers verwendet werden soll, der aus einer Kugel spawnt (nahe ist die Anzahl der Shulker-Entitäten in der Nähe). Lassen Sie dieses Feld leer, um immer zu spawnen, wenn ein Shulker in der Nähe ist",
   "TXT_CODE_1a124d6": "Wenn Sie dies auf „false“ setzen, wird verhindert, dass Pfeile auf unbestimmte Zeit am Leben bleiben (z. B. wenn der Block, in dem der Pfeil steckt, entfernt wird, wie z. B. ein Kolbenkopf, der sich nach oben/unten bewegt).",
-  "TXT_CODE_1a77954": "Die maximale Anzahl an Ticks, die bei der Heiliung von Zombie-Dorfbewohnern zufällig ausgewählt werden."
+  "TXT_CODE_1a77954": "Die maximale Anzahl an Ticks, die bei der Heiliung von Zombie-Dorfbewohnern zufällig ausgewählt werden.",
+  "TXT_CODE_eee2a47f": "Bildvorschau",
+  "TXT_CODE_66f38b2e": "Normale Benutzer können nur einen Teil der Einstellungen ändern"
 }
