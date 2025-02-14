@@ -15,7 +15,6 @@ import instanceRouter from "./routers/instance_admin_router";
 import userInstanceRouter from "./routers/instance_operate_router";
 import serviceRouter from "./routers/daemon_router";
 import filemanager_router from "./routers/filemananger_router";
-import businessInstanceRouter from "./routers/business_instance_router";
 import businessUserRouter from "./routers/manage_user_router";
 import scheduleRouter from "./routers/schedule_router";
 import environmentRouter from "./routers/environment_router";
@@ -28,7 +27,6 @@ export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   apiRouter.use(instanceRouter.routes()).use(instanceRouter.allowedMethods());
   apiRouter.use(serviceRouter.routes()).use(serviceRouter.allowedMethods());
   apiRouter.use(filemanager_router.routes()).use(filemanager_router.allowedMethods());
-  apiRouter.use(businessInstanceRouter.routes()).use(businessInstanceRouter.allowedMethods());
   apiRouter.use(businessUserRouter.routes()).use(businessUserRouter.allowedMethods());
   apiRouter.use(loginRouter.routes()).use(loginRouter.allowedMethods());
   apiRouter.use(lowUserRouter.routes()).use(lowUserRouter.allowedMethods());

@@ -19,12 +19,17 @@ import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { TYPE_MINECRAFT_JAVA, TYPE_STEAM_SERVER_UNIVERSAL, useInstanceInfo } from "@/hooks/useInstance";
+import {
+  TYPE_MINECRAFT_JAVA,
+  TYPE_STEAM_SERVER_UNIVERSAL,
+  useInstanceInfo
+} from "@/hooks/useInstance";
 import TermConfig from "./dialogs/TermConfig.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import RconSettings from "./dialogs/RconSettings.vue";
 import InstanceDetail from "./dialogs/InstanceDetail.vue";
+import InstanceFundamentalDetail from "./dialogs/InstanceFundamentalDetail.vue";
 import type { RouteLocationPathRaw } from "vue-router";
 import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
 import McPingSettings from "./dialogs/McPingSettings.vue";
@@ -36,6 +41,7 @@ const mcSettingsDialog = ref<InstanceType<typeof McPingSettings>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetail>>();
+const instanceFundamentalDetailDialog = ref<InstanceType<typeof InstanceFundamentalDetail>>();
 
 const { toPage: toOtherPager } = useAppRouters();
 
@@ -119,7 +125,8 @@ const btns = computed(() => {
       click: () => {
         rconSettingsDialog.value?.openDialog();
       },
-      condition: () => instanceInfo.value?.config.type.includes(TYPE_STEAM_SERVER_UNIVERSAL) ?? false
+      condition: () =>
+        instanceInfo.value?.config.type.includes(TYPE_STEAM_SERVER_UNIVERSAL) ?? false
     },
     {
       title: t("TXT_CODE_d23631cb"),
@@ -149,13 +156,20 @@ const btns = computed(() => {
         eventConfigDialog.value?.openDialog();
       }
     },
-
     {
       title: t("TXT_CODE_4f34fc28"),
       icon: AppstoreAddOutlined,
       condition: () => isAdmin.value,
       click: () => {
         instanceDetailsDialog.value?.openDialog();
+      }
+    },
+    {
+      title: t("TXT_CODE_4f34fc28"),
+      icon: AppstoreAddOutlined,
+      condition: () => !isAdmin.value,
+      click: () => {
+        instanceFundamentalDetailDialog.value?.openDialog();
       }
     }
   ]);
@@ -216,6 +230,14 @@ const btns = computed(() => {
 
   <InstanceDetail
     ref="instanceDetailsDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <InstanceFundamentalDetail
+    ref="instanceFundamentalDetailDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"

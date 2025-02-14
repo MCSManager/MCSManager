@@ -37,7 +37,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <a-modal :visible="isOpen" :title="t('图像预览')" @ok="onClose" @cancel="onClose">
+  <a-modal :visible="isOpen" :title="t('TXT_CODE_eee2a47f')" @ok="onClose" @cancel="onClose">
     <div class="image-view">
       <a-spin :spinning="!imgLink">
         <a-image :src="imgLink" />
@@ -47,9 +47,9 @@ onMounted(async () => {
       {{ props.fileName }}
     </div>
     <template #footer>
-      <a-button @click="onClose">{{ t("关闭") }}</a-button>
+      <a-button @click="onClose">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       <a-button type="primary" :loading="downloadBtnLoading" @click="onDownload">
-        {{ t("下载") }}
+        {{ t("TXT_CODE_65b21404") }}
       </a-button>
     </template>
   </a-modal>
