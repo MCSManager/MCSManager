@@ -80,7 +80,7 @@ router.all(
         allowUsePreset: systemConfig?.allowUsePreset || false,
         businessMode: systemConfig?.businessMode || false,
         businessId: systemConfig?.businessId || null,
-        allowEditCmdOnDocker: systemConfig?.allowEditCmdOnDocker || false
+        allowChangeCmd: systemConfig?.allowChangeCmd || false
       } as Partial<SystemConfig>
     };
   }

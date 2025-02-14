@@ -397,7 +397,7 @@ onMounted(async () => {
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select
-                      v-model:value.prop="(formData as any).allowEditCmdOnDocker"
+                      v-model:value.prop="(formData as any).allowChangeCmd"
                       style="max-width: 320px"
                     >
                       <a-select-option

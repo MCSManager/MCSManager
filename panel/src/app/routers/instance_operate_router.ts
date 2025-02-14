@@ -444,7 +444,7 @@ router.put(
 
         if (
           instance.config.processType === "docker" &&
-          !systemConfig?.allowEditCmdOnDocker &&
+          !systemConfig?.allowChangeCmd &&
           !hasPermission
         )
           return verificationFailed(ctx);

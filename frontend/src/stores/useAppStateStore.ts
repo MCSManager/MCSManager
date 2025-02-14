@@ -23,7 +23,7 @@ export const useAppStateStore = createGlobalState(() => {
       allowUsePreset: false,
       businessMode: false,
       businessId: "",
-      allowEditCmdOnDocker: false
+      allowChangeCmd: false
     }
   });
 
