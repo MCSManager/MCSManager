@@ -76,6 +76,7 @@ export interface Settings {
   allowUsePreset: boolean;
   businessMode: boolean;
   businessId: string;
+  allowEditCmdOnDocker: boolean;
 }
 
 export interface ImageInfo {
@@ -246,5 +247,6 @@ export interface PanelStatus {
     allowUsePreset: boolean;
     businessMode: boolean;
     businessId: string;
+    allowEditCmdOnDocker: boolean;
   };
 }
