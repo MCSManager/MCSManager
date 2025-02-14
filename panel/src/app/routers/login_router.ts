@@ -79,7 +79,8 @@ router.all(
         canFileManager: systemConfig?.canFileManager || false,
         allowUsePreset: systemConfig?.allowUsePreset || false,
         businessMode: systemConfig?.businessMode || false,
-        businessId: systemConfig?.businessId || null
+        businessId: systemConfig?.businessId || null,
+        allowChangeCmd: systemConfig?.allowChangeCmd || false
       } as Partial<SystemConfig>
     };
   }

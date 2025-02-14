@@ -167,7 +167,10 @@ const btns = computed(() => {
     {
       title: t("TXT_CODE_4f34fc28"),
       icon: AppstoreAddOutlined,
-      condition: () => !isAdmin.value,
+      condition: () =>
+        !isAdmin.value &&
+        instanceInfo.value?.config.processType === "docker" &&
+        state.settings.allowChangeCmd,
       click: () => {
         instanceFundamentalDetailDialog.value?.openDialog();
       }

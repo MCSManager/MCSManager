@@ -22,7 +22,8 @@ export const useAppStateStore = createGlobalState(() => {
       canFileManager: false,
       allowUsePreset: false,
       businessMode: false,
-      businessId: ""
+      businessId: "",
+      allowChangeCmd: false
     }
   });
 

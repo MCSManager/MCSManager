@@ -431,13 +431,24 @@ router.put(
         instanceUuid
       });
 
+      const isCmdChanged = (cmd: string | null, instanceCmd: string) => cmd !== instanceCmd;
+      const hasPermission = isTopPermissionByUuid(getUserUuid(ctx));
+
       if (
         (startCommand || updateCommand) &&
-        instance.config.processType !== "docker" &&
-        (startCommand !== instance.config.startCommand ||
-          updateCommand !== instance.config.updateCommand)
-      )
-        return verificationFailed(ctx);
+        isCmdChanged(startCommand, instance.config.startCommand) &&
+        isCmdChanged(updateCommand, instance.config.updateCommand)
+      ) {
+        if (instance.config.processType !== "docker" && !hasPermission)
+          return verificationFailed(ctx);
+
+        if (
+          instance.config.processType === "docker" &&
+          !systemConfig?.allowChangeCmd &&
+          !hasPermission
+        )
+          return verificationFailed(ctx);
+      }
 
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
