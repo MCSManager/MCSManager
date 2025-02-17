@@ -35,3 +35,8 @@ export function reportErrorMsg(error: any = {}) {
 }
 
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x00-\x7F]{9,36}$/;
+
+export function isLocalNetworkIP(ip: string): boolean {
+  const localNetworks = [/^10\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./, /^192\.168\./];
+  return localNetworks.some((pattern) => pattern.test(ip));
+}

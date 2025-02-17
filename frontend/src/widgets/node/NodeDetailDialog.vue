@@ -2,9 +2,9 @@
 import { ref, computed, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
-import { message, type FormInstance } from "ant-design-vue";
+import { message, Modal, type FormInstance } from "ant-design-vue";
 import { type RemoteNodeDetail } from "@/hooks/useRemoteNode";
-import { reportErrorMsg } from "@/tools/validator";
+import { reportErrorMsg, isLocalNetworkIP } from "@/tools/validator";
 
 const { addNode, deleteNode, updateNode } = useRemoteNode();
 
@@ -75,6 +75,16 @@ const dialog = reactive({
   submit: async () => {
     try {
       await dialog.check();
+      if (isLocalNetworkIP(dialog.data.ip)) {
+        await new Promise<void>((resolve) => {
+          Modal.confirm({
+            title: t("你正使用私有 IP 地址"),
+            content: t("使用公网地址访问面板时该节点可能无法正常工作"),
+            okText: t("确认"),
+            onOk: () => resolve()
+          });
+        });
+      }
       dialog.loading = true;
       if (editMode.value) {
         await updateNode(dialog.uuid, dialog.data);
