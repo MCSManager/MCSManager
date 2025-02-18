@@ -10,6 +10,7 @@ import type { FormInstance } from "ant-design-vue";
 import CopyButton from "@/components/CopyButton.vue";
 import { bind2FA } from "../services/apis/user";
 import { PERMISSION_MAP } from "@/config/const";
+import { toCopy } from "@/tools/copy";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -176,7 +177,6 @@ const disable2FACode = async () => {
             </a-button>
           </div>
         </a-form-item>
-
         <a-form-item label="APIKEY">
           <a-typography-paragraph>
             {{ t("TXT_CODE_b2dbf778") }}
