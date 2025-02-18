@@ -579,9 +579,9 @@ onMounted(async () => {
               </div>
               <div v-if="formData.businessMode" class="mb-24">
                 <a-typography-paragraph>
-                  <a-typography-title :level="5">节点ID</a-typography-title>
+                  <a-typography-title :level="5">{{ t("TXT_CODE_72cfab69") }}</a-typography-title>
                   <a-typography-text type="secondary">
-                    在 “商家控制台 - 节点列表” 中可以找到节点ID
+                    {{ t("TXT_CODE_678164d7") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <div>
@@ -594,7 +594,7 @@ onMounted(async () => {
               </div>
               <div>
                 <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
-                  保存
+                  {{ t("TXT_CODE_abfe9512") }}
                 </a-button>
               </div>
             </div>
