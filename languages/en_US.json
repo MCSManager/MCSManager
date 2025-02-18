@@ -2553,5 +2553,8 @@
   "TXT_CODE_eee2a47f": "Image preview",
   "TXT_CODE_66f38b2e": "Normal users can only modify part of the settings",
   "TXT_CODE_a583cae4": "Allow normal users to edit the startup command",
-  "TXT_CODE_bfbdf579": "This feature allows normal users to edit the 'start' and 'update' commands of Docker instances"
+  "TXT_CODE_bfbdf579": "This feature allows normal users to edit the 'start' and 'update' commands of Docker instances",
+  "TXT_CODE_36cae384": "You are using a private IP address",
+  "TXT_CODE_ea6e5e5e": "This node may not work properly when accessing the panel using a public IP address",
+  "TXT_CODE_1cbe2507": "Confirm"
 }

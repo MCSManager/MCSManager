@@ -2024,5 +2024,8 @@
   "TXT_CODE_eee2a47f": "图像预览",
   "TXT_CODE_66f38b2e": "普通用户仅可修改部分设置",
   "TXT_CODE_a583cae4": "准许普通用户编辑启动命令",
-  "TXT_CODE_bfbdf579": "该功能允许普通用户编辑 Docker 实例的“启动”和“更新”命令"
+  "TXT_CODE_bfbdf579": "该功能允许普通用户编辑 Docker 实例的“启动”和“更新”命令",
+  "TXT_CODE_36cae384": "你正使用私有 IP 地址",
+  "TXT_CODE_ea6e5e5e": "使用公网地址访问面板时该节点可能无法正常工作",
+  "TXT_CODE_1cbe2507": "确认"
 }
