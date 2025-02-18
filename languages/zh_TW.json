@@ -1996,7 +1996,7 @@
   "TXT_CODE_ef27fda1": "售後渠道：",
   "TXT_CODE_ec0b25f5": "您可以將此畫面位址複製給網路上的其他人，使用者無須登入即可瀏覽此畫面。",
   "TXT_CODE_e5bf0df1": "暫時無法取得商家資訊，可能伺服器正在維護中，請稍候再嘗試！",
-  "TXT_CODE_4ef3f800": "如果您是商家，請留言在 https://redeem.mcsmanager.com 或官網的公告以獲得協助。",
+  "TXT_CODE_4ef3f800": "如果您是商家，請留意在 https://redeem.mcsmanager.com 或官網的公告以獲得協助。",
   "TXT_CODE_aa43b248": "進入控制台",
   "TXT_CODE_4770de17": "商家資訊",
   "TXT_CODE_381f8f22": "商品列表",
@@ -2040,6 +2040,8 @@
   "TXT_CODE_779553fb": "網路服務權杖",
   "TXT_CODE_ae566b56": "透過選擇性地跳過檢查來改善窒息檢查。大多數伺服器都建議使用，但如果不希望出現誤差時可關閉。",
   "TXT_CODE_c6d3bd8": "MC Pufferfish",
-  "TXT_CODE_eee2a47f": "圖像預覽",
-  "TXT_CODE_66f38b2e": "普通用戶僅可修改部分設置"
+  "TXT_CODE_eee2a47f": "圖片預覽",
+  "TXT_CODE_66f38b2e": "使用者只能修改部分設定",
+  "TXT_CODE_a583cae4": "允許使用者編輯啟動指令",
+  "TXT_CODE_bfbdf579": "該功能允許使用者編輯 Docker 伺服器的「啟動」和「更新」指令"
 }

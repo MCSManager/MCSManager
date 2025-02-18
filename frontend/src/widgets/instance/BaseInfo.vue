@@ -158,9 +158,13 @@ onMounted(async () => {
         </span>
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <a-typography-text> {{ t("TXT_CODE_30051f9b") }} </a-typography-text>
+        <a-typography-text :title="instanceInfo?.instanceUuid">
+          {{ t("TXT_CODE_30051f9b") }}
+        </a-typography-text>
         <a-typography-text :copyable="{ text: instanceInfo?.instanceUuid }"> </a-typography-text>
-        <a-typography-text class="ml-20"> {{ t("TXT_CODE_5f2d2e30") }} </a-typography-text>
+        <a-typography-text class="ml-20" :title="daemonId">
+          {{ t("TXT_CODE_5f2d2e30") }}
+        </a-typography-text>
         <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
     </template>

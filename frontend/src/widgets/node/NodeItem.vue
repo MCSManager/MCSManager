@@ -228,7 +228,7 @@ onMounted(() => {
             :span="6"
           >
             <a-typography-paragraph>
-              <div>
+              <div :title="detail.onlyCopy ? detail.value : ''">
                 {{ detail.title }}
               </div>
 
