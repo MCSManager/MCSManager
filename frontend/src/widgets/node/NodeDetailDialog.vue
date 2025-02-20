@@ -80,7 +80,7 @@ const dialog = reactive({
           Modal.confirm({
             title: t("TXT_CODE_36cae384"),
             content: t("TXT_CODE_ea6e5e5e"),
-            okText: t("TXT_CODE_1cbe2507"),
+            okText: t("TXT_CODE_d507abff"),
             onOk: () => resolve()
           });
         });

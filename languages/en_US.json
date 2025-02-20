@@ -2556,5 +2556,5 @@
   "TXT_CODE_bfbdf579": "This feature allows normal users to edit the 'start' and 'update' commands of Docker instances",
   "TXT_CODE_36cae384": "You are using a private IP address",
   "TXT_CODE_ea6e5e5e": "This node may not work properly when accessing the panel using a public IP address",
-  "TXT_CODE_1cbe2507": "Confirm"
+  "TXT_CODE_678164d7": "You can find the node ID in the 'Node List' section of the merchant console"
 }
