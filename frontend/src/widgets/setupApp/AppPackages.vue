@@ -5,8 +5,9 @@ import { quickInstallListAddr } from "@/services/apis/instance";
 import type { QuickStartPackages } from "@/types";
 import { reportErrorMsg } from "@/tools/validator";
 import { Modal } from "ant-design-vue";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import Loading from "@/components/Loading.vue";
+import type { SelectValue } from "ant-design-vue/es/select";
 
 const emit = defineEmits<{
   handleSelectTemplate: [item: QuickStartPackages];
@@ -22,6 +23,7 @@ const ALL_LANG_KEY = "all";
 const searchForm = reactive({
   language: isCN() ? getCurrentLang() : "en_us"
 });
+const selectedPackage = ref<QuickStartPackages>();
 
 const appList = computed(() => {
   // For MCSManager v9
@@ -78,6 +80,18 @@ const init = async () => {
     console.error(err.message);
     return reportErrorMsg(err.message);
   }
+  selectedPackage.value = appList.value[0];
+};
+const onClick = () => {
+  console.log("Selected package: ", selectedPackage.value);
+  if (!selectedPackage.value) {
+    return;
+  }
+  emit("handleSelectTemplate", selectedPackage.value);
+};
+const onChange = (value: SelectValue) => {
+  selectedPackage.value = appList.value.find((item) => item.targetLink === value);
+  console.log("Selected package: ", selectedPackage.value);
 };
 
 defineExpose({
@@ -110,71 +124,47 @@ onMounted(() => {
         </a-form-item>
       </a-form>
     </a-col>
-    <fade-up-animation>
-      <a-col
-        v-for="item in appList"
-        :key="item.targetLink + item.title"
-        :span="24"
-        :xl="6"
-        :lg="8"
-        :sm="12"
+    <a-col :span="24">
+      <a-card
+        v-if="selectedPackage"
+        :bordered="true"
       >
-        <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
-          <CardPanel style="flex-grow: 1">
-            <template #title>
-              <div class="ellipsis-text" style="max-width: 280px">
-                {{ item.title }}
-              </div>
-            </template>
-            <template #body>
-              <div style="min-height: 120px; position: relative">
-                <a-typography-paragraph
-                  :ellipsis="{ rows: 3, expandable: true }"
-                  :content="item.description"
-                >
-                </a-typography-paragraph>
-                <a-typography-paragraph>
-                  <a-typography-text class="color-info">
-                    <div v-if="item.runtime">{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
-                    <div v-if="item.hardware">
-                      {{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}
-                    </div>
-                    <div v-if="item.size">{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
-                  </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                </a-typography-paragraph>
-              </div>
-
-              <div
-                style="
-                  position: absolute;
-                  bottom: 0;
-                  left: 0;
-                  right: 0;
-                  display: flex;
-                  justify-content: center;
-                "
-              >
-                <a-button
-                  block
-                  type="primary"
-                  ghost
-                  style="max-width: 120px"
-                  @click="emit('handleSelectTemplate', item)"
-                >
-                  <template #icon>
-                    <DownloadOutlined />
-                  </template>
-                  <span>{{ t("TXT_CODE_1704ea49") }}</span>
-                </a-button>
-              </div>
-            </template>
-          </CardPanel>
-        </div>
-      </a-col>
-    </fade-up-animation>
+        <a-select
+          show-search
+          :default-value="appList.length > 0 ? appList[0].targetLink : ''"
+          style="width: 100%"
+          @change="onChange"
+        >
+          <a-select-option v-for="item in appList" :key="item.targetLink + item.title" :value="item.targetLink">
+            {{ item.title }}
+          </a-select-option>
+        </a-select>
+        <template #actions>
+          <a-space direction="vertical">
+            <a-col style="display: block; margin-bottom: 8px;">
+              <span style="color: white;">{{ selectedPackage.description }}</span>
+            </a-col>
+            <a-col>
+              <a-tag color="red">{{ selectedPackage.size }}</a-tag>
+              <a-tag color="blue">{{ selectedPackage.runtime }}</a-tag>
+              <a-tag color="green">{{ selectedPackage.hardware }}</a-tag>
+              <a-tag color="orange">{{ selectedPackage.language }}</a-tag>
+            </a-col>
+          </a-space>
+        </template>
+      </a-card>
+    </a-col>
+    <a-col :span="24">
+      <a-button
+        block
+        type="primary"
+        @click="onClick"
+      >
+        <template #icon>
+          <DownloadOutlined />
+        </template>
+        <span>{{ t("TXT_CODE_1704ea49") }}</span>
+      </a-button>
+    </a-col>
   </a-row>
 </template>
