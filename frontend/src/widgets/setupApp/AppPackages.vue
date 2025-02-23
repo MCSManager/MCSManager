@@ -125,20 +125,21 @@ onMounted(() => {
       </a-form>
     </a-col>
     <a-col :span="24">
+      <a-select
+        show-search
+        :default-value="appList.length > 0 ? appList[0].targetLink : ''"
+        style="width: 100%"
+        @change="onChange"
+      >
+        <a-select-option v-for="item in appList" :key="item.targetLink + item.title" :value="item.targetLink">
+          {{ item.title }}
+        </a-select-option>
+      </a-select>
+    </a-col>
+    <a-col :span="24">
       <a-card
         v-if="selectedPackage"
-        :bordered="true"
       >
-        <a-select
-          show-search
-          :default-value="appList.length > 0 ? appList[0].targetLink : ''"
-          style="width: 100%"
-          @change="onChange"
-        >
-          <a-select-option v-for="item in appList" :key="item.targetLink + item.title" :value="item.targetLink">
-            {{ item.title }}
-          </a-select-option>
-        </a-select>
         <template #actions>
           <a-space direction="vertical">
             <a-col style="display: block; margin-bottom: 8px;">
