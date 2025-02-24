@@ -2551,5 +2551,10 @@
   "TXT_CODE_1a124d6": "Wenn Sie dies auf „false“ setzen, wird verhindert, dass Pfeile auf unbestimmte Zeit am Leben bleiben (z. B. wenn der Block, in dem der Pfeil steckt, entfernt wird, wie z. B. ein Kolbenkopf, der sich nach oben/unten bewegt).",
   "TXT_CODE_1a77954": "Die maximale Anzahl an Ticks, die bei der Heiliung von Zombie-Dorfbewohnern zufällig ausgewählt werden.",
   "TXT_CODE_eee2a47f": "Bildvorschau",
-  "TXT_CODE_66f38b2e": "Normale Benutzer können nur einen Teil der Einstellungen ändern"
+  "TXT_CODE_66f38b2e": "Normale Benutzer können nur einen Teil der Einstellungen ändern",
+  "TXT_CODE_36cae384": "Sie verwenden eine private IP -Adresse",
+  "TXT_CODE_678164d7": "Sie finden die Knoten -ID im Abschnitt \"Knotenliste\" der Händlerkonsole",
+  "TXT_CODE_a583cae4": "Ermöglichen Sie den normalen Benutzern, den Startbefehl zu bearbeiten",
+  "TXT_CODE_bfbdf579": "Mit dieser Funktion können normale Benutzer die Befehle \"Start\" und \"Aktualisieren\" von Docker -Instanzen bearbeiten",
+  "TXT_CODE_ea6e5e5e": "Dieser Knoten funktioniert möglicherweise nicht ordnungsgemäß, wenn Sie mit einer öffentlichen IP -Adresse auf das Panel zugreifen"
 }

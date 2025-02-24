@@ -2045,6 +2045,5 @@
   "TXT_CODE_a583cae4": "允許使用者編輯啟動指令",
   "TXT_CODE_bfbdf579": "該功能允許使用者編輯 Docker 伺服器的「啟動」和「更新」指令",
   "TXT_CODE_36cae384": "你正使用虛擬 IP 位址",
-  "TXT_CODE_ea6e5e5e": "使用公共 ip 存取面板時該節點可能無法正常運作",
-  "TXT_CODE_1cbe2507": "確認"
+  "TXT_CODE_ea6e5e5e": "使用公共 ip 存取面板時該節點可能無法正常運作"
 }
