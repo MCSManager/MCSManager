@@ -10,8 +10,6 @@ import DockerStartCommand from "./docker/docker_start";
 import TimeCheck from "./task/time";
 import GeneralUpdateCommand from "./general/general_update";
 import PtyStartCommand from "./pty/pty_start";
-import PtyStopCommand from "./pty/pty_stop";
-import OpenFrpTask from "./task/openfrp";
 import RconCommand from "./steam/rcon_command";
 import DockerResizeCommand from "./docker/docker_pty_resize";
 import PtyResizeCommand from "./pty/pty_resize";
@@ -45,7 +43,7 @@ export default class FunctionDispatcher extends InstanceCommand {
 
     // the component that the instance must mount
     instance.lifeCycleTaskManager.registerLifeCycleTask(new TimeCheck());
-    instance.lifeCycleTaskManager.registerLifeCycleTask(new OpenFrpTask());
+    // instance.lifeCycleTaskManager.registerLifeCycleTask(new OpenFrpTask());
 
     // Instance general preset capabilities
     instance.setPreset("command", new GeneralSendCommand());
@@ -64,7 +62,6 @@ export default class FunctionDispatcher extends InstanceCommand {
     // Enable emulated terminal mode
     if (instance.config.terminalOption.pty && instance.config.processType === "general") {
       instance.setPreset("start", new PtyStartCommand());
-      instance.setPreset("stop", new PtyStopCommand());
       instance.setPreset("resize", new PtyResizeCommand());
     }
     // Whether to enable Docker PTY mode
