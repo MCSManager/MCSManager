@@ -8,11 +8,8 @@ export default class GeneralRestartCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
-    // If the automatic restart function is enabled, the setting is ignored once
-    if (instance.config.eventTask && instance.config.eventTask.autoRestart)
-      instance.config.eventTask.ignore = true;
-
     try {
+      instance.ignoreEventTaskOnce();
       instance.println("INFO", $t("TXT_CODE_restart.start"));
       instance.setLock(true);
       await instance.execPreset("stop");

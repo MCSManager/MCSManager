@@ -1955,7 +1955,7 @@
   "TXT_CODE_9d1d244f": "程式啟動失敗，無法讀取輸出入流：{{pipeName}}",
   "TXT_CODE_ca030197": "伺服器正在進行其他任務，無法進行此操作！",
   "TXT_CODE_aae2918f": "伺服器啟動失敗，請檢查啟動指令和執行環境等設定！",
-  "TXT_CODE_e543f6c0": "MC Purpur。",
+  "TXT_CODE_e543f6c0": "MC Purpur",
   "TXT_CODE_98e50717": "Purpur 設定檔，允許對進階參數及更具體的遊戲設定進行進一步調整，極大影響整體效能，並在 Paper 設定檔功能基礎上進行擴展。",
   "TXT_CODE_da76ea07": "此設定檔常用於 Purpur 伺服器，它在 Paper 設定基礎上進行了更全面的擴展。",
   "TXT_CODE_81cabec": "設定伺服器是否應在啟動時轉存所有設定值到伺服器日誌",
