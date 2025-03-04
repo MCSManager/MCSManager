@@ -424,6 +424,8 @@ router.put(
       const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
       const startCommand = toText(config.startCommand);
       const updateCommand = toText(config.updateCommand);
+      const dockerEnv =
+        !isEmpty(config.docker.env) && Array.isArray(config.docker.env) ? config.docker.env : [];
 
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
 
@@ -433,6 +435,14 @@ router.put(
 
       const isCmdChanged = (cmd: string | null, instanceCmd: string) => cmd !== instanceCmd;
       const hasPermission = isTopPermissionByUuid(getUserUuid(ctx));
+
+      if (
+        dockerEnv.length &&
+        instance.config.processType !== "docker" &&
+        !systemConfig?.allowChangeCmd &&
+        !hasPermission
+      )
+        return verificationFailed(ctx);
 
       if (
         (startCommand || updateCommand) &&
@@ -468,7 +478,10 @@ router.put(
           tag: instanceTags,
           fileCode,
           startCommand: startCommand ?? instance.startCommand,
-          updateCommand: updateCommand ?? instance.updateCommand
+          updateCommand: updateCommand ?? instance.updateCommand,
+          docker: {
+            env: dockerEnv
+          }
         }
       });
       ctx.body = result;
