@@ -13,6 +13,7 @@ import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { Dayjs } from "dayjs";
 import _ from "lodash";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
+import { useDockerEnvEditDialog } from "@/components/fc";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -94,6 +95,21 @@ const encodeFormData = () => {
     return postData;
   }
   throw new Error("Ref Options is null");
+};
+
+const handleEditDockerEnv = async () => {
+  if (!options.value?.config) return;
+
+  const envs = options.value.config.docker.env?.map((v) => {
+    const tmp = v.split("=");
+    return {
+      label: tmp[0] || "",
+      value: tmp[1] || ""
+    };
+  });
+  const result = await useDockerEnvEditDialog(envs);
+  const envsArray = result.map((v) => `${v.label}=${v.value}`);
+  options.value.config.docker.env = envsArray;
 };
 
 defineExpose({
@@ -217,7 +233,7 @@ defineExpose({
             </a-form-item>
           </a-col>
 
-          <a-col :xs="24" :offset="0">
+          <a-col :xs="24" :lg="18" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
               <a-typography-paragraph>
@@ -234,6 +250,22 @@ defineExpose({
                 :placeholder="UPDATE_CMD_TEMPLATE"
                 :disabled="!isDockerMode"
               />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="6" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_b916a8dc") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  {{ t("TXT_CODE_33ce1c5c") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input-group compact>
+                <a-button type="default" @click="handleEditDockerEnv">
+                  {{ t("TXT_CODE_ad207008") }}
+                </a-button>
+              </a-input-group>
             </a-form-item>
           </a-col>
         </a-row>
