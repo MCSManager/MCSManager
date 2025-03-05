@@ -13,6 +13,7 @@ import { ROLE } from "../entity/user";
 import axios from "axios";
 import { systemConfig } from "../setting";
 import { IQuickStartTemplate } from "common/global";
+import { checkInstanceAdvancedParams } from "../service/instance_service";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -422,43 +423,11 @@ router.put(
       const ie = !isEmpty(config.ie) ? toText(config?.ie) : null;
       const fileCode = toText(config.fileCode);
       const stopCommand = config.stopCommand ? toText(config.stopCommand) : null;
-      const startCommand = toText(config.startCommand);
-      const updateCommand = toText(config.updateCommand);
-      const dockerEnv =
-        !isEmpty(config.docker.env) && Array.isArray(config.docker.env) ? config.docker.env : [];
-
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
+      const isTopPermission = isTopPermissionByUuid(getUserUuid(ctx));
 
-      const instance = await new RemoteRequest(remoteService).request("instance/detail", {
-        instanceUuid
-      });
-
-      const isCmdChanged = (cmd: string | null, instanceCmd: string) => cmd !== instanceCmd;
-      const hasPermission = isTopPermissionByUuid(getUserUuid(ctx));
-
-      if (
-        dockerEnv.length &&
-        instance.config.processType !== "docker" &&
-        !systemConfig?.allowChangeCmd &&
-        !hasPermission
-      )
-        return verificationFailed(ctx);
-
-      if (
-        (startCommand || updateCommand) &&
-        isCmdChanged(startCommand, instance.config.startCommand) &&
-        isCmdChanged(updateCommand, instance.config.updateCommand)
-      ) {
-        if (instance.config.processType !== "docker" && !hasPermission)
-          return verificationFailed(ctx);
-
-        if (
-          instance.config.processType === "docker" &&
-          !systemConfig?.allowChangeCmd &&
-          !hasPermission
-        )
-          return verificationFailed(ctx);
-      }
+      let advancedConfig = {};
+      advancedConfig = checkInstanceAdvancedParams(config, isTopPermission);
 
       const result = await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
@@ -477,11 +446,7 @@ router.put(
           enableRcon,
           tag: instanceTags,
           fileCode,
-          startCommand: startCommand ?? instance.startCommand,
-          updateCommand: updateCommand ?? instance.updateCommand,
-          docker: {
-            env: dockerEnv
-          }
+          ...advancedConfig
         }
       });
       ctx.body = result;
