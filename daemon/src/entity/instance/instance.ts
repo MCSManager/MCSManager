@@ -288,21 +288,20 @@ export default class Instance extends EventEmitter {
     this.lifeCycleTaskManager.execLifeCycleTask(0);
 
     // If automatic restart is enabled, the startup operation is performed immediately
-    if (this.config.eventTask.autoRestart) {
-      if (!this.config.eventTask.ignore) {
-        this.execPreset("start")
-          .then(() => {
-            this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
-          })
-          .catch((err) => {
-            this.println(
-              $t("TXT_CODE_instanceConf.error"),
-              $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
-            );
-          });
-      }
-      this.config.eventTask.ignore = false;
+    if (!this.config.eventTask.ignore && this.config.eventTask.autoRestart) {
+      this.execPreset("start")
+        .then(() => {
+          this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
+        })
+        .catch((err) => {
+          this.println(
+            $t("TXT_CODE_instanceConf.error"),
+            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+          );
+        });
     }
+
+    this.config.eventTask.ignore = false;
 
     // Turn off the warning immediately after startup, usually the startup command is written incorrectly
     const currentTimestamp = new Date().getTime();
@@ -310,6 +309,10 @@ export default class Instance extends EventEmitter {
     if (currentTimestamp - this.startTimestamp < startThreshold) {
       this.println("ERROR", $t("TXT_CODE_aae2918f"));
     }
+  }
+
+  ignoreEventTaskOnce() {
+    if (this.config.eventTask) this.config.eventTask.ignore = true;
   }
 
   // custom output method, formatting
