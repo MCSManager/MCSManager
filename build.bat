@@ -11,13 +11,11 @@ cd daemon
 call npm run build
 
 echo "Build panel..."
-cd ..
-cd panel
+cd ../panel
 call npm run build
 
 echo "Build frontend..."
-cd ..
-cd frontend
+cd ../frontend
 call npm run build
 
 echo "Collecting files..."
