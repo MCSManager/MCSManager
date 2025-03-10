@@ -12,7 +12,6 @@ import InstanceConfig from "../entity/instance/Instance_config";
 import { QueryMapWrapper, InstanceStreamListener } from "common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import InstanceControl from "./system_instance_control";
-import StartCommand from "../entity/commands/start";
 import { globalConfiguration } from "../entity/config";
 
 // init instance default install path
@@ -43,25 +42,27 @@ class InstanceSubsystem extends EventEmitter {
   private autoStart() {
     this.instances.forEach((instance) => {
       if (instance.config.eventTask.autoStart) {
-        instance
-          .execPreset("start")
-          .then(() => {
-            logger.info(
-              $t("TXT_CODE_system_instance.autoStart", {
-                name: instance.config.nickname,
-                uuid: instance.instanceUuid
-              })
-            );
-          })
-          .catch((reason) => {
-            logger.error(
-              $t("TXT_CODE_system_instance.autoStartErr", {
-                name: instance.config.nickname,
-                uuid: instance.instanceUuid,
-                reason: reason
-              })
-            );
-          });
+        setTimeout(() => {
+          instance
+            .execPreset("start")
+            .then(() => {
+              logger.info(
+                $t("TXT_CODE_system_instance.autoStart", {
+                  name: instance.config.nickname,
+                  uuid: instance.instanceUuid
+                })
+              );
+            })
+            .catch((reason) => {
+              logger.error(
+                $t("TXT_CODE_system_instance.autoStartErr", {
+                  name: instance.config.nickname,
+                  uuid: instance.instanceUuid,
+                  reason: reason
+                })
+              );
+            });
+        }, 1000 * 10);
       }
     });
   }
@@ -107,7 +108,6 @@ class InstanceSubsystem extends EventEmitter {
       this.GLOBAL_INSTANCE_UUID
     );
 
-    // handle autostart
     this.autoStart();
   }
 
