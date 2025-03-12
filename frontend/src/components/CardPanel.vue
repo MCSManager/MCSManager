@@ -57,7 +57,6 @@ const { containerState } = useLayoutContainerStore();
   display: flex;
   flex-direction: column;
   position: relative;
-  backdrop-filter: blur(3px);
 
   .card-panel-title {
     font-weight: 600;

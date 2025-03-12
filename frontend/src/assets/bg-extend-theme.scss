@@ -1,6 +1,10 @@
 @import "./tools.scss";
 
 .bg-extend-css {
+  .card-panel {
+    backdrop-filter: blur(3px);
+  }
+
   .ant-table,
   .left-menu,
   .ant-table-cell,
