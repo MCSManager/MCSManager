@@ -8,7 +8,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit --skipLibCheck -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "analyze": "vite build --mode analyze"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
@@ -68,7 +69,7 @@
     "less-loader": "^11.1.3",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.0.0",
-    "rollup-plugin-visualizer": "^5.12.0",
+    "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.64.1",
     "typescript": "~5.1.6",
     "unplugin-vue-components": "^0.25.1",

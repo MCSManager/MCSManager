@@ -10,35 +10,39 @@ import { visualizer } from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    sourcemap: true,
     chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules/ant-design-vue/es")) {
+        manualChunks(path) {
+          if (path.includes("node_modules/ant-design-vue/es")) {
             return "ant-es";
           }
-          if (id.includes("node_modules/ant-design-vue")) {
+          if (path.includes("node_modules/ant-design-vue")) {
             return "ant";
           }
-          if (id.includes("node_modules/echarts")) {
-            return "echart";
-          }
-          if (id.includes("node_modules/zrender")) {
+          if (path.includes("node_modules/zrender")) {
             return "zrender";
           }
-          if (id.includes("node_modules/vue") || id.includes("node_modules/@vue")) {
+          if (path.includes("node_modules/echarts")) {
+            return "echart";
+          }
+          if (path.includes("node_modules/lodash")) {
+            return "lodash";
+          }
+          if (path.includes("node_modules/vue") || path.includes("node_modules/@vue")) {
             return "vue";
           }
-          if (id.includes("node_modules/xterm")) {
+          if (path.includes("node_modules/xterm")) {
             return "xterm";
           }
-          if (id.includes("node_modules/@codemirror")) {
+          if (path.includes("node_modules/@codemirror")) {
             return "codemirror";
           }
-          if (id.includes("node_modules/monaco")) {
+          if (path.includes("node_modules/monaco")) {
             return "monaco";
           }
-          if (id.includes("node_modules/htmlparser2")) {
+          if (path.includes("node_modules/htmlparser2")) {
             return "htmlparser2";
           }
         }
@@ -73,7 +77,7 @@ export default defineConfig({
         })
       ]
     }),
-    visualizer()
+    visualizer({ emitFile: true, filename: "stats.html" })
   ],
   resolve: {
     alias: {
