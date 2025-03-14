@@ -152,8 +152,7 @@ export function checkInstanceAdvancedParams(
 
   const startCommand = toText(config.startCommand);
   const updateCommand = toText(config.updateCommand);
-  const dockerEnv =
-    !isEmpty(config.docker.env) && Array.isArray(config.docker.env) ? config.docker.env : [];
+  const dockerEnv = Array.isArray(config.docker?.env) ? config.docker.env : [];
 
   return {
     startCommand,
