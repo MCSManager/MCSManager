@@ -14,6 +14,7 @@ export const TYPE_MINECRAFT_SPIGOT = "minecraft/java/spigot";
 export const TYPE_MINECRAFT_PAPER = "minecraft/java/paper";
 export const TYPE_MINECRAFT_PUFFERFISH = "minecraft/java/pufferfish";
 export const TYPE_MINECRAFT_FORGE = "minecraft/java/forge";
+export const TYPE_MINECRAFT_NEOFORGE = "minecraft/java/neoforge";
 export const TYPE_MINECRAFT_FABRIC = "minecraft/java/fabric";
 export const TYPE_MINECRAFT_BUNGEECORD = "minecraft/java/bungeecord";
 export const TYPE_MINECRAFT_VELOCITY = "minecraft/java/velocity";
@@ -32,6 +33,7 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_STEAM_SERVER_UNIVERSAL]: t("TXT_CODE_3d7fbe30"),
   [TYPE_MINECRAFT_JAVA]: t("TXT_CODE_97f779b3"),
   [TYPE_MINECRAFT_BEDROCK]: t("TXT_CODE_7f1aef9f"),
+  [TYPE_MINECRAFT_NUKKIT]: t("TXT_CODE_8f3e5807"),
   [TYPE_MINECRAFT_SPIGOT]: t("TXT_CODE_6c08319b"),
   [TYPE_MINECRAFT_PAPER]: t("TXT_CODE_ec0cda88"),
   [TYPE_MINECRAFT_PUFFERFISH]: t("TXT_CODE_c6d3bd8"),
@@ -41,6 +43,8 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_MINECRAFT_BDS]: t("TXT_CODE_67b5f678"),
   [TYPE_MINECRAFT_SPONGE]: t("TXT_CODE_e4dbff32"),
   [TYPE_MINECRAFT_FORGE]: t("TXT_CODE_5112fcb2"),
+  [TYPE_MINECRAFT_NEOFORGE]: t("TXT_CODE_98b4ac74"),
+  [TYPE_MINECRAFT_MOHIST]: t("TXT_CODE_82e624d1"),
   [TYPE_MINECRAFT_FABRIC]: t("TXT_CODE_7af6d85a"),
   [TYPE_MINECRAFT_BUKKIT]: t("TXT_CODE_992bf9bc"),
   [TYPE_MINECRAFT_GEYSER]: t("TXT_CODE_4f57868"),
@@ -183,6 +187,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_FORGE,
+      TYPE_MINECRAFT_NEOFORGE,
       TYPE_MINECRAFT_FABRIC,
       TYPE_MINECRAFT_SPONGE,
       TYPE_MINECRAFT_PURPUR,
@@ -201,6 +206,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_FABRIC,
+      TYPE_MINECRAFT_FORGE,
+      TYPE_MINECRAFT_NEOFORGE,
       TYPE_MINECRAFT_SPONGE,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH
@@ -349,5 +356,29 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     path: "tshock/config.json",
     redirect: "tshock/config.json",
     category: [TYPE_TERRARIA]
+  },
+  {
+    fileName: "[Forge] fml.toml",
+    type: "toml",
+    info: t("TXT_CODE_7e6a82d8"),
+    path: "config/fml.toml",
+    redirect: "forge/fml.toml",
+    category: [TYPE_MINECRAFT_FORGE]
+  },
+  {
+    fileName: "[NeoForge] neoforge-server.toml",
+    type: "toml",
+    info: t("TXT_CODE_5b6f3691"),
+    path: "config/neoforge-server.toml",
+    redirect: "neoforge/neoforge-server.toml",
+    category: [TYPE_MINECRAFT_NEOFORGE]
+  },
+  {
+    fileName: "[NeoForge] neoforge-common.toml",
+    type: "toml",
+    info: t("TXT_CODE_1efc7c5f"),
+    path: "config/neoforge-common.toml",
+    redirect: "neoforge/neoforge-common.toml",
+    category: [TYPE_MINECRAFT_NEOFORGE]
   }
 ];
