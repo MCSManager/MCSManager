@@ -20,7 +20,7 @@
   "dependencies": {
     "@koa/router": "^10.0.0",
     "@types/qrcode": "^1.5.5",
-    "axios": "^1.6.2",
+    "axios": "^1.8.2",
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "formidable": "^3.5.1",
