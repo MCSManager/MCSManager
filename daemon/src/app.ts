@@ -17,7 +17,7 @@ import InstanceSubsystem from "./service/system_instance";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
 import "./service/system_visual_data";
-import { removeTrail } from "common";
+import { removeTrail } from "mcsmanager-common";
 
 initVersionManager();
 const VERSION = getVersion();

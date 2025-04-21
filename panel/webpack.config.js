@@ -25,11 +25,7 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [
-    nodeExternals({
-      allowlist: ["common"]
-    })
-  ],
+  externals: [nodeExternals()],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")

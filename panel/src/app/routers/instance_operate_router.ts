@@ -8,11 +8,10 @@ import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
 import { $t } from "../i18n";
 import { isTopPermissionByUuid } from "../service/permission_service";
-import { isEmpty, toText, toBoolean, toNumber } from "common";
+import { isEmpty, toText, toBoolean, toNumber } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import axios from "axios";
 import { systemConfig } from "../setting";
-import { IQuickStartTemplate } from "common/global";
 import { checkInstanceAdvancedParams } from "../service/instance_service";
 
 const router = new Router({ prefix: "/protected_instance" });

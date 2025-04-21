@@ -6,7 +6,7 @@ import EventEmitter from "events";
 import { IInstanceProcess } from "../../instance/interface";
 import { ChildProcess, spawn } from "child_process";
 import { commandStringToArray } from "../base/command_parser";
-import { killProcess } from "common";
+import { killProcess } from "mcsmanager-common";
 import AbsStartCommand from "../start";
 
 // Error exception at startup

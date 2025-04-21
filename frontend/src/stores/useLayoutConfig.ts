@@ -4,7 +4,6 @@ import { useRouterParams } from "@/hooks/useRouterParams";
 import { getAllLayoutConfig, setAllLayoutConfig } from "@/config/originLayoutConfig";
 import { createGlobalState } from "@vueuse/core";
 import { resetLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
-import type { IPageLayoutConfig } from "../../../common/global";
 
 export const useLayoutConfigStore = createGlobalState(() => {
   const hasBgImage = ref(false);

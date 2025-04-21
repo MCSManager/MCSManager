@@ -19,7 +19,7 @@ import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
-import { removeTrail } from "common";
+import { removeTrail } from "mcsmanager-common";
 
 function hasParams(name: string) {
   return process.argv.includes(name);

@@ -1,4 +1,4 @@
-import { systemInfo } from "common";
+import { systemInfo } from "mcsmanager-common";
 
 // Visual data subsystem: responsible for collecting system data and event data, and providing some methods to display them
 class LineQueue<T> {

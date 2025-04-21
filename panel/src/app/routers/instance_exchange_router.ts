@@ -10,7 +10,7 @@ import {
   REDEEM_PLATFORM_ADDR,
   RequestAction
 } from "../service/exchange_service";
-import { toText } from "common";
+import { toText } from "mcsmanager-common";
 import { logger } from "../service/log";
 import Koa from "koa";
 import UserSSOService from "../service/user_sso_service";

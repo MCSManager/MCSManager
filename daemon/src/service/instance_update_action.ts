@@ -1,5 +1,5 @@
 import { $t } from "../i18n";
-import { killProcess } from "common";
+import { killProcess } from "mcsmanager-common";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import logger from "../service/log";
 import Instance from "../entity/instance/instance";

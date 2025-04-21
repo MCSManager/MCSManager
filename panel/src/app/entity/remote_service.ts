@@ -2,7 +2,7 @@ import { io, Socket, SocketOptions, ManagerOptions } from "socket.io-client";
 import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
-import { InstanceStreamListener, removeTrail } from "common";
+import { InstanceStreamListener, removeTrail } from "mcsmanager-common";
 import { $t, i18next } from "../i18n";
 
 export default class RemoteService {

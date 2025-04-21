@@ -14,8 +14,8 @@ import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask } from "../service/async_task_service/quick_install";
 import { QuickInstallTask } from "../service/async_task_service/quick_install";
-import { toNumber } from "common";
-import { arrayUnique } from "common";
+import { toNumber } from "mcsmanager-common";
+import { arrayUnique } from "mcsmanager-common";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {

@@ -1,5 +1,3 @@
-import type { IGlobalInstanceConfig } from "../../../common/global.d.ts";
-
 export interface UserInstance {
   hostIp: string;
   instanceUuid: string;

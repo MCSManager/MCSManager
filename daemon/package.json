@@ -58,7 +58,7 @@
     "@types/pidusage": "^2.0.1",
     "@types/ssh2": "^1.11.7",
     "@types/uuid": "^8.3.0",
-    "common": "file:../common",
+    "mcsmanager-common": "1.1.0",
     "eslint": "^7.13.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.1",

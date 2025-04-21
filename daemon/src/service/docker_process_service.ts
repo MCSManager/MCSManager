@@ -12,7 +12,7 @@ import { EventEmitter } from "stream";
 import { IInstanceProcess } from "../entity/instance/interface";
 import { AsyncTask } from "./async_task_service";
 import iconv from "iconv-lite";
-import { toText } from "common";
+import { toText } from "mcsmanager-common";
 import fs from "fs-extra";
 
 // Error exception at startup

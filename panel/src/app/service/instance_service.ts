@@ -3,8 +3,7 @@ import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest from "../service/remote_command";
 import { t } from "i18next";
 import { systemConfig } from "../setting";
-import { isEmpty, toText } from "common/dist";
-import { IGlobalInstanceConfig } from "common/global";
+import { toText } from "mcsmanager-common";
 
 export enum INSTANCE_STATUS {
   BUSY = -1,
