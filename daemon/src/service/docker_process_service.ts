@@ -100,7 +100,7 @@ export class SetupDockerContainer extends AsyncTask {
     let cpusetCpus: string | undefined = undefined;
     if (instance.config.docker.cpusetCpus) {
       const arr = instance.config.docker.cpusetCpus.split(",");
-      arr.forEach((v) => {
+      arr.forEach((v: string) => {
         if (isNaN(Number(v))) throw new Error($t("TXT_CODE_instance.invalidCpu", { v }));
       });
       cpusetCpus = instance.config.docker.cpusetCpus;

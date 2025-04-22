@@ -3,7 +3,7 @@
   "version": "4.6.1",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
   "scripts": {
-    "dev": "ts-node --project tsconfig.json src/app.ts",
+    "dev": "npm run build && node --enable-source-maps production/app.js",
     "build": "webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
@@ -31,6 +31,7 @@
     "koa-body-patch": "^6.0.1",
     "koa-send": "^5.0.1",
     "log4js": "^6.4.0",
+    "mcsmanager-common": "1.1.0",
     "module-alias": "^2.2.3",
     "node-schedule": "^2.0.0",
     "node-stream-zip": "^1.15.0",
@@ -58,7 +59,6 @@
     "@types/pidusage": "^2.0.1",
     "@types/ssh2": "^1.11.7",
     "@types/uuid": "^8.3.0",
-    "mcsmanager-common": "1.1.0",
     "eslint": "^7.13.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.1",
