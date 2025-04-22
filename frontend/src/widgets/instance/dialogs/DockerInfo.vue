@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { t } from "@/lang/i18n";
-import type { IGlobalInstanceDockerConfig } from "../../../../../common/global";
 import { dockerPortsArray } from "@/tools/common";
 const props = defineProps<{
   dockerInfo?: IGlobalInstanceDockerConfig;

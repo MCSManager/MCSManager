@@ -1,7 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail, NodeStatus, PanelStatus, Settings } from "@/types";
 import type { BaseUserInfo, LoginUserInfo, EditUserInfo, UserInstance } from "@/types/user";
-import type { IPanelOverviewResponse } from "../../../../common/global";
 
 export const panelInstall = useDefineApi<
   {

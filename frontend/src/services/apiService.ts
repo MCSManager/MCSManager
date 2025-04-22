@@ -1,5 +1,4 @@
 import { reportErrorMsg } from "@/tools/validator";
-import type { IPanelResponseProtocol } from "./../../../common/global.d";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import axios from "axios";

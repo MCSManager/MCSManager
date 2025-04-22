@@ -7,7 +7,8 @@
     "src/config/**/*",
     "src/lang/**/*.json",
     "ant.d.ts",
-    "components.d.ts"
+    "components.d.ts",
+    "../common/global.d.ts"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {

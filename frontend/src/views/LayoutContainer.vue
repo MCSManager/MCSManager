@@ -10,7 +10,6 @@ import { useRouterParams } from "../hooks/useRouterParams";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { useScreen } from "@/hooks/useScreen";
 import { useMouseEnter } from "@/hooks/useMouseEnter";
-import type { ILayoutCard } from "../../../common/global";
 
 const { containerState } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();

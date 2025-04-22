@@ -1,6 +1,6 @@
 import Instance from "./instance";
 import os from "os";
-import { IGlobalInstanceConfig, IGlobalInstanceDockerConfig } from "common/global";
+
 interface IActionCommand {
   name: string;
   command: string;

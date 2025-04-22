@@ -74,11 +74,7 @@ async function initI18n(lang: string) {
   const messages: Record<string, any> = {};
   const langFiles = import.meta.glob("../../../languages/*.json");
   for (const path in langFiles) {
-    if (
-      lang !== "en_us" &&
-      toStandardLang(path).includes(lang) &&
-      typeof langFiles[path] === "function"
-    ) {
+    if (toStandardLang(path).includes(lang) && typeof langFiles[path] === "function") {
       messages[lang] = await langFiles[path]();
     }
   }

@@ -11,7 +11,7 @@ import { PresetCommandManager } from "./preset";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
-import { configureEntityParams, toText } from "common";
+import { configureEntityParams, toText } from "mcsmanager-common";
 import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
 import { t } from "i18next";
