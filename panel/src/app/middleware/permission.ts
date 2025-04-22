@@ -1,5 +1,5 @@
 import Koa from "koa";
-import { GlobalVariable } from "common";
+import { GlobalVariable } from "mcsmanager-common";
 import userSystem from "../service/user_service";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";

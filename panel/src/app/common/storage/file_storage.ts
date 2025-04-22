@@ -1,5 +1,5 @@
 import { IStorage } from "./storage_interface";
-import { StorageSubsystem } from "common";
+import { StorageSubsystem } from "mcsmanager-common";
 
 const storage = new StorageSubsystem();
 

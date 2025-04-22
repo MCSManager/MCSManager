@@ -9,7 +9,7 @@ import { v4 } from "uuid";
 import { Socket } from "socket.io";
 import StorageSubsystem from "../common/system_storage";
 import InstanceConfig from "../entity/instance/Instance_config";
-import { QueryMapWrapper, InstanceStreamListener } from "common";
+import { QueryMapWrapper, InstanceStreamListener } from "mcsmanager-common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import InstanceControl from "./system_instance_control";
 import { globalConfiguration } from "../entity/config";

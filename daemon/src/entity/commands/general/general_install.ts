@@ -3,7 +3,6 @@ import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 import fs from "fs-extra";
 import { QuickInstallTask } from "../../../service/async_task_service/quick_install";
-import { IQuickStartPackages } from "common/global";
 
 export default class GeneralInstallCommand extends InstanceCommand {
   private process?: QuickInstallTask;

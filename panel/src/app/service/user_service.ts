@@ -4,7 +4,7 @@ import { IUserApp, User, UserPassWordType } from "../entity/user";
 import { logger } from "./log";
 import { IUser } from "../entity/entity_interface";
 import Storage from "../common/storage/sys_storage";
-import { QueryWrapper, LocalFileSource } from "common";
+import { QueryWrapper, LocalFileSource } from "mcsmanager-common";
 import { $t } from "../i18n";
 import bcrypt from "bcryptjs";
 import { authenticator } from "otplib";

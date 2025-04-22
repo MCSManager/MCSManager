@@ -1,5 +1,3 @@
-import type { IPageLayoutConfig } from "../../../common/global";
-
 export enum LayoutCardHeight {
   MINI = "100px",
   SMALL = "200px",

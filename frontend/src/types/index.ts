@@ -1,21 +1,11 @@
 /* eslint-disable no-unused-vars */
 import type { Dayjs } from "dayjs";
-import type {
-  IGlobalInstanceConfig,
-  ILayoutCard as GlobalLayoutCard,
-  ILayoutCardParams as GlobalLayoutCardParams,
-  IJsonData,
-  IMapData,
-  IGlobalInstanceDockerConfig,
-  IQuickStartTemplate,
-  IQuickStartPackages
-} from "../../../common/global";
 import type { INSTANCE_STATUS_CODE, ScheduleCreateType } from "./const";
 
 export type JsonData = IJsonData;
 export type MapData<T> = IMapData<T>;
-export type LayoutCardParams = GlobalLayoutCardParams;
-export type LayoutCard = GlobalLayoutCard;
+export type LayoutCardParams = ILayoutCardParams;
+export type LayoutCard = ILayoutCard;
 
 export interface LayoutWithRouter {
   page: string;

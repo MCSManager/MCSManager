@@ -1,7 +1,7 @@
 import path from "path";
 import { t } from "i18next";
 import logger from "../service/log";
-import { ProcessWrapper } from "common";
+import { ProcessWrapper } from "mcsmanager-common";
 import fs from "fs-extra";
 import { GOLANG_ZIP_PATH } from "../const";
 import { ZIP_TIMEOUT_SECONDS } from "../const";
