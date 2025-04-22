@@ -1,4 +1,3 @@
-import "module-alias/register";
 import http from "http";
 import fs from "fs-extra";
 import versionAdapter from "./service/version_adapter";

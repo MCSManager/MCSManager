@@ -1,4 +1,3 @@
-import "module-alias/register";
 import os from "os";
 import { $t } from "./app/i18n";
 import { initVersionManager, getVersion } from "./app/version";
