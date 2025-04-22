@@ -5,7 +5,7 @@ import { ILifeCycleTask } from "../../instance/life_cycle";
 import Instance from "../../instance/instance";
 import logger from "../../../service/log";
 import { $t } from "../../../i18n";
-import { ProcessWrapper } from "common";
+import { ProcessWrapper } from "mcsmanager-common";
 import { FRPC_PATH } from "../../../const";
 import { downloadFileToLocalFile } from "../../../service/download";
 export class OpenFrp {

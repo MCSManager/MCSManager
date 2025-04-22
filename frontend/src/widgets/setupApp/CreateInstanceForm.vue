@@ -65,7 +65,7 @@ const formData = reactive<NewInstanceForm>({
     networkAliases: [],
     cpusetCpus: "",
     workingDir: "/data",
-    changeWorkdir: false,
+    changeWorkdir: true,
     memory: undefined,
     cpuUsage: undefined,
     maxSpace: undefined,

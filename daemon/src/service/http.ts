@@ -3,7 +3,7 @@ import koaBody from "koa-body-patch";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
 import { globalConfiguration } from "../entity/config";
-import { removeTrail } from "common";
+import { removeTrail } from "mcsmanager-common";
 
 export function initKoa() {
   const koaApp = new Koa();

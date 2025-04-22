@@ -3,8 +3,6 @@
 import { createI18n } from "vue-i18n";
 import { updateSettings } from "@/services/apis";
 
-import enUS from "@languages/en_US.json";
-
 // DO NOT I18N
 // If you want to add the language of your own country, you need to add the code here.
 export const SUPPORTED_LANGS = [
@@ -73,16 +71,10 @@ export async function initInstallPageFlow(language: string) {
 async function initI18n(lang: string) {
   lang = toStandardLang(lang);
 
-  const messages: Record<string, any> = {
-    en_us: enUS
-  };
+  const messages: Record<string, any> = {};
   const langFiles = import.meta.glob("../../../languages/*.json");
   for (const path in langFiles) {
-    if (
-      lang !== "en_us" &&
-      toStandardLang(path).includes(lang) &&
-      typeof langFiles[path] === "function"
-    ) {
+    if (toStandardLang(path).includes(lang) && typeof langFiles[path] === "function") {
       messages[lang] = await langFiles[path]();
     }
   }

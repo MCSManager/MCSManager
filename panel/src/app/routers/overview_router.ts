@@ -1,13 +1,12 @@
-import { IPanelOverviewResponse } from "common/global";
 import Router from "@koa/router";
 import permission from "../middleware/permission";
 import RemoteServiceSubsystem from "../service/remote_service";
 import VisualDataSubsystem from "../service/visual_data";
 import RemoteRequest from "../service/remote_command";
 import os from "os";
-import { systemInfo } from "common";
+import { systemInfo } from "mcsmanager-common";
 import { getVersion, specifiedDaemonVersion } from "../version";
-import { GlobalVariable } from "common";
+import { GlobalVariable } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import {
   LOGIN_FAILED_KEY,

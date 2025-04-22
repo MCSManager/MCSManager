@@ -1,8 +1,7 @@
 import { v4 } from "uuid";
-import { IPageLayoutConfig } from "../../../../common/global";
 import { $t as t } from "../i18n";
 import storage from "../common/system_storage";
-import { GlobalVariable } from "common";
+import { GlobalVariable } from "mcsmanager-common";
 import path from "path";
 import fs from "fs-extra";
 

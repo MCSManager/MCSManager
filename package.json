@@ -2,7 +2,8 @@
   "name": "mcsmanager-workspace",
   "version": "1.0.0",
   "scripts": {
-    "i18n": "i18next-scanner --config i18-scanner.config.js",
+    "i18n": "i18next-scanner --config i18-scanner.config.js && npm run sort-lang-key",
+    "sort-lang-keys": "node scripts/sort-lang-key.mjs",
     "preview-build": "cd common && npm install && npm run build",
     "daemon": "cd daemon &&  npm run dev",
     "frontend": "cd frontend && npm run dev",

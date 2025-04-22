@@ -1,6 +1,6 @@
 import Instance from "./instance";
 import os from "os";
-import { IGlobalInstanceConfig, IGlobalInstanceDockerConfig } from "common/global";
+
 interface IActionCommand {
   name: string;
   command: string;
@@ -67,7 +67,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     network: 0,
     workingDir: "/workspace/",
     env: [],
-    changeWorkdir: false
+    changeWorkdir: true
   };
 
   public pingConfig = {
