@@ -1,0 +1,1912 @@
+{
+    "remark": "This file is only used for quick deployment.",
+    "languages": [
+        {
+            "label": "Leaf",
+            "value": "leaf"
+        },
+        {
+            "label": "Leaves",
+            "value": "leaves"
+        },
+        {
+            "label": "Purpur",
+            "value": "purpur"
+        },
+        {
+            "label": "Pufferfish",
+            "value": "pufferfish"
+        },
+        {
+            "label": "Paper",
+            "value": "paper"
+        },
+        {
+            "label": "Forge",
+            "value": "forge"
+        },
+        {
+            "label": "Fabric",
+            "value": "fabric"
+        },
+        {
+            "label": "Vanilla",
+            "value": "vanilla"
+        },
+        {
+            "label": "VanillaAprilFools",
+            "value": "april_fools"
+        },
+        {
+            "label": "Spigot",
+            "value": "spigot"
+        },
+        {
+            "label": "基础服务包",
+            "value": "zh_cn"
+        }
+    ],
+    "packages": [
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.21.3 Pufferfish",
+            "title": "Minecraft 1.21.3",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.21/27/artifact/build/libs/pufferfish-paperclip-1.21.3-R0.1-SNAPSHOT-mojmap.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.21.3-R0.1-SNAPSHOT-mojmap.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.21.1 Pufferfish",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.21/20/artifact/build/libs/pufferfish-paperclip-1.21.1-R0.1-SNAPSHOT-mojmap.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.21.1-R0.1-SNAPSHOT-mojmap.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.20.4 Pufferfish",
+            "title": "Minecraft 1.20.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.20/52/artifact/build/libs/pufferfish-paperclip-1.20.4-R0.1-SNAPSHOT-reobf.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.20.4-R0.1-SNAPSHOT-reobf.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.20.1 Pufferfish",
+            "title": "Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.20/23/artifact/build/libs/pufferfish-paperclip-1.20.1-R0.1-SNAPSHOT-reobf.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.20.1-R0.1-SNAPSHOT-reobf.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.19.4 Pufferfish",
+            "title": "Minecraft 1.19.4",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.19/73/artifact/build/libs/pufferfish-paperclip-1.19.4-R0.1-SNAPSHOT-reobf.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.19.4-R0.1-SNAPSHOT-reobf.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.18.2 Pufferfish",
+            "title": "Minecraft 1.18.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.18/72/artifact/build/libs/pufferfish-paperclip-1.18.2-R0.1-SNAPSHOT-reobf.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar pufferfish-paperclip-1.18.2-R0.1-SNAPSHOT-reobf.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "pufferfish",
+            "description": "[Pufferfish] Minecraft 1.17.1 Pufferfish",
+            "title": "Minecraft 1.17.1",
+            "runtime": "JDK 16+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Pufferfish",
+            "targetLink": "https://ci.pufferfish.host/job/Pufferfish-1.17/22/artifact/build/libs/Pufferfish-1.17.1-R0.1-SNAPSHOT.jar",
+            "author": "pufferfish.host",
+            "setupInfo": {
+                "type": "minecraft/java/pufferfish",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar Pufferfish-1.17.1-R0.1-SNAPSHOT.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.21.4 Purpur",
+            "title": "Minecraft 1.21.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.21.4-2399.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.21.4-2399.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.21.3 Purpur",
+            "title": "Minecraft 1.21.3",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.21.3-2358.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.21.3-2358.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.21.1 Purpur",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.21.1-2329.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.21.1-2329.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.20.6 Purpur",
+            "title": "Minecraft 1.20.6",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.20.6-2233.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.20.6-2233.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.20.4 Purpur",
+            "title": "Minecraft 1.20.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.20.4-2176.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.20.4-2176.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.20.1 Purpur",
+            "title": "Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.20.1-2062.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.20.1-2062.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.19.2 Purpur",
+            "title": "Minecraft 1.19.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.19.2-1858.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.19.2-1858.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.18.2 Purpur",
+            "title": "Minecraft 1.18.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.18.2-1632.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.18.2-1632.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.17.1 Purpur",
+            "title": "Minecraft 1.17.1",
+            "runtime": "JDK 16+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.17.1-1428.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.17.1-1428.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "purpur",
+            "description": "[Purpur] Minecraft 1.16.5 Purpur",
+            "title": "Minecraft 1.16.5",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Purpur",
+            "targetLink": "https://gh-proxy.com/https://github.com/SkyKingPX/MCSManagerServerSoftware/releases/download/PurpurMC/purpur-1.16.5-1171.jar",
+            "author": "purpurmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/purpur",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar purpur-1.16.5-1171.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.21.5 Paper",
+            "title": "Minecraft 1.21.5",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.21.5/builds/36/downloads/paper-1.21.5-36.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.21.5-36.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.21.4 Paper",
+            "title": "Minecraft 1.21.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/178/downloads/paper-1.21.4-178.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.21.4-178.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.21.3 Paper",
+            "title": "Minecraft 1.21.3",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.21.3/builds/82/downloads/paper-1.21.3-82.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.21.3-82.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.21.1 Paper",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/132/downloads/paper-1.21.1-132.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.21.1-132.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.20.6 Paper",
+            "title": "Minecraft 1.20.6",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.20.6/builds/151/downloads/paper-1.20.6-151.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.20.6-151.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.20.4 Paper",
+            "title": "Minecraft 1.20.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/499/downloads/paper-1.20.4-499.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.20.4-499.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.20.2 Paper",
+            "title": "Minecraft 1.20.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "150MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.20.2/builds/318/downloads/paper-1.20.2-318.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.20.2-318.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.20.1 Paper",
+            "title": "Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "200MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/196/downloads/paper-1.20.1-196.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.20.1-196.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.19.4 Paper",
+            "title": "Minecraft 1.19.4",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.19.4/builds/550/downloads/paper-1.19.4-550.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.19.4-550.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.19.2 Paper",
+            "title": "Minecraft 1.19.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.19.2/builds/307/downloads/paper-1.19.2-307.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.19.2-307.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.18.2 Paper",
+            "title": "Minecraft 1.18.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.18.2/builds/388/downloads/paper-1.18.2-388.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.18.2-388.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.17.1 Paper",
+            "title": "Minecraft 1.17.1",
+            "runtime": "JDK 16+",
+            "hardware": "RAM 4G+",
+            "size": "60MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.17.1/builds/411/downloads/paper-1.17.1-411.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.17.1-411.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.16.5 Paper",
+            "title": "Minecraft 1.16.5",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.16.5/builds/794/downloads/paper-1.16.5-794.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.16.5-794.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.12.2 Paper",
+            "title": "Minecraft 1.12.2",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.12.2/builds/1620/downloads/paper-1.12.2-1620.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.12.2-1620.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "paper",
+            "description": "[Paper] Minecraft 1.8.8 Paper",
+            "title": "Minecraft 1.8.8",
+            "runtime": "JDK 7+",
+            "hardware": "RAM 4G+",
+            "size": "20MB",
+            "remark": "Paper",
+            "targetLink": "https://api.papermc.io/v2/projects/paper/versions/1.8.8/builds/445/downloads/paper-1.8.8-445.jar",
+            "author": "papermc.io",
+            "setupInfo": {
+                "type": "minecraft/java/paper",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar paper-1.8.8-445.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "forge",
+            "description": "Forge自动安装",
+            "title": "Forge 1.16.5 (支持模组)",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 8G+",
+            "size": "7MB",
+            "remark": "Minecraft Forge",
+            "targetLink": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.42/forge-1.16.5-36.2.42-installer.jar",
+            "author": "minecraftforge.net",
+            "setupInfo": {
+                "type": "minecraft/java/forge",
+                "startCommand": "sh run.sh",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar forge-1.16.5-36.2.42-installer.jar --installServer",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "forge",
+            "description": "Forge自动安装",
+            "title": "Forge 1.12.2 (支持模组)",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 8G+",
+            "size": "5MB",
+            "remark": "Minecraft Forge",
+            "targetLink": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2860/forge-1.12.2-14.23.5.2860-installer.jar",
+            "author": "minecraftforge.net",
+            "setupInfo": {
+                "type": "minecraft/java/forge",
+                "startCommand": "java -Xmx4096m -Xms4096m -jar forge-1.12.2-14.23.5.2860-server.jar",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar forge-1.12.2-14.23.5.2860-installer.jar --installServer",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "forge",
+            "description": "Forge自动安装",
+            "title": "Forge 1.8.9 (支持模组)",
+            "runtime": "JDK 7+",
+            "hardware": "RAM 8G+",
+            "size": "5MB",
+            "remark": "Minecraft Forge",
+            "targetLink": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.9-11.15.1.2318-1.8.9/forge-1.8.9-11.15.1.2318-1.8.9-installer.jar",
+            "author": "minecraftforge.net",
+            "setupInfo": {
+                "type": "minecraft/java/forge",
+                "startCommand": "java -Xmx4096m -Xms4096m -jar forge-1.8.9-11.15.1.2318-1.8.9-universal.jar",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar forge-1.8.9-11.15.1.2318-1.8.9-installer.jar --installServer",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "forge",
+            "description": "Forge自动安装",
+            "title": "Forge 1.7.10 (支持模组)",
+            "runtime": "JDK 7+",
+            "hardware": "RAM 8G+",
+            "size": "5MB",
+            "remark": "Minecraft Forge",
+            "targetLink": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-installer.jar",
+            "author": "minecraftforge.net",
+            "setupInfo": {
+                "type": "minecraft/java/forge",
+                "startCommand": "java -Xmx4096m -Xms4096m -jar forge-1.7.10-10.13.4.1614-1.7.10-universal.jar",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar forge-1.7.10-10.13.4.1614-1.7.10-installer.jar --installServer",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.21.5 Fabric",
+            "title": "Minecraft 1.21.5 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.21.5",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.21.4 Fabric",
+            "title": "Minecraft 1.21.4 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.21.4",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.21.3 Fabric",
+            "title": "Minecraft 1.21.3 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.21.3",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.21.1 Fabric",
+            "title": "Minecraft 1.21.1 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.21.1",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.20.6 Fabric",
+            "title": "Minecraft 1.20.6 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.20.6",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.20.4 Fabric",
+            "title": "Minecraft 1.20.4 ",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.20.4",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.20.1 Fabric",
+            "title": "Minecraft 1.20.1 ",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.20.1",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.19.4 Fabric",
+            "title": "Minecraft 1.19.4 ",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.19.4",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.19.2 Fabric",
+            "title": "Minecraft 1.19.2 ",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.19.2",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.18.2 Fabric",
+            "title": "Minecraft 1.18.2 ",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.18.2",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.17.1 Fabric",
+            "title": "Minecraft 1.17.1 ",
+            "runtime": "JDK 16+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.17.1",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.16.5 Fabric",
+            "title": "Minecraft 1.16.5 ",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.16.5",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.15.2 Fabric",
+            "title": "Minecraft 1.15.2 ",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.15.2",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "fabric",
+            "description": "[Fabric] Minecraft 1.14.4 Fabric",
+            "title": "Minecraft 1.14.4 ",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 4G+",
+            "size": "5MB",
+            "remark": "Minecraft Fabric",
+            "targetLink": "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+            "author": "fabricmc.net",
+            "setupInfo": {
+                "type": "minecraft/java/fabric",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar fabric-server-launch.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "java -jar fabric-installer-1.0.1.jar server -mcversion 1.14.4",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 25w14craftmine - 简而言之，现在你可以Craft制作自己专属的Mine了！Craft+Mine——懂了吧？这里的‘Mine’指的是‘关卡’……",
+            "title": "25w14craftmine",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/4527a9019e37e001770787e4523b505f79cac4c5/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 24w14potato - 毒马铃薯一直被大家忽视和低估，于是我们超级加强了它！",
+            "title": "24w14potato",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/2d29eee4f5a71f323d20b36d623e2ec21dab74f7/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 23w13a_or_b - 研究表明：玩家喜欢作出选择——越多越好！",
+            "title": "23w13a_or_b",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/6241fc14ce7a659f371683a72aa24c155f60cce1/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 22w13oneblockatatime - 一次一个方块，慢慢来！",
+            "title": "22w13oneblockatatime",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/5f48eea55c7fd1881d9c63835b15dfb5bbcd3a67/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 20w14infinite - 无限的维度，无限的可能性！",
+            "title": "20w14infinite",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/c0711cd9608d1af3d6f05ac423dd8f4199780225/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 3D Shareware v1.34 - 免费试玩！购买完整版解锁所有功能！",
+            "title": "3D Shareware v1.34",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/ffd306fc2aaa884755c5a6bf9fbd87aed26dd78f/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 1.RV-Pre1 - 虚拟现实的未来就在这里！",
+            "title": "1.RV-Pre1",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/f51d9489706f603be6be9716407f1dab5f7f2733/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "april_fools",
+            "description": "[愚人节] Minecraft 15w14a - 爱与拥抱的更新！",
+            "title": "15w14a",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/f7d2bd26ce7893477fc1ca6e27b671345253bae4/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.21.5",
+            "title": "Minecraft 1.21.5",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.21.4",
+            "title": "Minecraft 1.21.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "55MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.21.1",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "50MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/59353fb40c36d304f2035d51e7d6e6baa98dc05c/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.20.6",
+            "title": "Minecraft 1.20.6",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "50MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/145ff0858209bcfc164859ba735d4199aafa1eea/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.20.4",
+            "title": "Minecraft 1.20.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 2G+",
+            "size": "50MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.20.1",
+            "title": "Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 2G+",
+            "size": "50MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.19.4",
+            "title": "Minecraft 1.19.4",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 2G+",
+            "size": "50MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/8f3112a1049751cc472ec13e397eade5336ca7ae/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.18.2",
+            "title": "Minecraft 1.18.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 2G+",
+            "size": "45MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/c8f83c5655308435b3dcf03c06d9fe8740a77469/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.17.1",
+            "title": "Minecraft 1.17.1",
+            "runtime": "JDK 16+",
+            "hardware": "RAM 2G+",
+            "size": "45MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.16.5",
+            "title": "Minecraft 1.16.5",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "45MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.12.2",
+            "title": "Minecraft 1.12.2",
+            "runtime": "JDK 8+",
+            "hardware": "RAM 2G+",
+            "size": "30MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://piston-data.mojang.com/v1/objects/886945bfb2b978778c3a0288fd7fab09d315b25f/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "vanilla",
+            "description": "[Vanilla] Minecraft 1.8.9",
+            "title": "Minecraft 1.8.9",
+            "runtime": "JDK 7+",
+            "hardware": "RAM 2G+",
+            "size": "10MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://launcher.mojang.com/v1/objects/b58b2ceb36e01bcd8dbf49c8fb66c55a9f0676cd/server.jar",
+            "author": "Mojang",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms2048M -Xmx2048M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[Paper] Minecraft 1.21.1 快速开服",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "250MB",
+            "remark": "包含基础插件，萌新快速开服！低配机器专属！",
+            "targetLink": "https://cloud.alongw.cn/f/DzvHK/Paper-1.21.1-ZH.zip",
+            "author": "alongw.cn",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[Paper] 中小型互通服推荐，1.20.4 版本",
+            "title": "Minecraft 1.20.4 (低配机器推荐)",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "140MB",
+            "remark": "支持插件，最低 4GB 内存要求",
+            "targetLink": "https://url.alww.top/mcsm/paper1.20.4.zip",
+            "author": "alongw.cn",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms6144M -Xmx6144M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "基础开服包，拥有你想要的功能",
+            "title": "[优选][Leaves] Minecraft 1.21.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "290MB",
+            "remark": "Leaves",
+            "targetLink": "http://mc-plfd-host.top:27171/cxfreeze.zip",
+            "author": "Kush_ShuL",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.21.4 (高性能)",
+            "title": "[Leaf] Minecraft 1.21.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.21.4/leaf-1.21.4-238.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.21.4-238.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.21.3 (高性能)",
+            "title": "[Leaf] Minecraft 1.21.3",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.21.3/leaf-1.21.3.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.21.3.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.21.1 (高性能)",
+            "title": "[Leaf] Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.21.1/leaf-1.21.1.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.21.1.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.20.6 (高性能)",
+            "title": "[Leaf] Minecraft 1.20.6",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.20.6/leaf-1.20.6-reobf.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.20.6-reobf.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.20.4 (高性能)",
+            "title": "[Leaf] Minecraft 1.20.4",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.20.4/leaf-1.20.4.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.20.4.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.20.2 (高性能)",
+            "title": "[Leaf] Minecraft 1.20.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.20.2/leaf-1.20.2.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.20.2.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.20.1 (高性能)",
+            "title": "[Leaf] Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.20.1/leaf-1.20.1.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.20.1.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.20 (高性能)",
+            "title": "[Leaf] Minecraft 1.20",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.20.1/leaf-1.20.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.20.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaf",
+            "description": "Minecraft 1.19.3 (高性能)",
+            "title": "[Leaf] Minecraft 1.19.3",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4GB+",
+            "size": "64MB",
+            "remark": "Minecraft Java",
+            "targetLink": "https://gh-proxy.com/https://github.com/Winds-Studio/Leaf/releases/download/ver-1.19.3/leaf-1.19.3.jar",
+            "author": "Dreeam",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaf-1.19.3.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.21.4 Leaves",
+            "title": "Minecraft 1.21.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.21.4-27-7a4d62f/leaves-1.21.4.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.21.4.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.21.3 Leaves",
+            "title": "Minecraft 1.21.3",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.21.3-91-46e8b6c/leaves-1.21.3.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.21.3.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.21.1 Leaves",
+            "title": "Minecraft 1.21.1",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.21.1-ec5a806/leaves-1.21.1.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.21.1.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.20.6 Leaves",
+            "title": "Minecraft 1.20.6",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.20.6-e234432/leaves-1.20.6.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.20.6.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.20.4 Leaves",
+            "title": "Minecraft 1.20.4",
+            "runtime": "JDK 21+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.20.4-e7c14b8/leaves-1.20.4.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.20.4.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.20.2 Leaves",
+            "title": "Minecraft 1.20.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.20.2-10acfe9/leaves-1.20.2.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.20.2.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.20.1 Leaves",
+            "title": "Minecraft 1.20.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.20.1-847357b/leaves-1.20.1.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.20.1.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.19.4 Leaves",
+            "title": "Minecraft 1.19.4",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.19.4-6769d55/leaves-1.19.4.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.19.4.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.19.3 Leaves",
+            "title": "Minecraft 1.19.3",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.19.3-2fe2913/leaves-1.19.3.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.19.3.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.19.2 Leaves",
+            "title": "Minecraft 1.19.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.19.2-98129c8/leaves-1.19.2.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.19.2.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.19.1 Leaves",
+            "title": "Minecraft 1.19.1",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.19.1-3384dee/leaves-1.19.1.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.19.1.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "leaves",
+            "description": "[LeavesMC] Minecraft 1.19 Leaves",
+            "title": "Minecraft 1.19",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "50MB",
+            "remark": "LeavesMC",
+            "targetLink": "https://gh-proxy.com/https://github.com/LeavesMC/Leaves/releases/download/1.19-a941bf6/leaves-1.19.jar",
+            "author": "leavesmc.org",
+            "setupInfo": {
+                "type": "minecraft/java/leaves",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar leaves-1.19.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[原版生存] 朋友联机推荐，1.19.2 版本，快速开服，享受原汁原味的极致生存与探索。",
+            "title": "Minecraft 1.19.2 Java 原版",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 4G+",
+            "size": "140MB",
+            "remark": "支持插件，最低 4GB 内存要求",
+            "targetLink": "http://oss.duzuii.com/d/MCSManager/Minecraft-Server-Software/paper-1.19.2.zip",
+            "author": "MCSManager",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms4096M -Xmx4096M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[整合包] 小型服务器推荐，包含基础插件、箱子锁、操作回滚、领地和商店等插件。",
+            "title": "Minecraft 1.19.2 Java 版整合包",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 6G+",
+            "size": "210MB",
+            "remark": "支持插件，最低 6GB 内存要求",
+            "targetLink": "https://url.alww.top/mcsm/paper1.19.2",
+            "author": "alongw.cn",
+            "setupInfo": {
+                "type": "minecraft/java",
+                "startCommand": "java -Xms6144M -Xmx6144M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[Arclight] 小型服务器推荐，1.19.2 版本，可安装mod，互通基岩版，快速开服，包含ESS、锁箱子、操作回滚、领地商店等基础插件。",
+            "title": "Minecraft 1.19.2",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 6G+",
+            "size": "100MB",
+            "remark": "支持插件，支持mod（Forge），最低 6GB 内存要求",
+            "targetLink": "https://url.alww.top/mcsm/arclight1.19.2",
+            "author": "alongw.cn",
+            "setupInfo": {
+                "type": "minecraft/java/arclight",
+                "startCommand": "java -Xms6144M -Xmx6144M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+        },
+        {
+            "language": "zh_cn",
+            "description": "[整合包/Java&基岩版互通] 小型服务器推荐，互通基岩版，包含基础插件、箱子锁、操作回滚、领地和商店等插件。",
+            "title": "Minecraft 1.19.2 基岩互通版",
+            "runtime": "JDK 17+",
+            "hardware": "RAM 6G+",
+            "size": "230MB",
+            "remark": "支持插件，最低 6GB 内存要求",
+            "targetLink": "https://url.alww.top/mcsm/paper-geyser1.19.2",
+            "author": "alongw.cn",
+            "setupInfo": {
+                "type": "minecraft/java/geyser",
+                "startCommand": "java -Xms6144M -Xmx6144M -jar server.jar nogui",
+                "stopCommand": "stop",
+                "updateCommand": "",
+                "ie": "utf-8",
+                "oe": "utf-8"
+            }
+    ]
+}
