@@ -215,7 +215,7 @@ export function useTerminal() {
           lastCtrlCTime = 0;
         } else {
           lastCtrlCTime = currentTime;
-          term.write(t("\r\n请再按一下 Ctrl+C 生效..."));
+          term.write(t("请再按一下 Ctrl+C 生效..."));
         }
       } else {
         lastCtrlCTime = 0;
