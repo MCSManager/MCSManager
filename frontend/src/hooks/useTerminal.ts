@@ -219,7 +219,7 @@ export function useTerminal() {
         lastCtrlCTime = 0;
       } else {
         lastCtrlCTime = now;
-        term.write(t("请再按一下 Ctrl+C 生效..."));
+        term.write("/r/n" + t("请再按一下 Ctrl+C 生效..."));
       }
     });
 
