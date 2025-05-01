@@ -215,7 +215,7 @@ export function useTerminal() {
           lastCtrlCTime = 0;
         } else {
           lastCtrlCTime = currentTime;
-          term.write("\r\n按下 Ctrl+C 一次，再次按下将中断进程...");
+          term.write(t("\r\n请再按一下 Ctrl+C 生效..."));
         }
       } else {
         lastCtrlCTime = 0;
