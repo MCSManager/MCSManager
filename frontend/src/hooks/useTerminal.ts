@@ -197,33 +197,29 @@ export function useTerminal() {
 
     let lastCtrlCTime = 0;
     const ctrlCTimeThreshold = 500;
+
+    function sendInput(data: string) {
+      socket?.emit("stream/write", {
+        data: { input: data }
+      });
+    }
     term.onData((data) => {
-      if (data === "\x03") {
-        const currentTime = new Date().getTime();
-        if (currentTime - lastCtrlCTime < ctrlCTimeThreshold) {
-          Modal.confirm({
-            title: t("TXT_CODE_893567ac"),
-            content: t("TXT_CODE_6da85509"),
-            onOk: async () => {
-              socket?.emit("stream/write", {
-                data: {
-                  input: data
-                }
-              });
-            }
-          });
-          lastCtrlCTime = 0;
-        } else {
-          lastCtrlCTime = currentTime;
-          term.write(t("请再按一下 Ctrl+C 生效..."));
-        }
-      } else {
+      if (data !== "\x03") {
         lastCtrlCTime = 0;
-        socket?.emit("stream/write", {
-          data: {
-            input: data
-          }
+        return sendInput(data);
+      }
+
+      const now = Date.now();
+      if (now - lastCtrlCTime < ctrlCTimeThreshold) {
+        Modal.confirm({
+          title: t("TXT_CODE_893567ac"),
+          content: t("TXT_CODE_6da85509"),
+          onOk: async () => sendInput(data)
         });
+        lastCtrlCTime = 0;
+      } else {
+        lastCtrlCTime = now;
+        term.write(t("请再按一下 Ctrl+C 生效..."));
       }
     });
 
