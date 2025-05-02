@@ -37,7 +37,7 @@ router.get(
     const page = Number(ctx.query.page);
     const pageSize = Number(ctx.query.page_size);
     const instanceName = ctx.query.instance_name;
-    const status = String(ctx.query.status);
+    const status = ctx.query.status;
     const tag = String(ctx.query.tag);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
     let tagList: string[] = [];

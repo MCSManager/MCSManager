@@ -57,7 +57,7 @@ routerApp.on("instance/select", (ctx, data) => {
   let result = queryWrapper.select<Instance>((v) => {
     if (v.config.tag) allTags.push(...v.config.tag);
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
-    if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
+    if (condition.instanceName && !v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
 

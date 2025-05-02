@@ -56,6 +56,7 @@ export class ProcessConfig {
         unicode: true
       });
       text = text.replace(/ = /gim, "=");
+      text = text.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
       if (this.iProcessConfig.fileName == "server.properties") {
         text = text.replace(/\\\\u/gim, "\\u");
       }
