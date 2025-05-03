@@ -206,8 +206,9 @@ Please ensure that any submitted code adheres to our existing coding style. For 
 
 Thank the following personnel for the security vulnerability patches:
 
-[bddjr](https://github.com/bddjr)
-- https://github.com/MCSManager/MCSManager/pull/1590
+- [bddjr](https://github.com/bddjr)
+  - CNVD-C-2025-217073 https://github.com/MCSManager/MCSManager/pull/1590  
+  - CNVD-C-2025-241734
 
 <br />
 
