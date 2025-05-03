@@ -195,7 +195,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 感谢以下人员提供的安全漏洞补丁：
 
 [bddjr](https://github.com/bddjr)
-- https://github.com/MCSManager/MCSManager/pull/1596
+- https://github.com/MCSManager/MCSManager/pull/1590
 
 
 <br />
