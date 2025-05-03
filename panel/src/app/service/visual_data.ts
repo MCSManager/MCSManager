@@ -1,5 +1,5 @@
 import { logger } from "./log";
-import { systemInfo } from "common";
+import { systemInfo } from "mcsmanager-common";
 import RemoteServiceSubsystem from "./remote_service";
 import RemoteRequest from "./remote_command";
 

@@ -14,8 +14,8 @@ import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask } from "../service/async_task_service/quick_install";
 import { QuickInstallTask } from "../service/async_task_service/quick_install";
-import { toNumber } from "common";
-import { arrayUnique } from "common";
+import { toNumber } from "mcsmanager-common";
+import { arrayUnique } from "mcsmanager-common";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -57,7 +57,7 @@ routerApp.on("instance/select", (ctx, data) => {
   let result = queryWrapper.select<Instance>((v) => {
     if (v.config.tag) allTags.push(...v.config.tag);
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
-    if (!v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
+    if (condition.instanceName && !v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
 

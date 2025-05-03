@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import * as log4js from "log4js";
-import { systemInfo } from "common";
+import { systemInfo } from "mcsmanager-common";
 import { $t } from "../i18n";
 
 const LOG_FILE_PATH = "logs/current.log";

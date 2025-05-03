@@ -1,6 +1,6 @@
 import { ILifeCycleTask } from "../../instance/life_cycle";
 import Instance from "../../instance/instance";
-import { MCServerStatus } from "common";
+import { MCServerStatus } from "mcsmanager-common";
 
 // When the instance is running, continue to check the expiration time
 export default class PingMinecraftServerTask implements ILifeCycleTask {

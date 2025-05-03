@@ -3,7 +3,7 @@ import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import Instance from "../entity/instance/instance";
 
-import { systemInfo } from "common";
+import { systemInfo } from "mcsmanager-common";
 import { getVersion } from "../service/version";
 import { globalConfiguration } from "../entity/config";
 import i18next from "i18next";

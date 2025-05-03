@@ -1,2 +1,2 @@
-import { StorageSubsystem } from "common";
+import { StorageSubsystem } from "mcsmanager-common";
 export default new StorageSubsystem();

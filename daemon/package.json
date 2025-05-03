@@ -1,9 +1,9 @@
 {
   "name": "mcsmanager-daemon",
-  "version": "4.6.0",
+  "version": "4.6.1",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
   "scripts": {
-    "dev": "ts-node --project tsconfig.json src/app.ts",
+    "dev": "npm run build && node --enable-source-maps production/app.js",
     "build": "webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
@@ -27,11 +27,11 @@
     "fs-extra": "^9.0.1",
     "i18next": "^21.8.14",
     "iconv-lite": "^0.6.2",
-    "koa": "^2.15.4",
+    "koa": "^2.16.1",
     "koa-body-patch": "^6.0.1",
     "koa-send": "^5.0.1",
     "log4js": "^6.4.0",
-    "module-alias": "^2.2.3",
+    "mcsmanager-common": "1.1.0",
     "node-schedule": "^2.0.0",
     "node-stream-zip": "^1.15.0",
     "os-utils": "0.0.14",
@@ -58,7 +58,6 @@
     "@types/pidusage": "^2.0.1",
     "@types/ssh2": "^1.11.7",
     "@types/uuid": "^8.3.0",
-    "common": "file:../common",
     "eslint": "^7.13.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.1",
