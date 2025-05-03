@@ -48,7 +48,7 @@ export default class StorageSubsystem {
       throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
     const data = JSON.stringify(object, null, 4);
-    fs.writeFileSync(filePath, data, { encoding: "utf-8" });
+    fs.writeFileSync(filePath, data, { encoding: "utf-8", mode: 0o600 });
   }
 
   // deep copy of the primitive type with the copy target as the prototype

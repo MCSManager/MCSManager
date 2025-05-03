@@ -19,6 +19,14 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 import { removeTrail } from "mcsmanager-common";
+import fs from 'fs'
+
+// Fix CNVD-C-2025-241734
+try {
+  fs.chmodSync(process.cwd(), 0o700)
+} catch (e) {
+  logger.error(e)
+}
 
 function hasParams(name: string) {
   return process.argv.includes(name);

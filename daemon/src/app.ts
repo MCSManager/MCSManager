@@ -18,6 +18,13 @@ import "./service/async_task_service/quick_install";
 import "./service/system_visual_data";
 import { removeTrail } from "mcsmanager-common";
 
+// Fix CNVD-C-2025-241734
+try {
+  fs.chmodSync(process.cwd(), 0o700)
+} catch (e) {
+  logger.error(e)
+}
+
 initVersionManager();
 const VERSION = getVersion();
 

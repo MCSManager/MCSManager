@@ -44,6 +44,9 @@ jobs:
       - name: Create archive
         run: |
           mv dist_linux/ mcsmanager/
+          chmod 700 mcsmanager/web
+          chmod 700 mcsmanager/daemon
+          chmod 700 mcsmanager/
           tar czf mcsmanager_linux_release.tar.gz mcsmanager/
           rm -rf mcsmanager/
           mv dist_windows/ mcsmanager/
