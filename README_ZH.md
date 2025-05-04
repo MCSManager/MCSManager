@@ -192,11 +192,6 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 若发现严重安全漏洞又不便公开发布，请发送邮件至: support@mcsmanager.com，安全问题修复后将在代码中附加漏洞发现者姓名。
 
-感谢以下人员提供的安全漏洞补丁：
-
-[bddjr](https://github.com/bddjr)
-- https://github.com/MCSManager/MCSManager/pull/1590
-
 
 <br />
 
