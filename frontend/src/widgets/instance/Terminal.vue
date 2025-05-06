@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import { t } from "@/lang/i18n";
+import { t, $t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import {
   CloudDownloadOutlined,

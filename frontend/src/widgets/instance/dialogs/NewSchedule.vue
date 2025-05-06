@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { t } from "@/lang/i18n";
+import { t, $t } from "@/lang/i18n";
 import { notification } from "ant-design-vue";
 import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
 import type { Schedule, ScheduleTaskForm } from "@/types";
