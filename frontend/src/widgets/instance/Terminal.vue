@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import { t, $t } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import {
   CloudDownloadOutlined,
@@ -256,7 +256,7 @@ onMounted(async () => {
               >
                 <a-tooltip>
                   <template #title>
-                    {{ $t("TXT_CODE_4a37ec9c") }}
+                    {{ t("TXT_CODE_4a37ec9c") }}
                   </template>
                   <LaptopOutlined />
                 </a-tooltip>

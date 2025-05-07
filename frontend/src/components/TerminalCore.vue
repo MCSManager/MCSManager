@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { t, $t } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import { CodeOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons-vue";
 import { encodeConsoleColor, useTerminal } from "../hooks/useTerminal";
 import { getInstanceOutputLog } from "@/services/apis/instance";
