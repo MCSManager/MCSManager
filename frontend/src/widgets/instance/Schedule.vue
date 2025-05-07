@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { t, $t } from "@/lang/i18n";
+import { t, t as $t } from "@/lang/i18n";
 import { message } from "ant-design-vue";
 import { DeleteOutlined, EditOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
 import CardPanel from "@/components/CardPanel.vue";

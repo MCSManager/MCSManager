@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
-import { SUPPORTED_LANGS, isCN, t, $t } from "@/lang/i18n";
+import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
 import type { LayoutCard, Settings } from "@/types";
 import { onMounted, ref } from "vue";
 import { Modal, message, notification } from "ant-design-vue";
