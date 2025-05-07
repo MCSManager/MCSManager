@@ -213,6 +213,10 @@ const encodeFormData = () => {
   const postData = _.cloneDeep(unref(options));
   if (postData) {
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
+    postData.config.docker.networkAliases = postData.networkAliasesText
+      .split(",")
+      .map((v) => v.trim())
+      .filter((v) => v !== "");
     return postData;
   }
   throw new Error("Ref Options is null");
