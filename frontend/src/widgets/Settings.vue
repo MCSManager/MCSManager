@@ -16,7 +16,8 @@ import {
   MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SafetyOutlined
 } from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
@@ -83,6 +84,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_1c18acc0"),
     key: "ui",
     icon: PicLeftOutlined
+  },
+  {
+    title: t("TXT_CODE_https_settings"),
+    key: "https",
+    icon: SafetyOutlined
   },
   {
     title: t("TXT_CODE_9c3ca8f"),
@@ -364,6 +370,211 @@ onMounted(async () => {
                       {{ t("TXT_CODE_50d471b2") }}
                     </a-button>
                   </a-form-item>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #https>
+            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_https_settings") }}
+              </a-typography-title>
+
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_enable_https") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_desc_1_enable_https") }}
+                        <br />
+                        <strong>{{ t("TXT_CODE_desc_2_enable_https") }}</strong>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).https"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_domain") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_desc_domain") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.domain"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_enforce_https") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_desc_enforce_https") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).enforce_https"
+                      style="max-width: 320px"
+                      :disabled="!(formData as any).https"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_panel_https_port") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_desc_panel_https_port") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.httpsPort"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                      :disabled="!(formData as any).https"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_cert_type") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_desc_cert_type") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).cert_type"
+                      style="max-width: 320px"
+                      :disabled="!(formData as any).https"
+                    >
+                      <a-select-option
+                        v-for="item in [ 'text', 'file_path' ]"
+                        :key="item"
+                        :value="item"
+                      >
+                        {{ t(`TXT_CODE_cert_type_${item}`) }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <div v-if="(formData as any).cert_type == 'text'">
+                    <a-form-item>
+                      <a-typography-title :level="5">{{ t("TXT_CODE_cert") }}</a-typography-title>
+                      <a-typography-paragraph>
+                        <a-typography-text type="secondary">
+                          {{ t("TXT_CODE_desc_cert") }}
+                        </a-typography-text>
+                      </a-typography-paragraph>
+                      <a-textarea
+                        v-model:value="formData.cert"
+                        :rows="4"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                        :disabled="!(formData as any).https"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">{{ t("TXT_CODE_private_key") }}</a-typography-title>
+                      <a-typography-paragraph>
+                        <a-typography-text type="secondary">
+                          {{ t("TXT_CODE_desc_private_key") }}
+                        </a-typography-text>
+                      </a-typography-paragraph>
+                      <a-textarea
+                        v-model:value="formData.key"
+                        :rows="4"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                        :disabled="!(formData as any).https"
+                      />
+                    </a-form-item>
+                  </div>
+                  <div v-else-if="(formData as any).cert_type == 'file_path'">
+                    <a-form-item>
+                      <a-typography-title :level="5">{{ t("TXT_CODE_cert") }}</a-typography-title>
+                      <a-typography-paragraph>
+                        <a-typography-text type="secondary">
+                          {{ t("TXT_CODE_desc_cert") }}
+                        </a-typography-text>
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="formData.cert"
+                        style="max-width: 320px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                        :disabled="!(formData as any).https"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">{{ t("TXT_CODE_private_key") }}</a-typography-title>
+                      <a-typography-paragraph>
+                        <a-typography-text type="secondary">
+                          {{ t("TXT_CODE_desc_private_key") }}
+                        </a-typography-text>
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="formData.key"
+                        style="max-width: 320px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                        :disabled="!(formData as any).https"
+                      />
+                    </a-form-item>
+                  </div>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_min_tls_version") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_desc_min_tls_version") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).min_tls_version"
+                      style="max-width: 320px"
+                      :disabled="!(formData as any).https"
+                    >
+                      <a-select-option
+                        v-for="item in [ 'TLSv1.3', 'TLSv1.2', 'TLSv1.1', 'TLSv1' ]"
+                        :key="item"
+                        :value="item"
+                      >
+                        {{ item }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
                 </a-form>
               </div>
             </div>

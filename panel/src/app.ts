@@ -7,26 +7,29 @@ import { initSystemConfig, systemConfig } from "./app/setting";
 import SystemUser from "./app/service/user_service";
 import SystemRemoteService from "./app/service/remote_service";
 import Koa from "koa";
+import sslify, { xForwardedProtoResolver } from "koa-sslify";
 import { v4 } from "uuid";
 import path from "path";
 import koaBody, { HttpMethodEnum } from "koa-body-patch";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
+import https from "https";
+import fs from "fs";
 import open from "open";
 import { fileLogger, logger } from "./app/service/log";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 import { removeTrail } from "mcsmanager-common";
+import { HttpsOptions } from "index";
 
 function hasParams(name: string) {
   return process.argv.includes(name);
 }
 
-function setupHttp(koaApp: Koa, port: number, host?: string) {
+function setupHttp(koaApp: Koa, port: number, domain?: string, host?: string) {
   const httpServer = http.createServer(koaApp.callback());
-
   httpServer.on("error", (err) => {
     logger.error($t("TXT_CODE_app.httpSetupError"));
     logger.error(err);
@@ -34,16 +37,51 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   });
 
   httpServer.listen(port, host);
-  logger.info("==================================");
   logger.info($t("TXT_CODE_app.panelStarted"));
   logger.info($t("TXT_CODE_app.reference"));
-  logger.info($t("TXT_CODE_app.host", { port }));
+  logger.info($t("TXT_CODE_app.host", { domain: domain || "localhost", port }));
   logger.info($t("TXT_CODE_app.portTip", { port }));
   logger.info($t("TXT_CODE_app.exitTip", { port }));
-  logger.info("==================================");
+}
+function setupHttps(koaApp: Koa, port: number, options: HttpsOptions, host?: string) {
+  const https_options = {
+    cert: "",
+    key: "",
+    minVersion: options.min_tls_version || "TLSv1.2"
+  };
+  const setup = () => {
+    const httpsServer = https.createServer(https_options, koaApp.callback());
+    httpsServer.on("error", (err) => {
+      logger.error($t("TXT_CODE_app.httpsSetupError"));
+      logger.error(err);
+      // process.exit(1);
+    });
 
-  if (os.platform() == "win32" && hasParams("--open")) {
-    open(`http://localhost:${port}/`);
+    httpsServer.listen(port, host);
+    logger.info($t("TXT_CODE_app.panelStarted"));
+    logger.info($t("TXT_CODE_app.reference"));
+    logger.info($t("TXT_CODE_app.httpsHost", { domain: options.domain || "your_domain", port }));
+    logger.info($t("TXT_CODE_app.portTip", { port }));
+    logger.info($t("TXT_CODE_app.exitTip", { port }));
+  }
+  if (options.type == "file_path") {
+    fs.readFile(options.cert, (error, data) => {
+      if (error) {
+        logger.error($t("TXT_CODE_app.httpsSetupCertError", { error }));
+        return;
+      }
+      https_options.cert = data.toString("utf-8");
+
+      fs.readFile(options.key, (error, data) => {
+        if (error) {
+          logger.error($t("TXT_CODE_app.httpsSetupKeyError", { error }));
+          return;
+        }
+        https_options.key = data.toString("utf-8");
+
+        setup();
+      });
+    });
   }
 }
 
@@ -110,6 +148,19 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     // Block all Koa framework level events
     // When Koa is attacked by a short connection flood, it is easy for error messages to swipe the screen, which may indirectly affect the operation of some applications
   });
+
+  if (systemConfig && systemConfig.https && systemConfig.enforce_https) {
+    let inst = null;
+    if (systemConfig.reverseProxyMode) {
+      inst = sslify({ resolver: xForwardedProtoResolver });
+    }
+    else {
+      inst = sslify();
+    }
+
+    app.use(inst);
+    // logger.warn("koa-sslify has been mounted.");
+  }
 
   app.use(
     koaBody({
@@ -194,7 +245,18 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-  if (systemConfig) setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
+  if (systemConfig) {
+    setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
+    if (systemConfig.https) {
+      setupHttps(app, systemConfig.httpsPort, {
+        cert: systemConfig.cert,
+        key: systemConfig.key,
+        min_tls_version: systemConfig.min_tls_version,
+        type: systemConfig.cert_type,
+        domain: systemConfig.domain,
+      }, systemConfig.httpsIp);
+    }
+  }
 }
 
 main().catch((err) => {

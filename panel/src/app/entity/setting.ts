@@ -1,9 +1,22 @@
+import { SecureVersion } from "tls";
+
 // @Entity
 export default class SystemConfig {
   // HTTP service port, IP and path prefix
   httpPort: number = 23333;
   httpIp: string = "";
   prefix: string = "";
+
+  // HTTPS service
+  https: boolean = false;
+  enforce_https: boolean = false;
+  domain: string = "your_domain";
+  httpsPort: number = 23334;
+  httpsIp: string = "";
+  cert_type: "file_path" | "text" = "text";
+  cert: string = "";
+  key: string = "";
+  min_tls_version: SecureVersion = "TLSv1.2"
 
   // reverse proxy mode
   reverseProxyMode: boolean = false;
