@@ -35,6 +35,15 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
     if (config.prefix != null) systemConfig.prefix = config.prefix;
+    if (config.https != null) systemConfig.https = config.https;
+    if (config.enforce_https != null) systemConfig.enforce_https = config.enforce_https;
+    if (config.domain != null) systemConfig.domain = config.domain;
+    if (config.httpsPort != null) systemConfig.httpsPort = config.httpsPort;
+    if (config.httpsIp != null) systemConfig.httpsIp = config.httpsIp;
+    if (config.cert_type != null) systemConfig.cert_type = config.cert_type;
+    if (config.cert != null) systemConfig.cert = config.cert;
+    if (config.key != null) systemConfig.key = config.key;
+    if (config.min_tls_version != null) systemConfig.min_tls_version = config.min_tls_version;
     if (config.reverseProxyMode != null) {
       systemConfig.reverseProxyMode = Boolean(config.reverseProxyMode);
       ctx.app.proxy = systemConfig.reverseProxyMode;
