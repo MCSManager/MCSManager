@@ -152,12 +152,17 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   });
 
   if (systemConfig && systemConfig.https && systemConfig.enforce_https) {
+    const options = {
+      hostname: systemConfig.domain,
+      port: systemConfig.httpsPort,
+      temprary: false
+    };
     let inst = null;
     if (systemConfig.reverseProxyMode) {
-      inst = sslify({ resolver: xForwardedProtoResolver });
+      inst = sslify({ resolver: xForwardedProtoResolver, ...options });
     }
     else {
-      inst = sslify();
+      inst = sslify(options);
     }
 
     app.use(inst);
