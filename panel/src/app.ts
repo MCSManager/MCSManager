@@ -82,7 +82,9 @@ function setupHttps(koaApp: Koa, port: number, options: HttpsOptions, host?: str
         setup();
       });
     });
+    return;
   }
+  setup();
 }
 
 async function processExit() {
