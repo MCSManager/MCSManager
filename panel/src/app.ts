@@ -45,8 +45,8 @@ function setupHttp(koaApp: Koa, port: number, domain?: string, host?: string) {
 }
 function setupHttps(koaApp: Koa, port: number, options: HttpsOptions, host?: string) {
   const https_options = {
-    cert: "",
-    key: "",
+    cert: options.cert,
+    key: options.key,
     minVersion: options.min_tls_version || "TLSv1.2"
   };
   const setup = () => {
@@ -255,6 +255,15 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         type: systemConfig.cert_type,
         domain: systemConfig.domain,
       }, systemConfig.httpsIp);
+
+      if (os.platform() == "win32" && hasParams("--open")) {
+        open(systemConfig.domain ? `https://${systemConfig.domain}:${systemConfig.httpsPort}` : `http://localhost:${systemConfig.httpPort}`);
+      }
+    }
+    else {
+      if (os.platform() == "win32" && hasParams("--open")) {
+        open(`http://localhost:${systemConfig.httpPort}`);
+      }
     }
   }
 }
