@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import type { Dayjs } from "dayjs";
 import type { INSTANCE_STATUS_CODE, ScheduleCreateType } from "./const";
+import type { SecureVersion } from "tls";
 
 export type JsonData = IJsonData;
 export type MapData<T> = IMapData<T>;
@@ -49,6 +50,15 @@ export interface NodeStatus {
 export interface Settings {
   httpPort: number;
   httpIp: any;
+  https: boolean;
+  enforce_https: boolean;
+  domain: string;
+  httpsPort: number;
+  httpsIp: string;
+  cert_type: "file_path" | "text";
+  cert: string;
+  key: string;
+  min_tls_version: SecureVersion;
   reverseProxyMode: boolean;
   dataPort: number;
   forwardType: number;
