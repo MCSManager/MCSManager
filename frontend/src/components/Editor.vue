@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, onMounted, watch } from "vue";
+import { t } from "@/lang/i18n";
 import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { StreamLanguage, LanguageSupport } from "@codemirror/language";
@@ -29,121 +30,130 @@ const DOM_ID = `file-editor-${uuid}`;
 const { isPhone } = useScreen();
 
 const props = defineProps<{
-    text: string;
-    height: string;
-    filename: string;
+  text: string;
+  height: string;
+  filename: string;
 }>();
 
-// 字体配置
 const baseFontSize = isPhone.value ? "14px" : "15px";
 const lineHeight = isPhone.value ? "22px" : "24px";
 
-// 优化语言检测
 const getLanguageExtension = () => {
-    const ext = getFileExtName(props.filename);
-    const languagesMap = [
-        {
-            name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
-            plugin: () => javascript({ jsx: true, typescript: ext === "ts" })
-        },
-        {
-            name: ["json", "json5"],
-            plugin: () => [
-                json(),
-                lintGutter(),
-                linter(jsonParseLinter())
-            ]
-        },
-        {
-            name: ["xml"],
-            plugin: () => xml()
-        },
-        {
-            name: ["css", "less", "scss"],
-            plugin: () => css()
-        },
-        {
-            name: ["html", "vue"],
-            plugin: () => html()
-        },
-        {
-            name: ["yaml", "yml", "toml"],
-            plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
-        },
-        {
-            name: ["properties", "ini"],
-            plugin: () => new LanguageSupport(StreamLanguage.define(propertiesMode.properties))
-        },
-        {
-            name: ["shell", "sh", "bat", "cmd"],
-            plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
-        },
-        {
-            name: ["py", "pyi", "pyw"],
-            plugin: () => python()
-        }
-    ];
+  const ext = getFileExtName(props.filename);
+  const languagesMap = [
+    {
+      name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
+      plugin: () => javascript({ jsx: true, typescript: ext === "ts" })
+    },
+    {
+      name: ["json", "json5"],
+      plugin: () => [
+        json(),
+        lintGutter(),
+        linter(jsonParseLinter())
+      ]
+    },
+    {
+      name: ["xml"],
+      plugin: () => xml()
+    },
+    {
+      name: ["css", "less", "scss"],
+      plugin: () => css()
+    },
+    {
+      name: ["html", "vue"],
+      plugin: () => html()
+    },
+    {
+      name: ["yaml", "yml", "toml"],
+      plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
+    },
+    {
+      name: ["properties", "ini"],
+      plugin: () => new LanguageSupport(StreamLanguage.define(propertiesMode.properties))
+    },
+    {
+      name: ["shell", "sh", "bat", "cmd"],
+      plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
+    },
+    {
+      name: ["py", "pyi", "pyw"],
+      plugin: () => python()
+    }
+  ];
 
-    return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? javascript();
+  return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? javascript();
 };
 
-// 编辑器实例
 let editor: EditorView | null = null;
 let editableCompartment: Compartment;
 const Editable = ref(true);
 
-// 初始化编辑器
 const initEditor = () => {
-    editableCompartment = new Compartment();
-    const startState = EditorState.create({
-        doc: props.text,
-        extensions: [
-            basicSetup,
-            tokyoNight,
-            getLanguageExtension(),
-            EditorView.lineWrapping,
-            // 添加字体主题配置
-            EditorView.theme({
-                "&": {
-                    fontSize: baseFontSize,
-                    lineHeight: lineHeight,
-                },
-                ".cm-content": {
-                    fontSize: baseFontSize,
-                    lineHeight: lineHeight,
-                },
-                ".cm-gutter": {
-                    fontSize: baseFontSize,
-                    lineHeight: lineHeight,
-                },
-                // 添加错误波浪线样式
-                ".cm-lintRange-error": {
-                    backgroundImage: "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23dc3545'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\")",
-                    backgroundRepeat: "repeat-x",
-                    backgroundPosition: "bottom left"
-                }
-            }),
-            EditorView.updateListener.of((update) => {
-                if (!update.changes.empty && Editable.value) {
-                    emit("update:text", update.state.doc.toString());
-                }
-            }),
-            editableCompartment.of(EditorView.editable.of(Editable.value))
-        ]
-    });
+  editableCompartment = new Compartment();
+  const startState = EditorState.create({
+    doc: props.text,
+    extensions: [
+      basicSetup,
+      tokyoNight,
+      getLanguageExtension(),
+      EditorView.lineWrapping,
+      EditorView.theme({
+        "&": {
+          fontSize: baseFontSize,
+          lineHeight: lineHeight,
+        },
+        ".cm-content": {
+          fontSize: baseFontSize,
+          lineHeight: lineHeight,
+          padding: "0 8px 0 12px!important",
+        },
+        ".cm-gutters": {
+          backgroundColor: "#1a1a1c",
+          color: "#666672",
+          borderRight: "1px solid #38383a",
+          minWidth: "3.2em",
+          padding: "0 4px"
+        },
+        ".cm-gutterElement": {
+          padding: "0 4px 0 0",
+          justifyContent: "flex-end"
+        },
+        ".cm-activeLineGutter": {
+          backgroundColor: "#2a2a2e",
+          color: "#fff"
+        },
+        ".cm-lineNumbers .cm-gutterElement": {
+          fontFamily: "Menlo, Monaco, Consolas, 'Courier New', monospace"
+        },
+        ".cm-lintRange-error": {
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23dc3545'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\")",
+          backgroundRepeat: "repeat-x",
+          backgroundPosition: "bottom left",
+          backgroundSize: "auto 3px"
+        }
+      }),
+      EditorView.updateListener.of((update) => {
+        if (!update.changes.empty && Editable.value) {
+          emit("update:text", update.state.doc.toString());
+        }
+      }),
+      editableCompartment.of(EditorView.editable.of(Editable.value))
+    ]
+  });
 
-    const parentElement = document.getElementById(DOM_ID);
-    if (!parentElement) {
-        console.error(`Editor container #${DOM_ID} not found.`);
-        return;
-    }
-    editor = new EditorView({
-        state: startState,
-        parent: parentElement,
-    });
+  const parentElement = document.getElementById(DOM_ID);
+  if (!parentElement) {
+    console.error(`Editor container #${DOM_ID} not found.`);
+    return;
+  }
+  editor = new EditorView({
+    state: startState,
+    parent: parentElement,
+  });
 };
 
-// 生命周期管理
 onMounted(initEditor);
 onBeforeUnmount(() => editor?.destroy());
 watch(Editable, (newVal) => {
@@ -158,7 +168,7 @@ watch(Editable, (newVal) => {
 <template>
   <div class="editor-container">
     <div class="mode-switcher">
-      <span class="mode-label">{{ Editable ? '读写' : '只读' }}</span>
+      <span class="mode-label">{{ Editable ? 't("读写")' : 't("只读")' }}</span>
       <a-switch 
         v-model:checked="Editable" 
         class="mode-switch"
@@ -176,32 +186,35 @@ watch(Editable, (newVal) => {
   display: flex;
   flex-direction: column;
   background: #1e1e1e;
+  border-radius: 6px;
+  overflow: hidden;
 
-  // 移动端优化
   @media (max-width: 768px) {
-    height: 60vh; // 改用视口高度
-    touch-action: pan-y; // 启用垂直触摸滑动
+    height: 60vh;
+    touch-action: pan-y;
   }
 }
 
 .mode-switcher {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 8px;
+  right: 8px;
   z-index: 100;
   display: flex;
   align-items: center;
-  padding: 4px 8px;
-  background: rgba(37, 37, 38, 0.9);
+  padding: 6px 12px;
+  background: rgba(37, 37, 38, 0.95);
   border-radius: 4px;
   backdrop-filter: blur(8px);
   border: 1px solid #3c3c3c;
-  gap: 6px;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   
   .mode-label {
     font-size: 12px;
     color: #d4d4d4;
     line-height: 1;
+    font-weight: 500;
   }
   
   .mode-switch {
@@ -209,10 +222,16 @@ watch(Editable, (newVal) => {
       width: 40px;
       min-width: 40px;
       background: #3c3c3c;
+      &-checked {
+        background: #1890ff;
+      }
     }
     :deep(.ant-switch-handle) {
       width: 16px;
       height: 16px;
+      &::before {
+        border-radius: 8px;
+      }
     }
   }
 }
@@ -220,14 +239,16 @@ watch(Editable, (newVal) => {
 .file-editor {
   flex: 1;
   overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
   
-  // 移动端滚动优化
   @media (max-width: 768px) {
-    -webkit-overflow-scrolling: touch;
-    overflow: auto;
-    
     .cm-content {
-      min-height: calc(100% + 100px); // 增加可滚动区域
+      min-height: calc(100% + 100px);
+      padding: 0 8px 0 8px!important;
+    }
+    .cm-gutters {
+      font-size: 13px!important;
     }
   }
 }
@@ -242,7 +263,7 @@ watch(Editable, (newVal) => {
     line-height: 22px !important;
     
     .cm-gutters {
-      font-size: 14px !important;
+      font-size: 13px !important;
     }
   }
 }
