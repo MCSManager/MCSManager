@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from "vue";
-import { EditorView, basicSetup } from "codemirror";
+import { ref, onBeforeUnmount, onMounted, watch } from "vue";
+import { EditorView } from "@codemirror/view";
+import { basicSetup } from "codemirror";
 import { StreamLanguage, LanguageSupport } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
@@ -9,134 +10,240 @@ import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { xml } from "@codemirror/lang-xml";
 import { getFileExtName } from "@/tools/fileManager";
-import { EditorState } from "@codemirror/state";
+import { EditorState, Compartment } from "@codemirror/state";
+import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { getRandomId } from "@/tools/randId";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
 import { useScreen } from "../hooks/useScreen";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import { dracula, draculaInit } from "@uiw/codemirror-theme-dracula";
+import { linter } from "@codemirror/lint";
+import { jsonParseLinter } from "@codemirror/lang-json";
+import { lintGutter } from "@codemirror/lint";
 
 const { isDarkTheme } = useAppConfigStore();
-
 const emit = defineEmits(["update:text"]);
-
 const uuid = getRandomId();
 const DOM_ID = `file-editor-${uuid}`;
-
 const { isPhone } = useScreen();
 
 const props = defineProps<{
-  text: string;
-  height: string;
-  filename: string;
+    text: string;
+    height: string;
+    filename: string;
 }>();
 
-const theme = EditorView.theme({
-  $: {
-    fontSize: "12px"
-  },
-  ".cm-gutters": {
-    "background-color": "var(--color-gray-4)",
-    display: isPhone.value ? "none" : "flex",
-    "border-right": "1px solid var(--color-gray-5)"
-  },
-  ".cm-scroller": {
-    overflow: "auto",
-    height: props.height
-  },
-  ".cm-content": {
-    "background-color": `rgba($color:var(--color-gray-4),$alpha:${isDarkTheme() ? 0.8 : 0.5})`
-  }
-  // ".cm-wrap": {
-  //   height: props.height,
-  //   border: "1px solid silver"
-  // }
-});
+// 字体配置
+const baseFontSize = isPhone.value ? "14px" : "15px";
+const lineHeight = isPhone.value ? "22px" : "24px";
 
+// 优化语言检测
 const getLanguageExtension = () => {
-  const ext = getFileExtName(props.filename);
-  const languagesMap = [
-    {
-      name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
-      plugin: () => javascript()
-    },
-    {
-      name: ["json", "json5"],
-      plugin: () => json()
-    },
-    {
-      name: ["xml"],
-      plugin: () => xml()
-    },
-    {
-      name: ["css", "less", "scss"],
-      plugin: () => css()
-    },
-    {
-      name: ["html", "vue"],
-      plugin: () => html()
-    },
-    {
-      name: ["yaml", "yml", "toml"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
-    },
-    {
-      name: ["properties", "ini"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(propertiesMode.properties))
-    },
-    {
-      name: ["shell", "sh", "bat", "cmd"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
-    },
-    {
-      name: ["py", "pyi", "pyw"],
-      plugin: () => python()
-    }
-  ];
+    const ext = getFileExtName(props.filename);
+    const languagesMap = [
+        {
+            name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
+            plugin: () => javascript({ jsx: true, typescript: ext === "ts" })
+        },
+        {
+            name: ["json", "json5"],
+            plugin: () => [
+                json(),
+                lintGutter(),
+                linter(jsonParseLinter())
+            ]
+        },
+        {
+            name: ["xml"],
+            plugin: () => xml()
+        },
+        {
+            name: ["css", "less", "scss"],
+            plugin: () => css()
+        },
+        {
+            name: ["html", "vue"],
+            plugin: () => html()
+        },
+        {
+            name: ["yaml", "yml", "toml"],
+            plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
+        },
+        {
+            name: ["properties", "ini"],
+            plugin: () => new LanguageSupport(StreamLanguage.define(propertiesMode.properties))
+        },
+        {
+            name: ["shell", "sh", "bat", "cmd"],
+            plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
+        },
+        {
+            name: ["py", "pyi", "pyw"],
+            plugin: () => python()
+        }
+    ];
 
-  const info = languagesMap.filter((item) => item.name.includes(ext))?.[0];
-  if (!info) return null;
-  return info?.plugin();
+    return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? javascript();
 };
 
-let editor: EditorView;
+// 编辑器实例
+let editor: EditorView | null = null;
+let editableCompartment: Compartment;
+const Editable = ref(true);
+
+// 初始化编辑器
 const initEditor = () => {
-  const extLang = getLanguageExtension();
-  const startState = EditorState.create({
-    doc: props.text,
-    extensions: [
-      basicSetup,
-      theme,
-      dracula,
-      extLang ? extLang : javascript(),
-      EditorView.updateListener.of(function (e) {
-        const text = e.view.state.doc.toString();
-        emit("update:text", text);
-      })
-    ]
-  });
+    editableCompartment = new Compartment();
+    const startState = EditorState.create({
+        doc: props.text,
+        extensions: [
+            basicSetup,
+            tokyoNight,
+            getLanguageExtension(),
+            EditorView.lineWrapping,
+            // 添加字体主题配置
+            EditorView.theme({
+                "&": {
+                    fontSize: baseFontSize,
+                    lineHeight: lineHeight,
+                },
+                ".cm-content": {
+                    fontSize: baseFontSize,
+                    lineHeight: lineHeight,
+                },
+                ".cm-gutter": {
+                    fontSize: baseFontSize,
+                    lineHeight: lineHeight,
+                },
+                // 添加错误波浪线样式
+                ".cm-lintRange-error": {
+                    backgroundImage: "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23dc3545'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\")",
+                    backgroundRepeat: "repeat-x",
+                    backgroundPosition: "bottom left"
+                }
+            }),
+            EditorView.updateListener.of((update) => {
+                if (!update.changes.empty && Editable.value) {
+                    emit("update:text", update.state.doc.toString());
+                }
+            }),
+            editableCompartment.of(EditorView.editable.of(Editable.value))
+        ]
+    });
 
-  editor = new EditorView({
-    state: startState,
-    parent: document.getElementById(DOM_ID) as HTMLElement
-  });
+    const parentElement = document.getElementById(DOM_ID);
+    if (!parentElement) {
+        console.error(`Editor container #${DOM_ID} not found.`);
+        return;
+    }
+    editor = new EditorView({
+        state: startState,
+        parent: parentElement,
+    });
 };
 
-onMounted(() => {
-  initEditor();
-});
-
-onBeforeUnmount(() => {
-  editor?.destroy();
+// 生命周期管理
+onMounted(initEditor);
+onBeforeUnmount(() => editor?.destroy());
+watch(Editable, (newVal) => {
+  if (editor) {
+    editor.dispatch({
+      effects: editableCompartment.reconfigure(EditorView.editable.of(newVal))
+    });
+  }
 });
 </script>
 
 <template>
   <div class="editor-container">
+    <div class="mode-switcher">
+      <span class="mode-label">{{ Editable ? '读写' : '只读' }}</span>
+      <a-switch 
+        v-model:checked="Editable" 
+        class="mode-switch"
+        size="small"
+      />
+    </div>
     <div :id="DOM_ID" class="file-editor"></div>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.editor-container {
+  position: relative;
+  height: v-bind('props.height');
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+
+  // 移动端优化
+  @media (max-width: 768px) {
+    height: 60vh; // 改用视口高度
+    touch-action: pan-y; // 启用垂直触摸滑动
+  }
+}
+
+.mode-switcher {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: rgba(37, 37, 38, 0.9);
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+  border: 1px solid #3c3c3c;
+  gap: 6px;
+  
+  .mode-label {
+    font-size: 12px;
+    color: #d4d4d4;
+    line-height: 1;
+  }
+  
+  .mode-switch {
+    :deep(.ant-switch) {
+      width: 40px;
+      min-width: 40px;
+      background: #3c3c3c;
+    }
+    :deep(.ant-switch-handle) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.file-editor {
+  flex: 1;
+  overflow: hidden;
+  
+  // 移动端滚动优化
+  @media (max-width: 768px) {
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
+    
+    .cm-content {
+      min-height: calc(100% + 100px); // 增加可滚动区域
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-container {
+    border-radius: 0;
+  }
+  
+  .file-editor {
+    font-size: 14px !important;
+    line-height: 22px !important;
+    
+    .cm-gutters {
+      font-size: 14px !important;
+    }
+  }
+}
+</style>
