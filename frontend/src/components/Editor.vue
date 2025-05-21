@@ -188,10 +188,10 @@ watch(Editable, (newVal) => {
   background: #1e1e1e;
   border-radius: 6px;
   overflow: hidden;
+  touch-action: pan-y;
 
   @media (max-width: 768px) {
     height: 60vh;
-    touch-action: pan-y;
   }
 }
 
@@ -222,9 +222,11 @@ watch(Editable, (newVal) => {
       width: 40px;
       min-width: 40px;
       background: #3c3c3c;
-      &-checked {
-        background: #1890ff;
-      }
+    }
+    :deep(.ant-switch-checked) {
+      width: 40px;
+      min-width: 40px;
+      background: #1890ff;
     }
     :deep(.ant-switch-handle) {
       width: 16px;
