@@ -102,22 +102,18 @@ const initEditor = () => {
       EditorView.theme({
         "&": {
           fontSize: baseFontSize,
-          lineHeight: lineHeight,
+          lineHeight: lineHeight
         },
         ".cm-content": {
           fontSize: baseFontSize,
-          lineHeight: lineHeight,
-          padding: "0 8px 0 12px!important",
+          lineHeight: lineHeight
         },
         ".cm-gutters": {
           backgroundColor: "#1a1a1c",
           color: "#666672",
-          borderRight: "1px solid #38383a",
-          minWidth: "3.2em",
-          padding: "0 4px"
+          borderRight: "1px solid #c1c1d1"
         },
         ".cm-gutterElement": {
-          padding: "0 4px 0 0",
           justifyContent: "flex-end"
         },
         ".cm-activeLineGutter": {
@@ -130,8 +126,7 @@ const initEditor = () => {
         ".cm-lintRange-error": {
           backgroundImage: "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23dc3545'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\")",
           backgroundRepeat: "repeat-x",
-          backgroundPosition: "bottom left",
-          backgroundSize: "auto 3px"
+          backgroundPosition: "bottom left"
         }
       }),
       EditorView.updateListener.of((update) => {
