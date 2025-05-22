@@ -107,7 +107,7 @@ const initEditor = () => {
         ".cm-content": {
           fontSize: baseFontSize,
           lineHeight: lineHeight,
-          border-left: "2px solid #fbfbfb"
+          "border-left": "2px solid #fbfbfb"
         },
         ".cm-gutters": {
           backgroundColor: "#1a1a1c",
