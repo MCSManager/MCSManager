@@ -106,12 +106,12 @@ const initEditor = () => {
         },
         ".cm-content": {
           fontSize: baseFontSize,
-          lineHeight: lineHeight
+          lineHeight: lineHeight,
+          border-left: "2px solid #fbfbfb"
         },
         ".cm-gutters": {
           backgroundColor: "#1a1a1c",
-          color: "#666672",
-          borderRight: "1px solid #c1c1d1"
+          color: "#666672"
         },
         ".cm-gutterElement": {
           justifyContent: "flex-end"
