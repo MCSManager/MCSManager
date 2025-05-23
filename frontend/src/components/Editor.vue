@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount, onMounted, watch } from "vue";
-import { t } from "@/lang/i18n";
+import { ref, onBeforeUnmount, onMounted } from "vue";
 import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { StreamLanguage, LanguageSupport } from "@codemirror/language";
@@ -11,8 +10,8 @@ import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { xml } from "@codemirror/lang-xml";
 import { getFileExtName } from "@/tools/fileManager";
-import { EditorState, Compartment } from "@codemirror/state";
-import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
+import { EditorState, StateEffect } from "@codemirror/state";
+import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { getRandomId } from "@/tools/randId";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
@@ -35,233 +34,212 @@ const props = defineProps<{
   filename: string;
 }>();
 
-const baseFontSize = isPhone.value ? "14px" : "15px";
-const lineHeight = isPhone.value ? "22px" : "24px";
+const editorContainer = ref<HTMLElement>();
+let startDistance = 0;
+let startScale = 1;
+const MAX_SCALE = 1.25;
+const MIN_SCALE = 0.4;
+const baseFontSize = isPhone.value ? 14 : 15;
+const baseLineHeight = isPhone.value ? 22 : 24;
+const currentFontSize = ref(baseFontSize);
+const currentLineHeight = ref(baseLineHeight);
+let scale = 1;
+let animationFrameId = 0;
+
+const jsonLintExtensions = [
+  lintGutter(),
+  linter(jsonParseLinter())
+];
 
 const getLanguageExtension = () => {
   const ext = getFileExtName(props.filename);
+  const isJSON = ["json", "json5"].includes(ext);
+  
   const languagesMap = [
-    {
-      name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
-      plugin: () => javascript({ jsx: true, typescript: ext === "ts" })
-    },
-    {
-      name: ["json", "json5"],
-      plugin: () => [
-        json(),
-        lintGutter(),
-        linter(jsonParseLinter())
-      ]
-    },
-    {
-      name: ["xml"],
-      plugin: () => xml()
-    },
-    {
-      name: ["css", "less", "scss"],
-      plugin: () => css()
-    },
-    {
-      name: ["html", "vue"],
-      plugin: () => html()
-    },
-    {
-      name: ["yaml", "yml", "toml"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml))
-    },
-    {
-      name: ["properties", "ini"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(propertiesMode.properties))
-    },
-    {
-      name: ["shell", "sh", "bat", "cmd"],
-      plugin: () => new LanguageSupport(StreamLanguage.define(shellMode.shell))
-    },
-    {
-      name: ["py", "pyi", "pyw"],
-      plugin: () => python()
-    }
+    { name: ["json", "json5"], plugin: () => [json(), ...(isJSON ? jsonLintExtensions : [])] },
+    { name: ["js", "jsx", "ts", "tsx", "mjs", "djs"], plugin: () => [javascript({ jsx: true, typescript: ext === "ts" })] },
+    { name: ["xml"], plugin: () => [xml()] },
+    { name: ["css", "less", "scss"], plugin: () => [css()] },
+    { name: ["html", "vue"], plugin: () => [html()] },
+    { name: ["yaml", "yml", "toml"], plugin: () => [new LanguageSupport(StreamLanguage.define(yamlMode.yaml))] },
+    { name: ["properties", "ini"], plugin: () => [new LanguageSupport(StreamLanguage.define(propertiesMode.properties))] },
+    { name: ["shell", "sh", "bat", "cmd"], plugin: () => [new LanguageSupport(StreamLanguage.define(shellMode.shell))] },
+    { name: ["py", "pyi", "pyw"], plugin: () => [python()] }
   ];
 
-  return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? javascript();
+  return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? [javascript()];
 };
 
 let editor: EditorView | null = null;
-let editableCompartment: Compartment;
-const Editable = ref(true);
+
+const createThemeExtension = () => {
+  return EditorView.theme({
+    "&": { 
+      fontSize: `${currentFontSize.value}px`,
+      lineHeight: `${currentLineHeight.value}px`,
+      "--cm-lint-marker-error-color": "#dc3545"
+    },
+    ".cm-content": {
+      fontSize: `${currentFontSize.value}px`,
+      lineHeight: `${currentLineHeight.value}px`,
+      "border-left": "1px solid #fbfbfb"
+    },
+    ".cm-gutters": {
+      backgroundColor: "#1a1a1c",
+      color: "#666672",
+      fontSize: `${currentFontSize.value}px`,
+      minWidth: `${currentFontSize.value * 3}px`
+    }
+  });
+};
+
+const baseExtensions = [
+  basicSetup,
+  tokyoNight,
+  EditorView.lineWrapping,
+  EditorView.updateListener.of(update => {
+    if (!update.changes.empty) emit("update:text", update.state.doc.toString());
+  })
+];
+
+const updateEditor = () => {
+  if (!editor) return;
+  editor.dispatch({
+    effects: StateEffect.reconfigure.of([
+      ...baseExtensions,
+      ...getLanguageExtension(),
+      createThemeExtension()
+    ])
+  });
+};
 
 const initEditor = () => {
-  editableCompartment = new Compartment();
   const startState = EditorState.create({
     doc: props.text,
     extensions: [
-      basicSetup,
-      tokyoNight,
-      getLanguageExtension(),
-      EditorView.lineWrapping,
-      EditorView.theme({
-        "&": {
-          fontSize: baseFontSize,
-          lineHeight: lineHeight
-        },
-        ".cm-content": {
-          fontSize: baseFontSize,
-          lineHeight: lineHeight,
-          "border-left": "1px solid #fbfbfb"
-        },
-        ".cm-gutters": {
-          backgroundColor: "#1a1a1c",
-          color: "#666672"
-        },
-        ".cm-gutterElement": {
-          justifyContent: "flex-end"
-        },
-        ".cm-activeLineGutter": {
-          backgroundColor: "#2a2a2e",
-          color: "#fff"
-        },
-        ".cm-lineNumbers .cm-gutterElement": {
-          fontFamily: "Menlo, Monaco, Consolas, 'Courier New', monospace"
-        },
-        ".cm-lintRange-error": {
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23dc3545'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\")",
-          backgroundRepeat: "repeat-x",
-          backgroundPosition: "bottom left"
-        }
-      }),
-      EditorView.updateListener.of((update) => {
-        if (!update.changes.empty && Editable.value) {
-          emit("update:text", update.state.doc.toString());
-        }
-      }),
-      editableCompartment.of(EditorView.editable.of(Editable.value))
+      ...baseExtensions,
+      ...getLanguageExtension(),
+      createThemeExtension()
     ]
   });
 
   const parentElement = document.getElementById(DOM_ID);
-  if (!parentElement) {
-    console.error(`Editor container #${DOM_ID} not found.`);
-    return;
-  }
-  editor = new EditorView({
-    state: startState,
-    parent: parentElement,
-  });
+  if (!parentElement) return;
+  editor = new EditorView({ state: startState, parent: parentElement });
 };
 
-onMounted(initEditor);
-onBeforeUnmount(() => editor?.destroy());
-watch(Editable, (newVal) => {
-  if (editor) {
-    editor.dispatch({
-      effects: editableCompartment.reconfigure(EditorView.editable.of(newVal))
+const handleTouchMove = (e: TouchEvent) => {
+  if (e.touches.length === 2 && editorContainer.value) {
+    e.preventDefault();
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = requestAnimationFrame(() => {
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const currentDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      
+      if (startDistance > 0) {
+        const scaleFactor = currentDistance / startDistance;
+        const newScale = startScale * scaleFactor;
+        scale = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
+        
+        currentFontSize.value = Math.round(baseFontSize * scale);
+        currentLineHeight.value = Math.round(baseLineHeight * scale);
+        
+        updateEditor();
+      }
     });
   }
+};
+
+const handleTouchStart = (e: TouchEvent) => {
+  if (e.touches.length === 2) {
+    const t1 = e.touches[0];
+    const t2 = e.touches[1];
+    startDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    startScale = scale;
+  }
+};
+
+const handleTouchEnd = () => {
+  startDistance = 0;
+  cancelAnimationFrame(animationFrameId);
+};
+
+onMounted(() => {
+  initEditor();
+  const container = editorContainer.value;
+  if (container) {
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('touchcancel', handleTouchEnd);
+  }
+});
+
+onBeforeUnmount(() => {
+  const container = editorContainer.value;
+  if (container) {
+    container.removeEventListener('touchstart', handleTouchStart);
+    container.removeEventListener('touchmove', handleTouchMove);
+    container.removeEventListener('touchend', handleTouchEnd);
+    container.removeEventListener('touchcancel', handleTouchEnd);
+  }
+  if (editor) {
+    editor.destroy();
+    editor = null;
+  }
+  cancelAnimationFrame(animationFrameId);
 });
 </script>
 
 <template>
-  <div class="editor-container">
-    <div class="mode-switcher">
-      <span class="mode-label">{{ Editable ? 't("读写")' : 't("只读")' }}</span>
-      <a-switch 
-        v-model:checked="Editable" 
-        class="mode-switch"
-        size="small"
-      />
+  <div class="editor-wrapper">
+    <div class="editor-container" ref="editorContainer">
+      <div :id="DOM_ID" class="file-editor"></div>
     </div>
-    <div :id="DOM_ID" class="file-editor"></div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.editor-container {
-  position: relative;
+.editor-wrapper {
   height: v-bind('props.height');
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
   background: #1e1e1e;
   border-radius: 6px;
-  overflow: hidden;
   touch-action: pan-y;
 
   @media (max-width: 768px) {
     height: 60vh;
+    border-radius: 0;
   }
 }
 
-.mode-switcher {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  background: rgba(37, 37, 38, 0.95);
-  border-radius: 4px;
-  backdrop-filter: blur(8px);
-  border: 1px solid #3c3c3c;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  
-  .mode-label {
-    font-size: 12px;
-    color: #d4d4d4;
-    line-height: 1;
-    font-weight: 500;
-  }
-  
-  .mode-switch {
-    :deep(.ant-switch) {
-      width: 40px;
-      min-width: 40px;
-      background: #3c3c3c;
-    }
-    :deep(.ant-switch-checked) {
-      width: 40px;
-      min-width: 40px;
-      background: #1890ff;
-    }
-    :deep(.ant-switch-handle) {
-      width: 16px;
-      height: 16px;
-      &::before {
-        border-radius: 8px;
-      }
-    }
-  }
+.editor-container {
+  min-height: 100%;
+  padding: 12px;
+  transform-origin: 0 0;
 }
 
 .file-editor {
-  flex: 1;
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  overflow: auto;
-  
-  @media (max-width: 768px) {
-    .cm-content {
-      min-height: calc(100% + 100px);
-      padding: 0 8px 0 8px!important;
-    }
-    .cm-gutters {
-      font-size: 13px!important;
-    }
+  :deep(.cm-editor) {
+    min-height: calc(v-bind('props.height') - 24px);
+    transition: font-size 0.1s ease-out;
   }
-}
 
-@media (max-width: 768px) {
-  .editor-container {
-    border-radius: 0;
+  :deep(.cm-lint-marker-error) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc3545'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+    width: calc(1em * 1.2);
+    height: calc(1em * 1.2);
+    background-size: contain;
+    margin-left: 0.2em;
+    transition: all 0.1s ease-out;
   }
-  
-  .file-editor {
-    font-size: 14px !important;
-    line-height: 22px !important;
-    
-    .cm-gutters {
-      font-size: 13px !important;
-    }
+
+  :deep(.cm-lintRange-error) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3'%3E%3Cg fill='%23dc3545'%3E%3Cpolygon points='5.5,0 2.5,3 1.1,3 4.1,0'/%3E%3Cpolygon points='4,0 6,2 6,0.6 5.4,0'/%3E%3Cpolygon points='0,2 1,3 2.4,3 0,0.6'/%3E%3C/g%3E%3C/svg%3E");
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    background-size: auto calc(0.15em + 1px);
   }
 }
 </style>
