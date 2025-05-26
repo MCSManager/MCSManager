@@ -31,15 +31,15 @@ MCSManager ได้รับความนิยมในระดับหน
 
 MCSManager **รองรับ อังกฤษ ฝรั่งเศส เยอรมัน อิตาลี ไทย ญี่ปุ่น โปรตุเกส จีนตัวย่อ และจีนตัวเต็ม** พร้อมแผนที่จะเพิ่มการรองรับภาษาอื่นๆ เพิ่มเติมในอนาคต!
 
-**Terminal**
+**เทอร์มินัล**
 
 ![failed_to_load_screenshot.png](/.github/panel-image.png)
 
-**Instance List**
+**รายการอินสแตนซ์**
 
 ![failed_to_load_screenshot.png](/.github/panel-instances.png)
 
-**Custom Layout**
+**รูปแบบกำหนดเอง**
 
 ![failed_to_load_screenshot.png](/.github/panel-custom-layout.gif)
 
@@ -63,7 +63,7 @@ MCSM รองรับ `Windows` และ `Linux`แต่ต้องกา�
 
 <br />
 
-## Installation
+## ติดตั้ง
 
 ### Windows
 
@@ -83,15 +83,15 @@ MCSM รองรับ `Windows` และ `Linux`แต่ต้องกา�
 sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
-**Usage**
+**ใช้งาน**
 
 ```bash
 systemctl start mcsm-{web,daemon}
 systemctl stop mcsm-{web,daemon}
 ```
 
-- Only supports Ubuntu/Centos/Debian/Archlinux.
-- Installation directory: `/opt/mcsmanager/`.
+- รองรับ Ubuntu/Centos/Debian/Archlinux เท่านั้น
+- ที่อยู่การติดตั้ง: `/opt/mcsmanager/`.
 
 <br />
 
@@ -179,7 +179,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./build.sh  # MacOS
 ```
 
-Output Directory: "production-code"
+ผลลัพธ์ไดเรกทอรี: "production-code"
 
 <br />
 
@@ -191,14 +191,14 @@ Output Directory: "production-code"
 
 <br />
 
-## Browser Compatibility
+## ความเข้ากันได้ของเบราว์เซอร์
 
 - รองรับบนเบราว์เซอร์สมัยใหม่รวมถึง `Chrome` `Firefox` และ `Safari`
 - การสนับสนุน `IE` ถูกยกเลิกแล้ว
 
 <br />
 
-## BUG Reporting
+## รายงานจุดบกพร่อง
 
 **ปัญหาที่ยังไม่ได้รับการแก้ไข:** [คลิกที่นี่](https://github.com/MCSManager/MCSManager/issues/new/choose)
 
