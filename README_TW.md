@@ -17,7 +17,7 @@
 [官方網站](http://mcsmanager.com/) | [教學說明](https://docs.mcsmanager.com/#/zh-cn/) | [TG 群組](https://t.me/MCSManager_dev) | [成為贊助者](https://afdian.net/a/mcsmanager)
 
 [English](README.md) | [简体中文](README_ZH.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
-[日本語](README_JP.md) | [Spanish](README_ES.md)
+[日本語](README_JP.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
 
