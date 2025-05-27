@@ -211,7 +211,7 @@ Please ensure that any submitted code adheres to our existing coding style. For 
 Thanks to these contributors for providing a substantial amount of translation:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/yumao233)
+- [Yumao](https://github.com/yumao233)
 - [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
