@@ -191,8 +191,8 @@ Por favor, certifique-se de que qualquer código enviado siga o estilo de codifi
 Agradecemos aos seguintes colaboradores por fornecerem uma quantidade substancial de tradução:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />
