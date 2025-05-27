@@ -200,8 +200,8 @@ git clone https://github.com/MCSManager/MCSManager.git
 感谢下列成员提供的**大量**翻译文件：
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />
