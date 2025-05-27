@@ -187,8 +187,8 @@ Asegúrate de que el código enviado siga nuestro estilo de codificación existe
 Gracias a estos colaboradores por proporcionar una gran cantidad de traducciones:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />
