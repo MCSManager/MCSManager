@@ -17,7 +17,7 @@
 [官方网站](http://mcsmanager.com/) | [使用文档](https://docs.mcsmanager.com/#/zh-cn/) | [QQ 群](https://jq.qq.com/?_wv=1027&k=Pgl9ScGw) | [TG 群](https://t.me/MCSManager_dev) | [成为赞助者](https://afdian.net/a/mcsmanager)
 
 [English](README.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
-[日本語](README_JP.md) | [Spanish](README_ES.md)
+[日本語](README_JP.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
 
@@ -192,11 +192,6 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 若发现严重安全漏洞又不便公开发布，请发送邮件至: support@mcsmanager.com，安全问题修复后将在代码中附加漏洞发现者姓名。
 
-感谢以下人员提供的安全漏洞补丁：
-
-[bddjr](https://github.com/bddjr)
-- https://github.com/MCSManager/MCSManager/pull/1590
-
 
 <br />
 
@@ -205,8 +200,8 @@ git clone https://github.com/MCSManager/MCSManager.git
 感谢下列成员提供的**大量**翻译文件：
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />

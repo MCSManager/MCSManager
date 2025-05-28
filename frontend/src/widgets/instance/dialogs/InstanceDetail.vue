@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, unref } from "vue";
-import { $t, t } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import { useScreen } from "@/hooks/useScreen";
 import type { InstanceDetail, DockerNetworkModes } from "@/types";
 import type { FormInstance } from "ant-design-vue";
@@ -63,7 +63,7 @@ const IMAGE_DEFINE = {
   EDIT: "__MCSM_EDIT_IMAGE__"
 };
 
-const updateCommandDesc = $t("TXT_CODE_fa487a47");
+const updateCommandDesc = t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
@@ -214,6 +214,10 @@ const encodeFormData = () => {
   const postData = _.cloneDeep(unref(options));
   if (postData) {
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
+    postData.config.docker.networkAliases = postData.networkAliasesText
+      .split(",")
+      .map((v) => v.trim())
+      .filter((v) => v !== "");
     return postData;
   }
   throw new Error("Ref Options is null");

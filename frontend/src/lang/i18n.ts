@@ -45,6 +45,10 @@ export const SUPPORTED_LANGS = [
   {
     label: `Deutsch`,
     value: `de_de`
+  };
+  {
+    label: `Thai`,
+    value: `th_th`
   }
 ];
 
@@ -132,9 +136,7 @@ const isPT = () => {
 const $t = (...args: any[]): string => {
   return (i18n.global.t as Function)(...args);
 };
-const t = (...args: any[]): string => {
-  return (i18n.global.t as Function)(...args);
-};
+const t = $t;
 
 (window as any).setLang = setLanguage;
 

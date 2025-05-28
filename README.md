@@ -17,7 +17,7 @@
 [Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
 [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
-[日本語](README_JP.md) | [Spanish](README_ES.md)
+[日本語](README_JP.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
 
@@ -204,11 +204,6 @@ Please ensure that any submitted code adheres to our existing coding style. For 
 
 **Security Vulnerability Report:** [SECURITY.md](SECURITY.md)
 
-Thank the following personnel for the security vulnerability patches:
-
-[bddjr](https://github.com/bddjr)
-- https://github.com/MCSManager/MCSManager/pull/1590
-
 <br />
 
 ## Internationalization
@@ -216,8 +211,8 @@ Thank the following personnel for the security vulnerability patches:
 Thanks to these contributors for providing a substantial amount of translation:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />

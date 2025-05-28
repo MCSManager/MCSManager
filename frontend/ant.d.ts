@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { ComponentOptions } from "vue";
 
 export {};
@@ -8,5 +9,11 @@ declare module "vue" {
     ATypographyParagraph: any;
     ATypographyText: any;
     ATypographyTitle: any;
+  }
+}
+
+declare module "@vue/runtime-core" {
+  interface ComponentCustomProperties {
+    $t: (...args: any[]) => string;
   }
 }

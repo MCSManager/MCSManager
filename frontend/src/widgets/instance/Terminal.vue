@@ -256,7 +256,7 @@ onMounted(async () => {
               >
                 <a-tooltip>
                   <template #title>
-                    {{ $t("TXT_CODE_4a37ec9c") }}
+                    {{ t("TXT_CODE_4a37ec9c") }}
                   </template>
                   <LaptopOutlined />
                 </a-tooltip>
