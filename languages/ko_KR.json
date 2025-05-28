@@ -1460,7 +1460,7 @@
   "TXT_CODE_a3f13157": "컨테이너 보호",
   "TXT_CODE_a3f8313f": "스폰지가 물을 흡수하는 블록의 영역",
   "TXT_CODE_a4037a98": "인터페이스 요청 볼륨 상태",
-  "TXT_CODE_a409b8a9": "",
+  "TXT_CODE_a409b8a9": "멈추다",
   "TXT_CODE_a41a4820": "마을 주민 근처 POI 확인 시간",
   "TXT_CODE_a42984e": "변수 이름",
   "TXT_CODE_a463be37": "서버가 /compass 명령을 실행할 때 Bossbar 형식",
@@ -2583,5 +2583,7 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
+  "TXT_CODE_3725b37b": "Ctrl C가 전송되었습니다!",
+  "TXT_CODE_3fd222b0": "CTRL C를 다시 누르십시오."
 }

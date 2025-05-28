@@ -2583,5 +2583,7 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "มีงานที่ซ้ำกันอยู่แล้ว",
   "TXT_CODE_system_instance_control.illegalName": "ชื่องานไม่ถูกต้อง รองรับเฉพาะขีดล่าง ตัวเลข ตัวอักษร และอักขระภาษาท้องถิ่นบางตัวเท่านั้น",
   "TXT_CODE_ui.help": "[เทอร์มินัล] Daemon มีฟังก์ชันการโต้ตอบพื้นฐาน กรุณาป้อน 'help' สำหรับข้อมูลเพิ่มเติม",
-  "TXT_CODE_version.versionDetectErr": "การตรวจสอบเวอร์ชันล้มเหลว"
+  "TXT_CODE_version.versionDetectErr": "การตรวจสอบเวอร์ชันล้มเหลว",
+  "TXT_CODE_3725b37b": "Ctrl C ถูกส่งไปแล้ว!",
+  "TXT_CODE_3fd222b0": "โปรดกด Ctrl C อีกครั้งเพื่อให้มีผล ..."
 }

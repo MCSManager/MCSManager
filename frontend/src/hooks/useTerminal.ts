@@ -211,12 +211,12 @@ export function useTerminal() {
 
       const now = Date.now();
       if (now - lastCtrlCTime < ctrlCTimeThreshold) {
-        term.write("\r\n" + t("已发送 Ctrl+C！") + "\r\n");
+        term.write("\r\n" + t("TXT_CODE_3725b37b") + "\r\n");
         sendInput(data);
         lastCtrlCTime = 0;
       } else {
         lastCtrlCTime = now;
-        term.write("\r\n" + t("请快速再按一下 Ctrl+C 生效..."));
+        term.write("\r\n" + t("TXT_CODE_3fd222b0"));
       }
     });
 
