@@ -10,6 +10,7 @@ export function isExitCommand(instance: Instance, buf: any) {
   if (String(buf).toLowerCase() === "^c" && instance.process) {
     if (instance.config.terminalOption.pty || instance.config.docker.image) {
       instance.process.write(CTRL_C);
+      instance.process.write(instance.getCrlfValue());
     } else {
       instance.process.kill("SIGINT");
     }
@@ -28,15 +29,13 @@ export default class GeneralSendCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance, buf?: any): Promise<any> {
-    console.debug("pass command:", buf);
     if (isExitCommand(instance, buf)) return;
-    console.debug("execute command:", buf);
+
     // The server shutdown command needs to send a command, but before the server shutdown command is executed, the status will be set to the shutdown state.
     // So here the command can only be executed by whether the process exists or not
     if (instance?.process) {
       instance.process.write(encode(buf, instance.config.ie));
-      if (instance.config.crlf === 2) return instance.process.write("\r\n");
-      return instance.process.write("\n");
+      instance.process.write(instance.getCrlfValue());
     } else {
       instance.failure(new Error($t("TXT_CODE_command.instanceNotOpen")));
     }

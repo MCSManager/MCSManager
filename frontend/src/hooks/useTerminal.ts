@@ -211,15 +211,12 @@ export function useTerminal() {
 
       const now = Date.now();
       if (now - lastCtrlCTime < ctrlCTimeThreshold) {
-        Modal.confirm({
-          title: t("TXT_CODE_893567ac"),
-          content: t("TXT_CODE_6da85509"),
-          onOk: async () => sendInput(data)
-        });
+        term.write("\r\n" + t("已发送 Ctrl+C！") + "\r\n");
+        sendInput(data);
         lastCtrlCTime = 0;
       } else {
         lastCtrlCTime = now;
-        term.write("/r/n" + t("请再按一下 Ctrl+C 生效..."));
+        term.write("\r\n" + t("请快速再按一下 Ctrl+C 生效..."));
       }
     });
 
