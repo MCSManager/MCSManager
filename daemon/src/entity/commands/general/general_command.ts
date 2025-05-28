@@ -7,8 +7,12 @@ import InstanceCommand from "../base/command";
 export const CTRL_C = "\x03";
 
 export function isExitCommand(instance: Instance, buf: any) {
-  if (String(buf).toLowerCase() === "^c") {
-    instance.process?.kill("SIGINT");
+  if (String(buf).toLowerCase() === "^c" && instance.process) {
+    if (instance.config.terminalOption.pty || instance.config.docker.image) {
+      instance.process.write(CTRL_C);
+    } else {
+      instance.process.kill("SIGINT");
+    }
     return true;
   }
   if (buf == CTRL_C) {
@@ -24,7 +28,9 @@ export default class GeneralSendCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance, buf?: any): Promise<any> {
+    console.debug("pass command:", buf);
     if (isExitCommand(instance, buf)) return;
+    console.debug("execute command:", buf);
     // The server shutdown command needs to send a command, but before the server shutdown command is executed, the status will be set to the shutdown state.
     // So here the command can only be executed by whether the process exists or not
     if (instance?.process) {

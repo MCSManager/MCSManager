@@ -411,6 +411,10 @@ export default class Instance extends EventEmitter {
     return text;
   }
 
+  public getCrlfValue(): string {
+    return this.config.crlf === 2 ? "\r\n" : "\n";
+  }
+
   private pushOutput(data: string) {
     if (data.length > LINE_MAX_SIZE * 100) {
       this.outputStack.push(IGNORE_TEXT);

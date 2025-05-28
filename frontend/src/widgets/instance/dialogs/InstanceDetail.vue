@@ -19,6 +19,7 @@ import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 import { dockerPortsArray } from "@/tools/common";
 import type { DefaultOptionType } from "ant-design-vue/es/select";
+import { CloseOutlined, CheckOutlined } from "@ant-design/icons-vue";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
