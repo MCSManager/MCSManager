@@ -17,7 +17,7 @@
 
 [HP](http://mcsmanager.com/) | [ドキュメント](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [Spanish](README_ES.md)
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
 

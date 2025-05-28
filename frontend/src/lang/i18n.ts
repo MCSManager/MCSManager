@@ -45,6 +45,10 @@ export const SUPPORTED_LANGS = [
   {
     label: `Deutsch`,
     value: `de_de`
+  };
+  {
+    label: `Thai`,
+    value: `th_th`
   }
 ];
 
