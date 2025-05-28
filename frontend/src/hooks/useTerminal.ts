@@ -3,6 +3,7 @@ import { parseForwardAddress } from "@/tools/protocol";
 import { computed, onMounted, onUnmounted, ref, unref } from "vue";
 import { io } from "socket.io-client";
 import type { Socket } from "socket.io-client";
+import { Modal } from "ant-design-vue";
 import { t } from "@/lang/i18n";
 import EventEmitter from "eventemitter3";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -194,12 +195,32 @@ export function useTerminal() {
       refreshWindowSize(term.cols - 1, term.rows - 1);
     }, 2000);
 
-    term.onData((data) => {
+    let lastCtrlCTime = 0;
+    const ctrlCTimeThreshold = 500;
+
+    function sendInput(data: string) {
       socket?.emit("stream/write", {
-        data: {
-          input: data
-        }
+        data: { input: data }
       });
+    }
+    term.onData((data) => {
+      if (data !== "\x03") {
+        lastCtrlCTime = 0;
+        return sendInput(data);
+      }
+
+      const now = Date.now();
+      if (now - lastCtrlCTime < ctrlCTimeThreshold) {
+        Modal.confirm({
+          title: t("TXT_CODE_893567ac"),
+          content: t("TXT_CODE_6da85509"),
+          onOk: async () => sendInput(data)
+        });
+        lastCtrlCTime = 0;
+      } else {
+        lastCtrlCTime = now;
+        term.write("/r/n" + t("请再按一下 Ctrl+C 生效..."));
+      }
     });
 
     terminal.value = term;
