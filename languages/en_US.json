@@ -2585,5 +2585,9 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_a64852e0": "EULA file not found. You must accept the Minecraft EULA to start this instance.",
+  "TXT_CODE_e0a944a1": "You must accept the Minecraft EULA to start this instance.",
+  "TXT_CODE_525e6e18": "EULA has been accepted successfully. Starting instance...",
+  "TXT_CODE_e456aed": "Accept"
 }

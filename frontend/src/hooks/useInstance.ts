@@ -397,7 +397,7 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
       }
     })
     .catch(() => {
-      reportErrorMsg(t("未找到 EULA 文件。您必须同意 Minecraft EULA 协议才能启动此实例。"));
+      reportErrorMsg(t("TXT_CODE_a64852e0"));
       return {
         value: false
       };
@@ -406,7 +406,7 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
   if (!data.value.eula) {
     return new Promise((resolve) =>
       Modal.confirm({
-        title: () => t("您必须同意 Minecraft EULA 协议才能启动此实例"),
+        title: () => t("TXT_CODE_e0a944a1"),
         onOk: async () => {
           await updateConfigFile().execute({
             params: {
@@ -417,11 +417,11 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
             },
             data: { eula: true }
           });
-          message.success(t("EULA 协议已成功接受。正在启动实例..."));
+          message.success(t("TXT_CODE_525e6e18"));
           resolve(true);
         },
         onCancel: () => resolve(false),
-        okText: t("同意"),
+        okText: t("TXT_CODE_e456aed"),
         maskClosable: true
       })
     );
