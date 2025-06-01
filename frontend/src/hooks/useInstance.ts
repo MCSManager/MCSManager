@@ -1,9 +1,11 @@
 import type { InstanceDetail, MapData } from "@/types";
 import { t } from "@/lang/i18n";
 import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
-import { getInstanceInfo } from "@/services/apis/instance";
+import { getConfigFile, getInstanceInfo, updateConfigFile } from "@/services/apis/instance";
 import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { GLOBAL_INSTANCE_NAME } from "@/config/const";
+import { reportErrorMsg } from "@/tools/validator";
+import { message, Modal } from "ant-design-vue";
 
 export const TYPE_UNIVERSAL = "universal";
 export const TYPE_WEB_SHELL = "universal/web_shell";
@@ -382,3 +384,47 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [TYPE_MINECRAFT_NEOFORGE]
   }
 ];
+
+export async function verifyEULA(instanceId: string, daemonId: string, type: string) {
+  if (!type.startsWith("minecraft/java")) return true;
+  const data = await getConfigFile()
+    .execute({
+      params: {
+        uuid: instanceId,
+        daemonId: daemonId,
+        fileName: "eula.txt",
+        type: "properties"
+      }
+    })
+    .catch(() => {
+      reportErrorMsg(t("未找到 EULA 文件。您必须同意 Minecraft EULA 协议才能启动此实例。"));
+      return {
+        value: false
+      };
+    });
+  if (!data?.value) return false;
+  if (!data.value.eula) {
+    return new Promise((resolve) =>
+      Modal.confirm({
+        title: () => t("您必须同意 Minecraft EULA 协议才能启动此实例"),
+        onOk: async () => {
+          await updateConfigFile().execute({
+            params: {
+              uuid: instanceId,
+              daemonId: daemonId,
+              fileName: "eula.txt",
+              type: "properties"
+            },
+            data: { eula: true }
+          });
+          message.success(t("EULA 协议已成功接受。正在启动实例..."));
+          resolve(true);
+        },
+        onCancel: () => resolve(false),
+        okText: t("同意"),
+        maskClosable: true
+      })
+    );
+  }
+  return true;
+}
