@@ -1,10 +1,9 @@
 import type { InstanceDetail, MapData } from "@/types";
 import { t } from "@/lang/i18n";
-import { computed, onMounted, onUnmounted, ref, type Ref } from "vue";
+import { computed, h, onMounted, onUnmounted, ref, type Ref } from "vue";
 import { getConfigFile, getInstanceInfo, updateConfigFile } from "@/services/apis/instance";
 import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { GLOBAL_INSTANCE_NAME } from "@/config/const";
-import { reportErrorMsg } from "@/tools/validator";
 import { message, Modal } from "ant-design-vue";
 
 export const TYPE_UNIVERSAL = "universal";
@@ -397,16 +396,20 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
       }
     })
     .catch(() => {
-      reportErrorMsg(t("TXT_CODE_a64852e0"));
       return {
         value: false
       };
     });
-  if (!data?.value) return false;
+  if (!data?.value) return true;
   if (!data.value.eula) {
     return new Promise((resolve) =>
       Modal.confirm({
-        title: () => t("TXT_CODE_e0a944a1"),
+        title: t("TXT_CODE_617ce69c"),
+        content: h("div", {
+          innerHTML: t("TXT_CODE_e0a944a1", [
+            '<a href="https://www.minecraft.net/eula" target="_blank">Minecraft EULA</a>'
+          ])
+        }),
         onOk: async () => {
           await updateConfigFile().execute({
             params: {
@@ -422,7 +425,7 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
         },
         onCancel: () => resolve(false),
         okText: t("TXT_CODE_e456aed"),
-        maskClosable: true
+        maskClosable: false
       })
     );
   }
