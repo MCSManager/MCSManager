@@ -1421,7 +1421,7 @@
   "TXT_CODE_9fd05002": "设置蜜蜂蜇刺后是否应该死亡",
   "TXT_CODE_9fe98f3": "监听端口",
   "TXT_CODE_9fed23ab": "请输入镜像名称",
-  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件；<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui <br/>如果使用 Docker 容器，则可以不填写启动命令，将已镜像定义的命令启动",
+  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件；<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui <br/>如果使用 Docker 容器，则可以不填写启动命令，将以镜像定义的命令启动",
   "TXT_CODE_Instance_router.accessFileErr": "文件不存在或路径错误，文件访问被拒绝",
   "TXT_CODE_Instance_router.cancelIO": "会话 {{id}} 请求取消转发实例 {{targetInstanceUuid}} IO 流",
   "TXT_CODE_Instance_router.openInstanceErr": "实例{{instanceUuid}}启动时错误: ",
