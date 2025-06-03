@@ -35,7 +35,7 @@ import { reportErrorMsg } from "@/tools/validator";
 import TerminalCore from "@/components/TerminalCore.vue";
 import Reinstall from "./dialogs/Reinstall.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 
@@ -75,10 +75,16 @@ const quickOperations = computed(() =>
       type: "default",
       click: async () => {
         try {
+          const flag = await verifyEULA(
+            instanceId ?? "",
+            daemonId ?? "",
+            instanceInfo.value?.config.type ?? ""
+          );
+          if (!flag) return;
           await openInstance().execute({
             params: {
-              uuid: instanceId || "",
-              daemonId: daemonId || ""
+              uuid: instanceId ?? "",
+              daemonId: daemonId ?? ""
             }
           });
         } catch (error: any) {

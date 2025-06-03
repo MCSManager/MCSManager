@@ -1421,7 +1421,7 @@
   "TXT_CODE_9fd05002": "设置蜜蜂蜇刺后是否应该死亡",
   "TXT_CODE_9fe98f3": "监听端口",
   "TXT_CODE_9fed23ab": "请输入镜像名称",
-  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件；<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui <br/>如果使用 Docker 容器，则可以不填写启动命令，将已镜像定义的命令启动",
+  "TXT_CODE_A0000001": "适用于任何控制台程序的启动命令，不支持脚本文件；<br />列如： \"C://Program Files/Java/bin/java.exe\" -Dfile.encoding=utf-8 -Djline.terminal=jline.UnsupportedTerminal -jar my server.jar -nogui <br/>如果使用 Docker 容器，则可以不填写启动命令，将以镜像定义的命令启动",
   "TXT_CODE_Instance_router.accessFileErr": "文件不存在或路径错误，文件访问被拒绝",
   "TXT_CODE_Instance_router.cancelIO": "会话 {{id}} 请求取消转发实例 {{targetInstanceUuid}} IO 流",
   "TXT_CODE_Instance_router.openInstanceErr": "实例{{instanceUuid}}启动时错误: ",
@@ -2585,5 +2585,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败",
+  "TXT_CODE_e0a944a1": "检测到您未同意 {0} 协议，需要同意此协议才能启动该实例。是否同意？",
+  "TXT_CODE_525e6e18": "EULA 协议已成功接受。正在启动实例...",
+  "TXT_CODE_e456aed": "同意"
 }
