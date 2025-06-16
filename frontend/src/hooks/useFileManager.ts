@@ -602,7 +602,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         router.replace({ query });
       }
     } catch (e) {
-      console.error("保存路径到 URL 失败:", e);
+      reportErrorMsg(t("保存路径到 URL 失败"));
     }
   };
 
@@ -615,7 +615,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         return decodeURIComponent(pathQuery);
       }
     } catch (e) {
-      console.error("从 URL 获取路径失败:", e);
+      reportErrorMsg(t("从 URL 获取路径失败"));
     }
     return null;
   };
