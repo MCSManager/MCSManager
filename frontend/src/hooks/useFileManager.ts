@@ -616,7 +616,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (!router) return null;
 
     try {
-      // 从 URL 哈希部分获取查询参数
       const hash = window.location.hash;
       const hashParts = hash.split("?");
 
@@ -629,13 +628,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       }
 
-      // 如果哈希部分没有查询参数，尝试从 URL 查询部分获取
       const pathQuery = router.currentRoute.value.query.path;
       if (typeof pathQuery === "string" && pathQuery) {
         return decodeURIComponent(pathQuery);
       }
     } catch (e) {
-      reportErrorMsg(t("从 URL 获取路径失败"));
+      reportErrorMsg(t("从 URL 加载路径失败"));
     }
     return null;
   };
