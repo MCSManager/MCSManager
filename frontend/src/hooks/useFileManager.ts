@@ -264,10 +264,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       content: createVNode("div", { style: "color:red;" }, t("TXT_CODE_6a10302d")),
       async onOk() {
         if (!isMultiple.value) {
-          // one file
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
-          // more file
           if (!selectionData.value) return reportErrorMsg(t("TXT_CODE_f41ad30a"));
           await useDeleteFileApi(
             selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
@@ -593,13 +591,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.deep = false;
   };
 
-  const currentDisk = ref(t("TXT_CODE_28124988")); // 保存当前路径到 URL 查询参数
+  const currentDisk = ref(t("TXT_CODE_28124988"));
   const savePathToQuery = (path: string) => {
     if (!path || !router) return;
 
     try {
       const query = { ...router.currentRoute.value.query };
-      // 仅当路径变更时才更新 URL
       if (query.path !== encodeURIComponent(path)) {
         query.path = encodeURIComponent(path);
         router.replace({ query });
@@ -609,7 +606,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     }
   };
 
-  // 从 URL 查询参数获取路径
   const getPathFromQuery = (): string | null => {
     if (!router) return null;
 
@@ -631,7 +627,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       name: "/",
       disabled: false
     });
-    // spinning 状态由 getFileList 内部控制
     operationForm.value.name = "";
     operationForm.value.current = 1;
     await getFileList();
