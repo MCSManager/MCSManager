@@ -80,7 +80,8 @@ const {
   oneSelected,
   isImage,
   showImage,
-  getPathFromQuery
+  getPathFromQuery,
+  buildBreadcrumbs
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -292,53 +293,25 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
 };
 
 onMounted(async () => {
-  spinning.value = true;
-  dialog.value.loading = true;
-
+  spinning.value = dialog.value.loading = true;
   await getFileStatus();
 
   const savedPath = getPathFromQuery();
   const isWin = fileStatus.value?.platform === "win32";
 
   if (savedPath && savedPath !== "/") {
-    if (isWin && /^[A-Za-z]:\\$/.test(savedPath)) {
-      const disk = savedPath[0];
-      currentDisk.value = disk;
-      await toDisk(disk);
-    } else {
-      breadcrumbs.splice(0, breadcrumbs.length, {
-        path: "/",
-        name: "/",
-        disabled: false
-      });
+    const { breadcrumbs: crumbList, disk, diskOnly } = buildBreadcrumbs(savedPath, isWin);
 
-      const parts = savedPath.split("/").filter(Boolean);
-      let currentPath = "/";
+    breadcrumbs.splice(0, breadcrumbs.length, ...crumbList);
+    if (disk) currentDisk.value = disk;
+    if (diskOnly) await toDisk(disk);
 
-      if (isWin && parts.length > 0 && parts[0].endsWith(":")) {
-        const disk = parts.shift()!.replace(":", "");
-        currentDisk.value = disk;
-        currentPath = `${disk}:\\`;
-        breadcrumbs[0].path = currentPath;
-      }
-
-      for (const part of parts) {
-        currentPath += `${part}/`;
-        breadcrumbs.push({
-          path: currentPath,
-          name: part,
-          disabled: false
-        });
-      }
-
-      operationForm.value.name = "";
-      operationForm.value.current = 1;
-    }
+    operationForm.value.name = "";
+    operationForm.value.current = 1;
   }
 
   await getFileList();
-  dialog.value.loading = false;
-  spinning.value = false;
+  dialog.value.loading = spinning.value = false;
 
   task = setInterval(async () => {
     await getFileStatus();

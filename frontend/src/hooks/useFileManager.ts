@@ -596,10 +596,17 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (!path || !router) return;
 
     try {
+      let cleanPath = path;
+      if (cleanPath !== "/" && cleanPath.endsWith("/")) {
+        cleanPath = cleanPath.slice(0, -1);
+      }
+
       const query = { ...router.currentRoute.value.query };
-      if (query.path !== encodeURIComponent(path)) {
-        query.path = encodeURIComponent(path);
-        router.replace({ query });
+      if (query.path !== encodeURIComponent(cleanPath)) {
+        query.path = encodeURIComponent(cleanPath);
+        const url = new URL(window.location.href);
+        url.searchParams.set("path", cleanPath);
+        window.history.replaceState({}, "", url.toString());
       }
     } catch (e) {
       reportErrorMsg(t("保存路径到 URL 失败"));
@@ -631,6 +638,52 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     operationForm.value.current = 1;
     await getFileList();
     savePathToQuery(path);
+  };
+
+  const buildBreadcrumbs = (savedPath: string, isWin: boolean) => {
+    const breadcrumbs: { path: string; name: string; disabled: boolean }[] = [];
+    let disk = "";
+    let diskOnly = false;
+
+    const push = (segments: string[], base: string) => {
+      let currentPath = base;
+      for (const part of segments) {
+        currentPath += isWin ? `${part}\\` : `${part}/`;
+        breadcrumbs.push({ path: currentPath, name: part, disabled: false });
+      }
+    };
+
+    if (!savedPath || savedPath === "/") {
+      return { breadcrumbs, disk, diskOnly };
+    }
+
+    const rootMatch = /^[A-Za-z]:\\$/;
+    const fullWinMatch = /^([A-Za-z]):[\\/](.*)?$/;
+
+    if (isWin && rootMatch.test(savedPath)) {
+      disk = savedPath[0];
+      diskOnly = true;
+      return { breadcrumbs, disk, diskOnly };
+    }
+
+    const match = savedPath.match(fullWinMatch);
+    if (isWin && match) {
+      disk = match[1];
+      breadcrumbs.push({ path: `${disk}:\\`, name: "/", disabled: false });
+      match[2] && push(match[2].split(/[\\/]/).filter(Boolean), `${disk}:\\`);
+    } else {
+      const parts = savedPath.split("/").filter(Boolean);
+      if (isWin && parts[0]?.includes(":")) {
+        disk = parts.shift()!.replace(":", "");
+        breadcrumbs.push({ path: `${disk}:\\`, name: "/", disabled: false });
+        push(parts, `${disk}:\\`);
+      } else {
+        breadcrumbs.push({ path: "/", name: "/", disabled: false });
+        push(parts, "/");
+      }
+    }
+
+    return { breadcrumbs, disk, diskOnly };
   };
 
   const isImage = (extName: string) => {
@@ -683,6 +736,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     isImage,
     showImage,
     savePathToQuery,
-    getPathFromQuery
+    getPathFromQuery,
+    buildBreadcrumbs
   };
 };
