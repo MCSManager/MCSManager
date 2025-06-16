@@ -600,23 +600,36 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       if (cleanPath !== "/" && cleanPath.endsWith("/")) {
         cleanPath = cleanPath.slice(0, -1);
       }
-
-      const query = { ...router.currentRoute.value.query };
-      if (query.path !== encodeURIComponent(cleanPath)) {
-        query.path = encodeURIComponent(cleanPath);
-        const url = new URL(window.location.href);
-        url.searchParams.set("path", cleanPath);
-        window.history.replaceState({}, "", url.toString());
-      }
+      const url = new URL(window.location.href);
+      const hash = url.hash;
+      const hashParts = hash.split("?");
+      const hashPath = hashParts[0];
+      const searchParams = new URLSearchParams(hashParts.length > 1 ? hashParts[1] : "");
+      searchParams.set("path", cleanPath);
+      const newHash = `${hashPath}?${searchParams.toString()}`;
+      window.history.replaceState(null, "", url.pathname + url.search + newHash);
     } catch (e) {
       reportErrorMsg(t("保存路径到 URL 失败"));
     }
   };
-
   const getPathFromQuery = (): string | null => {
     if (!router) return null;
 
     try {
+      // 从 URL 哈希部分获取查询参数
+      const hash = window.location.hash;
+      const hashParts = hash.split("?");
+
+      if (hashParts.length > 1) {
+        const searchParams = new URLSearchParams(hashParts[1]);
+        const pathParam = searchParams.get("path");
+
+        if (pathParam) {
+          return decodeURIComponent(pathParam);
+        }
+      }
+
+      // 如果哈希部分没有查询参数，尝试从 URL 查询部分获取
       const pathQuery = router.currentRoute.value.query.path;
       if (typeof pathQuery === "string" && pathQuery) {
         return decodeURIComponent(pathQuery);
