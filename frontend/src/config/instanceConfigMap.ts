@@ -2873,6 +2873,42 @@ export const configData: {
       "config-version": t("TXT_CODE_c8cdeeee")
     }
   },
+  "forge/fml.toml": {
+    desc: t("TXT_CODE_7e6a82d8"),
+    config: {
+      "earlyWindowHeight": t("TXT_CODE_341dfd11"),
+      "versionCheck": t("TXT_CODE_ea04fb32"),
+      "earlyWindowControl": t("TXT_CODE_703cdd68"),
+      "earlyWindowFBScale": t("TXT_CODE_ecc99fb6"),
+      "earlyWindowProvider": t("TXT_CODE_55e91545"),
+      "earlyWindowWidth": t("TXT_CODE_bd1ff011"),
+      "earlyWindowMaximized": t("TXT_CODE_2ce63943"),
+      "defaultConfigPath": t("TXT_CODE_b02f295d"),
+      "disableOptimizedDFU": t("TXT_CODE_1f3aac40"),
+      "earlyWindowSkipGLVersions": t("TXT_CODE_44c67809"),
+      "maxThreads": t("TXT_CODE_e75ed0b5"),
+      "earlyWindowSquir": t("TXT_CODE_4fe284cd"),
+      "disableConfigWatcher": t("TXT_CODE_7c25c81a")
+    }
+  },
+  "neoforge/neoforge-server.toml": {
+    desc: t("TXT_CODE_5b6f3691"),
+    config: {
+      "removeErroringBlockEntities": t("TXT_CODE_f4c15e78"),
+      "removeErroringEntities": t("TXT_CODE_c53c342e"),
+      "fullBoundingBoxLadders": t("TXT_CODE_1fec78cc"),
+      "permissionHandler": t("TXT_CODE_dd65f101"),
+      "advertiseDedicatedServerToLan": t("TXT_CODE_176b2151")
+    }
+  },
+  "neoforge/neoforge-common.toml": {
+    desc: t("TXT_CODE_1efc7c5f"),
+    config: {
+      "logUntranslatedItemTagWarnings": t("TXT_CODE_cf393058"),
+      "logLegacyTagWarnings": t("TXT_CODE_b2f1310e"),
+      "attributeAdvancedTooltipDebugInfo": t("TXT_CODE_94d885d1")
+    }
+  },
   //   "mcdr/permission.yml": {},
   //   "mcdr/config.yml": {},
   "tshock/config.json": {

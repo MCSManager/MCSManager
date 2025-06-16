@@ -17,7 +17,7 @@
 
 [HP](http://mcsmanager.com/) | [ドキュメント](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [Spanish](README_ES.md)
+[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
 
@@ -192,8 +192,8 @@ git clone https://github.com/MCSManager/MCSManager.git
 以下の人は、多量の翻訳してありがどうございます：
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />

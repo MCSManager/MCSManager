@@ -15,6 +15,8 @@ export default class GeneralKillCommand extends InstanceCommand {
       return instance.failure(new Error($t("TXT_CODE_6259357c")));
     }
 
+    instance.ignoreEventTaskOnce();
+
     const task = instance?.asynchronousTask;
     if (task && task.stop) {
       task

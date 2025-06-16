@@ -4,12 +4,10 @@ call npm run preview-build
 cd daemon
 call npm install
 
-cd ..
-cd panel
+cd ../panel
 call npm install
 
-cd ..
-cd frontend
+cd ../frontend
 call npm install
 
 pause

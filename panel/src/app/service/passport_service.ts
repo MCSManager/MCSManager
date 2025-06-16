@@ -3,7 +3,7 @@ import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import userSystem from "./user_service";
 import { timeUuid } from "./password";
-import { GlobalVariable, toText } from "common";
+import { GlobalVariable, toText } from "mcsmanager-common";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
 import { User } from "../entity/user";

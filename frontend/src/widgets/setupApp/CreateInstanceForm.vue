@@ -22,6 +22,7 @@ import {
 } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
+import { CloseOutlined, CheckOutlined } from "@ant-design/icons-vue";
 
 // eslint-disable-next-line no-unused-vars
 enum UNZIP {
@@ -65,7 +66,7 @@ const formData = reactive<NewInstanceForm>({
     networkAliases: [],
     cpusetCpus: "",
     workingDir: "/data",
-    changeWorkdir: false,
+    changeWorkdir: true,
     memory: undefined,
     cpuUsage: undefined,
     maxSpace: undefined,

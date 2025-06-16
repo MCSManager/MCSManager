@@ -6,6 +6,7 @@ import logger from "../service/log";
 import RouterContext from "../entity/ctx";
 import { IGNORE } from "../const";
 import { LOGIN_BY_TOP_LEVEL, loginSuccessful } from "../service/mission_passport";
+import { timingSafeEqual } from 'node:crypto'
 
 // latest verification time
 const AUTH_TIMEOUT = 6000;
@@ -19,7 +20,7 @@ routerApp.use(async (event, ctx, _, next) => {
   if (event === "auth") return await next();
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
   if (
-    ctx.session.key === globalConfiguration.config.key &&
+    timingSafeEqual(Uint8Array.from(ctx.session.key as string), Uint8Array.from(globalConfiguration.config.key)) &&
     ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
     ctx.session.id
@@ -40,7 +41,7 @@ routerApp.use(async (event, ctx, _, next) => {
 
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
-  if (data === globalConfiguration.config.key) {
+  if (timingSafeEqual(Uint8Array.from(data as string), Uint8Array.from(globalConfiguration.config.key))) {
     // The authentication is passed, and the registered session is a trusted session
     logger.info(
       $t("TXT_CODE_auth_router.access", {

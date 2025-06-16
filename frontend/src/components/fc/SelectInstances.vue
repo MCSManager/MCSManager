@@ -244,7 +244,7 @@ const handleChangeNode = async (item: NodeStatus) => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'safe'">
-                  <span v-if="record?.config?.docker?.image" style="color: var(--color-green-6)">
+                  <span v-if="record?.config?.processType === 'docker'" style="color: var(--color-green-6)">
                     {{ t("TXT_CODE_a3f13157") }}
                   </span>
                   <span v-else class="color-danger">{{ t("TXT_CODE_201bc643") }}</span>

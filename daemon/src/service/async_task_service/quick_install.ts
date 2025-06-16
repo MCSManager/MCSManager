@@ -11,7 +11,6 @@ import { getFileManager } from "../file_router_service";
 import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
-import type { IJsonData } from "common/global";
 import { InstanceUpdateAction } from "../instance_update_action";
 
 export class QuickInstallTask extends AsyncTask {

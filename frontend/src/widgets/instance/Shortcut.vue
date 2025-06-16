@@ -26,7 +26,7 @@ import {
 } from "@/services/apis/instance";
 import { Modal } from "ant-design-vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useInstanceInfo } from "@/hooks/useInstance";
+import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { parseTimestamp } from "@/tools/time";
 import { arrayFilter } from "@/tools/array";
@@ -77,6 +77,12 @@ const refreshList = () => {
 
 const actions = {
   start: async () => {
+    const flag = await verifyEULA(
+      instanceId ?? "",
+      daemonId ?? "",
+      instanceInfo.value?.config.type ?? ""
+    );
+    if (!flag) return;
     await executeOpen(operationConfig);
     message.success(t("TXT_CODE_e13abbb1"));
   },

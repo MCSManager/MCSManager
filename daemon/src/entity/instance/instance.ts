@@ -11,7 +11,7 @@ import { PresetCommandManager } from "./preset";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
 import StartCommand from "../commands/start";
-import { configureEntityParams, toText } from "common";
+import { configureEntityParams, toText } from "mcsmanager-common";
 import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
 import { t } from "i18next";
@@ -89,7 +89,7 @@ export default class Instance extends EventEmitter {
   public process?: IInstanceProcess;
 
   private outputStack: string[] = [];
-  private outputLoopTask?: NodeJS.Timer;
+  private outputLoopTask?: NodeJS.Timeout;
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
@@ -288,21 +288,20 @@ export default class Instance extends EventEmitter {
     this.lifeCycleTaskManager.execLifeCycleTask(0);
 
     // If automatic restart is enabled, the startup operation is performed immediately
-    if (this.config.eventTask.autoRestart) {
-      if (!this.config.eventTask.ignore) {
-        this.execPreset("start")
-          .then(() => {
-            this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
-          })
-          .catch((err) => {
-            this.println(
-              $t("TXT_CODE_instanceConf.error"),
-              $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
-            );
-          });
-      }
-      this.config.eventTask.ignore = false;
+    if (!this.config.eventTask.ignore && this.config.eventTask.autoRestart) {
+      this.execPreset("start")
+        .then(() => {
+          this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
+        })
+        .catch((err) => {
+          this.println(
+            $t("TXT_CODE_instanceConf.error"),
+            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+          );
+        });
     }
+
+    this.config.eventTask.ignore = false;
 
     // Turn off the warning immediately after startup, usually the startup command is written incorrectly
     const currentTimestamp = new Date().getTime();
@@ -310,6 +309,10 @@ export default class Instance extends EventEmitter {
     if (currentTimestamp - this.startTimestamp < startThreshold) {
       this.println("ERROR", $t("TXT_CODE_aae2918f"));
     }
+  }
+
+  ignoreEventTaskOnce() {
+    if (this.config.eventTask) this.config.eventTask.ignore = true;
   }
 
   // custom output method, formatting
@@ -406,6 +409,10 @@ export default class Instance extends EventEmitter {
     text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
     return text;
+  }
+
+  public getCrlfValue(): string {
+    return this.config.crlf === 2 ? "\r\n" : "\n";
   }
 
   private pushOutput(data: string) {

@@ -3,9 +3,8 @@ import RemoteRequest from "../service/remote_command";
 import user_service from "../service/user_service";
 import { customAlphabet } from "nanoid";
 import { t } from "i18next";
-import { toNumber, toText } from "common";
+import { toNumber, toText } from "mcsmanager-common";
 import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
-import type { IGlobalInstanceConfig } from "common/global";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.

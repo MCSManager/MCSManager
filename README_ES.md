@@ -16,7 +16,7 @@
 
 [Sitio Oficial](http://mcsmanager.com/) | [Documentación](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
-[Inglés](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [日本語](README_JP.md)
+[Inglés](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [日本語](README_JP.md) | [Thai](README_TH.md)
 </div>
 
 <br />
@@ -187,8 +187,8 @@ Asegúrate de que el código enviado siga nuestro estilo de codificación existe
 Gracias a estos colaboradores por proporcionar una gran cantidad de traducciones:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
-- [JianyueLab](https://github.com/JianyueLab)
+- [Yumao](https://github.com/yumao233)
+- [JHL-HK](https://github.com/jhl-hk)
 - [IceBrick](https://github.com/IceBrick01)
 
 <br />

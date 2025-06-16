@@ -161,14 +161,13 @@ onMounted(() => {
                 <a-button
                   block
                   type="primary"
-                  ghost
                   style="max-width: 120px"
                   @click="emit('handleSelectTemplate', item)"
                 >
                   <template #icon>
                     <DownloadOutlined />
                   </template>
-                  <span>{{ t("TXT_CODE_1704ea49") }}</span>
+                  {{ t("TXT_CODE_1704ea49") }}
                 </a-button>
               </div>
             </template>

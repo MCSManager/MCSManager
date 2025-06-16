@@ -1,10 +1,10 @@
 {
   "name": "mcsmanager-panel",
-  "version": "10.4.3",
-  "daemonVersion": "4.5.0",
+  "version": "10.6.1",
+  "daemonVersion": "4.6.2",
   "description": "Provide MCSManager with the ability to connect and control all Daemons, and provide API services for the front end.",
   "scripts": {
-    "dev": "ts-node --project tsconfig.json src/app.ts",
+    "dev": "npm run build && node --enable-source-maps production/app.js",
     "build": "webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@koa/router": "^10.0.0",
     "@types/qrcode": "^1.5.5",
-    "axios": "^1.6.2",
+    "axios": "^1.8.2",
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "formidable": "^3.5.1",
@@ -32,8 +32,8 @@
     "koa-session": "^6.2.0",
     "koa-static": "^5.0.0",
     "log4js": "^6.4.0",
+    "mcsmanager-common": "1.1.0",
     "md5": "^2.3.0",
-    "module-alias": "^2.2.3",
     "nanoid": "^3.3.8",
     "node-schedule": "^2.0.0",
     "open": "^8.4.0",
@@ -58,7 +58,6 @@
     "@types/node-schedule": "^1.3.2",
     "@types/os-utils": "0.0.1",
     "@types/uuid": "^8.3.0",
-    "common": "file:../common",
     "eslint": "^7.23.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.1",

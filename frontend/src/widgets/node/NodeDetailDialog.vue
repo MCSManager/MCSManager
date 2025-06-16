@@ -78,9 +78,9 @@ const dialog = reactive({
       if (isLocalNetworkIP(dialog.data.ip)) {
         await new Promise<void>((resolve) => {
           Modal.confirm({
-            title: t("你正使用私有 IP 地址"),
-            content: t("使用公网地址访问面板时该节点可能无法正常工作"),
-            okText: t("确认"),
+            title: t("TXT_CODE_36cae384"),
+            content: t("TXT_CODE_ea6e5e5e"),
+            okText: t("TXT_CODE_d507abff"),
             onOk: () => resolve()
           });
         });

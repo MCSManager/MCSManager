@@ -2,6 +2,8 @@ import userSystem from "../service/user_service";
 import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest from "../service/remote_command";
 import { t } from "i18next";
+import { systemConfig } from "../setting";
+import { toText } from "mcsmanager-common";
 
 export enum INSTANCE_STATUS {
   BUSY = -1,
@@ -134,5 +136,28 @@ export async function getInstancesByUuid(
     open2FA: user.open2FA,
     secret: user.secret,
     token: ""
+  };
+}
+
+export function checkInstanceAdvancedParams(
+  config: IGlobalInstanceConfig,
+  isTopPermission: boolean = false
+) {
+  const canChangeCmd = systemConfig?.allowChangeCmd;
+  if (!isTopPermission) {
+    if (!canChangeCmd) return {};
+    if (config.processType !== "docker") return {};
+  }
+
+  const startCommand = toText(config.startCommand);
+  const updateCommand = toText(config.updateCommand);
+  const dockerEnv = Array.isArray(config.docker?.env) ? config.docker.env : null;
+
+  return {
+    startCommand,
+    updateCommand,
+    docker: {
+      env: dockerEnv
+    }
   };
 }
