@@ -79,7 +79,8 @@ const {
   toDisk,
   oneSelected,
   isImage,
-  showImage
+  showImage,
+  getPathFromQuery
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -152,9 +153,6 @@ const columns = computed(() => {
 });
 
 let task: NodeJS.Timer | undefined;
-task = setInterval(async () => {
-  await getFileStatus();
-}, 3000);
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
@@ -294,10 +292,57 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
 };
 
 onMounted(async () => {
-  await getFileStatus();
+  spinning.value = true;
   dialog.value.loading = true;
+
+  await getFileStatus();
+
+  const savedPath = getPathFromQuery();
+  const isWin = fileStatus.value?.platform === "win32";
+
+  if (savedPath && savedPath !== "/") {
+    if (isWin && /^[A-Za-z]:\\$/.test(savedPath)) {
+      const disk = savedPath[0];
+      currentDisk.value = disk;
+      await toDisk(disk);
+    } else {
+      breadcrumbs.splice(0, breadcrumbs.length, {
+        path: "/",
+        name: "/",
+        disabled: false
+      });
+
+      const parts = savedPath.split("/").filter(Boolean);
+      let currentPath = "/";
+
+      if (isWin && parts.length > 0 && parts[0].endsWith(":")) {
+        const disk = parts.shift()!.replace(":", "");
+        currentDisk.value = disk;
+        currentPath = `${disk}:\\`;
+        breadcrumbs[0].path = currentPath;
+      }
+
+      for (const part of parts) {
+        currentPath += `${part}/`;
+        breadcrumbs.push({
+          path: currentPath,
+          name: part,
+          disabled: false
+        });
+      }
+
+      operationForm.value.name = "";
+      operationForm.value.current = 1;
+    }
+  }
+
   await getFileList();
   dialog.value.loading = false;
+  spinning.value = false;
+
+  task = setInterval(async () => {
+    await getFileStatus();
+  }, 3000);
 });
 
 onUnmounted(() => {

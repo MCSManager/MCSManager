@@ -30,8 +30,10 @@ import type {
 import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
 import { useImageViewerDialog } from "@/components/fc";
+import { useRouter } from "vue-router";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
+  const router = useRouter();
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -109,9 +111,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     });
   };
-
   const getFileList = async (throwErr = false) => {
     const { execute } = getFileListApi();
+    spinning.value = true;
     try {
       clearSelected();
       const res = await execute({
@@ -129,6 +131,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     } catch (error: any) {
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
+    } finally {
+      spinning.value = false;
     }
   };
 
@@ -444,24 +448,22 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectionData.value = [];
     selectedRowKeys.value = [];
   };
-
   const rowClickTable = async (item: string, type: number) => {
     if (type === 1) return;
     try {
-      spinning.value = true;
+      const path = `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`;
       breadcrumbs.push({
-        path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
+        path: path,
         name: item,
         disabled: false
       });
       operationForm.value.name = "";
       operationForm.value.current = 1;
       await getFileList(true);
+      savePathToQuery(path);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
-    } finally {
-      spinning.value = false;
     }
   };
 
@@ -492,16 +494,15 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (!link) throw new Error(t("TXT_CODE_6d772765"));
     window.open(link);
   };
-
   const handleChangeDir = async (dir: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
       return reportErrorMsg(t("TXT_CODE_96281410"));
-    spinning.value = true;
+
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     operationForm.value.name = "";
     operationForm.value.current = 1;
     await getFileList();
-    spinning.value = false;
+    savePathToQuery(dir);
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
@@ -592,20 +593,49 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     permission.deep = false;
   };
 
-  const currentDisk = ref(t("TXT_CODE_28124988"));
+  const currentDisk = ref(t("TXT_CODE_28124988")); // 保存当前路径到 URL 查询参数
+  const savePathToQuery = (path: string) => {
+    if (!path || !router) return;
 
+    try {
+      const query = { ...router.currentRoute.value.query };
+      // 仅当路径变更时才更新 URL
+      if (query.path !== encodeURIComponent(path)) {
+        query.path = encodeURIComponent(path);
+        router.replace({ query });
+      }
+    } catch (e) {
+      console.error("保存路径到 URL 失败:", e);
+    }
+  };
+
+  // 从 URL 查询参数获取路径
+  const getPathFromQuery = (): string | null => {
+    if (!router) return null;
+
+    try {
+      const pathQuery = router.currentRoute.value.query.path;
+      if (typeof pathQuery === "string" && pathQuery) {
+        return decodeURIComponent(pathQuery);
+      }
+    } catch (e) {
+      console.error("从 URL 获取路径失败:", e);
+    }
+    return null;
+  };
   const toDisk = async (disk: string) => {
     breadcrumbs.splice(0, breadcrumbs.length);
+    const path = disk === "/" ? disk : disk + ":\\";
     breadcrumbs.push({
-      path: disk === "/" ? disk : disk + ":\\",
+      path: path,
       name: "/",
       disabled: false
     });
-    spinning.value = true;
+    // spinning 状态由 getFileList 内部控制
     operationForm.value.name = "";
     operationForm.value.current = 1;
     await getFileList();
-    spinning.value = false;
+    savePathToQuery(path);
   };
 
   const isImage = (extName: string) => {
@@ -617,7 +647,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const frontDir = breadcrumbs[breadcrumbs.length - 1].path;
     useImageViewerDialog(instanceId || "", daemonId || "", file.name, frontDir);
   };
-
   return {
     fileStatus,
     dialog,
@@ -657,6 +686,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     pushSelected,
     oneSelected,
     isImage,
-    showImage
+    showImage,
+    savePathToQuery,
+    getPathFromQuery
   };
 };
