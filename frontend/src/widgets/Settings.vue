@@ -16,7 +16,8 @@ import {
   MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SketchOutlined
 } from "@ant-design/icons-vue";
 
 import { settingInfo, setSettingInfo } from "@/services/apis";
@@ -26,6 +27,8 @@ import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { arrayFilter } from "../tools/array";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import IframeBox from "@/components/IframeBox/index.vue";
+import { getProPanelUrl } from "@/components/IframeBox/config";
 
 defineProps<{
   card: LayoutCard;
@@ -39,6 +42,7 @@ const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
   bgUrl?: string;
+  proLicenseKey?: string;
 }
 
 const ApacheLicense = `Copyright ${new Date().getFullYear()} MCSManager Dev
@@ -75,6 +79,19 @@ const submit = async (needReload: boolean = true) => {
 
 const menus = arrayFilter([
   {
+    title: "高级配置",
+    key: "pro",
+    icon: SketchOutlined,
+    condition: () => isCN()
+  },
+
+  {
+    title: "卡密销售",
+    key: "redeem",
+    icon: KeyOutlined,
+    condition: () => isCN()
+  },
+  {
     title: t("TXT_CODE_cdd555be"),
     key: "baseInfo",
     icon: ProjectOutlined
@@ -90,7 +107,7 @@ const menus = arrayFilter([
     icon: LockOutlined
   },
   {
-    title: t("TXT_CODE_8bb8e2a1"),
+    title: "卡密销售（旧）",
     key: "business",
     icon: KeyOutlined,
     condition: () => isCN()
@@ -104,6 +121,7 @@ const menus = arrayFilter([
     title: t("TXT_CODE_46cb40d5"),
     key: "sponsor",
     icon: MoneyCollectOutlined,
+    condition: () => !isCN(),
     click: () => {
       let url = "https://www.patreon.com/mcsmanager";
       if (isCN()) url = "https://afdian.com/a/mcsmanager";
@@ -537,6 +555,14 @@ onMounted(async () => {
                 </a-form>
               </div>
             </div>
+          </template>
+
+          <template #pro>
+            <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
+          </template>
+
+          <template #redeem>
+            <IframeBox :src="getProPanelUrl('/')" :height="card.height" />
           </template>
 
           <template #business>
