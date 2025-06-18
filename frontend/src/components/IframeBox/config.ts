@@ -1,4 +1,5 @@
 import { onUnmounted, type Ref } from "vue";
+import { openIframeModal } from "../IframeModal/useIframeModal";
 
 export interface IframeEvent {
   id: string;
@@ -30,6 +31,12 @@ const iframeRouters: Record<
       panelId: "testId",
       code: "04HZD11WK8NA2NFAZ7EF23QB"
     };
+  },
+  OpenNewIframePage: async (iframe: Ref<HTMLIFrameElement | null>, data: any) => {
+    console.log("OpenNewIframePage", data);
+    openIframeModal({
+      src: data
+    });
   }
 };
 
