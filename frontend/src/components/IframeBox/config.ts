@@ -28,7 +28,7 @@ const iframeRouters: Record<
   MainAppInfo: async (iframe: Ref<HTMLIFrameElement | null>, data: any) => {
     return {
       isDarkMode: false,
-      panelId: "testId",
+      panelId: "testId2",
       code: "04HZD11WK8NA2NFAZ7EF23QB"
     };
   },

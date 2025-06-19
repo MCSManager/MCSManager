@@ -2,23 +2,18 @@
 <template>
   <a-modal
     v-model:open="visible"
-    :width="modalWidth"
-    :height="modalHeight"
+    width="99vw"
+    height="98vh"
     :footer="null"
-    :closable="closable"
-    :mask-closable="maskClosable"
+    :closable="true"
+    :mask-closable="true"
     :destroy-on-close="true"
+    :centered="true"
     class="iframe-modal"
     @cancel="handleCancel"
   >
-    <div class="iframe-modal-content" :style="{ height: iframeHeight }">
-      <IframeBox
-        :src="src"
-        :width="iframeWidth"
-        :height="iframeHeight"
-        @load="handleIframeLoad"
-        @error="handleIframeError"
-      />
+    <div class="iframe-modal-content">
+      <IframeBox :src="src" width="100%" height="100%" />
     </div>
   </a-modal>
 </template>
@@ -29,52 +24,15 @@ import IframeBox from "@/components/IframeBox/index.vue";
 
 interface IframeModalProps {
   src: string;
-  width?: string | number;
-  height?: string | number;
-  closable?: boolean;
-  maskClosable?: boolean;
-  destroyComponent?: (delay?: number) => Promise<void>;
-  emitResult?: (data: any) => void;
 }
 
-const props = withDefaults(defineProps<IframeModalProps>(), {
-  width: "100%",
-  height: "100%",
-  closable: true,
-  maskClosable: true
-});
+const props = defineProps<IframeModalProps>();
 
 const visible = ref(false);
-
-// Calculate modal and iframe dimensions
-const modalWidth = typeof props.width === "number" ? `${props.width}px` : props.width;
-const modalHeight = typeof props.height === "number" ? `${props.height}px` : props.height;
-const iframeWidth = "100%";
-const iframeHeight =
-  typeof props.height === "number" ? `${props.height - 100}px` : "calc(80vh - 100px)";
 
 // Handle modal close
 const handleCancel = () => {
   visible.value = false;
-  // Delay component destruction
-  props.destroyComponent?.(300);
-};
-
-// Handle iframe load complete
-const handleIframeLoad = () => {
-  console.log("Iframe loaded successfully");
-};
-
-// Handle iframe load error
-const handleIframeError = () => {
-  console.error("Iframe load failed");
-};
-
-// Return result and close modal
-const emitResultAndClose = (data: any) => {
-  visible.value = false;
-  props.emitResult?.(data);
-  props.destroyComponent?.(300);
 };
 
 // Show modal after component mount
@@ -84,7 +42,6 @@ onMounted(() => {
 
 // Expose methods for external use
 defineExpose({
-  emitResultAndClose,
   close: handleCancel
 });
 </script>
@@ -97,7 +54,9 @@ defineExpose({
 
 .iframe-modal-content {
   width: 100%;
+  height: calc(100vh - 80px);
   overflow: hidden;
+  padding: 14px 0;
 }
 
 .iframe-modal :deep(.ant-modal-content) {
