@@ -269,13 +269,24 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
   if (selectedInstance.value.length === 0) return reportErrorMsg(t("TXT_CODE_a0a77be5"));
   const { execute, state } = batchDelete();
   const uuids: string[] = [];
+  const paths: string[] = [];
   for (const i of selectedInstance.value) {
     uuids.push(i.instanceUuid);
+    if (i.config?.cwd) {
+      paths.push(i.config.cwd);
+    }
   }
   const confirmDeleteInstanceModal = Modal.confirm({
     title: t("TXT_CODE_2a3b0c17"),
     icon: h(InfoCircleOutlined),
-    content: deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a"),
+    content: () => h("div", {}, [
+      h("p", {}, deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a")),
+      h("p", { style: "margin-top: 8px; color: #666;" }, [
+        t("实例所在目录："),
+        h("br"),
+        paths.join()
+      ])
+    ]),
     okText: t("TXT_CODE_d507abff"),
     async onOk() {
       try {
