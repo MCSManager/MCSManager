@@ -79,7 +79,9 @@ const {
   toDisk,
   oneSelected,
   isImage,
-  showImage
+  showImage,
+  getPathFromQuery,
+  buildBreadcrumbs
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -152,9 +154,6 @@ const columns = computed(() => {
 });
 
 let task: NodeJS.Timer | undefined;
-task = setInterval(async () => {
-  await getFileStatus();
-}, 3000);
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
@@ -294,10 +293,29 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
 };
 
 onMounted(async () => {
+  spinning.value = dialog.value.loading = true;
   await getFileStatus();
-  dialog.value.loading = true;
+
+  const savedPath = getPathFromQuery();
+  const isWin = fileStatus.value?.platform === "win32";
+
+  if (savedPath && savedPath !== "/") {
+    const { breadcrumbs: crumbList, disk, diskOnly } = buildBreadcrumbs(savedPath, isWin);
+
+    breadcrumbs.splice(0, breadcrumbs.length, ...crumbList);
+    if (disk) currentDisk.value = disk;
+    if (diskOnly) await toDisk(disk);
+
+    operationForm.value.name = "";
+    operationForm.value.current = 1;
+  }
+
   await getFileList();
-  dialog.value.loading = false;
+  dialog.value.loading = spinning.value = false;
+
+  task = setInterval(async () => {
+    await getFileStatus();
+  }, 3000);
 });
 
 onUnmounted(() => {

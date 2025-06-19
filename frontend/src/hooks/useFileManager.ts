@@ -30,8 +30,10 @@ import type {
 import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
 import { useImageViewerDialog } from "@/components/fc";
+import { useRouter } from "vue-router";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
+  const router = useRouter();
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -109,9 +111,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       };
     });
   };
-
   const getFileList = async (throwErr = false) => {
     const { execute } = getFileListApi();
+    spinning.value = true;
     try {
       clearSelected();
       const res = await execute({
@@ -129,6 +131,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     } catch (error: any) {
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
+    } finally {
+      spinning.value = false;
     }
   };
 
@@ -260,10 +264,8 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       content: createVNode("div", { style: "color:red;" }, t("TXT_CODE_6a10302d")),
       async onOk() {
         if (!isMultiple.value) {
-          // one file
           await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
         } else {
-          // more file
           if (!selectionData.value) return reportErrorMsg(t("TXT_CODE_f41ad30a"));
           await useDeleteFileApi(
             selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
@@ -444,24 +446,22 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectionData.value = [];
     selectedRowKeys.value = [];
   };
-
   const rowClickTable = async (item: string, type: number) => {
     if (type === 1) return;
     try {
-      spinning.value = true;
+      const path = `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`;
       breadcrumbs.push({
-        path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
+        path: path,
         name: item,
         disabled: false
       });
       operationForm.value.name = "";
       operationForm.value.current = 1;
       await getFileList(true);
+      savePathToQuery(path);
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
-    } finally {
-      spinning.value = false;
     }
   };
 
@@ -492,16 +492,15 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (!link) throw new Error(t("TXT_CODE_6d772765"));
     window.open(link);
   };
-
   const handleChangeDir = async (dir: string) => {
     if (breadcrumbs.findIndex((e) => e.path === dir) === -1)
       return reportErrorMsg(t("TXT_CODE_96281410"));
-    spinning.value = true;
+
     breadcrumbs.splice(breadcrumbs.findIndex((e) => e.path === dir) + 1);
     operationForm.value.name = "";
     operationForm.value.current = 1;
     await getFileList();
-    spinning.value = false;
+    savePathToQuery(dir);
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
@@ -593,19 +592,109 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   };
 
   const currentDisk = ref(t("TXT_CODE_28124988"));
+  const savePathToQuery = (path: string) => {
+    if (!path || !router) return;
 
+    try {
+      let cleanPath = path;
+      if (cleanPath !== "/" && cleanPath.endsWith("/")) {
+        cleanPath = cleanPath.slice(0, -1);
+      }
+      const url = new URL(window.location.href);
+      const hash = url.hash;
+      const hashParts = hash.split("?");
+      const hashPath = hashParts[0];
+      const searchParams = new URLSearchParams(hashParts.length > 1 ? hashParts[1] : "");
+      searchParams.set("path", cleanPath);
+      const newHash = `${hashPath}?${searchParams.toString()}`;
+      window.history.replaceState(null, "", url.pathname + url.search + newHash);
+    } catch (e) {
+      reportErrorMsg(t("保存路径到 URL 失败"));
+    }
+  };
+  const getPathFromQuery = (): string | null => {
+    if (!router) return null;
+
+    try {
+      const hash = window.location.hash;
+      const hashParts = hash.split("?");
+
+      if (hashParts.length > 1) {
+        const searchParams = new URLSearchParams(hashParts[1]);
+        const pathParam = searchParams.get("path");
+
+        if (pathParam) {
+          return decodeURIComponent(pathParam);
+        }
+      }
+
+      const pathQuery = router.currentRoute.value.query.path;
+      if (typeof pathQuery === "string" && pathQuery) {
+        return decodeURIComponent(pathQuery);
+      }
+    } catch (e) {
+      reportErrorMsg(t("从 URL 加载路径失败"));
+    }
+    return null;
+  };
   const toDisk = async (disk: string) => {
     breadcrumbs.splice(0, breadcrumbs.length);
+    const path = disk === "/" ? disk : disk + ":\\";
     breadcrumbs.push({
-      path: disk === "/" ? disk : disk + ":\\",
+      path: path,
       name: "/",
       disabled: false
     });
-    spinning.value = true;
     operationForm.value.name = "";
     operationForm.value.current = 1;
     await getFileList();
-    spinning.value = false;
+    savePathToQuery(path);
+  };
+
+  const buildBreadcrumbs = (savedPath: string, isWin: boolean) => {
+    const breadcrumbs: { path: string; name: string; disabled: boolean }[] = [];
+    let disk = "";
+    let diskOnly = false;
+
+    const push = (segments: string[], base: string) => {
+      let currentPath = base;
+      for (const part of segments) {
+        currentPath += isWin ? `${part}\\` : `${part}/`;
+        breadcrumbs.push({ path: currentPath, name: part, disabled: false });
+      }
+    };
+
+    if (!savedPath || savedPath === "/") {
+      return { breadcrumbs, disk, diskOnly };
+    }
+
+    const rootMatch = /^[A-Za-z]:\\$/;
+    const fullWinMatch = /^([A-Za-z]):[\\/](.*)?$/;
+
+    if (isWin && rootMatch.test(savedPath)) {
+      disk = savedPath[0];
+      diskOnly = true;
+      return { breadcrumbs, disk, diskOnly };
+    }
+
+    const match = savedPath.match(fullWinMatch);
+    if (isWin && match) {
+      disk = match[1];
+      breadcrumbs.push({ path: `${disk}:\\`, name: "/", disabled: false });
+      match[2] && push(match[2].split(/[\\/]/).filter(Boolean), `${disk}:\\`);
+    } else {
+      const parts = savedPath.split("/").filter(Boolean);
+      if (isWin && parts[0]?.includes(":")) {
+        disk = parts.shift()!.replace(":", "");
+        breadcrumbs.push({ path: `${disk}:\\`, name: "/", disabled: false });
+        push(parts, `${disk}:\\`);
+      } else {
+        breadcrumbs.push({ path: "/", name: "/", disabled: false });
+        push(parts, "/");
+      }
+    }
+
+    return { breadcrumbs, disk, diskOnly };
   };
 
   const isImage = (extName: string) => {
@@ -617,7 +706,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     const frontDir = breadcrumbs[breadcrumbs.length - 1].path;
     useImageViewerDialog(instanceId || "", daemonId || "", file.name, frontDir);
   };
-
   return {
     fileStatus,
     dialog,
@@ -657,6 +745,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     pushSelected,
     oneSelected,
     isImage,
-    showImage
+    showImage,
+    savePathToQuery,
+    getPathFromQuery,
+    buildBreadcrumbs
   };
 };
