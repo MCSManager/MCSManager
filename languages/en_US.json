@@ -687,6 +687,7 @@
   "TXT_CODE_5207688f": "MCDReforged Server Control Tool Permission Configuration File",
   "TXT_CODE_5245bd11": "Please complete the form",
   "TXT_CODE_524e3036": "Terminal",
+  "TXT_CODE_525e6e18": "EULA has been accepted successfully. Starting instance...",
   "TXT_CODE_5275cb62": "Player Insomnia Start Tick",
   "TXT_CODE_528753e7": "Minecraft or other programs require specific runtime environments, such as Java/Python/.NET, installing and managing different versions on the same machine is very complicated. Using different images can easily manage different versions of service environments.",
   "TXT_CODE_52b31aef": "Record where players logged off based on their IP. Cleared upon server restart.",
@@ -2120,6 +2121,7 @@
   "TXT_CODE_e08dfec5": "Max health attribute",
   "TXT_CODE_e08e63b5": "Console Program",
   "TXT_CODE_e093012e": "Resolve the issue where Bedrock Edition can't build above Y coordinate 127 by changing the Nether dimension ID to the End ID.",
+  "TXT_CODE_e0a944a1": "You have not agreed to the {0}. You need to agree to this agreement to start this instance. Do you agree?",
   "TXT_CODE_e1070b52": "We are processing the files with all our might!",
   "TXT_CODE_e109c091": "Abnormal access to remote node",
   "TXT_CODE_e10c992a": "All users will see your new changes upon refreshing the webpage.",
@@ -2150,6 +2152,7 @@
   "TXT_CODE_e3db239d": "Hr",
   "TXT_CODE_e3efef30": "List of items that are immune to fire",
   "TXT_CODE_e40ddc99": "Block fall multiplier for brown bed",
+  "TXT_CODE_e456aed": "Accept",
   "TXT_CODE_e4794d20": "please click here.",
   "TXT_CODE_e4878221": "Missing remote node ID",
   "TXT_CODE_e4895a21": "If a value is set, Mobs will also avoid walking over the stonecutter.",
@@ -2585,8 +2588,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_e0a944a1": "You have not agreed to the {0}. You need to agree to this agreement to start this instance. Do you agree?",
-  "TXT_CODE_525e6e18": "EULA has been accepted successfully. Starting instance...",
-  "TXT_CODE_e456aed": "Accept"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
 }
