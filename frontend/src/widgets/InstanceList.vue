@@ -282,7 +282,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
     content: () => h("div", {}, [
       h("p", {}, deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a")),
       h("p", { style: "margin-top: 8px; color: #666;" }, [
-        t("实例所在目录："),
+        t("TXT_CODE_91d70059"),
         h("br"),
         paths.join()
       ])

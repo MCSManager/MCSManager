@@ -1282,6 +1282,7 @@
   "TXT_CODE_91a8d35c": "Percent chance (0.0-1.0) the killer rabbit naturally spawns",
   "TXT_CODE_91b3fa98": "The panel cannot determine if this configuration file is compatible, please navigate to the corresponding file interface based on its type.",
   "TXT_CODE_91bb6101": "Panel/Linux (UTF8)",
+  "TXT_CODE_91d70059": "实例所在目录：",
   "TXT_CODE_91d857f5": "Optional, from 0 to infinity.",
   "TXT_CODE_91ebfa75": "Flying speed attribute",
   "TXT_CODE_9213f8e3": "Configuration file for Pufferfish. It allows for further configuration of a paper server.",
