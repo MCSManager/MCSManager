@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "Ayrılmış slotlar. Maksimum sunucu slotundan daha fazlasına sahip oyuncuların katılabileceği ayrılmış slot sayısı.",
   "TXT_CODE_36b878dc": "Paket İşleme Aralığı",
   "TXT_CODE_36cae384": "Özel bir IP adresi kullanıyorsunuz",
+  "TXT_CODE_3725b37b": "Ctrl C gönderildi!",
   "TXT_CODE_372e97f4": "Dünya zor moddayken CorruptionSpread'e izin ver.",
   "TXT_CODE_3752d436": "Command.uppime.Format seçeneğinde",
   "TXT_CODE_37658aab": "Kar topu mermilerinin değiştirici değeri",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "Varsayılan olarak (0) devre dışı bırakılır, bir varlığın kaybolmadan önce yaşayacağı keneler miktarı. \nBir oyuncu ile etkileşim, zamanlayıcıyı sıfırlar",
   "TXT_CODE_3f99f17f": "Daemon Sürümü",
   "TXT_CODE_3fce7ccb": "İzin verildiğinde örnek durumunu görüntüler.",
+  "TXT_CODE_3fd222b0": "Lütfen etkili olmak için Ctrl C'ye tekrar tekrar basın ...",
   "TXT_CODE_3fe97dcc": "Sistem Ayarları",
   "TXT_CODE_400a4210": "Girdi Kodlaması: ",
   "TXT_CODE_40241d8e": "Minecraft durum edinimi",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Yinelenen bir görev zaten var.",
   "TXT_CODE_system_instance_control.illegalName": "Yasadışı görev adı. Yalnızca alt çizgiler, sayılar, harfler ve bazı yerel dil karakterleri desteklenir.",
   "TXT_CODE_ui.help": "[Terminal] Daemon temel etkileşimli işlevselliğe sahiptir. Daha fazla bilgi için lütfen 'help' girin.",
-  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız",
-  "TXT_CODE_3725b37b": "Ctrl C gönderildi!",
-  "TXT_CODE_3fd222b0": "Lütfen etkili olmak için Ctrl C'ye tekrar tekrar basın ..."
+  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız"
 }

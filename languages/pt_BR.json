@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "Slots reservados. O número de slots reservados para jogadores com mais slots de servidor máximos.",
   "TXT_CODE_36b878dc": "Intervalo de Manipulação de Pacote",
   "TXT_CODE_36cae384": "Você está usando um endereço IP privado",
+  "TXT_CODE_3725b37b": "Ctrl C foi enviado!",
   "TXT_CODE_372e97f4": "Permitir CorruptionSpread quando o mundo está em modo difícil.",
   "TXT_CODE_3752d436": "Saída de <hora> espaço reservado no comando.uptime.format Opção",
   "TXT_CODE_37658aab": "O valor do modificador dos projéteis de bola de neve",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "Desativado por padrão (0), quantidade de carrapatos que uma entidade viverá antes de desaparecer. \nInteragir com um jogador redefine o temporizador",
   "TXT_CODE_3f99f17f": "Versão do Daemon",
   "TXT_CODE_3fce7ccb": "Exibe o status da instância quando a permissão permite.",
+  "TXT_CODE_3fd222b0": "Por favor, pressione rapidamente Ctrl C novamente para entrar em vigor ...",
   "TXT_CODE_3fe97dcc": "Configurações do Sistema",
   "TXT_CODE_400a4210": "Codificação de Entrada: ",
   "TXT_CODE_40241d8e": "Aquisição de status do Minecraft",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Uma tarefa duplicada já existe.",
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
-  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
-  "TXT_CODE_3725b37b": "Ctrl C foi enviado!",
-  "TXT_CODE_3fd222b0": "Por favor, pressione rapidamente Ctrl C novamente para entrar em vigor ..."
+  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão"
 }

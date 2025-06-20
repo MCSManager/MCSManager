@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "スロットを予約します。\n予約済みプレイヤーがサーバー スロットの最大数を超えた場合に参加できる予約済みスロットの数",
   "TXT_CODE_36b878dc": "パケット処理間隔",
   "TXT_CODE_36cae384": "プライベートIPアドレスを使用しています",
+  "TXT_CODE_3725b37b": "Ctrl Cが送信されました！",
   "TXT_CODE_372e97f4": "世界がハードモードになると汚職が蔓延する",
   "TXT_CODE_3752d436": "command.uptime.formatオプションの<hour>プレースホルダーの出力",
   "TXT_CODE_37658aab": "スノーボール発射体の修飾子値",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "デフォルトで無効になっている（0）、エンティティが消える前に生存するダニの量。\nプレーヤーとの対話は、タイマーをリセットします",
   "TXT_CODE_3f99f17f": "リモートノードのバージョン",
   "TXT_CODE_3fce7ccb": "ユーザーがインスタンスに入る権限を持っている場合、インスタンスのステータスを表示します。",
+  "TXT_CODE_3fd222b0": "ctrl cをもう一度押してください。",
   "TXT_CODE_3fe97dcc": "システム設定",
   "TXT_CODE_400a4210": "コードを入力する：",
   "TXT_CODE_40241d8e": "Minecraftのステータス取得",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "重複したタスクがすでに存在します",
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
-  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
-  "TXT_CODE_3725b37b": "Ctrl Cが送信されました！",
-  "TXT_CODE_3fd222b0": "ctrl cをもう一度押してください。"
+  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました"
 }

@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "Réservez des créneaux. \nNombre d'emplacements réservés que les joueurs réservés peuvent rejoindre s'ils dépassent le nombre maximum d'emplacements sur le serveur",
   "TXT_CODE_36b878dc": "Intervalle de traitement des paquets",
   "TXT_CODE_36cae384": "Vous utilisez une adresse IP privée",
+  "TXT_CODE_3725b37b": "Ctrl C a été envoyé!",
   "TXT_CODE_372e97f4": "Quand le monde est en mode dur, la corruption peut se propager",
   "TXT_CODE_3752d436": "Sortie de <Hour> Planholder dans Commande.Uptime.Format Option",
   "TXT_CODE_37658aab": "La valeur du modificateur des projectiles de balle de neige",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "Désactivé par défaut (0), le montant des tiques Une entité vivra avant de disparaître. \nL'interaction avec un joueur réinitialise la minuterie",
   "TXT_CODE_3f99f17f": "Version du nœud distant",
   "TXT_CODE_3fce7ccb": "Afficher l'état de l'instance, à condition que l'utilisateur soit autorisé à accéder à l'instance",
+  "TXT_CODE_3fd222b0": "Veuillez appuyer rapidement à nouveau Ctrl C pour prendre effet ...",
   "TXT_CODE_3fe97dcc": "Les paramètres du système",
   "TXT_CODE_400a4210": "Entrez le code:",
   "TXT_CODE_40241d8e": "Acquisition du statut Minecraft",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Des tâches en double existent déjà",
   "TXT_CODE_system_instance_control.illegalName": "Nom de projet incorrect, ne prend en charge que les traits de soulignement, les chiffres, les lettres et certaines langues locales",
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
-  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
-  "TXT_CODE_3725b37b": "Ctrl C a été envoyé!",
-  "TXT_CODE_3fd222b0": "Veuillez appuyer rapidement à nouveau Ctrl C pour prendre effet ..."
+  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué"
 }
