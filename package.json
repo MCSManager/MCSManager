@@ -8,10 +8,14 @@
     "daemon": "cd daemon &&  npm run dev",
     "frontend": "cd frontend && npm run dev",
     "panel": "cd panel && npm run dev",
+    "all": "concurrently -n Daemon,Frontend,Panel -c cyan,magenta,green -p name \"npm run dev --prefix daemon\" \"npm run dev --prefix frontend\" \"npm run dev --prefix panel\"",
     "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\""
   },
   "dependencies": {
     "crc": "^4.3.2",
     "i18next-scanner": "^4.4.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
