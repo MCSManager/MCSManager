@@ -1,5 +1,5 @@
 import { onUnmounted, type Ref } from "vue";
-import { openIframeModal } from "../IframeModal/useIframeModal";
+import { iframeRouters } from "./handler";
 
 export interface IframeEvent {
   id: string;
@@ -20,25 +20,6 @@ export interface IframeBoxEmits {
   (e: "error"): void;
   (e: "resize", dimensions: { width: number; height: number }): void;
 }
-
-const iframeRouters: Record<
-  string,
-  (iframe: Ref<HTMLIFrameElement | null>, data: any) => Promise<any>
-> = {
-  MainAppInfo: async (iframe: Ref<HTMLIFrameElement | null>, data: any) => {
-    return {
-      isDarkMode: false,
-      panelId: "testId2",
-      code: "04HZD11WK8NA2NFAZ7EF23QB"
-    };
-  },
-  OpenNewIframePage: async (iframe: Ref<HTMLIFrameElement | null>, data: any) => {
-    console.log("OpenNewIframePage", data);
-    openIframeModal({
-      src: data
-    });
-  }
-};
 
 export function getProPanelUrl(path: string) {
   return `http://localhost:5174/#${path}`;

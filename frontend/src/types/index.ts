@@ -67,6 +67,8 @@ export interface Settings {
   businessMode: boolean;
   businessId: string;
   allowChangeCmd: boolean;
+  registerCode: string;
+  panelId: string;
 }
 
 export interface ImageInfo {
