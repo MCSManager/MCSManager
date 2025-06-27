@@ -53,6 +53,24 @@ export const CURRENT_PANEL_ADDR = window.location.host.includes("localhost")
   ? "http://localhost:23333/"
   : `${window.location.protocol}//${window.location.host}/`;
 
+export const requestBuyInstance = useDefineApi<
+  {
+    data: {
+      productId: number;
+      daemonId: number;
+      payload: string;
+      code: string;
+      instanceId?: string;
+      username?: string;
+    };
+  },
+  any
+>({
+  url: "/api/exchange/request_buy_instance",
+  method: "POST",
+  timeout: 1000 * 30
+});
+
 export const requestRedeemPlatform = useDefineApi<
   {
     data: {

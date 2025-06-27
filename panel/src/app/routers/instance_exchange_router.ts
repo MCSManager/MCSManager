@@ -5,18 +5,20 @@ import { ROLE } from "../entity/user";
 import {
   buyOrRenewInstance,
   getNodeStatus,
+  IRedeemResponseProtocol,
   parseUserName,
   queryInstanceByUserId,
   REDEEM_PLATFORM_ADDR,
   RequestAction
 } from "../service/exchange_service";
-import { toText } from "mcsmanager-common";
+import { toNumber, toText } from "mcsmanager-common";
 import { logger } from "../service/log";
 import Koa from "koa";
 import UserSSOService from "../service/user_sso_service";
 import { loginSuccess } from "../service/passport_service";
 import { $t } from "../i18n";
 import axios from "axios";
+import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -123,4 +125,76 @@ router.post(
   }
 );
 
+router.post(
+  "/request_buy_instance",
+  permission({ token: false, level: null }),
+  validator({
+    body: {
+      productId: Number,
+      daemonId: String,
+      payload: String,
+      code: String
+    }
+  }),
+  async (ctx) => {
+    const panelId = systemConfig?.panelId;
+    const registerCode = systemConfig?.registerCode;
+    const productId = toNumber(ctx.request.body.productId) ?? 0;
+    const daemonId = toText(ctx.request.body.daemonId) ?? "";
+    const payload = toText(ctx.request.body.payload) ?? "";
+    const code = toText(ctx.request.body.code);
+
+    // Optional
+    const instanceId = toText(ctx.request.body.targetInstanceId) ?? "";
+    const username = toText(ctx.request.body.username) ?? "";
+
+    const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
+      `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
+      {
+        panelId,
+        registerCode,
+        productId,
+        daemonId,
+        payload,
+        code
+      },
+      {
+        headers: {
+          "X-Panel-Id": panelId
+        }
+      }
+    );
+
+    const productInfo = responseData?.data;
+
+    console.log("productInfo", productInfo);
+    const hours = productInfo?.hours;
+    if (!hours) {
+      throw new Error($t("请求套餐详情失败，请稍后重试！"));
+    }
+
+    const { config } = JSON.parse(payload || "{}") as { config: Partial<IGlobalInstanceConfig> };
+    if (!config) {
+      throw new Error("Invalid payload");
+    }
+
+    const params = {
+      category_id: productId,
+      payload: config,
+      username: username,
+      node_id: daemonId,
+      hours: hours,
+      instance_id: instanceId,
+      code: code ?? ""
+    };
+
+    console.log("准备请求 params", params);
+
+    const res = await buyOrRenewInstance(
+      instanceId ? RequestAction.RENEW : RequestAction.BUY,
+      params
+    );
+    ctx.body = res;
+  }
+);
 export default router;

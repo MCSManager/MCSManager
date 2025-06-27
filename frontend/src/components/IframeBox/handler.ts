@@ -3,6 +3,8 @@ import { openIframeModal } from "../IframeModal/useIframeModal";
 import { setUserApiKey } from "@/services/apis/user";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
+import { setSettingInfo, settingInfo } from "@/services/apis";
+import { requestBuyInstance } from "@/services/apis/redeem";
 
 export interface RemoteAppDaemon {
   nodeId: number;
@@ -12,6 +14,12 @@ export interface RemoteAppDaemon {
   daemonId: string;
   daemonAddr: string;
   daemonKey: string;
+}
+
+interface ReportBuyInstanceData {
+  code: string;
+  username: string;
+  product: IBusinessProductInfo;
 }
 
 export type IframeRouterHandler<T = any> = (
@@ -51,15 +59,15 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
   MainAppInfo: async () => {
     await autoOpenUserApiKey();
     const userInfo = await getUserInfo();
+    const setting = await settingInfo().execute();
     return {
       isDarkMode: false,
-      panelId: "testId",
-      code: "04HZD11WK8NA2NFAZ7EF23QB",
+      panelId: setting.value?.panelId || "",
+      code: setting.value?.registerCode || "",
       userInfo: JSON.parse(JSON.stringify(userInfo))
     };
   },
   OpenNewIframePage: async (_, data: any) => {
-    console.log("OpenNewIframePage", data);
     openIframeModal({
       src: data
     });
@@ -82,5 +90,29 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
         daemonKey: ""
       };
     });
+  },
+  UpdatePanelSettings: async (_, data: any) => {
+    const originSetting = await settingInfo().execute();
+    if (!originSetting.value) throw new Error("Panel settings not found");
+    await setSettingInfo().execute({
+      data: {
+        ...originSetting.value,
+        panelId: originSetting.value.panelId || data?.panelId,
+        registerCode: originSetting.value.registerCode || data?.registerCode
+      }
+    });
+    return true;
+  },
+
+  BuyInstance: async (_, data: ReportBuyInstanceData) => {
+    const res = await requestBuyInstance().execute({
+      data: {
+        ...data.product,
+        code: data.code,
+        username: data.username
+      }
+    });
+    console.log("BuyInstance 成功", res);
+    return res;
   }
 };
