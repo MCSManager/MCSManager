@@ -208,6 +208,17 @@ declare global {
     }[];
     packages: IQuickStartPackages[];
   }
+
+  export interface IBusinessProductInfo {
+    productId: number;
+    title: string;
+    price: number;
+    ispId: number;
+    daemonId: number;
+    payload: string;
+    remark?: string;
+    hours?: number;
+  }
 }
 
 export {};

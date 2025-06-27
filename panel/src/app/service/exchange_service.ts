@@ -9,9 +9,17 @@ import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+// export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+export const REDEEM_PLATFORM_ADDR = "http://localhost:3000";
 
 // ------- Protocol Define -------
+
+export interface IRedeemResponseProtocol<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
 export interface INodeStatusProtocol {
   name: string;
   id: string;
@@ -46,7 +54,7 @@ export interface IBuyRequestProtocol {
   node_id: string;
   username: string;
   hours: number;
-  payload: any;
+  payload: Partial<IGlobalInstanceConfig>;
   code?: string;
   instance_id?: string;
 }
