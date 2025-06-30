@@ -2,8 +2,7 @@
 <template>
   <a-modal
     v-model:open="visible"
-    width="99vw"
-    height="98vh"
+    width="80%"
     :footer="null"
     :closable="true"
     :mask-closable="true"
@@ -54,7 +53,8 @@ defineExpose({
 
 .iframe-modal-content {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: 80vh;
+  min-height: 600px;
   overflow: hidden;
   padding: 14px 0;
 }

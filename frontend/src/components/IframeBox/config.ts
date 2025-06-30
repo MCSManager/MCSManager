@@ -5,6 +5,7 @@ export interface IframeEvent {
   id: string;
   source: string;
   data: any;
+  error?: string;
   app: "MCSManager";
 }
 
@@ -51,7 +52,9 @@ export async function iframeEventDispatch(
       if (result !== undefined) {
         sendIframeMsg(iframe, event, result);
       }
-    } catch (error) {
+    } catch (error: any) {
+      event.error = error?.message || String(error);
+      sendIframeMsg(iframe, event, null);
       console.error("Iframe router error:", error);
     }
   }

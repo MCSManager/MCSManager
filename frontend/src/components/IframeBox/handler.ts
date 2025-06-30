@@ -112,7 +112,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
         username: data.username
       }
     });
-    console.log("BuyInstance 成功", res);
-    return res;
+    console.log("BuyInstance 成功", res.value);
+    return JSON.parse(JSON.stringify(res.value));
   }
 };
