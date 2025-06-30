@@ -24,8 +24,6 @@ interface ReportBuyInstanceData {
 
 export type IframeRouterHandler<T = any> = (
   // eslint-disable-next-line no-unused-vars
-  iframe: Ref<HTMLIFrameElement | null>,
-  // eslint-disable-next-line no-unused-vars
   data: T
 ) => Promise<any>;
 
@@ -67,10 +65,11 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
       userInfo: JSON.parse(JSON.stringify(userInfo))
     };
   },
-  OpenNewIframePage: async (_, data: any) => {
+  OpenNewIframePage: async (data: any) => {
     openIframeModal({
       src: data
     });
+    return true;
   },
   GetRemoteAppDaemons: async () => {
     await autoOpenUserApiKey();
@@ -91,7 +90,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
       };
     });
   },
-  UpdatePanelSettings: async (_, data: any) => {
+  UpdatePanelSettings: async (data: any) => {
     const originSetting = await settingInfo().execute();
     if (!originSetting.value) throw new Error("Panel settings not found");
     await setSettingInfo().execute({
@@ -104,7 +103,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
     return true;
   },
 
-  BuyInstance: async (_, data: ReportBuyInstanceData) => {
+  BuyInstance: async (data: ReportBuyInstanceData) => {
     const res = await requestBuyInstance().execute({
       data: {
         ...data.product,

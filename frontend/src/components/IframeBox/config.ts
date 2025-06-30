@@ -1,5 +1,6 @@
 import { onUnmounted, type Ref } from "vue";
 import { iframeRouters } from "./handler";
+import { v4 } from "uuid";
 
 export interface IframeEvent {
   id: string;
@@ -22,39 +23,45 @@ export interface IframeBoxEmits {
   (e: "resize", dimensions: { width: number; height: number }): void;
 }
 
+const globalReqIdMap = new Map<string, boolean>();
+const globalIframeList = new Map<string, Ref<HTMLIFrameElement | null>>();
+
 export function getProPanelUrl(path: string) {
   return `http://localhost:5174/#${path}`;
 }
 
 export function useIframeEventListener(iframe: Ref<HTMLIFrameElement | null>) {
+  const iframeId = v4();
+  globalIframeList.set(iframeId, iframe);
   const handler = async (event: MessageEvent) => {
     const cfg = event.data as Partial<IframeEvent>;
     if (cfg?.app === "MCSManager" && cfg?.id) {
-      console.debug("Receive MCSManager iframe event:", cfg);
-      return await iframeEventDispatch(iframe, cfg);
+      return await iframeEventDispatch(cfg);
     }
   };
   window.addEventListener("message", handler);
 
   onUnmounted(() => {
+    globalIframeList.delete(iframeId);
     window.removeEventListener("message", handler);
   });
 }
 
-export async function iframeEventDispatch(
-  iframe: Ref<HTMLIFrameElement | null>,
-  event: Partial<IframeEvent>
-) {
+export async function iframeEventDispatch(event: Partial<IframeEvent>) {
   const routerHandler = iframeRouters[String(event.source)];
-  if (typeof routerHandler === "function") {
+  if (event.id && typeof routerHandler === "function" && !globalReqIdMap.has(String(event.id))) {
+    console.warn("iframeEventDispatch(): Receive iframe event:", event);
+    globalReqIdMap.set(String(event.id), true);
+    setTimeout(() => {
+      globalReqIdMap.delete(String(event.id));
+    }, 1000 * 10);
     try {
-      const result = await routerHandler(iframe, event.data);
-      if (result !== undefined) {
-        sendIframeMsg(iframe, event, result);
-      }
+      const result = await routerHandler(event.data);
+      console.warn("iframeEventDispatch(): Send iframe event:", event, result);
+      globalIframeList.forEach((iframe) => sendIframeMsg(iframe, event, result));
     } catch (error: any) {
       event.error = error?.message || String(error);
-      sendIframeMsg(iframe, event, null);
+      globalIframeList.forEach((iframe) => sendIframeMsg(iframe, event, null));
       console.error("Iframe router error:", error);
     }
   }
