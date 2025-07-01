@@ -10,5 +10,5 @@ cd ../frontend
 npm install
 
 echo "------------"
-echo "All Done!"
+echo "All done!"
 echo "------------"

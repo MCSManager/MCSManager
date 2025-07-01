@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "預留位。超過最大伺服器人數的超額玩家可以加入的預留位置數量",
   "TXT_CODE_36b878dc": "封包處理時間間隔",
   "TXT_CODE_36cae384": "你正使用虛擬 IP 位址",
+  "TXT_CODE_3725b37b": "已傳送 Ctrl+C！",
   "TXT_CODE_372e97f4": "當世界處於困難模式時，允許腐敗蔓延",
   "TXT_CODE_3752d436": "command.uptime.format 選項中 <hour> 佔位符的輸出",
   "TXT_CODE_37658aab": "雪球的投射物修飾符值",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "預設停用(0)，實體在消失前存在的刻數。與玩家互動將重設計時器",
   "TXT_CODE_3f99f17f": "遠端節點版本",
   "TXT_CODE_3fce7ccb": "顯示實例狀態，前提是這個使用者有權限能進入這個實例",
+  "TXT_CODE_3fd222b0": "請快速再按一次 Ctrl+C 生效...",
   "TXT_CODE_3fe97dcc": "系統設定",
   "TXT_CODE_400a4210": "輸入編碼：",
   "TXT_CODE_40241d8e": "Minecraft 狀態獲取",
@@ -2583,5 +2585,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重複的任務",
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[控制台] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
-  "TXT_CODE_version.versionDetectErr": "版本檢查失敗"
+  "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
+  "TXT_CODE_e0a944a1": "偵測到您未同意 {0} 協議，需同意此協議才能啟動該實例。是否同意？",
+  "TXT_CODE_525e6e18": "EULA 協議已成功接受。正在啟動實例...",
+  "TXT_CODE_e456aed": "同意"
 }
