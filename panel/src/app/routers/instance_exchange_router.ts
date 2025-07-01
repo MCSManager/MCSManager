@@ -148,6 +148,10 @@ router.post(
     const instanceId = toText(ctx.request.body.targetInstanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
 
+    if (username.length < 4) {
+      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
+    }
+
     const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
       `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
       {
@@ -166,8 +170,6 @@ router.post(
     );
 
     const productInfo = responseData?.data;
-
-    console.log("productInfo", productInfo);
     const hours = productInfo?.hours;
     if (!hours) {
       throw new Error($t("请求套餐详情失败，请稍后重试！"));
@@ -187,8 +189,6 @@ router.post(
       instance_id: instanceId,
       code: code ?? ""
     };
-
-    console.log("准备请求 params", params);
 
     const res = await buyOrRenewInstance(
       instanceId ? RequestAction.RENEW : RequestAction.BUY,
