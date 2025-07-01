@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "Reserva de plazas. \nNúmero de espacios reservados a los que los jugadores reservados pueden unirse si superan el número máximo de espacios de servidor",
   "TXT_CODE_36b878dc": "Intervalo de procesamiento de paquetes",
   "TXT_CODE_36cae384": "Estás utilizando una dirección IP privada",
+  "TXT_CODE_3725b37b": "Ctrl C ha sido enviado!",
   "TXT_CODE_372e97f4": "Cuando el mundo está en modo difícil, se permite que la corrupción se propague",
   "TXT_CODE_3752d436": "Salida del marcador de posición <Hora> en Command.uptime.Format Opción",
   "TXT_CODE_37658aab": "El valor modificador de los proyectiles de bola de nieve",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "Desactivado por defecto (0), la cantidad de garrapatas una entidad vivirá antes de desaparecer. \nInteractuar con un jugador restablece el temporizador",
   "TXT_CODE_3f99f17f": "Versión de nodo remoto",
   "TXT_CODE_3fce7ccb": "Mostrar el estado de la instancia, siempre que el usuario tenga permiso para ingresar a la instancia.",
+  "TXT_CODE_3fd222b0": "Por favor, presione rápidamente Ctrl C nuevamente para entrar en vigencia ...",
   "TXT_CODE_3fe97dcc": "Ajustes del sistema",
   "TXT_CODE_400a4210": "Introduzca el código:",
   "TXT_CODE_40241d8e": "Adquisición de estado de Minecraft",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
-  "TXT_CODE_3725b37b": "Ctrl C ha sido enviado!",
-  "TXT_CODE_3fd222b0": "Por favor, presione rápidamente Ctrl C nuevamente para entrar en vigencia ..."
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
 }
