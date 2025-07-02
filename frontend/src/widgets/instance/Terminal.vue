@@ -37,7 +37,6 @@ import Reinstall from "./dialogs/Reinstall.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useMountComponent } from "@/hooks/useMountComponent";
-import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -193,11 +192,7 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_f77093c8"),
       icon: MoneyCollectOutlined,
       noConfirm: true,
-      click: () => {
-        useMountComponent({
-          instanceId: instanceId
-        }).mount(UseRedeemDialog);
-      },
+      click: () => {},
       props: {},
       condition: () => state.settings.businessMode
     }

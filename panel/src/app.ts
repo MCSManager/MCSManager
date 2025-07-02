@@ -1,6 +1,6 @@
 import os from "os";
 import { $t } from "./app/i18n";
-import { initVersionManager, getVersion } from "./app/version";
+import { initVersionManager, getVersion, checkBusinessMode } from "./app/version";
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
 import { initSystemConfig, systemConfig } from "./app/setting";
@@ -95,6 +95,8 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   // Detect whether the configuration file is from an older version and update it if so.
   versionAdapter.detectConfig();
+
+  checkBusinessMode();
 
   // Initialize services
   await SystemUser.initialize();

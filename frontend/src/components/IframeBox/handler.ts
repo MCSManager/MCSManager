@@ -5,6 +5,7 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { setSettingInfo, settingInfo } from "@/services/apis";
 import { requestBuyInstance } from "@/services/apis/redeem";
+import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 
 export interface RemoteAppDaemon {
   nodeId: number;
@@ -55,15 +56,27 @@ export async function getUserInfo() {
 
 export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
   MainAppInfo: async () => {
-    await autoOpenUserApiKey();
-    const userInfo = await getUserInfo();
-    const setting = await settingInfo().execute();
-    return {
-      isDarkMode: false,
-      panelId: setting.value?.panelId || "",
-      code: setting.value?.registerCode || "",
-      userInfo: JSON.parse(JSON.stringify(userInfo))
-    };
+    const { state: panelStatus } = useAppStateStore();
+    const { isDarkTheme } = useAppConfigStore();
+    try {
+      await autoOpenUserApiKey();
+      const userInfo = await getUserInfo();
+      const setting = await settingInfo().execute();
+      return {
+        isDarkMode: isDarkTheme(),
+        panelId: setting.value?.panelId || "",
+        code: setting.value?.registerCode || "",
+        userInfo: JSON.parse(JSON.stringify(userInfo))
+      };
+    } catch (err: any) {
+      console.warn(`MainAppInfo error, we will use default config:`, err?.message);
+      return {
+        isDarkMode: isDarkTheme(),
+        panelId: panelStatus.settings.panelId,
+        code: "",
+        userInfo: null
+      };
+    }
   },
   OpenNewIframePage: async (data: any) => {
     openIframeModal({

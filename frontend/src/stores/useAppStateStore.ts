@@ -19,6 +19,7 @@ export const useAppStateStore = createGlobalState(() => {
     versionChange: false,
     language: "en_us",
     settings: {
+      panelId: "",
       canFileManager: false,
       allowUsePreset: false,
       businessMode: false,

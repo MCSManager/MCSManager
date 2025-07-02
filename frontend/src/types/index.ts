@@ -240,5 +240,6 @@ export interface PanelStatus {
     businessMode: boolean;
     businessId: string;
     allowChangeCmd: boolean;
+    panelId: string;
   };
 }

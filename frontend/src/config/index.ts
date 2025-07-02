@@ -42,7 +42,6 @@ import Carousel from "@/widgets/others/Carousel.vue";
 import PluginCard from "@/widgets/others/PluginCard.vue";
 import MusicCard from "@/widgets/others/MusicCard.vue";
 import ShelvesCard from "@/widgets/ShelvesCard.vue";
-import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
 
@@ -87,8 +86,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Carousel,
   PluginCard,
   MusicCard,
-  ShelvesCard,
-  ShopInfoCard
+  ShelvesCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -509,17 +507,6 @@ export function getLayoutCardPool() {
       width: 8,
       description: t("TXT_CODE_163e2d0a"),
       height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.COMMON
-    },
-    {
-      id: getRandomId(),
-      permission: ROLE.GUEST,
-      meta: {},
-      type: "ShopInfoCard",
-      title: t("TXT_CODE_48261ab7"),
-      width: 8,
-      description: t("TXT_CODE_1648c9ea"),
-      height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     }
   ];
