@@ -2588,5 +2588,6 @@
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
   "TXT_CODE_e0a944a1": "检测到您未同意 {0} 协议，需要同意此协议才能启动该实例。是否同意？",
   "TXT_CODE_525e6e18": "EULA 协议已成功接受。正在启动实例...",
-  "TXT_CODE_e456aed": "同意"
+  "TXT_CODE_e456aed": "同意",
+  "TXT_CODE_panel_id": "面板 ID"
 }

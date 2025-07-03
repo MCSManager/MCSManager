@@ -1,23 +1,22 @@
 import Router from "@koa/router";
-import remoteService from "../service/remote_service";
-import permission from "../middleware/permission";
-import validator from "../middleware/validator";
-import { saveSystemConfig, systemConfig } from "../setting";
-import { logger } from "../service/log";
-import { i18next, $t } from "../i18n";
-import userSystem from "../service/user_service";
-import { v4 } from "uuid";
-import path from "path";
 import * as fs from "fs-extra";
+import path from "path";
+import { v4 } from "uuid";
+import FileManager from "../../../../daemon/src/service/system_file";
+import SystemConfig from "../entity/setting";
+import { ROLE } from "../entity/user";
+import { $t, i18next } from "../i18n";
+import permission from "../middleware/permission";
 import {
   getFrontendLayoutConfig,
   resetFrontendLayoutConfig,
+  SAVE_DIR_PATH,
   setFrontendLayoutConfig
 } from "../service/frontend_layout";
-import { ROLE } from "../entity/user";
-import { SAVE_DIR_PATH } from "../service/frontend_layout";
-import FileManager from "../../../../daemon/src/service/system_file";
-import SystemConfig from "../entity/setting";
+import { logger } from "../service/log";
+import remoteService from "../service/remote_service";
+import userSystem from "../service/user_service";
+import { saveSystemConfig, systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/overview" });
 

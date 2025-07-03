@@ -1,11 +1,10 @@
-import { onUnmounted, type Ref } from "vue";
-import { openIframeModal } from "../IframeModal/useIframeModal";
-import { setUserApiKey } from "@/services/apis/user";
-import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { setSettingInfo, settingInfo } from "@/services/apis";
 import { requestBuyInstance } from "@/services/apis/redeem";
-import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
+import { setUserApiKey } from "@/services/apis/user";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { openIframeModal } from "../IframeModal/useIframeModal";
 
 export interface RemoteAppDaemon {
   nodeId: number;
@@ -121,10 +120,10 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
       data: {
         ...data.product,
         code: data.code,
-        username: data.username
+        username: data.username,
+        daemonId: data.product.daemonUuid || ""
       }
     });
-    console.log("BuyInstance 成功", res.value);
     return JSON.parse(JSON.stringify(res.value));
   }
 };

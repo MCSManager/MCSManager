@@ -1,9 +1,10 @@
-import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
-import user_service from "../service/user_service";
-import { customAlphabet } from "nanoid";
 import { t } from "i18next";
 import { toNumber, toText } from "mcsmanager-common";
+import { customAlphabet } from "nanoid";
+import { $t } from "../i18n";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
+import user_service from "../service/user_service";
 import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
@@ -140,6 +141,11 @@ export async function buyOrRenewInstance(
     payload.category = params.category_id || 0;
     payload.endTime =
       (payload.endTime ? Number(payload.endTime) : Date.now()) + hours * 3600 * 1000;
+
+    if (username.length < 4) {
+      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
+    }
+
     payload.nickname = "App-" + username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",

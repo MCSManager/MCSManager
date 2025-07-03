@@ -1,15 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
-export interface ShopItem {
-  productId: number;
-  title: string;
-  price: number;
-  ispId?: number;
-  daemonId: number;
-  payload: string;
-  remark: string;
-}
-
 export interface ShopInfo {
   uid?: number;
   nickname: string;
@@ -19,65 +9,44 @@ export interface ShopInfo {
   afterSalesGroup: string;
 }
 
-export interface ShopInfoResponse {
-  ispInfo: ShopInfo;
-  products: ShopItem[];
+export interface PortInfoProtocol {
+  host: number;
+  container: number;
+  protocol: string;
+}
+export interface InstanceInfoProtocol {
+  instance_id: string;
+  name: string;
+  expire: number;
+  status: number;
+  lines: Array<{ title: string; value: any }>;
+  ports: PortInfoProtocol[];
 }
 
 export interface BuyInstanceResponse {
-  instanceId: string;
-  expire: number;
+  instance_id: string;
   username: string;
   password: string;
   uuid: string;
+  expire: number;
+  instance_config?: IGlobalInstanceConfig;
+  instance_info?: InstanceInfoProtocol;
 }
-
-export interface PurchaseQueryResponse {
-  id: number;
-  uid: number;
-  nodeId: number;
-  productId: number;
-  panelAddr: string;
-  username: string;
-  password: string;
-  activeTime?: number;
-  code: string;
-}
-
-export const CURRENT_PANEL_ADDR = window.location.host.includes("localhost")
-  ? "http://localhost:23333/"
-  : `${window.location.protocol}//${window.location.host}/`;
 
 export const requestBuyInstance = useDefineApi<
   {
     data: {
       productId: number;
-      daemonId: number;
-      payload: string;
+      daemonId: string;
       code: string;
       instanceId?: string;
+      payload?: string;
       username?: string;
     };
   },
-  any
+  BuyInstanceResponse
 >({
   url: "/api/exchange/request_buy_instance",
-  method: "POST",
-  timeout: 1000 * 30
-});
-
-export const requestRedeemPlatform = useDefineApi<
-  {
-    data: {
-      targetUrl: string;
-      method: string;
-      data?: object;
-      params?: object;
-    };
-  },
-  any
->({
-  url: "/api/exchange/request_redeem_platform",
   method: "POST",
   timeout: 1000 * 30
 });

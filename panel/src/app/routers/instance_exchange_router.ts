@@ -1,7 +1,11 @@
 import Router from "@koa/router";
+import axios from "axios";
+import Koa from "koa";
+import { toNumber, toText } from "mcsmanager-common";
+import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { ROLE } from "../entity/user";
 import {
   buyOrRenewInstance,
   getNodeStatus,
@@ -11,13 +15,9 @@ import {
   REDEEM_PLATFORM_ADDR,
   RequestAction
 } from "../service/exchange_service";
-import { toNumber, toText } from "mcsmanager-common";
 import { logger } from "../service/log";
-import Koa from "koa";
-import UserSSOService from "../service/user_sso_service";
 import { loginSuccess } from "../service/passport_service";
-import { $t } from "../i18n";
-import axios from "axios";
+import UserSSOService from "../service/user_sso_service";
 import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/exchange" });
@@ -89,7 +89,6 @@ router.post(
     body: {
       productId: Number,
       daemonId: String,
-      payload: String,
       code: String
     }
   }),
@@ -98,16 +97,11 @@ router.post(
     const registerCode = systemConfig?.registerCode;
     const productId = toNumber(ctx.request.body.productId) ?? 0;
     const daemonId = toText(ctx.request.body.daemonId) ?? "";
-    const payload = toText(ctx.request.body.payload) ?? "";
     const code = toText(ctx.request.body.code);
 
     // Optional
-    const instanceId = toText(ctx.request.body.targetInstanceId) ?? "";
+    const instanceId = toText(ctx.request.body.instanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
-
-    if (username.length < 4) {
-      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
-    }
 
     const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
       `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
@@ -116,23 +110,29 @@ router.post(
         registerCode,
         productId,
         daemonId,
-        payload,
         code
       },
       {
         headers: {
-          "X-Panel-Id": panelId
+          "X-Panel-Id": panelId,
+          "X-Register-Code": registerCode
         }
       }
     );
 
+    if (responseData.code !== 200) {
+      throw new Error(responseData.message);
+    }
+
     const productInfo = responseData?.data;
     const hours = productInfo?.hours;
-    if (!hours) {
+    if (!hours || !productInfo?.payload) {
       throw new Error($t("请求套餐详情失败，请稍后重试！"));
     }
 
-    const { config } = JSON.parse(payload || "{}") as { config: Partial<IGlobalInstanceConfig> };
+    const { config } = JSON.parse(productInfo.payload) as {
+      config: Partial<IGlobalInstanceConfig>;
+    };
     if (!config) {
       throw new Error("Invalid payload");
     }

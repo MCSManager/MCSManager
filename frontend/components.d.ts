@@ -96,7 +96,8 @@ declare module 'vue' {
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
-    PurchaseQueryDialog: typeof import('./src/components/fc/PurchaseQueryDialog.vue')['default']
+    PurchaseQueryDialog: typeof import("./src/components/fc/PurchaseQueryDialog.vue")["default"]
+    RenewalDialog: typeof import('./src/components/fc/RenewalDialog.vue')['default']
     ResponsiveLayoutGroup: typeof import('./src/components/ResponsiveLayoutGroup.vue')['default']
     RightMenu: typeof import('./src/components/fc/RightMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -108,7 +109,7 @@ declare module 'vue' {
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
-    UseRedeemDialog: typeof import('./src/components/fc/UseRedeemDialog.vue')['default']
+    UseRedeemDialog: typeof import("./src/components/fc/UseRedeemDialog.vue")["default"]
     WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }
 }

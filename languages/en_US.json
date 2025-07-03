@@ -2588,5 +2588,6 @@
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
   "TXT_CODE_e0a944a1": "You have not agreed to the {0}. You need to agree to this agreement to start this instance. Do you agree?",
   "TXT_CODE_525e6e18": "EULA has been accepted successfully. Starting instance...",
-  "TXT_CODE_e456aed": "Accept"
+  "TXT_CODE_e456aed": "Accept",
+  "TXT_CODE_panel_id": "Panel ID"
 }

@@ -214,10 +214,11 @@ declare global {
     title: string;
     price: number;
     ispId: number;
-    daemonId: number;
-    payload: string;
+    daemonId: string;
+    payload?: string;
     remark?: string;
     hours?: number;
+    daemonUuid?: string;
   }
 }
 

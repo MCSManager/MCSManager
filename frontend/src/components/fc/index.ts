@@ -1,16 +1,17 @@
 import { useMountComponent } from "@/hooks/useMountComponent";
 import type { UserInstance } from "@/types/user";
 
-import SelectInstances from "@/components/fc/SelectInstances.vue";
 import CmdAssistantDialog from "@/components/fc/CmdAssistantDialog/index.vue";
 import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
+import SelectInstances from "@/components/fc/SelectInstances.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
-import UploadFileDialogVue from "./UploadFileDialog.vue";
-import TaskLoadingDialog from "./TaskLoadingDialog.vue";
-import TagsDialog from "./TagsDialog.vue";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
+import RenewalDialog from "./RenewalDialog.vue";
+import TagsDialog from "./TagsDialog.vue";
+import TaskLoadingDialog from "./TaskLoadingDialog.vue";
+import UploadFileDialogVue from "./UploadFileDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -171,4 +172,10 @@ export async function useImageViewerDialog(
   return await useMountComponent({ instanceId, daemonId, fileName, frontDir }).mount(
     ImageViewerDialog
   );
+}
+
+export async function openRenewalDialog(instanceId: string, daemonId: string, productId: number) {
+  return useMountComponent({ instanceId, daemonId, productId })
+    .load<InstanceType<typeof RenewalDialog>>(RenewalDialog)
+    .openDialog();
 }

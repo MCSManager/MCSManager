@@ -1,42 +1,43 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
+import { openRenewalDialog } from "@/components/fc";
+import IconBtn from "@/components/IconBtn.vue";
+import TerminalCore from "@/components/TerminalCore.vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
+import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
-import type { LayoutCard } from "@/types";
 import {
+  killInstance,
+  openInstance,
+  restartInstance,
+  stopInstance,
+  updateInstance
+} from "@/services/apis/instance";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard } from "@/types";
+import { INSTANCE_STATUS } from "@/types/const";
+import {
+  CheckCircleOutlined,
+  CloseOutlined,
   CloudDownloadOutlined,
   CloudServerOutlined,
   DownOutlined,
+  InfoCircleOutlined,
+  InteractionOutlined,
+  LaptopOutlined,
+  LoadingOutlined,
+  MoneyCollectOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
-  RedoOutlined,
-  LaptopOutlined,
-  InteractionOutlined,
-  LoadingOutlined,
-  MoneyCollectOutlined
+  RedoOutlined
 } from "@ant-design/icons-vue";
-import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
-import { arrayFilter } from "../../tools/array";
-import { useTerminal } from "../../hooks/useTerminal";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useScreen } from "@/hooks/useScreen";
-import IconBtn from "@/components/IconBtn.vue";
-import {
-  openInstance,
-  stopInstance,
-  restartInstance,
-  killInstance,
-  updateInstance
-} from "@/services/apis/instance";
-import { CloseOutlined } from "@ant-design/icons-vue";
+import { computed, onMounted, ref } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
-import { INSTANCE_STATUS } from "@/types/const";
-import { reportErrorMsg } from "@/tools/validator";
-import TerminalCore from "@/components/TerminalCore.vue";
+import { useTerminal } from "../../hooks/useTerminal";
+import { arrayFilter } from "../../tools/array";
 import Reinstall from "./dialogs/Reinstall.vue";
-import { useAppStateStore } from "@/stores/useAppStateStore";
-import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
-import { useMountComponent } from "@/hooks/useMountComponent";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -192,7 +193,13 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_f77093c8"),
       icon: MoneyCollectOutlined,
       noConfirm: true,
-      click: () => {},
+      click: async () => {
+        await openRenewalDialog(
+          instanceInfo.value?.instanceUuid ?? "",
+          daemonId ?? "",
+          instanceInfo.value?.config.category ?? 0
+        );
+      },
       props: {},
       condition: () => state.settings.businessMode
     }
