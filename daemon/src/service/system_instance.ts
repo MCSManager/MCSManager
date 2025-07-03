@@ -109,8 +109,15 @@ class InstanceSubsystem extends EventEmitter {
       this.GLOBAL_INSTANCE_UUID
     );
 
-    const self = this;
-    takeoverContainer().then(() => self.autoStart());
+    takeoverContainer()
+      .catch((error) =>
+        logger.error(
+          $t("TXT_CODE_8d4c8f7e", {
+            reason: error.message || error
+          })
+        )
+      )
+      .finally(() => this.autoStart());
   }
 
   createInstance(cfg: any, persistence = true, uuid?: string) {
