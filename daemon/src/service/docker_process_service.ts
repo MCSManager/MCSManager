@@ -31,7 +31,10 @@ export interface IDockerProcessAdapterStartParam {
 export class SetupDockerContainer extends AsyncTask {
   private container?: Docker.Container;
 
-  constructor(public readonly instance: Instance, public readonly startCommand?: string) {
+  constructor(
+    public readonly instance: Instance,
+    public readonly startCommand?: string
+  ) {
     super();
   }
 
@@ -46,7 +49,7 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     // Command text parsing
-    let commandList: string[] = [];
+    let commandList: string[];
     if (instance.config?.startCommand?.trim() || customCommand?.trim()) {
       commandList = commandStringToArray(customCommand ?? instance.config.startCommand);
     } else {
@@ -178,6 +181,10 @@ export class SetupDockerContainer extends AsyncTask {
       ExposedPorts: exposedPorts,
       Env: instance.config.docker?.env || [],
 
+      Labels: {
+        "mcsmanager.instance.uuid": instance.instanceUuid
+      },
+
       HostConfig: {
         Memory: maxMemory,
         AutoRemove: true,
@@ -204,6 +211,7 @@ export class SetupDockerContainer extends AsyncTask {
       this.stop();
     });
   }
+
   public async onStop() {
     try {
       await this.container?.kill();
@@ -227,7 +235,8 @@ export class SetupDockerContainer extends AsyncTask {
         stream: true,
         stdout: true,
         stderr: true,
-        stdin: true
+        stdin: true,
+        hijack: true
       });
       stream.on("data", (text: any) => instance.print(iconv.decode(text, outputCode)));
       stream.on("error", (text: any) => instance.print(iconv.decode(text, outputCode)));
@@ -254,10 +263,14 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   // Once the program is actually started, no errors can block the next startup process
-  public async start(param: IDockerProcessAdapterStartParam) {
+  public async start(param: IDockerProcessAdapterStartParam, container?: Docker.Container) {
     try {
-      await this.containerWrapper.start();
-      this.container = this.containerWrapper.getContainer();
+      if (container) {
+        this.container = container;
+      } else {
+        await this.containerWrapper.start();
+        this.container = this.containerWrapper.getContainer();
+      }
 
       const { isTty, h, w } = param;
       if (isTty) {
@@ -269,7 +282,8 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
         stream: true,
         stdout: true,
         stderr: true,
-        stdin: true
+        stdin: true,
+        hijack: true
       });
       this.stream.on("data", (data) => this.emit("data", data));
       this.stream.on("error", (data) => this.emit("data", data));

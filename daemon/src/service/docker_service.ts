@@ -1,9 +1,12 @@
 import Docker from "dockerode";
 import { Readable } from "node:stream";
+import os from "os";
 
 export class DefaultDocker extends Docker {
   public static readonly defaultConfig: Docker.DockerOptions = {
-    socketPath: process.env.DOCKER_HOST ?? '/var/run/docker.sock'
+    socketPath:
+      process.env.DOCKER_HOST ??
+      (os.platform() == "win32" ? "//./pipe/docker_engine" : "/var/run/docker.sock")
   };
 
   constructor(p?: Docker.DockerOptions) {
@@ -47,7 +50,9 @@ export class DockerManager {
       );
       // wait for creation to complete
       await new Promise((resolve, reject) => {
-        this.docker.modem.followProgress(Readable.from(stream), (err, res) => (err ? reject(err) : resolve(res)));
+        this.docker.modem.followProgress(Readable.from(stream), (err, res) =>
+          err ? reject(err) : resolve(res)
+        );
       });
       // Set the current image creation progress
       DockerManager.setBuilderProgress(dockerImageName, 2);
