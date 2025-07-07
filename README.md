@@ -57,9 +57,9 @@ MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Si
 
 ## Runtime Environment
 
-MCSM supports both `Windows` and `Linux`. The only requirement is `Node.JS` and some libraries **for decompression**.
+MCSM supports both `Windows` and `Linux`. The only requirement is `Node.js` and some libraries **for decompression**.
 
-Requires [Node.JS 16.20.2](https://nodejs.org/en) or above.
+Requires [Node.js 16.20.2](https://nodejs.org/en) or above.
 
 <br />
 
