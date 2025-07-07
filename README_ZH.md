@@ -49,9 +49,9 @@
 
 ## 运行环境
 
-控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `Node.JS` 环境和几个**用于解压缩**的命令。
+控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `Node.js` 环境和几个**用于解压缩**的命令。
 
-必须使用 [Node.JS 16.20.2](https://nodejs.org/en) 以上，推荐使用最新版本 LTS 版本。
+必须使用 [Node.js 16.20.2](https://nodejs.org/en) 以上，推荐使用最新版本 LTS 版本。
 
 <br />
 
