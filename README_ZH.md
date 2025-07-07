@@ -25,7 +25,7 @@
 
 ## 这是什么？
 
-**MCSManager 面板**（简称：MCSM 面板）是一款免费，开源，分布式，轻量级，快速部署，支持 Minecraft 和 Steam 游戏服务器的 Web 管理面板。
+**MCSManager 面板**（简称：MCSM 面板 或MCSM）是一款免费，开源，分布式，轻量级，快速部署，支持 Minecraft 和 Steam 游戏服务器的 Web 管理面板。
 
 此软件在 `Minecraft` 和其他游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，实现在任何主机上创建游戏服务器，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 `Minecraft`，`Terraria` 和 `Steam` 游戏服务器的管理员，运维人员和个人开发者提供健康的软件支持。
 
@@ -49,9 +49,9 @@
 
 ## 运行环境
 
-控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `Node.js` 环境和几个**用于解压缩**的命令。
+控制面板可运行在 `Windows` 与 `Linux` 平台，无需安装数据库，只需安装 `Node.JS` 环境和几个**用于解压缩**的命令。
 
-必须使用 [Node.js 16.20.2](https://nodejs.org/en) 以上，推荐使用最新版本 LTS 版本。
+必须使用 [Node.JS 16.20.2](https://nodejs.org/en) 以上，推荐使用最新版本 LTS 版本。
 
 <br />
 
@@ -80,7 +80,7 @@ systemctl start mcsm-{web,daemon} # 开启面板
 systemctl stop mcsm-{web,daemon}  # 关闭面板
 ```
 
-- 脚本仅适用于 Ubuntu/Centos/Debian/Archlinux。
+- 脚本仅适用于 Ubuntu/Centos/Debian/Archlinux
 - 面板代码与运行环境自动安装在 `/opt/mcsmanager/` 目录下。
 
 <br />
