@@ -1,18 +1,18 @@
-import { $t } from "../i18n";
-import fs from "fs-extra";
-import path from "path";
-import os from "os";
-import Instance from "../entity/instance/instance";
 import EventEmitter from "events";
-import logger from "./log";
-import { v4 } from "uuid";
+import fs from "fs-extra";
+import { InstanceStreamListener, QueryMapWrapper } from "mcsmanager-common";
+import os from "os";
+import path from "path";
 import { Socket } from "socket.io";
+import { v4 } from "uuid";
 import StorageSubsystem from "../common/system_storage";
-import InstanceConfig from "../entity/instance/Instance_config";
-import { QueryMapWrapper, InstanceStreamListener } from "mcsmanager-common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
-import InstanceControl from "./system_instance_control";
 import { globalConfiguration } from "../entity/config";
+import Instance from "../entity/instance/instance";
+import InstanceConfig from "../entity/instance/Instance_config";
+import { $t } from "../i18n";
+import logger from "./log";
+import InstanceControl from "./system_instance_control";
 
 // init instance default install path
 globalConfiguration.load();
@@ -76,7 +76,6 @@ class InstanceSubsystem extends EventEmitter {
         const instanceConfig = StorageSubsystem.load("InstanceConfig", InstanceConfig, uuid);
         const instance = new Instance(uuid, instanceConfig);
 
-        // Fix BUG, reset state
         instanceConfig.eventTask.ignore = false;
 
         // All instances are all function schedulers

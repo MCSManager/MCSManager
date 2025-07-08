@@ -1,20 +1,20 @@
-import { $t } from "../../i18n";
-import iconv from "iconv-lite";
-import path from "path";
+import { randomUUID } from "crypto";
 import { EventEmitter } from "events";
-import { IExecutable } from "./preset";
-import InstanceCommand from "../commands/base/command";
-import InstanceConfig from "./Instance_config";
-import StorageSubsystem from "../../common/system_storage";
-import { LifeCycleTaskManager } from "./life_cycle";
-import { PresetCommandManager } from "./preset";
-import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
-import { IInstanceProcess } from "./interface";
-import StartCommand from "../commands/start";
-import { configureEntityParams, toText } from "mcsmanager-common";
-import { OpenFrp } from "../commands/task/openfrp";
-import logger from "../../service/log";
 import { t } from "i18next";
+import iconv from "iconv-lite";
+import { configureEntityParams } from "mcsmanager-common";
+import path from "path";
+import StorageSubsystem from "../../common/system_storage";
+import { $t } from "../../i18n";
+import logger from "../../service/log";
+import InstanceCommand from "../commands/base/command";
+import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
+import { OpenFrp } from "../commands/task/openfrp";
+import { globalConfiguration } from "../config";
+import InstanceConfig from "./Instance_config";
+import { IInstanceProcess } from "./interface";
+import { LifeCycleTaskManager } from "./life_cycle";
+import { IExecutable, PresetCommandManager } from "./preset";
 
 interface IInstanceInfo {
   mcPingOnline: boolean;
@@ -225,7 +225,33 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "haveColor", Boolean);
     }
 
-    if (persistence) StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
+    if (persistence) {
+      if (!this.config.basePort) this.allocatePort(this.config);
+      StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
+    }
+  }
+
+  allocatePort(cfg: InstanceConfig) {
+    const globalCfg = globalConfiguration.config;
+    const [minPort, maxPort] = globalCfg.allocatablePortRange;
+
+    cfg.basePort = globalCfg.currentAllocatablePort;
+    globalCfg.currentAllocatablePort += globalCfg.portAssignInterval;
+
+    if (globalCfg.currentAllocatablePort > maxPort) {
+      globalCfg.currentAllocatablePort = minPort;
+    }
+
+    // Avoid port overlap with Daemon.
+    if (
+      cfg.basePort <= globalCfg.port &&
+      cfg.basePort + globalCfg.portAssignInterval >= globalCfg.port
+    ) {
+      cfg.basePort = globalCfg.port + 1;
+      globalCfg.currentAllocatablePort = cfg.basePort + globalCfg.portAssignInterval;
+    }
+
+    globalConfiguration.store();
   }
 
   setLock(bool: boolean) {
@@ -405,9 +431,22 @@ export default class Instance extends EventEmitter {
   }
 
   public parseTextParams(text: string) {
+    if (typeof text !== "string") return "";
     text = text.replace(/\{mcsm_workspace\}/gim, this.absoluteCwdPath());
-    text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
+    text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
+    text = text.replace(/\{mcsm_uuid\}/gim, this.instanceUuid);
+    text = text.replace(/\{mcsm_random\}/gim, randomUUID());
+    const ports = Array.from(
+      { length: globalConfiguration.config.portAssignInterval || 1 },
+      (_, index) => index + 1
+    );
+    const basePort = Number(this.config.basePort);
+    ports.forEach((portOffset) => {
+      const placeholder = `\{mcsm_port${portOffset}\}`;
+      const replacement = String(basePort + portOffset);
+      text = text.replace(new RegExp(placeholder, "gim"), replacement);
+    });
     return text;
   }
 

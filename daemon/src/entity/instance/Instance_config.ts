@@ -1,5 +1,5 @@
-import Instance from "./instance";
 import os from "os";
+import Instance from "./instance";
 
 interface IActionCommand {
   name: string;
@@ -26,6 +26,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public updateCommand: string = "";
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
   public category = 0;
+  public basePort = 0;
 
   // Steam RCON protocol
   public enableRcon = false;
