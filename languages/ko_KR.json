@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "슬롯을 예약하세요. \n예약 플레이어가 최대 서버 슬롯 수를 초과할 경우 가입할 수 있는 예약 슬롯 수",
   "TXT_CODE_36b878dc": "패킷 처리 간격",
   "TXT_CODE_36cae384": "개인 IP 주소를 사용하고 있습니다",
+  "TXT_CODE_3725b37b": "Ctrl C가 전송되었습니다!",
   "TXT_CODE_372e97f4": "세계가 하드 모드에 들어가면 부패가 퍼지는 것이 허용됩니다.",
   "TXT_CODE_3752d436": "command.uptime.format 옵션에서 <hour> 자리 표시 자의 출력",
   "TXT_CODE_37658aab": "스노우 볼 발사체의 수정 자 값",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "기본적으로 비활성화 (0), 실체의 양은 사라지기 전에 살아갑니다. \n플레이어와 상호 작용하면 타이머를 재설정합니다",
   "TXT_CODE_3f99f17f": "데몬 버전",
   "TXT_CODE_3fce7ccb": "사용자에게 인스턴스에 들어갈 수 있는 권한이 있는 경우 인스턴스 상태를 표시합니다.",
+  "TXT_CODE_3fd222b0": "CTRL C를 다시 누르십시오.",
   "TXT_CODE_3fe97dcc": "환경 설정",
   "TXT_CODE_400a4210": "입력 인코딩:",
   "TXT_CODE_40241d8e": "Minecraft 서버 주소 설정",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
-  "TXT_CODE_3725b37b": "Ctrl C가 전송되었습니다!",
-  "TXT_CODE_3fd222b0": "CTRL C를 다시 누르십시오."
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
 }

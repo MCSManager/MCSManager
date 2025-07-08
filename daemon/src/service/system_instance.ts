@@ -13,6 +13,7 @@ import { QueryMapWrapper, InstanceStreamListener } from "mcsmanager-common";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import InstanceControl from "./system_instance_control";
 import { globalConfiguration } from "../entity/config";
+import takeoverContainer from "./takeover_container";
 
 // init instance default install path
 globalConfiguration.load();
@@ -41,7 +42,7 @@ class InstanceSubsystem extends EventEmitter {
   // start automatically at boot
   private autoStart() {
     this.instances.forEach((instance) => {
-      if (instance.config.eventTask.autoStart) {
+      if (instance.config.eventTask.autoStart && instance.status() == Instance.STATUS_STOP) {
         setTimeout(() => {
           instance
             .execPreset("start")
@@ -108,7 +109,15 @@ class InstanceSubsystem extends EventEmitter {
       this.GLOBAL_INSTANCE_UUID
     );
 
-    this.autoStart();
+    takeoverContainer()
+      .catch((error) =>
+        logger.error(
+          $t("TXT_CODE_8d4c8f7e", {
+            reason: error.message || error
+          })
+        )
+      )
+      .finally(() => this.autoStart());
   }
 
   createInstance(cfg: any, persistence = true, uuid?: string) {

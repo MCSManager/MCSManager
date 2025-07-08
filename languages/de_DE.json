@@ -400,6 +400,7 @@
   "TXT_CODE_369a4a22": "Slots reservieren. \nAnzahl der reservierten Slots, denen reservierte Spieler beitreten können, wenn sie die maximale Anzahl an Server-Slots überschreiten",
   "TXT_CODE_36b878dc": "Paketverarbeitungsintervall",
   "TXT_CODE_36cae384": "Sie verwenden eine private IP -Adresse",
+  "TXT_CODE_3725b37b": "Strg C wurde gesendet!",
   "TXT_CODE_372e97f4": "Wenn sich die Welt im harten Modus befindet, darf sich Korruption ausbreiten",
   "TXT_CODE_3752d436": "Ausgabe des Platzhalters <Stunde> in der Option command.uptime.format",
   "TXT_CODE_37658aab": "Der Modifikatorwert von Schneeballprojektilen",
@@ -498,6 +499,7 @@
   "TXT_CODE_3f810f66": "Standardmäßig deaktiviert (0), Anzahl der Ticks, die eine Entität überlebt, bevor sie verschwindet. \nDurch die Interaktion mit einem Spieler wird der Timer zurückgesetzt",
   "TXT_CODE_3f99f17f": "Remote-Knoten-Version",
   "TXT_CODE_3fce7ccb": "Zeigen Sie den Instanzstatus an, sofern der Benutzer die Berechtigung zum Betreten der Instanz hat",
+  "TXT_CODE_3fd222b0": "Bitte drücken Sie schnell erneut C, um wirksam zu werden ...",
   "TXT_CODE_3fe97dcc": "Systemeinstellungen",
   "TXT_CODE_400a4210": "Eingabekodierung: ",
   "TXT_CODE_40241d8e": "Minecraft-Spielerabfrage",
@@ -2583,7 +2585,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
-  "TXT_CODE_3725b37b": "Strg C wurde gesendet!",
-  "TXT_CODE_3fd222b0": "Bitte drücken Sie schnell erneut C, um wirksam zu werden ..."
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
 }
