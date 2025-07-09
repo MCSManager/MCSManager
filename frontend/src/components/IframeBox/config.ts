@@ -1,12 +1,11 @@
+import { v4 } from "uuid";
 import { onUnmounted, type Ref } from "vue";
 import { iframeRouters } from "./handler";
-import { v4 } from "uuid";
 
 export interface IframeEvent {
   id: string;
   source: string;
   data: any;
-  error?: string;
   app: "MCSManager";
 }
 
@@ -60,9 +59,10 @@ export async function iframeEventDispatch(event: Partial<IframeEvent>) {
       console.warn("iframeEventDispatch(): Send iframe event:", event, result);
       globalIframeList.forEach((iframe) => sendIframeMsg(iframe, event, result));
     } catch (error: any) {
-      event.error = error?.message || String(error);
-      globalIframeList.forEach((iframe) => sendIframeMsg(iframe, event, null));
       console.error("Iframe router error:", error);
+      globalIframeList.forEach((iframe) =>
+        sendIframeMsg(iframe, event, error instanceof Error ? error : new Error(String(error)))
+      );
     }
   }
 }

@@ -1,5 +1,4 @@
 import Router from "@koa/router";
-import axios from "axios";
 import Koa from "koa";
 import { toNumber, toText } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
@@ -9,16 +8,16 @@ import validator from "../middleware/validator";
 import {
   buyOrRenewInstance,
   getNodeStatus,
-  IRedeemResponseProtocol,
   parseUserName,
   queryInstanceByUserId,
-  REDEEM_PLATFORM_ADDR,
-  RequestAction
+  RequestAction,
+  requestUseRedeem
 } from "../service/exchange_service";
 import { logger } from "../service/log";
 import { loginSuccess } from "../service/passport_service";
 import UserSSOService from "../service/user_sso_service";
 import { systemConfig } from "../setting";
+import { execWithMutexId } from "../utils/sync";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -93,65 +92,71 @@ router.post(
     }
   }),
   async (ctx) => {
-    const panelId = systemConfig?.panelId;
-    const registerCode = systemConfig?.registerCode;
+    const panelId = systemConfig?.panelId || "";
+    const registerCode = systemConfig?.registerCode || "";
     const productId = toNumber(ctx.request.body.productId) ?? 0;
     const daemonId = toText(ctx.request.body.daemonId) ?? "";
-    const code = toText(ctx.request.body.code);
+    const code = toText(ctx.request.body.code) ?? "";
 
     // Optional
     const instanceId = toText(ctx.request.body.instanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
 
-    const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
-      `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
-      {
+    const response = await execWithMutexId(`buy-${code}`, async () => {
+      // First, check if the redeem code is valid
+      const productInfo = await requestUseRedeem(
         panelId,
         registerCode,
         productId,
         daemonId,
-        code
-      },
-      {
-        headers: {
-          "X-Panel-Id": panelId,
-          "X-Register-Code": registerCode
-        }
+        code,
+        false
+      );
+
+      const hours = productInfo?.hours;
+      if (!hours || !productInfo?.payload) {
+        throw new Error($t("请求套餐详情失败，请稍后重试！"));
       }
-    );
 
-    if (responseData.code !== 200) {
-      throw new Error(responseData.message);
-    }
+      const { config } = JSON.parse(productInfo.payload) as {
+        config: Partial<IGlobalInstanceConfig>;
+      };
+      if (!config) {
+        throw new Error($t("服务商设置的套餐存在问题，请联系商家重新配置套餐！"));
+      }
 
-    const productInfo = responseData?.data;
-    const hours = productInfo?.hours;
-    if (!hours || !productInfo?.payload) {
-      throw new Error($t("请求套餐详情失败，请稍后重试！"));
-    }
+      const params = {
+        category_id: productId,
+        payload: config,
+        username: username,
+        node_id: daemonId,
+        hours: hours,
+        instance_id: instanceId,
+        code: code
+      };
 
-    const { config } = JSON.parse(productInfo.payload) as {
-      config: Partial<IGlobalInstanceConfig>;
-    };
-    if (!config) {
-      throw new Error("Invalid payload");
-    }
+      try {
+        return await buyOrRenewInstance(
+          instanceId ? RequestAction.RENEW : RequestAction.BUY,
+          params,
+          {
+            onCreateBefore: async () => {
+              // Then, delete the redeem code
+              await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
+            },
+            onCreateAfter: async (instanceId, user) => {
+              logger.info("Instance created: %s, -> user: %s", instanceId, user.userName);
+            }
+          }
+        );
+      } catch (error) {
+        logger.error($t("用户激活实例失败："), error);
 
-    const params = {
-      category_id: productId,
-      payload: config,
-      username: username,
-      node_id: daemonId,
-      hours: hours,
-      instance_id: instanceId,
-      code: code ?? ""
-    };
+        throw error;
+      }
+    });
 
-    const res = await buyOrRenewInstance(
-      instanceId ? RequestAction.RENEW : RequestAction.BUY,
-      params
-    );
-    ctx.body = res;
+    ctx.body = response;
   }
 );
 export default router;

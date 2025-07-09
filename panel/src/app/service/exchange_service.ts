@@ -1,11 +1,13 @@
+import axios from "axios";
 import { t } from "i18next";
 import { toNumber, toText } from "mcsmanager-common";
 import { customAlphabet } from "nanoid";
+import { User } from "../entity/user";
 import { $t } from "../i18n";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import user_service from "../service/user_service";
-import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
+import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
@@ -81,6 +83,37 @@ const getNanoId = customAlphabet(
   6
 );
 
+export async function requestUseRedeem(
+  panelId: string,
+  registerCode: string,
+  productId: string | number,
+  daemonId: string,
+  code: string,
+  isDelete?: boolean
+) {
+  const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
+    `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
+    {
+      panelId,
+      registerCode,
+      productId,
+      daemonId,
+      code,
+      isDelete
+    },
+    {
+      headers: {
+        "X-Panel-Id": panelId,
+        "X-Register-Code": registerCode
+      }
+    }
+  );
+  if (responseData.code !== 200) {
+    throw new Error(responseData.message);
+  }
+  return responseData.data;
+}
+
 function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProtocol {
   let ports: string[] = instance.docker?.ports ?? [];
   let portRules: Array<IPortInfo> = [];
@@ -122,7 +155,11 @@ export function parseUserName(t?: string) {
 
 export async function buyOrRenewInstance(
   request_action: RequestAction,
-  params: IBuyRequestProtocol
+  params: IBuyRequestProtocol,
+  handler: {
+    onCreateBefore?: (instanceId: string) => Promise<void>;
+    onCreateAfter?: (instanceId: string, user: User) => Promise<void>;
+  } = {}
 ): Promise<IBuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
@@ -156,6 +193,8 @@ export async function buyOrRenewInstance(
     let user = user_service.getUserByUserName(username);
     let newPassword = "";
 
+    await handler.onCreateBefore?.(newInstanceId);
+
     if (user) {
       await user_service.edit(user.uuid, {
         instances: [
@@ -180,6 +219,9 @@ export async function buyOrRenewInstance(
         ]
       });
     }
+
+    await handler.onCreateAfter?.(newInstanceId, user);
+
     return {
       instance_id: newInstanceId,
       instance_config: newInstanceConfig,

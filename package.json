@@ -12,6 +12,7 @@
     "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\""
   },
   "dependencies": {
+    "async-mutex": "^0.5.0",
     "crc": "^4.3.2",
     "i18next-scanner": "^4.4.0"
   },
