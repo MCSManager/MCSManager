@@ -1,10 +1,10 @@
-import type { InstanceDetail, MapData } from "@/types";
-import { t } from "@/lang/i18n";
-import { computed, h, onMounted, onUnmounted, ref, type Ref } from "vue";
-import { getConfigFile, getInstanceInfo, updateConfigFile } from "@/services/apis/instance";
-import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { GLOBAL_INSTANCE_NAME } from "@/config/const";
+import { t } from "@/lang/i18n";
+import { getConfigFile, getInstanceInfo, updateConfigFile } from "@/services/apis/instance";
+import type { InstanceDetail, MapData } from "@/types";
+import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { message, Modal } from "ant-design-vue";
+import { computed, h, onMounted, onUnmounted, ref, type Ref } from "vue";
 
 export const TYPE_UNIVERSAL = "universal";
 export const TYPE_WEB_SHELL = "universal/web_shell";
@@ -384,9 +384,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   }
 ];
 
-export async function verifyEULA(instanceId: string, daemonId: string, type: string) {
-  if (!type.startsWith("minecraft/java")) return true;
-  const data = await getConfigFile()
+export async function verifyEULA(instanceId: string, daemonId: string) {
+  const data: any = await getConfigFile()
     .execute({
       params: {
         uuid: instanceId,
@@ -396,12 +395,9 @@ export async function verifyEULA(instanceId: string, daemonId: string, type: str
       }
     })
     .catch(() => {
-      return {
-        value: false
-      };
+      return null;
     });
-  if (!data?.value) return true;
-  if (!data.value.eula) {
+  if (data?.value?.eula === false) {
     return new Promise((resolve) =>
       Modal.confirm({
         title: t("TXT_CODE_617ce69c"),

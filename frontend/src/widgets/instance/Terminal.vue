@@ -15,6 +15,7 @@ import {
   updateInstance
 } from "@/services/apis/instance";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { sleep } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_STATUS } from "@/types/const";
@@ -64,6 +65,27 @@ const instanceTypeText = computed(
   () => INSTANCE_TYPE_TRANSLATION[instanceInfo.value?.config.type ?? -1]
 );
 
+const { execute: requestOpenInstance, isLoading: isOpenInstanceLoading } = openInstance();
+
+const toOpenInstance = async () => {
+  try {
+    if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
+      const flag = await verifyEULA(instanceId ?? "", daemonId ?? "");
+      if (!flag) return;
+      await sleep(1000);
+    }
+
+    await requestOpenInstance({
+      params: {
+        uuid: instanceId ?? "",
+        daemonId: daemonId ?? ""
+      }
+    });
+  } catch (error: any) {
+    reportErrorMsg(error);
+  }
+};
+
 const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
 const quickOperations = computed(() =>
@@ -73,24 +95,7 @@ const quickOperations = computed(() =>
       icon: PlayCircleOutlined,
       noConfirm: false,
       type: "default",
-      click: async () => {
-        try {
-          const flag = await verifyEULA(
-            instanceId ?? "",
-            daemonId ?? "",
-            instanceInfo.value?.config.type ?? ""
-          );
-          if (!flag) return;
-          await openInstance().execute({
-            params: {
-              uuid: instanceId ?? "",
-              daemonId: daemonId ?? ""
-            }
-          });
-        } catch (error: any) {
-          reportErrorMsg(error);
-        }
-      },
+      click: toOpenInstance,
       props: {},
       condition: () => isStopped.value
     },
@@ -282,6 +287,7 @@ onMounted(async () => {
                 v-if="item.noConfirm"
                 class="ml-8"
                 :danger="item.type === 'danger'"
+                :disabled="isOpenInstanceLoading"
                 @click="item.click"
               >
                 <component :is="item.icon" />

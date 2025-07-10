@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type { MountComponent } from "@/types";
 import { t } from "@/lang/i18n";
+import type { MountComponent } from "@/types";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons-vue";
-import { h } from "vue";
-import _ from "lodash";
-import { emptyValueValidator, reportValidatorError } from "../../tools/validator";
 import { type FormInstance } from "ant-design-vue";
+import _ from "lodash";
+import { computed, h, ref } from "vue";
+import { emptyValueValidator, reportValidatorError } from "../../tools/validator";
 
 interface Props extends MountComponent {
   title: string;
@@ -102,7 +101,7 @@ const operation = (type: "add" | "del", index = 0) => {
     @cancel="cancel"
   >
     <div class="dialog-overflow-container">
-      <div v-if="props.subTitle" style="font-size: 13px" class="text-gray-400 mb-4">
+      <div v-if="props.subTitle" style="font-size: 14px" class="text-gray-400 mb-4">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span v-html="props.subTitle"></span>
       </div>
