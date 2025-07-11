@@ -1,9 +1,9 @@
-import { v4 } from "uuid";
-import { $t as t } from "../i18n";
-import storage from "../common/system_storage";
+import fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import path from "path";
-import fs from "fs-extra";
+import { v4 } from "uuid";
+import storage from "../common/system_storage";
+import { $t as t } from "../i18n";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
 
@@ -359,7 +359,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           meta: {},
           type: "Settings",
           title: t("TXT_CODE_3fe97dcc"),
-          width: 8,
+          width: 9,
           height: LayoutCardHeight.LARGE,
           disableDelete: true
         }

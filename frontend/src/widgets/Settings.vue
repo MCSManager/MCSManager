@@ -78,7 +78,7 @@ const submit = async (needReload: boolean = true) => {
 
 const menus = arrayFilter([
   {
-    title: "升级面板",
+    title: "订阅中心",
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()

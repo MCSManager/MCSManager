@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { router, type RouterMetaInfo } from "@/config/router";
 import logo from "@/assets/logo.png";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { useRoute } from "vue-router";
-import { computed, h } from "vue";
+import { router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { notification } from "ant-design-vue";
-import {
-  BuildOutlined,
-  SaveOutlined,
-  AppstoreAddOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  MenuUnfoldOutlined,
-  FormatPainterOutlined,
-  RedoOutlined,
-  CloseCircleOutlined
-} from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
-import CardPanel from "./CardPanel.vue";
 import { t } from "@/lang/i18n";
-import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { logoutUser } from "@/services/apis/index";
-import { message } from "ant-design-vue";
-import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import {
+  AppstoreAddOutlined,
+  BuildOutlined,
+  CloseCircleOutlined,
+  FlagOutlined,
+  FormatPainterOutlined,
+  GithubOutlined,
+  LogoutOutlined,
+  MenuUnfoldOutlined,
+  RedoOutlined,
+  SaveOutlined,
+  UserOutlined
+} from "@ant-design/icons-vue";
+import { message, Modal, notification } from "ant-design-vue";
+import { computed, h } from "vue";
+import { useRoute } from "vue-router";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
-import { Modal } from "ant-design-vue";
+import CardPanel from "./CardPanel.vue";
 
 const { saveGlobalLayoutConfig, resetGlobalLayoutConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
@@ -34,6 +34,7 @@ const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
 const { isAdmin, state: appState, isLogged } = useAppStateStore();
+const { state: frontendState } = useAppStateStore();
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -254,6 +255,10 @@ const appMenus = computed(() => {
 
 const { isPhone } = useScreen();
 
+const isProMode = computed(() => {
+  return frontendState.settings.businessMode;
+});
+
 const openPhoneMenu = (b = false) => {
   containerState.showPhoneMenu = b;
 };
@@ -279,6 +284,23 @@ const openPhoneMenu = (b = false) => {
         </div>
       </nav>
       <div class="btns">
+        <div
+          :class="{
+            'pro-mode-order-container': true
+          }"
+        >
+          <div
+            :class="{
+              'pro-mode-order': true
+            }"
+            type="text"
+            @click="router.push('/settings')"
+          >
+            <GithubOutlined v-if="!isProMode" />
+            <FlagOutlined v-else />
+            {{ isProMode ? $t("专业版") : $t("社区版") }}
+          </div>
+        </div>
         <div v-for="(item, index) in appMenus" :key="index">
           <a-dropdown v-if="item.menus && item.conditions" placement="bottom">
             <div class="nav-button" @click.prevent>
@@ -479,6 +501,29 @@ const openPhoneMenu = (b = false) => {
 
   .logo {
     cursor: pointer;
+  }
+
+  .pro-mode-order-container {
+    position: relative;
+    margin: 0 8px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--app-header-text-color);
+  }
+
+  .pro-mode-order {
+    padding: 6px 12px;
+    position: relative;
+
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    border: 1px solid rgb(255, 255, 255, 0.2);
+
+    &:hover {
+      border: 1px solid #2596ff97;
+      box-shadow: 0 4px 12px rgba(27, 117, 137, 0.49);
+    }
   }
 
   // Sync margin
