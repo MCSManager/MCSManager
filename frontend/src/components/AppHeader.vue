@@ -186,13 +186,7 @@ const appMenus = computed(() => {
       icon: FormatPainterOutlined,
       click: (key: string) => {
         if (key === THEME.DARK) {
-          Modal.confirm({
-            title: t("TXT_CODE_9775ccb"),
-            content: t("TXT_CODE_90b2ae00"),
-            async onOk() {
-              setTheme(THEME.DARK);
-            }
-          });
+          setTheme(THEME.DARK);
         } else {
           setTheme(THEME.LIGHT);
         }

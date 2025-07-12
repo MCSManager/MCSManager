@@ -20,8 +20,9 @@
 </template>
 
 <script setup lang="ts">
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { nextTick, onMounted, ref } from "vue";
-import { useIframeEventListener, type IframeBoxProps, type IframeBoxEmits } from "./config";
+import { useIframeEventListener, type IframeBoxEmits, type IframeBoxProps } from "./config";
 
 const props = withDefaults(defineProps<IframeBoxProps>(), {
   width: "100%",
@@ -33,6 +34,7 @@ const emit = defineEmits<IframeBoxEmits>();
 const iframeRef = ref<HTMLIFrameElement | null>(null);
 const error = ref<string>("");
 const iframeSrc = ref<string>("");
+const { isDarkTheme } = useAppConfigStore();
 
 useIframeEventListener(iframeRef);
 
@@ -48,16 +50,20 @@ const handleError = (err: any) => {
   emit("error");
 };
 
+const generateIframeAddr = () => {
+  return `${props.src}?theme=${isDarkTheme() ? "dark" : "light"}&t=${Date.now()}`;
+};
+
 // 重新加载iframe
 const reload = () => {
   iframeSrc.value = "";
   nextTick(() => {
-    iframeSrc.value = props.src;
+    iframeSrc.value = generateIframeAddr();
   });
 };
 
 onMounted(() => {
-  iframeSrc.value = props.src;
+  iframeSrc.value = generateIframeAddr();
 });
 </script>
 

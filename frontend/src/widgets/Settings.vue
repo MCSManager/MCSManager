@@ -224,7 +224,7 @@ onMounted(async () => {
       <template #body>
         <LeftMenusPanel :menus="menus">
           <template #baseInfo>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_5206cf41") }}
               </a-typography-title>
@@ -318,7 +318,7 @@ onMounted(async () => {
           </template>
 
           <template #ui>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_1c18acc0") }}
               </a-typography-title>
@@ -403,7 +403,7 @@ onMounted(async () => {
           </template>
 
           <template #security>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_9c3ca8f") }}
               </a-typography-title>
@@ -581,7 +581,7 @@ onMounted(async () => {
           </template>
 
           <template #about>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>
@@ -625,7 +625,7 @@ onMounted(async () => {
           </template>
 
           <template #sponsor>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_46cb40d5") }}
               </a-typography-title>
@@ -653,5 +653,10 @@ div {
     top: 0;
     left: 0;
   }
+}
+
+.content-box {
+  padding: 16px;
+  overflow-y: auto;
 }
 </style>

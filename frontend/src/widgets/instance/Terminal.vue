@@ -206,7 +206,7 @@ const instanceOperations = computed(() =>
         );
       },
       props: {},
-      condition: () => state.settings.businessMode
+      condition: () => !!instanceInfo.value?.config?.category
     }
   ])
 );

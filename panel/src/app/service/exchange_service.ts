@@ -2,7 +2,6 @@ import axios from "axios";
 import { t } from "i18next";
 import { toNumber, toText } from "mcsmanager-common";
 import { customAlphabet } from "nanoid";
-import { User } from "../entity/user";
 import { $t } from "../i18n";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
@@ -157,8 +156,7 @@ export async function buyOrRenewInstance(
   request_action: RequestAction,
   params: IBuyRequestProtocol,
   handler: {
-    onCreateBefore?: (instanceId: string) => Promise<void>;
-    onCreateAfter?: (instanceId: string, user: User) => Promise<void>;
+    onCreateConfirm?: (instanceId: string) => Promise<void>;
   } = {}
 ): Promise<IBuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
@@ -193,7 +191,7 @@ export async function buyOrRenewInstance(
     let user = user_service.getUserByUserName(username);
     let newPassword = "";
 
-    await handler.onCreateBefore?.(newInstanceId);
+    await handler.onCreateConfirm?.(newInstanceId);
 
     if (user) {
       await user_service.edit(user.uuid, {
@@ -219,8 +217,6 @@ export async function buyOrRenewInstance(
         ]
       });
     }
-
-    await handler.onCreateAfter?.(newInstanceId, user);
 
     return {
       instance_id: newInstanceId,
@@ -256,6 +252,8 @@ export async function buyOrRenewInstance(
     } else {
       config.endTime = curExpireTime + hours * 3600 * 1000;
     }
+
+    await handler.onCreateConfirm?.(instance_id);
 
     await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,

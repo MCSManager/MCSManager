@@ -140,12 +140,9 @@ router.post(
           instanceId ? RequestAction.RENEW : RequestAction.BUY,
           params,
           {
-            onCreateBefore: async () => {
+            onCreateConfirm: async () => {
               // Then, delete the redeem code
               await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
-            },
-            onCreateAfter: async (instanceId, user) => {
-              logger.info("Instance created: %s, -> user: %s", instanceId, user.userName);
             }
           }
         );

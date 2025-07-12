@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, type FunctionalComponent, onMounted } from "vue";
-import LeftMenuBtn from "./LeftMenuBtn.vue";
 import { useScreen } from "@/hooks/useScreen";
+import { onMounted, ref, type FunctionalComponent } from "vue";
+import LeftMenuBtn from "./LeftMenuBtn.vue";
 
 const { isPhone } = useScreen();
 
@@ -79,9 +79,9 @@ onMounted(() => {
     border-bottom-left-radius: 4px;
   }
   .right-content {
+    padding-right: 1px;
     overflow: hidden;
     flex-grow: 1;
-    padding: 20px;
     text-align: left;
   }
 }
