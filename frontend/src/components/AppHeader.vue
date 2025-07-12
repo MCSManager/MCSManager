@@ -3,7 +3,7 @@ import logo from "@/assets/logo.png";
 import { router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useScreen } from "@/hooks/useScreen";
-import { t } from "@/lang/i18n";
+import { isCN, t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
@@ -262,6 +262,14 @@ const isProMode = computed(() => {
 const openPhoneMenu = (b = false) => {
   containerState.showPhoneMenu = b;
 };
+
+const onClickIcon = () => {
+  if (isCN()) {
+    router.push("/settings");
+  } else {
+    window.open("https://github.com/MCSManager/MCSManager", "_blank");
+  }
+};
 </script>
 
 <template>
@@ -294,7 +302,7 @@ const openPhoneMenu = (b = false) => {
               'pro-mode-order': true
             }"
             type="text"
-            @click="router.push('/settings')"
+            @click="onClickIcon"
           >
             <GithubOutlined v-if="!isProMode" />
             <FlagOutlined v-else />
@@ -506,7 +514,7 @@ const openPhoneMenu = (b = false) => {
   .pro-mode-order-container {
     position: relative;
     margin: 0 8px;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     color: var(--app-header-text-color);
   }
