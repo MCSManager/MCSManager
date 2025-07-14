@@ -13,6 +13,7 @@ import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permissi
 import { ROLE } from "../entity/user";
 import { removeTrail } from "mcsmanager-common";
 import userSystem from "../service/user_service";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -45,12 +46,19 @@ router.post(
   "/",
   permission({ level: ROLE.ADMIN }),
   validator({ query: { daemonId: String } }),
+
   async (ctx) => {
     try {
       const daemonId = String(ctx.query.daemonId);
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
+      operationLogger.log("instance_create", {
+        daemon_id: daemonId,
+        instance_id: result.instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -73,6 +81,12 @@ router.post(
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
+      operationLogger.log("instance_create", {
+        daemon_id: daemonId,
+        instance_id: newInstanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       // Send a cross-end file upload task to the daemon
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
         remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
@@ -107,6 +121,12 @@ router.put(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      operationLogger.log("instance_config_change", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/update", {
@@ -135,6 +155,16 @@ router.delete(
       if (!instanceUuids || !Array.isArray(instanceUuids))
         throw new Error("Type error, invalid uuids or daemonId");
       const instanceIds = instanceUuids.map((uuid: string) => {
+        operationLogger.log(
+          "instance_delete",
+          {
+            daemon_id: daemonId,
+            instance_id: uuid,
+            operator_ip: ctx.ip,
+            operator_name: ctx.session?.["userName"]
+          },
+          "error"
+        );
         return { instanceUuid: uuid, daemonId };
       });
       userSystem.deleteUserInstances(null, instanceIds, true);
@@ -155,6 +185,14 @@ router.post("/multi_open", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      instanceUuids.forEach((instanceUuid) => {
+        operationLogger.log("instance_start", {
+          daemon_id: daemonId,
+          instance_id: instanceUuid,
+          operator_ip: ctx.ip,
+          operator_name: ctx.session?.["userName"]
+        });
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/open", {
@@ -174,6 +212,14 @@ router.post("/multi_stop", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      instanceUuids.forEach((instanceUuid) => {
+        operationLogger.log("instance_stop", {
+          daemon_id: daemonId,
+          instance_id: instanceUuid,
+          operator_ip: ctx.ip,
+          operator_name: ctx.session?.["userName"]
+        });
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/stop", {
@@ -193,6 +239,18 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      instanceUuids.forEach((instanceUuid) => {
+        operationLogger.log(
+          "instance_kill",
+          {
+            daemon_id: daemonId,
+            instance_id: instanceUuid,
+            operator_ip: ctx.ip,
+            operator_name: ctx.session?.["userName"]
+          },
+          "warning"
+        );
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/kill", { instanceUuids })
@@ -210,6 +268,14 @@ router.post("/multi_restart", permission({ level: ROLE.ADMIN }), async (ctx) => 
   try {
     const instances = ctx.request.body;
     multiOperationForwarding(instances, async (daemonId: string, instanceUuids: string[]) => {
+      instanceUuids.forEach((instanceUuid) => {
+        operationLogger.log("instance_restart", {
+          daemon_id: daemonId,
+          instance_id: instanceUuid,
+          operator_ip: ctx.ip,
+          operator_name: ctx.session?.["userName"]
+        });
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       new RemoteRequest(remoteService)
         .request("instance/restart", { instanceUuids })

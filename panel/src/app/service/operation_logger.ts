@@ -50,7 +50,7 @@ class OperationLogger {
       operation_time,
       operation_level: level,
       ...payload
-    } as Extract<OperationLoggerItem, { type: T }>;
+    } as unknown as OperationLoggerItem;
 
     this.#buffer.set(operation_id, item);
     this.checkBufferQueue();

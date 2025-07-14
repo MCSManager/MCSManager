@@ -4,6 +4,7 @@ import validator from "../middleware/validator";
 import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest from "../service/remote_command";
 import { ROLE } from "../entity/user";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/service" });
 
@@ -118,6 +119,13 @@ router.post(
       prefix: parameter.prefix ?? "",
       remarks: parameter.remarks ?? ""
     });
+
+    operationLogger.log("daemon_create", {
+      operator_ip: ctx.ip,
+      operator_name: ctx.session?.["userName"],
+      daemon_id: instance.uuid
+    });
+
     ctx.body = instance.uuid;
   }
 );
@@ -139,6 +147,11 @@ router.put(
       apiKey: parameter.apiKey,
       remarks: parameter.remarks
     });
+    operationLogger.log("daemon_config_change", {
+      operator_ip: ctx.ip,
+      operator_name: ctx.session?.["userName"],
+      daemon_id: uuid
+    });
     ctx.body = true;
   }
 );
@@ -153,6 +166,11 @@ router.delete(
     const uuid = String(ctx.request.query.uuid);
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     await RemoteServiceSubsystem.deleteRemoteService(uuid);
+    operationLogger.log("daemon_remove", {
+      operator_ip: ctx.ip,
+      operator_name: ctx.session?.["userName"],
+      daemon_id: uuid
+    });
     ctx.body = true;
   }
 );

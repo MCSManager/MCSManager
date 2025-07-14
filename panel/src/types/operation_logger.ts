@@ -11,6 +11,8 @@ export enum OperationLoggerAction {
   InstanceFileUpdate = "instance_file_update",
   InstanceFileDownload = "instance_file_download",
   InstanceFileDelete = "instance_file_delete",
+  InstanceTaskCreate = "instance_task_create",
+  InstanceTaskDelete = "instance_task_delete",
   DaemonCreate = "daemon_create",
   DaemonRemove = "daemon_remove",
   DeamonConfigChange = "daemon_config_change",
@@ -67,18 +69,32 @@ export type InstanceDeleteOptions = {
 
 export type InstanceFileUploadOptions = {
   type: "instance_file_upload";
+  file: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileUpdateOptions = {
   type: "instance_file_update";
+  file: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileDownloadOptions = {
   type: "instance_file_download";
+  file: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileDeleteOptions = {
   type: "instance_file_delete";
+  file: string;
+} & InstanceGeneralOptions;
+
+export type InstanceTaskCreateOptions = {
+  type: "instance_task_create";
+  task_name: string;
+} & InstanceGeneralOptions;
+
+export type InstanceTaskDeleteOptions = {
+  type: "instance_task_delete";
+  task_name: string;
 } & InstanceGeneralOptions;
 
 export type DaemonCreateOptions = {
@@ -98,10 +114,12 @@ export type DaemonConfigChangeOptions = {
 
 export type UserCreateOptions = {
   type: "user_create";
+  target_user_name: string;
 } & GlobalGeneralOptions;
 
 export type UserDeleteOptions = {
   type: "user_delete";
+  target_user_name: string;
 } & GlobalGeneralOptions;
 
 export type UserConfigChangeOptions = {
@@ -125,6 +143,8 @@ export type OperationLoggerItem =
   | InstanceFileUpdateOptions
   | InstanceFileDownloadOptions
   | InstanceFileDeleteOptions
+  | InstanceTaskCreateOptions
+  | InstanceTaskDeleteOptions
   | DaemonCreateOptions
   | DaemonRemoveOptions
   | DaemonConfigChangeOptions

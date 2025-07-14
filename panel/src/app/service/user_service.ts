@@ -138,6 +138,10 @@ class UserSubsystem {
     return null;
   }
 
+  getUserByUuid(uuid: string) {
+    return this.objects.get(uuid) || null;
+  }
+
   getInstance(uuid: string) {
     return this.objects.get(uuid);
   }

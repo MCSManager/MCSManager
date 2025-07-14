@@ -13,6 +13,7 @@ import { ROLE } from "../entity/user";
 import axios from "axios";
 import { systemConfig } from "../setting";
 import { checkInstanceAdvancedParams } from "../service/instance_service";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -39,6 +40,12 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      operationLogger.log("instance_start", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/open", {
         instanceUuids: [instanceUuid]
@@ -64,6 +71,12 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      operationLogger.log("instance_stop", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/stop", {
         instanceUuids: [instanceUuid]
@@ -109,6 +122,12 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      operationLogger.log("instance_restart", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/restart", {
         instanceUuids: [instanceUuid]
@@ -130,6 +149,16 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      operationLogger.log(
+        "instance_kill",
+        {
+          daemon_id: daemonId,
+          instance_id: instanceUuid,
+          operator_ip: ctx.ip,
+          operator_name: ctx.session?.["userName"]
+        },
+        "warning"
+      );
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/kill", {
         instanceUuids: [instanceUuid]

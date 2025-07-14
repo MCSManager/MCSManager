@@ -10,6 +10,7 @@ import { systemConfig } from "../setting";
 import { $t } from "../i18n";
 import { ROLE } from "../entity/user";
 import { removeTrail } from "mcsmanager-common";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/files" });
 
@@ -171,6 +172,13 @@ router.put(
         },
         100000
       );
+      operationLogger.log("instance_file_update", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        file: target
+      });
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -233,6 +241,13 @@ router.delete(
       const result = await new RemoteRequest(remoteService).request("file/delete", {
         instanceUuid,
         targets
+      });
+      operationLogger.log("instance_file_delete", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: String(instanceUuid),
+        daemon_id: daemonId,
+        file: targets
       });
       ctx.body = result;
     } catch (err) {
@@ -297,6 +312,13 @@ router.all(
           instanceUuid
         }
       });
+      operationLogger.log("instance_file_download", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        file: fileName
+      });
       ctx.body = {
         password,
         addr
@@ -328,6 +350,13 @@ router.all(
           uploadDir,
           instanceUuid
         }
+      });
+      operationLogger.log("instance_file_upload", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        file: uploadDir
       });
       ctx.body = {
         password,
