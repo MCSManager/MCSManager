@@ -1,0 +1,154 @@
+import path from "path";
+import fs from "fs-extra";
+
+export class JsonlStorageSubsystem {
+  #rootDir: string;
+
+  constructor(dir: string) {
+    this.#rootDir = path.normalize(process.cwd() + "/data/" + dir);
+  }
+
+  private resolveFilePath(logicalPath: string): string {
+    if (!this.checkPath(logicalPath)) {
+      throw new Error(`Invalid path: ${logicalPath}`);
+    }
+
+    const fullPath = path.join(this.#rootDir, logicalPath + ".jsonl");
+    const normalizePath = path.normalize(fullPath);
+    if (!fs.existsSync(path.dirname(normalizePath))) {
+      fs.mkdirsSync(path.dirname(normalizePath));
+    }
+    return normalizePath;
+  }
+
+  private checkPath(name: string) {
+    const blackList = ["..", "\\", "//"];
+    return !blackList.some((ch) => name.includes(ch));
+  }
+
+  public async append(logicalPath: string, entry: object | object[], sync = false) {
+    if (!Array.isArray(entry)) entry = [entry];
+    const filePath = this.resolveFilePath(logicalPath);
+    const lines = (entry as object[]).map((e) => JSON.stringify(e)).join("\n") + "\n";
+    if (sync) {
+      fs.ensureFileSync(filePath);
+      fs.appendFileSync(filePath, lines, "utf-8");
+    } else {
+      await fs.ensureFile(filePath);
+      await fs.appendFile(filePath, lines, "utf-8");
+    }
+  }
+
+  public async readAll(logicalPath: string): Promise<object[]> {
+    const filePath = this.resolveFilePath(logicalPath);
+    if (!(await fs.pathExists(filePath))) return [];
+    const lines = await fs.readFile(filePath, "utf-8");
+    return lines
+      .split("\n")
+      .filter((l) => l.trim())
+      .map((l) => {
+        try {
+          return JSON.parse(l);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
+  }
+
+  public async query(logicalPath: string, predicate: (entry: any) => boolean) {
+    const all = await this.readAll(logicalPath);
+    return all.filter(predicate);
+  }
+
+  public async overwrite(logicalPath: string, entries: object[]) {
+    const filePath = this.resolveFilePath(logicalPath);
+    await fs.ensureFile(filePath);
+    const content = entries.map((e) => JSON.stringify(e)).join("\n") + "\n";
+    await fs.writeFile(filePath, content, "utf-8");
+  }
+
+  public async update(
+    logicalPath: string,
+    predicate: (entry: any) => boolean,
+    updater: (entry: any) => any
+  ) {
+    const entries = await this.readAll(logicalPath);
+    const newEntries = entries.map((e) => (predicate(e) ? updater(e) : e));
+    await this.overwrite(logicalPath, newEntries);
+  }
+
+  public async delete(logicalPath: string, predicate: (entry: any) => boolean) {
+    const entries = await this.readAll(logicalPath);
+    const filtered = entries.filter((e) => !predicate(e));
+    await this.overwrite(logicalPath, filtered);
+  }
+
+  public async clear(logicalPath: string) {
+    const filePath = this.resolveFilePath(logicalPath);
+    if (await fs.pathExists(filePath)) {
+      await fs.remove(filePath);
+    }
+  }
+
+  public async tail(logicalPath: string, count: number): Promise<object[]> {
+    const filePath = this.resolveFilePath(logicalPath);
+    if (!(await fs.pathExists(filePath))) return [];
+
+    const fileSize = (await fs.stat(filePath)).size;
+    const chunkSize = 1024 * 16;
+    let position = fileSize;
+    let buffer = "";
+    let lineCount = 0;
+
+    while (position > 0 && lineCount < count) {
+      const readSize = Math.min(position, chunkSize);
+      position -= readSize;
+
+      const buf = new Uint8Array(readSize);
+      const fd = await fs.promises.open(filePath, "r");
+      const result = await fd.read(buf, 0, readSize, position);
+      await fd.close();
+
+      const bufferData = Buffer.from(buf.subarray(0, result.bytesRead));
+
+      buffer = bufferData.toString("utf-8") + buffer;
+      lineCount = buffer.split("\n").filter((l) => l.trim()).length;
+    }
+
+    const lines = buffer.trim().split("\n").filter(Boolean).slice(-count);
+    return lines
+      .map((line) => {
+        try {
+          return JSON.parse(line);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
+  }
+
+  public async listPaths(): Promise<string[]> {
+    const result: string[] = [];
+
+    async function recurse(dir: string, base = "") {
+      const files = await fs.readdir(dir);
+      for (const f of files) {
+        const fullPath = path.join(dir, f);
+        const relPath = path.join(base, f);
+        const stat = await fs.stat(fullPath);
+        if (stat.isDirectory()) {
+          await recurse(fullPath, relPath);
+        } else if (f.endsWith(".jsonl")) {
+          result.push(relPath.replace(/\.jsonl$/, "").replace(/\\/g, "/"));
+        }
+      }
+    }
+
+    if (await fs.pathExists(this.#rootDir)) {
+      await recurse(this.#rootDir);
+    }
+
+    return result;
+  }
+}
