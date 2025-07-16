@@ -91,7 +91,7 @@ export class JsonlStorageSubsystem {
     }
   }
 
-  public async tail(logicalPath: string, count: number): Promise<object[]> {
+  public async tail<T>(logicalPath: string, count: number): Promise<T[]> {
     const filePath = this.resolveFilePath(logicalPath);
     if (!(await fs.pathExists(filePath))) return [];
 

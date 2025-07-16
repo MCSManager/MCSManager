@@ -2,6 +2,11 @@ import { JsonlStorageSubsystem } from "./../common/storage/jsonl_storage";
 import { v4 } from "uuid";
 import type { OperationLoggerItem, OperationLoggerItemPayload } from "../../types/operation_logger";
 
+type CleanPayload<T extends keyof OperationLoggerItemPayload> = Omit<
+  OperationLoggerItemPayload[T],
+  "operation_id" | "operation_time" | "operation_level"
+>;
+
 class OperationLogger {
   #storage: JsonlStorageSubsystem;
   #buffer: Map<string, OperationLoggerItem>;
@@ -13,14 +18,14 @@ class OperationLogger {
     this.#bufferSize = bufferSize;
   }
 
-  async store(buffer: Map<string, OperationLoggerItem> = this.#buffer) {
+  async flushAsync(buffer: Map<string, OperationLoggerItem> = this.#buffer) {
     if (buffer.size === 0) return true;
     const entries = Array.from(buffer.values());
     await this.#storage.append("global", entries);
     return true;
   }
 
-  storeSync(buffer: Map<string, OperationLoggerItem> = this.#buffer) {
+  flushSync(buffer: Map<string, OperationLoggerItem> = this.#buffer) {
     if (buffer.size === 0) return true;
     const entries = Array.from(buffer.values());
     this.#storage.append("global", entries, true);
@@ -31,15 +36,12 @@ class OperationLogger {
     if (this.#buffer.size < this.#bufferSize) return;
     const currentBuffer = this.#buffer;
     this.#buffer = new Map();
-    this.store(currentBuffer);
+    this.flushAsync(currentBuffer);
   }
 
   log<T extends keyof OperationLoggerItemPayload>(
     type: T,
-    payload: Omit<
-      OperationLoggerItemPayload[T],
-      "operation_id" | "operation_time" | "operation_level"
-    >,
+    payload: CleanPayload<T>,
     level: "info" | "warning" | "error" = "info"
   ) {
     const operation_id = v4();
@@ -59,18 +61,29 @@ class OperationLogger {
 
   async get(limit = 20) {
     if (limit <= this.#buffer.size) return Array.from(this.#buffer.values()).slice(-limit);
-    await this.store();
-    const entries = await this.#storage.tail("global", limit);
-    return entries;
+    await this.flushAsync();
+    return this.#storage.tail<OperationLoggerItem>("global", limit);
+  }
+
+  info<T extends keyof OperationLoggerItemPayload>(type: T, payload: CleanPayload<T>) {
+    return this.log(type, payload, "info");
+  }
+
+  warning<T extends keyof OperationLoggerItemPayload>(type: T, payload: CleanPayload<T>) {
+    return this.log(type, payload, "warning");
+  }
+
+  error<T extends keyof OperationLoggerItemPayload>(type: T, payload: CleanPayload<T>) {
+    return this.log(type, payload, "error");
   }
 }
 
 export const operationLogger = new OperationLogger();
 
 process.on("SIGINT", () => {
-  operationLogger.storeSync();
+  operationLogger.flushSync();
 });
 
 process.on("exit", () => {
-  operationLogger.storeSync();
+  operationLogger.flushSync();
 });

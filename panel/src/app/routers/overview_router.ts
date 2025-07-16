@@ -15,6 +15,7 @@ import {
   LOGIN_FAILED_COUNT_KEY,
   BAN_IP_COUNT
 } from "../service/passport_service";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -80,6 +81,19 @@ router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => 
   };
 
   ctx.body = overviewData;
+});
+
+// [Top-level Permission]
+// Get user operation logs
+router.get("/operation_logs", permission({ level: ROLE.ADMIN }), async (ctx) => {
+  const limit = +(ctx?.query?.limit || 20);
+
+  if (isNaN(limit)) return ctx.throw(400, "Invalid limit value. It must be a number.");
+
+  if (limit <= 0 || limit > 100)
+    return ctx.throw(400, "Invalid limit value. It must be between 1 and 100.");
+
+  ctx.body = await operationLogger.get(limit);
 });
 
 export default router;
