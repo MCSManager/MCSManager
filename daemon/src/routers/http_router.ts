@@ -9,6 +9,8 @@ import FileManager from "../service/system_file";
 import formidable from "formidable";
 import { clearUploadFiles } from "../tools/filepath";
 import logger from "../service/log";
+import FileWriter from "../entity/file_writer";
+import uploadManager from "../service/upload_manager";
 
 const router = new Router();
 
@@ -54,7 +56,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
 });
 
 // File upload route
-router.post("/upload/:key", async (ctx) => {
+router.post("/upload-legacy/:key", async (ctx) => {
   const key = String(ctx.params.key);
   const unzip = Boolean(ctx.query.unzip);
   const zipCode = String(ctx.query.code);
@@ -136,4 +138,112 @@ router.post("/upload/:key", async (ctx) => {
     if (tmpFiles) clearUploadFiles(tmpFiles);
   }
 });
+
+router.post("/upload/:key", async (ctx) => {
+  const key = String(ctx.params.key);
+  const unzip = Boolean(ctx.query.unzip);
+  const zipCode = String(ctx.query.code);
+  const filename = String(ctx.query.filename);
+  const size = Number(ctx.query.size);
+  const sum = String(ctx.query.sum);
+  if (ctx.query.stop) {
+    const writer = uploadManager.get(key);
+    if (writer) {
+      await writer.stop();
+      uploadManager.delete(key);
+      ctx.body = "OK";
+      return;
+    } else {
+      ctx.body = "Access denied: No task found";
+      ctx.status = 500;
+      return;
+    }
+  }
+  try {
+    const mission = missionPassport.getMission(key, "upload");
+    if (!mission) throw new Error("Access denied: No task found");
+    const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
+    if (!instance) throw new Error("Access denied: No instance found");
+    const uploadDir = mission.parameter.uploadDir;
+    const cwd = instance.absoluteCwdPath();
+    const overwrite = ctx.query.overwrite !== "false";
+    let fr = uploadManager.getByPath(FileWriter.getPath(cwd, uploadDir, filename, overwrite));
+    if (fr && (sum != fr.writer.sum || size != fr.writer.size)) {
+      uploadManager.delete(fr.id);
+      await fr.writer.stop();
+      fr = undefined;
+    }
+    if (!fr) {
+      const fileWriter = new FileWriter(
+        cwd,
+        uploadDir,
+        filename,
+        size,
+        overwrite,
+        unzip,
+        zipCode,
+        sum
+      );
+      await fileWriter.init();
+      const id = uploadManager.add(fileWriter);
+      fr = { id, writer: fileWriter };
+    }
+
+    logger.info(
+      "Browser Upload File Task:",
+      fr.writer.path,
+      "File size:",
+      Number(size / 1024 / 1024).toFixed(0),
+      "MB"
+    );
+
+    ctx.body = {
+      data: {
+        id: fr.id,
+        received: fr.writer.received
+      },
+      status: 200
+    };
+    return;
+  } catch (error: any) {
+    ctx.body = error.message;
+    ctx.status = 500;
+  } finally {
+    missionPassport.deleteMission(key);
+  }
+});
+
+router.post("/upload-piece/:id", async (ctx) => {
+  const id = String(ctx.params.id);
+  const offset = Number(ctx.query.offset);
+  const tmpFiles = ctx.request.files?.file;
+
+  try {
+    if (!tmpFiles) {
+      ctx.body = "Access denied: No file found";
+      ctx.status = 500;
+    }
+
+    let uploadedFile: formidable.File;
+    if (tmpFiles instanceof Array) {
+      uploadedFile = tmpFiles[0];
+    } else {
+      throw new Error("Access denied: Files must a array!");
+    }
+    const writer = uploadManager.get(id);
+    if (!writer) throw new Error("Access denied: No task found");
+
+    const chunk = await fs.readFile(uploadedFile.filepath);
+    await writer.write(offset, chunk);
+
+    if (tmpFiles) clearUploadFiles(tmpFiles);
+
+    ctx.body = "OK";
+    return;
+  } catch (error: any) {
+    ctx.body = error.message;
+    ctx.status = 500;
+  }
+});
+
 export default router;
