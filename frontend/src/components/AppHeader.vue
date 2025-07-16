@@ -22,6 +22,7 @@ import {
   SaveOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
+import { useScroll } from "@vueuse/core";
 import { message, Modal, notification } from "ant-design-vue";
 import { computed, h } from "vue";
 import { useRoute } from "vue-router";
@@ -35,6 +36,19 @@ const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
 const { isAdmin, state: appState, isLogged } = useAppStateStore();
 const { state: frontendState } = useAppStateStore();
+
+const { y } = useScroll(document.body);
+
+const isScroll = computed(() => {
+  return y.value > 10;
+});
+
+const headerStyle = computed(() => {
+  return {
+    "--header-height": isScroll.value ? "60px" : "64px"
+  };
+});
+
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -75,7 +89,8 @@ const menus = computed(() => {
       return {
         name: r.name,
         path: r.path,
-        meta: r.meta
+        meta: r.meta,
+        customClass: r.meta.customClass ?? []
       };
     });
 });
@@ -142,7 +157,8 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-success"]
     },
     {
       title: t("TXT_CODE_5b5d6f04"),
@@ -157,7 +173,8 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-warning"]
     },
     {
       title: t("TXT_CODE_abd2f7e1"),
@@ -178,7 +195,8 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-danger"]
     },
 
     {
@@ -241,6 +259,7 @@ const appMenus = computed(() => {
           }
         });
       },
+      customClass: ["nav-button-danger"],
       conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     }
@@ -267,7 +286,7 @@ const onClickIcon = () => {
 </script>
 
 <template>
-  <header class="app-header-wrapper">
+  <header class="app-header-wrapper" :style="headerStyle">
     <div v-if="!isPhone" class="app-header-content">
       <nav class="btns">
         <a href="." style="margin-right: 12px">
@@ -280,6 +299,7 @@ const onClickIcon = () => {
           v-for="item in menus"
           :key="item.path"
           class="nav-button"
+          :class="item.customClass"
           @click="handleToPage(item.path)"
         >
           <span>{{ item.name }}</span>
@@ -305,7 +325,7 @@ const onClickIcon = () => {
         </div>
         <div v-for="(item, index) in appMenus" :key="index">
           <a-dropdown v-if="item.menus && item.conditions" placement="bottom">
-            <div class="nav-button" @click.prevent>
+            <div :class="item.customClass" class="nav-button" @click.prevent>
               <component :is="item.icon"></component>
             </div>
             <template #overlay>
@@ -320,7 +340,12 @@ const onClickIcon = () => {
             <template #title>
               <span>{{ item.title }}</span>
             </template>
-            <div class="nav-button" type="text" @click="(e: any) => item.click(e.key)">
+            <div
+              :class="item.customClass"
+              class="nav-button"
+              type="text"
+              @click="(e: any) => item.click(e.key)"
+            >
               <component :is="item.icon"></component>
             </div>
           </a-tooltip>
@@ -328,7 +353,7 @@ const onClickIcon = () => {
       </div>
     </div>
   </header>
-  <div v-if="!isPhone" style="height: 60px"></div>
+  <div v-if="!isPhone" style="height: 64px"></div>
 
   <!-- Menus for phone -->
   <header v-if="isPhone" class="app-header-content-for-phone">
@@ -411,6 +436,26 @@ const onClickIcon = () => {
 <style lang="scss" scoped>
 @import "@/assets/global.scss";
 
+.nav-button-warning:hover {
+  background-color: rgba(255, 193, 7, 0.34) !important;
+}
+
+.nav-button-success:hover {
+  background-color: rgba(64, 156, 216, 0.12) !important;
+}
+
+.nav-button-danger:hover {
+  background-color: #ff19116f !important;
+}
+
+.nav-button-primary:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.nav-button-success:hover {
+  background-color: #48e6635a !important;
+}
+
 .phone-menu {
   .phone-menu-btn {
     padding: 16px 8px;
@@ -467,6 +512,10 @@ const onClickIcon = () => {
   right: 0;
 
   z-index: 20;
+
+  // 添加平滑过渡效果
+  transition: height 0.4s ease-in-out;
+
   .app-header-content {
     @extend .global-app-container;
 
@@ -474,7 +523,10 @@ const onClickIcon = () => {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 60px;
+    height: var(--header-height);
+
+    // 添加平滑过渡效果
+    transition: height 0.4s ease-in-out;
 
     .btns {
       display: flex;
@@ -498,7 +550,7 @@ const onClickIcon = () => {
     font-size: 16px !important;
   }
   .nav-button:hover {
-    background-color: rgba(215, 215, 215, 0.12);
+    background-color: rgba(215, 215, 215, 0.261);
   }
 
   .logo {
@@ -506,26 +558,8 @@ const onClickIcon = () => {
   }
 
   .pro-mode-order-container {
-    position: relative;
-    margin: 0 8px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--app-header-text-color);
-  }
-
-  .pro-mode-order {
-    padding: 6px 12px;
-    position: relative;
-
-    border-radius: 8px;
-    transition: all 0.3s ease;
-
-    border: 1px solid rgb(255, 255, 255, 0.2);
-
-    &:hover {
-      border: 1px solid #2596ff97;
-      box-shadow: 0 4px 12px rgba(27, 117, 137, 0.49);
-    }
+    @extend .nav-button;
+    @extend .nav-button-success;
   }
 
   // Sync margin

@@ -46,6 +46,7 @@ const handleLoad = () => {
 
 // 处理iframe加载错误
 const handleError = (err: any) => {
+  console.error("IframeBox error", err);
   error.value = err?.message;
   emit("error");
 };

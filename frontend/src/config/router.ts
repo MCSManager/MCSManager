@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory, type Router, type RouteRecordRaw } from "vue-router";
-import LayoutContainer from "@/views/LayoutContainer.vue";
 import { $t as t } from "@/lang/i18n";
-import LoginPage from "@/views/Login.vue";
-import InstallPage from "@/views/Install.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import InstallPage from "@/views/Install.vue";
+import LayoutContainer from "@/views/LayoutContainer.vue";
+import LoginPage from "@/views/Login.vue";
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
 
 export interface RouterMetaInfo {
   icon?: string;
@@ -11,6 +11,7 @@ export interface RouterMetaInfo {
   permission?: number;
   redirect?: string;
   onlyDisplayEditMode?: boolean;
+  customClass?: string[];
   condition?: () => boolean;
   breadcrumbs?: Array<{
     name: string;
@@ -187,7 +188,8 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       permission: ROLE.ADMIN,
-      mainMenu: true
+      mainMenu: true,
+      customClass: ["nav-button-success"]
     }
   },
   {
@@ -224,7 +226,8 @@ const originRouterConfig: RouterConfig[] = [
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
-      onlyDisplayEditMode: true
+      onlyDisplayEditMode: true,
+      customClass: ["nav-button-warning"]
     }
   },
   {
@@ -234,7 +237,8 @@ const originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.ADMIN, // open page without permission
       mainMenu: true,
-      onlyDisplayEditMode: true
+      onlyDisplayEditMode: true,
+      customClass: ["nav-button-warning"]
     }
   },
   {

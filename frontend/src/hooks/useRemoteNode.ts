@@ -1,11 +1,11 @@
-import { ref, computed } from "vue";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import {
-  editNode as editNodeApi,
   addNode as addNodeApi,
+  connectNode,
   deleteNode as deleteNodeApi,
-  connectNode
+  editNode as editNodeApi
 } from "@/services/apis";
+import { computed, ref } from "vue";
 
 export interface RemoteNodeDetail {
   ip: string;
@@ -19,7 +19,7 @@ export function useRemoteNode() {
   const operationForm = ref({
     name: "",
     current: 1,
-    pageSize: 10,
+    pageSize: 8,
     total: 0
   });
   const ALL = "all";

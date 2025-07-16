@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import BetweenMenus from "@/components/BetweenMenus.vue";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types/index";
-import { ref, computed, onMounted, onUnmounted, h, type CSSProperties } from "vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { useFileManager } from "@/hooks/useFileManager";
+import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
+import { arrayFilter } from "@/tools/array";
+import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
 import { convertFileSize } from "@/tools/fileSize";
-import dayjs from "dayjs";
+import type { AntColumnsType } from "@/types/ant";
+import type { DataType } from "@/types/fileManager";
+import type { LayoutCard } from "@/types/index";
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -22,17 +28,11 @@ import {
   SearchOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useScreen } from "@/hooks/useScreen";
-import { arrayFilter } from "@/tools/array";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
-import { useFileManager } from "@/hooks/useFileManager";
-import FileEditor from "./dialogs/FileEditor.vue";
-import type { DataType } from "@/types/fileManager";
-import type { AntColumnsType } from "@/types/ant";
+import { Modal, message, type ItemType } from "ant-design-vue";
+import dayjs from "dayjs";
+import { computed, h, onMounted, onUnmounted, ref, type CSSProperties } from "vue";
 import { useRightClickMenu } from "../../hooks/useRightClickMenu";
-import { message, type ItemType, Modal } from "ant-design-vue";
+import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
   card: LayoutCard;

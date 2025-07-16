@@ -1,28 +1,24 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
+import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
+import { loginPageInfo, loginUser } from "@/services/apis";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { sleep } from "@/tools/common";
+import { markdownToHTML } from "@/tools/safe";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard } from "@/types";
 import {
   CheckCircleOutlined,
   LoadingOutlined,
   LockOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
-import { Modal } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
-import { router } from "@/config/router";
-import { loginPageInfo, loginUser } from "@/services/apis";
-import { sleep } from "@/tools/common";
-import { reportErrorMsg } from "@/tools/validator";
-import { useAppStateStore } from "@/stores/useAppStateStore";
-import type { LayoutCard } from "@/types";
-import { markdownToHTML } from "@/tools/safe";
-import { message } from "ant-design-vue";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
 
-onMounted(async () => {
-  await execute();
-});
 const props = defineProps<{
   card?: LayoutCard;
 }>();
@@ -93,6 +89,11 @@ const loginSuccess = () => {
 const openBuyInstanceDialog = async () => {
   router.push({ path: "/shop" });
 };
+
+onMounted(async () => {
+  await execute();
+  if (!appConfig.isInstall) router.push({ path: "/install" });
+});
 </script>
 
 <template>
@@ -108,8 +109,13 @@ const openBuyInstanceDialog = async () => {
     <CardPanel class="login-panel">
       <template #body>
         <div v-show="loginStep === 0" class="login-panel-body">
-          <a-typography-title :level="3" class="mb-20">
-            {{ props.card?.title ? props.card?.title : t("TXT_CODE_3ba5ad") }}
+          <a-typography-title :level="3" class="mb-20 glitch-wrapper">
+            <div
+              class="glitch"
+              :data-text="props.card?.title ? props.card?.title : t('TXT_CODE_3ba5ad')"
+            >
+              {{ props.card?.title ? props.card?.title : t("TXT_CODE_3ba5ad") }}
+            </div>
           </a-typography-title>
           <a-typography-paragraph class="mb-20">
             {{ t("TXT_CODE_5b60ad00") }}
@@ -230,12 +236,14 @@ const openBuyInstanceDialog = async () => {
 <style lang="scss" scoped>
 .logging {
   .login-panel {
-    transform: scale(0.96);
+    transform: scale(0.94);
+    border: 2px solid var(--color-blue-5);
+    box-shadow: 0 0 20px rgba(28, 120, 207, 0.3);
   }
 }
 .login-panel {
   margin: 0 auto;
-  transition: all 0.6s;
+  transition: all 0.4s;
   width: 100%;
   // backdrop-filter: saturate(120%) blur(12px);
   background-color: var(--login-panel-bg);
@@ -256,10 +264,10 @@ const openBuyInstanceDialog = async () => {
   }
 }
 .logging-icon {
-  animation: opacityAnimation 0.6s;
+  animation: opacityAnimation 0.4s;
 }
 .login-success-icon {
-  animation: scaleAnimation 0.6s;
+  animation: scaleAnimation 0.4s;
 }
 
 @keyframes opacityAnimation {
@@ -313,6 +321,110 @@ const openBuyInstanceDialog = async () => {
   }
   100% {
     transform: translate(0, 0);
+  }
+}
+
+.glitch-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch {
+  position: relative;
+  font-weight: 600;
+  animation: glitch-trigger 4s infinite;
+
+  &::before,
+  &::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    color: #ff0040;
+    animation: glitch-anim-1 4s infinite;
+  }
+
+  &::after {
+    color: #00ffff;
+    animation: glitch-anim-2 4s infinite;
+  }
+}
+
+@keyframes glitch-trigger {
+  0%,
+  96% {
+    transform: translate(0);
+  }
+  97%,
+  100% {
+    transform: translate(-1px, 1px);
+  }
+}
+
+@keyframes glitch-anim-1 {
+  0%,
+  96% {
+    transform: translate(0);
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  97% {
+    transform: translate(-2px, -2px);
+    opacity: 0.7;
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  }
+  98% {
+    transform: translate(2px, 1px);
+    opacity: 0.8;
+    clip-path: polygon(0 35%, 100% 35%, 100% 70%, 0 70%);
+  }
+  99% {
+    transform: translate(-1px, 2px);
+    opacity: 0.9;
+    clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%);
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0%,
+  96% {
+    transform: translate(0);
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  97% {
+    transform: translate(2px, 1px);
+    opacity: 0.6;
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+  }
+  98% {
+    transform: translate(-2px, -1px);
+    opacity: 0.7;
+    clip-path: polygon(0 25%, 100% 25%, 100% 75%, 0 75%);
+  }
+  99% {
+    transform: translate(1px, -2px);
+    opacity: 0.8;
+    clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%);
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
 }
 </style>
