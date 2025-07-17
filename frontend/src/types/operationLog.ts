@@ -1,27 +1,3 @@
-export enum OperationLoggerAction {
-  InstanceStart = "instance_start",
-  InstanceStop = "instance_stop",
-  InstanceRestart = "instance_restart",
-  InstanceUpdate = "instance_update",
-  InstanceKill = "instance_kill",
-  InstanceConfigChange = "instance_config_change",
-  InstanceCreate = "instance_create",
-  InstanceDelete = "instance_delete",
-  InstanceFileUpload = "instance_file_upload",
-  InstanceFileUpdate = "instance_file_update",
-  InstanceFileDownload = "instance_file_download",
-  InstanceFileDelete = "instance_file_delete",
-  InstanceTaskCreate = "instance_task_create",
-  InstanceTaskDelete = "instance_task_delete",
-  DaemonCreate = "daemon_create",
-  DaemonRemove = "daemon_remove",
-  DeamonConfigChange = "daemon_config_change",
-  UserCreate = "user_create",
-  UserDelete = "user_delete",
-  UserConfigChange = "user_config_change",
-  SystemConfigChange = "system_config_change"
-}
-
 export type GlobalGeneralOptions = {
   operation_id: string;
   operation_time: string;
@@ -33,7 +9,6 @@ export type GlobalGeneralOptions = {
 export type InstanceGeneralOptions = {
   instance_id: string;
   daemon_id: string;
-  instance_name?: string;
 } & GlobalGeneralOptions;
 
 export type InstanceStartOptions = {
@@ -153,7 +128,3 @@ export type OperationLoggerItem =
   | UserDeleteOptions
   | UserConfigChangeOptions
   | SystemConfigChangeOptions;
-
-export type OperationLoggerItemPayload = {
-  [T in OperationLoggerItem["type"]]: Omit<Extract<OperationLoggerItem, { type: T }>, "type">;
-};

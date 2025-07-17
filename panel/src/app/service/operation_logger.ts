@@ -1,6 +1,8 @@
 import { JsonlStorageSubsystem } from "./../common/storage/jsonl_storage";
 import { v4 } from "uuid";
 import type { OperationLoggerItem, OperationLoggerItemPayload } from "../../types/operation_logger";
+import RemoteRequest from "./remote_command";
+import RemoteServiceSubsystem from "./remote_service";
 
 type CleanPayload<T extends keyof OperationLoggerItemPayload> = Omit<
   OperationLoggerItemPayload[T],
@@ -46,6 +48,7 @@ class OperationLogger {
   ) {
     const operation_id = v4();
     const operation_time = Date.now().toString();
+
     const item: OperationLoggerItem = {
       type,
       operation_id,
@@ -61,7 +64,9 @@ class OperationLogger {
 
   async get(limit = 20) {
     if (limit <= this.#buffer.size) return Array.from(this.#buffer.values()).slice(-limit);
-    await this.flushAsync();
+    const currentBuffer = this.#buffer;
+    this.#buffer = new Map();
+    await this.flushAsync(currentBuffer);
     return this.#storage.tail<OperationLoggerItem>("global", limit);
   }
 
