@@ -70,12 +70,12 @@ export type InstanceDeleteOptions = {
 
 export type InstanceFileUploadOptions = {
   type: "instance_file_upload";
-  file: string;
+  file?: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileUpdateOptions = {
   type: "instance_file_update";
-  file: string;
+  file?: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileDownloadOptions = {

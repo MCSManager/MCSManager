@@ -355,8 +355,7 @@ router.all(
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
         instance_id: instanceUuid,
-        daemon_id: daemonId,
-        file: uploadDir
+        daemon_id: daemonId
       });
       ctx.body = {
         password,
