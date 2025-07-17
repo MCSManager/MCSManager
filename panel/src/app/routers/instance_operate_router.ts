@@ -40,15 +40,16 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/open", {
+        instanceUuids: [instanceUuid]
+      });
       operationLogger.log("instance_start", {
         daemon_id: daemonId,
         instance_id: instanceUuid,
         operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"]
-      });
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/open", {
-        instanceUuids: [instanceUuid]
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
@@ -71,15 +72,16 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/stop", {
+        instanceUuids: [instanceUuid]
+      });
       operationLogger.log("instance_stop", {
         daemon_id: daemonId,
         instance_id: instanceUuid,
         operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"]
-      });
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/stop", {
-        instanceUuids: [instanceUuid]
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
@@ -122,15 +124,16 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/restart", {
+        instanceUuids: [instanceUuid]
+      });
       operationLogger.log("instance_restart", {
         daemon_id: daemonId,
         instance_id: instanceUuid,
         operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"]
-      });
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/restart", {
-        instanceUuids: [instanceUuid]
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
@@ -149,19 +152,16 @@ router.all(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      operationLogger.log(
-        "instance_kill",
-        {
-          daemon_id: daemonId,
-          instance_id: instanceUuid,
-          operator_ip: ctx.ip,
-          operator_name: ctx.session?.["userName"]
-        },
-        "warning"
-      );
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/kill", {
         instanceUuids: [instanceUuid]
+      });
+      operationLogger.warning("instance_kill", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
