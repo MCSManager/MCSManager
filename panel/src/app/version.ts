@@ -1,8 +1,8 @@
+import axios from "axios";
 import * as fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
-import { logger } from "./service/log";
 import storage from "./common/system_storage";
-import axios from "axios";
+import { logger } from "./service/log";
 import { saveSystemConfig, systemConfig } from "./setting";
 
 interface IPackageInfo {
@@ -62,21 +62,25 @@ export function specifiedDaemonVersion() {
 export async function checkBusinessMode() {
   const check = async () => {
     if (!systemConfig) return;
-    const { data: response } = await axios.post<{ code: number; data: any }>(
-      `${REDEEM_PLATFORM_ADDR}/api/user/check`,
-      {
-        panelId: systemConfig?.panelId,
-        registerCode: systemConfig?.registerCode,
-        businessMode: systemConfig?.businessMode
+    try {
+      const { data: response } = await axios.post<{ code: number; data: any }>(
+        `${REDEEM_PLATFORM_ADDR}/api/user/check`,
+        {
+          panelId: systemConfig?.panelId,
+          registerCode: systemConfig?.registerCode,
+          businessMode: systemConfig?.businessMode
+        }
+      );
+      if (response.data && response.code === 200) {
+        logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
+        systemConfig.businessMode = true;
+      } else {
+        systemConfig.businessMode = false;
       }
-    );
-    if (response.data && response.code === 200) {
-      logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
-      systemConfig.businessMode = true;
-    } else {
-      systemConfig.businessMode = false;
+      saveSystemConfig(systemConfig);
+    } catch (error: any) {
+      // ignore
     }
-    saveSystemConfig(systemConfig);
   };
 
   check();

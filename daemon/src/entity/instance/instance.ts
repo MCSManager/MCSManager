@@ -4,6 +4,7 @@ import { t } from "i18next";
 import iconv from "iconv-lite";
 import { configureEntityParams } from "mcsmanager-common";
 import path from "path";
+import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
 import { $t } from "../../i18n";
 import logger from "../../service/log";
@@ -34,7 +35,6 @@ interface IWatcherInfo {
   };
 }
 
-const LINE_MAX_SIZE = 1024;
 const TERM_TEXT_YELLOW = "\x1B[0;33;1m";
 const TERM_TEXT_GOLD = "\x1B[0;33m"; // Gold §6
 const TERM_RESET = "\x1B[0m";
@@ -90,6 +90,7 @@ export default class Instance extends EventEmitter {
 
   private outputStack: string[] = [];
   private outputLoopTask?: NodeJS.Timeout;
+  private outputBuffer = new CircularBuffer<string>(64);
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
@@ -455,29 +456,16 @@ export default class Instance extends EventEmitter {
   }
 
   private pushOutput(data: string) {
-    if (data.length > LINE_MAX_SIZE * 100) {
-      this.outputStack.push(IGNORE_TEXT);
-    } else if (data.length > LINE_MAX_SIZE) {
-      for (let index = 0; index < Math.ceil(data.length / LINE_MAX_SIZE); index++) {
-        const tmp = data.slice(index * LINE_MAX_SIZE, (index + 1) * LINE_MAX_SIZE);
-        if (tmp) this.outputStack.push(tmp);
-      }
-    } else {
-      this.outputStack.push(data);
-    }
-    if (this.outputStack.length >= 100) {
-      this.outputStack.splice(0, 50);
-      this.outputStack.splice(0, 0, IGNORE_TEXT);
-    }
+    this.outputBuffer.pushLog(data);
   }
 
   private startOutputLoop() {
     this.stopOutputLoop();
     this.outputLoopTask = setInterval(() => {
-      if (this.outputStack.length > 0) {
-        const buf = this.outputStack.splice(0, 10);
-        this.emit("data", buf.join(""));
-      }
+      const { items, wasDeleted } = this.outputBuffer.getCache();
+      if (!items.length) return;
+      if (wasDeleted) items.unshift(IGNORE_TEXT);
+      this.emit("data", items.join(""));
     }, 50);
   }
 
