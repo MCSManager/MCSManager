@@ -1,11 +1,133 @@
 import { ref } from "vue";
 import { getOperationLog } from "@/services/apis/operationLog";
 import { t } from "@/lang/i18n";
-import dayjs from "dayjs";
 import type { OperationLoggerItem } from "@/types/operationLog";
 
 type LogsDataItem = OperationLoggerItem & { text: string };
 type LogsData = { color: string; item: LogsDataItem[] };
+type TextRenderResult = {
+  text: string;
+  data: string[];
+};
+
+type OperationRenderer = {
+  [K in OperationLoggerItem["type"]]: (
+    // This variable is actually used internally. Fix the plugin's false positive error.
+    // eslint-disable-next-line no-unused-vars
+    item: Extract<OperationLoggerItem, { type: K }>
+  ) => TextRenderResult;
+};
+
+const renderMap: OperationRenderer = {
+  instance_start: (item) => ({
+    text: t("用户 {{operator_name}} 启动了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_stop: (item) => ({
+    text: t("用户 {{operator_name}} 关闭了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_restart: (item) => ({
+    text: t("用户 {{operator_name}} 重启了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_update: (item) => ({
+    text: t("用户 {{operator_name}} 更新了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_kill: (item) => ({
+    text: t("用户 {{operator_name}} 强制终止了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_config_change: (item) => ({
+    text: t("用户 {{operator_name}} 修改了 {{instance_name}} 实例配置"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_create: (item) => ({
+    text: t("用户 {{operator_name}} 创建了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_delete: (item) => ({
+    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_file_upload: (item) => ({
+    text: t("用户 {{operator_name}} 向 {{instance_name}} 实例上传了文件 {{file}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.file
+    ]
+  }),
+  instance_file_update: (item) => ({
+    text: t("用户 {{operator_name}} 更新了 {{instance_name}} 实例的文件 {{file}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.file
+    ]
+  }),
+  instance_file_download: (item) => ({
+    text: t("用户 {{operator_name}} 下载了 {{instance_name}} 实例的文件 {{file}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.file
+    ]
+  }),
+  instance_file_delete: (item) => ({
+    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例的文件 {{file}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.file
+    ]
+  }),
+  instance_task_create: (item) => ({
+    text: t("用户 {{operator_name}} 为 {{instance_name}} 实例创建了任务 {{task_name}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.task_name
+    ]
+  }),
+  instance_task_delete: (item) => ({
+    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例的任务 {{task_name}}"),
+    data: [
+      item.operator_name || item.operation_id,
+      item.instance_name || item.instance_id,
+      item.task_name
+    ]
+  }),
+  daemon_create: (item) => ({
+    text: t("用户 {{operator_name}} 创建了守护进程 {{daemon_id}}"),
+    data: [item.operator_name || item.operation_id, item.daemon_id]
+  }),
+  daemon_remove: (item) => ({
+    text: t("用户 {{operator_name}} 删除了守护进程 {{daemon_id}}"),
+    data: [item.operator_name || item.operation_id, item.daemon_id]
+  }),
+  daemon_config_change: (item) => ({
+    text: t("用户 {{operator_name}} 修改了守护进程 {{daemon_id}} 配置"),
+    data: [item.operator_name || item.operation_id, item.daemon_id]
+  }),
+  user_create: (item) => ({
+    text: t("用户 {{operator_name}} 创建了用户 {{target_user_name}}"),
+    data: [item.operator_name || item.operation_id, item.target_user_name]
+  }),
+  user_delete: (item) => ({
+    text: t("用户 {{operator_name}} 删除了用户 {{target_user_name}}"),
+    data: [item.operator_name || item.operation_id, item.target_user_name]
+  }),
+  user_config_change: (item) => ({
+    text: t("用户 {{operator_name}} 修改了用户配置"),
+    data: [item.operator_name || item.operation_id]
+  }),
+  system_config_change: (item) => ({
+    text: t("用户 {{operator_name}} 修改了系统配置"),
+    data: [item.operator_name || item.operation_id]
+  })
+};
 
 export const useOperationLog = () => {
   const logs = ref<OperationLoggerItem[]>([]);
@@ -26,7 +148,11 @@ export const useOperationLog = () => {
   };
 
   const generateTextByItem = (item: OperationLoggerItem) => {
-    return `用户 ${item.operator_name} 关闭实例 ${item.operator_name}`;
+    const handler = renderMap[item.type];
+    if (!handler) return t("未知操作");
+    const { text, data } = handler(item as any);
+    let i = 0;
+    return text.replace(/\{\{\s*[\w_]+\s*\}\}/g, () => data[i++] ?? "--");
   };
 
   const generateTimelineByLogs = () => {

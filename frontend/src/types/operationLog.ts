@@ -9,6 +9,7 @@ export type GlobalGeneralOptions = {
 export type InstanceGeneralOptions = {
   instance_id: string;
   daemon_id: string;
+  instance_name?: string;
 } & GlobalGeneralOptions;
 
 export type InstanceStartOptions = {
