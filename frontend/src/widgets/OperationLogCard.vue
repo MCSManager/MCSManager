@@ -6,6 +6,7 @@ import type { LayoutCard } from "@/types";
 
 import { useOperationLog } from "@/hooks/useOperationLog";
 import { onMounted } from "vue";
+import dayjs from "dayjs";
 
 const { fetchData, logsData } = useOperationLog();
 
@@ -27,9 +28,14 @@ onMounted(() => {
       <div class="time-line full-card-body-container">
         <a-timeline>
           <a-timeline-item v-for="(item, index) in logsData" :key="index" :color="item.color">
-            <p v-for="subItem in item.item" :key="subItem.operation_id">
-              {{ subItem.text }}
-            </p>
+            <div v-for="subItem in item.item" :key="subItem.operation_id" class="log-item">
+              <div class="log-content">
+                {{ subItem.text }}
+              </div>
+              <div class="log-time">
+                {{ dayjs(+subItem.operation_time).format("YYYY-MM-DD HH:mm:ss") }}
+              </div>
+            </div>
           </a-timeline-item>
         </a-timeline>
       </div>
@@ -39,10 +45,40 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .time-line {
-  padding-top: 5px;
+  // fix the top content of the component is blocked
+  padding-top: 10px;
+}
 
-  p {
-    margin: 0;
+.log-item {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
   }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.log-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.log-time {
+  font-size: 12px;
+  color: #999;
+  font-family: "Consolas", "Monaco", monospace;
+  opacity: 0.8;
 }
 </style>

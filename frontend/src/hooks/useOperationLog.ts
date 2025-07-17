@@ -26,9 +26,7 @@ export const useOperationLog = () => {
   };
 
   const generateTextByItem = (item: OperationLoggerItem) => {
-    return `用户 ${item.operator_name} 关闭实例 ${item.operator_name} ${dayjs(
-      +item.operation_time
-    ).format("YYYY-MM-DD HH:mm:ss")}`;
+    return `用户 ${item.operator_name} 关闭实例 ${item.operator_name}`;
   };
 
   const generateTimelineByLogs = () => {
