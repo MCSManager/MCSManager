@@ -18,21 +18,20 @@ export default class FileWriter {
 
   constructor(
     private cwd: string,
-    dir: string,
     private filename: string,
     public readonly size: number,
-    overwrite: boolean,
     private unzip: boolean,
     private zipCode: string,
-    public readonly sum: string
+    public readonly sum: string,
+    filePath: string
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
       throw new Error("Access denied: Malformed file name");
 
-    this.path = FileWriter.getPath(cwd, dir, filename, overwrite);
+    this.path = filePath;
   }
 
-  static getPath(cwd: string, dir: string, filename: string, overwrite: boolean) {
+  static async getPath(cwd: string, dir: string, filename: string, overwrite: boolean) {
     const fileManager = new FileManager(cwd);
 
     const ext = path.extname(filename);
@@ -42,10 +41,13 @@ export default class FileWriter {
     let counter = 1;
 
     while (
-      fs.existsSync(fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName)))) &&
-      !lockfile.checkSync(
+      (await fs
+        .access(fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName))))
+        .then(() => true)
+        .catch(() => false)) &&
+      !(await lockfile.check(
         fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName)))
-      ) &&
+      )) &&
       !overwrite
     ) {
       if (counter == 1) {
@@ -92,7 +94,9 @@ export default class FileWriter {
 
     this.addWrittenRange(offset, offset + chunk.length);
     if (this.isFullyCovered()) {
-      this.done(); // async
+      this.done().catch((e) => {
+        logger.error("Error completing file upload:", e);
+      }); // async
     }
   }
 

@@ -38,7 +38,7 @@ class UploadFiles {
     try {
       await uploadFile({
         timeout: Number.MAX_VALUE,
-        url: `${url}/upload/${password}`,
+        url: `${url}/upload-new/${password}`,
         params: {
           overwrite: shouldOverwrite,
           filename: this.file.name,
@@ -94,7 +94,7 @@ class UploadFiles {
 
     const { execute: uploadFile } = uploadFileApi();
     await uploadFile({
-      url: `${this.url}/upload/${this.id}`,
+      url: `${this.url}/upload-new/${this.id}`,
       params: {
         stop: true
       }

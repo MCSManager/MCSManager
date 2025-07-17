@@ -56,7 +56,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
 });
 
 // File upload route
-router.post("/upload-legacy/:key", async (ctx) => {
+router.post("/upload/:key", async (ctx) => {
   const key = String(ctx.params.key);
   const unzip = Boolean(ctx.query.unzip);
   const zipCode = String(ctx.query.code);
@@ -139,7 +139,7 @@ router.post("/upload-legacy/:key", async (ctx) => {
   }
 });
 
-router.post("/upload/:key", async (ctx) => {
+router.post("/upload-new/:key", async (ctx) => {
   const key = String(ctx.params.key);
   const unzip = Boolean(ctx.query.unzip);
   const zipCode = String(ctx.query.code);
@@ -167,23 +167,15 @@ router.post("/upload/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";
-    let fr = uploadManager.getByPath(FileWriter.getPath(cwd, uploadDir, filename, overwrite));
+    const filePath = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
+    let fr = uploadManager.getByPath(filePath);
     if (fr && (sum != fr.writer.sum || size != fr.writer.size)) {
       uploadManager.delete(fr.id);
       await fr.writer.stop();
       fr = undefined;
     }
     if (!fr) {
-      const fileWriter = new FileWriter(
-        cwd,
-        uploadDir,
-        filename,
-        size,
-        overwrite,
-        unzip,
-        zipCode,
-        sum
-      );
+      const fileWriter = new FileWriter(cwd, filename, size, unzip, zipCode, sum, filePath);
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };
