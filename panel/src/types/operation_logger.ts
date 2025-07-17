@@ -15,7 +15,7 @@ export enum OperationLoggerAction {
   InstanceTaskDelete = "instance_task_delete",
   DaemonCreate = "daemon_create",
   DaemonRemove = "daemon_remove",
-  DeamonConfigChange = "daemon_config_change",
+  DaemonConfigChange = "daemon_config_change",
   UserCreate = "user_create",
   UserDelete = "user_delete",
   UserConfigChange = "user_config_change",

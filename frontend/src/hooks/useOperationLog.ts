@@ -56,7 +56,7 @@ const renderMap: OperationRenderer = {
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
-      item.file
+      item.file || ""
     ]
   }),
   instance_file_update: (item) => ({
@@ -137,7 +137,7 @@ export const useOperationLog = () => {
     info: "blue",
     warning: "orange",
     error: "red",
-    unknow: "gray"
+    unknown: "gray"
   };
 
   const fetchData = async () => {
@@ -171,7 +171,7 @@ export const useOperationLog = () => {
       }
 
       result.push({
-        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknow,
+        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknown,
         item: currentGroup
       });
 
@@ -180,7 +180,7 @@ export const useOperationLog = () => {
 
     if (currentGroup.length) {
       result.push({
-        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknow,
+        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknown,
         item: currentGroup
       });
     }

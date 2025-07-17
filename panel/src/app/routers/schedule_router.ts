@@ -8,8 +8,8 @@ import { isHaveInstanceByUuid } from "../service/permission_service";
 import { FILENAME_BLACKLIST } from "../const";
 import { $t } from "../i18n";
 import { ROLE } from "../entity/user";
-const router = new Router({ prefix: "/protected_schedule" });
 import { operationLogger } from "../service/operation_logger";
+const router = new Router({ prefix: "/protected_schedule" });
 
 // Routing permission verification middleware
 router.use(async (ctx, next) => {
