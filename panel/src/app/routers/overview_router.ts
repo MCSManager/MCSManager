@@ -90,8 +90,8 @@ router.get("/operation_logs", permission({ level: ROLE.ADMIN }), async (ctx) => 
 
   if (isNaN(limit)) return ctx.throw(400, "Invalid limit value. It must be a number.");
 
-  if (limit <= 0 || limit > 100)
-    return ctx.throw(400, "Invalid limit value. It must be between 1 and 100.");
+  if (limit <= 0 || limit > 200)
+    return ctx.throw(400, "Invalid limit value. It must be between 1 and 200.");
 
   ctx.body = await operationLogger.get(limit);
 });
