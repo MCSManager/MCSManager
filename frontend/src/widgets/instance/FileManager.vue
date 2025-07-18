@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types/index";
-import { ref, computed, onMounted, onUnmounted, h, type CSSProperties } from "vue";
+import type { LayoutCard } from "@/types";
+import { ref, computed, onMounted, onUnmounted, h, type CSSProperties, watch } from "vue";
 import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
+  CaretLeftOutlined,
+  CloseOutlined,
   CopyOutlined,
   DeleteOutlined,
   DownOutlined,
@@ -17,6 +19,7 @@ import {
   FolderOutlined,
   FormOutlined,
   KeyOutlined,
+  PauseOutlined,
   PlusOutlined,
   ScissorOutlined,
   SearchOutlined,
@@ -31,8 +34,9 @@ import { useFileManager } from "@/hooks/useFileManager";
 import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
-import { useRightClickMenu } from "../../hooks/useRightClickMenu";
-import { message, type ItemType, Modal } from "ant-design-vue";
+import { useRightClickMenu } from "@/hooks/useRightClickMenu";
+import { type ItemType, Modal } from "ant-design-vue";
+import uploadService from "@/services/uploadService";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -46,7 +50,6 @@ const { isPhone } = useScreen();
 
 const {
   dialog,
-  percentComplete,
   spinning,
   fileStatus,
   permission,
@@ -151,6 +154,27 @@ const columns = computed(() => {
   ]);
 });
 
+let uploading = false;
+const progress = computed(() => {
+  if (uploadService.uiData.value.current) {
+    return (uploadService.uiData.value.current[0] * 100) / uploadService.uiData.value.current[1];
+  }
+  return 0;
+});
+const uploadData = uploadService.uiData;
+watch(
+  () => uploadService.uiData.value,
+  (newValue) => {
+    if (newValue.current) {
+      uploading = true;
+    } else if (uploading) {
+      uploading = false;
+      getFileList();
+    }
+  },
+  { immediate: true }
+);
+
 let task: NodeJS.Timer | undefined;
 task = setInterval(async () => {
   await getFileStatus();
@@ -175,14 +199,29 @@ const handleDrop = (e: DragEvent) => {
   opacity.value = false;
   if (!files) return;
   if (files.length === 0) return;
-  if (files.length > 1) return message.error(t("TXT_CODE_f125d699"));
-  if (percentComplete.value > 0) return message.error(t("TXT_CODE_4f6a2959"));
+  let name = "";
+  if (files.length === 1) {
+    name = files[0].name;
+  } else {
+    for (const file of files) {
+      name += file.name + ", ";
+    }
+    name = name.slice(0, -2); // trailing comma
+  }
+  if (name.length > 30) {
+    name = name.slice(0, 27) + "..."; // cut if too long
+  }
+  if (files.length > 1) {
+    name += ` (${files.length})`;
+  }
   Modal.confirm({
-    title: t("TXT_CODE_52bc24ec") + ` ${files[0].name} ?`,
+    title: t("TXT_CODE_52bc24ec"),
     icon: h(ExclamationCircleOutlined),
-    content: t("TXT_CODE_fffaeb16"),
+    content: t("TXT_CODE_52bc24ec") + ` ${name} ?`,
     onOk() {
-      selectedFile(files[0]);
+      for (const file of files) {
+        selectedFile(file);
+      }
     }
   });
 };
@@ -325,19 +364,10 @@ onUnmounted(() => {
               }}
             </a-typography-text>
 
-            <a-upload
-              :before-upload="beforeUpload"
-              :max-count="1"
-              :disabled="percentComplete > 0"
-              :show-upload-list="false"
-            >
-              <a-button type="dashed" :loading="percentComplete > 0">
-                <upload-outlined v-if="percentComplete === 0" />
-                {{
-                  percentComplete > 0
-                    ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
-                    : t("TXT_CODE_e00c858c")
-                }}
+            <a-upload :before-upload="beforeUpload" multiple :show-upload-list="false">
+              <a-button type="dashed">
+                <upload-outlined />
+                {{ t("TXT_CODE_e00c858c") }}
               </a-button>
             </a-upload>
             <a-button
@@ -417,15 +447,46 @@ onUnmounted(() => {
           @drop="handleDrop"
         >
           <template #body>
-            <a-progress
-              v-if="percentComplete > 0"
-              :stroke-color="{
-                '0%': '#49b3ff',
-                '100%': '#25f5b9'
-              }"
-              :percent="percentComplete"
-              class="mb-20"
-            />
+            <div v-if="uploadData.current" class="flex-nowrap w-100">
+              <a-typography-text :ellipsis="true">
+                {{ uploadData.currentFile }}
+              </a-typography-text>
+              <a-typography-text style="padding-left: 5px; white-space: nowrap">
+                ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
+              </a-typography-text>
+              <caret-left-outlined
+                v-if="uploadData.suspending"
+                style="margin-left: 5px"
+                type="button"
+                @click="uploadService.unsuspend()"
+              />
+              <pause-outlined
+                v-else
+                style="margin-left: 5px"
+                type="button"
+                @click="uploadService.suspend()"
+              />
+              <close-outlined
+                style="margin-left: 5px"
+                type="button"
+                @click="uploadService.stop()"
+              />
+            </div>
+            <div v-if="uploadData.current" class="flex-nowrap w-100">
+              <a-progress
+                :stroke-color="{
+                  '0%': '#49b3ff',
+                  '100%': '#25f5b9'
+                }"
+                :percent="progress"
+                :show-info="false"
+                class="mb-20"
+              />
+              <a-typography-text style="padding-left: 2px; white-space: nowrap">
+                {{ convertFileSize(uploadData.current![0].toString()) }} /
+                {{ convertFileSize(uploadData.current![1].toString()) }}
+              </a-typography-text>
+            </div>
             <div class="flex-wrap items-flex-start">
               <a-select
                 v-if="isShowDiskList"
@@ -508,7 +569,7 @@ onUnmounted(() => {
                   <template v-if="column.key === 'action'">
                     <a-dropdown v-if="isPhone">
                       <template #overlay>
-                        <a-menu mode="vertical" :items="menuList(record as DataType)"> </a-menu>
+                        <a-menu mode="vertical" :items="menuList(record as DataType)"></a-menu>
                       </template>
                       <a-button size="middle">
                         {{ t("TXT_CODE_fe731dfc") }}
@@ -659,6 +720,7 @@ onUnmounted(() => {
 
 .file-name {
   color: inherit;
+
   &:hover {
     color: #1677ff;
   }
@@ -706,6 +768,7 @@ onUnmounted(() => {
 @media (max-width: 350px) {
   .permission {
     flex-direction: column;
+
     .son {
       width: 100%;
     }
