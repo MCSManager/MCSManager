@@ -8,6 +8,7 @@ import { isHaveInstanceByUuid } from "../service/permission_service";
 import { FILENAME_BLACKLIST } from "../const";
 import { $t } from "../i18n";
 import { ROLE } from "../entity/user";
+import { operationLogger } from "../service/operation_logger";
 const router = new Router({ prefix: "/protected_schedule" });
 
 // Routing permission verification middleware
@@ -67,6 +68,14 @@ router.post(
         if (name.includes(ch)) throw new Error($t("TXT_CODE_router.schedule.invalidName"));
       });
 
+      operationLogger.log("instance_task_create", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        task_name: name
+      });
+
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(daemonId)).request(
         "schedule/register",
         {
@@ -96,6 +105,15 @@ router.delete(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const name = String(ctx.query.task_name);
+
+      operationLogger.log("instance_task_delete", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        task_name: name
+      });
+
       ctx.body = await new RemoteRequest(RemoteServiceSubsystem.getInstance(daemonId)).request(
         "schedule/delete",
         {

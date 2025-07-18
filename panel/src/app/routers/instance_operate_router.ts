@@ -13,6 +13,7 @@ import { ROLE } from "../entity/user";
 import axios from "axios";
 import { systemConfig } from "../setting";
 import { checkInstanceAdvancedParams } from "../service/instance_service";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -43,6 +44,13 @@ router.all(
       const result = await new RemoteRequest(remoteService).request("instance/open", {
         instanceUuids: [instanceUuid]
       });
+      operationLogger.log("instance_start", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
+      });
       ctx.body = result;
     } catch (err) {
       if (err instanceof RemoteRequestTimeoutError) {
@@ -67,6 +75,13 @@ router.all(
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/stop", {
         instanceUuids: [instanceUuid]
+      });
+      operationLogger.log("instance_stop", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
@@ -113,6 +128,13 @@ router.all(
       const result = await new RemoteRequest(remoteService).request("instance/restart", {
         instanceUuids: [instanceUuid]
       });
+      operationLogger.log("instance_restart", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
+      });
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -133,6 +155,13 @@ router.all(
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/kill", {
         instanceUuids: [instanceUuid]
+      });
+      operationLogger.warning("instance_kill", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_name: result?.instances?.[0]?.nickname
       });
       ctx.body = result;
     } catch (err) {
