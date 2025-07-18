@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import { ref } from "vue";
-// import { $t as t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 
