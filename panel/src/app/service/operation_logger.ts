@@ -13,11 +13,13 @@ class OperationLogger {
   #storage: JsonlStorageSubsystem;
   #buffer: Map<string, OperationLoggerItem>;
   #bufferSize: number;
+  #flushTimer: NodeJS.Timeout | null = null;
 
   constructor(bufferSize = 20) {
     this.#storage = new JsonlStorageSubsystem("/operation_logs");
     this.#buffer = new Map();
     this.#bufferSize = bufferSize;
+    this.startFlushTimer();
   }
 
   async flushAsync(buffer: Map<string, OperationLoggerItem> = this.#buffer) {
@@ -81,14 +83,33 @@ class OperationLogger {
   error<T extends keyof OperationLoggerItemPayload>(type: T, payload: CleanPayload<T>) {
     return this.log(type, payload, "error");
   }
+
+  private startFlushTimer() {
+    this.#flushTimer = setInterval(() => {
+      if (this.#buffer.size > 0) {
+        const currentBuffer = this.#buffer;
+        this.#buffer = new Map();
+        this.flushAsync(currentBuffer);
+      }
+    }, 5000);
+  }
+
+  public stopFlushTimer() {
+    if (this.#flushTimer) {
+      clearInterval(this.#flushTimer);
+      this.#flushTimer = null;
+    }
+  }
 }
 
 export const operationLogger = new OperationLogger();
 
 process.on("SIGINT", () => {
+  operationLogger.stopFlushTimer();
   operationLogger.flushSync();
 });
 
 process.on("exit", () => {
+  operationLogger.stopFlushTimer();
   operationLogger.flushSync();
 });
