@@ -3,9 +3,11 @@ import fs from "fs-extra";
 
 export class JsonlStorageSubsystem {
   #rootDir: string;
+  #maxLines: number;
 
-  constructor(dir: string) {
+  constructor(dir: string, maxLines: number = 200) {
     this.#rootDir = path.normalize(process.cwd() + "/data/" + dir);
+    this.#maxLines = maxLines;
   }
 
   private resolveFilePath(logicalPath: string): string {
@@ -30,6 +32,7 @@ export class JsonlStorageSubsystem {
     if (!Array.isArray(entry)) entry = [entry];
     const filePath = this.resolveFilePath(logicalPath);
     const lines = (entry as object[]).map((e) => JSON.stringify(e)).join("\n") + "\n";
+
     if (sync) {
       fs.ensureFileSync(filePath);
       fs.appendFileSync(filePath, lines, "utf-8");
@@ -37,6 +40,8 @@ export class JsonlStorageSubsystem {
       await fs.ensureFile(filePath);
       await fs.appendFile(filePath, lines, "utf-8");
     }
+
+    await this.trimToMaxLines(logicalPath);
   }
 
   public async readAll(logicalPath: string): Promise<object[]> {
@@ -92,63 +97,15 @@ export class JsonlStorageSubsystem {
   }
 
   public async tail<T>(logicalPath: string, count: number): Promise<T[]> {
-    const filePath = this.resolveFilePath(logicalPath);
-    if (!(await fs.pathExists(filePath))) return [];
-
-    const fileSize = (await fs.stat(filePath)).size;
-    const chunkSize = 1024 * 16;
-    let position = fileSize;
-    let buffer = "";
-    let lineCount = 0;
-
-    while (position > 0 && lineCount < count) {
-      const readSize = Math.min(position, chunkSize);
-      position -= readSize;
-
-      const buf = new Uint8Array(readSize);
-      const fd = await fs.promises.open(filePath, "r");
-      const result = await fd.read(buf, 0, readSize, position);
-      await fd.close();
-
-      const bufferData = Buffer.from(buf.subarray(0, result.bytesRead));
-
-      buffer = bufferData.toString("utf-8") + buffer;
-      lineCount = buffer.split("\n").filter((l) => l.trim()).length;
-    }
-
-    const lines = buffer.trim().split("\n").filter(Boolean).slice(-count);
-    return lines
-      .map((line) => {
-        try {
-          return JSON.parse(line);
-        } catch {
-          return null;
-        }
-      })
-      .filter(Boolean);
+    const entries = await this.query(logicalPath, () => true);
+    return entries.slice(-count) as T[];
   }
 
-  public async listPaths(): Promise<string[]> {
-    const result: string[] = [];
-
-    async function recurse(dir: string, base = "") {
-      const files = await fs.readdir(dir);
-      for (const f of files) {
-        const fullPath = path.join(dir, f);
-        const relPath = path.join(base, f);
-        const stat = await fs.stat(fullPath);
-        if (stat.isDirectory()) {
-          await recurse(fullPath, relPath);
-        } else if (f.endsWith(".jsonl")) {
-          result.push(relPath.replace(/\.jsonl$/, "").replace(/\\/g, "/"));
-        }
-      }
+  private async trimToMaxLines(logicalPath: string) {
+    const entries = await this.readAll(logicalPath);
+    if (entries.length > this.#maxLines) {
+      const trimmedEntries = entries.slice(-this.#maxLines);
+      await this.overwrite(logicalPath, trimmedEntries);
     }
-
-    if (await fs.pathExists(this.#rootDir)) {
-      await recurse(this.#rootDir);
-    }
-
-    return result;
   }
 }
