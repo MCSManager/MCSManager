@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 
@@ -24,7 +25,11 @@ onMounted(() => {
     </template>
     <template #body>
       <div class="time-line full-card-body-container">
-        <a-timeline>
+        <div v-if="logsData.length === 0" class="empty-state">
+          <div class="empty-text">{{ t("暂无操作日志") }}</div>
+          <div class="empty-description">{{ t("系统操作日志将在此处显示") }}</div>
+        </div>
+        <a-timeline v-else>
           <a-timeline-item v-for="(item, index) in logsData" :key="index" :color="item.color">
             <div v-for="subItem in item.item" :key="subItem.operation_id" class="log-item">
               <div class="log-content">
@@ -78,5 +83,28 @@ onMounted(() => {
   color: #999;
   font-family: "Consolas", "Monaco", monospace;
   opacity: 0.8;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  min-height: 120px;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.empty-description {
+  font-size: 14px;
+  color: #999;
+  line-height: 1.4;
 }
 </style>
