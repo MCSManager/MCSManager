@@ -141,7 +141,7 @@ export default class PtyStartCommand extends AbsStartCommand {
     });
   }
 
-  async createProcess(instance: Instance) {
+    async createProcess(instance: Instance) {
     if (
       !instance.config.startCommand ||
       !instance.hasCwdPath() ||
@@ -163,10 +163,9 @@ export default class PtyStartCommand extends AbsStartCommand {
     }
 
     if (checkPtyEnv === false) {
-      // Close the PTY type, reconfigure the instance function group, and restart the instance
       instance.config.terminalOption.pty = false;
       await instance.forceExec(new FunctionDispatcher());
-      await instance.execPreset("start"); // execute the preset command directly
+      await instance.execPreset("start");
       return;
     }
 
@@ -177,14 +176,8 @@ export default class PtyStartCommand extends AbsStartCommand {
     // command parsing
     let commandList: string[] = [];
     if (os.platform() === "win32") {
-      // windows: cmd.exe  /c {{startCommand}}
       commandList = [instance.config.startCommand];
-    } else {
-      commandList = commandStringToArray(instance.config.startCommand);
     }
-
-    if (commandList.length === 0)
-      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
 
     const pipeId = v4();
     const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
@@ -194,6 +187,38 @@ export default class PtyStartCommand extends AbsStartCommand {
       pipeName = `\\\\.\\pipe\\mcsmanager-${pipeId}`;
     }
 
+    // Get user info for the target user (Linux/macOS only)
+    let uid: number | undefined;
+    let gid: number | undefined;
+    if (process.platform !== 'win32' && instance.config.runAs) {
+      try {
+        const { execSync } = require('child_process');
+        uid = parseInt(execSync(`id -u ${instance.config.runAs}`).toString().trim());
+        gid = parseInt(execSync(`id -g ${instance.config.runAs}`).toString().trim());
+        
+        // Ensure working directory has correct permissions
+        fs.chownSync(instance.absoluteCwdPath(), uid, gid);
+        commandList = commandStringToArray("sudo" + " -u " + instance.config.runAs);
+      } catch (e) {
+        throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
+          user: instance.config.runAs,
+          error: e
+        }));
+      }
+    }
+
+    // Prepare environment variables
+    const env = {
+      ...process.env,
+      TERM: "xterm-256color",
+      ...(process.platform !== 'win32' && instance.config.runAs ? {
+        USER: instance.config.runAs,
+        HOME: `/home/${instance.config.runAs}`,
+        LOGNAME: instance.config.runAs
+      } : {})
+    };
+   commandList.push(instance.config.startCommand);
+    // Prepare PTY parameters
     const ptyParameter = [
       "-size",
       `${instance.config.terminalOption.ptyWindowCol},${instance.config.terminalOption.ptyWindowRow}`,
@@ -201,8 +226,6 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.config.oe,
       "-dir",
       instance.absoluteCwdPath(),
-      "-fifo",
-      pipeName,
       "-cmd",
       JSON.stringify(commandList)
     ];
@@ -214,18 +237,18 @@ export default class PtyStartCommand extends AbsStartCommand {
     logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
     logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
     logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }));
+    logger.info($t("TXT_CODE_general_start.runAs", { user: instance.config.runAs }));
+    if (uid && gid) {
+      logger.info($t("TXT_CODE_general_start.runAsIds", { uid, gid }));
+    }
     logger.info("----------------");
 
     // create pty child process
-    // Parameter 1 directly passes the process name or path (including spaces) without double quotes
     const subProcess = spawn(PTY_PATH, ptyParameter, {
       cwd: path.dirname(PTY_PATH),
       stdio: "pipe",
       windowsHide: true,
-      env: {
-        ...process.env,
-        TERM: "xterm-256color"
-      }
+      env: env
     });
 
     // pty child process creation result check
@@ -245,8 +268,6 @@ export default class PtyStartCommand extends AbsStartCommand {
     const ptySubProcessCfg = await this.readPtySubProcessConfig(subProcess);
     const processAdapter = new GoPtyProcessAdapter(subProcess, ptySubProcessCfg.pid, pipeName);
 
-    // After reading the configuration, Need to check the process status
-    // The "processAdapter.pid" here represents the process created by the PTY process
     if (subProcess.exitCode !== null || processAdapter.pid == null || processAdapter.pid === 0) {
       instance.println(
         "ERROR",

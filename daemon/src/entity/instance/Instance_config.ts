@@ -24,6 +24,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public fileCode: string = "utf-8";
   public processType: ProcessType = "general";
   public updateCommand: string = "";
+  public runAs: string = "root";
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
   public category = 0;
 
@@ -38,7 +39,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
 
   // terminal option
   public terminalOption = {
-    haveColor: false,
+    haveColor: true,
     pty: true,
     ptyWindowCol: 164,
     ptyWindowRow: 40
