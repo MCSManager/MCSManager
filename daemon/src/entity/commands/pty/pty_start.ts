@@ -175,9 +175,15 @@ export default class PtyStartCommand extends AbsStartCommand {
 
     // command parsing
     let commandList: string[] = [];
-    if (os.platform() === "win32") {
+     if (os.platform() === "win32") {
+      // windows: cmd.exe  /c {{startCommand}}
       commandList = [instance.config.startCommand];
+    } else {
+      commandList = commandStringToArray(instance.config.startCommand);
     }
+
+    if (commandList.length === 0)
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
 
     const pipeId = v4();
     const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
@@ -226,10 +232,12 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.config.oe,
       "-dir",
       instance.absoluteCwdPath(),
+       "-fifo",
+      pipeName,
       "-cmd",
       JSON.stringify(commandList)
     ];
-
+    
     logger.info("----------------");
     logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: "" }));
     logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));

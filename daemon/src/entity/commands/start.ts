@@ -37,7 +37,6 @@ export default abstract class AbsStartCommand extends InstanceCommand {
 
       instance.print("\n\n");
       instance.println("INFO", $t("TXT_CODE_start.startInstance"));
-      
 
       // prevent the dead-loop from starting
       await this.sleep();
