@@ -126,6 +126,21 @@ const allYesNo = [
   }
 ];
 
+const totpDriftOptions = ref([
+  {
+    label: t("TXT_CODE_718c9310"),
+    value: 0
+  },
+  {
+    label: t("30 秒"),
+    value: 1
+  },
+  {
+    label: t("60 秒"),
+    value: 2
+  }
+]);
+
 const aboutLinks = arrayFilter([
   {
     title: "GitHub",
@@ -529,6 +544,31 @@ onMounted(async () => {
                       </a-select-option>
                     </a-select>
                   </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("双重登录验证 (TOTP) 时间漂移容忍度") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("允许客户端设备和服务器之间在生成和验证 TOTP 代码时存在的最大时间差异。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value="formData.totpDriftToleranceSteps"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in totpDriftOptions"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
                       {{ t("TXT_CODE_abfe9512") }}

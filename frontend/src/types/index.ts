@@ -57,6 +57,7 @@ export interface Settings {
   maxCompress: number;
   maxDownload: number;
   zipType: number;
+  totpDriftToleranceSteps: number;
   loginCheckIp: boolean;
   loginInfo: string;
   canFileManager: boolean;
