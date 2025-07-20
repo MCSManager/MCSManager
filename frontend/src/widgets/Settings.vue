@@ -132,11 +132,11 @@ const totpDriftOptions = ref([
     value: 0
   },
   {
-    label: t("30 秒"),
+    label: "30 s",
     value: 1
   },
   {
-    label: t("60 秒"),
+    label: "60 s",
     value: 2
   }
 ]);
@@ -547,11 +547,11 @@ onMounted(async () => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("双重登录验证 (TOTP) 时间漂移容忍度") }}
+                      {{ t("TXT_CODE_b026be33") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("允许客户端设备和服务器之间在生成和验证 TOTP 代码时存在的最大时间差异。") }}
+                        {{ t("TXT_CODE_a77b1a21") }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
