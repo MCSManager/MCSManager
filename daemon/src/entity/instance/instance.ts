@@ -25,6 +25,10 @@ interface IInstanceInfo {
   playersChart: Array<{ value: string }>;
   openFrpStatus: boolean;
   latency: number;
+  cpuUsage?: number;
+  memoryUsage?: number;
+  rxBytes?: number;
+  txBytes?: number;
 }
 
 interface IWatcherInfo {
@@ -81,7 +85,11 @@ export default class Instance extends EventEmitter {
     fileLock: 0,
     playersChart: [],
     openFrpStatus: false,
-    latency: 0
+    latency: 0,
+    cpuUsage: 0,
+    memoryUsage: 0,
+    rxBytes: 0,
+    txBytes: 0
   };
 
   public watchers: Map<string, IWatcherInfo> = new Map();

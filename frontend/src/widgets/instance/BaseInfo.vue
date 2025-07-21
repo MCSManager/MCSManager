@@ -5,7 +5,12 @@ import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
-import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import {
+  CheckCircleOutlined,
+  CloudDownloadOutlined,
+  CloudUploadOutlined,
+  ExclamationCircleOutlined
+} from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
 import { dockerPortsArray } from "@/tools/common";
@@ -108,6 +113,33 @@ onMounted(async () => {
         </span>
         <span>
           {{ instanceGameServerInfo.version }}
+        </span>
+      </a-typography-paragraph>
+
+      <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
+        <span>
+          {{ t("CPU 使用率:") }}
+          {{ instanceInfo?.info.cpuUsage }}%
+        </span>
+      </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.info.memoryUsage != null">
+        <span>
+          {{ t("内存使用率:") }}
+          {{ instanceInfo?.info.memoryUsage }}%
+        </span>
+      </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.info.rxBytes != null">
+        <span>
+          {{ t("上传/下载速率：") }}
+        </span>
+        <span>
+          <CloudUploadOutlined />
+          {{ instanceInfo?.info.rxBytes }}
+        </span>
+        <span> / </span>
+        <span>
+          <CloudDownloadOutlined />
+          {{ instanceInfo?.info.txBytes }}
         </span>
       </a-typography-paragraph>
 

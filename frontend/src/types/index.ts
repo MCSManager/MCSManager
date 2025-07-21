@@ -33,6 +33,10 @@ export interface InstanceDetail {
     playersChart: Array<{ value: string }>;
     openFrpStatus: boolean;
     latency: number;
+    cpuUsage?: number;
+    memoryUsage?: number;
+    rxBytes?: number;
+    txBytes?: number;
   };
   config: IGlobalInstanceConfig;
   watcher?: number;
