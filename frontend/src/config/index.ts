@@ -43,6 +43,7 @@ import PluginCard from "@/widgets/others/PluginCard.vue";
 import MusicCard from "@/widgets/others/MusicCard.vue";
 import ShelvesCard from "@/widgets/ShelvesCard.vue";
 import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
+import OperationLogCard from "@/widgets/OperationLogCard.vue";
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
 
@@ -88,7 +89,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   PluginCard,
   MusicCard,
   ShelvesCard,
-  ShopInfoCard
+  ShopInfoCard,
+  OperationLogCard
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -414,6 +416,17 @@ export function getLayoutCardPool() {
       width: 12,
       description: t("TXT_CODE_2a8dc13f"),
       height: LayoutCardHeight.BIG,
+      category: NEW_CARD_TYPE.DATA
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.ADMIN,
+      type: "OperationLogCard",
+      title: t("操作日志"),
+      meta: {},
+      width: 3,
+      description: t("用于查看用户操作日志"),
+      height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.DATA
     },
     {

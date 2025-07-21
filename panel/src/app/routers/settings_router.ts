@@ -18,6 +18,7 @@ import { ROLE } from "../entity/user";
 import { SAVE_DIR_PATH } from "../service/frontend_layout";
 import FileManager from "../../../../daemon/src/service/system_file";
 import SystemConfig from "../entity/setting";
+import { operationLogger } from "../service/operation_logger";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -61,6 +62,11 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       await i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
+
+    operationLogger.log("system_config_change", {
+      operator_ip: ctx.ip,
+      operator_name: ctx.session?.["userName"]
+    });
 
     saveSystemConfig(systemConfig);
     ctx.body = "OK";
