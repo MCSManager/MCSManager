@@ -9,6 +9,8 @@ export default class DockerStatsTask implements ILifeCycleTask {
   public status: number = 0;
   public name: string = "DockerStats";
   private task: NodeJS.Timeout | null = null;
+  private lastDiskStats: { readBytes?: number; writeBytes?: number; timestamp: number } | null =
+    null;
 
   private getNetworkInterface(stats: Dockerode.NetworkStats) {
     let networkInterface = stats?.["eth0"];
@@ -25,12 +27,8 @@ export default class DockerStatsTask implements ILifeCycleTask {
       networkInterface = stats[networkKeys?.[0]] ?? undefined;
     }
 
-    const rxBytes = networkInterface?.rx_bytes
-      ? Number(networkInterface.rx_bytes) / 1024 / 1024
-      : undefined;
-    const txBytes = networkInterface?.tx_bytes
-      ? Number(networkInterface.tx_bytes) / 1024 / 1024
-      : undefined;
+    const rxBytes = networkInterface?.rx_bytes ?? undefined;
+    const txBytes = networkInterface?.tx_bytes ?? undefined;
 
     return {
       rxBytes,
@@ -65,8 +63,32 @@ export default class DockerStatsTask implements ILifeCycleTask {
         readBytes: undefined,
         writeBytes: undefined
       };
-    const readBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "read");
-    const writeBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "write");
+
+    const currentReadBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "read");
+    const currentWriteBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "write");
+    const currentTimestamp = Date.now();
+
+    let readBytes;
+    let writeBytes;
+
+    if (this.lastDiskStats && currentReadBytes !== undefined && currentWriteBytes !== undefined) {
+      const timeDelta = (currentTimestamp - this.lastDiskStats.timestamp) / 1000;
+
+      if (
+        timeDelta > 0 &&
+        this.lastDiskStats.readBytes !== undefined &&
+        this.lastDiskStats.writeBytes !== undefined
+      ) {
+        readBytes = Math.max(0, (currentReadBytes - this.lastDiskStats.readBytes) / timeDelta);
+        writeBytes = Math.max(0, (currentWriteBytes - this.lastDiskStats.writeBytes) / timeDelta);
+      }
+    }
+
+    this.lastDiskStats = {
+      readBytes: currentReadBytes,
+      writeBytes: currentWriteBytes,
+      timestamp: currentTimestamp
+    };
 
     return {
       readBytes,
@@ -112,6 +134,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       clearInterval(this.task);
       this.task = null;
     }
+    this.lastDiskStats = null;
     instance.info = {
       ...instance.info,
       cpuUsage: undefined,
