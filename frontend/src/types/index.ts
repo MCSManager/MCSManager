@@ -35,6 +35,7 @@ export interface InstanceDetail {
     latency: number;
     cpuUsage?: number;
     memoryUsage?: number;
+    memoryUsagePercent?: number;
     rxBytes?: number;
     txBytes?: number;
   };

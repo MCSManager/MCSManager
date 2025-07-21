@@ -56,18 +56,22 @@ export default class DockerStatsTask implements ILifeCycleTask {
 
   async updateStats(containerId: string, instance: Instance) {
     try {
-      const container = await DockerStatsTask.defaultDocker.getContainer(containerId);
+      const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
       const { rxBytes, txBytes } = this.getNetworkInterface(stats.networks);
 
-      const memoryUsage = stats.memory_stats.usage - stats.memory_stats.stats.cache;
-      const memoryUsagePercent = (memoryUsage / stats.memory_stats.limit) * 100;
+      const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
+      const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
 
       const result = {
         cpuUsage: this.getCpuUsage(stats),
         rxBytes,
         txBytes,
-        memoryUsage: memoryUsagePercent
+        memoryUsage,
+        memoryUsagePercent,
+
+        // dev code
+        stats
       };
       instance.info = { ...instance.info, ...result };
     } catch (error) {

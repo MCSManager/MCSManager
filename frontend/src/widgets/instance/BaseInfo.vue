@@ -122,10 +122,10 @@ onMounted(async () => {
           {{ instanceInfo?.info.cpuUsage }}%
         </span>
       </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.info.memoryUsage != null">
+      <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
         <span>
           {{ t("内存使用率:") }}
-          {{ instanceInfo?.info.memoryUsage }}%
+          {{ instanceInfo?.info.memoryUsagePercent }}%
         </span>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="instanceInfo?.info.rxBytes != null">
