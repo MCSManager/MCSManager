@@ -11,6 +11,41 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private task: NodeJS.Timeout | null = null;
   private lastDiskStats: { readBytes?: number; writeBytes?: number; timestamp: number } | null =
     null;
+  private lastNetworkStats: { rxBytes?: number; txBytes?: number; timestamp: number } | null = null;
+
+  private calculateRealTimeRate<T extends Record<string, number | undefined>>(
+    currentValues: T,
+    lastStats: (Partial<T> & { timestamp: number }) | null,
+    updateLastStats: (newStats: { timestamp: number } & T) => void
+  ): T {
+    const currentTimestamp = Date.now();
+    const result = {} as T;
+
+    if (lastStats) {
+      const timeDelta = (currentTimestamp - lastStats.timestamp) / 1000;
+
+      if (timeDelta > 0) {
+        for (const key in currentValues) {
+          const currentValue = currentValues[key];
+          const lastValue = lastStats[key];
+
+          if (currentValue !== undefined && lastValue !== undefined) {
+            result[key] = Math.max(0, (currentValue - lastValue) / timeDelta) as T[Extract<
+              keyof T,
+              string
+            >];
+          }
+        }
+      }
+    }
+
+    updateLastStats({
+      ...currentValues,
+      timestamp: currentTimestamp
+    });
+
+    return result;
+  }
 
   private getNetworkInterface(stats: Dockerode.NetworkStats) {
     let networkInterface = stats?.["eth0"];
@@ -27,13 +62,14 @@ export default class DockerStatsTask implements ILifeCycleTask {
       networkInterface = stats[networkKeys?.[0]] ?? undefined;
     }
 
-    const rxBytes = networkInterface?.rx_bytes ?? undefined;
-    const txBytes = networkInterface?.tx_bytes ?? undefined;
-
-    return {
-      rxBytes,
-      txBytes
+    const currentValues = {
+      rxBytes: networkInterface?.rx_bytes ?? undefined,
+      txBytes: networkInterface?.tx_bytes ?? undefined
     };
+
+    return this.calculateRealTimeRate(currentValues, this.lastNetworkStats, (newStats) => {
+      this.lastNetworkStats = newStats;
+    });
   }
 
   private getCpuUsage(stats: Dockerode.ContainerStats) {
@@ -64,36 +100,14 @@ export default class DockerStatsTask implements ILifeCycleTask {
         writeBytes: undefined
       };
 
-    const currentReadBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "read");
-    const currentWriteBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "write");
-    const currentTimestamp = Date.now();
-
-    let readBytes;
-    let writeBytes;
-
-    if (this.lastDiskStats && currentReadBytes !== undefined && currentWriteBytes !== undefined) {
-      const timeDelta = (currentTimestamp - this.lastDiskStats.timestamp) / 1000;
-
-      if (
-        timeDelta > 0 &&
-        this.lastDiskStats.readBytes !== undefined &&
-        this.lastDiskStats.writeBytes !== undefined
-      ) {
-        readBytes = Math.max(0, (currentReadBytes - this.lastDiskStats.readBytes) / timeDelta);
-        writeBytes = Math.max(0, (currentWriteBytes - this.lastDiskStats.writeBytes) / timeDelta);
-      }
-    }
-
-    this.lastDiskStats = {
-      readBytes: currentReadBytes,
-      writeBytes: currentWriteBytes,
-      timestamp: currentTimestamp
+    const currentValues = {
+      readBytes: this.findIoStatValue(ioStats.io_service_bytes_recursive, "read"),
+      writeBytes: this.findIoStatValue(ioStats.io_service_bytes_recursive, "write")
     };
 
-    return {
-      readBytes,
-      writeBytes
-    };
+    return this.calculateRealTimeRate(currentValues, this.lastDiskStats, (newStats) => {
+      this.lastDiskStats = newStats;
+    });
   }
 
   async updateStats(containerId: string, instance: Instance) {
@@ -135,6 +149,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       this.task = null;
     }
     this.lastDiskStats = null;
+    this.lastNetworkStats = null;
     instance.info = {
       ...instance.info,
       cpuUsage: undefined,
