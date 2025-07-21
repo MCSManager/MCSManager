@@ -6,15 +6,16 @@ import { onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
 import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
   CheckCircleOutlined,
-  CloudDownloadOutlined,
-  CloudUploadOutlined,
   ExclamationCircleOutlined
 } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
 import { dockerPortsArray } from "@/tools/common";
 import DockerInfo from "./dialogs/DockerInfo.vue";
+import _prettyBytes from "pretty-bytes";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -51,6 +52,12 @@ const instanceGameServerInfo = computed(() => {
     return null;
   }
 });
+
+const prettyBytes = (bytes: number) =>
+  _prettyBytes(bytes, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -128,19 +135,25 @@ onMounted(async () => {
           {{ instanceInfo?.info.memoryUsagePercent }}%
         </span>
       </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.info.rxBytes != null">
+      <a-typography-paragraph
+        v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+      >
         <span>
-          {{ t("上传/下载速率：") }}
+          {{ t("网络速率：") }}
         </span>
-        <span>
-          <CloudUploadOutlined />
-          {{ instanceInfo?.info.rxBytes }}
-        </span>
-        <span> / </span>
-        <span>
-          <CloudDownloadOutlined />
-          {{ instanceInfo?.info.txBytes }}
-        </span>
+        <a-tooltip :title="t('上传速率')">
+          <span>
+            <ArrowUpOutlined />
+            {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
+          </span>
+        </a-tooltip>
+        &nbsp;|
+        <a-tooltip :title="t('下载速率')">
+          <span>
+            <ArrowDownOutlined />
+            {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
+          </span>
+        </a-tooltip>
       </a-typography-paragraph>
 
       <a-typography-paragraph>

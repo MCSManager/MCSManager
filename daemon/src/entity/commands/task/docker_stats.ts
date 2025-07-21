@@ -26,11 +26,12 @@ export default class DockerStatsTask implements ILifeCycleTask {
     }
 
     const rxBytes = networkInterface?.rx_bytes
-      ? Math.ceil(Number(networkInterface.rx_bytes) / 1024 / 1024)
+      ? Number(networkInterface.rx_bytes) / 1024 / 1024
       : undefined;
     const txBytes = networkInterface?.tx_bytes
-      ? Math.ceil(Number(networkInterface.tx_bytes) / 1024 / 1024)
+      ? Number(networkInterface.tx_bytes) / 1024 / 1024
       : undefined;
+
     return {
       rxBytes,
       txBytes
