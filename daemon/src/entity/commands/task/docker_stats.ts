@@ -55,11 +55,31 @@ export default class DockerStatsTask implements ILifeCycleTask {
     return 0;
   }
 
+  private findIoStatValue = (stats: Dockerode.BlkioStatEntry[], op: string) =>
+    stats.find((stat) => stat.op === op)?.value;
+
+  private getDiskIO(stats: Dockerode.ContainerStats) {
+    const ioStats = stats.blkio_stats;
+    if (!ioStats?.io_service_bytes_recursive)
+      return {
+        readBytes: undefined,
+        writeBytes: undefined
+      };
+    const readBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "read");
+    const writeBytes = this.findIoStatValue(ioStats.io_service_bytes_recursive, "write");
+
+    return {
+      readBytes,
+      writeBytes
+    };
+  }
+
   async updateStats(containerId: string, instance: Instance) {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
       const { rxBytes, txBytes } = this.getNetworkInterface(stats.networks);
+      const { readBytes, writeBytes } = this.getDiskIO(stats);
 
       const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
@@ -68,11 +88,9 @@ export default class DockerStatsTask implements ILifeCycleTask {
         cpuUsage: this.getCpuUsage(stats),
         rxBytes,
         txBytes,
-        memoryUsage,
         memoryUsagePercent,
-
-        // dev code
-        stats
+        readBytes,
+        writeBytes
       };
       instance.info = { ...instance.info, ...result };
     } catch (error) {
@@ -99,7 +117,9 @@ export default class DockerStatsTask implements ILifeCycleTask {
       cpuUsage: undefined,
       rxBytes: undefined,
       txBytes: undefined,
-      memoryUsage: undefined
+      memoryUsagePercent: undefined,
+      readBytes: undefined,
+      writeBytes: undefined
     };
   }
 }

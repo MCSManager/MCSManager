@@ -9,7 +9,9 @@ import {
   ArrowDownOutlined,
   ArrowUpOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined
+  DownloadOutlined,
+  ExclamationCircleOutlined,
+  UploadOutlined
 } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
@@ -126,13 +128,13 @@ onMounted(async () => {
       <template v-if="instanceInfo?.config.processType === 'docker'">
         <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
           <span>
-            {{ t("CPU 使用率:") }}
+            {{ t("CPU 使用率：") }}
             {{ instanceInfo?.info.cpuUsage }}%
           </span>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
           <span>
-            {{ t("内存使用率:") }}
+            {{ t("内存使用率：") }}
             {{ instanceInfo?.info.memoryUsagePercent }}%
           </span>
         </a-typography-paragraph>
@@ -148,7 +150,7 @@ onMounted(async () => {
               {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
             </span>
           </a-tooltip>
-          &nbsp;|
+          <span>&nbsp;|&nbsp;</span>
           <a-tooltip :title="t('下载速率')">
             <span>
               <ArrowDownOutlined />
@@ -156,8 +158,27 @@ onMounted(async () => {
             </span>
           </a-tooltip>
         </a-typography-paragraph>
-
-        <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
+        <a-typography-paragraph
+          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+        >
+          <span>
+            {{ t("磁盘I/O：") }}
+          </span>
+          <a-tooltip :title="t('读取')">
+            <span>
+              <UploadOutlined />
+              {{ prettyBytes(instanceInfo?.info.readBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+          <span>&nbsp;|&nbsp;</span>
+          <a-tooltip :title="t('写入')">
+            <span>
+              <DownloadOutlined />
+              {{ prettyBytes(instanceInfo?.info.writeBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+        </a-typography-paragraph>
+        <a-typography-paragraph>
           {{ t("TXT_CODE_4f917a65") }}
           <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
             {{ t("TXT_CODE_530f5951") }}

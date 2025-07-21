@@ -34,10 +34,11 @@ export interface InstanceDetail {
     openFrpStatus: boolean;
     latency: number;
     cpuUsage?: number;
-    memoryUsage?: number;
     memoryUsagePercent?: number;
     rxBytes?: number;
     txBytes?: number;
+    readBytes: number;
+    writeBytes: number;
   };
   config: IGlobalInstanceConfig;
   watcher?: number;
