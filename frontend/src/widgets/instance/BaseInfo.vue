@@ -123,55 +123,49 @@ onMounted(async () => {
         </span>
       </a-typography-paragraph>
 
-      <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
-        <span>
-          {{ t("CPU 使用率:") }}
-          {{ instanceInfo?.info.cpuUsage }}%
-        </span>
-      </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
-        <span>
-          {{ t("内存使用率:") }}
-          {{ instanceInfo?.info.memoryUsagePercent }}%
-        </span>
-      </a-typography-paragraph>
-      <a-typography-paragraph
-        v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
-      >
-        <span>
-          {{ t("网络速率：") }}
-        </span>
-        <a-tooltip :title="t('上传速率')">
+      <template v-if="instanceInfo?.config.processType === 'docker'">
+        <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
           <span>
-            <ArrowUpOutlined />
-            {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
+            {{ t("CPU 使用率:") }}
+            {{ instanceInfo?.info.cpuUsage }}%
           </span>
-        </a-tooltip>
-        &nbsp;|
-        <a-tooltip :title="t('下载速率')">
+        </a-typography-paragraph>
+        <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
           <span>
-            <ArrowDownOutlined />
-            {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
+            {{ t("内存使用率:") }}
+            {{ instanceInfo?.info.memoryUsagePercent }}%
           </span>
-        </a-tooltip>
-      </a-typography-paragraph>
+        </a-typography-paragraph>
+        <a-typography-paragraph
+          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+        >
+          <span>
+            {{ t("网络速率：") }}
+          </span>
+          <a-tooltip :title="t('上传速率')">
+            <span>
+              <ArrowUpOutlined />
+              {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+          &nbsp;|
+          <a-tooltip :title="t('下载速率')">
+            <span>
+              <ArrowDownOutlined />
+              {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+        </a-typography-paragraph>
 
-      <a-typography-paragraph>
-        {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
-      </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
-        {{ t("TXT_CODE_4f917a65") }}
-        <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
-          {{ t("TXT_CODE_530f5951") }}
-        </a>
-      </a-typography-paragraph>
+        <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
+          {{ t("TXT_CODE_4f917a65") }}
+          <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
+            {{ t("TXT_CODE_530f5951") }}
+          </a>
+        </a-typography-paragraph>
+      </template>
 
-      <a-typography-paragraph
-        v-if="
-          instanceInfo?.config.processType === 'docker' &&
-          Number(instanceInfo?.config.docker.ports?.length) > 0
-        "
-      >
+      <a-typography-paragraph v-if="Number(instanceInfo?.config.docker.ports?.length) > 0">
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div
@@ -189,12 +183,16 @@ onMounted(async () => {
           </div>
         </div>
       </a-typography-paragraph>
+
       <a-typography-paragraph>
         <span>{{ t("TXT_CODE_ae747cc0") }}</span>
         <span>{{ parseTimestamp(instanceInfo?.config.endTime) || t("TXT_CODE_e3a77a77") }}</span>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="!instanceGameServerInfo">
         {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
+      </a-typography-paragraph>
+      <a-typography-paragraph>
+        {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="!instanceGameServerInfo">
         <span>{{ t("TXT_CODE_cec321b4") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>
