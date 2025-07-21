@@ -150,7 +150,7 @@ onMounted(async () => {
               {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
             </span>
           </a-tooltip>
-          <span>&nbsp;|&nbsp;</span>
+          <span class="mx-4">|</span>
           <a-tooltip :title="t('下载速率')">
             <span>
               <ArrowDownOutlined />
@@ -170,7 +170,7 @@ onMounted(async () => {
               {{ prettyBytes(instanceInfo?.info.readBytes ?? 0) }}/s
             </span>
           </a-tooltip>
-          <span>&nbsp;|&nbsp;</span>
+          <span class="mx-4">|</span>
           <a-tooltip :title="t('写入')">
             <span>
               <DownloadOutlined />
