@@ -8,6 +8,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
 
   public status: number = 0;
   public name: string = "DockerStats";
+  private task: NodeJS.Timeout | null = null;
 
   private getNetworkInterface(stats: Dockerode.NetworkStats) {
     let networkInterface = stats?.["eth0"];
@@ -53,11 +54,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
     return 0;
   }
 
-  async start(instance: Instance) {
-    const containerId = String(instance.process?.pid ?? "");
-    if (!containerId) return;
-    if (!instance.config.docker?.image || instance.config.processType !== "docker") return;
-
+  async updateStats(containerId: string, instance: Instance) {
     try {
       const container = await DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
@@ -78,7 +75,20 @@ export default class DockerStatsTask implements ILifeCycleTask {
     }
   }
 
+  async start(instance: Instance) {
+    const containerId = String(instance.process?.pid ?? "");
+    if (!containerId) return;
+    if (!instance.config.docker?.image || instance.config.processType !== "docker") return;
+    this.task = setInterval(() => {
+      this.updateStats(containerId, instance);
+    }, 3000);
+  }
+
   async stop(instance: Instance) {
+    if (this.task) {
+      clearInterval(this.task);
+      this.task = null;
+    }
     instance.info = {
       ...instance.info,
       cpuUsage: undefined,
