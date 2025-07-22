@@ -128,7 +128,7 @@ onMounted(async () => {
       <template v-if="instanceInfo?.config.processType === 'docker'">
         <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
           <span>
-            {{ t("CPU 使用率：") }}
+            {{ t("CPU 负载：") }}
             {{ instanceInfo?.info.cpuUsage }}%
           </span>
         </a-typography-paragraph>
