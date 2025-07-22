@@ -9,17 +9,16 @@ export default class DockerStatsTask implements ILifeCycleTask {
   public status: number = 0;
   public name: string = "DockerStats";
   private task: NodeJS.Timeout | null = null;
-  private lastDiskStats: { readBytes?: number; writeBytes?: number; timestamp: number } | null =
-    null;
-  private lastNetworkStats: { rxBytes?: number; txBytes?: number; timestamp: number } | null = null;
+  private lastStatsMap: Map<string, { [key: string]: number | undefined; timestamp: number }> =
+    new Map();
 
   private calculateRealTimeRate<T extends Record<string, number | undefined>>(
     currentValues: T,
-    lastStats: (Partial<T> & { timestamp: number }) | null,
-    updateLastStats: (newStats: { timestamp: number } & T) => void
+    statsName: string
   ): T {
     const currentTimestamp = Date.now();
     const result = {} as T;
+    const lastStats = this.lastStatsMap.get(statsName);
 
     if (lastStats) {
       const timeDelta = (currentTimestamp - lastStats.timestamp) / 1000;
@@ -39,7 +38,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       }
     }
 
-    updateLastStats({
+    this.lastStatsMap.set(statsName, {
       ...currentValues,
       timestamp: currentTimestamp
     });
@@ -67,9 +66,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       txBytes: networkInterface?.tx_bytes ?? undefined
     };
 
-    return this.calculateRealTimeRate(currentValues, this.lastNetworkStats, (newStats) => {
-      this.lastNetworkStats = newStats;
-    });
+    return this.calculateRealTimeRate(currentValues, "network");
   }
 
   private getCpuUsage(stats: Dockerode.ContainerStats) {
@@ -92,22 +89,19 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private findIoStatValue = (stats: Dockerode.BlkioStatEntry[], op: string) =>
     stats.find((stat) => stat.op === op)?.value;
 
-  private getDiskIO(stats: Dockerode.ContainerStats) {
-    const ioStats = stats.blkio_stats;
-    if (!ioStats?.io_service_bytes_recursive)
+  private getDiskIO(stats?: Dockerode.BlkioStats) {
+    if (!stats?.io_service_bytes_recursive)
       return {
         readBytes: undefined,
         writeBytes: undefined
       };
 
     const currentValues = {
-      readBytes: this.findIoStatValue(ioStats.io_service_bytes_recursive, "read"),
-      writeBytes: this.findIoStatValue(ioStats.io_service_bytes_recursive, "write")
+      readBytes: this.findIoStatValue(stats.io_service_bytes_recursive, "read"),
+      writeBytes: this.findIoStatValue(stats.io_service_bytes_recursive, "write")
     };
 
-    return this.calculateRealTimeRate(currentValues, this.lastDiskStats, (newStats) => {
-      this.lastDiskStats = newStats;
-    });
+    return this.calculateRealTimeRate(currentValues, "disk");
   }
 
   async updateStats(containerId: string, instance: Instance) {
@@ -115,7 +109,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
       const { rxBytes, txBytes } = this.getNetworkInterface(stats.networks);
-      const { readBytes, writeBytes } = this.getDiskIO(stats);
+      const { readBytes, writeBytes } = this.getDiskIO(stats.blkio_stats);
 
       const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
@@ -148,8 +142,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
       clearInterval(this.task);
       this.task = null;
     }
-    this.lastDiskStats = null;
-    this.lastNetworkStats = null;
+    this.lastStatsMap.clear();
     instance.info = {
       ...instance.info,
       cpuUsage: undefined,
