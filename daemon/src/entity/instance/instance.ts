@@ -88,12 +88,12 @@ export default class Instance extends EventEmitter {
     playersChart: [],
     openFrpStatus: false,
     latency: 0,
-    cpuUsage: 0,
-    memoryUsagePercent: 0,
-    rxBytes: 0,
-    txBytes: 0,
-    readBytes: 0,
-    writeBytes: 0
+    cpuUsage: undefined,
+    memoryUsagePercent: undefined,
+    rxBytes: undefined,
+    txBytes: undefined,
+    readBytes: undefined,
+    writeBytes: undefined
   };
 
   public watchers: Map<string, IWatcherInfo> = new Map();
