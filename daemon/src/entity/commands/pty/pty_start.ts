@@ -14,7 +14,10 @@ import FunctionDispatcher from "../dispatcher";
 import { PTY_PATH } from "../../../const";
 import { Writable } from "stream";
 import { v4 } from "uuid";
+import { promisify } from "util";
 import AbsStartCommand from "../start";
+
+const execAsync = promisify(exec);
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -146,7 +149,8 @@ export default class PtyStartCommand extends AbsStartCommand {
       !instance.config.startCommand ||
       !instance.hasCwdPath() ||
       !instance.config.ie ||
-      !instance.config.oe
+      !instance.config.oe ||
+      !instance.config.runAs
     )
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
@@ -198,13 +202,12 @@ export default class PtyStartCommand extends AbsStartCommand {
     let gid: number | undefined;
     if (process.platform !== 'win32' && instance.config.runAs) {
       try {
-        const { execSync } = require('child_process');
-        uid = parseInt(execSync(`id -u ${instance.config.runAs}`).toString().trim());
-        gid = parseInt(execSync(`id -g ${instance.config.runAs}`).toString().trim());
+        //async
+        uid = await parseInt(execAsync(`id -u ${instance.config.runAs}`).toString().trim());
+        gid = await parseInt(execAsync(`id -g ${instance.config.runAs}`).toString().trim());
         
         // Ensure working directory has correct permissions
         fs.chownSync(instance.absoluteCwdPath(), uid, gid);
-        //commandList = commandStringToArray("sudo" + " -u " + instance.config.runAs);
       } catch (e) {
         throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
           user: instance.config.runAs,
