@@ -90,7 +90,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
     let gid: number | undefined;
     
     try {
-      if (process.platform !== 'win32') {
+      if (process.platform !== 'win32' && instance.config.runAs) {
         // Use child_process to execute 'id -u' and 'id -g' for the target user
         const { execSync } = require('child_process');
         uid = parseInt(execSync(`id -u ${instance.config.runAs}`).toString().trim());
@@ -102,10 +102,9 @@ export default class GeneralStartCommand extends AbsStartCommand {
     } catch (e) {
       throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
         user: instance.config.runAs,
-        error: "e"
+        error: e
       }));
     }
-    logger.info("uid:" + uid);
     // create child process
     const subProcess = spawn(commandExeFile, commandParameters, {
       cwd: instance.absoluteCwdPath(),

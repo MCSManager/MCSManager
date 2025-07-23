@@ -204,7 +204,7 @@ export default class PtyStartCommand extends AbsStartCommand {
         
         // Ensure working directory has correct permissions
         fs.chownSync(instance.absoluteCwdPath(), uid, gid);
-        commandList = commandStringToArray("sudo" + " -u " + instance.config.runAs);
+        //commandList = commandStringToArray("sudo" + " -u " + instance.config.runAs);
       } catch (e) {
         throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
           user: instance.config.runAs,
@@ -212,18 +212,7 @@ export default class PtyStartCommand extends AbsStartCommand {
         }));
       }
     }
-
-    // Prepare environment variables
-    const env = {
-      ...process.env,
-      TERM: "xterm-256color",
-      ...(process.platform !== 'win32' && instance.config.runAs ? {
-        USER: instance.config.runAs,
-        HOME: `/home/${instance.config.runAs}`,
-        LOGNAME: instance.config.runAs
-      } : {})
-    };
-   commandList.push(instance.config.startCommand);
+   
     // Prepare PTY parameters
     const ptyParameter = [
       "-size",
@@ -256,7 +245,19 @@ export default class PtyStartCommand extends AbsStartCommand {
       cwd: path.dirname(PTY_PATH),
       stdio: "pipe",
       windowsHide: true,
-      env: env
+      env: {
+        ...process.env,
+        // Set important environment variables for the target user
+        USER: instance.config.runAs,
+        HOME: `/home/${instance.config.runAs}`,
+        LOGNAME: instance.config.runAs
+      },
+       ...(process.platform !== 'win32' && uid && gid ? {
+        uid,
+        gid,
+        // Ensure we don't inherit root privileges
+        detached: true
+      } : {})
     });
 
     // pty child process creation result check
