@@ -42,6 +42,7 @@
     "marked": "^7.0.3",
     "monaco-editor": "^0.44.0",
     "pinia": "^2.1.4",
+    "pretty-bytes": "^7.0.0",
     "sanitize-html": "^2.12.1",
     "socket.io-client": "^4.7.2",
     "spark-md5": "^3.0.2",

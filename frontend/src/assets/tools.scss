@@ -10,13 +10,15 @@
 }
 
 .text-black-shadow {
-  text-shadow: 6px -4px 15px #303030,
-  -7px 7px 15px #161616;
+  text-shadow:
+    6px -4px 15px #303030,
+    -7px 7px 15px #161616;
 }
 
 .text-white-shadow {
-  text-shadow: 6px -4px 15px #e6dede,
-  -7px 7px 15px #e2e2e2;
+  text-shadow:
+    6px -4px 15px #e6dede,
+    -7px 7px 15px #e2e2e2;
 }
 
 .flex-between {
@@ -259,6 +261,10 @@
   .mt-#{$depth} {
     margin-top: #{$depth}px !important;
   }
+  .mx-#{$depth} {
+    margin-left: #{$depth}px !important;
+    margin-right: #{$depth}px !important;
+  }
   .p-#{$depth} {
     padding: #{$depth}px !important;
   }
@@ -273,6 +279,10 @@
   }
   .pt-#{$depth} {
     padding-top: #{$depth}px !important;
+  }
+  .px-#{$depth} {
+    padding-left: #{$depth}px !important;
+    padding-right: #{$depth}px !important;
   }
 
   @if $depth >= 1 {
