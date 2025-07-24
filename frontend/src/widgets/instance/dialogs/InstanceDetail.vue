@@ -418,7 +418,7 @@ defineExpose({
                 {{ t("TXT_CODE_f041de90") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                   {{ t("TXT_CODE_6e69b5a5") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -431,21 +431,27 @@ defineExpose({
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :offset="0">
+          <a-col :xs="24" :lg="16" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_fffaeb17") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                   <span>{{ t("TXT_CODE_fffaeb18") }}</span>
                   <br />
-                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span>
+                    {{
+                      t(
+                        "同时，此选项也会影响实例 Docker 容器中的用户，如果您不知道这意味着什么，请不要修改它。"
+                      )
+                    }}
+                  </span>
                 </a-typography-text>
               </a-typography-paragraph>
-              <!-- eslint-disable-next-line vue/html-quotes -->
               <a-input
                 v-model:value="options.config.runAs"
-                :placeholder="RUN_AS_TEMPLATE"
+                :placeholder="t('默认继承并使用启动面板的系统用户')"
                 :disabled="isGlobalTerminal"
+                style="width: 400px"
               />
             </a-form-item>
           </a-col>

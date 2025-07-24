@@ -2604,5 +2604,7 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败",
+  "TXT_CODE_fffaeb17": "指定 Linux 其他用户运行实例",
+  "TXT_CODE_fffaeb18": "指定用户后，MCSManager 会尝试更改工作目录里所有文件的所属权，你需要自行解决因为权限问题带来的问题。"
 }
