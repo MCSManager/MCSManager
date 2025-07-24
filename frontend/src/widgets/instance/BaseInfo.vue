@@ -128,13 +128,13 @@ onMounted(async () => {
       <template v-if="instanceInfo?.config.processType === 'docker'">
         <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
           <span>
-            {{ t("CPU 负载：") }}
+            {{ t("TXT_CODE_b862a158") }}
             {{ instanceInfo?.info.cpuUsage }}%
           </span>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
           <span>
-            {{ t("内存使用率：") }}
+            {{ t("TXT_CODE_d745c7d4") }}
             {{ instanceInfo?.info.memoryUsagePercent }}%
           </span>
         </a-typography-paragraph>
@@ -142,16 +142,16 @@ onMounted(async () => {
           v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
         >
           <span>
-            {{ t("网络速率：") }}
+            {{ t("TXT_CODE_dedc50a0") }}
           </span>
-          <a-tooltip :title="t('上传速率')">
+          <a-tooltip :title="t('TXT_CODE_9afe56de')">
             <span>
               <ArrowUpOutlined />
               {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
             </span>
           </a-tooltip>
           <span class="mx-4">|</span>
-          <a-tooltip :title="t('下载速率')">
+          <a-tooltip :title="t('TXT_CODE_59ab3364')">
             <span>
               <ArrowDownOutlined />
               {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
@@ -162,16 +162,16 @@ onMounted(async () => {
           v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
         >
           <span>
-            {{ t("磁盘I/O：") }}
+            {{ t("TXT_CODE_84bf49c9") }}
           </span>
-          <a-tooltip :title="t('读取')">
+          <a-tooltip :title="t('TXT_CODE_798f592e')">
             <span>
               <UploadOutlined />
               {{ prettyBytes(instanceInfo?.info.readBytes ?? 0) }}/s
             </span>
           </a-tooltip>
           <span class="mx-4">|</span>
-          <a-tooltip :title="t('写入')">
+          <a-tooltip :title="t('TXT_CODE_46c4e9ac')">
             <span>
               <DownloadOutlined />
               {{ prettyBytes(instanceInfo?.info.writeBytes ?? 0) }}/s
