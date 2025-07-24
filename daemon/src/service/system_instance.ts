@@ -110,13 +110,13 @@ class InstanceSubsystem extends EventEmitter {
     );
 
     takeoverContainer()
-      .catch((error) =>
-        logger.error(
-          $t("TXT_CODE_8d4c8f7e", {
-            reason: error.message || error
-          })
-        )
-      )
+      .catch((error) => {
+        const reason = error.message || error;
+        if (typeof reason == "string" && reason.includes("connect ENOENT")) {
+          return;
+        }
+        logger.error(`${$t("TXT_CODE_8d4c8f7e")}: ${reason}`);
+      })
       .finally(() => this.autoStart());
   }
 

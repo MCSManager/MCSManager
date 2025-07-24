@@ -29,6 +29,9 @@ export default class SystemConfig {
   // Decompression implementation form
   zipType: number = 1;
 
+  // TOTP drift tolerance, in steps (30 seconds)
+  totpDriftToleranceSteps: number = 0;
+
   // Login times IP limit
   loginCheckIp: boolean = true;
 

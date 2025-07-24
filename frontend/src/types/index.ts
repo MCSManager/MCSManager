@@ -33,6 +33,12 @@ export interface InstanceDetail {
     playersChart: Array<{ value: string }>;
     openFrpStatus: boolean;
     latency: number;
+    cpuUsage?: number;
+    memoryUsagePercent?: number;
+    rxBytes?: number;
+    txBytes?: number;
+    readBytes: number;
+    writeBytes: number;
   };
   config: IGlobalInstanceConfig;
   watcher?: number;
@@ -57,6 +63,7 @@ export interface Settings {
   maxCompress: number;
   maxDownload: number;
   zipType: number;
+  totpDriftToleranceSteps: number;
   loginCheckIp: boolean;
   loginInfo: string;
   canFileManager: boolean;

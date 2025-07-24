@@ -41,6 +41,11 @@
   flex-wrap: wrap;
 }
 
+.flex-nowrap {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
 .flex {
   display: flex;
 }
@@ -256,6 +261,10 @@
   .mt-#{$depth} {
     margin-top: #{$depth}px !important;
   }
+  .mx-#{$depth} {
+    margin-left: #{$depth}px !important;
+    margin-right: #{$depth}px !important;
+  }
   .p-#{$depth} {
     padding: #{$depth}px !important;
   }
@@ -270,6 +279,10 @@
   }
   .pt-#{$depth} {
     padding-top: #{$depth}px !important;
+  }
+  .px-#{$depth} {
+    padding-left: #{$depth}px !important;
+    padding-right: #{$depth}px !important;
   }
 
   @if $depth >= 1 {

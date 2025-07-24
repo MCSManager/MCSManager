@@ -26,7 +26,8 @@ export function login(
   const ip = getLoginIp(ctx);
   // check user information
   try {
-    userSystem.checkUser({ userName, passWord }, twoFACode);
+    const totpDriftToleranceSteps = systemConfig?.totpDriftToleranceSteps || 0;
+    userSystem.checkUser({ userName, passWord }, twoFACode, totpDriftToleranceSteps);
     // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
     if (ipMap) delete ipMap[ip || ""];

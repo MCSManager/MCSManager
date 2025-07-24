@@ -5,11 +5,19 @@ import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
-import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  CheckCircleOutlined,
+  DownloadOutlined,
+  ExclamationCircleOutlined,
+  UploadOutlined
+} from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
 import { dockerPortsArray } from "@/tools/common";
 import DockerInfo from "./dialogs/DockerInfo.vue";
+import _prettyBytes from "pretty-bytes";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -46,6 +54,12 @@ const instanceGameServerInfo = computed(() => {
     return null;
   }
 });
+
+const prettyBytes = (bytes: number) =>
+  _prettyBytes(bytes, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
 onMounted(async () => {
   if (instanceId && daemonId) {
@@ -111,22 +125,68 @@ onMounted(async () => {
         </span>
       </a-typography-paragraph>
 
-      <a-typography-paragraph>
-        {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
-      </a-typography-paragraph>
-      <a-typography-paragraph v-if="instanceInfo?.config.processType === 'docker'">
-        {{ t("TXT_CODE_4f917a65") }}
-        <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
-          {{ t("TXT_CODE_530f5951") }}
-        </a>
-      </a-typography-paragraph>
+      <template v-if="instanceInfo?.config.processType === 'docker'">
+        <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
+          <span>
+            {{ t("CPU 负载：") }}
+            {{ instanceInfo?.info.cpuUsage }}%
+          </span>
+        </a-typography-paragraph>
+        <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
+          <span>
+            {{ t("内存使用率：") }}
+            {{ instanceInfo?.info.memoryUsagePercent }}%
+          </span>
+        </a-typography-paragraph>
+        <a-typography-paragraph
+          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+        >
+          <span>
+            {{ t("网络速率：") }}
+          </span>
+          <a-tooltip :title="t('上传速率')">
+            <span>
+              <ArrowUpOutlined />
+              {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+          <span class="mx-4">|</span>
+          <a-tooltip :title="t('下载速率')">
+            <span>
+              <ArrowDownOutlined />
+              {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+        </a-typography-paragraph>
+        <a-typography-paragraph
+          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+        >
+          <span>
+            {{ t("磁盘I/O：") }}
+          </span>
+          <a-tooltip :title="t('读取')">
+            <span>
+              <UploadOutlined />
+              {{ prettyBytes(instanceInfo?.info.readBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+          <span class="mx-4">|</span>
+          <a-tooltip :title="t('写入')">
+            <span>
+              <DownloadOutlined />
+              {{ prettyBytes(instanceInfo?.info.writeBytes ?? 0) }}/s
+            </span>
+          </a-tooltip>
+        </a-typography-paragraph>
+        <a-typography-paragraph>
+          {{ t("TXT_CODE_4f917a65") }}
+          <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
+            {{ t("TXT_CODE_530f5951") }}
+          </a>
+        </a-typography-paragraph>
+      </template>
 
-      <a-typography-paragraph
-        v-if="
-          instanceInfo?.config.processType === 'docker' &&
-          Number(instanceInfo?.config.docker.ports?.length) > 0
-        "
-      >
+      <a-typography-paragraph v-if="Number(instanceInfo?.config.docker.ports?.length) > 0">
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div
@@ -144,12 +204,16 @@ onMounted(async () => {
           </div>
         </div>
       </a-typography-paragraph>
+
       <a-typography-paragraph>
         <span>{{ t("TXT_CODE_ae747cc0") }}</span>
         <span>{{ parseTimestamp(instanceInfo?.config.endTime) || t("TXT_CODE_e3a77a77") }}</span>
       </a-typography-paragraph>
       <a-typography-paragraph v-if="!instanceGameServerInfo">
         {{ t("TXT_CODE_8b8e08a6") }}{{ parseTimestamp(instanceInfo?.config.createDatetime) }}
+      </a-typography-paragraph>
+      <a-typography-paragraph>
+        {{ t("TXT_CODE_46f575ae") }}{{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
       </a-typography-paragraph>
       <a-typography-paragraph v-if="!instanceGameServerInfo">
         <span>{{ t("TXT_CODE_cec321b4") }}{{ instanceInfo?.config.oe.toUpperCase() }} </span>

@@ -126,6 +126,21 @@ const allYesNo = [
   }
 ];
 
+const totpDriftOptions = ref([
+  {
+    label: t("TXT_CODE_718c9310"),
+    value: 0
+  },
+  {
+    label: "30 s",
+    value: 1
+  },
+  {
+    label: "60 s",
+    value: 2
+  }
+]);
+
 const aboutLinks = arrayFilter([
   {
     title: "GitHub",
@@ -529,6 +544,31 @@ onMounted(async () => {
                       </a-select-option>
                     </a-select>
                   </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_b026be33") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_a77b1a21") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value="formData.totpDriftToleranceSteps"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in totpDriftOptions"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
                       {{ t("TXT_CODE_abfe9512") }}
