@@ -2453,8 +2453,6 @@
   "TXT_CODE_fff00e2b": "Min movement speed attribute",
   "TXT_CODE_fffaeb16": "Cannot cancel during upload!",
   "TXT_CODE_fffaeb17": "Run start command as user.",
-  "TXT_CODE_fffaeb18": "",
-  "TXT_CODE_fffaeb19": "Runs as root if unchanged",
   "TXT_CODE_file_router.instanceNotExist": "Instance {{instanceUuid}} does not exist",
   "TXT_CODE_file_router.unzipLimit": "Exceeded the maximum number of concurrent decompression tasks. The maximum allowed is {{maxFileTask}}, and currently, {{fileLock}} tasks are in progress. Please be patient.",
   "TXT_CODE_file_router_service.instanceNotExit": "Instance {{uuid}} does not exist",
@@ -2598,5 +2596,17 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_50a2b2d9": "At the same time, this option will also affect the user in the instance's Docker container. If you don't know what this means, please do not modify it.",
+  "TXT_CODE_59ab3364": "Download Rate",
+  "TXT_CODE_84bf49c9": "Disk I/O:",
+  "TXT_CODE_9aa83c05": "By default, it inherits and uses the system user of Launchpad",
+  "TXT_CODE_9afe56de": "Upload Rate",
+  "TXT_CODE_b862a158": "CPU Usage",
+  "TXT_CODE_d745c7d4": "RAM Usage",
+  "TXT_CODE_dedc50a0": "Network Rate",
+  "TXT_CODE_ba09da46": "Trying to start child process as Linux user {{name}}...",
+  "TXT_CODE_general_start.runAs": "Try to start the subprocess using the system user, username: {{user}}",
+  "TXT_CODE_fcdc758": "Changing the instance folder owner (chown) failed. This step has been automatically skipped.",
+  "TXT_CODE_fffaeb18": "Set the system user used to start the process. You may need to solve problems caused by permission issues yourself."
 }

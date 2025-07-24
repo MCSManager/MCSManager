@@ -67,7 +67,6 @@ const updateCommandDesc = t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
-const RUN_AS_TEMPLATE = t("TXT_CODE_fffaeb19");
 const initFormDetail = () => {
   if (props.instanceInfo) {
     options.value = {
