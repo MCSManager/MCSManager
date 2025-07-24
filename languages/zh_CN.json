@@ -671,6 +671,7 @@
   "TXT_CODE_50511e8f": "默认玩家权限等级（游客: visitor | 会员: member | 管理员: operator",
   "TXT_CODE_50697989": "利用远程主机地址与模糊查询来为此用户增加应用实例",
   "TXT_CODE_509d7d9a": "Spigot 配置文件，能够进一步的控制服务器的行为和具体参数，一些更为高级的限制都在此配置文件中",
+  "TXT_CODE_50a2b2d9": "同时，此选项也会影响实例 Docker 容器中的用户，如果您不知道这意味着什么，请不要修改它。",
   "TXT_CODE_50aa56a1": "允许使用命令 /timings。用于测量插件为事件所花费的时间",
   "TXT_CODE_50d471b2": "重置",
   "TXT_CODE_510bd294": "仅支持 ZIP 格式，上传后压缩包会自动解压到 “文件目录”",
@@ -1384,6 +1385,7 @@
   "TXT_CODE_99fab05d": "是否允许重生锚爆炸。将此设置为false只会让重生锚消失。",
   "TXT_CODE_9a6e35e4": "禁用玩家互动",
   "TXT_CODE_9aa1872c": "对闪电免疫的物品列表",
+  "TXT_CODE_9aa83c05": "默认继承并使用启动面板的系统用户",
   "TXT_CODE_9ac035d0": "服务器名称隐私设置",
   "TXT_CODE_9ac051fb": "在基岩版玩家库存中标记不可用插槽的物品。",
   "TXT_CODE_9afe56de": "上传速率",
@@ -2460,6 +2462,8 @@
   "TXT_CODE_ffebf0bf": "向 OP 广播 RCON 信息",
   "TXT_CODE_fff00e2b": "最小移动速度属性。",
   "TXT_CODE_fffaeb16": "上传过程中不可取消！",
+  "TXT_CODE_fffaeb17": "使用其他系统用户",
+  "TXT_CODE_fffaeb18": "设定启动进程使用的系统用户，您可能需要自行解决因为权限问题带来的问题。",
   "TXT_CODE_file_router.instanceNotExist": "实例 {{instanceUuid}} 不存在",
   "TXT_CODE_file_router.unzipLimit": "超出最大同时解压缩任务量，最大准许{{maxFileTask}}个，目前有{{fileLock}}个任务正在进行，请耐心等待",
   "TXT_CODE_file_router_service.instanceNotExit": "实例 {{uuid}} 不存在",
@@ -2604,7 +2608,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败",
-  "TXT_CODE_fffaeb17": "指定 Linux 其他用户运行实例",
-  "TXT_CODE_fffaeb18": "指定用户后，MCSManager 会尝试更改工作目录里所有文件的所属权，你需要自行解决因为权限问题带来的问题。"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败"
 }

@@ -439,17 +439,13 @@ defineExpose({
                   <span>{{ t("TXT_CODE_fffaeb18") }}</span>
                   <br />
                   <span>
-                    {{
-                      t(
-                        "同时，此选项也会影响实例 Docker 容器中的用户，如果您不知道这意味着什么，请不要修改它。"
-                      )
-                    }}
+                    {{ t("TXT_CODE_50a2b2d9") }}
                   </span>
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.runAs"
-                :placeholder="t('默认继承并使用启动面板的系统用户')"
+                :placeholder="t('TXT_CODE_9aa83c05')"
                 :disabled="isGlobalTerminal"
                 style="width: 400px"
               />

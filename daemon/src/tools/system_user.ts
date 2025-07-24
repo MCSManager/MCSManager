@@ -59,13 +59,14 @@ export async function getRunAsUserParams(instance: Instance) {
     const result = await getLinuxSystemId(name);
     uid = result.uid;
     gid = result.gid;
-    // Ensure working directory has correct permissions
-    try {
-      await execAsync(`chown -R ${uid}:${gid} "${instance.absoluteCwdPath()}"`);
-    } catch (error) {
-      instance.println("WARN", $t("TXT_CODE_fcdc758"));
-      instance.println("WARN", String(error));
-    }
+    // Do not consider forcibly changing the ownership of instance files,
+    // as this may cause unexpected situations for users.
+    // try {
+    //   await execAsync(`chown -R ${uid}:${gid} "${instance.absoluteCwdPath()}"`);
+    // } catch (error) {
+    //   instance.println("WARN", $t("TXT_CODE_fcdc758"));
+    //   instance.println("WARN", String(error));
+    // }
     isEnableRunAs = true;
   }
   return { uid, gid, isEnableRunAs, runAsName: name };
