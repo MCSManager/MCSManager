@@ -13,7 +13,11 @@ import {
   LaptopOutlined,
   InteractionOutlined,
   LoadingOutlined,
-  MoneyCollectOutlined
+  MoneyCollectOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  UploadOutlined,
+  DownloadOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -38,6 +42,9 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
+import TerminalTags from "@/components/TerminalTags.vue";
+import type { TagInfo } from "../../components/interface";
+import prettyBytes from "pretty-bytes";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -212,6 +219,49 @@ const getInstanceName = computed(() => {
   }
 });
 
+const terminalTopTags = computed<TagInfo[]>(() => {
+  const info = instanceInfo.value?.info;
+  if (!info) return [];
+  return arrayFilter<TagInfo>([
+    {
+      label: t("TXT_CODE_b862a158"),
+      value: `${parseInt(String(info.cpuUsage))}%`,
+      condition: () => info.cpuUsage != null,
+      color: info?.cpuUsage! > 60 ? "warning" : "default"
+    },
+    {
+      label: t("TXT_CODE_d745c7d4"),
+      value: `${parseInt(String(info.memoryUsagePercent))}%`,
+      condition: () => info.memoryUsagePercent != null,
+      color: info?.cpuUsage! > 70 ? "warning" : "default"
+    },
+    {
+      label: t("TXT_CODE_9afe56de"),
+      value: `${prettyBytes(info.rxBytes || 0)}/s`,
+      condition: () => info.rxBytes != null,
+      icon: ArrowUpOutlined
+    },
+    {
+      label: t("TXT_CODE_59ab3364"),
+      value: `${prettyBytes(info.txBytes || 0)}/s`,
+      condition: () => info.txBytes != null,
+      icon: ArrowDownOutlined
+    },
+    {
+      label: t("TXT_CODE_d043fe18"),
+      value: `${prettyBytes(info.readBytes || 0)}/s`,
+      condition: () => info.readBytes != null,
+      icon: DownloadOutlined
+    },
+    {
+      label: t("TXT_CODE_9f174887"),
+      value: `${prettyBytes(info.writeBytes || 0)}/s`,
+      condition: () => info.writeBytes != null,
+      icon: UploadOutlined
+    }
+  ]);
+});
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -319,6 +369,9 @@ onMounted(async () => {
           </a-dropdown>
         </template>
       </BetweenMenus>
+    </div>
+    <div class="mb-10 justify-end">
+      <TerminalTags :tags="terminalTopTags" />
     </div>
     <TerminalCore
       v-if="instanceId && daemonId"

@@ -126,58 +126,6 @@ onMounted(async () => {
       </a-typography-paragraph>
 
       <template v-if="instanceInfo?.config.processType === 'docker'">
-        <a-typography-paragraph v-if="instanceInfo?.info.cpuUsage != null">
-          <span>
-            {{ t("TXT_CODE_b862a158") }}
-            {{ instanceInfo?.info.cpuUsage }}%
-          </span>
-        </a-typography-paragraph>
-        <a-typography-paragraph v-if="instanceInfo?.info.memoryUsagePercent != null">
-          <span>
-            {{ t("TXT_CODE_d745c7d4") }}
-            {{ instanceInfo?.info.memoryUsagePercent }}%
-          </span>
-        </a-typography-paragraph>
-        <a-typography-paragraph
-          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
-        >
-          <span>
-            {{ t("TXT_CODE_dedc50a0") }}
-          </span>
-          <a-tooltip :title="t('TXT_CODE_9afe56de')">
-            <span>
-              <ArrowUpOutlined />
-              {{ prettyBytes(instanceInfo?.info.rxBytes ?? 0) }}/s
-            </span>
-          </a-tooltip>
-          <span class="mx-4">|</span>
-          <a-tooltip :title="t('TXT_CODE_59ab3364')">
-            <span>
-              <ArrowDownOutlined />
-              {{ prettyBytes(instanceInfo?.info.txBytes ?? 0) }}/s
-            </span>
-          </a-tooltip>
-        </a-typography-paragraph>
-        <a-typography-paragraph
-          v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
-        >
-          <span>
-            {{ t("TXT_CODE_84bf49c9") }}
-          </span>
-          <a-tooltip :title="t('TXT_CODE_798f592e')">
-            <span>
-              <UploadOutlined />
-              {{ prettyBytes(instanceInfo?.info.readBytes ?? 0) }}/s
-            </span>
-          </a-tooltip>
-          <span class="mx-4">|</span>
-          <a-tooltip :title="t('TXT_CODE_46c4e9ac')">
-            <span>
-              <DownloadOutlined />
-              {{ prettyBytes(instanceInfo?.info.writeBytes ?? 0) }}/s
-            </span>
-          </a-tooltip>
-        </a-typography-paragraph>
         <a-typography-paragraph>
           {{ t("TXT_CODE_4f917a65") }}
           <a href="javascript:;" @click="DockerInfoDialog?.openDialog()">
