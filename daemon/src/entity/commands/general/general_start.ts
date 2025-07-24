@@ -8,7 +8,7 @@ import { ChildProcess, spawn } from "child_process";
 import { commandStringToArray } from "../base/command_parser";
 import { killProcess } from "mcsmanager-common";
 import AbsStartCommand from "../start";
-import os from "os";
+import { getRunAsUserParams } from "../../../tools/system_user";
 
 // Error exception at startup
 class StartupError extends Error {
@@ -63,8 +63,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
       (!instance.config.startCommand && instance.config.processType === "general") ||
       !instance.hasCwdPath() ||
       !instance.config.ie ||
-      !instance.config.oe ||
-      !instance.config.runAs
+      !instance.config.oe
     )
       throw new StartupError($t("TXT_CODE_general_start.instanceConfigErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
@@ -77,52 +76,40 @@ export default class GeneralStartCommand extends AbsStartCommand {
       throw new StartupError($t("TXT_CODE_general_start.cmdEmpty"));
     }
 
+    const runAsConfig = await getRunAsUserParams(instance);
+
     logger.info("----------------");
     logger.info($t("TXT_CODE_general_start.startInstance", { source: source }));
     logger.info($t("TXT_CODE_general_start.instanceUuid", { uuid: instance.instanceUuid }));
     logger.info($t("TXT_CODE_general_start.startCmd", { cmdList: JSON.stringify(commandList) }));
     logger.info($t("TXT_CODE_general_start.cwd", { cwd: instance.absoluteCwdPath() }));
-    logger.info($t("TXT_CODE_general_start.runAs", { user: instance.config.runAs }));
+    logger.info($t("TXT_CODE_general_start.runAs", { user: runAsConfig.runAsName }));
     logger.info("----------------");
 
-    // Get user info for the target user
-    let uid: number | undefined;
-    let gid: number | undefined;
-    
-    try {
-      if (process.platform !== 'win32' && instance.config.runAs) {
-        // Use child_process to execute 'id -u' and 'id -g' for the target user
-        const { execSync } = require('child_process');
-        uid = parseInt(execSync(`id -u ${instance.config.runAs}`).toString().trim());
-        gid = parseInt(execSync(`id -g ${instance.config.runAs}`).toString().trim());
-        
-        // Also ensure the working directory has correct permissions
-        fs.chownSync(instance.absoluteCwdPath(), uid, gid);
-      }
-    } catch (e) {
-      throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
-        user: instance.config.runAs,
-        error: e
-      }));
+    if (runAsConfig.isEnableRunAs) {
+      instance.println(
+        "INFO",
+        $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName })
+      );
     }
+
     // create child process
     const subProcess = spawn(commandExeFile, commandParameters, {
+      ...runAsConfig,
       cwd: instance.absoluteCwdPath(),
       stdio: "pipe",
       windowsHide: true,
       env: {
         ...process.env,
         // Set important environment variables for the target user
-        USER: instance.config.runAs,
-        HOME: `/home/${instance.config.runAs}`,
-        LOGNAME: instance.config.runAs
+        USER: runAsConfig.runAsName,
+        HOME: `/home/${runAsConfig.runAsName}`,
+        LOGNAME: runAsConfig.runAsName
       },
-      ...(process.platform !== 'win32' && uid && gid ? {
-        uid,
-        gid,
-        // Ensure we don't inherit root privileges
-        detached: true
-      } : {})
+      // Do not detach the child process;
+      // otherwise, an abnormal exit of the parent process may cause the child process to continue running,
+      // leading to an abnormal instance state.
+      detached: false
     });
 
     // child process creation result check
@@ -146,13 +133,9 @@ export default class GeneralStartCommand extends AbsStartCommand {
     logger.info(
       $t("TXT_CODE_general_start.startSuccess", {
         instanceUuid: instance.instanceUuid,
-        pid: subProcess.pid,
-        user: instance.config.runAs,
-        uid,
-        gid
+        pid: subProcess.pid
       })
     );
     instance.println("INFO", $t("TXT_CODE_general_start.startOrdinaryTerminal"));
   }
 }
-

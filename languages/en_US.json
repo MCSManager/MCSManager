@@ -2598,8 +2598,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_general_start.runAs": "Running as: {{user}}",
-  "TXT_CODE_general_start.userNotFound": "User not found!",
-  "TXT_CODE_general_start.runAsIds": "{{uid}}:{{gid}}"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
 }

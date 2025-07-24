@@ -14,10 +14,8 @@ import FunctionDispatcher from "../dispatcher";
 import { PTY_PATH } from "../../../const";
 import { Writable } from "stream";
 import { v4 } from "uuid";
-import { promisify } from "util";
 import AbsStartCommand from "../start";
-
-const execAsync = promisify(exec);
+import { getRunAsUserParams } from "../../../tools/system_user";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -144,13 +142,12 @@ export default class PtyStartCommand extends AbsStartCommand {
     });
   }
 
-    async createProcess(instance: Instance) {
+  async createProcess(instance: Instance) {
     if (
       !instance.config.startCommand ||
       !instance.hasCwdPath() ||
       !instance.config.ie ||
-      !instance.config.oe ||
-      !instance.config.runAs
+      !instance.config.oe
     )
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
@@ -179,7 +176,7 @@ export default class PtyStartCommand extends AbsStartCommand {
 
     // command parsing
     let commandList: string[] = [];
-     if (os.platform() === "win32") {
+    if (os.platform() === "win32") {
       // windows: cmd.exe  /c {{startCommand}}
       commandList = [instance.config.startCommand];
     } else {
@@ -197,25 +194,8 @@ export default class PtyStartCommand extends AbsStartCommand {
       pipeName = `\\\\.\\pipe\\mcsmanager-${pipeId}`;
     }
 
-    // Get user info for the target user (Linux/macOS only)
-    let uid: number | undefined;
-    let gid: number | undefined;
-    if (process.platform !== 'win32' && instance.config.runAs) {
-      try {
-        //async
-        uid = await parseInt(execAsync(`id -u ${instance.config.runAs}`).toString().trim());
-        gid = await parseInt(execAsync(`id -g ${instance.config.runAs}`).toString().trim());
-        
-        // Ensure working directory has correct permissions
-        fs.chownSync(instance.absoluteCwdPath(), uid, gid);
-      } catch (e) {
-        throw new StartupError($t("TXT_CODE_general_start.userNotFound", { 
-          user: instance.config.runAs,
-          error: e
-        }));
-      }
-    }
-   
+    const runAsConfig = await getRunAsUserParams(instance);
+
     // Prepare PTY parameters
     const ptyParameter = [
       "-size",
@@ -224,12 +204,12 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.config.oe,
       "-dir",
       instance.absoluteCwdPath(),
-       "-fifo",
+      "-fifo",
       pipeName,
       "-cmd",
       JSON.stringify(commandList)
     ];
-    
+
     logger.info("----------------");
     logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: "" }));
     logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));
@@ -237,30 +217,33 @@ export default class PtyStartCommand extends AbsStartCommand {
     logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
     logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
     logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }));
-    logger.info($t("TXT_CODE_general_start.runAs", { user: instance.config.runAs }));
-    if (uid && gid) {
-      logger.info($t("TXT_CODE_general_start.runAsIds", { uid, gid }));
-    }
+    logger.info($t("TXT_CODE_general_start.runAs", { user: runAsConfig.runAsName }));
     logger.info("----------------");
+
+    if (runAsConfig.isEnableRunAs) {
+      instance.println(
+        "INFO",
+        $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName })
+      );
+    }
 
     // create pty child process
     const subProcess = spawn(PTY_PATH, ptyParameter, {
+      ...runAsConfig,
       cwd: path.dirname(PTY_PATH),
       stdio: "pipe",
       windowsHide: true,
       env: {
         ...process.env,
         // Set important environment variables for the target user
-        USER: instance.config.runAs,
-        HOME: `/home/${instance.config.runAs}`,
-        LOGNAME: instance.config.runAs
+        USER: runAsConfig.runAsName,
+        HOME: `/home/${runAsConfig.runAsName}`,
+        LOGNAME: runAsConfig.runAsName
       },
-       ...(process.platform !== 'win32' && uid && gid ? {
-        uid,
-        gid,
-        // Ensure we don't inherit root privileges
-        detached: true
-      } : {})
+      // Do not detach the child process;
+      // otherwise, an abnormal exit of the parent process may cause the child process to continue running,
+      // leading to an abnormal instance state.
+      detached: false
     });
 
     // pty child process creation result check
