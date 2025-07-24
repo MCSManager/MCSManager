@@ -221,7 +221,7 @@ const getInstanceName = computed(() => {
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
-  if (!info) return [];
+  if (!info || isStopped.value) return [];
   return arrayFilter<TagInfo>([
     {
       label: t("TXT_CODE_b862a158"),
@@ -230,10 +230,11 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       color: info?.cpuUsage! > 60 ? "warning" : "default"
     },
     {
-      label: t("TXT_CODE_d745c7d4"),
-      value: `${parseInt(String(info.memoryUsagePercent))}%`,
-      condition: () => info.memoryUsagePercent != null,
-      color: info?.cpuUsage! > 70 ? "warning" : "default"
+      label: t("TXT_CODE_593ee330"),
+      value: info.memoryLimit
+        ? `${prettyBytes(info.memoryUsage || 0)}/${prettyBytes(info.memoryLimit)}`
+        : prettyBytes(info.memoryUsage || 0),
+      condition: () => info.memoryUsage != null
     },
     {
       label: t("TXT_CODE_9afe56de"),
@@ -427,6 +428,9 @@ onMounted(async () => {
       </a-dropdown>
     </template>
     <template #body>
+      <div class="mb-6">
+        <TerminalTags :tags="terminalTopTags" />
+      </div>
       <TerminalCore
         v-if="instanceId && daemonId"
         :instance-id="instanceId"

@@ -37,8 +37,10 @@ export interface InstanceDetail {
     memoryUsagePercent?: number;
     rxBytes?: number;
     txBytes?: number;
-    readBytes: number;
-    writeBytes: number;
+    readBytes?: number;
+    writeBytes?: number;
+    memoryUsage?: number;
+    memoryLimit?: number;
   };
   config: IGlobalInstanceConfig;
   watcher?: number;

@@ -119,8 +119,10 @@ export default class DockerStatsTask implements ILifeCycleTask {
         rxBytes,
         txBytes,
         memoryUsagePercent,
+        memoryUsage,
         readBytes,
-        writeBytes
+        writeBytes,
+        memoryLimit: stats.memory_stats.limit
       };
       instance.info = { ...instance.info, ...result };
     } catch (error) {

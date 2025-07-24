@@ -31,6 +31,8 @@ interface IInstanceInfo {
   txBytes?: number;
   readBytes?: number;
   writeBytes?: number;
+  memoryUsage?: number;
+  memoryLimit?: number;
 }
 
 interface IWatcherInfo {
@@ -87,13 +89,7 @@ export default class Instance extends EventEmitter {
     fileLock: 0,
     playersChart: [],
     openFrpStatus: false,
-    latency: 0,
-    cpuUsage: undefined,
-    memoryUsagePercent: undefined,
-    rxBytes: undefined,
-    txBytes: undefined,
-    readBytes: undefined,
-    writeBytes: undefined
+    latency: 0
   };
 
   public watchers: Map<string, IWatcherInfo> = new Map();
