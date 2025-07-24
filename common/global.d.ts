@@ -14,6 +14,7 @@ declare global {
     fileCode: string;
     processType: string;
     updateCommand: string;
+    runAs: string;
     actionCommandList: any[];
     crlf: number;
     category: number;
