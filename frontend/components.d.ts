@@ -107,6 +107,7 @@ declare module 'vue' {
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     TerminalTags: typeof import('./src/components/TerminalTags.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
+    UploadTag: typeof import('./src/components/UploadTag.vue')['default']
     UseRedeemDialog: typeof import('./src/components/fc/UseRedeemDialog.vue')['default']
     WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }

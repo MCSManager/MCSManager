@@ -14,7 +14,9 @@
     "MCSM",
     "mcsmanager",
     "MINECRAFT",
-    "mkdirs"
+    "mkdirs",
+    "percpu",
+    "precpu"
   ],
   "i18n-ally.localesPaths": [
     "languages",

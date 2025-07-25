@@ -15,9 +15,7 @@ import {
   LoadingOutlined,
   MoneyCollectOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined,
-  UploadOutlined,
-  DownloadOutlined
+  BlockOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -227,7 +225,8 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       label: t("TXT_CODE_b862a158"),
       value: `${parseInt(String(info.cpuUsage))}%`,
       condition: () => info.cpuUsage != null,
-      color: info?.cpuUsage! > 60 ? "warning" : "default"
+      color: info?.cpuUsage! > 60 ? "warning" : "default",
+      icon: BlockOutlined
     },
     {
       label: t("TXT_CODE_593ee330"),
@@ -237,28 +236,10 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       condition: () => info.memoryUsage != null
     },
     {
-      label: t("TXT_CODE_9afe56de"),
-      value: `${prettyBytes(info.rxBytes || 0)}/s`,
-      condition: () => info.rxBytes != null,
+      label: t("网络"),
+      value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
+      condition: () => info.rxBytes != null || info.txBytes != null,
       icon: ArrowUpOutlined
-    },
-    {
-      label: t("TXT_CODE_59ab3364"),
-      value: `${prettyBytes(info.txBytes || 0)}/s`,
-      condition: () => info.txBytes != null,
-      icon: ArrowDownOutlined
-    },
-    {
-      label: t("TXT_CODE_d043fe18"),
-      value: `${prettyBytes(info.readBytes || 0)}/s`,
-      condition: () => info.readBytes != null,
-      icon: DownloadOutlined
-    },
-    {
-      label: t("TXT_CODE_9f174887"),
-      value: `${prettyBytes(info.writeBytes || 0)}/s`,
-      condition: () => info.writeBytes != null,
-      icon: UploadOutlined
     }
   ]);
 });

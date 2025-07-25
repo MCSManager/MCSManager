@@ -86,30 +86,11 @@ export default class DockerStatsTask implements ILifeCycleTask {
     return 0;
   }
 
-  private findIoStatValue = (stats: Dockerode.BlkioStatEntry[], op: string) =>
-    stats.find((stat) => stat.op === op)?.value;
-
-  private getDiskIO(stats?: Dockerode.BlkioStats) {
-    if (!stats?.io_service_bytes_recursive)
-      return {
-        readBytes: undefined,
-        writeBytes: undefined
-      };
-
-    const currentValues = {
-      readBytes: this.findIoStatValue(stats.io_service_bytes_recursive, "read"),
-      writeBytes: this.findIoStatValue(stats.io_service_bytes_recursive, "write")
-    };
-
-    return this.calculateRealTimeRate(currentValues, "disk");
-  }
-
   async updateStats(containerId: string, instance: Instance) {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
       const { rxBytes, txBytes } = this.getNetworkInterface(stats.networks);
-      const { readBytes, writeBytes } = this.getDiskIO(stats.blkio_stats);
 
       const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
@@ -120,8 +101,6 @@ export default class DockerStatsTask implements ILifeCycleTask {
         txBytes,
         memoryUsagePercent,
         memoryUsage,
-        readBytes,
-        writeBytes,
         memoryLimit: stats.memory_stats.limit
       };
       instance.info = { ...instance.info, ...result };
@@ -136,7 +115,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
     if (!instance.config.docker?.image || instance.config.processType !== "docker") return;
     this.task = setInterval(() => {
       this.updateStats(containerId, instance);
-    }, 3000);
+    }, 4000);
   }
 
   async stop(instance: Instance) {

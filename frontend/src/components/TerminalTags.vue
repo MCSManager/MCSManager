@@ -15,8 +15,10 @@ defineProps<{
     }"
   >
     <a-tag v-for="tag in tags" :key="tag.label" style="margin: 0" :color="tag.color" class="tag">
-      <component :is="tag.icon" v-if="tag.icon"></component>
-      <span style="margin-right: 4px">{{ tag.label }}</span>
+      <span>
+        <component :is="tag.icon" v-if="tag.icon"></component>
+      </span>
+      <span>{{ tag.label }}</span>
       <span>{{ tag.value }}</span>
     </a-tag>
   </div>
@@ -27,12 +29,16 @@ defineProps<{
   display: flex;
   flex-wrap: wrap;
   justify-content: end;
+  align-items: center;
 }
 .tag {
-  user-select: none;
+  align-items: center;
+  display: flex;
+  gap: 4px;
 }
 
 .tag:hover {
   box-shadow: 0 2px 4px 0 var(--card-shadow-color);
+  border: 1px solid var(--color-blue-5);
 }
 </style>
