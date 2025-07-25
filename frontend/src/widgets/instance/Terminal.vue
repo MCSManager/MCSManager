@@ -236,7 +236,7 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       condition: () => info.memoryUsage != null
     },
     {
-      label: t("网络"),
+      label: t("TXT_CODE_50daec4"),
       value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
       condition: () => info.rxBytes != null || info.txBytes != null,
       icon: ArrowUpOutlined
