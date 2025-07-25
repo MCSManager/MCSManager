@@ -84,4 +84,17 @@ router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => 
   ctx.body = overviewData;
 });
 
+// [Top-level Permission]
+// Get user operation logs
+router.get("/operation_logs", permission({ level: ROLE.ADMIN }), async (ctx) => {
+  const limit = +(ctx?.query?.limit || 20);
+
+  if (isNaN(limit)) return ctx.throw(400, "Invalid limit value. It must be a number.");
+
+  if (limit <= 0 || limit > 200)
+    return ctx.throw(400, "Invalid limit value. It must be between 1 and 200.");
+
+  ctx.body = await operationLogger.get(limit);
+});
+
 export default router;
