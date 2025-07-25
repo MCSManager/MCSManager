@@ -57,7 +57,10 @@ routerApp.on("instance/select", (ctx, data) => {
   let result = queryWrapper.select<Instance>((v) => {
     if (v.config.tag) allTags.push(...v.config.tag);
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
-    if (condition.instanceName && !v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase()))
+    if (
+      condition.instanceName &&
+      !v.config.nickname.toLowerCase().includes(condition.instanceName.toLowerCase())
+    )
       return false;
     if (condition.status && v.instanceStatus !== Number(condition.status)) return false;
 
@@ -167,7 +170,8 @@ routerApp.on("instance/new", (ctx, data) => {
     const newInstance = InstanceSubsystem.createInstance(config);
     protocol.msg(ctx, "instance/new", {
       instanceUuid: newInstance.instanceUuid,
-      config: newInstance.config
+      config: newInstance.config,
+      nickname: newInstance.config.nickname
     });
   } catch (err: any) {
     protocol.error(ctx, "instance/new", { instanceUuid: null, err: err.message });
@@ -218,18 +222,28 @@ routerApp.on("instance/forward", (ctx, data) => {
 // open the instance
 routerApp.on("instance/open", async (ctx, data) => {
   const disableResponse = data.disableResponse;
+  const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    instances.push({
+      instanceUuid: instanceUuid,
+      nickname: instance?.config.nickname
+    });
     try {
-      await instance!.execPreset("start");
-      if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid });
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      await instance.execPreset("start");
+      if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse) {
         logger.error(
           $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }),
           err
         );
-        protocol.error(ctx, "instance/open", { instanceUuid: instanceUuid, err: err.message });
+        protocol.error(ctx, "instance/open", {
+          instanceUuid: instanceUuid,
+          nickname: instance?.config.nickname,
+          err: err.message
+        });
       }
     }
   }
@@ -238,16 +252,25 @@ routerApp.on("instance/open", async (ctx, data) => {
 // close the instance
 routerApp.on("instance/stop", async (ctx, data) => {
   const disableResponse = data.disableResponse;
+  const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    instances.push({
+      instanceUuid: instanceUuid,
+      nickname: instance?.config.nickname
+    });
     try {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       await instance.execPreset("stop");
       //Note: Removing this reply will cause the front-end response to be slow, because the front-end will wait for the panel-side message to be forwarded
-      if (!disableResponse) protocol.msg(ctx, "instance/stop", { instanceUuid });
+      if (!disableResponse) protocol.msg(ctx, "instance/stop", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse)
-        protocol.error(ctx, "instance/stop", { instanceUuid: instanceUuid, err: err.message });
+        protocol.error(ctx, "instance/stop", {
+          instanceUuid: instanceUuid,
+          nickname: instance?.config.nickname,
+          err: err.message
+        });
     }
   }
 });
@@ -255,15 +278,24 @@ routerApp.on("instance/stop", async (ctx, data) => {
 // restart the instance
 routerApp.on("instance/restart", async (ctx, data) => {
   const disableResponse = data.disableResponse;
+  const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    instances.push({
+      instanceUuid: instanceUuid,
+      nickname: instance?.config.nickname
+    });
     try {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       await instance.execPreset("restart");
-      if (!disableResponse) protocol.msg(ctx, "instance/restart", { instanceUuid });
+      if (!disableResponse) protocol.msg(ctx, "instance/restart", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse)
-        protocol.error(ctx, "instance/restart", { instanceUuid: instanceUuid, err: err.message });
+        protocol.error(ctx, "instance/restart", {
+          instanceUuid: instanceUuid,
+          nickname: instance?.config.nickname,
+          err: err.message
+        });
     }
   }
 });
@@ -271,15 +303,24 @@ routerApp.on("instance/restart", async (ctx, data) => {
 // terminate instance method
 routerApp.on("instance/kill", async (ctx, data) => {
   const disableResponse = data.disableResponse;
+  const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
+    instances.push({
+      instanceUuid: instanceUuid,
+      nickname: instance?.config.nickname
+    });
     if (!instance) continue;
     try {
       await instance.execPreset("kill");
-      if (!disableResponse) protocol.msg(ctx, "instance/kill", { instanceUuid });
+      if (!disableResponse) protocol.msg(ctx, "instance/kill", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse)
-        protocol.error(ctx, "instance/kill", { instanceUuid: instanceUuid, err: err.message });
+        protocol.error(ctx, "instance/kill", {
+          instanceUuid: instanceUuid,
+          nickname: instance?.config.nickname,
+          err: err.message
+        });
     }
   }
 });
@@ -304,12 +345,19 @@ routerApp.on("instance/command", async (ctx, data) => {
 routerApp.on("instance/delete", (ctx, data) => {
   const instanceUuids = data.instanceUuids;
   const deleteFile = data.deleteFile;
+  const instances = [];
   for (const instanceUuid of instanceUuids) {
     try {
+      const instance = InstanceSubsystem.getInstance(instanceUuid);
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      instances.push({
+        instanceUuid: instance.instanceUuid,
+        nickname: instance.config.nickname
+      });
       InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
     } catch (err: any) {}
   }
-  protocol.msg(ctx, "instance/delete", instanceUuids);
+  protocol.msg(ctx, "instance/delete", { instanceUuids, instances });
 });
 
 // perform complex asynchronous tasks
@@ -337,6 +385,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
           $t("TXT_CODE_Instance_router.performTasksErr", {
             uuid: instance.instanceUuid,
             taskName: taskName,
+            nickname: instance.config.nickname,
             err: err
           })
         );
@@ -353,6 +402,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
           $t("TXT_CODE_Instance_router.performTasksErr", {
             uuid: instance.instanceUuid,
             taskName: taskName,
+            nickname: instance.config.nickname,
             err: err
           })
         );

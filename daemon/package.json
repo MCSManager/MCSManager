@@ -3,7 +3,7 @@
   "version": "4.6.2",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
   "scripts": {
-    "dev": "npm run build && node --enable-source-maps production/app.js",
+    "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",
     "build": "webpack --config webpack.config.js"
   },
   "homepage": "https://mcsmanager.com/",
@@ -61,6 +61,7 @@
     "@types/ssh2": "^1.11.7",
     "@types/uuid": "^8.3.0",
     "eslint": "^7.13.0",
+    "nodemon": "^3.1.10",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.8.3",
