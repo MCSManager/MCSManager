@@ -26,8 +26,8 @@ onMounted(() => {
     <template #body>
       <div class="time-line full-card-body-container">
         <div v-if="logsData.length === 0" class="empty-state">
-          <div class="empty-text">{{ t("暂无操作日志") }}</div>
-          <div class="empty-description">{{ t("系统操作日志将在此处显示") }}</div>
+          <div class="empty-text">{{ t("TXT_CODE_54469e02") }}</div>
+          <div class="empty-description">{{ t("TXT_CODE_73102f2b") }}</div>
         </div>
         <a-timeline v-else>
           <a-timeline-item v-for="(item, index) in logsData" :key="index" :color="item.color">
