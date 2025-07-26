@@ -83,8 +83,8 @@ class InstanceSubsystem extends EventEmitter {
         // All instances are all function schedulers
         instance
           .forceExec(new FunctionDispatcher())
-          .then((v) => {})
-          .catch((v) => {});
+          .then((v) => { })
+          .catch((v) => { });
         this.addInstance(instance);
       } catch (error: any) {
         logger.error(
@@ -94,18 +94,39 @@ class InstanceSubsystem extends EventEmitter {
       }
     });
 
+    // handle global instance
+    let globalConfig: InstanceConfig;
+    try {
+      globalConfig = StorageSubsystem.load("InstanceConfig", InstanceConfig, this.GLOBAL_INSTANCE_UUID);
+    } catch (error: any) {
+      // create default global instance config if not exists
+      globalConfig = new InstanceConfig();
+      globalConfig.nickname = this.GLOBAL_INSTANCE;
+      globalConfig.cwd = "/";
+      globalConfig.startCommand = os.platform() === "win32" ? "cmd.exe" : "bash";
+      globalConfig.stopCommand = "^c";
+      globalConfig.ie = "utf-8";
+      globalConfig.oe = "utf-8";
+      globalConfig.type = Instance.TYPE_UNIVERSAL;
+      globalConfig.processType = "general";
+
+      // save config to file
+      StorageSubsystem.store("InstanceConfig", this.GLOBAL_INSTANCE_UUID, globalConfig);
+    }
+
+    // create global instance
     this.createInstance(
       {
-        nickname: this.GLOBAL_INSTANCE,
-        cwd: "/",
-        startCommand: os.platform() === "win32" ? "cmd.exe" : "bash",
-        stopCommand: "^c",
-        ie: "utf-8",
-        oe: "utf-8",
-        type: Instance.TYPE_UNIVERSAL,
-        processType: "general"
+        nickname: globalConfig.nickname,
+        cwd: globalConfig.cwd,
+        startCommand: globalConfig.startCommand,
+        stopCommand: globalConfig.stopCommand,
+        ie: globalConfig.ie,
+        oe: globalConfig.oe,
+        type: globalConfig.type,
+        processType: globalConfig.processType
       },
-      false,
+      true,  // allow persistence
       this.GLOBAL_INSTANCE_UUID
     );
 
@@ -188,7 +209,7 @@ class InstanceSubsystem extends EventEmitter {
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
       InstanceControl.deleteInstanceAllTask(instanceUuid);
-      if (deleteFile) fs.remove(instance.absoluteCwdPath(), (err) => {});
+      if (deleteFile) fs.remove(instance.absoluteCwdPath(), (err) => { });
       return true;
     }
     throw new Error($t("TXT_CODE_3bfb9e04"));
@@ -197,7 +218,7 @@ class InstanceSubsystem extends EventEmitter {
   forward(targetInstanceUuid: string, socket: Socket) {
     try {
       this.instanceStream.requestForward(socket, targetInstanceUuid);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   stopForward(targetInstanceUuid: string, socket: Socket) {
@@ -206,7 +227,7 @@ class InstanceSubsystem extends EventEmitter {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       instance.watchers.delete(socket.id);
       this.instanceStream.cannelForward(socket, targetInstanceUuid);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   forEachForward(instanceUuid: string, callback: (socket: Socket) => void) {
