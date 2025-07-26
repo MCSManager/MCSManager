@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { getOperationLog } from "@/services/apis/operationLog";
 import { t } from "@/lang/i18n";
 import type { OperationLoggerItem } from "@/types/operationLog";
@@ -20,39 +20,39 @@ type OperationRenderer = {
 
 const renderMap: OperationRenderer = {
   instance_start: (item) => ({
-    text: t("用户 {{operator_name}} 启动了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_e4605c4"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_stop: (item) => ({
-    text: t("用户 {{operator_name}} 关闭了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_48c286cc"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_restart: (item) => ({
-    text: t("用户 {{operator_name}} 重启了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_fa7002ef"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_update: (item) => ({
-    text: t("用户 {{operator_name}} 更新了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_e1454ba7"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_kill: (item) => ({
-    text: t("用户 {{operator_name}} 强制终止了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_ee54440"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_config_change: (item) => ({
-    text: t("用户 {{operator_name}} 修改了 {{instance_name}} 实例配置"),
+    text: t("TXT_CODE_30fcc19a"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_create: (item) => ({
-    text: t("用户 {{operator_name}} 创建了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_9ab6fd"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_delete: (item) => ({
-    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例"),
+    text: t("TXT_CODE_61b6facb"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_file_upload: (item) => ({
-    text: t("用户 {{operator_name}} 向 {{instance_name}} 实例上传了文件 {{file}}"),
+    text: t("TXT_CODE_58e4a9bd"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -60,7 +60,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_update: (item) => ({
-    text: t("用户 {{operator_name}} 更新了 {{instance_name}} 实例的文件 {{file}}"),
+    text: t("TXT_CODE_c5687e56"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -68,7 +68,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_download: (item) => ({
-    text: t("用户 {{operator_name}} 下载了 {{instance_name}} 实例的文件 {{file}}"),
+    text: t("TXT_CODE_6f43f95f"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -76,7 +76,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_delete: (item) => ({
-    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例的文件 {{file}}"),
+    text: t("TXT_CODE_de567e84"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -84,7 +84,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_create: (item) => ({
-    text: t("用户 {{operator_name}} 为 {{instance_name}} 实例创建了任务 {{task_name}}"),
+    text: t("TXT_CODE_5ddb00f2"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -92,7 +92,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_delete: (item) => ({
-    text: t("用户 {{operator_name}} 删除了 {{instance_name}} 实例的任务 {{task_name}}"),
+    text: t("TXT_CODE_41f86ac"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -100,38 +100,37 @@ const renderMap: OperationRenderer = {
     ]
   }),
   daemon_create: (item) => ({
-    text: t("用户 {{operator_name}} 创建了守护进程 {{daemon_id}}"),
+    text: t("TXT_CODE_f7969e5a"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_remove: (item) => ({
-    text: t("用户 {{operator_name}} 删除了守护进程 {{daemon_id}}"),
+    text: t("TXT_CODE_384d278f"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_config_change: (item) => ({
-    text: t("用户 {{operator_name}} 修改了守护进程 {{daemon_id}} 配置"),
+    text: t("TXT_CODE_b6ac7af4"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   user_create: (item) => ({
-    text: t("用户 {{operator_name}} 创建了用户 {{target_user_name}}"),
+    text: t("TXT_CODE_faa1962b"),
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_delete: (item) => ({
-    text: t("用户 {{operator_name}} 删除了用户 {{target_user_name}}"),
+    text: t("TXT_CODE_cd76bc9"),
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_config_change: (item) => ({
-    text: t("用户 {{operator_name}} 修改了用户配置"),
+    text: t("TXT_CODE_5564bc4c"),
     data: [item.operator_name || item.operation_id]
   }),
   system_config_change: (item) => ({
-    text: t("用户 {{operator_name}} 修改了系统配置"),
+    text: t("TXT_CODE_d6312bd5"),
     data: [item.operator_name || item.operation_id]
   })
 };
 
 export const useOperationLog = () => {
   const logs = ref<OperationLoggerItem[]>([]);
-  const logsData = ref<LogsData[]>([]);
 
   const levelColors = {
     info: "blue",
@@ -144,48 +143,29 @@ export const useOperationLog = () => {
     const { execute } = getOperationLog();
     const data = await execute();
     logs.value = data.value?.reverse() || [];
-    logsData.value = generateTimelineByLogs();
   };
 
   const generateTextByItem = (item: OperationLoggerItem) => {
     const handler = renderMap[item.type];
-    if (!handler) return t("未知操作");
+    if (!handler) return t("TXT_CODE_43df9305");
     const { text, data } = handler(item as any);
     let i = 0;
     return text.replace(/\{\{\s*[\w_]+\s*\}\}/g, () => data[i++] ?? "--");
   };
 
-  const generateTimelineByLogs = () => {
-    const result: LogsData[] = [];
-    let currentGroup: LogsDataItem[] = [];
-
-    for (const log of logs.value) {
-      const item = { ...log, text: generateTextByItem(log) };
-
-      if (
-        currentGroup.length === 0 ||
-        currentGroup[currentGroup.length - 1].operation_level === log.operation_level
-      ) {
-        currentGroup.push(item);
-        continue;
-      }
-
-      result.push({
-        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknown,
-        item: currentGroup
-      });
-
-      currentGroup = [item];
-    }
-
-    if (currentGroup.length) {
-      result.push({
-        color: levelColors[currentGroup[0].operation_level] ?? levelColors.unknown,
-        item: currentGroup
-      });
-    }
-    return result;
+  const getColorByLevel = (level: OperationLoggerItem["operation_level"]) => {
+    return levelColors[level] ?? levelColors.unknown;
   };
 
-  return { fetchData, logs, logsData };
+  const formattedLogs = computed(() => {
+    return logs.value.map((item) => {
+      return {
+        ...item,
+        color: getColorByLevel(item.operation_level),
+        text: generateTextByItem(item)
+      };
+    });
+  });
+
+  return { fetchData, logs, getColorByLevel, generateTextByItem, formattedLogs };
 };

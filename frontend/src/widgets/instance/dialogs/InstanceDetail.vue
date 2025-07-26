@@ -67,7 +67,6 @@ const updateCommandDesc = t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
-
 const initFormDetail = () => {
   if (props.instanceInfo) {
     options.value = {
@@ -418,7 +417,7 @@ defineExpose({
                 {{ t("TXT_CODE_f041de90") }}
               </a-typography-title>
               <a-typography-paragraph>
-                <a-typography-text type="secondary">
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
                   {{ t("TXT_CODE_6e69b5a5") }}
                 </a-typography-text>
               </a-typography-paragraph>
@@ -429,6 +428,26 @@ defineExpose({
                 <a-select-option v-for="item in TERMINAL_CODE" :key="item" :value="item">
                 </a-select-option>
               </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :xs="24" :lg="16" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_fffaeb17") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary" :class="!isPhone && 'two-line-height'">
+                  <span>{{ t("TXT_CODE_fffaeb18") }}</span>
+                  <br />
+                  <span>
+                    {{ t("TXT_CODE_50a2b2d9") }}
+                  </span>
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.runAs"
+                :placeholder="t('TXT_CODE_9aa83c05')"
+                :disabled="isGlobalTerminal"
+                style="width: 400px"
+              />
             </a-form-item>
           </a-col>
         </a-row>

@@ -137,11 +137,30 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           meta: {},
+          type: "OperationLogCard",
+          title: t("TXT_CODE_f6a33629"),
+          width: 4,
+          description: t("TXT_CODE_9e8c176e"),
+          height: LayoutCardHeight.MEDIUM
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "NodeOverview",
+          title: t("TXT_CODE_bfb50126"),
+          width: 8,
+          description: t("TXT_CODE_55ade942"),
+          height: LayoutCardHeight.MEDIUM
+        },
+
+        {
+          id: getRandomId(),
+          meta: {},
           type: "RequestChart",
           title: t("TXT_CODE_a4037a98"),
           width: 6,
           description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
+          height: LayoutCardHeight.MEDIUM
         },
         {
           id: getRandomId(),
@@ -149,15 +168,6 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           type: "InstanceChart",
           title: t("TXT_CODE_d6d9c42c"),
           width: 6,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "NodeOverview",
-          title: t("TXT_CODE_bfb50126"),
-          width: 12,
           description: t("TXT_CODE_55ade942"),
           height: LayoutCardHeight.MEDIUM
         }

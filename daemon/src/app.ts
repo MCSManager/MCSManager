@@ -17,6 +17,7 @@ import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
 import "./service/system_visual_data";
 import { removeTrail } from "mcsmanager-common";
+import uploadManager from "./service/upload_manager";
 
 initVersionManager();
 const VERSION = getVersion();
@@ -147,6 +148,7 @@ async function processExit() {
     console.log("");
     logger.warn("Program received EXIT command.");
     await InstanceSubsystem.exit();
+    await uploadManager.exit();
     logger.info("Exit.");
   } catch (err) {
     logger.error("ERROR:", err);

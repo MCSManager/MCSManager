@@ -16,6 +16,7 @@ import PtyResizeCommand from "./pty/pty_resize";
 import GeneralInstallCommand from "./general/general_install";
 import PingJavaMinecraftServerCommand from "./minecraft/mc_ping";
 import PingMinecraftServerTask from "./task/mc_players";
+import DockerStatsTask from "./task/docker_stats";
 
 // If you add a new "Preset", Please add the definition here.
 export type IPresetCommand =
@@ -43,7 +44,6 @@ export default class FunctionDispatcher extends InstanceCommand {
 
     // the component that the instance must mount
     instance.lifeCycleTaskManager.registerLifeCycleTask(new TimeCheck());
-    // instance.lifeCycleTaskManager.registerLifeCycleTask(new OpenFrpTask());
 
     // Instance general preset capabilities
     instance.setPreset("command", new GeneralSendCommand());
@@ -68,6 +68,7 @@ export default class FunctionDispatcher extends InstanceCommand {
     if (instance.config.processType === "docker") {
       instance.setPreset("start", new DockerStartCommand());
       instance.setPreset("resize", new DockerResizeCommand());
+      instance.lifeCycleTaskManager.registerLifeCycleTask(new DockerStatsTask());
     }
     if (instance.config.enableRcon) {
       instance.setPreset("command", new RconCommand());

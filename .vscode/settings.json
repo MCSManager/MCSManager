@@ -6,7 +6,18 @@
 
   "i18n-ally.sourceLanguage": "en",
   "i18n-ally.extract.keyMaxLength": 10000,
-  "cSpell.words": ["BUKKIT", "BUNGEECORD", "MINECRAFT"],
+  "cSpell.words": [
+    "BUKKIT",
+    "BUNGEECORD",
+    "cpuset",
+    "LOGNAME",
+    "MCSM",
+    "mcsmanager",
+    "MINECRAFT",
+    "mkdirs",
+    "percpu",
+    "precpu"
+  ],
   "i18n-ally.localesPaths": [
     "languages",
     "frontend/src/lang",

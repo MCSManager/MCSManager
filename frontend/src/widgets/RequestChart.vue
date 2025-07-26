@@ -40,7 +40,7 @@ watch(state, () => {
   <CardPanel class="CardWrapper" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <div :id="domId" :style="{ width: '100%', height: card.height }"></div>
+      <div :id="domId" :style="{ width: '100%', height: '100%' }"></div>
     </template>
   </CardPanel>
 </template>

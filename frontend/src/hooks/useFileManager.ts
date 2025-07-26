@@ -16,7 +16,6 @@ import {
   moveFile as moveFileApi,
   compressFile as compressFileApi,
   uploadAddress,
-  uploadFile as uploadFileApi,
   downloadAddress,
   changePermission as changePermissionApi
 } from "@/services/apis/fileManager";
@@ -30,6 +29,7 @@ import type {
 import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
 import { useImageViewerDialog } from "@/components/fc";
+import uploadService from "@/services/uploadService";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -344,17 +344,13 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     }
   };
 
-  const percentComplete = ref(0);
-
   const spinning = ref(false);
 
   const selectedFile = async (file: File) => {
-    const { execute: uploadFile } = uploadFileApi();
-    const { state: uploadCfg, execute: getUploadCfg } = uploadAddress();
+    const { state: missionCfg, execute: getUploadMissionCfg } = uploadAddress();
     try {
-      percentComplete.value = 1;
       const uploadDir = breadcrumbs[breadcrumbs.length - 1].path;
-      await getUploadCfg({
+      await getUploadMissionCfg({
         params: {
           upload_dir: uploadDir,
           daemonId: daemonId!,
@@ -362,8 +358,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           file_name: file.name
         }
       });
-      if (!uploadCfg.value) {
-        percentComplete.value = 0;
+      if (!missionCfg.value) {
         throw new Error(t("TXT_CODE_e8ce38c2"));
       }
 
@@ -379,7 +374,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             },
             onCancel() {
               onComplete(false);
-              percentComplete.value = 0;
             }
           });
         });
@@ -389,29 +383,14 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       }
 
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
-
-      await uploadFile({
-        data: uploadFormData,
-        timeout: Number.MAX_VALUE,
-        url: `${parseForwardAddress(uploadCfg.value.addr, "http")}/upload/${
-          uploadCfg.value.password
-        }`,
-        onUploadProgress: (progressEvent: any) => {
-          const p = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          if (p >= 1) percentComplete.value = p;
-        },
-        params: {
-          overwrite: shouldOverwrite
-        }
-      });
-      await getFileList();
-      percentComplete.value = 0;
-      return message.success(t("TXT_CODE_773f36a0"));
+      uploadService.append(
+        file,
+        parseForwardAddress(missionCfg.value.addr, "http"),
+        missionCfg.value.password,
+        shouldOverwrite
+      );
     } catch (err: any) {
       console.error(err);
-      percentComplete.value = 0;
       return reportErrorMsg(err.response?.data || err.message);
     }
   };
@@ -621,7 +600,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   return {
     fileStatus,
     dialog,
-    percentComplete,
     spinning,
     operationForm,
     dataSource,
