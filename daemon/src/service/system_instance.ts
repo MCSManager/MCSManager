@@ -102,7 +102,10 @@ class InstanceSubsystem extends EventEmitter {
         InstanceConfig,
         this.GLOBAL_INSTANCE_UUID
       );
+      if (globalConfig?.nickname !== this.GLOBAL_INSTANCE)
+        throw new Error("Global instance config is not valid");
     } catch (error: any) {
+      // if global instance config is not valid, create a new one
       // create default global instance config if not exists
       globalConfig = new InstanceConfig();
       globalConfig.nickname = this.GLOBAL_INSTANCE;
