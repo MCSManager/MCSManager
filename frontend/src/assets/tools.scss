@@ -245,6 +245,20 @@
   text-overflow: ellipsis;
 }
 
+.scrollbar-hidden {
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE 10+ */
+  -ms-overflow-style: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  /* Chrome, Safari, Opera */
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
 @mixin generate-styles($depth) {
   .m-#{$depth} {
     margin: #{$depth}px !important;
