@@ -25,13 +25,13 @@ const searchForm = reactive({
   category: ALL_CATEGORY_KEY
 });
 const categoryNameMap: Record<string, string> = {
-  [ALL_CATEGORY_KEY]: t("TXT_CODE_a4a48f75"),
-  "mc-purpur": t("TXT_CODE_e018806e"),
-  "mc-paper": t("TXT_CODE_b72d674f"),
-  "mc-forge": t("TXT_CODE_a334175"),
-  "mc-neoforge": t("TXT_CODE_e0190b16"),
-  "mc-fabric": t("TXT_CODE_7fadaef4"),
-  "mc-vanilla": t("TXT_CODE_f67d5a9d")
+  [ALL_CATEGORY_KEY]: t("所有类别"),
+  "mc-purpur": "Minecraft Purpur",
+  "mc-paper": "Minecraft Paper",
+  "mc-forge": "Minecraft Forge",
+  "mc-neoforge": "Minecraft NeoForge",
+  "mc-fabric": "Minecraft Fabric",
+  "mc-vanilla": "Minecraft Vanilla"
 };
 
 const appList = computed(() => {
@@ -81,7 +81,7 @@ const appLangList = computed(() => {
 });
 
 const appCategoryList = computed(() => {
-  return Object.keys(categoryNameMap).map(key => ({
+  return Object.keys(categoryNameMap).map((key) => ({
     label: categoryNameMap[key],
     value: key
   }));
