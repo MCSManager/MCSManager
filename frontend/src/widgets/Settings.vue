@@ -78,14 +78,14 @@ const submit = async (needReload: boolean = true) => {
 
 const menus = arrayFilter([
   {
-    title: "订阅中心",
+    title: t("订阅中心"),
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()
   },
 
   {
-    title: "卡密销售",
+    title: t("卡密销售"),
     key: "redeem",
     icon: KeyOutlined,
     condition: () => isCN()
@@ -289,7 +289,7 @@ onMounted(async () => {
                   </a-form-item>
 
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("TXT_CODE_panel_id") }}</a-typography-title>
+                    <a-typography-title :level="5">Panel ID</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{
                         t(
