@@ -19,9 +19,20 @@ const {
 } = quickInstallListAddr();
 
 const ALL_LANG_KEY = "all";
+const ALL_CATEGORY_KEY = "all";
 const searchForm = reactive({
-  language: isCN() ? getCurrentLang() : "en_us"
+  language: isCN() ? getCurrentLang() : "en_us",
+  category: ALL_CATEGORY_KEY
 });
+const categoryNameMap: Record<string, string> = {
+  [ALL_CATEGORY_KEY]: t("TXT_CODE_ebbb2def"),
+  "mc-purpur": "Minecraft Purpur",
+  "mc-paper": "Minecraft Paper",
+  "mc-forge": "Minecraft Forge",
+  "mc-neoforge": "Minecraft NeoForge",
+  "mc-fabric": "Minecraft Fabric",
+  "mc-vanilla": "Minecraft Vanilla"
+};
 
 const appList = computed(() => {
   // For MCSManager v9
@@ -45,10 +56,14 @@ const appList = computed(() => {
     return [];
   }
   let list = presetList.value?.packages;
-  if (searchForm.language)
+  if (searchForm.language) {
     list = list.filter(
       (item) => item.language === searchForm.language || searchForm.language === ALL_LANG_KEY
     );
+  }
+  if (searchForm.category && searchForm.category !== ALL_CATEGORY_KEY) {
+    list = list.filter((item) => item.category === searchForm.category);
+  }
   return list;
 });
 
@@ -63,6 +78,13 @@ const appLangList = computed(() => {
     all = all.concat(presetList.value?.languages);
   }
   return all;
+});
+
+const appCategoryList = computed(() => {
+  return Object.keys(categoryNameMap).map((key) => ({
+    label: categoryNameMap[key],
+    value: key
+  }));
 });
 
 const init = async () => {
@@ -105,6 +127,17 @@ onMounted(() => {
           <a-radio-group v-model:value="searchForm.language">
             <a-radio-button v-for="item in appLangList" :key="item.value" :value="item.value">
               {{ item.label }}
+            </a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+      </a-form>
+    </a-col>
+    <a-col :span="24" :md="24">
+      <a-form layout="horizontal" :model="searchForm">
+        <a-form-item class="mb-0">
+          <a-radio-group v-model:value="searchForm.category">
+            <a-radio-button v-for="item in appCategoryList" :key="item.value" :value="item.value">
+              {{ categoryNameMap[item.value] || item.label }}
             </a-radio-button>
           </a-radio-group>
         </a-form-item>

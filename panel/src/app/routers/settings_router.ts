@@ -14,6 +14,7 @@ import {
   setFrontendLayoutConfig
 } from "../service/frontend_layout";
 import { logger } from "../service/log";
+import { operationLogger } from "../service/operation_logger";
 import remoteService from "../service/remote_service";
 import userSystem from "../service/user_service";
 import { saveSystemConfig, systemConfig } from "../setting";
@@ -43,6 +44,8 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.maxCompress != null) systemConfig.maxCompress = config.maxCompress;
     if (config.maxDownload != null) systemConfig.maxDownload = config.maxDownload;
     if (config.zipType != null) systemConfig.zipType = config.zipType;
+    if (config.totpDriftToleranceSteps != null)
+      systemConfig.totpDriftToleranceSteps = config.totpDriftToleranceSteps;
     if (config.loginCheckIp != null) systemConfig.loginCheckIp = config.loginCheckIp;
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
@@ -61,6 +64,11 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       await i18next.changeLanguage(systemConfig.language.toLowerCase());
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
+
+    operationLogger.log("system_config_change", {
+      operator_ip: ctx.ip,
+      operator_name: ctx.session?.["userName"]
+    });
 
     saveSystemConfig(systemConfig);
     ctx.body = "OK";

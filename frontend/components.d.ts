@@ -44,6 +44,7 @@ declare module 'vue' {
     AppConfigProvider: typeof import('./src/components/AppConfigProvider.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AProgress: typeof import('ant-design-vue/es')['Progress']
+    ARadio: typeof import('ant-design-vue/es')['Radio']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     AResult: typeof import('ant-design-vue/es')['Result']
@@ -59,6 +60,8 @@ declare module 'vue' {
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    ATimeline: typeof import('ant-design-vue/es')['Timeline']
+    ATimelineItem: typeof import('ant-design-vue/es')['TimelineItem']
     ATimePicker: typeof import('ant-design-vue/es')['TimePicker']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ATypography: typeof import('ant-design-vue/es')['Typography']
@@ -108,8 +111,10 @@ declare module 'vue' {
     TagsDialog: typeof import('./src/components/fc/TagsDialog.vue')['default']
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
+    TerminalTags: typeof import('./src/components/TerminalTags.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
-    UseRedeemDialog: typeof import("./src/components/fc/UseRedeemDialog.vue")["default"]
+    UploadTag: typeof import('./src/components/UploadTag.vue')['default']
+    UseRedeemDialog: typeof import('./src/components/fc/UseRedeemDialog.vue')['default']
     WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }
 }

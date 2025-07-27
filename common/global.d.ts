@@ -14,6 +14,7 @@ declare global {
     fileCode: string;
     processType: string;
     updateCommand: string;
+    runAs: string;
     actionCommandList: any[];
     crlf: number;
     category: number;
@@ -191,6 +192,7 @@ declare global {
     language: string;
     description: string;
     title: string;
+    category: string;
     runtime: string;
     size: string;
     hardware: string;
@@ -203,6 +205,10 @@ declare global {
   interface IQuickStartTemplate {
     remark: string;
     languages: {
+      label: string;
+      value: string;
+    }[];
+    categories: {
       label: string;
       value: string;
     }[];

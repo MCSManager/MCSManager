@@ -13,6 +13,7 @@ import InstanceConfig from "../entity/instance/Instance_config";
 import { $t } from "../i18n";
 import logger from "./log";
 import InstanceControl from "./system_instance_control";
+import takeoverContainer from "./takeover_container";
 
 // init instance default install path
 globalConfiguration.load();
@@ -41,7 +42,7 @@ class InstanceSubsystem extends EventEmitter {
   // start automatically at boot
   private autoStart() {
     this.instances.forEach((instance) => {
-      if (instance.config.eventTask.autoStart) {
+      if (instance.config.eventTask.autoStart && instance.status() == Instance.STATUS_STOP) {
         setTimeout(() => {
           instance
             .execPreset("start")
@@ -92,22 +93,58 @@ class InstanceSubsystem extends EventEmitter {
       }
     });
 
+    // handle global instance
+    let globalConfig: InstanceConfig;
+    try {
+      globalConfig = StorageSubsystem.load(
+        "InstanceConfig",
+        InstanceConfig,
+        this.GLOBAL_INSTANCE_UUID
+      );
+      if (globalConfig?.nickname !== this.GLOBAL_INSTANCE)
+        throw new Error("Global instance config is not valid");
+    } catch (error: any) {
+      // if global instance config is not valid, create a new one
+      // create default global instance config if not exists
+      globalConfig = new InstanceConfig();
+      globalConfig.nickname = this.GLOBAL_INSTANCE;
+      globalConfig.cwd = "/";
+      globalConfig.startCommand = os.platform() === "win32" ? "cmd.exe" : "bash";
+      globalConfig.stopCommand = "^c";
+      globalConfig.ie = "utf-8";
+      globalConfig.oe = "utf-8";
+      globalConfig.type = Instance.TYPE_UNIVERSAL;
+      globalConfig.processType = "general";
+
+      // save config to file
+      StorageSubsystem.store("InstanceConfig", this.GLOBAL_INSTANCE_UUID, globalConfig);
+    }
+
+    // create global instance
     this.createInstance(
       {
-        nickname: this.GLOBAL_INSTANCE,
-        cwd: "/",
-        startCommand: os.platform() === "win32" ? "cmd.exe" : "bash",
-        stopCommand: "^c",
-        ie: "utf-8",
-        oe: "utf-8",
-        type: Instance.TYPE_UNIVERSAL,
-        processType: "general"
+        nickname: globalConfig.nickname,
+        cwd: globalConfig.cwd,
+        startCommand: globalConfig.startCommand,
+        stopCommand: globalConfig.stopCommand,
+        ie: globalConfig.ie,
+        oe: globalConfig.oe,
+        type: globalConfig.type,
+        processType: globalConfig.processType
       },
-      false,
+      true, // allow persistence
       this.GLOBAL_INSTANCE_UUID
     );
 
-    this.autoStart();
+    takeoverContainer()
+      .catch((error) => {
+        const reason = error.message || error;
+        if (typeof reason == "string" && reason.includes("connect ENOENT")) {
+          return;
+        }
+        logger.error(`${$t("TXT_CODE_8d4c8f7e")}: ${reason}`);
+      })
+      .finally(() => this.autoStart());
   }
 
   createInstance(cfg: any, persistence = true, uuid?: string) {

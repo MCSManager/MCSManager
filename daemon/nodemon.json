@@ -1,0 +1,10 @@
+{
+  "watch": ["src"],
+  "ext": "ts,js",
+  "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts", "node_modules/**/*", "production/**/*"],
+  "exec": "npm run build && node --enable-source-maps production/app.js",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": "1000"
+}

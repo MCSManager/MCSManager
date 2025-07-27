@@ -54,7 +54,7 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     // Command text parsing
-    let commandList: string[] = [];
+    let commandList: string[];
     if (instance.config?.startCommand?.trim() || customCommand?.trim()) {
       const tmpCmd = customCommand ?? instance.config.startCommand;
       commandList = commandStringToArray(instance.parseTextParams(tmpCmd));
@@ -120,7 +120,6 @@ export class SetupDockerContainer extends AsyncTask {
         if (isNaN(Number(v))) throw new Error($t("TXT_CODE_instance.invalidCpu", { v }));
       });
       cpusetCpus = instance.config.docker.cpusetCpus;
-      // Note: check
     }
 
     // container name check
@@ -206,7 +205,10 @@ export class SetupDockerContainer extends AsyncTask {
       StdinOnce: false,
       ExposedPorts: exposedPorts,
       Env: instance.config.docker?.env || [],
-
+      User: instance.config.runAs || undefined,
+      Labels: {
+        "mcsmanager.instance.uuid": instance.instanceUuid
+      },
       HostConfig: {
         Memory: maxMemory,
         AutoRemove: true,
@@ -229,10 +231,9 @@ export class SetupDockerContainer extends AsyncTask {
     await this.container.start();
 
     // Listen to events
-    this.container.wait(() => {
-      this.stop();
-    });
+    this.container.wait(() => this.stop());
   }
+
   public async onStop() {
     try {
       await this.container?.kill();
@@ -256,7 +257,8 @@ export class SetupDockerContainer extends AsyncTask {
         stream: true,
         stdout: true,
         stderr: true,
-        stdin: true
+        stdin: true,
+        hijack: true
       });
       stream.on("data", (text: any) => instance.print(iconv.decode(text, outputCode)));
       stream.on("error", (text: any) => instance.print(iconv.decode(text, outputCode)));
@@ -283,10 +285,14 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   // Once the program is actually started, no errors can block the next startup process
-  public async start(param: IDockerProcessAdapterStartParam) {
+  public async start(param: IDockerProcessAdapterStartParam, container?: Docker.Container) {
     try {
-      await this.containerWrapper.start();
-      this.container = this.containerWrapper.getContainer();
+      if (container) {
+        this.container = container;
+      } else {
+        await this.containerWrapper.start();
+        this.container = this.containerWrapper.getContainer();
+      }
 
       const { isTty, h, w } = param;
       if (isTty) {
@@ -298,7 +304,8 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
         stream: true,
         stdout: true,
         stderr: true,
-        stdin: true
+        stdin: true,
+        hijack: true
       });
       this.stream.on("data", (data) => this.emit("data", data));
       this.stream.on("error", (data) => this.emit("data", data));

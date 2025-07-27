@@ -2,13 +2,14 @@
   "name": "mcsmanager-workspace",
   "version": "1.0.0",
   "scripts": {
-    "i18n": "i18next-scanner --config i18-scanner.config.js && npm run sort-lang-keys",
-    "sort-lang-keys": "node scripts/sort-lang-key.mjs",
-    "preview-build": "cd common && npm install && npm run build",
     "daemon": "cd daemon &&  npm run dev",
     "frontend": "cd frontend && npm run dev",
     "panel": "cd panel && npm run dev",
+    "dev": "npm run all",
     "all": "concurrently -n Daemon,Frontend,Panel -c cyan,magenta,green -p name \"npm run dev --prefix daemon\" \"npm run dev --prefix frontend\" \"npm run dev --prefix panel\"",
+    "i18n": "i18next-scanner --config i18-scanner.config.js",
+    "sort-lang-keys": "node scripts/sort-lang-key.mjs",
+    "preview-build": "cd common && npm install && npm run build",
     "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\""
   },
   "dependencies": {

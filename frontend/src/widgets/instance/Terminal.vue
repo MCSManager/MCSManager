@@ -3,6 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import { openRenewalDialog } from "@/components/fc";
 import IconBtn from "@/components/IconBtn.vue";
 import TerminalCore from "@/components/TerminalCore.vue";
+import TerminalTags from "@/components/TerminalTags.vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useScreen } from "@/hooks/useScreen";
@@ -20,6 +21,8 @@ import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_STATUS } from "@/types/const";
 import {
+  ArrowUpOutlined,
+  BlockOutlined,
   CheckCircleOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
@@ -34,7 +37,9 @@ import {
   PlayCircleOutlined,
   RedoOutlined
 } from "@ant-design/icons-vue";
+import prettyBytes from "pretty-bytes";
 import { computed, onMounted, ref } from "vue";
+import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal } from "../../hooks/useTerminal";
 import { arrayFilter } from "../../tools/array";
@@ -219,6 +224,33 @@ const getInstanceName = computed(() => {
   }
 });
 
+const terminalTopTags = computed<TagInfo[]>(() => {
+  const info = instanceInfo.value?.info;
+  if (!info || isStopped.value) return [];
+  return arrayFilter<TagInfo>([
+    {
+      label: t("TXT_CODE_b862a158"),
+      value: `${parseInt(String(info.cpuUsage))}%`,
+      condition: () => info.cpuUsage != null,
+      color: info?.cpuUsage! > 60 ? "warning" : "default",
+      icon: BlockOutlined
+    },
+    {
+      label: t("TXT_CODE_593ee330"),
+      value: info.memoryLimit
+        ? `${prettyBytes(info.memoryUsage || 0)}/${prettyBytes(info.memoryLimit)}`
+        : prettyBytes(info.memoryUsage || 0),
+      condition: () => info.memoryUsage != null
+    },
+    {
+      label: t("TXT_CODE_50daec4"),
+      value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
+      condition: () => info.rxBytes != null || info.txBytes != null,
+      icon: ArrowUpOutlined
+    }
+  ]);
+});
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -328,6 +360,9 @@ onMounted(async () => {
         </template>
       </BetweenMenus>
     </div>
+    <div class="mb-10 justify-end">
+      <TerminalTags :tags="terminalTopTags" />
+    </div>
     <TerminalCore
       v-if="instanceId && daemonId"
       :instance-id="instanceId"
@@ -382,6 +417,9 @@ onMounted(async () => {
       </a-dropdown>
     </template>
     <template #body>
+      <div class="mb-6">
+        <TerminalTags :tags="terminalTopTags" />
+      </div>
       <TerminalCore
         v-if="instanceId && daemonId"
         :instance-id="instanceId"

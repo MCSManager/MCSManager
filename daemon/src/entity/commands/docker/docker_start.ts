@@ -20,7 +20,7 @@ export default class DockerStartCommand extends AbsStartCommand {
     await processAdapter.start({
       isTty: instance.config.terminalOption.pty,
       w: instance.config.terminalOption.ptyWindowCol,
-      h: instance.config.terminalOption.ptyWindowCol
+      h: instance.config.terminalOption.ptyWindowRow
     });
 
     instance.started(processAdapter);

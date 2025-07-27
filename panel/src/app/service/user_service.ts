@@ -63,17 +63,19 @@ class UserSubsystem {
     return reg.test(password);
   }
 
-  check2FA(code: string, user: IUser) {
+  check2FA(code: string, user: IUser, totpDriftToleranceSteps: number = 0) {
     if (!user.secret)
       throw new Error("Please contact the administrator to reset the account password");
-    return authenticator.check(code, user?.secret);
+    authenticator.options= { window: totpDriftToleranceSteps };
+    const delta = authenticator.checkDelta(code, user?.secret);
+    return delta != null;
   }
 
-  checkUser(info: IUser, code2FA?: string) {
+  checkUser(info: IUser, code2FA?: string, totpDriftToleranceSteps: number = 0) {
     const inputPassword = info.passWord || "";
     for (const [uuid, user] of this.objects) {
       if (user.userName === info.userName) {
-        if (user.open2FA && user.secret && !this.check2FA(code2FA || "", user))
+        if (user.open2FA && user.secret && !this.check2FA(code2FA || "", user, totpDriftToleranceSteps))
           throw new TwoFactorError(t("TXT_CODE_3d68e43b"));
         if (user.passWordType === UserPassWordType.bcrypt) {
           if (!bcrypt.compareSync(inputPassword, user.passWord))
@@ -136,6 +138,10 @@ class UserSubsystem {
       if (user.userName === userName) return user;
     }
     return null;
+  }
+
+  getUserByUuid(uuid: string) {
+    return this.objects.get(uuid) || null;
   }
 
   getInstance(uuid: string) {

@@ -156,10 +156,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     for (const iterator of ignoreUrls) {
       if (ctx.URL.pathname.includes(iterator)) return await next();
     }
-    fileLogger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
-    fileLogger.info(
-      `[HTTP] IP: ${ctx.ip} USER: ${ctx.session?.userName} UUID: ${ctx.session?.uuid}`
-    );
+    // fileLogger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
+    // fileLogger.info(
+    //   `[HTTP] IP: ${ctx.ip} USER: ${ctx.session?.userName} UUID: ${ctx.session?.uuid}`
+    // );
     await next();
   });
 
