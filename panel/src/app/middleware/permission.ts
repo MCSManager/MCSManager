@@ -4,19 +4,22 @@ import userSystem from "../service/user_service";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";
 
+/**
+ * @description Request speed limit, 5 requests per second
+ */
 function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
-  const SESSION_REQ_TIME = "lastRequestTime";
-  const INV = 40;
+  const SESSION_REQ_TIMES = "SESSION_REQ_TIMES";
+  const MAX_REQUESTS_PER_SECOND = 5;
+  const WINDOW_SIZE = 1000;
   const currentTime = new Date().getTime();
-  const LastTime = ctx.session?.[SESSION_REQ_TIME];
   if (!ctx.session) return false;
-  if (LastTime && typeof LastTime === "number") {
-    if (currentTime - LastTime < INV) return false;
-    ctx.session[SESSION_REQ_TIME] = currentTime;
-  } else {
-    ctx.session[SESSION_REQ_TIME] = currentTime;
+  let requestTimes: number[] = ctx.session[SESSION_REQ_TIMES] || [];
+  requestTimes = requestTimes.filter((time) => currentTime - time < WINDOW_SIZE);
+  if (requestTimes.length >= MAX_REQUESTS_PER_SECOND) {
+    return false;
   }
-
+  requestTimes.push(currentTime);
+  ctx.session[SESSION_REQ_TIMES] = requestTimes;
   return true;
 }
 

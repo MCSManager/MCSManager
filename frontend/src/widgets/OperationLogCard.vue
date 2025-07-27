@@ -4,10 +4,10 @@ import CardPanel from "@/components/CardPanel.vue";
 import type { LayoutCard } from "@/types";
 
 import { useOperationLog } from "@/hooks/useOperationLog";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import dayjs from "dayjs";
 
-const { fetchData, logsData } = useOperationLog();
+const { fetchData, formattedLogs } = useOperationLog();
 
 defineProps<{
   card: LayoutCard;
@@ -24,19 +24,17 @@ onMounted(() => {
       {{ card.title }}
     </template>
     <template #body>
-      <div class="time-line full-card-body-container">
-        <div v-if="logsData.length === 0" class="empty-state">
-          <div class="empty-text">{{ t("暂无操作日志") }}</div>
-          <div class="empty-description">{{ t("系统操作日志将在此处显示") }}</div>
+      <div class="time-line full-card-body-container scrollbar-hidden">
+        <div v-if="formattedLogs.length === 0" class="empty-state">
+          <div class="empty-text">{{ t("TXT_CODE_54469e02") }}</div>
+          <div class="empty-description">{{ t("TXT_CODE_73102f2b") }}</div>
         </div>
         <a-timeline v-else>
-          <a-timeline-item v-for="(item, index) in logsData" :key="index" :color="item.color">
-            <div v-for="subItem in item.item" :key="subItem.operation_id" class="log-item">
-              <div class="log-content">
-                {{ subItem.text }}
-              </div>
+          <a-timeline-item v-for="(item, index) in formattedLogs" :key="index" :color="item.color">
+            <div class="log-item">
+              <div class="log-content">{{ item.text }}</div>
               <div class="log-time">
-                {{ dayjs(+subItem.operation_time).format("YYYY-MM-DD HH:mm:ss") }}
+                {{ dayjs(Number(item.operation_time)).format("YYYY-MM-DD HH:mm:ss") }}
               </div>
             </div>
           </a-timeline-item>

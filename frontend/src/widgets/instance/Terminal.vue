@@ -13,7 +13,9 @@ import {
   LaptopOutlined,
   InteractionOutlined,
   LoadingOutlined,
-  MoneyCollectOutlined
+  MoneyCollectOutlined,
+  ArrowUpOutlined,
+  BlockOutlined
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
@@ -38,6 +40,9 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useMountComponent } from "@/hooks/useMountComponent";
 import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
+import TerminalTags from "@/components/TerminalTags.vue";
+import type { TagInfo } from "../../components/interface";
+import prettyBytes from "pretty-bytes";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -212,6 +217,33 @@ const getInstanceName = computed(() => {
   }
 });
 
+const terminalTopTags = computed<TagInfo[]>(() => {
+  const info = instanceInfo.value?.info;
+  if (!info || isStopped.value) return [];
+  return arrayFilter<TagInfo>([
+    {
+      label: t("TXT_CODE_b862a158"),
+      value: `${parseInt(String(info.cpuUsage))}%`,
+      condition: () => info.cpuUsage != null,
+      color: info?.cpuUsage! > 60 ? "warning" : "default",
+      icon: BlockOutlined
+    },
+    {
+      label: t("TXT_CODE_593ee330"),
+      value: info.memoryLimit
+        ? `${prettyBytes(info.memoryUsage || 0)}/${prettyBytes(info.memoryLimit)}`
+        : prettyBytes(info.memoryUsage || 0),
+      condition: () => info.memoryUsage != null
+    },
+    {
+      label: t("TXT_CODE_50daec4"),
+      value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
+      condition: () => info.rxBytes != null || info.txBytes != null,
+      icon: ArrowUpOutlined
+    }
+  ]);
+});
+
 onMounted(async () => {
   try {
     if (instanceId && daemonId) {
@@ -320,6 +352,9 @@ onMounted(async () => {
         </template>
       </BetweenMenus>
     </div>
+    <div class="mb-10 justify-end">
+      <TerminalTags :tags="terminalTopTags" />
+    </div>
     <TerminalCore
       v-if="instanceId && daemonId"
       :instance-id="instanceId"
@@ -374,6 +409,9 @@ onMounted(async () => {
       </a-dropdown>
     </template>
     <template #body>
+      <div class="mb-6">
+        <TerminalTags :tags="terminalTopTags" />
+      </div>
       <TerminalCore
         v-if="instanceId && daemonId"
         :instance-id="instanceId"
