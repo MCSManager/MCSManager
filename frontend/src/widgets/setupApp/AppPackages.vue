@@ -25,7 +25,7 @@ const searchForm = reactive({
   category: ALL_CATEGORY_KEY
 });
 const categoryNameMap: Record<string, string> = {
-  [ALL_CATEGORY_KEY]: t("所有类别"),
+  [ALL_CATEGORY_KEY]: t("TXT_CODE_ebbb2def"),
   "mc-purpur": "Minecraft Purpur",
   "mc-paper": "Minecraft Paper",
   "mc-forge": "Minecraft Forge",
