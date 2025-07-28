@@ -54,7 +54,7 @@ onMounted(() => {
   margin-bottom: 12px;
   padding: 8px 12px;
   border-radius: 6px;
-  background: var(--card-shadow-color);
+  background: var(--color-gray-4);
   border: 1px solid var(--card-border-color);
   transition: all 0.2s ease;
 

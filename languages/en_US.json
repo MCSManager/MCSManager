@@ -2638,5 +2638,9 @@
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_ebbb2def": "All Categories"
+  "TXT_CODE_ebbb2def": "All Categories",
+  "TXT_CODE_88249aee": "Server Template Market",
+  "TXT_CODE_107695d": "All Games",
+  "TXT_CODE_2af87548": "All Versions",
+  "TXT_CODE_7356e569": "No Templates Available"
 }

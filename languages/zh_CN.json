@@ -2638,5 +2638,9 @@
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
-  "TXT_CODE_ebbb2def": "所有类别"
+  "TXT_CODE_ebbb2def": "所有类别",
+  "TXT_CODE_88249aee": "服务端模板市场",
+  "TXT_CODE_107695d": "所有游戏",
+  "TXT_CODE_2af87548": "所有版本",
+  "TXT_CODE_7356e569": "暂无可用模板"
 }
