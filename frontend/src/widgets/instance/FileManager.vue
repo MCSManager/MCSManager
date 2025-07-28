@@ -6,7 +6,7 @@ import { getCurrentLang, t } from "@/lang/i18n";
 import { convertFileSize } from "@/tools/fileSize";
 import dayjs from "dayjs";
 import {
-  CaretLeftOutlined,
+  CaretRightOutlined,
   CloseOutlined,
   CopyOutlined,
   DeleteOutlined,
@@ -454,7 +454,7 @@ onUnmounted(() => {
               <a-typography-text style="padding-left: 5px; white-space: nowrap">
                 ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
               </a-typography-text>
-              <caret-left-outlined
+              <caret-right-outlined
                 v-if="uploadData.suspending"
                 style="margin-left: 5px"
                 type="button"
