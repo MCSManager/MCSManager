@@ -22,25 +22,27 @@ const router = new Router({ prefix: "/overview" });
 // [Top-level Permission]
 // Control panel home page information overview routing
 router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => {
-  // Get the information of the remote service
-  const remoteInfoList = new Array();
-  for (const iterator of RemoteServiceSubsystem.services.entries()) {
-    const remoteService = iterator[1];
-    let remoteInfo: any = {};
-    try {
-      remoteInfo = await new RemoteRequest(remoteService).request("info/overview");
-    } catch (err) {
-      // ignore request errors and continue looping
+  // Get the information of the remote service concurrently
+  const requestTasks = Array.from(RemoteServiceSubsystem.services.entries()).map(
+    async ([_, remoteService]) => {
+      let remoteInfo: any = {};
+      try {
+        remoteInfo = await new RemoteRequest(remoteService).request("info/overview");
+      } catch (err) {
+        // ignore request errors and continue looping
+      }
+      // assign some identifier value
+      remoteInfo.uuid = remoteService.uuid;
+      remoteInfo.ip = remoteService.config.ip;
+      remoteInfo.port = remoteService.config.port;
+      remoteInfo.prefix = remoteService.config.prefix;
+      remoteInfo.available = remoteService.available;
+      remoteInfo.remarks = remoteService.config.remarks;
+      return remoteInfo;
     }
-    // assign some identifier value
-    remoteInfo.uuid = remoteService.uuid;
-    remoteInfo.ip = remoteService.config.ip;
-    remoteInfo.port = remoteService.config.port;
-    remoteInfo.prefix = remoteService.config.prefix;
-    remoteInfo.available = remoteService.available;
-    remoteInfo.remarks = remoteService.config.remarks;
-    remoteInfoList.push(remoteInfo);
-  }
+  );
+
+  const remoteInfoList = await Promise.all(requestTasks);
   const selfInfo = systemInfo();
   // Get the information of the system where the panel is located
   const overviewData: IPanelOverviewResponse = {

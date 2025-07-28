@@ -422,10 +422,10 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "OperationLogCard",
-      title: t("操作日志"),
+      title: t("TXT_CODE_f6a33629"),
       meta: {},
       width: 3,
-      description: t("用于查看用户操作日志"),
+      description: t("TXT_CODE_9e8c176e"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.DATA
     },

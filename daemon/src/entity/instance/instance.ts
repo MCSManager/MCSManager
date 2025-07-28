@@ -25,6 +25,14 @@ interface IInstanceInfo {
   playersChart: Array<{ value: string }>;
   openFrpStatus: boolean;
   latency: number;
+  cpuUsage?: number;
+  memoryUsagePercent?: number;
+  rxBytes?: number;
+  txBytes?: number;
+  readBytes?: number;
+  writeBytes?: number;
+  memoryUsage?: number;
+  memoryLimit?: number;
 }
 
 interface IWatcherInfo {
@@ -183,6 +191,7 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "startCommand", String);
     configureEntityParams(this.config, cfg, "stopCommand", String);
     configureEntityParams(this.config, cfg, "updateCommand", String);
+    configureEntityParams(this.config, cfg, "runAs", String);
     configureEntityParams(this.config, cfg, "cwd", String);
     configureEntityParams(this.config, cfg, "ie", String);
     configureEntityParams(this.config, cfg, "oe", String);

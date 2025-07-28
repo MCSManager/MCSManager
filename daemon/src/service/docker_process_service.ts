@@ -31,10 +31,7 @@ export interface IDockerProcessAdapterStartParam {
 export class SetupDockerContainer extends AsyncTask {
   private container?: Docker.Container;
 
-  constructor(
-    public readonly instance: Instance,
-    public readonly startCommand?: string
-  ) {
+  constructor(public readonly instance: Instance, public readonly startCommand?: string) {
     super();
   }
 
@@ -107,7 +104,6 @@ export class SetupDockerContainer extends AsyncTask {
         if (isNaN(Number(v))) throw new Error($t("TXT_CODE_instance.invalidCpu", { v }));
       });
       cpusetCpus = instance.config.docker.cpusetCpus;
-      // Note: check
     }
 
     // container name check
@@ -180,11 +176,10 @@ export class SetupDockerContainer extends AsyncTask {
       StdinOnce: false,
       ExposedPorts: exposedPorts,
       Env: instance.config.docker?.env || [],
-
+      User: instance.config.runAs || undefined,
       Labels: {
         "mcsmanager.instance.uuid": instance.instanceUuid
       },
-
       HostConfig: {
         Memory: maxMemory,
         AutoRemove: true,
@@ -207,9 +202,7 @@ export class SetupDockerContainer extends AsyncTask {
     await this.container.start();
 
     // Listen to events
-    this.container.wait(() => {
-      this.stop();
-    });
+    this.container.wait(() => this.stop());
   }
 
   public async onStop() {
