@@ -393,7 +393,7 @@ export function getLayoutCardPool() {
       meta: {},
       width: 6,
       description: t("TXT_CODE_6f659da2"),
-      height: LayoutCardHeight.SMALL,
+      height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.DATA
     },
     {
@@ -404,7 +404,7 @@ export function getLayoutCardPool() {
       meta: {},
       width: 6,
       description: t("TXT_CODE_6f659da2"),
-      height: LayoutCardHeight.SMALL,
+      height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.DATA
     },
     {

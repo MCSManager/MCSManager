@@ -67,14 +67,16 @@ const dataSource = computed(() => {
   <CardPanel class="NodeOverview" style="height: 100%">
     <template #title>{{ card.title }}</template>
     <template #body>
-      <a-table
-        :scroll="{
-          x: 'max-content'
-        }"
-        :columns="columns"
-        :data-source="dataSource"
-        :pagination="false"
-      ></a-table>
+      <div :style="{ height: card.height, overflow: 'auto' }">
+        <a-table
+          :scroll="{
+            x: 'max-content'
+          }"
+          :columns="columns"
+          :data-source="dataSource"
+          :pagination="false"
+        ></a-table>
+      </div>
     </template>
   </CardPanel>
 </template>
