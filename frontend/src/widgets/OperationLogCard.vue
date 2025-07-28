@@ -56,13 +56,13 @@ onMounted(() => {
   margin-bottom: 12px;
   padding: 8px 12px;
   border-radius: 6px;
-  background: rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--card-shadow-color);
+  border: 1px solid var(--card-border-color);
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: rgba(0, 0, 0, 0.1);
+    background: var(--card-shadow-extend-color);
+    border-color: var(--card-border-color);
   }
 
   &:last-child {
@@ -73,14 +73,14 @@ onMounted(() => {
 .log-content {
   font-size: 14px;
   line-height: 1.5;
-  color: #333;
+  color: var(--color-gray-10);
   margin-bottom: 4px;
   word-break: break-word;
 }
 
 .log-time {
   font-size: 12px;
-  color: #999;
+  color: var(--color-gray-7);
   font-family: "Consolas", "Monaco", monospace;
   opacity: 0.8;
 }
@@ -97,14 +97,14 @@ onMounted(() => {
 
 .empty-text {
   font-size: 16px;
-  color: #666;
+  color: var(--color-gray-8);
   margin-bottom: 8px;
   font-weight: 500;
 }
 
 .empty-description {
   font-size: 14px;
-  color: #999;
+  color: var(--color-gray-7);
   line-height: 1.4;
 }
 </style>
