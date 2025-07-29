@@ -141,7 +141,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           title: t("TXT_CODE_a4037a98"),
           width: 6,
           description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
+          height: LayoutCardHeight.SMALL
         },
         {
           id: getRandomId(),
