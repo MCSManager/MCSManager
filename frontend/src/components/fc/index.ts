@@ -1,16 +1,17 @@
 import { useMountComponent } from "@/hooks/useMountComponent";
 import type { UserInstance } from "@/types/user";
 
-import SelectInstances from "@/components/fc/SelectInstances.vue";
 import CmdAssistantDialog from "@/components/fc/CmdAssistantDialog/index.vue";
 import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
+import SelectInstances from "@/components/fc/SelectInstances.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
-import UploadFileDialogVue from "./UploadFileDialog.vue";
-import TaskLoadingDialog from "./TaskLoadingDialog.vue";
-import TagsDialog from "./TagsDialog.vue";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
+import RenewalDialog from "./RenewalDialog.vue";
+import TagsDialog from "./TagsDialog.vue";
+import TaskLoadingDialog from "./TaskLoadingDialog.vue";
+import UploadFileDialogVue from "./UploadFileDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -62,19 +63,22 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
+      subTitle: t(
+        "默认情况下，MCSManager 为每个实例按序分配 5 个端口，支持填写 {mcsm_port1} 到 {mcsm_port5}，为按序新增的端口号。"
+      ),
       title: t("TXT_CODE_c4435af9"),
       columns: [
         {
           align: "center",
           dataIndex: "host",
           title: t("TXT_CODE_534db0b2"),
-          placeholder: "eg: 8080"
+          placeholder: "eg: 8080 or {mcsm_port1}"
         },
         {
           align: "center",
           dataIndex: "container",
           title: t("TXT_CODE_b729d2e"),
-          placeholder: "eg: 25565"
+          placeholder: "eg: 25565 or {mcsm_port1}"
         },
         {
           align: "center",
@@ -171,4 +175,10 @@ export async function useImageViewerDialog(
   return await useMountComponent({ instanceId, daemonId, fileName, frontDir }).mount(
     ImageViewerDialog
   );
+}
+
+export async function openRenewalDialog(instanceId: string, daemonId: string, productId: number) {
+  return useMountComponent({ instanceId, daemonId, productId })
+    .load<InstanceType<typeof RenewalDialog>>(RenewalDialog)
+    .openDialog();
 }

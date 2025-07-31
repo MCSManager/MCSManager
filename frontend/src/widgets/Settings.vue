@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { getProPanelUrl } from "@/components/IframeBox/config";
+import IframeBox from "@/components/IframeBox/index.vue";
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
+import Loading from "@/components/Loading.vue";
+import { useUploadFileDialog } from "@/components/fc";
 import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
-import type { LayoutCard, Settings } from "@/types";
-import { onMounted, ref } from "vue";
-import { Modal, message, notification } from "ant-design-vue";
+import { setSettingInfo, settingInfo } from "@/services/apis";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard, Settings } from "@/types";
 import {
   BankOutlined,
   BookOutlined,
@@ -16,16 +21,13 @@ import {
   MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SketchOutlined
 } from "@ant-design/icons-vue";
-
-import { settingInfo, setSettingInfo } from "@/services/apis";
-import Loading from "@/components/Loading.vue";
-import { useUploadFileDialog } from "@/components/fc";
+import { Modal, message, notification } from "ant-design-vue";
+import { onMounted, ref } from "vue";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { arrayFilter } from "../tools/array";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 
 defineProps<{
   card: LayoutCard;
@@ -39,6 +41,7 @@ const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
   bgUrl?: string;
+  proLicenseKey?: string;
 }
 
 const ApacheLicense = `Copyright ${new Date().getFullYear()} MCSManager Dev
@@ -75,6 +78,19 @@ const submit = async (needReload: boolean = true) => {
 
 const menus = arrayFilter([
   {
+    title: t("订阅中心"),
+    key: "pro",
+    icon: SketchOutlined,
+    condition: () => isCN()
+  },
+
+  {
+    title: t("卡密销售"),
+    key: "redeem",
+    icon: KeyOutlined,
+    condition: () => isCN()
+  },
+  {
     title: t("TXT_CODE_cdd555be"),
     key: "baseInfo",
     icon: ProjectOutlined
@@ -90,12 +106,6 @@ const menus = arrayFilter([
     icon: LockOutlined
   },
   {
-    title: t("TXT_CODE_8bb8e2a1"),
-    key: "business",
-    icon: KeyOutlined,
-    condition: () => isCN()
-  },
-  {
     title: t("TXT_CODE_3b4b656d"),
     key: "about",
     icon: QuestionCircleOutlined
@@ -104,6 +114,7 @@ const menus = arrayFilter([
     title: t("TXT_CODE_46cb40d5"),
     key: "sponsor",
     icon: MoneyCollectOutlined,
+    condition: () => !isCN(),
     click: () => {
       let url = "https://www.patreon.com/mcsmanager";
       if (isCN()) url = "https://afdian.com/a/mcsmanager";
@@ -228,7 +239,7 @@ onMounted(async () => {
       <template #body>
         <LeftMenusPanel :menus="menus">
           <template #baseInfo>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_5206cf41") }}
               </a-typography-title>
@@ -278,6 +289,28 @@ onMounted(async () => {
                   </a-form-item>
 
                   <a-form-item>
+                    <a-typography-title :level="5">Panel ID</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{
+                        t(
+                          "此 ID 是 MCSManager 的唯一标识，用于区分不同的面板，所有由 MCSManager 提供的在线服务都将以此 ID 区分用户。"
+                        )
+                      }}
+                      <br />
+                      <span v-if="formData.panelId">
+                        {{ t("请勿随意修改，如果与其他面板冲突，可能会导致服务无法正常使用。") }}
+                      </span>
+                      <span v-else>
+                        {{ t("请勿填写，有需求时面板会自动生成。") }}
+                      </span>
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.panelId"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_514e064a") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_328191e") }}
@@ -300,7 +333,7 @@ onMounted(async () => {
           </template>
 
           <template #ui>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_1c18acc0") }}
               </a-typography-title>
@@ -385,7 +418,7 @@ onMounted(async () => {
           </template>
 
           <template #security>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_9c3ca8f") }}
               </a-typography-title>
@@ -579,69 +612,16 @@ onMounted(async () => {
             </div>
           </template>
 
-          <template #business>
-            <div
-              :style="{
-                maxHeight: card.height,
-                overflowY: 'auto'
-              }"
-            >
-              <a-typography-title :level="4" class="mb-24">
-                {{ t("TXT_CODE_8bb8e2a1") }}
-              </a-typography-title>
-              <div class="mb-24">
-                <a-typography-paragraph>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_180884da") }}
-                  </a-typography-title>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_3f227bcf") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <div>
-                  <a-switch v-model:checked="formData.businessMode" @change="submit(false)" />
-                </div>
-              </div>
-              <div class="mb-24">
-                <a-typography-paragraph>
-                  <a-typography-title :level="5">
-                    {{ t("TXT_CODE_d31196db") }}
-                  </a-typography-title>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_59c39e03") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <div>
-                  <a-button :disabled="!formData.businessMode" @click="gotoBusinessCenter()">
-                    {{ t("TXT_CODE_2dbd3cd3") }}
-                  </a-button>
-                </div>
-              </div>
-              <div v-if="formData.businessMode" class="mb-24">
-                <a-typography-paragraph>
-                  <a-typography-title :level="5">{{ t("TXT_CODE_72cfab69") }}</a-typography-title>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_678164d7") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <div>
-                  <a-input
-                    v-model:value="formData.businessId"
-                    style="max-width: 200px"
-                    placeholder="eg: 123"
-                  />
-                </div>
-              </div>
-              <div>
-                <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
-                  {{ t("TXT_CODE_abfe9512") }}
-                </a-button>
-              </div>
-            </div>
+          <template #pro>
+            <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
+          </template>
+
+          <template #redeem>
+            <IframeBox :src="getProPanelUrl('/')" :height="card.height" />
           </template>
 
           <template #about>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_3b4b656d") }}
               </a-typography-title>
@@ -685,7 +665,7 @@ onMounted(async () => {
           </template>
 
           <template #sponsor>
-            <div :style="{ maxHeight: card.height, overflowY: 'auto' }">
+            <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
                 {{ t("TXT_CODE_46cb40d5") }}
               </a-typography-title>
@@ -713,5 +693,10 @@ div {
     top: 0;
     left: 0;
   }
+}
+
+.content-box {
+  padding: 16px;
+  overflow-y: auto;
 }
 </style>

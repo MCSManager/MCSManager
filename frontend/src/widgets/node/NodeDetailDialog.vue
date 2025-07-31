@@ -1,15 +1,28 @@
 <script lang="ts" setup>
-import { ref, computed, reactive } from "vue";
+import { useRemoteNode, type RemoteNodeDetail } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
-import { useRemoteNode } from "@/hooks/useRemoteNode";
-import { message, Modal, type FormInstance } from "ant-design-vue";
-import { type RemoteNodeDetail } from "@/hooks/useRemoteNode";
-import { reportErrorMsg, isLocalNetworkIP } from "@/tools/validator";
+import { isLocalNetworkIP, reportErrorMsg } from "@/tools/validator";
+import { message, type FormInstance } from "ant-design-vue";
+import { computed, reactive, ref } from "vue";
 
 const { addNode, deleteNode, updateNode } = useRemoteNode();
 
 const editMode = ref(false);
 const formRef = ref<FormInstance>();
+
+const ipRules = [
+  { required: true, message: t("地址必须填写") },
+  {
+    validator: (_rule: any, value: string) => {
+      if (value && isLocalNetworkIP(value)) {
+        return Promise.reject(
+          new Error(t("远程节点地址必须为公网 IP 地址，域名或 localhost，无法使用局域网 IP 地址。"))
+        );
+      }
+      return Promise.resolve();
+    }
+  }
+];
 
 const openDialog = (data?: RemoteNodeDetail, uuid?: string) => {
   if (data && uuid) {
@@ -75,16 +88,6 @@ const dialog = reactive({
   submit: async () => {
     try {
       await dialog.check();
-      if (isLocalNetworkIP(dialog.data.ip)) {
-        await new Promise<void>((resolve) => {
-          Modal.confirm({
-            title: t("TXT_CODE_36cae384"),
-            content: t("TXT_CODE_ea6e5e5e"),
-            okText: t("TXT_CODE_d507abff"),
-            onOk: () => resolve()
-          });
-        });
-      }
       dialog.loading = true;
       if (editMode.value) {
         await updateNode(dialog.uuid, dialog.data);
@@ -113,7 +116,7 @@ defineExpose({ openDialog });
         <a-input v-model:value="dialog.data.remarks" :placeholder="t('TXT_CODE_4b1d5199')" />
       </a-form-item>
 
-      <a-form-item :label="t('TXT_CODE_93f9b02a')" name="ip" required>
+      <a-form-item :label="t('TXT_CODE_93f9b02a')" name="ip" required :rules="ipRules">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
             {{ t("TXT_CODE_be7a689a") }}

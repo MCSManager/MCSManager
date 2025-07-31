@@ -4,16 +4,24 @@ import DockerPullCommand from "../entity/commands/docker/docker_pull";
 import Instance from "../entity/instance/instance";
 import { DefaultDocker } from "./docker_service";
 
-import path from "path";
-import { $t } from "../i18n";
-import logger from "./log";
 import Docker from "dockerode";
-import { EventEmitter } from "stream";
-import { IInstanceProcess } from "../entity/instance/interface";
-import { AsyncTask } from "./async_task_service";
+import fs from "fs-extra";
 import iconv from "iconv-lite";
 import { toText } from "mcsmanager-common";
-import fs from "fs-extra";
+import path from "path";
+import { EventEmitter } from "stream";
+import { IInstanceProcess } from "../entity/instance/interface";
+import { $t } from "../i18n";
+import { AsyncTask } from "./async_task_service";
+import logger from "./log";
+
+type PublicPortArray = {
+  [key: string]: { HostPort: string }[];
+};
+
+type ExposedPorts = {
+  [key: string]: {};
+};
 
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
@@ -38,7 +46,7 @@ export class SetupDockerContainer extends AsyncTask {
   public async onStart() {
     const instance = this.instance;
     const customCommand = this.startCommand;
-    // Docker Image check
+
     try {
       await instance.forceExec(new DockerPullCommand());
     } catch (error: any) {
@@ -48,7 +56,8 @@ export class SetupDockerContainer extends AsyncTask {
     // Command text parsing
     let commandList: string[];
     if (instance.config?.startCommand?.trim() || customCommand?.trim()) {
-      commandList = commandStringToArray(customCommand ?? instance.config.startCommand);
+      const tmpCmd = customCommand ?? instance.config.startCommand;
+      commandList = commandStringToArray(instance.parseTextParams(tmpCmd));
     } else {
       commandList = [];
     }
@@ -56,10 +65,12 @@ export class SetupDockerContainer extends AsyncTask {
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
     const portMap = instance.config.docker.ports || [];
-    const publicPortArray: any = {};
-    const exposedPorts: any = {};
-    for (const iterator of portMap) {
-      const elem = iterator.split("/");
+
+    const logOpenedPorts: { host: number; container: number; protocol: string }[] = [];
+    const publicPortArray: PublicPortArray = {};
+    const exposedPorts: ExposedPorts = {};
+    for (const portConfigText of portMap) {
+      const elem = instance.parseTextParams(portConfigText).split("/");
       if (elem.length != 2) throw new Error($t("TXT_CODE_1cf6fc4b"));
       const ports = elem[0];
       const protocol = elem[1];
@@ -70,6 +81,11 @@ export class SetupDockerContainer extends AsyncTask {
         { HostPort: publicAndPrivatePort[0] }
       ];
       exposedPorts[`${publicAndPrivatePort[1]}/${protocol}`] = {};
+      logOpenedPorts.push({
+        host: Number(publicAndPrivatePort[0]),
+        container: Number(publicAndPrivatePort[1]),
+        protocol: protocol
+      });
     }
 
     // resolve extra path mounts
@@ -125,7 +141,20 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     if (workingDir) {
-      instance.println("CONTAINER", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
+      instance.println("MCSManager", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
+    }
+    if (logOpenedPorts.length) {
+      instance.println("MCSManager", $t("已为实例开放以下端口："));
+      logOpenedPorts.forEach((v) => {
+        instance.println(
+          "MCSManager",
+          $t("外部访问端口：{{- host}} -> 容器内端口：{{- container}} / 协议：{{- protocol}}", {
+            host: v.host,
+            container: v.container,
+            protocol: v.protocol
+          })
+        );
+      });
     }
 
     const mounts: Docker.MountConfig =

@@ -1,48 +1,49 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
+import { openRenewalDialog } from "@/components/fc";
+import IconBtn from "@/components/IconBtn.vue";
+import TerminalCore from "@/components/TerminalCore.vue";
+import TerminalTags from "@/components/TerminalTags.vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
+import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
-import type { LayoutCard } from "@/types";
 import {
+  killInstance,
+  openInstance,
+  restartInstance,
+  stopInstance,
+  updateInstance
+} from "@/services/apis/instance";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { sleep } from "@/tools/common";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard } from "@/types";
+import { INSTANCE_STATUS } from "@/types/const";
+import {
+  ArrowUpOutlined,
+  BlockOutlined,
+  CheckCircleOutlined,
+  CloseOutlined,
   CloudDownloadOutlined,
   CloudServerOutlined,
   DownOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
-  RedoOutlined,
-  LaptopOutlined,
+  InfoCircleOutlined,
   InteractionOutlined,
+  LaptopOutlined,
   LoadingOutlined,
   MoneyCollectOutlined,
-  ArrowUpOutlined,
-  BlockOutlined
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  RedoOutlined
 } from "@ant-design/icons-vue";
-import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
-import { arrayFilter } from "../../tools/array";
-import { useTerminal } from "../../hooks/useTerminal";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useScreen } from "@/hooks/useScreen";
-import IconBtn from "@/components/IconBtn.vue";
-import {
-  openInstance,
-  stopInstance,
-  restartInstance,
-  killInstance,
-  updateInstance
-} from "@/services/apis/instance";
-import { CloseOutlined } from "@ant-design/icons-vue";
-import { GLOBAL_INSTANCE_NAME } from "../../config/const";
-import { INSTANCE_STATUS } from "@/types/const";
-import { reportErrorMsg } from "@/tools/validator";
-import TerminalCore from "@/components/TerminalCore.vue";
-import Reinstall from "./dialogs/Reinstall.vue";
-import { useAppStateStore } from "@/stores/useAppStateStore";
-import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
-import { useMountComponent } from "@/hooks/useMountComponent";
-import UseRedeemDialog from "@/components/fc/UseRedeemDialog.vue";
-import TerminalTags from "@/components/TerminalTags.vue";
-import type { TagInfo } from "../../components/interface";
 import prettyBytes from "pretty-bytes";
+import { computed, onMounted, ref } from "vue";
+import type { TagInfo } from "../../components/interface";
+import { GLOBAL_INSTANCE_NAME } from "../../config/const";
+import { useTerminal } from "../../hooks/useTerminal";
+import { arrayFilter } from "../../tools/array";
+import Reinstall from "./dialogs/Reinstall.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -69,6 +70,27 @@ const instanceTypeText = computed(
   () => INSTANCE_TYPE_TRANSLATION[instanceInfo.value?.config.type ?? -1]
 );
 
+const { execute: requestOpenInstance, isLoading: isOpenInstanceLoading } = openInstance();
+
+const toOpenInstance = async () => {
+  try {
+    if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
+      const flag = await verifyEULA(instanceId ?? "", daemonId ?? "");
+      if (!flag) return;
+      await sleep(1000);
+    }
+
+    await requestOpenInstance({
+      params: {
+        uuid: instanceId ?? "",
+        daemonId: daemonId ?? ""
+      }
+    });
+  } catch (error: any) {
+    reportErrorMsg(error);
+  }
+};
+
 const updateCmd = computed(() => (instanceInfo.value?.config.updateCommand ? true : false));
 const instanceStatusText = computed(() => INSTANCE_STATUS[instanceInfo.value?.status ?? -1]);
 const quickOperations = computed(() =>
@@ -78,24 +100,7 @@ const quickOperations = computed(() =>
       icon: PlayCircleOutlined,
       noConfirm: false,
       type: "default",
-      click: async () => {
-        try {
-          const flag = await verifyEULA(
-            instanceId ?? "",
-            daemonId ?? "",
-            instanceInfo.value?.config.type ?? ""
-          );
-          if (!flag) return;
-          await openInstance().execute({
-            params: {
-              uuid: instanceId ?? "",
-              daemonId: daemonId ?? ""
-            }
-          });
-        } catch (error: any) {
-          reportErrorMsg(error);
-        }
-      },
+      click: toOpenInstance,
       props: {},
       condition: () => isStopped.value
     },
@@ -198,13 +203,15 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_f77093c8"),
       icon: MoneyCollectOutlined,
       noConfirm: true,
-      click: () => {
-        useMountComponent({
-          instanceId: instanceId
-        }).mount(UseRedeemDialog);
+      click: async () => {
+        await openRenewalDialog(
+          instanceInfo.value?.instanceUuid ?? "",
+          daemonId ?? "",
+          instanceInfo.value?.config.category ?? 0
+        );
       },
       props: {},
-      condition: () => state.settings.businessMode
+      condition: () => !!instanceInfo.value?.config?.category
     }
   ])
 );
@@ -312,6 +319,7 @@ onMounted(async () => {
                 v-if="item.noConfirm"
                 class="ml-8"
                 :danger="item.type === 'danger'"
+                :disabled="isOpenInstanceLoading"
                 @click="item.click"
               >
                 <component :is="item.icon" />

@@ -1,7 +1,7 @@
 // I18n init configuration (Frontend)
 
-import { createI18n } from "vue-i18n";
 import { updateSettings } from "@/services/apis";
+import { createI18n } from "vue-i18n";
 
 // DO NOT I18N
 // If you want to add the language of your own country, you need to add the code here.
@@ -118,19 +118,15 @@ const getCurrentLang = (): string => {
 };
 
 const isCN = () => {
-  return getCurrentLang() === "zh_cn";
+  return (
+    getCurrentLang() === "zh_cn" ||
+    getCurrentLang() === "zh_tw" ||
+    window.navigator.language.includes("zh")
+  );
 };
 
 const isEN = () => {
   return getCurrentLang() === "en_us";
-};
-
-const isTW = () => {
-  return getCurrentLang() === "zh_tw";
-};
-
-const isPT = () => {
-  return getCurrentLang() === "pt_br";
 };
 
 const $t = (...args: any[]): string => {
@@ -141,15 +137,13 @@ const t = $t;
 (window as any).setLang = setLanguage;
 
 export {
-  setLanguage,
-  getCurrentLang,
-  searchSupportLanguage,
   $t,
-  t,
+  getCurrentLang,
+  getSupportLanguages,
   initI18n,
   isCN,
   isEN,
-  isTW,
-  isPT,
-  getSupportLanguages
+  searchSupportLanguage,
+  setLanguage,
+  t
 };
