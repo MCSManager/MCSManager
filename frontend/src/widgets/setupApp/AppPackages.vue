@@ -11,8 +11,12 @@ import Loading from "@/components/Loading.vue";
 import CardPanel from "@/components/CardPanel.vue";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 
+defineProps<{
+  title?: string;
+}>();
+
 const emit = defineEmits<{
-  handleSelectTemplate: [item: QuickStartPackages];
+  "handle-select-template": [item: QuickStartPackages];
 }>();
 
 const {
@@ -24,11 +28,12 @@ const {
 const SEARCH_ALL_KEY = "ALL";
 
 // Search form state for filtering packages
-// Contains language, category, and game type filters with default values
+// Contains language, category, game type, and platform filters with default values
 const searchForm = reactive({
   language: isCN() ? getCurrentLang() : "en_us",
   category: SEARCH_ALL_KEY,
-  gameType: SEARCH_ALL_KEY
+  gameType: SEARCH_ALL_KEY,
+  platform: SEARCH_ALL_KEY
 });
 
 // Type definition for filter options used in select dropdowns
@@ -63,6 +68,11 @@ const matchesCategoryFilter = (item: QuickStartPackages): boolean => {
   return matchesFilterCondition(item, "category", searchForm.category);
 };
 
+// Platform filter function - checks if item matches current platform filter
+const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
+  return matchesFilterCondition(item, "platform", searchForm.platform);
+};
+
 // Get filtered packages based on current search criteria
 // Supports additional custom filters through additionalFilters parameter
 // Returns empty array if no packages are available
@@ -74,11 +84,12 @@ const getFilteredPackages = (
   }
 
   return presetList.value.packages.filter((item) => {
-    // Apply base filters (language, game type, category)
+    // Apply base filters (language, game type, category, platform)
     const baseFilters = [
       matchesLanguageFilter(item),
       matchesGameTypeFilter(item),
-      matchesCategoryFilter(item)
+      matchesCategoryFilter(item),
+      matchesPlatformFilter(item)
     ];
 
     // Combine base filters with additional custom filters if provided
@@ -155,6 +166,15 @@ const appCategoryList = computed(() => {
   return generateOptionsList(packages, "category", t("TXT_CODE_2af87548"));
 });
 
+// Computed property for platform options dropdown
+// Filters packages by current language, game type, and category selections before generating options
+const appPlatformList = computed(() => {
+  const packages = getFilteredPackages(
+    (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
+  );
+  return generateOptionsList(packages, "platform", t("所有系统"));
+});
+
 // Initialize function to load package data and handle errors
 // Fetches quick install list and shows error modal if no packages are available
 const init = async () => {
@@ -176,14 +196,21 @@ const handleReset = () => {
   searchForm.language = isCN() ? getCurrentLang() : "en_us";
   searchForm.gameType = SEARCH_ALL_KEY;
   searchForm.category = SEARCH_ALL_KEY;
+  searchForm.platform = SEARCH_ALL_KEY;
 };
 
 const handleGameTypeChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
+  searchForm.platform = SEARCH_ALL_KEY;
 };
 
 const handleLanguageChange = () => {
   searchForm.gameType = SEARCH_ALL_KEY;
+  searchForm.category = SEARCH_ALL_KEY;
+  searchForm.platform = SEARCH_ALL_KEY;
+};
+
+const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
@@ -198,24 +225,31 @@ onMounted(() => {
 </script>
 
 <template>
+  <a-typography-title :level="4" style="margin-bottom: 20px">
+    {{ title || t("TXT_CODE_88249aee") }}
+  </a-typography-title>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
     <a-col :span="24">
-      <div style="height: 50vh">
-        <Loading />
+      <div
+        style="
+          height: 50vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div><Loading /></div>
+        <div style="margin-top: 20px; color: var(--color-gray-12)">
+          {{ t("加载中，如果长期无反应，请检查网络。") }}
+        </div>
       </div>
     </a-col>
   </a-row>
 
   <!-- Main content - package marketplace interface -->
   <a-row v-else :gutter="[24, 24]" style="height: 100%">
-    <!-- Page title -->
-    <a-col :span="24">
-      <a-typography-title :level="4" style="margin-bottom: 0px">
-        {{ t("TXT_CODE_88249aee") }}
-      </a-typography-title>
-    </a-col>
-
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
       <a-form layout="horizontal" :model="searchForm" style="display: flex; gap: 10px">
@@ -242,6 +276,20 @@ onMounted(() => {
             @change="handleGameTypeChange"
           >
             <a-select-option v-for="item in appGameTypeList" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+
+        <!-- Platform filter dropdown -->
+        <a-form-item class="mb-0">
+          <a-select
+            v-model:value="searchForm.platform"
+            style="width: 200px"
+            placeholder="请选择系统"
+            @change="handlePlatformChange"
+          >
+            <a-select-option v-for="item in appPlatformList" :key="item.value" :value="item.value">
               {{ item.label }}
             </a-select-option>
           </a-select>
@@ -283,69 +331,52 @@ onMounted(() => {
         v-for="item in appList"
         :key="item.targetLink + item.title + item.gameType + item.language + item.category"
         :span="24"
-        :xl="6"
+        :xl="8"
         :lg="8"
         :sm="12"
       >
         <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
-          <CardPanel style="flex-grow: 1">
+          <CardPanel style="flex-grow: 1" :style="{ padding: '12px' }">
             <!-- Package title -->
-            <template #title>
-              <div class="ellipsis-text" style="max-width: 280px">
-                {{ item.title }}
-              </div>
-            </template>
+            <template #title> </template>
 
             <!-- Package content -->
             <template #body>
-              <!-- Package description and metadata -->
-              <div style="min-height: 120px; position: relative">
-                <!-- Package description with ellipsis -->
-                <a-typography-paragraph
-                  :ellipsis="{ rows: 3, expandable: true }"
-                  :content="item.description"
-                >
-                </a-typography-paragraph>
+              <div class="package-card-content">
+                <div class="package-image-container">
+                  <img class="package-image cursor-pointer" :src="item.image" alt="" srcset="" />
+                </div>
 
-                <!-- Package metadata (runtime, hardware, size) -->
-                <a-typography-paragraph>
-                  <a-typography-text class="color-info">
-                    <div v-if="item.runtime">{{ t("TXT_CODE_18b94497") }}: {{ item.runtime }}</div>
-                    <div v-if="item.hardware">
-                      {{ t("TXT_CODE_683e3033") }}: {{ item.hardware }}
-                    </div>
-                    <div v-if="item.size">{{ t("TXT_CODE_94bb113a") }}: {{ item.size }}</div>
-                  </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                  <br />
-                  <a-typography-text class="color-info"> </a-typography-text>
-                </a-typography-paragraph>
-              </div>
+                <div class="package-info">
+                  <a-typography-title :level="5">
+                    {{ item.title }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    {{ item.description }}
+                  </a-typography-paragraph>
+                  <a-typography-paragraph>
+                    <span class="text-gray-5">{{ t("TXT_CODE_18b94497") }}: </span>
+                    <span>{{ item.runtime }}</span>
+                    <br />
+                    <span class="text-gray-5">{{ t("TXT_CODE_683e3033") }}: </span>
+                    <span>{{ item.hardware }}</span>
+                  </a-typography-paragraph>
+                </div>
 
-              <!-- Download button positioned at bottom of card -->
-              <div
-                style="
-                  position: absolute;
-                  bottom: 0;
-                  left: 0;
-                  right: 0;
-                  display: flex;
-                  justify-content: center;
-                "
-              >
-                <a-button
-                  block
-                  type="primary"
-                  style="max-width: 120px"
-                  @click="emit('handleSelectTemplate', item)"
-                >
-                  <template #icon>
-                    <DownloadOutlined />
-                  </template>
-                  {{ t("TXT_CODE_1704ea49") }}
-                </a-button>
+                <div class="package-action">
+                  <a-button
+                    block
+                    type="primary"
+                    class="download-button"
+                    @click="emit('handle-select-template', item)"
+                  >
+                    <template #icon>
+                      <DownloadOutlined />
+                    </template>
+                    {{ t("TXT_CODE_1704ea49") }}
+                  </a-button>
+                </div>
               </div>
             </template>
           </CardPanel>
@@ -354,3 +385,62 @@ onMounted(() => {
     </fade-up-animation>
   </a-row>
 </template>
+
+<style scoped>
+.package-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.package-image-container {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.package-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  max-height: 120px;
+  transition: transform 0.3s ease;
+}
+
+.package-info {
+  flex: 1;
+}
+
+.package-action {
+  display: flex;
+  justify-content: center;
+}
+
+.download-button {
+  max-width: 120px;
+  transition: all 0.3s ease;
+  background-color: var(--color-green-6);
+}
+
+/* 鼠标移入特效 */
+.ant-card:hover {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.package-image:hover {
+  transform: scale(1.05);
+}
+
+.ant-card:hover .download-button {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+</style>

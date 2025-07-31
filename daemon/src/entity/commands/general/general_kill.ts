@@ -18,7 +18,7 @@ export default class GeneralKillCommand extends InstanceCommand {
     instance.ignoreEventTaskOnce();
 
     const task = instance?.asynchronousTask;
-    if (task && task.stop) {
+    if (task && typeof task.stop === "function") {
       task
         .stop(instance)
         .then(() => {})
