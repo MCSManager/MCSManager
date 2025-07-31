@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard, QuickStartPackages } from "@/types";
+import type { LayoutCard } from "@/types";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { t } from "@/lang/i18n";
 import {
   CloudServerOutlined,
   FileZipOutlined,
   FolderOpenOutlined,
-  ArrowRightOutlined
+  ArrowRightOutlined,
+  BuildOutlined,
+  ApiOutlined,
+  AuditOutlined
 } from "@ant-design/icons-vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { router } from "@/config/router";
@@ -93,6 +96,7 @@ const manualInstallOptions = [
   <div style="height: 100%">
     <div v-if="isAdmin" style="margin-bottom: 30px">
       <a-typography-title :level="4" style="margin-bottom: 16px">
+        <AuditOutlined />
         {{ t("手动安装") }}
       </a-typography-title>
       <div class="manual-install-options">

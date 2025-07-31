@@ -1,15 +1,28 @@
-import { createRouter, createWebHashHistory, type Router, type RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHashHistory,
+  type RouteLocationNormalized,
+  type Router,
+  type RouteRecordRaw
+} from "vue-router";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import { $t as t } from "@/lang/i18n";
 import LoginPage from "@/views/Login.vue";
 import InstallPage from "@/views/Install.vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import type { LoginUserInfo } from "@/types/user";
 
 export interface RouterMetaInfo {
   icon?: string;
   mainMenu?: boolean;
   permission?: number;
-  redirect?: string;
+  redirect?:
+    | string
+    | ((
+        userInfo: LoginUserInfo | undefined,
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalized
+      ) => string);
   onlyDisplayEditMode?: boolean;
   condition?: () => boolean;
   breadcrumbs?: Array<{
@@ -26,6 +39,13 @@ export interface RouterConfig {
   component?: any;
   children?: RouterConfig[];
   meta: RouterMetaInfo;
+  redirect?:
+    | string
+    | ((
+        userInfo: LoginUserInfo,
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalized
+      ) => string);
 }
 
 export enum ROLE {
@@ -68,20 +88,20 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/",
-    name: t("TXT_CODE_16d71239"),
+    name: "",
     component: LayoutContainer,
     meta: {
       mainMenu: true,
-      permission: ROLE.ADMIN
-    }
-  },
-  {
-    path: "/market",
-    name: t("模板市场"),
-    component: LayoutContainer,
-    meta: {
-      mainMenu: true,
-      permission: ROLE.ADMIN
+      redirect: (user) => {
+        if (user?.permission === ROLE.ADMIN) {
+          return "/instances";
+        }
+        if (user?.permission && user.permission >= ROLE.USER) {
+          return "/customer";
+        }
+        return "/login";
+      },
+      permission: ROLE.USER
     }
   },
   {
@@ -138,6 +158,24 @@ const originRouterConfig: RouterConfig[] = [
         ]
       }
     ]
+  },
+  {
+    path: "/market",
+    name: t("应用市场"),
+    component: LayoutContainer,
+    meta: {
+      mainMenu: true,
+      permission: ROLE.ADMIN
+    }
+  },
+  {
+    path: "/overview",
+    name: t("数据监控"),
+    component: LayoutContainer,
+    meta: {
+      mainMenu: true,
+      permission: ROLE.ADMIN
+    }
   },
   {
     path: "/users",
@@ -288,6 +326,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
+
   const userPermission = state.userInfo?.permission ?? 0;
   const toPagePermission = Number(to.meta.permission ?? 0);
   const fromRoutePath = router.currentRoute.value.path.trim();
@@ -302,6 +341,18 @@ router.beforeEach((to, from, next) => {
     "toPagePermission:",
     toPagePermission
   );
+
+  if (!state.isInstall && toRoutePath !== "/install") {
+    return next("/install");
+  }
+
+  if (to.meta?.redirect) {
+    if (typeof to.meta.redirect === "function") {
+      const userInfo = state.userInfo;
+      return next(to.meta.redirect(userInfo, to, from));
+    }
+    return next(to.meta.redirect as string);
+  }
 
   if (
     toRoutePath.includes("_open_page") ||

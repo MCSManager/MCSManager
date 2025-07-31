@@ -78,7 +78,9 @@ const overviewList = computed(() => {
     },
     {
       title: t("TXT_CODE_b4d8588"),
-      value: `${system.version} ${system.release}`
+      value: `${
+        system.version.length > 16 ? system.version.slice(0, 16) + "..." : system.version
+      } ${system.release}`
     },
     {
       title: t("TXT_CODE_edf84830"),

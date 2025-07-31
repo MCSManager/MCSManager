@@ -5,7 +5,7 @@ import { quickInstallListAddr } from "@/services/apis/instance";
 import type { QuickStartPackages } from "@/types";
 import { reportErrorMsg } from "@/tools/validator";
 import { Modal } from "ant-design-vue";
-import { DownloadOutlined } from "@ant-design/icons-vue";
+import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
 import { onMounted } from "vue";
 import Loading from "@/components/Loading.vue";
 import CardPanel from "@/components/CardPanel.vue";
@@ -226,6 +226,7 @@ onMounted(() => {
 
 <template>
   <a-typography-title :level="4" style="margin-bottom: 20px">
+    <DatabaseOutlined />
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
   <!-- Loading state - shows loading spinner while fetching package data -->
