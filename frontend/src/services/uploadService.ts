@@ -8,7 +8,7 @@ import { t } from "@/lang/i18n";
 import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
 
-const PIECE_SIZE = 1024 * 1024; // 1MB
+const PIECE_SIZE = 1024 * 1024 * 10;
 
 class UploadFiles {
   file: File;
@@ -256,7 +256,7 @@ class UploadService {
           message.success(currentFile.file.name + " " + t("TXT_CODE_773f36a0"));
         }
         while (this.files.size > 0) {
-          const current = this.files.keys().next().value;
+          const current = this.files.keys().next().value ?? "";
           const currentFile = this.files.get(current);
           if (currentFile?.removing) {
             this.files.delete(current);
