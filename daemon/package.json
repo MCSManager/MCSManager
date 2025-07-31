@@ -36,6 +36,7 @@
     "node-stream-zip": "^1.15.0",
     "os-utils": "0.0.14",
     "pidusage": "^2.0.21",
+    "pretty-bytes": "^7.0.0",
     "proper-lockfile": "^4.1.2",
     "properties": "^1.2.1",
     "rcon-srcds": "^2.1.0",

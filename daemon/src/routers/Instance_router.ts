@@ -408,7 +408,10 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
         );
       });
   }
+
   // Quick install Minecraft server task
+  // Why not use the ".execPreset("install", parameter)" that already exists in Instance?
+  // Because the instance has not yet been created at this stage.
   if (taskName === "quick_install") {
     const newInstanceName = String(parameter.newInstanceName);
     const targetLink = String(parameter.targetLink);

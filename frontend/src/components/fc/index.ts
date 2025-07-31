@@ -11,6 +11,7 @@ import TaskLoadingDialog from "./TaskLoadingDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
+import NodeSelectDialog from "./NodeSelectDialog.vue";
 
 interface DockerConfigItem {
   host: string;
@@ -171,4 +172,11 @@ export async function useImageViewerDialog(
   return await useMountComponent({ instanceId, daemonId, fileName, frontDir }).mount(
     ImageViewerDialog
   );
+}
+
+export async function openNodeSelectDialog() {
+  const dialog = useMountComponent({}).load<InstanceType<typeof NodeSelectDialog>>(
+    NodeSelectDialog
+  );
+  return dialog!.openDialog();
 }

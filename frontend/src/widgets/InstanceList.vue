@@ -144,7 +144,16 @@ const handleChangeNode = async (item: NodeStatus) => {
 
 const toCreateAppPage = () => {
   router.push({
-    path: "/quickstart",
+    path: "/market",
+    query: {
+      daemonId: currentRemoteNode.value?.uuid
+    }
+  });
+};
+
+const toMarketPage = () => {
+  router.push({
+    path: "/market",
     query: {
       daemonId: currentRemoteNode.value?.uuid
     }
@@ -279,14 +288,15 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
   const confirmDeleteInstanceModal = Modal.confirm({
     title: t("TXT_CODE_2a3b0c17"),
     icon: h(InfoCircleOutlined),
-    content: () => h("div", {}, [
-      h("p", {}, deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a")),
-      h("p", { style: "margin-top: 8px; color: #666;" }, [
-        t("TXT_CODE_91d70059"),
-        h("br"),
-        paths.join()
-      ])
-    ]),
+    content: () =>
+      h("div", {}, [
+        h("p", {}, deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a")),
+        h("p", { style: "margin-top: 8px; color: #666;" }, [
+          t("TXT_CODE_91d70059"),
+          h("br"),
+          paths.join()
+        ])
+      ]),
     okText: t("TXT_CODE_d507abff"),
     async onOk() {
       try {
@@ -324,8 +334,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div style="height: 100%" class="container">
-    <a-row :gutter="[24, 24]" style="height: 100%">
+  <div style="min-height: 100%" class="container">
+    <a-row :gutter="[24, 24]" style="min-height: 100%">
       <a-col :span="24">
         <BetweenMenus>
           <template v-if="!isPhone" #left>
@@ -490,10 +500,10 @@ onMounted(async () => {
           </a-tag>
         </div>
       </a-col>
-      <template v-if="isLoading">
+      <a-col v-if="isLoading" :span="24">
         <Loading></Loading>
-      </template>
-      <template v-else-if="instancesMoreInfo.length > 0">
+      </a-col>
+      <a-col v-else-if="instancesMoreInfo.length > 0" :span="24">
         <fade-up-animation>
           <a-col
             v-for="item in instancesMoreInfo"
@@ -515,13 +525,22 @@ onMounted(async () => {
             />
           </a-col>
         </fade-up-animation>
-      </template>
-      <div
+      </a-col>
+      <a-col
         v-else-if="instancesMoreInfo.length === 0"
-        class="flex align-center justify-center h-100 w-100"
+        :span="24"
+        class="flex align-center justify-center h-100 w-100 flex-col"
+        style="position: relative"
       >
-        <Empty :description="t('TXT_CODE_5415f009')" />
-      </div>
+        <div>
+          <Empty :description="t('TXT_CODE_5415f009')" />
+        </div>
+        <div class="mt-20">
+          <a-button type="primary" @click="toMarketPage">
+            {{ t("前往应用市场安装应用") }}
+          </a-button>
+        </div>
+      </a-col>
     </a-row>
   </div>
 </template>

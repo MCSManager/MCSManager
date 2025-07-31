@@ -280,6 +280,13 @@ export const queryAsyncTask = useDefineApi<
       instanceUuid: string;
       status: number;
       taskId: string;
+      downloadProgress?: {
+        percentage: number;
+        downloadedBytes: number;
+        totalBytes: number;
+        speed: number;
+        eta: number;
+      };
     };
   }
 >({

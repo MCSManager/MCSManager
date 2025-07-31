@@ -56,7 +56,7 @@ const createUser = async () => {
 
 const toQuickStart = () => {
   toPage({
-    path: "/quickstart",
+    path: "/market",
     query: {
       from_install: 1
     }
