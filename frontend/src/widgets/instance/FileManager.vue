@@ -480,7 +480,7 @@ onUnmounted(() => {
                 }"
                 :percent="progress"
                 :show-info="false"
-                class="mb-20"
+                class="mb-20 no-animation"
               />
               <a-typography-text style="padding-left: 2px; white-space: nowrap">
                 {{ convertFileSize(uploadData.current![0].toString()) }} /
