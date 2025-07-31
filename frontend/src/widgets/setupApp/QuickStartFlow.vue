@@ -31,9 +31,14 @@ const {
 } = useQuickStartFlow();
 
 const presetAppType = String(route.query.appType);
+const presetCreateMethod = String(route.query.createMethod);
 
 if (presetAppType in QUICKSTART_ACTION_TYPE) {
   toStep2(presetAppType as QUICKSTART_ACTION_TYPE);
+}
+
+if (presetCreateMethod in QUICKSTART_METHOD) {
+  toStep4(presetCreateMethod as QUICKSTART_METHOD);
 }
 
 const handleNext = (key: string) => {

@@ -12,6 +12,8 @@ import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
 import logger from "../log";
 import { t } from "i18next";
 import { InstanceUpdateAction } from "../instance_update_action";
+import prettyBytes from "pretty-bytes";
+import { formatTime } from "../../tools/time";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -22,9 +24,20 @@ export class QuickInstallTask extends AsyncTask {
   public filePath = "";
   public extName = "";
 
+  public downloadProgress = {
+    percentage: 0,
+    downloadedBytes: 0,
+    totalBytes: 0,
+    speed: 0, // bytes per second
+    eta: 0 // estimated time remaining in seconds
+  };
+
   private downloadStream?: fs.WriteStream;
   private writeStream?: fs.WriteStream;
   private updateTask?: InstanceUpdateAction;
+  private lastProgressOutput = 0; // Throttle progress output
+  private abortController = new AbortController();
+  private isInitInstance = false;
 
   constructor(
     public instanceName: string,
@@ -39,9 +52,12 @@ export class QuickInstallTask extends AsyncTask {
     if (!curInstance) {
       config.cwd = "";
       this.instance = InstanceSubsystem.createInstance(config);
+      this.isInitInstance = true;
     } else {
       this.instance = curInstance;
+      this.isInitInstance = false;
     }
+
     this.taskId = `${QuickInstallTask.TYPE}-${this.instance.instanceUuid}-${v4()}`;
     this.type = QuickInstallTask.TYPE;
     this.extName = path.extname(this.targetLink ?? "") || ".zip";
@@ -60,14 +76,90 @@ export class QuickInstallTask extends AsyncTask {
           path.join(this.instance.absoluteCwdPath(), downloadFileName)
         );
         this.writeStream = fs.createWriteStream(this.filePath);
+
+        // Initialize download progress
+        this.downloadProgress = {
+          percentage: 0,
+          downloadedBytes: 0,
+          totalBytes: 0,
+          speed: 0,
+          eta: 0
+        };
+
         const response = await axios<Readable>({
           url: this.targetLink,
-          responseType: "stream"
+          responseType: "stream",
+          signal: this.abortController.signal
         });
+
+        // Get total file size
+        const contentLength = response.headers["content-length"];
+        if (contentLength) {
+          this.downloadProgress.totalBytes = parseInt(contentLength);
+        }
+
+        let lastProgressUpdate = Date.now();
+        let lastDownloadedBytes = 0;
+
+        response.data.on("data", (chunk: Buffer) => {
+          this.downloadProgress.downloadedBytes += chunk.length;
+
+          // Calculate download speed (update every second)
+          const currentTime = Date.now();
+          if (currentTime - lastProgressUpdate >= 1000) {
+            const timeDiff = (currentTime - lastProgressUpdate) / 1000;
+            const bytesDiff = this.downloadProgress.downloadedBytes - lastDownloadedBytes;
+            this.downloadProgress.speed = bytesDiff / timeDiff;
+
+            // Calculate remaining time
+            if (this.downloadProgress.speed > 0 && this.downloadProgress.totalBytes > 0) {
+              const remainingBytes =
+                this.downloadProgress.totalBytes - this.downloadProgress.downloadedBytes;
+              this.downloadProgress.eta = remainingBytes / this.downloadProgress.speed;
+            }
+
+            lastProgressUpdate = currentTime;
+            lastDownloadedBytes = this.downloadProgress.downloadedBytes;
+          }
+
+          // Calculate download percentage
+          if (this.downloadProgress.totalBytes > 0) {
+            this.downloadProgress.percentage = Math.round(
+              (this.downloadProgress.downloadedBytes / this.downloadProgress.totalBytes) * 100
+            );
+          }
+
+          // Throttle progress output to once per second
+          const now = Date.now();
+          if (now - this.lastProgressOutput >= 1000) {
+            const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
+              this.downloadProgress.totalBytes
+            )}`;
+            const speed = `${prettyBytes(this.downloadProgress.speed)}/s, ETA: ${formatTime(
+              this.downloadProgress.eta
+            )}`;
+            this.instance.println(
+              "INFO",
+              `Downloading... (${this.downloadProgress.percentage}%): ${size}, ${speed}`
+            );
+            this.lastProgressOutput = now;
+          }
+        });
+
         this.downloadStream = pipeline(response.data, this.writeStream, (err) => {
           if (err) {
             reject(err);
           } else {
+            this.downloadProgress.percentage = 100;
+            this.downloadProgress.downloadedBytes = this.downloadProgress.totalBytes;
+            this.instance.println(
+              "INFO",
+              `Download "${this.targetLink}" success! ${(
+                this.downloadProgress.downloadedBytes /
+                1024 /
+                1024
+              ).toFixed(2)} MB`
+            );
             resolve(true);
           }
         });
@@ -80,13 +172,28 @@ export class QuickInstallTask extends AsyncTask {
   async onStart() {
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
-      if (this.targetLink) {
-        let result = await this.download();
-        if (this.extName === ".zip")
-          result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
-        if (!result) throw new Error($t("TXT_CODE_quick_install.unzipError"));
+      this.instance.status(Instance.STATUS_BUSY);
+      if (this.isInitInstance) {
+        if (this.instance.asynchronousTask) {
+          throw new Error(
+            $t("无法开始安装，因为有其他的异步任务正在进行，请在终端页先终止其他任务！")
+          );
+        }
+        this.instance.asynchronousTask = this;
       }
 
+      if (this.targetLink) {
+        let result = await this.download();
+        this.instance.println("INFO", "Unziping...");
+        if (this.extName === ".zip")
+          result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
+        if (!result) {
+          this.error(new Error($t("TXT_CODE_quick_install.unzipError")));
+          return;
+        }
+      }
+
+      this.instance.println("INFO", "Building config...");
       let config: Partial<InstanceConfig>;
       if (this.buildParams?.startCommand || !fs.existsSync(this.ZIP_CONFIG_JSON)) {
         config = this.buildParams || {};
@@ -127,18 +234,27 @@ export class QuickInstallTask extends AsyncTask {
         });
       }
 
+      this.instance.println("INFO", "Config built successfully!");
+
       if (this.instance?.config?.updateCommand) {
         try {
+          this.instance.println("INFO", "Updating instance...");
           this.updateTask = new InstanceUpdateAction(this.instance);
           await this.updateTask.start();
           await this.updateTask.wait();
-        } catch (error) {}
+          this.instance.println("INFO", "Instance updated successfully!");
+        } catch (error: any) {
+          this.instance.println("WARNING", "Instance update failed! Reason: " + error?.message);
+        }
       }
 
       this.stop();
     } catch (error: any) {
       this.error(error);
     } finally {
+      this.instance.status(Instance.STATUS_STOP);
+      if (this.isInitInstance && this.instance.asynchronousTask === this)
+        this.instance.asynchronousTask = undefined;
       if (fs.existsSync(fileManager.toAbsolutePath(this.TMP_ZIP_NAME)))
         fs.remove(fileManager.toAbsolutePath(this.TMP_ZIP_NAME), () => {});
     }
@@ -146,19 +262,28 @@ export class QuickInstallTask extends AsyncTask {
 
   async onStop() {
     try {
+      this.abortController.abort();
       this.writeStream?.destroy();
-      this.writeStream = undefined;
       this.downloadStream?.destroy();
+      this.writeStream = undefined;
       this.downloadStream = undefined;
-    } catch (error) {
-      logger.error("QuickInstallTask -> onStop(): destroy download stream error:", error);
+    } catch (error: any) {
+      this.instance.println(
+        "ERROR",
+        "QuickInstallTask -> onStop(): destroy download stream error: " + error?.message
+      );
+      logger.error("QuickInstallTask -> onStop(): destroy download stream error: ", error);
     }
 
     try {
       await this.updateTask?.stop();
       this.updateTask = undefined;
     } catch (error: any) {
-      logger.error("QuickInstallTask -> onStop(): updateTask stop error:", error);
+      this.instance.println(
+        "ERROR",
+        "QuickInstallTask -> onStop(): updateTask stop error: " + error?.message
+      );
+      logger.error("QuickInstallTask -> onStop(): updateTask stop error: ", error);
     }
   }
 
@@ -169,12 +294,15 @@ export class QuickInstallTask extends AsyncTask {
         status: this.status(),
         instanceUuid: this.instance.instanceUuid,
         instanceStatus: this.instance.status(),
-        instanceConfig: this.instance.config
+        instanceConfig: this.instance.config,
+        downloadProgress: this.downloadProgress
       })
     );
   }
 
-  async onError() {}
+  async onError(err: Error) {
+    this.instance.println("ERROR", err?.message);
+  }
 }
 
 export function createQuickInstallTask(
