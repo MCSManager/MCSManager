@@ -26,7 +26,6 @@ const { isAdmin } = useAppStateStore();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId = getMetaOrRouteValue("daemonId", false) ?? "";
-const instanceId = getMetaOrRouteValue("instanceId", false) ?? "";
 
 // 表单数据状态
 const formData = ref({
@@ -37,10 +36,6 @@ const formData = ref({
 
 // 弹窗状态
 const showCreateForm = ref(false);
-
-const handleSelectTemplate = (template: QuickStartPackages) => {
-  console.log(daemonId, instanceId, template);
-};
 
 const handleNext = (instanceUuid: string) => {
   showCreateForm.value = false;
