@@ -37,6 +37,7 @@ import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
 import { type ItemType, Modal } from "ant-design-vue";
 import uploadService from "@/services/uploadService";
+import type { UploadFile } from "ant-design-vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -70,7 +71,6 @@ const {
   deleteFile,
   zipFile,
   unzipFile,
-  beforeUpload,
   downloadFile,
   handleChangeDir,
   handleSearchChange,
@@ -87,9 +87,18 @@ const {
 
 const { openRightClickMenu } = useRightClickMenu();
 
+const beforeUploadMulti = (file: UploadFile, fileList: UploadFile[]) => {
+  // Only run once (for the first file) so we don’t duplicate the queueing
+  if (file.uid !== fileList[0].uid) return false;
+  fileList.forEach((f) => {
+    if (f.originFileObj) selectedFile(f.originFileObj as File);
+  });
+  return false; // keep Ant Design in manual mode
+};
+
 const isShowDiskList = computed(
   () =>
-    fileStatus.value?.disks.length &&
+    fileStatus.value?.disks?.length &&
     fileStatus.value?.platform === "win32" &&
     fileStatus.value?.isGlobalInstance
 );
@@ -156,10 +165,9 @@ const columns = computed(() => {
 
 let uploading = false;
 const progress = computed(() => {
-  if (uploadService.uiData.value.current) {
-    return (uploadService.uiData.value.current[0] * 100) / uploadService.uiData.value.current[1];
-  }
-  return 0;
+  const cur = uploadService.uiData.value.current;
+  if (!cur || cur[1] === 0) return 0;
+  return (cur[0] * 100) / cur[1];
 });
 const uploadData = uploadService.uiData;
 watch(
@@ -364,7 +372,7 @@ onUnmounted(() => {
               }}
             </a-typography-text>
 
-            <a-upload :before-upload="beforeUpload" multiple :show-upload-list="false">
+            <a-upload :before-upload="beforeUploadMulti" multiple :show-upload-list="false">
               <a-button type="dashed">
                 <upload-outlined />
                 {{ t("TXT_CODE_e00c858c") }}
