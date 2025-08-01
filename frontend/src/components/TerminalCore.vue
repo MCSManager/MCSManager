@@ -6,7 +6,7 @@ import { encodeConsoleColor, useTerminal } from "../hooks/useTerminal";
 import { getInstanceOutputLog } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import connectErrorImage from "@/assets/daemon_connection_error.png";
-import { Terminal } from "xterm";
+import { Terminal } from "@xterm/xterm";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { getRandomId } from "../tools/randId";
