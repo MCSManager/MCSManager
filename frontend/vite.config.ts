@@ -33,7 +33,7 @@ export default defineConfig({
           if (path.includes("node_modules/vue") || path.includes("node_modules/@vue")) {
             return "vue";
           }
-          if (path.includes("node_modules/xterm")) {
+          if (path.includes("node_modules/@xterm")) {
             return "xterm";
           }
           if (path.includes("node_modules/@codemirror")) {
