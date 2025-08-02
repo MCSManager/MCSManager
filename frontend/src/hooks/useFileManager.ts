@@ -1,5 +1,4 @@
 import { message, Modal } from "ant-design-vue";
-import type { UploadProps } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { ref, createVNode, reactive, type VNodeRef, computed } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
@@ -30,6 +29,7 @@ import { reportErrorMsg } from "@/tools/validator";
 import { openLoadingDialog } from "@/components/fc";
 import { useImageViewerDialog } from "@/components/fc";
 import uploadService from "@/services/uploadService";
+import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -346,58 +346,94 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const spinning = ref(false);
 
-  const selectedFile = async (file: File) => {
+  const selectedFiles = async (files: File[]) => {
     const { state: missionCfg, execute: getUploadMissionCfg } = uploadAddress();
-    try {
-      const uploadDir = breadcrumbs[breadcrumbs.length - 1].path;
-      await getUploadMissionCfg({
-        params: {
-          upload_dir: uploadDir,
-          daemonId: daemonId!,
-          uuid: instanceId!,
-          file_name: file.name
-        }
-      });
-      if (!missionCfg.value) {
-        throw new Error(t("TXT_CODE_e8ce38c2"));
-      }
+    const fileSet = new Set(files.map((f) => ({ file: f, overwrite: false })));
+    const existingFiles: typeof fileSet = new Set();
 
-      let shouldOverwrite = true;
-      if (dataSource.value?.find((dataType) => dataType.name === file.name)) {
-        const confirmPromise = new Promise<boolean>((onComplete) => {
-          Modal.confirm({
-            title: t("TXT_CODE_99ca8563"),
-            icon: createVNode(ExclamationCircleOutlined),
-            content: [t("TXT_CODE_ec99ddaa"), file.name, t("TXT_CODE_8bd1f5d2")].join(" "),
-            onOk() {
-              onComplete(true);
-            },
-            onCancel() {
-              onComplete(false);
-            }
-          });
-        });
-        if (!(await confirmPromise)) {
-          shouldOverwrite = false;
-          //return reportErrorMsg(t("TXT_CODE_8b14426e"));
-        }
+    for (const f of fileSet) {
+      if (dataSource.value?.find((dataType) => dataType.name === f.file.name)) {
+        existingFiles.add(f);
       }
-
-      uploadService.append(
-        file,
-        parseForwardAddress(missionCfg.value.addr, "http"),
-        missionCfg.value.password,
-        shouldOverwrite
-      );
-    } catch (err: any) {
-      console.error(err);
-      return reportErrorMsg(err.response?.data || err.message);
     }
-  };
 
-  const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
-    await selectedFile(file);
-    return false;
+    for (const f of existingFiles) {
+      const all = ref(false);
+      const overwrite = ref(false);
+      const confirmPromise = new Promise<boolean>((onComplete) => {
+        Modal.confirm({
+          title: t("TXT_CODE_99ca8563"),
+          icon: createVNode(ExclamationCircleOutlined),
+          content: createVNode(
+            OverwriteFilesPopUpContent,
+            {
+              count: existingFiles.size,
+              fileName: f.file.name,
+              all: all,
+              overwrite: overwrite,
+              "onUpdate:all": (val: boolean) => (all.value = val),
+              "onUpdate:overwrite": (val: boolean) => (overwrite.value = val)
+            },
+            null
+          ),
+          okText: t("TXT_CODE_ae09d79d"),
+          cancelText: t("TXT_CODE_518528d0"),
+          onOk() {
+            onComplete(true);
+          },
+          onCancel() {
+            onComplete(false);
+          }
+        });
+      });
+      if (await confirmPromise) {
+        if (all.value) {
+          for (const f of existingFiles) {
+            f.overwrite = overwrite.value;
+          }
+          break;
+        }
+        f.overwrite = overwrite.value;
+        existingFiles.delete(f);
+      } else {
+        // skip
+        if (all.value) {
+          for (const f of existingFiles) {
+            fileSet.delete(f);
+          }
+          break;
+        }
+        existingFiles.delete(f);
+        fileSet.delete(f);
+      }
+    }
+
+    for (const f of fileSet) {
+      try {
+        const uploadDir = breadcrumbs[breadcrumbs.length - 1].path;
+        await getUploadMissionCfg({
+          params: {
+            upload_dir: uploadDir,
+            daemonId: daemonId!,
+            uuid: instanceId!,
+            file_name: f.file.name
+          }
+        });
+        if (!missionCfg.value) {
+          throw new Error(t("TXT_CODE_e8ce38c2"));
+        }
+
+        uploadService.append(
+          f.file,
+          parseForwardAddress(missionCfg.value.addr, "http"),
+          missionCfg.value.password,
+          f.overwrite
+        );
+      } catch (err: any) {
+        console.error(err);
+        return reportErrorMsg(err.response?.data || err.message);
+      }
+    }
   };
 
   const selectChanged = (_selectedRowKeys: Key[], selectedRows: DataType[]) => {
@@ -621,8 +657,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     deleteFile,
     zipFile,
     unzipFile,
-    beforeUpload,
-    selectedFile,
+    selectedFiles,
     rowClickTable,
     downloadFile,
     getFileLink,

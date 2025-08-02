@@ -44,7 +44,6 @@ declare module 'vue' {
     AppConfigProvider: typeof import('./src/components/AppConfigProvider.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AProgress: typeof import('ant-design-vue/es')['Progress']
-    ARadio: typeof import('ant-design-vue/es')['Radio']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     AResult: typeof import('ant-design-vue/es')['Result']
@@ -95,6 +94,7 @@ declare module 'vue' {
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
     NodeSimpleChart: typeof import('./src/components/NodeSimpleChart.vue')['default']
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
+    OverwriteFilesPopUpContent: typeof import('./src/components/OverwriteFilesPopUpContent.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     PurchaseQueryDialog: typeof import('./src/components/fc/PurchaseQueryDialog.vue')['default']
@@ -110,7 +110,6 @@ declare module 'vue' {
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     TerminalTags: typeof import('./src/components/TerminalTags.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
-    UploadTag: typeof import('./src/components/UploadTag.vue')['default']
     UseRedeemDialog: typeof import('./src/components/fc/UseRedeemDialog.vue')['default']
     WarningDialog: typeof import('./src/components/fc/WarningDialog.vue')['default']
   }

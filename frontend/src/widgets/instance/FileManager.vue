@@ -35,7 +35,7 @@ import FileEditor from "./dialogs/FileEditor.vue";
 import type { DataType } from "@/types/fileManager";
 import type { AntColumnsType } from "@/types/ant";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
-import { type ItemType, Modal } from "ant-design-vue";
+import { type ItemType, Modal, type UploadChangeParam, type UploadProps } from "ant-design-vue";
 import uploadService from "@/services/uploadService";
 
 const props = defineProps<{
@@ -70,11 +70,10 @@ const {
   deleteFile,
   zipFile,
   unzipFile,
-  beforeUpload,
   downloadFile,
   handleChangeDir,
   handleSearchChange,
-  selectedFile,
+  selectedFiles,
   rowClickTable,
   handleTableChange,
   getFileStatus,
@@ -219,11 +218,18 @@ const handleDrop = (e: DragEvent) => {
     icon: h(ExclamationCircleOutlined),
     content: t("TXT_CODE_52bc24ec") + ` ${name} ?`,
     onOk() {
-      for (const file of files) {
-        selectedFile(file);
-      }
+      selectedFiles([...files]); // files:FileList not instanceof Array
     }
   });
+};
+const fileList = ref<UploadProps["fileList"]>([]);
+const onFileSelect = (info: UploadChangeParam) => {
+  if (!info.fileList) return;
+  if (info.fileList[info.fileList.length - 1].uid != info.file.uid) return;
+  if (!fileList.value) return;
+  const files = [...fileList.value].map((v) => v.originFileObj as File);
+  fileList.value = [];
+  selectedFiles(files);
 };
 
 const editFile = (fileName: string) => {
@@ -364,7 +370,13 @@ onUnmounted(() => {
               }}
             </a-typography-text>
 
-            <a-upload :before-upload="beforeUpload" multiple :show-upload-list="false">
+            <a-upload
+              v-model:file-list="fileList"
+              :before-upload="() => false"
+              multiple
+              :on-change="onFileSelect"
+              :show-upload-list="false"
+            >
               <a-button type="dashed">
                 <upload-outlined />
                 {{ t("TXT_CODE_e00c858c") }}
