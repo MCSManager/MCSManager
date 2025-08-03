@@ -15,6 +15,9 @@ const GOLANG_ZIP_NAME = `file_zip_${SYSTEM_TYPE}_${os.arch()}${
   SYSTEM_TYPE === "win32" ? ".exe" : ""
 }`;
 const GOLANG_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", GOLANG_ZIP_NAME));
+const STEAM_CMD_PATH = path.normalize(
+  path.join(process.cwd(), "lib", os.platform() === "win32" ? "steamcmd.exe" : "steamcmd")
+);
 
 export {
   GOLANG_ZIP_PATH,
@@ -23,5 +26,6 @@ export {
   LOCAL_PRESET_LANG_PATH,
   FRPC_PATH,
   IGNORE,
-  ZIP_TIMEOUT_SECONDS
+  ZIP_TIMEOUT_SECONDS,
+  STEAM_CMD_PATH
 };

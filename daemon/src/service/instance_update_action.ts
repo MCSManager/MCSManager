@@ -33,13 +33,11 @@ export class InstanceUpdateAction extends AsyncTask {
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
     );
+    this.instance.println($t("TXT_CODE_general_update.update"), `${updateCommand}`);
 
     // Docker Update Command Mode
     if (this.instance.config.processType === "docker" && this.instance.config.docker?.image) {
-      this.containerWrapper = new SetupDockerContainer(
-        this.instance,
-        this.instance.config.updateCommand
-      );
+      this.containerWrapper = new SetupDockerContainer(this.instance, updateCommand);
       await this.containerWrapper.start();
       await this.containerWrapper.attach(this.instance);
       await this.containerWrapper.wait();
@@ -47,7 +45,6 @@ export class InstanceUpdateAction extends AsyncTask {
       return;
     }
 
-    // command parsing
     const commandList = commandStringToArray(updateCommand);
     const commandExeFile = commandList[0];
     const commandParameters = commandList.slice(1);
