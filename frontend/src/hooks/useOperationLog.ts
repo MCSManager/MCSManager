@@ -3,8 +3,6 @@ import { getOperationLog } from "@/services/apis/operationLog";
 import { t } from "@/lang/i18n";
 import type { OperationLoggerItem } from "@/types/operationLog";
 
-type LogsDataItem = OperationLoggerItem & { text: string };
-type LogsData = { color: string; item: LogsDataItem[] };
 type TextRenderResult = {
   text: string;
   data: string[];
@@ -123,6 +121,13 @@ const renderMap: OperationRenderer = {
     text: t("TXT_CODE_5564bc4c"),
     data: [item.operator_name || item.operation_id]
   }),
+  user_login: (item) => ({
+    text: t("TXT_CODE_31a48870") + ` (${item.operator_ip})`,
+    data: [
+      item.operator_name || item.operation_id,
+      item.login_result ? t("TXT_CODE_43fcaf94") : t("TXT_CODE_56c686f8")
+    ]
+  }),
   system_config_change: (item) => ({
     text: t("TXT_CODE_d6312bd5"),
     data: [item.operator_name || item.operation_id]
@@ -150,7 +155,7 @@ export const useOperationLog = () => {
     if (!handler) return t("TXT_CODE_43df9305");
     const { text, data } = handler(item as any);
     let i = 0;
-    return text.replace(/\{\{\s*[\w_]+\s*\}\}/g, () => data[i++] ?? "--");
+    return text.replace(/\<\<\s*[\w_]+\s*\>\>/g, () => data[i++] ?? "--");
   };
 
   const getColorByLevel = (level: OperationLoggerItem["operation_level"]) => {

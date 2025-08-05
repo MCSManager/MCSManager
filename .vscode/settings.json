@@ -16,7 +16,8 @@
     "MINECRAFT",
     "mkdirs",
     "percpu",
-    "precpu"
+    "precpu",
+    "totp"
   ],
   "i18n-ally.localesPaths": [
     "languages",

@@ -9,7 +9,7 @@ import SystemRemoteService from "./app/service/remote_service";
 import Koa from "koa";
 import { v4 } from "uuid";
 import path from "path";
-import koaBody, { HttpMethodEnum } from "koa-body-patch";
+import koaBody, { HttpMethodEnum } from "koa-body";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
@@ -115,7 +115,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   app.use(preCheckMiddleware);
   app.use(
     koaBody({
-      multipart: false,
+      multipart: true,
       parsedMethods: [
         HttpMethodEnum.GET,
         HttpMethodEnum.PUT,
@@ -123,7 +123,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         HttpMethodEnum.DELETE
       ],
       formidable: {
-        maxFileSize: 1,
+        maxFileSize: 1024 * 1024 * 500,
         maxFiles: 1
       },
       jsonLimit: "10mb",
