@@ -302,6 +302,7 @@ export default class Instance extends EventEmitter {
   // function that must be executed after the instance has been closed
   // trigger exit event
   stopped(code = 0) {
+    this.println("INFO", $t("实例已停止。"));
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;

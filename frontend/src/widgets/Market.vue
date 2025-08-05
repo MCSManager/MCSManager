@@ -5,13 +5,11 @@ import type { LayoutCard } from "@/types";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { t } from "@/lang/i18n";
 import {
-  CloudServerOutlined,
   FileZipOutlined,
   FolderOpenOutlined,
   ArrowRightOutlined,
-  BuildOutlined,
-  ApiOutlined,
-  AuditOutlined
+  AppstoreAddOutlined,
+  BlockOutlined
 } from "@ant-design/icons-vue";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { router } from "@/config/router";
@@ -70,18 +68,20 @@ const handleInstallAction = async (
 
 const manualInstallOptions = [
   {
-    label: t("使用 Docker 镜像创建"),
-    icon: CloudServerOutlined,
-    description: t("通过使用您在 DockerHub 上搜索到的任何镜像来创建、安装和启动实例。"),
-    action: () =>
-      handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer)
-  },
-  {
     label: t("导入压缩包"),
     icon: FileZipOutlined,
     description: t("通过上传服务端压缩包来自动创建实例，仅支持 .zip 文件，上传后会自动解压。"),
     action: () =>
       handleInstallAction(QUICKSTART_METHOD.IMPORT, QUICKSTART_ACTION_TYPE.SteamGameServer)
+  },
+  {
+    label: t("使用 Docker 镜像创建"),
+    icon: BlockOutlined,
+    description: t(
+      "需要提前安装好 Docker，再通过使用您在 DockerHub 上搜索到的任何镜像来创建、安装和启动实例。"
+    ),
+    action: () =>
+      handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer)
   },
   {
     label: t("直接创建"),
@@ -96,8 +96,8 @@ const manualInstallOptions = [
   <div style="height: 100%">
     <div v-if="isAdmin" style="margin-bottom: 30px">
       <a-typography-title :level="4" style="margin-bottom: 16px">
-        <AuditOutlined />
-        {{ t("手动安装") }}
+        <AppstoreAddOutlined />
+        {{ t("创建实例") }}
       </a-typography-title>
       <div class="manual-install-options">
         <a-row :gutter="[16, 16]">
@@ -111,19 +111,19 @@ const manualInstallOptions = [
             <CardPanel class="install-option-card" :style="{}" @click="option.action">
               <template #title>
                 <div class="card-header">
-                  <div class="icon-wrapper">
-                    <component :is="option.icon" />
-                  </div>
                   <div class="card-title">{{ option.label }}</div>
                 </div>
               </template>
               <template #body>
+                <div class="icon-wrapper">
+                  <component :is="option.icon" />
+                </div>
                 <div class="card-description">
                   {{ option.description }}
                 </div>
                 <div class="card-action">
                   <ArrowRightOutlined />
-                  {{ t("选择此方式") }}
+                  {{ t("选择") }}
                 </div>
               </template>
             </CardPanel>
@@ -176,18 +176,6 @@ const manualInstallOptions = [
   .card-header {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
-
-    .icon-wrapper {
-      font-size: 20px;
-      margin-right: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-      color: var(--color-gray-8);
-    }
 
     .card-title {
       font-size: 16px;
@@ -211,6 +199,17 @@ const manualInstallOptions = [
     color: var(--color-blue-6);
     font-size: 14px;
     gap: 4px;
+    margin-right: 4px;
+  }
+
+  .icon-wrapper {
+    position: absolute;
+    left: 2px;
+    bottom: 0;
+    color: var(--color-gray-8);
+    opacity: 0.2;
+    font-size: 20px;
+    transform: rotate(-1deg);
   }
 }
 </style>
