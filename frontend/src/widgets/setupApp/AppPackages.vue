@@ -350,14 +350,19 @@ onMounted(() => {
                   <a-typography-title :level="5">
                     {{ item.title }}
                   </a-typography-title>
+                  <div class="mb-5">
+                    <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>
+                  </div>
                   <a-typography-paragraph>
-                    <a-typography-text :style="{ fontSize: '13px' }">
-                      {{ item.description }}
+                    <a-typography-text :style="{ fontSize: '12px' }">
+                      <span>
+                        {{ item.description }}
+                      </span>
                       <br />
-                      <span style="opacity: 0.4">{{ t("TXT_CODE_18b94497") }}: </span>
+                      <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
                       <span>{{ item.runtime }}</span>
                       <br />
-                      <span style="opacity: 0.4">{{ t("TXT_CODE_683e3033") }}: </span>
+                      <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
                       <span>{{ item.hardware }}</span>
                     </a-typography-text>
                   </a-typography-paragraph>

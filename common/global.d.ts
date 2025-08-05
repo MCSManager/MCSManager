@@ -203,6 +203,7 @@ declare global {
     gameType: string;
     image: string;
     platform: string;
+    tags?: string[];
   }
 
   interface IQuickStartTemplate {
