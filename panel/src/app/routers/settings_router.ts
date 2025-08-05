@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import remoteService from "../service/remote_service";
 import permission from "../middleware/permission";
-import validator from "../middleware/validator";
+import formidable from "formidable";
 import { saveSystemConfig, systemConfig } from "../setting";
 import { logger } from "../service/log";
 import { i18next, $t } from "../i18n";
@@ -45,7 +45,8 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.maxCompress != null) systemConfig.maxCompress = config.maxCompress;
     if (config.maxDownload != null) systemConfig.maxDownload = config.maxDownload;
     if (config.zipType != null) systemConfig.zipType = config.zipType;
-    if (config.totpDriftToleranceSteps != null) systemConfig.totpDriftToleranceSteps = config.totpDriftToleranceSteps;
+    if (config.totpDriftToleranceSteps != null)
+      systemConfig.totpDriftToleranceSteps = config.totpDriftToleranceSteps;
     if (config.loginCheckIp != null) systemConfig.loginCheckIp = config.loginCheckIp;
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
@@ -116,12 +117,17 @@ router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Upload file to asserts directory, only administrator can upload
 router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  const tmpFiles = ctx.request.files?.file;
+  let files = ctx.request.files?.file;
+  let tmpFile: formidable.File | undefined;
+  if (Array.isArray(files)) {
+    tmpFile = files[0];
+  } else {
+    tmpFile = files;
+  }
   try {
-    if (!tmpFiles || !(tmpFiles instanceof Array)) throw new Error($t("TXT_CODE_e4d6cc20"));
-    if (!tmpFiles[0].filepath || !fs.existsSync(tmpFiles[0].filepath))
+    if (!tmpFile) throw new Error($t("TXT_CODE_e4d6cc20"));
+    if (!tmpFile.filepath || !fs.existsSync(tmpFile.filepath))
       throw new Error($t("TXT_CODE_1a499109"));
-    const tmpFile = tmpFiles[0];
     const newFileName = v4() + path.extname(tmpFile.originalFilename || "");
     if (!FileManager.checkFileName(newFileName))
       throw new Error("Access denied: Malformed file name");
@@ -130,9 +136,13 @@ router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => 
     await fs.move(tmpFile.filepath, path.join(saveDirPath, newFileName));
     ctx.body = newFileName;
   } finally {
-    tmpFiles?.forEach((v) => {
-      if (v?.filepath) fs.remove(v.filepath, () => {});
-    });
+    if (Array.isArray(files)) {
+      files.forEach((v) => {
+        if (v?.filepath) fs.remove(v.filepath, () => {});
+      });
+    } else {
+      if (tmpFile?.filepath) fs.remove(tmpFile.filepath, () => {});
+    }
   }
 });
 
