@@ -280,13 +280,13 @@ onMounted(async () => {
                   <LoadingOutlined />
                   {{ instanceStatusText }}
                 </a-tag>
-                <a-tag v-else>
+                <a-tag v-else-if="instanceStatusText">
                   <InfoCircleOutlined />
                   {{ instanceStatusText }}
                 </a-tag>
               </span>
 
-              <a-tag color="purple"> {{ instanceTypeText }} </a-tag>
+              <a-tag v-if="instanceTypeText" color="purple"> {{ instanceTypeText }} </a-tag>
 
               <span
                 v-if="instanceInfo?.watcher && instanceInfo?.watcher > 1 && !isPhone"

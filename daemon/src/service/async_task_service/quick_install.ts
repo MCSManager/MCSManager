@@ -170,6 +170,8 @@ export class QuickInstallTask extends AsyncTask {
   }
 
   async onStart() {
+    this.instance.println("INFO", $t("安装任务正在启动..."));
+
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
       this.instance.status(Instance.STATUS_BUSY);
@@ -201,6 +203,14 @@ export class QuickInstallTask extends AsyncTask {
         config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
       }
 
+      if (this.instance.config.processType === "docker" && config.processType !== "docker") {
+        throw new Error(
+          $t(
+            "无法使用此应用模板重新安装，使用 Docker 容器创建的实例无法重装为普通模板，请选择含 Docker 标签的预设包进行重装。如果你确实需要安装其他模板，请联系管理员手动关闭实例的容器化设置。"
+          )
+        );
+      }
+
       logger.info(
         t("TXT_CODE_e5ba712d"),
         this.instance.config.nickname,
@@ -210,7 +220,8 @@ export class QuickInstallTask extends AsyncTask {
       );
       logger.info(t("TXT_CODE_ac225d07") + JSON.stringify(config));
 
-      this.instance.parameters(config);
+      this.instance.clearRuntimeConfig();
+      this.instance.parameters(config, true);
 
       this.instance.println("INFO", $t("配置构建成功！"));
 

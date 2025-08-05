@@ -237,6 +237,24 @@ export default class Instance extends EventEmitter {
     if (persistence) StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
   }
 
+  clearRuntimeConfig() {
+    const name = this.config.nickname;
+    const memory = this.config.docker.memory;
+    const maxSpace = this.config.docker.maxSpace;
+    const cpuUsage = this.config.docker.cpuUsage;
+    const cwd = this.config.cwd;
+    const endTime = this.config.endTime;
+
+    const newConfig = new InstanceConfig();
+    newConfig.nickname = name;
+    newConfig.docker.memory = memory;
+    newConfig.docker.maxSpace = maxSpace;
+    newConfig.docker.cpuUsage = cpuUsage;
+    newConfig.cwd = cwd;
+    newConfig.endTime = endTime;
+    this.config = newConfig;
+  }
+
   setLock(bool: boolean) {
     if (this.lock === true && bool === true) {
       throw new Error($t("TXT_CODE_ca030197"));
