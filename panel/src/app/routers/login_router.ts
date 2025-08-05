@@ -29,12 +29,22 @@ router.post(
     if (check(ctx)) return (ctx.body = "Logined");
     try {
       ctx.body = login(ctx, userName, passWord, code);
+      operationLogger.info("user_login", {
+        operator_ip: ctx.ip,
+        operator_name: userName,
+        login_result: true
+      });
     } catch (error: any) {
       if (error instanceof TwoFactorError && !code) {
         ctx.body = "NEED_2FA";
         return;
       }
       ctx.body = error;
+      operationLogger.warning("user_login", {
+        operator_ip: ctx.ip,
+        operator_name: userName,
+        login_result: false
+      });
     }
   }
 );
