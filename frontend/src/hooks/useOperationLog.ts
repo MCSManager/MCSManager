@@ -18,39 +18,39 @@ type OperationRenderer = {
 
 const renderMap: OperationRenderer = {
   instance_start: (item) => ({
-    text: "用户 {operator_name} 启动了 {instance_name} 实例",
+    text: t("TXT_CODE_e4605c4"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_stop: (item) => ({
-    text: "用户 {operator_name} 关闭了 {instance_name} 实例",
+    text: t("TXT_CODE_48c286cc"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_restart: (item) => ({
-    text: "用户 {operator_name} 重启了 {instance_name} 实例",
+    text: t("TXT_CODE_fa7002ef"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_update: (item) => ({
-    text: "用户 {operator_name} 更新了 {instance_name} 实例",
+    text: t("TXT_CODE_e1454ba7"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_kill: (item) => ({
-    text: "用户 {operator_name} 强制终止了 {instance_name} 实例",
+    text: t("TXT_CODE_ee54440"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_config_change: (item) => ({
-    text: "用户 {operator_name} 修改了 {instance_name} 实例配置",
+    text: t("TXT_CODE_30fcc19a"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_create: (item) => ({
-    text: "用户 {operator_name} 创建了 {instance_name} 实例",
+    text: t("TXT_CODE_9ab6fd"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_delete: (item) => ({
-    text: "用户 {operator_name} 删除了 {instance_name} 实例",
+    text: t("TXT_CODE_61b6facb"),
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_file_upload: (item) => ({
-    text: "用户 {operator_name} 向 {instance_name} 实例上传了文件 {file}",
+    text: t("TXT_CODE_58e4a9bd"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -58,7 +58,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_update: (item) => ({
-    text: "用户 {operator_name} 更新了 {instance_name} 实例的文件 {file}",
+    text: t("TXT_CODE_c5687e56"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -66,7 +66,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_download: (item) => ({
-    text: "用户 {operator_name} 下载了 {instance_name} 实例的文件 {file}",
+    text: t("TXT_CODE_6f43f95f"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -74,7 +74,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_delete: (item) => ({
-    text: "用户 {operator_name} 删除了 {instance_name} 实例的文件 {file}",
+    text: t("TXT_CODE_de567e84"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -82,7 +82,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_create: (item) => ({
-    text: "用户 {operator_name} 为 {instance_name} 实例创建了任务 {task_name}",
+    text: t("TXT_CODE_5ddb00f2"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -90,7 +90,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_delete: (item) => ({
-    text: "用户 {operator_name} 删除了 {instance_name} 实例的任务 {task_name}",
+    text: t("TXT_CODE_41f86ac"),
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -98,35 +98,35 @@ const renderMap: OperationRenderer = {
     ]
   }),
   daemon_create: (item) => ({
-    text: "用户 {operator_name} 创建了守护进程 {daemon_id}",
+    text: t("TXT_CODE_f7969e5a"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_remove: (item) => ({
-    text: "用户 {operator_name} 删除了守护进程 {daemon_id}",
+    text: t("TXT_CODE_384d278f"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_config_change: (item) => ({
-    text: "用户 {operator_name} 修改了守护进程 {daemon_id} 配置",
+    text: t("TXT_CODE_b6ac7af4"),
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   user_create: (item) => ({
-    text: "用户 {operator_name} 创建了用户 {target_user_name}",
+    text: t("TXT_CODE_faa1962b"),
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_delete: (item) => ({
-    text: "用户 {operator_name} 删除了用户 {target_user_name}",
+    text: t("TXT_CODE_cd76bc9"),
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_config_change: (item) => ({
-    text: "用户 {operator_name} 修改了用户配置",
+    text: t("TXT_CODE_5564bc4c"),
     data: [item.operator_name || item.operation_id]
   }),
   user_login: (item) => ({
-    text: `用户 {operator_name} 登录{login_result} (${item.operator_ip})`,
+    text: `用户 <<operator_name>> 登录<<login_result>> (${item.operator_ip})`,
     data: [item.operator_name || item.operation_id, item.login_result ? t("成功") : t("失败")]
   }),
   system_config_change: (item) => ({
-    text: "用户 {operator_name} 修改了系统配置",
+    text: t("TXT_CODE_d6312bd5"),
     data: [item.operator_name || item.operation_id]
   })
 };
