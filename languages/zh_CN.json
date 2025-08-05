@@ -2646,5 +2646,8 @@
   "TXT_CODE_58a55f17": "文件 {name} 已经在目录中存在",
   "TXT_CODE_5445f34b": "以及之后 {num} 个",
   "TXT_CODE_5bf41818": "覆盖",
-  "TXT_CODE_518528d0": "跳过"
+  "TXT_CODE_518528d0": "跳过",
+  "TXT_CODE_31a48870": "用户 <<operator_name>> 尝试登录，结果：<<login_result>>",
+  "TXT_CODE_43fcaf94": "成功",
+  "TXT_CODE_56c686f8": "失败"
 }
