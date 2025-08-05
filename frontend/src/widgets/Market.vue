@@ -68,25 +68,25 @@ const handleInstallAction = async (
 
 const manualInstallOptions = [
   {
-    label: t("导入压缩包"),
+    label: t("TXT_CODE_a3efb1cc"),
     icon: FileZipOutlined,
-    description: t("通过上传服务端压缩包来自动创建实例，仅支持 .zip 文件，上传后会自动解压。"),
+    description: t("TXT_CODE_f09da050"),
     action: () =>
       handleInstallAction(QUICKSTART_METHOD.IMPORT, QUICKSTART_ACTION_TYPE.SteamGameServer)
   },
   {
-    label: t("使用 Docker 镜像创建"),
+    label: t("TXT_CODE_bae487e4"),
     icon: BlockOutlined,
     description: t(
-      "需要提前安装好 Docker，再通过使用您在 DockerHub 上搜索到的任何镜像来创建、安装和启动实例。"
+      "TXT_CODE_256e5825"
     ),
     action: () =>
       handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer)
   },
   {
-    label: t("直接创建"),
+    label: t("TXT_CODE_e0fca76"),
     icon: FolderOpenOutlined,
-    description: t("无需上传任何文件，直接创建实例，后续再进行配置，适合经验丰富的用户。"),
+    description: t("TXT_CODE_b3844cf8"),
     action: () => handleInstallAction(QUICKSTART_METHOD.EXIST, QUICKSTART_ACTION_TYPE.AnyApp)
   }
 ];
@@ -97,7 +97,7 @@ const manualInstallOptions = [
     <div v-if="isAdmin" style="margin-bottom: 30px">
       <a-typography-title :level="4" style="margin-bottom: 16px">
         <AppstoreAddOutlined />
-        {{ t("创建实例") }}
+        {{ t("TXT_CODE_5a74975b") }}
       </a-typography-title>
       <div class="manual-install-options">
         <a-row :gutter="[16, 16]">
@@ -123,7 +123,7 @@ const manualInstallOptions = [
                 </div>
                 <div class="card-action">
                   <ArrowRightOutlined />
-                  {{ t("选择") }}
+                  {{ t("TXT_CODE_7b2c5414") }}
                 </div>
               </template>
             </CardPanel>
@@ -136,7 +136,7 @@ const manualInstallOptions = [
     <!-- 创建实例表单弹窗 -->
     <a-modal
       v-model:open="showCreateForm"
-      :title="t('创建新实例')"
+      :title="t('TXT_CODE_645bc545')"
       :width="800"
       :footer="null"
       :destroy-on-close="true"

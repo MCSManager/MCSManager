@@ -21,8 +21,8 @@ const formData = reactive({
 
 const rules: Record<string, any> = {
   instanceName: [
-    { required: true, message: t("请输入名称"), trigger: "blur" },
-    { min: 1, max: 30, message: t("名称长度应在1-30个字符之间"), trigger: "blur" }
+    { required: true, message: t("TXT_CODE_cf27ab7e"), trigger: "blur" },
+    { min: 1, max: 30, message: t("TXT_CODE_6dcaa94d"), trigger: "blur" }
   ]
 };
 
@@ -48,7 +48,7 @@ const handleConfirm = async () => {
 <template>
   <a-modal
     :open="open"
-    :title="t('使用模板快速开始')"
+    :title="t('TXT_CODE_c10ea805')"
     :width="500"
     :footer="null"
     :destroy-on-close="true"
@@ -67,10 +67,10 @@ const handleConfirm = async () => {
           <p class="template-description">{{ template.description }}</p>
           <div class="template-meta">
             <span class="meta-item">
-              <strong>{{ t("类别") }}:</strong> {{ template.category }}
+              <strong>{{ t("TXT_CODE_402018ce") }}:</strong> {{ template.category }}
             </span>
             <span class="meta-item">
-              <strong>{{ t("平台") }}:</strong> {{ template.platform }}
+              <strong>{{ t("TXT_CODE_3d0885c0") }}:</strong> {{ template.platform }}
             </span>
           </div>
         </div>
@@ -78,10 +78,10 @@ const handleConfirm = async () => {
     </div>
 
     <a-form ref="formRef" :model="formData" :rules="rules" layout="vertical" class="instance-form">
-      <a-form-item :label="t('取个好听的名字吧！')" name="instanceName">
+      <a-form-item :label="t('TXT_CODE_44ae0e7')" name="instanceName">
         <a-input
           v-model:value="formData.instanceName"
-          :placeholder="t('请输入名称')"
+          :placeholder="t('TXT_CODE_cf27ab7e')"
           :maxlength="50"
           show-count
         />
@@ -90,10 +90,10 @@ const handleConfirm = async () => {
 
     <div class="dialog-footer">
       <a-button @click="handleCancel">
-        {{ t("取消") }}
+        {{ t("TXT_CODE_a0451c97") }}
       </a-button>
       <a-button type="primary" @click="handleConfirm">
-        {{ t("开始安装") }}
+        {{ t("TXT_CODE_e4898801") }}
       </a-button>
     </div>
   </a-modal>

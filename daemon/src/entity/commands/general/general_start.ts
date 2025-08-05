@@ -134,6 +134,6 @@ export default class GeneralStartCommand extends AbsStartCommand {
       })
     );
     instance.println("INFO", $t("TXT_CODE_general_start.startOrdinaryTerminal"));
-    instance.println("INFO", $t("实例已启动..."));
+    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
   }
 }

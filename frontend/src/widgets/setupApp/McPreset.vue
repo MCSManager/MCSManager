@@ -53,7 +53,7 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
     if (!daemonId) {
       const node = await openNodeSelectDialog();
       if (!node) {
-        reportErrorMsg(t("请选择一个节点再安装！"));
+        reportErrorMsg(t("TXT_CODE_2de92a5d"));
         return;
       }
       daemonId = node.uuid;
@@ -90,7 +90,7 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
 
 // jump to terminal page
 const startDownloadTask = async () => {
-  message.info(t("下载任务正在进行中，即将跳转到控制台..."));
+  message.info(t("TXT_CODE_e718a226"));
   setTimeout(() => {
     router.push({
       path: "/instances/terminal",

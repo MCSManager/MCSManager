@@ -452,12 +452,12 @@ onMounted(async () => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("普通用户准许使用重装功能") }}
+                      {{ t("TXT_CODE_3c93920b") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         {{
-                          t("开启后，所有用户都可以使用终端右上角的 “重装” 功能，无需管理员权限。")
+                          t("TXT_CODE_bc2e52a0")
                         }}
                       </a-typography-text>
                     </a-typography-paragraph>

@@ -170,7 +170,7 @@ export class QuickInstallTask extends AsyncTask {
   }
 
   async onStart() {
-    this.instance.println("INFO", $t("安装任务正在启动..."));
+    this.instance.println("INFO", $t("TXT_CODE_e166bc2f"));
 
     const fileManager = getFileManager(this.instance.instanceUuid);
     try {
@@ -178,7 +178,7 @@ export class QuickInstallTask extends AsyncTask {
       if (this.isInitInstance) {
         if (this.instance.asynchronousTask) {
           throw new Error(
-            $t("无法开始安装，因为有其他的异步任务正在进行，请在终端页先终止其他任务！")
+            $t("TXT_CODE_5b0e93b5")
           );
         }
         this.instance.asynchronousTask = this;
@@ -186,7 +186,7 @@ export class QuickInstallTask extends AsyncTask {
 
       if (this.targetLink) {
         let result = await this.download();
-        this.instance.println("INFO", $t("正在解压文件..."));
+        this.instance.println("INFO", $t("TXT_CODE_e4a926bf"));
         if (this.extName === ".zip")
           result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
         if (!result) {
@@ -195,7 +195,7 @@ export class QuickInstallTask extends AsyncTask {
         }
       }
 
-      this.instance.println("INFO", $t("正在构建配置..."));
+      this.instance.println("INFO", $t("TXT_CODE_9df98e2"));
       let config: Partial<InstanceConfig>;
       if (this.buildParams?.startCommand || !fs.existsSync(this.ZIP_CONFIG_JSON)) {
         config = this.buildParams || {};
@@ -206,7 +206,7 @@ export class QuickInstallTask extends AsyncTask {
       if (this.instance.config.processType === "docker" && config.processType !== "docker") {
         throw new Error(
           $t(
-            "无法使用此应用模板重新安装，使用 Docker 容器创建的实例无法重装为普通模板，请选择含 Docker 标签的预设包进行重装。如果你确实需要安装其他模板，请联系管理员手动关闭实例的容器化设置。"
+            "TXT_CODE_f8145844"
           )
         );
       }
@@ -223,20 +223,20 @@ export class QuickInstallTask extends AsyncTask {
       this.instance.clearRuntimeConfig();
       this.instance.parameters(config, true);
 
-      this.instance.println("INFO", $t("配置构建成功！"));
+      this.instance.println("INFO", $t("TXT_CODE_4eccdde8"));
 
       if (this.instance?.config?.updateCommand) {
         try {
-          this.instance.println("INFO", $t("正在更新实例..."));
+          this.instance.println("INFO", $t("TXT_CODE_e577c77c"));
           this.updateTask = new InstanceUpdateAction(this.instance);
           await this.updateTask.start();
           await this.updateTask.wait();
-          this.instance.println("INFO", $t("实例更新成功！"));
+          this.instance.println("INFO", $t("TXT_CODE_9b4985d3"));
         } catch (error: any) {
-          this.instance.println("WARNING", $t("实例更新失败！原因：") + error?.message);
+          this.instance.println("WARNING", $t("TXT_CODE_47d56d0d") + error?.message);
         }
       }
-      this.instance.println("INFO", $t("所有安装操作均已执行完成，请尝试启动实例..."));
+      this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
 
       this.stop();
     } catch (error: any) {

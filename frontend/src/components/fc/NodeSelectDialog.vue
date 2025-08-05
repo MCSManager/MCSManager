@@ -21,7 +21,7 @@ const availableNodes = ref<NodeStatus[]>([]);
 
 const selectNode = (node: NodeStatus) => {
   if (!node.available) {
-    reportErrorMsg(t("请选择一个可用的节点！"));
+    reportErrorMsg(t("TXT_CODE_4ec4f7bb"));
     return;
   }
   submit(node);
@@ -41,7 +41,7 @@ defineExpose({
 <template>
   <a-modal
     v-model:open="isVisible"
-    :title="t('选择节点')"
+    :title="t('TXT_CODE_7e267ba')"
     :width="840"
     :footer="null"
     :destroy-on-close="true"
@@ -49,7 +49,7 @@ defineExpose({
   >
     <div class="node-select-container">
       <a-typography-paragraph>
-        {{ t("请选择一个可用的节点。") }}
+        {{ t("TXT_CODE_ad24269a") }}
       </a-typography-paragraph>
       <div class="node-grid">
         <div
@@ -61,8 +61,8 @@ defineExpose({
           <div class="node-content">
             <div class="node-header">
               <span class="node-name">{{ item.remarks || `${item.ip}:${item.port}` }}</span>
-              <a-tag v-if="item.available" color="green">{{ t("可用") }}</a-tag>
-              <a-tag v-else color="red">{{ t("不可用") }}</a-tag>
+              <a-tag v-if="item.available" color="green">{{ t("TXT_CODE_b078a763") }}</a-tag>
+              <a-tag v-else color="red">{{ t("TXT_CODE_6cbb84a9") }}</a-tag>
             </div>
             <div class="node-details">
               <span>IP: {{ item.ip }}:{{ item.port }}</span>

@@ -282,6 +282,6 @@ export default class PtyStartCommand extends AbsStartCommand {
       })
     );
     instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal"));
-    instance.println("INFO", $t("实例已启动..."));
+    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
   }
 }

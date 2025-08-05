@@ -161,7 +161,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/market",
-    name: t("应用市场"),
+    name: t("TXT_CODE_27594db8"),
     component: LayoutContainer,
     meta: {
       mainMenu: true,
@@ -170,7 +170,7 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/overview",
-    name: t("数据监控"),
+    name: t("TXT_CODE_84fbe277"),
     component: LayoutContainer,
     meta: {
       mainMenu: true,

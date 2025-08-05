@@ -543,9 +543,9 @@ export function getLayoutCardPool() {
       permission: ROLE.USER,
       meta: {},
       type: "Market",
-      title: t("应用市场"),
+      title: t("TXT_CODE_27594db8"),
       width: 12,
-      description: t("使用预设模板快速安装应用"),
+      description: t("TXT_CODE_9b45858c"),
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.COMMON
     }

@@ -172,7 +172,7 @@ const appPlatformList = computed(() => {
   const packages = getFilteredPackages(
     (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
   );
-  return generateOptionsList(packages, "platform", t("所有系统"));
+  return generateOptionsList(packages, "platform", t("TXT_CODE_47203b64"));
 });
 
 // Initialize function to load package data and handle errors
@@ -243,7 +243,7 @@ onMounted(() => {
       >
         <div><Loading /></div>
         <div style="margin-top: 20px; color: var(--color-gray-12)">
-          {{ t("加载中，如果长期无反应，请检查网络。") }}
+          {{ t("TXT_CODE_7fca723a") }}
         </div>
       </div>
     </a-col>

@@ -541,7 +541,7 @@ onMounted(async () => {
         </div>
         <div class="mt-20">
           <a-button type="primary" @click="toMarketPage">
-            {{ t("前往应用市场安装应用") }}
+            {{ t("TXT_CODE_871cb8bc") }}
           </a-button>
         </div>
       </a-col>
