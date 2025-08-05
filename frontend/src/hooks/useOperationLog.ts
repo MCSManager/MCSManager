@@ -122,7 +122,7 @@ const renderMap: OperationRenderer = {
     data: [item.operator_name || item.operation_id]
   }),
   user_login: (item) => ({
-    text: t("用户 <<operator_name>> 登录<<login_result>>") + `+ (${item.operator_ip})`,
+    text: t("用户 <<operator_name>> 登录<<login_result>>") + ` (${item.operator_ip})`,
     data: [item.operator_name || item.operation_id, item.login_result ? t("成功") : t("失败")]
   }),
   system_config_change: (item) => ({
