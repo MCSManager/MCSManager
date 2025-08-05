@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "Nom de projet incorrect, ne prend en charge que les traits de soulignement, les chiffres, les lettres et certaines langues locales",
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
   "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
-  "TXT_CODE_ebbb2def": "Toutes les catégories"
+  "TXT_CODE_ebbb2def": "Toutes les catégories",
+  "TXT_CODE_88249aee": "Marché des modèles de serveur",
+  "TXT_CODE_107695d": "Tous les jeux",
+  "TXT_CODE_2af87548": "Toutes les versions",
+  "TXT_CODE_7356e569": "Aucun modèle disponible",
+  "TXT_CODE_58a55f17": "Le fichier {name} existe déjà dans ce dossier",
+  "TXT_CODE_5445f34b": "et {num} autres",
+  "TXT_CODE_5bf41818": "Écraser",
+  "TXT_CODE_518528d0": "Ignorer",
+  "TXT_CODE_31a48870": "L'utilisateur <<operator_name>> a tenté de se connecter, résultat : <<login_result>>",
+  "TXT_CODE_43fcaf94": "Succès",
+  "TXT_CODE_56c686f8": "Échec"
 }

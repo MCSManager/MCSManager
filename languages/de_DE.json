@@ -2637,5 +2637,17 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
+  "TXT_CODE_ebbb2def": "Alle Kategorien",
+  "TXT_CODE_88249aee": "Server-Vorlagenmarkt",
+  "TXT_CODE_107695d": "Alle Spiele",
+  "TXT_CODE_2af87548": "Alle Versionen",
+  "TXT_CODE_7356e569": "Keine Vorlagen verfügbar",
+  "TXT_CODE_58a55f17": "Die Datei {name} existiert bereits in diesem Ordner",
+  "TXT_CODE_5445f34b": "und {num} weitere",
+  "TXT_CODE_5bf41818": "Überschreiben",
+  "TXT_CODE_518528d0": "Überspringen",
+  "TXT_CODE_31a48870": "Benutzer <<operator_name>> hat versucht, sich anzumelden, Ergebnis: <<login_result>>",
+  "TXT_CODE_43fcaf94": "Erfolgreich",
+  "TXT_CODE_56c686f8": "Fehlgeschlagen"
 }

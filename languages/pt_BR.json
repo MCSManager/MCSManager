@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
   "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
-  "TXT_CODE_ebbb2def": "Todas as categorias"
+  "TXT_CODE_ebbb2def": "Todas as categorias",
+  "TXT_CODE_88249aee": "Mercado de Modelos de Servidor",
+  "TXT_CODE_107695d": "Todos os Jogos",
+  "TXT_CODE_2af87548": "Todas as Versões",
+  "TXT_CODE_7356e569": "Nenhum Modelo Disponível",
+  "TXT_CODE_58a55f17": "O arquivo {name} já existe nesta pasta",
+  "TXT_CODE_5445f34b": "e mais {num}",
+  "TXT_CODE_5bf41818": "Substituir",
+  "TXT_CODE_518528d0": "Pular",
+  "TXT_CODE_31a48870": "Usuário <<operator_name>> tentou fazer login, resultado: <<login_result>>",
+  "TXT_CODE_43fcaf94": "Sucesso",
+  "TXT_CODE_56c686f8": "Falhou"
 }

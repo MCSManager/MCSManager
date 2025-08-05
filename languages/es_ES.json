@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
   "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
-  "TXT_CODE_ebbb2def": "Todas las categorías"
+  "TXT_CODE_ebbb2def": "Todas las categorías",
+  "TXT_CODE_88249aee": "Mercato dei modelli di server",
+  "TXT_CODE_107695d": "Tutti i giochi",
+  "TXT_CODE_2af87548": "Tutte le versioni",
+  "TXT_CODE_7356e569": "Nessun modello disponibile",
+  "TXT_CODE_58a55f17": "Il file {name} esiste già in questa cartella",
+  "TXT_CODE_5445f34b": "e altri {num}",
+  "TXT_CODE_5bf41818": "Sovrascrivi",
+  "TXT_CODE_518528d0": "Salta",
+  "TXT_CODE_31a48870": "L'utente <<operator_name>> ha tentato l'accesso, risultato: <<login_result>>",
+  "TXT_CODE_43fcaf94": "Successo",
+  "TXT_CODE_56c686f8": "Fallito"
 }

@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
   "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
-  "TXT_CODE_ebbb2def": "모든 카테고리"
+  "TXT_CODE_ebbb2def": "모든 카테고리",
+  "TXT_CODE_88249aee": "서버 템플릿 마켓",
+  "TXT_CODE_107695d": "모든 게임",
+  "TXT_CODE_2af87548": "모든 버전",
+  "TXT_CODE_7356e569": "사용 가능한 템플릿 없음",
+  "TXT_CODE_58a55f17": "파일 {name}이(가) 이 폴더에 이미 존재합니다",
+  "TXT_CODE_5445f34b": "및 {num}개 더",
+  "TXT_CODE_5bf41818": "덮어쓰기",
+  "TXT_CODE_518528d0": "건너뛰기",
+  "TXT_CODE_31a48870": "사용자 <<operator_name>>이(가) 로그인 시도를 했습니다, 결과: <<login_result>>",
+  "TXT_CODE_43fcaf94": "성공",
+  "TXT_CODE_56c686f8": "실패"
 }

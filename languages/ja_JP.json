@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
   "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
-  "TXT_CODE_ebbb2def": "すべてのカテゴリ"
+  "TXT_CODE_ebbb2def": "すべてのカテゴリ",
+  "TXT_CODE_88249aee": "サーバーテンプレート市場",
+  "TXT_CODE_107695d": "すべてのゲーム",
+  "TXT_CODE_2af87548": "すべてのバージョン",
+  "TXT_CODE_7356e569": "テンプレートがありません",
+  "TXT_CODE_58a55f17": "ファイル {name} はこのフォルダにすでに存在します",
+  "TXT_CODE_5445f34b": "および {num} 件以上",
+  "TXT_CODE_5bf41818": "上書き",
+  "TXT_CODE_518528d0": "スキップ",
+  "TXT_CODE_31a48870": "ユーザー <<operator_name>> がログインを試みました、結果：<<login_result>>",
+  "TXT_CODE_43fcaf94": "成功",
+  "TXT_CODE_56c686f8": "失敗"
 }

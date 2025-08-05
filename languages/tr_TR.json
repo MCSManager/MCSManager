@@ -2638,5 +2638,16 @@
   "TXT_CODE_system_instance_control.illegalName": "Yasadışı görev adı. Yalnızca alt çizgiler, sayılar, harfler ve bazı yerel dil karakterleri desteklenir.",
   "TXT_CODE_ui.help": "[Terminal] Daemon temel etkileşimli işlevselliğe sahiptir. Daha fazla bilgi için lütfen 'help' girin.",
   "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız",
-  "TXT_CODE_ebbb2def": "Tüm kategoriler"
+  "TXT_CODE_ebbb2def": "Tüm kategoriler",
+  "TXT_CODE_88249aee": "Sunucu Şablon Pazarı",
+  "TXT_CODE_107695d": "Tüm Oyunlar",
+  "TXT_CODE_2af87548": "Tüm Sürümler",
+  "TXT_CODE_7356e569": "Kullanılabilir Şablon Yok",
+  "TXT_CODE_58a55f17": "{name} dosyası bu klasörde zaten mevcut",
+  "TXT_CODE_5445f34b": "ve {num} tane daha",
+  "TXT_CODE_5bf41818": "Üzerine Yaz",
+  "TXT_CODE_518528d0": "Atla",
+  "TXT_CODE_31a48870": "Kullanıcı <<operator_name>> oturum açmayı denedi, sonuç: <<login_result>>",
+  "TXT_CODE_43fcaf94": "Başarılı",
+  "TXT_CODE_56c686f8": "Başarısız"
 }
