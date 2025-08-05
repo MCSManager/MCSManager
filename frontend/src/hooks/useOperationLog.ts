@@ -3,8 +3,6 @@ import { getOperationLog } from "@/services/apis/operationLog";
 import { t } from "@/lang/i18n";
 import type { OperationLoggerItem } from "@/types/operationLog";
 
-type LogsDataItem = OperationLoggerItem & { text: string };
-type LogsData = { color: string; item: LogsDataItem[] };
 type TextRenderResult = {
   text: string;
   data: string[];
@@ -20,39 +18,39 @@ type OperationRenderer = {
 
 const renderMap: OperationRenderer = {
   instance_start: (item) => ({
-    text: t("TXT_CODE_e4605c4"),
+    text: "用户 {operator_name} 启动了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_stop: (item) => ({
-    text: t("TXT_CODE_48c286cc"),
+    text: "用户 {operator_name} 关闭了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_restart: (item) => ({
-    text: t("TXT_CODE_fa7002ef"),
+    text: "用户 {operator_name} 重启了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_update: (item) => ({
-    text: t("TXT_CODE_e1454ba7"),
+    text: "用户 {operator_name} 更新了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_kill: (item) => ({
-    text: t("TXT_CODE_ee54440"),
+    text: "用户 {operator_name} 强制终止了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_config_change: (item) => ({
-    text: t("TXT_CODE_30fcc19a"),
+    text: "用户 {operator_name} 修改了 {instance_name} 实例配置",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_create: (item) => ({
-    text: t("TXT_CODE_9ab6fd"),
+    text: "用户 {operator_name} 创建了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_delete: (item) => ({
-    text: t("TXT_CODE_61b6facb"),
+    text: "用户 {operator_name} 删除了 {instance_name} 实例",
     data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
   }),
   instance_file_upload: (item) => ({
-    text: t("TXT_CODE_58e4a9bd"),
+    text: "用户 {operator_name} 向 {instance_name} 实例上传了文件 {file}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -60,7 +58,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_update: (item) => ({
-    text: t("TXT_CODE_c5687e56"),
+    text: "用户 {operator_name} 更新了 {instance_name} 实例的文件 {file}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -68,7 +66,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_download: (item) => ({
-    text: t("TXT_CODE_6f43f95f"),
+    text: "用户 {operator_name} 下载了 {instance_name} 实例的文件 {file}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -76,7 +74,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_file_delete: (item) => ({
-    text: t("TXT_CODE_de567e84"),
+    text: "用户 {operator_name} 删除了 {instance_name} 实例的文件 {file}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -84,7 +82,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_create: (item) => ({
-    text: t("TXT_CODE_5ddb00f2"),
+    text: "用户 {operator_name} 为 {instance_name} 实例创建了任务 {task_name}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -92,7 +90,7 @@ const renderMap: OperationRenderer = {
     ]
   }),
   instance_task_delete: (item) => ({
-    text: t("TXT_CODE_41f86ac"),
+    text: "用户 {operator_name} 删除了 {instance_name} 实例的任务 {task_name}",
     data: [
       item.operator_name || item.operation_id,
       item.instance_name || item.instance_id,
@@ -100,35 +98,35 @@ const renderMap: OperationRenderer = {
     ]
   }),
   daemon_create: (item) => ({
-    text: t("TXT_CODE_f7969e5a"),
+    text: "用户 {operator_name} 创建了守护进程 {daemon_id}",
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_remove: (item) => ({
-    text: t("TXT_CODE_384d278f"),
+    text: "用户 {operator_name} 删除了守护进程 {daemon_id}",
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   daemon_config_change: (item) => ({
-    text: t("TXT_CODE_b6ac7af4"),
+    text: "用户 {operator_name} 修改了守护进程 {daemon_id} 配置",
     data: [item.operator_name || item.operation_id, item.daemon_id]
   }),
   user_create: (item) => ({
-    text: t("TXT_CODE_faa1962b"),
+    text: "用户 {operator_name} 创建了用户 {target_user_name}",
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_delete: (item) => ({
-    text: t("TXT_CODE_cd76bc9"),
+    text: "用户 {operator_name} 删除了用户 {target_user_name}",
     data: [item.operator_name || item.operation_id, item.target_user_name]
   }),
   user_config_change: (item) => ({
-    text: t("TXT_CODE_5564bc4c"),
+    text: "用户 {operator_name} 修改了用户配置",
     data: [item.operator_name || item.operation_id]
   }),
   user_login: (item) => ({
-    text: t("用户 {{operator_name}} 登录{{login_result}}") + ` (${item.operator_ip})`,
+    text: `用户 {operator_name} 登录{login_result} (${item.operator_ip})`,
     data: [item.operator_name || item.operation_id, item.login_result ? t("成功") : t("失败")]
   }),
   system_config_change: (item) => ({
-    text: t("TXT_CODE_d6312bd5"),
+    text: "用户 {operator_name} 修改了系统配置",
     data: [item.operator_name || item.operation_id]
   })
 };
@@ -154,7 +152,7 @@ export const useOperationLog = () => {
     if (!handler) return t("TXT_CODE_43df9305");
     const { text, data } = handler(item as any);
     let i = 0;
-    return text.replace(/\{\{\s*[\w_]+\s*\}\}/g, () => data[i++] ?? "--");
+    return text.replace(/\{\s*[\w_]+\s*\}/g, () => data[i++] ?? "--");
   };
 
   const getColorByLevel = (level: OperationLoggerItem["operation_level"]) => {
