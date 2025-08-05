@@ -1862,7 +1862,7 @@
   "TXT_CODE_c536b7c7": "ファントムの炎がアイテムを燃やすことができるかどうか",
   "TXT_CODE_c53c342e": "これをtrueに設定して、サーバーを閉じてクラッシュログを報告する代わりに、ティックメソッドにエラーをスローするエンティティを削除します（注：封鎖は含まれません）。\nこれは、すべてを台無しにする可能性があることに注意してください。",
   "TXT_CODE_c565b2e0": "HTML ファイルのアップロードをサポートしており、このカードは HTML をロードして Javascript コードを実行します。",
-  "TXT_CODE_c5687e56": "user <<operator_name>> {{Instance_name}} instanceのファイル<<file>>を更新しました",
+  "TXT_CODE_c5687e56": "user <<operator_name>> <<instance_name>> instanceのファイル<<file>>を更新しました",
   "TXT_CODE_c59f077d": "爆発に否定的な爆発値を設定するためにfalseに設定する",
   "TXT_CODE_c5b38d90": "更新用のインスタンスの仕様が一致しないため、更新操作を完了できません。",
   "TXT_CODE_c5c56801": "登録時間",
