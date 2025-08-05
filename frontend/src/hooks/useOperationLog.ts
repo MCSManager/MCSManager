@@ -150,7 +150,7 @@ export const useOperationLog = () => {
     if (!handler) return t("TXT_CODE_43df9305");
     const { text, data } = handler(item as any);
     let i = 0;
-    return text.replace(/\{\{\s*[\w_]+\s*\}\}/g, () => data[i++] ?? "--");
+    return text.replace(/\<\<\s*[\w_]+\s*\>\>/g, () => data[i++] ?? "--");
   };
 
   const getColorByLevel = (level: OperationLoggerItem["operation_level"]) => {
