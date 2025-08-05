@@ -503,29 +503,33 @@ onMounted(async () => {
       <a-col v-if="isLoading" :span="24">
         <Loading></Loading>
       </a-col>
+
       <a-col v-else-if="instancesMoreInfo.length > 0" :span="24">
-        <fade-up-animation>
-          <a-col
-            v-for="item in instancesMoreInfo"
-            :key="item.instanceUuid"
-            :span="24"
-            :xl="8"
-            :lg="8"
-            :sm="12"
-          >
-            <Shortcut
-              class="instance-card"
-              :class="{ selected: multipleMode && findInstance(item) }"
-              style="height: 100%"
-              :card="card"
-              :target-instance-info="item"
-              :target-daemon-id="currentRemoteNode?.uuid"
-              @click="handleSelectInstance(item)"
-              @refresh-list="initInstancesData()"
-            />
-          </a-col>
-        </fade-up-animation>
+        <a-row :gutter="[16, 16]">
+          <fade-up-animation>
+            <a-col
+              v-for="item in instancesMoreInfo"
+              :key="item.instanceUuid"
+              :span="24"
+              :xl="8"
+              :lg="8"
+              :sm="12"
+            >
+              <Shortcut
+                class="instance-card"
+                :class="{ selected: multipleMode && findInstance(item) }"
+                style="height: 100%"
+                :card="card"
+                :target-instance-info="item"
+                :target-daemon-id="currentRemoteNode?.uuid"
+                @click="handleSelectInstance(item)"
+                @refresh-list="initInstancesData()"
+              />
+            </a-col>
+          </fade-up-animation>
+        </a-row>
       </a-col>
+
       <a-col
         v-else-if="instancesMoreInfo.length === 0"
         :span="24"

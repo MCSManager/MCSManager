@@ -16,7 +16,7 @@
 
 [Official Website](http://mcsmanager.com/) | [Docs](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
 
- | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
+| [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) |
 [日本語](README_JP.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
 
 </div>
@@ -25,7 +25,7 @@
 
 ## อะไรคือ MCSManager?
 
-**MCSManager Panel** (MCSM) คือ **แผงควบคุมที่ทันสมัย ​​ปลอดภัย** ถูกออกแบบมาเพื่อจัดการเซิรฟ์เวอร์ Minecraft และเซิร์ฟเวอร์สตรีมเกมส์ 
+**MCSManager Panel** (MCSM) คือ **แผงควบคุมที่ทันสมัย ​​ปลอดภัย** ถูกออกแบบมาเพื่อจัดการเซิรฟ์เวอร์ Minecraft และเซิร์ฟเวอร์สตรีมเกมส์
 
 MCSManager ได้รับความนิยมในระดับหนึ่งในชุมชนแล้ว โดยเฉพาะอย่างยิ่งเนื่องมาจาก Minecraft MCSManager โดดเด่นในด้านการนำเสนอโซลูชันการจัดการแบบรวมศูนย์สำหรับอินสแตนซ์เซิร์ฟเวอร์หลายตัว และมอบระบบการอนุญาตผู้ใช้หลายคนที่ปลอดภัยและเชื่อถือได้ นอกจากนี้ เรายังมุ่งมั่นที่จะสนับสนุนผู้ดูแลระบบเซิร์ฟเวอร์ ไม่เพียงแต่สำหรับ Minecraft เท่านั้น แต่ยังรวมถึง Terraria และเกม Steam ต่างๆ ด้วย เป้าหมายของเราคือการส่งเสริมชุมชนที่เจริญรุ่งเรืองและให้การสนับสนุนสำหรับการจัดการเซิร์ฟเวอร์เกม
 
@@ -211,7 +211,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 ขอขอบคุณผู้สนับสนุนเหล่านี้ที่จัดทำการแปลจำนวนมาก:
 
 - [KevinLu2000](https://github.com/KevinLu2000)
-- [Unitwk](https://github.com/unitwk)
+- [YuMao233](https://github.com/yumao233)
 - [JianyueLab](https://github.com/JianyueLab)
 - [IceBrick](https://github.com/IceBrick01)
 

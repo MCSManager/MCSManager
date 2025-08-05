@@ -184,7 +184,7 @@ export class QuickInstallTask extends AsyncTask {
 
       if (this.targetLink) {
         let result = await this.download();
-        this.instance.println("INFO", "Unziping...");
+        this.instance.println("INFO", $t("正在解压文件..."));
         if (this.extName === ".zip")
           result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
         if (!result) {
@@ -193,7 +193,7 @@ export class QuickInstallTask extends AsyncTask {
         }
       }
 
-      this.instance.println("INFO", "Building config...");
+      this.instance.println("INFO", $t("正在构建配置..."));
       let config: Partial<InstanceConfig>;
       if (this.buildParams?.startCommand || !fs.existsSync(this.ZIP_CONFIG_JSON)) {
         config = this.buildParams || {};
@@ -212,41 +212,20 @@ export class QuickInstallTask extends AsyncTask {
 
       this.instance.parameters(config);
 
-      // Render startCommand with ENV
-      if (this.instance.config.startCommand) {
-        let startCommand = this.instance.config.startCommand;
-        const ENV_MAP: IJsonData = {
-          java: "java",
-          cwd: this.instance.absoluteCwdPath(),
-          rconIp: this.instance.config.rconIp || "localhost",
-          rconPort: String(this.instance.config.rconPort),
-          rconPassword: this.instance.config.rconPassword,
-          nickname: this.instance.config.nickname,
-          instanceUuid: this.instance.instanceUuid
-        };
-        for (const key in ENV_MAP) {
-          const varDefine = `{{${key}}}`;
-          while (startCommand.includes(varDefine))
-            startCommand = startCommand?.replace(varDefine, ENV_MAP[key] || "");
-        }
-        this.instance.parameters({
-          startCommand
-        });
-      }
-
-      this.instance.println("INFO", "Config built successfully!");
+      this.instance.println("INFO", $t("配置构建成功！"));
 
       if (this.instance?.config?.updateCommand) {
         try {
-          this.instance.println("INFO", "Updating instance...");
+          this.instance.println("INFO", $t("正在更新实例..."));
           this.updateTask = new InstanceUpdateAction(this.instance);
           await this.updateTask.start();
           await this.updateTask.wait();
-          this.instance.println("INFO", "Instance updated successfully!");
+          this.instance.println("INFO", $t("实例更新成功！"));
         } catch (error: any) {
-          this.instance.println("WARNING", "Instance update failed! Reason: " + error?.message);
+          this.instance.println("WARNING", $t("实例更新失败！原因：") + error?.message);
         }
       }
+      this.instance.println("INFO", $t("所有安装操作均已执行完成，请尝试启动实例..."));
 
       this.stop();
     } catch (error: any) {

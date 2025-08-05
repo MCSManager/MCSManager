@@ -2644,5 +2644,9 @@
   "TXT_CODE_2af87548": "All Versions",
   "TXT_CODE_7356e569": "No Templates Available",
   "TXT_CODE_Speed": "Speed",
-  "TXT_CODE_ETA": "ETA"
+  "TXT_CODE_ETA": "ETA",
+  "TXT_CODE_58a55f17": "The file {name} already exists in this folder",
+  "TXT_CODE_5445f34b": "and {num} more",
+  "TXT_CODE_5bf41818": "Overwrite",
+  "TXT_CODE_518528d0": "Skip"
 }

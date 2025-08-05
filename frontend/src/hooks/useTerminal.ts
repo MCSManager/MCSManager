@@ -8,8 +8,10 @@ import { t } from "@/lang/i18n";
 import EventEmitter from "eventemitter3";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
 import type { InstanceDetail } from "@/types";
-import { Terminal } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
+import { Terminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
+import { CanvasAddon } from "@xterm/addon-canvas";
+import { WebglAddon } from "@xterm/addon-webgl";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
@@ -168,7 +170,53 @@ export function useTerminal() {
     });
   };
 
+  const touchHandler = (event: TouchEvent) => {
+    let touches = event.changedTouches;
+    let first = touches[0];
+    let type = "";
+    switch (event.type) {
+      case "touchstart":
+        type = "mousedown";
+        break;
+      case "touchmove":
+        type = "mousemove";
+        break;
+      case "touchend":
+        type = "mouseup";
+        break;
+      default:
+        return;
+    }
+
+    let mouseEvent = new MouseEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      detail: 1,
+      screenX: first.screenX,
+      screenY: first.screenY,
+      clientX: first.clientX,
+      clientY: first.clientY,
+      ctrlKey: false,
+      altKey: false,
+      shiftKey: false,
+      metaKey: false,
+      button: 0,
+      relatedTarget: null
+    });
+
+    first.target.dispatchEvent(mouseEvent);
+    if (type === "mousedown") {
+      event.preventDefault();
+    }
+  };
+
   const initTerminalWindow = (element: HTMLElement) => {
+    // init touch handler
+    element.addEventListener("touchstart", touchHandler, true);
+    element.addEventListener("touchmove", touchHandler, true);
+    element.addEventListener("touchend", touchHandler, true);
+    element.addEventListener("touchcancel", touchHandler, true);
     const background = hasBgImage.value ? "#00000000" : "#1e1e1e";
     const term = new Terminal({
       convertEol: true,
@@ -180,11 +228,25 @@ export function useTerminal() {
         background
       },
       allowProposedApi: true,
-      allowTransparency: true,
-      rendererType: "canvas"
+      allowTransparency: true
     });
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
+    
+    const gl = document.createElement("canvas").getContext("webgl2");
+    if (gl) {
+      // If WebGL2 is supported, use the WebGlAddon
+      const webglAddon = new WebglAddon();
+      webglAddon.onContextLoss((_) => {
+        webglAddon.dispose();
+      });
+      term.loadAddon(webglAddon);
+    } else {
+      // If WebGL2 is not supported, use the CanvasAddon
+      const canvasAddon = new CanvasAddon();
+      term.loadAddon(canvasAddon);
+    }
+    
     term.open(element);
 
     // Auto resize pty win size

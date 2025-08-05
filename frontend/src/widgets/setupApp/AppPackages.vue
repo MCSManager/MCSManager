@@ -250,7 +250,7 @@ onMounted(() => {
   </a-row>
 
   <!-- Main content - package marketplace interface -->
-  <a-row v-else :gutter="[24, 24]" style="height: 100%">
+  <a-row v-else :gutter="[12, 12]" style="height: 100%">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
       <a-form layout="horizontal" :model="searchForm" style="display: flex; gap: 10px">
@@ -332,16 +332,13 @@ onMounted(() => {
         v-for="item in appList"
         :key="item.targetLink + item.title + item.gameType + item.language + item.category"
         :span="24"
-        :xl="8"
-        :lg="8"
+        :xl="6"
+        :lg="6"
         :sm="12"
       >
         <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
           <CardPanel style="flex-grow: 1" :style="{ padding: '12px' }">
-            <!-- Package title -->
-            <template #title> </template>
-
             <!-- Package content -->
             <template #body>
               <div class="package-card-content">
@@ -354,14 +351,15 @@ onMounted(() => {
                     {{ item.title }}
                   </a-typography-title>
                   <a-typography-paragraph>
-                    {{ item.description }}
-                  </a-typography-paragraph>
-                  <a-typography-paragraph>
-                    <span class="text-gray-5">{{ t("TXT_CODE_18b94497") }}: </span>
-                    <span>{{ item.runtime }}</span>
-                    <br />
-                    <span class="text-gray-5">{{ t("TXT_CODE_683e3033") }}: </span>
-                    <span>{{ item.hardware }}</span>
+                    <a-typography-text :style="{ fontSize: '13px' }">
+                      {{ item.description }}
+                      <br />
+                      <span style="opacity: 0.4">{{ t("TXT_CODE_18b94497") }}: </span>
+                      <span>{{ item.runtime }}</span>
+                      <br />
+                      <span style="opacity: 0.4">{{ t("TXT_CODE_683e3033") }}: </span>
+                      <span>{{ item.hardware }}</span>
+                    </a-typography-text>
                   </a-typography-paragraph>
                 </div>
 
@@ -406,7 +404,8 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   object-fit: cover;
-  max-height: 120px;
+  max-height: 160px;
+  height: 160px;
   transition: transform 0.3s ease;
 }
 
@@ -420,28 +419,59 @@ onMounted(() => {
 }
 
 .download-button {
-  max-width: 120px;
+  margin: 0px 12px;
   transition: all 0.3s ease;
-  background-color: var(--color-green-6);
 }
 
-/* 鼠标移入特效 */
-.ant-card:hover {
-  transition: all 0.3s ease;
-  cursor: pointer;
+.package-image {
+  user-drag: none;
+  user-select: none;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.ant-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+.package-image::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(24, 144, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .package-image:hover {
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(2deg);
+  filter: brightness(1.1) contrast(1.1);
+}
+
+.package-image:hover::after {
+  opacity: 1;
 }
 
 .ant-card:hover .download-button {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  transform: scale(1.08);
+  box-shadow:
+    0 8px 20px rgba(24, 144, 255, 0.4),
+    0 0 15px rgba(24, 144, 255, 0.2);
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  border: none;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 8px 20px rgba(24, 144, 255, 0.4),
+      0 0 15px rgba(24, 144, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 8px 25px rgba(24, 144, 255, 0.6),
+      0 0 25px rgba(24, 144, 255, 0.4);
+  }
 }
 </style>
