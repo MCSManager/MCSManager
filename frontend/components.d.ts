@@ -95,6 +95,7 @@ declare module 'vue' {
     NodeSelectDialog: typeof import('./src/components/fc/NodeSelectDialog.vue')['default']
     NodeSimpleChart: typeof import('./src/components/NodeSimpleChart.vue')['default']
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']
+    OverwriteFilesPopUpContent: typeof import('./src/components/OverwriteFilesPopUpContent.vue')['default']
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     PurchaseQueryDialog: typeof import('./src/components/fc/PurchaseQueryDialog.vue')['default']
