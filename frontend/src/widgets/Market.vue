@@ -84,9 +84,9 @@ const manualInstallOptions = [
       handleInstallAction(QUICKSTART_METHOD.IMPORT, QUICKSTART_ACTION_TYPE.SteamGameServer)
   },
   {
-    label: t("选择已存在的目录"),
+    label: t("直接创建"),
     icon: FolderOpenOutlined,
-    description: t("无需上传任何文件，直接填写一个文件路径，即可创建实例，适合经验丰富的用户。"),
+    description: t("无需上传任何文件，直接创建实例，后续再进行配置，适合经验丰富的用户。"),
     action: () => handleInstallAction(QUICKSTART_METHOD.EXIST, QUICKSTART_ACTION_TYPE.AnyApp)
   }
 ];
