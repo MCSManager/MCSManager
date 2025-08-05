@@ -14,6 +14,9 @@ import { ROLE } from "../entity/user";
 import { removeTrail } from "mcsmanager-common";
 import userSystem from "../service/user_service";
 import { operationLogger } from "../service/operation_logger";
+import fs from "fs/promises";
+import path from "path";
+import { logger } from "../service/log";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -310,13 +313,37 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
     return;
   }
 
+  // Cache logic implementation
   const ADDR = systemConfig?.presetPackAddr;
+  const cacheFileName = "cache_quick_install.json";
+  const cacheFilePath = path.join(process.cwd(), "data", cacheFileName);
+  const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+
   try {
+    // Check if cache file exists and is valid
+    try {
+      const stats = await fs.stat(cacheFilePath);
+      const now = Date.now();
+      const fileAge = now - stats.mtime.getTime();
+
+      // Use cache
+      if (fileAge < CACHE_DURATION) {
+        const cachedData = await fs.readFile(cacheFilePath, "utf-8");
+        ctx.body = JSON.parse(cachedData);
+        return;
+      }
+    } catch (error) {
+      // Cache file doesn't exist, continue to fetch new data
+    }
+
     const response = await axios.request({
       method: "GET",
       url: ADDR
     });
-    if (response.status !== 200) throw new Error("Response code != 200");
+    if (response.status !== 200) throw new Error(`Request failed, status: ${response.status}`);
+
+    // Save to cache file
+    fs.writeFile(cacheFilePath, JSON.stringify(response.data), "utf-8").catch(() => {});
     ctx.body = response.data;
   } catch (err) {
     ctx.body = [];
