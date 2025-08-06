@@ -237,7 +237,7 @@ const terminalTopTags = computed<TagInfo[]>(() => {
     },
     {
       label: t("TXT_CODE_50daec4"),
-      value: `↓${prettyBytes(info.rxBytes*8 || 0, {bits: true})}ps ↑${prettyBytes(info.txBytes*8 || 0, {bits: true})}ps`,
+      value: `↓${prettyBytes((info.rxBytes || 0)*8, {bits: true})}ps ↑${prettyBytes((info.txBytes || 0)*8, {bits: true})}ps`,
       condition: () => info.rxBytes != null || info.txBytes != null,
       icon: ArrowUpOutlined
     }
