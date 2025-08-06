@@ -32,12 +32,13 @@ export class QuickInstallTask extends AsyncTask {
     eta: 0 // estimated time remaining in seconds
   };
 
+  private lastProgressOutput = 0; // Throttle progress output
+  private isInitInstance = false;
+
+  private abortController?: AbortController;
   private downloadStream?: fs.WriteStream;
   private writeStream?: fs.WriteStream;
   private updateTask?: InstanceUpdateAction;
-  private lastProgressOutput = 0; // Throttle progress output
-  private abortController = new AbortController();
-  private isInitInstance = false;
 
   constructor(
     public instanceName: string,
@@ -66,6 +67,7 @@ export class QuickInstallTask extends AsyncTask {
   private download(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
+        this.abortController = new AbortController();
         if (!this.targetLink) return reject(new Error("No targetLink!"));
         let downloadFileName = this.TMP_ZIP_NAME;
         if (this.extName !== ".zip") {
@@ -177,9 +179,7 @@ export class QuickInstallTask extends AsyncTask {
       this.instance.status(Instance.STATUS_BUSY);
       if (this.isInitInstance) {
         if (this.instance.asynchronousTask) {
-          throw new Error(
-            $t("TXT_CODE_5b0e93b5")
-          );
+          throw new Error($t("TXT_CODE_5b0e93b5"));
         }
         this.instance.asynchronousTask = this;
       }
@@ -204,11 +204,7 @@ export class QuickInstallTask extends AsyncTask {
       }
 
       if (this.instance.config.processType === "docker" && config.processType !== "docker") {
-        throw new Error(
-          $t(
-            "TXT_CODE_f8145844"
-          )
-        );
+        throw new Error($t("TXT_CODE_f8145844"));
       }
 
       logger.info(
@@ -252,11 +248,12 @@ export class QuickInstallTask extends AsyncTask {
 
   async onStop() {
     try {
-      this.abortController.abort();
+      this.abortController?.abort();
       this.writeStream?.destroy();
       this.downloadStream?.destroy();
       this.writeStream = undefined;
       this.downloadStream = undefined;
+      this.abortController = undefined;
     } catch (error: any) {
       this.instance.println(
         "ERROR",

@@ -287,7 +287,7 @@ onMounted(() => {
           <a-select
             v-model:value="searchForm.platform"
             style="width: 200px"
-            placeholder="请选择系统"
+            :placeholder="t('TXT_CODE_47203b64')"
             @change="handlePlatformChange"
           >
             <a-select-option v-for="item in appPlatformList" :key="item.value" :value="item.value">
