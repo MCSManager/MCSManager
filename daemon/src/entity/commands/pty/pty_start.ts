@@ -221,10 +221,7 @@ export default class PtyStartCommand extends AbsStartCommand {
     logger.info("----------------");
 
     if (runAsConfig.isEnableRunAs) {
-      instance.println(
-        "INFO",
-        $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName })
-      );
+      instance.println("INFO", $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName }));
     }
 
     // create pty child process
@@ -285,5 +282,6 @@ export default class PtyStartCommand extends AbsStartCommand {
       })
     );
     instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal"));
+    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
   }
 }

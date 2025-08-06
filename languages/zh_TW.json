@@ -2499,7 +2499,7 @@
   "TXT_CODE_ffa884f9": "警告：執行位置沒有掛載到容器中，容器將無法存取到實體資料夾位置中的檔案",
   "TXT_CODE_ffca72ed": "使伺服器在伺服器清單中顯示為線上。如果設定為否，它將抑制來自客戶端的回應。這表示它將顯示為離線，但仍將接受連線。",
   "TXT_CODE_ffda3755": "請輸入序號",
-  "TXT_CODE_ffe9366a": "是否添加在基岩版版中本來不存在的任何物品和方塊。",
+  "TXT_CODE_ffe9366a": "是否添加在基岩版中本來不存在的任何物品和方塊。",
   "TXT_CODE_ffebf0bf": "向 OP 廣播 RCON 訊息",
   "TXT_CODE_fff00e2b": "最小移動速度屬性。",
   "TXT_CODE_fffaeb16": "上傳過程中不可取消！",
@@ -2649,5 +2649,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重複的任務",
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[控制台] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
-  "TXT_CODE_version.versionDetectErr": "版本檢查失敗"
+  "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
+  "TXT_CODE_b135e9bd": "下载中..."
 }

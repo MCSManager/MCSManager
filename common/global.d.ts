@@ -201,6 +201,9 @@ declare global {
     author: string;
     setupInfo?: IJsonData;
     gameType: string;
+    image: string;
+    platform: string;
+    tags?: string[];
   }
 
   interface IQuickStartTemplate {

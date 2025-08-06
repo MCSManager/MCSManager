@@ -62,5 +62,5 @@ export default class SystemConfig {
   businessId = "";
 
   // Whether to allow users to edit the start & update command of Docker instances
-  allowChangeCmd = false;
+  allowChangeCmd = true;
 }

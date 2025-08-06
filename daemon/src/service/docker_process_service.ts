@@ -48,7 +48,9 @@ export class SetupDockerContainer extends AsyncTask {
     // Command text parsing
     let commandList: string[];
     if (instance.config?.startCommand?.trim() || customCommand?.trim()) {
-      commandList = commandStringToArray(customCommand ?? instance.config.startCommand);
+      commandList = commandStringToArray(
+        instance.parseTextParams(customCommand ?? instance.config.startCommand)
+      );
     } else {
       commandList = [];
     }

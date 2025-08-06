@@ -44,6 +44,8 @@ import MusicCard from "@/widgets/others/MusicCard.vue";
 import ShelvesCard from "@/widgets/ShelvesCard.vue";
 import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
 import OperationLogCard from "@/widgets/OperationLogCard.vue";
+import Market from "@/widgets/Market.vue";
+
 import { NEW_CARD_TYPE } from "../types/index";
 import { ROLE } from "./router";
 
@@ -90,7 +92,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   MusicCard,
   ShelvesCard,
   ShopInfoCard,
-  OperationLogCard
+  OperationLogCard,
+  Market
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -533,6 +536,17 @@ export function getLayoutCardPool() {
       width: 8,
       description: t("TXT_CODE_1648c9ea"),
       height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.USER,
+      meta: {},
+      type: "Market",
+      title: t("TXT_CODE_27594db8"),
+      width: 12,
+      description: t("TXT_CODE_9b45858c"),
+      height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.COMMON
     }
   ];

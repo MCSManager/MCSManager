@@ -1,5 +1,7 @@
 import EventEmitter from "events";
 import logger from "../log";
+import { IExecutable } from "../../entity/instance/preset";
+import Instance from "../../entity/instance/instance";
 
 export type IAsyncTaskJSON = any;
 
@@ -13,7 +15,7 @@ export interface IAsyncTask extends EventEmitter {
   toObject(): IAsyncTaskJSON;
 }
 
-export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
+export abstract class AsyncTask extends EventEmitter implements IAsyncTask, IExecutable {
   public static readonly STATUS_STOP = 0;
   public static readonly STATUS_RUNNING = 1;
   public static readonly STATUS_ERROR = -1;
@@ -38,6 +40,10 @@ export abstract class AsyncTask extends EventEmitter implements IAsyncTask {
       this.error(error);
       throw error;
     }
+  }
+
+  public async exec(_: Instance, __: any) {
+    return this.start();
   }
 
   public async stop() {

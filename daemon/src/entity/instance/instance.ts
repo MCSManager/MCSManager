@@ -10,11 +10,11 @@ import { LifeCycleTaskManager } from "./life_cycle";
 import { PresetCommandManager } from "./preset";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { IInstanceProcess } from "./interface";
-import StartCommand from "../commands/start";
-import { configureEntityParams, toText } from "mcsmanager-common";
+import { configureEntityParams } from "mcsmanager-common";
 import { OpenFrp } from "../commands/task/openfrp";
 import logger from "../../service/log";
 import { t } from "i18next";
+import { STEAM_CMD_PATH } from "../../const";
 
 interface IInstanceInfo {
   mcPingOnline: boolean;
@@ -237,6 +237,24 @@ export default class Instance extends EventEmitter {
     if (persistence) StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
   }
 
+  clearRuntimeConfig() {
+    const name = this.config.nickname;
+    const memory = this.config.docker.memory;
+    const maxSpace = this.config.docker.maxSpace;
+    const cpuUsage = this.config.docker.cpuUsage;
+    const cwd = this.config.cwd;
+    const endTime = this.config.endTime;
+
+    const newConfig = new InstanceConfig();
+    newConfig.nickname = name;
+    newConfig.docker.memory = memory;
+    newConfig.docker.maxSpace = maxSpace;
+    newConfig.docker.cpuUsage = cpuUsage;
+    newConfig.cwd = cwd;
+    newConfig.endTime = endTime;
+    this.config = newConfig;
+  }
+
   setLock(bool: boolean) {
     if (this.lock === true && bool === true) {
       throw new Error($t("TXT_CODE_ca030197"));
@@ -284,6 +302,7 @@ export default class Instance extends EventEmitter {
   // function that must be executed after the instance has been closed
   // trigger exit event
   stopped(code = 0) {
+    this.println("INFO", $t("TXT_CODE_70ce6fbb"));
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
@@ -417,6 +436,8 @@ export default class Instance extends EventEmitter {
     text = text.replace(/\{mcsm_workspace\}/gim, this.absoluteCwdPath());
     text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
+    text = text.replace(/\{mcsm_run_as\}/gim, this.config.runAs);
+    text = text.replace(/\{mcsm_steamcmd\}/gim, STEAM_CMD_PATH);
     return text;
   }
 

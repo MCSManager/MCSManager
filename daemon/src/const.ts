@@ -1,5 +1,23 @@
+import { existsSync } from "fs";
 import os from "os";
 import path from "path";
+
+function loadSteamCmdPath() {
+  let targetPath = path.normalize(
+    path.join(
+      process.cwd(),
+      "lib",
+      os.platform() === "win32" ? "steamcmd.exe" : `steamcmd_${os.arch()}`
+    )
+  );
+  if (!existsSync(targetPath)) {
+    targetPath = "steamcmd";
+    if (SYSTEM_TYPE === "win32") {
+      targetPath += ".exe";
+    }
+  }
+  return targetPath;
+}
 
 const SYS_INFO = `${os.platform()}_${os.arch()}${os.platform() === "win32" ? ".exe" : ""}`;
 const ptyName = `pty_${SYS_INFO}`;
@@ -15,6 +33,7 @@ const GOLANG_ZIP_NAME = `file_zip_${SYSTEM_TYPE}_${os.arch()}${
   SYSTEM_TYPE === "win32" ? ".exe" : ""
 }`;
 const GOLANG_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", GOLANG_ZIP_NAME));
+const STEAM_CMD_PATH = loadSteamCmdPath();
 
 export {
   GOLANG_ZIP_PATH,
@@ -23,5 +42,6 @@ export {
   LOCAL_PRESET_LANG_PATH,
   FRPC_PATH,
   IGNORE,
-  ZIP_TIMEOUT_SECONDS
+  ZIP_TIMEOUT_SECONDS,
+  STEAM_CMD_PATH
 };
