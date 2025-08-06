@@ -343,7 +343,9 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
     if (response.status !== 200) throw new Error(`Request failed, status: ${response.status}`);
 
     // Save to cache file
-    fs.writeFile(cacheFilePath, JSON.stringify(response.data), "utf-8").catch(() => {});
+    fs.writeFile(cacheFilePath, JSON.stringify(response.data), "utf-8").catch((err) => {
+      logger.warn(`Failed to write quick install cache file at ${cacheFilePath}: ${err}`);
+    });
     ctx.body = response.data;
   } catch (err) {
     ctx.body = [];
