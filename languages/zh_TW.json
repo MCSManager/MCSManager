@@ -2649,5 +2649,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重複的任務",
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[控制台] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
-  "TXT_CODE_version.versionDetectErr": "版本檢查失敗"
+  "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
+  "TXT_CODE_b135e9bd": "下载中..."
 }

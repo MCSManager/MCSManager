@@ -2691,5 +2691,6 @@
   "TXT_CODE_47203b64": "All Systems",
   "TXT_CODE_7fca723a": "Loading. If there is no response for a long time, please check the network.",
   "TXT_CODE_2de92a5d": "Please select a node before installing!",
-  "TXT_CODE_e718a226": "The download task is in progress. About to jump to the console..."
+  "TXT_CODE_e718a226": "The download task is in progress. About to jump to the console...",
+  "TXT_CODE_b135e9bd": "Downloading..."
 }

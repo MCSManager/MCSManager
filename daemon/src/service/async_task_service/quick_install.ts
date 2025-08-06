@@ -136,12 +136,11 @@ export class QuickInstallTask extends AsyncTask {
         const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
           this.downloadProgress.totalBytes
         )}`;
-        const speed = `${prettyBytes(this.downloadProgress.speed)}/s, ETA: ${formatTime(
-          this.downloadProgress.eta
-        )}`;
+        const speed = `${prettyBytes(this.downloadProgress.speed)}/s`;
+        const downloadText = t("TXT_CODE_b135e9bd");
         this.instance.println(
           "INFO",
-          `Downloading... (${this.downloadProgress.percentage}%): ${size}, ${speed}`
+          `${downloadText} (${this.downloadProgress.percentage}%): ${size}, ${speed}`
         );
         this.lastProgressOutput = now;
       }
@@ -249,9 +248,7 @@ export class QuickInstallTask extends AsyncTask {
   async onStop() {
     try {
       this.abortController?.abort();
-      this.writeStream?.removeAllListeners();
       this.writeStream?.destroy();
-      this.downloadStream?.removeAllListeners();
       this.downloadStream?.destroy();
       this.writeStream = undefined;
       this.downloadStream = undefined;

@@ -4,3 +4,5 @@ export const formatTime = (seconds: number) => {
   const remainingSeconds = Math.round(seconds % 60);
   return minutes + "m " + remainingSeconds + "s";
 };
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
