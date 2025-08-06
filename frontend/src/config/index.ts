@@ -42,6 +42,8 @@ import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
 import UserInstanceList from "@/widgets/UserInstanceList.vue";
 import UserList from "@/widgets/UserList.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
+import Market from "@/widgets/Market.vue";
+
 import { NEW_CARD_TYPE } from "../types/index";
 import { LayoutCardHeight } from "./originLayoutConfig";
 import { ROLE } from "./router";
@@ -89,6 +91,9 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   MusicCard,
   ShelvesCard,
   OperationLogCard
+  ShopInfoCard,
+  OperationLogCard,
+  Market
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -391,7 +396,7 @@ export function getLayoutCardPool() {
       meta: {},
       width: 6,
       description: t("TXT_CODE_6f659da2"),
-      height: LayoutCardHeight.SMALL,
+      height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.DATA
     },
     {
@@ -402,7 +407,7 @@ export function getLayoutCardPool() {
       meta: {},
       width: 6,
       description: t("TXT_CODE_6f659da2"),
-      height: LayoutCardHeight.SMALL,
+      height: LayoutCardHeight.MINI,
       category: NEW_CARD_TYPE.DATA
     },
     {
@@ -520,6 +525,17 @@ export function getLayoutCardPool() {
       width: 8,
       description: t("TXT_CODE_163e2d0a"),
       height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.COMMON
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.USER,
+      meta: {},
+      type: "Market",
+      title: t("TXT_CODE_27594db8"),
+      width: 12,
+      description: t("TXT_CODE_9b45858c"),
+      height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.COMMON
     }
   ];

@@ -485,11 +485,13 @@ onMounted(async () => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("TXT_CODE_a5f01916") }}
+                      {{ t("TXT_CODE_3c93920b") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("TXT_CODE_f5f9664") }}
+                        {{
+                          t("TXT_CODE_bc2e52a0")
+                        }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select

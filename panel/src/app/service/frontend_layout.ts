@@ -70,7 +70,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       }
     },
     {
-      page: "/",
+      page: "/overview",
       items: [
         {
           id: getRandomId(),
@@ -121,18 +121,27 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           meta: {},
           type: "DataOverview",
           title: t("TXT_CODE_721157a3"),
-          width: 9,
+          width: 12,
           description: t("TXT_CODE_55ade942"),
           height: LayoutCardHeight.MEDIUM
         },
         {
           id: getRandomId(),
           meta: {},
-          type: "QuickStart",
-          title: t("TXT_CODE_2799a1dd"),
-          width: 3,
+          type: "RequestChart",
+          title: t("TXT_CODE_a4037a98"),
+          width: 6,
           description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
+          height: LayoutCardHeight.SMALL
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "InstanceChart",
+          title: t("TXT_CODE_d6d9c42c"),
+          width: 6,
+          description: t("TXT_CODE_55ade942"),
+          height: LayoutCardHeight.SMALL
         },
         {
           id: getRandomId(),
@@ -151,25 +160,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           width: 8,
           description: t("TXT_CODE_55ade942"),
           height: LayoutCardHeight.MEDIUM
-        },
-
+        }
+      ]
+    },
+    {
+      page: "/market",
+      items: [
         {
           id: getRandomId(),
           meta: {},
-          type: "RequestChart",
-          title: t("TXT_CODE_a4037a98"),
-          width: 6,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
+          type: "Market",
+          title: t("TXT_CODE_88249aee"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
         },
         {
           id: getRandomId(),
           meta: {},
-          type: "InstanceChart",
-          title: t("TXT_CODE_d6d9c42c"),
-          width: 6,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
         }
       ]
     },

@@ -9,7 +9,7 @@ import SystemRemoteService from "./app/service/remote_service";
 import Koa from "koa";
 import { v4 } from "uuid";
 import path from "path";
-import koaBody, { HttpMethodEnum } from "koa-body-patch";
+import koaBody, { HttpMethodEnum } from "koa-body";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import http from "http";
@@ -19,6 +19,7 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { mountRouters } from "./app/index";
 import versionAdapter from "./app/service/version_adapter";
 import { removeTrail } from "mcsmanager-common";
+import { preCheckMiddleware } from "./app/middleware/precheck";
 
 function hasParams(name: string) {
   return process.argv.includes(name);
@@ -113,6 +114,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     // When Koa is attacked by a short connection flood, it is easy for error messages to swipe the screen, which may indirectly affect the operation of some applications
   });
 
+  app.use(preCheckMiddleware);
   app.use(
     koaBody({
       multipart: true,
@@ -123,8 +125,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
         HttpMethodEnum.DELETE
       ],
       formidable: {
-        maxFieldsSize: Number.MAX_VALUE,
-        maxFileSize: Number.MAX_VALUE,
+        maxFileSize: 1024 * 1024 * 500,
         maxFiles: 1
       },
       jsonLimit: "10mb",
@@ -156,10 +157,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     for (const iterator of ignoreUrls) {
       if (ctx.URL.pathname.includes(iterator)) return await next();
     }
-    // fileLogger.info(`[HTTP] ${ctx.method}: ${ctx.URL.href}`);
-    // fileLogger.info(
-    //   `[HTTP] IP: ${ctx.ip} USER: ${ctx.session?.userName} UUID: ${ctx.session?.uuid}`
-    // );
     await next();
   });
 

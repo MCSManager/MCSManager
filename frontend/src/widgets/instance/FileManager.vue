@@ -14,7 +14,7 @@ import type { LayoutCard } from "@/types";
 import type { AntColumnsType } from "@/types/ant";
 import type { DataType } from "@/types/fileManager";
 import {
-  CaretLeftOutlined,
+  CaretRightOutlined,
   CloseOutlined,
   CopyOutlined,
   DeleteOutlined,
@@ -33,9 +33,9 @@ import {
   SearchOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import { type ItemType, Modal } from "ant-design-vue";
+import { Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
 import dayjs from "dayjs";
-import { type CSSProperties, computed, h, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, h, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
@@ -70,11 +70,10 @@ const {
   deleteFile,
   zipFile,
   unzipFile,
-  beforeUpload,
   downloadFile,
   handleChangeDir,
   handleSearchChange,
-  selectedFile,
+  selectedFiles,
   rowClickTable,
   handleTableChange,
   getFileStatus,
@@ -219,11 +218,18 @@ const handleDrop = (e: DragEvent) => {
     icon: h(ExclamationCircleOutlined),
     content: t("TXT_CODE_52bc24ec") + ` ${name} ?`,
     onOk() {
-      for (const file of files) {
-        selectedFile(file);
-      }
+      selectedFiles([...files]); // files:FileList not instanceof Array
     }
   });
+};
+const fileList = ref<UploadProps["fileList"]>([]);
+const onFileSelect = (info: UploadChangeParam) => {
+  if (!info.fileList) return;
+  if (info.fileList[info.fileList.length - 1].uid != info.file.uid) return;
+  if (!fileList.value) return;
+  const files = [...fileList.value].map((v) => v.originFileObj as File);
+  fileList.value = [];
+  selectedFiles(files);
 };
 
 const editFile = (fileName: string) => {
@@ -364,7 +370,13 @@ onUnmounted(() => {
               }}
             </a-typography-text>
 
-            <a-upload :before-upload="beforeUpload" multiple :show-upload-list="false">
+            <a-upload
+              v-model:file-list="fileList"
+              :before-upload="() => false"
+              multiple
+              :on-change="onFileSelect"
+              :show-upload-list="false"
+            >
               <a-button type="dashed">
                 <upload-outlined />
                 {{ t("TXT_CODE_e00c858c") }}
@@ -454,7 +466,7 @@ onUnmounted(() => {
               <a-typography-text style="padding-left: 5px; white-space: nowrap">
                 ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
               </a-typography-text>
-              <caret-left-outlined
+              <caret-right-outlined
                 v-if="uploadData.suspending"
                 style="margin-left: 5px"
                 type="button"
@@ -480,7 +492,7 @@ onUnmounted(() => {
                 }"
                 :percent="progress"
                 :show-info="false"
-                class="mb-20"
+                class="mb-20 no-animation"
               />
               <a-typography-text style="padding-left: 2px; white-space: nowrap">
                 {{ convertFileSize(uploadData.current![0].toString()) }} /

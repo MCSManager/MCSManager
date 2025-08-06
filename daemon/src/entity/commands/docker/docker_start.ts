@@ -24,6 +24,7 @@ export default class DockerStartCommand extends AbsStartCommand {
     });
 
     instance.started(processAdapter);
+    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
     logger.info(
       $t("TXT_CODE_instance.successful", {
         v: `${instance.config.nickname} ${instance.instanceUuid}`

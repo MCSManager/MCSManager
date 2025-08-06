@@ -88,10 +88,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
     logger.info("----------------");
 
     if (runAsConfig.isEnableRunAs) {
-      instance.println(
-        "INFO",
-        $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName })
-      );
+      instance.println("INFO", $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName }));
     }
 
     // create child process
@@ -138,5 +135,6 @@ export default class GeneralStartCommand extends AbsStartCommand {
       })
     );
     instance.println("INFO", $t("TXT_CODE_general_start.startOrdinaryTerminal"));
+    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
   }
 }

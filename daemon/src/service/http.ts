@@ -1,20 +1,23 @@
 import Koa from "koa";
-import koaBody from "koa-body-patch";
+import koaBody from "koa-body";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
 import { globalConfiguration } from "../entity/config";
 import { removeTrail } from "mcsmanager-common";
+import { uploadFileCheckMiddleware } from "../middlewares/precheck";
 
 export function initKoa() {
   const koaApp = new Koa();
   const config = globalConfiguration.config;
+  koaApp.use(uploadFileCheckMiddleware);
   koaApp.use(
     koaBody({
       multipart: true,
       formidable: {
-        maxFileSize: Number.MAX_SAFE_INTEGER,
+        maxFileSize: 1024 * 1024 * 100, // 100MB
         maxFiles: 1
       },
+      jsonLimit: "10mb",
       onError(err, ctx) {
         logger.error("koaBody Lib Error:", err);
       }

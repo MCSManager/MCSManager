@@ -8,7 +8,7 @@ import { t } from "@/lang/i18n";
 import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
 
-const PIECE_SIZE = 1024 * 1024; // 1MB
+const PIECE_SIZE = 1024 * 1024 * 10;
 
 class UploadFiles {
   file: File;
@@ -21,19 +21,13 @@ class UploadFiles {
   canceled = false;
   removing = false;
 
-  constructor(
-    private tempId: string,
-    file: File,
-    url: string,
-    password: string,
-    shouldOverwrite: boolean
-  ) {
+  constructor(tempId: string, file: File, url: string, password: string, shouldOverwrite: boolean) {
     this.file = file;
     this.url = url;
-    this.init(url, password, shouldOverwrite); // async
+    this.init(tempId, url, password, shouldOverwrite); // async
   }
 
-  async init(url: string, password: string, shouldOverwrite: boolean) {
+  async init(tempId: string, url: string, password: string, shouldOverwrite: boolean) {
     const { state: uploadCfg, execute: uploadFile } = uploadFileApi();
     try {
       await uploadFile({
@@ -53,7 +47,7 @@ class UploadFiles {
       const id = uploadCfg.value?.id;
       this.id = id;
       this.pieceUrl = `${url}/upload-piece/${id}`;
-      uploadService.changeId(this.tempId, id);
+      uploadService.changeId(tempId, id);
 
       const received: { start: number; end: number }[] = uploadCfg.value?.received!;
       if (received.length > 0 && received[0].start == 0) {
@@ -68,7 +62,6 @@ class UploadFiles {
       uploadService.update();
     } catch (err: any) {
       this.removing = true;
-      console.error(err);
       return reportErrorMsg(err.response?.data || err.message);
     }
   }
@@ -99,7 +92,7 @@ class UploadFiles {
         stop: true
       }
     });
-    uploadService.files.delete(this.id ?? this.tempId);
+    uploadService.files.delete(this.id!);
   }
 }
 
@@ -245,7 +238,11 @@ class UploadService {
           break;
         }
         this.task.push(nextTask);
-        nextTask.start();
+      }
+      for (const uploadTask of this.task) {
+        if (uploadTask.status == "pending") {
+          uploadTask.start(); // async
+        }
       }
       if (reachTaskEnd && currentFile.prepared && this.task.length == 0) {
         const currentFile = this.files.get(this.current)!;
@@ -259,7 +256,7 @@ class UploadService {
           message.success(currentFile.file.name + " " + t("TXT_CODE_773f36a0"));
         }
         while (this.files.size > 0) {
-          const current = this.files.keys().next().value;
+          const current = this.files.keys().next().value ?? "";
           const currentFile = this.files.get(current);
           if (currentFile?.removing) {
             this.files.delete(current);
@@ -294,6 +291,9 @@ class UploadService {
     if (this.status != "suspend") return;
     if (this.files.size > 0) {
       this.status = "working";
+      for (const uploadTask of this.task) {
+        uploadTask.status = "pending";
+      }
     }
     this.update();
   }

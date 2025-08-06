@@ -1,4 +1,5 @@
 import Router from "@koa/router";
+import formidable from "formidable";
 import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
@@ -118,12 +119,17 @@ router.delete("/layout", permission({ level: ROLE.ADMIN }), async (ctx) => {
 // [Top-level Permission]
 // Upload file to asserts directory, only administrator can upload
 router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  const tmpFiles = ctx.request.files?.file;
+  let files = ctx.request.files?.file;
+  let tmpFile: formidable.File | undefined;
+  if (Array.isArray(files)) {
+    tmpFile = files[0];
+  } else {
+    tmpFile = files;
+  }
   try {
-    if (!tmpFiles || !(tmpFiles instanceof Array)) throw new Error($t("TXT_CODE_e4d6cc20"));
-    if (!tmpFiles[0].filepath || !fs.existsSync(tmpFiles[0].filepath))
+    if (!tmpFile) throw new Error($t("TXT_CODE_e4d6cc20"));
+    if (!tmpFile.filepath || !fs.existsSync(tmpFile.filepath))
       throw new Error($t("TXT_CODE_1a499109"));
-    const tmpFile = tmpFiles[0];
     const newFileName = v4() + path.extname(tmpFile.originalFilename || "");
     if (!FileManager.checkFileName(newFileName))
       throw new Error("Access denied: Malformed file name");
@@ -132,9 +138,13 @@ router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => 
     await fs.move(tmpFile.filepath, path.join(saveDirPath, newFileName));
     ctx.body = newFileName;
   } finally {
-    tmpFiles?.forEach((v) => {
-      if (v?.filepath) fs.remove(v.filepath, () => {});
-    });
+    if (Array.isArray(files)) {
+      files.forEach((v) => {
+        if (v?.filepath) fs.remove(v.filepath, () => {});
+      });
+    } else {
+      if (tmpFile?.filepath) fs.remove(tmpFile.filepath, () => {});
+    }
   }
 });
 

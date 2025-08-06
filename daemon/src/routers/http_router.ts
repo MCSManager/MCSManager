@@ -55,7 +55,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
   }
 });
 
-// File upload route
+// Old version upload route
 router.post("/upload/:key", async (ctx) => {
   const key = String(ctx.params.key);
   const unzip = Boolean(ctx.query.unzip);
@@ -73,8 +73,10 @@ router.post("/upload/:key", async (ctx) => {
       let uploadedFile: formidable.File;
       if (tmpFiles instanceof Array) {
         uploadedFile = tmpFiles[0];
+      } else if (tmpFiles) {
+        uploadedFile = tmpFiles;
       } else {
-        throw new Error("Access denied: Files must a array!");
+        throw new Error("Empty File!");
       }
 
       const originFileName = uploadedFile.originalFilename || "";
@@ -219,8 +221,10 @@ router.post("/upload-piece/:id", async (ctx) => {
     let uploadedFile: formidable.File;
     if (tmpFiles instanceof Array) {
       uploadedFile = tmpFiles[0];
+    } else if (tmpFiles) {
+      uploadedFile = tmpFiles;
     } else {
-      throw new Error("Access denied: Files must a array!");
+      throw new Error("Empty File!");
     }
     const writer = uploadManager.get(id);
     if (!writer) throw new Error("Access denied: No task found");

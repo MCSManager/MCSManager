@@ -149,6 +149,11 @@ html {
   margin-bottom: 16px !important;
 }
 
+// Override the AntDesign progress bar animation
+.no-animation .ant-progress-bg {
+  transition: none !important;
+}
+
 // Scrollbar
 *::-webkit-scrollbar {
   width: 8px;

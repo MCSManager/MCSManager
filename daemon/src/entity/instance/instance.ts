@@ -6,6 +6,7 @@ import { configureEntityParams } from "mcsmanager-common";
 import path from "path";
 import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
+import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
 import logger from "../../service/log";
 import InstanceCommand from "../commands/base/command";
@@ -264,6 +265,24 @@ export default class Instance extends EventEmitter {
     globalConfiguration.store();
   }
 
+  clearRuntimeConfig() {
+    const name = this.config.nickname;
+    const memory = this.config.docker.memory;
+    const maxSpace = this.config.docker.maxSpace;
+    const cpuUsage = this.config.docker.cpuUsage;
+    const cwd = this.config.cwd;
+    const endTime = this.config.endTime;
+
+    const newConfig = new InstanceConfig();
+    newConfig.nickname = name;
+    newConfig.docker.memory = memory;
+    newConfig.docker.maxSpace = maxSpace;
+    newConfig.docker.cpuUsage = cpuUsage;
+    newConfig.cwd = cwd;
+    newConfig.endTime = endTime;
+    this.config = newConfig;
+  }
+
   setLock(bool: boolean) {
     if (this.lock === true && bool === true) {
       throw new Error($t("TXT_CODE_ca030197"));
@@ -311,6 +330,7 @@ export default class Instance extends EventEmitter {
   // function that must be executed after the instance has been closed
   // trigger exit event
   stopped(code = 0) {
+    this.println("INFO", $t("TXT_CODE_70ce6fbb"));
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
@@ -457,6 +477,8 @@ export default class Instance extends EventEmitter {
       const replacement = String(basePort + portOffset);
       text = text.replace(new RegExp(placeholder, "gim"), replacement);
     });
+    text = text.replace(/\{mcsm_run_as\}/gim, this.config.runAs);
+    text = text.replace(/\{mcsm_steamcmd\}/gim, STEAM_CMD_PATH);
     return text;
   }
 

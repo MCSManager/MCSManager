@@ -103,6 +103,11 @@ export type UserConfigChangeOptions = {
   type: "user_config_change";
 } & GlobalGeneralOptions;
 
+export type UserLoginOptions = {
+  type: "user_login";
+  login_result: boolean;
+} & GlobalGeneralOptions;
+
 export type SystemConfigChangeOptions = {
   type: "system_config_change";
 } & GlobalGeneralOptions;
@@ -128,4 +133,5 @@ export type OperationLoggerItem =
   | UserCreateOptions
   | UserDeleteOptions
   | UserConfigChangeOptions
+  | UserLoginOptions
   | SystemConfigChangeOptions;

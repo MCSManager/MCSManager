@@ -8,6 +8,7 @@ import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
+import NodeSelectDialog from "./NodeSelectDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
 import TaskLoadingDialog from "./TaskLoadingDialog.vue";
@@ -181,4 +182,11 @@ export async function openRenewalDialog(instanceId: string, daemonId: string, pr
   return useMountComponent({ instanceId, daemonId, productId })
     .load<InstanceType<typeof RenewalDialog>>(RenewalDialog)
     .openDialog();
+}
+
+export async function openNodeSelectDialog() {
+  const dialog = useMountComponent({}).load<InstanceType<typeof NodeSelectDialog>>(
+    NodeSelectDialog
+  );
+  return dialog!.openDialog();
 }

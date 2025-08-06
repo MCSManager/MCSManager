@@ -19,6 +19,7 @@ export enum OperationLoggerAction {
   UserCreate = "user_create",
   UserDelete = "user_delete",
   UserConfigChange = "user_config_change",
+  UserLogin = "user_login",
   SystemConfigChange = "system_config_change"
 }
 
@@ -127,6 +128,11 @@ export type UserConfigChangeOptions = {
   type: "user_config_change";
 } & GlobalGeneralOptions;
 
+export type UserLoginOptions = {
+  type: "user_login";
+  login_result: boolean;
+} & GlobalGeneralOptions;
+
 export type SystemConfigChangeOptions = {
   type: "system_config_change";
 } & GlobalGeneralOptions;
@@ -152,6 +158,7 @@ export type OperationLoggerItem =
   | UserCreateOptions
   | UserDeleteOptions
   | UserConfigChangeOptions
+  | UserLoginOptions
   | SystemConfigChangeOptions;
 
 export type OperationLoggerItemPayload = {

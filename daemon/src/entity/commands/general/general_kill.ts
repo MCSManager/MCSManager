@@ -1,5 +1,5 @@
-import { $t } from "../../../i18n";
-import logger from "../../../service/log";
+import { t } from "i18next";
+import { sleep } from "../../../tools/time";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 
@@ -11,24 +11,33 @@ export default class GeneralKillCommand extends InstanceCommand {
   async exec(instance: Instance) {
     if (instance.status() === Instance.STATUS_STOP) return;
 
-    if (instance.startTimestamp && instance.startTimestamp + 6 * 1000 > Date.now()) {
-      return instance.failure(new Error($t("TXT_CODE_6259357c")));
+    // The program must run for more than 6 seconds before it can be forced to stop!
+    const waitTime = instance.startTimestamp + 6 * 1000 - Date.now();
+    if (instance.startTimestamp && waitTime > 0) {
+      await sleep(waitTime);
     }
 
     instance.ignoreEventTaskOnce();
 
     const task = instance?.asynchronousTask;
-    if (task && task.stop) {
-      task
-        .stop(instance)
-        .then(() => {})
-        .catch((err) => {
-          logger.error(`Instance ${instance.config.nickname} asynchronousTask stop error:`, err);
-        });
+    if (task && typeof task.stop === "function") {
+      task.stop(instance).catch((err) => {
+        instance.println(
+          "ERROR",
+          `Instance ${instance.config.nickname} asynchronousTask stop failed: ${err}`
+        );
+      });
     }
 
     if (instance.process) {
-      await instance.process.kill("SIGKILL");
+      try {
+        await instance.process.kill("SIGKILL");
+      } catch (err) {
+        instance.println(
+          "ERROR",
+          `Instance ${instance.config.nickname} process kill failed: ${err}`
+        );
+      }
     }
   }
 }

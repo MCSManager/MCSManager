@@ -1,15 +1,27 @@
 import { $t as t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import type { LoginUserInfo } from "@/types/user";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
-import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHashHistory,
+  type RouteLocationNormalized,
+  type RouteRecordRaw
+} from "vue-router";
 
 export interface RouterMetaInfo {
   icon?: string;
   mainMenu?: boolean;
   permission?: number;
-  redirect?: string;
+  redirect?:
+    | string
+    | ((
+        userInfo: LoginUserInfo | undefined,
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalized
+      ) => string);
   onlyDisplayEditMode?: boolean;
   customClass?: string[];
   condition?: () => boolean;
@@ -27,6 +39,13 @@ export interface RouterConfig {
   component?: any;
   children?: RouterConfig[];
   meta: RouterMetaInfo;
+  redirect?:
+    | string
+    | ((
+        userInfo: LoginUserInfo,
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalized
+      ) => string);
 }
 
 export enum ROLE {
@@ -59,7 +78,7 @@ const originRouterConfig: RouterConfig[] = [
     children: [
       {
         path: "/quickstart/minecraft",
-        name: t("TXT_CODE_8d8b1d6a"),
+        name: t("TXT_CODE_88249aee"),
         component: LayoutContainer,
         meta: {
           permission: ROLE.ADMIN
@@ -69,11 +88,20 @@ const originRouterConfig: RouterConfig[] = [
   },
   {
     path: "/",
-    name: t("TXT_CODE_16d71239"),
+    name: "",
     component: LayoutContainer,
     meta: {
       mainMenu: true,
-      permission: ROLE.ADMIN
+      redirect: (user) => {
+        if (user?.permission === ROLE.ADMIN) {
+          return "/instances";
+        }
+        if (user?.permission && user.permission >= ROLE.USER) {
+          return "/customer";
+        }
+        return "/login";
+      },
+      permission: ROLE.USER
     }
   },
   {
@@ -130,6 +158,24 @@ const originRouterConfig: RouterConfig[] = [
         ]
       }
     ]
+  },
+  {
+    path: "/market",
+    name: t("TXT_CODE_27594db8"),
+    component: LayoutContainer,
+    meta: {
+      mainMenu: true,
+      permission: ROLE.ADMIN
+    }
+  },
+  {
+    path: "/overview",
+    name: t("TXT_CODE_84fbe277"),
+    component: LayoutContainer,
+    meta: {
+      mainMenu: true,
+      permission: ROLE.ADMIN
+    }
   },
   {
     path: "/users",
@@ -283,6 +329,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const { state } = useAppStateStore();
+
   const userPermission = state.userInfo?.permission ?? 0;
   const toPagePermission = Number(to.meta.permission ?? 0);
   const fromRoutePath = router.currentRoute.value.path.trim();
@@ -297,6 +344,18 @@ router.beforeEach((to, from, next) => {
     "toPagePermission:",
     toPagePermission
   );
+
+  if (!state.isInstall && toRoutePath !== "/install") {
+    return next("/install");
+  }
+
+  if (to.meta?.redirect) {
+    if (typeof to.meta.redirect === "function") {
+      const userInfo = state.userInfo;
+      return next(to.meta.redirect(userInfo, to, from));
+    }
+    return next(to.meta.redirect as string);
+  }
 
   if (
     toRoutePath.includes("_open_page") ||

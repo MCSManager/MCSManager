@@ -10,13 +10,17 @@
     "BUKKIT",
     "BUNGEECORD",
     "cpuset",
+    "frpc",
     "LOGNAME",
     "MCSM",
     "mcsmanager",
     "MINECRAFT",
     "mkdirs",
+    "openfrp",
     "percpu",
-    "precpu"
+    "precpu",
+    "steamcmd",
+    "totp"
   ],
   "i18n-ally.localesPaths": [
     "languages",

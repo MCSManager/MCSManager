@@ -68,6 +68,7 @@ const menus = computed(() => {
   return router
     .getRoutes()
     .filter((v) => {
+      if (v.path === "/" || !v.name) return false;
       const metaInfo = v.meta as RouterMetaInfo;
       if (metaInfo.condition && !metaInfo.condition()) {
         return false;

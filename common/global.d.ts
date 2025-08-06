@@ -200,15 +200,15 @@ declare global {
     targetLink?: string;
     author: string;
     setupInfo?: IJsonData;
+    gameType: string;
+    image: string;
+    platform: string;
+    tags?: string[];
   }
 
   interface IQuickStartTemplate {
-    remark: string;
+    name: string;
     languages: {
-      label: string;
-      value: string;
-    }[];
-    categories: {
       label: string;
       value: string;
     }[];
