@@ -64,112 +64,110 @@ export class QuickInstallTask extends AsyncTask {
     this.extName = path.extname(this.targetLink ?? "") || ".zip";
   }
 
-  private download(): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        this.abortController = new AbortController();
-        if (!this.targetLink) return reject(new Error("No targetLink!"));
-        let downloadFileName = this.TMP_ZIP_NAME;
-        if (this.extName !== ".zip") {
-          const url = new URL(this.targetLink);
-          downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
+  private async download() {
+    this.abortController = new AbortController();
+    if (!this.targetLink) throw new Error("No targetLink!");
+    let downloadFileName = this.TMP_ZIP_NAME;
+    if (this.extName !== ".zip") {
+      const url = new URL(this.targetLink);
+      downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
+    }
+    this.filePath = path.normalize(path.join(this.instance.absoluteCwdPath(), downloadFileName));
+    this.writeStream = fs.createWriteStream(this.filePath);
+    if (!this.writeStream) throw new Error("Not writeStream!");
+
+    // Initialize download progress
+    this.downloadProgress = {
+      percentage: 0,
+      downloadedBytes: 0,
+      totalBytes: 0,
+      speed: 0,
+      eta: 0
+    };
+
+    const response = await axios<Readable>({
+      url: this.targetLink,
+      responseType: "stream",
+      signal: this.abortController.signal
+    });
+
+    // Get total file size
+    const contentLength = response.headers["content-length"];
+    if (contentLength) {
+      this.downloadProgress.totalBytes = parseInt(contentLength);
+    }
+
+    let lastProgressUpdate = Date.now();
+    let lastDownloadedBytes = 0;
+
+    // listen download progress
+    response.data.on("data", (chunk: Buffer) => {
+      this.downloadProgress.downloadedBytes += chunk.length;
+
+      // Calculate download speed (update every second)
+      const currentTime = Date.now();
+      if (currentTime - lastProgressUpdate >= 1000) {
+        const timeDiff = (currentTime - lastProgressUpdate) / 1000;
+        const bytesDiff = this.downloadProgress.downloadedBytes - lastDownloadedBytes;
+        this.downloadProgress.speed = bytesDiff / timeDiff;
+
+        // Calculate remaining time
+        if (this.downloadProgress.speed > 0 && this.downloadProgress.totalBytes > 0) {
+          const remainingBytes =
+            this.downloadProgress.totalBytes - this.downloadProgress.downloadedBytes;
+          this.downloadProgress.eta = remainingBytes / this.downloadProgress.speed;
         }
-        this.filePath = path.normalize(
-          path.join(this.instance.absoluteCwdPath(), downloadFileName)
+
+        lastProgressUpdate = currentTime;
+        lastDownloadedBytes = this.downloadProgress.downloadedBytes;
+      }
+
+      // Calculate download percentage
+      if (this.downloadProgress.totalBytes > 0) {
+        this.downloadProgress.percentage = Math.round(
+          (this.downloadProgress.downloadedBytes / this.downloadProgress.totalBytes) * 100
         );
-        this.writeStream = fs.createWriteStream(this.filePath);
+      }
 
-        // Initialize download progress
-        this.downloadProgress = {
-          percentage: 0,
-          downloadedBytes: 0,
-          totalBytes: 0,
-          speed: 0,
-          eta: 0
-        };
-
-        const response = await axios<Readable>({
-          url: this.targetLink,
-          responseType: "stream",
-          signal: this.abortController.signal
-        });
-
-        // Get total file size
-        const contentLength = response.headers["content-length"];
-        if (contentLength) {
-          this.downloadProgress.totalBytes = parseInt(contentLength);
-        }
-
-        let lastProgressUpdate = Date.now();
-        let lastDownloadedBytes = 0;
-
-        response.data.on("data", (chunk: Buffer) => {
-          this.downloadProgress.downloadedBytes += chunk.length;
-
-          // Calculate download speed (update every second)
-          const currentTime = Date.now();
-          if (currentTime - lastProgressUpdate >= 1000) {
-            const timeDiff = (currentTime - lastProgressUpdate) / 1000;
-            const bytesDiff = this.downloadProgress.downloadedBytes - lastDownloadedBytes;
-            this.downloadProgress.speed = bytesDiff / timeDiff;
-
-            // Calculate remaining time
-            if (this.downloadProgress.speed > 0 && this.downloadProgress.totalBytes > 0) {
-              const remainingBytes =
-                this.downloadProgress.totalBytes - this.downloadProgress.downloadedBytes;
-              this.downloadProgress.eta = remainingBytes / this.downloadProgress.speed;
-            }
-
-            lastProgressUpdate = currentTime;
-            lastDownloadedBytes = this.downloadProgress.downloadedBytes;
-          }
-
-          // Calculate download percentage
-          if (this.downloadProgress.totalBytes > 0) {
-            this.downloadProgress.percentage = Math.round(
-              (this.downloadProgress.downloadedBytes / this.downloadProgress.totalBytes) * 100
-            );
-          }
-
-          // Throttle progress output to once per second
-          const now = Date.now();
-          const PROGRESS_THROTTLE_MS = 1000;
-          if (now - this.lastProgressOutput >= PROGRESS_THROTTLE_MS) {
-            const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
-              this.downloadProgress.totalBytes
-            )}`;
-            const speed = `${prettyBytes(this.downloadProgress.speed)}/s, ETA: ${formatTime(
-              this.downloadProgress.eta
-            )}`;
-            this.instance.println(
-              "INFO",
-              `Downloading... (${this.downloadProgress.percentage}%): ${size}, ${speed}`
-            );
-            this.lastProgressOutput = now;
-          }
-        });
-
-        this.downloadStream = pipeline(response.data, this.writeStream, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            this.downloadProgress.percentage = 100;
-            this.downloadProgress.downloadedBytes = this.downloadProgress.totalBytes;
-            this.instance.println(
-              "INFO",
-              `Download "${this.targetLink}" success! ${(
-                this.downloadProgress.downloadedBytes /
-                1024 /
-                1024
-              ).toFixed(2)} MB`
-            );
-            resolve(true);
-          }
-        });
-      } catch (error: any) {
-        reject(error);
+      // Throttle progress output to once per second
+      const now = Date.now();
+      const PROGRESS_THROTTLE_MS = 1000;
+      if (now - this.lastProgressOutput >= PROGRESS_THROTTLE_MS) {
+        const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
+          this.downloadProgress.totalBytes
+        )}`;
+        const speed = `${prettyBytes(this.downloadProgress.speed)}/s, ETA: ${formatTime(
+          this.downloadProgress.eta
+        )}`;
+        this.instance.println(
+          "INFO",
+          `Downloading... (${this.downloadProgress.percentage}%): ${size}, ${speed}`
+        );
+        this.lastProgressOutput = now;
       }
     });
+
+    // await download
+    await new Promise<boolean>(async (resolve, reject) => {
+      this.downloadStream = pipeline(response.data, this.writeStream!, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+
+    this.downloadProgress.percentage = 100;
+    this.downloadProgress.downloadedBytes = this.downloadProgress.totalBytes;
+    this.instance.println(
+      "INFO",
+      `Download "${this.targetLink}" success! ${(
+        this.downloadProgress.downloadedBytes /
+        1024 /
+        1024
+      ).toFixed(2)} MB`
+    );
   }
 
   async onStart() {
@@ -186,13 +184,14 @@ export class QuickInstallTask extends AsyncTask {
       }
 
       if (this.targetLink) {
-        let result = await this.download();
+        await this.download();
         this.instance.println("INFO", $t("TXT_CODE_e4a926bf"));
-        if (this.extName === ".zip")
-          result = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
-        if (!result) {
-          this.error(new Error($t("TXT_CODE_quick_install.unzipError")));
-          return;
+        if (this.extName === ".zip") {
+          const isOk = await fileManager.unzip(this.TMP_ZIP_NAME, ".", "UTF-8");
+          if (!isOk) {
+            this.error(new Error($t("TXT_CODE_quick_install.unzipError")));
+            return;
+          }
         }
       }
 
@@ -250,7 +249,9 @@ export class QuickInstallTask extends AsyncTask {
   async onStop() {
     try {
       this.abortController?.abort();
+      this.writeStream?.removeAllListeners();
       this.writeStream?.destroy();
+      this.downloadStream?.removeAllListeners();
       this.downloadStream?.destroy();
       this.writeStream = undefined;
       this.downloadStream = undefined;
