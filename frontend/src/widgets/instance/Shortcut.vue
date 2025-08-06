@@ -1,39 +1,38 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
+import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
+import { useAppRouters } from "@/hooks/useAppRouters";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
+import { t } from "@/lang/i18n";
+import {
+  killInstance,
+  openInstance,
+  restartInstance,
+  stopInstance,
+  updateInstance
+} from "@/services/apis/instance";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { arrayFilter } from "@/tools/array";
+import { parseTimestamp } from "@/tools/time";
+import { reportErrorMsg } from "@/tools/validator";
 import type { InstanceDetail, LayoutCard } from "@/types/index";
-import { message } from "ant-design-vue";
 import {
   CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  PlayCircleOutlined,
-  PauseCircleOutlined,
-  RedoOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
   CodeOutlined,
-  UserOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  RedoOutlined,
   TagsOutlined,
-  DeleteOutlined
+  UserOutlined
 } from "@ant-design/icons-vue";
-import {
-  openInstance,
-  stopInstance,
-  restartInstance,
-  killInstance,
-  updateInstance
-} from "@/services/apis/instance";
-import { Modal } from "ant-design-vue";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
-import { useAppRouters } from "@/hooks/useAppRouters";
-import { parseTimestamp } from "@/tools/time";
-import { arrayFilter } from "@/tools/array";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { reportErrorMsg } from "@/tools/validator";
-import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
+import { message, Modal } from "ant-design-vue";
 import _ from "lodash";
+import { computed, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -77,11 +76,7 @@ const refreshList = () => {
 
 const actions = {
   start: async () => {
-    const flag = await verifyEULA(
-      instanceId ?? "",
-      daemonId ?? "",
-      instanceInfo.value?.config.type ?? ""
-    );
+    const flag = await verifyEULA(instanceId ?? "", daemonId ?? "");
     if (!flag) return;
     await executeOpen(operationConfig);
     message.success(t("TXT_CODE_e13abbb1"));
