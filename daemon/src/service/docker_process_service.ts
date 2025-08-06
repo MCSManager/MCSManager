@@ -144,11 +144,11 @@ export class SetupDockerContainer extends AsyncTask {
       instance.println("MCSManager", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
     }
     if (logOpenedPorts.length) {
-      instance.println("MCSManager", $t("已为实例开放以下端口："));
+      instance.println("MCSManager", $t("TXT_CODE_c1c548fb"));
       logOpenedPorts.forEach((v) => {
         instance.println(
           "MCSManager",
-          $t("外部访问端口：{{- host}} -> 容器内端口：{{- container}} / 协议：{{- protocol}}", {
+          $t("TXT_CODE_1e03347e", {
             host: v.host,
             container: v.container,
             protocol: v.protocol

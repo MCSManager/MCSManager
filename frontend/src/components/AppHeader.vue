@@ -132,16 +132,16 @@ const breadcrumbs = computed(() => {
 const appMenus = computed(() => {
   return [
     {
-      iconText: t("社区版"),
-      title: t("了解更多"),
+      iconText: t("TXT_CODE_3ccb26e"),
+      title: t("TXT_CODE_b01f8383"),
       icon: GithubFilled,
       conditions: !isProMode.value,
       onlyPC: true,
       click: onClickIcon
     },
     {
-      iconText: t("专业版"),
-      title: t("查看订阅信息"),
+      iconText: t("TXT_CODE_80f0904e"),
+      title: t("TXT_CODE_b6c675d6"),
       icon: SketchOutlined,
       click: onClickIcon,
       conditions: isProMode.value,

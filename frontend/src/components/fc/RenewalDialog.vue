@@ -36,7 +36,7 @@ const submit = async () => {
         productId: props.productId
       }
     });
-    message.success(t("续费成功！"));
+    message.success(t("TXT_CODE_ae51f93b"));
     isVisible.value = false;
     formData.value.code = "";
   } catch (error) {
@@ -59,19 +59,19 @@ defineExpose({
     v-model:open="isVisible"
     centered
     width="500px"
-    :title="t('续费')"
+    :title="t('TXT_CODE_f77093c8')"
     :footer="null"
     @cancel="cancel"
   >
     <div class="dialog-overflow-container">
       <a-form layout="vertical">
         <a-typography-paragraph>
-          {{ t("请确保激活码有效且对应此实例套餐规格。") }}
+          {{ t("TXT_CODE_2432f4cc") }}
         </a-typography-paragraph>
         <a-form-item required>
           <a-input
             v-model:value="formData.code"
-            :placeholder="t('请输入续费代码')"
+            :placeholder="t('TXT_CODE_b3cc1379')"
             size="large"
             @keyup.enter="submit"
           />
@@ -84,7 +84,7 @@ defineExpose({
             :disabled="!formData.code.trim()"
             @click="submit"
           >
-            {{ t("确认续费") }}
+            {{ t("TXT_CODE_bc560b9") }}
           </a-button>
         </div>
       </a-form>

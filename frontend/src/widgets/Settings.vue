@@ -84,13 +84,13 @@ const menus = arrayFilter([
     icon: ProjectOutlined
   },
   {
-    title: t("高级设置"),
+    title: t("TXT_CODE_31a1d824"),
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()
   },
   {
-    title: t("卡密销售"),
+    title: t("TXT_CODE_caf8ebb7"),
     key: "redeem",
     icon: KeyOutlined,
     condition: () => isCN()
@@ -307,17 +307,13 @@ onUnmounted(() => {
                   <a-form-item>
                     <a-typography-title :level="5">Panel ID</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{
-                        t(
-                          "此 ID 是 MCSManager 的唯一标识，用于区分不同的面板，所有由 MCSManager 提供的在线服务都将以此 ID 区分用户。"
-                        )
-                      }}
+                      {{ t("TXT_CODE_e2976753") }}
                       <br />
                       <span v-if="formData.panelId">
-                        {{ t("请勿随意修改，如果与其他面板冲突，可能会导致服务无法正常使用。") }}
+                        {{ t("TXT_CODE_e56cced3") }}
                       </span>
                       <span v-else>
-                        {{ t("请勿填写，有需求时面板会自动生成。") }}
+                        {{ t("TXT_CODE_699b4b66") }}
                       </span>
                     </a-typography-paragraph>
                     <a-input

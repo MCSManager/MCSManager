@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { t } from "@/lang/i18n";
-import {
-  FileZipOutlined,
-  FolderOpenOutlined,
-  ArrowRightOutlined,
-  AppstoreAddOutlined,
-  BlockOutlined
-} from "@ant-design/icons-vue";
-import { useAppStateStore } from "@/stores/useAppStateStore";
-import { router } from "@/config/router";
-import { QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
-import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
-import { QUICKSTART_ACTION_TYPE } from "@/hooks/widgets/quickStartFlow";
 import { openNodeSelectDialog } from "@/components/fc/index";
+import { router } from "@/config/router";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
+import { t } from "@/lang/i18n";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import type { LayoutCard } from "@/types";
+import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
+import {
+  AppstoreAddOutlined,
+  ArrowRightOutlined,
+  BlockOutlined,
+  FileZipOutlined,
+  FolderOpenOutlined
+} from "@ant-design/icons-vue";
+import { ref } from "vue";
 import McPreset from "./setupApp/McPreset.vue";
 
 const props = defineProps<{
@@ -77,9 +76,7 @@ const manualInstallOptions = [
   {
     label: t("TXT_CODE_bae487e4"),
     icon: BlockOutlined,
-    description: t(
-      "TXT_CODE_256e5825"
-    ),
+    description: t("TXT_CODE_256e5825"),
     action: () =>
       handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer)
   },
@@ -95,10 +92,15 @@ const manualInstallOptions = [
 <template>
   <div style="height: 100%">
     <div v-if="isAdmin" style="margin-bottom: 30px">
-      <a-typography-title :level="4" style="margin-bottom: 16px">
+      <a-typography-title :level="4" style="margin-bottom: 8px">
         <AppstoreAddOutlined />
         {{ t("TXT_CODE_5a74975b") }}
       </a-typography-title>
+      <a-typography-paragraph>
+        <p>
+          {{ t("TXT_CODE_81ad9e80") }}
+        </p>
+      </a-typography-paragraph>
       <div class="manual-install-options">
         <a-row :gutter="[16, 16]">
           <a-col

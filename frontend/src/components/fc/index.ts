@@ -65,7 +65,7 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
     (await useMountComponent({
       data,
       subTitle: t(
-        "默认情况下，MCSManager 为每个实例按序分配 5 个端口，支持填写 {mcsm_port1} 到 {mcsm_port5}，为按序新增的端口号。"
+        "TXT_CODE_56b9e6af"
       ),
       title: t("TXT_CODE_c4435af9"),
       columns: [

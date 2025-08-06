@@ -57,16 +57,12 @@ defineExpose({
             <div>
               <div class="mb-2">
                 <p style="opacity: 0.8">
-                  {{
-                    t(
-                      "无法找到可用的远程节点，请前往节点页面连接你的节点，如果您不知道如何做，请尝试重新安装面板。"
-                    )
-                  }}
+                  {{ t("TXT_CODE_f4110b65") }}
                 </p>
               </div>
               <div>
                 <a-button type="primary" @click="selectNode(availableNodes[0])">{{
-                  t("前往节点页")
+                  t("TXT_CODE_4fe5dce5")
                 }}</a-button>
               </div>
             </div>

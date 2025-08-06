@@ -11,13 +11,11 @@ const editMode = ref(false);
 const formRef = ref<FormInstance>();
 
 const ipRules = [
-  { required: true, message: t("地址必须填写") },
+  { required: true, message: t("TXT_CODE_86e0cccc") },
   {
     validator: (_rule: any, value: string) => {
       if (value && isLocalNetworkIP(value)) {
-        return Promise.reject(
-          new Error(t("远程节点地址必须为公网 IP 地址，域名或 localhost，无法使用局域网 IP 地址。"))
-        );
+        return Promise.reject(new Error(t("TXT_CODE_e37b4577")));
       }
       return Promise.resolve();
     }
