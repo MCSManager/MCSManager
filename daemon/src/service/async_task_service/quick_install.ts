@@ -133,7 +133,7 @@ export class QuickInstallTask extends AsyncTask {
 
           // Throttle progress output to once per second
           const now = Date.now();
-          if (now - this.lastProgressOutput >= 1000) {
+          if (now - this.lastProgressOutput >= PROGRESS_THROTTLE_MS) {
             const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
               this.downloadProgress.totalBytes
             )}`;
