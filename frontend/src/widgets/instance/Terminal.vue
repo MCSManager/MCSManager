@@ -231,13 +231,13 @@ const terminalTopTags = computed<TagInfo[]>(() => {
     {
       label: t("TXT_CODE_593ee330"),
       value: info.memoryLimit
-        ? `${prettyBytes(info.memoryUsage || 0, {binary: true})}/${prettyBytes(info.memoryLimit, {binary: true})}`
-        : prettyBytes(info.memoryUsage || 0, {binary: true}),
+        ? `${prettyBytes(info.memoryUsage || 0, { binary: true })}/${prettyBytes(info.memoryLimit, { binary: true })}`
+        : prettyBytes(info.memoryUsage || 0, { binary: true }),
       condition: () => info.memoryUsage != null
     },
     {
       label: t("TXT_CODE_50daec4"),
-      value: `↓${prettyBytes((info.rxBytes || 0)*8, {bits: true})}ps ↑${prettyBytes((info.txBytes || 0)*8, {bits: true})}ps`,
+      value: `↓${prettyBytes((info.rxBytes || 0) * 8, { bits: true })}ps ↑${prettyBytes((info.txBytes || 0) * 8, { bits: true })}ps`,
       condition: () => info.rxBytes != null || info.txBytes != null,
       icon: ArrowUpOutlined
     }
