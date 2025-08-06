@@ -7,3 +7,7 @@ npm install --production --no-fund --no-audit
 
 cd "${BASE_PATH}/web"
 npm install --production --no-fund --no-audit
+
+echo "------------"
+echo "All done!"
+echo "------------"
