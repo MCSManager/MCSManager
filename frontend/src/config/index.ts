@@ -16,6 +16,7 @@ import Terminal from "@/widgets/instance/Terminal.vue";
 import InstanceChart from "@/widgets/InstanceChart.vue";
 import InstanceList from "@/widgets/InstanceList.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
+import Market from "@/widgets/Market.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import NodeList from "@/widgets/NodeList.vue";
 import NodeOverview from "@/widgets/NodeOverview.vue";
@@ -42,7 +43,6 @@ import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
 import UserInstanceList from "@/widgets/UserInstanceList.vue";
 import UserList from "@/widgets/UserList.vue";
 import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
-import Market from "@/widgets/Market.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
 import { LayoutCardHeight } from "./originLayoutConfig";
@@ -90,8 +90,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   PluginCard,
   MusicCard,
   ShelvesCard,
-  OperationLogCard
-  ShopInfoCard,
   OperationLogCard,
   Market
 };

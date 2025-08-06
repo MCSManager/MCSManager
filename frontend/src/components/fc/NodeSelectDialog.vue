@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { useDialog } from "@/hooks/useDialog";
 import { t } from "@/lang/i18n";
 import { remoteNodeList } from "@/services/apis";
-import type { NodeStatus } from "@/types";
-import { useDialog } from "@/hooks/useDialog";
 import { reportErrorMsg } from "@/tools/validator";
+import type { NodeStatus } from "@/types";
+import { onMounted, ref } from "vue";
 
 interface Props {
   destroyComponent?: () => void;
@@ -52,7 +52,28 @@ defineExpose({
         {{ t("TXT_CODE_ad24269a") }}
       </a-typography-paragraph>
       <div class="node-grid">
+        <div v-if="availableNodes.length === 0">
+          <div class="justify-center" flex-center>
+            <div>
+              <div class="mb-2">
+                <p style="opacity: 0.8">
+                  {{
+                    t(
+                      "无法找到可用的远程节点，请前往节点页面连接你的节点，如果您不知道如何做，请尝试重新安装面板。"
+                    )
+                  }}
+                </p>
+              </div>
+              <div>
+                <a-button type="primary" @click="selectNode(availableNodes[0])">{{
+                  t("前往节点页")
+                }}</a-button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
+          v-else
           v-for="item in availableNodes"
           :key="item.uuid"
           class="node-item"

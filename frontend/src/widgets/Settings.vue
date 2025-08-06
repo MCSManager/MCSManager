@@ -4,6 +4,7 @@ import IframeBox from "@/components/IframeBox/index.vue";
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import Loading from "@/components/Loading.vue";
 import { useUploadFileDialog } from "@/components/fc";
+import { router } from "@/config/router";
 import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
 import { setSettingInfo, settingInfo } from "@/services/apis";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
@@ -25,7 +26,7 @@ import {
   SketchOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import { arrayFilter } from "../tools/array";
 
@@ -44,7 +45,7 @@ interface MySettings extends Settings {
   proLicenseKey?: string;
 }
 
-const ApacheLicense = `Copyright ${new Date().getFullYear()} MCSManager Dev
+const ApacheLicense = `Copyright ${new Date().getFullYear()} MCSManager
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -78,22 +79,21 @@ const submit = async (needReload: boolean = true) => {
 
 const menus = arrayFilter([
   {
-    title: t("订阅中心"),
+    title: t("TXT_CODE_cdd555be"),
+    key: "baseInfo",
+    icon: ProjectOutlined
+  },
+  {
+    title: t("高级设置"),
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()
   },
-
   {
     title: t("卡密销售"),
     key: "redeem",
     icon: KeyOutlined,
     condition: () => isCN()
-  },
-  {
-    title: t("TXT_CODE_cdd555be"),
-    key: "baseInfo",
-    icon: ProjectOutlined
   },
   {
     title: t("TXT_CODE_1c18acc0"),
@@ -106,11 +106,6 @@ const menus = arrayFilter([
     icon: LockOutlined
   },
   {
-    title: t("TXT_CODE_3b4b656d"),
-    key: "about",
-    icon: QuestionCircleOutlined
-  },
-  {
     title: t("TXT_CODE_46cb40d5"),
     key: "sponsor",
     icon: MoneyCollectOutlined,
@@ -120,10 +115,14 @@ const menus = arrayFilter([
       if (isCN()) url = "https://afdian.com/a/mcsmanager";
       window.open(url, "_blank");
     }
+  },
+  {
+    title: t("TXT_CODE_3b4b656d"),
+    key: "about",
+    icon: QuestionCircleOutlined
   }
 ]);
 
-// DO NOT I18N
 const allLanguages = SUPPORTED_LANGS;
 
 const allYesNo = [
@@ -223,6 +222,8 @@ const gotoBusinessCenter = () => {
   window.open("https://redeem.mcsmanager.com/", "_blank");
 };
 
+const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
+
 onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
@@ -230,6 +231,21 @@ onMounted(async () => {
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
   }
+  setTimeout(() => {
+    if (router.currentRoute.value.query.tab === "pro") {
+      leftMenusPanelRef.value?.setActiveKey("pro");
+    }
+  }, 100);
+});
+
+onUnmounted(() => {
+  const route = router.currentRoute.value;
+  router.replace({
+    query: {
+      ...route.query,
+      tab: undefined
+    }
+  });
 });
 </script>
 
@@ -237,7 +253,7 @@ onMounted(async () => {
   <div>
     <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
-        <LeftMenusPanel :menus="menus">
+        <LeftMenusPanel ref="leftMenusPanelRef" :menus="menus">
           <template #baseInfo>
             <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
@@ -489,9 +505,7 @@ onMounted(async () => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t("TXT_CODE_bc2e52a0")
-                        }}
+                        {{ t("TXT_CODE_bc2e52a0") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select
@@ -615,6 +629,7 @@ onMounted(async () => {
           </template>
 
           <template #pro>
+            {{ console.debug("pro template") }}
             <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
           </template>
 

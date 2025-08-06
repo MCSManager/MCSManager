@@ -11,15 +11,15 @@ import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import {
   AppstoreAddOutlined,
+  BgColorsOutlined,
   BuildOutlined,
   CloseCircleOutlined,
-  FlagOutlined,
-  FormatPainterOutlined,
-  GithubOutlined,
+  GithubFilled,
   LogoutOutlined,
   MenuUnfoldOutlined,
   RedoOutlined,
   SaveOutlined,
+  SketchOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
 import { useScroll } from "@vueuse/core";
@@ -132,6 +132,23 @@ const breadcrumbs = computed(() => {
 const appMenus = computed(() => {
   return [
     {
+      iconText: t("社区版"),
+      title: t("了解更多"),
+      icon: GithubFilled,
+      conditions: !isProMode.value,
+      onlyPC: true,
+      click: onClickIcon
+    },
+    {
+      iconText: t("专业版"),
+      title: t("查看订阅信息"),
+      icon: SketchOutlined,
+      click: onClickIcon,
+      conditions: isProMode.value,
+      onlyPC: true,
+      customClass: ["nav-button-success"]
+    },
+    {
       title: t("TXT_CODE_8b0f8aab"),
       icon: AppstoreAddOutlined,
       click: openNewCardDialog,
@@ -202,7 +219,7 @@ const appMenus = computed(() => {
 
     {
       title: t("TXT_CODE_f591e2fa"),
-      icon: FormatPainterOutlined,
+      icon: BgColorsOutlined,
       click: (key: string) => {
         if (key === THEME.DARK) {
           setTheme(THEME.DARK);
@@ -279,7 +296,7 @@ const openPhoneMenu = (b = false) => {
 
 const onClickIcon = () => {
   if (isCN()) {
-    router.push("/settings");
+    router.push("/settings?tab=pro");
   } else {
     window.open("https://github.com/MCSManager/MCSManager", "_blank");
   }
@@ -307,27 +324,14 @@ const onClickIcon = () => {
         </div>
       </nav>
       <div class="btns">
-        <div
-          :class="{
-            'pro-mode-order-container': true
-          }"
-        >
-          <div
-            :class="{
-              'pro-mode-order': true
-            }"
-            type="text"
-            @click="onClickIcon"
-          >
-            <GithubOutlined v-if="!isProMode" />
-            <FlagOutlined v-else />
-            {{ isProMode ? $t("专业版") : $t("社区版") }}
-          </div>
-        </div>
         <div v-for="(item, index) in appMenus" :key="index">
           <a-dropdown v-if="item.menus && item.conditions" placement="bottom">
-            <div :class="item.customClass" class="nav-button" @click.prevent>
-              <component :is="item.icon"></component>
+            <div
+              :class="item.customClass"
+              class="nav-button right-nav-button flex-center"
+              @click.prevent
+            >
+              <component v-if="item.icon" :is="item.icon"></component>
             </div>
             <template #overlay>
               <a-menu @click="(e: any) => item.click(String(e.key))">
@@ -343,11 +347,14 @@ const onClickIcon = () => {
             </template>
             <div
               :class="item.customClass"
-              class="nav-button"
+              class="nav-button right-nav-button flex-center"
               type="text"
               @click="(e: any) => item.click(e.key)"
             >
-              <component :is="item.icon"></component>
+              <component v-if="item.icon" :is="item.icon"></component>
+              <span v-if="item.iconText" class="ml-6" style="font-size: 12px">
+                {{ item.iconText }}
+              </span>
             </div>
           </a-tooltip>
         </div>
@@ -545,6 +552,13 @@ const onClickIcon = () => {
     min-width: 40px;
     cursor: pointer;
     border-radius: 6px;
+    user-select: none;
+  }
+
+  .right-nav-button {
+    margin: 0 2px;
+    font-size: 14px;
+    padding: 8px 8px;
   }
 
   .icon-button {

@@ -25,8 +25,16 @@ const handleChangeMenu = (item: LeftMenuItem) => {
   activeKey.value = item.key;
 };
 
+const setActiveKey = (key: string) => {
+  activeKey.value = key;
+};
+
 onMounted(() => {
   activeKey.value = props.menus[0].key;
+});
+
+defineExpose({
+  setActiveKey
 });
 </script>
 
