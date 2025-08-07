@@ -138,15 +138,15 @@ const appList = computed(() => {
 // Computed property for language options dropdown
 // Includes "ALL" option and available languages from preset data
 const appLangList = computed(() => {
-  const allOption: FilterOption = {
-    label: t("TXT_CODE_8a30e150"),
-    value: SEARCH_ALL_KEY
-  };
+  // const allOption: FilterOption = {
+  //   label: t("TXT_CODE_8a30e150"),
+  //   value: SEARCH_ALL_KEY
+  // };
 
   const languageOptions: FilterOption[] =
     presetList.value?.languages instanceof Array ? presetList.value.languages : [];
 
-  return [allOption, ...languageOptions];
+  return [...languageOptions];
 });
 
 // Computed property for game type options dropdown
