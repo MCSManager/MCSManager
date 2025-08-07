@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
-import { getCurrentLang, isCN, t } from "@/lang/i18n";
-import { quickInstallListAddr } from "@/services/apis/instance";
-import type { QuickStartPackages } from "@/types";
-import { reportErrorMsg } from "@/tools/validator";
-import { Modal } from "ant-design-vue";
-import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { onMounted } from "vue";
-import Loading from "@/components/Loading.vue";
 import CardPanel from "@/components/CardPanel.vue";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
+import Loading from "@/components/Loading.vue";
+import { getCurrentLang, isCN, t } from "@/lang/i18n";
+import { quickInstallListAddr } from "@/services/apis/instance";
+import { reportErrorMsg } from "@/tools/validator";
+import type { QuickStartPackages } from "@/types";
+import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
+import { Modal } from "ant-design-vue";
+import { computed, onMounted, reactive } from "vue";
 
 defineProps<{
   title?: string;
@@ -225,10 +224,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-typography-title :level="4" style="margin-bottom: 20px">
+  <a-typography-title :level="4" style="margin-bottom: 8px">
     <DatabaseOutlined />
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
+  <a-typography-paragraph>
+    <p>
+      {{ t("TXT_CODE_c9ce7427") }}
+    </p>
+  </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
     <a-col :span="24">

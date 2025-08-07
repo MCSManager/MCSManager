@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import type { LayoutCard } from "@/types/index";
-import { ref, onMounted, computed, h } from "vue";
 import { t } from "@/lang/i18n";
+import type { LayoutCard } from "@/types/index";
 import {
-  SearchOutlined,
+  AppstoreOutlined,
+  CloseOutlined,
+  DatabaseOutlined,
+  DeleteOutlined,
   DownOutlined,
   FormOutlined,
-  DatabaseOutlined,
-  AppstoreOutlined,
-  PlayCircleOutlined,
-  PauseCircleOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  WarningOutlined,
-  InfoCircleOutlined,
   FrownOutlined,
-  RedoOutlined
+  InfoCircleOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  RedoOutlined,
+  SearchOutlined,
+  WarningOutlined
 } from "@ant-design/icons-vue";
+import { computed, h, onMounted, ref } from "vue";
 
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
+import { useInstanceTagSearch, useInstanceTagTips } from "@/hooks/useInstanceTag";
+import { useScreen } from "@/hooks/useScreen";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import {
-  batchStart,
-  batchStop,
-  batchKill,
   batchDelete,
-  batchRestart
+  batchKill,
+  batchRestart,
+  batchStart,
+  batchStop
 } from "@/services/apis/instance";
-import type { NodeStatus } from "../types/index";
-import { notification, Modal } from "ant-design-vue";
-import { computeNodeName } from "../tools/nodes";
-import type { InstanceMoreDetail } from "../hooks/useInstance";
-import { useInstanceMoreDetail } from "../hooks/useInstance";
-import { throttle } from "lodash";
-import { useScreen } from "@/hooks/useScreen";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS } from "@/types/const";
+import { Modal, notification } from "ant-design-vue";
+import { throttle } from "lodash";
+import type { InstanceMoreDetail } from "../hooks/useInstance";
+import { useInstanceMoreDetail } from "../hooks/useInstance";
+import { computeNodeName } from "../tools/nodes";
+import type { NodeStatus } from "../types/index";
 import Shortcut from "./instance/Shortcut.vue";
-import { useInstanceTagSearch, useInstanceTagTips } from "@/hooks/useInstanceTag";
 
 defineProps<{
   card: LayoutCard;
@@ -291,11 +291,13 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
     content: () =>
       h("div", {}, [
         h("p", {}, deleteFile ? t("TXT_CODE_18d2f8ae") : t("TXT_CODE_ac01315a")),
-        h("p", { style: "margin-top: 8px; color: #666;" }, [
-          t("TXT_CODE_91d70059"),
-          h("br"),
-          paths.join()
-        ])
+        paths.length > 1
+          ? null
+          : h("p", { style: "margin-top: 8px; color: #666;" }, [
+              t("TXT_CODE_91d70059"),
+              h("br"),
+              paths.join()
+            ])
       ]),
     okText: t("TXT_CODE_d507abff"),
     async onOk() {

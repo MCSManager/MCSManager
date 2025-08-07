@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import BetweenMenus from "@/components/BetweenMenus.vue";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types";
-import { ref, computed, onMounted, onUnmounted, h, type CSSProperties, watch } from "vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { useFileManager } from "@/hooks/useFileManager";
+import { useRightClickMenu } from "@/hooks/useRightClickMenu";
+import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
+import uploadService from "@/services/uploadService";
+import { arrayFilter } from "@/tools/array";
+import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
 import { convertFileSize } from "@/tools/fileSize";
-import dayjs from "dayjs";
+import type { LayoutCard } from "@/types";
+import type { AntColumnsType } from "@/types/ant";
+import type { DataType } from "@/types/fileManager";
 import {
   CaretRightOutlined,
   CloseOutlined,
@@ -25,18 +33,10 @@ import {
   SearchOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useScreen } from "@/hooks/useScreen";
-import { arrayFilter } from "@/tools/array";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
-import { useFileManager } from "@/hooks/useFileManager";
+import { Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
+import dayjs from "dayjs";
+import { computed, h, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
 import FileEditor from "./dialogs/FileEditor.vue";
-import type { DataType } from "@/types/fileManager";
-import type { AntColumnsType } from "@/types/ant";
-import { useRightClickMenu } from "@/hooks/useRightClickMenu";
-import { type ItemType, Modal, type UploadChangeParam, type UploadProps } from "ant-design-vue";
-import uploadService from "@/services/uploadService";
 
 const props = defineProps<{
   card: LayoutCard;

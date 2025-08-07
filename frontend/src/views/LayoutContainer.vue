@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import NewCardList from "@/components//NewCardList/index.vue";
-import CardOperator from "@/components/CardOperator.vue";
 import LayoutCardComponent from "@/components//LayoutCard.vue";
+import NewCardList from "@/components//NewCardList/index.vue";
 import PlaceHolderCard from "@/components//PlaceHolderCard.vue";
-import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import CardOperator from "@/components/CardOperator.vue";
 import { useCardDragMove } from "@/hooks/useCardDragMove";
-import { useCardLayoutComputed, PLACE_HOLDER_CARD } from "@/hooks/useCardLayoutComputed";
-import { useRouterParams } from "../hooks/useRouterParams";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { useScreen } from "@/hooks/useScreen";
+import { PLACE_HOLDER_CARD, useCardLayoutComputed } from "@/hooks/useCardLayoutComputed";
 import { useMouseEnter } from "@/hooks/useMouseEnter";
+import { useScreen } from "@/hooks/useScreen";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { useRouterParams } from "../hooks/useRouterParams";
 
 const { containerState } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();
@@ -150,10 +150,12 @@ const showCardOperator = (card: ILayoutCard) => {
 @keyframes scaleAnimation {
   0% {
     opacity: 0.02;
+    transform: scale(0.98);
   }
 
   100% {
     opacity: 1;
+    transform: scale(1);
   }
 }
 </style>

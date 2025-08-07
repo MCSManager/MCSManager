@@ -54,13 +54,16 @@ export default class SystemConfig {
   // Redis address (Experimental Features)
   redisUrl = "";
 
+  // Whether to allow users to edit the start & update command of Docker instances
+  allowChangeCmd = false;
+
+  // -----
   // After it is enabled, you can connect to the redeem.mcsmanager.com platform
   // to sell instances based on redeem
   // (this feature may not be available in some countries)
   businessMode = false;
-
   businessId = "";
-
-  // Whether to allow users to edit the start & update command of Docker instances
-  allowChangeCmd = true;
+  panelId = "";
+  registerCode = "";
+  // -----
 }

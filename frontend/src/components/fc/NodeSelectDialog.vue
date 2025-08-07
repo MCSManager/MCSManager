@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { useDialog } from "@/hooks/useDialog";
 import { t } from "@/lang/i18n";
 import { remoteNodeList } from "@/services/apis";
-import type { NodeStatus } from "@/types";
-import { useDialog } from "@/hooks/useDialog";
 import { reportErrorMsg } from "@/tools/validator";
+import type { NodeStatus } from "@/types";
+import { onMounted, ref } from "vue";
 
 interface Props {
   destroyComponent?: () => void;
@@ -52,7 +52,24 @@ defineExpose({
         {{ t("TXT_CODE_ad24269a") }}
       </a-typography-paragraph>
       <div class="node-grid">
+        <div v-if="availableNodes.length === 0">
+          <div class="justify-center" flex-center>
+            <div>
+              <div class="mb-2">
+                <p style="opacity: 0.8">
+                  {{ t("TXT_CODE_f4110b65") }}
+                </p>
+              </div>
+              <div>
+                <a-button type="primary" @click="selectNode(availableNodes[0])">{{
+                  t("TXT_CODE_4fe5dce5")
+                }}</a-button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
+          v-else
           v-for="item in availableNodes"
           :key="item.uuid"
           class="node-item"
