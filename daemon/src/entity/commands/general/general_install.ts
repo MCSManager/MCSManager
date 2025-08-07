@@ -5,7 +5,7 @@ import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
 
 export default class GeneralInstallCommand extends InstanceCommand {
-  private process?: QuickInstallTask;
+  private installTask?: QuickInstallTask;
 
   constructor() {
     super("GeneralInstallCommand");
@@ -32,7 +32,7 @@ export default class GeneralInstallCommand extends InstanceCommand {
         await fs.mkdirs(instance.absoluteCwdPath());
       }
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_906c5d6a"));
-      this.process = new QuickInstallTask(
+      this.installTask = new QuickInstallTask(
         instance.config.nickname,
         params.targetLink,
         params.setupInfo,
@@ -40,8 +40,8 @@ export default class GeneralInstallCommand extends InstanceCommand {
       );
       instance.asynchronousTask = this;
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_b9ca022b"));
-      await this.process.start();
-      await this.process.wait();
+      await this.installTask?.start();
+      await this.installTask?.wait();
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),
@@ -58,7 +58,7 @@ export default class GeneralInstallCommand extends InstanceCommand {
       $t("TXT_CODE_general_update.killProcess")
     );
     this.stopped(instance);
-    await this.process?.stop();
-    this.process = undefined;
+    await this.installTask?.stop();
+    this.installTask = undefined;
   }
 }

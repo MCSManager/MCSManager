@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types";
-import { getConfigFileList } from "@/services/apis/instance";
-import { reportErrorMsg } from "@/tools/validator";
+import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
-import { useAppRouters } from "@/hooks/useAppRouters";
 import { useScreen } from "@/hooks/useScreen";
+import { t } from "@/lang/i18n";
+import { getConfigFileList } from "@/services/apis/instance";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard } from "@/types";
+import { FileExclamationOutlined } from "@ant-design/icons-vue";
+import { onMounted, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -139,11 +140,19 @@ onMounted(async () => {
                 </a-list-item>
               </template>
             </a-list>
-            <a-empty v-else>
+            <a-empty v-else class="mt-40 mb-40">
               <template #description>
-                {{ t("TXT_CODE_432cfb62") }}
+                <p style="font-size: 16px; margin-top: 40px">
+                  <FileExclamationOutlined class="mr-4" />{{ t("没有找到可用的配置文件") }}
+                </p>
+                <p style="font-size: 14px; margin-bottom: 10px">
+                  {{
+                    t(
+                      "请尝试启动一次实例生成配置文件，如果依然显示为空，则可能不支持此游戏服务器类型"
+                    )
+                  }}
+                </p>
               </template>
-              {{ t("TXT_CODE_70a2613b") }}
             </a-empty>
           </template>
         </CardPanel>

@@ -84,7 +84,7 @@ const menus = arrayFilter([
     icon: ProjectOutlined
   },
   {
-    title: t("TXT_CODE_31a1d824"),
+    title: t("在线功能"),
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()
