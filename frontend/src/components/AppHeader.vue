@@ -132,7 +132,8 @@ const breadcrumbs = computed(() => {
 const appMenus = computed(() => {
   return [
     {
-      iconText: t("TXT_CODE_3ccb26e"),
+      iconText: "",
+      // iconText: t("TXT_CODE_3ccb26e"),
       title: t("TXT_CODE_b01f8383"),
       icon: GithubFilled,
       conditions: !isProMode.value,
@@ -331,7 +332,7 @@ const onClickIcon = () => {
               class="nav-button right-nav-button flex-center"
               @click.prevent
             >
-              <component v-if="item.icon" :is="item.icon"></component>
+              <component :is="item.icon" v-if="item.icon"></component>
             </div>
             <template #overlay>
               <a-menu @click="(e: any) => item.click(String(e.key))">
@@ -351,9 +352,9 @@ const onClickIcon = () => {
               type="text"
               @click="(e: any) => item.click(e.key)"
             >
-              <component v-if="item.icon" :is="item.icon"></component>
-              <span v-if="item.iconText" class="ml-6" style="font-size: 12px">
-                {{ item.iconText }}
+              <component :is="item.icon" v-if="item.icon"></component>
+              <span v-if="item?.iconText" class="ml-6" style="font-size: 12px">
+                {{ item?.iconText }}
               </span>
             </div>
           </a-tooltip>
