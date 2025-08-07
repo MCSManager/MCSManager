@@ -35,7 +35,6 @@ export default abstract class AbsStartCommand extends InstanceCommand {
         }
       }
 
-      instance.print("\n\n");
       instance.println("INFO", $t("TXT_CODE_start.startInstance"));
 
       // prevent the dead-loop from starting
@@ -43,9 +42,7 @@ export default abstract class AbsStartCommand extends InstanceCommand {
 
       return await this.createProcess(instance);
     } catch (error: any) {
-      try {
-        await instance.execPreset("kill");
-      } catch (ignore) {}
+      instance.execPreset("kill");
       instance.releaseResources();
       instance.status(Instance.STATUS_STOP);
       instance.failure(error);

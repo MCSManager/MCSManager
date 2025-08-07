@@ -1,22 +1,21 @@
-import { setUpTerminalStreamChannel } from "@/services/apis/instance";
-import { parseForwardAddress } from "@/tools/protocol";
-import { computed, onMounted, onUnmounted, ref, unref } from "vue";
-import { io } from "socket.io-client";
-import type { Socket } from "socket.io-client";
-import { Modal } from "ant-design-vue";
-import { t } from "@/lang/i18n";
-import EventEmitter from "eventemitter3";
-import type { DefaultEventsMap } from "@socket.io/component-emitter";
-import type { InstanceDetail } from "@/types";
-import { Terminal } from "@xterm/xterm";
-import { FitAddon } from "@xterm/addon-fit";
-import { CanvasAddon } from "@xterm/addon-canvas";
-import { WebglAddon } from "@xterm/addon-webgl";
-import { INSTANCE_STATUS_CODE } from "@/types/const";
-import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
-import { useCommandHistory } from "@/hooks/useCommandHistory";
-import { removeTrail } from "@/tools/string";
 import { GLOBAL_INSTANCE_NAME } from "@/config/const";
+import { useCommandHistory } from "@/hooks/useCommandHistory";
+import { t } from "@/lang/i18n";
+import { setUpTerminalStreamChannel } from "@/services/apis/instance";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { parseForwardAddress } from "@/tools/protocol";
+import { removeTrail } from "@/tools/string";
+import type { InstanceDetail } from "@/types";
+import { INSTANCE_STATUS_CODE } from "@/types/const";
+import type { DefaultEventsMap } from "@socket.io/component-emitter";
+import { CanvasAddon } from "@xterm/addon-canvas";
+import { FitAddon } from "@xterm/addon-fit";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { Terminal } from "@xterm/xterm";
+import EventEmitter from "eventemitter3";
+import type { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
+import { computed, onMounted, onUnmounted, ref, unref } from "vue";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -56,6 +55,8 @@ export interface StdoutData {
 
 const { setHistory } = useCommandHistory();
 
+export type UseTerminalHook = ReturnType<typeof useTerminal>;
+
 export function useTerminal() {
   const { hasBgImage } = useLayoutConfigStore();
 
@@ -77,8 +78,15 @@ export function useTerminal() {
     h: 40
   };
 
+  console.debug("useTerminal():");
+
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
+
+    if (socket) {
+      return socket;
+    }
+
     const res = await setUpTerminalStreamChannel().execute({
       params: {
         daemonId: config.daemonId,
@@ -87,6 +95,8 @@ export function useTerminal() {
     });
     const remoteInfo = unref(res.value);
     if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
+
+    console.debug("useTerminal - execute():", config, remoteInfo);
 
     const addr = parseForwardAddress(remoteInfo?.addr, "ws");
     socketAddress.value = addr;
@@ -144,7 +154,7 @@ export function useTerminal() {
     });
 
     socket.on("disconnect", () => {
-      console.warn("[Socket.io] disconnect:", addr);
+      console.error("[Socket.io] disconnect:", addr);
       isConnect.value = false;
       events.emit("disconnect");
     });
@@ -212,6 +222,10 @@ export function useTerminal() {
   };
 
   const initTerminalWindow = (element: HTMLElement) => {
+    if (terminal.value) {
+      throw new Error("Terminal already initialized, Please refresh the page!");
+    }
+
     // init touch handler
     element.addEventListener("touchstart", touchHandler, true);
     element.addEventListener("touchmove", touchHandler, true);
@@ -232,7 +246,11 @@ export function useTerminal() {
     });
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
-    
+
+    terminal.value = term;
+
+    console.debug("useTerminal - initTerminalWindow():", terminal.value);
+
     const gl = document.createElement("canvas").getContext("webgl2");
     if (gl) {
       // If WebGL2 is supported, use the WebGlAddon
@@ -246,7 +264,7 @@ export function useTerminal() {
       const canvasAddon = new CanvasAddon();
       term.loadAddon(canvasAddon);
     }
-    
+
     term.open(element);
 
     // Auto resize pty win size
@@ -270,7 +288,6 @@ export function useTerminal() {
         lastCtrlCTime = 0;
         return sendInput(data);
       }
-
       const now = Date.now();
       if (now - lastCtrlCTime < ctrlCTimeThreshold) {
         term.write("\r\n" + t("TXT_CODE_3725b37b") + "\r\n");
@@ -282,8 +299,11 @@ export function useTerminal() {
       }
     });
 
-    terminal.value = term;
     return term;
+  };
+
+  const clearTerminal = () => {
+    terminal.value?.clear();
   };
 
   events.on("stdout", (v: StdoutData) => {
@@ -333,10 +353,10 @@ export function useTerminal() {
     socketAddress,
     isConnect,
     isGlobalTerminal,
-
     execute,
     initTerminalWindow,
-    sendCommand
+    sendCommand,
+    clearTerminal
   };
 }
 

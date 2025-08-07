@@ -232,6 +232,7 @@ export class QuickInstallTask extends AsyncTask {
           await this.updateTask.start();
           await this.updateTask.wait();
           this.instance.println("INFO", $t("TXT_CODE_9b4985d3"));
+          this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
         } catch (error: any) {
           this.instance.println(
             "ERROR",
@@ -241,8 +242,9 @@ ${error?.message}
 ========================================\n`
           );
         }
+      } else {
+        this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
       }
-      this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
 
       this.stop();
     } catch (error: any) {

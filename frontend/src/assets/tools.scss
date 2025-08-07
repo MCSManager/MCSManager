@@ -165,6 +165,25 @@
   color: var(--color-info);
 }
 
+.button-color-success {
+  color: #ffffff !important;
+  background-color: var(--color-green-6) !important;
+}
+
+.button-color-warning {
+  color: #ffffff !important;
+  background-color: var(--color-warning) !important;
+}
+
+.button-color-danger {
+  color: #ffffff !important;
+  background-color: var(--color-danger) !important;
+}
+
+.button-color-info {
+  background-color: var(--color-info) !important;
+}
+
 .transition-all-6 {
   transition: all 0.6s;
 }

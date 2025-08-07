@@ -49,7 +49,7 @@ export class InstanceUpdateAction extends AsyncTask {
     const commandExeFile = commandList[0];
     const commandParameters = commandList.slice(1);
     if (commandList.length === 0) {
-      return this.instance.failure(new Error($t("TXT_CODE_general_update.cmdFormatErr")));
+      throw new Error($t("TXT_CODE_general_update.cmdFormatErr"));
     }
 
     // start the update command
@@ -59,7 +59,7 @@ export class InstanceUpdateAction extends AsyncTask {
       windowsHide: true
     });
     if (!process || !process.pid) {
-      return this.instance.failure(new Error($t("TXT_CODE_general_update.updateFailed")));
+      throw new Error($t("TXT_CODE_general_update.updateFailed"));
     }
 
     // process & pid

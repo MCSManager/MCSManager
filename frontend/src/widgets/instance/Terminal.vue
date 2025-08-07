@@ -21,8 +21,6 @@ import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_STATUS } from "@/types/const";
 import {
-  ArrowUpOutlined,
-  BlockOutlined,
   CheckCircleOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
@@ -38,10 +36,10 @@ import {
   RedoOutlined
 } from "@ant-design/icons-vue";
 import prettyBytes from "pretty-bytes";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
-import { useTerminal } from "../../hooks/useTerminal";
+import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
 import { arrayFilter } from "../../tools/array";
 import Reinstall from "./dialogs/Reinstall.vue";
 
@@ -52,14 +50,20 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { state, isAdmin } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
+
+// The `useTerminal` is shared by this component and `TerminalCore`.
+// Please do not initialize `useTerminal` in this component; all initialization logic should be placed in its child component `TerminalCore.vue`.
+// The state of the shared terminal is used here.
+const terminalHook: UseTerminalHook = useTerminal();
 const {
-  execute,
   state: instanceInfo,
   isStopped,
   isRunning,
   isBuys,
-  isGlobalTerminal
-} = useTerminal();
+  isGlobalTerminal,
+  clearTerminal
+} = terminalHook;
+
 const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -73,6 +77,7 @@ const instanceTypeText = computed(
 const { execute: requestOpenInstance, isLoading: isOpenInstanceLoading } = openInstance();
 
 const toOpenInstance = async () => {
+  clearTerminal();
   try {
     if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
       const flag = await verifyEULA(instanceId ?? "", daemonId ?? "");
@@ -100,6 +105,7 @@ const quickOperations = computed(() =>
       icon: PlayCircleOutlined,
       noConfirm: false,
       type: "default",
+      class: "button-color-success",
       click: toOpenInstance,
       props: {},
       condition: () => isStopped.value
@@ -152,6 +158,7 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_7b67813a"),
       icon: CloseOutlined,
       type: "danger",
+      class: "color-warning",
       click: async () => {
         try {
           await killInstance().execute({
@@ -172,6 +179,7 @@ const instanceOperations = computed(() =>
       icon: CloudDownloadOutlined,
       click: async () => {
         try {
+          clearTerminal();
           await updateInstance().execute({
             params: {
               uuid: instanceId || "",
@@ -192,7 +200,10 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_b19ed1dd"),
       icon: InteractionOutlined,
       noConfirm: true,
-      click: () => reinstallDialog.value?.openDialog(),
+      click: () => {
+        clearTerminal();
+        reinstallDialog.value?.openDialog();
+      },
       props: {},
       condition: () =>
         isStopped.value &&
@@ -232,8 +243,7 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       label: t("TXT_CODE_b862a158"),
       value: `${parseInt(String(info.cpuUsage))}%`,
       condition: () => info.cpuUsage != null,
-      color: info?.cpuUsage! > 60 ? "warning" : "default",
-      icon: BlockOutlined
+      color: info?.cpuUsage! > 60 ? "warning" : "default"
     },
     {
       label: t("TXT_CODE_593ee330"),
@@ -245,24 +255,9 @@ const terminalTopTags = computed<TagInfo[]>(() => {
     {
       label: t("TXT_CODE_50daec4"),
       value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
-      condition: () => info.rxBytes != null || info.txBytes != null,
-      icon: ArrowUpOutlined
+      condition: () => info.rxBytes != null || info.txBytes != null
     }
   ]);
-});
-
-onMounted(async () => {
-  try {
-    if (instanceId && daemonId) {
-      await execute({
-        instanceId,
-        daemonId
-      });
-    }
-  } catch (error: any) {
-    console.error(error);
-    throw error;
-  }
 });
 </script>
 
@@ -318,6 +313,7 @@ onMounted(async () => {
               <a-button
                 v-if="item.noConfirm"
                 class="ml-8"
+                :class="item.class ? item.class : ''"
                 :danger="item.type === 'danger'"
                 :disabled="isOpenInstanceLoading"
                 @click="item.click"
@@ -331,7 +327,11 @@ onMounted(async () => {
                 :title="t('TXT_CODE_276756b2')"
                 @confirm="item.click"
               >
-                <a-button class="ml-8" :danger="item.type === 'danger'">
+                <a-button
+                  class="ml-8"
+                  :danger="item.type === 'danger'"
+                  :class="item.class ? item.class : ''"
+                >
                   <component :is="item.icon" />
                   {{ item.title }}
                 </a-button>
@@ -365,6 +365,7 @@ onMounted(async () => {
     </div>
     <TerminalCore
       v-if="instanceId && daemonId"
+      :use-terminal-hook="terminalHook"
       :instance-id="instanceId"
       :daemon-id="daemonId"
       :height="card.height"
@@ -422,6 +423,7 @@ onMounted(async () => {
       </div>
       <TerminalCore
         v-if="instanceId && daemonId"
+        :use-terminal-hook="terminalHook"
         :instance-id="instanceId"
         :daemon-id="daemonId"
         :height="card.height"
