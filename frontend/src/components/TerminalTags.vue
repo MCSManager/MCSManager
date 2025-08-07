@@ -14,7 +14,16 @@ defineProps<{
       gap: gap || '6px'
     }"
   >
-    <a-tag v-for="tag in tags" :key="tag.label" style="margin: 0" :color="tag.color" class="tag">
+    <a-tag
+      v-for="tag in tags"
+      :key="tag.label"
+      class="tag m-0"
+      :color="tag.color"
+      :style="{
+        cursor: tag.onClick ? 'pointer' : 'default'
+      }"
+      @click="tag.onClick?.()"
+    >
       <span>
         <component :is="tag.icon" v-if="tag.icon"></component>
       </span>
