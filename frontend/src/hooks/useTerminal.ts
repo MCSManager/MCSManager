@@ -1,22 +1,21 @@
-import { setUpTerminalStreamChannel } from "@/services/apis/instance";
-import { parseForwardAddress } from "@/tools/protocol";
-import { computed, onMounted, onUnmounted, ref, unref } from "vue";
-import { io } from "socket.io-client";
-import type { Socket } from "socket.io-client";
-import { Modal } from "ant-design-vue";
-import { t } from "@/lang/i18n";
-import EventEmitter from "eventemitter3";
-import type { DefaultEventsMap } from "@socket.io/component-emitter";
-import type { InstanceDetail } from "@/types";
-import { Terminal } from "@xterm/xterm";
-import { FitAddon } from "@xterm/addon-fit";
-import { CanvasAddon } from "@xterm/addon-canvas";
-import { WebglAddon } from "@xterm/addon-webgl";
-import { INSTANCE_STATUS_CODE } from "@/types/const";
-import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
-import { useCommandHistory } from "@/hooks/useCommandHistory";
-import { removeTrail } from "@/tools/string";
 import { GLOBAL_INSTANCE_NAME } from "@/config/const";
+import { useCommandHistory } from "@/hooks/useCommandHistory";
+import { t } from "@/lang/i18n";
+import { setUpTerminalStreamChannel } from "@/services/apis/instance";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { parseForwardAddress } from "@/tools/protocol";
+import { removeTrail } from "@/tools/string";
+import type { InstanceDetail } from "@/types";
+import { INSTANCE_STATUS_CODE } from "@/types/const";
+import type { DefaultEventsMap } from "@socket.io/component-emitter";
+import { CanvasAddon } from "@xterm/addon-canvas";
+import { FitAddon } from "@xterm/addon-fit";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { Terminal } from "@xterm/xterm";
+import EventEmitter from "eventemitter3";
+import type { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
+import { computed, onMounted, onUnmounted, ref, unref } from "vue";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -171,8 +170,9 @@ export function useTerminal() {
   };
 
   const touchHandler = (event: TouchEvent) => {
-    let touches = event.changedTouches;
-    let first = touches[0];
+    const touches = event.changedTouches;
+    const first = touches[0];
+
     let type = "";
     switch (event.type) {
       case "touchstart":
@@ -188,7 +188,7 @@ export function useTerminal() {
         return;
     }
 
-    let mouseEvent = new MouseEvent(type, {
+    const mouseEvent = new MouseEvent(type, {
       bubbles: true,
       cancelable: true,
       view: window,
@@ -212,11 +212,11 @@ export function useTerminal() {
   };
 
   const initTerminalWindow = (element: HTMLElement) => {
-    // init touch handler
     element.addEventListener("touchstart", touchHandler, true);
     element.addEventListener("touchmove", touchHandler, true);
     element.addEventListener("touchend", touchHandler, true);
     element.addEventListener("touchcancel", touchHandler, true);
+
     const background = hasBgImage.value ? "#00000000" : "#1e1e1e";
     const term = new Terminal({
       convertEol: true,
@@ -232,9 +232,9 @@ export function useTerminal() {
     });
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
-    
-    const gl = document.createElement("canvas").getContext("webgl2");
-    if (gl) {
+
+    const webGL2 = document.createElement("canvas").getContext("webgl2");
+    if (webGL2) {
       // If WebGL2 is supported, use the WebGlAddon
       const webglAddon = new WebglAddon();
       webglAddon.onContextLoss((_) => {
@@ -246,7 +246,7 @@ export function useTerminal() {
       const canvasAddon = new CanvasAddon();
       term.loadAddon(canvasAddon);
     }
-    
+
     term.open(element);
 
     // Auto resize pty win size
@@ -265,7 +265,16 @@ export function useTerminal() {
         data: { input: data }
       });
     }
+
     term.onData((data) => {
+      // If the PTY terminal is disabled, no input is sent.
+      if (
+        state.value?.config.terminalOption?.pty === false ||
+        state.value?.status === INSTANCE_STATUS_CODE.STOPPED
+      ) {
+        return;
+      }
+
       if (data !== "\x03") {
         lastCtrlCTime = 0;
         return sendInput(data);
