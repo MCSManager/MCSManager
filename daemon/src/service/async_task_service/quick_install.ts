@@ -136,7 +136,7 @@ export class QuickInstallTask extends AsyncTask {
         const size = `${prettyBytes(this.downloadProgress.downloadedBytes, { binary: true })}/${prettyBytes(
           this.downloadProgress.totalBytes, { binary: true }
         )}`;
-        const speed = `${prettyBytes(this.downloadProgress.speed * 8, { bits: true })}ps`;
+        const speed = `${prettyBytes(this.downloadProgress.speed)}/s`;
         const downloadText = t("TXT_CODE_b135e9bd");
         this.instance.println(
           "INFO",
