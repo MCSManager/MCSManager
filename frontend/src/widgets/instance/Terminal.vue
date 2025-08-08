@@ -246,7 +246,7 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
     ? prettyBytes(bytes ?? 0, prettyBytesConfig) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }) + "ps";
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }).replace(/bit$/, "b") + "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
