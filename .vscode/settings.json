@@ -4,7 +4,7 @@
   // Change this to your language, available options: "languages/*.json"
   // "i18n-ally.displayLanguage": "en_US"
 
-  "i18n-ally.sourceLanguage": "zh",
+  "i18n-ally.sourceLanguage": "en",
   "i18n-ally.extract.keyMaxLength": 10000,
   "cSpell.words": [
     "BUKKIT",
