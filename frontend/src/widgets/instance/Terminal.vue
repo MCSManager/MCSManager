@@ -245,8 +245,8 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
-    ? prettyBytes(bytes ?? 0, prettyBytesConfig)
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true });
+    ? prettyBytes(bytes ?? 0, prettyBytesConfig) + "/s"
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }) + "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
@@ -270,7 +270,7 @@ const terminalTopTags = computed<TagInfo[]>(() => {
     },
     {
       label: t("TXT_CODE_50daec4"),
-      value: `↓${formatNetworkSpeed(rxBytes)}/s · ↑${formatNetworkSpeed(txBytes)}/s`,
+      value: `↓${formatNetworkSpeed(rxBytes)} · ↑${formatNetworkSpeed(txBytes)}`,
       icon: ApartmentOutlined,
       condition: () => rxBytes != null || txBytes != null,
       onClick: () => {
