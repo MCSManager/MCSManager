@@ -209,9 +209,9 @@ export interface LabelValueOption {
   value: string;
 }
 
-export interface MountComponent {
+export interface MountComponent<T = any> {
   destroyComponent(delay?: number): void;
-  emitResult(data?: any): void;
+  emitResult(data?: T): void;
 }
 
 export interface Schedule {

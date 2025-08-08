@@ -5,6 +5,7 @@ import { setUserApiKey } from "@/services/apis/user";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { openIframeModal } from "../IframeModal/useIframeModal";
+import { openMarketDialog } from "../fc";
 
 export interface RemoteAppDaemon {
   nodeId: number;
@@ -125,5 +126,10 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
       }
     });
     return JSON.parse(JSON.stringify(res.value));
+  },
+  OpenMarketDialog: async (data: any) => {
+    const res = await openMarketDialog(data?.daemonId, data?.instanceId, data?.options);
+    if (!res) return res;
+    return JSON.parse(JSON.stringify(res));
   }
 };

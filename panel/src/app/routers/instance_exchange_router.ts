@@ -121,7 +121,10 @@ router.post(
       const { config } = JSON.parse(productInfo.payload) as {
         config: Partial<IGlobalInstanceConfig>;
       };
-      if (!config) {
+
+      logger.info(`Router /request_buy_instance Report: Product: ${JSON.stringify(productInfo)}`);
+
+      if (!config || !productId) {
         throw new Error($t("服务商设置的套餐存在问题，请联系商家重新配置套餐！"));
       }
 

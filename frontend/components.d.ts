@@ -91,6 +91,7 @@ declare module 'vue' {
     LeftMenusPanel: typeof import('./src/components/LeftMenusPanel.vue')['default']
     LineOption: typeof import('./src/components/LineOption.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
+    MarketDialog: typeof import('./src/components/fc/MarketDialog.vue')['default']
     MinecraftJavaForm: typeof import('./src/components/fc/CmdAssistantDialog/MinecraftJavaForm.vue')['default']
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']

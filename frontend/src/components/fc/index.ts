@@ -8,6 +8,7 @@ import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
+import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
@@ -64,9 +65,7 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      subTitle: t(
-        "TXT_CODE_56b9e6af"
-      ),
+      subTitle: t("TXT_CODE_56b9e6af"),
       title: t("TXT_CODE_c4435af9"),
       columns: [
         {
@@ -188,5 +187,23 @@ export async function openNodeSelectDialog() {
   const dialog = useMountComponent({}).load<InstanceType<typeof NodeSelectDialog>>(
     NodeSelectDialog
   );
+  return dialog!.openDialog();
+}
+
+export async function openMarketDialog(
+  daemonId?: string,
+  instanceId?: string,
+  options: {
+    autoInstall?: boolean;
+    btnText?: string;
+    title?: string;
+    showCustomBtn?: boolean;
+  } = {}
+) {
+  const dialog = useMountComponent({
+    daemonId,
+    instanceId,
+    ...options
+  }).load<InstanceType<typeof MarketDialog>>(MarketDialog);
   return dialog!.openDialog();
 }

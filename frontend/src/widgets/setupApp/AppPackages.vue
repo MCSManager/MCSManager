@@ -12,10 +12,12 @@ import { computed, onMounted, reactive } from "vue";
 
 defineProps<{
   title?: string;
+  btnText?: string;
+  showCustomBtn?: boolean;
 }>();
 
 const emit = defineEmits<{
-  "handle-select-template": [item: QuickStartPackages];
+  "handle-select-template": [item: QuickStartPackages | null];
 }>();
 
 const {
@@ -104,6 +106,7 @@ const generateOptionsList = (
   items: QuickStartPackages[],
   field: keyof QuickStartPackages,
   allLabel: string,
+  // eslint-disable-next-line no-unused-vars
   additionalFilter?: (item: QuickStartPackages) => boolean
 ): FilterOption[] => {
   const valueMap: Record<string, string> = {};
@@ -213,6 +216,8 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
+const handleCustomBtnClick = () => {};
+
 defineExpose({
   init,
   appList
@@ -257,7 +262,11 @@ onMounted(() => {
   <a-row v-else :gutter="[12, 12]" style="height: 100%">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
-      <a-form layout="horizontal" :model="searchForm" style="display: flex; gap: 10px">
+      <a-form
+        layout="horizontal"
+        :model="searchForm"
+        style="display: flex; gap: 10px; flex-wrap: wrap"
+      >
         <!-- Language filter dropdown -->
         <a-form-item class="mb-0">
           <a-select
@@ -321,6 +330,16 @@ onMounted(() => {
       </a-form>
     </a-col>
 
+    <a-col v-if="showCustomBtn" :span="24" :md="24" class="justify-end">
+      <a-button
+        type="link"
+        style="margin: 0; padding: 0"
+        @click="emit('handle-select-template', null)"
+      >
+        {{ t("没有找到合适的模板？自定义一个模板配置吧") }}
+      </a-button>
+    </a-col>
+
     <!-- Empty state - shown when no packages match current filters -->
     <a-col v-if="appList.length === 0" :span="24">
       <div style="display: flex; justify-content: center; align-items: center; height: 40vh">
@@ -338,7 +357,7 @@ onMounted(() => {
         :span="24"
         :xl="6"
         :lg="6"
-        :sm="12"
+        :sm="24"
       >
         <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
@@ -382,7 +401,7 @@ onMounted(() => {
                     <template #icon>
                       <DownloadOutlined />
                     </template>
-                    {{ t("TXT_CODE_1704ea49") }}
+                    {{ btnText || t("TXT_CODE_1704ea49") }}
                   </a-button>
                 </div>
               </div>

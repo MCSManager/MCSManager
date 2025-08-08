@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import { openRenewalDialog } from "@/components/fc";
+import { openMarketDialog, openRenewalDialog } from "@/components/fc";
 import IconBtn from "@/components/IconBtn.vue";
 import TerminalCore from "@/components/TerminalCore.vue";
 import TerminalTags from "@/components/TerminalTags.vue";
@@ -36,12 +36,11 @@ import {
   RedoOutlined
 } from "@ant-design/icons-vue";
 import prettyBytes from "pretty-bytes";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
 import { arrayFilter } from "../../tools/array";
-import Reinstall from "./dialogs/Reinstall.vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -63,8 +62,6 @@ const {
   isGlobalTerminal,
   clearTerminal
 } = terminalHook;
-
-const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
@@ -200,9 +197,15 @@ const instanceOperations = computed(() =>
       title: t("TXT_CODE_b19ed1dd"),
       icon: InteractionOutlined,
       noConfirm: true,
-      click: () => {
-        clearTerminal();
-        reinstallDialog.value?.openDialog();
+      click: async () => {
+        try {
+          clearTerminal();
+          await openMarketDialog(daemonId ?? "", instanceId ?? "", {
+            autoInstall: true
+          });
+        } catch (error: any) {
+          // ignore
+        }
       },
       props: {},
       condition: () =>
@@ -430,8 +433,6 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       />
     </template>
   </CardPanel>
-
-  <Reinstall ref="reinstallDialog" :daemon-id="daemonId ?? ''" :instance-id="instanceId ?? ''" />
 </template>
 
 <style lang="scss" scoped>

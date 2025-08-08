@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { openNodeSelectDialog } from "@/components/fc";
+import { router } from "@/config/router";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { t } from "@/lang/i18n";
-import type { LayoutCard, QuickStartPackages } from "@/types";
 import { createAsyncTask } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
-import AppPackages from "@/widgets/setupApp/AppPackages.vue";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { router } from "@/config/router";
+import type { LayoutCard, QuickStartPackages } from "@/types";
 import TemplateNameDialog from "@/widgets/instance/dialogs/TemplateNameDialog.vue";
-import { openNodeSelectDialog } from "@/components/fc";
+import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import { message } from "ant-design-vue";
+import { ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -43,7 +43,8 @@ const selectedTemplate = ref<QuickStartPackages | null>(null);
 
 const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
 
-const handleSelectTemplate = async (item: QuickStartPackages) => {
+const handleSelectTemplate = async (item: QuickStartPackages | null) => {
+  if (!item) return;
   selectedTemplate.value = item;
   showTemplateNameDialog.value = true;
 };

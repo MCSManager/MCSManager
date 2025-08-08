@@ -456,7 +456,7 @@ router.put(
       let advancedConfig = {};
       advancedConfig = checkInstanceAdvancedParams(config, isTopPermission);
 
-      const result = await new RemoteRequest(remoteService).request("instance/update", {
+      new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
           pingConfig: !isEmpty(config.pingConfig) ? pingConfig : null,
@@ -476,7 +476,7 @@ router.put(
           ...advancedConfig
         }
       });
-      ctx.body = result;
+      ctx.body = true;
     } catch (err) {
       ctx.body = err;
     }
@@ -555,12 +555,12 @@ router.post(
       if (!targetPresetConfig) throw new Error("Preset Config is not found!");
 
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
+      new RemoteRequest(remoteService).request("instance/asynchronous", {
         taskName: "install_instance",
         instanceUuid,
         parameter: targetPresetConfig
       });
-      ctx.body = result;
+      ctx.body = true;
     } catch (err) {
       ctx.body = err;
     }

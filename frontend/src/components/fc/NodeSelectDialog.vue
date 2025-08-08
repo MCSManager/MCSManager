@@ -4,12 +4,10 @@ import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
+import type { MountComponent } from "@/types";
 import { onMounted, ref } from "vue";
 
-interface Props {
-  destroyComponent?: () => void;
-  emitResult?: (node: ComputedNodeInfo) => void;
-}
+interface Props extends MountComponent<ComputedNodeInfo> {}
 
 const props = defineProps<Props>();
 
