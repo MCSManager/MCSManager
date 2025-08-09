@@ -8,7 +8,7 @@ import { t } from "@/lang/i18n";
 import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
 
-const PIECE_SIZE = 1024 * 1024 * 10;
+const PIECE_SIZE = 1024 * 1024 * 2;
 
 class UploadFiles {
   file: File;
@@ -142,6 +142,7 @@ class UploadTask {
     }
     const isStopping = this.status == "stopping";
     this.status = "failed";
+    this.onProgress(0);
     this.retries += 1;
 
     if (!isStopping && this.retries < 3) {
@@ -175,7 +176,7 @@ class UploadService {
   static concurrency = 5;
   files: Map<string, UploadFiles> = new Map();
   uploaded = 0;
-  task: UploadTask[] = [];
+  task: (UploadTask | undefined)[] = [];
   current?: string;
   status: "stopped" | "working" | "suspend" = "stopped";
   uiData: Ref<{ files: number[]; current?: number[]; currentFile?: string; suspending: boolean }> =
@@ -208,10 +209,16 @@ class UploadService {
   }
 
   update() {
-    this.task = this.task.filter((t) => t.status !== "completed");
+    for (let i = 0; i < this.task.length; i++) {
+      if (!this.task[i]) continue;
+      if (this.task[i]!.status == "completed") {
+        this.task[i] = undefined;
+      }
+    }
     if (this.status == "suspend") return;
     let removeFile = false;
     for (const task of this.task) {
+      if (!task) continue;
       if (task.status == "removing") {
         removeFile = true;
       }
@@ -227,24 +234,30 @@ class UploadService {
       if (removeFile) {
         this.task = [];
       }
-      while (
-        !reachTaskEnd &&
-        currentFile.prepared &&
-        this.task.length < UploadService.concurrency
-      ) {
-        const nextTask = currentFile.nextTask();
-        if (!nextTask) {
-          reachTaskEnd = true;
+
+      for (let i = 0; i < UploadService.concurrency; i++) {
+        if (reachTaskEnd || !currentFile.prepared) {
           break;
         }
-        this.task.push(nextTask);
-      }
-      for (const uploadTask of this.task) {
-        if (uploadTask.status == "pending") {
-          uploadTask.start(); // async
+        if (this.task[i] == undefined) {
+          const nextTask = currentFile.nextTask();
+          if (!nextTask) {
+            reachTaskEnd = true;
+            break;
+          }
+          this.task[i] = nextTask;
         }
       }
-      if (reachTaskEnd && currentFile.prepared && this.task.length == 0) {
+
+      let tasks = 0;
+      for (const uploadTask of this.task) {
+        if (!uploadTask) continue;
+        tasks++;
+        if (uploadTask.status != "pending") continue;
+        uploadTask.retries = 0;
+        uploadTask.start(); // async
+      }
+      if (reachTaskEnd && currentFile.prepared && tasks == 0) {
         const currentFile = this.files.get(this.current)!;
         if (!removeFile) {
           this.uploaded += 1;
@@ -280,6 +293,7 @@ class UploadService {
     if (this.status == "suspend") return;
     this.status = "suspend";
     this.task.forEach((t) => {
+      if (!t) return;
       if (t.status != "completed") {
         t.status = "stopping";
       }
@@ -292,6 +306,7 @@ class UploadService {
     if (this.files.size > 0) {
       this.status = "working";
       for (const uploadTask of this.task) {
+        if (!uploadTask) continue;
         uploadTask.status = "pending";
       }
     }
@@ -302,6 +317,7 @@ class UploadService {
     if (this.status == "stopped") return;
     this.status = "stopped";
     for (const task of this.task) {
+      if (!task) continue;
       if (task.status !== "completed") {
         task.status = "stopping";
       }
@@ -329,6 +345,7 @@ class UploadService {
     const currentFile = this.files.get(this.current)!;
     let progress = currentFile.uploadedSize;
     for (const uploadTask of this.task) {
+      if (!uploadTask) continue;
       progress += uploadTask.progress;
     }
 
