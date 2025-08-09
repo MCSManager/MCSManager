@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, toRef } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
@@ -20,7 +20,6 @@ import {
 } from "@ant-design/icons-vue";
 import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { arrayFilter } from "../../tools/array";
-import { useTerminal } from "../../hooks/useTerminal";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useScreen } from "@/hooks/useScreen";
 import IconBtn from "@/components/IconBtn.vue";
@@ -53,14 +52,15 @@ const props = defineProps<{
 const { isPhone } = useScreen();
 const { state, isAdmin } = useAppStateStore();
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-const {
-  execute,
-  state: instanceInfo,
-  isStopped,
-  isRunning,
-  isBuys,
-  isGlobalTerminal
-} = useTerminal();
+
+const terminalRef = ref<InstanceType<typeof TerminalCore>>();
+
+const instanceInfo = toRef(() => terminalRef.value?.instanceInfo);
+const isStopped = computed(() => terminalRef.value?.isRunning ?? false);
+const isRunning = computed(() => terminalRef.value?.isRunning ?? false);
+const isBuys = computed(() => terminalRef.value?.isRunning ?? false);
+const isGlobalTerminal = computed(() => terminalRef.value?.isGlobalTerminal ?? false);
+
 const reinstallDialog = ref<InstanceType<typeof Reinstall>>();
 
 const instanceId = getMetaOrRouteValue("instanceId");
@@ -246,11 +246,12 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
     ? prettyBytes(bytes ?? 0, prettyBytesConfig) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }).replace(/bit$/, "b") + "ps";
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }).replace(/bit$/, "b") +
+      "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
-  if (!info || isStopped.value) return [];
+  if (!info || !!terminalRef.value?.isStopped) return [];
   const { cpuUsage, memoryUsage, memoryLimit, memoryUsagePercent, rxBytes, txBytes } = info;
 
   return arrayFilter<TagInfo>([
@@ -280,19 +281,19 @@ const terminalTopTags = computed<TagInfo[]>(() => {
   ]);
 });
 
-onMounted(async () => {
-  try {
-    if (instanceId && daemonId) {
-      await execute({
-        instanceId,
-        daemonId
-      });
-    }
-  } catch (error: any) {
-    console.error(error);
-    throw error;
-  }
-});
+// onMounted(async () => {
+//   try {
+//     if (instanceId && daemonId) {
+//       await execute({
+//         instanceId,
+//         daemonId
+//       });
+//     }
+//   } catch (error: any) {
+//     console.error(error);
+//     throw error;
+//   }
+// });
 </script>
 
 <template>
@@ -449,6 +450,7 @@ onMounted(async () => {
         <TerminalTags :tags="terminalTopTags" />
       </div>
       <TerminalCore
+        ref="terminalRef"
         v-if="instanceId && daemonId"
         :instance-id="instanceId"
         :daemon-id="daemonId"
