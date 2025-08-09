@@ -445,6 +445,19 @@ export default class Instance extends EventEmitter {
     return this.config.crlf === 2 ? "\r\n" : "\n";
   }
 
+  public generateEnv() {
+    let env = process.env;
+    if (this.config.runAs) {
+      env = {
+        ...env,
+        USER: this.config.runAs ?? "",
+        HOME: this.config.runAs ? `/home/${this.config.runAs}` : "",
+        LOGNAME: this.config.runAs ?? ""
+      };
+    }
+    return env;
+  }
+
   private pushOutput(data: string) {
     if (data.length > LINE_MAX_SIZE * 100) {
       this.outputStack.push(IGNORE_TEXT);
