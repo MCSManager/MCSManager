@@ -132,7 +132,20 @@ class UploadTask {
   }
 
   onError(error: any) {
+    this.retries += 1;
+    const isStopping = this.status == "stopping";
     console.error("Upload error:", error);
+    if (!isStopping) {
+      message.error(
+        t("TXT_CODE_6adffa20") +
+          (this.retries < 3
+            ? t("TXT_CODE_31145b04", {
+                retries: this.retries + 1,
+                maxRetries: 3
+              })
+            : t("TXT_CODE_3f828072"))
+      );
+    }
     const msg = error.response?.data || error.message;
     console.error(msg);
     if (msg == "Access denied: No task found" || msg == "File is not opened") {
@@ -140,10 +153,8 @@ class UploadTask {
       this.status = "removing";
       return uploadService.update();
     }
-    const isStopping = this.status == "stopping";
     this.status = "failed";
     this.onProgress(0);
-    this.retries += 1;
 
     if (!isStopping && this.retries < 3) {
       this.start(); // async
