@@ -2692,5 +2692,8 @@
   "TXT_CODE_7fca723a": "Loading. If there is no response for a long time, please check the network.",
   "TXT_CODE_2de92a5d": "Please select a node before installing!",
   "TXT_CODE_e718a226": "The download task is in progress. About to jump to the console...",
-  "TXT_CODE_b135e9bd": "Downloading..."
+  "TXT_CODE_b135e9bd": "Downloading...",
+  "TXT_CODE_6adffa20": "Failed to upload file slice, ",
+  "TXT_CODE_31145b04": "retrying {retries}/{maxRetries}",
+  "TXT_CODE_3f828072": "reaching maximum number of retries"
 }
