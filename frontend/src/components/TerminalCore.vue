@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, type ComputedRef } from "vue";
 import { t } from "@/lang/i18n";
 import { CodeOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons-vue";
 import { encodeConsoleColor, useTerminal } from "../hooks/useTerminal";
@@ -17,7 +17,6 @@ const props = defineProps<{
   daemonId: string;
   height: string;
 }>();
-
 const { containerState } = useLayoutContainerStore();
 
 const {
@@ -29,9 +28,28 @@ const {
   clickHistoryItem
 } = useCommandHistory();
 
-const { execute, initTerminalWindow, sendCommand, state, events, isConnect, socketAddress } =
-  useTerminal();
+const {
+  execute,
+  initTerminalWindow,
+  sendCommand,
+  state,
+  events,
+  isConnect,
+  socketAddress,
+  isStopped,
+  isRunning,
+  isBuys,
+  isGlobalTerminal
+} = useTerminal();
 
+defineExpose({
+  execute,
+  instanceInfo: state,
+  isStopped: isStopped as ComputedRef<boolean>,
+  isRunning: isRunning as ComputedRef<boolean>,
+  isBuys: isBuys as ComputedRef<boolean>,
+  isGlobalTerminal: isGlobalTerminal as ComputedRef<boolean>
+});
 const instanceId = props.instanceId;
 const daemonId = props.daemonId;
 
