@@ -5,19 +5,11 @@ import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { onMounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  CheckCircleOutlined,
-  DownloadOutlined,
-  ExclamationCircleOutlined,
-  UploadOutlined
-} from "@ant-design/icons-vue";
+import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { parseTimestamp } from "../../tools/time";
 import { dockerPortsArray } from "@/tools/common";
 import DockerInfo from "./dialogs/DockerInfo.vue";
-import _prettyBytes from "pretty-bytes";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -54,12 +46,6 @@ const instanceGameServerInfo = computed(() => {
     return null;
   }
 });
-
-const prettyBytes = (bytes: number) =>
-  _prettyBytes(bytes, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
 
 onMounted(async () => {
   if (instanceId && daemonId) {

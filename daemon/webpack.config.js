@@ -25,7 +25,9 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  externals: [nodeExternals({
+    allowlist: ['pretty-bytes']
+  })],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")
