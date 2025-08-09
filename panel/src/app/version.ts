@@ -2,6 +2,7 @@ import * as fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import { logger } from "./service/log";
 import storage from "./common/system_storage";
+import { getFrontendLayoutConfig } from "./service/frontend_layout";
 
 interface IPackageInfo {
   name: string;
@@ -33,6 +34,9 @@ export function initVersionManager() {
     if (LastLaunchedVersion && LastLaunchedVersion != currentVersion) {
       logger.warn(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
       GlobalVariable.set("versionChange", currentVersion);
+
+      // reload layout
+      getFrontendLayoutConfig();
     }
   }
   storage.writeFile(VERSION_LOG_TEXT_NAME, currentVersion);
