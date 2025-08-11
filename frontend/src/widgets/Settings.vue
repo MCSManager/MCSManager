@@ -294,12 +294,28 @@ onUnmounted(() => {
                   </a-form-item>
 
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("TXT_CODE_b2767aa2") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("应用市场数据源") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{ t("TXT_CODE_b1f833f3") }}
+                      {{
+                        t(
+                          "您可以下载应用市场数据源，将其更改后上传到任意服务器，加入您自己的整合包到应用市场。"
+                        )
+                      }}
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.presetPackAddr"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_514e064a") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_328191e") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.httpIp"
+                      style="max-width: 320px"
                       :placeholder="t('TXT_CODE_4ea93630')"
                     />
                   </a-form-item>
@@ -318,18 +334,6 @@ onUnmounted(() => {
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.panelId"
-                      :placeholder="t('TXT_CODE_4ea93630')"
-                    />
-                  </a-form-item>
-
-                  <a-form-item>
-                    <a-typography-title :level="5">{{ t("TXT_CODE_514e064a") }}</a-typography-title>
-                    <a-typography-paragraph type="secondary">
-                      {{ t("TXT_CODE_328191e") }}
-                    </a-typography-paragraph>
-                    <a-input
-                      v-model:value="formData.httpIp"
-                      style="max-width: 320px"
                       :placeholder="t('TXT_CODE_4ea93630')"
                     />
                   </a-form-item>
