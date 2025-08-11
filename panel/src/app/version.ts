@@ -46,6 +46,10 @@ export function getVersion(): string {
   return GlobalVariable.get("version", "Unknown");
 }
 
+export function hasVersionChanged(): boolean {
+  return GlobalVariable.get("versionChange") || false;
+}
+
 export function specifiedDaemonVersion() {
   try {
     const data: any = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
