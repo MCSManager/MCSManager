@@ -6,4 +6,5 @@ export interface TagInfo {
   value: string | number;
   icon?: any;
   color?: "error" | "default" | "success" | "processing" | "warning";
+  onClick?: () => void;
 }

@@ -1,6 +1,7 @@
 import StorageSubsystem from "../common/system_storage";
 import { t } from "i18next";
 import { logger } from "./log";
+import { systemConfig } from "../setting";
 
 function readCategoryConfig(configCategory: string, callback: (config: any) => boolean) {
   const configPaths = StorageSubsystem.readDir(configCategory);
@@ -32,7 +33,20 @@ function refactorUserConfig(config: any) {
   return changed;
 }
 
+/**
+ * Starting from version 10.8.0, the configuration file path for preset templates has changed,
+ * so we will perform an automatic upgrade to ensure users' paths are updated automatically!
+ */
+function upgradePresetPackAddr() {
+  const config = systemConfig;
+  if (config && config.presetPackAddr === "https://script.mcsmanager.com/templates.json") {
+    config.presetPackAddr = "https://script.mcsmanager.com/templates-config.json";
+    StorageSubsystem.store("SystemConfig", "config", config);
+  }
+}
+
 function detectConfig() {
+  upgradePresetPackAddr();
   readCategoryConfig("User", refactorUserConfig);
 }
 

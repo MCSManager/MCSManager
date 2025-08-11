@@ -2,7 +2,6 @@ import axios from "axios";
 import fs from "fs-extra";
 import { t } from "i18next";
 import path from "path";
-import prettyBytes from "pretty-bytes";
 import { pipeline, Readable } from "stream";
 import { v4 } from "uuid";
 import Instance from "../../entity/instance/instance";
@@ -132,14 +131,11 @@ export class QuickInstallTask extends AsyncTask {
       const now = Date.now();
       const PROGRESS_THROTTLE_MS = 1000;
       if (now - this.lastProgressOutput >= PROGRESS_THROTTLE_MS) {
-        const size = `${prettyBytes(this.downloadProgress.downloadedBytes)}/${prettyBytes(
-          this.downloadProgress.totalBytes
-        )}`;
-        const speed = `${prettyBytes(this.downloadProgress.speed)}/s`;
         const downloadText = t("TXT_CODE_b135e9bd");
+        const speed = `${(this.downloadProgress.speed / 1024 / 1024).toFixed(2)} MB/s`;
         this.instance.println(
           "INFO",
-          `${downloadText} (${this.downloadProgress.percentage}%): ${size}, ${speed}`
+          `${downloadText} ${this.downloadProgress.percentage}% ${speed}`
         );
         this.lastProgressOutput = now;
       }
@@ -158,14 +154,7 @@ export class QuickInstallTask extends AsyncTask {
 
     this.downloadProgress.percentage = 100;
     this.downloadProgress.downloadedBytes = this.downloadProgress.totalBytes;
-    this.instance.println(
-      "INFO",
-      `Download "${this.targetLink}" success! ${(
-        this.downloadProgress.downloadedBytes /
-        1024 /
-        1024
-      ).toFixed(2)} MB`
-    );
+    this.instance.println("INFO", `Download "${this.targetLink}" success!!!`);
   }
 
   async onStart() {

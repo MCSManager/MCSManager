@@ -5,6 +5,7 @@ import InstanceSubsystem from "../service/system_instance";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import { globalConfiguration, globalEnv } from "../entity/config";
 import os from "os";
+import uploadManager from "../service/upload_manager";
 
 // Some routers operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -122,8 +123,15 @@ routerApp.on("file/delete", async (ctx, data) => {
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
     for (const target of targets) {
-      // async delete
-      fileManager.delete(target);
+      const path = fileManager.toAbsolutePath(target);
+      const uploadTask = uploadManager.getByPath(path);
+      if (uploadTask != undefined) {
+        uploadManager.delete(uploadTask.id);
+        uploadTask.writer.stop();
+      } else {
+        // async delete
+        fileManager.delete(target);
+      }
     }
     protocol.response(ctx, true);
   } catch (error: any) {
@@ -163,6 +171,7 @@ routerApp.on("file/compress", async (ctx, data) => {
         })
       );
     }
+
     // Statistics of the number of tasks in a single instance file and the number of tasks in the entire daemon process
     function fileTaskStart() {
       if (instance) {
@@ -170,6 +179,7 @@ routerApp.on("file/compress", async (ctx, data) => {
         globalEnv.fileTaskCount++;
       }
     }
+
     function fileTaskEnd() {
       if (instance) {
         instance.info.fileLock--;

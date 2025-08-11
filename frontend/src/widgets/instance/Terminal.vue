@@ -21,10 +21,13 @@ import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_STATUS } from "@/types/const";
 import {
+  ApartmentOutlined,
+  BlockOutlined,
   CheckCircleOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
   CloudServerOutlined,
+  DashboardOutlined,
   DownOutlined,
   InfoCircleOutlined,
   InteractionOutlined,
@@ -35,6 +38,7 @@ import {
   PlayCircleOutlined,
   RedoOutlined
 } from "@ant-design/icons-vue";
+import { useLocalStorage } from "@vueuse/core";
 import prettyBytes from "pretty-bytes";
 import { computed } from "vue";
 import type { TagInfo } from "../../components/interface";
@@ -238,27 +242,64 @@ const getInstanceName = computed(() => {
   }
 });
 
+const useByteUnit = useLocalStorage("useByteUnit", true); // true: bytes, false: bits
+const prettyBytesConfig = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+};
+
+const getUsageColor = (percentage?: number) => {
+  percentage = Number(percentage);
+  if (percentage > 80) return "error";
+  if (percentage > 60) return "warning";
+  return "default";
+};
+
+const formatMemoryUsage = (usage?: number, limit?: number) => {
+  const config = {
+    ...prettyBytesConfig,
+    binary: true
+  };
+  const fUsage = prettyBytes(usage ?? 0, config);
+  const fLimit = prettyBytes(limit ?? 0, config);
+
+  return limit ? `${fUsage} / ${fLimit}` : fUsage;
+};
+
+const formatNetworkSpeed = (bytes?: number) =>
+  useByteUnit.value
+    ? prettyBytes(bytes ?? 0, prettyBytesConfig) + "/s"
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }).replace(/bit$/, "b") +
+      "ps";
+
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
   if (!info || isStopped.value) return [];
+  const { cpuUsage, memoryUsage, memoryLimit, memoryUsagePercent, rxBytes, txBytes } = info;
+
   return arrayFilter<TagInfo>([
     {
       label: t("TXT_CODE_b862a158"),
-      value: `${parseInt(String(info.cpuUsage))}%`,
-      condition: () => info.cpuUsage != null,
-      color: info?.cpuUsage! > 60 ? "warning" : "default"
+      value: `${parseInt(String(cpuUsage))}%`,
+      color: getUsageColor(cpuUsage),
+      icon: BlockOutlined,
+      condition: () => cpuUsage != null
     },
     {
       label: t("TXT_CODE_593ee330"),
-      value: info.memoryLimit
-        ? `${prettyBytes(info.memoryUsage || 0)}/${prettyBytes(info.memoryLimit)}`
-        : prettyBytes(info.memoryUsage || 0),
-      condition: () => info.memoryUsage != null
+      value: formatMemoryUsage(memoryUsage, memoryLimit),
+      color: getUsageColor(memoryUsagePercent),
+      icon: DashboardOutlined,
+      condition: () => memoryUsage != null
     },
     {
       label: t("TXT_CODE_50daec4"),
-      value: `↓${prettyBytes(info.rxBytes || 0)}/s ↑${prettyBytes(info.txBytes || 0)}/s`,
-      condition: () => info.rxBytes != null || info.txBytes != null
+      value: `↓${formatNetworkSpeed(rxBytes)} · ↑${formatNetworkSpeed(txBytes)}`,
+      icon: ApartmentOutlined,
+      condition: () => rxBytes != null || txBytes != null,
+      onClick: () => {
+        useByteUnit.value = !useByteUnit.value;
+      }
     }
   ]);
 });

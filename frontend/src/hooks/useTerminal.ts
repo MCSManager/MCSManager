@@ -181,8 +181,9 @@ export function useTerminal() {
   };
 
   const touchHandler = (event: TouchEvent) => {
-    let touches = event.changedTouches;
-    let first = touches[0];
+    const touches = event.changedTouches;
+    const first = touches[0];
+
     let type = "";
     switch (event.type) {
       case "touchstart":
@@ -198,7 +199,7 @@ export function useTerminal() {
         return;
     }
 
-    let mouseEvent = new MouseEvent(type, {
+    const mouseEvent = new MouseEvent(type, {
       bubbles: true,
       cancelable: true,
       view: window,
@@ -231,6 +232,7 @@ export function useTerminal() {
     element.addEventListener("touchmove", touchHandler, true);
     element.addEventListener("touchend", touchHandler, true);
     element.addEventListener("touchcancel", touchHandler, true);
+
     const background = hasBgImage.value ? "#00000000" : "#1e1e1e";
     const term = new Terminal({
       convertEol: true,
@@ -283,7 +285,16 @@ export function useTerminal() {
         data: { input: data }
       });
     }
+
     term.onData((data) => {
+      // If the PTY terminal is disabled, no input is sent.
+      if (
+        state.value?.config.terminalOption?.pty === false ||
+        state.value?.status === INSTANCE_STATUS_CODE.STOPPED
+      ) {
+        return;
+      }
+
       if (data !== "\x03") {
         lastCtrlCTime = 0;
         return sendInput(data);

@@ -194,7 +194,8 @@ export const uploadFilePiece = useDefineApi<
   any
 >({
   method: "POST",
-  headers: { "Content-Type": "multipart/form-data" }
+  headers: { "Content-Type": "multipart/form-data" },
+  timeout: Number.MAX_SAFE_INTEGER
 });
 
 export const downloadAddress = useDefineApi<

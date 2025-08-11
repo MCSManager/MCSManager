@@ -97,13 +97,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
       cwd: instance.absoluteCwdPath(),
       stdio: "pipe",
       windowsHide: true,
-      env: {
-        ...process.env,
-        // Set important environment variables for the target user
-        USER: runAsConfig.runAsName,
-        HOME: `/home/${runAsConfig.runAsName}`,
-        LOGNAME: runAsConfig.runAsName
-      },
+      env: instance.generateEnv(),
       // Do not detach the child process;
       // otherwise, an abnormal exit of the parent process may cause the child process to continue running,
       // leading to an abnormal instance state.

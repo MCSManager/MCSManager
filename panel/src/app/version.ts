@@ -2,6 +2,7 @@ import axios from "axios";
 import * as fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import storage from "./common/system_storage";
+import { getFrontendLayoutConfig } from "./service/frontend_layout";
 import { logger } from "./service/log";
 import { saveSystemConfig, systemConfig } from "./setting";
 
@@ -41,6 +42,9 @@ export function initVersionManager() {
     if (LastLaunchedVersion && LastLaunchedVersion != currentVersion) {
       logger.warn(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
       GlobalVariable.set("versionChange", currentVersion);
+
+      // reload layout
+      getFrontendLayoutConfig();
     }
   }
   storage.writeFile(VERSION_LOG_TEXT_NAME, currentVersion);
@@ -48,6 +52,10 @@ export function initVersionManager() {
 
 export function getVersion(): string {
   return GlobalVariable.get("version", "Unknown");
+}
+
+export function hasVersionChanged(): boolean {
+  return GlobalVariable.get("versionChange") || false;
 }
 
 export function specifiedDaemonVersion() {

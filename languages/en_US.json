@@ -2714,5 +2714,8 @@
   "TXT_CODE_c9ce7427": "You can filter games via the dropdown menu, select a template, and proceed with installation. Ensure the system has the required runtime environment for the game.",
   "TXT_CODE_45d7b982": "Failed to request plan details. Please try again later!",
   "TXT_CODE_c92156bb": "There is an issue with the plan set by the service provider. Please contact the provider to reconfigure the plan!",
-  "TXT_CODE_55b1f20e": "User failed to activate instance:"
+  "TXT_CODE_55b1f20e": "User failed to activate instance:",
+  "TXT_CODE_6adffa20": "Failed to upload file slice, ",
+  "TXT_CODE_31145b04": "retrying {retries}/{maxRetries}",
+  "TXT_CODE_3f828072": "reaching maximum number of retries"
 }

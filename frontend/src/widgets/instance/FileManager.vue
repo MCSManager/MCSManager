@@ -466,6 +466,14 @@ onUnmounted(() => {
               <a-typography-text style="padding-left: 5px; white-space: nowrap">
                 ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
               </a-typography-text>
+              <div class="flex" style="margin-left: 5px; padding: 3px; gap: 3px">
+                <upload-task-progress
+                  v-for="(uTask, i) in uploadService.task.filter((v) => v)"
+                  :key="i"
+                  :progress="uTask!.progress / (uTask!.rangeEnd - uTask!.rangeStart)"
+                  :retries="uTask!.retries"
+                />
+              </div>
               <caret-right-outlined
                 v-if="uploadData.suspending"
                 style="margin-left: 5px"
