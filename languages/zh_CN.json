@@ -2695,5 +2695,6 @@
   "TXT_CODE_b135e9bd": "下载中...",
   "TXT_CODE_6adffa20": "切片上传失败，",
   "TXT_CODE_31145b04": "正在重试 {retries}/{maxRetries}",
-  "TXT_CODE_3f828072": "已达最大重试次数"
+  "TXT_CODE_3f828072": "已达最大重试次数",
+  "TXT_CODE_b0ff4172": "正在后台上传 {n} 个文件"
 }
