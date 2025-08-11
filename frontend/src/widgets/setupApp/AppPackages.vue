@@ -379,8 +379,19 @@ onMounted(() => {
                 </div>
 
                 <div class="package-info">
-                  <a-typography-title :level="5">
-                    {{ item.title }}
+                  <a-typography-title :level="5" class="justify-between">
+                    <span>
+                      {{ item.title }}
+                    </span>
+                    <span>
+                      <a-tag color="cyan">
+                        {{
+                          String(item.platform).toLowerCase() === "all"
+                            ? t("TXT_CODE_all_platform")
+                            : item.platform
+                        }}
+                      </a-tag>
+                    </span>
                   </a-typography-title>
                   <div class="mb-5">
                     <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>

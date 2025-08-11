@@ -1,22 +1,22 @@
 import Router from "@koa/router";
+import axios from "axios";
+import fs from "fs/promises";
+import { removeTrail } from "mcsmanager-common";
+import { MARKET_CACHE_FILE_PATH } from "../const";
+import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
 import { multiOperationForwarding } from "../service/instance_service";
-import { timeUuid } from "../service/password";
-import { $t } from "../i18n";
-import axios from "axios";
-import { systemConfig } from "../setting";
-import { getUserUuid } from "../service/passport_service";
-import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
-import { ROLE } from "../entity/user";
-import { removeTrail } from "mcsmanager-common";
-import userSystem from "../service/user_service";
-import { operationLogger } from "../service/operation_logger";
-import fs from "fs/promises";
-import path from "path";
 import { logger } from "../service/log";
+import { operationLogger } from "../service/operation_logger";
+import { getUserUuid } from "../service/passport_service";
+import { timeUuid } from "../service/password";
+import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
+import userSystem from "../service/user_service";
+import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/instance" });
 
@@ -315,20 +315,18 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
 
   // Cache logic implementation
   const ADDR = systemConfig?.presetPackAddr;
-  const cacheFileName = "cache_quick_install.json";
-  const cacheFilePath = path.join(process.cwd(), "data", cacheFileName);
   const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
   try {
     // Check if cache file exists and is valid
     try {
-      const stats = await fs.stat(cacheFilePath);
+      const stats = await fs.stat(MARKET_CACHE_FILE_PATH);
       const now = Date.now();
       const fileAge = now - stats.mtime.getTime();
 
       // Use cache
       if (fileAge < CACHE_DURATION) {
-        const cachedData = await fs.readFile(cacheFilePath, "utf-8");
+        const cachedData = await fs.readFile(MARKET_CACHE_FILE_PATH, "utf-8");
         ctx.body = JSON.parse(cachedData);
         return;
       }
@@ -343,8 +341,8 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
     if (response.status !== 200) throw new Error(`Request failed, status: ${response.status}`);
 
     // Save to cache file
-    fs.writeFile(cacheFilePath, JSON.stringify(response.data), "utf-8").catch((err) => {
-      logger.warn(`Failed to write quick install cache file at ${cacheFilePath}: ${err}`);
+    fs.writeFile(MARKET_CACHE_FILE_PATH, JSON.stringify(response.data), "utf-8").catch((err) => {
+      logger.warn(`Failed to write quick install cache file at ${MARKET_CACHE_FILE_PATH}: ${err}`);
     });
     ctx.body = response.data;
   } catch (err) {

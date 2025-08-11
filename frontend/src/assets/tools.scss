@@ -124,9 +124,16 @@
   justify-content: flex-end;
 }
 
-.justify-space-between {
+.justify-space-between,
+.justify-between {
   display: flex;
   justify-content: space-between;
+}
+
+.justify-space-around,
+.justify-around {
+  display: flex;
+  justify-content: space-around;
 }
 
 .h-100 {
