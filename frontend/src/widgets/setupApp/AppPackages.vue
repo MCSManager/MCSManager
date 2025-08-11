@@ -10,10 +10,11 @@ import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
 import { Modal } from "ant-design-vue";
 import { computed, onMounted, reactive } from "vue";
 
-defineProps<{
+const props = defineProps<{
   title?: string;
   btnText?: string;
   showCustomBtn?: boolean;
+  onlyDockerTemplate?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -85,6 +86,10 @@ const getFilteredPackages = (
   }
 
   return presetList.value.packages.filter((item) => {
+    if (props.onlyDockerTemplate && !item.setupInfo?.docker) {
+      return false;
+    }
+
     // Apply base filters (language, game type, category, platform)
     const baseFilters = [
       matchesLanguageFilter(item),
@@ -235,7 +240,11 @@ onMounted(() => {
   </a-typography-title>
   <a-typography-paragraph>
     <p>
-      {{ t("TXT_CODE_c9ce7427") }}
+      <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+      <span v-if="onlyDockerTemplate">
+        <br />
+        {{ t("由于实例类型为 Docker 容器模式，我们将只展示 Docker 版的模板。") }}
+      </span>
     </p>
   </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->

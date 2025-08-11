@@ -64,6 +64,7 @@ const {
   isRunning,
   isBuys,
   isGlobalTerminal,
+  isDockerMode,
   clearTerminal
 } = terminalHook;
 
@@ -205,7 +206,8 @@ const instanceOperations = computed(() =>
         try {
           clearTerminal();
           await openMarketDialog(daemonId ?? "", instanceId ?? "", {
-            autoInstall: true
+            autoInstall: true,
+            onlyDockerTemplate: isDockerMode.value
           });
         } catch (error: any) {
           // ignore

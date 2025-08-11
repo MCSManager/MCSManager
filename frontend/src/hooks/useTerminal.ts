@@ -72,6 +72,10 @@ export function useTerminal() {
     return state.value?.config.nickname === GLOBAL_INSTANCE_NAME;
   });
 
+  const isDockerMode = computed(() => {
+    return state.value?.config.processType === "docker";
+  });
+
   let fitAddonTask: NodeJS.Timer;
   let cachedSize = {
     w: 160,
@@ -364,6 +368,7 @@ export function useTerminal() {
     socketAddress,
     isConnect,
     isGlobalTerminal,
+    isDockerMode,
     execute,
     initTerminalWindow,
     sendCommand,

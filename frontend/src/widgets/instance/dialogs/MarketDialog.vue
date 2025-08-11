@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { OpenMarketDialogProps } from "@/components/fc";
 import { useDialog } from "@/hooks/useDialog";
 import { t } from "@/lang/i18n";
 import { reinstallInstance } from "@/services/apis/instance";
@@ -8,14 +9,7 @@ import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import { Modal } from "ant-design-vue";
 import { ref } from "vue";
 
-interface Props extends MountComponent<QuickStartPackages> {
-  daemonId?: string;
-  instanceId?: string;
-  autoInstall?: boolean;
-  btnText?: string;
-  dialogTitle?: string;
-  showCustomBtn?: boolean;
-}
+interface Props extends OpenMarketDialogProps, MountComponent<QuickStartPackages> {}
 
 const props = defineProps<Props>();
 
@@ -79,14 +73,13 @@ defineExpose({
     :footer="null"
     @cancel="cancel"
   >
-    <div>
-      <AppPackages
-        ref="appPackages"
-        :btn-text="btnText"
-        :title="dialogTitle"
-        :show-custom-btn="showCustomBtn"
-        @handle-select-template="handleSelectTemplate"
-      />
-    </div>
+    <AppPackages
+      ref="appPackages"
+      :btn-text="btnText"
+      :title="dialogTitle"
+      :show-custom-btn="showCustomBtn"
+      :only-docker-template="onlyDockerTemplate"
+      @handle-select-template="handleSelectTemplate"
+    />
   </a-modal>
 </template>

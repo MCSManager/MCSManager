@@ -190,15 +190,20 @@ export async function openNodeSelectDialog() {
   return dialog!.openDialog();
 }
 
+export interface OpenMarketDialogProps {
+  daemonId?: string;
+  instanceId?: string;
+  autoInstall?: boolean;
+  btnText?: string;
+  dialogTitle?: string;
+  showCustomBtn?: boolean;
+  onlyDockerTemplate?: boolean;
+}
+
 export async function openMarketDialog(
   daemonId?: string,
   instanceId?: string,
-  options: {
-    autoInstall?: boolean;
-    btnText?: string;
-    title?: string;
-    showCustomBtn?: boolean;
-  } = {}
+  options: OpenMarketDialogProps = {}
 ) {
   const dialog = useMountComponent({
     daemonId,

@@ -1,20 +1,29 @@
+import os from "os";
+import { globalConfiguration, globalEnv } from "../entity/config";
+import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
+import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import { getFileManager, getWindowsDisks } from "../service/file_router_service";
-import { globalConfiguration, globalEnv } from "../entity/config";
-import os from "os";
 import uploadManager from "../service/upload_manager";
 
 // Some routers operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
   if (event.startsWith("file/")) {
     const instanceUuid = data.instanceUuid;
-    if (!InstanceSubsystem.exists(instanceUuid)) {
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) {
       return protocol.error(ctx, event, {
         instanceUuid: instanceUuid,
         err: $t("TXT_CODE_file_router.instanceNotExist", { instanceUuid: instanceUuid })
+      });
+    }
+
+    if ([Instance.STATUS_BUSY, Instance.STATUS_STARTING].includes(instance.status())) {
+      return protocol.error(ctx, event, {
+        instanceUuid: instanceUuid,
+        err: $t("实例当前的状态不准许修改任何文件，请稍后再试！")
       });
     }
   }
