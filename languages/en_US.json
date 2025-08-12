@@ -2695,5 +2695,6 @@
   "TXT_CODE_b135e9bd": "Downloading...",
   "TXT_CODE_6adffa20": "Failed to upload file slice, ",
   "TXT_CODE_31145b04": "retrying {retries}/{maxRetries}",
-  "TXT_CODE_3f828072": "reaching maximum number of retries"
+  "TXT_CODE_3f828072": "reaching maximum number of retries",
+  "TXT_CODE_b0ff4172": "Uploading {n} files in the background"
 }
