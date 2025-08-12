@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, createVNode } from "vue";
+import { ref, reactive, createVNode, onUnmounted, computed } from "vue";
 import { t } from "@/lang/i18n";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import type { FormInstance } from "ant-design-vue";
@@ -15,22 +15,11 @@ import {
   TYPE_TERRARIA
 } from "@/hooks/useInstance";
 import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
-import {
-  uploadAddress,
-  uploadInstanceFile,
-  createInstance as createInstanceApi
-} from "@/services/apis/instance";
+import { uploadAddress, createInstance as createInstanceApi } from "@/services/apis/instance";
 import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons-vue";
-
-// eslint-disable-next-line no-unused-vars
-enum UNZIP {
-  // eslint-disable-next-line no-unused-vars
-  ON = 1,
-  // eslint-disable-next-line no-unused-vars
-  OFF = 0
-}
+import uploadService, { UploadFiles } from "@/services/uploadService";
 
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
 const emit = defineEmits(["nextStep"]);
@@ -147,9 +136,37 @@ const finalConfirm = async () => {
   });
 };
 
+const uploadStarted = ref(false);
+const uploadFileInstance = ref<UploadFiles>();
+let uploadStartCallback: (() => void) | undefined = undefined;
+let uploadEndCallback: (() => void) | undefined = undefined;
+onUnmounted(() => {
+  if (uploadFileInstance.value) {
+    if (uploadStartCallback) uploadFileInstance.value.removeCallback("start", uploadStartCallback);
+    if (uploadEndCallback) uploadFileInstance.value.removeCallback("end", uploadEndCallback);
+  }
+});
+
 const { state: cfg, execute: getCfg } = uploadAddress();
-const { execute: uploadFile } = uploadInstanceFile();
-const percentComplete = ref(0);
+const percentComplete = computed(() => {
+  if (!uploadStarted.value) return 0;
+  const uploadData = uploadService.uiData.value;
+  if (!uploadData.current) return 0;
+  return (uploadData.current[0] / uploadData.current[1]) * 100;
+});
+const percentText = () => {
+  if (!uploadFileInstance.value) {
+    return t("TXT_CODE_c17f6488");
+  }
+
+  if (uploadStarted.value) {
+    return t("TXT_CODE_b625dbf0") + percentComplete.value.toFixed(0) + "%";
+  } else {
+    return t("TXT_CODE_f63c4be2", {
+      n: uploadService.getFileNth(uploadFileInstance.value.id!)
+    });
+  }
+};
 const selectedFile = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
@@ -165,23 +182,29 @@ const selectedFile = async () => {
     });
     if (!cfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
-    const uploadFormData = new FormData();
-    uploadFormData.append("file", uFile.value as any);
-
-    await uploadFile({
-      params: {
-        unzip: isImportMode ? UNZIP.ON : UNZIP.OFF,
+    uploadStartCallback = () => {
+      uploadStarted.value = true;
+    };
+    const task = uploadService.append(
+      uFile.value!,
+      parseForwardAddress(cfg.value.addr, "http"),
+      cfg.value.password,
+      {
+        overwrite: false,
+        unzip: isImportMode,
         code: zipCode.value
       },
-      timeout: Number.MAX_VALUE,
-      data: uploadFormData,
-      url: `${parseForwardAddress(cfg.value.addr, "http")}/upload/${cfg.value.password}`,
-      onUploadProgress: (progressEvent: any) => {
-        percentComplete.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      (task) => {
+        task.addCallback("start", uploadStartCallback!);
       }
-    });
-    emit("nextStep", cfg.value.instanceUuid);
-    return message.success(t("TXT_CODE_d28c05df"));
+    );
+    uploadFileInstance.value = task;
+    const instanceUuid = cfg.value.instanceUuid;
+    uploadEndCallback = () => {
+      emit("nextStep", instanceUuid);
+      return message.success(t("TXT_CODE_d28c05df"));
+    };
+    task.addCallback("end", uploadEndCallback);
   } catch (err: any) {
     console.error(err);
     return reportErrorMsg(err.message);
@@ -272,8 +295,12 @@ const createInstance = async () => {
           :checked-value="true"
           :un-checked-value="false"
         >
-          <template #checkedChildren><check-outlined /></template>
-          <template #unCheckedChildren><close-outlined /></template>
+          <template #checkedChildren>
+            <check-outlined />
+          </template>
+          <template #unCheckedChildren>
+            <close-outlined />
+          </template>
         </a-switch>
       </a-form-item>
 
@@ -359,15 +386,14 @@ const createInstance = async () => {
           :before-upload="beforeUpload"
           :max-count="1"
           :change="selectedFile"
-          :disabled="percentComplete > 0"
+          :disabled="percentComplete > 0 || uploadFileInstance != undefined"
         >
-          <a-button type="primary" :loading="percentComplete > 0">
-            <upload-outlined v-if="percentComplete === 0" />
-            {{
-              percentComplete > 0
-                ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
-                : t("TXT_CODE_c17f6488")
-            }}
+          <a-button
+            type="primary"
+            :loading="percentComplete > 0 || uploadFileInstance != undefined"
+          >
+            <upload-outlined v-if="percentComplete == 0 && uploadFileInstance == undefined" />
+            {{ percentText() }}
           </a-button>
         </a-upload>
       </a-form-item>
@@ -392,6 +418,7 @@ const createInstance = async () => {
 .CardWrapper {
   min-height: 500px;
 }
+
 .btn-area {
   position: absolute;
   bottom: 16px;
