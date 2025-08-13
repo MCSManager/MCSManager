@@ -121,7 +121,7 @@ export default class FileWriter {
 
     if (this.unzip) {
       const instanceFiles = new FileManager(this.cwd);
-      await instanceFiles.unzip(this.cwd, ".", this.zipCode);
+      await instanceFiles.unzip(this.path, ".", this.zipCode);
       logger.info("File unzipped:", this.path);
     }
   }
