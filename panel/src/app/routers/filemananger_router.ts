@@ -341,7 +341,6 @@ router.all(
 
 router.all(
   "/upload",
-  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({ query: { uuid: String, daemonId: String, upload_dir: String } }),
   async (ctx) => {
