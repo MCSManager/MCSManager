@@ -167,7 +167,7 @@ const percentText = () => {
     return t("TXT_CODE_b625dbf0") + percentComplete.value.toFixed(0) + "%";
   } else {
     return t("TXT_CODE_f63c4be2", {
-      n: uploadService.getFileNth(uploadFileInstance.value.id!)
+      n: uploadService.getFileNth(uploadFileInstance.value.id || "")
     });
   }
 };

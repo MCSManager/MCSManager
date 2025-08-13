@@ -292,7 +292,7 @@ defineExpose({
           <a-tab-pane
             v-if="!isGlobalTerminal"
             :key="TabSettings.ResLimit"
-            :tab="t('容器限制')"
+            :tab="t('TXT_CODE_604d8d63')"
           ></a-tab-pane>
         </a-tabs>
       </div>
@@ -733,40 +733,32 @@ defineExpose({
 
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("最大 Spawn 内存") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_a68b3a9c") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "在最大内存的基础上，额外分配的虚拟内存，使用此内存效率很低，留空代表自动分配"
-                    )
-                  }}
+                  {{ t("TXT_CODE_b946a322") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.memorySwap"
                 :allow-clear="true"
-                :placeholder="t('自动分配')"
+                :placeholder="t('TXT_CODE_6f1129fb')"
               />
             </a-form-item>
           </a-col>
 
           <a-col :xs="24" :lg="8" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("虚拟内存使用倾向") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_5c43374f") }}</a-typography-title>
               <a-typography-paragraph>
                 <a-typography-text type="secondary">
-                  {{
-                    t(
-                      "控制容器对虚拟内存页的使用倾向，范围为 0 到 100 的整数。值越高，内核越倾向于交换内存页到 swap 以释放物理内存。"
-                    )
-                  }}
+                  {{ t("TXT_CODE_a7885cbc") }}
                 </a-typography-text>
               </a-typography-paragraph>
               <a-input
                 v-model:value="options.config.docker.memorySwappiness"
                 :allow-clear="true"
-                :placeholder="t('自动分配')"
+                :placeholder="t('TXT_CODE_6f1129fb')"
               />
             </a-form-item>
           </a-col>

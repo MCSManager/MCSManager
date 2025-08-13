@@ -243,7 +243,7 @@ onMounted(() => {
       <span>{{ t("TXT_CODE_c9ce7427") }}</span>
       <span v-if="onlyDockerTemplate">
         <br />
-        {{ t("由于实例类型为 Docker 容器模式，我们将只展示 Docker 版的模板。") }}
+        {{ t("TXT_CODE_de9b7cc0") }}
       </span>
     </p>
   </a-typography-paragraph>
@@ -345,7 +345,7 @@ onMounted(() => {
         style="margin: 0; padding: 0"
         @click="emit('handle-select-template', null)"
       >
-        {{ t("没有找到合适的模板？自定义一个模板配置吧") }}
+        {{ t("TXT_CODE_181c72ba") }}
       </a-button>
     </a-col>
 

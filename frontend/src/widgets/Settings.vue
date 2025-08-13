@@ -84,7 +84,7 @@ const menus = arrayFilter([
     icon: ProjectOutlined
   },
   {
-    title: t("在线功能"),
+    title: t("TXT_CODE_574ed474"),
     key: "pro",
     icon: SketchOutlined,
     condition: () => isCN()
@@ -294,13 +294,9 @@ onUnmounted(() => {
                   </a-form-item>
 
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("应用市场数据源") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_6265ae47") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{
-                        t(
-                          "您可以下载应用市场数据源，将其更改后上传到任意服务器，加入您自己的整合包到应用市场。"
-                        )
-                      }}
+                      {{ t("TXT_CODE_24c4768a") }}
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.presetPackAddr"

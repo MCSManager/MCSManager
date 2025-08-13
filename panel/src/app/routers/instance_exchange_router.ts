@@ -115,7 +115,7 @@ router.post(
 
       const hours = productInfo?.hours;
       if (!hours || !productInfo?.payload) {
-        throw new Error($t("请求套餐详情失败，请稍后重试！"));
+        throw new Error($t("TXT_CODE_45d7b982"));
       }
 
       const { config } = JSON.parse(productInfo.payload) as {
@@ -125,7 +125,7 @@ router.post(
       logger.info(`Router /request_buy_instance Report: Product: ${JSON.stringify(productInfo)}`);
 
       if (!config || !productId) {
-        throw new Error($t("服务商设置的套餐存在问题，请联系商家重新配置套餐！"));
+        throw new Error($t("TXT_CODE_c92156bb"));
       }
 
       const params = {
@@ -150,7 +150,7 @@ router.post(
           }
         );
       } catch (error) {
-        logger.error($t("用户激活实例失败："), error);
+        logger.error($t("TXT_CODE_55b1f20e"), error);
 
         throw error;
       }

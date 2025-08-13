@@ -2718,5 +2718,20 @@
   "TXT_CODE_6adffa20": "Failed to upload file slice, ",
   "TXT_CODE_31145b04": "retrying {retries}/{maxRetries}",
   "TXT_CODE_3f828072": "reaching maximum number of retries",
-  "TXT_CODE_f63c4be2": "Waiting to upload in queue, {n} remaining"
+  "TXT_CODE_f63c4be2": "Waiting to upload in queue, {n} remaining",
+  "TXT_CODE_bbedcf29": "The current state of the instance does not allow modifying any files. Please try again later!",
+  "TXT_CODE_604d8d63": "Container Limits",
+  "TXT_CODE_a68b3a9c": "Maximum Spawn Memory",
+  "TXT_CODE_b946a322": "Additional virtual memory allocated on top of the maximum memory. Using this memory is less efficient. Leave blank for automatic allocation.",
+  "TXT_CODE_6f1129fb": "Automatic Allocation",
+  "TXT_CODE_5c43374f": "Virtual Memory Usage Preference",
+  "TXT_CODE_a7885cbc": "Controls the container's preference for using virtual memory pages, ranging from 0 to 100. Higher values make the kernel more likely to swap memory pages to release physical memory.",
+  "TXT_CODE_37a4c14a": "No available configuration file found",
+  "TXT_CODE_4c0fda9": "Please try starting the instance once to generate a configuration file. If it still appears empty, this game server type may not be supported.",
+  "TXT_CODE_574ed474": "Online Features",
+  "TXT_CODE_6265ae47": "App Marketplace Data Source",
+  "TXT_CODE_24c4768a": "You can download the app marketplace data source, modify it, and upload it to any server to add your own modpack to the marketplace.",
+  "TXT_CODE_de9b7cc0": "Since the instance type is Docker container mode, we will only display Docker version templates.",
+  "TXT_CODE_181c72ba": "No suitable template found? Customize a template configuration.",
+  "TXT_CODE_c093bec9": "This operation is on cooldown. You can continue in about {{seconds}} seconds!"
 }

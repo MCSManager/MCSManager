@@ -83,7 +83,7 @@ defineExpose({
             <div class="node-details">
               <span>ID: {{ item.uuid }}</span>
               <span>{{ t("TXT_CODE_3d0885c0") }}: {{ item?.platformText }}</span>
-              <span>{{ t("IP 地址") }}: {{ item.ip }}:{{ item.port }}</span>
+              <span>{{ t("TXT_CODE_c7d0002e") }}: {{ item.ip }}:{{ item.port }}</span>
             </div>
           </div>
         </div>

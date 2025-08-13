@@ -143,14 +143,10 @@ onMounted(async () => {
             <a-empty v-else class="mt-40 mb-40">
               <template #description>
                 <p style="font-size: 16px; margin-top: 40px">
-                  <FileExclamationOutlined class="mr-4" />{{ t("没有找到可用的配置文件") }}
+                  <FileExclamationOutlined class="mr-4" />{{ t("TXT_CODE_37a4c14a") }}
                 </p>
                 <p style="font-size: 14px; margin-bottom: 10px">
-                  {{
-                    t(
-                      "请尝试启动一次实例生成配置文件，如果依然显示为空，则可能不支持此游戏服务器类型"
-                    )
-                  }}
+                  {{ t("TXT_CODE_4c0fda9") }}
                 </p>
               </template>
             </a-empty>

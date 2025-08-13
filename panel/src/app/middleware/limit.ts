@@ -21,7 +21,7 @@ export function speedLimit(seconds: number, errMsg?: string) {
       ctx.status = 500;
       ctx.body =
         errMsg ||
-        $t("此操作冷却中，约 {{seconds}} 秒后可继续操作！", {
+        $t("TXT_CODE_c093bec9", {
           seconds: singletonMemoryRedis.ttl(speedCheckKey)
         });
       return;
