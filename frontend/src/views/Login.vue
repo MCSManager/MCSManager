@@ -1,80 +1,36 @@
 <script setup lang="ts">
 import type { LayoutCard } from "@/types";
-import LayoutContainer from "./LayoutContainer.vue";
-import { useScreen } from "../hooks/useScreen";
 import LoginCard from "@/widgets/LoginCard.vue";
+import { useScreen } from "../hooks/useScreen";
+import LayoutContainer from "./LayoutContainer.vue";
 
 defineProps<{
   card: LayoutCard;
 }>();
 
 const { isPhone } = useScreen();
+
+const skeletonConfigs = [
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 6, rows: 4 },
+  { span: 24, rows: 9 },
+  { span: 8, rows: 6 },
+  { span: 16, rows: 6 },
+  { span: 8, rows: 6 },
+  { span: 16, rows: 6 }
+];
 </script>
 
 <template>
   <div v-if="!isPhone">
     <div class="login-page-bg">
       <a-row :gutter="[24, 24]">
-        <a-col :span="6">
+        <a-col v-for="(config, index) in skeletonConfigs" :key="index" :span="config.span">
           <CardPanel>
             <template #body>
-              <a-skeleton :paragraph="{ rows: 4 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="6">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 4 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="6">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 4 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="6">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 4 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="24">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 9 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="8">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 6 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="16">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 6 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="8">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 6 }" />
-            </template>
-          </CardPanel>
-        </a-col>
-        <a-col :span="16">
-          <CardPanel>
-            <template #body>
-              <a-skeleton :paragraph="{ rows: 6 }" />
+              <a-skeleton :paragraph="{ rows: config.rows }" />
             </template>
           </CardPanel>
         </a-col>

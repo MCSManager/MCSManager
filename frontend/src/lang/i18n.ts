@@ -19,37 +19,38 @@ export const SUPPORTED_LANGS = [
     value: `zh_tw`
   },
   {
-    label: `日本語`,
-    value: `ja_jp`
-  },
-  {
-    label: `한국어`,
-    value: `ko_kr`
-  },
-  {
     label: `Русский`,
     value: `ru_ru`
-  },
-  {
-    label: `Português Brasileiro`,
-    value: `pt_br`
   },
   {
     label: `Français`,
     value: `fr_fr`
   },
   {
-    label: `Español`,
-    value: `es_es`
-  },
-  {
     label: `Deutsch`,
     value: `de_de`
-  },
-  {
-    label: `Thai`,
-    value: `th_th`
   }
+  // These languages are temporarily not supported due to low user volume and long-term lack of maintenance
+  // {
+  //   label: `Português Brasileiro`,
+  //   value: `pt_br`
+  // },
+  // {
+  //   label: `Thai`,
+  //   value: `th_th`
+  // }
+  // {
+  //   label: `日本語`,
+  //   value: `ja_jp`
+  // },
+  // {
+  //   label: `Español`,
+  //   value: `es_es`
+  // },
+  // {
+  //   label: `한국어`,
+  //   value: `ko_kr`
+  // },
 ];
 
 export const LANGUAGE_KEY = "LANGUAGE";
@@ -117,6 +118,16 @@ const getCurrentLang = (): string => {
   return searchSupportLanguage(curLang);
 };
 
+// Only for first install page
+const getInitLanguage = (): string => {
+  const curLang = String(i18n.global.locale).toLowerCase();
+  const lang = searchSupportLanguage(curLang);
+  if (lang !== "zh_cn" && lang !== "zh_tw") {
+    return "en_us";
+  }
+  return lang;
+};
+
 const isCN = () => {
   return (
     getCurrentLang() === "zh_cn" ||
@@ -139,6 +150,7 @@ const t = $t;
 export {
   $t,
   getCurrentLang,
+  getInitLanguage,
   getSupportLanguages,
   initI18n,
   isCN,

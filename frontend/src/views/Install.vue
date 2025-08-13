@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive } from "vue";
 import CardPanel from "@/components/CardPanel.vue";
-import { getCurrentLang, t } from "@/lang/i18n";
+import { useAppRouters } from "@/hooks/useAppRouters";
+import { getInitLanguage, t } from "@/lang/i18n";
 import { panelInstall } from "@/services/apis";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
-import { useAppRouters } from "@/hooks/useAppRouters";
-import { useAppStateStore } from "@/stores/useAppStateStore";
+import { onMounted, reactive, ref } from "vue";
 
 const skeletons = [
   { span: 6, rows: 4 },
@@ -28,7 +28,7 @@ const formRef = ref<FormInstance>();
 const formData = reactive({
   username: "",
   password: "",
-  language: getCurrentLang()
+  language: getInitLanguage()
 });
 
 const { execute: createAdminUser } = panelInstall();
@@ -111,13 +111,6 @@ onMounted(async () => {});
         <a-button v-else class="mt-45 mb-45" type="primary" size="large" @click="step = 2">
           {{ t("TXT_CODE_351aaf7") }}
         </a-button>
-        <!-- <div style="flex">
-          <a-select v-model:value="formData.language" class="mr-6" :style="{ minWidth: '200px' }">
-            <a-select-option v-for="item in SUPPORTED_LANGS" :key="item.value" :value="item.value">
-              {{ item.label }}
-            </a-select-option>
-          </a-select>
-        </div> -->
       </template>
     </CardPanel>
   </div>
