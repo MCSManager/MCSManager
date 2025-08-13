@@ -2718,5 +2718,6 @@
   "TXT_CODE_55b1f20e": "用户激活实例失败：",
   "TXT_CODE_6adffa20": "切片上传失败，",
   "TXT_CODE_31145b04": "正在重试 {retries}/{maxRetries}",
-  "TXT_CODE_3f828072": "已达最大重试次数"
+  "TXT_CODE_3f828072": "已达最大重试次数",
+  "TXT_CODE_f63c4be2": "正在排队等待上传，剩余 {n} 个"
 }

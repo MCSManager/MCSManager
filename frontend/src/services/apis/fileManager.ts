@@ -173,6 +173,8 @@ export const uploadFile = useDefineApi<
           filename: string;
           size: number;
           sum: string;
+          unzip?: boolean;
+          code?: string;
         }
       | { stop: boolean };
   },
