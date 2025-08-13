@@ -165,6 +165,7 @@ class UploadTask {
   rangeStart: number;
   rangeEnd: number;
   worker?: Promise<any>;
+  abortController?: AbortController;
   retries: number = 0;
 
   constructor(config: { file: UploadFiles; range: [number, number] }) {
@@ -178,6 +179,7 @@ class UploadTask {
 
     const formData = new FormData();
     formData.append("file", this.file.file.slice(this.rangeStart, this.rangeEnd));
+    this.abortController = new AbortController();
 
     this.worker = uploadFilePiece({
       url: this.file.pieceUrl,
@@ -185,7 +187,8 @@ class UploadTask {
       params: {
         offset: this.rangeStart
       },
-      onUploadProgress: (progressEvent: any) => this.onProgress(progressEvent.loaded)
+      onUploadProgress: (progressEvent: any) => this.onProgress(progressEvent.loaded),
+      signal: this.abortController.signal
     })
       .then(() => this.onCompleted())
       .catch((e) => this.onError(e));
@@ -193,11 +196,19 @@ class UploadTask {
     this.status = "uploading";
   }
 
+  stop() {
+    this.status = "stopping";
+    if (!this.worker) {
+      return;
+    }
+    this.abortController?.abort();
+  }
+
   onError(error: any) {
-    this.retries += 1;
     const isStopping = this.status == "stopping";
     console.error("Upload error:", error);
     if (!isStopping) {
+      this.retries += 1;
       message.error(
         t("TXT_CODE_6adffa20") +
           (this.retries < 3
@@ -395,7 +406,7 @@ class UploadService {
     this.task.forEach((t) => {
       if (!t) return;
       if (t.status != "completed") {
-        t.status = "stopping";
+        t.stop();
       }
     });
     this.updateProgress();
@@ -419,7 +430,7 @@ class UploadService {
     for (const task of this.task) {
       if (!task) continue;
       if (task.status !== "completed") {
-        task.status = "stopping";
+        task.stop();
       }
     }
     this.task = [];
@@ -444,10 +455,6 @@ class UploadService {
     }
     const currentFile = this.files.get(this.current)!;
     let progress = currentFile.uploadedSize;
-    for (const uploadTask of this.task) {
-      if (!uploadTask) continue;
-      progress += uploadTask.progress;
-    }
 
     this.uiData.value = {
       current: [progress, currentFile.file.size],
