@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { $t } from "../i18n";
-import { keyValueStore } from "../service/Kv_store";
+import { singletonMemoryRedis } from "../service/mini_redis";
 import userSystem from "../service/user_service";
 
 const SPEED_LIMIT_KEY = "SpeedLimit";
@@ -15,15 +15,19 @@ export function speedLimit(seconds: number, errMsg?: string) {
     }
 
     const speedCheckKey = `${SPEED_LIMIT_KEY}:${user.uuid}:${requestPath}`;
-    const isExist = keyValueStore.get<boolean>(speedCheckKey);
+    const isExist = singletonMemoryRedis.get<boolean>(speedCheckKey);
 
     if (isExist) {
       ctx.status = 500;
-      ctx.body = errMsg || $t("操作过于频繁，请慢一点操作");
+      ctx.body =
+        errMsg ||
+        $t("此操作冷却中，约 {{seconds}} 秒后可继续操作！", {
+          seconds: singletonMemoryRedis.ttl(speedCheckKey)
+        });
       return;
     }
 
-    keyValueStore.set(speedCheckKey, true, seconds);
+    singletonMemoryRedis.set(speedCheckKey, true, seconds);
     return await next();
   };
 }

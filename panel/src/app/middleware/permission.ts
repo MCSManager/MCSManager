@@ -5,11 +5,11 @@ import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/
 import userSystem from "../service/user_service";
 
 /**
- * @description Request speed limit, 5 requests per second
+ * @description Request speed limit, 8 requests per second
  */
 function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
   const SESSION_REQ_TIMES = "SESSION_REQ_TIMES";
-  const MAX_REQUESTS_PER_SECOND = 5;
+  const MAX_REQUESTS_PER_SECOND = 8;
   const WINDOW_SIZE = 1000;
   const currentTime = new Date().getTime();
   if (!ctx.session) return false;

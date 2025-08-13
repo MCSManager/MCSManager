@@ -20,7 +20,10 @@ routerApp.use((event, ctx, data, next) => {
       });
     }
 
-    if ([Instance.STATUS_BUSY, Instance.STATUS_STARTING].includes(instance.status())) {
+    if (
+      [Instance.STATUS_BUSY, Instance.STATUS_STARTING].includes(instance.status()) &&
+      !["file/list", "file/status"].includes(event)
+    ) {
       return protocol.error(ctx, event, {
         instanceUuid: instanceUuid,
         err: $t("实例当前的状态不准许修改任何文件，请稍后再试！")

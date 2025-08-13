@@ -3,6 +3,7 @@ import axios from "axios";
 import { isEmpty, toBoolean, toNumber, toText } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
+import { speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { checkInstanceAdvancedParams } from "../service/instance_service";
@@ -173,6 +174,7 @@ router.all(
 // start asynchronous task
 router.post(
   "/asynchronous",
+  speedLimit(3),
   permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String, task_name: String },
@@ -385,6 +387,7 @@ router.put(
 // Update instance low-privilege configuration data (normal user)
 router.put(
   "/instance_update",
+  speedLimit(3),
   permission({ level: ROLE.USER }),
   validator({
     query: { uuid: String, daemonId: String },
@@ -519,8 +522,10 @@ router.get(
 );
 
 // [Low-level Permission]
+// Reinstall the instance
 router.post(
   "/install_instance",
+  speedLimit(3),
   permission({ level: ROLE.USER, speedLimit: true }),
   validator({
     query: { daemonId: String, uuid: String },
@@ -535,6 +540,9 @@ router.post(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+
+      // Use "description" and "title" as Package ID
+      // Do NOT use other parameters from frontend, it may be a malicious attack
       const description = String(ctx.request.body.description);
       const title = String(ctx.request.body.title);
 
@@ -549,6 +557,8 @@ router.post(
       const packages = presetConfig.packages;
 
       if (!(packages instanceof Array)) throw new Error("Preset Config is not array!");
+
+      // Find the target preset config
       const targetPresetConfig = packages.find(
         (v) => v.title === title && v.description === description
       );

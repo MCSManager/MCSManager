@@ -1,12 +1,12 @@
+import { t } from "@/lang/i18n";
 import {
   uploadFile as uploadFileApi,
   uploadFilePiece as uploadFilePieceApi
 } from "@/services/apis/fileManager";
-import { ref, type Ref } from "vue";
-import { message } from "ant-design-vue";
-import { t } from "@/lang/i18n";
 import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
+import { message } from "ant-design-vue";
+import { ref, type Ref } from "vue";
 
 const PIECE_SIZE = 1024 * 1024 * 2;
 
@@ -257,6 +257,7 @@ class UploadService {
     url: string,
     password: string,
     options: UploadOptions,
+    // eslint-disable-next-line no-unused-vars
     beforeMounted?: (uploadFile: UploadFiles) => void
   ) {
     const tempId = Date.now().toString();

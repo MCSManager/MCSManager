@@ -1,25 +1,29 @@
 <script setup lang="ts">
-import { ref, reactive, createVNode, onUnmounted, computed } from "vue";
-import { t } from "@/lang/i18n";
-import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
-import type { FormInstance } from "ant-design-vue";
-import type { Rule } from "ant-design-vue/es/form";
-import type { NewInstanceForm } from "@/types";
-import { UploadOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
-import { message, Modal, type UploadProps } from "ant-design-vue";
 import {
-  TYPE_MINECRAFT_JAVA,
   TYPE_MINECRAFT_BEDROCK,
+  TYPE_MINECRAFT_JAVA,
   TYPE_STEAM_SERVER_UNIVERSAL,
-  TYPE_UNIVERSAL,
-  TYPE_TERRARIA
+  TYPE_TERRARIA,
+  TYPE_UNIVERSAL
 } from "@/hooks/useInstance";
-import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
-import { uploadAddress, createInstance as createInstanceApi } from "@/services/apis/instance";
+import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
+import { t } from "@/lang/i18n";
+import { createInstance as createInstanceApi, uploadAddress } from "@/services/apis/instance";
+import uploadService, { UploadFiles } from "@/services/uploadService";
 import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
-import { CloseOutlined, CheckOutlined } from "@ant-design/icons-vue";
-import uploadService, { UploadFiles } from "@/services/uploadService";
+import type { NewInstanceForm } from "@/types";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  InfoCircleOutlined,
+  UploadOutlined
+} from "@ant-design/icons-vue";
+import type { FormInstance } from "ant-design-vue";
+import { message, Modal, type UploadProps } from "ant-design-vue";
+import type { Rule } from "ant-design-vue/es/form";
+import { computed, createVNode, onUnmounted, reactive, ref } from "vue";
+import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
 
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
 const emit = defineEmits(["nextStep"]);

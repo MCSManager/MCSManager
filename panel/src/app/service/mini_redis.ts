@@ -3,7 +3,7 @@ interface Data {
   ttl: number;
 }
 
-class KeyValueStore {
+class SingletonMemoryRedis {
   private readonly envMap: Map<string, Data> = new Map();
 
   constructor() {
@@ -14,7 +14,7 @@ class KeyValueStore {
           this.envMap.delete(key);
         }
       }
-    }, 1000);
+    }, 500);
   }
 
   get<T = any>(key: string): T | undefined {
@@ -27,7 +27,14 @@ class KeyValueStore {
       ttl: Date.now() + ttl * 1000
     });
   }
+
+  ttl(key: string) {
+    const data = this.envMap.get(key);
+    if (!data) return 0;
+    const ttl = data.ttl - Date.now();
+    return parseInt(String(ttl / 1000));
+  }
 }
 
 // singleton
-export const keyValueStore = new KeyValueStore();
+export const singletonMemoryRedis = new SingletonMemoryRedis();

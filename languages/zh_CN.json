@@ -1849,7 +1849,7 @@
   "TXT_CODE_c237192c": "请输入新实例的名字",
   "TXT_CODE_c24c2569": "在用户授权Geyser访问其Microsoft帐户时等待的秒数。",
   "TXT_CODE_c2697552": "修改曲目",
-  "TXT_CODE_c26e5fb7": "支持 Markdown 格式",
+  "TXT_CODE_c26e5fb7": "支持 Markdown 格式，当启用卡密销售功能后，因为登录页空间有限，此设置将无效！",
   "TXT_CODE_c2a8378b": "世界（地图）名称",
   "TXT_CODE_c2cef2d": "袭击者激活范围",
   "TXT_CODE_c3022e22": "此配置文件为 Bukkit 类或其他衍生类服务端常见的配置文件，包含了绝大部分的服务端设置，例如服务器端口，最大人数，玩家视距和正版验证等。",

@@ -60,6 +60,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     ports: [],
     extraVolumes: [],
     memory: 0,
+    memorySwap: undefined,
+    memorySwappiness: undefined,
     networkMode: "bridge",
     networkAliases: [],
     cpusetCpus: "",

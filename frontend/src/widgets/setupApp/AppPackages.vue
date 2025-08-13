@@ -186,8 +186,8 @@ const appPlatformList = computed(() => {
 // Fetches quick install list and shows error modal if no packages are available
 const init = async () => {
   try {
-    await getQuickInstallListAddr();
-    if (!appList.value || appList.value.length === 0) {
+    const list = await getQuickInstallListAddr();
+    if (!list.value?.packages || list.value?.packages.length === 0) {
       Modal.error({
         title: t("TXT_CODE_c534ca49"),
         content: t("TXT_CODE_bcfaf14d")

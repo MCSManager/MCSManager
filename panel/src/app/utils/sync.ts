@@ -1,6 +1,7 @@
 import { Mutex } from "async-mutex";
 
-const mutexMap = new WeakMap<Function, Mutex>();
+export const mutexMap = new WeakMap<Function, Mutex>();
+export const mutexIdMap = new Map<string, Mutex>();
 
 export async function execWithMutex<T>(fn: () => Promise<T>): Promise<T> {
   let mutex = mutexMap.get(fn);
@@ -17,8 +18,6 @@ export async function execWithMutex<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-const mutexIdMap = new Map<string, Mutex>();
-
 export async function execWithMutexId<T>(id: string, fn: () => Promise<T>) {
   let mutex = mutexIdMap.get(id);
   if (!mutex) {
@@ -33,4 +32,3 @@ export async function execWithMutexId<T>(id: string, fn: () => Promise<T>) {
     mutexIdMap.delete(id);
   }
 }
-

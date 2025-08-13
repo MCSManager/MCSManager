@@ -158,6 +158,7 @@ router.post(
 
 router.put(
   "/",
+  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
@@ -193,7 +194,7 @@ router.put(
 router.post(
   "/copy",
   permission({ level: ROLE.USER }),
-  speedLimit(1000 * 10),
+  speedLimit(3),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
@@ -214,8 +215,8 @@ router.post(
 
 router.put(
   "/move",
+  speedLimit(3),
   permission({ level: ROLE.USER }),
-  speedLimit(10),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
@@ -236,8 +237,8 @@ router.put(
 
 router.delete(
   "/",
-  permission({ level: ROLE.USER }),
   speedLimit(3),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Object } }),
   async (ctx) => {
     try {
@@ -265,7 +266,7 @@ router.delete(
 
 router.post(
   "/compress",
-  speedLimit(10, $t("操作过快，请等待10秒后再进行操作！")),
+  speedLimit(3),
   permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String },
@@ -301,7 +302,7 @@ router.post(
 router.all(
   "/download",
   permission({ level: ROLE.USER }),
-  speedLimit(30, $t("为确保网络问题，30 秒内只能下载一个文件，请稍等一下！")),
+  speedLimit(3),
   validator({ query: { uuid: String, daemonId: String, file_name: String } }),
   async (ctx) => {
     try {
@@ -340,6 +341,7 @@ router.all(
 
 router.all(
   "/upload",
+  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({ query: { uuid: String, daemonId: String, upload_dir: String } }),
   async (ctx) => {

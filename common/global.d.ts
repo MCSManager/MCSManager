@@ -63,6 +63,8 @@ declare global {
     workingDir?: string;
     env?: string[];
     changeWorkdir?: boolean;
+    memorySwap?: number;
+    memorySwappiness?: number;
   }
 
   interface IPanelResponseProtocol {

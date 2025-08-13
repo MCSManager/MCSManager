@@ -61,10 +61,14 @@ export class SetupDockerContainer extends AsyncTask {
     } else {
       commandList = [];
     }
+    const dockerConfig = instance.config.docker;
+    if (!dockerConfig) {
+      throw new Error("Instance's Docker configuration is not found! ");
+    }
 
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
-    const portMap = instance.config.docker.ports || [];
+    const portMap = dockerConfig.ports || [];
 
     const logOpenedPorts: { host: number; container: number; protocol: string }[] = [];
     const publicPortArray: PublicPortArray = {};
@@ -89,7 +93,7 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     // resolve extra path mounts
-    const extraVolumes = instance.config.docker.extraVolumes || [];
+    const extraVolumes = dockerConfig.extraVolumes || [];
     const extraBinds: { hostPath: string; containerPath: string }[] = [];
     for (const item of extraVolumes) {
       if (!item) throw new Error($t("TXT_CODE_ae441ea3"));
@@ -102,29 +106,42 @@ export class SetupDockerContainer extends AsyncTask {
 
     // memory limit
     let maxMemory: number | undefined = undefined;
-    if (instance.config.docker.memory) maxMemory = instance.config.docker.memory * 1024 * 1024;
+    if (typeof dockerConfig.memory === "number" && dockerConfig.memory > 0)
+      maxMemory = dockerConfig.memory * 1024 * 1024;
 
     // CPU usage calculation
     let cpuQuota: number | undefined = undefined;
     let cpuPeriod: number | undefined = undefined;
-    if (instance.config.docker.cpuUsage) {
-      cpuQuota = instance.config.docker.cpuUsage * 10 * 1000;
+    if (typeof dockerConfig.cpuUsage === "number" && dockerConfig.cpuUsage > 0) {
+      cpuQuota = dockerConfig.cpuUsage * 10 * 1000;
       cpuPeriod = 1000 * 1000;
     }
 
     // Check the number of CPU cores
     let cpusetCpus: string | undefined = undefined;
-    if (instance.config.docker.cpusetCpus) {
-      const arr = instance.config.docker.cpusetCpus.split(",");
+    if (dockerConfig.cpusetCpus) {
+      const arr = dockerConfig.cpusetCpus.split(",");
       arr.forEach((v: string) => {
         if (isNaN(Number(v))) throw new Error($t("TXT_CODE_instance.invalidCpu", { v }));
       });
-      cpusetCpus = instance.config.docker.cpusetCpus;
+      cpusetCpus = dockerConfig.cpusetCpus;
     }
 
+    // memory swap and swappiness
+    let memorySwap: number | undefined = undefined;
+    let memorySwappiness: number | undefined = undefined;
+    if (typeof dockerConfig.memorySwap === "number" && maxMemory)
+      memorySwap = dockerConfig.memorySwap * 1024 * 1024 + maxMemory;
+    if (
+      typeof dockerConfig.memorySwappiness === "number" &&
+      dockerConfig.memorySwappiness <= 100 &&
+      dockerConfig.memorySwappiness >= 0 &&
+      maxMemory
+    )
+      memorySwappiness = dockerConfig.memorySwappiness;
+
     // container name check
-    let containerName =
-      instance.config.docker.containerName || `MCSM-${instance.instanceUuid.slice(0, 6)}`;
+    let containerName = dockerConfig.containerName || `MCSM-${instance.instanceUuid.slice(0, 6)}`;
     if (containerName && (containerName.length > 64 || containerName.length < 2)) {
       throw new Error($t("TXT_CODE_instance.invalidContainerName", { v: containerName }));
     }
@@ -132,29 +149,12 @@ export class SetupDockerContainer extends AsyncTask {
     // Whether to use TTY mode
     const isTty = instance.config.terminalOption.pty;
 
-    const workingDir = instance.config.docker.workingDir || undefined;
+    const workingDir = dockerConfig.workingDir || undefined;
 
     let cwd = instance.absoluteCwdPath();
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
     if (hostRealPath) {
       cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
-    }
-
-    if (workingDir) {
-      instance.println("MCSManager", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
-    }
-    if (logOpenedPorts.length) {
-      instance.println("MCSManager", $t("TXT_CODE_c1c548fb"));
-      logOpenedPorts.forEach((v) => {
-        instance.println(
-          "MCSManager",
-          $t("TXT_CODE_1e03347e", {
-            host: v.host,
-            container: v.container,
-            protocol: v.protocol
-          })
-        );
-      });
     }
 
     const mounts: Docker.MountConfig =
@@ -181,48 +181,68 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`NAME: [${containerName}]`);
     logger.info(`COMMAND: ${commandList.join(" ")}`);
     logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
-    logger.info(`NET_MODE: ${instance.config.docker.networkMode}`);
+    logger.info(`NET_MODE: ${dockerConfig.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
-    logger.info(`NET_ALIASES: ${JSON.stringify(instance.config.docker.networkAliases)}`);
-    logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB`);
+    logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
+    logger.info(`MEM_LIMIT: ${maxMemory || "--"} MB, Swap: ${memorySwap || "--"} MB`);
     logger.info(`TYPE: Docker Container`);
     logger.info("----------------");
+
+    if (workingDir) {
+      instance.println("INFO", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
+    }
+
+    if (logOpenedPorts.length) {
+      instance.println("INFO", $t("TXT_CODE_c1c548fb"));
+      logOpenedPorts.forEach((v) => {
+        instance.println(
+          "INFO",
+          $t("TXT_CODE_1e03347e", {
+            host: v.host,
+            container: v.container,
+            protocol: v.protocol
+          })
+        );
+      });
+    }
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
     this.container = await docker.createContainer({
       name: containerName,
       Hostname: containerName,
-      Image: instance.config.docker.image,
+      Image: dockerConfig.image,
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
       Tty: isTty,
-      WorkingDir: instance.config.docker.changeWorkdir ? workingDir : undefined,
+      WorkingDir: dockerConfig.changeWorkdir ? workingDir : undefined,
       Cmd: commandList.length > 0 ? commandList : undefined,
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
-      Env: instance.config.docker?.env || [],
+      Env: dockerConfig?.env || [],
       User: instance.config.runAs || undefined,
       Labels: {
         "mcsmanager.instance.uuid": instance.instanceUuid
       },
       HostConfig: {
         Memory: maxMemory,
+        MemorySwap: memorySwap,
+        MemorySwappiness: memorySwappiness,
         AutoRemove: true,
         CpusetCpus: cpusetCpus,
         CpuPeriod: cpuPeriod,
         CpuQuota: cpuQuota,
         PortBindings: publicPortArray,
-        NetworkMode: instance.config.docker.networkMode,
+        NetworkMode: dockerConfig.networkMode,
         Mounts: mounts
       },
       NetworkingConfig: {
         EndpointsConfig: {
-          [instance.config.docker.networkMode || "bridge"]: {
-            Aliases: instance.config.docker.networkAliases
+          [dockerConfig.networkMode || "bridge"]: {
+            Aliases: dockerConfig.networkAliases
           }
         }
       }
