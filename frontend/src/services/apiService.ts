@@ -100,7 +100,7 @@ class ApiService {
 
       // Request cache
       const startTime = Date.now();
-      if (!config.timeout) config.timeout = 1000 * 10;
+      if (!config.timeout) config.timeout = 1000 * 30;
       const { data: result } = await axios<PacketProtocol<T>>(config);
       const endTime = Date.now();
       const reqSpeed = endTime - startTime;

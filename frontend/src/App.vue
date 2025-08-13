@@ -9,6 +9,7 @@ import { Button, Select, Input, Table } from "ant-design-vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import { closeAppLoading } from "./tools/dom";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
+import UploadBubble from "@/components/UploadBubble.vue";
 
 const { isDarkTheme, setBackgroundImage } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
@@ -50,6 +51,7 @@ onMounted(async () => {
     <div class="global-app-container">
       <AppHeader />
       <RouterView :key="$route.fullPath" />
+      <UploadBubble />
     </div>
 
     <!-- Global Components -->
