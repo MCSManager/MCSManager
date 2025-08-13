@@ -25,6 +25,7 @@ let currentVersion = "";
 
 export function initVersionManager() {
   try {
+    GlobalVariable.set("lastLaunchedVersion", 100);
     GlobalVariable.set("version", "Unknown");
     if (fs.existsSync(PACKAGE_JSON)) {
       const data: IPackageInfo = JSON.parse(fs.readFileSync(PACKAGE_JSON, { encoding: "utf-8" }));
@@ -39,8 +40,11 @@ export function initVersionManager() {
 
   if (currentVersion && storage.fileExists(VERSION_LOG_TEXT_NAME)) {
     const LastLaunchedVersion = storage.readFile(VERSION_LOG_TEXT_NAME);
-    if (LastLaunchedVersion && LastLaunchedVersion != currentVersion) {
+    const lastVersionNumber = Number(LastLaunchedVersion.split(".").slice(0, 2).join(""));
+
+    if (LastLaunchedVersion && LastLaunchedVersion != currentVersion && !isNaN(lastVersionNumber)) {
       logger.warn(`Version changed from ${LastLaunchedVersion} to ${currentVersion}`);
+      GlobalVariable.set("lastLaunchedVersion", lastVersionNumber);
       GlobalVariable.set("versionChange", currentVersion);
 
       // reload layout

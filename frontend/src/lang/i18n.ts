@@ -23,14 +23,14 @@ export const SUPPORTED_LANGS = [
     value: `ru_ru`
   },
   {
-    label: `Français`,
-    value: `fr_fr`
-  },
-  {
     label: `Deutsch`,
     value: `de_de`
   }
   // These languages are temporarily not supported due to low user volume and long-term lack of maintenance
+  // {
+  //   label: `Français`,
+  //   value: `fr_fr`
+  // },
   // {
   //   label: `Português Brasileiro`,
   //   value: `pt_br`

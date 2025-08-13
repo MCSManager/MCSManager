@@ -1,6 +1,8 @@
 import { t } from "i18next";
+import { GlobalVariable } from "mcsmanager-common";
 import StorageSubsystem from "../common/system_storage";
 import { systemConfig } from "../setting";
+import { hasVersionChanged } from "../version";
 import { logger } from "./log";
 
 function readCategoryConfig(configCategory: string, callback: (config: any) => boolean) {
@@ -39,7 +41,13 @@ function refactorUserConfig(config: any) {
  */
 function upgradePresetPackAddr() {
   const config = systemConfig;
-  if (config && config.presetPackAddr === "https://script.mcsmanager.com/templates.json") {
+  const lastLaunchedVersion = GlobalVariable.get("lastLaunchedVersion");
+  // If the version is less than 10.8.0 and the version has changed,
+  // then we need to upgrade the preset pack addr
+  if (config && lastLaunchedVersion < 108 && hasVersionChanged()) {
+    logger.warn(
+      `Upgrading Market source addr from ${config.presetPackAddr} to https://script.mcsmanager.com/market.json`
+    );
     config.presetPackAddr = "https://script.mcsmanager.com/market.json";
     StorageSubsystem.store("SystemConfig", "config", config);
   }

@@ -6,7 +6,7 @@ import { panelInstall } from "@/services/apis";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
-import { onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 
 const skeletons = [
   { span: 6, rows: 4 },
@@ -71,8 +71,6 @@ const toOverview = () => {
     }
   });
 };
-
-onMounted(async () => {});
 </script>
 
 <template>
