@@ -294,7 +294,7 @@ class UploadService {
       }
     }
     if (this.status == "suspend") {
-      if (this.files.size > 0) {
+      if (this.files.size == 0) {
         this.status = "stopped";
       }
       return;
