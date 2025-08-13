@@ -276,10 +276,10 @@ class UploadService {
   ) {
     const tempId = Date.now().toString();
     const uploadFile = new UploadFiles(tempId, file, url, password, options);
-    this.files.set(tempId, uploadFile);
     if (beforeMounted) {
       beforeMounted(uploadFile);
     }
+    this.files.set(tempId, uploadFile);
     if (this.status == "stopped") {
       this.status = "working";
       this.current = tempId;
