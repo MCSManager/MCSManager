@@ -2735,5 +2735,6 @@
   "TXT_CODE_de9b7cc0": "由于实例类型为 Docker 容器模式，我们将只展示 Docker 版的模板。",
   "TXT_CODE_181c72ba": "没有找到合适的模板？自定义一个模板配置吧",
   "TXT_CODE_c093bec9": "此操作冷却中，约 {{seconds}} 秒后可继续操作！",
-  "TXT_CODE_b0ff4172": "正在后台上传 {n} 个文件"
+  "TXT_CODE_b0ff4172": "正在后台上传 {n} 个文件",
+  "TXT_CODE_59c0c994": "正在往其他实例上传"
 }

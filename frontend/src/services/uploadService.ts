@@ -26,6 +26,12 @@ export class UploadFiles {
   prepared = false;
   canceled = false;
   removing = false;
+  instanceInfo:
+    | {
+        daemonId: string;
+        instanceId: string;
+      }
+    | undefined;
   callbacks: {
     onStart: Set<() => void>;
     onEnd: Set<() => void>;
@@ -246,11 +252,19 @@ class UploadService {
   task: (UploadTask | undefined)[] = [];
   current?: string;
   status: "stopped" | "working" | "suspend" = "stopped";
-  uiData: Ref<{ files: number[]; current?: number[]; currentFile?: string; suspending: boolean }> =
-    ref({
-      files: [],
-      suspending: false
-    });
+  uiData: Ref<{
+    files: number[];
+    current?: number[];
+    currentFile?: string;
+    suspending: boolean;
+    instanceInfo?: {
+      daemonId: string;
+      instanceId: string;
+    };
+  }> = ref({
+    files: [],
+    suspending: false
+  });
 
   append(
     file: File,
@@ -439,7 +453,8 @@ class UploadService {
       current: [progress, currentFile.file.size],
       currentFile: currentFile.file.name,
       files: [this.uploaded + (this.current ? 1 : 0), this.uploaded + this.files.size],
-      suspending: this.status == "suspend"
+      suspending: this.status == "suspend",
+      instanceInfo: currentFile.instanceInfo
     };
   }
 

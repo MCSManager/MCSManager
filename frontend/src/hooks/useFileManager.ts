@@ -423,7 +423,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           throw new Error(t("TXT_CODE_e8ce38c2"));
         }
 
-        uploadService.append(
+        const task = uploadService.append(
           f.file,
           parseForwardAddress(missionCfg.value.addr, "http"),
           missionCfg.value.password,
@@ -431,6 +431,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             overwrite: f.overwrite
           }
         );
+        task.instanceInfo = {
+          instanceId: instanceId || "",
+          daemonId: daemonId || ""
+        };
       } catch (err: any) {
         console.error(err);
         return reportErrorMsg(err.response?.data || err.message);

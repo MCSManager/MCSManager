@@ -161,6 +161,16 @@ const progress = computed(() => {
   return 0;
 });
 const uploadData = uploadService.uiData;
+const uploadInstanceTag = computed(() => {
+  if (
+    uploadData.value.instanceInfo &&
+    (uploadData.value.instanceInfo.instanceId != instanceId ||
+      uploadData.value.instanceInfo.daemonId != daemonId)
+  ) {
+    return `(${t("TXT_CODE_59c0c994")})`;
+  }
+  return "";
+});
 watch(
   () => uploadService.uiData.value,
   (newValue) => {
@@ -462,6 +472,7 @@ onUnmounted(() => {
             <div v-if="uploadData.current" class="flex-nowrap w-100">
               <a-typography-text :ellipsis="true">
                 {{ uploadData.currentFile }}
+                {{ uploadInstanceTag }}
               </a-typography-text>
               <a-typography-text style="padding-left: 5px; white-space: nowrap">
                 ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
