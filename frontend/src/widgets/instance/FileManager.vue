@@ -163,9 +163,9 @@ const progress = computed(() => {
 const uploadData = uploadService.uiData;
 const uploadInstanceTag = computed(() => {
   if (
-    uploadData.value.instanceInfo &&
-    (uploadData.value.instanceInfo.instanceId != instanceId ||
-      uploadData.value.instanceInfo.daemonId != daemonId)
+    !uploadData.value.instanceInfo ||
+    uploadData.value.instanceInfo.instanceId != instanceId ||
+    uploadData.value.instanceInfo.daemonId != daemonId
   ) {
     return `(${t("TXT_CODE_59c0c994")})`;
   }
