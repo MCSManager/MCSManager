@@ -1,52 +1,51 @@
-import EmptyCard from "@/widgets/EmptyCard.vue";
-import Page404 from "@/widgets/Page404.vue";
+import { t } from "@/lang/i18n";
 import { getRandomId } from "@/tools/randId";
 import type { LayoutCard } from "@/types";
-import { LayoutCardHeight } from "./originLayoutConfig";
-import DataOverview from "@/widgets/PanelOverview.vue";
-import StatusBlock from "@/widgets/StatusBlock.vue";
-import { t } from "@/lang/i18n";
-import NodeOverview from "@/widgets/NodeOverview.vue";
-import QuickStart from "@/widgets/QuickStart.vue";
-import RequestChart from "@/widgets/RequestChart.vue";
-import InstanceChart from "@/widgets/InstanceChart.vue";
-import InstanceList from "@/widgets/InstanceList.vue";
-import NodeList from "@/widgets/NodeList.vue";
-import Settings from "@/widgets/Settings.vue";
-import UserList from "@/widgets/UserList.vue";
-import Terminal from "@/widgets/instance/Terminal.vue";
-import InstanceManagerBtns from "@/widgets/instance/ManagerBtns.vue";
-import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
-import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
-import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
-import InstanceFileManager from "@/widgets/instance/FileManager.vue";
-import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
-import ImageBox from "@/widgets/others/ImageBox.vue";
-import TextCard from "@/widgets/others/TextCard.vue";
-import LinkCard from "@/widgets/others/LinkCard.vue";
-import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
-import McPreset from "@/widgets/setupApp/McPreset.vue";
-import IframeCard from "@/widgets/others/IframeCard.vue";
-import ClockCard from "@/widgets/others/ClockCard.vue";
-import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
-import UserInstanceList from "@/widgets/UserInstanceList.vue";
+import DefaultCard from "@/widgets/DefaultCard.vue";
+import EmptyCard from "@/widgets/EmptyCard.vue";
 import ImageManager from "@/widgets/imageManager/index.vue";
 import NewImage from "@/widgets/imageManager/NewImage.vue";
+import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
+import InstanceFileManager from "@/widgets/instance/FileManager.vue";
+import InstanceManagerBtns from "@/widgets/instance/ManagerBtns.vue";
 import Schedule from "@/widgets/instance/Schedule.vue";
+import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
+import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
 import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
-import NodeItem from "@/widgets/node/NodeItem.vue";
-import TitleCard from "@/widgets/TitleCard.vue";
+import Terminal from "@/widgets/instance/Terminal.vue";
+import InstanceChart from "@/widgets/InstanceChart.vue";
+import InstanceList from "@/widgets/InstanceList.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
-import DefaultCard from "@/widgets/DefaultCard.vue";
-import Carousel from "@/widgets/others/Carousel.vue";
-import PluginCard from "@/widgets/others/PluginCard.vue";
-import MusicCard from "@/widgets/others/MusicCard.vue";
-import ShelvesCard from "@/widgets/ShelvesCard.vue";
-import ShopInfoCard from "@/widgets/ShopInfoCard.vue";
-import OperationLogCard from "@/widgets/OperationLogCard.vue";
 import Market from "@/widgets/Market.vue";
+import NodeItem from "@/widgets/node/NodeItem.vue";
+import NodeList from "@/widgets/NodeList.vue";
+import NodeOverview from "@/widgets/NodeOverview.vue";
+import OperationLogCard from "@/widgets/OperationLogCard.vue";
+import Carousel from "@/widgets/others/Carousel.vue";
+import ClockCard from "@/widgets/others/ClockCard.vue";
+import IframeCard from "@/widgets/others/IframeCard.vue";
+import ImageBox from "@/widgets/others/ImageBox.vue";
+import LinkCard from "@/widgets/others/LinkCard.vue";
+import MusicCard from "@/widgets/others/MusicCard.vue";
+import PluginCard from "@/widgets/others/PluginCard.vue";
+import TextCard from "@/widgets/others/TextCard.vue";
+import Page404 from "@/widgets/Page404.vue";
+import DataOverview from "@/widgets/PanelOverview.vue";
+import QuickStart from "@/widgets/QuickStart.vue";
+import RequestChart from "@/widgets/RequestChart.vue";
+import Settings from "@/widgets/Settings.vue";
+import McPreset from "@/widgets/setupApp/McPreset.vue";
+import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
+import ShelvesCard from "@/widgets/ShelvesCard.vue";
+import StatusBlock from "@/widgets/StatusBlock.vue";
+import TitleCard from "@/widgets/TitleCard.vue";
+import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
+import UserInstanceList from "@/widgets/UserInstanceList.vue";
+import UserList from "@/widgets/UserList.vue";
+import UserStatusBlock from "@/widgets/UserStatusBlock.vue";
 
 import { NEW_CARD_TYPE } from "../types/index";
+import { LayoutCardHeight } from "./originLayoutConfig";
 import { ROLE } from "./router";
 
 // Register specified Vue components for each card.
@@ -91,7 +90,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   PluginCard,
   MusicCard,
   ShelvesCard,
-  ShopInfoCard,
   OperationLogCard,
   Market
 };
@@ -525,17 +523,6 @@ export function getLayoutCardPool() {
       width: 8,
       description: t("TXT_CODE_163e2d0a"),
       height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.COMMON
-    },
-    {
-      id: getRandomId(),
-      permission: ROLE.GUEST,
-      meta: {},
-      type: "ShopInfoCard",
-      title: t("TXT_CODE_48261ab7"),
-      width: 8,
-      description: t("TXT_CODE_1648c9ea"),
-      height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
     },
     {

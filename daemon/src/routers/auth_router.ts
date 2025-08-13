@@ -1,12 +1,11 @@
-import { $t } from "../i18n";
-import { routerApp } from "../service/router";
-import * as protocol from "../service/protocol";
-import { globalConfiguration } from "../entity/config";
-import logger from "../service/log";
-import RouterContext from "../entity/ctx";
+import { timingSafeEqual } from "node:crypto";
 import { IGNORE } from "../const";
+import { globalConfiguration } from "../entity/config";
+import { $t } from "../i18n";
+import logger from "../service/log";
 import { LOGIN_BY_TOP_LEVEL, loginSuccessful } from "../service/mission_passport";
-import { timingSafeEqual } from 'node:crypto'
+import * as protocol from "../service/protocol";
+import { routerApp } from "../service/router";
 
 // latest verification time
 const AUTH_TIMEOUT = 6000;
@@ -20,7 +19,10 @@ routerApp.use(async (event, ctx, _, next) => {
   if (event === "auth") return await next();
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
   if (
-    timingSafeEqual(Uint8Array.from(ctx.session.key as string), Uint8Array.from(globalConfiguration.config.key)) &&
+    timingSafeEqual(
+      Uint8Array.from(ctx.session.key as string),
+      Uint8Array.from(globalConfiguration.config.key)
+    ) &&
     ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
     ctx.session.id
@@ -41,17 +43,26 @@ routerApp.use(async (event, ctx, _, next) => {
 
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
-  if (timingSafeEqual(Uint8Array.from(data as string), Uint8Array.from(globalConfiguration.config.key))) {
-    // The authentication is passed, and the registered session is a trusted session
-    logger.info(
-      $t("TXT_CODE_auth_router.access", {
-        id: ctx.socket.id,
-        address: ctx.socket.handshake.address
-      })
-    );
-    loginSuccessful(ctx, data);
-    protocol.msg(ctx, "auth", true);
-  } else {
+  try {
+    if (
+      timingSafeEqual(
+        Uint8Array.from(String(data)),
+        Uint8Array.from(globalConfiguration.config.key)
+      )
+    ) {
+      // The authentication is passed, and the registered session is a trusted session
+      logger.info(
+        $t("TXT_CODE_auth_router.access", {
+          id: ctx.socket.id,
+          address: ctx.socket.handshake.address
+        })
+      );
+      loginSuccessful(ctx, data);
+      protocol.msg(ctx, "auth", true);
+    } else {
+      protocol.msg(ctx, "auth", false);
+    }
+  } catch (e) {
     protocol.msg(ctx, "auth", false);
   }
 });

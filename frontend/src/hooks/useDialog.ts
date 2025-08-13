@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { ref } from "vue";
 
 export function useDialog<T = any>(props: any) {

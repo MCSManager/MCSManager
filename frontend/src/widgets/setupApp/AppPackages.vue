@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
-import { getCurrentLang, isCN, t } from "@/lang/i18n";
-import { quickInstallListAddr } from "@/services/apis/instance";
-import type { QuickStartPackages } from "@/types";
-import { reportErrorMsg } from "@/tools/validator";
-import { Modal } from "ant-design-vue";
-import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { onMounted } from "vue";
-import Loading from "@/components/Loading.vue";
 import CardPanel from "@/components/CardPanel.vue";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
+import Loading from "@/components/Loading.vue";
+import { getCurrentLang, isCN, t } from "@/lang/i18n";
+import { quickInstallListAddr } from "@/services/apis/instance";
+import { reportErrorMsg } from "@/tools/validator";
+import type { QuickStartPackages } from "@/types";
+import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
+import { Modal } from "ant-design-vue";
+import { computed, onMounted, reactive } from "vue";
 
-defineProps<{
+const props = defineProps<{
   title?: string;
+  btnText?: string;
+  showCustomBtn?: boolean;
+  onlyDockerTemplate?: boolean;
 }>();
 
 const emit = defineEmits<{
-  "handle-select-template": [item: QuickStartPackages];
+  "handle-select-template": [item: QuickStartPackages | null];
 }>();
 
 const {
@@ -84,6 +86,10 @@ const getFilteredPackages = (
   }
 
   return presetList.value.packages.filter((item) => {
+    if (props.onlyDockerTemplate && !item.setupInfo?.docker) {
+      return false;
+    }
+
     // Apply base filters (language, game type, category, platform)
     const baseFilters = [
       matchesLanguageFilter(item),
@@ -105,6 +111,7 @@ const generateOptionsList = (
   items: QuickStartPackages[],
   field: keyof QuickStartPackages,
   allLabel: string,
+  // eslint-disable-next-line no-unused-vars
   additionalFilter?: (item: QuickStartPackages) => boolean
 ): FilterOption[] => {
   const valueMap: Record<string, string> = {};
@@ -139,15 +146,15 @@ const appList = computed(() => {
 // Computed property for language options dropdown
 // Includes "ALL" option and available languages from preset data
 const appLangList = computed(() => {
-  const allOption: FilterOption = {
-    label: t("TXT_CODE_8a30e150"),
-    value: SEARCH_ALL_KEY
-  };
+  // const allOption: FilterOption = {
+  //   label: t("TXT_CODE_8a30e150"),
+  //   value: SEARCH_ALL_KEY
+  // };
 
   const languageOptions: FilterOption[] =
     presetList.value?.languages instanceof Array ? presetList.value.languages : [];
 
-  return [allOption, ...languageOptions];
+  return [...languageOptions];
 });
 
 // Computed property for game type options dropdown
@@ -179,8 +186,8 @@ const appPlatformList = computed(() => {
 // Fetches quick install list and shows error modal if no packages are available
 const init = async () => {
   try {
-    await getQuickInstallListAddr();
-    if (!appList.value || appList.value.length === 0) {
+    const list = await getQuickInstallListAddr();
+    if (!list.value?.packages || list.value?.packages.length === 0) {
       Modal.error({
         title: t("TXT_CODE_c534ca49"),
         content: t("TXT_CODE_bcfaf14d")
@@ -214,6 +221,8 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
+const handleCustomBtnClick = () => {};
+
 defineExpose({
   init,
   appList
@@ -225,10 +234,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-typography-title :level="4" style="margin-bottom: 20px">
+  <a-typography-title :level="4" style="margin-bottom: 8px">
     <DatabaseOutlined />
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
+  <a-typography-paragraph>
+    <p>
+      <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+      <span v-if="onlyDockerTemplate">
+        <br />
+        {{ t("TXT_CODE_de9b7cc0") }}
+      </span>
+    </p>
+  </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
     <a-col :span="24">
@@ -253,7 +271,11 @@ onMounted(() => {
   <a-row v-else :gutter="[12, 12]" style="height: 100%">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
-      <a-form layout="horizontal" :model="searchForm" style="display: flex; gap: 10px">
+      <a-form
+        layout="horizontal"
+        :model="searchForm"
+        style="display: flex; gap: 10px; flex-wrap: wrap"
+      >
         <!-- Language filter dropdown -->
         <a-form-item class="mb-0">
           <a-select
@@ -317,6 +339,16 @@ onMounted(() => {
       </a-form>
     </a-col>
 
+    <a-col v-if="showCustomBtn" :span="24" :md="24" class="justify-end">
+      <a-button
+        type="link"
+        style="margin: 0; padding: 0"
+        @click="emit('handle-select-template', null)"
+      >
+        {{ t("TXT_CODE_181c72ba") }}
+      </a-button>
+    </a-col>
+
     <!-- Empty state - shown when no packages match current filters -->
     <a-col v-if="appList.length === 0" :span="24">
       <div style="display: flex; justify-content: center; align-items: center; height: 40vh">
@@ -334,7 +366,7 @@ onMounted(() => {
         :span="24"
         :xl="6"
         :lg="6"
-        :sm="12"
+        :sm="24"
       >
         <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
@@ -347,8 +379,19 @@ onMounted(() => {
                 </div>
 
                 <div class="package-info">
-                  <a-typography-title :level="5">
-                    {{ item.title }}
+                  <a-typography-title :level="5" class="justify-between">
+                    <span>
+                      {{ item.title }}
+                    </span>
+                    <span>
+                      <a-tag color="cyan">
+                        {{
+                          String(item.platform).toLowerCase() === "all"
+                            ? t("TXT_CODE_all_platform")
+                            : item.platform
+                        }}
+                      </a-tag>
+                    </span>
                   </a-typography-title>
                   <div class="mb-5">
                     <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>
@@ -378,7 +421,7 @@ onMounted(() => {
                     <template #icon>
                       <DownloadOutlined />
                     </template>
-                    {{ t("TXT_CODE_1704ea49") }}
+                    {{ btnText || t("TXT_CODE_1704ea49") }}
                   </a-button>
                 </div>
               </div>

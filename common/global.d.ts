@@ -63,6 +63,8 @@ declare global {
     workingDir?: string;
     env?: string[];
     changeWorkdir?: boolean;
+    memorySwap?: number;
+    memorySwappiness?: number;
   }
 
   interface IPanelResponseProtocol {
@@ -213,6 +215,18 @@ declare global {
       value: string;
     }[];
     packages: IQuickStartPackages[];
+  }
+
+  export interface IBusinessProductInfo {
+    productId: number;
+    title: string;
+    price: number;
+    ispId: number;
+    daemonId: string;
+    payload?: string;
+    remark?: string;
+    hours?: number;
+    daemonUuid?: string;
   }
 }
 

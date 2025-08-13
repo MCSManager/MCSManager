@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { t } from "@/lang/i18n";
-import { remoteNodeList } from "@/services/apis";
-import type { NodeStatus } from "@/types";
 import { useDialog } from "@/hooks/useDialog";
+import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
+import { useRemoteNode } from "@/hooks/useRemoteNode";
+import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
+import type { MountComponent } from "@/types";
+import { onMounted, ref } from "vue";
 
-interface Props {
-  destroyComponent?: () => void;
-  emitResult?: (node: NodeStatus) => void;
-}
+interface Props extends MountComponent<ComputedNodeInfo> {}
 
 const props = defineProps<Props>();
 
-const { isVisible, openDialog, cancel, submit } = useDialog<NodeStatus>(props);
+const { isVisible, openDialog, cancel, submit } = useDialog<ComputedNodeInfo>(props);
 
 // 获取可用节点
-const { state: nodes, execute: getNodes } = remoteNodeList();
-const availableNodes = ref<NodeStatus[]>([]);
+const { remoteNodes: nodes, refresh: refreshOverviewInfo } = useRemoteNode();
 
-const selectNode = (node: NodeStatus) => {
+const availableNodes = ref<ComputedNodeInfo[]>([]);
+
+const selectNode = (node: ComputedNodeInfo) => {
   if (!node.available) {
     reportErrorMsg(t("TXT_CODE_4ec4f7bb"));
     return;
@@ -28,7 +27,7 @@ const selectNode = (node: NodeStatus) => {
 };
 
 onMounted(async () => {
-  await getNodes();
+  await refreshOverviewInfo();
   availableNodes.value = nodes.value?.filter((node) => node.available) || [];
 });
 
@@ -52,8 +51,25 @@ defineExpose({
         {{ t("TXT_CODE_ad24269a") }}
       </a-typography-paragraph>
       <div class="node-grid">
+        <div v-if="availableNodes.length === 0">
+          <div class="justify-center" flex-center>
+            <div>
+              <div class="mb-2">
+                <p style="opacity: 0.8">
+                  {{ t("TXT_CODE_f4110b65") }}
+                </p>
+              </div>
+              <div>
+                <a-button type="primary" @click="selectNode(availableNodes[0])">
+                  {{ t("TXT_CODE_4fe5dce5") }}
+                </a-button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           v-for="item in availableNodes"
+          v-else
           :key="item.uuid"
           class="node-item"
           @click="selectNode(item)"
@@ -65,8 +81,9 @@ defineExpose({
               <a-tag v-else color="red">{{ t("TXT_CODE_6cbb84a9") }}</a-tag>
             </div>
             <div class="node-details">
-              <span>IP: {{ item.ip }}:{{ item.port }}</span>
-              <span>UUID: {{ item.uuid }}</span>
+              <span>ID: {{ item.uuid }}</span>
+              <span>{{ t("TXT_CODE_3d0885c0") }}: {{ item?.platformText }}</span>
+              <span>{{ t("TXT_CODE_c7d0002e") }}: {{ item.ip }}:{{ item.port }}</span>
             </div>
           </div>
         </div>

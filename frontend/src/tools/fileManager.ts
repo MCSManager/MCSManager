@@ -1,27 +1,27 @@
 import { t } from "@/lang/i18n";
 import {
+  AndroidOutlined,
+  BranchesOutlined,
+  CodeOutlined,
+  CustomerServiceOutlined,
+  FileExcelOutlined,
+  FileGifOutlined,
+  FileImageOutlined,
+  FileMarkdownOutlined,
   FileOutlined,
-  FolderOutlined,
   FilePdfOutlined,
   FilePptOutlined,
-  FileWordOutlined,
-  FileExcelOutlined,
   FileTextOutlined,
-  FileZipOutlined,
-  FileImageOutlined,
-  FileGifOutlined,
-  FileMarkdownOutlined,
   FileUnknownOutlined,
-  PlaySquareOutlined,
-  VideoCameraOutlined,
+  FileWordOutlined,
+  FileZipOutlined,
+  FolderOutlined,
   Html5Outlined,
-  CodeOutlined,
-  ToolOutlined,
-  BranchesOutlined,
-  AndroidOutlined,
   IeOutlined,
-  WindowsOutlined,
-  CustomerServiceOutlined
+  PlaySquareOutlined,
+  ToolOutlined,
+  VideoCameraOutlined,
+  WindowsOutlined
 } from "@ant-design/icons-vue";
 
 export const filterFileName = (fileName: string, onlyExtname = false) => {

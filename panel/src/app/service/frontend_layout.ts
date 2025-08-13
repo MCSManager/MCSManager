@@ -1,9 +1,9 @@
-import { v4 } from "uuid";
-import { $t as t } from "../i18n";
-import storage from "../common/system_storage";
+import fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import path from "path";
-import fs from "fs-extra";
+import { v4 } from "uuid";
+import storage from "../common/system_storage";
+import { $t as t } from "../i18n";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
 
@@ -381,7 +381,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           meta: {},
           type: "Settings",
           title: t("TXT_CODE_3fe97dcc"),
-          width: 8,
+          width: 9,
           height: LayoutCardHeight.LARGE,
           disableDelete: true
         }
@@ -567,52 +567,11 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 2,
-          height: LayoutCardHeight.MINI
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "ShopInfoCard",
-          title: t("TXT_CODE_4770de17"),
-          width: 8,
-          height: LayoutCardHeight.SMALL,
-          disableDelete: true
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 2,
-          height: LayoutCardHeight.MINI
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 2,
-          height: LayoutCardHeight.MINI
-        },
-        {
-          id: getRandomId(),
-          meta: {},
           type: "ShelvesCard",
           title: t("TXT_CODE_381f8f22"),
-          width: 8,
+          width: 12,
           height: LayoutCardHeight.LARGE,
           disableDelete: true
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 2,
-          height: LayoutCardHeight.MINI
         }
       ]
     },

@@ -1,18 +1,17 @@
-import { v4 } from "uuid";
 import axios from "axios";
-import { pipeline, Readable } from "stream";
 import fs from "fs-extra";
+import { t } from "i18next";
+import path from "path";
+import { pipeline, Readable } from "stream";
+import { v4 } from "uuid";
 import Instance from "../../entity/instance/instance";
-import InstanceSubsystem from "../system_instance";
 import InstanceConfig from "../../entity/instance/Instance_config";
 import { $t } from "../../i18n";
-import path from "path";
 import { getFileManager } from "../file_router_service";
-import { IAsyncTaskJSON, TaskCenter, AsyncTask } from "./index";
-import logger from "../log";
-import { t } from "i18next";
 import { InstanceUpdateAction } from "../instance_update_action";
-import { formatTime } from "../../tools/time";
+import logger from "../log";
+import InstanceSubsystem from "../system_instance";
+import { AsyncTask, IAsyncTaskJSON, TaskCenter } from "./index";
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -159,6 +158,16 @@ export class QuickInstallTask extends AsyncTask {
   }
 
   async onStart() {
+    this.instance.print("\n");
+    if (
+      this.instance.config.processType === "docker" &&
+      this.buildParams?.processType !== "docker"
+    ) {
+      this.instance.println("ERROR", $t("TXT_CODE_f8145844"));
+      this.stop();
+      return;
+    }
+
     this.instance.println("INFO", $t("TXT_CODE_e166bc2f"));
 
     const fileManager = getFileManager(this.instance.instanceUuid);
@@ -191,10 +200,6 @@ export class QuickInstallTask extends AsyncTask {
         config = JSON.parse(await fileManager.readFile(this.ZIP_CONFIG_JSON));
       }
 
-      if (this.instance.config.processType === "docker" && config.processType !== "docker") {
-        throw new Error($t("TXT_CODE_f8145844"));
-      }
-
       logger.info(
         t("TXT_CODE_e5ba712d"),
         this.instance.config.nickname,
@@ -216,11 +221,19 @@ export class QuickInstallTask extends AsyncTask {
           await this.updateTask.start();
           await this.updateTask.wait();
           this.instance.println("INFO", $t("TXT_CODE_9b4985d3"));
+          this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
         } catch (error: any) {
-          this.instance.println("WARNING", $t("TXT_CODE_47d56d0d") + error?.message);
+          this.instance.println(
+            "ERROR",
+            `\n========================================
+${$t("TXT_CODE_47d56d0d")}
+${error?.message}
+========================================\n`
+          );
         }
+      } else {
+        this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
       }
-      this.instance.println("INFO", $t("TXT_CODE_1562f6cf"));
 
       this.stop();
     } catch (error: any) {
@@ -259,6 +272,8 @@ export class QuickInstallTask extends AsyncTask {
         "QuickInstallTask -> onStop(): updateTask stop error: " + error?.message
       );
       logger.error("QuickInstallTask -> onStop(): updateTask stop error: ", error);
+    } finally {
+      this.instance.print("\n");
     }
   }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, type FunctionalComponent, onMounted } from "vue";
-import LeftMenuBtn from "./LeftMenuBtn.vue";
 import { useScreen } from "@/hooks/useScreen";
+import { onMounted, ref, type FunctionalComponent } from "vue";
+import LeftMenuBtn from "./LeftMenuBtn.vue";
 
 const { isPhone } = useScreen();
 
@@ -25,8 +25,16 @@ const handleChangeMenu = (item: LeftMenuItem) => {
   activeKey.value = item.key;
 };
 
+const setActiveKey = (key: string) => {
+  activeKey.value = key;
+};
+
 onMounted(() => {
   activeKey.value = props.menus[0].key;
+});
+
+defineExpose({
+  setActiveKey
 });
 </script>
 
@@ -79,9 +87,9 @@ onMounted(() => {
     border-bottom-left-radius: 4px;
   }
   .right-content {
+    padding-right: 1px;
     overflow: hidden;
     flex-grow: 1;
-    padding: 20px;
     text-align: left;
   }
 }

@@ -1,19 +1,19 @@
-import { $t } from "../../../i18n";
-import os from "os";
-import Instance from "../../instance/instance";
-import logger from "../../../service/log";
+import { ChildProcess, ChildProcessWithoutNullStreams, spawn } from "child_process";
+import EventEmitter from "events";
 import fs from "fs-extra";
+import { killProcess } from "mcsmanager-common";
+import os from "os";
 import path from "path";
 import readline from "readline";
-import EventEmitter from "events";
-import { IInstanceProcess } from "../../instance/interface";
-import { ChildProcess, ChildProcessWithoutNullStreams, exec, spawn } from "child_process";
-import { commandStringToArray } from "../base/command_parser";
-import { killProcess } from "mcsmanager-common";
-import FunctionDispatcher from "../dispatcher";
-import { PTY_PATH } from "../../../const";
 import { Writable } from "stream";
 import { v4 } from "uuid";
+import { PTY_PATH } from "../../../const";
+import { $t } from "../../../i18n";
+import logger from "../../../service/log";
+import Instance from "../../instance/instance";
+import { IInstanceProcess } from "../../instance/interface";
+import { commandStringToArray } from "../base/command_parser";
+import FunctionDispatcher from "../dispatcher";
 import AbsStartCommand from "../start";
 import { getRunAsUserParams } from "../../../tools/system_user";
 
@@ -176,11 +176,13 @@ export default class PtyStartCommand extends AbsStartCommand {
 
     // command parsing
     let commandList: string[] = [];
+    const tmpStarCmd = instance.parseTextParams(instance.config.startCommand);
     if (os.platform() === "win32") {
-      // windows: cmd.exe  /c {{startCommand}}
-      commandList = [instance.config.startCommand];
+      // windows: cmd.exe /c {{startCommand}}
+      commandList = [tmpStarCmd];
     } else {
-      commandList = commandStringToArray(instance.config.startCommand);
+      // other
+      commandList = commandStringToArray(tmpStarCmd);
     }
 
     if (commandList.length === 0)

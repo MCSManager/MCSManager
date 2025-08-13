@@ -76,6 +76,8 @@ export interface Settings {
   businessMode: boolean;
   businessId: string;
   allowChangeCmd: boolean;
+  registerCode: string;
+  panelId: string;
 }
 
 export interface ImageInfo {
@@ -207,9 +209,9 @@ export interface LabelValueOption {
   value: string;
 }
 
-export interface MountComponent {
+export interface MountComponent<T = any> {
   destroyComponent(delay?: number): void;
-  emitResult(data?: any): void;
+  emitResult(data?: T): void;
 }
 
 export interface Schedule {
@@ -247,5 +249,6 @@ export interface PanelStatus {
     businessMode: boolean;
     businessId: string;
     allowChangeCmd: boolean;
+    panelId: string;
   };
 }

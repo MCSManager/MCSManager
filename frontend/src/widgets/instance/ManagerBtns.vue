@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type { LayoutCard } from "@/types";
-import { arrayFilter } from "../../tools/array";
+import InnerCard from "@/components/InnerCard.vue";
+import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
+import { useAppRouters } from "@/hooks/useAppRouters";
+import {
+  TYPE_MINECRAFT_JAVA,
+  TYPE_STEAM_SERVER_UNIVERSAL,
+  useInstanceInfo
+} from "@/hooks/useInstance";
+import { useServerConfig } from "@/hooks/useServerConfig";
 import { t } from "@/lang/i18n";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import type { LayoutCard } from "@/types";
 import {
   AppstoreAddOutlined,
   ArrowRightOutlined,
@@ -14,26 +22,19 @@ import {
   FolderOpenOutlined,
   UsergroupDeleteOutlined
 } from "@ant-design/icons-vue";
-import InnerCard from "@/components/InnerCard.vue";
+
+import { computed, ref, watch } from "vue";
+import type { RouteLocationPathRaw } from "vue-router";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
-import { useAppStateStore } from "@/stores/useAppStateStore";
-import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
-import {
-  TYPE_MINECRAFT_JAVA,
-  TYPE_STEAM_SERVER_UNIVERSAL,
-  useInstanceInfo
-} from "@/hooks/useInstance";
-import TermConfig from "./dialogs/TermConfig.vue";
+import { arrayFilter } from "../../tools/array";
 import EventConfig from "./dialogs/EventConfig.vue";
-import PingConfig from "./dialogs/PingConfig.vue";
-import RconSettings from "./dialogs/RconSettings.vue";
 import InstanceDetail from "./dialogs/InstanceDetail.vue";
 import InstanceFundamentalDetail from "./dialogs/InstanceFundamentalDetail.vue";
-import type { RouteLocationPathRaw } from "vue-router";
-import { TYPE_UNIVERSAL, TYPE_WEB_SHELL } from "../../hooks/useInstance";
 import McPingSettings from "./dialogs/McPingSettings.vue";
-import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
+import PingConfig from "./dialogs/PingConfig.vue";
+import RconSettings from "./dialogs/RconSettings.vue";
+import TermConfig from "./dialogs/TermConfig.vue";
 
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
@@ -61,6 +62,8 @@ const { instanceInfo, execute, isGlobalTerminal } = useInstanceInfo({
   daemonId,
   autoRefresh: true
 });
+
+const { serverConfigFiles, refresh: refreshServerConfig } = useServerConfig();
 
 const toPage = (params: RouteLocationPathRaw) => {
   if (!params.query) params.query = {};
@@ -91,7 +94,8 @@ const btns = computed(() => {
       condition: () => {
         return (
           !isGlobalTerminal.value &&
-          ![TYPE_UNIVERSAL, TYPE_WEB_SHELL].includes(instanceInfo.value?.config.type || "")
+          !!serverConfigFiles.value &&
+          serverConfigFiles.value?.length > 0
         );
       },
       click: (): void => {
@@ -176,6 +180,12 @@ const btns = computed(() => {
       }
     }
   ]);
+});
+
+watch(instanceInfo, (cfg, oldCfg) => {
+  if (cfg?.config?.type && instanceId && daemonId && cfg.config.type !== oldCfg?.config?.type) {
+    refreshServerConfig(cfg.config.type, instanceId, daemonId);
+  }
 });
 </script>
 

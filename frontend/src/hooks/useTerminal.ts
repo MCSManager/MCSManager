@@ -55,6 +55,8 @@ export interface StdoutData {
 
 const { setHistory } = useCommandHistory();
 
+export type UseTerminalHook = ReturnType<typeof useTerminal>;
+
 export function useTerminal() {
   const { hasBgImage } = useLayoutConfigStore();
 
@@ -70,6 +72,10 @@ export function useTerminal() {
     return state.value?.config.nickname === GLOBAL_INSTANCE_NAME;
   });
 
+  const isDockerMode = computed(() => {
+    return state.value?.config.processType === "docker";
+  });
+
   let fitAddonTask: NodeJS.Timer;
   let cachedSize = {
     w: 160,
@@ -78,6 +84,11 @@ export function useTerminal() {
 
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
+
+    if (socket) {
+      return socket;
+    }
+
     const res = await setUpTerminalStreamChannel().execute({
       params: {
         daemonId: config.daemonId,
@@ -143,7 +154,7 @@ export function useTerminal() {
     });
 
     socket.on("disconnect", () => {
-      console.warn("[Socket.io] disconnect:", addr);
+      console.error("[Socket.io] disconnect:", addr);
       isConnect.value = false;
       events.emit("disconnect");
     });
@@ -212,6 +223,11 @@ export function useTerminal() {
   };
 
   const initTerminalWindow = (element: HTMLElement) => {
+    if (terminal.value) {
+      throw new Error("Terminal already initialized, Please refresh the page!");
+    }
+
+    // init touch handler
     element.addEventListener("touchstart", touchHandler, true);
     element.addEventListener("touchmove", touchHandler, true);
     element.addEventListener("touchend", touchHandler, true);
@@ -233,8 +249,10 @@ export function useTerminal() {
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
 
-    const webGL2 = document.createElement("canvas").getContext("webgl2");
-    if (webGL2) {
+    terminal.value = term;
+
+    const gl = document.createElement("canvas").getContext("webgl2");
+    if (gl) {
       // If WebGL2 is supported, use the WebGlAddon
       const webglAddon = new WebglAddon();
       webglAddon.onContextLoss((_) => {
@@ -279,7 +297,6 @@ export function useTerminal() {
         lastCtrlCTime = 0;
         return sendInput(data);
       }
-
       const now = Date.now();
       if (now - lastCtrlCTime < ctrlCTimeThreshold) {
         term.write("\r\n" + t("TXT_CODE_3725b37b") + "\r\n");
@@ -291,8 +308,11 @@ export function useTerminal() {
       }
     });
 
-    terminal.value = term;
     return term;
+  };
+
+  const clearTerminal = () => {
+    terminal.value?.clear();
   };
 
   events.on("stdout", (v: StdoutData) => {
@@ -342,10 +362,11 @@ export function useTerminal() {
     socketAddress,
     isConnect,
     isGlobalTerminal,
-
+    isDockerMode,
     execute,
     initTerminalWindow,
-    sendCommand
+    sendCommand,
+    clearTerminal
   };
 }
 

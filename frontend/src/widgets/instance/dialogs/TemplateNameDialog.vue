@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import type { QuickStartPackages } from "@/types";
 import type { FormInstance } from "ant-design-vue";
+import { reactive, ref } from "vue";
 
 const props = defineProps<{
   open: boolean;

@@ -1,17 +1,17 @@
-import FileManager from "../service/system_file";
-import path from "path";
-import fs from "fs-extra";
-import logger from "../service/log";
-import * as lockfile from "proper-lockfile";
-import uploadManager from "../service/upload_manager";
 import { createHash } from "crypto";
+import fs from "fs-extra";
+import path from "path";
+import * as lockfile from "proper-lockfile";
+import logger from "../service/log";
+import FileManager from "../service/system_file";
+import uploadManager from "../service/upload_manager";
 
 type ChunkRange = { start: number; end: number };
 
 export default class FileWriter {
   readonly path: string;
   id?: string;
-  private releaseLock?: { (): void };
+  private releaseLock?: () => Promise<void>;
   private fd: number | null = null;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
@@ -77,10 +77,10 @@ export default class FileWriter {
     }
     try {
       this.fd = await fs.open(this.path, "w+");
-      this.releaseLock = lockfile.lockSync(this.path);
+      this.releaseLock = await lockfile.lock(this.path);
       await fs.ftruncate(this.fd, this.size);
     } catch (e) {
-      this.releaseLock!();
+      await this.releaseLock!();
       this.releaseLock = undefined;
       throw e;
     }
@@ -104,7 +104,7 @@ export default class FileWriter {
     if (this.fd != null) {
       await fs.close(this.fd);
       this.fd = null;
-      this.releaseLock!();
+      await this.releaseLock!();
     }
 
     if (this.id != null) {
@@ -130,7 +130,7 @@ export default class FileWriter {
     if (this.fd != null) {
       await fs.close(this.fd);
       this.fd = null;
-      this.releaseLock!();
+      await this.releaseLock!();
     }
     if (this.id != null) {
       uploadManager.delete(this.id);

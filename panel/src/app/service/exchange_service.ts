@@ -1,17 +1,27 @@
-import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
-import user_service from "../service/user_service";
-import { customAlphabet } from "nanoid";
+import axios from "axios";
 import { t } from "i18next";
 import { toNumber, toText } from "mcsmanager-common";
-import { IAdvancedInstanceInfo, getInstancesByUuid } from "./instance_service";
+import { customAlphabet } from "nanoid";
+import { $t } from "../i18n";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
+import user_service from "../service/user_service";
+import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+// export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
+export const REDEEM_PLATFORM_ADDR = "http://localhost:3000";
 
 // ------- Protocol Define -------
+
+export interface IRedeemResponseProtocol<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
 export interface INodeStatusProtocol {
   name: string;
   id: string;
@@ -46,7 +56,7 @@ export interface IBuyRequestProtocol {
   node_id: string;
   username: string;
   hours: number;
-  payload: any;
+  payload: Partial<IGlobalInstanceConfig>;
   code?: string;
   instance_id?: string;
 }
@@ -71,6 +81,37 @@ const getNanoId = customAlphabet(
   "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   6
 );
+
+export async function requestUseRedeem(
+  panelId: string,
+  registerCode: string,
+  productId: string | number,
+  daemonId: string,
+  code: string,
+  isDelete?: boolean
+) {
+  const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
+    `${REDEEM_PLATFORM_ADDR}/api/iframe_instances/use_redeem`,
+    {
+      panelId,
+      registerCode,
+      productId,
+      daemonId,
+      code,
+      isDelete
+    },
+    {
+      headers: {
+        "X-Panel-Id": panelId,
+        "X-Register-Code": registerCode
+      }
+    }
+  );
+  if (responseData.code !== 200) {
+    throw new Error(responseData.message);
+  }
+  return responseData.data;
+}
 
 function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProtocol {
   let ports: string[] = instance.docker?.ports ?? [];
@@ -113,7 +154,10 @@ export function parseUserName(t?: string) {
 
 export async function buyOrRenewInstance(
   request_action: RequestAction,
-  params: IBuyRequestProtocol
+  params: IBuyRequestProtocol,
+  handler: {
+    onCreateConfirm?: (instanceId: string) => Promise<void>;
+  } = {}
 ): Promise<IBuyResponseProtocol> {
   const node_id = toText(params.node_id) ?? "";
   const instance_id = toText(params.instance_id) ?? "";
@@ -132,6 +176,11 @@ export async function buyOrRenewInstance(
     payload.category = params.category_id || 0;
     payload.endTime =
       (payload.endTime ? Number(payload.endTime) : Date.now()) + hours * 3600 * 1000;
+
+    if (username.length < 4) {
+      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
+    }
+
     payload.nickname = "App-" + username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
@@ -141,6 +190,8 @@ export async function buyOrRenewInstance(
 
     let user = user_service.getUserByUserName(username);
     let newPassword = "";
+
+    await handler.onCreateConfirm?.(newInstanceId);
 
     if (user) {
       await user_service.edit(user.uuid, {
@@ -166,6 +217,7 @@ export async function buyOrRenewInstance(
         ]
       });
     }
+
     return {
       instance_id: newInstanceId,
       instance_config: newInstanceConfig,
@@ -200,6 +252,8 @@ export async function buyOrRenewInstance(
     } else {
       config.endTime = curExpireTime + hours * 3600 * 1000;
     }
+
+    await handler.onCreateConfirm?.(instance_id);
 
     await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,

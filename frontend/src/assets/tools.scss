@@ -124,9 +124,16 @@
   justify-content: flex-end;
 }
 
-.justify-space-between {
+.justify-space-between,
+.justify-between {
   display: flex;
   justify-content: space-between;
+}
+
+.justify-space-around,
+.justify-around {
+  display: flex;
+  justify-content: space-around;
 }
 
 .h-100 {
@@ -163,6 +170,25 @@
 
 .color-info {
   color: var(--color-info);
+}
+
+.button-color-success {
+  color: #ffffff !important;
+  background-color: var(--color-green-6) !important;
+}
+
+.button-color-warning {
+  color: #ffffff !important;
+  background-color: var(--color-warning) !important;
+}
+
+.button-color-danger {
+  color: #ffffff !important;
+  background-color: var(--color-danger) !important;
+}
+
+.button-color-info {
+  background-color: var(--color-info) !important;
 }
 
 .transition-all-6 {

@@ -1,22 +1,23 @@
 import Router from "@koa/router";
+import Koa from "koa";
+import { toNumber, toText } from "mcsmanager-common";
+import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { ROLE } from "../entity/user";
 import {
   buyOrRenewInstance,
   getNodeStatus,
   parseUserName,
   queryInstanceByUserId,
-  REDEEM_PLATFORM_ADDR,
-  RequestAction
+  RequestAction,
+  requestUseRedeem
 } from "../service/exchange_service";
-import { toText } from "mcsmanager-common";
 import { logger } from "../service/log";
-import Koa from "koa";
-import UserSSOService from "../service/user_sso_service";
 import { loginSuccess } from "../service/passport_service";
-import { $t } from "../i18n";
-import axios from "axios";
+import UserSSOService from "../service/user_sso_service";
+import { systemConfig } from "../setting";
+import { execWithMutexId } from "../utils/sync";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -81,46 +82,81 @@ router.get(
 );
 
 router.post(
-  "/request_redeem_platform",
+  "/request_buy_instance",
   permission({ token: false, level: null }),
   validator({
-    body: { targetUrl: String, method: String }
+    body: {
+      productId: Number,
+      daemonId: String,
+      code: String
+    }
   }),
   async (ctx) => {
-    try {
-      const url = REDEEM_PLATFORM_ADDR + String(ctx.request.body.targetUrl);
-      const method = ctx.request.body.method;
-      const data = ctx.request.body.data;
-      const params = ctx.request.body.params;
-      logger.info(
-        "Request redeem platform, url: %s, method: %s, data: %j, params: %j",
-        url,
-        method,
-        data,
-        params
+    const panelId = systemConfig?.panelId || "";
+    const registerCode = systemConfig?.registerCode || "";
+    const productId = toNumber(ctx.request.body.productId) ?? 0;
+    const daemonId = toText(ctx.request.body.daemonId) ?? "";
+    const code = toText(ctx.request.body.code) ?? "";
+
+    // Optional
+    const instanceId = toText(ctx.request.body.instanceId) ?? "";
+    const username = toText(ctx.request.body.username) ?? "";
+
+    const response = await execWithMutexId(`buy-${code}`, async () => {
+      // First, check if the redeem code is valid
+      const productInfo = await requestUseRedeem(
+        panelId,
+        registerCode,
+        productId,
+        daemonId,
+        code,
+        false
       );
-      const res = await axios.request({
-        url,
-        method,
-        data,
-        params,
-        timeout: 1000 * 30,
-        headers: {
-          "Content-Type": "application/json",
-          "X-MCSManager-Panel": "true"
-        }
-      });
-      logger.info("Request redeem platform response: %j", JSON.stringify(res.data));
-      const realData = res.data;
-      if (Number(realData.code) !== 200) {
-        throw new Error(realData?.message ?? "Unknown error");
+
+      const hours = productInfo?.hours;
+      if (!hours || !productInfo?.payload) {
+        throw new Error($t("TXT_CODE_45d7b982"));
       }
-      ctx.body = realData?.data ?? "";
-    } catch (error) {
-      logger.error("Request redeem platform error: " + error);
-      ctx.body = error;
-    }
+
+      const { config } = JSON.parse(productInfo.payload) as {
+        config: Partial<IGlobalInstanceConfig>;
+      };
+
+      logger.info(`Router /request_buy_instance Report: Product: ${JSON.stringify(productInfo)}`);
+
+      if (!config || !productId) {
+        throw new Error($t("TXT_CODE_c92156bb"));
+      }
+
+      const params = {
+        category_id: productId,
+        payload: config,
+        username: username,
+        node_id: daemonId,
+        hours: hours,
+        instance_id: instanceId,
+        code: code
+      };
+
+      try {
+        return await buyOrRenewInstance(
+          instanceId ? RequestAction.RENEW : RequestAction.BUY,
+          params,
+          {
+            onCreateConfirm: async () => {
+              // Then, delete the redeem code
+              await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
+            }
+          }
+        );
+      } catch (error) {
+        logger.error($t("TXT_CODE_55b1f20e"), error);
+
+        throw error;
+      }
+    });
+
+    ctx.body = response;
   }
 );
-
 export default router;

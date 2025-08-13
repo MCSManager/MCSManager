@@ -70,6 +70,7 @@ export function useOverviewInfo() {
         forceRequest
       })
     );
+    return newState.value;
   };
 
   onMounted(async () => {

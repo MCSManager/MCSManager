@@ -1,16 +1,22 @@
+import { t } from "@/lang/i18n";
 import {
   uploadFile as uploadFileApi,
   uploadFilePiece as uploadFilePieceApi
 } from "@/services/apis/fileManager";
-import { ref, type Ref } from "vue";
-import { message } from "ant-design-vue";
-import { t } from "@/lang/i18n";
 import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
+import { message } from "ant-design-vue";
+import { ref, type Ref } from "vue";
 
 const PIECE_SIZE = 1024 * 1024 * 2;
 
-class UploadFiles {
+type UploadOptions = {
+  overwrite: boolean;
+  unzip?: boolean;
+  code?: string;
+};
+
+export class UploadFiles {
   file: File;
   id: string | undefined;
   url: string;
@@ -20,24 +26,33 @@ class UploadFiles {
   prepared = false;
   canceled = false;
   removing = false;
+  callbacks: {
+    onStart: Set<() => void>;
+    onEnd: Set<() => void>;
+  };
 
-  constructor(tempId: string, file: File, url: string, password: string, shouldOverwrite: boolean) {
+  constructor(tempId: string, file: File, url: string, password: string, options: UploadOptions) {
     this.file = file;
     this.url = url;
-    this.init(tempId, url, password, shouldOverwrite); // async
+    this.id = tempId;
+    this.callbacks = {
+      onStart: new Set(),
+      onEnd: new Set()
+    };
+    this.init(tempId, url, password, options); // async
   }
 
-  async init(tempId: string, url: string, password: string, shouldOverwrite: boolean) {
+  async init(tempId: string, url: string, password: string, options: UploadOptions) {
     const { state: uploadCfg, execute: uploadFile } = uploadFileApi();
     try {
       await uploadFile({
         timeout: Number.MAX_VALUE,
         url: `${url}/upload-new/${password}`,
         params: {
-          overwrite: shouldOverwrite,
           filename: this.file.name,
           size: this.file.size,
-          sum: await fileSum(this.file)
+          sum: await fileSum(this.file),
+          ...options
         }
       });
 
@@ -66,6 +81,46 @@ class UploadFiles {
     }
   }
 
+  addCallback(type: "start" | "end", callback: () => void) {
+    if (type == "start") {
+      this.callbacks.onStart.add(callback);
+    }
+    if (type == "end") {
+      this.callbacks.onEnd.add(callback);
+    }
+  }
+
+  removeCallback(type: "start" | "end", callback: () => void) {
+    if (type == "start") {
+      this.callbacks.onStart.delete(callback);
+    }
+    if (type == "end") {
+      this.callbacks.onEnd.delete(callback);
+    }
+  }
+
+  onStart() {
+    this.callbacks.onStart.forEach((callback) => {
+      try {
+        callback();
+      } catch (e) {
+        console.error("Error in upload start callback:", e);
+      }
+    });
+    this.callbacks.onStart.clear();
+  }
+
+  onEnd() {
+    this.callbacks.onEnd.forEach((callback) => {
+      try {
+        callback();
+      } catch (e) {
+        console.error("Error in upload end callback:", e);
+      }
+    });
+    this.callbacks.onEnd.clear();
+  }
+
   nextTask(): UploadTask | undefined {
     const rangeStart = this.offset;
     const rangeEnd = Math.min(this.offset + PIECE_SIZE, this.file.size);
@@ -92,6 +147,7 @@ class UploadFiles {
         stop: true
       }
     });
+    this.onEnd();
     uploadService.files.delete(this.id!);
   }
 }
@@ -196,15 +252,27 @@ class UploadService {
       suspending: false
     });
 
-  append(file: File, url: string, password: string, shouldOverwrite: boolean) {
+  append(
+    file: File,
+    url: string,
+    password: string,
+    options: UploadOptions,
+    // eslint-disable-next-line no-unused-vars
+    beforeMounted?: (uploadFile: UploadFiles) => void
+  ) {
     const tempId = Date.now().toString();
-    const uploadFile = new UploadFiles(tempId, file, url, password, shouldOverwrite);
+    const uploadFile = new UploadFiles(tempId, file, url, password, options);
     this.files.set(tempId, uploadFile);
+    if (beforeMounted) {
+      beforeMounted(uploadFile);
+    }
     if (this.status == "stopped") {
       this.status = "working";
       this.current = tempId;
+      uploadFile.onStart();
     }
     this.update();
+    return uploadFile;
   }
 
   changeId(oldId: string, newId: string) {
@@ -226,7 +294,12 @@ class UploadService {
         this.task[i] = undefined;
       }
     }
-    if (this.status == "suspend") return;
+    if (this.status == "suspend") {
+      if (this.files.size == 0) {
+        this.status = "stopped";
+      }
+      return;
+    }
     let removeFile = false;
     for (const task of this.task) {
       if (!task) continue;
@@ -270,6 +343,7 @@ class UploadService {
       }
       if (reachTaskEnd && currentFile.prepared && tasks == 0) {
         const currentFile = this.files.get(this.current)!;
+        currentFile.onEnd();
         if (!removeFile) {
           this.uploaded += 1;
         }
@@ -281,13 +355,14 @@ class UploadService {
         }
         while (this.files.size > 0) {
           const current = this.files.keys().next().value ?? "";
-          const currentFile = this.files.get(current);
-          if (currentFile?.removing) {
+          const currentFile = this.files.get(current)!;
+          if (currentFile.removing) {
             this.files.delete(current);
             continue;
           }
 
           this.current = current;
+          currentFile.onStart();
           this.updateProgress();
           this.update();
           return;
@@ -366,6 +441,15 @@ class UploadService {
       files: [this.uploaded + (this.current ? 1 : 0), this.uploaded + this.files.size],
       suspending: this.status == "suspend"
     };
+  }
+
+  getFileNth(id: string): number {
+    for (const string of this.files.keys()) {
+      if (string == id) {
+        return Array.from(this.files.keys()).indexOf(string);
+      }
+    }
+    return -1;
   }
 }
 

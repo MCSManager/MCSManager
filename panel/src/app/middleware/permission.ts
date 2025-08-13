@@ -1,15 +1,15 @@
 import Koa from "koa";
 import { GlobalVariable } from "mcsmanager-common";
-import userSystem from "../service/user_service";
-import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import { $t } from "../i18n";
+import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
+import userSystem from "../service/user_service";
 
 /**
- * @description Request speed limit, 5 requests per second
+ * @description Request speed limit, 8 requests per second
  */
 function requestSpeedLimit(ctx: Koa.ParameterizedContext) {
   const SESSION_REQ_TIMES = "SESSION_REQ_TIMES";
-  const MAX_REQUESTS_PER_SECOND = 5;
+  const MAX_REQUESTS_PER_SECOND = 8;
   const WINDOW_SIZE = 1000;
   const currentTime = new Date().getTime();
   if (!ctx.session) return false;
@@ -69,10 +69,6 @@ export default (parameter: IPermissionCfg) => {
     }
 
     // If it is an API request, perform API-level permission judgment
-    /**
-     * @date update time: 2024-08-06
-     * @description Added a new "API-KEY" filling method
-     */
     const key = ctx.request?.header["x-request-api-key"] || ctx.query.apikey;
     if (key) {
       const apiKey = String(key);

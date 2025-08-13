@@ -1,7 +1,7 @@
-import StorageSubsystem from "../common/system_storage";
 import { t } from "i18next";
-import { logger } from "./log";
+import StorageSubsystem from "../common/system_storage";
 import { systemConfig } from "../setting";
+import { logger } from "./log";
 
 function readCategoryConfig(configCategory: string, callback: (config: any) => boolean) {
   const configPaths = StorageSubsystem.readDir(configCategory);
@@ -40,7 +40,7 @@ function refactorUserConfig(config: any) {
 function upgradePresetPackAddr() {
   const config = systemConfig;
   if (config && config.presetPackAddr === "https://script.mcsmanager.com/templates.json") {
-    config.presetPackAddr = "https://script.mcsmanager.com/templates-config.json";
+    config.presetPackAddr = "https://script.mcsmanager.com/market.json";
     StorageSubsystem.store("SystemConfig", "config", config);
   }
 }

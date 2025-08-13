@@ -1,32 +1,33 @@
 <script setup lang="ts">
-import { router, type RouterMetaInfo } from "@/config/router";
 import logo from "@/assets/logo.png";
-import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { useRoute } from "vue-router";
-import { computed, h } from "vue";
+import { router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { notification } from "ant-design-vue";
-import {
-  BuildOutlined,
-  SaveOutlined,
-  AppstoreAddOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  MenuUnfoldOutlined,
-  FormatPainterOutlined,
-  RedoOutlined,
-  CloseCircleOutlined
-} from "@ant-design/icons-vue";
 import { useScreen } from "@/hooks/useScreen";
-import CardPanel from "./CardPanel.vue";
 import { t } from "@/lang/i18n";
-import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { logoutUser } from "@/services/apis/index";
-import { message } from "ant-design-vue";
-import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import {
+  AppstoreAddOutlined,
+  BgColorsOutlined,
+  BuildOutlined,
+  CloseCircleOutlined,
+  GithubFilled,
+  LogoutOutlined,
+  MenuUnfoldOutlined,
+  RedoOutlined,
+  SaveOutlined,
+  SketchOutlined,
+  UserOutlined
+} from "@ant-design/icons-vue";
+import { useScroll } from "@vueuse/core";
+import { message, Modal, notification } from "ant-design-vue";
+import { computed, h } from "vue";
+import { useRoute } from "vue-router";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
-import { Modal } from "ant-design-vue";
+import CardPanel from "./CardPanel.vue";
 
 const { saveGlobalLayoutConfig, resetGlobalLayoutConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
@@ -34,6 +35,20 @@ const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
 const { state: appTools } = useAppToolsStore();
 const { isAdmin, state: appState, isLogged } = useAppStateStore();
+const { state: frontendState } = useAppStateStore();
+
+const { y } = useScroll(document.body);
+
+const isScroll = computed(() => {
+  return y.value > 10;
+});
+
+const headerStyle = computed(() => {
+  return {
+    "--header-height": isScroll.value ? "60px" : "64px"
+  };
+});
+
 const openNewCardDialog = () => {
   containerState.showNewCardDialog = true;
 };
@@ -75,7 +90,8 @@ const menus = computed(() => {
       return {
         name: r.name,
         path: r.path,
-        meta: r.meta
+        meta: r.meta,
+        customClass: r.meta.customClass ?? []
       };
     });
 });
@@ -116,6 +132,24 @@ const breadcrumbs = computed(() => {
 const appMenus = computed(() => {
   return [
     {
+      iconText: "",
+      // iconText: t("TXT_CODE_3ccb26e"),
+      title: t("TXT_CODE_b01f8383"),
+      icon: GithubFilled,
+      conditions: !isProMode.value,
+      onlyPC: true,
+      click: onClickIcon
+    },
+    {
+      iconText: t("TXT_CODE_80f0904e"),
+      title: t("TXT_CODE_b6c675d6"),
+      icon: SketchOutlined,
+      click: onClickIcon,
+      conditions: isProMode.value,
+      onlyPC: true,
+      customClass: ["nav-button-success"]
+    },
+    {
       title: t("TXT_CODE_8b0f8aab"),
       icon: AppstoreAddOutlined,
       click: openNewCardDialog,
@@ -142,7 +176,8 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-success"]
     },
     {
       title: t("TXT_CODE_5b5d6f04"),
@@ -157,7 +192,8 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-warning"]
     },
     {
       title: t("TXT_CODE_abd2f7e1"),
@@ -178,21 +214,16 @@ const appMenus = computed(() => {
         });
       },
       conditions: containerState.isDesignMode,
-      onlyPC: true
+      onlyPC: true,
+      customClass: ["nav-button-danger"]
     },
 
     {
       title: t("TXT_CODE_f591e2fa"),
-      icon: FormatPainterOutlined,
+      icon: BgColorsOutlined,
       click: (key: string) => {
         if (key === THEME.DARK) {
-          Modal.confirm({
-            title: t("TXT_CODE_9775ccb"),
-            content: t("TXT_CODE_90b2ae00"),
-            async onOk() {
-              setTheme(THEME.DARK);
-            }
-          });
+          setTheme(THEME.DARK);
         } else {
           setTheme(THEME.LIGHT);
         }
@@ -247,6 +278,7 @@ const appMenus = computed(() => {
           }
         });
       },
+      customClass: ["nav-button-danger"],
       conditions: !containerState.isDesignMode && isLogged.value,
       onlyPC: false
     }
@@ -255,13 +287,21 @@ const appMenus = computed(() => {
 
 const { isPhone } = useScreen();
 
+const isProMode = computed(() => {
+  return !!frontendState.settings.businessMode;
+});
+
 const openPhoneMenu = (b = false) => {
   containerState.showPhoneMenu = b;
+};
+
+const onClickIcon = () => {
+  window.open("https://github.com/MCSManager/MCSManager", "_blank");
 };
 </script>
 
 <template>
-  <header class="app-header-wrapper">
+  <header class="app-header-wrapper" :style="headerStyle">
     <div v-if="!isPhone" class="app-header-content">
       <nav class="btns">
         <a href="." style="margin-right: 12px">
@@ -274,6 +314,7 @@ const openPhoneMenu = (b = false) => {
           v-for="item in menus"
           :key="item.path"
           class="nav-button"
+          :class="item.customClass"
           @click="handleToPage(item.path)"
         >
           <span>{{ item.name }}</span>
@@ -282,8 +323,12 @@ const openPhoneMenu = (b = false) => {
       <div class="btns">
         <div v-for="(item, index) in appMenus" :key="index">
           <a-dropdown v-if="item.menus && item.conditions" placement="bottom">
-            <div class="nav-button" @click.prevent>
-              <component :is="item.icon"></component>
+            <div
+              :class="item.customClass"
+              class="nav-button right-nav-button flex-center"
+              @click.prevent
+            >
+              <component :is="item.icon" v-if="item.icon"></component>
             </div>
             <template #overlay>
               <a-menu @click="(e: any) => item.click(String(e.key))">
@@ -297,15 +342,23 @@ const openPhoneMenu = (b = false) => {
             <template #title>
               <span>{{ item.title }}</span>
             </template>
-            <div class="nav-button" type="text" @click="(e: any) => item.click(e.key)">
-              <component :is="item.icon"></component>
+            <div
+              :class="item.customClass"
+              class="nav-button right-nav-button flex-center"
+              type="text"
+              @click="(e: any) => item.click(e.key)"
+            >
+              <component :is="item.icon" v-if="item.icon"></component>
+              <span v-if="item?.iconText" class="ml-6" style="font-size: 12px">
+                {{ item?.iconText }}
+              </span>
             </div>
           </a-tooltip>
         </div>
       </div>
     </div>
   </header>
-  <div v-if="!isPhone" style="height: 60px"></div>
+  <div v-if="!isPhone" style="height: 64px"></div>
 
   <!-- Menus for phone -->
   <header v-if="isPhone" class="app-header-content-for-phone">
@@ -388,6 +441,26 @@ const openPhoneMenu = (b = false) => {
 <style lang="scss" scoped>
 @import "@/assets/global.scss";
 
+.nav-button-warning:hover {
+  background-color: rgba(255, 193, 7, 0.34) !important;
+}
+
+.nav-button-success:hover {
+  background-color: rgba(64, 156, 216, 0.12) !important;
+}
+
+.nav-button-danger:hover {
+  background-color: #ff19116f !important;
+}
+
+.nav-button-primary:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.nav-button-success:hover {
+  background-color: #48e6635a !important;
+}
+
 .phone-menu {
   .phone-menu-btn {
     padding: 16px 8px;
@@ -444,6 +517,10 @@ const openPhoneMenu = (b = false) => {
   right: 0;
 
   z-index: 20;
+
+  // 添加平滑过渡效果
+  transition: height 0.4s ease-in-out;
+
   .app-header-content {
     @extend .global-app-container;
 
@@ -451,7 +528,10 @@ const openPhoneMenu = (b = false) => {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 60px;
+    height: var(--header-height);
+
+    // 添加平滑过渡效果
+    transition: height 0.4s ease-in-out;
 
     .btns {
       display: flex;
@@ -469,17 +549,29 @@ const openPhoneMenu = (b = false) => {
     min-width: 40px;
     cursor: pointer;
     border-radius: 6px;
+    user-select: none;
+  }
+
+  .right-nav-button {
+    margin: 0 2px;
+    font-size: 14px;
+    padding: 8px 8px;
   }
 
   .icon-button {
     font-size: 16px !important;
   }
   .nav-button:hover {
-    background-color: rgba(215, 215, 215, 0.12);
+    background-color: rgba(215, 215, 215, 0.261);
   }
 
   .logo {
     cursor: pointer;
+  }
+
+  .pro-mode-order-container {
+    @extend .nav-button;
+    @extend .nav-button-success;
   }
 
   // Sync margin

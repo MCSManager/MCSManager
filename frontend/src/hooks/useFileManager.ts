@@ -427,7 +427,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           f.file,
           parseForwardAddress(missionCfg.value.addr, "http"),
           missionCfg.value.password,
-          f.overwrite
+          {
+            overwrite: f.overwrite
+          }
         );
       } catch (err: any) {
         console.error(err);

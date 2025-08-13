@@ -1,8 +1,8 @@
 import { $t } from "../../../i18n";
+import { InstanceUpdateAction } from "../../../service/instance_update_action";
 import logger from "../../../service/log";
 import Instance from "../../instance/instance";
 import InstanceCommand from "../base/command";
-import { InstanceUpdateAction } from "../../../service/instance_update_action";
 
 export default class GeneralUpdateCommand extends InstanceCommand {
   private updateTask?: InstanceUpdateAction;
@@ -29,8 +29,8 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       instance.status(Instance.STATUS_BUSY);
 
       this.updateTask = new InstanceUpdateAction(instance);
-      await this.updateTask.start();
-      await this.updateTask.wait();
+      await this.updateTask?.start();
+      await this.updateTask?.wait();
     } catch (err: any) {
       instance.println(
         $t("TXT_CODE_general_update.update"),
@@ -54,7 +54,7 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       $t("TXT_CODE_general_update.update"),
       $t("TXT_CODE_general_update.killProcess")
     );
-
     await this.updateTask?.stop();
+    this.updateTask = undefined;
   }
 }

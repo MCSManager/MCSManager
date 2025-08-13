@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { ref, computed, unref } from "vue";
-import { t } from "@/lang/i18n";
-import { useScreen } from "@/hooks/useScreen";
-import type { InstanceDetail, DockerNetworkModes } from "@/types";
-import type { FormInstance } from "ant-design-vue";
-import type { Rule } from "ant-design-vue/es/form";
-import { updateAnyInstanceConfig } from "@/services/apis/instance";
-import { imageList, getNetworkModeList } from "@/services/apis/envImage";
-import { message } from "ant-design-vue";
-import { reportErrorMsg } from "@/tools/validator";
-import { TERMINAL_CODE } from "@/types/const";
-import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 import { useAppRouters } from "@/hooks/useAppRouters";
+import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { useScreen } from "@/hooks/useScreen";
+import { t } from "@/lang/i18n";
+import { getNetworkModeList, imageList } from "@/services/apis/envImage";
+import { updateAnyInstanceConfig } from "@/services/apis/instance";
+import { dockerPortsArray } from "@/tools/common";
+import { reportErrorMsg } from "@/tools/validator";
+import type { DockerNetworkModes, InstanceDetail } from "@/types";
+import { TERMINAL_CODE } from "@/types/const";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons-vue";
+import type { FormInstance } from "ant-design-vue";
+import { message } from "ant-design-vue";
+import type { Rule } from "ant-design-vue/es/form";
+import type { DefaultOptionType } from "ant-design-vue/es/select";
 import { Dayjs } from "dayjs";
 import _ from "lodash";
+import { computed, ref, unref } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
-import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
-import { dockerPortsArray } from "@/tools/common";
-import type { DefaultOptionType } from "ant-design-vue/es/select";
-import { CloseOutlined, CheckOutlined } from "@ant-design/icons-vue";
 
 interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
@@ -40,7 +40,9 @@ enum TabSettings {
   // eslint-disable-next-line no-unused-vars
   Docker = "Docker",
   // eslint-disable-next-line no-unused-vars
-  Advanced = "Advanced"
+  Advanced = "Advanced",
+  // eslint-disable-next-line no-unused-vars
+  ResLimit = "ResLimit"
 }
 
 const emit = defineEmits(["update"]);
@@ -286,6 +288,11 @@ defineExpose({
             v-if="!isGlobalTerminal"
             :key="TabSettings.Docker"
             :tab="t('TXT_CODE_afb12200')"
+          ></a-tab-pane>
+          <a-tab-pane
+            v-if="!isGlobalTerminal"
+            :key="TabSettings.ResLimit"
+            :tab="t('TXT_CODE_604d8d63')"
           ></a-tab-pane>
         </a-tabs>
       </div>
@@ -608,59 +615,6 @@ defineExpose({
             </a-col>
 
             <a-col :xs="24" :lg="8" :offset="0">
-              <a-form-item>
-                <a-typography-title :level="5">{{ t("TXT_CODE_53046822") }}</a-typography-title>
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_750ab5c6") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <a-tooltip placement="bottom">
-                  <template #title>
-                    {{ t("TXT_CODE_dce87e42") }}
-                  </template>
-                  <a-input
-                    v-model:value="options.config.docker.cpuUsage"
-                    :placeholder="t('TXT_CODE_91d857f5')"
-                  />
-                </a-tooltip>
-              </a-form-item>
-            </a-col>
-            <a-col :xs="24" :lg="8" :offset="0">
-              <a-form-item>
-                <a-typography-title :level="5">{{ t("TXT_CODE_b0c4e4ae") }}</a-typography-title>
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_2b9e9b5") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <a-tooltip placement="bottom">
-                  <template #title>
-                    {{ t("TXT_CODE_67c765be") }}
-                  </template>
-                  <a-input
-                    v-model:value="options.config.docker.cpusetCpus"
-                    :placeholder="t('TXT_CODE_30fe1717')"
-                  />
-                </a-tooltip>
-              </a-form-item>
-            </a-col>
-            <a-col :xs="24" :lg="8" :offset="0">
-              <a-form-item>
-                <a-typography-title :level="5">{{ t("TXT_CODE_6fe24924") }}</a-typography-title>
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_a0d214ac") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <a-input
-                  v-model:value="options.config.docker.memory"
-                  :placeholder="t('TXT_CODE_80790069')"
-                />
-              </a-form-item>
-            </a-col>
-
-            <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item :name="['docker', 'networkMode']">
                 <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
                   {{ t("TXT_CODE_efcef926") }}
@@ -719,6 +673,95 @@ defineExpose({
               </a-form-item>
             </a-col>
           </template>
+        </a-row>
+        <a-row v-if="activeKey === TabSettings.ResLimit" :gutter="20">
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_53046822") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_750ab5c6") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-tooltip placement="bottom">
+                <template #title>
+                  {{ t("TXT_CODE_dce87e42") }}
+                </template>
+                <a-input
+                  v-model:value="options.config.docker.cpuUsage"
+                  :allow-clear="true"
+                  :placeholder="t('TXT_CODE_91d857f5')"
+                />
+              </a-tooltip>
+            </a-form-item>
+          </a-col>
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_b0c4e4ae") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_2b9e9b5") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-tooltip placement="bottom">
+                <template #title>
+                  {{ t("TXT_CODE_67c765be") }}
+                </template>
+                <a-input
+                  v-model:value="options.config.docker.cpusetCpus"
+                  :allow-clear="true"
+                  :placeholder="t('TXT_CODE_30fe1717')"
+                />
+              </a-tooltip>
+            </a-form-item>
+          </a-col>
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_6fe24924") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_a0d214ac") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.docker.memory"
+                :allow-clear="true"
+                :placeholder="t('TXT_CODE_80790069')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_a68b3a9c") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_b946a322") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.docker.memorySwap"
+                :allow-clear="true"
+                :placeholder="t('TXT_CODE_6f1129fb')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_5c43374f") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_a7885cbc") }}
+                </a-typography-text>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.docker.memorySwappiness"
+                :allow-clear="true"
+                :placeholder="t('TXT_CODE_6f1129fb')"
+              />
+            </a-form-item>
+          </a-col>
         </a-row>
       </a-form>
     </div>
