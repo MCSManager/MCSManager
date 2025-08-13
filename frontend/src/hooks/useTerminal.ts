@@ -82,8 +82,6 @@ export function useTerminal() {
     h: 40
   };
 
-  console.debug("useTerminal():");
-
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
 
@@ -99,8 +97,6 @@ export function useTerminal() {
     });
     const remoteInfo = unref(res.value);
     if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
-
-    console.debug("useTerminal - execute():", config, remoteInfo);
 
     const addr = parseForwardAddress(remoteInfo?.addr, "ws");
     socketAddress.value = addr;
@@ -254,8 +250,6 @@ export function useTerminal() {
     term.loadAddon(fitAddon);
 
     terminal.value = term;
-
-    console.debug("useTerminal - initTerminalWindow():", terminal.value);
 
     const gl = document.createElement("canvas").getContext("webgl2");
     if (gl) {

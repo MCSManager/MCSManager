@@ -3,7 +3,7 @@ import logo from "@/assets/logo.png";
 import { router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useScreen } from "@/hooks/useScreen";
-import { isCN, t } from "@/lang/i18n";
+import { t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
@@ -288,7 +288,7 @@ const appMenus = computed(() => {
 const { isPhone } = useScreen();
 
 const isProMode = computed(() => {
-  return frontendState.settings.businessMode;
+  return !!frontendState.settings.businessMode;
 });
 
 const openPhoneMenu = (b = false) => {
@@ -296,11 +296,7 @@ const openPhoneMenu = (b = false) => {
 };
 
 const onClickIcon = () => {
-  if (isCN()) {
-    router.push("/settings?tab=pro");
-  } else {
-    window.open("https://github.com/MCSManager/MCSManager", "_blank");
-  }
+  window.open("https://github.com/MCSManager/MCSManager", "_blank");
 };
 </script>
 

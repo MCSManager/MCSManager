@@ -16,14 +16,12 @@ import {
   BookOutlined,
   BugOutlined,
   GithubOutlined,
-  KeyOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined,
-  SketchOutlined
+  QuestionCircleOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -83,18 +81,18 @@ const menus = arrayFilter([
     key: "baseInfo",
     icon: ProjectOutlined
   },
-  {
-    title: t("TXT_CODE_574ed474"),
-    key: "pro",
-    icon: SketchOutlined,
-    condition: () => isCN()
-  },
-  {
-    title: t("TXT_CODE_caf8ebb7"),
-    key: "redeem",
-    icon: KeyOutlined,
-    condition: () => isCN()
-  },
+  // {
+  //   title: t("TXT_CODE_574ed474"),
+  //   key: "pro",
+  //   icon: SketchOutlined,
+  //   condition: () => isCN()
+  // },
+  // {
+  //   title: t("TXT_CODE_caf8ebb7"),
+  //   key: "redeem",
+  //   icon: KeyOutlined,
+  //   condition: () => isCN()
+  // },
   {
     title: t("TXT_CODE_1c18acc0"),
     key: "ui",
@@ -216,10 +214,6 @@ const startDesignUI = async () => {
     message: t("TXT_CODE_7b1adf35"),
     description: t("TXT_CODE_6b6f1d3")
   });
-};
-
-const gotoBusinessCenter = () => {
-  window.open("https://redeem.mcsmanager.com/", "_blank");
 };
 
 const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
@@ -625,7 +619,6 @@ onUnmounted(() => {
           </template>
 
           <template #pro>
-            {{ console.debug("pro template") }}
             <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
           </template>
 

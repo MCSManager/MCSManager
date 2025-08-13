@@ -68,29 +68,27 @@ export function specifiedDaemonVersion() {
 }
 
 export async function checkBusinessMode() {
-  const check = async () => {
-    if (!systemConfig) return;
-    try {
-      const { data: response } = await axios.post<{ code: number; data: any }>(
-        `${REDEEM_PLATFORM_ADDR}/api/user/check`,
-        {
-          panelId: systemConfig?.panelId,
-          registerCode: systemConfig?.registerCode,
-          businessMode: systemConfig?.businessMode
-        }
-      );
-      if (response.data && response.code === 200) {
-        logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
-        systemConfig.businessMode = true;
-      } else {
-        systemConfig.businessMode = false;
+  if (!systemConfig) return;
+  try {
+    systemConfig.businessMode = false;
+    const { data: response } = await axios.post<{ code: number; data: any }>(
+      `${REDEEM_PLATFORM_ADDR}/api/user/check`,
+      {
+        panelId: systemConfig?.panelId,
+        registerCode: systemConfig?.registerCode,
+        businessMode: systemConfig?.businessMode
       }
-      saveSystemConfig(systemConfig);
-    } catch (error: any) {
-      // ignore
+    );
+    if (response.data && response.code === 200) {
+      logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
+      systemConfig.businessMode = true;
+    } else {
+      systemConfig.businessMode = false;
     }
-  };
-
-  check();
-  setInterval(check, 1000 * 60 * 60 * 12);
+    saveSystemConfig(systemConfig);
+  } catch (error: any) {
+    // ignore
+  }
 }
+
+setInterval(checkBusinessMode, 1000 * 60 * 60);

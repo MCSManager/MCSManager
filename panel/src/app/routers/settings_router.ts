@@ -8,6 +8,7 @@ import { MARKET_CACHE_FILE_PATH } from "../const";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t, i18next } from "../i18n";
+import { speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import {
   getFrontendLayoutConfig,
@@ -20,6 +21,7 @@ import { operationLogger } from "../service/operation_logger";
 import remoteService from "../service/remote_service";
 import userSystem from "../service/user_service";
 import { saveSystemConfig, systemConfig } from "../setting";
+import { checkBusinessMode } from "../version";
 
 const router = new Router({ prefix: "/overview" });
 
@@ -82,6 +84,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     });
 
     saveSystemConfig(systemConfig);
+    checkBusinessMode();
     ctx.body = "OK";
     return;
   }
@@ -157,5 +160,15 @@ router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => 
     }
   }
 });
+
+router.post(
+  "/refresh_business_mode",
+  speedLimit(5),
+  permission({ level: ROLE.ADMIN }),
+  async (ctx) => {
+    await checkBusinessMode();
+    ctx.body = "OK";
+  }
+);
 
 export default router;
