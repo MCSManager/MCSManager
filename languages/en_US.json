@@ -2734,5 +2734,6 @@
   "TXT_CODE_de9b7cc0": "Since the instance type is Docker container mode, we will only display Docker version templates.",
   "TXT_CODE_181c72ba": "No suitable template found? Customize a template configuration.",
   "TXT_CODE_c093bec9": "This operation is on cooldown. You can continue in about {{seconds}} seconds!",
-  "TXT_CODE_b0ff4172": "Uploading {n} files in the background"
+  "TXT_CODE_b0ff4172": "Uploading {n} files in the background",
+  "TXT_CODE_all_platform": "All Platforms"
 }
