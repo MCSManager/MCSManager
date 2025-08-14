@@ -49,7 +49,7 @@ export default class SystemConfig {
   language = "en_us";
 
   // Quick installation address
-  presetPackAddr = "https://script.mcsmanager.com/templates.json";
+  presetPackAddr = "https://script.mcsmanager.com/market.json";
 
   // Redis address (Experimental Features)
   redisUrl = "";
