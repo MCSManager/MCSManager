@@ -1,16 +1,15 @@
-import { $t } from "../i18n";
 import Router from "@koa/router";
-import send from "koa-send";
-import fs from "fs-extra";
-import path from "path";
-import { missionPassport } from "../service/mission_passport";
-import InstanceSubsystem from "../service/system_instance";
-import FileManager from "../service/system_file";
 import formidable from "formidable";
-import { clearUploadFiles } from "../tools/filepath";
-import logger from "../service/log";
+import fs from "fs-extra";
+import send from "koa-send";
+import path from "path";
 import FileWriter from "../entity/file_writer";
+import { $t } from "../i18n";
+import { missionPassport } from "../service/mission_passport";
+import FileManager from "../service/system_file";
+import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
+import { clearUploadFiles } from "../tools/filepath";
 
 const router = new Router();
 
@@ -111,14 +110,6 @@ router.post("/upload/:key", async (ctx) => {
 
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
 
-      logger.info(
-        "Browser Upload File:",
-        fileSaveAbsolutePath,
-        "File size:",
-        Number(uploadedFile.size / 1024 / 1024).toFixed(0),
-        "MB"
-      );
-
       await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
         overwrite: true
       });
@@ -182,14 +173,6 @@ router.post("/upload-new/:key", async (ctx) => {
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };
     }
-
-    logger.info(
-      "Browser Upload File Task:",
-      fr.writer.path,
-      "File size:",
-      Number(size / 1024 / 1024).toFixed(0),
-      "MB"
-    );
 
     ctx.body = {
       data: {
