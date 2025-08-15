@@ -207,6 +207,7 @@ router.post("/upload-piece/:id", async (ctx) => {
     } else if (tmpFiles) {
       uploadedFile = tmpFiles;
     } else {
+      console.log("没有收到任何文件！！！");
       throw new Error("Empty File!");
     }
     const writer = uploadManager.get(id);
