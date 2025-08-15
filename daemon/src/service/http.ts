@@ -1,14 +1,15 @@
 import Koa from "koa";
 import koaBody from "koa-body";
+import { removeTrail } from "mcsmanager-common";
+import { globalConfiguration } from "../entity/config";
+import { uploadFileCheckMiddleware, uploadSpeedLimitMiddleware } from "../middlewares/precheck";
 import koaRouter from "../routers/http_router";
 import logger from "./log";
-import { globalConfiguration } from "../entity/config";
-import { removeTrail } from "mcsmanager-common";
-import { uploadFileCheckMiddleware } from "../middlewares/precheck";
 
 export function initKoa() {
   const koaApp = new Koa();
   const config = globalConfiguration.config;
+  koaApp.use(uploadSpeedLimitMiddleware);
   koaApp.use(uploadFileCheckMiddleware);
   koaApp.use(
     koaBody({

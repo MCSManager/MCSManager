@@ -22,6 +22,10 @@ class Config {
   public allocatablePortRange = [10010, 65500];
   public currentAllocatablePort = 10010;
   public portAssignInterval = 5;
+
+  // 上传限速配置
+  public uploadSpeedLimit = 1024;
+  public uploadBurstSize = 1024;
 }
 
 // daemon configuration class
