@@ -27,7 +27,7 @@ const GOLANG_ZIP_NAME = `file_zip_${SYSTEM_TYPE}_${os.arch()}${
 }`;
 const GOLANG_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", GOLANG_ZIP_NAME));
 const STEAM_CMD_PATH = loadSteamCmdPath();
-const STEAM_CMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+const WINDOWS_STEAM_CMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
 export {
   FILENAME_BLACKLIST,
@@ -37,6 +37,7 @@ export {
   LOCAL_PRESET_LANG_PATH,
   PTY_PATH,
   STEAM_CMD_PATH,
-  STEAM_CMD_URL,
+  SYSTEM_TYPE,
+  WINDOWS_STEAM_CMD_URL,
   ZIP_TIMEOUT_SECONDS
 };
