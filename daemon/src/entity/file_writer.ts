@@ -168,13 +168,33 @@ export default class FileWriter {
   }
 
   private async checkSum(): Promise<boolean> {
-    let md5 = await new Promise<string>((resolve, reject) => {
-      const hash = createHash("md5");
-      const stream = fs.createReadStream(this.path);
-      stream.on("data", (chunk) => hash.update(chunk));
-      stream.on("end", () => resolve(hash.digest("hex")));
-      stream.on("error", (err) => reject(err));
+    const hash = createHash("md5");
+    const fileSize = await fs.stat(this.path).then((stat) => stat.size);
+
+    if (fileSize <= 1024) {
+      await this.readStreamToHash(this.path, hash);
+      return hash.digest("hex") === this.sum;
+    }
+
+    await this.readStreamToHash(this.path, hash, { start: 0, end: 511 });
+    await this.readStreamToHash(this.path, hash, {
+      start: Math.max(0, fileSize - 512),
+      end: fileSize - 1
     });
-    return md5 == this.sum;
+
+    return hash.digest("hex") === this.sum;
+  }
+
+  private readStreamToHash(
+    filePath: string,
+    hash: any,
+    options?: { start: number; end: number }
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const stream = fs.createReadStream(filePath, options);
+      stream.on("data", (chunk) => hash.update(chunk));
+      stream.on("end", resolve);
+      stream.on("error", reject);
+    });
   }
 }
