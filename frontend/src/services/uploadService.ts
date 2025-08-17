@@ -3,7 +3,6 @@ import {
   uploadFile as uploadFileApi,
   uploadFilePiece as uploadFilePieceApi
 } from "@/services/apis/fileManager";
-import fileSum from "@/tools/fileSum";
 import { reportErrorMsg } from "@/tools/validator";
 import { message } from "ant-design-vue";
 import { ref, type Ref } from "vue";
@@ -57,7 +56,8 @@ export class UploadFiles {
         params: {
           filename: this.file.name,
           size: this.file.size,
-          sum: await fileSum(this.file),
+          // sum: await fileSum(this.file),
+          sum: "",
           ...options
         }
       });

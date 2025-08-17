@@ -111,11 +111,11 @@ export default class FileWriter {
       uploadManager.delete(this.id);
     }
 
-    if (!(await this.checkSum())) {
-      await fs.remove(this.path);
-      logger.error("File checksum does not match:", this.path);
-      throw new Error("File checksum does not match");
-    }
+    // if (!(await this.checkSum())) {
+    //   await fs.remove(this.path);
+    //   logger.error("File checksum does not match:", this.path);
+    //   throw new Error("File checksum does not match");
+    // }
 
     logger.info("Browser Uploaded File:", this.path);
 
