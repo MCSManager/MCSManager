@@ -10,7 +10,8 @@ export async function initSteamCmd() {
   try {
     if (!fs.existsSync(STEAM_CMD_PATH) && SYSTEM_TYPE === "win32") {
       const zipPath = await downloadSteam(WINDOWS_STEAM_CMD_URL);
-      new FileManager().unzip(zipPath, "lib", "utf-8");
+      await new FileManager().unzip(zipPath, "lib", "utf-8");
+      await fs.remove(zipPath);
     }
   } catch (error) {
     logger.error(`Steam command line tool download failed: ${error}`);
