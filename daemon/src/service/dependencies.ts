@@ -1,12 +1,17 @@
-import { GOLANG_ZIP_PATH } from "../const";
 import fs from "fs-extra";
-import { t } from "i18next";
+import { GOLANG_ZIP_PATH } from "../const";
+import { initSteamCmd } from "../tools/steam_cmd";
 
 export function checkDependencies() {
+  initSteamCmd();
+
   const dependencies = [GOLANG_ZIP_PATH];
   dependencies.forEach((path) => {
     if (!fs.existsSync(path)) {
-      throw new Error(t("TXT_CODE_6915f2a") + path);
+      throw new Error(`MCSManager requires additional dependencies to run. 
+Please download the files suitable for your system architecture from the following locations:
+  1. https://github.com/MCSManager/PTY/releases
+  2. https://github.com/MCSManager/Zip-Tools/releases`);
     }
   });
 }

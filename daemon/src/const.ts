@@ -1,4 +1,3 @@
-import { existsSync } from "fs";
 import os from "os";
 import path from "path";
 
@@ -10,12 +9,6 @@ function loadSteamCmdPath() {
       os.platform() === "win32" ? "steamcmd.exe" : `steamcmd_${os.arch()}`
     )
   );
-  if (!existsSync(targetPath)) {
-    targetPath = "steamcmd";
-    if (SYSTEM_TYPE === "win32") {
-      targetPath += ".exe";
-    }
-  }
   return targetPath;
 }
 
@@ -34,14 +27,16 @@ const GOLANG_ZIP_NAME = `file_zip_${SYSTEM_TYPE}_${os.arch()}${
 }`;
 const GOLANG_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", GOLANG_ZIP_NAME));
 const STEAM_CMD_PATH = loadSteamCmdPath();
+const STEAM_CMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
 export {
-  GOLANG_ZIP_PATH,
   FILENAME_BLACKLIST,
-  PTY_PATH,
-  LOCAL_PRESET_LANG_PATH,
   FRPC_PATH,
+  GOLANG_ZIP_PATH,
   IGNORE,
-  ZIP_TIMEOUT_SECONDS,
-  STEAM_CMD_PATH
+  LOCAL_PRESET_LANG_PATH,
+  PTY_PATH,
+  STEAM_CMD_PATH,
+  STEAM_CMD_URL,
+  ZIP_TIMEOUT_SECONDS
 };
