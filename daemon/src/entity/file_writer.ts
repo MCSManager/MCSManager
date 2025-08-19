@@ -80,7 +80,7 @@ export default class FileWriter {
       this.releaseLock = await lockfile.lock(this.path);
       await fs.ftruncate(this.fd, this.size);
     } catch (e) {
-      await this.releaseLock!();
+      if (typeof this.releaseLock === "function") await this.releaseLock();
       this.releaseLock = undefined;
       throw e;
     }
