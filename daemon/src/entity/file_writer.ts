@@ -40,16 +40,16 @@ export default class FileWriter {
     let tempFileSaveName = basename + ext;
     let counter = 1;
 
-    while (
-      (await fs
-        .access(fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName))))
-        .then(() => true)
-        .catch(() => false)) &&
-      !(await lockfile.check(
-        fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName)))
-      )) &&
-      !overwrite
-    ) {
+    const absolutePath = fileManager.toAbsolutePath(
+      path.normalize(path.join(dir, tempFileSaveName))
+    );
+    const isLock = await lockfile.check(absolutePath);
+    const isAccess = await fs
+      .access(absolutePath)
+      .then(() => true)
+      .catch(() => false);
+
+    while (isAccess && !isLock && !overwrite) {
       if (counter == 1) {
         tempFileSaveName = `${basename}-copy${ext}`;
       } else {
@@ -58,7 +58,7 @@ export default class FileWriter {
       counter++;
     }
 
-    let fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));
+    const fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));
 
     if (!fileManager.checkPath(fileSaveRelativePath))
       throw new Error("Access denied: Invalid destination");
