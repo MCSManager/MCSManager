@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { LayoutCard } from "@/types/index";
-import { ref } from "vue";
-import { t } from "@/lang/i18n";
-import { SearchOutlined, ClusterOutlined } from "@ant-design/icons-vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
+import { useScreen } from "@/hooks/useScreen";
+import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
-import NodeItem from "./node/NodeItem.vue";
+import type { LayoutCard } from "@/types/index";
+import { ClusterOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import { ref } from "vue";
 import { useRemoteNode } from "../hooks/useRemoteNode";
 import NodeDetailDialog from "./node/NodeDetailDialog.vue";
-import { useScreen } from "@/hooks/useScreen";
+import NodeItem from "./node/NodeItem.vue";
 
 defineProps<{
   card: LayoutCard;

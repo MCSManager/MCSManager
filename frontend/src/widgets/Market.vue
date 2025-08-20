@@ -10,7 +10,6 @@ import type { LayoutCard } from "@/types";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
 import {
   AppstoreAddOutlined,
-  ArrowRightOutlined,
   BlockOutlined,
   FileZipOutlined,
   FolderOpenOutlined
@@ -123,9 +122,13 @@ const manualInstallOptions = [
                 <div class="card-description">
                   {{ option.description }}
                 </div>
+
                 <div class="card-action">
-                  <ArrowRightOutlined />
-                  {{ t("TXT_CODE_7b2c5414") }}
+                  <a-button type="primary" @click="option.action">
+                    <div class="flex items-center">
+                      {{ t("TXT_CODE_7b2c5414") }}
+                    </div>
+                  </a-button>
                 </div>
               </template>
             </CardPanel>
@@ -155,7 +158,7 @@ const manualInstallOptions = [
 
 <style lang="scss" scoped>
 .manual-install-options {
-  margin-bottom: 24px;
+  margin: 24px auto;
 }
 
 .install-option-card {
