@@ -1,16 +1,17 @@
+import Instance from "../entity/instance/instance";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import Instance from "../entity/instance/instance";
 
-import { systemInfo } from "mcsmanager-common";
-import { getVersion } from "../service/version";
-import { globalConfiguration } from "../entity/config";
-import i18next from "i18next";
-import logger from "../service/log";
 import fs from "fs-extra";
+import i18next from "i18next";
+import { systemInfo } from "mcsmanager-common";
 import { LOCAL_PRESET_LANG_PATH } from "../const";
+import { globalConfiguration } from "../entity/config";
+import { $t } from "../i18n";
+import logger from "../service/log";
 import VisualDataSubsystem from "../service/system_visual_data";
+import { getVersion } from "../service/version";
 
 // Get the basic information of the daemon system
 routerApp.on("info/overview", async (ctx) => {
@@ -41,7 +42,7 @@ routerApp.on("info/overview", async (ctx) => {
 routerApp.on("info/setting", async (ctx, data) => {
   const language = String(data.language);
   try {
-    logger.warn("Language change:", language);
+    logger.warn($t("语言已切换："), language);
     i18next.changeLanguage(language);
     fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
     globalConfiguration.config.language = language;

@@ -1,23 +1,22 @@
-import http from "http";
 import fs from "fs-extra";
-import versionAdapter from "./service/version_adapter";
-import { checkDependencies } from "./service/dependencies";
-import { $t, i18next } from "./i18n";
-import { getVersion, initVersionManager } from "./service/version";
-import { globalConfiguration } from "./entity/config";
+import http from "http";
+import { removeTrail } from "mcsmanager-common";
 import { Server, Socket } from "socket.io";
-import { LOCAL_PRESET_LANG_PATH } from "./const";
-import logger from "./service/log";
-import { GOLANG_ZIP_PATH, PTY_PATH } from "./const";
-import * as router from "./service/router";
-import * as koa from "./service/http";
-import * as protocol from "./service/protocol";
-import InstanceSubsystem from "./service/system_instance";
+import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH } from "./const";
+import { globalConfiguration } from "./entity/config";
+import { $t, i18next } from "./i18n";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
+import { checkDependencies } from "./service/dependencies";
+import * as koa from "./service/http";
+import logger from "./service/log";
+import * as protocol from "./service/protocol";
+import * as router from "./service/router";
+import InstanceSubsystem from "./service/system_instance";
 import "./service/system_visual_data";
-import { removeTrail } from "mcsmanager-common";
 import uploadManager from "./service/upload_manager";
+import { getVersion, initVersionManager } from "./service/version";
+import versionAdapter from "./service/version_adapter";
 
 initVersionManager();
 const VERSION = getVersion();
@@ -143,28 +142,27 @@ logger.info($t("TXT_CODE_app.exitTip"));
 logger.info("----------------------------");
 console.log("");
 
-async function processExit() {
+async function listenExitSig(signal: string, isForce = true) {
   try {
-    console.log("");
-    logger.warn("Program received EXIT command.");
-    await InstanceSubsystem.exit();
+    logger.warn($t("收到来自系统的 {{signal}} 信号，正在尝试关闭所有实例...", { signal }));
+    await InstanceSubsystem.exit(isForce);
     await uploadManager.exit();
-    logger.info("Exit.");
-  } catch (err) {
-    logger.error("ERROR:", err);
-  } finally {
+    logger.info($t("程序已退出！"));
     process.exit(0);
+  } catch (err) {
+    logger.error(err);
+    process.exit(-1);
   }
 }
 
+// Listen for close process signals
 ["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
-  process.on(sig, () => {
-    logger.warn(`${sig} close process signal detected.`);
-    processExit();
+  process.on(sig, async () => {
+    await listenExitSig(sig);
   });
 });
 
 process.stdin.on("data", (v) => {
   const command = v.toString().replace("\n", "").replace("\r", "").trim().toLowerCase();
-  if (command === "exit") processExit();
+  if (command === "exit") listenExitSig("exit");
 });
