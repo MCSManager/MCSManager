@@ -410,6 +410,7 @@ const createInstance = async () => {
           :disabled="percentComplete > 0 || uploadFileInstance != undefined"
         >
           <a-button
+            :disabled="!formData.nickname"
             type="primary"
             :loading="percentComplete > 0 || uploadFileInstance != undefined"
           >

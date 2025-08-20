@@ -10,13 +10,11 @@ export async function preCheckMiddleware(ctx: Context, next: () => Promise<void>
   const headers = ctx.request?.headers;
   const contentType = headers?.["content-type"] ?? "";
   const isMultipart = contentType.toLowerCase().includes("multipart/form-data");
-  const user = getUserFromCtx(ctx);
-  if (!user) {
-    throw new Error("Access denied: Invalid request!");
-  }
-  const isAdmin = user?.permission === ROLE.ADMIN;
-  if (isMultipart && !isAdmin) {
-    throw new Error("Access denied: Invalid multipart/form-data request!");
+
+  if (isMultipart) {
+    const user = getUserFromCtx(ctx);
+    const isAdmin = user?.permission === ROLE.ADMIN;
+    if (!isAdmin) throw new Error("Access denied: Invalid multipart/form-data request!");
   }
   return await next();
 }

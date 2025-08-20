@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import fs from "fs-extra";
 import path from "path";
 import * as lockfile from "proper-lockfile";
@@ -22,7 +21,6 @@ export default class FileWriter {
     public readonly size: number,
     private unzip: boolean,
     private zipCode: string,
-    public readonly sum: string,
     filePath: string
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
@@ -43,7 +41,10 @@ export default class FileWriter {
     const absolutePath = fileManager.toAbsolutePath(
       path.normalize(path.join(dir, tempFileSaveName))
     );
-    const isLock = await lockfile.check(absolutePath);
+    const isLock = await lockfile
+      .check(absolutePath)
+      .then((isLock) => isLock)
+      .catch(() => false);
     const isAccess = await fs
       .access(absolutePath)
       .then(() => true)
@@ -111,12 +112,6 @@ export default class FileWriter {
       uploadManager.delete(this.id);
     }
 
-    // if (!(await this.checkSum())) {
-    //   await fs.remove(this.path);
-    //   logger.error("File checksum does not match:", this.path);
-    //   throw new Error("File checksum does not match");
-    // }
-
     logger.info("Browser Uploaded File:", this.path);
 
     if (this.unzip) {
@@ -165,24 +160,6 @@ export default class FileWriter {
       this.received[0].start === 0 &&
       this.received[0].end === this.size
     );
-  }
-
-  private async checkSum(): Promise<boolean> {
-    const hash = createHash("md5");
-    const fileSize = await fs.stat(this.path).then((stat) => stat.size);
-
-    if (fileSize <= 1024) {
-      await this.readStreamToHash(this.path, hash);
-      return hash.digest("hex") === this.sum;
-    }
-
-    await this.readStreamToHash(this.path, hash, { start: 0, end: 511 });
-    await this.readStreamToHash(this.path, hash, {
-      start: Math.max(0, fileSize - 512),
-      end: fileSize - 1
-    });
-
-    return hash.digest("hex") === this.sum;
   }
 
   private readStreamToHash(

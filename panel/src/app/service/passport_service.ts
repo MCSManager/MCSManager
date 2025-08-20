@@ -160,11 +160,15 @@ export function getUserNameBySession(ctx: Koa.ParameterizedContext): string {
 }
 
 export function getUserFromCtx(ctx: Koa.ParameterizedContext) {
-  if (isApiRequest(ctx)) {
-    const user = getUuidByApiKey(getApiKey(ctx));
-    return user || undefined;
+  try {
+    if (isApiRequest(ctx)) {
+      const user = getUuidByApiKey(getApiKey(ctx));
+      return user || undefined;
+    }
+    return userSystem.getInstance(ctx.session?.["uuid"] || "") || undefined;
+  } catch (error) {
+    return undefined;
   }
-  return userSystem.getInstance(ctx.session?.["uuid"] || "") || undefined;
 }
 
 export function getUserUuid(ctx: Koa.ParameterizedContext): string {
