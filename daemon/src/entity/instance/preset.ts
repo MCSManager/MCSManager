@@ -1,12 +1,12 @@
 import { $t } from "../../i18n";
 import { IPresetCommand } from "../commands/dispatcher";
-export interface IExecutable {
-  exec: (a: any, b?: any) => Promise<any>;
-  stop?: (a: any) => Promise<void>;
+export interface IExecutable<T = any> {
+  exec: (a: T, b?: any) => Promise<any>;
+  stop?: (a: T) => Promise<void>;
 }
 
 export class PresetCommandManager {
-  public readonly preset = new Map<IPresetCommand, IExecutable>();
+  public readonly preset = new Map<IPresetCommand, IExecutable<any>>();
 
   constructor(private self: any) {}
 

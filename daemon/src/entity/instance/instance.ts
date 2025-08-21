@@ -24,7 +24,7 @@ interface IInstanceInfo {
   maxPlayers: number;
   version: string;
   fileLock: number;
-  playersChart: Array<{ value: string }>;
+  playersChart: { value: string }[];
   openFrpStatus: boolean;
   latency: number;
   cpuUsage?: number;
@@ -35,6 +35,7 @@ interface IInstanceInfo {
   writeBytes?: number;
   memoryUsage?: number;
   memoryLimit?: number;
+  allocatedPorts?: { host: number; container: number; protocol: string }[];
 }
 
 interface IWatcherInfo {
@@ -90,14 +91,14 @@ export default class Instance extends EventEmitter {
     fileLock: 0,
     playersChart: [],
     openFrpStatus: false,
-    latency: 0
+    latency: 0,
+    allocatedPorts: []
   };
 
   public watchers: Map<string, IWatcherInfo> = new Map();
 
   public process?: IInstanceProcess;
 
-  private outputStack: string[] = [];
   private outputLoopTask?: NodeJS.Timeout;
   private outputBuffer = new CircularBuffer<string>(64);
 
@@ -393,6 +394,21 @@ export default class Instance extends EventEmitter {
     } finally {
       this.process = undefined;
     }
+    this.resetInstanceRuntimeInfo();
+  }
+
+  resetInstanceRuntimeInfo() {
+    this.info = {
+      mcPingOnline: false,
+      currentPlayers: 0,
+      maxPlayers: 0,
+      version: "",
+      fileLock: 0,
+      playersChart: [],
+      openFrpStatus: false,
+      latency: 0,
+      allocatedPorts: this.info.allocatedPorts ?? []
+    };
   }
 
   // destroy this instance

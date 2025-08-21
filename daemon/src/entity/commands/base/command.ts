@@ -1,5 +1,8 @@
-export default class InstanceCommand {
+import Instance from "../../instance/instance";
+import { IExecutable } from "../../instance/preset";
+
+export default class InstanceCommand implements IExecutable<Instance> {
   constructor(public info?: string) {}
-  async exec(instance: any): Promise<any> {}
-  async stop(instance: any) {}
+  async exec(instance: Instance): Promise<any> {}
+  async stop(instance: Instance) {}
 }
