@@ -25,6 +25,7 @@ export class ThrottleTransform extends Transform {
   }
 
   private pending(): Promise<void> {
+    if (typeof this.solveFn === "function") this.solveFn();
     return new Promise<void>((resolve) => {
       this.solveFn = resolve;
     });
