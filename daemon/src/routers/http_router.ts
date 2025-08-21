@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import formidable from "formidable";
 import fs from "fs-extra";
-import send from "koa-send";
 import path from "path";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
@@ -10,6 +9,7 @@ import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
 import { clearUploadFiles } from "../tools/filepath";
+import { sendFile } from "../utils/speed_limit";
 
 const router = new Router();
 
@@ -19,7 +19,7 @@ router.all("/", async (ctx) => {
   ctx.status = 200;
 });
 
-// file download route
+// File download route
 router.get("/download/:key/:fileName", async (ctx) => {
   const key = ctx.params.key;
   const paramsFileName = ctx.params.fileName;
@@ -40,15 +40,13 @@ router.get("/download/:key/:fileName", async (ctx) => {
     if (!fileManager.check(fileRelativePath))
       throw new Error((ctx.body = "Access denied: Invalid destination"));
 
-    // send File
     const fileAbsPath = fileManager.toAbsolutePath(fileRelativePath);
-    const fileDir = path.dirname(fileAbsPath);
-    const fileName = path.basename(fileAbsPath);
-    ctx.set("Content-Type", "application/octet-stream");
-    await send(ctx, fileName, { root: fileDir + "/", hidden: true });
+    await sendFile(ctx, fileAbsPath);
   } catch (error: any) {
-    ctx.body = $t("TXT_CODE_http_router.downloadErr", { error: error.message });
-    ctx.status = 500;
+    if (!ctx.res.headersSent) {
+      ctx.body = $t("TXT_CODE_http_router.downloadErr", { error: error.message });
+      ctx.status = 500;
+    }
   } finally {
     missionPassport.deleteMission(key);
   }
@@ -207,7 +205,6 @@ router.post("/upload-piece/:id", async (ctx) => {
     } else if (tmpFiles) {
       uploadedFile = tmpFiles;
     } else {
-      console.log("没有收到任何文件！！！");
       throw new Error("Empty File!");
     }
     const writer = uploadManager.get(id);

@@ -48,20 +48,10 @@ export async function uploadFileCheckMiddleware(ctx: Context, next: () => Promis
 export async function uploadSpeedLimitMiddleware(ctx: Context, next: () => Promise<void>) {
   const isUpload = isUploadRequest(ctx);
   if (isUpload) {
-    try {
-      // 从配置获取限速设置
-      const config = globalConfiguration.config;
-      const rate = 1024 * 1024;
-
-      // 使用新的限速功能
-      const incomingMessage = proxyIncomingMessage(ctx.req, rate);
-
-      ctx.req = incomingMessage;
-    } catch (error) {
-      logger.error(`Failed to apply upload speed limit: ${error}`);
-      // 即使速度限制失败，也继续处理请求
-    }
+    const rate = Number(globalConfiguration.config.uploadSpeedRate) || 0;
+    if (rate <= 0) return await next();
+    const incomingMessage = proxyIncomingMessage(ctx.req, rate);
+    ctx.req = incomingMessage;
   }
-
   return await next();
 }
