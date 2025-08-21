@@ -11,22 +11,24 @@ import { globalConfiguration } from "../entity/config";
  * from accumulating infinitely in the JS layer.
  */
 export class ThrottleTransform extends Transform {
-  private solveFn: (() => void) | null = null;
-  private task: NodeJS.Timeout;
+  private resolve: (() => void) | null = null;
+  private consumerTasks: NodeJS.Timeout;
 
   constructor(rate: number) {
     super();
     if (rate >= 1000 || rate <= 0 || isNaN(rate)) rate = 1000;
-    this.task = setInterval(() => {
-      this.solveFn?.();
-      this.solveFn = null;
+    this.consumerTasks = setInterval(() => {
+      this.resolve?.();
+      this.resolve = null;
     }, 1000 / rate);
   }
 
   private pending(): Promise<void> {
-    if (typeof this.solveFn === "function") this.solveFn();
+    if (this.resolve) {
+      throw new Error("ThrottleTransform is already pending, cannot call pending() again.");
+    }
     return new Promise<void>((resolve) => {
-      this.solveFn = resolve;
+      this.resolve = resolve;
     });
   }
 
@@ -41,9 +43,15 @@ export class ThrottleTransform extends Transform {
   }
 
   _flush(callback: TransformCallback): void {
-    clearInterval(this.task);
-    this.solveFn = null;
+    clearInterval(this.consumerTasks);
+    this.resolve = null;
     callback();
+  }
+
+  _destroy(error: Error | null, callback: (error?: Error | null) => void): void {
+    clearInterval(this.consumerTasks);
+    this.resolve = null;
+    callback(error);
   }
 }
 
