@@ -12,15 +12,14 @@ import { globalConfiguration } from "../entity/config";
  */
 export class ThrottleTransform extends Transform {
   private solveFn: (() => void) | null = null;
-  private id: number = 0;
   private task: NodeJS.Timeout;
 
   constructor(rate: number) {
     super();
+    if (rate >= 1000 || rate <= 0 || isNaN(rate)) rate = 1000;
     this.task = setInterval(() => {
       this.solveFn?.();
       this.solveFn = null;
-      this.id++;
     }, 1000 / rate);
   }
 
