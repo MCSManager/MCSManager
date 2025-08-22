@@ -229,10 +229,10 @@ defineExpose({ openDialog });
         <a-form :model="dialog.data" layout="vertical">
           <a-row :gutter="16">
             <a-col :span="12">
-              <a-form-item :label="t('用户上传文件速率')" name="uploadSpeedRate">
+              <a-form-item :label="t('TXT_CODE_fde31068')" name="uploadSpeedRate">
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
-                    {{ t("限制每个 HTTP 请求，上传文件最大速度") }}
+                    {{ t("TXT_CODE_d8d19932") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-select v-model:value="dialog.data.uploadSpeedRate" style="width: 100%">
@@ -247,10 +247,10 @@ defineExpose({ openDialog });
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item :label="t('用户下载文件速率')" name="downloadSpeedRate">
+              <a-form-item :label="t('TXT_CODE_785a0fcf')" name="downloadSpeedRate">
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
-                    {{ t("限制每个 HTTP 请求，下载文件最大速度") }}
+                    {{ t("TXT_CODE_b9fc604c") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-select v-model:value="dialog.data.downloadSpeedRate" style="width: 100%">
@@ -265,10 +265,10 @@ defineExpose({ openDialog });
               </a-form-item>
             </a-col>
             <a-col :span="24">
-              <a-form-item :label="t('节点监听端口')" name="port">
+              <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="port">
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
-                    {{ t("重启节点生效，需要同时修改连接配置") }}
+                    {{ t("TXT_CODE_75ef0619") }}
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-input v-model:value="dialog.data.port" />

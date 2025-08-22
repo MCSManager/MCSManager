@@ -57,7 +57,7 @@ routerApp.on("info/setting", async (ctx, data) => {
   const portAssignInterval = toNumber(data.portAssignInterval);
   const port = toNumber(data.port);
   if (language) {
-    logger.warn($t("节点语言已更改："), language);
+    logger.warn($t("TXT_CODE_66e32091"), language);
     i18next.changeLanguage(language);
     fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
     globalConfiguration.config.language = language;

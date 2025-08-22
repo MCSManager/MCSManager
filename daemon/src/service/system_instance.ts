@@ -292,7 +292,7 @@ class InstanceSubsystem extends EventEmitter {
             count++;
             if (checkCount > 10) {
               logger.info(
-                $t("实例 {{instance}} 正常关闭超时，正在强制关闭...", {
+                $t("TXT_CODE_eadac3c2", {
                   instance: instance.config.nickname
                 })
               );
@@ -301,11 +301,11 @@ class InstanceSubsystem extends EventEmitter {
           }
         }
         if (count === 0) {
-          logger.info($t("所有实例已关闭，正在退出程序..."));
+          logger.info($t("TXT_CODE_187bb567"));
           clearInterval(checkTask);
           resolve();
         } else {
-          logger.info($t("还剩下 {{count}} 个实例待关闭，正在等待...", { count }));
+          logger.info($t("TXT_CODE_6f23ce93", { count }));
         }
       }, 1000);
     });
