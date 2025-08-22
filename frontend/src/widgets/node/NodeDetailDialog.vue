@@ -90,7 +90,6 @@ const ipRules = [
 ];
 
 const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
-  console.log("打开弹窗：", data);
   if (data && uuid) {
     editMode.value = true;
     dialog.uuid = uuid;
