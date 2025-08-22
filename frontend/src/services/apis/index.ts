@@ -1,6 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type { InstanceDetail, NodeStatus, PanelStatus, Settings } from "@/types";
-import type { BaseUserInfo, LoginUserInfo, EditUserInfo, UserInstance } from "@/types/user";
+import type { BaseUserInfo, EditUserInfo, LoginUserInfo, UserInstance } from "@/types/user";
 
 export const panelInstall = useDefineApi<
   {
@@ -203,6 +203,7 @@ export const editNode = useDefineApi<
       ip?: string;
       port?: number;
       remarks?: string;
+      setting?: any;
     };
   },
   any

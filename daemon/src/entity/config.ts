@@ -25,7 +25,7 @@ class Config {
 
   // default: Unlimited, if set 40 => (40 packets * 64KB)/s => 2.5MB/s
   public uploadSpeedRate = 0;
-  // default: Unlimited, if set 30 => (30 packets * 64KB)/s => 1.875MB/s
+  // default: Unlimited, if set 32 => (32 packets * 64KB)/s => 2MB/s
   public downloadSpeedRate = 0;
 }
 

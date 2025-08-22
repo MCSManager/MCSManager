@@ -1,10 +1,10 @@
 import Router from "@koa/router";
+import { ROLE } from "../entity/user";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
-import { ROLE } from "../entity/user";
 import { operationLogger } from "../service/operation_logger";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
 
 const router = new Router({ prefix: "/service" });
 
@@ -138,8 +138,16 @@ router.put(
   validator({ query: { uuid: String } }),
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
-    const parameter = ctx.request.body;
+    const parameter = ctx.request.body || {};
+    const daemonSetting = parameter?.setting || {};
+    const daemon = RemoteServiceSubsystem.getInstance(uuid);
+
+    if (daemonSetting) {
+      await new RemoteRequest(daemon).request("info/setting", daemonSetting);
+    }
+
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
+
     await RemoteServiceSubsystem.edit(uuid, {
       port: parameter.port,
       ip: parameter.ip,
@@ -147,11 +155,13 @@ router.put(
       apiKey: parameter.apiKey,
       remarks: parameter.remarks
     });
+
     operationLogger.log("daemon_config_change", {
       operator_ip: ctx.ip,
       operator_name: ctx.session?.["userName"],
       daemon_id: uuid
     });
+
     ctx.body = true;
   }
 );

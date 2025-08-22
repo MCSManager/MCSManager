@@ -109,6 +109,15 @@ declare global {
     prefix: string;
     available: boolean;
     remarks: string;
+    config: {
+      language: string;
+      uploadSpeedRate: number;
+      downloadSpeedRate: number;
+      portRangeStart: number;
+      portRangeEnd: number;
+      portAssignInterval: number;
+      port: number;
+    };
   }
 
   interface IPanelOverviewResponse {

@@ -1,16 +1,17 @@
+import Instance from "../entity/instance/instance";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import Instance from "../entity/instance/instance";
 
-import { systemInfo } from "mcsmanager-common";
-import { getVersion } from "../service/version";
-import { globalConfiguration } from "../entity/config";
-import i18next from "i18next";
-import logger from "../service/log";
 import fs from "fs-extra";
+import i18next from "i18next";
+import { systemInfo, toNumber, toText } from "mcsmanager-common";
 import { LOCAL_PRESET_LANG_PATH } from "../const";
+import { globalConfiguration } from "../entity/config";
+import { $t } from "../i18n";
+import logger from "../service/log";
 import VisualDataSubsystem from "../service/system_visual_data";
+import { getVersion } from "../service/version";
 
 // Get the basic information of the daemon system
 routerApp.on("info/overview", async (ctx) => {
@@ -33,21 +34,50 @@ routerApp.on("info/overview", async (ctx) => {
       total
     },
     system: systemInfo(),
-    cpuMemChart: VisualDataSubsystem.getSystemChartArray()
+    cpuMemChart: VisualDataSubsystem.getSystemChartArray(),
+    config: {
+      language: globalConfiguration.config.language,
+      uploadSpeedRate: globalConfiguration.config.uploadSpeedRate,
+      downloadSpeedRate: globalConfiguration.config.downloadSpeedRate,
+      portRangeStart: globalConfiguration.config.allocatablePortRange[0],
+      portRangeEnd: globalConfiguration.config.allocatablePortRange[1],
+      portAssignInterval: globalConfiguration.config.portAssignInterval,
+      port: globalConfiguration.config.port
+    }
   };
   protocol.response(ctx, info);
 });
 
 routerApp.on("info/setting", async (ctx, data) => {
-  const language = String(data.language);
-  try {
-    logger.warn("Language change:", language);
+  const language = toText(data.language);
+  const uploadSpeedRate = toNumber(data.uploadSpeedRate);
+  const downloadSpeedRate = toNumber(data.downloadSpeedRate);
+  const portRangeStart = toNumber(data.portRangeStart);
+  const portRangeEnd = toNumber(data.portRangeEnd);
+  const portAssignInterval = toNumber(data.portAssignInterval);
+  const port = toNumber(data.port);
+  if (language) {
+    logger.warn($t("节点语言已更改："), language);
     i18next.changeLanguage(language);
     fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
     globalConfiguration.config.language = language;
-    globalConfiguration.store();
-    protocol.response(ctx, true);
-  } catch (error: any) {
-    protocol.responseError(ctx, error);
   }
+  if (uploadSpeedRate != null && uploadSpeedRate >= 0) {
+    globalConfiguration.config.uploadSpeedRate = uploadSpeedRate;
+  }
+  if (downloadSpeedRate != null && downloadSpeedRate >= 0) {
+    globalConfiguration.config.downloadSpeedRate = downloadSpeedRate;
+  }
+  if (portRangeStart != null && portRangeEnd != null && portRangeStart < portRangeEnd) {
+    globalConfiguration.config.allocatablePortRange = [portRangeStart, portRangeEnd];
+    globalConfiguration.config.currentAllocatablePort = portRangeStart;
+  }
+  if (portAssignInterval != null && portAssignInterval > 0) {
+    globalConfiguration.config.portAssignInterval = portAssignInterval;
+  }
+  if (port && port > 0 && port < 65535) {
+    globalConfiguration.config.port = port;
+  }
+  globalConfiguration.store();
+  protocol.response(ctx, true);
 });
