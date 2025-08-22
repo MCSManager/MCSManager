@@ -1,32 +1,32 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import { ref, computed, onMounted } from "vue";
-import { t } from "@/lang/i18n";
-import {
-  SettingOutlined,
-  CodeOutlined,
-  BlockOutlined,
-  FolderOpenOutlined,
-  ReloadOutlined,
-  InfoCircleOutlined,
-  CloudServerOutlined,
-  CheckCircleOutlined,
-  LoadingOutlined
-} from "@ant-design/icons-vue";
-import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import IconBtn from "@/components/IconBtn.vue";
 import NodeSimpleChart from "@/components/NodeSimpleChart.vue";
-import { connectNode } from "@/services/apis";
-import { message } from "ant-design-vue";
-import { reportErrorMsg } from "@/tools/validator";
+import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import type { LayoutCard } from "@/types";
-import { arrayFilter } from "@/tools/array";
-import { GLOBAL_INSTANCE_UUID } from "@/config/const";
-import NodeDetailDialog from "./NodeDetailDialog.vue";
+import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
+import { t } from "@/lang/i18n";
+import { connectNode } from "@/services/apis";
+import { arrayFilter } from "@/tools/array";
+import { reportErrorMsg } from "@/tools/validator";
 import { hasVersionUpdate } from "@/tools/version";
+import type { LayoutCard } from "@/types";
+import {
+  BlockOutlined,
+  CheckCircleOutlined,
+  CloudServerOutlined,
+  CodeOutlined,
+  FolderOpenOutlined,
+  InfoCircleOutlined,
+  LoadingOutlined,
+  ReloadOutlined,
+  SettingOutlined
+} from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
+import { computed, onMounted, ref } from "vue";
+import NodeDetailDialog from "./NodeDetailDialog.vue";
 
 const { testFrontendSocket, socketStatus } = useSocketIoClient();
 
@@ -221,7 +221,7 @@ onMounted(() => {
         </span>
       </template>
       <template v-if="remoteNode" #body>
-        <a-row :gutter="[24, 24]" class="mt-2">
+        <a-row :gutter="[24, 0]" class="mt-2">
           <a-col
             v-for="detail in detailList(remoteNode)"
             :key="detail.title + detail.value"

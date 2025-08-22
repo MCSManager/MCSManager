@@ -194,6 +194,7 @@ export class SetupDockerContainer extends AsyncTask {
     }
 
     if (logOpenedPorts.length) {
+      instance.info.allocatedPorts = logOpenedPorts;
       instance.println("INFO", $t("TXT_CODE_c1c548fb"));
       logOpenedPorts.forEach((v) => {
         instance.println(
@@ -205,6 +206,8 @@ export class SetupDockerContainer extends AsyncTask {
           })
         );
       });
+    } else {
+      instance.info.allocatedPorts = [];
     }
 
     // Start Docker container creation and running

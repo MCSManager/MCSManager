@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { LayoutCard } from "@/types";
-import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { onMounted, computed } from "vue";
-import { t } from "@/lang/i18n";
 import { useInstanceInfo } from "@/hooks/useInstance";
+import { t } from "@/lang/i18n";
+import type { LayoutCard } from "@/types";
 import { CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { computed, onMounted, ref } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
+import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { parseTimestamp } from "../../tools/time";
-import { dockerPortsArray } from "@/tools/common";
 import DockerInfo from "./dialogs/DockerInfo.vue";
 
 const props = defineProps<{
@@ -120,11 +118,11 @@ onMounted(async () => {
         </a-typography-paragraph>
       </template>
 
-      <a-typography-paragraph v-if="Number(instanceInfo?.config.docker.ports?.length) > 0">
+      <a-typography-paragraph v-if="Number(instanceInfo?.info?.allocatedPorts?.length) > 0">
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
           <div
-            v-for="(item, index) in dockerPortsArray(instanceInfo?.config.docker.ports ?? [])"
+            v-for="(item, index) in instanceInfo?.info?.allocatedPorts"
             :key="index"
             class="mb-4"
           >

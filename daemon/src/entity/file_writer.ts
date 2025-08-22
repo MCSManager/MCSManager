@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import fs from "fs-extra";
 import path from "path";
 import * as lockfile from "proper-lockfile";
@@ -22,7 +21,6 @@ export default class FileWriter {
     public readonly size: number,
     private unzip: boolean,
     private zipCode: string,
-    public readonly sum: string,
     filePath: string
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
@@ -40,16 +38,19 @@ export default class FileWriter {
     let tempFileSaveName = basename + ext;
     let counter = 1;
 
-    while (
-      (await fs
-        .access(fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName))))
-        .then(() => true)
-        .catch(() => false)) &&
-      !(await lockfile.check(
-        fileManager.toAbsolutePath(path.normalize(path.join(dir, tempFileSaveName)))
-      )) &&
-      !overwrite
-    ) {
+    const absolutePath = fileManager.toAbsolutePath(
+      path.normalize(path.join(dir, tempFileSaveName))
+    );
+    const isLock = await lockfile
+      .check(absolutePath)
+      .then((isLock) => isLock)
+      .catch(() => false);
+    const isAccess = await fs
+      .access(absolutePath)
+      .then(() => true)
+      .catch(() => false);
+
+    while (isAccess && !isLock && !overwrite) {
       if (counter == 1) {
         tempFileSaveName = `${basename}-copy${ext}`;
       } else {
@@ -58,7 +59,7 @@ export default class FileWriter {
       counter++;
     }
 
-    let fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));
+    const fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));
 
     if (!fileManager.checkPath(fileSaveRelativePath))
       throw new Error("Access denied: Invalid destination");
@@ -80,7 +81,7 @@ export default class FileWriter {
       this.releaseLock = await lockfile.lock(this.path);
       await fs.ftruncate(this.fd, this.size);
     } catch (e) {
-      await this.releaseLock!();
+      if (typeof this.releaseLock === "function") await this.releaseLock();
       this.releaseLock = undefined;
       throw e;
     }
@@ -109,12 +110,6 @@ export default class FileWriter {
 
     if (this.id != null) {
       uploadManager.delete(this.id);
-    }
-
-    if (!(await this.checkSum())) {
-      await fs.remove(this.path);
-      logger.error("File checksum does not match:", this.path);
-      throw new Error("File checksum does not match");
     }
 
     logger.info("Browser Uploaded File:", this.path);
@@ -167,14 +162,16 @@ export default class FileWriter {
     );
   }
 
-  private async checkSum(): Promise<boolean> {
-    let md5 = await new Promise<string>((resolve, reject) => {
-      const hash = createHash("md5");
-      const stream = fs.createReadStream(this.path);
+  private readStreamToHash(
+    filePath: string,
+    hash: any,
+    options?: { start: number; end: number }
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const stream = fs.createReadStream(filePath, options);
       stream.on("data", (chunk) => hash.update(chunk));
-      stream.on("end", () => resolve(hash.digest("hex")));
-      stream.on("error", (err) => reject(err));
+      stream.on("end", resolve);
+      stream.on("error", reject);
     });
-    return md5 == this.sum;
   }
 }

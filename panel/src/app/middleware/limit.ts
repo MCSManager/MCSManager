@@ -1,17 +1,20 @@
 import { Context } from "koa";
+import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { singletonMemoryRedis } from "../service/mini_redis";
-import userSystem from "../service/user_service";
+import { getUserFromCtx } from "../service/passport_service";
 
 const SPEED_LIMIT_KEY = "SpeedLimit";
 
 export function speedLimit(seconds: number, errMsg?: string) {
   return async (ctx: Context, next: Function) => {
     const requestPath = ctx.URL.pathname;
-    const user = userSystem.getInstance(ctx.session?.["uuid"]);
+    const user = getUserFromCtx(ctx);
 
-    if (!user) {
-      throw new Error($t("TXT_CODE_permission.forbidden"));
+    if (!user) throw new Error($t("TXT_CODE_permission.forbidden"));
+
+    if (user.permission === ROLE.ADMIN) {
+      return await next();
     }
 
     const speedCheckKey = `${SPEED_LIMIT_KEY}:${user.uuid}:${requestPath}`;

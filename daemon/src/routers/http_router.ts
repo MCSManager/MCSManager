@@ -136,7 +136,6 @@ router.post("/upload-new/:key", async (ctx) => {
   const zipCode = String(ctx.query.code);
   const filename = String(ctx.query.filename);
   const size = Number(ctx.query.size);
-  const sum = String(ctx.query.sum);
   if (ctx.query.stop) {
     const writer = uploadManager.get(key);
     if (writer) {
@@ -160,13 +159,13 @@ router.post("/upload-new/:key", async (ctx) => {
     const overwrite = ctx.query.overwrite !== "false";
     const filePath = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
     let fr = uploadManager.getByPath(filePath);
-    if (fr && (sum != fr.writer.sum || size != fr.writer.size)) {
+    if (fr && size != fr.writer.size) {
       uploadManager.delete(fr.id);
       await fr.writer.stop();
       fr = undefined;
     }
     if (!fr) {
-      const fileWriter = new FileWriter(cwd, filename, size, unzip, zipCode, sum, filePath);
+      const fileWriter = new FileWriter(cwd, filename, size, unzip, zipCode, filePath);
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };

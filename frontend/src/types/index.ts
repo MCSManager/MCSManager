@@ -20,28 +20,35 @@ export enum NEW_CARD_TYPE {
   OTHER = "OTHER"
 }
 
+export interface InstanceRuntimeInfo {
+  mcPingOnline: boolean;
+  currentPlayers: number;
+  maxPlayers: number;
+  version: string;
+  fileLock: number;
+  playersChart: { value: string }[];
+  openFrpStatus: boolean;
+  latency: number;
+  cpuUsage?: number;
+  memoryUsagePercent?: number;
+  rxBytes?: number;
+  txBytes?: number;
+  readBytes?: number;
+  writeBytes?: number;
+  memoryUsage?: number;
+  memoryLimit?: number;
+  allocatedPorts?: { 
+    host: number;
+    container: number;
+    protocol: string;
+  }[];
+}
+
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
   status: INSTANCE_STATUS_CODE;
-  info: {
-    mcPingOnline: boolean;
-    currentPlayers: number;
-    maxPlayers: number;
-    version: string;
-    fileLock: number;
-    playersChart: Array<{ value: string }>;
-    openFrpStatus: boolean;
-    latency: number;
-    cpuUsage?: number;
-    memoryUsagePercent?: number;
-    rxBytes?: number;
-    txBytes?: number;
-    readBytes?: number;
-    writeBytes?: number;
-    memoryUsage?: number;
-    memoryLimit?: number;
-  };
+  info: InstanceRuntimeInfo;
   config: IGlobalInstanceConfig;
   watcher?: number;
 }

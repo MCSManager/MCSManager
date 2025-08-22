@@ -254,26 +254,61 @@ class InstanceSubsystem extends EventEmitter {
     return this.instances.has(instanceUuid);
   }
 
-  async exit() {
-    let promises = [];
-    for (const iterator of this.instances) {
-      const instance = iterator[1];
-      if (instance.status() != Instance.STATUS_STOP) {
-        logger.info(
-          `Instance ${instance.config.nickname} (${instance.instanceUuid}) is running or busy, and is being forced to end.`
-        );
-        promises.push(
-          instance.execPreset("kill").then(() => {
-            if (!this.isGlobalInstance(instance))
-              StorageSubsystem.store("InstanceConfig", instance.instanceUuid, instance.config);
-            logger.info(
-              `Instance ${instance.config.nickname} (${instance.instanceUuid}) saved successfully.`
-            );
-          })
-        );
+  async exitInstance(instance: Instance, force = true) {
+    if (!this.isGlobalInstance(instance))
+      StorageSubsystem.store("InstanceConfig", instance.instanceUuid, instance.config);
+    if (instance.status() === Instance.STATUS_BUSY) {
+      logger.info(`Killing ${instance.config.nickname} (${instance.instanceUuid})...`);
+      await instance.execPreset("kill");
+    } else if (instance.status() !== Instance.STATUS_STOP) {
+      if (force) {
+        logger.info(`Force stopping ${instance.config.nickname} (${instance.instanceUuid})...`);
+        await instance.execPreset("kill");
+      } else {
+        logger.info(`Stopping ${instance.config.nickname} (${instance.instanceUuid})...`);
+        // BUG: Error: write EPIPE
+        await instance.execPreset("stop");
       }
     }
-    await Promise.all(promises);
+  }
+
+  exit(force = false) {
+    const promises: Promise<void>[] = [];
+    for (const iterator of this.instances) {
+      const instance = iterator[1];
+      if (instance.status() !== Instance.STATUS_STOP) {
+        promises.push(this.exitInstance(instance, force));
+      }
+    }
+    Promise.all(promises);
+
+    return new Promise<void>((resolve) => {
+      let checkCount = 0;
+      const checkTask = setInterval(() => {
+        let count = 0;
+        checkCount++;
+        for (const [_, instance] of this.instances) {
+          if (instance.status() !== Instance.STATUS_STOP) {
+            count++;
+            if (checkCount > 10) {
+              logger.info(
+                $t("实例 {{instance}} 正常关闭超时，正在强制关闭...", {
+                  instance: instance.config.nickname
+                })
+              );
+              this.exitInstance(instance, true);
+            }
+          }
+        }
+        if (count === 0) {
+          logger.info($t("所有实例已关闭，正在退出程序..."));
+          clearInterval(checkTask);
+          resolve();
+        } else {
+          logger.info($t("还剩下 {{count}} 个实例待关闭，正在等待...", { count }));
+        }
+      }, 1000);
+    });
   }
 
   getInstances() {

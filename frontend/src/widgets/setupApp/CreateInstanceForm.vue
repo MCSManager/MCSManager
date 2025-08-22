@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  INSTANCE_TYPE_TRANSLATION,
   TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
   TYPE_STEAM_SERVER_UNIVERSAL,
@@ -257,6 +258,22 @@ const createInstance = async () => {
         <a-input v-model:value="formData.nickname" :placeholder="t('TXT_CODE_475c5890')" />
       </a-form-item>
 
+      <a-form-item>
+        <a-typography-title :level="5" class="require-field">
+          {{ t("TXT_CODE_2f291d8b") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <a-typography-text type="secondary">
+            {{ t("TXT_CODE_be608c82") }}
+          </a-typography-text>
+        </a-typography-paragraph>
+        <a-select v-model:value="formData.type" :placeholder="t('TXT_CODE_3bb646e4')">
+          <a-select-option v-for="(item, key) in INSTANCE_TYPE_TRANSLATION" :key="key" :value="key">
+            {{ item }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
         <a-typography-title :level="5" class="require-field">
           {{ t("TXT_CODE_de3ced4b") }}
@@ -335,7 +352,7 @@ const createInstance = async () => {
         </a-input-group>
       </a-form-item>
 
-      <a-form-item v-if="createMethod !== QUICKSTART_METHOD.EXIST" name="cwd">
+      <a-form-item name="cwd">
         <a-typography-title :level="5">
           {{ t("TXT_CODE_320f4304") }}
         </a-typography-title>
@@ -393,6 +410,7 @@ const createInstance = async () => {
           :disabled="percentComplete > 0 || uploadFileInstance != undefined"
         >
           <a-button
+            :disabled="!formData.nickname"
             type="primary"
             :loading="percentComplete > 0 || uploadFileInstance != undefined"
           >

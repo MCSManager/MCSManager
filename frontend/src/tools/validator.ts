@@ -45,11 +45,6 @@ export function isLocalNetworkIP(ip: string): boolean {
   // Trim leading and trailing whitespace
   ip = ip.trim();
 
-  // Check for localhost
-  if (ip === "localhost" || ip === "127.0.0.1" || ip === "::1") {
-    return true;
-  }
-
   // IPv4 address format check
   const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
   if (ipv4Regex.test(ip)) {
