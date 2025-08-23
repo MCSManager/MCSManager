@@ -5,7 +5,7 @@ import InstanceSubsystem from "../service/system_instance";
 
 import fs from "fs-extra";
 import i18next from "i18next";
-import { systemInfo } from "mcsmanager-common";
+import { systemInfo, toNumber, toText } from "mcsmanager-common";
 import { LOCAL_PRESET_LANG_PATH } from "../const";
 import { globalConfiguration } from "../entity/config";
 import { $t } from "../i18n";
@@ -34,21 +34,50 @@ routerApp.on("info/overview", async (ctx) => {
       total
     },
     system: systemInfo(),
-    cpuMemChart: VisualDataSubsystem.getSystemChartArray()
+    cpuMemChart: VisualDataSubsystem.getSystemChartArray(),
+    config: {
+      language: globalConfiguration.config.language,
+      uploadSpeedRate: globalConfiguration.config.uploadSpeedRate,
+      downloadSpeedRate: globalConfiguration.config.downloadSpeedRate,
+      portRangeStart: globalConfiguration.config.allocatablePortRange[0],
+      portRangeEnd: globalConfiguration.config.allocatablePortRange[1],
+      portAssignInterval: globalConfiguration.config.portAssignInterval,
+      port: globalConfiguration.config.port
+    }
   };
   protocol.response(ctx, info);
 });
 
 routerApp.on("info/setting", async (ctx, data) => {
-  const language = String(data.language);
-  try {
-    logger.warn($t("语言已切换："), language);
+  const language = toText(data.language);
+  const uploadSpeedRate = toNumber(data.uploadSpeedRate);
+  const downloadSpeedRate = toNumber(data.downloadSpeedRate);
+  const portRangeStart = toNumber(data.portRangeStart);
+  const portRangeEnd = toNumber(data.portRangeEnd);
+  const portAssignInterval = toNumber(data.portAssignInterval);
+  const port = toNumber(data.port);
+  if (language) {
+    logger.warn($t("TXT_CODE_66e32091"), language);
     i18next.changeLanguage(language);
     fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
     globalConfiguration.config.language = language;
-    globalConfiguration.store();
-    protocol.response(ctx, true);
-  } catch (error: any) {
-    protocol.responseError(ctx, error);
   }
+  if (uploadSpeedRate != null && uploadSpeedRate >= 0) {
+    globalConfiguration.config.uploadSpeedRate = uploadSpeedRate;
+  }
+  if (downloadSpeedRate != null && downloadSpeedRate >= 0) {
+    globalConfiguration.config.downloadSpeedRate = downloadSpeedRate;
+  }
+  if (portRangeStart != null && portRangeEnd != null && portRangeStart < portRangeEnd) {
+    globalConfiguration.config.allocatablePortRange = [portRangeStart, portRangeEnd];
+    globalConfiguration.config.currentAllocatablePort = portRangeStart;
+  }
+  if (portAssignInterval != null && portAssignInterval > 0) {
+    globalConfiguration.config.portAssignInterval = portAssignInterval;
+  }
+  if (port && port > 0 && port < 65535) {
+    globalConfiguration.config.port = port;
+  }
+  globalConfiguration.store();
+  protocol.response(ctx, true);
 });

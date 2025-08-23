@@ -22,6 +22,11 @@ class Config {
   public allocatablePortRange = [10010, 65500];
   public currentAllocatablePort = 10010;
   public portAssignInterval = 5;
+
+  // default: Unlimited, if set 40 => (40 packets * 64KB)/s => 2.5MB/s
+  public uploadSpeedRate = 0;
+  // default: Unlimited, if set 32 => (32 packets * 64KB)/s => 2MB/s
+  public downloadSpeedRate = 0;
 }
 
 // daemon configuration class

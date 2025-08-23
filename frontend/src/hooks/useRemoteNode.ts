@@ -13,6 +13,12 @@ export interface RemoteNodeDetail {
   prefix: string;
   remarks: string;
   apiKey?: string;
+  language: string;
+  uploadSpeedRate: number;
+  downloadSpeedRate: number;
+  portRangeStart: number;
+  portRangeEnd: number;
+  portAssignInterval: number;
 }
 
 export function useRemoteNode() {

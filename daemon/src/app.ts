@@ -144,10 +144,10 @@ console.log("");
 
 async function listenExitSig(signal: string, isForce = true) {
   try {
-    logger.warn($t("收到来自系统的 {{signal}} 信号，正在尝试关闭所有实例...", { signal }));
+    logger.warn($t("TXT_CODE_4ffdc91d", { signal }));
     await InstanceSubsystem.exit(isForce);
     await uploadManager.exit();
-    logger.info($t("程序已退出！"));
+    logger.info($t("TXT_CODE_dff680b7"));
     process.exit(0);
   } catch (err) {
     logger.error(err);

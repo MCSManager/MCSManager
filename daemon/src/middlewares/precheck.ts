@@ -1,7 +1,15 @@
 import { Context } from "koa";
-import { missionPassport } from "../service/mission_passport";
+import { globalConfiguration } from "../entity/config";
 import logger from "../service/log";
+import { missionPassport } from "../service/mission_passport";
 import uploadManager from "../service/upload_manager";
+import { proxyIncomingMessage } from "../utils/speed_limit";
+
+export function isUploadRequest(ctx: Context) {
+  const headers = ctx.request?.headers;
+  const contentType = headers?.["content-type"] ?? "";
+  return contentType.toLowerCase().includes("multipart/form-data");
+}
 
 /**
  * Prevent users from performing unrestricted file uploads using koa-body,
@@ -9,9 +17,7 @@ import uploadManager from "../service/upload_manager";
  */
 export async function uploadFileCheckMiddleware(ctx: Context, next: () => Promise<void>) {
   try {
-    const headers = ctx.request?.headers;
-    const contentType = headers?.["content-type"] ?? "";
-    const isMultipart = contentType.toLowerCase().includes("multipart/form-data");
+    const isMultipart = isUploadRequest(ctx);
     const error = new Error("Access denied: Invalid multipart/form-data request!");
 
     if (isMultipart) {
@@ -37,4 +43,15 @@ export async function uploadFileCheckMiddleware(ctx: Context, next: () => Promis
     logger.error("uploadFileCheckMiddleware error: " + e?.message);
     throw e;
   }
+}
+
+export async function uploadSpeedLimitMiddleware(ctx: Context, next: () => Promise<void>) {
+  const isUpload = isUploadRequest(ctx);
+  if (isUpload) {
+    const rate = Number(globalConfiguration.config.uploadSpeedRate) || 0;
+    if (rate <= 0) return await next();
+    const incomingMessage = proxyIncomingMessage(ctx.req, rate);
+    ctx.req = incomingMessage;
+  }
+  return await next();
 }

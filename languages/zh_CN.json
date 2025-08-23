@@ -2736,5 +2736,17 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败",
+  "TXT_CODE_4ffdc91d": "收到来自系统的 {{signal}} 信号，正在尝试关闭所有实例...",
+  "TXT_CODE_dff680b7": "程序已退出！",
+  "TXT_CODE_66e32091": "节点语言已更改：",
+  "TXT_CODE_eadac3c2": "实例 {{instance}} 正常关闭超时，正在强制关闭...",
+  "TXT_CODE_187bb567": "所有实例已关闭，正在退出程序...",
+  "TXT_CODE_6f23ce93_0": "还剩下 {{count}} 个实例待关闭，正在等待...",
+  "TXT_CODE_fde31068": "用户上传文件速率",
+  "TXT_CODE_d8d19932": "限制每个 HTTP 请求，上传文件最大速度",
+  "TXT_CODE_785a0fcf": "用户下载文件速率",
+  "TXT_CODE_b9fc604c": "限制每个 HTTP 请求，下载文件最大速度",
+  "TXT_CODE_cd1f9ef7": "节点监听端口",
+  "TXT_CODE_75ef0619": "重启节点生效，需要同时修改连接配置"
 }

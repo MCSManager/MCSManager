@@ -2736,5 +2736,18 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_4ffdc91d": "Received {{signal}} signal from the system, attempting to shut down all instances...",
+  "TXT_CODE_dff680b7": "Program has exited!",
+  "TXT_CODE_66e32091": "Node language has been changed:",
+  "TXT_CODE_eadac3c2": "Instance {{instance}} shutdown timed out, forcing shutdown...",
+  "TXT_CODE_187bb567": "All instances have been shut down, exiting program...",
+  "TXT_CODE_6f23ce93": "{{count}} instance remaining to be shut down, waiting...",
+  "TXT_CODE_6f23ce93_plural": "{{count}} instances remaining to be shut down, waiting...",
+  "TXT_CODE_fde31068": "User file upload rate",
+  "TXT_CODE_d8d19932": "Limit per HTTP request, maximum file upload speed",
+  "TXT_CODE_785a0fcf": "User file download rate",
+  "TXT_CODE_b9fc604c": "Limit per HTTP request, maximum file download speed",
+  "TXT_CODE_cd1f9ef7": "Node listening port",
+  "TXT_CODE_75ef0619": "Restart node to take effect, requires simultaneous modification of connection configuration"
 }
