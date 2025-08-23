@@ -142,9 +142,15 @@ logger.info($t("TXT_CODE_app.exitTip"));
 logger.info("----------------------------");
 console.log("");
 
+let isExiting = false;
 async function listenExitSig(signal: string, isForce = true) {
+  if (isExiting) {
+    logger.warn($t("TXT_CODE_6f862823"));
+    return;
+  }
   try {
     logger.warn($t("TXT_CODE_4ffdc91d", { signal }));
+    isExiting = true;
     await InstanceSubsystem.exit(isForce);
     await uploadManager.exit();
     logger.info($t("TXT_CODE_dff680b7"));

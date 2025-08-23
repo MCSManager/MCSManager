@@ -2751,5 +2751,6 @@
   "TXT_CODE_75ef0619": "Restart node to take effect, requires simultaneous modification of connection configuration",
   "TXT_CODE_1556989": "The label content is too long. Please reduce the number of characters.",
   "TXT_CODE_34611898": "Startup",
-  "TXT_CODE_e4dce83f": "Online"
+  "TXT_CODE_e4dce83f": "Online",
+  "TXT_CODE_6f862823": "The MCSManager is exiting, please wait..."
 }
