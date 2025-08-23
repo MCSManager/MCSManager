@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
+import TextContainer from "@/components/TextContainer.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
@@ -14,6 +15,7 @@ import {
 } from "@/services/apis/instance";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { arrayFilter } from "@/tools/array";
+import { formatMemoryUsage } from "@/tools/memory";
 import { parseTimestamp } from "@/tools/time";
 import { reportErrorMsg } from "@/tools/validator";
 import type { InstanceDetail, LayoutCard } from "@/types/index";
@@ -258,73 +260,79 @@ const instanceOperations = computed(() =>
     </template>
     <template #operator> </template>
     <template #body>
-      <a-typography-paragraph>
-        <div class="mb-6">
-          <a-tag :color="isRunning ? 'green' : ''">
-            <span v-if="isRunning">
-              <CheckCircleOutlined />
-              {{ statusText }}
-            </span>
-            <span v-else-if="isStopped" class="color-info">
-              <ExclamationCircleOutlined />
-              {{ statusText }}
-            </span>
-            <span v-else>
-              <ExclamationCircleOutlined />
-              {{ statusText }}
-            </span>
-          </a-tag>
-          <a-tag>
-            {{ instanceTypeText }}
-          </a-tag>
-        </div>
+      <div class="instance-card-body">
+        <a-typography-paragraph>
+          <div class="mb-6 flex" style="flex-wrap: wrap; gap: 8px">
+            <a-tag class="m-0" :color="isRunning ? 'green' : 'blue'">
+              <span v-if="isRunning">
+                <CheckCircleOutlined />
+                {{ statusText }}
+              </span>
+              <span v-else-if="isStopped">
+                <ExclamationCircleOutlined />
+                {{ statusText }}
+              </span>
+              <span v-else>
+                <ExclamationCircleOutlined />
+                {{ statusText }}
+              </span>
+            </a-tag>
+            <a-tag class="m-0" color="blue">
+              {{ instanceTypeText }}
+            </a-tag>
+            <div v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0">|</div>
+            <a-tag v-for="item in instanceInfo?.config.tag" :key="item" class="m-0">
+              {{ item }}
+            </a-tag>
+          </div>
 
-        <div
-          v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0"
-          class="instance-tag-container mb-6"
-        >
-          <a-tag
-            v-for="item in instanceInfo?.config.tag"
-            :key="item"
-            class="group-name-tag"
-            color="blue"
-          >
-            {{ item }}
-          </a-tag>
-        </div>
+          <div>
+            {{ t("TXT_CODE_d31a684c") }}
+            {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
+          </div>
+          <div v-if="instanceInfo?.config.endTime">
+            {{ t("TXT_CODE_ae747cc0") }}
+            {{ parseTimestamp(instanceInfo?.config.endTime) }}
+          </div>
+          <div v-if="instanceInfo?.config?.docker?.image">
+            {{ t("镜像名：") }}
+            <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="30" />
+          </div>
+          <div v-if="instanceInfo?.info.memoryUsage">
+            {{ t("内存占用:") }}
+            {{
+              formatMemoryUsage(
+                instanceInfo?.info.memoryUsage,
+                instanceInfo?.config?.docker?.memory
+              )
+            }}
+          </div>
+          <div v-if="instanceInfo?.info.mcPingOnline">
+            <span class="mr-2">{{ t("TXT_CODE_33a09033") }}</span>
+            <span style="vertical-align: middle">
+              <UserOutlined />
+              {{ instanceInfo?.info.currentPlayers }} / {{ instanceInfo?.info.maxPlayers }}
+            </span>
+          </div>
+        </a-typography-paragraph>
 
-        <div>
-          {{ t("TXT_CODE_d31a684c") }}
-          {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
-        </div>
-        <div>
-          {{ t("TXT_CODE_ae747cc0") }}
-          {{ parseTimestamp(instanceInfo?.config.endTime) }}
-        </div>
-        <div v-if="instanceInfo?.info.mcPingOnline">
-          <span class="mr-2">{{ t("TXT_CODE_33a09033") }}</span>
-          <span style="vertical-align: middle">
-            <UserOutlined />
-            {{ instanceInfo?.info.currentPlayers }} / {{ instanceInfo?.info.maxPlayers }}
-          </span>
-        </div>
-      </a-typography-paragraph>
-      <a-space warp :size="6" class="mb-4">
-        <div v-for="item in instanceOperations" :key="item.title">
-          <a-divider v-if="item.area" type="vertical" />
-          <a-tooltip v-else :title="item.title">
-            <a-button
-              size="small"
-              :loading="item.loading"
-              :disabled="item.disabled"
-              :danger="item.danger"
-              @click="item.click"
-            >
-              <component :is="item.icon" style="font-size: 13px"></component>
-            </a-button>
-          </a-tooltip>
-        </div>
-      </a-space>
+        <a-space warp :size="6" class="mb-4">
+          <div v-for="item in instanceOperations" :key="item.title">
+            <a-divider v-if="item.area" type="vertical" />
+            <a-tooltip v-else :title="item.title">
+              <a-button
+                size="small"
+                :loading="item.loading"
+                :disabled="item.disabled"
+                :danger="item.danger"
+                @click="item.click"
+              >
+                <component :is="item.icon" style="font-size: 13px"></component>
+              </a-button>
+            </a-tooltip>
+          </div>
+        </a-space>
+      </div>
     </template>
   </CardPanel>
 </template>
@@ -333,6 +341,7 @@ const instanceOperations = computed(() =>
 .instance-card {
   cursor: pointer;
   min-height: 170px;
+  transition: border 0.3s ease;
 }
 .instance-card:hover {
   border: 1px solid var(--color-gray-8);
@@ -341,8 +350,15 @@ const instanceOperations = computed(() =>
 .instance-tag-container {
   margin-left: -4px;
   margin-right: -4px;
-  .group-name-tag {
-    margin: 4px;
-  }
+}
+.group-name-tag {
+  margin: 4px;
+}
+
+.instance-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 </style>

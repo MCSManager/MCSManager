@@ -112,6 +112,7 @@ declare module 'vue' {
     TaskLoadingDialog: typeof import('./src/components/fc/TaskLoadingDialog.vue')['default']
     TerminalCore: typeof import('./src/components/TerminalCore.vue')['default']
     TerminalTags: typeof import('./src/components/TerminalTags.vue')['default']
+    TextContainer: typeof import('./src/components/TextContainer.vue')['default']
     UploadBubble: typeof import('./src/components/UploadBubble.vue')['default']
     UploadFileDialog: typeof import('./src/components/fc/UploadFileDialog.vue')['default']
     UploadTaskProgress: typeof import('./src/components/UploadTaskProgress.vue')['default']

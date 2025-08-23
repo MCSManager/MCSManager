@@ -1584,7 +1584,7 @@
   "TXT_CODE_a725a5b1": "Message that shows when the tpsbar is enabled for a user using the /tpsbar command.",
   "TXT_CODE_a77b1a21": "The maximum allowed time difference between client devices and the server when generating and verifying TOTP codes.",
   "TXT_CODE_a7813c72": "Set to true for the ender dragon to bypass the mob griefing gamerule",
-  "TXT_CODE_a7885cbc": "Controls the container's preference for using virtual memory pages, ranging from 0 to 100. Higher values make the kernel more likely to swap memory pages to release physical memory.",
+  "TXT_CODE_a7885cbc": "Controls the container's preference for using virtual memory pages, ranging from 0 to 100.",
   "TXT_CODE_a788e3eb": "Memory & CPU",
   "TXT_CODE_a7907771": "Saved Successfully",
   "TXT_CODE_a7aa53a3": "Sets the server to use for profiles.",

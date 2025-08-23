@@ -406,7 +406,7 @@ router.put(
       if (config.tag instanceof Array && isTopPermissionByUuid(getUserUuid(ctx))) {
         instanceTags = (config.tag as any[]).map((tag: any) => {
           const tmp = String(tag).trim();
-          if (tmp.length > 9) throw new Error($t("TXT_CODE_6d8bc58d"));
+          if (tmp.length > 20) throw new Error($t("标签内容过长，请减少字符数"));
           return tmp;
         });
         if (instanceTags.length > 6) {
