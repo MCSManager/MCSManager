@@ -142,7 +142,7 @@ router.put(
     const daemonSetting = parameter?.setting || {};
     const daemon = RemoteServiceSubsystem.getInstance(uuid);
 
-    if (daemonSetting) {
+    if (daemonSetting && daemon?.available) {
       await new RemoteRequest(daemon).request("info/setting", daemonSetting);
     }
 

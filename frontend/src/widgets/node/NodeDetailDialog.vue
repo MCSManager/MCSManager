@@ -11,12 +11,13 @@ const { addNode, deleteNode, updateNode } = useRemoteNode();
 const editMode = ref(false);
 const formRef = ref<FormInstance>();
 const activeTabKey = ref("basic");
+const daemonInfo = ref<ComputedNodeInfo | null>(null);
 
 const DEFAULT_CONFIG = {
   ip: "",
   port: 24444,
   prefix: "",
-  remarks: "",
+  remarks: "Unnamed Node",
   apiKey: "",
   language: "",
   uploadSpeedRate: 0,
@@ -91,6 +92,7 @@ const ipRules = [
 
 const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
   if (data && uuid) {
+    daemonInfo.value = data;
     editMode.value = true;
     dialog.uuid = uuid;
     dialog.data = {
@@ -224,7 +226,7 @@ defineExpose({ openDialog });
       </a-tab-pane>
 
       <!-- 高级配置标签页 -->
-      <a-tab-pane key="advanced" :tab="t('TXT_CODE_31a1d824')">
+      <a-tab-pane v-if="daemonInfo?.available" key="advanced" :tab="t('TXT_CODE_31a1d824')">
         <a-form :model="dialog.data" layout="vertical">
           <a-row :gutter="16">
             <a-col :span="12">

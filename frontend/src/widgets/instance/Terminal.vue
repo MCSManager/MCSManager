@@ -252,8 +252,8 @@ const prettyBytesConfig = {
 
 const getUsageColor = (percentage?: number) => {
   percentage = Number(percentage);
-  if (percentage > 80) return "error";
-  if (percentage > 60) return "warning";
+  if (percentage > 600) return "error";
+  if (percentage > 200) return "warning";
   return "default";
 };
 
