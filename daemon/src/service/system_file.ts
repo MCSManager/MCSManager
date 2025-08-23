@@ -6,6 +6,7 @@ import iconv from "iconv-lite";
 import { globalConfiguration } from "../entity/config";
 import { ProcessWrapper } from "mcsmanager-common";
 import os from "os";
+import { normalizedJoin } from "../tools/filepath";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
@@ -21,7 +22,10 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -79,7 +83,7 @@ export default class FileManager {
 
   cd(dirName: string) {
     if (!this.check(dirName)) throw new Error(ERROR_MSG_01);
-    this.cwd = path.normalize(path.join(this.cwd, dirName));
+    this.cwd = normalizedJoin(this.cwd, dirName);
   }
 
   list(page: 0, pageSize = 40, searchFileName?: string) {
