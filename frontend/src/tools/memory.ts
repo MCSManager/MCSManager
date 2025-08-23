@@ -2,7 +2,6 @@ import prettyBytes, { type Options } from "pretty-bytes";
 
 export const formatMemoryUsage = (usage?: number, limit?: number) => {
   const config: Options = {
-    binary: true,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   };

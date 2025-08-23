@@ -258,12 +258,8 @@ const getUsageColor = (percentage?: number) => {
 };
 
 const formatMemoryUsage = (usage?: number, limit?: number) => {
-  const config = {
-    ...prettyBytesConfig,
-    binary: true
-  };
-  const fUsage = prettyBytes(usage ?? 0, config);
-  const fLimit = prettyBytes(limit ?? 0, config);
+  const fUsage = prettyBytes(usage ?? 0, prettyBytesConfig);
+  const fLimit = prettyBytes(limit ?? 0, prettyBytesConfig);
 
   return limit ? `${fUsage} / ${fLimit}` : fUsage;
 };

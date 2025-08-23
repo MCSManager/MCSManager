@@ -304,10 +304,7 @@ const instanceOperations = computed(() =>
             <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
             <span class="value">
               {{
-                formatMemoryUsage(
-                  instanceInfo?.info.memoryUsage,
-                  instanceInfo?.config?.docker?.memory
-                )
+                formatMemoryUsage(instanceInfo?.info.memoryUsage, instanceInfo?.info.memoryLimit)
               }}
             </span>
           </div>
