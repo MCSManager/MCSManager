@@ -209,7 +209,7 @@ export class QuickInstallTask extends AsyncTask {
       );
       logger.info(t("TXT_CODE_ac225d07") + JSON.stringify(config));
 
-      this.instance.clearRuntimeConfig();
+      this.instance.resetConfigWithoutDocker();
       this.instance.parameters(config, true);
 
       this.instance.println("INFO", $t("TXT_CODE_4eccdde8"));

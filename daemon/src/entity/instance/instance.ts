@@ -268,22 +268,27 @@ export default class Instance extends EventEmitter {
     globalConfiguration.store();
   }
 
-  clearRuntimeConfig() {
-    const name = this.config.nickname;
-    const memory = this.config.docker.memory;
-    const maxSpace = this.config.docker.maxSpace;
-    const cpuUsage = this.config.docker.cpuUsage;
-    const cwd = this.config.cwd;
-    const endTime = this.config.endTime;
+  resetConfigWithoutDocker() {
+    const newDockerCfg: IGlobalInstanceConfig["docker"] = JSON.parse(
+      JSON.stringify(this.config.docker)
+    );
 
-    const newConfig = new InstanceConfig();
-    newConfig.nickname = name;
-    newConfig.docker.memory = memory;
-    newConfig.docker.maxSpace = maxSpace;
-    newConfig.docker.cpuUsage = cpuUsage;
-    newConfig.cwd = cwd;
-    newConfig.endTime = endTime;
-    this.config = newConfig;
+    // Delete some environment configurations specific to a certain image
+    // to avoid the newly generated configurations from having an adverse impact on new images.
+    delete newDockerCfg.image;
+    delete newDockerCfg.env;
+    delete newDockerCfg.ports;
+    delete newDockerCfg.workingDir;
+    delete newDockerCfg.changeWorkdir;
+    delete newDockerCfg.containerName;
+
+    // Reset some configurations
+    this.config.updateCommand = "";
+    this.config.startCommand = "";
+    this.config.stopCommand = "^C";
+    this.config.type = Instance.TYPE_UNIVERSAL;
+
+    this.config.docker = newDockerCfg;
   }
 
   setLock(bool: boolean) {
