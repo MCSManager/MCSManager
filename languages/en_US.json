@@ -1087,7 +1087,7 @@
   "TXT_CODE_76c66252": "Tab-Completion Abuse Increment",
   "TXT_CODE_76d20724": "Assigned Instances",
   "TXT_CODE_76d59e8": "Set to true to make downward bubble columns generate instead of upward bubble columns when soul sand is placed/generated under water-source blocks.",
-  "TXT_CODE_77000411": "Image Name",
+  "TXT_CODE_77000411": "Image",
   "TXT_CODE_7702d818": "Sneak and right-click a strider with a saddle on it's back to remove it with this option enabled",
   "TXT_CODE_772c4961": "Amount of damage per second crystals deal to phantoms. Value of 1.0 is half a heart",
   "TXT_CODE_773f36a0": "Upload Successful.",
@@ -2529,7 +2529,7 @@
   "TXT_CODE_fa6d3490": "Allow Spiders to Cross World Borders",
   "TXT_CODE_fa6f95a1": "MC MCDR",
   "TXT_CODE_fa7002ef": "User <<operator_name>> restarted the <<instance_name>> instance",
-  "TXT_CODE_fa920c0": "Expiration Time",
+  "TXT_CODE_fa920c0": "Expire",
   "TXT_CODE_faa1962b": "User <<operator_name>> created the user <<target_user_name>>",
   "TXT_CODE_faa6656a": "The server will send hashed block network IDs instead of incrementing IDs starting from 0",
   "TXT_CODE_fabc6a75": "Villager Immunity After Work",
@@ -2743,11 +2743,13 @@
   "TXT_CODE_eadac3c2": "Instance {{instance}} shutdown timed out, forcing shutdown...",
   "TXT_CODE_187bb567": "All instances have been shut down, exiting program...",
   "TXT_CODE_6f23ce93": "{{count}} instance remaining to be shut down, waiting...",
-  "TXT_CODE_6f23ce93_plural": "{{count}} instances remaining to be shut down, waiting...",
   "TXT_CODE_fde31068": "User file upload rate",
   "TXT_CODE_d8d19932": "Limit per HTTP request, maximum file upload speed",
   "TXT_CODE_785a0fcf": "User file download rate",
   "TXT_CODE_b9fc604c": "Limit per HTTP request, maximum file download speed",
   "TXT_CODE_cd1f9ef7": "Node listening port",
-  "TXT_CODE_75ef0619": "Restart node to take effect, requires simultaneous modification of connection configuration"
+  "TXT_CODE_75ef0619": "Restart node to take effect, requires simultaneous modification of connection configuration",
+  "TXT_CODE_1556989": "The label content is too long. Please reduce the number of characters.",
+  "TXT_CODE_34611898": "Startup",
+  "TXT_CODE_e4dce83f": "Online"
 }

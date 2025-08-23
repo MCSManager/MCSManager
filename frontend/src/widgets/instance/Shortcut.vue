@@ -262,7 +262,7 @@ const instanceOperations = computed(() =>
     <template #body>
       <div class="instance-card-body">
         <a-typography-paragraph>
-          <div class="mb-6 flex" style="flex-wrap: wrap; gap: 8px">
+          <div class="mb-8 flex" style="flex-wrap: wrap; gap: 8px">
             <a-tag class="m-0" :color="isRunning ? 'green' : 'blue'">
               <span v-if="isRunning">
                 <CheckCircleOutlined />
@@ -286,30 +286,34 @@ const instanceOperations = computed(() =>
             </a-tag>
           </div>
 
-          <div>
-            {{ t("TXT_CODE_d31a684c") }}
-            {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}
+          <div class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_34611898") }}:</span>
+            <span class="value"> {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}</span>
           </div>
-          <div v-if="instanceInfo?.config.endTime">
-            {{ t("TXT_CODE_ae747cc0") }}
-            {{ parseTimestamp(instanceInfo?.config.endTime) }}
+          <div v-if="instanceInfo?.config.endTime" class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_fa920c0") }}:</span>
+            <span> {{ parseTimestamp(instanceInfo?.config.endTime) }}</span>
           </div>
-          <div v-if="instanceInfo?.config?.docker?.image">
-            {{ t("镜像名：") }}
-            <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="30" />
+          <div v-if="instanceInfo?.config?.docker?.image" class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_77000411") }}:</span>
+            <span class="value">
+              <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="26" />
+            </span>
           </div>
-          <div v-if="instanceInfo?.info.memoryUsage">
-            {{ t("内存占用:") }}
-            {{
-              formatMemoryUsage(
-                instanceInfo?.info.memoryUsage,
-                instanceInfo?.config?.docker?.memory
-              )
-            }}
+          <div v-if="instanceInfo?.info.memoryUsage" class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
+            <span class="value">
+              {{
+                formatMemoryUsage(
+                  instanceInfo?.info.memoryUsage,
+                  instanceInfo?.config?.docker?.memory
+                )
+              }}
+            </span>
           </div>
-          <div v-if="instanceInfo?.info.mcPingOnline">
-            <span class="mr-2">{{ t("TXT_CODE_33a09033") }}</span>
-            <span style="vertical-align: middle">
+          <div v-if="instanceInfo?.info.mcPingOnline" class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_e4dce83f") }}:</span>
+            <span class="value" style="vertical-align: middle">
               <UserOutlined />
               {{ instanceInfo?.info.currentPlayers }} / {{ instanceInfo?.info.maxPlayers }}
             </span>
@@ -360,5 +364,20 @@ const instanceOperations = computed(() =>
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+}
+
+.instance-info-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+
+  .title {
+    margin-right: 10px;
+  }
+
+  .value {
+    opacity: 0.8;
+  }
 }
 </style>
