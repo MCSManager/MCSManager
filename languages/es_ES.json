@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
+  "TXT_CODE_1556989": "El contenido de la etiqueta es demasiado largo. \nReduzca el número de caracteres.",
+  "TXT_CODE_187bb567": "Todas las instancias se han cerrado, saliendo del programa ...",
+  "TXT_CODE_34611898": "Puesta en marcha",
+  "TXT_CODE_4ffdc91d": "Se recibió la señal {{señal}} del sistema, intentando cerrar todas las instancias ...",
+  "TXT_CODE_66e32091": "El lenguaje de nodo ha sido cambiado:",
+  "TXT_CODE_6f23ce93": "{{count}} instancia restante para ser cerrada, esperando ...",
+  "TXT_CODE_6f862823": "El McSmanager está saliendo, por favor espera ...",
+  "TXT_CODE_75ef0619": "Reiniciar el nodo para entrar en vigencia, requiere una modificación simultánea de la configuración de la conexión",
+  "TXT_CODE_785a0fcf": "Tasa de descarga de archivos de usuario",
+  "TXT_CODE_b9fc604c": "Límite por solicitud HTTP, velocidad máxima de descarga de archivo",
+  "TXT_CODE_cd1f9ef7": "Puerto de escucha de nodo",
+  "TXT_CODE_d8d19932": "Límite por solicitud HTTP, velocidad máxima de carga de archivo",
+  "TXT_CODE_dff680b7": "¡El programa ha salido!",
+  "TXT_CODE_e4dce83f": "En línea",
+  "TXT_CODE_eadac3c2": "Instancia {{instancia}} apagado horario, forzando el apagado ...",
+  "TXT_CODE_fde31068": "Tasa de carga de archivo de usuario"
 }

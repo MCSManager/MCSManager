@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Des tâches en double existent déjà",
   "TXT_CODE_system_instance_control.illegalName": "Nom de projet incorrect, ne prend en charge que les traits de soulignement, les chiffres, les lettres et certaines langues locales",
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
-  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué"
+  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
+  "TXT_CODE_1556989": "The label content is too long. \nVeuillez réduire le nombre de caractères.",
+  "TXT_CODE_187bb567": "Toutes les instances ont été fermées, sortant du programme ...",
+  "TXT_CODE_34611898": "Démarrer",
+  "TXT_CODE_4ffdc91d": "Signal {{signal}} reçu du système, essayant d'arrêter toutes les instances ...",
+  "TXT_CODE_66e32091": "La langue de nœud a été modifiée:",
+  "TXT_CODE_6f23ce93": "{{count}} instance restant pour être arrêté, en attendant ...",
+  "TXT_CODE_6f862823": "Le McSmanager sort, veuillez patienter ...",
+  "TXT_CODE_75ef0619": "Redémarrer le nœud pour prendre effet, nécessite une modification simultanée de la configuration de la connexion",
+  "TXT_CODE_785a0fcf": "Taux de téléchargement des fichiers utilisateur",
+  "TXT_CODE_b9fc604c": "Limite par demande HTTP, vitesse de téléchargement de fichiers maximum",
+  "TXT_CODE_cd1f9ef7": "Port d'écoute de nœud",
+  "TXT_CODE_d8d19932": "Limite par demande HTTP, vitesse maximale de téléchargement de fichiers",
+  "TXT_CODE_dff680b7": "Le programme est sorti!",
+  "TXT_CODE_e4dce83f": "En ligne",
+  "TXT_CODE_eadac3c2": "Instance {{instance}} Shutdown a chronométré, forçant l'arrêt ...",
+  "TXT_CODE_fde31068": "Taux de téléchargement de fichiers utilisateur"
 }

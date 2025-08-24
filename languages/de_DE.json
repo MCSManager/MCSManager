@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
+  "TXT_CODE_1556989": "Der Etiketteninhalt ist zu lang. \nBitte reduzieren Sie die Anzahl der Zeichen.",
+  "TXT_CODE_187bb567": "Alle Fälle wurden geschlossen und das Programm verlassen ...",
+  "TXT_CODE_34611898": "Start-up",
+  "TXT_CODE_4ffdc91d": "Empfangen {{Signal}} Signal aus dem System und versucht, alle Instanzen zu schalten ...",
+  "TXT_CODE_66e32091": "Die Knotensprache wurde geändert:",
+  "TXT_CODE_6f23ce93": "{{count}} Instanz verbleiben, um geschlossen zu werden, und wartet ...",
+  "TXT_CODE_6f862823": "Der McSmanager fährt aus, bitte warte ...",
+  "TXT_CODE_75ef0619": "Starten Sie den Knoten zur Wirkung neu, erfordert eine gleichzeitige Änderung der Verbindungskonfiguration",
+  "TXT_CODE_785a0fcf": "Benutzerdatei -Download -Rate",
+  "TXT_CODE_b9fc604c": "Limit pro HTTP -Anforderung, Maximale Datei -Download -Geschwindigkeit",
+  "TXT_CODE_cd1f9ef7": "Knotenhöranschluss",
+  "TXT_CODE_d8d19932": "Begrenzung pro HTTP",
+  "TXT_CODE_dff680b7": "Das Programm ist verlassen!",
+  "TXT_CODE_e4dce83f": "Online",
+  "TXT_CODE_eadac3c2": "Instanz {{Instanz}} Herunterfahren zeitlich festgelegt, erzwingt das Abschalten ...",
+  "TXT_CODE_fde31068": "Upload -Rate für Benutzerdatei"
 }

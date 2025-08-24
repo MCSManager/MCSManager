@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Uma tarefa duplicada já existe.",
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
-  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão"
+  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
+  "TXT_CODE_1556989": "O conteúdo do rótulo é muito longo. \nPor favor, reduza o número de caracteres.",
+  "TXT_CODE_187bb567": "Todas as instâncias foram fechadas, saindo do programa ...",
+  "TXT_CODE_34611898": "Comece",
+  "TXT_CODE_4ffdc91d": "Recebido {{Signal}} sinal do sistema, tentando encerrar todas as instâncias ...",
+  "TXT_CODE_66e32091": "A linguagem do nó foi alterada:",
+  "TXT_CODE_6f23ce93": "{{count}} a instância restante para ser desligada, esperando ...",
+  "TXT_CODE_6f862823": "O McManager está saindo, por favor, espere ...",
+  "TXT_CODE_75ef0619": "Reiniciar o nó para entrar em vigor, requer modificação simultânea da configuração de conexão",
+  "TXT_CODE_785a0fcf": "Taxa de download de arquivos do usuário",
+  "TXT_CODE_b9fc604c": "Limite por solicitação HTTP, velocidade máxima de download de arquivo",
+  "TXT_CODE_cd1f9ef7": "Porta de escuta do nó",
+  "TXT_CODE_d8d19932": "Limite por solicitação HTTP, velocidade máxima de upload do arquivo",
+  "TXT_CODE_dff680b7": "O programa saiu!",
+  "TXT_CODE_e4dce83f": "On-line",
+  "TXT_CODE_eadac3c2": "Instância {{Instância}} desligamento cronometrado, forçando o desligamento ...",
+  "TXT_CODE_fde31068": "Taxa de upload de arquivos do usuário"
 }

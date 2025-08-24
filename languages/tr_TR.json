@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Yinelenen bir görev zaten var.",
   "TXT_CODE_system_instance_control.illegalName": "Yasadışı görev adı. Yalnızca alt çizgiler, sayılar, harfler ve bazı yerel dil karakterleri desteklenir.",
   "TXT_CODE_ui.help": "[Terminal] Daemon temel etkileşimli işlevselliğe sahiptir. Daha fazla bilgi için lütfen 'help' girin.",
-  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız"
+  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız",
+  "TXT_CODE_1556989": "Etiket içeriği çok uzun. \nLütfen karakter sayısını azaltın.",
+  "TXT_CODE_187bb567": "Tüm örnekler kapatıldı, programdan çıktı ...",
+  "TXT_CODE_34611898": "Başlatmak",
+  "TXT_CODE_4ffdc91d": "Tüm örnekleri kapatmaya çalışarak sistemden {{sinyal}} sinyali alındı ​​...",
+  "TXT_CODE_66e32091": "Düğüm dili değiştirildi:",
+  "TXT_CODE_6f23ce93": "{{count}} kapatılacak örnek, bekliyor ...",
+  "TXT_CODE_6f862823": "McSmanger çıkıyor, lütfen bekleyin ...",
+  "TXT_CODE_75ef0619": "Etkili olmak için düğümü yeniden başlatın, bağlantı yapılandırmasının eşzamanlı olarak değiştirilmesini gerektirir",
+  "TXT_CODE_785a0fcf": "Kullanıcı Dosyası İndirme Oranı",
+  "TXT_CODE_b9fc604c": "HTTP İsteği Başına Limit, Maksimum Dosya İndirme Hızı",
+  "TXT_CODE_cd1f9ef7": "Düğüm dinleme bağlantı noktası",
+  "TXT_CODE_d8d19932": "HTTP isteği başına sınır, maksimum dosya yükleme hızı",
+  "TXT_CODE_dff680b7": "Program çıktı!",
+  "TXT_CODE_e4dce83f": "Çevrimiçi",
+  "TXT_CODE_eadac3c2": "Örnek {{örnek}} Kapatma zaman aşımına uğrayarak kapanma zorlanıyor ...",
+  "TXT_CODE_fde31068": "Kullanıcı Dosyası Yükleme Oranı"
 }

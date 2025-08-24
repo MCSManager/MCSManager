@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "重複したタスクがすでに存在します",
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
-  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました"
+  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
+  "TXT_CODE_1556989": "ラベルのコンテンツが長すぎます。\n文字の数を減らしてください。",
+  "TXT_CODE_187bb567": "すべてのインスタンスがシャットダウンされ、プログラムを終了しました...",
+  "TXT_CODE_34611898": "起動する",
+  "TXT_CODE_4ffdc91d": "システムから{{signal}}信号を受信し、すべてのインスタンスをシャットダウンしようとしました...",
+  "TXT_CODE_66e32091": "ノード言語が変更されました：",
+  "TXT_CODE_6f23ce93": "{{count}} shut shutdownの残りのインスタンス、待っています...",
+  "TXT_CODE_6f862823": "McSmanagerが出発しています、待ってください...",
+  "TXT_CODE_75ef0619": "ノードを再起動して有効にするには、接続構成の同時変更が必要です",
+  "TXT_CODE_785a0fcf": "ユーザーファイルのダウンロードレート",
+  "TXT_CODE_b9fc604c": "HTTP要求ごとに制限、最大ファイルのダウンロード速度",
+  "TXT_CODE_cd1f9ef7": "ノードリスニングポート",
+  "TXT_CODE_d8d19932": "HTTP要求ごとに制限、最大ファイルアップロード速度",
+  "TXT_CODE_dff680b7": "プログラムが終了しました！",
+  "TXT_CODE_e4dce83f": "オンライン",
+  "TXT_CODE_eadac3c2": "instance {{instance}}シャットダウンタイムアウト、シャットダウンを強制します...",
+  "TXT_CODE_fde31068": "ユーザーファイルのアップロードレート"
 }

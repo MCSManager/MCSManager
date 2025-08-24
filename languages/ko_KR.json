@@ -2736,5 +2736,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
+  "TXT_CODE_1556989": "레이블 내용이 너무 길다. \n문자 수를 줄이십시오.",
+  "TXT_CODE_187bb567": "모든 인스턴스가 종료되어 프로그램을 종료했습니다 ...",
+  "TXT_CODE_34611898": "스타트 업",
+  "TXT_CODE_4ffdc91d": "시스템에서 {{signal}} 신호를 받았으며 모든 인스턴스를 종료하려고 시도합니다 ...",
+  "TXT_CODE_66e32091": "노드 언어가 변경되었습니다.",
+  "TXT_CODE_6f23ce93": "{{count}} 종료 될 남은 인스턴스, 대기 중 ...",
+  "TXT_CODE_6f862823": "McSmanager가 종료 중입니다. 잠깐만 ...",
+  "TXT_CODE_75ef0619": "적용되도록 노드를 다시 시작하고 연결 구성의 동시 수정이 필요합니다.",
+  "TXT_CODE_785a0fcf": "사용자 파일 다운로드 속도",
+  "TXT_CODE_b9fc604c": "HTTP 요청 당 제한, 최대 파일 다운로드 속도",
+  "TXT_CODE_cd1f9ef7": "노드 청취 포트",
+  "TXT_CODE_d8d19932": "HTTP 요청 당 제한, 최대 파일 업로드 속도",
+  "TXT_CODE_dff680b7": "프로그램이 종료되었습니다!",
+  "TXT_CODE_e4dce83f": "온라인",
+  "TXT_CODE_eadac3c2": "인스턴스 {{instance}} 종료 시간이 중단되어 종료를 강요 ...",
+  "TXT_CODE_fde31068": "사용자 파일 업로드 속도"
 }
