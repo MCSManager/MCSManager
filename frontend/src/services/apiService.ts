@@ -45,14 +45,14 @@ class ApiService {
       }
     });
 
+    if (config.url?.startsWith("/")) {
+      config.url = "." + config.url;
+    }
+
     if (config.forceRequest === true) {
       config.params = config?.params || {};
       config.params._force = Date.now();
       return await this.sendRequest<T>(config);
-    }
-
-    if (config.url?.startsWith("/")) {
-      config.url = "." + config.url;
     }
 
     const reqId = encodeURIComponent(
