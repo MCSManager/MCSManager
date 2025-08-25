@@ -26,7 +26,7 @@ const globalReqIdMap = new Map<string, boolean>();
 const globalIframeList = new Map<string, Ref<HTMLIFrameElement | null>>();
 
 export function getProPanelUrl(path: string) {
-  return `http://localhost:5174/#${path}`;
+  return `https://online.mcsmanager.com/#${path}`;
 }
 
 export function useIframeEventListener(iframe: Ref<HTMLIFrameElement | null>) {

@@ -16,12 +16,14 @@ import {
   BookOutlined,
   BugOutlined,
   GithubOutlined,
+  KeyOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
   PicLeftOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SketchOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -81,18 +83,18 @@ const menus = arrayFilter([
     key: "baseInfo",
     icon: ProjectOutlined
   },
-  // {
-  //   title: t("TXT_CODE_574ed474"),
-  //   key: "pro",
-  //   icon: SketchOutlined,
-  //   condition: () => isCN()
-  // },
-  // {
-  //   title: t("TXT_CODE_caf8ebb7"),
-  //   key: "redeem",
-  //   icon: KeyOutlined,
-  //   condition: () => isCN()
-  // },
+  {
+    title: t("TXT_CODE_574ed474"),
+    key: "pro",
+    icon: SketchOutlined,
+    condition: () => isCN()
+  },
+  {
+    title: t("TXT_CODE_caf8ebb7"),
+    key: "redeem",
+    icon: KeyOutlined,
+    condition: () => isCN()
+  },
   {
     title: t("TXT_CODE_1c18acc0"),
     key: "ui",
