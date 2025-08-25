@@ -496,7 +496,7 @@ export default class Instance extends EventEmitter {
     );
     const basePort = Number(this.config.basePort);
     ports.forEach((portOffset) => {
-      const placeholder = `\{mcsm_port${portOffset}\}`;
+      const placeholder = `\\{mcsm_port${portOffset}\\}`;
       const replacement = String(basePort + portOffset);
       text = text.replace(new RegExp(placeholder, "gim"), replacement);
     });
