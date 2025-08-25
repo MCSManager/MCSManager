@@ -39,7 +39,7 @@ import {
   RedoOutlined
 } from "@ant-design/icons-vue";
 import { useLocalStorage } from "@vueuse/core";
-import prettyBytes from "pretty-bytes";
+import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
 import { computed } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
@@ -245,9 +245,10 @@ const getInstanceName = computed(() => {
 });
 
 const useByteUnit = useLocalStorage("useByteUnit", true); // true: bytes, false: bits
-const prettyBytesConfig = {
+const prettyBytesConfig: PrettyOptions = {
   minimumFractionDigits: 2,
-  maximumFractionDigits: 2
+  maximumFractionDigits: 2,
+  binary: true
 };
 
 const getUsageColor = (percentage?: number) => {
