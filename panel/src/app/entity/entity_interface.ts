@@ -1,4 +1,4 @@
-import { SocketOptions, ManagerOptions } from "socket.io-client";
+import { ManagerOptions, SocketOptions } from "socket.io-client";
 export interface IPacket {
   uuid: string;
   status: number;
@@ -53,10 +53,10 @@ export class RemoteServiceConfig {
   public apiKey = "";
   connectOpts: Partial<SocketOptions & ManagerOptions> = {
     multiplex: false,
-    reconnectionDelayMax: 1000 * 3,
-    timeout: 1000 * 3,
+    reconnectionDelayMax: 1000 * 5,
+    timeout: 1000 * 10,
     reconnection: true,
-    reconnectionAttempts: 20,
+    reconnectionAttempts: 10,
     rejectUnauthorized: false
   };
 }
