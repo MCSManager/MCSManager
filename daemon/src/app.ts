@@ -1,8 +1,10 @@
+import { exec } from "child_process";
 import fs from "fs-extra";
 import http from "http";
 import { removeTrail } from "mcsmanager-common";
 import { Server, Socket } from "socket.io";
-import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH } from "./const";
+import { promisify } from "util";
+import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH, SEVEN_ZIP_PATH, setSevenZipStatus } from "./const";
 import { globalConfiguration } from "./entity/config";
 import { $t, i18next } from "./i18n";
 import "./service/async_task_service";
@@ -17,6 +19,8 @@ import "./service/system_visual_data";
 import uploadManager from "./service/upload_manager";
 import { getVersion, initVersionManager } from "./service/version";
 import versionAdapter from "./service/version_adapter";
+
+const execPromise = promisify(exec);
 
 initVersionManager();
 const VERSION = getVersion();
@@ -89,10 +93,50 @@ const io = new Server(httpServer, {
   maxHttpBufferSize: 1e8
 });
 
+// 检查7zip是否正常工作
+async function check7zipStatus(): Promise<boolean> {
+  try {
+    // 检查7zip文件是否存在
+    if (!fs.existsSync(SEVEN_ZIP_PATH)) {
+      logger.warn("7zip文件不存在: " + SEVEN_ZIP_PATH);
+      return false;
+    }
+
+    // 设置7zip文件可执行权限
+    try {
+      fs.chmodSync(SEVEN_ZIP_PATH, 0o755);
+    } catch (chmodError: any) {
+      logger.warn(`设置7zip文件权限失败: ${chmodError.message}`);
+    }
+
+    // 尝试运行7zip信息命令
+    const { stdout, stderr } = await execPromise(`"${SEVEN_ZIP_PATH}" i`);
+    
+    // 检查输出是否包含版本信息
+    if (stdout.includes("7-Zip") && stdout.includes("Copyright")) {
+      logger.info("7zip成功加载");
+      logger.info(`7zip版本信息: ${stdout.split('\n')[1].trim()}`);
+      return true;
+    } else {
+      logger.warn("7zip运行异常，输出不包含预期信息");
+      return false;
+    }
+  } catch (error: any) {
+    logger.warn(`7zip检查失败: ${error.message}`);
+    return false;
+  }
+}
+
 // Initialize application instance system
 try {
   InstanceSubsystem.loadInstances();
   logger.info($t("TXT_CODE_app.instanceLoad", { n: InstanceSubsystem.getInstances().length }));
+  
+  // 检查7zip状态
+  check7zipStatus().then(status => {
+    setSevenZipStatus(status);
+  });
+  
 } catch (err) {
   logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
