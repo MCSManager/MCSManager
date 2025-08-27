@@ -43,6 +43,49 @@ export const getFileExtName = (fileName: string) => {
   return suffix;
 };
 
+/**
+ * 判断文件是否为可解压的压缩包格式
+ * 支持常见单卷包：.7z, .zip, .rar, .tar.gz, .iso, .cab 等
+ * 支持常见分卷包：.7z.001、.part1.rar、.rar + .r00、.zip + .z01 等
+ */
+export const isCompressFile = (fileName: string): boolean => {
+  const lowerFileName = fileName.toLowerCase();
+  
+  // 常见单卷包后缀
+  const singleVolumeExts = ['7z', 'zip', 'rar', 'tar.gz', 'iso', 'cab', 'tar', 'gz', 'tar.xz', 'bz2', 'tar.bz2'];
+  
+  // 检查单卷包
+  for (const ext of singleVolumeExts) {
+    if (lowerFileName.endsWith('.' + ext)) {
+      return true;
+    }
+  }
+  
+  // 检查分卷包格式
+  // 1. 7z分卷：.7z.001, .7z.002, .7z.003 等（只有 .7z.001 可以解压）
+  if (/\.7z\.\d+$/i.test(lowerFileName)) {
+    return lowerFileName.endsWith('.001'); // 只有第一卷可以解压
+  }
+  
+  // 2. RAR分卷
+  // 新版RAR5：.part1.rar, .part2.rar, .part3.rar 等（只有 part1.rar 可以解压）
+  if (/\.part\d+\.rar$/i.test(lowerFileName)) {
+    return /\.part1\.rar$/i.test(lowerFileName); // 只有第一卷可以解压
+  }
+  
+  // 旧版RAR：.rar, .r00, .r01, .r02 等（只有 .rar 可以解压）
+  if (/\.r\d{2}$/i.test(lowerFileName)) {
+    return false; // .r00, .r01 等不能解压，只有主 .rar 文件可以
+  }
+  
+  // 3. ZIP分卷：.zip, .z01, .z02, .z03 等（只有 .zip 主文件可以解压）
+  if (/\.z\d{2}$/i.test(lowerFileName)) {
+    return false; // .z01, .z02 等不能解压，只有主 .zip 文件可以
+  }
+  
+  return false;
+};
+
 const fileType = new Map([
   ["DOC", FileWordOutlined],
   ["DOCX", FileWordOutlined],
@@ -60,6 +103,19 @@ const fileType = new Map([
   ["RAR", FileZipOutlined],
   ["TAR.GZ", FileZipOutlined],
   ["TAR.XZ", FileZipOutlined],
+  ["ISO", FileZipOutlined], // 新增ISO格式
+  ["CAB", FileZipOutlined], // 新增CAB格式
+  ["BZ2", FileZipOutlined], // 新增BZ2格式
+  ["TAR.BZ2", FileZipOutlined], // 新增TAR.BZ2格式
+  
+  // 分卷包格式支持
+  ["001", FileZipOutlined], // 7z分卷 (.7z.001)
+  ["R00", FileZipOutlined], // RAR旧版分卷 (.r00)
+  ["R01", FileZipOutlined], // RAR旧版分卷 (.r01)
+  ["R02", FileZipOutlined], // RAR旧版分卷 (.r02)
+  ["Z01", FileZipOutlined], // ZIP分卷 (.z01)
+  ["Z02", FileZipOutlined], // ZIP分卷 (.z02)
+  ["Z03", FileZipOutlined], // ZIP分卷 (.z03)
 
   ["JPG", FileImageOutlined],
   ["JPEG", FileImageOutlined],

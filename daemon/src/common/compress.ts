@@ -24,6 +24,35 @@ function checkFileName(fileName: string) {
   return true;
 }
 
+// 检查文件是否为zip格式（仅支持.zip后缀）
+function isZipFormat(filePath: string): boolean {
+  const ext = path.extname(filePath).toLowerCase();
+  return ext === '.zip';
+}
+
+// 检查是否为zip分卷包
+function isZipMultiVolume(zipPath: string): boolean {
+  const dir = path.dirname(zipPath);
+  const baseName = path.basename(zipPath, '.zip');
+  
+  // 检查是否存在 .z01, .z02 等分卷文件
+  const volumeExtensions = ['.z01', '.z02', '.z03', '.z04', '.z05'];
+  
+  for (const ext of volumeExtensions) {
+    const volumeFile = path.join(dir, baseName + ext);
+    if (fs.existsSync(volumeFile)) {
+      return true; // 发现分卷文件，说明是分卷包
+    }
+  }
+  
+  return false; // 没有发现分卷文件，是普通zip文件
+}
+
+// 获取文件扩展名用于错误提示
+function getFileExtension(filePath: string): string {
+  return path.extname(filePath).toLowerCase().substring(1) || 'unknown';
+}
+
 export async function compress(
   sourceZip: string,
   files: string[],
@@ -42,12 +71,29 @@ export async function decompress(
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
   
-  // 如果7zip状态为true，使用7zip解压
-  if (SEVEN_ZIP_STATUS) {
-    return await use7zip(zipPath, dest);
+  // 如果7zip状态为false，只支持zip格式解压
+  if (!SEVEN_ZIP_STATUS) {
+    if (!isZipFormat(zipPath)) {
+      const fileExt = getFileExtension(zipPath);
+      throw new Error(`7zip未加载，不支持 .${fileExt} 格式的解压。请联系管理员启用7zip支持或使用 .zip 格式的压缩包。`);
+    }
+    
+    // 检查是否为zip分卷包
+    if (isZipMultiVolume(zipPath)) {
+      throw new Error('7zip未加载，不支持zip分卷包的解压。zip分卷包需要启用7zip支持才能正确解压，请联系管理员启用7zip功能。');
+    }
+    
+    // 使用原来的file_zip处理普通zip文件，添加友好的错误处理
+    try {
+      return await useUnzip(zipPath, dest, fileCode || "utf-8");
+    } catch (error: any) {
+      // 将原有的模糊错误转换为更友好的提示
+      logger.error(`ZIP解压失败: ${error.message}`);
+      throw new Error('ZIP文件解压失败。可能的原因：\n1. 文件损坏或密码保护\n2. 如果这是分卷压缩包(zip+z01+z02等)，需要启用7zip支持\n3. 文件格式不正确\n请检查文件或联系管理员启用7zip功能以获得更好的压缩包支持。');
+    }
   } else {
-    // 否则使用原来的file_zip
-    return await useUnzip(zipPath, dest, fileCode || "utf-8");
+    // 7zip状态为true，使用7zip解压（支持所有格式）
+    return await use7zip(zipPath, dest);
   }
 }
 
