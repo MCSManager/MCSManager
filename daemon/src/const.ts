@@ -28,7 +28,6 @@ function generate7zipConstants() {
     } else if (arch === "arm64") {
       folder = "7z2501-linux-arm";
     } else {
-      // 其他架构默认使用x86
       folder = "7z2501-linux-x86";
     }
     name = "7zz";
@@ -36,7 +35,6 @@ function generate7zipConstants() {
     folder = "7z2501-mac";
     name = "7zz";
   } else {
-    // 其他系统默认使用linux配置
     folder = "7z2501-linux-x86";
     name = "7zz";
   }
@@ -61,11 +59,9 @@ const GOLANG_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", GOLANG_ZI
 const STEAM_CMD_PATH = loadSteamCmdPath();
 const WINDOWS_STEAM_CMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
-// 生成7zip相关常量
+
 const { folder: SEVEN_ZIP_FOLDER, name: SEVEN_ZIP_NAME } = generate7zipConstants();
 const SEVEN_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", SEVEN_ZIP_FOLDER, SEVEN_ZIP_NAME));
-
-// 7zip状态全局变量
 let SEVEN_ZIP_STATUS = false;
 
 export {
@@ -85,7 +81,9 @@ export {
   ZIP_TIMEOUT_SECONDS
 };
 
-// 设置7zip状态的函数
+/**
+ * Set the 7zip status
+ */
 export function setSevenZipStatus(status: boolean) {
   SEVEN_ZIP_STATUS = status;
 }
