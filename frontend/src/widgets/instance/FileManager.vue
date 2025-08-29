@@ -8,7 +8,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
 import uploadService from "@/services/uploadService";
 import { arrayFilter } from "@/tools/array";
-import { filterFileName, getFileExtName, getFileIcon } from "@/tools/fileManager";
+import { filterFileName, getFileExtName, getFileIcon, isCompressFile } from "@/tools/fileManager";
 import { convertFileSize } from "@/tools/fileSize";
 import type { LayoutCard } from "@/types";
 import type { AntColumnsType } from "@/types/ant";
@@ -281,7 +281,7 @@ const menuList = (record: DataType) =>
       key: "unzip",
       icon: h(FileZipOutlined),
       onClick: () => unzipFile(record.name),
-      condition: () => record.type === 1 && getFileExtName(record.name) === "zip"
+      condition: () => record.type === 1 && isCompressFile(record.name)
     },
     {
       label: t("TXT_CODE_ad207008"),
