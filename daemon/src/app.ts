@@ -96,13 +96,19 @@ const io = new Server(httpServer, {
 try {
   InstanceSubsystem.loadInstances();
   logger.info($t("TXT_CODE_app.instanceLoad", { n: InstanceSubsystem.getInstances().length }));
-  
-  initializeSevenZip();
-  
 } catch (err) {
   logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
 }
+
+// Initialize 7zip service
+(async function init7zipModule() {
+  try {
+    await initializeSevenZip();
+  } catch (error: any) {
+    logger.error($t("7zip初始化失败: {{message}}", { message: error?.message || "Unknown error" }));
+  }
+})();
 
 (function initCompressModule() {
   try {

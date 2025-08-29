@@ -69,7 +69,6 @@ export function getFileExtension(filePath: string): string {
 async function check7zipStatus(): Promise<boolean> {
   try {
     if (!fs.existsSync(SEVEN_ZIP_PATH)) {
-      logger.warn($t("7zip文件不存在: {{path}}", { path: SEVEN_ZIP_PATH }));
       return false;
     }
 
@@ -82,15 +81,13 @@ async function check7zipStatus(): Promise<boolean> {
     const { stdout } = await execPromise(`"${SEVEN_ZIP_PATH}" i`);
     
     if (stdout.includes("7-Zip") && stdout.includes("Copyright")) {
-      logger.info($t("7zip成功加载"));
-      logger.info($t("7zip版本信息: {{info}}", { info: stdout.split('\n')[1].trim() }));
+      logger.info($t("7zip成功加载: {{info}}", { info: stdout.split('\n')[1].trim() }));
       return true;
     } else {
       logger.warn($t("7zip运行异常，输出不包含预期信息"));
       return false;
     }
   } catch (error: any) {
-    logger.warn($t("7zip检查失败: {{message}}", { message: error.message }));
     return false;
   }
 }
