@@ -275,12 +275,6 @@ export default class Instance extends EventEmitter {
 
     // Delete some environment configurations specific to a certain image
     // to avoid the newly generated configurations from having an adverse impact on new images.
-    delete newDockerCfg.image;
-    delete newDockerCfg.env;
-    delete newDockerCfg.ports;
-    delete newDockerCfg.workingDir;
-    delete newDockerCfg.changeWorkdir;
-    delete newDockerCfg.containerName;
 
     // Reset some configurations
     this.config.updateCommand = "";
