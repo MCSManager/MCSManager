@@ -20,7 +20,7 @@ Fixing or upgrading an existing feature, **without exceeding the responsibilitie
 
 ### How to Contribute Code?
 
-Please refer to the `Development` section in the README.md file.
+Please refer to the [Development](https://github.com/MCSManager/MCSManager#development) section in the README.md file.
 
 <br />
 
@@ -46,4 +46,4 @@ Please refer to the `Development` section in the README.md file.
 
 ### 如何贡献代码？
 
-请阅读 README.MD 文件的 `Development` 段落。
+请阅读 README_ZH.MD 文件的 [搭建开发环境](https://github.com/MCSManager/MCSManager/blob/master/README_ZH.md#%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83) 段落。
