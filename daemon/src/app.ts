@@ -12,6 +12,7 @@ import * as koa from "./service/http";
 import logger from "./service/log";
 import * as protocol from "./service/protocol";
 import * as router from "./service/router";
+import { initializeSevenZip } from "./service/seven_zip_service";
 import InstanceSubsystem from "./service/system_instance";
 import "./service/system_visual_data";
 import uploadManager from "./service/upload_manager";
@@ -89,6 +90,8 @@ const io = new Server(httpServer, {
   maxHttpBufferSize: 1e8
 });
 
+
+
 // Initialize application instance system
 try {
   InstanceSubsystem.loadInstances();
@@ -97,6 +100,15 @@ try {
   logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
 }
+
+// Initialize 7zip service
+(async function init7zipModule() {
+  try {
+    await initializeSevenZip();
+  } catch (error: any) {
+    logger.error($t("7zip初始化失败: {{message}}", { message: error?.message || "Unknown error" }));
+  }
+})();
 
 (function initCompressModule() {
   try {
