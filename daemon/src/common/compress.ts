@@ -4,10 +4,15 @@ import { t } from "i18next";
 import { ProcessWrapper } from "mcsmanager-common";
 import path from "path";
 import { promisify } from "util";
-import { GOLANG_ZIP_PATH, SEVEN_ZIP_PATH, SEVEN_ZIP_STATUS, ZIP_TIMEOUT_SECONDS } from "../const";
+import { GOLANG_ZIP_PATH, SEVEN_ZIP_PATH, ZIP_TIMEOUT_SECONDS } from "../const";
 import { $t } from "../i18n";
 import logger from "../service/log";
-import { getFileExtension, isMultiVolume, isZipFormat } from "../service/seven_zip_service";
+import {
+  check7zipStatus,
+  getFileExtension,
+  isMultiVolume,
+  isZipFormat
+} from "../service/seven_zip_service";
 
 const execPromise = promisify(exec);
 
@@ -26,8 +31,6 @@ function checkFileName(fileName: string) {
   return true;
 }
 
-
-
 export async function compress(
   sourceZip: string,
   files: string[],
@@ -45,22 +48,32 @@ export async function decompress(
 ): Promise<boolean> {
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
-  
-  if (!SEVEN_ZIP_STATUS) {
+
+  if (!check7zipStatus()) {
     if (!isZipFormat(zipPath)) {
       const fileExt = getFileExtension(zipPath);
-      throw new Error($t("7zip未加载，不支持 .{{fileExt}} 格式的解压。请联系管理员启用7zip支持或使用 .zip 格式的压缩包。", { fileExt }));
+      throw new Error(
+        $t("缺少 7zip 依赖库支持，暂无法解压 {{fileExt}} 格式文件。", { fileExt: fileExt })
+      );
     }
-    
+
     if (isMultiVolume(zipPath)) {
-      throw new Error($t("7zip未加载，不支持分卷压缩包的解压。分卷压缩包（包括zip、7z、rar等格式）需要启用7zip支持才能正确解压，请联系管理员启用7zip功能。"));
+      throw new Error(
+        $t(
+          "7zip未加载，不支持分卷压缩包的解压。分卷压缩包（包括zip、7z、rar等格式）需要启用7zip支持才能正确解压，请联系管理员尝试安装 7zip 依赖库功能。"
+        )
+      );
     }
-    
+
     try {
       return await useUnzip(zipPath, dest, fileCode || "utf-8");
     } catch (error: any) {
-      logger.error($t("ZIP解压失败: {{message}}", { message: error.message }));
-      throw new Error($t("ZIP文件解压失败。可能的原因：\n1. 文件损坏或密码保护\n2. 如果这是分卷压缩包(zip+z01+z02等)，需要启用7zip支持\n3. 文件格式不正确\n请检查文件或联系管理员启用7zip功能以获得更好的压缩包支持。"));
+      logger.error($t("ZIP 解压失败: {{message}}", { message: error.message }));
+      throw new Error(
+        $t(
+          "ZIP文件解压失败。可能的原因：\n1. 文件损坏或密码保护\n2. 如果这是分卷压缩包(zip+z01+z02等)，需要启用7zip支持\n3. 文件格式不正确\n请检查文件或联系管理员启用7zip功能以获得更好的压缩包支持。"
+        )
+      );
     }
   } else {
     return await use7zip(zipPath, dest);
@@ -75,10 +88,10 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     const sourceDir = path.dirname(sourceZip);
     const normalizedDest = path.normalize(destDir);
     const normalizedSource = path.normalize(sourceDir);
-    
+
     let command: string;
     let workingDir: string;
-    
+
     if (normalizedDest === normalizedSource) {
       command = `"${SEVEN_ZIP_PATH}" e "${sourceZip}" -aoa`;
       workingDir = sourceDir;
@@ -89,28 +102,32 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
       workingDir = sourceDir;
       logger.info($t("使用7zip解压到指定目录: {{command}}", { command }));
     }
-    
-    const { stdout, stderr } = await execPromise(command, { 
+
+    const { stdout, stderr } = await execPromise(command, {
       cwd: workingDir,
       timeout: ZIP_TIMEOUT_SECONDS * 1000
     });
-    
-    const hasErrors = stdout.includes("ERRORS:") || 
-                     stdout.includes("ERROR:") || 
-                     stdout.includes("Open Errors:") || 
-                     stdout.includes("Missing volume") ||
-                     stdout.includes("Data Error") ||
-                     stdout.includes("Archives with Errors:");
-    
+
+    const hasErrors =
+      stdout.includes("ERRORS:") ||
+      stdout.includes("ERROR:") ||
+      stdout.includes("Open Errors:") ||
+      stdout.includes("Missing volume") ||
+      stdout.includes("Data Error") ||
+      stdout.includes("Archives with Errors:");
+
     if (hasErrors) {
-      const errorLines = stdout.split('\n').filter(line => 
-        line.includes("ERROR") || 
-        line.includes("Missing volume") || 
-        line.includes("Data Error") ||
-        line.includes("Open Errors") ||
-        line.includes("Archives with Errors")
-      );
-      
+      const errorLines = stdout
+        .split("\n")
+        .filter(
+          (line) =>
+            line.includes("ERROR") ||
+            line.includes("Missing volume") ||
+            line.includes("Data Error") ||
+            line.includes("Open Errors") ||
+            line.includes("Archives with Errors")
+        );
+
       let cleanErrorMsg: string;
       if (stdout.includes("Missing volume")) {
         const volumeMatch = stdout.match(/Missing volume\s*:\s*([^\s\n]+)/);
@@ -127,28 +144,32 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
         const firstError = errorLines[0]?.trim() || $t("未知错误");
         cleanErrorMsg = firstError.length > 100 ? firstError.substring(0, 100) + "..." : firstError;
       }
-      
+
       logger.error($t("7zip解压出现错误: {{message}}", { message: cleanErrorMsg }));
       throw new Error($t("解压失败: {{message}}", { message: cleanErrorMsg }));
     }
-    
+
     if (stderr && stderr.trim()) {
       logger.warn($t("7zip解压警告: {{warning}}", { warning: stderr }));
     }
-    
+
     if (stdout.includes("Everything is Ok")) {
       logger.info($t("7zip解压完成: Everything is Ok"));
     } else {
-      const resultLines = stdout.split('\n').filter(line => line.trim()).slice(-3);
-      logger.info($t("7zip解压完成: {{result}}", { result: resultLines.join('; ') }));
+      const resultLines = stdout
+        .split("\n")
+        .filter((line) => line.trim())
+        .slice(-3);
+      logger.info($t("7zip解压完成: {{result}}", { result: resultLines.join("; ") }));
     }
     return true;
-    
   } catch (error: any) {
     let simpleErrorMsg: string;
     if (error.message.includes("Missing volume")) {
       const volumeMatch = error.message.match(/Missing volume\s*:\s*([^\s\n]+)/);
-      simpleErrorMsg = volumeMatch ? $t("缺少分卷文件: {{file}}", { file: volumeMatch[1] }) : $t("缺少分卷文件");
+      simpleErrorMsg = volumeMatch
+        ? $t("缺少分卷文件: {{file}}", { file: volumeMatch[1] })
+        : $t("缺少分卷文件");
     } else if (error.message.includes("timeout")) {
       simpleErrorMsg = $t("解压超时");
     } else if (error.message.includes("ENOENT")) {
@@ -158,8 +179,13 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     } else {
       simpleErrorMsg = $t("解压失败");
     }
-    
-    logger.error($t("7zip解压失败: {{message}} (详细: {{details}})", { message: simpleErrorMsg, details: error.message.substring(0, 200) }));
+
+    logger.error(
+      $t("7zip解压失败: {{message}} (详细: {{details}})", {
+        message: simpleErrorMsg,
+        details: error.message.substring(0, 200)
+      })
+    );
     throw new Error($t("解压失败: {{message}}", { message: simpleErrorMsg }));
   }
 }

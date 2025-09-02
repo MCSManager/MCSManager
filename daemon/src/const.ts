@@ -31,7 +31,6 @@ const WINDOWS_STEAM_CMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/
 
 const SEVEN_ZIP_NAME = `7z_${os.platform()}_${os.arch()}${os.platform() === "win32" ? ".exe" : ""}`;
 const SEVEN_ZIP_PATH = path.normalize(path.join(process.cwd(), "lib", SEVEN_ZIP_NAME));
-let SEVEN_ZIP_STATUS = false;
 
 export {
   FILENAME_BLACKLIST,
@@ -42,17 +41,8 @@ export {
   PTY_PATH,
   SEVEN_ZIP_NAME,
   SEVEN_ZIP_PATH,
-  SEVEN_ZIP_STATUS,
   STEAM_CMD_PATH,
   SYSTEM_TYPE,
   WINDOWS_STEAM_CMD_URL,
   ZIP_TIMEOUT_SECONDS
 };
-
-/**
- * Set the 7zip status
- */
-export function setSevenZipStatus(status: boolean) {
-  SEVEN_ZIP_STATUS = status;
-}
-
