@@ -2775,5 +2775,6 @@
   "TXT_CODE_f460677f": "Decompression failed",
   "TXT_CODE_1b688710": "7zip decompression failed: {{message}} (details: {{details}})",
   "TXT_CODE_9ade0fb8": "Failed to set 7zip file permissions: {{message}}",
-  "TXT_CODE_a7c73a51": "7zip successfully loaded: {{info}}"
+  "TXT_CODE_a7c73a51": "7zip successfully loaded: {{info}}",
+  "TXT_CODE_f0512848": "Unzip Error: {{message}}"
 }

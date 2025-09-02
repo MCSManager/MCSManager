@@ -64,9 +64,9 @@ export async function decompress(
     } catch (error: any) {
       logger.error($t("TXT_CODE_842929d0", { message: error.message }));
       throw new Error(
-        $t(
-          "ZIP文件解压失败。可能的原因：\n1. 文件损坏或密码保护\n2. 如果这是分卷压缩包(zip+z01+z02等)，需要启用7zip支持\n3. 文件格式不正确\n请检查文件或联系管理员启用7zip功能以获得更好的压缩包支持。"
-        )
+        $t("TXT_CODE_f0512848", {
+          message: error?.message
+        })
       );
     }
   } else {
