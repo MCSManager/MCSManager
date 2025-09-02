@@ -24,7 +24,8 @@ const DEFAULT_CONFIG = {
   downloadSpeedRate: 0,
   portRangeStart: 0,
   portRangeEnd: 0,
-  portAssignInterval: 0
+  portAssignInterval: 0,
+  daemonPort: 24444
 };
 
 const SPEED_RATE_OPTIONS = [
@@ -97,7 +98,9 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
     dialog.uuid = uuid;
     dialog.data = {
       ...data,
-      ...data.config,
+      ...data?.config,
+      port: data?.port, // connection port
+      daemonPort: data?.config?.port, // listen port
       apiKey: ""
     };
   } else {
@@ -266,13 +269,13 @@ defineExpose({ openDialog });
               </a-form-item>
             </a-col>
             <a-col :span="24">
-              <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="port">
+              <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="daemonPort">
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
                     {{ t("TXT_CODE_75ef0619") }}
                   </a-typography-text>
                 </a-typography-paragraph>
-                <a-input v-model:value="dialog.data.port" />
+                <a-input v-model:value="dialog.data.daemonPort" />
               </a-form-item>
             </a-col>
           </a-row>
