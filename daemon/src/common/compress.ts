@@ -52,23 +52,17 @@ export async function decompress(
   if (!check7zipStatus()) {
     if (!isZipFormat(zipPath)) {
       const fileExt = getFileExtension(zipPath);
-      throw new Error(
-        $t("缺少 7zip 依赖库支持，暂无法解压 {{fileExt}} 格式文件。", { fileExt: fileExt })
-      );
+      throw new Error($t("TXT_CODE_69c42450", { fileExt: fileExt }));
     }
 
     if (isMultiVolume(zipPath)) {
-      throw new Error(
-        $t(
-          "7zip未加载，不支持分卷压缩包的解压。分卷压缩包（包括zip、7z、rar等格式）需要启用7zip支持才能正确解压，请联系管理员尝试安装 7zip 依赖库功能。"
-        )
-      );
+      throw new Error($t("TXT_CODE_91d066aa"));
     }
 
     try {
       return await useUnzip(zipPath, dest, fileCode || "utf-8");
     } catch (error: any) {
-      logger.error($t("ZIP 解压失败: {{message}}", { message: error.message }));
+      logger.error($t("TXT_CODE_842929d0", { message: error.message }));
       throw new Error(
         $t(
           "ZIP文件解压失败。可能的原因：\n1. 文件损坏或密码保护\n2. 如果这是分卷压缩包(zip+z01+z02等)，需要启用7zip支持\n3. 文件格式不正确\n请检查文件或联系管理员启用7zip功能以获得更好的压缩包支持。"
@@ -95,12 +89,12 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     if (normalizedDest === normalizedSource) {
       command = `"${SEVEN_ZIP_PATH}" e "${sourceZip}" -aoa`;
       workingDir = sourceDir;
-      logger.info($t("使用7zip解压到当前目录: {{command}}", { command }));
+      logger.info($t("TXT_CODE_fe2435a0", { command }));
     } else {
       await fs.ensureDir(destDir);
       command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" "-o${destDir}" -aoa`;
       workingDir = sourceDir;
-      logger.info($t("使用7zip解压到指定目录: {{command}}", { command }));
+      logger.info($t("TXT_CODE_35d2ee7a", { command }));
     }
 
     const { stdout, stderr } = await execPromise(command, {
@@ -132,35 +126,35 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
       if (stdout.includes("Missing volume")) {
         const volumeMatch = stdout.match(/Missing volume\s*:\s*([^\s\n]+)/);
         if (volumeMatch) {
-          cleanErrorMsg = $t("缺少分卷文件: {{file}}", { file: volumeMatch[1] });
+          cleanErrorMsg = $t("TXT_CODE_c0401ba7", { file: volumeMatch[1] });
         } else {
-          cleanErrorMsg = $t("缺少分卷文件");
+          cleanErrorMsg = $t("TXT_CODE_908a4ace");
         }
       } else if (stdout.includes("Data Error")) {
-        cleanErrorMsg = $t("压缩包数据损坏");
+        cleanErrorMsg = $t("TXT_CODE_b1ef1d4a");
       } else if (stdout.includes("Open Errors")) {
-        cleanErrorMsg = $t("压缩包无法打开");
+        cleanErrorMsg = $t("TXT_CODE_5778848e");
       } else {
-        const firstError = errorLines[0]?.trim() || $t("未知错误");
+        const firstError = errorLines[0]?.trim() || $t("TXT_CODE_11ecd5a9");
         cleanErrorMsg = firstError.length > 100 ? firstError.substring(0, 100) + "..." : firstError;
       }
 
-      logger.error($t("7zip解压出现错误: {{message}}", { message: cleanErrorMsg }));
-      throw new Error($t("解压失败: {{message}}", { message: cleanErrorMsg }));
+      logger.error($t("TXT_CODE_cacd8840", { message: cleanErrorMsg }));
+      throw new Error($t("TXT_CODE_ec7fc405", { message: cleanErrorMsg }));
     }
 
     if (stderr && stderr.trim()) {
-      logger.warn($t("7zip解压警告: {{warning}}", { warning: stderr }));
+      logger.warn($t("TXT_CODE_8a9c6364", { warning: stderr }));
     }
 
     if (stdout.includes("Everything is Ok")) {
-      logger.info($t("7zip解压完成: Everything is Ok"));
+      logger.info($t("TXT_CODE_e96a91cd"));
     } else {
       const resultLines = stdout
         .split("\n")
         .filter((line) => line.trim())
         .slice(-3);
-      logger.info($t("7zip解压完成: {{result}}", { result: resultLines.join("; ") }));
+      logger.info($t("TXT_CODE_143db7d9", { result: resultLines.join("; ") }));
     }
     return true;
   } catch (error: any) {
@@ -168,25 +162,25 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     if (error.message.includes("Missing volume")) {
       const volumeMatch = error.message.match(/Missing volume\s*:\s*([^\s\n]+)/);
       simpleErrorMsg = volumeMatch
-        ? $t("缺少分卷文件: {{file}}", { file: volumeMatch[1] })
-        : $t("缺少分卷文件");
+        ? $t("TXT_CODE_c0401ba7", { file: volumeMatch[1] })
+        : $t("TXT_CODE_908a4ace");
     } else if (error.message.includes("timeout")) {
-      simpleErrorMsg = $t("解压超时");
+      simpleErrorMsg = $t("TXT_CODE_1d1ec400");
     } else if (error.message.includes("ENOENT")) {
-      simpleErrorMsg = $t("7zip程序未找到");
+      simpleErrorMsg = $t("TXT_CODE_a0ede210");
     } else if (error.message.includes("Command failed")) {
-      simpleErrorMsg = $t("解压过程中出现错误");
+      simpleErrorMsg = $t("TXT_CODE_4fb3fad1");
     } else {
-      simpleErrorMsg = $t("解压失败");
+      simpleErrorMsg = $t("TXT_CODE_f460677f");
     }
 
     logger.error(
-      $t("7zip解压失败: {{message}} (详细: {{details}})", {
+      $t("TXT_CODE_1b688710", {
         message: simpleErrorMsg,
         details: error.message.substring(0, 200)
       })
     );
-    throw new Error($t("解压失败: {{message}}", { message: simpleErrorMsg }));
+    throw new Error($t("TXT_CODE_ec7fc405", { message: simpleErrorMsg }));
   }
 }
 

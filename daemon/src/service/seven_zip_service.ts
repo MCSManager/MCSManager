@@ -74,13 +74,13 @@ export async function check7zipStatus(): Promise<boolean> {
     try {
       await fs.chmod(SEVEN_ZIP_PATH, 0o755);
     } catch (chmodError: any) {
-      logger.warn($t("设置 7zip 文件权限失败: {{message}}", { message: chmodError.message }));
+      logger.warn($t("TXT_CODE_9ade0fb8", { message: chmodError.message }));
     }
     const { stdout } = await execPromise(`"${SEVEN_ZIP_PATH}" i`, {
       timeout: 5 * 1000
     });
     if (stdout.includes("7-Zip") && stdout.includes("Copyright")) {
-      logger.info($t("7zip 成功加载: {{info}}", { info: stdout.split("\n")[1].trim() }));
+      logger.info($t("TXT_CODE_a7c73a51", { info: stdout.split("\n")[1].trim() }));
       isChecked7zip = true;
       return true;
     }
