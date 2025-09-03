@@ -19,6 +19,10 @@ export const SUPPORTED_LANGS = [
     value: `zh_tw`
   },
   {
+    label: `日本語`,
+    value: `ja_jp`
+  },
+  {
     label: `Русский`,
     value: `ru_ru`
   },
@@ -39,10 +43,6 @@ export const SUPPORTED_LANGS = [
   //   label: `Thai`,
   //   value: `th_th`
   // }
-  // {
-  //   label: `日本語`,
-  //   value: `ja_jp`
-  // },
   // {
   //   label: `Español`,
   //   value: `es_es`

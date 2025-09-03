@@ -38,25 +38,29 @@ export default class FileWriter {
     let tempFileSaveName = basename + ext;
     let counter = 1;
 
-    const absolutePath = fileManager.toAbsolutePath(
-      path.normalize(path.join(dir, tempFileSaveName))
-    );
-    const isLock = await lockfile
-      .check(absolutePath)
-      .then((isLock) => isLock)
-      .catch(() => false);
-    const isAccess = await fs
-      .access(absolutePath)
-      .then(() => true)
-      .catch(() => false);
+    const checkFile = async (name: string) => {
+      const absolutePath = fileManager.toAbsolutePath(path.normalize(path.join(dir, name)));
+      const isLock = await lockfile
+        .check(absolutePath)
+        .then((isLock) => isLock)
+        .catch(() => false);
+      const isAccess = await fs
+        .access(absolutePath)
+        .then(() => true)
+        .catch(() => false);
+      return isAccess && !isLock && !overwrite;
+    };
 
-    while (isAccess && !isLock && !overwrite) {
+    while (await checkFile(tempFileSaveName)) {
       if (counter == 1) {
         tempFileSaveName = `${basename}-copy${ext}`;
       } else {
         tempFileSaveName = `${basename}-copy-${counter}${ext}`;
       }
       counter++;
+      if (counter > 100) {
+        throw new Error("Access denied: File name already exists!");
+      }
     }
 
     const fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));

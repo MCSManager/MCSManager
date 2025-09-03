@@ -36,6 +36,11 @@ jobs:
           cp prod-scripts/linux/* dist_linux/
           cp prod-scripts/windows/* dist_windows/
 
+      - name: Copy license
+        run: |
+          cp LICENSE dist_linux/LICENSE
+          cp LICENSE dist_windows/LICENSE
+
       - name: Copy node runtime to windows build
         run: |
           wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe

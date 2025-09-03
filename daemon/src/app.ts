@@ -78,8 +78,8 @@ httpServer.listen(config.port, config.ip);
 // Initialize Websocket service to HTTP service
 const io = new Server(httpServer, {
   serveClient: false,
-  pingInterval: 5000,
-  pingTimeout: 5000,
+  pingInterval: 1000 * 20,
+  pingTimeout: 1000 * 10,
   cookie: false,
   path: removeTrail(config.prefix, "/") + "/socket.io",
   cors: {
