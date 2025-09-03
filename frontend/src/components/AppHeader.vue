@@ -358,7 +358,7 @@ const onClickIcon = () => {
       </div>
     </div>
   </header>
-  <div v-if="!isPhone" style="height: 64px"></div>
+  <div v-if="!isPhone && route.meta?.showAppHeader !== false" style="height: 64px"></div>
 
   <!-- Menus for phone -->
   <header v-if="isPhone" class="app-header-content-for-phone">

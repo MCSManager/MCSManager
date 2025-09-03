@@ -107,6 +107,8 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectInstances: typeof import('./src/components/fc/SelectInstances.vue')['default']
+    ShopInfoUpdate: typeof import('./src/components/ShopInfoUpdate.vue')['default']
+    ShopInfoUpdateDialog: typeof import('./src/components/ShopInfoUpdateDialog.vue')['default']
     Style1: typeof import('./src/components/time/Style1.vue')['default']
     Style2: typeof import('./src/components/time/Style2.vue')['default']
     TagsDialog: typeof import('./src/components/fc/TagsDialog.vue')['default']

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { markdownToHTML } from "@/tools/safe";
 import { Button, Card, Flex } from "ant-design-vue";
 import { onMounted, reactive } from "vue";
 
-const { products, companyInfo, fetchProducts } = useShop();
+const { products, settingState: settings, refreshSettingInfo, fetchProducts } = useShop();
+const { isAdmin } = useAppStateStore();
 
 const formData = reactive({
   code: ""
@@ -19,20 +22,31 @@ const activeInstance = () => {
 };
 
 onMounted(async () => {
+  await refreshSettingInfo();
   await fetchProducts();
 });
 </script>
 
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <Flex vertical :gap="60" class="business-container">
+    <div v-if="isAdmin">
+      <ShopInfoUpdateDialog />
+    </div>
     <!-- 公司信息头部 -->
     <Flex class="company-header" align="center" justify="space-between" :gap="16">
       <Flex class="mb-60" vertical align="start" justify="start" :gap="16">
         <a-typography-title :level="1" class="company-title">
-          {{ companyInfo.name }}
+          <div
+            class="business-page-markdown-area"
+            v-html="markdownToHTML(settings?.shopName || '')"
+          ></div>
         </a-typography-title>
         <a-typography-paragraph class="company-desc">
-          {{ companyInfo.description }}
+          <div
+            class="business-page-markdown-area"
+            v-html="markdownToHTML(settings?.shopDescription || '')"
+          ></div>
         </a-typography-paragraph>
 
         <Flex :gap="16" align="center">
@@ -57,7 +71,7 @@ onMounted(async () => {
 
         <div style="opacity: 0.4">
           <a-typography-paragraph style="text-align: left">
-            售后QQ群：294213892
+            <span v-html="markdownToHTML(settings?.shopTip || '')"></span>
           </a-typography-paragraph>
         </div>
       </Flex>
@@ -131,13 +145,11 @@ onMounted(async () => {
     <footer class="footer-container">
       <Flex justify="space-between" align="center" vertical gap="8">
         <Flex align="center" :gap="8" justify="center" style="margin-bottom: 8px">
-          <span>© Copyright {{ new Date().getFullYear() }} {{ companyInfo.name }}</span>
+          <span>© Copyright {{ new Date().getFullYear() }}</span>
           <a-divider type="vertical" style="height: 9px" />
-          <span>
-            <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备12345678号</a>
-          </span>
+          <span v-html="markdownToHTML(settings?.loginInfo || '')"></span>
           <a-divider type="vertical" style="height: 9px" />
-          <span>{{ companyInfo.contact.email }} </span>
+          <span v-html="markdownToHTML(settings?.shopEmail || '')"></span>
         </Flex>
 
         <div>
@@ -151,7 +163,32 @@ onMounted(async () => {
   </Flex>
 </template>
 
+<style lang="scss">
+.business-page-markdown-area {
+  p {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+</style>
+
 <style scoped lang="scss">
+.layout-container {
+  border-radius: 12px;
+  padding: 20px 20px;
+  overflow: hidden;
+}
+
+.business-container {
+  min-height: 100vh;
+  padding: 40px 0px;
+  padding-bottom: 0px;
+  p {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
 .footer-container {
   color: #bbbbbb9d;
   padding: 40px;
@@ -176,23 +213,12 @@ onMounted(async () => {
   border: 1px solid var(--color-gray-5) !important;
 }
 
-.layout-container {
-  border-radius: 12px;
-  padding: 20px 20px;
-  overflow: hidden;
-}
-
-.business-container {
-  min-height: 100vh;
-  padding: 40px 0px;
-  padding-bottom: 0px;
-}
-
 /* 公司头部样式 */
 .company-header {
   text-align: center;
   height: 80vh;
   min-height: 500px;
+  margin: 0 60px;
 }
 
 .company-title {
@@ -200,6 +226,11 @@ onMounted(async () => {
   margin-bottom: 0 !important;
   font-weight: bold;
   font-size: 3.4rem !important;
+
+  p {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
 }
 
 .company-desc {

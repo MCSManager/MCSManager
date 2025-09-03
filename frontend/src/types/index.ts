@@ -37,7 +37,7 @@ export interface InstanceRuntimeInfo {
   writeBytes?: number;
   memoryUsage?: number;
   memoryLimit?: number;
-  allocatedPorts?: { 
+  allocatedPorts?: {
     host: number;
     container: number;
     protocol: string;
@@ -85,6 +85,10 @@ export interface Settings {
   allowChangeCmd: boolean;
   registerCode: string;
   panelId: string;
+  shopName: string;
+  shopEmail: string;
+  shopDescription: string;
+  shopTip: string;
 }
 
 export interface ImageInfo {

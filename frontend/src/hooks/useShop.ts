@@ -1,3 +1,5 @@
+import { setSettingInfo, settingInfo } from "@/services/apis";
+import type { Settings } from "@/types";
 import { ref } from "vue";
 
 export interface FrontProductInfo extends IBusinessProductInfo {
@@ -89,6 +91,8 @@ const PRODUCT_CONFIGS: FrontProductInfo[] = [
 ];
 
 export function useShop() {
+  const { execute: updateSettingInfo } = setSettingInfo();
+  const { execute: refreshSettingInfo, state: settingState } = settingInfo();
   const products = ref<FrontProductInfo[]>([]);
   const companyInfo = ref({
     name: "星星云数据",
@@ -109,9 +113,18 @@ export function useShop() {
     });
   };
 
+  const updateShopInfo = async (data: Partial<Settings>) => {
+    return await updateSettingInfo({
+      data
+    });
+  };
+
   return {
+    refreshSettingInfo,
     products,
     companyInfo,
-    fetchProducts
+    settingState,
+    fetchProducts,
+    updateShopInfo
   };
 }

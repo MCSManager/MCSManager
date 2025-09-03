@@ -111,7 +111,7 @@ export const settingInfo = useDefineApi<any, Settings>({
 
 export const setSettingInfo = useDefineApi<
   | {
-      data: Settings;
+      data: Partial<Settings>;
     }
   | undefined,
   string
