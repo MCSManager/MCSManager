@@ -91,8 +91,8 @@ const PRODUCT_CONFIGS: FrontProductInfo[] = [
 export function useShop() {
   const products = ref<FrontProductInfo[]>([]);
   const companyInfo = ref({
-    name: "星云数据",
-    description: "专业的游戏服务器托管服务商，为您提供稳定、高性能的服务器托管解决方案",
+    name: "星星云数据",
+    description: "专业的游戏服务器托管服务商，为您提供稳定、高性能的游戏服务器解决方案",
     contact: {
       phone: "400-888-6666",
       email: "support@mcscloud.com",

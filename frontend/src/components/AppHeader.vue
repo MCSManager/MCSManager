@@ -302,7 +302,7 @@ const onClickIcon = () => {
 
 <template>
   <header class="app-header-wrapper" :style="headerStyle">
-    <div v-if="!isPhone" class="app-header-content">
+    <div v-if="!isPhone && route.meta?.showAppHeader !== false" class="app-header-content">
       <nav class="btns">
         <a href="." style="margin-right: 12px">
           <div class="logo">

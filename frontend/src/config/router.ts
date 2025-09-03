@@ -5,6 +5,7 @@ import Business from "@/views/Business.vue";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
+import type { CSSProperties } from "vue";
 import {
   createRouter,
   createWebHashHistory,
@@ -13,7 +14,8 @@ import {
 } from "vue-router";
 
 export interface RouterMetaInfo {
-  showBreadcrumbs?: boolean; // 面包屑导航是否显示
+  showBreadcrumbs?: boolean;
+  showAppHeader?: boolean;
   icon?: string;
   mainMenu?: boolean;
   permission?: number;
@@ -33,6 +35,7 @@ export interface RouterMetaInfo {
     mainMenu?: boolean;
     permission: number;
   }>;
+  appContainerStyle?: CSSProperties;
 }
 
 export interface RouterConfig {
@@ -295,6 +298,7 @@ const originRouterConfig: RouterConfig[] = [
     component: Business,
     meta: {
       showBreadcrumbs: false,
+      showAppHeader: false,
       permission: ROLE.GUEST,
       mainMenu: true,
       condition: () => {

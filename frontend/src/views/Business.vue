@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
 import { Button, Card, Flex } from "ant-design-vue";
-import { onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 
 const { products, companyInfo, fetchProducts } = useShop();
+
+const formData = reactive({
+  code: ""
+});
+
+const toLoginPage = () => {
+  router.push({ path: "/login" });
+};
+
+const activeInstance = () => {
+  console.log("激活实例！");
+};
 
 onMounted(async () => {
   await fetchProducts();
@@ -14,27 +27,57 @@ onMounted(async () => {
   <Flex vertical :gap="60" class="business-container">
     <!-- 公司信息头部 -->
     <Flex class="company-header" align="center" justify="space-between" :gap="16">
-      <Flex vertical align="start" justify="start" :gap="16">
+      <Flex class="mb-60" vertical align="start" justify="start" :gap="16">
         <a-typography-title :level="1" class="company-title">
           {{ companyInfo.name }}
         </a-typography-title>
         <a-typography-paragraph class="company-desc">
           {{ companyInfo.description }}
         </a-typography-paragraph>
-        <a-typography-paragraph>
-          <a-typography-text> 联系方式：{{ companyInfo.contact.email }} </a-typography-text>
-        </a-typography-paragraph>
+
+        <Flex :gap="16" align="center">
+          <a-input
+            v-model:value="formData.code"
+            placeholder="请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO"
+            size="large"
+            style="width: 320px"
+          >
+          </a-input>
+
+          <a-button
+            type="primary"
+            class="button-color-success"
+            size="large"
+            @click="activeInstance"
+          >
+            激活实例
+          </a-button>
+          <a-button type="primary" size="large" @click="toLoginPage"> 进入控制台 </a-button>
+        </Flex>
+
+        <div style="opacity: 0.4">
+          <a-typography-paragraph style="text-align: left">
+            售后QQ群：294213892
+          </a-typography-paragraph>
+        </div>
       </Flex>
-      <div>
-        <!-- TODO 登录界面 -->
-        AAA
-      </div>
+
+      <Flex justify="center" align="center" class="mr-40">
+        <div>
+          <IconFly />
+        </div>
+      </Flex>
     </Flex>
 
     <!-- 产品展示区域 -->
     <div class="products-section">
       <Flex vertical :gap="32">
-        <a-typography-title :level="2" class="section-title"> 可用的服务套餐 </a-typography-title>
+        <a-typography-paragraph class="section-title">
+          <a-typography-title :level="2"> 服务套餐 </a-typography-title>
+          <a-typography-text class="section-sub-title" type="secondary">
+            我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。
+          </a-typography-text>
+        </a-typography-paragraph>
 
         <Flex wrap="wrap" :gap="24" justify="center">
           <Card
@@ -85,63 +128,84 @@ onMounted(async () => {
       </Flex>
     </div>
 
-    <!-- 联系信息区域 -->
-    <div class="contact-section">
-      <Flex vertical :gap="24" align="center">
-        <a-typography-title :level="2" class="section-title"> 联系我们 </a-typography-title>
-
-        <Flex wrap="wrap" :gap="32" justify="center">
-          <Flex vertical align="center" :gap="8">
-            <a-typography-text class="contact-label"> 客服电话 </a-typography-text>
-            <a-typography-title :level="4" class="contact-value">
-              {{ companyInfo.contact.phone }}
-            </a-typography-title>
-          </Flex>
-
-          <Flex vertical align="center" :gap="8">
-            <a-typography-text class="contact-label"> 邮箱 </a-typography-text>
-            <a-typography-title :level="4" class="contact-value">
-              {{ companyInfo.contact.email }}
-            </a-typography-title>
-          </Flex>
-
-          <Flex vertical align="center" :gap="8">
-            <a-typography-text class="contact-label"> QQ客服 </a-typography-text>
-            <a-typography-title :level="4" class="contact-value">
-              {{ companyInfo.contact.qq }}
-            </a-typography-title>
-          </Flex>
+    <footer class="footer-container">
+      <Flex justify="space-between" align="center" vertical gap="8">
+        <Flex align="center" :gap="8" justify="center" style="margin-bottom: 8px">
+          <span>© Copyright {{ new Date().getFullYear() }} {{ companyInfo.name }}</span>
+          <a-divider type="vertical" style="height: 9px" />
+          <span>
+            <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备12345678号</a>
+          </span>
+          <a-divider type="vertical" style="height: 9px" />
+          <span>{{ companyInfo.contact.email }} </span>
         </Flex>
+
+        <div>
+          <span>
+            <span>Powered by </span>
+            <a href="https://mcsmanager.com" target="_blank">MCSManager</a>
+          </span>
+        </div>
       </Flex>
-    </div>
+    </footer>
   </Flex>
 </template>
 
 <style scoped lang="scss">
+.footer-container {
+  color: #bbbbbb9d;
+  padding: 40px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 80px;
+
+  a {
+    color: #bbbbbb9d;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  a:hover {
+    opacity: 0.6;
+  }
+}
+
+.base-block {
+  color: var(--color-gray-10);
+  background-color: var(--color-gray-3) !important;
+  border: 1px solid var(--color-gray-5) !important;
+}
+
+.layout-container {
+  border-radius: 12px;
+  padding: 20px 20px;
+  overflow: hidden;
+}
+
 .business-container {
   min-height: 100vh;
   padding: 40px 0px;
+  padding-bottom: 0px;
 }
 
 /* 公司头部样式 */
 .company-header {
-  padding: 0px 0px;
   text-align: center;
-  height: 50vh;
-  min-height: 300px;
+  height: 80vh;
+  min-height: 500px;
 }
 
 .company-title {
-  color: var(--color-primary);
+  color: var(--color-blue-7);
   margin-bottom: 0 !important;
   font-weight: bold;
   font-size: 3.4rem !important;
 }
 
 .company-desc {
-  color: var(--color-gray-8) !important;
+  color: var(--color-gray-10) !important;
   font-size: 1.2rem;
-  max-width: 600px;
+  max-width: 700px;
   text-align: left;
 }
 
@@ -152,15 +216,15 @@ onMounted(async () => {
 
 .section-title {
   text-align: center;
-  margin-bottom: 0 !important;
-  font-weight: bold;
+
+  .section-title {
+    margin-top: 20px;
+  }
 }
 
 .product-card {
+  @extend .base-block;
   width: 320px;
-  color: var(--color-gray-10);
-  background-color: var(--color-gray-2) !important;
-  border: 1px solid var(--color-gray-5) !important;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
@@ -174,14 +238,13 @@ onMounted(async () => {
 .product-title {
   color: var(--color-gray-12);
   margin-bottom: 0 !important;
-  font-size: 1.3rem !important;
+  font-size: 1.1rem !important;
 }
 
 .product-price {
-  color: var(--color-primary) !important;
+  color: var(--color-red-6) !important;
   margin-bottom: 0 !important;
-  font-size: 2rem !important;
-  font-weight: bold;
+  font-size: 2.2rem !important;
 }
 
 .price-unit {
@@ -213,25 +276,13 @@ onMounted(async () => {
   border-radius: 8px;
 }
 
-/* 联系区域样式 */
-.contact-section {
-  padding: 40px 20px;
-  background-color: var(--color-gray-11);
-  border-radius: 16px;
-  margin: 0 20px;
+.login-input {
+  width: 320px;
 }
 
-.contact-label {
-  color: var(--color-gray-7) !important;
-  font-size: 0.9rem;
+.login-button {
+  width: 320px;
 }
-
-.contact-value {
-  color: var(--color-primary) !important;
-  margin-bottom: 0 !important;
-  font-weight: bold;
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
   .business-container {

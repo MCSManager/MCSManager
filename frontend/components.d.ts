@@ -80,6 +80,7 @@ declare module 'vue' {
     Empty: typeof import('./src/components/Empty.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
+    IconFly: typeof import('./src/components/IconFly.vue')['default']
     IframeBox: typeof import('./src/components/IframeBox/index.vue')['default']
     IframeModal: typeof import('./src/components/IframeModal/index.vue')['default']
     InnerCard: typeof import('./src/components/InnerCard.vue')['default']
