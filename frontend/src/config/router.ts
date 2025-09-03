@@ -1,6 +1,7 @@
 import { $t as t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LoginUserInfo } from "@/types/user";
+import Business from "@/views/Business.vue";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
@@ -12,6 +13,7 @@ import {
 } from "vue-router";
 
 export interface RouterMetaInfo {
+  showBreadcrumbs?: boolean; // 面包屑导航是否显示
   icon?: string;
   mainMenu?: boolean;
   permission?: number;
@@ -290,8 +292,9 @@ const originRouterConfig: RouterConfig[] = [
   {
     path: "/shop",
     name: t("TXT_CODE_5a408a5e"),
-    component: LayoutContainer,
+    component: Business,
     meta: {
+      showBreadcrumbs: false,
       permission: ROLE.GUEST,
       mainMenu: true,
       condition: () => {

@@ -142,9 +142,9 @@ const appMenus = computed(() => {
     },
     {
       iconText: t("TXT_CODE_80f0904e"),
-      title: t("TXT_CODE_b6c675d6"),
+      title: t("商业 & 专业模式已开启"),
       icon: SketchOutlined,
-      click: onClickIcon,
+      click: () => {},
       conditions: isProMode.value,
       onlyPC: true,
       customClass: ["nav-button-success"]
@@ -428,7 +428,7 @@ const onClickIcon = () => {
     </div>
   </a-drawer>
 
-  <div class="breadcrumbs">
+  <div v-if="route.meta.showBreadcrumbs !== false" class="breadcrumbs">
     <a-breadcrumb>
       <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.title">
         <a v-if="!item.disabled" :href="item.href">{{ item.title }}</a>

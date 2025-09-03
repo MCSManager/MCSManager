@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { removeTrail } from "mcsmanager-common";
+import { removeTrail, toNumber, toText } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
@@ -62,13 +62,13 @@ router.get(
   }),
   async (ctx) => {
     try {
-      const target = String(ctx.query.target);
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const page = Number(ctx.query.page);
-      const pageSize = Number(ctx.query.page_size);
-      const fileName = String(ctx.query.file_name);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const target = toText(ctx.query.target);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const page = toNumber(ctx.query.page);
+      const pageSize = toNumber(ctx.query.page_size);
+      const fileName = toText(ctx.query.file_name);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/list", {
         instanceUuid,
         target,
@@ -93,12 +93,12 @@ router.put(
   }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const target = String(ctx.request.body.target);
-      const chmod = Number(ctx.request.body.chmod);
-      const deep = Number(ctx.request.body.deep);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const target = toText(ctx.request.body.target);
+      const chmod = toNumber(ctx.request.body.chmod);
+      const deep = toNumber(ctx.request.body.deep);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/chmod", {
         target,
         instanceUuid,
@@ -119,10 +119,10 @@ router.post(
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const target = String(ctx.request.body.target);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const target = toText(ctx.request.body.target);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/touch", {
         target,
         instanceUuid
@@ -141,10 +141,10 @@ router.post(
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const target = String(ctx.request.body.target);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const target = toText(ctx.request.body.target);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/mkdir", {
         target,
         instanceUuid
@@ -163,11 +163,11 @@ router.put(
   validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const target = String(ctx.request.body.target);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const target = toText(ctx.request.body.target);
       const text = ctx.request.body.text;
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request(
         "file/edit",
         {
@@ -180,9 +180,9 @@ router.put(
       operationLogger.log("instance_file_update", {
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
-        instance_id: instanceUuid,
-        daemon_id: daemonId,
-        file: target
+        instance_id: instanceUuid || "",
+        daemon_id: daemonId || "",
+        file: target || ""
       });
       ctx.body = result;
     } catch (err) {
@@ -198,10 +198,10 @@ router.post(
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
       const targets = ctx.request.body.targets as [];
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/copy", {
         instanceUuid,
         targets
@@ -220,10 +220,10 @@ router.put(
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Array } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
       const targets = ctx.request.body.targets as [];
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/move", {
         instanceUuid,
         targets
@@ -242,10 +242,10 @@ router.delete(
   validator({ query: { daemonId: String, uuid: String }, body: { targets: Object } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = ctx.query.uuid;
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
       const targets = ctx.request.body.targets;
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const result = await new RemoteRequest(remoteService).request("file/delete", {
         instanceUuid,
         targets
@@ -254,7 +254,7 @@ router.delete(
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
         instance_id: String(instanceUuid),
-        daemon_id: daemonId,
+        daemon_id: daemonId || "",
         file: targets
       });
       ctx.body = result;
@@ -274,13 +274,13 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
       const source = String(ctx.request.body.source);
       const targets = ctx.request.body.targets;
       const type = Number(ctx.request.body.type);
       const code = String(ctx.request.body.code);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const res = await new RemoteRequest(remoteService).request(
         "file/compress",
         {
@@ -306,10 +306,10 @@ router.all(
   validator({ query: { uuid: String, daemonId: String, file_name: String } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const fileName = String(ctx.query.file_name);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
+      const fileName = toText(ctx.query.file_name);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
         remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
       }`;
@@ -319,15 +319,15 @@ router.all(
         password: password,
         parameter: {
           fileName,
-          instanceUuid
+          instanceUuid: instanceUuid || ""
         }
       });
       operationLogger.log("instance_file_download", {
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
-        instance_id: instanceUuid,
-        daemon_id: daemonId,
-        file: fileName
+        instance_id: instanceUuid || "",
+        daemon_id: daemonId || "",
+        file: fileName || ""
       });
       ctx.body = {
         password,
@@ -345,10 +345,10 @@ router.all(
   validator({ query: { uuid: String, daemonId: String, upload_dir: String } }),
   async (ctx) => {
     try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
+      const daemonId = toText(ctx.query.daemonId);
+      const instanceUuid = toText(ctx.query.uuid);
       const uploadDir = String(ctx.query.upload_dir);
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
         remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
       }`;
@@ -364,8 +364,8 @@ router.all(
       operationLogger.log("instance_file_upload", {
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
-        instance_id: instanceUuid,
-        daemon_id: daemonId
+        instance_id: instanceUuid || "",
+        daemon_id: daemonId || ""
       });
       ctx.body = {
         password,

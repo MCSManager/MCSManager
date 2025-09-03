@@ -16,7 +16,7 @@ interface IPackageInfo {
 // A business platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Business Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = "http://localhost:3000";
+export const REDEEM_PLATFORM_ADDR = "https://online.mcsmanager.com";
 
 const PACKAGE_JSON = "package.json";
 const VERSION_LOG_TEXT_NAME = "current-version.txt";
@@ -81,6 +81,9 @@ export async function checkBusinessMode() {
         panelId: systemConfig?.panelId,
         registerCode: systemConfig?.registerCode,
         businessMode: systemConfig?.businessMode
+      },
+      {
+        timeout: 1000 * 30
       }
     );
     if (response.data && response.code === 200) {
