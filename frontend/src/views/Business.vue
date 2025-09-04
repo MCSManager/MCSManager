@@ -29,142 +29,150 @@ onMounted(async () => {
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <Flex vertical :gap="60" class="business-container">
+  <div>
     <div v-if="isAdmin">
       <ShopInfoUpdateDialog />
     </div>
-    <!-- 公司信息头部 -->
-    <Flex class="company-header" align="center" justify="space-between" :gap="16">
-      <Flex class="mb-60" vertical align="start" justify="start" :gap="16">
-        <a-typography-title :level="1" class="company-title">
-          <div
-            class="business-page-markdown-area"
-            v-html="markdownToHTML(settings?.shopName || '')"
-          ></div>
-        </a-typography-title>
-        <a-typography-paragraph class="company-desc">
-          <div
-            class="business-page-markdown-area"
-            v-html="markdownToHTML(settings?.shopDescription || '')"
-          ></div>
-        </a-typography-paragraph>
+    <Flex vertical :gap="60" class="business-container">
+      <!-- 公司信息头部 -->
+      <Flex vertical :gap="0" class="company-header">
+        <Flex align="center" justify="space-between" :gap="16" style="flex: 1">
+          <Flex class="mb-30" vertical align="start" justify="start" :gap="16">
+            <a-typography-title :level="1" class="company-title">
+              <div
+                class="business-page-markdown-area"
+                v-html="markdownToHTML(settings?.shopName || '')"
+              ></div>
+            </a-typography-title>
+            <a-typography-paragraph class="company-desc">
+              <div
+                class="business-page-markdown-area"
+                v-html="markdownToHTML(settings?.shopDescription || '')"
+              ></div>
+            </a-typography-paragraph>
 
-        <Flex :gap="16" align="center">
-          <a-input
-            v-model:value="formData.code"
-            placeholder="请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO"
-            size="large"
-            style="width: 320px"
-          >
-          </a-input>
+            <Flex :gap="16" align="center">
+              <a-input
+                v-model:value="formData.code"
+                placeholder="请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO"
+                size="large"
+                style="width: 320px"
+              >
+              </a-input>
 
-          <a-button
-            type="primary"
-            class="button-color-success"
-            size="large"
-            @click="activeInstance"
-          >
-            激活实例
-          </a-button>
-          <a-button type="primary" size="large" @click="toLoginPage"> 进入控制台 </a-button>
-        </Flex>
-
-        <div style="opacity: 0.4">
-          <a-typography-paragraph style="text-align: left">
-            <span v-html="markdownToHTML(settings?.shopTip || '')"></span>
-          </a-typography-paragraph>
-        </div>
-      </Flex>
-
-      <Flex justify="center" align="center" class="mr-40">
-        <div>
-          <IconFly />
-        </div>
-      </Flex>
-    </Flex>
-
-    <!-- 产品展示区域 -->
-    <div class="products-section">
-      <Flex vertical :gap="32">
-        <a-typography-paragraph class="section-title">
-          <a-typography-title :level="2"> 服务套餐 </a-typography-title>
-          <a-typography-text class="section-sub-title" type="secondary">
-            我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。
-          </a-typography-text>
-        </a-typography-paragraph>
-
-        <Flex wrap="wrap" :gap="24" justify="center">
-          <Card
-            v-for="product in products"
-            :key="product.productId"
-            class="product-card"
-            :hoverable="true"
-            :body-style="{
-              height: '100%'
-            }"
-          >
-            <Flex vertical justify="space-between" :gap="16" style="height: 100%">
-              <!-- 产品标题 -->
-              <a-typography-title :level="3" class="product-title">
-                {{ product.title }}
-              </a-typography-title>
-
-              <!-- 价格 -->
-              <Flex align="baseline" :gap="8">
-                <a-typography-title :level="2" class="product-price">
-                  ¥{{ product.price }}
-                </a-typography-title>
-                <a-typography-text class="price-unit"> /月 </a-typography-text>
-              </Flex>
-
-              <!-- 配置信息 -->
-              <Flex vertical :gap="8">
-                <template v-for="item in product.lines" :key="item.title + item.value">
-                  <Flex justify="space-between">
-                    <a-typography-text class="spec-label"> {{ item.title }}: </a-typography-text>
-                    <a-typography-text class="spec-value">
-                      {{ item.value }}
-                    </a-typography-text>
-                  </Flex>
-                </template>
-              </Flex>
-
-              <!-- 产品备注 -->
-              <a-typography-paragraph class="product-remark">
-                {{ product.remark }}
-              </a-typography-paragraph>
-
-              <!-- 购买按钮 -->
-              <Button type="primary" size="large" class="buy-button"> 立即购买 </Button>
+              <a-button
+                type="primary"
+                class="button-color-success"
+                size="large"
+                @click="activeInstance"
+              >
+                激活实例
+              </a-button>
+              <a-button type="primary" size="large" @click="toLoginPage"> 进入控制台 </a-button>
             </Flex>
-          </Card>
-        </Flex>
-      </Flex>
-    </div>
 
-    <footer class="footer-container">
-      <Flex justify="space-between" align="center" vertical gap="8">
-        <Flex align="center" :gap="8" justify="center" style="margin-bottom: 8px">
-          <span>© Copyright {{ new Date().getFullYear() }}</span>
-          <a-divider type="vertical" style="height: 9px" />
-          <span v-html="markdownToHTML(settings?.loginInfo || '')"></span>
-          <a-divider type="vertical" style="height: 9px" />
-          <span v-html="markdownToHTML(settings?.shopEmail || '')"></span>
+            <div style="opacity: 0.4">
+              <a-typography-paragraph style="text-align: left">
+                <span v-html="markdownToHTML(settings?.shopTip || '')"></span>
+              </a-typography-paragraph>
+            </div>
+          </Flex>
+
+          <Flex justify="center" align="center" class="mr-40">
+            <div>
+              <IconFly />
+            </div>
+          </Flex>
         </Flex>
 
-        <div>
-          <span>
-            <span>Powered by </span>
-            <a href="https://mcsmanager.com" target="_blank">MCSManager</a>
-          </span>
+        <div class="down-icon-container">
+          <DownIcon :text="$t('向下滚动查看更多')" />
         </div>
       </Flex>
-    </footer>
-  </Flex>
+      <!-- 产品展示区域 -->
+      <div class="products-section">
+        <Flex vertical :gap="32">
+          <a-typography-paragraph class="section-title">
+            <a-typography-title :level="2"> 服务套餐 </a-typography-title>
+            <a-typography-text class="section-sub-title" type="secondary">
+              我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。
+            </a-typography-text>
+          </a-typography-paragraph>
+
+          <Flex wrap="wrap" :gap="24" justify="center">
+            <Card
+              v-for="product in products"
+              :key="product.productId"
+              class="product-card"
+              :hoverable="true"
+              :body-style="{
+                height: '100%'
+              }"
+            >
+              <Flex vertical justify="space-between" :gap="16" style="height: 100%">
+                <!-- 产品标题 -->
+                <a-typography-title :level="3" class="product-title">
+                  {{ product.title }}
+                </a-typography-title>
+
+                <!-- 价格 -->
+                <Flex align="baseline" :gap="8">
+                  <a-typography-title :level="2" class="product-price">
+                    ¥{{ product.price }}
+                  </a-typography-title>
+                  <a-typography-text class="price-unit"> /月 </a-typography-text>
+                </Flex>
+
+                <!-- 配置信息 -->
+                <Flex vertical :gap="8">
+                  <template v-for="item in product.lines" :key="item.title + item.value">
+                    <Flex justify="space-between">
+                      <a-typography-text class="spec-label"> {{ item.title }}: </a-typography-text>
+                      <a-typography-text class="spec-value">
+                        {{ item.value }}
+                      </a-typography-text>
+                    </Flex>
+                  </template>
+                </Flex>
+
+                <!-- 产品备注 -->
+                <a-typography-paragraph class="product-remark">
+                  {{ product.remark }}
+                </a-typography-paragraph>
+
+                <!-- 购买按钮 -->
+                <Button type="primary" size="large" class="buy-button"> 立即购买 </Button>
+              </Flex>
+            </Card>
+          </Flex>
+        </Flex>
+      </div>
+
+      <footer class="footer-container">
+        <Flex justify="space-between" align="center" vertical gap="8">
+          <Flex align="center" :gap="8" justify="center" style="margin-bottom: 8px">
+            <span>© Copyright {{ new Date().getFullYear() }}</span>
+            <a-divider type="vertical" style="height: 9px" />
+            <span v-html="markdownToHTML(settings?.loginInfo || '')"></span>
+            <a-divider type="vertical" style="height: 9px" />
+            <span v-html="markdownToHTML(settings?.shopEmail || '')"></span>
+          </Flex>
+
+          <div>
+            <span>
+              <span>Powered by </span>
+              <a href="https://mcsmanager.com" target="_blank">MCSManager</a>
+            </span>
+          </div>
+        </Flex>
+      </footer>
+    </Flex>
+  </div>
 </template>
 
 <style lang="scss">
-.business-page-markdown-area {
+.business-page-markdown-area,
+.business-container {
   p {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
@@ -179,10 +187,13 @@ onMounted(async () => {
   overflow: hidden;
 }
 
+.down-icon-container {
+  height: 60px;
+}
+
 .business-container {
   min-height: 100vh;
-  padding: 40px 0px;
-  padding-bottom: 0px;
+
   p {
     margin-bottom: 0px !important;
     margin-top: 0px !important;
@@ -216,9 +227,9 @@ onMounted(async () => {
 /* 公司头部样式 */
 .company-header {
   text-align: center;
-  height: 80vh;
+  height: 100vh;
   min-height: 500px;
-  margin: 0 60px;
+  margin: 0 40px;
 }
 
 .company-title {
@@ -314,6 +325,13 @@ onMounted(async () => {
 .login-button {
   width: 320px;
 }
+
+.admin-message {
+  padding: 8px 0px;
+  background-color: var(--color-gray-7);
+  font-size: 12px;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .business-container {

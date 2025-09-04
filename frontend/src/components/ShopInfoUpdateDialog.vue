@@ -75,15 +75,10 @@ const handleSubmit = async () => {
       </a-typography-paragraph>
 
       <Form :model="formData" layout="vertical" class="shop-form" @finish="handleSubmit">
-        <Form.Item label="店铺名称" name="shopName" required>
+        <Form.Item label="首页名称" name="shopName" required>
           <Input v-model:value="formData.shopName" placeholder="请输入店铺名称" size="large" />
         </Form.Item>
-
-        <Form.Item label="店铺邮箱" name="shopEmail" required>
-          <Input v-model:value="formData.shopEmail" placeholder="请输入店铺联系邮箱" size="large" />
-        </Form.Item>
-
-        <Form.Item label="店铺描述" name="shopDescription">
+        <Form.Item label="首页描述文字" name="shopDescription">
           <Input.TextArea
             v-model:value="formData.shopDescription"
             placeholder="请输入店铺描述信息"
@@ -91,14 +86,25 @@ const handleSubmit = async () => {
             size="large"
           />
         </Form.Item>
-
-        <Form.Item label="店铺提示" name="shopTip">
+        <Form.Item label="首页描述二级文字" name="shopTip">
           <Input.TextArea
             v-model:value="formData.shopTip"
             placeholder="请输入店铺提示信息"
             :rows="3"
             size="large"
           />
+        </Form.Item>
+
+        <Form.Item label="页脚信息" name="loginInfo">
+          <Input
+            v-model:value="formData.loginInfo"
+            placeholder="请输入页脚信息，可以输入版权信息，备案信息，支持 Markdown"
+            size="large"
+          />
+        </Form.Item>
+
+        <Form.Item label="页脚联系邮箱方式" name="shopEmail" required>
+          <Input v-model:value="formData.shopEmail" placeholder="请输入店铺联系邮箱" size="large" />
         </Form.Item>
 
         <Form.Item class="form-actions">

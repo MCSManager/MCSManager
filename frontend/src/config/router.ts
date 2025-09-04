@@ -356,6 +356,10 @@ router.beforeEach((to, from, next) => {
     return next("/install");
   }
 
+  if (state.settings.businessMode && toRoutePath === "/") {
+    return next("/shop");
+  }
+
   if (to.meta?.redirect) {
     if (typeof to.meta.redirect === "function") {
       const userInfo = state.userInfo;
