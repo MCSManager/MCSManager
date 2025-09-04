@@ -4,55 +4,64 @@
   </a>
 
   <br />
-  
-  <h1 id="mcsmanager">
-    <a href="https://mcsmanager.com/" target="_blank">Painel MCSManager</a>
-  </h1>
+  <br />
 
-[![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
-[![Status](https://img.shields.io/badge/npm-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
+[![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[Website Oficial](http://mcsmanager.com/) | [Documentação](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
+<p align="center">
+  <a href="http://mcsmanager.com/"><img alt="Official Website" src="https://img.shields.io/badge/Site-Official Website-yellow"></a>
+  <a href="https://docs.mcsmanager.com/"><img alt="EnglishDocs" src="https://img.shields.io/badge/Docs-English Document-blue"></a>
+  <a href="https://discord.gg/BNpYMVX7Cd"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join Us-5866f4"></a>
+  
+</p>
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) |
-[日本語](README_JP.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
+<br />
+
+[English](README.md) - [简体中文](README_ZH.md) - [繁體中文](README_TW.md) - [Deutsch](README_DE.md) - [Português BR](README_PTBR.md) -
+[日本語](README_JP.md) - [Spanish](README_ES.md) - [Thai](README_TH.md)
 
 </div>
 
 <br />
 
+## O que é isso?
 
+**MCSManager Panel** (abreviado: MCSM Panel) é um painel de administração web moderno, simples, multi-usuário, compatível com arquitetura distribuída e de implantação rápida para servidores de jogos Minecraft e Steam.
 
-## O que é o MCSManager?
+MCSManager ganhou popularidade nas comunidades de jogos `Minecraft` e `Steam`. Ajuda você a gerenciar centralmente múltiplos servidores físicos, permitindo criar servidores de jogos em qualquer host, e fornece um sistema de permissões multi-usuário seguro e confiável que pode facilmente ajudá-lo a gerenciar múltiplos servidores. Tem fornecido suporte de software saudável para administradores, pessoal de operações e desenvolvedores individuais de servidores de jogos `Minecraft`, `Terraria` e `Steam`.
 
-O **Painel MCSManager** (MCSM) é um **painel de controle moderno, seguro e distribuído** projetado para gerenciar servidores de jogos Minecraft e Steam.
+Também é adequado para qualquer atividade comercial, como provedores de serviços IDC para venda de servidores privados, etc. Várias pequenas e médias empresas já estão usando este painel como software de gerenciamento e vendas, e suporta idiomas de **múltiplos países**.
 
-O MCSManager já conquistou um certo nível de popularidade dentro da comunidade, especificamente a de Minecraft. O MCSManager se destaca por oferecer uma solução de gerenciamento centralizado para várias instâncias de servidores e proporciona um sistema de permissões multiusuário seguro e confiável. Além disso, estamos comprometidos em apoiar os administradores de servidores não apenas para Minecraft, mas também para Terraria e diversos jogos da Steam. Nosso objetivo é fomentar uma comunidade próspera e colaborativa para o gerenciamento de servidores de jogos.
+<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
-O MCSManager **suporta Alemão, Chinês Simplificado, Chinês Tradicional, Inglês, Francês, Italiano, Japonês e Português**, com planos de adicionar suporte para mais idiomas no futuro!
+<img width="3502" height="2946" alt="2" src="https://github.com/user-attachments/assets/c1677320-87e3-4b29-ae3b-378544fc36b6" />
 
-![failed_to_load_screenshot.png](/.github/panel-image.png)
+<img width="3164" height="2060" alt="3" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
 
-![failed_to_load_screenshot.png](/.github/panel-instances.png)
+<img width="3164" height="2060" alt="4" src="https://github.com/user-attachments/assets/c7a3165c-466b-42c5-b75a-16ada603b1da" />
 
-## Features
+<br />
 
-1. Implantação com um clique do servidor `Minecraft` Java/Bedrock
-2. Compatível com a maioria dos servidores de jogos da `Steam` (ex.: `Palworld`, `Squad`, `Project Zomboid`, `Terraria`, etc.)
-3. Interface personalizável, crie seu próprio layout
-4. Suporte à virtualização `Docker`, multiusuário e serviços comerciais
-5. Gerencie múltiplos servidores com uma única interface web
-6. E mais...
+## Recursos
+
+1. Use o mercado de aplicativos para implantar facilmente servidores de jogos `Minecraft` ou `Steam` com um clique.
+2. Compatível com a maioria dos servidores de jogos `Steam`, como `Palworld`, `Squad`, `Project Zomboid` e `Terraria`, etc.
+3. Interface web suporta layout de cartões de arrastar e soltar para criar seu layout de interface preferido.
+4. Suporta todas as imagens no `Docker Hub`, suporta multi-usuário, suporta serviços de venda de instâncias comerciais.
+5. Suporta arquitetura distribuída, uma interface web pode gerenciar múltiplas máquinas simultaneamente.
+6. Stack tecnológico simples, você só precisa dominar TypeScript para completar todo o desenvolvimento do MCSManager!
+7. Mais...
 
 <br />
 
 ## Ambiente de Execução
 
-O MCSM suporta tanto `Windows` quanto `Linux`. O único requisito é `Node.js` e algumas bibliotecas **para descompressão**.
+O painel de controle pode executar em plataformas `Windows` e `Linux`, não requer instalação de banco de dados, você só precisa instalar o ambiente `Node.js` e vários **comandos de descompactação**.
 
-Requer [Node.js 16.20.2](https://nodejs.org/en) ou superior.
+Deve usar [Node.js 16.20.2](https://nodejs.org/en) ou superior, recomendamos usar a versão LTS mais recente.
 
 <br />
 
@@ -60,145 +69,230 @@ Requer [Node.js 16.20.2](https://nodejs.org/en) ou superior.
 
 ### Windows
 
-Para Windows, fornecemos arquivos executáveis empacotados:
+Download: https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-Acesse: [https://mcsmanager.com/](https://mcsmanager.com/)
+Iniciar painel:
+
+```bash
+start.bat
+```
 
 <br />
 
 ### Linux
 
-**Implantação com um Comando**
-
-> O script precisa registrar serviços do sistema, portanto, requer permissões de root.
+**Comando de uma linha para instalação rápida**
 
 ```bash
 sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
-**Uso**
+**Uso após a instalação**
 
 ```bash
-systemctl start mcsm-{web,daemon}
-systemctl stop mcsm-{web,daemon}
+systemctl start mcsm-{web,daemon} # Iniciar painel
+systemctl stop mcsm-{web,daemon}  # Parar painel
 ```
 
-- Suporta apenas Ubuntu/Centos/Debian/Archlinux.
-- Diretório de instalação: `/opt/mcsmanager/`.
+- Script se aplica apenas ao Ubuntu/Centos/Debian/Archlinux
+- Código do painel e ambiente de execução são instalados automaticamente no diretório `/opt/mcsmanager/`.
 
 <br />
 
-**Instalação Manual no Linux**
+**Instalação manual do Linux**
 
-- Se o script de instalação falhou ao ser executado corretamente, você pode tentar instalar manualmente.
+- Se a instalação de um clique não funcionar, você pode tentar este passo para instalação manual.
 
 ```bash
-# Criar o diretório /opt se ainda não existir
-mkdir /opt
-# Mudar para o diretório /opt
+# Mudar para o diretório de instalação. Se não existir, por favor crie com 'mkdir /opt/' primeiro.
 cd /opt/
-# Baixar o Node.js 20.11. Se você já tiver o Node.js 16+ instalado, ignore este passo.
+# Baixar ambiente de execução (Node.js). Se você já tem Node.js 16+ instalado, por favor ignore este passo.
 wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-# Descompactar o código-fonte do Node.js
+# Extrair arquivo
 tar -xvf node-v20.11.0-linux-x64.tar.xz
-# Adicionar o Node.js ao PATH do sistema
+# Adicionar programa às variáveis de ambiente do sistema.
 ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
 
-# Preparar o diretório de instalação do MCSM
+# Preparar diretório de instalação.
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# Baixar o MCSManager
+# Baixar MCSManager.
 wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
 tar -zxf mcsmanager_linux_release.tar.gz
 
-# Instalar dependências
+# Instalar dependências.
+chmod 775 install.sh
 ./install.sh
 
-# Por favor, abra dois terminais ou telas separadas.
+# Por favor abra dois terminais ou screen.
 
-# Inicie o daemon primeiro.
+# Iniciar programa node primeiro.
 ./start-daemon.sh
 
-# Inicie a interface web no segundo terminal ou tela.
+# Iniciar serviço web (no segundo terminal ou screen).
 ./start-web.sh
 
-# Para acessar a web, vá para http://localhost:23333/
-# Geralmente, a interface web irá escanear e adicionar automaticamente o daemon local.
+# Visite http://<IP público>:23333/ para ver o painel.
+# Geralmente, a aplicação web irá automaticamente escanear e conectar ao daemon local.
 ```
 
-Este método de instalação não configura automaticamente o MCSManager como um serviço do sistema. Portanto, é necessário usar `screen` para gerenciamento. Para aqueles interessados em gerenciar o MCSManager por meio de um serviço do sistema, consulte nossa wiki/documentação.
+Este método de instalação não registra automaticamente o painel aos serviços do sistema, então você deve usar software `screen` para gerenciá-lo. Se você quiser que o serviço do sistema assuma o MCSManager, por favor consulte a documentação.
+
+### Mac OS
+
+```bash
+
+# Primeiro instalar Node.js, se você já tem instalado, pode pular este passo.
+# Node.js recomenda instalar a versão LTS mais recente.
+brew install node
+node -v
+npm -v
+
+# Usar curl para baixar arquivos
+curl -L https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz -o mcsmanager_linux_release.tar.gz
+
+# Extrair arquivos (mesmo comando que o original)
+tar -zxf mcsmanager_linux_release.tar.gz
+
+cd mcsmanager
+
+# Instalar dependências.
+chmod 775 install.sh
+./install.sh
+
+# Por favor abra dois terminais ou screen.
+
+# Iniciar programa node primeiro.
+./start-daemon.sh
+
+# Iniciar serviço web (no segundo terminal ou screen).
+./start-web.sh
+
+# Visite http://localhost:23333/ para ver o painel.
+# Geralmente, a aplicação web irá automaticamente escanear e conectar ao daemon local.
+```
 
 <br />
 
-## Compatibilidade com Navegadores
+## Contribuindo com Código
 
-- Suportado em navegadores modernos, incluindo `Chrome`, `Firefox` e `Safari`.
-- O suporte ao `IE` foi descontinuado.
+- Deve ser lido antes de contribuir com código: https://github.com/MCSManager/MCSManager/issues/599
+
+- Código precisa manter o formato existente, formatação excessiva de código não é permitida.
+
+- Todo código deve cumprir com os padrões de internacionalização.
 
 <br />
 
 ## Desenvolvimento
 
-Esta seção é especificamente projetada para desenvolvedores. Usuários comuns podem ignorar esta parte sem preocupações.
+Esta seção é para desenvolvedores. Se você quer fazer desenvolvimento secundário no MCSManager ou enviar contribuições de código, por favor leia cuidadosamente estes conteúdos:
 
-### MacOS
+### Requerido
+
+Usamos `Visual Studio Code` para desenvolver MCSManager. Você deve **instalar** estes plugins:
+
+- Suporte de exibição de texto i18n (I18n Ally)
+- Formatação de código (Prettier)
+- Vue - Official
+- ESLint
+
+### Arquivos de Dependências
+
+Você precisa ir aos projetos [PTY](https://github.com/MCSManager/PTY) e [Zip-Tools](https://github.com/MCSManager/Zip-Tools) para baixar arquivos binários adequados para seu sistema, armazená-los no diretório `daemon/lib` (criar manualmente se não existir) para garantir o funcionamento normal de `terminal de simulação` e `descompactação de arquivos`.
+
+### Execução
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
+
+# MacOS
 ./install-dependents.sh
 ./npm-dev-macos.sh
-```
 
-### Windows
-
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
+# Windows
 ./install-dependents.bat
 ./npm-dev-windows.bat
 ```
 
-### Build Production Version
+### Internacionalização de Código
+
+Como o projeto se adapta a múltiplos idiomas, todas as `strings` e `comentários` no código apenas aceitam inglês, então por favor não codifique texto não-inglês diretamente no código.
+
+Por exemplo, você pode escrever uma nova string que precisa se adaptar a múltiplos idiomas.
+
+```ts
+import { $t } from "../i18n";
+
+if (!checkName) {
+  const errorMsg = "Check Name Failed!" // Não faça isso!
+  const errorMsg = $t("TXT_CODE_MY_ERROR"); // Correto!
+}.
+```
+
+```html
+<script lang="ts" setup>
+  import { t } from "@/lang/i18n";
+  // ...
+</script>
+
+<template>
+  <!-- ... -->
+  <a-menu-item key="toNodesPage" @click="toNodesPage()">
+    <FormOutlined />
+    {{ t("TXT_CODE_NODE_INFO") }}
+  </a-menu-item>
+</template>
+```
+
+Por favor adicione esta linha ao arquivo de idioma, por exemplo: `languages/en_US.json`
+
+Entre eles, `en_US.json` é obrigatório adicionar, é o texto fonte para todos os idiomas de países, outros idiomas de países podem ser traduzidos automaticamente por nós usando IA.
+
+```json
+{
+  //...
+  "TXT_CODE_MY_ERROR": "Check Name Failed!",
+  "TXT_CODE_NODE_INFO": "Jump to Node Page"
+}
+```
+
+Se você instalou o plugin `I18n Ally`, seu `$t("TXT_CODE_MY_ERROR")` deve exibir o texto em inglês.
+
+Se o texto de tradução precisa carregar parâmetros, isso pode ser um pouco complexo, porque frontend e backend usam bibliotecas i18n diferentes, então o formato pode ser diferente. Você precisa olhar através dos arquivos para encontrar código similar para entender.
+
+Todas as chaves de texto de tradução não podem ser duplicadas, então por favor tente usar um nome mais longo!
+
+### Construir Versão de Ambiente de Produção
 
 ```bash
 ./build.bat # Windows
 ./build.sh  # MacOS
 ```
 
-Em seguida, você precisará acessar os projetos [PTY](https://github.com/MCSManager/PTY) e [Zip-Tools](https://github.com/MCSManager/Zip-Tools) para baixar os arquivos binários correspondentes e colocá-los no diretório `daemon/lib` para garantir o funcionamento adequado do `Terminal de Emulação` e `Descompressão de Arquivos`.
+Após a construção estar completa, você encontrará o código do ambiente de produção no diretório `production-code`.
 
 <br />
 
-## Contribuição de Código
+## Compatibilidade do Navegador
 
-Se você encontrar algum problema ao usar o MCSManager, sinta-se à vontade para [enviar um Issue](https://github.com/MCSManager/MCSManager/issues/new/choose). Alternativamente, você pode fazer um fork do projeto e contribuir diretamente enviando um Pull Request.
-
-Por favor, certifique-se de que qualquer código enviado siga o estilo de codificação existente. Para mais detalhes, consulte as diretrizes fornecidas [neste issue](https://github.com/MCSManager/MCSManager/issues/544).
-
-<br />
-
-## Relatório de BUGs
-
-**Criar Issue:** [Clique aqui](https://github.com/MCSManager/MCSManager/issues/new/choose)
-
-**Relatório de Vulnerabilidade de Segurança:** [SECURITY.md](SECURITY.md)
+- Suporta navegadores modernos principais como `Chrome` `Firefox` `Safari` `Opera`.
+- Abandonou suporte para navegador `IE`.
 
 <br />
 
-## Internacionalização
+## Relatórios de Bugs
 
-Agradecemos aos seguintes colaboradores por fornecerem uma quantidade substancial de tradução:
+Bem-vindo para reportar qualquer problema encontrado, iremos corrigi-los rapidamente.
 
-- [KevinLu2000](https://github.com/KevinLu2000)
-- [Yumao](https://github.com/yumao233)
-- [JHL-HK](https://github.com/jhl-hk)
-- [IceBrick](https://github.com/IceBrick01)
+Se você descobrir vulnerabilidades de segurança graves que são inconvenientes de publicar publicamente, por favor envie um email para: support@mcsmanager.com. Após problemas de segurança serem corrigidos, o nome do descobridor será anexado no código.
 
 <br />
 
 ## Licença
 
-O código-fonte do MCSManager é licenciado sob a Licença [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+O código fonte segue a licença [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 Copyright ©2025 MCSManager.

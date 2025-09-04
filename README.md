@@ -84,7 +84,7 @@ start.bat
 **One-line command quick installation**
 
 ```bash
-sudo su -c "wget -qO- https://script.mcsmanager.com/setup_cn.sh | bash"
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **Usage after installation**
