@@ -94,10 +94,10 @@ onMounted(async () => {
         </div>
       </Flex>
       <!-- Products section -->
-      <div class="products-section">
+      <div class="section">
         <Flex vertical :gap="32">
           <a-typography-paragraph class="section-title">
-            <a-typography-title :level="2"> {{ $t("服务套餐") }} </a-typography-title>
+            <a-typography-title :level="1"> {{ $t("服务套餐") }} </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
               {{ $t("我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。") }}
             </a-typography-text>
@@ -151,6 +151,19 @@ onMounted(async () => {
               </Flex>
             </Card>
           </Flex>
+        </Flex>
+      </div>
+
+      <div class="section">
+        <Flex vertical :gap="32">
+          <a-typography-paragraph class="section-title">
+            <a-typography-title :level="1"> {{ $t("用户友好，易于使用") }} </a-typography-title>
+            <a-typography-text class="section-sub-title" type="secondary">
+              {{ $t("基于 MCSManager 面板提供可视化服务，快捷部署任意服务。") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+
+          <div></div>
         </Flex>
       </div>
 
@@ -266,8 +279,8 @@ onMounted(async () => {
 }
 
 /* Products section styles */
-.products-section {
-  padding: 0 0px;
+.section {
+  padding: 80px 0px;
 }
 
 .section-title {
