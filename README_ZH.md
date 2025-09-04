@@ -70,7 +70,13 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 
 对于 Windows 系统，**已整合成直接运行版本，下载即可运行**:
 
-前往：[https://mcsmanager.com/](https://mcsmanager.com/)
+压缩包：https://download.mcsmanager.com/mcsmanager_windows_release.zip
+
+启动面板：
+
+```bash
+start.bat
+```
 
 <br />
 
