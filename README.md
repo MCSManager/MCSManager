@@ -22,26 +22,24 @@
 </div>
 
 <br />
-
+ 
 ## What is MCSManager?
 
 **MCSManager Panel** (abbreviated as MCSM Panel) is a one-click installation, distributed architecture, multi-user rental, modern web management panel for Minecraft and Steam game servers.
 
-This software has gained considerable popularity within the `Minecraft` and `Steam` gaming communities. It enables centralized management of multiple physical servers, allowing game server creation on any host and providing a secure, reliable multi-user permission system. It simplifies managing multiple servers and has been supporting developers and service providers for `Minecraft`, `Terraria`, and other game servers.
+This software has gained considerable popularity within the `Minecraft` and `Steam` gaming communities. It enables centralized management of multiple physical servers, allowing game server creation on any host and providing a secure, reliable multi-user permission system. It simplifies managing multiple servers and has been supporting developers and service providers for steam game servers.
 
 It is also suitable for commercial purposes, such as IDC service providers selling private servers. Several small and medium-sized enterprises are currently using this panel as their sales software.
 
-MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
+MCSManager **supports English, German, Japanese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
 
+<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
-<img width="3164" height="2060" alt="1111" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
+<img width="3502" height="2946" alt="2" src="https://github.com/user-attachments/assets/c1677320-87e3-4b29-ae3b-378544fc36b6" />
 
-<img width="3502" height="2946" alt="5555555" src="https://github.com/user-attachments/assets/c1677320-87e3-4b29-ae3b-378544fc36b6" />
+<img width="3164" height="2060" alt="3" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
 
-<img width="3164" height="2060" alt="444" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
-
-<img width="3164" height="2060" alt="3333" src="https://github.com/user-attachments/assets/c7a3165c-466b-42c5-b75a-16ada603b1da" />
-
+<img width="3164" height="2060" alt="4" src="https://github.com/user-attachments/assets/c7a3165c-466b-42c5-b75a-16ada603b1da" />
 
 **Custom Layout**
 
