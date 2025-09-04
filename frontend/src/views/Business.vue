@@ -5,9 +5,11 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
 import { Button, Card, Flex } from "ant-design-vue";
 import { onMounted, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 
 const { products, settingState: settings, refreshSettingInfo, fetchProducts } = useShop();
 const { isAdmin } = useAppStateStore();
+const { t } = useI18n();
 
 const formData = reactive({
   code: ""
@@ -18,7 +20,7 @@ const toLoginPage = () => {
 };
 
 const activeInstance = () => {
-  console.log("激活实例！");
+  console.log(t("激活实例！"));
 };
 
 onMounted(async () => {
@@ -34,7 +36,7 @@ onMounted(async () => {
       <ShopInfoUpdateDialog />
     </div>
     <Flex vertical :gap="60" class="business-container">
-      <!-- 公司信息头部 -->
+      <!-- Company header section -->
       <Flex vertical :gap="0" class="company-header">
         <Flex align="center" justify="space-between" :gap="16" style="flex: 1">
           <Flex class="mb-30" vertical align="start" justify="start" :gap="16">
@@ -54,7 +56,7 @@ onMounted(async () => {
             <Flex :gap="16" align="center">
               <a-input
                 v-model:value="formData.code"
-                placeholder="请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO"
+                :placeholder="$t('请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO')"
                 size="large"
                 style="width: 320px"
               >
@@ -66,9 +68,11 @@ onMounted(async () => {
                 size="large"
                 @click="activeInstance"
               >
-                激活实例
+                {{ $t("激活实例") }}
               </a-button>
-              <a-button type="primary" size="large" @click="toLoginPage"> 进入控制台 </a-button>
+              <a-button type="primary" size="large" @click="toLoginPage">
+                {{ $t("进入控制台") }}
+              </a-button>
             </Flex>
 
             <div style="opacity: 0.4">
@@ -89,13 +93,13 @@ onMounted(async () => {
           <DownIcon :text="$t('向下滚动查看更多')" />
         </div>
       </Flex>
-      <!-- 产品展示区域 -->
+      <!-- Products section -->
       <div class="products-section">
         <Flex vertical :gap="32">
           <a-typography-paragraph class="section-title">
-            <a-typography-title :level="2"> 服务套餐 </a-typography-title>
+            <a-typography-title :level="2"> {{ $t("服务套餐") }} </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
-              我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。
+              {{ $t("我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。") }}
             </a-typography-text>
           </a-typography-paragraph>
 
@@ -110,20 +114,20 @@ onMounted(async () => {
               }"
             >
               <Flex vertical justify="space-between" :gap="16" style="height: 100%">
-                <!-- 产品标题 -->
+                <!-- Product title -->
                 <a-typography-title :level="3" class="product-title">
                   {{ product.title }}
                 </a-typography-title>
 
-                <!-- 价格 -->
+                <!-- Price -->
                 <Flex align="baseline" :gap="8">
                   <a-typography-title :level="2" class="product-price">
-                    ¥{{ product.price }}
+                    {{ product.price }}
                   </a-typography-title>
-                  <a-typography-text class="price-unit"> /月 </a-typography-text>
+                  <a-typography-text class="price-unit"> {{ $t("/月") }} </a-typography-text>
                 </Flex>
 
-                <!-- 配置信息 -->
+                <!-- Configuration info -->
                 <Flex vertical :gap="8">
                   <template v-for="item in product.lines" :key="item.title + item.value">
                     <Flex justify="space-between">
@@ -135,13 +139,15 @@ onMounted(async () => {
                   </template>
                 </Flex>
 
-                <!-- 产品备注 -->
+                <!-- Product remark -->
                 <a-typography-paragraph class="product-remark">
                   {{ product.remark }}
                 </a-typography-paragraph>
 
-                <!-- 购买按钮 -->
-                <Button type="primary" size="large" class="buy-button"> 立即购买 </Button>
+                <!-- Buy button -->
+                <Button type="primary" size="large" class="buy-button">
+                  {{ $t("立即购买") }}
+                </Button>
               </Flex>
             </Card>
           </Flex>
@@ -164,6 +170,14 @@ onMounted(async () => {
               <a href="https://mcsmanager.com" target="_blank">MCSManager</a>
             </span>
           </div>
+
+          <Flex v-if="isAdmin" justify="center" align="center" class="admin-message">
+            {{
+              $t(
+                '右侧编辑悬浮球可以修改页面上的文字，如果您想深度定制此页，则需要开发人员修改 "frontend/src/views/Business.vue" 文件（仅管理员可见）'
+              )
+            }}
+          </Flex>
         </Flex>
       </footer>
     </Flex>
@@ -224,7 +238,7 @@ onMounted(async () => {
   border: 1px solid var(--color-gray-5) !important;
 }
 
-/* 公司头部样式 */
+/* Company header styles */
 .company-header {
   text-align: center;
   height: 100vh;
@@ -251,7 +265,7 @@ onMounted(async () => {
   text-align: left;
 }
 
-/* 产品区域样式 */
+/* Products section styles */
 .products-section {
   padding: 0 0px;
 }
@@ -327,12 +341,13 @@ onMounted(async () => {
 }
 
 .admin-message {
+  opacity: 0.6;
   padding: 8px 0px;
-  background-color: var(--color-gray-7);
+  text-align: center;
   font-size: 12px;
 }
 
-/* 响应式设计 */
+/* Responsive design */
 @media (max-width: 768px) {
   .business-container {
     padding: 20px 10px;

@@ -4,13 +4,15 @@ import type { Settings } from "@/types";
 import { EditOutlined } from "@ant-design/icons-vue";
 import { Button, Form, Input, message, Modal } from "ant-design-vue";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const { refreshSettingInfo, updateShopInfo } = useShop();
+const { t } = useI18n();
 
-// 对话框显示状态
+// Dialog visibility state
 const visible = ref(false);
 
-// 表单数据
+// Form data
 const formData = ref<Partial<Settings>>({
   shopName: "",
   shopEmail: "",
@@ -18,34 +20,34 @@ const formData = ref<Partial<Settings>>({
   shopTip: ""
 });
 
-// 提交状态
+// Submit loading state
 const loading = ref(false);
 
-// 显示对话框
+// Show dialog
 const showDialog = async () => {
   const settingInfo = await refreshSettingInfo();
   formData.value = settingInfo.value || {};
   visible.value = true;
 };
 
-// 隐藏对话框
+// Hide dialog
 const hideDialog = () => {
   visible.value = false;
 };
 
-// 提交表单
+// Submit form
 const handleSubmit = async () => {
   try {
     loading.value = true;
     await updateShopInfo({
       ...formData.value
     });
-    message.success("信息更新成功，网页稍后将进行刷新...");
+    message.success(t("信息更新成功，网页稍后将进行刷新..."));
     setTimeout(() => {
       window.location.reload();
     }, 2000);
   } catch (error) {
-    message.error("更新失败，请重试");
+    message.error(t("更新失败，请重试"));
   } finally {
     loading.value = false;
   }
@@ -54,64 +56,72 @@ const handleSubmit = async () => {
 
 <template>
   <div>
-    <!-- 悬浮球 -->
+    <!-- Floating button -->
     <div class="floating-button" @click="showDialog">
       <EditOutlined class="icon" />
-      <span class="tooltip">编辑店铺信息</span>
+      <span class="tooltip">{{ $t("编辑店铺信息") }}</span>
     </div>
 
-    <!-- 表单对话框 -->
+    <!-- Form dialog -->
     <Modal
       v-model:open="visible"
-      title="编辑店铺信息"
+      :title="$t('编辑店铺信息')"
       :width="600"
       :footer="null"
       @cancel="hideDialog"
     >
       <a-typography-paragraph>
         <a-typography-text>
-          所有文本均支持 Markdown 格式来自定义超链接，列表等特殊格式。
+          {{ $t("所有文本均支持 Markdown 格式来自定义超链接，列表等特殊格式。") }}
         </a-typography-text>
       </a-typography-paragraph>
 
       <Form :model="formData" layout="vertical" class="shop-form" @finish="handleSubmit">
-        <Form.Item label="首页名称" name="shopName" required>
-          <Input v-model:value="formData.shopName" placeholder="请输入店铺名称" size="large" />
+        <Form.Item :label="$t('首页名称')" name="shopName" required>
+          <Input
+            v-model:value="formData.shopName"
+            :placeholder="$t('请输入店铺名称')"
+            size="large"
+          />
         </Form.Item>
-        <Form.Item label="首页描述文字" name="shopDescription">
+        <Form.Item :label="$t('首页描述文字')" name="shopDescription">
           <Input.TextArea
             v-model:value="formData.shopDescription"
-            placeholder="请输入店铺描述信息"
+            :placeholder="$t('请输入店铺描述信息')"
             :rows="4"
             size="large"
           />
         </Form.Item>
-        <Form.Item label="首页描述二级文字" name="shopTip">
+        <Form.Item :label="$t('首页描述二级文字')" name="shopTip">
           <Input.TextArea
             v-model:value="formData.shopTip"
-            placeholder="请输入店铺提示信息"
+            :placeholder="$t('请输入店铺提示信息')"
             :rows="3"
             size="large"
           />
         </Form.Item>
 
-        <Form.Item label="页脚信息" name="loginInfo">
+        <Form.Item :label="$t('页脚信息')" name="loginInfo">
           <Input
             v-model:value="formData.loginInfo"
-            placeholder="请输入页脚信息，可以输入版权信息，备案信息，支持 Markdown"
+            :placeholder="$t('请输入页脚信息，可以输入版权信息，备案信息，支持 Markdown')"
             size="large"
           />
         </Form.Item>
 
-        <Form.Item label="页脚联系邮箱方式" name="shopEmail" required>
-          <Input v-model:value="formData.shopEmail" placeholder="请输入店铺联系邮箱" size="large" />
+        <Form.Item :label="$t('页脚联系邮箱方式')" name="shopEmail" required>
+          <Input
+            v-model:value="formData.shopEmail"
+            :placeholder="$t('请输入店铺联系邮箱')"
+            size="large"
+          />
         </Form.Item>
 
         <Form.Item class="form-actions">
           <div class="button-group">
-            <Button size="large" @click="hideDialog"> 取消 </Button>
+            <Button size="large" @click="hideDialog"> {{ $t("取消") }} </Button>
             <Button type="primary" html-type="submit" :loading="loading" size="large">
-              保存
+              {{ $t("保存") }}
             </Button>
           </div>
         </Form.Item>
@@ -218,7 +228,7 @@ const handleSubmit = async () => {
   }
 }
 
-// 响应式设计
+// Responsive design
 @media (max-width: 768px) {
   .floating-button {
     bottom: 80px;
