@@ -34,19 +34,13 @@ It is also suitable for commercial purposes, such as IDC service providers selli
 MCSManager **supports English, French, German, Italian, Japanese, Portuguese, Simplified Chinese, and Traditional Chinese**, with plans to add support for more languages in the future!
 
 
-<img width="1906" height="1453" alt="Market Image" src="https://github.com/user-attachments/assets/729ee316-4c97-4e45-97e5-7c9083d7d607" />
+<img width="3164" height="2060" alt="1111" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
-<img width="3164" height="2060" alt="image" src="https://github.com/user-attachments/assets/ce27edcc-d580-450d-b932-c6e121378104" />
+<img width="3502" height="2946" alt="5555555" src="https://github.com/user-attachments/assets/c1677320-87e3-4b29-ae3b-378544fc36b6" />
 
-<img width="3164" height="2060" alt="image" src="https://github.com/user-attachments/assets/16a68374-ab64-445d-a269-bbfa26af3ca0" />
+<img width="3164" height="2060" alt="444" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
 
-<img width="3164" height="2060" alt="image" src="https://github.com/user-attachments/assets/1e209f09-42d0-4785-9ae8-fadfed734e8e" />
-
-<img width="3164" height="2060" alt="image" src="https://github.com/user-attachments/assets/06004946-d1b4-4e66-a90d-b6812bec81db" />
-
-<img width="3164" height="2060" alt="image" src="https://github.com/user-attachments/assets/08dd7af3-3701-426d-911b-6029e1963551" />
-
-<img width="3502" height="2946" alt="Terminal Image" src="https://github.com/user-attachments/assets/78ff1c43-4e35-4a1e-b461-3d70fe1587d8" />
+<img width="3164" height="2060" alt="3333" src="https://github.com/user-attachments/assets/c7a3165c-466b-42c5-b75a-16ada603b1da" />
 
 
 **Custom Layout**
