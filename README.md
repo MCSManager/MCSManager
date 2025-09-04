@@ -21,7 +21,7 @@
 <br />
 
 [English](README.md) - [简体中文](README_ZH.md) - [繁體中文](README_TW.md) - [Deutsch](README_DE.md) - [Português BR](README_PTBR.md) -
-[日本語](README_JP.md) - [Spanish](README_ES.md) - [Thai](README_TH.md)
+[日本語](README_JP.md) - [Spanish](README_ES.md) - [Thai](README_TH.md) - [Français](README_FR.md) - [Русский](README_RU.md)
 
 </div>
 
