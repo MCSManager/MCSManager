@@ -8,7 +8,7 @@ import { proxyIncomingMessage } from "../utils/speed_limit";
 export function isUploadRequest(ctx: Context) {
   const headers = ctx.request?.headers;
   const contentType = headers?.["content-type"] ?? "";
-  return contentType.toLowerCase().includes("multipart/form-data");
+  return contentType.toLowerCase().includes("multipart");
 }
 
 /**
@@ -18,7 +18,7 @@ export function isUploadRequest(ctx: Context) {
 export async function uploadFileCheckMiddleware(ctx: Context, next: () => Promise<void>) {
   try {
     const isMultipart = isUploadRequest(ctx);
-    const error = new Error("Access denied: Invalid multipart/form-data request!");
+    const error = new Error("Access denied: Invalid multipart request!");
 
     if (isMultipart) {
       let uploadKey = "";
