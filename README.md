@@ -36,9 +36,10 @@ MCSManager has gained popularity within the `Minecraft` and `Steam` gaming commu
 
 It is also suitable for any commercial activities, such as IDC service providers for private server sales, etc. Several small and medium-sized enterprises are already using this panel as management & sales software, and it supports **multiple countries'** languages.
 
-<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
 <img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
+
+<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
 <img width="3164" height="2060" alt="3" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
 
