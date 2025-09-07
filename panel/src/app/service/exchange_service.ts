@@ -6,6 +6,7 @@ import { $t } from "../i18n";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import user_service from "../service/user_service";
+import { systemConfig } from "../setting";
 import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
@@ -106,6 +107,37 @@ export async function requestUseRedeem(
       }
     }
   );
+  if (responseData.code !== 200) {
+    throw new Error(responseData.message);
+  }
+  return responseData.data;
+}
+
+export async function requestRemotePlatform<T = any>(method: string, url: string, data: any = {}) {
+  const { data: responseData } = await axios.request<IRedeemResponseProtocol<T>>({
+    url: `${REDEEM_PLATFORM_ADDR}${url}`,
+    data:
+      method === "POST"
+        ? {
+            panelId: systemConfig?.panelId || "",
+            registerCode: systemConfig?.registerCode || "",
+            ...data
+          }
+        : undefined,
+    params:
+      method === "GET"
+        ? {
+            panelId: systemConfig?.panelId || "",
+            registerCode: systemConfig?.registerCode || "",
+            ...data
+          }
+        : undefined,
+    method: method,
+    headers: {
+      "X-Panel-Id": systemConfig?.panelId || "",
+      "X-Register-Code": systemConfig?.registerCode || ""
+    }
+  });
   if (responseData.code !== 200) {
     throw new Error(responseData.message);
   }

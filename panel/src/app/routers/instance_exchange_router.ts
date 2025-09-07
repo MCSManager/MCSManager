@@ -11,6 +11,7 @@ import {
   parseUserName,
   queryInstanceByUserId,
   RequestAction,
+  requestRemotePlatform,
   requestUseRedeem
 } from "../service/exchange_service";
 import { logger } from "../service/log";
@@ -159,4 +160,10 @@ router.post(
     ctx.body = response;
   }
 );
+
+router.get("/products", async (ctx: Koa.ParameterizedContext) => {
+  const response = await requestRemotePlatform("GET", "/api/advanced_consumer/products");
+  ctx.body = response;
+});
+
 export default router;
