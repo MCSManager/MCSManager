@@ -2,6 +2,7 @@ import axios from "axios";
 import * as fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import storage from "./common/system_storage";
+import { REDEEM_PLATFORM_ADDR } from "./service/exchange_service";
 import { getFrontendLayoutConfig } from "./service/frontend_layout";
 import { logger } from "./service/log";
 import { saveSystemConfig, systemConfig } from "./setting";
@@ -16,7 +17,6 @@ interface IPackageInfo {
 // A business platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Business Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = "https://online.mcsmanager.com";
 
 const PACKAGE_JSON = "package.json";
 const VERSION_LOG_TEXT_NAME = "current-version.txt";
