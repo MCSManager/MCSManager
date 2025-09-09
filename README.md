@@ -28,13 +28,11 @@
 
 ## What is this?
 
-**MCSManager Panel** (abbreviated as: MCSM Panel) is a fast-deploying, distributed architecture-supported, multi-user, simple and modern web management panel for Minecraft and Steam game servers.
+**MCSManager Panel** (or simply **MCSM Panel**) is a fast-deploying, distributed, multi-user, and modern web-based management panel for **`Minecraft`**, **`Steam`**, and other game servers.
 
+MCSManager has gained popularity within the **`Minecraft`** and **`Steam`** gaming communities. It enables you to manage multiple physical or virtual servers from a single platform, and offers a **secure**, **reliable**, and **granular multi-user permission system**. The MCSM Panel continues to support server administrators, operators, and independent developers, managing servers like **`Minecraft`**, **`Terraria`**, and other **`Steam`**-based games for them.
 
-MCSManager has gained popularity within the `Minecraft` and `Steam` gaming communities. It helps you centrally manage multiple physical servers, enabling you to create game servers on any host, and provides a secure and reliable multi-user permission system that can easily help you manage multiple servers. It has been providing healthy software support for administrators, operations personnel, and individual developers of `Minecraft`, `Terraria`, and `Steam` game servers.
-
-
-It is also suitable for any commercial activities, such as IDC service providers for private server sales, etc. Several small and medium-sized enterprises are already using this panel as management & sales software, and it supports **multiple countries'** languages.
+MCSM also has **commercial applications** in mind, such as private server hosting and sales by **IDC service providers**. Several small and medium-sized enterprises already use the panel as a combined **server management** and **sales platform**. In addition, it supports **multi-language environments**, making it accessible to users across different countries and regions.
 
 
 <img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
@@ -49,23 +47,22 @@ It is also suitable for any commercial activities, such as IDC service providers
 
 ## Features
 
-1. Use the application market to easily deploy `Minecraft` or `Steam` game servers with one click.
-2. Compatible with most `Steam` game servers, such as `Palworld`, `Squad`, `Project Zomboid`, and `Terraria`, etc.
-3. Web interface supports drag-and-drop card layout to create your preferred interface layout.
-4. Supports all images on `Docker Hub`, supports multi-user, supports commercial instance sales services.
-5. Supports distributed architecture, one web interface can manage multiple machines simultaneously.
-6. Simple technology stack, only need to be proficient in TypeScript to complete the entire MCSManager development!
-7. More...
+1. One-click deployment of **`Minecraft`** or **`Steam`** game servers via the built-in application marketplace.
+2. Compatible with most **`Steam`**-based game servers, including **`Palworld`**, **`Squad`**, **`Project Zomboid`**, **`Terraria`**, and more.
+3. Customizable web interface with drag-and-drop card layout to build your ideal dashboard.
+4. Full **Docker Hub** image support, with built-in multi-user access and support for commercial instance hosting services.
+5. Distributed architecture, managing multiple machines from a single web panel.
+6. Lightweight technology stack. The entire project can be developed and maintained with TypeScript alone.
+7. ...and much more.
 
 <br />
 
 ## Runtime Environment
 
-The control panel can run on `Windows` and `Linux` platforms, no database installation required, only need to install `Node.js` environment and several **commands for decompression**.
+The control panel runs on both **`Windows`** and **`Linux`** platforms. No database installation is required. Simply install the **`Node.js`** runtime and a few basic **decompression utilities**.
 
-Must use [Node.js 16.20.2](https://nodejs.org/en) or above, recommend using the latest LTS version.
-
-<br />
+> Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.  
+> It is recommended to use the **latest LTS version** for best compatibility and stability.
 
 ## Installation
 
@@ -103,134 +100,156 @@ systemctl stop mcsm-{web,daemon}  # Stop panel
 
 **Linux Manual Installation**
 
-- If one-click installation doesn't work, you can try this step for manual installation.
+- If the one-click installation method doesn't work, you can install MCSManager manually by following the steps below:
+
 
 ```bash
-# Switch to installation directory. If it doesn't exist, please create it with 'mkdir /opt/' first.
+# Step 1: Navigate to the installation directory (create it if it doesn't exist)
 cd /opt/
-# Download runtime environment (Node.js). If you already have Node.js 16+ installed, please ignore this step.
+
+# Step 2: (Optional) Download and install Node.js if it's not already installed
 wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-# Extract archive
 tar -xvf node-v20.11.0-linux-x64.tar.xz
-# Add program to system environment variables.
+
+# Add Node.js and npm to the system path
 ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
 
-# Prepare installation directory.
+# Step 3: Prepare the MCSManager installation directory
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# Download MCSManager.
+# Step 4: Download the latest MCSManager release
 wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
 tar -zxf mcsmanager_linux_release.tar.gz
 
-# Install dependencies.
+# Step 5: Install dependencies
 chmod 775 install.sh
 ./install.sh
 
-# Please open two terminals or screen.
+# Step 6: Open two terminal windows or use screen/tmux
 
-# Start node program first.
+# In the first terminal: start the daemon
 ./start-daemon.sh
 
-# Start web service (in second terminal or screen).
+# In the second terminal: start the web service
 ./start-web.sh
 
-# Visit http://<public IP>:23333/ to view the panel.
-# Generally, the web application will automatically scan and connect to the local daemon.
+# Step 7: Access the panel in your browser
+# Replace <public IP> with your server's actual IP address
+http://<public IP>:23333/
+
+# The web interface will automatically detect and connect to the local daemon in most cases.
 ```
 
-This installation method does not automatically register the panel to system services, so you must use `screen` software to manage it. If you want the system service to take over MCSManager, please refer to the documentation.
+> The above steps do **not** register the panel as a system service.  
+> To keep it running in the background, you’ll need to use tools like **`screen`** or **`tmux`**.
+
+If you prefer to run MCSManager as a system service, please refer to the official documentation for setup instructions.
 
 ### Mac OS
 
 ```bash
 
-# First install Node.js, if you already have it installed, you can skip this step.
-# Node.js recommends installing the latest LTS version.
+# Step 1: Install Node.js (skip if already installed)
+# It's recommended to use the latest LTS version
 brew install node
 node -v
 npm -v
 
-# Use curl to download files
+# Step 2: Download the latest release using curl
 curl -L https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz -o mcsmanager_linux_release.tar.gz
 
-# Extract files (same as original command)
+# Step 3: Extract the downloaded archive
 tar -zxf mcsmanager_linux_release.tar.gz
 
+# Step 4: Enter the extracted directory
 cd mcsmanager
 
-# Install dependencies.
+# Step 5: Make the installer executable and run it
 chmod 775 install.sh
 ./install.sh
 
-# Please open two terminals or screen.
+# Step 6: Open two terminal windows or use screen/tmux to run services in parallel
 
-# Start node program first.
+# In the first terminal: start the daemon
 ./start-daemon.sh
 
-# Start web service (in second terminal or screen).
+# In the second terminal: start the web service
 ./start-web.sh
 
-# Visit http://localhost:23333/ to view the panel.
-# Generally, the web application will automatically scan and connect to the local daemon.
+# Access the panel at: http://localhost:23333/
+# The web interface will typically auto-detect and connect to the local daemon.
 ```
 
 <br />
 
 ## Contributing Code
 
-- Must read before contributing code: https://github.com/MCSManager/MCSManager/issues/599
+Before contributing code to this project, please make sure to review the following:
 
-- Code needs to maintain existing format, no excessive code formatting allowed.
-
-- All code must comply with internationalization standards.
+- **Must read:** [Issue #599 – Contribution Guidelines](https://github.com/MCSManager/MCSManager/issues/599)
+- Please maintain the existing code structure and formatting, **do not apply unnecessary or excessive formatting changes.**
+- All submitted code **must follow internationalization (i18n) standards**.
 
 <br />
 
 ## Development
 
-This section is for developers. If you want to do secondary development on MCSManager or submit code contributions, please carefully read these contents:
+This section is intended for developers. If you plan to contribute to MCSManager or perform secondary development, please review the following requirements:
 
-### Required
+### Required Setup
 
-We use `Visual Studio Code` to develop MCSManager. You **must install** these plugins:
+We recommend using **Visual Studio Code** for development. You **must install** the following extensions:
 
-- i18n text display support (I18n Ally)
-- Code formatting (Prettier)
-- Vue - Official
-- ESLint
+- **I18n Ally** – Internationalization text display support  
+- **Prettier** – Code formatter  
+- **Vue – Official** – Vue framework support  
+- **ESLint** – JavaScript/TypeScript linting and code style enforcement
+
 
 ### Dependency Files
 
-You need to go to [PTY](https://github.com/MCSManager/PTY) and [Zip-Tools](https://github.com/MCSManager/Zip-Tools) projects to download binary files suitable for your system, store them in the `daemon/lib` directory (create manually if it doesn't exist) to ensure normal operation of `simulation terminal` and `file decompression`.
+To enable the **emulated terminal** and **file decompression** features, you need to download and install required binary dependencies manually:
+
+- Visit the following repositories:
+  - [PTY](https://github.com/MCSManager/PTY)
+  - [Zip-Tools](https://github.com/MCSManager/Zip-Tools)
+  
+- Download the appropriate binaries for your operating system.
+- Place the downloaded files into the `daemon/lib/` directory.
+  - If the `lib` folder does not exist, create it manually.
+  
+This step is essential to ensure proper functionality of terminal emulation and archive handling within MCSManager.
+
+---
 
 ### Running
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
 
-# MacOS
+# For macOS
 ./install-dependents.sh
 ./npm-dev-macos.sh
 
-# Windows
+# For Windows
 ./install-dependents.bat
 ./npm-dev-windows.bat
-```
 
 ### Code Internationalization
 
-Since the project adapts to multiple languages, all `strings` and `comments` in the code only accept English, so please do not hardcode non-English text directly in the code.
+Since MCSManager supports multiple languages, **all strings and comments in the codebase must be written in English**.  
+**Do not hardcode any non-English text directly into the code.**
 
-For example, you might write a new string that needs to adapt to multiple languages.
+For example, when introducing a new string that needs to support translation:
 
 ```ts
 import { $t } from "../i18n";
 
 if (!checkName) {
-  const errorMsg = "Check Name Failed!" // Don't do this!
-  const errorMsg = $t("TXT_CODE_MY_ERROR"); // Correct!
+  const errorMsg = "Check Name Failed!" // Avoid hardcoding text like this
+  const errorMsg = $t("TXT_CODE_MY_ERROR"); // Use i18n keys instead
 }.
 ```
 
@@ -249,9 +268,10 @@ if (!checkName) {
 </template>
 ```
 
-Please add this line to the language file, for example: `languages/en_US.json`
+After adding new keys, be sure to update the appropriate language file, for example: languages/en_US.json.
 
-Among them, `en_US.json` is mandatory to add, it is the source text for all country languages, other country languages can be automatically translated by us using AI.
+The en_US.json file is mandatory and serves as the base source for all other languages.
+Other language files can be automatically translated later using AI or manual review.
 
 ```json
 {
@@ -261,40 +281,55 @@ Among them, `en_US.json` is mandatory to add, it is the source text for all coun
 }
 ```
 
-If you have installed the `I18n Ally` plugin, your `$t("TXT_CODE_MY_ERROR")` should display the English text.
+If you have the `I18n Ally` plugin installed, your usage of `$t("TXT_CODE_MY_ERROR")` will display the actual English translation inline.
 
-If the translation text needs to carry parameters, this might be a bit complex, because the frontend and backend use different i18n libraries, so the format might be different. You need to look through the files to find similar code to understand.
+If your translation string requires parameters, it may be slightly more complex.
+Note that the frontend and backend use different i18n libraries, so the parameter formats may vary. Please refer to similar examples in the codebase to understand the correct syntax.
 
-All translation text keys cannot be duplicated, so please try to use a longer name!
+Lastly, translation keys must be unique, to avoid conflicts, use **longer**, **descriptive** key names.
 
 ### Building Production Environment Version
 
+To generate the production build, run the appropriate script based on your operating system:
+
+
 ```bash
-./build.bat # Windows
-./build.sh  # MacOS
+# Windows
+./build.bat
+
+# macOS / Linux
+./build.sh
 ```
 
-After building is complete, you will find the production environment code in the `production-code` directory.
+After the build process completes, the compiled production code will be located in the `production-code` directory.
 
 <br />
 
 ## Browser Compatibility
 
-- Supports modern mainstream browsers like `Chrome` `Firefox` `Safari` `Opera`.
-- Has abandoned support for `IE` browser.
+MCSManager supports all major modern browsers, including:
 
+- `Chrome`
+- `Firefox`
+- `Safari`
+- `Opera`
+
+**Internet Explorer (IE)** is no longer supported.
 <br />
 
 ## Bug Reports
 
-Welcome to report any issues found, we will fix them promptly.
+We welcome all bug reports and feedback. Your contributions help us improve the project.
 
-If you discover serious security vulnerabilities that are inconvenient to publish publicly, please send an email to: support@mcsmanager.com. After security issues are fixed, the discoverer's name will be attached in the code.
+If you encounter any issues, please report them via the [GitHub Issues](https://github.com/MCSManager/MCSManager/issues) page, and we’ll address them as soon as possible.
 
-<br />
+For serious **security vulnerabilities** that should not be disclosed publicly, please contact us directly at: **support@mcsmanager.com**
+
+Once resolved, we will credit the discoverer in the relevant code or release notes.
 
 ## License
 
-Source code follows [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-Copyright ©2025 MCSManager.
+&copy; 2025 MCSManager. All rights reserved.
+
