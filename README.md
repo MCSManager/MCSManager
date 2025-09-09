@@ -236,6 +236,7 @@ git clone https://github.com/MCSManager/MCSManager.git
 # For Windows
 ./install-dependents.bat
 ./npm-dev-windows.bat
+```
 
 ### Code Internationalization
 
@@ -270,7 +271,7 @@ if (!checkName) {
 
 After adding new keys, be sure to update the appropriate language file, for example: languages/en_US.json.
 
-The en_US.json file is mandatory and serves as the base source for all other languages.
+The `en_US.json` file is mandatory and serves as the base source for all other languages.
 Other language files can be automatically translated later using AI or manual review.
 
 ```json
