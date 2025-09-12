@@ -69,9 +69,7 @@ routerApp.on("instance/select", (ctx, data) => {
     }
     return true;
   });
-  result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));
-
-  // sort first by status, then by name
+  // sort first by status， then by nickname
   result.sort((a, b) => {
     if (a.status() !== b.status()) {
       return b.status() - a.status();
