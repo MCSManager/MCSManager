@@ -1,21 +1,19 @@
-import { $t } from "../i18n";
 import fs from "fs-extra";
+import path from "path";
+import Instance from "../entity/instance/instance";
+import { $t } from "../i18n";
+import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import Instance from "../entity/instance/instance";
-import logger from "../service/log";
-import path from "path";
 
-import { IInstanceDetail, IJson } from "../service/interfaces";
+import { arrayUnique, toNumber } from "mcsmanager-common";
 import ProcessInfoCommand from "../entity/commands/process_info";
-import FileManager from "../service/system_file";
 import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
-import { createQuickInstallTask } from "../service/async_task_service/quick_install";
-import { QuickInstallTask } from "../service/async_task_service/quick_install";
-import { toNumber } from "mcsmanager-common";
-import { arrayUnique } from "mcsmanager-common";
+import { createQuickInstallTask, QuickInstallTask } from "../service/async_task_service/quick_install";
+import { IInstanceDetail, IJson } from "../service/interfaces";
+import FileManager from "../service/system_file";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -71,7 +69,13 @@ routerApp.on("instance/select", (ctx, data) => {
     }
     return true;
   });
-  result = result.sort((a, b) => (a.config.nickname > b.config.nickname ? 1 : -1));
+  // sort first by status， then by nickname
+  result.sort((a, b) => {
+    if (a.status() !== b.status()) {
+      return b.status() - a.status();
+    }
+    return a.config.nickname >= b.config.nickname ? 1 : -1;
+  });
   // paging function
   const pageResult = queryWrapper.page<Instance>(result, page, pageSize);
   // filter unwanted data
@@ -85,12 +89,6 @@ routerApp.on("instance/select", (ctx, data) => {
     });
   });
 
-  overview.sort((a, b) => {
-    if (a.status !== b.status) {
-      return b.status - a.status;
-    }
-    return a.config.nickname >= b.config.nickname ? 1 : -1;
-  });
 
   protocol.response(ctx, {
     page: pageResult.page,
@@ -148,7 +146,7 @@ routerApp.on("instance/detail", async (ctx, data) => {
     try {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
-    } catch (err: any) {}
+    } catch (err: any) { }
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -355,7 +353,7 @@ routerApp.on("instance/delete", (ctx, data) => {
         nickname: instance.config.nickname
       });
       InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
-    } catch (err: any) {}
+    } catch (err: any) { }
   }
   protocol.msg(ctx, "instance/delete", { instanceUuids, instances });
 });
@@ -379,7 +377,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "install_instance" && instance) {
     instance
       .execPreset("install", parameter)
-      .then(() => {})
+      .then(() => { })
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -396,7 +394,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "update" && instance) {
     instance
       .execPreset("update", parameter)
-      .then(() => {})
+      .then(() => { })
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -442,8 +440,8 @@ routerApp.on("instance/stop_asynchronous", (ctx, data) => {
   if (task && task.stop) {
     task
       .stop(instance)
-      .then(() => {})
-      .catch((err) => {});
+      .then(() => { })
+      .catch((err) => { });
   } else {
     return protocol.error(
       ctx,
