@@ -418,6 +418,37 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_50d471b2") }}
                     </a-button>
                   </a-form-item>
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_b8d40519") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>
+                          {{ t("TXT_CODE_bc07aed1") }}
+                        </div>
+                        <div>
+                          {{ t("TXT_CODE_8b4f38c0") }}
+                        </div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                      <div class="flex">
+                        <a-input
+                          v-model:value="formData.logoUrl"
+                          style="max-width: 320px"
+                          :placeholder="t('TXT_CODE_4ea93630')"
+                        />
+                        <a-button class="ml-6" @click="() => uploadLogo()">
+                          {{ t("TXT_CODE_ae09d79d") }}
+                        </a-button>
+                      </div>
+                    </a-typography-paragraph>
+                    <a-button type="primary" class="mr-6" @click="handleSaveLogoUrl()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                    <a-button danger @click="handleSaveLogoUrl('')">
+                      {{ t("TXT_CODE_50d471b2") }}
+                    </a-button>
+                  </a-form-item>
                 </a-form>
               </div>
             </div>
