@@ -40,6 +40,7 @@ const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
   bgUrl?: string;
+  logoUrl?: string;
   proLicenseKey?: string;
 }
 
@@ -73,6 +74,39 @@ const submit = async (needReload: boolean = true) => {
       reportErrorMsg(error);
     }
   }
+};
+
+const uploadLogo = async () => {
+  const body = document.querySelector("body");
+  if (formData.value && body) {
+    const url = await useUploadFileDialog();
+    if (url) {
+      formData.value.logoUrl = url;
+    }
+  }
+};
+
+const handleSaveLogoUrl = async (url?: string) => {
+  Modal.confirm({
+    title: t("TXT_CODE_88d48f94"),
+    content: t("TXT_CODE_8b4f38c0"),
+    async onOk() {
+      const cfg = await getSettingsConfig();
+      if (!cfg?.theme) {
+        return reportErrorMsg(t("TXT_CODE_b89780e2"));
+      }
+      cfg.theme.logoImage = url ?? formData.value?.logoUrl ?? "";
+      await setSettingsConfig(cfg);
+
+      // trigger header logo refresh
+      if ((window as any).refreshHeaderLogo) {
+        (window as any).refreshHeaderLogo();
+      }
+
+      // dispatch custom event for any other components listening
+      window.dispatchEvent(new CustomEvent('logoConfigChanged'));
+    }
+  });
 };
 
 const menus = arrayFilter([
@@ -224,6 +258,9 @@ onMounted(async () => {
   formData.value = res.value!;
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
+  }
+  if (cfg?.theme?.logoImage) {
+    formData.value.logoUrl = cfg.theme.logoImage;
   }
   setTimeout(() => {
     if (router.currentRoute.value.query.tab === "pro") {
