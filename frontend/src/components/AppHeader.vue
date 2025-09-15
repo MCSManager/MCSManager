@@ -9,6 +9,7 @@ import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import {
   AppstoreAddOutlined,
   BgColorsOutlined,
@@ -24,12 +25,11 @@ import {
 } from "@ant-design/icons-vue";
 import { useScroll } from "@vueuse/core";
 import { message, Modal, notification } from "ant-design-vue";
-import { computed, h } from "vue";
+import { computed, h, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import CardPanel from "./CardPanel.vue";
 
-const { saveGlobalLayoutConfig, resetGlobalLayoutConfig } = useLayoutConfigStore();
+const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
@@ -38,6 +38,16 @@ const { isAdmin, state: appState, isLogged } = useAppStateStore();
 const { state: frontendState } = useAppStateStore();
 
 const { y } = useScroll(document.body);
+
+const customLogoUrl = ref<string>("");
+const logoLoadError = ref<boolean>(false);
+
+const logoSrc = computed(() => {
+  if (customLogoUrl.value && !logoLoadError.value) {
+    return customLogoUrl.value;
+  }
+  return logo; // default logo mcsm
+});
 
 const isScroll = computed(() => {
   return y.value > 10;
@@ -298,6 +308,41 @@ const openPhoneMenu = (b = false) => {
 const onClickIcon = () => {
   window.open("https://github.com/MCSManager/MCSManager", "_blank");
 };
+
+const loadLogoConfig = async () => {
+  try {
+    const cfg = await getSettingsConfig();
+    if (cfg?.theme?.logoImage) {
+      customLogoUrl.value = cfg.theme.logoImage;
+      logoLoadError.value = false;
+    }
+  } catch (error) {
+    console.warn("Failed to load logo configuration:", error);
+  }
+};
+
+const handleLogoError = () => {
+  logoLoadError.value = true;
+};
+
+// func to refresh logo config (can be called externally)
+const refreshLogoConfig = () => {
+  loadLogoConfig();
+};
+
+// expose refresh function globally for settings page to call
+(window as any).refreshHeaderLogo = refreshLogoConfig;
+
+onMounted(() => {
+  loadLogoConfig();
+
+  // Add event listener for storage changes (if settings page updates logo)
+  const handleStorageChange = () => {
+    loadLogoConfig();
+  };
+
+  window.addEventListener('logoConfigChanged', handleStorageChange);
+});
 </script>
 
 <template>
@@ -306,7 +351,7 @@ const onClickIcon = () => {
       <nav class="btns">
         <a href="." style="margin-right: 12px">
           <div class="logo">
-            <img :src="logo" style="height: 18px" />
+            <img :src="logoSrc" style="height: 18px" @error="handleLogoError" />
           </div>
         </a>
 
@@ -390,7 +435,7 @@ const onClickIcon = () => {
             </div>
           </div>
           <div>
-            <img :src="logo" style="height: 18px" />
+            <img :src="logoSrc" style="height: 18px" @error="handleLogoError"  alt="logo"/>
           </div>
           <div style="width: 100px" class="justify-end">
             <div v-for="(item, index) in appMenus" :key="index">
