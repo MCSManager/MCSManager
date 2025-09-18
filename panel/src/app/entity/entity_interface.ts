@@ -35,6 +35,19 @@ export interface ICompleteUser {
   loginTime: string;
 }
 
+type RemoteMappingEntry = {
+  from: {
+    ip: string;
+    port: number;
+    prefix: string;
+  };
+  to: {
+    ip: string;
+    port: number;
+    prefix: string;
+  };
+};
+
 export interface IRemoteService {
   uuid?: string;
   ip?: string;
@@ -42,6 +55,7 @@ export interface IRemoteService {
   prefix?: string;
   remarks?: string;
   apiKey?: string;
+  remoteMappings?: RemoteMappingEntry[];
 }
 
 // @Entity
@@ -51,6 +65,7 @@ export class RemoteServiceConfig {
   public prefix = "";
   public remarks = "";
   public apiKey = "";
+  public remoteMappings: RemoteMappingEntry[] = [];
   connectOpts: Partial<SocketOptions & ManagerOptions> = {
     multiplex: false,
     reconnectionDelayMax: 1000 * 5,

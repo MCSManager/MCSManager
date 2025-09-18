@@ -73,6 +73,19 @@ declare global {
     status: number;
   }
 
+  interface IPanelOverviewRemoteMappingResponse {
+    from: {
+      ip: string;
+      port: number;
+      prefix: string;
+    };
+    to: {
+      ip: string;
+      port: number;
+      prefix: string;
+    };
+  }
+
   interface IPanelOverviewRemoteResponse {
     version: string;
     process?: {
@@ -107,6 +120,7 @@ declare global {
     ip: string;
     port: number;
     prefix: string;
+    remoteMappings: IPanelOverviewRemoteMappingResponse[];
     available: boolean;
     remarks: string;
     config: {
@@ -239,4 +253,5 @@ declare global {
   }
 }
 
-export {};
+export { };
+

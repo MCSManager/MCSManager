@@ -310,9 +310,19 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
-      }`;
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const prefix = removeTrail(remoteService.config.prefix.trim(), "/");
+      const remoteMappings = remoteService.config.remoteMappings.map((remote) => ({
+        from: {
+          addr: `${remote.from.ip}:${remote.from.port}`,
+          prefix: remote.from.prefix
+        },
+        to: {
+          addr: `${remote.to.ip}:${remote.to.port}`,
+          prefix: remote.to.prefix
+        }
+      }));
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "download",
@@ -331,7 +341,8 @@ router.all(
       });
       ctx.body = {
         password,
-        addr
+        addr: addr + prefix,
+        remoteMappings
       };
     } catch (err) {
       ctx.body = err;
@@ -350,7 +361,7 @@ router.all(
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
+        removeTrail((remoteService?.config.prefix ?? "").trim(), "/")
       }`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
