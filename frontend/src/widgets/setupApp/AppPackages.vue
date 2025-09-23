@@ -104,6 +104,43 @@ const getFilteredPackages = (
   });
 };
 
+const getSummaryPackages = (
+  additionalFilters?: (item: QuickStartPackages) => boolean
+): QuickStartPackages[] => {
+  let filteredPackages = getFilteredPackages(additionalFilters);
+  if (searchForm.gameType == SEARCH_ALL_KEY) {
+    const map = new Map<string, QuickStartPackages>();
+    filteredPackages.forEach((item) => {
+      if (!map.has(item.gameType)) {
+        const summary: QuickStartPackages = {
+          ...item,
+          description: "",
+          title: item.gameType,
+          category: "",
+          runtime: "",
+          size: "",
+          hardware: "",
+          remark: "",
+          targetLink: undefined,
+          author: "",
+          setupInfo: undefined,
+          tags: undefined
+        };
+        map.set(item.gameType, summary);
+      } else {
+        const existing = map.get(item.gameType);
+        if (existing) {
+          if (existing.platform != item.platform) {
+            existing.platform = "All";
+          }
+        }
+      }
+    });
+    filteredPackages = Array.from(map.values());
+  }
+  return filteredPackages;
+};
+
 // Generic function to generate options list for select dropdowns
 // Creates unique options from package items based on specified field
 // Supports additional filtering before generating options
@@ -140,7 +177,7 @@ const generateOptionsList = (
 // Computed property for filtered application list
 // Uses the generic getFilteredPackages function with current search criteria
 const appList = computed(() => {
-  return getFilteredPackages();
+  return getSummaryPackages();
 });
 
 // Computed property for language options dropdown
@@ -259,7 +296,9 @@ onMounted(() => {
           justify-content: center;
         "
       >
-        <div><Loading /></div>
+        <div>
+          <Loading />
+        </div>
         <div style="margin-top: 20px; color: var(--color-gray-12)">
           {{ t("TXT_CODE_7fca723a") }}
         </div>
@@ -384,7 +423,7 @@ onMounted(() => {
                       {{ item.title }}
                     </span>
                     <span>
-                      <a-tag color="cyan">
+                      <a-tag v-if="item.platform" color="cyan">
                         {{
                           String(item.platform).toLowerCase() === "all"
                             ? t("TXT_CODE_all_platform")
@@ -398,21 +437,26 @@ onMounted(() => {
                   </div>
                   <a-typography-paragraph>
                     <a-typography-text :style="{ fontSize: '12px' }">
-                      <span>
-                        {{ item.description }}
-                      </span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
-                      <span>{{ item.runtime }}</span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
-                      <span>{{ item.hardware }}</span>
+                      <p>
+                        <span>
+                          {{ item.description || "&nbsp;" }}
+                        </span>
+                      </p>
+                      <p v-if="item.runtime">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
+                        <span>{{ item.runtime }}</span>
+                      </p>
+                      <p v-if="item.hardware">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
+                        <span>{{ item.hardware }}</span>
+                      </p>
                     </a-typography-text>
                   </a-typography-paragraph>
                 </div>
 
                 <div class="package-action">
                   <a-button
+                    v-if="item.targetLink"
                     block
                     type="primary"
                     class="download-button"
@@ -422,6 +466,16 @@ onMounted(() => {
                       <DownloadOutlined />
                     </template>
                     {{ btnText || t("TXT_CODE_1704ea49") }}
+                  </a-button>
+
+                  <a-button
+                    v-else
+                    block
+                    type="primary"
+                    class="download-button"
+                    @click="searchForm.gameType = item.gameType"
+                  >
+                    {{ t("展开") }}
                   </a-button>
                 </div>
               </div>
