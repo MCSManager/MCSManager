@@ -8,10 +8,7 @@ export function checkDependencies() {
   const dependencies = [GOLANG_ZIP_PATH];
   dependencies.forEach((path) => {
     if (!fs.existsSync(path)) {
-      throw new Error(`MCSManager requires additional dependencies to run. 
-Please download the files suitable for your system architecture from the following locations:
-  1. https://github.com/MCSManager/PTY/releases
-  2. https://github.com/MCSManager/Zip-Tools/releases`);
+      throw new Error(`MCSManager requires additional dependencies to run. Please download the files suitable for your system architecture from the following locations:\n1. https://github.com/MCSManager/PTY/releases\n2. https://github.com/MCSManager/Zip-Tools/releases`);
     }
   });
 }
