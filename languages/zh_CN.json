@@ -2776,7 +2776,5 @@
   "TXT_CODE_1b688710": "7zip解压失败: {{message}} (详细: {{details}})",
   "TXT_CODE_9ade0fb8": "设置 7zip 文件权限失败: {{message}}",
   "TXT_CODE_a7c73a51": "7zip 成功加载: {{info}}",
-  "TXT_CODE_f0512848": "ZIP文件解压失败，可能是因为文件损坏或不完整：{{message}}",
-  "TXT_CODE_5e9022f8": "下一步",
-  "TXT_CODE_5a936b7f": "展开"
+  "TXT_CODE_f0512848": "ZIP文件解压失败，可能是因为文件损坏或不完整：{{message}}"
 }
