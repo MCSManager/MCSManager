@@ -1880,7 +1880,6 @@
   "TXT_CODE_be608c82": "Diferentes tipos podem ter ligeiras diferenças em algumas funções",
   "TXT_CODE_be6484f7": "Por favor, selecione uma imagem de instância",
   "TXT_CODE_be769e64": "Permite que você altere a quantidade de carrapatos necessários para a morte de uma multidão contar como um jogador matando depois de ser ferido pelo jogador (projétil ou diretamente)",
-  "TXT_CODE_be7a689a": "Deve ser um IP/Domain Público ou 'localhost'. Caso contrário, o daemon falhará ao conectar.",
   "TXT_CODE_bea356aa": "Permitir conexões do ProxyPass e do Waterdog.",
   "TXT_CODE_bea85b64": "Quantidade de carrapatos O jogador brilhará depois de comer uma baga de brilho. \nDefinido como 0 para desativar",
   "TXT_CODE_beacbdc": "A velocidade em que um caldeirão se enche com neve em pó (depende do carrapato aleatório)",

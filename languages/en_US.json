@@ -1880,7 +1880,7 @@
   "TXT_CODE_be608c82": "Different types may have slightly differences in some functions",
   "TXT_CODE_be6484f7": "Please select an instance image",
   "TXT_CODE_be769e64": "Allows you to change the amount of ticks required for a mob's death to count as a player kill after being hurt by the player (projectile or directly)",
-  "TXT_CODE_be7a689a": "It must be an Public IP/Domain or 'localhost'. Otherwise, the daemon will fail to connect.",
+  "TXT_CODE_be7a689a": "It must be accessible from the server that provide this panel. When it is neither a public IP/domain nor 'localhost' and you are using reverse proxy for public access, you need to configure node direct connection mappings to let related functionalities work properly.",
   "TXT_CODE_bea356aa": "Allow connections from ProxyPass and Waterdog.",
   "TXT_CODE_bea85b64": "Amount of ticks the player will glow after eating a glow berry. Set to 0 to disable",
   "TXT_CODE_beacbdc": "The speed in which a cauldron fills with powdered snow (depends on random tick)",
@@ -2776,5 +2776,16 @@
   "TXT_CODE_1b688710": "7zip decompression failed: {{message}} (details: {{details}})",
   "TXT_CODE_9ade0fb8": "Failed to set 7zip file permissions: {{message}}",
   "TXT_CODE_a7c73a51": "7zip successfully loaded: {{info}}",
-  "TXT_CODE_f0512848": "Unzip Error: {{message}}"
+  "TXT_CODE_f0512848": "Unzip Error: {{message}}",
+  "TXT_CODE_dd559000": "Could not find remote with given daemon ID!",
+  "TXT_CODE_bbe23ee7": "Node direct connection address mappings",
+  "TXT_CODE_497568db": "Configure how the node is directly connected when user reaches panel from different endpoints, useful when node is behind a reverse proxy.",
+  "TXT_CODE_2ee6fd18": "When accessing panel from",
+  "TXT_CODE_6f27624c": "Access daemon from",
+  "TXT_CODE_54312194": "Address and port",
+  "TXT_CODE_941d83b8": "Path prefix",
+  "TXT_CODE_6f2c1806": "Remove",
+  "TXT_CODE_8036ea5e": "No mapping is set.",
+  "TXT_CODE_8d8fbbf4": "Add a mapping",
+  "TXT_CODE_93c3cb78": "For this address to work, you may need to configure node direct connection mappings."
 }

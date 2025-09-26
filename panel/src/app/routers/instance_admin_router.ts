@@ -94,7 +94,7 @@ router.post(
       });
       // Send a cross-end file upload task to the daemon
       const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
+        removeTrail((remoteService?.config.prefix ?? "").trim(), "/")
       }`;
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {

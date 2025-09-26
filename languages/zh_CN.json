@@ -1880,7 +1880,7 @@
   "TXT_CODE_be608c82": "不同的类型会在某些功能上有细微的差别",
   "TXT_CODE_be6484f7": "请选择实例镜像",
   "TXT_CODE_be769e64": "允许您更改生物在受到玩家攻击后计为玩家击杀所需的刻数",
-  "TXT_CODE_be7a689a": "必须使用外网地址或 localhost 地址，否则将导致远程实例无法连接",
+  "TXT_CODE_be7a689a": "必须使用能从面板服务器访问的地址。如果使用的既不是外网地址也不是 localhost 地址且使用了反向代理暴露给外部访问，则需要配置节点直连映射以使相关功能正常运作。",
   "TXT_CODE_bea356aa": "允许来自ProxyPass和Waterdog的连接。",
   "TXT_CODE_bea85b64": "玩家食用荧光浆果后发光的时间刻数。设置为0以禁用",
   "TXT_CODE_beacbdc": "大雪填满坩埚的速度(与随机刻相关)。",
@@ -2776,5 +2776,16 @@
   "TXT_CODE_1b688710": "7zip解压失败: {{message}} (详细: {{details}})",
   "TXT_CODE_9ade0fb8": "设置 7zip 文件权限失败: {{message}}",
   "TXT_CODE_a7c73a51": "7zip 成功加载: {{info}}",
-  "TXT_CODE_f0512848": "ZIP文件解压失败，可能是因为文件损坏或不完整：{{message}}"
+  "TXT_CODE_f0512848": "ZIP文件解压失败，可能是因为文件损坏或不完整：{{message}}",
+  "TXT_CODE_dd559000": "无法找到具有对应daemon ID的远程节点！",
+  "TXT_CODE_bbe23ee7": "节点直连地址映射",
+  "TXT_CODE_2ee6fd18": "从此处访问面板时",
+  "TXT_CODE_6f27624c": "从此处访问节点",
+  "TXT_CODE_54312194": "地址与端口",
+  "TXT_CODE_941d83b8": "路径前缀",
+  "TXT_CODE_6f2c1806": "删除",
+  "TXT_CODE_8036ea5e": "未设置任何映射。",
+  "TXT_CODE_8d8fbbf4": "添加一条映射",
+  "TXT_CODE_497568db": "设置用户从不同地址访问面板时直连节点使用的地址，在节点使用反向代理暴露时很有用。",
+  "TXT_CODE_93c3cb78": "为使此地址正常工作，可能需要配置节点直连映射。"
 }
