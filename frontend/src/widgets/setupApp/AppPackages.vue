@@ -475,7 +475,7 @@ onMounted(() => {
                     class="download-button"
                     @click="searchForm.gameType = item.gameType"
                   >
-                    {{ t("展开") }}
+                    {{ t("TXT_CODE_5a936b7f") }}
                   </a-button>
                 </div>
               </div>
