@@ -74,7 +74,7 @@ const toQuickStart = () => {
     query: {
       from_install: 1
     }
-  });
+  }).then(() => window.location.reload());
 };
 
 const toOverview = () => {
@@ -83,7 +83,7 @@ const toOverview = () => {
     query: {
       from_install: 1
     }
-  });
+  }).then(() => window.location.reload());
 };
 </script>
 
