@@ -114,6 +114,8 @@ router.post(
         false
       );
 
+      logger.info(`Router /request_buy_instance ProductInfo: ${JSON.stringify(productInfo)}`);
+
       const hours = productInfo?.hours;
       if (!hours || !productInfo?.payload) {
         throw new Error($t("TXT_CODE_45d7b982"));
@@ -133,7 +135,7 @@ router.post(
         category_id: productId,
         payload: config,
         username: username,
-        node_id: daemonId,
+        node_id: productInfo.daemonUuid || "", // Use daemonId from productInfo
         hours: hours,
         instance_id: instanceId,
         code: code

@@ -1,19 +1,35 @@
 <script setup lang="ts">
 import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
+import { requestBuyInstance, type FrontProductInfo } from "@/services/apis/redeem";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
-import { Button, Card, Flex } from "ant-design-vue";
-import { onMounted, reactive } from "vue";
+import { reportErrorMsg } from "@/tools/validator";
+import { Button, Card, Flex, Modal } from "ant-design-vue";
+import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { products, settingState: settings, refreshSettingInfo, fetchProducts } = useShop();
 const { isAdmin } = useAppStateStore();
 const { t } = useI18n();
+const { execute: requestBuy } = requestBuyInstance();
+
+const selectedProduct = ref<FrontProductInfo | null>(null);
+
+// 表单验证规则
+const formRules = {
+  cardCode: [{ required: true, message: t("请输入卡密"), trigger: "blur" }],
+  username: [{ required: true, message: t("请输入激活用户名"), trigger: "blur" }]
+} as any;
 
 const formData = reactive({
   code: ""
 });
+
+// 对话框状态管理
+const isModalVisible = ref(false);
+const cardCode = ref("");
+const username = ref("");
 
 const toLoginPage = () => {
   router.push({ path: "/login" });
@@ -21,6 +37,43 @@ const toLoginPage = () => {
 
 const activeInstance = () => {
   console.log(t("激活实例！"));
+};
+
+// 显示购买对话框
+const showBuyModal = (product: FrontProductInfo) => {
+  isModalVisible.value = true;
+  cardCode.value = "";
+  username.value = "";
+  selectedProduct.value = product;
+};
+
+// 确认购买
+const handleBuyConfirm = async () => {
+  if (!cardCode.value.trim() || !username.value.trim()) {
+    return;
+  }
+  try {
+    await requestBuy({
+      data: {
+        code: cardCode.value,
+        daemonId: selectedProduct.value?.daemonId || "",
+        productId: selectedProduct.value?.productId || 0,
+        username: username.value
+      }
+    });
+    isModalVisible.value = false;
+    cardCode.value = "";
+    username.value = "";
+  } catch (error) {
+    reportErrorMsg(error);
+  }
+};
+
+// 取消购买
+const handleBuyCancel = () => {
+  isModalVisible.value = false;
+  cardCode.value = "";
+  username.value = "";
 };
 
 onMounted(async () => {
@@ -145,7 +198,12 @@ onMounted(async () => {
                 </a-typography-paragraph>
 
                 <!-- Buy button -->
-                <Button type="primary" size="large" class="buy-button">
+                <Button
+                  type="primary"
+                  size="large"
+                  class="buy-button"
+                  @click="showBuyModal(product)"
+                >
                   {{ $t("立即购买") }}
                 </Button>
               </Flex>
@@ -194,6 +252,31 @@ onMounted(async () => {
         </Flex>
       </footer>
     </Flex>
+
+    <!-- 购买对话框 -->
+    <Modal
+      v-model:open="isModalVisible"
+      :title="$t('购买服务')"
+      :ok-text="$t('确定')"
+      :cancel-text="$t('取消')"
+      @ok="handleBuyConfirm"
+      @cancel="handleBuyCancel"
+    >
+      <a-form :model="{ cardCode, username }" :rules="formRules" layout="vertical">
+        <a-form-item :label="$t('为哪个账号购买？')" name="username">
+          <a-typography-paragraph>
+            <a-typography-text type="secondary">
+              {{ $t("请确保输入的用户名正确，如果用户不存在则会自动创建，请勿使用他人账号购买。") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+          <a-input v-model:value="username" :placeholder="$t('请输入用户名')" size="large" />
+        </a-form-item>
+
+        <a-form-item :label="$t('兑换码')" name="cardCode">
+          <a-input v-model:value="cardCode" :placeholder="$t('请输入兑换码')" size="large" />
+        </a-form-item>
+      </a-form>
+    </Modal>
   </div>
 </template>
 
