@@ -1,7 +1,7 @@
 // I18n init configuration (Frontend)
 
 import { updateSettings } from "@/services/apis";
-import { createI18n } from "vue-i18n";
+import { createI18n, type I18n } from "vue-i18n";
 
 // DO NOT I18N
 // If you want to add the language of your own country, you need to add the code here.
@@ -55,7 +55,7 @@ export const SUPPORTED_LANGS = [
 
 export const LANGUAGE_KEY = "LANGUAGE";
 
-let i18n: any;
+let i18n: I18n;
 
 export function toStandardLang(lang?: string) {
   if (!lang) return "en_us";
@@ -73,14 +73,16 @@ export async function initInstallPageFlow(language: string) {
 
 // I18n init configuration
 // If you want to add the language of your own country, you need to add the code here.
+const messages: Record<string, any> = {};
 async function initI18n(lang: string) {
   lang = toStandardLang(lang);
 
-  const messages: Record<string, any> = {};
   const langFiles = import.meta.glob("../../../languages/*.json");
   for (const path in langFiles) {
-    if (toStandardLang(path).includes(lang) && typeof langFiles[path] === "function") {
-      messages[lang] = await langFiles[path]();
+    for (const l of SUPPORTED_LANGS) {
+      if (toStandardLang(path).includes(l.value) && typeof langFiles[path] === "function") {
+        messages[l.value] = await langFiles[path]();
+      }
     }
   }
 
@@ -107,10 +109,11 @@ const searchSupportLanguage = (lang: string) => {
   return "en_us";
 };
 
-const setLanguage = (lang: string) => {
+const setLanguage = (lang: string, reload = true) => {
   lang = toStandardLang(lang);
   localStorage.setItem(LANGUAGE_KEY, lang);
-  window.location.reload();
+  i18n.global.locale = lang;
+  if (reload) window.location.reload();
 };
 
 const getCurrentLang = (): string => {
