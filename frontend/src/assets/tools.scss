@@ -305,6 +305,10 @@
     margin-left: #{$depth}px !important;
     margin-right: #{$depth}px !important;
   }
+  .my-#{$depth} {
+    margin-top: #{$depth}px !important;
+    margin-bottom: #{$depth}px !important;
+  }
   .p-#{$depth} {
     padding: #{$depth}px !important;
   }
