@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { getInitLanguage, t } from "@/lang/i18n";
+import {
+  getInitLanguage,
+  initInstallPageFlow,
+  setLanguage,
+  SUPPORTED_LANGS,
+  t,
+  toStandardLang
+} from "@/lang/i18n";
 import { panelInstall } from "@/services/apis";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { reportErrorMsg } from "@/tools/validator";
+import { ArrowRightOutlined } from "@ant-design/icons-vue";
 import type { FormInstance } from "ant-design-vue";
 import { reactive, ref } from "vue";
 
@@ -22,7 +30,7 @@ const skeletons = [
 
 const { updateUserInfo, updatePanelStatus, state: appState } = useAppStateStore();
 
-const step = ref(1);
+const step = ref(0);
 const { toPage } = useAppRouters();
 const formRef = ref<FormInstance>();
 const formData = reactive({
@@ -54,6 +62,12 @@ const createUser = async () => {
   }
 };
 
+const setLang = (lang: string) => {
+  lang = toStandardLang(lang);
+  initInstallPageFlow(lang);
+  setLanguage(formData.language, false);
+};
+
 const toQuickStart = () => {
   toPage({
     path: "/market",
@@ -83,6 +97,30 @@ const toOverview = () => {
       </CardPanel>
     </a-col>
   </a-row>
+  <div v-if="step === 0" class="install-page-container" style="text-align: center">
+    <CardPanel :full-height="false" class="install-panel">
+      <template #body>
+        <a-typography>
+          <a-typography-title :level="3"> 请选择您的语言 </a-typography-title>
+          <a-typography-paragraph>
+            <a-typography-text> Please select your language </a-typography-text>
+          </a-typography-paragraph>
+        </a-typography>
+        <a-select
+          v-model:value="formData.language"
+          :options="SUPPORTED_LANGS"
+          style="min-width: 120px"
+          @select="() => setLang(formData.language)"
+        >
+        </a-select>
+        <br />
+        <a-button class="mt-30" type="primary" size="large" @click="step++">
+          {{ t("TXT_CODE_5e9022f8") }}
+          <ArrowRightOutlined />
+        </a-button>
+      </template>
+    </CardPanel>
+  </div>
   <div v-if="step === 1" class="install-page-container" style="text-align: center">
     <CardPanel :full-height="false" class="install-panel">
       <template #body>
@@ -102,7 +140,6 @@ const toOverview = () => {
           class="mt-45 mb-45"
           type="primary"
           size="large"
-          @click="step = 2"
         >
           {{ t("TXT_CODE_3371000d") }}
         </a-button>

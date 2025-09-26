@@ -37,7 +37,7 @@ export interface InstanceRuntimeInfo {
   writeBytes?: number;
   memoryUsage?: number;
   memoryLimit?: number;
-  allocatedPorts?: { 
+  allocatedPorts?: {
     host: number;
     container: number;
     protocol: string;
