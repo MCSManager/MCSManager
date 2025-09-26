@@ -124,7 +124,8 @@ const getSummaryPackages = (
           targetLink: undefined,
           author: "",
           setupInfo: undefined,
-          tags: undefined
+          tags: undefined,
+          isSummary: true
         };
         map.set(item.gameType, summary);
       } else {
@@ -456,7 +457,7 @@ onMounted(() => {
 
                 <div class="package-action">
                   <a-button
-                    v-if="item.targetLink"
+                    v-if="!item.isSummary"
                     block
                     type="primary"
                     class="download-button"
