@@ -173,6 +173,7 @@ declare global {
     items: ILayoutCard[];
     theme?: {
       backgroundImage: string;
+      logoImage: string;
     };
   }
 
