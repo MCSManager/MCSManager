@@ -5,7 +5,7 @@ import { requestBuyInstance, type FrontProductInfo } from "@/services/apis/redee
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
 import { reportErrorMsg } from "@/tools/validator";
-import { Button, Card, Flex, Modal } from "ant-design-vue";
+import { Flex as AFlex, Button, Card, Flex, Modal } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -343,60 +343,213 @@ onMounted(async () => {
     <!-- 激活成功弹窗 -->
     <Modal
       v-model:open="isSuccessModalVisible"
-      :title="successInfo.title"
+      :title="null"
       :footer="null"
       :closable="false"
       :mask-closable="false"
-      width="500px"
+      width="600px"
+      class="success-modal"
     >
-      <div class="success-modal-content">
-        <!-- 成功图标 -->
-        <div class="success-icon">
-          <a-result status="success" :title="successInfo.title">
-            <template #icon>
-              <div class="success-icon-wrapper">✅</div>
+      <a-flex vertical :gap="24" class="success-modal-content">
+        <!-- 成功状态区域 -->
+        <a-flex vertical align="center" :gap="16" class="success-header">
+          <div class="success-status-circle">
+            <div class="success-checkmark">✓</div>
+          </div>
+          <a-flex vertical align="center" :gap="8">
+            <a-typography-title :level="2" class="success-title">
+              {{ successInfo.title }}
+            </a-typography-title>
+            <a-typography-paragraph class="success-message">
+              {{ successInfo.message }}
+            </a-typography-paragraph>
+          </a-flex>
+        </a-flex>
+
+        <!-- 账户信息卡片 -->
+        <a-card v-if="successInfo.instanceInfo" class="instance-info-card" :bordered="false">
+          <template #title>
+            <a-flex align="center" :gap="8">
+              <span class="info-card-title">{{ $t("账户信息") }}</span>
+            </a-flex>
+          </template>
+
+          <a-flex vertical :gap="12">
+            <a-flex
+              v-if="successInfo.instanceInfo.instance_id"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("实例ID") }}
+              </a-typography-text>
+              <a-tag color="blue" class="info-tag">
+                {{ successInfo.instanceInfo.instance_id }}
+              </a-tag>
+            </a-flex>
+
+            <a-flex
+              v-if="successInfo.instanceInfo.username"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("用户名") }}
+              </a-typography-text>
+              <a-tag color="green" class="info-tag">
+                {{ successInfo.instanceInfo.username }}
+              </a-tag>
+            </a-flex>
+
+            <a-flex
+              v-if="successInfo.instanceInfo.password"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("密码") }}
+              </a-typography-text>
+              <a-tag color="purple" class="info-tag password-tag">
+                {{ successInfo.instanceInfo.password }}
+              </a-tag>
+            </a-flex>
+
+            <a-flex
+              v-if="successInfo.instanceInfo.uuid"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("UUID") }}
+              </a-typography-text>
+              <a-tag color="cyan" class="info-tag uuid-tag">
+                {{ successInfo.instanceInfo.uuid }}
+              </a-tag>
+            </a-flex>
+
+            <a-flex
+              v-if="successInfo.instanceInfo.expire"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("到期时间") }}
+              </a-typography-text>
+              <a-tag color="orange" class="info-tag">
+                {{ new Date(successInfo.instanceInfo.expire).toLocaleDateString() }}
+              </a-tag>
+            </a-flex>
+          </a-flex>
+        </a-card>
+
+        <!-- 实例详细信息卡片 -->
+        <a-card
+          v-if="successInfo.instanceInfo?.instance_info"
+          class="instance-info-card"
+          :bordered="false"
+        >
+          <template #title>
+            <a-flex align="center" :gap="8">
+              <span class="info-card-title">{{ $t("实例详情") }}</span>
+            </a-flex>
+          </template>
+
+          <a-flex vertical :gap="12">
+            <a-flex
+              v-if="successInfo.instanceInfo.instance_info.name"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("实例名称") }}
+              </a-typography-text>
+              <a-tag color="geekblue" class="info-tag">
+                {{ successInfo.instanceInfo.instance_info.name }}
+              </a-tag>
+            </a-flex>
+
+            <a-flex
+              v-if="successInfo.instanceInfo.instance_info.status !== undefined"
+              justify="space-between"
+              align="center"
+              class="info-row"
+            >
+              <a-typography-text class="info-label">
+                {{ $t("运行状态") }}
+              </a-typography-text>
+              <a-tag
+                :color="successInfo.instanceInfo.instance_info.status === 0 ? 'red' : 'green'"
+                class="info-tag"
+              >
+                {{
+                  successInfo.instanceInfo.instance_info.status === 0 ? $t("已停止") : $t("运行中")
+                }}
+              </a-tag>
+            </a-flex>
+
+            <!-- 配置信息 -->
+            <template v-if="successInfo.instanceInfo.instance_info.lines?.length">
+              <a-divider class="info-divider">{{ $t("配置信息") }}</a-divider>
+              <a-flex
+                v-for="line in successInfo.instanceInfo.instance_info.lines"
+                :key="line.title"
+                justify="space-between"
+                align="center"
+                class="info-row config-row"
+              >
+                <a-typography-text class="info-label">
+                  {{ line.title }}
+                </a-typography-text>
+                <a-typography-text class="info-value config-value">
+                  {{ line.value }}
+                </a-typography-text>
+              </a-flex>
             </template>
-          </a-result>
-        </div>
 
-        <!-- 成功消息 -->
-        <div class="success-message">
-          <a-typography-paragraph>
-            {{ successInfo.message }}
-          </a-typography-paragraph>
-        </div>
+            <!-- 端口信息 -->
+            <template v-if="successInfo.instanceInfo.instance_info.ports?.length">
+              <a-divider class="info-divider">{{ $t("端口信息") }}</a-divider>
+              <a-flex vertical :gap="8">
+                <a-flex
+                  v-for="(port, index) in successInfo.instanceInfo.instance_info.ports"
+                  :key="index"
+                  justify="space-between"
+                  align="center"
+                  class="info-row port-row"
+                >
+                  <a-typography-text class="info-label">
+                    {{ port.protocol.toUpperCase() }} {{ $t("端口") }}
+                  </a-typography-text>
+                  <a-flex :gap="8" align="center">
+                    <a-tag color="volcano" class="port-tag">
+                      {{ $t("主机") }}: {{ port.host }}
+                    </a-tag>
+                    <a-tag color="magenta" class="port-tag">
+                      {{ $t("容器") }}: {{ port.container }}
+                    </a-tag>
+                  </a-flex>
+                </a-flex>
+              </a-flex>
+            </template>
+          </a-flex>
+        </a-card>
 
-        <!-- 实例信息展示 -->
-        <div v-if="successInfo.instanceInfo" class="instance-info">
-          <a-typography-title :level="4">{{ $t("实例信息") }}</a-typography-title>
-          <div v-if="successInfo.instanceInfo.instance_id" class="info-item">
-            <span class="info-label">{{ $t("实例ID") }}:</span>
-            <span class="info-value">{{ successInfo.instanceInfo.instance_id }}</span>
-          </div>
-          <div v-if="successInfo.instanceInfo.username" class="info-item">
-            <span class="info-label">{{ $t("用户名") }}:</span>
-            <span class="info-value">{{ successInfo.instanceInfo.username }}</span>
-          </div>
-          <div v-if="successInfo.instanceInfo.expire" class="info-item">
-            <span class="info-label">{{ $t("到期时间") }}:</span>
-            <span class="info-value">{{
-              new Date(successInfo.instanceInfo.expire).toLocaleDateString()
-            }}</span>
-          </div>
-        </div>
-
-        <!-- 操作按钮 -->
-        <div class="success-actions">
-          <a-space>
-            <a-button @click="handleSuccessModalClose">
-              {{ $t("稍后处理") }}
-            </a-button>
-            <a-button type="primary" @click="handleSuccessToLogin">
-              {{ $t("立即登录") }}
-            </a-button>
-          </a-space>
-        </div>
-      </div>
+        <!-- 操作按钮区域 -->
+        <a-flex justify="center" :gap="16" class="success-actions">
+          <a-button size="large" @click="handleSuccessModalClose">
+            {{ $t("稍后处理") }}
+          </a-button>
+          <a-button type="primary" size="large" @click="handleSuccessToLogin">
+            {{ $t("立即登录") }}
+          </a-button>
+        </a-flex>
+      </a-flex>
     </Modal>
   </div>
 </template>
@@ -604,69 +757,204 @@ onMounted(async () => {
 }
 
 /* 成功弹窗样式 */
-.success-modal-content {
-  text-align: center;
-  padding: 20px 0;
+.success-modal {
+  .ant-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .ant-modal-body {
+    padding: 32px 24px;
+  }
 }
 
-.success-icon-wrapper {
-  font-size: 4rem;
-  margin-bottom: 16px;
+.success-modal-content {
+  text-align: center;
+}
+
+/* 成功状态区域 */
+.success-header {
+  padding: 8px 0;
+}
+
+.success-status-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(82, 196, 26, 0.3);
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+.success-checkmark {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+@keyframes successPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(82, 196, 26, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(82, 196, 26, 0.4);
+  }
+}
+
+.success-title {
+  color: var(--color-gray-12) !important;
+  margin-bottom: 0 !important;
+  font-weight: 600;
+  font-size: 1.5rem !important;
 }
 
 .success-message {
-  margin: 20px 0;
+  color: var(--color-gray-8) !important;
+  font-size: 1rem;
+  margin-bottom: 0 !important;
+  line-height: 1.6;
+  max-width: 400px;
+}
 
-  .ant-typography {
-    font-size: 1.1rem;
-    color: var(--color-gray-10);
-    margin-bottom: 0 !important;
+/* 实例信息卡片 */
+.instance-info-card {
+  background: var(--color-gray-1) !important;
+  border: 1px solid var(--color-gray-3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .ant-card-head {
+    border-bottom: 1px solid var(--color-gray-3) !important;
+    padding: 16px 20px 12px !important;
+    min-height: auto !important;
+  }
+
+  .ant-card-body {
+    padding: 16px 20px 20px !important;
   }
 }
 
-.instance-info {
-  background: var(--color-gray-2);
-  border: 1px solid var(--color-gray-4);
-  border-radius: 8px;
-  padding: 16px;
-  margin: 20px 0;
-  text-align: left;
-
-  .ant-typography-title {
-    margin-bottom: 12px !important;
-    color: var(--color-gray-12);
-  }
+.info-card-title {
+  color: var(--color-gray-12);
+  font-weight: 600;
+  font-size: 1rem;
 }
 
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--color-gray-3);
+.info-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-gray-2);
 
   &:last-child {
     border-bottom: none;
+    padding-bottom: 0;
   }
 }
 
 .info-label {
-  color: var(--color-gray-8);
+  color: var(--color-gray-8) !important;
   font-weight: 500;
-  min-width: 80px;
+  font-size: 0.9rem;
 }
 
-.info-value {
-  color: var(--color-gray-12);
-  font-weight: 600;
-  word-break: break-all;
+/* 特殊标签样式 */
+.password-tag {
+  font-family: "Courier New", monospace !important;
+  letter-spacing: 1px !important;
 }
 
+.uuid-tag {
+  font-family: "Courier New", monospace !important;
+  font-size: 0.75rem !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.port-tag {
+  font-size: 0.8rem !important;
+  padding: 2px 8px !important;
+}
+
+/* 分隔线样式 */
+.info-divider {
+  margin: 16px 0 8px 0 !important;
+
+  .ant-divider-inner-text {
+    color: var(--color-gray-8) !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* 配置信息行样式 */
+.config-row {
+  background: var(--color-gray-1);
+  padding: 8px 12px !important;
+  border-radius: 6px;
+  border: 1px solid var(--color-gray-2);
+}
+
+.config-value {
+  color: var(--color-gray-12) !important;
+  font-weight: 600 !important;
+  font-family: "Courier New", monospace;
+  background: var(--color-gray-2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* 端口信息行样式 */
+.port-row {
+  background: var(--color-gray-1);
+  padding: 8px 12px !important;
+  border-radius: 6px;
+  border: 1px solid var(--color-gray-2);
+}
+
+/* 操作按钮区域 */
 .success-actions {
-  margin-top: 24px;
+  padding-top: 8px;
+}
 
-  .ant-btn {
-    min-width: 100px;
+.action-button {
+  min-width: 120px !important;
+  height: 44px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.secondary-button {
+  border-color: var(--color-gray-4) !important;
+  color: var(--color-gray-8) !important;
+
+  &:hover {
+    border-color: var(--color-gray-6) !important;
+    color: var(--color-gray-10) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3) !important;
+
+  &:hover {
+    background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4) !important;
   }
 }
 </style>
