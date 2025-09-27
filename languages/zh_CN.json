@@ -2778,5 +2778,8 @@
   "TXT_CODE_a7c73a51": "7zip 成功加载: {{info}}",
   "TXT_CODE_f0512848": "ZIP文件解压失败，可能是因为文件损坏或不完整：{{message}}",
   "TXT_CODE_5e9022f8": "下一步",
-  "TXT_CODE_5a936b7f": "展开"
+  "TXT_CODE_5a936b7f": "展开",
+  "TXT_CODE_709c2db4": "想贡献模板？",
+  "TXT_CODE_8facd134": "点击这里",
+  "TXT_CODE_880fedf7": "重置筛选条件"
 }

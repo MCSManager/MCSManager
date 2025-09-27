@@ -7,7 +7,8 @@ import { quickInstallListAddr } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages } from "@/types";
 import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { Modal } from "ant-design-vue";
+import { Flex, Modal } from "ant-design-vue";
+import Link from "ant-design-vue/es/typography/Link";
 import { computed, onMounted, reactive } from "vue";
 
 const props = defineProps<{
@@ -79,6 +80,7 @@ const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
 // Supports additional custom filters through additionalFilters parameter
 // Returns empty array if no packages are available
 const getFilteredPackages = (
+  // eslint-disable-next-line no-unused-vars
   additionalFilters?: (item: QuickStartPackages) => boolean
 ): QuickStartPackages[] => {
   if (!presetList.value?.packages) {
@@ -105,6 +107,7 @@ const getFilteredPackages = (
 };
 
 const getSummaryPackages = (
+  // eslint-disable-next-line no-unused-vars
   additionalFilters?: (item: QuickStartPackages) => boolean
 ): QuickStartPackages[] => {
   let filteredPackages = getFilteredPackages(additionalFilters);
@@ -184,11 +187,6 @@ const appList = computed(() => {
 // Computed property for language options dropdown
 // Includes "ALL" option and available languages from preset data
 const appLangList = computed(() => {
-  // const allOption: FilterOption = {
-  //   label: t("TXT_CODE_8a30e150"),
-  //   value: SEARCH_ALL_KEY
-  // };
-
   const languageOptions: FilterOption[] =
     presetList.value?.languages instanceof Array ? presetList.value.languages : [];
 
@@ -259,8 +257,6 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
-const handleCustomBtnClick = () => {};
-
 defineExpose({
   init,
   appList
@@ -277,13 +273,21 @@ onMounted(() => {
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
   <a-typography-paragraph>
-    <p>
-      <span>{{ t("TXT_CODE_c9ce7427") }}</span>
-      <span v-if="onlyDockerTemplate">
-        <br />
-        {{ t("TXT_CODE_de9b7cc0") }}
-      </span>
-    </p>
+    <Flex justify="space-between" align="flex-start">
+      <p>
+        <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+        <span v-if="onlyDockerTemplate">
+          <br />
+          {{ t("TXT_CODE_de9b7cc0") }}
+          <br />
+        </span>
+      </p>
+      <p>
+        <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
+          {{ t("TXT_CODE_709c2db4") }}
+        </Link>
+      </p>
+    </Flex>
   </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
@@ -373,7 +377,7 @@ onMounted(() => {
 
         <a-form-item class="mb-0">
           <a-button type="default" @click="handleReset">
-            {{ t("TXT_CODE_50d471b2") }}
+            {{ t("TXT_CODE_880fedf7") }}
           </a-button>
         </a-form-item>
       </a-form>
@@ -433,7 +437,7 @@ onMounted(() => {
                       </a-tag>
                     </span>
                   </a-typography-title>
-                  <div class="mb-5">
+                  <div v-if="!item.isSummary" class="mb-5">
                     <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>
                   </div>
                   <a-typography-paragraph>
@@ -476,7 +480,7 @@ onMounted(() => {
                     class="download-button"
                     @click="searchForm.gameType = item.gameType"
                   >
-                    {{ t("TXT_CODE_5a936b7f") }}
+                    {{ t("TXT_CODE_530f5951") }}
                   </a-button>
                 </div>
               </div>
@@ -522,8 +526,9 @@ onMounted(() => {
 }
 
 .download-button {
-  margin: 0px 12px;
+  margin: 0px auto;
   transition: all 0.3s ease;
+  max-width: 140px;
 }
 
 .package-image {
