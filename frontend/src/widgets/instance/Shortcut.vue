@@ -294,7 +294,12 @@ const instanceOperations = computed(() =>
             <span class="title">{{ t("TXT_CODE_fa920c0") }}:</span>
             <span> {{ parseTimestamp(instanceInfo?.config.endTime) }}</span>
           </div>
-          <div v-if="instanceInfo?.config?.docker?.image" class="instance-info-line">
+          <div
+            v-if="
+              instanceInfo?.config?.docker?.image && instanceInfo?.config?.processType === 'docker'
+            "
+            class="instance-info-line"
+          >
             <span class="title">{{ t("TXT_CODE_77000411") }}:</span>
             <span class="value">
               <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="26" />

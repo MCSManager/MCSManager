@@ -1,10 +1,10 @@
-import { computed, reactive } from "vue";
-import { createGlobalState } from "@vueuse/core";
-import _ from "lodash";
+import { LANGUAGE_KEY, toStandardLang } from "@/lang/i18n";
 import { panelStatus, userInfoApi } from "@/services/apis";
-import type { LoginUserInfo } from "@/types/user";
-import { initInstallPageFlow, searchSupportLanguage, toStandardLang } from "@/lang/i18n";
 import type { PanelStatus } from "@/types";
+import type { LoginUserInfo } from "@/types/user";
+import { createGlobalState, useLocalStorage } from "@vueuse/core";
+import _ from "lodash";
+import { computed, reactive } from "vue";
 
 interface AppStateInfo extends PanelStatus {
   userInfo: LoginUserInfo | null;
@@ -13,11 +13,12 @@ interface AppStateInfo extends PanelStatus {
 export const useAppStateStore = createGlobalState(() => {
   const { execute: reqUserInfo } = userInfoApi();
 
+  const language = useLocalStorage(LANGUAGE_KEY, toStandardLang(window.navigator.language));
   const state: AppStateInfo = reactive<AppStateInfo>({
     userInfo: null,
     isInstall: true,
     versionChange: false,
-    language: "en_us",
+    language: language.value,
     settings: {
       panelId: "",
       canFileManager: false,
@@ -63,10 +64,7 @@ export const useAppStateStore = createGlobalState(() => {
       state.settings = panelStatusRes.value?.settings;
     }
     if (state.isInstall) {
-      state.language = toStandardLang(panelStatusRes.value?.language);
-    } else {
-      state.language = searchSupportLanguage(window.navigator.language);
-      await initInstallPageFlow(state.language);
+      language.value = toStandardLang(panelStatusRes.value?.language);
     }
     console.info("Window.navigator.language:", window.navigator.language);
     console.info("Panel Language:", state.language);

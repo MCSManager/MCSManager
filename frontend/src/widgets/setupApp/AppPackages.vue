@@ -7,7 +7,8 @@ import { quickInstallListAddr } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages } from "@/types";
 import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { Modal } from "ant-design-vue";
+import { Flex, Modal } from "ant-design-vue";
+import Link from "ant-design-vue/es/typography/Link";
 import { computed, onMounted, reactive } from "vue";
 
 const props = defineProps<{
@@ -79,6 +80,7 @@ const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
 // Supports additional custom filters through additionalFilters parameter
 // Returns empty array if no packages are available
 const getFilteredPackages = (
+  // eslint-disable-next-line no-unused-vars
   additionalFilters?: (item: QuickStartPackages) => boolean
 ): QuickStartPackages[] => {
   if (!presetList.value?.packages) {
@@ -102,6 +104,45 @@ const getFilteredPackages = (
     const allFilters = additionalFilters ? [additionalFilters(item)] : baseFilters;
     return allFilters.every((filter) => filter);
   });
+};
+
+const getSummaryPackages = (
+  // eslint-disable-next-line no-unused-vars
+  additionalFilters?: (item: QuickStartPackages) => boolean
+): QuickStartPackages[] => {
+  let filteredPackages = getFilteredPackages(additionalFilters);
+  if (searchForm.gameType == SEARCH_ALL_KEY) {
+    const map = new Map<string, QuickStartPackages>();
+    filteredPackages.forEach((item) => {
+      if (!map.has(item.gameType)) {
+        const summary: QuickStartPackages = {
+          ...item,
+          description: "",
+          title: item.gameType,
+          category: "",
+          runtime: "",
+          size: "",
+          hardware: "",
+          remark: "",
+          targetLink: undefined,
+          author: "",
+          setupInfo: undefined,
+          tags: undefined,
+          isSummary: true
+        };
+        map.set(item.gameType, summary);
+      } else {
+        const existing = map.get(item.gameType);
+        if (existing) {
+          if (existing.platform != item.platform) {
+            existing.platform = "All";
+          }
+        }
+      }
+    });
+    filteredPackages = Array.from(map.values());
+  }
+  return filteredPackages;
 };
 
 // Generic function to generate options list for select dropdowns
@@ -140,17 +181,12 @@ const generateOptionsList = (
 // Computed property for filtered application list
 // Uses the generic getFilteredPackages function with current search criteria
 const appList = computed(() => {
-  return getFilteredPackages();
+  return getSummaryPackages();
 });
 
 // Computed property for language options dropdown
 // Includes "ALL" option and available languages from preset data
 const appLangList = computed(() => {
-  // const allOption: FilterOption = {
-  //   label: t("TXT_CODE_8a30e150"),
-  //   value: SEARCH_ALL_KEY
-  // };
-
   const languageOptions: FilterOption[] =
     presetList.value?.languages instanceof Array ? presetList.value.languages : [];
 
@@ -221,8 +257,6 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
-const handleCustomBtnClick = () => {};
-
 defineExpose({
   init,
   appList
@@ -239,13 +273,21 @@ onMounted(() => {
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
   <a-typography-paragraph>
-    <p>
-      <span>{{ t("TXT_CODE_c9ce7427") }}</span>
-      <span v-if="onlyDockerTemplate">
-        <br />
-        {{ t("TXT_CODE_de9b7cc0") }}
-      </span>
-    </p>
+    <Flex justify="space-between" align="flex-start">
+      <p>
+        <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+        <span v-if="onlyDockerTemplate">
+          <br />
+          {{ t("TXT_CODE_de9b7cc0") }}
+          <br />
+        </span>
+      </p>
+      <p>
+        <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
+          {{ t("TXT_CODE_709c2db4") }}
+        </Link>
+      </p>
+    </Flex>
   </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
@@ -259,7 +301,9 @@ onMounted(() => {
           justify-content: center;
         "
       >
-        <div><Loading /></div>
+        <div>
+          <Loading />
+        </div>
         <div style="margin-top: 20px; color: var(--color-gray-12)">
           {{ t("TXT_CODE_7fca723a") }}
         </div>
@@ -333,7 +377,7 @@ onMounted(() => {
 
         <a-form-item class="mb-0">
           <a-button type="default" @click="handleReset">
-            {{ t("TXT_CODE_50d471b2") }}
+            {{ t("TXT_CODE_880fedf7") }}
           </a-button>
         </a-form-item>
       </a-form>
@@ -384,7 +428,7 @@ onMounted(() => {
                       {{ item.title }}
                     </span>
                     <span>
-                      <a-tag color="cyan">
+                      <a-tag v-if="item.platform" color="cyan">
                         {{
                           String(item.platform).toLowerCase() === "all"
                             ? t("TXT_CODE_all_platform")
@@ -393,26 +437,31 @@ onMounted(() => {
                       </a-tag>
                     </span>
                   </a-typography-title>
-                  <div class="mb-5">
+                  <div v-if="!item.isSummary" class="mb-5">
                     <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>
                   </div>
                   <a-typography-paragraph>
                     <a-typography-text :style="{ fontSize: '12px' }">
-                      <span>
-                        {{ item.description }}
-                      </span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
-                      <span>{{ item.runtime }}</span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
-                      <span>{{ item.hardware }}</span>
+                      <p>
+                        <span>
+                          {{ item.description || "&nbsp;" }}
+                        </span>
+                      </p>
+                      <p v-if="item.runtime">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
+                        <span>{{ item.runtime }}</span>
+                      </p>
+                      <p v-if="item.hardware">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
+                        <span>{{ item.hardware }}</span>
+                      </p>
                     </a-typography-text>
                   </a-typography-paragraph>
                 </div>
 
                 <div class="package-action">
                   <a-button
+                    v-if="!item.isSummary"
                     block
                     type="primary"
                     class="download-button"
@@ -422,6 +471,16 @@ onMounted(() => {
                       <DownloadOutlined />
                     </template>
                     {{ btnText || t("TXT_CODE_1704ea49") }}
+                  </a-button>
+
+                  <a-button
+                    v-else
+                    block
+                    type="primary"
+                    class="download-button"
+                    @click="searchForm.gameType = item.gameType"
+                  >
+                    {{ t("TXT_CODE_530f5951") }}
                   </a-button>
                 </div>
               </div>
@@ -467,8 +526,9 @@ onMounted(() => {
 }
 
 .download-button {
-  margin: 0px 12px;
+  margin: 0px auto;
   transition: all 0.3s ease;
+  max-width: 140px;
 }
 
 .package-image {
