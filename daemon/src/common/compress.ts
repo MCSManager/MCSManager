@@ -86,16 +86,16 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     let command: string;
     let workingDir: string;
 
-    if (normalizedDest === normalizedSource) {
-      command = `"${SEVEN_ZIP_PATH}" e "${sourceZip}" -aoa`;
-      workingDir = sourceDir;
-      logger.info($t("TXT_CODE_fe2435a0", { command }));
-    } else {
-      await fs.ensureDir(destDir);
-      command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" "-o${destDir}" -aoa`;
-      workingDir = sourceDir;
-      logger.info($t("TXT_CODE_35d2ee7a", { command }));
-    }
+    // if (normalizedDest === normalizedSource) {
+    //   command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" -aoa`;
+    //   workingDir = sourceDir;
+    //   logger.info($t("TXT_CODE_fe2435a0", { command }));
+    // } else {
+    await fs.ensureDir(destDir);
+    command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" "-o${destDir}" -aoa`;
+    workingDir = sourceDir;
+    logger.info($t("TXT_CODE_35d2ee7a", { command }));
+    // }
 
     const { stdout, stderr } = await execPromise(command, {
       cwd: workingDir,
