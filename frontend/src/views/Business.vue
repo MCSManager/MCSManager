@@ -150,11 +150,11 @@ onMounted(async () => {
     <div v-if="isAdmin">
       <ShopInfoUpdateDialog />
     </div>
-    <Flex vertical :gap="60" class="business-container">
+    <Flex vertical :gap="0" class="business-container">
       <!-- Company header section -->
-      <Flex vertical :gap="0" class="company-header">
+      <Flex vertical :gap="0" justify="center" class="company-header">
         <Flex align="center" justify="space-between" :gap="16" style="flex: 1">
-          <Flex class="mb-30" vertical align="start" justify="start" :gap="16">
+          <Flex class="mb-10" vertical align="start" justify="start" :gap="16">
             <a-typography-title :level="1" class="company-title">
               <div
                 class="business-page-markdown-area"
@@ -169,22 +169,6 @@ onMounted(async () => {
             </a-typography-paragraph>
 
             <Flex :gap="16" align="center">
-              <a-input
-                v-model:value="formData.code"
-                :placeholder="$t('请输入激活码，列如：KNFI19SiWO25IBN2FON2A24NJIO')"
-                size="large"
-                style="width: 320px"
-              >
-              </a-input>
-
-              <a-button
-                type="primary"
-                class="button-color-success"
-                size="large"
-                @click="activeInstance"
-              >
-                {{ $t("激活实例") }}
-              </a-button>
               <a-button type="primary" size="large" @click="toLoginPage">
                 {{ $t("进入控制台") }}
               </a-button>
@@ -204,6 +188,55 @@ onMounted(async () => {
           </Flex>
         </Flex>
 
+        <Flex wrap="wrap" :gap="24" justify="center">
+          <Card
+            v-for="product in products"
+            :key="product.productId"
+            class="product-card"
+            :hoverable="true"
+            :body-style="{
+              height: '100%'
+            }"
+          >
+            <Flex vertical justify="space-between" :gap="16" style="height: 100%">
+              <!-- Product title -->
+              <a-typography-title :level="3" class="product-title">
+                {{ product.title }}
+              </a-typography-title>
+
+              <!-- Price -->
+              <Flex align="baseline" :gap="8">
+                <a-typography-title :level="2" class="product-price">
+                  {{ product.price }}
+                </a-typography-title>
+                <a-typography-text class="price-unit"> {{ $t("/月") }} </a-typography-text>
+              </Flex>
+
+              <!-- Configuration info -->
+              <Flex vertical :gap="8">
+                <template v-for="item in product.lines" :key="item.title + item.value">
+                  <Flex justify="space-between">
+                    <a-typography-text class="spec-label"> {{ item.title }}: </a-typography-text>
+                    <a-typography-text class="spec-value">
+                      {{ item.value }}
+                    </a-typography-text>
+                  </Flex>
+                </template>
+              </Flex>
+
+              <!-- Product remark -->
+              <a-typography-paragraph class="product-remark">
+                {{ product.remark }}
+              </a-typography-paragraph>
+
+              <!-- Buy button -->
+              <Button type="primary" size="large" class="buy-button" @click="showBuyModal(product)">
+                {{ $t("立即购买") }}
+              </Button>
+            </Flex>
+          </Card>
+        </Flex>
+
         <div class="down-icon-container">
           <DownIcon :text="$t('向下滚动查看更多')" />
         </div>
@@ -217,60 +250,6 @@ onMounted(async () => {
               {{ $t("我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。") }}
             </a-typography-text>
           </a-typography-paragraph>
-
-          <Flex wrap="wrap" :gap="24" justify="center">
-            <Card
-              v-for="product in products"
-              :key="product.productId"
-              class="product-card"
-              :hoverable="true"
-              :body-style="{
-                height: '100%'
-              }"
-            >
-              <Flex vertical justify="space-between" :gap="16" style="height: 100%">
-                <!-- Product title -->
-                <a-typography-title :level="3" class="product-title">
-                  {{ product.title }}
-                </a-typography-title>
-
-                <!-- Price -->
-                <Flex align="baseline" :gap="8">
-                  <a-typography-title :level="2" class="product-price">
-                    {{ product.price }}
-                  </a-typography-title>
-                  <a-typography-text class="price-unit"> {{ $t("/月") }} </a-typography-text>
-                </Flex>
-
-                <!-- Configuration info -->
-                <Flex vertical :gap="8">
-                  <template v-for="item in product.lines" :key="item.title + item.value">
-                    <Flex justify="space-between">
-                      <a-typography-text class="spec-label"> {{ item.title }}: </a-typography-text>
-                      <a-typography-text class="spec-value">
-                        {{ item.value }}
-                      </a-typography-text>
-                    </Flex>
-                  </template>
-                </Flex>
-
-                <!-- Product remark -->
-                <a-typography-paragraph class="product-remark">
-                  {{ product.remark }}
-                </a-typography-paragraph>
-
-                <!-- Buy button -->
-                <Button
-                  type="primary"
-                  size="large"
-                  class="buy-button"
-                  @click="showBuyModal(product)"
-                >
-                  {{ $t("立即购买") }}
-                </Button>
-              </Flex>
-            </Card>
-          </Flex>
         </Flex>
       </div>
 
