@@ -86,8 +86,8 @@ export async function requestUseRedeem(
   panelId: string,
   registerCode: string,
   productId: string | number,
-  daemonId: string,
-  code: string,
+  daemonId?: string,
+  code?: string,
   isDelete?: boolean
 ) {
   const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(

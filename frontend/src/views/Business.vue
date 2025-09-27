@@ -14,7 +14,7 @@ const { isAdmin } = useAppStateStore();
 const { t } = useI18n();
 const { execute: requestBuy } = requestBuyInstance();
 
-const selectedProduct = ref<FrontProductInfo | null>(null);
+const selectedProduct = ref<FrontProductInfo | undefined>();
 
 // 表单验证规则
 const formRules = {
@@ -31,29 +31,60 @@ const isModalVisible = ref(false);
 const cardCode = ref("");
 const username = ref("");
 
+// 成功弹窗状态管理
+const isSuccessModalVisible = ref(false);
+const successInfo = ref({
+  title: "",
+  message: "",
+  instanceInfo: null as any
+});
+
 const toLoginPage = () => {
   router.push({ path: "/login" });
 };
 
-const activeInstance = () => {
-  console.log(t("激活实例！"));
+const activeInstance = async () => {
+  if (!formData.code.trim()) {
+    return;
+  }
+
+  try {
+    const res = await requestBuy({
+      data: {
+        code: formData.code,
+        daemonId: "",
+        productId: 0,
+        username: ""
+      }
+    });
+
+    // 清空激活码输入框
+    formData.code = "";
+
+    // 显示成功弹窗
+    showSuccessModal({
+      title: t("激活成功"),
+      message: t("恭喜！您的激活码已成功激活，可以登录控制台开始使用。"),
+      instanceInfo: res.value
+    });
+  } catch (error) {
+    reportErrorMsg(error);
+  }
 };
 
-// 显示购买对话框
-const showBuyModal = (product: FrontProductInfo) => {
+const showBuyModal = (product?: FrontProductInfo) => {
   isModalVisible.value = true;
   cardCode.value = "";
   username.value = "";
   selectedProduct.value = product;
 };
 
-// 确认购买
 const handleBuyConfirm = async () => {
   if (!cardCode.value.trim() || !username.value.trim()) {
     return;
   }
   try {
-    await requestBuy({
+    const res = await requestBuy({
       data: {
         code: cardCode.value,
         daemonId: selectedProduct.value?.daemonId || "",
@@ -61,9 +92,18 @@ const handleBuyConfirm = async () => {
         username: username.value
       }
     });
+
+    // 关闭购买对话框
     isModalVisible.value = false;
     cardCode.value = "";
     username.value = "";
+
+    // 显示成功弹窗
+    showSuccessModal({
+      title: t("购买成功"),
+      message: t("恭喜！您的服务已成功激活，可以登录控制台开始使用。"),
+      instanceInfo: res.value
+    });
   } catch (error) {
     reportErrorMsg(error);
   }
@@ -74,6 +114,28 @@ const handleBuyCancel = () => {
   isModalVisible.value = false;
   cardCode.value = "";
   username.value = "";
+};
+
+// 显示成功弹窗
+const showSuccessModal = (info: { title: string; message: string; instanceInfo: any }) => {
+  successInfo.value = info;
+  isSuccessModalVisible.value = true;
+};
+
+// 关闭成功弹窗
+const handleSuccessModalClose = () => {
+  isSuccessModalVisible.value = false;
+  successInfo.value = {
+    title: "",
+    message: "",
+    instanceInfo: null
+  };
+};
+
+// 成功后跳转到登录页
+const handleSuccessToLogin = () => {
+  handleSuccessModalClose();
+  toLoginPage();
 };
 
 onMounted(async () => {
@@ -277,6 +339,65 @@ onMounted(async () => {
         </a-form-item>
       </a-form>
     </Modal>
+
+    <!-- 激活成功弹窗 -->
+    <Modal
+      v-model:open="isSuccessModalVisible"
+      :title="successInfo.title"
+      :footer="null"
+      :closable="false"
+      :mask-closable="false"
+      width="500px"
+    >
+      <div class="success-modal-content">
+        <!-- 成功图标 -->
+        <div class="success-icon">
+          <a-result status="success" :title="successInfo.title">
+            <template #icon>
+              <div class="success-icon-wrapper">✅</div>
+            </template>
+          </a-result>
+        </div>
+
+        <!-- 成功消息 -->
+        <div class="success-message">
+          <a-typography-paragraph>
+            {{ successInfo.message }}
+          </a-typography-paragraph>
+        </div>
+
+        <!-- 实例信息展示 -->
+        <div v-if="successInfo.instanceInfo" class="instance-info">
+          <a-typography-title :level="4">{{ $t("实例信息") }}</a-typography-title>
+          <div v-if="successInfo.instanceInfo.instance_id" class="info-item">
+            <span class="info-label">{{ $t("实例ID") }}:</span>
+            <span class="info-value">{{ successInfo.instanceInfo.instance_id }}</span>
+          </div>
+          <div v-if="successInfo.instanceInfo.username" class="info-item">
+            <span class="info-label">{{ $t("用户名") }}:</span>
+            <span class="info-value">{{ successInfo.instanceInfo.username }}</span>
+          </div>
+          <div v-if="successInfo.instanceInfo.expire" class="info-item">
+            <span class="info-label">{{ $t("到期时间") }}:</span>
+            <span class="info-value">{{
+              new Date(successInfo.instanceInfo.expire).toLocaleDateString()
+            }}</span>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="success-actions">
+          <a-space>
+            <a-button @click="handleSuccessModalClose">
+              {{ $t("稍后处理") }}
+            </a-button>
+            <a-button type="primary" @click="handleSuccessToLogin">
+              {{ $t("立即登录") }}
+            </a-button>
+          </a-space>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -479,6 +600,73 @@ onMounted(async () => {
 
   .product-price {
     font-size: 1.6rem !important;
+  }
+}
+
+/* 成功弹窗样式 */
+.success-modal-content {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.success-icon-wrapper {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.success-message {
+  margin: 20px 0;
+
+  .ant-typography {
+    font-size: 1.1rem;
+    color: var(--color-gray-10);
+    margin-bottom: 0 !important;
+  }
+}
+
+.instance-info {
+  background: var(--color-gray-2);
+  border: 1px solid var(--color-gray-4);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+  text-align: left;
+
+  .ant-typography-title {
+    margin-bottom: 12px !important;
+    color: var(--color-gray-12);
+  }
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-gray-3);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  color: var(--color-gray-8);
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.info-value {
+  color: var(--color-gray-12);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.success-actions {
+  margin-top: 24px;
+
+  .ant-btn {
+    min-width: 100px;
   }
 }
 </style>

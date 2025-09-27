@@ -176,4 +176,22 @@ router.post(
   }
 );
 
+// [Top-level Permission]
+// Get panel configuration items
+router.get("/public_setting", async (ctx) => {
+  if (systemConfig) {
+    const config = systemConfig;
+    ctx.body = {
+      businessMode: config.businessMode,
+      businessId: config.businessId,
+      panelId: config.panelId,
+      registerCode: config.registerCode,
+      shopName: config.shopName,
+      shopEmail: config.shopEmail,
+      shopDescription: config.shopDescription,
+      shopTip: config.shopTip
+    };
+  }
+});
+
 export default router;

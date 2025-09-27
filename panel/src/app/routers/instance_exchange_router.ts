@@ -88,7 +88,6 @@ router.post(
   validator({
     body: {
       productId: Number,
-      daemonId: String,
       code: String
     }
   }),
