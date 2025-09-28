@@ -1,7 +1,23 @@
 //@ts-check
-import { readdir, readFile } from "fs/promises";
+import { readdir, readFile, writeFile } from "fs/promises";
 import OpenAI from "openai";
 import path from "path";
+import { sortLanguageFiles } from "./sort-lang-key.mjs";
+
+// 语言代码映射，用于AI翻译
+const LANGUAGE_MAP = {
+  "zh_CN.json": "Chinese (Simplified)",
+  "zh_TW.json": "Chinese (Traditional)",
+  "ja_JP.json": "Japanese",
+  "ko_KR.json": "Korean",
+  "fr_FR.json": "French",
+  "de_DE.json": "German",
+  "es_ES.json": "Spanish",
+  "pt_BR.json": "Portuguese (Brazil)",
+  "ru_RU.json": "Russian",
+  "th_TH.json": "Thai",
+  "tr_TR.json": "Turkish"
+};
 
 // 你现在是一名经验丰富的翻译专家，我将给你一系列的文案，翻译时必须遵守以下规则：。
 // 1. 这些文本最终会使用到 MCSManager 游戏服务器程序管理面板的UI界面上，它是一个支持 Minecraft，Steam 等的游戏服务器 Web 管理程序。
@@ -81,7 +97,6 @@ async function getApiKey() {
 const apiKey = await getApiKey();
 const chatAiSession = new AiChatSession(apiKey, SYSTEM_PROMPT);
 
-// 将一组文本翻译成目标语言
 /**
  * 将一组文本翻译成目标语言
  * @param {{key:string, text:string}[]} textList - 需要翻译的文本数组
@@ -89,29 +104,93 @@ const chatAiSession = new AiChatSession(apiKey, SYSTEM_PROMPT);
  * @returns {Promise<{key:string, text:string}[]>} - 翻译后的文本数组
  */
 async function translateText(textList = [], targetLanguage = "") {
+  // return textList.map((item) => ({
+  //   key: item.key,
+  //   text: "Mock: " + targetLanguage + ": " + item.text
+  // }));
   const result = await chatAiSession.sendMessage(JSON.stringify(textList));
   return JSON.parse(result.content);
 }
 
-async function parseLanguageFiles() {
-  const languageFiles = await readdir(path.join(import.meta.dirname, "../languages"));
-  for (const file of languageFiles) {
-    if (file.endsWith(".json")) {
-      const content = await readFile(path.join(import.meta.dirname, "../languages", file), "utf8");
-      const json = JSON.parse(content);
-      console.log(json);
+/**
+ * 以 en_US.json 为标准，检查并填充其他语言文件中缺失的键值对
+ */
+async function checkAndFillMissingKeys() {
+  const languagesPath = path.join(import.meta.dirname, "../languages");
+
+  // 读取标准文件 en_US.json
+  const standardFilePath = path.join(languagesPath, "en_US.json");
+  const standardContent = await readFile(standardFilePath, "utf8");
+  const standardJson = JSON.parse(standardContent);
+  const standardKeys = Object.keys(standardJson);
+
+  console.log(`标准文件 en_US.json 包含 ${standardKeys.length} 个键值对`);
+
+  // 获取所有语言文件
+  const languageFiles = await readdir(languagesPath);
+  const targetFiles = languageFiles.filter(
+    (file) => file.endsWith(".json") && file !== "en_US.json"
+  );
+
+  // 逐个处理每个语言文件
+  for (const file of targetFiles) {
+    const filePath = path.join(languagesPath, file);
+    const content = await readFile(filePath, "utf8");
+    const json = JSON.parse(content);
+    const existingKeys = Object.keys(json);
+
+    // 找出缺失的键
+    const missingKeys = standardKeys.filter((key) => !json.hasOwnProperty(key));
+
+    if (missingKeys.length === 0) {
+      console.log(`✅ ${file} 没有缺失的键值对`);
+      continue;
+    }
+
+    console.log(`🔍 ${file} 缺失 ${missingKeys.length} 个键值对，开始翻译...`);
+
+    // 准备翻译数据
+    const textsToTranslate = missingKeys.map((key) => ({
+      key: key,
+      text: standardJson[key]
+    }));
+
+    // 获取目标语言
+    const targetLanguage = LANGUAGE_MAP[file];
+    if (!targetLanguage) {
+      console.warn(`⚠️  未找到 ${file} 对应的语言映射，跳过`);
+      continue;
+    }
+
+    try {
+      // 调用翻译函数
+      console.log(`🌍 正在翻译到 ${targetLanguage}...`);
+      const translatedTexts = await translateText(textsToTranslate, targetLanguage);
+
+      // 将翻译结果添加到当前语言的 JSON 对象中
+      for (const translatedItem of translatedTexts) {
+        json[translatedItem.key] = translatedItem.text;
+      }
+
+      // 将更新后的内容写回文件
+      const updatedContent = JSON.stringify(json, null, 2);
+      await writeFile(filePath, updatedContent, "utf8");
+
+      console.log(`✅ ${file} 已成功填充 ${missingKeys.length} 个缺失的键值对`);
+
+      // 清空对话历史，避免上下文过长
+      chatAiSession.clearHistory();
+    } catch (error) {
+      console.error(`❌ 翻译 ${file} 时发生错误:`, error.message);
     }
   }
-  return languageFiles;
+
+  console.log("🎉 所有语言文件检查和填充完成!");
 }
 
 async function main() {
-  // await sortLanguageFiles();
-
-  await parseLanguageFiles();
-
-  // const { content } = await chat.sendMessage(``);
-  // await writeFile("output.txt", content);
+  await checkAndFillMissingKeys();
+  await sortLanguageFiles();
 }
 
 main();
