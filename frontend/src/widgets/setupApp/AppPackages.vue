@@ -257,6 +257,10 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
+const handleSelectTopCategory = (item: QuickStartPackages) => {
+  searchForm.gameType = item.gameType;
+};
+
 defineExpose({
   init,
   appList
@@ -312,7 +316,7 @@ onMounted(() => {
   </a-row>
 
   <!-- Main content - package marketplace interface -->
-  <a-row v-else :gutter="[12, 12]" style="height: 100%">
+  <a-row v-else :gutter="[16, 16]" style="height: 100%">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
       <a-form
@@ -408,13 +412,37 @@ onMounted(() => {
         v-for="item in appList"
         :key="item.targetLink + item.title + item.gameType + item.language + item.category"
         :span="24"
-        :xl="6"
-        :lg="6"
+        :xl="item.isSummary ? 8 : 6"
+        :lg="item.isSummary ? 8 : 6"
         :sm="24"
       >
-        <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
-          <CardPanel style="flex-grow: 1" :style="{ padding: '12px' }">
+          <!-- Top Category Card -->
+          <div
+            v-if="item.isSummary"
+            class="package-image-container-summary global-card-container-shadow"
+            style="overflow: hidden"
+            @click="handleSelectTopCategory(item)"
+          >
+            <div class="package-image-container" style="border-radius: 0">
+              <img
+                class="package-image cursor-pointer"
+                style="height: 220px; border-radius: 0"
+                :src="item.image"
+                alt=""
+                srcset=""
+              />
+            </div>
+
+            <a-typography-title :level="5" class="flex-center package-subtitle">
+              <span>
+                {{ item.title }}
+              </span>
+            </a-typography-title>
+          </div>
+
+          <!-- Template Pack -->
+          <CardPanel v-else style="flex-grow: 1" :style="{ padding: '12px' }">
             <!-- Package content -->
             <template #body>
               <div class="package-card-content">
@@ -437,7 +465,7 @@ onMounted(() => {
                       </a-tag>
                     </span>
                   </a-typography-title>
-                  <div v-if="!item.isSummary" class="mb-5">
+                  <div class="mb-5">
                     <a-tag v-for="tag in item.tags" :key="tag" color="blue">{{ tag }}</a-tag>
                   </div>
                   <a-typography-paragraph>
@@ -461,7 +489,6 @@ onMounted(() => {
 
                 <div class="package-action">
                   <a-button
-                    v-if="!item.isSummary"
                     block
                     type="primary"
                     class="download-button"
@@ -471,16 +498,6 @@ onMounted(() => {
                       <DownloadOutlined />
                     </template>
                     {{ btnText || t("TXT_CODE_1704ea49") }}
-                  </a-button>
-
-                  <a-button
-                    v-else
-                    block
-                    type="primary"
-                    class="download-button"
-                    @click="searchForm.gameType = item.gameType"
-                  >
-                    {{ t("TXT_CODE_530f5951") }}
                   </a-button>
                 </div>
               </div>
@@ -492,7 +509,7 @@ onMounted(() => {
   </a-row>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .package-card-content {
   display: flex;
   flex-direction: column;
@@ -507,13 +524,17 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .package-image {
   height: 100%;
   width: 100%;
   object-fit: cover;
-  max-height: 160px;
   height: 160px;
   transition: transform 0.3s ease;
+  background-color: var(--color-gray-1);
 }
 
 .package-info {
@@ -567,6 +588,30 @@ onMounted(() => {
   background: linear-gradient(45deg, #1890ff, #40a9ff);
   border: none;
   animation: pulse-glow 2s infinite;
+}
+
+.package-subtitle {
+  cursor: pointer;
+  background-color: var(--card-bottom-background-color);
+  color: rgb(255, 255, 255);
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  // border-bottom-left-radius: 6px;
+  // border-bottom-right-radius: 6px;
+  border-radius: 0 !important;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  margin: 0;
+}
+
+.package-image-container-summary {
+  position: relative;
 }
 
 @keyframes pulse-glow {
