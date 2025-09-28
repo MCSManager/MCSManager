@@ -1,6 +1,7 @@
-import { readFile } from "fs/promises";
+//@ts-check
+import { readdir, readFile } from "fs/promises";
 import OpenAI from "openai";
-import { sortLanguageFiles } from "./sort-lang-key.mjs";
+import path from "path";
 
 // 你现在是一名经验丰富的翻译专家，我将给你一系列的文案，翻译时必须遵守以下规则：。
 // 1. 这些文本最终会使用到 MCSManager 游戏服务器程序管理面板的UI界面上，它是一个支持 Minecraft，Steam 等的游戏服务器 Web 管理程序。
@@ -17,12 +18,12 @@ const SYSTEM_PROMPT = `You are now an experienced translation expert. I will pro
 Now, fully understand the meaning of the original text and translate it into the {target} language.  `;
 
 export class AiChatSession {
-  constructor(apiKey, systemPrompt) {
+  constructor(apiKey = "", systemPrompt = "") {
     this.messages = [{ role: "system", content: systemPrompt }];
     this.apiKey = apiKey;
   }
 
-  async sendMessage(userInput, onStream = () => {}) {
+  async sendMessage(userInput = "", onStream = (text = "") => {}) {
     try {
       const openai = new OpenAI({
         baseURL: "https://api.deepseek.com",
@@ -32,7 +33,7 @@ export class AiChatSession {
       this.messages.push({ role: "user", content: userInput });
 
       const completion = await openai.chat.completions.create({
-        messages: this.messages,
+        messages: /** @type {any} */ (this.messages),
         model: "deepseek-chat",
         stream: true
       });
@@ -59,19 +60,9 @@ export class AiChatSession {
     }
   }
 
-  // 获取对话历史
-  getHistory() {
-    return this.messages.filter((msg) => msg.role !== "system");
-  }
-
   // 清空对话历史（保留系统提示）
   clearHistory() {
     this.messages = this.messages.filter((msg) => msg.role === "system");
-  }
-
-  // 设置新的系统提示
-  setSystemPrompt(prompt) {
-    this.messages[0] = { role: "system", content: prompt };
   }
 }
 
@@ -87,11 +78,37 @@ async function getApiKey() {
   }
 }
 
-async function main() {
-  const apiKey = await getApiKey();
-  const chat = new AiChatSession(apiKey, SYSTEM_PROMPT);
+const apiKey = await getApiKey();
+const chatAiSession = new AiChatSession(apiKey, SYSTEM_PROMPT);
 
-  await sortLanguageFiles();
+// 将一组文本翻译成目标语言
+/**
+ * 将一组文本翻译成目标语言
+ * @param {{key:string, text:string}[]} textList - 需要翻译的文本数组
+ * @param {string} targetLanguage - 目标语言（如 "zh-CN", "en-US" 等）
+ * @returns {Promise<{key:string, text:string}[]>} - 翻译后的文本数组
+ */
+async function translateText(textList = [], targetLanguage = "") {
+  const result = await chatAiSession.sendMessage(JSON.stringify(textList));
+  return JSON.parse(result.content);
+}
+
+async function parseLanguageFiles() {
+  const languageFiles = await readdir(path.join(import.meta.dirname, "../languages"));
+  for (const file of languageFiles) {
+    if (file.endsWith(".json")) {
+      const content = await readFile(path.join(import.meta.dirname, "../languages", file), "utf8");
+      const json = JSON.parse(content);
+      console.log(json);
+    }
+  }
+  return languageFiles;
+}
+
+async function main() {
+  // await sortLanguageFiles();
+
+  await parseLanguageFiles();
 
   // const { content } = await chat.sendMessage(``);
   // await writeFile("output.txt", content);
