@@ -24,14 +24,13 @@ const LANGUAGE_MAP = {
 // 2. 不要回答我的任何问题，我传给你什么文本，你就翻译什么文本，不要问我任何问题。
 // 3. 翻译时必须遵守 {target} 语言的语法和习惯用语，不要出现语法错误和习惯用语错误。
 // 4. 翻译结果尽可能简短，本地化，不要出现冗余的文本。
+// 5. 我会给你 JSON 格式的文本，请翻译结果也返回 JSON 格式。
 // 现在，请你充分理解原文的意思，并且将它翻译成 {target} 语言
 
-const SYSTEM_PROMPT = `You are now an experienced translation expert. I will provide you with a series of texts, and you must follow these rules when translating:  
-1. These texts will be used in the UI of the MCSManager game server management panel, a web-based management program supporting Minecraft, Steam, and other game servers.  
-2. Do not answer any questions from me. Translate only the texts I provide, without asking any questions.  
-3. The translation must adhere to the grammar and idiomatic expressions of the {target} language, avoiding grammatical errors and improper idioms.  
-4. Keep the translation as concise and localized as possible, avoiding redundant text.  
-Now, fully understand the meaning of the original text and translate it into the {target} language.  `;
+const SYSTEM_PROMPT = `你现在是一名经验丰富的翻译专家，我将给你一系列的文案，翻译时必须遵守以下规则：
+1. 翻译时必须遵守 {target} 语言的语法和习惯用语，不要出现语法错误和习惯用语错误，尽可能的简短。
+2. 我会给你 JSON 格式的文本，请翻译结果也返回 JSON 纯文本，请确保 JSON 格式正确，注意转移符号等。
+现在，请你充分理解原文的意思，并且将它翻译成 {target} 语言`;
 
 export class AiChatSession {
   constructor(apiKey = "", systemPrompt = "") {
@@ -94,28 +93,26 @@ async function getApiKey() {
   }
 }
 
-const apiKey = await getApiKey();
-const chatAiSession = new AiChatSession(apiKey, SYSTEM_PROMPT);
-
 /**
  * 将一组文本翻译成目标语言
  * @param {{key:string, text:string}[]} textList - 需要翻译的文本数组
  * @param {string} targetLanguage - 目标语言（如 "zh-CN", "en-US" 等）
  * @returns {Promise<{key:string, text:string}[]>} - 翻译后的文本数组
  */
-async function translateText(textList = [], targetLanguage = "") {
-  // return textList.map((item) => ({
-  //   key: item.key,
-  //   text: "Mock: " + targetLanguage + ": " + item.text
-  // }));
-  const result = await chatAiSession.sendMessage(JSON.stringify(textList));
-  return JSON.parse(result.content);
+async function translateText(chatAiSession, textList = [], targetLanguage = "") {
+  const result = await chatAiSession.sendMessage(JSON.stringify(textList), (text) => {
+    process.stdout.write(text || "");
+  });
+  let text = result.content;
+  text = text.replace(/^```json\n/, "").replace(/\n```$/, "");
+  return JSON.parse(text);
 }
 
 /**
  * 以 en_US.json 为标准，检查并填充其他语言文件中缺失的键值对
  */
 async function checkAndFillMissingKeys() {
+  const apiKey = await getApiKey();
   const languagesPath = path.join(import.meta.dirname, "../languages");
 
   // 读取标准文件 en_US.json
@@ -134,6 +131,9 @@ async function checkAndFillMissingKeys() {
 
   // 逐个处理每个语言文件
   for (const file of targetFiles) {
+    const systemPrompt = SYSTEM_PROMPT.replace(/{target}/g, LANGUAGE_MAP[file]);
+    const chatAiSession = new AiChatSession(apiKey, systemPrompt);
+
     const filePath = path.join(languagesPath, file);
     const content = await readFile(filePath, "utf8");
     const json = JSON.parse(content);
@@ -165,7 +165,7 @@ async function checkAndFillMissingKeys() {
     try {
       // 调用翻译函数
       console.log(`🌍 正在翻译到 ${targetLanguage}...`);
-      const translatedTexts = await translateText(textsToTranslate, targetLanguage);
+      const translatedTexts = await translateText(chatAiSession, textsToTranslate, targetLanguage);
 
       // 将翻译结果添加到当前语言的 JSON 对象中
       for (const translatedItem of translatedTexts) {
