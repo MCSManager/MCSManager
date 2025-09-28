@@ -1,6 +1,6 @@
-import { writeFile, readFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import OpenAI from "openai";
-import readline from "readline";
+import { sortLanguageFiles } from "./sort-lang-key.mjs";
 
 // 你现在是一名经验丰富的翻译专家，我将给你一系列的文案，翻译时必须遵守以下规则：。
 // 1. 这些文本最终会使用到 MCSManager 游戏服务器程序管理面板的UI界面上，它是一个支持 Minecraft，Steam 等的游戏服务器 Web 管理程序。
@@ -90,8 +90,11 @@ async function getApiKey() {
 async function main() {
   const apiKey = await getApiKey();
   const chat = new AiChatSession(apiKey, SYSTEM_PROMPT);
-  const { content } = await chat.sendMessage(``);
-  await writeFile("output.txt", content);
+
+  await sortLanguageFiles();
+
+  // const { content } = await chat.sendMessage(``);
+  // await writeFile("output.txt", content);
 }
 
 main();
