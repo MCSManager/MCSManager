@@ -273,20 +273,24 @@ export default class Instance extends EventEmitter {
       JSON.stringify(this.config.docker)
     );
 
-    // Delete some environment configurations specific to a certain image
-    // to avoid the newly generated configurations from having an adverse impact on new images.
-    delete newDockerCfg.image;
-    delete newDockerCfg.env;
-    delete newDockerCfg.ports;
-    delete newDockerCfg.workingDir;
-    delete newDockerCfg.changeWorkdir;
-    delete newDockerCfg.containerName;
+    const extendDockerCfg = newDockerCfg as any;
 
-    // Reset some configurations
-    this.config.updateCommand = "";
-    this.config.startCommand = "";
-    this.config.stopCommand = "^C";
-    this.config.type = Instance.TYPE_UNIVERSAL;
+    if (!extendDockerCfg?.isResetDockerCfg) {
+      // Delete some environment configurations specific to a certain image
+      // to avoid the newly generated configurations from having an adverse impact on new images.
+      delete newDockerCfg.image;
+      delete newDockerCfg.env;
+      delete newDockerCfg.ports;
+      delete newDockerCfg.workingDir;
+      delete newDockerCfg.changeWorkdir;
+      delete newDockerCfg.containerName;
+
+      // Reset some configurations
+      this.config.updateCommand = "";
+      this.config.startCommand = "";
+      this.config.stopCommand = "^C";
+      this.config.type = Instance.TYPE_UNIVERSAL;
+    }
 
     this.config.docker = newDockerCfg;
   }
