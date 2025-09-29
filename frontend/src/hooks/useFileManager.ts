@@ -16,7 +16,7 @@ import {
 } from "@/services/apis/fileManager";
 import uploadService from "@/services/uploadService";
 import { number2permission, permission2number } from "@/tools/permission";
-import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
+import { mapDaemonAddress, parseForwardAddress, type RemoteMappingEntry } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
 import type {
   Breadcrumb,
@@ -29,6 +29,17 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
+
+export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
+  let addr = config.addr;
+  if (config.remoteMappings) {
+    const mapped = mapDaemonAddress(config.remoteMappings);
+    if (mapped) {
+      addr = mapped.addr + mapped.prefix;
+    }
+  }
+  return addr;
+}
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -418,13 +429,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             file_name: f.file.name
           }
         });
-        if (!missionCfg.value) {
-          throw new Error(t("TXT_CODE_e8ce38c2"));
-        }
+        if (!missionCfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
+        const addr = parseForwardAddress(getFileConfigAddr(missionCfg.value), "http");
         uploadService.append(
           f.file,
-          parseForwardAddress(missionCfg.value.addr, "http"),
+          addr,
           missionCfg.value.password,
           {
             overwrite: f.overwrite
@@ -500,15 +510,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       });
       if (!downloadCfg.value) return null;
-      let addr = downloadCfg.value.addr;
-      if (downloadCfg.value.remoteMappings) {
-        const mapped = mapDaemonAddress(downloadCfg.value.remoteMappings);
-        if (mapped) {
-          addr = mapped.addr + mapped.prefix;
-        }
-      }
+      const addr = parseForwardAddress(getFileConfigAddr(downloadCfg.value), "http");
       const path = `/download/${downloadCfg.value.password}/${fileName}`;
-      return parseForwardAddress(addr, "http") + path;
+      return addr + path;
     } catch (err: any) {
       console.error(err);
       return reportErrorMsg(err.message);

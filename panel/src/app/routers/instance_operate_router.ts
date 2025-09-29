@@ -279,18 +279,9 @@ router.post(
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService)
         throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
+      const addr = remoteService.config.addr;
       const prefix = remoteService.config.prefix;
-      const remoteMappings = remoteService.config.remoteMappings.map(remote => ({
-        from: {
-          addr: `${remote.from.ip}:${remote.from.port}`,
-          prefix: remote.from.prefix,
-        },
-        to: {
-          addr: `${remote.to.ip}:${remote.to.port}`,
-          prefix: remote.to.prefix,
-        },
-      }));
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "stream_channel",

@@ -1,5 +1,4 @@
 import Router from "@koa/router";
-import { removeTrail } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
@@ -311,18 +310,8 @@ router.all(
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = `${remoteService.config.ip}:${remoteService.config.port}`;
-      const prefix = removeTrail(remoteService.config.prefix.trim(), "/");
-      const remoteMappings = remoteService.config.remoteMappings.map((remote) => ({
-        from: {
-          addr: `${remote.from.ip}:${remote.from.port}`,
-          prefix: remote.from.prefix
-        },
-        to: {
-          addr: `${remote.to.ip}:${remote.to.port}`,
-          prefix: remote.to.prefix
-        }
-      }));
+      const addr = remoteService.config.fullAddr;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "download",
@@ -341,7 +330,7 @@ router.all(
       });
       ctx.body = {
         password,
-        addr: addr + prefix,
+        addr,
         remoteMappings
       };
     } catch (err) {
@@ -360,9 +349,9 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        removeTrail((remoteService?.config.prefix ?? "").trim(), "/")
-      }`;
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      const addr = remoteService.config.fullAddr;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -380,7 +369,8 @@ router.all(
       });
       ctx.body = {
         password,
-        addr
+        addr,
+        remoteMappings,
       };
     } catch (err) {
       ctx.body = err;

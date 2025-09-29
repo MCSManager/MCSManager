@@ -160,6 +160,7 @@ export const uploadAddress = useDefineApi<
   {
     password: string;
     addr: string;
+    remoteMappings: RemoteMappingEntry[];
   }
 >({
   url: "/api/files/upload",

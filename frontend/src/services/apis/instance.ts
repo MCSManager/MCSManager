@@ -195,6 +195,7 @@ export const uploadAddress = useDefineApi<
     instanceUuid: string;
     password: string;
     addr: string;
+    remoteMappings: RemoteMappingEntry[];
   }
 >({
   url: "/api/instance/upload",

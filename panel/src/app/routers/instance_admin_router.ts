@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import axios from "axios";
 import fs from "fs/promises";
-import { removeTrail } from "mcsmanager-common";
 import { MARKET_CACHE_FILE_PATH } from "../const";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
@@ -82,6 +81,7 @@ router.post(
       // const uploadDir = String(ctx.query.upload_dir);
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
@@ -93,9 +93,8 @@ router.post(
         instance_name: result.nickname
       });
       // Send a cross-end file upload task to the daemon
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        removeTrail((remoteService?.config.prefix ?? "").trim(), "/")
-      }`;
+      const addr = remoteService.config.fullAddr;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -108,7 +107,8 @@ router.post(
       ctx.body = {
         instanceUuid: newInstanceUuid,
         password,
-        addr
+        addr,
+        remoteMappings,
       };
     } catch (err) {
       ctx.body = err;
