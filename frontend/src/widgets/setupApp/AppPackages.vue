@@ -7,7 +7,8 @@ import { quickInstallListAddr } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages } from "@/types";
 import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { Modal } from "ant-design-vue";
+import { Flex, Modal } from "ant-design-vue";
+import Link from "ant-design-vue/es/typography/Link";
 import { computed, onMounted, reactive } from "vue";
 
 const props = defineProps<{
@@ -79,6 +80,7 @@ const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
 // Supports additional custom filters through additionalFilters parameter
 // Returns empty array if no packages are available
 const getFilteredPackages = (
+  // eslint-disable-next-line no-unused-vars
   additionalFilters?: (item: QuickStartPackages) => boolean
 ): QuickStartPackages[] => {
   if (!presetList.value?.packages) {
@@ -102,6 +104,45 @@ const getFilteredPackages = (
     const allFilters = additionalFilters ? [additionalFilters(item)] : baseFilters;
     return allFilters.every((filter) => filter);
   });
+};
+
+const getSummaryPackages = (
+  // eslint-disable-next-line no-unused-vars
+  additionalFilters?: (item: QuickStartPackages) => boolean
+): QuickStartPackages[] => {
+  let filteredPackages = getFilteredPackages(additionalFilters);
+  if (searchForm.gameType == SEARCH_ALL_KEY) {
+    const map = new Map<string, QuickStartPackages>();
+    filteredPackages.forEach((item) => {
+      if (!map.has(item.gameType)) {
+        const summary: QuickStartPackages = {
+          ...item,
+          description: "",
+          title: item.gameType,
+          category: "",
+          runtime: "",
+          size: "",
+          hardware: "",
+          remark: "",
+          targetLink: undefined,
+          author: "",
+          setupInfo: undefined,
+          tags: undefined,
+          isSummary: true
+        };
+        map.set(item.gameType, summary);
+      } else {
+        const existing = map.get(item.gameType);
+        if (existing) {
+          if (existing.platform != item.platform) {
+            existing.platform = "All";
+          }
+        }
+      }
+    });
+    filteredPackages = Array.from(map.values());
+  }
+  return filteredPackages;
 };
 
 // Generic function to generate options list for select dropdowns
@@ -140,17 +181,12 @@ const generateOptionsList = (
 // Computed property for filtered application list
 // Uses the generic getFilteredPackages function with current search criteria
 const appList = computed(() => {
-  return getFilteredPackages();
+  return getSummaryPackages();
 });
 
 // Computed property for language options dropdown
 // Includes "ALL" option and available languages from preset data
 const appLangList = computed(() => {
-  // const allOption: FilterOption = {
-  //   label: t("TXT_CODE_8a30e150"),
-  //   value: SEARCH_ALL_KEY
-  // };
-
   const languageOptions: FilterOption[] =
     presetList.value?.languages instanceof Array ? presetList.value.languages : [];
 
@@ -221,7 +257,9 @@ const handlePlatformChange = () => {
   searchForm.category = SEARCH_ALL_KEY;
 };
 
-const handleCustomBtnClick = () => {};
+const handleSelectTopCategory = (item: QuickStartPackages) => {
+  searchForm.gameType = item.gameType;
+};
 
 defineExpose({
   init,
@@ -239,13 +277,21 @@ onMounted(() => {
     {{ title || t("TXT_CODE_88249aee") }}
   </a-typography-title>
   <a-typography-paragraph>
-    <p>
-      <span>{{ t("TXT_CODE_c9ce7427") }}</span>
-      <span v-if="onlyDockerTemplate">
-        <br />
-        {{ t("TXT_CODE_de9b7cc0") }}
-      </span>
-    </p>
+    <Flex justify="space-between" align="flex-start">
+      <p>
+        <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+        <span v-if="onlyDockerTemplate">
+          <br />
+          {{ t("TXT_CODE_de9b7cc0") }}
+          <br />
+        </span>
+      </p>
+      <p>
+        <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
+          {{ t("TXT_CODE_709c2db4") }}
+        </Link>
+      </p>
+    </Flex>
   </a-typography-paragraph>
   <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
@@ -259,7 +305,9 @@ onMounted(() => {
           justify-content: center;
         "
       >
-        <div><Loading /></div>
+        <div>
+          <Loading />
+        </div>
         <div style="margin-top: 20px; color: var(--color-gray-12)">
           {{ t("TXT_CODE_7fca723a") }}
         </div>
@@ -268,7 +316,7 @@ onMounted(() => {
   </a-row>
 
   <!-- Main content - package marketplace interface -->
-  <a-row v-else :gutter="[12, 12]" style="height: 100%">
+  <a-row v-else :gutter="[16, 16]" style="height: 100%">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
       <a-form
@@ -333,7 +381,7 @@ onMounted(() => {
 
         <a-form-item class="mb-0">
           <a-button type="default" @click="handleReset">
-            {{ t("TXT_CODE_50d471b2") }}
+            {{ t("TXT_CODE_880fedf7") }}
           </a-button>
         </a-form-item>
       </a-form>
@@ -364,13 +412,37 @@ onMounted(() => {
         v-for="item in appList"
         :key="item.targetLink + item.title + item.gameType + item.language + item.category"
         :span="24"
-        :xl="6"
-        :lg="6"
+        :xl="item.isSummary ? 8 : 6"
+        :lg="item.isSummary ? 8 : 6"
         :sm="24"
       >
-        <!-- Individual package card -->
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
-          <CardPanel style="flex-grow: 1" :style="{ padding: '12px' }">
+          <!-- Top Category Card -->
+          <div
+            v-if="item.isSummary"
+            class="package-image-container-summary global-card-container-shadow"
+            style="overflow: hidden"
+            @click="handleSelectTopCategory(item)"
+          >
+            <div class="package-image-container" style="border-radius: 0">
+              <img
+                class="package-image cursor-pointer"
+                style="height: 220px; border-radius: 0"
+                :src="item.image"
+                alt=""
+                srcset=""
+              />
+            </div>
+
+            <a-typography-title :level="5" class="flex-center package-subtitle">
+              <span>
+                {{ item.title }}
+              </span>
+            </a-typography-title>
+          </div>
+
+          <!-- Template Pack -->
+          <CardPanel v-else style="flex-grow: 1" :style="{ padding: '12px' }">
             <!-- Package content -->
             <template #body>
               <div class="package-card-content">
@@ -384,7 +456,7 @@ onMounted(() => {
                       {{ item.title }}
                     </span>
                     <span>
-                      <a-tag color="cyan">
+                      <a-tag v-if="item.platform" color="cyan">
                         {{
                           String(item.platform).toLowerCase() === "all"
                             ? t("TXT_CODE_all_platform")
@@ -398,15 +470,19 @@ onMounted(() => {
                   </div>
                   <a-typography-paragraph>
                     <a-typography-text :style="{ fontSize: '12px' }">
-                      <span>
-                        {{ item.description }}
-                      </span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
-                      <span>{{ item.runtime }}</span>
-                      <br />
-                      <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
-                      <span>{{ item.hardware }}</span>
+                      <p>
+                        <span>
+                          {{ item.description || "&nbsp;" }}
+                        </span>
+                      </p>
+                      <p v-if="item.runtime">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_18b94497") }}: </span>
+                        <span>{{ item.runtime }}</span>
+                      </p>
+                      <p v-if="item.hardware">
+                        <span style="opacity: 0.6">{{ t("TXT_CODE_683e3033") }}: </span>
+                        <span>{{ item.hardware }}</span>
+                      </p>
                     </a-typography-text>
                   </a-typography-paragraph>
                 </div>
@@ -433,7 +509,7 @@ onMounted(() => {
   </a-row>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .package-card-content {
   display: flex;
   flex-direction: column;
@@ -448,13 +524,17 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .package-image {
   height: 100%;
   width: 100%;
   object-fit: cover;
-  max-height: 160px;
   height: 160px;
   transition: transform 0.3s ease;
+  background-color: var(--color-gray-1);
 }
 
 .package-info {
@@ -467,8 +547,9 @@ onMounted(() => {
 }
 
 .download-button {
-  margin: 0px 12px;
+  margin: 0px auto;
   transition: all 0.3s ease;
+  max-width: 140px;
 }
 
 .package-image {
@@ -507,6 +588,30 @@ onMounted(() => {
   background: linear-gradient(45deg, #1890ff, #40a9ff);
   border: none;
   animation: pulse-glow 2s infinite;
+}
+
+.package-subtitle {
+  cursor: pointer;
+  background-color: var(--card-bottom-background-color);
+  color: rgb(255, 255, 255);
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  // border-bottom-left-radius: 6px;
+  // border-bottom-right-radius: 6px;
+  border-radius: 0 !important;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  margin: 0;
+}
+
+.package-image-container-summary {
+  position: relative;
 }
 
 @keyframes pulse-glow {

@@ -5,7 +5,7 @@ import path from "path";
 
 const languagesDir = path.join(import.meta.dirname, "../languages");
 
-async function sortLanguageFiles() {
+export async function sortLanguageFiles() {
   try {
     const languageFiles = await fs.readdir(languagesDir);
     await Promise.all(

@@ -14,7 +14,7 @@ const props = defineProps<Props>();
 const { isVisible, openDialog, cancel, submit } = useDialog<ComputedNodeInfo>(props);
 
 // 获取可用节点
-const { remoteNodes: nodes, refresh: refreshOverviewInfo } = useRemoteNode();
+const { response, refresh: refreshOverviewInfo } = useRemoteNode();
 
 const availableNodes = ref<ComputedNodeInfo[]>([]);
 
@@ -28,7 +28,7 @@ const selectNode = (node: ComputedNodeInfo) => {
 
 onMounted(async () => {
   await refreshOverviewInfo();
-  availableNodes.value = nodes.value?.filter((node) => node.available) || [];
+  availableNodes.value = response.value?.remote?.filter((node) => node.available) || [];
 });
 
 // 暴露openDialog方法
@@ -70,7 +70,9 @@ defineExpose({
         <div
           v-for="item in availableNodes"
           v-else
-          :key="item.uuid"
+          :key="item.uuid + item.remarks + item.ip"
+          :data-ip="item.ip"
+          :data-uuid="item.uuid"
           class="node-item"
           @click="selectNode(item)"
         >

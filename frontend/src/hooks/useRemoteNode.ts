@@ -98,6 +98,7 @@ export function useRemoteNode() {
   };
 
   return {
+    response: state,
     remoteNodes,
     operationForm,
     currentStatus,

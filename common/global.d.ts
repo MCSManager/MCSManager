@@ -229,6 +229,7 @@ declare global {
     image: string;
     platform: string;
     tags?: string[];
+    isSummary?: boolean;
   }
 
   interface IQuickStartTemplate {
