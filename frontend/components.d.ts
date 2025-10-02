@@ -94,6 +94,7 @@ declare module 'vue' {
     MinecraftJavaForm: typeof import('./src/components/fc/CmdAssistantDialog/MinecraftJavaForm.vue')['default']
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
+    NodeRemoteMappingEdit: typeof import('./src/components/NodeRemoteMappingEdit.vue')['default']
     NodeSelectDialog: typeof import('./src/components/fc/NodeSelectDialog.vue')['default']
     NodeSimpleChart: typeof import('./src/components/NodeSimpleChart.vue')['default']
     NoPreviewCard: typeof import('./src/components/NoPreviewCard.vue')['default']

@@ -1,3 +1,39 @@
+import { removeTrail } from "./string";
+
+export function parseIp(ip: string) {
+  if (ip.toLowerCase() === "localhost" || ip === "127.0.0.1") {
+    return window.location.hostname;
+  }
+  return ip;
+}
+
+export type RemoteMappingEntry = {
+  from: {
+    addr: string;
+    prefix: string;
+  };
+  to: {
+    addr: string;
+    prefix: string;
+  };
+};
+
+export function mapDaemonAddress(remoteMappings: RemoteMappingEntry[]) {
+  const loc = window.location;
+  let addr = loc.host;
+  if (loc.port === "") {
+    if (loc.protocol === "http:") addr = `${addr}:80`;
+    if (loc.protocol === "https:") addr = `${addr}:443`;
+  }
+  const match = remoteMappings.find(
+    (entry) =>
+      entry.from.addr === addr &&
+      removeTrail(entry.from.prefix, "/") === removeTrail(loc.pathname, "/")
+  );
+  if (!match) return undefined;
+  return match.to;
+}
+
 export function parseForwardAddress(addr: string, require: "http" | "ws") {
   // save its protocol header
   //ws://127.0.0.1:25565

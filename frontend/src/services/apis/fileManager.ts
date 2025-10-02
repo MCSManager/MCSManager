@@ -1,4 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { RemoteMappingEntry } from "@/tools/protocol";
 
 export const fileList = useDefineApi<
   {
@@ -159,6 +160,7 @@ export const uploadAddress = useDefineApi<
   {
     password: string;
     addr: string;
+    remoteMappings: RemoteMappingEntry[];
   }
 >({
   url: "/api/files/upload",
@@ -211,6 +213,7 @@ export const downloadAddress = useDefineApi<
   {
     password: string;
     addr: string;
+    remoteMappings: RemoteMappingEntry[];
   }
 >({
   url: "/api/files/download",

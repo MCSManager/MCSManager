@@ -156,7 +156,8 @@ router.put(
       ip: parameter.ip,
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
-      remarks: parameter.remarks
+      remarks: parameter.remarks,
+      remoteMappings: parameter.remoteMappings ?? [],
     });
 
     operationLogger.log("daemon_config_change", {

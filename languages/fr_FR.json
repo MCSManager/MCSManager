@@ -1914,7 +1914,6 @@
   "TXT_CODE_be608c82": "Différents types auront des différences subtiles dans certaines fonctions",
   "TXT_CODE_be6484f7": "Veuillez sélectionner une image d'instance",
   "TXT_CODE_be769e64": "Vous permet de modifier la quantité de tiques requises pour que la mort d'une foule compte comme un joueur tue après avoir été blessé par le joueur (projectile ou directement)",
-  "TXT_CODE_be7a689a": "Vous devez utiliser une adresse réseau externe ou une adresse localhost, sinon l'entité d'exécution à distance ne pourra pas se connecter.",
   "TXT_CODE_bea356aa": "Autoriser les connexions depuis ProxyPass et Waterdog.",
   "TXT_CODE_bea85b64": "Quantité de tiques que le joueur brillera après avoir mangé une baie brillante. \nRéglé sur 0 pour désactiver",
   "TXT_CODE_beacbdc": "La vitesse à laquelle un chaudron se remplit de neige en poudre (dépend d'une tique aléatoire)",

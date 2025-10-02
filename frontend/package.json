@@ -51,7 +51,7 @@
     "socket.io-client": "^4.7.2",
     "spark-md5": "^3.0.2",
     "uuid": "^9.0.0",
-    "vue": "^3.3.4",
+    "vue": "~3.4.0",
     "vue-i18n": "^9.6.5",
     "vue-router": "^4.2.4",
     "wavesurfer.js": "^7.7.1",
