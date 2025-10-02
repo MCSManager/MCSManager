@@ -168,7 +168,7 @@ const rules: Record<string, any> = {
       validator: async (_rule: Rule, value: number) => {
         if (value !== undefined && value !== null && value !== 0) {
           if (value < 0 || value > 65535) {
-            throw new Error(t("端口号必须在 0-65535 范围内"));
+            throw new Error(t("TXT_CODE_12040bf0"));
           }
         }
       },
@@ -613,13 +613,13 @@ defineExpose({
             <a-col :xs="24" :lg="8" :offset="0">
               <a-form-item name="basePort">
                 <a-typography-title :level="5">
-                  {{ t("分配的起始端口") }}
+                  {{ t("TXT_CODE_15f5fb07") }}
                 </a-typography-title>
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
                     {{
                       t(
-                        "这个数字对应 {mcsm_port1} 到 {mcsm_port5} 的变量，每次新增实例都会递增分配"
+                        "TXT_CODE_dfd06954"
                       )
                     }}
                   </a-typography-text>
