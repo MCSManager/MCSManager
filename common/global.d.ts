@@ -18,6 +18,7 @@ declare global {
     actionCommandList: any[];
     crlf: number;
     category: number;
+    basePort: number;
 
     // Steam RCON
     enableRcon?: boolean;

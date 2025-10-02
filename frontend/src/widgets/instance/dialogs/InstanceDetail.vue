@@ -163,6 +163,18 @@ const rules: Record<string, any> = {
     }
   ],
   cwd: [{ required: true, message: t("TXT_CODE_71c948a9") }],
+  basePort: [
+    {
+      validator: async (_rule: Rule, value: number) => {
+        if (value !== undefined && value !== null && value !== 0) {
+          if (value < 0 || value > 65535) {
+            throw new Error(t("端口号必须在 0-65535 范围内"));
+          }
+        }
+      },
+      trigger: "change"
+    }
+  ],
   docker: {
     image: [
       {
@@ -595,6 +607,31 @@ defineExpose({
                     {{ t("TXT_CODE_ad207008") }}
                   </a-button>
                 </a-input-group>
+              </a-form-item>
+            </a-col>
+
+            <a-col :xs="24" :lg="8" :offset="0">
+              <a-form-item name="basePort">
+                <a-typography-title :level="5">
+                  {{ t("分配的起始端口") }}
+                </a-typography-title>
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{
+                      t(
+                        "这个数字对应 {mcsm_port1} 到 {mcsm_port5} 的变量，每次新增实例都会递增分配"
+                      )
+                    }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-input
+                  v-model:value="options.config.basePort"
+                  :min="0"
+                  :max="65535"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
+                  :disabled="isGlobalTerminal"
+                  style="width: 100%"
+                />
               </a-form-item>
             </a-col>
 
