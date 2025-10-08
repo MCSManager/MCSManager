@@ -99,4 +99,4 @@ jobs:
           labels: ${{ steps.meta_daemon.outputs.labels }}
           build-args: |
             BUILDPLATFORM=linux/amd64
-            JAVA_RUNTIME=${{ matrix.java_version }}
+            EMBEDDED_JAVA_VERSION=${{ matrix.java_version }}
