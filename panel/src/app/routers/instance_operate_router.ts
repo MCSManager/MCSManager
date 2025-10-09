@@ -277,8 +277,11 @@ router.post(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}`;
-      const prefix = remoteService?.config.prefix;
+      if (!remoteService)
+        throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      const addr = remoteService.config.addr;
+      const prefix = remoteService.config.prefix;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "stream_channel",
@@ -290,7 +293,8 @@ router.post(
       ctx.body = {
         password,
         addr,
-        prefix
+        prefix,
+        remoteMappings,
       };
     } catch (err) {
       ctx.body = err;

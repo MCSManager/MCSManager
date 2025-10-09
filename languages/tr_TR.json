@@ -1914,7 +1914,6 @@
   "TXT_CODE_be608c82": "Farklı türlerin bazı işlevlerinde küçük farklılıklar olabilir",
   "TXT_CODE_be6484f7": "Lütfen bir örnek resim seçin",
   "TXT_CODE_be769e64": "Oyuncu tarafından yaralandıktan sonra (mermi veya doğrudan) bir oyuncu öldürme olarak sayılması için gereken kenelerin miktarını değiştirmenizi sağlar.",
-  "TXT_CODE_be7a689a": "Bir Genel IP/Alan Adı veya 'localhost' olmalıdır. Aksi takdirde, daemon bağlanamayacaktır.",
   "TXT_CODE_bea356aa": "ProxyPass ve Waterdog'dan gelen bağlantılara izin ver.",
   "TXT_CODE_bea85b64": "Bir parıltı meyvesi yedikten sonra oyuncunun parlayacağı keneler miktarı. \nDevre dışı bırakmak için 0 olarak ayarlayın",
   "TXT_CODE_beacbdc": "Bir kazanın toz karla doldurma hızı (rastgele kene bağlıdır)",

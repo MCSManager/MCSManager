@@ -1,11 +1,11 @@
-import { logger } from "./log";
-import { IRemoteService, RemoteServiceConfig } from "../entity/entity_interface";
-import RemoteService from "../entity/remote_service";
-import { UniversalRemoteSubsystem } from "./base/urs";
-import Storage from "../common/storage/sys_storage";
 import fs from "fs-extra";
 import path from "path";
+import Storage from "../common/storage/sys_storage";
+import { IRemoteService, RemoteServiceConfig } from "../entity/entity_interface";
+import RemoteService from "../entity/remote_service";
 import { $t } from "../i18n";
+import { UniversalRemoteSubsystem } from "./base/urs";
+import { logger } from "./log";
 
 // The RemoteServiceSubsystem will be one of the most important systems
 // main function is to store remote services everywhere
@@ -80,6 +80,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     if (config.port) instance.config.port = config.port;
     if (config.prefix != null) instance.config.prefix = config.prefix;
     if (config.apiKey) instance.config.apiKey = config.apiKey;
+    if (config.remoteMappings != null) instance.config.remoteMappings = config.remoteMappings;
     await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
   }
 
