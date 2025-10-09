@@ -2795,5 +2795,6 @@
   "TXT_CODE_6f2c1806": "Remove",
   "TXT_CODE_8036ea5e": "No mapping is set.",
   "TXT_CODE_8d8fbbf4": "Add a mapping",
-  "TXT_CODE_93c3cb78": "For this address to work, you may need to configure node direct connection mappings."
+  "TXT_CODE_93c3cb78": "For this address to work, you may need to configure node direct connection mappings.",
+  "TXT_CODE_48c291c1": "Remote mappings are not available. This may be caused by an outdated panel backend."
 }

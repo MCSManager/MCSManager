@@ -279,7 +279,13 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-card>
-              <NodeRemoteMappingEdit v-model:value="dialog.data.remoteMappings" />
+              <NodeRemoteMappingEdit
+                v-if="dialog.data.remoteMappings"
+                v-model:value="dialog.data.remoteMappings"
+              />
+              <a-typography-text v-else type="secondary">
+                {{ t("TXT_CODE_48c291c1") }}
+              </a-typography-text>
             </a-card>
           </a-form-item>
         </a-form>
