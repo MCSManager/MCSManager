@@ -205,6 +205,7 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "rconPort", Number);
     configureEntityParams(this.config, cfg, "rconIp", String);
     configureEntityParams(this.config, cfg, "category", Number);
+    configureEntityParams(this.config, cfg, "basePort", Number);
 
     if (cfg.docker) {
       configureEntityParams(this.config.docker, cfg.docker, "containerName", String);
