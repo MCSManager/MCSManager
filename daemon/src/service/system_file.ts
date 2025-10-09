@@ -1,11 +1,11 @@
-import { $t, i18next } from "../i18n";
-import path from "path";
 import fs from "fs-extra";
-import { compress, decompress } from "../common/compress";
 import iconv from "iconv-lite";
-import { globalConfiguration } from "../entity/config";
 import { ProcessWrapper } from "mcsmanager-common";
 import os from "os";
+import path from "path";
+import { compress, decompress } from "../common/compress";
+import { globalConfiguration } from "../entity/config";
+import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
@@ -22,10 +22,7 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(
-    public topPath: string = "",
-    public fileCode?: string
-  ) {
+  constructor(public topPath: string = "", public fileCode?: string) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -105,7 +102,7 @@ export default class FileManager {
         const mode = parseInt(String(parseInt(info.mode?.toString(8), 10)).slice(-3));
         const commonInfo = {
           name: name,
-          size: info.size,
+          size: info.isFile() ? info.size : 0,
           time: info.atime.toString(),
           mode,
           type: info.isFile() ? 1 : 0
