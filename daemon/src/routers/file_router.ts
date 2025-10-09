@@ -34,12 +34,12 @@ routerApp.use((event, ctx, data, next) => {
 });
 
 // List the files in the specified instance working directory
-routerApp.on("file/list", (ctx, data) => {
+routerApp.on("file/list", async (ctx, data) => {
   try {
     const fileManager = getFileManager(data.instanceUuid);
     const { page, pageSize, target, fileName } = data;
     fileManager.cd(target);
-    const overview = fileManager.list(page, pageSize, fileName);
+    const overview = await fileManager.list(page, pageSize, fileName);
     protocol.response(ctx, overview);
   } catch (error: any) {
     protocol.responseError(ctx, error);
