@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getFileConfigAddr } from "@/hooks/useFileManager";
 import {
   INSTANCE_TYPE_TRANSLATION,
   TYPE_MINECRAFT_BEDROCK,
@@ -190,9 +191,10 @@ const selectedFile = async () => {
     uploadStartCallback = () => {
       uploadStarted.value = true;
     };
+    const addr = parseForwardAddress(getFileConfigAddr(cfg.value), "http");
     const task = uploadService.append(
       uFile.value!,
-      parseForwardAddress(cfg.value.addr, "http"),
+      addr,
       cfg.value.password,
       {
         overwrite: false,
