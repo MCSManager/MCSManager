@@ -1914,7 +1914,6 @@
   "TXT_CODE_be608c82": "Verschiedene Typen weisen geringfügige Unterschiede in bestimmten Funktionen auf",
   "TXT_CODE_be6484f7": "Bitte wählen Sie ein Instanzbild aus",
   "TXT_CODE_be769e64": "Ermöglicht Ihnen, die Anzahl der Ticks zu ändern, die erforderlich sind, damit der Tod eines Mobs als Spielertötung zählt, nachdem er vom Spieler verletzt wurde (Projektil oder direkt).",
-  "TXT_CODE_be7a689a": "Sie müssen eine externe Netzwerkadresse oder eine Localhost-Adresse verwenden, andernfalls kann die Remote-Ausführungseinheit keine Verbindung herstellen.",
   "TXT_CODE_bea356aa": "Erlauben Sie Verbindungen von ProxyPass und Waterdog.",
   "TXT_CODE_bea85b64": "Anzahl der Ticks, die der Spieler nach dem Verzehr einer Glühbeere zum Leuchten bringt. \nZum Deaktivieren auf 0 setzen",
   "TXT_CODE_beacbdc": "Die Geschwindigkeit, mit der sich ein Kessel mit Pulverschnee füllt (abhängig von der Zufallsgeschwindigkeit)",

@@ -3,8 +3,7 @@ import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { t } from "@/lang/i18n";
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
-import { parseForwardAddress } from "@/tools/protocol";
-import { removeTrail } from "@/tools/string";
+import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
 import type { InstanceDetail } from "@/types";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -14,8 +13,8 @@ import { WebglAddon } from "@xterm/addon-webgl";
 import { Terminal } from "@xterm/xterm";
 import EventEmitter from "eventemitter3";
 import type { Socket } from "socket.io-client";
-import { io } from "socket.io-client";
 import { computed, onMounted, onUnmounted, ref, unref } from "vue";
+import { makeSocketIo } from "./useSocketIo";
 
 export const TERM_COLOR = {
   TERM_RESET: "\x1B[0m",
@@ -98,19 +97,19 @@ export function useTerminal() {
     const remoteInfo = unref(res.value);
     if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
 
-    const addr = parseForwardAddress(remoteInfo?.addr, "ws");
-    socketAddress.value = addr;
+    let addr = remoteInfo.addr,
+      prefix = remoteInfo.prefix;
+    if (remoteInfo.remoteMappings) {
+      const mapped = mapDaemonAddress(remoteInfo.remoteMappings);
+      if (mapped) {
+        addr = mapped.addr;
+        prefix = mapped.prefix;
+      }
+    }
+    socketAddress.value = parseForwardAddress(addr, "ws");
     const password = remoteInfo.password;
 
-    socket = io(addr, {
-      path: (!!remoteInfo.prefix ? removeTrail(remoteInfo.prefix, "/") : "") + "/socket.io",
-      multiplex: false,
-      reconnectionDelayMax: 1000 * 10,
-      timeout: 1000 * 30,
-      reconnection: true,
-      reconnectionAttempts: 3,
-      rejectUnauthorized: false
-    });
+    socket = makeSocketIo(addr, prefix);
 
     socket.on("connect", () => {
       console.log("[Socket.io] connect:", addr);
