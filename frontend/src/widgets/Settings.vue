@@ -295,7 +295,11 @@ onUnmounted(() => {
                     <a-input
                       v-model:value="formData.presetPackAddr"
                       :placeholder="t('TXT_CODE_4ea93630')"
+                      style="max-width: 320px"
                     />
+
+                    <a-button class="mx-8">{{ t("编辑该模板") }}</a-button>
+                    <a-button>{{ t("新建空白模板") }}</a-button>
                   </a-form-item>
 
                   <a-form-item>

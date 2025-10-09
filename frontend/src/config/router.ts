@@ -166,7 +166,17 @@ const originRouterConfig: RouterConfig[] = [
     meta: {
       mainMenu: true,
       permission: ROLE.ADMIN
-    }
+    },
+    children: [
+      {
+        path: "editor",
+        name: t("模板编辑器"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
   },
   {
     path: "/overview",
