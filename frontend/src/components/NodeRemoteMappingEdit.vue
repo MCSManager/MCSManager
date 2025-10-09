@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
+import { useVModel } from "@vueuse/core";
 import { Form } from 'ant-design-vue';
 import _ from "lodash";
-import { watch } from "vue";
+import { watch, type PropType } from "vue";
+
+type RemoteMappingItem = IPanelOverviewRemoteMappingResponse;
 
 type ListRenderItem = {
-  item: IPanelOverviewRemoteMappingResponse;
+  item: RemoteMappingItem;
   index: number;
 };
 
@@ -24,7 +27,29 @@ const DEFAULT_MAPPING = {
   }
 };
 
-const remoteMappings = defineModel<IPanelOverviewRemoteMappingResponse[]>({ required: true });
+/**
+ * Here we follow the convention of `ant-design-vue` and name the model prop as
+ * `value`. It should be used like `v-model:value="..."`.
+ * 
+ * To be compatible with lower Vue runtime versions, we use `useVModel` from
+ * `vueuse` instead of `defineModel`, which is available in Vue 3.4+. Also,
+ * runtime declaration forms of `defineProps` and `defineEmits` are used
+ * instead of type declaration forms for better compatibility.
+ */
+
+const props = defineProps({
+  value: {
+    type: Array as PropType<RemoteMappingItem[]>,
+    required: true,
+  },
+});
+
+const emit = defineEmits({
+  'update:value': (value: RemoteMappingItem[]) => null
+});
+
+const remoteMappings = useVModel(props, 'value', emit);
+
 watch(remoteMappings, () => {
   formItemContext.onFieldChange();
 });

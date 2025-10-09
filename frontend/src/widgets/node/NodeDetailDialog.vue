@@ -279,7 +279,7 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-card>
-              <NodeRemoteMappingEdit v-model="dialog.data.remoteMappings" />
+              <NodeRemoteMappingEdit v-model:value="dialog.data.remoteMappings" />
             </a-card>
           </a-form-item>
         </a-form>
