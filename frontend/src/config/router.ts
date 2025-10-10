@@ -298,7 +298,7 @@ const originRouterConfig: RouterConfig[] = [
     component: Business,
     meta: {
       showBreadcrumbs: false,
-      showAppHeader: false,
+      showAppHeader: true,
       permission: ROLE.GUEST,
       mainMenu: true,
       condition: () => {

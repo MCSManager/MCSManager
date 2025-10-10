@@ -66,8 +66,10 @@ const { t } = useI18n();
 
 <style scoped lang="scss">
 .product-card {
-  width: 320px;
-  border-radius: 12px;
+  // width: 320px;
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
   transition: all 0.3s ease;
   color: var(--color-gray-10);
   background-color: var(--color-gray-3) !important;
@@ -76,7 +78,7 @@ const { t } = useI18n();
 
 .product-card:hover {
   border-color: var(--color-primary) !important;
-  transform: translateY(-4px);
+  // transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(64, 150, 255, 0.2);
 }
 
@@ -110,7 +112,7 @@ const { t } = useI18n();
   color: var(--color-gray-7) !important;
   font-size: 0.9rem;
   margin-bottom: 0 !important;
-  line-height: 1.5;
+  line-height: 1;
 }
 
 .buy-button {

@@ -518,7 +518,6 @@ const onClickIcon = () => {
 
   z-index: 20;
 
-  // 添加平滑过渡效果
   transition: height 0.4s ease-in-out;
 
   .app-header-content {
@@ -530,7 +529,6 @@ const onClickIcon = () => {
     width: 100%;
     height: var(--header-height);
 
-    // 添加平滑过渡效果
     transition: height 0.4s ease-in-out;
 
     .btns {

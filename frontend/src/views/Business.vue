@@ -4,7 +4,6 @@ import introductionImage3 from "@/assets/images/introduction-3.png";
 import introductionImage5 from "@/assets/images/introduction-5.png";
 import BuyModal from "@/components/BuyModal.vue";
 import CompanyHeader from "@/components/CompanyHeader.vue";
-import ProductCard from "@/components/ProductCard.vue";
 import SuccessModal from "@/components/SuccessModal.vue";
 import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
@@ -43,7 +42,7 @@ const successInfo = ref({
 });
 
 const toLoginPage = () => {
-  router.push({ path: "/login" });
+  router.push({ path: "/" });
 };
 
 const showBuyModal = (product?: FrontProductInfo) => {
@@ -117,32 +116,14 @@ onMounted(async () => {
     </div>
     <Flex vertical :gap="0" class="business-container">
       <!-- Company header section -->
-      <CompanyHeader
-        :shop-name="settings?.shopName"
-        :shop-description="settings?.shopDescription"
-        :shop-tip="settings?.shopTip"
-        @to-login="toLoginPage"
-      />
-
-      <!-- Products section -->
       <div class="section">
-        <Flex vertical :gap="32">
-          <a-typography-paragraph class="section-title">
-            <a-typography-title :level="1"> {{ $t("服务套餐") }} </a-typography-title>
-            <a-typography-text class="section-sub-title" type="secondary">
-              {{ $t("我们提供多种服务套餐，满足您的需求，请选择适合您的套餐。") }}
-            </a-typography-text>
-          </a-typography-paragraph>
-          <!-- Products Grid -->
-          <Flex wrap="wrap" :gap="24" justify="center" class="products-grid">
-            <ProductCard
-              v-for="product in products"
-              :key="product.productId"
-              :product="product"
-              @buy="showBuyModal"
-            />
-          </Flex>
-        </Flex>
+        <CompanyHeader
+          :shop-name="settings?.shopName"
+          :shop-description="settings?.shopDescription"
+          :shop-tip="settings?.shopTip"
+          :products="products"
+          @to-login="toLoginPage"
+        />
       </div>
 
       <div class="section">
