@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { LayoutCard } from "@/types/index";
-import { ref, computed, reactive, onMounted } from "vue";
-import type { MapData } from "@/types/index";
-import type { FormInstance } from "ant-design-vue";
-import { BulbOutlined } from "@ant-design/icons-vue";
-import { $t as t } from "@/lang/i18n";
 import { useSelectInstances } from "@/components/fc";
+import { $t as t } from "@/lang/i18n";
+import type { LayoutCard, MapData } from "@/types/index";
+import { BulbOutlined } from "@ant-design/icons-vue";
+import type { FormInstance } from "ant-design-vue";
+import { ref } from "vue";
 
 const open = ref(false);
 const card = ref<LayoutCard>();

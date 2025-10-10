@@ -28,7 +28,7 @@ const DEFAULT_CONFIG = {
   portRangeEnd: 0,
   portAssignInterval: 0,
   daemonPort: 24444,
-  remoteMappings: [] as IPanelOverviewRemoteMappingResponse[],
+  remoteMappings: [] as IPanelOverviewRemoteMappingResponse[]
 };
 
 const SPEED_RATE_OPTIONS = [
@@ -97,7 +97,7 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
       port: data.port, // connection port
       daemonPort: data.config.port, // listen port
       apiKey: "",
-      remoteMappings: data.remoteMappings ?? [],
+      remoteMappings: data.remoteMappings ?? []
     };
   } else {
     editMode.value = false;
@@ -182,7 +182,7 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-input v-model:value="dialog.data.ip" />
-            <a-typography-text type="secondary" v-if="ipNeedsMapping(dialog.data.ip)">
+            <a-typography-text v-if="ipNeedsMapping(dialog.data.ip)" type="secondary">
               {{ t("TXT_CODE_93c3cb78") }}
             </a-typography-text>
           </a-form-item>

@@ -89,19 +89,21 @@ onUnmounted(() => {
       </Flex>
       <div class="products-container"></div>
     </Flex>
-    <a-row :gutter="[16, 16]">
-      <a-col
-        v-for="product in [...(products || []), ...(products || []), ...(products || [])]"
-        :key="product.productId"
-        :xs="24"
-        :sm="12"
-        :md="12"
-        :lg="8"
-        :xl="8"
-      >
-        <ProductCard :product="product" @buy="emit('buy', product)" />
-      </a-col>
-    </a-row>
+    <div>
+      <a-row :gutter="[16, 16]">
+        <a-col
+          v-for="product in [...(products || []), ...(products || []), ...(products || [])]"
+          :key="product.productId"
+          :xs="24"
+          :sm="12"
+          :md="12"
+          :lg="8"
+          :xl="8"
+        >
+          <ProductCard :product="product" @buy="emit('buy', product)" />
+        </a-col>
+      </a-row>
+    </div>
   </Flex>
 
   <!-- 自定义登录弹窗 -->
@@ -137,7 +139,7 @@ onUnmounted(() => {
 
 /* Company header styles */
 .company-header {
-  text-align: center;
+  text-align: left;
   min-height: 500px;
   margin: 0 40px;
 }
@@ -196,7 +198,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--color-mask-bg);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -218,7 +220,7 @@ onUnmounted(() => {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-fill-3);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -227,13 +229,13 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #fff;
+  color: var(--color-text-1);
   font-size: 16px;
   transition: all 0.2s;
   z-index: 1001;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--color-fill-4);
     transform: rotate(90deg);
   }
 }
@@ -293,7 +295,7 @@ onUnmounted(() => {
   .custom-modal-close {
     top: 10px;
     right: 10px;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--color-fill-4);
   }
 }
 </style>

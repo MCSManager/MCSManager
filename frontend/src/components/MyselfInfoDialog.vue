@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import CopyButton from "@/components/CopyButton.vue";
+import { PERMISSION_MAP } from "@/config/const";
 import { t } from "@/lang/i18n";
+import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
-import { reactive, ref } from "vue";
-import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
-import { message } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
-import CopyButton from "@/components/CopyButton.vue";
+import { message } from "ant-design-vue";
+import { reactive, ref } from "vue";
 import { bind2FA } from "../services/apis/user";
-import { PERMISSION_MAP } from "@/config/const";
-import { toCopy } from "@/tools/copy";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
