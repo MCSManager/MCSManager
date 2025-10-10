@@ -412,9 +412,9 @@ onMounted(() => {
         v-for="item in appList"
         :key="item.targetLink + item.title + item.gameType + item.language + item.category"
         :span="24"
-        :xl="item.isSummary ? 8 : 6"
-        :lg="item.isSummary ? 8 : 6"
         :sm="24"
+        :md="12"
+        :lg="item.isSummary ? 8 : 6"
       >
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
           <!-- Top Category Card -->
