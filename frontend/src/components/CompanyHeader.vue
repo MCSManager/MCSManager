@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <script setup lang="ts">
 import { markdownToHTML } from "@/tools/safe";
 import { Flex } from "ant-design-vue";
@@ -21,6 +22,7 @@ defineEmits<Emits>();
 const { t } = useI18n();
 </script>
 
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <Flex vertical :gap="0" justify="center" class="company-header">
     <Flex align="center" justify="space-between" :gap="16" style="flex: 1">

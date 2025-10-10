@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import introductionImage2 from "@/assets/images/introduction-2.png";
+import introductionImage3 from "@/assets/images/introduction-3.png";
+import introductionImage5 from "@/assets/images/introduction-5.png";
 import BuyModal from "@/components/BuyModal.vue";
 import CompanyHeader from "@/components/CompanyHeader.vue";
 import ProductCard from "@/components/ProductCard.vue";
@@ -12,6 +15,14 @@ import { reportErrorMsg } from "@/tools/validator";
 import { Flex } from "ant-design-vue";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+
+const introductionImages = [
+  // introductionImage1,
+  introductionImage2,
+  introductionImage3,
+  // introductionImage4,
+  introductionImage5
+];
 
 const { products, settingState: settings, refreshSettingInfo, fetchProducts } = useShop();
 const { isAdmin } = useAppStateStore();
@@ -143,7 +154,12 @@ onMounted(async () => {
             </a-typography-text>
           </a-typography-paragraph>
 
-          <div></div>
+          <Flex justify="center" align="center" class="images-stack-container">
+            <img
+              :src="introductionImages[2]"
+              style="max-width: 1100px; width: 100%; object-fit: cover"
+            />
+          </Flex>
         </Flex>
       </div>
 
