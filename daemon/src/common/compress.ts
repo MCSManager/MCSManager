@@ -49,7 +49,7 @@ export async function decompress(
   if (!checkFileName(zipPath) || !checkFileName(dest))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
 
-  if (!check7zipStatus()) {
+  const tryUnzip = async () => {
     if (!isZipFormat(zipPath)) {
       const fileExt = getFileExtension(zipPath);
       throw new Error($t("TXT_CODE_69c42450", { fileExt: fileExt }));
@@ -58,7 +58,6 @@ export async function decompress(
     if (isMultiVolume(zipPath)) {
       throw new Error($t("TXT_CODE_91d066aa"));
     }
-
     try {
       return await useUnzip(zipPath, dest, fileCode || "utf-8");
     } catch (error: any) {
@@ -69,8 +68,17 @@ export async function decompress(
         })
       );
     }
+  };
+
+  if (!check7zipStatus()) {
+    try {
+      return await use7zip(zipPath, dest);
+    } catch (error) {
+      // if 7zip is not working, try to use unzip
+      return await tryUnzip();
+    }
   } else {
-    return await use7zip(zipPath, dest);
+    return await tryUnzip();
   }
 }
 
@@ -86,16 +94,10 @@ async function use7zip(sourceZip: string, destDir: string): Promise<boolean> {
     let command: string;
     let workingDir: string;
 
-    // if (normalizedDest === normalizedSource) {
-    //   command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" -aoa`;
-    //   workingDir = sourceDir;
-    //   logger.info($t("TXT_CODE_fe2435a0", { command }));
-    // } else {
     await fs.ensureDir(destDir);
     command = `"${SEVEN_ZIP_PATH}" x "${sourceZip}" "-o${destDir}" -aoa`;
     workingDir = sourceDir;
     logger.info($t("TXT_CODE_35d2ee7a", { command }));
-    // }
 
     const { stdout, stderr } = await execPromise(command, {
       cwd: workingDir,

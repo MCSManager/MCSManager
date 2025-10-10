@@ -1,11 +1,11 @@
-import { $t, i18next } from "../i18n";
-import path from "path";
 import fs from "fs-extra";
-import { compress, decompress } from "../common/compress";
 import iconv from "iconv-lite";
-import { globalConfiguration } from "../entity/config";
 import { ProcessWrapper } from "mcsmanager-common";
 import os from "os";
+import path from "path";
+import { compress, decompress } from "../common/compress";
+import { globalConfiguration } from "../entity/config";
+import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
@@ -22,10 +22,7 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(
-    public topPath: string = "",
-    public fileCode?: string
-  ) {
+  constructor(public topPath: string = "", public fileCode?: string) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -86,43 +83,60 @@ export default class FileManager {
     this.cwd = normalizedJoin(this.cwd, dirName);
   }
 
-  list(page: 0, pageSize = 40, searchFileName?: string) {
+  async list(page: 0, pageSize = 40, searchFileName?: string) {
     if (pageSize > 100 || pageSize <= 0 || page < 0) throw new Error("Beyond the value limit");
-    let fileNames = fs.readdirSync(this.toAbsolutePath());
-    if (searchFileName)
-      fileNames = fileNames.filter((name) =>
-        name.toLowerCase().includes(searchFileName.toLowerCase())
-      );
 
-    const total = fileNames.length;
+    // Use withFileTypes option to get file type directly, reducing stat calls
+    const dirents = await fs.readdir(this.toAbsolutePath(), { withFileTypes: true });
+
+    // Filter search results and create basic file info with type
+    let filteredItems = dirents
+      .filter(
+        (dirent) =>
+          !searchFileName || dirent.name.toLowerCase().includes(searchFileName.toLowerCase())
+      )
+      .map((dirent) => ({
+        name: dirent.name,
+        type: dirent.isFile() ? 1 : 0
+      }));
+
+    const total = filteredItems.length;
+
+    // Sort: directories first (type 0), then files (type 1), both alphabetically
+    filteredItems.sort((a, b) => {
+      if (a.type !== b.type) return a.type - b.type;
+      return a.name.localeCompare(b.name);
+    });
+
     const sliceStart = page * pageSize;
     const sliceEnd = sliceStart + pageSize;
-    const files: IFile[] = [];
-    const dirs: IFile[] = [];
-    fileNames.forEach((name) => {
+    const targetItems = filteredItems.slice(sliceStart, sliceEnd);
+
+    const statPromises = targetItems.map(async (item) => {
       try {
-        const info = fs.statSync(this.toAbsolutePath(name));
+        const info = await fs.stat(this.toAbsolutePath(item.name));
         const mode = parseInt(String(parseInt(info.mode?.toString(8), 10)).slice(-3));
-        const commonInfo = {
-          name: name,
-          size: info.size,
+        return {
+          name: item.name,
+          size: info.isFile() ? info.size : 0,
           time: info.atime.toString(),
           mode,
-          type: info.isFile() ? 1 : 0
+          type: item.type
         };
-        if (info.isFile()) {
-          files.push(commonInfo);
-        } else {
-          dirs.push(commonInfo);
-        }
       } catch (error: any) {
-        // Ignore a file information retrieval error to prevent an overall error
+        return {
+          name: item.name,
+          size: 0,
+          time: new Date().toString(),
+          mode: 0,
+          type: item.type
+        };
       }
     });
-    files.sort((a, b) => (a.name > b.name ? 1 : -1));
-    dirs.sort((a, b) => (a.name > b.name ? 1 : -1));
-    let resultList = dirs.concat(files);
-    resultList = resultList.slice(sliceStart, sliceEnd);
+
+    // Execute all stat operations concurrently
+    const resultList = await Promise.all(statPromises);
+
     return {
       items: resultList,
       page,
