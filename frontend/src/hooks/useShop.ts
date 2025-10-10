@@ -1,11 +1,11 @@
-import { setSettingInfo, settingInfo } from "@/services/apis";
+import { publicSettingInfo, setSettingInfo } from "@/services/apis";
 import { requestProducts } from "@/services/apis/redeem";
 import type { Settings } from "@/types";
 import { ref } from "vue";
 
 export function useShop() {
   const { execute: updateSettingInfo } = setSettingInfo();
-  const { execute: refreshSettingInfo, state: settingState } = settingInfo();
+  const { execute: refreshSettingInfo, state: settingState } = publicSettingInfo();
   const { execute: fetchProducts, state: products, isLoading, isReady } = requestProducts();
 
   const companyInfo = ref({
