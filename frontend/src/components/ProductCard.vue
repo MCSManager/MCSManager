@@ -66,7 +66,6 @@ const { t } = useI18n();
 
 <style scoped lang="scss">
 .product-card {
-  // width: 320px;
   width: 100%;
   text-align: left;
   border-radius: 10px;

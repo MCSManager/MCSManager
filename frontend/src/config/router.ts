@@ -1,10 +1,10 @@
 import { $t as t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LoginUserInfo } from "@/types/user";
-import Business from "@/views/Business.vue";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
+import Business from "@/views/shop/index.vue";
 import type { CSSProperties } from "vue";
 import {
   createRouter,

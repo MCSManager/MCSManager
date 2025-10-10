@@ -3,7 +3,6 @@ import introductionImage2 from "@/assets/images/introduction-2.png";
 import introductionImage3 from "@/assets/images/introduction-3.png";
 import introductionImage5 from "@/assets/images/introduction-5.png";
 import BuyModal from "@/components/BuyModal.vue";
-import CompanyHeader from "@/components/CompanyHeader.vue";
 import SuccessModal from "@/components/SuccessModal.vue";
 import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
@@ -14,6 +13,7 @@ import { reportErrorMsg } from "@/tools/validator";
 import { Flex } from "ant-design-vue";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import IndexHeader from "./header.vue";
 
 const introductionImages = [
   // introductionImage1,
@@ -115,14 +115,14 @@ onMounted(async () => {
       <ShopInfoUpdateDialog />
     </div>
     <Flex vertical :gap="0" class="business-container">
-      <!-- Company header section -->
       <div class="section">
-        <CompanyHeader
+        <IndexHeader
           :shop-name="settings?.shopName"
           :shop-description="settings?.shopDescription"
           :shop-tip="settings?.shopTip"
           :products="products"
           @to-login="toLoginPage"
+          @buy="showBuyModal"
         />
       </div>
 

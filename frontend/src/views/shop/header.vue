@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <script setup lang="ts">
+import ProductCard from "@/components/ProductCard.vue";
 import type { FrontProductInfo } from "@/services/apis/redeem";
 import { markdownToHTML } from "@/tools/safe";
 import LoginCard from "@/widgets/LoginCard.vue";
@@ -7,7 +8,6 @@ import { CloseOutlined } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import ProductCard from "./ProductCard.vue";
 
 interface Props {
   shopName?: string;
@@ -19,6 +19,7 @@ interface Props {
 defineProps<Props>();
 const emit = defineEmits<{
   toLogin: [];
+  buy: [FrontProductInfo];
 }>();
 
 const { t } = useI18n();
@@ -98,7 +99,7 @@ onUnmounted(() => {
         :lg="8"
         :xl="8"
       >
-        <ProductCard :product="product" />
+        <ProductCard :product="product" @buy="emit('buy', product)" />
       </a-col>
     </a-row>
   </Flex>
