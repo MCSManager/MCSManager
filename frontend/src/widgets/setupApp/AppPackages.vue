@@ -117,6 +117,13 @@ const getSummaryPackages = (
       if (!map.has(item.gameType)) {
         const summary: QuickStartPackages = {
           ...item,
+          key:
+            item.title +
+            item.language +
+            item.platform +
+            item.gameType +
+            item.targetLink +
+            item.category,
           description: "",
           title: item.gameType,
           category: "",
@@ -410,7 +417,7 @@ onMounted(() => {
     <fade-up-animation>
       <a-col
         v-for="item in appList"
-        :key="item.targetLink + item.title + item.gameType + item.language + item.category"
+        :key="item.key"
         :span="24"
         :sm="24"
         :md="12"
