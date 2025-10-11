@@ -3,6 +3,7 @@ import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { isCN, t } from "@/lang/i18n";
 import { dockerPortsArray } from "@/tools/common";
+import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages } from "@/types";
 import { TERMINAL_CODE } from "@/types/const";
 import { PlusOutlined } from "@ant-design/icons-vue";
@@ -186,6 +187,8 @@ const props = defineProps<{
       message.success(editMode.value ? t("TXT_CODE_a7907771") : t("TXT_CODE_d28c05df"));
       emits("ok", _.cloneDeep(formData.value), index.value);
       cancel();
+    } catch (err) {
+      reportErrorMsg(err);
     } finally {
       loading.value = false;
     }

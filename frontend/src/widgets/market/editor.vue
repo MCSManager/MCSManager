@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import { isCN, t } from "@/lang/i18n";
-import type { QuickStartPackages, QuickStartTemplate } from "@/types";
+import { t } from "@/lang/i18n";
+import type { QuickStartPackages } from "@/types";
 import {
   CopyOutlined,
   DatabaseOutlined,
@@ -13,223 +13,33 @@ import {
   SelectOutlined
 } from "@ant-design/icons-vue";
 import { Flex, message } from "ant-design-vue";
-import axios from "axios";
-import { computed, onMounted, reactive, ref } from "vue";
-
+import { onMounted, ref } from "vue";
 // import { toCopy } from '@/utils'
 import Loading from "@/components/Loading.vue";
 import { router } from "@/config/router";
+import { useMarketPackages } from "@/hooks/useMarketPackages";
 import Editor from "./dialogs/info.vue";
 
 const url = router.currentRoute.value.query.url as string;
 const isUserUpload = Boolean(router.currentRoute.value.query.userUpload as string);
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
 
-const appList = ref<QuickStartTemplate>();
-const appListLoading = ref(false);
-const fetchTemplate = async () => {
-  if (!url) return;
-
-  try {
-    appListLoading.value = true;
-    const { data } = await axios.get(url);
-    appList.value = data.data;
-  } catch (error) {
-    message.error(t("TXT_CODE_aa13fde2") + `${error}`);
-  } finally {
-    appListLoading.value = false;
-  }
-};
-
-const SEARCH_ALL_KEY = "ALL";
-const searchForm = reactive({
-  language: isCN() ? "zh_cn" : "en_us",
-  category: SEARCH_ALL_KEY,
-  gameType: SEARCH_ALL_KEY,
-  platform: SEARCH_ALL_KEY
-});
-
-interface FilterOption {
-  label: string;
-  value: string;
-}
-
-const matchesFilterCondition = (
-  item: QuickStartPackages,
-  field: keyof QuickStartPackages,
-  filterValue: string
-): boolean => {
-  return filterValue === SEARCH_ALL_KEY || item[field] === filterValue;
-};
-
-const matchesLanguageFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "language", searchForm.language);
-};
-
-const matchesGameTypeFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "gameType", searchForm.gameType);
-};
-
-const matchesCategoryFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "category", searchForm.category);
-};
-
-const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "platform", searchForm.platform);
-};
-
-const getFilteredPackages = (
-  // eslint-disable-next-line no-unused-vars
-  additionalFilters?: (item: QuickStartPackages) => boolean
-): QuickStartPackages[] => {
-  if (!appList.value?.packages) {
-    return [];
-  }
-
-  return appList.value.packages.filter((item) => {
-    // if (props.onlyDockerTemplate && !item.setupInfo?.docker) {
-    //   return false;
-    // }
-
-    // Apply base filters (language, game type, category, platform)
-    const baseFilters = [
-      matchesLanguageFilter(item),
-      matchesGameTypeFilter(item),
-      matchesCategoryFilter(item),
-      matchesPlatformFilter(item)
-    ];
-
-    // Combine base filters with additional custom filters if provided
-    const allFilters = additionalFilters ? [additionalFilters(item)] : baseFilters;
-    return allFilters.every((filter) => filter);
-  });
-};
-
-const getSummaryPackages = (
-  // eslint-disable-next-line no-unused-vars
-  additionalFilters?: (item: QuickStartPackages) => boolean
-): QuickStartPackages[] => {
-  let filteredPackages = getFilteredPackages(additionalFilters);
-  if (searchForm.gameType == SEARCH_ALL_KEY) {
-    const map = new Map<string, QuickStartPackages>();
-    filteredPackages.forEach((item) => {
-      if (!map.has(item.gameType)) {
-        const summary: QuickStartPackages = {
-          ...item,
-          key:
-            item.title +
-            item.language +
-            item.platform +
-            item.gameType +
-            item.targetLink +
-            item.category,
-          description: "",
-          title: item.gameType,
-          category: "",
-          runtime: "",
-          size: "",
-          hardware: "",
-          remark: "",
-          targetLink: undefined,
-          author: "",
-          setupInfo: undefined,
-          tags: undefined,
-          isSummary: true
-        };
-        map.set(item.gameType, summary);
-      } else {
-        const existing = map.get(item.gameType);
-        if (existing) {
-          if (existing.platform != item.platform) {
-            existing.platform = "All";
-          }
-        }
-      }
-    });
-    filteredPackages = Array.from(map.values());
-  }
-  return filteredPackages;
-};
-
-const generateOptionsList = (
-  items: QuickStartPackages[],
-  field: keyof QuickStartPackages,
-  allLabel: string,
-  // eslint-disable-next-line no-unused-vars
-  additionalFilter?: (item: QuickStartPackages) => boolean
-): FilterOption[] => {
-  const valueMap: Record<string, string> = {};
-
-  // Apply additional filter if provided, otherwise use all items
-  const filteredItems = additionalFilter ? items.filter(additionalFilter) : items;
-
-  // Build unique value map from filtered items
-  filteredItems.forEach((item) => {
-    const value = item[field] as string;
-    if (!valueMap[value]) {
-      valueMap[value] = value;
-    }
-  });
-
-  // Add "ALL" option to the map
-  valueMap[SEARCH_ALL_KEY] = allLabel;
-
-  // Convert map to array of FilterOption objects
-  return Object.keys(valueMap).map((key) => ({
-    label: valueMap[key] || "",
-    value: key
-  }));
-};
-
-const dynamicList = computed(() => getSummaryPackages());
-
-const appLangList = computed(() => {
-  const languageOptions: FilterOption[] =
-    appList.value?.languages instanceof Array ? appList.value.languages : [];
-
-  return [...languageOptions];
-});
-
-const appGameTypeList = computed(() => {
-  const packages = getFilteredPackages(matchesLanguageFilter);
-  return generateOptionsList(packages, "gameType", t("TXT_CODE_107695d"));
-});
-
-const appCategoryList = computed(() => {
-  const packages = getFilteredPackages(
-    (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
-  );
-  return generateOptionsList(packages, "category", t("TXT_CODE_2af87548"));
-});
-
-const appPlatformList = computed(() => {
-  const packages = getFilteredPackages(
-    (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
-  );
-  return generateOptionsList(packages, "platform", t("TXT_CODE_47203b64"));
-});
-
-const handleReset = () => {
-  searchForm.language = isCN() ? "zh_cn" : "en_us";
-  searchForm.gameType = SEARCH_ALL_KEY;
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handleGameTypeChange = () => {
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handleLanguageChange = () => {
-  searchForm.gameType = SEARCH_ALL_KEY;
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handlePlatformChange = () => {
-  searchForm.category = SEARCH_ALL_KEY;
-};
+const {
+  searchForm,
+  packages,
+  appListLoading,
+  filteredList: appList,
+  languageOptions: appLangList,
+  gameTypeOptions: appGameTypeList,
+  categoryOptions: appCategoryList,
+  platformOptions: appPlatformList,
+  handleReset,
+  handleGameTypeChange,
+  handleLanguageChange,
+  handlePlatformChange,
+  handleSelectTopCategory,
+  fetchTemplate
+} = useMarketPackages();
 
 const downloadMarketJson = () => {
   if (!appList.value) return message.warning(t("TXT_CODE_8e223f23"));
@@ -255,17 +65,16 @@ const findFn = (pkg: QuickStartPackages, item: QuickStartPackages) =>
   pkg.category === item.category;
 const editorRef = ref<InstanceType<typeof Editor>>();
 const toEdit = (item: QuickStartPackages) => {
-  const actualIndex = appList.value?.packages.findIndex((pkg) => findFn(pkg, item));
+  const actualIndex = packages.value.findIndex((pkg) => findFn(pkg, item));
   editorRef?.value?.open(item, actualIndex);
 };
 
 const save = (item: QuickStartPackages, i: number) => {
-  if (!appList.value?.packages) return;
-  // 如果 i < 0 表示新
+  if (!packages.value) return;
   if (i < 0) {
-    appList.value.packages.push(item);
+    packages.value.push(item);
   } else {
-    appList.value.packages[i] = item;
+    packages.value[i] = item;
   }
 };
 
@@ -295,10 +104,10 @@ const handleSelectItem = (item: QuickStartPackages) => {
 };
 
 const selectAllItems = () => {
-  if (dynamicList.value.length === selectedItems.value.length) {
+  if (appList.value.length === selectedItems.value.length) {
     selectedItems.value = [];
   } else {
-    for (const item of dynamicList.value) {
+    for (const item of appList.value) {
       if (item.isSummary) continue;
       if (findItem(item)) continue;
       selectedItems.value.push(item);
@@ -314,9 +123,9 @@ const exitMultipleMode = () => {
 const batchDelete = () => {
   if (selectedItems.value.length === 0) return message.warning(t("TXT_CODE_72952e19"));
   for (const item of selectedItems.value) {
-    const index = appList.value?.packages.findIndex((pkg) => findFn(pkg, item));
+    const index = packages.value.findIndex((pkg) => findFn(pkg, item));
     if (Number(index) < 0) continue;
-    appList.value?.packages.splice(Number(index), 1);
+    packages.value.splice(Number(index), 1);
   }
   selectedItems.value = [];
   message.success(t("TXT_CODE_28190dbc"));
@@ -326,19 +135,17 @@ onMounted(() => {
   if (isUserUpload) {
     // appList.value = userUploadData.value;
   } else if (isNewTemplate) {
-    appList.value = {
-      packages: [],
-      languages: [
-        {
-          label: "简体中文",
-          value: "zh_cn"
-        },
-        {
-          label: "English",
-          value: "en_us"
-        }
-      ]
-    };
+    packages.value = [];
+    appLangList.value = [
+      {
+        label: "简体中文",
+        value: "zh_cn"
+      },
+      {
+        label: "English",
+        value: "en_us"
+      }
+    ];
   } else {
     fetchTemplate();
   }
@@ -390,7 +197,7 @@ onMounted(() => {
         <a-form-item class="mb-0">
           <a-button class="btn-has-icon" type="default" size="large" @click="selectAllItems">
             {{
-              dynamicList.length === selectedItems.length
+              appList.length === selectedItems.length
                 ? t("TXT_CODE_df87c46d")
                 : t("TXT_CODE_f466d7a")
             }}
@@ -542,7 +349,7 @@ onMounted(() => {
     </a-col>
 
     <!-- Empty state - shown when no packages match current filters -->
-    <a-col v-if="dynamicList.length === 0" :span="24">
+    <a-col v-if="appList.length === 0" :span="24">
       <div style="display: flex; justify-content: center; align-items: center; height: 40vh">
         <a-typography-paragraph :style="{ color: 'var(--color-gray-7)' }">
           {{ t("TXT_CODE_7356e569") }}
@@ -553,7 +360,7 @@ onMounted(() => {
     <!-- Package cards grid with fade-up animation -->
     <fade-up-animation>
       <a-col
-        v-for="item in dynamicList"
+        v-for="item in appList"
         :key="item.key"
         :span="24"
         :sm="24"
@@ -566,7 +373,7 @@ onMounted(() => {
             v-if="item.isSummary"
             class="package-image-container-summary global-card-container-shadow"
             style="overflow: hidden"
-            @click="searchForm.gameType = item.gameType"
+            @click="handleSelectTopCategory(item)"
           >
             <div class="package-image-container" style="border-radius: 0">
               <img
@@ -578,7 +385,7 @@ onMounted(() => {
               />
             </div>
 
-            <a-typography-title :level="5" class="flex-center package-subtitle">
+            <a-typography-title :level="5" class="flex-center package-subtitle mb-0">
               <span>
                 {{ item.title }}
               </span>
@@ -671,123 +478,3 @@ onMounted(() => {
     @ok="save"
   />
 </template>
-
-<style scoped lang="scss">
-.package-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: space-between;
-  height: 100%;
-  transition: all 0.3s ease;
-}
-
-.package-image-container {
-  overflow: hidden;
-  border-radius: 8px;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.package-image {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  height: 160px;
-  transition: transform 0.3s ease;
-  background-color: var(--color-gray-1);
-}
-
-.package-info {
-  flex: 1;
-}
-
-.package-action {
-  display: flex;
-  justify-content: center;
-}
-
-.download-button {
-  margin: 0px auto;
-  transition: all 0.3s ease;
-  max-width: 140px;
-}
-
-.package-image {
-  user-drag: none;
-  user-select: none;
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.package-image::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent, rgba(24, 144, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.package-image:hover {
-  transform: scale(1.08) rotate(2deg);
-  filter: brightness(1.1) contrast(1.1);
-}
-
-.package-image:hover::after {
-  opacity: 1;
-}
-
-.ant-card:hover .download-button {
-  transform: scale(1.08);
-  box-shadow:
-    0 8px 20px rgba(24, 144, 255, 0.4),
-    0 0 15px rgba(24, 144, 255, 0.2);
-  background: linear-gradient(45deg, #1890ff, #40a9ff);
-  border: none;
-  animation: pulse-glow 2s infinite;
-}
-
-.package-subtitle {
-  cursor: pointer;
-  background-color: var(--card-bottom-background-color);
-  color: rgb(255, 255, 255);
-  padding: 8px;
-  font-size: 14px;
-  font-weight: 400;
-  // border-bottom-left-radius: 6px;
-  // border-bottom-right-radius: 6px;
-  border-radius: 0 !important;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 1;
-  margin: 0;
-}
-
-.package-image-container-summary {
-  position: relative;
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 8px 20px rgba(24, 144, 255, 0.4),
-      0 0 15px rgba(24, 144, 255, 0.2);
-  }
-  50% {
-    box-shadow:
-      0 8px 25px rgba(24, 144, 255, 0.6),
-      0 0 25px rgba(24, 144, 255, 0.4);
-  }
-}
-</style>
