@@ -172,7 +172,16 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
 
   // Computed properties
   const filteredList = computed(() => getSummaryPackages());
-  const languageOptions = ref<FilterOption[]>([]);
+  const languageOptions = ref<FilterOption[]>([
+    {
+      label: "简体中文",
+      value: "zh_cn"
+    },
+    {
+      label: "English",
+      value: "en_us"
+    }
+  ]);
 
   const rawList = computed(() => ({
     languages: languageOptions.value,

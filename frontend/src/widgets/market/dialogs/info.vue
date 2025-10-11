@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
+import { useMarketPackages } from "@/hooks/useMarketPackages";
 import { isCN, t } from "@/lang/i18n";
 import { dockerPortsArray } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
@@ -27,6 +28,7 @@ const props = defineProps<{
   loading = ref(false),
   editMode = ref<boolean>(true),
   activeKey = ref("1"),
+  { languageOptions } = useMarketPackages(),
   defaultFormData: QuickStartPackages = {
     language: "",
     description: "",
@@ -84,7 +86,6 @@ const props = defineProps<{
         {
           required: false,
           validator: async (_rule: Rule, value: string) => {
-            // if (value === '') throw new Error(t('TXT_CODE_4e810102'))
             if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
           },
           trigger: "change"
@@ -275,9 +276,8 @@ defineExpose({
                     <a-select
                       v-model:value="formData.language"
                       :placeholder="t('TXT_CODE_60752a40')"
+                      :options="languageOptions"
                     >
-                      <a-select-option value="zh_cn">简体中文</a-select-option>
-                      <a-select-option value="en_us">English</a-select-option>
                     </a-select>
                   </a-form-item>
                 </a-col>

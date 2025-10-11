@@ -13,6 +13,7 @@ import {
   DownloadOutlined,
   DownOutlined,
   EditOutlined,
+  InboxOutlined,
   PlusOutlined,
   SelectOutlined,
   UploadOutlined
@@ -62,16 +63,21 @@ const beforeUpload: UploadProps["beforeUpload"] = (file) => {
   return false;
 };
 
-const importFromClipboard = () => {
-  navigator.clipboard.readText().then((text) => {
-    try {
-      const jsonData = JSON.parse(text) as QuickStartTemplate;
-      packages.value = jsonData.packages || [];
-      appLangList.value = jsonData.languages || [];
-    } catch {
+const importFromClipboard = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    const jsonData = JSON.parse(text) as QuickStartTemplate;
+    packages.value = jsonData.packages || [];
+    appLangList.value = jsonData.languages || [];
+  } catch (err: any) {
+    if (err instanceof SyntaxError) {
       message.error(t("TXT_CODE_bddc37e2"));
+    } else if (err.name === "NotAllowedError") {
+      message.error(t("无剪切板权限，请检查您的浏览器设置"));
+    } else {
+      message.error(err.message);
     }
-  });
+  }
 };
 
 const downloadMarketJson = () => {
@@ -167,16 +173,6 @@ const batchDelete = () => {
 onMounted(() => {
   if (isNewTemplate) {
     packages.value = [];
-    appLangList.value = [
-      {
-        label: "简体中文",
-        value: "zh_cn"
-      },
-      {
-        label: "English",
-        value: "en_us"
-      }
-    ];
   } else {
     fetchTemplate();
   }
@@ -184,7 +180,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-typography-title :level="4" style="margin-bottom: 8px">
+  <a-typography-title :level="4" class="mb-8">
     <EditOutlined />
     {{ t("TXT_CODE_dfd4fc5a") }}
   </a-typography-title>
@@ -251,7 +247,7 @@ onMounted(() => {
         <a-form-item class="mb-0">
           <a-button class="btn-has-icon" type="default" size="large" @click="selectAllItems">
             {{
-              appList.length === selectedItems.length
+              appList.length !== 0 && appList.length === selectedItems.length
                 ? t("TXT_CODE_df87c46d")
                 : t("TXT_CODE_f466d7a")
             }}
@@ -404,10 +400,30 @@ onMounted(() => {
 
     <!-- Empty state - shown when no packages match current filters -->
     <a-col v-if="appList.length === 0" :span="24">
-      <div style="display: flex; justify-content: center; align-items: center; height: 40vh">
-        <a-typography-paragraph :style="{ color: 'var(--color-gray-7)' }">
+      <div class="flex-center flex-col my-50 m-auto" style="width: 40svw">
+        <a-typography-paragraph style="color: var(--color-gray-7)">
           {{ t("TXT_CODE_7356e569") }}
         </a-typography-paragraph>
+        <template v-if="packages.length === 0">
+          <a-upload-dragger
+            v-model:fileList="fileList"
+            class="w-full"
+            accept=".json"
+            :max-count="1"
+            :before-upload="beforeUpload"
+            :show-upload-list="false"
+          >
+            <div class="flex-center flex-col h-full">
+              <p class="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p class="ant-upload-text">{{ t("TXT_CODE_8e16ee21") }}</p>
+              <p class="ant-upload-hint">
+                {{ t("TXT_CODE_e1c60611") }}
+              </p>
+            </div>
+          </a-upload-dragger>
+        </template>
       </div>
     </a-col>
 
