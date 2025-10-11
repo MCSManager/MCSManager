@@ -19,7 +19,7 @@ import { computed, onMounted, reactive, ref } from "vue";
 // import { toCopy } from '@/utils'
 import Loading from "@/components/Loading.vue";
 import { router } from "@/config/router";
-import Editor from "./MarketEditorDialog.vue";
+import Editor from "./dialogs/info.vue";
 
 const url = router.currentRoute.value.query.url as string;
 const isUserUpload = Boolean(router.currentRoute.value.query.userUpload as string);
