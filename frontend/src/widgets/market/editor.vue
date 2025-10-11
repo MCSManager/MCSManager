@@ -4,7 +4,10 @@ import Loading from "@/components/Loading.vue";
 import { router } from "@/config/router";
 import { useMarketPackages } from "@/hooks/useMarketPackages";
 import { t } from "@/lang/i18n";
+import { setSettingInfo } from "@/services/apis";
+import { uploadFile } from "@/services/apis/layout";
 import { toCopy } from "@/tools/copy";
+import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
   CopyOutlined,
@@ -13,13 +16,14 @@ import {
   DownloadOutlined,
   DownOutlined,
   EditOutlined,
+  ExclamationCircleOutlined,
   InboxOutlined,
   PlusOutlined,
   SelectOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import { Flex, message, type UploadProps } from "ant-design-vue";
-import { onMounted, ref } from "vue";
+import { Flex, message, Modal, type UploadProps } from "ant-design-vue";
+import { h, onMounted, ref } from "vue";
 import Editor from "./dialogs/info.vue";
 
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
@@ -170,6 +174,47 @@ const batchDelete = () => {
   message.success(t("TXT_CODE_28190dbc"));
 };
 
+const { execute: execUpload, state: fileName } = uploadFile();
+const { execute: saveSettings } = setSettingInfo();
+const uploadToPanel = async () => {
+  if (!packages.value.length) {
+    const confirmPromise = new Promise<boolean>((resolve) => {
+      Modal.confirm({
+        title: t("警告"),
+        icon: h(ExclamationCircleOutlined),
+        content: t("当前模板内容为空，是否继续保存？"),
+        okText: t("确定"),
+        cancelText: t("取消"),
+        onOk() {
+          resolve(true);
+        },
+        onCancel() {
+          resolve(false);
+        }
+      });
+    });
+    if (!(await confirmPromise)) return;
+  }
+  const uploadFormData = new FormData();
+  const dataStr = JSON.stringify(rawList.value, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  uploadFormData.append("file", blob);
+  try {
+    await execUpload({
+      data: uploadFormData,
+      timeout: Number.MAX_SAFE_INTEGER
+    });
+    await saveSettings({
+      data: {
+        presetPackAddr: `public/upload_files/${fileName.value}`
+      }
+    });
+    message.success(t("TXT_CODE_a7907771"));
+  } catch (err: any) {
+    reportErrorMsg(err);
+  }
+};
+
 onMounted(() => {
   if (isNewTemplate) {
     packages.value = [];
@@ -192,14 +237,21 @@ onMounted(() => {
   <a-form layout="horizontal" class="flex-wrap justify-between">
     <div class="flex-wrap gap-10">
       <a-form-item class="mb-0">
-        <a-button type="primary" size="large" @click="toCopy(JSON.stringify(rawList))">
+        <a-button type="primary" @click="uploadToPanel">
+          {{ t("保存到面板") }}
+          <CopyOutlined />
+        </a-button>
+      </a-form-item>
+
+      <a-form-item class="mb-0">
+        <a-button @click="toCopy(JSON.stringify(rawList))">
           {{ t("TXT_CODE_29efd001") }}
           <CopyOutlined />
         </a-button>
       </a-form-item>
 
       <a-form-item class="mb-0">
-        <a-button class="button-color-success" size="large" @click="downloadMarketJson">
+        <a-button class="button-color-success" @click="downloadMarketJson">
           {{ t("TXT_CODE_c5a46eba") }}
           <DownloadOutlined />
         </a-button>
