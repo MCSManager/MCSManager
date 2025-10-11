@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { t } from "@/lang/i18n";
-import type { QuickStartPackages } from "@/types";
+import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
   CopyOutlined,
   DatabaseOutlined,
@@ -10,9 +10,10 @@ import {
   DownOutlined,
   EditOutlined,
   PlusOutlined,
-  SelectOutlined
+  SelectOutlined,
+  UploadOutlined
 } from "@ant-design/icons-vue";
-import { Flex, message } from "ant-design-vue";
+import { Flex, message, type UploadProps } from "ant-design-vue";
 import { onMounted, ref } from "vue";
 // import { toCopy } from '@/utils'
 import Loading from "@/components/Loading.vue";
@@ -20,8 +21,6 @@ import { router } from "@/config/router";
 import { useMarketPackages } from "@/hooks/useMarketPackages";
 import Editor from "./dialogs/info.vue";
 
-const url = router.currentRoute.value.query.url as string;
-const isUserUpload = Boolean(router.currentRoute.value.query.userUpload as string);
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
 
 const {
@@ -29,6 +28,7 @@ const {
   packages,
   appListLoading,
   filteredList: appList,
+  rawList,
   languageOptions: appLangList,
   gameTypeOptions: appGameTypeList,
   categoryOptions: appCategoryList,
@@ -41,9 +41,42 @@ const {
   fetchTemplate
 } = useMarketPackages();
 
+const fileList = ref<any>([]);
+const beforeUpload: UploadProps["beforeUpload"] = (file) => {
+  const reader = new FileReader();
+
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    if (!e.target || !e.target.result) return message.error(t("TXT_CODE_a62886b9"));
+    if (typeof e.target.result !== "string") return message.error(t("TXT_CODE_bddc37e2"));
+    const fileContent = e.target.result;
+    try {
+      const jsonData = JSON.parse(fileContent) as QuickStartTemplate;
+      packages.value = jsonData.packages || [];
+      appLangList.value = jsonData.languages || [];
+    } catch {
+      message.error(t("TXT_CODE_bddc37e2"));
+    }
+  };
+  reader.onerror = () => message.error(t("TXT_CODE_a62886b9"));
+  reader.readAsText(file);
+  return false;
+};
+
+const importFromClipboard = () => {
+  navigator.clipboard.readText().then((text) => {
+    try {
+      const jsonData = JSON.parse(text) as QuickStartTemplate;
+      packages.value = jsonData.packages || [];
+      appLangList.value = jsonData.languages || [];
+    } catch {
+      message.error(t("TXT_CODE_bddc37e2"));
+    }
+  });
+};
+
 const downloadMarketJson = () => {
-  if (!appList.value) return message.warning(t("TXT_CODE_8e223f23"));
-  const dataStr = JSON.stringify(appList.value, null, 2);
+  if (!packages.value.length) return message.warning(t("TXT_CODE_8e223f23"));
+  const dataStr = JSON.stringify(rawList.value, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -132,9 +165,7 @@ const batchDelete = () => {
 };
 
 onMounted(() => {
-  if (isUserUpload) {
-    // appList.value = userUploadData.value;
-  } else if (isNewTemplate) {
+  if (isNewTemplate) {
     packages.value = [];
     appLangList.value = [
       {
@@ -178,6 +209,29 @@ onMounted(() => {
           <DownloadOutlined />
         </a-button>
       </a-form-item>
+
+      <template v-if="isNewTemplate && !packages.length">
+        <a-form-item class="mb-0">
+          <a-upload
+            v-model:file-list="fileList"
+            accept=".json"
+            :max-count="1"
+            :before-upload="beforeUpload"
+          >
+            <a-button class="button-color-warning" size="large" type="default">
+              {{ t("从文件导入") }}
+              <UploadOutlined />
+            </a-button>
+          </a-upload>
+        </a-form-item>
+
+        <a-form-item class="mb-0">
+          <a-button size="large" @click="importFromClipboard">
+            {{ t("从剪切板导入") }}
+            <DownloadOutlined />
+          </a-button>
+        </a-form-item>
+      </template>
     </div>
 
     <div class="flex-center gap-10">

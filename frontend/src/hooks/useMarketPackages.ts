@@ -172,8 +172,12 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
 
   // Computed properties
   const filteredList = computed(() => getSummaryPackages());
-
   const languageOptions = ref<FilterOption[]>([]);
+
+  const rawList = computed(() => ({
+    languages: languageOptions.value,
+    packages: packages.value
+  }));
 
   const gameTypeOptions = computed(() => {
     const packages = getFilteredPackages(matchesLanguageFilter);
@@ -221,14 +225,10 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
     searchForm.gameType = item.gameType;
   };
 
-  const {
-    state: list,
-    execute: getQuickInstallListAddr,
-    isLoading: appListLoading
-  } = quickInstallListAddr();
+  const { execute: getQuickInstallListAddr, isLoading: appListLoading } = quickInstallListAddr();
   const fetchTemplate = async () => {
     try {
-      await getQuickInstallListAddr();
+      const list = await getQuickInstallListAddr();
       languageOptions.value = list.value?.languages || [];
       packages.value = list.value?.packages || [];
       if (!list.value?.packages || list.value?.packages.length === 0) {
@@ -263,6 +263,7 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
 
     // Computed properties
     filteredList,
+    rawList,
     languageOptions,
     gameTypeOptions,
     categoryOptions,

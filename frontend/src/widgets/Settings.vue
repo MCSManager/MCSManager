@@ -218,6 +218,22 @@ const startDesignUI = async () => {
 
 const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
 
+const toTemplate = {
+  path: "/market/editor",
+  new: () =>
+    router.push({
+      path: toTemplate.path,
+      query: {
+        newTemplate: "true"
+      }
+    }),
+  edit: () =>
+    router.push({
+      path: toTemplate.path,
+      query: {}
+    })
+};
+
 onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
@@ -298,8 +314,12 @@ onUnmounted(() => {
                       style="max-width: 320px"
                     />
 
-                    <a-button class="mx-8">{{ t("编辑该模板") }}</a-button>
-                    <a-button>{{ t("新建空白模板") }}</a-button>
+                    <a-button class="mx-8" @click="toTemplate.edit">
+                      {{ t("TXT_CODE_921206fc") }}
+                    </a-button>
+                    <a-button @click="toTemplate.new">
+                      {{ t("新建空白模板") }}
+                    </a-button>
                   </a-form-item>
 
                   <a-form-item>
