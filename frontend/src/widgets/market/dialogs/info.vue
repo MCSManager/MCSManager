@@ -328,7 +328,6 @@ defineExpose({
                         size="middle"
                       />
                       <a-button
-                        class="btn-has-icon"
                         type="text"
                         @click="addOption(searchFormData.appGameTypeList, 'appGameTypeList')"
                       >
@@ -360,7 +359,6 @@ defineExpose({
                         size="middle"
                       />
                       <a-button
-                        class="btn-has-icon"
                         type="text"
                         @click="addOption(searchFormData.appPlatformList, 'appPlatformList')"
                       >
@@ -392,7 +390,6 @@ defineExpose({
                         size="middle"
                       />
                       <a-button
-                        class="btn-has-icon"
                         type="text"
                         @click="addOption(searchFormData.appCategoryList, 'appCategoryList')"
                       >

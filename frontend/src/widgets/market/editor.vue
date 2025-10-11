@@ -341,13 +341,13 @@ onMounted(() => {
         </a-form-item>
 
         <a-form-item class="mb-0">
-          <a-button class="btn-has-icon" type="default" size="large" @click="exitMultipleMode">
+          <a-button type="default" size="large" @click="exitMultipleMode">
             {{ t("TXT_CODE_5366af54") }}
           </a-button>
         </a-form-item>
 
         <a-form-item class="mb-0">
-          <a-button class="btn-has-icon" type="default" size="large" @click="selectAllItems">
+          <a-button type="default" size="large" @click="selectAllItems">
             {{
               appList.length !== 0 && appList.length === selectedItems.length
                 ? t("TXT_CODE_df87c46d")
@@ -374,20 +374,20 @@ onMounted(() => {
               </a-menu-item>
             </a-menu>
           </template>
-          <a-button class="btn-has-icon" size="large" type="primary">
+          <a-button size="large" type="primary">
             {{ t("TXT_CODE_8fd8bfd3") }}
             <DownOutlined />
           </a-button>
         </a-dropdown>
       </template>
       <a-form-item v-else class="mb-0">
-        <a-button class="btn-has-icon" type="default" size="large" @click="toMultiMode">
+        <a-button type="default" size="large" @click="toMultiMode">
           {{ t("TXT_CODE_5cb656b9") }}
         </a-button>
       </a-form-item>
 
       <a-form-item class="mb-0">
-        <a-button class="button-color-success btn-has-icon" size="large" @click="editorRef?.open()">
+        <a-button class="button-color-success" size="large" @click="editorRef?.open()">
           {{ t("TXT_CODE_3d45d8d") }}
           <PlusOutlined />
         </a-button>
