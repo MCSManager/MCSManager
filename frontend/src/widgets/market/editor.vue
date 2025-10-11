@@ -6,6 +6,7 @@ import { useMarketPackages } from "@/hooks/useMarketPackages";
 import { t } from "@/lang/i18n";
 import { setSettingInfo } from "@/services/apis";
 import { uploadFile } from "@/services/apis/layout";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { toCopy } from "@/tools/copy";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
@@ -17,17 +18,20 @@ import {
   DownOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  FileOutlined,
   InboxOutlined,
+  LinkOutlined,
   PlusOutlined,
-  SelectOutlined,
-  UploadOutlined
+  SelectOutlined
 } from "@ant-design/icons-vue";
 import { Flex, message, Modal, type UploadProps } from "ant-design-vue";
+import axios from "axios";
 import { h, onMounted, ref } from "vue";
 import Editor from "./dialogs/info.vue";
 
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
 
+const { openInputDialog } = useAppToolsStore();
 const {
   searchForm,
   packages,
@@ -45,6 +49,8 @@ const {
   handleSelectTopCategory,
   fetchTemplate
 } = useMarketPackages();
+const { execute: execUpload, state: fileName } = uploadFile();
+const { execute: saveSettings } = setSettingInfo();
 
 const fileList = ref<any>([]);
 const beforeUpload: UploadProps["beforeUpload"] = (file) => {
@@ -67,9 +73,31 @@ const beforeUpload: UploadProps["beforeUpload"] = (file) => {
   return false;
 };
 
+const cleanAxios = axios.create({
+  headers: {
+    "x-requested-with": null
+  },
+  params: {}
+});
+const importFromLink = async (addr?: string) => {
+  try {
+    if (!addr) addr = await openInputDialog(t("TXT_CODE_ac10fe01"));
+    if (!addr) return message.error(t("TXT_CODE_ac10fe01"));
+    appListLoading.value = true;
+    const res = await cleanAxios.get(addr ?? "");
+    packages.value = res.data.packages || [];
+    appLangList.value = res.data.languages || [];
+  } catch (err) {
+    reportErrorMsg(err);
+  } finally {
+    appListLoading.value = false;
+  }
+};
+
 const importFromClipboard = async () => {
   try {
     const text = await navigator.clipboard.readText();
+    if (text.startsWith("http")) return importFromLink(text);
     const jsonData = JSON.parse(text) as QuickStartTemplate;
     packages.value = jsonData.packages || [];
     appLangList.value = jsonData.languages || [];
@@ -174,8 +202,10 @@ const batchDelete = () => {
   message.success(t("TXT_CODE_28190dbc"));
 };
 
-const { execute: execUpload, state: fileName } = uploadFile();
-const { execute: saveSettings } = setSettingInfo();
+const rm_rf = () => {
+  packages.value = selectedItems.value = [];
+};
+
 const uploadToPanel = async () => {
   if (!packages.value.length) {
     const confirmPromise = new Promise<boolean>((resolve) => {
@@ -237,48 +267,68 @@ onMounted(() => {
   <a-form layout="horizontal" class="flex-wrap justify-between">
     <div class="flex-wrap gap-10">
       <a-form-item class="mb-0">
-        <a-button type="primary" @click="uploadToPanel">
+        <a-button @click="uploadToPanel">
           {{ t("保存到面板") }}
           <CopyOutlined />
         </a-button>
       </a-form-item>
 
-      <a-form-item class="mb-0">
-        <a-button @click="toCopy(JSON.stringify(rawList))">
-          {{ t("TXT_CODE_29efd001") }}
-          <CopyOutlined />
+      <a-dropdown>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item @click="toCopy(JSON.stringify(rawList))">
+              <CopyOutlined />
+              {{ t("TXT_CODE_29efd001") }}
+            </a-menu-item>
+            <a-menu-item @click="downloadMarketJson">
+              <DownloadOutlined />
+              {{ t("TXT_CODE_c5a46eba") }}
+            </a-menu-item>
+            <a-popconfirm :title="t('TXT_CODE_276756b2')" @confirm="rm_rf">
+              <a-menu-item danger>
+                <DeleteOutlined />
+                {{ t("清空当前模板") }}
+              </a-menu-item>
+            </a-popconfirm>
+          </a-menu>
+        </template>
+        <a-button type="primary">
+          {{ t("操作") }}
+          <DownOutlined />
         </a-button>
-      </a-form-item>
-
-      <a-form-item class="mb-0">
-        <a-button class="button-color-success" @click="downloadMarketJson">
-          {{ t("TXT_CODE_c5a46eba") }}
-          <DownloadOutlined />
-        </a-button>
-      </a-form-item>
+      </a-dropdown>
 
       <template v-if="!packages.length">
-        <a-form-item class="mb-0">
-          <a-upload
-            v-model:file-list="fileList"
-            accept=".json"
-            :max-count="1"
-            :show-upload-list="false"
-            :before-upload="beforeUpload"
-          >
-            <a-button class="button-color-warning" size="large" type="default">
-              {{ t("从文件导入") }}
-              <UploadOutlined />
-            </a-button>
-          </a-upload>
-        </a-form-item>
-
-        <a-form-item class="mb-0">
-          <a-button size="large" @click="importFromClipboard">
-            {{ t("从剪切板导入") }}
-            <DownloadOutlined />
+        <a-dropdown>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <a-upload
+                  v-model:file-list="fileList"
+                  accept=".json"
+                  :max-count="1"
+                  :show-upload-list="false"
+                  :before-upload="beforeUpload"
+                >
+                  <FileOutlined />
+                  {{ t("从文件导入") }}
+                </a-upload>
+              </a-menu-item>
+              <a-menu-item @click="importFromLink()">
+                <LinkOutlined />
+                {{ t("从链接导入") }}
+              </a-menu-item>
+              <a-menu-item @click="importFromClipboard">
+                <CopyOutlined />
+                {{ t("从剪切板导入") }}
+              </a-menu-item>
+            </a-menu>
+          </template>
+          <a-button class="button-color-warning">
+            {{ t("导入") }}
+            <DownOutlined />
           </a-button>
-        </a-form-item>
+        </a-dropdown>
       </template>
     </div>
 
