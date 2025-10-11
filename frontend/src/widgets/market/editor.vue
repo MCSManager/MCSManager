@@ -105,7 +105,7 @@ const importFromClipboard = async () => {
     if (err instanceof SyntaxError) {
       message.error(t("TXT_CODE_bddc37e2"));
     } else if (err.name === "NotAllowedError") {
-      message.error(t("无剪切板权限，请检查您的浏览器设置"));
+      message.error(t("TXT_CODE_2a22c2ff"));
     } else {
       message.error(err.message);
     }
@@ -210,11 +210,11 @@ const uploadToPanel = async () => {
   if (!packages.value.length) {
     const confirmPromise = new Promise<boolean>((resolve) => {
       Modal.confirm({
-        title: t("警告"),
+        title: t("TXT_CODE_617ce69c"),
         icon: h(ExclamationCircleOutlined),
-        content: t("当前模板内容为空，是否继续保存？"),
-        okText: t("确定"),
-        cancelText: t("取消"),
+        content: t("TXT_CODE_f88db280"),
+        okText: t("TXT_CODE_d507abff"),
+        cancelText: t("TXT_CODE_a0451c97"),
         onOk() {
           resolve(true);
         },
@@ -268,7 +268,7 @@ onMounted(() => {
     <div class="flex-wrap gap-10">
       <a-form-item class="mb-0">
         <a-button :loading="upLoading || saveSetLoading" @click="uploadToPanel">
-          {{ t("保存到面板") }}
+          {{ t("TXT_CODE_592eff33") }}
           <CopyOutlined />
         </a-button>
       </a-form-item>
@@ -287,13 +287,13 @@ onMounted(() => {
             <a-popconfirm :title="t('TXT_CODE_276756b2')" @confirm="rm_rf">
               <a-menu-item danger>
                 <DeleteOutlined />
-                {{ t("清空当前模板") }}
+                {{ t("TXT_CODE_75da3f2d") }}
               </a-menu-item>
             </a-popconfirm>
           </a-menu>
         </template>
         <a-button type="primary">
-          {{ t("操作") }}
+          {{ t("TXT_CODE_fe731dfc") }}
           <DownOutlined />
         </a-button>
       </a-dropdown>
@@ -311,21 +311,21 @@ onMounted(() => {
                   :before-upload="beforeUpload"
                 >
                   <FileOutlined />
-                  {{ t("从文件导入") }}
+                  {{ t("TXT_CODE_fd0cdf5d") }}
                 </a-upload>
               </a-menu-item>
               <a-menu-item @click="importFromLink()">
                 <LinkOutlined />
-                {{ t("从链接导入") }}
+                {{ t("TXT_CODE_dfc4b650") }}
               </a-menu-item>
               <a-menu-item @click="importFromClipboard">
                 <CopyOutlined />
-                {{ t("从剪切板导入") }}
+                {{ t("TXT_CODE_caaac421") }}
               </a-menu-item>
             </a-menu>
           </template>
           <a-button class="button-color-warning">
-            {{ t("导入") }}
+            {{ t("TXT_CODE_1df9fbd5") }}
             <DownOutlined />
           </a-button>
         </a-dropdown>

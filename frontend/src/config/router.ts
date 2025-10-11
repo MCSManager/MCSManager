@@ -170,7 +170,7 @@ const originRouterConfig: RouterConfig[] = [
     children: [
       {
         path: "editor",
-        name: t("模板编辑器"),
+        name: t("TXT_CODE_54275b9c"),
         component: LayoutContainer,
         meta: {
           permission: ROLE.ADMIN

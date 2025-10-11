@@ -2870,5 +2870,16 @@
   "TXT_CODE_8e16ee21": "Click to upload template file",
   "TXT_CODE_e1c60611": "JSON format only",
   "TXT_CODE_595efd06": "Create New",
-  "TXT_CODE_98dbd049": "Suggest not to exceed 3 lines"
+  "TXT_CODE_98dbd049": "Suggest not to exceed 3 lines",
+  "TXT_CODE_ef8f8e29": "Page failed to load, please try again later!",
+  "TXT_CODE_9277af78": "Retry",
+  "TXT_CODE_2a22c2ff": "No clipboard permission, please check your browser settings",
+  "TXT_CODE_f88db280": "The current template is empty, do you want to continue saving?",
+  "TXT_CODE_592eff33": "Save to panel",
+  "TXT_CODE_75da3f2d": "Clear current template",
+  "TXT_CODE_fd0cdf5d": "Import from file",
+  "TXT_CODE_dfc4b650": "Import from link",
+  "TXT_CODE_caaac421": "Import from clipboard",
+  "TXT_CODE_1df9fbd5": "Import",
+  "TXT_CODE_53499d7": "Create blank template"
 }

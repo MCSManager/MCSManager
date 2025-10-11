@@ -15,11 +15,13 @@ import {
   BankOutlined,
   BookOutlined,
   BugOutlined,
+  EditOutlined,
   GithubOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
   PicLeftOutlined,
+  PlusOutlined,
   ProjectOutlined,
   QuestionCircleOutlined
 } from "@ant-design/icons-vue";
@@ -314,11 +316,13 @@ onUnmounted(() => {
                       style="max-width: 320px"
                     />
 
-                    <a-button class="mx-8" @click="toTemplate.edit">
-                      {{ t("TXT_CODE_921206fc") }}
+                    <a-button class="mx-8" type="primary" @click="toTemplate.edit">
+                      {{ t("TXT_CODE_ad207008") }}
+                      <EditOutlined />
                     </a-button>
                     <a-button @click="toTemplate.new">
-                      {{ t("新建空白模板") }}
+                      {{ t("TXT_CODE_53499d7") }}
+                      <PlusOutlined />
                     </a-button>
                   </a-form-item>
 

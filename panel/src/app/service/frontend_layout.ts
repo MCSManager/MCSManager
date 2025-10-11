@@ -192,7 +192,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "MarketEditor",
-          title: t("模板编辑器"),
+          title: t("TXT_CODE_54275b9c"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

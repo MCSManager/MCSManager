@@ -2870,5 +2870,16 @@
   "TXT_CODE_8e16ee21": "点击上传模板文件",
   "TXT_CODE_e1c60611": "仅限 JSON 格式",
   "TXT_CODE_595efd06": "创建新模板",
-  "TXT_CODE_98dbd049": "建议不要超过 3 行"
+  "TXT_CODE_98dbd049": "建议不要超过 3 行",
+  "TXT_CODE_ef8f8e29": "页面加载失败，请稍后重试！",
+  "TXT_CODE_9277af78": "重试",
+  "TXT_CODE_2a22c2ff": "无剪切板权限，请检查您的浏览器设置",
+  "TXT_CODE_f88db280": "当前模板内容为空，是否继续保存？",
+  "TXT_CODE_592eff33": "保存到面板",
+  "TXT_CODE_75da3f2d": "清空当前模板",
+  "TXT_CODE_fd0cdf5d": "从文件导入",
+  "TXT_CODE_dfc4b650": "从链接导入",
+  "TXT_CODE_caaac421": "从剪切板导入",
+  "TXT_CODE_1df9fbd5": "导入",
+  "TXT_CODE_53499d7": "新建空白模板"
 }
