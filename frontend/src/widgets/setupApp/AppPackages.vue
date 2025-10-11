@@ -41,7 +41,8 @@ const {
 });
 
 defineExpose({
-  appList
+  appList,
+  fetchTemplate
 });
 
 onMounted(() => {
