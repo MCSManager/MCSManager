@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
+import Loading from "@/components/Loading.vue";
+import { router } from "@/config/router";
+import { useMarketPackages } from "@/hooks/useMarketPackages";
 import { t } from "@/lang/i18n";
+import { toCopy } from "@/tools/copy";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
   CopyOutlined,
@@ -15,10 +19,6 @@ import {
 } from "@ant-design/icons-vue";
 import { Flex, message, type UploadProps } from "ant-design-vue";
 import { onMounted, ref } from "vue";
-// import { toCopy } from '@/utils'
-import Loading from "@/components/Loading.vue";
-import { router } from "@/config/router";
-import { useMarketPackages } from "@/hooks/useMarketPackages";
 import Editor from "./dialogs/info.vue";
 
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
@@ -196,8 +196,7 @@ onMounted(() => {
   <a-form layout="horizontal" class="flex-wrap justify-between">
     <div class="flex-wrap gap-10">
       <a-form-item class="mb-0">
-        <!--   @click="toCopy(JSON.stringify(appList))" -->
-        <a-button type="primary" size="large">
+        <a-button type="primary" size="large" @click="toCopy(JSON.stringify(rawList))">
           {{ t("TXT_CODE_29efd001") }}
           <CopyOutlined />
         </a-button>
@@ -210,12 +209,13 @@ onMounted(() => {
         </a-button>
       </a-form-item>
 
-      <template v-if="isNewTemplate && !packages.length">
+      <template v-if="!packages.length">
         <a-form-item class="mb-0">
           <a-upload
             v-model:file-list="fileList"
             accept=".json"
             :max-count="1"
+            :show-upload-list="false"
             :before-upload="beforeUpload"
           >
             <a-button class="button-color-warning" size="large" type="default">
