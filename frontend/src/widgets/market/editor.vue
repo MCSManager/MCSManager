@@ -49,8 +49,8 @@ const {
   handleSelectTopCategory,
   fetchTemplate
 } = useMarketPackages();
-const { execute: execUpload, state: fileName } = uploadFile();
-const { execute: saveSettings } = setSettingInfo();
+const { execute: execUpload, state: fileName, isLoading: upLoading } = uploadFile();
+const { execute: saveSettings, isLoading: saveSetLoading } = setSettingInfo();
 
 const fileList = ref<any>([]);
 const beforeUpload: UploadProps["beforeUpload"] = (file) => {
@@ -267,7 +267,7 @@ onMounted(() => {
   <a-form layout="horizontal" class="flex-wrap justify-between">
     <div class="flex-wrap gap-10">
       <a-form-item class="mb-0">
-        <a-button @click="uploadToPanel">
+        <a-button :loading="upLoading || saveSetLoading" @click="uploadToPanel">
           {{ t("保存到面板") }}
           <CopyOutlined />
         </a-button>
