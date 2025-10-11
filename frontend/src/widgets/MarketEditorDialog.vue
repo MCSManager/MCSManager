@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import imgFallback from "@/assets/img-fallback.png";
 import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
 import { isCN, t } from "@/lang/i18n";
@@ -27,7 +26,6 @@ const props = defineProps<{
   loading = ref(false),
   editMode = ref<boolean>(true),
   activeKey = ref("1"),
-  // TODO: 使用 Class
   defaultFormData: QuickStartPackages = {
     language: "",
     description: "",
@@ -236,7 +234,7 @@ defineExpose({
   <a-modal
     v-model:open="status"
     centered
-    class="min-w-[50svw]"
+    style="min-width: 50svw"
     :title="title"
     :mask-closable="false"
     @ok="ok"
@@ -248,7 +246,8 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_80c5409f')" name="image">
-                <a-image :src="formData.image" :fallback="imgFallback" />
+                <a-image v-if="formData.image" :src="formData.image" />
+                <a-empty v-else />
                 <a-input v-model:value="formData.image" />
               </a-form-item>
             </a-col>

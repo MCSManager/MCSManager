@@ -447,7 +447,7 @@ onMounted(() => {
       </p>
     </Flex>
   </a-typography-paragraph>
-
+  <!-- Loading state - shows loading spinner while fetching package data -->
   <a-row v-if="appListLoading" :gutter="[24, 24]" style="height: 100%">
     <a-col :span="24">
       <div
@@ -469,7 +469,8 @@ onMounted(() => {
     </a-col>
   </a-row>
 
-  <a-row v-else :gutter="[16, 16]" style="height: 100%">
+  <!-- Main content - package marketplace interface -->
+  <a-row v-else :gutter="[16, 16]">
     <!-- Search filters section -->
     <a-col :span="24" :md="24">
       <a-form
@@ -606,7 +607,7 @@ onMounted(() => {
                       <a-tag v-if="item.platform" color="cyan">
                         {{
                           String(item.platform).toLowerCase() === "all"
-                            ? t("TXT_CODE_9693b0e1")
+                            ? t("TXT_CODE_all_platform")
                             : item.platform
                         }}
                       </a-tag>
