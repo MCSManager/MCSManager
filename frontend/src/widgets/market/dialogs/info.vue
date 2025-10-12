@@ -250,14 +250,16 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_80c5409f')" name="image">
-                <a-image v-if="formData.image" :src="formData.image" />
-                <a-empty v-else />
-                <a-input v-model:value="formData.image" />
+                <a-image :src="formData.image" fallback="" />
+                <a-input
+                  v-model:value="formData.image"
+                  placeholder="https://example.com/image.png"
+                />
               </a-form-item>
             </a-col>
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_f4fba0cd')" name="title">
-                <a-input v-model:value="formData.title" />
+                <a-input v-model:value="formData.title" placeholder="Application A" />
               </a-form-item>
 
               <a-form-item :label="t('TXT_CODE_59cdbec3')" name="description">
@@ -283,7 +285,7 @@ defineExpose({
                 </a-col>
                 <a-col :span="24" :lg="12">
                   <a-form-item :label="t('TXT_CODE_3d56da34')" name="author">
-                    <a-input v-model:value="formData.author" />
+                    <a-input v-model:value="formData.author" placeholder="MCSManager" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -408,17 +410,17 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_80c85070')" name="runtime">
-                <a-input v-model:value="formData.runtime" />
+                <a-input v-model:value="formData.runtime" placeholder="Java 18+" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_683e3033')" name="hardware">
-                <a-input v-model:value="formData.hardware" />
+                <a-input v-model:value="formData.hardware" placeholder="RAM 4G+" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_8dbcf565')" name="size">
-                <a-input v-model:value="formData.size" />
+                <a-input v-model:value="formData.size" placeholder="123MB" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -431,6 +433,7 @@ defineExpose({
             <a-select
               v-model:value="formData.tags"
               mode="tags"
+              placeholder="apple, banana, cherry"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
@@ -509,6 +512,7 @@ defineExpose({
             <a-select
               v-model:value="formData.setupInfo.tag"
               mode="tags"
+              placeholder="apple, banana, cherry"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
@@ -549,6 +553,7 @@ defineExpose({
               >
                 <a-input
                   v-model:value="formData.setupInfo.docker.workingDir"
+                  placeholder="eg: /workspace"
                   :disabled="!isDockerMode"
                 />
               </a-form-item>
@@ -577,6 +582,7 @@ defineExpose({
                     readonly
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"
@@ -594,8 +600,10 @@ defineExpose({
                     v-model:value="formData.setupInfo.docker.env"
                     :disabled="!isDockerMode"
                     readonly
+                    placeholder="eg: PWD=123456"
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"
@@ -616,8 +624,10 @@ defineExpose({
                     v-model:value="formData.setupInfo.docker.extraVolumes"
                     :disabled="!isDockerMode"
                     readonly
+                    placeholder="eg: /host/path:/container/path"
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"

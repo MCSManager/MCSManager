@@ -276,3 +276,13 @@ html {
       0 0 25px rgba(24, 144, 255, 0.4);
   }
 }
+
+.compact-btn-right {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.compact-btn-left {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
