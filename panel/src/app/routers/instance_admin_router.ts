@@ -323,7 +323,7 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
       const fileName = ADDR?.split(SAVE_DIR_PATH)[1];
       const filePath = path.join(filesDir, fileName ?? "");
       if (fs.existsSync(filePath)) {
-        ctx.body = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        ctx.body = JSON.parse(await fs.readFile(filePath, "utf-8"));
       } else {
         throw new Error(`Request failed, status: 404`);
       }
