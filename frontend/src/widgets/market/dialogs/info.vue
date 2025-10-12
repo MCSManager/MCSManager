@@ -250,9 +250,13 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_80c5409f')" name="image">
-                <a-image :src="formData.image" fallback="" />
+                <a-image
+                  :src="formData.image"
+                  fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1700' height='800' viewBox='0 0 170 80'%3E%3Crect width='1700' height='800' fill='%230044ff' fill-opacity='0.1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%23ffffff80'%3EEmpty%3C/text%3E%3C/svg%3E"
+                />
                 <a-input
                   v-model:value="formData.image"
+                  class="mt-10"
                   placeholder="https://example.com/image.png"
                 />
               </a-form-item>
