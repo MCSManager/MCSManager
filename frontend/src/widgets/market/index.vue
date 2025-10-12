@@ -8,6 +8,7 @@ import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
+import McPreset from "@/widgets/setupApp/McPreset.vue";
 import {
   AppstoreAddOutlined,
   BlockOutlined,
@@ -15,7 +16,6 @@ import {
   FolderOpenOutlined
 } from "@ant-design/icons-vue";
 import { ref } from "vue";
-import McPreset from "./setupApp/McPreset.vue";
 
 const props = defineProps<{
   card: LayoutCard;

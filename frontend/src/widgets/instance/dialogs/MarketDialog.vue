@@ -16,7 +16,7 @@ const props = defineProps<Props>();
 const { isVisible, openDialog: open, cancel, submit } = useDialog<QuickStartPackages>(props);
 
 const openDialog = async () => {
-  appPackages.value?.init();
+  appPackages.value?.fetchTemplate();
   return await open();
 };
 

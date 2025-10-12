@@ -186,6 +186,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/market/editor",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "MarketEditor",
+          title: t("TXT_CODE_54275b9c"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
       page: "/instances",
       items: [
         {
