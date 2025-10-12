@@ -6,7 +6,7 @@ import {
   useVolumeEditDialog
 } from "@/components/fc";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
-import { useMarketPackages } from "@/hooks/useMarketPackages";
+import { SEARCH_ALL_KEY, useMarketPackages } from "@/hooks/useMarketPackages";
 import { isCN, t } from "@/lang/i18n";
 import { dockerPortsArray } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
@@ -138,7 +138,6 @@ const props = defineProps<{
       return this.vnodes;
     }
   }),
-  SEARCH_ALL_KEY = "ALL",
   selectOptions = ref({
     appGameTypeList: props.gL,
     appPlatformList: props.pL,
@@ -369,7 +368,9 @@ defineExpose({
                   v-model:value="formData.platform"
                   show-search
                   :placeholder="t('TXT_CODE_47203b64')"
-                  :options="selectOptions.appPlatformList"
+                  :options="
+                    selectOptions.appPlatformList.filter((item) => item.value !== SEARCH_ALL_KEY)
+                  "
                 >
                   <template #dropdownRender="{ menuNode: menu }">
                     <v-nodes :vnodes="menu" />
@@ -400,7 +401,9 @@ defineExpose({
                   v-model:value="formData.category"
                   show-search
                   :placeholder="t('TXT_CODE_5962e188')"
-                  :options="selectOptions.appCategoryList"
+                  :options="
+                    selectOptions.appCategoryList.filter((item) => item.value !== SEARCH_ALL_KEY)
+                  "
                 >
                   <template #dropdownRender="{ menuNode: menu }">
                     <v-nodes :vnodes="menu" />
