@@ -50,7 +50,7 @@ const props = defineProps<{
       stopCommand: "",
       ie: "UTF-8",
       oe: "UTF-8",
-      type: "",
+      type: undefined,
       tag: [],
       fileCode: "UTF-8",
       processType: "",
@@ -317,6 +317,7 @@ defineExpose({
                 <a-select
                   v-if="formData.setupInfo"
                   v-model:value="formData.setupInfo.type"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   show-search
                 >
                   <a-select-option
@@ -334,7 +335,7 @@ defineExpose({
                 <a-select
                   v-model:value="formData.gameType"
                   show-search
-                  :placeholder="t('TXT_CODE_107695d')"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   :options="
                     selectOptions.appGameTypeList.filter((item) => item.value !== SEARCH_ALL_KEY)
                   "
@@ -367,7 +368,7 @@ defineExpose({
                 <a-select
                   v-model:value="formData.platform"
                   show-search
-                  :placeholder="t('TXT_CODE_47203b64')"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   :options="
                     selectOptions.appPlatformList.filter((item) => item.value !== SEARCH_ALL_KEY)
                   "
@@ -400,7 +401,7 @@ defineExpose({
                 <a-select
                   v-model:value="formData.category"
                   show-search
-                  :placeholder="t('TXT_CODE_5962e188')"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   :options="
                     selectOptions.appCategoryList.filter((item) => item.value !== SEARCH_ALL_KEY)
                   "
