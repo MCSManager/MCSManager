@@ -529,23 +529,23 @@ export function getLayoutCardPool() {
     },
     {
       id: getRandomId(),
-      permission: ROLE.USER,
+      permission: ROLE.ADMIN,
       meta: {},
       type: "Market",
       title: t("TXT_CODE_27594db8"),
       width: 12,
       description: t("TXT_CODE_9b45858c"),
       height: LayoutCardHeight.BIG,
-      category: NEW_CARD_TYPE.COMMON
+      category: NEW_CARD_TYPE.OTHER
     },
     {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       meta: {},
       type: "MarketEditor",
-      title: t("TXT_CODE_27594db8"),
+      title: t("TXT_CODE_54275b9c"),
       width: 12,
-      description: t("TXT_CODE_9b45858c"),
+      description: t("TXT_CODE_94f55150"),
       height: LayoutCardHeight.BIG,
       category: NEW_CARD_TYPE.OTHER
     }
