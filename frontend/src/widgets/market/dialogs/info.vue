@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { useDockerEnvEditDialog, usePortEditDialog, useVolumeEditDialog } from "@/components/fc";
+import {
+  useDockerEnvEditDialog,
+  usePortEditDialog,
+  useUploadFileDialog,
+  useVolumeEditDialog
+} from "@/components/fc";
 import { INSTANCE_TYPE_TRANSLATION } from "@/hooks/useInstance";
-import { useMarketPackages } from "@/hooks/useMarketPackages";
+import { SEARCH_ALL_KEY, useMarketPackages } from "@/hooks/useMarketPackages";
 import { isCN, t } from "@/lang/i18n";
 import { dockerPortsArray } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
@@ -45,7 +50,7 @@ const props = defineProps<{
       stopCommand: "",
       ie: "UTF-8",
       oe: "UTF-8",
-      type: "",
+      type: undefined,
       tag: [],
       fileCode: "UTF-8",
       processType: "",
@@ -133,7 +138,6 @@ const props = defineProps<{
       return this.vnodes;
     }
   }),
-  SEARCH_ALL_KEY = "ALL",
   selectOptions = ref({
     appGameTypeList: props.gL,
     appPlatformList: props.pL,
@@ -227,6 +231,12 @@ const props = defineProps<{
       const envsArray = result.map((v) => `${v.label}=${v.value}`);
       formData.value.setupInfo.docker!.env = envsArray;
     }
+  },
+  uploadImg = async () => {
+    const url = await useUploadFileDialog();
+    if (url && formData.value) {
+      formData.value.image = url;
+    }
   };
 
 defineExpose({
@@ -250,14 +260,25 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_80c5409f')" name="image">
-                <a-image v-if="formData.image" :src="formData.image" />
-                <a-empty v-else />
-                <a-input v-model:value="formData.image" />
+                <a-image
+                  fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1700' height='800' viewBox='0 0 170 80'%3E%3Crect width='1700' height='800' fill='%230044ff' fill-opacity='0.1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%23ffffff80'%3EEmpty%3C/text%3E%3C/svg%3E"
+                  class="cursor-pointer"
+                  style="border-radius: 8px"
+                  :src="formData.image"
+                  :placeholder="false"
+                  :preview="false"
+                  @click="uploadImg"
+                />
+                <a-input
+                  v-model:value="formData.image"
+                  class="mt-10"
+                  placeholder="https://example.com/image.png"
+                />
               </a-form-item>
             </a-col>
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_f4fba0cd')" name="title">
-                <a-input v-model:value="formData.title" />
+                <a-input v-model:value="formData.title" placeholder="Application A" />
               </a-form-item>
 
               <a-form-item :label="t('TXT_CODE_59cdbec3')" name="description">
@@ -283,7 +304,7 @@ defineExpose({
                 </a-col>
                 <a-col :span="24" :lg="12">
                   <a-form-item :label="t('TXT_CODE_3d56da34')" name="author">
-                    <a-input v-model:value="formData.author" />
+                    <a-input v-model:value="formData.author" placeholder="MCSManager" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -296,6 +317,7 @@ defineExpose({
                 <a-select
                   v-if="formData.setupInfo"
                   v-model:value="formData.setupInfo.type"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   show-search
                 >
                   <a-select-option
@@ -313,7 +335,7 @@ defineExpose({
                 <a-select
                   v-model:value="formData.gameType"
                   show-search
-                  :placeholder="t('TXT_CODE_107695d')"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
                   :options="
                     selectOptions.appGameTypeList.filter((item) => item.value !== SEARCH_ALL_KEY)
                   "
@@ -346,8 +368,10 @@ defineExpose({
                 <a-select
                   v-model:value="formData.platform"
                   show-search
-                  :placeholder="t('TXT_CODE_47203b64')"
-                  :options="selectOptions.appPlatformList"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
+                  :options="
+                    selectOptions.appPlatformList.filter((item) => item.value !== SEARCH_ALL_KEY)
+                  "
                 >
                   <template #dropdownRender="{ menuNode: menu }">
                     <v-nodes :vnodes="menu" />
@@ -377,8 +401,10 @@ defineExpose({
                 <a-select
                   v-model:value="formData.category"
                   show-search
-                  :placeholder="t('TXT_CODE_5962e188')"
-                  :options="selectOptions.appCategoryList"
+                  :placeholder="t('TXT_CODE_3bb646e4')"
+                  :options="
+                    selectOptions.appCategoryList.filter((item) => item.value !== SEARCH_ALL_KEY)
+                  "
                 >
                   <template #dropdownRender="{ menuNode: menu }">
                     <v-nodes :vnodes="menu" />
@@ -408,17 +434,17 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_80c85070')" name="runtime">
-                <a-input v-model:value="formData.runtime" />
+                <a-input v-model:value="formData.runtime" placeholder="Java 18+" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_683e3033')" name="hardware">
-                <a-input v-model:value="formData.hardware" />
+                <a-input v-model:value="formData.hardware" placeholder="RAM 4G+" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_8dbcf565')" name="size">
-                <a-input v-model:value="formData.size" />
+                <a-input v-model:value="formData.size" placeholder="123MB" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -431,6 +457,7 @@ defineExpose({
             <a-select
               v-model:value="formData.tags"
               mode="tags"
+              placeholder="apple, banana, cherry"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
@@ -509,6 +536,7 @@ defineExpose({
             <a-select
               v-model:value="formData.setupInfo.tag"
               mode="tags"
+              placeholder="apple, banana, cherry"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
@@ -549,6 +577,7 @@ defineExpose({
               >
                 <a-input
                   v-model:value="formData.setupInfo.docker.workingDir"
+                  placeholder="eg: /workspace"
                   :disabled="!isDockerMode"
                 />
               </a-form-item>
@@ -577,6 +606,7 @@ defineExpose({
                     readonly
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"
@@ -594,8 +624,10 @@ defineExpose({
                     v-model:value="formData.setupInfo.docker.env"
                     :disabled="!isDockerMode"
                     readonly
+                    placeholder="eg: PWD=123456"
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"
@@ -616,8 +648,10 @@ defineExpose({
                     v-model:value="formData.setupInfo.docker.extraVolumes"
                     :disabled="!isDockerMode"
                     readonly
+                    placeholder="eg: /host/path:/container/path"
                   />
                   <a-button
+                    class="compact-btn-right"
                     type="primary"
                     size="large"
                     :disabled="!isDockerMode"
