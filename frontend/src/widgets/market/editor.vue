@@ -7,7 +7,6 @@ import { t } from "@/lang/i18n";
 import { setSettingInfo } from "@/services/apis";
 import { uploadFile } from "@/services/apis/layout";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
-import { toCopy } from "@/tools/copy";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
@@ -276,10 +275,6 @@ onMounted(() => {
       <a-dropdown>
         <template #overlay>
           <a-menu>
-            <a-menu-item @click="toCopy(JSON.stringify(rawList))">
-              <CopyOutlined />
-              {{ t("TXT_CODE_29efd001") }}
-            </a-menu-item>
             <a-menu-item @click="downloadMarketJson">
               <DownloadOutlined />
               {{ t("TXT_CODE_c5a46eba") }}
