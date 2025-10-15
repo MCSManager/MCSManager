@@ -2882,5 +2882,11 @@
   "TXT_CODE_caaac421": "Import from clipboard",
   "TXT_CODE_1df9fbd5": "Import",
   "TXT_CODE_53499d7": "Create blank template",
-  "TXT_CODE_94f55150": "Visual preset template editor"
+  "TXT_CODE_94f55150": "Visual preset template editor",
+  "TXT_CODE_99a42341": "eg: https://example.com/image.png",
+  "TXT_CODE_e6adf32d": "Please enter the author name",
+  "TXT_CODE_772bb48a": "eg: Java 18+",
+  "TXT_CODE_d79ff710": "eg: RAM 4G",
+  "TXT_CODE_d0d08d6": "eg: 123MB",
+  "TXT_CODE_7d839745": "eg: apple, banana, cherry"
 }
