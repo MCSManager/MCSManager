@@ -105,13 +105,14 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
         if (!map.has(item.gameType)) {
           const summary: QuickStartPackages = {
             ...item,
-            key:
-              item.title +
-              item.language +
-              item.platform +
-              item.gameType +
-              item.targetLink +
-              item.category,
+            key: JSON.stringify({
+              title: item.title,
+              language: item.language,
+              platform: item.platform,
+              gameType: item.gameType,
+              targetLink: item.targetLink,
+              category: item.category
+            }),
             description: "",
             title: item.gameType,
             category: "",
