@@ -1,5 +1,9 @@
 // Global tool style class
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .full-card-body-container {
   position: absolute;
   top: 0px;
@@ -136,7 +140,8 @@
   justify-content: space-around;
 }
 
-.h-100 {
+.h-100,
+.h-full {
   height: 100% !important;
 }
 
@@ -144,7 +149,8 @@
   height: 50% !important;
 }
 
-.w-100 {
+.w-100,
+.w-full {
   width: 100% !important;
 }
 
@@ -327,6 +333,10 @@
   .px-#{$depth} {
     padding-left: #{$depth}px !important;
     padding-right: #{$depth}px !important;
+  }
+
+  .gap-#{$depth} {
+    gap: #{$depth}px;
   }
 
   @if $depth >= 1 {
