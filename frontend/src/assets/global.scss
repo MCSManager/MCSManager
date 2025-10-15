@@ -233,11 +233,10 @@ html {
 .package-subtitle {
   cursor: pointer;
   background-color: var(--card-bottom-background-color);
-  color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255) !important;
   padding: 8px;
-  font-size: 14px;
-  font-weight: 400;
-  border-radius: 0 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   position: absolute;
   bottom: 0;
   left: 0;
