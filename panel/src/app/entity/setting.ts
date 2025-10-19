@@ -66,4 +66,11 @@ export default class SystemConfig {
   panelId = "";
   registerCode = "";
   // -----
+
+  // Whether to enable SSL/TLS (HTTPS)
+  ssl = false;
+  // SSL certificate file path (.pem)
+  sslPemPath = "";
+  // SSL private key file path (.key)
+  sslKeyPath = "";
 }
