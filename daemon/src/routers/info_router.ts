@@ -57,10 +57,12 @@ routerApp.on("info/setting", async (ctx, data) => {
   const portAssignInterval = toNumber(data.portAssignInterval);
   const port = toNumber(data.port);
   if (language) {
-    logger.warn($t("TXT_CODE_66e32091"), language);
-    i18next.changeLanguage(language);
-    fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
-    globalConfiguration.config.language = language;
+    if (i18next.language != language) {
+      logger.warn($t("TXT_CODE_66e32091"), language);
+      i18next.changeLanguage(language);
+      fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
+      globalConfiguration.config.language = language;
+    }
   }
   if (uploadSpeedRate != null && uploadSpeedRate >= 0) {
     globalConfiguration.config.uploadSpeedRate = uploadSpeedRate;
