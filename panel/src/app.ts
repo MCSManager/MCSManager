@@ -57,6 +57,12 @@ function setupHttp(koaApp: Koa, ssl: boolean, sslPemPath: string, sslKeyPath: st
   logger.info($t("TXT_CODE_app.exitTip", { port }));
   logger.info("==================================");
 
+  logger.info("")
+  logger.info("Ciallo～(∠・ω< )⌒★")
+  logger.info("MCSM-猫猫保护盾 powered by ChengZhiMeow")
+  logger.info("“在意的话，会让眼前的幸福逃走的，傻子才会在意。”")
+  logger.info("")
+
   if (os.platform() == "win32" && hasParams("--open")) {
     open(ssl ? `https://localhost:${port}/` : `http://localhost:${port}/`);
   }

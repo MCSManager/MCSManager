@@ -156,6 +156,12 @@ logger.info($t("TXT_CODE_app.exitTip"));
 logger.info("----------------------------");
 console.log("");
 
+logger.info("")
+logger.info("Ciallo～(∠・ω< )⌒★")
+logger.info("MCSM-猫猫保护盾 powered by ChengZhiMeow")
+logger.info("“在意的话，会让眼前的幸福逃走的，傻子才会在意。”")
+logger.info("")
+
 let isExiting = false;
 async function listenExitSig(signal: string, isForce = true) {
   if (isExiting) {
