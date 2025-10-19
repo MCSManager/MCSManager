@@ -93,48 +93,50 @@ class InstanceSubsystem extends EventEmitter {
       }
     });
 
-    // handle global instance
-    let globalConfig: InstanceConfig;
-    try {
-      globalConfig = StorageSubsystem.load(
-        "InstanceConfig",
-        InstanceConfig,
+    if (globalConfiguration.config.enableGlobalTerminal) {
+      // handle global instance
+      let globalConfig: InstanceConfig;
+      try {
+        globalConfig = StorageSubsystem.load(
+          "InstanceConfig",
+          InstanceConfig,
+          this.GLOBAL_INSTANCE_UUID
+        );
+        if (globalConfig?.nickname !== this.GLOBAL_INSTANCE)
+          throw new Error("Global instance config is not valid");
+      } catch (error: any) {
+        // if global instance config is not valid, create a new one
+        // create default global instance config if not exists
+        globalConfig = new InstanceConfig();
+        globalConfig.nickname = this.GLOBAL_INSTANCE;
+        globalConfig.cwd = "/";
+        globalConfig.startCommand = os.platform() === "win32" ? "cmd.exe" : "bash";
+        globalConfig.stopCommand = "^c";
+        globalConfig.ie = "utf-8";
+        globalConfig.oe = "utf-8";
+        globalConfig.type = Instance.TYPE_UNIVERSAL;
+        globalConfig.processType = "general";
+
+        // save config to file
+        StorageSubsystem.store("InstanceConfig", this.GLOBAL_INSTANCE_UUID, globalConfig);
+      }
+
+      // create global instance
+      this.createInstance(
+        {
+          nickname: globalConfig.nickname,
+          cwd: globalConfig.cwd,
+          startCommand: globalConfig.startCommand,
+          stopCommand: globalConfig.stopCommand,
+          ie: globalConfig.ie,
+          oe: globalConfig.oe,
+          type: globalConfig.type,
+          processType: globalConfig.processType
+        },
+        true, // allow persistence
         this.GLOBAL_INSTANCE_UUID
       );
-      if (globalConfig?.nickname !== this.GLOBAL_INSTANCE)
-        throw new Error("Global instance config is not valid");
-    } catch (error: any) {
-      // if global instance config is not valid, create a new one
-      // create default global instance config if not exists
-      globalConfig = new InstanceConfig();
-      globalConfig.nickname = this.GLOBAL_INSTANCE;
-      globalConfig.cwd = "/";
-      globalConfig.startCommand = os.platform() === "win32" ? "cmd.exe" : "bash";
-      globalConfig.stopCommand = "^c";
-      globalConfig.ie = "utf-8";
-      globalConfig.oe = "utf-8";
-      globalConfig.type = Instance.TYPE_UNIVERSAL;
-      globalConfig.processType = "general";
-
-      // save config to file
-      StorageSubsystem.store("InstanceConfig", this.GLOBAL_INSTANCE_UUID, globalConfig);
     }
-
-    // create global instance
-    this.createInstance(
-      {
-        nickname: globalConfig.nickname,
-        cwd: globalConfig.cwd,
-        startCommand: globalConfig.startCommand,
-        stopCommand: globalConfig.stopCommand,
-        ie: globalConfig.ie,
-        oe: globalConfig.oe,
-        type: globalConfig.type,
-        processType: globalConfig.processType
-      },
-      true, // allow persistence
-      this.GLOBAL_INSTANCE_UUID
-    );
 
     takeoverContainer()
       .catch((error) => {
