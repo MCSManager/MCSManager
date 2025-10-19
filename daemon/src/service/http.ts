@@ -20,6 +20,10 @@ export function initKoa() {
       },
       jsonLimit: "10mb",
       onError(err, ctx) {
+        if (err.message.indexOf("invalid JSON") != -1) {
+          return;
+        }
+        
         logger.error("koaBody Lib Error:", err);
       }
     })
