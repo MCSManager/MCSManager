@@ -30,9 +30,9 @@ class Config {
 
   public enableGlobalTerminal = true;
   
-  ssl = false;
-  sslPemPath = "";
-  sslKeyPath = "";
+  public ssl = false;
+  public sslPemPath = "";
+  public sslKeyPath = "";
 }
 
 // daemon configuration class
