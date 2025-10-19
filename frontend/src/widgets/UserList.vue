@@ -21,7 +21,6 @@ import type { BaseUserInfo, EditUserInfo } from "@/types/user";
 import _ from "lodash";
 import type { AntColumnsType, AntTableCell } from "../types/ant";
 import type { Key } from "ant-design-vue/es/_util/type";
-import { PASSWORD_REGEX } from "../tools/validator";
 import { PERMISSION_MAP } from "@/config/const";
 import { reportErrorMsg } from "@/tools/validator";
 
@@ -248,7 +247,7 @@ const addUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (!PASSWORD_REGEX.test(value)) throw new Error(t("TXT_CODE_6032f5a3"));
+        if (value.length < 6) throw new Error("密码必须由至少6个字符组成");
       },
       trigger: "blur"
     }
@@ -264,7 +263,7 @@ const editUserRules: Record<string, Rule[]> = {
       min: 9,
       max: 36,
       validator: async (_rule: Rule, value: string) => {
-        if (value && !PASSWORD_REGEX.test(value)) throw new Error(t("TXT_CODE_6032f5a3"));
+        if (value && value.length < 6) throw new Error("密码必须由至少6个字符组成");
       },
       trigger: "blur"
     }
@@ -337,7 +336,7 @@ onMounted(async () => {
       <a-form-item :required="isAddMode" name="passWord" :label="t('TXT_CODE_551b0348')">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ !isAddMode ? t("TXT_CODE_af1f921d") : t("TXT_CODE_1f2062c7") }}
+            {{ !isAddMode ? t("TXT_CODE_af1f921d") : "必填，至少由6个字符组成。" }}
           </a-typography-text>
         </a-typography-paragraph>
         <a-input v-model:value="formData.passWord" :placeholder="t('TXT_CODE_4ea93630')" />

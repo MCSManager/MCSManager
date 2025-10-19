@@ -58,9 +58,8 @@ class UserSubsystem {
   }
 
   validatePassword(password = "") {
-    if (password.length < 9 || password.length > 36) return false;
-    const reg = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
-    return reg.test(password);
+    if (password.length < 6) return false;
+    return true;
   }
 
   check2FA(code: string, user: IUser, totpDriftToleranceSteps: number = 0) {
