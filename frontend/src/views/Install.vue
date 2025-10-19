@@ -179,8 +179,8 @@ const toOverview = () => {
             :rules="[
               {
                 required: true,
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,36}$/,
-                message: t('TXT_CODE_ad533c70')
+                pattern: /^.{6,}$/,
+                message: '密码必须由至少6个字符组成'
               }
             ]"
           >
