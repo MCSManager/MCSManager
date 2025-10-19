@@ -9,6 +9,7 @@ import {
 import AbsStartCommand from "../start";
 import { DefaultDocker } from "../../../service/docker_service";
 import Docker from "dockerode";
+import { globalConfiguration } from "../../config";
 
 export default class DockerTakeoverCommand extends AbsStartCommand {
   constructor(private containerInfo: Docker.ContainerInfo) {
@@ -37,6 +38,13 @@ export default class DockerTakeoverCommand extends AbsStartCommand {
       logger.error("uuid:", instance.instanceUuid);
       logger.error("container:", this.containerInfo.Id);
       throw new StartupDockerProcessError($t("TXT_CODE_786c22bd"));
+    }
+    const instanceConfig = instance.config;
+    const startCommand = instanceConfig.startCommand as string;
+    for (let word of globalConfiguration.config.blockComamndsWordList) {
+      if (startCommand.match(word)) {
+        throw new StartupDockerProcessError(`使用了禁止使用的启动命令: ${word}`);
+      }
     }
 
     instance.started(processAdapter);

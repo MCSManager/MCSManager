@@ -29,6 +29,8 @@ class Config {
   public downloadSpeedRate = 0;
 
   public enableGlobalTerminal = true;
+
+  public blockComamndsWordList = ["cmd", "bash", "del"]
   
   public ssl = false;
   public sslPemPath = "";

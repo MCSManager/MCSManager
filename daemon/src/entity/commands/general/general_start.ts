@@ -9,6 +9,7 @@ import { IInstanceProcess } from "../../instance/interface";
 import { commandStringToArray } from "../base/command_parser";
 import AbsStartCommand from "../start";
 import { getRunAsUserParams } from "../../../tools/system_user";
+import { globalConfiguration } from "../../config";
 
 // Error exception at startup
 class StartupError extends Error {
@@ -67,6 +68,13 @@ export default class GeneralStartCommand extends AbsStartCommand {
     )
       throw new StartupError($t("TXT_CODE_general_start.instanceConfigErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
+    const instanceConfig = instance.config;
+    const startCommand = instanceConfig.startCommand as string;
+    for (let word of globalConfiguration.config.blockComamndsWordList) {
+      if (startCommand.match(word)) {
+        throw new StartupError(`使用了禁止使用的启动命令: ${word}`);
+      }
+    }
 
     // command parsing
     const tmpStartCmd = instance.parseTextParams(instance.config.startCommand);

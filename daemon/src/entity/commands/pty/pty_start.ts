@@ -16,6 +16,7 @@ import { commandStringToArray } from "../base/command_parser";
 import FunctionDispatcher from "../dispatcher";
 import AbsStartCommand from "../start";
 import { getRunAsUserParams } from "../../../tools/system_user";
+import { globalConfiguration } from "../../config";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -153,6 +154,13 @@ export default class PtyStartCommand extends AbsStartCommand {
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
     if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))
       throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath"));
+    const instanceConfig = instance.config;
+    const startCommand = instanceConfig.startCommand as string;
+    for (let word of globalConfiguration.config.blockComamndsWordList) {
+      if (startCommand.match(word)) {
+        throw new StartupError(`使用了禁止使用的启动命令: ${word}`);
+      }
+    }
 
     // PTY mode correctness check
     logger.info($t("TXT_CODE_pty_start.startPty", { source: "" }));
