@@ -1,4 +1,5 @@
 import http from "http";
+import https from "https";
 import Koa from "koa";
 import koaBody, { HttpMethodEnum } from "koa-body";
 import session from "koa-session";
@@ -6,6 +7,7 @@ import koaStatic from "koa-static";
 import { removeTrail } from "mcsmanager-common";
 import open from "open";
 import os from "os";
+import fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import RedisStorage from "./app/common/storage/redis_storage";
@@ -25,8 +27,18 @@ function hasParams(name: string) {
   return process.argv.includes(name);
 }
 
-function setupHttp(koaApp: Koa, port: number, host?: string) {
-  const httpServer = http.createServer(koaApp.callback());
+function setupHttp(koaApp: Koa, ssl: boolean, sslPemPath: string, sslKeyPath: string, port: number, host?: string) {
+  let httpServer: http.Server | https.Server;
+
+  if (ssl) {
+    const options = {
+      cert: fs.readFileSync(path.join(sslPemPath)),
+      key: fs.readFileSync(path.join(sslKeyPath))
+    };
+    httpServer = https.createServer(options, koaApp.callback());
+  } else {
+    httpServer = http.createServer(koaApp.callback());
+  }
 
   httpServer.on("error", (err) => {
     logger.error($t("TXT_CODE_app.httpSetupError"));
@@ -38,13 +50,15 @@ function setupHttp(koaApp: Koa, port: number, host?: string) {
   logger.info("==================================");
   logger.info($t("TXT_CODE_app.panelStarted"));
   logger.info($t("TXT_CODE_app.reference"));
-  logger.info($t("TXT_CODE_app.host", { port }));
+  let appHost = $t("TXT_CODE_app.host", { port })
+  if (ssl) appHost = appHost.replace("http", "https");
+  logger.info(appHost);
   logger.info($t("TXT_CODE_app.portTip", { port }));
   logger.info($t("TXT_CODE_app.exitTip", { port }));
   logger.info("==================================");
 
   if (os.platform() == "win32" && hasParams("--open")) {
-    open(`http://localhost:${port}/`);
+    open(ssl ? `https://localhost:${port}/` : `http://localhost:${port}/`);
   }
 }
 
@@ -193,7 +207,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-  if (systemConfig) setupHttp(app, systemConfig.httpPort, systemConfig.httpIp);
+  if (systemConfig) setupHttp(app, systemConfig.ssl, systemConfig.sslPemPath, systemConfig.sslKeyPath, systemConfig.httpPort, systemConfig.httpIp);
 }
 
 main().catch((err) => {

@@ -27,6 +27,10 @@ class Config {
   public uploadSpeedRate = 0;
   // default: Unlimited, if set 32 => (32 packets * 64KB)/s => 2MB/s
   public downloadSpeedRate = 0;
+  
+  ssl = false;
+  sslPemPath = "";
+  sslKeyPath = "";
 }
 
 // daemon configuration class
