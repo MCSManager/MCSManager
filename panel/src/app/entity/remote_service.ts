@@ -5,6 +5,7 @@ import RemoteRequest from "../service/remote_command";
 import { InstanceStreamListener, removeTrail } from "mcsmanager-common";
 import { systemConfig } from "../setting";
 import { $t, i18next } from "../i18n";
+import { createHash } from "crypto";
 
 export default class RemoteService {
   public static readonly STATUS_OK = 200;
@@ -16,6 +17,7 @@ export default class RemoteService {
   public readonly instanceStream = new InstanceStreamListener();
   public config: RemoteServiceConfig;
   public realUrl: string = "";
+  public last_safe_token = "";
 
   constructor(uuid: string, config: RemoteServiceConfig) {
     this.uuid = uuid;
@@ -90,9 +92,17 @@ export default class RemoteService {
     if (key) this.config.apiKey = key;
     const daemonInfo = this.getDaemonInfo();
     try {
-      const res = await new RemoteRequest(this).request("auth", this.config.apiKey, 5000, true);
+      const date = new Date();
+      const safe_token = "橙汁喵喵 香香软软 可可爱爱 不要超我" + "-" + this.config.apiKey + "-" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + "/" + date.getHours() + "/" + date.getMinutes();
+      const hash = createHash('sha256')
+      hash.update(safe_token);
+      const safe_token_hash = hash.digest('hex');
+
+      const res = await new RemoteRequest(this).request("auth", safe_token_hash, 5000, true, false);
       if (res === true) {
         this.available = true;
+        this.last_safe_token = safe_token;
+        logger.info("安全密钥已更新, 旧密钥已销毁无法使用!");
         await this.setLanguage();
         logger.info($t("TXT_CODE_daemonInfo.authSuccess", { v: daemonInfo }));
         return true;
@@ -107,7 +117,14 @@ export default class RemoteService {
     }
   }
 
-  public emit(event: string, data?: any) {
+  public emit(event: string, data?: any, auth = false) {
+    if (auth) {
+      const date = new Date();
+      const safe_token = "橙汁喵喵 香香软软 可可爱爱 不要超我" + "-" + this.config.apiKey + "-" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + "/" + date.getHours() + "/" + date.getMinutes();
+      if (this.last_safe_token != safe_token) {
+        this.auth(this.config.apiKey);
+      }
+    }
     return this.socket?.emit(event, data);
   }
 

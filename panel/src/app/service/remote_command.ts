@@ -27,7 +27,8 @@ export default class RemoteRequest {
     event: string,
     data?: any,
     timeout = 6000,
-    force = false
+    force = false,
+    auth = true
   ): Promise<T> {
     if (!this.rService || !this.rService.socket) throw new Error($t("TXT_CODE_3d94ea16"));
     if (!this.rService.available && !force)
@@ -66,7 +67,7 @@ export default class RemoteRequest {
 
       this.rService?.socket?.on(event, fn);
       // send command
-      this.rService?.emit(event, protocolData);
+      this.rService?.emit(event, protocolData, auth);
     });
   }
 }

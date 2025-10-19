@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { timingSafeEqual } from "node:crypto";
 import { IGNORE } from "../const";
 import { globalConfiguration } from "../entity/config";
@@ -18,11 +19,17 @@ routerApp.use(async (event, ctx, _, next) => {
   // Except for the auth controller, which is publicly accessible, other business controllers must be authorized before they can be accessed
   if (event === "auth") return await next();
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
+
+  const date = new Date();
+  const safe_token = "橙汁喵喵 香香软软 可可爱爱 不要超我" + "-" + globalConfiguration.config.key + "-" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + "/" + date.getHours() + "/" + date.getMinutes();
+
+  const hash = createHash('sha256');
+  hash.update(safe_token);
+  const safe_token_hash = hash.digest('hex');
+
   if (
-    timingSafeEqual(
-      Uint8Array.from(ctx.session.key as string),
-      Uint8Array.from(globalConfiguration.config.key)
-    ) &&
+    Uint8Array.from(ctx.session.key as string).length == Uint8Array.from(safe_token_hash).length &&
+    timingSafeEqual(Uint8Array.from(ctx.session.key as string), Uint8Array.from(safe_token_hash)) &&
     ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
     ctx.session.id
@@ -44,11 +51,16 @@ routerApp.use(async (event, ctx, _, next) => {
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
   try {
+    const date = new Date();
+    const safe_token = "橙汁喵喵 香香软软 可可爱爱 不要超我" + "-" + globalConfiguration.config.key + "-" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + "/" + date.getHours() + "/" + date.getMinutes();
+
+    const hash = createHash('sha256');
+    hash.update(safe_token);
+    const safe_token_hash = hash.digest('hex');
+
     if (
-      timingSafeEqual(
-        Uint8Array.from(String(data)),
-        Uint8Array.from(globalConfiguration.config.key)
-      )
+      Uint8Array.from(data as string).length == Uint8Array.from(safe_token_hash).length &&
+      timingSafeEqual(Uint8Array.from(data as string), Uint8Array.from(safe_token_hash))
     ) {
       // The authentication is passed, and the registered session is a trusted session
       logger.info(
