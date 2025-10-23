@@ -22,7 +22,14 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string,
+    public fileManagementRules?: {
+      blacklist: string[];
+      whitelist: string[];
+    }
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -75,6 +82,55 @@ export default class FileManager {
 
   check(destPath: string) {
     if (this.isRootTopRath()) return true;
+    // Check file management rules
+    if (this.fileManagementRules) {
+      const absolutePath = this.toAbsolutePath(destPath);
+      const relativePath = path.relative(this.topPath, absolutePath);
+      const normalizedPath = relativePath.replace(/\\/g, "/");
+
+      // Special case: allow access to root directory to show whitelisted items
+      if (normalizedPath === "") {
+        return true;
+      }
+
+      // Check whitelist
+      if (this.fileManagementRules.whitelist.length > 0) {
+        let isAllowed = false;
+        for (const allowedPath of this.fileManagementRules.whitelist) {
+          // Normalize both paths for comparison
+          let normalizedAllowedPath = allowedPath.replace(/\\/g, "/");
+          if (normalizedAllowedPath.endsWith("/")) {
+            normalizedAllowedPath = normalizedAllowedPath.slice(0, -1);
+          }
+          if (
+            normalizedPath === normalizedAllowedPath ||
+            normalizedPath.startsWith(normalizedAllowedPath + "/")
+          ) {
+            isAllowed = true;
+            break;
+          }
+        }
+        if (!isAllowed) {
+          return false;
+        }
+      }
+
+      // Check blacklist
+      for (const forbiddenPath of this.fileManagementRules.blacklist) {
+        // Normalize both paths for comparison
+        let normalizedForbiddenPath = forbiddenPath.replace(/\\/g, "/");
+        if (normalizedForbiddenPath.endsWith("/")) {
+          normalizedForbiddenPath = normalizedForbiddenPath.slice(0, -1);
+        }
+        if (
+          normalizedPath === normalizedForbiddenPath ||
+          normalizedPath.startsWith(normalizedForbiddenPath + "/")
+        ) {
+          return false;
+        }
+      }
+    }
+
     return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
   }
 
@@ -98,7 +154,12 @@ export default class FileManager {
       .map((dirent) => ({
         name: dirent.name,
         type: dirent.isFile() ? 1 : 0
-      }));
+      }))
+      // Apply file management rules to filter out items that should not be visible
+      .filter(item => {
+        // Check if this specific file/directory is allowed based on the file management rules
+        return this.check(item.name);
+      });
 
     const total = filteredItems.length;
 

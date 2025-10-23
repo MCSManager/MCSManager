@@ -10,7 +10,8 @@ export function getFileManager(instanceUuid: string) {
   if (!instance)
     throw new Error($t("TXT_CODE_file_router_service.instanceNotExit", { uuid: instanceUuid }));
   const fileCode = instance.config?.fileCode;
-  return new FileManager(instance.absoluteCwdPath(), fileCode);
+  const fileManagementRules = instance.config?.fileManagementRules;
+  return new FileManager(instance.absoluteCwdPath(), fileCode, fileManagementRules);
 }
 
 let cacheDisks: string[] = [];

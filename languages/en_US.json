@@ -2882,5 +2882,12 @@
   "TXT_CODE_caaac421": "Import from clipboard",
   "TXT_CODE_1df9fbd5": "Import",
   "TXT_CODE_53499d7": "Create blank template",
-  "TXT_CODE_94f55150": "Visual preset template editor"
+  "TXT_CODE_94f55150": "Visual preset template editor",
+  "TXT_CODE_fileManagementRules": "File Management Rules",
+  "TXT_CODE_blacklist": "Blacklist",
+  "TXT_CODE_whitelist": "Whitelist",
+  "TXT_CODE_blacklistDesc": "Files or folders listed here will not be displayed in the file management interface. One entry per line.",
+  "TXT_CODE_whitelistDesc": "Only files or folders listed here will be displayed in the file management interface. One entry per line.",
+  "TXT_CODE_blacklistPlaceholder": "Enter file or folder names to hide, one per line.\nExample:\nconfig/\nsensitive.txt",
+  "TXT_CODE_whitelistPlaceholder": "Enter file or folder names to show, one per line.\nExample:\nworld/\nserver.properties"
 }

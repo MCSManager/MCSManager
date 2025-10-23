@@ -2783,5 +2783,12 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
+  "TXT_CODE_fileManagementRules": "Dateiverwaltungsregeln",
+  "TXT_CODE_blacklist": "Schwarze Liste",
+  "TXT_CODE_whitelist": "Weiße Liste",
+  "TXT_CODE_blacklistDesc": "Hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche nicht angezeigt. Ein Eintrag pro Zeile.",
+  "TXT_CODE_whitelistDesc": "Nur hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche angezeigt. Ein Eintrag pro Zeile.",
+  "TXT_CODE_blacklistPlaceholder": "Geben Sie die Namen der zu versteckenden Dateien oder Ordner ein, einen pro Zeile.\nBeispiel:\nconfig/\nsensitive.txt",
+  "TXT_CODE_whitelistPlaceholder": "Geben Sie die Namen der anzuzeigenden Dateien oder Ordner ein, einen pro Zeile.\nBeispiel:\nworld/\nserver.properties"
 }

@@ -20,6 +20,12 @@ declare global {
     category: number;
     basePort: number;
 
+    // 文件管理限制规则
+    fileManagementRules: {
+      blacklist: string[]; // 黑名单：不允许访问的文件/目录
+      whitelist: string[]; // 白名单：只允许访问的文件/目录（如果为空，则不限制）
+    };
+
     // Steam RCON
     enableRcon?: boolean;
     rconPassword?: string;

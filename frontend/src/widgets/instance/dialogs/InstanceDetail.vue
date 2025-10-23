@@ -25,6 +25,16 @@ interface FormDetail extends InstanceDetail {
   dayjsEndTime?: Dayjs;
   networkAliasesText: string;
   imageSelectMethod: "SELECT" | "EDIT";
+  // 文件管理限制规则
+  fileManagementRules: {
+    blacklist: string[];
+    whitelist: string[];
+  };
+  // 文件管理限制规则（字符串格式，用于表单绑定）
+  fileManagementRulesText: {
+    blacklist: string;
+    whitelist: string;
+  };
 }
 
 const props = defineProps<{
@@ -71,11 +81,23 @@ const UPDATE_CMD_TEMPLATE =
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
 const initFormDetail = () => {
   if (props.instanceInfo) {
+    // 初始化文件管理规则
+    const fileManagementRules = props.instanceInfo?.config?.fileManagementRules || {
+      blacklist: [],
+      whitelist: []
+    };
+    
     options.value = {
       ...props.instanceInfo,
       dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
       networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
-      imageSelectMethod: "SELECT"
+      imageSelectMethod: "SELECT",
+      fileManagementRules,
+      // 将数组转换为字符串用于表单绑定
+      fileManagementRulesText: {
+        blacklist: fileManagementRules.blacklist.join('\n'),
+        whitelist: fileManagementRules.whitelist.join('\n')
+      }
     };
   }
 };
@@ -199,7 +221,12 @@ const rules: Record<string, any> = {
       }
     ]
   },
-  dockerImage: []
+  dockerImage: [],
+  // 文件管理限制规则验证
+  fileManagementRules: {
+    blacklist: [],
+    whitelist: []
+  }
 };
 
 const submit = async () => {
@@ -231,6 +258,11 @@ const encodeFormData = () => {
       .split(",")
       .map((v) => v.trim())
       .filter((v) => v !== "");
+    // 处理文件管理规则，将文本转换回数组
+    postData.config.fileManagementRules = {
+      blacklist: postData.fileManagementRulesText.blacklist.split('\n').filter(item => item.trim() !== ''),
+      whitelist: postData.fileManagementRulesText.whitelist.split('\n').filter(item => item.trim() !== '')
+    };
     return postData;
   }
   throw new Error("Ref Options is null");
@@ -489,6 +521,49 @@ defineExpose({
                 :placeholder="t('TXT_CODE_9aa83c05')"
                 :disabled="isGlobalTerminal"
                 style="width: 400px"
+              />
+            </a-form-item>
+          </a-col>
+          
+          <!-- 文件管理限制规则设置 -->
+          <a-col :span="24">
+            <a-divider>{{ t("TXT_CODE_fileManagementRules") }}</a-divider>
+          </a-col>
+          
+          <!-- 黑名单设置 -->
+          <a-col :xs="24" :lg="12">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_blacklist") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_blacklistDesc')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_blacklistDesc") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.fileManagementRulesText.blacklist"
+                :rows="3"
+                :placeholder="t('TXT_CODE_blacklistPlaceholder')"
+              />
+            </a-form-item>
+          </a-col>
+          
+          <!-- 白名单设置 -->
+          <a-col :xs="24" :lg="12">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_whitelist") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_whitelistDesc')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_whitelistDesc") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.fileManagementRulesText.whitelist"
+                :rows="3"
+                :placeholder="t('TXT_CODE_whitelistPlaceholder')"
               />
             </a-form-item>
           </a-col>

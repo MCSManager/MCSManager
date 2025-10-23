@@ -244,6 +244,16 @@ export default class Instance extends EventEmitter {
       if (!this.config.basePort) this.allocatePort(this.config);
       StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
     }
+        
+    // 处理文件管理规则
+    if (cfg.fileManagementRules) {
+      if (Array.isArray(cfg.fileManagementRules.blacklist)) {
+        this.config.fileManagementRules.blacklist = cfg.fileManagementRules.blacklist;
+      }
+      if (Array.isArray(cfg.fileManagementRules.whitelist)) {
+        this.config.fileManagementRules.whitelist = cfg.fileManagementRules.whitelist;
+      }
+    }
   }
 
   allocatePort(cfg: InstanceConfig) {

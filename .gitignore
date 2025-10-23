@@ -124,3 +124,6 @@ src/public/1.png
 */.idea/*
 
 .turbo
+
+.iflow/
+IFLOW.md

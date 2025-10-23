@@ -28,6 +28,14 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
   public category = 0;
   public basePort = 0;
+  // File management restrictions
+  public fileManagementRules: {
+    blacklist: string[]; // Files/directories that are not allowed to be accessed
+    whitelist: string[]; // Files/directories that are only allowed to be accessed (if not empty, only these are allowed)
+  } = {
+    blacklist: [],
+    whitelist: []
+  };
 
   // Steam RCON protocol
   public enableRcon = false;
