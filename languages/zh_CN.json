@@ -2884,10 +2884,10 @@
   "TXT_CODE_53499d7": "新建空白模板",
   "TXT_CODE_94f55150": "可视化预设模板编辑器",
   "TXT_CODE_fileManagementRules": "文件管理规则",
-  "TXT_CODE_blacklist": "黑名单",
-  "TXT_CODE_whitelist": "白名单",
-  "TXT_CODE_blacklistDesc": "在此处列出的文件或文件夹将不会在文件管理界面中显示。每行一个条目。",
-  "TXT_CODE_whitelistDesc": "仅在此处列出的文件或文件夹将在文件管理界面中显示。每行一个条目。",
-  "TXT_CODE_blacklistPlaceholder": "输入要隐藏的文件或文件夹名称，每行一个。\n例如：\nconfig/\nsensitive.txt",
-  "TXT_CODE_whitelistPlaceholder": "输入要显示的文件或文件夹名称，每行一个。\n例如：\nworld/\nserver.properties"
+  "TXT_CODE_mcsmignore": ".mcsmignore 文件",
+  "TXT_CODE_mcsmallow": ".mcsmallow 文件",
+  "TXT_CODE_mcsmignoreDesc": "在此处列出的文件或文件夹将不会在文件管理界面中显示。每行一个条目，支持通配符匹配。",
+  "TXT_CODE_mcsmallowDesc": "仅在此处列出的文件或文件夹将在文件管理界面中显示。每行一个条目，支持通配符匹配。",
+  "TXT_CODE_mcsmignorePlaceholder": "输入要隐藏的文件或文件夹名称，每行一个。\n支持通配符匹配，例如：\nconfig/\nsensitive.txt\n*.log\ntemp/**",
+  "TXT_CODE_mcsmallowPlaceholder": "输入要显示的文件或文件夹名称，每行一个。\n支持通配符匹配，例如：\nworld/\nserver.properties\nplugins/**\n*.yml"
 }

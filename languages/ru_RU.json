@@ -2783,5 +2783,12 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Такая задача уже существует.",
   "TXT_CODE_system_instance_control.illegalName": "Некорректное имя задачи. Допустимы только подчеркивания, цифры, буквы и некоторые локальные языковые символы.",
   "TXT_CODE_ui.help": "[Терминал] У демона есть базовые интерактивные функции. Пожалуйста, введите 'help' для получения больше информации.",
-  "TXT_CODE_version.versionDetectErr": "Ошибка проверки версии"
+  "TXT_CODE_version.versionDetectErr": "Ошибка проверки версии",
+  "TXT_CODE_fileManagementRules": "Правила управления файлами",
+  "TXT_CODE_mcsmignore": ".mcsmignore файл",
+  "TXT_CODE_mcsmallow": ".mcsmallow файл",
+  "TXT_CODE_mcsmignoreDesc": "Файлы или папки, перечисленные здесь, не будут отображаться в интерфейсе управления файлами. Одна запись на строку, поддерживает сопоставление с шаблонами.",
+  "TXT_CODE_mcsmallowDesc": "Только файлы или папки, перечисленные здесь, будут отображаться в интерфейсе управления файлами. Одна запись на строку, поддерживает сопоставление с шаблонами.",
+  "TXT_CODE_mcsmignorePlaceholder": "Введите имена файлов или папок для скрытия, по одному на строку.\nПоддерживает сопоставление с шаблонами, например:\nconfig/\nsensitive.txt\n*.log\ntemp/**",
+  "TXT_CODE_mcsmallowPlaceholder": "Введите имена файлов или папок для отображения, по одному на строку.\nПоддерживает сопоставление с шаблонами, например:\nworld/\nserver.properties\nplugins/**\n*.yml"
 }

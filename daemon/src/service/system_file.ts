@@ -7,6 +7,8 @@ import { compress, decompress } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
+// 使用动态导入避免类型冲突
+const loadMinimatch = () => require("minimatch");
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
@@ -39,6 +41,46 @@ export default class FileManager {
       this.fileCode = "utf-8";
       if (i18next.language == "zh_cn") this.fileCode = "gbk";
     }
+  }
+
+  /**
+   * 读取并解析 .mcsmignore 文件
+   * @returns 忽略规则数组
+   */
+  private async readMcsmIgnore(): Promise<string[]> {
+    try {
+      const ignoreFilePath = path.join(this.topPath, ".mcsmignore");
+      if (fs.existsSync(ignoreFilePath)) {
+        const content = fs.readFileSync(ignoreFilePath, "utf-8");
+        return content
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "" && !line.startsWith("#"));
+      }
+    } catch (error) {
+      // 忽略读取错误
+    }
+    return [];
+  }
+
+  /**
+   * 读取并解析 .mcsmallow 文件
+   * @returns 白名单规则数组
+   */
+  private async readMcsmAllow(): Promise<string[]> {
+    try {
+      const allowFilePath = path.join(this.topPath, ".mcsmallow");
+      if (fs.existsSync(allowFilePath)) {
+        const content = fs.readFileSync(allowFilePath, "utf-8");
+        return content
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "" && !line.startsWith("#"));
+      }
+    } catch (error) {
+      // 忽略读取错误
+    }
+    return [];
   }
 
   isRootTopRath() {
@@ -80,54 +122,104 @@ export default class FileManager {
     return destAbsolutePath.indexOf(topAbsolutePath) === 0;
   }
 
-  check(destPath: string) {
+  async check(destPath: string) {
     if (this.isRootTopRath()) return true;
-    // Check file management rules
-    if (this.fileManagementRules) {
-      const absolutePath = this.toAbsolutePath(destPath);
-      const relativePath = path.relative(this.topPath, absolutePath);
-      const normalizedPath = relativePath.replace(/\\/g, "/");
+    
+    // 隐藏配置文件自身
+    const fileName = path.basename(destPath);
+    if (fileName === '.mcsmignore' || fileName === '.mcsmallow') {
+      return false;
+    }
+    
+    const absolutePath = this.toAbsolutePath(destPath);
+    const relativePath = path.relative(this.topPath, absolutePath);
+    const normalizedPath = relativePath.replace(/\\/g, "/");
 
-      // Special case: allow access to root directory to show whitelisted items
-      if (normalizedPath === "") {
-        return true;
-      }
-
-      // Check whitelist
-      if (this.fileManagementRules.whitelist.length > 0) {
-        let isAllowed = false;
-        for (const allowedPath of this.fileManagementRules.whitelist) {
-          // Normalize both paths for comparison
-          let normalizedAllowedPath = allowedPath.replace(/\\/g, "/");
-          if (normalizedAllowedPath.endsWith("/")) {
-            normalizedAllowedPath = normalizedAllowedPath.slice(0, -1);
-          }
-          if (
-            normalizedPath === normalizedAllowedPath ||
-            normalizedPath.startsWith(normalizedAllowedPath + "/")
-          ) {
+    // Check .mcsmallow rules (whitelist)
+    const mcsmAllowRules = await this.readMcsmAllow();
+    if (mcsmAllowRules.length > 0) {
+      const minimatch = loadMinimatch();
+      let isAllowed = false;
+      // 检查文件是否在白名单中
+      for (const rule of mcsmAllowRules) {
+        // 处理否定规则 (!)
+        const isNegated = rule.startsWith('!');
+        const actualRule = isNegated ? rule.substring(1) : rule;
+        
+        // 检查路径是否匹配规则
+        let isMatch = false;
+        
+        // 如果规则以 / 结尾，表示是目录规则，我们需要处理两种情况：
+        // 1. 目录本身 (如 temp/ 匹配 temp)
+        // 2. 目录下的文件 (如 temp/ 匹配 temp/file.txt)
+        if (actualRule.endsWith('/')) {
+          const dirRule = actualRule.slice(0, -1); // 去掉末尾的 /
+          // 匹配目录本身或目录下的文件
+          isMatch = minimatch(normalizedPath, dirRule, { dot: true }) || 
+                    minimatch(normalizedPath, dirRule + '/**', { dot: true });
+        } else {
+          // 标准规则匹配
+          isMatch = minimatch(normalizedPath, actualRule, { dot: true }) || 
+                    minimatch(path.basename(normalizedPath), actualRule);
+        }
+        
+        if (isMatch) {
+          if (isNegated) {
+            // 否定规则匹配，取消允许
+            isAllowed = false;
+          } else {
+            // 普通规则匹配，标记为允许
             isAllowed = true;
-            break;
           }
         }
-        if (!isAllowed) {
-          return false;
+      }
+      
+      // 如果白名单不为空但文件不在白名单中，则拒绝访问
+      if (!isAllowed) {
+        return false;
+      }
+    }
+
+    // Check .mcsmignore rules (blacklist)
+    const mcsmIgnoreRules = await this.readMcsmIgnore();
+    if (mcsmIgnoreRules.length > 0) {
+      const minimatch = loadMinimatch();
+      let ignored = false;
+      // 检查文件是否被 .mcsmignore 规则忽略
+      for (const rule of mcsmIgnoreRules) {
+        // 处理否定规则 (!)
+        const isNegated = rule.startsWith('!');
+        const actualRule = isNegated ? rule.substring(1) : rule;
+        
+        // 检查路径是否匹配规则
+        let isMatch = false;
+        
+        // 如果规则以 / 结尾，表示是目录规则，我们需要处理两种情况：
+        // 1. 目录本身 (如 temp/ 匹配 temp)
+        // 2. 目录下的文件 (如 temp/ 匹配 temp/file.txt)
+        if (actualRule.endsWith('/')) {
+          const dirRule = actualRule.slice(0, -1); // 去掉末尾的 /
+          // 匹配目录本身或目录下的文件
+          isMatch = minimatch(normalizedPath, dirRule, { dot: true }) || 
+                    minimatch(normalizedPath, dirRule + '/**', { dot: true });
+        } else {
+          // 标准规则匹配
+          isMatch = minimatch(normalizedPath, actualRule, { dot: true }) || 
+                    minimatch(path.basename(normalizedPath), actualRule);
+        }
+        
+        if (isMatch) {
+          if (isNegated) {
+            // 否定规则匹配，取消忽略
+            ignored = false;
+          } else {
+            // 普通规则匹配，标记为忽略
+            ignored = true;
+          }
         }
       }
-
-      // Check blacklist
-      for (const forbiddenPath of this.fileManagementRules.blacklist) {
-        // Normalize both paths for comparison
-        let normalizedForbiddenPath = forbiddenPath.replace(/\\/g, "/");
-        if (normalizedForbiddenPath.endsWith("/")) {
-          normalizedForbiddenPath = normalizedForbiddenPath.slice(0, -1);
-        }
-        if (
-          normalizedPath === normalizedForbiddenPath ||
-          normalizedPath.startsWith(normalizedForbiddenPath + "/")
-        ) {
-          return false;
-        }
+      if (ignored) {
+        return false; // 被忽略的文件/目录，返回 false
       }
     }
 
@@ -154,24 +246,38 @@ export default class FileManager {
       .map((dirent) => ({
         name: dirent.name,
         type: dirent.isFile() ? 1 : 0
-      }))
-      // Apply file management rules to filter out items that should not be visible
-      .filter(item => {
-        // Check if this specific file/directory is allowed based on the file management rules
-        return this.check(item.name);
-      });
+      }));
 
-    const total = filteredItems.length;
+    // 由于需要异步过滤，使用 Promise.all 来处理
+    const filteredResults = await Promise.all(
+      filteredItems.map(async (item) => {
+        // 隐藏配置文件自身
+        if (item.name === '.mcsmignore' || item.name === '.mcsmallow') {
+          return { item, isValid: false };
+        }
+        
+        // Check if this specific file/directory is allowed based on the file management rules
+        const isValid = await this.check(item.name);
+        return { item, isValid };
+      })
+    );
+
+    // 过滤出有效的项目
+    const validItems = filteredResults
+      .filter(result => result.isValid)
+      .map(result => result.item);
+
+    const total = validItems.length;
 
     // Sort: directories first (type 0), then files (type 1), both alphabetically
-    filteredItems.sort((a, b) => {
+    validItems.sort((a, b) => {
       if (a.type !== b.type) return a.type - b.type;
       return a.name.localeCompare(b.name);
     });
 
     const sliceStart = page * pageSize;
     const sliceEnd = sliceStart + pageSize;
-    const targetItems = filteredItems.slice(sliceStart, sliceEnd);
+    const targetItems = validItems.slice(sliceStart, sliceEnd);
 
     const statPromises = targetItems.map(async (item) => {
       try {
@@ -297,7 +403,7 @@ export default class FileManager {
     const filesPath = [];
     let totalSize = 0;
     for (const iterator of files) {
-      if (this.check(iterator)) {
+      if (await this.check(iterator)) {
         filesPath.push(this.toAbsolutePath(iterator));
         try {
           totalSize += fs.statSync(this.toAbsolutePath(iterator))?.size;

@@ -37,7 +37,7 @@ routerApp.use((event, ctx, data, next) => {
 });
 
 // Get the list of instances of this daemon (query)
-routerApp.on("instance/select", (ctx, data) => {
+routerApp.on("instance/select", async (ctx, data) => {
   const page = toNumber(data.page) ?? 1;
   const pageSize = toNumber(data.pageSize) ?? 1;
   const condition = data.condition;
@@ -53,7 +53,6 @@ routerApp.on("instance/select", (ctx, data) => {
   }
 
   let result = queryWrapper.select<Instance>((v) => {
-    if (v.config.tag) allTags.push(...v.config.tag);
     if (InstanceSubsystem.isGlobalInstance(v)) return false;
     if (
       condition.instanceName &&
@@ -89,10 +88,9 @@ routerApp.on("instance/select", (ctx, data) => {
     });
   });
 
-
   protocol.response(ctx, {
     page: pageResult.page,
-    pageSize: pageResult.pageSize,
+    pageSize: pageSize,
     maxPage: pageResult.maxPage,
     allTags: arrayUnique(allTags).slice(0, 60),
     data: overview
@@ -482,7 +480,7 @@ routerApp.on("instance/query_asynchronous", (ctx, data) => {
   }
 });
 
-routerApp.on("instance/process_config/list", (ctx, data) => {
+routerApp.on("instance/process_config/list", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   const files = data.files;
   const result: any[] = [];
@@ -491,7 +489,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     const fileManager = new FileManager(instance.absoluteCwdPath());
     for (const filePath of files) {
-      if (fileManager.check(filePath)) {
+      if (await fileManager.check(filePath)) {
         result.push({
           file: filePath,
           check: true
@@ -505,7 +503,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
 });
 
 // Get or update the content of the instance specified file
-routerApp.on("instance/process_config/file", (ctx, data) => {
+routerApp.on("instance/process_config/file", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   const fileName = data.fileName;
   const config = data.config || null;
@@ -514,7 +512,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
     const fileManager = new FileManager(instance.absoluteCwdPath());
-    if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
+    if (!await fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
     const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
     const processConfig = new ProcessConfig({
       fileName: fileName,

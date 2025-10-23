@@ -32,6 +32,7 @@
     "koa-send": "^5.0.1",
     "log4js": "^6.4.0",
     "mcsmanager-common": "1.1.0",
+    "minimatch": "^3.1.2",
     "node-schedule": "^2.0.0",
     "node-stream-zip": "^1.15.0",
     "os-utils": "0.0.14",

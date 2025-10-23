@@ -6,6 +6,7 @@ import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import { getNetworkModeList, imageList } from "@/services/apis/envImage";
 import { updateAnyInstanceConfig } from "@/services/apis/instance";
+import { fileContent } from "@/services/apis/fileManager";
 import { dockerPortsArray } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
 import type { DockerNetworkModes, InstanceDetail } from "@/types";
@@ -21,20 +22,18 @@ import { computed, ref, unref } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 
-interface FormDetail extends InstanceDetail {
+interface FormDetail {
+  instanceUuid: string;
+  started: number;
+  status: number;
+  config: IGlobalInstanceConfig;
+  info: any;
   dayjsEndTime?: Dayjs;
   networkAliasesText: string;
   imageSelectMethod: "SELECT" | "EDIT";
-  // 文件管理限制规则
-  fileManagementRules: {
-    blacklist: string[];
-    whitelist: string[];
-  };
-  // 文件管理限制规则（字符串格式，用于表单绑定）
-  fileManagementRulesText: {
-    blacklist: string;
-    whitelist: string;
-  };
+  // .mcsmignore 和 .mcsmallow 文件内容
+  mcsmIgnoreContent: string;
+  mcsmAllowContent: string;
 }
 
 const props = defineProps<{
@@ -79,26 +78,62 @@ const updateCommandDesc = t("TXT_CODE_fa487a47");
 const UPDATE_CMD_TEMPLATE =
   t("TXT_CODE_61ca492b") +
   `"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit`;
-const initFormDetail = () => {
-  if (props.instanceInfo) {
-    // 初始化文件管理规则
-    const fileManagementRules = props.instanceInfo?.config?.fileManagementRules || {
-      blacklist: [],
-      whitelist: []
-    };
-    
-    options.value = {
-      ...props.instanceInfo,
-      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
-      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
-      imageSelectMethod: "SELECT",
-      fileManagementRules,
-      // 将数组转换为字符串用于表单绑定
-      fileManagementRulesText: {
-        blacklist: fileManagementRules.blacklist.join('\n'),
-        whitelist: fileManagementRules.whitelist.join('\n')
+// 使用 fileContent API
+const { state: fileContentState, execute: executeFileContent } = fileContent();
+
+// 初始化表单数据
+const initFormDetail = async () => {
+  if (!props.instanceInfo) return;
+  
+  options.value = {
+    instanceUuid: props.instanceInfo.instanceUuid || "",
+    started: props.instanceInfo.started || 0,
+    status: props.instanceInfo.status || 0,
+    config: props.instanceInfo.config,
+    info: props.instanceInfo.info || {},
+    dayjsEndTime: props.instanceInfo.config.endTime ? timestampToDayjs(props.instanceInfo.config.endTime) : undefined,
+    networkAliasesText: (props.instanceInfo.config.docker.networkAliases || []).join(", "),
+    imageSelectMethod: "SELECT",
+    mcsmIgnoreContent: "",
+    mcsmAllowContent: ""
+  };
+  
+  // 读取 .mcsmignore 文件
+  try {
+    await executeFileContent({
+      params: {
+        daemonId: props.daemonId ?? "",
+        uuid: props.instanceId ?? ""
+      },
+      data: {
+        target: ".mcsmignore"
       }
-    };
+    });
+    
+    if (fileContentState.value && typeof fileContentState.value === "string") {
+      options.value.mcsmIgnoreContent = fileContentState.value;
+    }
+  } catch (error) {
+    options.value.mcsmIgnoreContent = "";
+  }
+  
+  // 读取 .mcsmallow 文件
+  try {
+    await executeFileContent({
+      params: {
+        daemonId: props.daemonId ?? "",
+        uuid: props.instanceId ?? ""
+      },
+      data: {
+        target: ".mcsmallow"
+      }
+    });
+    
+    if (fileContentState.value && typeof fileContentState.value === "string") {
+      options.value.mcsmAllowContent = fileContentState.value;
+    }
+  } catch (error) {
+    options.value.mcsmAllowContent = "";
   }
 };
 
@@ -169,7 +204,7 @@ const loadNetworkModes = async () => {
 
 const openDialog = async () => {
   open.value = true;
-  initFormDetail();
+  await initFormDetail();
   await Promise.all([loadImages(), loadNetworkModes()]);
 };
 
@@ -233,7 +268,7 @@ const submit = async () => {
   try {
     await formRef.value?.validateFields();
     if (!options.value?.config) throw new Error("");
-    const postData = encodeFormData();
+    const postData = await encodeFormData();
     await execute({
       params: {
         uuid: props.instanceId ?? "",
@@ -250,7 +285,11 @@ const submit = async () => {
   }
 };
 
-const encodeFormData = () => {
+const encodeFormData = async () => {
+  if (!options.value) {
+    throw new Error("Options is not initialized");
+  }
+  
   const postData = _.cloneDeep(unref(options));
   if (postData) {
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
@@ -259,10 +298,43 @@ const encodeFormData = () => {
       .map((v) => v.trim())
       .filter((v) => v !== "");
     // 处理文件管理规则，将文本转换回数组
-    postData.config.fileManagementRules = {
-      blacklist: postData.fileManagementRulesText.blacklist.split('\n').filter(item => item.trim() !== ''),
-      whitelist: postData.fileManagementRulesText.whitelist.split('\n').filter(item => item.trim() !== '')
-    };
+    // 保存 .mcsmignore 文件内容
+    if (options.value.mcsmIgnoreContent !== undefined) {
+      try {
+        await executeFileContent({
+          params: {
+            daemonId: props.daemonId ?? "",
+            uuid: props.instanceId ?? ""
+          },
+          data: {
+            target: ".mcsmignore",
+            text: options.value.mcsmIgnoreContent
+          }
+        });
+      } catch (err) {
+        console.error("保存 .mcsmignore 文件失败:", err);
+        // 不中断提交过程，只记录错误
+      }
+    }
+    
+    // 保存 .mcsmallow 文件内容
+    if (options.value.mcsmAllowContent !== undefined) {
+      try {
+        await executeFileContent({
+          params: {
+            daemonId: props.daemonId ?? "",
+            uuid: props.instanceId ?? ""
+          },
+          data: {
+            target: ".mcsmallow",
+            text: options.value.mcsmAllowContent
+          }
+        });
+      } catch (err) {
+        console.error("保存 .mcsmallow 文件失败:", err);
+        // 不中断提交过程，只记录错误
+      }
+    }
     return postData;
   }
   throw new Error("Ref Options is null");
@@ -525,45 +597,38 @@ defineExpose({
             </a-form-item>
           </a-col>
           
-          <!-- 文件管理限制规则设置 -->
-          <a-col :span="24">
-            <a-divider>{{ t("TXT_CODE_fileManagementRules") }}</a-divider>
-          </a-col>
+          <a-divider orientation="left">
+            <a-typography-title :level="5">
+              {{ t("TXT_CODE_fileManagementRules") }}
+            </a-typography-title>
+          </a-divider>
           
-          <!-- 黑名单设置 -->
-          <a-col :xs="24" :lg="12">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_blacklist") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-tooltip :title="t('TXT_CODE_blacklistDesc')" placement="top">
-                  <a-typography-text type="secondary" class="typography-text-ellipsis">
-                    {{ t("TXT_CODE_blacklistDesc") }}
-                  </a-typography-text>
-                </a-tooltip>
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item :label="t('TXT_CODE_mcsmignore')" name="mcsmignore">
+              <a-typography-paragraph type="secondary" class="typography-text-ellipsis">
+                {{ t("TXT_CODE_mcsmignoreDesc") }}
               </a-typography-paragraph>
               <a-textarea
-                v-model:value="options.fileManagementRulesText.blacklist"
-                :rows="3"
-                :placeholder="t('TXT_CODE_blacklistPlaceholder')"
+                v-model:value="options.mcsmIgnoreContent"
+                :placeholder="t('TXT_CODE_mcsmignorePlaceholder')"
+                :rows="4"
+                show-count
+                :maxlength="10000"
               />
             </a-form-item>
           </a-col>
           
-          <!-- 白名单设置 -->
-          <a-col :xs="24" :lg="12">
-            <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_whitelist") }}</a-typography-title>
-              <a-typography-paragraph>
-                <a-tooltip :title="t('TXT_CODE_whitelistDesc')" placement="top">
-                  <a-typography-text type="secondary" class="typography-text-ellipsis">
-                    {{ t("TXT_CODE_whitelistDesc") }}
-                  </a-typography-text>
-                </a-tooltip>
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item :label="t('TXT_CODE_mcsmallow')" name="mcsmallow">
+              <a-typography-paragraph type="secondary" class="typography-text-ellipsis">
+                {{ t("TXT_CODE_mcsmallowDesc") }}
               </a-typography-paragraph>
               <a-textarea
-                v-model:value="options.fileManagementRulesText.whitelist"
-                :rows="3"
-                :placeholder="t('TXT_CODE_whitelistPlaceholder')"
+                v-model:value="options.mcsmAllowContent"
+                :placeholder="t('TXT_CODE_mcsmallowPlaceholder')"
+                :rows="4"
+                show-count
+                :maxlength="10000"
               />
             </a-form-item>
           </a-col>
@@ -949,9 +1014,6 @@ defineExpose({
 </template>
 
 <style scoped>
-.two-line-height {
-}
-
 .typography-text-ellipsis {
   display: block;
   white-space: nowrap;

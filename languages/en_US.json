@@ -2884,10 +2884,10 @@
   "TXT_CODE_53499d7": "Create blank template",
   "TXT_CODE_94f55150": "Visual preset template editor",
   "TXT_CODE_fileManagementRules": "File Management Rules",
-  "TXT_CODE_blacklist": "Blacklist",
-  "TXT_CODE_whitelist": "Whitelist",
-  "TXT_CODE_blacklistDesc": "Files or folders listed here will not be displayed in the file management interface. One entry per line.",
-  "TXT_CODE_whitelistDesc": "Only files or folders listed here will be displayed in the file management interface. One entry per line.",
-  "TXT_CODE_blacklistPlaceholder": "Enter file or folder names to hide, one per line.\nExample:\nconfig/\nsensitive.txt",
-  "TXT_CODE_whitelistPlaceholder": "Enter file or folder names to show, one per line.\nExample:\nworld/\nserver.properties"
+  "TXT_CODE_mcsmignore": ".mcsmignore File",
+  "TXT_CODE_mcsmallow": ".mcsmallow File",
+  "TXT_CODE_mcsmignoreDesc": "Files or folders listed here will not be displayed in the file management interface. One entry per line, supports wildcard matching.",
+  "TXT_CODE_mcsmallowDesc": "Only files or folders listed here will be displayed in the file management interface. One entry per line, supports wildcard matching.",
+  "TXT_CODE_mcsmignorePlaceholder": "Enter file or folder names to hide, one per line.\nSupports wildcard matching, for example:\nconfig/\nsensitive.txt\n*.log\ntemp/**",
+  "TXT_CODE_mcsmallowPlaceholder": "Enter file or folder names to show, one per line.\nSupports wildcard matching, for example:\nworld/\nserver.properties\nplugins/**\n*.yml"
 }

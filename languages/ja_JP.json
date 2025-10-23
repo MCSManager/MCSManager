@@ -2783,5 +2783,12 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "重複したタスクがすでに存在します",
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
-  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました"
+  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
+  "TXT_CODE_fileManagementRules": "ファイル管理ルール",
+  "TXT_CODE_mcsmignore": ".mcsmignore ファイル",
+  "TXT_CODE_mcsmallow": ".mcsmallow ファイル",
+  "TXT_CODE_mcsmignoreDesc": "ここにリストされたファイルまたはフォルダはファイル管理インターフェースに表示されません。1行に1エントリ、ワイルドカードマッチングをサポートします。",
+  "TXT_CODE_mcsmallowDesc": "ここにリストされたファイルまたはフォルダのみがファイル管理インターフェースに表示されます。1行に1エントリ、ワイルドカードマッチングをサポートします。",
+  "TXT_CODE_mcsmignorePlaceholder": "非表示にするファイルまたはフォルダ名を入力してください、1行に1つ。\nワイルドカードマッチングをサポート、例えば：\nconfig/\nsensitive.txt\n*.log\ntemp/**",
+  "TXT_CODE_mcsmallowPlaceholder": "表示するファイルまたはフォルダ名を入力してください、1行に1つ。\nワイルドカードマッチングをサポート、例えば：\nworld/\nserver.properties\nplugins/**\n*.yml"
 }

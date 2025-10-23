@@ -2785,10 +2785,10 @@
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
   "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
   "TXT_CODE_fileManagementRules": "Dateiverwaltungsregeln",
-  "TXT_CODE_blacklist": "Schwarze Liste",
-  "TXT_CODE_whitelist": "Weiße Liste",
-  "TXT_CODE_blacklistDesc": "Hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche nicht angezeigt. Ein Eintrag pro Zeile.",
-  "TXT_CODE_whitelistDesc": "Nur hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche angezeigt. Ein Eintrag pro Zeile.",
-  "TXT_CODE_blacklistPlaceholder": "Geben Sie die Namen der zu versteckenden Dateien oder Ordner ein, einen pro Zeile.\nBeispiel:\nconfig/\nsensitive.txt",
-  "TXT_CODE_whitelistPlaceholder": "Geben Sie die Namen der anzuzeigenden Dateien oder Ordner ein, einen pro Zeile.\nBeispiel:\nworld/\nserver.properties"
+  "TXT_CODE_mcsmignore": ".mcsmignore Datei",
+  "TXT_CODE_mcsmallow": ".mcsmallow Datei",
+  "TXT_CODE_mcsmignoreDesc": "Hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche nicht angezeigt. Ein Eintrag pro Zeile, unterstützt Wildcard-Übereinstimmung.",
+  "TXT_CODE_mcsmallowDesc": "Nur hier aufgeführte Dateien oder Ordner werden in der Dateiverwaltungsoberfläche angezeigt. Ein Eintrag pro Zeile, unterstützt Wildcard-Übereinstimmung.",
+  "TXT_CODE_mcsmignorePlaceholder": "Geben Sie die Namen der zu versteckenden Dateien oder Ordner ein, einen pro Zeile.\nUnterstützt Wildcard-Übereinstimmung, zum Beispiel:\nconfig/\nsensitive.txt\n*.log\ntemp/**",
+  "TXT_CODE_mcsmallowPlaceholder": "Geben Sie die Namen der anzuzeigenden Dateien oder Ordner ein, einen pro Zeile.\nUnterstützt Wildcard-Übereinstimmung, zum Beispiel:\nworld/\nserver.properties\nplugins/**\n*.yml"
 }
