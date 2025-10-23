@@ -31,7 +31,7 @@ interface FormDetail {
   dayjsEndTime?: Dayjs;
   networkAliasesText: string;
   imageSelectMethod: "SELECT" | "EDIT";
-  // .mcsmignore 和 .mcsmallow 文件内容
+  // .mcsm/.fileignore 和 .mcsm/.fileallow 文件内容
   mcsmIgnoreContent: string;
   mcsmAllowContent: string;
 }
@@ -98,7 +98,7 @@ const initFormDetail = async () => {
     mcsmAllowContent: ""
   };
   
-  // 读取 .mcsmignore 文件
+  // 读取 .mcsm/.fileignore 文件
   try {
     await executeFileContent({
       params: {
@@ -106,7 +106,7 @@ const initFormDetail = async () => {
         uuid: props.instanceId ?? ""
       },
       data: {
-        target: ".mcsmignore"
+        target: ".mcsm/.fileignore"
       }
     });
     
@@ -117,7 +117,7 @@ const initFormDetail = async () => {
     options.value.mcsmIgnoreContent = "";
   }
   
-  // 读取 .mcsmallow 文件
+  // 读取 .mcsm/.fileallow 文件
   try {
     await executeFileContent({
       params: {
@@ -125,7 +125,7 @@ const initFormDetail = async () => {
         uuid: props.instanceId ?? ""
       },
       data: {
-        target: ".mcsmallow"
+        target: ".mcsm/.fileallow"
       }
     });
     
@@ -298,7 +298,7 @@ const encodeFormData = async () => {
       .map((v) => v.trim())
       .filter((v) => v !== "");
     // 处理文件管理规则，将文本转换回数组
-    // 保存 .mcsmignore 文件内容
+    // 保存 .mcsm/.fileignore 文件内容
     if (options.value.mcsmIgnoreContent !== undefined) {
       try {
         await executeFileContent({
@@ -307,17 +307,17 @@ const encodeFormData = async () => {
             uuid: props.instanceId ?? ""
           },
           data: {
-            target: ".mcsmignore",
+            target: ".mcsm/.fileignore",
             text: options.value.mcsmIgnoreContent
           }
         });
       } catch (err) {
-        console.error("保存 .mcsmignore 文件失败:", err);
+        console.error("保存 .mcsm/.fileignore 文件失败:", err);
         // 不中断提交过程，只记录错误
       }
     }
     
-    // 保存 .mcsmallow 文件内容
+    // 保存 .mcsm/.fileallow 文件内容
     if (options.value.mcsmAllowContent !== undefined) {
       try {
         await executeFileContent({
@@ -326,12 +326,12 @@ const encodeFormData = async () => {
             uuid: props.instanceId ?? ""
           },
           data: {
-            target: ".mcsmallow",
+            target: ".mcsm/.fileallow",
             text: options.value.mcsmAllowContent
           }
         });
       } catch (err) {
-        console.error("保存 .mcsmallow 文件失败:", err);
+        console.error("保存 .mcsm/.fileallow 文件失败:", err);
         // 不中断提交过程，只记录错误
       }
     }
