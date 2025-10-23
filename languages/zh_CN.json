@@ -2860,7 +2860,6 @@
   "TXT_CODE_72952e19": "请选择要删除的项",
   "TXT_CODE_dfd4fc5a": "编辑器选项 & 说明",
   "TXT_CODE_372e7b9c": "点击“图片封面”即可查看当前分类下的所有模板，点击“安装”即可编辑模板信息，点击“批量编辑”进行删除操作。",
-  "TXT_CODE_29efd001": "复制到剪切板",
   "TXT_CODE_c5a46eba": "下载修改后的文件",
   "TXT_CODE_abedfd03": "取消选择",
   "TXT_CODE_ac10fe01": "请输入模板地址",
@@ -2882,5 +2881,11 @@
   "TXT_CODE_caaac421": "从剪切板导入",
   "TXT_CODE_1df9fbd5": "导入",
   "TXT_CODE_53499d7": "新建空白模板",
-  "TXT_CODE_94f55150": "可视化预设模板编辑器"
+  "TXT_CODE_94f55150": "可视化预设模板编辑器",
+  "TXT_CODE_99a42341": "例如：https://example.com/image.png",
+  "TXT_CODE_e6adf32d": "请输入作者名称",
+  "TXT_CODE_772bb48a": "例如：Java 18+",
+  "TXT_CODE_d79ff710": "例如：RAM 4G",
+  "TXT_CODE_d0d08d6": "例如：123MB",
+  "TXT_CODE_7d839745": "例如：apple, banana, cherry"
 }

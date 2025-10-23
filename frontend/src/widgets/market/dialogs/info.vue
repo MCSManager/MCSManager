@@ -272,13 +272,13 @@ defineExpose({
                 <a-input
                   v-model:value="formData.image"
                   class="mt-10"
-                  placeholder="https://example.com/image.png"
+                  :placeholder="t('TXT_CODE_99a42341')"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="24" :sm="24" :md="12">
               <a-form-item :label="t('TXT_CODE_f4fba0cd')" name="title">
-                <a-input v-model:value="formData.title" placeholder="Application A" />
+                <a-input v-model:value="formData.title" :placeholder="t('TXT_CODE_6b5509c7')" />
               </a-form-item>
 
               <a-form-item :label="t('TXT_CODE_59cdbec3')" name="description">
@@ -304,7 +304,7 @@ defineExpose({
                 </a-col>
                 <a-col :span="24" :lg="12">
                   <a-form-item :label="t('TXT_CODE_3d56da34')" name="author">
-                    <a-input v-model:value="formData.author" placeholder="MCSManager" />
+                    <a-input v-model:value="formData.author" :placeholder="t('TXT_CODE_e6adf32d')" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -434,17 +434,17 @@ defineExpose({
           <a-row :gutter="20">
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_80c85070')" name="runtime">
-                <a-input v-model:value="formData.runtime" placeholder="Java 18+" />
+                <a-input v-model:value="formData.runtime" :placeholder="t('TXT_CODE_772bb48a')" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_683e3033')" name="hardware">
-                <a-input v-model:value="formData.hardware" placeholder="RAM 4G+" />
+                <a-input v-model:value="formData.hardware" :placeholder="t('TXT_CODE_d79ff710')" />
               </a-form-item>
             </a-col>
             <a-col :span="8">
               <a-form-item :label="t('TXT_CODE_8dbcf565')" name="size">
-                <a-input v-model:value="formData.size" placeholder="123MB" />
+                <a-input v-model:value="formData.size" :placeholder="t('TXT_CODE_d0d08d6')" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -457,7 +457,7 @@ defineExpose({
             <a-select
               v-model:value="formData.tags"
               mode="tags"
-              placeholder="apple, banana, cherry"
+              :placeholder="t('TXT_CODE_7d839745')"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
@@ -536,7 +536,7 @@ defineExpose({
             <a-select
               v-model:value="formData.setupInfo.tag"
               mode="tags"
-              placeholder="apple, banana, cherry"
+              :placeholder="t('TXT_CODE_7d839745')"
               :token-separators="[',']"
             ></a-select>
           </a-form-item>
