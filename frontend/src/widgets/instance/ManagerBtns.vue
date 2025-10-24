@@ -300,5 +300,16 @@ watch(instanceInfo, (cfg, oldCfg) => {
   bottom: 0;
   left: 0;
   right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 移动设备窄屏幕下的自适应高度 */
+@media (max-width: 600px) {
+  .function-btns-container {
+    position: relative;
+    height: auto;
+    min-height: 100%;
+  }
 }
 </style>
