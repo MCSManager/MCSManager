@@ -13,6 +13,15 @@ const loadMinimatch = () => require("minimatch");
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
 
+type RuleType = "allow" | "ignore";
+
+const RULE_FILES: Record<RuleType, string> = {
+  allow: ".fileallow",
+  ignore: ".fileignore"
+};
+
+const HIDDEN_ENTRIES = new Set([".fileignore", ".fileallow", ".mcsm"]);
+
 interface IFile {
   name: string;
   size: number;
@@ -23,6 +32,13 @@ interface IFile {
 
 export default class FileManager {
   public cwd: string = ".";
+
+  private readonly rulesCache: Record<RuleType, { values: string[]; timestamp: number }> = {
+    allow: { values: [], timestamp: 0 },
+    ignore: { values: [], timestamp: 0 }
+  };
+
+  private readonly rulesCacheTimeout = 5000; // 5秒缓存过期时间
 
   constructor(
     public topPath: string = "",
@@ -44,67 +60,204 @@ export default class FileManager {
   }
 
   /**
-   * 读取并解析 .mcsm/.fileignore 文件
-   * @returns 忽略规则数组
+   * 获取规则列表并缓存
    */
-  private async readMcsmIgnore(): Promise<string[]> {
-    try {
-      const mcsmDirPath = path.join(this.topPath, ".mcsm");
-      const ignoreFilePath = path.join(mcsmDirPath, ".fileignore");
-      
-      // 如果目录不存在，则创建目录
-      if (!fs.existsSync(mcsmDirPath)) {
-        fs.mkdirSync(mcsmDirPath, { recursive: true });
+  private async getRules(type: RuleType): Promise<string[]> {
+    // 优先使用实例化时传入的规则
+    if (this.fileManagementRules) {
+      const fromConfig =
+        type === "allow"
+          ? this.fileManagementRules.whitelist ?? []
+          : this.fileManagementRules.blacklist ?? [];
+      if (fromConfig.length) {
+        return fromConfig;
       }
-      
-      // 如果文件不存在，则返回空数组（默认不限制访问）
-      if (!fs.existsSync(ignoreFilePath)) {
-        return [];
-      }
-      
-      const content = fs.readFileSync(ignoreFilePath, "utf-8");
-      return content
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line !== "" && !line.startsWith("#"));
-    } catch (error) {
-      // 忽略读取错误
     }
-    return [];
-  }
 
-  /**
-   * 读取并解析 .mcsm/.fileallow 文件
-   * @returns 白名单规则数组
-   */
-  private async readMcsmAllow(): Promise<string[]> {
+    const now = Date.now();
+  const cached = this.rulesCache[type];
+  if (cached.values.length && now - cached.timestamp < this.rulesCacheTimeout) {
+    return cached.values;
+    }
+
     try {
       const mcsmDirPath = path.join(this.topPath, ".mcsm");
-      const allowFilePath = path.join(mcsmDirPath, ".fileallow");
-      
-      // 如果目录不存在，则创建目录
+      const rulesFilePath = path.join(mcsmDirPath, RULE_FILES[type]);
+
       if (!fs.existsSync(mcsmDirPath)) {
         fs.mkdirSync(mcsmDirPath, { recursive: true });
       }
-      
-      // 如果文件不存在，则返回空数组（默认不限制访问）
-      if (!fs.existsSync(allowFilePath)) {
-        return [];
+
+      if (!fs.existsSync(rulesFilePath)) {
+        cached.values = [];
+      } else {
+        const content = await fs.readFile(rulesFilePath, "utf-8");
+        cached.values = content
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "" && !line.startsWith("#"));
       }
-      
-      const content = fs.readFileSync(allowFilePath, "utf-8");
-      return content
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line !== "" && !line.startsWith("#"));
+      cached.timestamp = now;
     } catch (error) {
-      // 忽略读取错误
+      cached.values = [];
+      cached.timestamp = now;
     }
-    return [];
+
+    return cached.values;
   }
 
   isRootTopRath() {
     return this.topPath === "/" || this.topPath === "\\";
+  }
+
+  /**
+   * 清除文件管理规则缓存
+   */
+  clearRulesCache() {
+    Object.keys(this.rulesCache).forEach((key) => {
+      const type = key as RuleType;
+      this.rulesCache[type].values = [];
+      this.rulesCache[type].timestamp = 0;
+    });
+  }
+
+  private withinTopPath(absolutePath: string): boolean {
+    if (this.isRootTopRath()) return true;
+    return absolutePath.startsWith(this.topPath);
+  }
+
+  private canAccess(absolutePath: string): boolean {
+    return this.withinTopPath(absolutePath) && fs.existsSync(absolutePath);
+  }
+
+  private parseRule(rule: string) {
+    const trimmed = rule.trim();
+    const negated = trimmed.startsWith("!");
+    const pattern = negated ? trimmed.slice(1) : trimmed;
+    return { pattern, negated };
+  }
+
+  private matchRule(
+    pattern: string,
+    normalizedPath: string,
+    minimatchLib: any,
+    options: { allowParentAccess?: boolean } = {}
+  ): boolean {
+    if (!pattern) return false;
+
+    const { allowParentAccess = false } = options;
+    const matchOptions = { dot: true } as const;
+    let targetPath = normalizedPath;
+
+    if (pattern.startsWith("/")) {
+      targetPath = `/${normalizedPath}`;
+    }
+
+    if (pattern.endsWith("/")) {
+      const dirPattern = pattern.slice(0, -1);
+
+      if (
+        minimatchLib(targetPath, dirPattern, matchOptions) ||
+        minimatchLib(targetPath, `${dirPattern}/**`, matchOptions) ||
+        targetPath.startsWith(`${dirPattern}/`)
+      ) {
+        return true;
+      }
+
+      if (allowParentAccess) {
+        const normalizedRule = dirPattern.startsWith("/")
+          ? dirPattern.slice(1)
+          : dirPattern;
+        return (
+          normalizedPath.length > 0 &&
+          normalizedRule.startsWith(`${normalizedPath}/`)
+        );
+      }
+
+      return false;
+    }
+
+    const candidates = [pattern];
+    if (pattern.endsWith("/*") && !pattern.endsWith("/**")) {
+      candidates.push(`${pattern.slice(0, -1)}**`);
+    }
+
+    for (const candidate of candidates) {
+      if (minimatchLib(targetPath, candidate, matchOptions)) {
+        return true;
+      }
+
+      if (candidate === pattern) {
+        const basename = pattern.startsWith("/")
+          ? `/${path.basename(normalizedPath)}`
+          : path.basename(normalizedPath);
+        if (minimatchLib(basename, candidate)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private evaluateAllowRules(
+    normalizedPath: string,
+    rules: string[],
+    minimatchLib: any
+  ): boolean {
+    if (rules.length === 0) return true;
+
+    let matched = false;
+    let allowed = false;
+
+    for (const rule of rules) {
+      const { pattern, negated } = this.parseRule(rule);
+      if (!pattern) continue;
+
+      const isMatch = this.matchRule(pattern, normalizedPath, minimatchLib, {
+        allowParentAccess: true
+      });
+
+      if (!isMatch) continue;
+
+      matched = true;
+
+      if (negated) {
+        allowed = false;
+        continue;
+      }
+
+      allowed = true;
+      break;
+    }
+
+    if (!matched) return false;
+    return allowed;
+  }
+
+  private evaluateIgnoreRules(
+    normalizedPath: string,
+    rules: string[],
+    minimatchLib: any
+  ): boolean {
+    if (rules.length === 0) return true;
+
+    for (const rule of rules) {
+      const { pattern, negated } = this.parseRule(rule);
+      if (!pattern) continue;
+
+      const isMatch = this.matchRule(pattern, normalizedPath, minimatchLib);
+
+      if (!isMatch) continue;
+
+      if (negated) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return true;
   }
 
   toAbsolutePath(fileName: string = "") {
@@ -161,119 +314,34 @@ export default class FileManager {
     const normalizedPath = relativePath.replace(/\\/g, "/");
 
     // 读取规则文件
-    const mcsmAllowRules = await this.readMcsmAllow();
-    const mcsmIgnoreRules = await this.readMcsmIgnore();
+    const mcsmAllowRules = await this.getRules("allow");
+    const mcsmIgnoreRules = await this.getRules("ignore");
 
     // 如果两个文件都不存在，则不限制访问
     if (mcsmAllowRules.length === 0 && mcsmIgnoreRules.length === 0) {
       return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
     }
 
-    // 处理白名单规则 (优先级更高)
     if (mcsmAllowRules.length > 0) {
       const minimatch = loadMinimatch();
-      
-      // 检查文件是否在白名单中
-      for (const rule of mcsmAllowRules) {
-        // 处理否定规则 (!)
-        const isNegated = rule.startsWith('!');
-        const actualRule = isNegated ? rule.substring(1) : rule;
-        
-        // 检查路径是否匹配规则
-        let isMatch = false;
-        
-        // 处理绝对路径规则（以/开头）
-        let matchPath = normalizedPath;
-        if (actualRule.startsWith('/')) {
-          matchPath = '/' + normalizedPath;
-        }
-        
-        // 如果规则以 / 结尾，表示是目录规则
-        if (actualRule.endsWith('/')) {
-          const dirRule = actualRule.slice(0, -1); // 去掉末尾的 /
-          
-          // 匹配目录本身或目录下的文件
-          isMatch = minimatch(matchPath, dirRule, { dot: true }) || 
-                    minimatch(matchPath, dirRule + '/**', { dot: true });
-        } else {
-          // 处理绝对路径规则（以/开头）
-          let matchBasename = path.basename(normalizedPath);
-          if (actualRule.startsWith('/')) {
-            matchBasename = '/' + matchBasename;
-          }
-          
-          // 标准规则匹配
-          isMatch = minimatch(matchPath, actualRule, { dot: true }) || 
-                    minimatch(matchBasename, actualRule);
-        }
-        
-        if (isMatch) {
-          if (isNegated) {
-            // 否定规则匹配，取消允许
-            return false;
-          } else {
-            // 普通规则匹配，标记为允许
-            // 白名单优先，如果匹配到白名单规则，直接允许访问，不再检查黑名单
-            return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
-          }
-        }
+      const allowResult = this.evaluateAllowRules(normalizedPath, mcsmAllowRules, minimatch);
+      if (!allowResult) {
+        return false;
       }
-      // 如果有白名单规则但文件不在白名单中，则拒绝访问
-      return false;
+      return this.canAccess(absolutePath);
     }
 
     // 处理黑名单规则 (仅在没有白名单或白名单不匹配时检查)
     if (mcsmIgnoreRules.length > 0) {
       const minimatch = loadMinimatch();
-      
-      // 检查文件是否被 .mcsm/.fileignore 规则忽略
-      for (const rule of mcsmIgnoreRules) {
-        // 处理否定规则 (!)
-        const isNegated = rule.startsWith('!');
-        const actualRule = isNegated ? rule.substring(1) : rule;
-        
-        // 检查路径是否匹配规则
-        let isMatch = false;
-        
-        // 处理绝对路径规则（以/开头）
-        let matchPath = normalizedPath;
-        if (actualRule.startsWith('/')) {
-          matchPath = '/' + normalizedPath;
-        }
-        
-        // 如果规则以 / 结尾，表示是目录规则
-        if (actualRule.endsWith('/')) {
-          const dirRule = actualRule.slice(0, -1); // 去掉末尾的 /
-          
-          // 匹配目录本身或目录下的文件
-          isMatch = minimatch(matchPath, dirRule, { dot: true }) || 
-                    minimatch(matchPath, dirRule + '/**', { dot: true });
-        } else {
-          // 处理绝对路径规则（以/开头）
-          let matchBasename = path.basename(normalizedPath);
-          if (actualRule.startsWith('/')) {
-            matchBasename = '/' + matchBasename;
-          }
-          
-          // 标准规则匹配
-          isMatch = minimatch(matchPath, actualRule, { dot: true }) || 
-                    minimatch(matchBasename, actualRule);
-        }
-        
-        if (isMatch) {
-          if (isNegated) {
-            // 否定规则匹配，取消忽略
-            return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
-          } else {
-            // 普通规则匹配，标记为忽略
-            return false;
-          }
-        }
+      const ignoreResult = this.evaluateIgnoreRules(normalizedPath, mcsmIgnoreRules, minimatch);
+      if (!ignoreResult) {
+        return false;
       }
     }
     
     // 默认情况：允许访问
-    return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
+    return this.canAccess(absolutePath);
   }
 
   cd(dirName: string) {
@@ -302,7 +370,7 @@ export default class FileManager {
     const filteredResults = await Promise.all(
       filteredItems.map(async (item) => {
         // 隐藏配置文件自身和.mcsm目录
-        if (item.name === '.fileignore' || item.name === '.fileallow' || item.name === '.mcsm') {
+        if (HIDDEN_ENTRIES.has(item.name)) {
           return { item, isValid: false };
         }
         
@@ -388,6 +456,12 @@ export default class FileManager {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
     const buf = iconv.encode(data, this.fileCode || "utf-8");
+    
+    // 如果写入的是规则文件，清除缓存
+    if (fileName.includes('.mcsm/.fileignore') || fileName.includes('.mcsm/.fileallow')) {
+      this.clearRulesCache();
+    }
+    
     return await fs.writeFile(absPath, buf);
   }
 
