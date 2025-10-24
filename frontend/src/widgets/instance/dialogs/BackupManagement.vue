@@ -6,14 +6,17 @@ import type { InstanceDetail } from "@/types";
 import {
   CloudDownloadOutlined,
   DeleteOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
   FolderOpenOutlined,
   ReloadOutlined,
   RollbackOutlined
 } from "@ant-design/icons-vue";
-import { message, Modal } from "ant-design-vue";
-import { computed, ref } from "vue";
+import { message, Modal, type ItemType } from "ant-design-vue";
+import { computed, h, ref, type CSSProperties } from "vue";
 import { parseTimestamp } from "@/tools/time";
 import { formatFileSize } from "@/tools/common";
+import { arrayFilter } from "@/tools/array";
 import {
   createBackup as createBackupApi,
   listBackups as listBackupsApi,
@@ -40,31 +43,39 @@ const backupList = ref<BackupInfo[]>([]);
 const loading = ref(false);
 const operationLoading = ref<Record<string, boolean>>({});
 
-const columns = computed(() => [
-  {
-    title: t("TXT_CODE_94234052"),
-    dataIndex: "fileName",
-    key: "fileName",
-    ellipsis: true
-  },
-  {
-    title: t("TXT_CODE_34579982"),
-    dataIndex: "timestamp",
-    key: "timestamp",
-    customRender: ({ text }: { text: number }) => parseTimestamp(text)
-  },
-  {
-    title: t("TXT_CODE_20289768"),
-    dataIndex: "size",
-    key: "size",
-    customRender: ({ text }: { text: number }) => formatFileSize(text)
-  },
-  {
-    title: t("TXT_CODE_fe731dfc"),
-    key: "action",
-    width: isPhone.value ? 100 : 180
-  }
-]);
+const columns = computed(() =>
+  arrayFilter([
+    {
+      title: t("TXT_CODE_94234052"),
+      dataIndex: "fileName",
+      key: "fileName",
+      ellipsis: true,
+      minWidth: 200
+    },
+    {
+      title: t("TXT_CODE_34579982"),
+      dataIndex: "timestamp",
+      key: "timestamp",
+      customRender: ({ text }: { text: number }) => parseTimestamp(text),
+      condition: () => !isPhone.value,
+      minWidth: 180
+    },
+    {
+      title: t("TXT_CODE_20289768"),
+      dataIndex: "size",
+      key: "size",
+      customRender: ({ text }: { text: number }) => formatFileSize(text),
+      condition: () => !isPhone.value,
+      minWidth: 120
+    },
+    {
+      title: t("TXT_CODE_fe731dfc"),
+      key: "action",
+      align: (isPhone.value ? "center" : "right") as "left" | "center" | "right",
+      width: isPhone.value ? 100 : 180
+    }
+  ])
+);
 
 const openDialog = () => {
   open.value = true;
@@ -119,7 +130,10 @@ const { execute: executeDeleteBackup } = deleteBackupApi();
 const deleteBackup = async (backup: BackupInfo) => {
   Modal.confirm({
     title: t("TXT_CODE_893567ac"),
-    content: t("TXT_CODE_93524074", { name: backup.fileName }),
+    icon: h(ExclamationCircleOutlined),
+    content: h("div", { style: "color:red;" }, t("TXT_CODE_93524074", { name: backup.fileName })),
+    okType: "danger",
+    okText: t("TXT_CODE_d507abff"),
     onOk: async () => {
       try {
         operationLoading.value[backup.fileName] = true;
@@ -151,7 +165,10 @@ const restoreBackup = async (backup: BackupInfo) => {
 
   Modal.confirm({
     title: t("TXT_CODE_893567ac"),
-    content: t("TXT_CODE_84261372", { name: backup.fileName }),
+    icon: h(ExclamationCircleOutlined),
+    content: h("div", { style: "color:red;" }, t("TXT_CODE_84261372", { name: backup.fileName })),
+    okType: "danger",
+    okText: t("TXT_CODE_d507abff"),
     onOk: async () => {
       try {
         operationLoading.value[`restore_${backup.fileName}`] = true;
@@ -209,6 +226,33 @@ const downloadBackup = async (backup: BackupInfo) => {
   }
 };
 
+const menuList = (record: BackupInfo) =>
+  arrayFilter<ItemType & { style?: CSSProperties }>([
+    {
+      label: t("TXT_CODE_88853923"),
+      key: "restore",
+      icon: h(RollbackOutlined),
+      disabled: props.instanceInfo?.status !== 0,
+      onClick: () => restoreBackup(record)
+    },
+    {
+      label: t("TXT_CODE_28735002"),
+      key: "download",
+      icon: h(CloudDownloadOutlined),
+      onClick: () => downloadBackup(record),
+      condition: () => props.instanceInfo?.config.backupConfig?.enableDownload !== false
+    },
+    {
+      label: t("TXT_CODE_ecbd7449"),
+      key: "delete",
+      icon: h(DeleteOutlined),
+      style: {
+        color: "var(--color-red-5)"
+      },
+      onClick: () => deleteBackup(record)
+    }
+  ]);
+
 defineExpose({
   openDialog,
   closeDialog
@@ -252,49 +296,52 @@ defineExpose({
         :data-source="backupList"
         :loading="loading"
         :pagination="{ pageSize: 10 }"
-        :scroll="{ x: 600 }"
+        :scroll="{ x: 'max-content' }"
         row-key="fileName"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
-            <a-space :size="8">
+            <a-dropdown v-if="isPhone">
+              <template #overlay>
+                <a-menu mode="vertical" :items="menuList(record as BackupInfo)"></a-menu>
+              </template>
+              <a-button size="middle">
+                {{ t("TXT_CODE_fe731dfc") }}
+                <DownOutlined />
+              </a-button>
+            </a-dropdown>
+            <a-space v-else :size="4">
               <a-tooltip :title="t('TXT_CODE_88853923')">
                 <a-button
+                  :icon="h(RollbackOutlined)"
+                  type="text"
                   size="small"
                   :loading="operationLoading[`restore_${record.fileName}`]"
                   :disabled="props.instanceInfo?.status !== 0"
                   @click="restoreBackup(record as BackupInfo)"
-                >
-                  <template #icon>
-                    <RollbackOutlined />
-                  </template>
-                </a-button>
+                />
               </a-tooltip>
               <a-tooltip
                 v-if="props.instanceInfo?.config.backupConfig?.enableDownload !== false"
                 :title="t('TXT_CODE_28735002')"
               >
                 <a-button
+                  :icon="h(CloudDownloadOutlined)"
+                  type="text"
                   size="small"
                   :loading="operationLoading[`download_${record.fileName}`]"
                   @click="downloadBackup(record as BackupInfo)"
-                >
-                  <template #icon>
-                    <CloudDownloadOutlined />
-                  </template>
-                </a-button>
+                />
               </a-tooltip>
-              <a-tooltip :title="t('TXT_CODE_a0e19f38')">
+              <a-tooltip :title="t('TXT_CODE_ecbd7449')">
                 <a-button
+                  :icon="h(DeleteOutlined)"
+                  type="text"
                   size="small"
                   danger
                   :loading="operationLoading[record.fileName]"
                   @click="deleteBackup(record as BackupInfo)"
-                >
-                  <template #icon>
-                    <DeleteOutlined />
-                  </template>
-                </a-button>
+                />
               </a-tooltip>
             </a-space>
           </template>
