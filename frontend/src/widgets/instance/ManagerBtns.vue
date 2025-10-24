@@ -20,6 +20,7 @@ import {
   DashboardOutlined,
   FieldTimeOutlined,
   FolderOpenOutlined,
+  SaveOutlined,
   UsergroupDeleteOutlined
 } from "@ant-design/icons-vue";
 
@@ -28,6 +29,7 @@ import type { RouteLocationPathRaw } from "vue-router";
 import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { arrayFilter } from "../../tools/array";
+import BackupManagement from "./dialogs/BackupManagement.vue";
 import EventConfig from "./dialogs/EventConfig.vue";
 import InstanceDetail from "./dialogs/InstanceDetail.vue";
 import InstanceFundamentalDetail from "./dialogs/InstanceFundamentalDetail.vue";
@@ -43,6 +45,7 @@ const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetail>>();
 const instanceFundamentalDetailDialog = ref<InstanceType<typeof InstanceFundamentalDetail>>();
+const backupManagementDialog = ref<InstanceType<typeof BackupManagement>>();
 
 const { toPage: toOtherPager } = useAppRouters();
 
@@ -114,6 +117,14 @@ const btns = computed(() => {
         toPage({ path: "/instances/terminal/files" });
       },
       condition: () => state.settings.canFileManager || isAdmin.value
+    },
+    {
+      title: t("TXT_CODE_39046477"),
+      icon: SaveOutlined,
+      click: () => {
+        backupManagementDialog.value?.openDialog();
+      },
+      condition: () => !isGlobalTerminal.value
     },
     {
       title: t("TXT_CODE_40241d8e"),
@@ -267,6 +278,14 @@ watch(instanceInfo, (cfg, oldCfg) => {
 
   <McPingSettings
     ref="mcSettingsDialog"
+    :instance-info="instanceInfo"
+    :instance-id="instanceId"
+    :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <BackupManagement
+    ref="backupManagementDialog"
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"

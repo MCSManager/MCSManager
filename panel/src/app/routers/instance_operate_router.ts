@@ -581,4 +581,139 @@ router.post(
   }
 );
 
+// [Low-level Permission]
+// Create backup
+router.post(
+  "/backup/create",
+  permission({ level: ROLE.USER }),
+  validator({ query: { daemonId: String, uuid: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request(
+        "instance/backup/create",
+        {
+          instanceUuid
+        },
+        1000 * 60 * 10
+      );
+      operationLogger.log("backup_create", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"]
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+// List backups
+router.get(
+  "/backup/list",
+  permission({ level: ROLE.USER }),
+  validator({ query: { daemonId: String, uuid: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/backup/list", {
+        instanceUuid
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+// Delete backup
+router.post(
+  "/backup/delete",
+  permission({ level: ROLE.USER }),
+  validator({ query: { daemonId: String, uuid: String, fileName: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const fileName = String(ctx.query.fileName);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/backup/delete", {
+        instanceUuid,
+        fileName
+      });
+      operationLogger.log("backup_delete", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        file_name: fileName
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+// Restore backup
+router.post(
+  "/backup/restore",
+  permission({ level: ROLE.USER }),
+  validator({ query: { daemonId: String, uuid: String, fileName: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const fileName = String(ctx.query.fileName);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/backup/restore", {
+        instanceUuid,
+        fileName
+      });
+      operationLogger.log("backup_restore", {
+        daemon_id: daemonId,
+        instance_id: instanceUuid,
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        file_name: fileName
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
+// Get backup download path
+router.get(
+  "/backup/download",
+  permission({ level: ROLE.USER }),
+  validator({ query: { daemonId: String, uuid: String, fileName: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const fileName = String(ctx.query.fileName);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/backup/download", {
+        instanceUuid,
+        fileName
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
 export default router;

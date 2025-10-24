@@ -77,6 +77,7 @@ import "../routers/passport_router";
 import "../routers/info_router";
 import "../routers/Instance_router";
 import "../routers/instance_event_router";
+import "../routers/instance_backup_router";
 import "../routers/file_router";
 import "../routers/stream_router";
 import "../routers/environment_router";

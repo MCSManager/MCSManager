@@ -11,6 +11,9 @@ export enum OperationLoggerAction {
   InstanceFileUpdate = "instance_file_update",
   InstanceFileDownload = "instance_file_download",
   InstanceFileDelete = "instance_file_delete",
+  BackupCreate = "backup_create",
+  BackupDelete = "backup_delete",
+  BackupRestore = "backup_restore",
   InstanceTaskCreate = "instance_task_create",
   InstanceTaskDelete = "instance_task_delete",
   DaemonCreate = "daemon_create",
@@ -89,6 +92,20 @@ export type InstanceFileDeleteOptions = {
   file: string;
 } & InstanceGeneralOptions;
 
+export type BackupCreateOptions = {
+  type: "backup_create";
+} & InstanceGeneralOptions;
+
+export type BackupDeleteOptions = {
+  type: "backup_delete";
+  file_name: string;
+} & InstanceGeneralOptions;
+
+export type BackupRestoreOptions = {
+  type: "backup_restore";
+  file_name: string;
+} & InstanceGeneralOptions;
+
 export type InstanceTaskCreateOptions = {
   type: "instance_task_create";
   task_name: string;
@@ -150,6 +167,9 @@ export type OperationLoggerItem =
   | InstanceFileUpdateOptions
   | InstanceFileDownloadOptions
   | InstanceFileDeleteOptions
+  | BackupCreateOptions
+  | BackupDeleteOptions
+  | BackupRestoreOptions
   | InstanceTaskCreateOptions
   | InstanceTaskDeleteOptions
   | DaemonCreateOptions

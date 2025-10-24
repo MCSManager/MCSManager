@@ -240,6 +240,12 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "haveColor", Boolean);
     }
 
+    if (cfg.backupConfig) {
+      configureEntityParams(this.config.backupConfig, cfg.backupConfig, "backupPath", String);
+      configureEntityParams(this.config.backupConfig, cfg.backupConfig, "maxBackupCount", Number);
+      configureEntityParams(this.config.backupConfig, cfg.backupConfig, "enableDownload", Boolean);
+    }
+
     if (persistence) {
       if (!this.config.basePort) this.allocatePort(this.config);
       StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);

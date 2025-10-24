@@ -34,6 +34,9 @@ interface FormDetail {
   // .mcsm/.fileignore 和 .mcsm/.fileallow 文件内容
   mcsmIgnoreContent: string;
   mcsmAllowContent: string;
+  // .mcsm/.backupignore 和 .mcsm/.backupallow 文件内容
+  backupIgnoreContent: string;
+  backupAllowContent: string;
 }
 
 const props = defineProps<{
@@ -51,7 +54,9 @@ enum TabSettings {
   // eslint-disable-next-line no-unused-vars
   Advanced = "Advanced",
   // eslint-disable-next-line no-unused-vars
-  ResLimit = "ResLimit"
+  ResLimit = "ResLimit",
+  // eslint-disable-next-line no-unused-vars
+  FileManagement = "FileManagement"
 }
 
 const emit = defineEmits(["update"]);
@@ -95,7 +100,9 @@ const initFormDetail = async () => {
     networkAliasesText: (props.instanceInfo.config.docker.networkAliases || []).join(", "),
     imageSelectMethod: "SELECT",
     mcsmIgnoreContent: "",
-    mcsmAllowContent: ""
+    mcsmAllowContent: "",
+    backupIgnoreContent: "",
+    backupAllowContent: ""
   };
   
   // 读取 .mcsm/.fileignore 文件
@@ -134,6 +141,44 @@ const initFormDetail = async () => {
     }
   } catch (error) {
     options.value.mcsmAllowContent = "";
+  }
+  
+  // 读取 .mcsm/.backupignore 文件
+  try {
+    await executeFileContent({
+      params: {
+        daemonId: props.daemonId ?? "",
+        uuid: props.instanceId ?? ""
+      },
+      data: {
+        target: ".mcsm/.backupignore"
+      }
+    });
+    
+    if (fileContentState.value && typeof fileContentState.value === "string") {
+      options.value.backupIgnoreContent = fileContentState.value;
+    }
+  } catch (error) {
+    options.value.backupIgnoreContent = "";
+  }
+  
+  // 读取 .mcsm/.backupallow 文件
+  try {
+    await executeFileContent({
+      params: {
+        daemonId: props.daemonId ?? "",
+        uuid: props.instanceId ?? ""
+      },
+      data: {
+        target: ".mcsm/.backupallow"
+      }
+    });
+    
+    if (fileContentState.value && typeof fileContentState.value === "string") {
+      options.value.backupAllowContent = fileContentState.value;
+    }
+  } catch (error) {
+    options.value.backupAllowContent = "";
   }
 };
 
@@ -335,6 +380,42 @@ const encodeFormData = async () => {
         // 不中断提交过程，只记录错误
       }
     }
+    
+    // 保存 .mcsm/.backupignore 文件内容
+    if (options.value.backupIgnoreContent !== undefined) {
+      try {
+        await executeFileContent({
+          params: {
+            daemonId: props.daemonId ?? "",
+            uuid: props.instanceId ?? ""
+          },
+          data: {
+            target: ".mcsm/.backupignore",
+            text: options.value.backupIgnoreContent
+          }
+        });
+      } catch (err) {
+        console.error("保存 .mcsm/.backupignore 文件失败:", err);
+      }
+    }
+    
+    // 保存 .mcsm/.backupallow 文件内容
+    if (options.value.backupAllowContent !== undefined) {
+      try {
+        await executeFileContent({
+          params: {
+            daemonId: props.daemonId ?? "",
+            uuid: props.instanceId ?? ""
+          },
+          data: {
+            target: ".mcsm/.backupallow",
+            text: options.value.backupAllowContent
+          }
+        });
+      } catch (err) {
+        console.error("保存 .mcsm/.backupallow 文件失败:", err);
+      }
+    }
     return postData;
   }
   throw new Error("Ref Options is null");
@@ -411,6 +492,11 @@ defineExpose({
             v-if="!isGlobalTerminal"
             :key="TabSettings.ResLimit"
             :tab="t('TXT_CODE_604d8d63')"
+          ></a-tab-pane>
+          <a-tab-pane
+            v-if="!isGlobalTerminal"
+            :key="TabSettings.FileManagement"
+            :tab="t('TXT_CODE_fileManagement')"
           ></a-tab-pane>
         </a-tabs>
       </div>
@@ -593,42 +679,6 @@ defineExpose({
                 :placeholder="t('TXT_CODE_9aa83c05')"
                 :disabled="isGlobalTerminal"
                 style="width: 400px"
-              />
-            </a-form-item>
-          </a-col>
-          
-          <a-divider orientation="left">
-            <a-typography-title :level="5">
-              {{ t("TXT_CODE_fileManagementRules") }}
-            </a-typography-title>
-          </a-divider>
-          
-          <a-col :xs="24" :lg="12" :offset="0">
-            <a-form-item :label="t('TXT_CODE_mcsmignore')" name="mcsmignore">
-              <a-typography-paragraph type="secondary" class="typography-text-ellipsis">
-                {{ t("TXT_CODE_mcsmignoreDesc") }}
-              </a-typography-paragraph>
-              <a-textarea
-                v-model:value="options.mcsmIgnoreContent"
-                :placeholder="t('TXT_CODE_mcsmignorePlaceholder')"
-                :rows="4"
-                show-count
-                :maxlength="10000"
-              />
-            </a-form-item>
-          </a-col>
-          
-          <a-col :xs="24" :lg="12" :offset="0">
-            <a-form-item :label="t('TXT_CODE_mcsmallow')" name="mcsmallow">
-              <a-typography-paragraph type="secondary" class="typography-text-ellipsis">
-                {{ t("TXT_CODE_mcsmallowDesc") }}
-              </a-typography-paragraph>
-              <a-textarea
-                v-model:value="options.mcsmAllowContent"
-                :placeholder="t('TXT_CODE_mcsmallowPlaceholder')"
-                :rows="4"
-                show-count
-                :maxlength="10000"
               />
             </a-form-item>
           </a-col>
@@ -1004,6 +1054,165 @@ defineExpose({
                 v-model:value="options.config.docker.memorySwappiness"
                 :allow-clear="true"
                 :placeholder="t('TXT_CODE_6f1129fb')"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <!-- 文件管理标签页 -->
+        <a-row v-if="activeKey === TabSettings.FileManagement" :gutter="20">
+          <!-- 备份配置 -->
+          <a-col :xs="24" :lg="24" :offset="0">
+            <a-typography-title :level="5">{{ t("TXT_CODE_18994363") }}</a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_97165686") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_05707837") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_15865123')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_15865123") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-input
+                v-model:value="options.config.backupConfig.backupPath"
+                :allow-clear="true"
+                :placeholder="t('TXT_CODE_85549886')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_12116480") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_19616655')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_19616655") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-input-number
+                v-model:value="options.config.backupConfig.maxBackupCount"
+                :min="0"
+                :max="100"
+                style="width: 100%"
+                :placeholder="t('TXT_CODE_70229072')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="8" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_00104604") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_47708140')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_47708140") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-switch v-model:checked="options.config.backupConfig.enableDownload" />
+            </a-form-item>
+          </a-col>
+
+          <!-- 备份规则 -->
+          <a-col :xs="24" :lg="24" :offset="0">
+            <a-divider />
+            <a-typography-title :level="5">{{ t("TXT_CODE_30738602") }}</a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_14034312") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+          </a-col>
+
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_41277979") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_68481429')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_68481429") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.backupIgnoreContent"
+                :rows="10"
+                :placeholder="t('TXT_CODE_81773654')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_86347014") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_40539831')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_40539831") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.backupAllowContent"
+                :rows="10"
+                :placeholder="t('TXT_CODE_08170224')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <!-- 文件管理规则 -->
+          <a-col :xs="24" :lg="24" :offset="0">
+            <a-divider />
+            <a-typography-title :level="5">{{ t("TXT_CODE_fileManagementRules") }}</a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_fileManagementRulesDesc") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+          </a-col>
+
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_mcsmignore") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_mcsmignoreDesc')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_mcsmignoreDesc") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.mcsmIgnoreContent"
+                :rows="10"
+                :placeholder="t('TXT_CODE_mcsmignorePlaceholder')"
+              />
+            </a-form-item>
+          </a-col>
+
+          <a-col :xs="24" :lg="12" :offset="0">
+            <a-form-item>
+              <a-typography-title :level="5">{{ t("TXT_CODE_mcsmallow") }}</a-typography-title>
+              <a-typography-paragraph>
+                <a-tooltip :title="t('TXT_CODE_mcsmallowDesc')" placement="top">
+                  <a-typography-text type="secondary" class="typography-text-ellipsis">
+                    {{ t("TXT_CODE_mcsmallowDesc") }}
+                  </a-typography-text>
+                </a-tooltip>
+              </a-typography-paragraph>
+              <a-textarea
+                v-model:value="options.mcsmAllowContent"
+                :rows="10"
+                :placeholder="t('TXT_CODE_mcsmallowPlaceholder')"
               />
             </a-form-item>
           </a-col>

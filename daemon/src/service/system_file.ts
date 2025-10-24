@@ -495,15 +495,20 @@ export default class FileManager {
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
-    return await compress(sourceZipPath, filesPath, code);
+    // 传入 topPath 作为基础目录以保持文件夹结构
+    return await compress(sourceZipPath, filesPath, code, this.topPath);
   }
 
   async edit(target: string, data?: string) {
-    if (!this.check(target)) throw new Error(ERROR_MSG_01);
+    const absPath = this.toAbsolutePath(target);
+    const dirPath = path.dirname(absPath);
+    await fs.ensureDir(dirPath);
     if (data || typeof data === "string") {
       return await this.writeFile(target, data);
     } else {
-      const absPath = this.toAbsolutePath(target);
+      if (!fs.existsSync(absPath)) {
+        return "";
+      }
       const info = fs.statSync(absPath);
       if (info.size > MAX_EDIT_SIZE) {
         throw new Error($t("TXT_CODE_system_file.execLimit"));

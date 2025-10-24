@@ -85,4 +85,10 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     openFrpTunnelId: "",
     openFrpToken: ""
   };
+
+  public backupConfig = {
+    backupPath: "",
+    maxBackupCount: 5,
+    enableDownload: true
+  };
 }

@@ -4,6 +4,7 @@ import { t } from "i18next";
 import { ProcessWrapper } from "mcsmanager-common";
 import path from "path";
 import { promisify } from "util";
+import archiver from "archiver";
 import { GOLANG_ZIP_PATH, SEVEN_ZIP_PATH, ZIP_TIMEOUT_SECONDS } from "../const";
 import { $t } from "../i18n";
 import logger from "../service/log";
@@ -34,11 +35,12 @@ function checkFileName(fileName: string) {
 export async function compress(
   sourceZip: string,
   files: string[],
-  fileCode?: string
+  fileCode?: string,
+  baseDir?: string
 ): Promise<boolean> {
   if (!checkFileName(sourceZip) || files.some((v) => !checkFileName(v)))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
-  return await useZip(sourceZip, files, fileCode);
+  return await useZip(sourceZip, files, fileCode, baseDir);
 }
 
 export async function decompress(
@@ -207,24 +209,40 @@ async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Pro
 }
 
 // ./file-zip -mode 1 --file main.go --file file-zip --file 123 --file README.md --zipPath aaabb.zip
-async function useZip(distZip: string, files: string[], code = "utf-8"): Promise<boolean> {
+async function useZip(distZip: string, files: string[], code = "utf-8", baseDir?: string): Promise<boolean> {
   if (!files || files.length == 0) throw new Error(t("TXT_CODE_2038ec2c"));
-  const params = ["--mode=1", `--code=${code}`, `--zipPath=${path.basename(distZip)}`];
-  files.forEach((v) => {
-    params.push(`--file=${path.basename(v)}`);
+
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  await fs.ensureDir(path.dirname(distZip));
+
+  const output = fs.createWriteStream(distZip);
+  const finalize = new Promise<void>((resolve, reject) => {
+    output.on("close", () => resolve());
+    output.on("error", (err) => reject(err));
+    archive.on("error", (err) => reject(err));
   });
-  logger.info(
-    `Function useZip(): Command: ${GOLANG_ZIP_PATH} ${params.join(" ")}, CWD: ${path.dirname(
-      distZip
-    )}`
-  );
-  const subProcess = new ProcessWrapper(
-    GOLANG_ZIP_PATH,
-    params,
-    path.dirname(distZip),
-    ZIP_TIMEOUT_SECONDS,
-    code
-  );
-  subProcess.setErrMsg(COMPRESS_ERROR_MSG);
-  return subProcess.start();
+
+  archive.pipe(output);
+
+  for (const filePath of files) {
+    const stat = await fs.stat(filePath);
+    
+    // Calculate relative path if baseDir is provided
+    let archiveName: string;
+    if (baseDir) {
+      archiveName = path.relative(baseDir, filePath);
+    } else {
+      archiveName = path.basename(filePath);
+    }
+    
+    if (stat.isFile()) {
+      archive.file(filePath, { name: archiveName });
+    } else if (stat.isDirectory()) {
+      archive.directory(filePath, archiveName);
+    }
+  }
+
+  await archive.finalize();
+  await finalize;
+  return true;
 }
