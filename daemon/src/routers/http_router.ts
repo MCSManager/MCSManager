@@ -27,21 +27,36 @@ router.get("/download/:key/:fileName", async (ctx) => {
     // Get the task from the task center
     const mission = missionPassport.getMission(key, "download");
     if (!mission) throw new Error((ctx.body = "Access denied: No task found"));
-    const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
-    if (!instance) throw new Error($t("TXT_CODE_http_router.instanceNotExist"));
-    if (!FileManager.checkFileName(paramsFileName))
-      throw new Error($t("TXT_CODE_http_router.fileNameNotSpec"));
+    
+    // 如果是绝对路径下载（如备份文件），直接使用绝对路径
+    if (mission.parameter.absoluteFilePath) {
+      const absoluteFilePath = mission.parameter.absoluteFilePath;
+      if (!FileManager.checkFileName(paramsFileName))
+        throw new Error($t("TXT_CODE_http_router.fileNameNotSpec"));
+      
+      // 检查文件是否存在
+      if (!fs.existsSync(absoluteFilePath))
+        throw new Error("File not found");
+      
+      await sendFile(ctx, absoluteFilePath);
+    } else {
+      // 原有的相对路径下载逻辑
+      const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
+      if (!instance) throw new Error($t("TXT_CODE_http_router.instanceNotExist"));
+      if (!FileManager.checkFileName(paramsFileName))
+        throw new Error($t("TXT_CODE_http_router.fileNameNotSpec"));
 
-    const cwd = instance.absoluteCwdPath();
-    const fileRelativePath = mission.parameter.fileName;
+      const cwd = instance.absoluteCwdPath();
+      const fileRelativePath = mission.parameter.fileName;
 
-    // Check for file cross-directory security risks
-    const fileManager = new FileManager(cwd);
-    if (!fileManager.check(fileRelativePath))
-      throw new Error((ctx.body = "Access denied: Invalid destination"));
+      // Check for file cross-directory security risks
+      const fileManager = new FileManager(cwd);
+      if (!fileManager.check(fileRelativePath))
+        throw new Error((ctx.body = "Access denied: Invalid destination"));
 
-    const fileAbsPath = fileManager.toAbsolutePath(fileRelativePath);
-    await sendFile(ctx, fileAbsPath);
+      const fileAbsPath = fileManager.toAbsolutePath(fileRelativePath);
+      await sendFile(ctx, fileAbsPath);
+    }
   } catch (error: any) {
     if (!ctx.res.headersSent) {
       ctx.body = $t("TXT_CODE_http_router.downloadErr", { error: error.message });

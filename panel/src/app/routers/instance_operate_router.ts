@@ -694,7 +694,7 @@ router.post(
 );
 
 // [Low-level Permission]
-// Get backup download path
+// Get backup download info (参考文件管理下载方式)
 router.get(
   "/backup/download",
   permission({ level: ROLE.USER }),
@@ -705,11 +705,24 @@ router.get(
       const instanceUuid = String(ctx.query.uuid);
       const fileName = String(ctx.query.fileName);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      
+      // 从daemon获取下载密钥
       const result = await new RemoteRequest(remoteService).request("instance/backup/download", {
         instanceUuid,
         fileName
       });
-      ctx.body = result;
+      
+      // 像文件管理下载一样，返回完整的下载信息
+      const addr = remoteService.config.fullAddr;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
+      
+      ctx.body = {
+        password: result.password,
+        addr,
+        remoteMappings,
+        fileName
+      };
     } catch (err) {
       ctx.body = err;
     }

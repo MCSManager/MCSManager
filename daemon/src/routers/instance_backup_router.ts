@@ -5,6 +5,8 @@ import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import InstanceBackupService from "../service/instance_backup";
 import Instance from "../entity/instance/instance";
+import { missionPassport } from "../service/mission_passport";
+import { v4 as uuidv4 } from "uuid";
 
 // 备份功能路由认证中间件
 routerApp.use((event, ctx, data, next) => {
@@ -116,7 +118,7 @@ routerApp.on("instance/backup/delete", async (ctx, data) => {
   }
 });
 
-// 获取备份下载路径
+// 获取备份下载密钥
 routerApp.on("instance/backup/download", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   const fileName = data.fileName;
@@ -135,18 +137,32 @@ routerApp.on("instance/backup/download", async (ctx, data) => {
 
     const backupPath = InstanceBackupService.getBackupPath(instance, fileName);
 
+    // 生成下载密钥
+    const password = uuidv4().replace(/-/gim, "");
+    
+    // 注册下载任务，使用绝对路径
+    missionPassport.registerMission(password, {
+      name: "download",
+      parameter: {
+        instanceUuid,
+        absoluteFilePath: backupPath
+      },
+      start: new Date().getTime(),
+      end: new Date().getTime() + 1000 * 60 * 10 // 10 分钟有效期
+    });
+
     logger.info(
-      `[Backup] User ${ctx.socket.id} requested download path for backup ${fileName} of instance ${instanceUuid}`
+      `[Backup] User ${ctx.socket.id} requested download for backup ${fileName} of instance ${instanceUuid}, password: ${password}`
     );
 
     protocol.msg(ctx, "instance/backup/download", {
       instanceUuid,
       fileName,
-      path: backupPath
+      password
     });
   } catch (err: any) {
     logger.error(
-      `[Backup] Failed to get download path for backup ${fileName} of instance ${instanceUuid}:`,
+      `[Backup] Failed to get download password for backup ${fileName} of instance ${instanceUuid}:`,
       err
     );
     protocol.error(ctx, "instance/backup/download", {

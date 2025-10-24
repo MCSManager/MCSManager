@@ -1071,25 +1071,21 @@ defineExpose({
             </a-typography-paragraph>
           </a-col>
 
-          <a-col :xs="24" :lg="8" :offset="0">
+          <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_05707837") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_00104604") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-tooltip :title="t('TXT_CODE_15865123')" placement="top">
+                <a-tooltip :title="t('TXT_CODE_47708140')" placement="top">
                   <a-typography-text type="secondary" class="typography-text-ellipsis">
-                    {{ t("TXT_CODE_15865123") }}
+                    {{ t("TXT_CODE_47708140") }}
                   </a-typography-text>
                 </a-tooltip>
               </a-typography-paragraph>
-              <a-input
-                v-model:value="options.config.backupConfig.backupPath"
-                :allow-clear="true"
-                :placeholder="t('TXT_CODE_85549886')"
-              />
+              <a-switch v-model:checked="options.config.backupConfig!.enableDownload" />
             </a-form-item>
           </a-col>
 
-          <a-col :xs="24" :lg="8" :offset="0">
+          <a-col :xs="24" :lg="6" :offset="0">
             <a-form-item>
               <a-typography-title :level="5">{{ t("TXT_CODE_12116480") }}</a-typography-title>
               <a-typography-paragraph>
@@ -1100,7 +1096,7 @@ defineExpose({
                 </a-tooltip>
               </a-typography-paragraph>
               <a-input-number
-                v-model:value="options.config.backupConfig.maxBackupCount"
+                v-model:value="options.config.backupConfig!.maxBackupCount"
                 :min="0"
                 :max="100"
                 style="width: 100%"
@@ -1109,17 +1105,21 @@ defineExpose({
             </a-form-item>
           </a-col>
 
-          <a-col :xs="24" :lg="8" :offset="0">
+          <a-col :xs="24" :lg="12" :offset="0">
             <a-form-item>
-              <a-typography-title :level="5">{{ t("TXT_CODE_00104604") }}</a-typography-title>
+              <a-typography-title :level="5">{{ t("TXT_CODE_05707837") }}</a-typography-title>
               <a-typography-paragraph>
-                <a-tooltip :title="t('TXT_CODE_47708140')" placement="top">
+                <a-tooltip :title="t('TXT_CODE_15865123')" placement="top">
                   <a-typography-text type="secondary" class="typography-text-ellipsis">
-                    {{ t("TXT_CODE_47708140") }}
+                    {{ t("TXT_CODE_15865123") }}
                   </a-typography-text>
                 </a-tooltip>
               </a-typography-paragraph>
-              <a-switch v-model:checked="options.config.backupConfig.enableDownload" />
+              <a-input
+                v-model:value="options.config.backupConfig!.backupPath"
+                :allow-clear="true"
+                :placeholder="t('TXT_CODE_85549886')"
+              />
             </a-form-item>
           </a-col>
 

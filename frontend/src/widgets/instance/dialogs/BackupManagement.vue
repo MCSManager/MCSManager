@@ -19,9 +19,11 @@ import {
   listBackups as listBackupsApi,
   deleteBackup as deleteBackupApi,
   restoreBackup as restoreBackupApi,
-  getBackupDownloadPath,
+  getBackupDownloadAddress,
   type BackupInfo
 } from "@/services/apis/backup";
+import { parseForwardAddress } from "@/tools/protocol";
+import { getFileConfigAddr } from "@/hooks/useFileManager";
 
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
@@ -84,7 +86,7 @@ const loadBackupList = async () => {
         daemonId: props.daemonId!
       }
     });
-    backupList.value = result?.value?.backups ?? result?.backups ?? [];
+    backupList.value = (result?.value?.backups ?? result?.value ?? result) as BackupInfo[];
   } catch (error: any) {
     reportErrorMsg(error);
   } finally {
@@ -103,7 +105,7 @@ const createBackup = async () => {
         daemonId: props.daemonId!
       }
     });
-    message.success(t("TXT_CODE_backup.createSuccess"));
+    message.success(t("TXT_CODE_03563103"));
     await loadBackupList();
   } catch (error: any) {
     reportErrorMsg(error);
@@ -171,7 +173,7 @@ const restoreBackup = async (backup: BackupInfo) => {
   });
 };
 
-const { execute: executeGetDownloadPath } = getBackupDownloadPath();
+const { execute: executeGetDownloadAddress } = getBackupDownloadAddress();
 
 const downloadBackup = async (backup: BackupInfo) => {
   if (!props.instanceInfo?.config.backupConfig?.enableDownload) {
@@ -181,7 +183,9 @@ const downloadBackup = async (backup: BackupInfo) => {
 
   try {
     operationLoading.value[`download_${backup.fileName}`] = true;
-    const result = await executeGetDownloadPath({
+    
+    // 获取下载信息（与文件管理下载方式完全一致）
+    const result = await executeGetDownloadAddress({
       params: {
         uuid: props.instanceId!,
         daemonId: props.daemonId!,
@@ -189,13 +193,15 @@ const downloadBackup = async (backup: BackupInfo) => {
       }
     });
     
-    const pathValue = result?.value?.path ?? result?.path;
-    if (pathValue) {
-      const downloadUrl = `/api/files/download?daemonId=${props.daemonId}&fileName=${encodeURIComponent(
-        backup.fileName
-      )}&path=${encodeURIComponent(pathValue)}`;
-      window.open(downloadUrl, "_blank");
+    if (!result?.value) {
+      throw new Error(t("TXT_CODE_6d772765"));
     }
+    
+    // 构建下载链接（与文件管理下载完全一致）
+    const addr = parseForwardAddress(getFileConfigAddr(result.value), "http");
+    const downloadUrl = `${addr}/download/${result.value.password}/${backup.fileName}`;
+    
+    window.open(downloadUrl);
   } catch (error: any) {
     reportErrorMsg(error);
   } finally {
@@ -251,13 +257,13 @@ defineExpose({
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
-            <a-space :size="4">
+            <a-space :size="8">
               <a-tooltip :title="t('TXT_CODE_88853923')">
                 <a-button
                   size="small"
                   :loading="operationLoading[`restore_${record.fileName}`]"
                   :disabled="props.instanceInfo?.status !== 0"
-                  @click="restoreBackup(record)"
+                  @click="restoreBackup(record as BackupInfo)"
                 >
                   <template #icon>
                     <RollbackOutlined />
@@ -283,7 +289,7 @@ defineExpose({
                   size="small"
                   danger
                   :loading="operationLoading[record.fileName]"
-                  @click="deleteBackup(record)"
+                  @click="deleteBackup(record as BackupInfo)"
                 >
                   <template #icon>
                     <DeleteOutlined />

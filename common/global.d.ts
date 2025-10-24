@@ -1,5 +1,6 @@
 declare global {
   interface IGlobalInstanceConfig {
+    network: string;
     nickname: string;
     startCommand: string;
     stopCommand: string;
@@ -49,6 +50,11 @@ declare global {
     extraServiceConfig: {
       openFrpTunnelId?: string;
       openFrpToken?: string;
+    };
+    backupConfig?: {
+      backupPath?: string;
+      maxBackupCount?: number;
+      enableDownload?: boolean;
     };
   }
 

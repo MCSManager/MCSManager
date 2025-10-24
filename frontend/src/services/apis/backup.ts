@@ -1,4 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { RemoteMappingEntry } from "@/tools/protocol";
 
 export interface BackupInfo {
   fileName: string;
@@ -74,7 +75,8 @@ export const restoreBackup = useDefineApi<
   method: "POST"
 });
 
-export const getBackupDownloadPath = useDefineApi<
+// 获取备份下载信息（参考文件管理下载方式，一步到位）
+export const getBackupDownloadAddress = useDefineApi<
   {
     params: {
       uuid: string;
@@ -83,9 +85,10 @@ export const getBackupDownloadPath = useDefineApi<
     };
   },
   {
-    instanceUuid: string;
+    password: string;
+    addr: string;
+    remoteMappings: RemoteMappingEntry[];
     fileName: string;
-    path: string;
   }
 >({
   url: "/api/protected_instance/backup/download",
