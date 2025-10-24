@@ -22,23 +22,9 @@ const RULE_FILES: Record<RuleType, string> = {
 
 const HIDDEN_ENTRIES = new Set([".fileignore", ".fileallow", ".mcsm"]);
 
-interface IFile {
-  name: string;
-  size: number;
-  time: string;
-  type: number;
-  mode: number;
-}
 
 export default class FileManager {
   public cwd: string = ".";
-
-  private readonly rulesCache: Record<RuleType, { values: string[]; timestamp: number }> = {
-    allow: { values: [], timestamp: 0 },
-    ignore: { values: [], timestamp: 0 }
-  };
-
-  private readonly rulesCacheTimeout = 5000; // 5秒缓存过期时间
 
   constructor(
     public topPath: string = "",
@@ -63,7 +49,6 @@ export default class FileManager {
    * 获取规则列表并缓存
    */
   private async getRules(type: RuleType): Promise<string[]> {
-    // 优先使用实例化时传入的规则
     if (this.fileManagementRules) {
       const fromConfig =
         type === "allow"
@@ -72,12 +57,6 @@ export default class FileManager {
       if (fromConfig.length) {
         return fromConfig;
       }
-    }
-
-    const now = Date.now();
-  const cached = this.rulesCache[type];
-  if (cached.values.length && now - cached.timestamp < this.rulesCacheTimeout) {
-    return cached.values;
     }
 
     try {
@@ -89,36 +68,21 @@ export default class FileManager {
       }
 
       if (!fs.existsSync(rulesFilePath)) {
-        cached.values = [];
-      } else {
-        const content = await fs.readFile(rulesFilePath, "utf-8");
-        cached.values = content
-          .split("\n")
-          .map((line) => line.trim())
-          .filter((line) => line !== "" && !line.startsWith("#"));
+        return [];
       }
-      cached.timestamp = now;
-    } catch (error) {
-      cached.values = [];
-      cached.timestamp = now;
-    }
 
-    return cached.values;
+      const content = await fs.readFile(rulesFilePath, "utf-8");
+      return content
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "" && !line.startsWith("#"));
+    } catch (error) {
+      return [];
+    }
   }
 
   isRootTopRath() {
     return this.topPath === "/" || this.topPath === "\\";
-  }
-
-  /**
-   * 清除文件管理规则缓存
-   */
-  clearRulesCache() {
-    Object.keys(this.rulesCache).forEach((key) => {
-      const type = key as RuleType;
-      this.rulesCache[type].values = [];
-      this.rulesCache[type].timestamp = 0;
-    });
   }
 
   private withinTopPath(absolutePath: string): boolean {
@@ -204,8 +168,8 @@ export default class FileManager {
     normalizedPath: string,
     rules: string[],
     minimatchLib: any
-  ): boolean {
-    if (rules.length === 0) return true;
+  ): "allow" | "deny" | "no-match" {
+    if (rules.length === 0) return "allow";
 
     let matched = false;
     let allowed = false;
@@ -231,8 +195,8 @@ export default class FileManager {
       break;
     }
 
-    if (!matched) return false;
-    return allowed;
+    if (!matched) return "no-match";
+    return allowed ? "allow" : "deny";
   }
 
   private evaluateIgnoreRules(
@@ -313,34 +277,34 @@ export default class FileManager {
     const relativePath = path.relative(this.topPath, absolutePath);
     const normalizedPath = relativePath.replace(/\\/g, "/");
 
-    // 读取规则文件
     const mcsmAllowRules = await this.getRules("allow");
     const mcsmIgnoreRules = await this.getRules("ignore");
 
-    // 如果两个文件都不存在，则不限制访问
     if (mcsmAllowRules.length === 0 && mcsmIgnoreRules.length === 0) {
-      return this.checkPath(destPath) && fs.existsSync(this.toAbsolutePath(destPath));
-    }
-
-    if (mcsmAllowRules.length > 0) {
-      const minimatch = loadMinimatch();
-      const allowResult = this.evaluateAllowRules(normalizedPath, mcsmAllowRules, minimatch);
-      if (!allowResult) {
-        return false;
-      }
       return this.canAccess(absolutePath);
     }
 
-    // 处理黑名单规则 (仅在没有白名单或白名单不匹配时检查)
+    const minimatch = loadMinimatch();
+
+    let allowResult: "allow" | "deny" | "no-match" = "no-match";
+    if (mcsmAllowRules.length > 0) {
+      allowResult = this.evaluateAllowRules(normalizedPath, mcsmAllowRules, minimatch);
+      if (allowResult === "deny") {
+        return false;
+      }
+    }
+
     if (mcsmIgnoreRules.length > 0) {
-      const minimatch = loadMinimatch();
       const ignoreResult = this.evaluateIgnoreRules(normalizedPath, mcsmIgnoreRules, minimatch);
       if (!ignoreResult) {
         return false;
       }
     }
-    
-    // 默认情况：允许访问
+
+    if (mcsmAllowRules.length > 0) {
+      return allowResult === "allow" && this.canAccess(absolutePath);
+    }
+
     return this.canAccess(absolutePath);
   }
 
@@ -456,11 +420,6 @@ export default class FileManager {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
     const buf = iconv.encode(data, this.fileCode || "utf-8");
-    
-    // 如果写入的是规则文件，清除缓存
-    if (fileName.includes('.mcsm/.fileignore') || fileName.includes('.mcsm/.fileallow')) {
-      this.clearRulesCache();
-    }
     
     return await fs.writeFile(absPath, buf);
   }
