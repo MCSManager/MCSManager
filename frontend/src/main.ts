@@ -1,6 +1,6 @@
 import { initI18n } from "@/lang/i18n";
-import { useAppStateStore } from "./stores/useAppStateStore";
 import { initLayoutConfig } from "./services/layout";
+import { useAppStateStore } from "./stores/useAppStateStore";
 
 (async function () {
   const { state, updatePanelStatus } = useAppStateStore();

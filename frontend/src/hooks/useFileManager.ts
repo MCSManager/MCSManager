@@ -1,35 +1,45 @@
-import { message, Modal } from "ant-design-vue";
-import type { Key } from "ant-design-vue/es/table/interface";
-import { ref, createVNode, reactive, type VNodeRef, computed } from "vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { parseForwardAddress } from "@/tools/protocol";
-import { number2permission, permission2number } from "@/tools/permission";
+import { openLoadingDialog, useImageViewerDialog } from "@/components/fc";
+import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
 import { t } from "@/lang/i18n";
 import {
+  addFolder as addFolderApi,
+  changePermission as changePermissionApi,
+  compressFile as compressFileApi,
+  copyFile as copyFileApi,
+  deleteFile as deleteFileApi,
+  downloadAddress,
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
-  addFolder as addFolderApi,
-  deleteFile as deleteFileApi,
-  touchFile as touchFileApi,
-  copyFile as copyFileApi,
   moveFile as moveFileApi,
-  compressFile as compressFileApi,
-  uploadAddress,
-  downloadAddress,
-  changePermission as changePermissionApi
+  touchFile as touchFileApi,
+  uploadAddress
 } from "@/services/apis/fileManager";
+import uploadService from "@/services/uploadService";
+import { number2permission, permission2number } from "@/tools/permission";
+import { mapDaemonAddress, parseForwardAddress, type RemoteMappingEntry } from "@/tools/protocol";
+import { reportErrorMsg } from "@/tools/validator";
 import type {
-  DataType,
-  OperationForm,
   Breadcrumb,
+  DataType,
   FileStatus,
+  OperationForm,
   Permission
 } from "@/types/fileManager";
-import { reportErrorMsg } from "@/tools/validator";
-import { openLoadingDialog } from "@/components/fc";
-import { useImageViewerDialog } from "@/components/fc";
-import uploadService from "@/services/uploadService";
-import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { message, Modal } from "ant-design-vue";
+import type { Key } from "ant-design-vue/es/table/interface";
+import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
+
+export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
+  let addr = config.addr;
+  if (config.remoteMappings) {
+    const mapped = mapDaemonAddress(config.remoteMappings);
+    if (mapped) {
+      addr = mapped.addr + mapped.prefix;
+    }
+  }
+  return addr;
+}
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
   const dataSource = ref<DataType[]>();
@@ -419,13 +429,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
             file_name: f.file.name
           }
         });
-        if (!missionCfg.value) {
-          throw new Error(t("TXT_CODE_e8ce38c2"));
-        }
+        if (!missionCfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
+        const addr = parseForwardAddress(getFileConfigAddr(missionCfg.value), "http");
         uploadService.append(
           f.file,
-          parseForwardAddress(missionCfg.value.addr, "http"),
+          addr,
           missionCfg.value.password,
           {
             overwrite: f.overwrite
@@ -501,9 +510,9 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
         }
       });
       if (!downloadCfg.value) return null;
-      return `${parseForwardAddress(downloadCfg.value.addr, "http")}/download/${
-        downloadCfg.value.password
-      }/${fileName}`;
+      const addr = parseForwardAddress(getFileConfigAddr(downloadCfg.value), "http");
+      const path = `/download/${downloadCfg.value.password}/${fileName}`;
+      return addr + path;
     } catch (err: any) {
       console.error(err);
       return reportErrorMsg(err.message);

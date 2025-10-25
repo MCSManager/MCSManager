@@ -143,7 +143,10 @@ router.put(
     const daemon = RemoteServiceSubsystem.getInstance(uuid);
 
     if (daemonSetting && daemon?.available) {
-      await new RemoteRequest(daemon).request("info/setting", daemonSetting);
+      await new RemoteRequest(daemon).request("info/setting", {
+        ...daemonSetting,
+        port: parameter.daemonPort
+      });
     }
 
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
@@ -153,7 +156,8 @@ router.put(
       ip: parameter.ip,
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
-      remarks: parameter.remarks
+      remarks: parameter.remarks,
+      remoteMappings: parameter.remoteMappings ?? [],
     });
 
     operationLogger.log("daemon_config_change", {

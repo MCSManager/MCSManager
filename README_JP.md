@@ -4,202 +4,295 @@
   </a>
 
   <br />
+  <br />
 
-  <h1 id="mcsmanager">
-    <a href="https://mcsmanager.com/" target="_blank">MCSManager パネル</a>
-  </h1>
-
-
-[![--](https://img.shields.io/badge/Support-Windows/Linux-green.svg)](https://github.com/MCSManager)
-[![Status](https://img.shields.io/badge/npm-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
+[![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
+[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
-[HP](http://mcsmanager.com/) | [ドキュメント](https://docs.mcsmanager.com/) | [Discord](https://discord.gg/BNpYMVX7Cd)
+<p align="center">
+  <a href="http://mcsmanager.com/"><img alt="Official Website" src="https://img.shields.io/badge/Site-Official Website-yellow"></a>
+  <a href="https://docs.mcsmanager.com/"><img alt="EnglishDocs" src="https://img.shields.io/badge/Docs-English Document-blue"></a>
+  <a href="https://discord.gg/BNpYMVX7Cd"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join Us-5866f4"></a>
+  
+</p>
 
-[English](README.md) | [简体中文](README_ZH.md) | [繁體中文](README_TW.md) | [Deutsch](README_DE.md) | [Português BR](README_PTBR.md) | [Spanish](README_ES.md) | [Thai](README_TH.md)
+<br />
+
+[English](README.md) - [简体中文](README_ZH.md) - [繁體中文](README_TW.md) - [Deutsch](README_DE.md) - [Português BR](README_PTBR.md) -
+[日本語](README_JP.md) - [Spanish](README_ES.md) - [Thai](README_TH.md)
 
 </div>
 
 <br />
 
+## これは何ですか？
 
+**MCSManager Panel**（略称：MCSM Panel）は、Minecraft と Steam ゲームサーバー用の高速デプロイ、分散アーキテクチャ対応、マルチユーザー、シンプルでモダンな Web 管理パネルです。
 
-## MCSManagerとは？
+MCSManager は `Minecraft` と `Steam` ゲーミングコミュニティ内で人気を博しています。複数の物理サーバーを一元管理し、任意のホストでゲームサーバーを作成できるよう支援し、複数のサーバーを簡単に管理できる安全で信頼性の高いマルチユーザー権限システムを提供します。`Minecraft`、`Terraria`、`Steam` ゲームサーバーの管理者、運用担当者、個人開発者に健全なソフトウェアサポートを提供し続けています。
 
-**MCSManager パネル**は、マイクラフト（Minecraft）やsteamのゲームサーバーを管理するために開発されました。このパネルは、モダンで安全な分散型コントロールパネルです。
+また、IDC サービスプロバイダーのプライベートサーバー販売などの商業活動にも適しています。いくつかの中小企業がすでにこのパネルを管理・販売ソフトウェアとして使用しており、**複数国の**言語をサポートしています。
 
-MCSManagerは、マイクラフトと中心としてコミュニティ内で既に一定の人気を得ています。このパネルは、複数のサーバーインスタンスの集中管理ソリューションを提供し、安全で信頼できるマルチユーザー許可システムも提供します。まだ、マイクラフトだけでなく、Terrariaや色々なSteamゲームサーバーの管理者をサポートします。私たちの目標は、ゲームサーバー管理のために別なコミュニティを育成します。
+<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
-今まで、MCSManagerは英語、フランス語、ドイツ語、イタリア語、日本語、簡体中国語、繫体中国語をサポートしており、将来は多くの言語のサポートを追加する予定です。
+<img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
 
-![failed_to_load_screenshot.png](/.github/panel-image.png)
+<img width="3164" height="2060" alt="3" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
 
-![failed_to_load_screenshot.png](/.github/panel-instances.png)
-
-## 特徴
-
-1. シンプルなマイクラフトサーバーをデプロイメントができます。
-2. 他のゲームサーバーもコンパチブルです。（例：`Palworld`, `Squad`, `Project Zomboid`, `Terraria`)
-3. 個人的なUIをカスタマイズすることができます。
-4. `Docker`デプロイすると商用利用ができます。
-5. 一つウェブでマルチサーバー管理することができます。
-6. もっと
+<img width="3164" height="2060" alt="4" src="https://github.com/user-attachments/assets/c7a3165c-466b-42c5-b75a-16ada603b1da" />
 
 <br />
 
-## ランタイム環境
+## 機能
 
-MCSMパネルは`Windows`や`Linux`システムをサポートして、`Node.js`が必要です。
-
-`Node.js`は16.20.2以上が必要です。
+1. アプリケーションマーケットを使用して、`Minecraft` または `Steam` ゲームサーバーをワンクリックで簡単にデプロイできます。
+2. `Palworld`、`Squad`、`Project Zomboid`、`Terraria` など、ほとんどの `Steam` ゲームサーバーと互換性があります。
+3. Web インターフェースはドラッグアンドドロップカードレイアウトをサポートし、お好みのインターフェースレイアウトを作成できます。
+4. `Docker Hub` のすべてのイメージをサポートし、マルチユーザー、商業インスタンス販売サービスをサポートします。
+5. 分散アーキテクチャをサポートし、1 つの Web インターフェースで複数のマシンを同時に管理できます。
+6. シンプルな技術スタック、TypeScript に精通するだけで MCSManager 全体の開発を完了できます！
+7. その他...
 
 <br />
 
-## インスタレーション
+## 実行環境
+
+コントロールパネルは `Windows` と `Linux` プラットフォームで実行でき、データベースのインストールは不要で、`Node.js` 環境といくつかの**解凍用コマンド**をインストールするだけで済みます。
+
+[Node.js 16.20.2](https://nodejs.org/en) 以上を使用する必要があり、最新の LTS バージョンの使用を推奨します。
+
+<br />
+
+## インストール
 
 ### Windows
 
-[MCSM HP](https://mcsmanager.com)でファイルパックをダウンロードしって、`.exe`ファイルを実行するです。
+ダウンロード：https://download.mcsmanager.com/mcsmanager_windows_release.zip
+
+パネルを開始：
+
+```bash
+start.bat
+```
 
 <br />
 
 ### Linux
 
-**シンプルデプロイ**
-
-> スクリプトは自動的にシステムサービスを登録して、実行するときはルートパーミッションが必要です。
+**ワンラインコマンドクイックインストール**
 
 ```bash
 sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
-**コマンド**
+**インストール後の使用方法**
 
 ```bash
-systemctl start mcsm-{web,daemon}
-systemctl stop mcsm-{web,daemon}
+systemctl start mcsm-{web,daemon} # パネルを開始
+systemctl stop mcsm-{web,daemon}  # パネルを停止
 ```
 
-- Ubuntu/Centos/Debian/Archlinuxしかサポートしてないです。
-- インストールパス: `/opt/mcsmanager/`.
+- スクリプトは Ubuntu/Centos/Debian/Archlinux にのみ適用されます
+- パネルコードと実行環境は `/opt/mcsmanager/` ディレクトリに自動インストールされます
 
 <br />
 
-**Linux マニュアルのインストール**
+**Linux 手動インストール**
 
-- スクリプト実行するときでエロがあったら、マニュアルでインストールもできます。
+- ワンクリックインストールが機能しない場合は、この手順で手動インストールを試すことができます。
 
 ```bash
-# /opt パスなかったら、パスを作成します
-mkdir /opt
-# /opt パスを開けます
+# インストールディレクトリに切り替え。存在しない場合は、まず 'mkdir /opt/' で作成してください。
 cd /opt/
-# Node.js 20.11 ダウンロードします。Node.js 16+ あったら、しなくていいです。
+# 実行環境（Node.js）をダウンロード。すでに Node.js 16+ がインストールされている場合は、この手順をスキップしてください。
 wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-# Node.jsソースの解凍
+# アーカイブを解凍
 tar -xvf node-v20.11.0-linux-x64.tar.xz
-# Node.jsをシステムパス追加します
+# プログラムをシステム環境変数に追加。
 ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
 ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
 
-# MCSMのインストールパスを準備します
+# インストールディレクトリを準備。
 mkdir /opt/mcsmanager/
 cd /opt/mcsmanager/
 
-# MCSMダウンロードします
+# MCSManager をダウンロード。
 wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
 tar -zxf mcsmanager_linux_release.tar.gz
 
-# 必要なアプリを自動的にインストールします
-
+# 依存関係をインストール。
+chmod 775 install.sh
 ./install.sh
 
-# 二つターミナル用意してください
+# 2つのターミナルまたは screen を開いてください。
 
-# まず、daemon実行します。
+# まず node プログラムを開始。
 ./start-daemon.sh
 
-# daemon実行したら、二つ目のターミナルでウェブを実行します。
+# Web サービスを開始（2番目のターミナルまたは screen で）。
 ./start-web.sh
 
-# ウェブのアドレスは http://localhost:23333/
-# ウェブは自動的に同じデバイスインストールしたdaemonを検測して、追加します。
+# http://<パブリック IP>:23333/ にアクセスしてパネルを表示。
+# 通常、Web アプリケーションは自動的にスキャンしてローカルデーモンに接続します。
 ```
 
-マニュアルインストールは、自動的にシステムサービス追加しません。そして、自分でシステムサービス追加するか`screen`しないといけないです。システム追加する方法は、グーグルやウィキペディアで調べてください。
+このインストール方法では、パネルがシステムサービスに自動登録されないため、`screen` ソフトウェアを使用して管理する必要があります。システムサービスに MCSManager を管理させたい場合は、ドキュメントを参照してください。
+
+### Mac OS
+
+```bash
+
+# まず Node.js をインストール。すでにインストールされている場合は、この手順をスキップできます。
+# Node.js は最新の LTS バージョンのインストールを推奨します。
+brew install node
+node -v
+npm -v
+
+# curl を使用してファイルをダウンロード
+curl -L https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz -o mcsmanager_linux_release.tar.gz
+
+# ファイルを解凍（元のコマンドと同じ）
+tar -zxf mcsmanager_linux_release.tar.gz
+
+cd mcsmanager
+
+# 依存関係をインストール。
+chmod 775 install.sh
+./install.sh
+
+# 2つのターミナルまたは screen を開いてください。
+
+# まず node プログラムを開始。
+./start-daemon.sh
+
+# Web サービスを開始（2番目のターミナルまたは screen で）。
+./start-web.sh
+
+# http://localhost:23333/ にアクセスしてパネルを表示。
+# 通常、Web アプリケーションは自動的にスキャンしてローカルデーモンに接続します。
+```
 
 <br />
 
-## ブラウザの互換性
+## コードの貢献
 
-- Supported on modern browsers including `Chrome`, `Firefox`, and `Safari`.
-- `Chrome`と`Firefox`と`Safari`がサポートしています。
-- Support for `IE` has been discontinued.
-- 現在は、`IE`のサポートしていません。
+- コードを貢献する前に必ずお読みください：https://github.com/MCSManager/MCSManager/issues/599
+
+- コードは既存の形式を維持する必要があり、過度のコードフォーマットは許可されません。
+
+- すべてのコードは国際化標準に準拠する必要があります。
 
 <br />
 
 ## 開発
 
-以下の情報は、開発者関係のみです。普通のユーザーとは関係ないです。
+このセクションは開発者向けです。MCSManager で二次開発を行ったり、コード貢献を提出したりする場合は、これらの内容を注意深くお読みください：
 
-### MacOS
+### 必要要件
+
+MCSManager の開発には `Visual Studio Code` を使用しています。以下のプラグインを**必ずインストール**してください：
+
+- i18n テキスト表示サポート（I18n Ally）
+- コードフォーマット（Prettier）
+- Vue - Official
+- ESLint
+
+### 依存ファイル
+
+`daemon/lib` ディレクトリ（存在しない場合は手動で作成）に、お使いのシステムに適したバイナリファイルを保存するために、[PTY](https://github.com/MCSManager/PTY) と [Zip-Tools](https://github.com/MCSManager/Zip-Tools) プロジェクトにアクセスしてダウンロードする必要があります。これにより `シミュレーション端末` と `ファイル解凍` の正常な動作が保証されます。
+
+### 実行
 
 ```bash
 git clone https://github.com/MCSManager/MCSManager.git
+
+# MacOS
 ./install-dependents.sh
 ./npm-dev-macos.sh
-```
 
-### Windows
-
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
+# Windows
 ./install-dependents.bat
 ./npm-dev-windows.bat
 ```
 
-### Build Production Version
+### コードの国際化
+
+プロジェクトは複数言語に対応しているため、コード内のすべての `文字列` と `コメント` は英語のみを受け付けます。コード内で非英語テキストを直接ハードコードしないでください。
+
+例えば、複数言語に対応する必要がある新しい文字列を書く場合があります。
+
+```ts
+import { $t } from "../i18n";
+
+if (!checkName) {
+  const errorMsg = "Check Name Failed!" // これはしないでください！
+  const errorMsg = $t("TXT_CODE_MY_ERROR"); // 正しい方法！
+}.
+```
+
+```html
+<script lang="ts" setup>
+  import { t } from "@/lang/i18n";
+  // ...
+</script>
+
+<template>
+  <!-- ... -->
+  <a-menu-item key="toNodesPage" @click="toNodesPage()">
+    <FormOutlined />
+    {{ t("TXT_CODE_NODE_INFO") }}
+  </a-menu-item>
+</template>
+```
+
+この行を言語ファイルに追加してください。例：`languages/en_US.json`
+
+その中で、`en_US.json` は必須で追加する必要があり、これはすべての国言語のソーステキストです。他の国言語は AI を使用して自動翻訳できます。
+
+```json
+{
+  //...
+  "TXT_CODE_MY_ERROR": "Check Name Failed!",
+  "TXT_CODE_NODE_INFO": "Jump to Node Page"
+}
+```
+
+`I18n Ally` プラグインをインストールしている場合、`$t("TXT_CODE_MY_ERROR")` は英語テキストを表示するはずです。
+
+翻訳テキストにパラメータを含める必要がある場合は、少し複雑になる可能性があります。フロントエンドとバックエンドで異なる i18n ライブラリを使用しているため、形式が異なる場合があります。類似のコードを見つけるためにファイルを調べる必要があります。
+
+すべての翻訳テキストキーは重複できませんので、より長い名前を使用してください！
+
+### 本番環境バージョンのビルド
 
 ```bash
 ./build.bat # Windows
 ./build.sh  # MacOS
 ```
 
-そのあとは、[PTY](https://github.com/MCSManager/PTY)と[Zip-Tools](https://github.com/MCSManager/Zip-Tools) ダウンロードして、解凍して、対応の`daemon/lib`パスへ移動してください。
+ビルドが完了すると、`production-code` ディレクトリに本番環境コードが見つかります。
 
 <br />
 
-## コード貢献
+## ブラウザ互換性
 
-問題と意見あったら、GitHubのissueへ提出してください。プロジェクトforkしたら、そして、Pull Requestへcommit出して貢献することができます。
-
-もし、貢献するは、コードのスタイルが現在と似てっる感じしてください。詳細は、[ガイドライン](https://github.com/MCSManager/MCSManager/issues/544)見てください。
-
-<br />
-
-## BUG レポート
-
-**IssueとBUG:** [押してください](https://github.com/MCSManager/MCSManager/issues/new/choose)
-
-**安全関係のレポート:** [SECURITY.md](SECURITY.md)
+- `Chrome` `Firefox` `Safari` `Opera` などのモダンな主流ブラウザをサポートします。
+- `IE` ブラウザのサポートを放棄しました。
 
 <br />
 
-## 国際化
+## バグレポート
 
-以下の人は、多量の翻訳してありがどうございます：
+発見された問題の報告を歓迎します。迅速に修正いたします。
 
-- [KevinLu2000](https://github.com/KevinLu2000)
-- [Yumao](https://github.com/yumao233)
-- [JHL-HK](https://github.com/jhl-hk)
-- [IceBrick](https://github.com/IceBrick01)
+公開するのに不便な重大なセキュリティ脆弱性を発見した場合は、support@mcsmanager.com にメールをお送りください。セキュリティ問題が修正された後、発見者の名前がコードに添付されます。
 
 <br />
 
 ## ライセンス
 
-ソースコードは、 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)ライセンス使っています。
+ソースコードは [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) ライセンスに従います。
 
 Copyright ©2025 MCSManager.

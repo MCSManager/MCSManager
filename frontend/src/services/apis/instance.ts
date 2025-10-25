@@ -1,17 +1,19 @@
 import { useDefineApi } from "@/stores/useDefineApi";
+import type { RemoteMappingEntry } from "@/tools/protocol";
 import type {
   InstanceDetail,
+  JsonData,
   NewInstanceForm,
-  QuickStartTemplate,
-  Schedule,
   NewScheduleTask,
-  JsonData
+  QuickStartTemplate,
+  Schedule
 } from "@/types";
 
 export interface MissionPassportResponse {
   addr: string;
   password: string;
   prefix: string;
+  remoteMappings: RemoteMappingEntry[];
 }
 
 export const setUpTerminalStreamChannel = useDefineApi<
@@ -193,6 +195,7 @@ export const uploadAddress = useDefineApi<
     instanceUuid: string;
     password: string;
     addr: string;
+    remoteMappings: RemoteMappingEntry[];
   }
 >({
   url: "/api/instance/upload",

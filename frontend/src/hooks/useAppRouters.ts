@@ -1,10 +1,5 @@
 import { router } from "@/config/router";
-import type { JsonData } from "@/types";
-import {
-  useRoute,
-  type RouteLocationRaw,
-  type RouteLocationPathRaw,
-} from "vue-router";
+import { useRoute, type RouteLocationPathRaw } from "vue-router";
 
 export function useAppRouters() {
   const route = useRoute();
@@ -15,17 +10,18 @@ export function useAppRouters() {
 
   const toPage = (params: RouteLocationPathRaw) => {
     const tmp = {
-      ...params,
+      ...params
     };
     tmp.query = {
       ...(route.query || {}),
-      ...(params.query || {}),
+      ...(params.query || {})
     };
-    router.push(tmp);
+
+    return router.push(tmp);
   };
 
   return {
     getRouteParamsUrl,
-    toPage,
+    toPage
   };
 }

@@ -16,7 +16,8 @@ import Terminal from "@/widgets/instance/Terminal.vue";
 import InstanceChart from "@/widgets/InstanceChart.vue";
 import InstanceList from "@/widgets/InstanceList.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
-import Market from "@/widgets/Market.vue";
+import MarketEditor from "@/widgets/market/editor.vue";
+import Market from "@/widgets/market/index.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import NodeList from "@/widgets/NodeList.vue";
 import NodeOverview from "@/widgets/NodeOverview.vue";
@@ -91,7 +92,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   MusicCard,
   ShelvesCard,
   OperationLogCard,
-  Market
+  Market,
+  MarketEditor
 };
 
 export interface NewCardItem extends LayoutCard {
@@ -527,14 +529,25 @@ export function getLayoutCardPool() {
     },
     {
       id: getRandomId(),
-      permission: ROLE.USER,
+      permission: ROLE.ADMIN,
       meta: {},
       type: "Market",
       title: t("TXT_CODE_27594db8"),
       width: 12,
       description: t("TXT_CODE_9b45858c"),
       height: LayoutCardHeight.BIG,
-      category: NEW_CARD_TYPE.COMMON
+      category: NEW_CARD_TYPE.OTHER
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.ADMIN,
+      meta: {},
+      type: "MarketEditor",
+      title: t("TXT_CODE_54275b9c"),
+      width: 12,
+      description: t("TXT_CODE_94f55150"),
+      height: LayoutCardHeight.BIG,
+      category: NEW_CARD_TYPE.OTHER
     }
   ];
   return LAYOUT_CARD_POOL;

@@ -267,8 +267,8 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
-    ? prettyBytes(bytes ?? 0, prettyBytesConfig) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true }).replace(/bit$/, "b") +
+    ? prettyBytes(bytes ?? 0, { ...prettyBytesConfig, binary: false }) + "/s"
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(/bit$/, "b") +
       "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {

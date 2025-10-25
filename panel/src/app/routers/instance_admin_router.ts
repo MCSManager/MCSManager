@@ -1,12 +1,13 @@
 import Router from "@koa/router";
 import axios from "axios";
-import fs from "fs/promises";
-import { removeTrail } from "mcsmanager-common";
+import fs from "fs-extra";
+import path from "path";
 import { MARKET_CACHE_FILE_PATH } from "../const";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
+import { SAVE_DIR_PATH } from "../service/frontend_layout";
 import { multiOperationForwarding } from "../service/instance_service";
 import { logger } from "../service/log";
 import { operationLogger } from "../service/operation_logger";
@@ -82,6 +83,7 @@ router.post(
       // const uploadDir = String(ctx.query.upload_dir);
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
       const result = await new RemoteRequest(remoteService).request("instance/new", config);
       const newInstanceUuid = result.instanceUuid;
       if (!newInstanceUuid) throw new Error($t("TXT_CODE_router.instance.createError"));
@@ -93,9 +95,8 @@ router.post(
         instance_name: result.nickname
       });
       // Send a cross-end file upload task to the daemon
-      const addr = `${remoteService?.config.ip}:${remoteService?.config.port}${
-        remoteService?.config.prefix ? removeTrail(remoteService.config.prefix, "/") : ""
-      }`;
+      const addr = remoteService.config.fullAddr;
+      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -108,7 +109,8 @@ router.post(
       ctx.body = {
         instanceUuid: newInstanceUuid,
         password,
-        addr
+        addr,
+        remoteMappings
       };
     } catch (err) {
       ctx.body = err;
@@ -313,11 +315,24 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
     return;
   }
 
-  // Cache logic implementation
   const ADDR = systemConfig?.presetPackAddr;
-  const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
   try {
+    if (ADDR?.startsWith(SAVE_DIR_PATH)) {
+      const filesDir = path.join(process.cwd(), SAVE_DIR_PATH);
+      const fileName = ADDR?.split(SAVE_DIR_PATH)[1];
+      const filePath = path.join(filesDir, fileName ?? "");
+      if (fs.existsSync(filePath)) {
+        ctx.body = JSON.parse(await fs.readFile(filePath, "utf-8"));
+      } else {
+        throw new Error(`Request failed, status: 404`);
+      }
+      return;
+    }
+
+    // Cache logic implementation
+    const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+
     // Check if cache file exists and is valid
     try {
       const stats = await fs.stat(MARKET_CACHE_FILE_PATH);
@@ -334,17 +349,17 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
       // Cache file doesn't exist, continue to fetch new data
     }
 
-    const response = await axios.request({
+    const res = await axios.request({
       method: "GET",
       url: ADDR
     });
-    if (response.status !== 200) throw new Error(`Request failed, status: ${response.status}`);
+    if (res.status !== 200) throw new Error(`Request failed, status: ${res.status}`);
+    ctx.body = res.data;
 
     // Save to cache file
-    fs.writeFile(MARKET_CACHE_FILE_PATH, JSON.stringify(response.data), "utf-8").catch((err) => {
+    fs.writeFile(MARKET_CACHE_FILE_PATH, JSON.stringify(res.data), "utf-8").catch((err) => {
       logger.warn(`Failed to write quick install cache file at ${MARKET_CACHE_FILE_PATH}: ${err}`);
     });
-    ctx.body = response.data;
   } catch (err) {
     ctx.body = [];
   }

@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import NodeRemoteMappingEdit from "@/components/NodeRemoteMappingEdit.vue";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
 import { isLocalNetworkIP, reportErrorMsg } from "@/tools/validator";
 import { message, type FormInstance } from "ant-design-vue";
+import _ from "lodash";
 import { computed, reactive, ref } from "vue";
 
 const { addNode, deleteNode, updateNode } = useRemoteNode();
@@ -24,7 +26,9 @@ const DEFAULT_CONFIG = {
   downloadSpeedRate: 0,
   portRangeStart: 0,
   portRangeEnd: 0,
-  portAssignInterval: 0
+  portAssignInterval: 0,
+  daemonPort: 24444,
+  remoteMappings: [] as IPanelOverviewRemoteMappingResponse[],
 };
 
 const SPEED_RATE_OPTIONS = [
@@ -78,17 +82,9 @@ const SPEED_RATE_OPTIONS = [
   }
 ];
 
-const ipRules = [
-  { required: true, message: t("TXT_CODE_86e0cccc") },
-  {
-    validator: (_rule: any, value: string) => {
-      if (value && isLocalNetworkIP(value)) {
-        return Promise.reject(new Error(t("TXT_CODE_e37b4577")));
-      }
-      return Promise.resolve();
-    }
-  }
-];
+function ipNeedsMapping(ip: string) {
+  return ip && ip.trim() !== "localhost" && isLocalNetworkIP(ip);
+}
 
 const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
   if (data && uuid) {
@@ -98,11 +94,14 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
     dialog.data = {
       ...data,
       ...data.config,
-      apiKey: ""
+      port: data.port, // connection port
+      daemonPort: data.config.port, // listen port
+      apiKey: "",
+      remoteMappings: data.remoteMappings ?? [],
     };
   } else {
     editMode.value = false;
-    dialog.data = { ...DEFAULT_CONFIG };
+    dialog.data = _.cloneDeep(DEFAULT_CONFIG);
   }
   dialog.status = true;
 };
@@ -112,9 +111,7 @@ const dialog = reactive({
   loading: false,
   title: computed(() => (editMode.value ? t("TXT_CODE_39c5229e") : t("TXT_CODE_15a381d5"))),
   uuid: "",
-  data: {
-    ...DEFAULT_CONFIG
-  },
+  data: _.cloneDeep(DEFAULT_CONFIG),
 
   check: async () => {
     await formRef.value?.validate();
@@ -126,9 +123,7 @@ const dialog = reactive({
     dialog.status = false;
   },
   clear: () => {
-    dialog.data = {
-      ...DEFAULT_CONFIG
-    };
+    dialog.data = _.cloneDeep(DEFAULT_CONFIG);
   },
   delete: async () => {
     try {
@@ -178,7 +173,7 @@ defineExpose({ openDialog });
             <a-input v-model:value="dialog.data.remarks" :placeholder="t('TXT_CODE_4b1d5199')" />
           </a-form-item>
 
-          <a-form-item :label="t('TXT_CODE_93f9b02a')" name="ip" required :rules="ipRules">
+          <a-form-item :label="t('TXT_CODE_93f9b02a')" name="ip" required>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{ t("TXT_CODE_be7a689a") }}
@@ -187,6 +182,9 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-input v-model:value="dialog.data.ip" />
+            <a-typography-text type="secondary" v-if="ipNeedsMapping(dialog.data.ip)">
+              {{ t("TXT_CODE_93c3cb78") }}
+            </a-typography-text>
           </a-form-item>
 
           <a-form-item :label="t('TXT_CODE_4a6bf8c6')" name="port" required>
@@ -265,17 +263,31 @@ defineExpose({ openDialog });
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :span="24">
-              <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="port">
-                <a-typography-paragraph>
-                  <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_75ef0619") }}
-                  </a-typography-text>
-                </a-typography-paragraph>
-                <a-input v-model:value="dialog.data.port" />
-              </a-form-item>
-            </a-col>
           </a-row>
+          <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="daemonPort">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_75ef0619") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="dialog.data.daemonPort" />
+          </a-form-item>
+          <a-form-item :label="t('TXT_CODE_bbe23ee7')" name="remoteMappings">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_497568db") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-card>
+              <NodeRemoteMappingEdit
+                v-if="dialog.data.remoteMappings"
+                v-model:value="dialog.data.remoteMappings"
+              />
+              <a-typography-text v-else type="secondary">
+                {{ t("TXT_CODE_48c291c1") }}
+              </a-typography-text>
+            </a-card>
+          </a-form-item>
         </a-form>
       </a-tab-pane>
     </a-tabs>
