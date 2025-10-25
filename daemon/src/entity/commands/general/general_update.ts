@@ -18,10 +18,12 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
+    const userUuid: string = instance.config.userUuid;
+
     if (instance.status() !== Instance.STATUS_STOP && instance.status() !== Instance.STATUS_BUSY)
-      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop")));
+      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_notStop", userUuid)));
     if (instance.asynchronousTask)
-      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress")));
+      return instance.failure(new Error($t("TXT_CODE_general_update.statusErr_otherProgress", userUuid)));
 
     try {
       instance.setLock(true);
@@ -33,8 +35,8 @@ export default class GeneralUpdateCommand extends InstanceCommand {
       await this.updateTask?.wait();
     } catch (err: any) {
       instance.println(
-        $t("TXT_CODE_general_update.update"),
-        $t("TXT_CODE_general_update.error", { err: err })
+        $t("TXT_CODE_general_update.update", userUuid),
+        $t("TXT_CODE_general_update.error", { err: err }, userUuid)
       );
     } finally {
       this.stopped(instance);
@@ -42,17 +44,19 @@ export default class GeneralUpdateCommand extends InstanceCommand {
   }
 
   async stop(instance: Instance): Promise<void> {
+    const userUuid: string = instance.config.userUuid;
+
     instance.asynchronousTask = undefined;
     logger.info(
-      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
+      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid }, userUuid)
     );
     instance.println(
-      $t("TXT_CODE_general_update.update"),
-      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid })
+      $t("TXT_CODE_general_update.update", userUuid),
+      $t("TXT_CODE_general_update.terminateUpdate", { instanceUuid: instance.instanceUuid }, userUuid)
     );
     instance.println(
-      $t("TXT_CODE_general_update.update"),
-      $t("TXT_CODE_general_update.killProcess")
+      $t("TXT_CODE_general_update.update", userUuid),
+      $t("TXT_CODE_general_update.killProcess", userUuid)
     );
     await this.updateTask?.stop();
     this.updateTask = undefined;

@@ -53,9 +53,28 @@ export const SUPPORTED_LANGS = [
   // },
 ];
 
+export enum SUPPORTED_LANGS_ENUM {
+  "EN_US" = "en_us",
+  "ZH_CN" = "zh_cn",
+  "ZH_TW" = "zh_tw",
+  "JA_JP" = "ja_jp",
+  "RU_RU" = "ru_ru",
+  "DE_DE" = "de_de"
+}
+
+export function getLanguage(locale_code: SUPPORTED_LANGS_ENUM): string {
+  return (
+    SUPPORTED_LANGS.find(({ value  }): boolean => value === locale_code)?.label ??
+    SUPPORTED_LANGS.at(0)?.label as string
+  );
+}
+
+
+export const USER_UUID_KEY = "USER_UUID";
 export const LANGUAGE_KEY = "LANGUAGE";
 
 let i18n: I18n;
+let userLocale: { [key: string]: string };
 
 export function toStandardLang(lang?: string) {
   if (!lang) return "en_us";
@@ -69,6 +88,13 @@ export async function initInstallPageFlow(language: string) {
     }
   });
   return language;
+}
+
+async function changeLanguage(user_uuid: string, code: string): Promise<void> {
+  const request: Request = new Request(`/api/locales/get?user_uuid=${user_uuid}&code=${code}`, {
+    method: "GET"
+  })
+  userLocale = JSON.parse(await getLocale(request));
 }
 
 // I18n init configuration
@@ -85,6 +111,8 @@ async function initI18n(lang: string) {
       }
     }
   }
+
+  await changeLanguage(localStorage.getItem(USER_UUID_KEY) as string, localStorage.getItem(LANGUAGE_KEY) as string);
 
   i18n = createI18n({
     allowComposition: true,
@@ -143,8 +171,16 @@ const isEN = () => {
   return getCurrentLang() === "en_us";
 };
 
+function getLocale(request: Request): Promise<string> {
+  return new Promise(async (cb): Promise<void> => {
+    fetch(request)
+      .then((res: Response) => res.json())
+      .then(({ data }) => cb(data));
+  })
+}
+
 const $t = (...args: any[]): string => {
-  return (i18n.global.t as Function)(...args);
+  return userLocale ? userLocale[args.at(0)] : (i18n.global.t as Function)(...args);
 };
 const t = $t;
 

@@ -16,6 +16,8 @@ export default class DockerTakeoverCommand extends AbsStartCommand {
   }
 
   protected async createProcess(instance: Instance) {
+    const userUuid: string = instance.config.userUuid;
+
     // Docker docks to the process adapter
     const processAdapter = new DockerProcessAdapter(new SetupDockerContainer(instance));
     try {
@@ -36,14 +38,14 @@ export default class DockerTakeoverCommand extends AbsStartCommand {
       logger.error(e);
       logger.error("uuid:", instance.instanceUuid);
       logger.error("container:", this.containerInfo.Id);
-      throw new StartupDockerProcessError($t("TXT_CODE_786c22bd"));
+      throw new StartupDockerProcessError($t("TXT_CODE_786c22bd", userUuid));
     }
 
     instance.started(processAdapter);
     logger.info(
       $t("TXT_CODE_instance.successful", {
         v: `${instance.config.nickname} ${instance.instanceUuid}`
-      })
+      }, userUuid)
     );
   }
 }

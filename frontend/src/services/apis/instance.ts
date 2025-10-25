@@ -16,6 +16,8 @@ export interface MissionPassportResponse {
   remoteMappings: RemoteMappingEntry[];
 }
 
+const user_uuid: string | null = localStorage.getItem("USER_UUID");
+
 export const setUpTerminalStreamChannel = useDefineApi<
   {
     params: {
@@ -66,7 +68,7 @@ export const openInstance = useDefineApi<
     instanceUuid: string;
   }
 >({
-  url: "/api/protected_instance/open",
+  url: `/api/protected_instance/open?user_uuid=${user_uuid}`,
   method: "GET"
 });
 
@@ -81,7 +83,7 @@ export const stopInstance = useDefineApi<
     instanceUuid: string;
   }
 >({
-  url: "/api/protected_instance/stop",
+  url: `/api/protected_instance/stop?user_uuid=${user_uuid}`,
   method: "GET"
 });
 
@@ -96,7 +98,7 @@ export const restartInstance = useDefineApi<
     instanceUuid: string;
   }
 >({
-  url: "/api/protected_instance/restart",
+  url: `/api/protected_instance/restart?user_uuid=${user_uuid}`,
   method: "GET"
 });
 
@@ -111,7 +113,7 @@ export const killInstance = useDefineApi<
     instanceUuid: string;
   }
 >({
-  url: "/api/protected_instance/kill",
+  url: `/api/protected_instance/kill?user_uuid=${user_uuid}`,
   method: "GET"
 });
 

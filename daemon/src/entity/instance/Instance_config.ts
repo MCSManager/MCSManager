@@ -10,6 +10,7 @@ type ProcessType = "general" | "docker";
 
 // @Entity
 export default class InstanceConfig implements IGlobalInstanceConfig {
+  public userUuid = "Undefined";
   public nickname = "Undefined";
   public startCommand = "";
   public stopCommand = "^C";

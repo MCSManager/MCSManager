@@ -3,7 +3,7 @@ import path from "path";
 import Storage from "../common/storage/sys_storage";
 import { IRemoteService, RemoteServiceConfig } from "../entity/entity_interface";
 import RemoteService from "../entity/remote_service";
-import { $t } from "../i18n";
+import { $t, i18next } from "../i18n";
 import { UniversalRemoteSubsystem } from "./base/urs";
 import { logger } from "./log";
 
@@ -136,9 +136,9 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     });
   }
 
-  changeDaemonLanguage(language: string) {
+  changeDaemonLanguage(user_uuid: string, language: string) {
     for (const iterator of this.services.entries()) {
-      iterator[1].setLanguage(language);
+      iterator[1].setLanguage(user_uuid, language);
     }
   }
 }

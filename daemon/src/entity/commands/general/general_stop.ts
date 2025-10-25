@@ -8,9 +8,11 @@ export default class GeneralStopCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
+    const userUuid: string = instance.config.userUuid;
+
     const stopCommand = instance.config.stopCommand;
     if (instance.status() === Instance.STATUS_STOP || !instance.process)
-      return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning")));
+      return instance.failure(new Error($t("TXT_CODE_general_stop.notRunning", userUuid)));
 
     instance.status(Instance.STATUS_STOPPING);
     instance.ignoreEventTaskOnce();
@@ -21,7 +23,7 @@ export default class GeneralStopCommand extends InstanceCommand {
     }
 
     instance.print("\n");
-    instance.println("INFO", $t("TXT_CODE_pty_stop.execCmd", { stopCommand: `\n${stopCommand}` }));
+    instance.println("INFO", $t("TXT_CODE_pty_stop.execCmd", { stopCommand: `\n${stopCommand}` }, userUuid));
 
     const cacheStartCount = instance.startCount;
 
@@ -31,7 +33,7 @@ export default class GeneralStopCommand extends InstanceCommand {
         instance.status() === Instance.STATUS_STOPPING &&
         instance.startCount === cacheStartCount
       ) {
-        instance.println("ERROR", $t("TXT_CODE_general_stop.stopErr"));
+        instance.println("ERROR", $t("TXT_CODE_general_stop.stopErr", userUuid));
         instance.status(Instance.STATUS_RUNNING);
       }
     }, 1000 * 60 * 10);

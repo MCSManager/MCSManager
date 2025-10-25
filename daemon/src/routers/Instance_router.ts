@@ -219,27 +219,31 @@ routerApp.on("instance/forward", (ctx, data) => {
 
 // open the instance
 routerApp.on("instance/open", async (ctx, data) => {
+  const userUuid = data.userUuid;
   const disableResponse = data.disableResponse;
   const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     instances.push({
+      userUuid,
       instanceUuid: instanceUuid,
       nickname: instance?.config.nickname
     });
     try {
-      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
+      instance.config.userUuid = userUuid
       await instance.execPreset("start");
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse) {
         logger.error(
-          $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }),
+          $t("TXT_CODE_Instance_router.openInstanceErr", { instanceUuid: instanceUuid }, userUuid),
           err
         );
         protocol.error(ctx, "instance/open", {
+          instances,
           instanceUuid: instanceUuid,
-          nickname: instance?.config.nickname,
+          nickname: "instance?.config.nickname",
           err: err.message
         });
       }
@@ -249,22 +253,25 @@ routerApp.on("instance/open", async (ctx, data) => {
 
 // close the instance
 routerApp.on("instance/stop", async (ctx, data) => {
+  const userUuid = data.userUuid;
   const disableResponse = data.disableResponse;
   const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     instances.push({
+      userUuid,
       instanceUuid: instanceUuid,
       nickname: instance?.config.nickname
     });
     try {
-      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
       await instance.execPreset("stop");
       //Note: Removing this reply will cause the front-end response to be slow, because the front-end will wait for the panel-side message to be forwarded
       if (!disableResponse) protocol.msg(ctx, "instance/stop", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/stop", {
+          instances,
           instanceUuid: instanceUuid,
           nickname: instance?.config.nickname,
           err: err.message
@@ -275,6 +282,7 @@ routerApp.on("instance/stop", async (ctx, data) => {
 
 // restart the instance
 routerApp.on("instance/restart", async (ctx, data) => {
+  const userUuid = data.userUuid;
   const disableResponse = data.disableResponse;
   const instances = [];
   for (const instanceUuid of data.instanceUuids) {
@@ -284,12 +292,13 @@ routerApp.on("instance/restart", async (ctx, data) => {
       nickname: instance?.config.nickname
     });
     try {
-      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
       await instance.execPreset("restart");
       if (!disableResponse) protocol.msg(ctx, "instance/restart", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/restart", {
+          instances,
           instanceUuid: instanceUuid,
           nickname: instance?.config.nickname,
           err: err.message
@@ -300,11 +309,13 @@ routerApp.on("instance/restart", async (ctx, data) => {
 
 // terminate instance method
 routerApp.on("instance/kill", async (ctx, data) => {
+  const userUuid = data.userUuid;
   const disableResponse = data.disableResponse;
   const instances = [];
   for (const instanceUuid of data.instanceUuids) {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     instances.push({
+      userUuid,
       instanceUuid: instanceUuid,
       nickname: instance?.config.nickname
     });
@@ -315,6 +326,7 @@ routerApp.on("instance/kill", async (ctx, data) => {
     } catch (err: any) {
       if (!disableResponse)
         protocol.error(ctx, "instance/kill", {
+          instances,
           instanceUuid: instanceUuid,
           nickname: instance?.config.nickname,
           err: err.message
@@ -325,12 +337,13 @@ routerApp.on("instance/kill", async (ctx, data) => {
 
 // Send a command to the application instance
 routerApp.on("instance/command", async (ctx, data) => {
+  const userUuid = data.userUuid;
   const disableResponse = data.disableResponse;
   const instanceUuid = data.instanceUuid;
   const command = data.command || "";
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   try {
-    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
     await instance.execPreset("command", command);
     if (!disableResponse) protocol.msg(ctx, "instance/command", { instanceUuid });
   } catch (err: any) {

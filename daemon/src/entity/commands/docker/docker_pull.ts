@@ -27,47 +27,51 @@ export default class DockerPullCommand extends InstanceCommand {
   }
 
   private awaitImageDone(instance: Instance, name: string) {
+    const userUuid: string = instance.config.userUuid;
+
     return new Promise((resolve, reject) => {
       let count = 0;
       const task = setInterval(async () => {
         count++;
-        instance.println("CONTAINER", t("TXT_CODE_977cb449"));
+        instance.println("CONTAINER", t("TXT_CODE_977cb449", userUuid));
         if (await checkImage(name)) {
           clearInterval(task);
           resolve(true);
         }
         if (count >= 20 * 15) {
           clearInterval(task);
-          reject(new Error(t("TXT_CODE_9cae6f92")));
+          reject(new Error(t("TXT_CODE_9cae6f92", userUuid)));
         }
         if (this.stopFlag) {
           clearInterval(task);
-          reject(new Error(t("TXT_CODE_361a79c6")));
+          reject(new Error(t("TXT_CODE_361a79c6", userUuid)));
         }
       }, 3 * 1000);
     });
   }
 
   async exec(instance: Instance) {
+    const userUuid: string = instance.config.userUuid;
+
     const imageName = instance.config.docker.image;
-    if (!imageName) throw new Error(t("TXT_CODE_17be5f70"));
+    if (!imageName) throw new Error(t("TXT_CODE_17be5f70", userUuid));
     const cachedStartCount = instance.startCount;
     // If the image exists, there is no need to pull again.
     if (await checkImage(imageName)) return;
 
     try {
       const docker = new DefaultDocker();
-      instance.println("CONTAINER", t("TXT_CODE_2fa46b8c") + imageName);
+      instance.println("CONTAINER", t("TXT_CODE_2fa46b8c", userUuid) + imageName);
       instance.asynchronousTask = this;
 
       await docker.pull(imageName, {});
 
       await this.awaitImageDone(instance, imageName);
       if (cachedStartCount !== instance.startCount) return;
-      instance.println("CONTAINER", t("TXT_CODE_c68b0bef"));
+      instance.println("CONTAINER", t("TXT_CODE_c68b0bef", userUuid));
     } catch (err: any) {
       if (cachedStartCount !== instance.startCount) return;
-      throw new Error([t("TXT_CODE_db37b7f9"), err?.message].join("\n"));
+      throw new Error([t("TXT_CODE_db37b7f9", userUuid), err?.message].join("\n"));
     } finally {
       this.stopped(instance);
     }

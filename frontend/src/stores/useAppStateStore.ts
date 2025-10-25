@@ -8,6 +8,7 @@ import { computed, reactive } from "vue";
 
 interface AppStateInfo extends PanelStatus {
   userInfo: LoginUserInfo | null;
+  userUuid: string | null;
 }
 
 export const useAppStateStore = createGlobalState(() => {
@@ -16,6 +17,7 @@ export const useAppStateStore = createGlobalState(() => {
   const language = useLocalStorage(LANGUAGE_KEY, toStandardLang(window.navigator.language));
   const state: AppStateInfo = reactive<AppStateInfo>({
     userInfo: null,
+    userUuid: null,
     isInstall: true,
     versionChange: false,
     language: language.value,
@@ -45,6 +47,7 @@ export const useAppStateStore = createGlobalState(() => {
         const info = await reqUserInfo();
         if (info.value) {
           state.userInfo = info.value;
+          localStorage.setItem("USER_UUID", info.value.uuid);
         } else {
           throw new Error("Failed to get user information from server!");
         }
@@ -63,9 +66,9 @@ export const useAppStateStore = createGlobalState(() => {
     if (panelStatusRes.value?.settings) {
       state.settings = panelStatusRes.value?.settings;
     }
-    if (state.isInstall) {
-      language.value = toStandardLang(panelStatusRes.value?.language);
-    }
+    // if (state.isInstall) {
+    //   language.value = toStandardLang(panelStatusRes.value?.language);
+    // }
     console.info("Window.navigator.language:", window.navigator.language);
     console.info("Panel Language:", state.language);
   };

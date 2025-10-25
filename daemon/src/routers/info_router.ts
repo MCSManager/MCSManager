@@ -4,11 +4,10 @@ import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 
 import fs from "fs-extra";
-import i18next from "i18next";
 import { systemInfo, toNumber, toText } from "mcsmanager-common";
 import { LOCAL_PRESET_LANG_PATH } from "../const";
 import { globalConfiguration } from "../entity/config";
-import { $t } from "../i18n";
+import { $t, i18next } from "../i18n";
 import logger from "../service/log";
 import VisualDataSubsystem from "../service/system_visual_data";
 import { getVersion } from "../service/version";
@@ -50,6 +49,7 @@ routerApp.on("info/overview", async (ctx) => {
 
 routerApp.on("info/setting", async (ctx, data) => {
   const language = toText(data.language);
+  const userUuid = toText(data.user_uuid) ?? i18next.language;
   const uploadSpeedRate = toNumber(data.uploadSpeedRate);
   const downloadSpeedRate = toNumber(data.downloadSpeedRate);
   const portRangeStart = toNumber(data.portRangeStart);
@@ -58,9 +58,11 @@ routerApp.on("info/setting", async (ctx, data) => {
   const port = toNumber(data.port);
   if (language) {
     logger.warn($t("TXT_CODE_66e32091"), language);
-    i18next.changeLanguage(language);
-    fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
-    globalConfiguration.config.language = language;
+    i18next.changeLanguage(language, userUuid);
+    if (userUuid === i18next.language) {
+      globalConfiguration.config.language = language;
+      fs.remove(LOCAL_PRESET_LANG_PATH, () => {});
+    }
   }
   if (uploadSpeedRate != null && uploadSpeedRate >= 0) {
     globalConfiguration.config.uploadSpeedRate = uploadSpeedRate;

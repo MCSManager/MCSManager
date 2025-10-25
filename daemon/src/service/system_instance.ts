@@ -10,7 +10,7 @@ import FunctionDispatcher from "../entity/commands/dispatcher";
 import { globalConfiguration } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import InstanceConfig from "../entity/instance/Instance_config";
-import { $t } from "../i18n";
+import { $t, i18next } from "../i18n";
 import logger from "./log";
 import InstanceControl from "./system_instance_control";
 import takeoverContainer from "./takeover_container";
@@ -42,6 +42,8 @@ class InstanceSubsystem extends EventEmitter {
   // start automatically at boot
   private autoStart() {
     this.instances.forEach((instance) => {
+      const userUuid: string = instance.config.userUuid;
+
       if (instance.config.eventTask.autoStart && instance.status() == Instance.STATUS_STOP) {
         setTimeout(() => {
           instance
@@ -51,7 +53,7 @@ class InstanceSubsystem extends EventEmitter {
                 $t("TXT_CODE_system_instance.autoStart", {
                   name: instance.config.nickname,
                   uuid: instance.instanceUuid
-                })
+                }, userUuid)
               );
             })
             .catch((reason) => {
@@ -60,7 +62,7 @@ class InstanceSubsystem extends EventEmitter {
                   name: instance.config.nickname,
                   uuid: instance.instanceUuid,
                   reason: reason
-                })
+                }, userUuid)
               );
             });
         }, 1000 * 10);
@@ -73,9 +75,11 @@ class InstanceSubsystem extends EventEmitter {
     const instanceConfigs = StorageSubsystem.list("InstanceConfig");
     instanceConfigs.forEach((uuid) => {
       if (uuid === this.GLOBAL_INSTANCE_UUID) return;
+      let gi
       try {
         const instanceConfig = StorageSubsystem.load("InstanceConfig", InstanceConfig, uuid);
         const instance = new Instance(uuid, instanceConfig);
+        gi = instanceConfig;
 
         instanceConfig.eventTask.ignore = false;
 
@@ -86,10 +90,12 @@ class InstanceSubsystem extends EventEmitter {
           .catch((v) => {});
         this.addInstance(instance);
       } catch (error: any) {
+        const userUuid: string = gi.userUuid;
+
         logger.error(
-          $t("TXT_CODE_system_instance.readInstanceFailed", { uuid: uuid, error: error.message })
+          $t("TXT_CODE_system_instance.readInstanceFailed", { uuid: uuid, error: error.message }, userUuid)
         );
-        logger.error($t("TXT_CODE_system_instance.checkConf", { uuid: uuid }));
+        logger.error($t("TXT_CODE_system_instance.checkConf", { uuid: uuid }, userUuid));
       }
     });
 
@@ -136,13 +142,15 @@ class InstanceSubsystem extends EventEmitter {
       this.GLOBAL_INSTANCE_UUID
     );
 
+    const userUuid: string = globalConfig.userUuid;
+
     takeoverContainer()
       .catch((error) => {
         const reason = error.message || error;
         if (typeof reason == "string" && reason.includes("connect ENOENT")) {
           return;
         }
-        logger.error(`${$t("TXT_CODE_8d4c8f7e")}: ${reason}`);
+        logger.error(`${$t("TXT_CODE_8d4c8f7e", userUuid)}: ${reason}`);
       })
       .finally(() => this.autoStart());
   }
@@ -166,7 +174,9 @@ class InstanceSubsystem extends EventEmitter {
   }
 
   addInstance(instance: Instance) {
-    if (instance.instanceUuid == null) throw new Error($t("TXT_CODE_system_instance.uuidEmpty"));
+    const userUuid: string = instance.config.userUuid;
+
+    if (instance.instanceUuid == null) throw new Error($t("TXT_CODE_system_instance.uuidEmpty", userUuid));
     if (this.instances.has(instance.instanceUuid)) {
       throw new Error(`The application instance ${instance.instanceUuid} already exists.`);
     }
@@ -209,8 +219,11 @@ class InstanceSubsystem extends EventEmitter {
 
   removeInstance(instanceUuid: string, deleteFile: boolean) {
     const instance = this.getInstance(instanceUuid);
+    let userUuid: string = i18next.language;
     if (instance) {
-      if (instance.status() !== Instance.STATUS_STOP) throw new Error($t("TXT_CODE_fb547313"));
+      userUuid = instance.config.userUuid;
+
+      if (instance.status() !== Instance.STATUS_STOP) throw new Error($t("TXT_CODE_fb547313", userUuid));
       instance.destroy();
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
@@ -218,7 +231,8 @@ class InstanceSubsystem extends EventEmitter {
       if (deleteFile) fs.remove(instance.absoluteCwdPath(), (err) => {});
       return true;
     }
-    throw new Error($t("TXT_CODE_3bfb9e04"));
+
+    throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
   }
 
   forward(targetInstanceUuid: string, socket: Socket) {
@@ -230,7 +244,9 @@ class InstanceSubsystem extends EventEmitter {
   stopForward(targetInstanceUuid: string, socket: Socket) {
     try {
       const instance = this.getInstance(targetInstanceUuid);
-      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+      const userUuid: string = instance?.config.userUuid ?? i18next.language;
+
+      if (!instance) throw new Error($t("TXT_CODE_3bfb9e04", userUuid));
       instance.watchers.delete(socket.id);
       this.instanceStream.cannelForward(socket, targetInstanceUuid);
     } catch (err) {}
@@ -283,29 +299,32 @@ class InstanceSubsystem extends EventEmitter {
     Promise.all(promises);
 
     return new Promise<void>((resolve) => {
+      let userUuid: string = i18next.language;
       let checkCount = 0;
       const checkTask = setInterval(() => {
         let count = 0;
         checkCount++;
         for (const [_, instance] of this.instances) {
+          userUuid = instance.config.userUuid;
+
           if (instance.status() !== Instance.STATUS_STOP) {
             count++;
             if (checkCount > 10) {
               logger.info(
                 $t("TXT_CODE_eadac3c2", {
                   instance: instance.config.nickname
-                })
+                }, userUuid)
               );
               this.exitInstance(instance, true);
             }
           }
         }
         if (count === 0) {
-          logger.info($t("TXT_CODE_187bb567"));
+          logger.info($t("TXT_CODE_187bb567", userUuid));
           clearInterval(checkTask);
           resolve();
         } else {
-          logger.info($t("TXT_CODE_6f23ce93", { count }));
+          logger.info($t("TXT_CODE_6f23ce93", { count }, userUuid));
         }
       }, 1000);
     });

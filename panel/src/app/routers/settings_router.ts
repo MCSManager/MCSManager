@@ -75,7 +75,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       logger.warn($t("TXT_CODE_e29a9317"), config.language);
       systemConfig.language = String(config.language);
       await i18next.changeLanguage(systemConfig.language.toLowerCase());
-      remoteService.changeDaemonLanguage(systemConfig.language);
+      remoteService.changeDaemonLanguage(i18next.language, systemConfig.language);
     }
 
     operationLogger.log("system_config_change", {
@@ -100,7 +100,7 @@ router.put("/install", async (ctx) => {
       logger.warn($t("TXT_CODE_e29a9317"), config.language);
       systemConfig.language = String(config.language);
       i18next.changeLanguage(systemConfig.language.toLowerCase());
-      remoteService.changeDaemonLanguage(systemConfig.language);
+      remoteService.changeDaemonLanguage(i18next.language, systemConfig.language);
     }
     saveSystemConfig(systemConfig);
     ctx.body = "OK";

@@ -29,6 +29,8 @@ export default class GeneralSendCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance, buf?: any): Promise<any> {
+    const userUuid: string = instance.config.userUuid;
+
     if (isExitCommand(instance, buf)) return;
 
     // The server shutdown command needs to send a command, but before the server shutdown command is executed, the status will be set to the shutdown state.
@@ -37,7 +39,7 @@ export default class GeneralSendCommand extends InstanceCommand {
       instance.process.write(encode(buf, instance.config.ie));
       instance.process.write(instance.getCrlfValue());
     } else {
-      instance.failure(new Error($t("TXT_CODE_command.instanceNotOpen")));
+      instance.failure(new Error($t("TXT_CODE_command.instanceNotOpen", userUuid)));
     }
   }
 }

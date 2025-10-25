@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { EventEmitter } from "events";
-import { t } from "i18next";
+import i18next, { t } from "i18next";
 import iconv from "iconv-lite";
 import { configureEntityParams } from "mcsmanager-common";
 import path from "path";
@@ -98,6 +98,7 @@ export default class Instance extends EventEmitter {
   public watchers: Map<string, IWatcherInfo> = new Map();
 
   public process?: IInstanceProcess;
+  private readonly userUuid;
 
   private outputLoopTask?: NodeJS.Timeout;
   private outputBuffer = new CircularBuffer<string>(64);
@@ -105,8 +106,9 @@ export default class Instance extends EventEmitter {
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
     super();
+    if (!instanceUuid || !config) throw new Error($t("TXT_CODE_instanceConf.initInstanceErr", config.userUuid ?? i18next.language));
 
-    if (!instanceUuid || !config) throw new Error($t("TXT_CODE_instanceConf.initInstanceErr"));
+    this.userUuid = config.userUuid;
 
     // Basic information
     this.instanceStatus = Instance.STATUS_STOP;
@@ -130,20 +132,20 @@ export default class Instance extends EventEmitter {
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
       if (!this.isStoppedOrBusy())
-        throw new Error($t("TXT_CODE_instanceConf.cantModifyInstanceType"));
+        throw new Error($t("TXT_CODE_instanceConf.cantModifyInstanceType", this.userUuid));
       configureEntityParams(this.config, cfg, "type", String);
       this.forceExec(new FunctionDispatcher());
     }
 
     if (cfg?.enableRcon != null && cfg?.enableRcon !== this.config.enableRcon) {
-      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_bdfa3457"));
+      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_bdfa3457", this.userUuid));
       configureEntityParams(this.config, cfg, "enableRcon", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
 
     if (cfg?.processType && cfg?.processType !== this.config.processType) {
       if (!this.isStoppedOrBusy())
-        throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType"));
+        throw new Error($t("TXT_CODE_instanceConf.cantModifyProcessType", this.userUuid));
       configureEntityParams(this.config, cfg, "processType", String);
       this.forceExec(new FunctionDispatcher());
     }
@@ -153,7 +155,7 @@ export default class Instance extends EventEmitter {
       cfg?.terminalOption?.pty != null &&
       cfg?.terminalOption?.pty !== this.config.terminalOption.pty
     ) {
-      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel"));
+      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_instanceConf.cantModifyPtyModel", this.userUuid));
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "pty", Boolean);
       this.forceExec(new FunctionDispatcher());
     }
@@ -298,7 +300,7 @@ export default class Instance extends EventEmitter {
 
   setLock(bool: boolean) {
     if (this.lock === true && bool === true) {
-      throw new Error($t("TXT_CODE_ca030197"));
+      throw new Error($t("TXT_CODE_ca030197", this.userUuid));
     }
     this.lock = bool;
   }
@@ -343,7 +345,7 @@ export default class Instance extends EventEmitter {
   // function that must be executed after the instance has been closed
   // trigger exit event
   stopped(code = 0) {
-    this.println("INFO", $t("TXT_CODE_70ce6fbb"));
+    this.println("INFO", $t("TXT_CODE_70ce6fbb", this.userUuid));
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
@@ -360,12 +362,12 @@ export default class Instance extends EventEmitter {
     if (!this.config.eventTask.ignore && this.config.eventTask.autoRestart) {
       this.execPreset("start")
         .then(() => {
-          this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
+          this.println($t("TXT_CODE_instanceConf.info", this.userUuid), $t("TXT_CODE_instanceConf.autoRestart", this.userUuid));
         })
         .catch((err) => {
           this.println(
-            $t("TXT_CODE_instanceConf.error"),
-            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+            $t("TXT_CODE_instanceConf.error", this.userUuid),
+            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err }, this.userUuid)
           );
         });
     }
@@ -376,7 +378,7 @@ export default class Instance extends EventEmitter {
     const currentTimestamp = new Date().getTime();
     const startThreshold = 2 * 1000;
     if (currentTimestamp - this.startTimestamp < startThreshold) {
-      this.println("ERROR", $t("TXT_CODE_aae2918f"));
+      this.println("ERROR", $t("TXT_CODE_aae2918f", this.userUuid));
     }
   }
 

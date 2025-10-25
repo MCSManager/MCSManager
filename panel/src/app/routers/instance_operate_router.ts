@@ -42,6 +42,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/open", {
+        userUuid: String(ctx.query.user_uuid),
         instanceUuids: [instanceUuid]
       });
       operationLogger.log("instance_start", {
@@ -74,6 +75,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/stop", {
+        userUuid: String(ctx.query.user_uuid),
         instanceUuids: [instanceUuid]
       });
       operationLogger.log("instance_stop", {
@@ -104,6 +106,7 @@ router.all(
       const command = String(ctx.query.command);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/command", {
+        userUuid: String(ctx.query.user_uuid),
         instanceUuid,
         command
       });
@@ -126,6 +129,7 @@ router.all(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/restart", {
+        userUuid: String(ctx.query.user_uuid),
         instanceUuids: [instanceUuid]
       });
       operationLogger.log("instance_restart", {

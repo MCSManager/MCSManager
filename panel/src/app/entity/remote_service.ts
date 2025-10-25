@@ -71,14 +71,16 @@ export default class RemoteService {
     });
   }
 
-  public async setLanguage(language?: string) {
+  public async setLanguage(user_uuid: string = i18next.language, language?: string) {
     if (!language) language = i18next.language;
     logger.info(
       `${$t("TXT_CODE_daemonInfo.setLanguage")} (${this.config.ip}:${this.config.port}/${
         this.config.remarks
       }) language: ${language}`
     );
+    i18next.changeLanguage(language);
     return await new RemoteRequest(this).request("info/setting", {
+      user_uuid,
       language
     });
   }

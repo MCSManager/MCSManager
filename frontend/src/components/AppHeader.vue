@@ -3,7 +3,7 @@ import logo from "@/assets/logo.png";
 import { router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useScreen } from "@/hooks/useScreen";
-import { t } from "@/lang/i18n";
+import { getLanguage, LANGUAGE_KEY, SUPPORTED_LANGS_ENUM, t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
 import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
@@ -14,6 +14,7 @@ import {
   BgColorsOutlined,
   BuildOutlined,
   CloseCircleOutlined,
+  ControlOutlined,
   GithubFilled,
   LogoutOutlined,
   MenuUnfoldOutlined,
@@ -129,8 +130,77 @@ const breadcrumbs = computed(() => {
   return arr;
 });
 
+function setLoocle(code: SUPPORTED_LANGS_ENUM): void {
+  localStorage.setItem(LANGUAGE_KEY, code);
+  window.location.reload();
+}
+
 const appMenus = computed(() => {
   return [
+    {
+      iconText: "",
+      title: "",
+      icon: ControlOutlined,
+      conditions: !containerState.isDesignMode,
+      onlyPC: false,
+      click: (key: SUPPORTED_LANGS_ENUM) => {
+        if (localStorage.getItem(LANGUAGE_KEY) === key) return;
+        switch (key) {
+          case SUPPORTED_LANGS_ENUM.EN_US:
+            setLoocle(SUPPORTED_LANGS_ENUM.EN_US);
+            break;
+
+          case SUPPORTED_LANGS_ENUM.ZH_CN:
+              setLoocle(SUPPORTED_LANGS_ENUM.ZH_CN);
+            break;
+
+          case SUPPORTED_LANGS_ENUM.ZH_TW:
+              setLoocle(SUPPORTED_LANGS_ENUM.ZH_TW);
+            break;
+
+          case SUPPORTED_LANGS_ENUM.JA_JP:
+              setLoocle(SUPPORTED_LANGS_ENUM.JA_JP);
+            break;
+
+          case SUPPORTED_LANGS_ENUM.RU_RU:
+              setLoocle(SUPPORTED_LANGS_ENUM.RU_RU);
+            break;
+
+          case SUPPORTED_LANGS_ENUM.DE_DE:
+              setLoocle(SUPPORTED_LANGS_ENUM.DE_DE);
+            break;
+
+          default: setLoocle(SUPPORTED_LANGS_ENUM.EN_US);
+
+        }
+      },
+      menus: [
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.EN_US),
+          value: SUPPORTED_LANGS_ENUM.EN_US as string
+        },
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.ZH_CN),
+          value: SUPPORTED_LANGS_ENUM.ZH_CN as string
+        },
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.ZH_TW),
+          value: SUPPORTED_LANGS_ENUM.ZH_TW as string
+        },
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.JA_JP),
+          value: SUPPORTED_LANGS_ENUM.JA_JP as string
+        },
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.RU_RU),
+          value: SUPPORTED_LANGS_ENUM.RU_RU as string
+        },
+        {
+          title: getLanguage(SUPPORTED_LANGS_ENUM.DE_DE),
+          value: SUPPORTED_LANGS_ENUM.DE_DE as string
+        }
+      ]
+    },
     {
       iconText: "",
       // iconText: t("TXT_CODE_3ccb26e"),
@@ -300,6 +370,17 @@ const onClickIcon = () => {
 };
 </script>
 
+<script lang="ts">
+export default {
+  data() {
+    return {
+      locale_code: localStorage.getItem(LANGUAGE_KEY)
+    }
+  }
+}
+
+</script>
+
 <template>
   <header class="app-header-wrapper" :style="headerStyle">
     <div v-if="!isPhone" class="app-header-content">
@@ -331,8 +412,8 @@ const onClickIcon = () => {
               <component :is="item.icon" v-if="item.icon"></component>
             </div>
             <template #overlay>
-              <a-menu @click="(e: any) => item.click(String(e.key))">
-                <a-menu-item v-for="m in item.menus" :key="m.value">
+              <a-menu @click="(e: any) => item.click(e.key.toString())">
+                <a-menu-item v-for="m in item.menus" :key="m.value" :class="{ 'button-color-success': locale_code === m.value }">
                   {{ m.title }}
                 </a-menu-item>
               </a-menu>
@@ -380,7 +461,7 @@ const onClickIcon = () => {
               >
                 <a-button type="text" :icon="h(item.icon)" size="small" @click.prevent></a-button>
                 <template #overlay>
-                  <a-menu @click="(e: any) => item.click(String(e.key))">
+                  <a-menu @click="(e: any) => item.click(e.key.toString())">
                     <a-menu-item v-for="m in item.menus" :key="m.value">
                       {{ m.title }}
                     </a-menu-item>

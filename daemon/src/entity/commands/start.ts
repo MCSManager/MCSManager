@@ -20,6 +20,7 @@ export default abstract class AbsStartCommand extends InstanceCommand {
       return instance.failure(new StartupError($t("TXT_CODE_start.instanceNotDown")));
 
     try {
+      const userUuid: string = instance.config.userUuid;
       instance.setLock(true);
       instance.status(Instance.STATUS_STARTING);
       instance.startCount++;
@@ -30,12 +31,12 @@ export default abstract class AbsStartCommand extends InstanceCommand {
         const endTime = instance.config.endTime;
         if (endTime) {
           if (endTime <= instance.startTimestamp) {
-            throw new Error($t("TXT_CODE_start.instanceMaturity"));
+            throw new Error($t("TXT_CODE_start.instanceMaturity", userUuid));
           }
         }
       }
 
-      instance.println("INFO", $t("TXT_CODE_start.startInstance"));
+      instance.println("INFO", $t("TXT_CODE_start.startInstance", userUuid));
 
       // prevent the dead-loop from starting
       await this.sleep();

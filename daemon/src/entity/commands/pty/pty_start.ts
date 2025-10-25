@@ -143,23 +143,24 @@ export default class PtyStartCommand extends AbsStartCommand {
   }
 
   async createProcess(instance: Instance) {
+    const userUuid: string = instance.config.userUuid
     if (
       !instance.config.startCommand ||
       !instance.hasCwdPath() ||
       !instance.config.ie ||
       !instance.config.oe
     )
-      throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
+      throw new StartupError($t("TXT_CODE_pty_start.cmdErr", userUuid));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
     if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))
-      throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath"));
+      throw new StartupError($t("TXT_CODE_pty_start.mustAbsolutePath", userUuid));
 
     // PTY mode correctness check
-    logger.info($t("TXT_CODE_pty_start.startPty", { source: "" }));
+    logger.info($t("TXT_CODE_pty_start.startPty", { source: "" }, userUuid));
     let checkPtyEnv = true;
 
     if (!fs.existsSync(PTY_PATH)) {
-      instance.println("ERROR", $t("TXT_CODE_pty_start.startErr"));
+      instance.println("ERROR", $t("TXT_CODE_pty_start.startErr", userUuid));
       checkPtyEnv = false;
     }
 
@@ -186,7 +187,7 @@ export default class PtyStartCommand extends AbsStartCommand {
     }
 
     if (commandList.length === 0)
-      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty")));
+      return instance.failure(new StartupError($t("TXT_CODE_pty_start.cmdEmpty", userUuid)));
 
     const pipeId = v4();
     const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
@@ -213,17 +214,17 @@ export default class PtyStartCommand extends AbsStartCommand {
     ];
 
     logger.info("----------------");
-    logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: "" }));
-    logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }));
-    logger.info($t("TXT_CODE_pty_start.startCmd", { cmd: commandList.join(" ") }));
-    logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }));
-    logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }));
-    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }));
-    logger.info($t("TXT_CODE_general_start.runAs", { user: runAsConfig.runAsName }));
+    logger.info($t("TXT_CODE_pty_start.sourceRequest", { source: "" }, userUuid));
+    logger.info($t("TXT_CODE_pty_start.instanceUuid", { instanceUuid: instance.instanceUuid }, userUuid));
+    logger.info($t("TXT_CODE_pty_start.startCmd", { cmd: commandList.join(" ") }, userUuid));
+    logger.info($t("TXT_CODE_pty_start.ptyPath", { path: PTY_PATH }, userUuid));
+    logger.info($t("TXT_CODE_pty_start.ptyParams", { param: ptyParameter.join(" ") }, userUuid));
+    logger.info($t("TXT_CODE_pty_start.ptyCwd", { cwd: instance.absoluteCwdPath() }, userUuid));
+    logger.info($t("TXT_CODE_general_start.runAs", { user: runAsConfig.runAsName }, userUuid));
     logger.info("----------------");
 
     if (runAsConfig.isEnableRunAs) {
-      instance.println("INFO", $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName }));
+      instance.println("INFO", $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName }, userUuid));
     }
 
     // create pty child process
@@ -247,9 +248,9 @@ export default class PtyStartCommand extends AbsStartCommand {
           startCommand: instance.config.startCommand,
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
-        })
+        }, userUuid)
       );
-      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr"));
+      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr", userUuid));
     }
 
     // create process adapter
@@ -263,9 +264,9 @@ export default class PtyStartCommand extends AbsStartCommand {
           startCommand: instance.config.startCommand,
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
-        })
+        }, userUuid)
       );
-      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr"));
+      throw new StartupError($t("TXT_CODE_pty_start.instanceStartErr", userUuid));
     }
 
     // generate open event
@@ -275,9 +276,9 @@ export default class PtyStartCommand extends AbsStartCommand {
       $t("TXT_CODE_pty_start.startSuccess", {
         instanceUuid: instance.instanceUuid,
         pid: ptySubProcessCfg.pid
-      })
+      }, userUuid)
     );
-    instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal"));
-    instance.println("INFO", $t("TXT_CODE_b50ffba8"));
+    instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal", userUuid));
+    instance.println("INFO", $t("TXT_CODE_b50ffba8", userUuid));
   }
 }
