@@ -24,12 +24,12 @@ import {
 } from "@ant-design/icons-vue";
 import { useScroll } from "@vueuse/core";
 import { message, Modal, notification } from "ant-design-vue";
-import { computed, h } from "vue";
+import { computed, h, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import CardPanel from "./CardPanel.vue";
 
-const { saveGlobalLayoutConfig, resetGlobalLayoutConfig } = useLayoutConfigStore();
+const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } = useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme } = useAppConfigStore();
@@ -38,6 +38,18 @@ const { isAdmin, state: appState, isLogged } = useAppStateStore();
 const { state: frontendState } = useAppStateStore();
 
 const { y } = useScroll(document.body);
+
+const logoImage = ref(logo);
+onMounted(async () => {
+  try {
+    const settingsConfig = await getSettingsConfig();
+    if (settingsConfig?.theme?.logoImage) {
+      logoImage.value = settingsConfig.theme.logoImage;
+    }
+  } catch (error) {
+    console.error("Failed to load settings config:", error);
+  }
+});
 
 const isScroll = computed(() => {
   return y.value > 10;
@@ -306,7 +318,7 @@ const onClickIcon = () => {
       <nav class="btns">
         <a href="." style="margin-right: 12px">
           <div class="logo">
-            <img :src="logo" style="height: 18px" />
+            <img :src="logoImage" style="height: 18px" />
           </div>
         </a>
 

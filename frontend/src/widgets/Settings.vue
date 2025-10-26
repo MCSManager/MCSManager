@@ -41,6 +41,7 @@ const { setBackgroundImage } = useAppConfigStore();
 const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
+  logoUrl?: string;
   bgUrl?: string;
   proLicenseKey?: string;
 }
@@ -181,6 +182,31 @@ const contacts = arrayFilter([
     url: "https://github.com/MCSManager/MCSManager/issues"
   }
 ]);
+
+const uploadLogo = async () => {
+  const body = document.querySelector("body");
+  if (formData.value && body) {
+    const url = await useUploadFileDialog();
+    if (url) {
+      formData.value.logoUrl = url;
+    }
+  }
+};
+
+const handleSaveLogoUrl = async (url?: string) => {
+  Modal.confirm({
+    title: t("TXT_CODE_c0606ef4"),
+    content: t("TXT_CODE_cf95364f"),
+    async onOk() {
+      const cfg = await getSettingsConfig();
+      if (!cfg?.theme) {
+        return reportErrorMsg(t("TXT_CODE_b89780e2"));
+      }
+      cfg.theme.logoImage = url ?? formData.value?.logoUrl ?? "";
+      await setSettingsConfig(cfg);
+    }
+  });
+};
 
 const uploadBackground = async () => {
   const body = document.querySelector("body");
@@ -414,6 +440,35 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
+                  
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("Logo image") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>
+                          {{ t("TXT_CODE_cf95364f") }}
+                        </div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                      <div class="flex">
+                        <a-input
+                          v-model:value="formData.logoUrl"
+                          style="max-width: 320px"
+                          :placeholder="t('TXT_CODE_4ea93630')"
+                        />
+                        <a-button class="ml-6" @click="() => uploadLogo()">
+                          {{ t("TXT_CODE_ae09d79d") }}
+                        </a-button>
+                      </div>
+                    </a-typography-paragraph>
+                    <a-button type="primary" class="mr-6" @click="handleSaveLogoUrl()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                    <a-button danger @click="handleSaveLogoUrl('')">
+                      {{ t("TXT_CODE_50d471b2") }}
+                    </a-button>
+                  </a-form-item>
 
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_8ae0dc90") }}</a-typography-title>
