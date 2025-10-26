@@ -37,7 +37,7 @@ defineProps<{
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
 const { getSettingsConfig, setSettingsConfig } = useLayoutConfigStore();
-const { setBackgroundImage } = useAppConfigStore();
+const { setLogoImage, setBackgroundImage } = useAppConfigStore();
 const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
@@ -189,6 +189,7 @@ const uploadLogo = async () => {
     const url = await useUploadFileDialog();
     if (url) {
       formData.value.logoUrl = url;
+      setLogoImage(url)
     }
   }
 };
@@ -266,6 +267,9 @@ onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
   formData.value = res.value!;
+  if (cfg?.theme?.logoImage) {
+    formData.value.logoUrl = cfg.theme.logoImage;
+  }
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
   }
@@ -442,7 +446,7 @@ onUnmounted(() => {
                   </div>
                   
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("TXT_CODE_47b5a2f7") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("Logo image") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         <div>
