@@ -442,7 +442,7 @@ onUnmounted(() => {
                   </div>
                   
                   <a-form-item>
-                    <a-typography-title :level="5">{{ t("Logo image") }}</a-typography-title>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_47b5a2f7") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         <div>
