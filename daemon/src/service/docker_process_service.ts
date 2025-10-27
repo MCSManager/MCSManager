@@ -247,13 +247,18 @@ export class SetupDockerContainer extends AsyncTask {
         NetworkMode: dockerConfig.networkMode,
         Mounts: mounts
       },
-      NetworkingConfig: {
-        EndpointsConfig: {
-          [dockerConfig.networkMode || "bridge"]: {
-            Aliases: dockerConfig.networkAliases
+      // Only set NetworkingConfig for non-host network modes
+      // host mode uses the host's network stack and doesn't support EndpointsConfig
+      ...(dockerConfig.networkMode !== "host" &&
+      dockerConfig.networkMode !== "none" && {
+        NetworkingConfig: {
+          EndpointsConfig: {
+            [dockerConfig.networkMode || "bridge"]: {
+              Aliases: dockerConfig.networkAliases
+            }
           }
         }
-      }
+      })
     });
 
     await this.container.start();

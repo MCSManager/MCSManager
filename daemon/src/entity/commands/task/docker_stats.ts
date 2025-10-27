@@ -46,19 +46,27 @@ export default class DockerStatsTask implements ILifeCycleTask {
     return result;
   }
 
-  private getNetworkInterface(stats: Dockerode.NetworkStats) {
-    let networkInterface = stats?.["eth0"];
+  private getNetworkInterface(networks?: Dockerode.NetworkStats) {
+    // If networks is not available (e.g., in host network mode), return undefined values
+    if (!networks || typeof networks !== "object") {
+      return {
+        rxBytes: undefined,
+        txBytes: undefined
+      };
+    }
+
+    let networkInterface = networks?.["eth0"];
     if (!networkInterface) {
-      for (const key in stats.networks) {
+      for (const key in networks) {
         if (key.startsWith("eth")) {
-          networkInterface = stats[key];
+          networkInterface = networks[key];
           break;
         }
       }
     }
     if (!networkInterface) {
-      const networkKeys = Object.keys(stats.networks).filter((v) => !v.startsWith("lo0"));
-      networkInterface = stats[networkKeys?.[0]] ?? undefined;
+      const networkKeys = Object.keys(networks).filter((v) => !v.startsWith("lo"));
+      networkInterface = networks[networkKeys?.[0]] ?? undefined;
     }
 
     const currentValues = {
@@ -90,7 +98,18 @@ export default class DockerStatsTask implements ILifeCycleTask {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
-      const { rxBytes, txBytes } = this.getNetworkInterface(stats.networks);
+      
+      // Get network stats separately to avoid blocking other stats on failure
+      let rxBytes: number | undefined = undefined;
+      let txBytes: number | undefined = undefined;
+      
+      try {
+        const networkStats = this.getNetworkInterface(stats.networks);
+        rxBytes = networkStats.rxBytes;
+        txBytes = networkStats.txBytes;
+      } catch (error) {
+        // Network stats may not be available in host mode, continue with other stats
+      }
 
       const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
