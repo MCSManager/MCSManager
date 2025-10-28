@@ -100,11 +100,11 @@ const accountDataSource = computed(() => {
     });
   }
 
-  if (props.instanceInfo.instanceName) {
+  if (props.instanceInfo.instance_info.name) {
     data.push({
-      key: "instanceName",
+      key: "name",
       label: t("实例名称"),
-      value: props.instanceInfo.instanceName,
+      value: props.instanceInfo.instance_info.name,
       valueType: "text"
     });
   }
@@ -131,33 +131,6 @@ const accountDataSource = computed(() => {
       label: t("到期时间"),
       value: new Date(props.instanceInfo.expire).toLocaleString(),
       valueType: "text"
-    });
-  }
-
-  return data;
-});
-
-// 实例信息表格数据源
-const instanceDataSource = computed(() => {
-  if (!props.instanceInfo?.instance_info) return [];
-  const data = [];
-
-  if (props.instanceInfo.instance_info.name) {
-    data.push({
-      key: "name",
-      label: t("实例名称"),
-      value: props.instanceInfo.instance_info.name,
-      valueType: "text"
-    });
-  }
-
-  if (props.instanceInfo.instance_info.status !== undefined) {
-    data.push({
-      key: "status",
-      label: t("运行状态"),
-      value: props.instanceInfo.instance_info.status === 0 ? t("已停止") : t("运行中"),
-      valueType: "status",
-      status: props.instanceInfo.instance_info.status
     });
   }
 
