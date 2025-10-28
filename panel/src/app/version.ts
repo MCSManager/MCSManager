@@ -1,11 +1,9 @@
-import axios from "axios";
 import * as fs from "fs-extra";
 import { GlobalVariable } from "mcsmanager-common";
 import storage from "./common/system_storage";
-import { REDEEM_PLATFORM_ADDR } from "./service/exchange_service";
 import { getFrontendLayoutConfig } from "./service/frontend_layout";
 import { logger } from "./service/log";
-import { saveSystemConfig, systemConfig } from "./setting";
+import { systemConfig } from "./setting";
 
 interface IPackageInfo {
   name: string;
@@ -73,29 +71,32 @@ export function specifiedDaemonVersion() {
 
 export async function checkBusinessMode() {
   if (!systemConfig) return;
-  try {
+  if (systemConfig.panelId && systemConfig.registerCode) {
+    systemConfig.businessMode = true;
+  } else {
     systemConfig.businessMode = false;
-    const { data: response } = await axios.post<{ code: number; data: any }>(
-      `${REDEEM_PLATFORM_ADDR}/api/user/check`,
-      {
-        panelId: systemConfig?.panelId,
-        registerCode: systemConfig?.registerCode,
-        businessMode: systemConfig?.businessMode
-      },
-      {
-        timeout: 1000 * 30
-      }
-    );
-    if (response.data && response.code === 200) {
-      logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
-      systemConfig.businessMode = true;
-    } else {
-      systemConfig.businessMode = false;
-    }
-    saveSystemConfig(systemConfig);
-  } catch (error: any) {
-    // ignore
   }
+  // try {
+  //   systemConfig.businessMode = false;
+  //   const { data: response } = await axios.post<{ code: number; data: any }>(
+  //     `${REDEEM_PLATFORM_ADDR}/api/user/check`,
+  //     {
+  //       panelId: systemConfig?.panelId,
+  //       registerCode: systemConfig?.registerCode,
+  //       businessMode: systemConfig?.businessMode
+  //     },
+  //     {
+  //       timeout: 1000 * 30
+  //     }
+  //   );
+  //   if (response.data && response.code === 200) {
+  //     logger.info(`Business mode is active: ${JSON.stringify(response.data)} !!!`);
+  //     systemConfig.businessMode = true;
+  //   } else {
+  //     systemConfig.businessMode = false;
+  //   }
+  //   saveSystemConfig(systemConfig);
+  // } catch (error: any) {
+  //   // ignore
+  // }
 }
-
-setInterval(checkBusinessMode, 1000 * 60 * 60);
