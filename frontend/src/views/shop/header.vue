@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import ProductCard from "@/components/ProductCard.vue";
 import type { FrontProductInfo } from "@/services/apis/redeem";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
 import LoginCard from "@/widgets/LoginCard.vue";
 import { CloseOutlined } from "@ant-design/icons-vue";
@@ -23,6 +24,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const { isLogged } = useAppStateStore();
 const showLoginModal = ref(false);
 
 const openLoginModal = () => {
@@ -68,6 +70,7 @@ onUnmounted(() => {
 
         <Flex :gap="16" align="center">
           <a-button
+            v-if="!isLogged"
             type="primary"
             class="button-color-success"
             size="large"
@@ -76,7 +79,13 @@ onUnmounted(() => {
           >
             {{ t("登录") }}
           </a-button>
-          <a-button type="primary" size="large" style="width: 120px" @click="emit('toLogin')">
+          <a-button
+            v-if="isLogged"
+            type="primary"
+            size="large"
+            style="width: 120px"
+            @click="emit('toLogin')"
+          >
             {{ t("进入控制台") }}
           </a-button>
         </Flex>
@@ -92,7 +101,7 @@ onUnmounted(() => {
     <div>
       <a-row :gutter="[16, 16]">
         <a-col
-          v-for="product in [...(products || []), ...(products || []), ...(products || [])]"
+          v-for="product in products"
           :key="product.productId"
           :xs="24"
           :sm="12"
