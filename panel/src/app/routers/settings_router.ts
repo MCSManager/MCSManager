@@ -67,6 +67,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.shopDescription != null)
       systemConfig.shopDescription = String(config.shopDescription);
     if (config.shopTip != null) systemConfig.shopTip = String(config.shopTip);
+    if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
 
     if (config.presetPackAddr != null) {
       // clear cache
