@@ -3,6 +3,7 @@ import { RemoteServiceConfig } from "./entity_interface";
 import { logger } from "../service/log";
 import RemoteRequest from "../service/remote_command";
 import { InstanceStreamListener, removeTrail } from "mcsmanager-common";
+import { systemConfig } from "../setting";
 import { $t, i18next } from "../i18n";
 
 export default class RemoteService {
@@ -31,6 +32,9 @@ export default class RemoteService {
     let addr = `ws://${this.config.ip}:${this.config.port}`;
     if (this.config.ip.indexOf("wss://") === 0 || this.config.ip.indexOf("ws://") === 0) {
       addr = `${this.config.ip}:${this.config.port}`;
+    }
+    if (systemConfig?.ssl) {
+      addr = addr.replace("ws://", "wss://");
     }
     this.realUrl = addr;
 

@@ -2,14 +2,13 @@
 import CardPanel from "@/components/CardPanel.vue";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 import Loading from "@/components/Loading.vue";
-import { getCurrentLang, isCN, t } from "@/lang/i18n";
-import { quickInstallListAddr } from "@/services/apis/instance";
-import { reportErrorMsg } from "@/tools/validator";
+import { useMarketPackages } from "@/hooks/useMarketPackages";
+import { t } from "@/lang/i18n";
 import type { QuickStartPackages } from "@/types";
 import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { Flex, Modal } from "ant-design-vue";
+import { Flex } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
-import { computed, onMounted, reactive } from "vue";
+import { onMounted } from "vue";
 
 const props = defineProps<{
   title?: string;
@@ -22,252 +21,32 @@ const emit = defineEmits<{
   "handle-select-template": [item: QuickStartPackages | null];
 }>();
 
+// Use the market packages composable
 const {
-  state: presetList,
-  execute: getQuickInstallListAddr,
-  isLoading: appListLoading
-} = quickInstallListAddr();
-
-const SEARCH_ALL_KEY = "ALL";
-
-// Search form state for filtering packages
-// Contains language, category, game type, and platform filters with default values
-const searchForm = reactive({
-  language: isCN() ? getCurrentLang() : "en_us",
-  category: SEARCH_ALL_KEY,
-  gameType: SEARCH_ALL_KEY,
-  platform: SEARCH_ALL_KEY
+  searchForm,
+  appListLoading,
+  filteredList: appList,
+  languageOptions: appLangList,
+  gameTypeOptions: appGameTypeList,
+  categoryOptions: appCategoryList,
+  platformOptions: appPlatformList,
+  handleReset,
+  handleGameTypeChange,
+  handleLanguageChange,
+  handlePlatformChange,
+  handleSelectTopCategory,
+  fetchTemplate
+} = useMarketPackages({
+  onlyDockerTemplate: props.onlyDockerTemplate
 });
-
-// Type definition for filter options used in select dropdowns
-interface FilterOption {
-  label: string;
-  value: string;
-}
-
-// Generic filter condition checker function
-// Checks if an item matches a specific field filter value
-// Returns true if filterValue is "ALL" (no filter) or if item field matches filterValue
-const matchesFilterCondition = (
-  item: QuickStartPackages,
-  field: keyof QuickStartPackages,
-  filterValue: string
-): boolean => {
-  return filterValue === SEARCH_ALL_KEY || item[field] === filterValue;
-};
-
-// Language filter function - checks if item matches current language filter
-const matchesLanguageFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "language", searchForm.language);
-};
-
-// Game type filter function - checks if item matches current game type filter
-const matchesGameTypeFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "gameType", searchForm.gameType);
-};
-
-// Category filter function - checks if item matches current category filter
-const matchesCategoryFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "category", searchForm.category);
-};
-
-// Platform filter function - checks if item matches current platform filter
-const matchesPlatformFilter = (item: QuickStartPackages): boolean => {
-  return matchesFilterCondition(item, "platform", searchForm.platform);
-};
-
-// Get filtered packages based on current search criteria
-// Supports additional custom filters through additionalFilters parameter
-// Returns empty array if no packages are available
-const getFilteredPackages = (
-  // eslint-disable-next-line no-unused-vars
-  additionalFilters?: (item: QuickStartPackages) => boolean
-): QuickStartPackages[] => {
-  if (!presetList.value?.packages) {
-    return [];
-  }
-
-  return presetList.value.packages.filter((item) => {
-    if (props.onlyDockerTemplate && !item.setupInfo?.docker) {
-      return false;
-    }
-
-    // Apply base filters (language, game type, category, platform)
-    const baseFilters = [
-      matchesLanguageFilter(item),
-      matchesGameTypeFilter(item),
-      matchesCategoryFilter(item),
-      matchesPlatformFilter(item)
-    ];
-
-    // Combine base filters with additional custom filters if provided
-    const allFilters = additionalFilters ? [additionalFilters(item)] : baseFilters;
-    return allFilters.every((filter) => filter);
-  });
-};
-
-const getSummaryPackages = (
-  // eslint-disable-next-line no-unused-vars
-  additionalFilters?: (item: QuickStartPackages) => boolean
-): QuickStartPackages[] => {
-  let filteredPackages = getFilteredPackages(additionalFilters);
-  if (searchForm.gameType == SEARCH_ALL_KEY) {
-    const map = new Map<string, QuickStartPackages>();
-    filteredPackages.forEach((item) => {
-      if (!map.has(item.gameType)) {
-        const summary: QuickStartPackages = {
-          ...item,
-          description: "",
-          title: item.gameType,
-          category: "",
-          runtime: "",
-          size: "",
-          hardware: "",
-          remark: "",
-          targetLink: undefined,
-          author: "",
-          setupInfo: undefined,
-          tags: undefined,
-          isSummary: true
-        };
-        map.set(item.gameType, summary);
-      } else {
-        const existing = map.get(item.gameType);
-        if (existing) {
-          if (existing.platform != item.platform) {
-            existing.platform = "All";
-          }
-        }
-      }
-    });
-    filteredPackages = Array.from(map.values());
-  }
-  return filteredPackages;
-};
-
-// Generic function to generate options list for select dropdowns
-// Creates unique options from package items based on specified field
-// Supports additional filtering before generating options
-const generateOptionsList = (
-  items: QuickStartPackages[],
-  field: keyof QuickStartPackages,
-  allLabel: string,
-  // eslint-disable-next-line no-unused-vars
-  additionalFilter?: (item: QuickStartPackages) => boolean
-): FilterOption[] => {
-  const valueMap: Record<string, string> = {};
-
-  // Apply additional filter if provided, otherwise use all items
-  const filteredItems = additionalFilter ? items.filter(additionalFilter) : items;
-
-  // Build unique value map from filtered items
-  filteredItems.forEach((item) => {
-    const value = item[field] as string;
-    if (!valueMap[value]) {
-      valueMap[value] = value;
-    }
-  });
-
-  // Add "ALL" option to the map
-  valueMap[SEARCH_ALL_KEY] = allLabel;
-
-  // Convert map to array of FilterOption objects
-  return Object.keys(valueMap).map((key) => ({
-    label: valueMap[key],
-    value: key
-  }));
-};
-
-// Computed property for filtered application list
-// Uses the generic getFilteredPackages function with current search criteria
-const appList = computed(() => {
-  return getSummaryPackages();
-});
-
-// Computed property for language options dropdown
-// Includes "ALL" option and available languages from preset data
-const appLangList = computed(() => {
-  const languageOptions: FilterOption[] =
-    presetList.value?.languages instanceof Array ? presetList.value.languages : [];
-
-  return [...languageOptions];
-});
-
-// Computed property for game type options dropdown
-// Filters packages by current language selection before generating options
-const appGameTypeList = computed(() => {
-  const packages = getFilteredPackages(matchesLanguageFilter);
-  return generateOptionsList(packages, "gameType", t("TXT_CODE_107695d"));
-});
-
-// Computed property for category options dropdown
-// Filters packages by current language and game type selections before generating options
-const appCategoryList = computed(() => {
-  const packages = getFilteredPackages(
-    (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
-  );
-  return generateOptionsList(packages, "category", t("TXT_CODE_2af87548"));
-});
-
-// Computed property for platform options dropdown
-// Filters packages by current language, game type, and category selections before generating options
-const appPlatformList = computed(() => {
-  const packages = getFilteredPackages(
-    (item) => matchesLanguageFilter(item) && matchesGameTypeFilter(item)
-  );
-  return generateOptionsList(packages, "platform", t("TXT_CODE_47203b64"));
-});
-
-// Initialize function to load package data and handle errors
-// Fetches quick install list and shows error modal if no packages are available
-const init = async () => {
-  try {
-    const list = await getQuickInstallListAddr();
-    if (!list.value?.packages || list.value?.packages.length === 0) {
-      Modal.error({
-        title: t("TXT_CODE_c534ca49"),
-        content: t("TXT_CODE_bcfaf14d")
-      });
-    }
-  } catch (err: any) {
-    console.error(err.message);
-    return reportErrorMsg(err.message);
-  }
-};
-
-const handleReset = () => {
-  searchForm.language = isCN() ? getCurrentLang() : "en_us";
-  searchForm.gameType = SEARCH_ALL_KEY;
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handleGameTypeChange = () => {
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handleLanguageChange = () => {
-  searchForm.gameType = SEARCH_ALL_KEY;
-  searchForm.category = SEARCH_ALL_KEY;
-  searchForm.platform = SEARCH_ALL_KEY;
-};
-
-const handlePlatformChange = () => {
-  searchForm.category = SEARCH_ALL_KEY;
-};
-
-const handleSelectTopCategory = (item: QuickStartPackages) => {
-  searchForm.gameType = item.gameType;
-};
 
 defineExpose({
-  init,
-  appList
+  appList,
+  fetchTemplate
 });
 
 onMounted(() => {
-  init();
+  fetchTemplate();
 });
 </script>
 
@@ -410,11 +189,11 @@ onMounted(() => {
     <fade-up-animation>
       <a-col
         v-for="item in appList"
-        :key="item.targetLink + item.title + item.gameType + item.language + item.category"
+        :key="item.key"
         :span="24"
-        :xl="item.isSummary ? 8 : 6"
-        :lg="item.isSummary ? 8 : 6"
         :sm="24"
+        :md="12"
+        :lg="item.isSummary ? 8 : 6"
       >
         <div style="display: flex; flex-grow: 1; flex-direction: column; height: 100%">
           <!-- Top Category Card -->
@@ -434,7 +213,7 @@ onMounted(() => {
               />
             </div>
 
-            <a-typography-title :level="5" class="flex-center package-subtitle">
+            <a-typography-title :level="5" class="flex-center package-subtitle mb-0">
               <span>
                 {{ item.title }}
               </span>
@@ -508,123 +287,3 @@ onMounted(() => {
     </fade-up-animation>
   </a-row>
 </template>
-
-<style scoped lang="scss">
-.package-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: space-between;
-  height: 100%;
-  transition: all 0.3s ease;
-}
-
-.package-image-container {
-  overflow: hidden;
-  border-radius: 8px;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.package-image {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  height: 160px;
-  transition: transform 0.3s ease;
-  background-color: var(--color-gray-1);
-}
-
-.package-info {
-  flex: 1;
-}
-
-.package-action {
-  display: flex;
-  justify-content: center;
-}
-
-.download-button {
-  margin: 0px auto;
-  transition: all 0.3s ease;
-  max-width: 140px;
-}
-
-.package-image {
-  user-drag: none;
-  user-select: none;
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.package-image::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent, rgba(24, 144, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.package-image:hover {
-  transform: scale(1.08) rotate(2deg);
-  filter: brightness(1.1) contrast(1.1);
-}
-
-.package-image:hover::after {
-  opacity: 1;
-}
-
-.ant-card:hover .download-button {
-  transform: scale(1.08);
-  box-shadow:
-    0 8px 20px rgba(24, 144, 255, 0.4),
-    0 0 15px rgba(24, 144, 255, 0.2);
-  background: linear-gradient(45deg, #1890ff, #40a9ff);
-  border: none;
-  animation: pulse-glow 2s infinite;
-}
-
-.package-subtitle {
-  cursor: pointer;
-  background-color: var(--card-bottom-background-color);
-  color: rgb(255, 255, 255);
-  padding: 8px;
-  font-size: 14px;
-  font-weight: 400;
-  // border-bottom-left-radius: 6px;
-  // border-bottom-right-radius: 6px;
-  border-radius: 0 !important;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 1;
-  margin: 0;
-}
-
-.package-image-container-summary {
-  position: relative;
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 8px 20px rgba(24, 144, 255, 0.4),
-      0 0 15px rgba(24, 144, 255, 0.2);
-  }
-  50% {
-    box-shadow:
-      0 8px 25px rgba(24, 144, 255, 0.6),
-      0 0 25px rgba(24, 144, 255, 0.4);
-  }
-}
-</style>

@@ -15,11 +15,13 @@ import {
   BankOutlined,
   BookOutlined,
   BugOutlined,
+  EditOutlined,
   GithubOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
   PicLeftOutlined,
+  PlusOutlined,
   ProjectOutlined,
   QuestionCircleOutlined
 } from "@ant-design/icons-vue";
@@ -35,10 +37,11 @@ defineProps<{
 const { execute, isReady } = settingInfo();
 const { execute: submitExecute, isLoading: submitIsLoading } = setSettingInfo();
 const { getSettingsConfig, setSettingsConfig } = useLayoutConfigStore();
-const { setBackgroundImage } = useAppConfigStore();
+const { setLogoImage, setBackgroundImage } = useAppConfigStore();
 const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
+  logoUrl?: string;
   bgUrl?: string;
   proLicenseKey?: string;
 }
@@ -180,6 +183,32 @@ const contacts = arrayFilter([
   }
 ]);
 
+const uploadLogo = async () => {
+  const body = document.querySelector("body");
+  if (formData.value && body) {
+    const url = await useUploadFileDialog();
+    if (url) {
+      formData.value.logoUrl = url;
+      setLogoImage(url)
+    }
+  }
+};
+
+const handleSaveLogoUrl = async (url?: string) => {
+  Modal.confirm({
+    title: t("TXT_CODE_c0606ef4"),
+    content: t("TXT_CODE_cf95364f"),
+    async onOk() {
+      const cfg = await getSettingsConfig();
+      if (!cfg?.theme) {
+        return reportErrorMsg(t("TXT_CODE_b89780e2"));
+      }
+      cfg.theme.logoImage = url ?? formData.value?.logoUrl ?? "";
+      await setSettingsConfig(cfg);
+    }
+  });
+};
+
 const uploadBackground = async () => {
   const body = document.querySelector("body");
   if (formData.value && body) {
@@ -218,10 +247,29 @@ const startDesignUI = async () => {
 
 const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
 
+const toTemplate = {
+  path: "/market/editor",
+  new: () =>
+    router.push({
+      path: toTemplate.path,
+      query: {
+        newTemplate: "true"
+      }
+    }),
+  edit: () =>
+    router.push({
+      path: toTemplate.path,
+      query: {}
+    })
+};
+
 onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
   formData.value = res.value!;
+  if (cfg?.theme?.logoImage) {
+    formData.value.logoUrl = cfg.theme.logoImage;
+  }
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
   }
@@ -295,7 +343,17 @@ onUnmounted(() => {
                     <a-input
                       v-model:value="formData.presetPackAddr"
                       :placeholder="t('TXT_CODE_4ea93630')"
+                      style="max-width: 320px"
                     />
+
+                    <a-button class="mx-8" type="primary" @click="toTemplate.edit">
+                      {{ t("TXT_CODE_ad207008") }}
+                      <EditOutlined />
+                    </a-button>
+                    <a-button @click="toTemplate.new">
+                      {{ t("TXT_CODE_53499d7") }}
+                      <PlusOutlined />
+                    </a-button>
                   </a-form-item>
 
                   <a-form-item>
@@ -386,6 +444,35 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
+                  
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("Logo image") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>
+                          {{ t("TXT_CODE_cf95364f") }}
+                        </div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                      <div class="flex">
+                        <a-input
+                          v-model:value="formData.logoUrl"
+                          style="max-width: 320px"
+                          :placeholder="t('TXT_CODE_4ea93630')"
+                        />
+                        <a-button class="ml-6" @click="() => uploadLogo()">
+                          {{ t("TXT_CODE_ae09d79d") }}
+                        </a-button>
+                      </div>
+                    </a-typography-paragraph>
+                    <a-button type="primary" class="mr-6" @click="handleSaveLogoUrl()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                    <a-button danger @click="handleSaveLogoUrl('')">
+                      {{ t("TXT_CODE_50d471b2") }}
+                    </a-button>
+                  </a-form-item>
 
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_8ae0dc90") }}</a-typography-title>

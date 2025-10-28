@@ -1,5 +1,7 @@
 import fs from "fs-extra";
+import path from "path";
 import http from "http";
+import https from "https";
 import { removeTrail } from "mcsmanager-common";
 import { Server, Socket } from "socket.io";
 import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH } from "./const";
@@ -67,7 +69,17 @@ koaApp.on("error", (error) => {
   // When Koa is attacked by a short connection flood, it is easy for error messages to swipe the screen, which may indirectly affect the operation of some applications
 });
 
-const httpServer = http.createServer(koaApp.callback());
+let httpServer: http.Server | https.Server;
+if (config.ssl) {
+  const options = {
+    cert: fs.readFileSync(path.join(config.sslPemPath)),
+    key: fs.readFileSync(path.join(config.sslKeyPath))
+  };
+  httpServer = https.createServer(options, koaApp.callback());
+} else {
+  httpServer = http.createServer(koaApp.callback());
+}
+
 httpServer.on("error", (err) => {
   logger.error($t("TXT_CODE_app.httpSetupError"));
   logger.error(err);
@@ -134,7 +146,9 @@ process.on("unhandledRejection", (reason, p) => {
 logger.info("----------------------------");
 logger.info($t("TXT_CODE_app.started"));
 logger.info($t("TXT_CODE_app.doc"));
-logger.info($t("TXT_CODE_app.addr", { port: config.port }));
+let appHost = $t("TXT_CODE_app.host", { port: config.port })
+if (config.ssl) appHost = appHost.replace("http", "https");
+logger.info(appHost);
 logger.info($t("TXT_CODE_app.configPathTip", { path: "" }));
 logger.info($t("TXT_CODE_app.password", { key: config.key }));
 logger.info($t("TXT_CODE_app.passwordTip"));

@@ -187,6 +187,7 @@ declare global {
     page: string;
     items: ILayoutCard[];
     theme?: {
+      logoImage: string,
       backgroundImage: string;
     };
   }
@@ -231,10 +232,10 @@ declare global {
     platform: string;
     tags?: string[];
     isSummary?: boolean;
+    key?: string;
   }
 
   interface IQuickStartTemplate {
-    name: string;
     languages: {
       label: string;
       value: string;
@@ -255,5 +256,4 @@ declare global {
   }
 }
 
-export { };
-
+export {};

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { setLanguage, getCurrentLang } from "@/lang/i18n";
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import { createGlobalState } from "@vueuse/core";
+import logo from "@/assets/logo.png";
 
 export enum THEME {
   LIGHT = "light",
@@ -19,8 +20,11 @@ const defaultTheme = localStorage.getItem(THEME_KEY) || getSystemTheme();
 
 export const useAppConfigStore = createGlobalState(() => {
   const appConfig = reactive({
-    theme: defaultTheme as THEME
+    theme: defaultTheme as THEME,
+    logoImage: logo as string
   });
+  
+  const logoImage = computed(() => appConfig.logoImage);
 
   const setTheme = (theme: THEME) => {
     appConfig.theme = theme;
@@ -43,6 +47,12 @@ export const useAppConfigStore = createGlobalState(() => {
   const getCurrentLanguage = () => {
     return getCurrentLang() ?? "en_us";
   };
+  
+  const setLogoImage = (url: string) => {
+     if (url) {
+       appConfig.logoImage = url;
+     }
+  };
 
   const setBackgroundImage = (url: string) => {
     const body = document.querySelector("body");
@@ -58,6 +68,8 @@ export const useAppConfigStore = createGlobalState(() => {
 
   return {
     appConfig,
+    logoImage,
+    setLogoImage,
     changeLanguage,
     getCurrentLanguage,
     isDarkTheme,
