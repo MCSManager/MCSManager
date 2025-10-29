@@ -62,6 +62,7 @@ routerApp.on("stream/detail", async (ctx) => {
     protocol.response(ctx, {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info,
