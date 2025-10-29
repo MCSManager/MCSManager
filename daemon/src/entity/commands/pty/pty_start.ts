@@ -10,12 +10,12 @@ import { v4 } from "uuid";
 import { PTY_PATH } from "../../../const";
 import { $t } from "../../../i18n";
 import logger from "../../../service/log";
+import { getRunAsUserParams } from "../../../tools/system_user";
 import Instance from "../../instance/instance";
 import { IInstanceProcess } from "../../instance/interface";
 import { commandStringToArray } from "../base/command_parser";
 import FunctionDispatcher from "../dispatcher";
 import AbsStartCommand from "../start";
-import { getRunAsUserParams } from "../../../tools/system_user";
 
 interface IPtySubProcessCfg {
   pid: number;
@@ -169,10 +169,6 @@ export default class PtyStartCommand extends AbsStartCommand {
       await instance.execPreset("start");
       return;
     }
-
-    // Set the startup state & increase the number of startups
-    instance.status(Instance.STATUS_STARTING);
-    instance.startCount++;
 
     // command parsing
     let commandList: string[] = [];
