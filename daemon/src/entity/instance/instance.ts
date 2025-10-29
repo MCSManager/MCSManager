@@ -360,24 +360,21 @@ export default class Instance extends EventEmitter {
 
     // If automatic restart is enabled, the startup operation is performed immediately
     if (!this.config.eventTask.ignore && this.config.eventTask.autoRestart) {
-      const maxAutoRestartCount  =this.config.eventTask.autoRestartMaxTimes;
+      const maxAutoRestartCount = this.config.eventTask.autoRestartMaxTimes;
       if (maxAutoRestartCount == -1 || this.autoRestartCount < maxAutoRestartCount) {
-      this.execPreset("start")
-        .then(() => {
-          this.autoRestartCount++;
-          this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
-        })
-        .catch((err) => {
-          this.println(
-            $t("TXT_CODE_instanceConf.error"),
-            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
-          );
-        });
+        this.execPreset("start")
+          .then(() => {
+            this.autoRestartCount++;
+            this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
+          })
+          .catch((err) => {
+            this.println(
+              $t("TXT_CODE_instanceConf.error"),
+              $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+            );
+          });
       } else {
-          this.println(
-            $t("TXT_CODE_instanceConf.error"),
-            $t("TXT_CODE_894b8e52")
-          );
+        this.println($t("TXT_CODE_instanceConf.error"), $t("TXT_CODE_894b8e52"));
       }
     }
 
