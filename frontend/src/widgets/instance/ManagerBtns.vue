@@ -282,4 +282,13 @@ watch(instanceInfo, (cfg, oldCfg) => {
   left: 0;
   right: 0;
 }
+
+/* 当组件垂直排列时的自适应高度 */
+@media (max-width: 1000px) {
+  .function-btns-container {
+    position: relative;
+    height: auto;
+    min-height: 100%;
+  }
+}
 </style>
