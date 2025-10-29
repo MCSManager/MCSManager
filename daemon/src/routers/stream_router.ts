@@ -1,13 +1,13 @@
+import { IGNORE } from "../const";
 import { $t } from "../i18n";
-import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
 import {
   LOGIN_FROM_STREAM,
   missionPassport,
   streamLoginSuccessful
 } from "../service/mission_passport";
+import * as protocol from "../service/protocol";
+import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import { IGNORE } from "../const";
 
 // Authorization authentication middleware
 routerApp.use(async (event, ctx, data, next) => {
@@ -62,6 +62,7 @@ routerApp.on("stream/detail", async (ctx) => {
     protocol.response(ctx, {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info,

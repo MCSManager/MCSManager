@@ -83,6 +83,7 @@ routerApp.on("instance/select", (ctx, data) => {
     overview.push({
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info
@@ -106,6 +107,7 @@ routerApp.on("instance/overview", (ctx) => {
     overview.push({
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info
@@ -125,6 +127,7 @@ routerApp.on("instance/section", (ctx, data) => {
         overview.push({
           instanceUuid: instance.instanceUuid,
           started: instance.startCount,
+          autoRestarted: instance.autoRestartCount,
           status: instance.status(),
           config: instance.config,
           info: instance.info
@@ -150,6 +153,7 @@ routerApp.on("instance/detail", async (ctx, data) => {
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info,
@@ -230,6 +234,7 @@ routerApp.on("instance/open", async (ctx, data) => {
     try {
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
       await instance.execPreset("start");
+      instance.autoRestartCount = 0;
       if (!disableResponse) protocol.msg(ctx, "instance/open", { instanceUuid, instances });
     } catch (err: any) {
       if (!disableResponse) {

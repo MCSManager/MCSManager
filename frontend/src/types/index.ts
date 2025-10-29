@@ -47,6 +47,7 @@ export interface InstanceRuntimeInfo {
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
+  autoRestarted: number;
   status: INSTANCE_STATUS_CODE;
   info: InstanceRuntimeInfo;
   config: IGlobalInstanceConfig;

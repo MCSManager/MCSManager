@@ -2900,5 +2900,9 @@
   "TXT_CODE_d79ff710": "eg: RAM 4G",
   "TXT_CODE_d0d08d6": "eg: 123MB",
   "TXT_CODE_7d839745": "eg: apple, banana, cherry",
-  "TXT_CODE_47b5a2f7": "Logo image"
+  "TXT_CODE_47b5a2f7": "Logo image",
+  "TXT_CODE_f4b52ed4": "Maximum auto restart count",
+  "TXT_CODE_9d2fca76": "Do not automatically restart if the auto-restart count is reached. (Set to -1 for no limit)",
+  "TXT_CODE_6420023d": "Number of auto restart count: ",
+  "TXT_CODE_894b8e52": "Reached the maximum auto-restart limit"
 }

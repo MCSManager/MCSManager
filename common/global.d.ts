@@ -34,6 +34,7 @@ declare global {
     eventTask: {
       autoStart: boolean;
       autoRestart: boolean;
+      autoRestartMaxTimes: number;
       ignore: boolean;
     };
     docker: IGlobalInstanceDockerConfig;

@@ -74,6 +74,7 @@ export default class Instance extends EventEmitter {
   public instanceUuid: string = "";
   public lock: boolean = false;
   public startCount: number = 0;
+  public autoRestartCount: number = 0;
   public startTimestamp: number = 0;
   public asynchronousTask?: IExecutable | null;
   public openFrp?: OpenFrp;
@@ -234,6 +235,7 @@ export default class Instance extends EventEmitter {
     if (cfg.eventTask) {
       configureEntityParams(this.config.eventTask, cfg.eventTask, "autoStart", Boolean);
       configureEntityParams(this.config.eventTask, cfg.eventTask, "autoRestart", Boolean);
+      configureEntityParams(this.config.eventTask, cfg.eventTask, "autoRestartMaxTimes", Number);
       configureEntityParams(this.config.eventTask, cfg.eventTask, "ignore", Boolean);
     }
     if (cfg.terminalOption) {
@@ -358,16 +360,22 @@ export default class Instance extends EventEmitter {
 
     // If automatic restart is enabled, the startup operation is performed immediately
     if (!this.config.eventTask.ignore && this.config.eventTask.autoRestart) {
-      this.execPreset("start")
-        .then(() => {
-          this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
-        })
-        .catch((err) => {
-          this.println(
-            $t("TXT_CODE_instanceConf.error"),
-            $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
-          );
-        });
+      const maxAutoRestartCount = this.config.eventTask.autoRestartMaxTimes;
+      if (maxAutoRestartCount == -1 || this.autoRestartCount < maxAutoRestartCount) {
+        this.execPreset("start")
+          .then(() => {
+            this.autoRestartCount++;
+            this.println($t("TXT_CODE_instanceConf.info"), $t("TXT_CODE_instanceConf.autoRestart"));
+          })
+          .catch((err) => {
+            this.println(
+              $t("TXT_CODE_instanceConf.error"),
+              $t("TXT_CODE_instanceConf.autoRestartErr", { err: err })
+            );
+          });
+      } else {
+        this.println($t("TXT_CODE_instanceConf.error"), $t("TXT_CODE_894b8e52"));
+      }
     }
 
     this.config.eventTask.ignore = false;
