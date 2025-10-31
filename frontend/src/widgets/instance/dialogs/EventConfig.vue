@@ -66,6 +66,21 @@ defineExpose({
         </a-typography-paragraph>
         <a-switch v-model:checked="options.config.eventTask.autoRestart" />
       </a-form-item>
+      
+      <template v-if="options.config.eventTask.autoRestart">
+        <a-form-item>
+          <a-typography-title :level="5">{{ t("TXT_CODE_f4b52ed4") }}</a-typography-title>
+          <a-typography-paragraph>
+            <a-typography-text type="secondary">
+              {{ t("TXT_CODE_9d2fca76") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+          <a-input
+            v-model:value="options.config.eventTask.autoRestartMaxTimes"
+            :style="'width: 220px'"
+          />
+        </a-form-item>
+      </template>
 
       <a-form-item>
         <a-typography-title :level="5">{{ t("TXT_CODE_273d24e0") }}</a-typography-title>

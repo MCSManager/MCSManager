@@ -2900,5 +2900,9 @@
   "TXT_CODE_d79ff710": "例如：RAM 4G",
   "TXT_CODE_d0d08d6": "例如：123MB",
   "TXT_CODE_7d839745": "例如：apple, banana, cherry",
-  "TXT_CODE_47b5a2f7": "图标图片"
+  "TXT_CODE_47b5a2f7": "图标图片",
+  "TXT_CODE_f4b52ed4": "最大自动重启次数",
+  "TXT_CODE_9d2fca76": "若达到自动重启次数，就不进行自动重启。(设定为-1则不限制)",
+  "TXT_CODE_6420023d": "自动重启次数: ",
+  "TXT_CODE_894b8e52": "达到自动重启最大次数上线"
 }

@@ -435,7 +435,8 @@ router.put(
       // event task configuration
       const eventTask = {
         autoStart: toBoolean(config.eventTask?.autoStart),
-        autoRestart: toBoolean(config.eventTask?.autoRestart)
+        autoRestart: toBoolean(config.eventTask?.autoRestart),
+        autoRestartMaxTimes: toNumber(config.eventTask?.autoRestartMaxTimes)
       };
 
       // web terminal settings
