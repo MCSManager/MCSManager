@@ -22,6 +22,7 @@ export interface Breadcrumb {
 export interface FileStatus {
   instanceFileTask: number;
   globalFileTask: number;
+  downloadFileFromURLTask: number;
   platform: string;
   isGlobalInstance: boolean;
   disks: string[];
@@ -39,4 +40,9 @@ export interface Permission {
     key: string;
     role: "owner" | "usergroup" | "everyone";
   }[];
+}
+
+export interface DownloadFileConfigItem {
+  url: string;
+  fileName: string;
 }

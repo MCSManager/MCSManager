@@ -8,6 +8,7 @@ import {
   copyFile as copyFileApi,
   deleteFile as deleteFileApi,
   downloadAddress,
+  downloadFromUrl as downloadFromUrlAPI,
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
   moveFile as moveFileApi,
@@ -21,6 +22,7 @@ import { reportErrorMsg } from "@/tools/validator";
 import type {
   Breadcrumb,
   DataType,
+  DownloadFileConfigItem,
   FileStatus,
   OperationForm,
   Permission
@@ -519,6 +521,37 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     }
   };
 
+  const downloadFromUrl = async (downloadConfig: DownloadFileConfigItem) => {
+    if (!downloadConfig.url) throw new Error(t("TXT_CODE_f3031262"));
+    if (!downloadConfig.fileName) throw new Error(t("TXT_CODE_7b605ad8"));
+
+    const { execute } = downloadFromUrlAPI();
+    const loadingDialog = await openLoadingDialog(
+      t("TXT_CODE_b3825da"),
+      t("TXT_CODE_2b5b8a3d"),
+      t("TXT_CODE_6f038f25")
+    );
+    try {
+      await execute({
+        params: {
+          uuid: instanceId || "",
+          daemonId: daemonId || ""
+        },
+        data: {
+          url: downloadConfig.url,
+          file_name: downloadConfig.fileName
+        }
+      });
+      message.success(t("TXT_CODE_c3a933d3"));
+      await getFileList();
+    } catch (error: any) {
+      message.error(t("TXT_CODE_9ea5696b"));
+      reportErrorMsg(error.message);
+    } finally {
+      loadingDialog.cancel();
+    }
+  };
+
   const downloadFile = async (fileName: string) => {
     const link = await getFileLink(fileName);
     if (!link) throw new Error(t("TXT_CODE_6d772765"));
@@ -678,6 +711,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     rowClickTable,
     downloadFile,
     getFileLink,
+    downloadFromUrl,
     handleChangeDir,
     handleTableChange,
     handleSearchChange,

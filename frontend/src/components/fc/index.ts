@@ -6,9 +6,11 @@ import KvOptionsDialogVue from "@/components/fc/KvOptionsDialog.vue";
 import SelectInstances from "@/components/fc/SelectInstances.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
+import type { DownloadFileConfigItem } from "@/types/fileManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
+import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
@@ -26,6 +28,12 @@ interface PortConfigItem extends DockerConfigItem {
 interface DockerEnvItem {
   label: string;
   value: string;
+}
+
+export async function useDownloadFileDialog() {
+  return (
+    (await useMountComponent().mount<DownloadFileConfigItem>(DownloadFileDialogVue)) || undefined
+  );
 }
 
 export async function useUploadFileDialog() {
