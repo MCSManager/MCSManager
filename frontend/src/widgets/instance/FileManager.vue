@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import CardPanel from "@/components/CardPanel.vue";
+import { useDownloadFileDialog } from "@/components/fc";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useFileManager } from "@/hooks/useFileManager";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
@@ -71,6 +72,7 @@ const {
   zipFile,
   unzipFile,
   downloadFile,
+  downloadFromUrl,
   handleChangeDir,
   handleSearchChange,
   selectedFiles,
@@ -348,6 +350,12 @@ const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   return false;
 };
 
+const downloadFromURLFile = async () => {
+  const data = await useDownloadFileDialog();
+  if (!data) return;
+  await downloadFromUrl(data);
+};
+
 onMounted(async () => {
   await getFileStatus();
   dialog.value.loading = true;
@@ -380,6 +388,10 @@ onUnmounted(() => {
               }}
             </a-typography-text>
 
+            <a-button type="dashed" @click="() => downloadFromURLFile()">
+              <download-outlined />
+              {{ t("TXT_CODE_816ce026") }}
+            </a-button>
             <a-upload
               v-model:file-list="fileList"
               :before-upload="() => false"
@@ -542,6 +554,13 @@ onUnmounted(() => {
               </div>
             </div>
 
+            <p
+              v-if="fileStatus?.downloadFileFromURLTask && fileStatus.downloadFileFromURLTask > 0"
+              style="color: #1677ff"
+            >
+              <a-spin />
+              {{ t("TXT_CODE_8b7fe641", { count: fileStatus?.downloadFileFromURLTask }) }}
+            </p>
             <p
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"
               style="color: #1677ff"

@@ -212,6 +212,47 @@ router.post(
   }
 );
 
+router.post(
+  "/download_from_url",
+  permission({ level: ROLE.USER }),
+  speedLimit(3),
+  validator({
+    query: { uuid: String, daemonId: String },
+    body: { url: String, file_name: String }
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const url = String(ctx.request.body.url);
+      const fileName = String(ctx.request.body.file_name);
+
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      const downloadId = timeUuid();
+      ctx.body = downloadId;
+
+      operationLogger.log("instance_file_download_from_url", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        url: url,
+        fileName: fileName
+      });
+
+      await new RemoteRequest(remoteService).request("file/download_from_url", {
+        url,
+        fileName,
+        instanceUuid
+      });
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
 router.put(
   "/move",
   speedLimit(3),
@@ -370,7 +411,7 @@ router.all(
       ctx.body = {
         password,
         addr,
-        remoteMappings,
+        remoteMappings
       };
     } catch (err) {
       ctx.body = err;
