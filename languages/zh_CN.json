@@ -2904,7 +2904,7 @@
   "TXT_CODE_2b5b8a3d": "正在下载文件，请耐心等待...",
   "TXT_CODE_821a742e": "只能同时有 {{count}} 个下载任务!",
   "TXT_CODE_9ea5696b": "下载失败!",
-  "TXT_CODE_8b7fe641": " 下载任务运行中...",
+  "TXT_CODE_8b7fe641": "当前有 {count} 下载任务运行中...",
   "TXT_CODE_a15fca22": "从URL下载文件最大任务数",
   "TXT_CODE_ecaf78a2": "设置为 0 为无限制"
 }

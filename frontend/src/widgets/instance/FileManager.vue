@@ -559,8 +559,7 @@ onUnmounted(() => {
               style="color: #1677ff"
             >
               <a-spin />
-              <!-- prettier-ignore -->
-              {{ t("TXT_CODE_dd06dea2") + fileStatus?.downloadFileFromURLTask + t("TXT_CODE_8b7fe641") }}
+              {{ t("TXT_CODE_8b7fe641", { count: fileStatus?.downloadFileFromURLTask }) }}
             </p>
             <p
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"

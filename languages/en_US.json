@@ -2904,7 +2904,7 @@
   "TXT_CODE_2b5b8a3d": "Downloading, please wait patiently...",
   "TXT_CODE_821a742e": "Only have {{count}} concurrent download tasks!",
   "TXT_CODE_9ea5696b": "Download failed!",
-  "TXT_CODE_8b7fe641": " downloading tasks running...",
+  "TXT_CODE_8b7fe641": "Currently, there are {count} downloading tasks running...",
   "TXT_CODE_a15fca22": "Maximum of download from URL",
   "TXT_CODE_ecaf78a2": "Set to 0 to unlimited"
 }

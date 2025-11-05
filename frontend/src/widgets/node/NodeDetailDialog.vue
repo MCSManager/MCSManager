@@ -265,7 +265,7 @@ defineExpose({ openDialog });
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item :label="t('TXT_CODE_a15fca22')" name="uploadSpeedRate">
+              <a-form-item :label="t('TXT_CODE_a15fca22')" name="maxDownloadFromUrlFileCount">
                 <a-typography-paragraph>
                   <a-typography-text type="secondary">
                     {{ t("TXT_CODE_ecaf78a2") }}
