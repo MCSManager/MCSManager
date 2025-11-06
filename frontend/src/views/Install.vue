@@ -101,10 +101,7 @@ const toOverview = () => {
     <CardPanel :full-height="false" class="install-panel">
       <template #body>
         <a-typography>
-          <a-typography-title :level="3"> 请选择您的语言 </a-typography-title>
-          <a-typography-paragraph>
-            <a-typography-text> Please select your language </a-typography-text>
-          </a-typography-paragraph>
+          <a-typography-title :level="3">Select language</a-typography-title>
         </a-typography>
         <a-select
           v-model:value="formData.language"
