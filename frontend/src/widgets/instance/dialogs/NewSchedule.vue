@@ -111,7 +111,7 @@ const addEmptyAction = () => {
 };
 
 const delAction = (index: number) => {
-  if (newTask.actions.length == 1) {
+  if (newTask.actions.length === 1) {
     return reportErrorMsg(t("TXT_CODE_a749763b"));
   }
   newTask.actions.splice(index, 1);
