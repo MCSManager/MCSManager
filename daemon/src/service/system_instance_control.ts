@@ -187,7 +187,7 @@ class InstanceControlSubsystem {
         const type = action.type;
         const payload = action.payload;
         const instanceStatus = instance.status();
-        if (type == "delay") {
+        if (type === "delay") {
           await sleep(parseInt(payload));
         } else if (type === "start") {
           if (instanceStatus === 0) {
