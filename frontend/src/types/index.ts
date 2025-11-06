@@ -227,6 +227,7 @@ export interface Schedule {
   name: string;
   count: number;
   time: string;
+  actions: Action[];
   type: number;
 }
 
