@@ -1,9 +1,15 @@
-import { $t } from "../i18n";
 import schedule from "node-schedule";
-import InstanceSubsystem from "./system_instance";
 import StorageSubsystem from "../common/system_storage";
+import { $t } from "../i18n";
+import { sleep } from "../utils/sleep";
 import logger from "./log";
 import FileManager from "./system_file";
+import InstanceSubsystem from "./system_instance";
+
+interface IScheduleAction {
+  type: string;
+  payload: string;
+}
 
 // Scheduled task configuration item interface
 interface IScheduleTask {
@@ -11,8 +17,9 @@ interface IScheduleTask {
   name: string;
   count: number;
   time: string;
-  action: string;
-  payload: string;
+  action: string | undefined;
+  payload: string | undefined;
+  actions: IScheduleAction[];
   type: number;
 }
 
@@ -25,12 +32,13 @@ interface IScheduleJob {
 // Schedule task configuration data entity class
 class TaskConfig implements IScheduleTask {
   instanceUuid = "";
-  name: string = "";
-  count: number = 1;
-  time: string = "";
-  action: string = "";
-  payload: string = "";
-  type: number = 1;
+  name = "";
+  count = 1;
+  time = "";
+  action: string | undefined = undefined;
+  payload: string | undefined = undefined;
+  actions: IScheduleAction[] = [];
+  type = 1;
 }
 
 class IntervalJob implements IScheduleJob {
@@ -59,6 +67,16 @@ class InstanceControlSubsystem {
     StorageSubsystem.list("TaskConfig").forEach((uuid) => {
       const config = StorageSubsystem.load("TaskConfig", TaskConfig, uuid) as TaskConfig;
       try {
+        // load old task config
+        if (config.action && config.payload) {
+          config.actions[config.actions.length] = {
+            type: config.action,
+            payload: config.payload
+          };
+          config.action = undefined;
+          config.payload = undefined;
+          StorageSubsystem.store("TaskConfig", uuid, config);
+        }
         this.registerScheduleJob(config, false);
       } catch (error: any) {
         // Some scheduled tasks may be left, but the upper limit will not change
@@ -154,37 +172,40 @@ class InstanceControlSubsystem {
 
   public async action(task: IScheduleTask) {
     try {
-      const payload = task.payload;
+      const actions = task.actions;
       const instanceUuid = task.instanceUuid;
       const instance = InstanceSubsystem.getInstance(instanceUuid);
       // If the instance has been deleted, it needs to be automatically destroyed
       if (!instance) {
         return this.deleteScheduleTask(task.instanceUuid, task.name);
       }
-      const instanceStatus = instance.status();
       // logger.info(`Execute scheduled task: ${task.name} ${task.action} ${task.time} ${task.count} `);
-      if (task.action === "start") {
-        if (instanceStatus === 0) {
-          return await instance.execPreset("start");
+
+      for (const action of actions) {
+        const type = action.type;
+        const payload = action.payload;
+        const instanceStatus = instance.status();
+        if (type === "delay") {
+          await sleep(parseInt(payload, 500));
+        } else if (type === "start") {
+          if (instanceStatus === 0) {
+            await instance.execPreset("start");
+          }
+        } else if (type === "stop") {
+          if (instanceStatus === 3) {
+            await instance.execPreset("stop");
+          }
+        } else if (type === "restart") {
+          if (instanceStatus === 3) {
+            await instance.execPreset("restart");
+          }
+        } else if (type === "command") {
+          if (instanceStatus === 3) {
+            await instance.execPreset("command", payload);
+          }
+        } else if (type === "kill") {
+          await instance.execPreset("kill");
         }
-      }
-      if (task.action === "stop") {
-        if (instanceStatus === 3) {
-          return await instance.execPreset("stop");
-        }
-      }
-      if (task.action === "restart") {
-        if (instanceStatus === 3) {
-          return await instance.execPreset("restart");
-        }
-      }
-      if (task.action === "command") {
-        if (instanceStatus === 3) {
-          return await instance.execPreset("command", payload);
-        }
-      }
-      if (task.action === "kill") {
-        return await instance.execPreset("kill");
       }
     } catch (error: any) {
       logger.error(
