@@ -40,6 +40,7 @@ export const getFileStatus = useDefineApi<
   {
     instanceFileTask: number;
     globalFileTask: number;
+    downloadFileFromURLTask: number;
     platform: string;
     isGlobalInstance: boolean;
     disks: string[];
@@ -147,6 +148,25 @@ export const compressFile = useDefineApi<
   url: "/api/files/compress",
   method: "POST",
   timeout: Number.MAX_SAFE_INTEGER
+});
+
+export const downloadFromUrl = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      url: string;
+      file_name: string;
+    };
+  },
+  {
+    error?: string;
+  }
+>({
+  url: "/api/files/download_from_url",
+  method: "POST"
 });
 
 export const uploadAddress = useDefineApi<

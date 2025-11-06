@@ -7,6 +7,7 @@ export enum OperationLoggerAction {
   InstanceConfigChange = "instance_config_change",
   InstanceCreate = "instance_create",
   InstanceDelete = "instance_delete",
+  InstanceFileDownloadFromUrl = "instance_file_download_from_url",
   InstanceFileUpload = "instance_file_upload",
   InstanceFileUpdate = "instance_file_update",
   InstanceFileDownload = "instance_file_download",
@@ -67,6 +68,12 @@ export type InstanceCreateOptions = {
 
 export type InstanceDeleteOptions = {
   type: "instance_delete";
+} & InstanceGeneralOptions;
+
+export type InstanceFileDownloadFromUrlOptions = {
+  type: "instance_file_download_from_url";
+  url?: string;
+  fileName?: string;
 } & InstanceGeneralOptions;
 
 export type InstanceFileUploadOptions = {
@@ -146,6 +153,7 @@ export type OperationLoggerItem =
   | InstanceConfigChangeOptions
   | InstanceCreateOptions
   | InstanceDeleteOptions
+  | InstanceFileDownloadFromUrlOptions
   | InstanceFileUploadOptions
   | InstanceFileUpdateOptions
   | InstanceFileDownloadOptions

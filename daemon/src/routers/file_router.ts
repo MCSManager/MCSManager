@@ -1,7 +1,9 @@
+import { t } from "i18next";
 import os from "os";
 import { globalConfiguration, globalEnv } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
+import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
@@ -66,6 +68,7 @@ routerApp.on("file/status", async (ctx, data) => {
     protocol.response(ctx, {
       instanceFileTask: instance.info.fileLock ?? 0,
       globalFileTask: globalEnv.fileTaskCount ?? 0,
+      downloadFileFromURLTask: downloadManager.downloadingCount,
       platform: os.platform(),
       isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
       disks: getWindowsDisks()
@@ -94,6 +97,33 @@ routerApp.on("file/mkdir", (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.mkdir(target);
     protocol.response(ctx, true);
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
+// download a file from url
+routerApp.on("file/download_from_url", async (ctx, data) => {
+  try {
+    const url = data.url;
+    const fileName = data.fileName;
+
+    const fileManager = getFileManager(data.instanceUuid);
+    const targetPath = fileManager.toAbsolutePath(fileName);
+
+    const maxDownloadFromUrlFileCount = globalConfiguration.config.maxDownloadFromUrlFileCount;
+    if (
+      maxDownloadFromUrlFileCount > 0 &&
+      downloadManager.downloadingCount >= maxDownloadFromUrlFileCount
+    ) {
+      protocol.responseError(ctx, t("TXT_CODE_821a742e", { count: maxDownloadFromUrlFileCount }), {
+        disablePrint: true
+      });
+      return;
+    }
+
+    await downloadManager.downloadFromUrl(url, targetPath);
+    protocol.response(ctx, {});
   } catch (error: any) {
     protocol.responseError(ctx, error);
   }

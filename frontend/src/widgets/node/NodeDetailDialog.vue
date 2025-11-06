@@ -24,11 +24,12 @@ const DEFAULT_CONFIG = {
   language: "",
   uploadSpeedRate: 0,
   downloadSpeedRate: 0,
+  maxDownloadFromUrlFileCount: 1,
   portRangeStart: 0,
   portRangeEnd: 0,
   portAssignInterval: 0,
   daemonPort: 24444,
-  remoteMappings: [] as IPanelOverviewRemoteMappingResponse[],
+  remoteMappings: [] as IPanelOverviewRemoteMappingResponse[]
 };
 
 const SPEED_RATE_OPTIONS = [
@@ -97,7 +98,7 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
       port: data.port, // connection port
       daemonPort: data.config.port, // listen port
       apiKey: "",
-      remoteMappings: data.remoteMappings ?? [],
+      remoteMappings: data.remoteMappings ?? []
     };
   } else {
     editMode.value = false;
@@ -182,7 +183,7 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-input v-model:value="dialog.data.ip" />
-            <a-typography-text type="secondary" v-if="ipNeedsMapping(dialog.data.ip)">
+            <a-typography-text v-if="ipNeedsMapping(dialog.data.ip)" type="secondary">
               {{ t("TXT_CODE_93c3cb78") }}
             </a-typography-text>
           </a-form-item>
@@ -261,6 +262,16 @@ defineExpose({ openDialog });
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item :label="t('TXT_CODE_a15fca22')" name="maxDownloadFromUrlFileCount">
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_ecaf78a2") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-input v-model:value="dialog.data.maxDownloadFromUrlFileCount" />
               </a-form-item>
             </a-col>
           </a-row>

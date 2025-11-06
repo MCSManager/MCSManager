@@ -129,6 +129,7 @@ declare global {
       language: string;
       uploadSpeedRate: number;
       downloadSpeedRate: number;
+      maxDownloadFromUrlFileCount: number;
       portRangeStart: number;
       portRangeEnd: number;
       portAssignInterval: number;
@@ -188,7 +189,7 @@ declare global {
     page: string;
     items: ILayoutCard[];
     theme?: {
-      logoImage: string,
+      logoImage: string;
       backgroundImage: string;
     };
   }
