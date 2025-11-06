@@ -2906,5 +2906,8 @@
   "TXT_CODE_9ea5696b": "Download failed!",
   "TXT_CODE_8b7fe641": "Currently, there are {count} downloading tasks running...",
   "TXT_CODE_a15fca22": "Maximum of download from URL",
-  "TXT_CODE_ecaf78a2": "Set to 0 to unlimited"
+  "TXT_CODE_ecaf78a2": "Set to 0 to unlimited",
+  "TXT_CODE_735baf9f": "Delay",
+  "TXT_CODE_a749763b": "Actions cannot be empty",
+  "TXT_CODE_a62c99d1": "Task Type"
 }

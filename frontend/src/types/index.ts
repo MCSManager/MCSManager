@@ -227,23 +227,25 @@ export interface Schedule {
   name: string;
   count: number;
   time: string;
-  action: string;
-  payload: string;
   type: number;
+}
+
+export interface Action {
+  type: string;
+  payload: string;
 }
 
 export interface NewScheduleTask {
   name: string;
   count: number;
   time: string;
-  action: string;
   type: ScheduleCreateType;
 }
 
 export interface ScheduleTaskForm extends NewScheduleTask {
-  payload: string;
   weekend: number[];
   cycle: string[];
+  actions: Action[];
   objTime: Dayjs;
 }
 

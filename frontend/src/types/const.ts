@@ -91,6 +91,7 @@ WORKDIR /workspace
 `;
 
 export const ScheduleAction = {
+  delay: t("TXT_CODE_735baf9f"),
   command: t("TXT_CODE_b7cab91d"),
   stop: t("TXT_CODE_148d6467"),
   start: t("TXT_CODE_8c7318b3"),

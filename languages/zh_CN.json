@@ -2906,5 +2906,8 @@
   "TXT_CODE_9ea5696b": "下载失败!",
   "TXT_CODE_8b7fe641": "当前有 {count} 下载任务运行中...",
   "TXT_CODE_a15fca22": "从URL下载文件最大任务数",
-  "TXT_CODE_ecaf78a2": "设置为 0 为无限制"
+  "TXT_CODE_ecaf78a2": "设置为 0 为无限制",
+  "TXT_CODE_735baf9f": "延迟",
+  "TXT_CODE_a749763b": "操作不能为空",
+  "TXT_CODE_a62c99d1": "任务类型"
 }
