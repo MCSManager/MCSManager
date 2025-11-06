@@ -78,6 +78,7 @@ class InstanceControlSubsystem {
           };
           config.action = undefined;
           config.payload = undefined;
+          StorageSubsystem.store("TaskConfig", config, config.instanceUuid);
         }
         this.registerScheduleJob(config, false);
       } catch (error: any) {
