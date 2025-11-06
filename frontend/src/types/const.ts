@@ -90,7 +90,7 @@ ENV TZ=Asia/Shanghai
 WORKDIR /workspace
 `;
 
-export const ScheduleAction = {
+export const ScheduleActionType = {
   delay: t("TXT_CODE_735baf9f"),
   command: t("TXT_CODE_b7cab91d"),
   stop: t("TXT_CODE_148d6467"),

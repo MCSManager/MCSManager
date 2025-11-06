@@ -1,15 +1,12 @@
 import schedule from "node-schedule";
 import StorageSubsystem from "../common/system_storage";
 import { $t } from "../i18n";
+import { sleep } from "../utils/sleep";
 import logger from "./log";
 import FileManager from "./system_file";
 import InstanceSubsystem from "./system_instance";
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-interface IAction {
+interface IScheduleAction {
   type: string;
   payload: string;
 }
@@ -22,7 +19,7 @@ interface IScheduleTask {
   time: string;
   action: string | undefined;
   payload: string | undefined;
-  actions: IAction[];
+  actions: IScheduleAction[];
   type: number;
 }
 
@@ -40,7 +37,7 @@ class TaskConfig implements IScheduleTask {
   time = "";
   action: string | undefined = undefined;
   payload: string | undefined = undefined;
-  actions: IAction[] = [];
+  actions: IScheduleAction[] = [];
   type = 1;
 }
 

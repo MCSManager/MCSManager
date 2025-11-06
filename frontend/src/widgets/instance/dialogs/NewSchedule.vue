@@ -2,8 +2,8 @@
 import { useSchedule } from "@/hooks/useSchedule";
 import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
-import type { Action, Schedule, ScheduleTaskForm } from "@/types";
-import { ScheduleAction, ScheduleCreateType, ScheduleType } from "@/types/const";
+import type { Schedule, ScheduleAction, ScheduleTaskForm } from "@/types";
+import { ScheduleActionType, ScheduleCreateType, ScheduleType } from "@/types/const";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons-vue";
 import { notification } from "ant-design-vue";
 import dayjs from "dayjs";
@@ -62,7 +62,7 @@ const weeks = [
   { label: t("TXT_CODE_a621f370"), value: 7 }
 ];
 
-const defaultAction: Action = {
+const defaultAction: ScheduleAction = {
   type: "command",
   payload: ""
 };
@@ -255,7 +255,7 @@ defineExpose({
                 :placeholder="t('TXT_CODE_3bb646e4')"
                 :dropdown-match-select-width="false"
               >
-                <a-select-option v-for="(type, i) in ScheduleAction" :key="i" :value="i">
+                <a-select-option v-for="(type, i) in ScheduleActionType" :key="i" :value="i">
                   {{ type }}
                 </a-select-option>
               </a-select>
