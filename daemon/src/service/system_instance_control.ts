@@ -1,5 +1,6 @@
 import schedule from "node-schedule";
 import StorageSubsystem from "../common/system_storage";
+import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import { sleep } from "../utils/sleep";
 import logger from "./log";
@@ -97,7 +98,7 @@ class InstanceControlSubsystem {
       throw new Error($t("TXT_CODE_system_instance_control.existRepeatTask"));
     if (!FileManager.checkFileName(task.name))
       throw new Error($t("TXT_CODE_system_instance_control.illegalName"));
-    if (task.actions?.length > 10) throw new Error($t("一个计划任务最多只能创建10个动作"));
+    if (task.actions?.length > 10) throw new Error($t("TXT_CODE_3e107108"));
     if (needStore)
       logger.info(
         $t("TXT_CODE_system_instance_control.crateTask", {
@@ -176,37 +177,52 @@ class InstanceControlSubsystem {
       const actions = task.actions;
       const instanceUuid = task.instanceUuid;
       const instance = InstanceSubsystem.getInstance(instanceUuid);
+
       // If the instance has been deleted, it needs to be automatically destroyed
-      if (!instance) {
+      if (!instance || !instance?.config) {
         return this.deleteScheduleTask(task.instanceUuid, task.name);
       }
-      // logger.info(`Execute scheduled task: ${task.name} ${task.action} ${task.time} ${task.count} `);
 
       for (const action of actions) {
-        const type = action.type;
+        const actionType = action.type;
         const payload = action.payload;
         const instanceStatus = instance.status();
-        if (type === "delay") {
+        if (actionType === "delay") {
           await sleep(parseInt(payload, 500));
-        } else if (type === "start") {
-          if (instanceStatus === 0) {
+          continue;
+        }
+        if (actionType === "start") {
+          if (instanceStatus === Instance.STATUS_STOP) {
             await instance.execPreset("start");
           }
-        } else if (type === "stop") {
-          if (instanceStatus === 3) {
+          continue;
+        }
+        if (actionType === "stop") {
+          if (instanceStatus === Instance.STATUS_RUNNING) {
             await instance.execPreset("stop");
           }
-        } else if (type === "restart") {
-          if (instanceStatus === 3) {
+          continue;
+        }
+        if (actionType === "restart") {
+          if (
+            instanceStatus === Instance.STATUS_RUNNING ||
+            instanceStatus === Instance.STATUS_STOP
+          ) {
             await instance.execPreset("restart");
           }
-        } else if (type === "command") {
-          if (instanceStatus === 3) {
+          continue;
+        }
+        if (actionType === "command") {
+          if (instanceStatus === Instance.STATUS_RUNNING) {
             await instance.execPreset("command", payload);
           }
-        } else if (type === "kill") {
-          await instance.execPreset("kill");
+          continue;
         }
+        if (actionType === "kill") {
+          await instance.execPreset("kill");
+          continue;
+        }
+        await sleep(100);
       }
     } catch (error: any) {
       logger.error(
