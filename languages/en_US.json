@@ -2893,5 +2893,22 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_b5095a15": "URL must be filled in",
+  "TXT_CODE_de1b06cd": "File name must be filled in",
+  "TXT_CODE_a4a960b9": "Invalid URL",
+  "TXT_CODE_816ce026": "Download",
+  "TXT_CODE_62d10724": "URL",
+  "TXT_CODE_2eace3d5": "File name",
+  "TXT_CODE_f3031262": "URL must be filled in!",
+  "TXT_CODE_7b605ad8": "File name must be filled in!",
+  "TXT_CODE_2b5b8a3d": "Downloading, please wait patiently...",
+  "TXT_CODE_821a742e": "Only have {{count}} concurrent download tasks!",
+  "TXT_CODE_9ea5696b": "Download failed!",
+  "TXT_CODE_8b7fe641": "Currently, there are {count} downloading tasks running...",
+  "TXT_CODE_a15fca22": "Maximum of download from URL",
+  "TXT_CODE_ecaf78a2": "Set to 0 to unlimited",
+  "TXT_CODE_735baf9f": "Delay",
+  "TXT_CODE_a749763b": "Actions cannot be empty",
+  "TXT_CODE_a62c99d1": "Task Type"
 }
