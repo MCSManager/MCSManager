@@ -18,7 +18,14 @@ routerApp.use(async (event, ctx, _, next) => {
   // Except for the auth controller, which is publicly accessible, other business controllers must be authorized before they can be accessed
   if (event === "auth") return await next();
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
+
+  let ip = ctx.socket.handshake.address;
+  // extract IPv4 address from IPv6 format
+  if (ip.startsWith("::ffff:")) ip = ip.substring(7);
+
   if (
+    (!globalConfiguration.config.whiteListPanelIp ||
+      globalConfiguration.config.whiteListPanelIps.includes(ip)) &&
     timingSafeEqual(
       Uint8Array.from(ctx.session.key as string),
       Uint8Array.from(globalConfiguration.config.key)
@@ -44,7 +51,13 @@ routerApp.use(async (event, ctx, _, next) => {
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
   try {
+    let ip = ctx.socket.handshake.address;
+    // extract IPv4 address from IPv6 format
+    if (ip.startsWith("::ffff:")) ip = ip.substring(7);
+
     if (
+      (!globalConfiguration.config.whiteListPanelIp ||
+        globalConfiguration.config.whiteListPanelIps.includes(ip)) &&
       timingSafeEqual(
         Uint8Array.from(String(data)),
         Uint8Array.from(globalConfiguration.config.key)

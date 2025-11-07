@@ -30,6 +30,9 @@ class Config {
   // default: 1, if set 0 => Unlimited
   public maxDownloadFromUrlFileCount = 1;
 
+  public whiteListPanelIp = false;
+  public whiteListPanelIps = ["127.0.0.1", "::1"];
+
   ssl = false;
   sslPemPath = "";
   sslKeyPath = "";
