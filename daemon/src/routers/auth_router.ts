@@ -44,7 +44,13 @@ routerApp.use(async (event, ctx, _, next) => {
 // authentication controller
 routerApp.on("auth", (ctx, data) => {
   try {
+    let ip = ctx.socket.handshake.address;
+    // extract IPv4 address from IPv6 format
+    if (ip.startsWith("::ffff:")) ip = ip.substring(7);
+
     if (
+      (!globalConfiguration.config.whiteListPanelIp ||
+        globalConfiguration.config.whiteListPanelIps.includes(ip)) &&
       timingSafeEqual(
         Uint8Array.from(String(data ?? "")),
         Uint8Array.from(String(globalConfiguration.config.key ?? ""))
