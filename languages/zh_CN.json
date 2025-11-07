@@ -2893,5 +2893,22 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败",
+  "TXT_CODE_b5095a15": "URL必须填写!",
+  "TXT_CODE_de1b06cd": "文件名称必须填写!",
+  "TXT_CODE_a4a960b9": "无效的URL",
+  "TXT_CODE_816ce026": "下载",
+  "TXT_CODE_62d10724": "URL",
+  "TXT_CODE_2eace3d5": "文件名称",
+  "TXT_CODE_f3031262": "URL必须填写!",
+  "TXT_CODE_7b605ad8": "文件名称必须填写!",
+  "TXT_CODE_2b5b8a3d": "正在下载文件，请耐心等待...",
+  "TXT_CODE_821a742e": "只能同时有 {{count}} 个下载任务!",
+  "TXT_CODE_9ea5696b": "下载失败!",
+  "TXT_CODE_8b7fe641": "当前有 {count} 下载任务运行中...",
+  "TXT_CODE_a15fca22": "从URL下载文件最大任务数",
+  "TXT_CODE_ecaf78a2": "设置为 0 为无限制",
+  "TXT_CODE_735baf9f": "延迟",
+  "TXT_CODE_a749763b": "操作不能为空",
+  "TXT_CODE_a62c99d1": "任务类型"
 }
