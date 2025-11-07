@@ -20,8 +20,8 @@ routerApp.use(async (event, ctx, _, next) => {
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
   if (
     timingSafeEqual(
-      Uint8Array.from(ctx.session.key as string),
-      Uint8Array.from(globalConfiguration.config.key)
+      Uint8Array.from(String(ctx.session.key ?? "")),
+      Uint8Array.from(String(globalConfiguration.config.key ?? ""))
     ) &&
     ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
@@ -46,8 +46,8 @@ routerApp.on("auth", (ctx, data) => {
   try {
     if (
       timingSafeEqual(
-        Uint8Array.from(String(data)),
-        Uint8Array.from(globalConfiguration.config.key)
+        Uint8Array.from(String(data ?? "")),
+        Uint8Array.from(String(globalConfiguration.config.key ?? ""))
       )
     ) {
       // The authentication is passed, and the registered session is a trusted session
