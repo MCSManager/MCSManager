@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { t, t as $t } from "@/lang/i18n";
-import { message } from "ant-design-vue";
-import { DeleteOutlined, EditOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
-import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
+import CardPanel from "@/components/CardPanel.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import type { LayoutCard, Schedule } from "@/types/index";
-import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
-import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
-import type { AntColumnsType } from "../../types/ant";
-import { useScreen } from "@/hooks/useScreen";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useSchedule } from "@/hooks/useSchedule";
+import { useScreen } from "@/hooks/useScreen";
+import { t as $t, t } from "@/lang/i18n";
 import { padZero } from "@/tools/common";
+import { ScheduleActionType, ScheduleCreateType, ScheduleType } from "@/types/const";
+import type { LayoutCard, Schedule } from "@/types/index";
+import NewSchedule from "@/widgets/instance/dialogs/NewSchedule.vue";
+import { DeleteOutlined, EditOutlined, FieldTimeOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
+import { onMounted, ref } from "vue";
+import type { AntColumnsType } from "../../types/ant";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -82,8 +82,8 @@ const columns: AntColumnsType[] = [
     dataIndex: "action",
     key: "action",
     minWidth: 180,
-    customRender: (e: { text: "command" | "stop" | "start" | "restart" | "kill" }) =>
-      ScheduleAction[e.text]
+    customRender: (e: { text: "delay" | "command" | "stop" | "start" | "restart" | "kill" }) =>
+      ScheduleActionType[e.text]
   },
   {
     align: "center",
