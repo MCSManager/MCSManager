@@ -316,6 +316,7 @@ MCSManager supports all major modern browsers, including:
 - `Opera`
 
 **Internet Explorer (IE)** is no longer supported.
+
 <br />
 
 ## Bug Reports
@@ -327,6 +328,15 @@ If you encounter any issues, please report them via the [GitHub Issues](https://
 For serious **security vulnerabilities** that should not be disclosed publicly, please contact us directly at: **support@mcsmanager.com**
 
 Once resolved, we will credit the discoverer in the relevant code or release notes.
+
+
+<br/ >
+
+## Contributors
+
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=3" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+</a>
 
 ## License
 
