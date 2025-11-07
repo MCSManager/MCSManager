@@ -97,6 +97,7 @@ class InstanceControlSubsystem {
       throw new Error($t("TXT_CODE_system_instance_control.existRepeatTask"));
     if (!FileManager.checkFileName(task.name))
       throw new Error($t("TXT_CODE_system_instance_control.illegalName"));
+    if (task.actions?.length > 10) throw new Error($t("一个计划任务最多只能创建10个动作"));
     if (needStore)
       logger.info(
         $t("TXT_CODE_system_instance_control.crateTask", {

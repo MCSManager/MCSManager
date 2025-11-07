@@ -4,6 +4,7 @@ import { InstanceStreamListener, QueryMapWrapper } from "mcsmanager-common";
 import os from "os";
 import path from "path";
 import { Socket } from "socket.io";
+import { sleep } from "src/utils/sleep";
 import { v4 } from "uuid";
 import StorageSubsystem from "../common/system_storage";
 import FunctionDispatcher from "../entity/commands/dispatcher";
@@ -40,32 +41,32 @@ class InstanceSubsystem extends EventEmitter {
   }
 
   // start automatically at boot
-  private autoStart() {
-    this.instances.forEach((instance) => {
+  private async autoStart() {
+    await sleep(1000 * 5);
+    for (const instance of this.instances.values()) {
       if (instance.config.eventTask.autoStart && instance.status() == Instance.STATUS_STOP) {
-        setTimeout(() => {
-          instance
-            .execPreset("start")
-            .then(() => {
-              logger.info(
-                $t("TXT_CODE_system_instance.autoStart", {
-                  name: instance.config.nickname,
-                  uuid: instance.instanceUuid
-                })
-              );
-            })
-            .catch((reason) => {
-              logger.error(
-                $t("TXT_CODE_system_instance.autoStartErr", {
-                  name: instance.config.nickname,
-                  uuid: instance.instanceUuid,
-                  reason: reason
-                })
-              );
-            });
-        }, 1000 * 10);
+        instance
+          .execPreset("start")
+          .then(() => {
+            logger.info(
+              $t("TXT_CODE_system_instance.autoStart", {
+                name: instance.config.nickname,
+                uuid: instance.instanceUuid
+              })
+            );
+          })
+          .catch((reason) => {
+            logger.error(
+              $t("TXT_CODE_system_instance.autoStartErr", {
+                name: instance.config.nickname,
+                uuid: instance.instanceUuid,
+                reason: reason
+              })
+            );
+          });
+        await sleep(1000 * 5);
       }
-    });
+    }
   }
 
   // init all instances from local files
