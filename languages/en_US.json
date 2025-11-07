@@ -516,6 +516,7 @@
   "TXT_CODE_3dd66d98": "New tag",
   "TXT_CODE_3dee9250": "Set to true for turtle eggs to bypass the mob griefing gamerule",
   "TXT_CODE_3df4beaf": "Enable Linux Packet Receive/Send Optimization [Linux Only]",
+  "TXT_CODE_3e107108": "一个计划任务最多只能创建10个动作",
   "TXT_CODE_3e252bc9": "Size of invasion events.",
   "TXT_CODE_3e4e61b3": "Set to true for phantoms to shoot flames on swoop",
   "TXT_CODE_3e68ca00": "Additional Mount points",
@@ -2915,6 +2916,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_3e107108": "一个计划任务最多只能创建10个动作"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
 }
