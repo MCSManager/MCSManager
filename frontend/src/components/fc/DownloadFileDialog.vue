@@ -57,7 +57,7 @@ watch(
 <template>
   <a-modal
     v-model:open="open"
-    :title="t('远程下载资源')"
+    :title="t('TXT_CODE_f27b68b3')"
     :closable="false"
     :destroy-on-close="true"
     width="400px"
@@ -65,10 +65,10 @@ watch(
     @ok="submit"
   >
     <a-form layout="vertical">
-      <a-form-item :label="t('文件 URL 地址')">
+      <a-form-item :label="t('TXT_CODE_ab8dd5a0')">
         <Flex vertical :gap="4">
           <a-typography-text type="secondary" class="typography-text-ellipsis">
-            {{ t("只能下载暴露在公网的 URL，并且管理员可能对下载速度有限制。") }}
+            {{ t("TXT_CODE_3fd7fe73") }}
           </a-typography-text>
           <a-input v-model:value="dataSource.url" :placeholder="t('TXT_CODE_4ea93630')" />
         </Flex>

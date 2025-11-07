@@ -390,7 +390,7 @@ onUnmounted(() => {
 
             <a-button type="dashed" @click="() => downloadFromURLFile()">
               <download-outlined />
-              {{ t("远程下载") }}
+              {{ t("TXT_CODE_5b364aef") }}
             </a-button>
             <a-upload
               v-model:file-list="fileList"

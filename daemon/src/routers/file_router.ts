@@ -110,7 +110,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const fileName = data.fileName;
 
     if (!checkSafeUrl(url)) {
-      protocol.responseError(ctx, t("此 URL 不安全，请填写含有域名，并且暴露在公网的 URL！"), {
+      protocol.responseError(ctx, t("TXT_CODE_3fe1b194"), {
         disablePrint: true
       });
       return;
