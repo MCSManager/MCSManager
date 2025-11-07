@@ -19,10 +19,7 @@ routerApp.use(async (event, ctx, _, next) => {
   if (event === "auth") return await next();
   if (!ctx.session) throw new Error("Session does not exist in authentication middleware.");
   if (
-    timingSafeEqual(
-      Uint8Array.from(String(ctx.session.key ?? "")),
-      Uint8Array.from(String(globalConfiguration.config.key ?? ""))
-    ) &&
+    ctx.session.key === globalConfiguration.config.key &&
     ctx.session.type === LOGIN_BY_TOP_LEVEL &&
     ctx.session.login &&
     ctx.session.id
