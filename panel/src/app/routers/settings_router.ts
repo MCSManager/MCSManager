@@ -61,13 +61,18 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.businessId != null) systemConfig.businessId = String(config.businessId);
     if (config.allowChangeCmd != null) systemConfig.allowChangeCmd = Boolean(config.allowChangeCmd);
     if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
-    if (config.panelId != null) systemConfig.panelId = String(config.panelId);
+
     if (config.shopName != null) systemConfig.shopName = String(config.shopName);
     if (config.shopEmail != null) systemConfig.shopEmail = String(config.shopEmail);
     if (config.shopDescription != null)
       systemConfig.shopDescription = String(config.shopDescription);
     if (config.shopTip != null) systemConfig.shopTip = String(config.shopTip);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
+
+    if (config.panelId != null) {
+      systemConfig.panelId = String(config.panelId);
+      systemConfig.registerCode = "";
+    }
 
     if (config.presetPackAddr != null) {
       // clear cache
