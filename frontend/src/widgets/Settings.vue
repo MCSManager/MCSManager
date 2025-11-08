@@ -388,6 +388,18 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("启用商店首页作为首页") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{
+                        t("此选项开启后，将会有一个商店页面作为登录首页，可以自行二次开发改造。")
+                      }}
+                    </a-typography-paragraph>
+                    <a-switch v-model:checked="formData.enableShopHomePage" />
+                  </a-form-item>
+
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit()">
                       {{ t("TXT_CODE_abfe9512") }}

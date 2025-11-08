@@ -68,6 +68,8 @@ export default class SystemConfig {
   shopTip = "";
   // login Copyright Information
   loginInfo: string = "";
+  // Whether to enable the shop home page
+  enableShopHomePage = false;
   // -----
 
   // Whether to enable SSL/TLS (HTTPS)

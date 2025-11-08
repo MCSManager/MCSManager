@@ -366,7 +366,12 @@ router.beforeEach((to, from, next) => {
     return next("/install");
   }
 
-  if (state.settings.businessMode && toRoutePath === "/" && !state.userInfo?.permission) {
+  if (
+    state.settings.businessMode &&
+    toRoutePath === "/" &&
+    !state.userInfo?.permission &&
+    state.settings.enableShopHomePage
+  ) {
     return next("/shop");
   }
 

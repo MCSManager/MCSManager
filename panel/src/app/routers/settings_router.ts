@@ -69,10 +69,9 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.shopTip != null) systemConfig.shopTip = String(config.shopTip);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
 
-    if (config.panelId != null) {
-      systemConfig.panelId = String(config.panelId);
-      // systemConfig.registerCode = "";
-    }
+    if (config.panelId != null) systemConfig.panelId = String(config.panelId);
+    if (config.enableShopHomePage != null)
+      systemConfig.enableShopHomePage = Boolean(config.enableShopHomePage);
 
     if (config.presetPackAddr != null) {
       // clear cache
@@ -196,7 +195,8 @@ router.get("/public_setting", async (ctx) => {
       shopEmail: config.shopEmail,
       shopDescription: config.shopDescription,
       shopTip: config.shopTip,
-      loginInfo: config.loginInfo
+      loginInfo: config.loginInfo,
+      enableShopHomePage: config.enableShopHomePage
     };
   }
 });
