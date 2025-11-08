@@ -7,6 +7,7 @@ import ShopInfoUpdateDialog from "@/components/ShopInfoUpdateDialog.vue";
 import SuccessModal from "@/components/SuccessModal.vue";
 import { router } from "@/config/router";
 import { useShop } from "@/hooks/useShop";
+import { t } from "@/lang/i18n";
 import { requestBuyInstance, type FrontProductInfo } from "@/services/apis/redeem";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
@@ -25,7 +26,6 @@ import {
 } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
 import { onMounted, ref } from "vue";
-import { useI18n } from "vue-i18n";
 import IndexHeader from "./header.vue";
 
 const introductionImages = [
@@ -38,7 +38,6 @@ const introductionImages = [
 
 const { products, settingState: settings, refreshSettingInfo, fetchProducts } = useShop();
 const { isAdmin } = useAppStateStore();
-const { t } = useI18n();
 const { execute: requestBuy } = requestBuyInstance();
 
 const selectedProduct = ref<FrontProductInfo | undefined>();

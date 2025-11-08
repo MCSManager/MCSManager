@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { useShop } from "@/hooks/useShop";
+import { t } from "@/lang/i18n";
 import type { Settings } from "@/types";
 import { EditOutlined } from "@ant-design/icons-vue";
 import { Button, Form, Input, message, Modal } from "ant-design-vue";
 import { ref } from "vue";
-import { useI18n } from "vue-i18n";
 
 const { refreshSettingInfo, updateShopInfo } = useShop();
-const { t } = useI18n();
 
 // Dialog visibility state
 const visible = ref(false);

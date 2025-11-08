@@ -110,6 +110,7 @@ declare module 'vue' {
     Params: typeof import('./src/components/NewCardList/params.vue')['default']
     PlaceHolderCard: typeof import('./src/components/PlaceHolderCard.vue')['default']
     ProductCard: typeof import('./src/components/ProductCard.vue')['default']
+    ProductsDialog: typeof import('./src/components/fc/ProductsDialog.vue')['default']
     RenewalDialog: typeof import('./src/components/fc/RenewalDialog.vue')['default']
     ResponsiveLayoutGroup: typeof import('./src/components/ResponsiveLayoutGroup.vue')['default']
     RightMenu: typeof import('./src/components/fc/RightMenu.vue')['default']

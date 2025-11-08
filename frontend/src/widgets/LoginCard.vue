@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
+import { openProductsDialog } from "@/components/fc";
 import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
 import { loginPageInfo, loginUser } from "@/services/apis";
@@ -87,7 +88,7 @@ const loginSuccess = () => {
 };
 
 const openBuyInstanceDialog = async () => {
-  router.push({ path: "/shop" });
+  openProductsDialog();
 };
 
 onMounted(async () => {

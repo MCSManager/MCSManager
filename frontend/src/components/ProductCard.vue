@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { t } from "@/lang/i18n";
 import { type FrontProductInfo } from "@/services/apis/redeem";
 import { Button, Card, Flex } from "ant-design-vue";
-import { useI18n } from "vue-i18n";
-
 interface Props {
   product: FrontProductInfo;
 }
@@ -13,8 +12,6 @@ interface Emits {
 
 defineProps<Props>();
 defineEmits<Emits>();
-
-const { t } = useI18n();
 </script>
 
 <template>

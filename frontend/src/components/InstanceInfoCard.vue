@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { t } from "@/lang/i18n";
 
 interface Props {
   title: string;
@@ -8,8 +8,6 @@ interface Props {
 }
 
 defineProps<Props>();
-
-const { t } = useI18n();
 </script>
 
 <template>

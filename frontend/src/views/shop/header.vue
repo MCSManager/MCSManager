@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/no-v-html -->
 <script setup lang="ts">
 import ProductCard from "@/components/ProductCard.vue";
+import { t } from "@/lang/i18n";
 import type { FrontProductInfo } from "@/services/apis/redeem";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { markdownToHTML } from "@/tools/safe";
@@ -8,7 +9,6 @@ import LoginCard from "@/widgets/LoginCard.vue";
 import { CloseOutlined } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
-import { useI18n } from "vue-i18n";
 
 interface Props {
   shopName?: string;
@@ -23,7 +23,6 @@ const emit = defineEmits<{
   buy: [FrontProductInfo];
 }>();
 
-const { t } = useI18n();
 const { isLogged } = useAppStateStore();
 const showLoginModal = ref(false);
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { t } from "@/lang/i18n";
 import { type FrontProductInfo } from "@/services/apis/redeem";
 import { Modal } from "ant-design-vue";
 import { ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 
 interface Props {
   visible: boolean;
@@ -17,8 +17,6 @@ interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
-
-const { t } = useI18n();
 
 const cardCode = ref("");
 const username = ref("");

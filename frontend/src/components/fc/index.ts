@@ -12,6 +12,7 @@ import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
+import ProductsDialog from "./ProductsDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
 import TaskLoadingDialog from "./TaskLoadingDialog.vue";
@@ -218,5 +219,10 @@ export async function openMarketDialog(
     instanceId,
     ...options
   }).load<InstanceType<typeof MarketDialog>>(MarketDialog);
+  return dialog!.openDialog();
+}
+
+export async function openProductsDialog() {
+  const dialog = useMountComponent({}).load<InstanceType<typeof ProductsDialog>>(ProductsDialog);
   return dialog!.openDialog();
 }

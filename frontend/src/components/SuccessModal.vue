@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { t } from "@/lang/i18n";
 import { Flex, Modal } from "ant-design-vue";
 import { computed, onUnmounted, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 
 interface Props {
   visible: boolean;
@@ -16,8 +16,6 @@ defineEmits<{
   close: [];
   toLogin: [];
 }>();
-
-const { t } = useI18n();
 
 // 倒计时相关
 const countdown = ref(15);
