@@ -71,7 +71,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
     if (config.panelId != null) {
       systemConfig.panelId = String(config.panelId);
-      systemConfig.registerCode = "";
+      // systemConfig.registerCode = "";
     }
 
     if (config.presetPackAddr != null) {
@@ -195,7 +195,8 @@ router.get("/public_setting", async (ctx) => {
       shopName: config.shopName,
       shopEmail: config.shopEmail,
       shopDescription: config.shopDescription,
-      shopTip: config.shopTip
+      shopTip: config.shopTip,
+      loginInfo: config.loginInfo
     };
   }
 });

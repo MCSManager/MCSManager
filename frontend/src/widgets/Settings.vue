@@ -62,7 +62,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.`;
 
-const formData = ref<MySettings>();
+const formData = ref<Partial<MySettings>>();
 
 const submit = async (needReload: boolean = true) => {
   if (formData.value) {
@@ -191,7 +191,7 @@ const uploadLogo = async () => {
     const url = await useUploadFileDialog();
     if (url) {
       formData.value.logoUrl = url;
-      setLogoImage(url)
+      setLogoImage(url);
     }
   }
 };
@@ -446,7 +446,7 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
-                  
+
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_47b5a2f7") }}</a-typography-title>
                     <a-typography-paragraph>
