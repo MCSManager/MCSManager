@@ -1,27 +1,31 @@
+import { IGNORE } from "../const";
+import RouterContext from "../entity/ctx";
 import { $t } from "../i18n";
-import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
 import {
   LOGIN_FROM_STREAM,
   missionPassport,
   streamLoginSuccessful
 } from "../service/mission_passport";
+import * as protocol from "../service/protocol";
+import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
-import { IGNORE } from "../const";
+
+function checkStreamLogin(ctx: RouterContext) {
+  return (
+    ctx.session.stream &&
+    ctx.session?.stream?.check === true &&
+    ctx.session.type === LOGIN_FROM_STREAM
+  );
+}
 
 // Authorization authentication middleware
-routerApp.use(async (event, ctx, data, next) => {
+routerApp.use(async (routePath, ctx, data, next) => {
   // release data flow authentication route
-  if (event === "stream/auth") return next();
+  if (routePath === "stream/auth") return next();
   // Check other routes for data flow
-  if (event.startsWith("stream")) {
-    if (
-      ctx.session.stream &&
-      ctx.session?.stream?.check === true &&
-      ctx.session.type === LOGIN_FROM_STREAM
-    ) {
-      return await next();
-    }
+  if (routePath.startsWith("stream")) {
+    if (checkStreamLogin(ctx)) return await next();
+
     return protocol.error(ctx, "error", IGNORE, {
       disablePrint: true
     });
@@ -62,6 +66,7 @@ routerApp.on("stream/detail", async (ctx) => {
     protocol.response(ctx, {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
+      autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info,

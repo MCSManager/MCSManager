@@ -47,6 +47,7 @@ export interface InstanceRuntimeInfo {
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
+  autoRestarted: number;
   status: INSTANCE_STATUS_CODE;
   info: InstanceRuntimeInfo;
   config: IGlobalInstanceConfig;
@@ -230,23 +231,26 @@ export interface Schedule {
   name: string;
   count: number;
   time: string;
-  action: string;
-  payload: string;
+  actions: ScheduleAction[];
   type: number;
+}
+
+export interface ScheduleAction {
+  type: string;
+  payload: string;
 }
 
 export interface NewScheduleTask {
   name: string;
   count: number;
   time: string;
-  action: string;
   type: ScheduleCreateType;
 }
 
 export interface ScheduleTaskForm extends NewScheduleTask {
-  payload: string;
   weekend: number[];
   cycle: string[];
+  actions: ScheduleAction[];
   objTime: Dayjs;
 }
 

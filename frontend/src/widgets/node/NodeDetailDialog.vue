@@ -24,6 +24,7 @@ const DEFAULT_CONFIG = {
   language: "",
   uploadSpeedRate: 0,
   downloadSpeedRate: 0,
+  maxDownloadFromUrlFileCount: 1,
   portRangeStart: 0,
   portRangeEnd: 0,
   portAssignInterval: 0,
@@ -95,7 +96,7 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
       ...data,
       ...data.config,
       port: data.port, // connection port
-      daemonPort: data.config.port, // listen port
+      daemonPort: data.config?.port ?? 24444, // listen port
       apiKey: "",
       remoteMappings: data.remoteMappings ?? []
     };
@@ -261,6 +262,16 @@ defineExpose({ openDialog });
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item :label="t('TXT_CODE_a15fca22')" name="maxDownloadFromUrlFileCount">
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_ecaf78a2") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-input v-model:value="dialog.data.maxDownloadFromUrlFileCount" />
               </a-form-item>
             </a-col>
           </a-row>

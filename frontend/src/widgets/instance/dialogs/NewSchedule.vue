@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { useSchedule } from "@/hooks/useSchedule";
 import { t } from "@/lang/i18n";
-import { notification } from "ant-design-vue";
-import { ScheduleAction, ScheduleType, ScheduleCreateType } from "@/types/const";
-import type { Schedule, ScheduleTaskForm } from "@/types";
 import { reportErrorMsg } from "@/tools/validator";
+import type { Schedule, ScheduleAction, ScheduleTaskForm } from "@/types";
+import { ScheduleActionType, ScheduleCreateType, ScheduleType } from "@/types/const";
+import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons-vue";
+import { notification } from "ant-design-vue";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { useSchedule } from "@/hooks/useSchedule";
+import { h, reactive, ref } from "vue";
 
 const props = defineProps<{
   daemonId: string;
@@ -40,7 +41,7 @@ const emit = defineEmits(["getScheduleList"]);
 const open = ref(false);
 const openDialog = (task?: Schedule) => {
   newTask = reactive({
-    ..._.cloneDeep(newTaskOrigin),
+    ..._.cloneDeep(defaultTask),
     ...task
   });
 
@@ -61,19 +62,23 @@ const weeks = [
   { label: t("TXT_CODE_a621f370"), value: 7 }
 ];
 
-const newTaskOrigin: ScheduleTaskForm = {
+const defaultAction: ScheduleAction = {
+  type: "command",
+  payload: ""
+};
+
+const defaultTask: ScheduleTaskForm = {
   name: "",
-  action: "command",
   count: 0,
   type: ScheduleCreateType.INTERVAL,
   time: "",
-  payload: "",
+  actions: [_.clone(defaultAction)],
   weekend: [],
   cycle: ["0", "0", "0"],
   objTime: dayjs()
 };
 
-let newTask = reactive<ScheduleTaskForm>(_.cloneDeep(newTaskOrigin));
+let newTask = reactive<ScheduleTaskForm>(_.cloneDeep(defaultTask));
 
 const create = {
   [ScheduleCreateType.INTERVAL]: (newTask: ScheduleTaskForm) => createTaskTypeInterval(newTask),
@@ -91,7 +96,7 @@ const submit = async () => {
       notification.success({
         message: editMode.value ? t("TXT_CODE_d3de39b4") : t("TXT_CODE_d28c05df")
       });
-      newTask = reactive(_.cloneDeep(newTaskOrigin));
+      newTask = reactive(_.cloneDeep(defaultTask));
       open.value = false;
     }
   } catch (err: any) {
@@ -99,6 +104,17 @@ const submit = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const addEmptyAction = () => {
+  newTask.actions[newTask.actions.length] = _.clone(defaultAction);
+};
+
+const delAction = (index: number) => {
+  if (newTask.actions.length === 1) {
+    return reportErrorMsg(t("TXT_CODE_a749763b"));
+  }
+  newTask.actions.splice(index, 1);
 };
 
 defineExpose({
@@ -129,31 +145,16 @@ defineExpose({
     </a-form-item>
 
     <a-form-item>
-      <a-typography-title :level="5">{{ t("TXT_CODE_fcd641db") }}</a-typography-title>
-      <a-row :gutter="[24, 24]">
-        <a-col :xs="24" :md="12" :offset="0">
-          <a-select
-            v-model:value="newTask.action"
-            :placeholder="t('TXT_CODE_3bb646e4')"
-            :dropdown-match-select-width="false"
-          >
-            <a-select-option v-for="(action, i) in ScheduleAction" :key="i" :value="i">
-              {{ action }}
-            </a-select-option>
-          </a-select>
-        </a-col>
-        <a-col :xs="24" :md="12" :offset="0">
-          <a-select
-            v-model:value="newTask.type"
-            :placeholder="t('TXT_CODE_3bb646e4')"
-            :dropdown-match-select-width="false"
-          >
-            <a-select-option v-for="(type, i) in ScheduleType" :key="i" :value="Number(i)">
-              {{ type }}
-            </a-select-option>
-          </a-select>
-        </a-col>
-      </a-row>
+      <a-typography-title :level="5">{{ t("TXT_CODE_a62c99d1") }}</a-typography-title>
+      <a-select
+        v-model:value="newTask.type"
+        :placeholder="t('TXT_CODE_3bb646e4')"
+        :dropdown-match-select-width="false"
+      >
+        <a-select-option v-for="(type, i) in ScheduleType" :key="i" :value="Number(i)">
+          {{ type }}
+        </a-select-option>
+      </a-select>
     </a-form-item>
 
     <template v-if="newTask.type === ScheduleCreateType.INTERVAL">
@@ -230,13 +231,50 @@ defineExpose({
     </a-form-item>
 
     <a-form-item>
-      <a-typography-title :level="5">{{ t("TXT_CODE_61811ac") }}</a-typography-title>
-      <a-typography-paragraph>
-        <a-typography-text type="secondary">
-          {{ t("TXT_CODE_81297804") }}
-        </a-typography-text>
-      </a-typography-paragraph>
-      <a-input v-model:value="newTask.payload" />
+      <div class="flex justify-between items-center mb-20">
+        <div>
+          <a-typography-title :level="5" :style="{ marginBottom: 0 }">
+            {{ t("TXT_CODE_61811ac") }}
+          </a-typography-title>
+          <a-typography-paragraph>
+            <a-typography-text type="secondary">
+              {{ t("TXT_CODE_81297804") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+        </div>
+        <a-button :icon="h(PlusCircleOutlined)" @click="addEmptyAction()">
+          {{ t("TXT_CODE_dfc17a0c") }}
+        </a-button>
+      </div>
+      <template v-for="(action, index) in newTask.actions" :key="index">
+        <a-form-item>
+          <a-row :gutter="[12, 24]">
+            <a-col :xs="24" :md="6" :offset="0">
+              <a-select
+                v-model:value="action.type"
+                :placeholder="t('TXT_CODE_3bb646e4')"
+                :dropdown-match-select-width="false"
+              >
+                <a-select-option v-for="(type, i) in ScheduleActionType" :key="i" :value="i">
+                  {{ type }}
+                </a-select-option>
+              </a-select>
+            </a-col>
+            <a-col :xs="24" :md="16" :offset="0">
+              <a-input v-model:value="action.payload" />
+            </a-col>
+            <a-col :xs="24" :md="2" :offset="0">
+              <div>
+                <a-button
+                  :icon="h(MinusCircleOutlined)"
+                  danger
+                  @click="delAction(index)"
+                ></a-button>
+              </div>
+            </a-col>
+          </a-row>
+        </a-form-item>
+      </template>
     </a-form-item>
   </a-modal>
 </template>

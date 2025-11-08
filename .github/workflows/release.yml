@@ -50,13 +50,21 @@ jobs:
         run: |
           mv dist_linux/ mcsmanager/
           tar czf mcsmanager_linux_release.tar.gz mcsmanager/
+          tar --exclude='mcsmanager/daemon' --exclude='mcsmanager/start-daemon.sh' -czf mcsmanager_linux_web_only_release.tar.gz mcsmanager/
+          tar --exclude='mcsmanager/web' --exclude='mcsmanager/start-web.sh' -czf mcsmanager_linux_daemon_only_release.tar.gz mcsmanager/
           rm -rf mcsmanager/
           mv dist_windows/ mcsmanager/
           zip -r mcsmanager_windows_release.zip mcsmanager/
+          zip -r mcsmanager_windows_web_only_release.zip mcsmanager/ -x "mcsmanager/daemon/*"
+          zip -r mcsmanager_windows_daemon_only_release.zip mcsmanager/ -x "mcsmanager/web/*"
 
       - name: Upload assets to release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             mcsmanager_windows_release.zip
+            mcsmanager_windows_web_only_release.zip
+            mcsmanager_windows_daemon_only_release.zip
             mcsmanager_linux_release.tar.gz
+            mcsmanager_linux_web_only_release.tar.gz
+            mcsmanager_linux_daemon_only_release.tar.gz

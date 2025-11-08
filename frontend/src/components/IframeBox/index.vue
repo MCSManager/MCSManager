@@ -12,14 +12,15 @@
     ></iframe>
 
     <div v-if="error" class="iframe-error">
-      <p>页面加载失败，请稍后重试！</p>
+      <p>{{ t("TXT_CODE_ef8f8e29") }}</p>
       <p>{{ error }}</p>
-      <a-button type="primary" @click="reload">重试</a-button>
+      <a-button type="primary" @click="reload">{{ t("TXT_CODE_9277af78") }}</a-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { t } from "@/lang/i18n";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { nextTick, onMounted, ref } from "vue";
 import { useIframeEventListener, type IframeBoxEmits, type IframeBoxProps } from "./config";

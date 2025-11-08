@@ -1,8 +1,8 @@
-import { reportErrorMsg } from "@/tools/validator";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { reportErrorMsg } from "@/tools/validator";
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import axios from "axios";
-import EventEmitter from "events";
+import EventEmitter from "eventemitter3";
 import _ from "lodash";
 
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";

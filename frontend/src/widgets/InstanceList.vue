@@ -570,17 +570,6 @@ onMounted(async () => {
   width: 100%;
 }
 
-.selected {
-  border: 1px solid var(--color-blue-6);
-  user-select: none;
-
-  &:hover {
-    border: 1px solid var(--color-blue-6);
-    transition: all 0.3s;
-    box-shadow: inset 0 0 0 0.5px var(--color-blue-6);
-  }
-}
-
 .instances-tag-container {
   display: flex;
   flex-wrap: wrap;

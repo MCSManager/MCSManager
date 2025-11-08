@@ -88,6 +88,10 @@ onMounted(async () => {
           <a-tag color="purple" class="tag">
             {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
           </a-tag>
+          
+          <a-tag color="purple" class="tag">
+            {{ t("TXT_CODE_6420023d") }}{{ instanceInfo?.autoRestarted }}
+          </a-tag>
 
           <!-- real tags -->
           <a-tag v-for="tag in instanceInfo?.config.tag" :key="tag" class="tag" color="blue">

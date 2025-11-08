@@ -171,7 +171,17 @@ const originRouterConfig: RouterConfig[] = [
     meta: {
       mainMenu: true,
       permission: ROLE.ADMIN
-    }
+    },
+    children: [
+      {
+        path: "editor",
+        name: t("TXT_CODE_54275b9c"),
+        component: LayoutContainer,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
   },
   {
     path: "/overview",

@@ -2,6 +2,7 @@ import InstanceConfig from "../entity/instance/Instance_config";
 export interface IInstanceDetail {
   instanceUuid: string;
   started: number;
+  autoRestarted: number;
   status: number;
   config: InstanceConfig;
   info?: any;

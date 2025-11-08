@@ -39,6 +39,7 @@ routerApp.on("info/overview", async (ctx) => {
       language: globalConfiguration.config.language,
       uploadSpeedRate: globalConfiguration.config.uploadSpeedRate,
       downloadSpeedRate: globalConfiguration.config.downloadSpeedRate,
+      maxDownloadFromUrlFileCount: globalConfiguration.config.maxDownloadFromUrlFileCount,
       portRangeStart: globalConfiguration.config.allocatablePortRange[0],
       portRangeEnd: globalConfiguration.config.allocatablePortRange[1],
       portAssignInterval: globalConfiguration.config.portAssignInterval,
@@ -52,6 +53,7 @@ routerApp.on("info/setting", async (ctx, data) => {
   const language = toText(data.language);
   const uploadSpeedRate = toNumber(data.uploadSpeedRate);
   const downloadSpeedRate = toNumber(data.downloadSpeedRate);
+  const maxDownloadFromUrlFileCount = toNumber(data.maxDownloadFromUrlFileCount);
   const portRangeStart = toNumber(data.portRangeStart);
   const portRangeEnd = toNumber(data.portRangeEnd);
   const portAssignInterval = toNumber(data.portAssignInterval);
@@ -67,6 +69,9 @@ routerApp.on("info/setting", async (ctx, data) => {
   }
   if (downloadSpeedRate != null && downloadSpeedRate >= 0) {
     globalConfiguration.config.downloadSpeedRate = downloadSpeedRate;
+  }
+  if (maxDownloadFromUrlFileCount != null && maxDownloadFromUrlFileCount >= 0) {
+    globalConfiguration.config.maxDownloadFromUrlFileCount = maxDownloadFromUrlFileCount;
   }
   if (portRangeStart != null && portRangeEnd != null && portRangeStart < portRangeEnd) {
     globalConfiguration.config.allocatablePortRange = [portRangeStart, portRangeEnd];

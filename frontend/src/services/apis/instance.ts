@@ -150,6 +150,7 @@ export const updateInstanceConfig = useDefineApi<
       stopCommand?: string;
       eventTask?: {
         autoRestart: boolean;
+        autoRestartMaxTimes: number;
         autoStart: boolean;
       };
       pingConfig?: {

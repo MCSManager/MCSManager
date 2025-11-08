@@ -69,4 +69,11 @@ export default class SystemConfig {
   // login Copyright Information
   loginInfo: string = "";
   // -----
+
+  // Whether to enable SSL/TLS (HTTPS)
+  ssl = false;
+  // SSL certificate file path (.pem)
+  sslPemPath = "";
+  // SSL private key file path (.key)
+  sslKeyPath = "";
 }
