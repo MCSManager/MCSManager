@@ -12,7 +12,11 @@ export default class GeneralRestartCommand extends InstanceCommand {
       instance.ignoreEventTaskOnce();
       instance.println("INFO", $t("TXT_CODE_restart.start"));
       instance.setLock(true);
-      await instance.execPreset("stop");
+      try {
+        await instance.execPreset("stop");
+      } catch (error) {
+        // ignore error
+      }
       const startCount = instance.startCount;
       // Check the instance status every second,
       // if the instance status is stopped, restart the server immediately

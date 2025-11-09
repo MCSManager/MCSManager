@@ -9,6 +9,7 @@ import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
+import { checkSafeUrl } from "../utils/url";
 
 // Some routers operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -107,6 +108,13 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
   try {
     const url = data.url;
     const fileName = data.fileName;
+
+    if (!checkSafeUrl(url)) {
+      protocol.responseError(ctx, t("TXT_CODE_3fe1b194"), {
+        disablePrint: true
+      });
+      return;
+    }
 
     const fileManager = getFileManager(data.instanceUuid);
     const targetPath = fileManager.toAbsolutePath(fileName);

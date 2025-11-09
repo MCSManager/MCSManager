@@ -2,6 +2,7 @@
 import { t } from "@/lang/i18n";
 import { reportValidatorError } from "@/tools/validator";
 import type { DownloadFileConfigItem } from "@/types/fileManager";
+import { Flex } from "ant-design-vue";
 import { ref, watch } from "vue";
 import type { MountComponent } from "../../types/index";
 
@@ -56,7 +57,7 @@ watch(
 <template>
   <a-modal
     v-model:open="open"
-    :title="t('TXT_CODE_816ce026')"
+    :title="t('TXT_CODE_f27b68b3')"
     :closable="false"
     :destroy-on-close="true"
     width="400px"
@@ -64,8 +65,13 @@ watch(
     @ok="submit"
   >
     <a-form layout="vertical">
-      <a-form-item :label="t('TXT_CODE_62d10724')">
-        <a-input v-model:value="dataSource.url" :placeholder="t('TXT_CODE_4ea93630')" />
+      <a-form-item :label="t('TXT_CODE_ab8dd5a0')">
+        <Flex vertical :gap="4">
+          <a-typography-text type="secondary" class="typography-text-ellipsis">
+            {{ t("TXT_CODE_3fd7fe73") }}
+          </a-typography-text>
+          <a-input v-model:value="dataSource.url" :placeholder="t('TXT_CODE_4ea93630')" />
+        </Flex>
       </a-form-item>
       <a-form-item :label="t('TXT_CODE_2eace3d5')">
         <a-input v-model:value="dataSource.fileName" :placeholder="t('TXT_CODE_4ea93630')" />

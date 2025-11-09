@@ -29,28 +29,27 @@ export const SUPPORTED_LANGS = [
   {
     label: `Deutsch`,
     value: `de_de`
+  },
+  {
+    label: `Français`,
+    value: `fr_fr`
+  },
+  {
+    label: `Português Brasileiro`,
+    value: `pt_br`
+  },
+  {
+    label: `Thai`,
+    value: `th_th`
+  },
+  {
+    label: `Español`,
+    value: `es_es`
+  },
+  {
+    label: `한국어`,
+    value: `ko_kr`
   }
-  // These languages are temporarily not supported due to low user volume and long-term lack of maintenance
-  // {
-  //   label: `Français`,
-  //   value: `fr_fr`
-  // },
-  // {
-  //   label: `Português Brasileiro`,
-  //   value: `pt_br`
-  // },
-  // {
-  //   label: `Thai`,
-  //   value: `th_th`
-  // }
-  // {
-  //   label: `Español`,
-  //   value: `es_es`
-  // },
-  // {
-  //   label: `한국어`,
-  //   value: `ko_kr`
-  // },
 ];
 
 export const LANGUAGE_KEY = "LANGUAGE";
