@@ -500,9 +500,14 @@ export default class Instance extends EventEmitter {
     if (typeof text !== "string") return "";
     text = text.replace(/\{mcsm_workspace\}/gim, this.absoluteCwdPath());
     text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
-    text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_uuid\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_random\}/gim, randomUUID());
+    text = text.replace(/\{mcsm_run_as\}/gim, this.config.runAs);
+    text = text.replace(/\{mcsm_steamcmd\}/gim, STEAM_CMD_PATH);
+    text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
+    text = text.replace(/\{mcsm_instance_name\}/gim, this.config.nickname);
+    text = text.replace(/\{mcsm_instance_base_port\}/gim, String(this.config.basePort));
+
     const ports = Array.from(
       { length: globalConfiguration.config.portAssignInterval || 1 },
       (_, index) => index + 1
@@ -513,8 +518,6 @@ export default class Instance extends EventEmitter {
       const replacement = String(basePort + portOffset);
       text = text.replace(new RegExp(placeholder, "gim"), replacement);
     });
-    text = text.replace(/\{mcsm_run_as\}/gim, this.config.runAs);
-    text = text.replace(/\{mcsm_steamcmd\}/gim, STEAM_CMD_PATH);
     return text;
   }
 
