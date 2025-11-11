@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "每次生成夜魅時的最小數量",
   "TXT_CODE_dfc17a0c": "新增設定",
   "TXT_CODE_dfc4b650": "從連結匯入",
-  "TXT_CODE_dfd06954": "此數字對應變數{mcsm_port1}至{mcsm_port5}，每次新增實例時將依序分配",
+  "TXT_CODE_dfd06954": "此數字對應變數 mcsm_port1 至 mcsm_port5 ，每次新增實例時將依序分配",
   "TXT_CODE_dfd4fc5a": "編輯器選項與備註",
   "TXT_CODE_dff680b7": "程式已退出！",
   "TXT_CODE_e00c858c": "上傳檔案",

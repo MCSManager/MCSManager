@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "Mindestanzahl an Phantomen, die pro Versuch erscheinen",
   "TXT_CODE_dfc17a0c": "Neue Konfiguration",
   "TXT_CODE_dfc4b650": "Aus Link importieren",
-  "TXT_CODE_dfd06954": "Diese Zahl entspricht den Variablen von {mcsm_port1} bis {mcsm_port5} und wird bei jeder neuen Instanz inkrementell vergeben",
+  "TXT_CODE_dfd06954": "Diese Zahl entspricht den Variablen von mcsm_port1 bis mcsm_port5 und wird bei jeder neuen Instanz inkrementell vergeben",
   "TXT_CODE_dfd4fc5a": "Editor-Optionen & Hinweise",
   "TXT_CODE_dff680b7": "Das Programm ist verlassen!",
   "TXT_CODE_e00c858c": "Datei hochladen",

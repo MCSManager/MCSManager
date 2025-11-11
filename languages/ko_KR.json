@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "시도 당 최소 수의 팬텀 수",
   "TXT_CODE_dfc17a0c": "새로운 구성",
   "TXT_CODE_dfc4b650": "링크에서 가져오기",
-  "TXT_CODE_dfd06954": "이 번호는 {mcsm_port1}부터 {mcsm_port5}까지의 변수에 해당하며, 새 인스턴스가 추가될 때마다 순차적으로 할당됩니다",
+  "TXT_CODE_dfd06954": "이 번호는 mcsm_port1 부터 mcsm_port5 까지의 변수에 해당하며, 새 인스턴스가 추가될 때마다 순차적으로 할당됩니다",
   "TXT_CODE_dfd4fc5a": "편집기 옵션 및 참고사항",
   "TXT_CODE_dff680b7": "프로그램이 종료되었습니다!",
   "TXT_CODE_e00c858c": "파일 업로드",

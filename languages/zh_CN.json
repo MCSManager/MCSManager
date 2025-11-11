@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "每次生成幻翼时的最小数量",
   "TXT_CODE_dfc17a0c": "新增配置",
   "TXT_CODE_dfc4b650": "从链接导入",
-  "TXT_CODE_dfd06954": "这个数字对应 {mcsm_port1} 到 {mcsm_port5} 的变量，每次新增实例都会递增分配",
+  "TXT_CODE_dfd06954": "这个数字对应 mcsm_port1 到 mcsm_port5 的变量，每次新增实例都会递增分配",
   "TXT_CODE_dfd4fc5a": "编辑器选项 & 说明",
   "TXT_CODE_dff680b7": "程序已退出！",
   "TXT_CODE_e00c858c": "上传文件",

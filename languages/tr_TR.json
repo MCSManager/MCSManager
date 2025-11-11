@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "Deneme başına yumurtlamak için minimum fantom sayısı",
   "TXT_CODE_dfc17a0c": "Yapılandırma Ekle",
   "TXT_CODE_dfc4b650": "Bağlantıdan içe aktar",
-  "TXT_CODE_dfd06954": "Bu numara {mcsm_port1} ile {mcsm_port5} arasındaki değişkenlere karşılık gelir ve her yeni örnek eklendiğinde artarak atanacaktır",
+  "TXT_CODE_dfd06954": "Bu numara mcsm_port1 ile mcsm_port5 arasındaki değişkenlere karşılık gelir ve her yeni örnek eklendiğinde artarak atanacaktır",
   "TXT_CODE_dfd4fc5a": "Düzenleyici Seçenekleri & Notlar",
   "TXT_CODE_dff680b7": "Program çıktı!",
   "TXT_CODE_e00c858c": "Yükle",

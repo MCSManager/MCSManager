@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "Minimum number of phantoms to spawn per attempt",
   "TXT_CODE_dfc17a0c": "Add Configuration",
   "TXT_CODE_dfc4b650": "Import from link",
-  "TXT_CODE_dfd06954": "This number corresponds to the variables from {mcsm_port1} to {mcsm_port5}, and it will be incrementally assigned each time a new instance is added",
+  "TXT_CODE_dfd06954": "This number corresponds to the variables from mcsm_port1 to mcsm_port5, and it will be incrementally assigned each time a new instance is added",
   "TXT_CODE_dfd4fc5a": "Editor Options & Notes",
   "TXT_CODE_dff680b7": "Program has exited!",
   "TXT_CODE_e00c858c": "Upload",

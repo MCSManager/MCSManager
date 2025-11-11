@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "Nombre minimum de fantômes à apparaître par tentative",
   "TXT_CODE_dfc17a0c": "Nouvelle configuration",
   "TXT_CODE_dfc4b650": "Importer depuis un lien",
-  "TXT_CODE_dfd06954": "Ce nombre correspond aux variables de {mcsm_port1} à {mcsm_port5}, et sera attribué de manière incrémentale à chaque ajout d'instance",
+  "TXT_CODE_dfd06954": "Ce nombre correspond aux variables de mcsm_port1 à mcsm_port5 , et sera attribué de manière incrémentale à chaque ajout d'instance",
   "TXT_CODE_dfd4fc5a": "Options et notes de l'éditeur",
   "TXT_CODE_dff680b7": "Le programme est sorti!",
   "TXT_CODE_e00c858c": "Téléverser un fichier",

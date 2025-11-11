@@ -2381,7 +2381,7 @@
   "TXT_CODE_dfaa82f3": "Número mínimo de fantasmas para gerar por tentativa",
   "TXT_CODE_dfc17a0c": "Adicionar Configuração",
   "TXT_CODE_dfc4b650": "Importar de link",
-  "TXT_CODE_dfd06954": "Este número corresponde às variáveis de {mcsm_port1} a {mcsm_port5}, sendo atribuído incrementalmente a cada nova instância adicionada",
+  "TXT_CODE_dfd06954": "Este número corresponde às variáveis de mcsm_port1 a mcsm_port5, sendo atribuído incrementalmente a cada nova instância adicionada",
   "TXT_CODE_dfd4fc5a": "Opções e Notas do Editor",
   "TXT_CODE_dff680b7": "O programa saiu!",
   "TXT_CODE_e00c858c": "Enviar",
