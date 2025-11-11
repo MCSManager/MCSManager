@@ -56,10 +56,20 @@
   .breadcrumbs {
     @extend .text-white-shadow;
   }
+
+  .ant-btn-dangerous {
+    color: #fff;
+
+    &:not(:disabled):hover {
+      color: #ffe1e0 !important;
+    }
+  }
+
   .terminal-wrapper {
     background-color: rgba(0, 0, 0, 0.8) !important;
     backdrop-filter: blur(3px) !important;
   }
+
   .app-header-content-for-phone {
     .card-panel {
       background-color: #000000b4 !important;
@@ -70,6 +80,9 @@
 .extend-dark-css {
   .breadcrumbs {
     @extend .text-black-shadow;
+  }
+  .ant-btn-dangerous {
+    color: #ffa4a4;
   }
   .terminal-wrapper {
     background-color: var(--level-1-bg-color) !important;
