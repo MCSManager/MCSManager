@@ -105,17 +105,27 @@ const toOverview = () => {
         </a-typography>
         <br />
         <a-radio-group v-model:value="formData.language" @update:value="setLang(formData.language)">
-          <a-row :gutter="[0, 20]">
+          <a-row :gutter="[0, 20]" style="max-width: 280px">
             <a-col
               v-for="lang in SUPPORTED_LANGS"
               :key="lang.value"
               :span="24"
               :sm="12"
               align="start"
+              style="padding-left: 30px"
             >
-              <a-radio :value="lang.value" class="flex-between items-center">
-                {{ lang.label }}
-              </a-radio>
+              <div
+                style="
+                  max-width: 120px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                "
+              >
+                <a-radio :value="lang.value">
+                  {{ lang.label }}
+                </a-radio>
+              </div>
             </a-col>
           </a-row>
         </a-radio-group>
