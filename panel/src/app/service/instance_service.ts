@@ -1,9 +1,9 @@
-import userSystem from "../service/user_service";
-import RemoteServiceSubsystem from "../service/remote_service";
-import RemoteRequest from "../service/remote_command";
 import { t } from "i18next";
-import { systemConfig } from "../setting";
 import { toText } from "mcsmanager-common";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
+import userSystem from "../service/user_service";
+import { systemConfig } from "../setting";
 
 export enum INSTANCE_STATUS {
   BUSY = -1,
@@ -77,7 +77,7 @@ export async function getInstancesByUuid(
     for (const iterator of instances) {
       if (targetDaemonId && targetDaemonId !== iterator.daemonId) continue;
       const remoteService = RemoteServiceSubsystem.getInstance(iterator.daemonId);
-      if (!remoteService) {
+      if (!remoteService || !remoteService.available) {
         // If the remote service doesn't exist at all, load a deleted prompt
         resInstances.push({
           hostIp: "-- Unknown --",
@@ -98,27 +98,32 @@ export async function getInstancesByUuid(
         continue;
       }
       // Note: UUID can be integrated here to save the returned traffic, and this optimization will not be done for the time being
-      let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
-        instanceUuids: [iterator.instanceUuid]
-      });
-      if (!instancesInfo || instancesInfo.length === 0) continue;
-      instancesInfo = instancesInfo[0];
-      resInstances.push({
-        hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
-        remarks: remoteService.config.remarks,
-        instanceUuid: instancesInfo.instanceUuid,
-        daemonId: remoteService.uuid,
-        status: instancesInfo.status,
-        nickname: instancesInfo.config.nickname,
-        ie: instancesInfo.config.ie,
-        oe: instancesInfo.config.oe,
-        endTime: instancesInfo.config.endTime,
-        lastDatetime: instancesInfo.config.lastDatetime,
-        stopCommand: instancesInfo.config.stopCommand,
-        processType: instancesInfo.config.processType,
-        docker: instancesInfo.config.docker || {},
-        info: instancesInfo.info || {}
-      });
+      try {
+        let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
+          instanceUuids: [iterator.instanceUuid]
+        });
+        if (!instancesInfo || instancesInfo.length === 0) continue;
+        instancesInfo = instancesInfo[0];
+        resInstances.push({
+          hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
+          remarks: remoteService.config.remarks,
+          instanceUuid: instancesInfo.instanceUuid,
+          daemonId: remoteService.uuid,
+          status: instancesInfo.status,
+          nickname: instancesInfo.config.nickname,
+          ie: instancesInfo.config.ie,
+          oe: instancesInfo.config.oe,
+          endTime: instancesInfo.config.endTime,
+          lastDatetime: instancesInfo.config.lastDatetime,
+          stopCommand: instancesInfo.config.stopCommand,
+          processType: instancesInfo.config.processType,
+          docker: instancesInfo.config.docker || {},
+          info: instancesInfo.info || {}
+        });
+      } catch (error) {
+        // ignore error
+        continue;
+      }
     }
   } else {
     resInstances = user.instances;
