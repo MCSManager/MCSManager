@@ -69,21 +69,28 @@ const manualInstallOptions = [
     label: t("TXT_CODE_a3efb1cc"),
     icon: FileZipOutlined,
     description: t("TXT_CODE_f09da050"),
-    action: () =>
-      handleInstallAction(QUICKSTART_METHOD.IMPORT, QUICKSTART_ACTION_TYPE.SteamGameServer)
+    action: (e: Event) => {
+      handleInstallAction(QUICKSTART_METHOD.IMPORT, QUICKSTART_ACTION_TYPE.SteamGameServer);
+      e.preventDefault();
+    }
   },
   {
     label: t("TXT_CODE_bae487e4"),
     icon: BlockOutlined,
     description: t("TXT_CODE_256e5825"),
-    action: () =>
-      handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer)
+    action: (e: Event) => {
+      handleInstallAction(QUICKSTART_METHOD.DOCKER, QUICKSTART_ACTION_TYPE.SteamGameServer);
+      e.preventDefault();
+    }
   },
   {
     label: t("TXT_CODE_e0fca76"),
     icon: FolderOpenOutlined,
     description: t("TXT_CODE_b3844cf8"),
-    action: () => handleInstallAction(QUICKSTART_METHOD.EXIST, QUICKSTART_ACTION_TYPE.AnyApp)
+    action: (e: Event) => {
+      handleInstallAction(QUICKSTART_METHOD.EXIST, QUICKSTART_ACTION_TYPE.AnyApp);
+      e.preventDefault();
+    }
   }
 ];
 </script>
@@ -109,7 +116,7 @@ const manualInstallOptions = [
             :md="12"
             :lg="8"
           >
-            <CardPanel class="install-option-card" :style="{}" @click="option.action">
+            <CardPanel class="install-option-card">
               <template #title>
                 <div class="card-header">
                   <div class="card-title">{{ option.label }}</div>
