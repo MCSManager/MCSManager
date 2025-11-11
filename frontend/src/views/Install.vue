@@ -113,7 +113,7 @@ const toOverview = () => {
               :sm="12"
               align="start"
             >
-              <a-radio :value="lang.value">
+              <a-radio :value="lang.value" class="flex-between items-center">
                 {{ lang.label }}
               </a-radio>
             </a-col>
