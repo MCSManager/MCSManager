@@ -72,7 +72,7 @@ defineExpose({
       </p>
       <p>
         <Link target="_blank" @click="openEditor">
-          {{ t("编辑应用市场") }}
+          {{ t("TXT_CODE_85c10fde") }}
         </Link>
         <Divider type="vertical" />
         <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
