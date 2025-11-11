@@ -304,7 +304,10 @@ defineExpose({
                 </a-col>
                 <a-col :span="24" :lg="12">
                   <a-form-item :label="t('TXT_CODE_3d56da34')" name="author">
-                    <a-input v-model:value="formData.author" :placeholder="t('TXT_CODE_e6adf32d')" />
+                    <a-input
+                      v-model:value="formData.author"
+                      :placeholder="t('TXT_CODE_e6adf32d')"
+                    />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -570,6 +573,17 @@ defineExpose({
           </a-row>
 
           <a-row :gutter="20">
+            <a-col :span="12" :sm="10" :md="8" :lg="6">
+              <a-form-item
+                :label="t('TXT_CODE_6a06a9ef')"
+                :name="['setupInfo', 'docker', 'changeWorkdir']"
+              >
+                <a-switch
+                  v-model:checked="formData.setupInfo.docker.changeWorkdir"
+                  :disabled="!isDockerMode"
+                ></a-switch>
+              </a-form-item>
+            </a-col>
             <a-col :span="12" :sm="14" :md="16" :lg="18">
               <a-form-item
                 :label="t('TXT_CODE_b1446a00')"
@@ -580,17 +594,6 @@ defineExpose({
                   placeholder="eg: /workspace"
                   :disabled="!isDockerMode"
                 />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12" :sm="10" :md="8" :lg="6">
-              <a-form-item
-                :label="t('TXT_CODE_6a06a9ef')"
-                :name="['setupInfo', 'docker', 'changeWorkdir']"
-              >
-                <a-switch
-                  v-model:checked="formData.setupInfo.docker.changeWorkdir"
-                  :disabled="!isDockerMode"
-                ></a-switch>
               </a-form-item>
             </a-col>
           </a-row>
