@@ -65,17 +65,23 @@ MCSManager 在 `Minecraft` 和 `Steam` 遊戲社群中廣受歡迎。它幫助�
 
 <br />
 
+## 官方文檔
+
+英語：https://docs.mcsmanager.com/
+
+中文：https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## 安裝
 
 ### Windows
 
-下載：https://download.mcsmanager.com/mcsmanager_windows_release.zip
+對於 Windows 系統，**已整合成直接運行版本，下载即可運行**:
 
-啟動面板：
+壓縮包：https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+雙擊 `start.bat` 即可啟動面板和守護進程。
 
 <br />
 
@@ -140,6 +146,8 @@ chmod 775 install.sh
 
 此安裝方法不會自動將面板註冊到系統服務，因此您必須使用 `screen` 軟體來管理它。如果您希望系統服務接管 MCSManager，請參考文件。
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -176,6 +184,50 @@ chmod 775 install.sh
 
 <br />
 
+### 通過 Docker 安裝
+
+使用 docker-compose.yml 安裝面板，請注意您需要修改裡面的所有 `<CHANGE_ME_TO_INSTALL_PATH>` 為您的實際安裝目錄。
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+使用 docker-compose 啟用。
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # 這裡寫入上面的docker-compose.yml的內容
+docker compose pull && docker compose up -d
+```
+
+注意：使用 Docker 安裝後，Web 端可能會無法再自動連接到 Daemon。
+
+此時如果你進入面板，應該會出現一些錯誤，因為面板 Web 端沒有成功連接到守護進程端，你需要新建節點讓它們聯繫到一起。
+
+<br />
+
 ## 程式碼貢獻
 
 - 貢獻程式碼前必須閱讀：https://github.com/MCSManager/MCSManager/issues/599
@@ -188,7 +240,7 @@ chmod 775 install.sh
 
 ## 開發
 
-此部分適用於開發者。如果您想在 MCSManager 上進行二次開發或提交程式碼貢獻，請仔細閱讀這些內容：
+此部分**適用於開發者**。如果您想在 MCSManager 上進行二次開發或提交程式碼貢獻，請仔細閱讀這些內容：
 
 ### 必要條件
 
@@ -264,6 +316,8 @@ if (!checkName) {
 如果翻譯文字需要攜帶參數，這可能會有點複雜，因為前端和後端使用不同的 i18n 函式庫，所以格式可能會不同。您需要查看檔案以找到類似的程式碼來理解。
 
 所有翻譯文字鍵不能重複，因此請嘗試使用更長的名稱！
+
+<br />
 
 ### 建置生產環境版本
 

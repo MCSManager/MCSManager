@@ -65,17 +65,23 @@ MCSManager ได้รับความนิยมในชุมชนเก
 
 <br />
 
+## เอกสารทางการ
+
+ภาษาอังกฤษ: https://docs.mcsmanager.com/
+
+ภาษาจีน: https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## การติดตั้ง
 
 ### Windows
 
-ดาวน์โหลด: https://download.mcsmanager.com/mcsmanager_windows_release.zip
+**สำหรับระบบ Windows ได้รวมเป็นเวอร์ชันที่พร้อมใช้งาน - ดาวน์โหลดและรันได้ทันที:**
 
-เริ่มแผง:
+ไฟล์บีบอัด: https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+ดับเบิลคลิก `start.bat` เพื่อเปิดใช้งานทั้งแผงเว็บและกระบวนการ daemon
 
 <br />
 
@@ -140,6 +146,8 @@ chmod 775 install.sh
 
 วิธีการติดตั้งนี้ไม่ได้ลงทะเบียนแผงกับบริการระบบโดยอัตโนมัติ ดังนั้นคุณต้องใช้ซอฟต์แวร์ `screen` เพื่อจัดการ หากคุณต้องการให้บริการระบบจัดการ MCSManager กรุณาอ้างอิงเอกสาร
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -176,6 +184,50 @@ chmod 775 install.sh
 
 <br />
 
+### การติดตั้งผ่าน Docker
+
+ติดตั้งแผงโดยใช้ docker-compose.yml โปรดทราบว่าคุณต้องแก้ไข `<CHANGE_ME_TO_INSTALL_PATH>` ทั้งหมดให้เป็นเส้นทางติดตั้งจริงของคุณ
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+เปิดใช้งานโดยใช้ docker-compose
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # เขียนเนื้อหา docker-compose.yml ข้างต้นที่นี่
+docker compose pull && docker compose up -d
+```
+
+หมายเหตุ: หลังจากการติดตั้ง Docker ด้าน Web อาจไม่สามารถเชื่อมต่อกับ Daemon โดยอัตโนมัติได้อีกต่อไป
+
+ณ จุดนี้หากคุณเข้าสู่แผง คุณควรเห็นข้อผิดพลาดบางอย่างเนื่องจากด้าน Web ไม่สามารถเชื่อมต่อกับ daemon ได้สำเร็จ คุณต้องสร้างโหนดใหม่เพื่อเชื่อมต่อกัน
+
+<br />
+
 ## การมีส่วนร่วมในโค้ด
 
 - ต้องอ่านก่อนมีส่วนร่วมในโค้ด: https://github.com/MCSManager/MCSManager/issues/599
@@ -188,7 +240,7 @@ chmod 775 install.sh
 
 ## การพัฒนา
 
-ส่วนนี้สำหรับนักพัฒนา หากคุณต้องการทำการพัฒนาระดับสองใน MCSManager หรือส่งการมีส่วนร่วมในโค้ด กรุณาอ่านเนื้อหาเหล่านี้อย่างระมัดระวัง:
+**ส่วนนี้สำหรับนักพัฒนา** หากคุณต้องการทำการพัฒนาระดับสองใน MCSManager หรือส่งการมีส่วนร่วมในโค้ด กรุณาอ่านเนื้อหาเหล่านี้อย่างระมัดระวัง:
 
 ### จำเป็น
 
@@ -264,6 +316,8 @@ if (!checkName) {
 หากข้อความแปลต้องพารามิเตอร์ อาจจะซับซ้อนเล็กน้อย เพราะ frontend และ backend ใช้ไลบรารี i18n ที่แตกต่างกัน ดังนั้นรูปแบบอาจจะแตกต่างกัน คุณต้องดูผ่านไฟล์เพื่อหาโค้ดที่คล้ายกันเพื่อเข้าใจ
 
 คีย์ข้อความแปลทั้งหมดไม่สามารถซ้ำกันได้ ดังนั้นกรุณาพยายามใช้ชื่อที่ยาวกว่า!
+
+<br />
 
 ### การสร้างเวอร์ชันสภาพแวดล้อมการผลิต
 

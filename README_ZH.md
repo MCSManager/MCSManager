@@ -64,6 +64,14 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 
 <br />
 
+## 官方文档
+
+英语：https://docs.mcsmanager.com/
+
+中文：https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## 安装
 
 ### Windows
@@ -72,11 +80,7 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 
 压缩包：https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-启动面板：
-
-```bash
-start.bat
-```
+双击 `start.bat` 即可启动面板和守护进程。
 
 <br />
 
@@ -141,10 +145,11 @@ chmod 775 install.sh
 
 这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理，如果你希望由系统服务来接管 MCSManager，请参考文档。
 
+<br />
+
 ### Mac OS
 
 ```bash
-
 # 首先安装 Node.js，如果你已经安装可以忽略这个步骤。
 # Node.js 推荐安装最新 LTS 版本。
 brew install node
@@ -177,6 +182,50 @@ chmod 775 install.sh
 
 <br />
 
+### 通过 Docker 安装
+
+使用 docker-compose.yml 安装面板，请注意你需要修改里面的所有 `<CHANGE_ME_TO_INSTALL_PATH>` 为你的实际安装目录。
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+使用 docker-compose 启用。
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # 这里写入上面的docker-compose.yml的内容
+docker compose pull && docker compose up -d
+```
+
+注意：使用 Docker 安装后，Web 端可能会无法再自动连接到 Daemon。
+
+此时如果你进入面板，应该会出现一些错误，因为面板 Web 端没有成功连接到守护进程端，你需要新建节点让它们联系到一起。
+
+<br />
+
 ## 贡献代码
 
 - 贡献代码前必读：https://github.com/MCSManager/MCSManager/issues/599
@@ -189,7 +238,7 @@ chmod 775 install.sh
 
 ## 搭建开发环境
 
-此段落面向开发人员，如果你想对 MCSManager 二次开发，或者提交代码贡献，请务必仔细的阅读这些内容：
+此段落**面向开发人员**，如果你想对 MCSManager 二次开发，或者提交代码贡献，请务必仔细的阅读这些内容：
 
 ### 必备插件
 
@@ -265,6 +314,8 @@ if (!checkName) {
 如果翻译文案还需要携带参数，这可能会有点复杂，因为前端，后端所用的 i18n 库并非同一个，所以格式可能不太一样，你需要翻阅一下文件找到类似的代码便可知晓。
 
 所有的翻译文案 Key，不可有重复，所以请可能的取一个较长的名字！
+
+<br />
 
 ### 构建生产环境版本
 
