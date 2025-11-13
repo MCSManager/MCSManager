@@ -217,14 +217,14 @@ export class SetupDockerContainer extends AsyncTask {
     // Start Docker container creation and running
     const docker = new DefaultDocker();
 
-    // Compatible with Docker API v29+: Entrypoint must be an array type
-    const { Version: dockerVersion } = await docker.version();
     let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
 
+    // Compatible with Docker API v29+: Entrypoint must be an array type
+    const { Version: dockerVersion } = await docker.version();
     const versionNum = dockerVersion.split(".")[0];
-    if (Number(versionNum.replace("v", "")) >= 29) {
-      entrypoint = [String(entrypoint)];
+    if (Number(versionNum.replace("v", "")) >= 29 && entrypoint !== undefined) {
+      entrypoint = [entrypoint];
     }
 
     logger.info(`Container Entrypoint: ${entrypoint}`);
