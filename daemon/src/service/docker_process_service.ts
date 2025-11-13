@@ -185,6 +185,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
+
     logger.info(
       `MEM_LIMIT: ${maxMemory ? (maxMemory / 1024 / 1024).toFixed(2) : "--"} MB, Swap: ${
         memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
@@ -224,6 +225,8 @@ export class SetupDockerContainer extends AsyncTask {
     if (Version.startsWith("29")) {
       entrypoint = [String(entrypoint)];
     }
+
+    logger.info(`Docker Version: ${Version}`);
 
     this.container = await docker.createContainer({
       Entrypoint: entrypoint,
