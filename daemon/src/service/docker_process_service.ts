@@ -186,7 +186,8 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
     logger.info(
-      `MEM_LIMIT: ${maxMemory ? (maxMemory / 1024 / 1024).toFixed(2) : "--"} MB, Swap: ${memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
+      `MEM_LIMIT: ${maxMemory ? (maxMemory / 1024 / 1024).toFixed(2) : "--"} MB, Swap: ${
+        memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
       } MB`
     );
     logger.info(`TYPE: Docker Container`);
@@ -215,7 +216,18 @@ export class SetupDockerContainer extends AsyncTask {
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
+
+    // Compatible with Docker API v29+: Entrypoint must be an array type
+    const { Version } = await docker.version();
+    let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
+    const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
+    if (Version.startsWith("29")) {
+      entrypoint = [String(entrypoint)];
+    }
+
     this.container = await docker.createContainer({
+      Entrypoint: entrypoint,
+      Cmd: startCmd,
       name: containerName,
       Hostname: containerName,
       Image: dockerConfig.image,
@@ -224,9 +236,6 @@ export class SetupDockerContainer extends AsyncTask {
       AttachStderr: true,
       Tty: isTty,
       WorkingDir: dockerConfig.changeWorkdir ? workingDir : undefined,
-      // Compatible with Docker API v29+: Entrypoint must be an array type
-      Entrypoint: commandList.length ? [commandList[0]] : void 0,
-      Cmd: commandList.length > 1 ? commandList.slice(1) : undefined,
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
@@ -251,14 +260,14 @@ export class SetupDockerContainer extends AsyncTask {
       // host mode uses the host's network stack and doesn't support EndpointsConfig
       ...(dockerConfig.networkMode !== "host" &&
         dockerConfig.networkMode !== "none" && {
-        NetworkingConfig: {
-          EndpointsConfig: {
-            [dockerConfig.networkMode || "bridge"]: {
-              Aliases: dockerConfig.networkAliases
+          NetworkingConfig: {
+            EndpointsConfig: {
+              [dockerConfig.networkMode || "bridge"]: {
+                Aliases: dockerConfig.networkAliases
+              }
             }
           }
-        }
-      })
+        })
     });
 
     await this.container.start();
@@ -270,10 +279,10 @@ export class SetupDockerContainer extends AsyncTask {
   public async onStop() {
     try {
       await this.container?.kill();
-    } catch (error) { }
+    } catch (error) {}
     try {
       await this.container?.remove();
-    } catch (error) { }
+    } catch (error) {}
   }
 
   public getContainer() {
@@ -301,9 +310,9 @@ export class SetupDockerContainer extends AsyncTask {
     }
   }
 
-  public async onError(err: Error) { }
+  public async onError(err: Error) {}
 
-  public toObject() { }
+  public toObject() {}
 }
 
 // SubProcess adapter for Instance
@@ -361,7 +370,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   public async destroy() {
     try {
       await this.container?.remove();
-    } catch (error: any) { }
+    } catch (error: any) {}
   }
 
   private wait() {
