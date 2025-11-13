@@ -223,7 +223,7 @@ export class SetupDockerContainer extends AsyncTask {
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
 
     const versionNum = dockerVersion.split(".")[0];
-    if (Number(versionNum) >= 29) {
+    if (Number(versionNum.replace("v", "")) >= 29) {
       entrypoint = [String(entrypoint)];
     }
 
