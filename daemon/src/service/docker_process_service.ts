@@ -192,7 +192,6 @@ export class SetupDockerContainer extends AsyncTask {
       } MB`
     );
     logger.info(`TYPE: Docker Container`);
-    logger.info("----------------");
 
     if (workingDir) {
       instance.println("INFO", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
@@ -222,11 +221,19 @@ export class SetupDockerContainer extends AsyncTask {
     const { Version } = await docker.version();
     let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
-    if (Version.startsWith("29")) {
+
+    const versionNum = parseInt(
+      Version.match(/^\d+/)?.[0] || Version.match(/^v(\d+)/)?.[1] || "0",
+      10
+    );
+    if (versionNum >= 29) {
       entrypoint = [String(entrypoint)];
     }
 
+    logger.info(`Container Entrypoint: ${entrypoint}`);
+    logger.info(`Container Start Command: ${startCmd}`);
     logger.info(`Docker Version: ${Version}`);
+    logger.info("----------------");
 
     this.container = await docker.createContainer({
       Entrypoint: entrypoint,
