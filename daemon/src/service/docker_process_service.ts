@@ -218,21 +218,18 @@ export class SetupDockerContainer extends AsyncTask {
     const docker = new DefaultDocker();
 
     // Compatible with Docker API v29+: Entrypoint must be an array type
-    const { Version } = await docker.version();
+    const { Version: dockerVersion } = await docker.version();
     let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
 
-    const versionNum = parseInt(
-      Version.match(/^\d+/)?.[0] || Version.match(/^v(\d+)/)?.[1] || "0",
-      10
-    );
-    if (versionNum >= 29) {
+    const versionNum = dockerVersion.split(".")[0];
+    if (Number(versionNum) >= 29) {
       entrypoint = [String(entrypoint)];
     }
 
     logger.info(`Container Entrypoint: ${entrypoint}`);
     logger.info(`Container Start Command: ${startCmd}`);
-    logger.info(`Docker Version: ${Version}`);
+    logger.info(`Docker Version: ${dockerVersion}`);
     logger.info("----------------");
 
     this.container = await docker.createContainer({
