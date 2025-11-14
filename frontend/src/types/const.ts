@@ -138,8 +138,8 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   startCommand: "",
   stopCommand: "",
   cwd: "",
-  ie: "utf-8",
-  oe: "utf-8",
+  ie: "UTF-8",
+  oe: "UTF-8",
   createDatetime: new Date().getTime(),
   lastDatetime: 0,
   type: TYPE_UNIVERSAL,
@@ -152,13 +152,13 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   actionCommandList: [],
   crlf: 1,
   category: 0,
-  basePort: 25565,
+  basePort: undefined as any,
 
   // Steam RCON
   enableRcon: false,
   rconPassword: "",
-  rconPort: 25575,
-  rconIp: "127.0.0.1",
+  rconPort: undefined,
+  rconIp: "",
 
   // Old fields
   terminalOption: {
@@ -174,7 +174,7 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   docker: defaultDockerConfig,
   pingConfig: {
     ip: "",
-    port: 25565,
+    port: undefined,
     type: 1
   },
   extraServiceConfig: {

@@ -228,7 +228,7 @@ declare global {
     remark: string;
     targetLink?: string;
     author: string;
-    setupInfo?: IJsonData;
+    setupInfo?: IGlobalInstanceConfig;
     gameType: string;
     image: string;
     platform: string;

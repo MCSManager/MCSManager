@@ -26,7 +26,7 @@ import {
 import { Flex, message, Modal, type UploadProps } from "ant-design-vue";
 import axios from "axios";
 import { h, onMounted, ref } from "vue";
-import Editor from "./dialogs/info.vue";
+import InstanceDetail from "../instance/dialogs/InstanceDetail.vue";
 
 const isNewTemplate = Boolean(router.currentRoute.value.query.newTemplate as string);
 
@@ -133,10 +133,10 @@ const findFn = (pkg: QuickStartPackages, item: QuickStartPackages) =>
   pkg.language === item.language &&
   pkg.platform === item.platform &&
   pkg.category === item.category;
-const editorRef = ref<InstanceType<typeof Editor>>();
+const editorRef = ref<InstanceType<typeof InstanceDetail>>();
 const toEdit = (item: QuickStartPackages) => {
   const actualIndex = packages.value.findIndex((pkg) => findFn(pkg, item));
-  editorRef?.value?.open(item, actualIndex);
+  editorRef?.value?.openDialog({ item, i: actualIndex });
 };
 
 const save = (item: QuickStartPackages, i: number) => {
@@ -382,7 +382,11 @@ onMounted(() => {
       </a-form-item>
 
       <a-form-item class="mb-0">
-        <a-button class="button-color-success" size="large" @click="editorRef?.open()">
+        <a-button
+          class="button-color-success"
+          size="large"
+          @click="editorRef?.openDialog({ i: -1 })"
+        >
           {{ t("TXT_CODE_3d45d8d") }}
           <PlusOutlined />
         </a-button>
@@ -637,11 +641,11 @@ onMounted(() => {
     </fade-up-animation>
   </a-row>
 
-  <Editor
+  <InstanceDetail
     ref="editorRef"
-    :g-l="appGameTypeList"
-    :p-l="appPlatformList"
-    :c-l="appCategoryList"
-    @ok="save"
+    :game-type-list="appGameTypeList"
+    :platform-list="appPlatformList"
+    :category-list="appCategoryList"
+    @save-template="save"
   />
 </template>
