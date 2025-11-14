@@ -11,7 +11,7 @@ import { isCN, t } from "@/lang/i18n";
 import { dockerPortsArray } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages } from "@/types";
-import { TERMINAL_CODE } from "@/types/const";
+import { defaultQuickStartPackages, TERMINAL_CODE } from "@/types/const";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import { message, type FormInstance } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
@@ -34,42 +34,6 @@ const props = defineProps<{
   editMode = ref<boolean>(true),
   activeKey = ref("1"),
   { languageOptions } = useMarketPackages(),
-  defaultFormData: QuickStartPackages = {
-    language: "",
-    description: "",
-    title: "",
-    category: "",
-    runtime: "",
-    size: "",
-    hardware: "",
-    remark: "",
-    targetLink: "",
-    author: "",
-    setupInfo: {
-      startCommand: "",
-      stopCommand: "",
-      ie: "UTF-8",
-      oe: "UTF-8",
-      type: undefined,
-      tag: [],
-      fileCode: "UTF-8",
-      processType: "",
-      updateCommand: "",
-      docker: {
-        image: "",
-        ports: [],
-        extraVolumes: [],
-        workingDir: "",
-        env: [],
-        changeWorkdir: false
-      }
-    },
-    gameType: "",
-    image: "",
-    platform: "",
-    tags: [],
-    isSummary: false
-  },
   formRef = ref<FormInstance>(),
   formData = ref<QuickStartPackages>(),
   isDockerMode = computed(() => formData.value?.setupInfo?.processType === "docker"),
@@ -168,10 +132,10 @@ const props = defineProps<{
     if (item) {
       formData.value = _.cloneDeep(item);
       if (!formData.value.setupInfo?.docker)
-        formData.value.setupInfo!.docker = _.cloneDeep(defaultFormData.setupInfo!.docker);
+        formData.value.setupInfo!.docker = _.cloneDeep(defaultQuickStartPackages.setupInfo!.docker);
       editMode.value = true;
     } else {
-      formData.value = _.cloneDeep(defaultFormData);
+      formData.value = _.cloneDeep(defaultQuickStartPackages);
       formData.value.language = isCN() ? "zh_cn" : "en_us";
       editMode.value = false;
     }
