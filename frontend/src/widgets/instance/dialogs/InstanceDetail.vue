@@ -23,7 +23,7 @@ import type { Rule } from "ant-design-vue/es/form";
 import type { DefaultOptionType } from "ant-design-vue/es/select";
 import { Dayjs } from "dayjs";
 import _ from "lodash";
-import { computed, defineComponent, onMounted, ref, unref } from "vue";
+import { computed, defineComponent, ref, unref } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 
@@ -37,10 +37,13 @@ const props = defineProps<{
   instanceInfo?: InstanceDetail;
   instanceId?: string;
   daemonId?: string;
-  gameTypeList: FilterOption[];
-  platformList: FilterOption[];
-  categoryList: FilterOption[];
+  gameTypeList?: FilterOption[];
+  platformList?: FilterOption[];
+  categoryList?: FilterOption[];
 }>();
+
+const emit = defineEmits(["update", "save-template"]);
+const open = ref(false);
 
 // eslint-disable-next-line no-unused-vars
 enum TabSettings {
@@ -55,27 +58,85 @@ enum TabSettings {
   // eslint-disable-next-line no-unused-vars
   ResLimit
 }
+const activeKey = ref<TabSettings>(TabSettings.Basic);
+
+const IMAGE_DEFINE = {
+  NEW: "__MCSM_NEW_IMAGE__",
+  EDIT: "__MCSM_EDIT_IMAGE__"
+};
+const UPDATE_CMD_DESCRIPTION = t("TXT_CODE_fa487a47");
+const UPDATE_CMD_TEMPLATE =
+  t("TXT_CODE_61ca492b") +
+  '"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit';
 
 const formType = ref<"template" | "normal">("normal");
-const editMode = ref(false);
-const emit = defineEmits(["update", "save-template"]);
-
+const isEditMode = ref(false);
+const isTemplateMode = computed(() => formType.value === "template");
+const title = computed(() =>
+  isTemplateMode.value
+    ? isEditMode.value
+      ? t("TXT_CODE_921206fc")
+      : t("TXT_CODE_3d45d8d")
+    : t("TXT_CODE_aac98b2a")
+);
 const { toPage } = useAppRouters();
-const activeKey = ref<TabSettings>(TabSettings.Basic);
-const options = ref<FormDetail>();
-const screen = useScreen();
-const isPhone = computed(() => screen.isPhone.value);
-const open = ref(false);
-const { execute: executeGetNetworkModeList } = getNetworkModeList();
-const networkModes = ref<DockerNetworkModes[]>([]);
-const { execute, isLoading } = updateAnyInstanceConfig();
-const formRef = ref<FormInstance>();
-const { execute: getImageList } = imageList();
-const dockerImages = ref<{ label: string; value: string }[]>([]);
+const { isPhone } = useScreen();
 
-// Template tab (QuickStartPackages) state
+// form
+const formRef = ref<FormInstance>();
+const options = ref<FormDetail>();
+const rules: Record<string, any> = {
+  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
+  startCommand: [
+    {
+      required: true,
+      validator: async (_rule: Rule, value: string) => {
+        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
+      },
+      trigger: "change"
+    }
+  ],
+  cwd: [{ required: true, message: t("TXT_CODE_71c948a9") }],
+  basePort: [
+    {
+      validator: async (_rule: Rule, value: number) => {
+        if (value !== undefined && value !== null && value !== 0) {
+          if (value < 0 || value > 65535) {
+            throw new Error(t("TXT_CODE_12040bf0"));
+          }
+        }
+      },
+      trigger: "change"
+    }
+  ],
+  docker: {
+    image: [
+      {
+        required: true,
+        validator: async (_rule: Rule, value: string) => {
+          if (!isDockerMode.value) return;
+          const ErrMsg =
+            options.value?.imageSelectMethod === "EDIT"
+              ? t("TXT_CODE_9fed23ab")
+              : t("TXT_CODE_be6484f7");
+          if (value === "") throw new Error(ErrMsg);
+        },
+        trigger: "change"
+      }
+    ],
+    networkMode: [
+      {
+        validator: async (_rule: Rule, value: string) => {
+          if (!isDockerMode.value) return;
+          if (value === "") throw new Error(t("TXT_CODE_b52cb76c"));
+        }
+      }
+    ]
+  },
+  dockerImage: []
+};
+
 const templateFormRef = ref<FormInstance>();
-const { languageOptions } = useMarketPackages();
 const formData = ref<QuickStartPackages>();
 const templateFormRules = computed<Partial<Record<keyof QuickStartPackages, any>>>(() => ({
   title: [{ required: true, message: t("TXT_CODE_6b5509c7") }],
@@ -89,55 +150,35 @@ const templateFormRules = computed<Partial<Record<keyof QuickStartPackages, any>
   runtime: [{ required: true, message: t("TXT_CODE_8717ed9d") }],
   hardware: [{ required: true, message: t("TXT_CODE_f7909939") }],
   setupInfo: {
-    startCommand: [
-      {
-        required: false,
-        validator: async (_rule: Rule, value: string) => {
-          if (value && value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
-        },
-        trigger: "change"
-      }
-    ],
-    stopCommand: [
-      {
-        required: true,
-        validator: async (_rule: Rule, value: string) => {
-          if (value === "") throw new Error(t("TXT_CODE_cc732bf6"));
-          if (value.includes("\n")) throw new Error(t("TXT_CODE_ffeacc21"));
-        },
-        trigger: "change"
-      }
-    ],
-    updateCommand: [
-      {
-        required: false,
-        validator: async (_rule: Rule, value: string) => {
-          if (value && value.includes("\n")) throw new Error(t("TXT_CODE_e9ac4f57"));
-        },
-        trigger: "change"
-      }
-    ],
-    ie: [{ required: true, message: t("TXT_CODE_e86e91a2") }],
-    oe: [{ required: true, message: t("TXT_CODE_3bdd7af8") }],
-    fileCode: [{ required: true, message: t("TXT_CODE_c24fdee3") }],
-    type: [{ required: true, message: t("TXT_CODE_9f4eaa41") }],
-    docker: {
-      image: [
-        {
-          required: !!formData.value && formData.value.setupInfo?.processType === "docker",
-          message: t("TXT_CODE_9fed23ab")
-        }
-      ],
-      ports: [
-        {
-          required: !!formData.value && formData.value.setupInfo?.processType === "docker",
-          message: t("TXT_CODE_cd5df11b")
-        }
-      ]
-    }
+    type: [{ required: true, message: t("TXT_CODE_9f4eaa41") }]
   }
 }));
-const index = ref<number>(-1);
+const templateIndex = ref<number>(-1);
+const { languageOptions } = useMarketPackages();
+
+const initFormDetail = () => {
+  if (props.instanceInfo) {
+    options.value = {
+      ...props.instanceInfo,
+      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
+      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
+      imageSelectMethod: "SELECT"
+    };
+  } else {
+    selectOptions.value.appGameTypeList = props.gameTypeList;
+    selectOptions.value.appPlatformList = props.platformList;
+    selectOptions.value.appCategoryList = props.categoryList;
+
+    options.value = {
+      config: formData.value!.setupInfo!,
+      dayjsEndTime: timestampToDayjs(formData.value!.setupInfo!.endTime),
+      networkAliasesText: formData.value!.setupInfo!.docker.networkAliases?.join(",") || "",
+      imageSelectMethod: "SELECT",
+      ...({} as any)
+    };
+  }
+};
+
 const VNodes = defineComponent({
   props: {
     vnodes: {
@@ -164,44 +205,18 @@ const searchFormData = ref<{
   appCategoryList: ""
 });
 const addOption = (item: string, category: keyof typeof selectOptions.value) => {
-  selectOptions.value[category].push({
+  selectOptions.value![category]!.push({
     label: item,
     value: item
   });
   searchFormData.value[category] = "";
 };
 
-const IMAGE_DEFINE = {
-  NEW: "__MCSM_NEW_IMAGE__",
-  EDIT: "__MCSM_EDIT_IMAGE__"
-};
-
-const updateCommandDesc = t("TXT_CODE_fa487a47");
-const UPDATE_CMD_TEMPLATE =
-  t("TXT_CODE_61ca492b") +
-  '"C:/SteamCMD/steamcmd.exe" +login anonymous +force_install_dir "{mcsm_workspace}" "+app_update 380870 validate" +quit';
-const initFormDetail = () => {
-  if (props.instanceInfo) {
-    options.value = {
-      ...props.instanceInfo,
-      dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
-      networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
-      imageSelectMethod: "SELECT"
-    };
-  } else {
-    selectOptions.value.appGameTypeList = props.gameTypeList;
-    selectOptions.value.appPlatformList = props.platformList;
-    selectOptions.value.appCategoryList = props.categoryList;
-
-    options.value = {
-      config: formData.value!.setupInfo!,
-      dayjsEndTime: timestampToDayjs(formData.value!.setupInfo!.endTime),
-      networkAliasesText: formData.value!.setupInfo!.docker.networkAliases?.join(",") || "",
-      imageSelectMethod: "SELECT",
-      ...({} as any)
-    };
-  }
-};
+const networkModes = ref<DockerNetworkModes[]>([]);
+const dockerImages = ref<{ label: string; value: string }[]>([]);
+const { execute: executeGetNetworkModeList } = getNetworkModeList();
+const { execute, isLoading } = updateAnyInstanceConfig();
+const { execute: getImageList } = imageList();
 
 const isGlobalTerminal = computed(() => {
   return props.instanceInfo?.config.nickname === GLOBAL_INSTANCE_NAME;
@@ -273,15 +288,15 @@ const openDialog = async ({ item, i }: { item?: QuickStartPackages; i?: number }
     formData.value = _.cloneDeep(item);
     if (!formData.value.setupInfo?.docker)
       formData.value.setupInfo!.docker = _.cloneDeep(defaultQuickStartPackages.setupInfo!.docker);
-    editMode.value = true;
-    index.value = Number(i);
+    isEditMode.value = true;
+    templateIndex.value = Number(i);
 
     formType.value = "template";
     activeKey.value = TabSettings.Template;
   } else if (Number(i) < 0) {
     formData.value = _.cloneDeep(defaultQuickStartPackages);
     formData.value.language = isCN() ? "zh_cn" : "en_us";
-    editMode.value = false;
+    isEditMode.value = false;
 
     formType.value = "template";
     activeKey.value = TabSettings.Template;
@@ -292,71 +307,20 @@ const openDialog = async ({ item, i }: { item?: QuickStartPackages; i?: number }
   open.value = true;
 };
 
-const rules: Record<string, any> = {
-  nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
-  startCommand: [
-    {
-      required: true,
-      validator: async (_rule: Rule, value: string) => {
-        if (value.includes("\n")) throw new Error(t("TXT_CODE_bbbda29"));
-      },
-      trigger: "change"
-    }
-  ],
-  cwd: [{ required: true, message: t("TXT_CODE_71c948a9") }],
-  basePort: [
-    {
-      validator: async (_rule: Rule, value: number) => {
-        if (value !== undefined && value !== null && value !== 0) {
-          if (value < 0 || value > 65535) {
-            throw new Error(t("TXT_CODE_12040bf0"));
-          }
-        }
-      },
-      trigger: "change"
-    }
-  ],
-  docker: {
-    image: [
-      {
-        required: true,
-        validator: async (_rule: Rule, value: string) => {
-          if (!isDockerMode.value) return;
-          const ErrMsg =
-            options.value?.imageSelectMethod === "EDIT"
-              ? t("TXT_CODE_9fed23ab")
-              : t("TXT_CODE_be6484f7");
-          if (value === "") throw new Error(ErrMsg);
-        },
-        trigger: "change"
-      }
-    ],
-    networkMode: [
-      {
-        validator: async (_rule: Rule, value: string) => {
-          if (!isDockerMode.value) return;
-          if (value === "") throw new Error(t("TXT_CODE_b52cb76c"));
-        }
-      }
-    ]
-  },
-  dockerImage: []
-};
-
 const submit = async () => {
   try {
     // If current tab is Template, validate and emit template save
-    if (formType.value === "template") {
+    if (isTemplateMode.value) {
       await templateFormRef.value?.validate();
-      emit("save-template", _.cloneDeep(formData.value), index.value);
+      await formRef.value?.validateFields();
+      emit("save-template", _.cloneDeep(formData.value), templateIndex.value);
       open.value = false;
-      message.success(editMode.value ? t("TXT_CODE_a7907771") : t("TXT_CODE_d28c05df"));
+      message.success(isEditMode.value ? t("TXT_CODE_a7907771") : t("TXT_CODE_d28c05df"));
       templateFormRef.value?.resetFields();
       formData.value = _.cloneDeep(defaultQuickStartPackages);
       return;
     } else {
       await formRef.value?.validateFields();
-      if (!options.value?.config) throw new Error("");
       const postData = encodeFormData();
       await execute({
         params: {
@@ -431,8 +395,6 @@ const uploadImg = async () => {
   }
 };
 
-onMounted(() => {});
-
 defineExpose({
   openDialog
 });
@@ -444,13 +406,13 @@ defineExpose({
     centered
     :mask-closable="false"
     :width="isPhone ? '100%' : '1200px'"
-    :title="t('TXT_CODE_aac98b2a')"
+    :title="title"
     :confirm-loading="isLoading"
     :ok-text="t('TXT_CODE_abfe9512')"
     @ok="submit"
   >
     <div class="dialog-overflow-container">
-      <a-tooltip v-if="!formData" :title="t('TXT_CODE_cdf7c16a')" placement="top">
+      <a-tooltip v-if="!isTemplateMode" :title="t('TXT_CODE_cdf7c16a')" placement="top">
         <a-typography-text type="secondary" class="typography-text-ellipsis">
           {{ t("TXT_CODE_cdf7c16a") }}
         </a-typography-text>
@@ -464,7 +426,11 @@ defineExpose({
         autocomplete="off"
       >
         <a-tabs v-model:activeKey="activeKey">
-          <a-tab-pane v-if="formData" :key="TabSettings.Template" :tab="t('TXT_CODE_d9c63fdd')">
+          <a-tab-pane
+            v-if="isTemplateMode && formData"
+            :key="TabSettings.Template"
+            :tab="t('TXT_CODE_d9c63fdd')"
+          >
             <a-form
               ref="templateFormRef"
               :model="formData"
@@ -553,7 +519,7 @@ defineExpose({
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
-                        selectOptions.appGameTypeList.filter(
+                        selectOptions.appGameTypeList?.filter(
                           (item) => item.value !== SEARCH_ALL_KEY
                         )
                       "
@@ -588,7 +554,7 @@ defineExpose({
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
-                        selectOptions.appPlatformList.filter(
+                        selectOptions.appPlatformList?.filter(
                           (item) => item.value !== SEARCH_ALL_KEY
                         )
                       "
@@ -623,7 +589,7 @@ defineExpose({
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
-                        selectOptions.appCategoryList.filter(
+                        selectOptions.appCategoryList?.filter(
                           (item) => item.value !== SEARCH_ALL_KEY
                         )
                       "
@@ -693,7 +659,7 @@ defineExpose({
           </a-tab-pane>
           <a-tab-pane :key="TabSettings.Basic" :tab="t('TXT_CODE_cc7b54b9')">
             <a-row :gutter="20">
-              <a-col :xs="24" :lg="8" :offset="0">
+              <a-col v-if="!isTemplateMode" :xs="24" :lg="8" :offset="0">
                 <a-form-item name="nickname">
                   <a-typography-title :level="5" class="require-field">
                     {{ t("TXT_CODE_f70badb9") }}
@@ -708,7 +674,7 @@ defineExpose({
                   <a-input v-model:value="options.config.nickname" :disabled="isGlobalTerminal" />
                 </a-form-item>
               </a-col>
-              <a-col :xs="24" :lg="8" :offset="0">
+              <a-col v-if="!isTemplateMode" :xs="24" :lg="8" :offset="0">
                 <a-form-item>
                   <a-typography-title :level="5" class="require-field">
                     {{ t("TXT_CODE_2f291d8b") }}
@@ -803,12 +769,12 @@ defineExpose({
                 <a-form-item>
                   <a-typography-title :level="5">{{ t("TXT_CODE_bb0b9711") }}</a-typography-title>
                   <a-typography-paragraph>
-                    <a-tooltip :title="updateCommandDesc" placement="top">
+                    <a-tooltip :title="UPDATE_CMD_DESCRIPTION" placement="top">
                       <a-typography-text type="secondary" class="typography-text-ellipsis">
                         <span>{{ t("TXT_CODE_4f387c5a") }}</span>
                         <br />
                         <!-- eslint-disable-next-line vue/no-v-html -->
-                        <span v-html="updateCommandDesc"> </span>
+                        <span v-html="UPDATE_CMD_DESCRIPTION"> </span>
                       </a-typography-text>
                     </a-tooltip>
                   </a-typography-paragraph>

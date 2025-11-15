@@ -130,7 +130,7 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   env: [],
   changeWorkdir: true,
   memorySwap: undefined,
-  memorySwappiness: 0
+  memorySwappiness: undefined
 };
 
 export const defaultInstanceInfo: IGlobalInstanceConfig = {
