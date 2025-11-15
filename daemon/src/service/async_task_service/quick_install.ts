@@ -41,7 +41,7 @@ export class QuickInstallTask extends AsyncTask {
   constructor(
     public instanceName: string,
     public targetLink?: string,
-    public buildParams?: Partial<InstanceConfig>,
+    public buildParams?: IGlobalInstanceConfig,
     curInstance?: Instance
   ) {
     super();
@@ -193,7 +193,7 @@ export class QuickInstallTask extends AsyncTask {
       }
 
       this.instance.println("INFO", $t("TXT_CODE_9df98e2"));
-      let config: Partial<InstanceConfig>;
+      let config: Partial<IGlobalInstanceConfig>;
       if (this.buildParams?.startCommand || !fs.existsSync(this.ZIP_CONFIG_JSON)) {
         config = this.buildParams || {};
       } else {

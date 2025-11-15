@@ -163,7 +163,9 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   // Old fields
   terminalOption: {
     haveColor: true,
-    pty: false
+    pty: false,
+    ptyWindowCol: 164,
+    ptyWindowRow: 40
   },
   eventTask: {
     autoStart: false,
