@@ -5,8 +5,7 @@ import {
   TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
   TYPE_STEAM_SERVER_UNIVERSAL,
-  TYPE_TERRARIA,
-  TYPE_UNIVERSAL
+  TYPE_TERRARIA
 } from "@/hooks/useInstance";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
@@ -14,7 +13,7 @@ import { createInstance as createInstanceApi, uploadAddress } from "@/services/a
 import uploadService, { UploadFiles } from "@/services/uploadService";
 import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
-import type { NewInstanceForm } from "@/types";
+import { defaultInstanceInfo } from "@/types/const";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -38,38 +37,7 @@ const props = defineProps<{
 
 const zipCode = ref("utf-8");
 const formRef = ref<FormInstance>();
-const formData = reactive<NewInstanceForm>({
-  nickname: "",
-  startCommand: "",
-  stopCommand: "^c",
-  cwd: "",
-  ie: "utf-8",
-  oe: "utf-8",
-  processType: "general",
-  createDatetime: new Date().toDateString(),
-  lastDatetime: "",
-  type: TYPE_UNIVERSAL,
-  tag: [],
-  maxSpace: null,
-  endTime: "",
-  docker: {
-    containerName: "",
-    image: "",
-    ports: [],
-    extraVolumes: [],
-    networkMode: "bridge",
-    networkAliases: [],
-    cpusetCpus: "",
-    workingDir: "/data",
-    changeWorkdir: true,
-    memory: undefined,
-    cpuUsage: undefined,
-    maxSpace: undefined,
-    io: undefined,
-    network: undefined,
-    env: []
-  }
-});
+const formData = reactive<IGlobalInstanceConfig>(defaultInstanceInfo);
 
 const isImportMode = props.createMethod === QUICKSTART_METHOD.IMPORT;
 const isFileMode = props.createMethod === QUICKSTART_METHOD.FILE;

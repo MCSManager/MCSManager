@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
+import { TYPE_UNIVERSAL } from "@/hooks/useInstance";
 import { t } from "@/lang/i18n";
+import type { QuickStartPackages } from ".";
 export const CARD_FIXED_HEIGHT = 200;
 
 export const TERMINAL_CODE = [
@@ -110,3 +112,94 @@ export enum ScheduleCreateType {
   CYCLE,
   SPECIFY
 }
+
+export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
+  containerName: "",
+  image: "",
+  memory: undefined,
+  ports: [],
+  extraVolumes: [],
+  maxSpace: undefined,
+  network: undefined,
+  io: undefined,
+  networkMode: "bridge",
+  networkAliases: [],
+  cpusetCpus: "",
+  cpuUsage: undefined,
+  workingDir: "/data",
+  env: [],
+  changeWorkdir: true,
+  memorySwap: undefined,
+  memorySwappiness: undefined
+};
+
+export const defaultInstanceInfo: IGlobalInstanceConfig = {
+  nickname: "",
+  startCommand: "",
+  stopCommand: "",
+  cwd: "",
+  ie: "UTF-8",
+  oe: "UTF-8",
+  createDatetime: new Date().getTime(),
+  lastDatetime: 0,
+  type: TYPE_UNIVERSAL,
+  tag: [],
+  endTime: 0,
+  fileCode: "UTF-8",
+  processType: "general",
+  updateCommand: "",
+  runAs: "",
+  actionCommandList: [],
+  crlf: 1,
+  category: 0,
+  basePort: undefined as any,
+
+  // Steam RCON
+  enableRcon: false,
+  rconPassword: "",
+  rconPort: undefined,
+  rconIp: "",
+
+  // Old fields
+  terminalOption: {
+    haveColor: true,
+    pty: false,
+    ptyWindowCol: 164,
+    ptyWindowRow: 40
+  },
+  eventTask: {
+    autoStart: false,
+    autoRestart: false,
+    autoRestartMaxTimes: 3,
+    ignore: false
+  },
+  docker: defaultDockerConfig,
+  pingConfig: {
+    ip: "",
+    port: undefined,
+    type: 1
+  },
+  extraServiceConfig: {
+    openFrpTunnelId: "",
+    openFrpToken: ""
+  }
+};
+
+export const defaultQuickStartPackages: QuickStartPackages = {
+  language: "",
+  description: "",
+  title: "",
+  category: "",
+  runtime: "",
+  size: "",
+  hardware: "",
+  remark: "",
+  targetLink: "",
+  author: "",
+  setupInfo: defaultInstanceInfo,
+  gameType: "",
+  image: "",
+  platform: "",
+  tags: [],
+  isSummary: false
+};

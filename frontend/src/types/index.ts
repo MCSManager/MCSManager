@@ -192,23 +192,6 @@ export interface ContainerInfo {
   ];
 }
 
-export interface NewInstanceForm {
-  nickname: string;
-  processType: string;
-  startCommand: string;
-  stopCommand: string;
-  cwd: string;
-  ie: string;
-  oe: string;
-  createDatetime: string;
-  lastDatetime: string;
-  type: string;
-  tag: never[];
-  maxSpace: null;
-  endTime: string;
-  docker: IGlobalInstanceDockerConfig;
-}
-
 export type QuickStartTemplate = IQuickStartTemplate;
 export type QuickStartPackages = IQuickStartPackages;
 

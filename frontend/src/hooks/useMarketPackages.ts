@@ -122,7 +122,7 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
             remark: "",
             targetLink: undefined,
             author: "",
-            setupInfo: undefined,
+            setupInfo: undefined as any,
             tags: undefined,
             isSummary: true
           };
