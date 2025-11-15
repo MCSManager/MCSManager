@@ -83,9 +83,9 @@ const { toPage } = useAppRouters();
 const { isPhone } = useScreen();
 
 // form
-const formRef = ref<FormInstance>();
-const options = ref<FormDetail>();
-const rules: Record<string, any> = {
+const instanceFormRef = ref<FormInstance>();
+const instanceFormData = ref<FormDetail>();
+const instanceFormRules: Record<string, any> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   startCommand: [
     {
@@ -116,7 +116,7 @@ const rules: Record<string, any> = {
         validator: async (_rule: Rule, value: string) => {
           if (!isDockerMode.value) return;
           const ErrMsg =
-            options.value?.imageSelectMethod === "EDIT"
+            instanceFormData.value?.imageSelectMethod === "EDIT"
               ? t("TXT_CODE_9fed23ab")
               : t("TXT_CODE_be6484f7");
           if (value === "") throw new Error(ErrMsg);
@@ -137,7 +137,7 @@ const rules: Record<string, any> = {
 };
 
 const templateFormRef = ref<FormInstance>();
-const formData = ref<QuickStartPackages>();
+const templateFormData = ref<QuickStartPackages>();
 const templateFormRules = computed<Partial<Record<keyof QuickStartPackages, any>>>(() => ({
   title: [{ required: true, message: t("TXT_CODE_6b5509c7") }],
   language: [{ required: true, message: t("TXT_CODE_60752a40") }],
@@ -158,7 +158,7 @@ const { languageOptions } = useMarketPackages();
 
 const initFormDetail = () => {
   if (props.instanceInfo) {
-    options.value = {
+    instanceFormData.value = {
       ...props.instanceInfo,
       dayjsEndTime: timestampToDayjs(props.instanceInfo?.config?.endTime),
       networkAliasesText: props.instanceInfo?.config?.docker.networkAliases?.join(",") || "",
@@ -169,10 +169,10 @@ const initFormDetail = () => {
     selectOptions.value.appPlatformList = props.platformList;
     selectOptions.value.appCategoryList = props.categoryList;
 
-    options.value = {
-      config: formData.value!.setupInfo!,
-      dayjsEndTime: timestampToDayjs(formData.value!.setupInfo!.endTime),
-      networkAliasesText: formData.value!.setupInfo!.docker.networkAliases?.join(",") || "",
+    instanceFormData.value = {
+      config: templateFormData.value!.setupInfo!,
+      dayjsEndTime: timestampToDayjs(templateFormData.value!.setupInfo!.endTime),
+      networkAliasesText: templateFormData.value!.setupInfo!.docker.networkAliases?.join(",") || "",
       imageSelectMethod: "SELECT",
       ...({} as any)
     };
@@ -222,7 +222,7 @@ const isGlobalTerminal = computed(() => {
   return props.instanceInfo?.config.nickname === GLOBAL_INSTANCE_NAME;
 });
 
-const isDockerMode = computed(() => options.value?.config.processType === "docker");
+const isDockerMode = computed(() => instanceFormData.value?.config.processType === "docker");
 
 const loadImages = async () => {
   dockerImages.value = [
@@ -263,9 +263,9 @@ const selectImage = (row: DefaultOptionType) => {
     });
     return;
   }
-  if (image === IMAGE_DEFINE.EDIT && options.value) {
-    options.value.config.docker.image = "";
-    options.value.imageSelectMethod = "EDIT";
+  if (image === IMAGE_DEFINE.EDIT && instanceFormData.value) {
+    instanceFormData.value.config.docker.image = "";
+    instanceFormData.value.imageSelectMethod = "EDIT";
     return;
   }
 };
@@ -285,17 +285,19 @@ const loadNetworkModes = async () => {
 
 const openDialog = async ({ item, i }: { item?: QuickStartPackages; i?: number } = {}) => {
   if (item) {
-    formData.value = _.cloneDeep(item);
-    if (!formData.value.setupInfo?.docker)
-      formData.value.setupInfo!.docker = _.cloneDeep(defaultQuickStartPackages.setupInfo!.docker);
+    templateFormData.value = _.cloneDeep(item);
+    if (!templateFormData.value.setupInfo?.docker)
+      templateFormData.value.setupInfo!.docker = _.cloneDeep(
+        defaultQuickStartPackages.setupInfo!.docker
+      );
     isEditMode.value = true;
     templateIndex.value = Number(i);
 
     formType.value = "template";
     activeKey.value = TabSettings.Template;
   } else if (Number(i) < 0) {
-    formData.value = _.cloneDeep(defaultQuickStartPackages);
-    formData.value.language = isCN() ? "zh_cn" : "en_us";
+    templateFormData.value = _.cloneDeep(defaultQuickStartPackages);
+    templateFormData.value.language = isCN() ? "zh_cn" : "en_us";
     isEditMode.value = false;
 
     formType.value = "template";
@@ -309,18 +311,17 @@ const openDialog = async ({ item, i }: { item?: QuickStartPackages; i?: number }
 
 const submit = async () => {
   try {
-    // If current tab is Template, validate and emit template save
     if (isTemplateMode.value) {
       await templateFormRef.value?.validate();
-      await formRef.value?.validateFields();
-      emit("save-template", _.cloneDeep(formData.value), templateIndex.value);
+      await instanceFormRef.value?.validateFields();
+      emit("save-template", _.cloneDeep(templateFormData.value), templateIndex.value);
       open.value = false;
       message.success(isEditMode.value ? t("TXT_CODE_a7907771") : t("TXT_CODE_d28c05df"));
       templateFormRef.value?.resetFields();
-      formData.value = _.cloneDeep(defaultQuickStartPackages);
+      templateFormData.value = _.cloneDeep(defaultQuickStartPackages);
       return;
     } else {
-      await formRef.value?.validateFields();
+      await instanceFormRef.value?.validateFields();
       const postData = encodeFormData();
       await execute({
         params: {
@@ -340,7 +341,7 @@ const submit = async () => {
 };
 
 const encodeFormData = () => {
-  const postData = _.cloneDeep(unref(options));
+  const postData = _.cloneDeep(unref(instanceFormData));
   if (postData) {
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
     postData.config.docker.networkAliases = postData.networkAliasesText
@@ -353,16 +354,16 @@ const encodeFormData = () => {
 };
 
 const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
-  if (type === "port" && options.value?.config) {
+  if (type === "port" && instanceFormData.value?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
-    const portArray = dockerPortsArray(options.value?.config.docker.ports || []);
+    const portArray = dockerPortsArray(instanceFormData.value?.config.docker.ports || []);
     const result = await usePortEditDialog(portArray);
     const portsArray = result.map((v) => `${v.host}:${v.container}/${v.protocol}`);
-    options.value.config.docker.ports = portsArray;
+    instanceFormData.value.config.docker.ports = portsArray;
   }
 
-  if (type === "volume" && options.value?.config) {
-    const volumes = options.value.config.docker.extraVolumes?.map((v) => {
+  if (type === "volume" && instanceFormData.value?.config) {
+    const volumes = instanceFormData.value.config.docker.extraVolumes?.map((v) => {
       const tmp = v.split("|");
       return {
         host: tmp[0] || "",
@@ -371,11 +372,11 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
     });
     const result = await useVolumeEditDialog(volumes);
     const volumesArray = result.map((v) => `${v.host}|${v.container}`);
-    options.value.config.docker.extraVolumes = volumesArray;
+    instanceFormData.value.config.docker.extraVolumes = volumesArray;
   }
 
-  if (type === "env" && options.value?.config) {
-    const envs = options.value.config.docker.env?.map((v) => {
+  if (type === "env" && instanceFormData.value?.config) {
+    const envs = instanceFormData.value.config.docker.env?.map((v) => {
       const tmp = v.split("=");
       return {
         label: tmp[0] || "",
@@ -384,15 +385,13 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
     });
     const result = await useDockerEnvEditDialog(envs);
     const envsArray = result.map((v) => `${v.label}=${v.value}`);
-    options.value.config.docker.env = envsArray;
+    instanceFormData.value.config.docker.env = envsArray;
   }
 };
 
-const uploadImg = async () => {
+const handleUploadImg = async () => {
   const url = await useUploadFileDialog();
-  if (url && formData.value) {
-    formData.value.image = url;
-  }
+  if (url && templateFormData.value) templateFormData.value.image = url;
 };
 
 defineExpose({
@@ -418,52 +417,65 @@ defineExpose({
         </a-typography-text>
       </a-tooltip>
       <a-form
-        v-if="options"
-        ref="formRef"
-        :model="options.config"
-        :rules="rules"
+        v-if="instanceFormData"
+        ref="instanceFormRef"
+        :model="instanceFormData.config"
+        :rules="instanceFormRules"
         layout="vertical"
         autocomplete="off"
       >
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane
-            v-if="isTemplateMode && formData"
+            v-if="isTemplateMode && templateFormData"
             :key="TabSettings.Template"
             :tab="t('TXT_CODE_d9c63fdd')"
           >
             <a-form
               ref="templateFormRef"
-              :model="formData"
+              :model="templateFormData"
               :rules="templateFormRules"
               layout="vertical"
             >
               <a-row :gutter="20">
                 <a-col :span="24" :sm="24" :md="12">
-                  <a-form-item :label="t('TXT_CODE_80c5409f')" name="image">
+                  <a-form-item name="image">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_80c5409f") }}
+                    </a-typography-title>
                     <a-image
                       fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1700' height='800' viewBox='0 0 170 80'%3E%3Crect width='1700' height='800' fill='%230044ff' fill-opacity='0.1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%23ffffff80'%3EEmpty%3C/text%3E%3C/svg%3E"
                       class="cursor-pointer"
                       style="border-radius: 8px"
-                      :src="formData.image"
+                      width="100%"
+                      :src="templateFormData.image"
                       :placeholder="false"
                       :preview="false"
-                      @click="uploadImg"
+                      @click="handleUploadImg"
                     />
                     <a-input
-                      v-model:value="formData.image"
+                      v-model:value="templateFormData.image"
                       class="mt-10"
                       :placeholder="t('TXT_CODE_99a42341')"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="24" :sm="24" :md="12">
-                  <a-form-item :label="t('TXT_CODE_f4fba0cd')" name="title">
-                    <a-input v-model:value="formData.title" :placeholder="t('TXT_CODE_6b5509c7')" />
+                  <a-form-item name="title">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_f4fba0cd") }}
+                    </a-typography-title>
+                    <a-input
+                      v-model:value="templateFormData.title"
+                      :placeholder="t('TXT_CODE_6b5509c7')"
+                    />
                   </a-form-item>
 
-                  <a-form-item :label="t('TXT_CODE_59cdbec3')" name="description">
+                  <a-form-item name="description">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_59cdbec3") }}
+                    </a-typography-title>
                     <a-textarea
-                      v-model:value="formData.description"
+                      v-model:value="templateFormData.description"
                       :placeholder="t('TXT_CODE_98dbd049')"
                       allow-clear
                       size="large"
@@ -473,18 +485,24 @@ defineExpose({
 
                   <a-row :gutter="20">
                     <a-col :span="24" :lg="12">
-                      <a-form-item :label="t('TXT_CODE_2a34c50a')" name="language">
+                      <a-form-item name="language">
+                        <a-typography-title :level="5" class="require-field">
+                          {{ t("TXT_CODE_2a34c50a") }}
+                        </a-typography-title>
                         <a-select
-                          v-model:value="formData.language"
+                          v-model:value="templateFormData.language"
                           :placeholder="t('TXT_CODE_60752a40')"
                           :options="languageOptions"
                         />
                       </a-form-item>
                     </a-col>
                     <a-col :span="24" :lg="12">
-                      <a-form-item :label="t('TXT_CODE_3d56da34')" name="author">
+                      <a-form-item name="author">
+                        <a-typography-title :level="5" class="require-field">
+                          {{ t("TXT_CODE_3d56da34") }}
+                        </a-typography-title>
                         <a-input
-                          v-model:value="formData.author"
+                          v-model:value="templateFormData.author"
                           :placeholder="t('TXT_CODE_e6adf32d')"
                         />
                       </a-form-item>
@@ -494,11 +512,14 @@ defineExpose({
               </a-row>
 
               <a-row :gutter="20">
-                <a-col :span="12" :lg="6">
-                  <a-form-item :label="t('TXT_CODE_c5ace40b')" :name="['setupInfo', 'type']">
+                <a-col :span="24" :sm="12" :lg="6">
+                  <a-form-item name="type">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_c5ace40b") }}
+                    </a-typography-title>
                     <a-select
-                      v-if="formData.setupInfo"
-                      v-model:value="formData.setupInfo.type"
+                      v-if="templateFormData.setupInfo"
+                      v-model:value="templateFormData.setupInfo.type"
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       show-search
                     >
@@ -512,10 +533,13 @@ defineExpose({
                     </a-select>
                   </a-form-item>
                 </a-col>
-                <a-col :span="12" :lg="6">
-                  <a-form-item :label="t('TXT_CODE_ebfb4831')" name="gameType">
+                <a-col :span="24" :sm="12" :lg="6">
+                  <a-form-item name="gameType">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_ebfb4831") }}
+                    </a-typography-title>
                     <a-select
-                      v-model:value="formData.gameType"
+                      v-model:value="templateFormData.gameType"
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
@@ -547,10 +571,13 @@ defineExpose({
                     </a-select>
                   </a-form-item>
                 </a-col>
-                <a-col :span="12" :lg="6">
-                  <a-form-item :label="t('TXT_CODE_1ce1d1d1')" name="platform">
+                <a-col :span="24" :sm="12" :lg="6">
+                  <a-form-item name="platform">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_1ce1d1d1") }}
+                    </a-typography-title>
                     <a-select
-                      v-model:value="formData.platform"
+                      v-model:value="templateFormData.platform"
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
@@ -582,10 +609,13 @@ defineExpose({
                     </a-select>
                   </a-form-item>
                 </a-col>
-                <a-col :span="12" :lg="6">
-                  <a-form-item :label="t('TXT_CODE_2d8a400')" name="category">
+                <a-col :span="24" :sm="12" :lg="6">
+                  <a-form-item name="category">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_2d8a400") }}
+                    </a-typography-title>
                     <a-select
-                      v-model:value="formData.category"
+                      v-model:value="templateFormData.category"
                       show-search
                       :placeholder="t('TXT_CODE_3bb646e4')"
                       :options="
@@ -620,36 +650,57 @@ defineExpose({
               </a-row>
 
               <a-row :gutter="20">
-                <a-col :span="8">
-                  <a-form-item :label="t('TXT_CODE_80c85070')" name="runtime">
+                <a-col :span="24" :sm="12" :lg="8">
+                  <a-form-item name="runtime">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_80c85070") }}
+                    </a-typography-title>
                     <a-input
-                      v-model:value="formData.runtime"
+                      v-model:value="templateFormData.runtime"
                       :placeholder="t('TXT_CODE_772bb48a')"
                     />
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
-                  <a-form-item :label="t('TXT_CODE_683e3033')" name="hardware">
+                <a-col :span="24" :sm="12" :lg="8">
+                  <a-form-item name="hardware">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_683e3033") }}
+                    </a-typography-title>
                     <a-input
-                      v-model:value="formData.hardware"
+                      v-model:value="templateFormData.hardware"
                       :placeholder="t('TXT_CODE_d79ff710')"
                     />
                   </a-form-item>
                 </a-col>
-                <a-col :span="8">
-                  <a-form-item :label="t('TXT_CODE_8dbcf565')" name="size">
-                    <a-input v-model:value="formData.size" :placeholder="t('TXT_CODE_d0d08d6')" />
+                <a-col :span="24" :sm="12" :lg="8">
+                  <a-form-item name="size">
+                    <a-typography-title :level="5" class="require-field">
+                      {{ t("TXT_CODE_8dbcf565") }}
+                    </a-typography-title>
+                    <a-input
+                      v-model:value="templateFormData.size"
+                      :placeholder="t('TXT_CODE_d0d08d6')"
+                    />
                   </a-form-item>
                 </a-col>
               </a-row>
 
-              <a-form-item :label="t('TXT_CODE_13eac7e1')" name="targetLink">
-                <a-input v-model:value="formData.targetLink" :placeholder="t('TXT_CODE_8d83752')" />
+              <a-form-item name="targetLink">
+                <a-typography-title :level="5" class="require-field">
+                  {{ t("TXT_CODE_13eac7e1") }}
+                </a-typography-title>
+                <a-input
+                  v-model:value="templateFormData.targetLink"
+                  :placeholder="t('TXT_CODE_8d83752')"
+                />
               </a-form-item>
 
-              <a-form-item :label="t('TXT_CODE_9901af98')" name="tags">
+              <a-form-item name="tags">
+                <a-typography-title :level="5" class="require-field">
+                  {{ t("TXT_CODE_9901af98") }}
+                </a-typography-title>
                 <a-select
-                  v-model:value="formData.tags"
+                  v-model:value="templateFormData.tags"
                   mode="tags"
                   :placeholder="t('TXT_CODE_7d839745')"
                   :token-separators="[',']"
@@ -671,7 +722,10 @@ defineExpose({
                       </a-typography-text>
                     </a-tooltip>
                   </a-typography-paragraph>
-                  <a-input v-model:value="options.config.nickname" :disabled="isGlobalTerminal" />
+                  <a-input
+                    v-model:value="instanceFormData.config.nickname"
+                    :disabled="isGlobalTerminal"
+                  />
                 </a-form-item>
               </a-col>
               <a-col v-if="!isTemplateMode" :xs="24" :lg="8" :offset="0">
@@ -687,7 +741,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-select
-                    v-model:value="options.config.type"
+                    v-model:value="instanceFormData.config.type"
                     :placeholder="t('TXT_CODE_3bb646e4')"
                     :disabled="isGlobalTerminal"
                   >
@@ -713,7 +767,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-date-picker
-                    v-model:value="options.dayjsEndTime"
+                    v-model:value="instanceFormData.dayjsEndTime"
                     size="large"
                     show-time
                     style="width: 100%"
@@ -738,7 +792,7 @@ defineExpose({
                   </a-typography-paragraph>
                   <a-input-group compact style="display: flex">
                     <a-textarea
-                      v-model:value="options.config.startCommand"
+                      v-model:value="instanceFormData.config.startCommand"
                       :rows="5"
                       style="min-height: 40px"
                       :placeholder="isDockerMode ? t('TXT_CODE_98e7c829') : t('TXT_CODE_f50cfe2')"
@@ -762,7 +816,7 @@ defineExpose({
                       </a-typography-text>
                     </a-tooltip>
                   </a-typography-paragraph>
-                  <a-input v-model:value="options.config.cwd" />
+                  <a-input v-model:value="instanceFormData.config.cwd" />
                 </a-form-item>
               </a-col>
               <a-col :xs="24" :offset="0">
@@ -780,7 +834,7 @@ defineExpose({
                   </a-typography-paragraph>
                   <!-- eslint-disable-next-line vue/html-quotes -->
                   <a-input
-                    v-model:value="options.config.updateCommand"
+                    v-model:value="instanceFormData.config.updateCommand"
                     :placeholder="UPDATE_CMD_TEMPLATE"
                     :disabled="isGlobalTerminal"
                   />
@@ -802,7 +856,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-select
-                    v-model:value="options.config.fileCode"
+                    v-model:value="instanceFormData.config.fileCode"
                     :placeholder="t('TXT_CODE_3bb646e4')"
                   >
                     <a-select-option v-for="item in TERMINAL_CODE" :key="item" :value="item">
@@ -827,7 +881,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-input
-                    v-model:value="options.config.runAs"
+                    v-model:value="instanceFormData.config.runAs"
                     :placeholder="t('TXT_CODE_9aa83c05')"
                     :disabled="isGlobalTerminal"
                     style="width: 400px"
@@ -859,7 +913,7 @@ defineExpose({
                   </a-typography-paragraph>
                   <div class="ml-4">
                     <a-switch
-                      v-model:checked="options.config.processType"
+                      v-model:checked="instanceFormData.config.processType"
                       :disabled="isGlobalTerminal"
                       checked-value="docker"
                       un-checked-value="general"
@@ -871,7 +925,12 @@ defineExpose({
                 </a-form-item>
               </a-col>
               <template v-if="isDockerMode">
-                <a-col v-if="options.imageSelectMethod === 'SELECT'" :xs="24" :lg="16" :offset="0">
+                <a-col
+                  v-if="instanceFormData.imageSelectMethod === 'SELECT'"
+                  :xs="24"
+                  :lg="16"
+                  :offset="0"
+                >
                   <a-form-item :name="['docker', 'image']">
                     <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
                       {{ t("TXT_CODE_6904cb3") }}
@@ -887,7 +946,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-select
-                      v-model:value="options.config.docker.image"
+                      v-model:value="instanceFormData.config.docker.image"
                       size="large"
                       style="width: 100%"
                       :placeholder="t('TXT_CODE_3bb646e4')"
@@ -905,7 +964,12 @@ defineExpose({
                   </a-form-item>
                 </a-col>
 
-                <a-col v-if="options.imageSelectMethod === 'EDIT'" :xs="24" :lg="16" :offset="0">
+                <a-col
+                  v-if="instanceFormData.imageSelectMethod === 'EDIT'"
+                  :xs="24"
+                  :lg="16"
+                  :offset="0"
+                >
                   <a-form-item :name="['docker', 'image']">
                     <a-typography-title :level="5" :class="{ 'require-field': isDockerMode }">
                       {{ t("TXT_CODE_4e4d9680") }}
@@ -921,7 +985,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="options.config.docker.image"
+                      v-model:value="instanceFormData.config.docker.image"
                       :placeholder="t('TXT_CODE_d7638d7b')"
                     />
                   </a-form-item>
@@ -943,7 +1007,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-switch
-                      v-model:checked="options.config.docker.changeWorkdir"
+                      v-model:checked="instanceFormData.config.docker.changeWorkdir"
                       :disabled="isGlobalTerminal"
                       :checked-value="true"
                       :un-checked-value="false"
@@ -968,7 +1032,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="options.config.docker.workingDir"
+                      v-model:value="instanceFormData.config.docker.workingDir"
                       :placeholder="t('TXT_CODE_2082f659')"
                     />
                   </a-form-item>
@@ -1023,7 +1087,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="options.config.basePort"
+                      v-model:value="instanceFormData.config.basePort"
                       :min="0"
                       :max="65535"
                       :placeholder="t('TXT_CODE_3bb646e4')"
@@ -1064,7 +1128,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-select
-                      v-model:value="options.config.docker.networkMode"
+                      v-model:value="instanceFormData.config.docker.networkMode"
                       size="large"
                       style="width: 100%"
                       :placeholder="t('TXT_CODE_3bb646e4')"
@@ -1090,7 +1154,7 @@ defineExpose({
                       </a-tooltip>
                     </a-typography-paragraph>
                     <a-input
-                      v-model:value="options.networkAliasesText"
+                      v-model:value="instanceFormData.networkAliasesText"
                       :placeholder="t('TXT_CODE_8d4882b0')"
                     />
                   </a-form-item>
@@ -1109,7 +1173,7 @@ defineExpose({
                     <a-tooltip placement="bottom">
                       <template #title>{{ t("TXT_CODE_8d4882b0") }}</template>
                       <a-input
-                        v-model:value="options.config.docker.containerName"
+                        v-model:value="instanceFormData.config.docker.containerName"
                         :placeholder="t('TXT_CODE_f6047384')"
                       />
                     </a-tooltip>
@@ -1139,7 +1203,7 @@ defineExpose({
                       {{ t("TXT_CODE_dce87e42") }}
                     </template>
                     <a-input
-                      v-model:value="options.config.docker.cpuUsage"
+                      v-model:value="instanceFormData.config.docker.cpuUsage"
                       :allow-clear="true"
                       :placeholder="t('TXT_CODE_91d857f5')"
                     />
@@ -1161,7 +1225,7 @@ defineExpose({
                       {{ t("TXT_CODE_67c765be") }}
                     </template>
                     <a-input
-                      v-model:value="options.config.docker.cpusetCpus"
+                      v-model:value="instanceFormData.config.docker.cpusetCpus"
                       :allow-clear="true"
                       :placeholder="t('TXT_CODE_30fe1717')"
                     />
@@ -1179,7 +1243,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-input
-                    v-model:value="options.config.docker.memory"
+                    v-model:value="instanceFormData.config.docker.memory"
                     :allow-clear="true"
                     :placeholder="t('TXT_CODE_80790069')"
                   />
@@ -1197,7 +1261,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-input
-                    v-model:value="options.config.docker.memorySwap"
+                    v-model:value="instanceFormData.config.docker.memorySwap"
                     :allow-clear="true"
                     :placeholder="t('TXT_CODE_6f1129fb')"
                   />
@@ -1215,7 +1279,7 @@ defineExpose({
                     </a-tooltip>
                   </a-typography-paragraph>
                   <a-input
-                    v-model:value="options.config.docker.memorySwappiness"
+                    v-model:value="instanceFormData.config.docker.memorySwappiness"
                     :allow-clear="true"
                     :placeholder="t('TXT_CODE_6f1129fb')"
                   />
