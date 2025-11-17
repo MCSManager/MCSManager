@@ -255,6 +255,24 @@ MCSManager の開発には `Visual Studio Code` を使用しています。以�
 
 `daemon/lib` ディレクトリ（存在しない場合は手動で作成）に、お使いのシステムに適したバイナリファイルを保存するために、[PTY](https://github.com/MCSManager/PTY) と [Zip-Tools](https://github.com/MCSManager/Zip-Tools) プロジェクトにアクセスしてダウンロードする必要があります。これにより `シミュレーション端末` と `ファイル解凍` の正常な動作が保証されます。
 
+3つの依存ファイルをダウンロードし、システムアーキテクチャに応じて選択し、Releases を確認してシステムとアーキテクチャに適したバイナリファイルを見つけてください。
+
+例:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# シミュレーション端末依存ライブラリ
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# 解凍 & 圧縮ファイル依存ライブラリ
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# 7z アーカイブサポート、オプションのダウンロード
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
+
 ### 実行
 
 ```bash

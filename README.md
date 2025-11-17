@@ -63,11 +63,15 @@ The control panel runs on both **`Windows`** and **`Linux`** platforms. No datab
 > Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.
 > It is recommended to use the **latest LTS version** for best compatibility and stability.
 
+<br />
+
 ## Official Documentation
 
 English: https://docs.mcsmanager.com/
 
 Chinese: https://docs.mcsmanager.com/zh_cn/
+
+<br />
 
 ## Installation
 
@@ -265,6 +269,24 @@ To enable the **emulated terminal** and **file decompression** features, you nee
 - Download the appropriate binaries for your operating system.
 - Place the downloaded files into the `daemon/lib/` directory.
   - If the `lib` folder does not exist, create it manually.
+
+Download three dependency files, select according to your system architecture, and check Releases to find binaries suitable for your system and architecture.
+
+For example:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# Emulated terminal dependency library
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# Extract & compress file dependency library
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# 7z archive support, optional download
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
 
 This step is essential to ensure proper functionality of terminal emulation and archive handling within MCSManager.
 

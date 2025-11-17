@@ -255,6 +255,24 @@ docker compose pull && docker compose up -d
 
 Вам нужно перейти к проектам [PTY](https://github.com/MCSManager/PTY) и [Zip-Tools](https://github.com/MCSManager/Zip-Tools), чтобы скачать двоичные файлы, подходящие для вашей системы, сохранить их в каталоге `daemon/lib` (создать вручную, если не существует) для обеспечения нормальной работы `симуляционного терминала` и `распаковки файлов`.
 
+Скачайте три файла зависимостей, выберите в соответствии с архитектурой вашей системы, и проверьте релизы, чтобы найти двоичные файлы, подходящие для вашей системы и архитектуры.
+
+Например:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# Библиотека зависимостей симуляционного терминала
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# Библиотека зависимостей для распаковки и сжатия файлов
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# Поддержка архивов 7z, опциональная загрузка
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
+
 ### Выполнение
 
 ```bash

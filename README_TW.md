@@ -255,6 +255,24 @@ docker compose pull && docker compose up -d
 
 您需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 專案下載適合您系統的二進位檔案，將其儲存在 `daemon/lib` 目錄中（如果不存在請手動建立）以確保 `模擬終端` 和 `檔案解壓縮` 的正常運作。
 
+下載三個相依性檔案，根據您的系統架構來選擇，並查看 Releases 找到適合您系統和架構的二進位檔案。
+
+例如:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# 模擬終端相依性函式庫
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# 解壓 & 壓縮檔案相依性函式庫
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# 7z 壓縮包支援，可選下載
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
+
 ### 執行
 
 ```bash

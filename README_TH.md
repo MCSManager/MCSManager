@@ -255,6 +255,24 @@ docker compose pull && docker compose up -d
 
 คุณต้องไปที่โปรเจ็กต์ [PTY](https://github.com/MCSManager/PTY) และ [Zip-Tools](https://github.com/MCSManager/Zip-Tools) เพื่อดาวน์โหลดไฟล์ไบนารีที่เหมาะกับระบบของคุณ เก็บไว้ในไดเรกทอรี `daemon/lib` (สร้างด้วยตนเองหากไม่มี) เพื่อให้แน่ใจว่าการทำงานปกติของ `เทอร์มินัลจำลอง` และ `การแตกไฟล์`
 
+ดาวน์โหลดไฟล์การพึ่งพาสามไฟล์ เลือกตามสถาปัตยกรรมระบบของคุณ และตรวจสอบ Releases เพื่อหาไบนารีที่เหมาะกับระบบและสถาปัตยกรรมของคุณ
+
+ตัวอย่างเช่น:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# ห้องสมุดการพึ่งพาเทอร์มินัลจำลอง
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# ห้องสมุดการพึ่งพาสำหรับแตกและบีบอัดไฟล์
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# การสนับสนุนไฟล์บีบอัด 7z ดาวน์โหลดเสริม
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
+
 ### การทำงาน
 
 ```bash

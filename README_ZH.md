@@ -251,7 +251,25 @@ docker compose pull && docker compose up -d
 
 ### 下载依赖文件
 
-你需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 两个项目下载适用于你的系统的二进制文件，将他们存放到 `daemon/lib` 目录下（不存在就手动创建），以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+你需要前往 [PTY](https://github.com/MCSManager/PTY/releases) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools/releases) 两个项目下载适用于你的系统的二进制文件，将他们存放到 `daemon/lib` 目录下（不存在就手动创建），以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+
+下载三个依赖文件，需要根据自己的系统架构来选择，查看 Releases 可以找到适合自己系统和架构的二进制文件。
+
+例如:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# 仿真终端依赖库
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# 解压 & 压缩文件依赖库
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# 7z 压缩包支持，可选下载
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
 
 ### 运行开发环境
 

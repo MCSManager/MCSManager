@@ -255,6 +255,24 @@ Usamos `Visual Studio Code` para desenvolver MCSManager. Você deve **instalar**
 
 Você precisa ir aos projetos [PTY](https://github.com/MCSManager/PTY) e [Zip-Tools](https://github.com/MCSManager/Zip-Tools) para baixar arquivos binários adequados para seu sistema, armazená-los no diretório `daemon/lib` (criar manualmente se não existir) para garantir o funcionamento normal de `terminal de simulação` e `descompactação de arquivos`.
 
+Baixe três arquivos de dependência, selecione conforme a arquitetura do seu sistema, e verifique os Releases para encontrar binários adequados para seu sistema e arquitetura.
+
+Por exemplo:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# Biblioteca de dependências do terminal emulado
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# Biblioteca de dependências para extrair e comprimir arquivos
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# Suporte para arquivos 7z, download opcional
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
+
 ### Execução
 
 ```bash
