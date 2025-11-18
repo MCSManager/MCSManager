@@ -9,15 +9,13 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import type { LayoutCard } from "@/types";
 import {
-  defaultDockerFile,
-  openjdk16,
-  openjdk16CN,
-  openjdk17,
-  openjdk17CN,
-  openjdk8,
-  openjdk8CN,
-  ubuntu22,
-  ubuntu22CN
+  defaultDockerfile,
+  jdk17Dockerfile,
+  jdk17DockerfileCN,
+  jdk8Dockerfile,
+  jdk8DockerfileCN,
+  ubuntu22Dockerfile,
+  ubuntu22DockerfileCN
 } from "@/types/const";
 import { getCurrentLang } from "@/lang/i18n";
 import DockerFileForm from "./DockerFileForm.vue";
@@ -40,24 +38,19 @@ const imageList = [
     type: 1
   },
   {
-    title: t("TXT_CODE_694952a"),
-    description: t("TXT_CODE_4fdbb351"),
-    type: 2
-  },
-  {
     title: t("TXT_CODE_9b9b745c"),
     description: t("TXT_CODE_7d1a9487"),
-    type: 3
+    type: 2
   },
   {
     title: t("TXT_CODE_495027e1"),
     description: t("TXT_CODE_41d79430"),
-    type: 4
+    type: 3
   },
   {
     title: t("TXT_CODE_123bcd09"),
     description: t("TXT_CODE_3d14442a"),
-    type: 5
+    type: 4
   }
 ];
 
@@ -68,27 +61,22 @@ const isZH = getCurrentLang() === "zh_cn" ? true : false;
 const selectType = (type: number) => {
   switch (type) {
     case 1:
-      dockerFile.value = isZH ? openjdk8CN : openjdk8;
-      name.value = "mcsm-openjdk";
+      dockerFile.value = isZH ? jdk8DockerfileCN : jdk8Dockerfile;
+      name.value = "mcsm-eclipse-temurin";
       version.value = "8";
       break;
     case 2:
-      dockerFile.value = isZH ? openjdk16CN : openjdk16;
-      name.value = "mcsm-openjdk";
-      version.value = "16";
-      break;
-    case 3:
-      dockerFile.value = isZH ? openjdk17CN : openjdk17;
-      name.value = "mcsm-openjdk";
+      dockerFile.value = isZH ? jdk17DockerfileCN : jdk17Dockerfile;
+      name.value = "mcsm-eclipse-temurin";
       version.value = "17";
       break;
-    case 4:
-      dockerFile.value = isZH ? ubuntu22CN : ubuntu22;
+    case 3:
+      dockerFile.value = isZH ? ubuntu22DockerfileCN : ubuntu22Dockerfile;
       name.value = "mcsm-ubuntu";
       version.value = "22.04";
       break;
-    case 5:
-      dockerFile.value = defaultDockerFile;
+    case 4:
+      dockerFile.value = defaultDockerfile;
       name.value = "mcsm-custom";
       version.value = "latest";
       break;
