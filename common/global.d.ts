@@ -12,7 +12,7 @@ declare global {
     tag: string[];
     endTime: number;
     fileCode: string;
-    processType: string;
+    processType: ProcessType;
     updateCommand: string;
     runAs: string;
     actionCommandList: any[];
@@ -30,6 +30,8 @@ declare global {
     terminalOption: {
       haveColor: boolean;
       pty: boolean;
+      ptyWindowCol: number;
+      ptyWindowRow: number;
     };
     eventTask: {
       autoStart: boolean;
@@ -48,6 +50,8 @@ declare global {
       openFrpToken?: string;
     };
   }
+
+  type ProcessType = "general" | "docker";
 
   interface IGlobalInstanceDockerConfig {
     containerName?: string;
@@ -228,7 +232,7 @@ declare global {
     remark: string;
     targetLink?: string;
     author: string;
-    setupInfo?: IJsonData;
+    setupInfo: IGlobalInstanceConfig;
     gameType: string;
     image: string;
     platform: string;
