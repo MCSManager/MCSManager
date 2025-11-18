@@ -84,7 +84,7 @@ const { isPhone } = useScreen();
 
 // form
 const instanceFormRef = ref<FormInstance>();
-const instanceFormData = ref<FormDetail>();
+const instanceFormData = ref<Partial<FormDetail>>();
 const instanceFormRules: Record<string, any> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   startCommand: [
@@ -173,8 +173,7 @@ const initFormDetail = () => {
       config: templateFormData.value!.setupInfo!,
       dayjsEndTime: timestampToDayjs(templateFormData.value!.setupInfo!.endTime),
       networkAliasesText: templateFormData.value!.setupInfo!.docker.networkAliases?.join(",") || "",
-      imageSelectMethod: "SELECT",
-      ...({} as any)
+      imageSelectMethod: "SELECT"
     };
   }
 };
@@ -222,7 +221,7 @@ const isGlobalTerminal = computed(() => {
   return props.instanceInfo?.config.nickname === GLOBAL_INSTANCE_NAME;
 });
 
-const isDockerMode = computed(() => instanceFormData.value?.config.processType === "docker");
+const isDockerMode = computed(() => instanceFormData?.value?.config?.processType === "docker");
 
 const loadImages = async () => {
   dockerImages.value = [
@@ -263,7 +262,7 @@ const selectImage = (row: DefaultOptionType) => {
     });
     return;
   }
-  if (image === IMAGE_DEFINE.EDIT && instanceFormData.value) {
+  if (image === IMAGE_DEFINE.EDIT && instanceFormData.value?.config) {
     instanceFormData.value.config.docker.image = "";
     instanceFormData.value.imageSelectMethod = "EDIT";
     return;
@@ -328,7 +327,7 @@ const submit = async () => {
           uuid: props.instanceId ?? "",
           daemonId: props.daemonId ?? ""
         },
-        data: postData.config
+        data: postData?.config!
       });
       emit("update");
       open.value = false;
@@ -342,12 +341,12 @@ const submit = async () => {
 
 const encodeFormData = () => {
   const postData = _.cloneDeep(unref(instanceFormData));
-  if (postData) {
+  if (postData?.config) {
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
-    postData.config.docker.networkAliases = postData.networkAliasesText
-      .split(",")
-      .map((v) => v.trim())
-      .filter((v) => v !== "");
+    postData.config.docker.networkAliases = postData?.networkAliasesText
+      ?.split(",")
+      ?.map((v) => v.trim())
+      ?.filter((v) => v !== "");
     return postData;
   }
   throw new Error("Ref Options is null");
@@ -416,8 +415,13 @@ defineExpose({
           {{ t("TXT_CODE_cdf7c16a") }}
         </a-typography-text>
       </a-tooltip>
+      <div v-if="!instanceFormData?.config">
+        <a-typography-title :level="5">
+          {{ t("此实例配置存在问题，请刷新页面重试，或重新创建实例！") }}.
+        </a-typography-title>
+      </div>
       <a-form
-        v-if="instanceFormData"
+        v-if="instanceFormData?.config"
         ref="instanceFormRef"
         :model="instanceFormData.config"
         :rules="instanceFormRules"
