@@ -76,16 +76,20 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
   });
 
   const parsePath = (path: string) => {
-    if (path === "/") return ["/"];
+    if (!path) return [];
 
-    const parts = path.split("/").filter((part) => part !== "");
-    const result = ["/"];
+    const normalizedPath = path.replace(/\\/g, "/");
+    const driveMatch = normalizedPath.match(/^([a-zA-Z]):/);
+    const driveLetter = driveMatch ? driveMatch[1] : "";
+    const pathPart = driveLetter ? normalizedPath.slice(2) : normalizedPath;
 
-    for (let i = 0; i < parts.length; i++) {
-      const currentPath = "/" + parts.slice(0, i + 1).join("/");
-      const formattedPath = i < parts.length - 1 ? currentPath + "/" : currentPath;
-      result.push(formattedPath);
-    }
+    const parts = pathPart.split("/").filter(Boolean);
+    const result = driveLetter ? [driveLetter] : ["/"];
+
+    parts.forEach((_, index) => {
+      const currentPath = "/" + parts.slice(0, index + 1).join("/");
+      result.push(index < parts.length - 1 ? currentPath + "/" : currentPath);
+    });
 
     return result;
   };
@@ -165,15 +169,28 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       if (_latestPath && _latestPath.daemonId === daemonId && _latestPath.uuid === instanceId) {
         params = _latestPath;
         const breadcrumbPaths = parsePath(_latestPath.target);
-
         breadcrumbs.length = 0;
-        breadcrumbPaths.forEach((path) => {
-          breadcrumbs.push({
-            path,
-            name: getLastNameFromPath(path),
-            disabled: false
+
+        if (breadcrumbPaths[0] !== "/") {
+          // win
+          currentDisk.value = breadcrumbPaths[0];
+          breadcrumbPaths[0] = "/";
+          breadcrumbPaths.forEach((path) => {
+            breadcrumbs.push({
+              path: `${currentDisk.value}:${path}`,
+              name: getLastNameFromPath(path),
+              disabled: false
+            });
           });
-        });
+        } else {
+          breadcrumbPaths.forEach((path) => {
+            breadcrumbs.push({
+              path,
+              name: getLastNameFromPath(path),
+              disabled: false
+            });
+          });
+        }
       } else {
         params = {
           daemonId: daemonId || "",
