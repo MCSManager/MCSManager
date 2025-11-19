@@ -28,11 +28,11 @@
 
 ## 这是什么？
 
-**MCSManager 面板**（简称：MCSM 面板），是一个快速部署，支持分布式架构，支持多用户，简单易用和现代化的 Minecraft 和 Steam 游戏服务器 Web 管理面板。
+**MCSManager 面板**（简称：MCSM 面板），是一个快速部署，支持分布式架构，支持多用户，简单易用和现代化的 Minecraft、Steam 和其他游戏服务器 Web 管理面板。
 
 MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，实现在任何主机上创建游戏服务器，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 `Minecraft`，`Terraria` 和 `Steam` 游戏服务器的管理员，运维人员和个人开发者提供健康的软件支持。
 
-它同样也适合任何商业性质的行为，比如 IDC 服务商用于私服出售等，现已有多家中小型企业使用此面板作为管理&销售软件，并且支持**多个国家**的语言。
+MCSM 同样也考虑了**商业应用**，例如由 **IDC 服务提供商**进行的私有服务器托管和销售。多家中小型企业已经将此面板用作**服务器管理**和**销售平台**的结合。此外，它支持**多语言环境**，使其可供不同国家和地区的用户访问。
 
 <img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
@@ -89,7 +89,7 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 **一行命令快速安装**
 
 ```bash
-sudo su -c "wget -qO- https://script.mcsmanager.com/setup_cn.sh | bash"
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **安装后的使用方法**
@@ -289,8 +289,14 @@ docker compose pull && docker compose up -d
 
 <br />
 
-## 源代码协议
+## 贡献者
 
-源代码遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议。
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="贡献排行榜" style="display: block; width: 100%;" />
+</a>
+
+## 许可证
+
+此项目遵循 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议。
 
 Copyright ©2025 MCSManager.

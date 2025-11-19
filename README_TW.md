@@ -29,11 +29,11 @@
 
 ## 這是什麼？
 
-**MCSManager Panel**（簡稱：MCSM Panel）是一個快速部署、支援分散式架構、多使用者、簡單現代的 Minecraft 和 Steam 遊戲伺服器網頁管理面板。
+**MCSManager Panel**（簡稱：MCSM Panel）是一個快速部署、支援分散式架構、多使用者、簡單現代的 Minecraft、Steam 和其他遊戲伺服器網頁管理面板。
 
 MCSManager 在 `Minecraft` 和 `Steam` 遊戲社群中廣受歡迎。它幫助您集中管理多台實體伺服器，讓您可以在任何主機上建立遊戲伺服器，並提供安全可靠的多使用者權限系統，可以輕鬆幫助您管理多個伺服器。它一直為 `Minecraft`、`Terraria` 和 `Steam` 遊戲伺服器的管理員、營運人員和個人開發者提供健康的軟體支援。
 
-它也適用於任何商業活動，例如 IDC 服務提供商的私人伺服器銷售等。幾家中小企業已經將此面板用作管理和銷售軟體，並支援**多個國家**的語言。
+MCSM 同樣也考慮了**商業應用**，例如由 **IDC 服務提供商**進行的私有伺服器託管和銷售。多家中小型企業已經將此面板用作**伺服器管理**和**銷售平台**的結合。此外，它支援**多語言環境**，使其可供不同國家和地區的用戶訪問。
 
 <img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
@@ -90,7 +90,7 @@ MCSManager 在 `Minecraft` 和 `Steam` 遊戲社群中廣受歡迎。它幫助�
 **一行命令快速安裝**
 
 ```bash
-sudo su -c "wget -qO- https://script.mcsmanager.com/setup_cn.sh | bash"
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **安裝後使用**
@@ -291,8 +291,14 @@ docker compose pull && docker compose up -d
 
 <br />
 
+## 貢獻者
+
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="貢獻排行榜" style="display: block; width: 100%;" />
+</a>
+
 ## 授權條款
 
-原始碼遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 授權條款。
+此專案遵循 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 授權條款。
 
 Copyright ©2025 MCSManager.

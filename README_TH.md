@@ -363,8 +363,14 @@ if (!checkName) {
 
 <br />
 
+## ผู้มีส่วนร่วม
+
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="อันดับผู้มีส่วนร่วม" style="display: block; width: 100%;" />
+</a>
+
 ## ใบอนุญาต
 
-ซอร์สโค้ดปฏิบัติตามใบอนุญาต [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+โปรเจ็กต์นี้ได้รับอนุญาตภายใต้ [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 Copyright ©2025 MCSManager.
