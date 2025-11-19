@@ -248,66 +248,6 @@ Before contributing code to this project, please make sure to review the followi
 
 ## Development
 
-**This section is intended for developers.** If you plan to contribute to MCSManager or perform secondary development, please review the following requirements:
-
-### Required Setup
-
-We recommend using **Visual Studio Code** for development. You **must install** the following extensions:
-
-- **I18n Ally** – Internationalization text display support
-- **Prettier** – Code formatter
-- **Vue – Official** – Vue framework support
-- **ESLint** – JavaScript/TypeScript linting and code style enforcement
-
-### Dependency Files
-
-To enable the **emulated terminal** and **file decompression** features, you need to download and install required binary dependencies manually:
-
-- Visit the following repositories:
-  - [PTY](https://github.com/MCSManager/PTY)
-  - [Zip-Tools](https://github.com/MCSManager/Zip-Tools)
-- Download the appropriate binaries for your operating system.
-- Place the downloaded files into the `daemon/lib/` directory.
-  - If the `lib` folder does not exist, create it manually.
-
-Download three dependency files, select according to your system architecture, and check Releases to find binaries suitable for your system and architecture.
-
-For example:
-
-```bash
-cd /opt/mcsmanager/daemon
-mkdir lib && cd lib
-
-# Emulated terminal dependency library
-wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
-
-# Extract & compress file dependency library
-wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
-
-# 7z archive support, optional download
-wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
-```
-
-This step is essential to ensure proper functionality of terminal emulation and archive handling within MCSManager.
-
-### Running
-
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
-
-# For macOS
-./install-dependents.sh
-./npm-dev-macos.sh
-
-# For Windows
-./install-dependents.bat
-./npm-dev-windows.bat
-```
-
-<br />
-
-## Development
-
 ### Project Structure
 
 The project comprises three core modules:
