@@ -367,7 +367,7 @@ For serious **security vulnerabilities** that should not be disclosed publicly, 
 
 Once resolved, we will credit the discoverer in the relevant code or release notes.
 
-<br/ >
+<br />
 
 ## Contributors
 
