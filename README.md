@@ -340,7 +340,7 @@ Responsibilities of the Web Frontend:
 
 ### Setting Up Development Environment
 
-See: [DEVELOP.md](./DEVELOP.md)
+See: [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 <br />
 

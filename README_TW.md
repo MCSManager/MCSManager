@@ -272,7 +272,7 @@ docker compose pull && docker compose up -d
 
 ### 建立環境
 
-請參閱：[DEVELOP_ZH.md](./DEVELOP_ZH.md)
+請參閱：[DEVELOPMENT_ZH.md](./DEVELOPMENT_ZH.md)
 
 <br />
 

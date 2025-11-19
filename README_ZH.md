@@ -270,7 +270,7 @@ docker compose pull && docker compose up -d
 
 ### 搭建环境
 
-请参阅：[DEVELOP_ZH.md](./DEVELOP_ZH.md)
+请参阅：[DEVELOPMENT_ZH.md](./DEVELOPMENT_ZH.md)
 
 <br />
 
