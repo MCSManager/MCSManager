@@ -310,33 +310,31 @@ git clone https://github.com/MCSManager/MCSManager.git
 
 ### Project Structure
 
-The project consists of three main components:
+The project comprises three core modules:
 
 - Daemon backend (`daemon` directory)
 - Web backend (`panel` directory)
 - Web frontend (`frontend` directory)
 
-Responsibilities of the Web Backend:
+**Web Backend Responsibilities:**
 
 - User management
-- Connecting to nodes
-- Permission authentication and authorization
-- API provisioning
-- More...
+- Node connectivity
+- Authentication and authorization
+- API services
 
-Responsibilities of the Daemon Backend:
+**Daemon Backend Responsibilities:**
 
-- Actual process management (where your server instances run)
-- Docker container management
-- File management
-- Real-time terminals
-- More...
+- Process management for server instances
+- Docker container operations
+- File system management
+- Real-time terminal access
 
-Responsibilities of the Web Frontend:
+**Web Frontend Responsibilities:**
 
-- Web UI support.
-- Interaction with the Web backend
-- Some features communicate directly with the node backend to reduce traffic load
+- User interface implementation
+- Web backend integration
+- Direct node communication for optimized performance
 
 ### Setting Up Development Environment
 
