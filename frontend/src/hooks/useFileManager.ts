@@ -1,5 +1,6 @@
 import { openLoadingDialog, useImageViewerDialog } from "@/components/fc";
 import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
+import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
 import {
   addFolder as addFolderApi,
@@ -28,21 +29,10 @@ import type {
   Permission
 } from "@/types/fileManager";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { useLocalStorage } from "@vueuse/core";
 import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
-
-interface LatestPath {
-  daemonId: string;
-  uuid: string;
-  target: string;
-}
-export const latestPath = useLocalStorage<LatestPath>("LATEST_PATH", {
-  daemonId: "",
-  uuid: "",
-  target: ""
-});
+import { useRoute } from "vue-router";
 
 export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
   let addr = config.addr;
@@ -56,6 +46,8 @@ export function getFileConfigAddr(config: { addr: string; remoteMappings?: Remot
 }
 
 export const useFileManager = (instanceId?: string, daemonId?: string) => {
+  const route = useRoute();
+
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -96,7 +88,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
 
   const getLastNameFromPath = (path: string) => {
     if (path === "/") return "/";
-
     const cleanPath = path.endsWith("/") ? path.slice(0, -1) : path;
     const parts = cleanPath.split("/").filter((part) => part !== "");
     return parts.length > 0 ? parts[parts.length - 1] : "/";
@@ -161,14 +152,14 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     });
   };
 
-  const getFileList = async (throwErr = false, _latestPath?: LatestPath) => {
+  const getFileList = async (throwErr = false, curPath?: string) => {
     const { execute } = getFileListApi();
     try {
       clearSelected();
-      let params;
-      if (_latestPath && _latestPath.daemonId === daemonId && _latestPath.uuid === instanceId) {
-        params = _latestPath;
-        const breadcrumbPaths = parsePath(_latestPath.target);
+      let path;
+      if (curPath) {
+        path = curPath;
+        const breadcrumbPaths = parsePath(path);
         breadcrumbs.length = 0;
 
         if (breadcrumbPaths[0] !== "/") {
@@ -192,20 +183,17 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
           });
         }
       } else {
-        params = {
-          daemonId: daemonId || "",
-          uuid: instanceId || "",
-          target: breadcrumbs[breadcrumbs.length - 1].path
-        };
-        latestPath.value = params;
+        path = breadcrumbs[breadcrumbs.length - 1].path;
       }
 
       const res = await execute({
         params: {
+          daemonId: daemonId || "",
+          uuid: instanceId || "",
           page: operationForm.value.current - 1,
           page_size: operationForm.value.pageSize,
           file_name: operationForm.value.name,
-          ...params
+          target: path
         }
       });
       dataSource.value = res.value?.items || [];
@@ -555,7 +543,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (type === 1) return;
     try {
       spinning.value = true;
-      const target = `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`;
+      const target = `${breadcrumbs[breadcrumbs.length - 1].path}/${item}/`;
       breadcrumbs.push({
         path: target,
         name: item,
@@ -564,11 +552,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       operationForm.value.name = "";
       operationForm.value.current = 1;
       await getFileList(true);
-      latestPath.value = {
-        daemonId: daemonId || "",
-        uuid: instanceId || "",
-        target
-      };
+      router.push({
+        query: {
+          ...route.query,
+          path: target
+        }
+      });
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
@@ -645,6 +634,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     operationForm.value.current = 1;
     await getFileList();
     spinning.value = false;
+    router.push({
+      query: {
+        ...route.query,
+        path: breadcrumbs[breadcrumbs.length - 1].path
+      }
+    });
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {

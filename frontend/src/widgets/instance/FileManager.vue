@@ -3,7 +3,7 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { useDownloadFileDialog } from "@/components/fc";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { latestPath, useFileManager } from "@/hooks/useFileManager";
+import { useFileManager } from "@/hooks/useFileManager";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
 import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
@@ -46,6 +46,7 @@ const props = defineProps<{
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
+const currentPath = getMetaOrRouteValue("path", false);
 
 const { isPhone } = useScreen();
 
@@ -359,10 +360,9 @@ const downloadFromURLFile = async () => {
 onMounted(async () => {
   await getFileStatus();
   dialog.value.loading = true;
-  console.log("111lastPath: ", latestPath.value);
   console.log("222breadCrumbs: ", breadcrumbs);
 
-  await getFileList(false, latestPath.value);
+  await getFileList(false, currentPath);
   dialog.value.loading = false;
 });
 
