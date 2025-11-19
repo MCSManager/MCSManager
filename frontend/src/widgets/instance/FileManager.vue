@@ -3,7 +3,7 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import CardPanel from "@/components/CardPanel.vue";
 import { useDownloadFileDialog } from "@/components/fc";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { useFileManager } from "@/hooks/useFileManager";
+import { latestPath, useFileManager } from "@/hooks/useFileManager";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
 import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
@@ -359,7 +359,10 @@ const downloadFromURLFile = async () => {
 onMounted(async () => {
   await getFileStatus();
   dialog.value.loading = true;
-  await getFileList();
+  console.log("111lastPath: ", latestPath.value);
+  console.log("222breadCrumbs: ", breadcrumbs);
+
+  await getFileList(false, latestPath.value);
   dialog.value.loading = false;
 });
 

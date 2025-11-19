@@ -28,9 +28,21 @@ import type {
   Permission
 } from "@/types/fileManager";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { useLocalStorage } from "@vueuse/core";
 import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
+
+interface LatestPath {
+  daemonId: string;
+  uuid: string;
+  target: string;
+}
+export const latestPath = useLocalStorage<LatestPath>("LATEST_PATH", {
+  daemonId: "",
+  uuid: "",
+  target: ""
+});
 
 export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
   let addr = config.addr;
@@ -62,6 +74,29 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     name: "/",
     disabled: false
   });
+
+  const parsePath = (path: string) => {
+    if (path === "/") return ["/"];
+
+    const parts = path.split("/").filter((part) => part !== "");
+    const result = ["/"];
+
+    for (let i = 0; i < parts.length; i++) {
+      const currentPath = "/" + parts.slice(0, i + 1).join("/");
+      const formattedPath = i < parts.length - 1 ? currentPath + "/" : currentPath;
+      result.push(formattedPath);
+    }
+
+    return result;
+  };
+
+  const getLastNameFromPath = (path: string) => {
+    if (path === "/") return "/";
+
+    const cleanPath = path.endsWith("/") ? path.slice(0, -1) : path;
+    const parts = cleanPath.split("/").filter((part) => part !== "");
+    return parts.length > 0 ? parts[parts.length - 1] : "/";
+  };
 
   const clipboard = ref<{
     type: "copy" | "move";
@@ -122,18 +157,38 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     });
   };
 
-  const getFileList = async (throwErr = false) => {
+  const getFileList = async (throwErr = false, _latestPath?: LatestPath) => {
     const { execute } = getFileListApi();
     try {
       clearSelected();
-      const res = await execute({
-        params: {
+      let params;
+      if (_latestPath && _latestPath.daemonId === daemonId && _latestPath.uuid === instanceId) {
+        params = _latestPath;
+        const breadcrumbPaths = parsePath(_latestPath.target);
+
+        breadcrumbs.length = 0;
+        breadcrumbPaths.forEach((path) => {
+          breadcrumbs.push({
+            path,
+            name: getLastNameFromPath(path),
+            disabled: false
+          });
+        });
+      } else {
+        params = {
           daemonId: daemonId || "",
           uuid: instanceId || "",
+          target: breadcrumbs[breadcrumbs.length - 1].path
+        };
+        latestPath.value = params;
+      }
+
+      const res = await execute({
+        params: {
           page: operationForm.value.current - 1,
           page_size: operationForm.value.pageSize,
           file_name: operationForm.value.name,
-          target: breadcrumbs[breadcrumbs.length - 1].path
+          ...params
         }
       });
       dataSource.value = res.value?.items || [];
@@ -483,14 +538,20 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     if (type === 1) return;
     try {
       spinning.value = true;
+      const target = `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`;
       breadcrumbs.push({
-        path: `${breadcrumbs[breadcrumbs.length - 1].path}${item}/`,
+        path: target,
         name: item,
         disabled: false
       });
       operationForm.value.name = "";
       operationForm.value.current = 1;
       await getFileList(true);
+      latestPath.value = {
+        daemonId: daemonId || "",
+        uuid: instanceId || "",
+        target
+      };
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
