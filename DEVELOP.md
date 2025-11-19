@@ -1,4 +1,4 @@
-## Setting up the Development Environment
+## Setting Up Development Environment
 
 This section is **for developers**. If you want to develop MCSManager or contribute code, please read this content carefully:
 

@@ -236,113 +236,41 @@ docker compose pull && docker compose up -d
 
 <br />
 
-## 搭建开发环境
+## 开发此项目
 
-此段落**面向开发人员**，如果你想对 MCSManager 二次开发，或者提交代码贡献，请务必仔细的阅读这些内容：
+### 项目结构
 
-### 必备插件
+整体项目总共分为三个部分：
 
-我们使用 `Visual Studio Code` 开发 MCSManager，你**必须安装**这些插件：
+- 网页后端（panel 文件夹）
+- 被控节点端（daemon 文件夹）
+- 网页前端（frontend 文件夹）
 
-- i18n 文案显示支持（I18n Ally）
-- 代码格式化（Prettier）
-- Vue - Offcial
-- ESLint
+网页后端职责
 
-### 下载依赖文件
+- 用户管理
+- 连接节点
+- 大多数操作的权限认证与授权
+- API 接口提供
+- 更多...
 
-你需要前往 [PTY](https://github.com/MCSManager/PTY/releases) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools/releases) 两个项目下载适用于你的系统的二进制文件，将他们存放到 `daemon/lib` 目录下（不存在就手动创建），以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+节点端职责
 
-下载三个依赖文件，需要根据自己的系统架构来选择，查看 Releases 可以找到适合自己系统和架构的二进制文件。
+- 真实的进程管理（你的实例进程实际运行处）
+- Docker 容器管理
+- 文件管理
+- 实时终端
+- 更多...
 
-例如:
+网页前端的功能
 
-```bash
-cd /opt/mcsmanager/daemon
-mkdir lib && cd lib
+- 用户 UI 支持
+- 与 Web 后端交互
+- 部分功能直接与节点端通信，以避免大量流量压力
 
-# 仿真终端依赖库
-wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+### 搭建环境
 
-# 解压 & 压缩文件依赖库
-wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
-
-# 7z 压缩包支持，可选下载
-wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
-```
-
-### 运行开发环境
-
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
-
-# MacOS
-./install-dependents.sh
-./npm-dev-macos.sh
-
-# Windows
-./install-dependents.bat
-./npm-dev-windows.bat
-```
-
-### 代码国际化
-
-由于项目适配多国语言，所以代码中的所有 `字符串`，`注释` 都只接受英文，所以请勿直接硬文本非英语在代码中。
-
-比如你可能写了一行新的字符串，需要适配多国语言。
-
-```ts
-import { $t } from "../i18n";
-
-if (!checkName) {
-  const errorMsg = "Check Name Failed!" // 不要这样做！
-  const errorMsg = $t("TXT_CODE_MY_ERROR"); // 正确做法
-}.
-```
-
-```html
-<script lang="ts" setup>
-  import { t } from "@/lang/i18n";
-  // ...
-</script>
-
-<template>
-  <!-- ... -->
-  <a-menu-item key="toNodesPage" @click="toNodesPage()">
-    <FormOutlined />
-    {{ t("TXT_CODE_NODE_INFO") }}
-  </a-menu-item>
-</template>
-```
-
-请在语言文件中新增这一行，比如：`languages/en_US.json`
-
-其中，`en_US.json` 是必须添加的，它是所有国家语言的源文案，其他国家的语言可以由我们使用 AI 来自动翻译。
-
-```json
-{
-  //...
-  "TXT_CODE_MY_ERROR": "Check Name Failed!",
-  "TXT_CODE_NODE_INFO": "Jump to Node Page"
-}
-```
-
-如果你安装了 `I18n Ally` 插件，你的 `$t("TXT_CODE_MY_ERROR")` 应该会浮现英文文案。
-
-如果翻译文案还需要携带参数，这可能会有点复杂，因为前端，后端所用的 i18n 库并非同一个，所以格式可能不太一样，你需要翻阅一下文件找到类似的代码便可知晓。
-
-所有的翻译文案 Key，不可有重复，所以请可能的取一个较长的名字！
-
-<br />
-
-### 构建生产环境版本
-
-```bash
-./build.bat # Windows
-./build.sh  # MacOS
-```
-
-构建完成后，你会在 `production-code` 目录下找到生产环境代码。
+请参阅：[DEVELOP_ZH.md](./DEVELOP_ZH.md)
 
 <br />
 

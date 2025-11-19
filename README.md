@@ -290,8 +290,6 @@ wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x
 
 This step is essential to ensure proper functionality of terminal emulation and archive handling within MCSManager.
 
----
-
 ### Running
 
 ```bash
@@ -306,72 +304,43 @@ git clone https://github.com/MCSManager/MCSManager.git
 ./npm-dev-windows.bat
 ```
 
-### Code Internationalization
-
-Since MCSManager supports multiple languages, **all strings and comments in the codebase must be written in English**.  
-**Do not hardcode any non-English text directly into the code.**
-
-For example, when introducing a new string that needs to support translation:
-
-```ts
-import { $t } from "../i18n";
-
-if (!checkName) {
-  const errorMsg = "Check Name Failed!" // Avoid hardcoding text like this
-  const errorMsg = $t("TXT_CODE_MY_ERROR"); // Use i18n keys instead
-}.
-```
-
-```html
-<script lang="ts" setup>
-  import { t } from "@/lang/i18n";
-  // ...
-</script>
-
-<template>
-  <!-- ... -->
-  <a-menu-item key="toNodesPage" @click="toNodesPage()">
-    <FormOutlined />
-    {{ t("TXT_CODE_NODE_INFO") }}
-  </a-menu-item>
-</template>
-```
-
-After adding new keys, be sure to update the appropriate language file, for example: languages/en_US.json.
-
-The `en_US.json` file is mandatory and serves as the base source for all other languages.
-Other language files can be automatically translated later using AI or manual review.
-
-```json
-{
-  //...
-  "TXT_CODE_MY_ERROR": "Check Name Failed!",
-  "TXT_CODE_NODE_INFO": "Jump to Node Page"
-}
-```
-
-If you have the `I18n Ally` plugin installed, your usage of `$t("TXT_CODE_MY_ERROR")` will display the actual English translation inline.
-
-If your translation string requires parameters, it may be slightly more complex.
-Note that the frontend and backend use different i18n libraries, so the parameter formats may vary. Please refer to similar examples in the codebase to understand the correct syntax.
-
-Lastly, translation keys must be unique, to avoid conflicts, use **longer**, **descriptive** key names.
-
 <br />
 
-### Building Production Environment Version
+## Development
 
-To generate the production build, run the appropriate script based on your operating system:
+### Project Structure
 
-```bash
-# Windows
-./build.bat
+The project consists of three main components:
 
-# macOS / Linux
-./build.sh
-```
+- Daemon backend (`daemon` directory)
+- Web backend (`panel` directory)
+- Web frontend (`frontend` directory)
 
-After the build process completes, the compiled production code will be located in the `production-code` directory.
+Responsibilities of the Web Backend:
+
+- User management
+- Connecting to nodes
+- Permission authentication and authorization
+- API provisioning
+- More...
+
+Responsibilities of the Daemon Backend:
+
+- Actual process management (where your server instances run)
+- Docker container management
+- File management
+- Real-time terminals
+- More...
+
+Responsibilities of the Web Frontend:
+
+- Web UI support.
+- Interaction with the Web backend
+- Some features communicate directly with the node backend to reduce traffic load
+
+### Setting Up Development Environment
+
+See: [DEVELOP.md](./DEVELOP.md)
 
 <br />
 
