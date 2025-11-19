@@ -417,7 +417,7 @@ defineExpose({
       </a-tooltip>
       <div v-if="!instanceFormData?.config">
         <a-typography-title :level="5">
-          {{ t("此实例配置存在问题，请刷新页面重试，或重新创建实例！") }}.
+          {{ t("TXT_CODE_2dae1294") }}.
         </a-typography-title>
       </div>
       <a-form

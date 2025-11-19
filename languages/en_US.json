@@ -880,7 +880,7 @@
   "TXT_CODE_5c43374f": "Virtual Memory Usage Preference",
   "TXT_CODE_5c54f599": "Anyone",
   "TXT_CODE_5cb656b9": "Batch Operation",
-  "TXT_CODE_5cd3b4bd": "Instance(s)",
+  "TXT_CODE_5cd3b4bd": "items",
   "TXT_CODE_5ce5085c": "Input Encoding",
   "TXT_CODE_5d033431": "Anti-Xray Hidden Block List",
   "TXT_CODE_5d41afbf": "Set to true to have 100% chance of taming a mob",
@@ -2915,5 +2915,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_2dae1294": "此实例配置存在问题，请刷新页面重试，或重新创建实例！"
 }

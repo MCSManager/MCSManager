@@ -1,3 +1,4 @@
+import fs from "fs-extra";
 import http from "http";
 import https from "https";
 import Koa from "koa";
@@ -7,7 +8,6 @@ import koaStatic from "koa-static";
 import { removeTrail } from "mcsmanager-common";
 import open from "open";
 import os from "os";
-import fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import RedisStorage from "./app/common/storage/redis_storage";
@@ -27,7 +27,14 @@ function hasParams(name: string) {
   return process.argv.includes(name);
 }
 
-function setupHttp(koaApp: Koa, ssl: boolean, sslPemPath: string, sslKeyPath: string, port: number, host?: string) {
+function setupHttp(
+  koaApp: Koa,
+  ssl: boolean,
+  sslPemPath: string,
+  sslKeyPath: string,
+  port: number,
+  host?: string
+) {
   let httpServer: http.Server | https.Server;
 
   if (ssl) {
@@ -50,7 +57,7 @@ function setupHttp(koaApp: Koa, ssl: boolean, sslPemPath: string, sslKeyPath: st
   logger.info("==================================");
   logger.info($t("TXT_CODE_app.panelStarted"));
   logger.info($t("TXT_CODE_app.reference"));
-  let appHost = $t("TXT_CODE_app.host", { port })
+  let appHost = $t("TXT_CODE_app.host", { port });
   if (ssl) appHost = appHost.replace("http", "https");
   logger.info(appHost);
   logger.info($t("TXT_CODE_app.portTip", { port }));
@@ -207,7 +214,15 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     logger.error(`ERROR (unhandledRejection):`, reason, p);
   });
 
-  if (systemConfig) setupHttp(app, systemConfig.ssl, systemConfig.sslPemPath, systemConfig.sslKeyPath, systemConfig.httpPort, systemConfig.httpIp);
+  if (systemConfig)
+    setupHttp(
+      app,
+      systemConfig.ssl,
+      systemConfig.sslPemPath,
+      systemConfig.sslKeyPath,
+      systemConfig.httpPort,
+      systemConfig.httpIp
+    );
 }
 
 main().catch((err) => {
