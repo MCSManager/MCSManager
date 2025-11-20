@@ -58,6 +58,7 @@ const {
   operationForm,
   dataSource,
   breadcrumbs,
+  currentPath,
   clipboard,
   currentDisk,
   isMultiple,
@@ -249,7 +250,7 @@ const onFileSelect = (info: UploadChangeParam) => {
 };
 
 const editFile = (fileName: string) => {
-  const path = breadcrumbs[breadcrumbs.length - 1].path + fileName;
+  const path = currentPath.value + fileName;
   FileEditorDialog.value?.openDialog(path, fileName);
 };
 

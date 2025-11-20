@@ -78,6 +78,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     name: "/",
     disabled: false
   });
+  const currentPath = computed(() => breadcrumbs[breadcrumbs.length - 1].path + "/");
 
   // TODO: 退出登录时要删除
   const tabList = useLocalStorage<TabsMap>("FileManagerTabMap", {});
@@ -112,6 +113,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const updateBreadcrumbs = (path: string) => {
     const breadcrumbPaths = parsePath(path);
+    console.log("path", path);
+
     breadcrumbs.length = 0;
 
     if (breadcrumbPaths[0] !== "/") {
@@ -138,6 +141,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   };
 
   const handleChangeTab = async (key: string) => {
+    console.log("key: ", key);
+
     const path = currentTabs.value.find((tab) => tab.key === key)?.path || "";
     activeTab.value = key;
     updateBreadcrumbs(path);
@@ -161,8 +166,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     const result = driveLetter ? [driveLetter] : ["/"];
 
     parts.forEach((_, index) => {
-      const currentPath = "/" + parts.slice(0, index + 1).join("/");
-      result.push(index < parts.length - 1 ? currentPath + "/" : currentPath);
+      const _currentPath = "/" + parts.slice(0, index + 1).join("/");
+      result.push(index < parts.length - 1 ? _currentPath + "/" : _currentPath);
     });
 
     return result;
@@ -243,7 +248,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         path = initPath;
         updateBreadcrumbs(initPath);
       } else {
-        path = breadcrumbs[breadcrumbs.length - 1].path;
+        path = currentPath.value;
       }
       const res = await execute({
         params: {
@@ -297,7 +302,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
           daemonId: daemonId || ""
         },
         data: {
-          target: breadcrumbs[breadcrumbs.length - 1].path + dirname
+          target: currentPath.value + dirname
         }
       });
       await getFileList();
@@ -311,14 +316,14 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     if (file) {
       clipboard.value = {
         type,
-        value: [breadcrumbs[breadcrumbs.length - 1].path + file]
+        value: [currentPath.value + file]
       };
     } else {
       if (!selectionData.value || selectionData.value.length === 0)
         return reportErrorMsg(t("TXT_CODE_b152cd75"));
       clipboard.value = {
         type,
-        value: selectionData.value?.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
+        value: selectionData.value?.map((e) => currentPath.value + e.name)
       };
     }
     message.success(t("TXT_CODE_25cb04bb"));
@@ -338,7 +343,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         data: {
           targets: clipboard.value.value.map((e) => [
             e,
-            breadcrumbs[breadcrumbs.length - 1].path + e.split("/")[e.split("/").length - 1]
+            currentPath.value + e.split("/")[e.split("/").length - 1]
           ])
         }
       });
@@ -361,12 +366,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
           daemonId: daemonId || ""
         },
         data: {
-          targets: [
-            [
-              breadcrumbs[breadcrumbs.length - 1].path + file,
-              breadcrumbs[breadcrumbs.length - 1].path + newname
-            ]
-          ]
+          targets: [[currentPath.value + file, currentPath.value + newname]]
         }
       });
       message.success(t("TXT_CODE_5b990e2e"));
@@ -407,13 +407,11 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       async onOk() {
         if (!isMultiple.value) {
           // one file
-          await useDeleteFileApi([breadcrumbs[breadcrumbs.length - 1].path + file]);
+          await useDeleteFileApi([currentPath.value + file]);
         } else {
           // more file
           if (!selectionData.value) return reportErrorMsg(t("TXT_CODE_f41ad30a"));
-          await useDeleteFileApi(
-            selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
-          );
+          await useDeleteFileApi(selectionData.value.map((e) => currentPath.value + e.name));
         }
       },
       okType: "danger",
@@ -442,8 +440,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         data: {
           type: 1,
           code: "utf-8",
-          source: breadcrumbs[breadcrumbs.length - 1].path + filename + ".zip",
-          targets: selectionData.value.map((e) => breadcrumbs[breadcrumbs.length - 1].path + e.name)
+          source: `${currentPath.value}` + filename + ".zip",
+          targets: selectionData.value.map((e) => currentPath.value + e.name)
         }
       });
       message.success(t("TXT_CODE_c3a933d3"));
@@ -473,11 +471,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         data: {
           type: 2,
           code: dialog.value.code,
-          source: breadcrumbs[breadcrumbs.length - 1].path + name,
-          targets:
-            dialog.value.unzipmode == "0"
-              ? breadcrumbs[breadcrumbs.length - 1].path
-              : breadcrumbs[breadcrumbs.length - 1].path + dirname
+          source: currentPath.value + name,
+          targets: dialog.value.unzipmode == "0" ? currentPath.value : currentPath.value + dirname
         }
       });
       message.success(t("TXT_CODE_c3a933d3"));
@@ -556,10 +551,9 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
     for (const f of fileSet) {
       try {
-        const uploadDir = breadcrumbs[breadcrumbs.length - 1].path;
         await getUploadMissionCfg({
           params: {
-            upload_dir: uploadDir,
+            upload_dir: currentPath.value,
             daemonId: daemonId!,
             uuid: instanceId!,
             file_name: f.file.name
@@ -617,7 +611,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     if (type === 1) return;
     try {
       spinning.value = true;
-      const target = `${breadcrumbs[breadcrumbs.length - 1].path}/${item}/`;
+      const target = currentPath.value + item + "/";
 
       breadcrumbs.push({
         path: target,
@@ -651,7 +645,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   };
 
   const getFileLink = async (fileName: string, frontDir?: string) => {
-    frontDir = frontDir || breadcrumbs[breadcrumbs.length - 1].path;
+    frontDir = frontDir || currentPath.value;
     const { state: downloadCfg, execute: getDownloadCfg } = downloadAddress();
 
     try {
@@ -728,7 +722,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     // router.push({
     //   query: {
     //     ...route.query,
-    //     path: breadcrumbs[breadcrumbs.length - 1].path
+    //     path: `${currentPath.value}`
     //   }
     // });
   };
@@ -810,7 +804,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
             permission.data.everyone
           ),
           deep: permission.deep,
-          target: breadcrumbs[breadcrumbs.length - 1].path + name
+          target: currentPath.value + name
         }
       });
       message.success(t("TXT_CODE_b05948d1"));
@@ -824,9 +818,10 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   const currentDisk = ref(t("TXT_CODE_28124988"));
 
   const toDisk = async (disk: string) => {
+    const diskName = disk === "/" ? disk : disk + ":\\";
     breadcrumbs.splice(0, breadcrumbs.length);
     breadcrumbs.push({
-      path: disk === "/" ? disk : disk + ":\\",
+      path: diskName,
       name: "/",
       disabled: false
     });
@@ -835,7 +830,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     operationForm.value.current = 1;
     const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
     if (thisTab) {
-      thisTab.name = "/";
+      thisTab.name = thisTab.path = diskName;
     }
     await getFileList();
     spinning.value = false;
@@ -847,8 +842,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   };
 
   const showImage = (file: DataType) => {
-    const frontDir = breadcrumbs[breadcrumbs.length - 1].path;
-    useImageViewerDialog(instanceId || "", daemonId || "", file.name, frontDir);
+    useImageViewerDialog(instanceId || "", daemonId || "", file.name, currentPath.value);
   };
 
   return {
@@ -858,6 +852,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     operationForm,
     dataSource,
     breadcrumbs,
+    currentPath,
     permission,
     clipboard,
     selectedRowKeys,
