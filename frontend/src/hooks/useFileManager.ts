@@ -113,8 +113,6 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const updateBreadcrumbs = (path: string) => {
     const breadcrumbPaths = parsePath(path);
-    console.log("path", path);
-
     breadcrumbs.length = 0;
 
     if (breadcrumbPaths[0] !== "/") {
@@ -141,8 +139,6 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   };
 
   const handleChangeTab = async (key: string) => {
-    console.log("key: ", key);
-
     const path = currentTabs.value.find((tab) => tab.key === key)?.path || "";
     activeTab.value = key;
     updateBreadcrumbs(path);
@@ -684,7 +680,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         },
         data: {
           url: downloadConfig.url,
-          file_name: downloadConfig.fileName
+          file_name: currentPath.value + downloadConfig.fileName
         }
       });
       message.success(t("TXT_CODE_c3a933d3"));

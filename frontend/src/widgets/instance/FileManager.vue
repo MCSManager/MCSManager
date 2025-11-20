@@ -364,7 +364,6 @@ const downloadFromURLFile = async () => {
 onMounted(async () => {
   await getFileStatus();
   dialog.value.loading = true;
-  console.log("222breadCrumbs: ", breadcrumbs);
 
   if (currentTabs.value.length) {
     const thisTab = currentTabs.value[0];
