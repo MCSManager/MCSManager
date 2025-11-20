@@ -543,8 +543,6 @@ onUnmounted(() => {
                 {{ convertFileSize(uploadData.current![1].toString()) }}
               </a-typography-text>
             </div>
-            {{ activeTab }}
-            {{ currentTabs }}
             <a-tabs
               v-model:activeKey="activeTab"
               type="editable-card"

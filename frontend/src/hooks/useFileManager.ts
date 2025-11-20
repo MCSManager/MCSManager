@@ -109,9 +109,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       }
     }
   };
-  const handleChangeTab = async (key: string) => {
-    const path = currentTabs.value.find((tab) => tab.key === key)?.path || "";
-    activeTab.value = key;
+
+  const updateBreadcrumbs = (path: string) => {
     const breadcrumbPaths = parsePath(path);
     breadcrumbs.length = 0;
 
@@ -119,23 +118,29 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       // win
       currentDisk.value = breadcrumbPaths[0];
       breadcrumbPaths[0] = "/";
-      breadcrumbPaths.forEach((path) => {
+      breadcrumbPaths.forEach((p) => {
         breadcrumbs.push({
-          path: `${currentDisk.value}:${path}`,
-          name: getLastNameFromPath(path),
+          path: `${currentDisk.value}:${p}`,
+          name: getLastNameFromPath(p),
           disabled: false
         });
       });
     } else {
       currentDisk.value = t("TXT_CODE_28124988");
-      breadcrumbPaths.forEach((path) => {
+      breadcrumbPaths.forEach((p) => {
         breadcrumbs.push({
-          path,
-          name: getLastNameFromPath(path),
+          path: p,
+          name: getLastNameFromPath(p),
           disabled: false
         });
       });
     }
+  };
+
+  const handleChangeTab = async (key: string) => {
+    const path = currentTabs.value.find((tab) => tab.key === key)?.path || "";
+    activeTab.value = key;
+    updateBreadcrumbs(path);
 
     spinning.value = true;
     operationForm.value.name = "";
@@ -236,29 +241,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       let path;
       if (initPath) {
         path = initPath;
-        const breadcrumbPaths = parsePath(initPath);
-        breadcrumbs.length = 0;
-
-        if (breadcrumbPaths[0] !== "/") {
-          // win
-          currentDisk.value = breadcrumbPaths[0];
-          breadcrumbPaths[0] = "/";
-          breadcrumbPaths.forEach((path) => {
-            breadcrumbs.push({
-              path: `${currentDisk.value}:${path}`,
-              name: getLastNameFromPath(path),
-              disabled: false
-            });
-          });
-        } else {
-          breadcrumbPaths.forEach((path) => {
-            breadcrumbs.push({
-              path,
-              name: getLastNameFromPath(path),
-              disabled: false
-            });
-          });
-        }
+        updateBreadcrumbs(initPath);
       } else {
         path = breadcrumbs[breadcrumbs.length - 1].path;
       }
