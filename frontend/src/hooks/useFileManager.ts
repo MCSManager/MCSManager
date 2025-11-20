@@ -611,7 +611,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     if (type === 1) return;
     try {
       spinning.value = true;
-      const target = currentPath.value + item + "/";
+      const target = currentPath.value + item;
 
       breadcrumbs.push({
         path: target,
