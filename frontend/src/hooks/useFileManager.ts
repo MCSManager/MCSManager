@@ -1,6 +1,5 @@
 import { openLoadingDialog, useImageViewerDialog } from "@/components/fc";
 import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
-import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
 import {
   addFolder as addFolderApi,
@@ -29,8 +28,10 @@ import type {
   Permission
 } from "@/types/fileManager";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { useLocalStorage } from "@vueuse/core";
 import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
+import { v4 } from "uuid";
 import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
 import { useRoute } from "vue-router";
 
@@ -45,7 +46,18 @@ export function getFileConfigAddr(config: { addr: string; remoteMappings?: Remot
   return addr;
 }
 
-export const useFileManager = (instanceId?: string, daemonId?: string) => {
+interface TabItem {
+  name: string;
+  path: string;
+  closable: boolean;
+  key: string;
+}
+
+interface TabsMap {
+  [key: string]: TabItem[];
+}
+
+export const useFileManager = (instanceId: string = "", daemonId: string = "") => {
   const route = useRoute();
 
   const dataSource = ref<DataType[]>();
@@ -66,6 +78,71 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     name: "/",
     disabled: false
   });
+
+  // TODO: 退出登录时要删除
+  const tabList = useLocalStorage<TabsMap>("FileManagerTabMap", {});
+  const currentTabKey = instanceId + daemonId;
+  const currentTabs = computed(() => tabList.value[currentTabKey] ?? []);
+  const activeTab = ref<string>("");
+  const onEditTabs = (targetKey: MouseEvent | Key | KeyboardEvent, action: "remove" | "add") => {
+    if (action === "add") {
+      const path = "/";
+      const key = v4();
+      currentTabs.value.push({
+        name: path,
+        path,
+        closable: true,
+        key
+      });
+      activeTab.value = key;
+      currentDisk.value = t("TXT_CODE_28124988");
+      handleChangeTab(key);
+    } else {
+      const targetIndex = currentTabs.value.findIndex((tab) => tab.key === targetKey);
+      if (targetIndex !== -1) {
+        if (currentTabs.value.length === 1) return;
+        currentTabs.value.splice(targetIndex, 1);
+      }
+      if (activeTab.value === targetKey) {
+        activeTab.value = currentTabs.value[currentTabs.value.length - 1]?.key || "";
+        handleChangeTab(activeTab.value);
+      }
+    }
+  };
+  const handleChangeTab = async (key: string) => {
+    const path = currentTabs.value.find((tab) => tab.key === key)?.path || "";
+    activeTab.value = key;
+    const breadcrumbPaths = parsePath(path);
+    breadcrumbs.length = 0;
+
+    if (breadcrumbPaths[0] !== "/") {
+      // win
+      currentDisk.value = breadcrumbPaths[0];
+      breadcrumbPaths[0] = "/";
+      breadcrumbPaths.forEach((path) => {
+        breadcrumbs.push({
+          path: `${currentDisk.value}:${path}`,
+          name: getLastNameFromPath(path),
+          disabled: false
+        });
+      });
+    } else {
+      currentDisk.value = t("TXT_CODE_28124988");
+      breadcrumbPaths.forEach((path) => {
+        breadcrumbs.push({
+          path,
+          name: getLastNameFromPath(path),
+          disabled: false
+        });
+      });
+    }
+
+    spinning.value = true;
+    operationForm.value.name = "";
+    operationForm.value.current = 1;
+    await getFileList();
+    spinning.value = false;
+  };
 
   const parsePath = (path: string) => {
     if (!path) return [];
@@ -152,14 +229,14 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     });
   };
 
-  const getFileList = async (throwErr = false, curPath?: string) => {
+  const getFileList = async (throwErr = false, initPath?: string) => {
     const { execute } = getFileListApi();
     try {
       clearSelected();
       let path;
-      if (curPath) {
-        path = curPath;
-        const breadcrumbPaths = parsePath(path);
+      if (initPath) {
+        path = initPath;
+        const breadcrumbPaths = parsePath(initPath);
         breadcrumbs.length = 0;
 
         if (breadcrumbPaths[0] !== "/") {
@@ -185,7 +262,6 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       } else {
         path = breadcrumbs[breadcrumbs.length - 1].path;
       }
-
       const res = await execute({
         params: {
           daemonId: daemonId || "",
@@ -198,7 +274,22 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       });
       dataSource.value = res.value?.items || [];
       operationForm.value.total = res.value?.total || 0;
+
+      const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
+      if (!thisTab) {
+        const key = v4();
+        tabList.value[currentTabKey] = [
+          {
+            path: path,
+            name: getLastNameFromPath(path),
+            key: key,
+            closable: false
+          }
+        ];
+        activeTab.value = key;
+      }
     } catch (error: any) {
+      // TODO: tab出错就删除
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
     }
@@ -544,6 +635,7 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     try {
       spinning.value = true;
       const target = `${breadcrumbs[breadcrumbs.length - 1].path}/${item}/`;
+
       breadcrumbs.push({
         path: target,
         name: item,
@@ -552,12 +644,21 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
       operationForm.value.name = "";
       operationForm.value.current = 1;
       await getFileList(true);
-      router.push({
-        query: {
-          ...route.query,
-          path: target
-        }
-      });
+
+      const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
+      if (thisTab) {
+        thisTab.path = target;
+        thisTab.name = item;
+        // thisTab.key =
+        return;
+      }
+
+      // router.push({
+      //   query: {
+      //     ...route.query,
+      //     path: target
+      //   }
+      // });
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
@@ -634,12 +735,19 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     operationForm.value.current = 1;
     await getFileList();
     spinning.value = false;
-    router.push({
-      query: {
-        ...route.query,
-        path: breadcrumbs[breadcrumbs.length - 1].path
-      }
-    });
+
+    const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
+    if (thisTab) {
+      thisTab.path = dir;
+      thisTab.name = getLastNameFromPath(dir);
+      return;
+    }
+    // router.push({
+    //   query: {
+    //     ...route.query,
+    //     path: breadcrumbs[breadcrumbs.length - 1].path
+    //   }
+    // });
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
@@ -742,6 +850,10 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     spinning.value = true;
     operationForm.value.name = "";
     operationForm.value.current = 1;
+    const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
+    if (thisTab) {
+      thisTab.name = "/";
+    }
     await getFileList();
     spinning.value = false;
   };
@@ -770,6 +882,12 @@ export const useFileManager = (instanceId?: string, daemonId?: string) => {
     selectionData,
     selectChanged,
     isMultiple,
+    tabList,
+    currentTabKey,
+    currentTabs,
+    activeTab,
+    onEditTabs,
+    handleChangeTab,
     openDialog,
     getFileList,
     touchFile,

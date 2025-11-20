@@ -46,7 +46,6 @@ const props = defineProps<{
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
-const currentPath = getMetaOrRouteValue("path", false);
 
 const { isPhone } = useScreen();
 
@@ -62,6 +61,10 @@ const {
   clipboard,
   currentDisk,
   isMultiple,
+  activeTab,
+  currentTabs,
+  onEditTabs,
+  handleChangeTab,
   selectChanged,
   getFileList,
   touchFile,
@@ -362,7 +365,14 @@ onMounted(async () => {
   dialog.value.loading = true;
   console.log("222breadCrumbs: ", breadcrumbs);
 
-  await getFileList(false, currentPath);
+  if (currentTabs.value.length) {
+    const thisTab = currentTabs.value[0];
+    activeTab.value = thisTab.key;
+    await getFileList(false, thisTab.path);
+  } else {
+    await getFileList(false);
+  }
+
   dialog.value.loading = false;
 });
 
@@ -533,6 +543,18 @@ onUnmounted(() => {
                 {{ convertFileSize(uploadData.current![1].toString()) }}
               </a-typography-text>
             </div>
+            {{ activeTab }}
+            {{ currentTabs }}
+            <a-tabs
+              v-model:activeKey="activeTab"
+              type="editable-card"
+              @edit="onEditTabs"
+              @change="(key) => handleChangeTab(key as string)"
+            >
+              <a-tab-pane v-for="b in currentTabs" :key="b.key" :tab="b.name" :closable="true">
+              </a-tab-pane>
+            </a-tabs>
+
             <div class="flex-wrap items-flex-start">
               <a-select
                 v-if="isShowDiskList"
