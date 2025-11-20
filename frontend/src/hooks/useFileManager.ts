@@ -237,6 +237,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const getFileList = async (throwErr = false, initPath?: string) => {
     const { execute } = getFileListApi();
+    const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
     try {
       clearSelected();
       let path;
@@ -258,8 +259,6 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       });
       dataSource.value = res.value?.items || [];
       operationForm.value.total = res.value?.total || 0;
-
-      const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
       if (!thisTab) {
         const key = v4();
         tabList.value[currentTabKey] = [
@@ -273,7 +272,12 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         activeTab.value = key;
       }
     } catch (error: any) {
-      // TODO: tab出错就删除
+      if (thisTab) {
+        tabList.value[currentTabKey] = currentTabs.value.filter((e) => e.path !== thisTab.path);
+        activeTab.value = currentTabs.value[0].key;
+        updateBreadcrumbs(currentTabs.value[0].path);
+        getFileList();
+      }
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
     }
