@@ -33,6 +33,7 @@ export const confirm2FA = useDefineApi<
   {
     data: {
       enable: boolean;
+      TOTPCode: string;
     };
   },
   undefined
