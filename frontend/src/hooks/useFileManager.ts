@@ -18,6 +18,7 @@ import {
 import uploadService from "@/services/uploadService";
 import { number2permission, permission2number } from "@/tools/permission";
 import { mapDaemonAddress, parseForwardAddress, type RemoteMappingEntry } from "@/tools/protocol";
+import { removeTrail } from "@/tools/string";
 import { reportErrorMsg } from "@/tools/validator";
 import type {
   Breadcrumb,
@@ -78,13 +79,47 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     name: "/",
     disabled: false
   });
-  const currentPath = computed(() => breadcrumbs[breadcrumbs.length - 1].path + "/");
+  const currentPath = computed(
+    () => removeTrail(breadcrumbs[breadcrumbs.length - 1].path, "/") + "/"
+  );
 
   // TODO: 退出登录时要删除
   const tabList = useLocalStorage<TabsMap>("FileManagerTabMap", {});
   const currentTabKey = instanceId + daemonId;
   const currentTabs = computed(() => tabList.value[currentTabKey] ?? []);
   const activeTab = ref<string>("");
+  const initDefaultTab = () => {
+    const path = "/";
+    const key = v4();
+    tabList.value[currentTabKey].push({
+      path,
+      name: path,
+      closable: false,
+      key: key
+    });
+    activeTab.value = key;
+    currentDisk.value = t("TXT_CODE_28124988");
+    handleChangeTab(key);
+  };
+  const handleRemoveTab = (key: string) => {
+    const index = currentTabs.value.findIndex((tab) => tab.key === key);
+    if (index !== -1) {
+      currentTabs.value.splice(index, 1);
+      if (!currentTabs.value.length) {
+        initDefaultTab();
+        return;
+      }
+
+      if (activeTab.value === key) {
+        // Prefer to switch to the previous tab; if none exists, take the last one
+        const prevIndex = index > 0 ? index - 1 : currentTabs.value.length - 1;
+        const nextKey = currentTabs.value[prevIndex]?.key || "";
+        activeTab.value = nextKey;
+        handleChangeTab(nextKey);
+      }
+    }
+  };
+
   const onEditTabs = (targetKey: MouseEvent | Key | KeyboardEvent, action: "remove" | "add") => {
     if (action === "add") {
       const path = "/";
@@ -99,15 +134,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       currentDisk.value = t("TXT_CODE_28124988");
       handleChangeTab(key);
     } else {
-      const targetIndex = currentTabs.value.findIndex((tab) => tab.key === targetKey);
-      if (targetIndex !== -1) {
-        if (currentTabs.value.length === 1) return;
-        currentTabs.value.splice(targetIndex, 1);
-      }
-      if (activeTab.value === targetKey) {
-        activeTab.value = currentTabs.value[currentTabs.value.length - 1]?.key || "";
-        handleChangeTab(activeTab.value);
-      }
+      handleRemoveTab(targetKey as string);
     }
   };
 
@@ -238,6 +265,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   const getFileList = async (throwErr = false, initPath?: string) => {
     const { execute } = getFileListApi();
     const thisTab = currentTabs.value.find((e) => e.key === activeTab.value);
+
     try {
       clearSelected();
       let path;
@@ -261,23 +289,21 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       operationForm.value.total = res.value?.total || 0;
       if (!thisTab) {
         const key = v4();
-        tabList.value[currentTabKey] = [
-          {
-            path: path,
-            name: getLastNameFromPath(path),
-            key: key,
-            closable: false
-          }
-        ];
+        tabList.value[currentTabKey].push({
+          path: path,
+          name: getLastNameFromPath(path),
+          key: key,
+          closable: false
+        });
         activeTab.value = key;
       }
     } catch (error: any) {
       if (thisTab) {
-        tabList.value[currentTabKey] = currentTabs.value.filter((e) => e.path !== thisTab.path);
-        activeTab.value = currentTabs.value[0].key;
-        updateBreadcrumbs(currentTabs.value[0].path);
-        getFileList();
+        handleRemoveTab(thisTab.key);
+      } else {
+        initDefaultTab();
       }
+
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
     }
@@ -440,7 +466,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         data: {
           type: 1,
           code: "utf-8",
-          source: `${currentPath.value}` + filename + ".zip",
+          source: currentPath.value + filename + ".zip",
           targets: selectionData.value.map((e) => currentPath.value + e.name)
         }
       });
