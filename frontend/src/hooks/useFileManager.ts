@@ -1,5 +1,6 @@
 import { openLoadingDialog, useImageViewerDialog } from "@/components/fc";
 import OverwriteFilesPopUpContent from "@/components/OverwriteFilesPopUpContent.vue";
+
 import { t } from "@/lang/i18n";
 import {
   addFolder as addFolderApi,
@@ -34,7 +35,6 @@ import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { v4 } from "uuid";
 import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
-import { useRoute } from "vue-router";
 
 export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
   let addr = config.addr;
@@ -59,8 +59,6 @@ interface TabsMap {
 }
 
 export const useFileManager = (instanceId: string = "", daemonId: string = "") => {
-  const route = useRoute();
-
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -652,16 +650,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       if (thisTab) {
         thisTab.path = target;
         thisTab.name = item;
-        // thisTab.key =
         return;
       }
-
-      // router.push({
-      //   query: {
-      //     ...route.query,
-      //     path: target
-      //   }
-      // });
     } catch (error: any) {
       breadcrumbs.splice(breadcrumbs.length - 1, 1);
       return reportErrorMsg(error.message);
@@ -745,12 +735,6 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       thisTab.name = getLastNameFromPath(dir);
       return;
     }
-    // router.push({
-    //   query: {
-    //     ...route.query,
-    //     path: `${currentPath.value}`
-    //   }
-    // });
   };
 
   const handleTableChange = (e: { current: number; pageSize: number }) => {
