@@ -2771,6 +2771,7 @@
   "TXT_CODE_fffaeb16": "Cannot cancel during upload!",
   "TXT_CODE_fffaeb17": "Run start command as user.",
   "TXT_CODE_fffaeb18": "Set the system user used to start the process. You may need to solve problems caused by permission issues yourself.",
+  "TXT_code_fffce4a8": "Enter the TOTP verification code in the box below.",
   "TXT_CODE_file_router.instanceNotExist": "Instance {{instanceUuid}} does not exist",
   "TXT_CODE_file_router.unzipLimit": "Exceeded the maximum number of concurrent decompression tasks. The maximum allowed is {{maxFileTask}}, and currently, {{fileLock}} tasks are in progress. Please be patient.",
   "TXT_CODE_file_router_service.instanceNotExit": "Instance {{uuid}} does not exist",

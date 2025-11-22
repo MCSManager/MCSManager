@@ -2771,6 +2771,7 @@
   "TXT_CODE_fffaeb16": "上传过程中不可取消！",
   "TXT_CODE_fffaeb17": "使用其他系统用户",
   "TXT_CODE_fffaeb18": "设定启动进程使用的系统用户，您可能需要自行解决因为权限问题带来的问题。",
+  "TXT_code_fffce4a8": "将双重验证代码输入下框",
   "TXT_CODE_file_router.instanceNotExist": "实例 {{instanceUuid}} 不存在",
   "TXT_CODE_file_router.unzipLimit": "超出最大同时解压缩任务量，最大准许{{maxFileTask}}个，目前有{{fileLock}}个任务正在进行，请耐心等待",
   "TXT_CODE_file_router_service.instanceNotExit": "实例 {{uuid}} 不存在",
