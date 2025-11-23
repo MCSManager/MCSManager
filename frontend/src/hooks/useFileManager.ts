@@ -86,14 +86,14 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   const currentTabKey = instanceId + daemonId;
   const currentTabs = computed(() => tabList.value[currentTabKey] ?? []);
   const activeTab = ref<string>("");
-  const initDefaultTab = () => {
-    const path = "/";
+  const initDefaultTab = (path = "/") => {
     const key = v4();
-    tabList.value[currentTabKey]?.push({
+    tabList.value[currentTabKey] ||= [];
+    tabList.value[currentTabKey].push({
       path,
       name: path,
       closable: false,
-      key: key
+      key
     });
     activeTab.value = key;
     currentDisk.value = t("TXT_CODE_28124988");
@@ -286,14 +286,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       dataSource.value = res.value?.items || [];
       operationForm.value.total = res.value?.total || 0;
       if (!thisTab) {
-        const key = v4();
-        tabList.value[currentTabKey]?.push({
-          path: path,
-          name: getLastNameFromPath(path),
-          key: key,
-          closable: false
-        });
-        activeTab.value = key;
+        initDefaultTab(path);
       }
     } catch (error: any) {
       if (thisTab) {
