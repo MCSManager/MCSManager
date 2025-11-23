@@ -89,7 +89,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   const initDefaultTab = () => {
     const path = "/";
     const key = v4();
-    tabList.value[currentTabKey].push({
+    tabList.value[currentTabKey]?.push({
       path,
       name: path,
       closable: false,
@@ -287,7 +287,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       operationForm.value.total = res.value?.total || 0;
       if (!thisTab) {
         const key = v4();
-        tabList.value[currentTabKey].push({
+        tabList.value[currentTabKey]?.push({
           path: path,
           name: getLastNameFromPath(path),
           key: key,
