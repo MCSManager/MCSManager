@@ -65,17 +65,23 @@ MCSManager ได้รับความนิยมในชุมชนเก
 
 <br />
 
+## เอกสารทางการ
+
+ภาษาอังกฤษ: https://docs.mcsmanager.com/
+
+ภาษาจีน: https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## การติดตั้ง
 
 ### Windows
 
-ดาวน์โหลด: https://download.mcsmanager.com/mcsmanager_windows_release.zip
+**สำหรับระบบ Windows ได้รวมเป็นเวอร์ชันที่พร้อมใช้งาน - ดาวน์โหลดและรันได้ทันที:**
 
-เริ่มแผง:
+ไฟล์บีบอัด: https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+ดับเบิลคลิก `start.bat` เพื่อเปิดใช้งานทั้งแผงเว็บและกระบวนการ daemon
 
 <br />
 
@@ -140,6 +146,8 @@ chmod 775 install.sh
 
 วิธีการติดตั้งนี้ไม่ได้ลงทะเบียนแผงกับบริการระบบโดยอัตโนมัติ ดังนั้นคุณต้องใช้ซอฟต์แวร์ `screen` เพื่อจัดการ หากคุณต้องการให้บริการระบบจัดการ MCSManager กรุณาอ้างอิงเอกสาร
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -176,6 +184,50 @@ chmod 775 install.sh
 
 <br />
 
+### การติดตั้งผ่าน Docker
+
+ติดตั้งแผงโดยใช้ docker-compose.yml โปรดทราบว่าคุณต้องแก้ไข `<CHANGE_ME_TO_INSTALL_PATH>` ทั้งหมดให้เป็นเส้นทางติดตั้งจริงของคุณ
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+เปิดใช้งานโดยใช้ docker-compose
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # เขียนเนื้อหา docker-compose.yml ข้างต้นที่นี่
+docker compose pull && docker compose up -d
+```
+
+หมายเหตุ: หลังจากการติดตั้ง Docker ด้าน Web อาจไม่สามารถเชื่อมต่อกับ Daemon โดยอัตโนมัติได้อีกต่อไป
+
+ณ จุดนี้หากคุณเข้าสู่แผง คุณควรเห็นข้อผิดพลาดบางอย่างเนื่องจากด้าน Web ไม่สามารถเชื่อมต่อกับ daemon ได้สำเร็จ คุณต้องสร้างโหนดใหม่เพื่อเชื่อมต่อกัน
+
+<br />
+
 ## การมีส่วนร่วมในโค้ด
 
 - ต้องอ่านก่อนมีส่วนร่วมในโค้ด: https://github.com/MCSManager/MCSManager/issues/599
@@ -188,7 +240,7 @@ chmod 775 install.sh
 
 ## การพัฒนา
 
-ส่วนนี้สำหรับนักพัฒนา หากคุณต้องการทำการพัฒนาระดับสองใน MCSManager หรือส่งการมีส่วนร่วมในโค้ด กรุณาอ่านเนื้อหาเหล่านี้อย่างระมัดระวัง:
+**ส่วนนี้สำหรับนักพัฒนา** หากคุณต้องการทำการพัฒนาระดับสองใน MCSManager หรือส่งการมีส่วนร่วมในโค้ด กรุณาอ่านเนื้อหาเหล่านี้อย่างระมัดระวัง:
 
 ### จำเป็น
 
@@ -202,6 +254,24 @@ chmod 775 install.sh
 ### ไฟล์การพึ่งพา
 
 คุณต้องไปที่โปรเจ็กต์ [PTY](https://github.com/MCSManager/PTY) และ [Zip-Tools](https://github.com/MCSManager/Zip-Tools) เพื่อดาวน์โหลดไฟล์ไบนารีที่เหมาะกับระบบของคุณ เก็บไว้ในไดเรกทอรี `daemon/lib` (สร้างด้วยตนเองหากไม่มี) เพื่อให้แน่ใจว่าการทำงานปกติของ `เทอร์มินัลจำลอง` และ `การแตกไฟล์`
+
+ดาวน์โหลดไฟล์การพึ่งพาสามไฟล์ เลือกตามสถาปัตยกรรมระบบของคุณ และตรวจสอบ Releases เพื่อหาไบนารีที่เหมาะกับระบบและสถาปัตยกรรมของคุณ
+
+ตัวอย่างเช่น:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# ห้องสมุดการพึ่งพาเทอร์มินัลจำลอง
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# ห้องสมุดการพึ่งพาสำหรับแตกและบีบอัดไฟล์
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# การสนับสนุนไฟล์บีบอัด 7z ดาวน์โหลดเสริม
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
 
 ### การทำงาน
 
@@ -265,6 +335,8 @@ if (!checkName) {
 
 คีย์ข้อความแปลทั้งหมดไม่สามารถซ้ำกันได้ ดังนั้นกรุณาพยายามใช้ชื่อที่ยาวกว่า!
 
+<br />
+
 ### การสร้างเวอร์ชันสภาพแวดล้อมการผลิต
 
 ```bash
@@ -291,8 +363,14 @@ if (!checkName) {
 
 <br />
 
+## ผู้มีส่วนร่วม
+
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="อันดับผู้มีส่วนร่วม" style="display: block; width: 100%;" />
+</a>
+
 ## ใบอนุญาต
 
-ซอร์สโค้ดปฏิบัติตามใบอนุญาต [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+โปรเจ็กต์นี้ได้รับอนุญาตภายใต้ [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 Copyright ©2025 MCSManager.

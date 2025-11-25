@@ -6,8 +6,6 @@ interface IActionCommand {
   command: string;
 }
 
-type ProcessType = "general" | "docker";
-
 // @Entity
 export default class InstanceConfig implements IGlobalInstanceConfig {
   public nickname = "Undefined";

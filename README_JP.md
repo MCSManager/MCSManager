@@ -65,17 +65,23 @@ MCSManager は `Minecraft` と `Steam` ゲーミングコミュニティ内で�
 
 <br />
 
+## 公式ドキュメント
+
+英語：https://docs.mcsmanager.com/
+
+中国語：https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## インストール
 
 ### Windows
 
-ダウンロード：https://download.mcsmanager.com/mcsmanager_windows_release.zip
+**Windows システムの場合、すぐに実行できる統合バージョンとして提供されます - ダウンロードしてすぐに実行してください：**
 
-パネルを開始：
+アーカイブ：https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+`start.bat` をダブルクリックして、Web パネルと daemon プロセスの両方を起動します。
 
 <br />
 
@@ -140,6 +146,8 @@ chmod 775 install.sh
 
 このインストール方法では、パネルがシステムサービスに自動登録されないため、`screen` ソフトウェアを使用して管理する必要があります。システムサービスに MCSManager を管理させたい場合は、ドキュメントを参照してください。
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -176,6 +184,50 @@ chmod 775 install.sh
 
 <br />
 
+### Docker 経由でのインストール
+
+docker-compose.yml を使用してパネルをインストールしてください、`<CHANGE_ME_TO_INSTALL_PATH>` すべてを実際のインストールパスに変更する必要があることに注意してください。
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+docker-compose を使用して有効化。
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # 上記の docker-compose.yml の内容をここに記述
+docker compose pull && docker compose up -d
+```
+
+注意：Docker インストール後、Web 側は Daemon に自動的に接続できなくなる可能性があります。
+
+この時点でパネルに入ると、一部のエラーが表示されるはずです。これは Web 側が daemon 側に正常に接続できなかったためです、それらを接続するために新しいノードを作成する必要があります。
+
+<br />
+
 ## コードの貢献
 
 - コードを貢献する前に必ずお読みください：https://github.com/MCSManager/MCSManager/issues/599
@@ -188,7 +240,7 @@ chmod 775 install.sh
 
 ## 開発
 
-このセクションは開発者向けです。MCSManager で二次開発を行ったり、コード貢献を提出したりする場合は、これらの内容を注意深くお読みください：
+**このセクションは開発者向けです。**MCSManager で二次開発を行ったり、コード貢献を提出したりする場合は、これらの内容を注意深くお読みください：
 
 ### 必要要件
 
@@ -202,6 +254,24 @@ MCSManager の開発には `Visual Studio Code` を使用しています。以�
 ### 依存ファイル
 
 `daemon/lib` ディレクトリ（存在しない場合は手動で作成）に、お使いのシステムに適したバイナリファイルを保存するために、[PTY](https://github.com/MCSManager/PTY) と [Zip-Tools](https://github.com/MCSManager/Zip-Tools) プロジェクトにアクセスしてダウンロードする必要があります。これにより `シミュレーション端末` と `ファイル解凍` の正常な動作が保証されます。
+
+3つの依存ファイルをダウンロードし、システムアーキテクチャに応じて選択し、Releases を確認してシステムとアーキテクチャに適したバイナリファイルを見つけてください。
+
+例:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# シミュレーション端末依存ライブラリ
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# 解凍 & 圧縮ファイル依存ライブラリ
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# 7z アーカイブサポート、オプションのダウンロード
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
 
 ### 実行
 
@@ -264,6 +334,8 @@ if (!checkName) {
 翻訳テキストにパラメータを含める必要がある場合は、少し複雑になる可能性があります。フロントエンドとバックエンドで異なる i18n ライブラリを使用しているため、形式が異なる場合があります。類似のコードを見つけるためにファイルを調べる必要があります。
 
 すべての翻訳テキストキーは重複できませんので、より長い名前を使用してください！
+
+<br />
 
 ### 本番環境バージョンのビルド
 

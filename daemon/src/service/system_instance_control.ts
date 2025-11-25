@@ -225,13 +225,6 @@ class InstanceControlSubsystem {
         await sleep(100);
       }
     } catch (error: any) {
-      // logger.error(
-      //   $t("TXT_CODE_system_instance_control.execCmdErr", {
-      //     uuid: task.instanceUuid,
-      //     name: task.name,
-      //     error: error
-      //   })
-      // );
       // ignore error
     }
   }

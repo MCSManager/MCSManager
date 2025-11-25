@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
+import { TYPE_UNIVERSAL } from "@/hooks/useInstance";
 import { t } from "@/lang/i18n";
+import type { QuickStartPackages } from ".";
 export const CARD_FIXED_HEIGHT = 200;
 
 export const TERMINAL_CODE = [
@@ -30,33 +32,25 @@ export const INSTANCE_STATUS: Record<INSTANCE_STATUS_CODE, string> = {
   [INSTANCE_STATUS_CODE.RUNNING]: t("TXT_CODE_bdb620b9")
 };
 
-export const defaultDockerFile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
+export const defaultDockerfile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
 
-export const openjdk8 = `FROM openjdk:8-jre
-RUN apt update && apt install -y locales
+export const jdk8Dockerfile = `FROM eclipse-temurin:8
 RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
-export const openjdk16 = `FROM openjdk:16.0.2
-RUN mkdir -p /workspace
-WORKDIR /workspace
-`;
-
-export const ubuntu22 = `FROM ubuntu:22.04
+export const ubuntu22Dockerfile = `FROM ubuntu:22.04
 RUN apt update && apt -y install libcurl4 && DEBIAN_FRONTEND="noninteractive" apt -y install tzdata
 RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
-export const openjdk17 = `FROM openjdk:17
+export const jdk17Dockerfile = `FROM eclipse-temurin:17
 RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
-export const openjdk8CN = `FROM openjdk:8-jre
-RUN sed -i -E 's/http:\\/\\/(deb|security).debian.org/http:\\/\\/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list
-RUN apt update && apt install -y locales
+export const jdk8DockerfileCN = `FROM eclipse-temurin:8
 RUN echo "zh_CN.UTF-8 UTF-8">/etc/locale.gen && locale-gen
 ENV LANG=zh_CN.UTF-8
 ENV LANGUAGE=zh_CN.UTF-8
@@ -66,13 +60,7 @@ RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
-export const openjdk16CN = `FROM openjdk:16.0.2
-RUN mkdir -p /workspace
-ENV TZ=Asia/Shanghai
-WORKDIR /workspace
-`;
-
-export const ubuntu22CN = `FROM ubuntu:22.04
+export const ubuntu22DockerfileCN = `FROM ubuntu:22.04
 ENV TZ=Asia/Shanghai
 RUN sed -i -E 's/http:\\/\\/(archive|security).ubuntu.com/http:\\/\\/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list
 RUN apt update && apt -y install libcurl4 && DEBIAN_FRONTEND="noninteractive" apt -y install tzdata
@@ -81,12 +69,13 @@ RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
-export const openjdk17CN = `FROM openjdk:17
-RUN mkdir -p /workspace
+export const jdk17DockerfileCN = `FROM eclipse-temurin:17
+RUN echo "zh_CN.UTF-8 UTF-8">/etc/locale.gen && locale-gen
 ENV LANG=zh_CN.UTF-8
 ENV LANGUAGE=zh_CN.UTF-8
 ENV LC_ALL=zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
+RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
@@ -110,3 +99,94 @@ export enum ScheduleCreateType {
   CYCLE,
   SPECIFY
 }
+
+export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
+  containerName: "",
+  image: "",
+  memory: undefined,
+  ports: [],
+  extraVolumes: [],
+  maxSpace: undefined,
+  network: undefined,
+  io: undefined,
+  networkMode: "bridge",
+  networkAliases: [],
+  cpusetCpus: "",
+  cpuUsage: undefined,
+  workingDir: "/data",
+  env: [],
+  changeWorkdir: true,
+  memorySwap: undefined,
+  memorySwappiness: undefined
+};
+
+export const defaultInstanceInfo: IGlobalInstanceConfig = {
+  nickname: "",
+  startCommand: "",
+  stopCommand: "",
+  cwd: "",
+  ie: "UTF-8",
+  oe: "UTF-8",
+  createDatetime: new Date().getTime(),
+  lastDatetime: 0,
+  type: TYPE_UNIVERSAL,
+  tag: [],
+  endTime: 0,
+  fileCode: "UTF-8",
+  processType: "general",
+  updateCommand: "",
+  runAs: "",
+  actionCommandList: [],
+  crlf: 1,
+  category: 0,
+  basePort: undefined as any,
+
+  // Steam RCON
+  enableRcon: false,
+  rconPassword: "",
+  rconPort: undefined,
+  rconIp: "",
+
+  // Old fields
+  terminalOption: {
+    haveColor: true,
+    pty: false,
+    ptyWindowCol: 164,
+    ptyWindowRow: 40
+  },
+  eventTask: {
+    autoStart: false,
+    autoRestart: false,
+    autoRestartMaxTimes: 3,
+    ignore: false
+  },
+  docker: defaultDockerConfig,
+  pingConfig: {
+    ip: "",
+    port: undefined,
+    type: 1
+  },
+  extraServiceConfig: {
+    openFrpTunnelId: "",
+    openFrpToken: ""
+  }
+};
+
+export const defaultQuickStartPackages: QuickStartPackages = {
+  language: "",
+  description: "",
+  title: "",
+  category: "",
+  runtime: "",
+  size: "",
+  hardware: "",
+  remark: "",
+  targetLink: "",
+  author: "",
+  setupInfo: defaultInstanceInfo,
+  gameType: "",
+  image: "",
+  platform: "",
+  tags: [],
+  isSummary: false
+};

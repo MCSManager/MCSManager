@@ -1,7 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import permission from "../middleware/permission";
-import { bind2FA, confirm2FaQRCode, getUserUuid, logout } from "../service/passport_service";
+import { bind2FA, confirm2FaQRCode, getUserUuid, getUserFromCtx, logout } from "../service/passport_service";
 import userSystem from "../service/user_service";
 import { getToken, isAjax } from "../service/passport_service";
 import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
@@ -103,9 +103,15 @@ router.post("/bind2fa", permission({ level: 1 }), async (ctx: Koa.ParameterizedC
 router.post(
   "/confirm2fa",
   permission({ level: 1 }),
-  validator({ body: { enable: Boolean } }),
+  validator({ body: { enable: Boolean, TOTPCode: String } }),
   async (ctx: Koa.ParameterizedContext) => {
+    const TOTPCode = ctx.request.body.TOTPCode;
+    const MFAResult = userSystem.check2FA(TOTPCode, getUserFromCtx(ctx) ?? {}, 0);
     const enable = Boolean(ctx.request.body.enable);
+    if (enable && !MFAResult) {
+      ctx.body = false;
+      return;
+    }
     const userUuid = getUserUuid(ctx);
     await confirm2FaQRCode(userUuid, enable);
     ctx.body = true;

@@ -65,17 +65,23 @@ Deve usar [Node.js 16.20.2](https://nodejs.org/en) ou superior, recomendamos usa
 
 <br />
 
+## Documentação Oficial
+
+Inglês: https://docs.mcsmanager.com/
+
+Chinês: https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## Instalação
 
 ### Windows
 
-Download: https://download.mcsmanager.com/mcsmanager_windows_release.zip
+**Para sistemas Windows, vem como uma versão integrada pronta para executar - baixe e execute imediatamente:**
 
-Iniciar painel:
+Arquivo: https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+Clique duas vezes em `start.bat` para iniciar tanto o painel web quanto o processo daemon.
 
 <br />
 
@@ -140,6 +146,8 @@ chmod 775 install.sh
 
 Este método de instalação não registra automaticamente o painel aos serviços do sistema, então você deve usar software `screen` para gerenciá-lo. Se você quiser que o serviço do sistema assuma o MCSManager, por favor consulte a documentação.
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -176,6 +184,50 @@ chmod 775 install.sh
 
 <br />
 
+### Instalação via Docker
+
+Instale o painel usando docker-compose.yml, note que você precisa alterar todos os `<CHANGE_ME_TO_INSTALL_PATH>` para seu caminho de instalação real.
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+Habilitar usando docker-compose.
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # Escreva aqui o conteúdo do docker-compose.yml acima
+docker compose pull && docker compose up -d
+```
+
+Nota: Após a instalação do Docker, o lado Web pode não conseguir mais conectar automaticamente ao Daemon.
+
+Neste momento, se você entrar no painel, deve ver alguns erros porque o lado Web não conseguiu conectar com sucesso ao lado daemon, você precisa criar um novo nó para conectá-los.
+
+<br />
+
 ## Contribuindo com Código
 
 - Deve ser lido antes de contribuir com código: https://github.com/MCSManager/MCSManager/issues/599
@@ -188,7 +240,7 @@ chmod 775 install.sh
 
 ## Desenvolvimento
 
-Esta seção é para desenvolvedores. Se você quer fazer desenvolvimento secundário no MCSManager ou enviar contribuições de código, por favor leia cuidadosamente estes conteúdos:
+**Esta seção é para desenvolvedores.** Se você quer fazer desenvolvimento secundário no MCSManager ou enviar contribuições de código, por favor leia cuidadosamente estes conteúdos:
 
 ### Requerido
 
@@ -202,6 +254,24 @@ Usamos `Visual Studio Code` para desenvolver MCSManager. Você deve **instalar**
 ### Arquivos de Dependências
 
 Você precisa ir aos projetos [PTY](https://github.com/MCSManager/PTY) e [Zip-Tools](https://github.com/MCSManager/Zip-Tools) para baixar arquivos binários adequados para seu sistema, armazená-los no diretório `daemon/lib` (criar manualmente se não existir) para garantir o funcionamento normal de `terminal de simulação` e `descompactação de arquivos`.
+
+Baixe três arquivos de dependência, selecione conforme a arquitetura do seu sistema, e verifique os Releases para encontrar binários adequados para seu sistema e arquitetura.
+
+Por exemplo:
+
+```bash
+cd /opt/mcsmanager/daemon
+mkdir lib && cd lib
+
+# Biblioteca de dependências do terminal emulado
+wget https://github.com/MCSManager/PTY/releases/download/latest/pty_linux_x64
+
+# Biblioteca de dependências para extrair e comprimir arquivos
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/file_zip_linux_x64
+
+# Suporte para arquivos 7z, download opcional
+wget https://github.com/MCSManager/Zip-Tools/releases/download/latest/7z_linux_x64
+```
 
 ### Execução
 
@@ -264,6 +334,8 @@ Se você instalou o plugin `I18n Ally`, seu `$t("TXT_CODE_MY_ERROR")` deve exibi
 Se o texto de tradução precisa carregar parâmetros, isso pode ser um pouco complexo, porque frontend e backend usam bibliotecas i18n diferentes, então o formato pode ser diferente. Você precisa olhar através dos arquivos para encontrar código similar para entender.
 
 Todas as chaves de texto de tradução não podem ser duplicadas, então por favor tente usar um nome mais longo!
+
+<br />
 
 ### Construir Versão de Ambiente de Produção
 

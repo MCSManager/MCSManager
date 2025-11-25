@@ -34,7 +34,6 @@ MCSManager has gained popularity within the **`Minecraft`** and **`Steam`** gami
 
 MCSM also has **commercial applications** in mind, such as private server hosting and sales by **IDC service providers**. Several small and medium-sized enterprises already use the panel as a combined **server management** and **sales platform**. In addition, it supports **multi-language environments**, making it accessible to users across different countries and regions.
 
-
 <img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
 
 <img width="1915" height="1386" alt="market" src="https://github.com/user-attachments/assets/fc276180-a826-476a-803e-a038f97115fc" />
@@ -61,20 +60,28 @@ MCSM also has **commercial applications** in mind, such as private server hostin
 
 The control panel runs on both **`Windows`** and **`Linux`** platforms. No database installation is required. Simply install the **`Node.js`** runtime and a few basic **decompression utilities**.
 
-> Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.  
+> Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.
 > It is recommended to use the **latest LTS version** for best compatibility and stability.
+
+<br />
+
+## Official Documentation
+
+English: https://docs.mcsmanager.com/
+
+Chinese: https://docs.mcsmanager.com/zh_cn/
+
+<br />
 
 ## Installation
 
 ### Windows
 
-Download: https://download.mcsmanager.com/mcsmanager_windows_release.zip
+**For Windows systems, it comes as a ready-to-run integrated version - download and run it immediately.**
 
-Start panel:
+Archive: https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-```bash
-start.bat
-```
+Double-click `start.bat` to launch both the web panel and daemon process.
 
 <br />
 
@@ -101,7 +108,6 @@ systemctl stop mcsm-{web,daemon}  # Stop panel
 **Linux Manual Installation**
 
 - If the one-click installation method doesn't work, you can install MCSManager manually by following the steps below:
-
 
 ```bash
 # Step 1: Navigate to the installation directory (create it if it doesn't exist)
@@ -147,6 +153,8 @@ http://<public IP>:23333/
 
 If you prefer to run MCSManager as a system service, please refer to the official documentation for setup instructions.
 
+<br />
+
 ### Mac OS
 
 ```bash
@@ -184,6 +192,50 @@ chmod 775 install.sh
 
 <br />
 
+### Docker Installation
+
+Install the panel using docker-compose.yml, note that you need to modify all `<CHANGE_ME_TO_INSTALL_PATH>` in it to your actual installation directory.
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+Enable using docker-compose.
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # Write the above docker-compose.yml content here
+docker compose pull && docker compose up -d
+```
+
+Note: After Docker installation, the Web side may no longer be able to automatically connect to the Daemon.
+
+At this point, if you enter the panel, you should see some errors because the Web side has not successfully connected to the daemon side, you need to create a new node to connect them together.
+
+<br />
+
 ## Contributing Code
 
 Before contributing code to this project, please make sure to review the following:
@@ -196,113 +248,37 @@ Before contributing code to this project, please make sure to review the followi
 
 ## Development
 
-This section is intended for developers. If you plan to contribute to MCSManager or perform secondary development, please review the following requirements:
+### Project Structure
 
-### Required Setup
+The project comprises three core modules:
 
-We recommend using **Visual Studio Code** for development. You **must install** the following extensions:
+- Daemon backend (`daemon` directory)
+- Web backend (`panel` directory)
+- Web frontend (`frontend` directory)
 
-- **I18n Ally** – Internationalization text display support  
-- **Prettier** – Code formatter  
-- **Vue – Official** – Vue framework support  
-- **ESLint** – JavaScript/TypeScript linting and code style enforcement
+**Web Backend Responsibilities:**
 
+- User management
+- Node connectivity
+- Authentication and authorization
+- API services
 
-### Dependency Files
+**Daemon Backend Responsibilities:**
 
-To enable the **emulated terminal** and **file decompression** features, you need to download and install required binary dependencies manually:
+- Process management for server instances
+- Docker container operations
+- File system management
+- Real-time terminal access
 
-- Visit the following repositories:
-  - [PTY](https://github.com/MCSManager/PTY)
-  - [Zip-Tools](https://github.com/MCSManager/Zip-Tools)
-  
-- Download the appropriate binaries for your operating system.
-- Place the downloaded files into the `daemon/lib/` directory.
-  - If the `lib` folder does not exist, create it manually.
-  
-This step is essential to ensure proper functionality of terminal emulation and archive handling within MCSManager.
+**Web Frontend Responsibilities:**
 
----
+- User interface implementation
+- Web backend integration
+- Direct node communication for optimized performance
 
-### Running
+### Setting Up Development Environment
 
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
-
-# For macOS
-./install-dependents.sh
-./npm-dev-macos.sh
-
-# For Windows
-./install-dependents.bat
-./npm-dev-windows.bat
-```
-
-### Code Internationalization
-
-Since MCSManager supports multiple languages, **all strings and comments in the codebase must be written in English**.  
-**Do not hardcode any non-English text directly into the code.**
-
-For example, when introducing a new string that needs to support translation:
-
-```ts
-import { $t } from "../i18n";
-
-if (!checkName) {
-  const errorMsg = "Check Name Failed!" // Avoid hardcoding text like this
-  const errorMsg = $t("TXT_CODE_MY_ERROR"); // Use i18n keys instead
-}.
-```
-
-```html
-<script lang="ts" setup>
-  import { t } from "@/lang/i18n";
-  // ...
-</script>
-
-<template>
-  <!-- ... -->
-  <a-menu-item key="toNodesPage" @click="toNodesPage()">
-    <FormOutlined />
-    {{ t("TXT_CODE_NODE_INFO") }}
-  </a-menu-item>
-</template>
-```
-
-After adding new keys, be sure to update the appropriate language file, for example: languages/en_US.json.
-
-The `en_US.json` file is mandatory and serves as the base source for all other languages.
-Other language files can be automatically translated later using AI or manual review.
-
-```json
-{
-  //...
-  "TXT_CODE_MY_ERROR": "Check Name Failed!",
-  "TXT_CODE_NODE_INFO": "Jump to Node Page"
-}
-```
-
-If you have the `I18n Ally` plugin installed, your usage of `$t("TXT_CODE_MY_ERROR")` will display the actual English translation inline.
-
-If your translation string requires parameters, it may be slightly more complex.
-Note that the frontend and backend use different i18n libraries, so the parameter formats may vary. Please refer to similar examples in the codebase to understand the correct syntax.
-
-Lastly, translation keys must be unique, to avoid conflicts, use **longer**, **descriptive** key names.
-
-### Building Production Environment Version
-
-To generate the production build, run the appropriate script based on your operating system:
-
-
-```bash
-# Windows
-./build.bat
-
-# macOS / Linux
-./build.sh
-```
-
-After the build process completes, the compiled production code will be located in the `production-code` directory.
+See: [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 <br />
 
@@ -329,8 +305,7 @@ For serious **security vulnerabilities** that should not be disclosed publicly, 
 
 Once resolved, we will credit the discoverer in the relevant code or release notes.
 
-
-<br/ >
+<br />
 
 ## Contributors
 
@@ -343,4 +318,3 @@ Once resolved, we will credit the discoverer in the relevant code or release not
 This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 &copy; 2025 MCSManager. All rights reserved.
-

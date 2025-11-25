@@ -18,6 +18,7 @@ const { execute: executeUpdatePassword, isLoading: updatePasswordLoading } = upd
 
 const formState = reactive({
   resetPassword: false,
+  TOTPCode: "",
   password1: "",
   password2: "",
   qrcode: ""
@@ -69,20 +70,28 @@ const handleBind2FA = async () => {
 };
 
 const confirm2FACode = async () => {
-  await confirm2FA().execute({
-    data: {
-      enable: true
-    }
-  });
+  const TOTPCode = formState.TOTPCode;
+  try {
+    await confirm2FA().execute({
+      data: {
+        enable: true,
+        TOTPCode
+      }
+    });
+  } catch {
+    return message.error(t("TXT_CODE_3d68e43b"));
+  }
   message.success(t("TXT_CODE_d3de39b4"));
   await updateUserInfo();
+  formState.TOTPCode = "";
   formState.qrcode = "";
 };
 
 const disable2FACode = async () => {
   await confirm2FA().execute({
     data: {
-      enable: false
+      enable: false,
+      TOTPCode: "000000"
     }
   });
   message.success(t("TXT_CODE_d3de39b4"));
@@ -166,11 +175,17 @@ const disable2FACode = async () => {
           <div v-if="formState?.qrcode">
             <p>
               1. {{ t("TXT_CODE_cc561947") }}<br />
-              2. {{ t("TXT_CODE_af2a6972") }}<br />
+              2. {{ t("TXT_code_fffce4a8") }}<br />
+              3. {{ t("TXT_CODE_af2a6972") }}<br />
             </p>
             <div class="mb-20">
               <img :src="formState.qrcode" style="height: 180px; border-radius: 6px" />
             </div>
+            <a-input
+              v-model:value="formState.TOTPCode"
+              class="mb-12"
+              :placeholder="t('TXT_CODE_7ac8b1d3')"
+            />
             <a-button :loading="setUserApiKeyLoading" @click="confirm2FACode">
               {{ t("TXT_CODE_b0a18c20") }}
             </a-button>

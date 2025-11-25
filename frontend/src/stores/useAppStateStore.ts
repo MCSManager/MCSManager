@@ -64,7 +64,7 @@ export const useAppStateStore = createGlobalState(() => {
       state.settings = panelStatusRes.value?.settings;
     }
     if (state.isInstall) {
-      language.value = toStandardLang(panelStatusRes.value?.language);
+      state.language = language.value = toStandardLang(panelStatusRes.value?.language);
     }
     console.info("Window.navigator.language:", window.navigator.language);
     console.info("Panel Language:", state.language);

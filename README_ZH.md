@@ -28,11 +28,11 @@
 
 ## 这是什么？
 
-**MCSManager 面板**（简称：MCSM 面板），是一个快速部署，支持分布式架构，支持多用户，简单易用和现代化的 Minecraft 和 Steam 游戏服务器 Web 管理面板。
+**MCSManager 面板**（简称：MCSM 面板），是一个快速部署，支持分布式架构，支持多用户，简单易用和现代化的 Minecraft、Steam 和其他游戏服务器 Web 管理面板。
 
 MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行程度，它可以帮助你集中管理多个物理服务器，实现在任何主机上创建游戏服务器，并且提供安全可靠的多用户权限系统，可以很轻松的帮助你管理多个服务器，一直在为 `Minecraft`，`Terraria` 和 `Steam` 游戏服务器的管理员，运维人员和个人开发者提供健康的软件支持。
 
-它同样也适合任何商业性质的行为，比如 IDC 服务商用于私服出售等，现已有多家中小型企业使用此面板作为管理&销售软件，并且支持**多个国家**的语言。
+MCSM 同样也考虑了**商业应用**，例如由 **IDC 服务提供商**进行的私有服务器托管和销售。多家中小型企业已经将此面板用作**服务器管理**和**销售平台**的结合。此外，它支持**多语言环境**，使其可供不同国家和地区的用户访问。
 
 <img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
 
@@ -64,6 +64,14 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 
 <br />
 
+## 官方文档
+
+英语：https://docs.mcsmanager.com/
+
+中文：https://docs.mcsmanager.com/zh_cn/
+
+<br />
+
 ## 安装
 
 ### Windows
@@ -72,11 +80,7 @@ MCSManager 在 `Minecraft` 和 `Steam` 游戏社区内中已有一定的流行�
 
 压缩包：https://download.mcsmanager.com/mcsmanager_windows_release.zip
 
-启动面板：
-
-```bash
-start.bat
-```
+双击 `start.bat` 即可启动面板和守护进程。
 
 <br />
 
@@ -85,7 +89,7 @@ start.bat
 **一行命令快速安装**
 
 ```bash
-sudo su -c "wget -qO- https://script.mcsmanager.com/setup_cn.sh | bash"
+sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
 ```
 
 **安装后的使用方法**
@@ -141,10 +145,11 @@ chmod 775 install.sh
 
 这种安装方式不会自动注册面板到系统服务（Service），所以必须使用 `screen` 软件来管理，如果你希望由系统服务来接管 MCSManager，请参考文档。
 
+<br />
+
 ### Mac OS
 
 ```bash
-
 # 首先安装 Node.js，如果你已经安装可以忽略这个步骤。
 # Node.js 推荐安装最新 LTS 版本。
 brew install node
@@ -177,6 +182,50 @@ chmod 775 install.sh
 
 <br />
 
+### 通过 Docker 安装
+
+使用 docker-compose.yml 安装面板，请注意你需要修改里面的所有 `<CHANGE_ME_TO_INSTALL_PATH>` 为你的实际安装目录。
+
+```yml
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    ports:
+      - "23333:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    restart: unless-stopped
+    ports:
+      - "24444:24444"
+    environment:
+      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
+      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+使用 docker-compose 启用。
+
+```bash
+mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
+cd <CHANGE_ME_TO_INSTALL_PATH>
+vim docker-compose.yml # 这里写入上面的docker-compose.yml的内容
+docker compose pull && docker compose up -d
+```
+
+注意：使用 Docker 安装后，Web 端可能会无法再自动连接到 Daemon。
+
+此时如果你进入面板，应该会出现一些错误，因为面板 Web 端没有成功连接到守护进程端，你需要新建节点让它们联系到一起。
+
+<br />
+
 ## 贡献代码
 
 - 贡献代码前必读：https://github.com/MCSManager/MCSManager/issues/599
@@ -187,93 +236,41 @@ chmod 775 install.sh
 
 <br />
 
-## 搭建开发环境
+## 开发此项目
 
-此段落面向开发人员，如果你想对 MCSManager 二次开发，或者提交代码贡献，请务必仔细的阅读这些内容：
+### 项目结构
 
-### 必备插件
+整体项目总共分为三个部分：
 
-我们使用 `Visual Studio Code` 开发 MCSManager，你**必须安装**这些插件：
+- 网页后端（panel 文件夹）
+- 被控节点端（daemon 文件夹）
+- 网页前端（frontend 文件夹）
 
-- i18n 文案显示支持（I18n Ally）
-- 代码格式化（Prettier）
-- Vue - Offcial
-- ESLint
+网页后端职责
 
-### 下载依赖文件
+- 用户管理
+- 连接节点
+- 大多数操作的权限认证与授权
+- API 接口提供
+- 更多...
 
-你需要前往 [PTY](https://github.com/MCSManager/PTY) 和 [Zip-Tools](https://github.com/MCSManager/Zip-Tools) 两个项目下载适用于你的系统的二进制文件，将他们存放到 `daemon/lib` 目录下（不存在就手动创建），以确保 `仿真终端` 和 `文件解压缩` 的正常工作。
+节点端职责
 
-### 运行开发环境
+- 真实的进程管理（你的实例进程实际运行处）
+- Docker 容器管理
+- 文件管理
+- 实时终端
+- 更多...
 
-```bash
-git clone https://github.com/MCSManager/MCSManager.git
+网页前端的功能
 
-# MacOS
-./install-dependents.sh
-./npm-dev-macos.sh
+- 用户 UI 支持
+- 与 Web 后端交互
+- 部分功能直接与节点端通信，以避免大量流量压力
 
-# Windows
-./install-dependents.bat
-./npm-dev-windows.bat
-```
+### 搭建环境
 
-### 代码国际化
-
-由于项目适配多国语言，所以代码中的所有 `字符串`，`注释` 都只接受英文，所以请勿直接硬文本非英语在代码中。
-
-比如你可能写了一行新的字符串，需要适配多国语言。
-
-```ts
-import { $t } from "../i18n";
-
-if (!checkName) {
-  const errorMsg = "Check Name Failed!" // 不要这样做！
-  const errorMsg = $t("TXT_CODE_MY_ERROR"); // 正确做法
-}.
-```
-
-```html
-<script lang="ts" setup>
-  import { t } from "@/lang/i18n";
-  // ...
-</script>
-
-<template>
-  <!-- ... -->
-  <a-menu-item key="toNodesPage" @click="toNodesPage()">
-    <FormOutlined />
-    {{ t("TXT_CODE_NODE_INFO") }}
-  </a-menu-item>
-</template>
-```
-
-请在语言文件中新增这一行，比如：`languages/en_US.json`
-
-其中，`en_US.json` 是必须添加的，它是所有国家语言的源文案，其他国家的语言可以由我们使用 AI 来自动翻译。
-
-```json
-{
-  //...
-  "TXT_CODE_MY_ERROR": "Check Name Failed!",
-  "TXT_CODE_NODE_INFO": "Jump to Node Page"
-}
-```
-
-如果你安装了 `I18n Ally` 插件，你的 `$t("TXT_CODE_MY_ERROR")` 应该会浮现英文文案。
-
-如果翻译文案还需要携带参数，这可能会有点复杂，因为前端，后端所用的 i18n 库并非同一个，所以格式可能不太一样，你需要翻阅一下文件找到类似的代码便可知晓。
-
-所有的翻译文案 Key，不可有重复，所以请可能的取一个较长的名字！
-
-### 构建生产环境版本
-
-```bash
-./build.bat # Windows
-./build.sh  # MacOS
-```
-
-构建完成后，你会在 `production-code` 目录下找到生产环境代码。
+请参阅：[DEVELOPMENT_ZH.md](./DEVELOPMENT_ZH.md)
 
 <br />
 
@@ -292,8 +289,14 @@ if (!checkName) {
 
 <br />
 
-## 源代码协议
+## 贡献者
 
-源代码遵循 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议。
+<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="贡献排行榜" style="display: block; width: 100%;" />
+</a>
+
+## 许可证
+
+此项目遵循 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议。
 
 Copyright ©2025 MCSManager.

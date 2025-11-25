@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import formidable from "formidable";
 import fs from "fs-extra";
 import path from "path";
+import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
 import { missionPassport } from "../service/mission_passport";
@@ -15,7 +16,7 @@ const router = new Router();
 
 // Define the HTTP home page display route
 router.all("/", async (ctx) => {
-  ctx.body = "[MCSManager Daemon] Status: OK | reference: https://mcsmanager.com/";
+  ctx.body = DAEMON_INDEX_HTML;
   ctx.status = 200;
 });
 

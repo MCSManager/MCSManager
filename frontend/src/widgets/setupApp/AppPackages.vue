@@ -2,11 +2,12 @@
 import CardPanel from "@/components/CardPanel.vue";
 import FadeUpAnimation from "@/components/FadeUpAnimation.vue";
 import Loading from "@/components/Loading.vue";
+import { router } from "@/config/router";
 import { useMarketPackages } from "@/hooks/useMarketPackages";
 import { t } from "@/lang/i18n";
 import type { QuickStartPackages } from "@/types";
 import { DatabaseOutlined, DownloadOutlined } from "@ant-design/icons-vue";
-import { Flex } from "ant-design-vue";
+import { Divider, Flex } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
 import { onMounted } from "vue";
 
@@ -40,13 +41,17 @@ const {
   onlyDockerTemplate: props.onlyDockerTemplate
 });
 
-defineExpose({
-  appList,
-  fetchTemplate
-});
+const openEditor = () => {
+  router.push("/market/editor");
+};
 
 onMounted(() => {
   fetchTemplate();
+});
+
+defineExpose({
+  appList,
+  fetchTemplate
 });
 </script>
 
@@ -66,6 +71,10 @@ onMounted(() => {
         </span>
       </p>
       <p>
+        <Link target="_blank" @click="openEditor">
+          {{ t("TXT_CODE_85c10fde") }}
+        </Link>
+        <Divider type="vertical" />
         <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
           {{ t("TXT_CODE_709c2db4") }}
         </Link>
