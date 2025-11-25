@@ -106,11 +106,12 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
   UpdatePanelSettings: async (data: any) => {
     const originSetting = await settingInfo().execute();
     if (!originSetting.value) throw new Error("Panel settings not found");
+    console.log("正在更新面板设置: ", data);
     await setSettingInfo().execute({
       data: {
         ...originSetting.value,
-        panelId: originSetting.value.panelId || data?.panelId,
-        registerCode: originSetting.value.registerCode || data?.registerCode
+        panelId: data?.panelId || originSetting.value.panelId,
+        registerCode: data?.registerCode || originSetting.value.registerCode
       }
     });
     return true;

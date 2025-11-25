@@ -23,6 +23,7 @@ const emit = defineEmits<{
   buy: [FrontProductInfo];
 }>();
 
+const undefineText = "暂无描述";
 const { isLogged } = useAppStateStore();
 const showLoginModal = ref(false);
 
@@ -57,13 +58,19 @@ onUnmounted(() => {
   <Flex vertical :gap="40" justify="center" class="company-header">
     <Flex align="center" justify="space-between" :gap="16" style="flex: 1">
       <Flex class="mb-10" vertical align="start" justify="start" :gap="16">
+        <a-typography-paragraph v-if="!shopName" type="secondary">
+          {{ t("你可以在右下角编辑店铺介绍") }}
+        </a-typography-paragraph>
         <a-typography-title :level="1" class="company-title">
-          <div class="business-page-markdown-area" v-html="markdownToHTML(shopName || '')"></div>
+          <div
+            class="business-page-markdown-area"
+            v-html="markdownToHTML(shopName || undefineText)"
+          ></div>
         </a-typography-title>
         <a-typography-paragraph class="company-desc">
           <div
             class="business-page-markdown-area"
-            v-html="markdownToHTML(shopDescription || '')"
+            v-html="markdownToHTML(shopDescription || undefineText)"
           ></div>
         </a-typography-paragraph>
 
@@ -91,7 +98,7 @@ onUnmounted(() => {
 
         <div style="opacity: 0.4">
           <a-typography-paragraph style="text-align: left">
-            <span v-html="markdownToHTML(shopTip || '')"></span>
+            <span v-html="markdownToHTML(shopTip || undefineText)"></span>
           </a-typography-paragraph>
         </div>
       </Flex>
