@@ -146,7 +146,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
   const onEditTabs = (targetKey: MouseEvent | Key | KeyboardEvent, action: "remove" | "add") => {
     if (action === "add") {
       if (currentTabs.value.length >= 10) {
-        message.warning(t("最多同时打开10个选项卡，请关闭其他选项卡后再打开！"));
+        message.warning(t("TXT_CODE_22042570"));
         return;
       }
       const path = "/";

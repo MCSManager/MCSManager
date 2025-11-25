@@ -2917,5 +2917,6 @@
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_2dae1294": "此实例配置存在问题，请刷新页面重试，或重新创建实例！"
+  "TXT_CODE_2dae1294": "There is a configuration issue with this instance. Please refresh the page and try again, or recreate the instance!",
+  "TXT_CODE_22042570": "You can open a maximum of 10 tabs at the same time. Please close other tabs before opening more!"
 }
