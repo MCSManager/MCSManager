@@ -34,7 +34,7 @@ import { useLocalStorage } from "@vueuse/core";
 import { message, Modal } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
 import { v4 } from "uuid";
-import { computed, createVNode, reactive, ref, type VNodeRef } from "vue";
+import { computed, createVNode, onMounted, reactive, ref, type VNodeRef } from "vue";
 
 export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
   let addr = config.addr;
@@ -52,13 +52,17 @@ interface TabItem {
   path: string;
   closable: boolean;
   key: string;
+  pushedTime: number;
 }
 
 interface TabsMap {
   [key: string]: TabItem[];
 }
 
+const TAB_LIST_KEY = "FileManagerTabMap";
+
 export const useFileManager = (instanceId: string = "", daemonId: string = "") => {
+  const tabList = useLocalStorage<TabsMap>(TAB_LIST_KEY, {});
   const dataSource = ref<DataType[]>();
   const fileStatus = ref<FileStatus>();
   const selectedRowKeys = ref<Key[]>([]);
@@ -81,24 +85,45 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     () => removeTrail(breadcrumbs[breadcrumbs.length - 1].path, "/") + "/"
   );
 
-  // TODO: 退出登录时要删除
-  const tabList = useLocalStorage<TabsMap>("FileManagerTabMap", {});
   const currentTabKey = instanceId + daemonId;
   const currentTabs = computed(() => tabList.value[currentTabKey] ?? []);
   const activeTab = ref<string>("");
+
   const initDefaultTab = (path = "/") => {
     const key = v4();
     tabList.value[currentTabKey] ||= [];
     tabList.value[currentTabKey].push({
+      key,
       path,
       name: path,
-      closable: false,
-      key
+      pushedTime: 0,
+      closable: false
     });
     activeTab.value = key;
     currentDisk.value = t("TXT_CODE_28124988");
     handleChangeTab(key);
   };
+
+  // clear old tabs
+  onMounted(() => {
+    const oneDayInMs = 1000 * 60 * 60 * 24;
+    const now = Date.now();
+
+    Object.keys(tabList.value).forEach((key) => {
+      const tabs = tabList.value[key];
+      if (tabs && tabs.length > 0) {
+        tabList.value[key] = tabs.filter((tab) => {
+          if (!tab.pushedTime) return true;
+          return now - tab.pushedTime < oneDayInMs;
+        });
+
+        if (tabList.value[key].length === 0) {
+          delete tabList.value[key];
+        }
+      }
+    });
+  });
+
   const handleRemoveTab = (key: string) => {
     const index = currentTabs.value.findIndex((tab) => tab.key === key);
     if (index !== -1) {
@@ -120,13 +145,18 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const onEditTabs = (targetKey: MouseEvent | Key | KeyboardEvent, action: "remove" | "add") => {
     if (action === "add") {
+      if (currentTabs.value.length >= 10) {
+        message.warning(t("最多同时打开10个选项卡，请关闭其他选项卡后再打开！"));
+        return;
+      }
       const path = "/";
       const key = v4();
       currentTabs.value.push({
         name: path,
         path,
         closable: true,
-        key
+        key,
+        pushedTime: Date.now()
       });
       activeTab.value = key;
       currentDisk.value = t("TXT_CODE_28124988");
