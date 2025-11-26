@@ -783,12 +783,10 @@ defineExpose({
                     {{ t("TXT_CODE_d12fa808") }}
                   </a-typography-title>
                   <a-typography-paragraph>
-                    <a-tooltip :title="t('TXT_CODE_A0000001')" placement="top">
-                      <a-typography-text type="secondary" class="typography-text-ellipsis">
-                        <!-- eslint-disable-next-line vue/no-v-html -->
-                        <span v-html="t('TXT_CODE_A0000001')"></span>
-                      </a-typography-text>
-                    </a-tooltip>
+                    <a-typography-text type="secondary" class="typography-text-ellipsis">
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <span v-html="t('TXT_CODE_A0000001')"></span>
+                    </a-typography-text>
                   </a-typography-paragraph>
                   <a-input-group compact style="display: flex">
                     <a-textarea
@@ -807,11 +805,9 @@ defineExpose({
                     {{ t("TXT_CODE_11cfe3a1") }}
                   </a-typography-title>
                   <a-typography-paragraph>
-                    <a-tooltip :title="t('TXT_CODE_A0000001')" placement="top">
-                      <a-typography-text type="secondary" class="typography-text-ellipsis">
-                        {{ t("TXT_CODE_7ec7ccb8") }}
-                      </a-typography-text>
-                    </a-tooltip>
+                    <a-typography-text type="secondary" class="typography-text-ellipsis">
+                      {{ t("TXT_CODE_7ec7ccb8") }}
+                    </a-typography-text>
                   </a-typography-paragraph>
                   <a-input-group compact style="display: flex">
                     <a-input
