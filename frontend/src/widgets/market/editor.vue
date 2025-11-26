@@ -141,7 +141,6 @@ const toEdit = (item: QuickStartPackages) => {
 };
 
 const saveTemplate = (item: QuickStartPackages, i: number) => {
-  console.log("item:", item);
   const filteredItem = filterEmptyFields(item);
   if (!packages.value) return;
   if (i < 0) {
@@ -149,14 +148,6 @@ const saveTemplate = (item: QuickStartPackages, i: number) => {
   } else {
     packages.value[i] = filteredItem;
   }
-  setTimeout(() => {
-    router.push({
-      path: "/market",
-      query: {
-        newTemplate: "true"
-      }
-    });
-  }, 500);
 };
 
 const multipleMode = ref(false);
@@ -250,6 +241,14 @@ const uploadToPanel = async () => {
       }
     });
     message.success(t("TXT_CODE_a7907771"));
+    setTimeout(() => {
+      router.push({
+        path: "/market",
+        query: {
+          newTemplate: "true"
+        }
+      });
+    }, 500);
   } catch (err: any) {
     reportErrorMsg(err);
   }
