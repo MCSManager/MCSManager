@@ -674,12 +674,13 @@ defineExpose({
               </a-col>
               <a-col :span="24" :sm="12" :lg="8">
                 <a-form-item :name="['template', 'size']">
-                  <a-typography-title :level="5" class="require-field">
+                  <a-typography-title :level="5">
                     {{ t("TXT_CODE_8dbcf565") }}
                   </a-typography-title>
                   <a-input
                     v-model:value="formData.template.size"
-                    :placeholder="t('TXT_CODE_d0d08d6')"
+                    placeholder="Example: 1024MB, 1GB"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
@@ -755,7 +756,7 @@ defineExpose({
                 </a-form-item>
               </a-col>
 
-              <a-col :xs="24" :lg="8" :offset="0">
+              <a-col v-if="!isTemplateMode" :xs="24" :lg="8" :offset="0">
                 <a-form-item>
                   <a-typography-title :level="5">{{ t("TXT_CODE_fa920c0") }}</a-typography-title>
                   <a-typography-paragraph>
@@ -795,6 +796,27 @@ defineExpose({
                       :rows="5"
                       style="min-height: 40px"
                       :placeholder="isDockerMode ? t('TXT_CODE_98e7c829') : t('TXT_CODE_f50cfe2')"
+                    />
+                  </a-input-group>
+                </a-form-item>
+              </a-col>
+
+              <a-col :xs="24" :offset="0">
+                <a-form-item :name="['instance', 'config', 'stopCommand']">
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_11cfe3a1") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip :title="t('TXT_CODE_A0000001')" placement="top">
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{ t("TXT_CODE_7ec7ccb8") }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <a-input-group compact style="display: flex">
+                    <a-input
+                      v-model:value="formData.instance.config.stopCommand"
+                      :placeholder="t('请输入关闭实例命令，列如：stop、exit、^C、等')"
                     />
                   </a-input-group>
                 </a-form-item>

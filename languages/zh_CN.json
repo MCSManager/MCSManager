@@ -1551,7 +1551,7 @@
   "TXT_CODE_98e7c829": "留空将使用 Docker 镜像自带命令启动",
   "TXT_CODE_9900f79e": "图片",
   "TXT_CODE_9901af98": "标签（可选）",
-  "TXT_CODE_9911ac11": "保存失败，请检查配置项",
+  "TXT_CODE_9911ac11": "无法保存，请填写所有必填项",
   "TXT_CODE_99167cda": "矿车是否可在未在轨道上时被控制",
   "TXT_CODE_992bf9bc": "MC Bukkit",
   "TXT_CODE_998d1dec": "橙色床的方块掉落倍率",
