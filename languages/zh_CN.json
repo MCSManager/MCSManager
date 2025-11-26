@@ -2771,7 +2771,7 @@
   "TXT_CODE_fffaeb16": "上传过程中不可取消！",
   "TXT_CODE_fffaeb17": "使用其他系统用户",
   "TXT_CODE_fffaeb18": "设定启动进程使用的系统用户，您可能需要自行解决因为权限问题带来的问题。",
-  "TXT_code_fffce4a8": "将双重验证代码输入下框",
+  "TXT_CODE_fffce4a8": "将双重验证代码输入下框",
   "TXT_CODE_file_router.instanceNotExist": "实例 {{instanceUuid}} 不存在",
   "TXT_CODE_file_router.unzipLimit": "超出最大同时解压缩任务量，最大准许{{maxFileTask}}个，目前有{{fileLock}}个任务正在进行，请耐心等待",
   "TXT_CODE_file_router_service.instanceNotExit": "实例 {{uuid}} 不存在",
@@ -2918,5 +2918,8 @@
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
   "TXT_CODE_2dae1294": "此实例配置存在问题，请刷新页面重试，或重新创建实例！",
-  "TXT_CODE_22042570": "最多同时打开10个选项卡，请关闭其他选项卡后再打开！"
+  "TXT_CODE_22042570": "最多同时打开10个选项卡，请关闭其他选项卡后再打开！",
+  "TXT_CODE_99c6d1f1": "镜像名称不规范！",
+  "TXT_CODE_4cc91afe": "下载 Docker 镜像超时！请检查网络后，手动下载或重试！",
+  "TXT_CODE_83053cd5": "请输入关闭实例命令，列如：stop、exit、^C、等"
 }

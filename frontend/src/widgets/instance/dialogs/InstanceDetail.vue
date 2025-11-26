@@ -816,7 +816,7 @@ defineExpose({
                   <a-input-group compact style="display: flex">
                     <a-input
                       v-model:value="formData.instance.config.stopCommand"
-                      :placeholder="t('请输入关闭实例命令，列如：stop、exit、^C、等')"
+                      :placeholder="t('TXT_CODE_83053cd5')"
                     />
                   </a-input-group>
                 </a-form-item>

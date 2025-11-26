@@ -11,7 +11,7 @@ export function checkDockerName(name: string) {
 
 export async function checkImage(name: string) {
   try {
-    if (!checkDockerName(name)) throw new Error(t("镜像名称不规范！"));
+    if (!checkDockerName(name)) throw new Error(t("TXT_CODE_99c6d1f1"));
     const docker = new DefaultDocker();
     const image = docker.getImage(name);
     const info = await image.inspect();
@@ -44,7 +44,7 @@ export default class DockerPullCommand extends InstanceCommand {
       }
 
       if (count >= 20 * 30) {
-        throw new Error(t("下载 Docker 镜像超时！请检查网络后，手动下载或重试！"));
+        throw new Error(t("TXT_CODE_4cc91afe"));
       }
 
       if (this.stopFlag) {
