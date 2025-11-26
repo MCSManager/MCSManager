@@ -2771,7 +2771,7 @@
   "TXT_CODE_fffaeb16": "Cannot cancel during upload!",
   "TXT_CODE_fffaeb17": "Run start command as user.",
   "TXT_CODE_fffaeb18": "Set the system user used to start the process. You may need to solve problems caused by permission issues yourself.",
-  "TXT_code_fffce4a8": "Enter the TOTP verification code in the box below.",
+  "TXT_CODE_fffce4a8": "Enter the TOTP verification code in the box below.",
   "TXT_CODE_file_router.instanceNotExist": "Instance {{instanceUuid}} does not exist",
   "TXT_CODE_file_router.unzipLimit": "Exceeded the maximum number of concurrent decompression tasks. The maximum allowed is {{maxFileTask}}, and currently, {{fileLock}} tasks are in progress. Please be patient.",
   "TXT_CODE_file_router_service.instanceNotExit": "Instance {{uuid}} does not exist",
@@ -2918,5 +2918,8 @@
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
   "TXT_CODE_2dae1294": "There is a configuration issue with this instance. Please refresh the page and try again, or recreate the instance!",
-  "TXT_CODE_22042570": "You can open a maximum of 10 tabs at the same time. Please close other tabs before opening more!"
+  "TXT_CODE_22042570": "You can open a maximum of 10 tabs at the same time. Please close other tabs before opening more!",
+  "TXT_CODE_99c6d1f1": "Image name is not standardized!",
+  "TXT_CODE_4cc91afe": "Downloading Docker image timed out! Please check your network, download manually or try again!",
+  "TXT_CODE_83053cd5": "Please enter an instance shutdown command, such as: stop, exit, ^C, etc."
 }

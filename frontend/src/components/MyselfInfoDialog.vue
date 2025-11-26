@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import CopyButton from "@/components/CopyButton.vue";
+import { PERMISSION_MAP } from "@/config/const";
 import { t } from "@/lang/i18n";
+import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
-import { reactive, ref } from "vue";
-import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
-import { message } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
-import CopyButton from "@/components/CopyButton.vue";
+import { message } from "ant-design-vue";
+import { reactive, ref } from "vue";
 import { bind2FA } from "../services/apis/user";
-import { PERMISSION_MAP } from "@/config/const";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
@@ -175,7 +175,7 @@ const disable2FACode = async () => {
           <div v-if="formState?.qrcode">
             <p>
               1. {{ t("TXT_CODE_cc561947") }}<br />
-              2. {{ t("TXT_code_fffce4a8") }}<br />
+              2. {{ t("TXT_CODE_fffce4a8") }}<br />
               3. {{ t("TXT_CODE_af2a6972") }}<br />
             </p>
             <div class="mb-20">
@@ -196,7 +196,7 @@ const disable2FACode = async () => {
             {{ t("TXT_CODE_b2dbf778") }}
           </a-typography-paragraph>
           <a-typography-paragraph v-if="state.userInfo?.apiKey">
-            <pre 
+            <pre
               class="flex flex-between align-center">{{ state.userInfo.apiKey }}<CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
