@@ -7,6 +7,7 @@ import { t } from "@/lang/i18n";
 import { setSettingInfo } from "@/services/apis";
 import { uploadFile } from "@/services/apis/layout";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { filterEmptyFields } from "@/tools/object";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
@@ -139,13 +140,23 @@ const toEdit = (item: QuickStartPackages) => {
   editorRef?.value?.openDialog({ item, i: actualIndex });
 };
 
-const save = (item: QuickStartPackages, i: number) => {
+const saveTemplate = (item: QuickStartPackages, i: number) => {
+  console.log("item:", item);
+  const filteredItem = filterEmptyFields(item);
   if (!packages.value) return;
   if (i < 0) {
-    packages.value.push(item);
+    packages.value.push(filteredItem);
   } else {
-    packages.value[i] = item;
+    packages.value[i] = filteredItem;
   }
+  setTimeout(() => {
+    router.push({
+      path: "/market",
+      query: {
+        newTemplate: "true"
+      }
+    });
+  }, 500);
 };
 
 const multipleMode = ref(false);
@@ -646,6 +657,6 @@ onMounted(() => {
     :game-type-list="appGameTypeList"
     :platform-list="appPlatformList"
     :category-list="appCategoryList"
-    @save-template="save"
+    @save-template="saveTemplate"
   />
 </template>
