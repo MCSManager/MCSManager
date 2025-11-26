@@ -805,7 +805,7 @@
   "TXT_CODE_56197d09": "Deja que los calamares floten sobre el agua",
   "TXT_CODE_5635dd6b": "Establecido en verdadero para habilitar el daño al caminar con botas encantadas con Frost-Walker",
   "TXT_CODE_56516e92": "Configuraciones ocultas",
-  "TXT_CODE_56b9e6af": "Por defecto, McSmanager asigna 5 puertos secuencialmente para cada instancia, lo que respalda el uso de {MCSM_PORT1} a {MCSM_PORT5} como números de puerto agregados secuencialmente.",
+  "TXT_CODE_56b9e6af": "Por defecto, McSmanager asigna 5 puertos secuencialmente para cada instancia, lo que respalda el uso de {mcsm_port1} a {mcsm_port5} como números de puerto agregados secuencialmente.",
   "TXT_CODE_56c42793": "El prefijo que aparece en la lista de jugadores antes del nombre de alguien cuando son AFK",
   "TXT_CODE_56c686f8": "Fallito",
   "TXT_CODE_56ff18c1": "Visualización de información del servidor. Si utiliza programas complementarios como ColorMotd, puede dejar esta opción en blanco.",

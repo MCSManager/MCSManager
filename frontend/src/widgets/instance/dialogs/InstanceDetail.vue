@@ -803,7 +803,7 @@ defineExpose({
           </a-tab-pane>
           <a-tab-pane :key="TabSettings.Advanced" :tab="t('TXT_CODE_31a1d824')">
             <a-row :gutter="20">
-              <a-col :xs="24" :offset="0">
+              <a-col v-if="!isTemplateMode" :xs="24" :offset="0">
                 <a-form-item :name="['instance', 'config', 'cwd']">
                   <a-typography-title :level="5" class="require-field">
                     {{ t("TXT_CODE_ee67e1a3") }}
@@ -1073,7 +1073,7 @@ defineExpose({
                   </a-form-item>
                 </a-col>
 
-                <a-col :xs="24" :lg="8" :offset="0">
+                <a-col v-if="!isTemplateMode" :xs="24" :lg="8" :offset="0">
                   <a-form-item :name="['instance', 'config', 'basePort']">
                     <a-typography-title :level="5">
                       {{ t("TXT_CODE_15f5fb07") }}
