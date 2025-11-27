@@ -111,7 +111,12 @@ const operation = (type: "add" | "del", index = 0) => {
         </a-button>
       </div>
       <a-form ref="formInstance" :model="dataSource" name="validate_other">
-        <a-table :data-source="dataSource" :columns="columns" :pagination="false">
+        <a-table
+          :data-source="dataSource"
+          :columns="columns"
+          :pagination="false"
+          :scroll="{ x: 542 }"
+        >
           <template #bodyCell="{ column, record, index }: AntTableCell">
             <template v-if="column.dataIndex === 'operation'">
               <div class="flex-center flex-between">

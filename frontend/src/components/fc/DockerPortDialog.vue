@@ -214,7 +214,13 @@ onMounted(() => {
         </a-button>
       </div>
       <a-form ref="formInstance" :model="dataSource" name="validate_other">
-        <a-table :data-source="dataSource" :columns="columns" :pagination="false">
+        <a-table
+          :data-source="dataSource"
+          :columns="columns"
+          :pagination="false"
+          :scroll="{ x: 542 }"
+          size="small"
+        >
           <template #bodyCell="{ column, record, index }: AntTableCell">
             <template v-if="column.dataIndex === 'host' || column.dataIndex === 'container'">
               <div class="flex-center flex-row">
