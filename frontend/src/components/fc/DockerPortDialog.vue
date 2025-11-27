@@ -251,7 +251,7 @@ onMounted(() => {
                   :disabled="shouldDisableCheckbox(record, column.dataIndex as string)"
                   @change="() => handleCheckboxChange(record, column.dataIndex as string)"
                 >
-                  {{ t("自动分配") }}
+                  {{ t("TXT_CODE_6f1129fb") }}
                 </a-checkbox>
               </div>
             </template>
