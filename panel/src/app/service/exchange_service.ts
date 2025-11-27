@@ -12,7 +12,7 @@ import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
-export const REDEEM_PLATFORM_ADDR = " http://localhost:8079";
+export const REDEEM_PLATFORM_ADDR = " http://localhost:5174";
 
 // ------- Protocol Define -------
 
