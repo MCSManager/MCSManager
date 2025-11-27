@@ -129,7 +129,7 @@ class InstanceControlSubsystem {
       // Unit: seconds
       const internalTime = Number(task.time);
       if (isNaN(internalTime) || internalTime < 3) {
-        throw new Error($t("循环类型的计划任务执行间隔不能小于3秒！"));
+        throw new Error($t("TXT_CODE_ec96e2bf"));
       }
 
       // task.type=1: Time interval scheduled task, implemented with built-in timer
@@ -148,7 +148,7 @@ class InstanceControlSubsystem {
       // Expression validity check: 8 19 14 * * 1,2,3,4
       const timeArray = task.time.split(" ");
       if (timeArray[0] === "*") {
-        throw new Error($t("此计划任务执行间隔太频繁，请更改执行间隔周期！"));
+        throw new Error($t("TXT_CODE_6b77cd52"));
       }
 
       const checkIndex = [0, 1, 2];

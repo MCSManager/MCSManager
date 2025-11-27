@@ -94,10 +94,10 @@ const create = {
 
 const getInputPlaceholder = (action: ScheduleAction) => {
   if (action.type === ScheduleActionTypeEnum.Delay) {
-    return t("请填写时间，单位毫秒，1000ms = 1s");
+    return t("TXT_CODE_bb760145");
   }
   if (action.type === ScheduleActionTypeEnum.Command) {
-    return t("请填写要发送到实例的命令，比如 stop、exit 等");
+    return t("TXT_CODE_8ff89011");
   }
   return;
 };
