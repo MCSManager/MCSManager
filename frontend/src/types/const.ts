@@ -79,19 +79,34 @@ RUN mkdir -p /workspace
 WORKDIR /workspace
 `;
 
+export enum ScheduleActionTypeEnum {
+  Delay = "delay",
+  Command = "command",
+  Stop = "stop",
+  Start = "start",
+  Restart = "restart",
+  Kill = "kill"
+}
+
+export const ScheduleTypeEnum = {
+  Interval: 1,
+  Cycle: 2,
+  Specify: 3
+};
+
 export const ScheduleActionType = {
-  delay: t("TXT_CODE_735baf9f"),
-  command: t("TXT_CODE_b7cab91d"),
-  stop: t("TXT_CODE_148d6467"),
-  start: t("TXT_CODE_8c7318b3"),
-  restart: t("TXT_CODE_77cc12da"),
-  kill: t("TXT_CODE_1c36c8f2")
+  [ScheduleActionTypeEnum.Delay]: t("TXT_CODE_735baf9f"),
+  [ScheduleActionTypeEnum.Command]: t("TXT_CODE_b7cab91d"),
+  [ScheduleActionTypeEnum.Stop]: t("TXT_CODE_148d6467"),
+  [ScheduleActionTypeEnum.Start]: t("TXT_CODE_8c7318b3"),
+  [ScheduleActionTypeEnum.Restart]: t("TXT_CODE_77cc12da"),
+  [ScheduleActionTypeEnum.Kill]: t("TXT_CODE_1c36c8f2")
 };
 
 export const ScheduleType = {
-  1: t("TXT_CODE_ba497a8b"),
-  2: t("TXT_CODE_f17af923"),
-  3: t("TXT_CODE_c4f90da6")
+  [ScheduleTypeEnum.Interval]: t("TXT_CODE_ba497a8b"),
+  [ScheduleTypeEnum.Cycle]: t("TXT_CODE_f17af923"),
+  [ScheduleTypeEnum.Specify]: t("TXT_CODE_c4f90da6")
 };
 
 export enum ScheduleCreateType {

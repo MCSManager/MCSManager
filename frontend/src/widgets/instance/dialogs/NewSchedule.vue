@@ -3,9 +3,14 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
 import type { Schedule, ScheduleAction, ScheduleTaskForm } from "@/types";
-import { ScheduleActionType, ScheduleCreateType, ScheduleType } from "@/types/const";
+import {
+  ScheduleActionType,
+  ScheduleActionTypeEnum,
+  ScheduleCreateType,
+  ScheduleType
+} from "@/types/const";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons-vue";
-import { notification } from "ant-design-vue";
+import { Flex, notification } from "ant-design-vue";
 import dayjs from "dayjs";
 import _ from "lodash";
 import { h, reactive, ref } from "vue";
@@ -86,6 +91,16 @@ const create = {
   [ScheduleCreateType.SPECIFY]: (newTask: ScheduleTaskForm) => createTaskTypeSpecify(newTask)
 };
 
+const getInputPlaceholder = (action: ScheduleAction) => {
+  console.log(action.type);
+  if (action.type === ScheduleActionTypeEnum.Delay) {
+    return t("请填写时间，单位毫秒，1000ms = 1s");
+  }
+  if (action.type === ScheduleActionTypeEnum.Command) {
+    return t("请填写要发送到实例的命令，比如 stop、exit 等");
+  }
+  return;
+};
 const submit = async () => {
   try {
     isLoading.value = true;
@@ -254,6 +269,7 @@ defineExpose({
                 v-model:value="action.type"
                 :placeholder="t('TXT_CODE_3bb646e4')"
                 :dropdown-match-select-width="false"
+                @change="action.payload = ''"
               >
                 <a-select-option v-for="(type, i) in ScheduleActionType" :key="i" :value="i">
                   {{ type }}
@@ -261,7 +277,13 @@ defineExpose({
               </a-select>
             </a-col>
             <a-col :xs="24" :md="16" :offset="0">
-              <a-input v-model:value="action.payload" />
+              <Flex>
+                <a-input
+                  v-model:value="action.payload"
+                  :placeholder="getInputPlaceholder(action)"
+                  :disabled="!getInputPlaceholder(action)"
+                />
+              </Flex>
             </a-col>
             <a-col :xs="24" :md="2" :offset="0">
               <div>

@@ -7,6 +7,21 @@ import logger from "./log";
 import FileManager from "./system_file";
 import InstanceSubsystem from "./system_instance";
 
+export enum ScheduleActionTypeEnum {
+  Delay = "delay",
+  Command = "command",
+  Stop = "stop",
+  Start = "start",
+  Restart = "restart",
+  Kill = "kill"
+}
+
+export const ScheduleTypeEnum = {
+  Interval: 1,
+  Cycle: 2,
+  Specify: 3
+};
+
 interface IScheduleAction {
   type: string;
   payload: string;
@@ -110,9 +125,9 @@ class InstanceControlSubsystem {
     let job: IScheduleJob;
 
     // min interval check
-    if (task.type === 1) {
+    if (task.type === ScheduleTypeEnum.Interval) {
       let internalTime = Number(task.time);
-      if (isNaN(internalTime) || internalTime < 1) internalTime = 1;
+      if (isNaN(internalTime) || internalTime < 100) internalTime = 100;
 
       // task.type=1: Time interval scheduled task, implemented with built-in timer
       job = new IntervalJob(() => {
@@ -187,23 +202,24 @@ class InstanceControlSubsystem {
         const actionType = action.type;
         const payload = action.payload;
         const instanceStatus = instance.status();
-        if (actionType === "delay") {
-          await sleep(parseInt(payload, 500));
+        if (actionType === ScheduleActionTypeEnum.Delay) {
+          const delayTime = parseInt(payload);
+          await sleep(isNaN(delayTime) ? 0 : delayTime);
           continue;
         }
-        if (actionType === "start") {
+        if (actionType === ScheduleActionTypeEnum.Start) {
           if (instanceStatus === Instance.STATUS_STOP) {
             await instance.execPreset("start");
           }
           continue;
         }
-        if (actionType === "stop") {
+        if (actionType === ScheduleActionTypeEnum.Stop) {
           if (instanceStatus === Instance.STATUS_RUNNING) {
             await instance.execPreset("stop");
           }
           continue;
         }
-        if (actionType === "restart") {
+        if (actionType === ScheduleActionTypeEnum.Restart) {
           if (
             instanceStatus === Instance.STATUS_RUNNING ||
             instanceStatus === Instance.STATUS_STOP
@@ -212,16 +228,18 @@ class InstanceControlSubsystem {
           }
           continue;
         }
-        if (actionType === "command") {
+        if (actionType === ScheduleActionTypeEnum.Command) {
           if (instanceStatus === Instance.STATUS_RUNNING) {
             await instance.execPreset("command", payload);
           }
           continue;
         }
-        if (actionType === "kill") {
+        if (actionType === ScheduleActionTypeEnum.Kill) {
           await instance.execPreset("kill");
           continue;
         }
+
+        // Limit execution frequency to prevent user scheduled tasks from causing performance issues
         await sleep(100);
       }
     } catch (error: any) {
