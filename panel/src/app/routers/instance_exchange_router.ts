@@ -131,6 +131,7 @@ router.post(
       }
 
       const params = {
+        category_name: productInfo.title,
         category_id: productId,
         payload: config,
         username: username,

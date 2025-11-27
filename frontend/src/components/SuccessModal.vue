@@ -202,8 +202,9 @@ const portsColumns = [
     :footer="null"
     :closable="false"
     :mask-closable="false"
-    width="700px"
+    :width="700"
     class="success-modal"
+    :body-style="{ padding: '12px' }"
     @update:open="$emit('update:visible', $event)"
   >
     <Flex vertical :gap="24" class="success-modal-content">
