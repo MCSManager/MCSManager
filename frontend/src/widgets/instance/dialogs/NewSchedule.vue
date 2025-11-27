@@ -47,7 +47,8 @@ const open = ref(false);
 const openDialog = (task?: Schedule) => {
   newTask = reactive({
     ..._.cloneDeep(defaultTask),
-    ...task
+    ...task,
+    count: Number(task?.count) === -1 ? "" : Number(task?.count)
   });
 
   editMode.value = !!task;
@@ -92,7 +93,6 @@ const create = {
 };
 
 const getInputPlaceholder = (action: ScheduleAction) => {
-  console.log(action.type);
   if (action.type === ScheduleActionTypeEnum.Delay) {
     return t("请填写时间，单位毫秒，1000ms = 1s");
   }

@@ -126,8 +126,11 @@ class InstanceControlSubsystem {
 
     // min interval check
     if (task.type === ScheduleTypeEnum.Interval) {
-      let internalTime = Number(task.time);
-      if (isNaN(internalTime) || internalTime < 100) internalTime = 100;
+      // Unit: seconds
+      const internalTime = Number(task.time);
+      if (isNaN(internalTime) || internalTime < 3) {
+        throw new Error($t("循环类型的计划任务执行间隔不能小于3秒！"));
+      }
 
       // task.type=1: Time interval scheduled task, implemented with built-in timer
       job = new IntervalJob(() => {
@@ -144,6 +147,10 @@ class InstanceControlSubsystem {
     } else {
       // Expression validity check: 8 19 14 * * 1,2,3,4
       const timeArray = task.time.split(" ");
+      if (timeArray[0] === "*") {
+        throw new Error($t("此计划任务执行间隔太频繁，请更改执行间隔周期！"));
+      }
+
       const checkIndex = [0, 1, 2];
       checkIndex.forEach((item) => {
         if (isNaN(Number(timeArray[item])) && Number(timeArray[item]) >= 0) {
@@ -155,10 +162,11 @@ class InstanceControlSubsystem {
           );
         }
       });
+
       // task.type=2: Specify time-based scheduled tasks, implemented by node-schedule library
       job = schedule.scheduleJob(task.time, () => {
         this.action(task);
-        if (task.count === -1) return;
+        if (task.count === -1 || String(task.count) === "") return;
         if (task.count === 1) {
           job.cancel();
           this.deleteTask(key, task.name);
