@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
 import { type FrontProductInfo } from "@/services/apis/redeem";
+import { queryUsername } from "@/services/apis/user";
+import { reportErrorMsg } from "@/tools/validator";
 import { Modal } from "ant-design-vue";
 import { ref, watch } from "vue";
 
@@ -10,9 +12,9 @@ interface Props {
 }
 
 interface Emits {
-  (e: "update:visible", visible: boolean): void;
-  (e: "confirm", data: { cardCode: string; username: string }): void;
-  (e: "cancel"): void;
+  (_e: "update:visible", _visible: boolean): void;
+  (_e: "confirm", _data: { cardCode: string; username: string }): void;
+  (_e: "cancel"): void;
 }
 
 const props = defineProps<Props>();
@@ -20,6 +22,7 @@ const emit = defineEmits<Emits>();
 
 const cardCode = ref("");
 const username = ref("");
+const isChecking = ref(false);
 
 // 表单验证规则
 const formRules = {
@@ -38,14 +41,111 @@ watch(
   }
 );
 
-const handleConfirm = () => {
+// 显示带冷却时间的确认框
+const showConfirmWithCooldown = (
+  title: string,
+  content: string,
+  onOk: () => void,
+  onCancel?: () => void
+) => {
+  let countdown = 5;
+  let okButtonDisabled = true;
+  let modal: any;
+
+  const updateContent = () => {
+    if (countdown > 0) {
+      modal.update({
+        content: `${content}`,
+        okText: `${t("确定")} (${countdown}s)`,
+        okButtonProps: { disabled: true }
+      });
+    } else {
+      modal.update({
+        content: `${content}`,
+        okText: t("确定"),
+        okButtonProps: { disabled: false }
+      });
+    }
+  };
+
+  modal = Modal.confirm({
+    title,
+    content: `${content}`,
+    okText: `${t("确定")} (${countdown}s)`,
+    cancelText: t("取消"),
+    okButtonProps: { disabled: true },
+    onOk: () => {
+      if (!okButtonDisabled) {
+        onOk();
+      }
+    },
+    onCancel: () => {
+      if (onCancel) onCancel();
+    }
+  });
+
+  // 开始倒计时
+  const timer = setInterval(() => {
+    countdown--;
+    if (countdown <= 0) {
+      clearInterval(timer);
+      okButtonDisabled = false;
+    }
+    updateContent();
+  }, 1000);
+};
+
+const handleConfirm = async () => {
   if (!cardCode.value.trim() || !username.value.trim()) {
     return;
   }
-  emit("confirm", {
-    cardCode: cardCode.value,
-    username: username.value
-  });
+
+  // 检查用户名是否存在
+  if (isChecking.value) return;
+
+  try {
+    isChecking.value = true;
+    const { execute } = queryUsername();
+    const result = await execute({
+      params: {
+        username: username.value
+      }
+    });
+
+    if (result.value?.uuid) {
+      // 用户存在，显示确认框
+      showConfirmWithCooldown(
+        t("最终确认"),
+        `${t("账号 {username} 已存在，是否是你自己的账号名？", { username: username.value })}`,
+        () => {
+          // 用户确认后，触发购买
+          emit("confirm", {
+            cardCode: cardCode.value,
+            username: username.value
+          });
+        }
+      );
+    } else {
+      // 用户不存在，显示创建确认框
+      showConfirmWithCooldown(
+        t("最终确认"),
+        `${t("此用户不存在，是否新建用户 {username}，并生成随机密码？", {
+          username: username.value
+        })}`,
+        () => {
+          // 用户确认后，触发购买
+          emit("confirm", {
+            cardCode: cardCode.value,
+            username: username.value
+          });
+        }
+      );
+    }
+  } catch (error: any) {
+    reportErrorMsg(error.message || t("查询用户失败"));
+  } finally {
+    isChecking.value = false;
+  }
 };
 
 const handleCancel = () => {
@@ -59,6 +159,7 @@ const handleCancel = () => {
     :title="t('购买服务')"
     :ok-text="t('确定')"
     :cancel-text="t('取消')"
+    :confirm-loading="isChecking"
     @ok="handleConfirm"
     @cancel="handleCancel"
     @update:open="$emit('update:visible', $event)"
