@@ -12,8 +12,11 @@ interface Props {
 }
 
 interface Emits {
+  // eslint-disable-next-line no-unused-vars
   (_e: "update:visible", _visible: boolean): void;
+  // eslint-disable-next-line no-unused-vars
   (_e: "confirm", _data: { cardCode: string; username: string }): void;
+  // eslint-disable-next-line no-unused-vars
   (_e: "cancel"): void;
 }
 
