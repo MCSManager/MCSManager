@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import AppConfigProvider from "./components/AppConfigProvider.vue";
-import { RouterView } from "vue-router";
-import AppHeader from "./components/AppHeader.vue";
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import InputDialogProvider from "./components/InputDialogProvider.vue";
-import { Button, Select, Input, Table } from "ant-design-vue";
-import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
-import { closeAppLoading } from "./tools/dom";
-import { useLayoutConfigStore } from "./stores/useLayoutConfig";
 import UploadBubble from "@/components/UploadBubble.vue";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { Button, Input, Select, Table } from "ant-design-vue";
+import { onMounted } from "vue";
+import { RouterView } from "vue-router";
+import AppConfigProvider from "./components/AppConfigProvider.vue";
+import AppHeader from "./components/AppHeader.vue";
+import InputDialogProvider from "./components/InputDialogProvider.vue";
+import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
+import { useLayoutConfigStore } from "./stores/useLayoutConfig";
+import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 
 const { isDarkTheme, setBackgroundImage } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
@@ -38,6 +38,7 @@ if (isDarkTheme()) {
 });
 
 onMounted(async () => {
+  setLoadingTitle("Loading application settings...");
   const frontendSettings = await getSettingsConfig();
   if (frontendSettings?.theme?.backgroundImage)
     setBackground(frontendSettings.theme.backgroundImage);
