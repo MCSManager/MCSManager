@@ -1,12 +1,11 @@
 import Router from "@koa/router";
-import axios from "axios";
 import { isEmpty, toBoolean, toNumber, toText } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { checkInstanceAdvancedParams } from "../service/instance_service";
+import { checkInstanceAdvancedParams, getAppMarketList } from "../service/instance_service";
 import { operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
@@ -277,8 +276,7 @@ router.post(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      if (!remoteService)
-        throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
       const addr = remoteService.config.addr;
       const prefix = remoteService.config.prefix;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
@@ -294,7 +292,7 @@ router.post(
         password,
         addr,
         prefix,
-        remoteMappings,
+        remoteMappings
       };
     } catch (err) {
       ctx.body = err;
@@ -554,12 +552,8 @@ router.post(
       const presetUrl = systemConfig?.presetPackAddr;
       if (!presetUrl) throw new Error("Preset Addr is empty!");
 
-      const { data: presetConfig } = await axios<IQuickStartTemplate>({
-        url: presetUrl,
-        method: "GET"
-      });
-
-      const packages = presetConfig.packages;
+      const presetConfig = await getAppMarketList();
+      const packages = presetConfig?.packages || [];
 
       if (!(packages instanceof Array)) throw new Error("Preset Config is not array!");
 

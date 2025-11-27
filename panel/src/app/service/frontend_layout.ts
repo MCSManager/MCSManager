@@ -3,11 +3,10 @@ import { GlobalVariable } from "mcsmanager-common";
 import path from "path";
 import { v4 } from "uuid";
 import storage from "../common/system_storage";
+import { SAVE_DIR_PATH } from "../const";
 import { $t as t } from "../i18n";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
-
-export const SAVE_DIR_PATH = "public/upload_files/";
 
 function getRandomId() {
   return v4();
