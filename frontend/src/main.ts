@@ -12,11 +12,10 @@ import { setAppLoadingError, setLoadingTitle } from "./tools/dom";
     await initI18n(state.language);
     setLoadingTitle("Initializing Layout...");
     await initLayoutConfig();
-    setLoadingTitle("Downloading JavaScript Packages...");
+    setLoadingTitle("Downloading JavaScript Files...");
     const module = await import("./mount");
     setLoadingTitle("Rendering Application...");
     await module.mountApp();
-    setLoadingTitle("Application loaded successfully!");
   } catch (error: any) {
     console.error("Init app error:", error);
     setAppLoadingError(error?.message || String(error));

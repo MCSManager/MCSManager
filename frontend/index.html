@@ -58,7 +58,7 @@
         border: 4px solid rgba(36, 35, 35, 0.1);
         border-top-color: var(--loading-color);
         border-radius: 50%;
-        animation: spinner-rotate 1.2s linear infinite;
+        animation: spinner-rotate 1s linear infinite;
       }
 
       @media (prefers-color-scheme: dark) {
@@ -73,7 +73,7 @@
           transform: rotate(0deg) scale(1);
         }
         50% {
-          transform: rotate(180deg) scale(1.08);
+          transform: rotate(180deg) scale(1.06);
         }
         100% {
           transform: rotate(360deg) scale(1);
@@ -173,7 +173,7 @@
       <noscript>You need to enable JavaScript to run this Website.</noscript>
       <div class="loading-box">
         <div class="loading"></div>
-        <div class="loading-title"></div>
+        <div class="loading-title">Loading...</div>
         <div class="loading-error">
           <div class="error-title">Loading Failed</div>
           <div class="error-message"></div>
