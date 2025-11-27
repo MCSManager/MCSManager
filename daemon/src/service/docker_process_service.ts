@@ -14,6 +14,7 @@ import { IInstanceProcess } from "../entity/instance/interface";
 import { $t } from "../i18n";
 import { AsyncTask } from "./async_task_service";
 import logger from "./log";
+import InstanceSubsystem from "./system_instance";
 
 type PublicPortArray = {
   [key: string]: { HostPort: string }[];
@@ -152,8 +153,9 @@ export class SetupDockerContainer extends AsyncTask {
     const workingDir = dockerConfig.workingDir || undefined;
 
     let cwd = instance.absoluteCwdPath();
+    const defaultInstanceDir = InstanceSubsystem.getInstanceDataDir();
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
-    if (hostRealPath) {
+    if (hostRealPath && cwd.includes(defaultInstanceDir)) {
       cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
     }
 
