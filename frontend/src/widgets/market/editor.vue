@@ -7,6 +7,7 @@ import { t } from "@/lang/i18n";
 import { setSettingInfo } from "@/services/apis";
 import { uploadFile } from "@/services/apis/layout";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { filterEmptyFields } from "@/tools/object";
 import { reportErrorMsg } from "@/tools/validator";
 import type { QuickStartPackages, QuickStartTemplate } from "@/types";
 import {
@@ -139,12 +140,13 @@ const toEdit = (item: QuickStartPackages) => {
   editorRef?.value?.openDialog({ item, i: actualIndex });
 };
 
-const save = (item: QuickStartPackages, i: number) => {
+const saveTemplate = (item: QuickStartPackages, i: number) => {
+  const filteredItem = filterEmptyFields(item);
   if (!packages.value) return;
   if (i < 0) {
-    packages.value.push(item);
+    packages.value.push(filteredItem);
   } else {
-    packages.value[i] = item;
+    packages.value[i] = filteredItem;
   }
 };
 
@@ -239,6 +241,14 @@ const uploadToPanel = async () => {
       }
     });
     message.success(t("TXT_CODE_a7907771"));
+    setTimeout(() => {
+      router.push({
+        path: "/market",
+        query: {
+          newTemplate: "true"
+        }
+      });
+    }, 500);
   } catch (err: any) {
     reportErrorMsg(err);
   }
@@ -646,6 +656,6 @@ onMounted(() => {
     :game-type-list="appGameTypeList"
     :platform-list="appPlatformList"
     :category-list="appCategoryList"
-    @save-template="save"
+    @save-template="saveTemplate"
   />
 </template>

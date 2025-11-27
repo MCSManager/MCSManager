@@ -805,7 +805,7 @@
   "TXT_CODE_56197d09": "Verhindert, dass Tintenfische auf dem Wasser schwimmen",
   "TXT_CODE_5635dd6b": "Auf „True“ gesetzt, um Schaden beim Gehen mit Stiefeln zu ermöglichen, die mit „Frostläufer“ verzaubert sind",
   "TXT_CODE_56516e92": "Versteckte Einstellungen",
-  "TXT_CODE_56b9e6af": "Standardmäßig zuteilt McSmanager 5 Ports für jede Instanz nacheinander und unterstützt die Verwendung von {MCSM_PORT1} an {MCSM_PORT5} als nacheinander hinzugefügte Portnummern.",
+  "TXT_CODE_56b9e6af": "Standardmäßig zuteilt McSmanager 5 Ports für jede Instanz nacheinander und unterstützt die Verwendung von {mcsm_port1} an {mcsm_port5} als nacheinander hinzugefügte Portnummern.",
   "TXT_CODE_56c42793": "Das Präfix, das in der Spielerliste vor dem Namen einer Person angezeigt wird, wenn diese AFK ist",
   "TXT_CODE_56c686f8": "Fehlgeschlagen",
   "TXT_CODE_56ff18c1": "Anzeige der Serverinformationen. Wenn Sie Plug-in-Programme wie ColorMotd verwenden, können Sie diese Option leer lassen.",

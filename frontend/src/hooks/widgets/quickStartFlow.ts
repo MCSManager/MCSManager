@@ -22,12 +22,12 @@ import {
 import { computed, reactive, ref, type FunctionalComponent } from "vue";
 
 export enum QUICKSTART_ACTION_TYPE {
-  Minecraft = "Minecraft",
-  Bedrock = "Bedrock",
-  Terraria = "Terraria",
-  SteamGameServer = "SteamGameServer",
-  Docker = "Docker",
-  AnyApp = "AnyApp"
+  Minecraft = "minecraft",
+  Bedrock = "bedrock",
+  Terraria = "terraria",
+  SteamGameServer = "steam",
+  Docker = "docker",
+  AnyApp = "universal"
 }
 
 export enum QUICKSTART_METHOD {

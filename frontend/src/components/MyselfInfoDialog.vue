@@ -175,7 +175,7 @@ const disable2FACode = async () => {
           <div v-if="formState?.qrcode">
             <p>
               1. {{ t("TXT_CODE_cc561947") }}<br />
-              2. {{ t("TXT_code_fffce4a8") }}<br />
+              2. {{ t("TXT_CODE_fffce4a8") }}<br />
               3. {{ t("TXT_CODE_af2a6972") }}<br />
             </p>
             <div class="mb-20">

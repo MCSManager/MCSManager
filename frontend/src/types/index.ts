@@ -213,7 +213,7 @@ export interface MountComponent<T = any> {
 export interface Schedule {
   instanceUuid: string;
   name: string;
-  count: number;
+  count: number | string;
   time: string;
   actions: ScheduleAction[];
   type: number;
@@ -226,7 +226,7 @@ export interface ScheduleAction {
 
 export interface NewScheduleTask {
   name: string;
-  count: number;
+  count: number | string;
   time: string;
   type: ScheduleCreateType;
 }

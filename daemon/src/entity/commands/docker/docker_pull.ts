@@ -1,11 +1,18 @@
-import Instance from "../../instance/instance";
-import InstanceCommand from "../base/command";
 import { t } from "i18next";
 import { DefaultDocker } from "../../../service/docker_service";
+import { sleep } from "../../../tools/time";
+import Instance from "../../instance/instance";
+import InstanceCommand from "../base/command";
+
+export function checkDockerName(name: string) {
+  const asciiRegex = /^[\x00-\x7F]+$/;
+  return asciiRegex.test(name);
+}
 
 export async function checkImage(name: string) {
-  const docker = new DefaultDocker();
   try {
+    if (!checkDockerName(name)) throw new Error(t("TXT_CODE_99c6d1f1"));
+    const docker = new DefaultDocker();
     const image = docker.getImage(name);
     const info = await image.inspect();
     return info.Size > 0 ? true : false;
@@ -26,32 +33,33 @@ export default class DockerPullCommand extends InstanceCommand {
     instance.asynchronousTask = undefined;
   }
 
-  private awaitImageDone(instance: Instance, name: string) {
-    return new Promise((resolve, reject) => {
-      let count = 0;
-      const task = setInterval(async () => {
-        count++;
-        instance.println("CONTAINER", t("TXT_CODE_977cb449"));
-        if (await checkImage(name)) {
-          clearInterval(task);
-          resolve(true);
-        }
-        if (count >= 20 * 15) {
-          clearInterval(task);
-          reject(new Error(t("TXT_CODE_9cae6f92")));
-        }
-        if (this.stopFlag) {
-          clearInterval(task);
-          reject(new Error(t("TXT_CODE_361a79c6")));
-        }
-      }, 3 * 1000);
-    });
+  private async awaitImageDone(instance: Instance, name: string) {
+    let count = 0;
+    while (true) {
+      count++;
+      instance.println("CONTAINER", t("TXT_CODE_977cb449"));
+
+      if (await checkImage(name)) {
+        return true;
+      }
+
+      if (count >= 20 * 30) {
+        throw new Error(t("TXT_CODE_4cc91afe"));
+      }
+
+      if (this.stopFlag) {
+        throw new Error(t("TXT_CODE_361a79c6"));
+      }
+
+      await sleep(3000);
+    }
   }
 
   async exec(instance: Instance) {
     const imageName = instance.config.docker.image;
     if (!imageName) throw new Error(t("TXT_CODE_17be5f70"));
     const cachedStartCount = instance.startCount;
+
     // If the image exists, there is no need to pull again.
     if (await checkImage(imageName)) return;
 

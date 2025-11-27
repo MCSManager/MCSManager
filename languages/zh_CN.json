@@ -1551,7 +1551,7 @@
   "TXT_CODE_98e7c829": "留空将使用 Docker 镜像自带命令启动",
   "TXT_CODE_9900f79e": "图片",
   "TXT_CODE_9901af98": "标签（可选）",
-  "TXT_CODE_9911ac11": "保存失败，请检查配置项",
+  "TXT_CODE_9911ac11": "无法保存，请填写所有必填项",
   "TXT_CODE_99167cda": "矿车是否可在未在轨道上时被控制",
   "TXT_CODE_992bf9bc": "MC Bukkit",
   "TXT_CODE_998d1dec": "橙色床的方块掉落倍率",
@@ -2771,7 +2771,7 @@
   "TXT_CODE_fffaeb16": "上传过程中不可取消！",
   "TXT_CODE_fffaeb17": "使用其他系统用户",
   "TXT_CODE_fffaeb18": "设定启动进程使用的系统用户，您可能需要自行解决因为权限问题带来的问题。",
-  "TXT_code_fffce4a8": "将双重验证代码输入下框",
+  "TXT_CODE_fffce4a8": "将双重验证代码输入下框",
   "TXT_CODE_file_router.instanceNotExist": "实例 {{instanceUuid}} 不存在",
   "TXT_CODE_file_router.unzipLimit": "超出最大同时解压缩任务量，最大准许{{maxFileTask}}个，目前有{{fileLock}}个任务正在进行，请耐心等待",
   "TXT_CODE_file_router_service.instanceNotExit": "实例 {{uuid}} 不存在",
@@ -2918,5 +2918,12 @@
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
   "TXT_CODE_2dae1294": "此实例配置存在问题，请刷新页面重试，或重新创建实例！",
-  "TXT_CODE_22042570": "最多同时打开10个选项卡，请关闭其他选项卡后再打开！"
+  "TXT_CODE_22042570": "最多同时打开10个选项卡，请关闭其他选项卡后再打开！",
+  "TXT_CODE_99c6d1f1": "镜像名称不规范！",
+  "TXT_CODE_4cc91afe": "下载 Docker 镜像超时！请检查网络后，手动下载或重试！",
+  "TXT_CODE_83053cd5": "请输入关闭实例命令，列如：stop、exit、^C、等",
+  "TXT_CODE_ec96e2bf": "循环类型的计划任务执行间隔不能小于3秒！",
+  "TXT_CODE_6b77cd52": "此计划任务执行间隔太频繁，请更改执行间隔周期！",
+  "TXT_CODE_bb760145": "请填写时间，单位毫秒，1000ms = 1s",
+  "TXT_CODE_8ff89011": "请填写要发送到实例的命令，比如 stop、exit 等"
 }

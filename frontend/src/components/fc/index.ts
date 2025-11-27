@@ -74,7 +74,10 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      subTitle: t("TXT_CODE_56b9e6af"),
+      subTitle: t("TXT_CODE_56b9e6af", {
+        mcsm_port1: "{mcsm_port1}",
+        mcsm_port5: "{mcsm_port5}"
+      }),
       title: t("TXT_CODE_c4435af9"),
       columns: [
         {
