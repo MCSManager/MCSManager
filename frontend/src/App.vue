@@ -10,7 +10,7 @@ import InputDialogProvider from "./components/InputDialogProvider.vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
 import type { RouterMetaInfo } from "./config/router";
 import { useLayoutConfigStore } from "./stores/useLayoutConfig";
-import { closeAppLoading } from "./tools/dom";
+import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 
 const { isDarkTheme, setBackgroundImage } = useAppConfigStore();
 const { getSettingsConfig, hasBgImage } = useLayoutConfigStore();
@@ -42,6 +42,7 @@ if (isDarkTheme()) {
 });
 
 onMounted(async () => {
+  setLoadingTitle("Loading application settings...");
   const frontendSettings = await getSettingsConfig();
   if (frontendSettings?.theme?.backgroundImage)
     setBackground(frontendSettings.theme.backgroundImage);

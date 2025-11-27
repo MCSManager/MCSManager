@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import FileManager from "../../../../daemon/src/service/system_file";
-import { MARKET_CACHE_FILE_PATH } from "../const";
+import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t, i18next } from "../i18n";
@@ -13,7 +13,6 @@ import permission from "../middleware/permission";
 import {
   getFrontendLayoutConfig,
   resetFrontendLayoutConfig,
-  SAVE_DIR_PATH,
   setFrontendLayoutConfig
 } from "../service/frontend_layout";
 import { logger } from "../service/log";
