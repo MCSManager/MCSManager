@@ -17,3 +17,11 @@ export function findParentWithClass(element: HTMLElement, className: string): HT
 export function closeAppLoading() {
   (window as any).closeLoadingContainer();
 }
+
+export function setLoadingTitle(title: string) {
+  (window as any).setLoadingTitle(title);
+}
+
+export function setAppLoadingError(error: string) {
+  (window as any).setAppLoadingError(error);
+}
