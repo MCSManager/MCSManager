@@ -10,6 +10,7 @@ import type { DownloadFileConfigItem } from "@/types/fileManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
+import DockerPortDialog from "./DockerPortDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
@@ -73,33 +74,8 @@ export async function usePortEditDialog(data: PortConfigItem[] = []) {
   return (
     (await useMountComponent({
       data,
-      subTitle: t("TXT_CODE_56b9e6af", {
-        mcsm_port1: "{mcsm_port1}",
-        mcsm_port5: "{mcsm_port5}"
-      }),
-      title: t("TXT_CODE_c4435af9"),
-      columns: [
-        {
-          align: "center",
-          dataIndex: "host",
-          title: t("TXT_CODE_534db0b2"),
-          placeholder: "eg: 8080 or {mcsm_port1}"
-        },
-        {
-          align: "center",
-          dataIndex: "container",
-          title: t("TXT_CODE_b729d2e"),
-          placeholder: "eg: 25565 or {mcsm_port1}"
-        },
-        {
-          align: "center",
-          dataIndex: "protocol",
-          title: t("TXT_CODE_ad1c674c"),
-          placeholder: "tcp/udp"
-        }
-      ] as AntColumnsType[],
       textarea: false
-    }).mount<PortConfigItem[]>(KvOptionsDialogVue)) || []
+    }).mount<PortConfigItem[]>(DockerPortDialog)) || []
   );
 }
 
