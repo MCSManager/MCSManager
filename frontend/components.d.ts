@@ -76,7 +76,6 @@ declare module 'vue' {
     CardOperator: typeof import('./src/components/CardOperator.vue')['default']
     CardPanel: typeof import('./src/components/CardPanel.vue')['default']
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
-    copy: typeof import("./src/components/fc/DockerPortDialog.vue")["default"]
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     DockerPortDialog: typeof import('./src/components/fc/DockerPortDialog.vue')['default']

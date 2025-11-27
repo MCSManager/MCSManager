@@ -8,14 +8,25 @@ import _ from "lodash";
 import { computed, h, onMounted, ref } from "vue";
 import { emptyValueValidator, reportValidatorError } from "../../tools/validator";
 
-const usedPorts = ref<number[]>([]);
+type Protocol = "tcp" | "udp";
+interface DockerPortMapping {
+  protocol: Protocol;
+  container: string;
+  host: string;
+}
+
+interface DockerPortMappingWithAutoAssign extends DockerPortMapping {
+  autoAssignContainerPort: boolean;
+  autoAssignHostPort: boolean;
+}
+
 interface Props extends MountComponent {
-  data: any[];
+  data: DockerPortMapping[];
 }
 
 const props = defineProps<Props>();
-const dataSource = ref<any[]>(props.data instanceof Array ? _.cloneDeep(props.data) : []);
-
+const dataSource = ref<DockerPortMappingWithAutoAssign[]>([]);
+const usedPorts = ref<number[]>([]);
 const open = ref(true);
 const formInstance = ref<FormInstance>();
 
@@ -46,106 +57,98 @@ const columns = computed<AntColumnsType[]>(() => [
   }
 ]);
 
-const operation = (type: "add" | "del", index = 0) => {
-  if (type === "add") {
-    const keys = columns.value.filter((v) => v.dataIndex).map((v) => String(v.dataIndex));
-    const obj: any = {};
-    for (const key of keys) {
-      if (key === "operation") continue;
+const emptyPortMapping: DockerPortMappingWithAutoAssign = {
+  protocol: "tcp",
+  container: "",
+  host: "",
+  autoAssignContainerPort: false,
+  autoAssignHostPort: false
+};
 
-      obj[key] = "";
-      if (key === "protocol") obj[key] = "tcp";
-      obj[`${key}Checked`] = false;
+const hasMCSMPort = (str: string) => String(str).match(/\{mcsm_port(\d+)\}/);
+
+const cleanupPort = (portValue: string, currentIndex: number) => {
+  const portMatch = hasMCSMPort(portValue);
+  if (portMatch) {
+    const port = parseInt(portMatch[1]);
+    const isPortStillUsed = dataSource.value.some(
+      (rec, idx) =>
+        idx !== currentIndex &&
+        ((rec.autoAssignHostPort && hasMCSMPort(rec.host)?.[1] === portMatch[1]) ||
+          (rec.autoAssignContainerPort && hasMCSMPort(rec.container)?.[1] === portMatch[1]))
+    );
+    if (!isPortStillUsed) {
+      usedPorts.value = usedPorts.value.filter((p) => p !== port);
     }
-    dataSource.value.push(obj);
+  }
+};
+
+type OperationType = "add" | "del";
+const operation = (type: OperationType, index = 0) => {
+  if (type === "add") {
+    dataSource.value.push(_.cloneDeep(emptyPortMapping));
   } else {
     // Remove port from usedPorts
     const removedRecord = dataSource.value[index];
 
-    ["host", "container"].forEach((field) => {
-      if (removedRecord[`${field}Checked`]) {
-        const portMatch = hasMCSMPort(removedRecord[field]);
-        if (portMatch) {
-          const port = parseInt(portMatch[1]);
-          // 检查其他记录是否也在使用这个端口
-          const isPortStillUsed = dataSource.value.some(
-            (rec, idx) =>
-              idx !== index &&
-              ((rec.hostChecked && hasMCSMPort(rec.host)?.[1] === portMatch[1]) ||
-                (rec.containerChecked && hasMCSMPort(rec.container)?.[1] === portMatch[1]))
-          );
-          if (!isPortStillUsed) {
-            usedPorts.value = usedPorts.value.filter((p) => p !== port);
-          }
-        }
-      }
-    });
+    // check and clean host port
+    if (removedRecord.autoAssignHostPort) {
+      cleanupPort(removedRecord.host, index);
+    }
+
+    // check and clean container port
+    if (removedRecord.autoAssignContainerPort) {
+      cleanupPort(removedRecord.container, index);
+    }
 
     dataSource.value.splice(index, 1);
   }
 };
 
 const getNextNumber = (numArr: number[]): number => {
-  const arr = [...new Set(numArr.filter((n) => n >= 1 && n <= 5))];
+  if (numArr.length === 0) return 1;
 
-  if (arr.length === 0) return 1;
-  if (arr.length === 1 && arr[0] === 3) return 1;
-  if (arr.length === 2 && arr.includes(1) && arr.includes(3)) return 2;
-  if (arr.length === 3 && arr.includes(1) && arr.includes(2) && arr.includes(3)) return 4;
-
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= numArr.length + 1; i++) {
     if (!numArr.includes(i)) return i;
   }
 
-  return -1;
+  return numArr.length + 1;
 };
 
-const checkedCount = computed(() => usedPorts.value.length);
-const hasMCSMPort = (d: string) => String(d).match(/\{mcsm_port(\d+)\}/);
-const handleCheckboxChange = (record: any, dataIndex: string) => {
-  const otherDataIndex = dataIndex === "host" ? "container" : "host";
+type PortField = "host" | "container";
+const handleAutoAssignChange = (record: DockerPortMappingWithAutoAssign, field: PortField) => {
+  const otherField = field === "host" ? "container" : "host";
+  const autoAssignField = field === "host" ? "autoAssignHostPort" : "autoAssignContainerPort";
+  const otherAutoAssignField = field === "host" ? "autoAssignContainerPort" : "autoAssignHostPort";
 
-  if (record[`${dataIndex}Checked`]) {
-    // 取消勾选 - 只有当另一个字段也没有勾选时才释放端口
-    const port = hasMCSMPort(record[dataIndex]);
+  if (record[autoAssignField]) {
+    const port = hasMCSMPort(record[field]);
     if (port) {
       const portNum = parseInt(port[1]);
-      // 检查另一个字段是否也在使用同一个端口
-      const otherPort = hasMCSMPort(record[otherDataIndex]);
-      if (!otherPort || parseInt(otherPort[1]) !== portNum) {
-        // 另一个字段没有使用同一个端口，才释放
+      // check if other field is using the same port
+      const otherPort = hasMCSMPort(record[otherField]);
+      if (!otherPort || parseInt(otherPort[1]) !== portNum || !record[otherAutoAssignField]) {
+        // if other field is not using the same port, or other field is not auto assign, then release the port
         usedPorts.value = usedPorts.value.filter((p) => p !== portNum);
       }
     }
-    record[`${dataIndex}Checked`] = false;
-    record[dataIndex] = "";
+    record[autoAssignField] = false;
+    record[field] = "";
   } else {
-    // 勾选 - 优先使用另一个字段已分配的端口
     let portToUse: number;
 
-    const otherPort = hasMCSMPort(record[otherDataIndex]);
-    if (otherPort && record[`${otherDataIndex}Checked`]) {
-      // 使用另一个字段已分配的端口
+    const otherPort = hasMCSMPort(record[otherField]);
+    if (otherPort && record[otherAutoAssignField]) {
+      // Use port from other field
       portToUse = parseInt(otherPort[1]);
     } else {
       portToUse = getNextNumber(usedPorts.value);
-      if (portToUse === -1) {
-        record[`${dataIndex}Checked`] = false;
-        return;
-      }
       usedPorts.value.push(portToUse);
     }
 
-    record[dataIndex] = `{mcsm_port${portToUse}}`;
-    record[`${dataIndex}Checked`] = true;
+    record[field] = `{mcsm_port${portToUse}}`;
+    record[autoAssignField] = true;
   }
-};
-
-const shouldDisableCheckbox = (record: any, dataIndex: string) => {
-  const otherDataIndex = dataIndex === "host" ? "container" : "host";
-  return (
-    checkedCount.value >= 5 && !record[`${dataIndex}Checked`] && !record[`${otherDataIndex}Checked`]
-  );
 };
 
 const cancel = async () => {
@@ -159,30 +162,38 @@ const submit = async () => {
   } catch (error: any) {
     return reportValidatorError(error);
   }
-  if (props.emitResult) props.emitResult(dataSource.value);
+
+  const result: DockerPortMapping[] = dataSource.value.map((item) => ({
+    protocol: item.protocol,
+    container: item.container,
+    host: item.host
+  }));
+
+  if (props.emitResult) props.emitResult(result);
   await cancel();
 };
 
 onMounted(() => {
-  dataSource.value = props.data instanceof Array ? _.cloneDeep(props.data) : [];
-  dataSource.value.forEach((record) => {
-    const hostPortMatch = hasMCSMPort(record.host);
-    if (hostPortMatch) {
-      record.hostChecked = true;
-      const portNum = parseInt(hostPortMatch[1]);
-      if (!usedPorts.value.includes(portNum)) {
-        usedPorts.value.push(portNum);
-      }
-    }
+  dataSource.value =
+    props.data instanceof Array
+      ? props.data.map((item) => ({
+          ...item,
+          autoAssignHostPort: hasMCSMPort(item.host) !== null,
+          autoAssignContainerPort: hasMCSMPort(item.container) !== null
+        }))
+      : [];
 
-    const containerPortMatch = hasMCSMPort(record.container);
-    if (containerPortMatch) {
-      record.containerChecked = true;
-      const portNum = parseInt(containerPortMatch[1]);
-      if (!usedPorts.value.includes(portNum)) {
-        usedPorts.value.push(portNum);
+  // Initialize used ports
+  dataSource.value.forEach((record: DockerPortMappingWithAutoAssign) => {
+    (["host", "container"] as const).forEach((key) => {
+      const match = hasMCSMPort(record[key]);
+      if (match) {
+        const portNum = parseInt(match[1]);
+        if (!usedPorts.value.includes(portNum)) {
+          usedPorts.value.push(portNum);
+        }
       }
-    }
+    });
   });
 });
 </script>
@@ -225,7 +236,7 @@ onMounted(() => {
             <template v-if="column.dataIndex === 'host' || column.dataIndex === 'container'">
               <div class="flex-center flex-row">
                 <a-form-item
-                  :name="String(column.dataIndex)"
+                  :name="`${index}-${String(column.dataIndex)}`"
                   no-style
                   :rules="[
                     {
@@ -241,15 +252,26 @@ onMounted(() => {
                     max="65535"
                     size="large"
                     :placeholder="(column as any).placeholder"
-                    :disabled="record[`${column.dataIndex}Checked`]"
+                    :disabled="
+                      record[
+                        column.dataIndex === 'host'
+                          ? 'autoAssignHostPort'
+                          : 'autoAssignContainerPort'
+                      ]
+                    "
                   />
                 </a-form-item>
                 <a-checkbox
                   class="ml-12"
                   style="width: 114px"
-                  :checked="record[`${column.dataIndex}Checked`]"
-                  :disabled="shouldDisableCheckbox(record, column.dataIndex as string)"
-                  @change="() => handleCheckboxChange(record, column.dataIndex as string)"
+                  :checked="
+                    record[
+                      column.dataIndex === 'host' ? 'autoAssignHostPort' : 'autoAssignContainerPort'
+                    ]
+                  "
+                  @change="
+                    () => handleAutoAssignChange(record, column.dataIndex as 'host' | 'container')
+                  "
                 >
                   {{ t("TXT_CODE_6f1129fb") }}
                 </a-checkbox>
@@ -257,7 +279,7 @@ onMounted(() => {
             </template>
             <template v-else-if="column.dataIndex === 'protocol'">
               <a-form-item
-                :name="String(column.dataIndex)"
+                :name="`${index}-${String(column.dataIndex)}`"
                 no-style
                 :rules="[
                   {
