@@ -106,12 +106,13 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
   UpdatePanelSettings: async (data: any) => {
     const originSetting = await settingInfo().execute();
     if (!originSetting.value) throw new Error("Panel settings not found");
-    console.log("正在更新面板设置: ", data);
+    console.debug("正在更新面板设置: ", data);
     await setSettingInfo().execute({
       data: {
         ...originSetting.value,
-        panelId: data?.panelId || originSetting.value.panelId,
-        registerCode: data?.registerCode || originSetting.value.registerCode
+        panelId: data?.panelId != null ? data.panelId : originSetting.value.panelId,
+        registerCode:
+          data?.registerCode != null ? data.registerCode : originSetting.value.registerCode
       }
     });
     return true;
@@ -132,5 +133,9 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
     const res = await openMarketDialog(data?.daemonId, data?.instanceId, data?.options);
     if (!res) return res;
     return JSON.parse(JSON.stringify(res));
+  },
+  ReloadMainApp: async () => {
+    window.location.reload();
+    return true;
   }
 };

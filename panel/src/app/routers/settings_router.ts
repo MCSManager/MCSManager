@@ -59,7 +59,6 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.businessMode != null) systemConfig.businessMode = Boolean(config.businessMode);
     if (config.businessId != null) systemConfig.businessId = String(config.businessId);
     if (config.allowChangeCmd != null) systemConfig.allowChangeCmd = Boolean(config.allowChangeCmd);
-    if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
 
     if (config.shopName != null) systemConfig.shopName = String(config.shopName);
     if (config.shopEmail != null) systemConfig.shopEmail = String(config.shopEmail);
@@ -68,7 +67,6 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.shopTip != null) systemConfig.shopTip = String(config.shopTip);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
 
-    if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableShopHomePage != null)
       systemConfig.enableShopHomePage = Boolean(config.enableShopHomePage);
 
@@ -79,6 +77,12 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       });
       systemConfig.presetPackAddr = String(config.presetPackAddr);
     }
+
+    if (config.panelId != null) {
+      systemConfig.panelId = String(config.panelId);
+      if (systemConfig.registerCode) systemConfig.registerCode = "";
+    }
+    if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
 
     if (config.language != null) {
       logger.warn($t("TXT_CODE_e29a9317"), config.language);

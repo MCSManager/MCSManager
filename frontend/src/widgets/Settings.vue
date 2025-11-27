@@ -384,6 +384,20 @@ onUnmounted(() => {
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.panelId"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                      disabled
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("Panel ID 注册码") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("在线功能验证身份用，请勿外泄，否则可能会造成数据泄漏") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.registerCode"
+                      style="max-width: 320px"
                       :placeholder="t('TXT_CODE_4ea93630')"
                     />
                   </a-form-item>
