@@ -26,7 +26,7 @@ const globalReqIdMap = new Map<string, boolean>();
 const globalIframeList = new Map<string, Ref<HTMLIFrameElement | null>>();
 
 export function getProPanelUrl(path: string) {
-  return `http://localhost:5174/#${path}`;
+  return `http://47.94.144.51:5174/#${path}`;
 }
 
 export function useIframeEventListener(iframe: Ref<HTMLIFrameElement | null>) {
