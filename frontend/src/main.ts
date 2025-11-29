@@ -7,7 +7,7 @@ function handleLoadingError(error: any) {
   console.error("Init app error:", error);
   const errorMessage = String(error?.message || error);
   if (errorMessage.toLowerCase().includes("request failed with status code 500")) {
-    setLoadingTitle("The backend is currently unavailable, please try again later.");
+    setAppLoadingError("The backend is currently unavailable, please try again later.");
     return;
   }
   setAppLoadingError(errorMessage);

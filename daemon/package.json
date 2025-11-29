@@ -1,6 +1,6 @@
 {
   "name": "mcsmanager-daemon",
-  "version": "4.10.3",
+  "version": "4.11.0",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",
