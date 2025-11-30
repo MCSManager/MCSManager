@@ -2925,5 +2925,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Такая задача уже существует.",
   "TXT_CODE_system_instance_control.illegalName": "Некорректное имя задачи. Допустимы только подчеркивания, цифры, буквы и некоторые локальные языковые символы.",
   "TXT_CODE_ui.help": "[Терминал] У демона есть базовые интерактивные функции. Пожалуйста, введите 'help' для получения больше информации.",
-  "TXT_CODE_version.versionDetectErr": "Ошибка проверки версии"
+  "TXT_CODE_version.versionDetectErr": "Ошибка проверки версии",
+  "TXT_CODE_DISK_USAGE": "Диск"
 }

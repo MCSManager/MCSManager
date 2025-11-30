@@ -2925,5 +2925,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
+  "TXT_CODE_DISK_USAGE": "Festplatte"
 }

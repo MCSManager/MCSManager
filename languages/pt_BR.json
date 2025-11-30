@@ -2925,5 +2925,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Uma tarefa duplicada já existe.",
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
-  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão"
+  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
+  "TXT_CODE_DISK_USAGE": "Disco"
 }
