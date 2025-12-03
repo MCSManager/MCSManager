@@ -22,15 +22,27 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private cachedStorageUsage = 0;
   private cachedStorageLimit = 0;
 
-  private async getDirSize(dirPath: string): Promise<number> {
+  private async getDirSize(dirPath: string, visited?: Set<string>): Promise<number> {
     let size = 0;
     try {
+      // Resolve the real path to avoid double-counting and infinite loops
+      const realDirPath = await fs.realpath(dirPath);
+      if (!visited) visited = new Set();
+      if (visited.has(realDirPath)) {
+        // Already visited this directory, skip to prevent infinite loops
+        return 0;
+      }
+      visited.add(realDirPath);
       const files = await fs.readdir(dirPath);
       for (const file of files) {
         const filePath = path.join(dirPath, file);
-        const stats = await fs.stat(filePath);
+        const stats = await fs.lstat(filePath);
+        if (stats.isSymbolicLink()) {
+          // Skip symlinks to avoid loops and double-counting
+          continue;
+        }
         if (stats.isDirectory()) {
-          size += await this.getDirSize(filePath);
+          size += await this.getDirSize(filePath, visited);
         } else {
           size += stats.size;
         }
