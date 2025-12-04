@@ -1,13 +1,11 @@
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import Dockerode from "dockerode";
-import fs from "fs-extra";
-import path from "path";
 import { promisify } from "util";
 import { DefaultDocker } from "../../../service/docker_service";
 import Instance from "../../instance/instance";
 import { ILifeCycleTask } from "../../instance/life_cycle";
 
-const execPromise = promisify(exec);
+const execFilePromise = promisify(execFile);
 
 export default class DockerStatsTask implements ILifeCycleTask {
   private static defaultDocker = new DefaultDocker();
@@ -18,39 +16,9 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private lastStatsMap: Map<string, { [key: string]: number | undefined; timestamp: number }> =
     new Map();
 
-  // Storage cache per instance/container
-  private storageCacheMap: Map<string, { lastStorageCheck: number; cachedStorageUsage: number; cachedStorageLimit: number }> = new Map();
-
-  private async getDirSize(dirPath: string, visited?: Set<string>): Promise<number> {
-    let size = 0;
-    try {
-      // Resolve the real path to avoid double-counting and infinite loops
-      const realDirPath = await fs.realpath(dirPath);
-      if (!visited) visited = new Set();
-      if (visited.has(realDirPath)) {
-        // Already visited this directory, skip to prevent infinite loops
-        return 0;
-      }
-      visited.add(realDirPath);
-      const files = await fs.readdir(dirPath);
-      for (const file of files) {
-        const filePath = path.join(dirPath, file);
-        const stats = await fs.lstat(filePath);
-        if (stats.isSymbolicLink()) {
-          // Skip symlinks to avoid loops and double-counting
-          continue;
-        }
-        if (stats.isDirectory()) {
-          size += await this.getDirSize(filePath, visited);
-        } else {
-          size += stats.size;
-        }
-      }
-    } catch (error) {
-      // ignore
-    }
-    return size;
-  }
+  private lastStorageCheck = 0;
+  private cachedStorageUsage = 0;
+  private cachedStorageLimit = 0;
 
   private calculateRealTimeRate<T extends Record<string, number | undefined>>(
     currentValues: T,
@@ -158,52 +126,41 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let storageUsage = this.cachedStorageUsage;
       let storageLimit = this.cachedStorageLimit;
 
-      if (Date.now() - this.lastStorageCheck > 60 * 1000) {
+      if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 60 * 1000) {
         this.lastStorageCheck = Date.now();
         try {
           const containerInfo = await container.inspect();
           const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
 
           // Calculate Usage
-          if (process.platform === "linux") {
-            let totalUsage = 0;
-            for (const mount of mounts) {
-              try {
-                const { stdout } = await execPromise(`du -sb "${mount.Source}"`);
-                const usage = parseInt(stdout.split("\t")[0]);
-                if (!isNaN(usage)) totalUsage += usage;
-              } catch (e) {}
-            }
-            storageUsage = totalUsage;
-          } else {
-            let totalUsage = 0;
-            for (const mount of mounts) {
-              totalUsage += await this.getDirSize(mount.Source);
-            }
-            storageUsage = totalUsage;
+          let totalUsage = 0;
+          for (const mount of mounts) {
+            try {
+              const { stdout } = await execFilePromise("du", ["-sb", mount.Source]);
+              const usage = parseInt(stdout.split("\t")[0]);
+              if (!isNaN(usage)) totalUsage += usage;
+            } catch (e) {}
           }
+          storageUsage = totalUsage;
 
           // Calculate Limit (Partition Size)
           if (mounts.length > 0) {
             const targetPath = mounts[0].Source;
-            if (process.platform === "linux") {
-              try {
-                const { stdout } = await execPromise(
-                  `df -B1 --output=size "${targetPath}" | tail -n 1`
-                );
-                const limit = parseInt(stdout.trim());
+            try {
+              const { stdout } = await execFilePromise("df", [
+                "-B1",
+                "--output=size",
+                targetPath
+              ]);
+              // Output format:
+              // Size
+              // 123456
+              const lines = stdout.trim().split("\n");
+              if (lines.length >= 2) {
+                const limit = parseInt(lines[1].trim());
                 if (!isNaN(limit)) storageLimit = limit;
-              } catch (e) {}
-            } else {
-              try {
-                // Node 18.15.0+
-                if ((fs as any).statfs) {
-                  const statfs = promisify((fs as any).statfs);
-                  const stats = (await statfs(targetPath)) as any;
-                  storageLimit = stats.bsize * stats.blocks;
-                }
-              } catch (e) {}
-            }
+              }
+            } catch (e) {}
           }
 
           this.cachedStorageUsage = storageUsage;
