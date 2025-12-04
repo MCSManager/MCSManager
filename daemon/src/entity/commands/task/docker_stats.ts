@@ -18,9 +18,8 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private lastStatsMap: Map<string, { [key: string]: number | undefined; timestamp: number }> =
     new Map();
 
-  private lastStorageCheck = 0;
-  private cachedStorageUsage = 0;
-  private cachedStorageLimit = 0;
+  // Storage cache per instance/container
+  private storageCacheMap: Map<string, { lastStorageCheck: number; cachedStorageUsage: number; cachedStorageLimit: number }> = new Map();
 
   private async getDirSize(dirPath: string, visited?: Set<string>): Promise<number> {
     let size = 0;
