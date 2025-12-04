@@ -126,8 +126,8 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let storageUsage = this.cachedStorageUsage;
       let storageLimit = this.cachedStorageLimit;
 
-      if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 60 * 1000) {
-        this.lastStorageCheck = Date.now();
+      if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
+        this.lastStorageCheck = Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
         try {
           const containerInfo = await container.inspect();
           const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
@@ -136,7 +136,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
           let totalUsage = 0;
           for (const mount of mounts) {
             try {
-              const { stdout } = await execFilePromise("du", ["-sb", mount.Source]);
+              const { stdout } = await execFilePromise("nice", ["-n", "19", "ionice", "-c", "3", "du", "-sb", mount.Source]);
               const usage = parseInt(stdout.split("\t")[0]);
               if (!isNaN(usage)) totalUsage += usage;
             } catch (e) {}
