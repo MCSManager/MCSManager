@@ -9,11 +9,11 @@ import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import {
-  killInstance,
-  openInstance,
-  restartInstance,
-  stopInstance,
-  updateInstance
+    killInstance,
+    openInstance,
+    restartInstance,
+    stopInstance,
+    updateInstance
 } from "@/services/apis/instance";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { sleep } from "@/tools/common";
@@ -21,22 +21,23 @@ import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_STATUS } from "@/types/const";
 import {
-  ApartmentOutlined,
-  BlockOutlined,
-  CheckCircleOutlined,
-  CloseOutlined,
-  CloudDownloadOutlined,
-  CloudServerOutlined,
-  DashboardOutlined,
-  DownOutlined,
-  InfoCircleOutlined,
-  InteractionOutlined,
-  LaptopOutlined,
-  LoadingOutlined,
-  MoneyCollectOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
-  RedoOutlined
+    ApartmentOutlined,
+    BlockOutlined,
+    CheckCircleOutlined,
+    CloseOutlined,
+    CloudDownloadOutlined,
+    CloudServerOutlined,
+    DashboardOutlined,
+    DownOutlined,
+    HddOutlined,
+    InfoCircleOutlined,
+    InteractionOutlined,
+    LaptopOutlined,
+    LoadingOutlined,
+    MoneyCollectOutlined,
+    PauseCircleOutlined,
+    PlayCircleOutlined,
+    RedoOutlined
 } from "@ant-design/icons-vue";
 import { useLocalStorage } from "@vueuse/core";
 import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
@@ -274,7 +275,16 @@ const formatNetworkSpeed = (bytes?: number) =>
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
   if (!info || isStopped.value) return [];
-  const { cpuUsage, memoryUsage, memoryLimit, memoryUsagePercent, rxBytes, txBytes } = info;
+  const {
+    cpuUsage,
+    memoryUsage,
+    memoryLimit,
+    memoryUsagePercent,
+    rxBytes,
+    txBytes,
+    storageUsage,
+    storageLimit
+  } = info;
 
   return arrayFilter<TagInfo>([
     {
@@ -290,6 +300,12 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       color: getUsageColor(memoryUsagePercent),
       icon: DashboardOutlined,
       condition: () => memoryUsage != null
+    },
+    {
+      label: t("TXT_CODE_DISK_USAGE"),
+      value: formatMemoryUsage(storageUsage, storageLimit),
+      icon: HddOutlined,
+      condition: () => storageUsage != null
     },
     {
       label: t("TXT_CODE_50daec4"),

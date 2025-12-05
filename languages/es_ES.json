@@ -2925,5 +2925,6 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
+  "TXT_CODE_DISK_USAGE": "Disco"
 }
