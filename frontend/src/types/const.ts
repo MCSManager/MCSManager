@@ -138,7 +138,7 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
 export const defaultInstanceInfo: IGlobalInstanceConfig = {
   nickname: "",
   startCommand: "",
-  stopCommand: "",
+  stopCommand: "^c",
   cwd: "",
   ie: "UTF-8",
   oe: "UTF-8",
