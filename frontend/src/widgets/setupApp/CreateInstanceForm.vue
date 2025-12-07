@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { getFileConfigAddr } from "@/hooks/useFileManager";
-import {
-  INSTANCE_TYPE_TRANSLATION,
-  TYPE_MINECRAFT_BEDROCK,
-  TYPE_MINECRAFT_JAVA,
-  TYPE_STEAM_SERVER_UNIVERSAL,
-  TYPE_TERRARIA
-} from "@/hooks/useInstance";
+import { INSTANCE_TYPE_TRANSLATION, TYPE_MINECRAFT_BUNGEECORD } from "@/hooks/useInstance";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { createInstance as createInstanceApi, uploadAddress } from "@/services/apis/instance";
@@ -44,25 +38,25 @@ const needUpload = isImportMode || isFileMode;
 
 function changeInstanceType(appType: string) {
   if (appType.includes(QUICKSTART_ACTION_TYPE.Minecraft)) {
-    formData.stopCommand = "stop";
-    formData.type = TYPE_MINECRAFT_JAVA;
+    if (appType === TYPE_MINECRAFT_BUNGEECORD) {
+      formData.stopCommand = "end";
+    } else {
+      formData.stopCommand = "stop";
+    }
   }
 
   if (appType.includes(QUICKSTART_ACTION_TYPE.Bedrock)) {
     formData.stopCommand = "stop";
-    formData.type = TYPE_MINECRAFT_BEDROCK;
   }
 
   if (appType.includes(QUICKSTART_ACTION_TYPE.Terraria)) {
     formData.stopCommand = "stop";
-    formData.type = TYPE_TERRARIA;
   }
 
   if (
     appType.includes(QUICKSTART_ACTION_TYPE.SteamGameServer) ||
     appType.includes(QUICKSTART_ACTION_TYPE.AnyApp)
   ) {
-    formData.type = TYPE_STEAM_SERVER_UNIVERSAL;
     formData.stopCommand = "^c";
   }
 }
