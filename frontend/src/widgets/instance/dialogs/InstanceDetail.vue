@@ -1302,6 +1302,25 @@ defineExpose({
                   />
                 </a-form-item>
               </a-col>
+
+              <a-col :xs="24" :lg="8" :offset="0">
+                <a-form-item>
+                  <a-typography-title :level="5">{{ t("TXT_CODE_disk_limit") }}</a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip :title="t('TXT_CODE_disk_limit_desc')" placement="top">
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{ t("TXT_CODE_disk_limit_desc") }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <a-input
+                    v-model:value="formData.instance.config.docker.maxSpace"
+                    :allow-clear="true"
+                    :placeholder="t('TXT_CODE_disk_limit_placeholder')"
+                    type="number"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
           </a-tab-pane>
         </a-tabs>

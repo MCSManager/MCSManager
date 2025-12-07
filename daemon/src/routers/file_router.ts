@@ -80,11 +80,11 @@ routerApp.on("file/status", async (ctx, data) => {
 });
 
 // Create a new file
-routerApp.on("file/touch", (ctx, data) => {
+routerApp.on("file/touch", async (ctx, data) => {
   try {
     const target = data.target;
     const fileManager = getFileManager(data.instanceUuid);
-    fileManager.newFile(target);
+    await fileManager.newFile(target);
     protocol.response(ctx, true);
   } catch (error: any) {
     protocol.responseError(ctx, error);
@@ -92,11 +92,11 @@ routerApp.on("file/touch", (ctx, data) => {
 });
 
 // Create a directory
-routerApp.on("file/mkdir", (ctx, data) => {
+routerApp.on("file/mkdir", async (ctx, data) => {
   try {
     const target = data.target;
     const fileManager = getFileManager(data.instanceUuid);
-    fileManager.mkdir(target);
+    await fileManager.mkdir(target);
     protocol.response(ctx, true);
   } catch (error: any) {
     protocol.responseError(ctx, error);
@@ -144,7 +144,7 @@ routerApp.on("file/copy", async (ctx, data) => {
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
     for (const target of targets) {
-      fileManager.copy(target[0], target[1]);
+      await fileManager.copy(target[0], target[1]);
     }
     protocol.response(ctx, true);
   } catch (error: any) {
@@ -179,8 +179,8 @@ routerApp.on("file/delete", async (ctx, data) => {
         uploadManager.delete(uploadTask.id);
         uploadTask.writer.stop();
       } else {
-        // async delete
-        fileManager.delete(target);
+        // await the delete operation
+        await fileManager.delete(target);
       }
     }
     protocol.response(ctx, true);
