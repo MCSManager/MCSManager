@@ -36,7 +36,7 @@ let startScale = 1;
 const MAX_SCALE = 1.25;
 const MIN_SCALE = 0.4;
 const baseFontSize = isPhone.value ? 12 : 15;
-const baseLineHeight = isPhone.value ? 16 : 24;
+const baseLineHeight = isPhone.value ? 16 : 22;
 const currentFontSize = ref(baseFontSize);
 const currentLineHeight = ref(baseLineHeight);
 let scale = 1;
@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
 
 .file-editor {
   :deep(.cm-editor) {
-    min-height: calc(v-bind("props.height") - 24px);
+    min-height: v-bind("props.height");
     transition: font-size 0.1s ease-out;
   }
 

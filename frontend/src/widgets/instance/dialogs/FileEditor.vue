@@ -16,6 +16,7 @@ const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
+const fullScreen = ref(false);
 
 const { isPhone } = useScreen();
 
@@ -59,8 +60,6 @@ const openDialog = (_path: string, _fileName: string) => {
     reject = _reject;
   });
 };
-
-const fullScreen = ref(false);
 
 const { state: text, execute, isLoading } = fileContent();
 const render = async () => {
@@ -155,7 +154,7 @@ defineExpose({
       ref="EditorComponent"
       v-model:text="editorText"
       :filename="fileName"
-      :height="fullScreen ? '100svh' : '60vh'"
+      :height="fullScreen ? '100%' : '60vh'"
     />
     <a-skeleton v-else :paragraph="{ rows: 12 }" active />
   </a-modal>
