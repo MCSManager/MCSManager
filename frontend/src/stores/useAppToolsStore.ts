@@ -2,13 +2,6 @@
 import { createGlobalState } from "@vueuse/core";
 import { reactive } from "vue";
 
-export enum THEME {
-  LIGHT = "light",
-  DARK = "dark"
-}
-
-export const THEME_KEY = "THEME_KEY";
-
 export const useAppToolsStore = createGlobalState(() => {
   const state = reactive({
     inputDialog: {

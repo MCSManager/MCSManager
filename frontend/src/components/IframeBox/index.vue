@@ -53,7 +53,7 @@ const handleError = (err: any) => {
 };
 
 const generateIframeAddr = () => {
-  return `${props.src}?theme=${isDarkTheme() ? "dark" : "light"}&t=${Date.now()}`;
+  return `${props.src}?theme=${isDarkTheme.value ? "dark" : "light"}&t=${Date.now()}`;
 };
 
 // 重新加载iframe
