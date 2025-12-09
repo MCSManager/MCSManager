@@ -196,7 +196,7 @@ const uploadLogo = async () => {
 
 const handleSaveLogoUrl = async (url?: string) => {
   Modal.confirm({
-    title: t("确定设置图标图片吗？"),
+    title: t("TXT_CODE_dc053043"),
     content: t("TXT_CODE_cf95364f"),
     async onOk() {
       const cfg = await getSettingsConfig();

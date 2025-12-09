@@ -242,7 +242,7 @@ const appMenus = computed(() => {
       menus: [
         {
           value: AppTheme.AUTO,
-          title: t("自动")
+          title: t("TXT_CODE_dc8de4ff")
         },
         {
           value: AppTheme.LIGHT,
