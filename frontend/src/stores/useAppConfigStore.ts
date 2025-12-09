@@ -69,12 +69,12 @@ export const useAppConfigStore = createGlobalState(() => {
   };
 
   const initAppTheme = async () => {
-    const s = {
+    const fn = {
       [AppTheme.AUTO]: () => (isPreferredDark.value ? setDark() : setLight()),
       [AppTheme.LIGHT]: () => setLight(),
       [AppTheme.DARK]: () => setDark()
     };
-    s[currentTheme.value]?.();
+    fn[currentTheme.value]?.();
 
     const frontendSettings = await getSettingsConfig();
     if (frontendSettings?.theme?.backgroundImage)
@@ -116,6 +116,7 @@ export const useAppConfigStore = createGlobalState(() => {
     isDarkTheme,
     initAppTheme,
     setTheme,
-    setBackgroundImage
+    setBackgroundImage,
+    currentTheme
   };
 });
