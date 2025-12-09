@@ -5,7 +5,7 @@ import { AppTheme, THEME_KEY } from "@/types/const";
 import { createGlobalState, useLocalStorage, usePreferredDark } from "@vueuse/core";
 import { theme as antTheme } from "ant-design-vue";
 import type { ThemeConfig } from "ant-design-vue/es/config-provider/context";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useLayoutConfigStore } from "./useLayoutConfig";
 
 const isPreferredDark = usePreferredDark();
@@ -29,18 +29,12 @@ export const useAppConfigStore = createGlobalState(() => {
 
   const currentTheme = useLocalStorage<AppTheme>(THEME_KEY, AppTheme.LIGHT);
 
-  const lOrD = computed(() =>
-    currentTheme.value === AppTheme.LIGHT
-      ? "light"
-      : currentTheme.value === AppTheme.DARK
-      ? "dark"
-      : currentTheme.value === AppTheme.AUTO
-      ? isPreferredDark.value
-        ? "dark"
-        : "light"
-      : "light"
-  );
-  const isDarkTheme = computed(() => lOrD.value === "dark");
+  const isDarkTheme = computed(() => {
+    if (currentTheme.value === AppTheme.DARK) return true;
+    if (currentTheme.value === AppTheme.AUTO) return isPreferredDark.value;
+    return false;
+  });
+
   const hasBgImage = ref(false);
   const setBackgroundImage = (url: string) => {
     const body = document.querySelector("body");
@@ -88,8 +82,6 @@ export const useAppConfigStore = createGlobalState(() => {
   };
 
   const setTheme = (t: AppTheme) => {
-    console.log(t);
-
     currentTheme.value = t;
     initAppTheme();
   };
@@ -107,6 +99,12 @@ export const useAppConfigStore = createGlobalState(() => {
       appConfig.logoImage = url;
     }
   };
+
+  watch(isPreferredDark, () => {
+    if (currentTheme.value === AppTheme.AUTO) {
+      initAppTheme();
+    }
+  });
 
   return {
     appConfig,
