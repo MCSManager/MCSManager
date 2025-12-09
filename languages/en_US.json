@@ -2926,5 +2926,7 @@
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported. It's safest to stick to alphanumeric characters.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
-  "TXT_CODE_DISK_USAGE": "Disk"
+  "TXT_CODE_DISK_USAGE": "Disk",
+  "TXT_CODE_dc8de4ff": "Auto",
+  "TXT_CODE_dc053043": "Set the icon image?"
 }

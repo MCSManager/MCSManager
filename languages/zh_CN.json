@@ -2926,5 +2926,7 @@
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
-  "TXT_CODE_DISK_USAGE": "磁盘"
+  "TXT_CODE_DISK_USAGE": "磁盘",
+  "TXT_CODE_dc8de4ff": "跟随系统",
+  "TXT_CODE_dc053043": "确定设置图标图片吗？"
 }

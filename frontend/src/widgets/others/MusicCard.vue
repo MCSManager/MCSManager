@@ -1,18 +1,17 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup lang="ts">
-import { ref, h } from "vue";
+import { useUploadFileDialog } from "@/components/fc";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { t } from "@/lang/i18n";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useAppToolsStore } from "@/stores/useAppToolsStore";
+import { getRandomId } from "@/tools/randId";
+import type { LayoutCard } from "@/types";
+import { PauseCircleOutlined, PlayCircleOutlined } from "@ant-design/icons-vue";
 import { Empty, message } from "ant-design-vue";
 import dayjs from "dayjs";
-import { getRandomId } from "@/tools/randId";
-import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons-vue";
-import { t } from "@/lang/i18n";
-import { useUploadFileDialog } from "@/components/fc";
-import { useAppToolsStore } from "@/stores/useAppToolsStore";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
+import { h, onMounted, ref } from "vue";
 import WaveSurfer from "wavesurfer.js";
-import type { LayoutCard } from "@/types";
-import { onMounted } from "vue";
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 
 const { isDarkTheme } = useAppConfigStore();
 
@@ -87,8 +86,8 @@ onMounted(() => {
   if (time) {
     wavesurfer = WaveSurfer.create({
       container: time || "",
-      waveColor: isDarkTheme() ? "#707070" : "#7a7a7a",
-      progressColor: isDarkTheme() ? "#bababa" : "#000",
+      waveColor: isDarkTheme.value ? "#707070" : "#7a7a7a",
+      progressColor: isDarkTheme.value ? "#bababa" : "#000",
       cursorColor: "#8f8f8f",
       url: musicUrl.value,
       height: 50,
