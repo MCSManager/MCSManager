@@ -45,7 +45,7 @@ onMounted(async () => {
   try {
     const settingsConfig = await getSettingsConfig();
     if (settingsConfig?.theme?.logoImage) {
-      setLogoImage(settingsConfig.thesetThememe.logoImage);
+      setLogoImage(settingsConfig.theme.logoImage);
     }
   } catch (error) {
     console.error("Failed to load settings config:", error);
