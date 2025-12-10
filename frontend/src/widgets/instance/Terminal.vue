@@ -9,39 +9,40 @@ import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import {
-    killInstance,
-    openInstance,
-    restartInstance,
-    stopInstance,
-    updateInstance
+  killInstance,
+  openInstance,
+  restartInstance,
+  stopInstance,
+  updateInstance
 } from "@/services/apis/instance";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { sleep } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
-import { INSTANCE_STATUS } from "@/types/const";
+import { INSTANCE_CRASH_TIMEOUT, INSTANCE_STATUS } from "@/types/const";
 import {
-    ApartmentOutlined,
-    BlockOutlined,
-    CheckCircleOutlined,
-    CloseOutlined,
-    CloudDownloadOutlined,
-    CloudServerOutlined,
-    DashboardOutlined,
-    DownOutlined,
-    HddOutlined,
-    InfoCircleOutlined,
-    InteractionOutlined,
-    LaptopOutlined,
-    LoadingOutlined,
-    MoneyCollectOutlined,
-    PauseCircleOutlined,
-    PlayCircleOutlined,
-    RedoOutlined
+  ApartmentOutlined,
+  BlockOutlined,
+  CheckCircleOutlined,
+  CloseOutlined,
+  CloudDownloadOutlined,
+  CloudServerOutlined,
+  DashboardOutlined,
+  DownOutlined,
+  HddOutlined,
+  InfoCircleOutlined,
+  InteractionOutlined,
+  LaptopOutlined,
+  LoadingOutlined,
+  MoneyCollectOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  RedoOutlined
 } from "@ant-design/icons-vue";
 import { useLocalStorage } from "@vueuse/core";
+import { Modal } from "ant-design-vue";
 import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
-import { computed } from "vue";
+import { computed, h } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
@@ -94,6 +95,20 @@ const toOpenInstance = async () => {
         daemonId: daemonId ?? ""
       }
     });
+
+    setTimeout(() => {
+      if (!terminalHook.isRunning.value) {
+        Modal.error({
+          title: t("TXT_CODE_ac405b50"),
+          content: h("div", [
+            h("p", t("TXT_CODE_3409258a")),
+            h("p", `${t("TXT_CODE_973414e1")}：${instanceInfo.value?.config.startCommand || ""}`),
+            isDockerMode.value &&
+              h("p", `${t("TXT_CODE_44b585c7")}：${instanceInfo.value?.config.docker.image || ""}`)
+          ])
+        });
+      }
+    }, INSTANCE_CRASH_TIMEOUT);
   } catch (error: any) {
     reportErrorMsg(error);
   }
@@ -269,8 +284,10 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
     ? prettyBytes(bytes ?? 0, { ...prettyBytesConfig, binary: false }) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(/bit$/, "b") +
-      "ps";
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(
+        /bit$/,
+        "b"
+      ) + "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;

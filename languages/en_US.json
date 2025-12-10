@@ -2928,5 +2928,8 @@
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
   "TXT_CODE_DISK_USAGE": "Disk",
   "TXT_CODE_dc8de4ff": "Auto",
-  "TXT_CODE_dc053043": "Set the icon image?"
+  "TXT_CODE_dc053043": "Set the icon image?",
+  "TXT_CODE_3409258a": "Process startup failed. Please check the instance log for more information.",
+  "TXT_CODE_973414e1": "Current start command",
+  "TXT_CODE_44b585c7": "Current image in use"
 }
