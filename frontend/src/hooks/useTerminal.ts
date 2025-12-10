@@ -271,11 +271,17 @@ export function useTerminal() {
       if (arg.type === "keydown" && arg.ctrlKey && arg.code === "KeyC") {
         const selection = term.getSelection();
         if (selection) {
-          navigator.clipboard.writeText(selection).then(() => {
+          // If not in SecureContext, writeText will fail. Fallback to browser's default copy behavior, but selection won't be cleared.
+          if (window.isSecureContext) {
+            arg.preventDefault()
+          }
+
+          navigator.clipboard?.writeText(selection).then(() => {
              term.clearSelection();
           }).catch(err => {
              console.error("Could not copy text: ", err);
           });
+
           return false;
         }
       }
