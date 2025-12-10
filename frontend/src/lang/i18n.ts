@@ -74,8 +74,8 @@ export async function initInstallPageFlow(language: string) {
 // I18n init configuration
 // If you want to add the language of your own country, you need to add the code here.
 const messages: Record<string, any> = {};
-const { state } = useAppStateStore();
 async function initI18n(lang: string) {
+  const { state } = useAppStateStore();
   lang = toStandardLang(lang);
 
   const langFiles = import.meta.glob("../../../languages/*.json");
