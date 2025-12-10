@@ -42,7 +42,7 @@ import {
 import { useLocalStorage } from "@vueuse/core";
 import { Modal } from "ant-design-vue";
 import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
-import { computed, h } from "vue";
+import { computed, h, onUnmounted } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
@@ -80,7 +80,9 @@ const instanceTypeText = computed(
 
 const { execute: requestOpenInstance, isLoading: isOpenInstanceLoading } = openInstance();
 
+let checkRunningTimer: NodeJS.Timeout;
 const toOpenInstance = async () => {
+  if (checkRunningTimer) clearTimeout(checkRunningTimer);
   clearTerminal();
   try {
     if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
@@ -96,7 +98,7 @@ const toOpenInstance = async () => {
       }
     });
 
-    setTimeout(() => {
+    checkRunningTimer = setTimeout(() => {
       if (!terminalHook.isRunning.value) {
         Modal.error({
           title: t("TXT_CODE_ac405b50"),
@@ -334,6 +336,10 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       }
     }
   ]);
+});
+
+onUnmounted(() => {
+  if (checkRunningTimer) clearTimeout(checkRunningTimer);
 });
 </script>
 
