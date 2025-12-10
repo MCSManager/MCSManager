@@ -266,6 +266,23 @@ export function useTerminal() {
 
     term.open(element);
 
+    // If text is selected, copy it. Otherwise, fallback to default behavior.
+    term.attachCustomKeyEventHandler((arg) => {
+      if (arg.type === "keydown" && arg.ctrlKey && arg.code === "KeyC") {
+        const selection = term.getSelection();
+        if (selection) {
+          navigator.clipboard.writeText(selection).then(() => {
+             term.clearSelection();
+          }).catch(err => {
+             console.error("Could not copy text: ", err);
+          });
+          return false;
+        }
+      }
+
+      return true;
+    });
+
     // Auto resize pty win size
     fitAddon.fit();
     refreshWindowSize(term.cols - 1, term.rows - 1);
