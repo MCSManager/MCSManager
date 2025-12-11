@@ -124,7 +124,7 @@ const toOverview = () => {
           </div>
         </div>
 
-        <div style="text-align: center; margin-top: 40px">
+        <div class="text-center mt-35 mb-5">
           <a-button
             type="primary"
             size="large"
@@ -285,10 +285,15 @@ const toOverview = () => {
     background-color: var(--login-panel-bg);
     backdrop-filter: saturate(120%) blur(12px);
     padding: 40px;
+    max-height: 100%;
   }
 
   .language-select-panel {
     max-width: 640px;
+  }
+
+  :deep(.card-panel-content) {
+    overflow: auto !important;
   }
 }
 
