@@ -98,22 +98,6 @@ defineExpose({
   overflow-y: auto;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.mt-20 {
-  margin-top: 20px;
-}
-
-.flex {
-  display: flex;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
 .gap-2 {
   gap: 8px;
 }
