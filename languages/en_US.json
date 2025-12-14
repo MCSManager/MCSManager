@@ -3104,3 +3104,7 @@
   "TXT_CODE_LEAVES_FIX_COLLISION_BEHAVIOR": "Specify entity collision calculation method.",
   "TXT_CODE_LEAVES_FIX_VANILLA_END_VOID_RINGS": "Reintroduce vanilla End void ring generation. Does not affect already generated maps.",
   "TXT_CODE_LEAVES_CONFIG_INFO": "Leaves server core configuration file, designed to restoring technical Minecraft features removed by Paper while maintaining full compatibility with Paper/Spigot ecosystem settings."}
+  "TXT_CODE_3409258a": "Process startup failed. Please check the instance log for more information.",
+  "TXT_CODE_973414e1": "Current start command",
+  "TXT_CODE_44b585c7": "Current image in use"
+}

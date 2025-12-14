@@ -68,7 +68,16 @@ export const useAppConfigStore = createGlobalState(() => {
     document.body.classList.remove("app-light-theme");
   };
 
+  const resetTheme = () => (currentTheme.value = AppTheme.LIGHT);
+
   const initAppTheme = async () => {
+    if (
+      isNaN(currentTheme.value) ||
+      currentTheme.value < AppTheme.AUTO ||
+      currentTheme.value > AppTheme.DARK
+    ) {
+      resetTheme();
+    }
     const fn = {
       [AppTheme.AUTO]: () => (isPreferredDark.value ? setDark() : setLight()),
       [AppTheme.LIGHT]: () => setLight(),

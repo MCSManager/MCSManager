@@ -2928,5 +2928,8 @@
   "TXT_CODE_version.versionDetectErr": "版本检查失败",
   "TXT_CODE_DISK_USAGE": "磁盘",
   "TXT_CODE_dc8de4ff": "跟随系统",
-  "TXT_CODE_dc053043": "确定设置图标图片吗？"
+  "TXT_CODE_dc053043": "确定设置图标图片吗？",
+  "TXT_CODE_3409258a": "进程启动失败，请检查实例日志获取更多信息。",
+  "TXT_CODE_973414e1": "当前启动命令",
+  "TXT_CODE_44b585c7": "当前使用的镜像"
 }

@@ -41,6 +41,8 @@ export const INSTANCE_STATUS: Record<INSTANCE_STATUS_CODE, string> = {
   [INSTANCE_STATUS_CODE.RUNNING]: t("TXT_CODE_bdb620b9")
 };
 
+export const INSTANCE_CRASH_TIMEOUT = 2000;
+
 export const defaultDockerfile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
 
 export const jdk8Dockerfile = `FROM eclipse-temurin:8
