@@ -1,9 +1,9 @@
-import { $t } from "../../i18n";
-import yaml from "yaml";
 import toml from "@iarna/toml";
-import properties from "properties";
-import path from "path";
 import fs from "fs-extra";
+import path from "path";
+import properties from "properties";
+import yaml from "yaml";
+import { $t } from "../../i18n";
 
 const CONFIG_FILE_ENCODE = "utf-8";
 
@@ -34,6 +34,9 @@ export class ProcessConfig {
     if (this.iProcessConfig.type === "properties") {
       return properties.parse(text);
     }
+    if (this.iProcessConfig.type === "properties_not_unicode") {
+     return properties.parse(text);
+    }
     if (this.iProcessConfig.type === "json") {
       return JSON.parse(text);
     }
@@ -59,6 +62,13 @@ export class ProcessConfig {
       if (this.iProcessConfig.fileName == "server.properties") {
         text = text.replace(/\\\\u/gim, "\\u");
       }
+    }
+    if (this.iProcessConfig.type === "properties_not_unicode") {
+        text = properties.stringify(object, {
+        unicode: false
+      });
+      text = text.replace(/ = /gim, "=");
+    text = text.replace(/\\\\u/gim, "\\u");
     }
     if (this.iProcessConfig.type === "json") {
       text = JSON.stringify(object, null, 4);

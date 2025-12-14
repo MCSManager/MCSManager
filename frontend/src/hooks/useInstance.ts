@@ -404,6 +404,14 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_LEAVES
     ]
   },
+  {
+    fileName: "[Terraria] serverconfig.txt",
+    path: "serverconfig.txt",
+    redirect: "terraria/serverconfig.txt",
+    type: "properties_not_unicode",
+    info: t("TXT_CODE_TERRARIA_CONFIG_INFO"),
+    category: [TYPE_TERRARIA]
+  },
 ];
 
 export async function verifyEULA(instanceId: string, daemonId: string) {

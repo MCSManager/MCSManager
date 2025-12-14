@@ -3106,5 +3106,13 @@
   "TXT_CODE_LEAVES_CONFIG_INFO": "Leaves server core configuration file, designed to restoring technical Minecraft features removed by Paper while maintaining full compatibility with Paper/Spigot ecosystem settings.",
   "TXT_CODE_3409258a": "Process startup failed. Please check the instance log for more information.",
   "TXT_CODE_973414e1": "Current start command",
-  "TXT_CODE_44b585c7": "Current image in use"
+  "TXT_CODE_44b585c7": "Current image in use",
+  "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria Server Configuration",
+  "TXT_CODE_TERRARIA_PORT": "Server Port(default: 7777)",
+  "TXT_CODE_TERRARIA_PASSWORD": "Server Password",
+  "TXT_CODE_TERRARIA_WORLD": "World File Path(e.g: .\\Terraria\\MyWorld\\MyWorld.wld)",
+  "TXT_CODE_TERRARIA_LOG_PATH": "Log File Directory(default: logs)",
+  "TXT_CODE_TERRARIA_MAX_PLAYERS": "Maximum Players",
+  "TXT_CODE_TERRARIA_MOTD": "Message of the Day",
+  "TXT_CODE_TERRARIA_CONFIG_INFO": "Terraria configuration file, takes effect only when using the -config serverconfig.txt parameter"
 }
