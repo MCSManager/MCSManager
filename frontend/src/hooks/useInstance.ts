@@ -398,7 +398,6 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     redirect: "leaves/leaves.yml",
     category: [
       TYPE_MINECRAFT_JAVA,
-      TYPE_MINECRAFT_PAPER,
       TYPE_MINECRAFT_PUFFERFISH,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_LEAVES
