@@ -398,11 +398,18 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     redirect: "leaves/leaves.yml",
     category: [
       TYPE_MINECRAFT_JAVA,
-      TYPE_MINECRAFT_PAPER,
       TYPE_MINECRAFT_PUFFERFISH,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_LEAVES
     ]
+  },
+  {
+    fileName: "[Terraria] serverconfig.txt",
+    path: "serverconfig.txt",
+    redirect: "terraria/serverconfig.txt",
+    type: "properties_not_unicode",
+    info: t("TXT_CODE_TERRARIA_CONFIG_INFO"),
+    category: [TYPE_TERRARIA]
   },
 ];
 

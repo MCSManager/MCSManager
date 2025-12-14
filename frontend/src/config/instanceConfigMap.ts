@@ -3254,5 +3254,16 @@ export const configData: {
         }
       }
     }
+  },
+  "terraria/serverconfig.txt": {
+  desc: t("TXT_CODE_TERRARIA_CONFIG_DESC"),
+  config: {
+    port: t("TXT_CODE_TERRARIA_PORT"),
+    password: t("TXT_CODE_TERRARIA_PASSWORD"),
+    world: t("TXT_CODE_TERRARIA_WORLD"),
+    logpath: t("TXT_CODE_TERRARIA_LOG_PATH"),
+    maxplayers: t("TXT_CODE_TERRARIA_MAX_PLAYERS"),
+    motd: t("TXT_CODE_TERRARIA_MOTD"),
+    }
   }
 };
