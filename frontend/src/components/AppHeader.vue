@@ -29,7 +29,8 @@ import { useRoute } from "vue-router";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import CardPanel from "./CardPanel.vue";
 
-const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } = useLayoutConfigStore();
+const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } =
+  useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme, setLogoImage, logoImage } = useAppConfigStore();
@@ -60,7 +61,7 @@ const headerStyle = computed(() => {
   };
 });
 
-const openNewCardDialog = () => {
+const openNewCardDialog = (): void => {
   containerState.showNewCardDialog = true;
 };
 
@@ -155,7 +156,7 @@ const appMenus = computed(() => {
       iconText: t("TXT_CODE_80f0904e"),
       title: t("商业 & 专业模式已开启"),
       icon: SketchOutlined,
-      click: () => {},
+      click: (): void => {},
       conditions: isProMode.value,
       onlyPC: true,
       customClass: ["nav-button-success"]
