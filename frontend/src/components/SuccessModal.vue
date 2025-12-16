@@ -80,20 +80,18 @@ const accountDataSource = computed(() => {
   if (!props.instanceInfo) return [];
   const data = [];
 
-  if (props.instanceInfo.instance_id) {
-    data.push({
-      key: "instance_id",
-      label: t("实例ID"),
-      value: props.instanceInfo.instance_id,
-      valueType: "text"
-    });
-  }
-
   if (props.instanceInfo.username) {
     data.push({
       key: "username",
-      label: t("用户名"),
+      label: t("您的用户名"),
       value: props.instanceInfo.username,
+      valueType: "text"
+    });
+
+    data.push({
+      key: "password",
+      label: t("您的密码"),
+      value: props.instanceInfo.password || "与原账号密码保持一致",
       valueType: "text"
     });
   }
@@ -101,24 +99,8 @@ const accountDataSource = computed(() => {
   if (props.instanceInfo.instance_info.name) {
     data.push({
       key: "name",
-      label: t("实例名称"),
+      label: t("激活的实例名称"),
       value: props.instanceInfo.instance_info.name,
-      valueType: "text"
-    });
-  }
-
-  data.push({
-    key: "password",
-    label: t("密码"),
-    value: props.instanceInfo.password || "与原账号密码保持一致",
-    valueType: "text"
-  });
-
-  if (props.instanceInfo.uuid) {
-    data.push({
-      key: "uuid",
-      label: t("UUID"),
-      value: props.instanceInfo.uuid,
       valueType: "text"
     });
   }
