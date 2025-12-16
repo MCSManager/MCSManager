@@ -372,7 +372,6 @@ export const configData: {
       }
     }
   },
-
   "bungeecord/config.yml": {
     desc: t("TXT_CODE_4fd13f18"),
     config: {
@@ -3052,6 +3051,219 @@ export const configData: {
         RESTRequestBucketDecreaseIntervalMinutes: t("TXT_CODE_5b190bc4"),
         ApplicationRestTokens: t("TXT_CODE_f0ca2761")
       }
+    }
+  },
+  "leaves/leaves.yml": {
+    desc: t("TXT_CODE_LEAVES_DESCRIPTION"),
+    config: {
+      "config-version": t("TXT_CODE_LEAVES_CONFIG_VERSION"),
+      settings: {
+        misc: {
+          "auto-update": {
+            enable: t("TXT_CODE_LEAVES_AUTO_UPDATE_ENABLE"),
+            "download-source": t("TXT_CODE_LEAVES_DOWNLOAD_SOURCE"),
+            "allow-experimental": t("TXT_CODE_LEAVES_ALLOW_EXPERIMENTAL")
+          },
+          "extra-yggdrasil-service": {
+            enable: t("TXT_CODE_LEAVES_YGGDRASIL_ENABLE"),
+            "login-protect": t("TXT_CODE_LEAVES_LOGIN_PROTECT")
+          },
+          "disable-method-profiler": t("TXT_CODE_LEAVES_DISABLE_METHOD_PROFILER"),
+          "no-chat-sign": t("TXT_CODE_LEAVES_NO_CHAT_SIGN"),
+          "dont-respond-ping-before-start-fully": t("TXT_CODE_LEAVES_DONT_RESPOND_PING"),
+          "server-lang": t("TXT_CODE_LEAVES_SERVER_LANG"),
+          "server-mod-name": t("TXT_CODE_LEAVES_SERVER_MOD_NAME"),
+          "bstats-privacy-mode": t("TXT_CODE_LEAVES_BSTATS_PRIVACY_MODE"),
+          "force-minecraft-command": t("TXT_CODE_LEAVES_FORCE_MINECRAFT_COMMAND"),
+          "leaves-packet-event": t("TXT_CODE_LEAVES_PACKET_EVENT")
+        },
+        modify: {
+          fakeplayer: {
+            enable: t("TXT_CODE_LEAVES_FAKEPLAYER_ENABLE"),
+            limit: t("TXT_CODE_LEAVES_FAKEPLAYER_LIMIT"),
+            prefix: t("TXT_CODE_LEAVES_FAKEPLAYER_PREFIX"),
+            suffix: t("TXT_CODE_LEAVES_FAKEPLAYER_SUFFIX"),
+            "regen-amount": t("TXT_CODE_LEAVES_FAKEPLAYER_REGEN_AMOUNT"),
+            "always-send-data": t("TXT_CODE_LEAVES_FAKEPLAYER_ALWAYS_SEND_DATA"),
+            "resident-fakeplayer": t("TXT_CODE_LEAVES_FAKEPLAYER_RESIDENT"),
+            "open-fakeplayer-inventory": t("TXT_CODE_LEAVES_FAKEPLAYER_OPEN_INVENTORY"),
+            "skip-sleep-check": t("TXT_CODE_LEAVES_FAKEPLAYER_SKIP_SLEEP_CHECK"),
+            "spawn-phantom": t("TXT_CODE_LEAVES_FAKEPLAYER_SPAWN_PHANTOM"),
+            "use-action": t("TXT_CODE_LEAVES_FAKEPLAYER_USE_ACTION"),
+            "modify-config": t("TXT_CODE_LEAVES_FAKEPLAYER_MODIFY_CONFIG"),
+            "manual-save-and-load": t("TXT_CODE_LEAVES_FAKEPLAYER_MANUAL_SAVE"),
+            "cache-skin": t("TXT_CODE_LEAVES_FAKEPLAYER_CACHE_SKIN"),
+            "tick-type": t("TXT_CODE_LEAVES_FAKEPLAYER_TICK_TYPE")
+          },
+          "elytra-aeronautics": {
+            "no-chunk-load": t("TXT_CODE_LEAVES_ELYTRA_NO_CHUNK_LOAD"),
+            "no-chunk-height": t("TXT_CODE_LEAVES_ELYTRA_NO_CHUNK_HEIGHT"),
+            "no-chunk-speed": t("TXT_CODE_LEAVES_ELYTRA_NO_CHUNK_SPEED"),
+            message: t("TXT_CODE_LEAVES_ELYTRA_MESSAGE"),
+            "message-start": t("TXT_CODE_LEAVES_ELYTRA_MESSAGE_START"),
+            "message-end": t("TXT_CODE_LEAVES_ELYTRA_MESSAGE_END")
+          },
+          "redstone-shears-wrench": t("TXT_CODE_LEAVES_REDSTONE_SHEARS_WRENCH"),
+          "budding-amethyst-can-push-by-piston": t("TXT_CODE_LEAVES_AMETHYST_PUSHABLE"),
+          "spectator-dont-get-advancement": t("TXT_CODE_LEAVES_SPECTATOR_NO_ADVANCEMENT"),
+          "stick-change-armorstand-arm-status": t("TXT_CODE_LEAVES_STICK_CHANGE_ARMORSTAND"),
+          "snowball-and-egg-can-knockback-player": t("TXT_CODE_LEAVES_SNOWBALL_KNOCKBACK"),
+          "flatten-triangular-distribution": t("TXT_CODE_LEAVES_FLATTEN_TRIANGULAR_DIST"),
+          "player-operation-limiter": t("TXT_CODE_LEAVES_PLAYER_OPERATION_LIMITER"),
+          "renewable-elytra": t("TXT_CODE_LEAVES_RENEWABLE_ELYTRA"),
+          "stackable-shulker-boxes": t("TXT_CODE_LEAVES_STACKABLE_SHULKER_BOXES"),
+          "force-void-trade": t("TXT_CODE_LEAVES_FORCE_VOID_TRADE"),
+          "mc-technical-survival-mode": t("TXT_CODE_LEAVES_TECHNICAL_SURVIVAL_MODE"),
+          "return-nether-portal-fix": t("TXT_CODE_LEAVES_RETURN_NETHER_PORTAL_FIX"),
+          "use-vanilla-random": t("TXT_CODE_LEAVES_USE_VANILLA_RANDOM"),
+          "fix-update-suppression-crash": t("TXT_CODE_LEAVES_FIX_UPDATE_SUPPRESSION"),
+          "bedrock-break-list": t("TXT_CODE_LEAVES_BEDROCK_BREAK_LIST"),
+          "disable-distance-check-for-use-item": t("TXT_CODE_LEAVES_DISABLE_DISTANCE_CHECK"),
+          "no-feather-falling-trample": t("TXT_CODE_LEAVES_NO_FEATHER_FALLING_TRAMPLE"),
+          "shared-villager-discounts": t("TXT_CODE_LEAVES_SHARED_VILLAGER_DISCOUNTS"),
+          "disable-check-out-of-order-command": t("TXT_CODE_LEAVES_DISABLE_OUT_OF_ORDER_CHECK"),
+          "despawn-enderman-with-block": t("TXT_CODE_LEAVES_DESPAWN_ENDERMAN_WITH_BLOCK"),
+          "creative-no-clip": t("TXT_CODE_LEAVES_CREATIVE_NO_CLIP"),
+          "shave-snow-layers": t("TXT_CODE_LEAVES_SHAVE_SNOW_LAYERS"),
+          "ignore-lc": t("TXT_CODE_LEAVES_IGNORE_LC"),
+          "disable-packet-limit": t("TXT_CODE_LEAVES_DISABLE_PACKET_LIMIT"),
+          "lava-riptide": t("TXT_CODE_LEAVES_LAVA_RIPTIDE"),
+          "no-block-update-command": t("TXT_CODE_LEAVES_NO_BLOCK_UPDATE_COMMAND"),
+          "no-tnt-place-update": t("TXT_CODE_LEAVES_NO_TNT_PLACE_UPDATE"),
+          "raider-die-skip-self-raid-check": t("TXT_CODE_LEAVES_RAIDER_DIE_SKIP_RAID_CHECK"),
+          "container-passthrough": t("TXT_CODE_LEAVES_CONTAINER_PASSTHROUGH"),
+          "avoid-anvil-too-expensive": t("TXT_CODE_LEAVES_AVOID_ANVIL_EXPENSIVE"),
+          "bow-infinity-fix": t("TXT_CODE_LEAVES_BOW_INFINITY_FIX"),
+          "hopper-counter": t("TXT_CODE_LEAVES_HOPPER_COUNTER"),
+          "spider-jockeys-drop-gapples": t("TXT_CODE_LEAVES_SPIDER_JOCKEYS_DROP_GAPPLES"),
+          "renewable-deepslate": t("TXT_CODE_LEAVES_RENEWABLE_DEEPSLATE"),
+          "renewable-sponges": t("TXT_CODE_LEAVES_RENEWABLE_SPONGES"),
+          "renewable-coral": t("TXT_CODE_LEAVES_RENEWABLE_CORAL"),
+          "fast-resume": t("TXT_CODE_LEAVES_FAST_RESUME"),
+          "force-peaceful-mode-switch": {
+            tick: t("TXT_CODE_LEAVES_FORCE_PEACEFUL_TICK")
+          },
+          "disable-vault-blacklist": t("TXT_CODE_LEAVES_DISABLE_VAULT_BLACKLIST"),
+          "minecraft-old": {
+            "void-trade": t("TXT_CODE_LEAVES_OLD_VOID_TRADE"),
+            "block-updater": {
+              "instant-block-updater-reintroduced": t("TXT_CODE_LEAVES_INSTANT_BLOCK_UPDATER"),
+              "cce-update-suppression": t("TXT_CODE_LEAVES_CCE_UPDATE_SUPPRESSION"),
+              "redstone-wire-dont-connect-if-on-trapdoor": t("TXT_CODE_LEAVES_REDSTONE_NO_TRAPDOOR_CONNECT"),
+              "old-block-entity-behaviour": t("TXT_CODE_LEAVES_OLD_BLOCK_ENTITY_BEHAVIOUR")
+            },
+            "shears-in-dispenser-can-zero-amount": t("TXT_CODE_LEAVES_SHEARS_ZERO_AMOUNT"),
+            "armor-stand-cant-kill-by-mob-projectile": t("TXT_CODE_LEAVES_ARMOR_STAND_NO_PROJECTILE_KILL"),
+            "villager-infinite-discounts": t("TXT_CODE_LEAVES_VILLAGER_INFINITE_DISCOUNTS"),
+            "copper-bulb-1gt-delay": t("TXT_CODE_LEAVES_COPPER_BULB_DELAY"),
+            "crafter-1gt-delay": t("TXT_CODE_LEAVES_CRAFTER_DELAY"),
+            "zero-tick-plants": t("TXT_CODE_LEAVES_ZERO_TICK_PLANTS"),
+            "rng-fishing": t("TXT_CODE_LEAVES_RNG_FISHING"),
+            "allow-grindstone-overstacking": t("TXT_CODE_LEAVES_GRINDSTONE_OVERSTACKING"),
+            "allow-entity-portal-with-passenger": t("TXT_CODE_LEAVES_ENTITY_PORTAL_PASSENGER"),
+            "disable-gateway-portal-entity-ticking": t("TXT_CODE_LEAVES_DISABLE_GATEWAY_TICKING"),
+            "disable-LivingEntity-ai-step-alive-check": t("TXT_CODE_LEAVES_DISABLE_AI_STEP_CHECK"),
+            "fix-fortress-mob-spawn": t("TXT_CODE_LEAVES_FIX_FORTRESS_SPAWN"),
+            "old-hopper-suck-in-behavior": t("TXT_CODE_LEAVES_OLD_HOPPER_BEHAVIOR"),
+            "revert-raid-changes": {
+              "allow-bad-omen-trigger-raid": t("TXT_CODE_LEAVES_ALLOW_BAD_OMEN_RAID"),
+              "give-bad-omen-when-kill-patrol-leader": t("TXT_CODE_LEAVES_GIVE_BAD_OMEN"),
+              "use-old-find-spawn-position": t("TXT_CODE_LEAVES_OLD_SPAWN_POSITION"),
+              "skip-height-check": t("TXT_CODE_LEAVES_SKIP_HEIGHT_CHECK")
+            },
+            "allow-anvil-destroy-item-entities": t("TXT_CODE_LEAVES_ANVIL_DESTROY_ITEMS"),
+            "string-tripwire-hook-duplicate": t("TXT_CODE_LEAVES_TRIPWIRE_HOOK_DUPLICATE")
+          }
+        },
+        performance: {
+          "optimized-dragon-respawn": t("TXT_CODE_LEAVES_OPTIMIZED_DRAGON_RESPAWN"),
+          "dont-send-useless-entity-packets": t("TXT_CODE_LEAVES_NO_USELESS_ENTITY_PACKETS"),
+          "enable-suffocation-optimization": t("TXT_CODE_LEAVES_ENABLE_SUFFOCATION_OPTIMIZATION"),
+          "check-spooky-season-once-an-hour": t("TXT_CODE_LEAVES_CHECK_SPOOKY_SEASON"),
+          "inactive-goal-selector-disable": t("TXT_CODE_LEAVES_INACTIVE_GOAL_SELECTOR_DISABLE"),
+          "reduce-entity-allocations": t("TXT_CODE_LEAVES_REDUCE_ENTITY_ALLOCATIONS"),
+          "cache-climb-check": t("TXT_CODE_LEAVES_CACHE_CLIMB_CHECK"),
+          "reduce-chuck-load-and-lookup": t("TXT_CODE_LEAVES_REDUCE_CHUNK_LOAD"),
+          "cache-ignite-odds": t("TXT_CODE_LEAVES_CACHE_IGNITE_ODDS"),
+          "faster-chunk-serialization": t("TXT_CODE_LEAVES_FASTER_CHUNK_SERIALIZATION"),
+          "skip-secondary-POI-sensor-if-absent": t("TXT_CODE_LEAVES_SKIP_SECONDARY_POI_SENSOR"),
+          "store-mob-counts-in-array": t("TXT_CODE_LEAVES_STORE_MOB_COUNTS_IN_ARRAY"),
+          "optimize-noise-generation": t("TXT_CODE_LEAVES_OPTIMIZE_NOISE_GENERATION"),
+          "optimize-sun-burn-tick": t("TXT_CODE_LEAVES_OPTIMIZE_SUN_BURN_TICK"),
+          "optimized-CubePointRange": t("TXT_CODE_LEAVES_OPTIMIZED_CUBE_POINT_RANGE"),
+          "check-frozen-ticks-before-landing-block": t("TXT_CODE_LEAVES_CHECK_FROZEN_TICKS"),
+          "skip-entity-move-if-movement-is-zero": t("TXT_CODE_LEAVES_SKIP_ZERO_MOVEMENT"),
+          "skip-cloning-advancement-criteria": t("TXT_CODE_LEAVES_SKIP_CLONING_ADVANCEMENT"),
+          "skip-negligible-planar-movement-multiplication": t("TXT_CODE_LEAVES_SKIP_NEGLIGIBLE_MOVEMENT"),
+          "fix-villagers-dont-release-memory": t("TXT_CODE_LEAVES_FIX_VILLAGERS_MEMORY"),
+          remove: {
+            "tick-guard-lambda": t("TXT_CODE_LEAVES_REMOVE_TICK_GUARD_LAMBDA"),
+            "damage-lambda": t("TXT_CODE_LEAVES_REMOVE_DAMAGE_LAMBDA")
+          }
+        },
+        protocol: {
+          bladeren: {
+            protocol: t("TXT_CODE_LEAVES_BLADEREN_PROTOCOL"),
+            "mspt-sync-protocol": t("TXT_CODE_LEAVES_MSPT_SYNC_PROTOCOL"),
+            "mspt-sync-tick-interval": t("TXT_CODE_LEAVES_MSPT_SYNC_TICK_INTERVAL")
+          },
+          syncmatica: {
+            enable: t("TXT_CODE_LEAVES_SYNCMATICA_ENABLE"),
+            quota: t("TXT_CODE_LEAVES_SYNCMATICA_QUOTA"),
+            "quota-limit": t("TXT_CODE_LEAVES_SYNCMATICA_QUOTA_LIMIT")
+          },
+          pca: {
+            "pca-sync-protocol": t("TXT_CODE_LEAVES_PCA_SYNC_PROTOCOL"),
+            "pca-sync-player-entity": t("TXT_CODE_LEAVES_PCA_SYNC_PLAYER_ENTITY")
+          },
+          appleskin: {
+            protocol: t("TXT_CODE_LEAVES_APPLESKIN_PROTOCOL"),
+            "sync-tick-interval": t("TXT_CODE_LEAVES_APPLESKIN_SYNC_INTERVAL")
+          },
+          servux: {
+            "structure-protocol": t("TXT_CODE_LEAVES_SERVUX_STRUCTURE_PROTOCOL"),
+            "entity-protocol": t("TXT_CODE_LEAVES_SERVUX_ENTITY_PROTOCOL"),
+            "hud-metadata-protocol": t("TXT_CODE_LEAVES_SERVUX_HUD_METADATA_PROTOCOL"),
+            "hud-metadata-protocol-share-seed": t("TXT_CODE_LEAVES_SERVUX_HUD_SHARE_SEED"),
+            "litematics-protocol": t("TXT_CODE_LEAVES_SERVUX_LITEMATICS_PROTOCOL")
+          },
+          "bbor-protocol": t("TXT_CODE_LEAVES_BBOR_PROTOCOL"),
+          "jade-protocol": t("TXT_CODE_LEAVES_JADE_PROTOCOL"),
+          "alternative-block-placement": t("TXT_CODE_LEAVES_ALTERNATIVE_BLOCK_PLACEMENT"),
+          "xaero-map-protocol": t("TXT_CODE_LEAVES_XAERO_MAP_PROTOCOL"),
+          "xaero-map-server-id": t("TXT_CODE_LEAVES_XAERO_MAP_SERVER_ID"),
+          "leaves-carpet-support": t("TXT_CODE_LEAVES_CARPET_SUPPORT"),
+          "lms-paster-protocol": t("TXT_CODE_LEAVES_LMS_PASTER_PROTOCOL"),
+          "rei-server-protocol": t("TXT_CODE_LEAVES_REI_SERVER_PROTOCOL"),
+          "chat-image-protocol": t("TXT_CODE_LEAVES_CHAT_IMAGE_PROTOCOL")
+        },
+        region: {
+          format: t("TXT_CODE_LEAVES_REGION_FORMAT"),
+          linear: {
+            version: t("TXT_CODE_LEAVES_LINEAR_VERSION"),
+            "auto-convert-anvil-to-linear": t("TXT_CODE_LEAVES_AUTO_CONVERT_ANVIL"),
+            "flush-max-threads": t("TXT_CODE_LEAVES_FLUSH_MAX_THREADS"),
+            "flush-delay-ms": t("TXT_CODE_LEAVES_FLUSH_DELAY_MS"),
+            "use-virtual-thread": t("TXT_CODE_LEAVES_USE_VIRTUAL_THREAD"),
+            "compression-level": t("TXT_CODE_LEAVES_COMPRESSION_LEVEL")
+          }
+        },
+        fix: {
+          "vanilla-hopper": t("TXT_CODE_LEAVES_FIX_VANILLA_HOPPER"),
+          "vanilla-display-name": t("TXT_CODE_LEAVES_FIX_VANILLA_DISPLAY_NAME")
+        }
+      }
+    }
+  },
+  "terraria/serverconfig.txt": {
+  desc: t("TXT_CODE_TERRARIA_CONFIG_DESC"),
+  config: {
+    port: t("TXT_CODE_TERRARIA_PORT"),
+    password: t("TXT_CODE_TERRARIA_PASSWORD"),
+    world: t("TXT_CODE_TERRARIA_WORLD"),
+    logpath: t("TXT_CODE_TERRARIA_LOG_PATH"),
+    maxplayers: t("TXT_CODE_TERRARIA_MAX_PLAYERS"),
+    motd: t("TXT_CODE_TERRARIA_MOTD"),
     }
   }
 };

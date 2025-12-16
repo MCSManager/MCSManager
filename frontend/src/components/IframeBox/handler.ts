@@ -63,7 +63,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
       const userInfo = await getUserInfo();
       const setting = await settingInfo().execute();
       return {
-        isDarkMode: isDarkTheme(),
+        isDarkMode: isDarkTheme.value,
         panelId: setting.value?.panelId || "",
         code: setting.value?.registerCode || "",
         userInfo: JSON.parse(JSON.stringify(userInfo))
@@ -71,7 +71,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
     } catch (err: any) {
       console.warn(`MainAppInfo error, we will use default config:`, err?.message);
       return {
-        isDarkMode: isDarkTheme(),
+        isDarkMode: isDarkTheme.value,
         panelId: panelStatus.settings.panelId,
         code: "",
         userInfo: null

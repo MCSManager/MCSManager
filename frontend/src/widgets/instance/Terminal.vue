@@ -19,7 +19,7 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { sleep } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
-import { INSTANCE_STATUS } from "@/types/const";
+import { INSTANCE_CRASH_TIMEOUT, INSTANCE_STATUS } from "@/types/const";
 import {
   ApartmentOutlined,
   BlockOutlined,
@@ -29,6 +29,7 @@ import {
   CloudServerOutlined,
   DashboardOutlined,
   DownOutlined,
+  HddOutlined,
   InfoCircleOutlined,
   InteractionOutlined,
   LaptopOutlined,
@@ -39,8 +40,9 @@ import {
   RedoOutlined
 } from "@ant-design/icons-vue";
 import { useLocalStorage } from "@vueuse/core";
+import { Modal } from "ant-design-vue";
 import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
-import { computed } from "vue";
+import { computed, h, onUnmounted } from "vue";
 import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
@@ -78,7 +80,9 @@ const instanceTypeText = computed(
 
 const { execute: requestOpenInstance, isLoading: isOpenInstanceLoading } = openInstance();
 
+let checkRunningTimer: NodeJS.Timeout;
 const toOpenInstance = async () => {
+  if (checkRunningTimer) clearTimeout(checkRunningTimer);
   clearTerminal();
   try {
     if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
@@ -93,6 +97,20 @@ const toOpenInstance = async () => {
         daemonId: daemonId ?? ""
       }
     });
+
+    checkRunningTimer = setTimeout(() => {
+      if (!terminalHook.isRunning.value) {
+        Modal.error({
+          title: t("TXT_CODE_ac405b50"),
+          content: h("div", [
+            h("p", t("TXT_CODE_3409258a")),
+            h("p", `${t("TXT_CODE_973414e1")}：${instanceInfo.value?.config.startCommand || ""}`),
+            isDockerMode.value &&
+              h("p", `${t("TXT_CODE_44b585c7")}：${instanceInfo.value?.config.docker.image || ""}`)
+          ])
+        });
+      }
+    }, INSTANCE_CRASH_TIMEOUT);
   } catch (error: any) {
     reportErrorMsg(error);
   }
@@ -268,13 +286,24 @@ const formatMemoryUsage = (usage?: number, limit?: number) => {
 const formatNetworkSpeed = (bytes?: number) =>
   useByteUnit.value
     ? prettyBytes(bytes ?? 0, { ...prettyBytesConfig, binary: false }) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(/bit$/, "b") +
-      "ps";
+    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(
+        /bit$/,
+        "b"
+      ) + "ps";
 
 const terminalTopTags = computed<TagInfo[]>(() => {
   const info = instanceInfo.value?.info;
   if (!info || isStopped.value) return [];
-  const { cpuUsage, memoryUsage, memoryLimit, memoryUsagePercent, rxBytes, txBytes } = info;
+  const {
+    cpuUsage,
+    memoryUsage,
+    memoryLimit,
+    memoryUsagePercent,
+    rxBytes,
+    txBytes,
+    storageUsage,
+    storageLimit
+  } = info;
 
   return arrayFilter<TagInfo>([
     {
@@ -292,6 +321,12 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       condition: () => memoryUsage != null
     },
     {
+      label: t("TXT_CODE_DISK_USAGE"),
+      value: formatMemoryUsage(storageUsage, storageLimit),
+      icon: HddOutlined,
+      condition: () => storageUsage != null
+    },
+    {
       label: t("TXT_CODE_50daec4"),
       value: `↓${formatNetworkSpeed(rxBytes)} · ↑${formatNetworkSpeed(txBytes)}`,
       icon: ApartmentOutlined,
@@ -301,6 +336,10 @@ const terminalTopTags = computed<TagInfo[]>(() => {
       }
     }
   ]);
+});
+
+onUnmounted(() => {
+  if (checkRunningTimer) clearTimeout(checkRunningTimer);
 });
 </script>
 

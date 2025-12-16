@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { getFileExtName } from "@/tools/fileManager";
 import { getRandomId } from "@/tools/randId";
 import { css } from "@codemirror/lang-css";
@@ -20,7 +19,6 @@ import { basicSetup } from "codemirror";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useScreen } from "../hooks/useScreen";
 
-const { isDarkTheme } = useAppConfigStore();
 const emit = defineEmits(["update:text"]);
 const uuid = getRandomId();
 const DOM_ID = `file-editor-${uuid}`;
@@ -37,8 +35,8 @@ let startDistance = 0;
 let startScale = 1;
 const MAX_SCALE = 1.25;
 const MIN_SCALE = 0.4;
-const baseFontSize = isPhone.value ? 14 : 15;
-const baseLineHeight = isPhone.value ? 22 : 24;
+const baseFontSize = isPhone.value ? 12 : 15;
+const baseLineHeight = isPhone.value ? 16 : 22;
 const currentFontSize = ref(baseFontSize);
 const currentLineHeight = ref(baseLineHeight);
 let scale = 1;
@@ -212,20 +210,19 @@ onBeforeUnmount(() => {
   touch-action: pan-y;
 
   @media (max-width: 768px) {
-    height: 60vh;
+    height: v-bind("props.height || '60vh'");
     border-radius: 0;
   }
 }
 
 .editor-container {
   min-height: 100%;
-  padding: 12px;
   transform-origin: 0 0;
 }
 
 .file-editor {
   :deep(.cm-editor) {
-    min-height: calc(v-bind("props.height") - 24px);
+    min-height: v-bind("props.height");
     transition: font-size 0.1s ease-out;
   }
 

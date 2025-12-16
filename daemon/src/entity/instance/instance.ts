@@ -35,6 +35,8 @@ interface IInstanceInfo {
   writeBytes?: number;
   memoryUsage?: number;
   memoryLimit?: number;
+  storageUsage?: number;
+  storageLimit?: number;
   allocatedPorts?: { host: number; container: number; protocol: string }[];
 }
 
