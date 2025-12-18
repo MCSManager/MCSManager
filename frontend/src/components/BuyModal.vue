@@ -108,8 +108,7 @@ const handleConfirm = async () => {
 
   try {
     isChecking.value = true;
-    const { execute } = queryUsername();
-    const result = await execute({
+    const result = await queryUsername().execute({
       params: {
         username: username.value
       }

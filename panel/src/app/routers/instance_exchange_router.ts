@@ -102,6 +102,10 @@ router.post(
     const instanceId = toText(ctx.request.body.instanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
 
+    if (username.length > 12 || username.length < 2) {
+      throw new Error($t("用户名长度必须在2-12之间"));
+    }
+
     const response = await execWithMutexId(`buy-${code}`, async () => {
       // First, check if the redeem code is valid
       const productInfo = await requestUseRedeem(
