@@ -2,6 +2,4 @@
 alwaysApply: true
 ---
 
-这是一个 Minecraft 和 Steam 游戏服务器进程 Web 管理器，它拥有 frontend/ 前端，panel/ 网页后端，以及 daemon/ 进程节点。
-
-支持多个节点连接到同一个网页后端，支持分布式。
+This is a web-based process manager for Minecraft and Steam game servers. It consists of a web frontend (frontend/), a web backend (panel/), and nodes (daemon/), and supports connection of multiple nodes to the same web backend for distributed deployment.
