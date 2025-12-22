@@ -184,7 +184,6 @@ router.post(
   }
 );
 
-// [Top-level Permission]
 // Get panel configuration items
 router.get("/public_setting", async (ctx) => {
   if (systemConfig) {
