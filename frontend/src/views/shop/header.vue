@@ -59,7 +59,7 @@ onUnmounted(() => {
     <Flex align="center" justify="space-between" :gap="16" style="flex: 1">
       <Flex class="mb-10" vertical align="start" justify="start" :gap="16">
         <a-typography-paragraph v-if="!shopName" type="secondary">
-          {{ t("你可以在右下角编辑店铺介绍") }}
+          {{ t("TXT_CODE_acd6cbf7") }}
         </a-typography-paragraph>
         <a-typography-title :level="1" class="company-title">
           <div
@@ -83,7 +83,7 @@ onUnmounted(() => {
             style="width: 120px"
             @click="openLoginModal"
           >
-            {{ t("登录") }}
+            {{ t("TXT_CODE_d2c1a316") }}
           </a-button>
           <a-button
             v-if="isLogged"
@@ -92,7 +92,7 @@ onUnmounted(() => {
             style="width: 120px"
             @click="emit('toLogin')"
           >
-            {{ t("进入控制台") }}
+            {{ t("TXT_CODE_aa43b248") }}
           </a-button>
         </Flex>
 

@@ -103,7 +103,7 @@ router.post(
     const username = toText(ctx.request.body.username) ?? "";
 
     if (username.length > 12 || username.length < 2) {
-      throw new Error($t("用户名长度必须在2-12之间"));
+      throw new Error($t("TXT_CODE_3d89166a"));
     }
 
     const response = await execWithMutexId(`buy-${code}`, async () => {

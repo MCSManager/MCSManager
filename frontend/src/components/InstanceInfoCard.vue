@@ -28,7 +28,7 @@ defineProps<Props>();
           class="info-row"
         >
           <a-typography-text class="info-label">
-            {{ t("实例ID") }}
+            {{ t("TXT_CODE_379f67e") }}
           </a-typography-text>
           <a-tag color="blue" class="info-tag">
             {{ instanceInfo.instance_id }}
@@ -42,7 +42,7 @@ defineProps<Props>();
           class="info-row"
         >
           <a-typography-text class="info-label">
-            {{ t("用户名") }}
+            {{ t("TXT_CODE_eb9fcdad") }}
           </a-typography-text>
           <a-tag color="green" class="info-tag">
             {{ instanceInfo.username }}
@@ -56,7 +56,7 @@ defineProps<Props>();
           class="info-row"
         >
           <a-typography-text class="info-label">
-            {{ t("密码") }}
+            {{ t("TXT_CODE_551b0348") }}
           </a-typography-text>
           <a-tag color="purple" class="info-tag password-tag">
             {{ instanceInfo.password }}
@@ -65,7 +65,7 @@ defineProps<Props>();
 
         <a-flex v-if="instanceInfo.uuid" justify="space-between" align="center" class="info-row">
           <a-typography-text class="info-label">
-            {{ t("UUID") }}
+            {{ t("TXT_CODE_e7eabd12") }}
           </a-typography-text>
           <a-tag color="cyan" class="info-tag uuid-tag">
             {{ instanceInfo.uuid }}
@@ -74,7 +74,7 @@ defineProps<Props>();
 
         <a-flex v-if="instanceInfo.expire" justify="space-between" align="center" class="info-row">
           <a-typography-text class="info-label">
-            {{ t("到期时间") }}
+            {{ t("TXT_CODE_fa920c0") }}
           </a-typography-text>
           <a-tag color="orange" class="info-tag">
             {{ new Date(instanceInfo.expire).toLocaleDateString() }}
@@ -91,7 +91,7 @@ defineProps<Props>();
           class="info-row"
         >
           <a-typography-text class="info-label">
-            {{ t("实例名称") }}
+            {{ t("TXT_CODE_f70badb9") }}
           </a-typography-text>
           <a-tag color="geekblue" class="info-tag">
             {{ instanceInfo.instance_info.name }}
@@ -105,19 +105,19 @@ defineProps<Props>();
           class="info-row"
         >
           <a-typography-text class="info-label">
-            {{ t("运行状态") }}
+            {{ t("TXT_CODE_5476e012") }}
           </a-typography-text>
           <a-tag
             :color="instanceInfo.instance_info.status === 0 ? 'red' : 'green'"
             class="info-tag"
           >
-            {{ instanceInfo.instance_info.status === 0 ? t("已停止") : t("运行中") }}
+            {{ instanceInfo.instance_info.status === 0 ? t("TXT_CODE_4ef6b040") : t("TXT_CODE_bdb620b9") }}
           </a-tag>
         </a-flex>
 
         <!-- 配置信息 -->
         <template v-if="instanceInfo.instance_info.lines?.length">
-          <a-divider class="info-divider">{{ t("配置信息") }}</a-divider>
+          <a-divider class="info-divider">{{ t("TXT_CODE_9c9f604d") }}</a-divider>
           <a-flex
             v-for="line in instanceInfo.instance_info.lines"
             :key="line.title"
@@ -136,7 +136,7 @@ defineProps<Props>();
 
         <!-- 端口信息 -->
         <template v-if="instanceInfo.instance_info.ports?.length">
-          <a-divider class="info-divider">{{ t("端口信息") }}</a-divider>
+          <a-divider class="info-divider">{{ t("TXT_CODE_6225d929") }}</a-divider>
           <a-flex vertical :gap="8">
             <a-flex
               v-for="(port, index) in instanceInfo.instance_info.ports"
@@ -146,12 +146,12 @@ defineProps<Props>();
               class="info-row port-row"
             >
               <a-typography-text class="info-label">
-                {{ port.protocol.toUpperCase() }} {{ t("端口") }}
+                {{ port.protocol.toUpperCase() }} {{ t("TXT_CODE_f49149d0") }}
               </a-typography-text>
               <a-flex :gap="8" align="center">
-                <a-tag color="volcano" class="port-tag"> {{ t("主机") }}: {{ port.host }} </a-tag>
+                <a-tag color="volcano" class="port-tag"> {{ t("TXT_CODE_8dfc41ef") }}: {{ port.host }} </a-tag>
                 <a-tag color="magenta" class="port-tag">
-                  {{ t("容器") }}: {{ port.container }}
+                  {{ t("TXT_CODE_8f8103b7") }}: {{ port.container }}
                 </a-tag>
               </a-flex>
             </a-flex>

@@ -370,7 +370,7 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
+                  <a-form-item v-if="isCN()">
                     <a-typography-title :level="5">Panel ID</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_e2976753") }}
@@ -390,10 +390,10 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
-                    <a-typography-title :level="5">{{ t("Panel ID 注册码") }}</a-typography-title>
+                  <a-form-item v-if="isCN()">
+                    <a-typography-title :level="5">{{ t("TXT_CODE_dcf8f5c7") }}</a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{ t("在线功能验证身份用，请勿外泄，否则可能会造成数据泄漏") }}
+                      {{ t("TXT_CODE_4a0a0644") }}
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.registerCode"
@@ -402,14 +402,12 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
+                  <a-form-item v-if="isCN()">
                     <a-typography-title :level="5">
-                      {{ t("启用商店首页作为首页") }}
+                      {{ t("TXT_CODE_5432a435") }}
                     </a-typography-title>
                     <a-typography-paragraph type="secondary">
-                      {{
-                        t("此选项开启后，将会有一个商店页面作为登录首页，可以自行二次开发改造。")
-                      }}
+                      {{ t("TXT_CODE_d055c843") }}
                     </a-typography-paragraph>
                     <a-switch v-model:checked="formData.enableShopHomePage" />
                   </a-form-item>

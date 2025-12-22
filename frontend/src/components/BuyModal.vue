@@ -29,8 +29,8 @@ const isChecking = ref(false);
 
 // 表单验证规则
 const formRules = {
-  cardCode: [{ required: true, message: t("请输入卡密"), trigger: "blur" }],
-  username: [{ required: true, message: t("请输入激活用户名"), trigger: "blur" }]
+  cardCode: [{ required: true, message: t("TXT_CODE_b9542334"), trigger: "blur" }],
+  username: [{ required: true, message: t("TXT_CODE_578d5638"), trigger: "blur" }]
 } as any;
 
 // 监听visible变化，重置表单
@@ -59,13 +59,13 @@ const showConfirmWithCooldown = (
     if (countdown > 0) {
       modal.update({
         content: `${content}`,
-        okText: `${t("确定")} (${countdown}s)`,
+        okText: `${t("TXT_CODE_d507abff")} (${countdown}s)`,
         okButtonProps: { disabled: true }
       });
     } else {
       modal.update({
         content: `${content}`,
-        okText: t("确定"),
+        okText: t("TXT_CODE_d507abff"),
         okButtonProps: { disabled: false }
       });
     }
@@ -74,8 +74,8 @@ const showConfirmWithCooldown = (
   modal = Modal.confirm({
     title,
     content: `${content}`,
-    okText: `${t("确定")} (${countdown}s)`,
-    cancelText: t("取消"),
+    okText: `${t("TXT_CODE_d507abff")} (${countdown}s)`,
+    cancelText: t("TXT_CODE_a0451c97"),
     okButtonProps: { disabled: true },
     onOk: () => {
       if (!okButtonDisabled) {
@@ -117,8 +117,8 @@ const handleConfirm = async () => {
     if (result.value?.uuid) {
       // 用户存在，显示确认框
       showConfirmWithCooldown(
-        t("最终确认"),
-        `${t("账号 {username} 已存在，是否是你自己的账号名？", { username: username.value })}`,
+        t("TXT_CODE_2a3b0c17"),
+        `${t("TXT_CODE_7982f9b6", { username: username.value })}`,
         () => {
           // 用户确认后，触发购买
           emit("confirm", {
@@ -130,8 +130,8 @@ const handleConfirm = async () => {
     } else {
       // 用户不存在，显示创建确认框
       showConfirmWithCooldown(
-        t("最终确认"),
-        `${t("此用户不存在，是否新建用户 {username}，并生成随机密码？", {
+        t("TXT_CODE_2a3b0c17"),
+        `${t("TXT_CODE_a07b8694", {
           username: username.value
         })}`,
         () => {
@@ -144,7 +144,7 @@ const handleConfirm = async () => {
       );
     }
   } catch (error: any) {
-    reportErrorMsg(error.message || t("查询用户失败"));
+    reportErrorMsg(error.message || t("TXT_CODE_f690e493"));
   } finally {
     isChecking.value = false;
   }
@@ -158,26 +158,26 @@ const handleCancel = () => {
 <template>
   <Modal
     :open="visible"
-    :title="t('购买服务')"
-    :ok-text="t('确定')"
-    :cancel-text="t('取消')"
+    :title="t('TXT_CODE_ce2c04e')"
+    :ok-text="t('TXT_CODE_d507abff')"
+    :cancel-text="t('TXT_CODE_a0451c97')"
     :confirm-loading="isChecking"
     @ok="handleConfirm"
     @cancel="handleCancel"
     @update:open="$emit('update:visible', $event)"
   >
     <a-form :model="{ cardCode, username }" :rules="formRules" layout="vertical">
-      <a-form-item :label="t('为哪个账号购买？')" name="username">
+      <a-form-item :label="t('TXT_CODE_e405b681')" name="username">
         <a-typography-paragraph>
           <a-typography-text type="secondary">
-            {{ t("请确保输入的用户名正确，如果用户不存在则会自动创建，请勿使用他人账号购买。") }}
+            {{ t("TXT_CODE_3ce4de75") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="username" :placeholder="t('请输入用户名')" size="large" />
+        <a-input v-model:value="username" :placeholder="t('TXT_CODE_2695488c')" size="large" />
       </a-form-item>
 
-      <a-form-item :label="t('兑换码')" name="cardCode">
-        <a-input v-model:value="cardCode" :placeholder="t('请输入兑换码')" size="large" />
+      <a-form-item :label="t('TXT_CODE_32d0b274')" name="cardCode">
+        <a-input v-model:value="cardCode" :placeholder="t('TXT_CODE_ffda3755')" size="large" />
       </a-form-item>
     </a-form>
   </Modal>

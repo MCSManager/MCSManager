@@ -41,12 +41,12 @@ const handleSubmit = async () => {
     await updateShopInfo({
       ...formData.value
     });
-    message.success(t("信息更新成功，网页稍后将进行刷新..."));
+    message.success(t("TXT_CODE_425acc3b"));
     setTimeout(() => {
       window.location.reload();
     }, 2000);
   } catch (error) {
-    message.error(t("更新失败，请重试"));
+    message.error(t("TXT_CODE_dd0aa60b"));
   } finally {
     loading.value = false;
   }
@@ -58,69 +58,69 @@ const handleSubmit = async () => {
     <!-- Floating button -->
     <div class="floating-button" @click="showDialog">
       <EditOutlined class="icon" />
-      <span class="tooltip">{{ $t("编辑店铺信息") }}</span>
+      <span class="tooltip">{{ $t("TXT_CODE_7bcd27a") }}</span>
     </div>
 
     <!-- Form dialog -->
     <Modal
       v-model:open="visible"
-      :title="$t('编辑店铺信息')"
+      :title="$t('TXT_CODE_7bcd27a')"
       :width="600"
       :footer="null"
       @cancel="hideDialog"
     >
       <a-typography-paragraph>
         <a-typography-text>
-          {{ $t("所有文本均支持 Markdown 格式来自定义超链接，列表等特殊格式。") }}
+          {{ $t("TXT_CODE_fab7752") }}
         </a-typography-text>
       </a-typography-paragraph>
 
       <Form :model="formData" layout="vertical" class="shop-form" @finish="handleSubmit">
-        <Form.Item :label="$t('首页名称')" name="shopName" required>
+        <Form.Item :label="$t('TXT_CODE_f79d5b56')" name="shopName" required>
           <Input
             v-model:value="formData.shopName"
-            :placeholder="$t('请输入店铺名称')"
+            :placeholder="$t('TXT_CODE_17b7a606')"
             size="large"
           />
         </Form.Item>
-        <Form.Item :label="$t('首页描述文字')" name="shopDescription">
+        <Form.Item :label="$t('TXT_CODE_d1cb4d95')" name="shopDescription">
           <Input.TextArea
             v-model:value="formData.shopDescription"
-            :placeholder="$t('请输入店铺描述信息')"
+            :placeholder="$t('TXT_CODE_1cb93f81')"
             :rows="4"
             size="large"
           />
         </Form.Item>
-        <Form.Item :label="$t('首页描述二级文字')" name="shopTip">
+        <Form.Item :label="$t('TXT_CODE_2d853390')" name="shopTip">
           <Input.TextArea
             v-model:value="formData.shopTip"
-            :placeholder="$t('请输入店铺提示信息')"
+            :placeholder="$t('TXT_CODE_90045806')"
             :rows="3"
             size="large"
           />
         </Form.Item>
 
-        <Form.Item :label="$t('页脚信息')" name="loginInfo">
+        <Form.Item :label="$t('TXT_CODE_c8e95812')" name="loginInfo">
           <Input
             v-model:value="formData.loginInfo"
-            :placeholder="$t('请输入页脚信息，可以输入版权信息，备案信息，支持 Markdown')"
+            :placeholder="$t('TXT_CODE_41a2c34c')"
             size="large"
           />
         </Form.Item>
 
-        <Form.Item :label="$t('页脚联系邮箱方式')" name="shopEmail" required>
+        <Form.Item :label="$t('TXT_CODE_b73dbf69')" name="shopEmail" required>
           <Input
             v-model:value="formData.shopEmail"
-            :placeholder="$t('请输入店铺联系邮箱')"
+            :placeholder="$t('TXT_CODE_a63c2364')"
             size="large"
           />
         </Form.Item>
 
         <Form.Item class="form-actions">
           <div class="button-group">
-            <Button size="large" @click="hideDialog"> {{ $t("取消") }} </Button>
+            <Button size="large" @click="hideDialog"> {{ $t("TXT_CODE_a0451c97") }} </Button>
             <Button type="primary" html-type="submit" :loading="loading" size="large">
-              {{ $t("保存") }}
+              {{ $t("TXT_CODE_abfe9512") }}
             </Button>
           </div>
         </Form.Item>

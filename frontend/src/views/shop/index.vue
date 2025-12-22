@@ -162,8 +162,8 @@ const handleBuyConfirm = async (data: { cardCode: string; username: string }) =>
 
     // 显示成功弹窗
     showSuccessModal({
-      title: t("购买成功"),
-      message: t("恭喜！您的服务已成功激活，可以登录控制台开始使用。"),
+      title: t("TXT_CODE_fa9063e5"),
+      message: t("TXT_CODE_864bf2ac"),
       instanceInfo: res.value
     });
   } catch (error) {
@@ -226,10 +226,10 @@ onMounted(async () => {
         <Flex vertical :gap="48" align="center">
           <a-typography-paragraph class="section-title">
             <a-typography-title :level="1">
-              {{ $t("支持众多使用场景 & 游戏服务器") }}
+              {{ $t("TXT_CODE_17b32503") }}
             </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
-              {{ $t("从 Minecraft 到 Terraria，轻松管理各类游戏服务器 & 各类应用") }}
+              {{ $t("TXT_CODE_d5254054") }}
             </a-typography-text>
           </a-typography-paragraph>
 
@@ -256,9 +256,9 @@ onMounted(async () => {
       <div class="section">
         <Flex vertical :gap="32">
           <a-typography-paragraph class="section-title">
-            <a-typography-title :level="1"> {{ $t("用户友好，易于使用") }} </a-typography-title>
+            <a-typography-title :level="1"> {{ $t("TXT_CODE_2bef2384") }} </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
-              {{ $t("基于 MCSManager 面板提供可视化服务，快捷部署任意服务。") }}
+              {{ $t("TXT_CODE_a8c27e42") }}
             </a-typography-text>
           </a-typography-paragraph>
 
@@ -275,10 +275,10 @@ onMounted(async () => {
         <Flex vertical :gap="48" align="center">
           <a-typography-paragraph class="section-title">
             <a-typography-title :level="1">
-              {{ $t("更多强大核心功能") }}
+              {{ $t("TXT_CODE_6c488337") }}
             </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
-              {{ $t("专业的服务器管理工具，让运维更简单") }}
+              {{ $t("TXT_CODE_78ba9283") }}
             </a-typography-text>
           </a-typography-paragraph>
 
@@ -307,9 +307,9 @@ onMounted(async () => {
       <div class="section">
         <Flex vertical :gap="32">
           <a-typography-paragraph class="section-title">
-            <a-typography-title :level="1"> {{ $t("提供各类安装模板") }} </a-typography-title>
+            <a-typography-title :level="1"> {{ $t("TXT_CODE_4e5aacfc") }} </a-typography-title>
             <a-typography-text class="section-sub-title" type="secondary">
-              {{ $t("提供各类安装模板，一键部署，快捷方便。") }}
+              {{ $t("TXT_CODE_b14e88f7") }}
             </a-typography-text>
           </a-typography-paragraph>
 
@@ -344,7 +344,7 @@ onMounted(async () => {
             <Flex v-if="isAdmin" justify="center" align="center" class="admin-message">
               {{
                 $t(
-                  '右侧编辑悬浮球可以修改页面上的文字，如果您想深度定制此页，则需要开发人员修改 "frontend/src/views/Business.vue" 文件（仅管理员可见）'
+                  'TXT_CODE_482602ef'
                 )
               }}
             </Flex>

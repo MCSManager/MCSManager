@@ -58,13 +58,13 @@ const handleBuyConfirm = async (data: { cardCode: string; username: string }) =>
 
     // 显示成功弹窗
     successInfo.value = {
-      title: t("购买成功"),
-      message: t("恭喜！您的服务已成功激活，可以登录控制台开始使用。"),
+      title: t("TXT_CODE_fa9063e5"),
+      message: t("TXT_CODE_864bf2ac"),
       instanceInfo: res.value
     };
     isSuccessModalVisible.value = true;
 
-    message.success(t("购买成功"));
+    message.success(t("TXT_CODE_fa9063e5"));
   } catch (error) {
     reportErrorMsg(error);
   }
@@ -109,7 +109,7 @@ defineExpose({ openDialog });
   <AppConfigProvider>
     <a-modal
       v-model:open="open"
-      :title="t('面板可用套餐列表')"
+      :title="t('TXT_CODE_566611d8')"
       :width="1200"
       :footer="null"
       centered
@@ -117,7 +117,7 @@ defineExpose({ openDialog });
     >
       <div class="dialog-overflow-container">
         <a-typography-paragraph>
-          {{ t("请选择您需要的套餐，购买后将自动为您创建实例并激活服务。") }}
+          {{ t("TXT_CODE_8464c9b9") }}
         </a-typography-paragraph>
         <a-spin :spinning="isLoading">
           <div v-if="products && products.length > 0" class="products-container">
@@ -135,7 +135,7 @@ defineExpose({ openDialog });
             </a-row>
           </div>
           <div v-else class="empty-container">
-            <a-empty :description="t('暂无套餐')" />
+            <a-empty :description="t('TXT_CODE_6c79c420')" />
           </div>
         </a-spin>
       </div>

@@ -155,7 +155,7 @@ const appMenus = computed(() => {
     },
     {
       iconText: t("TXT_CODE_80f0904e"),
-      title: t("商业 & 专业模式已开启"),
+      title: t("TXT_CODE_685de81a"),
       icon: SketchOutlined,
       click: (): void => {},
       conditions: isProMode.value,

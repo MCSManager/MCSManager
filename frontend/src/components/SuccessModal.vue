@@ -62,9 +62,9 @@ watch(
 // 按钮文字
 const buttonText = computed(() => {
   if (isCountdownActive.value) {
-    return `${t("我知晓了")} (${countdown.value}s)`;
+    return `${t("TXT_CODE_85b60a33")} (${countdown.value}s)`;
   }
-  return t("我知晓了");
+  return t("TXT_CODE_85b60a33");
 });
 
 // 组件卸载时清理定时器
@@ -83,14 +83,14 @@ const accountDataSource = computed(() => {
   if (props.instanceInfo.username) {
     data.push({
       key: "username",
-      label: t("您的用户名"),
+      label: t("TXT_CODE_3757c742"),
       value: props.instanceInfo.username,
       valueType: "text"
     });
 
     data.push({
       key: "password",
-      label: t("您的密码"),
+      label: t("TXT_CODE_31e88e0d"),
       value: props.instanceInfo.password || "与原账号密码保持一致",
       valueType: "text"
     });
@@ -99,7 +99,7 @@ const accountDataSource = computed(() => {
   if (props.instanceInfo.instance_info.name) {
     data.push({
       key: "name",
-      label: t("激活的实例名称"),
+      label: t("TXT_CODE_9d31e7ea"),
       value: props.instanceInfo.instance_info.name,
       valueType: "text"
     });
@@ -108,7 +108,7 @@ const accountDataSource = computed(() => {
   if (props.instanceInfo.expire) {
     data.push({
       key: "expire",
-      label: t("到期时间"),
+      label: t("TXT_CODE_fa920c0"),
       value: new Date(props.instanceInfo.expire).toLocaleString(),
       valueType: "text"
     });
@@ -142,13 +142,13 @@ const portsDataSource = computed(() => {
 // 表格列定义
 const infoColumns = [
   {
-    title: t("项目"),
+    title: t("TXT_CODE_a2c247c4"),
     dataIndex: "label",
     key: "label",
     width: "40%"
   },
   {
-    title: t("内容"),
+    title: t("TXT_CODE_3e7aa0ad"),
     dataIndex: "value",
     key: "value",
     width: "60%"
@@ -157,19 +157,19 @@ const infoColumns = [
 
 const portsColumns = [
   {
-    title: t("协议"),
+    title: t("TXT_CODE_ad1c674c"),
     dataIndex: "protocol",
     key: "protocol",
     width: "30%"
   },
   {
-    title: t("主机端口"),
+    title: t("TXT_CODE_534db0b2"),
     dataIndex: "host",
     key: "host",
     width: "35%"
   },
   {
-    title: t("容器端口"),
+    title: t("TXT_CODE_b729d2e"),
     dataIndex: "container",
     key: "container",
     width: "35%"
@@ -208,7 +208,7 @@ const portsColumns = [
       <!-- 账户信息表格 -->
       <div v-if="accountDataSource.length > 0" class="info-section">
         <div class="section-title">
-          <span>{{ t("账户信息") }}</span>
+          <span>{{ t("TXT_CODE_7173d09e") }}</span>
         </div>
         <a-table
           :columns="infoColumns"
@@ -231,7 +231,7 @@ const portsColumns = [
       <!-- 配置信息表格 -->
       <div v-if="configDataSource.length > 0" class="info-section">
         <div class="section-title">
-          <span>{{ t("配置信息") }}</span>
+          <span>{{ t("TXT_CODE_9c9f604d") }}</span>
         </div>
         <a-table
           :columns="infoColumns"
@@ -254,7 +254,7 @@ const portsColumns = [
       <!-- 端口信息表格 -->
       <div v-if="portsDataSource.length > 0" class="info-section">
         <div class="section-title">
-          <span>{{ t("端口信息") }}</span>
+          <span>{{ t("TXT_CODE_6225d929") }}</span>
         </div>
         <a-table
           :columns="portsColumns"

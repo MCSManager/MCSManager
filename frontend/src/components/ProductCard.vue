@@ -33,7 +33,7 @@ defineEmits<Emits>();
         <a-typography-title :level="2" class="product-price">
           {{ product.price }}
         </a-typography-title>
-        <a-typography-text class="price-unit"> {{ t("/月") }} </a-typography-text>
+        <a-typography-text class="price-unit"> {{ t("TXT_CODE_4aed0262") }} </a-typography-text>
       </Flex>
 
       <!-- Configuration info -->
@@ -55,7 +55,7 @@ defineEmits<Emits>();
 
       <!-- Buy button -->
       <Button type="primary" size="large" class="buy-button" @click="$emit('buy', product)">
-        {{ t("立即购买") }}
+        {{ t("TXT_CODE_d2bfca82") }}
       </Button>
     </Flex>
   </Card>
