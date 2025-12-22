@@ -193,7 +193,6 @@ router.get("/public_setting", async (ctx) => {
       businessMode: config.businessMode,
       businessId: config.businessId,
       panelId: config.panelId,
-      registerCode: config.registerCode,
       shopName: config.shopName,
       shopEmail: config.shopEmail,
       shopDescription: config.shopDescription,
