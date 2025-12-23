@@ -62,13 +62,15 @@ router.get(
   permission({ level: ROLE.ADMIN }),
   validator({ query: { page: Number, page_size: Number } }),
   async (ctx: Koa.ParameterizedContext) => {
-    const userName = String(ctx.query.userName);
-    const role = String(ctx.query.role);
-    const page = Number(ctx.query.page);
-    const pageSize = Number(ctx.query.page_size);
+    // Fix parameter parsing - check if parameters exist before converting
+    const userName = ctx.query.userName ? String(ctx.query.userName) : "";
+    const role = ctx.query.role ? String(ctx.query.role) : "";
+    const page = Number(ctx.query.page) || 1;
+    const pageSize = Number(ctx.query.page_size) || 10;
+
     const condition: any = {};
-    if (userName) condition["userName"] = `%${userName}%`;
-    if (role) condition["permission"] = Number(role);
+    if (userName && userName !== "undefined") condition["userName"] = `%${userName}%`;
+    if (role && role !== "undefined" && role !== "null") condition["permission"] = Number(role);
     let resultPage = userSystem.getQueryWrapper().selectPage(condition, page, pageSize);
     // make a copy, delete redundant
     resultPage = JSON.parse(JSON.stringify(resultPage));
