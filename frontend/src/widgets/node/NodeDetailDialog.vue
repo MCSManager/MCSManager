@@ -34,7 +34,7 @@ const DEFAULT_CONFIG = {
 
 const SPEED_RATE_OPTIONS = [
   {
-    label: "无限制",
+    label: t("TXT_CODE_e3a77a77"),
     value: 0
   },
   {
