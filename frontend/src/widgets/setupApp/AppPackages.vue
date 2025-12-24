@@ -70,7 +70,7 @@ defineExpose({
           <br />
         </span>
       </p>
-      <p>
+      <p v-if="!onlyDockerTemplate">
         <Link target="_blank" @click="openEditor">
           {{ t("TXT_CODE_85c10fde") }}
         </Link>

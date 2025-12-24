@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+This is a web-based process manager for Minecraft and Steam game servers. It consists of a web frontend (frontend/), a web backend (panel/), and nodes (daemon/), and supports connection of multiple nodes to the same web backend for distributed deployment.

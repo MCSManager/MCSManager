@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { t } from "@/lang/i18n";
 import { useVModel } from "@vueuse/core";
-import { Form } from 'ant-design-vue';
+import { Form } from "ant-design-vue";
 import _ from "lodash";
 import { watch, type PropType } from "vue";
 
@@ -18,19 +18,19 @@ const DEFAULT_MAPPING = {
   from: {
     ip: "",
     port: 24444,
-    prefix: "",
+    prefix: ""
   },
   to: {
     ip: "",
     port: 24444,
-    prefix: "",
+    prefix: ""
   }
 };
 
 /**
  * Here we follow the convention of `ant-design-vue` and name the model prop as
  * `value`. It should be used like `v-model:value="..."`.
- * 
+ *
  * To be compatible with lower Vue runtime versions, we use `useVModel` from
  * `vueuse` instead of `defineModel`, which is available in Vue 3.4+. Also,
  * runtime declaration forms of `defineProps` and `defineEmits` are used
@@ -40,15 +40,16 @@ const DEFAULT_MAPPING = {
 const props = defineProps({
   value: {
     type: Array as PropType<RemoteMappingItem[]>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits({
-  'update:value': (value: RemoteMappingItem[]) => null
+  // eslint-disable-next-line no-unused-vars, vue/return-in-emits-validator
+  "update:value": (value: RemoteMappingItem[]) => null
 });
 
-const remoteMappings = useVModel(props, 'value', emit);
+const remoteMappings = useVModel(props, "value", emit);
 
 watch(remoteMappings, () => {
   formItemContext.onFieldChange();
@@ -89,38 +90,46 @@ watch(remoteMappings, () => {
                 {{ t("TXT_CODE_54312194") }}
                 <a-row :gutter="8">
                   <a-col :span="15">
-                    <a-textarea auto-size v-model:value="mapping.from.ip"/>
+                    <a-textarea v-model:value="mapping.from.ip" auto-size />
                   </a-col>
                   <a-col :span="9">
-                    <a-input-number class="w-full" :min="1" :max="65535" v-model:value="mapping.from.port" />
+                    <a-input-number
+                      v-model:value="mapping.from.port"
+                      class="w-full"
+                      :min="1"
+                      :max="65535"
+                    />
                   </a-col>
                 </a-row>
                 {{ t("TXT_CODE_941d83b8") }}
                 <a-row :gutter="8">
                   <a-col :span="24">
-                    <a-textarea auto-size v-model:value="mapping.from.prefix" />
+                    <a-textarea v-model:value="mapping.from.prefix" auto-size />
                   </a-col>
                 </a-row>
               </a-space>
             </a-col>
-            <a-col class="center-container" :span="2">
-              -&gt;
-            </a-col>
+            <a-col class="center-container" :span="2"> -&gt; </a-col>
             <a-col :span="9">
               <a-space direction="vertical">
                 {{ t("TXT_CODE_54312194") }}
                 <a-row :gutter="8">
                   <a-col :span="15">
-                    <a-textarea auto-size v-model:value="mapping.to.ip" />
+                    <a-textarea v-model:value="mapping.to.ip" auto-size />
                   </a-col>
                   <a-col :span="9">
-                    <a-input-number class="w-full" :min="1" :max="65535" v-model:value="mapping.to.port" />
+                    <a-input-number
+                      v-model:value="mapping.to.port"
+                      class="w-full"
+                      :min="1"
+                      :max="65535"
+                    />
                   </a-col>
                 </a-row>
                 {{ t("TXT_CODE_941d83b8") }}
                 <a-row :gutter="8">
                   <a-col :span="24">
-                    <a-textarea auto-size v-model:value="mapping.to.prefix" />
+                    <a-textarea v-model:value="mapping.to.prefix" auto-size />
                   </a-col>
                 </a-row>
               </a-space>

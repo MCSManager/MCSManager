@@ -59,8 +59,16 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.businessMode != null) systemConfig.businessMode = Boolean(config.businessMode);
     if (config.businessId != null) systemConfig.businessId = String(config.businessId);
     if (config.allowChangeCmd != null) systemConfig.allowChangeCmd = Boolean(config.allowChangeCmd);
-    if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
-    if (config.panelId != null) systemConfig.panelId = String(config.panelId);
+
+    if (config.shopName != null) systemConfig.shopName = String(config.shopName);
+    if (config.shopEmail != null) systemConfig.shopEmail = String(config.shopEmail);
+    if (config.shopDescription != null)
+      systemConfig.shopDescription = String(config.shopDescription);
+    if (config.shopTip != null) systemConfig.shopTip = String(config.shopTip);
+    if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
+
+    if (config.enableShopHomePage != null)
+      systemConfig.enableShopHomePage = Boolean(config.enableShopHomePage);
 
     if (config.presetPackAddr != null) {
       // clear cache
@@ -69,6 +77,12 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       });
       systemConfig.presetPackAddr = String(config.presetPackAddr);
     }
+
+    if (config.panelId != null) {
+      systemConfig.panelId = String(config.panelId);
+      if (systemConfig.registerCode) systemConfig.registerCode = "";
+    }
+    if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
 
     if (config.language != null) {
       logger.warn($t("TXT_CODE_e29a9317"), config.language);
@@ -169,5 +183,23 @@ router.post(
     ctx.body = "OK";
   }
 );
+
+// Get panel configuration items
+router.get("/public_setting", async (ctx) => {
+  if (systemConfig) {
+    const config = systemConfig;
+    ctx.body = {
+      businessMode: config.businessMode,
+      businessId: config.businessId,
+      panelId: config.panelId,
+      shopName: config.shopName,
+      shopEmail: config.shopEmail,
+      shopDescription: config.shopDescription,
+      shopTip: config.shopTip,
+      loginInfo: config.loginInfo,
+      enableShopHomePage: config.enableShopHomePage
+    };
+  }
+});
 
 export default router;

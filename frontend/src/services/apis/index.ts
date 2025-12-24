@@ -105,8 +105,12 @@ export const remoteInstances = useDefineApi<
   url: "/api/service/remote_service_instances"
 });
 
-export const settingInfo = useDefineApi<any, Settings>({
+export const settingInfo = useDefineApi<any, Partial<Settings>>({
   url: "/api/overview/setting"
+});
+
+export const publicSettingInfo = useDefineApi<any, Partial<Settings>>({
+  url: "/api/overview/public_setting"
 });
 
 export const setSettingInfo = useDefineApi<

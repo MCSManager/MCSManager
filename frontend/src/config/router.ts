@@ -4,6 +4,8 @@ import type { LoginUserInfo } from "@/types/user";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
+import Business from "@/views/shop/index.vue";
+import type { CSSProperties } from "vue";
 import {
   createRouter,
   createWebHashHistory,
@@ -12,6 +14,8 @@ import {
 } from "vue-router";
 
 export interface RouterMetaInfo {
+  showBreadcrumbs?: boolean;
+  showAppHeader?: boolean;
   icon?: string;
   mainMenu?: boolean;
   permission?: number;
@@ -31,6 +35,7 @@ export interface RouterMetaInfo {
     mainMenu?: boolean;
     permission: number;
   }>;
+  appContainerStyle?: CSSProperties;
 }
 
 export interface RouterConfig {
@@ -300,8 +305,10 @@ const originRouterConfig: RouterConfig[] = [
   {
     path: "/shop",
     name: t("TXT_CODE_5a408a5e"),
-    component: LayoutContainer,
+    component: Business,
     meta: {
+      showBreadcrumbs: false,
+      showAppHeader: true,
       permission: ROLE.GUEST,
       mainMenu: true,
       condition: () => {
@@ -357,6 +364,15 @@ router.beforeEach((to, from, next) => {
 
   if (!state.isInstall && toRoutePath !== "/install") {
     return next("/install");
+  }
+
+  if (
+    state.settings.businessMode &&
+    toRoutePath === "/" &&
+    !state.userInfo?.permission &&
+    state.settings.enableShopHomePage
+  ) {
+    return next("/shop");
   }
 
   if (to.meta?.redirect) {

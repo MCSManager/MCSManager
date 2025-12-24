@@ -1,17 +1,17 @@
-import Koa from "koa";
 import Router from "@koa/router";
-import validator from "../middleware/validator";
-import permission from "../middleware/permission";
-import { check, login, logout, checkBanIp, loginSuccess } from "../service/passport_service";
-import { systemConfig } from "../setting";
-import userSystem, { TwoFactorError } from "../service/user_service";
-import { logger } from "../service/log";
-import { $t } from "../i18n";
 import axios from "axios";
+import Koa from "koa";
 import { GlobalVariable } from "mcsmanager-common";
-import { ROLE } from "../entity/user";
 import SystemConfig from "../entity/setting";
+import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import { logger } from "../service/log";
 import { operationLogger } from "../service/operation_logger";
+import { check, checkBanIp, login, logout } from "../service/passport_service";
+import userSystem, { TwoFactorError } from "../service/user_service";
+import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -92,7 +92,8 @@ router.all(
         businessMode: systemConfig?.businessMode || false,
         businessId: systemConfig?.businessId || null,
         allowChangeCmd: systemConfig?.allowChangeCmd || false,
-        panelId: systemConfig?.panelId || null
+        panelId: systemConfig?.panelId || null,
+        enableShopHomePage: systemConfig?.enableShopHomePage || false
       } as Partial<SystemConfig>
     };
   }
