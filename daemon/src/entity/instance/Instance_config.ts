@@ -70,7 +70,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     network: 0,
     workingDir: "/workspace/",
     env: [],
-    changeWorkdir: true
+    changeWorkdir: true,
+    labels: []
   };
 
   public pingConfig = {

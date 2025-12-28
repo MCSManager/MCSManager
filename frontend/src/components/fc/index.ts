@@ -31,6 +31,11 @@ interface DockerEnvItem {
   value: string;
 }
 
+interface DockerLabelItem {
+  label: string;
+  value: string;
+}
+
 export async function useDownloadFileDialog() {
   return (
     (await useMountComponent().mount<DownloadFileConfigItem>(DownloadFileDialogVue)) || undefined
@@ -121,6 +126,29 @@ export async function useDockerEnvEditDialog(data: DockerEnvItem[] = []) {
       ] as AntColumnsType[],
       textarea: true
     }).mount<DockerEnvItem[]>(KvOptionsDialogVue)) || []
+  );
+}
+
+export async function useDockerLabelEditDialog(data: DockerLabelItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("TXT_CODE_g1c43s2h"),
+      subTitle: t("TXT_CODE_MimBB1Ea"),
+      columns: [
+        {
+          align: "center",
+          dataIndex: "label",
+          title: t("TXT_CODE_a42984e")
+        },
+        {
+          align: "center",
+          dataIndex: "value",
+          title: t("TXT_CODE_115e8a25")
+        }
+      ] as AntColumnsType[],
+      textarea: true
+    }).mount<DockerLabelItem[]>(KvOptionsDialogVue)) || []
   );
 }
 
