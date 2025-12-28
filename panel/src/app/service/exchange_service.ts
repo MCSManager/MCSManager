@@ -13,7 +13,7 @@ import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
 // export const REDEEM_PLATFORM_ADDR = "https://online.mcsmanager.com";
-export const REDEEM_PLATFORM_ADDR = "https://online.mcsmanager.com";
+export const REDEEM_PLATFORM_ADDR = process.env.REMOTE_ADDR || "https://online.mcsmanager.com";
 
 // ------- Protocol Define -------
 
