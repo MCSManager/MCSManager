@@ -1,140 +1,62 @@
-{
-  "language": "zh_cn",
-  "description": "使用TShock插件的泰拉瑞亚服务器",
-  "title": "泰拉瑞亚_TShock",
-  "category": "1.4.4.9",
-  "runtime": ".NET 6+",
-  "size": "",
-  "hardware": "RAM 1GB",
-  "remark": "",
-  "targetLink": "https://github.com/Pryaxis/TShock/releases/download/v5.2.4/TShock-5.2.4-for-Terraria-1.4.4.9-win-amd64-Release.zip",
-  "author": "Dawn3901",
-  "setupInfo": {
-    "startCommand": "TShock.Server.exe",
-    "stopCommand": "^c",
-    "ie": "UTF-8",
-    "oe": "UTF-8",
-    "type": "steam/terraria",
-    "tag": [],
-    "fileCode": "UTF-8",
-    "processType": "",
-    "updateCommand": "",
-    "docker": {
-      "image": "",
-      "ports": [],
-      "extraVolumes": [],
-      "workingDir": "",
-      "env": [],
-      "changeWorkdir": false
-    }
-  },
-  "gameType": "Terraria",
-  "image": "/upload_files/15539314-b8b3-4dae-ad3c-333a59672439.jpg",
-  "platform": "Windows",
-  "tags": [
-    "Terraria",
-    "TShock"
-  ],
-  "isSummary": false
-}
 
-{
-  "language": "en_US",
-  "description": "Terraria server with TShock plugin",
-  "title": "Terraria_TShock",
-  "category": "1.4.4.9",
-  "runtime": ".NET 6+",
-  "size": "",
-  "hardware": "RAM 1GB",
-  "remark": "",
-  "targetLink": "https://github.com/Pryaxis/TShock/releases/download/v5.2.4/TShock-5.2.4-for-Terraria-1.4.4.9-win-amd64-Release.zip",
-  "author": "Dawn___39",
-  "setupInfo": {
-    "startCommand": "TShock.Server.exe",
-    "stopCommand": "^c",
-    "ie": "UTF-8",
-    "oe": "UTF-8",
-    "type": "steam/terraria",
-    "tag": [],
-    "fileCode": "UTF-8",
-    "processType": "",
-    "updateCommand": "",
-    "docker": {
-      "image": "",
-      "ports": [],
-      "extraVolumes": [],
-      "workingDir": "",
-      "env": [],
-      "changeWorkdir": false
+    {
+      "language": "zh_cn",
+      "description": "使用TShock插件的泰拉瑞亚服务器",
+      "title": "Terraria_windows_x86",
+      "category": "最新版本",
+      "runtime": ".NET 6+",
+      "hardware": "RAM 1G",
+      "targetLink": "https://github.com/Pryaxis/TShock/releases/download/v5.2.4/TShock-5.2.4-for-Terraria-1.4.4.9-win-amd64-Release.zip",
+      "author": "Dawn3901",
+      "setupInfo": {
+        "startCommand": "TShock.Server.exe",
+        "stopCommand": "stop",
+        "ie": "UTF-8",
+        "oe": "UTF-8",
+        "createDatetime": 1767005798835,
+        "lastDatetime": 0,
+        "type": "universal",
+        "tag": [],
+        "endTime": 0,
+        "fileCode": "UTF-8",
+        "processType": "general",
+        "updateCommand": "{mcsm_steamcmd} +login anonymous +force_install_dir \"{mcsm_workspace}\" +app_update 380870 +quit",
+        "actionCommandList": [],
+        "crlf": 1,
+        "category": 0,
+        "enableRcon": false,
+        "terminalOption": {
+          "haveColor": true,
+          "pty": false,
+          "ptyWindowCol": 164,
+          "ptyWindowRow": 40
+        },
+        "eventTask": {
+          "autoStart": false,
+          "autoRestart": false,
+          "autoRestartMaxTimes": 3,
+          "ignore": false
+        },
+        "docker": {
+          "ports": [],
+          "extraVolumes": [],
+          "networkMode": "bridge",
+          "networkAliases": [],
+          "workingDir": "/data",
+          "env": [],
+          "changeWorkdir": true
+        },
+        "pingConfig": {
+          "type": 1
+        },
+        "extraServiceConfig": {}
+      },
+      "gameType": "Terraria",
+      "image": "https://cdn.akamai.steamstatic.com/steam/apps/105600/header.jpg?t=1666290860",
+      "platform": "Windows",
+      "tags": [
+        "TShock",
+        "Terraria"
+      ],
+      "isSummary": false
     }
-  },
-  "gameType": "Terraria",
-  "image": "/upload_files/15539314-b8b3-4dae-ad3c-333a59672439.jpg",
-  "platform": "Windows",
-  "tags": [
-    "Terraria",
-    "TShock"
-  ],
-  "isSummary": false
-}
-
-{
-  "title": "Terraria_TShock",
-  "language": "zh_cn",
-  "platform": "Windows",
-  "description": "使用TShock插件的泰拉瑞亚服务器",
-  "image": "/upload_files/15539314-b8b3-4dae-ad3c-333a59672439.jpg",
-  "gameType": "Terraria",
-  "category": "1.4.4.9",
-  "runtime": ".NET 6+",
-  "size": "",
-  "hardware": "RAM 1GB",
-  "remark": "",
-  "targetLink": "https://github.com/Pryaxis/TShock/releases/download/v5.2.4/TShock-5.2.4-for-Terraria-1.4.4.9-win-amd64-Release.zip",
-  "author": "Dawn___39",
-  "tags": [
-    "Terraria",
-    "TShock"
-  ],
-  "setupInfo": {
-    "startCommand": "TShock.Server.exe",
-    "stopCommand": "^c",
-    "ie": "UTF-8",
-    "oe": "UTF-8",
-    "type": "steam/terraria",
-    "tag": [],
-    "fileCode": "UTF-8",
-    "processType": "",
-    "updateCommand": "",
-  }
-},
-{
-  "title": "Terraria_TShock",
-  "language": "en_US",
-  "platform": "Windows",
-  "description": "Terraria server with TShock plugin",
-  "image": "/upload_files/15539314-b8b3-4dae-ad3c-333a59672439.jpg",
-  "gameType": "Terraria",
-  "category": "1.4.4.9",
-  "runtime": ".NET 6+",
-  "size": "",
-  "hardware": "RAM 1GB",
-  "remark": "",
-  "targetLink": "https://github.com/Pryaxis/TShock/releases/download/v5.2.4/TShock-5.2.4-for-Terraria-1.4.4.9-win-amd64-Release.zip",
-  "author": "Dawn___39",
-  "tags": [
-    "Terraria",
-    "TShock"
-  ],
-  "setupInfo": {
-    "startCommand": "TShock.Server.exe",
-    "stopCommand": "^c",
-    "ie": "UTF-8",
-    "oe": "UTF-8",
-    "type": "steam/terraria",
-    "tag": [],
-    "fileCode": "UTF-8",
-    "processType": "",
-    "updateCommand": "",
-  }
-}
