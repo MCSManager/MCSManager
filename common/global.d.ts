@@ -71,6 +71,7 @@ declare global {
     changeWorkdir?: boolean;
     memorySwap?: number;
     memorySwappiness?: number;
+    labels?: string[];
   }
 
   interface IPanelResponseProtocol {

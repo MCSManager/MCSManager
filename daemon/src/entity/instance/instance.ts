@@ -224,6 +224,7 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "cpusetCpus", String);
       configureEntityParams(this.config.docker, cfg.docker, "cpuUsage", Number);
       configureEntityParams(this.config.docker, cfg.docker, "env");
+      configureEntityParams(this.config.docker, cfg.docker, "labels");
       configureEntityParams(this.config.docker, cfg.docker, "workingDir", String);
       configureEntityParams(this.config.docker, cfg.docker, "changeWorkdir", Boolean);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwappiness", Number);

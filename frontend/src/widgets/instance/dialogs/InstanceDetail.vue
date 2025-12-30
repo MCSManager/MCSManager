@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   useDockerEnvEditDialog,
+  useDockerLabelEditDialog,
   usePortEditDialog,
   useUploadFileDialog,
   useVolumeEditDialog
@@ -362,7 +363,7 @@ const encodeFormData = () => {
   throw new Error("Ref Options is null");
 };
 
-const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
+const handleEditDockerConfig = async (type: "port" | "volume" | "env" | "label") => {
   if (type === "port" && formData.value?.instance?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
     const portArray = dockerPortsArray(formData.value?.instance?.config.docker.ports || []);
@@ -395,6 +396,19 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env") => {
     const result = await useDockerEnvEditDialog(envs);
     const envsArray = result.map((v) => `${v.label}=${v.value}`);
     formData.value.instance.config.docker.env = envsArray;
+  }
+
+  if (type === "label" && formData.value?.instance?.config) {
+    const labels = formData.value.instance.config.docker.labels?.map((v) => {
+      const tmp = v.split("=");
+      return {
+        label: tmp[0] || "",
+        value: tmp[1] || ""
+      };
+    });
+    const result = await useDockerLabelEditDialog(labels);
+    const labelsArray = result.map((v) => `${v.label}=${v.value}`);
+    formData.value.instance.config.docker.labels = labelsArray;
   }
 };
 
@@ -1126,6 +1140,24 @@ defineExpose({
                     </a-typography-paragraph>
                     <a-input-group compact>
                       <a-button type="default" @click="() => handleEditDockerConfig('env')">
+                        {{ t("TXT_CODE_ad207008") }}
+                      </a-button>
+                    </a-input-group>
+                  </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :lg="8" :offset="0">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_g1c43s2h") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-tooltip :title="t('TXT_CODE_MimBB1Ea')" placement="top">
+                        <a-typography-text type="secondary" class="typography-text-ellipsis">
+                          {{ t("TXT_CODE_MimBB1Ea") }}
+                        </a-typography-text>
+                      </a-tooltip>
+                    </a-typography-paragraph>
+                    <a-input-group compact>
+                      <a-button type="default" @click="() => handleEditDockerConfig('label')">
                         {{ t("TXT_CODE_ad207008") }}
                       </a-button>
                     </a-input-group>
