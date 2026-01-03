@@ -4,6 +4,7 @@ import { globalConfiguration, globalEnv } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
+import logger from "../service/log";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
@@ -66,10 +67,23 @@ routerApp.on("file/status", async (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+
+    const downloadTasks = [];
+    for (const [path, task] of downloadManager.tasks.entries()) {
+      downloadTasks.push({
+        path,
+        total: task.total,
+        current: task.current,
+        status: task.status,
+        error: task.error
+      });
+    }
+
     protocol.response(ctx, {
       instanceFileTask: instance.info.fileLock ?? 0,
       globalFileTask: globalEnv.fileTaskCount ?? 0,
       downloadFileFromURLTask: downloadManager.downloadingCount,
+      downloadTasks,
       platform: os.platform(),
       isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
       disks: getWindowsDisks()
@@ -130,7 +144,11 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    await downloadManager.downloadFromUrl(url, targetPath);
+    // Start download in background
+    downloadManager.downloadFromUrl(url, targetPath).catch((err) => {
+      logger.error(`Download failed: ${url} -> ${targetPath}`, err);
+    });
+
     protocol.response(ctx, {});
   } catch (error: any) {
     protocol.responseError(ctx, error);

@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AAlert: typeof import('ant-design-vue/es')['Alert']
+    AAvatar: typeof import('ant-design-vue/es')['Avatar']
+    ABadge: typeof import('ant-design-vue/es')['Badge']
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
@@ -31,6 +33,7 @@ declare module 'vue' {
     AInputGroup: typeof import('ant-design-vue/es')['InputGroup']
     AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
+    AInputSearch: typeof import('ant-design-vue/es')['InputSearch']
     AList: typeof import('ant-design-vue/es')['List']
     AListItem: typeof import('ant-design-vue/es')['ListItem']
     AListItemMeta: typeof import('ant-design-vue/es')['ListItemMeta']
@@ -41,6 +44,7 @@ declare module 'vue' {
     AnyAppForm: typeof import('./src/components/fc/CmdAssistantDialog/AnyAppForm.vue')['default']
     APagination: typeof import('ant-design-vue/es')['Pagination']
     APopconfirm: typeof import('ant-design-vue/es')['Popconfirm']
+    APopover: typeof import('ant-design-vue/es')['Popover']
     AppConfigProvider: typeof import('./src/components/AppConfigProvider.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AProgress: typeof import('ant-design-vue/es')['Progress']
