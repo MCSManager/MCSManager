@@ -134,8 +134,8 @@ const localDeferredTasks = computed({
                         {{ task.path.split(/[\\/]/).pop() || task.path }}
                       </div>
                       <div class="text-[10px] opacity-50 truncate w-full">
-                        <span v-if="task.status === 2" class="text-red-500">{{ task.error || "Download Failed" }}</span>
-                        <span v-else-if="task.status === 1" class="text-green-500">Finished</span>
+                        <span v-if="task.status === 2" class="text-red-500">{{ task.error || t("TXT_CODE_DOWNLOAD_FAILED") }}</span>
+                        <span v-else-if="task.status === 1" class="text-green-500">{{ t("TXT_CODE_FINISHED") }}</span>
                         <template v-else>
                           {{ (task.current / 1024 / 1024).toFixed(2) }}MB
                           <span v-if="task.total > 0"> / {{ (task.total / 1024 / 1024).toFixed(2) }}MB</span>

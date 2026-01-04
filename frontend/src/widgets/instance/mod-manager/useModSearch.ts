@@ -117,14 +117,14 @@ export function useModSearch(
   };
 
   const formatDate = (d: string) => {
-    if (!d) return "未知时间";
+    if (!d) return t("TXT_CODE_UNKNOWN_TIME");
     const date = new Date(d);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return "今天";
-    if (days === 1) return "昨天";
-    if (days < 30) return `${days} 天前`;
+    if (days === 0) return t("TXT_CODE_TODAY");
+    if (days === 1) return t("TXT_CODE_YESTERDAY");
+    if (days < 30) return `${days} ${t("TXT_CODE_DAYS_AGO")}`;
     return date.toLocaleDateString();
   };
 

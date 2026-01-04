@@ -3158,5 +3158,19 @@
   "TXT_CODE_MOD_DEFERRED_QUEUE": "Deferred Task Queue",
   "TXT_CODE_MOD_CLEAR_QUEUE": "Clear Queue",
   "TXT_CODE_MOD_SELECT_SAVE_DIR": "Hybrid environment detected, please select save location",
-  "TXT_CODE_MOD_WIN_RUNNING_ALERT": "The server is running. On Windows, files may be locked, causing operations to fail. It is recommended to stop the server first or add operations to the deferred task queue."
+  "TXT_CODE_MOD_WIN_RUNNING_ALERT": "The server is running. On Windows, files may be locked, causing operations to fail. It is recommended to stop the server first or add operations to the deferred task queue.",
+  "TXT_CODE_LATEST_VERSION": "Latest Version",
+  "TXT_CODE_SOURCE": "Source",
+  "TXT_CODE_UNKNOWN_TIME": "Unknown Time",
+  "TXT_CODE_TODAY": "Today",
+  "TXT_CODE_YESTERDAY": "Yesterday",
+  "TXT_CODE_DAYS_AGO": "days ago",
+  "TXT_CODE_UNKNOWN_VERSION": "Unknown Version",
+  "TXT_CODE_SELECT_LOADER": "Select Loader",
+  "TXT_CODE_SEARCH_MOD_PLUGIN": "Search Mod / Plugin",
+  "TXT_CODE_LOADER_PLATFORM": "Loader / Platform",
+  "TXT_CODE_SEARCH_TIP": "Enter keywords to start searching",
+  "TXT_CODE_NO_SEARCH_RESULT": "No results found",
+  "TXT_CODE_FINISHED": "Finished",
+  "TXT_CODE_DOWNLOAD_FAILED": "Download Failed"
 }

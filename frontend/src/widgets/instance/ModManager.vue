@@ -435,11 +435,11 @@ const columns = computed(() => {
 const searchColumns = computed(() => {
   const base = [
     { title: "", key: "icon", width: 60 },
-    { title: "名称", key: "name" },
-    { title: "最新版本", key: "version", width: 150 },
-    { title: "类型", key: "type", width: 100 },
-    { title: "来源", key: "source", width: 120 },
-    { title: "操作", key: "action", align: "right", width: isPhone.value ? 80 : 180 }
+    { title: t("TXT_CODE_NAME"), key: "name" },
+    { title: t("TXT_CODE_LATEST_VERSION"), key: "version", width: 150 },
+    { title: t("TXT_CODE_TYPE"), key: "type", width: 100 },
+    { title: t("TXT_CODE_SOURCE"), key: "source", width: 120 },
+    { title: t("TXT_CODE_OPERATE"), key: "action", align: "right", width: isPhone.value ? 80 : 180 }
   ];
 
   if (isPhone.value) {
@@ -630,8 +630,8 @@ const openExternal = (record: any) => {
                       <a-popconfirm
                         :title="t('TXT_CODE_71155575')"
                         @confirm="onDelete(record)"
-                        ok-text="Yes"
-                        cancel-text="No"
+                        :ok-text="t('TXT_CODE_d507abff')"
+                        :cancel-text="t('TXT_CODE_a0451c97')"
                       >
                         <a-tooltip :title="t('TXT_CODE_6f2c1806')">
                           <a-button type="link" size="small" danger>
@@ -755,8 +755,8 @@ const openExternal = (record: any) => {
                       <a-popconfirm
                         :title="t('TXT_CODE_71155575')"
                         @confirm="onDelete(record)"
-                        ok-text="Yes"
-                        cancel-text="No"
+                        :ok-text="t('TXT_CODE_d507abff')"
+                        :cancel-text="t('TXT_CODE_a0451c97')"
                       >
                         <a-tooltip :title="t('TXT_CODE_6f2c1806')">
                           <a-button type="link" size="small" danger>
