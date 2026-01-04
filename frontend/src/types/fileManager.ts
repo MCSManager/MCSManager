@@ -23,6 +23,13 @@ export interface FileStatus {
   instanceFileTask: number;
   globalFileTask: number;
   downloadFileFromURLTask: number;
+  downloadTasks?: {
+    path: string;
+    total: number;
+    current: number;
+    status: number;
+    error?: string;
+  }[];
   platform: string;
   isGlobalInstance: boolean;
   disks: string[];

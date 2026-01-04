@@ -14,6 +14,7 @@ import { TaskCenter } from "../service/async_task_service";
 import { createQuickInstallTask, QuickInstallTask } from "../service/async_task_service/quick_install";
 import { IInstanceDetail, IJson } from "../service/interfaces";
 import FileManager from "../service/system_file";
+import { modService } from "../service/mod_service";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -553,6 +554,46 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
     protocol.responseError(ctx, new Error($t("TXT_CODE_Instance_router.terminalLogNotExist")), {
       disablePrint: true
     });
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/list", async (ctx, data) => {
+  const instanceUuid = data.instanceUuid;
+  try {
+    const mods = await modService.listMods(instanceUuid);
+    protocol.response(ctx, mods);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/toggle", async (ctx, data) => {
+  const { instanceUuid, fileName } = data;
+  try {
+    await modService.toggleMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/delete", async (ctx, data) => {
+  const { instanceUuid, fileName } = data;
+  try {
+    await modService.deleteMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/config_files", async (ctx, data) => {
+  const { instanceUuid, modId, type, fileName } = data;
+  try {
+    const files = await modService.getModConfig(instanceUuid, modId, type, fileName);
+    protocol.response(ctx, files);
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }

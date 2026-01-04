@@ -3,12 +3,14 @@ import InnerCard from "@/components/InnerCard.vue";
 import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import {
+  TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
   TYPE_STEAM_SERVER_UNIVERSAL,
   useInstanceInfo
 } from "@/hooks/useInstance";
 import { useServerConfig } from "@/hooks/useServerConfig";
 import { t } from "@/lang/i18n";
+import { modListApi } from "@/services/apis/modManager";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
 import {
@@ -65,6 +67,35 @@ const { instanceInfo, execute, isGlobalTerminal } = useInstanceInfo({
 
 const { serverConfigFiles, refresh: refreshServerConfig } = useServerConfig();
 
+const folders = ref<string[]>([]);
+const foldersLoaded = ref(false);
+
+const loadFolders = async () => {
+  if (!instanceId || !daemonId) return;
+  try {
+    const { execute } = modListApi();
+    const res = await execute({
+      params: {
+        uuid: instanceId,
+        daemonId: daemonId
+      }
+    });
+    folders.value = res.value?.folders || [];
+  } catch (err) {
+    console.error("Failed to load folders:", err);
+  } finally {
+    foldersLoaded.value = true;
+  }
+};
+
+watch(
+  () => [instanceId, daemonId],
+  () => {
+    loadFolders();
+  },
+  { immediate: true }
+);
+
 const toPage = (params: RouteLocationPathRaw) => {
   if (!params.query) params.query = {};
   params.query = {
@@ -114,6 +145,33 @@ const btns = computed(() => {
         toPage({ path: "/instances/terminal/files" });
       },
       condition: () => state.settings.canFileManager || isAdmin.value
+    },
+    {
+      title: t("TXT_CODE_MOD_MANAGER"),
+      icon: AppstoreAddOutlined,
+      click: () => {
+        toPage({ path: "/instances/terminal/mods" });
+      },
+      condition: () => {
+        const type = instanceInfo.value?.config.type || "";
+        const isMC = type.includes(TYPE_MINECRAFT_JAVA) || type.includes("minecraft/bedrock");
+        if (!isMC) return false;
+
+        const hasPermission = state.settings.canFileManager || isAdmin.value;
+        if (!hasPermission) return false;
+
+        // If it's a known modded/plugin type, always show
+        const isModdedType =
+          type !== TYPE_MINECRAFT_JAVA &&
+          type !== TYPE_MINECRAFT_BEDROCK &&
+          type !== "minecraft/bedrock/bds";
+
+        if (isModdedType) return true;
+
+        // For Vanilla types, only show if folders exist (or still loading)
+        if (!foldersLoaded.value) return true;
+        return folders.value.length > 0;
+      }
     },
     {
       title: t("TXT_CODE_40241d8e"),

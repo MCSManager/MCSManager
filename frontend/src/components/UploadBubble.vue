@@ -23,6 +23,7 @@ const uploadProgress = computed(() => {
 <template>
   <FloatButton
     v-if="uploadData.current && !uploadData.suspending"
+    class="frosted-float-button"
     :badge="{
       count: uploadCount,
       overflowCount: 99,
@@ -36,4 +37,15 @@ const uploadProgress = computed(() => {
   </FloatButton>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.ant-float-button-body) {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+:deep(.ant-float-button-body:hover) {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+</style>
