@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed, watch, createVNode } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch, createVNode, reactive } from "vue";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 import {
@@ -13,6 +13,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useScreen } from "@/hooks/useScreen";
 import { useFileManager } from "@/hooks/useFileManager";
 import { useInstanceInfo } from "@/hooks/useInstance";
+import uploadService from "@/services/uploadService";
 import { message, Dropdown, Menu, MenuItem, Alert, Modal, Button } from "ant-design-vue";
 import {
   SearchOutlined,
@@ -24,7 +25,9 @@ import {
   PauseCircleOutlined,
   DownOutlined,
   ExclamationCircleOutlined,
-  CloudDownloadOutlined
+  CloudDownloadOutlined,
+  UploadOutlined,
+  ReloadOutlined
 } from "@ant-design/icons-vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
@@ -46,7 +49,10 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
-const { getFileStatus, fileStatus } = useFileManager(instanceId, daemonId);
+const { getFileStatus, fileStatus, selectedFiles, currentPath } = useFileManager(
+  instanceId,
+  daemonId
+);
 const { instanceInfo } = useInstanceInfo({ instanceId, daemonId, autoRefresh: true });
 
 const isWindows = computed(() => {
@@ -64,6 +70,35 @@ const loadingExtra = ref(false);
 const mods = ref<any[]>([]);
 const folders = ref<string[]>(["mods", "plugins"]);
 
+const tablePagination = reactive({
+  current: 1,
+  pageSize: 10,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "20", "50", "100"],
+  onChange: (page: number, size: number) => {
+    tablePagination.current = page;
+    tablePagination.pageSize = size;
+  },
+  onShowSizeChange: (current: number, size: number) => {
+    tablePagination.pageSize = size;
+    tablePagination.current = 1;
+  }
+});
+
+let uploading = false;
+watch(
+  () => uploadService.uiData.value,
+  (newValue) => {
+    if (newValue.current) {
+      uploading = true;
+    } else if (uploading) {
+      uploading = false;
+      loadMods();
+    }
+  },
+  { immediate: true }
+);
+
 const loadMods = async () => {
   loading.value = true;
   try {
@@ -77,10 +112,14 @@ const loadMods = async () => {
     const newMods = res.value?.mods || [];
     folders.value = res.value?.folders || [];
     // Keep existing extraInfo to avoid UI flickering
+    const oldModsMap = new Map();
+    mods.value.forEach((m) => {
+      if (m.file) oldModsMap.set(m.file, m);
+      if (m.hash) oldModsMap.set(m.hash, m);
+    });
+
     newMods.forEach((newMod) => {
-      const oldMod = mods.value.find(
-        (m) => m.file === newMod.file || (m.hash && m.hash === newMod.hash)
-      );
+      const oldMod = oldModsMap.get(newMod.file) || oldModsMap.get(newMod.hash);
       if (oldMod && oldMod.extraInfo) {
         newMod.extraInfo = oldMod.extraInfo;
       }
@@ -157,7 +196,74 @@ const handleDownload = async (version: any) => {
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
 
+const fileInput = ref<HTMLInputElement>();
+const onUploadClick = () => {
+  fileInput.value?.click();
+};
+
+const onFileChange = async (e: Event) => {
+  const files = (e.target as HTMLInputElement).files;
+  if (!files || files.length === 0) return;
+  const targetDir = activeKey.value === "1" ? "mods" : "plugins";
+  await selectedFiles([...files], targetDir);
+  if (fileInput.value) fileInput.value.value = "";
+};
+
 const activeKey = ref("1");
+
+const opacity = ref(false);
+
+const handleDragover = (e: DragEvent) => {
+  e.preventDefault();
+  if (activeKey.value === "3") return;
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = "copy";
+  }
+  opacity.value = true;
+};
+
+const handleDragleave = (e: DragEvent) => {
+  e.preventDefault();
+  // Only hide if we are leaving the container, not entering a child
+  if (e.relatedTarget === null || !((e.currentTarget as HTMLElement).contains(e.relatedTarget as Node))) {
+    opacity.value = false;
+  }
+};
+
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault();
+  opacity.value = false;
+  if (activeKey.value === "3") return;
+
+  const files = e.dataTransfer?.files;
+  if (!files || files.length === 0) return;
+
+  let name = "";
+  if (files.length === 1) {
+    name = files[0].name;
+  } else {
+    for (const file of files) {
+      name += file.name + ", ";
+    }
+    name = name.slice(0, -2);
+  }
+  if (name.length > 30) {
+    name = name.slice(0, 27) + "...";
+  }
+  if (files.length > 1) {
+    name += ` (${files.length})`;
+  }
+
+  Modal.confirm({
+    title: t("TXT_CODE_CONFIRM_UPLOAD"),
+    icon: createVNode(ExclamationCircleOutlined),
+    content: `${t("TXT_CODE_CONFIRM_UPLOAD")} ${name} ?`,
+    async onOk() {
+      const targetDir = activeKey.value === "1" ? "mods" : "plugins";
+      await selectedFiles([...files], targetDir);
+    }
+  });
+};
 
 const modSearchQuery = ref("");
 const pluginSearchQuery = ref("");
@@ -204,19 +310,17 @@ const localPlugins = computed(() =>
 );
 
 const filteredMods = computed(() => {
-  if (!modSearchQuery.value) return localMods.value;
+  const list = localMods.value;
+  if (!modSearchQuery.value) return list;
   const q = modSearchQuery.value.toLowerCase();
-  return localMods.value.filter(
-    (m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q)
-  );
+  return list.filter((m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q));
 });
 
 const filteredPlugins = computed(() => {
-  if (!pluginSearchQuery.value) return localPlugins.value;
+  const list = localPlugins.value;
+  if (!pluginSearchQuery.value) return list;
   const q = pluginSearchQuery.value.toLowerCase();
-  return localPlugins.value.filter(
-    (m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q)
-  );
+  return list.filter((m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q));
 });
 
 const headerSearchQuery = computed({
@@ -394,35 +498,44 @@ const columns = computed(() => {
     {
       title: "",
       key: "icon",
-      width: 60
+      width: 60,
+      align: "center"
     },
     {
       title: t("TXT_CODE_NAME"),
-      dataIndex: "name",
       key: "name",
+      minWidth: 200,
+      ellipsis: true,
       sorter: (a: any, b: any) => a.name.localeCompare(b.name)
     },
     {
       title: t("TXT_CODE_VERSION"),
       dataIndex: "version",
-      key: "version"
+      key: "version",
+      width: 120,
+      align: "center",
+      ellipsis: true
     },
     {
       title: t("TXT_CODE_TYPE"),
       dataIndex: "type",
-      key: "type"
+      key: "type",
+      width: 100,
+      align: "center"
     },
     {
       title: t("TXT_CODE_STATUS"),
       dataIndex: "enabled",
       key: "enabled",
+      width: 100,
+      align: "center",
       sorter: (a: any, b: any) => Number(b.enabled) - Number(a.enabled)
     },
     {
       title: t("TXT_CODE_OPERATE"),
       key: "action",
-      align: "right",
-      width: isPhone.value ? 120 : 220
+      align: "center",
+      width: isPhone.value ? 100 : 180
     }
   ];
 
@@ -435,11 +548,15 @@ const columns = computed(() => {
 const searchColumns = computed(() => {
   const base = [
     { title: "", key: "icon", width: 60 },
-    { title: t("TXT_CODE_NAME"), key: "name" },
-    { title: t("TXT_CODE_LATEST_VERSION"), key: "version", width: 150 },
-    { title: t("TXT_CODE_TYPE"), key: "type", width: 100 },
-    { title: t("TXT_CODE_SOURCE"), key: "source", width: 120 },
-    { title: t("TXT_CODE_OPERATE"), key: "action", align: "right", width: isPhone.value ? 80 : 180 }
+    {
+      title: t("TXT_CODE_NAME"),
+      key: "name",
+      ellipsis: true
+    },
+    { title: t("TXT_CODE_LATEST_VERSION"), key: "version", width: 150, align: "center", ellipsis: true },
+    { title: t("TXT_CODE_TYPE"), key: "type", width: 100, align: "center" },
+    { title: t("TXT_CODE_SOURCE"), key: "source", width: 120, align: "center" },
+    { title: t("TXT_CODE_OPERATE"), key: "action", align: "center", width: isPhone.value ? 80 : 180 }
   ];
 
   if (isPhone.value) {
@@ -463,7 +580,7 @@ const openExternal = (record: any) => {
 </script>
 
 <template>
-  <div style="height: 100%" class="container">
+  <div style="padding-bottom: 40px" class="container">
     <a-row :gutter="[24, 16]" :style="{ marginTop: !isPhone ? '-96px' : '0px' }">
       <a-col :span="24">
         <BetweenMenus>
@@ -488,22 +605,71 @@ const openExternal = (record: any) => {
             </div>
           </template>
           <template #right>
-            <a-button
-              v-if="activeKey !== '3'"
-              type="primary"
-              @click="loadMods"
-              :loading="loading"
-            >
-              {{ t("TXT_CODE_REFRESH") }}
-            </a-button>
+            <a-space>
+              <a-button v-if="activeKey === '1' || activeKey === '2'" @click="onUploadClick">
+                <template #icon>
+                  <upload-outlined />
+                </template>
+                {{ t("TXT_CODE_ae09d79d") }}
+              </a-button>
+              <a-button
+                v-if="activeKey !== '3'"
+                type="primary"
+                @click="loadMods"
+                :loading="loading"
+              >
+                <template #icon>
+                  <reload-outlined />
+                </template>
+                {{ t("TXT_CODE_REFRESH") }}
+              </a-button>
+            </a-space>
           </template>
         </BetweenMenus>
       </a-col>
 
       <a-col :span="24">
-        <CardPanel class="containerWrapper" style="height: 100%" :padding="false">
+        <CardPanel class="containerWrapper" :padding="false">
           <template #body>
-            <div :class="isPhone ? 'p-2' : 'p-4'">
+            <div
+              :class="isPhone ? 'p-2' : 'p-4'"
+              @dragover="handleDragover"
+              @dragleave="handleDragleave"
+              @drop="handleDrop"
+              style="position: relative"
+            >
+              <div
+                v-if="opacity"
+                class="drag-upload-mask"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  z-index: 100;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  background-color: rgba(128, 128, 128, 0.1);
+                  backdrop-filter: blur(10px);
+                  -webkit-backdrop-filter: blur(10px);
+                  z-index: 100;
+                  border: 2px dashed var(--ant-primary-color);
+                  border-radius: 8px;
+                  pointer-events: none;
+                "
+              >
+                <div class="text-center">
+                  <upload-outlined
+                    style="font-size: 48px; color: var(--ant-primary-color)"
+                  />
+                  <div class="mt-2 text-lg font-bold" style="color: var(--ant-primary-color)">
+                    {{ t("TXT_CODE_DRAG_TO_UPLOAD") }}
+                  </div>
+                </div>
+              </div>
+
               <a-alert
                 v-if="isWindows && isRunning"
                 type="warning"
@@ -520,7 +686,7 @@ const openExternal = (record: any) => {
                 </template>
               </a-alert>
 
-              <a-tabs v-model:activeKey="activeKey" class="mod-manager-tabs">
+              <a-tabs v-model:activeKey="activeKey" class="mod-manager-tabs" :destroyInactiveTabPane="true">
               <a-tab-pane key="1" v-if="folders.includes('mods')">
                 <template #tab>
                   <a-space :size="4">
@@ -547,6 +713,7 @@ const openExternal = (record: any) => {
                     rowKey="file"
                     class="mb-6"
                     :size="isPhone ? 'small' : 'middle'"
+                    :pagination="tablePagination"
                   >
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'icon'">
@@ -560,14 +727,22 @@ const openExternal = (record: any) => {
                   </a-avatar>
                 </template>
                 <template v-if="column.key === 'name'">
-                  <div>
-                    <div class="font-bold text-[15px]">{{ record.name }}</div>
+                  <div class="flex flex-col overflow-hidden text-left">
+                    <div class="font-bold text-[15px] truncate" :title="record.name">
+                      {{ record.name }}
+                    </div>
                     <div
-                      class="text-xs opacity-60"
+                      class="text-xs opacity-60 truncate"
                       v-if="record.extraInfo?.project?.description"
+                      :title="record.extraInfo.project.description"
                     >
                       {{ record.extraInfo.project.description }}
                     </div>
+                  </div>
+                </template>
+                <template v-if="column.key === 'version'">
+                  <div class="truncate w-full" :title="record.version">
+                    {{ record.version || t("TXT_CODE_UNKNOWN_VERSION") }}
                   </div>
                 </template>
                 <template v-if="column.key === 'enabled'">
@@ -579,7 +754,7 @@ const openExternal = (record: any) => {
                   <a-tag color="blue">{{ record.type }}</a-tag>
                 </template>
                 <template v-if="column.key === 'action'">
-                  <div class="flex justify-end">
+                  <div class="flex justify-center">
                     <template v-if="isPhone">
                       <a-dropdown :trigger="['click']">
                         <a-button size="small">
@@ -604,40 +779,41 @@ const openExternal = (record: any) => {
                       </a-dropdown>
                     </template>
                     <a-space v-else :size="12">
-                      <a-tooltip :title="t('TXT_CODE_CONFIG')">
-                        <a-button
-                          type="text"
-                          size="small"
-                          @click="openConfig(record)"
-                          class="opacity-60 hover:opacity-100"
-                        >
-                          <template #icon><setting-outlined style="font-size: 16px" /></template>
-                        </a-button>
-                      </a-tooltip>
-                      <a-tooltip :title="record.enabled ? t('TXT_CODE_DISABLE') : t('TXT_CODE_ENABLE')">
-                        <a-button
-                          type="text"
-                          size="small"
-                          @click="onToggle(record)"
-                          class="opacity-60 hover:opacity-100"
-                        >
-                          <template #icon>
-                            <pause-circle-outlined v-if="record.enabled" style="font-size: 16px" />
-                            <play-circle-outlined v-else style="font-size: 16px" />
-                          </template>
-                        </a-button>
-                      </a-tooltip>
+                      <a-button
+                        type="text"
+                        size="small"
+                        @click="openConfig(record)"
+                        class="opacity-60 hover:opacity-100"
+                        :title="t('TXT_CODE_CONFIG')"
+                      >
+                        <template #icon><setting-outlined style="font-size: 16px" /></template>
+                      </a-button>
+                      <a-button
+                        type="text"
+                        size="small"
+                        @click="onToggle(record)"
+                        class="opacity-60 hover:opacity-100"
+                        :title="record.enabled ? t('TXT_CODE_DISABLE') : t('TXT_CODE_ENABLE')"
+                      >
+                        <template #icon>
+                          <pause-circle-outlined v-if="record.enabled" style="font-size: 16px" />
+                          <play-circle-outlined v-else style="font-size: 16px" />
+                        </template>
+                      </a-button>
                       <a-popconfirm
                         :title="t('TXT_CODE_71155575')"
                         @confirm="onDelete(record)"
                         :ok-text="t('TXT_CODE_d507abff')"
                         :cancel-text="t('TXT_CODE_a0451c97')"
                       >
-                        <a-tooltip :title="t('TXT_CODE_6f2c1806')">
-                          <a-button type="link" size="small" danger>
-                            <template #icon><delete-outlined style="font-size: 16px" /></template>
-                          </a-button>
-                        </a-tooltip>
+                        <a-button
+                          type="link"
+                          size="small"
+                          danger
+                          :title="t('TXT_CODE_6f2c1806')"
+                        >
+                          <template #icon><delete-outlined style="font-size: 16px" /></template>
+                        </a-button>
                       </a-popconfirm>
                     </a-space>
                   </div>
@@ -672,6 +848,7 @@ const openExternal = (record: any) => {
                 :columns="columns"
                 rowKey="file"
                 :size="isPhone ? 'small' : 'middle'"
+                :pagination="tablePagination"
               >
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'icon'">
@@ -685,14 +862,22 @@ const openExternal = (record: any) => {
                   </a-avatar>
                 </template>
                 <template v-if="column.key === 'name'">
-                  <div>
-                    <div class="font-bold text-[15px]">{{ record.name }}</div>
+                  <div class="flex flex-col overflow-hidden text-left">
+                    <div class="font-bold text-[15px] truncate" :title="record.name">
+                      {{ record.name }}
+                    </div>
                     <div
-                      class="text-xs opacity-60"
+                      class="text-xs opacity-60 truncate"
                       v-if="record.extraInfo?.project?.description"
+                      :title="record.extraInfo.project.description"
                     >
                       {{ record.extraInfo.project.description }}
                     </div>
+                  </div>
+                </template>
+                <template v-if="column.key === 'version'">
+                  <div class="truncate w-full" :title="record.version">
+                    {{ record.version || t("TXT_CODE_UNKNOWN_VERSION") }}
                   </div>
                 </template>
                 <template v-if="column.key === 'enabled'">
@@ -704,7 +889,7 @@ const openExternal = (record: any) => {
                   <a-tag color="blue">{{ record.type }}</a-tag>
                 </template>
                 <template v-if="column.key === 'action'">
-                  <div class="flex justify-end">
+                  <div class="flex justify-center">
                     <template v-if="isPhone">
                       <a-dropdown :trigger="['click']">
                         <a-button size="small">
@@ -729,40 +914,41 @@ const openExternal = (record: any) => {
                       </a-dropdown>
                     </template>
                     <a-space v-else :size="12">
-                      <a-tooltip :title="t('TXT_CODE_CONFIG')">
-                        <a-button
-                          type="text"
-                          size="small"
-                          @click="openConfig(record)"
-                          class="opacity-60 hover:opacity-100"
-                        >
-                          <template #icon><setting-outlined style="font-size: 16px" /></template>
-                        </a-button>
-                      </a-tooltip>
-                      <a-tooltip :title="record.enabled ? t('TXT_CODE_DISABLE') : t('TXT_CODE_ENABLE')">
-                        <a-button
-                          type="text"
-                          size="small"
-                          @click="onToggle(record)"
-                          class="opacity-60 hover:opacity-100"
-                        >
-                          <template #icon>
-                            <pause-circle-outlined v-if="record.enabled" style="font-size: 16px" />
-                            <play-circle-outlined v-else style="font-size: 16px" />
-                          </template>
-                        </a-button>
-                      </a-tooltip>
+                      <a-button
+                        type="text"
+                        size="small"
+                        @click="openConfig(record)"
+                        class="opacity-60 hover:opacity-100"
+                        :title="t('TXT_CODE_CONFIG')"
+                      >
+                        <template #icon><setting-outlined style="font-size: 16px" /></template>
+                      </a-button>
+                      <a-button
+                        type="text"
+                        size="small"
+                        @click="onToggle(record)"
+                        class="opacity-60 hover:opacity-100"
+                        :title="record.enabled ? t('TXT_CODE_DISABLE') : t('TXT_CODE_ENABLE')"
+                      >
+                        <template #icon>
+                          <pause-circle-outlined v-if="record.enabled" style="font-size: 16px" />
+                          <play-circle-outlined v-else style="font-size: 16px" />
+                        </template>
+                      </a-button>
                       <a-popconfirm
                         :title="t('TXT_CODE_71155575')"
                         @confirm="onDelete(record)"
                         :ok-text="t('TXT_CODE_d507abff')"
                         :cancel-text="t('TXT_CODE_a0451c97')"
                       >
-                        <a-tooltip :title="t('TXT_CODE_6f2c1806')">
-                          <a-button type="link" size="small" danger>
-                            <template #icon><delete-outlined style="font-size: 16px" /></template>
-                          </a-button>
-                        </a-tooltip>
+                        <a-button
+                          type="link"
+                          size="small"
+                          danger
+                          :title="t('TXT_CODE_6f2c1806')"
+                        >
+                          <template #icon><delete-outlined style="font-size: 16px" /></template>
+                        </a-button>
                       </a-popconfirm>
                     </a-space>
                   </div>
@@ -874,27 +1060,30 @@ const openExternal = (record: any) => {
                     rowKey="id"
                     size="middle"
                   >
-                    <template #bodyCell="{ column, record }">
-                      <template v-if="column.key === 'icon'">
-                        <a-avatar :src="record.icon_url" shape="square" :size="40" class="rounded-md" />
-                      </template>
-                      <template v-if="column.key === 'name'">
-                        <div class="flex flex-col">
-                          <span class="font-bold text-[15px] text-gray-800 dark:text-gray-200">{{ record.title }}</span>
-                          <span class="text-xs opacity-60 line-clamp-1" :title="record.description">{{ record.description }}</span>
-                        </div>
-                      </template>
-                      <template v-if="column.key === 'version'">
-                        <div class="flex flex-col gap-1">
-                          <div class="font-bold text-sm text-blue-600 dark:text-blue-400">
-                            {{ record.version_number || t("TXT_CODE_UNKNOWN_VERSION") }}
+                      <template #bodyCell="{ column, record }">
+                        <template v-if="column.key === 'icon'">
+                          <a-avatar :src="record.icon_url" shape="square" :size="40" class="rounded-md" />
+                        </template>
+                        <template v-if="column.key === 'name'">
+                          <div class="flex flex-col">
+                            <span class="font-bold text-[15px] text-gray-800 dark:text-gray-200">{{ record.title }}</span>
+                            <span class="text-xs opacity-60 line-clamp-1" :title="record.description">{{ record.description }}</span>
                           </div>
-                          <span class="text-[10px] text-gray-400">{{
-                            formatDate(record.updated)
-                          }}</span>
-                        </div>
-                      </template>
-                      <template v-if="column.key === 'type'">
+                        </template>
+                        <template v-if="column.key === 'version'">
+                          <div class="flex flex-col gap-1 items-center overflow-hidden w-full">
+                            <div
+                              class="font-bold text-sm text-blue-600 dark:text-blue-400 truncate w-full"
+                              :title="record.version_number"
+                            >
+                              {{ record.version_number || t("TXT_CODE_UNKNOWN_VERSION") }}
+                            </div>
+                            <span class="text-[11px] opacity-50">{{
+                              formatDate(record.updated)
+                            }}</span>
+                          </div>
+                        </template>
+                        <template v-if="column.key === 'type'">
                         <a-tag color="blue" class="border-none rounded-md">{{ record.project_type }}</a-tag>
                       </template>
                       <template v-if="column.key === 'source'">
@@ -912,17 +1101,25 @@ const openExternal = (record: any) => {
                         </a-tag>
                       </template>
                       <template v-if="column.key === 'action'">
-                        <div class="flex justify-end">
-                          <a-space>
+                        <div class="flex justify-center">
+                          <a-space :size="12">
                             <a-button
-                              type="primary"
+                              type="text"
                               size="small"
                               @click="showVersions(record)"
+                              class="opacity-60 hover:opacity-100"
+                              :title="mods.some((m) => m.extraInfo?.project?.id === record.id) ? t('TXT_CODE_16853efe') : t('TXT_CODE_DOWNLOAD')"
                             >
-                              {{ mods.some((m) => m.extraInfo?.project?.id === record.id) ? t("TXT_CODE_16853efe").replace(t("TXT_CODE_16853efe").slice(2), "") : t("TXT_CODE_DOWNLOAD") }}
+                              <template #icon><cloud-download-outlined style="font-size: 16px" /></template>
                             </a-button>
-                            <a-button size="small" @click="openExternal(record)">
-                              {{ t("TXT_CODE_f1b166e7") }}
+                            <a-button
+                              type="text"
+                              size="small"
+                              @click="openExternal(record)"
+                              class="opacity-60 hover:opacity-100"
+                              :title="t('TXT_CODE_f1b166e7')"
+                            >
+                              <template #icon><file-text-outlined style="font-size: 16px" /></template>
                             </a-button>
                           </a-space>
                         </div>
@@ -979,6 +1176,15 @@ const openExternal = (record: any) => {
       @execute-task="executeDeferredTask"
       @execute-all="executeAllDeferredTasks"
       @remove-task="removeDeferredTask"
+    />
+
+    <input
+      type="file"
+      multiple
+      ref="fileInput"
+      style="display: none"
+      @change="onFileChange"
+      accept=".jar,.zip"
     />
   </div>
 </template>

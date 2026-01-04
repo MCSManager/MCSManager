@@ -3184,5 +3184,7 @@
   "TXT_CODE_SEARCH_TIP": "输入关键词开始搜索",
   "TXT_CODE_NO_SEARCH_RESULT": "未找到相关结果",
   "TXT_CODE_FINISHED": "已完成",
-  "TXT_CODE_DOWNLOAD_FAILED": "下载失败"
+  "TXT_CODE_DOWNLOAD_FAILED": "下载失败",
+  "TXT_CODE_DRAG_TO_UPLOAD": "拖拽文件到此处上传",
+  "TXT_CODE_CONFIRM_UPLOAD": "确认上传"
 }

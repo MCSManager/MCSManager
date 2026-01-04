@@ -3172,5 +3172,7 @@
   "TXT_CODE_SEARCH_TIP": "Enter keywords to start searching",
   "TXT_CODE_NO_SEARCH_RESULT": "No results found",
   "TXT_CODE_FINISHED": "Finished",
-  "TXT_CODE_DOWNLOAD_FAILED": "Download Failed"
+  "TXT_CODE_DOWNLOAD_FAILED": "Download Failed",
+  "TXT_CODE_DRAG_TO_UPLOAD": "Drag files here to upload",
+  "TXT_CODE_CONFIRM_UPLOAD": "Confirm Upload"
 }

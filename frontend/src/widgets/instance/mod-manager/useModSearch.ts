@@ -32,7 +32,7 @@ export function useModSearch(
   const searched = ref(false);
   const searchPage = ref(1);
   const searchTotal = ref(0);
-  const searchLimit = useLocalStorage("mcs_mod_search_limit", 20);
+  const searchLimit = useLocalStorage("mcs_mod_search_limit", 10);
 
   const mcVersions = ref<string[]>([]);
 
@@ -154,7 +154,17 @@ export function useModSearch(
       const bScore = (bMatchV ? 2 : 0) + (bMatchL ? 1 : 0);
 
       if (aScore !== bScore) return bScore - aScore;
-      return 0;
+
+      // Fallback 1: Date (Latest first)
+      const aDate = new Date(a.date_published || a.published_at || a.updated || 0).getTime();
+      const bDate = new Date(b.date_published || b.published_at || b.updated || 0).getTime();
+      if (aDate !== bDate && !isNaN(aDate) && !isNaN(bDate)) return bDate - aDate;
+
+      // Fallback 2: Version number (Natural sort, Latest first)
+      return (b.version_number || "").localeCompare(a.version_number || "", undefined, {
+        numeric: true,
+        sensitivity: "base"
+      });
     });
   });
 

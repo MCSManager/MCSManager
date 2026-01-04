@@ -8,6 +8,7 @@ import {
   Tag,
   Button
 } from "ant-design-vue";
+import { CloudDownloadOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   visible: boolean;
@@ -39,7 +40,17 @@ const sortedVersions = computed(() => {
     const bScore = (bMatchV ? 2 : 0) + (bMatchL ? 1 : 0);
 
     if (aScore !== bScore) return bScore - aScore;
-    return 0;
+
+    // Fallback 1: Date (Latest first)
+    const aDate = new Date(a.date_published || a.published_at || a.updated || 0).getTime();
+    const bDate = new Date(b.date_published || b.published_at || b.updated || 0).getTime();
+    if (aDate !== bDate && !isNaN(aDate) && !isNaN(bDate)) return bDate - aDate;
+
+    // Fallback 2: Version number (Natural sort, Latest first)
+    return (b.version_number || "").localeCompare(a.version_number || "", undefined, {
+      numeric: true,
+      sensitivity: "base"
+    });
   });
 });
 
@@ -91,12 +102,14 @@ const columns = computed(() => {
         </template>
         <template v-if="column.key === 'action'">
           <Button
-            type="primary"
+            type="text"
             size="small"
+            class="opacity-60 hover:opacity-100"
             :disabled="mods.some((m) => m.extraInfo?.version?.id === record.id)"
             @click="emit('download', record)"
+            :title="mods.some((m) => m.extraInfo?.version?.id === record.id) ? t('TXT_CODE_CURRENT_VERSION') : t('TXT_CODE_DOWNLOAD')"
           >
-            {{ mods.some((m) => m.extraInfo?.version?.id === record.id) ? t("TXT_CODE_CURRENT_VERSION") : t("TXT_CODE_DOWNLOAD") }}
+            <template #icon><cloud-download-outlined style="font-size: 16px" /></template>
           </Button>
         </template>
       </template>

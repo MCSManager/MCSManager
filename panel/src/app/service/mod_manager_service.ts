@@ -791,9 +791,16 @@ class ModManagerService {
           "User-Agent": "MCSManager"
         }
       });
-      return res.data.map((v: any) => {
+      const versions = res.data;
+      return versions.map((v: any, index: number) => {
         // Clean resource name for filename
         const safeName = resourceName.replace(/[\\\/\:\*\?\"\<\>\|]/g, "_").replace(/\s+/g, "_");
+        // Use version-less download URL for the latest version to bypass SpigotMC Cloudflare via Spiget CDN
+        const isLatest = index === versions.length - 1;
+        const downloadUrl = isLatest
+          ? `https://api.spiget.org/v2/resources/${projectId}/download`
+          : `https://api.spiget.org/v2/resources/${projectId}/versions/${v.id}/download`;
+
         return {
           id: String(v.id),
           name: v.name,
@@ -803,7 +810,7 @@ class ModManagerService {
           project_type: "plugin",
           files: [
             {
-              url: `https://api.spiget.org/v2/resources/${projectId}/versions/${v.id}/download`,
+              url: downloadUrl,
               filename: `${safeName}-${v.name}.jar`,
               primary: true
             }
