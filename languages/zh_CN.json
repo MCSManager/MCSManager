@@ -3170,5 +3170,6 @@
   "TXT_CODE_MOD_MANUAL_LATER": "稍后手动处理",
   "TXT_CODE_MOD_DEFERRED_QUEUE": "稍后处理队列",
   "TXT_CODE_MOD_CLEAR_QUEUE": "清空队列",
+  "TXT_CODE_MOD_SELECT_SAVE_DIR": "检测到混端环境，请选择保存位置",
   "TXT_CODE_MOD_WIN_RUNNING_ALERT": "检测到服务器正在运行，Windows 系统下文件可能被占用导致操作失败。建议先停止服务器，或将操作加入稍后处理队列。"
 }

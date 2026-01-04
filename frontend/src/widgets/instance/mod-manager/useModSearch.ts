@@ -1,6 +1,7 @@
-import { ref, computed } from "vue";
+import { ref, computed, type Ref, createVNode } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import { message } from "ant-design-vue";
+import { message, Modal, Button, Space } from "ant-design-vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { t } from "@/lang/i18n";
 import {
   searchModsApi,
@@ -15,7 +16,8 @@ export function useModSearch(
   daemonId: string,
   getMods: () => any[],
   addDeferredTask: (type: string, name: string, data: any) => void,
-  loadMods: () => Promise<void>
+  loadMods: () => Promise<void>,
+  folders: Ref<string[]>
 ) {
   const searchFilters = useLocalStorage("mcs_mod_search_filters", {
     query: "",
@@ -180,37 +182,123 @@ export function useModSearch(
     const file = version.files.find((f: any) => f.primary) || version.files[0];
     if (!file) return;
 
+    // 1. Automatic detection logic
+    let detectedType = version.project_type || selectedMod.value?.project_type || "mod";
+
+    const pluginLoaders = [
+      "spigot",
+      "paper",
+      "purpur",
+      "folia",
+      "bungeecord",
+      "velocity",
+      "waterfall"
+    ];
+    const isPluginLoader = version.loaders?.some((l: string) =>
+      pluginLoaders.includes(l.toLowerCase())
+    );
+
+    if (isPluginLoader || selectedMod.value?.source === "SpigotMC") {
+      detectedType = "plugin";
+    }
+
+    // 2. Handle hybrid servers (both folders exist)
+    let finalType = detectedType;
+    const hasMods = folders.value.includes("mods");
+    const hasPlugins = folders.value.includes("plugins");
+
+    if (hasMods && hasPlugins) {
+      try {
+        finalType = await new Promise((resolve, reject) => {
+          const modal = Modal.confirm({
+            title: t("TXT_CODE_MOD_SELECT_SAVE_DIR"),
+            icon: createVNode(ExclamationCircleOutlined),
+            content: "",
+            footer: createVNode("div", { style: "text-align: right; margin-top: 20px;" }, [
+              createVNode(
+                Button,
+                {
+                  onClick: () => {
+                    modal.destroy();
+                    reject(new Error("Cancelled"));
+                  }
+                },
+                { default: () => t("TXT_CODE_a0451c97") }
+              ),
+              createVNode(
+                Button,
+                {
+                  type: detectedType === "mod" ? "primary" : "default",
+                  style: "margin-left: 8px",
+                  onClick: () => {
+                    modal.destroy();
+                    resolve("mod");
+                  }
+                },
+                { default: () => t("TXT_CODE_MOD") }
+              ),
+              createVNode(
+                Button,
+                {
+                  type: detectedType === "plugin" ? "primary" : "default",
+                  style: "margin-left: 8px",
+                  onClick: () => {
+                    modal.destroy();
+                    resolve("plugin");
+                  }
+                },
+                { default: () => t("TXT_CODE_PLUGIN") }
+              )
+            ])
+          });
+        });
+      } catch (e) {
+        return; // User cancelled
+      }
+    } else if (hasPlugins && !hasMods) {
+      finalType = "plugin";
+    } else if (hasMods && !hasPlugins) {
+      finalType = "mod";
+    }
+
     const downloadData = {
       uuid: instanceId!,
       daemonId: daemonId!,
       url: file.url,
       fileName: file.filename,
-      projectType: selectedMod.value?.project_type
+      projectType: finalType
     };
 
     const immediateFn = async () => {
       try {
         const mods = getMods();
+        const currentProjectType = downloadData.projectType;
         const existingMod = mods.find((m) => m.extraInfo?.project?.id === selectedMod.value?.id);
         if (existingMod) {
-          const { execute: deleteOldMod } = deleteModApi();
-          await deleteOldMod({
-            data: {
-              uuid: instanceId!,
-              daemonId: daemonId!,
-              fileName: existingMod.file
-            }
-          });
+          try {
+            const { execute: deleteOldMod } = deleteModApi();
+            await deleteOldMod({
+              data: {
+                uuid: instanceId!,
+                daemonId: daemonId!,
+                fileName: existingMod.file
+              }
+            });
+          } catch (e) {
+            // Ignore deletion errors (e.g. file already gone) to ensure download proceeds
+            console.warn("Failed to delete old mod version:", e);
+          }
         }
 
         const { execute } = downloadModApi();
         await execute({
-          data: downloadData
+          data: {
+            ...downloadData,
+            projectType: currentProjectType
+          }
         });
         const targetTab =
-          selectedMod.value?.project_type === "plugin"
-            ? t("TXT_CODE_PLUGIN_LIST")
-            : t("TXT_CODE_MOD_LIST");
+          currentProjectType === "plugin" ? t("TXT_CODE_PLUGIN_LIST") : t("TXT_CODE_MOD_LIST");
         message.success(`${t("TXT_CODE_38fb23a8")} -> ${targetTab}`);
         showVersionModal.value = false;
         await loadMods();

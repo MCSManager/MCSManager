@@ -146,7 +146,7 @@ const {
   sortedVersions,
   showVersions,
   onDownload
-} = useModSearch(instanceId!, daemonId!, () => mods.value, addDeferredTask, loadMods);
+} = useModSearch(instanceId!, daemonId!, () => mods.value, addDeferredTask, loadMods, folders);
 
 const handleDownload = async (version: any) => {
   const result = await onDownload(version);
@@ -196,8 +196,12 @@ const editFile = (file: any) => {
   FileEditorDialog.value?.openDialog(file.path, file.name);
 };
 
-const localMods = computed(() => mods.value.filter((m) => m.type === "mod"));
-const localPlugins = computed(() => mods.value.filter((m) => m.type === "plugin"));
+const localMods = computed(() =>
+  mods.value.filter((m) => m.folder === "mods" || (m.type === "mod" && !m.folder))
+);
+const localPlugins = computed(() =>
+  mods.value.filter((m) => m.folder === "plugins" || (m.type === "plugin" && !m.folder))
+);
 
 const filteredMods = computed(() => {
   if (!modSearchQuery.value) return localMods.value;

@@ -15,6 +15,7 @@ export interface ModInfo {
   file: string;
   enabled: boolean;
   hash?: string;
+  folder?: string;
 }
 
 export interface ModListResult {
@@ -195,7 +196,8 @@ export class ModService {
                   type: metadata?.type || defaultType,
                   file: file,
                   enabled: enabled,
-                  hash: hash
+                  hash: hash,
+                  folder: dirName.toLowerCase()
                 });
               } catch (err) {
                 result.push({
@@ -205,7 +207,8 @@ export class ModService {
                   description: "",
                   type: defaultType,
                   file: file,
-                  enabled: enabled
+                  enabled: enabled,
+                  folder: dirName.toLowerCase()
                 });
               }
             });
@@ -228,7 +231,7 @@ export class ModService {
 
     // Remove duplicates
     const uniqueResult = result.filter(
-      (v, i, a) => a.findIndex((t) => t.file === v.file && t.type === v.type) === i
+      (v, i, a) => a.findIndex((t) => t.file === v.file && t.folder === v.folder) === i
     );
 
     return {

@@ -275,7 +275,21 @@ class ModManagerService {
 
     // Search all sources
     try {
-      const N = 3;
+      let N = 3;
+      let spigotPromise: Promise<any>;
+
+      if (filters?.type === "mod") {
+        N = 2;
+        spigotPromise = Promise.resolve({ hits: [], total_hits: 0 });
+      } else {
+        spigotPromise = this.searchSpigotMC(
+          query,
+          Math.floor((offset + 2) / N),
+          Math.floor((offset + limit + 2) / N) - Math.floor((offset + 2) / N),
+          filters
+        );
+      }
+
       const [modrinthRes, curseforgeRes, spigotRes] = await Promise.all([
         this.searchModrinth(
           query,
@@ -289,12 +303,7 @@ class ModManagerService {
           Math.floor((offset + limit + 1) / N) - Math.floor((offset + 1) / N),
           filters
         ),
-        this.searchSpigotMC(
-          query,
-          Math.floor((offset + 2) / N),
-          Math.floor((offset + limit + 2) / N) - Math.floor((offset + 2) / N),
-          filters
-        )
+        spigotPromise
       ]);
 
       const hits = [
@@ -546,7 +555,7 @@ class ModManagerService {
               .slice(0, 3) || [],
           display_categories: mod.categories?.slice(0, 3).map((c: any) => c.name),
           source: "CurseForge",
-          project_type: filters?.type === "plugin" ? "plugin" : "mod"
+          project_type: mod.classId === 12 ? "plugin" : "mod"
         };
       });
 
@@ -581,7 +590,14 @@ class ModManagerService {
       const res = await axios.get(`${this.baseUrl}/project/${projectId}/version`, {
         params
       });
-      return res.data;
+      // Add project_type to each version so the frontend knows where to save it
+      const projectRes = await axios.get(`${this.baseUrl}/project/${projectId}`);
+      const projectType = projectRes.data.project_type === "mod" ? "mod" : "plugin";
+
+      return res.data.map((v: any) => ({
+        ...v,
+        project_type: projectType
+      }));
     } catch (err) {
       return null;
     }
@@ -591,6 +607,7 @@ class ModManagerService {
     try {
       // Fetch mod info to get the name for cleaning version names
       let projectName = "";
+      let modData: any = null;
       try {
         const modRes = await axios.get(`${this.curseforgeUrl}/v1/cf/mods/${projectId}`, {
           headers: {
@@ -598,7 +615,8 @@ class ModManagerService {
             "x-api-key": "$2a$10$S.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6"
           }
         });
-        projectName = modRes.data.data.name;
+        modData = modRes.data.data;
+        projectName = modData.name;
       } catch (e) {}
 
       const res = await axios.get(`${this.curseforgeUrl}/v1/cf/mods/${projectId}/files`, {
@@ -607,6 +625,23 @@ class ModManagerService {
           "x-api-key": "$2a$10$S.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6"
         }
       });
+
+      // Determine project type from categories or classId
+      // classId 6 is Mod, 12 is Plugin
+      const isPlugin =
+        modData?.classId === 12 ||
+        modData?.categories?.some((c: any) =>
+          [
+            "spigot",
+            "paper",
+            "purpur",
+            "folia",
+            "bungeecord",
+            "velocity",
+            "waterfall"
+          ].includes(c.name.toLowerCase())
+        );
+
       return res.data.data.map((file: any) => {
         const gameVersions = file.gameVersions || [];
         const loaders = gameVersions.filter((v: string) =>
@@ -624,6 +659,7 @@ class ModManagerService {
           version_number: vn,
           game_versions: realGameVersions,
           loaders: loaders,
+          project_type: isPlugin ? "plugin" : "mod",
           files: [
             {
               url: file.downloadUrl,
@@ -645,6 +681,9 @@ class ModManagerService {
     limit = 20,
     filters?: { version?: string; type?: string; loader?: string; environment?: string }
   ) {
+    if (filters?.type === "mod") {
+      return { hits: [], total_hits: 0 };
+    }
     try {
       // Spiget API search endpoint returns 404 if no results are found
       // We should handle this gracefully
@@ -657,6 +696,9 @@ class ModManagerService {
           size: limit,
           page: Math.floor(offset / limit) + 1,
           fields: "id,name,tag,icon,rating,downloads,updateDate,version"
+        },
+        headers: {
+          "User-Agent": "MCSManager"
         },
         validateStatus: (status) => (status >= 200 && status < 300) || status === 404
       });
@@ -684,7 +726,12 @@ class ModManagerService {
                 try {
                   const vRes = await axios.get(
                     `https://api.spiget.org/v2/resources/${item.id}/versions/${item.version.id}`,
-                    { timeout: 2000 }
+                    {
+                      timeout: 2000,
+                      headers: {
+                        "User-Agent": "MCSManager"
+                      }
+                    }
                   );
                   if (vRes.data?.name) {
                     versionNamesMap[item.version.id] = vRes.data.name;
@@ -728,23 +775,41 @@ class ModManagerService {
 
   public async getSpigotVersions(projectId: string) {
     try {
-      const res = await axios.get(`https://api.spiget.org/v2/resources/${projectId}/versions`, {
-        params: { size: 100 }
-      });
-      return res.data.map((v: any) => ({
-        id: String(v.id),
-        name: v.name,
-        version_number: v.name,
-        game_versions: [],
-        loaders: ["Spigot", "Paper"],
-        files: [
-          {
-            url: `https://api.spiget.org/v2/resources/${projectId}/versions/${v.id}/download`,
-            filename: `${projectId}-${v.name}.jar`,
-            primary: true
+      let resourceName = projectId;
+      try {
+        const resourceRes = await axios.get(`https://api.spiget.org/v2/resources/${projectId}`, {
+          headers: {
+            "User-Agent": "MCSManager"
           }
-        ]
-      }));
+        });
+        resourceName = resourceRes.data.name;
+      } catch (e) {}
+
+      const res = await axios.get(`https://api.spiget.org/v2/resources/${projectId}/versions`, {
+        params: { size: 100 },
+        headers: {
+          "User-Agent": "MCSManager"
+        }
+      });
+      return res.data.map((v: any) => {
+        // Clean resource name for filename
+        const safeName = resourceName.replace(/[\\\/\:\*\?\"\<\>\|]/g, "_").replace(/\s+/g, "_");
+        return {
+          id: String(v.id),
+          name: v.name,
+          version_number: v.name,
+          game_versions: [],
+          loaders: ["Spigot", "Paper"],
+          project_type: "plugin",
+          files: [
+            {
+              url: `https://api.spiget.org/v2/resources/${projectId}/versions/${v.id}/download`,
+              filename: `${safeName}-${v.name}.jar`,
+              primary: true
+            }
+          ]
+        };
+      });
     } catch (err) {
       console.error("SpigotMC versions error:", err);
       return null;
