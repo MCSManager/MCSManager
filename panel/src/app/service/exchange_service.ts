@@ -6,13 +6,14 @@ import { $t } from "../i18n";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import user_service from "../service/user_service";
+import { systemConfig } from "../setting";
 import { getInstancesByUuid, IAdvancedInstanceInfo } from "./instance_service";
 
 // A commercial platform for selling instances released by the MCSManager Dev Team.
 // Currently, it only supports some countries and regions.
 // If you do not turn on "Commercial Mode", MCSManager will not send any data.
-// export const REDEEM_PLATFORM_ADDR = "https://redeem.mcsmanager.com";
-export const REDEEM_PLATFORM_ADDR = "http://localhost:3000";
+// export const REDEEM_PLATFORM_ADDR = "https://online.mcsmanager.com";
+export const REDEEM_PLATFORM_ADDR = process.env.REMOTE_ADDR || "https://online.mcsmanager.com";
 
 // ------- Protocol Define -------
 
@@ -59,6 +60,7 @@ export interface IBuyRequestProtocol {
   payload: Partial<IGlobalInstanceConfig>;
   code?: string;
   instance_id?: string;
+  category_name?: string;
 }
 
 export enum RequestAction {
@@ -86,8 +88,8 @@ export async function requestUseRedeem(
   panelId: string,
   registerCode: string,
   productId: string | number,
-  daemonId: string,
-  code: string,
+  daemonId?: string,
+  code?: string,
   isDelete?: boolean
 ) {
   const { data: responseData } = await axios.post<IRedeemResponseProtocol<IBusinessProductInfo>>(
@@ -107,6 +109,37 @@ export async function requestUseRedeem(
       }
     }
   );
+  if (responseData.code !== 200) {
+    throw new Error(responseData.message);
+  }
+  return responseData.data;
+}
+
+export async function requestRemotePlatform<T = any>(method: string, url: string, data: any = {}) {
+  const { data: responseData } = await axios.request<IRedeemResponseProtocol<T>>({
+    url: `${REDEEM_PLATFORM_ADDR}${url}`,
+    data:
+      method === "POST"
+        ? {
+            panelId: systemConfig?.panelId || "",
+            registerCode: systemConfig?.registerCode || "",
+            ...data
+          }
+        : undefined,
+    params:
+      method === "GET"
+        ? {
+            panelId: systemConfig?.panelId || "",
+            registerCode: systemConfig?.registerCode || "",
+            ...data
+          }
+        : undefined,
+    method: method,
+    headers: {
+      "X-Panel-Id": systemConfig?.panelId || "",
+      "X-Register-Code": systemConfig?.registerCode || ""
+    }
+  });
   if (responseData.code !== 200) {
     throw new Error(responseData.message);
   }
@@ -181,7 +214,7 @@ export async function buyOrRenewInstance(
       throw new Error($t("TXT_CODE_router.user.invalidUserName"));
     }
 
-    payload.nickname = "App-" + username + "-" + getNanoId(6);
+    payload.nickname = `${params.category_name || "App-"}-${username}-${getNanoId(6)}`;
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
       payload

@@ -11,6 +11,7 @@ import {
   parseUserName,
   queryInstanceByUserId,
   RequestAction,
+  requestRemotePlatform,
   requestUseRedeem
 } from "../service/exchange_service";
 import { logger } from "../service/log";
@@ -87,7 +88,6 @@ router.post(
   validator({
     body: {
       productId: Number,
-      daemonId: String,
       code: String
     }
   }),
@@ -102,6 +102,10 @@ router.post(
     const instanceId = toText(ctx.request.body.instanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
 
+    if (username.length > 12 || username.length < 2) {
+      throw new Error($t("TXT_CODE_3d89166a"));
+    }
+
     const response = await execWithMutexId(`buy-${code}`, async () => {
       // First, check if the redeem code is valid
       const productInfo = await requestUseRedeem(
@@ -112,6 +116,8 @@ router.post(
         code,
         false
       );
+
+      logger.info(`Router /request_buy_instance ProductInfo: ${JSON.stringify(productInfo)}`);
 
       const hours = productInfo?.hours;
       if (!hours || !productInfo?.payload) {
@@ -129,10 +135,11 @@ router.post(
       }
 
       const params = {
+        category_name: productInfo.title,
         category_id: productId,
         payload: config,
         username: username,
-        node_id: daemonId,
+        node_id: productInfo.daemonUuid || "", // Use daemonId from productInfo
         hours: hours,
         instance_id: instanceId,
         code: code
@@ -159,4 +166,10 @@ router.post(
     ctx.body = response;
   }
 );
+
+router.get("/products", async (ctx: Koa.ParameterizedContext) => {
+  const response = await requestRemotePlatform("GET", "/api/advanced_consumer/products");
+  ctx.body = response;
+});
+
 export default router;

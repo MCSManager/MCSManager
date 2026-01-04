@@ -35,9 +35,6 @@ export default class SystemConfig {
   // Login times IP limit
   loginCheckIp: boolean = true;
 
-  // login Copyright Information
-  loginInfo: string = "";
-
   // Whether to open the file management function for ordinary users
   canFileManager = true;
 
@@ -58,13 +55,21 @@ export default class SystemConfig {
   allowChangeCmd = false;
 
   // -----
-  // After it is enabled, you can connect to the redeem.mcsmanager.com platform
+  // After it is enabled, you can connect to the online.mcsmanager.com platform
   // to sell instances based on redeem
   // (this feature may not be available in some countries)
   businessMode = false;
   businessId = "";
   panelId = "";
   registerCode = "";
+  shopName = "";
+  shopEmail = "";
+  shopDescription = "";
+  shopTip = "";
+  // login Copyright Information
+  loginInfo: string = "";
+  // Whether to enable the shop home page
+  enableShopHomePage = false;
   // -----
 
   // Whether to enable SSL/TLS (HTTPS)

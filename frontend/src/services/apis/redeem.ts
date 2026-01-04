@@ -33,6 +33,10 @@ export interface BuyInstanceResponse {
   instance_info?: InstanceInfoProtocol;
 }
 
+export interface FrontProductInfo extends IBusinessProductInfo {
+  lines?: Array<{ title: string; value: string }>;
+}
+
 export const requestBuyInstance = useDefineApi<
   {
     data: {
@@ -48,5 +52,11 @@ export const requestBuyInstance = useDefineApi<
 >({
   url: "/api/exchange/request_buy_instance",
   method: "POST",
+  timeout: 1000 * 30
+});
+
+export const requestProducts = useDefineApi<{}, FrontProductInfo[]>({
+  url: "/api/exchange/products",
+  method: "GET",
   timeout: 1000 * 30
 });

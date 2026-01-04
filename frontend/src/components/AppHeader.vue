@@ -62,7 +62,7 @@ const headerStyle = computed(() => {
   };
 });
 
-const openNewCardDialog = () => {
+const openNewCardDialog = (): void => {
   containerState.showNewCardDialog = true;
 };
 
@@ -155,9 +155,9 @@ const appMenus = computed(() => {
     },
     {
       iconText: t("TXT_CODE_80f0904e"),
-      title: t("TXT_CODE_b6c675d6"),
+      title: t("TXT_CODE_685de81a"),
       icon: SketchOutlined,
-      click: onClickIcon,
+      click: (): void => {},
       conditions: isProMode.value,
       onlyPC: true,
       customClass: ["nav-button-success"]
@@ -315,7 +315,7 @@ const onClickIcon = () => {
 
 <template>
   <header class="app-header-wrapper" :style="headerStyle">
-    <div v-if="!isPhone" class="app-header-content">
+    <div v-if="!isPhone && route.meta?.showAppHeader !== false" class="app-header-content">
       <nav class="btns">
         <a href="." style="margin-right: 12px">
           <div class="logo">
@@ -371,7 +371,7 @@ const onClickIcon = () => {
       </div>
     </div>
   </header>
-  <div v-if="!isPhone" style="height: 64px"></div>
+  <div v-if="!isPhone && route.meta?.showAppHeader !== false" style="height: 64px"></div>
 
   <!-- Menus for phone -->
   <header v-if="isPhone" class="app-header-content-for-phone">
@@ -441,7 +441,7 @@ const onClickIcon = () => {
     </div>
   </a-drawer>
 
-  <div class="breadcrumbs">
+  <div v-if="route.meta.showBreadcrumbs !== false" class="breadcrumbs">
     <a-breadcrumb>
       <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.title">
         <a v-if="!item.disabled" :href="item.href">{{ item.title }}</a>
@@ -531,7 +531,6 @@ const onClickIcon = () => {
 
   z-index: 20;
 
-  // 添加平滑过渡效果
   transition: height 0.4s ease-in-out;
 
   .app-header-content {
@@ -543,7 +542,6 @@ const onClickIcon = () => {
     width: 100%;
     height: var(--header-height);
 
-    // 添加平滑过渡效果
     transition: height 0.4s ease-in-out;
 
     .btns {

@@ -26,7 +26,11 @@ const globalReqIdMap = new Map<string, boolean>();
 const globalIframeList = new Map<string, Ref<HTMLIFrameElement | null>>();
 
 export function getProPanelUrl(path: string) {
-  return `http://localhost:5174/#${path}`;
+  // 开发环境使用本地地址，生产环境使用在线地址
+  if (import.meta.env.DEV) {
+    return `http://localhost:5174/#${path}`;
+  }
+  return `https://online.mcsmanager.com/#${path}`;
 }
 
 export function useIframeEventListener(iframe: Ref<HTMLIFrameElement | null>) {

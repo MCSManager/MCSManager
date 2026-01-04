@@ -88,6 +88,11 @@ export interface Settings {
   allowChangeCmd: boolean;
   registerCode: string;
   panelId: string;
+  shopName: string;
+  shopEmail: string;
+  shopDescription: string;
+  shopTip: string;
+  enableShopHomePage: boolean;
 }
 
 export interface ImageInfo {
@@ -240,6 +245,7 @@ export interface PanelStatus {
   language: string;
   versionChange?: boolean;
   settings: {
+    enableShopHomePage: boolean;
     canFileManager: boolean;
     allowUsePreset: boolean;
     businessMode: boolean;

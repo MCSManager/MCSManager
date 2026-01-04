@@ -17,13 +17,15 @@ import {
   BugOutlined,
   EditOutlined,
   GithubOutlined,
+  KeyOutlined,
   LockOutlined,
   MessageOutlined,
   MoneyCollectOutlined,
   PicLeftOutlined,
   PlusOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SketchOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -60,7 +62,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.`;
 
-const formData = ref<MySettings>();
+const formData = ref<Partial<MySettings>>();
 
 const submit = async (needReload: boolean = true) => {
   if (formData.value) {
@@ -84,18 +86,18 @@ const menus = arrayFilter([
     key: "baseInfo",
     icon: ProjectOutlined
   },
-  // {
-  //   title: t("TXT_CODE_574ed474"),
-  //   key: "pro",
-  //   icon: SketchOutlined,
-  //   condition: () => isCN()
-  // },
-  // {
-  //   title: t("TXT_CODE_caf8ebb7"),
-  //   key: "redeem",
-  //   icon: KeyOutlined,
-  //   condition: () => isCN()
-  // },
+  {
+    title: t("TXT_CODE_574ed474"),
+    key: "pro",
+    icon: SketchOutlined,
+    condition: () => isCN()
+  },
+  {
+    title: t("TXT_CODE_caf8ebb7"),
+    key: "redeem",
+    icon: KeyOutlined,
+    condition: () => isCN()
+  },
   {
     title: t("TXT_CODE_1c18acc0"),
     key: "ui",
@@ -368,7 +370,7 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
+                  <a-form-item v-if="isCN()">
                     <a-typography-title :level="5">Panel ID</a-typography-title>
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_e2976753") }}
@@ -382,8 +384,32 @@ onUnmounted(() => {
                     </a-typography-paragraph>
                     <a-input
                       v-model:value="formData.panelId"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                      disabled
+                    />
+                  </a-form-item>
+
+                  <a-form-item v-if="isCN()">
+                    <a-typography-title :level="5">{{ t("TXT_CODE_dcf8f5c7") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_4a0a0644") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.registerCode"
+                      style="max-width: 320px"
                       :placeholder="t('TXT_CODE_4ea93630')"
                     />
+                  </a-form-item>
+
+                  <a-form-item v-if="isCN()">
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_5432a435") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_d055c843") }}
+                    </a-typography-paragraph>
+                    <a-switch v-model:checked="formData.enableShopHomePage" />
                   </a-form-item>
 
                   <div class="button">
