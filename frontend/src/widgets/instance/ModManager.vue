@@ -138,6 +138,8 @@ const {
   deferredTasks,
   autoExecute,
   isExecuting,
+  syncWithBackend,
+  clearAllTasks,
   addDeferredTask,
   removeDeferredTask,
   executeDeferredTask,
@@ -152,10 +154,8 @@ watch(
     if (!running) {
       // 当服务器停止时，立即刷新列表以获取最新状态（此时文件锁已释放）
       loadMods();
-      // 如果开启了自动执行，则执行队列
-      if (deferredTasks.value.length > 0 && autoExecute.value) {
-        executeAllDeferredTasks();
-      }
+      // 同步后端任务状态（后端会自动执行任务并清空队列）
+      syncWithBackend();
     }
   }
 );
@@ -165,12 +165,17 @@ const {
   loadingExtra,
   mods,
   folders,
-  loadMods,
+  loadMods: originalLoadMods,
   onToggle,
   onDelete,
   fileStatus,
   tablePagination
 } = useLocalMods(instanceId!, daemonId!, checkAndConfirm, addDeferredTask);
+
+const loadMods = async () => {
+  await originalLoadMods();
+  await syncWithBackend();
+};
 
 const {
   searchFilters,
@@ -698,6 +703,7 @@ onMounted(async () => {
       :is-executing="isExecuting"
       @execute-task="executeDeferredTask"
       @execute-all="executeAllDeferredTasks"
+      @clear-all="clearAllTasks"
       @remove-task="removeDeferredTask"
       @refresh="loadMods"
     />

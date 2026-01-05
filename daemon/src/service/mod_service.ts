@@ -5,6 +5,8 @@ import { getFileManager } from "./file_router_service";
 import yaml from "yaml";
 import toml from "@iarna/toml";
 import crypto from "crypto";
+import downloadManager from "./download_manager";
+import InstanceSubsystem from "./system_instance";
 
 export interface ModInfo {
   name: string;
@@ -24,8 +26,96 @@ export interface ModListResult {
 }
 
 export class ModService {
+  private readonly MAX_CACHE_SIZE = 2000;
   private cache: Map<string, { mtime: number; size: number; info: Partial<ModInfo>; hash: string }> =
     new Map();
+
+  private deferredTasks: Map<string, any[]> = new Map();
+  private autoExecuteInstances: Set<string> = new Set();
+
+  constructor() {
+    // Wait for next tick to ensure InstanceSubsystem is fully initialized if needed
+    process.nextTick(() => {
+      InstanceSubsystem.on("exit", (data) => {
+        const { instanceUuid } = data;
+        if (this.autoExecuteInstances.has(instanceUuid)) {
+          this.executeDeferredTasks(instanceUuid).catch((err) => {
+            console.error(`[ModService] Failed to execute deferred tasks for ${instanceUuid}:`, err);
+          });
+        } else {
+          console.log(`[ModService] Auto-execute is disabled for ${instanceUuid}, skipping deferred tasks.`);
+        }
+      });
+    });
+  }
+
+  private async executeDeferredTasks(instanceUuid: string) {
+    // 立即从 Map 中取出并删除，防止执行期间被前端 sync 查询到
+    const tasks = this.deferredTasks.get(instanceUuid);
+    this.deferredTasks.delete(instanceUuid);
+
+    if (!tasks || tasks.length === 0) return;
+
+    console.log(`[ModService] Executing ${tasks.length} deferred tasks for ${instanceUuid}`);
+
+    for (const task of tasks) {
+      try {
+        console.log(`[ModService] Running task: ${task.type} for ${instanceUuid}`);
+        if (task.type === "toggle") {
+          await this.toggleMod(instanceUuid, task.fileName);
+        } else if (task.type === "delete") {
+          await this.deleteMod(instanceUuid, task.fileName);
+        } else if (task.type === "download") {
+          await downloadManager.downloadFromUrl(task.url, task.targetPath, task.fallbackUrl);
+        }
+        console.log(`[ModService] Task ${task.type} completed for ${instanceUuid}`);
+      } catch (err) {
+        console.error(`[ModService] Task failed:`, task, err);
+      }
+    }
+  }
+
+  public addDeferredTask(instanceUuid: string, task: any) {
+    console.log(`[ModService] Adding deferred task for ${instanceUuid}:`, task.type, task.fileName || "");
+    if (!this.deferredTasks.has(instanceUuid)) {
+      this.deferredTasks.set(instanceUuid, []);
+    }
+    // 检查是否已经存在相同的任务，避免重复添加
+    const tasks = this.deferredTasks.get(instanceUuid);
+    const isDuplicate = tasks?.some((t) => {
+      if (t.type !== task.type) return false;
+      if (t.type === "download") return t.url === task.url;
+      // 统一处理文件名，防止因为 .disabled 后缀导致的重复判断失效
+      const name1 = t.fileName?.replace(".disabled", "");
+      const name2 = task.fileName?.replace(".disabled", "");
+      return name1 === name2;
+    });
+
+    if (!isDuplicate) {
+      // 为任务生成一个唯一 ID，方便前端同步
+      task.id = Math.random().toString(36).substring(2);
+      tasks?.push(task);
+    } else {
+      console.log(`[ModService] Duplicate task ignored:`, task.type, task.fileName || "");
+    }
+  }
+
+  public setAutoExecute(instanceUuid: string, enabled: boolean) {
+    if (enabled) {
+      this.autoExecuteInstances.add(instanceUuid);
+    } else {
+      this.autoExecuteInstances.delete(instanceUuid);
+    }
+    console.log(`[ModService] Auto-execute for ${instanceUuid} set to ${enabled}`);
+  }
+
+  public getDeferredTasks(instanceUuid: string) {
+    return this.deferredTasks.get(instanceUuid) || [];
+  }
+
+  public clearDeferredTasks(instanceUuid: string) {
+    this.deferredTasks.delete(instanceUuid);
+  }
 
   private async getFileHash(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -154,7 +244,7 @@ export class ModService {
     const tasks: (() => Promise<void>)[] = [];
 
     const scanDir = async (dirName: string, defaultType: "mod" | "plugin") => {
-      const dir = path.join(rootDir, dirName);
+      const dir = fileManager.toAbsolutePath(dirName);
       if (await fs.pathExists(dir)) {
         if (!folders.includes(dirName.toLowerCase())) {
           folders.push(dirName.toLowerCase());
@@ -180,6 +270,10 @@ export class ModService {
                 } else {
                   metadata = await this.parseJarMetadata(fullPath);
                   hash = await this.getFileHash(fullPath);
+                  if (this.cache.size >= this.MAX_CACHE_SIZE) {
+                    const firstKey = this.cache.keys().next().value;
+                    if (firstKey) this.cache.delete(firstKey);
+                  }
                   this.cache.set(cacheKey, {
                     mtime: stat.mtimeMs,
                     size: stat.size,
@@ -242,6 +336,7 @@ export class ModService {
 
   public async toggleMod(instanceUuid: string, fileName: string): Promise<void> {
     const fileManager = getFileManager(instanceUuid);
+    fileManager.checkPath(fileName);
     const rootDir = fileManager.toAbsolutePath(".");
 
     const possibleDirs = ["mods", "plugins", "Mods", "Plugins"];
@@ -271,6 +366,7 @@ export class ModService {
 
   public async deleteMod(instanceUuid: string, fileName: string): Promise<void> {
     const fileManager = getFileManager(instanceUuid);
+    fileManager.checkPath(fileName);
     const rootDir = fileManager.toAbsolutePath(".");
 
     const possibleDirs = ["mods", "plugins", "Mods", "Plugins"];
@@ -293,6 +389,8 @@ export class ModService {
 
   public async getModConfig(instanceUuid: string, modId: string, type: "mod" | "plugin", fileName?: string): Promise<any[]> {
     const fileManager = getFileManager(instanceUuid);
+    if (fileName) fileManager.checkPath(fileName);
+    if (modId) fileManager.checkPath(modId);
     const rootDir = fileManager.toAbsolutePath(".");
     const configFiles: any[] = [];
 

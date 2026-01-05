@@ -3154,6 +3154,7 @@
   "TXT_CODE_MOD_DEFERRED_REMIND_TITLE": "Deferred Tasks Reminder",
   "TXT_CODE_MOD_DEFERRED_REMIND_DESC": "Executing post-shutdown tasks",
   "TXT_CODE_MOD_EXECUTE_ALL": "Execute All",
+  "TXT_CODE_MOD_CLEAR_QUEUE": "Clear Queue",
   "TXT_CODE_MOD_MANUAL_LATER": "Manual Later",
   "TXT_CODE_MOD_DEFERRED_QUEUE": "Deferred Task Queue",
   "TXT_CODE_MOD_AUTO_EXECUTE": "Auto Execute Queue",

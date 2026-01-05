@@ -602,20 +602,30 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/toggle", async (ctx, data) => {
-  const { instanceUuid, fileName } = data;
+  const { instanceUuid, fileName, deferred } = data;
   try {
-    await modService.toggleMod(instanceUuid, fileName);
-    protocol.response(ctx, true);
+    if (deferred) {
+      modService.addDeferredTask(instanceUuid, { type: "toggle", fileName });
+      protocol.response(ctx, true);
+    } else {
+      await modService.toggleMod(instanceUuid, fileName);
+      protocol.response(ctx, true);
+    }
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });
 
 routerApp.on("instance/mods/delete", async (ctx, data) => {
-  const { instanceUuid, fileName } = data;
+  const { instanceUuid, fileName, deferred } = data;
   try {
-    await modService.deleteMod(instanceUuid, fileName);
-    protocol.response(ctx, true);
+    if (deferred) {
+      modService.addDeferredTask(instanceUuid, { type: "delete", fileName });
+      protocol.response(ctx, true);
+    } else {
+      await modService.deleteMod(instanceUuid, fileName);
+      protocol.response(ctx, true);
+    }
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }
@@ -626,6 +636,36 @@ routerApp.on("instance/mods/config_files", async (ctx, data) => {
   try {
     const files = await modService.getModConfig(instanceUuid, modId, type, fileName);
     protocol.response(ctx, files);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/deferred/list", async (ctx, data) => {
+  const { instanceUuid } = data;
+  try {
+    const tasks = modService.getDeferredTasks(instanceUuid);
+    protocol.response(ctx, tasks);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/deferred/auto_execute", async (ctx, data) => {
+  const { instanceUuid, enabled } = data;
+  try {
+    modService.setAutoExecute(instanceUuid, enabled);
+    protocol.response(ctx, true);
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/deferred/clear", async (ctx, data) => {
+  const { instanceUuid } = data;
+  try {
+    modService.clearDeferredTasks(instanceUuid);
+    protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }

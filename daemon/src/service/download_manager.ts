@@ -20,7 +20,7 @@ class DownloadManager {
     }
   >();
 
-  public async downloadFromUrl(url: string, targetPath: string): Promise<void> {
+  public async downloadFromUrl(url: string, targetPath: string, fallbackUrl?: string): Promise<void> {
     const taskId = targetPath;
     const controller = new AbortController();
     this.tasks.set(taskId, { total: 0, current: 0, status: 0, controller });
@@ -50,37 +50,59 @@ class DownloadManager {
       };
 
       let response;
-      try {
-        response = await axios({
-          method: "get",
-          url: url,
-          responseType: "stream",
-          timeout: 60000,
-          headers: commonHeaders,
-          maxRedirects: 10,
-          signal: controller.signal
-        });
-      } catch (err: any) {
-        // If CDN fails (e.g. 521), try the original Spiget API URL if it was a CDN URL
-        if (url.includes("cdn.spiget.org") && !controller.signal.aborted) {
-          const fallbackUrl = url.replace("cdn.spiget.org", "api.spiget.org");
-          const fallbackUrlObj = new URL(fallbackUrl);
+      const maxRetries = 2;
+      let lastError: any;
+
+      for (let i = 0; i <= maxRetries; i++) {
+        try {
           response = await axios({
             method: "get",
-            url: fallbackUrl,
+            url: url,
             responseType: "stream",
             timeout: 60000,
-            headers: {
-              ...commonHeaders,
-              Referer: fallbackUrlObj.origin
-            },
+            headers: commonHeaders,
             maxRedirects: 10,
             signal: controller.signal
           });
-        } else {
-          throw err;
+          break;
+        } catch (err: any) {
+          lastError = err;
+          const isNetworkError =
+            err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ECONNABORTED";
+          const isRetryableStatus = [500, 502, 503, 504].includes(err.response?.status);
+
+          if (i < maxRetries && (isNetworkError || isRetryableStatus) && !controller.signal.aborted) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            continue;
+          }
+
+          // If primary URL fails after retries, try fallback URL if provided
+          if (fallbackUrl && !controller.signal.aborted) {
+            const fallbackUrlObj = new URL(fallbackUrl);
+            try {
+              response = await axios({
+                method: "get",
+                url: fallbackUrl,
+                responseType: "stream",
+                timeout: 60000,
+                headers: {
+                  ...commonHeaders,
+                  Referer: fallbackUrlObj.origin
+                },
+                maxRedirects: 10,
+                signal: controller.signal
+              });
+              break;
+            } catch (fallbackErr) {
+              throw fallbackErr;
+            }
+          } else {
+            throw err;
+          }
         }
       }
+
+      if (!response) throw new Error("Download failed: No response received");
 
       const total = parseInt(response.headers["content-length"] || "0");
       let current = 0;

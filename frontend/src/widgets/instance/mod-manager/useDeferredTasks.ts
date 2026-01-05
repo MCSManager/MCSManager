@@ -1,11 +1,14 @@
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { message } from "ant-design-vue";
 import { t } from "@/lang/i18n";
 import {
   toggleModApi,
   deleteModApi,
-  downloadModApi
+  downloadModApi,
+  getDeferredTasksApi,
+  setAutoExecuteApi,
+  clearDeferredTasksApi
 } from "@/services/apis/modManager";
 
 export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?: () => Promise<void>) {
@@ -13,15 +16,114 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
   const autoExecute = useLocalStorage<boolean>(`mcs_mod_auto_execute_${instanceId}`, true);
   const isExecuting = ref(false);
 
-  const addDeferredTask = (type: string, name: string, data: any) => {
-    deferredTasks.value.push({
+  const syncWithBackend = async () => {
+    try {
+      const { execute } = getDeferredTasksApi();
+      const backendTasks = await execute({
+        params: {
+          daemonId,
+          uuid: instanceId
+        }
+      });
+
+      // 只要后端返回了结果（即使是空数组），就以后端为准同步前端
+      if (Array.isArray(backendTasks)) {
+        if (backendTasks.length === 0) {
+          if (deferredTasks.value.length > 0) {
+            console.log("[ModManager] Backend queue is empty, clearing frontend queue.");
+            deferredTasks.value = [];
+            if (reloadFn) await reloadFn();
+          }
+        } else {
+          console.log(`[ModManager] Syncing ${backendTasks.length} tasks from backend.`);
+          deferredTasks.value = backendTasks.map((t: any) => ({
+            id: t.id || Math.random().toString(36).substring(2),
+            type: t.type,
+            name: t.fileName || t.url || "Task",
+            data: t,
+            time: Date.now()
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to sync with backend:", err);
+    }
+  };
+
+  const clearAllTasks = async () => {
+    try {
+      const { execute } = clearDeferredTasksApi();
+      await execute({
+        data: {
+          daemonId,
+          uuid: instanceId
+        }
+      });
+      deferredTasks.value = [];
+      message.success(t("TXT_CODE_7f0c746d"));
+    } catch (err: any) {
+      message.error(err.message);
+    }
+  };
+
+  watch(autoExecute, async (val) => {
+    try {
+      const { execute } = setAutoExecuteApi();
+      await execute({
+        data: {
+          daemonId,
+          uuid: instanceId,
+          enabled: val
+        }
+      });
+    } catch (err) {
+      console.error("Failed to update auto-execute status:", err);
+    }
+  });
+
+  onMounted(async () => {
+    await syncWithBackend();
+    // 初始同步一次开关状态
+    try {
+      const { execute: setAuto } = setAutoExecuteApi();
+      await setAuto({
+        data: {
+          daemonId,
+          uuid: instanceId,
+          enabled: autoExecute.value
+        }
+      });
+    } catch (err) {
+      // ignore
+    }
+  });
+
+  const addDeferredTask = async (type: string, name: string, data: any) => {
+    const task = {
       id: Math.random().toString(36).substring(2),
       type,
       name,
       data,
       time: Date.now()
-    });
+    };
+    deferredTasks.value.push(task);
     message.success(t("TXT_CODE_MOD_DEFERRED_TASK_ADDED"));
+
+    // 立即同步到后端，这样即使关闭网页，后端也知道有任务要执行
+    try {
+      if (task.type === "download") {
+        const { execute } = downloadModApi();
+        await execute({ data: { ...task.data, deferred: true } });
+      } else if (task.type === "delete") {
+        const { execute } = deleteModApi();
+        await execute({ data: { ...task.data, deferred: true } });
+      } else if (task.type === "toggle") {
+        const { execute } = toggleModApi();
+        await execute({ data: { ...task.data, deferred: true } });
+      }
+    } catch (err: any) {
+      console.error("Failed to sync deferred task to backend:", err);
+    }
   };
 
   const removeDeferredTask = (id: string) => {
@@ -32,13 +134,28 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
     try {
       if (task.type === "download") {
         const { execute } = downloadModApi();
-        await execute({ data: task.data });
+        await execute({
+          data: {
+            ...task.data,
+            deferred: true
+          }
+        });
       } else if (task.type === "delete") {
         const { execute } = deleteModApi();
-        await execute({ data: task.data });
+        await execute({
+          data: {
+            ...task.data,
+            deferred: true
+          }
+        });
       } else if (task.type === "toggle") {
         const { execute } = toggleModApi();
-        await execute({ data: task.data });
+        await execute({
+          data: {
+            ...task.data,
+            deferred: true
+          }
+        });
       }
       removeDeferredTask(task.id);
       message.success(`${t("TXT_CODE_7f0c746d")}: ${task.name}`);
@@ -71,6 +188,8 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
     deferredTasks,
     autoExecute,
     isExecuting,
+    syncWithBackend,
+    clearAllTasks,
     addDeferredTask,
     removeDeferredTask,
     executeDeferredTask,

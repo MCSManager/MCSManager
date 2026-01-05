@@ -122,6 +122,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
   try {
     const url = data.url;
     const fileName = data.fileName;
+    const deferred = data.deferred;
 
     if (!checkSafeUrl(url)) {
       protocol.responseError(ctx, t("TXT_CODE_3fe1b194"), {
@@ -131,7 +132,26 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     }
 
     const fileManager = getFileManager(data.instanceUuid);
+    fileManager.checkPath(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
+
+    // Start download in background
+    let fallbackUrl: string | undefined;
+    if (url.includes("cdn.spiget.org")) {
+      fallbackUrl = url.replace("cdn.spiget.org", "api.spiget.org");
+    }
+
+    if (deferred) {
+      const { modService } = await import("../service/mod_service");
+      modService.addDeferredTask(data.instanceUuid, {
+        type: "download",
+        url,
+        targetPath,
+        fallbackUrl
+      });
+      protocol.response(ctx, true);
+      return;
+    }
 
     const maxDownloadFromUrlFileCount = globalConfiguration.config.maxDownloadFromUrlFileCount;
     if (
@@ -144,8 +164,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    // Start download in background
-    downloadManager.downloadFromUrl(url, targetPath).catch((err) => {
+    downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
       logger.error(`Download failed: ${url} -> ${targetPath}`, err);
     });
 
@@ -159,6 +178,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
 routerApp.on("file/download_stop", (ctx, data) => {
   try {
     const fileManager = getFileManager(data.instanceUuid);
+    fileManager.checkPath(data.fileName);
     const targetPath = fileManager.toAbsolutePath(data.fileName);
     const result = downloadManager.stop(targetPath);
     protocol.response(ctx, result);

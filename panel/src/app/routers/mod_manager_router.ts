@@ -223,11 +223,12 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, fileName } = ctx.request.body;
+      const { daemonId, uuid, fileName, deferred } = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/toggle", {
         instanceUuid: uuid,
-        fileName
+        fileName,
+        deferred
       });
       ctx.body = result;
     } catch (err) {
@@ -244,11 +245,73 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, fileName } = ctx.request.body;
+      const { daemonId, uuid, fileName, deferred } = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/delete", {
         instanceUuid: uuid,
-        fileName
+        fileName,
+        deferred
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.get(
+  "/deferred/list",
+  permission({ level: ROLE.USER }),
+  validator({
+    query: { daemonId: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const { daemonId, uuid } = ctx.query;
+      const remoteService = RemoteServiceSubsystem.getInstance(String(daemonId));
+      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/list", {
+        instanceUuid: uuid
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.post(
+  "/deferred/auto_execute",
+  permission({ level: ROLE.USER }),
+  validator({
+    body: { daemonId: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const { daemonId, uuid, enabled } = ctx.request.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/auto_execute", {
+        instanceUuid: uuid,
+        enabled
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.post(
+  "/deferred/clear",
+  permission({ level: ROLE.USER }),
+  validator({
+    body: { daemonId: String, uuid: String }
+  }),
+  async (ctx) => {
+    try {
+      const { daemonId, uuid } = ctx.request.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/clear", {
+        instanceUuid: uuid
       });
       ctx.body = result;
     } catch (err) {

@@ -20,9 +20,18 @@ export interface ModrinthVersion {
 class ModManagerService {
   private readonly baseUrl = "https://api.modrinth.com/v2";
   private readonly curseforgeUrl = "https://api.curse.tools";
+  private readonly MAX_CACHE_SIZE = 1000;
   private cache = new Map<string, any>();
   private mcVersionsCache: string[] = [];
   private mcVersionsLastFetch = 0;
+
+  private setCache(key: string, value: any) {
+    if (this.cache.size >= this.MAX_CACHE_SIZE) {
+      const firstKey = this.cache.keys().next().value;
+      if (firstKey) this.cache.delete(firstKey);
+    }
+    this.cache.set(key, value);
+  }
 
   public async getMinecraftVersions() {
     const now = Date.now();
@@ -32,7 +41,10 @@ class ModManagerService {
 
     try {
       // Try Modrinth first
-      const res = await axios.get(`${this.baseUrl}/tag/game_version`);
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/tag/game_version`
+      });
       const versions = res.data
         .filter((v: any) => v.project_type === "minecraft" && /^\d+\.\d+(\.\d+)?$/.test(v.version))
         .map((v: any) => v.version)
@@ -58,7 +70,10 @@ class ModManagerService {
 
     try {
       // Try Mojang official manifest as fallback
-      const res = await axios.get("https://launchermeta.mojang.com/mc/game/version_manifest.json");
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: "https://launchermeta.mojang.com/mc/game/version_manifest.json"
+      });
       const versions = res.data.versions
         .filter((v: any) => v.type === "release")
         .map((v: any) => v.id)
@@ -103,11 +118,17 @@ class ModManagerService {
 
     try {
       // 1. Get version by hash
-      const versionRes = await axios.get<ModrinthVersion>(`${this.baseUrl}/version_file/${hash}?algorithm=sha1`);
+      const versionRes = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/version_file/${hash}?algorithm=sha1`
+      });
       const versionData = versionRes.data;
 
       // 2. Get project by project_id
-      const projectRes = await axios.get<ModrinthProject>(`${this.baseUrl}/project/${versionData.project_id}`);
+      const projectRes = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/project/${versionData.project_id}`
+      });
       const projectData = projectRes.data;
 
       const result = {
@@ -115,7 +136,7 @@ class ModManagerService {
         project: projectData
       };
 
-      this.cache.set(hash, result);
+      this.setCache(hash, result);
       return result;
     } catch (err) {
       return null;
@@ -126,8 +147,14 @@ class ModManagerService {
     try {
       return await axios(config);
     } catch (err: any) {
-      if (retries > 0 && (err.response?.status === 500 || err.response?.status === 502)) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      const isNetworkError =
+        !err.response &&
+        (err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ECONNABORTED");
+      const isRetryableStatus =
+        err.response?.status === 500 || err.response?.status === 502 || err.response?.status === 504;
+
+      if (retries > 0 && (isNetworkError || isRetryableStatus)) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         return await this.requestWithRetry(config, retries - 1);
       }
       throw err;
@@ -183,7 +210,7 @@ class ModManagerService {
               const version = versionsMap[hash];
               const project = projectsMap[version.project_id];
               const info = { version, project };
-              this.cache.set(hash, info);
+              this.setCache(hash, info);
               result[hash] = info;
             }
           }
@@ -383,7 +410,9 @@ class ModManagerService {
         }
       }
 
-      const res = await axios.get(`${this.baseUrl}/search`, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/search`,
         params: {
           query,
           facets: facets.length > 0 ? JSON.stringify(facets) : undefined,
@@ -402,7 +431,9 @@ class ModManagerService {
 
       if (versionIds.length > 0) {
         try {
-          const versionsRes = await axios.get(`${this.baseUrl}/versions`, {
+          const versionsRes = await this.requestWithRetry({
+            method: "GET",
+            url: `${this.baseUrl}/versions`,
             params: { ids: JSON.stringify(versionIds) }
           });
           versionsMap = versionsRes.data.reduce((acc: any, v: any) => {
@@ -515,7 +546,9 @@ class ModManagerService {
         params.gameVersion = filters.version;
       }
 
-      const res = await axios.get(`${this.curseforgeUrl}/v1/cf/mods/search`, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.curseforgeUrl}/v1/cf/mods/search`,
         params,
         headers: {
           Accept: "application/json",
@@ -525,7 +558,11 @@ class ModManagerService {
       });
 
       // Log for debugging (User can see this in console)
-      console.log(`[CurseForge] Search "${query}" - Status: ${res.status}, Results: ${res.data?.data?.length || 0}`);
+      console.log(
+        `[CurseForge] Search "${query}" - Status: ${res.status}, Results: ${
+          res.data?.data?.length || 0
+        }`
+      );
 
       if (!res.data || !res.data.data || !Array.isArray(res.data.data)) {
         return { hits: [], total_hits: 0 };
@@ -588,11 +625,16 @@ class ModManagerService {
       if (loaders) params.loaders = JSON.stringify(loaders);
       if (gameVersions) params.game_versions = JSON.stringify(gameVersions);
 
-      const res = await axios.get(`${this.baseUrl}/project/${projectId}/version`, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/project/${projectId}/version`,
         params
       });
       // Add project_type to each version so the frontend knows where to save it
-      const projectRes = await axios.get(`${this.baseUrl}/project/${projectId}`);
+      const projectRes = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.baseUrl}/project/${projectId}`
+      });
       const projectType = projectRes.data.project_type === "mod" ? "mod" : "plugin";
 
       return res.data.map((v: any) => ({
@@ -610,7 +652,9 @@ class ModManagerService {
       let projectName = "";
       let modData: any = null;
       try {
-        const modRes = await axios.get(`${this.curseforgeUrl}/v1/cf/mods/${projectId}`, {
+        const modRes = await this.requestWithRetry({
+          method: "GET",
+          url: `${this.curseforgeUrl}/v1/cf/mods/${projectId}`,
           headers: {
             Accept: "application/json",
             "x-api-key": "$2a$10$S.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6"
@@ -620,7 +664,9 @@ class ModManagerService {
         projectName = modData.name;
       } catch (e) {}
 
-      const res = await axios.get(`${this.curseforgeUrl}/v1/cf/mods/${projectId}/files`, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `${this.curseforgeUrl}/v1/cf/mods/${projectId}/files`,
         headers: {
           Accept: "application/json",
           "x-api-key": "$2a$10$S.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6.v.m6"
@@ -692,7 +738,9 @@ class ModManagerService {
         ? `https://api.spiget.org/v2/search/resources/${encodeURIComponent(query)}`
         : `https://api.spiget.org/v2/resources/top`;
 
-      const res = await axios.get(url, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url,
         params: {
           size: limit,
           page: Math.floor(offset / limit) + 1,
@@ -701,7 +749,7 @@ class ModManagerService {
         headers: {
           "User-Agent": "MCSManager"
         },
-        validateStatus: (status) => (status >= 200 && status < 300) || status === 404
+        validateStatus: (status: number) => (status >= 200 && status < 300) || status === 404
       });
 
       if (res.status === 404 || !res.data) {
@@ -725,15 +773,14 @@ class ModManagerService {
             data.slice(0, 20).map(async (item: any) => {
               if (item.version?.id) {
                 try {
-                  const vRes = await axios.get(
-                    `https://api.spiget.org/v2/resources/${item.id}/versions/${item.version.id}`,
-                    {
-                      timeout: 2000,
-                      headers: {
-                        "User-Agent": "MCSManager"
-                      }
+                  const vRes = await this.requestWithRetry({
+                    method: "GET",
+                    url: `https://api.spiget.org/v2/resources/${item.id}/versions/${item.version.id}`,
+                    timeout: 2000,
+                    headers: {
+                      "User-Agent": "MCSManager"
                     }
-                  );
+                  });
                   if (vRes.data?.name) {
                     versionNamesMap[item.version.id] = vRes.data.name;
                   }
@@ -778,7 +825,9 @@ class ModManagerService {
     try {
       let resourceName = projectId;
       try {
-        const resourceRes = await axios.get(`https://api.spiget.org/v2/resources/${projectId}`, {
+        const resourceRes = await this.requestWithRetry({
+          method: "GET",
+          url: `https://api.spiget.org/v2/resources/${projectId}`,
           headers: {
             "User-Agent": "MCSManager"
           }
@@ -786,7 +835,9 @@ class ModManagerService {
         resourceName = resourceRes.data.name;
       } catch (e) {}
 
-      const res = await axios.get(`https://api.spiget.org/v2/resources/${projectId}/versions`, {
+      const res = await this.requestWithRetry({
+        method: "GET",
+        url: `https://api.spiget.org/v2/resources/${projectId}/versions`,
         params: { size: 100 },
         headers: {
           "User-Agent": "MCSManager"

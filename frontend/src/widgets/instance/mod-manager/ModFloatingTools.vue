@@ -40,6 +40,7 @@ const emit = defineEmits<{
   (e: "update:autoExecute", value: boolean): void;
   (e: "executeTask", task: any): void;
   (e: "executeAll"): void;
+  (e: "clearAll"): void;
   (e: "removeTask", id: string): void;
   (e: "refresh"): void;
 }>();
@@ -94,6 +95,9 @@ const onStopTransfer = async (task: any) => {
                 <span class="text-sm opacity-30 font-mono bg-gray-500/10 px-2 py-0.5 rounded-md">{{ props.deferredTasks.length }}</span>
               </div>
               <Space :size="12">
+                <Button size="small" type="link" class="px-0 text-sm font-medium text-red-500 hover:text-red-400" @click="emit('clearAll')" v-if="props.deferredTasks.length > 0">
+                  {{ t("TXT_CODE_MOD_CLEAR_QUEUE") }}
+                </Button>
                 <Button size="small" type="link" class="px-0 text-sm font-medium" @click="emit('executeAll')" v-if="props.deferredTasks.length > 0" :loading="isExecuting">
                   {{ t("TXT_CODE_MOD_EXECUTE_ALL") }}
                 </Button>
