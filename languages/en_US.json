@@ -1551,7 +1551,7 @@
   "TXT_CODE_98742e5f": "The color of the bossbar",
   "TXT_CODE_9878c2bc": "By default, Velocity will attempt to gracefully handle connection loss for users connecting to the server rather than disconnecting them.",
   "TXT_CODE_9885543f": "Terminal failed to initialize, possibly due to the remote daemon or instance no longer exists. Please refresh the page and retry.",
-  "TXT_CODE_98b4ac74": "MC NekoForge",
+  "TXT_CODE_98b4ac74": "MC NeoForge",
   "TXT_CODE_98dbd049": "Suggest not to exceed 3 lines",
   "TXT_CODE_98e50717": "Configuration file for Purpur. It allows for further configuration of advanced parameters and more specific game settings. It greatly affects overall performance and expands upon the limitations of the Paper configuration file.",
   "TXT_CODE_98e7c829": "Leave empty to use default Docker image command",
@@ -2931,7 +2931,6 @@
   "TXT_CODE_DISK_USAGE": "Disk",
   "TXT_CODE_dc8de4ff": "Auto",
   "TXT_CODE_dc053043": "Set the icon image?",
-  "TXT_CODE_LEAVES": "MC Leaves",
   "TXT_CODE_LEAVES_DESCRIPTION": "Leaves Server Configuration File",
   "TXT_CODE_LEAVES_CONFIG_VERSION": "Leaves configuration file version. Do not modify!",
   "TXT_CODE_LEAVES_AUTO_UPDATE_ENABLE": "Enable automatic update for Leaves.",
@@ -3116,5 +3115,6 @@
   "TXT_CODE_TERRARIA_LOG_PATH": "Log File Directory(default: logs)",
   "TXT_CODE_TERRARIA_MAX_PLAYERS": "Maximum Players",
   "TXT_CODE_TERRARIA_MOTD": "Message of the Day",
-  "TXT_CODE_TERRARIA_CONFIG_INFO": "Terraria configuration file, takes effect only when using the -config serverconfig.txt parameter"
+  "TXT_CODE_TERRARIA_CONFIG_INFO": "Terraria configuration file, takes effect only when using the -config serverconfig.txt parameter",
+  "TXT_CODE_8a5305a6": "MC Leaves"
 }

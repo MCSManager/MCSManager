@@ -1551,7 +1551,7 @@
   "TXT_CODE_98742e5f": "Boss 血條顏色",
   "TXT_CODE_9878c2bc": "預設情況下，Velocity將嘗試優雅地處理使用者對伺服器的連線意外遺失，而不是斷開連線。",
   "TXT_CODE_9885543f": "初始化控制台失敗，可能是遠端節點或實例已不存在，請刷新網頁重試。",
-  "TXT_CODE_98b4ac74": "MC NekoForge",
+  "TXT_CODE_98b4ac74": "MC NeoForge",
   "TXT_CODE_98dbd049": "建議不超過 3 行",
   "TXT_CODE_98e50717": "Purpur 設定檔，允許對進階參數及更具體的遊戲設定進行進一步調整，極大影響整體效能，並在 Paper 設定檔功能基礎上進行擴展。",
   "TXT_CODE_98e7c829": "留空將使用 Docker 映像預設指令啟動",
