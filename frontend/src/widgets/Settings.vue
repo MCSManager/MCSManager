@@ -404,6 +404,26 @@ onUnmounted(() => {
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
                   <a-form-item>
+                    <a-typography-title :level="5">{{ t("Page Title") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>
+                          {{ t("You can edit the Page title from the Panel which is set to 'MCSManager Panel' by default.") }}
+                        </div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                        <a-input
+                          v-model:value="formData.pageTitle"
+                          :placeholder="t('MCSManager Panel')"
+                        />
+                    </a-typography-paragraph>
+                    <a-button type="primary" class="mr-6" @click="handleSavePageTitle()">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </a-form-item>
+                  
+                  <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_ebd2a6a1") }}</a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
