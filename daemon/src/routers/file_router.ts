@@ -147,7 +147,8 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
         type: "download",
         url,
         targetPath,
-        fallbackUrl
+        fallbackUrl,
+        extraInfo: data.extraInfo
       });
       protocol.response(ctx, true);
       return;

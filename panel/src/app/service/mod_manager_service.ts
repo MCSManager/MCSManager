@@ -557,13 +557,6 @@ class ModManagerService {
         timeout: 10000
       });
 
-      // Log for debugging (User can see this in console)
-      console.log(
-        `[CurseForge] Search "${query}" - Status: ${res.status}, Results: ${
-          res.data?.data?.length || 0
-        }`
-      );
-
       if (!res.data || !res.data.data || !Array.isArray(res.data.data)) {
         return { hits: [], total_hits: 0 };
       }
@@ -736,7 +729,7 @@ class ModManagerService {
       // We should handle this gracefully
       const url = query
         ? `https://api.spiget.org/v2/search/resources/${encodeURIComponent(query)}`
-        : `https://api.spiget.org/v2/resources/top`;
+        : `https://api.spiget.org/v2/resources/last-update`;
 
       const res = await this.requestWithRetry({
         method: "GET",
@@ -744,7 +737,8 @@ class ModManagerService {
         params: {
           size: limit,
           page: Math.floor(offset / limit) + 1,
-          fields: "id,name,tag,icon,rating,downloads,updateDate,version"
+          fields: "id,name,tag,icon,rating,downloads,updateDate,version",
+          sort: "-updateDate"
         },
         headers: {
           "User-Agent": "MCSManager"

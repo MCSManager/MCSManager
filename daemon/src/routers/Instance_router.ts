@@ -578,13 +578,13 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
     }
 
     const uploadTasks = [];
-    for (const [id, writer] of (uploadManager as any).uploads.entries()) {
+    for (const [id, writer] of uploadManager.getUploads()) {
       if (writer.cwd === instanceUuid || writer.path.includes(instanceUuid)) {
         uploadTasks.push({
           id,
           path: writer.path,
           total: writer.size,
-          current: writer.received.reduce((acc: number, r: any) => acc + (r.end - r.start), 0),
+          current: writer.received.reduce((acc: number, r: { start: number; end: number }) => acc + (r.end - r.start), 0),
           status: 0,
           type: "upload"
         });
@@ -602,10 +602,10 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/toggle", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred } = data;
+  const { instanceUuid, fileName, deferred, extraInfo } = data;
   try {
     if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "toggle", fileName });
+      modService.addDeferredTask(instanceUuid, { type: "toggle", fileName, extraInfo });
       protocol.response(ctx, true);
     } else {
       await modService.toggleMod(instanceUuid, fileName);
@@ -617,10 +617,10 @@ routerApp.on("instance/mods/toggle", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/delete", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred } = data;
+  const { instanceUuid, fileName, deferred, extraInfo } = data;
   try {
     if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "delete", fileName });
+      modService.addDeferredTask(instanceUuid, { type: "delete", fileName, extraInfo });
       protocol.response(ctx, true);
     } else {
       await modService.deleteMod(instanceUuid, fileName);

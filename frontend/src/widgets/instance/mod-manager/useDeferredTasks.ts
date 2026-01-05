@@ -11,8 +11,16 @@ import {
   clearDeferredTasksApi
 } from "@/services/apis/modManager";
 
+export interface DeferredTask {
+  id: string;
+  type: string;
+  name: string;
+  data: any;
+  time: number;
+}
+
 export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?: () => Promise<void>) {
-  const deferredTasks = useLocalStorage<any[]>(`mcs_mod_deferred_tasks_${instanceId}`, []);
+  const deferredTasks = useLocalStorage<DeferredTask[]>(`mcs_mod_deferred_tasks_${instanceId}`, []);
   const autoExecute = useLocalStorage<boolean>(`mcs_mod_auto_execute_${instanceId}`, true);
   const isExecuting = ref(false);
 
@@ -26,7 +34,7 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
         }
       });
 
-      // 只要后端返回了结果（即使是空数组），就以后端为准同步前端
+      // As long as the backend returns a result (even an empty array), sync the frontend based on the backend
       if (Array.isArray(backendTasks)) {
         if (backendTasks.length === 0) {
           if (deferredTasks.value.length > 0) {
@@ -83,7 +91,7 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
 
   onMounted(async () => {
     await syncWithBackend();
-    // 初始同步一次开关状态
+    // Initial sync of the auto-execute toggle state
     try {
       const { execute: setAuto } = setAutoExecuteApi();
       await setAuto({
@@ -109,7 +117,7 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
     deferredTasks.value.push(task);
     message.success(t("TXT_CODE_MOD_DEFERRED_TASK_ADDED"));
 
-    // 立即同步到后端，这样即使关闭网页，后端也知道有任务要执行
+    // Sync to backend immediately so that even if the browser is closed, the backend knows there are tasks to execute
     try {
       if (task.type === "download") {
         const { execute } = downloadModApi();
@@ -130,7 +138,7 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
     deferredTasks.value = deferredTasks.value.filter((t) => t.id !== id);
   };
 
-  const executeDeferredTask = async (task: any, reload = true) => {
+  const executeDeferredTask = async (task: DeferredTask, reload = true) => {
     try {
       if (task.type === "download") {
         const { execute } = downloadModApi();

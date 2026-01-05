@@ -55,9 +55,9 @@ const headerSearchQuery = ref("");
 
 const isWindows = computed(() => {
   const config = instanceInfo.value?.config;
-  // 1. 检查 crlf 标识 (2 为 Windows)
+  // 1. Check CRLF flag (2 is Windows)
   if (config?.crlf === 2) return true;
-  // 2. 检查 cwd 路径格式 (如果是 C:\ 或包含反斜杠 \，则是 Windows)
+  // 2. Check CWD path format (if it starts with C:\ or contains backslash \, it's Windows)
   const cwd = config?.cwd || "";
   if (/^[a-zA-Z]:\\/.test(cwd) || cwd.includes("\\")) return true;
   return false;
@@ -67,7 +67,7 @@ const isRunning = computed(() => {
   return s === 2 || s === 3;
 });
 
-// 移除调试日志
+// Remove debug logs
 // watch([isWindows, isRunning], ([win, run]) => { ... });
 
 const checkAndConfirm = async (type: string, name: string, data: any, immediateFn: () => Promise<void>) => {
@@ -152,9 +152,9 @@ watch(
   () => isInstanceRunning.value,
   (running) => {
     if (!running) {
-      // 当服务器停止时，立即刷新列表以获取最新状态（此时文件锁已释放）
+      // When the server stops, refresh the list immediately to get the latest status (file locks are released)
       loadMods();
-      // 同步后端任务状态（后端会自动执行任务并清空队列）
+      // Sync backend task status (backend will automatically execute tasks and clear the queue)
       syncWithBackend();
     }
   }
@@ -249,12 +249,12 @@ watch(
   [hasModsFolder, hasPluginsFolder, loading],
   ([hasMods, hasPlugins, isLoading]) => {
     if (isLoading) return;
-    // 如果当前已经在有效的标签页（Mod列表、插件列表或下载页），则不进行自动跳转
+    // If currently on a valid tab (Mod list, Plugin list, or Download page), do not auto-jump
     if (hasMods && activeKey.value === "1") return;
     if (hasPlugins && activeKey.value === "2") return;
     if (activeKey.value === "3") return;
 
-    // 只有在当前标签页无效时（例如刚进入页面或文件夹状态改变），才进行初始化跳转
+    // Only perform initial jump if the current tab is invalid (e.g., just entered the page or folder status changed)
     if (hasMods) {
       activeKey.value = "1";
     } else if (hasPlugins) {
