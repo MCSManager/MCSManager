@@ -1551,7 +1551,7 @@
   "TXT_CODE_98742e5f": "Boss血条颜色",
   "TXT_CODE_9878c2bc": "默认情况下，Velocity将尝试优雅地处理用户对服务器的连接意外丢失，而不是断开连接。",
   "TXT_CODE_9885543f": "初始化终端失败，可能是远程节点或实例已不存在，请刷新网页重试。",
-  "TXT_CODE_98b4ac74": "MC NekoForge",
+  "TXT_CODE_98b4ac74": "MC NeoForge",
   "TXT_CODE_98dbd049": "建议不要超过 3 行",
   "TXT_CODE_98e50717": "Purpur配置文件，允许对高级参数及更具体的游戏设置进行进一步调整，极大地影响整体性能，并在Paper配置文件的功能基础上进行扩展。",
   "TXT_CODE_98e7c829": "留空将使用 Docker 镜像自带命令启动",
@@ -3193,4 +3193,5 @@
   "TXT_CODE_MOD_UPLOAD_NO_FOLDER": "不支持上传文件夹，请选择文件或压缩包",
   "TXT_CODE_TOTAL_ITEMS": "共计 {total} 条项目",
   "TXT_CODE_INSTALLED": "已安装"
+  "TXT_CODE_8a5305a6": "MC Leaves"
 }
