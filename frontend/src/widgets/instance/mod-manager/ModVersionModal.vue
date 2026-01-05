@@ -8,7 +8,7 @@ import {
   Tag,
   Button
 } from "ant-design-vue";
-import { CloudDownloadOutlined } from "@ant-design/icons-vue";
+import { CloudDownloadOutlined, CheckCircleOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps<{
   visible: boolean;
@@ -25,8 +25,8 @@ const { isPhone } = useScreen();
 
 const sortedVersions = computed(() => {
   if (!props.versions) return [];
-  const vFilter = props.searchFilters.version;
-  const lFilter = props.searchFilters.loader;
+  const vFilter = props.searchFilters?.version;
+  const lFilter = props.searchFilters?.loader;
 
   if (!vFilter && !lFilter) return props.versions;
 
@@ -54,6 +54,17 @@ const sortedVersions = computed(() => {
   });
 });
 
+const isInstalled = (record: any) => {
+  return props.mods?.some((m: any) => {
+    // 1. Check by version ID (most accurate for MCSM managed mods)
+    if (m.extraInfo?.version?.id && m.extraInfo.version.id === record.id) return true;
+    // 2. Check by filename (for manually uploaded or different metadata)
+    const targetFileName = record.filename || record.fileName || (record.files && record.files[0]?.filename);
+    if (targetFileName && m.file === targetFileName) return true;
+    return false;
+  });
+};
+
 const columns = computed(() => {
   const base = [
     { title: t("TXT_CODE_VERSION_NAME"), dataIndex: "name", key: "name" },
@@ -70,7 +81,7 @@ const columns = computed(() => {
   <Modal
     :visible="visible"
     @update:visible="val => emit('update:visible', val)"
-    :title="selectedMod?.title + ' - ' + t('TXT_CODE_VERSION_SELECT')"
+    :title="(selectedMod?.title || selectedMod?.name || '') + ' - ' + t('TXT_CODE_VERSION_SELECT')"
     :footer="null"
     :width="isPhone ? '100%' : '800px'"
   >
@@ -84,9 +95,9 @@ const columns = computed(() => {
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'game_versions'">
           <Tag
-            v-for="v in record.game_versions.slice(0, 3)"
+            v-for="v in record.game_versions?.slice(0, 3)"
             :key="v"
-            :color="v === searchFilters.version ? 'blue' : ''"
+            :color="v === searchFilters?.version ? 'blue' : ''"
           >
             {{ v }}
           </Tag>
@@ -95,7 +106,7 @@ const columns = computed(() => {
           <Tag
             v-for="l in record.loaders"
             :key="l"
-            :color="l.toLowerCase() === searchFilters.loader.toLowerCase() ? 'green' : 'orange'"
+            :color="l.toLowerCase() === searchFilters?.loader?.toLowerCase() ? 'green' : 'orange'"
           >
             {{ l }}
           </Tag>
@@ -105,11 +116,15 @@ const columns = computed(() => {
             type="text"
             size="small"
             class="opacity-60 hover:opacity-100"
-            :disabled="mods.some((m) => m.extraInfo?.version?.id === record.id)"
+            :disabled="isInstalled(record)"
             @click="emit('download', record)"
-            :title="mods.some((m) => m.extraInfo?.version?.id === record.id) ? t('TXT_CODE_CURRENT_VERSION') : t('TXT_CODE_DOWNLOAD')"
+            :title="isInstalled(record) ? t('TXT_CODE_INSTALLED') : t('TXT_CODE_DOWNLOAD')"
+            :class="{ 'text-green-500': isInstalled(record) }"
           >
-            <template #icon><cloud-download-outlined style="font-size: 16px" /></template>
+            <template #icon>
+              <check-circle-outlined v-if="isInstalled(record)" style="font-size: 16px" />
+              <cloud-download-outlined v-else style="font-size: 16px" />
+            </template>
           </Button>
         </template>
       </template>

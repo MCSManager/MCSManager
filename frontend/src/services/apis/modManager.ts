@@ -124,6 +124,22 @@ export const downloadModApi = useDefineApi<
   url: "/api/mod/download"
 });
 
+export const stopTransferApi = useDefineApi<
+  {
+    data: {
+      daemonId: string;
+      uuid: string;
+      fileName: string;
+      type: "download" | "upload";
+      uploadId?: string;
+    };
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/mod/stop_transfer"
+});
+
 export const getModConfigFilesApi = useDefineApi<
   {
     params: {

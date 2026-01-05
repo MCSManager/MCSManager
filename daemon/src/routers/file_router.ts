@@ -155,6 +155,18 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
   }
 });
 
+// stop download from url
+routerApp.on("file/download_stop", (ctx, data) => {
+  try {
+    const fileManager = getFileManager(data.instanceUuid);
+    const targetPath = fileManager.toAbsolutePath(data.fileName);
+    const result = downloadManager.stop(targetPath);
+    protocol.response(ctx, result);
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
 // copy the file
 routerApp.on("file/copy", async (ctx, data) => {
   try {

@@ -311,6 +311,7 @@ class ModManagerService {
         ...(curseforgeRes?.hits || []),
         ...(spigotRes?.hits || [])
       ];
+      
       const total_hits =
         (modrinthRes?.total_hits || 0) +
         (curseforgeRes?.total_hits || 0) +
@@ -765,7 +766,7 @@ class ModManagerService {
 
       return {
         hits,
-        total_hits: parseInt(res.headers["x-total-count"] || hits.length)
+        total_hits: parseInt(res.headers["x-total-count"] || "0") || (data.length === limit ? offset + limit + 1 : offset + data.length)
       };
     } catch (err) {
       console.error("SpigotMC search error:", err);
@@ -796,10 +797,15 @@ class ModManagerService {
         // Clean resource name for filename
         const safeName = resourceName.replace(/[\\\/\:\*\?\"\<\>\|]/g, "_").replace(/\s+/g, "_");
         // Use version-less download URL for the latest version to bypass SpigotMC Cloudflare via Spiget CDN
-        const isLatest = index === versions.length - 1;
+        // Spiget API returns versions sorted by releaseDate descending (newest first)
+        const isLatest = index === 0;
         const downloadUrl = isLatest
           ? `https://api.spiget.org/v2/resources/${projectId}/download`
           : `https://api.spiget.org/v2/resources/${projectId}/versions/${v.id}/download`;
+
+        // Use Spiget CDN to bypass Cloudflare if possible
+        // If CDN fails (521), the daemon will still try the original URL with browser headers
+        const cdnDownloadUrl = downloadUrl.replace("api.spiget.org", "cdn.spiget.org");
 
         return {
           id: String(v.id),
@@ -810,9 +816,14 @@ class ModManagerService {
           project_type: "plugin",
           files: [
             {
-              url: downloadUrl,
+              url: cdnDownloadUrl,
               filename: `${safeName}-${v.name}.jar`,
               primary: true
+            },
+            {
+              url: downloadUrl,
+              filename: `${safeName}-${v.name}.jar`,
+              primary: false
             }
           ]
         };

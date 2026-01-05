@@ -15,6 +15,8 @@ import { createQuickInstallTask, QuickInstallTask } from "../service/async_task_
 import { IInstanceDetail, IJson } from "../service/interfaces";
 import FileManager from "../service/system_file";
 import { modService } from "../service/mod_service";
+import downloadManager from "../service/download_manager";
+import uploadManager from "../service/upload_manager";
 
 // Some instances operate router authentication middleware
 routerApp.use((event, ctx, data, next) => {
@@ -563,7 +565,37 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   try {
     const mods = await modService.listMods(instanceUuid);
-    protocol.response(ctx, mods);
+    const downloadTasks = [];
+    for (const [path, task] of downloadManager.tasks.entries()) {
+      downloadTasks.push({
+        path,
+        total: task.total,
+        current: task.current,
+        status: task.status,
+        error: task.error,
+        type: "download"
+      });
+    }
+
+    const uploadTasks = [];
+    for (const [id, writer] of (uploadManager as any).uploads.entries()) {
+      if (writer.cwd === instanceUuid || writer.path.includes(instanceUuid)) {
+        uploadTasks.push({
+          id,
+          path: writer.path,
+          total: writer.size,
+          current: writer.received.reduce((acc: number, r: any) => acc + (r.end - r.start), 0),
+          status: 0,
+          type: "upload"
+        });
+      }
+    }
+
+    protocol.response(ctx, {
+      ...mods,
+      downloadTasks: [...downloadTasks, ...uploadTasks],
+      downloadFileFromURLTask: downloadManager.downloadingCount
+    });
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }

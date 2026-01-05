@@ -154,23 +154,14 @@ const btns = computed(() => {
       },
       condition: () => {
         const type = instanceInfo.value?.config.type || "";
-        const isMC = type.includes(TYPE_MINECRAFT_JAVA) || type.includes("minecraft/bedrock");
+        // 严格确保是我的世界服务器类型（Java版或基岩版）
+        const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
 
         const hasPermission = state.settings.canFileManager || isAdmin.value;
         if (!hasPermission) return false;
-
-        // If it's a known modded/plugin type, always show
-        const isModdedType =
-          type !== TYPE_MINECRAFT_JAVA &&
-          type !== TYPE_MINECRAFT_BEDROCK &&
-          type !== "minecraft/bedrock/bds";
-
-        if (isModdedType) return true;
-
-        // For Vanilla types, only show if folders exist (or still loading)
-        if (!foldersLoaded.value) return true;
-        return folders.value.length > 0;
+        if (!foldersLoaded.value) return false;
+        return folders.value && folders.value.length > 0;
       }
     },
     {

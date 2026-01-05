@@ -10,6 +10,7 @@ import {
 
 export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?: () => Promise<void>) {
   const deferredTasks = useLocalStorage<any[]>(`mcs_mod_deferred_tasks_${instanceId}`, []);
+  const autoExecute = useLocalStorage<boolean>(`mcs_mod_auto_execute_${instanceId}`, true);
   const isExecuting = ref(false);
 
   const addDeferredTask = (type: string, name: string, data: any) => {
@@ -51,12 +52,12 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
     if (isExecuting.value || deferredTasks.value.length === 0) return;
     isExecuting.value = true;
     try {
+      const tasks = [...deferredTasks.value];
       message.info(
         t("TXT_CODE_MOD_DEFERRED_REMIND_DESC", {
-          count: deferredTasks.value.length
+          count: tasks.length
         })
       );
-      const tasks = [...deferredTasks.value];
       for (const task of tasks) {
         await executeDeferredTask(task, false);
       }
@@ -68,6 +69,7 @@ export function useDeferredTasks(instanceId: string, daemonId: string, reloadFn?
 
   return {
     deferredTasks,
+    autoExecute,
     isExecuting,
     addDeferredTask,
     removeDeferredTask,

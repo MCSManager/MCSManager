@@ -84,12 +84,13 @@ export function useModSearch(
     };
     searchResults.value = [];
     searchTotal.value = 0;
+    searchPage.value = 1;
     searched.value = false;
   };
 
-  const onSearch = async (page: any = 1) => {
-    if (!searchFilters.value.query && !searchFilters.value.version) return;
+  const onSearch = async (page: any = 1, limit: any = null) => {
     if (typeof page !== "number") page = 1;
+    if (limit && typeof limit === "number") searchLimit.value = limit;
     searchLoading.value = true;
     searched.value = true;
     searchPage.value = page;
@@ -99,7 +100,7 @@ export function useModSearch(
         params: {
           query: searchFilters.value.query,
           source: searchFilters.value.source,
-          version: searchFilters.value.version,
+          version: searchFilters.value.version || searchFilters.value.gameVersion,
           type: searchFilters.value.type,
           loader: searchFilters.value.loader,
           environment: searchFilters.value.environment,
@@ -275,7 +276,7 @@ export function useModSearch(
       uuid: instanceId!,
       daemonId: daemonId!,
       url: file.url,
-      fileName: file.filename,
+      fileName: file.filename || file.name || (file.url?.split("/").pop()),
       projectType: finalType
     };
 
@@ -284,6 +285,29 @@ export function useModSearch(
         const mods = getMods();
         const currentProjectType = downloadData.projectType;
         const existingMod = mods.find((m) => m.extraInfo?.project?.id === selectedMod.value?.id);
+
+        const { execute } = downloadModApi();
+        await execute({
+          data: {
+            ...downloadData,
+            projectType: currentProjectType,
+            extraInfo: {
+              project: {
+                id: selectedMod.value?.id,
+                name: selectedMod.value?.title || selectedMod.value?.name,
+                icon_url: selectedMod.value?.icon_url || selectedMod.value?.thumbnail
+              },
+              version: {
+                id: version.id,
+                name: version.name,
+                version_number: version.version_number
+              },
+              source: selectedMod.value?.source
+            }
+          }
+        });
+
+        // If download starts successfully and there's an existing mod, delete it
         if (existingMod) {
           try {
             const { execute: deleteOldMod } = deleteModApi();
@@ -295,18 +319,10 @@ export function useModSearch(
               }
             });
           } catch (e) {
-            // Ignore deletion errors (e.g. file already gone) to ensure download proceeds
             console.warn("Failed to delete old mod version:", e);
           }
         }
 
-        const { execute } = downloadModApi();
-        await execute({
-          data: {
-            ...downloadData,
-            projectType: currentProjectType
-          }
-        });
         const targetTab =
           currentProjectType === "plugin" ? t("TXT_CODE_PLUGIN_LIST") : t("TXT_CODE_MOD_LIST");
         message.success(`${t("TXT_CODE_38fb23a8")} -> ${targetTab}`);

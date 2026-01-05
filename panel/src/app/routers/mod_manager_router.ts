@@ -162,6 +162,36 @@ router.post(
   }
 );
 
+router.post(
+  "/stop_transfer",
+  permission({ level: ROLE.USER }),
+  validator({
+    body: { daemonId: String, uuid: String, fileName: String, type: String }
+  }),
+  async (ctx) => {
+    try {
+      const { daemonId, uuid, fileName, type, uploadId } = ctx.request.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (type === "download") {
+        const result = await new RemoteRequest(remoteService).request("file/download_stop", {
+          instanceUuid: uuid,
+          fileName
+        });
+        ctx.body = result;
+      } else {
+        // Upload stop is handled by deleting the file or specific upload task
+        const result = await new RemoteRequest(remoteService).request("file/delete", {
+          instanceUuid: uuid,
+          targets: [fileName]
+        });
+        ctx.body = result;
+      }
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
 router.get(
   "/config_files",
   permission({ level: ROLE.USER }),
