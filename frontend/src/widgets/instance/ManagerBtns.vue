@@ -154,7 +154,7 @@ const btns = computed(() => {
       },
       condition: () => {
         const type = instanceInfo.value?.config.type || "";
-        // 严格确保是我的世界服务器类型（Java版或基岩版）
+        // Narrow it down to Minecraft server types only (Java or Bedrock)
         const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
 
@@ -332,7 +332,6 @@ watch(instanceInfo, (cfg, oldCfg) => {
   right: 0;
 }
 
-/* 当组件垂直排列时的自适应高度 */
 @media (max-width: 1000px) {
   .function-btns-container {
     position: relative;

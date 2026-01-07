@@ -100,7 +100,7 @@ export function useModSearch(
         params: {
           query: searchFilters.value.query,
           source: searchFilters.value.source,
-          version: searchFilters.value.version || searchFilters.value.gameVersion,
+          version: searchFilters.value.version,
           type: searchFilters.value.type,
           loader: searchFilters.value.loader,
           environment: searchFilters.value.environment,
@@ -193,6 +193,10 @@ export function useModSearch(
     const file = version.files.find((f: any) => f.primary) || version.files[0];
     if (!file) return;
 
+    // Find fallback URL if available (e.g., from SpigotMC version list)
+    const fallbackFile = version.files.find((f: any) => f.url !== file.url);
+    const fallbackUrl = fallbackFile?.url;
+
     // 1. Automatic detection logic
     let detectedType = version.project_type || selectedMod.value?.project_type || "mod";
 
@@ -276,6 +280,7 @@ export function useModSearch(
       uuid: instanceId!,
       daemonId: daemonId!,
       url: file.url,
+      fallbackUrl,
       fileName: file.filename || file.name || (file.url?.split("/").pop()),
       projectType: finalType
     };

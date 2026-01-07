@@ -8,6 +8,7 @@ import Instance from "../../entity/instance/instance";
 import InstanceConfig from "../../entity/instance/Instance_config";
 import { $t } from "../../i18n";
 import { getFileManager } from "../file_router_service";
+import { getCommonHeaders } from "../../common/network";
 import { InstanceUpdateAction } from "../instance_update_action";
 import logger from "../log";
 import InstanceSubsystem from "../system_instance";
@@ -83,25 +84,11 @@ export class QuickInstallTask extends AsyncTask {
       eta: 0
     };
 
-    const urlObj = new URL(this.targetLink);
     const response = await axios<Readable>({
       url: this.targetLink,
       responseType: "stream",
       signal: this.abortController.signal,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
-        Referer: urlObj.origin,
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1"
-      },
+      headers: getCommonHeaders(this.targetLink),
       maxRedirects: 10
     });
 

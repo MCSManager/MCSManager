@@ -90,11 +90,8 @@ export class ModService {
     const fileManager = getFileManager(instanceUuid);
     if (task.fileName && !fileManager.checkPath(task.fileName)) throw new Error("Invalid file name");
     if (task.url && !checkSafeUrl(task.url)) throw new Error("Invalid URL");
-    if (task.targetPath) {
-      const instanceRoot = fileManager.toAbsolutePath("");
-      if (!task.targetPath.startsWith(instanceRoot)) {
-        throw new Error("Access denied: Target path is outside of instance directory");
-      }
+    if (task.targetPath && !fileManager.checkPath(task.targetPath)) {
+      throw new Error("Access denied: Target path is outside of instance directory");
     }
 
     if (!this.deferredTasks.has(instanceUuid)) {
@@ -402,6 +399,45 @@ export class ModService {
     }
 
     await fs.remove(filePath);
+  }
+
+  public async installMod(
+    instanceUuid: string,
+    url: string,
+    fileName: string,
+    type: "mod" | "plugin",
+    options: { fallbackUrl?: string; deferred?: boolean; extraInfo?: any } = {}
+  ) {
+    const fileManager = getFileManager(instanceUuid);
+    const rootDir = fileManager.toAbsolutePath(".");
+    
+    // Determine the save directory based on what exists (case-sensitive check for Linux)
+    let saveDir = type === "plugin" ? "plugins" : "mods";
+    const variants = type === "plugin" ? ["plugins", "Plugins"] : ["mods", "Mods"];
+    
+    for (const v of variants) {
+      if (await fs.pathExists(path.join(rootDir, v))) {
+        saveDir = v;
+        break;
+      }
+    }
+
+    const relativePath = path.join(saveDir, fileName);
+    if (!fileManager.checkPath(relativePath)) throw new Error("Invalid file path");
+    const targetPath = fileManager.toAbsolutePath(relativePath);
+
+    if (options.deferred) {
+      this.addDeferredTask(instanceUuid, {
+        type: "download",
+        url,
+        targetPath,
+        fallbackUrl: options.fallbackUrl,
+        extraInfo: options.extraInfo
+      });
+      return;
+    }
+
+    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
   }
 
   public async getModConfig(

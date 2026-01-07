@@ -158,6 +158,7 @@ export const downloadModApi = useDefineApi<
       url: string;
       fileName: string;
       projectType?: string;
+      fallbackUrl?: string;
       deferred?: boolean;
     };
   },

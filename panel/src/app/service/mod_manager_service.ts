@@ -727,9 +727,8 @@ class ModManagerService {
     try {
       // Spiget API search endpoint returns 404 if no results are found
       // We should handle this gracefully
-      const url = query
-        ? `https://api.spiget.org/v2/search/resources/${encodeURIComponent(query)}`
-        : `https://api.spiget.org/v2/resources/last-update`;
+      const trimmedQuery = query?.trim() || " ";
+      const url = `https://api.spiget.org/v2/search/resources/${encodeURIComponent(trimmedQuery)}`;
 
       const res = await this.requestWithRetry({
         method: "GET",

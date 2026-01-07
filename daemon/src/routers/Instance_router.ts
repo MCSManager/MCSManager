@@ -566,13 +566,13 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
   try {
     const mods = await modService.listMods(instanceUuid);
     const downloadTasks = [];
-    for (const [path, task] of downloadManager.tasks.entries()) {
+    if (downloadManager.task) {
       downloadTasks.push({
-        path,
-        total: task.total,
-        current: task.current,
-        status: task.status,
-        error: task.error,
+        path: downloadManager.task.path,
+        total: downloadManager.task.total,
+        current: downloadManager.task.current,
+        status: downloadManager.task.status,
+        error: downloadManager.task.error,
         type: "download"
       });
     }
@@ -626,6 +626,16 @@ routerApp.on("instance/mods/delete", async (ctx, data) => {
       await modService.deleteMod(instanceUuid, fileName);
       protocol.response(ctx, true);
     }
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
+routerApp.on("instance/mods/install", async (ctx, data) => {
+  const { instanceUuid, url, fileName, type, fallbackUrl, deferred, extraInfo } = data;
+  try {
+    await modService.installMod(instanceUuid, url, fileName, type, { fallbackUrl, deferred, extraInfo });
+    protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }

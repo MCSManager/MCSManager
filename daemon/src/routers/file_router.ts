@@ -10,6 +10,7 @@ import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
+import { modService } from "../service/mod_service";
 import { checkSafeUrl } from "../utils/url";
 
 // Some routers operate router authentication middleware
@@ -69,13 +70,13 @@ routerApp.on("file/status", async (ctx, data) => {
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
 
     const downloadTasks = [];
-    for (const [path, task] of downloadManager.tasks.entries()) {
+    if (downloadManager.task) {
       downloadTasks.push({
-        path,
-        total: task.total,
-        current: task.current,
-        status: task.status,
-        error: task.error
+        path: downloadManager.task.path,
+        total: downloadManager.task.total,
+        current: downloadManager.task.current,
+        status: downloadManager.task.status,
+        error: downloadManager.task.error
       });
     }
 
@@ -136,13 +137,9 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const targetPath = fileManager.toAbsolutePath(fileName);
 
     // Start download in background
-    let fallbackUrl: string | undefined;
-    if (url.includes("cdn.spiget.org")) {
-      fallbackUrl = url.replace("cdn.spiget.org", "api.spiget.org");
-    }
+    const fallbackUrl = data.fallbackUrl;
 
     if (deferred) {
-      const { modService } = await import("../service/mod_service");
       modService.addDeferredTask(data.instanceUuid, {
         type: "download",
         url,

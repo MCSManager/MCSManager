@@ -143,17 +143,27 @@ router.post(
   "/download",
   permission({ level: ROLE.USER }),
   validator({
-    body: { daemonId: String, uuid: String, url: String, fileName: String, projectType: String }
+    body: {
+      daemonId: String,
+      uuid: String,
+      url: String,
+      fileName: String,
+      projectType: String
+    }
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, url, fileName, projectType } = ctx.request.body;
+      const { daemonId, uuid, url, fileName, projectType, fallbackUrl, deferred, extraInfo } =
+        ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const saveDir = projectType === "plugin" ? "plugins" : "mods";
-      const result = await new RemoteRequest(remoteService).request("file/download_from_url", {
+      const result = await new RemoteRequest(remoteService).request("instance/mods/install", {
         instanceUuid: uuid,
         url,
-        fileName: `${saveDir}/${fileName}`
+        fileName,
+        type: projectType,
+        fallbackUrl,
+        deferred,
+        extraInfo
       });
       ctx.body = result;
     } catch (err) {
