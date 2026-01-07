@@ -39,21 +39,21 @@ const submit = async () => {
     v-model:open="open"
     width="400px"
     centered
-    :title="t('下载Java环境')"
+    :title="t('TXT_CODE_84588601')"
     :closable="false"
     :destroy-on-close="true"
     @cancel="cancel"
     @ok="submit"
   >
     <a-form layout="vertical">
-      <a-form-item :label="t('Java 类型')">
+      <a-form-item :label="t('TXT_CODE_e714905d')">
         <a-select v-model:value="dataSource.name">
           <a-select-option v-for="java in JAVA_LIST" :key="java.name" :value="java.name">
             {{ java.name }}
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item :label="t('Java 版本')">
+      <a-form-item :label="t('TXT_CODE_1a15de5')">
         <a-select v-model:value="dataSource.version" :disabled="!dataSource.name">
           <a-select-option v-for="version in javaVersions" :key="version" :value="version">
             {{ version }}

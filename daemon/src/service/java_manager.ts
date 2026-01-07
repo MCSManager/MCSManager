@@ -125,11 +125,11 @@ class JavaManager {
 
   getJavaRuntimeCommand(id: string) {
     const java = this.getJava(id);
-    if (!java) throw new Error($t("找不到目标Java!"));
-    if (java.info.downloading) throw new Error($t("Java并没有下载完成!"));
+    if (!java) throw new Error($t("TXT_CODE_77ce8542"));
+    if (java.info.downloading) throw new Error($t("TXT_CODE_45d02bb7"));
 
     let javaPath = java.path;
-    if (!javaPath) throw new Error($t("找不到目标Java的路径!"));
+    if (!javaPath) throw new Error($t("TXT_CODE_82c8bca3"));
 
     let javaRuntimePath = path.join(
       javaPath,
@@ -142,13 +142,13 @@ class JavaManager {
 
   async removeJava(id: string) {
     const java = this.getJava(id);
-    if (!java) throw new Error($t("找不到目标Java!"));
+    if (!java) throw new Error($t("TXT_CODE_77ce8542"));
 
-    if (java.info.downloading) throw new Error($t("这个Java还在下载中!"));
-    if (java.usingInstances.length) throw new Error($t("请先关闭使用这个Java的所有实例!"));
+    if (java.info.downloading) throw new Error($t("TXT_CODE_887fee99"));
+    if (java.usingInstances.length) throw new Error($t("TXT_CODE_ea8ea5d1"));
 
     let javaPath = java.path;
-    if (!javaPath) throw new Error($t("找不到目标Java的路径!"));
+    if (!javaPath) throw new Error($t("TXT_CODE_82c8bca3"));
 
     await fs.remove(javaPath);
     this.javaList.delete(id);

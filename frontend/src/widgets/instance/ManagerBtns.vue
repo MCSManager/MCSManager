@@ -126,7 +126,7 @@ const btns = computed(() => {
       condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
     },
     {
-      title: t("Java 环境管理"),
+      title: t("TXT_CODE_3fee13ed"),
       icon: BuildOutlined,
       click: () => {
         javaManagerDialog.value?.openDialog();

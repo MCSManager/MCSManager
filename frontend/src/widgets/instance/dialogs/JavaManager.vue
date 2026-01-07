@@ -25,25 +25,25 @@ const props = defineProps<{
 const columns: AntColumnsType[] = [
   {
     align: "center",
-    title: t("Java 名称"),
+    title: t("TXT_CODE_3f36206f"),
     dataIndex: ["info", "fullname"],
     key: "fullname"
   },
   {
     align: "center",
-    title: t("安装时间"),
+    title: t("TXT_CODE_a2e79565"),
     dataIndex: ["info", "installTime"],
     key: "installTime",
     customRender: (e: { text: number }) => t(parseTimestamp(e.text))
   },
   {
     align: "center",
-    title: t("Java 状态"),
+    title: t("TXT_CODE_f55da98f"),
     key: "status",
     customRender: ({ record }: { record: JavaRuntime }) => {
-      if (record.usingInstances.length > 0) return t("运行中");
-      else if (record.info.downloading) return t("下载中");
-      else return t("未运行");
+      if (record.usingInstances.length > 0) return t("TXT_CODE_bdb620b9");
+      else if (record.info.downloading) return t("TXT_CODE_d919f7c7");
+      else return t("TXT_CODE_15f2e564");
     }
   },
   {
@@ -98,7 +98,7 @@ const handleDownloadJava = async () => {
   } catch (err: any) {
     message.error(err.message);
   }
-  message.success(t("下载任务已开始，请稍后..."));
+  message.success(t("TXT_CODE_5e7a4c02"));
   await refreshJavaList();
 };
 
@@ -150,16 +150,16 @@ defineExpose({
     v-model:open="open"
     width="1000px"
     centered
-    :title="t('Java 环境管理')"
+    :title="t('TXT_CODE_3fee13ed')"
     :confirm-loading="isLoading"
     @close="close"
   >
     <div>
       <a-typography-paragraph>
         <a-typography-text type="secondary">
-          {{ t("在 MCSManager 中选择并安装一个你需要的 Java 版本。") }}
+          {{ t("TXT_CODE_ebf01bcc") }}
           <br />
-          {{ t("完成配置后，将会使用 {mcsm_java} 来替代原本的 java应用命令。") }}
+          {{ t("TXT_CODE_e1c637bb") }}
         </a-typography-text>
       </a-typography-paragraph>
 
@@ -170,11 +170,11 @@ defineExpose({
           :icon="h(DownloadOutlined)"
           @click="handleDownloadJava()"
         >
-          {{ t("下载其他Java") }}
+          {{ t("TXT_CODE_9c48100e") }}
         </a-button>
 
         <a-button class="mr-10" :icon="h(ReloadOutlined)" @click="refreshJavaList(true)">
-          {{ t("刷新") }}
+          {{ t("TXT_CODE_b76d94e0") }}
         </a-button>
       </div>
 
@@ -191,7 +191,7 @@ defineExpose({
           <template v-if="column.key === 'actions'">
             <template v-if="record.info.fullname == instanceInfo?.config.java.id">
               <a-button class="mr-8" type="primary" :disabled="true">
-                {{ t("使用中") }}
+                {{ t("TXT_CODE_979520ef") }}
                 <CheckOutlined />
               </a-button>
             </template>
@@ -202,12 +202,12 @@ defineExpose({
               :disabled="record.info.downloading"
               @click="handleUsingJava(record.info as JavaInfo)"
             >
-              {{ t("使用") }}
+              {{ t("TXT_CODE_f0dcc8bf") }}
               <CheckOutlined />
             </a-button>
 
             <a-popconfirm
-              :title="t('你确定要删除这个Java环境吗?')"
+              :title="t('TXT_CODE_f4f86ba8')"
               @confirm="handleDeleteJava(record.info as JavaInfo)"
             >
               <a-button danger :disabled="record.info.downloading">
@@ -221,7 +221,7 @@ defineExpose({
     </div>
 
     <template #footer>
-      <a-button type="primary" @click="close">{{ t("完成") }}</a-button>
+      <a-button type="primary" @click="close">{{ t("TXT_CODE_31e92ef3") }}</a-button>
     </template>
   </a-modal>
 </template>

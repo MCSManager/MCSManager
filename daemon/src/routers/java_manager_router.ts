@@ -22,10 +22,10 @@ routerApp.on("java_manager/download", async (ctx, data) => {
 
   let downloadUrl: string;
   try {
-    if (javaManager.exists(info.fullname)) throw new Error($t("这个Java已经存在了!"));
+    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
 
     downloadUrl = await javaManager.getJavaDownloadUrl(info);
-    if (!downloadUrl) throw new Error($t("无法获取Java下载URL!"));
+    if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));
 
     protocol.response(ctx, true);
   } catch (error: any) {
@@ -82,7 +82,7 @@ routerApp.on("java_manager/download", async (ctx, data) => {
 routerApp.on("java_manager/using", async (ctx, data) => {
   try {
     const instance = instanceManager.getInstance(data.instanceId);
-    if (!instance) throw new Error($t("找不到目标实例!"));
+    if (!instance) throw new Error($t("TXT_CODE_ef6b54fb"));
 
     const startCommandList = commandStringToArray(instance.config.startCommand);
     startCommandList[0] = "{mcsm_java}";
