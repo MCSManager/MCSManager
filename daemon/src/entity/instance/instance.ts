@@ -337,6 +337,13 @@ export default class Instance extends EventEmitter {
     this.instanceStatus = Instance.STATUS_RUNNING;
     this.emit("open", this);
 
+    const javaId = this.config.java.id;
+    if (javaId) {
+      const java = javaManager.getJava(javaId);
+      if (java && !java.usingInstances.includes(this.instanceUuid))
+        java.usingInstances.push(this.instanceUuid);
+    }
+
     // start all lifecycle tasks
     this.lifeCycleTaskManager.execLifeCycleTask(1);
     this.startOutputLoop();
@@ -354,6 +361,12 @@ export default class Instance extends EventEmitter {
   // trigger exit event
   stopped(code = 0) {
     this.println("INFO", $t("TXT_CODE_70ce6fbb"));
+    const javaId = this.config.java.id;
+    if (javaId) {
+      const java = javaManager.getJava(javaId);
+      if (java)
+        java.usingInstances = java.usingInstances.filter((uuid) => uuid !== this.instanceUuid);
+    }
     this.releaseResources();
     if (this.instanceStatus != Instance.STATUS_STOP) {
       this.instanceStatus = Instance.STATUS_STOP;
