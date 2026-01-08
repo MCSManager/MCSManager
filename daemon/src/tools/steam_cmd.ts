@@ -5,6 +5,7 @@ import { pipeline, Readable } from "stream";
 import { STEAM_CMD_PATH, SYSTEM_TYPE, WINDOWS_STEAM_CMD_URL } from "../const";
 import logger from "../service/log";
 import FileManager from "../service/system_file";
+import { getCommonHeaders } from "../common/network";
 
 export async function initSteamCmd() {
   try {
@@ -40,10 +41,7 @@ export async function downloadSteam(url: string): Promise<string> {
         url: url,
         responseType: "stream",
         timeout: 1000 * 60 * 10, // 10 minutes timeout
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 MCSManager/10.0.0"
-        }
+        headers: getCommonHeaders(url)
       });
 
       // Create write stream

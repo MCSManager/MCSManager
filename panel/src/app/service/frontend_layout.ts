@@ -286,6 +286,20 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/instances/terminal/mods",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "InstanceModManager",
+          title: t("TXT_CODE_MOD_MANAGER"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        }
+      ]
+    },
+    {
       page: "/instances/terminal/serverConfig",
       items: [
         {
