@@ -142,7 +142,7 @@ class JavaManager {
       os.platform() == "win32" ? "java.exe" : "java"
     );
 
-    return javaRuntimePath;
+    return `"${javaRuntimePath}"`;
   }
 
   async removeJava(id: string) {
