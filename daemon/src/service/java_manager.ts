@@ -19,18 +19,26 @@ class JavaManager {
     if (!fs.existsSync(javaDataDir)) fs.mkdirsSync(javaDataDir);
     this.javaDataDir = path.normalize(javaDataDir);
 
-    for (const file of fs.readdirSync(this.javaDataDir)) {
+    this.loadJavaList();
+  }
+
+  public getJavaDataDir() {
+    return this.javaDataDir;
+  }
+
+  async loadJavaList() {
+    for (const file of await fs.readdir(this.javaDataDir)) {
       const javaPath = path.join(this.javaDataDir, file);
-      const dir = fs.statSync(javaPath);
+      const dir = await fs.stat(javaPath);
       if (!dir.isDirectory()) continue;
 
       const infoPath = path.join(javaPath, "java_info.json");
       if (!fs.existsSync(infoPath)) continue;
 
-      const config = fs.readJsonSync(infoPath);
+      const config = await fs.readJson(infoPath);
       // 删除上次没有下载完成的Java
       if (config.downloading) {
-        fs.removeSync(javaPath);
+        await fs.remove(javaPath);
         continue;
       }
 
@@ -41,10 +49,6 @@ class JavaManager {
         usingInstances: []
       });
     }
-  }
-
-  public getJavaDataDir() {
-    return this.javaDataDir;
   }
 
   list() {
