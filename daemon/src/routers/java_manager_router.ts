@@ -23,60 +23,52 @@ routerApp.on("java_manager/download", async (ctx, data) => {
   let downloadUrl: string;
   try {
     if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
+    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
+    javaManager.addJava(info);
 
     downloadUrl = await javaManager.getJavaDownloadUrl(info);
     if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));
 
     protocol.response(ctx, true);
-  } catch (error: any) {
-    protocol.responseError(ctx, error);
-    return;
-  }
 
-  (async () => {
-    try {
-      const javaPath = path.join(javaManager.getJavaDataDir(), info.fullname);
-      fs.mkdirsSync(javaPath);
+    const javaPath = path.join(javaManager.getJavaDataDir(), info.fullname);
+    fs.mkdirsSync(javaPath);
 
-      const fileName = path.basename(new URL(downloadUrl).pathname);
-      const filePath = path.join(javaPath, fileName);
-      javaManager.addJava(info);
+    const fileName = path.basename(new URL(downloadUrl).pathname);
+    const filePath = path.join(javaPath, fileName);
 
-      await downloadManager.downloadFromUrl(downloadUrl, filePath);
-      const java = javaManager.getJava(info.fullname);
-      if (!java) return;
+    await downloadManager.downloadFromUrl(downloadUrl, filePath);
+    const java = javaManager.getJava(info.fullname);
+    if (!java) return;
 
-      if (fileName.endsWith(".zip")) {
-        const fileManager = new FileManager(javaPath, "UTF-8");
-        await fileManager.unzip(fileName, ".", "UTF-8");
+    if (fileName.endsWith(".zip")) {
+      const fileManager = new FileManager(javaPath, "UTF-8");
+      await fileManager.unzip(fileName, ".", "UTF-8");
 
-        const extractDir = path.join(javaPath, path.basename(fileName, ".zip"));
-        if (fs.existsSync(extractDir) && fs.statSync(extractDir).isDirectory()) {
-          const files = fs.readdirSync(extractDir);
-          for (const file of files) {
-            await fs.move(path.join(extractDir, file), path.join(javaPath, file));
-          }
-          await fs.remove(extractDir);
+      const extractDir = path.join(javaPath, path.basename(fileName, ".zip"));
+      const extractDirInfo = await fs.stat(extractDir);
+      if (fs.existsSync(extractDir) && extractDirInfo.isDirectory()) {
+        const files = await fs.readdir(extractDir);
+        for (const file of files) {
+          await fs.move(path.join(extractDir, file), path.join(javaPath, file));
         }
-      } else if (fileName.endsWith(".tar.gz")) {
-        await extract({
-          file: filePath,
-          cwd: javaPath,
-          strip: 1
-        });
+        await fs.remove(extractDir);
       }
-      await fs.remove(filePath);
-
-      info.downloading = false;
-      javaManager.updateJavaInfo(info);
-    } catch (error: any) {
-      info.downloading = false;
-      javaManager.updateJavaInfo(info);
-
-      await javaManager.removeJava(info.fullname);
-      protocol.responseError(ctx, error);
+    } else if (fileName.endsWith(".tar.gz")) {
+      await extract({
+        file: filePath,
+        cwd: javaPath,
+        strip: 1
+      });
     }
-  })();
+    await fs.remove(filePath);
+
+    info.downloading = false;
+    javaManager.updateJavaInfo(info);
+  } catch (error: any) {
+    await javaManager.removeJava(info.fullname);
+    protocol.responseError(ctx, error);
+  }
 });
 
 routerApp.on("java_manager/using", async (ctx, data) => {
