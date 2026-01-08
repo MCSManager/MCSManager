@@ -205,6 +205,7 @@ services:
     environment:
       - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
     volumes:
+      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
       - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
