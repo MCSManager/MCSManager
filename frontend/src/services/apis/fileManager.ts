@@ -45,6 +45,8 @@ export const getFileStatus = useDefineApi<
       path: string;
       total: number;
       current: number;
+      status: number;
+      error?: string;
     }[];
     platform: string;
     isGlobalInstance: boolean;

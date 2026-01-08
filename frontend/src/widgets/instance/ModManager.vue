@@ -240,7 +240,7 @@ const {
   configLoading,
   openConfig,
   editFile
-} = useModConfig(instanceId, daemonId, FileEditorDialog);
+} = useModConfig(instanceId!, daemonId!, FileEditorDialog);
 
 const hasModsFolder = computed(() => folders.value.includes("mods"));
 const hasPluginsFolder = computed(() => folders.value.includes("plugins"));
@@ -654,7 +654,7 @@ onMounted(async () => {
                         total: searchTotal,
                         showSizeChanger: true,
                         pageSizeOptions: ['10', '20', '50', '100'],
-                        showTotal: (total) => t('TXT_CODE_TOTAL_ITEMS', { total })
+                        showTotal: (total: number) => t('TXT_CODE_TOTAL_ITEMS', { total })
                       }"
                       @change="(p: any) => onSearch(p.current, p.pageSize)"
                       @show-versions="showVersions"
