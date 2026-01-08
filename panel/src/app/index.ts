@@ -16,13 +16,11 @@ import userInstanceRouter from "./routers/instance_operate_router";
 import javaManagerRouter from "./routers/java_manager_router";
 import loginRouter from "./routers/login_router";
 import businessUserRouter from "./routers/manage_user_router";
+import modManagerRouter from "./routers/mod_manager_router";
 import overviewRouter from "./routers/overview_router";
 import scheduleRouter from "./routers/schedule_router";
 import settingsRouter from "./routers/settings_router";
 import userRouter from "./routers/user_overview_router";
-import environmentRouter from "./routers/environment_router";
-import exchangeRouter from "./routers/instance_exchange_router";
-import modManagerRouter from "./routers/mod_manager_router";
 
 export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   const apiRouter = new Router({ prefix: "/api" });
