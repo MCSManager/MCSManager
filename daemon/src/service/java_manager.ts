@@ -36,7 +36,7 @@ class JavaManager {
       if (!fs.existsSync(infoPath)) continue;
 
       const config = await fs.readJson(infoPath);
-      // 删除上次没有下载完成的Java
+      // Delete java not yet fully downloaded
       if (config.downloading) {
         await fs.remove(javaPath);
         continue;
@@ -68,7 +68,8 @@ class JavaManager {
       case "zulu": {
         let platform: string = os.platform();
 
-        // 使用 win32 部分情况下, 会获取到 macosx 的包, 所以映射为 windows 修复该问题
+        // In some cases, using win32 will download macosx package
+        // Therefore, change platform to windows
         switch (platform) {
           case "win32": {
             platform = "windows";
