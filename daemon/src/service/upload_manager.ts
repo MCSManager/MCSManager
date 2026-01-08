@@ -21,6 +21,10 @@ class UploadManager {
     return key;
   }
 
+  public getUploads() {
+    return this.uploads.entries();
+  }
+
   get(key: string): FileWriter | undefined {
     return this.uploads.get(key);
   }
