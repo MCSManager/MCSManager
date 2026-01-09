@@ -189,14 +189,14 @@ const uploadLogo = async () => {
     const url = await useUploadFileDialog();
     if (url) {
       formData.value.logoUrl = url;
-      setLogoImage(url)
+      setLogoImage(url);
     }
   }
 };
 
 const handleSaveLogoUrl = async (url?: string) => {
   Modal.confirm({
-    title: t("TXT_CODE_c0606ef4"),
+    title: t("TXT_CODE_dc053043"),
     content: t("TXT_CODE_cf95364f"),
     async onOk() {
       const cfg = await getSettingsConfig();
@@ -444,7 +444,7 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
-                  
+
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_47b5a2f7") }}</a-typography-title>
                     <a-typography-paragraph>

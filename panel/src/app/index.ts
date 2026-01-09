@@ -19,6 +19,7 @@ import businessUserRouter from "./routers/manage_user_router";
 import scheduleRouter from "./routers/schedule_router";
 import environmentRouter from "./routers/environment_router";
 import exchangeRouter from "./routers/instance_exchange_router";
+import modManagerRouter from "./routers/mod_manager_router";
 
 export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   const apiRouter = new Router({ prefix: "/api" });
@@ -35,6 +36,7 @@ export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   apiRouter.use(settingsRouter.routes()).use(settingsRouter.allowedMethods());
   apiRouter.use(environmentRouter.routes()).use(environmentRouter.allowedMethods());
   apiRouter.use(exchangeRouter.routes()).use(exchangeRouter.allowedMethods());
+  apiRouter.use(modManagerRouter.routes()).use(modManagerRouter.allowedMethods());
 
   app.use(apiRouter.routes()).use(apiRouter.allowedMethods());
 }

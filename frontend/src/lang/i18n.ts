@@ -1,6 +1,7 @@
 // I18n init configuration (Frontend)
 
 import { updateSettings } from "@/services/apis";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import { createI18n, type I18n } from "vue-i18n";
 
 // DO NOT I18N
@@ -74,14 +75,23 @@ export async function initInstallPageFlow(language: string) {
 // If you want to add the language of your own country, you need to add the code here.
 const messages: Record<string, any> = {};
 async function initI18n(lang: string) {
+  const { state } = useAppStateStore();
   lang = toStandardLang(lang);
 
   const langFiles = import.meta.glob("../../../languages/*.json");
   for (const path in langFiles) {
+    const langFile = langFiles[path];
+    if (typeof langFile !== "function") continue;
+
+    if (state.isInstall) {
+      if (!toStandardLang(path).includes(lang)) continue;
+      messages[lang] = await langFiles[path]();
+      break;
+    }
+
     for (const l of SUPPORTED_LANGS) {
-      if (toStandardLang(path).includes(l.value) && typeof langFiles[path] === "function") {
-        messages[l.value] = await langFiles[path]();
-      }
+      if (!toStandardLang(path).includes(l.value)) continue;
+      messages[l.value] = await langFiles[path]();
     }
   }
 

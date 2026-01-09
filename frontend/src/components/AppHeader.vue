@@ -5,10 +5,11 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
-import { THEME, useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { AppTheme } from "@/types/const";
 import {
   AppstoreAddOutlined,
   BgColorsOutlined,
@@ -29,7 +30,8 @@ import { useRoute } from "vue-router";
 import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import CardPanel from "./CardPanel.vue";
 
-const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } = useLayoutConfigStore();
+const { saveGlobalLayoutConfig, resetGlobalLayoutConfig, getSettingsConfig } =
+  useLayoutConfigStore();
 const { containerState, changeDesignMode } = useLayoutContainerStore();
 const { getRouteParamsUrl, toPage } = useAppRouters();
 const { setTheme, setLogoImage, logoImage } = useAppConfigStore();
@@ -233,22 +235,22 @@ const appMenus = computed(() => {
       title: t("TXT_CODE_f591e2fa"),
       icon: BgColorsOutlined,
       click: (key: string) => {
-        if (key === THEME.DARK) {
-          setTheme(THEME.DARK);
-        } else {
-          setTheme(THEME.LIGHT);
-        }
+        setTheme(Number(key) as AppTheme);
       },
       conditions: !containerState.isDesignMode,
       onlyPC: false,
       menus: [
         {
-          title: t("TXT_CODE_673eac8e"),
-          value: THEME.LIGHT
+          value: AppTheme.AUTO,
+          title: t("TXT_CODE_dc8de4ff")
         },
         {
-          title: t("TXT_CODE_5e4a370d"),
-          value: THEME.DARK
+          value: AppTheme.LIGHT,
+          title: t("TXT_CODE_673eac8e")
+        },
+        {
+          value: AppTheme.DARK,
+          title: t("TXT_CODE_5e4a370d")
         }
       ]
     },

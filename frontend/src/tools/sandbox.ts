@@ -1,8 +1,8 @@
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import axios from "axios";
 import { reportErrorMsg } from "@/tools/validator";
+import axios from "axios";
 
-const { getTheme } = useAppConfigStore();
+const { currentTheme } = useAppConfigStore();
 class SandboxBridge {
   [key: string | symbol | number]: any;
 
@@ -11,7 +11,7 @@ class SandboxBridge {
   // API
   public $axios = axios;
   public $realWindow = window;
-  public $theme = getTheme();
+  public $theme = currentTheme.value;
 
   public $onMounted(callback: Function) {
     this._addCallback("onMounted", callback);

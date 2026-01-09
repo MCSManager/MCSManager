@@ -2,7 +2,7 @@ import { GLOBAL_INSTANCE_NAME } from "@/config/const";
 import { useCommandHistory } from "@/hooks/useCommandHistory";
 import { t } from "@/lang/i18n";
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
-import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
 import type { InstanceDetail } from "@/types";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
@@ -57,7 +57,7 @@ const { setHistory } = useCommandHistory();
 export type UseTerminalHook = ReturnType<typeof useTerminal>;
 
 export function useTerminal() {
-  const { hasBgImage } = useLayoutConfigStore();
+  const { hasBgImage } = useAppConfigStore();
 
   const events = new EventEmitter();
   let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
@@ -265,6 +265,29 @@ export function useTerminal() {
     }
 
     term.open(element);
+
+    // If text is selected, copy it. Otherwise, fallback to default behavior.
+    term.attachCustomKeyEventHandler((arg) => {
+      if (arg.type === "keydown" && arg.ctrlKey && arg.code === "KeyC") {
+        const selection = term.getSelection();
+        if (selection) {
+          // If not in SecureContext, writeText will fail. Fallback to browser's default copy behavior, but selection won't be cleared.
+          if (window.isSecureContext) {
+            arg.preventDefault()
+          }
+
+          navigator.clipboard?.writeText(selection).then(() => {
+             term.clearSelection();
+          }).catch(err => {
+             console.error("Could not copy text: ", err);
+          });
+
+          return false;
+        }
+      }
+
+      return true;
+    });
 
     // Auto resize pty win size
     fitAddon.fit();

@@ -46,7 +46,6 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@types/stream-throttle": "^0.1.4",
     "@types/archiver": "^5.3.1",
     "@types/dockerode": "^3.2.7",
     "@types/formidable": "^3.4.5",
@@ -61,6 +60,7 @@
     "@types/pidusage": "^2.0.1",
     "@types/proper-lockfile": "^4.1.4",
     "@types/ssh2": "^1.11.7",
+    "@types/stream-throttle": "^0.1.4",
     "@types/uuid": "^8.3.0",
     "eslint": "^7.13.0",
     "nodemon": "^3.1.10",

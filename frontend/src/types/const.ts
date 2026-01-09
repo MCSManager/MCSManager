@@ -2,6 +2,15 @@
 import { TYPE_UNIVERSAL } from "@/hooks/useInstance";
 import { t } from "@/lang/i18n";
 import type { QuickStartPackages } from ".";
+
+export enum AppTheme {
+  AUTO = 0,
+  LIGHT,
+  DARK
+}
+
+export const THEME_KEY = "THEME_KEY";
+
 export const CARD_FIXED_HEIGHT = 200;
 
 export const TERMINAL_CODE = [
@@ -31,6 +40,8 @@ export const INSTANCE_STATUS: Record<INSTANCE_STATUS_CODE, string> = {
   [INSTANCE_STATUS_CODE.STARTING]: t("TXT_CODE_175b570d"),
   [INSTANCE_STATUS_CODE.RUNNING]: t("TXT_CODE_bdb620b9")
 };
+
+export const INSTANCE_CRASH_TIMEOUT = 2000;
 
 export const defaultDockerfile = `FROM ubuntu:latest\nRUN mkdir -p /workspace\nWORKDIR /workspace\n`;
 
@@ -132,7 +143,8 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   env: [],
   changeWorkdir: true,
   memorySwap: undefined,
-  memorySwappiness: undefined
+  memorySwappiness: undefined,
+  labels: []
 };
 
 export const defaultInstanceInfo: IGlobalInstanceConfig = {

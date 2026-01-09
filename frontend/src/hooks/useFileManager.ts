@@ -534,7 +534,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const spinning = ref(false);
 
-  const selectedFiles = async (files: File[]) => {
+  const selectedFiles = async (files: File[], overridePath?: string) => {
     const { state: missionCfg, execute: getUploadMissionCfg } = uploadAddress();
     const fileSet = new Set(files.map((f) => ({ file: f, overwrite: false })));
     const existingFiles: typeof fileSet = new Set();
@@ -600,7 +600,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       try {
         await getUploadMissionCfg({
           params: {
-            upload_dir: currentPath.value,
+            upload_dir: overridePath || currentPath.value,
             daemonId: daemonId!,
             uuid: instanceId!,
             file_name: f.file.name

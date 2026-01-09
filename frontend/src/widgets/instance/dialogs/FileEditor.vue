@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { t } from "@/lang/i18n";
-import { message } from "ant-design-vue";
-import { reportErrorMsg } from "@/tools/validator";
 import Editor from "@/components/Editor.vue";
-import { fileContent } from "@/services/apis/fileManager";
 import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { useScreen } from "@/hooks/useScreen";
-import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
+import { t } from "@/lang/i18n";
+import { fileContent } from "@/services/apis/fileManager";
+import { reportErrorMsg } from "@/tools/validator";
+import { FullscreenExitOutlined, FullscreenOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
+import { computed, ref } from "vue";
 
 const emit = defineEmits(["save"]);
 
@@ -16,6 +16,7 @@ const openEditor = ref(false);
 const editorText = ref("");
 const fileName = ref("");
 const path = ref("");
+const fullScreen = ref(false);
 
 const { isPhone } = useScreen();
 
@@ -48,9 +49,10 @@ const initKeydownListener = () => {
 };
 
 const openDialog = (_path: string, _fileName: string) => {
-  open.value = true;
+  fullScreen.value = isPhone.value;
   path.value = _path;
   fileName.value = _fileName;
+  open.value = true;
   initKeydownListener();
   return new Promise(async (_resolve, _reject) => {
     await render();
@@ -58,8 +60,6 @@ const openDialog = (_path: string, _fileName: string) => {
     reject = _reject;
   });
 };
-
-const fullScreen = ref(false);
 
 const { state: text, execute, isLoading } = fileContent();
 const render = async () => {
@@ -131,6 +131,7 @@ defineExpose({
   <a-modal
     v-model:open="open"
     centered
+    :wrap-class-name="fullScreen ? 'full-modal' : ''"
     :cancel-text="t('TXT_CODE_3b1cc020')"
     :ok-text="t('TXT_CODE_abfe9512')"
     :mask-closable="false"
@@ -153,8 +154,32 @@ defineExpose({
       ref="EditorComponent"
       v-model:text="editorText"
       :filename="fileName"
-      height="80vh"
+      :height="fullScreen ? '100%' : '60vh'"
     />
     <a-skeleton v-else :paragraph="{ rows: 12 }" active />
   </a-modal>
 </template>
+
+<style lang="scss">
+.full-modal {
+  .ant-modal-close {
+    top: 10px;
+  }
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0 !important;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+    padding: 5px;
+  }
+  .ant-modal-body {
+    flex: 1;
+    overflow: hidden;
+  }
+}
+</style>

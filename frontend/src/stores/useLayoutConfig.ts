@@ -1,12 +1,11 @@
-import { ref } from "vue";
-import type { LayoutWithRouter, LayoutCard } from "@/types";
-import { useRouterParams } from "@/hooks/useRouterParams";
 import { getAllLayoutConfig, setAllLayoutConfig } from "@/config/originLayoutConfig";
-import { createGlobalState } from "@vueuse/core";
+import { useRouterParams } from "@/hooks/useRouterParams";
 import { resetLayoutConfig, setLayoutConfig } from "@/services/apis/layout";
+import type { LayoutCard, LayoutWithRouter } from "@/types";
+import { createGlobalState } from "@vueuse/core";
+import { ref } from "vue";
 
 export const useLayoutConfigStore = createGlobalState(() => {
-  const hasBgImage = ref(false);
   const { currentRoutePath } = useRouterParams();
   const globalLayoutConfig = ref<LayoutWithRouter[]>(getAllLayoutConfig());
 
@@ -89,7 +88,6 @@ export const useLayoutConfigStore = createGlobalState(() => {
   };
 
   return {
-    hasBgImage,
     setSettingsConfig,
     getSettingsConfig,
     resetGlobalLayoutConfig,

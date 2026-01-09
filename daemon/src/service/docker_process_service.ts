@@ -251,6 +251,12 @@ export class SetupDockerContainer extends AsyncTask {
       Env: dockerConfig?.env || [],
       User: instance.config.runAs || undefined,
       Labels: {
+        ...dockerConfig.labels
+          ?.map((label) => {
+            const [key, ...rest] = label.split("=");
+            return { [key]: rest.join("=") };
+          })
+          .reduce((acc, cur) => ({ ...acc, ...cur }), {}),
         "mcsmanager.instance.uuid": instance.instanceUuid
       },
       HostConfig: {

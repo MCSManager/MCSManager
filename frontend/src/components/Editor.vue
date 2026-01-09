@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount, onMounted } from "vue";
-import { EditorView } from "@codemirror/view";
-import { basicSetup } from "codemirror";
-import { StreamLanguage, LanguageSupport } from "@codemirror/language";
-import { javascript } from "@codemirror/lang-javascript";
-import { python } from "@codemirror/lang-python";
-import { json } from "@codemirror/lang-json";
+import { getFileExtName } from "@/tools/fileManager";
+import { getRandomId } from "@/tools/randId";
 import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
+import { python } from "@codemirror/lang-python";
 import { xml } from "@codemirror/lang-xml";
-import { getFileExtName } from "@/tools/fileManager";
-import { EditorState, StateEffect } from "@codemirror/state";
-import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
-import { getRandomId } from "@/tools/randId";
-import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
+import { LanguageSupport, StreamLanguage } from "@codemirror/language";
 import * as propertiesMode from "@codemirror/legacy-modes/mode/properties";
 import * as shellMode from "@codemirror/legacy-modes/mode/shell";
+import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
+import { linter, lintGutter } from "@codemirror/lint";
+import { EditorState, StateEffect } from "@codemirror/state";
+import { EditorView } from "@codemirror/view";
+import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
+import { basicSetup } from "codemirror";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useScreen } from "../hooks/useScreen";
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
-import { linter } from "@codemirror/lint";
-import { jsonParseLinter } from "@codemirror/lang-json";
-import { lintGutter } from "@codemirror/lint";
 
-const { isDarkTheme } = useAppConfigStore();
 const emit = defineEmits(["update:text"]);
 const uuid = getRandomId();
 const DOM_ID = `file-editor-${uuid}`;
@@ -39,42 +35,51 @@ let startDistance = 0;
 let startScale = 1;
 const MAX_SCALE = 1.25;
 const MIN_SCALE = 0.4;
-const baseFontSize = isPhone.value ? 14 : 15;
-const baseLineHeight = isPhone.value ? 22 : 24;
+const baseFontSize = isPhone.value ? 12 : 15;
+const baseLineHeight = isPhone.value ? 16 : 22;
 const currentFontSize = ref(baseFontSize);
 const currentLineHeight = ref(baseLineHeight);
 let scale = 1;
 let animationFrameId = 0;
 
-const jsonLintExtensions = [
-  lintGutter(),
-  linter(jsonParseLinter())
-];
+const jsonLintExtensions = [lintGutter(), linter(jsonParseLinter())];
 
 const getLanguageExtension = () => {
   const ext = getFileExtName(props.filename);
   const isJSON = ["json", "json5"].includes(ext);
-  
+
   const languagesMap = [
     { name: ["json", "json5"], plugin: () => [json(), ...(isJSON ? jsonLintExtensions : [])] },
-    { name: ["js", "jsx", "ts", "tsx", "mjs", "djs"], plugin: () => [javascript({ jsx: true, typescript: ext === "ts" })] },
+    {
+      name: ["js", "jsx", "ts", "tsx", "mjs", "djs"],
+      plugin: () => [javascript({ jsx: true, typescript: ext === "ts" })]
+    },
     { name: ["xml"], plugin: () => [xml()] },
     { name: ["css", "less", "scss"], plugin: () => [css()] },
     { name: ["html", "vue"], plugin: () => [html()] },
-    { name: ["yaml", "yml", "toml"], plugin: () => [new LanguageSupport(StreamLanguage.define(yamlMode.yaml))] },
-    { name: ["properties", "ini"], plugin: () => [new LanguageSupport(StreamLanguage.define(propertiesMode.properties))] },
-    { name: ["shell", "sh", "bat", "cmd"], plugin: () => [new LanguageSupport(StreamLanguage.define(shellMode.shell))] },
+    {
+      name: ["yaml", "yml", "toml"],
+      plugin: () => [new LanguageSupport(StreamLanguage.define(yamlMode.yaml))]
+    },
+    {
+      name: ["properties", "ini"],
+      plugin: () => [new LanguageSupport(StreamLanguage.define(propertiesMode.properties))]
+    },
+    {
+      name: ["shell", "sh", "bat", "cmd"],
+      plugin: () => [new LanguageSupport(StreamLanguage.define(shellMode.shell))]
+    },
     { name: ["py", "pyi", "pyw"], plugin: () => [python()] }
   ];
 
-  return languagesMap.find(item => item.name.includes(ext))?.plugin() ?? [javascript()];
+  return languagesMap.find((item) => item.name.includes(ext))?.plugin() ?? [javascript()];
 };
 
 let editor: EditorView | null = null;
 
 const createThemeExtension = () => {
   return EditorView.theme({
-    "&": { 
+    "&": {
       fontSize: `${currentFontSize.value}px`,
       lineHeight: `${currentLineHeight.value}px`,
       "--cm-lint-marker-error-color": "#dc3545"
@@ -97,7 +102,7 @@ const baseExtensions = [
   basicSetup,
   tokyoNight,
   EditorView.lineWrapping,
-  EditorView.updateListener.of(update => {
+  EditorView.updateListener.of((update) => {
     if (!update.changes.empty) emit("update:text", update.state.doc.toString());
   })
 ];
@@ -116,11 +121,7 @@ const updateEditor = () => {
 const initEditor = () => {
   const startState = EditorState.create({
     doc: props.text,
-    extensions: [
-      ...baseExtensions,
-      ...getLanguageExtension(),
-      createThemeExtension()
-    ]
+    extensions: [...baseExtensions, ...getLanguageExtension(), createThemeExtension()]
   });
 
   const parentElement = document.getElementById(DOM_ID);
@@ -136,15 +137,15 @@ const handleTouchMove = (e: TouchEvent) => {
       const t1 = e.touches[0];
       const t2 = e.touches[1];
       const currentDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-      
+
       if (startDistance > 0) {
         const scaleFactor = currentDistance / startDistance;
         const newScale = startScale * scaleFactor;
         scale = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
-        
+
         currentFontSize.value = Math.round(baseFontSize * scale);
         currentLineHeight.value = Math.round(baseLineHeight * scale);
-        
+
         updateEditor();
       }
     });
@@ -169,20 +170,20 @@ onMounted(() => {
   initEditor();
   const container = editorContainer.value;
   if (container) {
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('touchcancel', handleTouchEnd);
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    container.addEventListener("touchend", handleTouchEnd);
+    container.addEventListener("touchcancel", handleTouchEnd);
   }
 });
 
 onBeforeUnmount(() => {
   const container = editorContainer.value;
   if (container) {
-    container.removeEventListener('touchstart', handleTouchStart);
-    container.removeEventListener('touchmove', handleTouchMove);
-    container.removeEventListener('touchend', handleTouchEnd);
-    container.removeEventListener('touchcancel', handleTouchEnd);
+    container.removeEventListener("touchstart", handleTouchStart);
+    container.removeEventListener("touchmove", handleTouchMove);
+    container.removeEventListener("touchend", handleTouchEnd);
+    container.removeEventListener("touchcancel", handleTouchEnd);
   }
   if (editor) {
     editor.destroy();
@@ -194,7 +195,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="editor-wrapper">
-    <div class="editor-container" ref="editorContainer">
+    <div ref="editorContainer" class="editor-container">
       <div :id="DOM_ID" class="file-editor"></div>
     </div>
   </div>
@@ -202,27 +203,26 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .editor-wrapper {
-  height: v-bind('props.height');
+  height: v-bind("props.height");
   overflow: auto;
   background: #1e1e1e;
   border-radius: 6px;
   touch-action: pan-y;
 
   @media (max-width: 768px) {
-    height: 60vh;
+    height: v-bind("props.height || '60vh'");
     border-radius: 0;
   }
 }
 
 .editor-container {
   min-height: 100%;
-  padding: 12px;
   transform-origin: 0 0;
 }
 
 .file-editor {
   :deep(.cm-editor) {
-    min-height: calc(v-bind('props.height') - 24px);
+    min-height: v-bind("props.height");
     transition: font-size 0.1s ease-out;
   }
 
