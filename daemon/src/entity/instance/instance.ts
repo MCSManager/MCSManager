@@ -11,6 +11,7 @@ import { $t } from "../../i18n";
 import javaManager from "../../service/java_manager";
 import logger from "../../service/log";
 import InstanceCommand from "../commands/base/command";
+import { commandStringToArray } from "../commands/base/command_parser";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
 import { OpenFrp } from "../commands/task/openfrp";
 import { globalConfiguration } from "../config";
@@ -246,7 +247,9 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "haveColor", Boolean);
     }
 
-    if (cfg.java) {
+    if (cfg.startCommand && commandStringToArray(cfg.startCommand)[0] != "{mcsm_java}") {
+      this.config.java.id = "";
+    } else if (cfg.java) {
       configureEntityParams(this.config.java, cfg.java, "id", String);
     }
 
