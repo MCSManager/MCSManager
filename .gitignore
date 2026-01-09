@@ -124,6 +124,3 @@ src/public/1.png
 */.idea/*
 
 .turbo
-
-daemon/tmp/*
-daemon/bin/*
