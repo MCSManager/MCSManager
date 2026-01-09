@@ -857,7 +857,7 @@ defineExpose({
                   />
                 </a-form-item>
               </a-col>
-              <a-col :xs="24" :lg="4" :offset="0">
+              <a-col :xs="24" :lg="6" :offset="0">
                 <a-form-item>
                   <a-typography-title :level="5">{{ t("TXT_CODE_disk_limit") }}</a-typography-title>
                   <a-typography-paragraph>
