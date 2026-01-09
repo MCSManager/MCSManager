@@ -2951,7 +2951,7 @@
   "TXT_CODE_5e7a4c02": "下载任务已开始，请稍后...",
   "TXT_CODE_3fee13ed": "Java 环境管理",
   "TXT_CODE_ebf01bcc": "在 MCSManager 中选择并安装一个你需要的 Java 版本。",
-  "TXT_CODE_e1c637bb": "完成配置后，将会使用 {mcsm_java} 来替代原本的 java应用命令。",
+  "TXT_CODE_e1c637bb": "完成配置后，将会使用 <mcsm_java> 来替代原本的 java应用命令。",
   "TXT_CODE_9c48100e": "下载其他Java",
   "TXT_CODE_979520ef": "使用中",
   "TXT_CODE_f0dcc8bf": "使用",

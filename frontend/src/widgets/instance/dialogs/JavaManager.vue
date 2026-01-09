@@ -159,7 +159,7 @@ defineExpose({
         <a-typography-text type="secondary">
           {{ t("TXT_CODE_ebf01bcc") }}
           <br />
-          {{ t("TXT_CODE_e1c637bb") }}
+          {{ t("TXT_CODE_e1c637bb").replace("<mcsm_java>", "{mcsm_java}") }}
         </a-typography-text>
       </a-typography-paragraph>
 
