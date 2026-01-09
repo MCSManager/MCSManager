@@ -19,6 +19,7 @@ class Config {
   public maxZipFileSize = 200;
   public language = "en_us";
   public defaultInstancePath = "";
+  public defaultJavaDataPath = "";
   public allocatablePortRange = [10010, 65500];
   public currentAllocatablePort = 10010;
   public portAssignInterval = 5;

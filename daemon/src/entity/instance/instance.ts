@@ -8,6 +8,7 @@ import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
+import javaManager from "../../service/java_manager";
 import logger from "../../service/log";
 import { DiskQuotaService } from "../../service/disk_quota_service";
 import InstanceCommand from "../commands/base/command";
@@ -273,6 +274,10 @@ export default class Instance extends EventEmitter {
     }
     if (cfg.terminalOption) {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "haveColor", Boolean);
+    }
+
+    if (cfg.java) {
+      configureEntityParams(this.config.java, cfg.java, "id", String);
     }
 
     if (persistence) {
@@ -544,6 +549,7 @@ export default class Instance extends EventEmitter {
     this.info.currentPlayers = 0;
     this.info.maxPlayers = 0;
     this.info.version = "";
+
     this.info.latency = 0;
   }
 
@@ -558,6 +564,11 @@ export default class Instance extends EventEmitter {
     text = text.replace(/\{mcsm_instance_id\}/gim, this.instanceUuid);
     text = text.replace(/\{mcsm_instance_name\}/gim, this.config.nickname);
     text = text.replace(/\{mcsm_instance_base_port\}/gim, String(this.config.basePort));
+
+    const javaId = this.config.java.id;
+    if (javaId) {
+      text = text.replace(/\{mcsm_java\}/gim, javaManager.getJavaRuntimeCommand(javaId));
+    }
 
     const ports = Array.from(
       { length: globalConfiguration.config.portAssignInterval || 1 },

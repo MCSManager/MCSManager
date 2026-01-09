@@ -52,6 +52,11 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     ignore: false
   };
 
+  // java
+  public java: IInstanceJavaConfig = {
+    id: ""
+  };
+
   // Extend
   public docker: IGlobalInstanceDockerConfig = {
     containerName: "",
