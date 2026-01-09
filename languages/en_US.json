@@ -2928,9 +2928,8 @@
   "TXT_CODE_version.versionDetectErr": "Version Check Failed",
   "TXT_CODE_DISK_USAGE": "Disk",
   "TXT_CODE_disk_limit": "Disk Space Limit",
-  "TXT_CODE_disk_limit_desc": "Set the maximum disk space that the instance can use (in MB). Note: This feature requires Docker storage driver support (overlay2 on XFS with pquota option, devicemapper, etc.). On EXT4 systems, disk limits may not be enforced at the container level.",
+  "TXT_CODE_disk_limit_desc": "Set the maximum disk space that the instance can use (in MB).",
   "TXT_CODE_disk_limit_placeholder": "Enter disk space limit in MB (e.g., 1024 for 1GB)",
-  "TXT_CODE_disk_limit_unsupported": "Disk space limiting is not supported on this system. The feature requires specific Docker storage drivers.",
   "TXT_CODE_disk_quota_exceeded": "Server is exceeding the assigned disk space limit (Used: {{- used}}MB, Limit: {{- limit}}MB). Server will be stopped automatically.",
   "TXT_CODE_disk_quota_stop_instance": "Server is exceeding the assigned disk space limit, stopping process now.",
   "TXT_CODE_disk_quota_exceeded_write": "Cannot write file: disk quota would be exceeded"
