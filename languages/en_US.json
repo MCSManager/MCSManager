@@ -3160,7 +3160,7 @@
   "TXT_CODE_5e7a4c02": "Download started...",
   "TXT_CODE_3fee13ed": "Java Manager",
   "TXT_CODE_ebf01bcc": "Select and install the Java version you need in MCSManager.",
-  "TXT_CODE_e1c637bb": "After completing the configuration, the Java command will be replaced with {mcsm_java}.",
+  "TXT_CODE_e1c637bb": "After completing the configuration, the Java command will be replaced with <mcsm_java>.",
   "TXT_CODE_979520ef": "In Use",
   "TXT_CODE_f0dcc8bf": "Use",
   "TXT_CODE_f4f86ba8": "Are you sure you want to delete the Java?",
