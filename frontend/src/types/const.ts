@@ -147,6 +147,10 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   labels: []
 };
 
+export const defaultInstanceJavaConfig: IInstanceJavaConfig = {
+  id: ""
+};
+
 export const defaultInstanceInfo: IGlobalInstanceConfig = {
   nickname: "",
   startCommand: "",
@@ -173,6 +177,9 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   rconPassword: "",
   rconPort: undefined,
   rconIp: "",
+
+  // Java
+  java: defaultInstanceJavaConfig,
 
   // Old fields
   terminalOption: {

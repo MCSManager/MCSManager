@@ -33,6 +33,7 @@ import { arrayFilter } from "../../tools/array";
 import EventConfig from "./dialogs/EventConfig.vue";
 import InstanceDetail from "./dialogs/InstanceDetail.vue";
 import InstanceFundamentalDetail from "./dialogs/InstanceFundamentalDetail.vue";
+import JavaManager from "./dialogs/JavaManager.vue";
 import McPingSettings from "./dialogs/McPingSettings.vue";
 import PingConfig from "./dialogs/PingConfig.vue";
 import RconSettings from "./dialogs/RconSettings.vue";
@@ -41,6 +42,7 @@ import TermConfig from "./dialogs/TermConfig.vue";
 const terminalConfigDialog = ref<InstanceType<typeof TermConfig>>();
 const rconSettingsDialog = ref<InstanceType<typeof RconSettings>>();
 const mcSettingsDialog = ref<InstanceType<typeof McPingSettings>>();
+const javaManagerDialog = ref<InstanceType<typeof JavaManager>>();
 const eventConfigDialog = ref<InstanceType<typeof EventConfig>>();
 const pingConfigDialog = ref<InstanceType<typeof PingConfig>>();
 const instanceDetailsDialog = ref<InstanceType<typeof InstanceDetail>>();
@@ -169,6 +171,14 @@ const btns = computed(() => {
       icon: UsergroupDeleteOutlined,
       click: () => {
         mcSettingsDialog.value?.openDialog();
+      },
+      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
+    },
+    {
+      title: t("TXT_CODE_3fee13ed"),
+      icon: BuildOutlined,
+      click: () => {
+        javaManagerDialog.value?.openDialog();
       },
       condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
     },
@@ -319,6 +329,14 @@ watch(instanceInfo, (cfg, oldCfg) => {
     :instance-info="instanceInfo"
     :instance-id="instanceId"
     :daemon-id="daemonId"
+    @update="refreshInstanceInfo"
+  />
+
+  <JavaManager
+    ref="javaManagerDialog"
+    :instance-info="instanceInfo"
+    :daemon-id="daemonId"
+    :instance-id="instanceId"
     @update="refreshInstanceInfo"
   />
 </template>

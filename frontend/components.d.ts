@@ -81,6 +81,7 @@ declare module 'vue' {
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     DockerPortDialog: typeof import('./src/components/fc/DockerPortDialog.vue')['default']
     DownloadFileDialog: typeof import('./src/components/fc/DownloadFileDialog.vue')['default']
+    DownloadJavaDialog: typeof import('./src/components/fc/DownloadJavaDialog.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     Empty: typeof import('./src/components/Empty.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']

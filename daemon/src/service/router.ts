@@ -1,9 +1,9 @@
-import { $t } from "../i18n";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import logger from "./log";
 import RouterContext from "../entity/ctx";
-import { IPacket, response, responseError } from "../service/protocol";
+import { $t } from "../i18n";
+import { IPacket, responseError } from "../service/protocol";
+import logger from "./log";
 // Routing controller class (singleton class)
 class RouterApp extends EventEmitter {
   public readonly middlewares: Array<Function>;
@@ -73,13 +73,14 @@ export function navigation(socket: Socket) {
 
 // The authentication routing order must be the first load. These routing orders cannot be changed without authorization
 import "../routers/auth_router";
-import "../routers/passport_router";
-import "../routers/info_router";
-import "../routers/Instance_router";
-import "../routers/instance_event_router";
-import "../routers/file_router";
-import "../routers/stream_router";
 import "../routers/environment_router";
+import "../routers/file_router";
+import "../routers/info_router";
+import "../routers/instance_event_router";
+import "../routers/Instance_router";
+import "../routers/java_manager_router";
+import "../routers/passport_router";
 import "../routers/schedule_router";
+import "../routers/stream_router";
 
 logger.info($t("TXT_CODE_router.initComplete"));
