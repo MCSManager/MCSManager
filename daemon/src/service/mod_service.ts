@@ -1,13 +1,14 @@
-import fs from "fs-extra";
-import path from "path";
-import StreamZip from "node-stream-zip";
-import { getFileManager } from "./file_router_service";
-import yaml from "yaml";
 import toml from "@iarna/toml";
 import crypto from "crypto";
-import downloadManager from "./download_manager";
-import InstanceSubsystem from "./system_instance";
+import fs from "fs-extra";
+import StreamZip from "node-stream-zip";
+import path from "path";
+import yaml from "yaml";
 import { checkSafeUrl } from "../utils/url";
+import { DiskQuotaService } from "./disk_quota_service";
+import downloadManager from "./download_manager";
+import { getFileManager } from "./file_router_service";
+import InstanceSubsystem from "./system_instance";
 
 export interface ModInfo {
   name: string;
@@ -77,7 +78,14 @@ export class ModService {
         } else if (task.type === "delete" && task.fileName) {
           await this.deleteMod(instanceUuid, task.fileName as string);
         } else if (task.type === "download" && task.url && task.targetPath) {
-          await downloadManager.downloadFromUrl(task.url as string, task.targetPath as string, task.fallbackUrl as string);
+          const instance = InstanceSubsystem.getInstance(instanceUuid);
+          const quotaService = DiskQuotaService.getInstance();
+          await downloadManager.downloadFromUrl(
+            task.url as string,
+            task.targetPath as string,
+            task.fallbackUrl as string,
+            { instance, quotaService }
+          );
         }
       } catch (err) {
         console.error(`[ModService] Task failed:`, task, err);
@@ -437,7 +445,12 @@ export class ModService {
       return;
     }
 
-    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
+    const quotaService = DiskQuotaService.getInstance();
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl, {
+      instance,
+      quotaService
+    });
   }
 
   public async getModConfig(

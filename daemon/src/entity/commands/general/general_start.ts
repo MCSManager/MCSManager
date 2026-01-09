@@ -62,7 +62,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
   async createProcess(instance: Instance, source = "") {
     // Check disk quota before starting the instance
     const quotaService = DiskQuotaService.getInstance();
-    const quota = quotaService["quotaMap"].get(instance.instanceUuid);
+    const quota = quotaService.getQuota(instance.instanceUuid);
     if (quota && quota > 0) {
       // Check if current disk usage exceeds quota
       const exceeds = await quotaService.exceedsQuota(instance);

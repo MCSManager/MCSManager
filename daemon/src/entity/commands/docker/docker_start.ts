@@ -1,5 +1,6 @@
 import fs from "fs-extra";
 import { $t } from "../../../i18n";
+import { DiskQuotaService } from "../../../service/disk_quota_service";
 import {
   DockerProcessAdapter,
   SetupDockerContainer,
@@ -8,13 +9,12 @@ import {
 import logger from "../../../service/log";
 import Instance from "../../instance/instance";
 import AbsStartCommand from "../start";
-import { DiskQuotaService } from "../../../service/disk_quota_service";
 
 export default class DockerStartCommand extends AbsStartCommand {
   protected async createProcess(instance: Instance) {
     // Check disk quota before starting the instance
     const quotaService = DiskQuotaService.getInstance();
-    const quota = quotaService["quotaMap"].get(instance.instanceUuid);
+    const quota = quotaService.getQuota(instance.instanceUuid);
     if (quota && quota > 0) {
       // Check if current disk usage exceeds quota
       const exceeds = await quotaService.exceedsQuota(instance);

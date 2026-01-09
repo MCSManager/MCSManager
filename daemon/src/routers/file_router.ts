@@ -3,14 +3,15 @@ import os from "os";
 import { globalConfiguration, globalEnv } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
+import { DiskQuotaService } from "../service/disk_quota_service";
 import downloadManager from "../service/download_manager";
-import logger from "../service/log";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
+import logger from "../service/log";
+import { modService } from "../service/mod_service";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
-import { modService } from "../service/mod_service";
 import { checkSafeUrl } from "../utils/url";
 
 // Some routers operate router authentication middleware
@@ -136,6 +137,16 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     fileManager.checkPath(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
 
+    // Check disk quota before downloading
+    // We check if the instance has exceeded its quota (no space available)
+    const quotaService = DiskQuotaService.getInstance();
+    const normalizedPath = targetPath.replace(/\\/g, '/');
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid);
+    if (instance && !await quotaService.hasSpaceAvailable(instance)) {
+      protocol.responseError(ctx, $t("TXT_CODE_disk_quota_exceeded_write"));
+      return;
+    }
+
     // Start download in background
     const fallbackUrl = data.fallbackUrl;
 
@@ -162,7 +173,9 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
+    downloadManager
+      .downloadFromUrl(url, targetPath, fallbackUrl, { instance, quotaService })
+      .catch((err) => {
       logger.error(`Download failed: ${url} -> ${targetPath}`, err);
     });
 

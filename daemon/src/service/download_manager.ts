@@ -3,8 +3,16 @@ import { createWriteStream } from "fs";
 import fs from "fs-extra";
 import path from "path";
 import { Throttle } from "stream-throttle";
-import { globalConfiguration } from "../entity/config";
 import { getCommonHeaders } from "../common/network";
+import { globalConfiguration } from "../entity/config";
+import Instance from "../entity/instance/instance";
+import { $t } from "../i18n";
+import { DiskQuotaService } from "./disk_quota_service";
+
+interface DownloadOptions {
+  instance?: Instance;
+  quotaService?: DiskQuotaService;
+}
 
 class DownloadManager {
   private controller: AbortController | null = null;
@@ -20,11 +28,19 @@ class DownloadManager {
     return this.task ? 1 : 0;
   }
 
-  public async downloadFromUrl(url: string, targetPath: string, fallbackUrl?: string): Promise<void> {
+  public async downloadFromUrl(
+    url: string,
+    targetPath: string,
+    fallbackUrl?: string,
+    options?: DownloadOptions
+  ): Promise<void> {
     try {
       // Ensure directory exists
       const dir = path.dirname(targetPath);
       if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
+
+      const quotaService = options?.quotaService;
+      const instance = options?.instance;
 
       // Setup controller and task state
       if (this.controller) this.controller.abort();
@@ -33,6 +49,17 @@ class DownloadManager {
 
       const response = await this.requestWithRetry(url, this.controller);
       const total = parseInt(response.headers["content-length"] || "0");
+      let quotaLimit = 0;
+      let quotaCurrent = 0;
+      if (quotaService && instance) {
+        const quotaInfo = await quotaService.getQuotaInfo(instance);
+        quotaLimit = quotaInfo.limit;
+        quotaCurrent = quotaInfo.used;
+        if (quotaLimit > 0 && total > 0 && quotaCurrent + total > quotaLimit) {
+          throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+        }
+      }
+
       let current = 0;
       const stream = response.data;
       const writeStream = createWriteStream(targetPath);
@@ -43,6 +70,7 @@ class DownloadManager {
         const onError = (err: Error) => {
           stream.destroy();
           writeStream.destroy();
+          fs.remove(targetPath).catch(() => {});
           if (this.task) {
             this.task.status = 2;
             this.task.error = err.message;
@@ -67,6 +95,14 @@ class DownloadManager {
         stream.on("data", (chunk: any) => {
           current += chunk.length;
           if (this.task) this.task.current = current;
+
+          if (quotaLimit > 0) {
+            quotaCurrent += chunk.length;
+            if (quotaCurrent > quotaLimit) {
+              const err = new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+              return onError(err);
+            }
+          }
         });
 
         stream.on("error", onError);
@@ -84,7 +120,7 @@ class DownloadManager {
       });
     } catch (err: any) {
       if (fallbackUrl && !this.controller?.signal.aborted) {
-        return await this.downloadFromUrl(fallbackUrl, targetPath);
+        return await this.downloadFromUrl(fallbackUrl, targetPath, undefined, options);
       }
       if (this.task) {
         this.task.status = 2;

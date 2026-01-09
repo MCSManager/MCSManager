@@ -5,6 +5,7 @@ import path from "path";
 import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
+import { DiskQuotaService } from "../service/disk_quota_service";
 import { missionPassport } from "../service/mission_passport";
 import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
@@ -64,6 +65,11 @@ router.post("/upload/:key", async (ctx) => {
     if (!mission) throw new Error("Access denied: No task found");
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
+    
+    // Check disk quota before uploading
+    const quotaService = DiskQuotaService.getInstance();
+    const instancePath = instance.absoluteCwdPath().replace(/\\/g, '/');
+    
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const tmpFiles = ctx.request.files?.file;
@@ -80,6 +86,13 @@ router.post("/upload/:key", async (ctx) => {
       const originFileName = uploadedFile.originalFilename || "";
       if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
+      
+      // Check disk quota before upload
+      const fileSize = uploadedFile.size;
+      if (await quotaService.wouldExceedQuota(instancePath, fileSize)) {
+        throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+      }
+      
       const fileManager = new FileManager(cwd);
 
       const ext = path.extname(originFileName);
@@ -155,6 +168,14 @@ router.post("/upload-new/:key", async (ctx) => {
     if (!mission) throw new Error("Access denied: No task found");
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
+    
+    // Check disk quota before starting upload
+    const quotaService = DiskQuotaService.getInstance();
+    const instancePath = instance.absoluteCwdPath().replace(/\\/g, '/');
+    if (await quotaService.wouldExceedQuota(instancePath, size)) {
+      throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+    }
+    
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";

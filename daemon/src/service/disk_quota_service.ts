@@ -1,7 +1,7 @@
+import { exec } from "child_process";
 import fs from "fs-extra";
 import path from "path";
 import { promisify } from "util";
-import { exec } from "child_process";
 import Instance from "../entity/instance/instance";
 import logger from "./log";
 
@@ -21,6 +21,36 @@ export class DiskQuotaService {
   private cacheTimeout: number = 5000; // 5 seconds cache
 
   private constructor() {}
+
+  /**
+   * Extract instance UUID from a path
+   * Handles both Unix and Windows path separators
+   */
+  private extractInstanceUuid(filePath: string): string | null {
+    // Normalize the path to use forward slashes for consistent processing
+    const normalizedPath = filePath.replace(/\\/g, '/');
+    const pathSegments = normalizedPath.split('/');
+    const instanceDataIndex = pathSegments.indexOf('InstanceData');
+    
+    if (instanceDataIndex !== -1 && pathSegments.length > instanceDataIndex + 1) {
+      return pathSegments[instanceDataIndex + 1];
+    }
+    return null;
+  }
+
+  /**
+   * Build the instance directory path
+   */
+  private buildInstanceDirPath(filePath: string): string | null {
+    const normalizedPath = filePath.replace(/\\/g, '/');
+    const pathSegments = normalizedPath.split('/');
+    const instanceDataIndex = pathSegments.indexOf('InstanceData');
+    
+    if (instanceDataIndex !== -1 && pathSegments.length > instanceDataIndex + 1) {
+      return pathSegments.slice(0, instanceDataIndex + 2).join('/');
+    }
+    return null;
+  }
 
   public static getInstance(): DiskQuotaService {
     if (!DiskQuotaService.instance) {
@@ -163,6 +193,34 @@ export class DiskQuotaService {
   }
 
   /**
+   * Check if adding a file/directory of given size would exceed quota
+   * This is used to prevent operations that would exceed the quota
+   */
+  public async wouldExceedQuota(instancePath: string, additionalSize: number): Promise<boolean> {
+    // Get instance directory from the path
+    const instanceDir = this.buildInstanceDirPath(instancePath);
+    if (!instanceDir) {
+      // Path doesn't contain InstanceData, so no quota to check
+      return false;
+    }
+
+    // Extract UUID
+    const uuid = this.extractInstanceUuid(instancePath);
+    if (!uuid) {
+      return false;
+    }
+
+    const quota = this.quotaMap.get(uuid);
+    if (!quota || quota <= 0) {
+      // No quota set
+      return false;
+    }
+
+    const currentUsage = await this.getDiskUsage(instanceDir);
+    return currentUsage + additionalSize > quota;
+  }
+
+  /**
    * Get detailed disk quota information for an instance
    */
   public async getQuotaInfo(instance: Instance): Promise<IDiskQuotaResult> {
@@ -178,6 +236,14 @@ export class DiskQuotaService {
       available,
       percentage
     };
+  }
+
+  /**
+   * Get quota for a specific instance (in bytes)
+   * Returns 0 if no quota is set
+   */
+  public getQuota(instanceUuid: string): number {
+    return this.quotaMap.get(instanceUuid) || 0;
   }
 
   /**

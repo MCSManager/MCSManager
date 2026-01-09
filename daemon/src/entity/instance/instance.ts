@@ -616,12 +616,15 @@ export default class Instance extends EventEmitter {
     
     // Only start monitoring if disk quota is set
     const quotaService = DiskQuotaService.getInstance();
-    const quota = quotaService["quotaMap"].get(this.instanceUuid);
+    const quota = quotaService.getQuota(this.instanceUuid);
     if (!quota || quota <= 0) {
       // If no quota is set, still update storage info if needed but don't monitor
       this.info.storageLimit = 0; // 0 means unlimited
+      logger.info(`Instance ${this.instanceUuid} has no disk quota set, skipping disk monitoring`);
       return; 
     }
+
+    logger.info(`Starting disk monitoring for instance ${this.instanceUuid} with quota ${Math.round(quota / (1024 * 1024))}MB`);
 
     // Run immediately to check initial state
     this.checkDiskQuota();
@@ -637,6 +640,7 @@ export default class Instance extends EventEmitter {
    */
   public stopDiskMonitor() {
     if (this.diskMonitorTask) {
+      logger.info(`Stopping disk monitoring for instance ${this.instanceUuid}`);
       clearInterval(this.diskMonitorTask);
       this.diskMonitorTask = undefined;
     }
@@ -670,12 +674,13 @@ export default class Instance extends EventEmitter {
         
         // Stop the instance since it exceeds quota
         if (this.instanceStatus === Instance.STATUS_RUNNING) {
-          logger.info(`Stopping instance ${this.instanceUuid} due to disk quota exceeded`);
+          logger.info(`Stopping instance ${this.config.nickname} (${this.instanceUuid}) due to disk quota exceeded`);
           this.println("INFO", $t("TXT_CODE_disk_quota_stop_instance"));
           
           // Use execPreset instead of forceExec to avoid type issues
           try {
             await this.execPreset("stop");
+            logger.info(`Successfully issued stop command to instance ${this.instanceUuid}`);
           } catch (error) {
             if (error instanceof Error) {
               logger.error(`Failed to gracefully stop instance ${this.instanceUuid} due to disk quota: ${error.message}`);
@@ -692,15 +697,24 @@ export default class Instance extends EventEmitter {
               if (this.process) {
                 try {
                   this.process.kill();
+                  logger.info(`Successfully force killed instance ${this.instanceUuid}`);
                 } catch (killError) {
                   logger.error(`Failed to force kill instance ${this.instanceUuid}: ${killError instanceof Error ? killError.message : String(killError)}`);
                 }
               }
             }
           }, 5000); // Wait 5 seconds before force killing
+        } else {
+          logger.info(`Instance ${this.instanceUuid} exceeds disk quota but is not running (status: ${this.instanceStatus})`);
         }
         
         return false; // Exceeds quota
+      } else {
+        // Log disk usage check for debugging
+        logger.debug(
+          `Instance ${this.config.nickname} (${this.instanceUuid}) disk check: ` +
+          `Used ${Math.round(quotaInfo.used / (1024 * 1024))}MB of ${Math.round(quotaInfo.limit / (1024 * 1024))}MB (${quotaInfo.percentage.toFixed(2)}%)`
+        );
       }
       
       return true; // Within quota
