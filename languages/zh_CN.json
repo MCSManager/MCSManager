@@ -3210,6 +3210,5 @@
   "TXT_CODE_CONFIRM_UPLOAD": "确认上传",
   "TXT_CODE_MOD_UPLOAD_NO_FOLDER": "不支持上传文件夹，请选择文件或压缩包",
   "TXT_CODE_TOTAL_ITEMS": "共计 {total} 条项目",
-  "TXT_CODE_INSTALLED": "已安装",
-  "TXT_CODE_8a5305a6": "MC Leaves"
+  "TXT_CODE_INSTALLED": "已安装"
 }
