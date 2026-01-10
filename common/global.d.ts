@@ -161,6 +161,7 @@ declare global {
       portAssignInterval: number;
       port: number;
     };
+    dockerPlatforms?: string[];
   }
 
   interface IPanelOverviewResponse {
