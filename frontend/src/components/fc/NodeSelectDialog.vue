@@ -30,7 +30,7 @@ const isNodeSupported = (node: ComputedNodeInfo): boolean => {
   if (!node.dockerPlatforms || node.dockerPlatforms.length === 0) {
     return false;
   }
-  return node.dockerPlatforms?.some((platform) => props.targetPlatforms?.includes(platform)) || false;
+  return node.dockerPlatforms?.some((platform) => props.targetPlatforms?.includes(platform));
 };
 
 // sorted nodes list: supported nodes first, unsupported nodes last

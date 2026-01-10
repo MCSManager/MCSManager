@@ -179,7 +179,7 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
       return;
     }
 
-    // Get authentication token from Docker Hub$
+    // Get authentication token from Docker Hub.
     // Might be subject to rate limiting if many pulls are made from the same IP, not necessary from MCS only
     // Shouldn't be too much of a problem, but good to be aware of
     let token = "";

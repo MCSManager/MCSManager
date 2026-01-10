@@ -88,7 +88,6 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
       let targetPlatforms: string[] | undefined;
       if (template.setupInfo?.docker?.image) {
         targetPlatforms = await getImagePlatformsFromDockerHub(template.setupInfo.docker.image);
-        console.log("Retrieved platforms for image:", template.setupInfo.docker.image, targetPlatforms);
         
         // only use platforms if we successfully got them
         if (!targetPlatforms || targetPlatforms.length === 0) {
@@ -96,7 +95,6 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
         }
       }
 
-      console.log("Opening node select dialog with targetPlatforms:", targetPlatforms);
       const node = await openNodeSelectDialog(targetPlatforms);
       if (!node) {
         reportErrorMsg(t("TXT_CODE_2de92a5d"));

@@ -8,15 +8,6 @@ export function normalizeDockerArchitecture(architecture: string | undefined): s
     return "amd64"; // default fallback
   }
 
-  // Normalize architecture names to standard Docker format
-  if (architecture === "amd64") {
-    return "amd64";
-  } else if (architecture === "arm64") {
-    return "arm64";
-  } else if (architecture === "arm") {
-    return "arm";
-  }
-
   // Return original if not one of the standard architectures
   return architecture;
 }

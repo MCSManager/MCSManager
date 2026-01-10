@@ -182,9 +182,6 @@ export class DockerManager {
       const url = new URL(registryUrl);
       const protocol = url.protocol === "https:" ? https : http;
 
-      // get manifest list (for multi-platform images) or manifest
-      const manifestUrl = `${registryUrl}/v2/${repository}/manifests/${tag}`;
-
       return new Promise((resolve) => {
         const options = {
           hostname: url.hostname,
@@ -203,6 +200,11 @@ export class DockerManager {
             data += chunk;
           });
           res.on("end", () => {
+            if (res.statusCode !== 200) {
+              resolve([]);
+              return;
+            }
+
             try {
               const manifest = JSON.parse(data);
               const platforms: string[] = [];
