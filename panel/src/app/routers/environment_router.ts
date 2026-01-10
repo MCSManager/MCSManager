@@ -1,9 +1,11 @@
 import Router from "@koa/router";
+import axios from "axios";
+import { normalizeDockerPlatform } from "mcsmanager-common";
+import { ROLE } from "../entity/user";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import RemoteServiceSubsystem from "../service/remote_service";
 import RemoteRequest from "../service/remote_command";
-import { ROLE } from "../entity/user";
+import RemoteServiceSubsystem from "../service/remote_service";
 
 const router = new Router({ prefix: "/environment" });
 
@@ -121,5 +123,107 @@ router.get(
     }
   }
 );
+
+// [Top-level Permission]
+// Get supported platforms for a Docker image (via daemon)
+router.post(
+  "/image_platforms",
+  permission({ level: ROLE.ADMIN }),
+  validator({ query: { daemonId: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const { imageName } = ctx.request.body as { imageName: string };
+      if (!imageName) {
+        ctx.body = { status: 400, message: "Image name is required" };
+        return;
+      }
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("environment/image_platforms", {
+        imageName
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Top-level Permission]
+// Get supported platforms for a Docker image from Docker Hub (proxy endpoint to avoid CORS)
+router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), async (ctx) => {
+  try {
+    const { imageName } = ctx.request.body as { imageName: string };
+    if (!imageName) {
+      ctx.body = { status: 400, message: "Image name is required" };
+      return;
+    }
+
+    // Parse image name: image:tag or namespace/image:tag
+    const parts = imageName.split("/");
+    let repository: string;
+    let tag = "latest";
+
+    if (parts.length === 1) {
+      // Format: image:tag or image
+      const [img, imgTag] = parts[0].includes(":") ? parts[0].split(":") : [parts[0], "latest"];
+      repository = `library/${img}`;
+      tag = imgTag;
+    } else if (parts.length === 2) {
+      // Format: namespace/image:tag
+      const [repo, repoTag] = parts[1].includes(":") ? parts[1].split(":") : [parts[1], "latest"];
+      repository = `${parts[0]}/${repo}`;
+      tag = repoTag;
+    } else {
+      ctx.body = { status: 400, message: "Invalid image name format" };
+      return;
+    }
+
+    // Get authentication token from Docker Hub$
+    // Might be subject to rate limiting if many pulls are made from the same IP, not necessary from MCS only
+    // Shouldn't be too much of a problem, but good to be aware of
+    let token = "";
+    try {
+      const tokenResponse = await axios.get(
+        `https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repository}:pull`
+      );
+      token = tokenResponse.data.token || tokenResponse.data.access_token || "";
+    } catch (tokenError) {
+      // continue without token for public images
+    }
+
+    // Fetch manifest list using Docker Registry HTTP API V2
+    const headers: Record<string, string> = {
+      Accept:
+        "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json"
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const manifestResponse = await axios.get(
+      `https://registry-1.docker.io/v2/${repository}/manifests/${tag}`,
+      { headers }
+    );
+
+    const manifest = manifestResponse.data;
+    const platforms: string[] = [];
+
+    // Check if it's a manifest list (multi-platform image)
+    if (manifest.manifests && Array.isArray(manifest.manifests)) {
+      for (const m of manifest.manifests) {
+        if (m.platform) {
+          platforms.push(normalizeDockerPlatform(m.platform));
+        }
+      }
+    }
+
+    ctx.body = platforms;
+  } catch (err: any) {
+    // Return empty array on error (graceful fallback)
+    ctx.body = [];
+  }
+});
 
 export default router;
