@@ -3,7 +3,6 @@ import InnerCard from "@/components/InnerCard.vue";
 import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import {
-  TYPE_MINECRAFT_BEDROCK,
   TYPE_MINECRAFT_JAVA,
   TYPE_STEAM_SERVER_UNIVERSAL,
   useInstanceInfo
