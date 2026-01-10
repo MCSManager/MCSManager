@@ -1262,6 +1262,8 @@
   "TXT_CODE_7dd469fa": "This is the message that gets broadcasted when a user is no longer AFK (must have player-idle-timeout set greater than 0 & kick-if-idle set as false)",
   "TXT_CODE_7e0b9953": "What to do with the blocks that are effected by the explosion.",
   "TXT_CODE_7e267ba": "Select Node",
+  "TXT_CODE_node_platform_unsupported": "Platform Not Supported",
+  "TXT_CODE_node_platform_required": "Required platforms",
   "TXT_CODE_7e426b47": "If query is enabled, what port should the query protocol listen on?",
   "TXT_CODE_7e6a82d8": "Configuration File of a Forge Server",
   "TXT_CODE_7e9727bd": "Players",
