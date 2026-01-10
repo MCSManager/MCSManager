@@ -171,6 +171,7 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   crlf: 1,
   category: 0,
   basePort: undefined as any,
+  diskQuota: 0,
 
   // Steam RCON
   enableRcon: false,

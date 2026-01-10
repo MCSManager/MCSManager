@@ -13,6 +13,11 @@ import { globalTaskQueue } from "./task_queue";
 interface DownloadOptions {
   instance?: Instance;
   quotaService?: DiskQuotaService;
+  hooks?: {
+    taskId?: string;
+    onProgress?: (current: number, total: number) => void;
+    onComplete?: (status: "success" | "failed", error?: string) => void;
+  };
 }
 
 class DownloadManager {
@@ -43,6 +48,7 @@ class DownloadManager {
 
         const quotaService = options?.quotaService;
         const instance = options?.instance;
+        const hooks = options?.hooks;
 
         // Setup controller and task state
         if (this.controller) this.controller.abort();
@@ -67,6 +73,7 @@ class DownloadManager {
         const writeStream = createWriteStream(targetPath);
 
         this.task.total = total;
+        hooks?.onProgress?.(0, total);
 
         return new Promise((resolve, reject) => {
           const onError = (err: Error) => {
@@ -80,6 +87,7 @@ class DownloadManager {
                 if (this.task?.status === 2) this.task = null;
               }, 10000);
             }
+            hooks?.onComplete?.("failed", err.message);
             reject(err);
           };
 
@@ -91,12 +99,14 @@ class DownloadManager {
                 if (this.task?.status === 1) this.task = null;
               }, 5000);
             }
+            hooks?.onComplete?.("success");
             resolve();
           };
 
           stream.on("data", (chunk: any) => {
             current += chunk.length;
             if (this.task) this.task.current = current;
+            hooks?.onProgress?.(current, total);
 
             if (quotaLimit > 0) {
               quotaCurrent += chunk.length;
@@ -131,6 +141,7 @@ class DownloadManager {
             if (this.task?.status === 2) this.task = null;
           }, 10000);
         }
+        options?.hooks?.onComplete?.("failed", err.message);
         throw err;
       }
     });

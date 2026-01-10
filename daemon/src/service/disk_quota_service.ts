@@ -1,8 +1,8 @@
 import { spawn } from "child_process";
 import path from "path";
 import Instance from "../entity/instance/instance";
-import InstanceSubsystem from "./system_instance";
 import logger from "./log";
+import InstanceSubsystem from "./system_instance";
 
 export interface IDiskQuotaResult {
   used: number; // in bytes
@@ -43,13 +43,17 @@ export class DiskQuotaService {
   /**
    * Get current disk usage for an instance
    */
-  public async getDiskUsageForInstance(instance: Instance): Promise<number> {
+  public async getDiskUsageForInstance(
+    instance: Instance,
+    opts?: { refresh?: boolean }
+  ): Promise<number> {
+    const refresh = opts?.refresh ?? false;
     const safePath = this.safeInstancePath(instance);
     const cacheKey = instance.instanceUuid;
     const cached = this.usageCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) return cached.used;
+    if (!refresh && cached && Date.now() - cached.timestamp < this.cacheTimeout) return cached.used;
 
-    const inFlight = this.inFlight.get(cacheKey);
+    const inFlight = !refresh ? this.inFlight.get(cacheKey) : undefined;
     if (inFlight) return inFlight;
 
     const promise = this.measureWithSystemCommand(safePath)

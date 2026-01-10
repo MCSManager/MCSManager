@@ -6,6 +6,7 @@ import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
 import { DiskQuotaService } from "../service/disk_quota_service";
+import { ioTaskService } from "../service/io_task_service";
 import { missionPassport } from "../service/mission_passport";
 import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
@@ -153,10 +154,12 @@ router.post("/upload-new/:key", async (ctx) => {
   const zipCode = String(ctx.query.code);
   const filename = String(ctx.query.filename);
   const size = Number(ctx.query.size);
+  let ioTaskId: string | undefined;
   if (ctx.query.stop) {
     const writer = uploadManager.get(key);
     if (writer) {
       await writer.stop();
+      await ioTaskService.finishTask(writer.ioTaskId, "cancelled", "stopped");
       uploadManager.delete(key);
       ctx.body = "OK";
       return;
@@ -181,6 +184,23 @@ router.post("/upload-new/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";
+    const ioTask = ioTaskService.startTask({
+      instanceUuid: instance.instanceUuid,
+      type: "upload",
+      path: path.join(uploadDir, filename)
+    });
+    ioTaskId = ioTask.task?.id;
+    const hooks = {
+      onProgress: (current: number, total: number) => {
+        const percent = total > 0 ? (current / total) * 100 : 0;
+        ioTaskService.updateProgress(ioTaskId, percent);
+      },
+      onComplete: (status: "success" | "failed" | "cancelled", message?: string) => {
+        const mapped =
+          status === "success" ? "success" : status === "cancelled" ? "cancelled" : "failed";
+        ioTaskService.finishTask(ioTaskId, mapped, message);
+      }
+    };
     const filePath = await FileWriter.getPath(
       cwd,
       uploadDir,
@@ -202,11 +222,15 @@ router.post("/upload-new/:key", async (ctx) => {
         unzip,
         zipCode,
         filePath,
-        instance.instanceUuid
+        instance.instanceUuid,
+        hooks,
+        ioTaskId
       );
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };
+    } else {
+      fr.writer.attachHooks(hooks, ioTaskId);
     }
 
     ctx.body = {
@@ -220,6 +244,7 @@ router.post("/upload-new/:key", async (ctx) => {
   } catch (error: any) {
     ctx.body = error.message;
     ctx.status = 500;
+    await ioTaskService.finishTask(ioTaskId, "failed", error.message);
   } finally {
     missionPassport.deleteMission(key);
   }

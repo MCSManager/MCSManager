@@ -8,9 +8,9 @@ import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
+import { DiskQuotaService } from "../../service/disk_quota_service";
 import javaManager from "../../service/java_manager";
 import logger from "../../service/log";
-import { DiskQuotaService } from "../../service/disk_quota_service";
 import { globalTaskQueue } from "../../service/task_queue";
 import InstanceCommand from "../commands/base/command";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
@@ -129,11 +129,14 @@ export default class Instance extends EventEmitter {
     this.startCount = 0;
 
     // Initialize disk quota if specified in config
-    if (config.docker?.maxSpace && config.docker.maxSpace > 0) {
+    const initialQuota =
+      (config.diskQuota && config.diskQuota > 0 ? config.diskQuota : config.docker?.maxSpace) || 0;
+
+    if (initialQuota > 0) {
       const quotaService = DiskQuotaService.getInstance();
-      quotaService.setQuota(instanceUuid, config.docker.maxSpace);
+      quotaService.setQuota(instanceUuid, initialQuota);
       // Also set the storage limit in instance info
-      this.info.storageLimit = config.docker.maxSpace * 1024 * 1024; // Convert MB to bytes
+      this.info.storageLimit = initialQuota * 1024 * 1024; // Convert MB to bytes
     } else {
       // If no quota set, mark as unlimited
       this.info.storageLimit = 0; // 0 means unlimited
@@ -225,6 +228,10 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "rconIp", String);
     configureEntityParams(this.config, cfg, "category", Number);
     configureEntityParams(this.config, cfg, "basePort", Number);
+    const oldDiskQuota = this.config.diskQuota;
+    configureEntityParams(this.config, cfg, "diskQuota", Number);
+
+    let oldMaxSpace = this.config.docker.maxSpace;
 
     if (cfg.docker) {
       configureEntityParams(this.config.docker, cfg.docker, "containerName", String);
@@ -232,23 +239,7 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "memory", Number);
       configureEntityParams(this.config.docker, cfg.docker, "ports");
       configureEntityParams(this.config.docker, cfg.docker, "extraVolumes");
-      const oldMaxSpace = this.config.docker.maxSpace;
       configureEntityParams(this.config.docker, cfg.docker, "maxSpace", Number);
-
-      // If maxSpace changed, update quota settings
-      if (oldMaxSpace !== this.config.docker.maxSpace) {
-        const quotaService = DiskQuotaService.getInstance();
-        if (this.config.docker.maxSpace != null && this.config.docker.maxSpace > 0) {
-          // Update quota
-          quotaService.setQuota(this.instanceUuid, this.config.docker.maxSpace);
-          // Update instance info limit
-          this.info.storageLimit = this.config.docker.maxSpace * 1024 * 1024; // Convert MB to bytes
-        } else {
-          // Remove quota (unlimited)
-          quotaService.setQuota(this.instanceUuid, 0);
-          this.info.storageLimit = 0; // 0 means unlimited
-        }
-      }
 
       configureEntityParams(this.config.docker, cfg.docker, "io", Number);
       configureEntityParams(this.config.docker, cfg.docker, "network", Number);
@@ -280,6 +271,19 @@ export default class Instance extends EventEmitter {
 
     if (cfg.java) {
       configureEntityParams(this.config.java, cfg.java, "id", String);
+    }
+
+    // Apply disk quota updates (diskQuota overrides docker.maxSpace when set)
+    const previousQuota = (oldDiskQuota && oldDiskQuota > 0 ? oldDiskQuota : oldMaxSpace) || 0;
+    const newQuota =
+      (this.config.diskQuota && this.config.diskQuota > 0
+        ? this.config.diskQuota
+        : this.config.docker.maxSpace) || 0;
+
+    if (previousQuota !== newQuota) {
+      const quotaService = DiskQuotaService.getInstance();
+      quotaService.setQuota(this.instanceUuid, newQuota);
+      this.info.storageLimit = newQuota > 0 ? newQuota * 1024 * 1024 : 0;
     }
 
     if (persistence) {

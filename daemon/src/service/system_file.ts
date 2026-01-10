@@ -1,3 +1,4 @@
+import { ChildProcess } from "child_process";
 import fs from "fs-extra";
 import iconv from "iconv-lite";
 import { ProcessWrapper } from "mcsmanager-common";
@@ -7,8 +8,9 @@ import { compress, decompress } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
-import InstanceSubsystem from "./system_instance";
 import { DiskQuotaService } from "./disk_quota_service";
+import logger from "./log";
+import InstanceSubsystem from "./system_instance";
 import { globalTaskQueue } from "./task_queue";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
@@ -305,7 +307,49 @@ export default class FileManager {
     const destDirAbs = this.toAbsolutePath(destDir);
     this.zipFileCheck(sourceZipAbs);
     return this.runInQueue(`unzip:${this.instanceUuid || "global"}`, async () => {
-      return await decompress(sourceZipAbs, destDirAbs, code);
+      const instance = this.instanceUuid ? InstanceSubsystem.getInstance(this.instanceUuid) : null;
+      const quotaService = DiskQuotaService.getInstance();
+      const quotaLimit = instance ? quotaService.getQuota(instance.instanceUuid) : 0;
+      let childProc: ChildProcess | null = null;
+      let exceededError: Error | null = null;
+      let monitor: NodeJS.Timeout | undefined;
+
+      const stopMonitor = () => {
+        if (monitor) clearInterval(monitor);
+        monitor = undefined;
+      };
+
+      if (quotaLimit > 0 && instance) {
+        monitor = setInterval(async () => {
+          try {
+            const used = await quotaService.getDiskUsageForInstance(instance);
+            if (used > quotaLimit) {
+              exceededError = new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+              if (childProc && !childProc.killed) {
+                childProc.kill("SIGKILL");
+              }
+            }
+          } catch (err) {
+            logger.debug(
+              `[FileManager] Disk usage monitor failed: ${
+                err instanceof Error ? err.message : String(err)
+              }`
+            );
+          }
+        }, 1500);
+      }
+
+      try {
+        const result = await decompress(sourceZipAbs, destDirAbs, code, {
+          onStart: (child) => {
+            childProc = child;
+          }
+        });
+        if (exceededError) throw exceededError;
+        return result;
+      } finally {
+        stopMonitor();
+      }
     });
   }
 
