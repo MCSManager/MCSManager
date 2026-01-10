@@ -150,7 +150,7 @@ router.post(
 );
 
 // [Top-level Permission]
-// Get supported platforms for a Docker image from Docker Hub (proxy endpoint to avoid CORS)
+// Get supported platforms for a Docker image from Docker Hub or custom registry (proxy endpoint to avoid CORS)
 router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), async (ctx) => {
   try {
     const { imageName } = ctx.request.body as { imageName: string };
@@ -159,8 +159,9 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
       return;
     }
 
-    // Parse image name: image:tag or namespace/image:tag
+    // Parse image name: image:tag, namespace/image:tag, or registry/namespace/image:tag
     const parts = imageName.split("/");
+    let registry = "registry-1.docker.io";
     let repository: string;
     let tag = "latest";
 
@@ -170,26 +171,51 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
       repository = `library/${img}`;
       tag = imgTag;
     } else if (parts.length === 2) {
-      // Format: namespace/image:tag
-      const [repo, repoTag] = parts[1].includes(":") ? parts[1].split(":") : [parts[1], "latest"];
-      repository = `${parts[0]}/${repo}`;
-      tag = repoTag;
+      // Format: namespace/image:tag or registry/repo:tag
+      if (parts[0].includes(".") || parts[0].includes(":")) {
+        // likely a registry
+        registry = parts[0];
+        const [repo, repoTag] = parts[1].includes(":") ? parts[1].split(":") : [parts[1], "latest"];
+        repository = repo;
+        tag = repoTag;
+      } else {
+        // Format: namespace/image:tag (Docker Hub)
+        const [repo, repoTag] = parts[1].includes(":") ? parts[1].split(":") : [parts[1], "latest"];
+        repository = `${parts[0]}/${repo}`;
+        tag = repoTag;
+      }
     } else {
-      ctx.body = { status: 400, message: "Invalid image name format" };
-      return;
+      // Format: registry/namespace/image:tag (3+ parts)
+      registry = parts[0];
+      const lastPart = parts[parts.length - 1];
+      const [lastRepo, lastTag] = lastPart.includes(":")
+        ? lastPart.split(":")
+        : [lastPart, "latest"];
+      repository = parts.slice(1, -1).concat(lastRepo).join("/");
+      tag = lastTag;
     }
 
-    // Get authentication token from Docker Hub.
-    // Might be subject to rate limiting if many pulls are made from the same IP, not necessary from MCS only
-    // Shouldn't be too much of a problem, but good to be aware of
+    // Normalize registry URL
+    const registryUrl = registry.includes("://") ? registry : `https://${registry}`;
+    const isDockerHub = registry === "registry-1.docker.io" || registry === "docker.io";
+
+    // Get authentication token
     let token = "";
-    try {
-      const tokenResponse = await axios.get(
-        `https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repository}:pull`
-      );
-      token = tokenResponse.data.token || tokenResponse.data.access_token || "";
-    } catch (tokenError) {
-      // continue without token for public images
+    if (isDockerHub) {
+      // Docker Hub authentication
+      try {
+        const tokenResponse = await axios.get(
+          `https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repository}:pull`
+        );
+        token = tokenResponse.data.token || tokenResponse.data.access_token || "";
+      } catch (tokenError) {
+        // continue without token for public images
+      }
+    } else {
+      // For custom registries, try to get token from registry's auth endpoint
+      // Most registries use /v2/ endpoint, but authentication varies
+      // For now, we'll proceed without token (works for public images)
+      // Custom registries may require additional authentication configuration
     }
 
     // Fetch manifest list using Docker Registry HTTP API V2
@@ -202,10 +228,8 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const manifestResponse = await axios.get(
-      `https://registry-1.docker.io/v2/${repository}/manifests/${tag}`,
-      { headers }
-    );
+    const manifestUrl = `${registryUrl}/v2/${repository}/manifests/${tag}`;
+    const manifestResponse = await axios.get(manifestUrl, { headers });
 
     const manifest = manifestResponse.data;
     const platforms: string[] = [];
