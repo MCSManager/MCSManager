@@ -1,14 +1,11 @@
-import { exec } from "child_process";
-import fs from "fs-extra";
+import { spawn } from "child_process";
 import path from "path";
-import { promisify } from "util";
 import Instance from "../entity/instance/instance";
+import InstanceSubsystem from "./system_instance";
 import logger from "./log";
 
-const execAsync = promisify(exec);
-
 export interface IDiskQuotaResult {
-  used: number;  // in bytes
+  used: number; // in bytes
   limit: number; // in bytes
   available: number; // in bytes
   percentage: number; // percentage used
@@ -18,39 +15,10 @@ export class DiskQuotaService {
   private static instance: DiskQuotaService;
   private quotaMap: Map<string, number> = new Map(); // instance UUID to quota (in bytes)
   private usageCache: Map<string, { used: number; timestamp: number }> = new Map();
-  private cacheTimeout: number = 5000; // 5 seconds cache
+  private inFlight: Map<string, Promise<number>> = new Map();
+  private cacheTimeout: number = 60_000; // 60 seconds cache aligns with poller
 
   private constructor() {}
-
-  /**
-   * Extract instance UUID from a path
-   * Handles both Unix and Windows path separators
-   */
-  private extractInstanceUuid(filePath: string): string | null {
-    // Normalize the path to use forward slashes for consistent processing
-    const normalizedPath = filePath.replace(/\\/g, '/');
-    const pathSegments = normalizedPath.split('/');
-    const instanceDataIndex = pathSegments.indexOf('InstanceData');
-    
-    if (instanceDataIndex !== -1 && pathSegments.length > instanceDataIndex + 1) {
-      return pathSegments[instanceDataIndex + 1];
-    }
-    return null;
-  }
-
-  /**
-   * Build the instance directory path
-   */
-  private buildInstanceDirPath(filePath: string): string | null {
-    const normalizedPath = filePath.replace(/\\/g, '/');
-    const pathSegments = normalizedPath.split('/');
-    const instanceDataIndex = pathSegments.indexOf('InstanceData');
-    
-    if (instanceDataIndex !== -1 && pathSegments.length > instanceDataIndex + 1) {
-      return pathSegments.slice(0, instanceDataIndex + 2).join('/');
-    }
-    return null;
-  }
 
   public static getInstance(): DiskQuotaService {
     if (!DiskQuotaService.instance) {
@@ -75,89 +43,108 @@ export class DiskQuotaService {
   /**
    * Get current disk usage for an instance
    */
-  public async getDiskUsage(instancePath: string): Promise<number> {
-    try {
-      // Check if we have a cached result
-      const cached = this.usageCache.get(instancePath);
-      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-        return cached.used;
-      }
+  public async getDiskUsageForInstance(instance: Instance): Promise<number> {
+    const safePath = this.safeInstancePath(instance);
+    const cacheKey = instance.instanceUuid;
+    const cached = this.usageCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) return cached.used;
 
-      let size = 0;
-      
-      // Use platform-appropriate command to calculate disk usage
-      if (process.platform === 'win32') {
-        // On Windows, use PowerShell to calculate directory size
-        try {
-          const { stdout } = await execAsync(
-            `powershell -command "& {Get-ChildItem -Path '${instancePath.replace(/'/g, "''")}' -Recurse -File | Measure-Object -Property Length -Sum | Select-Object -ExpandProperty Sum}"`
-          );
-          const parsedSize = parseInt(stdout.trim(), 10);
-          size = isNaN(parsedSize) ? 0 : parsedSize;
-        } catch (psError) {
-          // If PowerShell fails, fall back to Node.js fs method
-          size = await this.calculateDiskUsageWithFs(instancePath);
-        }
-      } else {
-        // On Unix-like systems, use du command (more efficient for large directories)
-        try {
-          const { stdout } = await execAsync(`du -sb "${instancePath}" 2>/dev/null || echo "0\\t${instancePath}"`);
-          const match = stdout.trim().match(/^(\d+)/);
-          size = match ? parseInt(match[1], 10) : 0;
-        } catch (duError) {
-          // If du command fails, fall back to Node.js fs method
-          size = await this.calculateDiskUsageWithFs(instancePath);
-        }
-      }
+    const inFlight = this.inFlight.get(cacheKey);
+    if (inFlight) return inFlight;
 
-      // Cache the result
-      this.usageCache.set(instancePath, { used: size, timestamp: Date.now() });
-      return size;
-    } catch (error) {
-      if (error instanceof Error) {
-        logger.warn(`Failed to get disk usage for ${instancePath}: ${error.message}`);
-      } else {
-        logger.warn(`Failed to get disk usage for ${instancePath}: ${String(error)}`);
-      }
-      
-      // Fallback: calculate using Node.js fs
-      return await this.calculateDiskUsageWithFs(instancePath);
-    }
+    const promise = this.measureWithSystemCommand(safePath)
+      .catch((err) => {
+        logger.warn(
+          `Disk usage measurement failed for ${cacheKey}: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
+        return 0; // fallback to 0 so monitoring continues; quota enforcement will re-run soon
+      })
+      .then((size) => {
+        this.usageCache.set(cacheKey, { used: size, timestamp: Date.now() });
+        return size;
+      })
+      .finally(() => {
+        this.inFlight.delete(cacheKey);
+      });
+
+    this.inFlight.set(cacheKey, promise);
+    return promise;
   }
 
-  /**
-   * Calculate disk usage using Node.js fs module (cross-platform)
-   */
-  private async calculateDiskUsageWithFs(instancePath: string): Promise<number> {
-    try {
-      const stats = await fs.stat(instancePath);
-      if (stats.isFile()) {
-        return stats.size;
-      }
-
-      let totalSize = 0;
-      const items = await fs.readdir(instancePath);
-      
-      for (const item of items) {
-        const itemPath = path.join(instancePath, item);
-        const itemStats = await fs.stat(itemPath);
-        
-        if (itemStats.isDirectory()) {
-          totalSize += await this.calculateDiskUsageWithFs(itemPath);
-        } else {
-          totalSize += itemStats.size;
-        }
-      }
-      
-      return totalSize;
-    } catch (fsError) {
-      if (fsError instanceof Error) {
-        logger.error(`Failed to calculate disk usage for ${instancePath} using fs: ${fsError.message}`);
-      } else {
-        logger.error(`Failed to calculate disk usage for ${instancePath} using fs: ${String(fsError)}`);
-      }
-      return 0;
+  private safeInstancePath(instance: Instance): string {
+    const resolved = path.resolve(instance.absoluteCwdPath());
+    const baseDir = path.resolve(InstanceSubsystem.getInstanceDataDir());
+    if (!resolved.startsWith(baseDir) && baseDir !== path.parse(baseDir).root) {
+      throw new Error(`Instance path ${resolved} is outside managed data directory`);
     }
+    return resolved;
+  }
+
+  private measureWithSystemCommand(targetPath: string): Promise<number> {
+    if (process.platform === "win32") {
+      return this.measureWithPowerShell(targetPath);
+    }
+    return this.measureWithDu(targetPath);
+  }
+
+  private measureWithPowerShell(targetPath: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const command = [
+        "& {",
+        "param([string]$p);",
+        "$ErrorActionPreference='Stop';",
+        "$ProgressPreference='SilentlyContinue';",
+        "$sum = (Get-ChildItem -LiteralPath $p -Force -Recurse -File -ErrorAction SilentlyContinue |",
+        "  Measure-Object -Property Length -Sum).Sum;",
+        "if ($null -eq $sum) { $sum = 0 };",
+        "$sum = [Int64]$sum;",
+        "[Console]::WriteLine($sum.ToString([System.Globalization.CultureInfo]::InvariantCulture))",
+        "}"
+      ].join(" ");
+
+      const ps = spawn(
+        "powershell.exe",
+        ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", command, "--", targetPath],
+        { shell: false, windowsHide: true, env: process.env, stdio: ["ignore", "pipe", "pipe"] }
+      );
+
+      ps.stdout.setEncoding("utf8");
+      let output = "";
+      ps.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+      let errorText = "";
+      ps.stderr.on("data", (data) => {
+        errorText += data.toString();
+      });
+      ps.on("close", (code) => {
+        if (code !== 0) {
+          return reject(new Error(errorText || `PowerShell exited with code ${code}`));
+        }
+        const size = parseInt(output.trim(), 10);
+        if (Number.isNaN(size)) return reject(new Error("Failed to parse PowerShell output"));
+        resolve(size);
+      });
+    });
+  }
+
+  private measureWithDu(targetPath: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const du = spawn("du", ["-sb", targetPath], { shell: false });
+      let output = "";
+      let errorText = "";
+      du.stdout.on("data", (data) => (output += data.toString()));
+      du.stderr.on("data", (data) => (errorText += data.toString()));
+      du.on("error", (err) => reject(err));
+      du.on("close", (code) => {
+        if (code !== 0) return reject(new Error(errorText || `du exited with code ${code}`));
+        const match = output.trim().match(/^(\d+)/);
+        if (!match) return reject(new Error("Failed to parse du output"));
+        resolve(parseInt(match[1], 10));
+      });
+    });
   }
 
   /**
@@ -166,13 +153,13 @@ export class DiskQuotaService {
   public async hasSpaceAvailable(instance: Instance): Promise<boolean> {
     const instanceUuid = instance.instanceUuid;
     const quota = this.quotaMap.get(instanceUuid);
-    
+
     // If no quota is set, unlimited space
     if (!quota) {
       return true;
     }
 
-    const used = await this.getDiskUsage(instance.absoluteCwdPath());
+    const used = await this.getDiskUsageForInstance(instance);
     return used < quota;
   }
 
@@ -182,13 +169,13 @@ export class DiskQuotaService {
   public async exceedsQuota(instance: Instance): Promise<boolean> {
     const instanceUuid = instance.instanceUuid;
     const quota = this.quotaMap.get(instanceUuid);
-    
+
     // If no quota is set, instance cannot exceed quota
     if (!quota) {
       return false;
     }
 
-    const used = await this.getDiskUsage(instance.absoluteCwdPath());
+    const used = await this.getDiskUsageForInstance(instance);
     return used > quota;
   }
 
@@ -196,27 +183,11 @@ export class DiskQuotaService {
    * Check if adding a file/directory of given size would exceed quota
    * This is used to prevent operations that would exceed the quota
    */
-  public async wouldExceedQuota(instancePath: string, additionalSize: number): Promise<boolean> {
-    // Get instance directory from the path
-    const instanceDir = this.buildInstanceDirPath(instancePath);
-    if (!instanceDir) {
-      // Path doesn't contain InstanceData, so no quota to check
-      return false;
-    }
+  public async wouldExceedQuota(instance: Instance, additionalSize: number): Promise<boolean> {
+    const quota = this.quotaMap.get(instance.instanceUuid);
+    if (!quota || quota <= 0) return false;
 
-    // Extract UUID
-    const uuid = this.extractInstanceUuid(instancePath);
-    if (!uuid) {
-      return false;
-    }
-
-    const quota = this.quotaMap.get(uuid);
-    if (!quota || quota <= 0) {
-      // No quota set
-      return false;
-    }
-
-    const currentUsage = await this.getDiskUsage(instanceDir);
+    const currentUsage = await this.getDiskUsageForInstance(instance);
     return currentUsage + additionalSize > quota;
   }
 
@@ -226,7 +197,7 @@ export class DiskQuotaService {
   public async getQuotaInfo(instance: Instance): Promise<IDiskQuotaResult> {
     const instanceUuid = instance.instanceUuid;
     const quota = this.quotaMap.get(instanceUuid) || 0;
-    const used = await this.getDiskUsage(instance.absoluteCwdPath());
+    const used = await this.getDiskUsageForInstance(instance);
     const available = quota > 0 ? quota - used : Number.MAX_SAFE_INTEGER;
     const percentage = quota > 0 ? (used / quota) * 100 : 0;
 
@@ -249,8 +220,8 @@ export class DiskQuotaService {
   /**
    * Clear cache for specific instance
    */
-  public clearCache(instancePath: string): void {
-    this.usageCache.delete(instancePath);
+  public clearCache(instanceUuid: string): void {
+    this.usageCache.delete(instanceUuid);
   }
 
   /**

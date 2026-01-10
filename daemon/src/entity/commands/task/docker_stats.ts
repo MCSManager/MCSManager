@@ -107,11 +107,11 @@ export default class DockerStatsTask implements ILifeCycleTask {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
-      
+
       // Get network stats separately to avoid blocking other stats on failure
       let rxBytes: number | undefined = undefined;
       let txBytes: number | undefined = undefined;
-      
+
       try {
         const networkStats = this.getNetworkInterface(stats.networks);
         rxBytes = networkStats.rxBytes;
@@ -131,14 +131,15 @@ export default class DockerStatsTask implements ILifeCycleTask {
       try {
         const quotaService = DiskQuotaService.getInstance();
         // Clear cache to get fresh data
-        quotaService.clearCache(instance.absoluteCwdPath());
+        quotaService.clearCache(instance.instanceUuid);
         const quotaInfo = await quotaService.getQuotaInfo(instance);
         storageUsage = quotaInfo.used;
         storageLimit = quotaInfo.limit;
       } catch (error) {
         // If disk quota service fails, fall back to the existing logic
         if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
-          this.lastStorageCheck = Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
+          this.lastStorageCheck =
+            Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
           try {
             const containerInfo = await container.inspect();
             const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
@@ -147,7 +148,16 @@ export default class DockerStatsTask implements ILifeCycleTask {
             let totalUsage = 0;
             for (const mount of mounts) {
               try {
-                const { stdout } = await execFilePromise("nice", ["-n", "19", "ionice", "-c", "3", "du", "-sb", mount.Source]);
+                const { stdout } = await execFilePromise("nice", [
+                  "-n",
+                  "19",
+                  "ionice",
+                  "-c",
+                  "3",
+                  "du",
+                  "-sb",
+                  mount.Source
+                ]);
                 const usage = parseInt(stdout.split("\t")[0]);
                 if (!isNaN(usage)) totalUsage += usage;
               } catch (e) {}

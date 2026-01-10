@@ -89,4 +89,9 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     openFrpTunnelId: "",
     openFrpToken: ""
   };
+
+  public diskUsageCache: { used: number; checkedAt: number } = {
+    used: 0,
+    checkedAt: 0
+  };
 }

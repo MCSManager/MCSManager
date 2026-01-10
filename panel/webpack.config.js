@@ -25,7 +25,16 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    ({ request }, callback) => {
+      if (request && request.endsWith(".node")) {
+        // Keep native addons external so Webpack does not try to parse binaries.
+        return callback(null, `commonjs ${request}`);
+      }
+      callback();
+    }
+  ],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")

@@ -65,11 +65,10 @@ router.post("/upload/:key", async (ctx) => {
     if (!mission) throw new Error("Access denied: No task found");
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
-    
+
     // Check disk quota before uploading
     const quotaService = DiskQuotaService.getInstance();
-    const instancePath = instance.absoluteCwdPath().replace(/\\/g, '/');
-    
+
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const tmpFiles = ctx.request.files?.file;
@@ -86,14 +85,14 @@ router.post("/upload/:key", async (ctx) => {
       const originFileName = uploadedFile.originalFilename || "";
       if (!FileManager.checkFileName(path.basename(originFileName)))
         throw new Error("Access denied: Malformed file name");
-      
+
       // Check disk quota before upload
       const fileSize = uploadedFile.size;
-      if (await quotaService.wouldExceedQuota(instancePath, fileSize)) {
+      if (await quotaService.wouldExceedQuota(instance, fileSize)) {
         throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
       }
-      
-      const fileManager = new FileManager(cwd);
+
+      const fileManager = new FileManager(cwd, undefined, instance.instanceUuid);
 
       const ext = path.extname(originFileName);
       const basename = path.basename(originFileName, ext);
@@ -127,7 +126,11 @@ router.post("/upload/:key", async (ctx) => {
       });
 
       if (unzip) {
-        const instanceFiles = new FileManager(instance.absoluteCwdPath());
+        const instanceFiles = new FileManager(
+          instance.absoluteCwdPath(),
+          undefined,
+          instance.instanceUuid
+        );
         instanceFiles.unzip(fileSaveAbsolutePath, ".", zipCode);
       }
       ctx.body = "OK";
@@ -168,18 +171,23 @@ router.post("/upload-new/:key", async (ctx) => {
     if (!mission) throw new Error("Access denied: No task found");
     const instance = InstanceSubsystem.getInstance(mission.parameter.instanceUuid);
     if (!instance) throw new Error("Access denied: No instance found");
-    
+
     // Check disk quota before starting upload
     const quotaService = DiskQuotaService.getInstance();
-    const instancePath = instance.absoluteCwdPath().replace(/\\/g, '/');
-    if (await quotaService.wouldExceedQuota(instancePath, size)) {
+    if (await quotaService.wouldExceedQuota(instance, size)) {
       throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
     }
-    
+
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";
-    const filePath = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
+    const filePath = await FileWriter.getPath(
+      cwd,
+      uploadDir,
+      filename,
+      overwrite,
+      instance.instanceUuid
+    );
     let fr = uploadManager.getByPath(filePath);
     if (fr && size != fr.writer.size) {
       uploadManager.delete(fr.id);
@@ -187,7 +195,15 @@ router.post("/upload-new/:key", async (ctx) => {
       fr = undefined;
     }
     if (!fr) {
-      const fileWriter = new FileWriter(cwd, filename, size, unzip, zipCode, filePath);
+      const fileWriter = new FileWriter(
+        cwd,
+        filename,
+        size,
+        unzip,
+        zipCode,
+        filePath,
+        instance.instanceUuid
+      );
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };

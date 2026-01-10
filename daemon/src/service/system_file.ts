@@ -7,7 +7,9 @@ import { compress, decompress } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
+import InstanceSubsystem from "./system_instance";
 import { DiskQuotaService } from "./disk_quota_service";
+import { globalTaskQueue } from "./task_queue";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
@@ -23,7 +25,11 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string,
+    private readonly instanceUuid?: string
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -41,13 +47,24 @@ export default class FileManager {
    */
   private async checkDiskQuotaForWrite(absPath: string, additionalSize: number): Promise<void> {
     const quotaService = DiskQuotaService.getInstance();
-    
-    // Normalize path to use forward slashes for consistent processing
-    const normalizedPath = absPath.replace(/\\/g, '/');
-    
-    if (await quotaService.wouldExceedQuota(normalizedPath, additionalSize)) {
+
+    if (!this.instanceUuid) return;
+    const instance = InstanceSubsystem.getInstance(this.instanceUuid);
+    if (!instance) return;
+
+    const normalizedPath = path.normalize(absPath);
+    const instanceRoot = path.normalize(instance.absoluteCwdPath());
+    if (!normalizedPath.startsWith(instanceRoot)) {
+      throw new Error("Access denied: path escapes instance root");
+    }
+
+    if (await quotaService.wouldExceedQuota(instance, additionalSize)) {
       throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
     }
+  }
+
+  private async runInQueue<T>(label: string, fn: () => Promise<T>): Promise<T> {
+    return globalTaskQueue.enqueue(label, fn);
   }
 
   isRootTopRath() {
@@ -186,42 +203,41 @@ export default class FileManager {
   async writeFile(fileName: string, data: string) {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
-    
-    const dataSize = Buffer.byteLength(data, 'utf8');
-    await this.checkDiskQuotaForWrite(absPath, dataSize);
-    
-    const buf = iconv.encode(data, this.fileCode || "utf-8");
-    return await fs.writeFile(absPath, buf);
+    return this.runInQueue(`write:${this.instanceUuid || "global"}`, async () => {
+      const dataSize = Buffer.byteLength(data, "utf8");
+      await this.checkDiskQuotaForWrite(absPath, dataSize);
+
+      const buf = iconv.encode(data, this.fileCode || "utf-8");
+      return await fs.writeFile(absPath, buf);
+    });
   }
 
   async newFile(fileName: string) {
     if (!this.checkPath(fileName)) throw new Error(ERROR_MSG_01);
     const target = this.toAbsolutePath(fileName);
-    
-    // Check disk quota before creating file (minimal size)
-    await this.checkDiskQuotaForWrite(target, 1);
-    
-    await fs.createFile(target);
+    return this.runInQueue(`new-file:${this.instanceUuid || "global"}`, async () => {
+      await this.checkDiskQuotaForWrite(target, 1);
+      await fs.createFile(target);
+    });
   }
 
   async copy(target1: string, target2: string) {
     if (!this.checkPath(target2) || !this.check(target1)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target1);
     target2 = this.toAbsolutePath(target2);
-    
-    // Get size of source file/directory
-    const sourceStats = await fs.stat(targetPath);
-    let sourceSize = 0;
-    if (sourceStats.isDirectory()) {
-      sourceSize = await this.getDirectorySize(targetPath);
-    } else {
-      sourceSize = sourceStats.size;
-    }
-    
-    // Check disk quota before copying
-    await this.checkDiskQuotaForWrite(target2, sourceSize);
-    
-    return await fs.copy(targetPath, target2);
+
+    return this.runInQueue(`copy:${this.instanceUuid || "global"}`, async () => {
+      const sourceStats = await fs.stat(targetPath);
+      let sourceSize = 0;
+      if (sourceStats.isDirectory()) {
+        sourceSize = await this.getDirectorySize(targetPath);
+      } else {
+        sourceSize = sourceStats.size;
+      }
+
+      await this.checkDiskQuotaForWrite(target2, sourceSize);
+      return await fs.copy(targetPath, target2);
+    });
   }
 
   mkdir(target: string) {
@@ -233,10 +249,12 @@ export default class FileManager {
   async delete(target: string): Promise<boolean> {
     if (!this.check(target)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
-    return new Promise((r, j) => {
-      fs.remove(targetPath, (err) => {
-        if (!err) r(true);
-        else j(err);
+    return this.runInQueue(`delete:${this.instanceUuid || "global"}`, () => {
+      return new Promise((r, j) => {
+        fs.remove(targetPath, (err) => {
+          if (!err) r(true);
+          else j(err);
+        });
       });
     });
   }
@@ -246,29 +264,31 @@ export default class FileManager {
     if (!this.checkPath(destPath)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
     destPath = this.toAbsolutePath(destPath);
-    
-    try {
-      // Get size of source file/directory
-      const sourceStats = await fs.stat(targetPath);
-      let sourceSize = 0;
-      if (sourceStats.isDirectory()) {
-        sourceSize = await this.getDirectorySize(targetPath);
-      } else {
-        sourceSize = sourceStats.size;
+
+    await this.runInQueue(`move:${this.instanceUuid || "global"}`, async () => {
+      try {
+        const sourceStats = await fs.stat(targetPath);
+        let sourceSize = 0;
+        if (sourceStats.isDirectory()) {
+          sourceSize = await this.getDirectorySize(targetPath);
+        } else {
+          sourceSize = sourceStats.size;
+        }
+
+        await this.checkDiskQuotaForWrite(destPath, sourceSize);
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          !error.message.includes("TXT_CODE_disk_quota_exceeded_write")
+        ) {
+          console.warn(`Could not get source size for quota check: ${error.message}`);
+        } else {
+          throw error;
+        }
       }
-      
-      // Check disk quota before moving
-      await this.checkDiskQuotaForWrite(destPath, sourceSize);
-    } catch (error) {
-      // If we can't stat the source, just proceed - error will be handled by fs.move
-      if (error instanceof Error && !error.message.includes("TXT_CODE_disk_quota_exceeded_write")) {
-        console.warn(`Could not get source size for quota check: ${error.message}`);
-      } else {
-        throw error;
-      }
-    }
-    
-    await fs.move(targetPath, destPath);
+
+      await fs.move(targetPath, destPath);
+    });
   }
 
   private zipFileCheck(path: string) {
@@ -281,8 +301,12 @@ export default class FileManager {
   async unzip(sourceZip: string, destDir: string, code?: string) {
     if (!code) code = this.fileCode;
     if (!this.check(sourceZip) || !this.checkPath(destDir)) throw new Error(ERROR_MSG_01);
-    this.zipFileCheck(this.toAbsolutePath(sourceZip));
-    return await decompress(this.toAbsolutePath(sourceZip), this.toAbsolutePath(destDir), code);
+    const sourceZipAbs = this.toAbsolutePath(sourceZip);
+    const destDirAbs = this.toAbsolutePath(destDir);
+    this.zipFileCheck(sourceZipAbs);
+    return this.runInQueue(`unzip:${this.instanceUuid || "global"}`, async () => {
+      return await decompress(sourceZipAbs, destDirAbs, code);
+    });
   }
 
   async zip(sourceZip: string, files: string[], code?: string) {
@@ -291,7 +315,7 @@ export default class FileManager {
     const MAX_ZIP_GB = globalConfiguration.config.maxZipFileSize;
     const MAX_TOTAL_FIELS_SIZE = 1024 * 1024 * 1024 * MAX_ZIP_GB;
     const sourceZipPath = this.toAbsolutePath(sourceZip);
-    const filesPath = [];
+    const filesPath = [] as string[];
     let totalSize = 0;
     for (const iterator of files) {
       if (this.check(iterator)) {
@@ -303,14 +327,13 @@ export default class FileManager {
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
-    
-    // Estimate that the zip file might be a significant size
-    const estimatedZipSize = totalSize * 0.5; // Estimate zip compression ratio
-    
-    // Check disk quota before creating zip file
-    await this.checkDiskQuotaForWrite(sourceZipPath, estimatedZipSize);
-    
-    return await compress(sourceZipPath, filesPath, code);
+
+    const estimatedZipSize = totalSize * 0.5;
+
+    return this.runInQueue(`zip:${this.instanceUuid || "global"}`, async () => {
+      await this.checkDiskQuotaForWrite(sourceZipPath, estimatedZipSize);
+      return await compress(sourceZipPath, filesPath, code);
+    });
   }
 
   async edit(target: string, data?: string) {
@@ -343,25 +366,25 @@ export default class FileManager {
     }
     return true;
   }
-  
+
   /**
    * Get the total size of a directory recursively
    */
   private async getDirectorySize(dirPath: string): Promise<number> {
     let totalSize = 0;
     const items = await fs.readdir(dirPath);
-    
+
     for (const item of items) {
       const itemPath = path.join(dirPath, item);
       const stats = await fs.stat(itemPath);
-      
+
       if (stats.isDirectory()) {
         totalSize += await this.getDirectorySize(itemPath);
       } else {
         totalSize += stats.size;
       }
     }
-    
+
     return totalSize;
   }
 }

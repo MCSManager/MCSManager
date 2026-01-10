@@ -10,6 +10,7 @@ import { $t, i18next } from "./i18n";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
 import { checkDependencies } from "./service/dependencies";
+import { diskUsageScheduler } from "./service/disk_usage_scheduler";
 import * as koa from "./service/http";
 import logger from "./service/log";
 import * as protocol from "./service/protocol";
@@ -105,6 +106,7 @@ const io = new Server(httpServer, {
 try {
   InstanceSubsystem.loadInstances();
   logger.info($t("TXT_CODE_app.instanceLoad", { n: InstanceSubsystem.getInstances().length }));
+  diskUsageScheduler.start();
 } catch (err) {
   logger.error($t("TXT_CODE_app.instanceLoadError"), err);
   process.exit(-1);
@@ -146,7 +148,7 @@ process.on("unhandledRejection", (reason, p) => {
 logger.info("----------------------------");
 logger.info($t("TXT_CODE_app.started"));
 logger.info($t("TXT_CODE_app.doc"));
-let appHost = $t("TXT_CODE_app.host", { port: config.port })
+let appHost = $t("TXT_CODE_app.host", { port: config.port });
 if (config.ssl) appHost = appHost.replace("http", "https");
 logger.info(appHost);
 logger.info($t("TXT_CODE_app.configPathTip", { path: "" }));

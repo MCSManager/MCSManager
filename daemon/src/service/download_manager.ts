@@ -8,6 +8,7 @@ import { globalConfiguration } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import { DiskQuotaService } from "./disk_quota_service";
+import { globalTaskQueue } from "./task_queue";
 
 interface DownloadOptions {
   instance?: Instance;
@@ -34,103 +35,105 @@ class DownloadManager {
     fallbackUrl?: string,
     options?: DownloadOptions
   ): Promise<void> {
-    try {
-      // Ensure directory exists
-      const dir = path.dirname(targetPath);
-      if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
+    return await globalTaskQueue.enqueue(`download:${targetPath}`, async () => {
+      try {
+        // Ensure directory exists
+        const dir = path.dirname(targetPath);
+        if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
 
-      const quotaService = options?.quotaService;
-      const instance = options?.instance;
+        const quotaService = options?.quotaService;
+        const instance = options?.instance;
 
-      // Setup controller and task state
-      if (this.controller) this.controller.abort();
-      this.controller = new AbortController();
-      this.task = { path: targetPath, total: 0, current: 0, status: 0 };
+        // Setup controller and task state
+        if (this.controller) this.controller.abort();
+        this.controller = new AbortController();
+        this.task = { path: targetPath, total: 0, current: 0, status: 0 };
 
-      const response = await this.requestWithRetry(url, this.controller);
-      const total = parseInt(response.headers["content-length"] || "0");
-      let quotaLimit = 0;
-      let quotaCurrent = 0;
-      if (quotaService && instance) {
-        const quotaInfo = await quotaService.getQuotaInfo(instance);
-        quotaLimit = quotaInfo.limit;
-        quotaCurrent = quotaInfo.used;
-        if (quotaLimit > 0 && total > 0 && quotaCurrent + total > quotaLimit) {
-          throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+        const response = await this.requestWithRetry(url, this.controller);
+        const total = parseInt(response.headers["content-length"] || "0");
+        let quotaLimit = 0;
+        let quotaCurrent = 0;
+        if (quotaService && instance) {
+          const quotaInfo = await quotaService.getQuotaInfo(instance);
+          quotaLimit = quotaInfo.limit;
+          quotaCurrent = quotaInfo.used;
+          if (quotaLimit > 0 && total > 0 && quotaCurrent + total > quotaLimit) {
+            throw new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+          }
         }
-      }
 
-      let current = 0;
-      const stream = response.data;
-      const writeStream = createWriteStream(targetPath);
+        let current = 0;
+        const stream = response.data;
+        const writeStream = createWriteStream(targetPath);
 
-      this.task.total = total;
+        this.task.total = total;
 
-      return new Promise((resolve, reject) => {
-        const onError = (err: Error) => {
-          stream.destroy();
-          writeStream.destroy();
-          fs.remove(targetPath).catch(() => {});
-          if (this.task) {
-            this.task.status = 2;
-            this.task.error = err.message;
-            setTimeout(() => {
-              if (this.task?.status === 2) this.task = null;
-            }, 10000);
-          }
-          reject(err);
-        };
-
-        const onFinish = () => {
-          if (this.task) {
-            this.task.status = 1;
-            this.task.current = total;
-            setTimeout(() => {
-              if (this.task?.status === 1) this.task = null;
-            }, 5000);
-          }
-          resolve();
-        };
-
-        stream.on("data", (chunk: any) => {
-          current += chunk.length;
-          if (this.task) this.task.current = current;
-
-          if (quotaLimit > 0) {
-            quotaCurrent += chunk.length;
-            if (quotaCurrent > quotaLimit) {
-              const err = new Error($t("TXT_CODE_disk_quota_exceeded_write"));
-              return onError(err);
+        return new Promise((resolve, reject) => {
+          const onError = (err: Error) => {
+            stream.destroy();
+            writeStream.destroy();
+            fs.remove(targetPath).catch(() => {});
+            if (this.task) {
+              this.task.status = 2;
+              this.task.error = err.message;
+              setTimeout(() => {
+                if (this.task?.status === 2) this.task = null;
+              }, 10000);
             }
+            reject(err);
+          };
+
+          const onFinish = () => {
+            if (this.task) {
+              this.task.status = 1;
+              this.task.current = total;
+              setTimeout(() => {
+                if (this.task?.status === 1) this.task = null;
+              }, 5000);
+            }
+            resolve();
+          };
+
+          stream.on("data", (chunk: any) => {
+            current += chunk.length;
+            if (this.task) this.task.current = current;
+
+            if (quotaLimit > 0) {
+              quotaCurrent += chunk.length;
+              if (quotaCurrent > quotaLimit) {
+                const err = new Error($t("TXT_CODE_disk_quota_exceeded_write"));
+                return onError(err);
+              }
+            }
+          });
+
+          stream.on("error", onError);
+          writeStream.on("error", onError);
+          writeStream.on("finish", onFinish);
+
+          const speedLimit = globalConfiguration.config.uploadSpeedRate;
+          if (speedLimit > 0) {
+            const throttleStream = new Throttle({ rate: speedLimit * 64 * 1024 });
+            throttleStream.on("error", onError);
+            stream.pipe(throttleStream).pipe(writeStream);
+          } else {
+            stream.pipe(writeStream);
           }
         });
-
-        stream.on("error", onError);
-        writeStream.on("error", onError);
-        writeStream.on("finish", onFinish);
-
-        const speedLimit = globalConfiguration.config.uploadSpeedRate;
-        if (speedLimit > 0) {
-          const throttleStream = new Throttle({ rate: speedLimit * 64 * 1024 });
-          throttleStream.on("error", onError);
-          stream.pipe(throttleStream).pipe(writeStream);
-        } else {
-          stream.pipe(writeStream);
+      } catch (err: any) {
+        if (fallbackUrl && !this.controller?.signal.aborted) {
+          return await this.downloadFromUrl(fallbackUrl, targetPath, undefined, options);
         }
-      });
-    } catch (err: any) {
-      if (fallbackUrl && !this.controller?.signal.aborted) {
-        return await this.downloadFromUrl(fallbackUrl, targetPath, undefined, options);
+        if (this.task) {
+          this.task.status = 2;
+          this.task.error = err.message;
+          setTimeout(() => {
+            if (this.task?.status === 2) this.task = null;
+          }, 10000);
+        }
+        throw err;
       }
-      if (this.task) {
-        this.task.status = 2;
-        this.task.error = err.message;
-        setTimeout(() => {
-          if (this.task?.status === 2) this.task = null;
-        }, 10000);
-      }
-      throw err;
-    }
+    });
   }
 
   public stop(taskId?: string) {

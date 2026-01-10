@@ -12,7 +12,10 @@ import { arrayUnique, toNumber } from "mcsmanager-common";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
-import { createQuickInstallTask, QuickInstallTask } from "../service/async_task_service/quick_install";
+import {
+  createQuickInstallTask,
+  QuickInstallTask
+} from "../service/async_task_service/quick_install";
 import downloadManager from "../service/download_manager";
 import { IInstanceDetail, IJson } from "../service/interfaces";
 import { modService } from "../service/mod_service";
@@ -102,7 +105,6 @@ routerApp.on("instance/select", async (ctx, data) => {
     overview.push(detail);
   }
 
-
   protocol.response(ctx, {
     page: pageResult.page,
     pageSize: pageResult.pageSize,
@@ -183,13 +185,13 @@ routerApp.on("instance/detail", async (ctx, data) => {
     try {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
-    } catch (err: any) { }
+    } catch (err: any) {}
     let diskQuota = null;
     try {
       // Get disk quota information
       const quotaService = DiskQuotaService.getInstance();
       diskQuota = await quotaService.getQuotaInfo(instance);
-    } catch (err: any) { }
+    } catch (err: any) {}
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -399,7 +401,7 @@ routerApp.on("instance/delete", (ctx, data) => {
         nickname: instance.config.nickname
       });
       InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
-    } catch (err: any) { }
+    } catch (err: any) {}
   }
   protocol.msg(ctx, "instance/delete", { instanceUuids, instances });
 });
@@ -423,7 +425,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "install_instance" && instance) {
     instance
       .execPreset("install", parameter)
-      .then(() => { })
+      .then(() => {})
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -440,7 +442,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "update" && instance) {
     instance
       .execPreset("update", parameter)
-      .then(() => { })
+      .then(() => {})
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -486,8 +488,8 @@ routerApp.on("instance/stop_asynchronous", (ctx, data) => {
   if (task && task.stop) {
     task
       .stop(instance)
-      .then(() => { })
-      .catch((err) => { });
+      .then(() => {})
+      .catch((err) => {});
   } else {
     return protocol.error(
       ctx,
@@ -535,7 +537,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.absoluteCwdPath(), undefined, instanceUuid);
     for (const filePath of files) {
       if (fileManager.check(filePath)) {
         result.push({
@@ -559,7 +561,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.absoluteCwdPath(), undefined, instanceUuid);
     if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
     const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
     const processConfig = new ProcessConfig({
@@ -622,7 +624,10 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
           id,
           path: writer.path,
           total: writer.size,
-          current: writer.received.reduce((acc: number, r: { start: number; end: number }) => acc + (r.end - r.start), 0),
+          current: writer.received.reduce(
+            (acc: number, r: { start: number; end: number }) => acc + (r.end - r.start),
+            0
+          ),
           status: 0,
           type: "upload"
         });
@@ -672,7 +677,11 @@ routerApp.on("instance/mods/delete", async (ctx, data) => {
 routerApp.on("instance/mods/install", async (ctx, data) => {
   const { instanceUuid, url, fileName, type, fallbackUrl, deferred, extraInfo } = data;
   try {
-    await modService.installMod(instanceUuid, url, fileName, type, { fallbackUrl, deferred, extraInfo });
+    await modService.installMod(instanceUuid, url, fileName, type, {
+      fallbackUrl,
+      deferred,
+      extraInfo
+    });
     protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err);

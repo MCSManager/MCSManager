@@ -21,7 +21,8 @@ export default class FileWriter {
     public readonly size: number,
     private unzip: boolean,
     private zipCode: string,
-    filePath: string
+    filePath: string,
+    private readonly instanceUuid?: string
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
       throw new Error("Access denied: Malformed file name");
@@ -29,8 +30,14 @@ export default class FileWriter {
     this.path = filePath;
   }
 
-  static async getPath(cwd: string, dir: string, filename: string, overwrite: boolean) {
-    const fileManager = new FileManager(cwd);
+  static async getPath(
+    cwd: string,
+    dir: string,
+    filename: string,
+    overwrite: boolean,
+    instanceUuid?: string
+  ) {
+    const fileManager = new FileManager(cwd, undefined, instanceUuid);
 
     const ext = path.extname(filename);
     const basename = path.basename(filename, ext);
@@ -119,7 +126,7 @@ export default class FileWriter {
     logger.info("Browser Uploaded File:", this.path);
 
     if (this.unzip) {
-      const instanceFiles = new FileManager(this.cwd);
+      const instanceFiles = new FileManager(this.cwd, undefined, this.instanceUuid);
       await instanceFiles.unzip(this.path, ".", this.zipCode);
       logger.info("File unzipped:", this.path);
     }
