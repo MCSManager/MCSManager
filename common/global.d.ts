@@ -26,6 +26,9 @@ declare global {
     rconPort?: number;
     rconIp?: string;
 
+    // Java
+    java: IInstanceJavaConfig;
+
     // Old fields
     terminalOption: {
       haveColor: boolean;
@@ -52,6 +55,24 @@ declare global {
   }
 
   type ProcessType = "general" | "docker";
+
+  interface IInstanceJavaConfig {
+    id: string;
+  }
+
+  interface IJavaInfo {
+    name: string;
+    version: string;
+    installTime: number;
+    downloading: boolean;
+    fullname: string;
+  }
+
+  interface IJavaRuntime {
+    info: IJavaInfo;
+    path: string;
+    usingInstances: string[];
+  }
 
   interface IGlobalInstanceDockerConfig {
     containerName?: string;
