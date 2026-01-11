@@ -65,6 +65,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       page: "__settings__",
       items: [],
       theme: {
+        pageTitle: "MCSManager Panel",
         logoImage: "",
         backgroundImage: ""
       }
