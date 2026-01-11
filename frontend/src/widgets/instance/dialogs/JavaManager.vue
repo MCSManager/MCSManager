@@ -24,7 +24,7 @@ const props = defineProps<{
 const columns: AntColumnsType[] = [
   {
     align: "center",
-    title: t("TXT_CODE_3f36206f"),
+    title: t("环境名称"),
     dataIndex: ["info", "fullname"],
     key: "fullname"
   },
@@ -37,7 +37,7 @@ const columns: AntColumnsType[] = [
   },
   {
     align: "center",
-    title: t("TXT_CODE_f55da98f"),
+    title: t("状态"),
     key: "status",
     customRender: ({ record }: { record: JavaRuntime }) => {
       if (record.usingInstances.length > 0) return t("TXT_CODE_bdb620b9");
@@ -70,7 +70,8 @@ const refreshJavaList = async (out: boolean = false) => {
   try {
     const list = await getJavaList().execute({
       params: {
-        daemonId: props.daemonId ?? ""
+        daemonId: props.daemonId ?? "",
+        instanceId: props.instanceId ?? ""
       }
     });
     javaList.value = list.value;
@@ -109,7 +110,8 @@ const handleDeleteJava = async (info: JavaInfo) => {
   try {
     await deleteJava().execute({
       params: {
-        daemonId: props.daemonId ?? ""
+        daemonId: props.daemonId ?? "",
+        instanceId: props.instanceId ?? ""
       },
       data: {
         id: info.fullname

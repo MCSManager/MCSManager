@@ -5,6 +5,7 @@ export const getJavaList = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
   },
   JavaRuntime[]
@@ -50,6 +51,7 @@ export const deleteJava = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
     data: {
       id: string;

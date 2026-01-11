@@ -26,7 +26,7 @@ router.use(async (ctx, next) => {
 router.get(
   "/list",
   permission({ level: ROLE.USER }),
-  validator({ query: { daemonId: String } }),
+  validator({ query: { daemonId: String, instanceId: String } }),
   async (ctx) => {
     const daemonId = String(ctx.query.daemonId);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
