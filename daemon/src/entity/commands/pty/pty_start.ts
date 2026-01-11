@@ -45,7 +45,9 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
     process.stdout?.on("data", (text) => this.emit("data", text));
     process.stderr?.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
-    this.initNamedPipe();
+    setTimeout(() => {
+      this.initNamedPipe();
+    }, 1000);
   }
 
   private async initNamedPipe() {
@@ -59,11 +61,7 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
       });
       this.pipeClient = writePipe;
     } catch (error) {
-      throw new Error(
-        $t("TXT_CODE_9d1d244f", {
-          pipeName: error
-        })
-      );
+      logger.warn("Start PTY Pipe error, This maybe is not a bug:", this.pipeName, error);
     }
   }
 
