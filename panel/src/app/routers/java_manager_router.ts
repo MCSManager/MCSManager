@@ -6,16 +6,30 @@ import RemoteServiceSubsystem from "../service/remote_service";
 
 const router = new Router({ prefix: "/java_manager" });
 
+import { $t } from "../i18n";
+import { speedLimit } from "../middleware/limit";
 import validator from "../middleware/validator";
+import { getUserUuid } from "../service/passport_service";
+import { isHaveInstanceByUuid } from "../service/permission_service";
+
+router.use(async (ctx, next) => {
+  const daemonId = String(ctx.query.daemonId);
+  const instanceId = String(ctx.query.instanceId);
+  const userUuid = getUserUuid(ctx);
+  if (isHaveInstanceByUuid(userUuid, daemonId, instanceId)) {
+    await next();
+  } else {
+    throw new Error($t("无法对不属于你的实例进行操作！"));
+  }
+});
 
 router.get(
   "/list",
-  permission({ level: ROLE.ADMIN }),
+  permission({ level: ROLE.USER }),
   validator({ query: { daemonId: String } }),
   async (ctx) => {
     const daemonId = String(ctx.query.daemonId);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-
     const response = await new RemoteRequest(remoteService).request("java_manager/list");
     ctx.body = response;
   }
@@ -23,10 +37,12 @@ router.get(
 
 router.post(
   "/download",
-  permission({ level: ROLE.ADMIN }),
+  speedLimit(5),
+  permission({ level: ROLE.USER }),
   validator({
     query: {
-      daemonId: String
+      daemonId: String,
+      instanceId: String
     },
     body: {
       name: String,
@@ -36,7 +52,6 @@ router.post(
   async (ctx) => {
     const daemonId = String(ctx.query.daemonId);
     const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-
     const response = await new RemoteRequest(remoteService).request("java_manager/download", {
       name: ctx.request.body.name,
       version: ctx.request.body.version
@@ -47,7 +62,7 @@ router.post(
 
 router.post(
   "/using",
-  permission({ level: ROLE.ADMIN }),
+  permission({ level: ROLE.USER }),
   validator({
     query: {
       daemonId: String,

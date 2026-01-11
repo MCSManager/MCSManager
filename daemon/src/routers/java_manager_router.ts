@@ -18,15 +18,16 @@ routerApp.on("java_manager/list", async (ctx) => {
 
 routerApp.on("java_manager/download", async (ctx, data) => {
   const info = new JavaInfo(data.name, data.version, Date.now());
-  info.downloading = true;
 
-  let downloadUrl: string;
+  if (javaManager.exists(info.fullname)) {
+    return protocol.responseError(ctx, new Error($t("TXT_CODE_79cf0302")));
+  }
+
+  info.downloading = true;
   try {
-    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
-    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     javaManager.addJava(info);
 
-    downloadUrl = await javaManager.getJavaDownloadUrl(info);
+    const downloadUrl = await javaManager.getJavaDownloadUrl(info);
     if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));
 
     protocol.response(ctx, true);

@@ -17,6 +17,7 @@ export const downloadJava = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
     data: {
       name: string;
