@@ -683,7 +683,7 @@ onMounted(async () => {
                         pageSize: searchLimit,
                         total: searchTotal,
                         showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
+                        pageSizeOptions: ['10', '20', '50'],
                         showTotal: (total: number) => t('TXT_CODE_TOTAL_ITEMS', { total })
                       }"
                       @change="(p: any) => onSearch(p.current, p.pageSize)"

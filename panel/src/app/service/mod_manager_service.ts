@@ -167,6 +167,10 @@ class ModManagerService {
     const result: Record<string, any> = {};
     const missingHashes: string[] = [];
 
+    if (hashes.length > 50) {
+      throw new Error("Hashes length cannot be greater than 50");
+    }
+
     for (const hash of hashes) {
       if (this.cache.has(hash)) {
         result[hash] = this.cache.get(hash);
@@ -294,6 +298,7 @@ class ModManagerService {
       environment?: string;
     }
   ) {
+    if (limit > 50) throw new Error("Limit cannot be greater than 100");
     const source = filters?.source || "all";
 
     if (source === "modrinth") {
@@ -306,10 +311,6 @@ class ModManagerService {
 
     if (source === "spigotmc") {
       return await this.searchSpigotMC(query, offset, limit, filters);
-    }
-
-    if (limit > 50) {
-      throw new Error("Limit cannot be greater than 100");
     }
 
     // Search all sources
@@ -635,6 +636,9 @@ class ModManagerService {
         url: `${this.baseUrl}/project/${projectId}/version`,
         params
       });
+
+      const items = res.data || [];
+
       // Add project_type to each version so the frontend knows where to save it
       const projectRes = await this.requestWithRetry({
         method: "GET",
@@ -642,7 +646,7 @@ class ModManagerService {
       });
       const projectType = projectRes.data.project_type === "mod" ? "mod" : "plugin";
 
-      return res.data.map((v: any) => ({
+      return items.slice(0, 200).map((v: any) => ({
         ...v,
         project_type: projectType
       }));
