@@ -151,7 +151,7 @@ const columns = computed(() => {
         <WarningOutlined />
         {{
           $t(
-            "由于第三方源网站可能存在部分地区的防火墙策略，如果一直下载失败，请尝试更换 “下载来源”，或手动前往原网站下载！"
+            "TXT_CODE_6111bc9e"
           )
         }}
       </a-typography-text>

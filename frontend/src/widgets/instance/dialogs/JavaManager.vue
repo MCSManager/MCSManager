@@ -24,7 +24,7 @@ const props = defineProps<{
 const columns: AntColumnsType[] = [
   {
     align: "center",
-    title: t("环境名称"),
+    title: t("TXT_CODE_151d2bb7"),
     dataIndex: ["info", "fullname"],
     key: "fullname"
   },
@@ -37,7 +37,7 @@ const columns: AntColumnsType[] = [
   },
   {
     align: "center",
-    title: t("状态"),
+    title: t("TXT_CODE_759fb403"),
     key: "status",
     customRender: ({ record }: { record: JavaRuntime }) => {
       if (record.usingInstances.length > 0) return t("TXT_CODE_bdb620b9");

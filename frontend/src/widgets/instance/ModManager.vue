@@ -596,7 +596,7 @@ onMounted(async () => {
                   </div>
                 </a-tab-pane>
 
-                <a-tab-pane key="3" :tab="t('下載模组/插件')">
+                <a-tab-pane key="3" :tab="t('TXT_CODE_25bf0004')">
                   <div :class="isPhone ? 'p-2' : 'p-10'">
                     <div>
                       <a-form

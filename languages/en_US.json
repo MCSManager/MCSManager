@@ -3199,5 +3199,10 @@
   "TXT_CODE_c7cb38fd": "Incorrect profile version, unable to set the page title, please try restarting the panel or resetting custom layout!",
   "TXT_CODE_395f147d": "Page Title",
   "TXT_CODE_b305236a": "This changes the page title of the browser tab. Leave blank to reset to default.",
-  "TXT_CODE_47ae8ee6": "MCSManager Panel"
+  "TXT_CODE_47ae8ee6": "MCSManager Panel",
+  "TXT_CODE_151d2bb7": "Environment Name",
+  "TXT_CODE_6111bc9e": "Due to potential firewall policies in some regions on third-party source websites, if the download consistently fails, please try changing the 'Download Source' or manually download from the original website!",
+  "TXT_CODE_47fea88e": "Original Website",
+  "TXT_CODE_25bf0004": "Download Modules/Plugins",
+  "TXT_CODE_eb401a37": "Cannot perform operations on instances that do not belong to you!"
 }

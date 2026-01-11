@@ -19,7 +19,7 @@ router.use(async (ctx, next) => {
   if (isHaveInstanceByUuid(userUuid, daemonId, instanceId)) {
     await next();
   } else {
-    throw new Error($t("无法对不属于你的实例进行操作！"));
+    throw new Error($t("TXT_CODE_eb401a37"));
   }
 });
 
@@ -38,7 +38,7 @@ router.get(
 router.post(
   "/download",
   speedLimit(5),
-  permission({ level: ROLE.USER }),
+  permission({ level: ROLE.ADMIN }),
   validator({
     query: {
       daemonId: String,

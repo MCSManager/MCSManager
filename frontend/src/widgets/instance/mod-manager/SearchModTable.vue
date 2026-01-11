@@ -144,7 +144,7 @@ const formatDate = (date: string) => {
                   class="opacity-60 hover:opacity-100"
                   @click="emit('open-external', record)"
                 >
-                  {{ t("原网站") }}
+                  {{ t("TXT_CODE_47fea88e") }}
                 </a-button>
               </a-space>
             </div>
