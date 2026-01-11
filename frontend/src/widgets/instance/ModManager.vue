@@ -171,8 +171,15 @@ const {
   tablePagination
 } = useLocalMods(instanceId!, daemonId!, checkAndConfirm, addDeferredTask);
 
-const loadMods = async () => {
-  await originalLoadMods();
+const getCurrentFolder = () => {
+  if (activeKey.value === "1") return "mods";
+  if (activeKey.value === "2") return "plugins";
+  return undefined;
+};
+
+const loadMods = async (folder?: string) => {
+  const targetFolder = folder !== undefined ? folder : getCurrentFolder();
+  await originalLoadMods(targetFolder);
   await syncWithBackend();
 };
 
@@ -269,15 +276,13 @@ const filterBySearch = (list: any[]) => {
 };
 
 const filteredMods = computed(() => {
-  const list = mods.value.filter((m) => m.folder === "mods" || (m.type === "mod" && !m.folder));
-  return filterBySearch(list);
+  // Backend already filters by folder, just apply local search
+  return filterBySearch(mods.value);
 });
 
 const filteredPlugins = computed(() => {
-  const list = mods.value.filter(
-    (m) => m.folder === "plugins" || (m.type === "plugin" && !m.folder)
-  );
-  return filterBySearch(list);
+  // Backend already filters by folder, just apply local search
+  return filterBySearch(mods.value);
 });
 
 const columns = computed(() => {
@@ -375,12 +380,31 @@ const searchColumns = computed(() => {
 });
 
 const handleTableChange = (pagination: any) => {
-  tablePagination.current = pagination.current;
-  tablePagination.pageSize = pagination.pageSize;
+  if (
+    tablePagination.current !== pagination.current ||
+    tablePagination.pageSize !== pagination.pageSize
+  ) {
+    tablePagination.current = pagination.current;
+    tablePagination.pageSize = pagination.pageSize;
+    loadMods(getCurrentFolder());
+  }
 };
 
+// Reload data when tab changes
+watch(activeKey, (newKey, oldKey) => {
+  // Only reload if switching between mods and plugins tabs
+  if (
+    (newKey === "1" || newKey === "2") &&
+    (oldKey === "1" || oldKey === "2") &&
+    newKey !== oldKey
+  ) {
+    tablePagination.current = 1; // Reset to first page on tab change
+    loadMods(getCurrentFolder());
+  }
+});
+
 onMounted(async () => {
-  loadMods();
+  loadMods(getCurrentFolder());
   loadMcVersions();
 });
 </script>
@@ -423,7 +447,7 @@ onMounted(async () => {
                 v-if="activeKey !== '3'"
                 type="primary"
                 :loading="loading"
-                @click="loadMods"
+                @click="() => loadMods()"
               >
                 <template #icon>
                   <reload-outlined />

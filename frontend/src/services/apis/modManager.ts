@@ -1,9 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
-export const getMcVersionsApi = useDefineApi<
-  {},
-  string[]
->({
+export const getMcVersionsApi = useDefineApi<{}, string[]>({
   method: "GET",
   url: "/api/mod/mc_versions"
 });
@@ -13,11 +10,17 @@ export const modListApi = useDefineApi<
     params: {
       daemonId: string;
       uuid: string;
+      page?: number;
+      pageSize?: number;
+      folder?: string;
     };
   },
   {
     mods: any[];
     folders: string[];
+    total: number;
+    page: number;
+    pageSize: number;
   }
 >({
   method: "GET",

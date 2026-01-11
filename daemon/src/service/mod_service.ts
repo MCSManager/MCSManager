@@ -24,6 +24,9 @@ export interface ModInfo {
 export interface ModListResult {
   mods: ModInfo[];
   folders: string[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface ModConfigFile {
@@ -249,7 +252,17 @@ export class ModService {
     return null;
   }
 
-  public async listMods(instanceUuid: string): Promise<ModListResult> {
+  public async listMods(
+    instanceUuid: string,
+    page: number = 1,
+    pageSize: number = 50,
+    folder?: string
+  ): Promise<ModListResult> {
+    // Enforce max page size of 50
+    if (pageSize > 50) pageSize = 50;
+    if (pageSize < 1) pageSize = 10;
+    if (page < 1) page = 1;
+
     const fileManager = getFileManager(instanceUuid);
     const rootDir = fileManager.toAbsolutePath(".");
 
@@ -342,9 +355,25 @@ export class ModService {
       (v, i, a) => a.findIndex((t) => t.file === v.file && t.folder === v.folder) === i
     );
 
+    // Filter by folder if specified
+    const filteredResult = folder
+      ? uniqueResult.filter((m) => m.folder === folder.toLowerCase())
+      : uniqueResult;
+
+    // Sort by name for consistent pagination
+    filteredResult.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+    const total = filteredResult.length;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedMods = filteredResult.slice(startIndex, endIndex);
+
     return {
-      mods: uniqueResult,
-      folders
+      mods: paginatedMods,
+      folders,
+      total,
+      page,
+      pageSize
     };
   }
 
