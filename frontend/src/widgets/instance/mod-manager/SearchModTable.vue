@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { useScreen } from "@/hooks/useScreen";
-import {
-  CheckCircleOutlined,
-  CloudDownloadOutlined,
-  FileTextOutlined,
-  SearchOutlined
-} from "@ant-design/icons-vue";
+import { SearchOutlined } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 
@@ -27,7 +22,7 @@ const isInstalled = (record: any) => {
 };
 
 const formatDate = (date: string) => {
-  if (!date) return t("TXT_CODE_UNKNOWN");
+  if (!date) return "Unknown time!";
   const d = new Date(date);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
@@ -134,26 +129,22 @@ const formatDate = (date: string) => {
             <div class="flex justify-center">
               <a-space :size="12">
                 <a-button
-                  type="text"
+                  type="link"
                   size="small"
                   class="opacity-60 hover:opacity-100"
-                  :title="isInstalled(record) ? t('TXT_CODE_INSTALLED') : t('TXT_CODE_DOWNLOAD')"
                   :class="{ 'text-green-500': isInstalled(record) }"
+                  :disabled="isInstalled(record)"
                   @click="emit('show-versions', record)"
                 >
-                  <template #icon>
-                    <check-circle-outlined v-if="isInstalled(record)" style="font-size: 16px" />
-                    <cloud-download-outlined v-else style="font-size: 16px" />
-                  </template>
+                  {{ isInstalled(record) ? t("TXT_CODE_INSTALLED") : t("TXT_CODE_DOWNLOAD") }}
                 </a-button>
                 <a-button
-                  type="text"
+                  type="link"
                   size="small"
                   class="opacity-60 hover:opacity-100"
-                  :title="t('TXT_CODE_f1b166e7')"
                   @click="emit('open-external', record)"
                 >
-                  <template #icon><file-text-outlined style="font-size: 16px" /></template>
+                  {{ t("原网站") }}
                 </a-button>
               </a-space>
             </div>
