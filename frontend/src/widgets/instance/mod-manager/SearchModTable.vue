@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import { useScreen } from "@/hooks/useScreen";
 import {
-  SearchOutlined,
+  CheckCircleOutlined,
   CloudDownloadOutlined,
   FileTextOutlined,
-  CheckCircleOutlined
+  SearchOutlined
 } from "@ant-design/icons-vue";
+import { Flex } from "ant-design-vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   loading: boolean;
@@ -36,13 +37,27 @@ const formatDate = (date: string) => {
 
 <template>
   <div class="search-results-container w-full">
-    <div v-if="loading && dataSource.length === 0" class="py-32 text-center">
-      <a-spin size="large" />
-    </div>
-    <div v-else-if="dataSource.length === 0" class="py-32 text-center text-gray-400">
-      <div class="mb-4"><search-outlined style="font-size: 64px; opacity: 0.1" /></div>
-      <div class="text-lg opacity-60">{{ t("TXT_CODE_SEARCH_TIP") }}</div>
-    </div>
+    <Flex
+      v-if="loading && dataSource.length === 0"
+      vertical
+      align="center"
+      justify="center"
+      class="py-32 text-center"
+      style="min-height: 400px"
+    >
+      <a-spin size="large" style="font-size: 42px" />
+    </Flex>
+    <Flex
+      v-else-if="dataSource.length === 0"
+      vertical
+      align="center"
+      justify="center"
+      class="py-32 text-center text-gray-400"
+      style="min-height: 400px"
+    >
+      <div class="mb-4"><search-outlined style="font-size: 42px; opacity: 0.1" /></div>
+      <div class="text-lg" style="opacity: 0.4">{{ t("TXT_CODE_SEARCH_TIP") }}</div>
+    </Flex>
     <div v-else class="search-results-table">
       <a-table
         :loading="loading"
@@ -61,7 +76,10 @@ const formatDate = (date: string) => {
           </template>
           <template v-if="column.key === 'name'">
             <div class="flex flex-col text-left overflow-hidden" style="min-width: 0">
-              <div class="font-bold text-[15px] truncate w-full whitespace-nowrap" :title="record.title">
+              <div
+                class="font-bold text-[15px] truncate w-full whitespace-nowrap"
+                :title="record.title"
+              >
                 {{ record.title }}
               </div>
               <!-- Mobile only: show version and source -->
@@ -80,7 +98,10 @@ const formatDate = (date: string) => {
             </div>
           </template>
           <template v-if="column.key === 'version'">
-            <div class="flex flex-col items-start justify-center overflow-hidden" style="min-width: 0">
+            <div
+              class="flex flex-col items-start justify-center overflow-hidden"
+              style="min-width: 0"
+            >
               <div
                 class="font-bold text-xs text-blue-600 dark:text-blue-400 truncate w-full font-mono whitespace-nowrap"
                 :title="record.version_number"
@@ -115,10 +136,10 @@ const formatDate = (date: string) => {
                 <a-button
                   type="text"
                   size="small"
-                  @click="emit('show-versions', record)"
                   class="opacity-60 hover:opacity-100"
                   :title="isInstalled(record) ? t('TXT_CODE_INSTALLED') : t('TXT_CODE_DOWNLOAD')"
                   :class="{ 'text-green-500': isInstalled(record) }"
+                  @click="emit('show-versions', record)"
                 >
                   <template #icon>
                     <check-circle-outlined v-if="isInstalled(record)" style="font-size: 16px" />
@@ -128,9 +149,9 @@ const formatDate = (date: string) => {
                 <a-button
                   type="text"
                   size="small"
-                  @click="emit('open-external', record)"
                   class="opacity-60 hover:opacity-100"
                   :title="t('TXT_CODE_f1b166e7')"
+                  @click="emit('open-external', record)"
                 >
                   <template #icon><file-text-outlined style="font-size: 16px" /></template>
                 </a-button>
