@@ -610,43 +610,31 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/toggle", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred, extraInfo } = data;
+  const { instanceUuid, fileName } = data;
   try {
-    if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "toggle", fileName, extraInfo });
-      protocol.response(ctx, true);
-    } else {
-      await modService.toggleMod(instanceUuid, fileName);
-      protocol.response(ctx, true);
-    }
+    await modService.toggleMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });
 
 routerApp.on("instance/mods/delete", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred, extraInfo } = data;
+  const { instanceUuid, fileName } = data;
   try {
-    if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "delete", fileName, extraInfo });
-      protocol.response(ctx, true);
-    } else {
-      await modService.deleteMod(instanceUuid, fileName);
-      protocol.response(ctx, true);
-    }
+    await modService.deleteMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err, { disablePrint: true });
   }
 });
 
 routerApp.on("instance/mods/install", async (ctx, data) => {
-  const { instanceUuid, url, fileName, type, fallbackUrl, deferred, extraInfo } = data;
+  const { instanceUuid, url, fileName, type, fallbackUrl } = data;
   try {
     // async
     modService.installMod(instanceUuid, url, fileName, type, {
-      fallbackUrl,
-      deferred,
-      extraInfo
+      fallbackUrl
     });
     protocol.response(ctx, true);
   } catch (err: any) {
@@ -661,35 +649,5 @@ routerApp.on("instance/mods/config_files", async (ctx, data) => {
     protocol.response(ctx, files);
   } catch (err: any) {
     protocol.responseError(ctx, err, { disablePrint: true });
-  }
-});
-
-routerApp.on("instance/mods/deferred/list", async (ctx, data) => {
-  const { instanceUuid } = data;
-  try {
-    const tasks = modService.getDeferredTasks(instanceUuid);
-    protocol.response(ctx, tasks);
-  } catch (err: any) {
-    protocol.responseError(ctx, err, { disablePrint: true });
-  }
-});
-
-routerApp.on("instance/mods/deferred/auto_execute", async (ctx, data) => {
-  const { instanceUuid, enabled } = data;
-  try {
-    modService.setAutoExecute(instanceUuid, enabled);
-    protocol.response(ctx, true);
-  } catch (err: any) {
-    protocol.responseError(ctx, err);
-  }
-});
-
-routerApp.on("instance/mods/deferred/clear", async (ctx, data) => {
-  const { instanceUuid } = data;
-  try {
-    modService.clearDeferredTasks(instanceUuid);
-    protocol.response(ctx, true);
-  } catch (err: any) {
-    protocol.responseError(ctx, err);
   }
 });

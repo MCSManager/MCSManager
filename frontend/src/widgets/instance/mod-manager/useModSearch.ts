@@ -15,7 +15,6 @@ export function useModSearch(
   instanceId: string,
   daemonId: string,
   getMods: () => any[],
-  addDeferredTask: (type: string, name: string, data: any) => void,
   loadMods: () => Promise<void>,
   folders: Ref<string[]>
 ) {

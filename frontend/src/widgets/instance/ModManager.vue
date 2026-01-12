@@ -142,8 +142,6 @@ const {
   deferredTasks,
   autoExecute,
   isExecuting,
-  syncWithBackend,
-  clearAllTasks,
   addDeferredTask,
   removeDeferredTask,
   executeDeferredTask,
@@ -158,8 +156,6 @@ watch(
     if (!running) {
       // When the server stops, refresh the list immediately to get the latest status (file locks are released)
       loadMods();
-      // Sync backend task status (backend will automatically execute tasks and clear the queue)
-      syncWithBackend();
     }
   }
 );
@@ -185,7 +181,6 @@ const getCurrentFolder = () => {
 const loadMods = async (folder?: string) => {
   const targetFolder = folder !== undefined ? folder : getCurrentFolder();
   await originalLoadMods(targetFolder);
-  await syncWithBackend();
 };
 
 const {
@@ -208,7 +203,7 @@ const {
   versions,
   versionsLoading,
   formatDate
-} = useModSearch(instanceId!, daemonId!, () => mods.value, addDeferredTask, loadMods, folders);
+} = useModSearch(instanceId!, daemonId!, () => mods.value, loadMods, folders);
 
 const openExternal = (mod: any) => {
   const { source, id, slug, name } = mod;
@@ -772,7 +767,6 @@ onMounted(async () => {
       :is-executing="isExecuting"
       @execute-task="executeDeferredTask"
       @execute-all="executeAllDeferredTasks"
-      @clear-all="clearAllTasks"
       @remove-task="removeDeferredTask"
       @refresh="loadMods"
     />

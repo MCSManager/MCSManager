@@ -4,13 +4,12 @@ import { globalConfiguration, globalEnv } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
-import logger from "../service/log";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
+import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
-import { modService } from "../service/mod_service";
 import { checkSafeUrl } from "../utils/url";
 
 // Some routers operate router authentication middleware
@@ -123,7 +122,6 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
   try {
     const url = data.url;
     const fileName = data.fileName;
-    const deferred = data.deferred;
 
     if (!checkSafeUrl(url)) {
       protocol.responseError(ctx, t("TXT_CODE_3fe1b194"), {
@@ -138,18 +136,6 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
 
     // Start download in background
     const fallbackUrl = data.fallbackUrl;
-
-    if (deferred) {
-      modService.addDeferredTask(data.instanceUuid, {
-        type: "download",
-        url,
-        targetPath,
-        fallbackUrl,
-        extraInfo: data.extraInfo
-      });
-      protocol.response(ctx, true);
-      return;
-    }
 
     const maxDownloadFromUrlFileCount = globalConfiguration.config.maxDownloadFromUrlFileCount;
     if (
