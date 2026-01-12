@@ -28,6 +28,11 @@ import { useModConfig } from "./mod-manager/useModConfig";
 import { useModSearch } from "./mod-manager/useModSearch";
 import { useModUpload } from "./mod-manager/useModUpload";
 
+// Tab key constants
+const TAB_KEY_MODS = "TAB_KEY_MODS";
+const TAB_KEY_PLUGINS = "TAB_KEY_PLUGINS";
+const TAB_KEY_DOWNLOAD = "TAB_KEY_DOWNLOAD";
+
 const props = defineProps<{
   card: LayoutCard;
 }>();
@@ -44,7 +49,7 @@ const { instanceInfo, isRunning: isInstanceRunning } = useInstanceInfo({
   autoRefresh: true
 });
 
-const activeKey = ref("1");
+const activeKey = ref(TAB_KEY_MODS);
 const headerSearchQuery = ref("");
 
 const isWindows = computed(() => {
@@ -172,8 +177,8 @@ const {
 } = useLocalMods(instanceId!, daemonId!, checkAndConfirm, addDeferredTask);
 
 const getCurrentFolder = () => {
-  if (activeKey.value === "1") return "mods";
-  if (activeKey.value === "2") return "plugins";
+  if (activeKey.value === TAB_KEY_MODS) return "mods";
+  if (activeKey.value === TAB_KEY_PLUGINS) return "plugins";
   return undefined;
 };
 
@@ -250,17 +255,17 @@ watch(
   ([hasMods, hasPlugins, isLoading]) => {
     if (isLoading) return;
     // If currently on a valid tab (Mod list, Plugin list, or Download page), do not auto-jump
-    if (hasMods && activeKey.value === "1") return;
-    if (hasPlugins && activeKey.value === "2") return;
-    if (activeKey.value === "3") return;
+    if (hasMods && activeKey.value === TAB_KEY_MODS) return;
+    if (hasPlugins && activeKey.value === TAB_KEY_PLUGINS) return;
+    if (activeKey.value === TAB_KEY_DOWNLOAD) return;
 
     // Only perform initial jump if the current tab is invalid (e.g., just entered the page or folder status changed)
     if (hasMods) {
-      activeKey.value = "1";
+      activeKey.value = TAB_KEY_MODS;
     } else if (hasPlugins) {
-      activeKey.value = "2";
+      activeKey.value = TAB_KEY_PLUGINS;
     } else {
-      activeKey.value = "3";
+      activeKey.value = TAB_KEY_DOWNLOAD;
     }
   },
   { immediate: true }
@@ -390,18 +395,13 @@ const handleTableChange = (pagination: any) => {
   }
 };
 
-// Reload data when tab changes
-watch(activeKey, (newKey, oldKey) => {
-  // Only reload if switching between mods and plugins tabs
-  if (
-    (newKey === "1" || newKey === "2") &&
-    (oldKey === "1" || oldKey === "2") &&
-    newKey !== oldKey
-  ) {
-    tablePagination.current = 1; // Reset to first page on tab change
-    loadMods(getCurrentFolder());
+// Handle tab change event
+const handleTabChange = (newKey: string | number) => {
+  tablePagination.current = 1; // Reset to first page on tab change
+  if (newKey === TAB_KEY_MODS || newKey === TAB_KEY_PLUGINS) {
+    loadMods(newKey === TAB_KEY_MODS ? "mods" : "plugins");
   }
-});
+};
 
 onMounted(async () => {
   loadMods(getCurrentFolder());
@@ -410,8 +410,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div style="padding-bottom: 40px" class="container">
-    <a-row :gutter="[24, 16]" :style="{ marginTop: !isPhone ? '-96px' : '0px' }">
+  <div class="container">
+    <a-row :gutter="[24, 16]">
       <a-col :span="24">
         <BetweenMenus>
           <template #left>
@@ -422,7 +422,10 @@ onMounted(async () => {
             <div v-else style="width: 40px"></div>
           </template>
           <template #center>
-            <div v-if="activeKey === '1' || activeKey === '2'" class="search-input">
+            <div
+              v-if="activeKey === TAB_KEY_MODS || activeKey === TAB_KEY_PLUGINS"
+              class="search-input"
+            >
               <a-input
                 v-model:value="headerSearchQuery"
                 :placeholder="t('TXT_CODE_SEARCH_PLACEHOLDER')"
@@ -437,14 +440,17 @@ onMounted(async () => {
           </template>
           <template #right>
             <a-space>
-              <a-button v-if="activeKey === '1' || activeKey === '2'" @click="onUploadClick">
+              <a-button
+                v-if="activeKey === TAB_KEY_MODS || activeKey === TAB_KEY_PLUGINS"
+                @click="onUploadClick"
+              >
                 <template #icon>
                   <upload-outlined />
                 </template>
                 {{ t("TXT_CODE_ae09d79d") }}
               </a-button>
               <a-button
-                v-if="activeKey !== '3'"
+                v-if="activeKey !== TAB_KEY_DOWNLOAD"
                 type="primary"
                 :loading="loading"
                 @click="() => loadMods()"
@@ -519,13 +525,14 @@ onMounted(async () => {
                 v-model:activeKey="activeKey"
                 class="mod-manager-tabs"
                 destroy-inactive-tab-pane
+                @change="handleTabChange"
               >
-                <a-tab-pane v-if="hasModsFolder" key="1">
+                <a-tab-pane v-if="hasModsFolder" :key="TAB_KEY_MODS">
                   <template #tab>
                     <Flex align="center" :gap="6">
                       {{ t("TXT_CODE_MOD_LIST") }}
                       <a-badge
-                        v-if="!loading && activeKey === '1'"
+                        v-if="!loading && activeKey === TAB_KEY_MODS"
                         :count="filteredMods.length"
                         :show-zero="true"
                         :overflow-count="999"
@@ -544,6 +551,7 @@ onMounted(async () => {
                   </template>
                   <div :class="isPhone ? 'p-2' : 'p-10'">
                     <LocalModTable
+                      :key="TAB_KEY_MODS"
                       :loading="loading"
                       :data-source="filteredMods"
                       :columns="columns"
@@ -558,15 +566,15 @@ onMounted(async () => {
                   </div>
                 </a-tab-pane>
 
-                <a-tab-pane v-if="hasPluginsFolder" key="2">
+                <a-tab-pane v-if="hasPluginsFolder" :key="TAB_KEY_PLUGINS">
                   <template #tab>
                     <Flex align="center" :gap="6">
                       {{ t("TXT_CODE_PLUGIN_LIST") }}
                       <a-badge
-                        v-if="!loading && activeKey === '2'"
+                        v-if="!loading && activeKey === TAB_KEY_PLUGINS"
                         :count="filteredPlugins.length"
                         :show-zero="true"
-                        :overflow-count="99999"
+                        :overflow-count="999"
                         :number-style="{
                           backgroundColor: '#f0f0f0',
                           color: '#555',
@@ -582,6 +590,7 @@ onMounted(async () => {
                   </template>
                   <div :class="isPhone ? 'p-2' : 'p-10'">
                     <LocalModTable
+                      :key="TAB_KEY_PLUGINS"
                       :loading="loading"
                       :data-source="filteredPlugins"
                       :columns="columns"
@@ -596,7 +605,7 @@ onMounted(async () => {
                   </div>
                 </a-tab-pane>
 
-                <a-tab-pane key="3" :tab="t('TXT_CODE_25bf0004')">
+                <a-tab-pane :key="TAB_KEY_DOWNLOAD" :tab="t('TXT_CODE_25bf0004')">
                   <div :class="isPhone ? 'p-2' : 'p-10'">
                     <div>
                       <a-form
@@ -606,9 +615,14 @@ onMounted(async () => {
                         label-width="120px"
                         label-align="left"
                       >
+                        <a-typography-paragraph>
+                          <a-typography-title :level="5" style="text-align: left">
+                            {{ t("搜索条件") }}
+                          </a-typography-title>
+                        </a-typography-paragraph>
                         <a-row :gutter="isPhone ? [8, 8] : [24, 0]">
-                          <a-col :span="isPhone ? 24 : 6">
-                            <a-form-item :label="t('TXT_CODE_NAME')">
+                          <a-col :span="isPhone ? 24 : 4">
+                            <a-form-item>
                               <a-input
                                 v-model:value="searchFilters.query"
                                 :placeholder="t('TXT_CODE_SEARCH_PLACEHOLDER')"
@@ -617,10 +631,10 @@ onMounted(async () => {
                             </a-form-item>
                           </a-col>
                           <a-col :span="isPhone ? 12 : 4">
-                            <a-form-item :label="t('TXT_CODE_SOURCE')">
+                            <a-form-item>
                               <a-select v-model:value="searchFilters.source">
                                 <a-select-option value="all">
-                                  {{ t("TXT_CODE_ALL") }}
+                                  {{ t("所有平台") }}
                                 </a-select-option>
                                 <a-select-option value="modrinth">Modrinth</a-select-option>
                                 <a-select-option value="curseforge">CurseForge</a-select-option>
@@ -629,15 +643,15 @@ onMounted(async () => {
                             </a-form-item>
                           </a-col>
                           <a-col :span="isPhone ? 12 : 4">
-                            <a-form-item :label="t('TXT_CODE_VERSION')">
+                            <a-form-item>
                               <a-select
                                 v-model:value="searchFilters.version"
                                 show-search
                                 allow-clear
-                                :placeholder="t('TXT_CODE_VERSION')"
+                                :placeholder="t('请选择内容')"
                               >
                                 <a-select-option value="">
-                                  {{ t("TXT_CODE_ALL") }}
+                                  {{ t("所有版本") }}
                                 </a-select-option>
                                 <a-select-option v-for="v in mcVersions" :key="v" :value="v">
                                   {{ v }}
@@ -646,10 +660,10 @@ onMounted(async () => {
                             </a-form-item>
                           </a-col>
                           <a-col :span="isPhone ? 12 : 4">
-                            <a-form-item :label="t('TXT_CODE_TYPE')">
+                            <a-form-item>
                               <a-select v-model:value="searchFilters.type">
                                 <a-select-option value="all">
-                                  {{ t("TXT_CODE_ALL") }}
+                                  {{ t("所有类型") }}
                                 </a-select-option>
                                 <a-select-option value="mod">
                                   {{ t("TXT_CODE_MOD") }}
@@ -660,11 +674,11 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 12 : 6">
-                            <a-form-item :label="t('TXT_CODE_ENVIRONMENT')">
+                          <a-col :span="isPhone ? 12 : 4">
+                            <a-form-item>
                               <a-select v-model:value="searchFilters.environment">
                                 <a-select-option value="all">
-                                  {{ t("TXT_CODE_ALL") }}
+                                  {{ t("客户端/服务端") }}
                                 </a-select-option>
                                 <a-select-option value="server">
                                   {{ t("TXT_CODE_SERVER") }}
@@ -675,8 +689,8 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 12 : 6">
-                            <a-form-item :label="t('TXT_CODE_LOADER_PLATFORM')">
+                          <a-col :span="isPhone ? 12 : 4">
+                            <a-form-item>
                               <a-select
                                 v-model:value="searchFilters.loader"
                                 show-search
@@ -689,7 +703,7 @@ onMounted(async () => {
                             </a-form-item>
                           </a-col>
                         </a-row>
-                        <div class="flex gap-4 justify-end mt-2">
+                        <div class="flex gap-8 justify-end mt-2">
                           <a-button type="primary" :loading="searchLoading" @click="onSearch">
                             <template #icon><search-outlined /></template>
                             {{ t("TXT_CODE_SEARCH") }}

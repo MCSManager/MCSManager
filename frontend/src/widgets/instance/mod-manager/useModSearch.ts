@@ -40,7 +40,7 @@ export function useModSearch(
     {
       label: t("TXT_CODE_LOADER"),
       options: [
-        { label: t("TXT_CODE_ALL"), value: "all" },
+        { label: t("所有加载器"), value: "all" },
         { label: "Forge", value: "forge" },
         { label: "Fabric", value: "fabric" },
         { label: "Quilt", value: "quilt" },
