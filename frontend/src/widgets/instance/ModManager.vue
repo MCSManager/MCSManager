@@ -21,7 +21,7 @@ import ModFloatingTools from "./mod-manager/ModFloatingTools.vue";
 import ModVersionModal from "./mod-manager/ModVersionModal.vue";
 import SearchModTable from "./mod-manager/SearchModTable.vue";
 
-import { Flex } from "ant-design-vue";
+import { Flex, message } from "ant-design-vue";
 import { useDeferredTasks } from "./mod-manager/useDeferredTasks";
 import { useLocalMods } from "./mod-manager/useLocalMods";
 import { useModConfig } from "./mod-manager/useModConfig";
@@ -213,11 +213,12 @@ const openExternal = (mod: any) => {
     SpigotMC: `https://www.spigotmc.org/resources/${id}`,
     MCMod: `https://www.mcmod.cn/class/${id}.html`
   };
-
-  const url =
-    baseUrlMap[source] || `https://www.mcmod.cn/s?key=${encodeURIComponent(name || id || "")}`;
-
-  if (url) window.open(url, "_blank");
+  const url = baseUrlMap[source];
+  if (!url) {
+    message.error(t("此模组或插件暂不支持展开详情"));
+  } else {
+    window.open(url, "_blank");
+  }
 };
 
 const handleDownload = async (version: any) => {

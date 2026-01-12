@@ -227,7 +227,7 @@ const onStopTransfer = async (task: any) => {
   width: 400px;
   max-height: 600px;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 6px 0px;
 }
 
 .popover-header {
@@ -254,8 +254,8 @@ const onStopTransfer = async (task: any) => {
 }
 
 .header-title {
-  font-weight: 700;
-  font-size: 1.125rem;
+  font-weight: 600;
+  font-size: 16px;
   letter-spacing: -0.025em;
 }
 

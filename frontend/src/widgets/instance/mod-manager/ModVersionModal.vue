@@ -141,7 +141,7 @@ const columns = computed(() => {
 <template>
   <Modal
     :visible="visible"
-    :title="(selectedMod?.title || selectedMod?.name || '') + ' - ' + t('TXT_CODE_VERSION_SELECT')"
+    :title="t('TXT_CODE_VERSION_SELECT')"
     :footer="null"
     :width="isPhone ? '100%' : '900px'"
     @update:visible="(val) => emit('update:visible', val)"
@@ -149,11 +149,7 @@ const columns = computed(() => {
     <a-typography class="mb-8" type="secondary">
       <a-typography-text>
         <WarningOutlined />
-        {{
-          $t(
-            "TXT_CODE_6111bc9e"
-          )
-        }}
+        {{ $t("TXT_CODE_6111bc9e") }}
       </a-typography-text>
     </a-typography>
     <Table
