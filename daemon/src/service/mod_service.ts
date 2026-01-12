@@ -1,13 +1,14 @@
-import fs from "fs-extra";
-import path from "path";
-import StreamZip from "node-stream-zip";
-import { getFileManager } from "./file_router_service";
-import yaml from "yaml";
 import toml from "@iarna/toml";
 import crypto from "crypto";
-import downloadManager from "./download_manager";
-import InstanceSubsystem from "./system_instance";
+import fs from "fs-extra";
+import StreamZip from "node-stream-zip";
+import path from "path";
+import yaml from "yaml";
 import { checkSafeUrl } from "../utils/url";
+import downloadManager from "./download_manager";
+import { getFileManager } from "./file_router_service";
+import logger from "./log";
+import InstanceSubsystem from "./system_instance";
 
 export interface ModInfo {
   name: string;
@@ -46,8 +47,10 @@ export interface DeferredTask {
 
 export class ModService {
   private readonly MAX_CACHE_SIZE = 2000;
-  private cache: Map<string, { mtime: number; size: number; info: Partial<ModInfo>; hash: string }> =
-    new Map();
+  private cache: Map<
+    string,
+    { mtime: number; size: number; info: Partial<ModInfo>; hash: string }
+  > = new Map();
 
   private deferredTasks: Map<string, DeferredTask[]> = new Map();
   private autoExecuteInstances: Set<string> = new Set();
@@ -59,7 +62,10 @@ export class ModService {
         const { instanceUuid } = data;
         if (this.autoExecuteInstances.has(instanceUuid)) {
           this.executeDeferredTasks(instanceUuid).catch((err) => {
-            console.error(`[ModService] Failed to execute deferred tasks for ${instanceUuid}:`, err);
+            console.error(
+              `[ModService] Failed to execute deferred tasks for ${instanceUuid}:`,
+              err
+            );
           });
         }
       });
@@ -80,7 +86,11 @@ export class ModService {
         } else if (task.type === "delete" && task.fileName) {
           await this.deleteMod(instanceUuid, task.fileName as string);
         } else if (task.type === "download" && task.url && task.targetPath) {
-          await downloadManager.downloadFromUrl(task.url as string, task.targetPath as string, task.fallbackUrl as string);
+          await downloadManager.downloadFromUrl(
+            task.url as string,
+            task.targetPath as string,
+            task.fallbackUrl as string
+          );
         }
       } catch (err) {
         console.error(`[ModService] Task failed:`, task, err);
@@ -91,7 +101,8 @@ export class ModService {
   public addDeferredTask(instanceUuid: string, task: DeferredTask) {
     // Security check for user inputs
     const fileManager = getFileManager(instanceUuid);
-    if (task.fileName && !fileManager.checkPath(task.fileName)) throw new Error("Invalid file name");
+    if (task.fileName && !fileManager.checkPath(task.fileName))
+      throw new Error("Invalid file name");
     if (task.url && !checkSafeUrl(task.url)) throw new Error("Invalid URL");
     if (task.targetPath && !fileManager.checkPath(task.targetPath)) {
       throw new Error("Access denied: Target path is outside of instance directory");
@@ -439,11 +450,11 @@ export class ModService {
   ) {
     const fileManager = getFileManager(instanceUuid);
     const rootDir = fileManager.toAbsolutePath(".");
-    
+
     // Determine the save directory based on what exists (case-sensitive check for Linux)
     let saveDir = type === "plugin" ? "plugins" : "mods";
     const variants = type === "plugin" ? ["plugins", "Plugins"] : ["mods", "Mods"];
-    
+
     for (const v of variants) {
       if (await fs.pathExists(path.join(rootDir, v))) {
         saveDir = v;
@@ -455,16 +466,21 @@ export class ModService {
     if (!fileManager.checkPath(relativePath)) throw new Error("Invalid file path");
     const targetPath = fileManager.toAbsolutePath(relativePath);
 
-    if (options.deferred) {
-      this.addDeferredTask(instanceUuid, {
-        type: "download",
-        url,
-        targetPath,
-        fallbackUrl: options.fallbackUrl,
-        extraInfo: options.extraInfo
-      });
-      return;
-    }
+    logger.info(
+      `[ModService] Instance ${instanceUuid} Install Mod: ${fileName} from ${url} to ${targetPath}`
+    );
+    logger.info(`[ModService] Options: ${JSON.stringify(options)}`);
+
+    // if (options.deferred) {
+    //   this.addDeferredTask(instanceUuid, {
+    //     type: "download",
+    //     url,
+    //     targetPath,
+    //     fallbackUrl: options.fallbackUrl,
+    //     extraInfo: options.extraInfo
+    //   });
+    //   return;
+    // }
 
     await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
   }
@@ -552,7 +568,10 @@ export class ModService {
         }
       }
 
-      if (await fs.pathExists(pluginConfigDir) && (await fs.stat(pluginConfigDir)).isDirectory()) {
+      if (
+        (await fs.pathExists(pluginConfigDir)) &&
+        (await fs.stat(pluginConfigDir)).isDirectory()
+      ) {
         const files = await fs.readdir(pluginConfigDir);
         for (const file of files) {
           const fullPath = path.join(pluginConfigDir, file);

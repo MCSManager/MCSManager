@@ -171,6 +171,7 @@ export function useModSearch(
 
   const showVersions = async (mod: any) => {
     selectedMod.value = mod;
+    versions.value = [];
     showVersionModal.value = true;
     versionsLoading.value = true;
     try {

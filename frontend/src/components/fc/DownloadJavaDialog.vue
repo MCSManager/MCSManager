@@ -108,7 +108,7 @@ const submit = async () => {
 
 .java-card-selected {
   border-color: #1890ff;
-  background-color: #e6f7ff;
+  background: linear-gradient(135deg, var(--color-gray-1) 0%, var(--color-gray-2) 100%);
 }
 
 .java-card-cover {
@@ -116,7 +116,7 @@ const submit = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  background: linear-gradient(135deg, var(--color-gray-3) 0%, var(--color-gray-5) 100%);
 }
 
 .java-card :deep(.ant-card-body) {

@@ -642,7 +642,8 @@ routerApp.on("instance/mods/delete", async (ctx, data) => {
 routerApp.on("instance/mods/install", async (ctx, data) => {
   const { instanceUuid, url, fileName, type, fallbackUrl, deferred, extraInfo } = data;
   try {
-    await modService.installMod(instanceUuid, url, fileName, type, {
+    // async
+    modService.installMod(instanceUuid, url, fileName, type, {
       fallbackUrl,
       deferred,
       extraInfo

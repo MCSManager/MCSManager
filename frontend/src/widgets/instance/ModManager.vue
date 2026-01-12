@@ -525,7 +525,7 @@ onMounted(async () => {
                     <Flex align="center" :gap="6">
                       {{ t("TXT_CODE_MOD_LIST") }}
                       <a-badge
-                        v-if="!loading"
+                        v-if="!loading && activeKey === '1'"
                         :count="filteredMods.length"
                         :show-zero="true"
                         :overflow-count="999"
@@ -560,10 +560,10 @@ onMounted(async () => {
 
                 <a-tab-pane v-if="hasPluginsFolder" key="2">
                   <template #tab>
-                    <a-space :size="4">
+                    <Flex align="center" :gap="6">
                       {{ t("TXT_CODE_PLUGIN_LIST") }}
                       <a-badge
-                        v-if="!loading"
+                        v-if="!loading && activeKey === '2'"
                         :count="filteredPlugins.length"
                         :show-zero="true"
                         :overflow-count="99999"
@@ -578,7 +578,7 @@ onMounted(async () => {
                         v-if="loading || loadingExtra"
                         style="font-size: 12px; color: #1890ff"
                       />
-                    </a-space>
+                    </Flex>
                   </template>
                   <div :class="isPhone ? 'p-2' : 'p-10'">
                     <LocalModTable
@@ -604,9 +604,10 @@ onMounted(async () => {
                         :model="searchFilters"
                         class="search-form"
                         label-width="120px"
+                        label-align="left"
                       >
                         <a-row :gutter="isPhone ? [8, 8] : [24, 0]">
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 24 : 6">
                             <a-form-item :label="t('TXT_CODE_NAME')">
                               <a-input
                                 v-model:value="searchFilters.query"
@@ -615,7 +616,7 @@ onMounted(async () => {
                               />
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 12 : 4">
                             <a-form-item :label="t('TXT_CODE_SOURCE')">
                               <a-select v-model:value="searchFilters.source">
                                 <a-select-option value="all">
@@ -627,7 +628,7 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 12 : 4">
                             <a-form-item :label="t('TXT_CODE_VERSION')">
                               <a-select
                                 v-model:value="searchFilters.version"
@@ -644,7 +645,7 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 12 : 4">
                             <a-form-item :label="t('TXT_CODE_TYPE')">
                               <a-select v-model:value="searchFilters.type">
                                 <a-select-option value="all">
@@ -659,7 +660,7 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 12 : 6">
                             <a-form-item :label="t('TXT_CODE_ENVIRONMENT')">
                               <a-select v-model:value="searchFilters.environment">
                                 <a-select-option value="all">
@@ -674,7 +675,7 @@ onMounted(async () => {
                               </a-select>
                             </a-form-item>
                           </a-col>
-                          <a-col :span="isPhone ? 24 : 12">
+                          <a-col :span="isPhone ? 12 : 6">
                             <a-form-item :label="t('TXT_CODE_LOADER_PLATFORM')">
                               <a-select
                                 v-model:value="searchFilters.loader"
