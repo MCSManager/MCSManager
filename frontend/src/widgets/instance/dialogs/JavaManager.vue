@@ -8,7 +8,6 @@ import type { InstanceDetail } from "@/types";
 import type { AntColumnsType } from "@/types/ant";
 import type { JavaInfo, JavaRuntime } from "@/types/javaManager";
 import {
-  CheckOutlined,
   DeleteOutlined,
   DownloadOutlined,
   ReloadOutlined
@@ -25,7 +24,7 @@ const props = defineProps<{
 const columns: AntColumnsType[] = [
   {
     align: "center",
-    title: t("TXT_CODE_3f36206f"),
+    title: t("TXT_CODE_151d2bb7"),
     dataIndex: ["info", "fullname"],
     key: "fullname"
   },
@@ -38,7 +37,7 @@ const columns: AntColumnsType[] = [
   },
   {
     align: "center",
-    title: t("TXT_CODE_f55da98f"),
+    title: t("TXT_CODE_759fb403"),
     key: "status",
     customRender: ({ record }: { record: JavaRuntime }) => {
       if (record.usingInstances.length > 0) return t("TXT_CODE_bdb620b9");
@@ -71,7 +70,8 @@ const refreshJavaList = async (out: boolean = false) => {
   try {
     const list = await getJavaList().execute({
       params: {
-        daemonId: props.daemonId ?? ""
+        daemonId: props.daemonId ?? "",
+        instanceId: props.instanceId ?? ""
       }
     });
     javaList.value = list.value;
@@ -82,23 +82,27 @@ const refreshJavaList = async (out: boolean = false) => {
 };
 
 const handleDownloadJava = async () => {
-  const data = await useDownloadJavaDialog();
+  const installedList = javaList.value?.map((item) => item.info.fullname) ?? [];
+  const data = await useDownloadJavaDialog(installedList);
   if (!data) return;
 
   try {
     await downloadJava().execute({
       params: {
-        daemonId: props.daemonId ?? ""
+        daemonId: props.daemonId ?? "",
+        instanceId: props.instanceId ?? ""
+
       },
       data: {
         name: data.name,
         version: data.version
       }
     });
+    message.success(t("TXT_CODE_5e7a4c02"));
+    await refreshJavaList();
   } catch (err: any) {
     message.error(err.message);
   }
-  message.success(t("TXT_CODE_5e7a4c02"));
   await refreshJavaList();
 };
 
@@ -106,7 +110,8 @@ const handleDeleteJava = async (info: JavaInfo) => {
   try {
     await deleteJava().execute({
       params: {
-        daemonId: props.daemonId ?? ""
+        daemonId: props.daemonId ?? "",
+        instanceId: props.instanceId ?? ""
       },
       data: {
         id: info.fullname
@@ -165,15 +170,15 @@ defineExpose({
 
       <div class="items-right">
         <a-button
-          class="mr-10"
-          type="dashed"
+         
+          type="link"
           :icon="h(DownloadOutlined)"
           @click="handleDownloadJava()"
         >
           {{ t("TXT_CODE_9c48100e") }}
         </a-button>
 
-        <a-button class="mr-10" :icon="h(ReloadOutlined)" @click="refreshJavaList(true)">
+        <a-button :icon="h(ReloadOutlined)" type="text" @click="refreshJavaList(true)">
           {{ t("TXT_CODE_b76d94e0") }}
         </a-button>
       </div>
@@ -188,34 +193,29 @@ defineExpose({
         }"
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'actions'">
-            <template v-if="record.info.fullname == instanceInfo?.config.java.id">
-              <a-button class="mr-8" type="primary" :disabled="true">
-                {{ t("TXT_CODE_979520ef") }}
-                <CheckOutlined />
-              </a-button>
-            </template>
+          <div v-if="column.key === 'actions'" class="flex justify-end">
+            <a-button v-if="record.info.fullname == instanceInfo?.config.java.id" class="mr-8" type="link" :disabled="true">
+              {{ t("TXT_CODE_979520ef") }}
+            </a-button>
             <a-button
               v-else
               class="mr-8"
-              type="primary"
+              type="link"
               :disabled="record.info.downloading"
               @click="handleUsingJava(record.info as JavaInfo)"
             >
               {{ t("TXT_CODE_f0dcc8bf") }}
-              <CheckOutlined />
             </a-button>
-
             <a-popconfirm
               :title="t('TXT_CODE_f4f86ba8')"
               @confirm="handleDeleteJava(record.info as JavaInfo)"
             >
-              <a-button danger :disabled="record.info.downloading">
+              <a-button danger type="link" :disabled="record.info.downloading">
                 {{ t("TXT_CODE_ecbd7449") }}
                 <DeleteOutlined />
               </a-button>
             </a-popconfirm>
-          </template>
+          </div>
         </template>
       </a-table>
     </div>

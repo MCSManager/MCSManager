@@ -151,7 +151,9 @@ class ModManagerService {
         !err.response &&
         (err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ECONNABORTED");
       const isRetryableStatus =
-        err.response?.status === 500 || err.response?.status === 502 || err.response?.status === 504;
+        err.response?.status === 500 ||
+        err.response?.status === 502 ||
+        err.response?.status === 504;
 
       if (retries > 0 && (isNetworkError || isRetryableStatus)) {
         await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -164,6 +166,10 @@ class ModManagerService {
   public async getInfosByHashes(hashes: string[]) {
     const result: Record<string, any> = {};
     const missingHashes: string[] = [];
+
+    if (hashes.length > 50) {
+      throw new Error("Hashes length cannot be greater than 50");
+    }
 
     for (const hash of hashes) {
       if (this.cache.has(hash)) {
@@ -269,7 +275,7 @@ class ModManagerService {
       }
     }
 
-    // If the result is still the same as the original (minus extension), 
+    // If the result is still the same as the original (minus extension),
     // and it's very long/ugly, try a more aggressive approach
     if (vn.includes("-") || vn.includes("_")) {
       const parts = vn.split(/[-_\s]+/);
@@ -284,8 +290,15 @@ class ModManagerService {
     query: string,
     offset = 0,
     limit = 20,
-    filters?: { source?: string; version?: string; type?: string; loader?: string; environment?: string }
+    filters?: {
+      source?: string;
+      version?: string;
+      type?: string;
+      loader?: string;
+      environment?: string;
+    }
   ) {
+    if (limit > 50) throw new Error("Limit cannot be greater than 100");
     const source = filters?.source || "all";
 
     if (source === "modrinth") {
@@ -338,7 +351,7 @@ class ModManagerService {
         ...(curseforgeRes?.hits || []),
         ...(spigotRes?.hits || [])
       ];
-      
+
       const total_hits =
         (modrinthRes?.total_hits || 0) +
         (curseforgeRes?.total_hits || 0) +
@@ -381,7 +394,7 @@ class ModManagerService {
           facets.push([`project_type:${filters.type}`]);
         }
       }
-      
+
       // Handle loaders (Forge, Fabric, etc.) - use categories facet
       if (filters?.loader && filters.loader !== "all") {
         const loaderMap: Record<string, string> = {
@@ -400,7 +413,7 @@ class ModManagerService {
         const loaderName = loaderMap[filters.loader.toLowerCase()] || filters.loader;
         facets.push([`categories:${loaderName}`]);
       }
-      
+
       // Handle environment (server/client)
       if (filters?.environment && filters.environment !== "all") {
         if (filters.environment.toLowerCase() === "server") {
@@ -623,6 +636,9 @@ class ModManagerService {
         url: `${this.baseUrl}/project/${projectId}/version`,
         params
       });
+
+      const items = res.data || [];
+
       // Add project_type to each version so the frontend knows where to save it
       const projectRes = await this.requestWithRetry({
         method: "GET",
@@ -630,7 +646,7 @@ class ModManagerService {
       });
       const projectType = projectRes.data.project_type === "mod" ? "mod" : "plugin";
 
-      return res.data.map((v: any) => ({
+      return items.slice(0, 200).map((v: any) => ({
         ...v,
         project_type: projectType
       }));
@@ -671,27 +687,31 @@ class ModManagerService {
       const isPlugin =
         modData?.classId === 12 ||
         modData?.categories?.some((c: any) =>
-          [
-            "spigot",
-            "paper",
-            "purpur",
-            "folia",
-            "bungeecord",
-            "velocity",
-            "waterfall"
-          ].includes(c.name.toLowerCase())
+          ["spigot", "paper", "purpur", "folia", "bungeecord", "velocity", "waterfall"].includes(
+            c.name.toLowerCase()
+          )
         );
 
       return res.data.data.map((file: any) => {
         const gameVersions = file.gameVersions || [];
         const loaders = gameVersions.filter((v: string) =>
-          ["Forge", "Fabric", "Quilt", "NeoForge", "Bungeecord", "Spigot", "Paper", "Purpur"].includes(
-            v
-          )
+          [
+            "Forge",
+            "Fabric",
+            "Quilt",
+            "NeoForge",
+            "Bungeecord",
+            "Spigot",
+            "Paper",
+            "Purpur"
+          ].includes(v)
         );
         const realGameVersions = gameVersions.filter((v: string) => /^\d+\.\d+(\.\d+)?$/.test(v));
 
-        const vn = this.cleanCurseForgeVersionName(file.displayName || file.fileName || "", projectName);
+        const vn = this.cleanCurseForgeVersionName(
+          file.displayName || file.fileName || "",
+          projectName
+        );
 
         return {
           id: String(file.id),
@@ -806,7 +826,9 @@ class ModManagerService {
 
       return {
         hits,
-        total_hits: parseInt(res.headers["x-total-count"] || "0") || (data.length === limit ? offset + limit + 1 : offset + data.length)
+        total_hits:
+          parseInt(res.headers["x-total-count"] || "0") ||
+          (data.length === limit ? offset + limit + 1 : offset + data.length)
       };
     } catch (err) {
       console.error("SpigotMC search error:", err);

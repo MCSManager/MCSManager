@@ -158,7 +158,6 @@ const btns = computed(() => {
         // Narrow it down to Minecraft server types only (Java or Bedrock)
         const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
-
         const hasPermission = state.settings.canFileManager || isAdmin.value;
         if (!hasPermission) return false;
         if (!foldersLoaded.value) return false;

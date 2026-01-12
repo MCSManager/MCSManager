@@ -2963,7 +2963,7 @@
   "TXT_CODE_f0dcc8bf": "使用",
   "TXT_CODE_f4f86ba8": "你确定要删除这个Java环境吗?",
   "TXT_CODE_31e92ef3": "完成",
-  "TXT_CODE_MOD_MANAGER": "Mod插件管理",
+  "TXT_CODE_MOD_MANAGER": "插件/模组管理",
   "TXT_CODE_MODRINTH_SEARCH": "Modrinth 搜索",
   "TXT_CODE_DOWNLOAD": "下载",
   "TXT_CODE_VERSION_SELECT": "版本选择",
@@ -3216,5 +3216,15 @@
   "TXT_CODE_CONFIRM_UPLOAD": "确认上传",
   "TXT_CODE_MOD_UPLOAD_NO_FOLDER": "不支持上传文件夹，请选择文件或压缩包",
   "TXT_CODE_TOTAL_ITEMS": "共计 {total} 条项目",
-  "TXT_CODE_INSTALLED": "已安装"
+  "TXT_CODE_INSTALLED": "已安装",
+  "TXT_CODE_3d811e3e": "Set the Page Title?",
+  "TXT_CODE_c7cb38fd": "Incorrect profile version, unable to set the page title, please try restarting the panel or resetting custom layout!",
+  "TXT_CODE_395f147d": "Page Title",
+  "TXT_CODE_b305236a": "This changes the page title of the browser tab. Leave blank to reset to default.",
+  "TXT_CODE_47ae8ee6": "MCSManager Panel",
+  "TXT_CODE_151d2bb7": "环境名称",
+  "TXT_CODE_6111bc9e": "由于第三方源网站可能存在部分地区的防火墙策略，如果一直下载失败，请尝试更换 “下载来源”，或手动前往原网站下载！",
+  "TXT_CODE_47fea88e": "原网站",
+  "TXT_CODE_25bf0004": "下載模组/插件",
+  "TXT_CODE_eb401a37": "无法对不属于你的实例进行操作！"
 }

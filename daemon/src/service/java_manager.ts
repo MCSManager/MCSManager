@@ -6,6 +6,7 @@ import StorageSubsystem from "../common/system_storage";
 import { JavaInfo } from "../entity/commands/java/java_manager";
 import { globalConfiguration } from "../entity/config";
 import { $t } from "../i18n";
+import InstanceSubsystem from "./system_instance";
 
 class JavaManager {
   private javaDataDir = "";
@@ -162,4 +163,34 @@ class JavaManager {
   }
 }
 
-export default new JavaManager();
+const javaManager = new JavaManager();
+
+InstanceSubsystem.on("open", (obj: { instanceUuid: string }) => {
+  const instanceUuid = obj.instanceUuid;
+  const config = InstanceSubsystem.getInstance(instanceUuid)?.config;
+  if (!config) return;
+
+  const javaId = config.java.id;
+  if (!javaId) return;
+
+  const java = javaManager.getJava(javaId);
+  if (java && !java.usingInstances.includes(instanceUuid)) java.usingInstances.push(instanceUuid);
+});
+
+const handleStopInstance = (obj: { instanceUuid: string }) => {
+  const instanceUuid = obj.instanceUuid;
+  const config = InstanceSubsystem.getInstance(instanceUuid)?.config;
+  if (!config) return;
+
+  const javaId = config.java.id;
+  if (!javaId) return;
+
+  const java = javaManager.getJava(javaId);
+  if (java && !java.usingInstances.includes(instanceUuid))
+    java.usingInstances.filter((uuid) => uuid !== instanceUuid);
+};
+
+InstanceSubsystem.on("exit", handleStopInstance);
+InstanceSubsystem.on("failure", handleStopInstance);
+
+export default javaManager;

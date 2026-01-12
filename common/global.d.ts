@@ -216,6 +216,7 @@ declare global {
     page: string;
     items: ILayoutCard[];
     theme?: {
+      pageTitle: string;
       logoImage: string;
       backgroundImage: string;
     };

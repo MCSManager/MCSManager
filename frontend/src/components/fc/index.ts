@@ -230,6 +230,10 @@ export async function openMarketDialog(
   return dialog!.openDialog();
 }
 
-export async function useDownloadJavaDialog() {
-  return (await useMountComponent().mount<DownloadJavaConfigItem>(DownloadJavaDialog)) || undefined;
+export async function useDownloadJavaDialog(installedJavaList?: string[]) {
+  return (
+    (await useMountComponent({ installedJavaList }).mount<DownloadJavaConfigItem>(
+      DownloadJavaDialog
+    )) || undefined
+  );
 }

@@ -4,10 +4,10 @@ import fs from "fs-extra";
 import StreamZip from "node-stream-zip";
 import path from "path";
 import yaml from "yaml";
-import { checkSafeUrl } from "../utils/url";
 import { DiskQuotaService } from "./disk_quota_service";
 import downloadManager from "./download_manager";
 import { getFileManager } from "./file_router_service";
+import logger from "./log";
 import InstanceSubsystem from "./system_instance";
 
 export interface ModInfo {
@@ -25,6 +25,9 @@ export interface ModInfo {
 export interface ModListResult {
   mods: ModInfo[];
   folders: string[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface ModConfigFile {
@@ -32,112 +35,12 @@ export interface ModConfigFile {
   path: string;
 }
 
-export interface DeferredTask {
-  id?: string;
-  type: "toggle" | "delete" | "download";
-  fileName?: string;
-  url?: string;
-  targetPath?: string;
-  fallbackUrl?: string;
-  extraInfo?: Record<string, any>;
-}
-
 export class ModService {
   private readonly MAX_CACHE_SIZE = 2000;
-  private cache: Map<string, { mtime: number; size: number; info: Partial<ModInfo>; hash: string }> =
-    new Map();
-
-  private deferredTasks: Map<string, DeferredTask[]> = new Map();
-  private autoExecuteInstances: Set<string> = new Set();
-
-  constructor() {
-    // Wait for next tick to ensure InstanceSubsystem is fully initialized if needed
-    process.nextTick(() => {
-      InstanceSubsystem.on("exit", (data) => {
-        const { instanceUuid } = data;
-        if (this.autoExecuteInstances.has(instanceUuid)) {
-          this.executeDeferredTasks(instanceUuid).catch((err) => {
-            console.error(`[ModService] Failed to execute deferred tasks for ${instanceUuid}:`, err);
-          });
-        }
-      });
-    });
-  }
-
-  private async executeDeferredTasks(instanceUuid: string) {
-    // Immediately retrieve and remove from Map to prevent the frontend from seeing it during execution
-    const tasks = this.deferredTasks.get(instanceUuid);
-    this.deferredTasks.delete(instanceUuid);
-
-    if (!tasks || tasks.length === 0) return;
-
-    for (const task of tasks) {
-      try {
-        if (task.type === "toggle" && task.fileName) {
-          await this.toggleMod(instanceUuid, task.fileName as string);
-        } else if (task.type === "delete" && task.fileName) {
-          await this.deleteMod(instanceUuid, task.fileName as string);
-        } else if (task.type === "download" && task.url && task.targetPath) {
-          const instance = InstanceSubsystem.getInstance(instanceUuid);
-          const quotaService = DiskQuotaService.getInstance();
-          await downloadManager.downloadFromUrl(
-            task.url as string,
-            task.targetPath as string,
-            task.fallbackUrl as string,
-            { instance, quotaService }
-          );
-        }
-      } catch (err) {
-        console.error(`[ModService] Task failed:`, task, err);
-      }
-    }
-  }
-
-  public addDeferredTask(instanceUuid: string, task: DeferredTask) {
-    // Security check for user inputs
-    const fileManager = getFileManager(instanceUuid);
-    if (task.fileName && !fileManager.checkPath(task.fileName)) throw new Error("Invalid file name");
-    if (task.url && !checkSafeUrl(task.url)) throw new Error("Invalid URL");
-    if (task.targetPath && !fileManager.checkPath(task.targetPath)) {
-      throw new Error("Access denied: Target path is outside of instance directory");
-    }
-
-    if (!this.deferredTasks.has(instanceUuid)) {
-      this.deferredTasks.set(instanceUuid, []);
-    }
-    // Check if the same task already exists to avoid duplicates
-    const tasks = this.deferredTasks.get(instanceUuid);
-    const isDuplicate = tasks?.some((t) => {
-      if (t.type !== task.type) return false;
-      if (t.type === "download") return t.url === task.url;
-      // Normalize file names to prevent duplicate detection failure due to .disabled suffix
-      const name1 = t.fileName?.replace(".disabled", "");
-      const name2 = task.fileName?.replace(".disabled", "");
-      return name1 === name2;
-    });
-
-    if (!isDuplicate) {
-      // Generate a unique ID for the task to facilitate frontend synchronization
-      task.id = Math.random().toString(36).substring(2);
-      tasks?.push(task);
-    }
-  }
-
-  public setAutoExecute(instanceUuid: string, enabled: boolean) {
-    if (enabled) {
-      this.autoExecuteInstances.add(instanceUuid);
-    } else {
-      this.autoExecuteInstances.delete(instanceUuid);
-    }
-  }
-
-  public getDeferredTasks(instanceUuid: string): DeferredTask[] {
-    return this.deferredTasks.get(instanceUuid) || [];
-  }
-
-  public clearDeferredTasks(instanceUuid: string) {
-    this.deferredTasks.delete(instanceUuid);
-  }
+  private cache: Map<
+    string,
+    { mtime: number; size: number; info: Partial<ModInfo>; hash: string }
+  > = new Map();
 
   private async getFileHash(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -257,7 +160,17 @@ export class ModService {
     return null;
   }
 
-  public async listMods(instanceUuid: string): Promise<ModListResult> {
+  public async listMods(
+    instanceUuid: string,
+    page: number = 1,
+    pageSize: number = 50,
+    folder?: string
+  ): Promise<ModListResult> {
+    // Enforce max page size of 50
+    if (pageSize > 50) pageSize = 50;
+    if (pageSize < 1) pageSize = 10;
+    if (page < 1) page = 1;
+
     const fileManager = getFileManager(instanceUuid);
     const rootDir = fileManager.toAbsolutePath(".");
 
@@ -350,9 +263,25 @@ export class ModService {
       (v, i, a) => a.findIndex((t) => t.file === v.file && t.folder === v.folder) === i
     );
 
+    // Filter by folder if specified
+    const filteredResult = folder
+      ? uniqueResult.filter((m) => m.folder === folder.toLowerCase())
+      : uniqueResult;
+
+    // Sort by name for consistent pagination
+    filteredResult.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+    const total = filteredResult.length;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedMods = filteredResult.slice(startIndex, endIndex);
+
     return {
-      mods: uniqueResult,
-      folders
+      mods: paginatedMods,
+      folders,
+      total,
+      page,
+      pageSize
     };
   }
 
@@ -414,15 +343,15 @@ export class ModService {
     url: string,
     fileName: string,
     type: "mod" | "plugin",
-    options: { fallbackUrl?: string; deferred?: boolean; extraInfo?: any } = {}
+    options: { fallbackUrl?: string } = {}
   ) {
     const fileManager = getFileManager(instanceUuid);
     const rootDir = fileManager.toAbsolutePath(".");
-    
+
     // Determine the save directory based on what exists (case-sensitive check for Linux)
     let saveDir = type === "plugin" ? "plugins" : "mods";
     const variants = type === "plugin" ? ["plugins", "Plugins"] : ["mods", "Mods"];
-    
+
     for (const v of variants) {
       if (await fs.pathExists(path.join(rootDir, v))) {
         saveDir = v;
@@ -434,16 +363,10 @@ export class ModService {
     if (!fileManager.checkPath(relativePath)) throw new Error("Invalid file path");
     const targetPath = fileManager.toAbsolutePath(relativePath);
 
-    if (options.deferred) {
-      this.addDeferredTask(instanceUuid, {
-        type: "download",
-        url,
-        targetPath,
-        fallbackUrl: options.fallbackUrl,
-        extraInfo: options.extraInfo
-      });
-      return;
-    }
+    logger.info(
+      `[ModService] Instance ${instanceUuid} Install Mod: ${fileName} from ${url} to ${targetPath}`
+    );
+    logger.info(`[ModService] Options: ${JSON.stringify(options)}`);
 
     const quotaService = DiskQuotaService.getInstance();
     const instance = InstanceSubsystem.getInstance(instanceUuid);
@@ -536,7 +459,10 @@ export class ModService {
         }
       }
 
-      if (await fs.pathExists(pluginConfigDir) && (await fs.stat(pluginConfigDir)).isDirectory()) {
+      if (
+        (await fs.pathExists(pluginConfigDir)) &&
+        (await fs.stat(pluginConfigDir)).isDirectory()
+      ) {
         const files = await fs.readdir(pluginConfigDir);
         for (const file of files) {
           const fullPath = path.join(pluginConfigDir, file);
