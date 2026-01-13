@@ -7,6 +7,7 @@ import yaml from "yaml";
 import downloadManager from "./download_manager";
 import { getFileManager } from "./file_router_service";
 import logger from "./log";
+import FileManager from "./system_file";
 
 export interface ModInfo {
   name: string;
@@ -170,7 +171,10 @@ export class ModService {
     if (page < 1) page = 1;
 
     const fileManager = getFileManager(instanceUuid);
-    const rootDir = fileManager.toAbsolutePath(".");
+
+    if (!FileManager.checkFileName(folder ?? "")) {
+      throw new Error("Invalid folder name");
+    }
 
     const result: ModInfo[] = [];
     const folders: string[] = [];

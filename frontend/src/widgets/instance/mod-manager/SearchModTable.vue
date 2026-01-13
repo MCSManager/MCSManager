@@ -151,7 +151,7 @@ const formatDate = (date: string) => {
           </template>
         </template>
       </a-table>
-      <div class="flex justify-end mt-4">
+      <div class="flex justify-end mt-12">
         <a-pagination
           v-bind="pagination"
           @change="(page, pageSize) => emit('change', { current: page, pageSize })"

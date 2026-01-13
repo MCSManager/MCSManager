@@ -32,6 +32,7 @@ export function useLocalMods(
     pageSize: 50,
     total: 0,
     showSizeChanger: true,
+    size: "large",
     pageSizeOptions: ["10", "20", "50"],
     showTotal: (total: number) => t("TXT_CODE_TOTAL_ITEMS", { total }),
     onChange: (page: number, size: number) => {
