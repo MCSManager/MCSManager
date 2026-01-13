@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
-import { speedLimit } from "../middleware/limit";
+import { requestConcurrencyLimiter, speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { modManagerService } from "../service/mod_manager_service";
@@ -10,6 +10,7 @@ import { isHaveInstanceByUuid } from "../service/permission_service";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
+import { checkSafeUrl } from "../utils/url";
 
 const router = new Router({ prefix: "/mod" });
 
@@ -87,7 +88,7 @@ router.get(
 
 router.get(
   "/info",
-  speedLimit(0.2),
+  speedLimit(0.5),
   permission({ level: ROLE.USER }),
   validator({
     query: { hash: String }
@@ -104,33 +105,41 @@ router.get(
   }
 );
 
-router.get("/search", speedLimit(2), permission({ level: ROLE.USER }), async (ctx) => {
-  try {
-    const query = String(ctx.query.query || "");
-    const offset = Number(ctx.query.offset) || 0;
-    const limit = Number(ctx.query.limit) || 20;
-    const source = String(ctx.query.source || "all");
-    const version = String(ctx.query.version || "");
-    const type = String(ctx.query.type || "all");
-    const loader = String(ctx.query.loader || "all");
-    const environment = String(ctx.query.environment || "all");
+router.get(
+  "/search",
+  permission({ level: ROLE.USER }),
+  requestConcurrencyLimiter("mod_manager:search"),
+  async (ctx) => {
+    try {
+      const query = String(ctx.query.query || "");
+      const offset = Number(ctx.query.offset) || 0;
+      const limit = Number(ctx.query.limit) || 20;
+      const source = String(ctx.query.source || "all");
+      const version = String(ctx.query.version || "");
+      const type = String(ctx.query.type || "all");
+      const loader = String(ctx.query.loader || "all");
+      const environment = String(ctx.query.environment || "all");
 
-    if (limit > 50) {
-      throw new Error("Limit cannot be greater than 50");
+      if (offset < 0 || offset > 100000) {
+        throw new Error("Offset must be between 0 and 100000");
+      }
+      if (limit < 1 || limit > 50) {
+        throw new Error("Limit must be between 1 and 50");
+      }
+
+      const result = await modManagerService.searchProjects(query, offset, limit, {
+        source,
+        version,
+        type,
+        loader,
+        environment
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
     }
-
-    const result = await modManagerService.searchProjects(query, offset, limit, {
-      source,
-      version,
-      type,
-      loader,
-      environment
-    });
-    ctx.body = result;
-  } catch (err) {
-    ctx.body = err;
   }
-});
+);
 
 router.get(
   "/versions",
@@ -153,8 +162,9 @@ router.get(
 
 router.post(
   "/download",
-  speedLimit(1),
   permission({ level: ROLE.USER }),
+  speedLimit(5),
+  requestConcurrencyLimiter("mod_manager:download"),
   validator({
     body: {
       daemonId: String,
@@ -168,6 +178,21 @@ router.post(
     try {
       const { daemonId, uuid, url, fileName, projectType, fallbackUrl, extraInfo } =
         ctx.request.body;
+
+      // Validate URL to prevent SSRF attacks
+      if (!checkSafeUrl(url)) {
+        ctx.status = 400;
+        ctx.body = new Error("Invalid or unsafe URL");
+        return;
+      }
+
+      // Validate fallbackUrl if provided
+      if (fallbackUrl && !checkSafeUrl(fallbackUrl)) {
+        ctx.status = 400;
+        ctx.body = new Error("Invalid or unsafe fallback URL");
+        return;
+      }
+
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/install", {
         instanceUuid: uuid,

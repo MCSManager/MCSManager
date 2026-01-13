@@ -2,7 +2,8 @@ import { Context } from "koa";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { singletonMemoryRedis } from "../service/mini_redis";
-import { getUserFromCtx } from "../service/passport_service";
+import { getUserFromCtx, getUserUuid } from "../service/passport_service";
+import { execWithMutexId } from "../utils/sync";
 
 const SPEED_LIMIT_KEY = "SpeedLimit";
 
@@ -32,5 +33,15 @@ export function speedLimit(seconds: number, errMsg?: string) {
 
     singletonMemoryRedis.set(speedCheckKey, true, seconds);
     return await next();
+  };
+}
+
+export function requestConcurrencyLimiter(url: string) {
+  return async (ctx: Context, next: Function) => {
+    const userId = getUserUuid(ctx) || "_anonymous_";
+    const key = `UserConcurrencyLimiter:${userId}:${url}`;
+    return await execWithMutexId(key, async () => {
+      return await next();
+    });
   };
 }

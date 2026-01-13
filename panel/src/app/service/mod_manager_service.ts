@@ -25,6 +25,14 @@ class ModManagerService {
   private mcVersionsCache: string[] = [];
   private mcVersionsLastFetch = 0;
 
+  constructor() {
+    setInterval(() => {
+      this.mcVersionsCache = [];
+      this.mcVersionsLastFetch = 0;
+      this.cache.clear();
+    }, 1000 * 60 * 60 * 24);
+  }
+
   private setCache(key: string, value: any) {
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
       const firstKey = this.cache.keys().next().value;
@@ -145,7 +153,10 @@ class ModManagerService {
 
   private async requestWithRetry(config: any, retries = 2): Promise<any> {
     try {
-      return await axios(config);
+      return await axios({
+        ...config,
+        timeout: config.timeout || 5000
+      });
     } catch (err: any) {
       const isNetworkError =
         !err.response &&
@@ -789,7 +800,7 @@ class ModManagerService {
                   const vRes = await this.requestWithRetry({
                     method: "GET",
                     url: `https://api.spiget.org/v2/resources/${item.id}/versions/${item.version.id}`,
-                    timeout: 2000,
+                    timeout: 4000,
                     headers: {
                       "User-Agent": "MCSManager"
                     }

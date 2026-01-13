@@ -251,7 +251,7 @@ export default class FileManager {
         filesPath.push(this.toAbsolutePath(iterator));
         try {
           totalSize += fs.statSync(this.toAbsolutePath(iterator))?.size;
-        } catch (error: any) { }
+        } catch (error: any) {}
       }
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
