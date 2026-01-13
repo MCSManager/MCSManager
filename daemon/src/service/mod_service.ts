@@ -4,9 +4,11 @@ import fs from "fs-extra";
 import StreamZip from "node-stream-zip";
 import path from "path";
 import yaml from "yaml";
+import { DiskQuotaService } from "./disk_quota_service";
 import downloadManager from "./download_manager";
 import { getFileManager } from "./file_router_service";
 import logger from "./log";
+import InstanceSubsystem from "./system_instance";
 
 export interface ModInfo {
   name: string;
@@ -366,7 +368,12 @@ export class ModService {
     );
     logger.info(`[ModService] Options: ${JSON.stringify(options)}`);
 
-    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
+    const quotaService = DiskQuotaService.getInstance();
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl, {
+      instance,
+      quotaService
+    });
   }
 
   public async getModConfig(

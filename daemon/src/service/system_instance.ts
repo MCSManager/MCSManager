@@ -15,6 +15,7 @@ import { sleep } from "../utils/sleep";
 import logger from "./log";
 import InstanceControl from "./system_instance_control";
 import takeoverContainer from "./takeover_container";
+import javaManager from "./java_manager";
 
 class InstanceSubsystem extends EventEmitter {
   public readonly GLOBAL_INSTANCE = "__MCSM_GLOBAL_INSTANCE__";
@@ -331,4 +332,34 @@ class InstanceSubsystem extends EventEmitter {
   }
 }
 
-export default new InstanceSubsystem();
+const instanceSubsystem = new InstanceSubsystem();
+
+instanceSubsystem.on("open", (obj: { instanceUuid: string }) => {
+  const instanceUuid = obj.instanceUuid;
+  const config = instanceSubsystem.getInstance(instanceUuid)?.config;
+  if (!config) return;
+
+  const javaId = config.java.id;
+  if (!javaId) return;
+
+  const java = javaManager.getJava(javaId);
+  if (java && !java.usingInstances.includes(instanceUuid)) java.usingInstances.push(instanceUuid);
+});
+
+const handleStopInstance = (obj: { instanceUuid: string }) => {
+  const instanceUuid = obj.instanceUuid;
+  const config = instanceSubsystem.getInstance(instanceUuid)?.config;
+  if (!config) return;
+
+  const javaId = config.java.id;
+  if (!javaId) return;
+
+  const java = javaManager.getJava(javaId);
+  if (java && !java.usingInstances.includes(instanceUuid))
+    java.usingInstances = java.usingInstances.filter((uuid: string) => uuid !== instanceUuid);
+};
+
+instanceSubsystem.on("exit", handleStopInstance);
+instanceSubsystem.on("failure", handleStopInstance);
+
+export default instanceSubsystem;

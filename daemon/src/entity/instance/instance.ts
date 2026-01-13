@@ -8,8 +8,10 @@ import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
+import { DiskQuotaService } from "../../service/disk_quota_service";
 import javaManager from "../../service/java_manager";
 import logger from "../../service/log";
+import { globalTaskQueue } from "../../service/task_queue";
 import InstanceCommand from "../commands/base/command";
 import { commandStringToArray } from "../commands/base/command_parser";
 import FunctionDispatcher, { IPresetCommand } from "../commands/dispatcher";
@@ -73,6 +75,7 @@ export default class Instance extends EventEmitter {
   public static readonly TYPE_UNIVERSAL = "universal";
   public static readonly TYPE_MINECRAFT_JAVA = "minecraft/java";
   public static readonly TYPE_MINECRAFT_BEDROCK = "minecraft/bedrock";
+  private static readonly DISK_MONITOR_INTERVAL = 60_000;
 
   public instanceStatus: number = Instance.STATUS_STOP;
   public instanceUuid: string = "";
@@ -106,6 +109,7 @@ export default class Instance extends EventEmitter {
 
   private outputLoopTask?: NodeJS.Timeout;
   private outputBuffer = new CircularBuffer<string>(64);
+  private diskMonitorTask?: NodeJS.Timeout;
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
@@ -124,6 +128,20 @@ export default class Instance extends EventEmitter {
 
     this.process = undefined;
     this.startCount = 0;
+
+    // Initialize disk quota if specified in config
+    const initialQuota =
+      (config.diskQuota && config.diskQuota > 0 ? config.diskQuota : config.docker?.maxSpace) || 0;
+
+    if (initialQuota > 0) {
+      const quotaService = DiskQuotaService.getInstance();
+      quotaService.setQuota(instanceUuid, initialQuota);
+      // Also set the storage limit in instance info
+      this.info.storageLimit = initialQuota * 1024 * 1024; // Convert MB to bytes
+    } else {
+      // If no quota set, mark as unlimited
+      this.info.storageLimit = 0; // 0 means unlimited
+    }
   }
 
   isStoppedOrBusy() {
@@ -211,6 +229,10 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "rconIp", String);
     configureEntityParams(this.config, cfg, "category", Number);
     configureEntityParams(this.config, cfg, "basePort", Number);
+    const oldDiskQuota = this.config.diskQuota;
+    configureEntityParams(this.config, cfg, "diskQuota", Number);
+
+    let oldMaxSpace = this.config.docker.maxSpace;
 
     if (cfg.docker) {
       configureEntityParams(this.config.docker, cfg.docker, "containerName", String);
@@ -219,6 +241,7 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "ports");
       configureEntityParams(this.config.docker, cfg.docker, "extraVolumes");
       configureEntityParams(this.config.docker, cfg.docker, "maxSpace", Number);
+
       configureEntityParams(this.config.docker, cfg.docker, "io", Number);
       configureEntityParams(this.config.docker, cfg.docker, "network", Number);
       configureEntityParams(this.config.docker, cfg.docker, "networkMode", String);
@@ -251,6 +274,19 @@ export default class Instance extends EventEmitter {
       this.config.java.id = "";
     } else if (cfg.java) {
       configureEntityParams(this.config.java, cfg.java, "id", String);
+    }
+
+    // Apply disk quota updates (diskQuota overrides docker.maxSpace when set)
+    const previousQuota = (oldDiskQuota && oldDiskQuota > 0 ? oldDiskQuota : oldMaxSpace) || 0;
+    const newQuota =
+      (this.config.diskQuota && this.config.diskQuota > 0
+        ? this.config.diskQuota
+        : this.config.docker.maxSpace) || 0;
+
+    if (previousQuota !== newQuota) {
+      const quotaService = DiskQuotaService.getInstance();
+      quotaService.setQuota(this.instanceUuid, newQuota);
+      this.info.storageLimit = newQuota > 0 ? newQuota * 1024 * 1024 : 0;
     }
 
     if (persistence) {
@@ -343,6 +379,24 @@ export default class Instance extends EventEmitter {
     // start all lifecycle tasks
     this.lifeCycleTaskManager.execLifeCycleTask(1);
     this.startOutputLoop();
+
+    // Update disk usage info and start disk monitoring if quota is set
+    this.startDiskMonitor();
+    // Immediately update disk usage after starting
+    setTimeout(async () => {
+      try {
+        const quotaService = DiskQuotaService.getInstance();
+        const quotaInfo = await quotaService.getQuotaInfo(this);
+        this.info.storageUsage = quotaInfo.used;
+        this.info.storageLimit = quotaInfo.limit;
+      } catch (error) {
+        logger.warn(
+          `Could not update disk usage for instance ${this.instanceUuid}: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    }, 1000); // Update after 1 second to allow instance to fully start
   }
 
   // If the instance performs any operation exception, it must throw an exception through this function
@@ -367,6 +421,10 @@ export default class Instance extends EventEmitter {
 
     // Close all lifecycle tasks
     this.stopOutputLoop();
+    this.stopDiskMonitor(); // Stop disk monitoring
+    // Clear disk usage info
+    this.info.storageUsage = 0;
+    this.info.storageLimit = 0;
     this.lifeCycleTaskManager.execLifeCycleTask(0);
 
     // If automatic restart is enabled, the startup operation is performed immediately
@@ -466,6 +524,11 @@ export default class Instance extends EventEmitter {
   // execute the preset command action
   async execPreset(action: IPresetCommand, p?: any) {
     if (this.presetCommandManager) {
+      if (action === "start") {
+        return await globalTaskQueue.enqueue(`instance-start:${this.instanceUuid}`, () =>
+          this.presetCommandManager.execPreset(action, p)
+        );
+      }
       return await this.presetCommandManager.execPreset(action, p);
     }
     throw new Error(`Preset Manager does not exist`);
@@ -572,5 +635,169 @@ export default class Instance extends EventEmitter {
   private stopOutputLoop() {
     if (this.outputLoopTask) clearInterval(this.outputLoopTask);
     this.outputLoopTask = undefined;
+  }
+
+  /**
+   * Start disk monitoring task for this instance
+   */
+  public startDiskMonitor() {
+    this.stopDiskMonitor();
+
+    const quotaService = DiskQuotaService.getInstance();
+    const quota = quotaService.getQuota(this.instanceUuid);
+    if (!quota || quota <= 0) {
+      this.info.storageLimit = 0;
+      logger.info(`Instance ${this.instanceUuid} has no disk quota set, skipping disk monitoring`);
+      return;
+    }
+
+    // Single immediate check; recurring checks are handled by the global scheduler.
+    logger.info(
+      `Scheduling disk quota checks for instance ${this.instanceUuid} with quota ${Math.round(
+        quota / (1024 * 1024)
+      )}MB`
+    );
+
+    const runCheck = async () => {
+      try {
+        await this.checkDiskQuota();
+      } catch (error) {
+        logger.warn(
+          `Disk quota check failed for instance ${this.instanceUuid}: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    };
+
+    // Immediate check, then schedule recurring checks.
+    runCheck();
+    this.diskMonitorTask = setInterval(runCheck, Instance.DISK_MONITOR_INTERVAL);
+  }
+
+  /**
+   * Stop disk monitoring task for this instance
+   */
+  public stopDiskMonitor() {
+    if (this.diskMonitorTask) {
+      clearInterval(this.diskMonitorTask);
+      this.diskMonitorTask = undefined;
+    }
+  }
+
+  /**
+   * Check if current disk usage exceeds quota and take action
+   */
+  public async checkDiskQuota(): Promise<boolean> {
+    const quotaService = DiskQuotaService.getInstance();
+
+    try {
+      // Update disk usage in instance info
+      const quotaInfo = await quotaService.getQuotaInfo(this);
+      this.info.storageUsage = quotaInfo.used;
+      this.info.storageLimit = quotaInfo.limit;
+
+      const checkedAt = Date.now();
+      this.config.diskUsageCache = {
+        used: quotaInfo.used,
+        checkedAt
+      };
+      StorageSubsystem.store("InstanceConfig", this.instanceUuid, this.config);
+
+      const exceeds = await quotaService.exceedsQuota(this);
+
+      if (exceeds) {
+        logger.warn(
+          `Instance ${this.config.nickname} (${this.instanceUuid}) exceeds disk quota: ` +
+            `Used ${Math.round(quotaInfo.used / (1024 * 1024))}MB of ${Math.round(
+              quotaInfo.limit / (1024 * 1024)
+            )}MB limit`
+        );
+
+        // Print warning to the instance console
+        this.println(
+          "WARN",
+          $t("TXT_CODE_disk_quota_exceeded", {
+            used: Math.round(quotaInfo.used / (1024 * 1024)),
+            limit: Math.round(quotaInfo.limit / (1024 * 1024))
+          })
+        );
+
+        // Stop the instance since it exceeds quota
+        if (this.instanceStatus === Instance.STATUS_RUNNING) {
+          logger.info(
+            `Stopping instance ${this.config.nickname} (${this.instanceUuid}) due to disk quota exceeded`
+          );
+          this.println("INFO", $t("TXT_CODE_disk_quota_stop_instance"));
+
+          // Use execPreset instead of forceExec to avoid type issues
+          try {
+            await this.execPreset("stop");
+            logger.info(`Successfully issued stop command to instance ${this.instanceUuid}`);
+          } catch (error) {
+            if (error instanceof Error) {
+              logger.error(
+                `Failed to gracefully stop instance ${this.instanceUuid} due to disk quota: ${error.message}`
+              );
+            } else {
+              logger.error(
+                `Failed to gracefully stop instance ${
+                  this.instanceUuid
+                } due to disk quota: ${String(error)}`
+              );
+            }
+          }
+
+          // After sending stop command, monitor if the instance actually stops
+          // If not stopped after 5 seconds, force kill
+          setTimeout(async () => {
+            if (this.instanceStatus === Instance.STATUS_RUNNING) {
+              logger.warn(
+                `Instance ${this.instanceUuid} did not stop after disk quota exceeded, forcing termination`
+              );
+              if (this.process) {
+                try {
+                  this.process.kill();
+                  logger.info(`Successfully force killed instance ${this.instanceUuid}`);
+                } catch (killError) {
+                  logger.error(
+                    `Failed to force kill instance ${this.instanceUuid}: ${
+                      killError instanceof Error ? killError.message : String(killError)
+                    }`
+                  );
+                }
+              }
+            }
+          }, 5000); // Wait 5 seconds before force killing
+        } else {
+          logger.info(
+            `Instance ${this.instanceUuid} exceeds disk quota but is not running (status: ${this.instanceStatus})`
+          );
+        }
+
+        return false; // Exceeds quota
+      } else {
+        // Log disk usage check for debugging
+        logger.debug(
+          `Instance ${this.config.nickname} (${this.instanceUuid}) disk check: ` +
+            `Used ${Math.round(quotaInfo.used / (1024 * 1024))}MB of ${Math.round(
+              quotaInfo.limit / (1024 * 1024)
+            )}MB (${quotaInfo.percentage.toFixed(2)}%)`
+        );
+      }
+
+      return true; // Within quota
+    } catch (error) {
+      if (error instanceof Error) {
+        logger.error(
+          `Error checking disk quota for instance ${this.instanceUuid}: ${error.message}`
+        );
+      } else {
+        logger.error(
+          `Error checking disk quota for instance ${this.instanceUuid}: ${String(error)}`
+        );
+      }
+      return true; // Assume within quota if there's an error checking
+    }
   }
 }

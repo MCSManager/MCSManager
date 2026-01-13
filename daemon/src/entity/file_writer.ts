@@ -7,6 +7,11 @@ import uploadManager from "../service/upload_manager";
 
 type ChunkRange = { start: number; end: number };
 
+type UploadHooks = {
+  onProgress?: (current: number, total: number) => void;
+  onComplete?: (status: "success" | "failed" | "cancelled", message?: string) => void;
+};
+
 export default class FileWriter {
   readonly path: string;
   id?: string;
@@ -14,6 +19,8 @@ export default class FileWriter {
   private fd: number | null = null;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
+  public ioTaskId?: string;
+  private hooks?: UploadHooks;
 
   constructor(
     public readonly cwd: string,
@@ -21,16 +28,32 @@ export default class FileWriter {
     public readonly size: number,
     private unzip: boolean,
     private zipCode: string,
-    filePath: string
+    filePath: string,
+    private readonly instanceUuid?: string,
+    taskHooks?: UploadHooks,
+    ioTaskId?: string
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
       throw new Error("Access denied: Malformed file name");
 
     this.path = filePath;
+    this.hooks = taskHooks;
+    this.ioTaskId = ioTaskId;
   }
 
-  static async getPath(cwd: string, dir: string, filename: string, overwrite: boolean) {
-    const fileManager = new FileManager(cwd);
+  public attachHooks(hooks?: UploadHooks, ioTaskId?: string) {
+    if (hooks) this.hooks = hooks;
+    if (ioTaskId) this.ioTaskId = ioTaskId;
+  }
+
+  static async getPath(
+    cwd: string,
+    dir: string,
+    filename: string,
+    overwrite: boolean,
+    instanceUuid?: string
+  ) {
+    const fileManager = new FileManager(cwd, undefined, instanceUuid);
 
     const ext = path.extname(filename);
     const basename = path.basename(filename, ext);
@@ -98,6 +121,8 @@ export default class FileWriter {
     await fs.write(this.fd, chunk, 0, chunk.length, offset);
 
     this.addWrittenRange(offset, offset + chunk.length);
+    const current = this.received.reduce((acc, r) => acc + (r.end - r.start), 0);
+    this.hooks?.onProgress?.(current, this.size);
     if (this.isFullyCovered()) {
       this.done().catch((e) => {
         logger.error("Error completing file upload:", e);
@@ -118,8 +143,10 @@ export default class FileWriter {
 
     logger.info("Browser Uploaded File:", this.path);
 
+    this.hooks?.onComplete?.("success");
+
     if (this.unzip) {
-      const instanceFiles = new FileManager(this.cwd);
+      const instanceFiles = new FileManager(this.cwd, undefined, this.instanceUuid);
       await instanceFiles.unzip(this.path, ".", this.zipCode);
       logger.info("File unzipped:", this.path);
     }
@@ -136,6 +163,7 @@ export default class FileWriter {
     }
     await fs.remove(this.path);
     logger.info("Browser Upload Task Stopped:", this.path);
+    this.hooks?.onComplete?.("cancelled");
   }
 
   private addWrittenRange(start: number, end: number): void {

@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
+import { DiskQuotaService } from "../service/disk_quota_service";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
@@ -43,7 +44,7 @@ routerApp.use((event, ctx, data, next) => {
 });
 
 // Get the list of instances of this daemon (query)
-routerApp.on("instance/select", (ctx, data) => {
+routerApp.on("instance/select", async (ctx, data) => {
   const page = toNumber(data.page) ?? 1;
   const pageSize = toNumber(data.pageSize) ?? 1;
   const condition = data.condition;
@@ -85,16 +86,24 @@ routerApp.on("instance/select", (ctx, data) => {
   // paging function
   const pageResult = queryWrapper.page<Instance>(result, page, pageSize);
   // filter unwanted data
-  pageResult.data.forEach((instance) => {
-    overview.push({
+  const quotaService = DiskQuotaService.getInstance();
+  for (const instance of pageResult.data) {
+    const detail: IInstanceDetail = {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
       autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info
-    });
-  });
+    };
+    // Try to get disk quota information
+    try {
+      detail.diskQuota = await quotaService.getQuotaInfo(instance);
+    } catch (err: any) {
+      // Ignore disk quota errors, they're non-critical
+    }
+    overview.push(detail);
+  }
 
   protocol.response(ctx, {
     page: pageResult.page,
@@ -106,26 +115,36 @@ routerApp.on("instance/select", (ctx, data) => {
 });
 
 // Get an overview of this daemon instance
-routerApp.on("instance/overview", (ctx) => {
+routerApp.on("instance/overview", async (ctx) => {
   const overview: IInstanceDetail[] = [];
-  InstanceSubsystem.getInstances().forEach((instance) => {
-    overview.push({
+  const quotaService = DiskQuotaService.getInstance();
+  const instances = InstanceSubsystem.getInstances();
+  for (const instance of instances) {
+    const detail: IInstanceDetail = {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
       autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
       info: instance.info
-    });
-  });
+    };
+    // Try to get disk quota information
+    try {
+      detail.diskQuota = await quotaService.getQuotaInfo(instance);
+    } catch (err: any) {
+      // Ignore disk quota errors, they're non-critical
+    }
+    overview.push(detail);
+  }
 
   protocol.msg(ctx, "instance/overview", overview);
 });
 
 // Get an overview of some instances of this daemon
-routerApp.on("instance/section", (ctx, data) => {
+routerApp.on("instance/section", async (ctx, data) => {
   const instanceUuids = data.instanceUuids as string[];
   const overview: IInstanceDetail[] = [];
+  const quotaService = DiskQuotaService.getInstance();
   InstanceSubsystem.getInstances().forEach((instance) => {
     instanceUuids.forEach((targetUuid) => {
       if (targetUuid === instance.instanceUuid) {
@@ -140,6 +159,18 @@ routerApp.on("instance/section", (ctx, data) => {
       }
     });
   });
+  // Enrich with disk quota information
+  for (let i = 0; i < overview.length; i++) {
+    const instanceUuid = overview[i].instanceUuid;
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (instance) {
+      try {
+        overview[i].diskQuota = await quotaService.getQuotaInfo(instance);
+      } catch (err: any) {
+        // Ignore disk quota errors, they're non-critical
+      }
+    }
+  }
   protocol.msg(ctx, "instance/section", overview);
 });
 
@@ -155,6 +186,12 @@ routerApp.on("instance/detail", async (ctx, data) => {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
     } catch (err: any) {}
+    let diskQuota = null;
+    try {
+      // Get disk quota information
+      const quotaService = DiskQuotaService.getInstance();
+      diskQuota = await quotaService.getQuotaInfo(instance);
+    } catch (err: any) {}
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -163,7 +200,8 @@ routerApp.on("instance/detail", async (ctx, data) => {
       config: instance.config,
       info: instance.info,
       space,
-      processInfo
+      processInfo,
+      diskQuota
     });
   } catch (err: any) {
     protocol.error(ctx, "instance/detail", { err: err.message });
@@ -499,7 +537,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.absoluteCwdPath(), undefined, instanceUuid);
     for (const filePath of files) {
       if (fileManager.check(filePath)) {
         result.push({
@@ -523,7 +561,7 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.absoluteCwdPath(), undefined, instanceUuid);
     if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
     const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
     const processConfig = new ProcessConfig({

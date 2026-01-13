@@ -19,6 +19,7 @@ declare global {
     crlf: number;
     category: number;
     basePort: number;
+    diskQuota: number;
 
     // Steam RCON
     enableRcon?: boolean;

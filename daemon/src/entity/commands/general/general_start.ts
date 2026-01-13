@@ -9,6 +9,7 @@ import { IInstanceProcess } from "../../instance/interface";
 import { commandStringToArray } from "../base/command_parser";
 import AbsStartCommand from "../start";
 import { getRunAsUserParams } from "../../../tools/system_user";
+import { DiskQuotaService } from "../../../service/disk_quota_service";
 
 // Error exception at startup
 class StartupError extends Error {
@@ -59,6 +60,30 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
 
 export default class GeneralStartCommand extends AbsStartCommand {
   async createProcess(instance: Instance, source = "") {
+    // Check disk quota before starting the instance
+    const quotaService = DiskQuotaService.getInstance();
+    const quota = quotaService.getQuota(instance.instanceUuid);
+    if (quota && quota > 0) {
+      // Check if current disk usage exceeds quota
+      const exceeds = await quotaService.exceedsQuota(instance);
+      if (exceeds) {
+        // Get quota info for logging
+        const quotaInfo = await quotaService.getQuotaInfo(instance);
+        logger.warn(
+          `Instance ${instance.config.nickname} (${instance.instanceUuid}) exceeds disk quota before start: ` +
+          `Used ${Math.round(quotaInfo.used / (1024 * 1024))}MB of ${Math.round(quotaInfo.limit / (1024 * 1024))}MB limit`
+        );
+        
+        // Print warning to the instance console
+        instance.println("WARN", $t("TXT_CODE_disk_quota_exceeded", {
+          used: Math.round(quotaInfo.used / (1024 * 1024)),
+          limit: Math.round(quotaInfo.limit / (1024 * 1024))
+        }));
+        
+        throw new StartupError($t("TXT_CODE_disk_quota_exceeded_write"));
+      }
+    }
+
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||
       !instance.hasCwdPath() ||

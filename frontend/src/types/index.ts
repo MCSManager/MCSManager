@@ -46,12 +46,21 @@ export interface InstanceRuntimeInfo {
   }[];
 }
 
+export interface DiskQuotaInfo {
+  used: number;
+  limit: number;
+  available: number;
+  percentage: number;
+}
+
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
   autoRestarted: number;
   status: INSTANCE_STATUS_CODE;
   info: InstanceRuntimeInfo;
+  // optional disk quota information returned by backend when instance is stopped or via overview
+  diskQuota?: DiskQuotaInfo;
   config: IGlobalInstanceConfig;
   watcher?: number;
 }

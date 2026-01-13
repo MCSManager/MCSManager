@@ -26,6 +26,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
   public category = 0;
   public basePort = 0;
+  public diskQuota = 0; // MB, 0 means unlimited
 
   // Steam RCON protocol
   public enableRcon = false;
@@ -88,5 +89,10 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public extraServiceConfig = {
     openFrpTunnelId: "",
     openFrpToken: ""
+  };
+
+  public diskUsageCache: { used: number; checkedAt: number } = {
+    used: 0,
+    checkedAt: 0
   };
 }

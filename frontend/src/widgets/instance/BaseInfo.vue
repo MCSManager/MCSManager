@@ -45,6 +45,34 @@ const instanceGameServerInfo = computed(() => {
   }
 });
 
+// Disk usage info (bytes -> MB). Prefer `info` fields, fallback to `diskQuota` returned by API.
+const storageInfo = computed(() => {
+  // Prefer instance.info if available
+  let usage: number | undefined | null = instanceInfo.value?.info?.storageUsage;
+  let limit: number | undefined | null = instanceInfo.value?.info?.storageLimit;
+
+  // Fallback to diskQuota provided by backend
+  if ((usage == null || usage === undefined) && (limit == null || limit === undefined)) {
+    const dq = instanceInfo.value?.diskQuota;
+    if (dq) {
+      usage = dq.used;
+      limit = dq.limit;
+    }
+  }
+
+  // if no info available, return null to hide
+  if ((usage == null || usage === undefined) && (!limit || limit === 0)) return null;
+
+  const usageMB = ((usage ?? 0) / (1024 * 1024)).toFixed(2);
+  const limitMB = limit && limit > 0 ? (limit / (1024 * 1024)).toFixed(2) : null;
+  const percent = limit && limit > 0 ? (((usage ?? 0) / limit) * 100).toFixed(2) : null;
+  return {
+    usageMB,
+    limitMB,
+    percent
+  };
+});
+
 onMounted(async () => {
   if (instanceId && daemonId) {
     await execute({
@@ -88,7 +116,7 @@ onMounted(async () => {
           <a-tag color="purple" class="tag">
             {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
           </a-tag>
-          
+
           <a-tag color="purple" class="tag">
             {{ t("TXT_CODE_6420023d") }}{{ instanceInfo?.autoRestarted }}
           </a-tag>
@@ -96,6 +124,15 @@ onMounted(async () => {
           <!-- real tags -->
           <a-tag v-for="tag in instanceInfo?.config.tag" :key="tag" class="tag" color="blue">
             {{ tag }}
+          </a-tag>
+          <!-- disk usage tag (always visible when info present) -->
+          <a-tag v-if="storageInfo" color="purple" class="tag">
+            {{ t("TXT_CODE_DISK_USAGE") }}:
+            <span v-if="storageInfo.limitMB">
+              {{ storageInfo.usageMB }}MB / {{ storageInfo.limitMB }}MB
+              <span v-if="storageInfo.percent"> ({{ storageInfo.percent }}%)</span>
+            </span>
+            <span v-else> {{ storageInfo.usageMB }}MB </span>
           </a-tag>
         </div>
       </a-typography-paragraph>

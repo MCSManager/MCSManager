@@ -2,6 +2,7 @@ import { execFile } from "child_process";
 import Dockerode from "dockerode";
 import { promisify } from "util";
 import { DefaultDocker } from "../../../service/docker_service";
+import { DiskQuotaService } from "../../../service/disk_quota_service";
 import Instance from "../../instance/instance";
 import { ILifeCycleTask } from "../../instance/life_cycle";
 
@@ -106,11 +107,11 @@ export default class DockerStatsTask implements ILifeCycleTask {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
-      
+
       // Get network stats separately to avoid blocking other stats on failure
       let rxBytes: number | undefined = undefined;
       let txBytes: number | undefined = undefined;
-      
+
       try {
         const networkStats = this.getNetworkInterface(stats.networks);
         rxBytes = networkStats.rxBytes;
@@ -126,47 +127,68 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let storageUsage = this.cachedStorageUsage;
       let storageLimit = this.cachedStorageLimit;
 
-      if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
-        this.lastStorageCheck = Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
-        try {
-          const containerInfo = await container.inspect();
-          const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
+      // For Docker instances, we can also check the disk quota service to get more accurate usage
+      try {
+        const quotaService = DiskQuotaService.getInstance();
+        // Clear cache to get fresh data
+        quotaService.clearCache(instance.instanceUuid);
+        const quotaInfo = await quotaService.getQuotaInfo(instance);
+        storageUsage = quotaInfo.used;
+        storageLimit = quotaInfo.limit;
+      } catch (error) {
+        // If disk quota service fails, fall back to the existing logic
+        if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
+          this.lastStorageCheck =
+            Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
+          try {
+            const containerInfo = await container.inspect();
+            const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
 
-          // Calculate Usage
-          let totalUsage = 0;
-          for (const mount of mounts) {
-            try {
-              const { stdout } = await execFilePromise("nice", ["-n", "19", "ionice", "-c", "3", "du", "-sb", mount.Source]);
-              const usage = parseInt(stdout.split("\t")[0]);
-              if (!isNaN(usage)) totalUsage += usage;
-            } catch (e) {}
+            // Calculate Usage
+            let totalUsage = 0;
+            for (const mount of mounts) {
+              try {
+                const { stdout } = await execFilePromise("nice", [
+                  "-n",
+                  "19",
+                  "ionice",
+                  "-c",
+                  "3",
+                  "du",
+                  "-sb",
+                  mount.Source
+                ]);
+                const usage = parseInt(stdout.split("\t")[0]);
+                if (!isNaN(usage)) totalUsage += usage;
+              } catch (e) {}
+            }
+            storageUsage = totalUsage;
+
+            // Calculate Limit (Partition Size)
+            if (mounts.length > 0) {
+              const targetPath = mounts[0].Source;
+              try {
+                const { stdout } = await execFilePromise("df", [
+                  "-B1",
+                  "--output=size",
+                  targetPath
+                ]);
+                // Output format:
+                // Size
+                // 123456
+                const lines = stdout.trim().split("\n");
+                if (lines.length >= 2) {
+                  const limit = parseInt(lines[1].trim());
+                  if (!isNaN(limit)) storageLimit = limit;
+                }
+              } catch (e) {}
+            }
+
+            this.cachedStorageUsage = storageUsage;
+            this.cachedStorageLimit = storageLimit;
+          } catch (error) {
+            // ignore storage check error
           }
-          storageUsage = totalUsage;
-
-          // Calculate Limit (Partition Size)
-          if (mounts.length > 0) {
-            const targetPath = mounts[0].Source;
-            try {
-              const { stdout } = await execFilePromise("df", [
-                "-B1",
-                "--output=size",
-                targetPath
-              ]);
-              // Output format:
-              // Size
-              // 123456
-              const lines = stdout.trim().split("\n");
-              if (lines.length >= 2) {
-                const limit = parseInt(lines[1].trim());
-                if (!isNaN(limit)) storageLimit = limit;
-              }
-            } catch (e) {}
-          }
-
-          this.cachedStorageUsage = storageUsage;
-          this.cachedStorageLimit = storageLimit;
-        } catch (error) {
-          // ignore storage check error
         }
       }
 
