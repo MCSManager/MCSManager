@@ -70,7 +70,18 @@ export default class FileManager {
     if (this.isRootTopRath()) return true;
     const destAbsolutePath = this.toAbsolutePath(fileNameOrPath);
     const topAbsolutePath = this.topPath;
-    return destAbsolutePath.indexOf(topAbsolutePath) === 0;
+
+    // Fix: Path Traversal Vulnerability
+    if (destAbsolutePath.startsWith(topAbsolutePath)) {
+      // Ensure it's not a sibling folder with the same prefix
+      // e.g. /data vs /data_secret
+      if (destAbsolutePath.length > topAbsolutePath.length) {
+        const barrierChar = destAbsolutePath.charAt(topAbsolutePath.length);
+        if (barrierChar !== path.sep) return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   check(destPath: string) {
@@ -240,7 +251,7 @@ export default class FileManager {
         filesPath.push(this.toAbsolutePath(iterator));
         try {
           totalSize += fs.statSync(this.toAbsolutePath(iterator))?.size;
-        } catch (error: any) {}
+        } catch (error: any) { }
       }
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
