@@ -611,12 +611,7 @@ onMounted(async () => {
                         label-width="120px"
                         label-align="left"
                       >
-                        <a-typography-paragraph>
-                          <a-typography-title :level="5" style="text-align: left">
-                            {{ t("搜索条件") }}
-                          </a-typography-title>
-                        </a-typography-paragraph>
-                        <a-row :gutter="isPhone ? [8, 8] : [24, 0]">
+                        <a-row :gutter="isPhone ? [8, 8] : [24, 0]" style="margin-top: 10px">
                           <a-col :span="isPhone ? 24 : 4">
                             <a-form-item>
                               <a-input

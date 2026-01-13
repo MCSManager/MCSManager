@@ -104,7 +104,7 @@ router.get(
   }
 );
 
-router.get("/search", speedLimit(1), permission({ level: ROLE.USER }), async (ctx) => {
+router.get("/search", speedLimit(2), permission({ level: ROLE.USER }), async (ctx) => {
   try {
     const query = String(ctx.query.query || "");
     const offset = Number(ctx.query.offset) || 0;

@@ -2929,7 +2929,7 @@
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[終端] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
   "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
-  "TXT_CODE_MOD_MANAGER": "插件/模组管理",
+  "TXT_CODE_MOD_MANAGER": "插件/模组管理 (Beta)",
   "TXT_CODE_MODRINTH_SEARCH": "Modrinth 搜尋",
   "TXT_CODE_DOWNLOAD": "下載插件/MOD",
   "TXT_CODE_VERSION_SELECT": "版本選擇",
