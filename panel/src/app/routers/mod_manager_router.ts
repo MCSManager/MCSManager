@@ -77,7 +77,7 @@ router.get(
         instanceUuid,
         page,
         pageSize,
-        folder
+        folder: folder || ""
       });
       ctx.body = result;
     } catch (err) {
@@ -310,7 +310,7 @@ router.post(
 
 router.post(
   "/batch_info",
-  speedLimit(1),
+  speedLimit(0.1),
   permission({ level: ROLE.USER }),
   validator({
     body: { hashes: Array }

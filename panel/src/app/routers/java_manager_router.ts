@@ -37,7 +37,7 @@ router.get(
 
 router.post(
   "/download",
-  speedLimit(5),
+  speedLimit(3),
   permission({ level: ROLE.ADMIN }),
   validator({
     query: {

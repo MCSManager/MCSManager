@@ -508,7 +508,7 @@ export default class Instance extends EventEmitter {
     this.info.latency = 0;
   }
 
-  public parseTextParams(text: string) {
+  public async parseTextParams(text: string) {
     if (typeof text !== "string") return "";
     text = text.replace(/\{mcsm_workspace\}/gim, this.absoluteCwdPath());
     text = text.replace(/\{mcsm_cwd\}/gim, this.absoluteCwdPath());
@@ -522,7 +522,7 @@ export default class Instance extends EventEmitter {
 
     const javaId = this.config.java.id;
     if (javaId) {
-      text = text.replace(/\{mcsm_java\}/gim, javaManager.getJavaRuntimeCommand(javaId));
+      text = text.replace(/\{mcsm_java\}/gim, await javaManager.getJavaRuntimeCommand(javaId));
     }
 
     const ports = Array.from(

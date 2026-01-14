@@ -102,8 +102,8 @@ class ModManagerService {
         this.mcVersionsLastFetch = now;
         return versions;
       }
-    } catch (err) {
-      console.error("Failed to fetch MC versions from Mojang:", err);
+    } catch (err: any) {
+      console.error("Failed to fetch MC versions from Mojang!", err?.message);
     }
 
     // Fallback to a reasonable list if all APIs fail
@@ -231,8 +231,8 @@ class ModManagerService {
               result[hash] = info;
             }
           }
-        } catch (err) {
-          console.error(`Modrinth batch lookup error for chunk ${i / chunkSize}:`, err);
+        } catch (err: any) {
+          console.error(`Modrinth batch lookup error for chunk ${i / chunkSize}:`, err?.message);
         }
       }
     }

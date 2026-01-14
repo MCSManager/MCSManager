@@ -19,7 +19,7 @@ export class InstanceUpdateAction extends AsyncTask {
   }
 
   public async onStart() {
-    const updateCommand = this.instance.parseTextParams(this.instance.config.updateCommand);
+    const updateCommand = await this.instance.parseTextParams(this.instance.config.updateCommand);
     logger.info(
       $t("TXT_CODE_general_update.readyUpdate", { instanceUuid: this.instance.instanceUuid })
     );

@@ -135,7 +135,7 @@ const { isPhone } = useScreen();
             </a-dropdown>
           </template>
           <a-space v-else :size="12">
-            <a-button
+            <!-- <a-button
               type="text"
               size="small"
               class="opacity-60 hover:opacity-100"
@@ -150,7 +150,7 @@ const { isPhone } = useScreen();
               "
             >
               <template #icon><info-circle-outlined style="font-size: 16px" /></template>
-            </a-button>
+            </a-button> -->
             <a-button
               type="text"
               size="small"
