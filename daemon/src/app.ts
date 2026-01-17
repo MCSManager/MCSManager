@@ -1,8 +1,8 @@
 import fs from "fs-extra";
-import path from "path";
 import http from "http";
 import https from "https";
 import { removeTrail } from "mcsmanager-common";
+import path from "path";
 import { Server, Socket } from "socket.io";
 import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH } from "./const";
 import { globalConfiguration } from "./entity/config";
@@ -146,7 +146,7 @@ process.on("unhandledRejection", (reason, p) => {
 logger.info("----------------------------");
 logger.info($t("TXT_CODE_app.started"));
 logger.info($t("TXT_CODE_app.doc"));
-let appHost = $t("TXT_CODE_app.host", { port: config.port })
+let appHost = $t("TXT_CODE_app.host", { port: config.port });
 if (config.ssl) appHost = appHost.replace("http", "https");
 logger.info(appHost);
 logger.info($t("TXT_CODE_app.configPathTip", { path: "" }));
@@ -157,18 +157,38 @@ logger.info("----------------------------");
 console.log("");
 
 let isExiting = false;
+let isSoftExit = false;
 async function listenExitSig(signal: string, isForce = true) {
-  if (isExiting) {
+  if (isExiting && !isForce) {
     logger.warn($t("TXT_CODE_6f862823"));
     return;
   }
+
   try {
-    logger.warn($t("TXT_CODE_4ffdc91d", { signal }));
-    isExiting = true;
-    await InstanceSubsystem.exit(isForce);
-    await uploadManager.exit();
-    logger.info($t("TXT_CODE_dff680b7"));
-    process.exit(0);
+    if (isExiting) {
+      // User interrupted the process, now force exit
+      logger.warn($t("TXT_CODE_4ffdc91d", { signal }));
+      logger.info($t("TXT_CODE_app.forcedShutdown"));
+      await InstanceSubsystem.exit(true); // Force close all instances
+      await uploadManager.exit();
+      logger.info($t("TXT_CODE_dff680b7"));
+      process.exit(0);
+    } else {
+      logger.warn($t("TXT_CODE_4ffdc91d", { signal }));
+      isExiting = true;
+
+      if (isForce) {
+        // If force signal is received from the start, just kill everything
+        await InstanceSubsystem.exit(true);
+      } else {
+        // Soft shutdown: skip Docker instances, soft close general instances
+        await InstanceSubsystem.softExit();
+      }
+
+      await uploadManager.exit();
+      logger.info($t("TXT_CODE_dff680b7"));
+      process.exit(0);
+    }
   } catch (err) {
     logger.error(err);
     process.exit(-1);
@@ -178,11 +198,11 @@ async function listenExitSig(signal: string, isForce = true) {
 // Listen for close process signals
 ["SIGTERM", "SIGINT", "SIGQUIT"].forEach(function (sig) {
   process.on(sig, async () => {
-    await listenExitSig(sig);
+    await listenExitSig(sig, false); // Use soft exit by default
   });
 });
 
 process.stdin.on("data", (v) => {
   const command = v.toString().replace("\n", "").replace("\r", "").trim().toLowerCase();
-  if (command === "exit") listenExitSig("exit");
+  if (command === "exit") listenExitSig("exit", false); // Use soft exit
 });
