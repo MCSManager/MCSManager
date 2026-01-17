@@ -215,7 +215,7 @@ const openExternal = (mod: any) => {
   };
   const url = baseUrlMap[source];
   if (!url) {
-    message.error(t("此模组或插件暂不支持展开详情"));
+    message.error(t("TXT_CODE_8d2a42a2"));
   } else {
     window.open(url, "_blank");
   }
@@ -625,7 +625,7 @@ onMounted(async () => {
                             <a-form-item>
                               <a-select v-model:value="searchFilters.source">
                                 <a-select-option value="all">
-                                  {{ t("所有平台") }}
+                                  {{ t("TXT_CODE_9693b0e1") }}
                                 </a-select-option>
                                 <a-select-option value="modrinth">Modrinth</a-select-option>
                                 <a-select-option value="curseforge">CurseForge</a-select-option>
@@ -639,10 +639,10 @@ onMounted(async () => {
                                 v-model:value="searchFilters.version"
                                 show-search
                                 allow-clear
-                                :placeholder="t('请选择内容')"
+                                :placeholder="t('TXT_CODE_743b4fe7')"
                               >
                                 <a-select-option value="">
-                                  {{ t("所有版本") }}
+                                  {{ t("TXT_CODE_2af87548") }}
                                 </a-select-option>
                                 <a-select-option v-for="v in mcVersions" :key="v" :value="v">
                                   {{ v }}
@@ -654,7 +654,7 @@ onMounted(async () => {
                             <a-form-item>
                               <a-select v-model:value="searchFilters.type">
                                 <a-select-option value="all">
-                                  {{ t("所有类型") }}
+                                  {{ t("TXT_CODE_cc4db8f0") }}
                                 </a-select-option>
                                 <a-select-option value="mod">
                                   {{ t("TXT_CODE_MOD") }}
@@ -669,7 +669,7 @@ onMounted(async () => {
                             <a-form-item>
                               <a-select v-model:value="searchFilters.environment">
                                 <a-select-option value="all">
-                                  {{ t("客户端/服务端") }}
+                                  {{ t("TXT_CODE_74e77b4c") }}
                                 </a-select-option>
                                 <a-select-option value="server">
                                   {{ t("TXT_CODE_SERVER") }}

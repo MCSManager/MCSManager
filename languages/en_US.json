@@ -3202,7 +3202,13 @@
   "TXT_CODE_47ae8ee6": "MCSManager Panel",
   "TXT_CODE_151d2bb7": "Environment Name",
   "TXT_CODE_6111bc9e": "Due to potential firewall policies in some regions on third-party source websites, if the download consistently fails, please try changing the 'Download Source' or manually download from the original website!",
-  "TXT_CODE_47fea88e": "Original Website",
+  "TXT_CODE_47fea88e": "Website",
   "TXT_CODE_25bf0004": "Download Modules/Plugins",
-  "TXT_CODE_eb401a37": "Cannot perform operations on instances that do not belong to you!"
+  "TXT_CODE_eb401a37": "Cannot perform operations on instances that do not belong to you!",
+  "TXT_CODE_c564f5bf": "All Loaders",
+  "TXT_CODE_8d2a42a2": "This module or plugin does not currently support expanding details",
+  "TXT_CODE_9693b0e1": "All Platforms",
+  "TXT_CODE_743b4fe7": "Please select content",
+  "TXT_CODE_cc4db8f0": "All Types",
+  "TXT_CODE_74e77b4c": "Client/Server"
 }

@@ -39,7 +39,7 @@ export function useModSearch(
     {
       label: t("TXT_CODE_LOADER"),
       options: [
-        { label: t("所有加载器"), value: "all" },
+        { label: t("TXT_CODE_c564f5bf"), value: "all" },
         { label: "Forge", value: "forge" },
         { label: "Fabric", value: "fabric" },
         { label: "Quilt", value: "quilt" },

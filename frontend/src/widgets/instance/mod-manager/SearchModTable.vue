@@ -117,8 +117,8 @@ const formatDate = (date: string) => {
                 record.source === 'CurseForge'
                   ? 'orange'
                   : record.source === 'SpigotMC'
-                  ? 'yellow'
-                  : 'green'
+                    ? 'yellow'
+                    : 'green'
               "
               class="border-none rounded-md"
             >
@@ -136,7 +136,7 @@ const formatDate = (date: string) => {
                   :disabled="isInstalled(record)"
                   @click="emit('show-versions', record)"
                 >
-                  {{ isInstalled(record) ? t("TXT_CODE_INSTALLED") : t("TXT_CODE_DOWNLOAD") }}
+                  {{ isInstalled(record) ? t("TXT_CODE_INSTALLED") : t("TXT_CODE_65b21404") }}
                 </a-button>
                 <a-button
                   type="link"
