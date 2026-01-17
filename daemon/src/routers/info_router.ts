@@ -9,6 +9,7 @@ import { systemInfo, toNumber, toText } from "mcsmanager-common";
 import { LOCAL_PRESET_LANG_PATH } from "../const";
 import { globalConfiguration } from "../entity/config";
 import { $t } from "../i18n";
+import { DockerManager } from "../service/docker_service";
 import logger from "../service/log";
 import VisualDataSubsystem from "../service/system_visual_data";
 import { getVersion } from "../service/version";
@@ -22,6 +23,15 @@ routerApp.on("info/overview", async (ctx) => {
     total++;
     if (v.status() == Instance.STATUS_RUNNING) running++;
   });
+
+  let dockerPlatforms: string[] | undefined;
+  try {
+    const dockerManager = new DockerManager();
+    dockerPlatforms = await dockerManager.getSupportedPlatforms();
+  } catch (error: any) {
+    logger.debug("Failed to get Docker platforms:", error);
+  }
+
   const info = {
     version: daemonVersion,
     process: {
@@ -44,7 +54,8 @@ routerApp.on("info/overview", async (ctx) => {
       portRangeEnd: globalConfiguration.config.allocatablePortRange[1],
       portAssignInterval: globalConfiguration.config.portAssignInterval,
       port: globalConfiguration.config.port
-    }
+    },
+    dockerPlatforms
   };
   protocol.response(ctx, info);
 });

@@ -1,5 +1,5 @@
 import { useDefineApi } from "@/stores/useDefineApi";
-import type { ImageInfo, DockerNetworkModes, ContainerInfo } from "@/types";
+import type { ContainerInfo, DockerNetworkModes, ImageInfo } from "@/types";
 
 export const imageList = useDefineApi<
   {
@@ -56,4 +56,31 @@ export const buildProgress = useDefineApi<
 >({
   url: "/api/environment/progress",
   method: "GET"
+});
+
+export const getImagePlatforms = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+    };
+    data: {
+      imageName: string;
+    };
+  },
+  string[]
+>({
+  url: "/api/environment/image_platforms",
+  method: "POST"
+});
+
+export const getDockerHubImagePlatforms = useDefineApi<
+  {
+    data: {
+      imageName: string;
+    };
+  },
+  string[]
+>({
+  url: "/api/environment/dockerhub_image_platforms",
+  method: "POST"
 });

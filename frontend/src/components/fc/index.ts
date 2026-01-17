@@ -200,8 +200,8 @@ export async function openRenewalDialog(instanceId: string, daemonId: string, pr
     .openDialog();
 }
 
-export async function openNodeSelectDialog() {
-  const dialog = useMountComponent({}).load<InstanceType<typeof NodeSelectDialog>>(
+export async function openNodeSelectDialog(targetPlatforms?: string[]) {
+  const dialog = useMountComponent({ targetPlatforms }).load<InstanceType<typeof NodeSelectDialog>>(
     NodeSelectDialog
   );
   return dialog!.openDialog();

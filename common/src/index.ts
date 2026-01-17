@@ -1,30 +1,36 @@
-import StorageSubsystem from "./system_storage";
 import GlobalVariable from "./global_variable";
 import InstanceStreamListener from "./instance_stream";
+import StorageSubsystem from "./system_storage";
 
 import MCServerStatus from "./mcping";
 
 export { ProcessWrapper, killProcess } from "./process_tools";
-export { systemInfo } from "./system_info";
 export {
-  QueryMapWrapper,
   IDataSource,
-  MySqlSource,
   LocalFileSource,
+  MySqlSource,
+  QueryMapWrapper,
   QueryWrapper
 } from "./query_wrapper";
+export { systemInfo } from "./system_info";
 
 export {
   configureEntityParams,
-  toText,
+  isEmpty,
+  supposeValue,
   toBoolean,
   toNumber,
-  isEmpty,
-  supposeValue
+  toText
 } from "./typecheck";
 
 export { arrayUnique } from "./array";
 
 export { removeTrail } from "./string_utils";
 
-export { MCServerStatus, StorageSubsystem, GlobalVariable, InstanceStreamListener };
+export {
+  normalizeDockerArchitecture,
+  normalizeDockerOS,
+  normalizeDockerPlatform
+} from "./docker_utils";
+
+export { GlobalVariable, InstanceStreamListener, MCServerStatus, StorageSubsystem };
