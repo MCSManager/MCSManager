@@ -1626,6 +1626,7 @@
   "TXT_CODE_9fe98f3": "Abhörport",
   "TXT_CODE_9fed23ab": "Bitte geben Sie den Bildnamen ein",
   "TXT_CODE_A0000001": "Geeignet für Startbefehle aller Konsolenprogramme, Skriptdateien werden nicht unterstützt;<br />Zum Beispiel: „C://Program Files/Java/bin/java.exe“ -Dfile.encoding= utf-8 -Djline.terminal =jline.UnsupportedTerminal -jar my server.jar -nogui <br/>Wenn Sie einen Docker-Container verwenden, müssen Sie den Startbefehl nicht ausfüllen und beginnen mit der Verwendung des durch das Image definierten Befehls.",
+  "TXT_CODE_DISK_USAGE": "Festplatte",
   "TXT_CODE_ETA": "ETA",
   "TXT_CODE_Instance_router.accessFileErr": "Die Datei existiert nicht oder der Pfad ist falsch.",
   "TXT_CODE_Instance_router.cancelIO": "Sitzung {{id}} hat den Abbruch des E/A-Streams der Weiterleitungsinstanz {{targetInstanceUuid}} angefordert",
@@ -2925,6 +2926,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
-  "TXT_CODE_DISK_USAGE": "Festplatte"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
 }

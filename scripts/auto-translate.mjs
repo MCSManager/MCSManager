@@ -129,22 +129,21 @@ async function checkAndFillMissingKeys() {
     (file) => file.endsWith(".json") && file !== "en_US.json"
   );
 
-  // Process each language file
-  for (const file of targetFiles) {
+  // Process each language file concurrently
+  const processFile = async (file) => {
     const systemPrompt = SYSTEM_PROMPT.replace(/{target}/g, LANGUAGE_MAP[file]);
     const chatAiSession = new AiChatSession(apiKey, systemPrompt);
 
     const filePath = path.join(languagesPath, file);
     const content = await readFile(filePath, "utf8");
     const json = JSON.parse(content);
-    const existingKeys = Object.keys(json);
 
     // Find missing keys
     const missingKeys = standardKeys.filter((key) => !json.hasOwnProperty(key));
 
     if (missingKeys.length === 0) {
       console.log(`✅ ${file} has no missing key-value pairs`);
-      continue;
+      return;
     }
 
     console.log(`🔍 ${file} is missing ${missingKeys.length} key-value pairs. Translating...`);
@@ -159,7 +158,7 @@ async function checkAndFillMissingKeys() {
     const targetLanguage = LANGUAGE_MAP[file];
     if (!targetLanguage) {
       console.warn(`⚠️  No language mapping found for ${file}. Skipping.`);
-      continue;
+      return;
     }
 
     try {
@@ -183,7 +182,9 @@ async function checkAndFillMissingKeys() {
     } catch (error) {
       console.error(`❌ Error translating ${file}:`, error.message);
     }
-  }
+  };
+
+  await Promise.all(targetFiles.map((file) => processFile(file)));
 
   console.log("🎉 All language files checked and filled!");
 }
