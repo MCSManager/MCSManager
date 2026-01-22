@@ -1,4 +1,3 @@
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { reportErrorMsg } from "@/tools/validator";
 import axios from "axios";
 
@@ -94,13 +93,4 @@ export class ProxySandBox {
   public mount() {
     this.fakeWindow.$mountSandbox();
   }
-}
-
-export function useProxySandbox(code = "") {
-  const { currentTheme } = useAppConfigStore();
-  const sandbox = new ProxySandBox({
-    theme: String(currentTheme.value)
-  });
-  sandbox.executeJavascript(code);
-  return sandbox;
 }
