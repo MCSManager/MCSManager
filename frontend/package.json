@@ -42,7 +42,7 @@
     "echarts": "^5.4.3",
     "eventemitter3": "^5.0.1",
     "i18next-scanner": "^4.3.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "marked": "^7.0.3",
     "monaco-editor": "^0.44.0",
     "pinia": "^2.1.4",
