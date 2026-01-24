@@ -2926,21 +2926,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
-  "TEXT_CODE_dc47d2aa": "Privilegierter Modus",
-  "TEXT_CODE_18437e81": "Der privilegierte Modus ermöglicht es Containern, auf alle Geräte des Hosts zuzugreifen, mit höheren Rechten und potenziellen Sicherheitsrisiken.",
-  "TXT_CODE_bbbd4133": "Fähigkeiten",
-  "TXT_CODE_377319df": "Container-Fähigkeiten verwalten",
-  "TXT_CODE_b3a60c78": "Geräte",
-  "TXT_CODE_b6e18b87": "Ermöglicht einem Container den Zugriff auf bestimmte Host-Hardwaregeräte",
-  "TXT_CODE_d51db65a": "Fähigkeitsname",
-  "TXT_CODE_9227a967": "Geben Sie den Fähigkeitsnamen ein (z. B. NET_ADMIN).",
-  "TXT_CODE_adea33ce": "Operationstyp",
-  "TXT_CODE_fac5dc49": "Entfernen",
-  "TXT_CODE_1d8ece49": "Beispiel: /dev/ttyUSB0 (kann leer sein)",
-  "TXT_CODE_e4a82ac7": "Host-Pfad",
-  "TXT_CODE_ef6115b7": "Pfad im Container",
-  "TXT_CODE_7595d100": "Beispiel: rwm (kann leer sein)",
-  "TXT_CODE_1d8ece48": "Beispiel: /dev/ttyUSB0",
-  "TXT_CODE_ae441ea4": "Die Geräte des Instanzcontainers sind falsch konfiguriert!"
+  "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
 }

@@ -3228,21 +3228,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
-  "TEXT_CODE_dc47d2aa": "특권 모드",
-  "TEXT_CODE_18437e81": "특권 모드는 컨테이너가 호스트의 모든 장치에 접근할 수 있도록 허용하며, 권한이 높아 보안 위험이 있습니다.",
-  "TXT_CODE_bbbd4133": "캡빌리티",
-  "TXT_CODE_377319df": "컨테이너 캡빌리티 관리",
-  "TXT_CODE_b3a60c78": "장치",
-  "TXT_CODE_b6e18b87": "컨테이너가 특정 호스트 하드웨어 장치에 액세스할 수 있도록 허용합니다.",
-  "TXT_CODE_d51db65a": "기능 이름",
-  "TXT_CODE_9227a967": "기능 이름을 입력하세요(예: NET_ADMIN).",
-  "TXT_CODE_adea33ce": "작업 유형",
-  "TXT_CODE_fac5dc49": "제거",
-  "TXT_CODE_1d8ece49": "예: /dev/ttyUSB0(비어 있을 수 있음)",
-  "TXT_CODE_e4a82ac7": "호스트 경로",
-  "TXT_CODE_ef6115b7": "컨테이너 내 경로",
-  "TXT_CODE_7595d100": "예: rwm(비어 있을 수 있음)",
-  "TXT_CODE_1d8ece48": "예: /dev/ttyUSB0",
-  "TXT_CODE_ae441ea4": "인스턴스 컨테이너의 디바이스 구성이 잘못되었습니다!"
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
 }

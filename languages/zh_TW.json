@@ -3228,21 +3228,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重複的任務",
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[終端] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
-  "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
-  "TEXT_CODE_dc47d2aa": "特權模式",
-  "TEXT_CODE_18437e81": "特權模式允許容器存取宿主機上的所有裝置，權限較高，存在安全風險。",
-  "TXT_CODE_bbbd4133": "能力",
-  "TXT_CODE_377319df": "管理容器權限能力",
-  "TXT_CODE_b3a60c78": "裝置",
-  "TXT_CODE_b6e18b87": "允許容器存取特定主機硬體裝置",
-  "TXT_CODE_d51db65a": "能力名稱",
-  "TXT_CODE_9227a967": "輸入能力名稱（例如 NET_ADMIN）",
-  "TXT_CODE_adea33ce": "操作類型",
-  "TXT_CODE_fac5dc49": "移除",
-  "TXT_CODE_e4a82ac7": "宿主機路徑",
-  "TXT_CODE_1d8ece48": "範例：/dev/ttyUSB0",
-  "TXT_CODE_ef6115b7": "容器內路徑",
-  "TXT_CODE_1d8ece49": "範例：/dev/ttyUSB0（可空白）",
-  "TXT_CODE_7595d100": "範例：rwm（可空白）",
-  "TXT_CODE_ae441ea4": "執行個體容器的裝置設定有誤！"
+  "TXT_CODE_version.versionDetectErr": "版本檢查失敗"
 }

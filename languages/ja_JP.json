@@ -3228,21 +3228,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "重複したタスクがすでに存在します",
   "TXT_CODE_system_instance_control.illegalName": "プロジェクト名が間違っています。アンダースコア、数字、文字、および一部の現地言語のみをサポートしています",
   "TXT_CODE_ui.help": "[コンソール] デーモンには基本的な対話機能があります。詳細を表示するには「ヘルプ」と入力してください。",
-  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました",
-  "TEXT_CODE_dc47d2aa": "特権モード",
-  "TEXT_CODE_18437e81": "特権モードでは、コンテナがホスト上のすべてのデバイスにアクセスできるようになり、権限が高くなるためセキュリティリスクが伴います。",
-  "TXT_CODE_bbbd4133": "ケイパビリティ",
-  "TXT_CODE_377319df": "コンテナのケイパビリティを管理",
-  "TXT_CODE_b3a60c78": "デバイス",
-  "TXT_CODE_b6e18b87": "コンテナが特定のホストハードウェアデバイスにアクセスできるようにします",
-  "TXT_CODE_d51db65a": "機能名",
-  "TXT_CODE_9227a967": "機能名を入力します (例: NET_ADMIN)",
-  "TXT_CODE_adea33ce": "操作の種類",
-  "TXT_CODE_fac5dc49": "削除",
-  "TXT_CODE_1d8ece49": "例: /dev/ttyUSB0 (空でも可)",
-  "TXT_CODE_e4a82ac7": "ホストパス",
-  "TXT_CODE_ef6115b7": "コンテナ内パス",
-  "TXT_CODE_7595d100": "例: rwm (空でも可)",
-  "TXT_CODE_1d8ece48": "例: /dev/ttyUSB0",
-  "TXT_CODE_ae441ea4": "インスタンスコンテナのデバイス設定が不正です！"
+  "TXT_CODE_version.versionDetectErr": "バージョンチェックに失敗しました"
 }
