@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {
+  useDockerCapabilityEditDialog,
+  useDockerDeviceEditDialog,
   useDockerEnvEditDialog,
   useDockerLabelEditDialog,
   usePortEditDialog,
@@ -363,7 +365,7 @@ const encodeFormData = () => {
   throw new Error("Ref Options is null");
 };
 
-const handleEditDockerConfig = async (type: "port" | "volume" | "env" | "label") => {
+const handleEditDockerConfig = async (type: "port" | "volume" | "env" | "label" | "device" | "capability") => {
   if (type === "port" && formData.value?.instance?.config) {
     // "25565:25565/tcp 8080:8080/tcp" -> Array
     const portArray = dockerPortsArray(formData.value?.instance?.config.docker.ports || []);
@@ -409,6 +411,47 @@ const handleEditDockerConfig = async (type: "port" | "volume" | "env" | "label")
     const result = await useDockerLabelEditDialog(labels);
     const labelsArray = result.map((v) => `${v.label}=${v.value}`);
     formData.value.instance.config.docker.labels = labelsArray;
+  }
+
+  if (type === "capability" && formData.value?.instance?.config) {
+    const capAdd = formData.value.instance.config.docker.capAdd || [];
+    const capDrop = formData.value.instance.config.docker.capDrop || [];
+
+    const allLabels = [...new Set([...capAdd, ...capDrop])]; // Deduplication solve
+    const dialogParams = allLabels.map(label => ({
+        label: label,
+        value: capAdd.includes(label)?"add":"drop"
+    }));
+
+    const result = await useDockerCapabilityEditDialog(dialogParams);
+
+    formData.value.instance.config.docker.capAdd = result
+        .filter(item => item.value === "add")
+        .map(item => item.label);
+    formData.value.instance.config.docker.capDrop = result
+        .filter(item => item.value === "drop")
+        .map(item => item.label);
+  }
+  
+  if (type === "device" && formData.value?.instance?.config) {
+    const devices = (formData.value.instance.config.docker.devices || []).map(v => {
+      const tmp = v.split("|");
+      return {
+        PathOnHost: tmp[0] || "",
+        PathInContainer: tmp[1] || "",
+        CgroupPermissions: tmp[2] || ""
+      };
+    });
+    const result = await useDockerDeviceEditDialog(devices);
+    const devicesArray = result.map(v => {
+      if (!v.PathOnHost) return "";
+      return !v.PathInContainer && !v.CgroupPermissions
+        ? v.PathOnHost
+        : !v.CgroupPermissions
+          ? `${v.PathOnHost}|${v.PathInContainer}`
+          : `${v.PathOnHost}|${v.PathInContainer}|${v.CgroupPermissions}`;
+    }).filter(Boolean);
+    formData.value.instance.config.docker.devices = devicesArray;
   }
 };
 
@@ -1226,6 +1269,74 @@ defineExpose({
                         :placeholder="t('TXT_CODE_f6047384')"
                       />
                     </a-tooltip>
+                  </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :lg="8" :offset="0">
+                  <a-form-item name="privilegedMode">
+                    <a-typography-title :level="5">
+                      {{ t("TEXT_CODE_dc47d2aa") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-tooltip 
+                        :title="t('TEXT_CODE_18437e81')" 
+                        placement="top"
+                      >
+                        <a-typography-text
+                          type="secondary"
+                          :class="[!isPhone && 'two-line-height', 'typography-text-ellipsis']"
+                        >
+                          {{ t("TEXT_CODE_18437e81") }}
+                        </a-typography-text>
+                      </a-tooltip>
+                    </a-typography-paragraph>
+                    <div class="ml-4">
+                      <a-switch
+                        v-model:checked="formData.instance.config.docker.privileged"
+                        :disabled="isGlobalTerminal"
+                        :checked-value="true"
+                        :un-checked-value="false"
+                      >
+                        <template #checkedChildren><check-outlined /></template>
+                        <template #unCheckedChildren><close-outlined /></template>
+                      </a-switch>
+                    </div>
+                  </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :lg="8" :offset="0">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_bbbd4133") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-tooltip :title="t('TXT_CODE_377319df')" placement="top">
+                        <a-typography-text type="secondary" class="typography-text-ellipsis">
+                          {{ t("TXT_CODE_377319df") }}
+                        </a-typography-text>
+                      </a-tooltip>
+                    </a-typography-paragraph>
+                    <a-input-group compact>
+                      <a-button type="default" @click="() => handleEditDockerConfig('capability')">
+                        {{ t("TXT_CODE_ad207008") }}
+                      </a-button>
+                    </a-input-group>
+                  </a-form-item>
+                </a-col>
+                
+                <a-col :xs="24" :lg="8" :offset="0">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_b3a60c78") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-tooltip :title="t('TXT_CODE_b6e18b87')" placement="top">
+                        <a-typography-text type="secondary" class="typography-text-ellipsis">
+                          {{ t("TXT_CODE_b6e18b87") }}
+                        </a-typography-text>
+                      </a-tooltip>
+                    </a-typography-paragraph>
+                    <a-input-group compact>
+                      <a-button type="default" @click="() => handleEditDockerConfig('device')">
+                        {{ t("TXT_CODE_ad207008") }}
+                      </a-button>
+                    </a-input-group>
                   </a-form-item>
                 </a-col>
               </template>

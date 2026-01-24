@@ -8,19 +8,18 @@ import type { ThemeConfig } from "ant-design-vue/es/config-provider/context";
 import { computed, reactive, ref, watch } from "vue";
 import { useLayoutConfigStore } from "./useLayoutConfig";
 
-const isPreferredDark = usePreferredDark();
-const { getSettingsConfig } = useLayoutConfigStore();
-
-export const theme: ThemeConfig = reactive({
-  algorithm: antTheme.defaultAlgorithm,
-  token: {
-    fontSizeLG: 14,
-    fontSizeSM: 12,
-    fontSizeXL: 18
-  }
-});
-
 export const useAppConfigStore = createGlobalState(() => {
+  const isPreferredDark = usePreferredDark();
+  const { getSettingsConfig } = useLayoutConfigStore();
+
+  const theme: ThemeConfig = reactive({
+    algorithm: antTheme.defaultAlgorithm,
+    token: {
+      fontSizeLG: 14,
+      fontSizeSM: 12,
+      fontSizeXL: 18
+    }
+  });
   const appConfig = reactive({
     logoImage: logo as string
   });
@@ -126,6 +125,7 @@ export const useAppConfigStore = createGlobalState(() => {
     initAppTheme,
     setTheme,
     setBackgroundImage,
-    currentTheme
+    currentTheme,
+    themeConfig: theme
   };
 });

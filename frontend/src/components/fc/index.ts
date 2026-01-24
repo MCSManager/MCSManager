@@ -11,6 +11,8 @@ import type { DownloadJavaConfigItem } from "@/types/javaManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
+import DockerCapabilityDialogVue from "./DockerCapabilityDialog.vue";
+import DockerDeviceDialogVue from "./DockerDeviceDialog.vue";
 import DockerPortDialog from "./DockerPortDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import DownloadJavaDialog from "./DownloadJavaDialog.vue";
@@ -36,6 +38,17 @@ interface DockerEnvItem {
 interface DockerLabelItem {
   label: string;
   value: string;
+}
+
+interface DockerCapabilityItem {
+  label: string;
+  value: string;
+}
+
+interface DockerDeviceItem {
+  PathOnHost: string;
+  PathInContainer: string;
+  CgroupPermissions: string;
 }
 
 export async function useDownloadFileDialog() {
@@ -151,6 +164,28 @@ export async function useDockerLabelEditDialog(data: DockerLabelItem[] = []) {
       ] as AntColumnsType[],
       textarea: true
     }).mount<DockerLabelItem[]>(KvOptionsDialogVue)) || []
+  );
+}
+
+export async function useDockerCapabilityEditDialog(data: DockerCapabilityItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("TXT_CODE_bbbd4133"),
+      subTitle: t("TXT_CODE_377319df"),
+      textarea: false
+    }).mount<DockerCapabilityItem[]>(DockerCapabilityDialogVue)) || []
+  );
+}
+
+export async function useDockerDeviceEditDialog(data: DockerDeviceItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("TXT_CODE_b3a60c78"),
+      subTitle: t("TXT_CODE_b6e18b87"),
+      textarea: false
+    }).mount<DockerDeviceItem[]>(DockerDeviceDialogVue)) || []
   );
 }
 
