@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { theme, useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import enUS from "ant-design-vue/es/locale/en_US";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import dayjs from "dayjs";
@@ -12,7 +12,7 @@ import { ConfigProvider } from "ant-design-vue";
 
 dayjs.extend(duration);
 
-const { getCurrentLanguage } = useAppConfigStore();
+const { getCurrentLanguage, themeConfig } = useAppConfigStore();
 const locale = ref(enUS);
 
 // init language with lib
@@ -25,7 +25,7 @@ if (getCurrentLanguage().toLowerCase() === "zh_cn") {
 </script>
 
 <template>
-  <ConfigProvider :theme="theme" :locale="locale">
+  <ConfigProvider :theme="themeConfig" :locale="locale">
     <slot></slot>
   </ConfigProvider>
 </template>

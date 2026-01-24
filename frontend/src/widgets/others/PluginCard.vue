@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { t } from "@/lang/i18n";
-import type { LayoutCard } from "../../types/index";
 import { useUploadFileDialog } from "@/components/fc";
-import { useLayoutCardTools } from "../../hooks/useCardTools";
-import { ref, onMounted, onUnmounted } from "vue";
-import { useLayoutContainerStore } from "../../stores/useLayoutContainerStore";
+import { t } from "@/lang/i18n";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import axios from "axios";
 import { v4 } from "uuid";
+import { onMounted, onUnmounted, ref } from "vue";
+import { useLayoutCardTools } from "../../hooks/useCardTools";
+import { useLayoutContainerStore } from "../../stores/useLayoutContainerStore";
 import { ProxySandBox } from "../../tools/sandbox";
+import type { LayoutCard } from "../../types/index";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -16,6 +17,7 @@ const props = defineProps<{
 const DOM_ID = v4().replace(/[-]/g, "");
 const { containerState } = useLayoutContainerStore();
 const { getMetaValue, setMetaValue } = useLayoutCardTools(props.card);
+const { currentTheme } = useAppConfigStore();
 
 const originUrl = ref(getMetaValue<string>("url", ""));
 let sandbox: ProxySandBox;
@@ -34,7 +36,7 @@ const loadRemoteHtml = async () => {
   if (data && dom) {
     dom.innerHTML = data;
     const scriptDoms = dom.querySelectorAll("script");
-    sandbox = new ProxySandBox();
+    sandbox = new ProxySandBox({ theme: String(currentTheme.value) });
     for (const remoteScript of scriptDoms) {
       if (remoteScript.src) {
         const script = document.createElement("script");
