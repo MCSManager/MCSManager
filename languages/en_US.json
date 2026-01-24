@@ -1902,7 +1902,7 @@
   "TXT_CODE_SOURCE": "Plug-in source",
   "TXT_CODE_STATUS": "Status",
   "TXT_CODE_Speed": "Speed",
-  "TXT_CODE_HYTALE_CONFIG_INFO": "General Hytale Server Config",
+  "TXT_CODE_HYTALE_CONFIG_INFO": "Hytale Server Config",
   "TXT_CODE_HYTALE_CONFIG_DESC": "General Hytale Server Config",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria Server Configuration",
   "TXT_CODE_TERRARIA_CONFIG_INFO": "Terraria configuration file, takes effect only when using the -config serverconfig.txt parameter",
