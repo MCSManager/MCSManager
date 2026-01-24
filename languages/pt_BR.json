@@ -3228,5 +3228,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Uma tarefa duplicada já existe.",
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
-  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão"
+  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
+  "TEXT_CODE_dc47d2aa": "Modo Privilegiado",
+  "TEXT_CODE_18437e81": "O modo privilegiado permite que os contêineres acessem todos os dispositivos da máquina host, com privilégios mais altos e riscos de segurança.",
+  "TXT_CODE_bbbd4133": "Capacidades",
+  "TXT_CODE_377319df": "Gerenciar Capacidades do Contêiner",
+  "TXT_CODE_b3a60c78": "Dispositivos",
+  "TXT_CODE_b6e18b87": "Permite que um contêiner acesse dispositivos de hardware host específicos",
+  "TXT_CODE_d51db65a": "Nome da capacidade",
+  "TXT_CODE_9227a967": "Insira o nome da capacidade (por exemplo, NET_ADMIN)",
+  "TXT_CODE_adea33ce": "Tipo de operação",
+  "TXT_CODE_fac5dc49": "Remover",
+  "TXT_CODE_1d8ece49": "Exemplo: /dev/ttyUSB0 (pode estar vazio)",
+  "TXT_CODE_e4a82ac7": "Caminho do Host",
+  "TXT_CODE_ef6115b7": "Caminho no Contêiner",
+  "TXT_CODE_7595d100": "Exemplo: rwm (pode estar vazio)",
+  "TXT_CODE_1d8ece48": "Exemplo: /dev/ttyUSB0",
+  "TXT_CODE_ae441ea4": "Os dispositivos do contêiner de instância estão configurados incorretamente!"
 }

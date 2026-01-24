@@ -3228,5 +3228,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
+  "TEXT_CODE_dc47d2aa": "Modo Privilegiado",
+  "TEXT_CODE_18437e81": "El modo privilegiado permite que los contenedores accedan a todos los dispositivos del host, con privilegios más altos y riesgos de seguridad.",
+  "TXT_CODE_bbbd4133": "Capacidades",
+  "TXT_CODE_377319df": "Gestionar Capacidades del Contenedor",
+  "TXT_CODE_b3a60c78": "Dispositivos",
+  "TXT_CODE_b6e18b87": "Permite que un contenedor acceda a dispositivos de hardware host específicos",
+  "TXT_CODE_d51db65a": "Nombre de la capacidad",
+  "TXT_CODE_9227a967": "Ingrese el nombre de la capacidad (por ejemplo, NET_ADMIN)",
+  "TXT_CODE_adea33ce": "Tipo de operación",
+  "TXT_CODE_fac5dc49": "Eliminar",
+  "TXT_CODE_1d8ece49": "Ejemplo: /dev/ttyUSB0 (puede estar vacío)",
+  "TXT_CODE_e4a82ac7": "Ruta del Host",
+  "TXT_CODE_ef6115b7": "Ruta en el Contenedor",
+  "TXT_CODE_7595d100": "Ejemplo: rwm (puede estar vacío)",
+  "TXT_CODE_1d8ece48": "Ejemplo: /dev/ttyUSB0",
+  "TXT_CODE_ae441ea4": "¡Los dispositivos del contenedor de instancia están configurados incorrectamente!"
 }

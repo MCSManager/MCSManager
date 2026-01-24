@@ -3228,5 +3228,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported. It's safest to stick to alphanumeric characters.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TEXT_CODE_dc47d2aa": "Privileged Mode",
+  "TEXT_CODE_18437e81": "Privileged mode allows containers to access all devices on the host machine, with higher privileges, posing security risks.",
+  "TXT_CODE_bbbd4133": "Capabilities",
+  "TXT_CODE_377319df": "Manage Container Capabilities",
+  "TXT_CODE_b3a60c78": "Devices",
+  "TXT_CODE_b6e18b87": "Allows a container to access specific host hardware devices",
+  "TXT_CODE_d51db65a": "Capability Name",
+  "TXT_CODE_9227a967": "Enter Capability name (e.g. NET_ADMIN)",
+  "TXT_CODE_adea33ce": "Operation Type",
+  "TXT_CODE_fac5dc49": "Drop",
+  "TXT_CODE_1d8ece49": "Example: /dev/ttyUSB0 (can be empty)",
+  "TXT_CODE_e4a82ac7": "Host Path",
+  "TXT_CODE_ef6115b7": "Container Path",
+  "TXT_CODE_7595d100": "Example: rwm (can be empty)",
+  "TXT_CODE_1d8ece48": "Example: /dev/ttyUSB0",
+  "TXT_CODE_ae441ea4": "The devices of the instance container are configured incorrectly!"
 }

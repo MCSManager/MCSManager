@@ -3228,5 +3228,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Yinelenen bir görev zaten var.",
   "TXT_CODE_system_instance_control.illegalName": "Yasadışı görev adı. Yalnızca alt çizgiler, sayılar, harfler ve bazı yerel dil karakterleri desteklenir.",
   "TXT_CODE_ui.help": "[Terminal] Daemon temel etkileşimli işlevselliğe sahiptir. Daha fazla bilgi için lütfen 'help' girin.",
-  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız"
+  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız",
+  "TEXT_CODE_dc47d2aa": "Haklı Mod",
+  "TEXT_CODE_18437e81": "Haklı mod, konteynerlerin ana bilgisayardaki tüm aygıtlara daha yüksek haklarla erişmesine izin verir ve güvenlik riski taşır.",
+  "TXT_CODE_bbbd4133": "Yetenekler",
+  "TXT_CODE_377319df": "Konteyner Yeteneklerini Yönet",
+  "TXT_CODE_b3a60c78": "Cihazlar",
+  "TXT_CODE_b6e18b87": "Bir konteynerin belirli ana bilgisayar donanım cihazlarına erişmesine izin verir",
+  "TXT_CODE_d51db65a": "Yetenek Adı",
+  "TXT_CODE_9227a967": "Yetenek adını girin (ör. NET_ADMIN)",
+  "TXT_CODE_adea33ce": "Operasyon Türü",
+  "TXT_CODE_fac5dc49": "Kaldır",
+  "TXT_CODE_1d8ece49": "Örnek: /dev/ttyUSB0 (boş olabilir)",
+  "TXT_CODE_e4a82ac7": "Ana Bilgisayar Yolu",
+  "TXT_CODE_ef6115b7": "Konteyner İçindeki Yol",
+  "TXT_CODE_7595d100": "Örnek: rwm (boş olabilir)",
+  "TXT_CODE_1d8ece48": "Örnek: /dev/ttyUSB0",
+  "TXT_CODE_ae441ea4": "Örnek kapsayıcının aygıtları yanlış yapılandırıldı!"
 }

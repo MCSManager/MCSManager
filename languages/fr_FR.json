@@ -3228,5 +3228,21 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Des tâches en double existent déjà",
   "TXT_CODE_system_instance_control.illegalName": "Nom de projet incorrect, ne prend en charge que les traits de soulignement, les chiffres, les lettres et certaines langues locales",
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
-  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué"
+  "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
+  "TEXT_CODE_dc47d2aa": "Mode Privilégié",
+  "TEXT_CODE_18437e81": "Le mode privilégié permet aux conteneurs d'accéder à tous les périphériques de la machine hôte, avec des privilèges plus élevés et des risques de sécurité.",
+  "TXT_CODE_bbbd4133": "Capacités",
+  "TXT_CODE_377319df": "Gérer les Capacités du Conteneur",
+  "TXT_CODE_b3a60c78": "Appareils",
+  "TXT_CODE_b6e18b87": "Permet à un conteneur d'accéder à des périphériques matériels hôtes spécifiques",
+  "TXT_CODE_d51db65a": "Nom de la capacité",
+  "TXT_CODE_9227a967": "Entrez le nom de la capacité (par exemple, NET_ADMIN)",
+  "TXT_CODE_adea33ce": "Type d'opération",
+  "TXT_CODE_fac5dc49": "Supprimer",
+  "TXT_CODE_1d8ece49": "Exemple : /dev/ttyUSB0 (peut être vide)",
+  "TXT_CODE_e4a82ac7": "Chemin de l'Hôte",
+  "TXT_CODE_ef6115b7": "Chemin dans le Conteneur",
+  "TXT_CODE_7595d100": "Exemple : rwm (peut être vide)",
+  "TXT_CODE_1d8ece48": "Exemple : /dev/ttyUSB0",
+  "TXT_CODE_ae441ea4": "Les périphériques du conteneur d'instance sont mal configurés !"
 }
