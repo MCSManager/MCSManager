@@ -3228,16 +3228,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败",
-  "TXT_CODE_e59f909f": "The name of the Hytale Server.",
-  "TXT_CODE_b5ebbc0b": "The message of the day.",
-  "TXT_CODE_d417058f": "The password that players need to use to join your server. Leave empty for no password.",
-  "TXT_CODE_6702c53e": "The maximum amout of players that is able to join your Hytale server.",
-  "TXT_CODE_d99ffe16": "The view radius for each player. This setting can impact the server performance.",
-  "TXT_CODE_2b58a46": "The name of the world.",
-  "TXT_CODE_783807df": "The game mode of the world.",
-  "TXT_CODE_938b5975": "Whether temporary tags in Strings should be displayed,",
-  "TXT_CODE_78d240bf": "The type of player storage.",
-  "TXT_CODE_de449b5f": "MC Folia",
-  "TXT_CODE_2025658e": "Hytale Server"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败"
 }
