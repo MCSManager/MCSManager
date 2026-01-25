@@ -1902,6 +1902,8 @@
   "TXT_CODE_SOURCE": "Plug-in source",
   "TXT_CODE_STATUS": "Status",
   "TXT_CODE_Speed": "Speed",
+  "TXT_CODE_HYTALE_CONFIG_INFO": "Hytale Server Config",
+  "TXT_CODE_HYTALE_CONFIG_DESC": "General Hytale Server Config",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria Server Configuration",
   "TXT_CODE_TERRARIA_CONFIG_INFO": "Terraria configuration file, takes effect only when using the -config serverconfig.txt parameter",
   "TXT_CODE_TERRARIA_LOG_PATH": "Log File Directory(default: logs)",
@@ -3228,5 +3230,16 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "A duplicate task already exists.",
   "TXT_CODE_system_instance_control.illegalName": "Illegal task name. Only underscores, numbers, letters, and some local language characters are supported. It's safest to stick to alphanumeric characters.",
   "TXT_CODE_ui.help": "[Terminal] The daemon has basic interactive functionality. Please enter 'help' for more information.",
-  "TXT_CODE_version.versionDetectErr": "Version Check Failed"
+  "TXT_CODE_version.versionDetectErr": "Version Check Failed",
+  "TXT_CODE_e59f909f": "The name of the Hytale Server.",
+  "TXT_CODE_b5ebbc0b": "The message of the day.",
+  "TXT_CODE_d417058f": "The password that players need to use to join your server. Leave empty for no password.",
+  "TXT_CODE_6702c53e": "The maximum amout of players that is able to join your Hytale server.",
+  "TXT_CODE_d99ffe16": "The view radius for each player. This setting can impact the server performance.",
+  "TXT_CODE_2b58a46": "The name of the world.",
+  "TXT_CODE_783807df": "The game mode of the world.",
+  "TXT_CODE_938b5975": "Whether temporary tags in Strings should be displayed,",
+  "TXT_CODE_78d240bf": "The type of player storage.",
+  "TXT_CODE_de449b5f": "MC Folia",
+  "TXT_CODE_2025658e": "Hytale Server"
 }

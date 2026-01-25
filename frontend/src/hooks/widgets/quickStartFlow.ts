@@ -24,6 +24,7 @@ import { computed, reactive, ref, type FunctionalComponent } from "vue";
 export enum QUICKSTART_ACTION_TYPE {
   Minecraft = "minecraft",
   Bedrock = "bedrock",
+  Hytale = "hytale",
   Terraria = "terraria",
   SteamGameServer = "steam",
   Docker = "docker",
@@ -60,6 +61,11 @@ export function useQuickStartFlow() {
     {
       title: t("TXT_CODE_c8261c85"),
       key: QUICKSTART_ACTION_TYPE.Bedrock,
+      icon: AppstoreAddOutlined
+    },
+    {
+      title: t("TXT_CODE_2025658e"),
+      key: QUICKSTART_ACTION_TYPE.Hytale,
       icon: AppstoreAddOutlined
     },
     {
