@@ -319,11 +319,11 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         initDefaultTab(path);
       }
     } catch (error: any) {
-      if (thisTab) {
-        handleRemoveTab(thisTab.key);
-      } else {
-        initDefaultTab();
-      }
+      // if (thisTab) {
+      //   handleRemoveTab(thisTab.key);
+      // } else {
+      //   initDefaultTab();
+      // }
 
       if (throwErr) throw error;
       return reportErrorMsg(error.message);

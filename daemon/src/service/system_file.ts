@@ -68,18 +68,21 @@ export default class FileManager {
 
   checkPath(fileNameOrPath: string) {
     if (this.isRootTopRath()) return true;
-    const destAbsolutePath = this.toAbsolutePath(fileNameOrPath);
-    const topAbsolutePath = this.topPath;
+    const destAbsolutePath = path.normalize(this.toAbsolutePath(fileNameOrPath));
+    const topAbsolutePath = path.normalize(this.topPath);
 
-    // Fix: Path Traversal Vulnerability
-    if (destAbsolutePath.startsWith(topAbsolutePath)) {
-      // Ensure it's not a sibling folder with the same prefix
-      // e.g. /data vs /data_secret
-      if (destAbsolutePath.length > topAbsolutePath.length) {
-        const barrierChar = destAbsolutePath.charAt(topAbsolutePath.length);
-        if (barrierChar !== path.sep) return false;
-      }
-      return true;
+    const destPath = destAbsolutePath.endsWith(path.sep)
+      ? destAbsolutePath.slice(0, -1)
+      : destAbsolutePath;
+    const topPath = topAbsolutePath.endsWith(path.sep)
+      ? topAbsolutePath.slice(0, -1)
+      : topAbsolutePath;
+
+    if (destPath.startsWith(topPath)) {
+      const parts = destPath.split(path.sep);
+      return topPath.split(path.sep).every((part, index) => {
+        return part === parts[index];
+      });
     }
     return false;
   }

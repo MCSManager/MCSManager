@@ -33,6 +33,7 @@ router.use(async (ctx, next) => {
 
 router.get(
   "/status",
+  speedLimit(0.1),
   permission({ level: ROLE.USER, speedLimit: false }),
   validator({
     query: { daemonId: String, uuid: String }
@@ -55,6 +56,7 @@ router.get(
 
 router.get(
   "/list",
+  speedLimit(0.1),
   permission({ level: ROLE.USER, speedLimit: false }),
   validator({
     query: { daemonId: String, uuid: String, target: String, page: Number, page_size: Number }

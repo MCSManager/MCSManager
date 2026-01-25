@@ -13,6 +13,7 @@ export const TYPE_MINECRAFT_JAVA = "minecraft/java";
 export const TYPE_MINECRAFT_BUKKIT = "minecraft/java/bukkit";
 export const TYPE_MINECRAFT_SPIGOT = "minecraft/java/spigot";
 export const TYPE_MINECRAFT_PAPER = "minecraft/java/paper";
+export const TYPE_MINECRAFT_FOLIA = "minecraft/java/folia";
 export const TYPE_MINECRAFT_LEAVES = "minecraft/java/leaves";
 export const TYPE_MINECRAFT_PUFFERFISH = "minecraft/java/pufferfish";
 export const TYPE_MINECRAFT_FORGE = "minecraft/java/forge";
@@ -27,6 +28,7 @@ export const TYPE_MINECRAFT_PURPUR = "minecraft/java/purpur";
 export const TYPE_MINECRAFT_BEDROCK = "minecraft/bedrock";
 export const TYPE_MINECRAFT_BDS = "minecraft/bedrock/bds";
 export const TYPE_MINECRAFT_NUKKIT = "minecraft/bedrock/nukkit";
+export const TYPE_HYTALE = "hytale";
 export const TYPE_STEAM_SERVER_UNIVERSAL = "steam/universal";
 export const TYPE_TERRARIA = "steam/terraria";
 
@@ -38,6 +40,7 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_MINECRAFT_NUKKIT]: t("TXT_CODE_8f3e5807"),
   [TYPE_MINECRAFT_SPIGOT]: t("TXT_CODE_6c08319b"),
   [TYPE_MINECRAFT_PAPER]: t("TXT_CODE_ec0cda88"),
+  [TYPE_MINECRAFT_FOLIA]: t("TXT_CODE_de449b5f"),
   [TYPE_MINECRAFT_LEAVES]: t("TXT_CODE_8a5305a6"),
   [TYPE_MINECRAFT_PUFFERFISH]: t("TXT_CODE_c6d3bd8"),
   [TYPE_MINECRAFT_BUNGEECORD]: t("TXT_CODE_ba86f4a"),
@@ -52,6 +55,7 @@ export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_MINECRAFT_BUKKIT]: t("TXT_CODE_992bf9bc"),
   [TYPE_MINECRAFT_GEYSER]: t("TXT_CODE_4f57868"),
   [TYPE_MINECRAFT_MCDR]: t("TXT_CODE_fa6f95a1"),
+  [TYPE_HYTALE]: t("TXT_CODE_2025658e"),
   [TYPE_WEB_SHELL]: t("TXT_CODE_31c5a4d0"),
   [TYPE_TERRARIA]: t("TXT_CODE_f25df30a")
 };
@@ -187,6 +191,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_SPIGOT,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_FORGE,
@@ -207,6 +212,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_SPIGOT,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_FABRIC,
@@ -227,6 +233,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_SPIGOT,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_PURPUR,
@@ -243,6 +250,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_SPIGOT,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_PURPUR,
@@ -299,6 +307,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_PUFFERFISH,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_LEAVES
@@ -313,6 +322,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     category: [
       TYPE_MINECRAFT_JAVA,
       TYPE_MINECRAFT_PAPER,
+      TYPE_MINECRAFT_FOLIA,
       TYPE_MINECRAFT_PUFFERFISH,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_LEAVES
@@ -410,6 +420,14 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     type: "properties_not_unicode",
     info: t("TXT_CODE_TERRARIA_CONFIG_INFO"),
     category: [TYPE_TERRARIA]
+  },
+  {
+    fileName: "[Hytale] config.json",
+    path: "config.json",
+    redirect: "hytale/config.json",
+    type: "json",
+    info: t("TXT_CODE_HYTALE_CONFIG_INFO"),
+    category: [TYPE_HYTALE]
   }
 ];
 
