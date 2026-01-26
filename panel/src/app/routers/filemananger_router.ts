@@ -66,8 +66,8 @@ router.get(
       const target = String(ctx.query.target);
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const page = Number(ctx.query.page);
-      const pageSize = Number(ctx.query.page_size);
+      const page = Math.max(0, Number(ctx.query.page) || 0);
+      const pageSize = Math.min(100, Math.max(1, Number(ctx.query.page_size) || 10));
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("file/list", {
