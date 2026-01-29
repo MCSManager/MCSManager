@@ -3241,5 +3241,9 @@
   "TXT_CODE_938b5975": "Whether temporary tags in Strings should be displayed,",
   "TXT_CODE_78d240bf": "The type of player storage.",
   "TXT_CODE_de449b5f": "MC Folia",
-  "TXT_CODE_2025658e": "Hytale Server"
+  "TXT_CODE_2025658e": "Hytale Server",
+  "TXT_CODE_b623b66f": "The name contains invalid characters. Please modify the name!",
+  "TXT_CODE_8900e7ee": "Add installed Java",
+  "TXT_CODE_10f0f8d": "Success!",
+  "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files."
 }

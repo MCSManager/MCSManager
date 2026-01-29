@@ -3228,5 +3228,9 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重复的任务",
   "TXT_CODE_system_instance_control.illegalName": "非法的计划名，仅支持下划线，数字，字母和部分本地语言",
   "TXT_CODE_ui.help": "[终端] 守护进程拥有基本的交互功能，请输入\"help\"查看更多信息",
-  "TXT_CODE_version.versionDetectErr": "版本检查失败"
+  "TXT_CODE_version.versionDetectErr": "版本检查失败",
+  "TXT_CODE_b623b66f": "名称中包含非法字符，请修改名称!",
+  "TXT_CODE_8900e7ee": "添加现有Java",
+  "TXT_CODE_10f0f8d": "添加成功!",
+  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。"
 }

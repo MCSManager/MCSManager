@@ -34,11 +34,14 @@ routerApp.on("java_manager/add", async (ctx, data) => {
 
 routerApp.on("java_manager/download", async (ctx, data) => {
   const info = new JavaInfo(data.name, Date.now(), data.version);
+  if (javaManager.exists(info.fullname)) {
+    return protocol.responseError(ctx, new Error($t("TXT_CODE_79cf0302")));
+  }
+  protocol.response(ctx, true);
+
   info.downloading = true;
   try {
-    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     javaManager.addJava(info);
-    protocol.response(ctx, true);
 
     const downloadUrl = await javaManager.getJavaDownloadUrl(info);
     if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));

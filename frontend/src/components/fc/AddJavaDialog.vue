@@ -28,17 +28,17 @@ const submit = async () => {
     v-model:open="open"
     width="400px"
     centered
-    :title="t('添加现有Java')"
+    :title="t('TXT_CODE_8900e7ee')"
     :closable="false"
     :destroy-on-close="true"
     @cancel="cancel"
     @ok="submit"
   >
     <a-form layout="vertical">
-      <a-form-item :label="t('Java 名称')">
+      <a-form-item :label="t('TXT_CODE_3f36206f')">
         <a-input v-model:value="dataSource.name" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
-      <a-form-item :label="t('Java 路径')">
+      <a-form-item :label="t('TXT_CODE_43422ed3')">
         <a-input v-model:value="dataSource.path" :placeholder="t('TXT_CODE_4ea93630')" />
       </a-form-item>
     </a-form>
