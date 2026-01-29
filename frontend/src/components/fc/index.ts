@@ -7,10 +7,11 @@ import SelectInstances from "@/components/fc/SelectInstances.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 import type { DownloadFileConfigItem } from "@/types/fileManager";
-import type { DownloadJavaConfigItem } from "@/types/javaManager";
+import type { AddJavaConfigItem, DownloadJavaConfigItem } from "@/types/javaManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
+import AddJavaDialog from "./AddJavaDialog.vue";
 import DockerPortDialog from "./DockerPortDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import DownloadJavaDialog from "./DownloadJavaDialog.vue";
@@ -228,6 +229,10 @@ export async function openMarketDialog(
     ...options
   }).load<InstanceType<typeof MarketDialog>>(MarketDialog);
   return dialog!.openDialog();
+}
+
+export async function useAddJavaDialog() {
+  return (await useMountComponent().mount<AddJavaConfigItem>(AddJavaDialog)) || undefined;
 }
 
 export async function useDownloadJavaDialog() {

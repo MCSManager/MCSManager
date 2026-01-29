@@ -42,7 +42,8 @@ class JavaManager {
         continue;
       }
 
-      const info = new JavaInfo(config.name, config.version, config.installTime ?? Date.now());
+      const info = new JavaInfo(config.name, config.installTime ?? Date.now(), config.version);
+      info.path = config.path;
       this.javaList.set(info.fullname, {
         info: info,
         path: javaPath,
@@ -104,6 +105,7 @@ class JavaManager {
 
     StorageSubsystem.store(`JavaData/${info.fullname}`, "java_info", {
       name: info.name,
+      path: info.path,
       version: info.version,
       installTime: info.installTime,
       downloading: info.downloading
@@ -122,6 +124,7 @@ class JavaManager {
 
     StorageSubsystem.store(`JavaData/${info.fullname}`, "java_info", {
       name: info.name,
+      path: info.path,
       version: info.version,
       installTime: info.installTime,
       downloading: info.downloading
@@ -133,7 +136,7 @@ class JavaManager {
     if (!java) throw new Error($t("TXT_CODE_77ce8542"));
     if (java.info.downloading) throw new Error($t("TXT_CODE_45d02bb7"));
 
-    let javaPath = java.path;
+    let javaPath = java.info.path ?? java.path;
     if (!javaPath) throw new Error($t("TXT_CODE_82c8bca3"));
 
     let javaRuntimePath = path.join(

@@ -16,13 +16,28 @@ routerApp.on("java_manager/list", async (ctx) => {
   protocol.response(ctx, javaManager.list());
 });
 
+routerApp.on("java_manager/add", async (ctx, data) => {
+  const info = new JavaInfo(data.name, Date.now());
+
+  try {
+    if (!FileManager.checkFileName(data.name))
+      throw new Error($t("名称中包含非法字符，请修改名称!"));
+
+    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
+    info.path = path.normalize(data.path);
+    javaManager.addJava(info);
+    protocol.response(ctx, true);
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
 routerApp.on("java_manager/download", async (ctx, data) => {
-  const info = new JavaInfo(data.name, data.version, Date.now());
+  const info = new JavaInfo(data.name, Date.now(), data.version);
   info.downloading = true;
 
   let downloadUrl: string;
   try {
-    if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     javaManager.addJava(info);
 

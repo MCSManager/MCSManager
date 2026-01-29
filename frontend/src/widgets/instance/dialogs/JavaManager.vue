@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useDownloadJavaDialog } from "@/components/fc";
+import { useAddJavaDialog, useDownloadJavaDialog } from "@/components/fc";
 import { t } from "@/lang/i18n";
 import { updateInstanceConfig } from "@/services/apis/instance";
-import { deleteJava, downloadJava, getJavaList, usingJava } from "@/services/apis/javaManager";
+import { addJava, deleteJava, downloadJava, getJavaList, usingJava } from "@/services/apis/javaManager";
 import { parseTimestamp } from "@/tools/time";
 import type { InstanceDetail } from "@/types";
 import type { AntColumnsType } from "@/types/ant";
@@ -11,6 +11,7 @@ import {
   CheckOutlined,
   DeleteOutlined,
   DownloadOutlined,
+  PlusOutlined,
   ReloadOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
@@ -102,6 +103,27 @@ const handleDownloadJava = async () => {
   await refreshJavaList();
 };
 
+const handleAddJava = async () => {
+  const data = await useAddJavaDialog();
+  if (!data) return;
+
+  try {
+    await addJava().execute({
+      params: {
+        daemonId: props.daemonId ?? ""
+      },
+      data: {
+        name: data.name,
+        path: data.path
+      }
+    });
+  } catch (err: any) {
+    message.error(err.message);
+  }
+  message.success(t("添加成功!"));
+  await refreshJavaList();
+}
+
 const handleDeleteJava = async (info: JavaInfo) => {
   try {
     await deleteJava().execute({
@@ -173,6 +195,15 @@ defineExpose({
           {{ t("TXT_CODE_9c48100e") }}
         </a-button>
 
+        <a-button
+          class="mr-10"
+          type="dashed"
+          :icon="h(PlusOutlined)"
+          @click="handleAddJava()"
+        >
+          {{ t("添加现有Java") }}
+        </a-button>
+
         <a-button class="mr-10" :icon="h(ReloadOutlined)" @click="refreshJavaList(true)">
           {{ t("TXT_CODE_b76d94e0") }}
         </a-button>
@@ -208,6 +239,7 @@ defineExpose({
 
             <a-popconfirm
               :title="t('TXT_CODE_f4f86ba8')"
+              :description="t('如果这个Java是从外部添加的, 并不会真的删除Java文件。')"
               @confirm="handleDeleteJava(record.info as JavaInfo)"
             >
               <a-button danger :disabled="record.info.downloading">
