@@ -1,17 +1,22 @@
-import { ref, computed, reactive, watch, onUnmounted } from "vue";
 import { t } from "@/lang/i18n";
 import {
-  modListApi,
-  toggleModApi,
   deleteModApi,
-  getModBatchInfoApi
+  getModBatchInfoApi,
+  modListApi,
+  toggleModApi
 } from "@/services/apis/modManager";
 import { message } from "ant-design-vue";
+import { computed, onUnmounted, reactive, ref, watch } from "vue";
 
 export function useLocalMods(
   instanceId: string,
   daemonId: string,
-  checkAndConfirm: (type: string, name: string, data: any, immediateFn: () => Promise<void>) => void,
+  checkAndConfirm: (
+    type: string,
+    name: string,
+    data: any,
+    immediateFn: () => Promise<void>
+  ) => void,
   addDeferredTask: (type: string, name: string, data: any) => void
 ) {
   const loading = ref(false);
@@ -19,37 +24,49 @@ export function useLocalMods(
   const mods = ref<any[]>([]);
   const folders = ref<string[]>(["mods", "plugins"]);
   const fileStatus = ref<any>({});
+  const totalMods = ref(0);
+  const currentFolder = ref<string | undefined>(undefined);
 
   const tablePagination = reactive({
     current: 1,
-    pageSize: 10,
+    pageSize: 50,
+    total: 0,
     showSizeChanger: true,
-    pageSizeOptions: ["10", "20", "50", "100"],
+    size: "large",
+    pageSizeOptions: ["10", "20", "50"],
     showTotal: (total: number) => t("TXT_CODE_TOTAL_ITEMS", { total }),
     onChange: (page: number, size: number) => {
       tablePagination.current = page;
       tablePagination.pageSize = size;
+      loadMods(currentFolder.value);
     },
     onShowSizeChange: (current: number, size: number) => {
       tablePagination.pageSize = size;
       tablePagination.current = 1;
+      loadMods(currentFolder.value);
     }
   });
 
-  const loadMods = async () => {
+  const loadMods = async (folder?: string) => {
     loading.value = true;
+    currentFolder.value = folder;
     try {
       const { execute } = modListApi();
       const res = await execute({
         params: {
           uuid: instanceId,
-          daemonId: daemonId
+          daemonId: daemonId,
+          page: tablePagination.current,
+          pageSize: tablePagination.pageSize,
+          folder
         }
       });
       const newMods = res.value?.mods || [];
       folders.value = res.value?.folders || [];
       fileStatus.value = res.value || {};
-      
+      totalMods.value = res.value?.total || 0;
+      tablePagination.total = res.value?.total || 0;
+
       // Keep existing extraInfo to avoid UI flickering
       const oldModsMap = new Map();
       mods.value.forEach((m) => {
@@ -66,8 +83,11 @@ export function useLocalMods(
       mods.value = newMods;
       loading.value = false;
 
-      // Fetch extra info for all mods in batch (Background)
-      const hashes = mods.value.filter((m) => !m.extraInfo).map((m) => m.hash).filter((h) => !!h);
+      // Fetch extra info for current page mods in batch (Background)
+      const hashes = mods.value
+        .filter((m) => !m.extraInfo)
+        .map((m) => m.hash)
+        .filter((h) => !!h);
       if (hashes.length > 0) {
         loadingExtra.value = true;
         try {
@@ -108,14 +128,18 @@ export function useLocalMods(
     const list = localMods.value;
     if (!modSearchQuery.value) return list;
     const q = modSearchQuery.value.toLowerCase();
-    return list.filter((m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q));
+    return list.filter(
+      (m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q)
+    );
   });
 
   const filteredPlugins = computed(() => {
     const list = localPlugins.value;
     if (!pluginSearchQuery.value) return list;
     const q = pluginSearchQuery.value.toLowerCase();
-    return list.filter((m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q));
+    return list.filter(
+      (m) => m.name?.toLowerCase().includes(q) || m.file?.toLowerCase().includes(q)
+    );
   });
 
   const onToggle = async (record: any) => {
@@ -179,13 +203,16 @@ export function useLocalMods(
         const res = await execute({
           params: {
             uuid: instanceId,
-            daemonId: daemonId
+            daemonId: daemonId,
+            page: tablePagination.current,
+            pageSize: tablePagination.pageSize,
+            folder: currentFolder.value
           }
         });
         fileStatus.value = res.value || {};
         if (!fileStatus.value.downloadTasks?.length) {
           stopPolling();
-          await loadMods();
+          await loadMods(currentFolder.value);
         }
       } catch (e) {
         console.error("Polling error:", e);
@@ -220,6 +247,8 @@ export function useLocalMods(
     mods,
     folders,
     tablePagination,
+    totalMods,
+    currentFolder,
     loadMods,
     modSearchQuery,
     pluginSearchQuery,

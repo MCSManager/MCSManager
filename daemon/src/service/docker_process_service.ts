@@ -58,7 +58,7 @@ export class SetupDockerContainer extends AsyncTask {
     let commandList: string[];
     if (instance.config?.startCommand?.trim() || customCommand?.trim()) {
       const tmpCmd = customCommand ?? instance.config.startCommand;
-      commandList = commandStringToArray(instance.parseTextParams(tmpCmd));
+      commandList = commandStringToArray(await instance.parseTextParams(tmpCmd));
     } else {
       commandList = [];
     }
@@ -75,7 +75,7 @@ export class SetupDockerContainer extends AsyncTask {
     const publicPortArray: PublicPortArray = {};
     const exposedPorts: ExposedPorts = {};
     for (const portConfigText of portMap) {
-      const elem = instance.parseTextParams(portConfigText).split("/");
+      const elem = (await instance.parseTextParams(portConfigText)).split("/");
       if (elem.length != 2) throw new Error($t("TXT_CODE_1cf6fc4b"));
       const ports = elem[0];
       const protocol = elem[1];
@@ -159,21 +159,21 @@ export class SetupDockerContainer extends AsyncTask {
       cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
     }
 
-    const mounts: Docker.MountConfig =
-      extraBinds.map((v) => {
-        const hostPath = instance.parseTextParams(v.hostPath);
-        if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
-        return {
-          Type: "bind",
-          Source: hostPath,
-          Target: instance.parseTextParams(v.containerPath)
-        };
-      }) || [];
+    const mounts: Docker.MountConfig = [];
+    for (const v of extraBinds) {
+      const hostPath = await instance.parseTextParams(v.hostPath);
+      if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
+      mounts.push({
+        Type: "bind",
+        Source: hostPath,
+        Target: await instance.parseTextParams(v.containerPath)
+      });
+    }
     if (workingDir && cwd) {
       mounts.push({
         Type: "bind",
         Source: cwd,
-        Target: instance.parseTextParams(workingDir)
+        Target: await instance.parseTextParams(workingDir)
       });
     }
 

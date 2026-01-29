@@ -235,6 +235,10 @@ export async function useAddJavaDialog() {
   return (await useMountComponent().mount<AddJavaConfigItem>(AddJavaDialog)) || undefined;
 }
 
-export async function useDownloadJavaDialog() {
-  return (await useMountComponent().mount<DownloadJavaConfigItem>(DownloadJavaDialog)) || undefined;
+export async function useDownloadJavaDialog(installedJavaList?: string[]) {
+  return (
+    (await useMountComponent({ installedJavaList }).mount<DownloadJavaConfigItem>(
+      DownloadJavaDialog
+    )) || undefined
+  );
 }

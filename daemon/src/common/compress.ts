@@ -70,7 +70,7 @@ export async function decompress(
     }
   };
 
-  if (!check7zipStatus()) {
+  if (!await check7zipStatus()) {
     try {
       return await use7zip(zipPath, dest);
     } catch (error) {

@@ -11,11 +11,14 @@ import { arrayUnique, toNumber } from "mcsmanager-common";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
-import { createQuickInstallTask, QuickInstallTask } from "../service/async_task_service/quick_install";
-import { IInstanceDetail, IJson } from "../service/interfaces";
-import FileManager from "../service/system_file";
-import { modService } from "../service/mod_service";
+import {
+  createQuickInstallTask,
+  QuickInstallTask
+} from "../service/async_task_service/quick_install";
 import downloadManager from "../service/download_manager";
+import { IInstanceDetail, IJson } from "../service/interfaces";
+import { modService } from "../service/mod_service";
+import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
 
 // Some instances operate router authentication middleware
@@ -93,7 +96,6 @@ routerApp.on("instance/select", (ctx, data) => {
     });
   });
 
-
   protocol.response(ctx, {
     page: pageResult.page,
     pageSize: pageResult.pageSize,
@@ -152,7 +154,7 @@ routerApp.on("instance/detail", async (ctx, data) => {
     try {
       // Parts that may be wrong due to file permissions, avoid affecting the acquisition of the entire configuration
       processInfo = await instance.forceExec(new ProcessInfoCommand());
-    } catch (err: any) { }
+    } catch (err: any) {}
     protocol.msg(ctx, "instance/detail", {
       instanceUuid: instance.instanceUuid,
       started: instance.startCount,
@@ -361,7 +363,7 @@ routerApp.on("instance/delete", (ctx, data) => {
         nickname: instance.config.nickname
       });
       InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
-    } catch (err: any) { }
+    } catch (err: any) {}
   }
   protocol.msg(ctx, "instance/delete", { instanceUuids, instances });
 });
@@ -385,7 +387,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "install_instance" && instance) {
     instance
       .execPreset("install", parameter)
-      .then(() => { })
+      .then(() => {})
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -402,7 +404,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "update" && instance) {
     instance
       .execPreset("update", parameter)
-      .then(() => { })
+      .then(() => {})
       .catch((err) => {
         logger.error(
           $t("TXT_CODE_Instance_router.performTasksErr", {
@@ -448,8 +450,8 @@ routerApp.on("instance/stop_asynchronous", (ctx, data) => {
   if (task && task.stop) {
     task
       .stop(instance)
-      .then(() => { })
-      .catch((err) => { });
+      .then(() => {})
+      .catch((err) => {});
   } else {
     return protocol.error(
       ctx,
@@ -563,8 +565,11 @@ routerApp.on("instance/outputlog", async (ctx, data) => {
 
 routerApp.on("instance/mods/list", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
+  const page = Number(data.page) || 1;
+  const pageSize = Math.min(Number(data.pageSize) || 50, 50); // Max 50
+  const folder = data.folder ? String(data.folder) : undefined;
   try {
-    const mods = await modService.listMods(instanceUuid);
+    const mods = await modService.listMods(instanceUuid, page, pageSize, folder);
     const downloadTasks = [];
     if (downloadManager.task) {
       downloadTasks.push({
@@ -584,7 +589,10 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
           id,
           path: writer.path,
           total: writer.size,
-          current: writer.received.reduce((acc: number, r: { start: number; end: number }) => acc + (r.end - r.start), 0),
+          current: writer.received.reduce(
+            (acc: number, r: { start: number; end: number }) => acc + (r.end - r.start),
+            0
+          ),
           status: 0,
           type: "upload"
         });
@@ -602,42 +610,35 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/toggle", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred, extraInfo } = data;
+  const { instanceUuid, fileName } = data;
   try {
-    if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "toggle", fileName, extraInfo });
-      protocol.response(ctx, true);
-    } else {
-      await modService.toggleMod(instanceUuid, fileName);
-      protocol.response(ctx, true);
-    }
+    await modService.toggleMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err);
   }
 });
 
 routerApp.on("instance/mods/delete", async (ctx, data) => {
-  const { instanceUuid, fileName, deferred, extraInfo } = data;
+  const { instanceUuid, fileName } = data;
   try {
-    if (deferred) {
-      modService.addDeferredTask(instanceUuid, { type: "delete", fileName, extraInfo });
-      protocol.response(ctx, true);
-    } else {
-      await modService.deleteMod(instanceUuid, fileName);
-      protocol.response(ctx, true);
-    }
+    await modService.deleteMod(instanceUuid, fileName);
+    protocol.response(ctx, true);
   } catch (err: any) {
-    protocol.responseError(ctx, err);
+    protocol.responseError(ctx, err, { disablePrint: true });
   }
 });
 
 routerApp.on("instance/mods/install", async (ctx, data) => {
-  const { instanceUuid, url, fileName, type, fallbackUrl, deferred, extraInfo } = data;
+  const { instanceUuid, url, fileName, type, fallbackUrl } = data;
   try {
-    await modService.installMod(instanceUuid, url, fileName, type, { fallbackUrl, deferred, extraInfo });
+    // async
+    modService.installMod(instanceUuid, url, fileName, type, {
+      fallbackUrl
+    });
     protocol.response(ctx, true);
   } catch (err: any) {
-    protocol.responseError(ctx, err);
+    protocol.responseError(ctx, err, { disablePrint: true });
   }
 });
 
@@ -647,36 +648,6 @@ routerApp.on("instance/mods/config_files", async (ctx, data) => {
     const files = await modService.getModConfig(instanceUuid, modId, type, fileName);
     protocol.response(ctx, files);
   } catch (err: any) {
-    protocol.responseError(ctx, err);
-  }
-});
-
-routerApp.on("instance/mods/deferred/list", async (ctx, data) => {
-  const { instanceUuid } = data;
-  try {
-    const tasks = modService.getDeferredTasks(instanceUuid);
-    protocol.response(ctx, tasks);
-  } catch (err: any) {
-    protocol.responseError(ctx, err);
-  }
-});
-
-routerApp.on("instance/mods/deferred/auto_execute", async (ctx, data) => {
-  const { instanceUuid, enabled } = data;
-  try {
-    modService.setAutoExecute(instanceUuid, enabled);
-    protocol.response(ctx, true);
-  } catch (err: any) {
-    protocol.responseError(ctx, err);
-  }
-});
-
-routerApp.on("instance/mods/deferred/clear", async (ctx, data) => {
-  const { instanceUuid } = data;
-  try {
-    modService.clearDeferredTasks(instanceUuid);
-    protocol.response(ctx, true);
-  } catch (err: any) {
-    protocol.responseError(ctx, err);
+    protocol.responseError(ctx, err, { disablePrint: true });
   }
 });

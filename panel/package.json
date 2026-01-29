@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
-  "version": "10.11.0",
-  "daemonVersion": "4.11.0",
+  "version": "10.12.2",
+  "daemonVersion": "4.12.1",
   "description": "Provide MCSManager with the ability to connect and control all Daemons, and provide API services for the front end.",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",

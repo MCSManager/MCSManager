@@ -5,6 +5,7 @@ export const getJavaList = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
   },
   JavaRuntime[]
@@ -33,6 +34,7 @@ export const downloadJava = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
     data: {
       name: string;
@@ -65,6 +67,7 @@ export const deleteJava = useDefineApi<
   {
     params: {
       daemonId: string;
+      instanceId: string;
     };
     data: {
       id: string;

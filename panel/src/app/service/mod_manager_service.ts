@@ -25,6 +25,14 @@ class ModManagerService {
   private mcVersionsCache: string[] = [];
   private mcVersionsLastFetch = 0;
 
+  constructor() {
+    setInterval(() => {
+      this.mcVersionsCache = [];
+      this.mcVersionsLastFetch = 0;
+      this.cache.clear();
+    }, 1000 * 60 * 60 * 24);
+  }
+
   private setCache(key: string, value: any) {
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
       const firstKey = this.cache.keys().next().value;
@@ -94,8 +102,8 @@ class ModManagerService {
         this.mcVersionsLastFetch = now;
         return versions;
       }
-    } catch (err) {
-      console.error("Failed to fetch MC versions from Mojang:", err);
+    } catch (err: any) {
+      console.error("Failed to fetch MC versions from Mojang!", err?.message);
     }
 
     // Fallback to a reasonable list if all APIs fail
@@ -145,13 +153,18 @@ class ModManagerService {
 
   private async requestWithRetry(config: any, retries = 2): Promise<any> {
     try {
-      return await axios(config);
+      return await axios({
+        ...config,
+        timeout: config.timeout || 5000
+      });
     } catch (err: any) {
       const isNetworkError =
         !err.response &&
         (err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ECONNABORTED");
       const isRetryableStatus =
-        err.response?.status === 500 || err.response?.status === 502 || err.response?.status === 504;
+        err.response?.status === 500 ||
+        err.response?.status === 502 ||
+        err.response?.status === 504;
 
       if (retries > 0 && (isNetworkError || isRetryableStatus)) {
         await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -164,6 +177,10 @@ class ModManagerService {
   public async getInfosByHashes(hashes: string[]) {
     const result: Record<string, any> = {};
     const missingHashes: string[] = [];
+
+    if (hashes.length > 50) {
+      throw new Error("Hashes length cannot be greater than 50");
+    }
 
     for (const hash of hashes) {
       if (this.cache.has(hash)) {
@@ -214,8 +231,8 @@ class ModManagerService {
               result[hash] = info;
             }
           }
-        } catch (err) {
-          console.error(`Modrinth batch lookup error for chunk ${i / chunkSize}:`, err);
+        } catch (err: any) {
+          console.error(`Modrinth batch lookup error for chunk ${i / chunkSize}:`, err?.message);
         }
       }
     }
@@ -269,7 +286,7 @@ class ModManagerService {
       }
     }
 
-    // If the result is still the same as the original (minus extension), 
+    // If the result is still the same as the original (minus extension),
     // and it's very long/ugly, try a more aggressive approach
     if (vn.includes("-") || vn.includes("_")) {
       const parts = vn.split(/[-_\s]+/);
@@ -284,8 +301,15 @@ class ModManagerService {
     query: string,
     offset = 0,
     limit = 20,
-    filters?: { source?: string; version?: string; type?: string; loader?: string; environment?: string }
+    filters?: {
+      source?: string;
+      version?: string;
+      type?: string;
+      loader?: string;
+      environment?: string;
+    }
   ) {
+    if (limit > 50) throw new Error("Limit cannot be greater than 100");
     const source = filters?.source || "all";
 
     if (source === "modrinth") {
@@ -338,7 +362,7 @@ class ModManagerService {
         ...(curseforgeRes?.hits || []),
         ...(spigotRes?.hits || [])
       ];
-      
+
       const total_hits =
         (modrinthRes?.total_hits || 0) +
         (curseforgeRes?.total_hits || 0) +
@@ -381,7 +405,7 @@ class ModManagerService {
           facets.push([`project_type:${filters.type}`]);
         }
       }
-      
+
       // Handle loaders (Forge, Fabric, etc.) - use categories facet
       if (filters?.loader && filters.loader !== "all") {
         const loaderMap: Record<string, string> = {
@@ -400,7 +424,7 @@ class ModManagerService {
         const loaderName = loaderMap[filters.loader.toLowerCase()] || filters.loader;
         facets.push([`categories:${loaderName}`]);
       }
-      
+
       // Handle environment (server/client)
       if (filters?.environment && filters.environment !== "all") {
         if (filters.environment.toLowerCase() === "server") {
@@ -623,6 +647,9 @@ class ModManagerService {
         url: `${this.baseUrl}/project/${projectId}/version`,
         params
       });
+
+      const items = res.data || [];
+
       // Add project_type to each version so the frontend knows where to save it
       const projectRes = await this.requestWithRetry({
         method: "GET",
@@ -630,7 +657,7 @@ class ModManagerService {
       });
       const projectType = projectRes.data.project_type === "mod" ? "mod" : "plugin";
 
-      return res.data.map((v: any) => ({
+      return items.slice(0, 200).map((v: any) => ({
         ...v,
         project_type: projectType
       }));
@@ -671,27 +698,31 @@ class ModManagerService {
       const isPlugin =
         modData?.classId === 12 ||
         modData?.categories?.some((c: any) =>
-          [
-            "spigot",
-            "paper",
-            "purpur",
-            "folia",
-            "bungeecord",
-            "velocity",
-            "waterfall"
-          ].includes(c.name.toLowerCase())
+          ["spigot", "paper", "purpur", "folia", "bungeecord", "velocity", "waterfall"].includes(
+            c.name.toLowerCase()
+          )
         );
 
       return res.data.data.map((file: any) => {
         const gameVersions = file.gameVersions || [];
         const loaders = gameVersions.filter((v: string) =>
-          ["Forge", "Fabric", "Quilt", "NeoForge", "Bungeecord", "Spigot", "Paper", "Purpur"].includes(
-            v
-          )
+          [
+            "Forge",
+            "Fabric",
+            "Quilt",
+            "NeoForge",
+            "Bungeecord",
+            "Spigot",
+            "Paper",
+            "Purpur"
+          ].includes(v)
         );
         const realGameVersions = gameVersions.filter((v: string) => /^\d+\.\d+(\.\d+)?$/.test(v));
 
-        const vn = this.cleanCurseForgeVersionName(file.displayName || file.fileName || "", projectName);
+        const vn = this.cleanCurseForgeVersionName(
+          file.displayName || file.fileName || "",
+          projectName
+        );
 
         return {
           id: String(file.id),
@@ -769,7 +800,7 @@ class ModManagerService {
                   const vRes = await this.requestWithRetry({
                     method: "GET",
                     url: `https://api.spiget.org/v2/resources/${item.id}/versions/${item.version.id}`,
-                    timeout: 2000,
+                    timeout: 4000,
                     headers: {
                       "User-Agent": "MCSManager"
                     }
@@ -806,7 +837,9 @@ class ModManagerService {
 
       return {
         hits,
-        total_hits: parseInt(res.headers["x-total-count"] || "0") || (data.length === limit ? offset + limit + 1 : offset + data.length)
+        total_hits:
+          parseInt(res.headers["x-total-count"] || "0") ||
+          (data.length === limit ? offset + limit + 1 : offset + data.length)
       };
     } catch (err) {
       console.error("SpigotMC search error:", err);

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import { useScreen } from "@/hooks/useScreen";
 import {
-  SettingOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
   DeleteOutlined,
   DownOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  SettingOutlined
 } from "@ant-design/icons-vue";
+import { useI18n } from "vue-i18n";
 
 defineProps<{
   loading: boolean;
@@ -26,9 +26,9 @@ const { isPhone } = useScreen();
 <template>
   <a-table
     :loading="loading"
-    :dataSource="dataSource"
+    :data-source="dataSource"
     :columns="columns"
-    rowKey="file"
+    row-key="file"
     class="mb-6"
     :size="isPhone ? 'small' : 'middle'"
     :pagination="pagination"
@@ -58,24 +58,33 @@ const { isPhone } = useScreen();
             <span class="text-[11px] opacity-60 font-mono bg-gray-500/10 px-1 rounded">
               {{ record.version || t("TXT_CODE_UNKNOWN_VERSION") }}
             </span>
-            <span :class="['text-[10px] font-bold', record.enabled ? 'text-green-500' : 'text-red-500']">
+            <span
+              :class="['text-[10px] font-bold', record.enabled ? 'text-green-500' : 'text-red-500']"
+            >
               {{ record.enabled ? t("TXT_CODE_ENABLED") : t("TXT_CODE_DISABLED") }}
             </span>
           </div>
           <div
-            class="text-xs opacity-60 truncate w-full mt-0.5 whitespace-nowrap"
             v-if="record.extraInfo?.project?.description"
+            class="text-xs opacity-60 truncate w-full mt-0.5 whitespace-nowrap"
             :title="record.extraInfo.project.description"
           >
             {{ record.extraInfo.project.description }}
           </div>
-          <div v-else-if="record.name && record.file !== record.name" class="text-[11px] opacity-40 truncate w-full mt-0.5 whitespace-nowrap">
+          <div
+            v-else-if="record.name && record.file !== record.name"
+            class="text-[11px] opacity-40 truncate w-full mt-0.5 whitespace-nowrap"
+          >
             {{ record.file }}
           </div>
         </div>
       </template>
       <template v-if="column.key === 'version'">
-        <div class="truncate w-full font-mono text-xs opacity-80" :title="record.version" style="min-width: 0">
+        <div
+          class="truncate w-full font-mono text-xs opacity-80"
+          :title="record.version"
+          style="min-width: 0"
+        >
           {{ record.version || t("TXT_CODE_UNKNOWN_VERSION") }}
         </div>
       </template>
@@ -105,7 +114,14 @@ const { isPhone } = useScreen();
                     {{ record.enabled ? t("TXT_CODE_DISABLE") : t("TXT_CODE_ENABLE") }}
                   </a-menu-item>
                   <a-menu-item
-                    @click="emit('openExternal', { id: record.extraInfo?.project?.id, source: record.extraInfo?.source, slug: record.extraInfo?.project?.slug, name: record.name || record.file })"
+                    @click="
+                      emit('openExternal', {
+                        id: record.extraInfo?.project?.id,
+                        source: record.extraInfo?.source,
+                        slug: record.extraInfo?.project?.slug,
+                        name: record.name || record.file
+                      })
+                    "
                   >
                     <template #icon><info-circle-outlined /></template>
                     {{ t("TXT_CODE_f1b166e7") }}
@@ -119,30 +135,37 @@ const { isPhone } = useScreen();
             </a-dropdown>
           </template>
           <a-space v-else :size="12">
-            <a-button
+            <!-- <a-button
               type="text"
               size="small"
-              @click="emit('openExternal', { id: record.extraInfo?.project?.id, source: record.extraInfo?.source, slug: record.extraInfo?.project?.slug, name: record.name || record.file })"
               class="opacity-60 hover:opacity-100"
               :title="t('TXT_CODE_f1b166e7')"
+              @click="
+                emit('openExternal', {
+                  id: record.extraInfo?.project?.id,
+                  source: record.extraInfo?.source,
+                  slug: record.extraInfo?.project?.slug,
+                  name: record.name || record.file
+                })
+              "
             >
               <template #icon><info-circle-outlined style="font-size: 16px" /></template>
-            </a-button>
+            </a-button> -->
             <a-button
               type="text"
               size="small"
-              @click="emit('config', record)"
               class="opacity-60 hover:opacity-100"
               :title="t('TXT_CODE_CONFIG')"
+              @click="emit('config', record)"
             >
               <template #icon><setting-outlined style="font-size: 16px" /></template>
             </a-button>
             <a-button
               type="text"
               size="small"
-              @click="emit('toggle', record)"
               class="opacity-60 hover:opacity-100"
               :title="record.enabled ? t('TXT_CODE_DISABLE') : t('TXT_CODE_ENABLE')"
+              @click="emit('toggle', record)"
             >
               <template #icon>
                 <pause-circle-outlined v-if="record.enabled" style="font-size: 16px" />
@@ -151,16 +174,11 @@ const { isPhone } = useScreen();
             </a-button>
             <a-popconfirm
               :title="t('TXT_CODE_71155575')"
-              @confirm="emit('delete', record)"
               :ok-text="t('TXT_CODE_d507abff')"
               :cancel-text="t('TXT_CODE_a0451c97')"
+              @confirm="emit('delete', record)"
             >
-              <a-button
-                type="link"
-                size="small"
-                danger
-                :title="t('TXT_CODE_6f2c1806')"
-              >
+              <a-button type="link" size="small" danger :title="t('TXT_CODE_6f2c1806')">
                 <template #icon><delete-outlined style="font-size: 16px" /></template>
               </a-button>
             </a-popconfirm>

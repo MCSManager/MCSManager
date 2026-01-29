@@ -67,4 +67,12 @@ export class CircularBuffer<T> {
       wasDeleted
     };
   }
+  
+  clear(){
+    this.buffer = new Array(this.capacity);
+    this.head = 0;
+    this.tail = 0;
+    this.size = 0;
+    this.deleted = false;
+  }
 }

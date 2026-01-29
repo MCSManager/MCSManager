@@ -7,6 +7,7 @@ import { JavaInfo } from "../entity/commands/java/java_manager";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import javaManager from "../service/java_manager";
+import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import FileManager from "../service/system_file";
@@ -20,8 +21,7 @@ routerApp.on("java_manager/add", async (ctx, data) => {
   const info = new JavaInfo(data.name, Date.now());
 
   try {
-    if (!FileManager.checkFileName(data.name))
-      throw new Error($t("名称中包含非法字符，请修改名称!"));
+    if (!FileManager.checkFileName(data.name)) throw new Error($t("TXT_CODE_b623b66f"));
 
     if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     info.path = path.normalize(data.path);
@@ -35,17 +35,15 @@ routerApp.on("java_manager/add", async (ctx, data) => {
 routerApp.on("java_manager/download", async (ctx, data) => {
   const info = new JavaInfo(data.name, Date.now(), data.version);
   info.downloading = true;
-
-  let downloadUrl: string;
   try {
     if (javaManager.exists(info.fullname)) throw new Error($t("TXT_CODE_79cf0302"));
     javaManager.addJava(info);
-
-    downloadUrl = await javaManager.getJavaDownloadUrl(info);
-    if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));
-
     protocol.response(ctx, true);
 
+    const downloadUrl = await javaManager.getJavaDownloadUrl(info);
+    if (!downloadUrl) throw new Error($t("TXT_CODE_4b0f31b4"));
+
+    logger.info(`Download Java: ${downloadUrl} --> ${info.fullname}`);
     const javaPath = path.join(javaManager.getJavaDataDir(), info.fullname);
     fs.mkdirsSync(javaPath);
 
@@ -76,11 +74,12 @@ routerApp.on("java_manager/download", async (ctx, data) => {
         strip: 1
       });
     }
-    await fs.remove(filePath);
 
+    logger.info(`Install Env Success: ${info.fullname}`);
     info.downloading = false;
     javaManager.updateJavaInfo(info);
   } catch (error: any) {
+    logger.warn(`Install Env Error: ${error.message}`);
     await javaManager.removeJava(info.fullname);
     protocol.responseError(ctx, error);
   }

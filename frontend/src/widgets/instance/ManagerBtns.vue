@@ -21,12 +21,12 @@ import {
   DashboardOutlined,
   FieldTimeOutlined,
   FolderOpenOutlined,
+  UsbOutlined,
   UsergroupDeleteOutlined
 } from "@ant-design/icons-vue";
 
 import { computed, ref, watch } from "vue";
 import type { RouteLocationPathRaw } from "vue-router";
-import { LayoutCardHeight } from "../../config/originLayoutConfig";
 import { useLayoutCardTools } from "../../hooks/useCardTools";
 import { arrayFilter } from "../../tools/array";
 import EventConfig from "./dialogs/EventConfig.vue";
@@ -149,7 +149,7 @@ const btns = computed(() => {
     },
     {
       title: t("TXT_CODE_MOD_MANAGER"),
-      icon: AppstoreAddOutlined,
+      icon: UsbOutlined,
       click: () => {
         toPage({ path: "/instances/terminal/mods" });
       },
@@ -158,21 +158,13 @@ const btns = computed(() => {
         // Narrow it down to Minecraft server types only (Java or Bedrock)
         const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
-
         const hasPermission = state.settings.canFileManager || isAdmin.value;
         if (!hasPermission) return false;
         if (!foldersLoaded.value) return false;
         return folders.value && folders.value.length > 0;
       }
     },
-    {
-      title: t("TXT_CODE_40241d8e"),
-      icon: UsergroupDeleteOutlined,
-      click: () => {
-        mcSettingsDialog.value?.openDialog();
-      },
-      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
-    },
+
     {
       title: t("TXT_CODE_3fee13ed"),
       icon: BuildOutlined,
@@ -190,13 +182,7 @@ const btns = computed(() => {
       condition: () =>
         instanceInfo.value?.config.type.includes(TYPE_STEAM_SERVER_UNIVERSAL) ?? false
     },
-    {
-      title: t("TXT_CODE_d23631cb"),
-      icon: CodeOutlined,
-      click: () => {
-        terminalConfigDialog.value?.openDialog();
-      }
-    },
+
     {
       title: t("TXT_CODE_b7d026f8"),
       icon: FieldTimeOutlined,
@@ -219,12 +205,27 @@ const btns = computed(() => {
       }
     },
     {
+      title: t("TXT_CODE_d23631cb"),
+      icon: CodeOutlined,
+      click: () => {
+        terminalConfigDialog.value?.openDialog();
+      }
+    },
+    {
       title: t("TXT_CODE_4f34fc28"),
       icon: AppstoreAddOutlined,
       condition: () => isAdmin.value,
       click: () => {
         instanceDetailsDialog.value?.openDialog();
       }
+    },
+    {
+      title: t("TXT_CODE_40241d8e"),
+      icon: UsergroupDeleteOutlined,
+      click: () => {
+        mcSettingsDialog.value?.openDialog();
+      },
+      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
     },
     {
       title: t("TXT_CODE_4f34fc28"),
@@ -253,11 +254,7 @@ watch(instanceInfo, (cfg, oldCfg) => {
     <template #body>
       <ResponsiveLayoutGroup class="function-btns-container" :items="btns">
         <template #default="{ item }">
-          <InnerCard
-            :style="{ height: LayoutCardHeight.MINI }"
-            :icon="item.icon"
-            @click="item.click"
-          >
+          <InnerCard :style="{ height: '90px' }" :icon="item.icon" @click="item.click">
             <template #title>
               {{ item.title }}
             </template>

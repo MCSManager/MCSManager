@@ -1,20 +1,27 @@
 import Router from "@koa/router";
 import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
+import { requestConcurrencyLimiter, speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import RemoteRequest from "../service/remote_command";
-import RemoteServiceSubsystem from "../service/remote_service";
 import { modManagerService } from "../service/mod_manager_service";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
+import RemoteRequest from "../service/remote_command";
+import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
-import { $t } from "../i18n";
+import { checkSafeUrl } from "../utils/url";
 
 const router = new Router({ prefix: "/mod" });
 
 // Permission check middleware
 router.use(async (ctx, next) => {
-  if (ctx.path === "/mod/mc_versions" || ctx.path === "/mod/search" || ctx.path === "/mod/info" || ctx.path === "/mod/batch_info") {
+  if (
+    ctx.path === "/mod/mc_versions" ||
+    ctx.path === "/mod/search" ||
+    ctx.path === "/mod/info" ||
+    ctx.path === "/mod/batch_info"
+  ) {
     return await next();
   }
 
@@ -42,21 +49,18 @@ router.use(async (ctx, next) => {
   }
 });
 
-router.get(
-  "/mc_versions",
-  permission({ level: ROLE.USER }),
-  async (ctx) => {
-    try {
-      const result = await modManagerService.getMinecraftVersions();
-      ctx.body = result;
-    } catch (err) {
-      ctx.body = err;
-    }
+router.get("/mc_versions", speedLimit(0.5), permission({ level: ROLE.USER }), async (ctx) => {
+  try {
+    const result = await modManagerService.getMinecraftVersions();
+    ctx.body = result;
+  } catch (err) {
+    ctx.body = err;
   }
-);
+});
 
 router.get(
   "/list",
+  speedLimit(0.5),
   permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String }
@@ -65,9 +69,15 @@ router.get(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
+      const page = Math.max(1, Number(ctx.query.page) || 1);
+      const pageSize = Math.min(50, Math.max(1, Number(ctx.query.pageSize) || 50));
+      const folder = ctx.query.folder ? String(ctx.query.folder) : undefined;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/list", {
-        instanceUuid
+        instanceUuid,
+        page,
+        pageSize,
+        folder: folder || ""
       });
       ctx.body = result;
     } catch (err) {
@@ -78,10 +88,12 @@ router.get(
 
 router.get(
   "/info",
+  speedLimit(0.5),
   permission({ level: ROLE.USER }),
   validator({
     query: { hash: String }
   }),
+
   async (ctx) => {
     try {
       const hash = String(ctx.query.hash);
@@ -96,6 +108,7 @@ router.get(
 router.get(
   "/search",
   permission({ level: ROLE.USER }),
+  requestConcurrencyLimiter("mod_manager:search"),
   async (ctx) => {
     try {
       const query = String(ctx.query.query || "");
@@ -106,6 +119,13 @@ router.get(
       const type = String(ctx.query.type || "all");
       const loader = String(ctx.query.loader || "all");
       const environment = String(ctx.query.environment || "all");
+
+      if (offset < 0 || offset > 100000) {
+        throw new Error("Offset must be between 0 and 100000");
+      }
+      if (limit < 1 || limit > 50) {
+        throw new Error("Limit must be between 1 and 50");
+      }
 
       const result = await modManagerService.searchProjects(query, offset, limit, {
         source,
@@ -123,6 +143,7 @@ router.get(
 
 router.get(
   "/versions",
+  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({
     query: { projectId: String, source: String }
@@ -142,6 +163,8 @@ router.get(
 router.post(
   "/download",
   permission({ level: ROLE.USER }),
+  speedLimit(5),
+  requestConcurrencyLimiter("mod_manager:download"),
   validator({
     body: {
       daemonId: String,
@@ -153,8 +176,23 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, url, fileName, projectType, fallbackUrl, deferred, extraInfo } =
+      const { daemonId, uuid, url, fileName, projectType, fallbackUrl, extraInfo } =
         ctx.request.body;
+
+      // Validate URL to prevent SSRF attacks
+      if (!checkSafeUrl(url)) {
+        ctx.status = 400;
+        ctx.body = new Error("Invalid or unsafe URL");
+        return;
+      }
+
+      // Validate fallbackUrl if provided
+      if (fallbackUrl && !checkSafeUrl(fallbackUrl)) {
+        ctx.status = 400;
+        ctx.body = new Error("Invalid or unsafe fallback URL");
+        return;
+      }
+
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/install", {
         instanceUuid: uuid,
@@ -162,7 +200,6 @@ router.post(
         fileName,
         type: projectType,
         fallbackUrl,
-        deferred,
         extraInfo
       });
       ctx.body = result;
@@ -174,6 +211,7 @@ router.post(
 
 router.post(
   "/stop_transfer",
+  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({
     body: { daemonId: String, uuid: String, fileName: String, type: String }
@@ -204,6 +242,7 @@ router.post(
 
 router.get(
   "/config_files",
+  speedLimit(0.5),
   permission({ level: ROLE.USER }),
   validator({
     query: { daemonId: String, uuid: String, modId: String, type: String, fileName: String }
@@ -227,18 +266,18 @@ router.get(
 
 router.post(
   "/toggle",
+  speedLimit(0.5),
   permission({ level: ROLE.USER }),
   validator({
     body: { daemonId: String, uuid: String, fileName: String }
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, fileName, deferred } = ctx.request.body;
+      const { daemonId, uuid, fileName } = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/toggle", {
         instanceUuid: uuid,
-        fileName,
-        deferred
+        fileName
       });
       ctx.body = result;
     } catch (err) {
@@ -249,79 +288,18 @@ router.post(
 
 router.post(
   "/delete",
+  speedLimit(1),
   permission({ level: ROLE.USER }),
   validator({
     body: { daemonId: String, uuid: String, fileName: String }
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, fileName, deferred } = ctx.request.body;
+      const { daemonId, uuid, fileName } = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/delete", {
         instanceUuid: uuid,
-        fileName,
-        deferred
-      });
-      ctx.body = result;
-    } catch (err) {
-      ctx.body = err;
-    }
-  }
-);
-
-router.get(
-  "/deferred/list",
-  permission({ level: ROLE.USER }),
-  validator({
-    query: { daemonId: String, uuid: String }
-  }),
-  async (ctx) => {
-    try {
-      const { daemonId, uuid } = ctx.query;
-      const remoteService = RemoteServiceSubsystem.getInstance(String(daemonId));
-      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/list", {
-        instanceUuid: uuid
-      });
-      ctx.body = result;
-    } catch (err) {
-      ctx.body = err;
-    }
-  }
-);
-
-router.post(
-  "/deferred/auto_execute",
-  permission({ level: ROLE.USER }),
-  validator({
-    body: { daemonId: String, uuid: String }
-  }),
-  async (ctx) => {
-    try {
-      const { daemonId, uuid, enabled } = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/auto_execute", {
-        instanceUuid: uuid,
-        enabled
-      });
-      ctx.body = result;
-    } catch (err) {
-      ctx.body = err;
-    }
-  }
-);
-
-router.post(
-  "/deferred/clear",
-  permission({ level: ROLE.USER }),
-  validator({
-    body: { daemonId: String, uuid: String }
-  }),
-  async (ctx) => {
-    try {
-      const { daemonId, uuid } = ctx.request.body;
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/mods/deferred/clear", {
-        instanceUuid: uuid
+        fileName
       });
       ctx.body = result;
     } catch (err) {
@@ -332,6 +310,7 @@ router.post(
 
 router.post(
   "/batch_info",
+  speedLimit(0.1),
   permission({ level: ROLE.USER }),
   validator({
     body: { hashes: Array }

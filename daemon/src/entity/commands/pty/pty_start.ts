@@ -45,7 +45,9 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
     process.stdout?.on("data", (text) => this.emit("data", text));
     process.stderr?.on("data", (text) => this.emit("data", text));
     process.on("exit", (code) => this.emit("exit", code));
-    this.initNamedPipe();
+    setTimeout(() => {
+      this.initNamedPipe();
+    }, 1000);
   }
 
   private async initNamedPipe() {
@@ -59,11 +61,7 @@ export class GoPtyProcessAdapter extends EventEmitter implements IInstanceProces
       });
       this.pipeClient = writePipe;
     } catch (error) {
-      throw new Error(
-        $t("TXT_CODE_9d1d244f", {
-          pipeName: error
-        })
-      );
+      logger.warn("Start PTY Pipe error, This maybe is not a bug:", this.pipeName, error);
     }
   }
 
@@ -172,7 +170,7 @@ export default class PtyStartCommand extends AbsStartCommand {
 
     // command parsing
     let commandList: string[] = [];
-    const tmpStarCmd = instance.parseTextParams(instance.config.startCommand);
+    const tmpStarCmd = await instance.parseTextParams(instance.config.startCommand);
     if (os.platform() === "win32") {
       // windows: cmd.exe /c {{startCommand}}
       commandList = [tmpStarCmd];
@@ -222,6 +220,8 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.println("INFO", $t("TXT_CODE_ba09da46", { name: runAsConfig.runAsName }));
     }
 
+    instance.println("INFO", "> " + commandList.join(" "));
+
     // create pty child process
     const subProcess = spawn(PTY_PATH, ptyParameter, {
       ...runAsConfig,
@@ -240,7 +240,7 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.println(
         "ERROR",
         $t("TXT_CODE_pty_start.pidErr", {
-          startCommand: instance.config.startCommand,
+          startCommand: commandList.join(" "),
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
         })
@@ -256,7 +256,7 @@ export default class PtyStartCommand extends AbsStartCommand {
       instance.println(
         "ERROR",
         $t("TXT_CODE_pty_start.pidErr", {
-          startCommand: instance.config.startCommand,
+          startCommand: commandList.join(" "),
           path: PTY_PATH,
           params: JSON.stringify(ptyParameter)
         })
@@ -273,7 +273,6 @@ export default class PtyStartCommand extends AbsStartCommand {
         pid: ptySubProcessCfg.pid
       })
     );
-    instance.println("INFO", $t("TXT_CODE_pty_start.startEmulatedTerminal"));
     instance.println("INFO", $t("TXT_CODE_b50ffba8"));
   }
 }

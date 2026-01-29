@@ -1,9 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 
-export const getMcVersionsApi = useDefineApi<
-  {},
-  string[]
->({
+export const getMcVersionsApi = useDefineApi<{}, string[]>({
   method: "GET",
   url: "/api/mod/mc_versions"
 });
@@ -13,11 +10,17 @@ export const modListApi = useDefineApi<
     params: {
       daemonId: string;
       uuid: string;
+      page?: number;
+      pageSize?: number;
+      folder?: string;
     };
   },
   {
     mods: any[];
     folders: string[];
+    total: number;
+    page: number;
+    pageSize: number;
   }
 >({
   method: "GET",
@@ -30,7 +33,6 @@ export const toggleModApi = useDefineApi<
       daemonId: string;
       uuid: string;
       fileName: string;
-      deferred?: boolean;
     };
   },
   boolean
@@ -45,53 +47,12 @@ export const deleteModApi = useDefineApi<
       daemonId: string;
       uuid: string;
       fileName: string;
-      deferred?: boolean;
     };
   },
   boolean
 >({
   method: "POST",
   url: "/api/mod/delete"
-});
-
-export const getDeferredTasksApi = useDefineApi<
-  {
-    params: {
-      daemonId: string;
-      uuid: string;
-    };
-  },
-  any[]
->({
-  method: "GET",
-  url: "/api/mod/deferred/list"
-});
-
-export const setAutoExecuteApi = useDefineApi<
-  {
-    data: {
-      daemonId: string;
-      uuid: string;
-      enabled: boolean;
-    };
-  },
-  boolean
->({
-  method: "POST",
-  url: "/api/mod/deferred/auto_execute"
-});
-
-export const clearDeferredTasksApi = useDefineApi<
-  {
-    data: {
-      daemonId: string;
-      uuid: string;
-    };
-  },
-  boolean
->({
-  method: "POST",
-  url: "/api/mod/deferred/clear"
 });
 
 export const getModInfoApi = useDefineApi<
@@ -159,7 +120,6 @@ export const downloadModApi = useDefineApi<
       fileName: string;
       projectType?: string;
       fallbackUrl?: string;
-      deferred?: boolean;
     };
   },
   boolean

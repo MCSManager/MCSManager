@@ -1,29 +1,16 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { t } from "@/lang/i18n";
-import { useScreen } from "@/hooks/useScreen";
-import { useDeferredTasks } from "./useDeferredTasks";
 import {
-  FloatButton,
-  Popover,
-  Button,
-  Space,
-  Progress,
-  Switch
-} from "ant-design-vue";
-import {
-  ClockCircleOutlined,
   CloudDownloadOutlined,
   CloudUploadOutlined,
-  PlayCircleOutlined,
   DeleteOutlined,
   LoadingOutlined,
   SwapOutlined
 } from "@ant-design/icons-vue";
+import { Button, FloatButton, Popover, Progress } from "ant-design-vue";
+import { computed } from "vue";
 
-import {
-  stopTransferApi
-} from "@/services/apis/modManager";
+import { stopTransferApi } from "@/services/apis/modManager";
 import { message } from "ant-design-vue";
 
 const props = defineProps<{
@@ -45,20 +32,8 @@ const emit = defineEmits<{
   (e: "refresh"): void;
 }>();
 
-const { isPhone } = useScreen();
-
 const activeTasksCount = computed(() => {
   return props.fileStatus?.downloadTasks?.filter((t: any) => t.status === 0).length || 0;
-});
-
-const localDeferredTasks = computed({
-  get: () => props.deferredTasks,
-  set: (val) => emit("update:deferredTasks", val)
-});
-
-const localAutoExecute = computed({
-  get: () => props.autoExecute,
-  set: (val) => emit("update:autoExecute", val)
 });
 
 const onStopTransfer = async (task: any) => {
@@ -83,183 +58,156 @@ const onStopTransfer = async (task: any) => {
 
 <template>
   <teleport to="body">
-    <div>
-      <!-- Deferred Queue Button (Top) -->
-      <Popover placement="leftBottom" trigger="click" overlay-class-name="frosted-popover" :arrow="false">
-        <template #content>
-          <div class="w-[400px] max-h-[600px] overflow-y-auto p-4 custom-scrollbar">
-            <div class="flex items-center justify-between mb-6 px-1">
-              <div class="flex items-center gap-3">
-                <div class="w-1 h-5 bg-blue-500 rounded-sm shadow-[0_0_10px_rgba(59,130,246,0.3)]"></div>
-                <span class="font-bold text-lg tracking-tight">{{ t("TXT_CODE_MOD_DEFERRED_QUEUE") }}</span>
-                <span class="text-sm opacity-30 font-mono bg-gray-500/10 px-2 py-0.5 rounded-md">{{ props.deferredTasks.length }}</span>
-              </div>
-              <Space :size="12">
-                <Button size="small" type="link" class="px-0 text-sm font-medium text-red-500 hover:text-red-400" @click="emit('clearAll')" v-if="props.deferredTasks.length > 0">
-                  {{ t("TXT_CODE_MOD_CLEAR_QUEUE") }}
-                </Button>
-                <Button size="small" type="link" class="px-0 text-sm font-medium" @click="emit('executeAll')" v-if="props.deferredTasks.length > 0" :loading="isExecuting">
-                  {{ t("TXT_CODE_MOD_EXECUTE_ALL") }}
-                </Button>
-              </Space>
+    <!-- Download Manager Button (Bottom) -->
+    <Popover
+      placement="leftBottom"
+      trigger="click"
+      overlay-class-name="frosted-popover"
+      :arrow="false"
+    >
+      <template #content>
+        <div class="popover-content custom-scrollbar">
+          <div class="popover-header">
+            <div class="header-left">
+              <div class="header-indicator"></div>
+              <span class="header-title">{{ t("TXT_CODE_TRANSFER_MANAGER") }}</span>
+              <span class="header-badge">{{ fileStatus?.downloadTasks?.length || 0 }}</span>
             </div>
+          </div>
 
-            <!-- Auto Execute Switch (Always at top) -->
-            <div class="flex items-center justify-between px-4 py-2.5 mb-6 bg-blue-500/10 dark:bg-blue-400/10 rounded-xl border border-blue-500/20 dark:border-blue-400/20 transition-all hover:bg-blue-500/15 dark:hover:bg-blue-400/15">
-              <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 opacity-90">关服自动运行</span>
-              <Switch v-model:checked="localAutoExecute" size="small" />
+          <div
+            v-if="!fileStatus?.downloadTasks?.length && !fileStatus?.downloadFileFromURLTask"
+            class="empty-state"
+          >
+            <div class="empty-icon">
+              <SwapOutlined style="font-size: 28px" class="empty-icon-inner" />
             </div>
-
-            <div v-if="props.deferredTasks.length === 0" class="py-16 text-center">
-              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-500/5 mb-4">
-                <ClockCircleOutlined style="font-size: 28px" class="opacity-10" />
-              </div>
-              <div class="text-xs opacity-20 tracking-[0.2em] font-light uppercase">{{ t("TXT_CODE_NO_DATA") }}</div>
+            <div class="empty-text">
+              {{ t("TXT_CODE_NO_TRANSFER_TASK") }}
             </div>
+          </div>
 
-            <div class="flex flex-col gap-3">
-              <div
-                v-for="task in props.deferredTasks"
-                :key="task.id"
-                class="group relative overflow-hidden border border-black/[0.03] dark:border-white/[0.05] rounded-xl bg-black/[0.02] dark:bg-white/[0.04] p-4 transition-all hover:bg-black/[0.05] dark:hover:bg-white/[0.08] hover:shadow-lg hover:shadow-black/5"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex flex-col overflow-hidden flex-1 mr-4">
-                    <div class="flex items-center gap-2 mb-1.5">
-                      <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-500 dark:text-blue-400 font-bold uppercase tracking-wider border border-blue-500/20">
-                        {{ task.type }}
-                      </span>
-                    </div>
-                    <span class="font-semibold text-base truncate opacity-90" :title="task.name">{{ task.name }}</span>
+          <div
+            v-if="
+              fileStatus?.downloadFileFromURLTask > 0 &&
+              (!fileStatus.downloadTasks || fileStatus.downloadTasks.length === 0)
+            "
+            class="url-task-indicator"
+          >
+            <div class="url-task-icon">
+              <loading-outlined class="url-task-icon-inner" />
+            </div>
+            <span class="url-task-text">{{
+              t("TXT_CODE_8b7fe641", { count: fileStatus.downloadFileFromURLTask })
+            }}</span>
+          </div>
+
+          <div class="task-list">
+            <div v-for="task in fileStatus.downloadTasks" :key="task.path" class="task-item">
+              <div class="task-header">
+                <div class="task-info">
+                  <div
+                    :class="[
+                      'task-icon',
+                      task.type === 'download' ? 'task-icon-download' : 'task-icon-upload'
+                    ]"
+                  >
+                    <CloudDownloadOutlined
+                      v-if="task.type === 'download'"
+                      style="font-size: 22px"
+                    />
+                    <CloudUploadOutlined v-else style="font-size: 22px" />
                   </div>
-                  <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                    <Button size="large" type="text" class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-blue-500/10 text-blue-500 dark:text-blue-400" @click="emit('executeTask', task)">
-                      <template #icon><PlayCircleOutlined style="font-size: 18px" /></template>
-                    </Button>
-                    <Button size="large" type="text" danger class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-red-500/10" @click="emit('removeTask', task.id)">
-                      <template #icon><DeleteOutlined style="font-size: 18px" /></template>
-                    </Button>
+                  <div class="task-details">
+                    <div class="task-filename" :title="task.path">
+                      {{ task.path.split(/[\\/]/).pop() || task.path }}
+                    </div>
+                    <div class="task-status-text">
+                      <span v-if="task.status === 2" class="task-status-error">{{
+                        task.error || t("TXT_CODE_DOWNLOAD_FAILED")
+                      }}</span>
+                      <span v-else-if="task.status === 1" class="task-status-success">{{
+                        t("TXT_CODE_FINISHED")
+                      }}</span>
+                      <template v-else>
+                        <span class="task-status-progress"
+                          >{{ (task.current / 1024 / 1024).toFixed(2) }}MB</span
+                        >
+                        <span v-if="task.total > 0" class="task-status-total"
+                          >/ {{ (task.total / 1024 / 1024).toFixed(2) }}MB</span
+                        >
+                      </template>
+                    </div>
                   </div>
                 </div>
+                <div class="task-actions">
+                  <span
+                    :class="[
+                      'task-percent',
+                      task.status === 2
+                        ? 'task-percent-error'
+                        : task.status === 1
+                        ? 'task-percent-success'
+                        : task.type === 'upload'
+                        ? 'task-percent-upload'
+                        : 'task-percent-download'
+                    ]"
+                  >
+                    {{ task.total > 0 ? Math.floor((task.current / task.total) * 100) : 0 }}%
+                  </span>
+                  <Button
+                    v-if="task.status === 0"
+                    size="large"
+                    type="text"
+                    danger
+                    class="task-stop-button"
+                    @click="onStopTransfer(task)"
+                  >
+                    <template #icon><DeleteOutlined style="font-size: 18px" /></template>
+                  </Button>
+                </div>
+              </div>
+              <div class="task-progress-wrapper">
+                <Progress
+                  :percent="
+                    task.status === 1
+                      ? 100
+                      : task.total > 0
+                      ? Math.floor((task.current / task.total) * 100)
+                      : 0
+                  "
+                  :show-info="false"
+                  :status="
+                    task.status === 2 ? 'exception' : task.status === 1 ? 'success' : 'active'
+                  "
+                  :stroke-width="6"
+                  :stroke-color="
+                    task.status === 2
+                      ? '#ef4444'
+                      : task.status === 1
+                      ? '#22c55e'
+                      : task.type === 'upload'
+                      ? '#f97316'
+                      : '#3b82f6'
+                  "
+                  class="task-progress"
+                />
               </div>
             </div>
           </div>
+        </div>
+      </template>
+      <FloatButton
+        class="frosted-float-button"
+        :style="{ right: '24px', bottom: '24px', zIndex: 9999 }"
+        :tooltip="t('TXT_CODE_TRANSFER_MANAGER')"
+        :badge="{ count: activeTasksCount, overflowCount: 999, showZero: false }"
+      >
+        <template #icon>
+          <SwapOutlined />
         </template>
-        <FloatButton
-          class="frosted-float-button"
-          :style="{ right: '24px', bottom: '100px', zIndex: 9999 }"
-          :tooltip="t('TXT_CODE_MOD_DEFERRED_QUEUE')"
-          :badge="{ count: props.deferredTasks.length, overflowCount: 99, showZero: false }"
-        >
-          <template #icon>
-            <clock-circle-outlined />
-          </template>
-        </FloatButton>
-      </Popover>
-
-      <!-- Download Manager Button (Bottom) -->
-      <Popover placement="leftBottom" trigger="click" overlay-class-name="frosted-popover" :arrow="false">
-        <template #content>
-          <div class="w-[400px] max-h-[600px] overflow-y-auto p-4 custom-scrollbar">
-            <div class="flex items-center justify-between mb-6 px-1">
-              <div class="flex items-center gap-3">
-                <div class="w-1 h-5 bg-orange-500 rounded-sm shadow-[0_0_10px_rgba(249,115,22,0.3)]"></div>
-                <span class="font-bold text-lg tracking-tight">{{ t("TXT_CODE_TRANSFER_MANAGER") }}</span>
-                <span class="text-sm opacity-30 font-mono bg-gray-500/10 px-2 py-0.5 rounded-md">{{ fileStatus?.downloadTasks?.length || 0 }}</span>
-              </div>
-            </div>
-
-            <div v-if="!fileStatus?.downloadTasks?.length && !fileStatus?.downloadFileFromURLTask" class="py-16 text-center">
-              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-500/5 mb-4">
-                <SwapOutlined style="font-size: 28px" class="opacity-10" />
-              </div>
-              <div class="text-xs opacity-20 tracking-[0.2em] font-light uppercase">{{ t("TXT_CODE_NO_TRANSFER_TASK") }}</div>
-            </div>
-            
-            <div v-if="fileStatus?.downloadFileFromURLTask > 0 && (!fileStatus.downloadTasks || fileStatus.downloadTasks.length === 0)" 
-              class="flex items-center gap-4 p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center shadow-inner">
-                <loading-outlined class="text-blue-500 dark:text-blue-400 text-lg" />
-              </div>
-              <span class="text-base font-semibold opacity-80">{{ t("TXT_CODE_8b7fe641", { count: fileStatus.downloadFileFromURLTask }) }}</span>
-            </div>
-
-            <div class="flex flex-col gap-3">
-              <div
-                v-for="task in fileStatus.downloadTasks"
-                :key="task.path"
-                class="group relative overflow-hidden border border-black/[0.03] dark:border-white/[0.05] rounded-xl bg-black/[0.02] dark:bg-white/[0.04] p-4 transition-all hover:bg-black/[0.05] dark:hover:bg-white/[0.08] hover:shadow-lg hover:shadow-black/5"
-              >
-                <div class="flex items-center justify-between mb-4">
-                  <div class="flex items-center gap-4 overflow-hidden flex-1">
-                    <div :class="[
-                      'w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm',
-                      task.type === 'download' ? 'bg-blue-500/10 text-blue-500 dark:text-blue-400' : 'bg-orange-500/10 text-orange-500 dark:text-orange-400'
-                    ]">
-                      <CloudDownloadOutlined v-if="task.type === 'download'" style="font-size: 22px" />
-                      <CloudUploadOutlined v-else style="font-size: 22px" />
-                    </div>
-                    <div class="min-w-0 flex-1 text-left">
-                      <div class="font-semibold text-base truncate w-full opacity-90 mb-1" :title="task.path">
-                        {{ task.path.split(/[\\/]/).pop() || task.path }}
-                      </div>
-                      <div class="text-xs opacity-40 font-mono flex items-center gap-2">
-                        <span v-if="task.status === 2" class="text-red-500 dark:text-red-400 font-bold">{{ task.error || t("TXT_CODE_DOWNLOAD_FAILED") }}</span>
-                        <span v-else-if="task.status === 1" class="text-green-500 dark:text-green-400 font-bold">{{ t("TXT_CODE_FINISHED") }}</span>
-                        <template v-else>
-                          <span class="font-bold text-gray-600 dark:text-gray-300">{{ (task.current / 1024 / 1024).toFixed(2) }}MB</span>
-                          <span v-if="task.total > 0" class="opacity-50">/ {{ (task.total / 1024 / 1024).toFixed(2) }}MB</span>
-                        </template>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="text-right ml-4 flex-shrink-0 flex items-center gap-3">
-                    <span
-                      :class="[
-                        'text-sm font-black font-mono tracking-tighter',
-                        task.status === 2 ? 'text-red-500' : task.status === 1 ? 'text-green-500' : task.type === 'upload' ? 'text-orange-500' : 'text-blue-500'
-                      ]"
-                    >
-                      {{ task.total > 0 ? Math.floor((task.current / task.total) * 100) : 0 }}%
-                    </span>
-                    <Button
-                      v-if="task.status === 0"
-                      size="large"
-                      type="text"
-                      danger
-                      class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0"
-                      @click="onStopTransfer(task)"
-                    >
-                      <template #icon><DeleteOutlined style="font-size: 18px" /></template>
-                    </Button>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <Progress
-                    :percent="task.status === 1 ? 100 : (task.total > 0 ? Math.floor((task.current / task.total) * 100) : 0)"
-                    :show-info="false"
-                    :status="task.status === 2 ? 'exception' : task.status === 1 ? 'success' : 'active'"
-                    :stroke-width="6"
-                    :stroke-color="task.status === 2 ? '#ef4444' : task.status === 1 ? '#22c55e' : task.type === 'upload' ? '#f97316' : '#3b82f6'"
-                    class="m-0"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-        <FloatButton
-          class="frosted-float-button"
-          :style="{ right: '24px', bottom: '24px', zIndex: 9999 }"
-          :tooltip="t('TXT_CODE_TRANSFER_MANAGER')"
-          :badge="{ count: activeTasksCount, overflowCount: 999, showZero: false }"
-        >
-          <template #icon>
-            <SwapOutlined />
-          </template>
-        </FloatButton>
-      </Popover>
-    </div>
+      </FloatButton>
+    </Popover>
   </teleport>
 </template>
 
@@ -273,6 +221,317 @@ const onStopTransfer = async (task: any) => {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(156, 163, 175, 0.4);
+}
+
+.popover-content {
+  width: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 6px 0px;
+}
+
+.popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-indicator {
+  width: 0.25rem;
+  height: 1.25rem;
+  background-color: #f97316;
+  border-radius: 0.125rem;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+.header-title {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.025em;
+}
+
+.header-badge {
+  font-size: 0.875rem;
+  opacity: 0.3;
+  font-family: monospace;
+  background-color: rgba(107, 114, 128, 0.1);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  border-radius: 0.375rem;
+}
+
+.empty-state {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  text-align: center;
+}
+
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  background-color: rgba(107, 114, 128, 0.05);
+  margin-bottom: 1rem;
+}
+
+.empty-icon-inner {
+  opacity: 0.1;
+}
+
+.empty-text {
+  font-size: 0.75rem;
+  opacity: 0.2;
+  letter-spacing: 0.2em;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.url-task-indicator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  margin-bottom: 1rem;
+}
+
+.url-task-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: rgba(59, 130, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.url-task-icon-inner {
+  color: #3b82f6;
+  font-size: 1.125rem;
+}
+
+.app-dark-theme .url-task-icon-inner {
+  color: #60a5fa;
+}
+
+.url-task-text {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.task-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  border-radius: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  transition: all 0.3s;
+}
+
+.app-dark-theme .task-item {
+  border-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.task-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.app-dark-theme .task-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.task-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+  flex: 1;
+}
+
+.task-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.task-icon-download {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.app-dark-theme .task-icon-download {
+  color: #60a5fa;
+}
+
+.task-icon-upload {
+  background-color: rgba(249, 115, 22, 0.1);
+  color: #f97316;
+}
+
+.app-dark-theme .task-icon-upload {
+  color: #fb923c;
+}
+
+.task-details {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.task-filename {
+  font-weight: 600;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  opacity: 0.9;
+  margin-bottom: 0.25rem;
+}
+
+.task-status-text {
+  font-size: 0.75rem;
+  opacity: 0.4;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-status-error {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.app-dark-theme .task-status-error {
+  color: #f87171;
+}
+
+.task-status-success {
+  color: #22c55e;
+  font-weight: 700;
+}
+
+.app-dark-theme .task-status-success {
+  color: #4ade80;
+}
+
+.task-status-progress {
+  font-weight: 700;
+  color: #4b5563;
+}
+
+.app-dark-theme .task-status-progress {
+  color: #d1d5db;
+}
+
+.task-status-total {
+  opacity: 0.5;
+}
+
+.task-actions {
+  text-align: right;
+  margin-left: 1rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.task-percent {
+  font-size: 0.875rem;
+  font-weight: 900;
+  font-family: monospace;
+  letter-spacing: -0.05em;
+}
+
+.task-percent-error {
+  color: #ef4444;
+}
+
+.task-percent-success {
+  color: #22c55e;
+}
+
+.task-percent-upload {
+  color: #f97316;
+}
+
+.task-percent-download {
+  color: #3b82f6;
+}
+
+.task-stop-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  opacity: 0;
+  transition: all 0.3s;
+  transform: translateX(0.5rem);
+}
+
+.task-item:hover .task-stop-button {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.task-stop-button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.task-progress-wrapper {
+  margin-top: 0.75rem;
+}
+
+.task-progress {
+  margin: 0;
 }
 
 @media (max-width: 585px) {

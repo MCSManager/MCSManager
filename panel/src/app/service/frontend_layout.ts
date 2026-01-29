@@ -65,6 +65,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       page: "__settings__",
       items: [],
       theme: {
+        pageTitle: "MCSManager Panel",
         logoImage: "",
         backgroundImage: ""
       }
@@ -296,6 +297,14 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
         }
       ]
     },

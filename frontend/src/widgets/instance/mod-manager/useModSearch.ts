@@ -1,21 +1,20 @@
-import { ref, computed, type Ref, createVNode } from "vue";
-import { useLocalStorage } from "@vueuse/core";
-import { message, Modal, Button, Space } from "ant-design-vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { t } from "@/lang/i18n";
 import {
-  searchModsApi,
-  getModVersionsApi,
-  getMcVersionsApi,
+  deleteModApi,
   downloadModApi,
-  deleteModApi
+  getMcVersionsApi,
+  getModVersionsApi,
+  searchModsApi
 } from "@/services/apis/modManager";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { useLocalStorage } from "@vueuse/core";
+import { Button, message, Modal } from "ant-design-vue";
+import { computed, createVNode, ref, type Ref } from "vue";
 
 export function useModSearch(
   instanceId: string,
   daemonId: string,
   getMods: () => any[],
-  addDeferredTask: (type: string, name: string, data: any) => void,
   loadMods: () => Promise<void>,
   folders: Ref<string[]>
 ) {
@@ -40,7 +39,7 @@ export function useModSearch(
     {
       label: t("TXT_CODE_LOADER"),
       options: [
-        { label: t("TXT_CODE_ALL"), value: "all" },
+        { label: t("TXT_CODE_c564f5bf"), value: "all" },
         { label: "Forge", value: "forge" },
         { label: "Fabric", value: "fabric" },
         { label: "Quilt", value: "quilt" },
@@ -171,6 +170,7 @@ export function useModSearch(
 
   const showVersions = async (mod: any) => {
     selectedMod.value = mod;
+    versions.value = [];
     showVersionModal.value = true;
     versionsLoading.value = true;
     try {
@@ -281,7 +281,7 @@ export function useModSearch(
       daemonId: daemonId!,
       url: file.url,
       fallbackUrl,
-      fileName: file.filename || file.name || (file.url?.split("/").pop()),
+      fileName: file.filename || file.name || file.url?.split("/").pop(),
       projectType: finalType
     };
 
