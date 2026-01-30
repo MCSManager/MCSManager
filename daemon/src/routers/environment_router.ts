@@ -1,12 +1,11 @@
-import { $t } from "../i18n";
-import { DockerManager } from "../service/docker_service";
-import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
 import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
+import { $t } from "../i18n";
+import { DockerManager } from "../service/docker_service";
 import logger from "../service/log";
-import os from "os";
+import * as protocol from "../service/protocol";
+import { routerApp } from "../service/router";
 
 // Get the image list of this system
 routerApp.on("environment/images", async (ctx, data) => {
@@ -108,6 +107,22 @@ routerApp.on("environment/progress", async (ctx) => {
       data[k] = v;
     });
     protocol.response(ctx, data);
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
+// get supported platforms for a Docker image
+routerApp.on("environment/image_platforms", async (ctx, data) => {
+  try {
+    const imageName = data.imageName;
+    if (!imageName) {
+      protocol.responseError(ctx, "Image name is required");
+      return;
+    }
+    const dockerManager = new DockerManager();
+    const platforms = await dockerManager.getImagePlatforms(imageName);
+    protocol.response(ctx, platforms);
   } catch (error: any) {
     protocol.responseError(ctx, error);
   }

@@ -59,11 +59,13 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
 
 export default class GeneralStartCommand extends AbsStartCommand {
   async createProcess(instance: Instance, source = "") {
+    if (!instance.config.ie || !instance.config.oe) {
+      instance.config.ie = "utf-8";
+      instance.config.oe = "utf-8";
+    }
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||
-      !instance.hasCwdPath() ||
-      !instance.config.ie ||
-      !instance.config.oe
+      !instance.hasCwdPath()
     )
       throw new StartupError($t("TXT_CODE_general_start.instanceConfigErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());

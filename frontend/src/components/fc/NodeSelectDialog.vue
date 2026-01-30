@@ -5,9 +5,12 @@ import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
 import { reportErrorMsg } from "@/tools/validator";
 import type { MountComponent } from "@/types";
-import { onMounted, ref } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { computed, onMounted, ref } from "vue";
 
-interface Props extends MountComponent<ComputedNodeInfo> {}
+interface Props extends MountComponent<ComputedNodeInfo> {
+  targetPlatforms?: string[];
+}
 
 const props = defineProps<Props>();
 
@@ -17,6 +20,29 @@ const { isVisible, openDialog, cancel, submit } = useDialog<ComputedNodeInfo>(pr
 const { response, refresh: refreshOverviewInfo } = useRemoteNode();
 
 const availableNodes = ref<ComputedNodeInfo[]>([]);
+
+// check node is supported target platforms
+const isNodeSupported = (node: ComputedNodeInfo): boolean => {
+  if (!props.targetPlatforms || props.targetPlatforms.length === 0) {
+    return true;
+  }
+  
+  if (!node.dockerPlatforms || node.dockerPlatforms.length === 0) {
+    return false;
+  }
+  return node.dockerPlatforms?.some((platform) => props.targetPlatforms?.includes(platform));
+};
+
+// sorted nodes list: supported nodes first, unsupported nodes last
+const sortedNodes = computed(() => {
+  const nodes = [...availableNodes.value];
+  return nodes.sort((a, b) => {
+    const aSupported = isNodeSupported(a);
+    const bSupported = isNodeSupported(b);
+    if (aSupported === bSupported) return 0;
+    return aSupported ? -1 : 1;
+  });
+});
 
 const selectNode = (node: ComputedNodeInfo) => {
   if (!node.available) {
@@ -31,7 +57,6 @@ onMounted(async () => {
   availableNodes.value = response.value?.remote?.filter((node) => node.available) || [];
 });
 
-// 暴露openDialog方法
 defineExpose({
   openDialog
 });
@@ -68,23 +93,43 @@ defineExpose({
           </div>
         </div>
         <div
-          v-for="item in availableNodes"
+          v-for="item in sortedNodes"
           v-else
           :key="item.uuid + item.remarks + item.ip"
           :data-ip="item.ip"
           :data-uuid="item.uuid"
           class="node-item"
+          :class="{ 'node-unsupported': props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item) }"
           @click="selectNode(item)"
         >
           <div class="node-content">
             <div class="node-header">
               <span class="node-name">{{ item.remarks || `${item.ip}:${item.port}` }}</span>
-              <a-tag v-if="item.available" color="green">{{ t("TXT_CODE_b078a763") }}</a-tag>
-              <a-tag v-else color="red">{{ t("TXT_CODE_6cbb84a9") }}</a-tag>
+              <div class="node-tags">
+                <a-tag v-if="item.available" color="green">{{ t("TXT_CODE_b078a763") }}</a-tag>
+                <a-tag v-else color="red">{{ t("TXT_CODE_6cbb84a9") }}</a-tag>
+                <a-tag
+                  v-if="props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)"
+                  color="orange"
+                >
+                  <ExclamationCircleOutlined />
+                  {{ t("TXT_CODE_node_platform_unsupported") }}
+                </a-tag>
+              </div>
             </div>
             <div class="node-details">
               <span>ID: {{ item.uuid }}</span>
               <span>{{ t("TXT_CODE_3d0885c0") }}: {{ item?.platformText }}</span>
+              <span
+                :class="{
+                  'node-warning-text': props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)
+                }"
+              >
+                <template v-if="props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)">
+                  <ExclamationCircleOutlined />
+                </template>
+                Docker platforms: {{ item?.dockerPlatforms?.join(",") || "--" }}
+              </span>
               <span>{{ t("TXT_CODE_c7d0002e") }}: {{ item.ip }}:{{ item.port }}</span>
             </div>
           </div>
@@ -118,6 +163,11 @@ defineExpose({
       border-color: var(--color-gray-5);
     }
 
+    &.node-unsupported {
+      border-color: var(--color-warning);
+      background-color: var(--color-warning-bg, rgba(255, 193, 7, 0.1));
+    }
+
     .node-content {
       .node-header {
         display: flex;
@@ -131,6 +181,12 @@ defineExpose({
           flex: 1;
           margin-right: 8px;
         }
+
+        .node-tags {
+          display: flex;
+          gap: 4px;
+          align-items: center;
+        }
       }
 
       .node-details {
@@ -139,6 +195,11 @@ defineExpose({
         gap: 4px;
         color: var(--color-gray-8);
         font-size: 12px;
+
+        .node-warning-text {
+          color: var(--color-warning, #faad14);
+          font-weight: 500;
+        }
       }
     }
   }

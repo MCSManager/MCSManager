@@ -92,6 +92,10 @@ declare global {
     memorySwap?: number;
     memorySwappiness?: number;
     labels?: string[];
+    capAdd?: string[];
+    capDrop?: string[];
+    devices?: string[];
+    privileged?: boolean;
   }
 
   interface IPanelResponseProtocol {
@@ -160,6 +164,7 @@ declare global {
       portAssignInterval: number;
       port: number;
     };
+    dockerPlatforms?: string[];
   }
 
   interface IPanelOverviewResponse {

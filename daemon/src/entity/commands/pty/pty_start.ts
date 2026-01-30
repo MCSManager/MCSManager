@@ -141,12 +141,11 @@ export default class PtyStartCommand extends AbsStartCommand {
   }
 
   async createProcess(instance: Instance) {
-    if (
-      !instance.config.startCommand ||
-      !instance.hasCwdPath() ||
-      !instance.config.ie ||
-      !instance.config.oe
-    )
+    if (!instance.config.ie || !instance.config.oe) {
+      instance.config.ie = "utf-8";
+      instance.config.oe = "utf-8";
+    }
+    if (!instance.config.startCommand || !instance.hasCwdPath())
       throw new StartupError($t("TXT_CODE_pty_start.cmdErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
     if (!path.isAbsolute(path.normalize(instance.absoluteCwdPath())))

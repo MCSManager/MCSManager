@@ -99,7 +99,7 @@ const toOpenInstance = async () => {
     });
 
     checkRunningTimer = setTimeout(() => {
-      if (!terminalHook.isRunning.value) {
+      if (terminalHook.isStopped.value) {
         Modal.error({
           title: t("TXT_CODE_ac405b50"),
           content: h("div", [
