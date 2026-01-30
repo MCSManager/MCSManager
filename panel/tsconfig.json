@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@languages/*": ["../languages/*"],
+      "mcsmanager-common": ["../common/src/index.ts"],
       "*": ["node_modules/*", "src/types/*"]
     }
   },

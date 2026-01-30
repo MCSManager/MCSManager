@@ -80,6 +80,8 @@ declare module 'vue' {
     CmdAssistantDialog: typeof import('./src/components/fc/CmdAssistantDialog/index.vue')['default']
     CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
+    DockerCapabilityDialog: typeof import('./src/components/fc/DockerCapabilityDialog.vue')['default']
+    DockerDeviceDialog: typeof import('./src/components/fc/DockerDeviceDialog.vue')['default']
     DockerPortDialog: typeof import('./src/components/fc/DockerPortDialog.vue')['default']
     DownloadFileDialog: typeof import('./src/components/fc/DownloadFileDialog.vue')['default']
     DownloadJavaDialog: typeof import('./src/components/fc/DownloadJavaDialog.vue')['default']
