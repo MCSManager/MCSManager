@@ -4,11 +4,11 @@ import fs from "fs-extra";
 import { killProcess } from "mcsmanager-common";
 import { $t } from "../../../i18n";
 import logger from "../../../service/log";
+import { getRunAsUserParams } from "../../../tools/system_user";
 import Instance from "../../instance/instance";
 import { IInstanceProcess } from "../../instance/interface";
 import { commandStringToArray } from "../base/command_parser";
 import AbsStartCommand from "../start";
-import { getRunAsUserParams } from "../../../tools/system_user";
 
 // Error exception at startup
 class StartupError extends Error {
@@ -59,11 +59,13 @@ class ProcessAdapter extends EventEmitter implements IInstanceProcess {
 
 export default class GeneralStartCommand extends AbsStartCommand {
   async createProcess(instance: Instance, source = "") {
+    if (!instance.config.ie || !instance.config.oe) {
+      instance.config.ie = "utf-8";
+      instance.config.oe = "utf-8";
+    }
     if (
       (!instance.config.startCommand && instance.config.processType === "general") ||
-      !instance.hasCwdPath() ||
-      !instance.config.ie ||
-      !instance.config.oe
+      !instance.hasCwdPath()
     )
       throw new StartupError($t("TXT_CODE_general_start.instanceConfigErr"));
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
