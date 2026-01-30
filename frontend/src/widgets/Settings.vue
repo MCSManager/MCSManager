@@ -27,8 +27,8 @@ import {
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
-import { useLayoutConfigStore } from "../stores/useLayoutConfig";
-import { arrayFilter } from "../tools/array";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
+import { arrayFilter } from "@/tools/array";
 
 defineProps<{
   card: LayoutCard;
@@ -41,6 +41,7 @@ const { setLogoImage, setBackgroundImage } = useAppConfigStore();
 const { changeDesignMode, containerState } = useLayoutContainerStore();
 
 interface MySettings extends Settings {
+  pageTitle?: string;
   logoUrl?: string;
   bgUrl?: string;
   proLicenseKey?: string;
@@ -183,6 +184,24 @@ const contacts = arrayFilter([
   }
 ]);
 
+const handleSavePageTitle = async () => {
+  Modal.confirm({
+    title: t("TXT_CODE_3d811e3e"),
+    content: t("TXT_CODE_cf95364f"),
+    async onOk() {
+      const cfg = await getSettingsConfig();
+      if (!cfg?.theme) {
+        return reportErrorMsg(t("TXT_CODE_c7cb38fd"));
+      }
+      const newTitle = formData.value?.pageTitle?.trim() || t("TXT_CODE_47ae8ee6");
+      cfg.theme.pageTitle = newTitle;
+      await setSettingsConfig(cfg);
+
+      message.success(t("TXT_CODE_a7907771"));
+    }
+  });
+};
+
 const uploadLogo = async () => {
   const body = document.querySelector("body");
   if (formData.value && body) {
@@ -272,6 +291,11 @@ onMounted(async () => {
   }
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
+  }
+  if (cfg?.theme?.pageTitle) {
+    formData.value.pageTitle = cfg.theme.pageTitle;
+  } else {
+    formData.value.pageTitle = t("TXT_CODE_47ae8ee6");
   }
   setTimeout(() => {
     if (router.currentRoute.value.query.tab === "pro") {
@@ -403,6 +427,27 @@ onUnmounted(() => {
               </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">{{ t("TXT_CODE_395f147d") }}</a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_b305236a") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.pageTitle"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
+                  </a-form-item>
+
+                  <div class="button mb-24">
+                    <a-button
+                      type="primary"
+                      :loading="submitIsLoading"
+                      @click="handleSavePageTitle()"
+                    >
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
+
                   <a-form-item>
                     <a-typography-title :level="5">{{ t("TXT_CODE_ebd2a6a1") }}</a-typography-title>
                     <a-typography-paragraph>

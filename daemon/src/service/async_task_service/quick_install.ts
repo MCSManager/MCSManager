@@ -8,6 +8,7 @@ import Instance from "../../entity/instance/instance";
 import InstanceConfig from "../../entity/instance/Instance_config";
 import { $t } from "../../i18n";
 import { getFileManager } from "../file_router_service";
+import { getCommonHeaders } from "../../common/network";
 import { InstanceUpdateAction } from "../instance_update_action";
 import logger from "../log";
 import InstanceSubsystem from "../system_instance";
@@ -86,7 +87,9 @@ export class QuickInstallTask extends AsyncTask {
     const response = await axios<Readable>({
       url: this.targetLink,
       responseType: "stream",
-      signal: this.abortController.signal
+      signal: this.abortController.signal,
+      headers: getCommonHeaders(this.targetLink),
+      maxRedirects: 10
     });
 
     // Get total file size

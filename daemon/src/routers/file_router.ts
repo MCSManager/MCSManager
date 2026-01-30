@@ -5,6 +5,7 @@ import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
+import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
@@ -66,10 +67,23 @@ routerApp.on("file/status", async (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+
+    const downloadTasks = [];
+    if (downloadManager.task) {
+      downloadTasks.push({
+        path: downloadManager.task.path,
+        total: downloadManager.task.total,
+        current: downloadManager.task.current,
+        status: downloadManager.task.status,
+        error: downloadManager.task.error
+      });
+    }
+
     protocol.response(ctx, {
       instanceFileTask: instance.info.fileLock ?? 0,
       globalFileTask: globalEnv.fileTaskCount ?? 0,
       downloadFileFromURLTask: downloadManager.downloadingCount,
+      downloadTasks,
       platform: os.platform(),
       isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
       disks: getWindowsDisks()
@@ -117,7 +131,11 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     }
 
     const fileManager = getFileManager(data.instanceUuid);
+    fileManager.checkPath(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
+
+    // Start download in background
+    const fallbackUrl = data.fallbackUrl;
 
     const maxDownloadFromUrlFileCount = globalConfiguration.config.maxDownloadFromUrlFileCount;
     if (
@@ -130,8 +148,24 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    await downloadManager.downloadFromUrl(url, targetPath);
+    downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
+      logger.error(`Download failed: ${url} -> ${targetPath}`, err);
+    });
+
     protocol.response(ctx, {});
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
+// stop download from url
+routerApp.on("file/download_stop", (ctx, data) => {
+  try {
+    const fileManager = getFileManager(data.instanceUuid);
+    fileManager.checkPath(data.fileName);
+    const targetPath = fileManager.toAbsolutePath(data.fileName);
+    const result = downloadManager.stop(targetPath);
+    protocol.response(ctx, result);
   } catch (error: any) {
     protocol.responseError(ctx, error);
   }

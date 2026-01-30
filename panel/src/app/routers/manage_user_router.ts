@@ -65,8 +65,8 @@ router.get(
     // Fix parameter parsing - check if parameters exist before converting
     const userName = ctx.query.userName ? String(ctx.query.userName) : "";
     const role = ctx.query.role ? String(ctx.query.role) : "";
-    const page = Number(ctx.query.page) || 1;
-    const pageSize = Number(ctx.query.page_size) || 10;
+    const page = Math.max(1, Number(ctx.query.page) || 1);
+    const pageSize = Math.min(50, Math.max(1, Number(ctx.query.page_size) || 10));
 
     const condition: any = {};
     if (userName && userName !== "undefined") condition["userName"] = `%${userName}%`;

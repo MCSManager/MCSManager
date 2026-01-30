@@ -35,8 +35,8 @@ router.get(
   validator({ query: { daemonId: String, page: Number, page_size: Number } }),
   async (ctx) => {
     const daemonId = String(ctx.query.daemonId);
-    const page = Number(ctx.query.page);
-    const pageSize = Number(ctx.query.page_size);
+    const page = Math.max(1, Number(ctx.query.page) || 1);
+    const pageSize = Math.min(50, Math.max(1, Number(ctx.query.page_size) || 10));
     const instanceName = ctx.query.instance_name;
     const status = ctx.query.status;
     const tag = String(ctx.query.tag);

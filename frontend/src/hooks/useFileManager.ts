@@ -319,11 +319,11 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         initDefaultTab(path);
       }
     } catch (error: any) {
-      if (thisTab) {
-        handleRemoveTab(thisTab.key);
-      } else {
-        initDefaultTab();
-      }
+      // if (thisTab) {
+      //   handleRemoveTab(thisTab.key);
+      // } else {
+      //   initDefaultTab();
+      // }
 
       if (throwErr) throw error;
       return reportErrorMsg(error.message);
@@ -534,7 +534,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
   const spinning = ref(false);
 
-  const selectedFiles = async (files: File[]) => {
+  const selectedFiles = async (files: File[], overridePath?: string) => {
     const { state: missionCfg, execute: getUploadMissionCfg } = uploadAddress();
     const fileSet = new Set(files.map((f) => ({ file: f, overwrite: false })));
     const existingFiles: typeof fileSet = new Set();
@@ -600,7 +600,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       try {
         await getUploadMissionCfg({
           params: {
-            upload_dir: currentPath.value,
+            upload_dir: overridePath || currentPath.value,
             daemonId: daemonId!,
             uuid: instanceId!,
             file_name: f.file.name

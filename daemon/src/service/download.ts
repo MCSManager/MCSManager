@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import axios from "axios";
 import { pipeline, Readable } from "stream";
 import logger from "./log";
+import { getCommonHeaders } from "../common/network";
 
 export function downloadFileToLocalFile(url: string, localFilePath: string): Promise<boolean> {
   logger.info(`Download File: ${url} --> ${path.normalize(localFilePath)}`);
@@ -12,7 +13,9 @@ export function downloadFileToLocalFile(url: string, localFilePath: string): Pro
       const response = await axios<Readable>({
         url,
         responseType: "stream",
-        timeout: 1000 * 10
+        timeout: 1000 * 20,
+        headers: getCommonHeaders(url),
+        maxRedirects: 10
       });
       const writeStream = fs.createWriteStream(path.normalize(localFilePath));
       pipeline(response.data, writeStream, (err) => {

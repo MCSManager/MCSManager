@@ -1,8 +1,10 @@
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { reportErrorMsg } from "@/tools/validator";
 import axios from "axios";
 
-const { currentTheme } = useAppConfigStore();
+interface InitBridgeParams {
+  theme: string;
+}
+
 class SandboxBridge {
   [key: string | symbol | number]: any;
 
@@ -11,7 +13,11 @@ class SandboxBridge {
   // API
   public $axios = axios;
   public $realWindow = window;
-  public $theme = currentTheme.value;
+  public $theme: string;
+
+  constructor(params: InitBridgeParams) {
+    this.$theme = params.theme;
+  }
 
   public $onMounted(callback: Function) {
     this._addCallback("onMounted", callback);
@@ -54,8 +60,8 @@ export class ProxySandBox {
   public proxyWindow;
   public fakeWindow: SandboxBridge;
 
-  constructor() {
-    this.fakeWindow = new SandboxBridge();
+  constructor(params: InitBridgeParams) {
+    this.fakeWindow = new SandboxBridge(params);
     this.proxyWindow = new Proxy(this.fakeWindow, {
       set: (target, prop, value) => {
         target[prop] = value;
@@ -87,10 +93,4 @@ export class ProxySandBox {
   public mount() {
     this.fakeWindow.$mountSandbox();
   }
-}
-
-export function useProxySandbox(code = "") {
-  const sandbox = new ProxySandBox();
-  sandbox.executeJavascript(code);
-  return sandbox;
 }

@@ -16,7 +16,7 @@ export default class FileWriter {
   lastUpdate: number = Date.now();
 
   constructor(
-    private cwd: string,
+    public readonly cwd: string,
     private filename: string,
     public readonly size: number,
     private unzip: boolean,

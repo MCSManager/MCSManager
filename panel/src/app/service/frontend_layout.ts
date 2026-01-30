@@ -65,6 +65,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       page: "__settings__",
       items: [],
       theme: {
+        pageTitle: "MCSManager Panel",
         logoImage: "",
         backgroundImage: ""
       }
@@ -271,6 +272,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           meta: {},
           type: "InstanceFileManager",
           title: t("TXT_CODE_ae533703"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
+      page: "/instances/terminal/mods",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "InstanceModManager",
+          title: t("TXT_CODE_MOD_MANAGER"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

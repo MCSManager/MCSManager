@@ -7,11 +7,13 @@ import SelectInstances from "@/components/fc/SelectInstances.vue";
 import { t } from "@/lang/i18n";
 import type { AntColumnsType } from "@/types/ant";
 import type { DownloadFileConfigItem } from "@/types/fileManager";
+import type { DownloadJavaConfigItem } from "@/types/javaManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
 import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
 import DockerPortDialog from "./DockerPortDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
+import DownloadJavaDialog from "./DownloadJavaDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
 import RenewalDialog from "./RenewalDialog.vue";
 import TagsDialog from "./TagsDialog.vue";
@@ -27,6 +29,11 @@ interface PortConfigItem extends DockerConfigItem {
 }
 
 interface DockerEnvItem {
+  label: string;
+  value: string;
+}
+
+interface DockerLabelItem {
   label: string;
   value: string;
 }
@@ -124,6 +131,29 @@ export async function useDockerEnvEditDialog(data: DockerEnvItem[] = []) {
   );
 }
 
+export async function useDockerLabelEditDialog(data: DockerLabelItem[] = []) {
+  return (
+    (await useMountComponent({
+      data,
+      title: t("TXT_CODE_g1c43s2h"),
+      subTitle: t("TXT_CODE_MimBB1Ea"),
+      columns: [
+        {
+          align: "center",
+          dataIndex: "label",
+          title: t("TXT_CODE_a42984e")
+        },
+        {
+          align: "center",
+          dataIndex: "value",
+          title: t("TXT_CODE_115e8a25")
+        }
+      ] as AntColumnsType[],
+      textarea: true
+    }).mount<DockerLabelItem[]>(KvOptionsDialogVue)) || []
+  );
+}
+
 export async function openLoadingDialog(title: string, text: string, subTitle?: string) {
   const component = useMountComponent({
     title,
@@ -198,4 +228,12 @@ export async function openMarketDialog(
     ...options
   }).load<InstanceType<typeof MarketDialog>>(MarketDialog);
   return dialog!.openDialog();
+}
+
+export async function useDownloadJavaDialog(installedJavaList?: string[]) {
+  return (
+    (await useMountComponent({ installedJavaList }).mount<DownloadJavaConfigItem>(
+      DownloadJavaDialog
+    )) || undefined
+  );
 }

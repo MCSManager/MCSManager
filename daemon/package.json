@@ -1,6 +1,6 @@
 {
   "name": "mcsmanager-daemon",
-  "version": "4.11.0",
+  "version": "4.12.1",
   "description": "Provides remote control capability for MCSManager to manage processes, scheduled tasks, I/O streams, and more",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",
@@ -42,11 +42,11 @@
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.7.5",
     "stream-throttle": "^0.1.3",
+    "tar": "^7.5.2",
     "uuid": "^8.3.2",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@types/stream-throttle": "^0.1.4",
     "@types/archiver": "^5.3.1",
     "@types/dockerode": "^3.2.7",
     "@types/formidable": "^3.4.5",
@@ -61,6 +61,7 @@
     "@types/pidusage": "^2.0.1",
     "@types/proper-lockfile": "^4.1.4",
     "@types/ssh2": "^1.11.7",
+    "@types/stream-throttle": "^0.1.4",
     "@types/uuid": "^8.3.0",
     "eslint": "^7.13.0",
     "nodemon": "^3.1.10",

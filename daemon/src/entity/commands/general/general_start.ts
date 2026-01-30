@@ -71,7 +71,7 @@ export default class GeneralStartCommand extends AbsStartCommand {
     if (!fs.existsSync(instance.absoluteCwdPath())) fs.mkdirpSync(instance.absoluteCwdPath());
 
     // command parsing
-    const tmpStartCmd = instance.parseTextParams(instance.config.startCommand);
+    const tmpStartCmd = await instance.parseTextParams(instance.config.startCommand);
     const commandList = commandStringToArray(tmpStartCmd);
     const commandExeFile = commandList[0];
     const commandParameters = commandList.slice(1);

@@ -143,7 +143,12 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   env: [],
   changeWorkdir: true,
   memorySwap: undefined,
-  memorySwappiness: undefined
+  memorySwappiness: undefined,
+  labels: []
+};
+
+export const defaultInstanceJavaConfig: IInstanceJavaConfig = {
+  id: ""
 };
 
 export const defaultInstanceInfo: IGlobalInstanceConfig = {
@@ -172,6 +177,9 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   rconPassword: "",
   rconPort: undefined,
   rconIp: "",
+
+  // Java
+  java: defaultInstanceJavaConfig,
 
   // Old fields
   terminalOption: {

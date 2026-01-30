@@ -8,10 +8,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AAlert: typeof import('ant-design-vue/es')['Alert']
+    AAvatar: typeof import('ant-design-vue/es')['Avatar']
+    ABadge: typeof import('ant-design-vue/es')['Badge']
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
+    ACardMeta: typeof import('ant-design-vue/es')['CardMeta']
     ACarousel: typeof import('ant-design-vue/es')['Carousel']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACheckboxGroup: typeof import('ant-design-vue/es')['CheckboxGroup']
@@ -79,6 +82,7 @@ declare module 'vue' {
     DataStatistic: typeof import('./src/components/DataStatistic.vue')['default']
     DockerPortDialog: typeof import('./src/components/fc/DockerPortDialog.vue')['default']
     DownloadFileDialog: typeof import('./src/components/fc/DownloadFileDialog.vue')['default']
+    DownloadJavaDialog: typeof import('./src/components/fc/DownloadJavaDialog.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     Empty: typeof import('./src/components/Empty.vue')['default']
     FadeUpAnimation: typeof import('./src/components/FadeUpAnimation.vue')['default']
