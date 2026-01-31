@@ -1364,7 +1364,7 @@
   "TXT_CODE_870b392e": "Nombre maximum de fantômes à apparaître par tentative (utilisez -1 pour baser cela de la difficulté mondiale)",
   "TXT_CODE_8717ed9d": "Veuillez saisir les exigences environnementales",
   "TXT_CODE_871cb8bc": "Accédez au marché des applications pour installer des applications",
-  "TXT_CODE_871fb0d6": "Nombre de connexions échouées : Nombre de connexions réussies",
+  "TXT_CODE_871fb0d6": "Connexions échouées : Connexions réussies",
   "TXT_CODE_871feca": "Activer la coloration syntaxique Brigadier",
   "TXT_CODE_875e804b": "À quel niveau de difficulté les villageois zombies brisent-ils les portes ?",
   "TXT_CODE_877eea45": "Facultatif, la valeur par défaut est automatiquement créée et gérée. Si nécessaire, veuillez écrire le chemin absolu complet.",
