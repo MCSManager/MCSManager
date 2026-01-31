@@ -1370,6 +1370,7 @@
   "TXT_CODE_8981d724": "Unbenannte Titelspalte",
   "TXT_CODE_8a30e150": "Alle Sprachen",
   "TXT_CODE_8a5274c1": "Gibt an, wie lange in Millisekunden BungeeCord zwischengespeicherte Ergebnisse von Server-Pings verwenden soll, anstatt sie manuell für die Spieleranzahl zu pingen. Geben Sie zum Deaktivieren -1 ein",
+  "TXT_CODE_8a5305a6": "MC Leaves",
   "TXT_CODE_8a71a4d7": "Auf „true“ setzen, damit Feuerbälle die Mob-Griefing-Gamerregel umgehen",
   "TXT_CODE_8a7c57b9": "Ermöglicht Ihnen, die Türen einzustellen, deren Betätigung Redstone erfordert (Eiche, Fichte usw.)",
   "TXT_CODE_8a924345": "Ob ServerName anstelle des Weltnamens verwendet werden soll",
