@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
+import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import { missionPassport } from "../service/mission_passport";
 import FileManager from "../service/system_file";
@@ -11,6 +12,35 @@ import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
 import { clearUploadFiles } from "../tools/filepath";
 import { sendFile } from "../utils/speed_limit";
+
+// Helper function to normalize path for comparison
+function normalizePath(p: string): string {
+  return p.replace(/\\/g, "/").replace(/\/+/g, "/").replace(/\/$/, "");
+}
+
+// Helper function to check if a path is locked
+function isPathLocked(instance: Instance, targetPath: string): boolean {
+  const lockedFiles = instance.config.lockedFiles || [];
+  if (lockedFiles.length === 0) return false;
+
+  const normalizedTarget = normalizePath(targetPath);
+
+  for (const lockedPath of lockedFiles) {
+    const normalizedLocked = normalizePath(lockedPath);
+
+    // Check if target is exactly the locked path
+    if (normalizedTarget === normalizedLocked) {
+      return true;
+    }
+
+    // Check if target is inside a locked directory
+    if (normalizedTarget.startsWith(normalizedLocked + "/")) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 const router = new Router();
 
@@ -109,6 +139,14 @@ router.post("/upload/:key", async (ctx) => {
 
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
 
+      // Check if target file is locked (only when overwriting existing file, and only for non-admin users)
+      const isAdminUser = mission.parameter.isAdmin === true;
+      if (fs.existsSync(fileSaveAbsolutePath) && ctx.query.overwrite !== "false" && !isAdminUser) {
+        if (isPathLocked(instance, fileSaveRelativePath)) {
+          throw new Error($t("TXT_CODE_file_locked_upload_error"));
+        }
+      }
+
       await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
         overwrite: true
       });
@@ -158,7 +196,26 @@ router.post("/upload-new/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";
+
+    const fileManager = new FileManager(cwd);
     const filePath = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
+
+    // Check if target file is locked (only when overwriting, and only for non-admin users)
+    const isAdminUser = mission.parameter.isAdmin === true;
+    if (overwrite && !isAdminUser) {
+      const targetRelativePath = path.normalize(path.join(uploadDir, filename));
+      const targetAbsolutePath = fileManager.toAbsolutePath(targetRelativePath);
+      if (fs.existsSync(targetAbsolutePath) && isPathLocked(instance, targetRelativePath)) {
+        // Clean up any existing upload task for this file path
+        const existingTask = uploadManager.getByPath(filePath);
+        if (existingTask) {
+          await existingTask.writer.stop();
+          uploadManager.delete(existingTask.id);
+        }
+        throw new Error($t("TXT_CODE_file_locked_upload_error"));
+      }
+    }
+
     let fr = uploadManager.getByPath(filePath);
     if (fr && size != fr.writer.size) {
       uploadManager.delete(fr.id);

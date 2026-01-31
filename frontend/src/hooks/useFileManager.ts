@@ -12,8 +12,10 @@ import {
   downloadFromUrl as downloadFromUrlAPI,
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
+  lockFile as lockFileApi,
   moveFile as moveFileApi,
   touchFile as touchFileApi,
+  unlockFile as unlockFileApi,
   uploadAddress
 } from "@/services/apis/fileManager";
 import uploadService from "@/services/uploadService";
@@ -878,6 +880,48 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     useImageViewerDialog(instanceId || "", daemonId || "", file.name, currentPath.value);
   };
 
+  const lockFile = async (fileName: string, skipRefresh = false) => {
+    const { execute } = lockFileApi();
+    try {
+      await execute({
+        params: {
+          daemonId: daemonId || "",
+          uuid: instanceId || ""
+        },
+        data: {
+          target: currentPath.value + fileName
+        }
+      });
+      if (!skipRefresh) {
+        message.success(t("TXT_CODE_file_lock_success"));
+        await getFileList();
+      }
+    } catch (err: any) {
+      return reportErrorMsg(err.message);
+    }
+  };
+
+  const unlockFile = async (fileName: string, skipRefresh = false) => {
+    const { execute } = unlockFileApi();
+    try {
+      await execute({
+        params: {
+          daemonId: daemonId || "",
+          uuid: instanceId || ""
+        },
+        data: {
+          target: currentPath.value + fileName
+        }
+      });
+      if (!skipRefresh) {
+        message.success(t("TXT_CODE_file_unlock_success"));
+        await getFileList();
+      }
+    } catch (err: any) {
+      return reportErrorMsg(err.message);
+    }
+  };
+
   return {
     fileStatus,
     dialog,
@@ -923,6 +967,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     pushSelected,
     oneSelected,
     isImage,
-    showImage
+    showImage,
+    lockFile,
+    unlockFile
   };
 };

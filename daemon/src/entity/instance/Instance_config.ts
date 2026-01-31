@@ -93,4 +93,12 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     openFrpTunnelId: "",
     openFrpToken: ""
   };
+
+  // Locked files/folders (admin only can modify, normal users cannot access)
+  public lockedFiles: string[] = [];
+
+  // Performance optimization: folders that contain locked files inside
+  // This is automatically maintained when files are locked/unlocked
+  // Only folders in this list need to be checked for containsLockedPath()
+  public foldersWithLockedContent: string[] = [];
 }

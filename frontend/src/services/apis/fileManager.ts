@@ -19,11 +19,13 @@ export const fileList = useDefineApi<
       time: string;
       type: number;
       mode: number;
+      locked?: boolean;
     }[];
     page: number;
     pageSize: number;
     total: number;
     absolutePath: string;
+    lockedFiles?: string[];
   }
 >({
   url: "/api/files/list",
@@ -281,4 +283,42 @@ export const changePermission = useDefineApi<
 >({
   url: "/api/files/chmod",
   method: "PUT"
+});
+
+export const lockFile = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      target: string;
+    };
+  },
+  {
+    locked: boolean;
+    lockedFiles: string[];
+  }
+>({
+  url: "/api/files/lock",
+  method: "POST"
+});
+
+export const unlockFile = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      target: string;
+    };
+  },
+  {
+    locked: boolean;
+    lockedFiles: string[];
+  }
+>({
+  url: "/api/files/unlock",
+  method: "POST"
 });

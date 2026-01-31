@@ -12,6 +12,27 @@ import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
 
+// Helper function to check if user is admin
+function isAdmin(ctx: any): boolean {
+  return getUserPermission(ctx) >= ROLE.ADMIN;
+}
+
+// Helper function to check if files are locked for non-admin users
+// checkContents: if true, also check if the path contains any locked files (for non-admin users)
+async function checkFileLock(
+  remoteService: any,
+  instanceUuid: string,
+  targets: string[],
+  checkContents: boolean = true
+): Promise<{ hasLocked: boolean; lockedPaths: string[] }> {
+  const result = await new RemoteRequest(remoteService).request("file/check_lock", {
+    instanceUuid,
+    targets,
+    checkContents
+  });
+  return result;
+}
+
 const router = new Router({ prefix: "/files" });
 
 router.use(async (ctx, next) => {
@@ -70,6 +91,19 @@ router.get(
       const pageSize = Math.min(100, Math.max(1, Number(ctx.query.page_size) || 10));
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if target directory itself is locked for non-admin users
+      // (allow entering folders that contain locked files, but not locked folders themselves)
+      if (!isAdmin(ctx) && target !== "/" && target !== ".") {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, [target], false);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request("file/list", {
         instanceUuid,
         target,
@@ -100,6 +134,18 @@ router.put(
       const chmod = Number(ctx.request.body.chmod);
       const deep = Number(ctx.request.body.deep);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if file is locked for non-admin users (prevent changing permissions of locked files)
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, [target]);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request("file/chmod", {
         target,
         instanceUuid,
@@ -169,6 +215,18 @@ router.put(
       const target = String(ctx.request.body.target);
       const text = ctx.request.body.text;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if file is locked for non-admin users (prevent editing locked files)
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, [target]);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request(
         "file/edit",
         {
@@ -201,8 +259,21 @@ router.post(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const targets = ctx.request.body.targets as [];
+      const targets = ctx.request.body.targets as string[][];
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if any source files are locked for non-admin users
+      if (!isAdmin(ctx)) {
+        const sourcePaths = targets.map((t) => t[0]);
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, sourcePaths);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request("file/copy", {
         instanceUuid,
         targets
@@ -264,8 +335,21 @@ router.put(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const targets = ctx.request.body.targets as [];
+      const targets = ctx.request.body.targets as string[][];
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if any source files are locked for non-admin users
+      if (!isAdmin(ctx)) {
+        const sourcePaths = targets.map((t) => t[0]);
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, sourcePaths);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request("file/move", {
         instanceUuid,
         targets
@@ -285,9 +369,21 @@ router.delete(
   async (ctx) => {
     try {
       const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = ctx.query.uuid;
-      const targets = ctx.request.body.targets;
+      const instanceUuid = String(ctx.query.uuid);
+      const targets = ctx.request.body.targets as string[];
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if any files are locked for non-admin users
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, targets);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const result = await new RemoteRequest(remoteService).request("file/delete", {
         instanceUuid,
         targets
@@ -295,9 +391,9 @@ router.delete(
       operationLogger.log("instance_file_delete", {
         operator_ip: ctx.ip,
         operator_name: ctx.session?.["userName"],
-        instance_id: String(instanceUuid),
+        instance_id: instanceUuid,
         daemon_id: daemonId,
-        file: targets
+        file: targets.join(", ")
       });
       ctx.body = result;
     } catch (err) {
@@ -319,10 +415,22 @@ router.post(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const source = String(ctx.request.body.source);
-      const targets = ctx.request.body.targets;
+      const targets = ctx.request.body.targets as string[];
       const type = Number(ctx.request.body.type);
       const code = String(ctx.request.body.code);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if any files are locked for non-admin users (prevent compressing locked files)
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, targets);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const res = await new RemoteRequest(remoteService).request(
         "file/compress",
         {
@@ -353,6 +461,17 @@ router.all(
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if file is locked for non-admin users (prevent downloading locked files)
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, [fileName]);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const addr = remoteService.config.fullAddr;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
@@ -393,6 +512,17 @@ router.all(
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      // Check if upload directory is locked for non-admin users
+      if (!isAdmin(ctx)) {
+        const lockCheck = await checkFileLock(remoteService, instanceUuid, [uploadDir]);
+        if (lockCheck.hasLocked) {
+          ctx.status = 403;
+          ctx.body = $t("TXT_CODE_file_locked_error");
+          return;
+        }
+      }
+
       const addr = remoteService.config.fullAddr;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
@@ -401,7 +531,8 @@ router.all(
         password: password,
         parameter: {
           uploadDir,
-          instanceUuid
+          instanceUuid,
+          isAdmin: isAdmin(ctx)
         }
       });
       operationLogger.log("instance_file_upload", {
@@ -415,6 +546,74 @@ router.all(
         addr,
         remoteMappings
       };
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// Lock file/folder (admin only)
+router.post(
+  "/lock",
+  permission({ level: ROLE.ADMIN }),
+  speedLimit(3),
+  validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const target = String(ctx.request.body.target);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      const result = await new RemoteRequest(remoteService).request("file/lock", {
+        instanceUuid,
+        target
+      });
+
+      operationLogger.log("instance_file_lock", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        file: target
+      });
+
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// Unlock file/folder (admin only)
+router.post(
+  "/unlock",
+  permission({ level: ROLE.ADMIN }),
+  speedLimit(3),
+  validator({ query: { daemonId: String, uuid: String }, body: { target: String } }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const target = String(ctx.request.body.target);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      const result = await new RemoteRequest(remoteService).request("file/unlock", {
+        instanceUuid,
+        target
+      });
+
+      operationLogger.log("instance_file_unlock", {
+        operator_ip: ctx.ip,
+        operator_name: ctx.session?.["userName"],
+        instance_id: instanceUuid,
+        daemon_id: daemonId,
+        file: target
+      });
+
+      ctx.body = result;
     } catch (err) {
       ctx.body = err;
     }

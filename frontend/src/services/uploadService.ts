@@ -83,6 +83,7 @@ export class UploadFiles {
       uploadService.update();
     } catch (err: any) {
       this.removing = true;
+      uploadService.update();
       return reportErrorMsg(err.response?.data || err.message);
     }
   }
@@ -338,9 +339,9 @@ class UploadService {
     }
     if (this.status == "working" && this.current) {
       const currentFile = this.files.get(this.current)!;
-      let reachTaskEnd = removeFile;
+      let reachTaskEnd = removeFile || currentFile.removing;
 
-      if (removeFile) {
+      if (removeFile || currentFile.removing) {
         this.task = [];
       }
 
@@ -366,14 +367,14 @@ class UploadService {
         uploadTask.retries = 0;
         uploadTask.start(); // async
       }
-      if (reachTaskEnd && currentFile.prepared && tasks == 0) {
+      if (reachTaskEnd && (currentFile.prepared || currentFile.removing) && tasks == 0) {
         const currentFile = this.files.get(this.current)!;
         currentFile.onEnd();
-        if (!removeFile) {
+        if (!removeFile && !currentFile.removing) {
           this.uploaded += 1;
         }
         this.files.delete(this.current);
-        if (removeFile) {
+        if (removeFile || currentFile.removing) {
           message.error(t("TXT_CODE_c3adc044") + ": " + currentFile.file.name);
         } else {
           message.success(currentFile.file.name + " " + t("TXT_CODE_773f36a0"));

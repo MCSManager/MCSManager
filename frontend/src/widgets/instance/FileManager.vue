@@ -7,6 +7,7 @@ import { useFileManager } from "@/hooks/useFileManager";
 import { useRightClickMenu } from "@/hooks/useRightClickMenu";
 import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, t } from "@/lang/i18n";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import uploadService from "@/services/uploadService";
 import { arrayFilter } from "@/tools/array";
 import { filterFileName, getFileExtName, getFileIcon, isCompressFile } from "@/tools/fileManager";
@@ -28,13 +29,15 @@ import {
   FolderOutlined,
   FormOutlined,
   KeyOutlined,
+  LockOutlined,
   PauseOutlined,
   PlusOutlined,
   ScissorOutlined,
   SearchOutlined,
+  UnlockOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import { Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
+import { message, Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
 import dayjs from "dayjs";
 import { computed, h, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
 import FileEditor from "./dialogs/FileEditor.vue";
@@ -49,12 +52,15 @@ const daemonId = getMetaOrRouteValue("daemonId");
 
 const { isPhone } = useScreen();
 
+const { isAdmin } = useAppStateStore();
+
 const {
   dialog,
   spinning,
   fileStatus,
   permission,
   selectedRowKeys,
+  selectionData,
   operationForm,
   dataSource,
   breadcrumbs,
@@ -88,7 +94,9 @@ const {
   toDisk,
   oneSelected,
   isImage,
-  showImage
+  showImage,
+  lockFile,
+  unlockFile
 } = useFileManager(instanceId, daemonId);
 
 const { openRightClickMenu } = useRightClickMenu();
@@ -261,8 +269,133 @@ const handleClickFile = async (file: DataType) => {
   return editFile(file.name);
 };
 
-const menuList = (record: DataType) =>
-  arrayFilter<ItemType & { style?: CSSProperties }>([
+// Local lock state counter for forcing re-render
+const lockStateVersion = ref(0);
+
+// Local lock state map for immediate UI updates
+const localLockState = ref<Map<string, boolean>>(new Map());
+
+// Get lock state key for template reactivity
+const getLockStateKey = (record: DataType) => {
+  // Access lockStateVersion to create dependency
+  const version = lockStateVersion.value;
+  const localState = localLockState.value.get(record.name);
+  if (localState !== undefined) {
+    return `${record.name}-${localState}-${version}`;
+  }
+  return `${record.name}-${(record as any).locked ?? false}-${version}`;
+};
+
+// Check if file is locked - first check local state, then fall back to record
+const isFileLocked = (record: DataType) => {
+  const localState = localLockState.value.get(record.name);
+  if (localState !== undefined) {
+    return localState;
+  }
+  return (record as any).locked === true;
+};
+
+// Update local lock state immediately for better UX
+const updateLocalLockState = (fileName: string, locked: boolean) => {
+  localLockState.value.set(fileName, locked);
+  // Increment version to force re-render
+  lockStateVersion.value++;
+};
+
+// Clear local lock state when file list is refreshed
+watch(dataSource, () => {
+  localLockState.value.clear();
+  lockStateVersion.value++;
+});
+
+// Handle batch lock for multiple selected files
+const handleBatchLock = async () => {
+  if (!selectionData.value || selectionData.value.length === 0) return;
+  const filesToLock = selectionData.value.filter((file) => !isFileLocked(file));
+  if (filesToLock.length === 0) return;
+  // Skip refresh for all but trigger final refresh
+  for (const file of filesToLock) {
+    await lockFile(file.name, true);
+  }
+  message.success(t("TXT_CODE_file_lock_success"));
+  await getFileList();
+};
+
+// Handle batch unlock for multiple selected files
+const handleBatchUnlock = async () => {
+  if (!selectionData.value || selectionData.value.length === 0) return;
+  const filesToUnlock = selectionData.value.filter((file) => isFileLocked(file));
+  if (filesToUnlock.length === 0) return;
+  // Skip refresh for all but trigger final refresh
+  for (const file of filesToUnlock) {
+    await unlockFile(file.name, true);
+  }
+  message.success(t("TXT_CODE_file_unlock_success"));
+  await getFileList();
+};
+
+const menuList = (record: DataType) => {
+  const locked = isFileLocked(record);
+
+  // For non-admin users, if file is locked, only show lock icon (no other operations)
+  if (!isAdmin.value && locked) {
+    return arrayFilter<ItemType & { style?: CSSProperties }>([
+      {
+        label: t("TXT_CODE_file_locked"),
+        key: "locked",
+        icon: h(LockOutlined),
+        style: {
+          color: "var(--color-gray-6)",
+          cursor: "not-allowed"
+        },
+        onClick: () => {},
+        condition: () => !isMultiple.value
+      }
+    ]);
+  }
+
+  // For non-admin users with unlocked files, show normal menu (no lock option)
+  // For admin users, show full menu with lock/unlock option at the beginning
+  return arrayFilter<ItemType & { style?: CSSProperties }>([
+    // Lock/Unlock option - only for admin users (single file)
+    {
+      label: locked ? t("TXT_CODE_file_locked") : t("TXT_CODE_file_unlocked"),
+      key: "lock",
+      icon: locked ? h(LockOutlined) : h(UnlockOutlined),
+      style: locked
+        ? { color: "var(--color-orange-6)" }
+        : { color: "var(--color-green-6)" },
+      onClick: async () => {
+        // Update local state immediately for better UX
+        updateLocalLockState(record.name, !locked);
+        if (locked) {
+          await unlockFile(record.name, true);
+          message.success(t("TXT_CODE_file_unlock_success"));
+        } else {
+          await lockFile(record.name, true);
+          message.success(t("TXT_CODE_file_lock_success"));
+        }
+      },
+      condition: () => isAdmin.value && !isMultiple.value
+    },
+    // Batch Lock option - only for admin users (multiple files)
+    {
+      label: t("TXT_CODE_file_batch_lock"),
+      key: "batch_lock",
+      icon: h(LockOutlined),
+      style: { color: "var(--color-orange-6)" },
+      onClick: () => handleBatchLock(),
+      condition: () => isAdmin.value && isMultiple.value
+    },
+    // Batch Unlock option - only for admin users (multiple files)
+    {
+      label: t("TXT_CODE_file_batch_unlock"),
+      key: "batch_unlock",
+      icon: h(UnlockOutlined),
+      style: { color: "var(--color-green-6)" },
+      onClick: () => handleBatchUnlock(),
+      condition: () => isAdmin.value && isMultiple.value
+    },
     {
       label: t("TXT_CODE_b147fabc"),
       key: "new",
@@ -346,6 +479,7 @@ const menuList = (record: DataType) =>
       onClick: () => deleteFile(record.name)
     }
   ]);
+};
 
 const handleRightClickRow = (e: MouseEvent, record: DataType) => {
   e.preventDefault();
@@ -650,9 +784,48 @@ onUnmounted(() => {
                       </a-button>
                     </a-dropdown>
                     <a-space v-else>
+                      <!-- Lock/Unlock button rendered directly for immediate reactivity -->
+                      <a-tooltip
+                        v-if="isAdmin"
+                        :key="getLockStateKey(record as DataType)"
+                        :title="
+                          isFileLocked(record as DataType)
+                            ? t('TXT_CODE_file_locked')
+                            : t('TXT_CODE_file_unlocked')
+                        "
+                      >
+                        <a-button
+                          type="text"
+                          size="small"
+                          :style="
+                            isFileLocked(record as DataType)
+                              ? { color: 'var(--color-orange-6)' }
+                              : { color: 'var(--color-green-6)' }
+                          "
+                          @click.stop="
+                            async () => {
+                              const locked = isFileLocked(record as DataType);
+                              updateLocalLockState(record.name, !locked);
+                              if (locked) {
+                                await unlockFile(record.name, true);
+                                message.success(t('TXT_CODE_file_unlock_success'));
+                              } else {
+                                await lockFile(record.name, true);
+                                message.success(t('TXT_CODE_file_lock_success'));
+                              }
+                            }
+                          "
+                        >
+                          <template #icon>
+                            <LockOutlined v-if="isFileLocked(record as DataType)" />
+                            <UnlockOutlined v-else />
+                          </template>
+                        </a-button>
+                      </a-tooltip>
+                      <!-- Other menu items -->
                       <a-tooltip
                         v-for="(item, i) in (menuList(record as DataType) as any).filter(
-                          (menu: any) => !menu.children
+                          (menu: any) => !menu.children && menu.key !== 'lock'
                         )"
                         :key="i"
                         :title="item.label"
@@ -662,7 +835,7 @@ onUnmounted(() => {
                           type="text"
                           size="small"
                           :style="item.style"
-                          @click="
+                          @click.stop="
                             () => {
                               oneSelected(record.name, record as DataType);
                               item.onClick();
