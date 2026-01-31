@@ -3244,5 +3244,9 @@
   "TXT_CODE_ef6115b7": "容器内路径",
   "TXT_CODE_1d8ece49": "示例：/dev/ttyUSB0（可空）",
   "TXT_CODE_7595d100": "示例：rwm（可空）",
-  "TXT_CODE_ae441ea4": "实例容器的设备配置有误！"
+  "TXT_CODE_ae441ea4": "实例容器的设备配置有误！",
+  "TXT_CODE_b623b66f": "名称中包含非法字符，请修改名称!",
+  "TXT_CODE_8900e7ee": "添加现有Java",
+  "TXT_CODE_10f0f8d": "添加成功!",
+  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。"
 }

@@ -36,6 +36,30 @@ router.get(
 );
 
 router.post(
+  "/add",
+  speedLimit(3),
+  permission({ level: ROLE.ADMIN }),
+  validator({
+    query: {
+      daemonId: String
+    },
+    body: {
+      name: String,
+      path: String
+    }
+  }),
+  async (ctx) => {
+    const daemonId = String(ctx.query.daemonId);
+    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+    const response = await new RemoteRequest(remoteService).request("java_manager/add", {
+      name: ctx.request.body.name,
+      path: ctx.request.body.path
+    });
+    ctx.body = response;
+  }
+);
+
+router.post(
   "/download",
   speedLimit(3),
   permission({ level: ROLE.ADMIN }),

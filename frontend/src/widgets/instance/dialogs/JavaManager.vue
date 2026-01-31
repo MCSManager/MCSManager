@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useDownloadJavaDialog } from "@/components/fc";
+import { useAddJavaDialog, useDownloadJavaDialog } from "@/components/fc";
 import { t } from "@/lang/i18n";
 import { updateInstanceConfig } from "@/services/apis/instance";
-import { deleteJava, downloadJava, getJavaList, usingJava } from "@/services/apis/javaManager";
+import { addJava, deleteJava, downloadJava, getJavaList, usingJava } from "@/services/apis/javaManager";
 import { parseTimestamp } from "@/tools/time";
 import type { InstanceDetail } from "@/types";
 import type { AntColumnsType } from "@/types/ant";
@@ -10,6 +10,7 @@ import type { JavaInfo, JavaRuntime } from "@/types/javaManager";
 import {
   DeleteOutlined,
   DownloadOutlined,
+  PlusOutlined,
   ReloadOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
@@ -106,6 +107,27 @@ const handleDownloadJava = async () => {
   await refreshJavaList();
 };
 
+const handleAddJava = async () => {
+  const data = await useAddJavaDialog();
+  if (!data) return;
+
+  try {
+    await addJava().execute({
+      params: {
+        daemonId: props.daemonId ?? ""
+      },
+      data: {
+        name: data.name,
+        path: data.path
+      }
+    });
+  } catch (err: any) {
+    message.error(err.message);
+  }
+  message.success(t("TXT_CODE_10f0f8d"));
+  await refreshJavaList();
+}
+
 const handleDeleteJava = async (info: JavaInfo) => {
   try {
     await deleteJava().execute({
@@ -170,7 +192,14 @@ defineExpose({
 
       <div class="items-right">
         <a-button
-         
+          type="link"
+          :icon="h(PlusOutlined)"
+          @click="handleAddJava()"
+        >
+          {{ t("添加现有Java") }}
+        </a-button>
+
+        <a-button
           type="link"
           :icon="h(DownloadOutlined)"
           @click="handleDownloadJava()"
@@ -208,6 +237,7 @@ defineExpose({
             </a-button>
             <a-popconfirm
               :title="t('TXT_CODE_f4f86ba8')"
+              :description="t('TXT_CODE_35631d1d')"
               @confirm="handleDeleteJava(record.info as JavaInfo)"
             >
               <a-button danger type="link" :disabled="record.info.downloading">

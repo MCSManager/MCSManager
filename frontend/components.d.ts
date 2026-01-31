@@ -21,6 +21,7 @@ declare module 'vue' {
     ACol: typeof import('ant-design-vue/es')['Col']
     ActionButton: typeof import('./src/components/ActionButton.vue')['default']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
+    AddJavaDialog: typeof import('./src/components/fc/AddJavaDialog.vue')['default']
     ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
     ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
     ADivider: typeof import('ant-design-vue/es')['Divider']

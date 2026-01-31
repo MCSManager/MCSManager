@@ -61,11 +61,10 @@ declare global {
   }
 
   interface IJavaInfo {
-    name: string;
-    version: string;
+    fullname: string;
+    path?: string;
     installTime: number;
     downloading: boolean;
-    fullname: string;
   }
 
   interface IJavaRuntime {

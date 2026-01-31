@@ -14,6 +14,22 @@ export const getJavaList = useDefineApi<
   method: "GET"
 });
 
+export const addJava = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+    };
+    data: {
+      name: string;
+      path: string;
+    };
+  },
+  Boolean
+>({
+  url: "/api/java_manager/add",
+  method: "POST"
+});
+
 export const downloadJava = useDefineApi<
   {
     params: {
