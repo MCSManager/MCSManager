@@ -1275,18 +1275,18 @@ defineExpose({
                 <a-col :xs="24" :lg="8" :offset="0">
                   <a-form-item name="privilegedMode">
                     <a-typography-title :level="5">
-                      {{ t("TEXT_CODE_dc47d2aa") }}
+                      {{ t("TXT_CODE_dc47d2aa") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-tooltip 
-                        :title="t('TEXT_CODE_18437e81')" 
+                        :title="t('TXT_CODE_18437e81')" 
                         placement="top"
                       >
                         <a-typography-text
                           type="secondary"
                           :class="[!isPhone && 'two-line-height', 'typography-text-ellipsis']"
                         >
-                          {{ t("TEXT_CODE_18437e81") }}
+                          {{ t("TXT_CODE_18437e81") }}
                         </a-typography-text>
                       </a-tooltip>
                     </a-typography-paragraph>
