@@ -26,7 +26,7 @@ import type { Rule } from "ant-design-vue/es/form";
 import type { DefaultOptionType } from "ant-design-vue/es/select";
 import { Dayjs } from "dayjs";
 import _ from "lodash";
-import { computed, defineComponent, ref, unref } from "vue";
+import { computed, defineComponent, ref, unref, watch } from "vue";
 import { GLOBAL_INSTANCE_NAME } from "../../../config/const";
 import { dayjsToTimestamp, timestampToDayjs } from "../../../tools/time";
 
@@ -145,6 +145,18 @@ const formRules = computed<Record<string, any>>(() => ({
               if (value === "") throw new Error(t("TXT_CODE_b52cb76c"));
             }
           }
+        ],
+        timezone: [
+          {
+            validator: async (_rule: Rule, value: string) => {
+              if (!isDockerMode.value) return;
+              const docker = formData.value?.instance?.config?.docker;
+              if (!docker?.enableTimezone) return;
+              if (typeof value !== "string" || value.trim() === "")
+                throw new Error(t("TXT_CODE_a5c7d7f1"));
+            },
+            trigger: "change"
+          }
         ]
       }
     }
@@ -236,6 +248,26 @@ const isGlobalTerminal = computed(() => {
 });
 
 const isDockerMode = computed(() => formData?.value?.instance?.config?.processType === "docker");
+
+const guessBrowserTimezone = (): string => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+};
+
+watch(
+  () => formData.value?.instance?.config?.docker?.enableTimezone,
+  (enabled) => {
+    if (!enabled) return;
+    const docker = formData.value?.instance?.config?.docker;
+    if (!docker) return;
+    if (typeof docker.timezone === "string" && docker.timezone.trim()) return;
+    const tz = guessBrowserTimezone();
+    if (tz) docker.timezone = tz;
+  }
+);
 
 const loadImages = async () => {
   dockerImages.value = [
@@ -1186,6 +1218,38 @@ defineExpose({
                         {{ t("TXT_CODE_ad207008") }}
                       </a-button>
                     </a-input-group>
+                  </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :lg="8" :offset="0">
+                  <a-form-item :name="['instance', 'config', 'docker', 'timezone']">
+                    <a-typography-title :level="5">{{ t("TXT_CODE_6aa7e18d") }}</a-typography-title>
+                    <a-typography-paragraph>
+                      <a-tooltip :title="t('TXT_CODE_1a9f21a8')" placement="top">
+                        <a-typography-text type="secondary" class="typography-text-ellipsis">
+                          {{ t("TXT_CODE_1a9f21a8") }}
+                        </a-typography-text>
+                      </a-tooltip>
+                    </a-typography-paragraph>
+                    <div class="ml-4">
+                      <a-switch
+                        v-model:checked="formData.instance.config.docker.enableTimezone"
+                        :disabled="isGlobalTerminal"
+                        :checked-value="true"
+                        :un-checked-value="false"
+                      >
+                        <template #checkedChildren><check-outlined /></template>
+                        <template #unCheckedChildren><close-outlined /></template>
+                      </a-switch>
+                    </div>
+                    <a-input
+                      v-model:value="formData.instance.config.docker.timezone"
+                      :disabled="
+                        isGlobalTerminal || !formData.instance.config.docker.enableTimezone
+                      "
+                      placeholder="Asia/Shanghai"
+                      style="width: 100%; margin-top: 8px"
+                    />
                   </a-form-item>
                 </a-col>
 

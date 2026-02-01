@@ -24,6 +24,23 @@ type ExposedPorts = {
   [key: string]: {};
 };
 
+function buildContainerEnv(dockerConfig: IGlobalInstanceDockerConfig): string[] {
+  const rawEnv = Array.isArray(dockerConfig.env) ? dockerConfig.env : [];
+  const env = rawEnv.filter((v) => typeof v === "string" && v.trim() !== "");
+
+  const enableTimezone = dockerConfig.enableTimezone === true;
+  const timezone = (dockerConfig.timezone ?? "").trim();
+  if (!enableTimezone || !timezone) return env;
+
+  const withoutTz = env.filter((item) => {
+    const index = item.indexOf("=");
+    const key = (index >= 0 ? item.slice(0, index) : item).trim();
+    return key !== "TZ";
+  });
+
+  return [...withoutTz, `TZ=${timezone}`];
+}
+
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
   constructor(msg: string) {
@@ -239,6 +256,7 @@ export class SetupDockerContainer extends AsyncTask {
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
+    const containerEnv = buildContainerEnv(dockerConfig);
 
     let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
@@ -269,7 +287,7 @@ export class SetupDockerContainer extends AsyncTask {
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
-      Env: dockerConfig?.env || [],
+      Env: containerEnv,
       User: instance.config.runAs || undefined,
       Labels: {
         ...dockerConfig.labels

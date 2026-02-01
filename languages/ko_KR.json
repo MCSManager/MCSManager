@@ -3228,5 +3228,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "중복된 할 일이 이미 존재합니다.",
   "TXT_CODE_system_instance_control.illegalName": "프로젝트 이름이 잘못되었습니다. 밑줄, 숫자, 문자 및 일부 현지 언어만 지원됩니다.",
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
-  "TXT_CODE_version.versionDetectErr": "버전 확인 실패"
+  "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
+  "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }

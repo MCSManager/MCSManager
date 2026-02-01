@@ -3228,5 +3228,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "มีงานที่ซ้ำกันอยู่แล้ว",
   "TXT_CODE_system_instance_control.illegalName": "ชื่องานไม่ถูกต้อง รองรับเฉพาะขีดล่าง ตัวเลข ตัวอักษร และอักขระภาษาท้องถิ่นบางตัวเท่านั้น",
   "TXT_CODE_ui.help": "[เทอร์มินัล] Daemon มีฟังก์ชันการโต้ตอบพื้นฐาน กรุณาป้อน 'help' สำหรับข้อมูลเพิ่มเติม",
-  "TXT_CODE_version.versionDetectErr": "การตรวจสอบเวอร์ชันล้มเหลว"
+  "TXT_CODE_version.versionDetectErr": "การตรวจสอบเวอร์ชันล้มเหลว",
+  "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }

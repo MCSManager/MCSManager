@@ -3248,5 +3248,8 @@
   "TXT_CODE_b623b66f": "名称中包含非法字符，请修改名称!",
   "TXT_CODE_8900e7ee": "添加现有Java",
   "TXT_CODE_10f0f8d": "添加成功!",
-  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。"
+  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。",
+  "TXT_CODE_6aa7e18d": "容器时区 (TZ)",
+  "TXT_CODE_1a9f21a8": "启用后，创建 Docker 容器时将注入 `TZ=<时区>`（例如 Asia/Shanghai），用于校正容器内时间/日志时间。",
+  "TXT_CODE_a5c7d7f1": "请输入时区（例如 Asia/Shanghai）"
 }

@@ -96,6 +96,15 @@ declare global {
     capDrop?: string[];
     devices?: string[];
     privileged?: boolean;
+    /**
+     * When enabled, inject a `TZ=<timezone>` env into the container at creation time.
+     * This helps align container time zone with expected log timestamps.
+     */
+    enableTimezone?: boolean;
+    /**
+     * IANA time zone name, e.g. "Asia/Shanghai" / "UTC".
+     */
+    timezone?: string;
   }
 
   interface IPanelResponseProtocol {

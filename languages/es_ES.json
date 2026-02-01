@@ -3228,5 +3228,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Ya existen tareas duplicadas",
   "TXT_CODE_system_instance_control.illegalName": "Nombre de proyecto incorrecto, solo admite guiones bajos, números, letras y algunos idiomas locales",
   "TXT_CODE_ui.help": "[Consola] El demonio tiene funciones interactivas básicas, ingrese \"ayuda\" para ver más información",
-  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión"
+  "TXT_CODE_version.versionDetectErr": "Error en la verificación de versión",
+  "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }

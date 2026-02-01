@@ -3228,5 +3228,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "已存在重複的任務",
   "TXT_CODE_system_instance_control.illegalName": "錯誤的計畫名，只支援底線，數字，字母和部分本地語言",
   "TXT_CODE_ui.help": "[終端] 守護程式擁有基本的互動功能，請輸入\"help\"查看更多資訊",
-  "TXT_CODE_version.versionDetectErr": "版本檢查失敗"
+  "TXT_CODE_version.versionDetectErr": "版本檢查失敗",
+  "TXT_CODE_6aa7e18d": "容器時區 (TZ)",
+  "TXT_CODE_1a9f21a8": "啟用後，建立 Docker 容器時將注入 `TZ=<時區>`（例如 Asia/Shanghai），用於校正容器內時間/日誌時間。",
+  "TXT_CODE_a5c7d7f1": "請輸入時區（例如 Asia/Shanghai）"
 }
