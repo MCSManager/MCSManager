@@ -9,6 +9,8 @@ import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
 import InstanceFileManager from "@/widgets/instance/FileManager.vue";
 import InstanceModManager from "@/widgets/instance/ModManager.vue";
 import InstanceManagerBtns from "@/widgets/instance/ManagerBtns.vue";
+import InstanceMetrics from "@/widgets/instance/Metrics.vue";
+import InstancePlayerManager from "@/widgets/instance/PlayerManager.vue";
 import Schedule from "@/widgets/instance/Schedule.vue";
 import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
 import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
@@ -70,6 +72,8 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Terminal,
   InstanceManagerBtns,
   InstanceBaseInfo,
+  InstanceMetrics,
+  InstancePlayerManager,
   InstanceServerConfigOverview,
   InstanceServerConfigFile,
   InstanceFileManager,
@@ -371,6 +375,62 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("TXT_CODE_97e5eccb"),
       height: LayoutCardHeight.SMALL,
+      category: NEW_CARD_TYPE.INSTANCE,
+      params: [
+        {
+          field: "instanceId",
+          label: t("TXT_CODE_e6a5c12b"),
+          type: "string"
+        },
+        {
+          field: "daemonId",
+          label: t("TXT_CODE_72cfab69"),
+          type: "string"
+        },
+        {
+          field: "instance",
+          label: t("TXT_CODE_cb043d10"),
+          type: "instance"
+        }
+      ]
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.USER,
+      meta: {},
+      type: "InstanceMetrics",
+      title: t("TXT_CODE_INSTANCE_METRICS_TITLE"),
+      width: 8,
+      description: t("TXT_CODE_INSTANCE_METRICS_DESC"),
+      height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.INSTANCE,
+      params: [
+        {
+          field: "instanceId",
+          label: t("TXT_CODE_e6a5c12b"),
+          type: "string"
+        },
+        {
+          field: "daemonId",
+          label: t("TXT_CODE_72cfab69"),
+          type: "string"
+        },
+        {
+          field: "instance",
+          label: t("TXT_CODE_cb043d10"),
+          type: "instance"
+        }
+      ]
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.USER,
+      meta: {},
+      type: "InstancePlayerManager",
+      title: t("TXT_CODE_INSTANCE_PLAYER_MANAGER_TITLE"),
+      width: 12,
+      description: t("TXT_CODE_INSTANCE_PLAYER_MANAGER_DESC"),
+      height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE,
       params: [
         {
