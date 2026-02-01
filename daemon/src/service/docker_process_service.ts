@@ -265,6 +265,9 @@ export class SetupDockerContainer extends AsyncTask {
     const enableTimezone = dockerConfig.enableTimezone === true && timezone;
     const canInjectTimezoneFiles = enableTimezone && process.platform !== "win32";
 
+    const tzHostZoneinfoDir = "/usr/share/zoneinfo";
+    const hasHostZoneinfoDir = canInjectTimezoneFiles && fs.existsSync(tzHostZoneinfoDir);
+
     const tzFileMount: Docker.MountSettings | undefined = canInjectTimezoneFiles
       ? !hasMountTarget(baseMounts, "/etc/timezone")
         ? {
@@ -287,6 +290,16 @@ export class SetupDockerContainer extends AsyncTask {
         : undefined
       : undefined;
 
+    const tzZoneinfoMount: Docker.MountSettings | undefined =
+      hasHostZoneinfoDir && !hasMountTarget(baseMounts, tzHostZoneinfoDir)
+        ? {
+            Type: "bind",
+            Source: tzHostZoneinfoDir,
+            Target: tzHostZoneinfoDir,
+            ReadOnly: true
+          }
+        : undefined;
+
     if (tzFileMount) {
       try {
         await fs.outputFile(path.join(fsCwd, ".mcsm_timezone"), `${timezone}\n`, "utf-8");
@@ -302,7 +315,8 @@ export class SetupDockerContainer extends AsyncTask {
     const mountsWithTimezone: Docker.MountSettings[] = [
       ...baseMounts,
       ...(tzFileMount ? [tzFileMount] : []),
-      ...(tzLocaltimeMount ? [tzLocaltimeMount] : [])
+      ...(tzLocaltimeMount ? [tzLocaltimeMount] : []),
+      ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
     ];
 
     logger.info("----------------");
@@ -421,8 +435,10 @@ export class SetupDockerContainer extends AsyncTask {
     const tzMountSourceHints = [
       tzFileMount?.Source,
       tzLocaltimeMount?.Source,
+      tzZoneinfoMount?.Source,
       tzFileMount ? "/etc/timezone" : undefined,
-      tzLocaltimeMount ? "/etc/localtime" : undefined
+      tzLocaltimeMount ? "/etc/localtime" : undefined,
+      tzZoneinfoMount ? "/usr/share/zoneinfo" : undefined
     ].filter(Boolean) as string[];
 
     try {
@@ -438,9 +454,10 @@ export class SetupDockerContainer extends AsyncTask {
         )}`
       );
 
-      const mountsWithTimezoneFileOnly: Docker.MountSettings[] = [
+      const mountsWithoutLocaltime: Docker.MountSettings[] = [
         ...baseMounts,
-        ...(tzFileMount ? [tzFileMount] : [])
+        ...(tzFileMount ? [tzFileMount] : []),
+        ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
       ];
 
       try {
@@ -448,23 +465,44 @@ export class SetupDockerContainer extends AsyncTask {
           ...createContainerOptions,
           HostConfig: {
             ...createContainerOptions.HostConfig,
-            Mounts: mountsWithTimezoneFileOnly
+            Mounts: mountsWithoutLocaltime
           }
         });
       } catch (error2) {
         logger.warn(
-          `[SetupDockerContainer] Timezone file mount failed, retrying without timezone mounts: ${formatUnknownError(
+          `[SetupDockerContainer] Timezone mounts failed, retrying without /usr/share/zoneinfo mount: ${formatUnknownError(
             error2
           )}`
         );
 
-        this.container = await docker.createContainer({
-          ...createContainerOptions,
-          HostConfig: {
-            ...createContainerOptions.HostConfig,
-            Mounts: baseMounts
-          }
-        });
+        const mountsWithoutZoneinfo: Docker.MountSettings[] = [
+          ...baseMounts,
+          ...(tzFileMount ? [tzFileMount] : [])
+        ];
+
+        try {
+          this.container = await docker.createContainer({
+            ...createContainerOptions,
+            HostConfig: {
+              ...createContainerOptions.HostConfig,
+              Mounts: mountsWithoutZoneinfo
+            }
+          });
+        } catch (error3) {
+          logger.warn(
+            `[SetupDockerContainer] Timezone file mount failed, retrying without timezone mounts: ${formatUnknownError(
+              error3
+            )}`
+          );
+
+          this.container = await docker.createContainer({
+            ...createContainerOptions,
+            HostConfig: {
+              ...createContainerOptions.HostConfig,
+              Mounts: baseMounts
+            }
+          });
+        }
       }
     }
 

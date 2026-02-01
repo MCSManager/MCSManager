@@ -2928,6 +2928,6 @@
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
   "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen",
   "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
-  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) and (when possible) bind-mount `/etc/localtime` and `/etc/timezone` into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) and (when possible) bind-mount `/etc/localtime`, `/etc/timezone` and `/usr/share/zoneinfo` into the Docker container at creation time to keep timestamps correct.",
   "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }
