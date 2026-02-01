@@ -99,6 +99,22 @@ export const restartInstance = useDefineApi<
   method: "GET"
 });
 
+export const sendInstanceCommand = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      daemonId: string;
+      command: string;
+    };
+  },
+  {
+    instanceUuid?: string;
+  }
+>({
+  url: "/api/protected_instance/command",
+  method: "GET"
+});
+
 export const killInstance = useDefineApi<
   {
     params: {

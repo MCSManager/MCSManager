@@ -261,6 +261,22 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           width: 8,
           height: LayoutCardHeight.SMALL,
           disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "InstanceMetrics",
+          title: t("TXT_CODE_INSTANCE_METRICS_TITLE"),
+          width: 12,
+          height: LayoutCardHeight.MEDIUM
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "InstancePlayerManager",
+          title: t("TXT_CODE_INSTANCE_PLAYER_MANAGER_TITLE"),
+          width: 12,
+          height: LayoutCardHeight.MEDIUM
         }
       ]
     },

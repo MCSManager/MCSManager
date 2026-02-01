@@ -46,6 +46,16 @@ export interface InstanceRuntimeInfo {
   }[];
 }
 
+export interface InstanceProcessInfo {
+  cpu: number;
+  memory: number;
+  ppid: number;
+  pid: number;
+  ctime: number;
+  elapsed: number;
+  timestamp: number;
+}
+
 export interface InstanceDetail {
   instanceUuid: string;
   started: number;
@@ -54,6 +64,8 @@ export interface InstanceDetail {
   info: InstanceRuntimeInfo;
   config: IGlobalInstanceConfig;
   watcher?: number;
+  processInfo?: InstanceProcessInfo | null;
+  space?: number;
 }
 
 export interface NodeStatus {
