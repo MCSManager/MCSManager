@@ -200,8 +200,9 @@ const playersText = computed(() => {
 });
 
 const latencyText = computed(() => {
-  const latency = instanceInfo.value?.info?.latency;
-  if (typeof latency !== "number") return "--";
+  const info = instanceInfo.value?.info;
+  if (!info?.mcPingOnline) return "--";
+  const latency = info.latency;
   return `${latency}ms`;
 });
 
