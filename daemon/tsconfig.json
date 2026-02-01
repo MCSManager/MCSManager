@@ -18,6 +18,8 @@
     "paths": {
       "@languages/*": ["../languages/*"],
       "mcsmanager-common": ["../common/src/index.ts"],
+      "fs-extra": ["node_modules/@types/fs-extra/index.d.ts"],
+      "os-utils": ["node_modules/@types/os-utils/index.d.ts"],
       "*": ["node_modules/*", "src/types/*"]
     }
   },
