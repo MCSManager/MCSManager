@@ -97,8 +97,11 @@ declare global {
     devices?: string[];
     privileged?: boolean;
     /**
-     * When enabled, inject a `TZ=<timezone>` env into the container at creation time.
-     * This helps align container time zone with expected log timestamps.
+     * When enabled, inject `TZ=<timezone>` and (when possible) bind-mount `/etc/localtime` and
+     * `/etc/timezone` into the container at creation time.
+     *
+     * This helps align container time zone with expected log timestamps, especially for
+     * Debian/Ubuntu-based images where some runtimes (e.g. Java) may read `/etc/timezone`.
      */
     enableTimezone?: boolean;
     /**

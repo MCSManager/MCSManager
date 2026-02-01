@@ -3230,6 +3230,6 @@
   "TXT_CODE_ui.help": "[Console] Le démon a des fonctions interactives de base, veuillez saisir \"aide\" pour afficher plus d'informations",
   "TXT_CODE_version.versionDetectErr": "La vérification de la version a échoué",
   "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
-  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) and (when possible) bind-mount `/etc/localtime` and `/etc/timezone` into the Docker container at creation time to keep timestamps correct.",
   "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }
