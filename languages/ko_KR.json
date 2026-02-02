@@ -3230,6 +3230,6 @@
   "TXT_CODE_ui.help": "[콘솔] 데몬에는 기본 대화형 기능이 있습니다. 자세한 내용을 보려면 \"help\"를 입력하십시오.",
   "TXT_CODE_version.versionDetectErr": "버전 확인 실패",
   "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
-  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai) and (when possible) bind-mount `/etc/localtime`, `/etc/timezone` and `/usr/share/zoneinfo` into the Docker container at creation time to keep timestamps correct.",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai), (when possible) bind-mount `/etc/localtime` and `/usr/share/zoneinfo`, and write the timezone text to `/etc/timezone` (best-effort) after container start to keep timestamps correct.",
   "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }

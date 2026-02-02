@@ -86,6 +86,31 @@ function isTimezoneMountError(err: unknown, sourceHints: string[]) {
   );
 }
 
+async function bestEffortWriteContainerTimezone(container: Docker.Container, timezone: string) {
+  try {
+    const exec = await container.exec({
+      AttachStdout: true,
+      AttachStderr: true,
+      Cmd: [
+        "sh",
+        "-c",
+        "umask 022; printf '%s\\n' \"$MCSM_TZ\" > /etc/timezone 2>/dev/null || true"
+      ],
+      Env: [`MCSM_TZ=${timezone}`]
+    });
+    const stream = await exec.start({ hijack: true, stdin: false });
+    await new Promise<void>((resolve) => {
+      stream.on("end", () => resolve());
+      stream.on("close", () => resolve());
+      stream.on("error", () => resolve());
+    });
+  } catch (error) {
+    logger.debug(
+      `[SetupDockerContainer] bestEffortWriteContainerTimezone failed: ${formatUnknownError(error)}`
+    );
+  }
+}
+
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
   constructor(msg: string) {
@@ -267,28 +292,18 @@ export class SetupDockerContainer extends AsyncTask {
 
     const tzHostZoneinfoDir = "/usr/share/zoneinfo";
     const hasHostZoneinfoDir = canInjectTimezoneFiles && fs.existsSync(tzHostZoneinfoDir);
+    const tzHostZoneinfoFile = canInjectTimezoneFiles ? `/usr/share/zoneinfo/${timezone}` : "";
+    const hasHostZoneinfoFile = canInjectTimezoneFiles && fs.existsSync(tzHostZoneinfoFile);
 
-    const tzFileMount: Docker.MountSettings | undefined = canInjectTimezoneFiles
-      ? !hasMountTarget(baseMounts, "/etc/timezone")
+    const tzLocaltimeMount: Docker.MountSettings | undefined =
+      hasHostZoneinfoFile && !hasMountTarget(baseMounts, "/etc/localtime")
         ? {
             Type: "bind",
-            Source: path.join(cwd, ".mcsm_timezone"),
-            Target: "/etc/timezone",
-            ReadOnly: true
-          }
-        : undefined
-      : undefined;
-
-    const tzLocaltimeMount: Docker.MountSettings | undefined = canInjectTimezoneFiles
-      ? !hasMountTarget(baseMounts, "/etc/localtime")
-        ? {
-            Type: "bind",
-            Source: `/usr/share/zoneinfo/${timezone}`,
+            Source: tzHostZoneinfoFile,
             Target: "/etc/localtime",
             ReadOnly: true
           }
-        : undefined
-      : undefined;
+        : undefined;
 
     const tzZoneinfoMount: Docker.MountSettings | undefined =
       hasHostZoneinfoDir && !hasMountTarget(baseMounts, tzHostZoneinfoDir)
@@ -300,21 +315,8 @@ export class SetupDockerContainer extends AsyncTask {
           }
         : undefined;
 
-    if (tzFileMount) {
-      try {
-        await fs.outputFile(path.join(fsCwd, ".mcsm_timezone"), `${timezone}\n`, "utf-8");
-      } catch (error) {
-        logger.warn(
-          `[SetupDockerContainer] Failed to write timezone file for container: ${formatUnknownError(
-            error
-          )}`
-        );
-      }
-    }
-
     const mountsWithTimezone: Docker.MountSettings[] = [
       ...baseMounts,
-      ...(tzFileMount ? [tzFileMount] : []),
       ...(tzLocaltimeMount ? [tzLocaltimeMount] : []),
       ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
     ];
@@ -433,10 +435,8 @@ export class SetupDockerContainer extends AsyncTask {
     };
 
     const tzMountSourceHints = [
-      tzFileMount?.Source,
       tzLocaltimeMount?.Source,
       tzZoneinfoMount?.Source,
-      tzFileMount ? "/etc/timezone" : undefined,
       tzLocaltimeMount ? "/etc/localtime" : undefined,
       tzZoneinfoMount ? "/usr/share/zoneinfo" : undefined
     ].filter(Boolean) as string[];
@@ -456,7 +456,6 @@ export class SetupDockerContainer extends AsyncTask {
 
       const mountsWithoutLocaltime: Docker.MountSettings[] = [
         ...baseMounts,
-        ...(tzFileMount ? [tzFileMount] : []),
         ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
       ];
 
@@ -475,38 +474,21 @@ export class SetupDockerContainer extends AsyncTask {
           )}`
         );
 
-        const mountsWithoutZoneinfo: Docker.MountSettings[] = [
-          ...baseMounts,
-          ...(tzFileMount ? [tzFileMount] : [])
-        ];
-
-        try {
-          this.container = await docker.createContainer({
-            ...createContainerOptions,
-            HostConfig: {
-              ...createContainerOptions.HostConfig,
-              Mounts: mountsWithoutZoneinfo
-            }
-          });
-        } catch (error3) {
-          logger.warn(
-            `[SetupDockerContainer] Timezone file mount failed, retrying without timezone mounts: ${formatUnknownError(
-              error3
-            )}`
-          );
-
-          this.container = await docker.createContainer({
-            ...createContainerOptions,
-            HostConfig: {
-              ...createContainerOptions.HostConfig,
-              Mounts: baseMounts
-            }
-          });
-        }
+        this.container = await docker.createContainer({
+          ...createContainerOptions,
+          HostConfig: {
+            ...createContainerOptions.HostConfig,
+            Mounts: baseMounts
+          }
+        });
       }
     }
 
     await this.container.start();
+
+    if (enableTimezone) {
+      await bestEffortWriteContainerTimezone(this.container, timezone);
+    }
 
     // Listen to events
     this.container.wait(() => this.stop());
