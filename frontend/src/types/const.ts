@@ -142,6 +142,8 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   workingDir: "/data",
   env: [],
   changeWorkdir: true,
+  enableTimezone: false,
+  timezone: "",
   memorySwap: undefined,
   memorySwappiness: undefined,
   labels: []

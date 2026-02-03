@@ -229,6 +229,8 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "labels");
       configureEntityParams(this.config.docker, cfg.docker, "workingDir", String);
       configureEntityParams(this.config.docker, cfg.docker, "changeWorkdir", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "enableTimezone", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "timezone", String);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwappiness", Number);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwap", Number);
       configureEntityParams(this.config.docker, cfg.docker, "capAdd");

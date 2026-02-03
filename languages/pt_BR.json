@@ -3228,5 +3228,8 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Uma tarefa duplicada já existe.",
   "TXT_CODE_system_instance_control.illegalName": "Nome de tarefa ilegal. Apenas underscores, números, letras e alguns caracteres de idioma local são suportados.",
   "TXT_CODE_ui.help": "[Terminal] O daemon tem funcionalidade básica de interação. Por favor, insira 'help' para mais informações.",
-  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão"
+  "TXT_CODE_version.versionDetectErr": "Falha na verificação da versão",
+  "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
+  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai), (when possible) bind-mount `/etc/localtime` and `/usr/share/zoneinfo`, and write the timezone text to `/etc/timezone` (best-effort) after container start to keep timestamps correct.",
+  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
 }

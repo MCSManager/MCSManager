@@ -80,6 +80,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     workingDir: "/workspace/",
     env: [],
     changeWorkdir: true,
+    enableTimezone: false,
+    timezone: "",
     labels: []
   };
 

@@ -24,6 +24,93 @@ type ExposedPorts = {
   [key: string]: {};
 };
 
+function buildContainerEnv(dockerConfig: IGlobalInstanceDockerConfig): string[] {
+  const rawEnv = Array.isArray(dockerConfig.env) ? dockerConfig.env : [];
+  const env = rawEnv.filter((v) => typeof v === "string" && v.trim() !== "");
+
+  const enableTimezone = dockerConfig.enableTimezone === true;
+  const timezone = (dockerConfig.timezone ?? "").trim();
+  if (!enableTimezone || !timezone) return env;
+
+  const withoutTz = env.filter((item) => {
+    const index = item.indexOf("=");
+    const key = (index >= 0 ? item.slice(0, index) : item).trim();
+    return key !== "TZ";
+  });
+
+  return [...withoutTz, `TZ=${timezone}`];
+}
+
+function normalizeContainerPath(p: string) {
+  return p.replace(/\\/g, "/");
+}
+
+function hasMountTarget(mounts: Docker.MountSettings[], target: string) {
+  const normalizedTarget = normalizeContainerPath(target);
+  return mounts.some(
+    (item) => normalizeContainerPath(String((item as any)?.Target ?? "")) === normalizedTarget
+  );
+}
+
+function sanitizeTimezoneName(timezone: string) {
+  const oneLine = (timezone ?? "").split(/\r?\n/)[0]?.trim();
+  if (!oneLine) return null;
+  if (oneLine.length > 128) return null;
+  if (oneLine.includes("..")) return null;
+  if (oneLine.startsWith("/") || oneLine.startsWith("\\")) return null;
+  if (!/^[A-Za-z0-9._+-]+(\/[A-Za-z0-9._+-]+)*$/.test(oneLine)) return null;
+  return oneLine;
+}
+
+function formatUnknownError(err: unknown) {
+  if (err instanceof Error) return err.message;
+  try {
+    return typeof err === "string" ? err : JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
+
+function isTimezoneMountError(err: unknown, sourceHints: string[]) {
+  const message = formatUnknownError(err);
+  const lowerMessage = message.toLowerCase();
+
+  if (sourceHints.some((h) => h && message.includes(h))) return true;
+
+  return (
+    lowerMessage.includes("bind source path does not exist") ||
+    lowerMessage.includes("invalid mount config") ||
+    lowerMessage.includes("invalid volume specification") ||
+    lowerMessage.includes("mounts denied") ||
+    lowerMessage.includes("no such file or directory")
+  );
+}
+
+async function bestEffortWriteContainerTimezone(container: Docker.Container, timezone: string) {
+  try {
+    const exec = await container.exec({
+      AttachStdout: true,
+      AttachStderr: true,
+      Cmd: [
+        "sh",
+        "-c",
+        "umask 022; printf '%s\\n' \"$MCSM_TZ\" > /etc/timezone 2>/dev/null || true"
+      ],
+      Env: [`MCSM_TZ=${timezone}`]
+    });
+    const stream = await exec.start({ hijack: true, stdin: false });
+    await new Promise<void>((resolve) => {
+      stream.on("end", () => resolve());
+      stream.on("close", () => resolve());
+      stream.on("error", () => resolve());
+    });
+  } catch (error) {
+    logger.debug(
+      `[SetupDockerContainer] bestEffortWriteContainerTimezone failed: ${formatUnknownError(error)}`
+    );
+  }
+}
+
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
   constructor(msg: string) {
@@ -173,30 +260,66 @@ export class SetupDockerContainer extends AsyncTask {
 
     const privileged = dockerConfig.privileged || false;
 
-    let cwd = instance.absoluteCwdPath();
+    const fsCwd = instance.absoluteCwdPath();
+    let cwd = fsCwd;
     const defaultInstanceDir = InstanceSubsystem.getInstanceDataDir();
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
-    if (hostRealPath && cwd.includes(defaultInstanceDir)) {
+    if (hostRealPath && fsCwd.includes(defaultInstanceDir)) {
       cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
     }
 
-    const mounts: Docker.MountConfig = [];
+    const baseMounts: Docker.MountSettings[] = [];
     for (const v of extraBinds) {
       const hostPath = await instance.parseTextParams(v.hostPath);
       if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
-      mounts.push({
+      baseMounts.push({
         Type: "bind",
         Source: hostPath,
         Target: await instance.parseTextParams(v.containerPath)
       });
     }
     if (workingDir && cwd) {
-      mounts.push({
+      baseMounts.push({
         Type: "bind",
         Source: cwd,
         Target: await instance.parseTextParams(workingDir)
       });
     }
+
+    const timezone = sanitizeTimezoneName(dockerConfig.timezone ?? "");
+    const enableTimezone = dockerConfig.enableTimezone === true && timezone;
+    const canInjectTimezoneFiles = enableTimezone && process.platform !== "win32";
+
+    const tzHostZoneinfoDir = "/usr/share/zoneinfo";
+    const hasHostZoneinfoDir = canInjectTimezoneFiles && fs.existsSync(tzHostZoneinfoDir);
+    const tzHostZoneinfoFile = canInjectTimezoneFiles ? `/usr/share/zoneinfo/${timezone}` : "";
+    const hasHostZoneinfoFile = canInjectTimezoneFiles && fs.existsSync(tzHostZoneinfoFile);
+
+    const tzLocaltimeMount: Docker.MountSettings | undefined =
+      hasHostZoneinfoFile && !hasMountTarget(baseMounts, "/etc/localtime")
+        ? {
+            Type: "bind",
+            Source: tzHostZoneinfoFile,
+            Target: "/etc/localtime",
+            ReadOnly: true
+          }
+        : undefined;
+
+    const tzZoneinfoMount: Docker.MountSettings | undefined =
+      hasHostZoneinfoDir && !hasMountTarget(baseMounts, tzHostZoneinfoDir)
+        ? {
+            Type: "bind",
+            Source: tzHostZoneinfoDir,
+            Target: tzHostZoneinfoDir,
+            ReadOnly: true
+          }
+        : undefined;
+
+    const mountsWithTimezone: Docker.MountSettings[] = [
+      ...baseMounts,
+      ...(tzLocaltimeMount ? [tzLocaltimeMount] : []),
+      ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
+    ];
 
     logger.info("----------------");
     logger.info(`[SetupDockerContainer]`);
@@ -206,7 +329,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`CWD: ${cwd}, WORKING_DIR: ${workingDir}`);
     logger.info(`NET_MODE: ${dockerConfig.networkMode}`);
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
-    logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
+    logger.info(`Volume Mounts: ${JSON.stringify(mountsWithTimezone)}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
 
     logger.info(
@@ -239,6 +362,7 @@ export class SetupDockerContainer extends AsyncTask {
 
     // Start Docker container creation and running
     const docker = new DefaultDocker();
+    const containerEnv = buildContainerEnv(dockerConfig);
 
     let entrypoint: string | string[] | undefined = commandList.length ? commandList[0] : undefined;
     const startCmd = commandList.length > 1 ? commandList.slice(1) : undefined;
@@ -255,7 +379,7 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`Docker Version: ${dockerVersion}`);
     logger.info("----------------");
 
-    this.container = await docker.createContainer({
+    const createContainerOptions: Docker.ContainerCreateOptions = {
       Entrypoint: entrypoint,
       Cmd: startCmd,
       name: containerName,
@@ -269,7 +393,7 @@ export class SetupDockerContainer extends AsyncTask {
       OpenStdin: true,
       StdinOnce: false,
       ExposedPorts: exposedPorts,
-      Env: dockerConfig?.env || [],
+      Env: containerEnv,
       User: instance.config.runAs || undefined,
       Labels: {
         ...dockerConfig.labels
@@ -290,7 +414,7 @@ export class SetupDockerContainer extends AsyncTask {
         CpuQuota: cpuQuota,
         PortBindings: publicPortArray,
         NetworkMode: dockerConfig.networkMode,
-        Mounts: mounts,
+        Mounts: mountsWithTimezone,
         CapAdd: capAdd,
         CapDrop: capDrop,
         Devices: parsedDevices,
@@ -308,9 +432,63 @@ export class SetupDockerContainer extends AsyncTask {
             }
           }
         })
-    });
+    };
+
+    const tzMountSourceHints = [
+      tzLocaltimeMount?.Source,
+      tzZoneinfoMount?.Source,
+      tzLocaltimeMount ? "/etc/localtime" : undefined,
+      tzZoneinfoMount ? "/usr/share/zoneinfo" : undefined
+    ].filter(Boolean) as string[];
+
+    try {
+      this.container = await docker.createContainer(createContainerOptions);
+    } catch (error) {
+      // If timezone-related mounts fail (e.g. host missing zoneinfo or Docker Desktop denies mounts),
+      // degrade gracefully instead of failing the whole instance start.
+      if (!tzMountSourceHints.length || !isTimezoneMountError(error, tzMountSourceHints)) throw error;
+
+      logger.warn(
+        `[SetupDockerContainer] Timezone mounts failed, retrying without /etc/localtime mount: ${formatUnknownError(
+          error
+        )}`
+      );
+
+      const mountsWithoutLocaltime: Docker.MountSettings[] = [
+        ...baseMounts,
+        ...(tzZoneinfoMount ? [tzZoneinfoMount] : [])
+      ];
+
+      try {
+        this.container = await docker.createContainer({
+          ...createContainerOptions,
+          HostConfig: {
+            ...createContainerOptions.HostConfig,
+            Mounts: mountsWithoutLocaltime
+          }
+        });
+      } catch (error2) {
+        logger.warn(
+          `[SetupDockerContainer] Timezone mounts failed, retrying without /usr/share/zoneinfo mount: ${formatUnknownError(
+            error2
+          )}`
+        );
+
+        this.container = await docker.createContainer({
+          ...createContainerOptions,
+          HostConfig: {
+            ...createContainerOptions.HostConfig,
+            Mounts: baseMounts
+          }
+        });
+      }
+    }
 
     await this.container.start();
+
+    if (enableTimezone) {
+      await bestEffortWriteContainerTimezone(this.container, timezone);
+    }
 
     // Listen to events
     this.container.wait(() => this.stop());
