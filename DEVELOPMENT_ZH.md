@@ -118,7 +118,7 @@ languages/en_US.json
     {{ t("TXT_CODE_NODE_INFO") }}
 
     <!-- 如果需要携带参数，前端代码使用一个花括号 -->
-    <div>{{ t("TEXT_CODE_FILE_ERROR", { name: props.fileName }) }}</div>
+    <div>{{ t("TXT_CODE_FILE_ERROR", { name: props.fileName }) }}</div>
   </a-menu-item>
 </template>
 ```
@@ -129,7 +129,7 @@ languages/en_US.json
 {
   "TXT_CODE_NODE_INFO": "Jump to Node Page",
   // 如果需要携带参数，前端代码使用一个花括号
-  "TEXT_CODE_FILE_ERROR": "File {name} error!"
+  "TXT_CODE_FILE_ERROR": "File {name} error!"
 }
 ```
 
