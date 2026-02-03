@@ -17,9 +17,14 @@ services:
     #   - "24444:24444"
     environment:
       - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
+      # Rootless Docker (Linux): set DOCKER_HOST to your user socket path
+      # - DOCKER_HOST=unix:///run/user/1000/docker.sock
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
       - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
+      # Rootful Docker (default):
       - /var/run/docker.sock:/var/run/docker.sock
+      # Rootless Docker (Linux): replace the line above with:
+      # - /run/user/1000/docker.sock:/run/user/1000/docker.sock

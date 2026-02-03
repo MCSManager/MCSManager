@@ -212,6 +212,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
+注意（Linux Rootless Docker）：Daemon 端已支持读取 `DOCKER_HOST`。如果你的 Docker 运行在 rootless 模式，socket 通常位于 `/run/user/<uid>/docker.sock`（而不是 `/var/run/docker.sock`）。此时请把默认的 socket 挂载替换为 rootless socket，并设置 `DOCKER_HOST`，例如：
+
+```yml
+  daemon:
+    environment:
+      - DOCKER_HOST=unix:///run/user/1000/docker.sock
+    volumes:
+      - /run/user/1000/docker.sock:/run/user/1000/docker.sock
+```
+
+把 `1000` 替换成你的实际 UID（`id -u`）。
+
 使用 docker-compose 启用。
 
 ```bash

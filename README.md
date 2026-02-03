@@ -222,6 +222,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
+Note (Rootless Docker on Linux): the daemon supports `DOCKER_HOST`. If your Docker daemon runs in rootless mode, the socket is usually at `/run/user/<uid>/docker.sock` instead of `/var/run/docker.sock`. In that case, replace the default socket mount with the rootless socket and set `DOCKER_HOST`, for example:
+
+```yml
+  daemon:
+    environment:
+      - DOCKER_HOST=unix:///run/user/1000/docker.sock
+    volumes:
+      - /run/user/1000/docker.sock:/run/user/1000/docker.sock
+```
+
+Replace `1000` with your actual UID (`id -u`).
+
 Enable using docker-compose.
 
 ```bash
