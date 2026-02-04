@@ -3228,8 +3228,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Yinelenen bir görev zaten var.",
   "TXT_CODE_system_instance_control.illegalName": "Yasadışı görev adı. Yalnızca alt çizgiler, sayılar, harfler ve bazı yerel dil karakterleri desteklenir.",
   "TXT_CODE_ui.help": "[Terminal] Daemon temel etkileşimli işlevselliğe sahiptir. Daha fazla bilgi için lütfen 'help' girin.",
-  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız",
-  "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
-  "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai), (when possible) bind-mount `/etc/localtime` and `/usr/share/zoneinfo`, and write the timezone text to `/etc/timezone` (best-effort) after container start to keep timestamps correct.",
-  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
+  "TXT_CODE_version.versionDetectErr": "Sürüm Kontrolü Başarısız"
 }

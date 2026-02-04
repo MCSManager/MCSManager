@@ -3275,8 +3275,8 @@
   "TXT_CODE_b623b66f": "The name contains invalid characters. Please modify the name!",
   "TXT_CODE_8900e7ee": "Add installed Java",
   "TXT_CODE_10f0f8d": "Success!",
-  "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files.",
   "TXT_CODE_6aa7e18d": "Container Timezone (TZ)",
   "TXT_CODE_1a9f21a8": "When enabled, inject `TZ=<timezone>` (e.g. Asia/Shanghai), (when possible) bind-mount `/etc/localtime` and `/usr/share/zoneinfo`, and write the timezone text to `/etc/timezone` (best-effort) after container start to keep timestamps correct.",
-  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai)."
+  "TXT_CODE_a5c7d7f1": "Please enter a timezone (e.g. Asia/Shanghai).",
+  "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files."
 }
