@@ -105,7 +105,7 @@ export default class Instance extends EventEmitter {
   public process?: IInstanceProcess;
 
   private outputLoopTask?: NodeJS.Timeout;
-  private outputBuffer = new CircularBuffer<string>(64);
+  private outputBuffer = new CircularBuffer<string>(256);
 
   // When initializing an instance, the instance must be initialized through uuid and configuration class, otherwise the instance will be unavailable
   constructor(instanceUuid: string, config: InstanceConfig) {
