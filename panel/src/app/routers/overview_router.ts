@@ -33,6 +33,7 @@ router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => 
       remoteInfo.uuid = remoteService.uuid;
       remoteInfo.ip = remoteService.config.ip;
       remoteInfo.port = remoteService.config.port;
+      remoteInfo.publicAddr = remoteService.config.publicAddr;
       remoteInfo.prefix = remoteService.config.prefix;
       remoteInfo.available = remoteService.available;
       remoteInfo.remarks = remoteService.config.remarks;

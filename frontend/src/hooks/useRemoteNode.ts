@@ -10,6 +10,7 @@ import { computed, ref } from "vue";
 export interface RemoteNodeDetail {
   ip: string;
   port: number;
+  publicAddr?: string;
   prefix: string;
   remarks: string;
   apiKey?: string;

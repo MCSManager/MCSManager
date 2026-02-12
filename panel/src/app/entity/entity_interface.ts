@@ -54,6 +54,7 @@ export interface IRemoteService {
   uuid?: string;
   ip?: string;
   port?: number;
+  publicAddr?: string;
   prefix?: string;
   remarks?: string;
   apiKey?: string;
@@ -64,6 +65,7 @@ export interface IRemoteService {
 export class RemoteServiceConfig {
   public ip = "";
   public port = 24444;
+  public publicAddr = "";
   public prefix = "";
   public remarks = "";
   public apiKey = "";

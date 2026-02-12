@@ -202,6 +202,7 @@ export const editNode = useDefineApi<
       apiKey?: string;
       ip?: string;
       port?: number;
+      publicAddr?: string;
       remarks?: string;
       setting?: any;
     };
@@ -217,6 +218,7 @@ export const addNode = useDefineApi<
     data: {
       ip: string;
       port: number;
+      publicAddr?: string;
       remarks: string;
       apiKey: string;
     };

@@ -3275,5 +3275,7 @@
   "TXT_CODE_b623b66f": "The name contains invalid characters. Please modify the name!",
   "TXT_CODE_8900e7ee": "Add installed Java",
   "TXT_CODE_10f0f8d": "Success!",
-  "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files."
+  "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files.",
+  "TXT_CODE_publicAddrLabel": "Public Address",
+  "TXT_CODE_publicAddrTip": "Optional. Used by the web UI to connect. Leave empty to use IP:Port."
 }

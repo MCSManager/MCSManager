@@ -150,6 +150,7 @@ declare global {
     uuid: string;
     ip: string;
     port: number;
+    publicAddr?: string;
     prefix: string;
     remoteMappings: IPanelOverviewRemoteMappingResponse[];
     available: boolean;

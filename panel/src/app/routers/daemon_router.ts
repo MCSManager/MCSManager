@@ -19,6 +19,7 @@ router.get("/remote_services_list", permission({ level: ROLE.ADMIN }), async (ct
       uuid: remoteService.uuid,
       ip: remoteService.config.ip,
       port: remoteService.config.port,
+      publicAddr: remoteService.config.publicAddr,
       prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks
@@ -94,6 +95,7 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
       uuid: remoteService.uuid,
       ip: remoteService.config.ip,
       port: remoteService.config.port,
+      publicAddr: remoteService.config.publicAddr,
       prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks,
@@ -116,6 +118,7 @@ router.post(
       apiKey: parameter.apiKey,
       port: parameter.port,
       ip: parameter.ip,
+      publicAddr: parameter.publicAddr,
       prefix: parameter.prefix ?? "",
       remarks: parameter.remarks ?? ""
     });
@@ -154,6 +157,7 @@ router.put(
     await RemoteServiceSubsystem.edit(uuid, {
       port: parameter.port,
       ip: parameter.ip,
+      publicAddr: parameter.publicAddr,
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
       remarks: parameter.remarks,

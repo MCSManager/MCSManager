@@ -78,6 +78,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     if (config.remarks) instance.config.remarks = config.remarks;
     if (config.ip) instance.config.ip = config.ip;
     if (config.port) instance.config.port = config.port;
+    if (config.publicAddr != null) instance.config.publicAddr = config.publicAddr;
     if (config.prefix != null) instance.config.prefix = config.prefix;
     if (config.apiKey) instance.config.apiKey = config.apiKey;
     if (config.remoteMappings != null) instance.config.remoteMappings = config.remoteMappings;

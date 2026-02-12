@@ -18,6 +18,7 @@ const daemonInfo = ref<ComputedNodeInfo | null>(null);
 const DEFAULT_CONFIG = {
   ip: "",
   port: 24444,
+  publicAddr: "",
   prefix: "",
   remarks: "Unnamed Node",
   apiKey: "",
@@ -186,6 +187,15 @@ defineExpose({ openDialog });
             <a-typography-text v-if="ipNeedsMapping(dialog.data.ip)" type="secondary">
               {{ t("TXT_CODE_93c3cb78") }}
             </a-typography-text>
+          </a-form-item>
+
+          <a-form-item :label="t('TXT_CODE_publicAddrLabel')" name="publicAddr">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_publicAddrTip") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="dialog.data.publicAddr" />
           </a-form-item>
 
           <a-form-item :label="t('TXT_CODE_4a6bf8c6')" name="port" required>

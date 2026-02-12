@@ -277,7 +277,9 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.addr;
+      const addr =
+        remoteService?.config.publicAddr ||
+        `${remoteService?.config.ip}:${remoteService?.config.port}`;
       const prefix = remoteService.config.prefix;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();

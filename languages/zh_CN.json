@@ -3250,5 +3250,7 @@
   "TXT_CODE_10f0f8d": "添加成功!",
   "TXT_CODE_de449b5f": "Folia Server",
   "TXT_CODE_2025658e": "Hytale Server",
-  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。"
+  "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。",
+  "TXT_CODE_publicAddrLabel": "公网地址",
+  "TXT_CODE_publicAddrTip": "可选。供前端连接使用，留空则使用 IP:端口。"
 }
