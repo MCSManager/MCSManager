@@ -20,6 +20,20 @@ import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/instance" });
 
+function getBrowserDirectAddr(remoteService: any) {
+  const webDirectAddress = remoteService.config.webDirectAddress?.trim();
+  const publicAddr = remoteService.config.publicAddr?.trim();
+  const hasWebDirectPort = Number(remoteService.config.webDirectPort) > 0;
+  const webDirectPort = hasWebDirectPort
+    ? Number(remoteService.config.webDirectPort)
+    : remoteService.config.port;
+  const baseAddr =
+    webDirectAddress || hasWebDirectPort
+      ? `${webDirectAddress || remoteService.config.ip}:${webDirectPort}`
+      : publicAddr || `${remoteService.config.ip}:${remoteService.config.port}`;
+  return `${baseAddr}${remoteService.config.canonicalPrefix}`;
+}
+
 // [Low-level Permission]
 // Get the details of an instance
 router.get(
@@ -94,7 +108,7 @@ router.post(
         instance_name: result.nickname
       });
       // Send a cross-end file upload task to the daemon
-      const addr = remoteService.config.fullAddr;
+      const addr = getBrowserDirectAddr(remoteService);
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {

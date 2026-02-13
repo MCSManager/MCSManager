@@ -14,6 +14,20 @@ import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/files" });
 
+function getBrowserDirectAddr(remoteService: any) {
+  const webDirectAddress = remoteService.config.webDirectAddress?.trim();
+  const publicAddr = remoteService.config.publicAddr?.trim();
+  const hasWebDirectPort = Number(remoteService.config.webDirectPort) > 0;
+  const webDirectPort = hasWebDirectPort
+    ? Number(remoteService.config.webDirectPort)
+    : remoteService.config.port;
+  const baseAddr =
+    webDirectAddress || hasWebDirectPort
+      ? `${webDirectAddress || remoteService.config.ip}:${webDirectPort}`
+      : publicAddr || `${remoteService.config.ip}:${remoteService.config.port}`;
+  return `${baseAddr}${remoteService.config.canonicalPrefix}`;
+}
+
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
   const daemonId = String(ctx.query.daemonId);
@@ -353,7 +367,7 @@ router.all(
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.fullAddr;
+      const addr = getBrowserDirectAddr(remoteService);
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
@@ -393,7 +407,7 @@ router.all(
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.fullAddr;
+      const addr = getBrowserDirectAddr(remoteService);
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
