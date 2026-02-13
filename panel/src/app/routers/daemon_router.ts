@@ -20,6 +20,8 @@ router.get("/remote_services_list", permission({ level: ROLE.ADMIN }), async (ct
       ip: remoteService.config.ip,
       port: remoteService.config.port,
       publicAddr: remoteService.config.publicAddr,
+      webDirectAddress: remoteService.config.webDirectAddress,
+      webDirectPort: remoteService.config.webDirectPort,
       prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks
@@ -96,6 +98,8 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
       ip: remoteService.config.ip,
       port: remoteService.config.port,
       publicAddr: remoteService.config.publicAddr,
+      webDirectAddress: remoteService.config.webDirectAddress,
+      webDirectPort: remoteService.config.webDirectPort,
       prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks,
@@ -113,12 +117,15 @@ router.post(
   validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
+    const backendConnectPort = parameter.backendConnectPort ?? parameter.port;
     // do asynchronous registration
     const instance = await RemoteServiceSubsystem.registerRemoteService({
       apiKey: parameter.apiKey,
-      port: parameter.port,
-      ip: parameter.ip,
-      publicAddr: parameter.publicAddr,
+      port: backendConnectPort,
+      ip: parameter.backendConnectAddress ?? parameter.ip,
+      publicAddr: parameter.publicAddr ?? parameter.daemonAddr,
+      webDirectAddress: parameter.webDirectAddress,
+      webDirectPort: parameter.webDirectPort,
       prefix: parameter.prefix ?? "",
       remarks: parameter.remarks ?? ""
     });
@@ -144,20 +151,23 @@ router.put(
     const parameter = ctx.request.body || {};
     const daemonSetting = parameter?.setting || {};
     const daemon = RemoteServiceSubsystem.getInstance(uuid);
+    const daemonListenPort = parameter.daemonListenPort ?? parameter.daemonPort;
 
     if (daemonSetting && daemon?.available) {
       await new RemoteRequest(daemon).request("info/setting", {
         ...daemonSetting,
-        port: parameter.daemonPort
+        port: daemonListenPort
       });
     }
 
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
 
     await RemoteServiceSubsystem.edit(uuid, {
-      port: parameter.port,
-      ip: parameter.ip,
-      publicAddr: parameter.publicAddr,
+      port: parameter.backendConnectPort ?? parameter.port,
+      ip: parameter.backendConnectAddress ?? parameter.ip,
+      publicAddr: parameter.publicAddr ?? parameter.daemonAddr,
+      webDirectAddress: parameter.webDirectAddress,
+      webDirectPort: parameter.webDirectPort,
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
       remarks: parameter.remarks,

@@ -3277,5 +3277,13 @@
   "TXT_CODE_10f0f8d": "Success!",
   "TXT_CODE_35631d1d": "If this Java was added externally, it won't actually delete the Java files.",
   "TXT_CODE_publicAddrLabel": "Public Address",
-  "TXT_CODE_publicAddrTip": "Optional. Used by the web UI to connect. Leave empty to use IP:Port."
+  "TXT_CODE_publicAddrTip": "Optional. Used by the web UI to connect. Leave empty to use IP:Port.",
+  "TXT_CODE_webDirectAddressLabel": "Web Direct Address",
+  "TXT_CODE_webDirectAddressTip": "Used for web direct connection to daemon (address only, no port). Leave empty to use backend connection address.",
+  "TXT_CODE_webDirectPortLabel": "Web Direct Port",
+  "TXT_CODE_webDirectPortTip": "Used for web direct connection to daemon. Can be different from backend connection port.",
+  "TXT_CODE_backendConnectAddressLabel": "Backend Connection Address",
+  "TXT_CODE_backendConnectAddressTip": "Used by panel backend to connect daemon (IP or domain).",
+  "TXT_CODE_backendConnectPortLabel": "Backend Connection Port",
+  "TXT_CODE_backendConnectPortTip": "Used by panel backend to connect daemon. Default is 24444."
 }

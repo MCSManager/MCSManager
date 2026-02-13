@@ -41,7 +41,15 @@ export function useSocketIoClient() {
     } else {
       try {
         socketStatus.value = SocketStatus.Connecting;
-        let addr = `${nodeCfg.ip}:${nodeCfg.port}`,
+        const webDirectAddress = nodeCfg.webDirectAddress?.trim();
+        const webDirectPort =
+          typeof nodeCfg.webDirectPort === "number" && nodeCfg.webDirectPort > 0
+            ? nodeCfg.webDirectPort
+            : nodeCfg.port;
+        let addr =
+            webDirectAddress && webDirectPort
+              ? `${webDirectAddress}:${webDirectPort}`
+              : nodeCfg.publicAddr || `${nodeCfg.ip}:${nodeCfg.port}`,
           prefix = nodeCfg.prefix;
         if (nodeCfg.remoteMappings) {
           const mapped = mapDaemonAddress(

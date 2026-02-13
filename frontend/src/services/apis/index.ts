@@ -200,9 +200,14 @@ export const editNode = useDefineApi<
     };
     data: {
       apiKey?: string;
+      backendConnectAddress?: string;
       ip?: string;
+      backendConnectPort?: number;
       port?: number;
       publicAddr?: string;
+      webDirectAddress?: string;
+      webDirectPort?: number;
+      daemonListenPort?: number;
       remarks?: string;
       setting?: any;
     };
@@ -216,9 +221,13 @@ export const editNode = useDefineApi<
 export const addNode = useDefineApi<
   {
     data: {
+      backendConnectAddress?: string;
       ip: string;
+      backendConnectPort?: number;
       port: number;
       publicAddr?: string;
+      webDirectAddress?: string;
+      webDirectPort?: number;
       remarks: string;
       apiKey: string;
     };

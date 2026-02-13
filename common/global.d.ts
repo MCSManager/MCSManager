@@ -151,6 +151,8 @@ declare global {
     ip: string;
     port: number;
     publicAddr?: string;
+    webDirectAddress?: string;
+    webDirectPort?: number;
     prefix: string;
     remoteMappings: IPanelOverviewRemoteMappingResponse[];
     available: boolean;

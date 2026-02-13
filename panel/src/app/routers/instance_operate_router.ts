@@ -277,9 +277,17 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      const webDirectAddress = remoteService.config.webDirectAddress?.trim();
+      const publicAddr = remoteService.config.publicAddr?.trim();
+      const legacyDaemonAddr = (remoteService.config as any).daemonAddr?.trim();
+      const hasWebDirectPort = Number(remoteService.config.webDirectPort) > 0;
+      const webDirectPort = hasWebDirectPort
+        ? Number(remoteService.config.webDirectPort)
+        : remoteService.config.port;
       const addr =
-        remoteService?.config.publicAddr ||
-        `${remoteService?.config.ip}:${remoteService?.config.port}`;
+        webDirectAddress || hasWebDirectPort
+          ? `${webDirectAddress || remoteService.config.ip}:${webDirectPort}`
+          : publicAddr || legacyDaemonAddr || `${remoteService.config.ip}:${remoteService.config.port}`;
       const prefix = remoteService.config.prefix;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();

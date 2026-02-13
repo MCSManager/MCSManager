@@ -11,6 +11,8 @@ export interface RemoteNodeDetail {
   ip: string;
   port: number;
   publicAddr?: string;
+  webDirectAddress?: string;
+  webDirectPort?: number;
   prefix: string;
   remarks: string;
   apiKey?: string;

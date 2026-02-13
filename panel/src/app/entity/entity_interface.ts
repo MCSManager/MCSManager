@@ -55,6 +55,8 @@ export interface IRemoteService {
   ip?: string;
   port?: number;
   publicAddr?: string;
+  webDirectAddress?: string;
+  webDirectPort?: number;
   prefix?: string;
   remarks?: string;
   apiKey?: string;
@@ -66,6 +68,8 @@ export class RemoteServiceConfig {
   public ip = "";
   public port = 24444;
   public publicAddr = "";
+  public webDirectAddress = "";
+  public webDirectPort = 0;
   public prefix = "";
   public remarks = "";
   public apiKey = "";

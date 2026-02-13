@@ -3252,5 +3252,13 @@
   "TXT_CODE_2025658e": "Hytale Server",
   "TXT_CODE_35631d1d": "如果这个Java是从外部添加的, 并不会真的删除Java文件。",
   "TXT_CODE_publicAddrLabel": "公网地址",
-  "TXT_CODE_publicAddrTip": "可选。供前端连接使用，留空则使用 IP:端口。"
+  "TXT_CODE_publicAddrTip": "可选。供前端连接使用，留空则使用 IP:端口。",
+  "TXT_CODE_webDirectAddressLabel": "网页直连地址",
+  "TXT_CODE_webDirectAddressTip": "用于网页直连守护进程（地址不含端口）。留空则使用后端连接地址。",
+  "TXT_CODE_webDirectPortLabel": "网页直连端口",
+  "TXT_CODE_webDirectPortTip": "用于网页直连守护进程，可与后端连接端口不同。",
+  "TXT_CODE_backendConnectAddressLabel": "后端连接地址",
+  "TXT_CODE_backendConnectAddressTip": "用于面板后端连接守护进程（IP 或域名）。",
+  "TXT_CODE_backendConnectPortLabel": "后端连接端口",
+  "TXT_CODE_backendConnectPortTip": "用于面板后端连接守护进程。默认 24444。"
 }

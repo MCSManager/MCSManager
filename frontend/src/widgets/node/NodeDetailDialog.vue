@@ -16,9 +16,10 @@ const activeTabKey = ref("basic");
 const daemonInfo = ref<ComputedNodeInfo | null>(null);
 
 const DEFAULT_CONFIG = {
-  ip: "",
-  port: 24444,
-  publicAddr: "",
+  backendConnectAddress: "",
+  backendConnectPort: 24444,
+  webDirectAddress: "",
+  webDirectPort: 24444,
   prefix: "",
   remarks: "Unnamed Node",
   apiKey: "",
@@ -29,7 +30,7 @@ const DEFAULT_CONFIG = {
   portRangeStart: 0,
   portRangeEnd: 0,
   portAssignInterval: 0,
-  daemonPort: 24444,
+  daemonListenPort: 24444,
   remoteMappings: [] as IPanelOverviewRemoteMappingResponse[]
 };
 
@@ -84,8 +85,23 @@ const SPEED_RATE_OPTIONS = [
   }
 ];
 
-function ipNeedsMapping(ip: string) {
-  return ip && ip.trim() !== "localhost" && isLocalNetworkIP(ip);
+function backendConnectAddressNeedsMapping(addr: string) {
+  return addr && addr.trim() !== "localhost" && isLocalNetworkIP(addr);
+}
+
+function parseLegacyPublicAddr(publicAddr?: string) {
+  if (!publicAddr) return { webDirectAddress: "", webDirectPort: undefined as number | undefined };
+  const normalized = publicAddr.includes("://") ? publicAddr : `ws://${publicAddr}`;
+  try {
+    const parsed = new URL(normalized);
+    const parsedPort = Number(parsed.port);
+    return {
+      webDirectAddress: parsed.hostname || "",
+      webDirectPort: Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : undefined
+    };
+  } catch (error) {
+    return { webDirectAddress: publicAddr, webDirectPort: undefined as number | undefined };
+  }
 }
 
 const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
@@ -93,11 +109,17 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
     daemonInfo.value = data;
     editMode.value = true;
     dialog.uuid = uuid;
+    const legacyPublicAddr = parseLegacyPublicAddr(
+      data.publicAddr ?? (data as any).daemonAddr
+    );
     dialog.data = {
       ...data,
       ...data.config,
-      port: data.port, // connection port
-      daemonPort: data.config?.port ?? 24444, // listen port
+      backendConnectAddress: data.ip,
+      backendConnectPort: data.port,
+      webDirectAddress: data.webDirectAddress ?? legacyPublicAddr.webDirectAddress,
+      webDirectPort: data.webDirectPort ?? legacyPublicAddr.webDirectPort ?? data.port,
+      daemonListenPort: data.config?.port ?? 24444,
       apiKey: "",
       remoteMappings: data.remoteMappings ?? []
     };
@@ -140,15 +162,30 @@ const dialog = reactive({
     try {
       await dialog.check();
       dialog.loading = true;
-      if (editMode.value) {
-        await updateNode(dialog.uuid, {
+      const payload = {
+        backendConnectAddress: dialog.data.backendConnectAddress,
+        ip: dialog.data.backendConnectAddress,
+        prefix: dialog.data.prefix,
+        remarks: dialog.data.remarks,
+        apiKey: dialog.data.apiKey,
+        backendConnectPort: Number(dialog.data.backendConnectPort),
+        port: Number(dialog.data.backendConnectPort),
+        publicAddr: dialog.data.webDirectAddress?.trim()
+          ? `${dialog.data.webDirectAddress.trim()}:${Number(dialog.data.webDirectPort)}`
+          : "",
+        webDirectAddress: dialog.data.webDirectAddress?.trim(),
+        webDirectPort: Number(dialog.data.webDirectPort),
+        daemonListenPort: Number(dialog.data.daemonListenPort),
+        remoteMappings: dialog.data.remoteMappings,
+        setting: {
           ...dialog.data,
-          setting: {
-            ...dialog.data
-          }
-        });
+          port: Number(dialog.data.daemonListenPort)
+        }
+      };
+      if (editMode.value) {
+        await updateNode(dialog.uuid, payload);
       } else {
-        await addNode(dialog.data);
+        await addNode(payload);
       }
       message.success(t("TXT_CODE_e74d658c"));
       dialog.close();
@@ -175,36 +212,45 @@ defineExpose({ openDialog });
             <a-input v-model:value="dialog.data.remarks" :placeholder="t('TXT_CODE_4b1d5199')" />
           </a-form-item>
 
-          <a-form-item :label="t('TXT_CODE_93f9b02a')" name="ip" required>
+          <a-form-item :label="t('TXT_CODE_backendConnectAddressLabel')" name="backendConnectAddress" required>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("TXT_CODE_be7a689a") }}
+                {{ t("TXT_CODE_backendConnectAddressTip") }}
                 <br />
                 {{ t("TXT_CODE_c82a51b0") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input v-model:value="dialog.data.ip" />
-            <a-typography-text v-if="ipNeedsMapping(dialog.data.ip)" type="secondary">
+            <a-input v-model:value="dialog.data.backendConnectAddress" />
+            <a-typography-text v-if="backendConnectAddressNeedsMapping(dialog.data.backendConnectAddress)" type="secondary">
               {{ t("TXT_CODE_93c3cb78") }}
             </a-typography-text>
           </a-form-item>
 
-          <a-form-item :label="t('TXT_CODE_publicAddrLabel')" name="publicAddr">
+          <a-form-item :label="t('TXT_CODE_backendConnectPortLabel')" name="backendConnectPort" required>
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("TXT_CODE_publicAddrTip") }}
+                {{ t("TXT_CODE_backendConnectPortTip") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input v-model:value="dialog.data.publicAddr" />
+            <a-input v-model:value="dialog.data.backendConnectPort" />
           </a-form-item>
 
-          <a-form-item :label="t('TXT_CODE_4a6bf8c6')" name="port" required>
+          <a-form-item :label="t('TXT_CODE_webDirectAddressLabel')" name="webDirectAddress">
             <a-typography-paragraph>
               <a-typography-text type="secondary">
-                {{ t("TXT_CODE_df455795") }}
+                {{ t("TXT_CODE_webDirectAddressTip") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input v-model:value="dialog.data.port" />
+            <a-input v-model:value="dialog.data.webDirectAddress" />
+          </a-form-item>
+
+          <a-form-item :label="t('TXT_CODE_webDirectPortLabel')" name="webDirectPort">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_webDirectPortTip") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="dialog.data.webDirectPort" />
           </a-form-item>
 
           <a-form-item :label="t('TXT_CODE_300c2ff4')" name="apiKey" :required="!editMode">
@@ -217,10 +263,8 @@ defineExpose({ openDialog });
                 </a>
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input
-              v-model:value="dialog.data.apiKey"
-              :placeholder="editMode ? t('TXT_CODE_dc570cf2') : t('TXT_CODE_fe25087f')"
-            />
+            <a-input v-model:value="dialog.data.apiKey"
+              :placeholder="editMode ? t('TXT_CODE_dc570cf2') : t('TXT_CODE_fe25087f')" />
           </a-form-item>
 
           <a-form-item :label="t('TXT_CODE_693f31d6')" name="prefix">
@@ -246,11 +290,7 @@ defineExpose({ openDialog });
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-select v-model:value="dialog.data.uploadSpeedRate" style="width: 100%">
-                  <a-select-option
-                    v-for="item in SPEED_RATE_OPTIONS"
-                    :key="item.value"
-                    :value="item.value"
-                  >
+                  <a-select-option v-for="item in SPEED_RATE_OPTIONS" :key="item.value" :value="item.value">
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
@@ -264,11 +304,7 @@ defineExpose({ openDialog });
                   </a-typography-text>
                 </a-typography-paragraph>
                 <a-select v-model:value="dialog.data.downloadSpeedRate" style="width: 100%">
-                  <a-select-option
-                    v-for="item in SPEED_RATE_OPTIONS"
-                    :key="item.value"
-                    :value="item.value"
-                  >
+                  <a-select-option v-for="item in SPEED_RATE_OPTIONS" :key="item.value" :value="item.value">
                     {{ item.label }}
                   </a-select-option>
                 </a-select>
@@ -285,13 +321,13 @@ defineExpose({ openDialog });
               </a-form-item>
             </a-col>
           </a-row>
-          <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="daemonPort">
+          <a-form-item :label="t('TXT_CODE_cd1f9ef7')" name="daemonListenPort">
             <a-typography-paragraph>
               <a-typography-text type="secondary">
                 {{ t("TXT_CODE_75ef0619") }}
               </a-typography-text>
             </a-typography-paragraph>
-            <a-input v-model:value="dialog.data.daemonPort" />
+            <a-input v-model:value="dialog.data.daemonListenPort" />
           </a-form-item>
           <a-form-item :label="t('TXT_CODE_bbe23ee7')" name="remoteMappings">
             <a-typography-paragraph>
@@ -300,10 +336,7 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-card>
-              <NodeRemoteMappingEdit
-                v-if="dialog.data.remoteMappings"
-                v-model:value="dialog.data.remoteMappings"
-              />
+              <NodeRemoteMappingEdit v-if="dialog.data.remoteMappings" v-model:value="dialog.data.remoteMappings" />
               <a-typography-text v-else type="secondary">
                 {{ t("TXT_CODE_48c291c1") }}
               </a-typography-text>
@@ -315,12 +348,7 @@ defineExpose({ openDialog });
 
     <template #footer>
       <div class="justify-space-between">
-        <a-popconfirm
-          :title="t('TXT_CODE_fb267b0b')"
-          ok-text="Yes"
-          cancel-text="No"
-          @confirm="dialog.delete()"
-        >
+        <a-popconfirm :title="t('TXT_CODE_fb267b0b')" ok-text="Yes" cancel-text="No" @confirm="dialog.delete()">
           <a-button v-if="editMode" key="delete" danger>{{ t("TXT_CODE_8b937b23") }}</a-button>
         </a-popconfirm>
         <div class="right">
