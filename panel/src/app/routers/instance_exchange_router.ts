@@ -7,6 +7,7 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import {
   buyOrRenewInstance,
+  getAllDaemon,
   getNodeStatus,
   parseUserName,
   queryInstanceByUserId,
@@ -48,6 +49,10 @@ router.post(
       }
       if (requestAction === RequestAction.SSO_TOKEN) {
         ctx.body = UserSSOService.generateSSOToken(parseUserName(params?.username));
+        return;
+      }
+      if (requestAction === RequestAction.GET_ALL_DAEMON) {
+        ctx.body = await getAllDaemon();
         return;
       }
     } catch (err) {

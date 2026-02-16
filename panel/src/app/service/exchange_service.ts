@@ -66,7 +66,8 @@ export enum RequestAction {
   RENEW = "renew",
   QUERY_INSTANCE = "query_instance",
   PING = "ping",
-  SSO_TOKEN = "sso_token"
+  SSO_TOKEN = "sso_token",
+  GET_ALL_DAEMON = "get_all_daemon"
 }
 
 export interface IPortInfo {
@@ -313,4 +314,34 @@ export async function getNodeStatus(params: Record<string, any>): Promise<INodeS
     running: Number(remoteInfo.instance.running),
     instances: Number(remoteInfo.instance.total)
   };
+}
+
+export async function getAllDaemon() {
+  // Get the information of the remote service concurrently
+  const requestTasks = Array.from(RemoteServiceSubsystem.services.entries()).map(
+    async ([_, remoteService]) => {
+      let remoteInfo: any = {};
+      try {
+        remoteInfo = await new RemoteRequest(remoteService).request("info/overview");
+      } catch (err) {
+        // ignore request errors and continue looping
+      }
+      return {
+        id: remoteService.uuid,
+        ip: remoteService.config.ip,
+        port: Number(remoteService.config.port),
+        available: remoteService.available,
+        nickname: remoteService.config.remarks,
+        cpuUsage: remoteInfo.system?.cpuUsage || 0,
+        memUsage: remoteInfo.system?.memUsage || 0,
+        loadavg: remoteInfo.system?.loadavg || [0, 0, 0],
+        running: remoteInfo.instance?.running || 0,
+        total: remoteInfo.instance?.total || 0,
+        version: remoteInfo.version || ""
+      };
+    }
+  );
+  const remoteInfoList = await Promise.all(requestTasks);
+  const result = remoteInfoList.filter((v) => !!v);
+  return result;
 }
