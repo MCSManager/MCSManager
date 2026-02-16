@@ -193,6 +193,7 @@
   "TXT_CODE_1fec78cc": "Stellen Sie dies auf True ein, um das Kollisionsgrenzfeld der gesamten Entität auf Leitern zu überprüfen, anstatt nur den Block, in dem sie sich befinden. Verursacht bemerkenswerte Unterschiede in der Mechanik, sodass Standard das Vanilleverhalten ist. \nStandard: Falsch.",
   "TXT_CODE_20053f37": "Blockfallmultiplikator für hellgraues Bett",
   "TXT_CODE_201bc643": "kein Schutz",
+  "TXT_CODE_2025658e": "Hytale Server",
   "TXT_CODE_2029027e": "Die Konfiguration des offenen Ports dieses Containers ist falsch und es gibt keine Werte auf der linken und rechten Seite des Trennzeichens!",
   "TXT_CODE_2033383b": "Verzögerung zwischen Wellen. \nJe niedriger der Wert, desto mehr Kreaturen gibt es",
   "TXT_CODE_2038ec2c": "Bitte wählen Sie mindestens ein Profil aus!",
@@ -2369,6 +2370,7 @@
   "TXT_CODE_de1b06cd": "Dateiname muss ausgefüllt werden",
   "TXT_CODE_de1ece3c": "Beruhigt den Eisengolem, wenn er geheilt ist, wenn er wütend ist",
   "TXT_CODE_de3ced4b": "Bitte geben Sie den Bildnamen ein",
+  "TXT_CODE_de449b5f": "Folia Server",
   "TXT_CODE_de567e84": "Benutzer <<operator_name>> löscht die Datei <<file>> der <<instance_name>> Instanz",
   "TXT_CODE_de61c48c": "Notizblockaktualisierungen deaktivieren",
   "TXT_CODE_de854aa6": "Maximale Sekunden, die ein Phantom zum Spawnen benötigt",
@@ -2927,7 +2929,5 @@
   "TXT_CODE_system_instance_control.existRepeatTask": "Es sind bereits doppelte Aufgaben vorhanden",
   "TXT_CODE_system_instance_control.illegalName": "Falscher Projektname, unterstützt nur Unterstriche, Zahlen, Buchstaben und einige lokale Sprachen",
   "TXT_CODE_ui.help": "[Konsole] Der Daemon verfügt über grundlegende interaktive Funktionen. Bitte geben Sie „Hilfe“ ein, um weitere Informationen anzuzeigen",
-  "TXT_CODE_de449b5f": "Folia Server",
-  "TXT_CODE_2025658e": "Hytale Server",
   "TXT_CODE_version.versionDetectErr": "Die Versionsprüfung ist fehlgeschlagen"
 }

@@ -171,7 +171,10 @@ const btns = computed(() => {
       click: () => {
         javaManagerDialog.value?.openDialog();
       },
-      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
+      condition: () =>
+        (instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) &&
+          instanceInfo.value?.config.processType === "general") ??
+        false
     },
     {
       title: t("TXT_CODE_656a85d8"),
