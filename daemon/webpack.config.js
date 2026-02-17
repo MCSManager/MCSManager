@@ -25,7 +25,11 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      allowlist: ["mcsmanager-common"]
+    })
+  ],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")
