@@ -54,7 +54,8 @@ export interface IBuyResponseProtocol {
 
 export interface IBuyRequestProtocol {
   category_id: number;
-  node_id: string;
+  daemon_id: string;
+  instance_name: string;
   username: string;
   hours: number;
   payload: Partial<IGlobalInstanceConfig>;
@@ -168,13 +169,14 @@ export async function buyOrRenewInstance(
     onCreateConfirm?: (instanceId: string) => Promise<void>;
   } = {}
 ): Promise<IBuyResponseProtocol> {
-  const node_id = toText(params.node_id) ?? "";
-  const instance_id = toText(params.instance_id) ?? "";
+  const daemonId = toText(params.daemon_id) ?? "";
+  const instanceId = toText(params.instance_id) ?? "";
   const username = parseUserName(params.username);
+  const newInstanceName = toText(params.instance_name) ?? "";
   const hours = toNumber(params.hours) ?? 0;
   const payload: Partial<IGlobalInstanceConfig> = params.payload ?? {};
 
-  const remoteService = RemoteServiceSubsystem.getInstance(node_id || "");
+  const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
   if (!remoteService?.available) {
     throw new Error(t("TXT_CODE_bed32084"));
   }
@@ -190,7 +192,7 @@ export async function buyOrRenewInstance(
       throw new Error($t("TXT_CODE_router.user.invalidUserName"));
     }
 
-    payload.nickname = "App-" + username + "-" + getNanoId(6);
+    payload.nickname = newInstanceName || "App-" + username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(
       "instance/new",
       payload
@@ -208,7 +210,7 @@ export async function buyOrRenewInstance(
           ...user.instances,
           {
             instanceUuid: newInstanceId,
-            daemonId: node_id
+            daemonId: daemonId
           }
         ]
       });
@@ -221,7 +223,7 @@ export async function buyOrRenewInstance(
         instances: [
           {
             instanceUuid: newInstanceId,
-            daemonId: node_id
+            daemonId: daemonId
           }
         ]
       });
@@ -234,13 +236,13 @@ export async function buyOrRenewInstance(
       password: newPassword,
       uuid: user.uuid,
       expire: toNumber(newInstanceConfig.endTime) || 0,
-      instance_info: formatInstanceData(newInstanceConfig, node_id)
+      instance_info: formatInstanceData(newInstanceConfig, daemonId)
     };
   }
 
   if (request_action === RequestAction.RENEW) {
     const instanceInfo = await remoteRequest.request("instance/detail", {
-      instanceUuid: instance_id
+      instanceUuid: instanceId
     });
 
     const config: IGlobalInstanceConfig = instanceInfo.config || {};
@@ -262,15 +264,15 @@ export async function buyOrRenewInstance(
       config.endTime = curExpireTime + hours * 3600 * 1000;
     }
 
-    await handler.onCreateConfirm?.(instance_id);
+    await handler.onCreateConfirm?.(instanceId);
 
     await remoteRequest.request("instance/update", {
-      instanceUuid: instance_id,
+      instanceUuid: instanceId,
       config: config
     });
 
     return {
-      instance_id,
+      instance_id: instanceId,
       instance_config: config,
       expire: toNumber(config.endTime) || 0,
       username: "",

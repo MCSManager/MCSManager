@@ -106,7 +106,7 @@ router.post(
     // Optional
     const instanceId = toText(ctx.request.body.instanceId) ?? "";
     const username = toText(ctx.request.body.username) ?? "";
-
+    const newInstanceName = toText(ctx.request.body.instanceName) ?? "";
     const response = await execWithMutexId(`buy-${code}`, async () => {
       // First, check if the redeem code is valid
       const productInfo = await requestUseRedeem(
@@ -137,9 +137,10 @@ router.post(
         category_id: productId,
         payload: config,
         username: username,
-        node_id: daemonId,
+        daemon_id: daemonId,
         hours: hours,
         instance_id: instanceId,
+        instance_name: newInstanceName,
         code: code
       };
 
