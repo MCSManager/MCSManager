@@ -150,7 +150,7 @@ router.post(
           {
             onCreateConfirm: async () => {
               // Then, delete the redeem code
-              await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
+              // await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
             }
           }
         );

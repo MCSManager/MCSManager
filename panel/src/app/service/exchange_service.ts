@@ -34,6 +34,7 @@ export interface INodeStatusProtocol {
 
 export interface IInstanceInfoProtocol {
   instance_id: string;
+  daemon_id: string;
   name: string;
   expire: number;
   status: number;
@@ -71,8 +72,8 @@ export enum RequestAction {
 }
 
 export interface IPortInfo {
-  host: number;
-  container: number;
+  host: string;
+  container: string;
   protocol: string;
 }
 
@@ -114,7 +115,10 @@ export async function requestUseRedeem(
   return responseData.data;
 }
 
-function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProtocol {
+function formatInstanceData(
+  instance: IAdvancedInstanceInfo,
+  daemonId: string
+): IInstanceInfoProtocol {
   let ports: string[] = instance.docker?.ports ?? [];
   let portRules: Array<IPortInfo> = [];
   if (ports?.length > 0) {
@@ -123,11 +127,10 @@ function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProto
       const [ports, protocol] = line.split("/");
       if (!ports || !protocol) return;
       const [host, container] = ports.split(":");
-      if (isNaN(Number(container)) || isNaN(Number(host))) return;
       portRules.push({
         protocol,
-        container: Number(container),
-        host: Number(host)
+        container: container,
+        host: host
       });
     });
   }
@@ -138,8 +141,13 @@ function formatInstanceData(instance: IAdvancedInstanceInfo): IInstanceInfoProto
       value: `${instance.info?.currentPlayers}/${instance.info?.maxPlayers}`
     });
   }
+  lines.push({
+    title: "额外展示",
+    value: `XXXXX测试数据`
+  });
   return {
     instance_id: instance.instanceUuid,
+    daemon_id: daemonId,
     name: instance.nickname || "",
     status: instance.status || 0,
     ports: portRules,
@@ -226,7 +234,7 @@ export async function buyOrRenewInstance(
       password: newPassword,
       uuid: user.uuid,
       expire: toNumber(newInstanceConfig.endTime) || 0,
-      instance_info: formatInstanceData(newInstanceConfig)
+      instance_info: formatInstanceData(newInstanceConfig, node_id)
     };
   }
 
@@ -278,19 +286,18 @@ export async function queryInstanceByUserId(
   params: Record<string, any>
 ): Promise<IInstanceInfoProtocol[]> {
   const name = parseUserName(params.username) || "";
-  const targetDaemonId = toText(params.node_id) ?? undefined;
   const user = user_service.getUserByUserName(name);
   if (!user) throw new Error(t("TXT_CODE_903b6c50"));
 
-  const { instances = [] } = await getInstancesByUuid(user.uuid, targetDaemonId, true);
+  const { instances = [] } = await getInstancesByUuid(user.uuid, undefined, true);
   const newInstancesInfo = instances.map((v) => {
-    return formatInstanceData(v);
+    return formatInstanceData(v, v.daemonId);
   });
   return newInstancesInfo;
 }
 
 export async function getNodeStatus(params: Record<string, any>): Promise<INodeStatusProtocol> {
-  const nodeId = toText(params.node_id) ?? "";
+  const nodeId = toText(params.daemon_id) ?? "";
   const remoteService = RemoteServiceSubsystem.getInstance(nodeId);
   if (!remoteService?.available) {
     throw new Error(t("TXT_CODE_bed32084"));

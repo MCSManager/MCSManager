@@ -84,11 +84,11 @@ export async function getInstancesByUuid(
       if (!remoteService || !remoteService.available) {
         // If the remote service doesn't exist at all, load a deleted prompt
         resInstances.push({
-          hostIp: "-- Unknown --",
+          hostIp: "",
           instanceUuid: iterator.instanceUuid,
           daemonId: iterator.daemonId,
           status: -1,
-          nickname: "-- Unknown --",
+          nickname: "",
           remarks: "",
           ie: "",
           oe: "",
