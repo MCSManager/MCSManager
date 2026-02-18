@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import { t } from "i18next";
 import { toText } from "mcsmanager-common";
 import path from "path";
+import Storage from "../common/storage/sys_storage";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
@@ -77,8 +78,8 @@ export async function getInstancesByUuid(
   // Advanced functions are optional, analyze each instance data
   let resInstances: IAdvancedInstanceInfo[] = [];
   if (advanced) {
-    const instances = user.instances;
-    for (const iterator of instances) {
+    const myInstances = user.instances;
+    for (const iterator of myInstances) {
       if (targetDaemonId && targetDaemonId !== iterator.daemonId) continue;
       const remoteService = RemoteServiceSubsystem.getInstance(iterator.daemonId);
       if (!remoteService || !remoteService.available) {
@@ -106,7 +107,13 @@ export async function getInstancesByUuid(
         let instancesInfo = await new RemoteRequest(remoteService).request("instance/section", {
           instanceUuids: [iterator.instanceUuid]
         });
-        if (!instancesInfo || instancesInfo.length === 0) continue;
+        if (!instancesInfo || instancesInfo.length === 0) {
+          // Delete the instance from the user's instances
+          user.instances = user.instances.filter(
+            (v) => v.instanceUuid !== iterator.instanceUuid && v.daemonId !== iterator.daemonId
+          );
+          continue;
+        }
         instancesInfo = instancesInfo[0];
         resInstances.push({
           hostIp: `${remoteService.config.ip}:${remoteService.config.port}`,
@@ -132,6 +139,7 @@ export async function getInstancesByUuid(
   } else {
     resInstances = user.instances;
   }
+  await Storage.getStorage().store("User", user.uuid, user);
   // respond to user data
   return {
     uuid: user.uuid,
