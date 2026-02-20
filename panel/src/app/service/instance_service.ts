@@ -26,6 +26,8 @@ export const INSTANCE_STATUS_TEXT: Record<number, string> = {
 };
 
 export interface IAdvancedInstanceInfo {
+  spec_id?: number;
+  order_id?: number;
   instanceUuid: string;
   daemonId: string;
   hostIp?: string;
@@ -38,7 +40,7 @@ export interface IAdvancedInstanceInfo {
   lastDatetime?: number;
   stopCommand?: string;
   processType?: string;
-  docker?: Record<string, any>;
+  docker?: Partial<IGlobalInstanceDockerConfig>;
   info?: Record<string, any>;
 }
 
@@ -98,7 +100,9 @@ export async function getInstancesByUuid(
           stopCommand: "",
           processType: "",
           docker: {},
-          info: {}
+          info: {},
+          order_id: 0,
+          spec_id: 0
         });
         continue;
       }
@@ -129,7 +133,9 @@ export async function getInstancesByUuid(
           stopCommand: instancesInfo.config.stopCommand,
           processType: instancesInfo.config.processType,
           docker: instancesInfo.config.docker || {},
-          info: instancesInfo.info || {}
+          info: instancesInfo.info || {},
+          order_id: instancesInfo.config.orderId ?? 0,
+          spec_id: instancesInfo.config.category ?? 0
         });
       } catch (error) {
         // ignore error

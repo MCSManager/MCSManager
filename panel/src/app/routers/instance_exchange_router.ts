@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import Koa from "koa";
-import { toNumber, toText } from "mcsmanager-common";
+import { toText } from "mcsmanager-common";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
@@ -11,14 +11,11 @@ import {
   getNodeStatus,
   parseUserName,
   queryInstanceByUserId,
-  RequestAction,
-  requestUseRedeem
+  RequestAction
 } from "../service/exchange_service";
 import { logger } from "../service/log";
 import { loginSuccess } from "../service/passport_service";
 import UserSSOService from "../service/user_sso_service";
-import { systemConfig } from "../setting";
-import { execWithMutexId } from "../utils/sync";
 
 const router = new Router({ prefix: "/exchange" });
 
@@ -83,86 +80,6 @@ router.get(
     } else {
       throw new Error($t("TXT_CODE_13411df7"));
     }
-  }
-);
-
-router.post(
-  "/request_buy_instance",
-  permission({ token: false, level: null }),
-  validator({
-    body: {
-      productId: Number,
-      daemonId: String,
-      code: String
-    }
-  }),
-  async (ctx) => {
-    const panelId = systemConfig?.panelId || "";
-    const registerCode = systemConfig?.registerCode || "";
-    const productId = toNumber(ctx.request.body.productId) ?? 0;
-    const daemonId = toText(ctx.request.body.daemonId) ?? "";
-    const code = toText(ctx.request.body.code) ?? "";
-
-    // Optional
-    const instanceId = toText(ctx.request.body.instanceId) ?? "";
-    const username = toText(ctx.request.body.username) ?? "";
-    const newInstanceName = toText(ctx.request.body.instanceName) ?? "";
-    const response = await execWithMutexId(`buy-${code}`, async () => {
-      // First, check if the redeem code is valid
-      const productInfo = await requestUseRedeem(
-        panelId,
-        registerCode,
-        productId,
-        daemonId,
-        code,
-        false
-      );
-
-      const hours = productInfo?.hours;
-      if (!hours || !productInfo?.payload) {
-        throw new Error($t("TXT_CODE_45d7b982"));
-      }
-
-      const { config } = JSON.parse(productInfo.payload) as {
-        config: Partial<IGlobalInstanceConfig>;
-      };
-
-      logger.info(`Router /request_buy_instance Report: Product: ${JSON.stringify(productInfo)}`);
-
-      if (!config || !productId) {
-        throw new Error($t("TXT_CODE_c92156bb"));
-      }
-
-      const params = {
-        category_id: productId,
-        payload: config,
-        username: username,
-        daemon_id: daemonId,
-        hours: hours,
-        instance_id: instanceId,
-        instance_name: newInstanceName,
-        code: code
-      };
-
-      try {
-        return await buyOrRenewInstance(
-          instanceId ? RequestAction.RENEW : RequestAction.BUY,
-          params,
-          {
-            onCreateConfirm: async () => {
-              // Then, delete the redeem code
-              // await requestUseRedeem(panelId, registerCode, productId, daemonId, code, true);
-            }
-          }
-        );
-      } catch (error) {
-        logger.error($t("TXT_CODE_55b1f20e"), error);
-
-        throw error;
-      }
-    });
-
-    ctx.body = response;
   }
 );
 export default router;

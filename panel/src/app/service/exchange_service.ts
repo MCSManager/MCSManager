@@ -38,8 +38,10 @@ export interface IInstanceInfoProtocol {
   name: string;
   expire: number;
   status: number;
-  lines: Array<{ title: string; value: any }>;
+  spec_id: number;
+  order_id: number;
   ports: IPortInfo[];
+  lines: Array<{ title: string; value: any }>;
 }
 
 export interface IBuyResponseProtocol {
@@ -53,7 +55,8 @@ export interface IBuyResponseProtocol {
 }
 
 export interface IBuyRequestProtocol {
-  category_id: number;
+  spec_id: number;
+  order_id: number;
   daemon_id: string;
   instance_name: string;
   username: string;
@@ -142,17 +145,22 @@ function formatInstanceData(
       value: `${instance.info?.currentPlayers}/${instance.info?.maxPlayers}`
     });
   }
-  lines.push({
-    title: "额外展示",
-    value: `XXXXX测试数据`
-  });
+  // instance.docker?.ports?.forEach((port, index) => {
+  //   lines.push({
+  //     title: `${index}.${port}`,
+  //     value: port
+  //   });
+  // });
+
   return {
     instance_id: instance.instanceUuid,
     daemon_id: daemonId,
     name: instance.nickname || "",
     status: instance.status || 0,
     ports: portRules,
-    expire: instance.endTime || 0,
+    expire: instance.endTime ? Math.floor(instance.endTime / 1000) : 0,
+    spec_id: instance.spec_id || 0,
+    order_id: instance.order_id || 0,
     lines
   };
 }
@@ -184,7 +192,8 @@ export async function buyOrRenewInstance(
   const remoteRequest = new RemoteRequest(remoteService);
 
   if (request_action === RequestAction.BUY) {
-    payload.category = params.category_id || 0;
+    payload.category = params.spec_id || 0;
+    payload.orderId = params.order_id || 0;
     payload.endTime =
       (payload.endTime ? Number(payload.endTime) : Date.now()) + hours * 3600 * 1000;
 
@@ -235,7 +244,7 @@ export async function buyOrRenewInstance(
       username: user.userName,
       password: newPassword,
       uuid: user.uuid,
-      expire: toNumber(newInstanceConfig.endTime) || 0,
+      expire: Math.floor((toNumber(newInstanceConfig.endTime) ?? 0) / 1000),
       instance_info: formatInstanceData(newInstanceConfig, daemonId)
     };
   }
@@ -251,7 +260,7 @@ export async function buyOrRenewInstance(
       throw new Error(t("TXT_CODE_ed81f72d"));
     }
 
-    if (config.category !== Number(params.category_id)) {
+    if (Number(config.category) !== Number(params.spec_id)) {
       throw new Error(t("TXT_CODE_c5b38d90"));
     }
 
