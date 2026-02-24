@@ -247,7 +247,7 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.terminalOption, cfg.terminalOption, "haveColor", Boolean);
     }
 
-    if (cfg.startCommand && commandStringToArray(cfg.startCommand)[0] != "{mcsm_java}") {
+    if (cfg.startCommand && !commandStringToArray(cfg.startCommand).includes("{mcsm_java}")) {
       this.config.java.id = "";
     } else if (cfg.java) {
       configureEntityParams(this.config.java, cfg.java, "id", String);
