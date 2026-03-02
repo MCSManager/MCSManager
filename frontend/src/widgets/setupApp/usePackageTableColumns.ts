@@ -61,14 +61,6 @@ function buildColumnDefs(): PackageTableColumnDef[] {
       align: "center"
     },
     {
-      key: "tags",
-      dataIndex: "tags",
-      title: t("TXT_CODE_eaabd222"),
-      width: 100,
-      align: "center",
-      useTag: true
-    },
-    {
       key: "remark",
       dataIndex: "remark",
       title: t("TXT_CODE_b8e8e6f5"),
