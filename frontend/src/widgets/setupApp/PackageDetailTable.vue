@@ -148,6 +148,18 @@ function platformDisplayText(platform: string): string {
           <a-button type="link" size="small" @click="openConfigModal(record)">
             {{ t("TXT_CODE_ee5cd485") }}
           </a-button>
+          <a-button
+            v-if="record?.dockerOptional"
+            type="primary"
+            class="button-color-success"
+            size="small"
+            @click="emit('select', record, 'docker')"
+          >
+            <template #icon>
+              <DownloadOutlined />
+            </template>
+            {{ t("通过镜像安装") }}
+          </a-button>
           <a-button type="primary" size="small" @click="emit('select', record, 'normal')">
             <template #icon>
               <DownloadOutlined />
@@ -158,17 +170,6 @@ function platformDisplayText(platform: string): string {
             <span v-else>
               {{ t("通过镜像安装") }}
             </span>
-          </a-button>
-          <a-button
-            v-if="record?.dockerOptional"
-            type="primary"
-            size="small"
-            @click="emit('select', record, 'docker')"
-          >
-            <template #icon>
-              <DownloadOutlined />
-            </template>
-            {{ t("通过镜像安装") }}
           </a-button>
         </Flex>
       </template>

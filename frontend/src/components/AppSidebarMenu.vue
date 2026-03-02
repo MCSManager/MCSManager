@@ -153,6 +153,7 @@ const { logoImage } = useAppConfigStore();
   background-image: url("@/assets/side.png");
   padding: 20px 12px;
   transition: all 0.3s ease;
+  background-position-x: -80px;
 }
 
 .sidebar-menu {
