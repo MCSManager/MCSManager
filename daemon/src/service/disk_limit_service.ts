@@ -28,22 +28,17 @@ class DiskLimitService {
   }
 
   async checkInstanceDiskSize(instance: Instance) {
-    if (
-      Number(instance.config.docker.maxSpace) > 0 &&
-      instance.instanceStatus !== Instance.STATUS_STOPPING
-    ) {
-      const workspace = instance.absoluteCwdPath();
-      const maxSpace = Number(instance.config.docker.maxSpace);
-      this.queue.push({
-        key: instance.instanceUuid,
-        item: {
-          instance,
-          workspace,
-          maxSpace
-        }
-      });
-      this.#startCheck();
-    }
+    const workspace = instance.absoluteCwdPath();
+    const maxSpace = Number(instance.config.docker.maxSpace);
+    this.queue.push({
+      key: instance.instanceUuid,
+      item: {
+        instance,
+        workspace,
+        maxSpace
+      }
+    });
+    this.#startCheck();
   }
 
   async #startCheck() {
@@ -55,6 +50,7 @@ class DiskLimitService {
         this.checkDiskNow(item);
       }
     }
+    this.checking = false;
   }
 
   async #stopInstance(instance: Instance) {
@@ -85,9 +81,7 @@ class DiskLimitService {
     const { stdout } = await execPromise(command);
 
     const diskUsageSizeMb = Number(String(stdout.split("/")[0]).replaceAll("\t", "").trim());
-    console.log(
-      `[DiskLimitService] Check instance ${instance.instanceUuid} disk, Command: ${command}, Result: ${stdout}，Number: ${diskUsageSizeMb}`
-    );
+
     if (isNaN(Number(diskUsageSizeMb))) {
       instance.info.storageUsage = 0;
       instance.info.storageLimit = convertGBToBytes(maxSpace); // GB to bytes
@@ -98,16 +92,9 @@ class DiskLimitService {
 
     const storageLimit = instance.info.storageLimit;
     const storageUsage = instance.info.storageUsage;
-    console.log(
-      `[DiskLimitService] Check instance ${
-        instance.instanceUuid
-      } disk, Storage Limit: ${storageLimit}GB, Storage Usage: ${storageUsage}GB, Info: ${JSON.stringify(
-        instance.info
-      )}`
-    );
 
     if (autoStop) {
-      if (storageUsage >= storageLimit) {
+      if (storageUsage >= storageLimit && storageLimit > 0) {
         for (let i = 0; i < 3; i++) {
           instance.println(
             "WARNING",
@@ -122,12 +109,12 @@ class DiskLimitService {
           );
           await sleep(200);
         }
+        this.#stopInstance(instance);
       }
-      this.#stopInstance(instance);
     }
 
     return {
-      isFull: storageUsage >= storageLimit,
+      isFull: storageUsage >= storageLimit && storageLimit > 0,
       storageLimit: convertBytesToGB(storageLimit),
       storageUsage: convertBytesToGB(storageUsage)
     };

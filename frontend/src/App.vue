@@ -12,9 +12,11 @@ import AppSidebarMenu from "./components/AppSidebarMenu.vue";
 import Breadcrumbs from "./components/Breadcrumbs.vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
+import { useLayoutContainerStore } from "./stores/useLayoutContainerStore";
 import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 
 const { hasBgImage, initAppTheme, sidebarPosition } = useAppConfigStore();
+const { containerState } = useLayoutContainerStore();
 
 /** Whether to show the left sidebar; when false, only top header (AppHeader) is used. */
 const breakpoints = useBreakpoints({ sidebar: 1300 });
@@ -29,6 +31,12 @@ const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
   element.props.size.default = "large";
 });
 
+const designModeNavStyle = computed(() => {
+  return {
+    zIndex: containerState.isDesignMode ? 997 : 1
+  };
+});
+
 onMounted(async () => {
   setLoadingTitle("Loading application settings...");
   await initAppTheme();
@@ -38,12 +46,12 @@ onMounted(async () => {
 
 <template>
   <AppConfigProvider :has-bg-image="hasBgImage">
-    <AppSidebarMenu v-if="useSidebarLayout" />
+    <AppSidebarMenu v-if="useSidebarLayout" :style="designModeNavStyle" />
 
     <!-- App Container -->
     <div class="global-app-container" :class="{ 'app-layout-sidebar-only': useSidebarLayout }">
       <main class="main-content">
-        <AppHeader v-if="!useSidebarLayout" />
+        <AppHeader v-if="!useSidebarLayout" :style="designModeNavStyle" />
         <Breadcrumbs />
         <RouterView :key="$route.fullPath" />
       </main>
