@@ -158,7 +158,7 @@ function platformDisplayText(platform: string): string {
             <template #icon>
               <DownloadOutlined />
             </template>
-            {{ t("通过镜像安装") }}
+            {{ t("TXT_CODE_9123858b") }}
           </a-button>
           <a-button type="primary" size="small" @click="emit('select', record, 'normal')">
             <template #icon>
@@ -168,7 +168,7 @@ function platformDisplayText(platform: string): string {
               {{ btnText || t("TXT_CODE_1704ea49") }}
             </span>
             <span v-else>
-              {{ t("通过镜像安装") }}
+              {{ t("TXT_CODE_9123858b") }}
             </span>
           </a-button>
         </Flex>

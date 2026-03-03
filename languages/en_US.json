@@ -3321,5 +3321,6 @@
   "TXT_CODE_docker_version_select_docker_btn": "Use Docker Mode",
   "TXT_CODE_docker_version_select_normal_title": "Standard Deployment",
   "TXT_CODE_docker_version_select_normal_subtitle": "Standard installation runs directly on the host. You need to install runtime environments yourself, such as Java or Python.",
-  "TXT_CODE_docker_version_select_normal_btn": "Use Standard Mode"
+  "TXT_CODE_docker_version_select_normal_btn": "Use Standard Mode",
+  "TXT_CODE_9123858b": "Install via Docker"
 }

@@ -3321,5 +3321,6 @@
   "TXT_CODE_docker_version_select_docker_btn": "使用 Docker 版",
   "TXT_CODE_docker_version_select_normal_title": "直接安装到主机",
   "TXT_CODE_docker_version_select_normal_subtitle": "普通安装方式则相当于裸奔在机器上，你需要自己安装运行环境，比如 Java 环境，Python 环境。",
-  "TXT_CODE_docker_version_select_normal_btn": "使用普通版"
+  "TXT_CODE_docker_version_select_normal_btn": "使用普通版",
+  "TXT_CODE_9123858b": "通过镜像安装"
 }
