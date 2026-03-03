@@ -1309,6 +1309,7 @@ defineExpose({
                       v-model:value="formData.instance.config.docker.cpuUsage"
                       :allow-clear="true"
                       :placeholder="t('TXT_CODE_91d857f5')"
+                      suffix="%"
                     />
                   </a-tooltip>
                 </a-form-item>
@@ -1349,6 +1350,7 @@ defineExpose({
                     v-model:value="formData.instance.config.docker.memory"
                     :allow-clear="true"
                     :placeholder="t('TXT_CODE_80790069')"
+                    suffix="MB"
                   />
                 </a-form-item>
               </a-col>
@@ -1367,6 +1369,39 @@ defineExpose({
                     v-model:value="formData.instance.config.docker.memorySwap"
                     :allow-clear="true"
                     :placeholder="t('TXT_CODE_6f1129fb')"
+                  />
+                </a-form-item>
+              </a-col>
+
+              <a-col :xs="24" :lg="8" :offset="0">
+                <a-form-item>
+                  <a-typography-title :level="5">
+                    {{ t("最大储存空间") }}
+                    <a-tag color="blue">{{ t("仅 Linux 系统") }}</a-tag>
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip
+                      :title="
+                        t(
+                          '此限制仅支持 Linux 系统，依靠系统命令 du 支持，启动前和运行时每隔 1～10 分钟会检查一次工作目录大小是否超出限额，超出后会自动停止实例。'
+                        )
+                      "
+                      placement="top"
+                    >
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{
+                          t(
+                            "此限制仅支持 Linux 系统，依靠系统命令 du 支持，启动前和运行时每隔 1～10 分钟会检查一次工作目录大小是否超出限额，超出后会自动停止实例。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <a-input
+                    v-model:value="formData.instance.config.docker.maxSpace"
+                    :allow-clear="true"
+                    :placeholder="t('单位 GB，列如 60 代表 60GB，0 代表不限制')"
+                    suffix="GB"
                   />
                 </a-form-item>
               </a-col>

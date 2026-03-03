@@ -1,11 +1,7 @@
-import { execFile } from "child_process";
 import Dockerode from "dockerode";
-import { promisify } from "util";
 import { DefaultDocker } from "../../../service/docker_service";
 import Instance from "../../instance/instance";
 import { ILifeCycleTask } from "../../instance/life_cycle";
-
-const execFilePromise = promisify(execFile);
 
 export default class DockerStatsTask implements ILifeCycleTask {
   private static defaultDocker = new DefaultDocker();
@@ -15,10 +11,6 @@ export default class DockerStatsTask implements ILifeCycleTask {
   private task: NodeJS.Timeout | null = null;
   private lastStatsMap: Map<string, { [key: string]: number | undefined; timestamp: number }> =
     new Map();
-
-  private lastStorageCheck = 0;
-  private cachedStorageUsage = 0;
-  private cachedStorageLimit = 0;
 
   private calculateRealTimeRate<T extends Record<string, number | undefined>>(
     currentValues: T,
@@ -106,11 +98,11 @@ export default class DockerStatsTask implements ILifeCycleTask {
     try {
       const container = DockerStatsTask.defaultDocker.getContainer(containerId);
       const stats = await container.stats({ stream: false });
-      
+
       // Get network stats separately to avoid blocking other stats on failure
       let rxBytes: number | undefined = undefined;
       let txBytes: number | undefined = undefined;
-      
+
       try {
         const networkStats = this.getNetworkInterface(stats.networks);
         rxBytes = networkStats.rxBytes;
@@ -123,52 +115,52 @@ export default class DockerStatsTask implements ILifeCycleTask {
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
 
       // Storage Stats
-      let storageUsage = this.cachedStorageUsage;
-      let storageLimit = this.cachedStorageLimit;
+      // let storageUsage = this.cachedStorageUsage;
+      // let storageLimit = this.cachedStorageLimit;
 
-      if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
-        this.lastStorageCheck = Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
-        try {
-          const containerInfo = await container.inspect();
-          const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
+      // if (process.platform === "linux" && Date.now() - this.lastStorageCheck > 600 * 1000) {
+      //   this.lastStorageCheck = Date.now() + Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000;
+      //   try {
+      //     const containerInfo = await container.inspect();
+      //     const mounts = containerInfo.Mounts.filter((m) => m.Type === "bind");
 
-          // Calculate Usage
-          let totalUsage = 0;
-          for (const mount of mounts) {
-            try {
-              const { stdout } = await execFilePromise("nice", ["-n", "19", "ionice", "-c", "3", "du", "-sb", mount.Source]);
-              const usage = parseInt(stdout.split("\t")[0]);
-              if (!isNaN(usage)) totalUsage += usage;
-            } catch (e) {}
-          }
-          storageUsage = totalUsage;
+      //     // Calculate Usage
+      //     let totalUsage = 0;
+      //     for (const mount of mounts) {
+      //       try {
+      //         const { stdout } = await execFilePromise("nice", ["-n", "19", "ionice", "-c", "3", "du", "-sb", mount.Source]);
+      //         const usage = parseInt(stdout.split("\t")[0]);
+      //         if (!isNaN(usage)) totalUsage += usage;
+      //       } catch (e) {}
+      //     }
+      //     storageUsage = totalUsage;
 
-          // Calculate Limit (Partition Size)
-          if (mounts.length > 0) {
-            const targetPath = mounts[0].Source;
-            try {
-              const { stdout } = await execFilePromise("df", [
-                "-B1",
-                "--output=size",
-                targetPath
-              ]);
-              // Output format:
-              // Size
-              // 123456
-              const lines = stdout.trim().split("\n");
-              if (lines.length >= 2) {
-                const limit = parseInt(lines[1].trim());
-                if (!isNaN(limit)) storageLimit = limit;
-              }
-            } catch (e) {}
-          }
+      //     // Calculate Limit (Partition Size)
+      //     if (mounts.length > 0) {
+      //       const targetPath = mounts[0].Source;
+      //       try {
+      //         const { stdout } = await execFilePromise("df", [
+      //           "-B1",
+      //           "--output=size",
+      //           targetPath
+      //         ]);
+      //         // Output format:
+      //         // Size
+      //         // 123456
+      //         const lines = stdout.trim().split("\n");
+      //         if (lines.length >= 2) {
+      //           const limit = parseInt(lines[1].trim());
+      //           if (!isNaN(limit)) storageLimit = limit;
+      //         }
+      //       } catch (e) {}
+      //     }
 
-          this.cachedStorageUsage = storageUsage;
-          this.cachedStorageLimit = storageLimit;
-        } catch (error) {
-          // ignore storage check error
-        }
-      }
+      //     this.cachedStorageUsage = storageUsage;
+      //     this.cachedStorageLimit = storageLimit;
+      //   } catch (error) {
+      //     // ignore storage check error
+      //   }
+      // }
 
       const result = {
         cpuUsage: this.getCpuUsage(stats),
@@ -176,9 +168,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
         txBytes,
         memoryUsagePercent,
         memoryUsage,
-        memoryLimit: stats.memory_stats.limit,
-        storageUsage,
-        storageLimit
+        memoryLimit: stats.memory_stats.limit
       };
       instance.info = { ...instance.info, ...result };
     } catch (error) {

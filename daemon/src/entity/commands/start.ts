@@ -1,5 +1,6 @@
 import fs from "fs-extra";
 import { $t } from "../../i18n";
+import disk_limit_service from "../../service/disk_limit_service";
 import Instance from "../instance/instance";
 import InstanceCommand from "./base/command";
 
@@ -45,6 +46,38 @@ export default abstract class AbsStartCommand extends InstanceCommand {
 
       // prevent the dead-loop from starting
       await this.sleep();
+
+      // check the disk space
+      if (instance.config.docker?.maxSpace && instance.config.docker.maxSpace > 0) {
+        instance.println("INFO", $t("正在计算已使用的储存空间，请耐心等待..."));
+        const result = await disk_limit_service.checkDiskNow(
+          {
+            instance,
+            workspace: instance.absoluteCwdPath(),
+            maxSpace: instance.config.docker.maxSpace
+          },
+          false
+        );
+        if (result?.isFull) {
+          throw new StartupError(
+            $t(
+              "无法启动！储存空间不足，您的储存额度为 {{storageLimit}}GB，当前已使用 {{storageUsage}}GB",
+              {
+                storageLimit: result?.storageLimit,
+                storageUsage: result?.storageUsage
+              }
+            )
+          );
+        } else {
+          instance.println(
+            "INFO",
+            $t("储存空间充足，当前已使用 {{storageUsage}}GB/{{storageLimit}}GB", {
+              storageUsage: result?.storageUsage,
+              storageLimit: result?.storageLimit
+            })
+          );
+        }
+      }
 
       return await this.createProcess(instance);
     } catch (error: any) {

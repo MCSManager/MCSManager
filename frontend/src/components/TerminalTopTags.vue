@@ -106,11 +106,11 @@ const cards = computed<PerfCardItem[]>(() => {
         }
       : null,
 
-    storageUsage != null
+    storageUsage
       ? {
           key: "disk",
           label: t("TXT_CODE_DISK_USAGE"),
-          value: formatMemoryUsage(storageUsage, storageLimit),
+          value: formatMemoryUsage(storageUsage || 0, storageLimit || 0),
           icon: HddOutlined,
           theme: "perf-card--disk",
           barPercent: storagePercent
