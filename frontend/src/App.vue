@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import UploadBubble from "@/components/UploadBubble.vue";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useScreen } from "@/hooks/useScreen";
 
 import { useBreakpoints } from "@vueuse/core";
 import { Button, Input, Select, Table } from "ant-design-vue";
 import { computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
+import AppBottomNav from "./components/AppBottomNav.vue";
 import AppConfigProvider from "./components/AppConfigProvider.vue";
 import AppHeader from "./components/AppHeader.vue";
 import AppSidebarMenu from "./components/AppSidebarMenu.vue";
@@ -19,6 +21,7 @@ import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 const { hasBgImage, initAppTheme, sidebarPosition } = useAppConfigStore();
 const { containerState } = useLayoutContainerStore();
 const { state: appState } = useAppStateStore();
+const { isPhone } = useScreen();
 
 /** Whether to show the left sidebar; when false, only top header (AppHeader) is used. */
 const breakpoints = useBreakpoints({ sidebar: 1300 });
@@ -61,6 +64,9 @@ onMounted(async () => {
 
       <UploadBubble />
     </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <AppBottomNav v-if="isPhone && !useSidebarLayout" />
 
     <!-- Global Components -->
     <component :is="component" v-for="(component, index) in GLOBAL_COMPONENTS" :key="index" />

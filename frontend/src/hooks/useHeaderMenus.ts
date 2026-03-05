@@ -194,7 +194,8 @@ export function useHeaderMenus() {
         customClass: ["nav-button-danger"]
       },
       {
-        title: t("TXT_CODE_f591e2fa"),
+        title: t("颜色主题"),
+        leftSideTitle: t("主题模式"),
         icon: BgColorsOutlined,
         click: (key: string) => {
           setTheme(Number(key) as AppTheme);
@@ -209,6 +210,7 @@ export function useHeaderMenus() {
       },
       {
         title: t("TXT_CODE_ebd2a6a1"),
+        leftSideTitle: t("布局模式"),
         icon: BuildOutlined,
         click: () => {
           changeDesignMode(true);
@@ -266,17 +268,16 @@ export function useHeaderMenus() {
         if (item.menus && item.menus.length > 0) {
           return {
             type: "app-dropdown" as const,
-            title: item.title,
+            title: item.leftSideTitle || item.title,
             icon: item.icon,
             customClass: item.customClass,
             menus: item.menus,
-            // eslint-disable-next-line no-unused-vars -- type assertion param name
-            click: item.click as (menuKey: string) => void
+            click: item.click as (_: string) => void
           };
         }
         return {
           type: "app" as const,
-          title: item.title,
+          title: item.leftSideTitle || item.title,
           icon: item.icon,
           customClass: item.customClass,
           click: item.click as () => void
