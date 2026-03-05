@@ -3322,5 +3322,15 @@
   "TXT_CODE_docker_version_select_normal_title": "Standard Deployment",
   "TXT_CODE_docker_version_select_normal_subtitle": "Standard installation runs directly on the host. You need to install runtime environments yourself, such as Java or Python.",
   "TXT_CODE_docker_version_select_normal_btn": "Use Standard Mode",
-  "TXT_CODE_9123858b": "Install via Docker"
+  "TXT_CODE_9123858b": "Install via Docker",
+  "TXT_CODE_2d7b8a91": "Calculating used storage space, please wait patiently...",
+  "TXT_CODE_e5938389": "Unable to start! Insufficient storage space. Your storage quota is {{storageLimit}}GB, currently used {{storageUsage}}GB",
+  "TXT_CODE_85e29331": "Storage space is sufficient. Currently used {{storageUsage}}GB/{{storageLimit}}GB",
+  "TXT_CODE_8418e7fe": "Instance shutdown timeout due to insufficient storage space. Force stopping...",
+  "TXT_CODE_f94734d8": "Insufficient storage space. Your storage quota is {{storageLimit}}GB, currently used {{storageUsage}}GB",
+  "TXT_CODE_d448d98d": "Please delete unnecessary files in File Management or contact the administrator to increase the storage quota, otherwise you will not be able to continue using it...!",
+  "TXT_CODE_ca61b504": "Maximum Storage Space",
+  "TXT_CODE_33d7a685": "Linux Systems Only",
+  "TXT_CODE_d86fbff5": "This limit is only supported on Linux systems. It relies on the system command `du`. Before startup and during runtime, the working directory size is checked every 1 to 10 minutes. If the limit is exceeded, the instance will be automatically stopped.",
+  "TXT_CODE_285cef0c": "Unit: GB. For example, 60 means 60GB, 0 means unlimited."
 }

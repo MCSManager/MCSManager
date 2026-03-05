@@ -59,7 +59,7 @@ class DiskLimitService {
       instance.execPreset("stop");
       await sleep(1000 * 60);
       if (instance.status() === Instance.STATUS_RUNNING && startCount === instance.startCount) {
-        instance.println("ERROR", $t("实例因为储存空间不足正常关闭超时，正在强制停止..."));
+        instance.println("ERROR", $t("TXT_CODE_8418e7fe"));
         instance
           .execPreset("kill")
           .then(() => {})
@@ -98,14 +98,14 @@ class DiskLimitService {
         for (let i = 0; i < 3; i++) {
           instance.println(
             "WARNING",
-            $t("储存空间不足，您的储存额度为 {{storageLimit}}GB，当前已使用 {{storageUsage}}GB", {
+            $t("TXT_CODE_f94734d8", {
               storageLimit: convertBytesToGB(storageLimit),
               storageUsage: convertBytesToGB(storageUsage)
             })
           );
           instance.println(
             "WARNING",
-            $t("请在文件管理中删除多余文件，或联系管理员增加储存额度，否则将无法继续使用...!")
+            $t("TXT_CODE_d448d98d")
           );
           await sleep(200);
         }

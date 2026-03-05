@@ -1376,14 +1376,14 @@ defineExpose({
               <a-col :xs="24" :lg="8" :offset="0">
                 <a-form-item>
                   <a-typography-title :level="5">
-                    {{ t("最大储存空间") }}
-                    <a-tag color="blue">{{ t("仅 Linux 系统") }}</a-tag>
+                    {{ t("TXT_CODE_ca61b504") }}
+                    <a-tag color="blue">{{ t("TXT_CODE_33d7a685") }}</a-tag>
                   </a-typography-title>
                   <a-typography-paragraph>
                     <a-tooltip
                       :title="
                         t(
-                          '此限制仅支持 Linux 系统，依靠系统命令 du 支持，启动前和运行时每隔 1～10 分钟会检查一次工作目录大小是否超出限额，超出后会自动停止实例。'
+                          'TXT_CODE_d86fbff5'
                         )
                       "
                       placement="top"
@@ -1391,7 +1391,7 @@ defineExpose({
                       <a-typography-text type="secondary" class="typography-text-ellipsis">
                         {{
                           t(
-                            "此限制仅支持 Linux 系统，依靠系统命令 du 支持，启动前和运行时每隔 1～10 分钟会检查一次工作目录大小是否超出限额，超出后会自动停止实例。"
+                            "TXT_CODE_d86fbff5"
                           )
                         }}
                       </a-typography-text>
@@ -1400,7 +1400,7 @@ defineExpose({
                   <a-input
                     v-model:value="formData.instance.config.docker.maxSpace"
                     :allow-clear="true"
-                    :placeholder="t('单位 GB，列如 60 代表 60GB，0 代表不限制')"
+                    :placeholder="t('TXT_CODE_285cef0c')"
                     suffix="GB"
                   />
                 </a-form-item>

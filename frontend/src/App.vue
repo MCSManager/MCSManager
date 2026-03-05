@@ -12,11 +12,13 @@ import AppSidebarMenu from "./components/AppSidebarMenu.vue";
 import Breadcrumbs from "./components/Breadcrumbs.vue";
 import InputDialogProvider from "./components/InputDialogProvider.vue";
 import MyselfInfoDialog from "./components/MyselfInfoDialog.vue";
+import { useAppStateStore } from "./stores/useAppStateStore";
 import { useLayoutContainerStore } from "./stores/useLayoutContainerStore";
 import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 
 const { hasBgImage, initAppTheme, sidebarPosition } = useAppConfigStore();
 const { containerState } = useLayoutContainerStore();
+const { state: appState } = useAppStateStore();
 
 /** Whether to show the left sidebar; when false, only top header (AppHeader) is used. */
 const breakpoints = useBreakpoints({ sidebar: 1300 });
@@ -32,6 +34,7 @@ const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
 });
 
 const designModeNavStyle = computed(() => {
+  if (!appState.userInfo) return {};
   return {
     zIndex: containerState.isDesignMode ? 997 : 1
   };

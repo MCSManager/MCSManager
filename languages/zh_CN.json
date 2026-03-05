@@ -3322,5 +3322,15 @@
   "TXT_CODE_docker_version_select_normal_title": "直接安装到主机",
   "TXT_CODE_docker_version_select_normal_subtitle": "普通安装方式则相当于裸奔在机器上，你需要自己安装运行环境，比如 Java 环境，Python 环境。",
   "TXT_CODE_docker_version_select_normal_btn": "使用普通版",
-  "TXT_CODE_9123858b": "通过镜像安装"
+  "TXT_CODE_9123858b": "通过镜像安装",
+  "TXT_CODE_2d7b8a91": "正在计算已使用的储存空间，请耐心等待...",
+  "TXT_CODE_e5938389": "无法启动！储存空间不足，您的储存额度为 {{storageLimit}}GB，当前已使用 {{storageUsage}}GB",
+  "TXT_CODE_85e29331": "储存空间充足，当前已使用 {{storageUsage}}GB/{{storageLimit}}GB",
+  "TXT_CODE_8418e7fe": "实例因为储存空间不足正常关闭超时，正在强制停止...",
+  "TXT_CODE_f94734d8": "储存空间不足，您的储存额度为 {{storageLimit}}GB，当前已使用 {{storageUsage}}GB",
+  "TXT_CODE_d448d98d": "请在文件管理中删除多余文件，或联系管理员增加储存额度，否则将无法继续使用...!",
+  "TXT_CODE_ca61b504": "最大储存空间",
+  "TXT_CODE_33d7a685": "仅 Linux 系统",
+  "TXT_CODE_d86fbff5": "此限制仅支持 Linux 系统，依靠系统命令 du 支持，启动前和运行时每隔 1～10 分钟会检查一次工作目录大小是否超出限额，超出后会自动停止实例。",
+  "TXT_CODE_285cef0c": "单位 GB，列如 60 代表 60GB，0 代表不限制"
 }

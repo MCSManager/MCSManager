@@ -49,7 +49,7 @@ export default abstract class AbsStartCommand extends InstanceCommand {
 
       // check the disk space
       if (instance.config.docker?.maxSpace && instance.config.docker.maxSpace > 0) {
-        instance.println("INFO", $t("正在计算已使用的储存空间，请耐心等待..."));
+        instance.println("INFO", $t("TXT_CODE_2d7b8a91"));
         const result = await disk_limit_service.checkDiskNow(
           {
             instance,
@@ -61,7 +61,7 @@ export default abstract class AbsStartCommand extends InstanceCommand {
         if (result?.isFull) {
           throw new StartupError(
             $t(
-              "无法启动！储存空间不足，您的储存额度为 {{storageLimit}}GB，当前已使用 {{storageUsage}}GB",
+              "TXT_CODE_e5938389",
               {
                 storageLimit: result?.storageLimit,
                 storageUsage: result?.storageUsage
@@ -71,7 +71,7 @@ export default abstract class AbsStartCommand extends InstanceCommand {
         } else {
           instance.println(
             "INFO",
-            $t("储存空间充足，当前已使用 {{storageUsage}}GB/{{storageLimit}}GB", {
+            $t("TXT_CODE_85e29331", {
               storageUsage: result?.storageUsage,
               storageLimit: result?.storageLimit
             })
