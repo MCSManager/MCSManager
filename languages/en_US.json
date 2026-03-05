@@ -3332,5 +3332,8 @@
   "TXT_CODE_ca61b504": "Maximum Storage Space",
   "TXT_CODE_33d7a685": "Linux Systems Only",
   "TXT_CODE_d86fbff5": "This limit is only supported on Linux systems. It relies on the system command `du`. Before startup and during runtime, the working directory size is checked every 1 to 10 minutes. If the limit is exceeded, the instance will be automatically stopped.",
-  "TXT_CODE_285cef0c": "Unit: GB. For example, 60 means 60GB, 0 means unlimited."
+  "TXT_CODE_285cef0c": "Unit: GB. For example, 60 means 60GB, 0 means unlimited.",
+  "TXT_CODE_5d88a9b": "Color Theme",
+  "TXT_CODE_ee01c10c": "Default Theme",
+  "TXT_CODE_4eb158da": "Layout Mode"
 }

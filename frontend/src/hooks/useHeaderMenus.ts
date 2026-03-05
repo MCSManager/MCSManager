@@ -194,8 +194,8 @@ export function useHeaderMenus() {
         customClass: ["nav-button-danger"]
       },
       {
-        title: t("颜色主题"),
-        leftSideTitle: t("主题模式"),
+        title: t("TXT_CODE_5d88a9b"),
+        leftSideTitle: t("TXT_CODE_ee01c10c"),
         icon: BgColorsOutlined,
         click: (key: string) => {
           setTheme(Number(key) as AppTheme);
@@ -210,7 +210,7 @@ export function useHeaderMenus() {
       },
       {
         title: t("TXT_CODE_ebd2a6a1"),
-        leftSideTitle: t("布局模式"),
+        leftSideTitle: t("TXT_CODE_4eb158da"),
         icon: BuildOutlined,
         click: () => {
           changeDesignMode(true);
