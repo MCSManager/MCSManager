@@ -77,9 +77,10 @@ const isActive = (path: string): boolean => {
   align-items: center;
   justify-content: space-between;
   flex: 1;
-  gap: 8px;
+  gap: 2px;
   padding: 6px;
-  background: var(--background-color-white);
+  background: var(--bottom-nav-background-color);
+  backdrop-filter: blur(6px);
   border-radius: 999px;
   box-shadow:
     0 8px 32px var(--card-shadow-extend-color),
@@ -109,22 +110,18 @@ const isActive = (path: string): boolean => {
   height: 46px;
   border-radius: 50%;
 
-  transition:
-    background 0.22s ease,
-    transform 0.18s ease;
+  transition: all 0.22s ease;
 
   .bottom-nav-icon {
     font-size: 20px;
     color: var(--color-gray-7);
-    transition: color 0.22s ease;
+    transition: all 0.22s ease;
   }
 }
 
 .bottom-nav-item--active .bottom-nav-icon-wrap {
-  // background: linear-gradient(135deg, var(--color-blue-4) 0%, var(--color-blue-6) 100%);
   background: var(--color-gray-4);
-
-  // box-shadow: 0 4px 16px color-mix(in srgb, var(--color-blue-6) 40%, transparent);
+  opacity: 0.8;
 
   .bottom-nav-icon {
     font-size: 22px;
