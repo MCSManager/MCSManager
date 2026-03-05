@@ -100,12 +100,11 @@ const handleMenuItemClick = (path: string) => {
 
 .fab-container {
   position: fixed;
-  bottom: 16px;
-  right: 24px;
+  bottom: 30%;
+  right: -30px;
   z-index: 1002;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
   pointer-events: none;
 
@@ -120,11 +119,12 @@ const handleMenuItemClick = (path: string) => {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: start;
+  // align-items: center;
   gap: 6px;
   padding: 10px;
   max-width: 196px;
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--bottom-nav-background-color);
   backdrop-filter: blur(12px);
   box-shadow:
@@ -151,7 +151,7 @@ const handleMenuItemClick = (path: string) => {
   justify-content: center;
   width: 52px;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 16px;
   transition: all 0.2s ease;
 
   .fab-menu-icon {
@@ -183,8 +183,8 @@ const handleMenuItemClick = (path: string) => {
 
 .fab-ball {
   width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  height: 70px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   outline: none;
