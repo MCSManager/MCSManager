@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import logo from "@/assets/logo.png";
+import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, setLanguage } from "@/lang/i18n";
 import { AppTheme, THEME_KEY } from "@/types/const";
 import { createGlobalState, useLocalStorage, usePreferredDark } from "@vueuse/core";
@@ -11,6 +12,7 @@ import { useLayoutConfigStore } from "./useLayoutConfig";
 export const useAppConfigStore = createGlobalState(() => {
   const isPreferredDark = usePreferredDark();
   const { getSettingsConfig } = useLayoutConfigStore();
+  const { isPhone } = useScreen();
 
   const theme: ThemeConfig = reactive({
     algorithm: antTheme.defaultAlgorithm,
@@ -93,6 +95,12 @@ export const useAppConfigStore = createGlobalState(() => {
       setBackgroundImage(frontendSettings.theme.backgroundImage);
     const pos = frontendSettings?.theme?.sidebarPosition;
     sidebarPosition.value = pos === "left" || pos === "right" ? pos : "left";
+
+    if (!isPhone.value) {
+      document.body.style.overflowX = "hidden";
+    } else {
+      document.body.style.overflowX = "auto";
+    }
   };
 
   const setTheme = (t: AppTheme) => {
