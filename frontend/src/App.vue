@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UploadBubble from "@/components/UploadBubble.vue";
-import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useScreen } from "@/hooks/useScreen";
+import { useAppConfigStore } from "@/stores/useAppConfigStore";
 
 import { useBreakpoints } from "@vueuse/core";
 import { Button, Input, Select, Table } from "ant-design-vue";
@@ -30,7 +30,7 @@ const useSidebarLayout = computed(
   () => sidebarPosition.value === "left" && isWideEnoughForSidebar.value
 );
 
-const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog];
+const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog, UploadBubble];
 
 [Button, Select, Input, Table].forEach((element) => {
   element.props.size.default = "large";
@@ -61,8 +61,6 @@ onMounted(async () => {
         <Breadcrumbs />
         <RouterView :key="$route.fullPath" />
       </main>
-
-      <UploadBubble />
     </div>
 
     <!-- Mobile Bottom Navigation -->

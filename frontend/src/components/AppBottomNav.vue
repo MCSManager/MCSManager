@@ -62,7 +62,7 @@ const isActive = (path: string): boolean => {
 <style lang="scss" scoped>
 .bottom-nav-bar {
   position: fixed;
-  bottom: 14px;
+  bottom: 0px;
   left: 0px;
   right: 0px;
   z-index: 1002;
@@ -80,13 +80,11 @@ const isActive = (path: string): boolean => {
   gap: 2px;
   padding: 6px;
   background: var(--bottom-nav-background-color);
-  backdrop-filter: blur(6px);
-  border-radius: 999px;
+  backdrop-filter: blur(8px);
   box-shadow:
     0 8px 32px var(--card-shadow-extend-color),
     0 2px 8px var(--card-shadow-color);
   pointer-events: auto;
-  max-width: 366px;
   margin: auto;
 }
 
@@ -97,6 +95,7 @@ const isActive = (path: string): boolean => {
   background: none;
   border: none;
   padding: 0;
+  flex: 1;
   cursor: pointer;
   outline: none;
   -webkit-tap-highlight-color: transparent;
@@ -106,9 +105,10 @@ const isActive = (path: string): boolean => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 46px;
-  border-radius: 50%;
+  // width: 42px;
+  flex: 1;
+  height: 48px;
+  border-radius: 6px;
 
   transition: all 0.22s ease;
 
@@ -120,7 +120,7 @@ const isActive = (path: string): boolean => {
 }
 
 .bottom-nav-item--active .bottom-nav-icon-wrap {
-  background: var(--color-gray-4);
+  background: var(--bottom-nav-background-color-hover);
   opacity: 0.8;
 
   .bottom-nav-icon {

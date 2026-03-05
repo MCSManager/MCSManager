@@ -38,9 +38,7 @@ export function useMarketTour(isAdmin: MaybeRef<boolean>) {
     steps.push({
       target: () => step3Ref.value ?? null,
       title: $t("TXT_CODE_d284d8a9"),
-      description: $t(
-        "TXT_CODE_22814776"
-      )
+      description: $t("TXT_CODE_22814776")
     });
     return steps as any;
   });
@@ -51,6 +49,7 @@ export function useMarketTour(isAdmin: MaybeRef<boolean>) {
   };
 
   const startTour = () => {
+    if (window.innerWidth < 1000) return;
     if (localStorage.getItem(MCS_MARKET_TOUR_DONE)) return;
     nextTick(() => {
       openTour.value = true;
