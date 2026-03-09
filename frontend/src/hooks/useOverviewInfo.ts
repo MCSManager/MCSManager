@@ -48,9 +48,9 @@ function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
       const used = Number(Number(total) - Number(free)).toFixed(1);
       node.platformText =
         node?.system?.platform == "win32" ? "windows" : node?.system?.platform || "--";
-      node.instanceStatus = `${node.instance.running}/${node.instance.total}`;
+      node.instanceStatus = `${node.instance.running} / ${node.instance.total}`;
       node.cpuInfo = `${Number(node.system.cpuUsage * 100).toFixed(1)}%`;
-      node.memText = `${used}G/${total}G`;
+      node.memText = `${used}G / ${total}G`;
       node.cpuChartData = node?.cpuMemChart.map((v) => v.cpu);
       node.memChartData = node?.cpuMemChart.map((v) => v.mem);
     }

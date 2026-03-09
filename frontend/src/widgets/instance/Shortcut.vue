@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
-import TextContainer from "@/components/TextContainer.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
@@ -34,6 +33,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import _ from "lodash";
+import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
 import { computed, ref } from "vue";
 
 const props = defineProps<{
@@ -69,6 +69,24 @@ const { isLoading: stopLoading, execute: executeStop } = stopInstance();
 const { isLoading: restartLoading, execute: executeRestart } = restartInstance();
 const { isLoading: killLoading, execute: executeKill } = killInstance();
 const { isLoading: updateLoading, execute: executeUpdate } = updateInstance();
+
+const prettyBytesConfig: PrettyOptions = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+  binary: true
+};
+
+const formatStorageUsage = (usage?: number, limit?: number) => {
+  const fUsage = prettyBytes(usage ?? 0, prettyBytesConfig);
+  const fLimit = prettyBytes(limit ?? 0, prettyBytesConfig);
+  return limit ? `${fUsage} / ${fLimit}` : fUsage;
+};
+
+const formatNetworkSpeed = (bytes?: number) =>
+  prettyBytes(bytes ?? 0, {
+    ...prettyBytesConfig,
+    binary: false
+  }) + "/s";
 
 const refreshList = () => {
   setTimeout(() => {
@@ -296,16 +314,10 @@ const instanceOperations = computed(() =>
           </div>
           <div
             v-if="
-              instanceInfo?.config?.docker?.image && instanceInfo?.config?.processType === 'docker'
+              instanceInfo?.info.memoryUsage && instanceInfo?.config?.processType !== 'docker'
             "
             class="instance-info-line"
           >
-            <span class="title">{{ t("TXT_CODE_77000411") }}:</span>
-            <span class="value">
-              <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="26" />
-            </span>
-          </div>
-          <div v-if="instanceInfo?.info.memoryUsage" class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
             <span class="value">
               {{
@@ -313,6 +325,38 @@ const instanceOperations = computed(() =>
               }}
             </span>
           </div>
+          <template v-if="instanceInfo?.config?.processType === 'docker'">
+            <div v-if="instanceInfo?.info.cpuUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_b862a158") }}:</span>
+              <span class="value">{{ parseInt(String(instanceInfo?.info.cpuUsage)) }}%</span>
+            </div>
+            <div v-if="instanceInfo?.info.memoryUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
+              <span class="value">
+                {{
+                  formatMemoryUsage(instanceInfo?.info.memoryUsage, instanceInfo?.info.memoryLimit)
+                }}
+              </span>
+            </div>
+            <div v-if="instanceInfo?.info.storageUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_DISK_USAGE") }}:</span>
+              <span class="value">
+                {{
+                  formatStorageUsage(instanceInfo?.info.storageUsage, instanceInfo?.info.storageLimit)
+                }}
+              </span>
+            </div>
+            <div
+              v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+              class="instance-info-line"
+            >
+              <span class="title">{{ t("TXT_CODE_50daec4") }}:</span>
+              <span class="value">
+                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxBytes) }}
+                ↑{{ formatNetworkSpeed(instanceInfo?.info.txBytes) }}
+              </span>
+            </div>
+          </template>
           <div v-if="instanceInfo?.info.mcPingOnline" class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_e4dce83f") }}:</span>
             <span class="value" style="vertical-align: middle">

@@ -75,6 +75,8 @@ declare global {
   }
 
   interface IGlobalInstanceDockerConfig {
+    /** Docker image for update command; empty = not used */
+    updateCommandImage?: string;
     containerName?: string;
     image?: string;
     memory?: number;
@@ -164,6 +166,10 @@ declare global {
       portRangeEnd: number;
       portAssignInterval: number;
       port: number;
+      outputBufferSize: number;
+      enableSoftShutdown: boolean;
+      softShutdownSkipDocker: boolean;
+      softShutdownWaitSeconds: number;
     };
     dockerPlatforms?: string[];
   }
@@ -223,6 +229,8 @@ declare global {
       pageTitle: string;
       logoImage: string;
       backgroundImage: string;
+      /** Main app navigation: "left" = sidebar, "right" = top header only */
+      sidebarPosition?: "left" | "right";
     };
   }
 
@@ -260,6 +268,10 @@ declare global {
     remark: string;
     targetLink?: string;
     author: string;
+    dockerOptional?: {
+      image: string;
+      updateCommandImage?: string;
+    };
     setupInfo: IGlobalInstanceConfig;
     gameType: string;
     image: string;

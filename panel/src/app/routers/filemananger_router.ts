@@ -98,7 +98,7 @@ router.put(
       const instanceUuid = String(ctx.query.uuid);
       const target = String(ctx.request.body.target);
       const chmod = Number(ctx.request.body.chmod);
-      const deep = Number(ctx.request.body.deep);
+      const deep = Boolean(ctx.request.body.deep);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("file/chmod", {
         target,
@@ -106,6 +106,36 @@ router.put(
         chmod,
         deep
       });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.put(
+  "/chmod_batch",
+  permission({ level: ROLE.USER }),
+  speedLimit(3),
+  validator({
+    query: { daemonId: String, uuid: String },
+    body: { targets: Array, chmod: Number, deep: Boolean }
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const targets = (ctx.request.body.targets as string[]).map((target) => String(target));
+      const chmod = Number(ctx.request.body.chmod);
+      const deep = Boolean(ctx.request.body.deep);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const timeout = Math.min(5 * 60 * 1000, Math.max(15 * 1000, targets.length * 2 * 1000));
+      const result = await new RemoteRequest(remoteService).request("file/chmod_batch", {
+        targets,
+        instanceUuid,
+        chmod,
+        deep
+      }, timeout);
       ctx.body = result;
     } catch (err) {
       ctx.body = err;

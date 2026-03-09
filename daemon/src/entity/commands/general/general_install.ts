@@ -32,12 +32,25 @@ export default class GeneralInstallCommand extends InstanceCommand {
         await fs.mkdirs(instance.absoluteCwdPath());
       }
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_906c5d6a"));
+
+      if (params.dockerOptional && instance.config.processType === "docker") {
+        params.setupInfo.docker = {
+          ...params.setupInfo.docker,
+          ...params.dockerOptional
+        };
+        params.setupInfo.processType = "docker";
+      }
+
+      // The "params" configuration has already been checked in router.post("/install_instance")
+      // Ensure that there is no user-customized parameter injection
+      // panel/src/app/routers/instance_operate_router.ts
       this.installTask = new QuickInstallTask(
         instance.config.nickname,
         params.targetLink,
         params.setupInfo,
         instance
       );
+
       instance.asynchronousTask = this;
       instance.println($t("TXT_CODE_1704ea49"), $t("TXT_CODE_b9ca022b"));
       await this.installTask?.start();

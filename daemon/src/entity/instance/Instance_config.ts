@@ -21,7 +21,10 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public endTime: number = 0;
   public fileCode: string = "utf-8";
   public processType: ProcessType = "general";
+
+  /** The command used for executing the update command */
   public updateCommand: string = "";
+
   public runAs: string = "";
   public crlf = os.platform() === "win32" ? 2 : 1; // 1: \n  2: \r\n
   public basePort = 0;
@@ -61,6 +64,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
 
   // Extend
   public docker: IGlobalInstanceDockerConfig = {
+    updateCommandImage: "",
     containerName: "",
     image: "",
     ports: [],
@@ -79,7 +83,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     maxSpace: 0,
     io: 0,
     network: 0,
-    workingDir: "/workspace/",
+    workingDir: "/data",
     env: [],
     changeWorkdir: true,
     labels: []

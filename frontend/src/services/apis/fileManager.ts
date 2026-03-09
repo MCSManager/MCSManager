@@ -282,3 +282,30 @@ export const changePermission = useDefineApi<
   url: "/api/files/chmod",
   method: "PUT"
 });
+
+export const changePermissionBatch = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      chmod: number;
+      deep: boolean;
+      targets: string[];
+    };
+  },
+  {
+    success: number;
+    failed: number;
+    total: number;
+    results: {
+      target: string;
+      success: boolean;
+      error?: string;
+    }[];
+  }
+>({
+  url: "/api/files/chmod_batch",
+  method: "PUT"
+});

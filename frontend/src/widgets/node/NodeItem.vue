@@ -97,11 +97,6 @@ const detailList = (node: ComputedNodeInfo) => [
     warnText: t("TXT_CODE_6b4a27dd")
   },
   {
-    title: t("TXT_CODE_a788e3eb"),
-    value: (node.memText || "") + "\n" + (node.cpuInfo || "")
-  },
-
-  {
     title: t("TXT_CODE_3d602459"),
     value: node.instanceStatus
   },
@@ -258,7 +253,9 @@ onMounted(() => {
           </a-col>
         </a-row>
         <NodeSimpleChart
-          class="mt-24"
+          class="mt-8"
+          :cpu-usage="remoteNode.cpuInfo ?? ''"
+          :mem-usage="remoteNode.memText ?? ''"
           :cpu-data="remoteNode.cpuChartData ?? []"
           :mem-data="remoteNode.memChartData ?? []"
         />

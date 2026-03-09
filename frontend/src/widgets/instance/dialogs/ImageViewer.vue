@@ -47,7 +47,6 @@ onMounted(async () => {
       {{ props.fileName }}
     </div>
     <template #footer>
-      <a-button @click="onClose">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       <a-button type="primary" :loading="downloadBtnLoading" @click="onDownload">
         {{ t("TXT_CODE_65b21404") }}
       </a-button>

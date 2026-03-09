@@ -26,6 +26,19 @@ const props = defineProps<{
 </template>
 
 <style lang="scss" scoped>
+@keyframes icon-sway {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-4px) rotate(-3deg);
+  }
+  75% {
+    transform: translateX(4px) rotate(3deg);
+  }
+}
+
 .bg-icon {
   position: absolute;
   right: 12px;
@@ -33,7 +46,9 @@ const props = defineProps<{
   bottom: 10px;
   color: var(--color-gray-12);
   opacity: 0.04;
+  transition: transform 0.25s ease-out;
 }
+
 .inner-card-wrapper {
   position: relative;
   overflow: hidden;
@@ -41,12 +56,20 @@ const props = defineProps<{
   background-color: var(--color-gray-2);
   padding: 12px;
   cursor: pointer;
-  transition: all 0.4s;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
   border-radius: 6px;
 }
 
 .inner-card-wrapper:hover {
-  border: 1px solid var(--color-gray-8);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  border-color: var(--color-gray-8);
+  background: var(--inner-card-hover-bg);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.inner-card-wrapper:hover .bg-icon {
+  animation: icon-sway 0.34s ease-in-out;
 }
 </style>

@@ -35,9 +35,16 @@ export class InstanceUpdateAction extends AsyncTask {
     );
     this.instance.println($t("TXT_CODE_general_update.update"), `${updateCommand}`);
 
-    // Docker Update Command Mode
-    if (this.instance.config.processType === "docker" && this.instance.config.docker?.image) {
-      this.containerWrapper = new SetupDockerContainer(this.instance, updateCommand);
+    // Docker Update Command Mode: Prefer using docker.updateCommandImage,
+    // otherwise, if the instance is in Docker mode, use docker.image
+    const updateImage =
+      this.instance.config.docker?.updateCommandImage?.trim() ||
+      (this.instance.config.processType === "docker" && this.instance.config.docker?.image
+        ? this.instance.config.docker.image
+        : "");
+    if (updateImage) {
+      const imageOverride = this.instance.config.docker?.updateCommandImage?.trim() || undefined;
+      this.containerWrapper = new SetupDockerContainer(this.instance, updateCommand, imageOverride);
       await this.containerWrapper.start();
       await this.containerWrapper.attach(this.instance);
       await this.containerWrapper.wait();

@@ -1,8 +1,8 @@
-import toml from "@iarna/toml";
 import crypto from "crypto";
 import fs from "fs-extra";
 import StreamZip from "node-stream-zip";
 import path from "path";
+import toml from 'smol-toml';
 import yaml from "yaml";
 import downloadManager from "./download_manager";
 import { getFileManager } from "./file_router_service";
@@ -95,7 +95,7 @@ export class ModService {
             description: mod.description,
             type: "mod"
           };
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // Quilt

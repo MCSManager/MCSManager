@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { t } from "@/lang/i18n";
 import CardPanel from "@/components/CardPanel.vue";
+import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
 
 import { useOperationLog } from "@/hooks/useOperationLog";
-import { computed, onMounted } from "vue";
 import dayjs from "dayjs";
+import { onMounted } from "vue";
 
 const { fetchData, formattedLogs } = useOperationLog();
 
@@ -54,13 +54,13 @@ onMounted(() => {
   margin-bottom: 12px;
   padding: 8px 12px;
   border-radius: 6px;
-  background: var(--color-gray-4);
-  border: 1px solid var(--card-border-color);
+  background: var(--color-gray-2);
+  border: 1px solid var(--color-gray-4);
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--card-shadow-extend-color);
-    border-color: var(--card-border-color);
+    background: var(--color-gray-3);
+    border: 1px solid var(--color-gray-5);
   }
 
   &:last-child {

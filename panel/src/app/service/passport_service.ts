@@ -2,7 +2,7 @@ import Koa from "koa";
 import { GlobalVariable } from "mcsmanager-common";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
-import { User } from "../entity/user";
+import { ROLE, User } from "../entity/user";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
@@ -57,6 +57,7 @@ export function loginSuccess(ctx: Koa.ParameterizedContext, userName: string) {
   ctx.session["login"] = true;
   ctx.session["userName"] = userName;
   ctx.session["uuid"] = user.uuid;
+  ctx.session["role"] = user.permission === 10 ? ROLE.ADMIN : ROLE.USER;
   ctx.session["token"] = timeUuid();
   ctx.session.save();
 

@@ -1,11 +1,12 @@
-import toml from "@iarna/toml";
 import fs from "fs-extra";
 import path from "path";
 import properties from "properties";
+import toml from "smol-toml";
 import yaml from "yaml";
 import { $t } from "../../i18n";
 
 const CONFIG_FILE_ENCODE = "utf-8";
+const FLOAT_MAGIC_PREFIX = "<__float__>";
 
 export interface IProcessConfig {
   fileName: string;
@@ -29,13 +30,15 @@ export class ProcessConfig {
       return yaml.parse(text);
     }
     if (this.iProcessConfig.type == "toml") {
-      return toml.parse(text);
+      const table = toml.parse(text, { integersAsBigInt: true });
+      const converted = convertTomlReadValues(table);
+      return converted;
     }
     if (this.iProcessConfig.type === "properties") {
       return properties.parse(text);
     }
     if (this.iProcessConfig.type === "properties_not_unicode") {
-     return properties.parse(text);
+      return properties.parse(text);
     }
     if (this.iProcessConfig.type === "json") {
       return JSON.parse(text);
@@ -46,13 +49,15 @@ export class ProcessConfig {
   }
 
   // Automatically save to the local configuration file according to the parameter object
-  write(object: Object | toml.JsonMap) {
+  write(object: Object) {
     let text = "";
     if (this.iProcessConfig.type === "yml") {
       text = yaml.stringify(object);
     }
     if (this.iProcessConfig.type === "toml") {
-      text = toml.stringify(<toml.JsonMap>object);
+      const newObject = JSON.parse(JSON.stringify(object));
+      const converted = convertTomlWriteValues(newObject);
+      text = toml.stringify(converted, { numbersAsFloat: true });
     }
     if (this.iProcessConfig.type === "properties") {
       text = properties.stringify(object, {
@@ -64,11 +69,11 @@ export class ProcessConfig {
       }
     }
     if (this.iProcessConfig.type === "properties_not_unicode") {
-        text = properties.stringify(object, {
+      text = properties.stringify(object, {
         unicode: false
       });
       text = text.replace(/ = /gim, "=");
-    text = text.replace(/\\\\u/gim, "\\u");
+      text = text.replace(/\\\\u/gim, "\\u");
     }
     if (this.iProcessConfig.type === "json") {
       text = JSON.stringify(object, null, 4);
@@ -84,4 +89,48 @@ export class ProcessConfig {
   exists() {
     return fs.existsSync(this.iProcessConfig.path);
   }
+}
+
+function convertTomlReadValues(obj: any): any {
+  if (obj == null) return null;
+  if (Array.isArray(obj)) {
+    return obj.map(convertTomlReadValues);
+  }
+  if (typeof obj === "object" && obj.constructor === Object) {
+    for (const key in obj) {
+      obj[key] = convertTomlReadValues(obj[key]);
+    }
+    return obj;
+  }
+
+  if (typeof obj === "bigint") {
+    return Number(obj);
+  }
+  if (typeof obj === "number") {
+    const value = FLOAT_MAGIC_PREFIX + String(obj);
+    if (value.indexOf(".") != -1) return value;
+    return `${value}.0`;
+  }
+  return obj;
+}
+
+function convertTomlWriteValues(obj: any): any {
+  if (obj == null) return null;
+  if (Array.isArray(obj)) {
+    return obj.map(convertTomlWriteValues);
+  }
+  if (typeof obj === "object" && obj.constructor === Object) {
+    for (const key in obj) {
+      obj[key] = convertTomlWriteValues(obj[key]);
+    }
+    return obj;
+  }
+
+  if (typeof obj === "number") {
+    return BigInt(obj);
+  }
+  if (typeof obj === "string" && obj.startsWith(FLOAT_MAGIC_PREFIX)) {
+    return Number(obj.replace(FLOAT_MAGIC_PREFIX, ""));
+  }
+  return obj;
 }

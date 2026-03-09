@@ -17,6 +17,9 @@
   "_moduleAliases": {
     "@languages": "../languages"
   },
+  "optionalDependencies": {
+    "mcsmanager-common": "file:../common"
+  },
   "dependencies": {
     "@koa/router": "^10.0.0",
     "@types/qrcode": "^1.5.5",
@@ -32,7 +35,6 @@
     "koa-session": "^6.2.0",
     "koa-static": "^5.0.0",
     "log4js": "^6.4.0",
-    "mcsmanager-common": "file:../common",
     "md5": "^2.3.0",
     "nanoid": "^3.3.8",
     "node-schedule": "^2.0.0",

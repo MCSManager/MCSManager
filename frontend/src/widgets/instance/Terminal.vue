@@ -3,7 +3,7 @@ import CardPanel from "@/components/CardPanel.vue";
 import { openMarketDialog, openRenewalDialog } from "@/components/fc";
 import IconBtn from "@/components/IconBtn.vue";
 import TerminalCore from "@/components/TerminalCore.vue";
-import TerminalTags from "@/components/TerminalTags.vue";
+import TerminalTopTags from "@/components/TerminalTopTags.vue";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { INSTANCE_TYPE_TRANSLATION, verifyEULA } from "@/hooks/useInstance";
 import { useScreen } from "@/hooks/useScreen";
@@ -21,15 +21,11 @@ import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { INSTANCE_CRASH_TIMEOUT, INSTANCE_STATUS } from "@/types/const";
 import {
-  ApartmentOutlined,
-  BlockOutlined,
   CheckCircleOutlined,
   CloseOutlined,
   CloudDownloadOutlined,
   CloudServerOutlined,
-  DashboardOutlined,
   DownOutlined,
-  HddOutlined,
   InfoCircleOutlined,
   InteractionOutlined,
   LaptopOutlined,
@@ -39,11 +35,8 @@ import {
   PlayCircleOutlined,
   RedoOutlined
 } from "@ant-design/icons-vue";
-import { useLocalStorage } from "@vueuse/core";
 import { Modal } from "ant-design-vue";
-import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
 import { computed, h, onUnmounted } from "vue";
-import type { TagInfo } from "../../components/interface";
 import { GLOBAL_INSTANCE_NAME } from "../../config/const";
 import { useTerminal, type UseTerminalHook } from "../../hooks/useTerminal";
 import { arrayFilter } from "../../tools/array";
@@ -262,82 +255,6 @@ const getInstanceName = computed(() => {
   }
 });
 
-const useByteUnit = useLocalStorage("useByteUnit", true); // true: bytes, false: bits
-const prettyBytesConfig: PrettyOptions = {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-  binary: true
-};
-
-const getUsageColor = (percentage?: number) => {
-  percentage = Number(percentage);
-  if (percentage > 600) return "error";
-  if (percentage > 200) return "warning";
-  return "default";
-};
-
-const formatMemoryUsage = (usage?: number, limit?: number) => {
-  const fUsage = prettyBytes(usage ?? 0, prettyBytesConfig);
-  const fLimit = prettyBytes(limit ?? 0, prettyBytesConfig);
-
-  return limit ? `${fUsage} / ${fLimit}` : fUsage;
-};
-
-const formatNetworkSpeed = (bytes?: number) =>
-  useByteUnit.value
-    ? prettyBytes(bytes ?? 0, { ...prettyBytesConfig, binary: false }) + "/s"
-    : prettyBytes((bytes ?? 0) * 8, { ...prettyBytesConfig, bits: true, binary: false }).replace(
-        /bit$/,
-        "b"
-      ) + "ps";
-
-const terminalTopTags = computed<TagInfo[]>(() => {
-  const info = instanceInfo.value?.info;
-  if (!info || isStopped.value) return [];
-  const {
-    cpuUsage,
-    memoryUsage,
-    memoryLimit,
-    memoryUsagePercent,
-    rxBytes,
-    txBytes,
-    storageUsage,
-    storageLimit
-  } = info;
-
-  return arrayFilter<TagInfo>([
-    {
-      label: t("TXT_CODE_b862a158"),
-      value: `${parseInt(String(cpuUsage))}%`,
-      color: getUsageColor(cpuUsage),
-      icon: BlockOutlined,
-      condition: () => cpuUsage != null
-    },
-    {
-      label: t("TXT_CODE_593ee330"),
-      value: formatMemoryUsage(memoryUsage, memoryLimit),
-      color: getUsageColor(memoryUsagePercent),
-      icon: DashboardOutlined,
-      condition: () => memoryUsage != null
-    },
-    {
-      label: t("TXT_CODE_DISK_USAGE"),
-      value: formatMemoryUsage(storageUsage, storageLimit),
-      icon: HddOutlined,
-      condition: () => storageUsage != null
-    },
-    {
-      label: t("TXT_CODE_50daec4"),
-      value: `↓${formatNetworkSpeed(rxBytes)} · ↑${formatNetworkSpeed(txBytes)}`,
-      icon: ApartmentOutlined,
-      condition: () => rxBytes != null || txBytes != null,
-      onClick: () => {
-        useByteUnit.value = !useByteUnit.value;
-      }
-    }
-  ]);
-});
-
 onUnmounted(() => {
   if (checkRunningTimer) clearTimeout(checkRunningTimer);
 });
@@ -443,7 +360,7 @@ onUnmounted(() => {
       </BetweenMenus>
     </div>
     <div class="mb-10 justify-end">
-      <TerminalTags :tags="terminalTopTags" />
+      <TerminalTopTags :info="instanceInfo?.info" :is-stopped="isStopped" />
     </div>
     <TerminalCore
       v-if="instanceId && daemonId"
@@ -501,7 +418,7 @@ onUnmounted(() => {
     </template>
     <template #body>
       <div class="mb-6">
-        <TerminalTags :tags="terminalTopTags" />
+        <TerminalTopTags :info="instanceInfo?.info" :is-stopped="isStopped" />
       </div>
       <TerminalCore
         v-if="instanceId && daemonId"

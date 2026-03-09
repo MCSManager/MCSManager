@@ -15,6 +15,7 @@ import AddJavaDialog from "./AddJavaDialog.vue";
 import DockerCapabilityDialogVue from "./DockerCapabilityDialog.vue";
 import DockerDeviceDialogVue from "./DockerDeviceDialog.vue";
 import DockerPortDialog from "./DockerPortDialog.vue";
+import DockerVersionSelectDialog from "./DockerVersionSelectDialog.vue";
 import DownloadFileDialogVue from "./DownloadFileDialog.vue";
 import DownloadJavaDialog from "./DownloadJavaDialog.vue";
 import NodeSelectDialog from "./NodeSelectDialog.vue";
@@ -240,6 +241,14 @@ export async function openNodeSelectDialog(targetPlatforms?: string[]) {
   const dialog = useMountComponent({ targetPlatforms }).load<InstanceType<typeof NodeSelectDialog>>(
     NodeSelectDialog
   );
+  return dialog!.openDialog();
+}
+
+export async function openDockerVersionSelectDialog() {
+  const dialog =
+    useMountComponent().load<InstanceType<typeof DockerVersionSelectDialog>>(
+      DockerVersionSelectDialog
+    );
   return dialog!.openDialog();
 }
 

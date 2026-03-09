@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
 import { t } from "@/lang/i18n";
 import { EditOutlined } from "@ant-design/icons-vue";
+import { computed, onMounted, ref } from "vue";
 
+const FLOAT_MAGIC_PREFIX = "<__float__>";
 const props = defineProps<{
   optionValue?: Record<string, any>;
   optionKey?: any;
@@ -17,6 +18,24 @@ enum CONTROL {
 const value = ref<Record<string, any>>({});
 const key = ref();
 const type = ref(2);
+
+const computedValue = computed({
+  get: () => {
+    const v = value.value[key.value];
+    if (typeof v === "string" && v.startsWith(FLOAT_MAGIC_PREFIX)) {
+      return v.replace(FLOAT_MAGIC_PREFIX, "");
+    }
+    return v;
+  },
+  set: (v) => {
+    const preValue = value.value[key.value];
+    if (typeof preValue === "string" && preValue.startsWith(FLOAT_MAGIC_PREFIX)) {
+      value.value[key.value] = `${FLOAT_MAGIC_PREFIX}${v}`;
+      return;
+    }
+    value.value[key.value] = v;
+  }
+});
 
 const valueType = computed(() => {
   if (typeof value.value[key.value] === "boolean") {
@@ -54,10 +73,10 @@ onMounted(() => {
               <slot name="optionInput"></slot>
             </div>
             <div v-else class="flex">
-              <a-input v-if="type == CONTROL.INPUT" v-model:value="value[key]" />
+              <a-input v-if="type == CONTROL.INPUT" v-model:value="computedValue" />
               <a-select
                 v-if="type == CONTROL.SELECT"
-                v-model:value="value[key]"
+                v-model:value="computedValue"
                 style="width: 100%"
                 :placeholder="t('TXT_CODE_fe3f34e6')"
               >

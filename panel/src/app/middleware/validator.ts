@@ -28,6 +28,20 @@ function check(target: any, parameter: any) {
         continue;
       }
 
+      if (typeVal === Boolean) {
+        if (typeof target[key] === "boolean") continue;
+        const value = String(target[key]).toLowerCase();
+        if (["1", "true", "yes", "on"].includes(value)) {
+          target[key] = true;
+          continue;
+        }
+        if (["0", "false", "no", "off"].includes(value)) {
+          target[key] = false;
+          continue;
+        }
+        throw new Error(`Validator failed: "${key}" is not a boolean`);
+      }
+
       if (typeVal === Array) {
         if (!(target[key] instanceof Array)) {
           const object = JSON.parse(target[key]);

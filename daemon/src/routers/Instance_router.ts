@@ -18,6 +18,7 @@ import {
 import downloadManager from "../service/download_manager";
 import { IInstanceDetail, IJson } from "../service/interfaces";
 import { modService } from "../service/mod_service";
+import { ROLE } from "../service/protocol";
 import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
 
@@ -374,6 +375,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   const taskName = data.taskName;
   const parameter = data.parameter;
   const instance = InstanceSubsystem.getInstance(instanceUuid);
+  const role = data.role as ROLE;
 
   logger.info(
     $t("TXT_CODE_Instance_router.performTasks", {
@@ -420,7 +422,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   // Quick install Minecraft server task
   // Why not use the ".execPreset("install", parameter)" that already exists in Instance?
   // Because the instance has not yet been created at this stage.
-  if (taskName === "quick_install") {
+  if (taskName === "quick_install" && role === ROLE.ADMIN) {
     const newInstanceName = String(parameter.newInstanceName);
     const targetLink = String(parameter.targetLink);
     logger.info(`Quick install: Name: ${newInstanceName} | Download: ${targetLink}`);

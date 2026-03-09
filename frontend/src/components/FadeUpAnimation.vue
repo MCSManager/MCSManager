@@ -33,10 +33,12 @@ const enter = (el: any, done: () => void) => {
 <style lang="scss">
 @keyframes global-fade-up-animation {
   from {
-    padding-top: 20px;
+    transform: translateY(16px);
+    opacity: 0;
   }
   to {
-    padding-top: 0px;
+    transform: translateY(0px);
+    opacity: 1;
   }
 }
 </style>

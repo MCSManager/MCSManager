@@ -8,6 +8,8 @@
   --new-card-list-background-color-menu: rgba(255, 255, 255, 0.8);
   --float-box-bg-color: rgba(235, 235, 235, 0.2);
   --gray-border-color: var(--color-gray-10);
+  --bottom-nav-background-color: rgb(255, 255, 255);
+  --bottom-nav-background-color-hover: rgba(167, 162, 162, 0.26);
 
   --login-panel-bg: rgb(255, 255, 255, 1);
 
@@ -22,6 +24,8 @@
   --card-shadow-extend-color: rgba(0, 0, 0, 0.16);
 
   --card-bottom-background-color: rgba(12, 12, 12, 0.6);
+
+  --inner-card-hover-bg: linear-gradient(135deg, #e8e8e8 0%, #d4d4d4 100%);
 }
 
 .app-light-base-color {

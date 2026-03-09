@@ -16,8 +16,10 @@
   "_moduleAliases": {
     "@languages": "../languages"
   },
+  "optionalDependencies": {
+    "mcsmanager-common": "file:../common"
+  },
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
     "@koa/router": "^10.0.0",
     "archiver": "^5.3.1",
     "axios": "^1.8.2",
@@ -31,7 +33,6 @@
     "koa-body": "^6.0.1",
     "koa-send": "^5.0.1",
     "log4js": "^6.4.0",
-    "mcsmanager-common": "file:../common",
     "node-schedule": "^2.0.0",
     "node-stream-zip": "^1.15.0",
     "os-utils": "0.0.14",
@@ -39,6 +40,7 @@
     "proper-lockfile": "^4.1.2",
     "properties": "^1.2.1",
     "rcon-srcds": "^2.1.0",
+    "smol-toml": "^1.6.0",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.7.5",
     "stream-throttle": "^0.1.3",

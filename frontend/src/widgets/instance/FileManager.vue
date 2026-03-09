@@ -328,7 +328,7 @@ const menuList = (record: DataType) =>
       key: "changePermission",
       icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
-      condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
+      condition: () => fileStatus.value?.platform !== "win32"
     },
     {
       label: t("TXT_CODE_88122886"),
