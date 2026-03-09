@@ -5,6 +5,8 @@
     "daemon": "cd daemon &&  npm run dev",
     "frontend": "cd frontend && npm run dev",
     "panel": "cd panel && npm run dev",
+    "install": "npm run install-dependents && npm run preview-build",
+    "install-dependents": "cd daemon && npm install && cd ../panel && npm install && cd ../frontend && npm install",
     "dev": "npm run all",
     "all": "concurrently -n Daemon,Frontend,Panel -c cyan,magenta,green -p name \"npm run dev --prefix daemon\" \"npm run dev --prefix frontend\" \"npm run dev --prefix panel\"",
     "i18n": "i18next-scanner --config i18-scanner.config.js",
