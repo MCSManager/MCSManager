@@ -1,4 +1,5 @@
 import * as oidc from "openid-client";
+import Koa from "koa";
 import { systemConfig } from "../setting";
 import { logger } from "./log";
 import crypto from "crypto";
@@ -55,10 +56,11 @@ export function generateCodeChallenge(verifier: string): string {
 export async function buildAuthorizationUrl(
   state: string,
   nonce: string,
-  codeVerifier: string
+  codeVerifier: string,
+  ctx?: Koa.ParameterizedContext
 ): Promise<string> {
   const config = await getOIDCConfig();
-  const callbackUrl = getCallbackUrl();
+  const callbackUrl = getCallbackUrl(ctx);
   const codeChallenge = generateCodeChallenge(codeVerifier);
 
   const url = oidc.buildAuthorizationUrl(config, {
@@ -99,11 +101,18 @@ export async function handleCallback(
   };
 }
 
-export function getCallbackUrl(): string {
+export function getCallbackUrl(ctx?: Koa.ParameterizedContext): string {
   if (!systemConfig) throw new Error("System config not initialized");
   if (systemConfig.ssoCallbackUrl) return systemConfig.ssoCallbackUrl;
-  const port = systemConfig.httpPort || 23333;
   const prefix = systemConfig.prefix || "";
+  if (ctx) {
+    const proto = (ctx.get("X-Forwarded-Proto") || ctx.protocol || "http").split(",")[0].trim();
+    const host = (ctx.get("X-Forwarded-Host") || ctx.get("Host") || "").split(",")[0].trim();
+    if (host) {
+      return `${proto}://${host}${prefix}/api/auth/sso/callback`;
+    }
+  }
+  const port = systemConfig.httpPort || 23333;
   return `http://localhost:${port}${prefix}/api/auth/sso/callback`;
 }
 

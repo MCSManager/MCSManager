@@ -59,7 +59,7 @@ router.get(
       ctx.session["ssoTimestamp"] = Date.now();
       ctx.session.save();
 
-      const url = await buildAuthorizationUrl(state, nonce, codeVerifier);
+      const url = await buildAuthorizationUrl(state, nonce, codeVerifier, ctx);
       ctx.redirect(url);
     } catch (err: any) {
       const oauthDesc = err.error_description || err.message || "Authorization redirect failed";
@@ -127,7 +127,7 @@ router.get(
 
     try {
       // When behind reverse proxy, reconstruct with the configured callback URL
-      const configuredCallback = getCallbackUrl();
+      const configuredCallback = getCallbackUrl(ctx);
       const reconstructedUrl = new URL(configuredCallback);
       reconstructedUrl.search = callbackUrl.search;
 

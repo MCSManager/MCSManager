@@ -212,7 +212,6 @@ const handleBind = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: 24px;
 }
 .sso-bind-card {
