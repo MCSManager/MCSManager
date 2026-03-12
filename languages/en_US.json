@@ -3367,6 +3367,8 @@
   "TXT_CODE_SSO_CLIENT_SECRET_DESC": "Client Secret provided by the identity provider.",
   "TXT_CODE_SSO_CALLBACK_URL": "Callback URL",
   "TXT_CODE_SSO_CALLBACK_URL_DESC": "OAuth2 redirect URI. If empty, it will be auto-generated based on panel address. Must match the redirect URI configured in the IdP.",
+  "TXT_CODE_SSO_IDENTITY_CHANGE_TITLE": "SSO Identity Configuration Changed",
+  "TXT_CODE_SSO_IDENTITY_CHANGE_CONFIRM": "You are changing critical SSO identity settings (protocol type, Issuer URL, Userinfo URL, or User ID field). After saving, all existing SSO-bound users will be unbound and will need to re-link their third-party accounts. Continue?",
   "TXT_CODE_SSO_LOGIN_BTN": "Login with {name}",
   "TXT_CODE_SSO_LOGIN_BTN_DEFAULT": "SSO Login",
   "TXT_CODE_SSO_LOGIN_DIVIDER": "or",

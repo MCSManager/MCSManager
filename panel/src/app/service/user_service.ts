@@ -184,6 +184,19 @@ class UserSubsystem {
     await Storage.getStorage().store("User", uuid, instance);
   }
 
+  async unbindAllSso(): Promise<number> {
+    let count = 0;
+    for (const [uuid, user] of this.objects) {
+      if (user.ssoBound || user.ssoSub) {
+        user.ssoSub = "";
+        user.ssoBound = false;
+        await Storage.getStorage().store("User", uuid, user);
+        count++;
+      }
+    }
+    return count;
+  }
+
   async bindSso(uuid: string, ssoSub: string) {
     const instance = this.getInstance(uuid);
     if (!instance) throw new Error("User not found");

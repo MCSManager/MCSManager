@@ -77,6 +77,12 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
 
+    // Snapshot identity-critical SSO fields before applying changes
+    const prevSsoType = systemConfig.ssoType || "oidc";
+    const prevSsoIssuer = systemConfig.ssoIssuer;
+    const prevSsoUserinfoUrl = systemConfig.ssoUserinfoUrl;
+    const prevSsoUserIdField = systemConfig.ssoUserIdField || "id";
+
     // SSO type
     if (config.ssoType != null) {
       const t = String(config.ssoType);
@@ -135,6 +141,21 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
 
     if (config.ssoUserIdField != null) systemConfig.ssoUserIdField = String(config.ssoUserIdField) || "id";
+
+    // Unbind all SSO users when identity-critical fields change
+    {
+      const typeChanged = systemConfig.ssoType !== prevSsoType;
+      const issuerChanged = ssoType === "oidc" && systemConfig.ssoIssuer !== prevSsoIssuer;
+      const userinfoChanged = ssoType === "oauth2" && systemConfig.ssoUserinfoUrl !== prevSsoUserinfoUrl;
+      const userIdFieldChanged = ssoType === "oauth2" && systemConfig.ssoUserIdField !== prevSsoUserIdField;
+
+      if (typeChanged || issuerChanged || userinfoChanged || userIdFieldChanged) {
+        const count = await userSystem.unbindAllSso();
+        if (count > 0) {
+          logger.warn(`[SSO] Identity-critical config changed, unbound ${count} SSO user(s).`);
+        }
+      }
+    }
     if (config.ssoScopes != null) systemConfig.ssoScopes = String(config.ssoScopes);
     if (config.ssoOnlyMode != null) systemConfig.ssoOnlyMode = Boolean(config.ssoOnlyMode);
     if (config.ssoAutoRedirect != null) systemConfig.ssoAutoRedirect = Boolean(config.ssoAutoRedirect);

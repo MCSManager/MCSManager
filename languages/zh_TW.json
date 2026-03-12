@@ -3345,6 +3345,8 @@
   "TXT_CODE_SSO_CLIENT_SECRET_DESC": "身份提供商提供的 Client Secret。",
   "TXT_CODE_SSO_CALLBACK_URL": "回調地址",
   "TXT_CODE_SSO_CALLBACK_URL_DESC": "OAuth2 重定向 URI。留空則根據面板地址自動產生。必須與身份提供商中設定的重定向 URI 一致。",
+  "TXT_CODE_SSO_IDENTITY_CHANGE_TITLE": "SSO 身份配置變更",
+  "TXT_CODE_SSO_IDENTITY_CHANGE_CONFIRM": "你正在修改 SSO 的關鍵身份標識配置（協議類型、Issuer 地址、Userinfo URL 或使用者 ID 欄位）。儲存後，所有已綁定 SSO 的使用者將被自動解綁，需要重新綁定第三方帳號。是否繼續？",
   "TXT_CODE_SSO_LOGIN_BTN": "使用 {name} 登入",
   "TXT_CODE_SSO_LOGIN_BTN_DEFAULT": "SSO 登入",
   "TXT_CODE_SSO_LOGIN_DIVIDER": "或",

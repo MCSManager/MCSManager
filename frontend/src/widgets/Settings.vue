@@ -70,6 +70,13 @@ limitations under the License.`;
 
 const formData = ref<MySettings>();
 
+const ssoSnapshot = ref({
+  ssoType: "",
+  ssoIssuer: "",
+  ssoUserinfoUrl: "",
+  ssoUserIdField: ""
+});
+
 /** Current sidebar position choice; persisted in layout config theme. */
 const sidebarPosition = ref<"left" | "right">("left");
 
@@ -311,6 +318,33 @@ const ssoMode = computed({
   }
 });
 
+const isSsoIdentityChanged = (): boolean => {
+  const fd = formData.value as any;
+  if (!fd) return false;
+  const snap = ssoSnapshot.value;
+  const curType = fd.ssoType || "oidc";
+  if (curType !== snap.ssoType) return true;
+  if (curType === "oidc" && (fd.ssoIssuer || "") !== snap.ssoIssuer) return true;
+  if (curType === "oauth2") {
+    if ((fd.ssoUserinfoUrl || "") !== snap.ssoUserinfoUrl) return true;
+    if ((fd.ssoUserIdField || "id") !== snap.ssoUserIdField) return true;
+  }
+  return false;
+};
+
+const doSubmitSso = async () => {
+  await submit(false);
+  const fd = formData.value as any;
+  if (fd) {
+    ssoSnapshot.value = {
+      ssoType: fd.ssoType || "oidc",
+      ssoIssuer: fd.ssoIssuer || "",
+      ssoUserinfoUrl: fd.ssoUserinfoUrl || "",
+      ssoUserIdField: fd.ssoUserIdField || "id"
+    };
+  }
+};
+
 const submitSso = async () => {
   const fd = formData.value as any;
   if (fd?.ssoEnabled) {
@@ -327,7 +361,18 @@ const submitSso = async () => {
       }
     }
   }
-  await submit(false);
+  if (isSsoIdentityChanged()) {
+    Modal.confirm({
+      title: t("TXT_CODE_SSO_IDENTITY_CHANGE_TITLE"),
+      content: t("TXT_CODE_SSO_IDENTITY_CHANGE_CONFIRM"),
+      okType: "danger",
+      async onOk() {
+        await doSubmitSso();
+      }
+    });
+    return;
+  }
+  await doSubmitSso();
 };
 
 const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
@@ -352,6 +397,13 @@ onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
   formData.value = res.value!;
+  const fd = formData.value as any;
+  ssoSnapshot.value = {
+    ssoType: fd.ssoType || "oidc",
+    ssoIssuer: fd.ssoIssuer || "",
+    ssoUserinfoUrl: fd.ssoUserinfoUrl || "",
+    ssoUserIdField: fd.ssoUserIdField || "id"
+  };
   if (cfg?.theme?.logoImage) {
     formData.value.logoUrl = cfg.theme.logoImage;
   }
