@@ -14,7 +14,8 @@ import {
   generateState,
   getCallbackUrl,
   getPublicSsoConfig,
-  handleCallback
+  handleOIDCCallback,
+  handleOAuth2Callback
 } from "../service/sso_service";
 import userSystem, { TwoFactorError } from "../service/user_service";
 import { systemConfig } from "../setting";
@@ -101,7 +102,8 @@ router.get(
     delete ctx.session["ssoTimestamp"];
     ctx.session.save();
 
-    if (!expectedState || !expectedNonce || !codeVerifier) {
+    const isOAuth2 = systemConfig?.ssoType === "oauth2";
+    if (!expectedState || !codeVerifier || (!isOAuth2 && !expectedNonce)) {
       ctx.redirect("/#/login?sso_error=invalid_sso_session");
       return;
     }
@@ -126,17 +128,26 @@ router.get(
     }
 
     try {
-      // When behind reverse proxy, reconstruct with the configured callback URL
-      const configuredCallback = getCallbackUrl(ctx);
-      const reconstructedUrl = new URL(configuredCallback);
-      reconstructedUrl.search = callbackUrl.search;
+      let sub: string;
+      let claims: Record<string, unknown>;
 
-      const { sub, claims } = await handleCallback(
-        reconstructedUrl,
-        expectedState,
-        expectedNonce,
-        codeVerifier
-      );
+      if (isOAuth2) {
+        const code = callbackUrl.searchParams.get("code");
+        if (!code) throw new Error("OAuth 2.0 callback missing code parameter");
+        const stateParam = callbackUrl.searchParams.get("state");
+        if (stateParam !== expectedState) throw new Error("OAuth 2.0 state mismatch");
+        ({ sub, claims } = await handleOAuth2Callback(code, codeVerifier, ctx));
+      } else {
+        const configuredCallback = getCallbackUrl(ctx);
+        const reconstructedUrl = new URL(configuredCallback);
+        reconstructedUrl.search = callbackUrl.search;
+        ({ sub, claims } = await handleOIDCCallback(
+          reconstructedUrl,
+          expectedState,
+          expectedNonce,
+          codeVerifier
+        ));
+      }
 
       logger.info(`[SSO] Callback received for sub: ${sub}`);
 

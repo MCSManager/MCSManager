@@ -29,7 +29,7 @@ import {
   QuestionCircleOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 defineProps<{
   card: LayoutCard;
@@ -293,11 +293,38 @@ const startDesignUI = async () => {
   });
 };
 
+const ssoMode = computed({
+  get(): string {
+    const fd = formData.value as any;
+    if (!fd?.ssoEnabled) return "disabled";
+    return fd.ssoType === "oauth2" ? "oauth2" : "oidc";
+  },
+  set(val: string) {
+    const fd = formData.value as any;
+    if (!fd) return;
+    if (val === "disabled") {
+      fd.ssoEnabled = false;
+    } else {
+      fd.ssoEnabled = true;
+      fd.ssoType = val;
+    }
+  }
+});
+
 const submitSso = async () => {
   const fd = formData.value as any;
   if (fd?.ssoEnabled) {
-    if (!fd.ssoIssuer?.trim() || !fd.ssoClientId?.trim() || !fd.ssoClientSecret?.trim()) {
+    if (!fd.ssoClientId?.trim() || !fd.ssoClientSecret?.trim()) {
       return message.error(t("TXT_CODE_SSO_ENABLE_REQUIRES_CONFIG"));
+    }
+    if (fd.ssoType === "oauth2") {
+      if (!fd.ssoAuthorizeUrl?.trim() || !fd.ssoTokenUrl?.trim() || !fd.ssoUserinfoUrl?.trim()) {
+        return message.error(t("TXT_CODE_SSO_OAUTH2_REQUIRES_URLS"));
+      }
+    } else {
+      if (!fd.ssoIssuer?.trim()) {
+        return message.error(t("TXT_CODE_SSO_ENABLE_REQUIRES_CONFIG"));
+      }
     }
   }
   await submit(false);
@@ -833,16 +860,12 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_SSO_ENABLE_DESC") }}
                     </a-typography-paragraph>
                     <a-select
-                      v-model:value.prop="(formData as any).ssoEnabled"
+                      v-model:value="ssoMode"
                       style="max-width: 320px"
                     >
-                      <a-select-option
-                        v-for="item in allYesNo"
-                        :key="item.value"
-                        :value="item.value"
-                      >
-                        {{ item.label }}
-                      </a-select-option>
+                      <a-select-option value="disabled">{{ t("TXT_CODE_718c9310") }}</a-select-option>
+                      <a-select-option value="oidc">OpenID Connect (OIDC)</a-select-option>
+                      <a-select-option value="oauth2">OAuth 2.0</a-select-option>
                     </a-select>
                   </a-form-item>
 
@@ -875,7 +898,8 @@ onUnmounted(() => {
                       />
                     </a-form-item>
 
-                    <a-form-item>
+                    <!-- OIDC-specific: Issuer URL -->
+                    <a-form-item v-if="ssoMode === 'oidc'">
                       <a-typography-title :level="5">
                         {{ t("TXT_CODE_SSO_ISSUER") }}
                       </a-typography-title>
@@ -888,6 +912,79 @@ onUnmounted(() => {
                         placeholder="https://accounts.example.com"
                       />
                     </a-form-item>
+
+                    <!-- OAuth 2.0-specific fields -->
+                    <template v-if="ssoMode === 'oauth2'">
+                      <a-form-item>
+                        <a-typography-title :level="5">
+                          {{ t("TXT_CODE_SSO_AUTHORIZE_URL") }}
+                        </a-typography-title>
+                        <a-typography-paragraph type="secondary">
+                          {{ t("TXT_CODE_SSO_AUTHORIZE_URL_DESC") }}
+                        </a-typography-paragraph>
+                        <a-input
+                          v-model:value="(formData as any).ssoAuthorizeUrl"
+                          style="max-width: 480px"
+                          placeholder="https://github.com/login/oauth/authorize"
+                        />
+                      </a-form-item>
+
+                      <a-form-item>
+                        <a-typography-title :level="5">
+                          {{ t("TXT_CODE_SSO_TOKEN_URL") }}
+                        </a-typography-title>
+                        <a-typography-paragraph type="secondary">
+                          {{ t("TXT_CODE_SSO_TOKEN_URL_DESC") }}
+                        </a-typography-paragraph>
+                        <a-input
+                          v-model:value="(formData as any).ssoTokenUrl"
+                          style="max-width: 480px"
+                          placeholder="https://github.com/login/oauth/access_token"
+                        />
+                      </a-form-item>
+
+                      <a-form-item>
+                        <a-typography-title :level="5">
+                          {{ t("TXT_CODE_SSO_USERINFO_URL") }}
+                        </a-typography-title>
+                        <a-typography-paragraph type="secondary">
+                          {{ t("TXT_CODE_SSO_USERINFO_URL_DESC") }}
+                        </a-typography-paragraph>
+                        <a-input
+                          v-model:value="(formData as any).ssoUserinfoUrl"
+                          style="max-width: 480px"
+                          placeholder="https://api.github.com/user"
+                        />
+                      </a-form-item>
+
+                      <a-form-item>
+                        <a-typography-title :level="5">
+                          {{ t("TXT_CODE_SSO_USER_ID_FIELD") }}
+                        </a-typography-title>
+                        <a-typography-paragraph type="secondary">
+                          {{ t("TXT_CODE_SSO_USER_ID_FIELD_DESC") }}
+                        </a-typography-paragraph>
+                        <a-input
+                          v-model:value="(formData as any).ssoUserIdField"
+                          style="max-width: 320px"
+                          placeholder="id"
+                        />
+                      </a-form-item>
+
+                      <a-form-item>
+                        <a-typography-title :level="5">
+                          {{ t("TXT_CODE_SSO_SCOPES") }}
+                        </a-typography-title>
+                        <a-typography-paragraph type="secondary">
+                          {{ t("TXT_CODE_SSO_SCOPES_DESC") }}
+                        </a-typography-paragraph>
+                        <a-input
+                          v-model:value="(formData as any).ssoScopes"
+                          style="max-width: 320px"
+                          placeholder="read:user"
+                        />
+                      </a-form-item>
+                    </template>
 
                     <a-form-item>
                       <a-typography-title :level="5">Client ID</a-typography-title>
