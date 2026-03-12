@@ -68,12 +68,9 @@ export function useHeaderMenus() {
   const { setTheme } = useAppConfigStore();
   const { state: appTools } = useAppToolsStore();
   const { isAdmin, state: appState, isLogged } = useAppStateStore();
-  const { state: frontendState } = useAppStateStore();
   const { execute } = logoutUser();
 
-  const isProMode = computed(() => !!frontendState.settings.businessMode);
-
-  const openNewCardDialog = () => {
+  const openNewCardDialog = (): void => {
     containerState.showNewCardDialog = true;
   };
 
@@ -212,7 +209,7 @@ export function useHeaderMenus() {
         title: t("TXT_CODE_ebd2a6a1"),
         leftSideTitle: t("TXT_CODE_4eb158da"),
         icon: BuildOutlined,
-        click: () => {
+        click: (): void => {
           changeDesignMode(true);
           notification.warning({
             placement: "bottom",
