@@ -2,7 +2,7 @@
 import CardPanel from "@/components/CardPanel.vue";
 import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
-import { loginPageInfo, loginUser } from "@/services/apis";
+import { loginPageInfo, loginUser, ssoConfig, type SsoPublicConfig } from "@/services/apis";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { sleep } from "@/tools/common";
 import { markdownToHTML } from "@/tools/safe";
@@ -12,12 +12,14 @@ import {
   CheckCircleOutlined,
   LoadingOutlined,
   LockOutlined,
+  LoginOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
 
 const { state: pageInfoResult, execute } = loginPageInfo();
+const ssoInfo = ref<SsoPublicConfig | null>(null);
 
 const props = defineProps<{
   card?: LayoutCard;
@@ -90,9 +92,45 @@ const openBuyInstanceDialog = async () => {
   router.push({ path: "/shop" });
 };
 
+const handleSsoLogin = () => {
+  window.location.href = "/api/auth/sso/authorize";
+};
+
 onMounted(async () => {
   await execute();
   if (!appConfig.isInstall) router.push({ path: "/install" });
+
+  try {
+    const res = await ssoConfig().execute();
+    if (res.value) ssoInfo.value = res.value;
+  } catch {
+    // SSO config may not be available
+  }
+
+  if (ssoInfo.value?.enabled && ssoInfo.value?.autoRedirect) {
+    const query = router.currentRoute.value.query;
+    if (!query.sso_error && query.ssoAutoRedirect !== "false") {
+      handleSsoLogin();
+      return;
+    }
+  }
+
+  const ssoError = router.currentRoute.value.query.sso_error;
+  if (ssoError) {
+    const ssoErrorDesc = router.currentRoute.value.query.sso_error_desc;
+    const errorCode = String(ssoError);
+    const ssoErrorTitles: Record<string, string> = {
+      sso_init_failed: t("TXT_CODE_SSO_ERROR_INIT_FAILED"),
+      sso_auth_failed: t("TXT_CODE_SSO_ERROR_AUTH_FAILED"),
+      session_expired: t("TXT_CODE_SSO_ERROR_SESSION_EXPIRED"),
+      invalid_sso_session: t("TXT_CODE_SSO_ERROR_SESSION_EXPIRED"),
+      sso_session_expired: t("TXT_CODE_SSO_ERROR_SESSION_EXPIRED")
+    };
+    Modal.error({
+      title: ssoErrorTitles[errorCode] || `${t("TXT_CODE_SSO_ERROR")}: ${errorCode}`,
+      content: ssoErrorDesc ? String(ssoErrorDesc) : t("TXT_CODE_SSO_CALLBACK_FAIL")
+    });
+  }
 });
 </script>
 
@@ -121,79 +159,135 @@ onMounted(async () => {
             {{ t("TXT_CODE_5b60ad00") }}
           </a-typography-paragraph>
           <div class="account-input-container">
-            <form @submit.prevent>
-              <div v-if="!is2Fa">
-                <a-input
-                  v-model:value="formData.username"
-                  class="account"
-                  size="large"
-                  name="mcsm-name-input"
-                  :placeholder="t('TXT_CODE_80a560a1')"
-                >
-                  <template #suffix>
-                    <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                  </template>
-                </a-input>
-                <a-input
-                  v-model:value="formData.password"
-                  class="mt-20 account"
-                  type="password"
-                  :placeholder="t('TXT_CODE_551b0348')"
-                  size="large"
-                  name="mcsm-pw-input"
-                  @press-enter="handleLogin"
-                >
-                  <template #suffix>
-                    <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                  </template>
-                </a-input>
-              </div>
-              <div v-else>
-                <a-input
-                  v-model:value="formData.code"
-                  class="mt-20 mb-20 account"
-                  type="text"
-                  :placeholder="t('TXT_CODE_7ac8b1d3')"
-                  size="large"
-                  autocomplete="off"
-                  name="mcsm-pw-2fa"
-                  @press-enter="handleLogin"
-                >
-                  <template #suffix>
-                    <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
-                  </template>
-                </a-input>
-              </div>
-            </form>
-
-            <div class="mt-24 flex-between align-center">
-              <div v-if="!appConfig.settings.businessMode" class="mcsmanager-link">
-                <div
-                  v-if="pageInfoResult?.loginInfo"
-                  class="global-markdown-html"
-                  v-html="markdownToHTML(pageInfoResult?.loginInfo || '')"
-                ></div>
-                Powered by
-                <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
-                  MCSManager
-                </a>
-              </div>
-              <div v-else></div>
-              <div class="justify-end" style="gap: 10px">
-                <a-button
-                  v-if="appConfig.settings.businessMode"
-                  size="large"
-                  class="green"
-                  style="min-width: 95px"
-                  @click="openBuyInstanceDialog"
-                >
-                  {{ t("TXT_CODE_5a408a5e") }}
-                </a-button>
-                <a-button size="large" type="primary" style="min-width: 95px" @click="handleLogin">
-                  {{ t("TXT_CODE_d2c1a316") }}
-                </a-button>
-              </div>
+            <div v-if="ssoInfo?.enabled && ssoInfo?.onlyMode" class="sso-only-container">
+              <a-typography-paragraph type="secondary" class="mb-20">
+                {{ t("TXT_CODE_SSO_ONLY_MODE_WARN") }}
+              </a-typography-paragraph>
+              <a-button
+                size="large"
+                type="primary"
+                block
+                @click="handleSsoLogin"
+              >
+                <template #icon>
+                  <img
+                    v-if="ssoInfo?.iconUrl"
+                    :src="ssoInfo.iconUrl"
+                    style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle"
+                  />
+                  <LoginOutlined v-else />
+                </template>
+                {{
+                  ssoInfo?.providerName
+                    ? t("TXT_CODE_SSO_LOGIN_BTN", { name: ssoInfo.providerName })
+                    : t("TXT_CODE_SSO_LOGIN_BTN_DEFAULT")
+                }}
+              </a-button>
             </div>
+
+            <template v-else>
+              <form @submit.prevent>
+                <div v-if="!is2Fa">
+                  <a-input
+                    v-model:value="formData.username"
+                    class="account"
+                    size="large"
+                    name="mcsm-name-input"
+                    :placeholder="t('TXT_CODE_80a560a1')"
+                  >
+                    <template #suffix>
+                      <UserOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                    </template>
+                  </a-input>
+                  <a-input
+                    v-model:value="formData.password"
+                    class="mt-20 account"
+                    type="password"
+                    :placeholder="t('TXT_CODE_551b0348')"
+                    size="large"
+                    name="mcsm-pw-input"
+                    @press-enter="handleLogin"
+                  >
+                    <template #suffix>
+                      <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                    </template>
+                  </a-input>
+                </div>
+                <div v-else>
+                  <a-input
+                    v-model:value="formData.code"
+                    class="mt-20 mb-20 account"
+                    type="text"
+                    :placeholder="t('TXT_CODE_7ac8b1d3')"
+                    size="large"
+                    autocomplete="off"
+                    name="mcsm-pw-2fa"
+                    @press-enter="handleLogin"
+                  >
+                    <template #suffix>
+                      <LockOutlined style="color: rgba(0, 0, 0, 0.45)" />
+                    </template>
+                  </a-input>
+                </div>
+              </form>
+
+              <div class="mt-24 flex-between align-center">
+                <div v-if="!appConfig.settings.businessMode" class="mcsmanager-link">
+                  <div
+                    v-if="pageInfoResult?.loginInfo"
+                    class="global-markdown-html"
+                    v-html="markdownToHTML(pageInfoResult?.loginInfo || '')"
+                  ></div>
+                  Powered by
+                  <a href="https://mcsmanager.com" target="_blank" rel="noopener noreferrer">
+                    MCSManager
+                  </a>
+                </div>
+                <div v-else></div>
+                <div class="justify-end" style="gap: 10px">
+                  <a-button
+                    v-if="appConfig.settings.businessMode"
+                    size="large"
+                    class="green"
+                    style="min-width: 95px"
+                    @click="openBuyInstanceDialog"
+                  >
+                    {{ t("TXT_CODE_5a408a5e") }}
+                  </a-button>
+                  <a-button
+                    size="large"
+                    type="primary"
+                    style="min-width: 95px"
+                    @click="handleLogin"
+                  >
+                    {{ t("TXT_CODE_d2c1a316") }}
+                  </a-button>
+                </div>
+              </div>
+
+              <div v-if="ssoInfo?.enabled && !ssoInfo?.onlyMode" class="sso-divider-section">
+                <a-divider>{{ t("TXT_CODE_SSO_LOGIN_DIVIDER") }}</a-divider>
+                <a-button
+                  size="large"
+                  block
+                  @click="handleSsoLogin"
+                >
+                  <template #icon>
+                    <img
+                      v-if="ssoInfo?.iconUrl"
+                      :src="ssoInfo.iconUrl"
+                      style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle"
+                    />
+                    <LoginOutlined v-else />
+                  </template>
+                  {{
+                    ssoInfo?.providerName
+                      ? t("TXT_CODE_SSO_LOGIN_BTN", { name: ssoInfo.providerName })
+                      : t("TXT_CODE_SSO_LOGIN_BTN_DEFAULT")
+                  }}
+                </a-button>
+              </div>
+            </template>
           </div>
         </div>
         <div v-show="loginStep === 1" class="login-panel-body flex-center">

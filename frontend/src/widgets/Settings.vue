@@ -14,6 +14,7 @@ import { arrayFilter } from "@/tools/array";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, Settings } from "@/types";
 import {
+  ApiOutlined,
   BankOutlined,
   BookOutlined,
   BugOutlined,
@@ -115,6 +116,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_9c3ca8f"),
     key: "security",
     icon: LockOutlined
+  },
+  {
+    title: t("TXT_CODE_SSO_TAB_TITLE"),
+    key: "sso",
+    icon: ApiOutlined
   },
   {
     title: t("TXT_CODE_46cb40d5"),
@@ -285,6 +291,16 @@ const startDesignUI = async () => {
     message: t("TXT_CODE_7b1adf35"),
     description: t("TXT_CODE_6b6f1d3")
   });
+};
+
+const submitSso = async () => {
+  const fd = formData.value as any;
+  if (fd?.ssoEnabled) {
+    if (!fd.ssoIssuer?.trim() || !fd.ssoClientId?.trim() || !fd.ssoClientSecret?.trim()) {
+      return message.error(t("TXT_CODE_SSO_ENABLE_REQUIRES_CONFIG"));
+    }
+  }
+  await submit(false);
 };
 
 const leftMenusPanelRef = ref<InstanceType<typeof LeftMenusPanel>>();
@@ -794,6 +810,168 @@ onUnmounted(() => {
 
                   <div class="button">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #sso>
+            <div class="content-box" :style="{ maxHeight: card.height }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_SSO_TAB_TITLE") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_SSO_ENABLE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_SSO_ENABLE_DESC") }}
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).ssoEnabled"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <template v-if="(formData as any).ssoEnabled">
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_PROVIDER_NAME") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_PROVIDER_NAME_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoProviderName"
+                        style="max-width: 320px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_ICON_URL") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_ICON_URL_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoIconUrl"
+                        style="max-width: 320px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_ISSUER") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_ISSUER_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoIssuer"
+                        style="max-width: 480px"
+                        placeholder="https://accounts.example.com"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">Client ID</a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_CLIENT_ID_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoClientId"
+                        style="max-width: 480px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">Client Secret</a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_CLIENT_SECRET_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input-password
+                        v-model:value="(formData as any).ssoClientSecret"
+                        style="max-width: 480px"
+                        :placeholder="t('TXT_CODE_4ea93630')"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_CALLBACK_URL") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_CALLBACK_URL_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoCallbackUrl"
+                        style="max-width: 480px"
+                        placeholder="https://your-panel.com/api/auth/sso/callback"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_ONLY_MODE") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_ONLY_MODE_DESC") }}
+                      </a-typography-paragraph>
+                      <a-select
+                        v-model:value.prop="(formData as any).ssoOnlyMode"
+                        style="max-width: 320px"
+                      >
+                        <a-select-option
+                          v-for="item in allYesNo"
+                          :key="item.value"
+                          :value="item.value"
+                        >
+                          {{ item.label }}
+                        </a-select-option>
+                      </a-select>
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_AUTO_REDIRECT") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_AUTO_REDIRECT_DESC") }}
+                      </a-typography-paragraph>
+                      <a-select
+                        v-model:value.prop="(formData as any).ssoAutoRedirect"
+                        style="max-width: 320px"
+                      >
+                        <a-select-option
+                          v-for="item in allYesNo"
+                          :key="item.value"
+                          :value="item.value"
+                        >
+                          {{ item.label }}
+                        </a-select-option>
+                      </a-select>
+                    </a-form-item>
+                  </template>
+
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submitSso">
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>

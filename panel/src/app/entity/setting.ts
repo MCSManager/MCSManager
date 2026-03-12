@@ -67,6 +67,17 @@ export default class SystemConfig {
   registerCode = "";
   // -----
 
+  // SSO / OpenID Connect
+  ssoEnabled = false;
+  ssoOnlyMode = false;
+  ssoAutoRedirect = false;
+  ssoProviderName = "";
+  ssoIconUrl = "";
+  ssoIssuer = "";
+  ssoClientId = "";
+  ssoClientSecret = "";
+  ssoCallbackUrl = "";
+
   // Whether to enable SSL/TLS (HTTPS)
   ssl = false;
   // SSL certificate file path (.pem)

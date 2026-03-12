@@ -77,6 +77,55 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
 
+    if (config.ssoEnabled != null) {
+      const wantEnable = Boolean(config.ssoEnabled);
+      if (wantEnable) {
+        const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
+        const clientId = config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
+        const clientSecret = config.ssoClientSecret != null ? String(config.ssoClientSecret) : systemConfig.ssoClientSecret;
+        if (!issuer?.trim() || !clientId?.trim() || !clientSecret?.trim()) {
+          throw new Error("Cannot enable SSO: Issuer, Client ID, and Client Secret are required");
+        }
+      }
+      systemConfig.ssoEnabled = wantEnable;
+    }
+    if (config.ssoOnlyMode != null) systemConfig.ssoOnlyMode = Boolean(config.ssoOnlyMode);
+    if (config.ssoAutoRedirect != null) systemConfig.ssoAutoRedirect = Boolean(config.ssoAutoRedirect);
+    if (config.ssoProviderName != null) systemConfig.ssoProviderName = String(config.ssoProviderName);
+    if (config.ssoIconUrl != null) {
+      const iconUrl = String(config.ssoIconUrl);
+      if (iconUrl && !iconUrl.startsWith("https://") && !iconUrl.startsWith("http://") && !iconUrl.startsWith("/")) {
+        throw new Error("SSO icon URL must use http(s) protocol or be a relative path");
+      }
+      systemConfig.ssoIconUrl = iconUrl;
+    }
+    if (config.ssoIssuer != null) {
+      const issuer = String(config.ssoIssuer);
+      if (issuer && !issuer.startsWith("https://") && !issuer.startsWith("http://")) {
+        throw new Error("SSO Issuer URL must use http(s) protocol");
+      }
+      systemConfig.ssoIssuer = issuer;
+      const { clearOIDCCache } = require("../service/sso_service");
+      clearOIDCCache();
+    }
+    if (config.ssoClientId != null) {
+      systemConfig.ssoClientId = String(config.ssoClientId);
+      const { clearOIDCCache } = require("../service/sso_service");
+      clearOIDCCache();
+    }
+    if (config.ssoClientSecret != null) {
+      systemConfig.ssoClientSecret = String(config.ssoClientSecret);
+      const { clearOIDCCache } = require("../service/sso_service");
+      clearOIDCCache();
+    }
+    if (config.ssoCallbackUrl != null) {
+      const cbUrl = String(config.ssoCallbackUrl);
+      if (cbUrl && !cbUrl.startsWith("https://") && !cbUrl.startsWith("http://")) {
+        throw new Error("SSO Callback URL must use http(s) protocol");
+      }
+      systemConfig.ssoCallbackUrl = cbUrl;
+    }
+
     operationLogger.log("system_config_change", {
       operator_ip: ctx.ip,
       operator_name: ctx.session?.["userName"]
