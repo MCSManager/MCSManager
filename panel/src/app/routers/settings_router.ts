@@ -77,17 +77,34 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       remoteService.changeDaemonLanguage(systemConfig.language);
     }
 
-    if (config.ssoEnabled != null) {
-      const wantEnable = Boolean(config.ssoEnabled);
+    if (config.ssoEnabled != null || config.ssoIssuer != null || config.ssoClientId != null || config.ssoClientSecret != null) {
+      const wantEnable = config.ssoEnabled != null ? Boolean(config.ssoEnabled) : systemConfig.ssoEnabled;
+      const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
+      const clientId = config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
+      const clientSecret = config.ssoClientSecret != null ? String(config.ssoClientSecret) : systemConfig.ssoClientSecret;
+
+      if (issuer) {
+        if (!issuer.startsWith("https://") && !issuer.startsWith("http://")) {
+          throw new Error("SSO Issuer URL must use http(s) protocol");
+        }
+      }
+
       if (wantEnable) {
-        const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
-        const clientId = config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
-        const clientSecret = config.ssoClientSecret != null ? String(config.ssoClientSecret) : systemConfig.ssoClientSecret;
         if (!issuer?.trim() || !clientId?.trim() || !clientSecret?.trim()) {
           throw new Error("Cannot enable SSO: Issuer, Client ID, and Client Secret are required");
         }
       }
-      systemConfig.ssoEnabled = wantEnable;
+
+      if (issuer?.trim() && clientId?.trim() && clientSecret?.trim()) {
+        const { verifyIssuer, clearOIDCCache } = require("../service/sso_service");
+        await verifyIssuer(issuer, clientId, clientSecret);
+        clearOIDCCache();
+      }
+
+      if (config.ssoEnabled != null) systemConfig.ssoEnabled = wantEnable;
+      if (config.ssoIssuer != null) systemConfig.ssoIssuer = issuer;
+      if (config.ssoClientId != null) systemConfig.ssoClientId = clientId;
+      if (config.ssoClientSecret != null) systemConfig.ssoClientSecret = clientSecret;
     }
     if (config.ssoOnlyMode != null) systemConfig.ssoOnlyMode = Boolean(config.ssoOnlyMode);
     if (config.ssoAutoRedirect != null) systemConfig.ssoAutoRedirect = Boolean(config.ssoAutoRedirect);
@@ -98,25 +115,6 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
         throw new Error("SSO icon URL must use http(s) protocol or be a relative path");
       }
       systemConfig.ssoIconUrl = iconUrl;
-    }
-    if (config.ssoIssuer != null) {
-      const issuer = String(config.ssoIssuer);
-      if (issuer && !issuer.startsWith("https://") && !issuer.startsWith("http://")) {
-        throw new Error("SSO Issuer URL must use http(s) protocol");
-      }
-      systemConfig.ssoIssuer = issuer;
-      const { clearOIDCCache } = require("../service/sso_service");
-      clearOIDCCache();
-    }
-    if (config.ssoClientId != null) {
-      systemConfig.ssoClientId = String(config.ssoClientId);
-      const { clearOIDCCache } = require("../service/sso_service");
-      clearOIDCCache();
-    }
-    if (config.ssoClientSecret != null) {
-      systemConfig.ssoClientSecret = String(config.ssoClientSecret);
-      const { clearOIDCCache } = require("../service/sso_service");
-      clearOIDCCache();
     }
     if (config.ssoCallbackUrl != null) {
       const cbUrl = String(config.ssoCallbackUrl);

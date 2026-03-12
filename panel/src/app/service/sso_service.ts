@@ -37,6 +37,16 @@ export function clearOIDCCache() {
   cachedIssuer = "";
 }
 
+export async function verifyIssuer(issuer: string, clientId: string, clientSecret: string): Promise<void> {
+  try {
+    const issuerUrl = new URL(issuer);
+    await oidc.discovery(issuerUrl, clientId, clientSecret);
+  } catch (err: any) {
+    logger.error("[SSO] Issuer verification failed: " + err.message);
+    throw new Error(`SSO Issuer verification failed: unable to reach ${issuer}/.well-known/openid-configuration`);
+  }
+}
+
 export function generateState(): string {
   return crypto.randomBytes(32).toString("hex");
 }
@@ -65,7 +75,7 @@ export async function buildAuthorizationUrl(
 
   const url = oidc.buildAuthorizationUrl(config, {
     redirect_uri: callbackUrl,
-    scope: "openid profile email",
+    scope: "openid profile",
     state,
     nonce,
     code_challenge: codeChallenge,
