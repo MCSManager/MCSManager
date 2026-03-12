@@ -260,7 +260,9 @@ const formDataOrigin: EditUserInfo = {
   apiKey: "",
   isInit: false,
   secret: "",
-  open2FA: false
+  open2FA: false,
+  ssoSub: "",
+  ssoBound: false
 };
 
 const formRef = ref<FormInstance>();
