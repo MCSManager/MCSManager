@@ -49,6 +49,8 @@ class UserSubsystem {
     if (config.apiKey != null) instance.apiKey = config.apiKey;
     if (config.secret != null) instance.secret = String(config.secret);
     if (config.open2FA != null) instance.open2FA = Boolean(config.open2FA);
+    if (config.ssoSub != null) instance.ssoSub = String(config.ssoSub);
+    if (config.ssoBound != null) instance.ssoBound = Boolean(config.ssoBound);
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.passWord) {
       instance.passWordType = UserPassWordType.bcrypt;
@@ -165,6 +167,42 @@ class UserSubsystem {
       this.objects.delete(uuid);
       await Storage.getStorage().delete("User", uuid);
     }
+  }
+
+  getUserBySsoSub(ssoSub: string): User | null {
+    for (const [, user] of this.objects) {
+      if (user.ssoSub && user.ssoSub === ssoSub) return user;
+    }
+    return null;
+  }
+
+  async unbindSso(uuid: string) {
+    const instance = this.getInstance(uuid);
+    if (!instance) return;
+    instance.ssoSub = "";
+    instance.ssoBound = false;
+    await Storage.getStorage().store("User", uuid, instance);
+  }
+
+  async unbindAllSso(): Promise<number> {
+    let count = 0;
+    for (const [uuid, user] of this.objects) {
+      if (user.ssoBound || user.ssoSub) {
+        user.ssoSub = "";
+        user.ssoBound = false;
+        await Storage.getStorage().store("User", uuid, user);
+        count++;
+      }
+    }
+    return count;
+  }
+
+  async bindSso(uuid: string, ssoSub: string) {
+    const instance = this.getInstance(uuid);
+    if (!instance) throw new Error("User not found");
+    instance.ssoSub = ssoSub;
+    instance.ssoBound = true;
+    await Storage.getStorage().store("User", uuid, instance);
   }
 
   getQueryWrapper() {
