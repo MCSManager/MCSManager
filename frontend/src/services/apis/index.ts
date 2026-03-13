@@ -34,12 +34,12 @@ export const panelStatus = useDefineApi<any, PanelStatus>({
 
 export const loginUser = useDefineApi<
   | {
-      // Post
-      data: {
-        username: string;
-        password: string;
-      };
-    }
+    // Post
+    data: {
+      username: string;
+      password: string;
+    };
+  }
   | undefined,
   // Response
   string
@@ -111,8 +111,8 @@ export const settingInfo = useDefineApi<any, Settings>({
 
 export const setSettingInfo = useDefineApi<
   | {
-      data: Partial<Settings>;
-    }
+    data: Partial<Settings>;
+  }
   | undefined,
   string
 >({
@@ -249,4 +249,48 @@ export const connectNode = useDefineApi<
 >({
   url: "/api/service/link_remote_service",
   method: "GET"
+});
+
+export interface SsoPublicConfig {
+  enabled: boolean;
+  onlyMode: boolean;
+  autoRedirect: boolean;
+  providerName: string;
+  iconUrl: string;
+}
+
+export const ssoConfig = useDefineApi<any, SsoPublicConfig | null>({
+  url: "/api/auth/sso/config",
+  method: "GET"
+});
+
+export const ssoBindLogin = useDefineApi<
+  {
+    data: {
+      username: string;
+      password: string;
+      code?: string;
+    };
+  },
+  string
+>({
+  url: "/api/auth/sso/bind",
+  method: "POST"
+});
+
+export const ssoBindCurrent = useDefineApi<any, boolean>({
+  url: "/api/auth/sso/bind-current",
+  method: "POST"
+});
+
+export const ssoUnbind = useDefineApi<
+  {
+    data: {
+      uuid: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth/sso/unbind",
+  method: "PUT"
 });

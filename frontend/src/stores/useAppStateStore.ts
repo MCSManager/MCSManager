@@ -25,7 +25,9 @@ export const useAppStateStore = createGlobalState(() => {
       allowUsePreset: false,
       businessMode: false,
       businessId: "",
-      allowChangeCmd: false
+      allowChangeCmd: false,
+      ssoEnabled: false,
+      ssoOnlyMode: false
     }
   });
 

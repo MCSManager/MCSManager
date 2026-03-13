@@ -26,6 +26,8 @@ export interface IUser {
   passWordType?: number;
   secret?: string;
   open2FA?: boolean;
+  ssoSub?: string;
+  ssoBound?: boolean;
 }
 
 export interface ICompleteUser {

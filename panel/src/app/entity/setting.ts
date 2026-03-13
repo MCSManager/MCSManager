@@ -67,6 +67,26 @@ export default class SystemConfig {
   registerCode = "";
   // -----
 
+  // SSO / OpenID Connect / OAuth 2.0
+  ssoEnabled = false;
+  ssoType: "oidc" | "oauth2" = "oidc";
+  ssoOnlyMode = false;
+  ssoAutoRedirect = false;
+  ssoProviderName = "";
+  ssoIconUrl = "";
+  // OIDC-specific
+  ssoIssuer = "";
+  // OAuth 2.0-specific
+  ssoAuthorizeUrl = "";
+  ssoTokenUrl = "";
+  ssoUserinfoUrl = "";
+  ssoUserIdField = "id";
+  ssoScopes = "";
+  // Shared
+  ssoClientId = "";
+  ssoClientSecret = "";
+  ssoCallbackUrl = "";
+
   // Whether to enable SSL/TLS (HTTPS)
   ssl = false;
   // SSL certificate file path (.pem)

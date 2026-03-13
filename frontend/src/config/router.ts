@@ -4,6 +4,7 @@ import type { LoginUserInfo } from "@/types/user";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
+import SsoBindLogin from "@/views/SsoBindLogin.vue";
 import {
   createRouter,
   createWebHashHistory,
@@ -306,6 +307,15 @@ const originRouterConfig: RouterConfig[] = [
     }
   },
   {
+    path: "/sso/bind",
+    name: t("TXT_CODE_SSO_BIND_TITLE"),
+    component: SsoBindLogin,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
+  {
     path: "/shop",
     name: t("TXT_CODE_5a408a5e"),
     component: LayoutContainer,
@@ -345,8 +355,8 @@ const router = createRouter({
   routes: routersConfigOptimize(originRouterConfig) as RouteRecordRaw[]
 });
 
-router.beforeEach((to, from, next) => {
-  const { state } = useAppStateStore();
+router.beforeEach(async (to, from, next) => {
+  const { state, updateUserInfo, isAdmin } = useAppStateStore();
 
   const userPermission = state.userInfo?.permission ?? 0;
   const toPagePermission = Number(to.meta.permission ?? 0);
@@ -375,8 +385,18 @@ router.beforeEach((to, from, next) => {
     return next(to.meta.redirect as string);
   }
 
+  if (toRoutePath === "/sso/callback") {
+    try {
+      await updateUserInfo();
+      return next(isAdmin.value ? "/" : "/customer");
+    } catch {
+      return next("/login");
+    }
+  }
+
   if (
     toRoutePath.includes("_open_page") ||
+    toRoutePath.startsWith("/sso/") ||
     ["/shop", "/login", "/install", "/404"].includes(toRoutePath)
   ) {
     return next();

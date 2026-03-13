@@ -21,6 +21,7 @@ export enum OperationLoggerAction {
   UserDelete = "user_delete",
   UserConfigChange = "user_config_change",
   UserLogin = "user_login",
+  SsoUnbind = "sso_unbind",
   SystemConfigChange = "system_config_change"
 }
 
@@ -138,6 +139,12 @@ export type UserConfigChangeOptions = {
 export type UserLoginOptions = {
   type: "user_login";
   login_result: boolean;
+  login_method?: string;
+} & GlobalGeneralOptions;
+
+export type SsoUnbindOptions = {
+  type: "sso_unbind";
+  target_user_name: string;
 } & GlobalGeneralOptions;
 
 export type SystemConfigChangeOptions = {
@@ -167,8 +174,9 @@ export type OperationLoggerItem =
   | UserDeleteOptions
   | UserConfigChangeOptions
   | UserLoginOptions
+  | SsoUnbindOptions
   | SystemConfigChangeOptions;
 
 export type OperationLoggerItemPayload = {
-  [T in OperationLoggerItem["type"]]: Omit<Extract<OperationLoggerItem, { type: T }>, "type">;
+  [T in OperationLoggerItem["type"]]: Omit<Extract<OperationLoggerItem, { type: T }>, "type">
 };
