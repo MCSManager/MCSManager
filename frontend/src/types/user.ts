@@ -18,6 +18,8 @@ export interface BaseUserInfo {
   isInit: boolean;
   secret: string;
   open2FA: boolean;
+  ssoSub: string;
+  ssoBound: boolean;
 }
 
 export interface EditUserInfo extends BaseUserInfo {

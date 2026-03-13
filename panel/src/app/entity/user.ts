@@ -25,6 +25,8 @@ export class User implements IUser {
   isInit: boolean = false;
   secret = "";
   open2FA = false;
+  ssoSub = "";
+  ssoBound = false;
 }
 
 export enum ROLE {

@@ -22,6 +22,10 @@ router.post(
   permission({ token: false, level: null }),
   validator({ body: { username: String, password: String } }),
   async (ctx: Koa.ParameterizedContext) => {
+    if (systemConfig?.ssoEnabled && systemConfig?.ssoOnlyMode) {
+      ctx.body = new Error("Password login is disabled. Please use SSO.");
+      return;
+    }
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
     const code = String(ctx.request.body.code);
@@ -92,7 +96,9 @@ router.all(
         businessMode: systemConfig?.businessMode || false,
         businessId: systemConfig?.businessId || null,
         allowChangeCmd: systemConfig?.allowChangeCmd || false,
-        panelId: systemConfig?.panelId || null
+        panelId: systemConfig?.panelId || null,
+        ssoEnabled: systemConfig?.ssoEnabled || false,
+        ssoOnlyMode: systemConfig?.ssoOnlyMode || false
       } as Partial<SystemConfig>
     };
   }
