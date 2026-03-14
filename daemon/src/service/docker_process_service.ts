@@ -351,12 +351,20 @@ export class SetupDockerContainer extends AsyncTask {
   }
 
   public async onStop() {
+    const containerId = this.container?.id;
+
     try {
       await this.container?.kill();
     } catch (error) {}
     try {
       await this.container?.remove();
     } catch (error) {}
+
+    if (containerId) {
+      try {
+        await NetworkLimitService.getInstance().clearBandwidthLimit(containerId);
+      } catch (error) {}
+    }
   }
 
   public getContainer() {

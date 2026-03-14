@@ -26,12 +26,16 @@ interface LinuxBandwidthState {
 }
 
 export class NetworkLimitService {
+  private static readonly STATS_WARNED_CONTAINERS_LIMIT = 512;
   private static instance: NetworkLimitService;
   private docker: Dockerode;
   private activeLimits: Map<string, BandwidthLimit> = new Map();
   private activeStates: Map<string, LinuxBandwidthState> = new Map();
   private linuxEnvironmentReady = false;
+  private linuxEnvironmentUnsupportedReason?: string;
+  private linuxEnvironmentWarningEmitted = false;
   private statsWarnedContainers = new Set<string>();
+  private statsWarnedOrder: string[] = [];
 
   private constructor() {
     this.docker = new DefaultDocker();
@@ -112,6 +116,7 @@ export class NetworkLimitService {
     const state = this.activeStates.get(containerId);
     if (!state) {
       this.activeLimits.delete(containerId);
+      this.clearStatsWarning(containerId);
       return;
     }
 
@@ -126,6 +131,7 @@ export class NetworkLimitService {
     await Promise.all(cleanupTasks.map((task) => task.catch(() => undefined)));
     this.activeStates.delete(containerId);
     this.activeLimits.delete(containerId);
+    this.clearStatsWarning(containerId);
   }
 
   public getBandwidthLimit(containerId: string): BandwidthLimit | undefined {
@@ -133,7 +139,11 @@ export class NetworkLimitService {
   }
 
   public async getContainerNetworkStats(containerId: string): Promise<ContainerNetworkStats | null> {
-    await this.ensureLinuxEnvironment();
+    const linuxSupported = await this.isLinuxEnvironmentSupported();
+    if (!linuxSupported) {
+      return null;
+    }
+
     let pid: number | undefined;
     let interfaceNames: string[] = [];
 
@@ -174,8 +184,7 @@ export class NetworkLimitService {
         source: "namespace"
       };
     } catch (error) {
-      if (!this.statsWarnedContainers.has(containerId)) {
-        this.statsWarnedContainers.add(containerId);
+      if (this.markStatsWarning(containerId)) {
         logger.warn(
           `[NetworkLimitService] Failed to read container network counters for ${containerId} ` +
             `(pid=${pid ?? "unknown"}, interfaces=${interfaceNames.join(",") || "unknown"}), fallback to Docker API stats. ` +
@@ -193,15 +202,66 @@ export class NetworkLimitService {
 
   private async ensureLinuxEnvironment() {
     if (this.linuxEnvironmentReady) {
+      return true;
+    }
+    if (this.linuxEnvironmentUnsupportedReason) {
+      throw new Error(this.linuxEnvironmentUnsupportedReason);
+    }
+
+    try {
+      if (process.platform !== "linux") {
+        throw new Error("Docker traffic limiting is only supported on Linux");
+      }
+      await this.execCommand("command -v tc >/dev/null 2>&1");
+      await this.execCommand("command -v ip >/dev/null 2>&1");
+      await this.execCommand("command -v nsenter >/dev/null 2>&1");
+      this.linuxEnvironmentReady = true;
+      return true;
+    } catch (error) {
+      this.linuxEnvironmentUnsupportedReason = this.getErrorMessage(error);
+      if (!this.linuxEnvironmentWarningEmitted) {
+        this.linuxEnvironmentWarningEmitted = true;
+        logger.warn(
+          `[NetworkLimitService] Linux network limiter unavailable, namespace stats disabled. ${this.linuxEnvironmentUnsupportedReason}`
+        );
+      }
+      throw new Error(this.linuxEnvironmentUnsupportedReason);
+    }
+  }
+
+  public async isLinuxEnvironmentSupported(): Promise<boolean> {
+    try {
+      await this.ensureLinuxEnvironment();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  public clearStatsWarning(containerId: string): void {
+    if (!this.statsWarnedContainers.has(containerId)) {
       return;
     }
-    if (process.platform !== "linux") {
-      throw new Error("Docker traffic limiting is only supported on Linux");
+    this.statsWarnedContainers.delete(containerId);
+    this.statsWarnedOrder = this.statsWarnedOrder.filter((id) => id !== containerId);
+  }
+
+  private markStatsWarning(containerId: string): boolean {
+    if (this.statsWarnedContainers.has(containerId)) {
+      return false;
     }
-    await this.execCommand("command -v tc >/dev/null 2>&1");
-    await this.execCommand("command -v ip >/dev/null 2>&1");
-    await this.execCommand("command -v nsenter >/dev/null 2>&1");
-    this.linuxEnvironmentReady = true;
+
+    this.statsWarnedContainers.add(containerId);
+    this.statsWarnedOrder.push(containerId);
+
+    if (this.statsWarnedOrder.length > NetworkLimitService.STATS_WARNED_CONTAINERS_LIMIT) {
+      const oldestContainerId = this.statsWarnedOrder.shift();
+      if (oldestContainerId) {
+        this.statsWarnedContainers.delete(oldestContainerId);
+      }
+    }
+
+    return true;
   }
 
   private async inspectContainer(containerId: string) {

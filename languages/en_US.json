@@ -3341,5 +3341,7 @@
   "TXT_CODE_network_upload_limit_placeholder": "e.g., 1024 (1 MB/s)",
   "TXT_CODE_network_download_limit": "Download Speed Limit",
   "TXT_CODE_network_download_limit_help": "Set container download bandwidth limit, 0 means unlimited",
-  "TXT_CODE_network_download_limit_placeholder": "e.g., 2048 (2 MB/s)"
+  "TXT_CODE_network_download_limit_placeholder": "e.g., 2048 (2 MB/s)",
+  "TXT_CODE_network_bandwidth": "Bandwidth",
+  "TXT_CODE_network_traffic": "Traffic"
 }

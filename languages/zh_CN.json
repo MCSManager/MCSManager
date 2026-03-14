@@ -3341,5 +3341,7 @@
   "TXT_CODE_network_upload_limit_placeholder": "例如：1024 (1 MB/s)",
   "TXT_CODE_network_download_limit": "下载速度限制",
   "TXT_CODE_network_download_limit_help": "设置容器下载带宽限制，0 表示不限制",
-  "TXT_CODE_network_download_limit_placeholder": "例如：2048 (2 MB/s)"
+  "TXT_CODE_network_download_limit_placeholder": "例如：2048 (2 MB/s)",
+  "TXT_CODE_network_bandwidth": "带宽",
+  "TXT_CODE_network_traffic": "流量"
 }

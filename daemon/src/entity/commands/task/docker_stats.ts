@@ -130,8 +130,14 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let networkStatsSource: "namespace" | "docker" | undefined = undefined;
 
       try {
-        const networkStats =
-          await DockerStatsTask.networkLimitService.getContainerNetworkStats(containerId);
+        let networkStats = null;
+        const linuxNetworkStatsSupported =
+          await DockerStatsTask.networkLimitService.isLinuxEnvironmentSupported();
+        if (linuxNetworkStatsSupported) {
+          networkStats = await DockerStatsTask.networkLimitService.getContainerNetworkStats(
+            containerId
+          );
+        }
         rxBytes = networkStats?.rxBytes;
         txBytes = networkStats?.txBytes;
         networkInterfaces = networkStats?.interfaceNames;
