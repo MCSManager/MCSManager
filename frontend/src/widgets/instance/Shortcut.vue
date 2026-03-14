@@ -364,18 +364,6 @@ const instanceOperations = computed(() =>
                 ↑{{ formatNetworkSpeed(instanceInfo?.info.txRate) }}
               </span>
             </div>
-            <div
-              v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
-              class="instance-info-line"
-            >
-              <span class="title">
-                {{ t("TXT_CODE_network_traffic") }}:
-              </span>
-              <span class="value">
-                ↓{{ formatTrafficUsage(instanceInfo?.info.rxBytes) }}
-                ↑{{ formatTrafficUsage(instanceInfo?.info.txBytes) }}
-              </span>
-            </div>
           </template>
           <div v-if="instanceInfo?.info.mcPingOnline" class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_e4dce83f") }}:</span>
