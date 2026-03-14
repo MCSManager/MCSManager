@@ -98,6 +98,10 @@ declare global {
     capDrop?: string[];
     devices?: string[];
     privileged?: boolean;
+    /** Upload speed limit in KB/s */
+    uploadSpeedLimit?: number;
+    /** Download speed limit in KB/s */
+    downloadSpeedLimit?: number;
   }
 
   interface IPanelResponseProtocol {

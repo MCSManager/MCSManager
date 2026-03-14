@@ -15,6 +15,7 @@ import { $t } from "../i18n";
 import { AsyncTask } from "./async_task_service";
 import logger from "./log";
 import InstanceSubsystem from "./system_instance";
+import { NetworkLimitService } from "./network_limit_service";
 
 type PublicPortArray = {
   [key: string]: { HostPort: string }[];
@@ -331,17 +332,39 @@ export class SetupDockerContainer extends AsyncTask {
 
     await this.container.start();
 
+    // Apply bandwidth limits if configured
+    if (dockerConfig && (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit)) {
+      try {
+        const networkLimitService = NetworkLimitService.getInstance();
+        await networkLimitService.setBandwidthLimit(this.container.id, {
+          uploadLimit: dockerConfig.uploadSpeedLimit,
+          downloadLimit: dockerConfig.downloadSpeedLimit
+        });
+        logger.info(`Applied bandwidth limits to container ${this.container.id}`);
+      } catch (error) {
+        logger.error(`Failed to apply bandwidth limits:`, error);
+      }
+    }
+
     // Listen to events
     this.container.wait(() => this.stop());
   }
 
   public async onStop() {
+    const containerId = this.container?.id;
+
     try {
       await this.container?.kill();
     } catch (error) {}
     try {
       await this.container?.remove();
     } catch (error) {}
+
+    if (containerId) {
+      try {
+        await NetworkLimitService.getInstance().clearBandwidthLimit(containerId);
+      } catch (error) {}
+    }
   }
 
   public getContainer() {

@@ -65,6 +65,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     updateCommandImage: "",
     containerName: "",
     image: "",
+    uploadSpeedLimit: 0,
+    downloadSpeedLimit: 0,
     ports: [],
     extraVolumes: [],
     capAdd: [],

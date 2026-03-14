@@ -66,6 +66,7 @@ export function useTerminal() {
   const terminal = ref<Terminal>();
   const isConnect = ref<boolean>(false);
   const socketAddress = ref("");
+  let isManualDisconnect = false;
 
   const isGlobalTerminal = computed(() => {
     return state.value?.config.nickname === GLOBAL_INSTANCE_NAME;
@@ -83,6 +84,7 @@ export function useTerminal() {
 
   const execute = async (config: UseTerminalParams) => {
     isReady.value = false;
+    isManualDisconnect = false;
 
     if (socket) {
       return socket;
@@ -153,7 +155,9 @@ export function useTerminal() {
     });
 
     socket.on("disconnect", () => {
-      console.error("[Socket.io] disconnect:", addr);
+      if (!isManualDisconnect) {
+        console.warn("[Socket.io] disconnect:", addr);
+      }
       isConnect.value = false;
       events.emit("disconnect");
     });
@@ -366,6 +370,7 @@ export function useTerminal() {
     clearInterval(fitAddonTask);
     clearInterval(statusQueryTask);
     events.removeAllListeners();
+    isManualDisconnect = true;
     socket?.disconnect();
     socket?.removeAllListeners();
   });
