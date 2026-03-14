@@ -39,6 +39,7 @@
     "nanoid": "^3.3.8",
     "node-schedule": "^2.0.0",
     "open": "^8.4.0",
+    "openid-client": "^6.8.2",
     "os-utils": "0.0.14",
     "otplib": "^12.0.1",
     "qrcode": "^1.5.3",
