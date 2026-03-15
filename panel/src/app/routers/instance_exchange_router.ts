@@ -11,7 +11,8 @@ import {
   getNodeStatus,
   parseUserName,
   queryInstanceByUserId,
-  RequestAction
+  RequestAction,
+  updateInstanceDetail
 } from "../service/exchange_service";
 import { logger } from "../service/log";
 import { loginSuccess } from "../service/passport_service";
@@ -34,6 +35,10 @@ router.post(
       logger.info("Get exchange request, action: %s, params: %j", requestAction, params);
       if (requestAction === RequestAction.PING) {
         ctx.body = await getNodeStatus(params);
+        return;
+      }
+      if (requestAction === RequestAction.UPDATE_INSTANCE) {
+        ctx.body = await updateInstanceDetail(params);
         return;
       }
       if ([RequestAction.RENEW, RequestAction.BUY].includes(requestAction)) {

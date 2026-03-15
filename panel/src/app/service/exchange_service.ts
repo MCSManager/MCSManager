@@ -66,13 +66,20 @@ export interface IBuyRequestProtocol {
   instance_id?: string;
 }
 
+export interface IUpdateInstanceConfigRequest {
+  daemon_id: string;
+  instance_id: string;
+  new_config: any;
+}
+
 export enum RequestAction {
   BUY = "buy",
   RENEW = "renew",
   QUERY_INSTANCE = "query_instance",
   PING = "ping",
   SSO_TOKEN = "sso_token",
-  GET_ALL_DAEMON = "get_all_daemon"
+  GET_ALL_DAEMON = "get_all_daemon",
+  UPDATE_INSTANCE = "update_instance"
 }
 
 export interface IPortInfo {
@@ -168,6 +175,26 @@ function formatInstanceData(
 export function parseUserName(t?: string) {
   if (!t || typeof t !== "string") return "";
   return toText(t) ?? "";
+}
+
+export async function updateInstanceDetail(params: IUpdateInstanceConfigRequest) {
+  const daemonId = toText(params.daemon_id) ?? "";
+  const instanceId = toText(params.instance_id) ?? "";
+  const newConfig = params.new_config ?? {};
+  if (!daemonId || !instanceId || typeof newConfig !== "object" || !newConfig) {
+    throw new Error(t("TXT_CODE_cb08d342"));
+  }
+  const remoteService = RemoteServiceSubsystem.getInstance(daemonId || "");
+  if (!remoteService?.available) {
+    throw new Error(t("TXT_CODE_bed32084"));
+  }
+  const remoteRequest = new RemoteRequest(remoteService);
+  await remoteRequest.request("instance/update", {
+    instanceUuid: instanceId,
+    config: newConfig
+  });
+
+  return true;
 }
 
 export async function buyOrRenewInstance(
