@@ -1423,6 +1423,42 @@ defineExpose({
                   />
                 </a-form-item>
               </a-col>
+              <a-col :xs="24" :lg="8" :offset="0">
+                <a-form-item>
+                  <a-typography-title :level="5">{{ t("TXT_CODE_network_upload_limit") }}</a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip :title="t('TXT_CODE_network_upload_limit_help')" placement="top">
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{ t("TXT_CODE_network_upload_limit_help") }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <a-input
+                    v-model:value="formData.instance.config.docker.uploadSpeedLimit"
+                    :allow-clear="true"
+                    :placeholder="t('TXT_CODE_network_upload_limit_placeholder')"
+                    suffix="KB/s"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :xs="24" :lg="8" :offset="0">
+                <a-form-item>
+                  <a-typography-title :level="5">{{ t("TXT_CODE_network_download_limit") }}</a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip :title="t('TXT_CODE_network_download_limit_help')" placement="top">
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{ t("TXT_CODE_network_download_limit_help") }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <a-input
+                    v-model:value="formData.instance.config.docker.downloadSpeedLimit"
+                    :allow-clear="true"
+                    :placeholder="t('TXT_CODE_network_download_limit_placeholder')"
+                    suffix="KB/s"
+                  />
+                </a-form-item>
+              </a-col>
             </a-row>
           </a-tab-pane>
         </a-tabs>

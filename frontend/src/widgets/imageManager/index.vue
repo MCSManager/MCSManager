@@ -241,9 +241,8 @@ onMounted(async () => {
                       text: record.Id
                     }"
                     :ellipsis="{ rows: 1, expandable: false }"
-                  >
-                    {{ isPhone ? "" : record.Id }}
-                  </a-typography-paragraph>
+                    :content="isPhone ? '' : record.Id"
+                  />
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">
@@ -292,9 +291,8 @@ onMounted(async () => {
                       text: record.Id
                     }"
                     :ellipsis="{ rows: 1, expandable: false }"
-                  >
-                    {{ isPhone ? "" : record.Id }}
-                  </a-typography-paragraph>
+                    :content="isPhone ? '' : record.Id"
+                  />
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button class="mr-8" size="large" @click="showDetail(record)">
