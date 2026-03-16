@@ -14,8 +14,8 @@ import { IInstanceProcess } from "../entity/instance/interface";
 import { $t } from "../i18n";
 import { AsyncTask } from "./async_task_service";
 import logger from "./log";
-import InstanceSubsystem from "./system_instance";
 import { NetworkLimitService } from "./network_limit_service";
+import InstanceSubsystem from "./system_instance";
 
 type PublicPortArray = {
   [key: string]: { HostPort: string }[];
@@ -341,8 +341,17 @@ export class SetupDockerContainer extends AsyncTask {
           downloadLimit: dockerConfig.downloadSpeedLimit
         });
         logger.info(`Applied bandwidth limits to container ${this.container.id}`);
-      } catch (error) {
+      } catch (error: any) {
+        instance.println(
+          "ERROR",
+          $t(
+            "网络限速功能启用失败！请确保面板能读取到系统命令或网卡信息，比如 tc、ip、modprobe、ifb 等。"
+          )
+        );
+        instance.println("ERROR", $t("错误信息：") + error.message);
         logger.error(`Failed to apply bandwidth limits:`, error);
+        this.container.kill().catch(() => {});
+        this.container.remove().catch(() => {});
       }
     }
 
