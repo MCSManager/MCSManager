@@ -152,6 +152,8 @@ export class DockerManager {
         armv7l: "arm",
         armv6l: "arm",
         arm: "arm",
+        loong64: "loong64",
+        loongarch64: "loong64",
         ppc64le: "ppc64le",
         s390x: "s390x",
         i386: "386",
@@ -170,7 +172,8 @@ export class DockerManager {
       const archMap: Record<string, string> = {
         x64: "amd64",
         arm64: "arm64",
-        arm: "arm"
+        arm: "arm",
+        loong64: "loong64"
       };
       const platformArch = archMap[nodeArch] || nodeArch;
       return [`${osType}/${platformArch}`];
