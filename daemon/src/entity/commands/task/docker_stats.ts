@@ -1,12 +1,10 @@
 import Dockerode from "dockerode";
-import { NetworkLimitService } from "../../../service/network_limit_service";
 import { DefaultDocker } from "../../../service/docker_service";
 import Instance from "../../instance/instance";
 import { ILifeCycleTask } from "../../instance/life_cycle";
 
 export default class DockerStatsTask implements ILifeCycleTask {
   private static defaultDocker = new DefaultDocker();
-  private static networkLimitService = NetworkLimitService.getInstance();
 
   public status: number = 0;
   public name: string = "DockerStats";
@@ -127,28 +125,14 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let rxRate: number | undefined = undefined;
       let txRate: number | undefined = undefined;
       let networkInterfaces: string[] | undefined = undefined;
-      let networkStatsSource: "namespace" | "docker" | undefined = undefined;
+      let networkStatsSource: "docker" | undefined = undefined;
 
       try {
-        let networkStats = null;
-        const linuxNetworkStatsSupported =
-          await DockerStatsTask.networkLimitService.isLinuxEnvironmentSupported();
-        if (linuxNetworkStatsSupported) {
-          networkStats = await DockerStatsTask.networkLimitService.getContainerNetworkStats(
-            containerId
-          );
-        }
-        rxBytes = networkStats?.rxBytes;
-        txBytes = networkStats?.txBytes;
-        networkInterfaces = networkStats?.interfaceNames;
-        networkStatsSource = networkStats?.source;
-        if (rxBytes == null || txBytes == null) {
-          const fallbackStats = this.getDockerNetworkCumulative(stats.networks);
-          rxBytes = fallbackStats.rxBytes;
-          txBytes = fallbackStats.txBytes;
-          networkInterfaces = fallbackStats.interfaceNames;
-          networkStatsSource = fallbackStats.source;
-        }
+        const networkStats = this.getDockerNetworkCumulative(stats.networks);
+        rxBytes = networkStats.rxBytes;
+        txBytes = networkStats.txBytes;
+        networkInterfaces = networkStats.interfaceNames;
+        networkStatsSource = networkStats.source;
 
         const networkRates = this.calculateRealTimeRate({ rxBytes, txBytes }, "network");
         rxRate = networkRates.rxBytes;

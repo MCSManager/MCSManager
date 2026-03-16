@@ -11,13 +11,6 @@ export interface BandwidthLimit {
   downloadLimit?: number;
 }
 
-export interface ContainerNetworkStats {
-  rxBytes?: number;
-  txBytes?: number;
-  interfaceNames?: string[];
-  source?: "namespace" | "docker";
-}
-
 interface LinuxBandwidthState {
   pid: number;
   interfaceName: string;
@@ -26,16 +19,12 @@ interface LinuxBandwidthState {
 }
 
 export class NetworkLimitService {
-  private static readonly STATS_WARNED_CONTAINERS_LIMIT = 512;
   private static instance: NetworkLimitService;
   private docker: Dockerode;
-  private activeLimits: Map<string, BandwidthLimit> = new Map();
   private activeStates: Map<string, LinuxBandwidthState> = new Map();
   private linuxEnvironmentReady = false;
   private linuxEnvironmentUnsupportedReason?: string;
   private linuxEnvironmentWarningEmitted = false;
-  private statsWarnedContainers = new Set<string>();
-  private statsWarnedOrder: string[] = [];
 
   private constructor() {
     this.docker = new DefaultDocker();
@@ -87,7 +76,6 @@ export class NetworkLimitService {
         await this.verifyUploadLimit(pid, interfaceName);
       }
 
-      this.activeLimits.set(containerId, normalizedLimit);
       this.activeStates.set(containerId, state);
       logger.info(
         `[NetworkLimitService] Applied Linux tc limits for ${containerId} on ${interfaceName} ` +
@@ -115,8 +103,6 @@ export class NetworkLimitService {
   public async clearBandwidthLimit(containerId: string): Promise<void> {
     const state = this.activeStates.get(containerId);
     if (!state) {
-      this.activeLimits.delete(containerId);
-      this.clearStatsWarning(containerId);
       return;
     }
 
@@ -130,69 +116,6 @@ export class NetworkLimitService {
 
     await Promise.all(cleanupTasks.map((task) => task.catch(() => undefined)));
     this.activeStates.delete(containerId);
-    this.activeLimits.delete(containerId);
-    this.clearStatsWarning(containerId);
-  }
-
-  public getBandwidthLimit(containerId: string): BandwidthLimit | undefined {
-    return this.activeLimits.get(containerId);
-  }
-
-  public async getContainerNetworkStats(containerId: string): Promise<ContainerNetworkStats | null> {
-    const linuxSupported = await this.isLinuxEnvironmentSupported();
-    if (!linuxSupported) {
-      return null;
-    }
-
-    let pid: number | undefined;
-    let interfaceNames: string[] = [];
-
-    try {
-      const state = this.activeStates.get(containerId);
-      pid = state?.pid;
-
-      if (!pid) {
-        const inspect = await this.inspectContainer(containerId);
-        const networkMode = this.getNetworkMode(inspect);
-        if (networkMode === "none") return null;
-        this.ensureSupportedNetworkMode(networkMode);
-        pid = this.ensureContainerPid(inspect.State?.Pid);
-      }
-
-      interfaceNames = await this.resolveContainerInterfaceNames(pid);
-      if (!interfaceNames.length) {
-        throw new Error(`Unable to resolve container network interfaces for PID ${pid}`);
-      }
-
-      if (this.looksLikeHostNamespaceInterfaces(interfaceNames)) {
-        throw new Error(
-          `Detected host-like interfaces in namespace stats: ${interfaceNames.join(",")}`
-        );
-      }
-
-      let rxBytes = 0;
-      let txBytes = 0;
-      for (const interfaceName of interfaceNames) {
-        rxBytes += await this.readInterfaceCounter(pid, interfaceName, "rx_bytes");
-        txBytes += await this.readInterfaceCounter(pid, interfaceName, "tx_bytes");
-      }
-
-      return {
-        rxBytes,
-        txBytes,
-        interfaceNames,
-        source: "namespace"
-      };
-    } catch (error) {
-      if (this.markStatsWarning(containerId)) {
-        logger.warn(
-          `[NetworkLimitService] Failed to read container network counters for ${containerId} ` +
-            `(pid=${pid ?? "unknown"}, interfaces=${interfaceNames.join(",") || "unknown"}), fallback to Docker API stats. ` +
-            `Error: ${this.getErrorMessage(error)}`
-        );
-      }
-      return null;
-    }
   }
 
   private normalizeLimit(value?: number): number | undefined {
@@ -227,41 +150,6 @@ export class NetworkLimitService {
       }
       throw new Error(this.linuxEnvironmentUnsupportedReason);
     }
-  }
-
-  public async isLinuxEnvironmentSupported(): Promise<boolean> {
-    try {
-      await this.ensureLinuxEnvironment();
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  public clearStatsWarning(containerId: string): void {
-    if (!this.statsWarnedContainers.has(containerId)) {
-      return;
-    }
-    this.statsWarnedContainers.delete(containerId);
-    this.statsWarnedOrder = this.statsWarnedOrder.filter((id) => id !== containerId);
-  }
-
-  private markStatsWarning(containerId: string): boolean {
-    if (this.statsWarnedContainers.has(containerId)) {
-      return false;
-    }
-
-    this.statsWarnedContainers.add(containerId);
-    this.statsWarnedOrder.push(containerId);
-
-    if (this.statsWarnedOrder.length > NetworkLimitService.STATS_WARNED_CONTAINERS_LIMIT) {
-      const oldestContainerId = this.statsWarnedOrder.shift();
-      if (oldestContainerId) {
-        this.statsWarnedContainers.delete(oldestContainerId);
-      }
-    }
-
-    return true;
   }
 
   private async inspectContainer(containerId: string) {
@@ -372,14 +260,6 @@ done`
     return /^[a-zA-Z0-9_.:-]+$/.test(interfaceName);
   }
 
-  private looksLikeHostNamespaceInterfaces(interfaceNames: string[]): boolean {
-    if (!interfaceNames.length) return false;
-    return interfaceNames.some((name) => {
-      if (name === "docker0") return true;
-      return /^(br-|veth|virbr|cni|flannel|kube-|cali|zt|tailscale)/.test(name);
-    });
-  }
-
   private ensureValidInterfaceName(interfaceName: string): string {
     if (!this.isValidInterfaceName(interfaceName)) {
       throw new Error(`Invalid interface name: ${interfaceName}`);
@@ -439,27 +319,6 @@ done`
       pid,
       `tc qdisc replace dev ${safeInterface} root tbf rate ${rateBitPerSecond}bit burst 32kbit latency 400ms`
     );
-  }
-
-  private async readInterfaceCounter(
-    pid: number,
-    interfaceName: string,
-    counterName: "rx_bytes" | "tx_bytes"
-  ): Promise<number> {
-    const safeInterface = this.ensureValidInterfaceName(interfaceName);
-    await this.execInNetworkNamespace(
-      pid,
-      `[ -r /sys/class/net/${safeInterface}/statistics/${counterName} ]`
-    );
-    const result = await this.execInNetworkNamespace(
-      pid,
-      `cat /sys/class/net/${safeInterface}/statistics/${counterName}`
-    );
-    const value = Number(result.stdout.trim());
-    if (!Number.isFinite(value) || value < 0) {
-      throw new Error(`Invalid ${counterName} value for ${safeInterface}: ${result.stdout.trim()}`);
-    }
-    return value;
   }
 
   private async deleteQdisc(pid: number, interfaceName: string, parent: "root" | "ingress") {
