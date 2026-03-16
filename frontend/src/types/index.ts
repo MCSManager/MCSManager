@@ -36,7 +36,7 @@ export interface InstanceRuntimeInfo {
   rxRate?: number;
   txRate?: number;
   networkInterfaces?: string[];
-  networkStatsSource?: "namespace" | "docker";
+  networkStatsSource?: "docker";
   readBytes?: number;
   writeBytes?: number;
   memoryUsage?: number;

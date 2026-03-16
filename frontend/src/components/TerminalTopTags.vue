@@ -20,7 +20,7 @@ interface TerminalRuntimeInfo {
   rxRate?: number;
   txRate?: number;
   networkInterfaces?: string[];
-  networkStatsSource?: "namespace" | "docker";
+  networkStatsSource?: "docker";
   storageUsage?: number;
   storageLimit?: number;
 }
