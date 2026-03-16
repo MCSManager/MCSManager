@@ -1,3 +1,33 @@
+/**
+ * Network Limit Service
+ *
+ * Applies per-container bandwidth limits (upload/download) on Linux using tc (traffic control)
+ * inside the container's network namespace. Optionally reads container network stats from the
+ * namespace when possible, with fallback to Docker API.
+ *
+ * Principle (flow):
+ *
+ *   setBandwidthLimit(containerId, limit)
+ *     1. Inspect container -> NetworkMode, State.Pid
+ *     2. resolveContainerInterfaceName(pid)
+ *         nsenter -t PID -n -> ip link show  (interfaces in container net ns only)
+ *         Pick eth0 or first non-lo, non-host-like interface
+ *     3. Apply tc inside container network namespace:
+ *         nsenter -t PID -n -> tc qdisc ... dev eth0
+ *         Ingress qdisc + police -> download limit; Root tbf qdisc -> upload limit
+ *
+ *   getContainerNetworkStats(containerId)
+ *     Resolve interfaces via ip link in net ns; read rx/tx from namespace or
+ *     fall back to Docker API if namespace stats look like host or read fails.
+ *
+ *   Host                          Container (net ns)
+ *   bridge (br-xxx) <--veth pair--> eth0  <- tc is applied here (inside container ns)
+ *
+ *   Important: nsenter -t PID -n joins only the network namespace; the mount namespace
+ *   remains the host. So /sys/class/net/ under the process is the host's; we must use
+ *   "ip link" to discover container interfaces (e.g. eth0), not /sys/class/net/*.
+ */
+
 import { exec } from "child_process";
 import { promisify } from "util";
 import Dockerode from "dockerode";
@@ -247,7 +277,7 @@ export class NetworkLimitService {
   }
 
   private markStatsWarning(containerId: string): boolean {
-    if (this.statsWarnedContainers.has(containerId)) {
+    if (!this.statsWarnedContainers.has(containerId)) {
       return false;
     }
 
@@ -317,29 +347,22 @@ export class NetworkLimitService {
     throw new Error("Container PID is unavailable, cannot configure tc rules");
   }
 
+  /**
+   * List interfaces in the container's network namespace using ip link (not /sys/class/net).
+   * nsenter -n only joins the network namespace; the mount namespace stays host, so /sys
+   * is the host's and enumerating /sys/class/net would yield host interfaces (br-, docker0,
+   * veth) instead of the container's eth0.
+   */
   private async resolveContainerInterfaceNames(pid: number): Promise<string[]> {
     const result = await this.execInNetworkNamespace(
       pid,
-      `for p in /sys/class/net/*; do
-name=$(basename "$p")
-if [ "$name" = "lo" ]; then
-  continue
-fi
-case "$name" in
-  bonding_masters|ifb*)
-    continue
-    ;;
-esac
-if [ -r "$p/statistics/rx_bytes" ] && [ -r "$p/statistics/tx_bytes" ]; then
-  echo "$name"
-fi
-done`
+      `ip -o link show 2>/dev/null | awk -F': ' 'NF>=2 {print \$2}' | cut -d'@' -f1`
     );
-    return result.stdout
+    const names = result.stdout
       .split(/\r?\n/)
-      .map((item) => item.trim())
-      .filter((item) => !!item)
-      .filter((item) => this.isValidInterfaceName(item));
+      .map((line) => line.trim())
+      .filter((name) => name && name !== "lo" && this.isValidInterfaceName(name));
+    return names.filter((name) => !this.isHostLikeInterface(name));
   }
 
   private async resolveContainerInterfaceName(pid: number): Promise<string> {
@@ -349,19 +372,12 @@ done`
     if (!interfaceName) {
       const diagnostics = await this.execInNetworkNamespace(
         pid,
-        `for p in /sys/class/net/*; do
-name=$(basename "$p")
-if [ -d "$p/statistics" ]; then
-  echo "$name:stats-dir"
-else
-  echo "$name:no-stats-dir"
-fi
-done`
-      );
+        `ip -o link show 2>/dev/null | awk -F': ' 'NF>=2 {print \$2}' | cut -d'@' -f1`
+      ).catch(() => ({ stdout: "" }));
+      const rawList = diagnostics.stdout.trim().replace(/\s+/g, " ") || "none";
       throw new Error(
-        `Unable to resolve a container network interface for PID ${pid}. Available entries: ${diagnostics.stdout
-          .trim()
-          .replace(/\s+/g, " ")}`
+        `Unable to resolve a container network interface for PID ${pid}. ` +
+          `Interfaces in namespace: ${rawList}. Bandwidth limiting may not be supported for this network mode.`
       );
     }
     return interfaceName;
@@ -372,12 +388,18 @@ done`
     return /^[a-zA-Z0-9_.:-]+$/.test(interfaceName);
   }
 
+  /** Whether the interface name is host-side (bridge, veth, physical NIC, etc.); not used as container limit target. */
+  private isHostLikeInterface(interfaceName: string): boolean {
+    if (!interfaceName) return true;
+    if (interfaceName === "docker0") return true;
+    if (/^(br-|veth|virbr|cni|flannel|kube-|cali|zt|tailscale)/.test(interfaceName)) return true;
+    if (/^(eno|ens|enp)\d+/.test(interfaceName)) return true;
+    return false;
+  }
+
   private looksLikeHostNamespaceInterfaces(interfaceNames: string[]): boolean {
     if (!interfaceNames.length) return false;
-    return interfaceNames.some((name) => {
-      if (name === "docker0") return true;
-      return /^(br-|veth|virbr|cni|flannel|kube-|cali|zt|tailscale)/.test(name);
-    });
+    return interfaceNames.some((name) => this.isHostLikeInterface(name));
   }
 
   private ensureValidInterfaceName(interfaceName: string): string {
