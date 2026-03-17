@@ -44,13 +44,18 @@ class DiskLimitService {
   async #startCheck() {
     if (this.checking) return;
     this.checking = true;
-    for (let i = 0; i < this.concurrent; i++) {
-      const item = this.queue.pop();
-      if (item) {
-        this.checkDiskNow(item);
+    try {
+      const promises = [];
+      for (let i = 0; i < this.concurrent; i++) {
+        const item = this.queue.pop();
+        if (item) {
+          promises.push(this.checkDiskNow(item));
+        }
       }
+      await Promise.all(promises);
+    } finally {
+      this.checking = false;
     }
-    this.checking = false;
   }
 
   async #stopInstance(instance: Instance) {
