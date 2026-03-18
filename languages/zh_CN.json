@@ -3398,5 +3398,7 @@
   "TXT_CODE_SSO_ERROR": "SSO 错误",
   "TXT_CODE_SSO_ERROR_INIT_FAILED": "SSO 初始化失败",
   "TXT_CODE_SSO_ERROR_AUTH_FAILED": "SSO 认证失败",
-  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO 会话已过期"
+  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO 会话已过期",
+  "TXT_CODE_bdb9f7bb": "网络限速功能启用失败！请确保面板能读取到系统命令或网卡信息，比如 tc、ip、modprobe、ifb 等，或选择在设置中关闭此实例的网络限速。",
+  "TXT_CODE_49731eec": "网络限速功能启用失败！请确保面板能读取到容器信息或网卡信息，或选择在设置中关闭此实例的网络限速。"
 }

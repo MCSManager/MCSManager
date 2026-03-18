@@ -330,25 +330,31 @@ export class SetupDockerContainer extends AsyncTask {
         })
     });
 
+    const networkLimitService = NetworkLimitService.getInstance();
+    if (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit) {
+      try {
+        networkLimitService.checkRequiredCommands();
+      } catch (error) {
+        instance.println("ERROR", $t("TXT_CODE_bdb9f7bb"));
+        throw error;
+      }
+    }
+
     await this.container.start();
 
     // Apply bandwidth limits if configured
     if (dockerConfig && (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit)) {
       try {
-        const networkLimitService = NetworkLimitService.getInstance();
         await networkLimitService.setBandwidthLimit(this.container.id, {
           uploadLimit: dockerConfig.uploadSpeedLimit,
           downloadLimit: dockerConfig.downloadSpeedLimit
         });
-        logger.info(`Applied bandwidth limits to container ${this.container.id}`);
-      } catch (error: any) {
-        instance.println(
-          "ERROR",
-          $t(
-            "网络限速功能启用失败！请确保面板能读取到系统命令或网卡信息，比如 tc、ip、modprobe、ifb 等。"
-          )
+        logger.info(
+          `Applied bandwidth limits to container ${this.container.id}, Instance: ${instance.config.nickname}`
         );
-        instance.println("ERROR", $t("错误信息：") + error.message);
+      } catch (error: any) {
+        instance.println("ERROR", $t("TXT_CODE_49731eec"));
+        instance.println("ERROR", $t("TXT_CODE_9c95b60f") + error.message);
         logger.error(`Failed to apply bandwidth limits:`, error);
         this.container.kill().catch(() => {});
         this.container.remove().catch(() => {});

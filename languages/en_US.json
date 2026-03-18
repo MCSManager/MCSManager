@@ -3398,5 +3398,7 @@
   "TXT_CODE_SSO_ERROR": "SSO Error",
   "TXT_CODE_SSO_ERROR_INIT_FAILED": "SSO Initialization Failed",
   "TXT_CODE_SSO_ERROR_AUTH_FAILED": "SSO Authentication Failed",
-  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO Session Expired"
+  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO Session Expired",
+  "TXT_CODE_bdb9f7bb": "Network rate limiting failed to enable! Please ensure the control panel can read system commands or network adapter information, such as tc, ip, modprobe, ifb, etc., or choose to disable network rate limiting for this instance in the settings.",
+  "TXT_CODE_49731eec": "Network rate limiting failed to enable! Please ensure the control panel can read container information or network adapter information, or choose to disable network rate limiting for this instance in the settings."
 }
