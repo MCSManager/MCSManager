@@ -33,6 +33,10 @@ interface IInstanceInfo {
   memoryUsagePercent?: number;
   rxBytes?: number;
   txBytes?: number;
+  rxRate?: number;
+  txRate?: number;
+  networkInterfaces?: string[];
+  networkStatsSource?: "docker";
   readBytes?: number;
   writeBytes?: number;
   memoryUsage?: number;
@@ -236,6 +240,8 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "changeWorkdir", Boolean);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwappiness", Number);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwap", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "uploadSpeedLimit", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "downloadSpeedLimit", Number);
       configureEntityParams(this.config.docker, cfg.docker, "capAdd");
       configureEntityParams(this.config.docker, cfg.docker, "capDrop");
       configureEntityParams(this.config.docker, cfg.docker, "devices");

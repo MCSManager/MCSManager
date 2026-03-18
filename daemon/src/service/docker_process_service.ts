@@ -14,6 +14,7 @@ import { IInstanceProcess } from "../entity/instance/interface";
 import { $t } from "../i18n";
 import { AsyncTask } from "./async_task_service";
 import logger from "./log";
+import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
 
 type PublicPortArray = {
@@ -225,13 +226,13 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
-
+    logger.info(`UPLOAD_LIMIT: ${dockerConfig.uploadSpeedLimit} KB/s`);
+    logger.info(`DOWNLOAD_LIMIT: ${dockerConfig.downloadSpeedLimit} KB/s`);
     logger.info(
       `MEM_LIMIT: ${maxMemory ? (maxMemory / 1024 / 1024).toFixed(2) : "--"} MB, Swap: ${
         memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
       } MB`
     );
-    logger.info(`TYPE: Docker Container`);
 
     if (workingDir) {
       instance.println("INFO", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
@@ -273,6 +274,17 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`Container Start Command: ${startCmd}`);
     logger.info(`Docker Version: ${dockerVersion}`);
     logger.info("----------------");
+
+    // Check if network rate limiting is enabled
+    const networkLimitService = NetworkLimitService.getInstance();
+    if (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit) {
+      try {
+        networkLimitService.checkRequiredCommands();
+      } catch (error) {
+        instance.println("ERROR", $t("TXT_CODE_bdb9f7bb"));
+        throw error;
+      }
+    }
 
     this.container = await docker.createContainer({
       Entrypoint: entrypoint,
@@ -331,17 +343,46 @@ export class SetupDockerContainer extends AsyncTask {
 
     await this.container.start();
 
+    // Apply bandwidth limits if configured
+    if (dockerConfig && (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit)) {
+      try {
+        await networkLimitService.setBandwidthLimit(this.container.id, {
+          uploadLimit: dockerConfig.uploadSpeedLimit,
+          downloadLimit: dockerConfig.downloadSpeedLimit
+        });
+        logger.info(
+          `Applied bandwidth limits to container ${this.container.id}, Instance: ${instance.config.nickname}`
+        );
+      } catch (error: any) {
+        instance.println("ERROR", $t("TXT_CODE_49731eec"));
+        instance.println("ERROR", $t("TXT_CODE_9c95b60f") + error.message);
+        logger.error(`Failed to apply bandwidth limits:`, error);
+        this.container.kill().catch(() => {});
+        this.container.remove().catch(() => {});
+        await networkLimitService.clearBandwidthLimit(this.container.id);
+        throw error;
+      }
+    }
+
     // Listen to events
     this.container.wait(() => this.stop());
   }
 
   public async onStop() {
+    const containerId = this.container?.id;
+
     try {
       await this.container?.kill();
     } catch (error) {}
     try {
       await this.container?.remove();
     } catch (error) {}
+
+    if (containerId) {
+      try {
+        await NetworkLimitService.getInstance().clearBandwidthLimit(containerId);
+      } catch (error) {}
+    }
   }
 
   public getContainer() {

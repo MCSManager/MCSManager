@@ -88,6 +88,12 @@ const formatNetworkSpeed = (bytes?: number) =>
     binary: false
   }) + "/s";
 
+const formatTrafficUsage = (bytes?: number) =>
+  prettyBytes(bytes ?? 0, {
+    ...prettyBytesConfig,
+    binary: false
+  });
+
 const refreshList = () => {
   setTimeout(() => {
     emits("refreshList");
@@ -347,13 +353,15 @@ const instanceOperations = computed(() =>
               </span>
             </div>
             <div
-              v-if="instanceInfo?.info.rxBytes != null || instanceInfo?.info.txBytes != null"
+              v-if="instanceInfo?.info.rxRate != null || instanceInfo?.info.txRate != null"
               class="instance-info-line"
             >
-              <span class="title">{{ t("TXT_CODE_50daec4") }}:</span>
+              <span class="title">
+                {{ t("TXT_CODE_network_bandwidth") }}:
+              </span>
               <span class="value">
-                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxBytes) }}
-                ↑{{ formatNetworkSpeed(instanceInfo?.info.txBytes) }}
+                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxRate) }}
+                ↑{{ formatNetworkSpeed(instanceInfo?.info.txRate) }}
               </span>
             </div>
           </template>

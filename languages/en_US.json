@@ -3336,6 +3336,14 @@
   "TXT_CODE_5d88a9b": "Color Theme",
   "TXT_CODE_ee01c10c": "Default Theme",
   "TXT_CODE_4eb158da": "Layout Mode",
+  "TXT_CODE_network_upload_limit": "Upload Speed Limit",
+  "TXT_CODE_network_upload_limit_help": "Set container upload bandwidth limit, 0 means unlimited",
+  "TXT_CODE_network_upload_limit_placeholder": "e.g., 1024 (1 MB/s)",
+  "TXT_CODE_network_download_limit": "Download Speed Limit",
+  "TXT_CODE_network_download_limit_help": "Set container download bandwidth limit, 0 means unlimited",
+  "TXT_CODE_network_download_limit_placeholder": "e.g., 2048 (2 MB/s)",
+  "TXT_CODE_network_bandwidth": "Bandwidth",
+  "TXT_CODE_network_traffic": "Traffic",
   "TXT_CODE_SSO_TAB_TITLE": "Third-Party Login",
   "TXT_CODE_SSO_ENABLE": "SSO Single Sign-On",
   "TXT_CODE_SSO_ENABLE_DESC": "Select a third-party login protocol. OIDC supports auto-discovery; OAuth 2.0 requires manual endpoint configuration (e.g. GitHub).",
@@ -3390,5 +3398,7 @@
   "TXT_CODE_SSO_ERROR": "SSO Error",
   "TXT_CODE_SSO_ERROR_INIT_FAILED": "SSO Initialization Failed",
   "TXT_CODE_SSO_ERROR_AUTH_FAILED": "SSO Authentication Failed",
-  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO Session Expired"
+  "TXT_CODE_SSO_ERROR_SESSION_EXPIRED": "SSO Session Expired",
+  "TXT_CODE_bdb9f7bb": "Network rate limiting failed to enable! Please ensure the control panel can read system commands or network adapter information, such as tc, ip, modprobe, ifb, etc., or choose to disable network rate limiting for this instance in the settings.",
+  "TXT_CODE_49731eec": "Network rate limiting failed to enable! Please ensure the control panel can read container information or network adapter information, or choose to disable network rate limiting for this instance in the settings."
 }

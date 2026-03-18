@@ -33,6 +33,10 @@ export interface InstanceRuntimeInfo {
   memoryUsagePercent?: number;
   rxBytes?: number;
   txBytes?: number;
+  rxRate?: number;
+  txRate?: number;
+  networkInterfaces?: string[];
+  networkStatsSource?: "docker";
   readBytes?: number;
   writeBytes?: number;
   memoryUsage?: number;
