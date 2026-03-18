@@ -6,15 +6,13 @@ import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { MenuUnfoldOutlined } from "@ant-design/icons-vue";
 import { useScroll } from "@vueuse/core";
-import { computed, h, onMounted } from "vue";
+import { computed, h } from "vue";
 import { useRoute } from "vue-router";
-import { useLayoutConfigStore } from "../stores/useLayoutConfig";
 import CardPanel from "./CardPanel.vue";
 
 const route = useRoute();
-const { getSettingsConfig } = useLayoutConfigStore();
 const { containerState } = useLayoutContainerStore();
-const { setLogoImage, logoImage } = useAppConfigStore();
+const { logoImage } = useAppConfigStore();
 
 const { menus, appMenus, handleToPage } = useHeaderMenus();
 
@@ -26,17 +24,6 @@ const isRouteActive = (path: string): boolean => {
 };
 
 const { y } = useScroll(document.body);
-
-onMounted(async () => {
-  try {
-    const settingsConfig = await getSettingsConfig();
-    if (settingsConfig?.theme?.logoImage) {
-      setLogoImage(settingsConfig.theme.logoImage);
-    }
-  } catch (error) {
-    console.error("Failed to load settings config:", error);
-  }
-});
 
 const isScroll = computed(() => {
   return y.value > 10;

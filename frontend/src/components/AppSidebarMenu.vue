@@ -24,6 +24,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const { sidebarItems, handleToPage } = useHeaderMenus();
+const { logoImage } = useAppConfigStore();
 
 /** Whether route menu item is active (current path equals or is child of this path) */
 const isRouteActive = (path: string): boolean => {
@@ -59,7 +60,6 @@ const getItemKey = (entry: SidebarEntry, index: number): string => {
 const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) => {
   item.click(String(info.key));
 };
-const { logoImage } = useAppConfigStore();
 </script>
 
 <template>

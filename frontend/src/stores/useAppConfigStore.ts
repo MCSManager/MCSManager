@@ -6,7 +6,7 @@ import { AppTheme, THEME_KEY } from "@/types/const";
 import { createGlobalState, useLocalStorage, usePreferredDark } from "@vueuse/core";
 import { theme as antTheme } from "ant-design-vue";
 import type { ThemeConfig } from "ant-design-vue/es/config-provider/context";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useLayoutConfigStore } from "./useLayoutConfig";
 
 export const useAppConfigStore = createGlobalState(() => {
@@ -125,6 +125,17 @@ export const useAppConfigStore = createGlobalState(() => {
   watch(isPreferredDark, () => {
     if (currentTheme.value === AppTheme.AUTO) {
       initAppTheme();
+    }
+  });
+
+  onMounted(async () => {
+    try {
+      const settingsConfig = await getSettingsConfig();
+      if (settingsConfig?.theme?.logoImage) {
+        setLogoImage(settingsConfig.theme.logoImage);
+      }
+    } catch (error) {
+      console.error("Failed to load settings config:", error);
     }
   });
 
