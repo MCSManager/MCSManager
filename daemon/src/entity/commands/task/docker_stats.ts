@@ -127,27 +127,15 @@ export default class DockerStatsTask implements ILifeCycleTask {
       let networkInterfaces: string[] | undefined = undefined;
       let networkStatsSource: "docker" | undefined = undefined;
 
-      try {
-        const networkStats = this.getDockerNetworkCumulative(stats.networks);
-        rxBytes = networkStats.rxBytes;
-        txBytes = networkStats.txBytes;
-        networkInterfaces = networkStats.interfaceNames;
-        networkStatsSource = networkStats.source;
+      const networkStats = this.getDockerNetworkCumulative(stats.networks);
+      rxBytes = networkStats.rxBytes;
+      txBytes = networkStats.txBytes;
+      networkInterfaces = networkStats.interfaceNames;
+      networkStatsSource = networkStats.source;
 
-        const networkRates = this.calculateRealTimeRate({ rxBytes, txBytes }, "network");
-        rxRate = networkRates.rxBytes;
-        txRate = networkRates.txBytes;
-      } catch (error) {
-        const fallbackStats = this.getDockerNetworkCumulative(stats.networks);
-        rxBytes = fallbackStats.rxBytes;
-        txBytes = fallbackStats.txBytes;
-        networkInterfaces = fallbackStats.interfaceNames;
-        networkStatsSource = fallbackStats.source;
-
-        const networkRates = this.calculateRealTimeRate({ rxBytes, txBytes }, "network");
-        rxRate = networkRates.rxBytes;
-        txRate = networkRates.txBytes;
-      }
+      const networkRates = this.calculateRealTimeRate({ rxBytes, txBytes }, "network");
+      rxRate = networkRates.rxBytes;
+      txRate = networkRates.txBytes;
 
       const memoryUsage = stats.memory_stats.usage - (stats.memory_stats.stats.cache ?? 0);
       const memoryUsagePercent = Math.ceil((memoryUsage / stats.memory_stats.limit) * 100);
@@ -164,6 +152,7 @@ export default class DockerStatsTask implements ILifeCycleTask {
         memoryUsage,
         memoryLimit: stats.memory_stats.limit
       };
+
       instance.info = { ...instance.info, ...result };
     } catch (error) {
       // ignore error
