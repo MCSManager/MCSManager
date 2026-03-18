@@ -100,7 +100,7 @@ languages/en_US.json
 {
   // 所有的翻译文案 Key，不可有重复，所以请可能的取一个较长的名字！
   "TXT_CODE_MY_ERROR": "Hello，这是一个错误！",
-  // 如果需要携带参数，使用两个花括号
+  // 如果需要携带参数，Web 后端、Daemon 后端则使用两个花括号
   "TXT_CODE_INSTANCE_ERROR": "Exception instance {{uuid}}: {{err}}"
 }
 ```

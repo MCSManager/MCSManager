@@ -87,7 +87,7 @@ if (!checkName) {
   const errorMsg = $t("TXT_CODE_MY_ERROR"); // Correct approach
 }
 
-// Usage with parameters
+// Usage with parameters, only Web backend, Daemon Backend.
 const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
   uuid: instance.instanceUuid,
   err: err
@@ -98,9 +98,9 @@ languages/en_US.json
 
 ```json
 {
-  // All translation text Keys must be unique, so please use a longer name if possible!
+  // All translation text Keys must be unique, so please use a longer name if possible! frontend only.
   "TXT_CODE_MY_ERROR": "Hello，这是一个错误！",
-  // If parameters are needed, use double curly braces
+  // If parameters are needed, use double curly braces. only Web backend, Daemon Backend.
   "TXT_CODE_INSTANCE_ERROR": "Exception instance {{uuid}}: {{err}}"
 }
 ```

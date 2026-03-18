@@ -1,0 +1,12 @@
+---
+description: 前端(Vue3 组件) 模板/脚本 i18n 使用规范
+globs: frontend/src/**/*.vue
+alwaysApply: false
+---
+
+# Vue 组件约定
+
+- 使用 Vue 3，组件必须使用 `<script setup lang="ts">`；逻辑用 `const`/类型标注清晰表达意图。
+- 组件直接使用 Vue 官方推荐的 props 优雅的传递参数，不得使用破坏单项数据流模型。
+- Vue 组件不易过长的 TS 代码逻辑，复杂逻辑应当按职责聚合到单独的 hooks 中方便复用。
+- Vue 组件不易过长的 HTML 模板，复杂的模板代码可以单独抽离到一个新的 Vue 组件中，方便复用。

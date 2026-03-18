@@ -1,0 +1,50 @@
+---
+description: 项目开发约定
+alwaysApply: true
+---
+
+# 项目结构
+
+项目结构分为：`网页后端（panel/*.*）、节点端（daemon/*.*）、网页前端（frontend/*.*）`。
+
+- 节点端专注于实例进程与容器、文件、终端管理。
+- 网页后端负责用户管理、节点连接、权限认证与 API 接口。
+- 网页前端主要提供用户 UI、与后端交互，部分功能直连节点以减轻流量压力。
+
+# 代码要求
+
+- 变更时优先“最小修改”，在开始编程之前，需要了解对应子项目的 `hooks/services/stores/utils` 文件夹中的函数，避免引入重复逻辑。
+- 不要在代码里直接写用户可见文案（包括 UI 文案与面向用户的错误消息）；统一走项目 i18n 约定（后端日志等除外）。
+- 代码需要符合 `高内聚、低耦合、可复用` 的设计要求。
+
+# i18n 约定
+
+- 前端：使用 `t()`（来自 `@/lang/i18n`）输出所有需要翻译的文本。
+- 后端：使用 `$t()`（如 `daemon/src/i18n/index.ts` 导出）输出所有面向用户的文本/错误消息。
+- 具体文案需要翻译成准确的、简短的、无误的英语文案储存到 `languages/en_us.json` 中，作为源语言，再由用户自己补充其他语言文案。
+
+## i18n 参数化文案规则
+
+> 前端和后端的参数有略微不同，且必须使用 `TXT_CODE` 前缀！
+
+```json
+{
+  // 如果需要携带参数，前端代码使用一个花括号表示。
+  "TXT_CODE_FILE_ERROR": "File {name} error!",
+  // 如果需要携带参数，Web 后端、Daemon 后端则使用两个花括号表示。
+  "TXT_CODE_INSTANCE_ERROR": "Exception instance {{uuid}}: {{err}}"
+}
+```
+
+```vue
+<!-- Web 前端 -->
+<template>{{ t("TXT_CODE_FILE_ERROR", { name: props.fileName }) }}</template>
+```
+
+```ts
+// 后端，带参数的使用方式
+const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
+  uuid: instance.instanceUuid,
+  err: err
+});
+```
