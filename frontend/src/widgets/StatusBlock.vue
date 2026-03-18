@@ -166,11 +166,11 @@ const systemBars = computed(() => {
       <template v-else-if="realStatus?.type === 'users'">
         <div class="status-tags status-tags--wrap">
           <a-tag color="red">
-            <span class="status-tag-label">{{ t("TXT_CODE_43fcaf94") }}</span>
+            <span class="status-tag-label">{{ t("TXT_CODE_ac405b50") }}</span>
             <span class="status-tag-value">{{ realStatus.loginFailed }}</span>
           </a-tag>
           <a-tag color="green">
-            <span class="status-tag-label">{{ t("TXT_CODE_ac405b50") }}</span>
+            <span class="status-tag-label">{{ t("TXT_CODE_43fcaf94") }}</span>
             <span class="status-tag-value">{{ realStatus.logined }}</span>
           </a-tag>
         </div>
