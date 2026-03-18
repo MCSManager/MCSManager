@@ -14,6 +14,7 @@ The codebase is split into: `web backend (panel/*.*)`, `daemon/node (daemon/*.*)
 # Code requirements
 
 - Prefer **minimal changes**. Before coding, check `hooks/services/stores/utils` in the relevant subproject to avoid duplicate logic.
+- All comments and all code must be written in English. If there are any non-English strings, you must use the i18n convention.
 - Do **not** hardcode user-facing text (UI copy or error messages). Use the project i18n flow (backend logs excepted).
 - Code must be **high cohesion, low coupling, reusable**.
 

@@ -20,4 +20,4 @@ Folder names under `daemon/src/*` and `panel/src/app/*` define the layers: route
 
 # Memory and leaks
 
-- For new Maps, queues, arrays, etc., add corresponding cleanup/release logic to avoid memory leaks.
+- For new Maps, queues, Buffer, arrays, etc., add corresponding cleanup/release logic to avoid memory leaks.
