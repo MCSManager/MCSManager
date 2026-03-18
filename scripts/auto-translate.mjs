@@ -2,7 +2,6 @@
 import { readdir, readFile, writeFile } from "fs/promises";
 import OpenAI from "openai";
 import path from "path";
-import { sortLanguageFiles } from "./sort-lang-key.mjs";
 
 // Language code mapping for AI translation
 const LANGUAGE_MAP = {
@@ -19,18 +18,12 @@ const LANGUAGE_MAP = {
   "tr_TR.json": "Turkish"
 };
 
-// You are an experienced translation expert. Translate the given copy while following:
-// 1. The text will be used in the MCSManager game server UI (supports Minecraft, Steam, etc.).
-// 2. Do not answer any questions. Translate exactly the provided text without asking.
-// 3. Follow {target} grammar and idioms; avoid grammatical or idiomatic errors.
-// 4. Keep translations concise and localized; avoid redundant text.
-// 5. I will provide JSON input; return JSON output as well.
-// Now fully understand the source text and translate it to {target}.
-
-const SYSTEM_PROMPT = `You are an experienced translation expert. Translate the given copy while following:
-1. Follow {target} grammar and idioms; avoid grammatical or idiomatic errors. Keep it as concise as possible.
-2. I will provide JSON input. Return JSON plain text and ensure the JSON is valid, including proper escaping.
-Now fully understand the source text and translate it to {target}.`;
+const SYSTEM_PROMPT = `You are a UI localization translator for MCSManager.
+Input: a JSON array of objects like {"key": string, "text": string}. Translate each "text" to {target}.
+Output: ONLY a valid JSON array with the same objects shape, the same "key" values, and the same array order/length.
+Rules: keep all placeholders/tokens unchanged (e.g. "{{...}}", "<...>", "{...}"), preserve all whitespace/newlines (including "\\n"), and keep punctuation consistent. Use natural {target} wording and be as concise as possible.
+Proper nouns: This software is a management tool for various Steam games and Minecraft game services. If there are proper nouns that are only available in English without corresponding translations, English will be used as the universal version for each language (e.g., Minecraft, Steam, EPIC).
+Output raw JSON only (no markdown, no extra commentary).`;
 
 export class AiChatSession {
   constructor(apiKey = "", systemPrompt = "") {
@@ -180,7 +173,7 @@ async function checkAndFillMissingKeys() {
       // Clear conversation history to avoid long context
       chatAiSession.clearHistory();
     } catch (error) {
-      console.error(`❌ Error translating ${file}:`, error.message);
+      console.error(`\n\n❌ Error translating ${file}: ${error.message} \n`);
     }
   };
 
@@ -191,7 +184,6 @@ async function checkAndFillMissingKeys() {
 
 async function main() {
   await checkAndFillMissingKeys();
-  await sortLanguageFiles();
 }
 
 main();
