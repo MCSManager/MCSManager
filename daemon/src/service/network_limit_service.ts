@@ -1,8 +1,9 @@
 import { exec } from "child_process";
-import { promisify } from "util";
 import Dockerode from "dockerode";
-import logger from "./log";
+import fs from "fs";
+import { promisify } from "util";
 import { DefaultDocker } from "./docker_service";
+import logger from "./log";
 
 const execAsync = promisify(exec);
 
@@ -11,20 +12,35 @@ export interface BandwidthLimit {
   downloadLimit?: number;
 }
 
+/** State stored per container for teardown; veth and optional IFB name. */
 interface LinuxBandwidthState {
-  pid: number;
-  interfaceName: string;
-  uploadApplied: boolean;
-  downloadApplied: boolean;
+  veth: string;
+  ifb?: string;
+}
+
+const TBF_BURST = "32kbit";
+const TBF_LATENCY = "400ms";
+
+/**
+ * Commands required for bandwidth limit. Only tc and ip are strictly required.
+ * modprobe is not required: it is used only to load the ifb kernel module (upload limit).
+ * Many kernels have ifb built-in or loaded at boot; modprobe comes from the kmod package
+ * and may be missing on minimal/container hosts. We run "modprobe ifb 2>/dev/null || true"
+ * and rely on "ip link add type ifb" failing with a clear error if ifb is unavailable.
+ */
+const REQUIRED_COMMANDS = ["tc", "ip"] as const;
+
+/** Linux interface names are limited to 15 chars (IFNAMSIZ). */
+function ifbNameForContainer(containerId: string): string {
+  const shortId = containerId.replace(/^([a-f0-9]+).*/, "$1").slice(0, 11);
+  return `ifb_${shortId}`;
 }
 
 export class NetworkLimitService {
   private static instance: NetworkLimitService;
   private docker: Dockerode;
-  private activeStates: Map<string, LinuxBandwidthState> = new Map();
-  private linuxEnvironmentReady = false;
-  private linuxEnvironmentUnsupportedReason?: string;
-  private linuxEnvironmentWarningEmitted = false;
+  /** In-memory state: containerId -> { veth, ifb? } for clearBandwidthLimit. */
+  private stateByContainer = new Map<string, LinuxBandwidthState>();
 
   private constructor() {
     this.docker = new DefaultDocker();
@@ -37,316 +53,250 @@ export class NetworkLimitService {
     return NetworkLimitService.instance;
   }
 
-  public async setBandwidthLimit(containerId: string, limit: BandwidthLimit): Promise<void> {
-    const normalizedLimit = {
-      uploadLimit: this.normalizeLimit(limit.uploadLimit),
-      downloadLimit: this.normalizeLimit(limit.downloadLimit)
-    };
-
-    await this.ensureLinuxEnvironment();
-    await this.clearBandwidthLimit(containerId);
-
-    if (!normalizedLimit.uploadLimit && !normalizedLimit.downloadLimit) {
-      return;
-    }
-
-    const inspect = await this.inspectContainer(containerId);
-    const networkMode = this.getNetworkMode(inspect);
-    this.ensureSupportedNetworkMode(networkMode);
-    const pid = await this.resolveContainerPid(containerId, inspect);
-    const interfaceName = await this.resolveContainerInterfaceName(pid);
-
-    const state: LinuxBandwidthState = {
-      pid,
-      interfaceName,
-      uploadApplied: false,
-      downloadApplied: false
-    };
-
-    try {
-      if (normalizedLimit.downloadLimit) {
-        await this.applyDownloadLimit(pid, interfaceName, normalizedLimit.downloadLimit);
-        state.downloadApplied = true;
-        await this.verifyDownloadLimit(pid, interfaceName);
-      }
-
-      if (normalizedLimit.uploadLimit) {
-        await this.applyUploadLimit(pid, interfaceName, normalizedLimit.uploadLimit);
-        state.uploadApplied = true;
-        await this.verifyUploadLimit(pid, interfaceName);
-      }
-
-      this.activeStates.set(containerId, state);
-      logger.info(
-        `[NetworkLimitService] Applied Linux tc limits for ${containerId} on ${interfaceName} ` +
-          `(upload=${normalizedLimit.uploadLimit ?? 0}KB/s, download=${normalizedLimit.downloadLimit ?? 0}KB/s)`
-      );
-    } catch (error) {
-      await Promise.all(
-        [
-          state.downloadApplied
-            ? this.deleteQdisc(state.pid, state.interfaceName, "ingress")
-            : Promise.resolve(),
-          state.uploadApplied
-            ? this.deleteQdisc(state.pid, state.interfaceName, "root")
-            : Promise.resolve()
-        ].map((task) => task.catch(() => undefined))
-      );
+  /**
+   * Pre-check required commands (tc, ip). Throws if any are missing.
+   * Call before setBandwidthLimit to fail fast with a clear error.
+   */
+  public async checkRequiredCommands(): Promise<void> {
+    const missing = await this.getMissingCommands();
+    if (missing.length > 0) {
       throw new Error(
-        `[NetworkLimitService] Failed to apply Linux tc limits for ${containerId} on ${interfaceName}: ${this.getErrorMessage(
-          error
-        )}`
+        `Network limit requires the following commands to be installed: ${REQUIRED_COMMANDS.join(", ")}. Missing: ${missing.join(", ")}.`
       );
     }
   }
 
-  public async clearBandwidthLimit(containerId: string): Promise<void> {
-    const state = this.activeStates.get(containerId);
-    if (!state) {
+  /** Start network rate limit for the given container. */
+  public async setBandwidthLimit(containerId: string, limit: BandwidthLimit): Promise<void> {
+    if (process.platform !== "linux") {
+      logger.warn("Network limit is only supported on Linux.");
+      return;
+    }
+    const uploadKbit = limit.uploadLimit && limit.uploadLimit > 0 ? limit.uploadLimit * 8 : 0;
+    const downloadKbit =
+      limit.downloadLimit && limit.downloadLimit > 0 ? limit.downloadLimit * 8 : 0;
+    if (uploadKbit === 0 && downloadKbit === 0) return;
+
+    await this.checkRequiredCommands();
+
+    const info = await this.getContainerNetworkInfo(containerId);
+    if (!info) return;
+    const { pid, networkMode } = info;
+    if (networkMode === "host" || networkMode === "none") {
+      logger.info(`Container ${containerId} network mode is ${networkMode}, skip bandwidth limit.`);
       return;
     }
 
-    const cleanupTasks: Promise<void>[] = [];
-    if (state.downloadApplied) {
-      cleanupTasks.push(this.deleteQdisc(state.pid, state.interfaceName, "ingress"));
-    }
-    if (state.uploadApplied) {
-      cleanupTasks.push(this.deleteQdisc(state.pid, state.interfaceName, "root"));
+    // Give the container network time to appear on the host (veth may lag after start).
+    await new Promise((r) => setTimeout(r, 3000));
+
+    const veth = await this.resolveVethFromPid(containerId, pid);
+    if (!veth) {
+      logger.error(`Could not resolve veth for container ${containerId}`);
+      throw new Error(`Could not resolve veth for container ${containerId}`);
     }
 
-    await Promise.all(cleanupTasks.map((task) => task.catch(() => undefined)));
-    this.activeStates.delete(containerId);
-  }
+    // Idempotent: clear existing limits then apply new ones.
+    const existing = this.stateByContainer.get(containerId);
+    if (existing) await this.clearLimitForVeth(existing.veth, existing.ifb).catch(() => {});
 
-  private normalizeLimit(value?: number): number | undefined {
-    if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined;
-    return Math.floor(value);
-  }
-
-  private async ensureLinuxEnvironment() {
-    if (this.linuxEnvironmentReady) {
-      return true;
-    }
-    if (this.linuxEnvironmentUnsupportedReason) {
-      throw new Error(this.linuxEnvironmentUnsupportedReason);
-    }
+    const ifbName = uploadKbit > 0 ? ifbNameForContainer(containerId) : undefined;
 
     try {
-      if (process.platform !== "linux") {
-        throw new Error("Docker traffic limiting is only supported on Linux");
-      }
-      await this.execCommand("command -v tc >/dev/null 2>&1");
-      await this.execCommand("command -v ip >/dev/null 2>&1");
-      await this.execCommand("command -v nsenter >/dev/null 2>&1");
-      this.linuxEnvironmentReady = true;
-      return true;
-    } catch (error) {
-      this.linuxEnvironmentUnsupportedReason = this.getErrorMessage(error);
-      if (!this.linuxEnvironmentWarningEmitted) {
-        this.linuxEnvironmentWarningEmitted = true;
-        logger.warn(
-          `[NetworkLimitService] Linux network limiter unavailable, namespace stats disabled. ${this.linuxEnvironmentUnsupportedReason}`
-        );
-      }
-      throw new Error(this.linuxEnvironmentUnsupportedReason);
+      if (downloadKbit > 0) await this.applyEgressLimit(veth, downloadKbit);
+      if (uploadKbit > 0 && ifbName) await this.applyIngressLimit(veth, ifbName, uploadKbit);
+      this.stateByContainer.set(containerId, { veth, ifb: ifbName });
+    } catch (err) {
+      this.stateByContainer.delete(containerId);
+      throw err;
     }
+  }
+
+  /** Remove network rate limit for the given container. */
+  public async clearBandwidthLimit(containerId: string): Promise<void> {
+    if (process.platform !== "linux") return;
+
+    let state = this.stateByContainer.get(containerId);
+    if (!state) {
+      try {
+        const info = await this.getContainerNetworkInfo(containerId);
+        if (!info || info.networkMode === "host" || info.networkMode === "none") {
+          this.stateByContainer.delete(containerId);
+          return;
+        }
+        const veth = await this.resolveVethFromPid(containerId, info.pid);
+        if (veth) state = { veth, ifb: ifbNameForContainer(containerId) };
+      } catch {
+        this.stateByContainer.delete(containerId);
+        return;
+      }
+    }
+    if (!state) {
+      this.stateByContainer.delete(containerId);
+      return;
+    }
+    await this.clearLimitForVeth(state.veth, state.ifb).catch((e) =>
+      logger.warn(`clearLimitForVeth failed for ${containerId}:`, e)
+    );
+    this.stateByContainer.delete(containerId);
+  }
+
+  /** Inspect container; return { pid, networkMode } or null if inspect fails. */
+  private async getContainerNetworkInfo(
+    containerId: string
+  ): Promise<{ pid: number; networkMode: string } | null> {
+    try {
+      const inspect = await this.inspectContainer(containerId);
+      const pid = inspect.State?.Pid ?? 0;
+      const networkMode = inspect.HostConfig?.NetworkMode ?? "default";
+      const mode = typeof networkMode === "string" ? networkMode : "default";
+      return { pid, networkMode: mode };
+    } catch (e) {
+      logger.warn("getContainerNetworkInfo failed:", e);
+      return null;
+    }
+  }
+
+  /** Resolve host-side veth name from container PID (iflink -> ifindex match on host). */
+  private async resolveVethFromPid(containerId: string, pid: number): Promise<string | null> {
+    if (!pid) return null;
+    const iflink = await this.readContainerIflink(containerId, pid);
+    if (iflink === null) return null;
+
+    const ifindex = String(iflink).replace(/[^0-9]/g, "");
+    if (!ifindex) return null;
+
+    return this.findVethByIfindex(ifindex);
+  }
+
+  /** Read iflink from container: try eth0 first, then first non-lo interface. */
+  private async readContainerIflink(containerId: string, pid: number): Promise<string | null> {
+    const tryPaths = ["eth0"];
+    try {
+      const netDir = `/proc/${pid}/root/sys/class/net`;
+      if (fs.existsSync(netDir)) {
+        const ifaces = fs.readdirSync(netDir).filter((n) => n !== "lo");
+        ifaces.forEach((n) => {
+          if (!tryPaths.includes(n)) tryPaths.push(n);
+        });
+      }
+    } catch {
+      // ignore
+    }
+    for (const iface of tryPaths) {
+      const procPath = `/proc/${pid}/root/sys/class/net/${iface}/iflink`;
+      try {
+        const value = fs.readFileSync(procPath, "utf8").trim();
+        if (value) return value;
+      } catch {
+        // continue
+      }
+    }
+    for (const iface of tryPaths) {
+      try {
+        const { stdout } = await execAsync(
+          `docker exec ${this.escapeShell(containerId)} cat /sys/class/net/${this.escapeShell(
+            iface
+          )}/iflink 2>/dev/null`
+        );
+        const value = (stdout || "").trim().replace(/\r/g, "");
+        if (value) return value;
+      } catch {
+        // continue
+      }
+    }
+    logger.warn(
+      `Could not read iflink for container ${containerId} (tried: ${tryPaths.join(", ")})`
+    );
+    return null;
+  }
+
+  /** Find host interface name by ifindex using ip -o link (avoids shell escaping). */
+  private async findVethByIfindex(ifindex: string): Promise<string | null> {
+    try {
+      const { stdout } = await execAsync("ip -o link show");
+      const lines = (stdout || "").trim().split("\n");
+      for (const line of lines) {
+        const match = line.match(/^\s*(\d+)\s*:\s*(\S+)\s*:/);
+        if (match && match[1] === ifindex) {
+          const name = match[2].split("@")[0].trim();
+          return name || null;
+        }
+      }
+    } catch {
+      // fallback: grep + sed on host
+      try {
+        const { stdout } = await execAsync(
+          `sh -c 'F=$(grep -l "^${ifindex}$" /sys/class/net/*/ifindex 2>/dev/null | head -1) && [ -n "$F" ] && basename $(dirname "$F")'`
+        );
+        const veth = (stdout || "").trim();
+        return veth || null;
+      } catch {
+        // ignore
+      }
+    }
+    return null;
+  }
+
+  /** Apply egress TBF on veth (limits download: host -> container). */
+  private async applyEgressLimit(veth: string, rateKbit: number): Promise<void> {
+    const rate = `${rateKbit}kbit`;
+    await execAsync(
+      `tc qdisc replace dev ${this.escapeShell(
+        veth
+      )} root tbf rate ${rate} burst ${TBF_BURST} latency ${TBF_LATENCY}`
+    );
+  }
+
+  /** Apply ingress limit via IFB (limits upload: container -> host). */
+  private async applyIngressLimit(veth: string, ifbName: string, rateKbit: number): Promise<void> {
+    const rate = `${rateKbit}kbit`;
+    await execAsync("modprobe ifb 2>/dev/null || true");
+    await execAsync(`ip link add name ${this.escapeShell(ifbName)} type ifb 2>/dev/null || true`);
+    await execAsync(`ip link set dev ${this.escapeShell(ifbName)} up`);
+    await execAsync(`tc qdisc replace dev ${this.escapeShell(veth)} ingress`);
+    await execAsync(
+      `tc filter add dev ${this.escapeShell(
+        veth
+      )} parent ffff: protocol all u32 match u32 0 0 action mirred egress redirect dev ${this.escapeShell(
+        ifbName
+      )}`
+    );
+    await execAsync(
+      `tc qdisc replace dev ${this.escapeShell(
+        ifbName
+      )} root tbf rate ${rate} burst ${TBF_BURST} latency ${TBF_LATENCY}`
+    );
+  }
+
+  /** Remove tc qdiscs and IFB for the given veth (and optional ifb). */
+  private async clearLimitForVeth(veth: string, ifbName?: string): Promise<void> {
+    await execAsync(`tc qdisc del dev ${this.escapeShell(veth)} root 2>/dev/null || true`);
+    await execAsync(`tc qdisc del dev ${this.escapeShell(veth)} ingress 2>/dev/null || true`);
+    if (ifbName) {
+      await execAsync(`tc qdisc del dev ${this.escapeShell(ifbName)} root 2>/dev/null || true`);
+      await execAsync(`ip link del ${this.escapeShell(ifbName)} 2>/dev/null || true`);
+    }
+  }
+
+  /** Returns list of required commands that are not available on PATH. */
+  private async getMissingCommands(): Promise<string[]> {
+    const missing: string[] = [];
+    for (const cmd of REQUIRED_COMMANDS) {
+      try {
+        await execAsync(`command -v ${this.escapeShell(cmd)}`);
+      } catch {
+        missing.push(cmd);
+      }
+    }
+    return missing;
+  }
+
+  private escapeShell(s: string): string {
+    return `'${String(s).replace(/'/g, "'\"'\"'")}'`;
   }
 
   private async inspectContainer(containerId: string) {
     return this.docker.getContainer(containerId).inspect();
-  }
-
-  private getNetworkMode(inspect: Dockerode.ContainerInspectInfo): string {
-    const networkMode = inspect.HostConfig?.NetworkMode || "bridge";
-    if (networkMode === "default") return "bridge";
-    return networkMode;
-  }
-
-  private ensureSupportedNetworkMode(networkMode: string) {
-    if (networkMode === "host") {
-      throw new Error("Docker traffic limiting does not support host network mode");
-    }
-    if (networkMode === "none") {
-      throw new Error("Docker traffic limiting does not support none network mode");
-    }
-    if (networkMode.startsWith("container:")) {
-      throw new Error("Docker traffic limiting does not support container network mode");
-    }
-  }
-
-  private ensureContainerPid(pid?: number): number {
-    if (!pid || pid <= 0) {
-      throw new Error("Container PID is unavailable, cannot configure tc rules");
-    }
-
-    return pid;
-  }
-
-  private async resolveContainerPid(
-    containerId: string,
-    initialInspect?: Dockerode.ContainerInspectInfo
-  ): Promise<number> {
-    const maxAttempts = 10;
-    const retryDelayMs = 200;
-    let inspect = initialInspect;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const pid = inspect?.State?.Pid;
-      if (pid && pid > 0) {
-        return pid;
-      }
-
-      if (attempt < maxAttempts - 1) {
-        await this.sleep(retryDelayMs);
-        inspect = await this.inspectContainer(containerId);
-      }
-    }
-
-    throw new Error("Container PID is unavailable, cannot configure tc rules");
-  }
-
-  private async resolveContainerInterfaceNames(pid: number): Promise<string[]> {
-    const result = await this.execInNetworkNamespace(
-      pid,
-      `for p in /sys/class/net/*; do
-name=$(basename "$p")
-if [ "$name" = "lo" ]; then
-  continue
-fi
-case "$name" in
-  bonding_masters|ifb*)
-    continue
-    ;;
-esac
-if [ -r "$p/statistics/rx_bytes" ] && [ -r "$p/statistics/tx_bytes" ]; then
-  echo "$name"
-fi
-done`
-    );
-    return result.stdout
-      .split(/\r?\n/)
-      .map((item) => item.trim())
-      .filter((item) => !!item)
-      .filter((item) => this.isValidInterfaceName(item));
-  }
-
-  private async resolveContainerInterfaceName(pid: number): Promise<string> {
-    const candidates = await this.resolveContainerInterfaceNames(pid);
-
-    const interfaceName = candidates.find((item) => item === "eth0") || candidates[0];
-    if (!interfaceName) {
-      const diagnostics = await this.execInNetworkNamespace(
-        pid,
-        `for p in /sys/class/net/*; do
-name=$(basename "$p")
-if [ -d "$p/statistics" ]; then
-  echo "$name:stats-dir"
-else
-  echo "$name:no-stats-dir"
-fi
-done`
-      );
-      throw new Error(
-        `Unable to resolve a container network interface for PID ${pid}. Available entries: ${diagnostics.stdout
-          .trim()
-          .replace(/\s+/g, " ")}`
-      );
-    }
-    return interfaceName;
-  }
-
-  private isValidInterfaceName(interfaceName: string): boolean {
-    if (!interfaceName) return false;
-    return /^[a-zA-Z0-9_.:-]+$/.test(interfaceName);
-  }
-
-  private ensureValidInterfaceName(interfaceName: string): string {
-    if (!this.isValidInterfaceName(interfaceName)) {
-      throw new Error(`Invalid interface name: ${interfaceName}`);
-    }
-    return interfaceName;
-  }
-
-  private limitToBitPerSecond(limitKBps: number): number {
-    return Math.max(8 * 1024, Math.floor(limitKBps * 1024 * 8));
-  }
-
-  private async verifyDownloadLimit(pid: number, interfaceName: string): Promise<void> {
-    const safeInterface = this.ensureValidInterfaceName(interfaceName);
-    await this.execInNetworkNamespace(
-      pid,
-      `tc qdisc show dev ${safeInterface} | grep -q "ingress ffff:"`
-    );
-    await this.execInNetworkNamespace(
-      pid,
-      `tc filter show dev ${safeInterface} parent ffff: | grep -Eq "police|rate"`
-    );
-  }
-
-  private async verifyUploadLimit(pid: number, interfaceName: string): Promise<void> {
-    const safeInterface = this.ensureValidInterfaceName(interfaceName);
-    await this.execInNetworkNamespace(
-      pid,
-      `tc qdisc show dev ${safeInterface} | grep -Eq "\\btbf\\b"`
-    );
-  }
-
-  private async applyDownloadLimit(
-    pid: number,
-    interfaceName: string,
-    limitKBps: number
-  ): Promise<void> {
-    const safeInterface = this.ensureValidInterfaceName(interfaceName);
-    const rateBitPerSecond = this.limitToBitPerSecond(limitKBps);
-    await this.execInNetworkNamespace(
-      pid,
-      `tc qdisc replace dev ${safeInterface} ingress`
-    );
-    await this.execInNetworkNamespace(
-      pid,
-      `tc filter replace dev ${safeInterface} parent ffff: protocol all prio 1 u32 match u32 0 0 police rate ${rateBitPerSecond}bit burst 32k drop flowid :1`
-    );
-  }
-
-  private async applyUploadLimit(
-    pid: number,
-    interfaceName: string,
-    limitKBps: number
-  ): Promise<void> {
-    const safeInterface = this.ensureValidInterfaceName(interfaceName);
-    const rateBitPerSecond = this.limitToBitPerSecond(limitKBps);
-    await this.execInNetworkNamespace(
-      pid,
-      `tc qdisc replace dev ${safeInterface} root tbf rate ${rateBitPerSecond}bit burst 32kbit latency 400ms`
-    );
-  }
-
-  private async deleteQdisc(pid: number, interfaceName: string, parent: "root" | "ingress") {
-    try {
-      const safeInterface = this.ensureValidInterfaceName(interfaceName);
-      await this.execInNetworkNamespace(pid, `tc qdisc del dev ${safeInterface} ${parent}`);
-    } catch (error) {}
-  }
-
-  private async execInNetworkNamespace(pid: number, command: string) {
-    return this.execCommand(`nsenter -t ${pid} -n sh -c '${command.replace(/'/g, `'"'"'`)}'`);
-  }
-
-  private async sleep(ms: number) {
-    return new Promise<void>((resolve) => setTimeout(resolve, ms));
-  }
-
-  private async execCommand(command: string) {
-    try {
-      return await execAsync(command);
-    } catch (error: any) {
-      const stderr = error?.stderr || error?.message || "Unknown command error";
-      throw new Error(stderr);
-    }
-  }
-
-  private getErrorMessage(error: unknown): string {
-    if (error instanceof Error) return error.message;
-    return String(error);
   }
 }
