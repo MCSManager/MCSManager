@@ -226,13 +226,13 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`OPEN_PORT: ${JSON.stringify(publicPortArray)}`);
     logger.info(`Volume Mounts: ${JSON.stringify(mounts)}`);
     logger.info(`NET_ALIASES: ${JSON.stringify(dockerConfig.networkAliases)}`);
-
+    logger.info(`UPLOAD_LIMIT: ${dockerConfig.uploadSpeedLimit} KB/s`);
+    logger.info(`DOWNLOAD_LIMIT: ${dockerConfig.downloadSpeedLimit} KB/s`);
     logger.info(
       `MEM_LIMIT: ${maxMemory ? (maxMemory / 1024 / 1024).toFixed(2) : "--"} MB, Swap: ${
         memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
       } MB`
     );
-    logger.info(`TYPE: Docker Container`);
 
     if (workingDir) {
       instance.println("INFO", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");
@@ -274,6 +274,17 @@ export class SetupDockerContainer extends AsyncTask {
     logger.info(`Container Start Command: ${startCmd}`);
     logger.info(`Docker Version: ${dockerVersion}`);
     logger.info("----------------");
+
+    // Check if network rate limiting is enabled
+    const networkLimitService = NetworkLimitService.getInstance();
+    if (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit) {
+      try {
+        networkLimitService.checkRequiredCommands();
+      } catch (error) {
+        instance.println("ERROR", $t("TXT_CODE_bdb9f7bb"));
+        throw error;
+      }
+    }
 
     this.container = await docker.createContainer({
       Entrypoint: entrypoint,
@@ -330,16 +341,6 @@ export class SetupDockerContainer extends AsyncTask {
         })
     });
 
-    const networkLimitService = NetworkLimitService.getInstance();
-    if (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit) {
-      try {
-        networkLimitService.checkRequiredCommands();
-      } catch (error) {
-        instance.println("ERROR", $t("TXT_CODE_bdb9f7bb"));
-        throw error;
-      }
-    }
-
     await this.container.start();
 
     // Apply bandwidth limits if configured
@@ -358,6 +359,8 @@ export class SetupDockerContainer extends AsyncTask {
         logger.error(`Failed to apply bandwidth limits:`, error);
         this.container.kill().catch(() => {});
         this.container.remove().catch(() => {});
+        await networkLimitService.clearBandwidthLimit(this.container.id);
+        throw error;
       }
     }
 
