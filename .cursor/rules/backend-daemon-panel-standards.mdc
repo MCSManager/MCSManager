@@ -1,23 +1,23 @@
 ---
-description: 后端开发规范
+description: Backend development conventions
 globs: daemon/src/**/*.ts, panel/src/**/*.ts,
 alwaysApply: false
 ---
 
-# 后端目录结构
+# Backend directory structure
 
-`daemon/src/*`，`panel/src/app/*` 下的文件夹名字即是对应的层级划分，路由层，中间件层，服务层，实例层...。
+Folder names under `daemon/src/*` and `panel/src/app/*` define the layers: route, middleware, service, instance, etc.
 
-# 日志与异常
+# Logging and exceptions
 
-- 日志用 `logger`（项目内封装），按场景区分 `info/error`；不要直接用 `console.*`。
-- 涉及外部资源（文件/网络/容器/系统命令）时：校验输入/边界，失败要记录并向上抛出或返回明确结果，避免吞异常导致问题不可定位。
+- Use the project **logger** (not raw `console.*`). Use `info` or `error` by context.
+- For external resources (files, network, containers, shell): validate inputs and boundaries; on failure log and rethrow or return a clear result. Do not swallow exceptions.
 
-# 安全隐患检查
+# Security checks
 
-- 容器/命令相关逻辑要对配置做严格解析与长度/格式校验；不要把未校验输入直接进入命令参数或配置字段。
-- 执行系统命令，或者读文件时，如果参数内容来自前端，则必须检查是否有安全隐患。
+- For container/command logic: strictly parse and validate config (length, format). Do not pass unvalidated input into command args or config fields.
+- When running shell commands or reading files, if arguments come from the frontend, validate them for security risks.
 
-# 内存泄漏检查
+# Memory and leaks
 
-- 代码新增的 Map，队列，数组等，需添加对应的释放内存逻辑，避免内存泄漏。
+- For new Maps, queues, arrays, etc., add corresponding cleanup/release logic to avoid memory leaks.
