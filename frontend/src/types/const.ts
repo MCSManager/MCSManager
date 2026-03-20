@@ -145,7 +145,11 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   changeWorkdir: true,
   memorySwap: undefined,
   memorySwappiness: undefined,
-  labels: []
+  labels: [],
+  gpuEnabled: false,
+  gpuCount: -1,
+  gpuDeviceIds: [],
+  gpuDriver: "nvidia"
 };
 
 export const defaultInstanceJavaConfig: IInstanceJavaConfig = {

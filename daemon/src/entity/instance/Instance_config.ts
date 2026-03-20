@@ -86,7 +86,11 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     workingDir: "/data",
     env: [],
     changeWorkdir: true,
-    labels: []
+    labels: [],
+    gpuEnabled: false,
+    gpuCount: -1,
+    gpuDeviceIds: [],
+    gpuDriver: "nvidia"
   };
 
   public pingConfig = {
