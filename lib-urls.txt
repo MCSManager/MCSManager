@@ -1,5 +1,4 @@
 https://github.com/MCSManager/Zip-Tools/releases/latest/download/file_zip_linux_arm64
-https://github.com/MCSManager/Zip-Tools/releases/latest/download/file_zip_linux_loong64
 https://github.com/MCSManager/Zip-Tools/releases/latest/download/file_zip_linux_x64
 https://github.com/MCSManager/Zip-Tools/releases/latest/download/file_zip_win32_x64.exe
 https://github.com/MCSManager/Zip-Tools/releases/latest/download/file_zip_darwin_arm64
