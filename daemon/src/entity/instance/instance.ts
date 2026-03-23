@@ -246,6 +246,10 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "capDrop");
       configureEntityParams(this.config.docker, cfg.docker, "devices");
       configureEntityParams(this.config.docker, cfg.docker, "privileged", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuEnabled", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuCount", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuDeviceIds");
+      configureEntityParams(this.config.docker, cfg.docker, "gpuDriver", String);
     }
     if (cfg.pingConfig) {
       configureEntityParams(this.config.pingConfig, cfg.pingConfig, "ip", String);

@@ -102,6 +102,14 @@ declare global {
     uploadSpeedLimit?: number;
     /** Download speed limit in KB/s */
     downloadSpeedLimit?: number;
+    /** Whether to enable GPU passthrough */
+    gpuEnabled?: boolean;
+    /** GPU count: -1 = all GPUs, 0 = none, positive integer = specific count */
+    gpuCount?: number;
+    /** Specific GPU device IDs, e.g. ["0","1"] or ["GPU-xxxx"]. Mutually exclusive with gpuCount */
+    gpuDeviceIds?: string[];
+    /** GPU driver name, default "nvidia" */
+    gpuDriver?: string;
   }
 
   interface IPanelResponseProtocol {
