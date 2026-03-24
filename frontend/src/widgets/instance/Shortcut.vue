@@ -50,12 +50,13 @@ const { toPage } = useAppRouters();
 const instanceId = props.targetInstanceInfo?.instanceUuid || getMetaOrRouteValue("instanceId");
 const daemonId = props.targetDaemonId || getMetaOrRouteValue("daemonId");
 
-const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo } = useInstanceInfo({
-  instanceId: props.targetInstanceInfo ? undefined : instanceId,
-  daemonId: props.targetInstanceInfo ? undefined : daemonId,
-  autoRefresh: props.targetInstanceInfo ? false : true,
-  instanceInfo: props.targetInstanceInfo ? ref(props.targetInstanceInfo) : undefined
-});
+const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, isStarting } =
+  useInstanceInfo({
+    instanceId: props.targetInstanceInfo ? undefined : instanceId,
+    daemonId: props.targetInstanceInfo ? undefined : daemonId,
+    autoRefresh: props.targetInstanceInfo ? false : true,
+    instanceInfo: props.targetInstanceInfo ? ref(props.targetInstanceInfo) : undefined
+  });
 
 const operationConfig = {
   params: {
@@ -287,7 +288,13 @@ const instanceOperations = computed(() =>
       <div class="instance-card-body">
         <a-typography-paragraph>
           <div class="mb-8 flex" style="flex-wrap: wrap; gap: 8px">
-            <a-tag class="m-0" :color="isRunning ? 'green' : 'blue'">
+            <a-tag
+              class="m-0"
+              :color="isRunning ? 'green' : isStarting ? 'pink' : ''"
+              :style="{
+                opacity: isRunning || isStarting ? '1' : '0.5'
+              }"
+            >
               <span v-if="isRunning">
                 <CheckCircleOutlined />
                 {{ statusText }}
@@ -301,15 +308,16 @@ const instanceOperations = computed(() =>
                 {{ statusText }}
               </span>
             </a-tag>
-            <a-tag class="m-0" color="blue">
-              {{ instanceTypeText }}
-            </a-tag>
+
             <div v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0">|</div>
             <a-tag v-for="item in instanceInfo?.config.tag" :key="item" class="m-0">
               {{ item }}
             </a-tag>
           </div>
-
+          <div class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_2f291d8b") }}:</span>
+            <span class="value"> {{ instanceTypeText }}</span>
+          </div>
           <div class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_34611898") }}:</span>
             <span class="value"> {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}</span>
@@ -319,9 +327,7 @@ const instanceOperations = computed(() =>
             <span> {{ parseTimestamp(instanceInfo?.config.endTime) }}</span>
           </div>
           <div
-            v-if="
-              instanceInfo?.info.memoryUsage && instanceInfo?.config?.processType !== 'docker'
-            "
+            v-if="instanceInfo?.info.memoryUsage && instanceInfo?.config?.processType !== 'docker'"
             class="instance-info-line"
           >
             <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
@@ -348,7 +354,10 @@ const instanceOperations = computed(() =>
               <span class="title">{{ t("TXT_CODE_DISK_USAGE") }}:</span>
               <span class="value">
                 {{
-                  formatStorageUsage(instanceInfo?.info.storageUsage, instanceInfo?.info.storageLimit)
+                  formatStorageUsage(
+                    instanceInfo?.info.storageUsage,
+                    instanceInfo?.info.storageLimit
+                  )
                 }}
               </span>
             </div>
@@ -356,12 +365,11 @@ const instanceOperations = computed(() =>
               v-if="instanceInfo?.info.rxRate != null || instanceInfo?.info.txRate != null"
               class="instance-info-line"
             >
-              <span class="title">
-                {{ t("TXT_CODE_network_bandwidth") }}:
-              </span>
+              <span class="title"> {{ t("TXT_CODE_network_bandwidth") }}: </span>
               <span class="value">
-                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxRate) }}
-                ↑{{ formatNetworkSpeed(instanceInfo?.info.txRate) }}
+                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxRate) }} ↑{{
+                  formatNetworkSpeed(instanceInfo?.info.txRate)
+                }}
               </span>
             </div>
           </template>
