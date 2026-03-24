@@ -96,6 +96,10 @@ body.app-layout-sidebar-only {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+
+  .new-card-list-container {
+    top: 0;
+  }
 }
 
 @media (max-width: 1400px) {
