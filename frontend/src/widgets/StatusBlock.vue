@@ -106,12 +106,21 @@ const systemBars = computed(() => {
   return [
     { label: "CPU", percent: s.cpuPercent },
     {
-      label: "RAM",
+      label: t("TXT_CODE_593ee330"),
       percent: s.memUsedPercent,
       detail: `${s.memUsedGB} GB / ${s.memTotalGB} GB`
     }
   ];
 });
+
+const breakInNeed = (a: number, b: number = 0) => {
+  const bigger = a > b ? a : b;
+  if (bigger >= 10000)
+    return {
+      display: "block"
+    };
+  else return "";
+};
 </script>
 
 <template>
@@ -119,7 +128,6 @@ const systemBars = computed(() => {
     <template #title>{{ card.title }}</template>
     <template #body>
       <div class="status-header">
-        <component :is="realStatus?.icon" class="status-header__icon" />
         <a-typography-text class="status-header__title color-info">
           {{ realStatus?.title }}
         </a-typography-text>
@@ -127,22 +135,25 @@ const systemBars = computed(() => {
 
       <!-- Nodes: progress bar + two tags -->
       <template v-if="realStatus?.type === 'node'">
-        <a-progress
-          :percent="
-            realStatus.total ? Math.round((realStatus.available / realStatus.total) * 100) : 0
-          "
-          :stroke-width="12"
-          :show-info="false"
-          class="status-progress"
-        />
-        <div class="status-tags">
-          <a-tag color="green">{{ realStatus.available }} {{ t("TXT_CODE_823bfe63") }}</a-tag>
-          <a-tag color="blue">{{ realStatus.total }} {{ t("TXT_CODE_ALL") }}</a-tag>
+        <div class="status-text">
+          <span class="status-text__highlight" :style="breakInNeed(realStatus.total)">
+            {{ realStatus.available }}
+          </span>
+          / {{ realStatus.total }}
         </div>
+
+        <component :is="realStatus?.icon" class="status-card-icon" />
       </template>
 
       <!-- Instances: progress bar + two tags -->
       <template v-else-if="realStatus?.type === 'instance'">
+        <div class="status-text mb-10">
+          <span class="status-text__highlight" :style="breakInNeed(realStatus.total)">{{
+            realStatus.running
+          }}</span>
+          / {{ realStatus.total }}
+        </div>
+
         <a-progress
           :percent="
             realStatus.total ? Math.round((realStatus.running / realStatus.total) * 100) : 0
@@ -154,43 +165,44 @@ const systemBars = computed(() => {
           "
           :show-info="false"
           :stroke-width="12"
-          class="status-progress"
+          style="max-width: 60%"
         />
-        <div class="status-tags">
-          <a-tag color="green">{{ realStatus.running }} {{ t("TXT_CODE_bdb620b9") }}</a-tag>
-          <a-tag color="default">{{ realStatus.total }} {{ t("TXT_CODE_ALL") }}</a-tag>
-        </div>
+
+        <component :is="realStatus?.icon" class="status-card-icon" />
       </template>
 
       <!-- User login: two tags -->
       <template v-else-if="realStatus?.type === 'users'">
-        <div class="status-tags status-tags--wrap">
-          <a-tag color="red">
-            <span class="status-tag-label">{{ t("TXT_CODE_ac405b50") }}</span>
-            <span class="status-tag-value">{{ realStatus.loginFailed }}</span>
-          </a-tag>
-          <a-tag color="green">
-            <span class="status-tag-label">{{ t("TXT_CODE_43fcaf94") }}</span>
-            <span class="status-tag-value">{{ realStatus.logined }}</span>
-          </a-tag>
+        <div class="status-text">
+          <span
+            class="status-text__highlight"
+            :style="breakInNeed(realStatus.loginFailed, realStatus.logined)"
+          >
+            {{ realStatus.loginFailed }}
+          </span>
+          / {{ realStatus.logined }}
         </div>
+
+        <component :is="realStatus?.icon" class="status-card-icon" />
       </template>
 
       <!-- System CPU / RAM -->
       <template v-else-if="realStatus?.type === 'system'">
         <div class="status-bars">
           <div v-for="bar in systemBars" :key="bar.label" class="status-bar-item">
-            <span class="status-bar-label">{{ bar.label }}</span>
+            <div class="status-bar-label">
+              <span>{{ bar.label }}</span>
+              <div class="status-bar-value">
+                <span class="status-bar-value__percent">{{ bar.percent }}%</span>
+                <span v-if="bar.detail" class="status-bar-value__detail">{{ bar.detail }}</span>
+              </div>
+            </div>
             <a-progress
               :percent="bar.percent"
               :stroke-color="getProgressStrokeColor(bar.percent)"
               :stroke-width="12"
               :show-info="false"
             />
-            <div class="status-bar-value">
-              <span class="status-bar-value__percent">{{ bar.percent }}%</span>
-              <span v-if="bar.detail" class="status-bar-value__detail">{{ bar.detail }}</span>
-            </div>
           </div>
         </div>
       </template>
@@ -199,6 +211,32 @@ const systemBars = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.status-text {
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.1em;
+  color: #606060;
+  font-family: auto;
+
+  &__highlight {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+}
+
+.status-card-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 4rem;
+  bottom: 10px;
+  opacity: 0.1;
+  transition: transform 0.25s ease-out;
+  svg {
+    fill: #fff;
+  }
+}
+
 .status-header {
   display: flex;
   align-items: center;
@@ -215,82 +253,30 @@ const systemBars = computed(() => {
   }
 }
 
-.status-progress {
-  margin-bottom: 10px;
-  max-width: 80%;
-
-  :deep(.ant-progress-inner) {
-    border-radius: 6px;
-  }
-}
-
-.status-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-
-  &--wrap {
-    margin-top: 4px;
-  }
-
-  .status-tag-label {
-    margin-right: 4px;
-    opacity: 0.9;
-  }
-
-  .status-tag-value {
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .ant-tag {
-    margin: 0;
-  }
-}
-
 .status-bars {
   display: flex;
   gap: 20px;
   margin-top: 4px;
+  flex-direction: column;
 
-  .status-bar-item {
-    flex: 1;
-    min-width: 0;
+  .status-bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .status-bar-label {
-      display: inline-block;
-      margin-bottom: 6px;
-      color: var(--color-gary-4);
+  .status-bar-value {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    &__percent {
+      font-weight: 500;
+    }
+
+    &__detail {
       font-size: 12px;
-    }
-
-    :deep(.ant-progress) {
-      margin-bottom: 0;
-
-      .ant-progress-outer,
-      .ant-progress-inner {
-        border-radius: 8px;
-      }
-    }
-
-    .status-bar-value {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 8px;
-      margin-top: 6px;
-      font-size: 13px;
-      color: var(--color-gary-6);
-
-      &__percent {
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
-      }
-
-      &__detail {
-        opacity: 0.9;
-      }
+      color: #909090;
     }
   }
 }

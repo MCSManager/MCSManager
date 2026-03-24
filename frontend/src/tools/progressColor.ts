@@ -11,5 +11,5 @@ export function getProgressStrokeColor(percent: number): { "0%": string; "100%":
   if (percent > 50) {
     return { "0%": "#faad14", "100%": "#faad14" };
   }
-  return { "0%": "#1890ff", "100%": "#1890ff" };
+  return { "0%": "var(--color-primary)", "100%": "var(--color-primary)" };
 }
