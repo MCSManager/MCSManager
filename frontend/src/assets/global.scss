@@ -3,13 +3,12 @@
 body,
 html {
   min-height: 100%;
-  margin: 0px;
-  padding: 0px;
-  // overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   background-color: var(--background-color);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .global-text-color {
@@ -67,24 +66,51 @@ html {
 
 .global-app-container {
   max-width: var(--app-max-width);
+  height: 100svh;
   margin: auto;
+
+  &:has(.app-layout-sidebar-only) {
+    display: flex;
+    max-width: 100%;
+  }
 }
 
-/* When main nav is header-only (no left sidebar), container stays full width. */
-.app-layout-header-only {
-  /* Reserved for layout overrides if needed. */
+.app-layout-sidebar-only {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .breadcrumbs,
+  .main-layout-container {
+    margin: 0 auto;
+    width: calc(100% - 48px);
+    max-width: var(--app-max-width);
+  }
 }
 
-@media (max-width: 1410px) {
+body.app-layout-sidebar-only {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.main-content.app-layout-sidebar-only {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+@media (max-width: 1400px) {
   .global-app-container {
-    margin: 0px 24px;
+    margin: 0 24px;
   }
 }
 
 @media (max-width: 992px) {
+  body {
+    overflow-y: auto;
+  }
+
   .global-app-container {
-    margin: 0px 12px;
-    margin-bottom: 60px;
+    margin: 0 12px 60px;
   }
 }
 
@@ -102,7 +128,7 @@ html {
 
   ul,
   ol {
-    margin-left: 0px;
+    margin-left: 0;
     padding-left: 16px;
   }
 
@@ -199,7 +225,7 @@ html {
 }
 
 .download-button {
-  margin: 0px auto;
+  margin: 0 auto;
   transition: all 0.3s ease;
   max-width: 140px;
 }

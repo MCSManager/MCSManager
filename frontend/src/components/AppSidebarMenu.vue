@@ -131,11 +131,9 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
 }
 
 .left-sidebar {
-  top: 0;
-  align-self: flex-start;
-  position: fixed;
-  width: 240px;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 240px;
   text-align: left;
   border-right: 1px solid var(--color-gray-5);
   background-image: url("@/assets/side.png");
@@ -150,9 +148,10 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
   align-items: flex-start;
   padding: 8px;
   color: rgba(255, 255, 255, 0.85);
-  min-height: 100%;
+  flex: 1;
   gap: 8px;
   width: 100%;
+  overflow-y: auto;
 }
 
 .sidebar-item {
