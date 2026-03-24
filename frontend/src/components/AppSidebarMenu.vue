@@ -64,76 +64,64 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
 
 <template>
   <aside class="left-sidebar">
+    <a href="." class="logo">
+      <img :src="logoImage" />
+    </a>
     <nav class="sidebar-menu">
-      <a href="." class="logo-link">
-        <div class="logo">
-          <img :src="logoImage" />
-        </div>
-      </a>
+      <template v-for="(entry, index) in sidebarItems" :key="getItemKey(entry, index)">
+        <!-- Divider -->
+        <div v-if="entry.type === 'divider'" class="sidebar-divider" />
 
-      <div class="sidebar-menu-section">
-        <template v-for="(entry, index) in sidebarItems" :key="getItemKey(entry, index)">
-          <!-- Divider -->
-          <div v-if="entry.type === 'divider'" class="sidebar-divider" />
+        <!-- Route link -->
+        <a
+          v-else-if="entry.type === 'route'"
+          class="sidebar-item"
+          :class="[entry.customClass, { 'sidebar-item-active': isRouteActive(entry.path) }]"
+          @click.prevent="handleToPage(entry.path)"
+        >
+          <component :is="getRouteIcon(entry.path)" class="sidebar-item-icon" />
+          <span class="sidebar-item-text">{{ entry.name }}</span>
+        </a>
 
-          <!-- Route link -->
-          <a
-            v-else-if="entry.type === 'route'"
-            class="sidebar-item"
-            :class="[entry.customClass, { 'sidebar-item-active': isRouteActive(entry.path) }]"
-            @click.prevent="handleToPage(entry.path)"
-          >
-            <component :is="getRouteIcon(entry.path)" class="sidebar-item-icon" />
-            <span class="sidebar-item-text">{{ entry.name }}</span>
-          </a>
-
-          <!-- App menu (dropdown) -->
-          <a-dropdown
-            v-else-if="entry.type === 'app-dropdown'"
-            trigger="click"
-            placement="topRight"
-          >
-            <a class="sidebar-item" @click.prevent>
-              <component :is="entry.icon" v-if="entry.icon" class="sidebar-item-icon" />
-              <span class="sidebar-item-text">{{ entry.title }}</span>
-            </a>
-            <template #overlay>
-              <a-menu @click="(info) => onAppDropdownClick(entry, info)">
-                <a-menu-item v-for="m in entry.menus" :key="String(m.value)">
-                  {{ m.title }}
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-
-          <!-- App menu (single click) -->
-          <a
-            v-else-if="entry.type === 'app'"
-            class="sidebar-item"
-            :class="entry.customClass"
-            @click.prevent="entry.click()"
-          >
+        <!-- App menu (dropdown) -->
+        <a-dropdown v-else-if="entry.type === 'app-dropdown'" trigger="click" placement="topRight">
+          <a class="sidebar-item" @click.prevent>
             <component :is="entry.icon" v-if="entry.icon" class="sidebar-item-icon" />
             <span class="sidebar-item-text">{{ entry.title }}</span>
           </a>
-        </template>
-      </div>
+          <template #overlay>
+            <a-menu @click="(info) => onAppDropdownClick(entry, info)">
+              <a-menu-item v-for="m in entry.menus" :key="String(m.value)">
+                {{ m.title }}
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+
+        <!-- App menu (single click) -->
+        <a
+          v-else-if="entry.type === 'app'"
+          class="sidebar-item"
+          :class="entry.customClass"
+          @click.prevent="entry.click()"
+        >
+          <component :is="entry.icon" v-if="entry.icon" class="sidebar-item-icon" />
+          <span class="sidebar-item-text">{{ entry.title }}</span>
+        </a>
+      </template>
     </nav>
   </aside>
 </template>
 
 <style lang="scss" scoped>
-.logo-link {
+.logo {
   display: block;
-  width: 100%;
-  padding-left: 27px;
-
-  .logo {
-    margin-bottom: 20px;
-    margin-right: 10px;
-  }
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 18px;
   img {
     height: 20px;
+    animation: MasterLogoWobble 10s ease infinite;
   }
 }
 
@@ -159,17 +147,12 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 12px 0;
+  align-items: flex-start;
+  padding: 8px;
   color: rgba(255, 255, 255, 0.85);
   min-height: 100%;
-}
-
-.sidebar-menu-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
 .sidebar-item {
@@ -182,7 +165,7 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.4s ease;
-  margin: 0 8px;
+  width: 100%;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.178);
@@ -208,8 +191,9 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
 .sidebar-divider {
   height: 1px;
   background-color: rgba(255, 255, 255, 0.12);
-  margin: 12px 12px;
+  margin: 12px 0;
   flex-shrink: 0;
+  width: 100%;
 }
 
 /* Same semantic highlight as AppHeader */
@@ -223,5 +207,20 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
 
 :deep(.nav-button-danger:hover) {
   background-color: rgba(255, 25, 17, 0.25) !important;
+}
+
+@keyframes MasterLogoWobble {
+  62% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+  88% {
+    transform: rotate(-4deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 </style>
