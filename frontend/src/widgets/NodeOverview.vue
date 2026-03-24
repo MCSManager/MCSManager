@@ -1,7 +1,11 @@
+<!-- eslint-disable vue/html-indent -->
 <script setup lang="ts">
 import { useOverviewInfo } from "@/hooks/useOverviewInfo";
 import { t } from "@/lang/i18n";
+import { getUsageColor } from "@/tools/common";
+import { hasVersionUpdate } from "@/tools/version";
 import type { LayoutCard } from "@/types";
+import { CheckCircleOutlined, InfoCircleOutlined } from "@ant-design/icons-vue";
 import { computed } from "vue";
 
 defineProps<{
@@ -9,6 +13,7 @@ defineProps<{
 }>();
 
 const { state } = useOverviewInfo();
+const specifiedDaemonVersion = computed(() => state.value?.specifiedDaemonVersion);
 
 const columns = [
   {
@@ -85,39 +90,61 @@ const paginationConfig = computed(() => {
           <template #bodyCell="{ column, record }">
             <!-- IP:端口 合并列 -->
             <template v-if="column.key === 'address'">
-              <span class="NodeOverview__address">{{ record.address }}</span>
+              <span class="text-monospace">{{ record.address }}</span>
             </template>
             <!-- 昵称：标签，空时显示占位 -->
             <template v-else-if="column.key === 'remark'">
-              <a-tag v-if="record.remark !== '--'" color="cyan" class="NodeOverview__tag">
-                {{ record.remark }}
-              </a-tag>
-              <span v-else class="NodeOverview__muted">--</span>
+              {{ record.remark }}
             </template>
             <!-- CPU：进度条内显示百分比 -->
             <template v-else-if="column.key === 'cpu'">
-              <a-tag color="purple" class="NodeOverview__tag">{{ record.cpu }}</a-tag>
+              <span
+                v-if="record.available"
+                class="text-monospace"
+                :style="{ color: getUsageColor(record.cpuPercent) }"
+              >
+                {{ record.cpu }}
+              </span>
+              <span v-else>--</span>
             </template>
             <!-- 内存：进度条内显示已用/总量 -->
             <template v-else-if="column.key === 'mem'">
-              <a-tag color="purple" class="NodeOverview__tag">{{ record.mem }}</a-tag>
+              <span
+                v-if="record.available"
+                :style="{ color: getUsageColor(record.memUsedPercent, 'var(--color-purple-8)') }"
+              >
+                {{ record.mem }}
+              </span>
+              <span v-else>--</span>
             </template>
             <!-- 运行实例：进度条内显示 运行/总数 -->
             <template v-else-if="column.key === 'instances'">
-              <a-tag color="green" class="NodeOverview__tag">
-                {{ record.running }} / {{ record.total }}
-              </a-tag>
+              {{ record.running }} / {{ record.total }}
             </template>
             <!-- 版本：标签 -->
+            <!--   -->
             <template v-else-if="column.key === 'version'">
-              <a-tag v-if="record.version !== '--'" color="purple" class="NodeOverview__tag">
+              <a-tooltip
+                v-if="record.available && hasVersionUpdate(specifiedDaemonVersion, record.version)"
+              >
+                <template #title>
+                  {{ t("TXT_CODE_e520908a") }}
+                </template>
+                <span class="color-danger">
+                  <InfoCircleOutlined class="mr-2" />
+                  {{ record.version }}
+                </span>
+              </a-tooltip>
+
+              <span v-else-if="record.available" class="color-success">
+                <CheckCircleOutlined class="mr-2" />
                 {{ record.version }}
-              </a-tag>
-              <span v-else class="NodeOverview__muted">--</span>
+              </span>
+              <span v-else>{{ record.version }}</span>
             </template>
             <!-- 连接状态：在线/离线标签 -->
             <template v-else-if="column.key === 'status'">
-              <a-tag :color="record.available ? 'green' : 'red'" class="NodeOverview__tag">
+              <a-tag :color="record.available ? 'green' : 'red'">
                 {{ record.status }}
               </a-tag>
             </template>
@@ -129,49 +156,13 @@ const paginationConfig = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.NodeOverview {
-  .value {
-    font-weight: 800;
-    font-size: 36px;
-    margin-top: 4px;
-  }
-}
-
 .NodeOverview__wrap {
   overflow: auto;
   padding: 0 1px;
 }
 
-.NodeOverview__address {
+.text-monospace {
   font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
-  font-size: 12px;
-  color: var(--ant-color-text);
-}
-
-.NodeOverview__tag {
-  margin-inline-end: 0;
-}
-
-.NodeOverview__muted {
-  color: var(--ant-color-text-tertiary);
-  font-size: 12px;
-}
-
-.NodeOverview__progress-cell {
-  min-width: 0;
-
-  .ant-progress {
-    margin-bottom: 0;
-  }
-
-  .ant-progress-inner {
-    vertical-align: middle;
-  }
-
-  :deep(.ant-progress-text) {
-    font-size: 11px;
-    min-width: 2.5em;
-  }
 }
 
 :deep(.NodeOverview__wrap .ant-table-pagination) {
@@ -184,7 +175,5 @@ const paginationConfig = computed(() => {
 
 :deep(.NodeOverview__wrap .ant-table-thead > tr > th) {
   font-weight: 600;
-  color: var(--ant-color-text-secondary);
-  background: var(--ant-color-fill-quaternary);
 }
 </style>
