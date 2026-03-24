@@ -3423,5 +3423,7 @@
   "TXT_CODE_gpu_invalid_count": "Invalid GPU count: {{v}}. Must be an integer >= -1.",
   "TXT_CODE_gpu_invalid_device_id": "Invalid GPU device ID: {{v}}. Only letters, digits, hyphens and underscores are allowed.",
   "TXT_CODE_gpu_invalid_driver": "Invalid GPU driver name: {{v}}. Only letters and digits are allowed.",
-  "TXT_CODE_gpu_conflict_count_and_ids": "GPU configuration conflict: cannot specify both GPU count and device IDs at the same time."
+  "TXT_CODE_gpu_conflict_count_and_ids": "GPU configuration conflict: cannot specify both GPU count and device IDs at the same time.",
+  "TXT_CODE_29e85f34": "Are you sure?",
+  "TXT_CODE_f18f65db": "Please make sure your current work has been saved. You can freely adjust the interface after entering. The page will refresh after exiting!"
 }
