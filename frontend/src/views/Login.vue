@@ -25,7 +25,7 @@ const skeletonConfigs = [
 
 <template>
   <div v-if="!isPhone">
-    <div class="login-page-bg">
+    <div class="main-layout-container">
       <a-row :gutter="[24, 24]">
         <a-col v-for="(config, index) in skeletonConfigs" :key="index" :span="config.span">
           <CardPanel>
