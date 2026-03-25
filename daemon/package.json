@@ -40,7 +40,7 @@
     "proper-lockfile": "^4.1.2",
     "properties": "^1.2.1",
     "rcon-srcds": "^2.1.0",
-    "smol-toml": "^1.6.0",
+    "smol-toml": "^1.6.1",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.7.5",
     "stream-throttle": "^0.1.3",
