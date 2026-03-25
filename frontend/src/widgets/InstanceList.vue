@@ -513,7 +513,7 @@ onMounted(async () => {
               v-for="item in instancesMoreInfo"
               :key="item.instanceUuid"
               :span="24"
-              :xl="8"
+              :xl="6"
               :lg="8"
               :sm="12"
             >

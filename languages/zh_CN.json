@@ -3423,5 +3423,7 @@
   "TXT_CODE_gpu_invalid_count": "无效的 GPU 数量：{{v}}，必须为 >= -1 的整数。",
   "TXT_CODE_gpu_invalid_device_id": "无效的 GPU 设备 ID：{{v}}，只允许字母、数字、连字符和下划线。",
   "TXT_CODE_gpu_invalid_driver": "无效的 GPU 驱动名称：{{v}}，只允许字母和数字。",
-  "TXT_CODE_gpu_conflict_count_and_ids": "GPU 配置冲突：不能同时指定 GPU 数量和设备 ID。"
+  "TXT_CODE_gpu_conflict_count_and_ids": "GPU 配置冲突：不能同时指定 GPU 数量和设备 ID。",
+  "TXT_CODE_29e85f34": "确定进入自定义设计模式吗？",
+  "TXT_CODE_f18f65db": "请确认当前工作已保存，进入后可以对界面进行自由调整，退出后会刷新页面！"
 }

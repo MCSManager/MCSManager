@@ -53,8 +53,6 @@ export const useCommandHistory = () => {
     if (focusHistoryList.value === false) {
       return openHistoryList();
     }
-    const body = document.querySelector("body");
-    if (body) body.style.overflowY = "hidden";
     if (e.key === "ArrowUp") {
       if (selectLocation.value <= 0) {
         selectLocation.value = history.value.length - 1;
@@ -73,12 +71,6 @@ export const useCommandHistory = () => {
       commandInputValue.value = history.value[selectLocation.value];
       closeHistoryList();
     }
-
-    // document.querySelector("#Terminal-History-Select-Item")?.scrollIntoView({
-    //   behavior: "smooth",
-    //   block: "center"
-    // });
-    if (body) body.style.overflowY = "auto";
   };
 
   return {
