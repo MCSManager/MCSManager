@@ -144,7 +144,7 @@ const paginationConfig = computed(() => {
             </template>
             <!-- 连接状态：在线/离线标签 -->
             <template v-else-if="column.key === 'status'">
-              <a-tag :color="record.available && 'green'">
+              <a-tag :color="record.available ? 'green' : ''">
                 {{ record.status }}
               </a-tag>
             </template>

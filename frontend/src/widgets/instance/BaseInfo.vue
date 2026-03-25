@@ -168,11 +168,11 @@ onMounted(async () => {
         </a-typography-text>
         <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
-      <a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.config.tag.length">
         <details open>
           <summary>{{ t("TXT_CODE_eaabd222") }}:</summary>
           <a-tag
-            v-for="tag in instanceInfo?.config.tag"
+            v-for="tag in instanceInfo.config.tag"
             :key="tag"
             class="m-4"
             style="display: inline-block"
