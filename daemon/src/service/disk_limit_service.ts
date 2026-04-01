@@ -62,7 +62,7 @@ class DiskLimitService {
     if (instance.status() === Instance.STATUS_RUNNING) {
       const startCount = instance.startCount;
       instance.execPreset("stop");
-      await sleep(1000 * 60);
+      await sleep(1000 * 10);
       if (instance.status() !== Instance.STATUS_STOP && startCount === instance.startCount) {
         instance.println("ERROR", $t("TXT_CODE_8418e7fe"));
         instance
@@ -108,10 +108,7 @@ class DiskLimitService {
               storageUsage: convertBytesToGB(storageUsage)
             })
           );
-          instance.println(
-            "WARNING",
-            $t("TXT_CODE_d448d98d")
-          );
+          instance.println("WARNING", $t("TXT_CODE_d448d98d"));
           await sleep(200);
         }
         this.#stopInstance(instance);
