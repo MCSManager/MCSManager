@@ -63,7 +63,7 @@ class DiskLimitService {
       const startCount = instance.startCount;
       instance.execPreset("stop");
       await sleep(1000 * 60);
-      if (instance.status() === Instance.STATUS_RUNNING && startCount === instance.startCount) {
+      if (instance.status() !== Instance.STATUS_STOP && startCount === instance.startCount) {
         instance.println("ERROR", $t("TXT_CODE_8418e7fe"));
         instance
           .execPreset("kill")
