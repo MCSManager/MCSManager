@@ -821,7 +821,7 @@ onUnmounted(() => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("TXT_CODE_ae575e12") }}
+                        {{ t("TXT_CODE_2b85af6d") }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
@@ -837,6 +837,23 @@ onUnmounted(() => {
                         {{ item.label }}
                       </a-select-option>
                     </a-select>
+                  </a-form-item>
+
+                  <a-form-item v-show="(formData as any).reverseProxyMode">
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_66aeac82") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_fd8bc51f") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-input
+                      v-model:value="(formData as any).reverseProxyHeader"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
                   </a-form-item>
 
                   <a-form-item>
@@ -911,11 +928,10 @@ onUnmounted(() => {
                     <a-typography-paragraph type="secondary">
                       {{ t("TXT_CODE_SSO_ENABLE_DESC") }}
                     </a-typography-paragraph>
-                    <a-select
-                      v-model:value="ssoMode"
-                      style="max-width: 320px"
-                    >
-                      <a-select-option value="disabled">{{ t("TXT_CODE_718c9310") }}</a-select-option>
+                    <a-select v-model:value="ssoMode" style="max-width: 320px">
+                      <a-select-option value="disabled">
+                        {{ t("TXT_CODE_718c9310") }}
+                      </a-select-option>
                       <a-select-option value="oidc">OpenID Connect (OIDC)</a-select-option>
                       <a-select-option value="oauth2">OAuth 2.0</a-select-option>
                     </a-select>

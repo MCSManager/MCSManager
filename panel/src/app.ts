@@ -126,7 +126,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
 
   const app = new Koa({
     proxy: systemConfig?.reverseProxyMode || false,
-    proxyIpHeader: "X-Real-IP"
+    proxyIpHeader: systemConfig?.reverseProxyHeader || "X-Real-IP"
   });
 
   // Listen for Koa errors

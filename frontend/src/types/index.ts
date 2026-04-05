@@ -72,6 +72,7 @@ export interface Settings {
   httpPort: number;
   httpIp: any;
   reverseProxyMode: boolean;
+  reverseProxyHeader: string;
   dataPort: number;
   forwardType: number;
   crossDomain: boolean;
