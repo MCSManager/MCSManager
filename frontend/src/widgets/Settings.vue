@@ -8,7 +8,9 @@ import { router } from "@/config/router";
 import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
 import { setSettingInfo, settingInfo } from "@/services/apis";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
+import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { arrayFilter } from "@/tools/array";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, Settings } from "@/types";
 import {
@@ -27,8 +29,6 @@ import {
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { onMounted, onUnmounted, ref } from "vue";
-import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
-import { arrayFilter } from "@/tools/array";
 
 defineProps<{
   card: LayoutCard;
@@ -674,7 +674,11 @@ onUnmounted(() => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("TXT_CODE_ae575e12") }}
+                        {{
+                          t(
+                            "如果您正在使用反向代理访问面板，请开启此选项。面板将会从特定的请求头来获取真实IP。"
+                          )
+                        }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
@@ -690,6 +694,23 @@ onUnmounted(() => {
                         {{ item.label }}
                       </a-select-option>
                     </a-select>
+                  </a-form-item>
+
+                  <a-form-item v-show="(formData as any).reverseProxyMode">
+                    <a-typography-title :level="5">
+                      {{ t("反向代理请求头") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("当反向代理模式开启时，面板将会从这个请求头中获取用户真实IP。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-input
+                      v-model:value="(formData as any).reverseProxyHeader"
+                      style="max-width: 320px"
+                      :placeholder="t('TXT_CODE_4ea93630')"
+                    />
                   </a-form-item>
 
                   <a-form-item>

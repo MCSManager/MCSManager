@@ -7,6 +7,8 @@ export default class SystemConfig {
 
   // reverse proxy mode
   reverseProxyMode: boolean = false;
+  // reverse proxy header
+  reverseProxyHeader: string = "X-Real-IP";
 
   // data transfer port
   dataPort: number = 23334;
