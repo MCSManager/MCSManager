@@ -3425,5 +3425,8 @@
   "TXT_CODE_gpu_invalid_driver": "Invalid GPU driver name: {{v}}. Only letters and digits are allowed.",
   "TXT_CODE_gpu_conflict_count_and_ids": "GPU configuration conflict: cannot specify both GPU count and device IDs at the same time.",
   "TXT_CODE_29e85f34": "Are you sure?",
-  "TXT_CODE_f18f65db": "Please make sure your current work has been saved. You can freely adjust the interface after entering. The page will refresh after exiting!"
+  "TXT_CODE_f18f65db": "Please make sure your current work has been saved. You can freely adjust the interface after entering. The page will refresh after exiting!",
+  "TXT_CODE_2b85af6d": "If you are accessing the panel through a reverse proxy, please enable this option. The panel will retrieve your real IP address from a specific request header.",
+  "TXT_CODE_66aeac82": "Reverse Proxy Request Header",
+  "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header."
 }

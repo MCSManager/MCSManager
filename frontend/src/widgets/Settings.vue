@@ -821,11 +821,7 @@ onUnmounted(() => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "如果您正在使用反向代理访问面板，请开启此选项。面板将会从特定的请求头来获取真实IP。"
-                          )
-                        }}
+                        {{ t("TXT_CODE_2b85af6d") }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
@@ -845,11 +841,11 @@ onUnmounted(() => {
 
                   <a-form-item v-show="(formData as any).reverseProxyMode">
                     <a-typography-title :level="5">
-                      {{ t("反向代理请求头") }}
+                      {{ t("TXT_CODE_66aeac82") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("当反向代理模式开启时，面板将会从这个请求头中获取用户真实IP。") }}
+                        {{ t("TXT_CODE_fd8bc51f") }}
                       </a-typography-text>
                     </a-typography-paragraph>
 
@@ -933,9 +929,9 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_SSO_ENABLE_DESC") }}
                     </a-typography-paragraph>
                     <a-select v-model:value="ssoMode" style="max-width: 320px">
-                      <a-select-option value="disabled">{{
-                        t("TXT_CODE_718c9310")
-                      }}</a-select-option>
+                      <a-select-option value="disabled">
+                        {{ t("TXT_CODE_718c9310") }}
+                      </a-select-option>
                       <a-select-option value="oidc">OpenID Connect (OIDC)</a-select-option>
                       <a-select-option value="oauth2">OAuth 2.0</a-select-option>
                     </a-select>
