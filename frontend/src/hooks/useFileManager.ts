@@ -5,6 +5,7 @@ import { t } from "@/lang/i18n";
 import {
   addFolder as addFolderApi,
   changePermission as changePermissionApi,
+  changePermissionBatch as changePermissionBatchApi,
   compressFile as compressFileApi,
   copyFile as copyFileApi,
   deleteFile as deleteFileApi,
@@ -823,24 +824,55 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     await openDialog(t("TXT_CODE_16853efe"), "", "", "permission", {
       maxWidth: "400px"
     });
-    const { execute } = changePermissionApi();
     try {
-      await execute({
-        params: {
-          daemonId: daemonId || "",
-          uuid: instanceId || ""
-        },
-        data: {
-          chmod: permission2number(
-            permission.data.owner,
-            permission.data.usergroup,
-            permission.data.everyone
-          ),
-          deep: permission.deep,
-          target: currentPath.value + name
+      const chmod = permission2number(
+        permission.data.owner,
+        permission.data.usergroup,
+        permission.data.everyone
+      );
+      if (isMultiple.value) {
+        if (!selectionData.value || selectionData.value.length === 0)
+          return reportErrorMsg(t("TXT_CODE_b152cd75"));
+        const { state, execute } = changePermissionBatchApi();
+        await execute({
+          params: {
+            daemonId: daemonId || "",
+            uuid: instanceId || ""
+          },
+          data: {
+            chmod,
+            deep: permission.deep,
+            targets: selectionData.value.map((item) => currentPath.value + item.name)
+          }
+        });
+        const summary = state.value;
+        if (!summary || summary.failed === 0) {
+          message.success(t("TXT_CODE_b05948d1"));
+        } else if (summary.success === 0) {
+          message.error(t("TXT_CODE_6f8ce7f1", { total: summary.total }));
+        } else {
+          message.warning(
+            t("TXT_CODE_31b8fbd5", {
+              success: summary.success,
+              failed: summary.failed
+            })
+          );
         }
-      });
-      message.success(t("TXT_CODE_b05948d1"));
+      } else {
+        const { execute } = changePermissionApi();
+        await execute({
+          params: {
+            daemonId: daemonId || "",
+            uuid: instanceId || ""
+          },
+          data: {
+            chmod,
+            deep: permission.deep,
+            target: currentPath.value + name
+          }
+        });
+        message.success(t("TXT_CODE_b05948d1"));
+      }
       await getFileList();
     } catch (err: any) {
       return reportErrorMsg(err.message);

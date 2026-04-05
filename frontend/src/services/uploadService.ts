@@ -56,7 +56,6 @@ export class UploadFiles {
         params: {
           filename: this.file.name,
           size: this.file.size,
-          // sum: await fileSum(this.file),
           sum: "",
           ...options
         }

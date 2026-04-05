@@ -32,7 +32,7 @@ export async function checkImage(name: string) {
 }
 
 export default class DockerPullCommand extends InstanceCommand {
-  constructor() {
+  constructor(private imageName?: string) {
     super("DockerPullCommand");
   }
 
@@ -77,7 +77,7 @@ export default class DockerPullCommand extends InstanceCommand {
   }
 
   async exec(instance: Instance) {
-    const imageName = instance.config.docker.image;
+    const imageName = this.imageName || instance.config.docker.image;
     if (!imageName) {
       const errorMsg = $t("TXT_CODE_17be5f70");
       logger.error(`Docker pull failed: ${errorMsg}`);

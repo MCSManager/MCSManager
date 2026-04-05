@@ -62,6 +62,49 @@ routerApp.on("file/chmod", async (ctx, data) => {
   }
 });
 
+routerApp.on("file/chmod_batch", async (ctx, data) => {
+  try {
+    const fileManager = getFileManager(data.instanceUuid);
+    const { chmod, targets, deep: rawDeep } = data as {
+      chmod: number;
+      deep?: boolean;
+      targets: string[];
+    };
+    const deep = Boolean(rawDeep);
+    const results: { target: string; success: boolean; error?: string }[] = [];
+    let success = 0;
+    let failed = 0;
+
+    for (const target of targets || []) {
+      const currentTarget = String(target);
+      try {
+        await fileManager.chmod(currentTarget, chmod, deep);
+        success += 1;
+        results.push({
+          target: currentTarget,
+          success: true
+        });
+      } catch (error: any) {
+        failed += 1;
+        results.push({
+          target: currentTarget,
+          success: false,
+          error: error?.message || String(error)
+        });
+      }
+    }
+
+    protocol.response(ctx, {
+      success,
+      failed,
+      total: results.length,
+      results
+    });
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
+});
+
 // Query the status of the file management system
 routerApp.on("file/status", async (ctx, data) => {
   try {

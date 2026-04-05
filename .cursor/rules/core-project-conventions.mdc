@@ -1,0 +1,52 @@
+---
+description: Project development conventions
+alwaysApply: true
+---
+
+# Project structure
+
+The codebase is split into: `web backend (panel/*.*)`, `daemon/node (daemon/*.*)`, and `web frontend (frontend/*.*)`.
+
+- **Daemon**: instance processes, containers, files, and terminal management.
+- **Web backend**: user management, node connections, auth, and API.
+- **Web frontend**: UI, backend communication; some features talk to the daemon directly to reduce load.
+
+# Code requirements
+
+- Prefer **minimal changes**. Before coding, check `hooks/services/stores/utils` in the relevant subproject to avoid duplicate logic.
+- All comments and all code must be written in English. If there are any non-English strings, you must use the i18n convention.
+- Do **not** hardcode user-facing text (UI copy or error messages). Use the project i18n flow (backend logs excepted).
+- Code must be **high cohesion, low coupling, reusable**.
+
+# i18n conventions
+
+- **Frontend**: use `t()` from `@/lang/i18n` for all translatable text.
+- **Backend**: use `$t()` (e.g. from `daemon/src/i18n/index.ts`) for all user-facing text and error messages.
+- Store source strings as accurate, short, correct English in `languages/en_us.json`; other locales are added separately.
+
+## i18n parameterized strings
+
+> Frontend and backend use different placeholder syntax. Keys must use the `TXT_CODE` prefix.
+
+```json
+{
+  "TXT_CODE_FILE_ERROR": "File {name} error!",
+  "TXT_CODE_INSTANCE_ERROR": "Exception instance {{uuid}}: {{err}}"
+}
+```
+
+- **Frontend**: one pair of braces `{name}`.
+- **Web backend / Daemon**: two pairs `{{uuid}}`, `{{err}}`.
+
+```vue
+<!-- Web frontend -->
+<template>{{ t("TXT_CODE_FILE_ERROR", { name: props.fileName }) }}</template>
+```
+
+```ts
+// Backend, with parameters
+const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
+  uuid: instance.instanceUuid,
+  err: err
+});
+```

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
 import { openNodeSelectDialog } from "@/components/fc/index";
 import { router } from "@/config/router";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
@@ -7,14 +6,19 @@ import { QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import type { LayoutCard } from "@/types";
+import InstallOptionButton from "@/widgets/market/InstallOptionButton.vue";
+import { useMarketTour } from "@/widgets/market/useMarketTour";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
 import {
   AppstoreAddOutlined,
   BlockOutlined,
+  DatabaseOutlined,
   FileZipOutlined,
   FolderOpenOutlined
 } from "@ant-design/icons-vue";
+import { Divider, Flex, Tour } from "ant-design-vue";
+import Link from "ant-design-vue/es/typography/Link";
 import { ref } from "vue";
 
 const props = defineProps<{
@@ -23,21 +27,24 @@ const props = defineProps<{
 
 const { isAdmin } = useAppStateStore();
 
+const { step3Ref, openTour, tourCurrent, tourSteps, setStepRef, markTourDone } =
+  useMarketTour(isAdmin);
+
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const daemonId = getMetaOrRouteValue("daemonId", false) ?? "";
 
-// 表单数据状态
+// Form data state
 const formData = ref({
   createMethod: QUICKSTART_METHOD.DOCKER,
   daemonId: daemonId || ""
 });
 
-// 弹窗状态
+// Dialog visibility state
 const showCreateForm = ref(false);
 
 const handleNext = (instanceUuid: string) => {
   showCreateForm.value = false;
-  // 创建成功后跳转到实例终端页面
+  // Navigate to instance terminal after create
   router.push({
     path: "/instances/terminal",
     query: {
@@ -89,6 +96,10 @@ const manualInstallOptions = [
     }
   }
 ];
+
+const openEditor = () => {
+  router.push("/market/editor");
+};
 </script>
 
 <template>
@@ -99,7 +110,7 @@ const manualInstallOptions = [
         {{ t("TXT_CODE_5a74975b") }}
       </a-typography-title>
       <a-typography-paragraph>
-        <p>
+        <p style="opacity: 0.6">
           {{ t("TXT_CODE_81ad9e80") }}
         </p>
       </a-typography-paragraph>
@@ -108,44 +119,54 @@ const manualInstallOptions = [
           <a-col
             v-for="(option, index) in manualInstallOptions"
             :key="index"
+            :ref="(el) => setStepRef(index, el)"
             :span="24"
             :md="12"
             :lg="8"
           >
-            <CardPanel class="install-option-card">
-              <template #title>
-                <div class="card-header">
-                  <div class="card-title">{{ option.label }}</div>
-                </div>
-              </template>
-              <template #body>
-                <div class="icon-wrapper">
-                  <component :is="option.icon" />
-                </div>
-                <div class="card-description">
-                  {{ option.description }}
-                </div>
-
-                <div class="card-action">
-                  <a-button type="primary" @click="option.action">
-                    <div class="flex items-center">
-                      {{ t("TXT_CODE_7b2c5414") }}
-                    </div>
-                  </a-button>
-                </div>
-              </template>
-            </CardPanel>
+            <InstallOptionButton :option="option" />
           </a-col>
         </a-row>
       </div>
     </div>
-    <div><McPreset :card="card" /></div>
+    <div>
+      <div ref="step3Ref">
+        <a-typography-title :level="4" style="margin-bottom: 8px">
+          <DatabaseOutlined />
+          {{ t("TXT_CODE_88249aee") }}
+        </a-typography-title>
+        <a-typography-paragraph>
+          <Flex justify="space-between" align="flex-start">
+            <p style="opacity: 0.6">
+              <span>{{ t("TXT_CODE_c9ce7427") }}</span>
+            </p>
+            <p style="opacity: 0.6">
+              <Link target="_blank" @click="openEditor">
+                {{ t("TXT_CODE_85c10fde") }}
+              </Link>
+              <Divider type="vertical" />
+              <Link href="https://github.com/MCSManager/Script/issues/77" target="_blank">
+                {{ t("TXT_CODE_709c2db4") }}
+              </Link>
+            </p>
+          </Flex>
+        </a-typography-paragraph>
+      </div>
+      <McPreset :card="card" />
+    </div>
 
-    <!-- 创建实例表单弹窗 -->
+    <Tour
+      v-model:current="tourCurrent"
+      :open="openTour"
+      :steps="tourSteps"
+      @close="markTourDone"
+      @finish="markTourDone"
+    />
+
     <a-modal
       v-model:open="showCreateForm"
       :title="t('TXT_CODE_645bc545')"
-      :width="800"
+      :width="1000"
       :footer="null"
       :destroy-on-close="true"
     >
@@ -161,62 +182,5 @@ const manualInstallOptions = [
 <style lang="scss" scoped>
 .manual-install-options {
   margin: 24px auto;
-}
-
-.install-option-card {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-4px);
-
-    &::before {
-      opacity: 1;
-    }
-  }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--color-gray-10);
-      flex: 1;
-    }
-  }
-
-  .card-description {
-    color: var(--color-gray-8);
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    flex: 1;
-  }
-
-  .card-action {
-    display: flex;
-    justify-content: flex-end;
-    color: var(--color-blue-6);
-    font-size: 14px;
-    gap: 4px;
-    margin-right: 4px;
-  }
-
-  .icon-wrapper {
-    position: absolute;
-    left: 2px;
-    bottom: 0;
-    color: var(--color-gray-8);
-    opacity: 0.2;
-    font-size: 20px;
-    transform: rotate(-1deg);
-  }
 }
 </style>

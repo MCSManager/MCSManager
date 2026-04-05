@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
 import { openInstanceTagsEditor, useDeleteInstanceDialog } from "@/components/fc/index";
-import TextContainer from "@/components/TextContainer.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useInstanceInfo, verifyEULA } from "@/hooks/useInstance";
@@ -34,6 +33,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import _ from "lodash";
+import prettyBytes, { type Options as PrettyOptions } from "pretty-bytes";
 import { computed, ref } from "vue";
 
 const props = defineProps<{
@@ -50,12 +50,13 @@ const { toPage } = useAppRouters();
 const instanceId = props.targetInstanceInfo?.instanceUuid || getMetaOrRouteValue("instanceId");
 const daemonId = props.targetDaemonId || getMetaOrRouteValue("daemonId");
 
-const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo } = useInstanceInfo({
-  instanceId: props.targetInstanceInfo ? undefined : instanceId,
-  daemonId: props.targetInstanceInfo ? undefined : daemonId,
-  autoRefresh: props.targetInstanceInfo ? false : true,
-  instanceInfo: props.targetInstanceInfo ? ref(props.targetInstanceInfo) : undefined
-});
+const { statusText, isRunning, isStopped, instanceTypeText, instanceInfo, isStarting } =
+  useInstanceInfo({
+    instanceId: props.targetInstanceInfo ? undefined : instanceId,
+    daemonId: props.targetInstanceInfo ? undefined : daemonId,
+    autoRefresh: props.targetInstanceInfo ? false : true,
+    instanceInfo: props.targetInstanceInfo ? ref(props.targetInstanceInfo) : undefined
+  });
 
 const operationConfig = {
   params: {
@@ -69,6 +70,30 @@ const { isLoading: stopLoading, execute: executeStop } = stopInstance();
 const { isLoading: restartLoading, execute: executeRestart } = restartInstance();
 const { isLoading: killLoading, execute: executeKill } = killInstance();
 const { isLoading: updateLoading, execute: executeUpdate } = updateInstance();
+
+const prettyBytesConfig: PrettyOptions = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+  binary: true
+};
+
+const formatStorageUsage = (usage?: number, limit?: number) => {
+  const fUsage = prettyBytes(usage ?? 0, prettyBytesConfig);
+  const fLimit = prettyBytes(limit ?? 0, prettyBytesConfig);
+  return limit ? `${fUsage} / ${fLimit}` : fUsage;
+};
+
+const formatNetworkSpeed = (bytes?: number) =>
+  prettyBytes(bytes ?? 0, {
+    ...prettyBytesConfig,
+    binary: false
+  }) + "/s";
+
+const formatTrafficUsage = (bytes?: number) =>
+  prettyBytes(bytes ?? 0, {
+    ...prettyBytesConfig,
+    binary: false
+  });
 
 const refreshList = () => {
   setTimeout(() => {
@@ -263,7 +288,13 @@ const instanceOperations = computed(() =>
       <div class="instance-card-body">
         <a-typography-paragraph>
           <div class="mb-8 flex" style="flex-wrap: wrap; gap: 8px">
-            <a-tag class="m-0" :color="isRunning ? 'green' : 'blue'">
+            <a-tag
+              class="m-0"
+              :color="isRunning ? 'green' : isStarting ? 'pink' : ''"
+              :style="{
+                opacity: isRunning || isStarting ? '1' : '0.5'
+              }"
+            >
               <span v-if="isRunning">
                 <CheckCircleOutlined />
                 {{ statusText }}
@@ -277,15 +308,16 @@ const instanceOperations = computed(() =>
                 {{ statusText }}
               </span>
             </a-tag>
-            <a-tag class="m-0" color="blue">
-              {{ instanceTypeText }}
-            </a-tag>
+
             <div v-if="instanceInfo?.config.tag && instanceInfo?.config.tag.length > 0">|</div>
             <a-tag v-for="item in instanceInfo?.config.tag" :key="item" class="m-0">
               {{ item }}
             </a-tag>
           </div>
-
+          <div class="instance-info-line">
+            <span class="title">{{ t("TXT_CODE_2f291d8b") }}:</span>
+            <span class="value"> {{ instanceTypeText }}</span>
+          </div>
           <div class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_34611898") }}:</span>
             <span class="value"> {{ parseTimestamp(instanceInfo?.config.lastDatetime) }}</span>
@@ -295,17 +327,9 @@ const instanceOperations = computed(() =>
             <span> {{ parseTimestamp(instanceInfo?.config.endTime) }}</span>
           </div>
           <div
-            v-if="
-              instanceInfo?.config?.docker?.image && instanceInfo?.config?.processType === 'docker'
-            "
+            v-if="instanceInfo?.info.memoryUsage && instanceInfo?.config?.processType !== 'docker'"
             class="instance-info-line"
           >
-            <span class="title">{{ t("TXT_CODE_77000411") }}:</span>
-            <span class="value">
-              <TextContainer :text="instanceInfo?.config?.docker?.image" :max-length="26" />
-            </span>
-          </div>
-          <div v-if="instanceInfo?.info.memoryUsage" class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
             <span class="value">
               {{
@@ -313,6 +337,42 @@ const instanceOperations = computed(() =>
               }}
             </span>
           </div>
+          <template v-if="instanceInfo?.config?.processType === 'docker'">
+            <div v-if="instanceInfo?.info.cpuUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_b862a158") }}:</span>
+              <span class="value">{{ parseInt(String(instanceInfo?.info.cpuUsage)) }}%</span>
+            </div>
+            <div v-if="instanceInfo?.info.memoryUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_593ee330") }}:</span>
+              <span class="value">
+                {{
+                  formatMemoryUsage(instanceInfo?.info.memoryUsage, instanceInfo?.info.memoryLimit)
+                }}
+              </span>
+            </div>
+            <div v-if="instanceInfo?.info.storageUsage != null" class="instance-info-line">
+              <span class="title">{{ t("TXT_CODE_DISK_USAGE") }}:</span>
+              <span class="value">
+                {{
+                  formatStorageUsage(
+                    instanceInfo?.info.storageUsage,
+                    instanceInfo?.info.storageLimit
+                  )
+                }}
+              </span>
+            </div>
+            <div
+              v-if="instanceInfo?.info.rxRate != null || instanceInfo?.info.txRate != null"
+              class="instance-info-line"
+            >
+              <span class="title"> {{ t("TXT_CODE_network_bandwidth") }}: </span>
+              <span class="value">
+                ↓{{ formatNetworkSpeed(instanceInfo?.info.rxRate) }} ↑{{
+                  formatNetworkSpeed(instanceInfo?.info.txRate)
+                }}
+              </span>
+            </div>
+          </template>
           <div v-if="instanceInfo?.info.mcPingOnline" class="instance-info-line">
             <span class="title">{{ t("TXT_CODE_e4dce83f") }}:</span>
             <span class="value" style="vertical-align: middle">

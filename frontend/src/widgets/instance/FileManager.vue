@@ -328,7 +328,7 @@ const menuList = (record: DataType) =>
       key: "changePermission",
       icon: h(KeyOutlined),
       onClick: () => changePermission(record.name, record.mode),
-      condition: () => !isMultiple.value && fileStatus.value?.platform !== "win32"
+      condition: () => fileStatus.value?.platform !== "win32"
     },
     {
       label: t("TXT_CODE_88122886"),
@@ -495,10 +495,10 @@ onUnmounted(() => {
         >
           <template #body>
             <div v-if="uploadData.current" class="flex-nowrap w-100">
-              <a-typography-text :ellipsis="true">
-                {{ uploadData.currentFile }}
-                {{ uploadInstanceTag }}
-              </a-typography-text>
+              <a-typography-text
+                :ellipsis="true"
+                :content="`${uploadData.currentFile} ${uploadInstanceTag}`.trim()"
+              />
               <a-typography-text style="padding-left: 5px; white-space: nowrap">
                 ({{ uploadData.files[0] }}/{{ uploadData.files[1] }})
               </a-typography-text>

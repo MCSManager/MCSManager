@@ -205,7 +205,10 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
       // Docker Hub authentication
       try {
         const tokenResponse = await axios.get(
-          `https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repository}:pull`
+          `https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repository}:pull`,
+          {
+            timeout: 3000
+          }
         );
         token = tokenResponse.data.token || tokenResponse.data.access_token || "";
       } catch (tokenError) {
@@ -229,7 +232,7 @@ router.post("/dockerhub_image_platforms", permission({ level: ROLE.ADMIN }), asy
     }
 
     const manifestUrl = `${registryUrl}/v2/${repository}/manifests/${tag}`;
-    const manifestResponse = await axios.get(manifestUrl, { headers });
+    const manifestResponse = await axios.get(manifestUrl, { headers, timeout: 3000 });
 
     const manifest = manifestResponse.data;
     const platforms: string[] = [];

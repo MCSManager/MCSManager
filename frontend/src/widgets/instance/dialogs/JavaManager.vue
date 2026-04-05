@@ -196,7 +196,7 @@ defineExpose({
           :icon="h(PlusOutlined)"
           @click="handleAddJava()"
         >
-          {{ t("添加现有Java") }}
+          {{ t("TXT_CODE_8900e7ee") }}
         </a-button>
 
         <a-button

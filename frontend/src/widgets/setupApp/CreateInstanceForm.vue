@@ -18,6 +18,7 @@ import type { FormInstance } from "ant-design-vue";
 import { message, Modal, type UploadProps } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { computed, createVNode, onUnmounted, reactive, ref } from "vue";
+import DockerImageSelect from "../instance/dialogs/components/DockerImageSelect.vue";
 import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
 
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
@@ -218,88 +219,125 @@ const createInstance = async () => {
       {{ t("TXT_CODE_b51bac6f") }}
     </a-typography-paragraph>
     <a-form ref="formRef" :rules="rules" :model="formData" layout="vertical" autocomplete="off">
-      <a-form-item name="nickname">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_f70badb9") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_818928ba") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.nickname" :placeholder="t('TXT_CODE_475c5890')" />
-      </a-form-item>
+      <a-row :gutter="20">
+        <a-col :xs="24" :md="12">
+          <a-form-item name="nickname">
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_f70badb9") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_818928ba") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="formData.nickname" :placeholder="t('TXT_CODE_475c5890')" />
+          </a-form-item>
+        </a-col>
 
-      <a-form-item>
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_2f291d8b") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_be608c82") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-select
-          v-model:value="formData.type"
-          :placeholder="t('TXT_CODE_3bb646e4')"
-          @change="(value) => changeInstanceType(value?.toString() ?? '')"
-        >
-          <a-select-option v-for="(item, key) in INSTANCE_TYPE_TRANSLATION" :key="key" :value="key">
-            {{ item }}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
+        <a-col :xs="24" :md="12">
+          <a-form-item>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_2f291d8b") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_be608c82") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-select
+              v-model:value="formData.type"
+              :placeholder="t('TXT_CODE_3bb646e4')"
+              @change="(value) => changeInstanceType(value?.toString() ?? '')"
+            >
+              <a-select-option
+                v-for="(item, key) in INSTANCE_TYPE_TRANSLATION"
+                :key="key"
+                :value="key"
+              >
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+      </a-row>
 
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_de3ced4b") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            <span>
-              {{ t("TXT_CODE_c7a43089") }}
-            </span>
-            <br />
-            <span>{{ t("TXT_CODE_8fd7a9a1") }}</span>
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.docker.image" :placeholder="t('TXT_CODE_95c5e900')" />
-      </a-form-item>
+      <a-row v-if="createMethod === QUICKSTART_METHOD.DOCKER" :gutter="20">
+        <a-col :xs="24" :md="12">
+          <a-form-item>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_d12f5b1c") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                <span>
+                  {{ t("TXT_CODE_c7a43089") }}
+                </span>
+              </a-typography-text>
+            </a-typography-paragraph>
+            <DockerImageSelect
+              :model-value="formData.docker.image ?? ''"
+              :daemon-id="daemonId ?? ''"
+              @update:model-value="(v: string) => (formData.docker.image = v)"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :xs="24" :md="12">
+          <a-form-item>
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_5484094a") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_60dd05d5") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-switch
+              v-model:checked="formData.docker.changeWorkdir"
+              :checked-value="true"
+              :un-checked-value="false"
+            >
+              <template #checkedChildren>
+                <check-outlined />
+              </template>
+              <template #unCheckedChildren>
+                <close-outlined />
+              </template>
+            </a-switch>
+          </a-form-item>
+        </a-col>
+      </a-row>
 
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
-        <a-typography-title :level="5">
-          {{ t("TXT_CODE_81979d0f") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_3407250a") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.docker.workingDir" :placeholder="t('TXT_CODE_2082f659')" />
-      </a-form-item>
-
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.DOCKER">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_5484094a") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_60dd05d5") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-switch
-          v-model:checked="formData.docker.changeWorkdir"
-          :checked-value="true"
-          :un-checked-value="false"
-        >
-          <template #checkedChildren>
-            <check-outlined />
-          </template>
-          <template #unCheckedChildren>
-            <close-outlined />
-          </template>
-        </a-switch>
-      </a-form-item>
+      <a-row v-if="createMethod === QUICKSTART_METHOD.DOCKER" :gutter="20">
+        <a-col :xs="24" :sm="12">
+          <a-form-item name="cwd">
+            <a-typography-title :level="5">
+              {{ t("TXT_CODE_20d110b3") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_877eea45") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="formData.cwd" :placeholder="t('TXT_CODE_a85091a4')" />
+          </a-form-item>
+        </a-col>
+        <a-col :xs="24" :md="12">
+          <a-form-item>
+            <a-typography-title :level="5">
+              {{ t("TXT_CODE_81979d0f") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_3407250a") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input
+              v-model:value="formData.docker.workingDir"
+              :placeholder="t('TXT_CODE_2082f659')"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
 
       <a-form-item name="startCommand">
         <a-typography-title :level="5">
@@ -321,36 +359,45 @@ const createInstance = async () => {
         <a-input-group compact style="display: flex">
           <a-textarea
             v-model:value="formData.startCommand"
-            :rows="3"
+            :rows="2"
             :placeholder="t('TXT_CODE_d4ad1dd')"
-            style="min-height: 40px"
+            style="min-height: 30px"
           />
         </a-input-group>
       </a-form-item>
 
-      <a-form-item name="stopCommand">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_11cfe3a1") }}
-        </a-typography-title>
+      <a-form-item>
+        <!-- Update Command -->
+        <a-typography-title :level="5">{{ t("TXT_CODE_2e2c6b7b") }}</a-typography-title>
         <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_7ec7ccb8") }}
+          <a-typography-text type="secondary" class="typography-text-ellipsis">
+            {{ t("TXT_CODE_4f387c5a") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-input v-model:value="formData.stopCommand" :placeholder="t('TXT_CODE_83053cd5')" />
+        <!-- eslint-disable-next-line vue/html-quotes -->
+        <a-textarea
+          v-model:value="formData.updateCommand"
+          :rows="2"
+          style="min-height: 30px"
+          :placeholder="$t('TXT_CODE_36bd6348')"
+        />
       </a-form-item>
 
-      <a-form-item name="cwd">
-        <a-typography-title :level="5">
-          {{ t("TXT_CODE_320f4304") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_877eea45") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-input v-model:value="formData.cwd" :placeholder="t('TXT_CODE_a85091a4')" />
-      </a-form-item>
+      <a-row :gutter="20">
+        <a-col :xs="24" :sm="12">
+          <a-form-item name="stopCommand">
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_11cfe3a1") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_7ec7ccb8") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-input v-model:value="formData.stopCommand" :placeholder="t('TXT_CODE_83053cd5')" />
+          </a-form-item>
+        </a-col>
+      </a-row>
 
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
         <a-typography-title :level="5" class="require-field">

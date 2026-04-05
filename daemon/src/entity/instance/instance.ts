@@ -33,6 +33,10 @@ interface IInstanceInfo {
   memoryUsagePercent?: number;
   rxBytes?: number;
   txBytes?: number;
+  rxRate?: number;
+  txRate?: number;
+  networkInterfaces?: string[];
+  networkStatsSource?: "docker";
   readBytes?: number;
   writeBytes?: number;
   memoryUsage?: number;
@@ -217,6 +221,7 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "basePort", Number);
 
     if (cfg.docker) {
+      configureEntityParams(this.config.docker, cfg.docker, "updateCommandImage", String);
       configureEntityParams(this.config.docker, cfg.docker, "containerName", String);
       configureEntityParams(this.config.docker, cfg.docker, "image", String);
       configureEntityParams(this.config.docker, cfg.docker, "memory", Number);
@@ -235,10 +240,16 @@ export default class Instance extends EventEmitter {
       configureEntityParams(this.config.docker, cfg.docker, "changeWorkdir", Boolean);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwappiness", Number);
       configureEntityParams(this.config.docker, cfg.docker, "memorySwap", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "uploadSpeedLimit", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "downloadSpeedLimit", Number);
       configureEntityParams(this.config.docker, cfg.docker, "capAdd");
       configureEntityParams(this.config.docker, cfg.docker, "capDrop");
       configureEntityParams(this.config.docker, cfg.docker, "devices");
       configureEntityParams(this.config.docker, cfg.docker, "privileged", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuEnabled", Boolean);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuCount", Number);
+      configureEntityParams(this.config.docker, cfg.docker, "gpuDeviceIds");
+      configureEntityParams(this.config.docker, cfg.docker, "gpuDriver", String);
     }
     if (cfg.pingConfig) {
       configureEntityParams(this.config.pingConfig, cfg.pingConfig, "ip", String);

@@ -67,7 +67,8 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       theme: {
         pageTitle: "MCSManager Panel",
         logoImage: "",
-        backgroundImage: ""
+        backgroundImage: "",
+        sidebarPosition: "right"
       }
     },
     {
@@ -129,6 +130,24 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         {
           id: getRandomId(),
           meta: {},
+          type: "OperationLogCard",
+          title: t("TXT_CODE_6a444b79"),
+          width: 4,
+          description: t("TXT_CODE_9e8c176e"),
+          height: LayoutCardHeight.MEDIUM
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "NodeOverview",
+          title: t("TXT_CODE_bfb50126"),
+          width: 8,
+          description: t("TXT_CODE_55ade942"),
+          height: LayoutCardHeight.MEDIUM
+        },
+        {
+          id: getRandomId(),
+          meta: {},
           type: "RequestChart",
           title: t("TXT_CODE_a4037a98"),
           width: 6,
@@ -143,24 +162,6 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           width: 6,
           description: t("TXT_CODE_55ade942"),
           height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "OperationLogCard",
-          title: t("TXT_CODE_f6a33629"),
-          width: 4,
-          description: t("TXT_CODE_9e8c176e"),
-          height: LayoutCardHeight.MEDIUM
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "NodeOverview",
-          title: t("TXT_CODE_bfb50126"),
-          width: 8,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
         }
       ]
     },

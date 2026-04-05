@@ -7,8 +7,8 @@ import ImageManager from "@/widgets/imageManager/index.vue";
 import NewImage from "@/widgets/imageManager/NewImage.vue";
 import InstanceBaseInfo from "@/widgets/instance/BaseInfo.vue";
 import InstanceFileManager from "@/widgets/instance/FileManager.vue";
-import InstanceModManager from "@/widgets/instance/ModManager.vue";
 import InstanceManagerBtns from "@/widgets/instance/ManagerBtns.vue";
+import InstanceModManager from "@/widgets/instance/ModManager.vue";
 import Schedule from "@/widgets/instance/Schedule.vue";
 import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
 import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
@@ -203,7 +203,7 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "StatusBlock",
-      title: t("TXT_CODE_66056676"),
+      title: t("TXT_CODE_48382669"),
       meta: {
         type: "system"
       },

@@ -10,11 +10,13 @@ import BetweenMenus from "@/components/BetweenMenus.vue";
 import { useScreen } from "../hooks/useScreen";
 import { arrayFilter } from "../tools/array";
 import { useAppRouters } from "@/hooks/useAppRouters";
+import { useAppStateStore } from "@/stores/useAppStateStore";
 import {
   getUserInfo,
   deleteUser as deleteUserApi,
   addUser as addUserApi,
-  editUserInfo
+  editUserInfo,
+  ssoUnbind as ssoUnbindApi
 } from "@/services/apis";
 import type { LayoutCard } from "@/types/index";
 import type { BaseUserInfo, EditUserInfo } from "@/types/user";
@@ -40,6 +42,7 @@ interface dataType {
 const { execute, isLoading: getUserInfoLoading } = getUserInfo();
 const { toPage } = useAppRouters();
 const { isPhone } = useScreen();
+const { state: appState } = useAppStateStore();
 
 const operationForm = ref({
   name: "",
@@ -88,6 +91,14 @@ const columns = computed(() => {
       key: "registerTime",
       minWidth: 200,
       condition: () => !isPhone.value
+    },
+    {
+      align: "center",
+      title: t("TXT_CODE_SSO_BOUND_STATUS"),
+      dataIndex: "ssoBound",
+      key: "ssoBound",
+      minWidth: 100,
+      condition: () => !isPhone.value && appState.settings.ssoEnabled
     },
     {
       align: "center",
@@ -164,6 +175,26 @@ const handleBatchDelete = async () => {
   await deleteUser(selectedUsers.value);
 };
 
+const handleSsoUnbind = async (user: BaseUserInfo) => {
+  try {
+    const { execute } = ssoUnbindApi();
+    await execute({ data: { uuid: user.uuid } });
+    message.success(t("TXT_CODE_SSO_UNBIND_SUCCESS"));
+    await fetchData();
+  } catch (error: any) {
+    reportErrorMsg(error.message);
+  }
+};
+
+const showSsoUnbindConfirm = (user: BaseUserInfo) => {
+  Modal.confirm({
+    title: t("TXT_CODE_SSO_UNBIND_CONFIRM", { userName: user.userName } as any),
+    okType: "danger",
+    onOk: () => handleSsoUnbind(user),
+    maskClosable: true
+  });
+};
+
 const showDeleteConfirm = (user: BaseUserInfo) => {
   Modal.confirm({
     title: () => t("TXT_CODE_e99ab99a", { userName: user.userName } as any),
@@ -229,7 +260,9 @@ const formDataOrigin: EditUserInfo = {
   apiKey: "",
   isInit: false,
   secret: "",
-  open2FA: false
+  open2FA: false,
+  ssoSub: "",
+  ssoBound: false
 };
 
 const formRef = ref<FormInstance>();
@@ -452,6 +485,14 @@ onMounted(async () => {
                 "
               >
                 <template #bodyCell="{ column, record }: AntTableCell">
+                  <template v-if="column.key === 'ssoBound'">
+                    <a-tag v-if="record.ssoBound" color="green">
+                      {{ t("TXT_CODE_SSO_BOUND_YES") }}
+                    </a-tag>
+                    <a-tag v-else>
+                      {{ t("TXT_CODE_SSO_BOUND_NO") }}
+                    </a-tag>
+                  </template>
                   <template v-if="column.key === 'action'">
                     <a-dropdown>
                       <template #overlay>
@@ -461,6 +502,13 @@ onMounted(async () => {
                           </a-menu-item>
                           <a-menu-item key="2" @click="handleToUserResources(record)">
                             {{ t("TXT_CODE_4d934e3a") }}
+                          </a-menu-item>
+                          <a-menu-item
+                            v-if="appState.settings.ssoEnabled && record.ssoBound"
+                            key="sso_unbind"
+                            @click="showSsoUnbindConfirm(record)"
+                          >
+                            {{ t("TXT_CODE_SSO_UNBIND") }}
                           </a-menu-item>
                           <a-menu-item key="3" @click="showDeleteConfirm(record)">
                             {{ t("TXT_CODE_ecbd7449") }}

@@ -3,7 +3,7 @@ import NodeRemoteMappingEdit from "@/components/NodeRemoteMappingEdit.vue";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
-import { isLocalNetworkIP, reportErrorMsg } from "@/tools/validator";
+import { getValidatorErrorMsg, isLocalNetworkIP, reportErrorMsg } from "@/tools/validator";
 import { message, type FormInstance } from "ant-design-vue";
 import _ from "lodash";
 import { computed, reactive, ref } from "vue";
@@ -30,7 +30,10 @@ const DEFAULT_CONFIG = {
   portAssignInterval: 0,
   daemonPort: 24444,
   remoteMappings: [] as IPanelOverviewRemoteMappingResponse[],
-  outputBufferSize: 256
+  outputBufferSize: 256,
+  enableSoftShutdown: true,
+  softShutdownSkipDocker: true,
+  softShutdownWaitSeconds: 10
 };
 
 const SPEED_RATE_OPTIONS = [
@@ -152,7 +155,16 @@ const dialog = reactive({
       }
       message.success(t("TXT_CODE_e74d658c"));
       dialog.close();
+      if (editMode.value) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 150);
+      }
     } catch (error: any) {
+      if (error?.errorFields instanceof Array) {
+        message.warning(getValidatorErrorMsg(error, t("TXT_CODE_5245bd11")));
+        return;
+      }
       reportErrorMsg(error.message ?? t("TXT_CODE_5245bd11"));
     }
   },
@@ -278,16 +290,52 @@ defineExpose({ openDialog });
             <a-col :span="12">
               <a-form-item :label="t('TXT_CODE_daemon_outputBufferSize')" name="outputBufferSize">
                 <a-typography-paragraph>
+                  <a-tooltip :title="t('TXT_CODE_daemon_outputBufferSizeInfo')" trigger="click">
+                    <a-typography-text
+                      type="secondary"
+                      style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer"
+                    >
+                      {{ t("TXT_CODE_daemon_outputBufferSizeInfo") }}
+                    </a-typography-text>
+                  </a-tooltip>
+                </a-typography-paragraph>
+                <a-input v-model:value="dialog.data.outputBufferSize" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item :label="t('TXT_CODE_daemon_enableSoftShutdown')" name="enableSoftShutdown">
+                <a-typography-paragraph>
                   <a-typography-text type="secondary">
-                    {{ t("TXT_CODE_daemon_outputBufferSizeInfo") }}
+                    {{ t("TXT_CODE_daemon_enableSoftShutdownInfo") }}
                   </a-typography-text>
                 </a-typography-paragraph>
-                <a-input-number
-                  v-model:value="dialog.data.outputBufferSize"
-                  :min="16"
-                  :max="4096"
-                  style="width: 100%"
-                />
+                <a-switch v-model:checked="dialog.data.enableSoftShutdown" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                :label="t('TXT_CODE_daemon_softShutdownSkipDocker')"
+                name="softShutdownSkipDocker"
+              >
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_daemon_softShutdownSkipDockerInfo") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-switch v-model:checked="dialog.data.softShutdownSkipDocker" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                :label="t('TXT_CODE_daemon_softShutdownWaitSeconds')"
+                name="softShutdownWaitSeconds"
+              >
+                <a-typography-paragraph>
+                  <a-typography-text type="secondary">
+                    {{ t("TXT_CODE_daemon_softShutdownWaitSecondsInfo") }}
+                  </a-typography-text>
+                </a-typography-paragraph>
+                <a-input v-model:value="dialog.data.softShutdownWaitSeconds" />
               </a-form-item>
             </a-col>
           </a-row>

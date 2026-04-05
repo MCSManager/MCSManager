@@ -19,6 +19,9 @@ export interface RemoteNodeDetail {
   portRangeStart: number;
   portRangeEnd: number;
   portAssignInterval: number;
+  enableSoftShutdown: boolean;
+  softShutdownSkipDocker: boolean;
+  softShutdownWaitSeconds: number;
 }
 
 export function useRemoteNode() {

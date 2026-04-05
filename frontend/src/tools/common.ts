@@ -1,6 +1,6 @@
+import type { JsonData } from "@/types";
 import { LoadingOutlined } from "@ant-design/icons-vue";
 import { h } from "vue";
-import type { JsonData } from "@/types";
 
 export async function sleep(t: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, t));
@@ -200,3 +200,6 @@ export const isInt = (x: any) => {
 };
 
 export const padZero = (num: string) => (num === "0" ? num : num.padStart(2, "0"));
+
+export const getUsageColor = (num: number, normalColor: string = "var(--color-primary)"): string =>
+  num >= 80 ? "var(--color-danger)" : num >= 60 ? "var(--color-warning)" : normalColor;

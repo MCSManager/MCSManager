@@ -1,0 +1,12 @@
+---
+description: Frontend (Vue 3) development conventions
+globs: frontend/src/**/*.vue
+alwaysApply: false
+---
+
+# Vue component conventions
+
+- Use **Vue 3**. Components must use `<script setup lang="ts">`. Use `const` and clear types to express intent.
+- Pass data via Vue’s recommended **props**; do not break one-way data flow.
+- Keep component TS logic short. Move complex logic into dedicated **hooks** by responsibility for reuse.
+- Keep templates short. Extract complex markup into separate Vue components for reuse.

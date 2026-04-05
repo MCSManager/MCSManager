@@ -22,7 +22,14 @@ const openDialog = async () => {
 
 const appPackages = ref<InstanceType<typeof AppPackages>>();
 
-const handleSelectTemplate = async (item: QuickStartPackages | null) => {
+const handleSelectCategory = (item: QuickStartPackages) => {
+  appPackages.value?.handleSelectTopCategory(item);
+};
+
+const handleSelectTemplate = async (
+  item: QuickStartPackages | null,
+  _type: "normal" | "docker"
+) => {
   if (!item) {
     return submit(undefined);
   }
@@ -79,7 +86,9 @@ defineExpose({
       :title="dialogTitle"
       :show-custom-btn="showCustomBtn"
       :only-docker-template="onlyDockerTemplate"
+      @handle-select-category="handleSelectCategory"
       @handle-select-template="handleSelectTemplate"
+      @handle-back-to-category="() => {}"
     />
   </a-modal>
 </template>

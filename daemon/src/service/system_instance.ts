@@ -314,6 +314,56 @@ class InstanceSubsystem extends EventEmitter {
     });
   }
 
+  // Soft exit: optional docker skip and configurable wait timeout
+  softExit(skipDocker = true, waitSeconds = 10) {
+    const promises: Promise<void>[] = [];
+    for (const iterator of this.instances) {
+      const instance = iterator[1];
+      if (instance.status() !== Instance.STATUS_STOP) {
+        if (skipDocker && instance.config.processType === "docker") {
+          logger.info(
+            `Skipping Docker instance ${instance.config.nickname} (${instance.instanceUuid}) during soft shutdown...`
+          );
+          continue;
+        } else {
+          // Soft close general instances (don't force kill)
+          promises.push(this.exitInstance(instance, false));
+        }
+      }
+    }
+    Promise.all(promises);
+
+    return new Promise<void>((resolve) => {
+      let checkCount = 0;
+      const checkTask = setInterval(() => {
+        let count = 0;
+        checkCount++;
+        for (const [_, instance] of this.instances) {
+          if (instance.status() !== Instance.STATUS_STOP) {
+            if (skipDocker && instance.config.processType === "docker") continue;
+            count++;
+            if (checkCount > waitSeconds) {
+              logger.info(
+                $t("TXT_CODE_eadac3c2", {
+                  instance: instance.config.nickname
+                })
+              );
+              // If it takes too long, force close target instances
+              this.exitInstance(instance, true);
+            }
+          }
+        }
+        if (count === 0) {
+          logger.info($t("TXT_CODE_187bb567"));
+          clearInterval(checkTask);
+          resolve();
+        } else {
+          logger.info($t("TXT_CODE_6f23ce93", { count }));
+        }
+      }, 1000);
+    });
+  }
+
   getInstances() {
     let newArr = new Array<Instance>();
     this.instances.forEach((instance) => {

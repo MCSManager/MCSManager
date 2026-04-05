@@ -1,0 +1,23 @@
+---
+description: Backend development conventions
+globs: daemon/src/**/*.ts, panel/src/**/*.ts,
+alwaysApply: false
+---
+
+# Backend directory structure
+
+Folder names under `daemon/src/*` and `panel/src/app/*` define the layers: route, middleware, service, instance, etc.
+
+# Logging and exceptions
+
+- Use the project **logger** (not raw `console.*`). Use `info` or `error` by context.
+- For external resources (files, network, containers, shell): validate inputs and boundaries; on failure log and rethrow or return a clear result. Do not swallow exceptions.
+
+# Security checks
+
+- For container/command logic: strictly parse and validate config (length, format). Do not pass unvalidated input into command args or config fields.
+- When running shell commands or reading files, if arguments come from the frontend, validate them for security risks.
+
+# Memory and leaks
+
+- For new Maps, queues, Buffer, arrays, etc., add corresponding cleanup/release logic to avoid memory leaks.

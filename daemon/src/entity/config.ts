@@ -38,6 +38,11 @@ class Config {
   // default: 256 (~64KB per flush), range: 16-4096
   public outputBufferSize = 256;
 
+  // Daemon shutdown behavior
+  public enableSoftShutdown = true;
+  public softShutdownSkipDocker = true;
+  public softShutdownWaitSeconds = 30;
+
   public whiteListPanelIp = false;
   public whiteListPanelIps = ["127.0.0.1", "::1"];
 

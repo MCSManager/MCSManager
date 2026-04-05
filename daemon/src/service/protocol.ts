@@ -1,13 +1,20 @@
-import { $t } from "../i18n";
 import { Socket } from "socket.io";
-import RouterContext from "../entity/ctx";
-import logger from "./log";
 import { IGNORE } from "../const";
+import RouterContext from "../entity/ctx";
+import { $t } from "../i18n";
+import logger from "./log";
 
 // Define network protocols and common send/broadcast/parse functions, the client should also have this file
 
 const STATUS_OK = 200;
 const STATUS_ERR = 500;
+
+export enum ROLE {
+  ADMIN = 10,
+  USER = 1,
+  GUEST = 0,
+  BAN = -1
+}
 
 // packet format definition
 export interface IPacket {

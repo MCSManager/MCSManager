@@ -2,10 +2,10 @@
 import logo from "@/assets/logo.png";
 import { getCurrentLang, setLanguage } from "@/lang/i18n";
 import { AppTheme, THEME_KEY } from "@/types/const";
-import { createGlobalState, useLocalStorage, usePreferredDark } from "@vueuse/core";
+import { createGlobalState, useBreakpoints, useLocalStorage, usePreferredDark } from "@vueuse/core";
 import { theme as antTheme } from "ant-design-vue";
 import type { ThemeConfig } from "ant-design-vue/es/config-provider/context";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useLayoutConfigStore } from "./useLayoutConfig";
 
 export const useAppConfigStore = createGlobalState(() => {
@@ -35,6 +35,17 @@ export const useAppConfigStore = createGlobalState(() => {
   });
 
   const hasBgImage = ref(false);
+
+  /** Main app nav layout: "left" = sidebar, "right" = top header only. Filled by initAppTheme(). */
+  const sidebarPosition = ref<"left" | "right">("left");
+
+  /** Whether to show the left sidebar; when false, only top header (AppHeader) is used. */
+  const breakpoints = useBreakpoints({ sidebar: 1400 });
+  const isWideEnoughForSidebar = breakpoints.greaterOrEqual("sidebar");
+  const useSidebarLayout = computed(
+    () => sidebarPosition.value === "left" && isWideEnoughForSidebar.value
+  );
+
   const setBackgroundImage = (url: string) => {
     const body = document.querySelector("body");
     if (body) {
@@ -87,6 +98,8 @@ export const useAppConfigStore = createGlobalState(() => {
     const frontendSettings = await getSettingsConfig();
     if (frontendSettings?.theme?.backgroundImage)
       setBackgroundImage(frontendSettings.theme.backgroundImage);
+    const pos = frontendSettings?.theme?.sidebarPosition;
+    sidebarPosition.value = pos === "left" || pos === "right" ? pos : "left";
   };
 
   const setTheme = (t: AppTheme) => {
@@ -114,10 +127,23 @@ export const useAppConfigStore = createGlobalState(() => {
     }
   });
 
+  onMounted(async () => {
+    try {
+      const settingsConfig = await getSettingsConfig();
+      if (settingsConfig?.theme?.logoImage) {
+        setLogoImage(settingsConfig.theme.logoImage);
+      }
+    } catch (error) {
+      console.error("Failed to load settings config:", error);
+    }
+  });
+
   return {
     appConfig,
     logoImage,
     hasBgImage,
+    sidebarPosition,
+    useSidebarLayout,
     setLogoImage,
     changeLanguage,
     getCurrentLanguage,
