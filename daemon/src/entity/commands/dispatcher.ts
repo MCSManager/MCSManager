@@ -77,7 +77,7 @@ export default class FunctionDispatcher extends InstanceCommand {
     }
 
     // Minecraft Ping
-    if (instance.config.type.includes(Instance.TYPE_MINECRAFT_JAVA)) {
+    if (instance.effectiveType().includes(Instance.TYPE_MINECRAFT_JAVA)) {
       instance.setPreset("refreshPlayers", new PingJavaMinecraftServerCommand());
       instance.lifeCycleTaskManager.registerLifeCycleTask(new PingMinecraftServerTask());
     }

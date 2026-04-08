@@ -57,6 +57,7 @@ export interface InstanceDetail {
   status: INSTANCE_STATUS_CODE;
   info: InstanceRuntimeInfo;
   config: IGlobalInstanceConfig;
+  effectiveType?: string;
   watcher?: number;
 }
 

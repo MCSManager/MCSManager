@@ -4,13 +4,14 @@ import InstanceSubsystem from "../service/system_instance";
 import FileManager from "./system_file";
 import os from "os";
 
-export function getFileManager(instanceUuid: string) {
+export function getFileManager(instanceUuid: string, options?: { useServerRoot?: boolean }) {
   // Initialize a file manager for the instance, and assign codes, restrictions, etc.
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   if (!instance)
     throw new Error($t("TXT_CODE_file_router_service.instanceNotExit", { uuid: instanceUuid }));
   const fileCode = instance.config?.fileCode;
-  return new FileManager(instance.absoluteCwdPath(), fileCode);
+  const rootPath = options?.useServerRoot ? instance.effectiveCwdPath() : instance.absoluteCwdPath();
+  return new FileManager(rootPath, fileCode);
 }
 
 let cacheDisks: string[] = [];
