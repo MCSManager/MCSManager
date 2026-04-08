@@ -117,6 +117,10 @@ const refreshInstanceInfo = async () => {
   });
 };
 
+const instanceType = computed(() => {
+  return instanceInfo.value?.effectiveType || instanceInfo.value?.config.type;
+});
+
 const btns = computed(() => {
   if (!instanceInfo.value) return [];
   return arrayFilter([
@@ -134,7 +138,7 @@ const btns = computed(() => {
         toPage({
           path: "/instances/terminal/serverConfig",
           query: {
-            type: instanceInfo.value?.effectiveType || instanceInfo.value?.config.type
+            type: instanceType.value
           }
         });
       }
@@ -154,7 +158,7 @@ const btns = computed(() => {
         toPage({ path: "/instances/terminal/mods" });
       },
       condition: () => {
-        const type = instanceInfo.value?.effectiveType || instanceInfo.value?.config.type || "";
+        const type = instanceType.value || "";
         // Narrow it down to Minecraft server types only (Java or Bedrock)
         const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
@@ -173,9 +177,8 @@ const btns = computed(() => {
       },
       condition: () => {
         return (
-          (instanceInfo.value?.effectiveType || instanceInfo.value?.config.type || "").includes(
-            TYPE_MINECRAFT_JAVA
-          ) && instanceInfo.value?.config.processType === "general"
+          (instanceType.value || "").includes(TYPE_MINECRAFT_JAVA) &&
+          instanceInfo.value?.config.processType === "general"
         );
       }
     },
@@ -186,11 +189,7 @@ const btns = computed(() => {
         rconSettingsDialog.value?.openDialog();
       },
       condition: () => {
-        return (
-          instanceInfo.value?.effectiveType ||
-          instanceInfo.value?.config.type ||
-          ""
-        ).includes(TYPE_STEAM_SERVER_UNIVERSAL);
+        return (instanceType.value || "").includes(TYPE_STEAM_SERVER_UNIVERSAL);
       }
     },
 
@@ -237,11 +236,7 @@ const btns = computed(() => {
         mcSettingsDialog.value?.openDialog();
       },
       condition: () => {
-        return (
-          instanceInfo.value?.effectiveType ||
-          instanceInfo.value?.config.type ||
-          ""
-        ).includes(TYPE_MINECRAFT_JAVA);
+        return (instanceType.value || "").includes(TYPE_MINECRAFT_JAVA);
       }
     },
     {
@@ -256,10 +251,6 @@ const btns = computed(() => {
       }
     }
   ]);
-});
-
-const instanceType = computed(() => {
-  return instanceInfo.value?.effectiveType || instanceInfo.value?.config.type;
 });
 
 watch(instanceType, (type, oldType) => {

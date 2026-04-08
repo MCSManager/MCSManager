@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import path from "path";
 import { ProcessConfig } from "../entity/instance/process_config";
 
@@ -29,6 +29,14 @@ const MCDR_HANDLER_TYPE_MAP: Record<string, string> = {
 const MCDR_CONFIG_FILES = ["config.yml", "config.yaml"];
 
 const cache = new Map<string, { mtime: number; result: IMCDRRuntime | null }>();
+const MAX_CACHE_SIZE = 256;
+
+function setCache(filePath: string, mtime: number, result: IMCDRRuntime | null) {
+    cache.delete(filePath);
+    cache.set(filePath, { mtime, result });
+    const oldestKey = cache.size > MAX_CACHE_SIZE ? cache.keys().next().value : undefined;
+    if (oldestKey) cache.delete(oldestKey);
+}
 
 export function resolveMCDRRuntime(instance: IMCDRResolvable): IMCDRRuntime | null {
     if (instance.config.type !== "universal/mcdr") return null;
@@ -37,7 +45,10 @@ export function resolveMCDRRuntime(instance: IMCDRResolvable): IMCDRRuntime | nu
 
     for (const fileName of MCDR_CONFIG_FILES) {
         const filePath = path.join(instanceRoot, fileName);
-        if (!fs.existsSync(filePath)) continue;
+        if (!fs.existsSync(filePath)) {
+            cache.delete(filePath);
+            continue;
+        }
 
         try {
             const stat = fs.statSync(filePath);
@@ -67,7 +78,7 @@ export function resolveMCDRRuntime(instance: IMCDRResolvable): IMCDRRuntime | nu
 
             const relative = path.relative(instanceRoot, resolvedRoot);
             if (relative.startsWith("..") || path.isAbsolute(relative)) {
-                cache.set(filePath, { mtime, result: null });
+                setCache(filePath, mtime, null);
                 return null;
             }
 
@@ -75,7 +86,7 @@ export function resolveMCDRRuntime(instance: IMCDRResolvable): IMCDRRuntime | nu
                 mcdrType: resolvedType,
                 mcdrRoot: resolvedRoot
             };
-            cache.set(filePath, { mtime, result });
+            setCache(filePath, mtime, result);
             return result;
         } catch (error) {
             continue;
