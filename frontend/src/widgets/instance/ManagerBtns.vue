@@ -117,6 +117,10 @@ const refreshInstanceInfo = async () => {
   });
 };
 
+const instanceType = computed(() => {
+  return instanceInfo.value?.effectiveType || instanceInfo.value?.config.type;
+});
+
 const btns = computed(() => {
   if (!instanceInfo.value) return [];
   return arrayFilter([
@@ -134,7 +138,7 @@ const btns = computed(() => {
         toPage({
           path: "/instances/terminal/serverConfig",
           query: {
-            type: instanceInfo.value?.config.type
+            type: instanceType.value
           }
         });
       }
@@ -154,7 +158,7 @@ const btns = computed(() => {
         toPage({ path: "/instances/terminal/mods" });
       },
       condition: () => {
-        const type = instanceInfo.value?.config.type || "";
+        const type = instanceType.value || "";
         // Narrow it down to Minecraft server types only (Java or Bedrock)
         const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
         if (!isMC) return false;
@@ -171,10 +175,12 @@ const btns = computed(() => {
       click: () => {
         javaManagerDialog.value?.openDialog();
       },
-      condition: () =>
-        (instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) &&
-          instanceInfo.value?.config.processType === "general") ??
-        false
+      condition: () => {
+        return (
+          (instanceType.value || "").includes(TYPE_MINECRAFT_JAVA) &&
+          instanceInfo.value?.config.processType === "general"
+        );
+      }
     },
     {
       title: t("TXT_CODE_656a85d8"),
@@ -182,8 +188,9 @@ const btns = computed(() => {
       click: () => {
         rconSettingsDialog.value?.openDialog();
       },
-      condition: () =>
-        instanceInfo.value?.config.type.includes(TYPE_STEAM_SERVER_UNIVERSAL) ?? false
+      condition: () => {
+        return (instanceType.value || "").includes(TYPE_STEAM_SERVER_UNIVERSAL);
+      }
     },
 
     {
@@ -228,7 +235,9 @@ const btns = computed(() => {
       click: () => {
         mcSettingsDialog.value?.openDialog();
       },
-      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
+      condition: () => {
+        return (instanceType.value || "").includes(TYPE_MINECRAFT_JAVA);
+      }
     },
     {
       title: t("TXT_CODE_4f34fc28"),
@@ -244,9 +253,9 @@ const btns = computed(() => {
   ]);
 });
 
-watch(instanceInfo, (cfg, oldCfg) => {
-  if (cfg?.config?.type && instanceId && daemonId && cfg.config.type !== oldCfg?.config?.type) {
-    refreshServerConfig(cfg.config.type, instanceId, daemonId);
+watch(instanceType, (type, oldType) => {
+  if (type && instanceId && daemonId && type !== oldType) {
+    refreshServerConfig(type as string, instanceId as string, daemonId as string);
   }
 });
 </script>

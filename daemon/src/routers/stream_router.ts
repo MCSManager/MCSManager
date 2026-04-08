@@ -70,6 +70,7 @@ routerApp.on("stream/detail", async (ctx) => {
       status: instance.status(),
       config: instance.config,
       info: instance.info,
+      effectiveType: instance.effectiveType(),
       watcher: instance.watchers.size
     });
   } catch (error: any) {

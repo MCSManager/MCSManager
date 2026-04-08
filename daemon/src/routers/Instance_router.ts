@@ -93,7 +93,8 @@ routerApp.on("instance/select", (ctx, data) => {
       autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
-      info: instance.info
+      info: instance.info,
+      effectiveType: instance.effectiveType()
     });
   });
 
@@ -116,7 +117,8 @@ routerApp.on("instance/overview", (ctx) => {
       autoRestarted: instance.autoRestartCount,
       status: instance.status(),
       config: instance.config,
-      info: instance.info
+      info: instance.info,
+      effectiveType: instance.effectiveType()
     });
   });
 
@@ -136,7 +138,8 @@ routerApp.on("instance/section", (ctx, data) => {
           autoRestarted: instance.autoRestartCount,
           status: instance.status(),
           config: instance.config,
-          info: instance.info
+          info: instance.info,
+          effectiveType: instance.effectiveType()
         });
       }
     });
@@ -163,6 +166,7 @@ routerApp.on("instance/detail", async (ctx, data) => {
       status: instance.status(),
       config: instance.config,
       info: instance.info,
+      effectiveType: instance.effectiveType(),
       space,
       processInfo
     });
@@ -501,7 +505,7 @@ routerApp.on("instance/process_config/list", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.effectiveCwdPath());
     for (const filePath of files) {
       if (fileManager.check(filePath)) {
         result.push({
@@ -525,9 +529,9 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   try {
     const instance = InstanceSubsystem.getInstance(instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    const fileManager = new FileManager(instance.absoluteCwdPath());
+    const fileManager = new FileManager(instance.effectiveCwdPath());
     if (!fileManager.check(fileName)) throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
-    const filePath = path.normalize(path.join(instance.absoluteCwdPath(), fileName));
+    const filePath = path.normalize(path.join(instance.effectiveCwdPath(), fileName));
     const processConfig = new ProcessConfig({
       fileName: fileName,
       redirect: fileName,

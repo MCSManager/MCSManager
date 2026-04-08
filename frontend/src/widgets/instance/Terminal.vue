@@ -78,7 +78,8 @@ const toOpenInstance = async () => {
   if (checkRunningTimer) clearTimeout(checkRunningTimer);
   clearTerminal();
   try {
-    if (instanceInfo.value?.config?.type?.startsWith("minecraft/java")) {
+    const instanceType = instanceInfo.value?.effectiveType || instanceInfo.value?.config.type || "";
+    if (instanceType.startsWith("minecraft/java")) {
       const flag = await verifyEULA(instanceId ?? "", daemonId ?? "");
       if (!flag) return;
       await sleep(1000);

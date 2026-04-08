@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { EventEmitter } from "events";
 import { t } from "i18next";
+import fs from "fs-extra";
 import iconv from "iconv-lite";
 import { configureEntityParams } from "mcsmanager-common";
 import path from "path";
@@ -9,6 +10,7 @@ import StorageSubsystem from "../../common/system_storage";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
 import javaManager from "../../service/java_manager";
+import { resolveMCDRRuntime } from "../../service/mcdr_service";
 import logger from "../../service/log";
 import InstanceCommand from "../commands/base/command";
 import { commandStringToArray } from "../commands/base/command_parser";
@@ -480,6 +482,18 @@ export default class Instance extends EventEmitter {
     if (!this.config || !this.config.cwd) throw new Error("Instance config error, cwd is Null!");
     if (path.isAbsolute(this.config.cwd)) return path.normalize(this.config.cwd);
     return path.normalize(path.join(process.cwd(), this.config.cwd));
+  }
+
+  effectiveType(): string {
+    return resolveMCDRRuntime(this)?.mcdrType || this.config.type;
+  }
+
+  effectiveCwdPath(): string {
+    const mcdr = resolveMCDRRuntime(this);
+    if (mcdr && fs.existsSync(mcdr.mcdrRoot)) {
+      return mcdr.mcdrRoot;
+    }
+    return this.absoluteCwdPath();
   }
 
   // execute the preset command action
