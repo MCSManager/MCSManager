@@ -3,9 +3,11 @@ import formidable from "formidable";
 import fs from "fs-extra";
 import path from "path";
 import { DAEMON_INDEX_HTML } from "../const/index_html";
+import { globalConfiguration } from "../entity/config";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
 import { missionPassport } from "../service/mission_passport";
+import monitorService from "../service/monitor_service";
 import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
@@ -18,6 +20,56 @@ const router = new Router();
 router.all("/", async (ctx) => {
   ctx.body = DAEMON_INDEX_HTML;
   ctx.status = 200;
+});
+
+router.get("/metrics", async (ctx) => {
+  ctx.type = "text/plain; version=0.0.4; charset=utf-8";
+  ctx.body = monitorService.renderPrometheusMetrics();
+  ctx.status = 200;
+});
+
+router.post("/v1/plugin/heartbeat", async (ctx) => {
+  try {
+    const result = monitorService.recordHeartbeat(ctx.request.body as any);
+    ctx.body = {
+      status: 200,
+      data: result
+    };
+  } catch (error: any) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 400,
+      data: error?.message || String(error)
+    };
+  }
+});
+
+router.get("/v1/plugin/token/:serverId", async (ctx) => {
+  const serverId = String(ctx.params.serverId || "");
+  const apiKey = String(ctx.query.apikey || ctx.request.header["x-request-api-key"] || "");
+  if (!serverId) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 400,
+      data: "serverId is required"
+    };
+    return;
+  }
+  if (!apiKey || apiKey !== globalConfiguration.config.key) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 403,
+      data: "invalid apikey"
+    };
+    return;
+  }
+  ctx.body = {
+    status: 200,
+    data: {
+      serverId,
+      instanceToken: monitorService.getExpectedToken(serverId)
+    }
+  };
 });
 
 // File download route

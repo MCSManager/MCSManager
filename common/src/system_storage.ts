@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs-extra";
+import * as fs from "fs-extra";
 
 export default class StorageSubsystem {
   public static readonly DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
@@ -26,7 +26,9 @@ export default class StorageSubsystem {
   public readDir(dirName: string) {
     const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, dirName));
     if (!fs.existsSync(targetPath)) return [];
-    const files = fs.readdirSync(targetPath).map((v) => path.normalize(path.join(dirName, v)));
+    const files = fs
+      .readdirSync(targetPath)
+      .map((v: string) => path.normalize(path.join(dirName, v)));
     return files;
   }
 
@@ -97,7 +99,7 @@ export default class StorageSubsystem {
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
     const files = fs.readdirSync(dirPath);
     const result = new Array<string>();
-    files.forEach((name) => {
+    files.forEach((name: string) => {
       result.push(name.replace(path.extname(name), ""));
     });
     return result;

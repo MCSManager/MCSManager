@@ -11,6 +11,7 @@ import { globalConfiguration } from "../entity/config";
 import { $t } from "../i18n";
 import { DockerManager } from "../service/docker_service";
 import logger from "../service/log";
+import monitorService from "../service/monitor_service";
 import VisualDataSubsystem from "../service/system_visual_data";
 import { getVersion } from "../service/version";
 
@@ -32,6 +33,16 @@ routerApp.on("info/overview", async (ctx) => {
     logger.debug("Failed to get Docker platforms:", error);
   }
 
+  const instancePaths = InstanceSubsystem.getInstances().map((instance) => {
+    try {
+      return instance.absoluteCwdPath();
+    } catch (error) {
+      return "";
+    }
+  });
+  const hostSnapshot = monitorService.getHostSnapshot(instancePaths);
+  const daemonSystemInfo = systemInfo();
+
   const info = {
     version: daemonVersion,
     process: {
@@ -43,7 +54,11 @@ routerApp.on("info/overview", async (ctx) => {
       running,
       total
     },
-    system: systemInfo(),
+    system: {
+      ...daemonSystemInfo,
+      disks: hostSnapshot.disks,
+      primaryDisk: hostSnapshot.primaryDisk
+    },
     cpuMemChart: VisualDataSubsystem.getSystemChartArray(),
     config: {
       language: globalConfiguration.config.language,

@@ -17,6 +17,7 @@ import javaManagerRouter from "./routers/java_manager_router";
 import loginRouter from "./routers/login_router";
 import businessUserRouter from "./routers/manage_user_router";
 import modManagerRouter from "./routers/mod_manager_router";
+import monitorRouter from "./routers/monitor_router";
 import overviewRouter from "./routers/overview_router";
 import scheduleRouter from "./routers/schedule_router";
 import settingsRouter from "./routers/settings_router";
@@ -41,6 +42,7 @@ export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   apiRouter.use(exchangeRouter.routes()).use(exchangeRouter.allowedMethods());
   apiRouter.use(javaManagerRouter.routes()).use(javaManagerRouter.allowedMethods());
   apiRouter.use(modManagerRouter.routes()).use(modManagerRouter.allowedMethods());
+  apiRouter.use(monitorRouter.routes()).use(monitorRouter.allowedMethods());
 
   app.use(apiRouter.routes()).use(apiRouter.allowedMethods());
 }

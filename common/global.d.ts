@@ -156,6 +156,8 @@ declare global {
       totalmem: number;
       processCpu: number;
       processMem: number;
+      disks?: IMcsmMonitorDiskSnapshot[];
+      primaryDisk?: IMcsmMonitorDiskSnapshot;
     };
     cpuMemChart?: {
       cpu: number;
@@ -223,6 +225,109 @@ declare global {
       total: number;
     };
     remote: IPanelOverviewRemoteResponse[];
+  }
+
+  interface IMcsmMonitorTpsSnapshot {
+    oneMin: number;
+    fiveMin: number;
+    fifteenMin: number;
+  }
+
+  interface IMcsmMonitorProcessSnapshot {
+    pid?: number | string;
+    cpuPercent?: number;
+    memoryBytes?: number;
+    memoryPercent?: number;
+  }
+
+  interface IMcsmMonitorPluginSnapshot {
+    online: boolean;
+    lastSeen?: number;
+    heartbeatAgeMs?: number;
+    pluginVersion?: string;
+    serverVersion?: string;
+    motd?: string;
+    worlds: string[];
+    mainThreadBlocked: boolean;
+    tps: IMcsmMonitorTpsSnapshot;
+    onlinePlayers: number;
+    maxPlayers: number;
+  }
+
+  interface IMcsmMonitorDiskSnapshot {
+    mount: string;
+    device: string;
+    totalBytes: number;
+    usedBytes: number;
+    freeBytes: number;
+    usagePercent: number;
+  }
+
+  interface IMcsmMonitorHistoryPoint {
+    timestamp: number;
+    tps: number;
+    onlinePlayers: number;
+    procCpu: number;
+    procMemPercent: number;
+  }
+
+  interface IMcsmMonitorServerSnapshot {
+    serverId: string;
+    instanceId: string;
+    instanceName: string;
+    daemonTime: number;
+    status: number;
+    statusText: string;
+    processRunning: boolean;
+    process: IMcsmMonitorProcessSnapshot;
+    plugin: IMcsmMonitorPluginSnapshot;
+    hostPrimaryDisk?: IMcsmMonitorDiskSnapshot;
+    history: IMcsmMonitorHistoryPoint[];
+  }
+
+  interface IMcsmMonitorHostSnapshot {
+    cpuPercent: number;
+    memPercent: number;
+    totalmem: number;
+    freemem: number;
+    hostname: string;
+    platform: string;
+    loadavg: number[];
+    primaryDisk?: IMcsmMonitorDiskSnapshot;
+    disks: IMcsmMonitorDiskSnapshot[];
+  }
+
+  interface IMcsmMonitorNodeOverview {
+    daemonId: string;
+    daemonIp: string;
+    daemonPort: number;
+    daemonPrefix: string;
+    daemonRemarks: string;
+    available: boolean;
+    host?: IMcsmMonitorHostSnapshot;
+    servers: IMcsmMonitorServerSnapshot[];
+  }
+
+  interface IMcsmMonitorOverviewResponse {
+    generatedAt: number;
+    summary: {
+      nodesTotal: number;
+      nodesOnline: number;
+      serversTotal: number;
+      serversRunning: number;
+      pluginOnline: number;
+    };
+    nodes: IMcsmMonitorNodeOverview[];
+    servers: Array<
+      IMcsmMonitorServerSnapshot & {
+        daemonId: string;
+        daemonRemarks: string;
+        daemonIp: string;
+        daemonPort: number;
+        daemonPrefix: string;
+        daemonAvailable: boolean;
+      }
+    >;
   }
 
   interface IJsonData {

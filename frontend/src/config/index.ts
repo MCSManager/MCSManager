@@ -19,6 +19,7 @@ import InstanceList from "@/widgets/InstanceList.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
 import MarketEditor from "@/widgets/market/editor.vue";
 import Market from "@/widgets/market/index.vue";
+import MonitorOverview from "@/widgets/MonitorOverview.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import NodeList from "@/widgets/NodeList.vue";
 import NodeOverview from "@/widgets/NodeOverview.vue";
@@ -93,6 +94,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   PluginCard,
   MusicCard,
   ShelvesCard,
+  MonitorOverview,
   OperationLogCard,
   Market,
   MarketEditor
@@ -455,6 +457,17 @@ export function getLayoutCardPool() {
       description: t("TXT_CODE_d628e631"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.INSTANCE
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.ADMIN,
+      type: "MonitorOverview",
+      title: "多主机监控",
+      meta: {},
+      width: 12,
+      description: "聚合节点上的 Minecraft 监控数据",
+      height: LayoutCardHeight.LARGE,
+      category: NEW_CARD_TYPE.DATA
     },
     {
       id: getRandomId(),

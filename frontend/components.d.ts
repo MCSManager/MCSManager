@@ -107,6 +107,7 @@ declare module 'vue' {
     LineOption: typeof import('./src/components/LineOption.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
     MinecraftJavaForm: typeof import('./src/components/fc/CmdAssistantDialog/MinecraftJavaForm.vue')['default']
+    MonitorMiniTrend: typeof import('./src/components/MonitorMiniTrend.vue')['default']
     MyselfInfoDialog: typeof import('./src/components/MyselfInfoDialog.vue')['default']
     NewCardList: typeof import('./src/components/NewCardList/index.vue')['default']
     NodeRemoteMappingEdit: typeof import('./src/components/NodeRemoteMappingEdit.vue')['default']

@@ -193,6 +193,11 @@ export const overviewInfo = useDefineApi<any, IPanelOverviewResponse>({
   url: "/api/overview"
 });
 
+export const monitorOverview = useDefineApi<any, IMcsmMonitorOverviewResponse>({
+  url: "/api/monitor/servers",
+  method: "GET"
+});
+
 export const editNode = useDefineApi<
   {
     params: {

@@ -1,5 +1,5 @@
 import os from "os";
-import osUtils from "os-utils";
+import * as osUtils from "os-utils";
 import fs from "fs";
 // import systeminformation from "systeminformation";
 
@@ -55,14 +55,14 @@ function otherSystemInfo() {
   info.freemem = os.freemem();
   info.totalmem = os.totalmem();
   info.memUsage = (os.totalmem() - os.freemem()) / os.totalmem();
-  osUtils.cpuUsage((p) => (info.cpuUsage = p));
+  osUtils.cpuUsage((p: number) => (info.cpuUsage = p));
 }
 
 function setWindowsSystemInfo() {
   info.freemem = os.freemem();
   info.totalmem = os.totalmem();
   info.memUsage = (os.totalmem() - os.freemem()) / os.totalmem();
-  osUtils.cpuUsage((p) => (info.cpuUsage = p));
+  osUtils.cpuUsage((p: number) => (info.cpuUsage = p));
 }
 
 function setLinuxSystemInfo() {
@@ -71,7 +71,7 @@ function setLinuxSystemInfo() {
     const data = fs.readFileSync("/proc/meminfo", { encoding: "utf-8" });
     const list = data.split("\n");
     const infoTable: IInfoTable = {};
-    list.forEach((line) => {
+    list.forEach((line: string) => {
       const kv = line.split(":");
       if (kv.length === 2) {
         const k = kv[0].replace(/ /gim, "").replace(/\t/gim, "").trim().toLowerCase();
@@ -87,7 +87,7 @@ function setLinuxSystemInfo() {
     info.freemem = memAvailable * 1024;
     info.totalmem = memTotal * 1024;
     info.memUsage = (info.totalmem - info.freemem) / info.totalmem;
-    osUtils.cpuUsage((p) => (info.cpuUsage = p));
+    osUtils.cpuUsage((p: number) => (info.cpuUsage = p));
   } catch (error: any) {
     // If the reading is wrong, the default general reading method is automatically used
     otherSystemInfo();

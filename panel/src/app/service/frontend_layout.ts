@@ -166,6 +166,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/monitor",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "MonitorOverview",
+          title: "多主机监控",
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
       page: "/market",
       items: [
         {

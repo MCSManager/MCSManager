@@ -197,6 +197,15 @@ const originRouterConfig: RouterConfig[] = [
     }
   },
   {
+    path: "/monitor",
+    name: "监控",
+    component: LayoutContainer,
+    meta: {
+      mainMenu: true,
+      permission: ROLE.ADMIN
+    }
+  },
+  {
     path: "/users",
     name: t("TXT_CODE_1deaa2dd"),
     component: LayoutContainer,
