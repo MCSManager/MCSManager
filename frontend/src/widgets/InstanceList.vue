@@ -52,10 +52,12 @@ defineProps<{
 const { isPhone } = useScreen();
 const route = useRoute();
 const { state: monitorState } = useMonitorOverview();
+const DEFAULT_PAGE_SIZE = 30;
+const INSTANCE_PAGE_SIZE_OPTIONS = ["30", "50"];
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
-  pageSize: 20,
+  pageSize: DEFAULT_PAGE_SIZE,
   status: ""
 });
 
@@ -131,6 +133,12 @@ const initInstancesData = async (resetPage?: boolean) => {
   } catch (err) {
     return reportErrorMsg(t("TXT_CODE_e109c091"));
   }
+};
+
+const handlePaginationChange = async (page: number, pageSize?: number) => {
+  operationForm.value.currentPage = page;
+  operationForm.value.pageSize = pageSize || operationForm.value.pageSize;
+  await initInstancesData();
 };
 
 const handleQueryInstance = throttle(async () => {
@@ -688,9 +696,10 @@ onMounted(async () => {
             <a-pagination
               v-model:current="operationForm.currentPage"
               v-model:pageSize="operationForm.pageSize"
+              :page-size-options="INSTANCE_PAGE_SIZE_OPTIONS"
               :total="(instances?.maxPage || 0) * operationForm.pageSize"
               show-size-changer
-              @change="initInstancesData()"
+              @change="handlePaginationChange"
             />
           </template>
         </BetweenMenus>
