@@ -437,9 +437,17 @@ watch(terminalKey, async () => {
 }
 
 .instance-workspace__bottom {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  display: flex;
+  flex-direction: column;
   gap: 14px;
+
+  .instance-workspace__panel:first-child {
+    order: 2;
+  }
+
+  .instance-workspace__panel:last-child {
+    order: 1;
+  }
 }
 
 .instance-workspace__panel {
@@ -509,9 +517,4 @@ watch(terminalKey, async () => {
   font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
 }
 
-@media (max-width: 1200px) {
-  .instance-workspace__bottom {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 </style>

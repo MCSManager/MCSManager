@@ -50,7 +50,7 @@ onMounted(async () => {
       <main class="main-content" :class="{ 'app-layout-sidebar-only': useSidebarLayout }">
         <AppHeader v-if="!useSidebarLayout" :style="designModeNavStyle" />
         <Breadcrumbs />
-        <RouterView :key="$route.fullPath" />
+        <RouterView :key="$route.path" />
       </main>
     </div>
 

@@ -33,6 +33,16 @@ type MonitorOverviewRecord = IMcsmMonitorOverviewResponse["servers"][number] & {
   nodeStatusText: string;
 };
 
+const compareNumber = (a?: number | null, b?: number | null) => {
+  const left = typeof a === "number" && !Number.isNaN(a) ? a : -1;
+  const right = typeof b === "number" && !Number.isNaN(b) ? b : -1;
+  return left - right;
+};
+
+const compareText = (a?: string, b?: string) => (a || "").localeCompare(b || "");
+
+const compareBoolean = (a: boolean, b: boolean) => Number(a) - Number(b);
+
 const nodeMap = computed(() => {
   const entries = (state.value?.nodes ?? []).map((node) => [node.daemonId, node] as const);
   return new Map(entries);
@@ -69,55 +79,79 @@ const columns = [
     title: "实例",
     dataIndex: "instanceName",
     key: "instanceName",
-    width: 180
+    width: 180,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareText(a.instanceName, b.instanceName)
   },
   {
     title: "节点",
     dataIndex: "daemonRemarks",
     key: "daemonRemarks",
-    width: 180
+    width: 180,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareText(
+        a.daemonRemarks || `${a.daemonIp}:${a.daemonPort}`,
+        b.daemonRemarks || `${b.daemonIp}:${b.daemonPort}`
+      )
   },
   {
     title: "状态",
     dataIndex: "statusText",
     key: "statusText",
-    width: 100
+    width: 100,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareBoolean(a.processRunning, b.processRunning)
   },
   {
     title: "进程 CPU",
     dataIndex: "procCpuText",
     key: "procCpuText",
-    width: 100
+    width: 100,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareNumber(a.process.cpuPercent, b.process.cpuPercent)
   },
   {
     title: "进程内存",
     dataIndex: "procMemText",
     key: "procMemText",
-    width: 140
+    width: 140,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareNumber(a.process.memoryBytes, b.process.memoryBytes)
   },
   {
     title: "TPS(1m)",
     dataIndex: "tpsText",
     key: "tpsText",
-    width: 100
+    width: 100,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareNumber(a.plugin.tps.oneMin, b.plugin.tps.oneMin)
   },
   {
     title: "人数",
     dataIndex: "playersText",
     key: "playersText",
-    width: 110
+    width: 110,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) => {
+      const onlineCompare = compareNumber(a.plugin.onlinePlayers, b.plugin.onlinePlayers);
+      if (onlineCompare !== 0) return onlineCompare;
+      return compareNumber(a.plugin.maxPlayers, b.plugin.maxPlayers);
+    }
   },
   {
     title: "插件",
     dataIndex: "pluginStatusText",
     key: "pluginStatusText",
-    width: 100
+    width: 100,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareBoolean(a.plugin.online, b.plugin.online)
   },
   {
     title: "最后心跳",
     dataIndex: "lastSeenText",
     key: "lastSeenText",
-    width: 170
+    width: 170,
+    sorter: (a: MonitorOverviewRecord, b: MonitorOverviewRecord) =>
+      compareNumber(a.plugin.lastSeen, b.plugin.lastSeen)
   },
   {
     title: "操作",
@@ -174,7 +208,7 @@ const dataSource = computed<MonitorOverviewRecord[]>(() =>
         hostDisks: nodeHost?.disks ?? [],
         procCpuText: formatPercent(server.process.cpuPercent),
         procMemText: server.process.memoryBytes ? formatMemoryUsage(server.process.memoryBytes) : "--",
-        tpsText: server.plugin.tps.oneMin ? server.plugin.tps.oneMin.toFixed(2) : "--",
+        tpsText: server.plugin.tps.oneMin != null ? server.plugin.tps.oneMin.toFixed(2) : "--",
         playersText: `${server.plugin.onlinePlayers} / ${server.plugin.maxPlayers}`,
         pluginStatusText: server.plugin.online ? "在线" : "离线",
         lastSeenText: formatAgo(server.plugin.lastSeen),
