@@ -21,6 +21,7 @@ import { computed, h, onMounted, ref, watch } from "vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
 import { useInstanceTagSearch, useInstanceTagTips } from "@/hooks/useInstanceTag";
+import { useMonitorOverview } from "@/hooks/useMonitorOverview";
 import { useScreen } from "@/hooks/useScreen";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import {
@@ -28,16 +29,17 @@ import {
   batchKill,
   batchRestart,
   batchStart,
-  batchStop
+  batchStop,
+  openInstance,
+  stopInstance
 } from "@/services/apis/instance";
-import { formatMemoryUsage } from "@/tools/memory";
 import { reportErrorMsg } from "@/tools/validator";
 import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { Modal, notification } from "ant-design-vue";
 import { throttle } from "lodash";
 import { useRoute } from "vue-router";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
-import { useInstanceMoreDetail } from "../hooks/useInstance";
+import { useInstanceMoreDetail, verifyEULA } from "../hooks/useInstance";
 import { computeNodeName } from "../tools/nodes";
 import type { NodeStatus } from "../types/index";
 import InstanceWorkspace from "./instance/InstanceWorkspace.vue";
@@ -49,6 +51,7 @@ defineProps<{
 
 const { isPhone } = useScreen();
 const route = useRoute();
+const { state: monitorState } = useMonitorOverview();
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
@@ -82,6 +85,7 @@ const {
 
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
 const selectedWorkspaceInstance = ref<InstanceListItem>();
+const sidebarActionLoadingKey = ref("");
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceListItem[] = [];
@@ -194,12 +198,6 @@ const isWorkspaceSelected = (item: InstanceListItem) => {
   return isSameInstance(item, selectedWorkspaceInstance.value);
 };
 
-const getInstanceNodeName = (item: InstanceListItem) => {
-  if (item.daemonRemarks) return item.daemonRemarks;
-  if (item.daemonIp) return `${item.daemonIp}:${item.daemonPort || ""}`;
-  return getCurrentNodeName();
-};
-
 const getInstanceStatusColor = (item: InstanceListItem) => {
   if (item.status === INSTANCE_STATUS_CODE.RUNNING) return "green";
   if (item.status === INSTANCE_STATUS_CODE.STARTING || item.status === INSTANCE_STATUS_CODE.BUSY)
@@ -207,14 +205,98 @@ const getInstanceStatusColor = (item: InstanceListItem) => {
   return "";
 };
 
-const getInstanceMemoryText = (item: InstanceListItem) => {
-  if (item.info?.memoryUsage == null) return "--";
-  return formatMemoryUsage(item.info.memoryUsage, item.info.memoryLimit);
+const getMonitorSnapshot = (item: InstanceListItem) => {
+  const daemonId = getInstanceDaemonId(item);
+  return monitorState.value?.servers.find(
+    (server) => server.daemonId === daemonId && server.serverId === item.instanceUuid
+  );
 };
 
-const getInstanceCpuText = (item: InstanceListItem) => {
-  if (item.info?.cpuUsage == null) return "--";
-  return `${Number(item.info.cpuUsage).toFixed(1)}%`;
+const getInstancePlayersText = (item: InstanceListItem) => {
+  const monitor = getMonitorSnapshot(item);
+  if (monitor?.plugin?.online) {
+    return `${monitor.plugin.onlinePlayers} / ${monitor.plugin.maxPlayers}`;
+  }
+  if (item.info?.mcPingOnline) {
+    return `${item.info.currentPlayers} / ${item.info.maxPlayers}`;
+  }
+  return "--";
+};
+
+const getInstanceTpsText = (item: InstanceListItem) => {
+  const tps = getMonitorSnapshot(item)?.plugin?.tps?.oneMin;
+  return tps != null ? tps.toFixed(2) : "--";
+};
+
+const isInstanceRunning = (item: InstanceListItem) => {
+  return item.status === INSTANCE_STATUS_CODE.RUNNING;
+};
+
+const isInstanceStopped = (item: InstanceListItem) => {
+  return item.status === INSTANCE_STATUS_CODE.STOPPED;
+};
+
+const getSidebarActionKey = (item: InstanceListItem) => {
+  return `${getInstanceDaemonId(item)}:${item.instanceUuid}`;
+};
+
+const getInstanceNodeColorIndex = (item: InstanceListItem) => {
+  const daemonId = getInstanceDaemonId(item);
+  const source = daemonId || item.daemonIp || "";
+  let hash = 0;
+  for (let index = 0; index < source.length; index++) {
+    hash = (hash + source.charCodeAt(index) * (index + 1)) % 6;
+  }
+  return hash;
+};
+
+const isSidebarActionLoading = (item: InstanceListItem) => {
+  return sidebarActionLoadingKey.value === getSidebarActionKey(item);
+};
+
+const runSidebarPowerAction = async (event: Event | undefined, item: InstanceListItem) => {
+  event?.stopPropagation();
+  const daemonId = getInstanceDaemonId(item);
+  if (!daemonId) return reportErrorMsg(t("TXT_CODE_e109c091"));
+  const actionKey = getSidebarActionKey(item);
+  sidebarActionLoadingKey.value = actionKey;
+  try {
+    if (isInstanceStopped(item)) {
+      if (item.config?.type?.startsWith("minecraft/java")) {
+        const flag = await verifyEULA(item.instanceUuid, daemonId);
+        if (!flag) return;
+      }
+      await openInstance().execute({
+        params: {
+          uuid: item.instanceUuid,
+          daemonId
+        }
+      });
+      notification.success({
+        message: t("TXT_CODE_2b5fd76e"),
+        description: item.config.nickname
+      });
+    } else if (isInstanceRunning(item)) {
+      await stopInstance().execute({
+        params: {
+          uuid: item.instanceUuid,
+          daemonId
+        }
+      });
+      notification.success({
+        message: t("TXT_CODE_4822a21"),
+        description: item.config.nickname
+      });
+    }
+    await initInstancesData();
+  } catch (err: any) {
+    console.error(err);
+    reportErrorMsg(err.message || err);
+  } finally {
+    if (sidebarActionLoadingKey.value === actionKey) {
+      sidebarActionLoadingKey.value = "";
+    }
+  }
 };
 
 const handleSidebarInstanceClick = (item: InstanceListItem) => {
@@ -480,7 +562,7 @@ onMounted(async () => {
             </a-typography-title>
           </template>
           <template #right>
-            <a-dropdown>
+            <a-dropdown v-if="isPhone">
               <template #overlay>
                 <a-menu>
                   <a-menu-item :key="ALL_REMOTE_NODES_ID" @click="handleChangeAllNodes">
@@ -641,6 +723,42 @@ onMounted(async () => {
       <a-col v-else-if="instancesMoreInfo.length > 0 && !isPhone" :span="24">
         <div class="instance-workbench">
           <aside class="instance-workbench__sidebar">
+            <div class="instance-workbench__node-switcher">
+              <a-dropdown>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item :key="ALL_REMOTE_NODES_ID" @click="handleChangeAllNodes">
+                      <DatabaseOutlined />
+                      {{ t("TXT_CODE_4bedec2a") }}
+                    </a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item
+                      v-for="item in nodes"
+                      :key="item.uuid"
+                      :disabled="!item.available"
+                      @click="handleChangeNode(item)"
+                    >
+                      <DatabaseOutlined v-if="item.available" />
+                      <FrownOutlined v-else />
+                      {{ computeNodeName(item.ip, item.available, item.remarks) }}
+                    </a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="toNodesPage" @click="toNodesPage()">
+                      <FormOutlined />
+                      {{ t("TXT_CODE_28e53fed") }}
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+                <a-button class="instance-workbench__node-button">
+                  <a-typography-text
+                    class="instance-workbench__node-text"
+                    :ellipsis="{ ellipsis: true }"
+                    :content="getCurrentNodeName()"
+                  />
+                  <DownOutlined />
+                </a-button>
+              </a-dropdown>
+            </div>
             <div class="instance-workbench__sidebar-title">
               <span>实例列表</span>
               <a-tag>{{ instancesMoreInfo.length }}</a-tag>
@@ -652,29 +770,49 @@ onMounted(async () => {
                 type="button"
                 class="instance-workbench__list-item"
                 :class="{
+                  [`node-color-${getInstanceNodeColorIndex(item)}`]: true,
                   active: !multipleMode && isWorkspaceSelected(item),
                   selected: multipleMode && findInstance(item)
                 }"
                 @click="handleSidebarInstanceClick(item)"
               >
                 <div class="instance-workbench__item-main">
-                  <span class="instance-workbench__item-name">{{ item.config.nickname }}</span>
-                  <a-tag :color="getInstanceStatusColor(item)">
-                    {{ item.moreInfo?.statusText || INSTANCE_STATUS[item.status] || "--" }}
-                  </a-tag>
-                </div>
-                <div class="instance-workbench__item-node">
-                  {{ getInstanceNodeName(item) }}
-                </div>
-                <div class="instance-workbench__item-meta">
-                  <span>{{ item.moreInfo?.instanceTypeText || "--" }}</span>
-                  <span>CPU {{ getInstanceCpuText(item) }}</span>
-                  <span>{{ t("TXT_CODE_593ee330") }} {{ getInstanceMemoryText(item) }}</span>
-                </div>
-                <div v-if="item.config.tag?.length" class="instance-workbench__item-tags">
-                  <a-tag v-for="tag in item.config.tag" :key="tag" class="m-0">
-                    {{ tag }}
-                  </a-tag>
+                  <div class="instance-workbench__item-copy">
+                    <div class="instance-workbench__item-name">{{ item.config.nickname }}</div>
+                    <div class="instance-workbench__item-metrics">
+                      人数 {{ getInstancePlayersText(item) }} · TPS {{ getInstanceTpsText(item) }}
+                    </div>
+                  </div>
+                  <div class="instance-workbench__item-actions">
+                    <a-tag class="m-0" :color="getInstanceStatusColor(item)">
+                      {{ item.moreInfo?.statusText || INSTANCE_STATUS[item.status] || "--" }}
+                    </a-tag>
+                    <a-button
+                      v-if="isInstanceStopped(item)"
+                      size="small"
+                      type="primary"
+                      ghost
+                      :loading="isSidebarActionLoading(item)"
+                      @click.stop="runSidebarPowerAction($event, item)"
+                    >
+                      启动
+                    </a-button>
+                    <a-popconfirm
+                      v-else-if="isInstanceRunning(item)"
+                      :title="t('TXT_CODE_276756b2')"
+                      @confirm="runSidebarPowerAction(undefined, item)"
+                    >
+                      <a-button
+                        size="small"
+                        danger
+                        :loading="isSidebarActionLoading(item)"
+                        @click.stop
+                      >
+                        关闭
+                      </a-button>
+                    </a-popconfirm>
+                    <a-button v-else size="small" disabled>处理中</a-button>
+                  </div>
                 </div>
               </button>
             </div>
@@ -764,6 +902,22 @@ onMounted(async () => {
   overflow: hidden;
 }
 
+.instance-workbench__node-switcher {
+  padding: 12px 12px 0;
+}
+
+.instance-workbench__node-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+}
+
+.instance-workbench__node-text {
+  max-width: 250px;
+}
+
 .instance-workbench__sidebar-title {
   display: flex;
   align-items: center;
@@ -785,9 +939,10 @@ onMounted(async () => {
 .instance-workbench__list-item {
   width: 100%;
   border: 1px solid transparent;
+  border-left: 5px solid var(--node-accent, var(--color-gray-6));
   border-radius: 13px;
   padding: 12px;
-  background: var(--color-gray-1);
+  background: linear-gradient(90deg, var(--node-bg, var(--color-gray-1)), var(--color-gray-1) 72%);
   color: inherit;
   cursor: pointer;
   text-align: left;
@@ -800,20 +955,57 @@ onMounted(async () => {
 
   &.active {
     border-color: var(--color-primary);
+    border-left-color: var(--node-accent, var(--color-primary));
     background: rgba(64, 150, 255, 0.08);
   }
 
   &.selected {
     border-color: var(--color-green-3);
+    border-left-color: var(--node-accent, var(--color-green-3));
     background: var(--color-green-1);
+  }
+
+  &.node-color-0 {
+    --node-accent: #3b82f6;
+    --node-bg: rgba(59, 130, 246, 0.12);
+  }
+
+  &.node-color-1 {
+    --node-accent: #16a34a;
+    --node-bg: rgba(22, 163, 74, 0.12);
+  }
+
+  &.node-color-2 {
+    --node-accent: #f59e0b;
+    --node-bg: rgba(245, 158, 11, 0.14);
+  }
+
+  &.node-color-3 {
+    --node-accent: #06b6d4;
+    --node-bg: rgba(6, 182, 212, 0.12);
+  }
+
+  &.node-color-4 {
+    --node-accent: #ef4444;
+    --node-bg: rgba(239, 68, 68, 0.11);
+  }
+
+  &.node-color-5 {
+    --node-accent: #8b5cf6;
+    --node-bg: rgba(139, 92, 246, 0.11);
   }
 }
 
 .instance-workbench__item-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
+}
+
+.instance-workbench__item-copy {
+  min-width: 0;
+  flex: 1;
 }
 
 .instance-workbench__item-name {
@@ -823,7 +1015,7 @@ onMounted(async () => {
   font-weight: 700;
 }
 
-.instance-workbench__item-node {
+.instance-workbench__item-metrics {
   margin-top: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -832,20 +1024,12 @@ onMounted(async () => {
   font-size: 12px;
 }
 
-.instance-workbench__item-meta {
+.instance-workbench__item-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-  color: var(--color-gray-7);
-  font-size: 12px;
-}
-
-.instance-workbench__item-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .instance-workbench__main {
