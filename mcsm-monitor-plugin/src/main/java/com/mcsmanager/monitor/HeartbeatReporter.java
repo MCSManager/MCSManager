@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -117,21 +116,7 @@ public final class HeartbeatReporter {
     }
 
     private double[] getTps() {
-        try {
-            Object spigot = Bukkit.getServer().getClass().getMethod("spigot").invoke(Bukkit.getServer());
-            Method getTpsMethod = spigot.getClass().getMethod("getTPS");
-            Object raw = getTpsMethod.invoke(spigot);
-            if (raw instanceof double[]) {
-                double[] source = (double[]) raw;
-                return new double[]{
-                        source.length > 0 ? source[0] : 0D,
-                        source.length > 1 ? source[1] : 0D,
-                        source.length > 2 ? source[2] : 0D
-                };
-            }
-        } catch (Exception ignored) {
-        }
-        return new double[]{0D, 0D, 0D};
+        return plugin.getCalculatedTps();
     }
 
     private String readBody(HttpURLConnection connection) {
