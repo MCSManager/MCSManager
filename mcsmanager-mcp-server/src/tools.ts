@@ -33,7 +33,7 @@ export const toolDefinitions: Tool[] = [
   },
   {
     name: "mcsm_list_instances",
-    description: "列出 Minecraft 实例，可按节点名称或状态筛选。",
+    description: "列出 Minecraft 实例，可按实例名称、节点名称或状态筛选。",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -41,6 +41,10 @@ export const toolDefinitions: Tool[] = [
         nodeName: {
           type: "string",
           description: "可选。按节点备注、prefix、IP 或 daemonId 模糊筛选。"
+        },
+        instanceName: {
+          type: "string",
+          description: "可选。按实例名称或 UUID 模糊筛选。"
         },
         status: {
           type: "string",
@@ -167,10 +171,12 @@ function filterInstances(
   args: unknown
 ): McsmMonitorServerWithDaemon[] {
   const nodeName = readString(args, "nodeName", false).toLowerCase();
+  const instanceName = readString(args, "instanceName", false).toLowerCase();
   const status = readString(args, "status", false);
 
   return overview.servers.filter((server) => {
     if (nodeName && !matchesNode(server, nodeName)) return false;
+    if (instanceName && !matchesInstance(server, instanceName)) return false;
     switch (status) {
       case "":
         return true;
@@ -188,6 +194,12 @@ function filterInstances(
         throw new Error(`不支持的 status：${status}`);
     }
   });
+}
+
+function matchesInstance(server: McsmMonitorServerWithDaemon, instanceName: string): boolean {
+  return [server.instanceName, server.instanceId, server.serverId].some((value) =>
+    value.toLowerCase().includes(instanceName)
+  );
 }
 
 function matchesNode(server: McsmMonitorServerWithDaemon, nodeName: string): boolean {

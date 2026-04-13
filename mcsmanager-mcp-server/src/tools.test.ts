@@ -56,3 +56,16 @@ test("McsmToolHandlers does not execute action for ambiguous instance name", asy
   assert.equal(client.actionCalls.length, 0);
   assert.match(result.content[0].text, /匹配到多个实例/);
 });
+
+test("McsmToolHandlers list instances supports instanceName filter", async () => {
+  const client = new FakeClient();
+  const handlers = new McsmToolHandlers(createTestConfig(), client);
+
+  const result = await handlers.callTool("mcsm_list_instances", {
+    instanceName: "ce1"
+  });
+
+  assert.match(result.content[0].text, /ce1/);
+  assert.match(result.content[0].text, /ce1-copy/);
+  assert.doesNotMatch(result.content[0].text, /ce2/);
+});

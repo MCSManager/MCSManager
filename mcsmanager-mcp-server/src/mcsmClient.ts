@@ -72,7 +72,7 @@ export class McsmClient {
         );
       }
 
-      return responseBody as T;
+      return unwrapMcsmResponse(responseBody) as T;
     } catch (error) {
       if (error instanceof McsmApiError) throw error;
       if (error instanceof Error && error.name === "AbortError") {
@@ -124,4 +124,22 @@ function extractMessage(body: unknown): string {
     if (typeof data === "string") return data;
   }
   return "";
+}
+
+function unwrapMcsmResponse(body: unknown): unknown {
+  if (!body || typeof body !== "object") return body;
+
+  const record = body as Record<string, unknown>;
+  if (!("status" in record) || !("data" in record)) return body;
+
+  const status = Number(record.status);
+  if (Number.isFinite(status) && status >= 400) {
+    throw new McsmApiError(
+      `MCSManager API returned status ${status} ${extractMessage(body)}`,
+      status,
+      body
+    );
+  }
+
+  return record.data;
 }

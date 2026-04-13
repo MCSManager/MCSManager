@@ -22,6 +22,46 @@ test("McsmClient sends x-request-api-key header", async () => {
   assert.equal(capturedApiKey, "test-api-key");
 });
 
+test("McsmClient unwraps MCSManager status/data envelope", async () => {
+  const fetchImpl = async () =>
+    new Response(
+      JSON.stringify({
+        status: 200,
+        data: createOverviewFixture(),
+        time: 1000
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+
+  const client = new McsmClient(createTestConfig(), fetchImpl as typeof fetch);
+  const overview = await client.getMonitorOverview();
+
+  assert.equal(overview.nodes.length, 2);
+  assert.equal(overview.servers.length, 3);
+});
+
+test("McsmClient rejects MCSManager error envelope", async () => {
+  const fetchImpl = async () =>
+    new Response(
+      JSON.stringify({
+        status: 403,
+        data: "api key invalid",
+        time: 1000
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+
+  const client = new McsmClient(createTestConfig(), fetchImpl as typeof fetch);
+
+  await assert.rejects(() => client.getMonitorOverview(), /status 403 api key invalid/);
+});
+
 test("McsmClient sends protected instance action request", async () => {
   let capturedUrl = "";
   let capturedMethod = "";
