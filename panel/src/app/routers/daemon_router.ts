@@ -7,6 +7,7 @@ import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 
 const router = new Router({ prefix: "/service" });
+const ALL_REMOTE_NODES_ID = "__all__";
 
 // [Top-level Permission]
 // Get the list of remote services
@@ -40,25 +41,89 @@ router.get(
     const instanceName = ctx.query.instance_name;
     const status = ctx.query.status;
     const tag = String(ctx.query.tag);
-    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
     let tagList: string[] = [];
     try {
       tagList = JSON.parse(tag);
     } catch (error) {
       // ignore
     }
+    const condition = {
+      instanceName,
+      status,
+      tag: tagList.length > 0 ? tagList : null
+    };
+
+    if (!daemonId || daemonId === ALL_REMOTE_NODES_ID) {
+      const data: any[] = [];
+      const allTags: string[] = [];
+
+      for (const remoteService of RemoteServiceSubsystem.services.values()) {
+        try {
+          const result = await new RemoteRequest(remoteService).request("instance/select", {
+            page: 1,
+            pageSize: Number.MAX_SAFE_INTEGER,
+            condition
+          });
+          if (Array.isArray(result?.allTags)) allTags.push(...result.allTags);
+          for (const instance of result?.data || []) {
+            data.push(withDaemonInfo(instance, remoteService));
+          }
+        } catch (err) {
+          // keep other nodes visible when one daemon is offline
+        }
+      }
+
+      data.sort(sortInstanceDetail);
+      const start = (page - 1) * pageSize;
+      ctx.body = {
+        page,
+        pageSize,
+        maxPage: data.length === 0 ? 0 : Math.ceil(data.length / pageSize),
+        allTags: uniqueStrings(allTags).slice(0, 60),
+        data: data.slice(start, start + pageSize)
+      };
+      return;
+    }
+
+    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
     const result = await new RemoteRequest(remoteService).request("instance/select", {
       page,
       pageSize,
-      condition: {
-        instanceName,
-        status,
-        tag: tagList.length > 0 ? tagList : null
-      }
+      condition
     });
-    ctx.body = result;
+    ctx.body = {
+      ...result,
+      data: Array.isArray(result?.data)
+        ? result.data.map((instance: any) => withDaemonInfo(instance, remoteService))
+        : []
+    };
   }
 );
+
+function withDaemonInfo(instance: any, remoteService: any) {
+  return {
+    ...instance,
+    daemonId: remoteService.uuid,
+    daemonIp: remoteService.config.ip,
+    daemonPort: remoteService.config.port,
+    daemonPrefix: remoteService.config.prefix,
+    daemonRemarks: remoteService.config.remarks,
+    daemonAvailable: remoteService.available
+  };
+}
+
+function sortInstanceDetail(a: any, b: any) {
+  const statusA = Number(a?.status ?? 0);
+  const statusB = Number(b?.status ?? 0);
+  if (statusA !== statusB) return statusB - statusA;
+  const nameA = String(a?.config?.nickname ?? "");
+  const nameB = String(b?.config?.nickname ?? "");
+  return nameA.localeCompare(nameB);
+}
+
+function uniqueStrings(values: string[]) {
+  return [...new Set(values.map((value) => String(value)).filter(Boolean))];
+}
 
 // [Top-level Permission]
 // Get remote server system information

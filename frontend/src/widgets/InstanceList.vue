@@ -52,6 +52,16 @@ const operationForm = ref({
   status: ""
 });
 
+const ALL_REMOTE_NODES_ID = "__all__";
+interface InstanceListItem extends InstanceMoreDetail {
+  daemonId?: string;
+  daemonIp?: string;
+  daemonPort?: number;
+  daemonPrefix?: string;
+  daemonRemarks?: string;
+  daemonAvailable?: boolean;
+}
+
 const currentRemoteNode = ref<NodeStatus>();
 
 const { execute: getNodes, state: nodes, isLoading: isLoading1 } = remoteNodeList();
@@ -69,9 +79,13 @@ const {
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
 
 const instancesMoreInfo = computed(() => {
-  const newInstances: InstanceMoreDetail[] = [];
+  const newInstances: InstanceListItem[] = [];
   for (const instance of instances.value?.data || []) {
-    const instanceMoreInfo = useInstanceMoreDetail(instance);
+    const instanceItem = instance as InstanceListItem;
+    if (!instanceItem.daemonId && currentRemoteNode.value?.uuid) {
+      instanceItem.daemonId = currentRemoteNode.value.uuid;
+    }
+    const instanceMoreInfo = useInstanceMoreDetail(instanceItem);
     newInstances.push(instanceMoreInfo);
   }
   return newInstances || [];
@@ -83,14 +97,7 @@ const initNodes = async () => {
   if (nodes.value?.length === 0) {
     return reportErrorMsg(t("TXT_CODE_e3d96a26"));
   }
-  if (localStorage.getItem("pageSelectedRemote")) {
-    currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
-    if (!nodes.value?.some((item) => item.uuid === currentRemoteNode.value?.uuid)) {
-      currentRemoteNode.value = undefined;
-    }
-  } else {
-    currentRemoteNode.value = nodes.value?.[0];
-  }
+  currentRemoteNode.value = undefined;
 };
 
 const initInstancesData = async (resetPage?: boolean) => {
@@ -102,7 +109,7 @@ const initInstancesData = async (resetPage?: boolean) => {
     }
     await getInstances({
       params: {
-        daemonId: currentRemoteNode.value?.uuid ?? "",
+        daemonId: currentRemoteNode.value?.uuid ?? ALL_REMOTE_NODES_ID,
         page: operationForm.value.currentPage,
         page_size: operationForm.value.pageSize,
         status: operationForm.value.status,
@@ -131,12 +138,35 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
   });
 };
 
+const getInstanceDaemonId = (item: InstanceListItem) => {
+  return item.daemonId || currentRemoteNode.value?.uuid || "";
+};
+
+const getCurrentNodeName = () => {
+  if (!currentRemoteNode.value) return t("TXT_CODE_4bedec2a");
+  return computeNodeName(
+    currentRemoteNode.value.ip || "",
+    currentRemoteNode.value.available || true,
+    currentRemoteNode.value.remarks
+  );
+};
+
+const handleChangeAllNodes = async () => {
+  try {
+    currentRemoteNode.value = undefined;
+    selectedInstance.value = [];
+    localStorage.removeItem("pageSelectedRemote");
+    await initInstancesData(true);
+  } catch (err: any) {
+    console.error(err.message);
+  }
+};
+
 const handleChangeNode = async (item: NodeStatus) => {
   try {
     currentRemoteNode.value = item;
     selectedInstance.value = [];
     await initInstancesData(true);
-    localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
   } catch (err: any) {
     console.error(err.message);
   }
@@ -167,15 +197,18 @@ const toNodesPage = () => {
 };
 
 const multipleMode = ref(false);
-const selectedInstance = ref<InstanceMoreDetail[]>([]);
+const selectedInstance = ref<InstanceListItem[]>([]);
 
-const findInstance = (item: InstanceMoreDetail) => {
-  return selectedInstance.value.find((i) => i.instanceUuid === item.instanceUuid);
+const findInstance = (item: InstanceListItem) => {
+  return selectedInstance.value.find(
+    (i) => i.instanceUuid === item.instanceUuid && getInstanceDaemonId(i) === getInstanceDaemonId(item)
+  );
 };
 
-const selectInstance = (item: InstanceMoreDetail) => {
-  if (findInstance(item)) {
-    selectedInstance.value.splice(selectedInstance.value.indexOf(item), 1);
+const selectInstance = (item: InstanceListItem) => {
+  const selected = findInstance(item);
+  if (selected) {
+    selectedInstance.value.splice(selectedInstance.value.indexOf(selected), 1);
   } else {
     selectedInstance.value.push(item);
   }
@@ -183,9 +216,9 @@ const selectInstance = (item: InstanceMoreDetail) => {
 
 const handleSelectInstance = (item: InstanceMoreDetail) => {
   if (multipleMode.value) {
-    selectInstance(item);
+    selectInstance(item as InstanceListItem);
   } else {
-    toAppDetailPage(currentRemoteNode.value?.uuid || "", item.instanceUuid);
+    toAppDetailPage(getInstanceDaemonId(item as InstanceListItem), item.instanceUuid);
   }
 };
 
@@ -251,10 +284,13 @@ const batchOperation = async (actName: "start" | "stop" | "kill" | "restart") =>
 
   const exec = async (fn: Function, msg: string) => {
     try {
+      if (selectedInstance.value.some((item) => !getInstanceDaemonId(item))) {
+        return reportErrorMsg(t("TXT_CODE_e109c091"));
+      }
       const state = await fn({
         data: selectedInstance.value.map((item) => ({
           instanceUuid: item.instanceUuid,
-          daemonId: currentRemoteNode.value?.uuid ?? ""
+          daemonId: getInstanceDaemonId(item)
         }))
       });
       if (state.value) {
@@ -277,10 +313,13 @@ const batchOperation = async (actName: "start" | "stop" | "kill" | "restart") =>
 const batchDeleteInstance = async (deleteFile: boolean) => {
   if (selectedInstance.value.length === 0) return reportErrorMsg(t("TXT_CODE_a0a77be5"));
   const { execute, state } = batchDelete();
-  const uuids: string[] = [];
+  const groupedUuids = new Map<string, string[]>();
   const paths: string[] = [];
   for (const i of selectedInstance.value) {
-    uuids.push(i.instanceUuid);
+    const daemonId = getInstanceDaemonId(i);
+    if (!daemonId) return reportErrorMsg(t("TXT_CODE_e109c091"));
+    if (!groupedUuids.has(daemonId)) groupedUuids.set(daemonId, []);
+    groupedUuids.get(daemonId)?.push(i.instanceUuid);
     if (i.config?.cwd) {
       paths.push(i.config.cwd);
     }
@@ -302,15 +341,17 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
     okText: t("TXT_CODE_d507abff"),
     async onOk() {
       try {
-        await execute({
-          params: {
-            daemonId: currentRemoteNode.value?.uuid ?? ""
-          },
-          data: {
-            uuids: uuids,
-            deleteFile: deleteFile
-          }
-        });
+        for (const [daemonId, uuids] of groupedUuids.entries()) {
+          await execute({
+            params: {
+              daemonId
+            },
+            data: {
+              uuids,
+              deleteFile
+            }
+          });
+        }
         if (state.value) {
           confirmDeleteInstanceModal.destroy();
           exitMultipleMode();
@@ -350,6 +391,11 @@ onMounted(async () => {
             <a-dropdown>
               <template #overlay>
                 <a-menu>
+                  <a-menu-item :key="ALL_REMOTE_NODES_ID" @click="handleChangeAllNodes">
+                    <DatabaseOutlined />
+                    {{ t("TXT_CODE_4bedec2a") }}
+                  </a-menu-item>
+                  <a-menu-divider />
                   <a-menu-item
                     v-for="item in nodes"
                     :key="item.uuid"
@@ -371,13 +417,7 @@ onMounted(async () => {
                 <a-typography-text
                   style="max-width: 145px"
                   :ellipsis="{ ellipsis: true }"
-                  :content="
-                    computeNodeName(
-                      currentRemoteNode?.ip || '',
-                      currentRemoteNode?.available || true,
-                      currentRemoteNode?.remarks
-                    )
-                  "
+                  :content="getCurrentNodeName()"
                 />
                 <DownOutlined />
               </a-button>
@@ -511,7 +551,7 @@ onMounted(async () => {
           <fade-up-animation>
             <a-col
               v-for="item in instancesMoreInfo"
-              :key="item.instanceUuid"
+              :key="`${getInstanceDaemonId(item)}:${item.instanceUuid}`"
               :span="24"
               :xl="6"
               :lg="8"
@@ -523,7 +563,7 @@ onMounted(async () => {
                 style="height: 100%"
                 :card="card"
                 :target-instance-info="item"
-                :target-daemon-id="currentRemoteNode?.uuid"
+                :target-daemon-id="getInstanceDaemonId(item)"
                 @click="handleSelectInstance(item)"
                 @refresh-list="initInstancesData()"
               />

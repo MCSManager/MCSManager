@@ -98,7 +98,16 @@ export const remoteInstances = useDefineApi<
     maxPage: 1;
     page: 1;
     pageSize: 10;
-    data: InstanceDetail[];
+    data: Array<
+      InstanceDetail & {
+        daemonId?: string;
+        daemonIp?: string;
+        daemonPort?: number;
+        daemonPrefix?: string;
+        daemonRemarks?: string;
+        daemonAvailable?: boolean;
+      }
+    >;
     allTags: string[];
   }
 >({

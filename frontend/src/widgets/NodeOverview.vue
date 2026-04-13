@@ -26,7 +26,7 @@ const columns = [
   { title: t("TXT_CODE_3c8fd4c2"), dataIndex: "remark", key: "remark", width: 100 },
   { title: "CPU", dataIndex: "cpu", key: "cpu", width: 72 },
   { title: t("TXT_CODE_593ee330"), dataIndex: "mem", key: "mem", width: 120 },
-  { title: "Disk", dataIndex: "disk", key: "disk", width: 170 },
+  { title: "磁盘", dataIndex: "disk", key: "disk", width: 170 },
   { title: t("TXT_CODE_eaed6901"), dataIndex: "instances", key: "instances", width: 90 },
   { title: t("TXT_CODE_3f99f17f"), dataIndex: "version", key: "version", width: 100 },
   { title: t("TXT_CODE_f80e0786"), dataIndex: "status", key: "status", width: 90 }
@@ -55,7 +55,7 @@ const dataSource = computed(() => {
         memUsedPercent,
         primaryDisk,
         disks: v.system?.disks ?? [],
-        disk: primaryDisk ? `${formatMemoryUsage(primaryDisk.freeBytes)} free` : "--",
+        disk: primaryDisk ? `${formatMemoryUsage(primaryDisk.freeBytes)} 可用` : "--",
         diskUsagePercent: primaryDisk?.usagePercent,
         instances: `${running} / ${total}`,
         running,
@@ -171,7 +171,7 @@ const getRecordValue = (record: Record<string, any>, key?: string | number) => {
 
           <template #expandedRowRender="{ record }">
             <div class="node-disk-list">
-              <div v-if="!record.disks.length" class="node-disk-list__empty">No disk snapshots</div>
+              <div v-if="!record.disks.length" class="node-disk-list__empty">暂无磁盘快照</div>
               <div
                 v-for="disk in record.disks"
                 :key="`${record.key}-${disk.mount}`"
@@ -179,12 +179,12 @@ const getRecordValue = (record: Record<string, any>, key?: string | number) => {
               >
                 <div class="node-disk-list__title">
                   <span class="text-monospace">{{ disk.mount }}</span>
-                  <a-tag v-if="record.primaryDisk?.mount === disk.mount" color="blue">Primary</a-tag>
+                  <a-tag v-if="record.primaryDisk?.mount === disk.mount" color="blue">主磁盘</a-tag>
                 </div>
                 <div class="node-disk-list__meta">
                   <span class="text-monospace">{{ disk.device }}</span>
                   <span>{{ formatMemoryUsage(disk.usedBytes) }} / {{ formatMemoryUsage(disk.totalBytes) }}</span>
-                  <span>{{ formatMemoryUsage(disk.freeBytes) }} free</span>
+                  <span>{{ formatMemoryUsage(disk.freeBytes) }} 可用</span>
                   <span>{{ disk.usagePercent.toFixed(1) }}%</span>
                 </div>
               </div>

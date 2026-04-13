@@ -43,22 +43,22 @@ const summaryItems = computed(() => {
   return [
     {
       key: "nodes",
-      label: "Nodes Online",
+      label: "在线节点",
       value: `${summary?.nodesOnline ?? 0} / ${summary?.nodesTotal ?? 0}`
     },
     {
       key: "servers",
-      label: "Servers Running",
+      label: "运行实例",
       value: `${summary?.serversRunning ?? 0} / ${summary?.serversTotal ?? 0}`
     },
     {
       key: "plugins",
-      label: "Plugin Heartbeats",
+      label: "插件心跳",
       value: `${summary?.pluginOnline ?? 0}`
     },
     {
       key: "updatedAt",
-      label: "Updated At",
+      label: "更新时间",
       value: parseTimestamp(state.value?.generatedAt ?? 0) || "--"
     }
   ];
@@ -66,31 +66,31 @@ const summaryItems = computed(() => {
 
 const columns = [
   {
-    title: "Server",
+    title: "实例",
     dataIndex: "instanceName",
     key: "instanceName",
     width: 180
   },
   {
-    title: "Node",
+    title: "节点",
     dataIndex: "daemonRemarks",
     key: "daemonRemarks",
     width: 180
   },
   {
-    title: "Status",
+    title: "状态",
     dataIndex: "statusText",
     key: "statusText",
     width: 100
   },
   {
-    title: "Proc CPU",
+    title: "进程 CPU",
     dataIndex: "procCpuText",
     key: "procCpuText",
     width: 100
   },
   {
-    title: "Proc Memory",
+    title: "进程内存",
     dataIndex: "procMemText",
     key: "procMemText",
     width: 140
@@ -102,25 +102,25 @@ const columns = [
     width: 100
   },
   {
-    title: "Players",
+    title: "人数",
     dataIndex: "playersText",
     key: "playersText",
     width: 110
   },
   {
-    title: "Plugin",
+    title: "插件",
     dataIndex: "pluginStatusText",
     key: "pluginStatusText",
     width: 100
   },
   {
-    title: "Last Seen",
+    title: "最后心跳",
     dataIndex: "lastSeenText",
     key: "lastSeenText",
     width: 170
   },
   {
-    title: "Action",
+    title: "操作",
     key: "actions",
     width: 120
   }
@@ -134,9 +134,9 @@ const formatPercent = (value?: number) => {
 const formatAgo = (timestamp?: number) => {
   if (!timestamp) return "--";
   const diff = Math.max(0, Date.now() - timestamp);
-  if (diff < 1000) return "just now";
-  if (diff < 60_000) return `${Math.floor(diff / 1000)}s ago`;
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+  if (diff < 1000) return "刚刚";
+  if (diff < 60_000) return `${Math.floor(diff / 1000)} 秒前`;
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} 分钟前`;
   return parseTimestamp(timestamp);
 };
 
@@ -147,7 +147,18 @@ const formatHostMemory = (host?: IMcsmMonitorHostSnapshot) => {
 
 const formatDiskSummary = (disk?: IMcsmMonitorDiskSnapshot) => {
   if (!disk) return "--";
-  return `${formatMemoryUsage(disk.freeBytes)} free`;
+  return `${formatMemoryUsage(disk.freeBytes)} 可用`;
+};
+
+const formatProcessStatus = (statusText: string) => {
+  const statusMap: Record<string, string> = {
+    running: "运行中",
+    starting: "启动中",
+    stopping: "停止中",
+    busy: "繁忙",
+    stopped: "已停止"
+  };
+  return statusMap[statusText] || statusText || "--";
 };
 
 const dataSource = computed<MonitorOverviewRecord[]>(() =>
@@ -165,12 +176,12 @@ const dataSource = computed<MonitorOverviewRecord[]>(() =>
         procMemText: server.process.memoryBytes ? formatMemoryUsage(server.process.memoryBytes) : "--",
         tpsText: server.plugin.tps.oneMin ? server.plugin.tps.oneMin.toFixed(2) : "--",
         playersText: `${server.plugin.onlinePlayers} / ${server.plugin.maxPlayers}`,
-        pluginStatusText: server.plugin.online ? "online" : "offline",
+        pluginStatusText: server.plugin.online ? "在线" : "离线",
         lastSeenText: formatAgo(server.plugin.lastSeen),
         hostCpuText: formatPercent(nodeHost?.cpuPercent),
         hostMemText: formatHostMemory(nodeHost),
         hostDiskText: formatDiskSummary(server.hostPrimaryDisk ?? nodeHost?.primaryDisk),
-        nodeStatusText: server.daemonAvailable ? "online" : "offline"
+        nodeStatusText: server.daemonAvailable ? "在线" : "离线"
       };
     })
     .sort((a, b) => {
@@ -221,7 +232,7 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
     <template #operator>
       <a-button size="small" :loading="isLoading" @click="refresh(true)">
         <ReloadOutlined />
-        Refresh
+        刷新
       </a-button>
     </template>
     <template #body>
@@ -259,7 +270,7 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
           </template>
           <template v-else-if="column.key === 'statusText'">
             <a-tag :color="record.processRunning ? 'green' : 'default'">
-              {{ record.statusText }}
+              {{ formatProcessStatus(record.statusText) }}
             </a-tag>
           </template>
           <template v-else-if="column.key === 'pluginStatusText'">
@@ -270,7 +281,7 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
           <template v-else-if="column.key === 'actions'">
             <a-button size="small" @click="toTerminalFromRow(record)">
               <ConsoleSqlOutlined />
-              Terminal
+              终端
             </a-button>
           </template>
           <template v-else>
@@ -282,7 +293,7 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
           <div class="monitor-expand">
             <div class="monitor-expand__host-summary">
               <div class="monitor-expand__host-card">
-                <div class="monitor-expand__host-label">Node</div>
+                <div class="monitor-expand__host-label">节点状态</div>
                 <div class="monitor-expand__host-value">
                   <a-tag :color="record.daemonAvailable ? 'green' : 'default'">
                     {{ record.nodeStatusText }}
@@ -290,7 +301,7 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
                 </div>
               </div>
               <div class="monitor-expand__host-card">
-                <div class="monitor-expand__host-label">Host CPU</div>
+                <div class="monitor-expand__host-label">主机 CPU</div>
                 <div
                   class="monitor-expand__host-value"
                   :style="{ color: getUsageColor(record.nodeHost?.cpuPercent ?? 0, 'var(--color-primary)') }"
@@ -299,11 +310,11 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
                 </div>
               </div>
               <div class="monitor-expand__host-card">
-                <div class="monitor-expand__host-label">Host Memory</div>
+                <div class="monitor-expand__host-label">主机内存</div>
                 <div class="monitor-expand__host-value">{{ record.hostMemText }}</div>
               </div>
               <div class="monitor-expand__host-card">
-                <div class="monitor-expand__host-label">Host Disk</div>
+                <div class="monitor-expand__host-label">主机磁盘</div>
                 <div class="monitor-expand__host-value">{{ record.hostDiskText }}</div>
               </div>
             </div>
@@ -319,13 +330,13 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
 
             <div class="monitor-expand__trends">
               <MonitorMiniTrend
-                title="TPS Trend"
+                title="TPS 趋势"
                 :current-text="record.tpsText"
                 :max="20"
                 :data="getTrendData(record, 'tps')"
               />
               <MonitorMiniTrend
-                title="Player Trend"
+                title="在线人数趋势"
                 :current-text="record.playersText"
                 :data="getTrendData(record, 'onlinePlayers')"
               />
@@ -343,32 +354,32 @@ const getTrendData = (record: MonitorOverviewRecord, field: "tps" | "onlinePlaye
                 </div>
                 <div class="monitor-expand__disk-main">
                   <span>{{ formatMemoryUsage(disk.usedBytes) }} / {{ formatMemoryUsage(disk.totalBytes) }}</span>
-                  <span>{{ formatMemoryUsage(disk.freeBytes) }} free</span>
+                  <span>{{ formatMemoryUsage(disk.freeBytes) }} 可用</span>
                   <span>{{ disk.usagePercent.toFixed(1) }}%</span>
                 </div>
               </div>
             </div>
 
             <a-descriptions bordered size="small" :column="2" class="monitor-expand__desc">
-              <a-descriptions-item label="Instance ID">{{ record.instanceId }}</a-descriptions-item>
-              <a-descriptions-item label="Process PID">{{ record.process.pid ?? "--" }}</a-descriptions-item>
-              <a-descriptions-item label="Server Version">
+              <a-descriptions-item label="实例 ID">{{ record.instanceId }}</a-descriptions-item>
+              <a-descriptions-item label="进程 PID">{{ record.process.pid ?? "--" }}</a-descriptions-item>
+              <a-descriptions-item label="服务端版本">
                 {{ record.plugin.serverVersion || "--" }}
               </a-descriptions-item>
-              <a-descriptions-item label="Plugin Version">
+              <a-descriptions-item label="插件版本">
                 {{ record.plugin.pluginVersion || "--" }}
               </a-descriptions-item>
               <a-descriptions-item label="MOTD">
                 {{ record.plugin.motd || "--" }}
               </a-descriptions-item>
-              <a-descriptions-item label="Worlds">
+              <a-descriptions-item label="世界">
                 {{ record.plugin.worlds.length ? record.plugin.worlds.join(", ") : "--" }}
               </a-descriptions-item>
-              <a-descriptions-item label="Last Heartbeat">
+              <a-descriptions-item label="最后心跳">
                 {{ record.plugin.lastSeen ? parseTimestamp(record.plugin.lastSeen) : "--" }}
               </a-descriptions-item>
-              <a-descriptions-item label="Main Thread">
-                {{ record.plugin.mainThreadBlocked ? "blocked" : "healthy" }}
+              <a-descriptions-item label="主线程">
+                {{ record.plugin.mainThreadBlocked ? "阻塞" : "正常" }}
               </a-descriptions-item>
             </a-descriptions>
           </div>
