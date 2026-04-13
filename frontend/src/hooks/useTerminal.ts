@@ -76,7 +76,7 @@ export function useTerminal() {
     return state.value?.config.processType === "docker";
   });
 
-  let fitAddonTask: NodeJS.Timer;
+  let fitAddonTask: NodeJS.Timer | undefined;
   let cachedSize = {
     w: 160,
     h: 40
@@ -337,6 +337,13 @@ export function useTerminal() {
     return term;
   };
 
+  const disposeTerminalWindow = () => {
+    if (fitAddonTask) clearInterval(fitAddonTask);
+    fitAddonTask = undefined;
+    terminal.value?.dispose();
+    terminal.value = undefined;
+  };
+
   const clearTerminal = () => {
     terminal.value?.clear();
   };
@@ -367,7 +374,7 @@ export function useTerminal() {
   });
 
   onUnmounted(() => {
-    clearInterval(fitAddonTask);
+    disposeTerminalWindow();
     clearInterval(statusQueryTask);
     events.removeAllListeners();
     isManualDisconnect = true;
@@ -392,6 +399,7 @@ export function useTerminal() {
     isDockerMode,
     execute,
     initTerminalWindow,
+    disposeTerminalWindow,
     sendCommand,
     clearTerminal
   };

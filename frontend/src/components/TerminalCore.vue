@@ -8,7 +8,7 @@ import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { CodeOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons-vue";
 import { Terminal } from "@xterm/xterm";
 import { message } from "ant-design-vue";
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, onUnmounted, ref } from "vue";
 import { encodeConsoleColor, type UseTerminalHook } from "../hooks/useTerminal";
 import { getRandomId } from "../tools/randId";
 
@@ -37,6 +37,7 @@ const {
   socketAddress,
   execute: setUpTerminal,
   initTerminalWindow,
+  disposeTerminalWindow,
   sendCommand,
   clearTerminal
 } = props.useTerminalHook;
@@ -50,6 +51,7 @@ const socketError = ref<Error>();
 const { isXhrPollError, xhrPollErrorReason } = useXhrPollError(socketError);
 
 let term: Terminal | undefined;
+let disposed = false;
 
 let inputRef = ref<HTMLElement | null>(null);
 
@@ -66,6 +68,8 @@ const handleClickHistoryItem = (item: string) => {
 
 const initTerminal = async () => {
   if (containerState.isDesignMode) return;
+  await nextTick();
+  if (disposed) return;
   const dom = document.getElementById(terminalDomId);
   if (dom) {
     const term = initTerminalWindow(dom);
@@ -74,24 +78,26 @@ const initTerminal = async () => {
   throw new Error(t("TXT_CODE_42bcfe0c"));
 };
 
-events.on("opened", () => {
+const handleOpened = () => {
   message.success(t("TXT_CODE_e13abbb1"));
-});
+};
 
-events.on("stopped", () => {
+const handleStopped = () => {
   message.success(t("TXT_CODE_efb6d377"));
-});
+};
 
-events.on("error", (error: Error) => {
+const handleError = (error: Error) => {
   socketError.value = error;
-});
+};
 
-events.once("detail", async () => {
+const handleDetail = async () => {
   try {
+    if (disposed) return;
     const { value } = await getInstanceOutputLog().execute({
       params: { uuid: instanceId || "", daemonId: daemonId || "" }
     });
 
+    if (disposed) return;
     if (value) {
       if (state.value?.config?.terminalOption?.haveColor) {
         term?.write(encodeConsoleColor(value));
@@ -100,7 +106,12 @@ events.once("detail", async () => {
       }
     }
   } catch (error: any) {}
-});
+};
+
+events.on("opened", handleOpened);
+events.on("stopped", handleStopped);
+events.on("error", handleError);
+events.once("detail", handleDetail);
 
 const refreshPage = () => {
   window.location.reload();
@@ -116,11 +127,23 @@ onMounted(async () => {
         daemonId
       });
     }
+    if (disposed) return;
     term = await initTerminal();
   } catch (error: any) {
+    if (disposed) return;
     console.error(error);
     throw error;
   }
+});
+
+onUnmounted(() => {
+  disposed = true;
+  events.off("opened", handleOpened);
+  events.off("stopped", handleStopped);
+  events.off("error", handleError);
+  events.off("detail", handleDetail);
+  disposeTerminalWindow();
+  term = undefined;
 });
 </script>
 

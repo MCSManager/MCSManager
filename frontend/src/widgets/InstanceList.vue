@@ -148,12 +148,6 @@ const getInstanceDaemonId = (item: InstanceListItem) => {
   return item.daemonId || currentRemoteNode.value?.uuid || "";
 };
 
-const selectedWorkspaceKey = computed(() => {
-  const item = selectedWorkspaceInstance.value;
-  if (!item) return "";
-  return `${getInstanceDaemonId(item)}:${item.instanceUuid}`;
-});
-
 const isSameInstance = (a?: InstanceListItem, b?: InstanceListItem) => {
   if (!a || !b) return false;
   return a.instanceUuid === b.instanceUuid && getInstanceDaemonId(a) === getInstanceDaemonId(b);
@@ -640,7 +634,7 @@ onMounted(async () => {
           </a-tag>
         </div>
       </a-col>
-      <a-col v-if="isLoading" :span="24">
+      <a-col v-if="isLoading && (isPhone || instancesMoreInfo.length === 0)" :span="24">
         <Loading></Loading>
       </a-col>
 
@@ -689,7 +683,6 @@ onMounted(async () => {
           <main class="instance-workbench__main">
             <InstanceWorkspace
               v-if="selectedWorkspaceInstance"
-              :key="selectedWorkspaceKey"
               :card="card"
               :target-instance-info="selectedWorkspaceInstance"
               :target-daemon-id="getInstanceDaemonId(selectedWorkspaceInstance)"

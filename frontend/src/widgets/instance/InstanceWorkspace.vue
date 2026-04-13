@@ -31,7 +31,7 @@ import {
   UsbOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
 
@@ -80,6 +80,7 @@ const instanceId = computed(() => props.targetInstanceInfo.instanceUuid);
 const daemonId = computed(() => props.targetDaemonId);
 const workspaceInfo = computed(() => terminalState.value || props.targetInstanceInfo);
 const terminalKey = computed(() => `${daemonId.value}:${instanceId.value}`);
+const terminalReady = ref(true);
 const terminalHeight = computed(() => "clamp(320px, calc(100vh - 440px), 560px)");
 
 const instanceName = computed(() => workspaceInfo.value?.config?.nickname || "--");
@@ -258,6 +259,12 @@ const functionItems = computed<FunctionItem[]>(() =>
     }
   ].filter(Boolean) as FunctionItem[]
 );
+
+watch(terminalKey, async () => {
+  terminalReady.value = false;
+  await Promise.resolve();
+  terminalReady.value = true;
+});
 </script>
 
 <template>
@@ -317,6 +324,7 @@ const functionItems = computed<FunctionItem[]>(() =>
         <TerminalTopTags :info="terminalState?.info" :is-stopped="isStopped" />
       </div>
       <TerminalCore
+        v-if="terminalReady"
         :key="terminalKey"
         :use-terminal-hook="terminalHook"
         :instance-id="instanceId"
