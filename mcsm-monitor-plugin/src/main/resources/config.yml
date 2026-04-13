@@ -5,3 +5,4 @@ heartbeatIntervalTicks: 100
 connectTimeoutMs: 3000
 readTimeoutMs: 3000
 mainThreadBlockedThresholdMs: 3000
+logHeartbeatFailures: true

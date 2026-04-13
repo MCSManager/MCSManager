@@ -1,6 +1,8 @@
 package com.mcsmanager.monitor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -15,8 +17,7 @@ public final class MinecraftMonitorPlugin extends JavaPlugin {
         saveDefaultConfig();
         tpsMonitor.reset();
         startMainThreadProbe();
-        heartbeatReporter = new HeartbeatReporter(this);
-        heartbeatReporter.start();
+        startHeartbeatReporter();
         getLogger().info("MCSM monitor plugin enabled.");
     }
 
@@ -30,6 +31,27 @@ public final class MinecraftMonitorPlugin extends JavaPlugin {
             heartbeatReporter.stop();
             heartbeatReporter = null;
         }
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!command.getName().equalsIgnoreCase("mcsmmonitor")) {
+            return false;
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.hasPermission("mcsmmonitor.reload")) {
+                sender.sendMessage("You do not have permission to reload MCSMMonitor.");
+                return true;
+            }
+            reloadConfig();
+            startHeartbeatReporter();
+            sender.sendMessage("MCSMMonitor config reloaded.");
+            return true;
+        }
+
+        sender.sendMessage("Usage: /" + label + " reload");
+        return true;
     }
 
     public boolean isMainThreadBlocked() {
@@ -52,5 +74,13 @@ public final class MinecraftMonitorPlugin extends JavaPlugin {
                 tpsMonitor.recordTick();
             }
         }, 1L, 1L);
+    }
+
+    private void startHeartbeatReporter() {
+        if (heartbeatReporter != null) {
+            heartbeatReporter.stop();
+        }
+        heartbeatReporter = new HeartbeatReporter(this);
+        heartbeatReporter.start();
     }
 }

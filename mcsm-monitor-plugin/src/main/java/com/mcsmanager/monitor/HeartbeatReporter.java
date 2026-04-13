@@ -47,7 +47,7 @@ public final class HeartbeatReporter {
         String instanceToken = safeTrim(config.getString("instanceToken", ""));
 
         if (agentUrl.isEmpty() || serverId.isEmpty() || instanceToken.isEmpty()) {
-            if (!invalidConfigWarned) {
+            if (isFailureLogEnabled(config) && !invalidConfigWarned) {
                 invalidConfigWarned = true;
                 plugin.getLogger().warning("Missing agentUrl/serverId/instanceToken, heartbeat reporter is idle.");
             }
@@ -74,15 +74,23 @@ public final class HeartbeatReporter {
 
             int statusCode = connection.getResponseCode();
             if (statusCode < 200 || statusCode >= 300) {
-                plugin.getLogger().warning("Heartbeat failed, HTTP " + statusCode + ": " + readBody(connection));
+                if (isFailureLogEnabled(config)) {
+                    plugin.getLogger().warning("Heartbeat failed, HTTP " + statusCode + ": " + readBody(connection));
+                }
             }
         } catch (Exception exception) {
-            plugin.getLogger().warning("Heartbeat error: " + exception.getMessage());
+            if (isFailureLogEnabled(config)) {
+                plugin.getLogger().warning("Heartbeat error: " + exception.getMessage());
+            }
         } finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
+    }
+
+    private boolean isFailureLogEnabled(FileConfiguration config) {
+        return config.getBoolean("logHeartbeatFailures", true);
     }
 
     private String buildHeartbeatPayload(String serverId, String instanceToken) {
