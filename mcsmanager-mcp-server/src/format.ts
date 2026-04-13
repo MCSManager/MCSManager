@@ -6,6 +6,13 @@ import type {
   McsmMonitorOverviewResponse,
   McsmMonitorServerWithDaemon
 } from "./types.js";
+import {
+  type AbnormalInstance,
+  type AbnormalInstanceOptions,
+  getAbnormalInstances,
+  getAbnormalNodes,
+  normalizeAbnormalInstanceOptions
+} from "./monitorInsights.js";
 
 export function toolText(text: string) {
   return {
@@ -21,6 +28,57 @@ export function formatOverview(overview: McsmMonitorOverviewResponse): string {
     `实例：${overview.summary.serversRunning}/${overview.summary.serversTotal} 运行中`,
     `插件：${overview.summary.pluginOnline}/${overview.summary.serversTotal} 在线`,
     abnormal.length > 0 ? `异常：${abnormal.join("；")}` : "异常：暂无明显异常"
+  ].join("\n");
+}
+
+export function formatHealthReport(overview: McsmMonitorOverviewResponse): string {
+  const abnormalNodes = getAbnormalNodes(overview);
+  const abnormalInstances = getAbnormalInstances(overview);
+  const abnormalLines = [
+    ...abnormalNodes.map(
+      ({ node, reasons }) => `- 节点 ${nodeDisplayName(node)}：${reasons.join("，")}`
+    ),
+    ...abnormalInstances.map(
+      ({ server, reasons }) =>
+        `- 实例 ${server.instanceName} / ${nodeDisplayNameFromServer(server)}：${reasons.join("，")}`
+    )
+  ];
+
+  return [
+    "MCSManager 健康报告",
+    `生成时间：${new Date(overview.generatedAt).toISOString()}`,
+    `总览：节点 ${overview.summary.nodesOnline}/${overview.summary.nodesTotal} 在线，实例 ${overview.summary.serversRunning}/${overview.summary.serversTotal} 运行中，插件 ${overview.summary.pluginOnline}/${overview.summary.serversTotal} 在线`,
+    "",
+    "节点资源：",
+    ...overview.nodes.map(formatNodeHealthLine),
+    "",
+    "实例状态：",
+    ...overview.servers.map(formatInstanceLine),
+    "",
+    "异常摘要：",
+    ...(abnormalLines.length > 0 ? abnormalLines : ["- 暂无明显异常"])
+  ].join("\n");
+}
+
+export function formatAbnormalInstances(
+  abnormalInstances: AbnormalInstance[],
+  options: Partial<AbnormalInstanceOptions> = {}
+): string {
+  const thresholds = normalizeAbnormalInstanceOptions(options);
+  if (abnormalInstances.length === 0) {
+    return [
+      "MCSManager 异常实例列表",
+      `规则：运行实例 TPS 低于 ${formatNumber(thresholds.minTps)}、插件离线、主线程卡顿、进程 CPU/内存过高、节点离线会被列出。`,
+      "当前没有匹配的异常实例。"
+    ].join("\n");
+  }
+
+  return [
+    "MCSManager 异常实例列表",
+    `规则：运行实例 TPS 低于 ${formatNumber(thresholds.minTps)}、插件离线、主线程卡顿、进程 CPU/内存过高、节点离线会被列出。`,
+    ...abnormalInstances.map(
+      ({ server, reasons }) => `${formatInstanceLine(server)} | 原因 ${reasons.join("，")}`
+    )
   ].join("\n");
 }
 
@@ -96,6 +154,23 @@ export function formatConfirmedAction(record: ConfirmationRecord): string {
   ].join("\n");
 }
 
+export function formatCommandSent(
+  server: McsmMonitorServerWithDaemon,
+  command: string,
+  allowedCommands: string[]
+): string {
+  return [
+    "已发送白名单控制台命令。",
+    `实例：${server.instanceName}`,
+    `UUID：${server.instanceId}`,
+    `节点：${nodeDisplayNameFromServer(server)} (${server.daemonIp}:${server.daemonPort})`,
+    `命令：${command}`,
+    `白名单：${allowedCommands.join(", ")}`,
+    `执行时间：${new Date().toISOString()}`,
+    "说明：MCSManager command API 只负责发送命令，不同步返回控制台输出；输出请在终端或后续状态查询中查看。"
+  ].join("\n");
+}
+
 export function formatInstanceLine(server: McsmMonitorServerWithDaemon): string {
   const plugin = server.plugin;
   return `- ${server.instanceName} | UUID ${server.instanceId} | 节点 ${nodeDisplayNameFromServer(server)} | 状态 ${server.statusText} | TPS ${formatNumber(plugin.tps.oneMin)} | 人数 ${plugin.onlinePlayers}/${plugin.maxPlayers} | 插件 ${plugin.online ? "在线" : "离线"} | CPU ${formatOptionalPercent(server.process.cpuPercent)} | 内存 ${formatBytes(server.process.memoryBytes)}`;
@@ -137,6 +212,21 @@ function formatDisk(disk: McsmMonitorDiskSnapshot | undefined): string {
   return `${disk.mount} ${formatPercent(disk.usagePercent)} 已用，${formatBytes(disk.freeBytes)} 可用`;
 }
 
+function formatNodeHealthLine(node: McsmMonitorNodeOverview): string {
+  const host = node.host;
+  if (!node.available) {
+    return `- ${nodeDisplayName(node)} (${node.daemonIp}:${node.daemonPort}) | 离线 | 实例 ${node.servers.length}`;
+  }
+  return [
+    `- ${nodeDisplayName(node)} (${node.daemonIp}:${node.daemonPort})`,
+    "在线",
+    `CPU ${host ? formatPercent(host.cpuPercent) : "--"}`,
+    `内存 ${host ? `${formatPercent(host.memPercent)}，${formatBytes(host.freemem)} 可用` : "--"}`,
+    `磁盘 ${formatDisk(host?.primaryDisk)}`,
+    `实例 ${node.servers.length}`
+  ].join(" | ");
+}
+
 function formatPercent(value: number): string {
   return `${formatNumber(value)}%`;
 }
@@ -152,21 +242,11 @@ function formatNumber(value: number): string {
 
 function buildAbnormalSummary(overview: McsmMonitorOverviewResponse): string[] {
   const abnormal: string[] = [];
-  const offlineNodes = overview.nodes.filter((node) => !node.available);
-  const pluginOffline = overview.servers.filter((server) => !server.plugin.online);
-  const blocked = overview.servers.filter((server) => server.plugin.mainThreadBlocked);
-  const lowTps = overview.servers.filter(
-    (server) => server.plugin.online && server.plugin.tps.oneMin > 0 && server.plugin.tps.oneMin < 18
-  );
-  const highDiskNodes = overview.nodes.filter(
-    (node) => (node.host?.primaryDisk?.usagePercent ?? 0) >= 90
-  );
+  const abnormalNodes = getAbnormalNodes(overview);
+  const abnormalInstances = getAbnormalInstances(overview);
 
-  if (offlineNodes.length > 0) abnormal.push(`${offlineNodes.length} 个节点离线`);
-  if (pluginOffline.length > 0) abnormal.push(`${pluginOffline.length} 个实例插件离线`);
-  if (blocked.length > 0) abnormal.push(`${blocked.length} 个实例主线程疑似卡顿`);
-  if (lowTps.length > 0) abnormal.push(`${lowTps.length} 个实例 TPS 低于 18`);
-  if (highDiskNodes.length > 0) abnormal.push(`${highDiskNodes.length} 个节点磁盘使用率超过 90%`);
+  if (abnormalNodes.length > 0) abnormal.push(`${abnormalNodes.length} 个节点异常`);
+  if (abnormalInstances.length > 0) abnormal.push(`${abnormalInstances.length} 个实例异常`);
 
   return abnormal;
 }

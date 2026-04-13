@@ -83,3 +83,25 @@ test("McsmClient sends protected instance action request", async () => {
     "http://127.0.0.1:23333/api/protected_instance/restart?daemonId=daemon-a&uuid=uuid-ce1"
   );
 });
+
+test("McsmClient sends protected instance command request", async () => {
+  let capturedUrl = "";
+  let capturedMethod = "";
+  const fetchImpl = async (input: string | URL | Request, init?: RequestInit) => {
+    capturedUrl = String(input);
+    capturedMethod = String(init?.method);
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+  };
+
+  const client = new McsmClient(createTestConfig(), fetchImpl as typeof fetch);
+  await client.performInstanceCommand("daemon-a", "uuid-ce1", "say hello");
+
+  assert.equal(capturedMethod, "POST");
+  assert.equal(
+    capturedUrl,
+    "http://127.0.0.1:23333/api/protected_instance/command?daemonId=daemon-a&uuid=uuid-ce1&command=say+hello"
+  );
+});

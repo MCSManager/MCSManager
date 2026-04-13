@@ -44,6 +44,17 @@ export class McsmClient {
     });
   }
 
+  performInstanceCommand(
+    daemonId: string,
+    instanceUuid: string,
+    command: string
+  ): Promise<unknown> {
+    return this.request("/protected_instance/command", {
+      method: "POST",
+      query: { daemonId, uuid: instanceUuid, command }
+    });
+  }
+
   async request<T>(
     path: string,
     options: {
