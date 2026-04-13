@@ -16,7 +16,7 @@ import {
   SearchOutlined,
   WarningOutlined
 } from "@ant-design/icons-vue";
-import { computed, h, onMounted, ref } from "vue";
+import { computed, h, onMounted, ref, watch } from "vue";
 
 import BetweenMenus from "@/components/BetweenMenus.vue";
 import { router } from "@/config/router";
@@ -30,14 +30,17 @@ import {
   batchStart,
   batchStop
 } from "@/services/apis/instance";
+import { formatMemoryUsage } from "@/tools/memory";
 import { reportErrorMsg } from "@/tools/validator";
-import { INSTANCE_STATUS } from "@/types/const";
+import { INSTANCE_STATUS, INSTANCE_STATUS_CODE } from "@/types/const";
 import { Modal, notification } from "ant-design-vue";
 import { throttle } from "lodash";
+import { useRoute } from "vue-router";
 import type { InstanceMoreDetail } from "../hooks/useInstance";
 import { useInstanceMoreDetail } from "../hooks/useInstance";
 import { computeNodeName } from "../tools/nodes";
 import type { NodeStatus } from "../types/index";
+import InstanceWorkspace from "./instance/InstanceWorkspace.vue";
 import Shortcut from "./instance/Shortcut.vue";
 
 defineProps<{
@@ -45,6 +48,7 @@ defineProps<{
 }>();
 
 const { isPhone } = useScreen();
+const route = useRoute();
 const operationForm = ref({
   instanceName: "",
   currentPage: 1,
@@ -77,6 +81,7 @@ const {
 } = useInstanceTagSearch();
 
 const isLoading = computed(() => isLoading1.value || isLoading2.value);
+const selectedWorkspaceInstance = ref<InstanceListItem>();
 
 const instancesMoreInfo = computed(() => {
   const newInstances: InstanceListItem[] = [];
@@ -118,6 +123,7 @@ const initInstancesData = async (resetPage?: boolean) => {
       }
     });
     updateTagTips(instances.value?.allTags || []);
+    syncWorkspaceSelection();
   } catch (err) {
     return reportErrorMsg(t("TXT_CODE_e109c091"));
   }
@@ -140,6 +146,89 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
 
 const getInstanceDaemonId = (item: InstanceListItem) => {
   return item.daemonId || currentRemoteNode.value?.uuid || "";
+};
+
+const selectedWorkspaceKey = computed(() => {
+  const item = selectedWorkspaceInstance.value;
+  if (!item) return "";
+  return `${getInstanceDaemonId(item)}:${item.instanceUuid}`;
+});
+
+const isSameInstance = (a?: InstanceListItem, b?: InstanceListItem) => {
+  if (!a || !b) return false;
+  return a.instanceUuid === b.instanceUuid && getInstanceDaemonId(a) === getInstanceDaemonId(b);
+};
+
+const findWorkspaceInstance = (daemonId?: string, instanceId?: string) => {
+  if (!daemonId || !instanceId) return undefined;
+  return instancesMoreInfo.value.find(
+    (item) => item.instanceUuid === instanceId && getInstanceDaemonId(item) === daemonId
+  );
+};
+
+const selectWorkspaceInstance = (item?: InstanceListItem, syncRoute = true) => {
+  selectedWorkspaceInstance.value = item;
+  if (!item || !syncRoute || isPhone.value) return;
+
+  const daemonId = getInstanceDaemonId(item);
+  if (!daemonId) return;
+  if (route.query.daemonId === daemonId && route.query.instanceId === item.instanceUuid) return;
+
+  router.replace({
+    query: {
+      ...route.query,
+      daemonId,
+      instanceId: item.instanceUuid
+    }
+  });
+};
+
+const syncWorkspaceSelection = (preferRoute = false) => {
+  if (isPhone.value) return;
+  const list = instancesMoreInfo.value;
+  if (!list.length) return selectWorkspaceInstance(undefined, false);
+
+  const routeDaemonId = route.query.daemonId ? String(route.query.daemonId) : "";
+  const routeInstanceId = route.query.instanceId ? String(route.query.instanceId) : "";
+  const routeMatched = findWorkspaceInstance(routeDaemonId, routeInstanceId);
+  const currentMatched = list.find((item) => isSameInstance(item, selectedWorkspaceInstance.value));
+  const next = (preferRoute && routeMatched) || currentMatched || routeMatched || list[0];
+  selectWorkspaceInstance(next as InstanceListItem);
+};
+
+const isWorkspaceSelected = (item: InstanceListItem) => {
+  return isSameInstance(item, selectedWorkspaceInstance.value);
+};
+
+const getInstanceNodeName = (item: InstanceListItem) => {
+  if (item.daemonRemarks) return item.daemonRemarks;
+  if (item.daemonIp) return `${item.daemonIp}:${item.daemonPort || ""}`;
+  return getCurrentNodeName();
+};
+
+const getInstanceStatusColor = (item: InstanceListItem) => {
+  if (item.status === INSTANCE_STATUS_CODE.RUNNING) return "green";
+  if (item.status === INSTANCE_STATUS_CODE.STARTING || item.status === INSTANCE_STATUS_CODE.BUSY)
+    return "pink";
+  return "";
+};
+
+const getInstanceMemoryText = (item: InstanceListItem) => {
+  if (item.info?.memoryUsage == null) return "--";
+  return formatMemoryUsage(item.info.memoryUsage, item.info.memoryLimit);
+};
+
+const getInstanceCpuText = (item: InstanceListItem) => {
+  if (item.info?.cpuUsage == null) return "--";
+  return `${Number(item.info.cpuUsage).toFixed(1)}%`;
+};
+
+const handleSidebarInstanceClick = (item: InstanceListItem) => {
+  if (multipleMode.value) {
+    selectInstance(item);
+    return;
+  }
+  selectWorkspaceInstance(item);
 };
 
 const getCurrentNodeName = () => {
@@ -370,6 +459,15 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
   });
 };
 
+watch(
+  () => [route.query.daemonId, route.query.instanceId],
+  () => syncWorkspaceSelection(true)
+);
+
+watch(isPhone, () => {
+  syncWorkspaceSelection(true);
+});
+
 onMounted(async () => {
   await initInstancesData();
   setRefreshFn(initInstancesData);
@@ -546,6 +644,61 @@ onMounted(async () => {
         <Loading></Loading>
       </a-col>
 
+      <a-col v-else-if="instancesMoreInfo.length > 0 && !isPhone" :span="24">
+        <div class="instance-workbench">
+          <aside class="instance-workbench__sidebar">
+            <div class="instance-workbench__sidebar-title">
+              <span>实例列表</span>
+              <a-tag>{{ instancesMoreInfo.length }}</a-tag>
+            </div>
+            <div class="instance-workbench__list">
+              <button
+                v-for="item in instancesMoreInfo"
+                :key="`${getInstanceDaemonId(item)}:${item.instanceUuid}`"
+                type="button"
+                class="instance-workbench__list-item"
+                :class="{
+                  active: !multipleMode && isWorkspaceSelected(item),
+                  selected: multipleMode && findInstance(item)
+                }"
+                @click="handleSidebarInstanceClick(item)"
+              >
+                <div class="instance-workbench__item-main">
+                  <span class="instance-workbench__item-name">{{ item.config.nickname }}</span>
+                  <a-tag :color="getInstanceStatusColor(item)">
+                    {{ item.moreInfo?.statusText || INSTANCE_STATUS[item.status] || "--" }}
+                  </a-tag>
+                </div>
+                <div class="instance-workbench__item-node">
+                  {{ getInstanceNodeName(item) }}
+                </div>
+                <div class="instance-workbench__item-meta">
+                  <span>{{ item.moreInfo?.instanceTypeText || "--" }}</span>
+                  <span>CPU {{ getInstanceCpuText(item) }}</span>
+                  <span>{{ t("TXT_CODE_593ee330") }} {{ getInstanceMemoryText(item) }}</span>
+                </div>
+                <div v-if="item.config.tag?.length" class="instance-workbench__item-tags">
+                  <a-tag v-for="tag in item.config.tag" :key="tag" class="m-0">
+                    {{ tag }}
+                  </a-tag>
+                </div>
+              </button>
+            </div>
+          </aside>
+
+          <main class="instance-workbench__main">
+            <InstanceWorkspace
+              v-if="selectedWorkspaceInstance"
+              :key="selectedWorkspaceKey"
+              :card="card"
+              :target-instance-info="selectedWorkspaceInstance"
+              :target-daemon-id="getInstanceDaemonId(selectedWorkspaceInstance)"
+              @refresh-list="initInstancesData()"
+            />
+          </main>
+        </div>
+      </a-col>
+
       <a-col v-else-if="instancesMoreInfo.length > 0" :span="24">
         <a-row :gutter="[16, 16]">
           <fade-up-animation>
@@ -592,6 +745,121 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+.instance-workbench {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 18px;
+  align-items: flex-start;
+  min-height: 620px;
+}
+
+.instance-workbench__sidebar,
+.instance-workbench__main {
+  border: 1px solid var(--card-border-color);
+  border-radius: 16px;
+  background: rgba(250, 252, 255, 0.86);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.instance-workbench__sidebar {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 160px);
+  min-height: 620px;
+  overflow: hidden;
+}
+
+.instance-workbench__sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--card-border-color);
+  font-weight: 700;
+}
+
+.instance-workbench__list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.instance-workbench__list-item {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  padding: 12px;
+  background: var(--color-gray-1);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--color-gray-6);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    border-color: var(--color-primary);
+    background: rgba(64, 150, 255, 0.08);
+  }
+
+  &.selected {
+    border-color: var(--color-green-3);
+    background: var(--color-green-1);
+  }
+}
+
+.instance-workbench__item-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.instance-workbench__item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.instance-workbench__item-node {
+  margin-top: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-gray-7);
+  font-size: 12px;
+}
+
+.instance-workbench__item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--color-gray-7);
+  font-size: 12px;
+}
+
+.instance-workbench__item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.instance-workbench__main {
+  min-width: 0;
+  padding: 18px;
+}
+
 .search-input {
   transition: all 0.6s;
   text-align: center;
