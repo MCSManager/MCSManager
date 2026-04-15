@@ -31,7 +31,7 @@ import {
   UsbOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useTerminal } from "../../hooks/useTerminal";
 
@@ -69,7 +69,7 @@ const emit = defineEmits<{
 const router = useRouter();
 const { state: appState, isAdmin } = useAppStateStore();
 const terminalHook = useTerminal();
-const { state: terminalState, clearTerminal } = terminalHook;
+const { state: terminalState, clearTerminal, resetTerminalSession } = terminalHook;
 
 const { execute: executeOpen, isLoading: openLoading } = openInstance();
 const { execute: executeStop, isLoading: stopLoading } = stopInstance();
@@ -78,7 +78,10 @@ const { execute: executeKill, isLoading: killLoading } = killInstance();
 
 const instanceId = computed(() => props.targetInstanceInfo.instanceUuid);
 const daemonId = computed(() => props.targetDaemonId);
-const workspaceInfo = computed(() => terminalState.value || props.targetInstanceInfo);
+const currentTerminalState = computed(() =>
+  terminalState.value?.instanceUuid === instanceId.value ? terminalState.value : undefined
+);
+const workspaceInfo = computed(() => currentTerminalState.value || props.targetInstanceInfo);
 const terminalKey = computed(() => `${daemonId.value}:${instanceId.value}`);
 const terminalReady = ref(true);
 const terminalHeight = computed(() => "clamp(320px, calc(100vh - 440px), 560px)");
@@ -262,7 +265,8 @@ const functionItems = computed<FunctionItem[]>(() =>
 
 watch(terminalKey, async () => {
   terminalReady.value = false;
-  await Promise.resolve();
+  resetTerminalSession();
+  await nextTick();
   terminalReady.value = true;
 });
 </script>
@@ -321,7 +325,7 @@ watch(terminalKey, async () => {
 
     <div class="instance-workspace__terminal">
       <div class="mb-10">
-        <TerminalTopTags :info="terminalState?.info" :is-stopped="isStopped" />
+        <TerminalTopTags :info="workspaceInfo?.info" :is-stopped="isStopped" />
       </div>
       <TerminalCore
         v-if="terminalReady"

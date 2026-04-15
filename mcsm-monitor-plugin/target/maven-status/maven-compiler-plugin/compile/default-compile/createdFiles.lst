@@ -1,0 +1,5 @@
+com\mcsmanager\monitor\TpsMonitor.class
+com\mcsmanager\monitor\MinecraftMonitorPlugin$1.class
+com\mcsmanager\monitor\HeartbeatReporter$1.class
+com\mcsmanager\monitor\MinecraftMonitorPlugin.class
+com\mcsmanager\monitor\HeartbeatReporter.class

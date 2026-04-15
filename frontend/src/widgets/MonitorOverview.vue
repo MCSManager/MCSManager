@@ -19,6 +19,7 @@ const { state, refresh, isLoading } = useMonitorOverview();
 
 type MonitorOverviewRecord = IMcsmMonitorOverviewResponse["servers"][number] & {
   key: string;
+  metricsLive: boolean;
   nodeHost?: IMcsmMonitorHostSnapshot;
   hostDisks: IMcsmMonitorDiskSnapshot[];
   procCpuText: string;
@@ -195,21 +196,35 @@ const formatProcessStatus = (statusText: string) => {
   return statusMap[statusText] || statusText || "--";
 };
 
+const isMetricsLive = (
+  server: Pick<IMcsmMonitorOverviewResponse["servers"][number], "processRunning" | "plugin">
+) => server.processRunning && server.plugin.online;
+
+const formatTpsText = (
+  server: Pick<IMcsmMonitorOverviewResponse["servers"][number], "processRunning" | "plugin">
+) => (isMetricsLive(server) ? server.plugin.tps.oneMin.toFixed(2) : "--");
+
+const formatPlayersText = (
+  server: Pick<IMcsmMonitorOverviewResponse["servers"][number], "processRunning" | "plugin">
+) => (isMetricsLive(server) ? `${server.plugin.onlinePlayers} / ${server.plugin.maxPlayers}` : "--");
+
 const dataSource = computed<MonitorOverviewRecord[]>(() =>
   (state.value?.servers ?? [])
     .map((server) => {
       const node = nodeMap.value.get(server.daemonId);
       const nodeHost = node?.host;
+      const metricsLive = isMetricsLive(server);
 
       return {
         ...server,
         key: `${server.daemonId}-${server.serverId}`,
+        metricsLive,
         nodeHost,
         hostDisks: nodeHost?.disks ?? [],
         procCpuText: formatPercent(server.process.cpuPercent),
         procMemText: server.process.memoryBytes ? formatMemoryUsage(server.process.memoryBytes) : "--",
-        tpsText: server.plugin.tps.oneMin != null ? server.plugin.tps.oneMin.toFixed(2) : "--",
-        playersText: `${server.plugin.onlinePlayers} / ${server.plugin.maxPlayers}`,
+        tpsText: formatTpsText(server),
+        playersText: formatPlayersText(server),
         pluginStatusText: server.plugin.online ? "在线" : "离线",
         lastSeenText: formatAgo(server.plugin.lastSeen),
         hostCpuText: formatPercent(nodeHost?.cpuPercent),

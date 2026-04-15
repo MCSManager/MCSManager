@@ -22,13 +22,15 @@ window.addEventListener("unhandledrejection", function (event) {
   console.error("Unhandled promise rejection:", event.reason);
 });
 
-const { updateUserInfo } = useAppStateStore();
+const { state, updateUserInfo } = useAppStateStore();
 
 export async function mountApp() {
   try {
-    const { execute: reqUserInfo } = userInfoApi();
-    const info = await reqUserInfo();
-    updateUserInfo(info.value);
+    if (!state.userInfo?.token) {
+      const { execute: reqUserInfo } = userInfoApi();
+      const info = await reqUserInfo();
+      updateUserInfo(info.value);
+    }
   } catch (err) {
     console.error("Init user info Error:", err);
   } finally {

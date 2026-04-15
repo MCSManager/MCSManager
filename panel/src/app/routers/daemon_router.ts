@@ -113,12 +113,25 @@ function withDaemonInfo(instance: any, remoteService: any) {
 }
 
 function sortInstanceDetail(a: any, b: any) {
+  const daemonA = getDaemonSortKey(a);
+  const daemonB = getDaemonSortKey(b);
+  const daemonCompare = daemonA.localeCompare(daemonB);
+  if (daemonCompare !== 0) return daemonCompare;
+
   const statusA = Number(a?.status ?? 0);
   const statusB = Number(b?.status ?? 0);
   if (statusA !== statusB) return statusB - statusA;
   const nameA = String(a?.config?.nickname ?? "");
   const nameB = String(b?.config?.nickname ?? "");
   return nameA.localeCompare(nameB);
+}
+
+function getDaemonSortKey(instance: any) {
+  const remarks = String(instance?.daemonRemarks ?? "");
+  const ip = String(instance?.daemonIp ?? "");
+  const port = String(instance?.daemonPort ?? "");
+  const daemonId = String(instance?.daemonId ?? "");
+  return `${remarks}\0${ip}:${port}\0${daemonId}`;
 }
 
 function uniqueStrings(values: string[]) {

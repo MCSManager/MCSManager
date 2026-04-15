@@ -1,13 +1,13 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { ConfirmationStore } from "./confirmationStore.js";
 import {
-  formatCandidates,
-  formatAbnormalInstances,
+  formatCurrentAbnormalInstances,
+  formatCurrentCandidates,
+  formatCurrentHealthReport,
+  formatCurrentInstanceStatus,
+  formatCurrentInstances,
   formatCommandSent,
   formatConfirmedAction,
-  formatHealthReport,
-  formatInstances,
-  formatInstanceStatus,
   formatNodes,
   formatOverview,
   formatPreparedAction,
@@ -163,12 +163,12 @@ export class McsmToolHandlers {
 
   constructor(
     config: AppConfig,
-    client: Pick<
+    client?: Pick<
       McsmClient,
       "getMonitorOverview" | "performInstanceAction" | "performInstanceCommand"
-    > = new McsmClient(config)
+    >
   ) {
-    this.client = client;
+    this.client = client ?? new McsmClient(config);
     this.confirmationStore = new ConfirmationStore(config.confirmationTtlMs);
     this.allowedInstanceCommands = config.allowedInstanceCommands;
   }
@@ -179,13 +179,15 @@ export class McsmToolHandlers {
         case "mcsm_get_overview":
           return toolText(formatOverview(await this.client.getMonitorOverview()));
         case "mcsm_get_health_report":
-          return toolText(formatHealthReport(await this.client.getMonitorOverview()));
+          return toolText(formatCurrentHealthReport(await this.client.getMonitorOverview()));
         case "mcsm_get_abnormal_instances":
           return toolText(await this.getAbnormalInstances(args));
         case "mcsm_list_nodes":
           return toolText(formatNodes((await this.client.getMonitorOverview()).nodes));
         case "mcsm_list_instances":
-          return toolText(formatInstances(filterInstances(await this.client.getMonitorOverview(), args)));
+          return toolText(
+            formatCurrentInstances(filterInstances(await this.client.getMonitorOverview(), args))
+          );
         case "mcsm_get_instance_status":
           return toolText(await this.getInstanceStatus(args));
         case "mcsm_prepare_instance_action":
@@ -208,14 +210,14 @@ export class McsmToolHandlers {
   private async getAbnormalInstances(args: unknown): Promise<string> {
     const options = readAbnormalInstanceOptions(args);
     const overview = await this.client.getMonitorOverview();
-    return formatAbnormalInstances(getAbnormalInstances(overview, options), options);
+    return formatCurrentAbnormalInstances(getAbnormalInstances(overview, options), options);
   }
 
   private async getInstanceStatus(args: unknown): Promise<string> {
     const overview = await this.client.getMonitorOverview();
     const result = resolveInstance(overview, readInstanceQuery(args));
-    if (result.type === "found") return formatInstanceStatus(result.instance);
-    if (result.type === "ambiguous") return formatCandidates(result.candidates);
+    if (result.type === "found") return formatCurrentInstanceStatus(result.instance);
+    if (result.type === "ambiguous") return formatCurrentCandidates(result.candidates);
     return "未找到匹配实例。请使用实例名称或 UUID 查询。";
   }
 
@@ -223,7 +225,7 @@ export class McsmToolHandlers {
     const input = readPrepareActionArgs(args);
     const overview = await this.client.getMonitorOverview();
     const result = resolveInstance(overview, input);
-    if (result.type === "ambiguous") return formatCandidates(result.candidates);
+    if (result.type === "ambiguous") return formatCurrentCandidates(result.candidates);
     if (result.type === "not_found") return "未找到匹配实例，未生成确认码。";
 
     return formatPreparedAction(this.confirmationStore.prepare(result.instance, input.action));
@@ -242,7 +244,7 @@ export class McsmToolHandlers {
     const command = validateAllowedCommand(input.command, this.allowedInstanceCommands);
     const overview = await this.client.getMonitorOverview();
     const result = resolveInstance(overview, input);
-    if (result.type === "ambiguous") return formatCandidates(result.candidates);
+    if (result.type === "ambiguous") return formatCurrentCandidates(result.candidates);
     if (result.type === "not_found") return "未找到匹配实例，未发送命令。";
 
     const instance = result.instance;

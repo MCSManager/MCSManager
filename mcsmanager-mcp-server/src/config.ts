@@ -6,7 +6,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     apiKey: requireEnv(env, "MCSM_API_KEY"),
     confirmationTtlMs: parsePositiveInteger(env.MCSM_CONFIRM_TTL_SECONDS, 60) * 1000,
     requestTimeoutMs: parsePositiveInteger(env.MCSM_REQUEST_TIMEOUT_MS, 5000),
-    allowedInstanceCommands: parseList(env.MCSM_ALLOWED_INSTANCE_COMMANDS)
+    allowedInstanceCommands: parseList(env.MCSM_ALLOWED_INSTANCE_COMMANDS),
+    alertEnabled: parseBoolean(env.MCSM_ALERT_ENABLED, false),
+    alertPushUrl: env.MCSM_ALERT_PUSH_URL,
+    alertPollIntervalMs: parsePositiveInteger(env.MCSM_ALERT_POLL_INTERVAL_SECONDS, 60) * 1000
   };
 }
 
@@ -43,4 +46,9 @@ function parseList(value: string | undefined): string[] {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function parseBoolean(value: string | undefined, fallback: boolean): boolean {
+  if (!value) return fallback;
+  return value === "true" || value === "1" || value === "yes";
 }

@@ -7,6 +7,9 @@ export function createTestConfig(overrides: Partial<AppConfig> = {}): AppConfig 
     confirmationTtlMs: 60000,
     requestTimeoutMs: 5000,
     allowedInstanceCommands: [],
+    alertEnabled: false,
+    alertPushUrl: undefined,
+    alertPollIntervalMs: 60000,
     ...overrides
   };
 }

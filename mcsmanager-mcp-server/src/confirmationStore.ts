@@ -50,7 +50,7 @@ export class ConfirmationStore {
   private generateCode(): string {
     let code = "";
     do {
-      code = randomBytes(4).toString("hex").toUpperCase();
+      code = randomBytes(1).toString("hex").toUpperCase().padStart(2, "0");
     } while (this.records.has(code));
     return code;
   }

@@ -33,6 +33,7 @@ export const getInstanceOutputLog = useDefineApi<
     params: {
       uuid: string;
       daemonId: string;
+      size?: number;
     };
   },
   string
@@ -96,6 +97,20 @@ export const restartInstance = useDefineApi<
   }
 >({
   url: "/api/protected_instance/restart",
+  method: "GET"
+});
+
+export const sendInstanceCommand = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      daemonId: string;
+      command: string;
+    };
+  },
+  any
+>({
+  url: "/api/protected_instance/command",
   method: "GET"
 });
 

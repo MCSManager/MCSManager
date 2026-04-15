@@ -66,6 +66,7 @@ export interface NodeStatus {
   port: number;
   remarks: string;
   uuid: string;
+  prefix?: string;
 }
 
 export interface Settings {

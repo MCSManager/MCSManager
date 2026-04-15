@@ -1,10 +1,13 @@
 import { createHash } from "crypto";
 import { systemInfo, toNumber, toText } from "mcsmanager-common";
-import Instance from "../entity/instance/instance";
 import { globalConfiguration } from "../entity/config";
-import processMonitor, { IProcessRuntimeSnapshot } from "./process_monitor";
 import { getLinuxDiskSnapshots, selectPrimaryDiskForPaths } from "./host_metrics";
-import InstanceSubsystem from "./system_instance";
+import type { IProcessRuntimeSnapshot } from "./process_monitor";
+
+const INSTANCE_STATUS_BUSY = -1;
+const INSTANCE_STATUS_STOPPING = 1;
+const INSTANCE_STATUS_STARTING = 2;
+const INSTANCE_STATUS_RUNNING = 3;
 
 interface IPluginHeartbeatPayload {
   serverId: string;
@@ -33,6 +36,56 @@ interface IPluginHeartbeatState {
   maxPlayers: number;
 }
 
+interface IInstanceExitEvent {
+  instanceUuid: string;
+  instanceName: string;
+}
+
+interface IMonitorInstanceLike {
+  instanceUuid: string;
+  config: {
+    nickname: string;
+  };
+  info: {
+    currentPlayers: number;
+    maxPlayers: number;
+    version: string;
+    cpuUsage?: number;
+    memoryUsagePercent?: number;
+    memoryUsage?: number;
+  };
+  process?: {
+    pid?: number | string;
+  };
+  status(): number;
+  absoluteCwdPath(): string;
+}
+
+interface IInstanceSubsystemLike {
+  getInstances(): IMonitorInstanceLike[];
+  getInstance(instanceUuid: string): IMonitorInstanceLike | undefined;
+  on(event: "exit", listener: (payload: IInstanceExitEvent, ...args: any[]) => void): any;
+}
+
+interface IProcessMonitorLike {
+  sample(pid?: number | string): IProcessRuntimeSnapshot;
+}
+
+interface IMonitorServiceDeps {
+  instanceSubsystem?: IInstanceSubsystemLike;
+  processMonitor?: IProcessMonitorLike;
+  now?: () => number;
+  setIntervalFn?: typeof setInterval;
+}
+
+function getDefaultInstanceSubsystem(): IInstanceSubsystemLike {
+  return require("./system_instance").default as IInstanceSubsystemLike;
+}
+
+function getDefaultProcessMonitor(): IProcessMonitorLike {
+  return require("./process_monitor").default as IProcessMonitorLike;
+}
+
 class RingQueue<T> {
   private readonly arr: T[] = [];
 
@@ -48,38 +101,59 @@ class RingQueue<T> {
   }
 }
 
-class MonitorService {
+export class MonitorService {
   private readonly pluginStateMap = new Map<string, IPluginHeartbeatState>();
   private readonly processSnapshotMap = new Map<string, IProcessRuntimeSnapshot>();
   private readonly historyMap = new Map<string, RingQueue<IMcsmMonitorHistoryPoint>>();
   private readonly HEARTBEAT_TIMEOUT = 1000 * 30;
   private readonly HISTORY_SIZE = 180;
   private readonly DISK_CACHE_TTL = 1000 * 5;
+  private readonly instanceSubsystem: IInstanceSubsystemLike;
+  private readonly processMonitorRef: IProcessMonitorLike;
+  private readonly now: () => number;
   private diskCacheAt = 0;
   private diskCache: IMcsmMonitorDiskSnapshot[] = [];
 
-  constructor() {
-    setInterval(() => this.sampleInstances(), 1000 * 5);
+  constructor(deps: IMonitorServiceDeps = {}) {
+    this.instanceSubsystem = deps.instanceSubsystem ?? getDefaultInstanceSubsystem();
+    this.processMonitorRef = deps.processMonitor ?? getDefaultProcessMonitor();
+    this.now = deps.now ?? Date.now;
+
+    this.instanceSubsystem.on("exit", ({ instanceUuid }) => {
+      this.handleInstanceExit(instanceUuid);
+    });
+
+    const timer = (deps.setIntervalFn ?? setInterval)(() => this.sampleInstances(), 1000 * 5);
+    if (typeof (timer as any)?.unref === "function") {
+      (timer as any).unref();
+    }
   }
 
   private sampleInstances() {
-    const now = Date.now();
-    for (const instance of InstanceSubsystem.getInstances()) {
-      const processSnapshot = processMonitor.sample(instance.process?.pid);
-      this.processSnapshotMap.set(instance.instanceUuid, processSnapshot);
+    const now = this.now();
+    for (const instance of this.instanceSubsystem.getInstances()) {
+      const processRunning = this.isProcessRunning(instance);
+      const processSnapshot = processRunning ? this.processMonitorRef.sample(instance.process?.pid) : {};
 
-      if (processSnapshot.cpuPercent != null) instance.info.cpuUsage = processSnapshot.cpuPercent;
-      if (processSnapshot.memoryPercent != null)
-        instance.info.memoryUsagePercent = processSnapshot.memoryPercent;
-      if (processSnapshot.memoryBytes != null) instance.info.memoryUsage = processSnapshot.memoryBytes;
+      if (processRunning) {
+        this.processSnapshotMap.set(instance.instanceUuid, processSnapshot);
+
+        if (processSnapshot.cpuPercent != null) instance.info.cpuUsage = processSnapshot.cpuPercent;
+        if (processSnapshot.memoryPercent != null)
+          instance.info.memoryUsagePercent = processSnapshot.memoryPercent;
+        if (processSnapshot.memoryBytes != null) instance.info.memoryUsage = processSnapshot.memoryBytes;
+      } else {
+        this.processSnapshotMap.delete(instance.instanceUuid);
+      }
 
       const pluginState = this.pluginStateMap.get(instance.instanceUuid);
-      this.ensureHistory(instance.instanceUuid).push({
+      const pluginMetricsLive = this.isPluginMetricsLive(instance, pluginState);
+      this.pushHistoryPoint(instance.instanceUuid, {
         timestamp: now,
-        tps: pluginState?.tps.oneMin ?? 0,
-        onlinePlayers: pluginState?.onlinePlayers ?? instance.info.currentPlayers ?? 0,
-        procCpu: processSnapshot.cpuPercent ?? 0,
-        procMemPercent: processSnapshot.memoryPercent ?? 0
+        tps: pluginMetricsLive && pluginState ? pluginState.tps.oneMin : 0,
+        onlinePlayers: pluginMetricsLive && pluginState ? pluginState.onlinePlayers : 0,
+        procCpu: processRunning ? processSnapshot.cpuPercent ?? 0 : 0,
+        procMemPercent: processRunning ? processSnapshot.memoryPercent ?? 0 : 0
       });
     }
   }
@@ -91,7 +165,7 @@ class MonitorService {
     return this.historyMap.get(serverId)!;
   }
 
-  private getInstancePath(instance: Instance) {
+  private getInstancePath(instance: IMonitorInstanceLike) {
     try {
       return instance.absoluteCwdPath();
     } catch (error) {
@@ -100,7 +174,7 @@ class MonitorService {
   }
 
   private getDiskSnapshots(forceRefresh = false) {
-    const now = Date.now();
+    const now = this.now();
     if (!forceRefresh && this.diskCacheAt > 0 && now - this.diskCacheAt < this.DISK_CACHE_TTL) {
       return this.diskCache;
     }
@@ -108,6 +182,53 @@ class MonitorService {
     this.diskCache = getLinuxDiskSnapshots();
     this.diskCacheAt = now;
     return this.diskCache;
+  }
+
+  private createEmptyTpsSnapshot(): IMcsmMonitorTpsSnapshot {
+    return {
+      oneMin: 0,
+      fiveMin: 0,
+      fifteenMin: 0
+    };
+  }
+
+  private isProcessRunning(instance: IMonitorInstanceLike) {
+    return instance.status() === INSTANCE_STATUS_RUNNING;
+  }
+
+  private getHeartbeatAgeMs(pluginState?: IPluginHeartbeatState) {
+    if (!pluginState) return undefined;
+    return Math.max(0, this.now() - pluginState.lastSeen);
+  }
+
+  private isPluginMetricsLive(instance: IMonitorInstanceLike, pluginState?: IPluginHeartbeatState) {
+    const heartbeatAgeMs = this.getHeartbeatAgeMs(pluginState);
+    return Boolean(
+      this.isProcessRunning(instance) &&
+        pluginState &&
+        heartbeatAgeMs != null &&
+        heartbeatAgeMs <= this.HEARTBEAT_TIMEOUT
+    );
+  }
+
+  private pushHistoryPoint(serverId: string, point: IMcsmMonitorHistoryPoint) {
+    this.ensureHistory(serverId).push(point);
+  }
+
+  private pushZeroHistory(serverId: string, timestamp = this.now()) {
+    this.pushHistoryPoint(serverId, {
+      timestamp,
+      tps: 0,
+      onlinePlayers: 0,
+      procCpu: 0,
+      procMemPercent: 0
+    });
+  }
+
+  private handleInstanceExit(serverId: string) {
+    this.pluginStateMap.delete(serverId);
+    this.processSnapshotMap.delete(serverId);
+    this.pushZeroHistory(serverId);
   }
 
   public getHostSnapshot(paths: string[] = []): IMcsmMonitorHostSnapshot {
@@ -140,13 +261,13 @@ class MonitorService {
 
   private getStatusText(status: number) {
     switch (status) {
-      case Instance.STATUS_RUNNING:
+      case INSTANCE_STATUS_RUNNING:
         return "running";
-      case Instance.STATUS_STARTING:
+      case INSTANCE_STATUS_STARTING:
         return "starting";
-      case Instance.STATUS_STOPPING:
+      case INSTANCE_STATUS_STOPPING:
         return "stopping";
-      case Instance.STATUS_BUSY:
+      case INSTANCE_STATUS_BUSY:
         return "busy";
       default:
         return "stopped";
@@ -169,7 +290,7 @@ class MonitorService {
     if (!serverId) throw new Error("serverId is required");
     if (!instanceToken) throw new Error("instanceToken is required");
 
-    const instance = InstanceSubsystem.getInstance(serverId);
+    const instance = this.instanceSubsystem.getInstance(serverId);
     if (!instance) throw new Error("serverId does not match any managed instance");
 
     const expectedToken = this.buildExpectedToken(serverId);
@@ -199,15 +320,15 @@ class MonitorService {
 
     return {
       serverId,
-      acceptedAt: Date.now(),
+      acceptedAt: this.now(),
       pluginOnline: true
     };
   }
 
-  private buildPluginSnapshot(instance: Instance): IMcsmMonitorPluginSnapshot {
+  private buildPluginSnapshot(instance: IMonitorInstanceLike): IMcsmMonitorPluginSnapshot {
     const pluginState = this.pluginStateMap.get(instance.instanceUuid);
-    const heartbeatAgeMs = pluginState ? Date.now() - pluginState.lastSeen : undefined;
-    const online = Boolean(pluginState && heartbeatAgeMs != null && heartbeatAgeMs <= this.HEARTBEAT_TIMEOUT);
+    const heartbeatAgeMs = this.getHeartbeatAgeMs(pluginState);
+    const online = this.isPluginMetricsLive(instance, pluginState);
     return {
       online,
       lastSeen: pluginState?.lastSeen,
@@ -216,20 +337,21 @@ class MonitorService {
       serverVersion: pluginState?.serverVersion || instance.info.version || "",
       motd: pluginState?.motd || "",
       worlds: pluginState?.worlds || [],
-      mainThreadBlocked: pluginState?.mainThreadBlocked ?? false,
-      tps: pluginState?.tps || {
-        oneMin: 0,
-        fiveMin: 0,
-        fifteenMin: 0
-      },
-      onlinePlayers: pluginState?.onlinePlayers ?? instance.info.currentPlayers ?? 0,
-      maxPlayers: pluginState?.maxPlayers ?? instance.info.maxPlayers ?? 0
+      mainThreadBlocked: online ? pluginState?.mainThreadBlocked ?? false : false,
+      tps: online && pluginState ? pluginState.tps : this.createEmptyTpsSnapshot(),
+      onlinePlayers: online && pluginState ? pluginState.onlinePlayers : 0,
+      maxPlayers: online && pluginState ? pluginState.maxPlayers : 0
     };
   }
 
-  private buildProcessSnapshot(instance: Instance): IMcsmMonitorProcessSnapshot {
+  private buildProcessSnapshot(instance: IMonitorInstanceLike): IMcsmMonitorProcessSnapshot {
+    if (!this.isProcessRunning(instance)) return {};
+
     const processSnapshot =
-      this.processSnapshotMap.get(instance.instanceUuid) ?? processMonitor.sample(instance.process?.pid);
+      this.processSnapshotMap.get(instance.instanceUuid) ??
+      this.processMonitorRef.sample(instance.process?.pid);
+    this.processSnapshotMap.set(instance.instanceUuid, processSnapshot);
+
     return {
       pid: processSnapshot.pid,
       cpuPercent: processSnapshot.cpuPercent,
@@ -238,7 +360,7 @@ class MonitorService {
     };
   }
 
-  public buildServerSnapshot(instance: Instance): IMcsmMonitorServerSnapshot {
+  public buildServerSnapshot(instance: IMonitorInstanceLike): IMcsmMonitorServerSnapshot {
     const instancePath = this.getInstancePath(instance);
     const hostPrimaryDisk = selectPrimaryDiskForPaths(this.getDiskSnapshots(), [instancePath]);
 
@@ -246,10 +368,10 @@ class MonitorService {
       serverId: instance.instanceUuid,
       instanceId: instance.instanceUuid,
       instanceName: instance.config.nickname,
-      daemonTime: Date.now(),
+      daemonTime: this.now(),
       status: instance.status(),
       statusText: this.getStatusText(instance.status()),
-      processRunning: instance.status() === Instance.STATUS_RUNNING,
+      processRunning: this.isProcessRunning(instance),
       process: this.buildProcessSnapshot(instance),
       plugin: this.buildPluginSnapshot(instance),
       hostPrimaryDisk,
@@ -258,10 +380,14 @@ class MonitorService {
   }
 
   public getAgentOverview() {
-    const instancePaths = InstanceSubsystem.getInstances().map((instance) => this.getInstancePath(instance));
-    const servers = InstanceSubsystem.getInstances().map((instance) => this.buildServerSnapshot(instance));
+    const instancePaths = this.instanceSubsystem
+      .getInstances()
+      .map((instance) => this.getInstancePath(instance));
+    const servers = this.instanceSubsystem
+      .getInstances()
+      .map((instance) => this.buildServerSnapshot(instance));
     return {
-      generatedAt: Date.now(),
+      generatedAt: this.now(),
       host: this.getHostSnapshot(instancePaths),
       servers
     };
@@ -336,4 +462,9 @@ class MonitorService {
   }
 }
 
-export default new MonitorService();
+const defaultMonitorService =
+  process.env.MCSM_MONITOR_SKIP_DEFAULT_BOOT === "1"
+    ? (undefined as unknown as MonitorService)
+    : new MonitorService();
+
+export default defaultMonitorService;

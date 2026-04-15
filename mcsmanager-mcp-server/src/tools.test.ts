@@ -76,6 +76,46 @@ test("McsmToolHandlers list instances supports instanceName filter", async () =>
   assert.doesNotMatch(result.content[0].text, /ce2/);
 });
 
+test("McsmToolHandlers hides stale metrics for stopped instance status", async () => {
+  const client = new FakeClient();
+  const stopped = client.overview.servers.find((server) => server.instanceId === "uuid-ce2");
+  assert.ok(stopped);
+  stopped.plugin.tps = { oneMin: 19.8, fiveMin: 19.7, fifteenMin: 19.6 };
+  stopped.plugin.onlinePlayers = 3;
+  stopped.plugin.maxPlayers = 20;
+
+  const handlers = new McsmToolHandlers(createTestConfig(), client);
+  const result = await handlers.callTool("mcsm_get_instance_status", {
+    instanceUuid: "uuid-ce2"
+  });
+
+  assert.match(result.content[0].text, /实例状态：stopped，进程未运行/);
+  assert.match(result.content[0].text, /插件：离线/);
+  assert.match(result.content[0].text, /TPS：--/);
+  assert.match(result.content[0].text, /人数：--/);
+  assert.doesNotMatch(result.content[0].text, /人数：3\/20/);
+});
+
+test("McsmToolHandlers hides stale metrics for running instance with offline plugin", async () => {
+  const client = new FakeClient();
+  const running = client.overview.servers.find((server) => server.instanceId === "uuid-ce1");
+  assert.ok(running);
+  running.plugin.online = false;
+  running.plugin.tps = { oneMin: 17.5, fiveMin: 17.2, fifteenMin: 17 };
+  running.plugin.onlinePlayers = 8;
+  running.plugin.maxPlayers = 20;
+
+  const handlers = new McsmToolHandlers(createTestConfig(), client);
+  const result = await handlers.callTool("mcsm_list_instances", {
+    instanceName: "uuid-ce1"
+  });
+
+  assert.match(result.content[0].text, /ce1/);
+  assert.match(result.content[0].text, /TPS --/);
+  assert.match(result.content[0].text, /人数 --/);
+  assert.doesNotMatch(result.content[0].text, /人数 8\/20/);
+});
+
 test("McsmToolHandlers returns health report", async () => {
   const client = new FakeClient();
   const handlers = new McsmToolHandlers(createTestConfig(), client);

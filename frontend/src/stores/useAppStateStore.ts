@@ -72,10 +72,31 @@ export const useAppStateStore = createGlobalState(() => {
     console.info("Panel Language:", state.language);
   };
 
+  const enableLocalPreviewAccess = () => {
+    state.isInstall = true;
+    state.versionChange = false;
+    state.userInfo = {
+      uuid: "local-preview-admin",
+      userName: "local-preview",
+      loginTime: "",
+      registerTime: "",
+      instances: [],
+      permission: 10,
+      apiKey: "",
+      isInit: true,
+      secret: "",
+      open2FA: false,
+      ssoSub: "",
+      ssoBound: false,
+      token: "local-preview-token"
+    };
+  };
+
   return {
     cloneState,
     updateUserInfo,
     updatePanelStatus,
+    enableLocalPreviewAccess,
     isAdmin,
     isLogged,
     state

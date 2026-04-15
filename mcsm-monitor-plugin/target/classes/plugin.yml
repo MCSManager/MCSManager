@@ -1,0 +1,15 @@
+name: MCSMMonitor
+main: com.mcsmanager.monitor.MinecraftMonitorPlugin
+version: 0.1.0-SNAPSHOT
+author: OpenAI
+website: https://github.com/MCSManager/MCSManager
+description: Reports TPS and player metrics to an MCSManager daemon.
+commands:
+  mcsmmonitor:
+    description: Manage the MCSM monitor plugin.
+    usage: /mcsmmonitor reload
+    permission: mcsmmonitor.reload
+permissions:
+  mcsmmonitor.reload:
+    description: Allows reloading the MCSM monitor plugin config.
+    default: op

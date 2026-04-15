@@ -109,18 +109,40 @@ export function formatInstances(servers: McsmMonitorServerWithDaemon[]): string 
   return ["MCSManager 实例列表", ...servers.map((server) => formatInstanceLine(server))].join("\n");
 }
 
+function hasLiveMetrics(
+  server: Pick<McsmMonitorServerWithDaemon, "processRunning" | "plugin">
+): boolean {
+  return server.processRunning && server.plugin.online;
+}
+
+function formatServerTps(
+  server: Pick<McsmMonitorServerWithDaemon, "processRunning" | "plugin">
+): string {
+  if (!hasLiveMetrics(server)) return "--";
+  const tps = server.plugin.tps;
+  return `1m ${formatNumber(tps.oneMin)} / 5m ${formatNumber(tps.fiveMin)} / 15m ${formatNumber(
+    tps.fifteenMin
+  )}`;
+}
+
+function formatServerPlayers(
+  server: Pick<McsmMonitorServerWithDaemon, "processRunning" | "plugin">
+): string {
+  if (!hasLiveMetrics(server)) return "--";
+  return `${server.plugin.onlinePlayers}/${server.plugin.maxPlayers}`;
+}
+
 export function formatInstanceStatus(server: McsmMonitorServerWithDaemon): string {
   const plugin = server.plugin;
   const process = server.process;
-  const tps = plugin.tps;
   return [
     `实例：${server.instanceName}`,
     `UUID：${server.instanceId}`,
     `节点：${nodeDisplayNameFromServer(server)} (${server.daemonIp}:${server.daemonPort})`,
     `节点状态：${server.daemonAvailable ? "在线" : "离线"}`,
     `实例状态：${server.statusText}，进程${server.processRunning ? "运行中" : "未运行"}`,
-    `TPS：1m ${formatNumber(tps.oneMin)} / 5m ${formatNumber(tps.fiveMin)} / 15m ${formatNumber(tps.fifteenMin)}`,
-    `人数：${plugin.onlinePlayers}/${plugin.maxPlayers}`,
+    `TPS：${formatServerTps(server)}`,
+    `人数：${formatServerPlayers(server)}`,
     `插件：${plugin.online ? "在线" : "离线"}${plugin.mainThreadBlocked ? "，主线程疑似卡顿" : ""}`,
     `进程：CPU ${formatOptionalPercent(process.cpuPercent)}，内存 ${formatBytes(process.memoryBytes)}`,
     `磁盘：${formatDisk(server.hostPrimaryDisk)}`,
@@ -173,7 +195,34 @@ export function formatCommandSent(
 
 export function formatInstanceLine(server: McsmMonitorServerWithDaemon): string {
   const plugin = server.plugin;
-  return `- ${server.instanceName} | UUID ${server.instanceId} | 节点 ${nodeDisplayNameFromServer(server)} | 状态 ${server.statusText} | TPS ${formatNumber(plugin.tps.oneMin)} | 人数 ${plugin.onlinePlayers}/${plugin.maxPlayers} | 插件 ${plugin.online ? "在线" : "离线"} | CPU ${formatOptionalPercent(server.process.cpuPercent)} | 内存 ${formatBytes(server.process.memoryBytes)}`;
+  return `- ${server.instanceName} | UUID ${server.instanceId} | 节点 ${nodeDisplayNameFromServer(server)} | 状态 ${server.statusText} | TPS ${formatServerTps(server)} | 人数 ${formatServerPlayers(server)} | 插件 ${plugin.online ? "在线" : "离线"} | CPU ${formatOptionalPercent(server.process.cpuPercent)} | 内存 ${formatBytes(server.process.memoryBytes)}`;
+}
+
+export function formatCurrentInstanceLine(server: McsmMonitorServerWithDaemon): string {
+  return formatInstanceLine(server);
+}
+
+export function formatCurrentInstanceStatus(server: McsmMonitorServerWithDaemon): string {
+  return formatInstanceStatus(server);
+}
+
+export function formatCurrentInstances(servers: McsmMonitorServerWithDaemon[]): string {
+  return formatInstances(servers);
+}
+
+export function formatCurrentCandidates(candidates: McsmMonitorServerWithDaemon[]): string {
+  return formatCandidates(candidates);
+}
+
+export function formatCurrentHealthReport(overview: McsmMonitorOverviewResponse): string {
+  return formatHealthReport(overview);
+}
+
+export function formatCurrentAbnormalInstances(
+  abnormalInstances: AbnormalInstance[],
+  options: Partial<AbnormalInstanceOptions> = {}
+): string {
+  return formatAbnormalInstances(abnormalInstances, options);
 }
 
 export function nodeDisplayName(node: McsmMonitorNodeOverview): string {

@@ -7,9 +7,191 @@ import { SAVE_DIR_PATH } from "../const";
 import { $t as t } from "../i18n";
 
 const LAYOUT_CONFIG_NAME = "layout.json";
+const OVERVIEW_PAGE = "/overview";
+const MONITOR_PAGE = "/monitor";
+const NODE_OVERVIEW_CARD_TYPE = "NodeOverview";
+const MONITOR_OVERVIEW_CARD_TYPE = "MonitorOverview";
 
 function getRandomId() {
   return v4();
+}
+
+export enum LayoutCardHeight {
+  MINI = "100px",
+  SMALL = "200px",
+  MEDIUM = "400px",
+  BIG = "600px",
+  LARGE = "800px",
+  AUTO = "unset"
+}
+
+function createMonitorOverviewCard(overrides: Partial<ILayoutCard> = {}): ILayoutCard {
+  return {
+    id: getRandomId(),
+    meta: {},
+    type: MONITOR_OVERVIEW_CARD_TYPE,
+    title: "多主机监控",
+    description: "聚合节点上的 Minecraft 监控数据",
+    width: 12,
+    height: LayoutCardHeight.AUTO,
+    disableDelete: true,
+    ...overrides
+  };
+}
+
+function insertMonitorOverviewCard(items: ILayoutCard[], card: ILayoutCard) {
+  const nodeOverviewIndex = items.findIndex((item) => item.type === NODE_OVERVIEW_CARD_TYPE);
+  const insertIndex = nodeOverviewIndex >= 0 ? nodeOverviewIndex + 1 : items.length;
+  items.splice(insertIndex, 0, card);
+}
+
+function createOverviewPageLayout(): IPageLayoutConfig {
+  return {
+    page: OVERVIEW_PAGE,
+    items: [
+      {
+        id: getRandomId(),
+        type: "StatusBlock",
+        title: t("TXT_CODE_e627e546"),
+        meta: {
+          type: "node"
+        },
+        width: 3,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "StatusBlock",
+        title: t("TXT_CODE_88e9361a"),
+        meta: {
+          type: "instance"
+        },
+        width: 3,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "StatusBlock",
+        title: t("TXT_CODE_db64faf6"),
+        meta: {
+          type: "users"
+        },
+        width: 3,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        type: "StatusBlock",
+        title: t("TXT_CODE_66056676"),
+        meta: {
+          type: "system"
+        },
+        width: 3,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "DataOverview",
+        title: t("TXT_CODE_721157a3"),
+        width: 12,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.MEDIUM
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "OperationLogCard",
+        title: t("TXT_CODE_6a444b79"),
+        width: 4,
+        description: t("TXT_CODE_9e8c176e"),
+        height: LayoutCardHeight.MEDIUM
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: NODE_OVERVIEW_CARD_TYPE,
+        title: t("TXT_CODE_bfb50126"),
+        width: 8,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.MEDIUM
+      },
+      createMonitorOverviewCard(),
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "RequestChart",
+        title: t("TXT_CODE_a4037a98"),
+        width: 6,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      },
+      {
+        id: getRandomId(),
+        meta: {},
+        type: "InstanceChart",
+        title: t("TXT_CODE_d6d9c42c"),
+        width: 6,
+        description: t("TXT_CODE_55ade942"),
+        height: LayoutCardHeight.SMALL
+      }
+    ]
+  };
+}
+
+function mergeMissingPages(
+  currentLayoutConfig: IPageLayoutConfig[],
+  latestLayoutConfig: IPageLayoutConfig[]
+) {
+  let changed = false;
+  for (const page of latestLayoutConfig) {
+    if (!currentLayoutConfig.find((item) => item.page === page.page)) {
+      currentLayoutConfig.push(page);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+function migrateMonitorLayout(currentLayoutConfig: IPageLayoutConfig[]) {
+  let changed = false;
+  let legacyMonitorCard: ILayoutCard | undefined;
+
+  for (let index = currentLayoutConfig.length - 1; index >= 0; index--) {
+    const page = currentLayoutConfig[index];
+    if (page.page !== MONITOR_PAGE) continue;
+
+    legacyMonitorCard ||= page.items.find((item) => item.type === MONITOR_OVERVIEW_CARD_TYPE);
+    currentLayoutConfig.splice(index, 1);
+    changed = true;
+  }
+
+  let overviewPage = currentLayoutConfig.find((item) => item.page === OVERVIEW_PAGE);
+  if (!overviewPage) {
+    overviewPage = createOverviewPageLayout();
+    currentLayoutConfig.push(overviewPage);
+    changed = true;
+  }
+
+  const hasMonitorOverview = overviewPage.items.some(
+    (item) => item.type === MONITOR_OVERVIEW_CARD_TYPE
+  );
+  if (!hasMonitorOverview) {
+    const nextMonitorCard = legacyMonitorCard
+      ? createMonitorOverviewCard({
+          ...legacyMonitorCard,
+          meta: legacyMonitorCard.meta ?? {}
+        })
+      : createMonitorOverviewCard();
+    insertMonitorOverviewCard(overviewPage.items, nextMonitorCard);
+    changed = true;
+  }
+
+  return changed;
 }
 
 export function getFrontendLayoutConfig(): string {
@@ -17,23 +199,28 @@ export function getFrontendLayoutConfig(): string {
   if (storage.fileExists(LAYOUT_CONFIG_NAME)) {
     layoutConfig = storage.readFile(LAYOUT_CONFIG_NAME);
   }
+
   if (layoutConfig) {
+    const currentLayoutConfig = JSON.parse(layoutConfig) as IPageLayoutConfig[];
+    let changed = false;
+
     if (GlobalVariable.get("versionChange")) {
       const latestLayoutConfig = getDefaultFrontendLayoutConfig();
-      const currentLayoutConfig = JSON.parse(layoutConfig) as IPageLayoutConfig[];
-      for (const page of latestLayoutConfig) {
-        if (!currentLayoutConfig.find((item) => item.page === page.page)) {
-          currentLayoutConfig.push(page);
-        }
-      }
+      changed = mergeMissingPages(currentLayoutConfig, latestLayoutConfig) || changed;
       GlobalVariable.set("versionChange", null);
+    }
+
+    changed = migrateMonitorLayout(currentLayoutConfig) || changed;
+
+    if (changed) {
       setFrontendLayoutConfig(currentLayoutConfig);
       return JSON.stringify(currentLayoutConfig);
     }
-    return layoutConfig as string;
-  } else {
-    return JSON.stringify(getDefaultFrontendLayoutConfig());
+
+    return layoutConfig;
   }
+
+  return JSON.stringify(getDefaultFrontendLayoutConfig());
 }
 
 export function setFrontendLayoutConfig(config: IPageLayoutConfig[]) {
@@ -50,15 +237,6 @@ export function resetFrontendLayoutConfig() {
   }
 }
 
-export enum LayoutCardHeight {
-  MINI = "100px",
-  SMALL = "200px",
-  MEDIUM = "400px",
-  BIG = "600px",
-  LARGE = "800px",
-  AUTO = "unset"
-}
-
 function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
   return [
     {
@@ -71,122 +249,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         sidebarPosition: "right"
       }
     },
-    {
-      page: "/overview",
-      items: [
-        {
-          id: getRandomId(),
-          type: "StatusBlock",
-          title: t("TXT_CODE_e627e546"),
-          meta: {
-            type: "node"
-          },
-          width: 3,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          type: "StatusBlock",
-          title: t("TXT_CODE_88e9361a"),
-          meta: {
-            type: "instance"
-          },
-          width: 3,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          type: "StatusBlock",
-          title: t("TXT_CODE_db64faf6"),
-          meta: {
-            type: "users"
-          },
-          width: 3,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          type: "StatusBlock",
-          title: t("TXT_CODE_66056676"),
-          meta: {
-            type: "system"
-          },
-          width: 3,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "DataOverview",
-          title: t("TXT_CODE_721157a3"),
-          width: 12,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "OperationLogCard",
-          title: t("TXT_CODE_6a444b79"),
-          width: 4,
-          description: t("TXT_CODE_9e8c176e"),
-          height: LayoutCardHeight.MEDIUM
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "NodeOverview",
-          title: t("TXT_CODE_bfb50126"),
-          width: 8,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.MEDIUM
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "RequestChart",
-          title: t("TXT_CODE_a4037a98"),
-          width: 6,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "InstanceChart",
-          title: t("TXT_CODE_d6d9c42c"),
-          width: 6,
-          description: t("TXT_CODE_55ade942"),
-          height: LayoutCardHeight.SMALL
-        }
-      ]
-    },
-    {
-      page: "/monitor",
-      items: [
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "MonitorOverview",
-          title: "多主机监控",
-          width: 12,
-          height: LayoutCardHeight.AUTO,
-          disableDelete: true
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 12,
-          height: LayoutCardHeight.MINI
-        }
-      ]
-    },
+    createOverviewPageLayout(),
     {
       page: "/market",
       items: [

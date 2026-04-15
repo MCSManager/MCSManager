@@ -4,6 +4,9 @@ export interface AppConfig {
   confirmationTtlMs: number;
   requestTimeoutMs: number;
   allowedInstanceCommands: string[];
+  alertEnabled: boolean;
+  alertPushUrl: string | undefined;
+  alertPollIntervalMs: number;
 }
 
 export interface McsmMonitorTpsSnapshot {

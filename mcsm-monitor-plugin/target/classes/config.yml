@@ -1,0 +1,8 @@
+agentUrl: "http://127.0.0.1:24444"
+serverId: ""
+instanceToken: ""
+heartbeatIntervalTicks: 100
+connectTimeoutMs: 3000
+readTimeoutMs: 3000
+mainThreadBlockedThresholdMs: 3000
+logHeartbeatFailures: true
