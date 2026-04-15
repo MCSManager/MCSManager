@@ -3463,5 +3463,9 @@
   "TXT_CODE_CONTROL_COMMAND_FAILED": "Failed to send command",
   "TXT_CODE_CONTROL_OUTPUT_REFRESH_FAILED": "Failed to refresh logs",
   "TXT_CODE_CONTROL_GLOBAL_NOT_OPEN": "Host shell is not open yet, open it first",
-  "TXT_CODE_CONTROL_INSTANCE_NOT_RUNNING": "Instance is not running, command rejected"
+  "TXT_CODE_CONTROL_INSTANCE_NOT_RUNNING": "Instance is not running, command rejected",
+  "TXT_CODE_CONTROL_HOST_ALREADY_OPEN": "Host shell is already open",
+  "TXT_CODE_CONTROL_HOST_ALREADY_CLOSED": "Host shell is already closed",
+  "TXT_CODE_CONTROL_INSTANCE_ALREADY_RUNNING": "Instance is already running or starting",
+  "TXT_CODE_CONTROL_INSTANCE_ALREADY_STOPPED": "Instance is already stopped"
 }

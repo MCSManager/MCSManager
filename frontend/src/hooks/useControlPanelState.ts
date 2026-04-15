@@ -3,6 +3,7 @@ import { TYPE_MINECRAFT_JAVA, verifyEULA } from "@/hooks/useInstance";
 import { t } from "@/lang/i18n";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import {
+  getInstanceInfo,
   getInstanceOutputLog,
   openInstance,
   restartInstance,
@@ -93,6 +94,7 @@ export function useControlPanelState() {
   const nodes = ref<ControlPreviewNode[]>([]);
   const logsByTarget = ref<Record<string, ControlLogLine[]>>({});
   const rawOutputByTarget = ref<Record<string, string>>({});
+  const lastOutputLineIdByTarget = ref<Record<string, string>>({});
   const pollErrorByTarget = ref<Record<string, string>>({});
   const globalStatusByDaemon = ref<Record<string, INSTANCE_STATUS_CODE>>({});
   const loadedDaemons = ref<Record<string, boolean>>({});
@@ -109,6 +111,30 @@ export function useControlPanelState() {
   const getGlobalTargetStatus = (daemonId: string, daemonAvailable: boolean) => {
     if (!daemonAvailable) return INSTANCE_STATUS_CODE.STOPPED;
     return globalStatusByDaemon.value[daemonId] ?? INSTANCE_STATUS_CODE.STOPPED;
+  };
+
+  const loadGlobalStatusForDaemon = async (daemonId: string, forceRequest = false) => {
+    const node = findNode(daemonId);
+    if (!node?.daemonAvailable) {
+      globalStatusByDaemon.value[daemonId] = INSTANCE_STATUS_CODE.STOPPED;
+      return INSTANCE_STATUS_CODE.STOPPED;
+    }
+
+    try {
+      const result = await getInstanceInfo().execute({
+        forceRequest,
+        params: {
+          daemonId,
+          uuid: GLOBAL_INSTANCE_UUID
+        }
+      });
+      const nextStatus =
+        result.value?.status ?? globalStatusByDaemon.value[daemonId] ?? INSTANCE_STATUS_CODE.STOPPED;
+      globalStatusByDaemon.value[daemonId] = nextStatus;
+      return nextStatus;
+    } catch {
+      return globalStatusByDaemon.value[daemonId] ?? INSTANCE_STATUS_CODE.STOPPED;
+    }
   };
 
   const createGlobalTarget = (node: Pick<
@@ -364,13 +390,24 @@ export function useControlPanelState() {
       if (!node.daemonAvailable) {
         globalStatusByDaemon.value[daemonId] = INSTANCE_STATUS_CODE.STOPPED;
         updateNodeTargets(daemonId, [createGlobalTarget(node)]);
-        loadedDaemons.value[daemonId] = true;
+        loadedDaemons.value[daemonId] = false;
         return;
       }
 
       try {
-        const instances = await fetchAllInstancesForDaemon(daemonId, Boolean(options.forceRequest));
-        updateNodeTargets(daemonId, buildTargetsForNode(node, instances));
+        const [instancesResult] = await Promise.allSettled([
+          fetchAllInstancesForDaemon(daemonId, Boolean(options.forceRequest)),
+          loadGlobalStatusForDaemon(daemonId, Boolean(options.forceRequest))
+        ]);
+
+        if (instancesResult.status !== "fulfilled") {
+          throw instancesResult.reason;
+        }
+
+        const latestNode = findNode(daemonId);
+        if (!latestNode) return;
+
+        updateNodeTargets(daemonId, buildTargetsForNode(latestNode, instancesResult.value));
         loadedDaemons.value[daemonId] = true;
       } catch (error) {
         loadedDaemons.value[daemonId] = false;
@@ -413,26 +450,48 @@ export function useControlPanelState() {
     if (normalizedOutput === previousOutput) return;
 
     const currentLines = logsByTarget.value[targetKey] || [];
-    let nextLines = currentLines;
+    let nextLines = [...currentLines];
+    let nextLastOutputLineId = lastOutputLineIdByTarget.value[targetKey] || "";
 
     if (!previousOutput) {
-      nextLines = trimControlLogLines(
-        [...currentLines, ...buildOutputLogLines(normalizedOutput)],
-        CONTROL_MAX_LOG_LINES
-      );
+      const outputLines = buildOutputLogLines(normalizedOutput);
+      nextLines = trimControlLogLines([...currentLines, ...outputLines], CONTROL_MAX_LOG_LINES);
+      nextLastOutputLineId = outputLines[outputLines.length - 1]?.id || "";
     } else if (normalizedOutput.startsWith(previousOutput)) {
       const appendedOutput = normalizedOutput.slice(previousOutput.length);
       if (appendedOutput) {
-        nextLines = trimControlLogLines(
-          [...currentLines, ...buildOutputLogLines(appendedOutput)],
-          CONTROL_MAX_LOG_LINES
-        );
+        const appendedSegments = splitControlOutputLog(appendedOutput);
+        const nextAppendedLines: ControlLogLine[] = [];
+        const previousEndedWithNewline = previousOutput.endsWith("\n");
+
+        if (!previousEndedWithNewline && appendedSegments.length > 0 && nextLastOutputLineId) {
+          const lastOutputLineIndex = nextLines.findIndex((line) => line.id === nextLastOutputLineId);
+          if (lastOutputLineIndex >= 0) {
+            const appendedText = appendedSegments.shift() ?? "";
+            nextLines[lastOutputLineIndex] = {
+              ...nextLines[lastOutputLineIndex],
+              text: `${nextLines[lastOutputLineIndex].text}${appendedText}`
+            };
+          }
+        }
+
+        if (appendedSegments.length > 0) {
+          const now = new Date();
+          nextAppendedLines.push(
+            ...appendedSegments.map((text) => createControlLogLine("info", text, now))
+          );
+        }
+
+        nextLines = trimControlLogLines([...nextLines, ...nextAppendedLines], CONTROL_MAX_LOG_LINES);
+        nextLastOutputLineId = nextAppendedLines[nextAppendedLines.length - 1]?.id || nextLastOutputLineId;
       }
     } else {
       nextLines = trimControlLogLines(buildOutputLogLines(normalizedOutput), CONTROL_MAX_LOG_LINES);
+      nextLastOutputLineId = nextLines[nextLines.length - 1]?.id || "";
     }
 
     rawOutputByTarget.value[targetKey] = normalizedOutput;
+    lastOutputLineIdByTarget.value[targetKey] = nextLastOutputLineId;
     logsByTarget.value[targetKey] = nextLines;
   };
 
@@ -588,6 +647,9 @@ export function useControlPanelState() {
     const targetKey = currentTargetKey.value;
     if (!targetKey) return;
     logsByTarget.value[targetKey] = [];
+    rawOutputByTarget.value[targetKey] = "";
+    lastOutputLineIdByTarget.value[targetKey] = "";
+    delete pollErrorByTarget.value[targetKey];
   };
 
   const startCurrentTarget = async () => {
@@ -604,7 +666,7 @@ export function useControlPanelState() {
 
     if (target.mode === "global") {
       if (target.status === INSTANCE_STATUS_CODE.RUNNING) {
-        appendLog(target, "warn", "宿主机终端已经处于打开状态");
+        appendLog(target, "warn", t("TXT_CODE_CONTROL_HOST_ALREADY_OPEN"));
         return;
       }
 
@@ -640,7 +702,7 @@ export function useControlPanelState() {
       target.status === INSTANCE_STATUS_CODE.RUNNING ||
       target.status === INSTANCE_STATUS_CODE.STARTING
     ) {
-      appendLog(target, "warn", "实例已经处于运行中或启动中");
+      appendLog(target, "warn", t("TXT_CODE_CONTROL_INSTANCE_ALREADY_RUNNING"));
       return;
     }
 
@@ -690,10 +752,17 @@ export function useControlPanelState() {
     }
 
     if (target.status === INSTANCE_STATUS_CODE.STOPPED) {
-      appendLog(target, "warn", target.mode === "global" ? "宿主机终端已经关闭" : "实例已经停止");
+      appendLog(
+        target,
+        "warn",
+        target.mode === "global"
+          ? t("TXT_CODE_CONTROL_HOST_ALREADY_CLOSED")
+          : t("TXT_CODE_CONTROL_INSTANCE_ALREADY_STOPPED")
+      );
       return;
     }
 
+    const previousStatus = target.status ?? INSTANCE_STATUS_CODE.STOPPED;
     const nextStatus =
       target.mode === "global" ? INSTANCE_STATUS_CODE.STOPPED : INSTANCE_STATUS_CODE.STOPPING;
     updateTargetStatus(targetKey, nextStatus);
@@ -725,6 +794,9 @@ export function useControlPanelState() {
         showToastOnError: false
       });
     } catch (error) {
+      if (target.mode === "global") {
+        updateTargetStatus(targetKey, previousStatus);
+      }
       await loadTargetsForDaemon(target.daemonId, {
         forceRequest: true,
         showToastOnError: false
@@ -782,9 +854,6 @@ export function useControlPanelState() {
     const command = commandInput.value.trim();
     if (!target || !command) return;
 
-    commandInput.value = "";
-    appendLog(target, "command", `$ ${command}`);
-
     if (!target.daemonAvailable) {
       const text = t("TXT_CODE_CONTROL_NODE_OFFLINE_ACTION");
       appendLog(target, "error", text);
@@ -814,6 +883,8 @@ export function useControlPanelState() {
           command
         }
       });
+      commandInput.value = "";
+      appendLog(target, "command", `$ ${command}`);
       appendLog(
         target,
         "info",
