@@ -85,7 +85,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     // SSO type
     if (config.ssoType != null) {
       const t = String(config.ssoType);
-      if (t !== "oidc" && t !== "oauth2") throw new Error("ssoType must be 'oidc' or 'oauth2'");
+      if (t !== "oidc" && t !== "oauth2" && t !== "clerk") throw new Error("ssoType must be 'oidc', 'oauth2', or 'clerk'");
       systemConfig.ssoType = t;
     }
     const ssoType = systemConfig.ssoType || "oidc";
@@ -96,7 +96,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       const clientId = config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
       const clientSecret = config.ssoClientSecret != null ? String(config.ssoClientSecret) : systemConfig.ssoClientSecret;
 
-      if (ssoType === "oidc") {
+      if (ssoType === "oidc" || ssoType === "clerk") {
         const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
         if (issuer && !issuer.startsWith("https://") && !issuer.startsWith("http://")) {
           throw new Error("SSO Issuer URL must use http(s) protocol");
@@ -144,7 +144,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     // Unbind all SSO users when identity-critical fields change
     {
       const typeChanged = systemConfig.ssoType !== prevSsoType;
-      const issuerChanged = ssoType === "oidc" && systemConfig.ssoIssuer !== prevSsoIssuer;
+      const issuerChanged = (ssoType === "oidc" || ssoType === "clerk") && systemConfig.ssoIssuer !== prevSsoIssuer;
       const userinfoChanged = ssoType === "oauth2" && systemConfig.ssoUserinfoUrl !== prevSsoUserinfoUrl;
       const userIdFieldChanged = ssoType === "oauth2" && systemConfig.ssoUserIdField !== prevSsoUserIdField;
 

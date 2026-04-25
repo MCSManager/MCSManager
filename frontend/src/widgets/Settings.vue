@@ -304,7 +304,9 @@ const ssoMode = computed({
   get(): string {
     const fd = formData.value as any;
     if (!fd?.ssoEnabled) return "disabled";
-    return fd.ssoType === "oauth2" ? "oauth2" : "oidc";
+    if (fd.ssoType === "oauth2") return "oauth2";
+    if (fd.ssoType === "clerk") return "clerk";
+    return "oidc";
   },
   set(val: string) {
     const fd = formData.value as any;
@@ -324,7 +326,7 @@ const isSsoIdentityChanged = (): boolean => {
   const snap = ssoSnapshot.value;
   const curType = fd.ssoType || "oidc";
   if (curType !== snap.ssoType) return true;
-  if (curType === "oidc" && (fd.ssoIssuer || "") !== snap.ssoIssuer) return true;
+  if ((curType === "oidc" || curType === "clerk") && (fd.ssoIssuer || "") !== snap.ssoIssuer) return true;
   if (curType === "oauth2") {
     if ((fd.ssoUserinfoUrl || "") !== snap.ssoUserinfoUrl) return true;
     if ((fd.ssoUserIdField || "id") !== snap.ssoUserIdField) return true;
@@ -933,6 +935,7 @@ onUnmounted(() => {
                         {{ t("TXT_CODE_718c9310") }}
                       </a-select-option>
                       <a-select-option value="oidc">OpenID Connect (OIDC)</a-select-option>
+                      <a-select-option value="clerk">Clerk</a-select-option>
                       <a-select-option value="oauth2">OAuth 2.0</a-select-option>
                     </a-select>
                   </a-form-item>
@@ -967,17 +970,22 @@ onUnmounted(() => {
                     </a-form-item>
 
                     <!-- OIDC-specific: Issuer URL -->
-                    <a-form-item v-if="ssoMode === 'oidc'">
+                    <a-form-item v-if="ssoMode === 'oidc' || ssoMode === 'clerk'">
                       <a-typography-title :level="5">
                         {{ t("TXT_CODE_SSO_ISSUER") }}
                       </a-typography-title>
                       <a-typography-paragraph type="secondary">
-                        {{ t("TXT_CODE_SSO_ISSUER_DESC") }}
+                        <template v-if="ssoMode === 'clerk'">
+                          {{ t("TXT_CODE_SSO_CLERK_ISSUER_DESC") }}
+                        </template>
+                        <template v-else>
+                          {{ t("TXT_CODE_SSO_ISSUER_DESC") }}
+                        </template>
                       </a-typography-paragraph>
                       <a-input
                         v-model:value="(formData as any).ssoIssuer"
                         style="max-width: 480px"
-                        placeholder="https://accounts.example.com"
+                        :placeholder="ssoMode === 'clerk' ? 'https://your-app.clerk.accounts.dev' : 'https://accounts.example.com'"
                       />
                     </a-form-item>
 

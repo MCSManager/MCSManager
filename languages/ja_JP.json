@@ -3331,6 +3331,7 @@
   "TXT_CODE_SSO_ICON_URL_DESC": "Icon URL for the SSO provider, displayed on the login button.",
   "TXT_CODE_SSO_ISSUER": "Issuer URL",
   "TXT_CODE_SSO_ISSUER_DESC": "OIDC Issuer URL (without /.well-known/openid-configuration). Used for service discovery.",
+  "TXT_CODE_SSO_CLERK_ISSUER_DESC": "Your Clerk Frontend API URL (e.g. https://your-app.clerk.accounts.dev). Find it in the Clerk Dashboard under API Keys.",
   "TXT_CODE_SSO_AUTHORIZE_URL": "Authorize URL",
   "TXT_CODE_SSO_AUTHORIZE_URL_DESC": "OAuth 2.0 認可エンドポイント。ユーザーはここにリダイレクトされてログインします。",
   "TXT_CODE_SSO_TOKEN_URL": "Token URL",
