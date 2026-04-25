@@ -2,19 +2,22 @@
 import CopyButton from "@/components/CopyButton.vue";
 import { PERMISSION_MAP } from "@/config/const";
 import { t } from "@/lang/i18n";
+import { ssoConfig, type SsoPublicConfig } from "@/services/apis";
 import { confirm2FA, setUserApiKey, updatePassword } from "@/services/apis/user";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { reportErrorMsg } from "@/tools/validator";
 import type { FormInstance } from "ant-design-vue";
 import { message } from "ant-design-vue";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { bind2FA } from "../services/apis/user";
 const { state, updateUserInfo } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
 const { execute, isLoading: setUserApiKeyLoading } = setUserApiKey();
 const { execute: executeUpdatePassword, isLoading: updatePasswordLoading } = updatePassword();
+
+const ssoInfo = ref<SsoPublicConfig | null>(null);
 
 const formState = reactive({
   resetPassword: false,
@@ -25,6 +28,19 @@ const formState = reactive({
 });
 
 const formRef = ref<FormInstance>();
+
+const handleLinkSso = () => {
+  window.location.href = "/api/auth/sso/authorize";
+};
+
+onMounted(async () => {
+  try {
+    const res = await ssoConfig().execute();
+    if (res.value) ssoInfo.value = res.value;
+  } catch {
+    // SSO config not available
+  }
+});
 
 const handleGenerateApiKey = async (enable: boolean) => {
   await execute({
@@ -191,6 +207,28 @@ const disable2FACode = async () => {
             </a-button>
           </div>
         </a-form-item>
+        <a-form-item v-if="ssoInfo?.enabled" :label="t('TXT_CODE_SSO_MY_ACCOUNT_LABEL')">
+          <a-typography-paragraph>
+            <a-typography-text type="secondary">
+              {{ t("TXT_CODE_SSO_MY_ACCOUNT_DESC") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+          <div v-if="state.userInfo?.ssoBound">
+            <a-tag color="green">
+              {{ t("TXT_CODE_SSO_MY_ACCOUNT_LINKED") }}
+            </a-tag>
+          </div>
+          <div v-else>
+            <a-button @click="handleLinkSso">
+              {{
+                ssoInfo?.providerName
+                  ? t("TXT_CODE_SSO_MY_ACCOUNT_LINK_BTN", { name: ssoInfo.providerName })
+                  : t("TXT_CODE_SSO_MY_ACCOUNT_LINK_BTN_DEFAULT")
+              }}
+            </a-button>
+          </div>
+        </a-form-item>
+
         <a-form-item label="APIKEY">
           <a-typography-paragraph>
             {{ t("TXT_CODE_b2dbf778") }}
