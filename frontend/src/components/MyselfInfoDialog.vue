@@ -30,7 +30,7 @@ const formState = reactive({
 const formRef = ref<FormInstance>();
 
 const handleLinkSso = () => {
-  window.location.href = "/api/auth/sso/authorize";
+  window.location.href = "./api/auth/sso/authorize";
 };
 
 onMounted(async () => {
