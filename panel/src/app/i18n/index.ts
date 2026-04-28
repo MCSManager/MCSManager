@@ -14,6 +14,7 @@ import ko_KR from "@languages/ko_KR.json";
 import de_DE from "@languages/de_DE.json";
 import pt_BR from "@languages/pt_BR.json";
 import th_TH from "@languages/th_TH.json";
+import tr_TR from "@languages/tr_TR.json";
 
 i18next.init({
   interpolation: {
@@ -54,6 +55,9 @@ i18next.init({
     },
     th_TH: {
       translation: th_TH
+    },
+    tr_tr: {
+      translation: tr_TR
     }
   }
 });

@@ -463,7 +463,7 @@ router.put(
       let advancedConfig = {};
       advancedConfig = checkInstanceAdvancedParams(config, isTopPermission);
 
-      new RemoteRequest(remoteService).request("instance/update", {
+      await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
           pingConfig: !isEmpty(config.pingConfig) ? pingConfig : null,
