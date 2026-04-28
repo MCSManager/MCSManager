@@ -132,7 +132,7 @@ export default class FileWriter {
       try {
         logger.info("Browser Uploaded File:", this.path);
 
-        const instanceFiles = new FileManager(this.instance.absoluteCwdPath());
+        const instanceFiles = new FileManager(this.cwd);
         await instanceFiles.unzip(this.path, ".", this.zipCode);
         logger.info("File unzipped:", this.path);
 
@@ -140,8 +140,6 @@ export default class FileWriter {
           await fs.remove(this.path);
           logger.info("Temporary zip deleted:", this.path);
         }
-      } catch (e) {
-        logger.error("Operation after upload failed:", e);
       } finally {
         globalEnv.fileTaskCount--;
         if (this.instance) this.instance.info.fileLock--;

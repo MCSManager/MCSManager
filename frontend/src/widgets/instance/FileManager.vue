@@ -214,10 +214,10 @@ const enterEditPath = () => {
 const submitPathEdit = async () => {
   if (!isEditingPath.value) return;
 
-  const targetPath = tempPath.value.trim();
-  const normalizedTarget = targetPath.endsWith("/") ? targetPath : targetPath + "/";
+  let targetPath = tempPath.value.trim().replace(/\\/g, "/");
+  targetPath = targetPath.endsWith("/") ? targetPath : targetPath + "/";
 
-  if (normalizedTarget === currentPath.value || !targetPath) {
+  if (targetPath === currentPath.value || !targetPath) {
     isEditingPath.value = false;
     return;
   }
@@ -237,30 +237,31 @@ const handleDragleave = (e: DragEvent) => {
   opacity.value = false;
 };
 
-const processUploadItems = (filesToBatch: File[], foldersToProcess: any[]) => {
-  if (filesToBatch.length === 0 && foldersToProcess.length === 0) return;
+const processUploadItems = (files: File[], folders: any[]) => {
+  if (files.length === 0 && folders.length === 0) return;
 
-  let nameSummary = "";
-  for (const folder of foldersToProcess) {
-    nameSummary += `[${t("TXT_CODE_e5f949c")}] ${folder.name}, `;
+  let name = "";
+  for (const folder of folders) {
+    name += `[${t("TXT_CODE_e5f949c")}] ${folder.name}, `;
   }
-  for (const file of filesToBatch) {
-    nameSummary += `${file.name}, `;
+  for (const file of files) {
+    name += `${file.name}, `;
   }
 
-  nameSummary = nameSummary.slice(0, -2); // trailing comma
-  if (nameSummary.length > 40) nameSummary = nameSummary.slice(0, 37) + "..."; // cut if too long
-  const countMsg = ` (${filesToBatch.length + foldersToProcess.length})`;
+  name = name.slice(0, -2); // trailing comma
+  if (name.length > 40) name = name.slice(0, 37) + "..."; // cut if too long
+
+  if (files.length + folders.length > 1) name += ` (${files.length + folders.length})`;
 
   Modal.confirm({
     title: t("TXT_CODE_52bc24ec"),
     icon: h(ExclamationCircleOutlined),
-    content: `${t("TXT_CODE_52bc24ec")} ${nameSummary}${countMsg} ?`,
+    content: `${t("TXT_CODE_52bc24ec")} ${name} ?`,
     onOk() {
-      if (filesToBatch.length > 0) {
-        selectedFiles(filesToBatch);
+      if (files.length > 0) {
+        selectedFiles(files);
       }
-      for (const folder of foldersToProcess) {
+      for (const folder of folders) {
         handleFolderUpload(folder);
       }
     }
@@ -274,24 +275,24 @@ const handleDrop = async (e: DragEvent) => {
   const items = e.dataTransfer?.items;
   if (!items) return;
 
-  const filesToBatch: File[] = [];
-  const foldersToProcess: FileSystemEntry[] = [];
+  const files: File[] = [];
+  const folders: FileSystemEntry[] = [];
 
   for (let i = 0; i < items.length; i++) {
     const entry = items[i].webkitGetAsEntry();
     if (!entry) continue;
 
     if (entry.isDirectory) {
-      foldersToProcess.push(entry);
+      folders.push(entry);
     } else {
       const file = items[i].getAsFile();
       if (file) {
-        filesToBatch.push(file);
+        files.push(file);
       }
     }
   }
 
-  processUploadItems(filesToBatch, foldersToProcess);
+  processUploadItems(files, folders);
 };
 
 const folderInputRef = ref<HTMLInputElement>();
