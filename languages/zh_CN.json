@@ -818,7 +818,7 @@
   "TXT_CODE_54275b9c": "模板编辑器",
   "TXT_CODE_54312194": "地址与端口",
   "TXT_CODE_543356c1": "用铁锹右击即可转变为草径的方块列表。",
-  "TXT_CODE_5445f34b": "以及之后 {num} 个",
+  "TXT_CODE_5445f34b": "应用于所有冲突 (剩余 {num} 个)",
   "TXT_CODE_54469e02": "暂无操作日志",
   "TXT_CODE_5476e012": "运行状态",
   "TXT_CODE_5484094a": "更变容器默认工作目录",
@@ -1622,7 +1622,7 @@
   "TXT_CODE_998d1dec": "橙色床的方块掉落倍率",
   "TXT_CODE_99a42341": "例如：https://example.com/image.png",
   "TXT_CODE_99c6d1f1": "镜像名称不规范！",
-  "TXT_CODE_99ca8563": "覆盖文件",
+  "TXT_CODE_99ca8563": "文件冲突",
   "TXT_CODE_99e98174": "计算所有生物用于生成",
   "TXT_CODE_99f8edf0": "设置为true以在放置时将can_summon设置为true",
   "TXT_CODE_99fab05d": "是否允许重生锚爆炸。将此设置为false只会让重生锚消失。",
@@ -3428,5 +3428,8 @@
   "TXT_CODE_f18f65db": "请确认当前工作已保存，进入后可以对界面进行自由调整，退出后会刷新页面！",
   "TXT_CODE_2b85af6d": "如果您正在使用反向代理访问面板，请开启此选项。面板将会从特定的请求头来获取真实IP。",
   "TXT_CODE_66aeac82": "反向代理请求头",
-  "TXT_CODE_fd8bc51f": "当反向代理模式开启时，面板将会从这个请求头中获取用户真实IP。"
+  "TXT_CODE_fd8bc51f": "当反向代理模式开启时，面板将会从这个请求头中获取用户真实IP。",
+  "TXT_CODE_upload_folder_too_large": "文件夹过大（超过 {size}），请手动压缩后上传。",
+  "TXT_CODE_folder_upload_not_supported": "文件夹不支持直接拖入，请先压缩后再上传。",
+  "TXT_CODE_upload_folder": "上传文件夹"
 }

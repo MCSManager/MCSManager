@@ -818,7 +818,7 @@
   "TXT_CODE_54275b9c": "Template Editor",
   "TXT_CODE_54312194": "Address and port",
   "TXT_CODE_543356c1": "List of blocks that can be turned into a grass path when right-clicked with a shovel",
-  "TXT_CODE_5445f34b": "and {num} more",
+  "TXT_CODE_5445f34b": "Apply to all conflicts ({num} more)",
   "TXT_CODE_54469e02": "No operation logs available yet",
   "TXT_CODE_5476e012": "State",
   "TXT_CODE_5484094a": "Change container working directory",
@@ -1622,7 +1622,7 @@
   "TXT_CODE_998d1dec": "Block fall multiplier for orange bed",
   "TXT_CODE_99a42341": "ie, https://example.com/image.png",
   "TXT_CODE_99c6d1f1": "Image name is not standardized!",
-  "TXT_CODE_99ca8563": "Overwriting File",
+  "TXT_CODE_99ca8563": "File Conflict",
   "TXT_CODE_99e98174": "Calculate All Entities for Spawning",
   "TXT_CODE_99f8edf0": "Set to true to set can_summon to true on placement",
   "TXT_CODE_99fab05d": "Whether respawn anchors explode. Setting this to false just makes the respawn anchors blip out of existence",
@@ -3428,5 +3428,8 @@
   "TXT_CODE_f18f65db": "Please make sure your current work has been saved. You can freely adjust the interface after entering. The page will refresh after exiting!",
   "TXT_CODE_2b85af6d": "If you are accessing the panel through a reverse proxy, please enable this option. The panel will retrieve your real IP address from a specific request header.",
   "TXT_CODE_66aeac82": "Reverse Proxy Request Header",
-  "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header."
+  "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header.",
+  "TXT_CODE_upload_folder_too_large": "The folder is too large (over {size}), please compress it manually and then upload it.",
+  "TXT_CODE_folder_upload_not_supported": "Folder upload is not supported, please compress it before uploading.",
+  "TXT_CODE_upload_folder": "Upload Folder"
 }

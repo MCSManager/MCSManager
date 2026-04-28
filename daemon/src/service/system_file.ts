@@ -22,7 +22,10 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -57,11 +60,10 @@ export default class FileManager {
       finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
     }
 
-    if (
-      finalPath.indexOf(topAbsolutePath) !== 0 &&
-      topAbsolutePath !== "/" &&
-      topAbsolutePath !== "\\"
-    )
+    // fix the /app/ vs /app mismatch bug and keep it secure
+    const relative = path.relative(topAbsolutePath, finalPath);
+    const isOutside = relative.startsWith("..") || path.isAbsolute(relative);
+    if (isOutside && topAbsolutePath !== "/" && topAbsolutePath !== "\\")
       throw new Error(ERROR_MSG_01);
     return finalPath;
   }
