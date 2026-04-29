@@ -3430,6 +3430,5 @@
   "TXT_CODE_66aeac82": "反向代理请求头",
   "TXT_CODE_fd8bc51f": "当反向代理模式开启时，面板将会从这个请求头中获取用户真实IP。",
   "TXT_CODE_upload_folder_too_large": "文件夹过大（超过 {size}），请手动压缩后上传。",
-  "TXT_CODE_folder_upload_not_supported": "文件夹不支持直接拖入，请先压缩后再上传。",
   "TXT_CODE_upload_folder": "上传文件夹"
 }
