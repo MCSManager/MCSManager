@@ -44,8 +44,6 @@ export default class FileManager {
   toAbsolutePath(fileName: string = "") {
     const topAbsolutePath = this.topPath;
 
-    if (path.normalize(fileName).indexOf(topAbsolutePath) === 0) return fileName;
-
     let finalPath = "";
     if (os.platform() === "win32") {
       const reg = new RegExp("^[A-Za-z]{1}:[\\\\/]{1}");
@@ -60,9 +58,10 @@ export default class FileManager {
       finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
     }
 
-    // fix the /app/ vs /app mismatch bug and keep it secure
+    // fix the /app/ vs /app and /app/ vs /app/..test mismatch bug and keep it secure
     const relative = path.relative(topAbsolutePath, finalPath);
-    const isOutside = relative.startsWith("..") || path.isAbsolute(relative);
+    const isOutside =
+      relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
     if (isOutside && topAbsolutePath !== "/" && topAbsolutePath !== "\\")
       throw new Error(ERROR_MSG_01);
     return finalPath;
