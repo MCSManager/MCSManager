@@ -159,8 +159,8 @@ router.post("/upload-new/:key", async (ctx) => {
     const uploadDir = mission.parameter.uploadDir;
     const cwd = instance.absoluteCwdPath();
     const overwrite = ctx.query.overwrite !== "false";
-    const filePath = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
-    let fr = uploadManager.getByPath(filePath);
+    const filePathInfo = await FileWriter.getPath(cwd, uploadDir, filename, overwrite);
+    let fr = uploadManager.getByPath(filePathInfo.absolutePath);
     if (fr && size != fr.writer.size) {
       uploadManager.delete(fr.id);
       await fr.writer.stop();
@@ -173,7 +173,9 @@ router.post("/upload-new/:key", async (ctx) => {
         size,
         unzip,
         zipCode,
-        filePath,
+        filePathInfo.absolutePath,
+        uploadDir,
+        filePathInfo.relativePath,
         deleteAfterUnzip
       );
       await fileWriter.init();

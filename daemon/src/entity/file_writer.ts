@@ -25,6 +25,8 @@ export default class FileWriter {
     private unzip: boolean,
     private zipCode: string,
     filePath: string,
+    private uploadDir: string,
+    private fileRelativePath: string,
     private deleteAfterUnzip: boolean = false
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
@@ -68,12 +70,14 @@ export default class FileWriter {
       }
     }
 
-    const fileSaveRelativePath = path.normalize(path.join(dir, tempFileSaveName));
+    const relativePath = path.normalize(path.join(dir, tempFileSaveName));
 
-    if (!fileManager.checkPath(fileSaveRelativePath))
-      throw new Error("Access denied: Invalid destination");
+    if (!fileManager.checkPath(relativePath)) throw new Error("Access denied: Invalid destination");
 
-    return fileManager.toAbsolutePath(fileSaveRelativePath);
+    return {
+      absolutePath: fileManager.toAbsolutePath(relativePath),
+      relativePath
+    };
   }
 
   async init() {
@@ -133,7 +137,7 @@ export default class FileWriter {
         logger.info("Browser Uploaded File:", this.path);
 
         const instanceFiles = new FileManager(this.cwd);
-        await instanceFiles.unzip(this.path, ".", this.zipCode);
+        await instanceFiles.unzip(this.fileRelativePath, this.uploadDir, this.zipCode);
         logger.info("File unzipped:", this.path);
 
         if (this.deleteAfterUnzip) {
