@@ -688,7 +688,7 @@ onUnmounted(() => {
                 v-else
                 ref="pathInputRef"
                 v-model:value="tempPath"
-                class="mb-20"
+                class="file-breadcrumbs-input mb-20"
                 @blur="submitPathEdit"
                 @keyup.enter="submitPathEdit"
               />
@@ -953,6 +953,11 @@ onUnmounted(() => {
   .file-breadcrumbs-item:hover {
     background-color: var(--color-gray-4);
   }
+}
+
+.file-breadcrumbs-input {
+  flex: 1;
+  border-radius: 6px;
 }
 
 @media (max-width: 350px) {
