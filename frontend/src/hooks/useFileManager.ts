@@ -759,7 +759,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         }
 
         message.loading({
-          content: `${t("TXT_CODE_ba027d6c")}`,
+          content: t("TXT_CODE_ba027d6c"),
           key: zipKey
         });
 

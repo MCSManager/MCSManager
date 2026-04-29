@@ -217,7 +217,7 @@ const submitPathEdit = async () => {
   let targetPath = tempPath.value.trim().replace(/\\/g, "/");
   targetPath = targetPath.endsWith("/") ? targetPath : targetPath + "/";
 
-  if (targetPath === currentPath.value || !targetPath) {
+  if (targetPath === currentPath.value || !tempPath.value.trim()) {
     isEditingPath.value = false;
     return;
   }
@@ -237,7 +237,7 @@ const handleDragleave = (e: DragEvent) => {
   opacity.value = false;
 };
 
-const processUploadItems = (files: File[], folders: any[]) => {
+const processUploadItems = (files: File[], folders: FileSystemEntry[]) => {
   if (files.length === 0 && folders.length === 0) return;
 
   let name = "";

@@ -134,8 +134,6 @@ export default class FileWriter {
       if (this.instance) this.instance.info.fileLock++;
 
       try {
-        logger.info("Browser Uploaded File:", this.path);
-
         const instanceFiles = new FileManager(this.cwd);
         await instanceFiles.unzip(this.fileRelativePath, this.uploadDir, this.zipCode);
         logger.info("File unzipped:", this.path);
