@@ -129,7 +129,7 @@ const cards = computed<PerfCardItem[]>(() => {
     rxRate != null || txRate != null
       ? {
           key: "network-bandwidth",
-          label: `${t("TXT_CODE_50daec4")} · 带宽`,
+          label: `${t("TXT_CODE_NETWORK_CURRENT")}`,
           value: `↓${formatNetworkSpeed(rxRate)} ↑${formatNetworkSpeed(txRate)}`,
           icon: ApartmentOutlined,
           theme: "perf-card--network",
@@ -143,7 +143,7 @@ const cards = computed<PerfCardItem[]>(() => {
     rxBytes != null || txBytes != null
       ? {
           key: "network-traffic",
-          label: `${t("TXT_CODE_50daec4")} · 流量`,
+          label: `${t("TXT_CODE_NETWORK_TOTAL")}`,
           value: `↓${formatTrafficUsage(rxBytes)} ↑${formatTrafficUsage(txBytes)}`,
           icon: ApartmentOutlined,
           theme: "perf-card--network",

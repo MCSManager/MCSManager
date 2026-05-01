@@ -134,6 +134,7 @@ const toAppDetailPage = (daemonId: string, instanceId: string) => {
 const handleChangeNode = async (item: NodeStatus) => {
   try {
     currentRemoteNode.value = item;
+    clearTags();
     selectedInstance.value = [];
     await initInstancesData(true);
     localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
