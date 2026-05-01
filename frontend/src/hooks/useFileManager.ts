@@ -949,7 +949,9 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       oldBreadcrumbs.forEach((item) => breadcrumbs.push(item));
       currentDisk.value = oldDisk;
 
-      await getFileList(false, oldPath).catch(() => {});
+      await getFileList(false, oldPath).catch((err) =>
+        console.error("Failed to revert to old path after jump failure:", err)
+      );
 
       const errorMsg = `${t("TXT_CODE_96281410")} ${
         error.response?.data?.message || error.message || ""

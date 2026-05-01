@@ -268,7 +268,7 @@ const processUploadItems = (files: File[], folders: FileSystemEntry[]) => {
   });
 };
 
-const handleDrop = async (e: DragEvent) => {
+const handleDrop = (e: DragEvent) => {
   e.preventDefault();
   opacity.value = false;
 
@@ -308,7 +308,7 @@ const onFolderInputChange = (e: Event) => {
 
   const rootName = files[0].webkitRelativePath.split("/")[0];
 
-  const scanItems: any[] = files.map((f) => ({
+  const scanItems = files.map((f) => ({
     path: f.webkitRelativePath,
     file: f,
     isDir: false
