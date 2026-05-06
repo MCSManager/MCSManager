@@ -3429,5 +3429,9 @@
   "TXT_CODE_f18f65db": "Please make sure your current work has been saved. You can freely adjust the interface after entering. The page will refresh after exiting!",
   "TXT_CODE_2b85af6d": "If you are accessing the panel through a reverse proxy, please enable this option. The panel will retrieve your real IP address from a specific request header.",
   "TXT_CODE_66aeac82": "Reverse Proxy Request Header",
-  "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header."
+  "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header.",
+  "TXT_CODE_e06fdab0": "Last Run Time",
+  "TXT_CODE_b283e720": "Resources",
+  "TXT_CODE_a60a421a": "Node Overview",
+  "TXT_CODE_101ef36f": "Load More..."
 }
