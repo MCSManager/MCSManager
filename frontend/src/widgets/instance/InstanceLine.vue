@@ -168,7 +168,7 @@ const toInstanceTerminal = async () => {
     </template>
 
     <template v-else-if="column.key === 'actions' && !node">
-      <a-space warp :size="6">
+      <a-space warp :size="6" style="padding-right: 10px">
         <a-button
           v-if="record.inst.moreInfo?.isStopped"
           size="small"

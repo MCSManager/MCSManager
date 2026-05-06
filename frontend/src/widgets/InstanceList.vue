@@ -338,7 +338,13 @@ const instanceTableColumns: AntColumnsType[] = [
     width: 100,
     align: "left"
   },
-  { title: t("TXT_CODE_fe731dfc"), dataIndex: "actions", key: "actions", width: 200, align: "left" }
+  {
+    title: t("TXT_CODE_fe731dfc"),
+    dataIndex: "actions",
+    key: "actions",
+    width: 200,
+    align: "right"
+  }
 ];
 
 const findInstance = (item: InstanceMoreDetail) => {
@@ -745,7 +751,13 @@ onMounted(async () => {
             :scroll="{ x: 'max-content' }"
           >
             <template #headerCell="{ column }">
-              <div :style="column.key === 'name' ? 'text-align: center' : ''">
+              <div v-if="column.key === 'name'" style="margin-left: 25px">
+                {{ column.title }}
+              </div>
+              <div v-else-if="column.key === 'actions'" style="padding-right: 10px">
+                {{ column.title }}
+              </div>
+              <div v-else>
                 {{ column.title }}
               </div>
             </template>
