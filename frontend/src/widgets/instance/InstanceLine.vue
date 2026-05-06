@@ -119,10 +119,10 @@ const toInstanceTerminal = async () => {
       </span>
     </template>
 
-    <template v-else-if="column.key === 'status'">
+    <template v-else-if="column.key === 'status' && !node">
       <a-tag
         :color="
-          props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.RUNNING || node?.available
+          props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.RUNNING
             ? 'green'
             : props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.STARTING
             ? 'pink'
@@ -130,15 +130,11 @@ const toInstanceTerminal = async () => {
         "
       >
         <span>
-          <CheckCircleOutlined v-if="record.inst?.moreInfo?.isRunning || record.node?.available" />
+          <CheckCircleOutlined v-if="record.inst?.moreInfo?.isRunning" />
           <ExclamationCircleOutlined v-else />
           {{
-            node
-              ? node?.available
-                ? t("TXT_CODE_823bfe63")
-                : t("TXT_CODE_66ce073e")
-              : t(String(INSTANCE_STATUS[props.targetInstanceInfo?.status ?? -1])) ||
-                t("TXT_CODE_c8333afa")
+            t(String(INSTANCE_STATUS[props.targetInstanceInfo?.status ?? -1])) ||
+            t("TXT_CODE_c8333afa")
           }}
         </span>
       </a-tag>

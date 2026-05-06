@@ -32,6 +32,7 @@ import {
   getInstanceInfo
 } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
+import type { AntColumnsType } from "@/types/ant";
 import { INSTANCE_STATUS } from "@/types/const";
 import { Modal, notification } from "ant-design-vue";
 import { throttle } from "lodash";
@@ -306,14 +307,38 @@ const toNodesPage = () => {
 const multipleMode = ref(false);
 const selectedInstance = ref<InstanceMoreDetail[]>([]);
 
-const instanceTableColumns = [
-  { title: t("TXT_CODE_f70badb9"), dataIndex: "name", key: "name", width: 200, ellipsis: true },
-  { title: t("TXT_CODE_759fb403"), dataIndex: "status", key: "status", width: 140 },
-  { title: t("TXT_CODE_67d68dd1"), dataIndex: "type", key: "type", width: 160 },
-  { title: t("TXT_CODE_e06fdab0"), dataIndex: "lastDatetime", key: "lastDatetime", width: 180 },
-  { title: t("TXT_CODE_b283e720"), dataIndex: "resources", key: "resources" },
-  { title: t("TXT_CODE_7e9727bd"), dataIndex: "players", key: "players", width: 100 },
-  { title: t("TXT_CODE_fe731dfc"), dataIndex: "actions", key: "actions", width: 200 }
+const instanceTableColumns: AntColumnsType[] = [
+  { title: t("TXT_CODE_f70badb9"), dataIndex: "name", key: "name", width: 250, align: "left" },
+  {
+    title: t("TXT_CODE_759fb403"),
+    dataIndex: "status",
+    key: "status",
+    width: 100,
+    align: "center"
+  },
+  {
+    title: t("TXT_CODE_67d68dd1"),
+    dataIndex: "type",
+    key: "type",
+    width: 160,
+    align: "center"
+  },
+  {
+    title: t("TXT_CODE_e06fdab0"),
+    dataIndex: "lastDatetime",
+    key: "lastDatetime",
+    width: 160,
+    align: "center"
+  },
+  { title: t("TXT_CODE_b283e720"), dataIndex: "resources", key: "resources", align: "left" },
+  {
+    title: t("TXT_CODE_7e9727bd"),
+    dataIndex: "players",
+    key: "players",
+    width: 100,
+    align: "left"
+  },
+  { title: t("TXT_CODE_fe731dfc"), dataIndex: "actions", key: "actions", width: 200, align: "left" }
 ];
 
 const findInstance = (item: InstanceMoreDetail) => {
@@ -719,6 +744,12 @@ onMounted(async () => {
             :default-expand-all-rows="true"
             :scroll="{ x: 'max-content' }"
           >
+            <template #headerCell="{ column }">
+              <div :style="column.key === 'name' ? 'text-align: center' : ''">
+                {{ column.title }}
+              </div>
+            </template>
+
             <template #bodyCell="{ column, record }">
               <template v-if="record.isLoadMore">
                 <div
