@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ALL_DAEMON_MODE } from "@/config/const";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types/index";
 import {
@@ -56,6 +57,7 @@ const operationForm = ref({
 });
 
 const currentRemoteNode = ref<NodeStatus>();
+const isGlobalDaemonMode = computed(() => currentRemoteNode.value?.uuid === ALL_DAEMON_MODE);
 
 const { execute: getNodes, state: nodes, isLoading: loadingNodes } = remoteNodeList();
 const { execute: getInstances, state: instances, isLoading: loadingInstance } = remoteInstances();
@@ -91,7 +93,7 @@ const initNodes = async () => {
   }
   if (localStorage.getItem("pageSelectedRemote")) {
     currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
-    if (currentRemoteNode.value?.uuid === "global") return;
+    if (isGlobalDaemonMode.value) return;
     if (!nodes.value?.some((item) => item.uuid === currentRemoteNode.value?.uuid)) {
       currentRemoteNode.value = undefined;
     }
@@ -108,7 +110,7 @@ const initInstancesData = async (resetPage?: boolean, daemonId?: string, instanc
     if (resetPage) operationForm.value.currentPage = 1;
     if (!currentRemoteNode.value) await initNodes();
 
-    if (currentRemoteNode.value?.uuid !== "global") {
+    if (!isGlobalDaemonMode.value) {
       await getInstances({
         params: {
           page: operationForm.value.currentPage,
@@ -516,7 +518,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
 };
 
 const globalNode = {
-  uuid: "global",
+  uuid: ALL_DAEMON_MODE,
   ip: "",
   port: 0,
   available: true,
@@ -544,7 +546,7 @@ onMounted(async () => {
             <a-dropdown>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item key="global" @click="handleChangeNode(globalNode)">
+                  <a-menu-item :key="ALL_DAEMON_MODE" @click="handleChangeNode(globalNode)">
                     <AppstoreOutlined />
                     {{ t("TXT_CODE_a60a421a") }}
                   </a-menu-item>
@@ -571,7 +573,7 @@ onMounted(async () => {
                   style="max-width: 145px"
                   :ellipsis="{ ellipsis: true }"
                   :content="
-                    currentRemoteNode?.uuid === 'global'
+                    isGlobalDaemonMode
                       ? t('TXT_CODE_a60a421a')
                       : computeNodeName(
                           currentRemoteNode?.ip || '',
@@ -624,8 +626,8 @@ onMounted(async () => {
       </a-col>
       <a-col :span="24">
         <BetweenMenus>
-          <template v-if="instances || currentRemoteNode?.uuid == 'global'" #left>
-            <div v-if="multipleMode && currentRemoteNode?.uuid != 'global'">
+          <template v-if="instances || isGlobalDaemonMode" #left>
+            <div v-if="multipleMode && !isGlobalDaemonMode">
               <a-button class="mr-10" @click="exitMultipleMode">
                 {{ t("TXT_CODE_5366af54") }}
               </a-button>
@@ -660,7 +662,7 @@ onMounted(async () => {
               </a-dropdown>
             </div>
             <div v-else>
-              <a-button v-if="currentRemoteNode?.uuid != 'global'" @click="multipleMode = true">
+              <a-button v-if="!isGlobalDaemonMode" @click="multipleMode = true">
                 {{ t("TXT_CODE_5cb656b9") }}
               </a-button>
               <a-button class="ml-10" @click="handleQueryInstance">
@@ -668,13 +670,13 @@ onMounted(async () => {
               </a-button>
             </div>
           </template>
-          <template v-if="multipleMode && currentRemoteNode?.uuid != 'global'" #center>
+          <template v-if="multipleMode && !isGlobalDaemonMode" #center>
             <a-typography-text>
               {{ t("TXT_CODE_432cbc38") }}{{ selectedInstance?.length || 0 }}
               {{ t("TXT_CODE_5cd3b4bd") }}
             </a-typography-text>
           </template>
-          <template v-if="instances && currentRemoteNode?.uuid != 'global'" #right>
+          <template v-if="instances && !isGlobalDaemonMode" #right>
             <a-pagination
               v-model:current="operationForm.currentPage"
               v-model:pageSize="operationForm.pageSize"
@@ -710,10 +712,7 @@ onMounted(async () => {
         <Loading></Loading>
       </a-col>
 
-      <a-col
-        v-else-if="currentRemoteNode?.uuid != 'global' && instancesMoreInfo?.length > 0"
-        :span="24"
-      >
+      <a-col v-else-if="!isGlobalDaemonMode && instancesMoreInfo?.length > 0" :span="24">
         <a-row :gutter="[16, 16]">
           <fade-up-animation>
             <a-col
@@ -739,7 +738,7 @@ onMounted(async () => {
         </a-row>
       </a-col>
 
-      <a-col v-else-if="currentRemoteNode?.uuid === 'global'" :span="24">
+      <a-col v-else-if="isGlobalDaemonMode" :span="24">
         <fade-up-animation>
           <a-table
             :data-source="tableTreeData"
