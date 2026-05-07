@@ -74,31 +74,33 @@ router.get(
 
     const result: Record<string, any> = {};
 
-    for (const iterator of RemoteServiceSubsystem.services.entries()) {
-      const remoteService = iterator[1];
-      try {
-        const instanceResult = await new RemoteRequest(remoteService).request("instance/select", {
-          page: page,
-          pageSize: pageSize,
-          condition: {
-            instanceName,
-            status
-          }
-        });
-        result[remoteService.uuid] = {
-          instances: instanceResult.data || [],
-          maxPage: instanceResult.maxPage || 1,
-          page: instanceResult.page || 1
-        };
-        continue;
-      } catch (err: any) {}
+    const promises = Array.from(RemoteServiceSubsystem.services.values()).map(
+      async (remoteService) => {
+        try {
+          const instanceResult = await new RemoteRequest(remoteService).request("instance/select", {
+            page: page,
+            pageSize: pageSize,
+            condition: {
+              instanceName,
+              status
+            }
+          });
+          result[remoteService.uuid] = {
+            instances: instanceResult.data || [],
+            maxPage: instanceResult.maxPage || 1,
+            page: instanceResult.page || 1
+          };
+        } catch (err: any) {
+          result[remoteService.uuid] = {
+            instances: [],
+            maxPage: 1,
+            page: 1
+          };
+        }
+      }
+    );
 
-      result[remoteService.uuid] = {
-        instances: [],
-        maxPage: 1,
-        page: 1
-      };
-    }
+    await Promise.all(promises);
     ctx.body = result;
   }
 );
