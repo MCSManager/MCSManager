@@ -800,7 +800,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
       Modal.confirm({
         title: t("TXT_CODE_99ca8563"),
         content: t("TXT_CODE_58a55f17", { name: folderName }),
-        onOk: () => startUpload(),
+        onOk: () => { startUpload(); },
         okText: t("TXT_CODE_5bf41818"),
         cancelText: t("TXT_CODE_518528d0")
       });
