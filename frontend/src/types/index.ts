@@ -44,7 +44,7 @@ export interface InstanceRuntimeInfo {
   storageUsage?: number;
   storageLimit?: number;
   allocatedPorts?: {
-    host: number;
+    host: string;
     container: number;
     protocol: string;
   }[];

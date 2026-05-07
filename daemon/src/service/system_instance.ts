@@ -8,7 +8,10 @@ import { v4 } from "uuid";
 import StorageSubsystem from "../common/system_storage";
 import FunctionDispatcher from "../entity/commands/dispatcher";
 import { globalConfiguration } from "../entity/config";
-import Instance from "../entity/instance/instance";
+import Instance, {
+  GLOBAL_INSTANCE_KEY,
+  GLOBAL_INSTANCE_UUID_KEY
+} from "../entity/instance/instance";
 import InstanceConfig from "../entity/instance/Instance_config";
 import { $t } from "../i18n";
 import { sleep } from "../utils/sleep";
@@ -17,8 +20,8 @@ import InstanceControl from "./system_instance_control";
 import takeoverContainer from "./takeover_container";
 
 class InstanceSubsystem extends EventEmitter {
-  public readonly GLOBAL_INSTANCE = "__MCSM_GLOBAL_INSTANCE__";
-  public readonly GLOBAL_INSTANCE_UUID = "global0001";
+  public readonly GLOBAL_INSTANCE = GLOBAL_INSTANCE_KEY;
+  public readonly GLOBAL_INSTANCE_UUID = GLOBAL_INSTANCE_UUID_KEY;
 
   public readonly LOG_DIR = "data/InstanceLog/";
 

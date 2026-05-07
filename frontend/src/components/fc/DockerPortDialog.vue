@@ -233,7 +233,7 @@ onMounted(() => {
           size="small"
         >
           <template #bodyCell="{ column, record, index }: AntTableCell">
-            <template v-if="column.dataIndex === 'host' || column.dataIndex === 'container'">
+            <template v-if="column.dataIndex === 'host'">
               <div class="flex-center flex-row">
                 <a-form-item
                   :name="`${index}-${String(column.dataIndex)}`"
@@ -252,26 +252,44 @@ onMounted(() => {
                     max="65535"
                     size="large"
                     :placeholder="(column as any).placeholder"
-                    :disabled="
-                      record[
-                        column.dataIndex === 'host'
-                          ? 'autoAssignHostPort'
-                          : 'autoAssignContainerPort'
-                      ]
-                    "
+                    :disabled="record['autoAssignHostPort']"
                   />
                 </a-form-item>
                 <a-checkbox
                   class="ml-12"
                   style="width: 114px"
-                  :checked="
-                    record[
-                      column.dataIndex === 'host' ? 'autoAssignHostPort' : 'autoAssignContainerPort'
-                    ]
-                  "
-                  @change="
-                    () => handleAutoAssignChange(record, column.dataIndex as 'host' | 'container')
-                  "
+                  :checked="record['autoAssignHostPort']"
+                  @change="() => handleAutoAssignChange(record, 'host')"
+                >
+                  {{ t("TXT_CODE_6f1129fb") }}
+                </a-checkbox>
+              </div>
+            </template>
+            <template v-if="column.dataIndex === 'container'">
+              <div class="flex-center flex-row">
+                <a-form-item
+                  :name="`${index}-${String(column.dataIndex)}`"
+                  no-style
+                  :rules="[
+                    {
+                      validator: () => emptyValueValidator(record[String(column.dataIndex)]),
+                      trigger: 'change'
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="record[String(column.dataIndex)]"
+                    class="w-full"
+                    size="large"
+                    :placeholder="(column as any).placeholder"
+                    :disabled="record['autoAssignContainerPort']"
+                  />
+                </a-form-item>
+                <a-checkbox
+                  class="ml-12"
+                  style="width: 114px"
+                  :checked="record['autoAssignContainerPort']"
+                  @change="() => handleAutoAssignChange(record, 'container')"
                 >
                   {{ t("TXT_CODE_6f1129fb") }}
                 </a-checkbox>

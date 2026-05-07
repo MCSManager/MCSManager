@@ -18,7 +18,10 @@ import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
 
 type PublicPortArray = {
-  [key: string]: { HostPort: string }[];
+  [key: string]: {
+    HostIp?: string;
+    HostPort: string;
+  }[];
 };
 
 type ExposedPorts = {
@@ -88,7 +91,7 @@ export class SetupDockerContainer extends AsyncTask {
     // 25565:25565/tcp 8080:8080/tcp
     const portMap = dockerConfig.ports || [];
 
-    const logOpenedPorts: { host: number; container: number; protocol: string }[] = [];
+    const logOpenedPorts: { host: string; container: number; protocol: string }[] = [];
     const publicPortArray: PublicPortArray = {};
     const exposedPorts: ExposedPorts = {};
     for (const portConfigText of portMap) {
@@ -98,16 +101,35 @@ export class SetupDockerContainer extends AsyncTask {
       const protocol = elem[1];
       //Host (host) port: container port
       const publicAndPrivatePort = ports.split(":");
-      if (publicAndPrivatePort.length != 2) throw new Error(t("TXT_CODE_2029027e"));
-      publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
-        { HostPort: publicAndPrivatePort[0] }
-      ];
-      exposedPorts[`${publicAndPrivatePort[1]}/${protocol}`] = {};
-      logOpenedPorts.push({
-        host: Number(publicAndPrivatePort[0]),
-        container: Number(publicAndPrivatePort[1]),
-        protocol: protocol
-      });
+
+      // example: 8080:8080/tcp
+      if (publicAndPrivatePort.length == 2) {
+        publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
+          { HostPort: publicAndPrivatePort[0] }
+        ];
+        exposedPorts[`${publicAndPrivatePort[1]}/${protocol}`] = {};
+        logOpenedPorts.push({
+          host: publicAndPrivatePort[0],
+          container: Number(publicAndPrivatePort[1]),
+          protocol: protocol
+        });
+        continue;
+      }
+
+      // example: 127.0.0.1:8080:8080/tcp
+      if (publicAndPrivatePort.length == 3) {
+        publicPortArray[`${publicAndPrivatePort[2]}/${protocol}`] = [
+          { HostIp: publicAndPrivatePort[0], HostPort: publicAndPrivatePort[1] }
+        ];
+        exposedPorts[`${publicAndPrivatePort[2]}/${protocol}`] = {};
+        logOpenedPorts.push({
+          host: publicAndPrivatePort[0] + ":" + publicAndPrivatePort[1],
+          container: Number(publicAndPrivatePort[2]),
+          protocol: protocol
+        });
+        continue;
+      }
+      throw new Error(t("TXT_CODE_2029027e"));
     }
 
     // resolve extra path mounts
@@ -200,9 +222,7 @@ export class SetupDockerContainer extends AsyncTask {
 
       // Validate gpuCount: must be integer >= -1 and <= 128 (reasonable upper bound)
       if (!Number.isInteger(gpuCount) || gpuCount < -1 || gpuCount > 128) {
-        throw new Error(
-          $t("TXT_CODE_gpu_invalid_count", { v: String(gpuCount) })
-        );
+        throw new Error($t("TXT_CODE_gpu_invalid_count", { v: String(gpuCount) }));
       }
 
       // Validate gpuDeviceIds: each item must be non-empty and contain only [a-zA-Z0-9_-]
@@ -214,17 +234,13 @@ export class SetupDockerContainer extends AsyncTask {
       const gpuIdPattern = /^[a-zA-Z0-9_-]+$/;
       for (const id of gpuDeviceIds) {
         if (typeof id !== "string" || !id.trim() || id.length > 128 || !gpuIdPattern.test(id)) {
-          throw new Error(
-            $t("TXT_CODE_gpu_invalid_device_id", { v: id })
-          );
+          throw new Error($t("TXT_CODE_gpu_invalid_device_id", { v: id }));
         }
       }
 
       // Validate gpuDriver: if set, must contain only letters and digits, max 32 chars
       if (gpuDriver && (gpuDriver.length > 32 || !/^[a-zA-Z0-9]+$/.test(gpuDriver))) {
-        throw new Error(
-          $t("TXT_CODE_gpu_invalid_driver", { v: gpuDriver })
-        );
+        throw new Error($t("TXT_CODE_gpu_invalid_driver", { v: gpuDriver }));
       }
 
       // Conflict check: gpuDeviceIds and gpuCount > 0 are mutually exclusive
@@ -242,7 +258,7 @@ export class SetupDockerContainer extends AsyncTask {
         if (privileged) {
           logger.warn(
             `[SetupDockerContainer] GPU passthrough is configured alongside privileged mode. ` +
-            `In privileged mode the container already has access to all host devices. Instance: ${instance.instanceUuid}`
+              `In privileged mode the container already has access to all host devices. Instance: ${instance.instanceUuid}`
           );
         }
 
@@ -307,9 +323,7 @@ export class SetupDockerContainer extends AsyncTask {
         memorySwap ? (memorySwap / 1024 / 1024).toFixed(2) : "--"
       } MB`
     );
-    logger.info(
-      `GPU: ${gpuDeviceRequests ? JSON.stringify(gpuDeviceRequests) : "disabled"}`
-    );
+    logger.info(`GPU: ${gpuDeviceRequests ? JSON.stringify(gpuDeviceRequests) : "disabled"}`);
 
     if (workingDir) {
       instance.println("INFO", $t("TXT_CODE_e76e49e9") + cwd + " --> " + workingDir + "\n");

@@ -1,4 +1,5 @@
 import { ChildProcess, exec, execSync, SpawnOptionsWithoutStdio } from "child_process";
+import fs from "fs";
 import os from "os";
 import child_process from "child_process";
 import path from "path";
@@ -130,11 +131,62 @@ export function killProcess(
       return true;
     }
     if (os.platform() === "linux") {
-      execSync(`kill -s 9 ${pid}`);
+      killLinuxProcessTree(pid);
       return true;
     }
   } catch (err) {
     return signal ? process.kill(signal) : process.kill("SIGKILL");
   }
   return signal ? process.kill(signal) : process.kill("SIGKILL");
+}
+
+function killLinuxProcessTree(pid: string | number) {
+  const targetPid = Number(pid);
+  const childPids = collectLinuxChildPids(targetPid);
+
+  for (const childPid of childPids) {
+    execSync(`kill -s 9 ${childPid}`);
+  }
+
+  execSync(`kill -s 9 ${targetPid}`);
+}
+
+function collectLinuxChildPids(pid: number): number[] {
+  const childPids = listLinuxChildPids(pid);
+  const result: number[] = [];
+
+  for (const childPid of childPids) {
+    result.push(...collectLinuxChildPids(childPid));
+    result.push(childPid);
+  }
+
+  return result;
+}
+
+function listLinuxChildPids(pid: number): number[] {
+  const procChildren = readLinuxChildrenFromProc(pid);
+  if (procChildren) return procChildren;
+
+  try {
+    const output = execSync(`ps -o pid= --ppid ${pid}`, { encoding: "utf-8" });
+    return String(output)
+      .split(/\s+/)
+      .map((item) => Number(item.trim()))
+      .filter((item) => Number.isInteger(item) && item > 0);
+  } catch (error) {
+    return [];
+  }
+}
+
+function readLinuxChildrenFromProc(pid: number): number[] | null {
+  try {
+    const childrenPath = `/proc/${pid}/task/${pid}/children`;
+    const output = fs.readFileSync(childrenPath, { encoding: "utf-8" });
+    return String(output)
+      .split(/\s+/)
+      .map((item) => Number(item.trim()))
+      .filter((item) => Number.isInteger(item) && item > 0);
+  } catch (error) {
+    return null;
+  }
 }

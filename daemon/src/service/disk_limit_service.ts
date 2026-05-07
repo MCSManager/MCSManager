@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { promisify } from "util";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
+import { checkFilePath } from "../tools/filepath";
 import { ConsumerQueue } from "../utils/queue";
 import { sleep } from "../utils/sleep";
 
@@ -73,15 +74,30 @@ class DiskLimitService {
     }
   }
 
+  private getCheckDefaultValue(instance: Instance, maxSpace = 0) {
+    instance.info.storageUsage = 0;
+    instance.info.storageLimit = maxSpace;
+    return {
+      isFull: false,
+      storageLimit: maxSpace,
+      storageUsage: 0
+    };
+  }
+
   public async checkDiskNow(item: IDiskLimitItem, autoStop: boolean = true) {
     const { instance, workspace, maxSpace } = item;
+
+    // global instance is not limited by disk space
+    if (instance.isGlobalInstance() || workspace === "/" || workspace === "\\") {
+      return this.getCheckDefaultValue(instance, maxSpace);
+    }
+
     // There was already an initial check on the working directory when saving,
     // but we double-check here.
-    if (['"', "'", "`", "$"].some((ch) => workspace.includes(ch)) || !fs.existsSync(workspace)) {
-      instance.info.storageUsage = -1;
-      instance.info.storageLimit = maxSpace;
-      return;
+    if (!checkFilePath(workspace) || !fs.existsSync(workspace)) {
+      return this.getCheckDefaultValue(instance, maxSpace);
     }
+
     const command = `du -s --block-size=1M "${workspace}"`;
     const { stdout } = await execPromise(command);
 
