@@ -42,6 +42,7 @@ export const getFileStatus = useDefineApi<
     globalFileTask: number;
     downloadFileFromURLTask: number;
     downloadTasks?: {
+      taskId: string;
       path: string;
       total: number;
       current: number;
@@ -176,6 +177,23 @@ export const downloadFromUrl = useDefineApi<
   method: "POST"
 });
 
+export const downloadFromUrlStop = useDefineApi<
+  {
+    params: {
+      daemonId: string;
+      uuid: string;
+    };
+    data: {
+      taskId?: string;
+      fileName?: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/files/download_from_url_stop",
+  method: "POST"
+});
+
 export const uploadAddress = useDefineApi<
   {
     params: {
@@ -198,15 +216,15 @@ export const uploadAddress = useDefineApi<
 export const uploadFile = useDefineApi<
   {
     params:
-    | {
-      overwrite: boolean;
-      filename: string;
-      size: number;
-      sum: string;
-      unzip?: boolean;
-      code?: string;
-    }
-    | { stop: boolean };
+      | {
+          overwrite: boolean;
+          filename: string;
+          size: number;
+          sum: string;
+          unzip?: boolean;
+          code?: string;
+        }
+      | { stop: boolean };
   },
   {
     id?: string;

@@ -10,7 +10,8 @@ import {
   copyFile as copyFileApi,
   deleteFile as deleteFileApi,
   downloadAddress,
-  downloadFromUrl as downloadFromUrlAPI,
+  downloadFromUrl as downloadFromUrlApi,
+  downloadFromUrlStop as downloadFromUrlStopApi,
   fileList as getFileListApi,
   getFileStatus as getFileStatusApi,
   moveFile as moveFileApi,
@@ -247,7 +248,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     unzipmode: "0",
     code: "utf-8",
     ref: ref<VNodeRef>(),
-    ok: () => { },
+    ok: () => {},
     cancel: () => {
       dialog.value.value = "";
     },
@@ -286,7 +287,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         dialog.value.info = "";
         dialog.value.mode = "";
         dialog.value.style = {};
-        dialog.value.ok = () => { };
+        dialog.value.ok = () => {};
       };
     });
   };
@@ -661,9 +662,9 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
           const decision = sharedDecision
             ? { ...sharedDecision, applyToAll: true }
             : await confirmUploadConflict(
-              fileName,
-              countRemainingUploadConflicts(uploadQueue, i, occupiedNames)
-            );
+                fileName,
+                countRemainingUploadConflicts(uploadQueue, i, occupiedNames)
+              );
 
           if (decision.applyToAll) {
             sharedDecision = {
@@ -797,7 +798,11 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     if (!downloadConfig.url) throw new Error(t("TXT_CODE_f3031262"));
     if (!downloadConfig.fileName) throw new Error(t("TXT_CODE_7b605ad8"));
 
-    const { execute } = downloadFromUrlAPI();
+    const targetPath = currentPath.value + downloadConfig.fileName;
+    if (fileStatus.value?.downloadTasks?.some((t) => t.path === targetPath))
+      return reportErrorMsg(t("TXT_CODE_2bda9d65"));
+
+    const { execute } = downloadFromUrlApi();
     const loadingDialog = await openLoadingDialog(
       t("TXT_CODE_b3825da"),
       t("TXT_CODE_2b5b8a3d"),
@@ -811,7 +816,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         },
         data: {
           url: downloadConfig.url,
-          file_name: currentPath.value + downloadConfig.fileName
+          file_name: targetPath
         }
       });
       message.success(t("TXT_CODE_c3a933d3"));
@@ -828,6 +833,24 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     const link = await getFileLink(fileName);
     if (!link) throw new Error(t("TXT_CODE_6d772765"));
     window.open(link);
+  };
+
+  const stopDownloadFileFromUrl = async (taskId: string) => {
+    const { execute } = downloadFromUrlStopApi();
+    try {
+      await execute({
+        params: {
+          uuid: instanceId || "",
+          daemonId: daemonId || ""
+        },
+        data: {
+          taskId: taskId
+        }
+      });
+      await getFileList();
+    } catch (error: any) {
+      reportErrorMsg(error.message);
+    }
   };
 
   const handleChangeDir = async (dir: string) => {
@@ -1033,6 +1056,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     downloadFile,
     getFileLink,
     downloadFromUrl,
+    stopDownloadFileFromUrl,
     handleChangeDir,
     handleTableChange,
     handleSearchChange,

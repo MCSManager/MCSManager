@@ -78,6 +78,7 @@ const {
   unzipFile,
   downloadFile,
   downloadFromUrl,
+  stopDownloadFileFromUrl,
   handleChangeDir,
   handleSearchChange,
   selectedFiles,
@@ -161,7 +162,7 @@ const columns = computed(() => {
 });
 
 let uploading = false;
-const progress = computed(() => {
+const uploadProgress = computed(() => {
   if (uploadService.uiData.value.current) {
     return (uploadService.uiData.value.current[0] * 100) / uploadService.uiData.value.current[1];
   }
@@ -190,6 +191,10 @@ watch(
   },
   { immediate: true }
 );
+
+const downloadProgress = (dTask: any) => {
+  return dTask.total > 0 ? Number(((dTask.current / dTask.total) * 100).toFixed(2)) : 0;
+};
 
 let task: NodeJS.Timer | undefined;
 task = setInterval(async () => {
@@ -534,7 +539,7 @@ onUnmounted(() => {
                   '0%': '#49b3ff',
                   '100%': '#25f5b9'
                 }"
-                :percent="progress"
+                :percent="uploadProgress"
                 :show-info="false"
                 class="mb-20 no-animation"
               />
@@ -577,13 +582,33 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <p
-              v-if="fileStatus?.downloadFileFromURLTask && fileStatus.downloadFileFromURLTask > 0"
-              style="color: #1677ff"
-            >
-              <a-spin />
-              {{ t("TXT_CODE_8b7fe641", { count: fileStatus?.downloadFileFromURLTask }) }}
-            </p>
+            <div v-for="(dTask, index) in fileStatus?.downloadTasks" :key="index">
+              <div class="flex-nowrap w-100">
+                <a-typography-text :ellipsis="true" :content="dTask.path.split(/[\\/]/).pop()" />
+                <close-outlined
+                  v-if="dTask.status === 0"
+                  style="margin-left: 5px; cursor: pointer; color: #ff4d4f"
+                  type="button"
+                  @click="stopDownloadFileFromUrl(dTask.taskId)"
+                />
+              </div>
+              <div class="flex-nowrap w-100">
+                <a-progress
+                  :stroke-color="{
+                    '0%': '#49b3ff',
+                    '100%': '#25f5b9'
+                  }"
+                  :percent="downloadProgress(dTask)"
+                  :show-info="false"
+                  class="mb-20"
+                />
+                <a-typography-text style="padding-left: 2px; white-space: nowrap">
+                  {{ convertFileSize(dTask.current.toString()) }} /
+                  {{ convertFileSize(dTask.total.toString()) }}
+                </a-typography-text>
+              </div>
+            </div>
+
             <p
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"
               style="color: #1677ff"

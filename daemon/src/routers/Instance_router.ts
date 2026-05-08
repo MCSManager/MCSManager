@@ -571,18 +571,27 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
   const pageSize = Math.min(Number(data.pageSize) || 50, 50); // Max 50
   const folder = data.folder ? String(data.folder) : undefined;
   try {
+    const fileManager = new FileManager(
+      InstanceSubsystem.getInstance(instanceUuid)!.absoluteCwdPath()
+    );
     const mods = await modService.listMods(instanceUuid, page, pageSize, folder);
-    const downloadTasks = [];
-    if (downloadManager.task) {
-      downloadTasks.push({
-        path: downloadManager.task.path,
-        total: downloadManager.task.total,
-        current: downloadManager.task.current,
-        status: downloadManager.task.status,
-        error: downloadManager.task.error,
-        type: "download"
+    const downloadTasks = downloadManager.tasks
+      .filter((t) => fileManager.checkPath(t.path))
+      .map((t) => {
+        let relativePath = path.relative(fileManager.toAbsolutePath(), t.path);
+        relativePath = relativePath.replace(/\\/g, "/");
+        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+
+        return {
+          taskId: t.id,
+          path: relativePath,
+          total: t.total,
+          current: t.current,
+          status: t.status,
+          error: t.error,
+          type: "download"
+        };
       });
-    }
 
     const uploadTasks = [];
     for (const [id, writer] of uploadManager.getUploads()) {
