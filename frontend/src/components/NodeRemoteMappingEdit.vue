@@ -89,16 +89,16 @@ watch(remoteMappings, () => {
                 {{ t("TXT_CODE_54312194") }}
                 <a-row :gutter="8">
                   <a-col :span="15">
-                    <a-textarea auto-size v-model:value="mapping.from.ip"/>
+                    <a-textarea v-model:value="mapping.from.ip" auto-size />
                   </a-col>
                   <a-col :span="9">
-                    <a-input-number class="w-full" :min="1" :max="65535" v-model:value="mapping.from.port" />
+                    <a-input-number v-model:value="mapping.from.port" class="w-full" :min="1" :max="65535" />
                   </a-col>
                 </a-row>
                 {{ t("TXT_CODE_941d83b8") }}
                 <a-row :gutter="8">
                   <a-col :span="24">
-                    <a-textarea auto-size v-model:value="mapping.from.prefix" />
+                    <a-textarea v-model:value="mapping.from.prefix" auto-size />
                   </a-col>
                 </a-row>
               </a-space>
@@ -111,16 +111,16 @@ watch(remoteMappings, () => {
                 {{ t("TXT_CODE_54312194") }}
                 <a-row :gutter="8">
                   <a-col :span="15">
-                    <a-textarea auto-size v-model:value="mapping.to.ip" />
+                    <a-textarea v-model:value="mapping.to.ip" auto-size />
                   </a-col>
                   <a-col :span="9">
-                    <a-input-number class="w-full" :min="1" :max="65535" v-model:value="mapping.to.port" />
+                    <a-input-number v-model:value="mapping.to.port" class="w-full" :min="1" :max="65535" />
                   </a-col>
                 </a-row>
                 {{ t("TXT_CODE_941d83b8") }}
                 <a-row :gutter="8">
                   <a-col :span="24">
-                    <a-textarea auto-size v-model:value="mapping.to.prefix" />
+                    <a-textarea v-model:value="mapping.to.prefix" auto-size />
                   </a-col>
                 </a-row>
               </a-space>

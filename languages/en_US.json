@@ -3431,5 +3431,9 @@
   "TXT_CODE_66aeac82": "Reverse Proxy Request Header",
   "TXT_CODE_fd8bc51f": "When reverse proxy mode is enabled, the panel will retrieve the user's real IP address from this request header.",
   "TXT_CODE_upload_folder_too_large": "The folder is too large (over {size}), please compress it manually and then upload it.",
-  "TXT_CODE_upload_folder": "Upload Folder"
+  "TXT_CODE_upload_folder": "Upload Folder",
+  "TXT_CODE_e06fdab0": "Last Run Time",
+  "TXT_CODE_b283e720": "Resources",
+  "TXT_CODE_a60a421a": "Node Overview",
+  "TXT_CODE_101ef36f": "Load More..."
 }
