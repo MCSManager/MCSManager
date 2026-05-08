@@ -205,6 +205,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     }
 
     downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
+      if (err.name === "CanceledError") return;
       logger.error(`Download failed: ${url} -> ${targetPath}`, err);
     });
 

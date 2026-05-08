@@ -71,6 +71,11 @@ class DownloadManager {
           setTimeout(() => {
             this.tasks = this.tasks.filter((t) => t.id !== taskId);
           }, 1000);
+
+          if (err.name === "CanceledError") {
+            resolve();
+            return;
+          }
           reject(err);
         };
 
@@ -110,6 +115,11 @@ class DownloadManager {
       if (fallbackUrl && !controller.signal.aborted) {
         this.tasks = this.tasks.filter((t) => t.id !== taskId);
         return await this.downloadFromUrl(fallbackUrl, targetPath);
+      }
+
+      if (err.name === "CanceledError") {
+        this.tasks = this.tasks.filter((t) => t.id !== taskId);
+        return;
       }
 
       const activeTask = this.tasks.find((t) => t.id === taskId);
