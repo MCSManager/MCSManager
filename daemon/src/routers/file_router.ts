@@ -1,7 +1,7 @@
 import { t } from "i18next";
 import os from "os";
 import { globalConfiguration, globalEnv } from "../entity/config";
-import Instance from "../entity/instance/instance";
+import Instance, { GLOBAL_INSTANCE_UUID_KEY } from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
@@ -65,7 +65,11 @@ routerApp.on("file/chmod", async (ctx, data) => {
 routerApp.on("file/chmod_batch", async (ctx, data) => {
   try {
     const fileManager = getFileManager(data.instanceUuid);
-    const { chmod, targets, deep: rawDeep } = data as {
+    const {
+      chmod,
+      targets,
+      deep: rawDeep
+    } = data as {
       chmod: number;
       deep?: boolean;
       targets: string[];
@@ -128,7 +132,7 @@ routerApp.on("file/status", async (ctx, data) => {
       downloadFileFromURLTask: downloadManager.downloadingCount,
       downloadTasks,
       platform: os.platform(),
-      isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
+      isGlobalInstance: data.instanceUuid === GLOBAL_INSTANCE_UUID_KEY,
       disks: getWindowsDisks()
     });
   } catch (error: any) {

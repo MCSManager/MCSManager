@@ -21,7 +21,6 @@ import takeoverContainer from "./takeover_container";
 
 class InstanceSubsystem extends EventEmitter {
   public readonly GLOBAL_INSTANCE = GLOBAL_INSTANCE_KEY;
-  public readonly GLOBAL_INSTANCE_UUID = GLOBAL_INSTANCE_UUID_KEY;
 
   public readonly LOG_DIR = "data/InstanceLog/";
 
@@ -78,7 +77,7 @@ class InstanceSubsystem extends EventEmitter {
   loadInstances() {
     const instanceConfigs = StorageSubsystem.list("InstanceConfig");
     instanceConfigs.forEach((uuid) => {
-      if (uuid === this.GLOBAL_INSTANCE_UUID) return;
+      if (uuid === GLOBAL_INSTANCE_UUID_KEY) return;
       try {
         const instanceConfig = StorageSubsystem.load("InstanceConfig", InstanceConfig, uuid);
         const instance = new Instance(uuid, instanceConfig);
@@ -105,15 +104,15 @@ class InstanceSubsystem extends EventEmitter {
       globalConfig = StorageSubsystem.load(
         "InstanceConfig",
         InstanceConfig,
-        this.GLOBAL_INSTANCE_UUID
+        GLOBAL_INSTANCE_UUID_KEY
       );
-      if (globalConfig?.nickname !== this.GLOBAL_INSTANCE)
+      if (globalConfig?.nickname !== GLOBAL_INSTANCE_KEY)
         throw new Error("Global instance config is not valid");
     } catch (error: any) {
       // if global instance config is not valid, create a new one
       // create default global instance config if not exists
       globalConfig = new InstanceConfig();
-      globalConfig.nickname = this.GLOBAL_INSTANCE;
+      globalConfig.nickname = GLOBAL_INSTANCE_KEY;
       globalConfig.cwd = "/";
       globalConfig.startCommand = os.platform() === "win32" ? "cmd.exe" : "bash";
       globalConfig.stopCommand = "^c";
@@ -123,7 +122,7 @@ class InstanceSubsystem extends EventEmitter {
       globalConfig.processType = "general";
 
       // save config to file
-      StorageSubsystem.store("InstanceConfig", this.GLOBAL_INSTANCE_UUID, globalConfig);
+      StorageSubsystem.store("InstanceConfig", GLOBAL_INSTANCE_UUID_KEY, globalConfig);
     }
 
     // create global instance
@@ -139,7 +138,7 @@ class InstanceSubsystem extends EventEmitter {
         processType: globalConfig.processType
       },
       true, // allow persistence
-      this.GLOBAL_INSTANCE_UUID
+      GLOBAL_INSTANCE_UUID_KEY
     );
 
     takeoverContainer()
@@ -378,8 +377,8 @@ class InstanceSubsystem extends EventEmitter {
 
   isGlobalInstance(instance: Instance) {
     return (
-      instance.instanceUuid === this.GLOBAL_INSTANCE_UUID ||
-      instance.config.nickname === this.GLOBAL_INSTANCE
+      instance.instanceUuid === GLOBAL_INSTANCE_UUID_KEY ||
+      instance.config.nickname === GLOBAL_INSTANCE_KEY
     );
   }
 }
