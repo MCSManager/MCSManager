@@ -3324,6 +3324,7 @@
   "TXT_CODE_docker_version_select_normal_subtitle": "Standard installation runs directly on the host. You need to install runtime environments yourself, such as Java or Python.",
   "TXT_CODE_docker_version_select_normal_btn": "Use Standard Mode",
   "TXT_CODE_9123858b": "Install via Docker",
+  "TXT_CODE_package_docker_optional_tooltip": "Only available on Linux with Docker installed and configured correctly.",
   "TXT_CODE_2d7b8a91": "Calculating used storage space, please wait patiently...",
   "TXT_CODE_e5938389": "Unable to start! Insufficient storage space. Your storage quota is {{storageLimit}}GB, currently used {{storageUsage}}GB",
   "TXT_CODE_85e29331": "Storage space is sufficient. Currently used {{storageUsage}}GB/{{storageLimit}}GB",

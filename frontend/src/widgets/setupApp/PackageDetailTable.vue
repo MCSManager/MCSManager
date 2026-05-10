@@ -2,7 +2,7 @@
 import { t } from "@/lang/i18n";
 import type { QuickStartPackages } from "@/types";
 import type { AntTableCell } from "@/types/ant";
-import { DownloadOutlined } from "@ant-design/icons-vue";
+import { DownloadOutlined, QuestionCircleOutlined } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
 import { computed, ref } from "vue";
 import type { PackageTableColumnDef } from "./usePackageTableColumns";
@@ -145,32 +145,36 @@ function platformDisplayText(platform: string): string {
       <!-- Action column -->
       <template v-else-if="column.key === 'action'">
         <Flex gap="small" align="center" justify="center">
-          <a-button type="link" size="small" @click="openConfigModal(record)">
-            {{ t("TXT_CODE_ee5cd485") }}
-          </a-button>
-          <a-button
-            v-if="record?.dockerOptional"
-            type="primary"
-            class="button-color-success"
-            size="small"
-            @click="emit('select', record, 'docker')"
-          >
-            <template #icon>
-              <DownloadOutlined />
-            </template>
-            {{ t("TXT_CODE_9123858b") }}
-          </a-button>
           <a-button type="primary" size="small" @click="emit('select', record, 'normal')">
             <template #icon>
               <DownloadOutlined />
             </template>
             <span v-if="!record?.setupInfo?.docker?.image">
+              <!-- Install -->
               {{ btnText || t("TXT_CODE_1704ea49") }}
             </span>
             <span v-else>
+              <!-- Install via Docker -->
               {{ t("TXT_CODE_9123858b") }}
             </span>
           </a-button>
+          <a-button type="link" size="small" @click="openConfigModal(record)">
+            {{ t("TXT_CODE_ee5cd485") }}
+          </a-button>
+          <Flex
+            v-if="record?.dockerOptional"
+            gap="1px"
+            align="center"
+            class="package-docker-optional-action"
+          >
+            <a-button type="link" size="small" @click="emit('select', record, 'docker')">
+              <!-- Install via Docker -->
+              {{ t("TXT_CODE_9123858b") }}
+            </a-button>
+            <a-tooltip :title="t('TXT_CODE_package_docker_optional_tooltip')" placement="top">
+              <QuestionCircleOutlined class="package-docker-optional-help-icon" tabindex="0" />
+            </a-tooltip>
+          </Flex>
         </Flex>
       </template>
 
@@ -245,6 +249,15 @@ function platformDisplayText(platform: string): string {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+
+.package-docker-optional-action {
+  display: inline-flex;
+}
+.package-docker-optional-help-icon {
+  color: var(--color-gray-6);
+  cursor: help;
+  font-size: 14px;
 }
 
 .config-modal-body {
