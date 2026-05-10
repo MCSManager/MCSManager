@@ -394,6 +394,10 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
+  if (toRoutePath === "/login" && state.userInfo?.token) {
+    return next(isAdmin.value ? "/" : "/customer");
+  }
+
   if (
     toRoutePath.includes("_open_page") ||
     toRoutePath.startsWith("/sso/") ||

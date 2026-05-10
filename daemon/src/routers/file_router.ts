@@ -2,7 +2,7 @@ import { t } from "i18next";
 import os from "os";
 import path from "path";
 import { globalConfiguration, globalEnv } from "../entity/config";
-import Instance from "../entity/instance/instance";
+import Instance, { GLOBAL_INSTANCE_UUID_KEY } from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
@@ -141,7 +141,7 @@ routerApp.on("file/status", async (ctx, data) => {
       downloadFileFromURLTask: downloadManager.downloadingCount,
       downloadTasks,
       platform: os.platform(),
-      isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
+      isGlobalInstance: data.instanceUuid === GLOBAL_INSTANCE_UUID_KEY,
       disks: getWindowsDisks()
     });
   } catch (error: any) {

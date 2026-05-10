@@ -41,6 +41,7 @@
     "dayjs": "^1.11.9",
     "echarts": "^5.4.3",
     "eventemitter3": "^5.0.1",
+    "fflate": "^0.8.2",
     "i18next-scanner": "^4.3.0",
     "lodash": "^4.17.23",
     "marked": "^7.0.3",

@@ -1,11 +1,12 @@
-import path from "path";
 import fs from "fs-extra";
+import path from "path";
 
 export default class StorageSubsystem {
   public static readonly DATA_PATH = path.normalize(path.join(process.cwd(), "data"));
   public static readonly INDEX_PATH = path.normalize(path.join(process.cwd(), "data", "index"));
 
   private checkFileName(name: string) {
+    if (!name) return false;
     const blackList = ["\\", "/", ".."];
     for (const ch of blackList) {
       if (name.includes(ch)) return false;

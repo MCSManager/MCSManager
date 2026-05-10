@@ -20,6 +20,9 @@ import { IInstanceProcess } from "./interface";
 import { LifeCycleTaskManager } from "./life_cycle";
 import { IExecutable, PresetCommandManager } from "./preset";
 
+export const GLOBAL_INSTANCE_KEY = "__MCSM_GLOBAL_INSTANCE__";
+export const GLOBAL_INSTANCE_UUID_KEY = "global0001";
+
 interface IInstanceInfo {
   mcPingOnline: boolean;
   currentPlayers: number;
@@ -572,6 +575,10 @@ export default class Instance extends EventEmitter {
       };
     }
     return env;
+  }
+
+  public isGlobalInstance() {
+    return this.instanceUuid === GLOBAL_INSTANCE_UUID_KEY;
   }
 
   private pushOutput(data: string) {
