@@ -4,29 +4,34 @@ import * as lockfile from "proper-lockfile";
 import logger from "../service/log";
 import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
+import { globalEnv } from "./config";
+import Instance from "./instance/instance";
 
 type ChunkRange = { start: number; end: number };
 
 export default class FileWriter {
   readonly path: string;
   id?: string;
+  cwd?: string;
   private releaseLock?: () => Promise<void>;
   private fd: number | null = null;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
 
   constructor(
-    public readonly cwd: string,
+    public readonly instance: Instance,
     private filename: string,
     public readonly size: number,
     private unzip: boolean,
     private zipCode: string,
-    filePath: string
+    filePath: string,
+    private deleteAfterUnzip: boolean = false
   ) {
     if (!FileManager.checkFileName(path.basename(this.filename)))
       throw new Error("Access denied: Malformed file name");
 
     this.path = filePath;
+    this.cwd = instance.absoluteCwdPath();
   }
 
   static async getPath(cwd: string, dir: string, filename: string, overwrite: boolean) {
@@ -119,9 +124,24 @@ export default class FileWriter {
     logger.info("Browser Uploaded File:", this.path);
 
     if (this.unzip) {
-      const instanceFiles = new FileManager(this.cwd);
-      await instanceFiles.unzip(this.path, ".", this.zipCode);
-      logger.info("File unzipped:", this.path);
+      // Statistics of the number of tasks in a single instance file and the number of tasks in the entire daemon process
+
+      globalEnv.fileTaskCount++;
+      if (this.instance) this.instance.info.fileLock++;
+
+      try {
+        const instanceFiles = new FileManager(this.cwd);
+        await instanceFiles.unzip(this.path, path.dirname(this.path), this.zipCode);
+        logger.info("File unzipped:", this.path);
+
+        if (this.deleteAfterUnzip) {
+          await fs.remove(this.path);
+          logger.info("Temporary zip deleted:", this.path);
+        }
+      } finally {
+        globalEnv.fileTaskCount--;
+        if (this.instance) this.instance.info.fileLock--;
+      }
     }
   }
 
