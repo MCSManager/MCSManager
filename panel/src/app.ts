@@ -3,6 +3,7 @@ import http from "http";
 import https from "https";
 import Koa from "koa";
 import koaBody, { HttpMethodEnum } from "koa-body";
+import compress from "koa-compress";
 import session from "koa-session";
 import koaStatic from "koa-static";
 import { removeTrail } from "mcsmanager-common";
@@ -197,6 +198,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
       }
     });
   }
+
+  // HTTP response compression
+  systemConfig?.gzip && app.use(compress({ threshold: 1024 }));
+
   app.use(protocolMiddleware);
   app.use(
     koaStatic(path.join(process.cwd(), "public"), {

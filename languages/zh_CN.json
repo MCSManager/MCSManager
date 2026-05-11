@@ -3437,5 +3437,7 @@
   "TXT_CODE_b283e720": "资源",
   "TXT_CODE_a60a421a": "节点总览",
   "TXT_CODE_101ef36f": "加载更多...",
-  "TXT_CODE_2bda9d65": "已经有一个下载请求在这个位置下载文件了！"
+  "TXT_CODE_2bda9d65": "已经有一个下载请求在这个位置下载文件了！",
+  "TXT_CODE_gzip_compress": "HTTP 压缩",
+  "TXT_CODE_gzip_compress_desc": "启用 HTTP 响应压缩（zstd、gzip 等，自动协商）。小于 1 KB 的响应不压缩。"
 }
