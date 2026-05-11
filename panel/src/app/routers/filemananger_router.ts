@@ -130,12 +130,16 @@ router.put(
       const deep = Boolean(ctx.request.body.deep);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const timeout = Math.min(5 * 60 * 1000, Math.max(15 * 1000, targets.length * 2 * 1000));
-      const result = await new RemoteRequest(remoteService).request("file/chmod_batch", {
-        targets,
-        instanceUuid,
-        chmod,
-        deep
-      }, timeout);
+      const result = await new RemoteRequest(remoteService).request(
+        "file/chmod_batch",
+        {
+          targets,
+          instanceUuid,
+          chmod,
+          deep
+        },
+        timeout
+      );
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -279,6 +283,34 @@ router.post(
         fileName,
         instanceUuid
       });
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+router.post(
+  "/download_from_url_stop",
+  speedLimit(3),
+  permission({ level: ROLE.USER }),
+  validator({
+    query: { uuid: String, daemonId: String },
+    body: { taskId: String }
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const taskId = String(ctx.request.body.taskId);
+
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+
+      const result = await new RemoteRequest(remoteService).request("file/download_from_url_stop", {
+        taskId,
+        instanceUuid
+      });
+      ctx.body = result;
     } catch (err) {
       ctx.body = err;
     }

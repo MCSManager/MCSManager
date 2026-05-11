@@ -24,6 +24,7 @@ export interface FileStatus {
   globalFileTask: number;
   downloadFileFromURLTask: number;
   downloadTasks?: {
+    taskId: string;
     path: string;
     total: number;
     current: number;

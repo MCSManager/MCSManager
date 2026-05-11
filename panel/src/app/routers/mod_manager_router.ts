@@ -221,10 +221,13 @@ router.post(
       const { daemonId, uuid, fileName, type, uploadId } = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (type === "download") {
-        const result = await new RemoteRequest(remoteService).request("file/download_stop", {
-          instanceUuid: uuid,
-          fileName
-        });
+        const result = await new RemoteRequest(remoteService).request(
+          "file/download_from_url_stop",
+          {
+            instanceUuid: uuid,
+            fileName
+          }
+        );
         ctx.body = result;
       } else {
         // Upload stop is handled by deleting the file or specific upload task
