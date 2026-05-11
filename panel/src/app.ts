@@ -205,7 +205,10 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   app.use(protocolMiddleware);
   app.use(
     koaStatic(path.join(process.cwd(), "public"), {
-      maxAge: 10 * 24 * 60 * 60
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      setHeaders(res, filePath) {
+        if (path.basename(filePath) === "index.html") res.setHeader("Cache-Control", "no-cache");
+      }
     })
   );
 
