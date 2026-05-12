@@ -3437,5 +3437,7 @@
   "TXT_CODE_b283e720": "Resources",
   "TXT_CODE_a60a421a": "Node Overview",
   "TXT_CODE_101ef36f": "Load More...",
-  "TXT_CODE_2bda9d65": "A download request already exists at this location. Please wait for it to complete before starting a new download."
+  "TXT_CODE_2bda9d65": "A download request already exists at this location. Please wait for it to complete before starting a new download.",
+  "TXT_CODE_gzip_compress": "HTTP Compression",
+  "TXT_CODE_gzip_compress_desc": "Compress HTTP responses (zstd, gzip, etc., auto-negotiated). Responses under 1 KB are skipped."
 }

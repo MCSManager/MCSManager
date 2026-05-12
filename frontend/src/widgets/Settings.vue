@@ -817,6 +817,30 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
+                      {{ t("TXT_CODE_gzip_compress") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_gzip_compress_desc") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value.prop="(formData as any).gzip"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
                       {{ t("TXT_CODE_f0789d81") }}
                     </a-typography-title>
                     <a-typography-paragraph>
