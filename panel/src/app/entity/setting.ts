@@ -71,7 +71,7 @@ export default class SystemConfig {
 
   // SSO / OpenID Connect / OAuth 2.0
   ssoEnabled = false;
-  ssoType: "oidc" | "oauth2" = "oidc";
+  ssoType: "oidc" | "oauth2" | "clerk" = "oidc";
   ssoOnlyMode = false;
   ssoAutoRedirect = false;
   ssoProviderName = "";
