@@ -383,6 +383,20 @@ const createInstance = async () => {
         />
       </a-form-item>
 
+      <a-form-item v-if="createMethod === QUICKSTART_METHOD.EXIST">
+        <a-form-item name="cwd">
+          <a-typography-title :level="5">
+            {{ t("TXT_CODE_ee67e1a3") }}
+          </a-typography-title>
+          <a-typography-paragraph>
+            <a-typography-text type="secondary">
+              {{ t("TXT_CODE_877eea45") }}
+            </a-typography-text>
+          </a-typography-paragraph>
+          <a-input v-model:value="formData.cwd" :placeholder="t('TXT_CODE_a85091a4')" />
+        </a-form-item>
+      </a-form-item>
+
       <a-row :gutter="20">
         <a-col :xs="24" :sm="12">
           <a-form-item name="stopCommand">

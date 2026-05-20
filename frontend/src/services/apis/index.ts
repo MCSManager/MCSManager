@@ -34,12 +34,12 @@ export const panelStatus = useDefineApi<any, PanelStatus>({
 
 export const loginUser = useDefineApi<
   | {
-    // Post
-    data: {
-      username: string;
-      password: string;
-    };
-  }
+      // Post
+      data: {
+        username: string;
+        password: string;
+      };
+    }
   | undefined,
   // Response
   string
@@ -105,14 +105,28 @@ export const remoteInstances = useDefineApi<
   url: "/api/service/remote_service_instances"
 });
 
+export const remoteInstancesGlobal = useDefineApi<
+  {
+    params: {
+      page: number;
+      page_size: number;
+      instance_name?: string;
+      status?: string;
+    };
+  },
+  Record<string, { instances: InstanceDetail[]; maxPage: number; page: number; error?: string }>
+>({
+  url: "/api/service/remote_services_instances_global"
+});
+
 export const settingInfo = useDefineApi<any, Settings>({
   url: "/api/overview/setting"
 });
 
 export const setSettingInfo = useDefineApi<
   | {
-    data: Partial<Settings>;
-  }
+      data: Partial<Settings>;
+    }
   | undefined,
   string
 >({

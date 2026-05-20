@@ -1,3 +1,4 @@
+import { TYPE_MINECRAFT_MCDR } from "../../service/mcdr_service";
 import Instance from "../instance/instance";
 import InstanceCommand from "./base/command";
 import DockerResizeCommand from "./docker/docker_pty_resize";
@@ -77,7 +78,10 @@ export default class FunctionDispatcher extends InstanceCommand {
     }
 
     // Minecraft Ping
-    if (instance.config.type.includes(Instance.TYPE_MINECRAFT_JAVA)) {
+    if (
+      instance.config.type.includes(Instance.TYPE_MINECRAFT_JAVA) ||
+      instance.config.type === TYPE_MINECRAFT_MCDR
+    ) {
       instance.setPreset("refreshPlayers", new PingJavaMinecraftServerCommand());
       instance.lifeCycleTaskManager.registerLifeCycleTask(new PingMinecraftServerTask());
     }

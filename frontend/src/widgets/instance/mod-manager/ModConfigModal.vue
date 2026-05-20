@@ -22,9 +22,9 @@ const emit = defineEmits(["update:visible", "edit"]);
 <template>
   <Modal
     :visible="visible"
-    @update:visible="val => emit('update:visible', val)"
     :title="t('TXT_CODE_CONFIG') + ': ' + currentMod?.name"
     :footer="null"
+    @update:visible="val => emit('update:visible', val)"
   >
     <List :loading="configLoading" :data-source="configFiles">
       <template #renderItem="{ item }">

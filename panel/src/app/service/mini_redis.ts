@@ -18,7 +18,13 @@ class SingletonMemoryRedis {
   }
 
   get<T = any>(key: string): T | undefined {
-    return this.envMap.get(key) as T | undefined;
+    const data = this.envMap.get(key);
+    if (!data) return undefined;
+    if (Date.now() >= data.ttl) {
+      this.envMap.delete(key);
+      return undefined;
+    }
+    return data.value as T;
   }
 
   set<T = any>(key: string, value: T, ttl: number = 0) {
@@ -32,6 +38,7 @@ class SingletonMemoryRedis {
     const data = this.envMap.get(key);
     if (!data) return 0;
     const ttl = data.ttl - Date.now();
+    if (ttl <= 0) return 0;
     return parseInt(String(ttl / 1000));
   }
 }

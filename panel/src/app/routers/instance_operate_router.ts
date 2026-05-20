@@ -170,46 +170,6 @@ router.all(
 );
 
 // [Low-level Permission]
-// start asynchronous task
-router.post(
-  "/asynchronous",
-  speedLimit(3),
-  permission({ level: ROLE.USER }),
-  validator({
-    query: { daemonId: String, uuid: String, task_name: String },
-    body: {}
-  }),
-  async (ctx) => {
-    try {
-      const daemonId = String(ctx.query.daemonId);
-      const instanceUuid = String(ctx.query.uuid);
-      const taskName = String(ctx.query.task_name).toLowerCase().trim();
-      const parameter = ctx.request.body;
-
-      // some asynchronous tasks are only allowed for administrators
-      const needTopPermissionTask = ["quick_install"];
-      if (
-        needTopPermissionTask.includes(taskName) &&
-        !isTopPermissionByUuid(ctx.session?.["uuid"])
-      ) {
-        throw new Error("illegal access");
-      }
-
-      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
-        instanceUuid,
-        taskName,
-        parameter,
-        role: ctx.session?.["role"] as ROLE
-      });
-      ctx.body = result;
-    } catch (err) {
-      ctx.body = err;
-    }
-  }
-);
-
-// [Low-level Permission]
 // stop an asynchronous task
 router.all(
   "/stop_asynchronous",
@@ -463,7 +423,7 @@ router.put(
       let advancedConfig = {};
       advancedConfig = checkInstanceAdvancedParams(config, isTopPermission);
 
-      new RemoteRequest(remoteService).request("instance/update", {
+      await new RemoteRequest(remoteService).request("instance/update", {
         instanceUuid,
         config: {
           pingConfig: !isEmpty(config.pingConfig) ? pingConfig : null,
@@ -526,6 +486,36 @@ router.get(
 );
 
 // [Low-level Permission]
+// start asynchronous task
+router.post(
+  "/asynchronous",
+  speedLimit(3),
+  permission({ level: ROLE.USER }),
+  validator({
+    query: { daemonId: String, uuid: String, task_name: String },
+    body: {}
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const instanceUuid = String(ctx.query.uuid);
+      const taskName = String(ctx.query.task_name).toLowerCase().trim();
+      const parameter = ctx.request.body;
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      const result = await new RemoteRequest(remoteService).request("instance/asynchronous", {
+        instanceUuid,
+        taskName,
+        parameter,
+        role: ctx.session?.["role"] as ROLE // Permission check is performed in the daemon
+      });
+      ctx.body = result;
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
 // Reinstall the instance
 router.post(
   "/install_instance",
@@ -565,12 +555,15 @@ router.post(
       if (!targetPresetConfig) throw new Error("Preset Config is not found!");
 
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      new RemoteRequest(remoteService).request("instance/asynchronous", {
+      await new RemoteRequest(remoteService).request("instance/asynchronous", {
         taskName: "install_instance",
         instanceUuid,
         parameter: targetPresetConfig,
-        role: ctx.session?.["role"] as ROLE
+        // targetPresetConfig is a template configured by the administrator,
+        // so it is theoretically safe and does not require a permission check
+        role: ROLE.ADMIN
       });
+
       ctx.body = true;
     } catch (err) {
       ctx.body = err;

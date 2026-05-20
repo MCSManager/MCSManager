@@ -5,8 +5,10 @@ import path from "path";
 import toml from 'smol-toml';
 import yaml from "yaml";
 import downloadManager from "./download_manager";
-import { getFileManager } from "./file_router_service";
+import { resolveMCDRServerRoot } from "./mcdr_service";
 import logger from "./log";
+import InstanceSubsystem from "./system_instance";
+import FileManager from "./system_file";
 
 export interface ModInfo {
   name: string;
@@ -50,6 +52,20 @@ export class ModService {
     });
   }
 
+  /**
+   * Try to get version from MANIFEST.MF
+   */
+  private async getVersionFromManifest(zip: any, entries: any): Promise<string | null> {
+    const manifestPath = "META-INF/MANIFEST.MF";
+    if (!entries[manifestPath]) return null;
+    const data = await zip.entryData(manifestPath);
+    const content = data.toString();
+    // Use regex to match Implementation-Version or Specification-Version
+    const match = content.match(/Implementation-Version:\s*(.+)/i)
+      || content.match(/Specification-Version:\s*(.+)/i);
+    return match ? match[1].trim() : null;
+  }
+
   private async parseJarMetadata(jarPath: string): Promise<Partial<ModInfo> | null> {
     const zip = new StreamZip.async({ file: jarPath });
     try {
@@ -68,15 +84,22 @@ export class ModService {
         };
       }
 
-      // Forge (mods.toml)
-      if (entries["META-INF/mods.toml"]) {
-        const data = await zip.entryData("META-INF/mods.toml");
+      // Forge (mods.toml) / NeoForge (neoforge.mods.toml)
+      const TOML_FILES = ["META-INF/mods.toml","META-INF/neoforge.mods.toml"];
+      for (const filePath of TOML_FILES) {
+        if (!entries[filePath]) continue;
+        const data = await zip.entryData(filePath);
         const config = toml.parse(data.toString()) as any;
-        const mod = config.mods ? config.mods[0] : {};
+        const mod = config.mods?.[0] || {};
+        // Handle placeholder logic
+        let version = mod.version;
+        if (version === "${file.jarVersion}") {
+         version = await this.getVersionFromManifest(zip, entries) || version;
+        }
         return {
           id: mod.modId,
           name: mod.displayName || mod.modId,
-          version: mod.version,
+          version: version,
           description: mod.description,
           type: "mod"
         };
@@ -169,7 +192,12 @@ export class ModService {
     if (pageSize < 1) pageSize = 10;
     if (page < 1) page = 1;
 
-    const fileManager = getFileManager(instanceUuid);
+    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
+    const cwd = instance.absoluteCwdPath();
+    const fileManager = new FileManager(
+      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
+      instance.config?.fileCode
+    );
 
     // if (!FileManager.checkFileName(folder ?? "")) {
     //   throw new Error("Invalid folder name");
@@ -287,7 +315,12 @@ export class ModService {
   }
 
   public async toggleMod(instanceUuid: string, fileName: string): Promise<void> {
-    const fileManager = getFileManager(instanceUuid);
+    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
+    const cwd = instance.absoluteCwdPath();
+    const fileManager = new FileManager(
+      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
+      instance.config?.fileCode
+    );
     if (!fileManager.checkPath(fileName)) throw new Error("Invalid file name");
     const rootDir = fileManager.toAbsolutePath(".");
 
@@ -317,7 +350,12 @@ export class ModService {
   }
 
   public async deleteMod(instanceUuid: string, fileName: string): Promise<void> {
-    const fileManager = getFileManager(instanceUuid);
+    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
+    const cwd = instance.absoluteCwdPath();
+    const fileManager = new FileManager(
+      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
+      instance.config?.fileCode
+    );
     if (!fileManager.checkPath(fileName)) throw new Error("Invalid file name");
     const rootDir = fileManager.toAbsolutePath(".");
 
@@ -346,7 +384,12 @@ export class ModService {
     type: "mod" | "plugin",
     options: { fallbackUrl?: string } = {}
   ) {
-    const fileManager = getFileManager(instanceUuid);
+    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
+    const cwd = instance.absoluteCwdPath();
+    const fileManager = new FileManager(
+      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
+      instance.config?.fileCode
+    );
     const rootDir = fileManager.toAbsolutePath(".");
 
     // Determine the save directory based on what exists (case-sensitive check for Linux)
@@ -378,7 +421,12 @@ export class ModService {
     type: "mod" | "plugin",
     fileName?: string
   ): Promise<ModConfigFile[]> {
-    const fileManager = getFileManager(instanceUuid);
+    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
+    const cwd = instance.absoluteCwdPath();
+    const fileManager = new FileManager(
+      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
+      instance.config?.fileCode
+    );
     if (fileName && !fileManager.checkPath(fileName)) throw new Error("Invalid file name");
     if (modId && !fileManager.checkPath(modId)) throw new Error("Invalid mod ID");
     const rootDir = fileManager.toAbsolutePath(".");

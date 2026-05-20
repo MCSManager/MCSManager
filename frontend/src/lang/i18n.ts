@@ -50,6 +50,10 @@ export const SUPPORTED_LANGS = [
   {
     label: `한국어`,
     value: `ko_kr`
+  },
+  {
+    label: `Türkçe`,
+    value: `tr_tr`
   }
 ];
 
@@ -74,6 +78,11 @@ export async function initInstallPageFlow(language: string) {
 // I18n init configuration
 // If you want to add the language of your own country, you need to add the code here.
 const messages: Record<string, any> = {};
+const normalizeLangModule = (langModule: any) => {
+  // `import.meta.glob` returns module objects; JSON content lives on `default`.
+  // Falling back keeps compatibility if a plugin already returns plain objects.
+  return langModule?.default ?? langModule;
+};
 async function initI18n(lang: string) {
   const { state } = useAppStateStore();
   lang = toStandardLang(lang);
@@ -85,13 +94,13 @@ async function initI18n(lang: string) {
 
     if (state.isInstall) {
       if (!toStandardLang(path).includes(lang)) continue;
-      messages[lang] = await langFiles[path]();
+      messages[lang] = normalizeLangModule(await langFiles[path]());
       break;
     }
 
     for (const l of SUPPORTED_LANGS) {
       if (!toStandardLang(path).includes(l.value)) continue;
-      messages[l.value] = await langFiles[path]();
+      messages[l.value] = normalizeLangModule(await langFiles[path]());
     }
   }
 

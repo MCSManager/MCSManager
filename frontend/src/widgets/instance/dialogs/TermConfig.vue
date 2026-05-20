@@ -6,7 +6,7 @@ import type { InstanceDetail } from "@/types";
 import { updateInstanceConfig } from "@/services/apis/instance";
 import { message } from "ant-design-vue";
 import { reportErrorMsg } from "@/tools/validator";
-import { TERMINAL_CODE } from "@/types/const";
+import { INSTANCE_STATUS_CODE, TERMINAL_CODE } from "@/types/const";
 
 const props = defineProps<{
   instanceInfo?: InstanceDetail;
@@ -15,6 +15,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["update"]);
 const options = ref<InstanceDetail>();
+const initialPty = ref<boolean>();
 
 const screen = useScreen();
 const isPhone = computed(() => screen.isPhone.value);
@@ -22,12 +23,28 @@ const open = ref(false);
 const openDialog = () => {
   open.value = true;
   options.value = props.instanceInfo;
+  initialPty.value = props.instanceInfo?.config.terminalOption?.pty;
 };
 
 const { execute, isLoading } = updateInstanceConfig();
 
+const isChangingPtyWhileRunning = () => {
+  const previousPty = initialPty.value;
+  const currentPty = options.value?.config.terminalOption?.pty;
+  if (previousPty === undefined || currentPty === undefined || previousPty === currentPty) {
+    return false;
+  }
+  const status = options.value?.status ?? props.instanceInfo?.status;
+  if (status === undefined) return false;
+  return status !== INSTANCE_STATUS_CODE.STOPPED && status !== INSTANCE_STATUS_CODE.BUSY;
+};
+
 const submit = async () => {
   try {
+    if (isChangingPtyWhileRunning()) {
+      return reportErrorMsg(t("TXT_CODE_instanceConf.cantModifyPtyModel"));
+    }
+
     await execute({
       params: {
         uuid: props.instanceId ?? "",

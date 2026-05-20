@@ -4,6 +4,7 @@ import ResponsiveLayoutGroup from "@/components/ResponsiveLayoutGroup.vue";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import {
   TYPE_MINECRAFT_JAVA,
+  TYPE_MINECRAFT_MCDR,
   TYPE_STEAM_SERVER_UNIVERSAL,
   useInstanceInfo
 } from "@/hooks/useInstance";
@@ -155,8 +156,11 @@ const btns = computed(() => {
       },
       condition: () => {
         const type = instanceInfo.value?.config.type || "";
-        // Narrow it down to Minecraft server types only (Java or Bedrock)
-        const isMC = type.startsWith("minecraft/java") || type.startsWith("minecraft/bedrock");
+        // Narrow it down to Minecraft server types only (Java, Bedrock, MCDR)
+        const isMC =
+          type.startsWith("minecraft/java") ||
+          type.startsWith("minecraft/bedrock") ||
+          type === TYPE_MINECRAFT_MCDR;
         if (!isMC) return false;
         const hasPermission = state.settings.canFileManager || isAdmin.value;
         if (!hasPermission) return false;
@@ -228,7 +232,10 @@ const btns = computed(() => {
       click: () => {
         mcSettingsDialog.value?.openDialog();
       },
-      condition: () => instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ?? false
+      condition: () =>
+        (instanceInfo.value?.config.type.includes(TYPE_MINECRAFT_JAVA) ||
+          instanceInfo.value?.config.type === TYPE_MINECRAFT_MCDR) ??
+        false
     },
     {
       title: t("TXT_CODE_4f34fc28"),

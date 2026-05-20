@@ -36,7 +36,7 @@ import {
 } from "@ant-design/icons-vue";
 import { Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
 import dayjs from "dayjs";
-import { computed, h, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
+import { computed, h, nextTick, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
@@ -78,8 +78,10 @@ const {
   unzipFile,
   downloadFile,
   downloadFromUrl,
+  stopDownloadFileFromUrl,
   handleChangeDir,
   handleSearchChange,
+  handleFolderUpload,
   selectedFiles,
   rowClickTable,
   handleTableChange,
@@ -161,7 +163,7 @@ const columns = computed(() => {
 });
 
 let uploading = false;
-const progress = computed(() => {
+const uploadProgress = computed(() => {
   if (uploadService.uiData.value.current) {
     return (uploadService.uiData.value.current[0] * 100) / uploadService.uiData.value.current[1];
   }
@@ -191,12 +193,43 @@ watch(
   { immediate: true }
 );
 
+const downloadProgress = (dTask: any) => {
+  return dTask.total > 0 ? Number(((dTask.current / dTask.total) * 100).toFixed(2)) : 0;
+};
+
 let task: NodeJS.Timer | undefined;
 task = setInterval(async () => {
   await getFileStatus();
 }, 3000);
 
 const FileEditorDialog = ref<InstanceType<typeof FileEditor>>();
+
+const isEditingPath = ref(false);
+const pathInputRef = ref();
+const tempPath = ref("");
+
+const enterEditPath = () => {
+  tempPath.value = currentPath.value;
+  isEditingPath.value = true;
+  nextTick(() => {
+    pathInputRef.value?.focus();
+  });
+};
+
+const submitPathEdit = async () => {
+  if (!isEditingPath.value) return;
+
+  let targetPath = tempPath.value.trim().replace(/\\/g, "/");
+  targetPath = targetPath.endsWith("/") ? targetPath : targetPath + "/";
+
+  if (targetPath === currentPath.value || !tempPath.value.trim()) {
+    isEditingPath.value = false;
+    return;
+  }
+
+  isEditingPath.value = false;
+  await handleChangeDir(targetPath);
+};
 
 const opacity = ref(false);
 const handleDragover = (e: DragEvent) => {
@@ -209,36 +242,88 @@ const handleDragleave = (e: DragEvent) => {
   opacity.value = false;
 };
 
-const handleDrop = (e: DragEvent) => {
-  e.preventDefault();
-  const files = e.dataTransfer?.files;
-  opacity.value = false;
-  if (!files) return;
-  if (files.length === 0) return;
+const processUploadItems = (files: File[], folders: FileSystemEntry[]) => {
+  if (files.length === 0 && folders.length === 0) return;
+
   let name = "";
-  if (files.length === 1) {
-    name = files[0].name;
-  } else {
-    for (const file of files) {
-      name += file.name + ", ";
-    }
-    name = name.slice(0, -2); // trailing comma
+  for (const folder of folders) {
+    name += `[${t("TXT_CODE_e5f949c")}] ${folder.name}, `;
   }
-  if (name.length > 30) {
-    name = name.slice(0, 27) + "..."; // cut if too long
+  for (const file of files) {
+    name += `${file.name}, `;
   }
-  if (files.length > 1) {
-    name += ` (${files.length})`;
-  }
+
+  name = name.slice(0, -2); // trailing comma
+  if (name.length > 40) name = name.slice(0, 37) + "..."; // cut if too long
+
+  if (files.length + folders.length > 1) name += ` (${files.length + folders.length})`;
+
   Modal.confirm({
     title: t("TXT_CODE_52bc24ec"),
     icon: h(ExclamationCircleOutlined),
-    content: t("TXT_CODE_52bc24ec") + ` ${name} ?`,
+    content: `${t("TXT_CODE_52bc24ec")} ${name} ?`,
     onOk() {
-      selectedFiles([...files]); // files:FileList not instanceof Array
+      if (files.length > 0) {
+        selectedFiles(files);
+      }
+      for (const folder of folders) {
+        handleFolderUpload(folder);
+      }
     }
   });
 };
+
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault();
+  opacity.value = false;
+
+  const items = e.dataTransfer?.items;
+  if (!items) return;
+
+  const files: File[] = [];
+  const folders: FileSystemEntry[] = [];
+
+  for (let i = 0; i < items.length; i++) {
+    const entry = items[i].webkitGetAsEntry();
+    if (!entry) continue;
+
+    if (entry.isDirectory) {
+      folders.push(entry);
+    } else {
+      const file = items[i].getAsFile();
+      if (file) {
+        files.push(file);
+      }
+    }
+  }
+
+  processUploadItems(files, folders);
+};
+
+const folderInputRef = ref<HTMLInputElement>();
+
+const triggerUploadFolder = () => {
+  folderInputRef.value?.click();
+};
+
+const onFolderInputChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const files = Array.from(target.files || []);
+  if (files.length === 0) return;
+
+  const rootName = files[0].webkitRelativePath.split("/")[0];
+
+  const scanItems = files.map((f) => ({
+    path: f.webkitRelativePath,
+    file: f,
+    isDir: false
+  }));
+
+  handleFolderUpload(scanItems, rootName);
+
+  target.value = "";
+};
+
 const fileList = ref<UploadProps["fileList"]>([]);
 const onFileSelect = (info: UploadChangeParam) => {
   if (!info.fileList) return;
@@ -405,18 +490,47 @@ onUnmounted(() => {
               <download-outlined />
               {{ t("TXT_CODE_5b364aef") }}
             </a-button>
-            <a-upload
-              v-model:file-list="fileList"
-              :before-upload="() => false"
-              multiple
-              :on-change="onFileSelect"
-              :show-upload-list="false"
-            >
+
+            <a-dropdown>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item key="uploadFile">
+                    <a-upload
+                      v-model:file-list="fileList"
+                      :before-upload="() => false"
+                      multiple
+                      :on-change="onFileSelect"
+                      :show-upload-list="false"
+                    >
+                      <span>
+                        <upload-outlined />
+                        <span style="margin-left: 8px">{{ t("TXT_CODE_e00c858c") }}</span>
+                      </span>
+                    </a-upload>
+                  </a-menu-item>
+                  <a-menu-item key="uploadFolder" @click="triggerUploadFolder">
+                    <span>
+                      <folder-outlined />
+                      <span style="margin-left: 8px">{{ t("TXT_CODE_upload_folder") }}</span>
+                    </span>
+                  </a-menu-item>
+                </a-menu>
+              </template>
               <a-button type="dashed">
                 <upload-outlined />
                 {{ t("TXT_CODE_e00c858c") }}
               </a-button>
-            </a-upload>
+            </a-dropdown>
+
+            <input
+              ref="folderInputRef"
+              type="file"
+              style="display: none"
+              webkitdirectory
+              directory
+              @change="onFolderInputChange"
+            />
+
             <a-button
               v-if="clipboard?.value && clipboard.value.length > 0"
               type="dashed"
@@ -534,7 +648,7 @@ onUnmounted(() => {
                   '0%': '#49b3ff',
                   '100%': '#25f5b9'
                 }"
-                :percent="progress"
+                :percent="uploadProgress"
                 :show-info="false"
                 class="mb-20 no-animation"
               />
@@ -566,24 +680,52 @@ onUnmounted(() => {
                   {{ disk }}
                 </a-select-option>
               </a-select>
-              <div class="file-breadcrumbs mb-20">
+              <div v-if="!isEditingPath" class="file-breadcrumbs mb-20" @click="enterEditPath">
                 <a-breadcrumb separator=">">
                   <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.path">
-                    <div class="file-breadcrumbs-item" @click="handleChangeDir(item.path)">
+                    <div class="file-breadcrumbs-item" @click.stop="handleChangeDir(item.path)">
                       {{ item.name }}
                     </div>
                   </a-breadcrumb-item>
                 </a-breadcrumb>
               </div>
+              <a-input
+                v-else
+                ref="pathInputRef"
+                v-model:value="tempPath"
+                class="file-breadcrumbs-input mb-20"
+                @blur="submitPathEdit"
+                @keyup.enter="submitPathEdit"
+              />
             </div>
 
-            <p
-              v-if="fileStatus?.downloadFileFromURLTask && fileStatus.downloadFileFromURLTask > 0"
-              style="color: #1677ff"
-            >
-              <a-spin />
-              {{ t("TXT_CODE_8b7fe641", { count: fileStatus?.downloadFileFromURLTask }) }}
-            </p>
+            <div v-for="(dTask, index) in fileStatus?.downloadTasks" :key="index">
+              <div class="flex-nowrap w-100">
+                <a-typography-text :ellipsis="true" :content="dTask.path.split(/[\\/]/).pop()" />
+                <close-outlined
+                  v-if="dTask.status === 0"
+                  style="margin-left: 5px; cursor: pointer; color: #ff4d4f"
+                  type="button"
+                  @click="stopDownloadFileFromUrl(dTask.taskId)"
+                />
+              </div>
+              <div class="flex-nowrap w-100">
+                <a-progress
+                  :stroke-color="{
+                    '0%': '#49b3ff',
+                    '100%': '#25f5b9'
+                  }"
+                  :percent="downloadProgress(dTask)"
+                  :show-info="false"
+                  class="mb-20"
+                />
+                <a-typography-text style="padding-left: 2px; white-space: nowrap">
+                  {{ convertFileSize(dTask.current.toString()) }} /
+                  {{ convertFileSize(dTask.total.toString()) }}
+                </a-typography-text>
+              </div>
+            </div>
+
             <p
               v-if="fileStatus?.instanceFileTask && fileStatus.instanceFileTask > 0"
               style="color: #1677ff"
@@ -836,6 +978,11 @@ onUnmounted(() => {
   .file-breadcrumbs-item:hover {
     background-color: var(--color-gray-4);
   }
+}
+
+.file-breadcrumbs-input {
+  flex: 1;
+  border-radius: 6px;
 }
 
 @media (max-width: 350px) {

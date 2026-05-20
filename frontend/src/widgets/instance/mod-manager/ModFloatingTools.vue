@@ -90,7 +90,7 @@ const onStopTransfer = async (task: any) => {
           <div
             v-if="
               fileStatus?.downloadFileFromURLTask > 0 &&
-              (!fileStatus.downloadTasks || fileStatus.downloadTasks.length === 0)
+                (!fileStatus.downloadTasks || fileStatus.downloadTasks.length === 0)
             "
             class="url-task-indicator"
           >
@@ -130,12 +130,8 @@ const onStopTransfer = async (task: any) => {
                         t("TXT_CODE_FINISHED")
                       }}</span>
                       <template v-else>
-                        <span class="task-status-progress"
-                          >{{ (task.current / 1024 / 1024).toFixed(2) }}MB</span
-                        >
-                        <span v-if="task.total > 0" class="task-status-total"
-                          >/ {{ (task.total / 1024 / 1024).toFixed(2) }}MB</span
-                        >
+                        <span class="task-status-progress">{{ (task.current / 1024 / 1024).toFixed(2) }}MB</span>
+                        <span v-if="task.total > 0" class="task-status-total">/ {{ (task.total / 1024 / 1024).toFixed(2) }}MB</span>
                       </template>
                     </div>
                   </div>
@@ -147,10 +143,10 @@ const onStopTransfer = async (task: any) => {
                       task.status === 2
                         ? 'task-percent-error'
                         : task.status === 1
-                        ? 'task-percent-success'
-                        : task.type === 'upload'
-                        ? 'task-percent-upload'
-                        : 'task-percent-download'
+                          ? 'task-percent-success'
+                          : task.type === 'upload'
+                            ? 'task-percent-upload'
+                            : 'task-percent-download'
                     ]"
                   >
                     {{ task.total > 0 ? Math.floor((task.current / task.total) * 100) : 0 }}%
@@ -173,8 +169,8 @@ const onStopTransfer = async (task: any) => {
                     task.status === 1
                       ? 100
                       : task.total > 0
-                      ? Math.floor((task.current / task.total) * 100)
-                      : 0
+                        ? Math.floor((task.current / task.total) * 100)
+                        : 0
                   "
                   :show-info="false"
                   :status="
@@ -185,10 +181,10 @@ const onStopTransfer = async (task: any) => {
                     task.status === 2
                       ? '#ef4444'
                       : task.status === 1
-                      ? '#22c55e'
-                      : task.type === 'upload'
-                      ? '#f97316'
-                      : '#3b82f6'
+                        ? '#22c55e'
+                        : task.type === 'upload'
+                          ? '#f97316'
+                          : '#3b82f6'
                   "
                   class="task-progress"
                 />

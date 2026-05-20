@@ -65,39 +65,41 @@ onMounted(async () => {
     </template>
     <template #body>
       <a-typography-paragraph>
-        {{ t("TXT_CODE_7ec9c59c") }}{{ getInstanceName }}
+        {{ t("TXT_CODE_7ec9c59c") }}
+        <span class="mr-10">{{ getInstanceName }}</span>
+        <a-tag v-if="isRunning" color="green" class="tag">
+          <CheckCircleOutlined />
+          {{ statusText }}
+        </a-tag>
+        <a-tag v-else-if="isStopped" class="tag">
+          <ExclamationCircleOutlined />
+          {{ statusText }}
+        </a-tag>
+        <a-tag v-else class="tag" color="pink">
+          {{ statusText }}
+        </a-tag>
       </a-typography-paragraph>
       <a-typography-paragraph>
-        <div class="flex flex-wrap instance-tag">
-          <!-- instance status -->
-          <a-tag v-if="isRunning" color="green" class="tag">
-            <CheckCircleOutlined />
-            {{ statusText }}
+        <span>{{ t("TXT_CODE_68831be6") }}</span>
+        <span>{{ instanceTypeText }}</span>
+      </a-typography-paragraph>
+      <a-typography-paragraph>
+        <span>
+          {{ t("TXT_CODE_ad30f3c5") }}
+          <a-tag v-if="Number(instanceInfo?.started) > 0">
+            {{ instanceInfo?.started }}
           </a-tag>
-          <a-tag v-else-if="isStopped" class="tag">
-            <ExclamationCircleOutlined />
-            {{ statusText }}
+          <span v-else>{{ instanceInfo?.started }}</span>
+        </span>
+      </a-typography-paragraph>
+      <a-typography-paragraph>
+        <span>
+          {{ t("TXT_CODE_6420023d") }}
+          <a-tag v-if="Number(instanceInfo?.autoRestarted) > 0" class="ml-6">
+            {{ instanceInfo?.autoRestarted }}
           </a-tag>
-          <a-tag v-else class="tag" color="pink">
-            {{ statusText }}
-          </a-tag>
-
-          <!-- instance type -->
-          <a-tag class="tag" color="purple"> {{ instanceTypeText }}</a-tag>
-
-          <a-tag color="purple" class="tag">
-            {{ t("TXT_CODE_ad30f3c5") }}{{ instanceInfo?.started }}
-          </a-tag>
-          
-          <a-tag color="purple" class="tag">
-            {{ t("TXT_CODE_6420023d") }}{{ instanceInfo?.autoRestarted }}
-          </a-tag>
-
-          <!-- real tags -->
-          <a-tag v-for="tag in instanceInfo?.config.tag" :key="tag" class="tag" color="blue">
-            {{ tag }}
-          </a-tag>
-        </div>
+          <span v-else class="ml-6">{{ instanceInfo?.autoRestarted }}</span>
+        </span>
       </a-typography-paragraph>
 
       <a-typography-paragraph v-if="instanceGameServerInfo">
@@ -121,7 +123,6 @@ onMounted(async () => {
           </a>
         </a-typography-paragraph>
       </template>
-
       <a-typography-paragraph v-if="Number(instanceInfo?.info?.allocatedPorts?.length) > 0">
         {{ t("TXT_CODE_2e4469f6") }}
         <div style="padding: 10px 0px 0px 16px">
@@ -167,18 +168,21 @@ onMounted(async () => {
         </a-typography-text>
         <a-typography-text :copyable="{ text: daemonId }"> </a-typography-text>
       </a-typography-paragraph>
+      <a-typography-paragraph v-if="instanceInfo?.config.tag.length">
+        <details open>
+          <summary>{{ t("TXT_CODE_eaabd222") }}:</summary>
+          <a-tag
+            v-for="tag in instanceInfo.config.tag"
+            :key="tag"
+            class="m-4"
+            style="display: inline-block"
+          >
+            {{ tag }}
+          </a-tag>
+        </details>
+      </a-typography-paragraph>
     </template>
   </CardPanel>
 
   <DockerInfo ref="DockerInfoDialog" :docker-info="instanceInfo?.config.docker" />
 </template>
-
-<style lang="scss" scoped>
-.instance-tag {
-  margin-left: -4px;
-  margin-right: -4px;
-  .tag {
-    margin: 4px;
-  }
-}
-</style>

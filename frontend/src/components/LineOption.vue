@@ -3,6 +3,7 @@ import { t } from "@/lang/i18n";
 import { EditOutlined } from "@ant-design/icons-vue";
 import { computed, onMounted, ref } from "vue";
 
+const LONG_MAGIC_PREFIX = "<__long__>";
 const FLOAT_MAGIC_PREFIX = "<__float__>";
 const props = defineProps<{
   optionValue?: Record<string, any>;
@@ -22,15 +23,25 @@ const type = ref(2);
 const computedValue = computed({
   get: () => {
     const v = value.value[key.value];
-    if (typeof v === "string" && v.startsWith(FLOAT_MAGIC_PREFIX)) {
-      return v.replace(FLOAT_MAGIC_PREFIX, "");
+    if (typeof v === "string") {
+      if (v.startsWith(LONG_MAGIC_PREFIX)) {
+        return v.replace(LONG_MAGIC_PREFIX, "");
+      } else if (v.startsWith(FLOAT_MAGIC_PREFIX)) {
+        return v.replace(FLOAT_MAGIC_PREFIX, "");
+      }
     }
     return v;
   },
   set: (v) => {
     const preValue = value.value[key.value];
-    if (typeof preValue === "string" && preValue.startsWith(FLOAT_MAGIC_PREFIX)) {
-      value.value[key.value] = `${FLOAT_MAGIC_PREFIX}${v}`;
+    if (typeof preValue === "string") {
+      if (preValue.startsWith(LONG_MAGIC_PREFIX)) {
+        value.value[key.value] = `${LONG_MAGIC_PREFIX}${v}`;
+        return;
+      } else if (preValue.startsWith(FLOAT_MAGIC_PREFIX)) {
+        value.value[key.value] = `${FLOAT_MAGIC_PREFIX}${v}`;
+        return;
+      }
       return;
     }
     value.value[key.value] = v;

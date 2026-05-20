@@ -1,7 +1,7 @@
 {
   "name": "mcsmanager-panel",
-  "version": "10.12.4",
-  "daemonVersion": "4.12.2",
+  "version": "10.14.0",
+  "daemonVersion": "4.14.0",
   "description": "Provide MCSManager with the ability to connect and control all Daemons, and provide API services for the front end.",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",
@@ -31,6 +31,7 @@
     "i18next": "^21.8.14",
     "koa": "^2.15.4",
     "koa-body": "^6.0.1",
+    "koa-compress": "^5.2.1",
     "koa-mount": "^4.0.0",
     "koa-session": "^6.2.0",
     "koa-static": "^5.0.0",
@@ -54,6 +55,7 @@
     "@types/fs-extra": "^9.0.11",
     "@types/koa": "^2.13.1",
     "@types/koa__router": "^8.0.4",
+    "@types/koa-compress": "^4.0.7",
     "@types/koa-session": "^5.10.3",
     "@types/koa-static": "^4.0.1",
     "@types/md5": "^2.3.1",

@@ -5,37 +5,48 @@ import { computed } from "vue";
 const props = defineProps<{
   count?: number;
   fileName: string;
-  all?: boolean;
-  overwrite: boolean;
+  all: boolean;
+  action: string;
 }>();
 
 const emit = defineEmits<{
+  (e: "update:action", value: string): void;
   (e: "update:all", value: boolean): void;
-  (e: "update:overwrite", value: boolean): void;
 }>();
 
-const overwriteRef = computed({
-  get: () => props.overwrite,
-  set: (value: boolean) => emit("update:overwrite", value)
+const actionModel = computed({
+  get: () => props.action,
+  set: (v) => emit("update:action", v)
 });
-const allRef = computed({
+
+const allModel = computed({
   get: () => props.all,
-  set: (value: boolean) => emit("update:all", value)
+  set: (v) => emit("update:all", v)
 });
 </script>
 
 <template>
-  <div class="flex-col">
-    {{ t("TXT_CODE_58a55f17", { name: props.fileName }) }}
-    <div style="margin-top: 16px; margin-bottom: -8px">
-      <a-checkbox v-model:checked="overwriteRef">
+  <div class="overwrite-popup-content">
+    <div class="mb-10">
+      {{ t("TXT_CODE_58a55f17", { name: props.fileName }) }}
+    </div>
+
+    <a-radio-group v-model:value="actionModel" class="flex-col" style="gap: 8px">
+      <a-radio value="rename">
+        {{ t("TXT_CODE_c83551f5") }}
+      </a-radio>
+
+      <a-radio value="overwrite">
         {{ t("TXT_CODE_5bf41818") }}
-      </a-checkbox>
-      <a-checkbox
-        v-if="props.count && props.count > 1"
-        v-model:checked="allRef"
-        style="margin-left: 5px"
-      >
+      </a-radio>
+
+      <a-radio value="skip">
+        {{ t("TXT_CODE_518528d0") }}
+      </a-radio>
+    </a-radio-group>
+
+    <div v-if="props.count && props.count > 1" class="mt-16">
+      <a-checkbox v-model:checked="allModel">
         {{ t("TXT_CODE_5445f34b", { num: props.count - 1 }) }}
       </a-checkbox>
     </div>

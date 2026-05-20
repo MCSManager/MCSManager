@@ -79,7 +79,6 @@ defineExpose({
     <template #footer>
       <a-space>
         <a-button :loading="isLoading" @click="getProgress">{{ t("TXT_CODE_b76d94e0") }}</a-button>
-        <a-button type="primary" @click="open = false">{{ t("TXT_CODE_b1dedda3") }}</a-button>
       </a-space>
     </template>
   </a-modal>

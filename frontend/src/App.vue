@@ -3,7 +3,6 @@ import UploadBubble from "@/components/UploadBubble.vue";
 import { useScreen } from "@/hooks/useScreen";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 
-import { useBreakpoints } from "@vueuse/core";
 import { Button, Input, Select, Table } from "ant-design-vue";
 import { computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
@@ -18,17 +17,10 @@ import { useAppStateStore } from "./stores/useAppStateStore";
 import { useLayoutContainerStore } from "./stores/useLayoutContainerStore";
 import { closeAppLoading, setLoadingTitle } from "./tools/dom";
 
-const { hasBgImage, initAppTheme, sidebarPosition } = useAppConfigStore();
+const { hasBgImage, initAppTheme, useSidebarLayout } = useAppConfigStore();
 const { containerState } = useLayoutContainerStore();
 const { state: appState } = useAppStateStore();
 const { isPhone } = useScreen();
-
-/** Whether to show the left sidebar; when false, only top header (AppHeader) is used. */
-const breakpoints = useBreakpoints({ sidebar: 1300 });
-const isWideEnoughForSidebar = breakpoints.greaterOrEqual("sidebar");
-const useSidebarLayout = computed(
-  () => sidebarPosition.value === "left" && isWideEnoughForSidebar.value
-);
 
 const GLOBAL_COMPONENTS = [InputDialogProvider, MyselfInfoDialog, UploadBubble];
 
@@ -52,11 +44,10 @@ onMounted(async () => {
 
 <template>
   <AppConfigProvider :has-bg-image="hasBgImage">
-    <AppSidebarMenu v-if="useSidebarLayout" :style="designModeNavStyle" />
-
     <!-- App Container -->
-    <div class="global-app-container" :class="{ 'app-layout-sidebar-only': useSidebarLayout }">
-      <main class="main-content">
+    <div class="global-app-container">
+      <AppSidebarMenu v-if="useSidebarLayout" :style="designModeNavStyle" />
+      <main class="main-content" :class="{ 'app-layout-sidebar-only': useSidebarLayout }">
         <AppHeader v-if="!useSidebarLayout" :style="designModeNavStyle" />
         <Breadcrumbs />
         <RouterView :key="$route.fullPath" />
@@ -70,14 +61,3 @@ onMounted(async () => {
     <component :is="component" v-for="(component, index) in GLOBAL_COMPONENTS" :key="index" />
   </AppConfigProvider>
 </template>
-
-<style lang="scss" scoped>
-.app-layout-sidebar-only {
-  margin-top: 12px;
-}
-@media (max-width: 1959px) {
-  .app-layout-sidebar-only {
-    padding-left: 260px;
-  }
-}
-</style>

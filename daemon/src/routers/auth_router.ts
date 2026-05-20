@@ -55,8 +55,8 @@ routerApp.on("auth", (ctx, data) => {
       (!globalConfiguration.config.whiteListPanelIp ||
         globalConfiguration.config.whiteListPanelIps.includes(ip)) &&
       timingSafeEqual(
-        Uint8Array.from(String(data ?? "")),
-        Uint8Array.from(String(globalConfiguration.config.key ?? ""))
+        Buffer.from(String(data ?? "")),
+        Buffer.from(String(globalConfiguration.config.key ?? ""))
       )
     ) {
       // The authentication is passed, and the registered session is a trusted session

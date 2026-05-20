@@ -137,6 +137,7 @@ router.post("/upload-new/:key", async (ctx) => {
   const zipCode = String(ctx.query.code);
   const filename = String(ctx.query.filename);
   const size = Number(ctx.query.size);
+  const deleteAfterUnzip = Boolean(ctx.query.deleteAfterUnzip);
   if (ctx.query.stop) {
     const writer = uploadManager.get(key);
     if (writer) {
@@ -166,7 +167,15 @@ router.post("/upload-new/:key", async (ctx) => {
       fr = undefined;
     }
     if (!fr) {
-      const fileWriter = new FileWriter(cwd, filename, size, unzip, zipCode, filePath);
+      const fileWriter = new FileWriter(
+        instance,
+        filename,
+        size,
+        unzip,
+        zipCode,
+        filePath,
+        deleteAfterUnzip
+      );
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };

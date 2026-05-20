@@ -95,7 +95,7 @@ export class QuickInstallTask extends AsyncTask {
     // Get total file size
     const contentLength = response.headers["content-length"];
     if (contentLength) {
-      this.downloadProgress.totalBytes = parseInt(contentLength);
+      this.downloadProgress.totalBytes = parseInt(`${contentLength}`);
     }
 
     let lastProgressUpdate = Date.now();

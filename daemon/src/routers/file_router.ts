@@ -1,7 +1,8 @@
 import { t } from "i18next";
 import os from "os";
+import path from "path";
 import { globalConfiguration, globalEnv } from "../entity/config";
-import Instance from "../entity/instance/instance";
+import Instance, { GLOBAL_INSTANCE_UUID_KEY } from "../entity/instance/instance";
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
@@ -65,7 +66,11 @@ routerApp.on("file/chmod", async (ctx, data) => {
 routerApp.on("file/chmod_batch", async (ctx, data) => {
   try {
     const fileManager = getFileManager(data.instanceUuid);
-    const { chmod, targets, deep: rawDeep } = data as {
+    const {
+      chmod,
+      targets,
+      deep: rawDeep
+    } = data as {
       chmod: number;
       deep?: boolean;
       targets: string[];
@@ -111,16 +116,24 @@ routerApp.on("file/status", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
 
-    const downloadTasks = [];
-    if (downloadManager.task) {
-      downloadTasks.push({
-        path: downloadManager.task.path,
-        total: downloadManager.task.total,
-        current: downloadManager.task.current,
-        status: downloadManager.task.status,
-        error: downloadManager.task.error
+    const fileManager = getFileManager(data.instanceUuid);
+
+    const downloadTasks = downloadManager.tasks
+      .filter((t) => fileManager.checkPath(t.path))
+      .map((t) => {
+        let relativePath = path.relative(fileManager.toAbsolutePath(), t.path);
+        relativePath = relativePath.replace(/\\/g, "/");
+        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+
+        return {
+          taskId: t.id,
+          path: relativePath,
+          total: t.total,
+          current: t.current,
+          status: t.status,
+          error: t.error
+        };
       });
-    }
 
     protocol.response(ctx, {
       instanceFileTask: instance.info.fileLock ?? 0,
@@ -128,7 +141,7 @@ routerApp.on("file/status", async (ctx, data) => {
       downloadFileFromURLTask: downloadManager.downloadingCount,
       downloadTasks,
       platform: os.platform(),
-      isGlobalInstance: data.instanceUuid === InstanceSubsystem.GLOBAL_INSTANCE_UUID,
+      isGlobalInstance: data.instanceUuid === GLOBAL_INSTANCE_UUID_KEY,
       disks: getWindowsDisks()
     });
   } catch (error: any) {
@@ -192,6 +205,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     }
 
     downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
+      if (err.name === "CanceledError") return;
       logger.error(`Download failed: ${url} -> ${targetPath}`, err);
     });
 
@@ -202,13 +216,21 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
 });
 
 // stop download from url
-routerApp.on("file/download_stop", (ctx, data) => {
+routerApp.on("file/download_from_url_stop", (ctx, data) => {
   try {
-    const fileManager = getFileManager(data.instanceUuid);
-    fileManager.checkPath(data.fileName);
-    const targetPath = fileManager.toAbsolutePath(data.fileName);
-    const result = downloadManager.stop(targetPath);
-    protocol.response(ctx, result);
+    if (data.taskId) {
+      const result = downloadManager.stopById(data.taskId);
+      protocol.response(ctx, result);
+    } else if (data.instanceUuid) {
+      const fileManager = getFileManager(data.instanceUuid);
+      fileManager.checkPath(data.fileName);
+      const targetPath = fileManager.toAbsolutePath(data.fileName);
+
+      const result = downloadManager.stop(targetPath);
+      protocol.response(ctx, result);
+    } else {
+      protocol.responseError(ctx, "taskId or fileName is required");
+    }
   } catch (error: any) {
     protocol.responseError(ctx, error);
   }
@@ -252,9 +274,12 @@ routerApp.on("file/delete", async (ctx, data) => {
     for (const target of targets) {
       const path = fileManager.toAbsolutePath(target);
       const uploadTask = uploadManager.getByPath(path);
+      const downloadTask = downloadManager.tasks.find((t) => t.path === path);
       if (uploadTask != undefined) {
         uploadManager.delete(uploadTask.id);
         uploadTask.writer.stop();
+      } else if (downloadTask != undefined) {
+        downloadManager.stop(path);
       } else {
         // async delete
         fileManager.delete(target);

@@ -377,6 +377,10 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   const role = data.role as ROLE;
 
+  if (!role || !instance) {
+    throw new Error("Invalid role or instance");
+  }
+
   logger.info(
     $t("TXT_CODE_Instance_router.performTasks", {
       id: ctx.socket.id,
@@ -385,25 +389,8 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
     })
   );
 
-  // Install instance via preset package
-  if (taskName === "install_instance" && instance) {
-    instance
-      .execPreset("install", parameter)
-      .then(() => {})
-      .catch((err) => {
-        logger.error(
-          $t("TXT_CODE_Instance_router.performTasksErr", {
-            uuid: instance.instanceUuid,
-            taskName: taskName,
-            nickname: instance.config.nickname,
-            err: err
-          })
-        );
-      });
-  }
-
   // Instance software update via Command
-  if (taskName === "update" && instance) {
+  if (taskName === "update") {
     instance
       .execPreset("update", parameter)
       .then(() => {})
@@ -417,6 +404,25 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
           })
         );
       });
+    return protocol.response(ctx, true);
+  }
+
+  // Install instance via preset package
+  if (taskName === "install_instance" && role === ROLE.ADMIN) {
+    instance
+      .execPreset("install", parameter)
+      .then(() => {})
+      .catch((err) => {
+        logger.error(
+          $t("TXT_CODE_Instance_router.performTasksErr", {
+            uuid: instance.instanceUuid,
+            taskName: taskName,
+            nickname: instance.config.nickname,
+            err: err
+          })
+        );
+      });
+    return protocol.response(ctx, true);
   }
 
   // Quick install Minecraft server task
@@ -430,7 +436,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
     return protocol.response(ctx, task.toObject());
   }
 
-  protocol.response(ctx, true);
+  throw new Error(`Access denied: ${taskName} is not allowed for role ${role}`);
 });
 
 // Terminate the execution of complex asynchronous tasks
@@ -571,18 +577,27 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
   const pageSize = Math.min(Number(data.pageSize) || 50, 50); // Max 50
   const folder = data.folder ? String(data.folder) : undefined;
   try {
+    const fileManager = new FileManager(
+      InstanceSubsystem.getInstance(instanceUuid)!.absoluteCwdPath()
+    );
     const mods = await modService.listMods(instanceUuid, page, pageSize, folder);
-    const downloadTasks = [];
-    if (downloadManager.task) {
-      downloadTasks.push({
-        path: downloadManager.task.path,
-        total: downloadManager.task.total,
-        current: downloadManager.task.current,
-        status: downloadManager.task.status,
-        error: downloadManager.task.error,
-        type: "download"
+    const downloadTasks = downloadManager.tasks
+      .filter((t) => fileManager.checkPath(t.path))
+      .map((t) => {
+        let relativePath = path.relative(fileManager.toAbsolutePath(), t.path);
+        relativePath = relativePath.replace(/\\/g, "/");
+        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+
+        return {
+          taskId: t.id,
+          path: relativePath,
+          total: t.total,
+          current: t.current,
+          status: t.status,
+          error: t.error,
+          type: "download"
+        };
       });
-    }
 
     const uploadTasks = [];
     for (const [id, writer] of uploadManager.getUploads()) {
