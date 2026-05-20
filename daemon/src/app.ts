@@ -98,7 +98,7 @@ const io = new Server(httpServer, {
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"]
   },
-  maxHttpBufferSize: 1e8
+  maxHttpBufferSize: 1e7
 });
 
 // Initialize application instance system
