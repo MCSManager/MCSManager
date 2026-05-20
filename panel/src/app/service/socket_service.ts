@@ -16,7 +16,7 @@ export default class SocketService {
         methods: ["GET", "POST"],
         credentials: true
       },
-      maxHttpBufferSize: 1e8
+      maxHttpBufferSize: 1e7
     });
 
     io.on("connection", (socket) => {
