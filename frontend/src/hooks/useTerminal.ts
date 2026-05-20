@@ -282,7 +282,6 @@ export function useTerminal() {
         const selection = term.getSelection();
         if (selection) {
           arg.preventDefault();
-          // execCommand inside toCopy triggers xterm.js's copy event handler
           toCopy(selection);
           term.clearSelection();
           return false;
