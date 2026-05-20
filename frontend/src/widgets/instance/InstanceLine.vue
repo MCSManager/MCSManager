@@ -109,7 +109,7 @@ const toInstanceTerminal = async () => {
       <FrownOutlined v-else-if="node" style="margin-right: 8px" />
       <a v-if="!node" @click="toInstanceTerminal()">
         <a-typography-text
-          :style="{ fontWeight: 'normal', maxWidth: '200px' }"
+          :style="{ fontWeight: 'normal', maxWidth: '190px' }"
           :ellipsis="{ tooltip: record.name }"
           :content="record.name"
         />
@@ -125,8 +125,8 @@ const toInstanceTerminal = async () => {
           props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.RUNNING
             ? 'green'
             : props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.STARTING
-              ? 'pink'
-              : ''
+            ? 'pink'
+            : ''
         "
       >
         <span>
@@ -134,7 +134,7 @@ const toInstanceTerminal = async () => {
           <ExclamationCircleOutlined v-else />
           {{
             t(String(INSTANCE_STATUS[props.targetInstanceInfo?.status ?? -1])) ||
-              t("TXT_CODE_c8333afa")
+            t("TXT_CODE_c8333afa")
           }}
         </span>
       </a-tag>
