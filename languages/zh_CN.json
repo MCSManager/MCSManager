@@ -3439,5 +3439,11 @@
   "TXT_CODE_101ef36f": "加载更多...",
   "TXT_CODE_2bda9d65": "已经有一个下载请求在这个位置下载文件了！",
   "TXT_CODE_gzip_compress": "HTTP 压缩",
-  "TXT_CODE_gzip_compress_desc": "启用 HTTP 响应压缩（zstd、gzip 等，自动协商）。小于 1 KB 的响应不压缩。"
+  "TXT_CODE_gzip_compress_desc": "启用 HTTP 响应压缩（zstd、gzip 等，自动协商）。小于 1 KB 的响应不压缩。",
+  "TXT_CODE_59653f38": "设备读取速率限制 (BPS)",
+  "TXT_CODE_edbb92dc": "限制容器对特定块设备的读取速率。格式如: /dev/sda:10MB。多个设备用逗号分隔。",
+  "TXT_CODE_6542489a": "例如: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "设备写入速率限制 (BPS)",
+  "TXT_CODE_2b2ff3ff": "限制容器对特定块设备的写入速率。格式如: /dev/sda:5MB。多个设备用逗号分隔。",
+  "TXT_CODE_f0dc9eca": "例如: /dev/sda:5MB"
 }

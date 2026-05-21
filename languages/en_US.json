@@ -3439,5 +3439,11 @@
   "TXT_CODE_101ef36f": "Load More...",
   "TXT_CODE_2bda9d65": "A download request already exists at this location. Please wait for it to complete before starting a new download.",
   "TXT_CODE_gzip_compress": "HTTP Compression",
-  "TXT_CODE_gzip_compress_desc": "Compress HTTP responses (zstd, gzip, etc., auto-negotiated). Responses under 1 KB are skipped."
+  "TXT_CODE_gzip_compress_desc": "Compress HTTP responses (zstd, gzip, etc., auto-negotiated). Responses under 1 KB are skipped.",
+  "TXT_CODE_59653f38": "Device Read Rate Limit (BPS)",
+  "TXT_CODE_edbb92dc": "Limit the read rate of specific block devices for the container. Format: /dev/sda:10MB. Separate multiple devices with commas.",
+  "TXT_CODE_6542489a": "Example: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "Device Write Rate Limit (BPS)",
+  "TXT_CODE_2b2ff3ff": "Limit the write rate of specific block devices for the container. Format: /dev/sda:5MB. Separate multiple devices with commas.",
+  "TXT_CODE_f0dc9eca": "Example: /dev/sda:5MB"
 }
