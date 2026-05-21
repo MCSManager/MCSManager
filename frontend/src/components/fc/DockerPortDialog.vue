@@ -245,11 +245,9 @@ onMounted(() => {
                     }
                   ]"
                 >
-                  <a-input-number
+                  <a-input
                     v-model:value="record[String(column.dataIndex)]"
                     class="w-full"
-                    min="1"
-                    max="65535"
                     size="large"
                     :placeholder="(column as any).placeholder"
                     :disabled="record['autoAssignHostPort']"
@@ -277,9 +275,11 @@ onMounted(() => {
                     }
                   ]"
                 >
-                  <a-input
+                  <a-input-number
                     v-model:value="record[String(column.dataIndex)]"
                     class="w-full"
+                    min="1"
+                    max="65535"
                     size="large"
                     :placeholder="(column as any).placeholder"
                     :disabled="record['autoAssignContainerPort']"
