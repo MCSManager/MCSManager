@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "Assurez-vous que votre travail actuel a été sauvegardé. Vous pouvez librement ajuster l'interface après être entré. La page se rafraîchira après la sortie !",
   "TXT_CODE_2b85af6d": "Si vous accédez au panneau via un proxy inverse, veuillez activer cette option. Le panneau récupérera votre adresse IP réelle depuis un en-tête de requête spécifique.",
   "TXT_CODE_66aeac82": "En-tête de requête du proxy inverse",
-  "TXT_CODE_fd8bc51f": "Lorsque le mode proxy inverse est activé, le panneau récupérera l'adresse IP réelle de l'utilisateur depuis cet en-tête de requête."
+  "TXT_CODE_fd8bc51f": "Lorsque le mode proxy inverse est activé, le panneau récupérera l'adresse IP réelle de l'utilisateur depuis cet en-tête de requête.",
+  "TXT_CODE_package_docker_optional_tooltip": "Disponible uniquement sur Linux avec Docker installé et configuré correctement.",
+  "TXT_CODE_upload_folder_too_large": "Le dossier est trop volumineux (plus de {size}), veuillez le compresser manuellement puis le télécharger.",
+  "TXT_CODE_upload_folder": "Télécharger un dossier",
+  "TXT_CODE_e06fdab0": "Dernière exécution",
+  "TXT_CODE_b283e720": "Ressources",
+  "TXT_CODE_a60a421a": "Aperçu du nœud",
+  "TXT_CODE_101ef36f": "Charger plus...",
+  "TXT_CODE_2bda9d65": "Une demande de téléchargement existe déjà à cet emplacement. Veuillez attendre sa fin avant d’en lancer une nouvelle.",
+  "TXT_CODE_gzip_compress": "Compression HTTP",
+  "TXT_CODE_gzip_compress_desc": "Compresse les réponses HTTP (zstd, gzip, etc., négociation automatique). Les réponses de moins de 1 Ko sont ignorées.",
+  "TXT_CODE_59653f38": "Limite de lecture du périphérique (BPS)",
+  "TXT_CODE_edbb92dc": "Limite le débit de lecture de périphériques bloc spécifiques pour le conteneur. Format : /dev/sda:10Mo. Séparez plusieurs périphériques par des virgules.",
+  "TXT_CODE_6542489a": "Exemple : /dev/sda:10Mo",
+  "TXT_CODE_9d2e6d5e": "Limite d'écriture du périphérique (BPS)",
+  "TXT_CODE_2b2ff3ff": "Limite le débit d'écriture de périphériques bloc spécifiques pour le conteneur. Format : /dev/sda:5Mo. Séparez plusieurs périphériques par des virgules.",
+  "TXT_CODE_f0dc9eca": "Exemple : /dev/sda:5Mo"
 }

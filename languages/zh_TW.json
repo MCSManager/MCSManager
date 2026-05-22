@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "請確保當前工作已儲存。進入後可自由調整介面，離開後頁面將會重新整理！",
   "TXT_CODE_2b85af6d": "如果您是通過反向代理存取面板，請啟用此選項。面板將從特定的請求標頭中獲取您的真實 IP 地址。",
   "TXT_CODE_66aeac82": "反向代理請求標頭",
-  "TXT_CODE_fd8bc51f": "啟用反向代理模式時，面板將從此請求標頭中獲取使用者的真實 IP 地址。"
+  "TXT_CODE_fd8bc51f": "啟用反向代理模式時，面板將從此請求標頭中獲取使用者的真實 IP 地址。",
+  "TXT_CODE_package_docker_optional_tooltip": "僅在已安裝並正確配置 Docker 的 Linux 系統上可用。",
+  "TXT_CODE_upload_folder_too_large": "資料夾過大（超過 {size}），請先手動壓縮再上傳。",
+  "TXT_CODE_upload_folder": "上傳資料夾",
+  "TXT_CODE_e06fdab0": "上次執行時間",
+  "TXT_CODE_b283e720": "資源",
+  "TXT_CODE_a60a421a": "節點概覽",
+  "TXT_CODE_101ef36f": "載入更多...",
+  "TXT_CODE_2bda9d65": "此位置已有下載請求，請等待完成後再開始新的下載。",
+  "TXT_CODE_gzip_compress": "HTTP 壓縮",
+  "TXT_CODE_gzip_compress_desc": "壓縮 HTTP 回應（zstd、gzip 等，自動協商）。1 KB 以下的回應將略過。",
+  "TXT_CODE_59653f38": "裝置讀取速率限制（BPS）",
+  "TXT_CODE_edbb92dc": "限制容器特定區塊裝置的讀取速率。格式：/dev/sda:10MB。多個裝置請用逗號分隔。",
+  "TXT_CODE_6542489a": "範例：/dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "裝置寫入速率限制（BPS）",
+  "TXT_CODE_2b2ff3ff": "限制容器特定區塊裝置的寫入速率。格式：/dev/sda:5MB。多個裝置請用逗號分隔。",
+  "TXT_CODE_f0dc9eca": "範例：/dev/sda:5MB"
 }

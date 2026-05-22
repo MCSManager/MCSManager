@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "Lütfen mevcut çalışmanızın kaydedildiğinden emin olun. Giriş yaptıktan sonra arayüzü özgürce ayarlayabilirsiniz. Çıkış yapıldığında sayfa yenilenecektir!",
   "TXT_CODE_2b85af6d": "Panele ters proxy üzerinden erişiyorsanız bu seçeneği etkinleştirin. Panel, gerçek IP adresinizi belirli bir istek başlığından alacaktır.",
   "TXT_CODE_66aeac82": "Ters Proxy İstek Başlığı",
-  "TXT_CODE_fd8bc51f": "Ters proxy modu etkinleştirildiğinde panel, kullanıcının gerçek IP adresini bu istek başlığından alır."
+  "TXT_CODE_fd8bc51f": "Ters proxy modu etkinleştirildiğinde panel, kullanıcının gerçek IP adresini bu istek başlığından alır.",
+  "TXT_CODE_package_docker_optional_tooltip": "Yalnızca Docker kurulu ve doğru yapılandırılmış Linux'ta kullanılabilir.",
+  "TXT_CODE_upload_folder_too_large": "Klasör çok büyük ({size} üzerinde), lütfen manuel olarak sıkıştırıp ardından yükleyin.",
+  "TXT_CODE_upload_folder": "Klasör Yükle",
+  "TXT_CODE_e06fdab0": "Son Çalışma Zamanı",
+  "TXT_CODE_b283e720": "Kaynaklar",
+  "TXT_CODE_a60a421a": "Düğüm Genel Bakış",
+  "TXT_CODE_101ef36f": "Daha Fazla Yükle...",
+  "TXT_CODE_2bda9d65": "Bu konumda zaten bir indirme isteği var. Yeni bir indirme başlatmadan önce tamamlanmasını bekleyin.",
+  "TXT_CODE_gzip_compress": "HTTP Sıkıştırma",
+  "TXT_CODE_gzip_compress_desc": "HTTP yanıtlarını sıkıştırır (zstd, gzip vb., otomatik anlaşma ile). 1 KB altındaki yanıtlar atlanır.",
+  "TXT_CODE_59653f38": "Cihaz Okuma Hız Sınırı (BPS)",
+  "TXT_CODE_edbb92dc": "Kapsayıcı için belirli blok cihazlarının okuma hızını sınırlar. Biçim: /dev/sda:10MB. Birden çok cihazı virgülle ayırın.",
+  "TXT_CODE_6542489a": "Örnek: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "Cihaz Yazma Hız Sınırı (BPS)",
+  "TXT_CODE_2b2ff3ff": "Kapsayıcı için belirli blok cihazlarının yazma hızını sınırlar. Biçim: /dev/sda:5MB. Birden çok cihazı virgülle ayırın.",
+  "TXT_CODE_f0dc9eca": "Örnek: /dev/sda:5MB"
 }

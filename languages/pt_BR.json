@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "Certifique-se de que seu trabalho atual foi salvo. Você pode ajustar livremente a interface após entrar. A página será atualizada ao sair!",
   "TXT_CODE_2b85af6d": "Se você estiver acessando o painel por meio de um proxy reverso, ative esta opção. O painel recuperará seu endereço IP real de um cabeçalho de requisição específico.",
   "TXT_CODE_66aeac82": "Cabeçalho da Requisição do Proxy Reverso",
-  "TXT_CODE_fd8bc51f": "Quando o modo de proxy reverso estiver ativado, o painel recuperará o endereço IP real do usuário a partir deste cabeçalho de requisição."
+  "TXT_CODE_fd8bc51f": "Quando o modo de proxy reverso estiver ativado, o painel recuperará o endereço IP real do usuário a partir deste cabeçalho de requisição.",
+  "TXT_CODE_package_docker_optional_tooltip": "Disponível apenas no Linux com Docker instalado e configurado corretamente.",
+  "TXT_CODE_upload_folder_too_large": "A pasta é muito grande (mais de {size}), compacte-a manualmente e faça o upload.",
+  "TXT_CODE_upload_folder": "Enviar Pasta",
+  "TXT_CODE_e06fdab0": "Última Execução",
+  "TXT_CODE_b283e720": "Recursos",
+  "TXT_CODE_a60a421a": "Visão Geral do Nó",
+  "TXT_CODE_101ef36f": "Carregar Mais...",
+  "TXT_CODE_2bda9d65": "Já existe uma solicitação de download neste local. Aguarde a conclusão antes de iniciar um novo download.",
+  "TXT_CODE_gzip_compress": "Compressão HTTP",
+  "TXT_CODE_gzip_compress_desc": "Comprime respostas HTTP (zstd, gzip, etc., negociado automaticamente). Respostas abaixo de 1 KB são ignoradas.",
+  "TXT_CODE_59653f38": "Limite de Leitura do Dispositivo (BPS)",
+  "TXT_CODE_edbb92dc": "Limita a taxa de leitura de dispositivos de bloco específicos para o contêiner. Formato: /dev/sda:10MB. Separe vários dispositivos com vírgulas.",
+  "TXT_CODE_6542489a": "Exemplo: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "Limite de Gravação do Dispositivo (BPS)",
+  "TXT_CODE_2b2ff3ff": "Limita a taxa de gravação de dispositivos de bloco específicos para o contêiner. Formato: /dev/sda:5MB. Separe vários dispositivos com vírgulas.",
+  "TXT_CODE_f0dc9eca": "Exemplo: /dev/sda:5MB"
 }

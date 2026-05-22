@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "Asegúrate de que tu trabajo actual esté guardado. Puedes ajustar libremente la interfaz después de entrar. ¡La página se actualizará al salir!",
   "TXT_CODE_2b85af6d": "Si accedes al panel a través de un proxy inverso, habilita esta opción. El panel obtendrá tu dirección IP real de un encabezado de solicitud específico.",
   "TXT_CODE_66aeac82": "Encabezado de solicitud de proxy inverso",
-  "TXT_CODE_fd8bc51f": "Cuando el modo de proxy inverso está habilitado, el panel obtiene la dirección IP real del usuario de este encabezado de solicitud."
+  "TXT_CODE_fd8bc51f": "Cuando el modo de proxy inverso está habilitado, el panel obtiene la dirección IP real del usuario de este encabezado de solicitud.",
+  "TXT_CODE_package_docker_optional_tooltip": "Solo disponible en Linux con Docker instalado y configurado correctamente.",
+  "TXT_CODE_upload_folder_too_large": "La carpeta es demasiado grande (más de {size}), comprímala manualmente y luego súbala.",
+  "TXT_CODE_upload_folder": "Subir carpeta",
+  "TXT_CODE_e06fdab0": "Última ejecución",
+  "TXT_CODE_b283e720": "Recursos",
+  "TXT_CODE_a60a421a": "Resumen del nodo",
+  "TXT_CODE_101ef36f": "Cargar más...",
+  "TXT_CODE_2bda9d65": "Ya existe una solicitud de descarga en esta ubicación. Espere a que se complete antes de iniciar una nueva descarga.",
+  "TXT_CODE_gzip_compress": "Compresión HTTP",
+  "TXT_CODE_gzip_compress_desc": "Comprimir respuestas HTTP (zstd, gzip, etc., negociación automática). Se omiten respuestas menores de 1 KB.",
+  "TXT_CODE_59653f38": "Límite de velocidad de lectura del dispositivo (BPS)",
+  "TXT_CODE_edbb92dc": "Limitar la velocidad de lectura de dispositivos de bloque específicos del contenedor. Formato: /dev/sda:10MB. Separe varios dispositivos con comas.",
+  "TXT_CODE_6542489a": "Ejemplo: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "Límite de velocidad de escritura del dispositivo (BPS)",
+  "TXT_CODE_2b2ff3ff": "Limitar la velocidad de escritura de dispositivos de bloque específicos del contenedor. Formato: /dev/sda:5MB. Separe varios dispositivos con comas.",
+  "TXT_CODE_f0dc9eca": "Ejemplo: /dev/sda:5MB"
 }

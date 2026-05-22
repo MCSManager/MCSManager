@@ -3429,5 +3429,21 @@
   "TXT_CODE_f18f65db": "Bitte stellen Sie sicher, dass Ihre aktuelle Arbeit gespeichert wurde. Sie können die Oberfläche nach dem Betreten frei anpassen. Die Seite wird nach dem Verlassen aktualisiert!",
   "TXT_CODE_2b85af6d": "Wenn Sie über einen Reverse-Proxy auf das Panel zugreifen, aktivieren Sie diese Option. Das Panel ermittelt Ihre echte IP-Adresse aus einem bestimmten Request-Header.",
   "TXT_CODE_66aeac82": "Reverse-Proxy-Request-Header",
-  "TXT_CODE_fd8bc51f": "Wenn der Reverse-Proxy-Modus aktiviert ist, bezieht das Panel die echte IP-Adresse des Benutzers aus diesem Request-Header."
+  "TXT_CODE_fd8bc51f": "Wenn der Reverse-Proxy-Modus aktiviert ist, bezieht das Panel die echte IP-Adresse des Benutzers aus diesem Request-Header.",
+  "TXT_CODE_package_docker_optional_tooltip": "Nur unter Linux verfügbar, wenn Docker installiert und korrekt konfiguriert ist.",
+  "TXT_CODE_upload_folder_too_large": "Der Ordner ist zu groß (über {size}), bitte komprimieren Sie ihn manuell und laden Sie ihn dann hoch.",
+  "TXT_CODE_upload_folder": "Ordner hochladen",
+  "TXT_CODE_e06fdab0": "Letzte Ausführungszeit",
+  "TXT_CODE_b283e720": "Ressourcen",
+  "TXT_CODE_a60a421a": "Knotenübersicht",
+  "TXT_CODE_101ef36f": "Mehr laden...",
+  "TXT_CODE_2bda9d65": "In diesem Bereich gibt es bereits eine Download-Anfrage. Bitte warten Sie, bis sie abgeschlossen ist, bevor Sie einen neuen Download starten.",
+  "TXT_CODE_gzip_compress": "HTTP-Kompression",
+  "TXT_CODE_gzip_compress_desc": "HTTP-Antworten komprimieren (zstd, gzip usw., automatisch ausgehandelt). Antworten unter 1 KB werden übersprungen.",
+  "TXT_CODE_59653f38": "Leserate-Limit für Geräte (BPS)",
+  "TXT_CODE_edbb92dc": "Begrenzt die Leserate bestimmter Blockgeräte für den Container. Format: /dev/sda:10MB. Mehrere Geräte durch Kommas trennen.",
+  "TXT_CODE_6542489a": "Beispiel: /dev/sda:10MB",
+  "TXT_CODE_9d2e6d5e": "Schreibrate-Limit für Geräte (BPS)",
+  "TXT_CODE_2b2ff3ff": "Begrenzt die Schreibrate bestimmter Blockgeräte für den Container. Format: /dev/sda:5MB. Mehrere Geräte durch Kommas trennen.",
+  "TXT_CODE_f0dc9eca": "Beispiel: /dev/sda:5MB"
 }
