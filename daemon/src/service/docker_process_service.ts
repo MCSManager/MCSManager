@@ -104,10 +104,10 @@ export class SetupDockerContainer extends AsyncTask {
 
       // example: 8080:8080/tcp
       if (publicAndPrivatePort.length == 2) {
-        publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
-          { HostPort: publicAndPrivatePort[0] }
-        ];
-        exposedPorts[`${publicAndPrivatePort[1]}/${protocol}`] = {};
+        const portKey = `${publicAndPrivatePort[1]}/${protocol}`;
+        publicPortArray[portKey] ||= [];
+        publicPortArray[portKey].push({ HostPort: publicAndPrivatePort[0] });
+        exposedPorts[portKey] = {};
         logOpenedPorts.push({
           host: publicAndPrivatePort[0],
           container: Number(publicAndPrivatePort[1]),
@@ -118,10 +118,13 @@ export class SetupDockerContainer extends AsyncTask {
 
       // example: 127.0.0.1:8080:8080/tcp
       if (publicAndPrivatePort.length == 3) {
-        publicPortArray[`${publicAndPrivatePort[2]}/${protocol}`] = [
-          { HostIp: publicAndPrivatePort[0], HostPort: publicAndPrivatePort[1] }
-        ];
-        exposedPorts[`${publicAndPrivatePort[2]}/${protocol}`] = {};
+        const portKey = `${publicAndPrivatePort[2]}/${protocol}`;
+        publicPortArray[portKey] ||= [];
+        publicPortArray[portKey].push({
+          HostIp: publicAndPrivatePort[0],
+          HostPort: publicAndPrivatePort[1]
+        });
+        exposedPorts[portKey] = {};
         logOpenedPorts.push({
           host: publicAndPrivatePort[0] + ":" + publicAndPrivatePort[1],
           container: Number(publicAndPrivatePort[2]),
