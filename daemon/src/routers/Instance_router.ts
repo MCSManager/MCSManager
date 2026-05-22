@@ -377,8 +377,23 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   const instance = InstanceSubsystem.getInstance(instanceUuid);
   const role = data.role as ROLE;
 
-  if (!role || !instance) {
-    throw new Error("Invalid role or instance");
+  if (!role) {
+    throw new Error("Invalid role");
+  }
+
+  // Quick install Minecraft server task
+  // Why not use the ".execPreset("install", parameter)" that already exists in Instance?
+  // Because the instance has not yet been created at this stage.
+  if (taskName === "quick_install" && role === ROLE.ADMIN) {
+    const newInstanceName = String(parameter.newInstanceName);
+    const targetLink = String(parameter.targetLink);
+    logger.info(`Quick install: Name: ${newInstanceName} | Download: ${targetLink}`);
+    const task = createQuickInstallTask(targetLink, newInstanceName, parameter.setupInfo);
+    return protocol.response(ctx, task.toObject());
+  }
+
+  if (!instance) {
+    throw new Error("Invalid instance");
   }
 
   logger.info(
@@ -423,17 +438,6 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
         );
       });
     return protocol.response(ctx, true);
-  }
-
-  // Quick install Minecraft server task
-  // Why not use the ".execPreset("install", parameter)" that already exists in Instance?
-  // Because the instance has not yet been created at this stage.
-  if (taskName === "quick_install" && role === ROLE.ADMIN) {
-    const newInstanceName = String(parameter.newInstanceName);
-    const targetLink = String(parameter.targetLink);
-    logger.info(`Quick install: Name: ${newInstanceName} | Download: ${targetLink}`);
-    const task = createQuickInstallTask(targetLink, newInstanceName, parameter.setupInfo);
-    return protocol.response(ctx, task.toObject());
   }
 
   throw new Error(`Access denied: ${taskName} is not allowed for role ${role}`);
