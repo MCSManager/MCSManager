@@ -149,7 +149,9 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   gpuEnabled: false,
   gpuCount: -1,
   gpuDeviceIds: [],
-  gpuDriver: "nvidia"
+  gpuDriver: "nvidia",
+  deviceReadBps: [],
+  deviceWriteBps: []
 };
 
 export const defaultInstanceJavaConfig: IInstanceJavaConfig = {

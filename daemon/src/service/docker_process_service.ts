@@ -144,6 +144,22 @@ export class SetupDockerContainer extends AsyncTask {
       extraBinds.push({ hostPath, containerPath });
     }
 
+    const parseBlkioString = (input: string) => {
+      const match = input.trim().match(/^([^:]+):(\d+)([KMG]?B?)$/i);
+      if (!match) return null;
+      const unit = (match[3] || "").charAt(0).toUpperCase();
+      const multipliers: Record<string, number> = { K: 1024, M: 1024 ** 2, G: 1024 ** 3 };
+      return { Path: match[1].trim(), Rate: parseInt(match[2]) * (multipliers[unit] || 1) };
+    };
+
+    const deviceReadBps = (dockerConfig.deviceReadBps || [])
+      .map(parseBlkioString)
+      .filter((v) => v !== null);
+
+    const deviceWriteBps = (dockerConfig.deviceWriteBps || [])
+      .map(parseBlkioString)
+      .filter((v) => v !== null);
+
     // memory limit
     let maxMemory: number | undefined = undefined;
     if (typeof dockerConfig.memory === "number" && dockerConfig.memory > 0)
@@ -403,6 +419,8 @@ export class SetupDockerContainer extends AsyncTask {
         "mcsmanager.instance.uuid": instance.instanceUuid
       },
       HostConfig: {
+        BlkioDeviceReadBps: deviceReadBps.length > 0 ? deviceReadBps : undefined,
+        BlkioDeviceWriteBps: deviceWriteBps.length > 0 ? deviceWriteBps : undefined,
         Memory: maxMemory,
         MemorySwap: memorySwap,
         MemorySwappiness: memorySwappiness,
