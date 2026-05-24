@@ -41,6 +41,7 @@ export interface IInstanceInfoProtocol {
   spec_id: number;
   order_id: number;
   ports: IPortInfo[];
+  machine_config: any;
   lines: Array<{ title: string; value: any }>;
 }
 
@@ -152,12 +153,6 @@ function formatInstanceData(
       value: `${instance.info?.currentPlayers}/${instance.info?.maxPlayers}`
     });
   }
-  // instance.docker?.ports?.forEach((port, index) => {
-  //   lines.push({
-  //     title: `${index}.${port}`,
-  //     value: port
-  //   });
-  // });
 
   return {
     instance_id: instance.instanceUuid,
@@ -168,6 +163,16 @@ function formatInstanceData(
     expire: instance.endTime ? Math.floor(instance.endTime / 1000) : 0,
     spec_id: instance.spec_id || 0,
     order_id: instance.order_id || 0,
+    machine_config: {
+      cpu_cores: instance.docker?.cpuUsage || 0,
+      memory_config: instance.docker?.memory || 0,
+      storage: instance.docker?.maxSpace || 0,
+      network: instance.docker?.network || 0,
+      memory_swap: instance.docker?.memorySwap || 0,
+      memory_swappiness: instance.docker?.memorySwappiness || 0,
+      upload_speed: 0,
+      download_speed: 0
+    },
     lines
   };
 }
@@ -324,6 +329,33 @@ export async function queryInstanceByUserId(
   params: Record<string, any>
 ): Promise<IInstanceInfoProtocol[]> {
   const name = parseUserName(params.username) || "";
+  const daemonId = toText(params.daemon_id) ?? "";
+  const instanceId = toText(params.instance_id) ?? "";
+
+  // 若 daemonId 与 instanceId 均存在，则忽略 name，直接从 Daemon 端拉取该实例真实数据
+  if (daemonId && instanceId) {
+    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+    if (!remoteService?.available) {
+      throw new Error(t("TXT_CODE_bed32084"));
+    }
+    const remoteRequest = new RemoteRequest(remoteService);
+    const instanceInfo = await remoteRequest.request("instance/detail", {
+      instanceUuid: instanceId
+    });
+    const advanced: IAdvancedInstanceInfo = {
+      instanceUuid: instanceInfo.instanceUuid,
+      daemonId,
+      status: instanceInfo.status,
+      nickname: instanceInfo.config?.nickname,
+      endTime: instanceInfo.config?.endTime,
+      docker: instanceInfo.config?.docker ?? {},
+      info: instanceInfo.info ?? {},
+      order_id: instanceInfo.config?.orderId ?? 0,
+      spec_id: instanceInfo.config?.category ?? 0
+    };
+    return [formatInstanceData(advanced, daemonId)];
+  }
+
   const user = user_service.getUserByUserName(name);
   if (!user) throw new Error(t("TXT_CODE_903b6c50"));
 
