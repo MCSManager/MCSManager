@@ -261,7 +261,15 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
   const handleSelectTopCategory = (item: QuickStartPackages, node?: ComputedNodeInfo) => {
     searchForm.gameType = item.gameType;
     searchForm.isSupportDocker = node?.dockerPlatforms?.length ? true : false;
-    searchForm.platform = node?.system?.type ?? SEARCH_ALL_KEY;
+    let platform = SEARCH_ALL_KEY;
+    if (
+      String(node?.system?.type)
+        .toLowerCase()
+        .includes("windows")
+    ) {
+      platform = "Windows";
+    }
+    searchForm.platform = platform;
   };
 
   const { execute: getQuickInstallListAddr, isLoading: appListLoading } = quickInstallListAddr();
