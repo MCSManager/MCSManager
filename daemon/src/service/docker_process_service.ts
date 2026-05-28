@@ -397,16 +397,18 @@ export class SetupDockerContainer extends AsyncTask {
       }
     }
 
-    // Convert runAs username to UID:GID format for Docker
-    let dockerUser: string | undefined = undefined;
-    if (instance.config.runAs && instance.config.runAs.trim()) {
+    // Convert Linux host username to UID:GID format for Docker.
+    const runAs = instance.config.runAs?.trim();
+    let dockerUser: string | undefined = runAs || undefined;
+    const shouldResolveHostUser =
+      runAs && process.platform === "linux" && !runAs.includes(":") && !/^\d+$/.test(runAs);
+    if (shouldResolveHostUser) {
       try {
-        const { uid, gid } = await getLinuxSystemId(instance.config.runAs);
+        const { uid, gid } = await getLinuxSystemId(runAs);
         dockerUser = `${uid}:${gid}`;
-        logger.info(`Docker User: ${dockerUser} (converted from ${instance.config.runAs})`);
+        logger.info(`Docker User: ${dockerUser} (converted from ${runAs})`);
       } catch (error: any) {
-        logger.warn(`Failed to get UID/GID for user ${instance.config.runAs}: ${error.message}`);
-        dockerUser = instance.config.runAs;
+        logger.warn(`Failed to get UID/GID for user ${runAs}: ${error.message}`);
       }
     }
 
