@@ -28,10 +28,11 @@ function getErrorText(err: any): string {
 function isPermissionError(err: any): boolean {
   const errorText = getErrorText(err);
   return (
-    (err.code === 1 || err.code === 2) &&
-    (errorText.includes("Operation not permitted") ||
-      errorText.includes("Permission denied") ||
-      errorText.includes("RTNETLINK answers: Operation not permitted"))
+    err?.code === "EACCES" ||
+    err?.code === "EPERM" ||
+    errorText.includes("Operation not permitted") ||
+    errorText.includes("Permission denied") ||
+    errorText.includes("RTNETLINK answers: Operation not permitted")
   );
 }
 
@@ -59,7 +60,7 @@ async function execWithSudo(
 
 async function readFileWithSudo(path: string): Promise<string | null> {
   try {
-    return fs.readFileSync(path, "utf8").trim();
+    return (await fs.promises.readFile(path, "utf8")).trim();
   } catch (err: any) {
     if (err.code !== "EACCES" && err.code !== "EPERM") {
       return null;
@@ -278,7 +279,13 @@ export class NetworkLimitService {
         ]);
         const value = (stdout || "").trim().replace(/\r/g, "");
         if (value) return value;
-      } catch {
+      } catch (err: any) {
+        if (err?.code === "ENOENT") {
+          logger.warn(
+            `Could not read iflink for container ${containerId}: docker binary is unavailable`
+          );
+          break;
+        }
         // continue
       }
     }
@@ -303,7 +310,7 @@ export class NetworkLimitService {
     } catch {
       return this.findVethByIfindexFromSysfs(ifindex);
     }
-    return null;
+    return this.findVethByIfindexFromSysfs(ifindex);
   }
 
   /** Apply egress TBF on veth (limits download: host -> container). */
@@ -328,7 +335,13 @@ export class NetworkLimitService {
   /** Apply ingress limit via IFB (limits upload: container -> host). */
   private async applyIngressLimit(veth: string, ifbName: string, rateKbit: number): Promise<void> {
     const rate = `${rateKbit}kbit`;
-    await execWithSudo("modprobe", ["ifb"]).catch(() => {});
+    await execWithSudo("modprobe", ["ifb"]).catch((err) => {
+      const errorText = getErrorText(err).trim();
+      logger.info(
+        `Best-effort modprobe ifb failed before ingress setup; continuing. ` +
+          `veth=${veth}, ifb=${ifbName}, error=${errorText}`
+      );
+    });
     await execWithSudo("ip", ["link", "add", "name", ifbName, "type", "ifb"]).catch((err) => {
       if (!this.isAlreadyExistsError(err)) throw err;
     });
