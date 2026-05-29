@@ -3299,6 +3299,7 @@
   "TXT_CODE_systemUser.userCount": "Number of local users: {{n}}",
   "TXT_CODE_system_file.execLimit": "Exceeded maximum file editing limit",
   "TXT_CODE_system_file.illegalAccess": "Illegal access path",
+  "TXT_CODE_system_file.linkNotAllowed": "Symbolic links and hard links are not allowed for this operation",
   "TXT_CODE_system_file.unzipLimit": "File decompression only supports file up to {{max}}GB. To change this limit, please go to the data/Config/global.json file.",
   "TXT_CODE_system_instance.autoStart": "Automatic start command for instance {{name}} ({{uuid}}) has been issued.",
   "TXT_CODE_system_instance.autoStartErr": "Error occurred while automatically starting instance {{name}} ({{uuid}}): {{reason}}",

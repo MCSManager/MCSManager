@@ -3445,5 +3445,6 @@
   "TXT_CODE_6542489a": "Exemplo: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "Limite de Gravação do Dispositivo (BPS)",
   "TXT_CODE_2b2ff3ff": "Limita a taxa de gravação de dispositivos de bloco específicos para o contêiner. Formato: /dev/sda:5MB. Separe vários dispositivos com vírgulas.",
-  "TXT_CODE_f0dc9eca": "Exemplo: /dev/sda:5MB"
+  "TXT_CODE_f0dc9eca": "Exemplo: /dev/sda:5MB",
+  "TXT_CODE_system_file.linkNotAllowed": "Links simbólicos e links físicos não são permitidos para esta operação"
 }

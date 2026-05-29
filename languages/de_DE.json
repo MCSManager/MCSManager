@@ -3445,5 +3445,6 @@
   "TXT_CODE_6542489a": "Beispiel: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "Schreibrate-Limit für Geräte (BPS)",
   "TXT_CODE_2b2ff3ff": "Begrenzt die Schreibrate bestimmter Blockgeräte für den Container. Format: /dev/sda:5MB. Mehrere Geräte durch Kommas trennen.",
-  "TXT_CODE_f0dc9eca": "Beispiel: /dev/sda:5MB"
+  "TXT_CODE_f0dc9eca": "Beispiel: /dev/sda:5MB",
+  "TXT_CODE_system_file.linkNotAllowed": "Symbolische Verknüpfungen und feste Verknüpfungen sind für diesen Vorgang nicht zulässig"
 }

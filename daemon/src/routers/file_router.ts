@@ -188,6 +188,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
 
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.checkPath(fileName);
+    fileManager.assertNotLink(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
 
     // Start download in background
@@ -224,6 +225,7 @@ routerApp.on("file/download_from_url_stop", (ctx, data) => {
     } else if (data.instanceUuid) {
       const fileManager = getFileManager(data.instanceUuid);
       fileManager.checkPath(data.fileName);
+      fileManager.assertNotLink(data.fileName);
       const targetPath = fileManager.toAbsolutePath(data.fileName);
 
       const result = downloadManager.stop(targetPath);
