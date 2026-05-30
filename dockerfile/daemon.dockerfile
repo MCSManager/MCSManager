@@ -17,11 +17,10 @@ FROM ghcr.io/linuxserver/baseimage-alpine:edge
 
 ARG EMBEDDED_JAVA_VERSION=21
 
-RUN apk add --no-cache \
-    wget \
+RUN apk add --no-cache wget && \
     wget -O /etc/apk/keys/adoptium.rsa.pub https://packages.adoptium.net/artifactory/api/security/keypair/public/repositories/apk && \
     echo 'https://packages.adoptium.net/artifactory/apk/alpine/main' | tee -a /etc/apk/repositories && \
-    apk add -no-cache \
+    apk add --no-cache \
     temurin-${EMBEDDED_JAVA_VERSION}-jdk \
     nodejs
 
