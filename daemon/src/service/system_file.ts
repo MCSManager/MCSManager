@@ -107,7 +107,11 @@ export default class FileManager {
   check(destPath: string) {
     if (this.isRootTopRath()) return true;
     if (!this.checkPath(destPath)) return false;
-    if (!fs.existsSync(this.toAbsolutePath(destPath))) throw new Error(ERROR_PATH_NOT_FOUND);
+    try {
+      fs.lstatSync(this.toAbsolutePath(destPath));
+    } catch {
+      throw new Error(ERROR_PATH_NOT_FOUND);
+    }
     return true;
   }
 
