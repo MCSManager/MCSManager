@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+# permissions
+lsiown -R abc:abc \
+    /opt/mcsmanager
+
+# install
+cd /opt/mcsmanager/web && s6-setuidgid abc npm install --production
