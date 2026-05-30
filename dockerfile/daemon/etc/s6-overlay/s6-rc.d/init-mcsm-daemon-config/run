@@ -1,6 +1,22 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
+DOCKER_GID=${DOCKER_GID:-999}
+
+# create docker group with specified GID and add abc user to it
+if getent group "$DOCKER_GID" >/dev/null 2>&1; then
+    EXISTING_GROUP=$(getent group "$DOCKER_GID" | cut -d: -f1)
+    echo "GID $DOCKER_GID already in use by group: $EXISTING_GROUP, adding abc to it"
+    addgroup abc "$EXISTING_GROUP"
+elif getent group docker >/dev/null 2>&1; then
+    echo "docker group exists, adding abc to it"
+    addgroup abc docker
+else
+    echo "Creating docker group with GID=$DOCKER_GID"
+    addgroup -g "$DOCKER_GID" docker
+    addgroup abc docker
+fi
+
 # permissions
 lsiown -R abc:abc \
     /opt/mcsmanager
