@@ -207,6 +207,7 @@ export default class FileManager {
     // if (!FileManager.checkFileName(fileName)) throw new Error(ERROR_MSG_01);
     if (!this.checkPath(fileName)) throw new Error(ERROR_MSG_01);
     const target = this.toAbsolutePath(fileName);
+    fs.ensureDirSync(path.dirname(target));
     fs.createFile(target);
   }
 
@@ -220,7 +221,7 @@ export default class FileManager {
   mkdir(target: string) {
     if (!this.checkPath(target)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
-    return fs.mkdirSync(targetPath);
+    return fs.mkdirSync(targetPath, { recursive: true });
   }
 
   async delete(target: string): Promise<boolean> {
