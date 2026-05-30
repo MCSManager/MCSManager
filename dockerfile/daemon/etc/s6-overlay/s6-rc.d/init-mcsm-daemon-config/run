@@ -1,6 +1,11 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
+# Auto-detect host Docker GID from mounted socket if not explicitly provided
+if [ -z "${DOCKER_GID:-}" ] && [ -S /var/run/docker.sock ]; then
+    DOCKER_GID=$(stat -c '%g' /var/run/docker.sock 2>/dev/null || echo "")
+fi
+
 DOCKER_GID=${DOCKER_GID:-999}
 
 # create docker group with specified GID and add abc user to it
@@ -19,7 +24,7 @@ fi
 
 # permissions
 lsiown -R abc:abc \
-    /opt/mcsmanager
+    /opt/mcsmanager/daemon
 
 # install
 cd /opt/mcsmanager/daemon && s6-setuidgid abc npm install --production

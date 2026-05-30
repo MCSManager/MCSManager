@@ -16,7 +16,6 @@ RUN apk add --no-cache wget &&\
 FROM ghcr.io/linuxserver/baseimage-alpine:edge
 
 ARG EMBEDDED_JAVA_VERSION=21
-ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
     wget \
@@ -25,8 +24,6 @@ RUN apk add --no-cache \
     apk add -no-cache \
     temurin-${EMBEDDED_JAVA_VERSION}-jdk \
     nodejs
-
-WORKDIR /opt/mcsmanager/daemon
 
 COPY --from=builder /src/production-code/daemon/ /opt/mcsmanager/daemon/
 
