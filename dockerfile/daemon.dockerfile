@@ -22,7 +22,8 @@ RUN apk add --no-cache wget && \
     echo 'https://packages.adoptium.net/artifactory/apk/alpine/main' | tee -a /etc/apk/repositories && \
     apk add --no-cache \
     temurin-${EMBEDDED_JAVA_VERSION}-jdk \
-    nodejs
+    nodejs \
+    npm
 
 COPY --from=builder /src/production-code/daemon/ /opt/mcsmanager/daemon/
 
