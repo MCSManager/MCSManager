@@ -104,10 +104,10 @@ export class SetupDockerContainer extends AsyncTask {
 
       // example: 8080:8080/tcp
       if (publicAndPrivatePort.length == 2) {
-        publicPortArray[`${publicAndPrivatePort[1]}/${protocol}`] = [
-          { HostPort: publicAndPrivatePort[0] }
-        ];
-        exposedPorts[`${publicAndPrivatePort[1]}/${protocol}`] = {};
+        const portKey = `${publicAndPrivatePort[1]}/${protocol}`;
+        publicPortArray[portKey] ||= [];
+        publicPortArray[portKey].push({ HostPort: publicAndPrivatePort[0] });
+        exposedPorts[portKey] = {};
         logOpenedPorts.push({
           host: publicAndPrivatePort[0],
           container: Number(publicAndPrivatePort[1]),
@@ -118,10 +118,13 @@ export class SetupDockerContainer extends AsyncTask {
 
       // example: 127.0.0.1:8080:8080/tcp
       if (publicAndPrivatePort.length == 3) {
-        publicPortArray[`${publicAndPrivatePort[2]}/${protocol}`] = [
-          { HostIp: publicAndPrivatePort[0], HostPort: publicAndPrivatePort[1] }
-        ];
-        exposedPorts[`${publicAndPrivatePort[2]}/${protocol}`] = {};
+        const portKey = `${publicAndPrivatePort[2]}/${protocol}`;
+        publicPortArray[portKey] ||= [];
+        publicPortArray[portKey].push({
+          HostIp: publicAndPrivatePort[0],
+          HostPort: publicAndPrivatePort[1]
+        });
+        exposedPorts[portKey] = {};
         logOpenedPorts.push({
           host: publicAndPrivatePort[0] + ":" + publicAndPrivatePort[1],
           container: Number(publicAndPrivatePort[2]),
@@ -143,6 +146,22 @@ export class SetupDockerContainer extends AsyncTask {
       const containerPath = path.normalize(paths[1]);
       extraBinds.push({ hostPath, containerPath });
     }
+
+    const parseBlkioString = (input: string) => {
+      const match = input.trim().match(/^([^:]+):(\d+)([KMG]?B?)$/i);
+      if (!match) return null;
+      const unit = (match[3] || "").charAt(0).toUpperCase();
+      const multipliers: Record<string, number> = { K: 1024, M: 1024 ** 2, G: 1024 ** 3 };
+      return { Path: match[1].trim(), Rate: parseInt(match[2]) * (multipliers[unit] || 1) };
+    };
+
+    const deviceReadBps = (dockerConfig.deviceReadBps || [])
+      .map(parseBlkioString)
+      .filter((v) => v !== null);
+
+    const deviceWriteBps = (dockerConfig.deviceWriteBps || [])
+      .map(parseBlkioString)
+      .filter((v) => v !== null);
 
     // memory limit
     let maxMemory: number | undefined = undefined;
@@ -403,6 +422,8 @@ export class SetupDockerContainer extends AsyncTask {
         "mcsmanager.instance.uuid": instance.instanceUuid
       },
       HostConfig: {
+        BlkioDeviceReadBps: deviceReadBps.length > 0 ? deviceReadBps : undefined,
+        BlkioDeviceWriteBps: deviceWriteBps.length > 0 ? deviceWriteBps : undefined,
         Memory: maxMemory,
         MemorySwap: memorySwap,
         MemorySwappiness: memorySwappiness,
