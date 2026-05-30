@@ -3445,6 +3445,5 @@
   "TXT_CODE_6542489a": "Ejemplo: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "Límite de velocidad de escritura del dispositivo (BPS)",
   "TXT_CODE_2b2ff3ff": "Limitar la velocidad de escritura de dispositivos de bloque específicos del contenedor. Formato: /dev/sda:5MB. Separe varios dispositivos con comas.",
-  "TXT_CODE_f0dc9eca": "Ejemplo: /dev/sda:5MB",
-  "TXT_CODE_system_file.linkNotAllowed": "No se permiten enlaces simbólicos ni enlaces duros para esta operación"
+  "TXT_CODE_f0dc9eca": "Ejemplo: /dev/sda:5MB"
 }

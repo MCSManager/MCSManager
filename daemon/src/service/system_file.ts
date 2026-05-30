@@ -7,10 +7,10 @@ import { compress, decompress } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
-import { isFileSystemLink } from "../tools/path_link_check";
+import { resolveLink } from "../tools/path_link_check";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
-const ERROR_MSG_LINK = $t("TXT_CODE_system_file.linkNotAllowed");
+const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
 
 interface IFile {
@@ -24,7 +24,10 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -80,7 +83,7 @@ export default class FileManager {
       ? topAbsolutePath.slice(0, -1)
       : topAbsolutePath;
 
-    this.assertNotLink(destPath);
+    this.assertLink(destPath);
 
     if (destPath.startsWith(topPath)) {
       const parts = destPath.split(path.sep);
@@ -91,17 +94,17 @@ export default class FileManager {
     return false;
   }
 
-  assertNotLink(fileNameOrPath: string) {
+  assertLink(fileNameOrPath: string) {
     const absPath = this.toAbsolutePath(fileNameOrPath);
-    if (fs.existsSync(absPath) && isFileSystemLink(absPath)) {
-      throw new Error(ERROR_MSG_LINK);
-    }
+    const resolved = resolveLink(absPath);
+    if (!resolved) return;
+    this.toAbsolutePath(resolved); // will throw if resolved path escapes workspace
   }
 
   check(destPath: string) {
     if (this.isRootTopRath()) return true;
-    if (!this.checkPath(destPath) || !fs.existsSync(this.toAbsolutePath(destPath))) return false;
-    this.assertNotLink(destPath);
+    if (!this.checkPath(destPath)) return false;
+    if (!fs.existsSync(this.toAbsolutePath(destPath))) throw new Error(ERROR_PATH_NOT_FOUND);
     return true;
   }
 
@@ -113,7 +116,7 @@ export default class FileManager {
   async list(page: 0, pageSize = 40, searchFileName?: string) {
     if (pageSize > 100 || pageSize <= 0 || page < 0) throw new Error("Beyond the value limit");
 
-    this.assertNotLink(".");
+    this.assertLink(".");
 
     // Use withFileTypes option to get file type directly, reducing stat calls
     const dirents = await fs.readdir(this.toAbsolutePath(), { withFileTypes: true });
@@ -124,10 +127,17 @@ export default class FileManager {
         (dirent) =>
           !searchFileName || dirent.name.toLowerCase().includes(searchFileName.toLowerCase())
       )
-      .map((dirent) => ({
-        name: dirent.name,
-        type: dirent.isFile() ? 1 : 0
-      }));
+      .map((dirent) => {
+        let type = dirent.isFile() ? 1 : 0;
+        if (type === 0 && !dirent.isDirectory()) {
+          // Symbolic links may return false for both isFile() and isDirectory()
+          // see #2124
+          try {
+            type = fs.statSync(this.toAbsolutePath(dirent.name)).isFile() ? 1 : 0;
+          } catch {}
+        }
+        return { name: dirent.name, type };
+      });
 
     const total = filteredItems.length;
 
@@ -258,12 +268,12 @@ export default class FileManager {
     const filesPath = [];
     let totalSize = 0;
     for (const iterator of files) {
-      if (this.check(iterator)) {
-        filesPath.push(this.toAbsolutePath(iterator));
-        try {
+      try {
+        if (this.check(iterator)) {
+          filesPath.push(this.toAbsolutePath(iterator));
           totalSize += fs.statSync(this.toAbsolutePath(iterator))?.size;
-        } catch (error: any) {}
-      }
+        }
+      } catch (error: any) {}
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
@@ -302,7 +312,6 @@ export default class FileManager {
   }
 
   private zipFileCheck(path: string) {
-    if (isFileSystemLink(path)) throw new Error(ERROR_MSG_LINK);
     const fileInfo = fs.statSync(path);
     const MAX_ZIP_GB = globalConfiguration.config.maxZipFileSize;
     if (fileInfo.size > 1024 * 1024 * 1024 * MAX_ZIP_GB)

@@ -1,5 +1,6 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import { promisify } from "util";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
@@ -89,6 +90,11 @@ class DiskLimitService {
 
     // global instance is not limited by disk space
     if (instance.isGlobalInstance() || workspace === "/" || workspace === "\\") {
+      return this.getCheckDefaultValue(instance, maxSpace);
+    }
+
+    // Disk limit is not supported on Windows
+    if (os.platform() === "win32") {
       return this.getCheckDefaultValue(instance, maxSpace);
     }
 
