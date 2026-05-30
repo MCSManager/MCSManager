@@ -24,7 +24,10 @@ interface IFile {
 export default class FileManager {
   public cwd: string = ".";
 
-  constructor(public topPath: string = "", public fileCode?: string) {
+  constructor(
+    public topPath: string = "",
+    public fileCode?: string
+  ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
     } else {
@@ -207,8 +210,9 @@ export default class FileManager {
     // if (!FileManager.checkFileName(fileName)) throw new Error(ERROR_MSG_01);
     if (!this.checkPath(fileName)) throw new Error(ERROR_MSG_01);
     const target = this.toAbsolutePath(fileName);
-    fs.ensureDirSync(path.dirname(target));
-    fs.createFile(target);
+    const parentDir = path.resolve(path.dirname(target));
+    if (parentDir !== path.parse(parentDir).root) await fs.mkdir(parentDir, { recursive: true });
+    return await fs.createFile(target);
   }
 
   async copy(target1: string, target2: string) {
