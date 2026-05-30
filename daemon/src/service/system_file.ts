@@ -7,7 +7,7 @@ import { compress, decompress } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
-import { resolveLink } from "../tools/path_link_check";
+import { resolveRealPath } from "../tools/path_link_check";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
@@ -46,8 +46,10 @@ export default class FileManager {
   private isOutsideWorkspace(absPath: string): boolean {
     // fix the /app/ vs /app mismatch bug and keep it secure
     if (this.isRootTopRath()) return false;
-    const normalizedTop = path.normalize(this.topPath);
-    const relative = path.relative(normalizedTop, absPath);
+    const realTop = resolveRealPath(this.topPath);
+    const realPath = resolveRealPath(absPath);
+    if (!realTop || !realPath) return true; // If the path cannot be resolved, treat it as outside for safety
+    const relative = path.relative(realTop, realPath);
     return relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
   }
 
@@ -86,7 +88,7 @@ export default class FileManager {
       ? topAbsolutePath.slice(0, -1)
       : topAbsolutePath;
 
-    this.assertLink(destPath);
+    this.assertInsideWorkspace(destPath);
 
     if (destPath.startsWith(topPath)) {
       const parts = destPath.split(path.sep);
@@ -97,21 +99,15 @@ export default class FileManager {
     return false;
   }
 
-  assertLink(fileNameOrPath: string) {
+  assertInsideWorkspace(fileNameOrPath: string) {
     const absPath = this.toAbsolutePath(fileNameOrPath);
-    const resolved = resolveLink(absPath);
-    if (!resolved) return;
-    if (this.isOutsideWorkspace(resolved)) throw new Error(ERROR_MSG_01);
+    if (this.isOutsideWorkspace(absPath)) throw new Error(ERROR_MSG_01);
   }
 
   check(destPath: string) {
     if (this.isRootTopRath()) return true;
     if (!this.checkPath(destPath)) return false;
-    try {
-      fs.lstatSync(this.toAbsolutePath(destPath));
-    } catch {
-      throw new Error(ERROR_PATH_NOT_FOUND);
-    }
+    if (!fs.existsSync(this.toAbsolutePath(destPath))) throw new Error(ERROR_PATH_NOT_FOUND);
     return true;
   }
 
@@ -123,7 +119,7 @@ export default class FileManager {
   async list(page: 0, pageSize = 40, searchFileName?: string) {
     if (pageSize > 100 || pageSize <= 0 || page < 0) throw new Error("Beyond the value limit");
 
-    this.assertLink(".");
+    this.assertInsideWorkspace(".");
 
     // Use withFileTypes option to get file type directly, reducing stat calls
     const dirents = await fs.readdir(this.toAbsolutePath(), { withFileTypes: true });
