@@ -43,6 +43,14 @@ export default class FileManager {
     return this.topPath === "/" || this.topPath === "\\";
   }
 
+  private isOutsideWorkspace(absPath: string): boolean {
+    // fix the /app/ vs /app mismatch bug and keep it secure
+    if (this.isRootTopRath()) return false;
+    const normalizedTop = path.normalize(this.topPath);
+    const relative = path.relative(normalizedTop, absPath);
+    return relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
+  }
+
   toAbsolutePath(fileName: string = "") {
     const topAbsolutePath = this.topPath;
 
@@ -62,12 +70,7 @@ export default class FileManager {
       finalPath = path.normalize(path.join(this.topPath, this.cwd, fileName));
     }
 
-    // fix the /app/ vs /app mismatch bug and keep it secure
-    const relative = path.relative(topAbsolutePath, finalPath);
-    const isOutside =
-      relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
-    if (isOutside && topAbsolutePath !== "/" && topAbsolutePath !== "\\")
-      throw new Error(ERROR_MSG_01);
+    if (this.isOutsideWorkspace(finalPath)) throw new Error(ERROR_MSG_01);
     return finalPath;
   }
 
@@ -98,7 +101,7 @@ export default class FileManager {
     const absPath = this.toAbsolutePath(fileNameOrPath);
     const resolved = resolveLink(absPath);
     if (!resolved) return;
-    this.toAbsolutePath(resolved); // will throw if resolved path escapes workspace
+    if (this.isOutsideWorkspace(resolved)) throw new Error(ERROR_MSG_01);
   }
 
   check(destPath: string) {
