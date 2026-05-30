@@ -15,7 +15,7 @@ RUN apt-get update && \
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash &&\
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        nodejs
+    nodejs
 
 WORKDIR /opt/mcsmanager/web
 
@@ -25,4 +25,6 @@ COPY dockerfile/web/ /
 
 EXPOSE 23333
 
-VOLUME ["/opt/mcsmanager/web/data", "/opt/mcsmanager/web/logs"]
+VOLUME \
+    /opt/mcsmanager/web/data \
+    /opt/mcsmanager/web/logs
