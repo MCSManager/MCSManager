@@ -7,7 +7,7 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { checkInstanceAdvancedParams, getAppMarketList } from "../service/instance_service";
 import { operationLogger } from "../service/operation_logger";
-import { getUserUuid } from "../service/passport_service";
+import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
 import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
@@ -506,7 +506,7 @@ router.post(
         instanceUuid,
         taskName,
         parameter,
-        role: ctx.session?.["role"] as ROLE // Permission check is performed in the daemon
+        role: getUserPermission(ctx) // Permission check is performed in the daemon
       });
       ctx.body = result;
     } catch (err) {
