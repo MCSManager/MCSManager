@@ -3,7 +3,7 @@
 
 # permissions
 lsiown -R abc:abc \
-    /opt/mcsmanager
+    /opt/mcsmanager/web
 
 # install
 cd /opt/mcsmanager/web && s6-setuidgid abc npm install --production
