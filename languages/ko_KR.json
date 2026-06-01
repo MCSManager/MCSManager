@@ -3445,6 +3445,5 @@
   "TXT_CODE_6542489a": "예시: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "장치 쓰기 속도 제한 (BPS)",
   "TXT_CODE_2b2ff3ff": "컨테이너의 특정 블록 장치 쓰기 속도를 제한합니다. 형식: /dev/sda:5MB. 여러 장치는 쉼표로 구분하세요.",
-  "TXT_CODE_f0dc9eca": "예시: /dev/sda:5MB",
-  "TXT_CODE_system_file.linkNotAllowed": "이 작업에서는 심볼릭 링크와 하드 링크가 허용되지 않습니다"
+  "TXT_CODE_f0dc9eca": "예시: /dev/sda:5MB"
 }

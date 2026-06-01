@@ -3445,6 +3445,5 @@
   "TXT_CODE_6542489a": "Exemple : /dev/sda:10Mo",
   "TXT_CODE_9d2e6d5e": "Limite d'écriture du périphérique (BPS)",
   "TXT_CODE_2b2ff3ff": "Limite le débit d'écriture de périphériques bloc spécifiques pour le conteneur. Format : /dev/sda:5Mo. Séparez plusieurs périphériques par des virgules.",
-  "TXT_CODE_f0dc9eca": "Exemple : /dev/sda:5Mo",
-  "TXT_CODE_system_file.linkNotAllowed": "Les liens symboliques et les liens physiques ne sont pas autorisés pour cette opération"
+  "TXT_CODE_f0dc9eca": "Exemple : /dev/sda:5Mo"
 }
