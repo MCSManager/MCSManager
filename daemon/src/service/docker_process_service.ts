@@ -7,16 +7,16 @@ import { DefaultDocker } from "./docker_service";
 import Docker from "dockerode";
 import fs from "fs-extra";
 import iconv from "iconv-lite";
-import { toText } from "mcsmanager-common";
 import path from "path";
 import { EventEmitter } from "stream";
 import { IInstanceProcess } from "../entity/instance/interface";
 import { $t } from "../i18n";
+import { getLinuxSystemId } from "../tools/system_user";
 import { AsyncTask } from "./async_task_service";
 import logger from "./log";
 import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
-import { getLinuxSystemId } from "../tools/system_user";
+import storageQuotaService from "./storage_quota_service";
 
 type PublicPortArray = {
   [key: string]: {
@@ -57,17 +57,43 @@ export class SetupDockerContainer extends AsyncTask {
     const instance = this.instance;
     const customCommand = this.startCommand;
     const useImageOverride = Boolean(this.imageOverride?.trim());
+    const dockerConfig = instance.config.docker;
+    if (!dockerConfig) {
+      throw new Error("Instance's Docker configuration is not found! ");
+    }
 
-    if (!fs.existsSync(this.instance.absoluteCwdPath())) {
-      await fs.mkdirs(instance.absoluteCwdPath());
+    const instanceWorkspace = this.instance.absoluteCwdPath();
+    const dockerHostWorkspace = storageQuotaService.resolveDockerHostWorkspace(instance);
+    if (!fs.existsSync(instanceWorkspace)) {
+      await fs.mkdirs(instanceWorkspace);
+    }
+    if (!fs.existsSync(dockerHostWorkspace)) {
+      await fs.mkdirs(dockerHostWorkspace);
     }
     // Because some accounts inside the container may be different from the account running MCSManager,
     // not setting permissions to 777 may cause failure to install any files properly.
-    fs.chmod(this.instance.absoluteCwdPath(), 0o777).catch(() => {
-      logger.error(
-        `Failed to chmod the instance directory to 777: ${this.instance.absoluteCwdPath()}`
-      );
+    Array.from(new Set([instanceWorkspace, dockerHostWorkspace])).forEach((workspace) => {
+      fs.chmod(workspace, 0o777).catch(() => {
+        logger.error(`Failed to chmod the instance directory to 777: ${workspace}`);
+      });
     });
+
+    const maxSpace = Number(dockerConfig.maxSpace || 0);
+    if (dockerConfig.enableHardStorageQuota && Number.isFinite(maxSpace) && maxSpace > 0) {
+      await storageQuotaService.ensureDockerHardQuota(instance, dockerHostWorkspace, maxSpace);
+      instance.println(
+        "INFO",
+        $t("TXT_CODE_storage_quota_applied", {
+          storageLimit: maxSpace
+        })
+      );
+    } else {
+      try {
+        await storageQuotaService.clearDockerHardQuotaIfManaged(instance, dockerHostWorkspace);
+      } catch (error: any) {
+        logger.warn(`Failed to clear hard storage quota: ${error?.message ?? error}`);
+      }
+    }
 
     try {
       await instance.forceExec(new DockerPullCommand(this.imageOverride?.trim()));
@@ -83,11 +109,6 @@ export class SetupDockerContainer extends AsyncTask {
     } else {
       commandList = [];
     }
-    const dockerConfig = instance.config.docker;
-    if (!dockerConfig) {
-      throw new Error("Instance's Docker configuration is not found! ");
-    }
-
     // Parsing port open
     // 25565:25565/tcp 8080:8080/tcp
     const portMap = dockerConfig.ports || [];
@@ -301,12 +322,7 @@ export class SetupDockerContainer extends AsyncTask {
       }
     }
 
-    let cwd = instance.absoluteCwdPath();
-    const defaultInstanceDir = InstanceSubsystem.getInstanceDataDir();
-    const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
-    if (hostRealPath && cwd.includes(defaultInstanceDir)) {
-      cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
-    }
+    const cwd = dockerHostWorkspace;
 
     const mounts: Docker.MountConfig = [];
     for (const v of extraBinds) {

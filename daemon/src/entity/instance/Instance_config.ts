@@ -81,6 +81,8 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
     cpusetCpus: "",
     cpuUsage: 0,
     maxSpace: 0,
+    enableHardStorageQuota: false,
+    storageQuotaProjectId: undefined,
     io: 0,
     network: 0,
     workingDir: "/data",

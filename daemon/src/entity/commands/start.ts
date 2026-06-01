@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import { $t } from "../../i18n";
 import disk_limit_service from "../../service/disk_limit_service";
+import storageQuotaService from "../../service/storage_quota_service";
 import Instance from "../instance/instance";
 import InstanceCommand from "./base/command";
 
@@ -50,10 +51,14 @@ export default abstract class AbsStartCommand extends InstanceCommand {
       // check the disk space
       if (instance.config.docker?.maxSpace && instance.config.docker.maxSpace > 0) {
         instance.println("INFO", $t("TXT_CODE_2d7b8a91"));
+        const workspace =
+          instance.config.processType === "docker"
+            ? storageQuotaService.resolveDockerHostWorkspace(instance)
+            : instance.absoluteCwdPath();
         const result = await disk_limit_service.checkDiskNow(
           {
             instance,
-            workspace: instance.absoluteCwdPath(),
+            workspace,
             maxSpace: instance.config.docker.maxSpace
           },
           false

@@ -1,4 +1,4 @@
-import { exec } from "node:child_process";
+import { execFile } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import { promisify } from "util";
@@ -8,7 +8,7 @@ import { checkFilePath } from "../tools/filepath";
 import { ConsumerQueue } from "../utils/queue";
 import { sleep } from "../utils/sleep";
 
-const execPromise = promisify(exec);
+const execFilePromise = promisify(execFile);
 
 interface IDiskLimitItem {
   instance: Instance;
@@ -29,8 +29,7 @@ class DiskLimitService {
     }, 1000 * 10);
   }
 
-  async checkInstanceDiskSize(instance: Instance) {
-    const workspace = instance.absoluteCwdPath();
+  async checkInstanceDiskSize(instance: Instance, workspace = instance.absoluteCwdPath()) {
     const maxSpace = Number(instance.config.docker.maxSpace);
     this.queue.push({
       key: instance.instanceUuid,
@@ -77,10 +76,10 @@ class DiskLimitService {
 
   private getCheckDefaultValue(instance: Instance, maxSpace = 0) {
     instance.info.storageUsage = 0;
-    instance.info.storageLimit = maxSpace;
+    instance.info.storageLimit = convertGBToBytes(maxSpace);
     return {
       isFull: false,
-      storageLimit: maxSpace,
+      storageLimit: convertBytesToGB(instance.info.storageLimit),
       storageUsage: 0
     };
   }
@@ -104,10 +103,9 @@ class DiskLimitService {
       return this.getCheckDefaultValue(instance, maxSpace);
     }
 
-    const command = `du -s --block-size=1M "${workspace}"`;
-    const { stdout } = await execPromise(command);
+    const { stdout } = await execFilePromise("du", ["-s", "--block-size=1M", workspace]);
 
-    const diskUsageSizeMb = Number(String(stdout.split("/")[0]).replaceAll("\t", "").trim());
+    const diskUsageSizeMb = Number(String(stdout).trim().split(/\s+/)[0]);
 
     if (isNaN(Number(diskUsageSizeMb))) {
       instance.info.storageUsage = 0;

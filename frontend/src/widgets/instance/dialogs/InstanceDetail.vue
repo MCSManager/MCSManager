@@ -1475,6 +1475,33 @@ defineExpose({
 
               <a-col :xs="24" :lg="8" :offset="0">
                 <a-form-item>
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_storage_quota_hard_limit") }}
+                    <a-tag color="blue">{{ t("TXT_CODE_33d7a685") }}</a-tag>
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-tooltip :title="t('TXT_CODE_storage_quota_hard_limit_help')" placement="top">
+                      <a-typography-text type="secondary" class="typography-text-ellipsis">
+                        {{ t("TXT_CODE_storage_quota_hard_limit_help") }}
+                      </a-typography-text>
+                    </a-tooltip>
+                  </a-typography-paragraph>
+                  <div class="ml-4">
+                    <a-switch
+                      v-model:checked="formData.instance.config.docker.enableHardStorageQuota"
+                      :disabled="isGlobalTerminal"
+                      :checked-value="true"
+                      :un-checked-value="false"
+                    >
+                      <template #checkedChildren><check-outlined /></template>
+                      <template #unCheckedChildren><close-outlined /></template>
+                    </a-switch>
+                  </div>
+                </a-form-item>
+              </a-col>
+
+              <a-col :xs="24" :lg="8" :offset="0">
+                <a-form-item>
                   <a-typography-title :level="5">{{ t("TXT_CODE_5c43374f") }}</a-typography-title>
                   <a-typography-paragraph>
                     <a-tooltip :title="t('TXT_CODE_a7885cbc')" placement="top">

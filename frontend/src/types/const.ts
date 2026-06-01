@@ -134,6 +134,8 @@ export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
   ports: [],
   extraVolumes: [],
   maxSpace: undefined,
+  enableHardStorageQuota: false,
+  storageQuotaProjectId: undefined,
   network: undefined,
   io: undefined,
   networkMode: "bridge",

@@ -9,10 +9,13 @@ export class ConsumerQueue<T> {
   constructor(private readonly maxSize: number) {}
 
   push(item: IQueueItem<T>) {
+    const index = this.items.findIndex((v) => v.key === item.key);
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
     if (this.items.length >= this.maxSize) {
       this.items.shift();
     }
-    this.items.find((v) => v.key === item.key);
     this.items.push(item);
   }
 

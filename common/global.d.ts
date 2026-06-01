@@ -82,6 +82,8 @@ declare global {
     ports?: string[];
     extraVolumes?: string[];
     maxSpace?: number;
+    enableHardStorageQuota?: boolean;
+    storageQuotaProjectId?: number;
     network?: number;
     io?: number;
     networkMode?: string;
