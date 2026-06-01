@@ -1,4 +1,5 @@
 ARG BUILDPLATFORM=linux/amd64
+ARG EMBEDDED_JAVA_VERSION=21
 
 FROM --platform=${BUILDPLATFORM} node:lts-alpine AS builder
 
@@ -13,16 +14,15 @@ RUN apk add --no-cache wget &&\
     wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
     chmod a+x production-code/daemon/lib/*
 
+FROM eclipse-temurin:${EMBEDDED_JAVA_VERSION}-alpine AS temurin-stage
+
 FROM ghcr.io/linuxserver/baseimage-alpine:edge
 
-ARG EMBEDDED_JAVA_VERSION=21
+ENV JAVA_HOME=/opt/java/openjdk
+COPY --from=temurin-stage $JAVA_HOME $JAVA_HOME
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN apk add --no-cache wget && \
-    wget -O /etc/apk/keys/adoptium.rsa.pub https://packages.adoptium.net/artifactory/api/security/keypair/public/repositories/apk && \
-    echo 'https://packages.adoptium.net/artifactory/apk/alpine/main' | tee -a /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache \
-    temurin-${EMBEDDED_JAVA_VERSION}-jdk \
+RUN apk add --no-cache \
     nodejs \
     npm
 
