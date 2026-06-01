@@ -22,11 +22,9 @@ ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=temurin-stage $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    nodejs \
-    npm && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl &&\
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash &&\
+    apt-get update && apt-get install -y nodejs && apt-get clean
 
 COPY --from=builder /src/production-code/daemon/ /opt/mcsmanager/daemon/
 
