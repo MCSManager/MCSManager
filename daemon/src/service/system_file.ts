@@ -125,22 +125,24 @@ export default class FileManager {
     const dirents = await fs.readdir(this.toAbsolutePath(), { withFileTypes: true });
 
     // Filter search results and create basic file info with type
-    let filteredItems = dirents
-      .filter(
-        (dirent) =>
-          !searchFileName || dirent.name.toLowerCase().includes(searchFileName.toLowerCase())
-      )
-      .map((dirent) => {
-        let type = dirent.isFile() ? 1 : 0;
-        if (type === 0 && !dirent.isDirectory()) {
-          // Symbolic links may return false for both isFile() and isDirectory()
-          // see #2124
-          try {
-            type = fs.statSync(this.toAbsolutePath(dirent.name)).isFile() ? 1 : 0;
-          } catch {}
-        }
-        return { name: dirent.name, type };
-      });
+    let filteredItems = await Promise.all(
+      dirents
+        .filter(
+          (dirent) =>
+            !searchFileName || dirent.name.toLowerCase().includes(searchFileName.toLowerCase())
+        )
+        .map(async (dirent) => {
+          let type = dirent.isFile() ? 1 : 0;
+          if (type === 0 && !dirent.isDirectory()) {
+            // Symbolic links may return false for both isFile() and isDirectory()
+            // see #2124
+            try {
+              type = (await fs.stat(this.toAbsolutePath(dirent.name))).isFile() ? 1 : 0;
+            } catch {}
+          }
+          return { name: dirent.name, type };
+        })
+    );
 
     const total = filteredItems.length;
 
