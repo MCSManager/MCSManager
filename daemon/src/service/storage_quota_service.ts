@@ -15,6 +15,12 @@ const PROJECTS_PATH = "/etc/projects";
 const PROJID_PATH = "/etc/projid";
 const MIN_PROJECT_ID = 200000;
 const COMMAND_TIMEOUT_MS = 10000;
+const COMMAND_ENV = {
+  ...process.env,
+  LC_ALL: "C",
+  LANG: "C",
+  LANGUAGE: "C"
+};
 
 interface IXfsMountInfo {
   mountPoint: string;
@@ -33,7 +39,10 @@ async function runFile(
   command: string,
   args: string[] = []
 ): Promise<{ stdout: string; stderr: string }> {
-  const { stdout, stderr } = await execFilePromise(command, args, { timeout: COMMAND_TIMEOUT_MS });
+  const { stdout, stderr } = await execFilePromise(command, args, {
+    timeout: COMMAND_TIMEOUT_MS,
+    env: COMMAND_ENV
+  });
   return { stdout: String(stdout || ""), stderr: String(stderr || "") };
 }
 
@@ -42,12 +51,15 @@ function getErrorText(error: any) {
 }
 
 function isPermissionError(error: any) {
-  const errorText = getErrorText(error);
+  const errorText = getErrorText(error).toLowerCase();
   return (
     error?.code === "EACCES" ||
     error?.code === "EPERM" ||
-    errorText.includes("Permission denied") ||
-    errorText.includes("Operation not permitted")
+    errorText.includes("permission denied") ||
+    errorText.includes("operation not permitted") ||
+    errorText.includes("not permitted") ||
+    errorText.includes("不允许") ||
+    errorText.includes("权限")
   );
 }
 
@@ -97,6 +109,7 @@ async function writeFileWithSudo(filePath: string, content: string) {
 async function writeFileWithSudoTee(filePath: string, content: string) {
   await new Promise<void>((resolve, reject) => {
     const child = spawn("sudo", ["-n", "tee", filePath], {
+      env: COMMAND_ENV,
       stdio: ["pipe", "ignore", "pipe"]
     });
     let stderr = "";
