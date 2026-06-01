@@ -14,17 +14,19 @@ RUN apk add --no-cache wget &&\
     wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/ &&\
     chmod a+x production-code/daemon/lib/*
 
-FROM eclipse-temurin:${EMBEDDED_JAVA_VERSION}-alpine AS temurin-stage
+FROM eclipse-temurin:${EMBEDDED_JAVA_VERSION} AS temurin-stage
 
-FROM ghcr.io/linuxserver/baseimage-alpine:edge
+FROM ghcr.io/linuxserver/baseimage-debian:trixie
 
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=temurin-stage $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN apk add --no-cache \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     nodejs \
-    npm
+    npm && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /src/production-code/daemon/ /opt/mcsmanager/daemon/
 
