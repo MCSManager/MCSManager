@@ -271,7 +271,7 @@ Once resolved, we will credit the discoverer in the relevant code or release not
 
 Thanks to the following developers for making important contributions to the security testing of MCSManager!
 
-> @Execute, @[xiaosuyyds](https://github.com/xiaosuyyds)
+> @Execute, [@xiaosuyyds](https://github.com/xiaosuyyds)
 
 <br />
 
