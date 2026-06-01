@@ -3349,6 +3349,7 @@
   "TXT_CODE_storage_quota_workspace_conflict": "硬储存配额失败：{{path}} 已分配给 project id {{id}}。",
   "TXT_CODE_storage_quota_project_file_write_failed": "硬储存配额失败：无法更新 /etc/projects 或 /etc/projid。{{error}}",
   "TXT_CODE_storage_quota_apply_failed": "硬储存配额失败：无法应用 XFS project quota。{{error}}",
+  "TXT_CODE_storage_quota_sudo_required": "硬储存配额需要 root 权限。请使用 root 运行 Daemon，或为 xfs_quota、cat、tee 配置免密 sudo。{{error}}",
   "TXT_CODE_5d88a9b": "颜色主题",
   "TXT_CODE_ee01c10c": "主题模式",
   "TXT_CODE_4eb158da": "布局模式",

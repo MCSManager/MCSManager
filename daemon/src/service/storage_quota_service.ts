@@ -1,4 +1,4 @@
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import fs from "fs-extra";
 import { toText } from "mcsmanager-common";
 import os from "node:os";
@@ -14,6 +14,7 @@ const execFilePromise = promisify(execFile);
 const PROJECTS_PATH = "/etc/projects";
 const PROJID_PATH = "/etc/projid";
 const MIN_PROJECT_ID = 200000;
+const COMMAND_TIMEOUT_MS = 10000;
 
 interface IXfsMountInfo {
   mountPoint: string;
@@ -26,6 +27,101 @@ interface IProjectFiles {
   projidText: string;
   projects: Map<number, string>;
   projids: Map<string, number>;
+}
+
+async function runFile(
+  command: string,
+  args: string[] = []
+): Promise<{ stdout: string; stderr: string }> {
+  const { stdout, stderr } = await execFilePromise(command, args, { timeout: COMMAND_TIMEOUT_MS });
+  return { stdout: String(stdout || ""), stderr: String(stderr || "") };
+}
+
+function getErrorText(error: any) {
+  return `${error?.stderr || ""}\n${error?.stdout || ""}\n${error?.message || ""}`;
+}
+
+function isPermissionError(error: any) {
+  const errorText = getErrorText(error);
+  return (
+    error?.code === "EACCES" ||
+    error?.code === "EPERM" ||
+    errorText.includes("Permission denied") ||
+    errorText.includes("Operation not permitted")
+  );
+}
+
+async function execWithSudo(command: string, args: string[] = []) {
+  try {
+    return await runFile(command, args);
+  } catch (error: any) {
+    if (!isPermissionError(error)) throw error;
+    try {
+      return await runFile("sudo", ["-n", command, ...args]);
+    } catch (sudoError: any) {
+      throw new Error($t("TXT_CODE_storage_quota_sudo_required", { error: getErrorText(sudoError).trim() }));
+    }
+  }
+}
+
+async function readFileWithSudo(filePath: string) {
+  try {
+    return await fs.readFile(filePath, "utf-8");
+  } catch (error: any) {
+    if (!isPermissionError(error)) {
+      if (error?.code === "ENOENT") return "";
+      throw error;
+    }
+    try {
+      const { stdout } = await runFile("sudo", ["-n", "cat", filePath]);
+      return stdout;
+    } catch (sudoError: any) {
+      throw new Error($t("TXT_CODE_storage_quota_sudo_required", { error: getErrorText(sudoError).trim() }));
+    }
+  }
+}
+
+async function writeFileWithSudo(filePath: string, content: string) {
+  try {
+    await fs.writeFile(filePath, content);
+  } catch (error: any) {
+    if (!isPermissionError(error)) throw error;
+    try {
+      await writeFileWithSudoTee(filePath, content);
+    } catch (sudoError: any) {
+      throw new Error($t("TXT_CODE_storage_quota_sudo_required", { error: sudoError.message }));
+    }
+  }
+}
+
+async function writeFileWithSudoTee(filePath: string, content: string) {
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn("sudo", ["-n", "tee", filePath], {
+      stdio: ["pipe", "ignore", "pipe"]
+    });
+    let stderr = "";
+    const timer = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`sudo tee timed out: ${filePath}`));
+    }, COMMAND_TIMEOUT_MS);
+
+    child.stderr.on("data", (data) => {
+      stderr += String(data);
+    });
+    child.on("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(stderr.trim() || `sudo tee exited with code ${code}`));
+      }
+    });
+    child.stdin.end(content);
+  });
 }
 
 class StorageQuotaService {
@@ -64,8 +160,8 @@ class StorageQuotaService {
 
     await this.#writeProjectFiles(projectFiles, projectName, projectId, workspace);
     try {
-      await execFilePromise("xfs_quota", ["-x", "-c", `project -s ${projectName}`, mountInfo.mountPoint]);
-      await execFilePromise("xfs_quota", [
+      await execWithSudo("xfs_quota", ["-x", "-c", `project -s ${projectName}`, mountInfo.mountPoint]);
+      await execWithSudo("xfs_quota", [
         "-x",
         "-c",
         `limit -p bhard=${this.#toQuotaKiB(maxSpaceGb)} ${projectName}`,
@@ -89,7 +185,7 @@ class StorageQuotaService {
 
     const mountInfo = await this.#getXfsProjectQuotaMount(workspace);
     await this.#assertXfsQuotaCommand();
-    await execFilePromise("xfs_quota", [
+    await execWithSudo("xfs_quota", [
       "-x",
       "-c",
       `limit -p bhard=0 ${projectName}`,
@@ -116,7 +212,7 @@ class StorageQuotaService {
       throw new Error($t("TXT_CODE_storage_quota_linux_only"));
     }
     try {
-      const { stdout } = await execFilePromise("findmnt", [
+      const { stdout } = await runFile("findmnt", [
         "--target",
         workspace,
         "--json",
@@ -154,7 +250,7 @@ class StorageQuotaService {
 
   async #assertXfsQuotaCommand() {
     try {
-      await execFilePromise("xfs_quota", ["-V"]);
+      await runFile("xfs_quota", ["-V"]);
     } catch (error: any) {
       if (error?.code === "ENOENT") {
         throw new Error($t("TXT_CODE_storage_quota_xfs_quota_missing"));
@@ -185,12 +281,7 @@ class StorageQuotaService {
   }
 
   async #readTextFile(filePath: string) {
-    try {
-      return await fs.readFile(filePath, "utf-8");
-    } catch (error: any) {
-      if (error?.code === "ENOENT") return "";
-      throw error;
-    }
+    return await readFileWithSudo(filePath);
   }
 
   #parseProjects(text: string) {
@@ -287,14 +378,14 @@ class StorageQuotaService {
   ) {
     try {
       await Promise.all([
-        fs.writeFile(
+        writeFileWithSudo(
           PROJID_PATH,
           this.#upsertLine(projectFiles.projidText, `${projectName}:${projectId}`, (line) => {
             const index = line.indexOf(":");
             return index !== -1 && line.slice(0, index) === projectName;
           })
         ),
-        fs.writeFile(
+        writeFileWithSudo(
           PROJECTS_PATH,
           this.#upsertLine(projectFiles.projectsText, `${projectId}:${path.normalize(workspace)}`, (line) => {
             const index = line.indexOf(":");

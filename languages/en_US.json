@@ -3349,6 +3349,7 @@
   "TXT_CODE_storage_quota_workspace_conflict": "Hard storage quota failed: {{path}} is already assigned to project id {{id}}.",
   "TXT_CODE_storage_quota_project_file_write_failed": "Hard storage quota failed: unable to update /etc/projects or /etc/projid. {{error}}",
   "TXT_CODE_storage_quota_apply_failed": "Hard storage quota failed: unable to apply XFS project quota. {{error}}",
+  "TXT_CODE_storage_quota_sudo_required": "Hard storage quota requires root privileges. Run Daemon as root or configure passwordless sudo for xfs_quota, cat, and tee. {{error}}",
   "TXT_CODE_5d88a9b": "Color Theme",
   "TXT_CODE_ee01c10c": "Default Theme",
   "TXT_CODE_4eb158da": "Layout Mode",
