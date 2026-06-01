@@ -257,7 +257,7 @@ docker compose pull && docker compose up -d
 
 感谢以下开发者为 MCSManager 安全性提供重要的代码贡献！
 
-> @Execute, [https://github.com/xiaosuyyds](https://github.com/xiaosuyyds)
+> @Execute, [@xiaosuyyds](https://github.com/xiaosuyyds)
 
 <br />
 
