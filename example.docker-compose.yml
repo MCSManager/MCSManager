@@ -4,6 +4,11 @@ services:
     image: githubyumao/mcsmanager-web:latest
     ports:
       - "23333:23333"
+    restart: unless-stopped
+    # If you want to run web via non-root user, uncomment the lines below and set PUID and PGID to your user and group ID
+    # environment:
+      # - PUID=1000
+      # - PGID=1000
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
@@ -19,6 +24,9 @@ services:
       - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
       # Rootless Docker (Linux): set DOCKER_HOST to your user socket path
       # - DOCKER_HOST=unix:///run/user/1000/docker.sock
+      # If you want to run daemon via non-root user, uncomment the lines below and set PUID and PGID to your user and group ID
+      # - PUID=1000
+      # - PGID=1000
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
