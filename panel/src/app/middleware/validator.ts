@@ -74,7 +74,8 @@ export default function (parameter: IParam) {
     try {
       parameter["params"] && check(ctx.params, parameter["params"]);
       parameter["query"] && check(ctx.query, parameter["query"]);
-      parameter["body"] && check(ctx.request.body, parameter["body"]);
+      if (parameter["body"] && Object.keys(parameter["body"]).length > 0)
+        check(ctx.request.body, parameter["body"]);
       return await next();
     } catch (err: any) {
       ctx.status = 400;

@@ -247,6 +247,18 @@ docker compose pull && docker compose up -d
 
 - 所有代码必须符合国际化标准。
 
+### BUG 报告
+
+欢迎发现的任何问题进行反馈，必当及时修复。
+
+若发现严重安全漏洞又不便公开发布，请发送邮件至: support@mcsmanager.com，安全问题修复后将在代码中附加漏洞发现者姓名。
+
+### 鸣谢
+
+感谢以下开发者为 MCSManager 安全性提供重要的代码贡献！
+
+> @Execute, [@xiaosuyyds](https://github.com/xiaosuyyds)
+
 <br />
 
 ## 开发此项目
@@ -291,14 +303,6 @@ docker compose pull && docker compose up -d
 
 - 支持 `Chrome` `Firefox` `Safari` `Opera` 等现代主流浏览器。
 - 已放弃支持 `IE` 浏览器。
-
-<br />
-
-## BUG 报告
-
-欢迎发现的任何问题进行反馈，必当及时修复。
-
-若发现严重安全漏洞又不便公开发布，请发送邮件至: support@mcsmanager.com，安全问题修复后将在代码中附加漏洞发现者姓名。
 
 <br />
 
