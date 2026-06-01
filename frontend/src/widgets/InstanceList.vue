@@ -370,20 +370,20 @@ const handleSelectInstance = (item: InstanceMoreDetail) => {
 };
 
 const selectAllInstances = () => {
-  let allInstancesCount = 0;
-  for (const node of tableTreeData.value) {
-    if (!node.children) continue;
-    allInstancesCount += node.children.length;
-  }
-
   selectedInstance.value = [];
-  if (allInstancesCount === selectedInstance.value?.length) return;
 
-  for (const node of tableTreeData.value) {
-    if (!node.children) continue;
-    for (const child of node.children) {
-      if (findInstance(child.inst)) continue;
-      selectedInstance.value.push(child.inst);
+  if (isGlobalDaemonMode.value) {
+    for (const node of tableTreeData.value) {
+      if (!node.children) continue;
+      for (const child of node.children) {
+        if (findInstance(child.inst)) continue;
+        selectedInstance.value.push(child.inst);
+      }
+    }
+  } else {
+    for (const item of instancesMoreInfo.value) {
+      if (findInstance(item)) continue;
+      selectedInstance.value.push(item);
     }
   }
 };
