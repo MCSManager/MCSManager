@@ -163,12 +163,7 @@ onMounted(async () => {
               <a-typography-paragraph type="secondary" class="mb-20">
                 {{ t("TXT_CODE_SSO_ONLY_MODE_WARN") }}
               </a-typography-paragraph>
-              <a-button
-                size="large"
-                type="primary"
-                block
-                @click="handleSsoLogin"
-              >
+              <a-button size="large" type="primary" block @click="handleSsoLogin">
                 <template #icon>
                   <img
                     v-if="ssoInfo?.iconUrl"
@@ -267,11 +262,7 @@ onMounted(async () => {
 
               <div v-if="ssoInfo?.enabled && !ssoInfo?.onlyMode" class="sso-divider-section">
                 <a-divider>{{ t("TXT_CODE_SSO_LOGIN_DIVIDER") }}</a-divider>
-                <a-button
-                  size="large"
-                  block
-                  @click="handleSsoLogin"
-                >
+                <a-button size="large" block @click="handleSsoLogin">
                   <template #icon>
                     <img
                       v-if="ssoInfo?.iconUrl"

@@ -1,5 +1,6 @@
 import { $t as t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
+import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import type { LoginUserInfo } from "@/types/user";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
@@ -357,6 +358,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const { state, updateUserInfo, isAdmin } = useAppStateStore();
+  const { containerState } = useLayoutContainerStore();
 
   const userPermission = state.userInfo?.permission ?? 0;
   const toPagePermission = Number(to.meta.permission ?? 0);
@@ -395,7 +397,11 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (toRoutePath === "/login" && state.userInfo?.token) {
-    return next(isAdmin.value ? "/" : "/customer");
+    if (isAdmin.value) {
+      if (containerState.isDesignMode) return next();
+      else return next("/");
+    }
+    return next("/customer");
   }
 
   if (
