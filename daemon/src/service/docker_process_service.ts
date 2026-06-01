@@ -16,6 +16,7 @@ import { AsyncTask } from "./async_task_service";
 import logger from "./log";
 import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
+import { getLinuxSystemId } from "../tools/system_user";
 
 type PublicPortArray = {
   [key: string]: {
@@ -396,6 +397,21 @@ export class SetupDockerContainer extends AsyncTask {
       }
     }
 
+    // Convert Linux host username to UID:GID format for Docker.
+    const runAs = instance.config.runAs?.trim();
+    let dockerUser: string | undefined = runAs || undefined;
+    const shouldResolveHostUser =
+      runAs && process.platform === "linux" && !runAs.includes(":") && !/^\d+$/.test(runAs);
+    if (shouldResolveHostUser) {
+      try {
+        const { uid, gid } = await getLinuxSystemId(runAs);
+        dockerUser = `${uid}:${gid}`;
+        logger.info(`Docker User: ${dockerUser} (converted from ${runAs})`);
+      } catch (error: any) {
+        logger.warn(`Failed to get UID/GID for user ${runAs}: ${error.message}`);
+      }
+    }
+
     this.container = await docker.createContainer({
       Entrypoint: entrypoint,
       Cmd: startCmd,
@@ -411,7 +427,7 @@ export class SetupDockerContainer extends AsyncTask {
       StdinOnce: false,
       ExposedPorts: exposedPorts,
       Env: dockerConfig?.env || [],
-      User: instance.config.runAs || undefined,
+      User: dockerUser,
       Labels: {
         ...dockerConfig.labels
           ?.map((label) => {
