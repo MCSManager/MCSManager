@@ -103,7 +103,7 @@ class DiskLimitService {
       return this.getCheckDefaultValue(instance, maxSpace);
     }
 
-    const { stdout } = await execFilePromise("du", ["-s", "--block-size=1M", workspace]);
+    const { stdout } = await execFilePromise("du", ["-s", "--block-size=1M", "--", workspace]);
 
     const diskUsageSizeMb = Number(String(stdout).trim().split(/\s+/)[0]);
 

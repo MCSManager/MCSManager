@@ -145,10 +145,11 @@ class StorageQuotaService {
   }
 
   public resolveDockerHostWorkspace(instance: Instance, defaultInstanceDir: string) {
-    let cwd = instance.absoluteCwdPath();
+    const cwd = path.normalize(instance.absoluteCwdPath());
+    const normalizedDefaultInstanceDir = path.normalize(defaultInstanceDir);
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
-    if (hostRealPath && cwd.includes(defaultInstanceDir)) {
-      cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
+    if (hostRealPath && this.#isPathInside(cwd, normalizedDefaultInstanceDir)) {
+      return path.normalize(path.join(hostRealPath, instance.instanceUuid));
     }
     return cwd;
   }
@@ -227,6 +228,7 @@ class StorageQuotaService {
     if (removeProject) {
       await this.#removeProjectFiles(projectFiles, projectName, projectId);
       instance.config.docker.storageQuotaProjectId = undefined;
+      StorageSubsystem.store("InstanceConfig", instance.instanceUuid, instance.config);
     }
   }
 
@@ -308,6 +310,14 @@ class StorageQuotaService {
 
   #getProjectName(instance: Instance) {
     return `mcsm_${instance.instanceUuid.replace(/[^a-zA-Z0-9]/g, "")}`;
+  }
+
+  #isPathInside(targetPath: string, parentPath: string) {
+    const relativePath = path.relative(parentPath, targetPath);
+    return (
+      relativePath === "" ||
+      (!!relativePath && !relativePath.startsWith("..") && !path.isAbsolute(relativePath))
+    );
   }
 
   #toQuotaKiB(maxSpaceGb: number) {
