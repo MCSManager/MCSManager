@@ -464,7 +464,7 @@ const batchOperation = async (actName: "start" | "stop" | "kill" | "restart") =>
 
 const batchDeleteInstance = async (deleteFile: boolean) => {
   if (selectedInstance.value.length === 0) return reportErrorMsg(t("TXT_CODE_a0a77be5"));
-  const { execute, state } = batchDelete();
+  const { execute } = batchDelete();
   const uuids: string[] = [];
   const paths: string[] = [];
   for (const i of selectedInstance.value) {
@@ -490,7 +490,7 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
     okText: t("TXT_CODE_d507abff"),
     async onOk() {
       try {
-        await execute({
+        const result = await execute({
           params: {
             daemonId: currentRemoteNode.value?.uuid ?? ""
           },
@@ -499,7 +499,8 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
             deleteFile: deleteFile
           }
         });
-        if (state.value) {
+        const deleteResult = result.value;
+        if (deleteResult?.instances.length) {
           confirmDeleteInstanceModal.destroy();
           exitMultipleMode();
           notification.success({
@@ -507,6 +508,12 @@ const batchDeleteInstance = async (deleteFile: boolean) => {
             description: t("TXT_CODE_50075e02")
           });
           await initInstancesData(true);
+        }
+        if (deleteResult?.errors.length) {
+          notification.warning({
+            message: t("TXT_CODE_2a3b0c17"),
+            description: deleteResult.errors.map((item) => item.err).join("\n")
+          });
         }
       } catch (err: any) {
         console.error(err);

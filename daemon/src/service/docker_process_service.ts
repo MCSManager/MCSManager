@@ -62,17 +62,26 @@ export class SetupDockerContainer extends AsyncTask {
       throw new Error("Instance's Docker configuration is not found! ");
     }
 
-    const instanceWorkspace = this.instance.absoluteCwdPath();
-    const dockerHostWorkspace = storageQuotaService.resolveDockerHostWorkspace(instance);
+    const instanceWorkspace = storageQuotaService.resolveDockerLocalWorkspace(instance);
+    const dockerHostWorkspace = storageQuotaService.resolveDockerHostWorkspace(
+      instance,
+      InstanceSubsystem.getInstanceDataDir()
+    );
     if (!fs.existsSync(instanceWorkspace)) {
       await fs.mkdirs(instanceWorkspace);
     }
     if (!fs.existsSync(dockerHostWorkspace)) {
-      await fs.mkdirs(dockerHostWorkspace);
+      const canCreateDockerHostWorkspace =
+        dockerHostWorkspace === instanceWorkspace || (await fs.pathExists(path.dirname(dockerHostWorkspace)));
+      if (canCreateDockerHostWorkspace) {
+        await fs.mkdirs(dockerHostWorkspace);
+      }
     }
     // Because some accounts inside the container may be different from the account running MCSManager,
     // not setting permissions to 777 may cause failure to install any files properly.
-    Array.from(new Set([instanceWorkspace, dockerHostWorkspace])).forEach((workspace) => {
+    const chmodWorkspaces = new Set([instanceWorkspace]);
+    if (fs.existsSync(dockerHostWorkspace)) chmodWorkspaces.add(dockerHostWorkspace);
+    Array.from(chmodWorkspaces).forEach((workspace) => {
       fs.chmod(workspace, 0o777).catch(() => {
         logger.error(`Failed to chmod the instance directory to 777: ${workspace}`);
       });

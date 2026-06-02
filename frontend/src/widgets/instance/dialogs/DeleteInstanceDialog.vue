@@ -22,7 +22,7 @@ const submit = async (deleteFile: boolean | null = deleteFiles.value) => {
   const { execute } = batchDelete();
   submitBtnLoading.value = true;
   try {
-    await execute({
+    const result = await execute({
       params: {
         daemonId: props.daemonId || ""
       },
@@ -31,6 +31,10 @@ const submit = async (deleteFile: boolean | null = deleteFiles.value) => {
         deleteFile: deleteFile || false
       }
     });
+    const errors = result.value?.errors ?? [];
+    if (errors.length > 0) {
+      throw new Error(errors.map((item) => item.err).join("\n"));
+    }
     props.emitResult(true);
   } catch (error) {
     reportErrorMsg(error);

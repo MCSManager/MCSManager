@@ -8,6 +8,19 @@ import type {
   Schedule
 } from "@/types";
 
+
+export interface BatchDeleteInstanceResponse {
+  instanceUuids: string[];
+  instances: {
+    instanceUuid: string;
+    nickname: string;
+  }[];
+  errors: {
+    instanceUuid: string;
+    err: string;
+  }[];
+}
+
 export interface MissionPassportResponse {
   addr: string;
   password: string;
@@ -409,7 +422,7 @@ export const batchDelete = useDefineApi<
       deleteFile: boolean;
     };
   },
-  string[]
+  BatchDeleteInstanceResponse
 >({
   method: "DELETE",
   url: "/api/instance"

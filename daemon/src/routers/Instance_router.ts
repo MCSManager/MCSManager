@@ -20,6 +20,7 @@ import { IInstanceDetail, IJson } from "../service/interfaces";
 import { modService } from "../service/mod_service";
 import { ROLE } from "../service/protocol";
 import FileManager from "../service/system_file";
+import storageQuotaService from "../service/storage_quota_service";
 import uploadManager from "../service/upload_manager";
 
 // Some instances operate router authentication middleware
@@ -187,11 +188,24 @@ routerApp.on("instance/new", (ctx, data) => {
 });
 
 // update instance data
-routerApp.on("instance/update", (ctx, data) => {
+routerApp.on("instance/update", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;
   const config = data.config;
   try {
-    InstanceSubsystem.getInstance(instanceUuid)?.parameters(config);
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+    const shouldRemoveHardStorageQuota =
+      instance.config.processType === "docker" &&
+      config?.docker?.enableHardStorageQuota === false &&
+      (instance.config.docker.enableHardStorageQuota || instance.config.docker.storageQuotaProjectId);
+    if (shouldRemoveHardStorageQuota) {
+      const workspace = storageQuotaService.resolveDockerHostWorkspace(
+        instance,
+        InstanceSubsystem.getInstanceDataDir()
+      );
+      await storageQuotaService.deleteDockerHardQuotaIfManaged(instance, workspace);
+    }
+    instance.parameters(config);
     protocol.msg(ctx, "instance/update", { instanceUuid });
   } catch (err: any) {
     protocol.error(ctx, "instance/update", { instanceUuid: instanceUuid, err: err.message });
@@ -351,22 +365,29 @@ routerApp.on("instance/command", async (ctx, data) => {
 });
 
 // delete instance
-routerApp.on("instance/delete", (ctx, data) => {
+routerApp.on("instance/delete", async (ctx, data) => {
   const instanceUuids = data.instanceUuids;
   const deleteFile = data.deleteFile;
   const instances = [];
+  const errors = [];
   for (const instanceUuid of instanceUuids) {
     try {
       const instance = InstanceSubsystem.getInstance(instanceUuid);
       if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-      instances.push({
+      const deletedInstance = {
         instanceUuid: instance.instanceUuid,
         nickname: instance.config.nickname
+      };
+      await InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
+      instances.push(deletedInstance);
+    } catch (err: any) {
+      errors.push({
+        instanceUuid,
+        err: err.message
       });
-      InstanceSubsystem.removeInstance(instanceUuid, deleteFile);
-    } catch (err: any) {}
+    }
   }
-  protocol.msg(ctx, "instance/delete", { instanceUuids, instances });
+  protocol.msg(ctx, "instance/delete", { instanceUuids, instances, errors });
 });
 
 // perform complex asynchronous tasks

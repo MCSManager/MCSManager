@@ -1,13 +1,12 @@
-import { execFile, spawn } from "node:child_process";
 import fs from "fs-extra";
 import { toText } from "mcsmanager-common";
+import { execFile, spawn } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import StorageSubsystem from "../common/system_storage";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
-import InstanceSubsystem from "./system_instance";
 
 const execFilePromise = promisify(execFile);
 
@@ -15,6 +14,7 @@ const PROJECTS_PATH = "/etc/projects";
 const PROJID_PATH = "/etc/projid";
 const MIN_PROJECT_ID = 200000;
 const COMMAND_TIMEOUT_MS = 10000;
+const HARD_QUOTA_HEADROOM_RATIO = 1.1;
 const COMMAND_ENV = {
   ...process.env,
   LC_ALL: "C",
@@ -140,9 +140,12 @@ async function writeFileWithSudoTee(filePath: string, content: string) {
 class StorageQuotaService {
   private quotaOperation = Promise.resolve();
 
-  public resolveDockerHostWorkspace(instance: Instance) {
+  public resolveDockerLocalWorkspace(instance: Instance) {
+    return instance.absoluteCwdPath();
+  }
+
+  public resolveDockerHostWorkspace(instance: Instance, defaultInstanceDir: string) {
     let cwd = instance.absoluteCwdPath();
-    const defaultInstanceDir = InstanceSubsystem.getInstanceDataDir();
     const hostRealPath = toText(process.env.MCSM_DOCKER_WORKSPACE_PATH);
     if (hostRealPath && cwd.includes(defaultInstanceDir)) {
       cwd = path.normalize(path.join(hostRealPath, instance.instanceUuid));
@@ -159,11 +162,18 @@ class StorageQuotaService {
 
   public async clearDockerHardQuotaIfManaged(instance: Instance, workspace: string) {
     return this.#withQuotaOperationLock(async () => {
-      await this.#clearDockerHardQuotaIfManaged(instance, workspace);
+      await this.#clearDockerHardQuotaIfManaged(instance, workspace, false);
+    });
+  }
+
+  public async deleteDockerHardQuotaIfManaged(instance: Instance, workspace: string) {
+    return this.#withQuotaOperationLock(async () => {
+      await this.#clearDockerHardQuotaIfManaged(instance, workspace, true);
     });
   }
 
   async #ensureDockerHardQuota(instance: Instance, workspace: string, maxSpaceGb: number) {
+    await this.#assertWorkspaceVisible(workspace);
     const mountInfo = await this.#getXfsProjectQuotaMount(workspace);
     await this.#assertXfsQuotaCommand();
 
@@ -190,20 +200,34 @@ class StorageQuotaService {
     }
   }
 
-  async #clearDockerHardQuotaIfManaged(instance: Instance, workspace: string) {
+  async #clearDockerHardQuotaIfManaged(instance: Instance, workspace: string, removeProject: boolean) {
     const projectName = this.#getProjectName(instance);
     const projectFiles = await this.#readProjectFiles();
     const projectId = instance.config.docker.storageQuotaProjectId ?? projectFiles.projids.get(projectName);
     if (!projectId || projectFiles.projids.get(projectName) !== projectId) return;
 
-    const mountInfo = await this.#getXfsProjectQuotaMount(workspace);
-    await this.#assertXfsQuotaCommand();
-    await execWithSudo("xfs_quota", [
-      "-x",
-      "-c",
-      `limit -p bhard=0 ${projectName}`,
-      mountInfo.mountPoint
-    ]);
+    const projectWorkspace = projectFiles.projects.get(projectId) ?? workspace;
+    if (await fs.pathExists(projectWorkspace)) {
+      const mountInfo = await this.#getXfsProjectQuotaMount(projectWorkspace);
+      await this.#assertXfsQuotaCommand();
+      await execWithSudo("xfs_quota", [
+        "-x",
+        "-c",
+        `limit -p bhard=0 ${projectName}`,
+        mountInfo.mountPoint
+      ]);
+    } else {
+      throw new Error(
+        $t("TXT_CODE_storage_quota_workspace_not_visible", {
+          path: projectWorkspace
+        })
+      );
+    }
+
+    if (removeProject) {
+      await this.#removeProjectFiles(projectFiles, projectName, projectId);
+      instance.config.docker.storageQuotaProjectId = undefined;
+    }
   }
 
   async #withQuotaOperationLock<T>(operation: () => Promise<T>) {
@@ -272,12 +296,22 @@ class StorageQuotaService {
     }
   }
 
+  async #assertWorkspaceVisible(workspace: string) {
+    if (!(await fs.pathExists(workspace))) {
+      throw new Error(
+        $t("TXT_CODE_storage_quota_workspace_not_visible", {
+          path: workspace
+        })
+      );
+    }
+  }
+
   #getProjectName(instance: Instance) {
     return `mcsm_${instance.instanceUuid.replace(/[^a-zA-Z0-9]/g, "")}`;
   }
 
   #toQuotaKiB(maxSpaceGb: number) {
-    return `${Math.ceil(maxSpaceGb * 1024 * 1024)}k`;
+    return `${Math.ceil(maxSpaceGb * HARD_QUOTA_HEADROOM_RATIO * 1024 * 1024)}k`;
   }
 
   async #readProjectFiles(): Promise<IProjectFiles> {
@@ -401,6 +435,36 @@ class StorageQuotaService {
         writeFileWithSudo(
           PROJECTS_PATH,
           this.#upsertLine(projectFiles.projectsText, `${projectId}:${path.normalize(workspace)}`, (line) => {
+            const index = line.indexOf(":");
+            return index !== -1 && Number(line.slice(0, index)) === projectId;
+          })
+        )
+      ]);
+    } catch (error: any) {
+      throw new Error($t("TXT_CODE_storage_quota_project_file_write_failed", { error: error.message }));
+    }
+  }
+
+  async #removeProjectFiles(projectFiles: IProjectFiles, projectName: string, projectId: number) {
+    const removeLines = (text: string, shouldRemove: (line: string) => boolean) => {
+      const lines = text.replace(/\r\n/g, "\n").split("\n");
+      if (lines.length && lines[lines.length - 1] === "") lines.pop();
+      const nextLines = lines.filter((line) => !shouldRemove(line.trim()));
+      return nextLines.length ? `${nextLines.join("\n")}\n` : "";
+    };
+
+    try {
+      await Promise.all([
+        writeFileWithSudo(
+          PROJID_PATH,
+          removeLines(projectFiles.projidText, (line) => {
+            const index = line.indexOf(":");
+            return index !== -1 && line.slice(0, index) === projectName;
+          })
+        ),
+        writeFileWithSudo(
+          PROJECTS_PATH,
+          removeLines(projectFiles.projectsText, (line) => {
             const index = line.indexOf(":");
             return index !== -1 && Number(line.slice(0, index)) === projectId;
           })

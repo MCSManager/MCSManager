@@ -116,7 +116,7 @@ class UserSubsystem {
       });
     });
   }
-  deleteUserInstances(uuid: string | null, instanceIds: IUserApp[], allUsers = false) {
+  async deleteUserInstances(uuid: string | null, instanceIds: IUserApp[], allUsers = false) {
     if (uuid && allUsers) {
       throw new Error("Type error, The uuid and allUsers cannot be true at the same time.");
     }
@@ -126,16 +126,19 @@ class UserSubsystem {
       if (!value.daemonId || !value.instanceUuid)
         throw new Error("Type error, The instances of user must be IUserHaveInstance array.");
     });
-    users.forEach((user) => {
-      if (!user) return;
-      user.instances = user.instances.filter((value) => {
+    for (const user of users) {
+      if (!user) continue;
+      const nextInstances = user.instances.filter((value) => {
         for (const instance of instanceIds) {
           if (instance.daemonId === value.daemonId && instance.instanceUuid === value.instanceUuid)
             return false;
         }
         return true;
       });
-    });
+      if (nextInstances.length === user.instances.length) continue;
+      user.instances = nextInstances;
+      await Storage.getStorage().store("User", user.uuid, user);
+    }
   }
 
   getUserByUserName(userName: string) {

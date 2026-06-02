@@ -16,6 +16,7 @@ import InstanceConfig from "../entity/instance/Instance_config";
 import { $t } from "../i18n";
 import { sleep } from "../utils/sleep";
 import logger from "./log";
+import storageQuotaService from "./storage_quota_service";
 import InstanceControl from "./system_instance_control";
 import takeoverContainer from "./takeover_container";
 
@@ -155,19 +156,39 @@ class InstanceSubsystem extends EventEmitter {
   createInstance(cfg: any, persistence = true, uuid?: string) {
     const newUuid = uuid || v4().replace(/-/gim, "");
     const instance = new Instance(newUuid, new InstanceConfig());
+    if (this.instances.has(instance.instanceUuid)) {
+      throw new Error(`The application instance ${instance.instanceUuid} already exists.`);
+    }
+    const storedConfigExists = StorageSubsystem.fileExists(
+      path.join("InstanceConfig", `${instance.instanceUuid}.json`)
+    );
     // Instance working directory verification and automatic creation
     if (!cfg.cwd || cfg.cwd === ".") {
       cfg.cwd = path.normalize(`${this.instanceDataDir}/${instance.instanceUuid}`);
     }
-    if (!fs.existsSync(cfg.cwd)) fs.mkdirsSync(cfg.cwd);
-    // Set the default input and output encoding
-    cfg.ie = cfg.oe = cfg.fileCode = "utf8";
-    // Build and initialize the type from the parameters
+    const cwd = path.normalize(cfg.cwd);
+    const createdCwd = !fs.existsSync(cwd);
+    if (createdCwd) fs.mkdirsSync(cwd);
+    try {
+      // Set the default input and output encoding
+      cfg.ie = cfg.oe = cfg.fileCode = "utf8";
+      // Build and initialize the type from the parameters
 
-    instance.parameters(cfg, persistence);
-    instance.forceExec(new FunctionDispatcher());
-    this.addInstance(instance);
-    return instance;
+      instance.parameters(cfg, persistence);
+      instance.forceExec(new FunctionDispatcher());
+      this.addInstance(instance);
+      return instance;
+    } catch (error) {
+      try {
+        if (createdCwd) fs.removeSync(cwd);
+        if (persistence && !storedConfigExists) StorageSubsystem.delete("InstanceConfig", instance.instanceUuid);
+      } catch (cleanupError: any) {
+        logger.warn(
+          `Failed to rollback instance creation for ${instance.instanceUuid}: ${cleanupError?.message ?? cleanupError}`
+        );
+      }
+      throw error;
+    }
   }
 
   addInstance(instance: Instance) {
@@ -212,15 +233,20 @@ class InstanceSubsystem extends EventEmitter {
     });
   }
 
-  removeInstance(instanceUuid: string, deleteFile: boolean) {
+  async removeInstance(instanceUuid: string, deleteFile: boolean) {
     const instance = this.getInstance(instanceUuid);
     if (instance) {
       if (instance.status() !== Instance.STATUS_STOP) throw new Error($t("TXT_CODE_fb547313"));
+      if (instance.config.processType === "docker") {
+        const workspace = storageQuotaService.resolveDockerHostWorkspace(instance, this.instanceDataDir);
+        await storageQuotaService.deleteDockerHardQuotaIfManaged(instance, workspace);
+      }
+      const cwd = instance.absoluteCwdPath();
+      if (deleteFile) await fs.remove(cwd);
       instance.destroy();
       this.instances.delete(instanceUuid);
       StorageSubsystem.delete("InstanceConfig", instanceUuid);
       InstanceControl.deleteInstanceAllTask(instanceUuid);
-      if (deleteFile) fs.remove(instance.absoluteCwdPath(), (err) => {});
       return true;
     }
     throw new Error($t("TXT_CODE_3bfb9e04"));
