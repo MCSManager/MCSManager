@@ -3,6 +3,7 @@ declare global {
     nickname: string;
     startCommand: string;
     stopCommand: string;
+    stopTimeout?: number;
     cwd: string;
     ie: string;
     oe: string;

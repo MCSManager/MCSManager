@@ -162,6 +162,7 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   nickname: "",
   startCommand: "",
   stopCommand: "^c",
+  stopTimeout: 0,
   cwd: "",
   ie: "UTF-8",
   oe: "UTF-8",
