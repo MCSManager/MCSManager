@@ -1,33 +1,18 @@
-import { ref, watch, createVNode, type Ref } from "vue";
-import { t } from "@/lang/i18n";
-import { Modal, message } from "ant-design-vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import uploadService from "@/services/uploadService";
 import { useFileManager } from "@/hooks/useFileManager";
+import { t } from "@/lang/i18n";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { Modal, message } from "ant-design-vue";
+import { createVNode, ref, type Ref } from "vue";
 
 export function useModUpload(
   instanceId: string,
   daemonId: string,
   activeKey: Ref<string>,
-  loadMods: () => void
+  loadMods: () => void | Promise<void>
 ) {
   const { selectedFiles } = useFileManager(instanceId, daemonId);
   const opacity = ref(false);
   const fileInput = ref<HTMLInputElement>();
-
-  let uploading = false;
-  watch(
-    () => uploadService.uiData.value,
-    (newValue) => {
-      if (newValue.current) {
-        uploading = true;
-      } else if (uploading) {
-        uploading = false;
-        loadMods();
-      }
-    },
-    { immediate: true }
-  );
 
   const onUploadClick = () => {
     fileInput.value?.click();
@@ -45,7 +30,9 @@ export function useModUpload(
     }
 
     const targetDir = activeKey.value === "1" ? "mods" : "plugins";
-    await selectedFiles(validFiles, targetDir);
+    await selectedFiles(validFiles, targetDir, async () => {
+      await loadMods();
+    });
     if (fileInput.value) fileInput.value.value = "";
   };
 
@@ -100,7 +87,9 @@ export function useModUpload(
       content: `${t("TXT_CODE_CONFIRM_UPLOAD")} ${name} ?`,
       async onOk() {
         const targetDir = activeKey.value === "1" ? "mods" : "plugins";
-        await selectedFiles(validFiles, targetDir);
+        await selectedFiles(validFiles, targetDir, async () => {
+          await loadMods();
+        });
       }
     });
   };

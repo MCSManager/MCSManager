@@ -251,7 +251,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     unzipmode: "0",
     code: "utf-8",
     ref: ref<VNodeRef>(),
-    ok: () => {},
+    ok: () => { },
     cancel: () => {
       dialog.value.value = "";
     },
@@ -290,7 +290,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         dialog.value.info = "";
         dialog.value.mode = "";
         dialog.value.style = {};
-        dialog.value.ok = () => {};
+        dialog.value.ok = () => { };
       };
     });
   };
@@ -550,6 +550,58 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     applyToAll: boolean;
   };
 
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const normalizeTargetPath = (path: string) => removeTrail(path, "/") + "/";
+
+  const isViewingTargetPath = (path: string) => {
+    return normalizeTargetPath(currentPath.value) === normalizeTargetPath(path);
+  };
+
+  const refreshUploadTarget = async (path: string) => {
+    if (!isViewingTargetPath(path)) return;
+    await getFileList();
+  };
+
+  const waitForInstanceFileTasks = async (baselineTaskCount: number, timeout = 15000) => {
+    const startTime = Date.now();
+    await sleep(500);
+
+    while (Date.now() - startTime < timeout) {
+      await getFileStatus();
+      const taskCount = fileStatus.value?.instanceFileTask ?? 0;
+      if (taskCount <= baselineTaskCount) return;
+      await sleep(500);
+    }
+  };
+
+  const createUploadCompletionTracker = (handler: () => void | Promise<void>) => {
+    let pendingCount = 0;
+    let finished = false;
+
+    const handleCompletion = () => {
+      if (finished) return;
+      finished = true;
+      void Promise.resolve(handler()).catch((error) => {
+        console.error("Failed to handle upload completion:", error);
+      });
+    };
+
+    return {
+      bind(task: ReturnType<typeof uploadService.append>) {
+        pendingCount += 1;
+        task.instanceInfo = {
+          instanceId: instanceId || "",
+          daemonId: daemonId || ""
+        };
+        task.addCallback("end", () => {
+          pendingCount -= 1;
+          if (pendingCount === 0) handleCompletion();
+        });
+      }
+    };
+  };
+
   const getExistingUploadNames = async (files: SelectedUploadFile[], targetPath: string) => {
     const targetNames = new Set(files.map((item) => item.file.name));
     const existingNames = new Set<string>();
@@ -644,10 +696,18 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     };
   };
 
-  const selectedFiles = async (files: File[], overridePath?: string) => {
+  const selectedFiles = async (
+    files: File[],
+    overridePath?: string,
+    onComplete?: () => void | Promise<void>
+  ) => {
     const { state: missionCfg, execute: getUploadMissionCfg } = uploadAddress();
     const targetPath = overridePath || currentPath.value;
     const uploadQueue: SelectedUploadFile[] = files.map((file) => ({ file, overwrite: false }));
+    const completionTracker = createUploadCompletionTracker(async () => {
+      await refreshUploadTarget(targetPath);
+      if (onComplete) await onComplete();
+    });
 
     try {
       const occupiedNames = await getExistingUploadNames(uploadQueue, targetPath);
@@ -663,9 +723,9 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
           const decision = sharedDecision
             ? { ...sharedDecision, applyToAll: true }
             : await confirmUploadConflict(
-                fileName,
-                countRemainingUploadConflicts(uploadQueue, i, occupiedNames)
-              );
+              fileName,
+              countRemainingUploadConflicts(uploadQueue, i, occupiedNames)
+            );
 
           if (decision.applyToAll) {
             sharedDecision = {
@@ -703,10 +763,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
               overwrite: f.overwrite
             },
             (task) => {
-              task.instanceInfo = {
-                instanceId: instanceId || "",
-                daemonId: daemonId || ""
-              };
+              completionTracker.bind(task);
             }
           );
         } catch (err: any) {
@@ -736,9 +793,13 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
     const hasConflict = occupiedNames.has(folderName);
 
     const startUpload = async () => {
+      const targetPath = currentPath.value;
+      await getFileStatus();
+      const baselineTaskCount = fileStatus.value?.instanceFileTask ?? 0;
+      const zipKey = `zip_${folderName}`;
+
       try {
         spinning.value = true;
-        const zipKey = `zip_${folderName}`;
 
         message.loading({
           content: t("TXT_CODE_b3825da"),
@@ -752,6 +813,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         const totalSize = allItems.reduce((sum, item) => sum + (item.file?.size || 0), 0);
         // prevent files from being too large causing excessive memory usage in the browser
         if (totalSize > MAX_FOLDER_SIZE) {
+          message.destroy(zipKey);
           return message.error(
             t("TXT_CODE_upload_folder_too_large", {
               size: convertFileSize(MAX_FOLDER_SIZE.toString())
@@ -771,7 +833,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         const { execute: getUploadMissionCfg } = uploadAddress();
         const res = await getUploadMissionCfg({
           params: {
-            upload_dir: currentPath.value,
+            upload_dir: targetPath,
             daemonId: daemonId,
             uuid: instanceId,
             file_name: zipFileName
@@ -782,15 +844,33 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
         const addr = parseForwardAddress(getFileConfigAddr(res.value), "http");
 
-        uploadService.append(zipFile, addr, res.value.password, {
-          overwrite: true,
-          unzip: true,
-          code: "utf-8",
-          deleteAfterUnzip: true
+        const completionTracker = createUploadCompletionTracker(async () => {
+          await waitForInstanceFileTasks(baselineTaskCount);
+          await refreshUploadTarget(targetPath);
+          message.success({
+            content: t("TXT_CODE_773f36a0"),
+            key: zipKey
+          });
         });
+
+        uploadService.append(
+          zipFile,
+          addr,
+          res.value.password,
+          {
+            overwrite: true,
+            unzip: true,
+            code: "utf-8",
+            deleteAfterUnzip: true
+          },
+          (task) => {
+            completionTracker.bind(task);
+          }
+        );
 
         message.loading({ content: t("TXT_CODE_b82225c3"), key: zipKey });
       } catch (error: any) {
+        message.destroy(zipKey);
         reportErrorMsg(error.message);
       } finally {
         spinning.value = false;
@@ -976,9 +1056,8 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         console.error("Failed to revert to old path after jump failure:", err)
       );
 
-      const errorMsg = `${t("TXT_CODE_96281410")} ${
-        error.response?.data?.message || error.message || ""
-      }`;
+      const errorMsg = `${t("TXT_CODE_96281410")} ${error.response?.data?.message || error.message || ""
+        }`;
       return reportErrorMsg(errorMsg);
     } finally {
       spinning.value = false;

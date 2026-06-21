@@ -36,7 +36,7 @@ import {
 } from "@ant-design/icons-vue";
 import { Modal, type ItemType, type UploadChangeParam, type UploadProps } from "ant-design-vue";
 import dayjs from "dayjs";
-import { computed, h, nextTick, onMounted, onUnmounted, ref, watch, type CSSProperties } from "vue";
+import { computed, h, nextTick, onMounted, onUnmounted, ref, type CSSProperties } from "vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 
 const props = defineProps<{
@@ -162,7 +162,6 @@ const columns = computed(() => {
   ]);
 });
 
-let uploading = false;
 const uploadProgress = computed(() => {
   if (uploadService.uiData.value.current) {
     return (uploadService.uiData.value.current[0] * 100) / uploadService.uiData.value.current[1];
@@ -180,18 +179,6 @@ const uploadInstanceTag = computed(() => {
   }
   return "";
 });
-watch(
-  () => uploadService.uiData.value,
-  (newValue) => {
-    if (newValue.current) {
-      uploading = true;
-    } else if (uploading) {
-      uploading = false;
-      getFileList();
-    }
-  },
-  { immediate: true }
-);
 
 const downloadProgress = (dTask: any) => {
   return dTask.total > 0 ? Number(((dTask.current / dTask.total) * 100).toFixed(2)) : 0;
