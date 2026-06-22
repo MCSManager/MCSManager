@@ -884,7 +884,7 @@ defineExpose({
                 </a-form-item>
               </a-col>
 
-              <a-col :xs="24" :offset="0">
+              <a-col :xs="24" :md="12" :offset="0">
                 <a-form-item :name="['instance', 'config', 'stopCommand']">
                   <a-typography-title :level="5">
                     {{ t("TXT_CODE_11cfe3a1") }}
@@ -900,6 +900,27 @@ defineExpose({
                       :placeholder="t('TXT_CODE_83053cd5')"
                     />
                   </a-input-group>
+                </a-form-item>
+              </a-col>
+
+              <a-col :xs="24" :md="12" :offset="0">
+                <a-form-item :name="['instance', 'config', 'stopTimeout']">
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_f26ad72e") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-typography-text type="secondary" class="typography-text-ellipsis">
+                      {{ t("TXT_CODE_62232876") }}
+                    </a-typography-text>
+                  </a-typography-paragraph>
+                  <a-input-number
+                    v-model:value="formData.instance.config.stopTimeout"
+                    :min="0"
+                    :max="86400"
+                    :step="1"
+                    :precision="0"
+                    style="width: 100%"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
