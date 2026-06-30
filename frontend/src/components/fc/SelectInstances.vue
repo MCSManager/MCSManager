@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router } from "@/config/router.js";
+import { router } from "@/config/router";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
