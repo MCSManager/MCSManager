@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { router } from "@/config/router";
 import { useDialog } from "@/hooks/useDialog";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
@@ -26,7 +27,7 @@ const isNodeSupported = (node: ComputedNodeInfo): boolean => {
   if (!props.targetPlatforms || props.targetPlatforms.length === 0) {
     return true;
   }
-  
+
   if (!node.dockerPlatforms || node.dockerPlatforms.length === 0) {
     return false;
   }
@@ -50,6 +51,13 @@ const selectNode = (node: ComputedNodeInfo) => {
     return;
   }
   submit(node);
+};
+
+const toNodesPage = () => {
+  router.push({
+    path: "/node"
+  });
+  isVisible.value = false;
 };
 
 onMounted(async () => {
@@ -85,7 +93,7 @@ defineExpose({
                 </p>
               </div>
               <div>
-                <a-button type="primary" @click="selectNode(availableNodes[0])">
+                <a-button type="primary" @click="toNodesPage">
                   {{ t("TXT_CODE_4fe5dce5") }}
                 </a-button>
               </div>
@@ -99,7 +107,10 @@ defineExpose({
           :data-ip="item.ip"
           :data-uuid="item.uuid"
           class="node-item"
-          :class="{ 'node-unsupported': props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item) }"
+          :class="{
+            'node-unsupported':
+              props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)
+          }"
           @click="selectNode(item)"
         >
           <div class="node-content">
@@ -109,7 +120,11 @@ defineExpose({
                 <a-tag v-if="item.available" color="green">{{ t("TXT_CODE_b078a763") }}</a-tag>
                 <a-tag v-else color="red">{{ t("TXT_CODE_6cbb84a9") }}</a-tag>
                 <a-tag
-                  v-if="props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)"
+                  v-if="
+                    props.targetPlatforms &&
+                    props.targetPlatforms.length > 0 &&
+                    !isNodeSupported(item)
+                  "
                   color="orange"
                 >
                   <ExclamationCircleOutlined />
@@ -122,10 +137,19 @@ defineExpose({
               <span>{{ t("TXT_CODE_3d0885c0") }}: {{ item?.platformText }}</span>
               <span
                 :class="{
-                  'node-warning-text': props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)
+                  'node-warning-text':
+                    props.targetPlatforms &&
+                    props.targetPlatforms.length > 0 &&
+                    !isNodeSupported(item)
                 }"
               >
-                <template v-if="props.targetPlatforms && props.targetPlatforms.length > 0 && !isNodeSupported(item)">
+                <template
+                  v-if="
+                    props.targetPlatforms &&
+                    props.targetPlatforms.length > 0 &&
+                    !isNodeSupported(item)
+                  "
+                >
                   <ExclamationCircleOutlined />
                 </template>
                 Docker platforms: {{ item?.dockerPlatforms?.join(",") || "--" }}

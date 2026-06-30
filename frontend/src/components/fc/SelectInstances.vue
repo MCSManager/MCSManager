@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-import BetweenMenus from "../BetweenMenus.vue";
-import type { MountComponent, NodeStatus } from "@/types";
-import type { UserInstance } from "@/types/user";
-import { INSTANCE_STATUS } from "@/types/const";
+import { router } from "@/config/router.js";
+import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
-import {
-  SearchOutlined,
-  DownOutlined,
-  FormOutlined,
-  DatabaseOutlined,
-  FrownOutlined
-} from "@ant-design/icons-vue";
-import type { AntColumnsType, AntTableCell } from "@/types/ant";
-import { reportErrorMsg } from "@/tools/validator";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
 import { computeNodeName } from "@/tools/nodes";
+import { reportErrorMsg } from "@/tools/validator";
+import type { MountComponent, NodeStatus } from "@/types";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
+import { INSTANCE_STATUS } from "@/types/const";
+import type { UserInstance } from "@/types/user";
+import {
+  DatabaseOutlined,
+  DownOutlined,
+  FormOutlined,
+  FrownOutlined,
+  SearchOutlined
+} from "@ant-design/icons-vue";
 import _, { throttle } from "lodash";
-import { useScreen } from "@/hooks/useScreen";
+import { computed, onMounted, ref } from "vue";
 import AppConfigProvider from "../AppConfigProvider.vue";
+import BetweenMenus from "../BetweenMenus.vue";
 
 interface Props extends MountComponent {
   title: string;
@@ -120,11 +121,6 @@ const submit = async () => {
   await cancel();
 };
 
-onMounted(async () => {
-  open.value = true;
-  await initInstancesData();
-});
-
 const handleQueryInstance = throttle(async () => {
   await initInstancesData();
 }, 600);
@@ -139,6 +135,18 @@ const handleChangeNode = async (item: NodeStatus) => {
     console.error(err.message);
   }
 };
+
+const toNodesPage = () => {
+  router.push({
+    path: "/node"
+  });
+  cancel();
+};
+
+onMounted(async () => {
+  open.value = true;
+  await initInstancesData();
+});
 </script>
 
 <template>
@@ -167,7 +175,7 @@ const handleChangeNode = async (item: NodeStatus) => {
                       {{ computeNodeName(item.ip, item.available, item.remarks) }}
                     </a-menu-item>
                     <a-menu-divider />
-                    <a-menu-item key="toNodesPage">
+                    <a-menu-item @click="toNodesPage">
                       <FormOutlined />
                       {{ t("TXT_CODE_28e53fed") }}
                     </a-menu-item>
@@ -244,7 +252,10 @@ const handleChangeNode = async (item: NodeStatus) => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'safe'">
-                  <span v-if="record?.config?.processType === 'docker'" style="color: var(--color-green-6)">
+                  <span
+                    v-if="record?.config?.processType === 'docker'"
+                    style="color: var(--color-green-6)"
+                  >
                     {{ t("TXT_CODE_a3f13157") }}
                   </span>
                   <span v-else class="color-danger">{{ t("TXT_CODE_201bc643") }}</span>
