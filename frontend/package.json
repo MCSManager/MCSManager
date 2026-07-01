@@ -40,7 +40,7 @@
     "codemirror": "^6.0.1",
     "crc": "^4.3.2",
     "dayjs": "^1.11.9",
-    "echarts": "^5.4.3",
+    "echarts": "^6.1.0",
     "eventemitter3": "^5.0.1",
     "fflate": "^0.8.2",
     "i18next-scanner": "^4.3.0",
