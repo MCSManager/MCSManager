@@ -184,7 +184,7 @@ const downloadProgress = (dTask: any) => {
   return dTask.total > 0 ? Number(((dTask.current / dTask.total) * 100).toFixed(2)) : 0;
 };
 
-let task: NodeJS.Timer | undefined;
+let task: ReturnType<typeof setInterval> | undefined;
 task = setInterval(async () => {
   await getFileStatus();
 }, 3000);

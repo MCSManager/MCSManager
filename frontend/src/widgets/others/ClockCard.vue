@@ -44,7 +44,7 @@ const getDate = () => dayjs().format("YYYY/MM/DD dddd");
 const time = ref(getTime());
 const date = ref(getDate());
 
-let timer: NodeJS.Timer | null;
+let timer: ReturnType<typeof setInterval> | null;
 
 onMounted(() => {
   timer = setInterval(() => {

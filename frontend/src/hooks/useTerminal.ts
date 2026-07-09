@@ -78,7 +78,7 @@ export function useTerminal() {
     return state.value?.config.processType === "docker";
   });
 
-  let fitAddonTask: NodeJS.Timer;
+  let fitAddonTask: ReturnType<typeof setInterval>;
   let cachedSize = {
     w: 160,
     h: 40

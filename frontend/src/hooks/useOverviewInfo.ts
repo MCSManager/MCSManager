@@ -60,7 +60,7 @@ function computeResponseData(v: Ref<IPanelOverviewResponse | undefined>) {
 
 export function useOverviewInfo() {
   const result = overviewInfo();
-  let task: NodeJS.Timer | undefined;
+  let task: ReturnType<typeof setInterval> | undefined;
 
   const newState = ref<ComputedOverviewResponse>();
 
