@@ -347,6 +347,22 @@ export const updateConfigFile = useDefineApi<
   url: "/api/protected_instance/process_config/file"
 });
 
+export const initializeConfigFile = useDefineApi<
+  {
+    params: {
+      uuid: string;
+      daemonId: string;
+      sourceFile: string;
+      targetFile: string;
+      type: string;
+    };
+  },
+  boolean
+>({
+  method: "POST",
+  url: "/api/protected_instance/process_config/init"
+});
+
 export const batchStart = useDefineApi<
   {
     data: {

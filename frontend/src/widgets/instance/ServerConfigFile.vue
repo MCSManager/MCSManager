@@ -13,6 +13,7 @@ import configComponent from "@/components/InstanceConfigEditor.vue";
 import FileEditor from "./dialogs/FileEditor.vue";
 import { useKeyboardEvents } from "@/hooks/useKeyboardEvents";
 import { reportErrorMsg } from "@/tools/validator";
+import { useInstanceInfo } from "@/hooks/useInstance";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -27,6 +28,7 @@ const configPath = getMetaOrRouteValue("configPath");
 const extName = getMetaOrRouteValue("extName");
 const type = getMetaOrRouteValue("type");
 const isFailure = ref(false);
+const { isRunning } = useInstanceInfo({ instanceId, daemonId });
 const { toPage } = useAppRouters();
 const toConfigOverview = () => {
   toPage({
@@ -142,6 +144,10 @@ onMounted(async () => {
             </a-button>
           </template>
         </BetweenMenus>
+      </a-col>
+
+      <a-col v-if="extName === 'palworld_ini' && isRunning" :span="24">
+        <a-alert type="warning" show-icon :message="t('TXT_CODE_palworld.runningWarning')" />
       </a-col>
 
       <configComponent

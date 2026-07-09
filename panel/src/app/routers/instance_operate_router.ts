@@ -347,6 +347,36 @@ router.put(
 );
 
 // [Low-level Permission]
+// Initialize an instance configuration from a game-provided default file
+router.post(
+  "/process_config/init",
+  permission({ level: ROLE.USER }),
+  validator({
+    query: {
+      daemonId: String,
+      uuid: String,
+      sourceFile: String,
+      targetFile: String,
+      type: String
+    }
+  }),
+  async (ctx) => {
+    try {
+      const daemonId = String(ctx.query.daemonId);
+      const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+      ctx.body = await new RemoteRequest(remoteService).request("instance/process_config/init", {
+        instanceUuid: String(ctx.query.uuid),
+        sourceFile: String(ctx.query.sourceFile),
+        targetFile: String(ctx.query.targetFile),
+        type: String(ctx.query.type)
+      });
+    } catch (err) {
+      ctx.body = err;
+    }
+  }
+);
+
+// [Low-level Permission]
 // Update instance low-privilege configuration data (normal user)
 router.put(
   "/instance_update",

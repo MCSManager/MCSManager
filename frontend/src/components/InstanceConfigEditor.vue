@@ -5,6 +5,7 @@ import { getDescriptionByTitle } from "@/tools/common";
 import { jsonToMap } from "@/tools/common";
 import isEmpty from "lodash/isEmpty";
 import { configData } from "@/config/instanceConfigMap";
+import type { ConfigField } from "@/config/instanceConfigMap";
 
 const props = defineProps<{
   config: Record<string, any>;
@@ -19,6 +20,13 @@ const data:
   | undefined = configData[props.configName];
 
 const parsedConfig = jsonToMap(props.config);
+
+const getField = (title: string): ConfigField => {
+  const field = getDescriptionByTitle(data?.config || {}, title);
+  if (typeof field === "string") return { description: field };
+  if (field && typeof field === "object") return field;
+  return {};
+};
 </script>
 
 <template>
@@ -44,9 +52,9 @@ const parsedConfig = jsonToMap(props.config);
       <template #body>
         <div v-if="!isEmpty(props.config)">
           <div v-for="(item, index) in parsedConfig" :key="index" class="p-1">
-            <LineOption :option-value="parsedConfig" :option-key="index">
+            <LineOption :option-value="parsedConfig" :option-key="index" :field="getField(index)">
               <template #title>{{ index }}</template>
-              <template #info>{{ getDescriptionByTitle(data?.config, index) }}</template>
+              <template #info>{{ getField(index).description }}</template>
             </LineOption>
           </div>
         </div>

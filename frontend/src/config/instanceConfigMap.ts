@@ -1,11 +1,137 @@
 import { t } from "@/lang/i18n";
 
+export interface ConfigField {
+  description?: string;
+  control?: "text" | "number" | "boolean" | "select" | "password";
+  min?: number;
+  max?: number;
+  step?: number;
+  options?: { label: string; value: string | number | boolean }[];
+}
+
 export const configData: {
   [key: string]: {
     desc: string;
     config: Record<string, any>;
   };
 } = {
+  "palworld/PalWorldSettings.ini": {
+    desc: t("TXT_CODE_palworld.configDesc"),
+    config: {
+      ServerName: { description: t("TXT_CODE_palworld.serverName"), control: "text" },
+      ServerDescription: {
+        description: t("TXT_CODE_palworld.serverDescription"),
+        control: "text"
+      },
+      AdminPassword: {
+        description: t("TXT_CODE_palworld.adminPassword"),
+        control: "password"
+      },
+      ServerPassword: {
+        description: t("TXT_CODE_palworld.serverPassword"),
+        control: "password"
+      },
+      ServerPlayerMaxNum: {
+        description: t("TXT_CODE_palworld.maxPlayers"),
+        control: "number",
+        min: 1,
+        max: 32,
+        step: 1
+      },
+      PublicPort: {
+        description: t("TXT_CODE_palworld.publicPort"),
+        control: "number",
+        min: 1,
+        max: 65535,
+        step: 1
+      },
+      PublicIP: { description: t("TXT_CODE_palworld.publicIp"), control: "text" },
+      RCONEnabled: { description: t("TXT_CODE_palworld.rconEnabled"), control: "boolean" },
+      RCONPort: {
+        description: t("TXT_CODE_palworld.rconPort"),
+        control: "number",
+        min: 1,
+        max: 65535,
+        step: 1
+      },
+      RESTAPIEnabled: {
+        description: t("TXT_CODE_palworld.restEnabled"),
+        control: "boolean"
+      },
+      RESTAPIPort: {
+        description: t("TXT_CODE_palworld.restPort"),
+        control: "number",
+        min: 1,
+        max: 65535,
+        step: 1
+      },
+      bIsPvP: { description: t("TXT_CODE_palworld.pvp"), control: "boolean" },
+      bHardcore: { description: t("TXT_CODE_palworld.hardcore"), control: "boolean" },
+      ExpRate: {
+        description: t("TXT_CODE_palworld.expRate"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      PalCaptureRate: {
+        description: t("TXT_CODE_palworld.captureRate"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      PalSpawnNumRate: {
+        description: t("TXT_CODE_palworld.spawnRate"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      DayTimeSpeedRate: {
+        description: t("TXT_CODE_palworld.daySpeed"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      NightTimeSpeedRate: {
+        description: t("TXT_CODE_palworld.nightSpeed"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      DeathPenalty: {
+        description: t("TXT_CODE_palworld.deathPenalty"),
+        control: "select",
+        options: ["None", "Item", "ItemAndEquipment", "All"].map((value) => ({
+          label: value,
+          value
+        }))
+      },
+      BaseCampWorkerMaxNum: {
+        description: t("TXT_CODE_palworld.baseWorkers"),
+        control: "number",
+        min: 1,
+        max: 50,
+        step: 1
+      },
+      GuildPlayerMaxNum: {
+        description: t("TXT_CODE_palworld.guildPlayers"),
+        control: "number",
+        min: 1,
+        step: 1
+      },
+      PalEggDefaultHatchingTime: {
+        description: t("TXT_CODE_palworld.eggTime"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      },
+      WorkSpeedRate: {
+        description: t("TXT_CODE_palworld.workSpeed"),
+        control: "number",
+        min: 0,
+        step: 0.1
+      }
+    }
+  },
   "common/server.properties": {
     desc: t("TXT_CODE_c3022e22"),
     config: {

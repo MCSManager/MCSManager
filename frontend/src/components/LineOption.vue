@@ -2,13 +2,17 @@
 import { t } from "@/lang/i18n";
 import { EditOutlined } from "@ant-design/icons-vue";
 import { computed, onMounted, ref } from "vue";
+import type { ConfigField } from "@/config/instanceConfigMap";
 
 const LONG_MAGIC_PREFIX = "<__long__>";
 const FLOAT_MAGIC_PREFIX = "<__float__>";
+const PALWORLD_QUOTED_PREFIX = "<__palworld_quoted__>";
+const PALWORLD_RAW_PREFIX = "<__palworld_raw__>";
 const props = defineProps<{
   optionValue?: Record<string, any>;
   optionKey?: any;
   custom?: boolean;
+  field?: ConfigField;
 }>();
 
 enum CONTROL {
@@ -28,6 +32,10 @@ const computedValue = computed({
         return v.replace(LONG_MAGIC_PREFIX, "");
       } else if (v.startsWith(FLOAT_MAGIC_PREFIX)) {
         return v.replace(FLOAT_MAGIC_PREFIX, "");
+      } else if (v.startsWith(PALWORLD_QUOTED_PREFIX)) {
+        return v.replace(PALWORLD_QUOTED_PREFIX, "");
+      } else if (v.startsWith(PALWORLD_RAW_PREFIX)) {
+        return v.replace(PALWORLD_RAW_PREFIX, "");
       }
     }
     return v;
@@ -41,14 +49,20 @@ const computedValue = computed({
       } else if (preValue.startsWith(FLOAT_MAGIC_PREFIX)) {
         value.value[key.value] = `${FLOAT_MAGIC_PREFIX}${v}`;
         return;
+      } else if (preValue.startsWith(PALWORLD_QUOTED_PREFIX)) {
+        value.value[key.value] = `${PALWORLD_QUOTED_PREFIX}${v}`;
+        return;
+      } else if (preValue.startsWith(PALWORLD_RAW_PREFIX)) {
+        value.value[key.value] = `${PALWORLD_RAW_PREFIX}${v}`;
+        return;
       }
-      return;
     }
     value.value[key.value] = v;
   }
 });
 
 const valueType = computed(() => {
+  if (props.field?.control === "boolean") return CONTROL.SELECT;
   if (typeof value.value[key.value] === "boolean") {
     return CONTROL.SELECT;
   }
@@ -84,7 +98,32 @@ onMounted(() => {
               <slot name="optionInput"></slot>
             </div>
             <div v-else class="flex">
-              <a-input v-if="type == CONTROL.INPUT" v-model:value="computedValue" />
+              <a-input-password
+                v-if="field?.control === 'password'"
+                v-model:value="computedValue"
+              />
+              <a-input-number
+                v-else-if="field?.control === 'number'"
+                v-model:value="computedValue"
+                :min="field.min"
+                :max="field.max"
+                :step="field.step"
+                style="width: 100%"
+              />
+              <a-select
+                v-else-if="field?.control === 'select'"
+                v-model:value="computedValue"
+                style="width: 100%"
+              >
+                <a-select-option
+                  v-for="option in field.options"
+                  :key="String(option.value)"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </a-select-option>
+              </a-select>
+              <a-input v-else-if="type == CONTROL.INPUT" v-model:value="computedValue" />
               <a-select
                 v-if="type == CONTROL.SELECT"
                 v-model:value="computedValue"
