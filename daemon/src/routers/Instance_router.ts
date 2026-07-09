@@ -558,6 +558,46 @@ routerApp.on("instance/process_config/file", (ctx, data) => {
   }
 });
 
+routerApp.on("instance/process_config/init", (ctx, data) => {
+  try {
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+    const fileManager = new FileManager(instance.absoluteCwdPath());
+    if (!fileManager.check(data.sourceFile)) {
+      throw new Error($t("TXT_CODE_palworldConfig.initSourceMissing"));
+    }
+    if (!fileManager.checkPath(data.targetFile)) {
+      throw new Error($t("TXT_CODE_Instance_router.accessFileErr"));
+    }
+    const targetPath = fileManager.toAbsolutePath(data.targetFile);
+    if (fs.existsSync(targetPath) && fs.statSync(targetPath).size > 0) {
+      throw new Error($t("TXT_CODE_palworldConfig.initTargetExists"));
+    }
+    const sourceText = fs.readFileSync(fileManager.toAbsolutePath(data.sourceFile), "utf-8");
+    const processConfig = new ProcessConfig({
+      fileName: data.targetFile,
+      redirect: data.targetFile,
+      path: targetPath,
+      type: data.type,
+      info: null,
+      fromLink: null
+    });
+    const parsed = new ProcessConfig({
+      fileName: data.sourceFile,
+      redirect: data.sourceFile,
+      path: fileManager.toAbsolutePath(data.sourceFile),
+      type: data.type,
+      info: null,
+      fromLink: null
+    }).read();
+    fs.mkdirsSync(path.dirname(targetPath));
+    processConfig.write(parsed);
+    protocol.response(ctx, Boolean(sourceText));
+  } catch (err: any) {
+    protocol.responseError(ctx, err);
+  }
+});
+
 // Get instance terminal log
 routerApp.on("instance/outputlog", async (ctx, data) => {
   const instanceUuid = data.instanceUuid;

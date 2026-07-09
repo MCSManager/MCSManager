@@ -4,6 +4,7 @@ import properties from "properties";
 import toml from "smol-toml";
 import yaml from "yaml";
 import { $t } from "../../i18n";
+import { parsePalworldConfig, stringifyPalworldConfig } from "./palworld_config";
 
 const CONFIG_FILE_ENCODE = "utf-8";
 const LONG_MAGIC_PREFIX = "<__long__>";
@@ -54,6 +55,9 @@ export class ProcessConfig {
     if (this.iProcessConfig.type === "txt") {
       return text;
     }
+    if (this.iProcessConfig.type === "palworld_ini") {
+      return parsePalworldConfig(text);
+    }
   }
 
   // Automatically save to the local configuration file according to the parameter object
@@ -93,8 +97,22 @@ export class ProcessConfig {
     if (this.iProcessConfig.type === "txt") {
       text = object.toString();
     }
+    if (this.iProcessConfig.type === "palworld_ini") {
+      text = stringifyPalworldConfig(object);
+    }
     if (!text && this.iProcessConfig.type !== "txt")
       throw new Error($t("TXT_CODE_process_config.writEmpty"));
+    if (this.iProcessConfig.type === "palworld_ini") {
+      const temporaryPath = `${this.iProcessConfig.path}.tmp-${process.pid}-${Date.now()}`;
+      try {
+        fs.writeFileSync(temporaryPath, text, { encoding: CONFIG_FILE_ENCODE });
+        parsePalworldConfig(fs.readFileSync(temporaryPath, CONFIG_FILE_ENCODE));
+        fs.moveSync(temporaryPath, this.iProcessConfig.path, { overwrite: true });
+      } finally {
+        if (fs.existsSync(temporaryPath)) fs.removeSync(temporaryPath);
+      }
+      return;
+    }
     fs.writeFileSync(this.iProcessConfig.path, text, { encoding: CONFIG_FILE_ENCODE });
   }
 

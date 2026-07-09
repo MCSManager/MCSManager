@@ -5,11 +5,12 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { getInstanceConfigByType, type InstanceConfigs } from "@/hooks/useInstance";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
-import { getConfigFileList } from "@/services/apis/instance";
+import { getConfigFileList, initializeConfigFile } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types";
 import { FileExclamationOutlined } from "@ant-design/icons-vue";
-import { onMounted, ref } from "vue";
+import { message } from "ant-design-vue";
+import { computed, onMounted, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -40,6 +41,7 @@ const render = async () => {
     const files: string[] = [];
     configFiles.forEach((v: InstanceConfigs) => {
       files.push(v.path);
+      if (v.initializeFrom) files.push(v.initializeFrom);
     });
     await execute({
       params: {
@@ -61,10 +63,39 @@ const render = async () => {
         }
       });
     });
+    const existingFiles = new Set(realFiles.value.map((file) => file.file));
+    configFiles.forEach((config) => {
+      config.canInitialize =
+        !config.check && !!config.initializeFrom && existingFiles.has(config.initializeFrom);
+    });
     InstanceConfigsList.value = configFiles;
   } catch (err: any) {
     console.error(err);
     return reportErrorMsg(err.message);
+  }
+};
+
+const hasAvailableConfigs = computed(() =>
+  InstanceConfigsList.value.some((config) => config.check || config.canInitialize)
+);
+
+const { execute: initialize, isLoading: isInitializing } = initializeConfigFile();
+const initializeConfig = async (config: InstanceConfigs) => {
+  if (!config.initializeFrom) return;
+  try {
+    await initialize({
+      params: {
+        uuid: instanceId ?? "",
+        daemonId: daemonId ?? "",
+        sourceFile: config.initializeFrom,
+        targetFile: config.path,
+        type: config.type
+      }
+    });
+    message.success(t("TXT_CODE_palworld.initialized"));
+    await render();
+  } catch (err: any) {
+    reportErrorMsg(err.message);
   }
 };
 
@@ -110,13 +141,13 @@ onMounted(async () => {
         <CardPanel style="height: 100%">
           <template #body>
             <a-list
-              v-if="realFiles && realFiles.length > 0"
+              v-if="hasAvailableConfigs"
               item-layout="horizontal"
               :data-source="InstanceConfigsList"
               :loading="isLoading"
             >
               <template #renderItem="{ item }">
-                <a-list-item v-if="item.check">
+                <a-list-item v-if="item.check || item.canInitialize">
                   <a-list-item-meta>
                     <template #title>
                       <a-tag v-if="item.conflict" color="warning">
@@ -133,8 +164,21 @@ onMounted(async () => {
                     </template>
                   </a-list-item-meta>
                   <template #actions>
-                    <a-button size="middle" @click="toEdit(item.redirect, item.path, item.type)">
+                    <a-button
+                      v-if="item.check"
+                      size="middle"
+                      @click="toEdit(item.redirect, item.path, item.type)"
+                    >
                       {{ t("TXT_CODE_ad207008") }}
+                    </a-button>
+                    <a-button
+                      v-else
+                      type="primary"
+                      size="middle"
+                      :loading="isInitializing"
+                      @click="initializeConfig(item)"
+                    >
+                      {{ t("TXT_CODE_palworld.initialize") }}
                     </a-button>
                   </template>
                 </a-list-item>

@@ -13,7 +13,12 @@ export function useServerConfig() {
 
   const refresh = async (type: string, instanceId: string, daemonId: string) => {
     serverConfigFiles.value = [];
-    serverConfigFiles.value = getInstanceConfigByType(type).map((v: InstanceConfigs) => v.path);
+    const configs = getInstanceConfigByType(type);
+    const candidateFiles: string[] = configs.flatMap((config: InstanceConfigs) => [
+      config.path,
+      config.initializeFrom || ""
+    ]);
+    serverConfigFiles.value = Array.from(new Set<string>(candidateFiles)).filter(Boolean);
     await requestConfigFileList({
       params: {
         uuid: instanceId ?? "",
@@ -23,6 +28,7 @@ export function useServerConfig() {
         files: serverConfigFiles.value
       }
     });
+    serverConfigFiles.value = (configFileList.value || []).map((item) => item.file);
   };
 
   return {
