@@ -9,12 +9,140 @@ export interface ConfigField {
   options?: { label: string; value: string | number | boolean }[];
 }
 
+const numberField = (
+  description: string,
+  min: number,
+  max: number,
+  step = 0.1
+): ConfigField => ({ description, control: "number", min, max, step });
+
+const selectField = (
+  description: string,
+  values: Array<string | number | boolean>
+): ConfigField => ({
+  description,
+  control: "select",
+  options: values.map((value) => ({ label: String(value), value }))
+});
+
 export const configData: {
   [key: string]: {
     desc: string;
     config: Record<string, any>;
   };
 } = {
+  "enshrouded/enshrouded_server.json": {
+    desc: "Enshrouded dedicated-server settings. Individual gameplay values apply only when gameSettingsPreset is Custom.",
+    config: {
+      name: { description: "Server name shown in the browser.", control: "text" },
+      saveDirectory: { description: "Save-game directory.", control: "text" },
+      logDirectory: { description: "Server log directory.", control: "text" },
+      ip: { description: "Internal bind address.", control: "text" },
+      queryPort: numberField("Steam query port.", 1, 65535, 1),
+      slotCount: numberField("Maximum concurrent players.", 1, 16, 1),
+      tags: { description: "Comma-separated server tags.", control: "text" },
+      voiceChatMode: selectField("Voice-chat range.", ["Proximity", "Global"]),
+      enableVoiceChat: { description: "Enable in-game voice chat.", control: "boolean" },
+      enableTextChat: { description: "Enable in-game text chat.", control: "boolean" },
+      gameSettingsPreset: selectField(
+        "Difficulty preset. Select Custom to apply the individual gameplay settings below.",
+        ["Default", "Relaxed", "Hard", "Survival", "Custom"]
+      ),
+      gameSettings: {
+        playerHealthFactor: numberField("Player maximum-health multiplier.", 0.25, 4),
+        playerManaFactor: numberField("Player maximum-mana multiplier.", 0.25, 4),
+        playerStaminaFactor: numberField("Player maximum-stamina multiplier.", 0.25, 4),
+        playerBodyHeatFactor: selectField("Player body-heat capacity.", [0.5, 1, 1.5, 2]),
+        playerDivingTimeFactor: numberField("Player underwater-time multiplier.", 0.5, 2),
+        enableDurability: { description: "Enable weapon durability.", control: "boolean" },
+        enableStarvingDebuff: { description: "Enable hunger and starvation.", control: "boolean" },
+        foodBuffDurationFactor: numberField("Food-buff duration multiplier.", 0.5, 2),
+        fromHungerToStarving: numberField(
+          "Hungry-state duration in nanoseconds (5–20 minutes).",
+          300000000000,
+          1200000000000,
+          60000000000
+        ),
+        shroudTimeFactor: numberField("Time-in-Shroud multiplier.", 0.5, 2),
+        enableGliderTurbulences: {
+          description: "Enable air turbulence while gliding.",
+          control: "boolean"
+        },
+        weatherFrequency: selectField("Weather-event frequency.", [
+          "Disabled",
+          "Rare",
+          "Normal",
+          "Often"
+        ]),
+        fishingDifficulty: selectField("Fishing minigame difficulty.", [
+          "VeryEasy",
+          "Easy",
+          "Normal",
+          "Hard",
+          "VeryHard"
+        ]),
+        randomSpawnerAmount: selectField("Number of enemies in the world.", [
+          "Few",
+          "Normal",
+          "Many",
+          "Extreme"
+        ]),
+        miningDamageFactor: numberField("Mining damage and resource-yield multiplier.", 0.5, 2),
+        plantGrowthSpeedFactor: numberField("Plant-growth speed multiplier.", 0.25, 2),
+        resourceDropStackAmountFactor: numberField("Resource stack-size multiplier.", 0.25, 2),
+        factoryProductionSpeedFactor: numberField("Workshop production-speed multiplier.", 0.25, 2),
+        perkUpgradeRecyclingFactor: numberField("Rune return when salvaging upgraded weapons.", 0, 1),
+        perkCostFactor: numberField("Weapon-upgrade Rune-cost multiplier.", 0.25, 2),
+        experienceCombatFactor: numberField("Combat experience multiplier.", 0.25, 2),
+        experienceMiningFactor: numberField("Mining experience multiplier.", 0, 2),
+        experienceExplorationQuestsFactor: numberField(
+          "Exploration and quest experience multiplier.",
+          0.25,
+          2
+        ),
+        aggroPoolAmount: selectField("Simultaneous enemy attackers.", [
+          "Few",
+          "Normal",
+          "Many",
+          "Extreme"
+        ]),
+        enemyDamageFactor: numberField("Non-boss enemy-damage multiplier.", 0.25, 5),
+        enemyHealthFactor: numberField("Non-boss enemy-health multiplier.", 0.25, 4),
+        enemyStaminaFactor: numberField("Non-boss enemy-stamina multiplier.", 0.5, 2),
+        enemyPerceptionRangeFactor: numberField("Enemy perception-range multiplier.", 0.5, 2),
+        bossDamageFactor: numberField("Boss-damage multiplier.", 0.2, 5),
+        bossHealthFactor: numberField("Boss-health multiplier.", 0.2, 5),
+        threatBonus: numberField("Enemy attack-frequency multiplier.", 0.25, 4),
+        pacifyAllEnemies: {
+          description: "Keep non-boss enemies passive until attacked.",
+          control: "boolean"
+        },
+        tamingStartleRepercussion: selectField("Progress lost when wildlife is startled.", [
+          "KeepProgress",
+          "LoseSomeProgress",
+          "LoseAllProgress"
+        ]),
+        dayTimeDuration: numberField(
+          "Daytime duration in nanoseconds (2–60 minutes).",
+          120000000000,
+          3600000000000,
+          60000000000
+        ),
+        nightTimeDuration: numberField(
+          "Nighttime duration in nanoseconds (2–60 minutes).",
+          120000000000,
+          3600000000000,
+          60000000000
+        ),
+        tombstoneMode: selectField("Items lost on death.", [
+          "AddBackpackMaterials",
+          "Everything",
+          "NoTombstone"
+        ]),
+        curseModifier: selectField("Shroud-curse frequency.", ["Easy", "Normal", "Hard"])
+      }
+    }
+  },
   "palworld/PalWorldSettings.ini": {
     desc: t("TXT_CODE_palworld.configDesc"),
     config: {

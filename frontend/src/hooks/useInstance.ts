@@ -31,12 +31,14 @@ export const TYPE_MINECRAFT_NUKKIT = "minecraft/bedrock/nukkit";
 export const TYPE_HYTALE = "hytale";
 export const TYPE_STEAM_SERVER_UNIVERSAL = "steam/universal";
 export const TYPE_PALWORLD = "steam/palworld";
+export const TYPE_ENSHROUDED = "steam/enshrouded";
 export const TYPE_TERRARIA = "steam/terraria";
 
 export const INSTANCE_TYPE_TRANSLATION: MapData<string> = {
   [TYPE_UNIVERSAL]: t("TXT_CODE_a92a4aa1"),
   [TYPE_STEAM_SERVER_UNIVERSAL]: t("TXT_CODE_3d7fbe30"),
   [TYPE_PALWORLD]: t("TXT_CODE_palworld.type"),
+  [TYPE_ENSHROUDED]: "Enshrouded Dedicated Server",
   [TYPE_MINECRAFT_JAVA]: t("TXT_CODE_97f779b3"),
   [TYPE_MINECRAFT_BEDROCK]: t("TXT_CODE_7f1aef9f"),
   [TYPE_MINECRAFT_NUKKIT]: t("TXT_CODE_8f3e5807"),
@@ -434,6 +436,14 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
     info: t("TXT_CODE_palworld.configInfo"),
     initializeFrom: "DefaultPalWorldSettings.ini",
     category: [TYPE_PALWORLD, TYPE_STEAM_SERVER_UNIVERSAL]
+  },
+  {
+    fileName: "[Enshrouded] enshrouded_server.json",
+    path: "game/server/enshrouded_server.json",
+    redirect: "enshrouded/enshrouded_server.json",
+    type: "json",
+    info: "Configure server access and every documented Enshrouded gameplay setting.",
+    category: [TYPE_ENSHROUDED]
   },
   {
     fileName: "[Terraria] serverconfig.txt",
