@@ -439,7 +439,7 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   },
   {
     fileName: "[Enshrouded] enshrouded_server.json",
-    path: "game/server/enshrouded_server.json",
+    path: "server/enshrouded_server.json",
     redirect: "enshrouded/enshrouded_server.json",
     type: "json",
     info: "Configure server access and every documented Enshrouded gameplay setting.",
