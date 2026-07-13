@@ -6,6 +6,58 @@ export const configData: {
     config: Record<string, any>;
   };
 } = {
+  "windrose/ServerDescription.json": {
+    desc: "Windrose server connection and identity settings. Stop the server before saving.",
+    config: {
+      ServerDescription_Persistent: {
+        InviteCode: {
+          description: "Case-sensitive invite code (at least 6 alphanumeric characters).",
+          control: "text"
+        },
+        UseDirectConnection: {
+          description: "Allow players to connect directly by IP and port instead of invite code.",
+          control: "boolean"
+        },
+        DirectConnectionServerPort: {
+          description: "Direct-connection port.",
+          control: "number",
+          min: 1,
+          max: 65535,
+          step: 1
+        },
+        DirectConnectionProxyAddress: {
+          description: "Address used by the direct-connection proxy.",
+          control: "text"
+        },
+        UserSelectedRegion: {
+          description: "Connection-service region.",
+          control: "select",
+          options: ["SEA", "CIS", "EU"].map((value) => ({ label: value, value }))
+        },
+        IsPasswordProtected: {
+          description: "Require a password to join.",
+          control: "boolean"
+        },
+        Password: { description: "Server join password.", control: "password" },
+        ServerName: { description: "Server name shown to players.", control: "text" },
+        MaxPlayerCount: {
+          description: "Maximum simultaneous players.",
+          control: "number",
+          min: 1,
+          max: 10,
+          step: 1
+        },
+        P2pProxyAddress: {
+          description: "Internal P2P proxy address.",
+          control: "text"
+        }
+      }
+    }
+  },
+  "windrose/windrose_plus.json": {
+    desc: "Windrose+ live map, RCON, multiplier, and feature settings. Unknown options remain editable.",
+    config: {}
+  },
   "common/server.properties": {
     desc: t("TXT_CODE_c3022e22"),
     config: {

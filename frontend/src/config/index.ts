@@ -13,6 +13,7 @@ import Schedule from "@/widgets/instance/Schedule.vue";
 import InstanceServerConfigFile from "@/widgets/instance/ServerConfigFile.vue";
 import InstanceServerConfigOverview from "@/widgets/instance/ServerConfigOverview.vue";
 import InstanceShortcut from "@/widgets/instance/Shortcut.vue";
+import WindrosePlusPanel from "@/widgets/instance/WindrosePlusPanel.vue";
 import Terminal from "@/widgets/instance/Terminal.vue";
 import InstanceChart from "@/widgets/InstanceChart.vue";
 import InstanceList from "@/widgets/InstanceList.vue";
@@ -74,6 +75,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   InstanceServerConfigFile,
   InstanceFileManager,
   InstanceModManager,
+  WindrosePlusPanel,
   UserAccessSettings,
   ImageBox,
   QuickStartFlow,

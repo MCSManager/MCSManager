@@ -310,6 +310,20 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/instances/terminal/windrosePlus",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "WindrosePlusPanel",
+          title: "Windrose+ Web Panel",
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        }
+      ]
+    },
+    {
       page: "/instances/terminal/serverConfig",
       items: [
         {

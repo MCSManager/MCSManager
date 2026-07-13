@@ -140,6 +140,14 @@ const originRouterConfig: RouterConfig[] = [
             }
           },
           {
+            path: `/instances/terminal/windrosePlus`,
+            name: "Windrose+ Web Panel",
+            component: LayoutContainer,
+            meta: {
+              permission: ROLE.USER
+            }
+          },
+          {
             path: `/instances/terminal/serverConfig`,
             name: t("TXT_CODE_d07742fe"),
             component: LayoutContainer,

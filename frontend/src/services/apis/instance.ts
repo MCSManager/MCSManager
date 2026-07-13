@@ -147,6 +147,12 @@ export const updateInstanceConfig = useDefineApi<
       oe?: string;
       tag?: string[];
       stopCommand?: string;
+      processType?: string;
+      startCommand?: string;
+      updateCommand?: string;
+      docker?: {
+        env?: string[];
+      };
       eventTask?: {
         autoRestart: boolean;
         autoRestartMaxTimes: number;
