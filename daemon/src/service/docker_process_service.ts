@@ -29,6 +29,43 @@ type ExposedPorts = {
   [key: string]: {};
 };
 
+function attachDockerContainer(container: Docker.Container): Promise<NodeJS.ReadWriteStream> {
+  const query = {
+    stream: true,
+    stdout: true,
+    stderr: true,
+    stdin: true
+  };
+
+  return new Promise((resolve, reject) => {
+    container.modem.dial(
+      {
+        path: `/containers/${container.id}/attach?`,
+        method: "POST",
+        isStream: true,
+        hijack: true,
+        openStdin: true,
+        file: Buffer.alloc(0),
+        statusCodes: {
+          200: true,
+          404: "no such container",
+          500: "server error"
+        },
+        options: {
+          ...query,
+          hijack: true,
+          _query: query
+        }
+      },
+      (error: Error | null, stream: NodeJS.ReadWriteStream | null) => {
+        if (error) return reject(error);
+        if (!stream) return reject(new Error("Docker attach returned no stream"));
+        resolve(stream);
+      }
+    );
+  });
+}
+
 // Error exception at startup
 export class StartupDockerProcessError extends Error {
   constructor(msg: string) {
@@ -524,13 +561,7 @@ export class SetupDockerContainer extends AsyncTask {
     const container = this.container;
     if (!container) throw new Error("Attach Failed, Container is Null!");
     try {
-      const stream = await container.attach({
-        stream: true,
-        stdout: true,
-        stderr: true,
-        stdin: true,
-        hijack: true
-      });
+      const stream = await attachDockerContainer(container);
       stream.on("data", (text: any) => instance.print(iconv.decode(text, outputCode)));
       stream.on("error", (text: any) => instance.print(iconv.decode(text, outputCode)));
     } catch (error: any) {
@@ -571,13 +602,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
       }
 
       this.pid = this.container.id;
-      this.stream = await this.container.attach({
-        stream: true,
-        stdout: true,
-        stderr: true,
-        stdin: true,
-        hijack: true
-      });
+      this.stream = await attachDockerContainer(this.container);
       this.stream.on("data", (data) => this.emit("data", data));
       this.stream.on("error", (data) => this.emit("data", data));
       this.wait();
