@@ -81,11 +81,17 @@ export default class StorageSubsystem {
     const filePath = path.join(dirPath, `${uuid}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, { encoding: "utf-8" });
-    const dataObject = JSON.parse(data);
+    let dataObject: any;
+    try {
+      dataObject = JSON.parse(data);
+    } catch (error) {
+      console.error(
+        `[StorageSubsystem] Failed to parse ${filePath}, the file is likely corrupted. ` +
+          `Treating it as missing. Error: ${(error as Error).message}`
+      );
+      return null;
+    }
     const target = new classz();
-    // for (const v of Object. keys(target)) {
-    // if (dataObject[v] !== undefined) target[v] = dataObject[v];
-    // }
     // deep object copy
     return this.defineAttr(target, dataObject);
   }
