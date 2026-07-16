@@ -352,10 +352,15 @@ export function useTerminal() {
         return;
       }
       historyReplayGate.begin();
-      term.write(text, () => {
+      try {
+        term.write(text, () => {
+          historyReplayGate.end();
+          resolve();
+        });
+      } catch (error) {
         historyReplayGate.end();
         resolve();
-      });
+      }
     });
   }
 
