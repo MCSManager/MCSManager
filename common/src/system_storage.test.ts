@@ -56,3 +56,24 @@ describe("StorageSubsystem.load", () => {
     }).not.toThrow();
   });
 });
+
+describe("StorageSubsystem.store atomicity", () => {
+  it("never leaves a .tmp file behind after a successful store", () => {
+    StorageSubsystem.store("dummy_category", "atomic-uuid", { name: "value" });
+    const dirPath = path.join(tmpDir, "data", "dummy_category");
+    const files = fs.readdirSync(dirPath);
+    expect(files).toEqual(["atomic-uuid.json"]);
+  });
+
+  it("writes via a temp file then renames into place", () => {
+    // Directly exercise writeFile too, since it has its own temp-then-rename path.
+    // writeFile() doesn't create its parent directory (neither before nor after
+    // the atomic-write change), and the shared afterEach removes tmpDir/data
+    // entirely between tests, so recreate it here as this test's own precondition.
+    fs.mkdirsSync(path.join(tmpDir, "data"));
+    StorageSubsystem.writeFile("plain.txt", "hello");
+    const files = fs.readdirSync(path.join(tmpDir, "data"));
+    expect(files).toContain("plain.txt");
+    expect(files.some((f) => f.endsWith(".tmp"))).toBe(false);
+  });
+});

@@ -16,7 +16,9 @@ export default class StorageSubsystem {
 
   public writeFile(name: string, data: string) {
     const targetPath = path.normalize(path.join(StorageSubsystem.DATA_PATH, name));
-    fs.writeFileSync(targetPath, data, { encoding: "utf-8" });
+    const tmpPath = `${targetPath}.tmp`;
+    fs.writeFileSync(tmpPath, data, { encoding: "utf-8" });
+    fs.renameSync(tmpPath, targetPath);
   }
 
   public readFile(name: string) {
@@ -48,8 +50,10 @@ export default class StorageSubsystem {
     if (!this.checkFileName(uuid))
       throw new Error(`UUID ${uuid} does not conform to specification`);
     const filePath = path.join(dirPath, `${uuid}.json`);
+    const tmpPath = `${filePath}.tmp`;
     const data = JSON.stringify(object, null, 4);
-    fs.writeFileSync(filePath, data, { encoding: "utf-8" });
+    fs.writeFileSync(tmpPath, data, { encoding: "utf-8" });
+    fs.renameSync(tmpPath, filePath);
   }
 
   // deep copy of the primitive type with the copy target as the prototype
