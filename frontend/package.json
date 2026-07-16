@@ -9,7 +9,8 @@
     "type-check": "vue-tsc --noEmit --skipLibCheck -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "analyze": "vite build --mode analyze"
+    "analyze": "vite build --mode analyze",
+    "test": "vitest run"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
