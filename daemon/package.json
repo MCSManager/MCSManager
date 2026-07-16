@@ -48,6 +48,9 @@
     "uuid": "^8.3.2",
     "yaml": "^1.10.2"
   },
+  "overrides": {
+    "docker-modem": "git+https://github.com/mliem2k/docker-modem.git#3ec0b151bbcc8d5021b8303fed301b9272aba023"
+  },
   "devDependencies": {
     "@types/archiver": "^5.3.1",
     "@types/dockerode": "^3.2.7",
