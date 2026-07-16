@@ -171,6 +171,25 @@ export function checkInstanceAdvancedParams(
   };
 }
 
+function upgradeInsecureImageUrl(url: string): string {
+  return url.startsWith("http://") ? "https://" + url.slice("http://".length) : url;
+}
+
+/**
+ * The template market manifest is fetched from a remote, third-party URL
+ * we don't control. Some entries' `image` fields are plain http://, which
+ * browsers block as mixed content when the panel itself is served over
+ * https://. Force-upgrade those before the data leaves the panel.
+ */
+export function sanitizeMarketTemplate(template: IQuickStartTemplate): IQuickStartTemplate {
+  for (const pkg of template.packages ?? []) {
+    if (pkg.image) {
+      pkg.image = upgradeInsecureImageUrl(pkg.image);
+    }
+  }
+  return template;
+}
+
 /**
  * Get the app market list
  * @returns IQuickStartTemplate
@@ -185,7 +204,8 @@ export async function getAppMarketList() {
     const fileName = presetUrl?.split(SAVE_DIR_PATH)[1];
     const filePath = path.join(filesDir, fileName ?? "");
     if (fs.existsSync(filePath)) {
-      return JSON.parse(await fs.readFile(filePath, "utf-8")) as IQuickStartTemplate;
+      const template = JSON.parse(await fs.readFile(filePath, "utf-8")) as IQuickStartTemplate;
+      return sanitizeMarketTemplate(template);
     } else {
       throw new Error(`Request failed, status: 404`);
     }
@@ -200,7 +220,7 @@ export async function getAppMarketList() {
       // Use cache
       if (fileAge < CACHE_DURATION) {
         const cachedData = await fs.readFile(MARKET_CACHE_FILE_PATH, "utf-8");
-        return JSON.parse(cachedData) as IQuickStartTemplate;
+        return sanitizeMarketTemplate(JSON.parse(cachedData) as IQuickStartTemplate);
       }
     } catch (error) {
       // Cache file doesn't exist, continue to fetch new data
@@ -210,6 +230,6 @@ export async function getAppMarketList() {
       url: presetUrl,
       method: "GET"
     });
-    return presetConfig;
+    return sanitizeMarketTemplate(presetConfig);
   }
 }
