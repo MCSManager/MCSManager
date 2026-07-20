@@ -72,6 +72,10 @@ export default (parameter: IPermissionCfg) => {
     const key = ctx.request?.header["x-request-api-key"] || ctx.query.apikey;
     if (key) {
       const apiKey = String(key);
+      // Validate apiKey: only A-Z, a-z, 0-9 are allowed
+      // if (!checkSafeName(apiKey)) {
+      //   return apiError(ctx);
+      // }
       const user = getUuidByApiKey(apiKey);
       if (user && user.permission >= Number(parameter.level)) {
         return await next();
