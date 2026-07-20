@@ -38,7 +38,8 @@ const {
   execute: setUpTerminal,
   initTerminalWindow,
   sendCommand,
-  clearTerminal
+  clearTerminal,
+  writeHistoryLog
 } = props.useTerminalHook;
 
 const instanceId = props.instanceId;
@@ -94,9 +95,9 @@ events.once("detail", async () => {
 
     if (value) {
       if (state.value?.config?.terminalOption?.haveColor) {
-        term?.write(encodeConsoleColor(value));
+        await writeHistoryLog(encodeConsoleColor(value));
       } else {
-        term?.write(value);
+        await writeHistoryLog(value);
       }
     }
   } catch (error: any) {}
