@@ -13,6 +13,12 @@ export interface MissionPassportResponse {
   password: string;
   prefix: string;
   remoteMappings: RemoteMappingEntry[];
+  dataPlaneMode?: "proxy" | "direct";
+  proxy?: {
+    daemonId: string;
+    httpBase: string;
+    wsPath: string;
+  };
 }
 
 export const setUpTerminalStreamChannel = useDefineApi<
@@ -196,6 +202,12 @@ export const uploadAddress = useDefineApi<
     password: string;
     addr: string;
     remoteMappings: RemoteMappingEntry[];
+    dataPlaneMode?: "proxy" | "direct";
+    proxy?: {
+      daemonId: string;
+      httpBase: string;
+      wsPath: string;
+    };
   }
 >({
   url: "/api/instance/upload",

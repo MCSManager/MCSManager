@@ -398,6 +398,9 @@ onMounted(async () => {
   const cfg = await getSettingsConfig();
   formData.value = res.value!;
   const fd = formData.value as any;
+  if (fd.dataPlaneMode !== "direct" && fd.dataPlaneMode !== "proxy") {
+    fd.dataPlaneMode = "proxy";
+  }
   ssoSnapshot.value = {
     ssoType: fd.ssoType || "oidc",
     ssoIssuer: fd.ssoIssuer || "",
@@ -835,6 +838,29 @@ onUnmounted(() => {
                         :value="item.value"
                       >
                         {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_DATA_PLANE_MODE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_DATA_PLANE_MODE_DESC") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value.prop="(formData as any).dataPlaneMode"
+                      style="max-width: 420px"
+                    >
+                      <a-select-option value="proxy">
+                        {{ t("TXT_CODE_DATA_PLANE_MODE_PROXY") }}
+                      </a-select-option>
+                      <a-select-option value="direct">
+                        {{ t("TXT_CODE_DATA_PLANE_MODE_DIRECT") }}
                       </a-select-option>
                     </a-select>
                   </a-form-item>

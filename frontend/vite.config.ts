@@ -65,6 +65,12 @@ export default defineConfig({
       "/socket.io": {
         target: "ws://localhost:23333",
         ws: true
+      },
+      // Panel data-plane proxy for Socket.IO terminal streams (browser → panel → daemon)
+      "/socket.io-daemon": {
+        target: "ws://localhost:23333",
+        ws: true,
+        changeOrigin: true
       }
     }
   },

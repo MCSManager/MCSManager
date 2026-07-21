@@ -22,7 +22,11 @@ import uploadService from "@/services/uploadService";
 import { convertFileSize } from "@/tools/fileSize";
 import { compressFolder, scanDirectory, type ScanItem } from "@/tools/folderUploader";
 import { number2permission, permission2number } from "@/tools/permission";
-import { mapDaemonAddress, parseForwardAddress, type RemoteMappingEntry } from "@/tools/protocol";
+import {
+  resolveDaemonHttpBase,
+  type DataPlaneMission
+} from "@/tools/dataPlane";
+import { mapDaemonAddress, type RemoteMappingEntry } from "@/tools/protocol";
 import { removeTrail } from "@/tools/string";
 import { reportErrorMsg } from "@/tools/validator";
 import type {
@@ -40,6 +44,7 @@ import type { Key } from "ant-design-vue/es/table/interface";
 import { v4 } from "uuid";
 import { computed, createVNode, onMounted, reactive, ref, type VNodeRef } from "vue";
 
+/** @deprecated Prefer resolveDaemonHttpBase — kept for call sites that only need raw addr rewrite */
 export function getFileConfigAddr(config: { addr: string; remoteMappings?: RemoteMappingEntry[] }) {
   let addr = config.addr;
   if (config.remoteMappings) {
@@ -49,6 +54,10 @@ export function getFileConfigAddr(config: { addr: string; remoteMappings?: Remot
     }
   }
   return addr;
+}
+
+function resolveFileHttpBase(mission: DataPlaneMission, daemonId: string) {
+  return resolveDaemonHttpBase(mission, daemonId);
 }
 
 interface TabItem {
@@ -754,7 +763,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
           });
           if (!missionCfg.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
-          const addr = parseForwardAddress(getFileConfigAddr(missionCfg.value), "http");
+          const addr = resolveFileHttpBase(missionCfg.value, daemonId!);
           uploadService.append(
             f.file,
             addr,
@@ -842,7 +851,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
 
         if (!res.value) throw new Error(t("TXT_CODE_e8ce38c2"));
 
-        const addr = parseForwardAddress(getFileConfigAddr(res.value), "http");
+        const addr = resolveFileHttpBase(res.value, daemonId);
 
         const completionTracker = createUploadCompletionTracker(async () => {
           await waitForInstanceFileTasks(baselineTaskCount);
@@ -956,7 +965,7 @@ export const useFileManager = (instanceId: string = "", daemonId: string = "") =
         }
       });
       if (!downloadCfg.value) return null;
-      const addr = parseForwardAddress(getFileConfigAddr(downloadCfg.value), "http");
+      const addr = resolveFileHttpBase(downloadCfg.value, daemonId || "");
       const path = `/download/${downloadCfg.value.password}/${fileName}`;
       return addr + path;
     } catch (err: any) {

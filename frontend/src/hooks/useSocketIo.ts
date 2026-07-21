@@ -1,3 +1,4 @@
+import { isDataPlaneProxyMode } from "@/tools/dataPlane";
 import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
 import { removeTrail } from "@/tools/string";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -16,6 +17,7 @@ export enum SocketStatus {
   Error = 0
 }
 
+/** Direct-mode socket: connect to daemon host with optional path prefix. */
 export function makeSocketIo(addr: string, prefix?: string) {
   prefix = removeTrail((prefix ?? "").trim(), "/");
   return io(parseForwardAddress(addr, "ws"), {
@@ -29,12 +31,32 @@ export function makeSocketIo(addr: string, prefix?: string) {
   });
 }
 
+/** Explicit Socket.IO options (used by data-plane proxy mode). */
+export function makeSocketIoWithOptions(url: string, path: string) {
+  return io(url, {
+    path: removeTrail(path.trim(), "/") || "/socket.io",
+    multiplex: false,
+    reconnectionDelayMax: 1000 * 10,
+    timeout: 1000 * 30,
+    reconnection: true,
+    reconnectionAttempts: 3,
+    rejectUnauthorized: false,
+    withCredentials: true
+  });
+}
+
 export function useSocketIoClient() {
   let socket: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
   const socketStatus = ref<SocketStatus>(SocketStatus.Connecting);
 
   const testFrontendSocket = async (remoteNode?: Partial<ComputedNodeInfo>) => {
     const nodeCfg = remoteNode;
+
+    // In proxy mode the browser never reaches daemons; panel availability is authoritative.
+    if (isDataPlaneProxyMode()) {
+      socketStatus.value = nodeCfg?.available ? SocketStatus.Connected : SocketStatus.Error;
+      return;
+    }
 
     if (!nodeCfg?.available || !nodeCfg.ip) {
       socketStatus.value = SocketStatus.Error;

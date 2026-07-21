@@ -56,6 +56,12 @@ watch(remoteMappings, () => {
 </script>
 
 <template>
+  <a-alert
+    type="info"
+    show-icon
+    style="margin-bottom: 12px"
+    :message="t('TXT_CODE_REMOTE_MAPPING_PROXY_HINT')"
+  />
   <template v-if="remoteMappings.length > 0">
     <a-list item-layout="horizontal" :data-source="remoteMappings">
       <template #header>

@@ -98,7 +98,8 @@ router.all(
         allowChangeCmd: systemConfig?.allowChangeCmd || false,
         panelId: systemConfig?.panelId || null,
         ssoEnabled: systemConfig?.ssoEnabled || false,
-        ssoOnlyMode: systemConfig?.ssoOnlyMode || false
+        ssoOnlyMode: systemConfig?.ssoOnlyMode || false,
+        dataPlaneMode: systemConfig?.dataPlaneMode === "direct" ? "direct" : "proxy"
       } as Partial<SystemConfig>
     };
   }

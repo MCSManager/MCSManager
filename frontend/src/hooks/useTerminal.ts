@@ -4,7 +4,7 @@ import { t } from "@/lang/i18n";
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { toCopy } from "@/tools/copy";
-import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
+import { resolveDaemonSocketOptions } from "@/tools/dataPlane";
 import type { InstanceDetail } from "@/types";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -16,7 +16,7 @@ import { Terminal } from "@xterm/xterm";
 import EventEmitter from "eventemitter3";
 import type { Socket } from "socket.io-client";
 import { computed, onMounted, onUnmounted, ref, unref } from "vue";
-import { makeSocketIo } from "./useSocketIo";
+import { makeSocketIoWithOptions } from "./useSocketIo";
 import { createTerminalHistoryReplayGate } from "./terminalHistoryReplayGate";
 
 export const TERM_COLOR = {
@@ -103,22 +103,14 @@ export function useTerminal() {
     const remoteInfo = unref(res.value);
     if (!remoteInfo) throw new Error(t("TXT_CODE_181f2f08"));
 
-    let addr = remoteInfo.addr,
-      prefix = remoteInfo.prefix;
-    if (remoteInfo.remoteMappings) {
-      const mapped = mapDaemonAddress(remoteInfo.remoteMappings);
-      if (mapped) {
-        addr = mapped.addr;
-        prefix = mapped.prefix;
-      }
-    }
-    socketAddress.value = parseForwardAddress(addr, "ws");
+    const sockOpts = resolveDaemonSocketOptions(remoteInfo, config.daemonId);
+    socketAddress.value = sockOpts.url + sockOpts.path;
     const password = remoteInfo.password;
 
-    socket = makeSocketIo(addr, prefix);
+    socket = makeSocketIoWithOptions(sockOpts.url, sockOpts.path);
 
     socket.on("connect", () => {
-      console.log("[Socket.io] connect:", addr);
+      console.log("[Socket.io] connect:", socketAddress.value);
       socket?.emit("stream/auth", {
         data: { password }
       });
@@ -126,7 +118,7 @@ export function useTerminal() {
     });
 
     socket.on("connect_error", (error) => {
-      console.error("[Socket.io] Connect error: ", addr, error);
+      console.error("[Socket.io] Connect error: ", socketAddress.value, error);
       isConnect.value = false;
       events.emit("error", error);
     });
@@ -151,7 +143,7 @@ export function useTerminal() {
     });
 
     socket.on("reconnect", () => {
-      console.warn("[Socket.io] reconnect:", addr);
+      console.warn("[Socket.io] reconnect:", socketAddress.value);
       isConnect.value = true;
       socket?.emit("stream/auth", {
         data: { password }
@@ -160,7 +152,7 @@ export function useTerminal() {
 
     socket.on("disconnect", () => {
       if (!isManualDisconnect) {
-        console.warn("[Socket.io] disconnect:", addr);
+        console.warn("[Socket.io] disconnect:", socketAddress.value);
       }
       isConnect.value = false;
       events.emit("disconnect");

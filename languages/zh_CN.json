@@ -3448,5 +3448,10 @@
   "TXT_CODE_6542489a": "例如: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "设备写入速率限制 (BPS)",
   "TXT_CODE_2b2ff3ff": "限制容器对特定块设备的写入速率。格式如: /dev/sda:5MB。多个设备用逗号分隔。",
-  "TXT_CODE_f0dc9eca": "例如: /dev/sda:5MB"
+  "TXT_CODE_f0dc9eca": "例如: /dev/sda:5MB",
+  "TXT_CODE_DATA_PLANE_MODE": "数据面模式",
+  "TXT_CODE_DATA_PLANE_MODE_DESC": "控制浏览器如何访问节点的终端与文件传输。代理模式只需能访问面板；直连模式要求浏览器能访问每个节点（旧模式）。",
+  "TXT_CODE_DATA_PLANE_MODE_PROXY": "代理（浏览器 → 面板 → 节点）",
+  "TXT_CODE_DATA_PLANE_MODE_DIRECT": "直连（浏览器 → 节点）",
+  "TXT_CODE_REMOTE_MAPPING_PROXY_HINT": "地址映射仅在直连数据面模式下生效。代理模式下浏览器不会连接节点。"
 }

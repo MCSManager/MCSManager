@@ -10,6 +10,7 @@ import { operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
+import { buildDataPlaneMissionResponse } from "../service/daemon_proxy_utils";
 import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
@@ -238,9 +239,6 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.addr;
-      const prefix = remoteService.config.prefix;
-      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "stream_channel",
@@ -249,12 +247,13 @@ router.post(
           instanceUuid
         }
       });
-      ctx.body = {
-        password,
-        addr,
-        prefix,
-        remoteMappings
-      };
+      // stream uses addr + prefix separately (not fullAddr)
+      const body = buildDataPlaneMissionResponse(daemonId, password, remoteService);
+      if (body.dataPlaneMode === "direct") {
+        body.addr = remoteService.config.addr;
+        body.prefix = remoteService.config.prefix;
+      }
+      ctx.body = body;
     } catch (err) {
       ctx.body = err;
     }

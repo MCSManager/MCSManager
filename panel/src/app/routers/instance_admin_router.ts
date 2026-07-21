@@ -13,6 +13,7 @@ import { operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
+import { buildDataPlaneMissionResponse } from "../service/daemon_proxy_utils";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import userSystem from "../service/user_service";
@@ -94,8 +95,6 @@ router.post(
         instance_name: result.nickname
       });
       // Send a cross-end file upload task to the daemon
-      const addr = remoteService.config.fullAddr;
-      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -105,12 +104,13 @@ router.post(
           instanceUuid: newInstanceUuid
         }
       });
-      ctx.body = {
-        instanceUuid: newInstanceUuid,
-        password,
-        addr,
-        remoteMappings
-      };
+      const body = buildDataPlaneMissionResponse(daemonId, password, remoteService, {
+        instanceUuid: newInstanceUuid
+      });
+      if (body.dataPlaneMode === "direct") {
+        body.addr = remoteService.config.fullAddr;
+      }
+      ctx.body = body;
     } catch (err) {
       ctx.body = err;
     }
