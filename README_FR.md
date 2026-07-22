@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://mcsmanager.com/" target="_blank">
-    <img src="https://public-link.oss-cn-shenzhen.aliyuncs.com/mcsm_picture/logo.png" alt="MCSManagerLogo.png" width="510px" />    
+    <img src="./frontend/src/assets/logo.png" alt="MCSManagerLogo.png" width="510px" />    
   </a>
 
   <br />
