@@ -7,7 +7,7 @@ import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { multiOperationForwarding } from "../service/instance_service";
+import { multiOperationForwarding, sanitizeMarketTemplate } from "../service/instance_service";
 import { logger } from "../service/log";
 import { operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
@@ -322,7 +322,8 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
       const fileName = ADDR?.split(SAVE_DIR_PATH)[1];
       const filePath = path.join(filesDir, fileName ?? "");
       if (fs.existsSync(filePath)) {
-        ctx.body = JSON.parse(await fs.readFile(filePath, "utf-8"));
+        const template = JSON.parse(await fs.readFile(filePath, "utf-8"));
+        ctx.body = sanitizeMarketTemplate(template);
       } else {
         throw new Error(`Request failed, status: 404`);
       }
@@ -341,7 +342,7 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
       // Use cache
       if (fileAge < CACHE_DURATION) {
         const cachedData = await fs.readFile(MARKET_CACHE_FILE_PATH, "utf-8");
-        ctx.body = JSON.parse(cachedData);
+        ctx.body = sanitizeMarketTemplate(JSON.parse(cachedData));
         return;
       }
     } catch (error) {
@@ -353,10 +354,11 @@ router.get("/quick_install_list", permission({ level: ROLE.USER }), async (ctx) 
       url: ADDR
     });
     if (res.status !== 200) throw new Error(`Request failed, status: ${res.status}`);
-    ctx.body = res.data;
+    const sanitized = sanitizeMarketTemplate(res.data);
+    ctx.body = sanitized;
 
-    // Save to cache file
-    fs.writeFile(MARKET_CACHE_FILE_PATH, JSON.stringify(res.data), "utf-8").catch((err) => {
+    // Save to cache file (already sanitized, so future cache reads need no re-upgrade)
+    fs.writeFile(MARKET_CACHE_FILE_PATH, JSON.stringify(sanitized), "utf-8").catch((err) => {
       logger.warn(`Failed to write quick install cache file at ${MARKET_CACHE_FILE_PATH}: ${err}`);
     });
   } catch (err) {
