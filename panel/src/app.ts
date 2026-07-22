@@ -17,6 +17,11 @@ import { $t } from "./app/i18n";
 import { mountRouters } from "./app/index";
 import { preCheckMiddleware } from "./app/middleware/precheck";
 import { middleware as protocolMiddleware } from "./app/middleware/protocol";
+import { daemonHttpProxyMiddleware } from "./app/service/daemon_http_proxy";
+import {
+  attachDaemonSocketUpgrade,
+  daemonSocketIoHttpProxyMiddleware
+} from "./app/service/daemon_socket_proxy";
 import { logger } from "./app/service/log";
 import SystemRemoteService from "./app/service/remote_service";
 import SystemUser from "./app/service/user_service";
@@ -47,6 +52,9 @@ function setupHttp(
   } else {
     httpServer = http.createServer(koaApp.callback());
   }
+
+  // Transparent Socket.IO upgrade proxy: browser → panel → daemon
+  attachDaemonSocketUpgrade(httpServer);
 
   httpServer.on("error", (err) => {
     logger.error($t("TXT_CODE_app.httpSetupError"));
@@ -136,6 +144,46 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     // When Koa is attacked by a short connection flood, it is easy for error messages to swipe the screen, which may indirectly affect the operation of some applications
   });
 
+  // Session must run before the daemon HTTP proxy so uploads/downloads can authenticate.
+  // Panel path prefix (if any) must be stripped before daemon proxy path matching.
+  // Daemon proxy must run before koa-body so large multipart bodies stream to nodes.
+  app.keys = [v4()];
+  app.use(
+    session(
+      {
+        key: v4(),
+        maxAge: 86400000,
+        overwrite: true,
+        httpOnly: true,
+        signed: true,
+        rolling: false,
+        renew: false,
+        secure: false
+      },
+      app
+    )
+  );
+
+  if (systemConfig && systemConfig.prefix != "") {
+    const prefix = systemConfig.prefix;
+    app.use(async (ctx, next) => {
+      if (ctx.url.startsWith(prefix)) {
+        const orig = ctx.url;
+        ctx.url = ctx.url.slice(prefix.length);
+        if (!ctx.url.startsWith("/")) {
+          ctx.url = "/" + ctx.url;
+        }
+        await next();
+        ctx.url = orig;
+      } else {
+        ctx.redirect(removeTrail(prefix, "/") + ctx.url);
+      }
+    });
+  }
+
+  app.use(daemonHttpProxyMiddleware);
+  app.use(daemonSocketIoHttpProxyMiddleware);
+
   app.use(preCheckMiddleware);
   app.use(
     koaBody({
@@ -157,23 +205,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     })
   );
 
-  app.keys = [v4()];
-  app.use(
-    session(
-      {
-        key: v4(),
-        maxAge: 86400000,
-        overwrite: true,
-        httpOnly: true,
-        signed: true,
-        rolling: false,
-        renew: false,
-        secure: false
-      },
-      app
-    )
-  );
-
   app.use(async (ctx, next) => {
     const ignoreUrls = ["/api/overview", "/api/files/status"];
     for (const iterator of ignoreUrls) {
@@ -181,23 +212,6 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
     }
     await next();
   });
-
-  if (systemConfig && systemConfig.prefix != "") {
-    const prefix = systemConfig.prefix;
-    app.use(async (ctx, next) => {
-      if (ctx.url.startsWith(prefix)) {
-        const orig = ctx.url;
-        ctx.url = ctx.url.slice(prefix.length);
-        if (!ctx.url.startsWith("/")) {
-          ctx.url = "/" + ctx.url;
-        }
-        await next();
-        ctx.url = orig;
-      } else {
-        ctx.redirect(removeTrail(prefix, "/") + ctx.url);
-      }
-    });
-  }
 
   // HTTP response compression
   systemConfig?.gzip && app.use(compress({ threshold: 1024 }));

@@ -13,6 +13,12 @@ export function isUploadRequest(ctx: Context) {
  * occupying machine disk space.
  */
 export async function preCheckMiddleware(ctx: Context, next: () => Promise<void>) {
+  // Daemon data-plane proxy streams multipart to nodes; do not treat as panel asset upload.
+  const path = ctx.path || "";
+  if (path.startsWith("/api/daemon_proxy/") || path.startsWith("/socket.io-daemon/")) {
+    return await next();
+  }
+
   if (isUploadRequest(ctx)) {
     const user = getUserFromCtx(ctx);
     const isAdmin = user?.permission === ROLE.ADMIN;

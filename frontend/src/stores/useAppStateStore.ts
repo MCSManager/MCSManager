@@ -27,7 +27,8 @@ export const useAppStateStore = createGlobalState(() => {
       businessId: "",
       allowChangeCmd: false,
       ssoEnabled: false,
-      ssoOnlyMode: false
+      ssoOnlyMode: false,
+      dataPlaneMode: "proxy"
     }
   });
 

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { getFileConfigAddr } from "@/hooks/useFileManager";
 import { INSTANCE_TYPE_TRANSLATION, TYPE_MINECRAFT_BUNGEECORD } from "@/hooks/useInstance";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { createInstance as createInstanceApi, uploadAddress } from "@/services/apis/instance";
 import uploadService, { UploadFiles } from "@/services/uploadService";
-import { parseForwardAddress } from "@/tools/protocol";
+import { resolveDaemonHttpBase } from "@/tools/dataPlane";
 import { reportErrorMsg } from "@/tools/validator";
 import { defaultInstanceInfo } from "@/types/const";
 import {
@@ -162,7 +161,7 @@ const selectedFile = async () => {
     uploadStartCallback = () => {
       uploadStarted.value = true;
     };
-    const addr = parseForwardAddress(getFileConfigAddr(cfg.value), "http");
+    const addr = resolveDaemonHttpBase(cfg.value, props.daemonId);
     const task = uploadService.append(
       uFile.value!,
       addr,

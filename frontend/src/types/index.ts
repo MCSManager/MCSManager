@@ -102,6 +102,8 @@ export interface Settings {
   ssoClientId: string;
   ssoClientSecret: string;
   ssoCallbackUrl: string;
+  /** proxy | direct — how browser reaches daemon data-plane (files/terminal) */
+  dataPlaneMode?: "proxy" | "direct";
 }
 
 export interface ImageInfo {
@@ -262,5 +264,7 @@ export interface PanelStatus {
     panelId: string;
     ssoEnabled: boolean;
     ssoOnlyMode: boolean;
+    /** proxy: browser only reaches panel; direct: browser may connect to daemons */
+    dataPlaneMode?: "proxy" | "direct";
   };
 }

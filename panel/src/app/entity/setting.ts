@@ -100,4 +100,13 @@ export default class SystemConfig {
   sslPemPath = "";
   // SSL private key file path (.key)
   sslKeyPath = "";
+
+  /**
+   * Data-plane transport mode for browser ↔ daemon traffic
+   * (terminal stream, file upload/download).
+   *
+   * - "proxy": browser only talks to the panel; panel reverse-proxies to daemons.
+   * - "direct": legacy mode; browser connects to each daemon (needs public node access).
+   */
+  dataPlaneMode: "proxy" | "direct" = "proxy";
 }

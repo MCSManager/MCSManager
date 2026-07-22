@@ -54,6 +54,13 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
     if (config.allowUsePreset != null) systemConfig.allowUsePreset = Boolean(config.allowUsePreset);
+    if (config.dataPlaneMode != null) {
+      const mode = String(config.dataPlaneMode);
+      if (mode !== "proxy" && mode !== "direct") {
+        throw new Error("dataPlaneMode must be 'proxy' or 'direct'");
+      }
+      systemConfig.dataPlaneMode = mode;
+    }
 
     if (config.businessMode != null) systemConfig.businessMode = Boolean(config.businessMode);
     if (config.businessId != null) systemConfig.businessId = String(config.businessId);

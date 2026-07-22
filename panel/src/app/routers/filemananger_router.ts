@@ -8,6 +8,7 @@ import { operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
+import { buildDataPlaneMissionResponse } from "../service/daemon_proxy_utils";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
@@ -415,8 +416,6 @@ router.all(
       const fileName = String(ctx.query.file_name);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.fullAddr;
-      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "download",
@@ -433,11 +432,12 @@ router.all(
         daemon_id: daemonId,
         file: fileName
       });
-      ctx.body = {
-        password,
-        addr,
-        remoteMappings
-      };
+      const body = buildDataPlaneMissionResponse(daemonId, password, remoteService);
+      // File APIs historically return fullAddr (ip:port + prefix) as `addr`
+      if (body.dataPlaneMode === "direct") {
+        body.addr = remoteService.config.fullAddr;
+      }
+      ctx.body = body;
     } catch (err) {
       ctx.body = err;
     }
@@ -455,8 +455,6 @@ router.all(
       const uploadDir = String(ctx.query.upload_dir);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      const addr = remoteService.config.fullAddr;
-      const remoteMappings = remoteService.config.getConvertedRemoteMappings();
       const password = timeUuid();
       await new RemoteRequest(remoteService).request("passport/register", {
         name: "upload",
@@ -472,11 +470,11 @@ router.all(
         instance_id: instanceUuid,
         daemon_id: daemonId
       });
-      ctx.body = {
-        password,
-        addr,
-        remoteMappings
-      };
+      const body = buildDataPlaneMissionResponse(daemonId, password, remoteService);
+      if (body.dataPlaneMode === "direct") {
+        body.addr = remoteService.config.fullAddr;
+      }
+      ctx.body = body;
     } catch (err) {
       ctx.body = err;
     }

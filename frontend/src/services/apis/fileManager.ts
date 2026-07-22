@@ -207,6 +207,12 @@ export const uploadAddress = useDefineApi<
     password: string;
     addr: string;
     remoteMappings: RemoteMappingEntry[];
+    dataPlaneMode?: "proxy" | "direct";
+    proxy?: {
+      daemonId: string;
+      httpBase: string;
+      wsPath: string;
+    };
   }
 >({
   url: "/api/files/upload",
@@ -260,6 +266,12 @@ export const downloadAddress = useDefineApi<
     password: string;
     addr: string;
     remoteMappings: RemoteMappingEntry[];
+    dataPlaneMode?: "proxy" | "direct";
+    proxy?: {
+      daemonId: string;
+      httpBase: string;
+      wsPath: string;
+    };
   }
 >({
   url: "/api/files/download",

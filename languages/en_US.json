@@ -3448,5 +3448,10 @@
   "TXT_CODE_6542489a": "Example: /dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "Device Write Rate Limit (BPS)",
   "TXT_CODE_2b2ff3ff": "Limit the write rate of specific block devices for the container. Format: /dev/sda:5MB. Separate multiple devices with commas.",
-  "TXT_CODE_f0dc9eca": "Example: /dev/sda:5MB"
+  "TXT_CODE_f0dc9eca": "Example: /dev/sda:5MB",
+  "TXT_CODE_DATA_PLANE_MODE": "Data plane mode",
+  "TXT_CODE_DATA_PLANE_MODE_DESC": "Controls how the browser reaches daemon nodes for terminals and file transfer. Proxy mode only requires access to the panel; Direct mode requires the browser to reach each node (legacy).",
+  "TXT_CODE_DATA_PLANE_MODE_PROXY": "Proxy (browser → panel → node)",
+  "TXT_CODE_DATA_PLANE_MODE_DIRECT": "Direct (browser → node)",
+  "TXT_CODE_REMOTE_MAPPING_PROXY_HINT": "Address mappings only apply in Direct data-plane mode. In Proxy mode the browser never connects to nodes."
 }
