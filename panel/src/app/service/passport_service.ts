@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { ROLE, User } from "../entity/user";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
+import { checkSafeName } from "../utils/safe";
 import { logger } from "./log";
 import { timeUuid } from "./password";
 import userSystem from "./user_service";
@@ -206,11 +207,14 @@ export function checkBanIp(ctx: Koa.ParameterizedContext) {
     if (ipMap[ip] != 999) {
       // record the number of bans
       GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 0) + 1);
-      setTimeout(() => {
-        delete ipMap[ip];
-        // delete the number of bans
-        GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 1) - 1);
-      }, 1000 * 60 * 10);
+      setTimeout(
+        () => {
+          delete ipMap[ip];
+          // delete the number of bans
+          GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 1) - 1);
+        },
+        1000 * 60 * 10
+      );
     }
     ipMap[ip] = 999;
     return false;
@@ -220,10 +224,12 @@ export function checkBanIp(ctx: Koa.ParameterizedContext) {
   return true;
 }
 
-export function getUuidByApiKey(apiKey: string) {
+export function getUuidByApiKey(unsafeApiKey: string) {
+  // Validate apiKey: only A-Z, a-z, 0-9 are allowed
+  if (!checkSafeName(unsafeApiKey)) return null;
   const pageData = userSystem.getQueryWrapper().selectPage(
     {
-      apiKey
+      apiKey: unsafeApiKey
     },
     1,
     1

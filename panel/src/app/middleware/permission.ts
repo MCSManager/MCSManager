@@ -3,6 +3,7 @@ import { GlobalVariable } from "mcsmanager-common";
 import { $t } from "../i18n";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import userSystem from "../service/user_service";
+import { systemConfig } from "../setting";
 import { checkSafeName } from "../utils/safe";
 
 /**
@@ -72,6 +73,12 @@ export default (parameter: IPermissionCfg) => {
     // If it is an API request, perform API-level permission judgment
     const key = ctx.request?.header["x-request-api-key"] || ctx.query.apikey;
     if (key) {
+      const enableApiKey = systemConfig?.enableApiKey || false;
+      if (!enableApiKey)
+        return new Error(
+          `The administrator has disabled the use of the API key. 
+Please contact the administrator and set "enableApiKey" to "true" in the configuration file to enable normal use of the API endpoints.`
+        );
       const apiKey = String(key);
       // Validate apiKey: only A-Z, a-z, 0-9 are allowed
       if (!checkSafeName(apiKey)) {
