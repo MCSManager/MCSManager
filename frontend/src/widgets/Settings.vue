@@ -722,6 +722,29 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
+                      {{ t("TXT_CODE_95192169") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_820260c5") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).enableApiKey"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
                       {{ t("TXT_CODE_a583cae4") }}
                     </a-typography-title>
                     <a-typography-paragraph>
@@ -825,10 +848,7 @@ onUnmounted(() => {
                       </a-typography-text>
                     </a-typography-paragraph>
 
-                    <a-select
-                      v-model:value.prop="(formData as any).gzip"
-                      style="max-width: 320px"
-                    >
+                    <a-select v-model:value.prop="(formData as any).gzip" style="max-width: 320px">
                       <a-select-option
                         v-for="item in allYesNo"
                         :key="item.value"
