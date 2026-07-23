@@ -1,16 +1,24 @@
-import Koa from "koa";
 import Router from "@koa/router";
-import permission from "../middleware/permission";
-import { bind2FA, confirm2FaQRCode, getUserUuid, getUserFromCtx, logout } from "../service/passport_service";
-import userSystem from "../service/user_service";
-import { getToken, isAjax } from "../service/passport_service";
-import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
-import validator from "../middleware/validator";
-import { v4 } from "uuid";
-import { $t } from "../i18n";
-import { ROLE } from "../entity/user";
-import { getInstancesByUuid } from "../service/instance_service";
+import Koa from "koa";
 import { toBoolean } from "mcsmanager-common";
+import { v4 } from "uuid";
+import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
+import permission from "../middleware/permission";
+import validator from "../middleware/validator";
+import { getInstancesByUuid } from "../service/instance_service";
+import {
+  bind2FA,
+  confirm2FaQRCode,
+  getToken,
+  getUserFromCtx,
+  getUserUuid,
+  isAjax,
+  logout
+} from "../service/passport_service";
+import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
+import userSystem from "../service/user_service";
+import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -72,6 +80,7 @@ router.put("/api", permission({ level: ROLE.USER }), async (ctx: Koa.Parameteriz
   try {
     if (user) {
       if (enable) {
+        if (!systemConfig?.enableApiKey) throw new Error($t("TXT_CODE_db253979"));
         newKey = v4().replace(/-/gim, "");
         await userSystem.edit(userUuid, {
           apiKey: newKey

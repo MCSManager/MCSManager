@@ -60,6 +60,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.allowChangeCmd != null) systemConfig.allowChangeCmd = Boolean(config.allowChangeCmd);
     if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
+    if (config.enableApiKey != null) systemConfig.enableApiKey = Boolean(config.enableApiKey);
 
     if (config.presetPackAddr != null) {
       // clear cache
@@ -92,9 +93,14 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
     // SSO core fields
     {
-      const wantEnable = config.ssoEnabled != null ? Boolean(config.ssoEnabled) : systemConfig.ssoEnabled;
-      const clientId = config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
-      const clientSecret = config.ssoClientSecret != null ? String(config.ssoClientSecret) : systemConfig.ssoClientSecret;
+      const wantEnable =
+        config.ssoEnabled != null ? Boolean(config.ssoEnabled) : systemConfig.ssoEnabled;
+      const clientId =
+        config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
+      const clientSecret =
+        config.ssoClientSecret != null
+          ? String(config.ssoClientSecret)
+          : systemConfig.ssoClientSecret;
 
       if (ssoType === "oidc") {
         const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
@@ -102,7 +108,9 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
           throw new Error("SSO Issuer URL must use http(s) protocol");
         }
         if (wantEnable && (!issuer?.trim() || !clientId?.trim() || !clientSecret?.trim())) {
-          throw new Error("Cannot enable SSO (OIDC): Issuer, Client ID, and Client Secret are required");
+          throw new Error(
+            "Cannot enable SSO (OIDC): Issuer, Client ID, and Client Secret are required"
+          );
         }
         if (issuer?.trim() && clientId?.trim() && clientSecret?.trim()) {
           const { verifyIssuer, clearOIDCCache } = require("../service/sso_service");
@@ -112,9 +120,16 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
         if (config.ssoIssuer != null) systemConfig.ssoIssuer = issuer;
       } else {
         // OAuth 2.0
-        const authorizeUrl = config.ssoAuthorizeUrl != null ? String(config.ssoAuthorizeUrl) : systemConfig.ssoAuthorizeUrl;
-        const tokenUrl = config.ssoTokenUrl != null ? String(config.ssoTokenUrl) : systemConfig.ssoTokenUrl;
-        const userinfoUrl = config.ssoUserinfoUrl != null ? String(config.ssoUserinfoUrl) : systemConfig.ssoUserinfoUrl;
+        const authorizeUrl =
+          config.ssoAuthorizeUrl != null
+            ? String(config.ssoAuthorizeUrl)
+            : systemConfig.ssoAuthorizeUrl;
+        const tokenUrl =
+          config.ssoTokenUrl != null ? String(config.ssoTokenUrl) : systemConfig.ssoTokenUrl;
+        const userinfoUrl =
+          config.ssoUserinfoUrl != null
+            ? String(config.ssoUserinfoUrl)
+            : systemConfig.ssoUserinfoUrl;
 
         const validateUrl = (url: string, name: string) => {
           if (url && !url.startsWith("https://") && !url.startsWith("http://")) {
@@ -125,8 +140,17 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
         validateUrl(tokenUrl, "Token URL");
         validateUrl(userinfoUrl, "Userinfo URL");
 
-        if (wantEnable && (!authorizeUrl?.trim() || !tokenUrl?.trim() || !userinfoUrl?.trim() || !clientId?.trim() || !clientSecret?.trim())) {
-          throw new Error("Cannot enable SSO (OAuth 2.0): Authorize URL, Token URL, Userinfo URL, Client ID, and Client Secret are required");
+        if (
+          wantEnable &&
+          (!authorizeUrl?.trim() ||
+            !tokenUrl?.trim() ||
+            !userinfoUrl?.trim() ||
+            !clientId?.trim() ||
+            !clientSecret?.trim())
+        ) {
+          throw new Error(
+            "Cannot enable SSO (OAuth 2.0): Authorize URL, Token URL, Userinfo URL, Client ID, and Client Secret are required"
+          );
         }
 
         if (config.ssoAuthorizeUrl != null) systemConfig.ssoAuthorizeUrl = authorizeUrl;
@@ -139,14 +163,17 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       if (config.ssoClientSecret != null) systemConfig.ssoClientSecret = clientSecret;
     }
 
-    if (config.ssoUserIdField != null) systemConfig.ssoUserIdField = String(config.ssoUserIdField) || "id";
+    if (config.ssoUserIdField != null)
+      systemConfig.ssoUserIdField = String(config.ssoUserIdField) || "id";
 
     // Unbind all SSO users when identity-critical fields change
     {
       const typeChanged = systemConfig.ssoType !== prevSsoType;
       const issuerChanged = ssoType === "oidc" && systemConfig.ssoIssuer !== prevSsoIssuer;
-      const userinfoChanged = ssoType === "oauth2" && systemConfig.ssoUserinfoUrl !== prevSsoUserinfoUrl;
-      const userIdFieldChanged = ssoType === "oauth2" && systemConfig.ssoUserIdField !== prevSsoUserIdField;
+      const userinfoChanged =
+        ssoType === "oauth2" && systemConfig.ssoUserinfoUrl !== prevSsoUserinfoUrl;
+      const userIdFieldChanged =
+        ssoType === "oauth2" && systemConfig.ssoUserIdField !== prevSsoUserIdField;
 
       if (typeChanged || issuerChanged || userinfoChanged || userIdFieldChanged) {
         const count = await userSystem.unbindAllSso();
@@ -157,11 +184,18 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
     if (config.ssoScopes != null) systemConfig.ssoScopes = String(config.ssoScopes);
     if (config.ssoOnlyMode != null) systemConfig.ssoOnlyMode = Boolean(config.ssoOnlyMode);
-    if (config.ssoAutoRedirect != null) systemConfig.ssoAutoRedirect = Boolean(config.ssoAutoRedirect);
-    if (config.ssoProviderName != null) systemConfig.ssoProviderName = String(config.ssoProviderName);
+    if (config.ssoAutoRedirect != null)
+      systemConfig.ssoAutoRedirect = Boolean(config.ssoAutoRedirect);
+    if (config.ssoProviderName != null)
+      systemConfig.ssoProviderName = String(config.ssoProviderName);
     if (config.ssoIconUrl != null) {
       const iconUrl = String(config.ssoIconUrl);
-      if (iconUrl && !iconUrl.startsWith("https://") && !iconUrl.startsWith("http://") && !iconUrl.startsWith("/")) {
+      if (
+        iconUrl &&
+        !iconUrl.startsWith("https://") &&
+        !iconUrl.startsWith("http://") &&
+        !iconUrl.startsWith("/")
+      ) {
         throw new Error("SSO icon URL must use http(s) protocol or be a relative path");
       }
       systemConfig.ssoIconUrl = iconUrl;
