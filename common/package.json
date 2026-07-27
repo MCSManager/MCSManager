@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "pub": "npm publish"
+    "pub": "npm publish",
+    "test": "vitest run"
   },
   "dependencies": {
     "@types/fs-extra": "^11.0.4",
@@ -25,5 +26,8 @@
     "os-utils": "^0.0.14",
     "socket.io": "^4.7.2",
     "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "vitest": "^0.33.0"
   }
 }
