@@ -52,7 +52,7 @@ const assignApp = async () => {
     const selectedInstances = await useSelectInstances(dataSource.value);
     let warningInstances: string[] = [];
     for (const instance of selectedInstances || []) {
-      if (instance.config?.processType !== "docker") warningInstances.push(instance.nickname);
+      if (instance?.processType !== "docker") warningInstances.push(instance.nickname);
     }
     if (warningInstances.length > 0) {
       const component = (

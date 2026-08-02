@@ -57,10 +57,18 @@ const instancesList = computed(() => {
     newInstances.push({
       instanceUuid: instance.instanceUuid,
       daemonId: currentRemoteNode.value?.uuid ?? "",
-      nickname: instance.config.nickname,
-      status: instance.status,
       hostIp: `${currentRemoteNode.value?.ip}:${currentRemoteNode.value?.port}`,
-      config: instance.config
+      remarks: currentRemoteNode.value?.remarks,
+      status: instance.status,
+      nickname: instance.config.nickname,
+      ie: instance.config.ie,
+      oe: instance.config.oe,
+      endTime: instance.config.endTime,
+      lastDatetime: instance.config.lastDatetime,
+      stopCommand: instance.config.stopCommand,
+      processType: instance.config.processType,
+      docker: instance.config.docker,
+      info: instance.info
     });
   }
   return newInstances;
@@ -252,10 +260,7 @@ onMounted(async () => {
             >
               <template #bodyCell="{ column, record }: AntTableCell">
                 <template v-if="column.key === 'safe'">
-                  <span
-                    v-if="record?.config?.processType === 'docker'"
-                    style="color: var(--color-green-6)"
-                  >
+                  <span v-if="record?.processType === 'docker'" style="color: var(--color-green-6)">
                     {{ t("TXT_CODE_a3f13157") }}
                   </span>
                   <span v-else class="color-danger">{{ t("TXT_CODE_201bc643") }}</span>
