@@ -12,8 +12,14 @@ export class ConsumerQueue<T> {
     if (this.items.length >= this.maxSize) {
       this.items.shift();
     }
-    this.items.find((v) => v.key === item.key);
-    this.items.push(item);
+    // Deduplicate by key: if a pending item for this key exists, replace it
+    // instead of stacking a stale duplicate that would trigger redundant work.
+    const existingIndex = this.items.findIndex((v) => v.key === item.key);
+    if (existingIndex !== -1) {
+      this.items[existingIndex] = item;
+    } else {
+      this.items.push(item);
+    }
   }
 
   pop() {
