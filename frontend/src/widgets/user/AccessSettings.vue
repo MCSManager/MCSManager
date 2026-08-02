@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import CardPanel from "@/components/CardPanel.vue";
-import type { LayoutCard } from "@/types";
-import type { UserInstance } from "@/types/user";
-import { computed, ref, onMounted } from "vue";
-import { t } from "@/lang/i18n";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useScreen } from "@/hooks/useScreen";
-import { arrayFilter } from "@/tools/array";
-import { userInfoApiAdvanced } from "@/services/apis";
-import { useLayoutCardTools } from "@/hooks/useCardTools";
-import { updateUserInstance } from "@/services/apis";
+import CardPanel from "@/components/CardPanel.vue";
 import { useSelectInstances } from "@/components/fc";
-import { message } from "ant-design-vue";
-import { reportErrorMsg } from "@/tools/validator";
-import { INSTANCE_STATUS } from "@/types/const";
-import type { AntColumnsType, AntTableCell } from "@/types/ant";
-import dayjs from "dayjs";
 import WarningDialog from "@/components/fc/WarningDialog.vue";
+import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useMountComponent } from "@/hooks/useMountComponent";
+import { useScreen } from "@/hooks/useScreen";
+import { t } from "@/lang/i18n";
+import { updateUserInstance, userInfoApiAdvanced } from "@/services/apis";
+import { arrayFilter } from "@/tools/array";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard } from "@/types";
+import type { AntColumnsType, AntTableCell } from "@/types/ant";
+import { INSTANCE_STATUS } from "@/types/const";
+import type { UserInstance } from "@/types/user";
+import { message } from "ant-design-vue";
+import dayjs from "dayjs";
+import { computed, onMounted, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
@@ -53,8 +52,7 @@ const assignApp = async () => {
     const selectedInstances = await useSelectInstances(dataSource.value);
     let warningInstances: string[] = [];
     for (const instance of selectedInstances || []) {
-      if (typeof instance.config?.docker?.image == "string" && !instance.config?.docker?.image)
-        warningInstances.push(instance.nickname);
+      if (instance.config?.processType !== "docker") warningInstances.push(instance.nickname);
     }
     if (warningInstances.length > 0) {
       const component = (
