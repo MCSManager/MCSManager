@@ -263,7 +263,44 @@ export default class FileManager {
     if (!code) code = this.fileCode;
     if (!this.check(sourceZip) || !this.checkPath(destDir)) throw new Error(ERROR_MSG_01);
     this.zipFileCheck(this.toAbsolutePath(sourceZip));
-    return await decompress(this.toAbsolutePath(sourceZip), this.toAbsolutePath(destDir), code);
+    const absDest = this.toAbsolutePath(destDir);
+
+    let hasEscapingLink = await this.hasEscapingLink(absDest);
+    if (hasEscapingLink) throw new Error(ERROR_MSG_01);
+
+    return await decompress(this.toAbsolutePath(sourceZip), absDest, code);
+  }
+
+  private async hasEscapingLink(
+    absDir: string,
+    visited: Set<string> = new Set()
+  ): Promise<boolean> {
+    if (this.isRootTopRath()) return false;
+    const real = resolveRealPath(absDir);
+    if (!real || visited.has(real)) return false;
+    visited.add(real);
+
+    try {
+      let entries = await fs.readdir(absDir, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const child = path.join(absDir, entry.name);
+        if (!entry.isSymbolicLink()) {
+          if (!entry.isDirectory()) continue;
+
+          let result = await this.hasEscapingLink(child, visited);
+          if (result) return true;
+          continue;
+        }
+
+        if (this.isOutsideWorkspace(child)) return true;
+        if (!fs.existsSync(child) || !fs.statSync(child).isDirectory()) continue;
+
+        let result = await this.hasEscapingLink(child, visited);
+        if (result) return true;
+      }
+    } catch {}
+    return false;
   }
 
   async zip(sourceZip: string, files: string[], code?: string) {
