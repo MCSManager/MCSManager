@@ -9,7 +9,18 @@ import {
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useLocalStorage } from "@vueuse/core";
 import { Button, message, Modal } from "ant-design-vue";
-import { computed, createVNode, ref, type Ref } from "vue";
+import { computed, createVNode, ref, watch, type Ref } from "vue";
+
+const MOD_LOADER_VALUES = ["forge", "fabric", "quilt", "neoforge"];
+const PLUGIN_LOADER_VALUES = [
+  "spigot",
+  "paper",
+  "purpur",
+  "folia",
+  "bungeecord",
+  "velocity",
+  "waterfall"
+];
 
 export function useModSearch(
   instanceId: string,
@@ -35,30 +46,54 @@ export function useModSearch(
 
   const mcVersions = ref<string[]>([]);
 
-  const loaderOptions = computed(() => [
-    {
-      label: t("TXT_CODE_LOADER"),
-      options: [
-        { label: t("TXT_CODE_c564f5bf"), value: "all" },
-        { label: "Forge", value: "forge" },
-        { label: "Fabric", value: "fabric" },
-        { label: "Quilt", value: "quilt" },
-        { label: "NeoForge", value: "neoforge" }
-      ]
-    },
-    {
-      label: t("TXT_CODE_SERVER_PLUGIN_PLATFORM"),
-      options: [
-        { label: "Spigot", value: "spigot" },
-        { label: "Paper", value: "paper" },
-        { label: "Purpur", value: "purpur" },
-        { label: "Folia", value: "folia" },
-        { label: "BungeeCord", value: "bungeecord" },
-        { label: "Velocity", value: "velocity" },
-        { label: "Waterfall", value: "waterfall" }
-      ]
+  const loaderOptions = computed(() => {
+    const type = searchFilters.value.type;
+    const groups: any[] = [];
+
+    if (type !== "plugin") {
+      groups.push({
+        label: t("TXT_CODE_LOADER"),
+        options: [
+          { label: t("TXT_CODE_c564f5bf"), value: "all" },
+          { label: "Forge", value: "forge" },
+          { label: "Fabric", value: "fabric" },
+          { label: "Quilt", value: "quilt" },
+          { label: "NeoForge", value: "neoforge" }
+        ]
+      });
     }
-  ]);
+
+    if (type !== "mod") {
+      groups.push({
+        label: t("TXT_CODE_SERVER_PLUGIN_PLATFORM"),
+        options: [
+          ...(type === "plugin" ? [{ label: t("TXT_CODE_c564f5bf"), value: "all" }] : []),
+          { label: "Spigot", value: "spigot" },
+          { label: "Paper", value: "paper" },
+          { label: "Purpur", value: "purpur" },
+          { label: "Folia", value: "folia" },
+          { label: "BungeeCord", value: "bungeecord" },
+          { label: "Velocity", value: "velocity" },
+          { label: "Waterfall", value: "waterfall" }
+        ]
+      });
+    }
+
+    return groups;
+  });
+
+  // Reset loader filter when it becomes incompatible with the newly selected type
+  watch(
+    () => searchFilters.value.type,
+    (type) => {
+      const loader = searchFilters.value.loader;
+      if (type === "mod" && PLUGIN_LOADER_VALUES.includes(loader)) {
+        searchFilters.value.loader = "all";
+      } else if (type === "plugin" && MOD_LOADER_VALUES.includes(loader)) {
+        searchFilters.value.loader = "all";
+      }
+    }
+  );
 
   const loadMcVersions = async () => {
     try {
