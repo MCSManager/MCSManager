@@ -392,13 +392,13 @@ class ModManagerService {
           // If no specific loader is selected, filter by common plugin categories
           if (!filters.loader || filters.loader === "all") {
             facets.push([
-              "categories:Spigot",
-              "categories:Paper",
-              "categories:Purpur",
-              "categories:Folia",
-              "categories:BungeeCord",
-              "categories:Velocity",
-              "categories:Waterfall"
+              "categories:spigot",
+              "categories:paper",
+              "categories:purpur",
+              "categories:folia",
+              "categories:bungeecord",
+              "categories:velocity",
+              "categories:waterfall"
             ]);
           }
         } else {
@@ -408,21 +408,7 @@ class ModManagerService {
 
       // Handle loaders (Forge, Fabric, etc.) - use categories facet
       if (filters?.loader && filters.loader !== "all") {
-        const loaderMap: Record<string, string> = {
-          forge: "Forge",
-          fabric: "Fabric",
-          quilt: "Quilt",
-          neoforge: "NeoForge",
-          spigot: "Spigot",
-          paper: "Paper",
-          purpur: "Purpur",
-          folia: "Folia",
-          bungeecord: "BungeeCord",
-          velocity: "Velocity",
-          waterfall: "Waterfall"
-        };
-        const loaderName = loaderMap[filters.loader.toLowerCase()] || filters.loader;
-        facets.push([`categories:${loaderName}`]);
+        facets.push([`categories:${filters.loader.toLowerCase()}`]);
       }
 
       // Handle environment (server/client)
