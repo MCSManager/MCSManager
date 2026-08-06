@@ -1,9 +1,10 @@
 import fs from "fs-extra";
 import iconv from "iconv-lite";
 import { ProcessWrapper } from "mcsmanager-common";
+import StreamZip from "node-stream-zip";
 import os from "os";
 import path from "path";
-import { compress, decompress } from "../common/compress";
+import { compress, decompress, listArchiveEntries } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
 import { normalizedJoin } from "../tools/filepath";
@@ -263,7 +264,51 @@ export default class FileManager {
     if (!code) code = this.fileCode;
     if (!this.check(sourceZip) || !this.checkPath(destDir)) throw new Error(ERROR_MSG_01);
     this.zipFileCheck(this.toAbsolutePath(sourceZip));
-    return await decompress(this.toAbsolutePath(sourceZip), this.toAbsolutePath(destDir), code);
+    const absSource = this.toAbsolutePath(sourceZip);
+    const absDest = this.toAbsolutePath(destDir);
+
+    const hasZipSlip = await this.hasZipSlip(absSource, absDest);
+    if (hasZipSlip) throw new Error(ERROR_MSG_01);
+
+    return await decompress(absSource, absDest, code);
+  }
+
+  private async hasZipSlip(absSource: string, absDest: string): Promise<boolean> {
+    const zip = new StreamZip.async({ file: absSource });
+
+    let archiveEntries: Array<{ name: string; isDirectory: boolean }>;
+    try {
+      // zip archive
+      archiveEntries = Object.values(await zip.entries());
+    } catch (err: any) {
+      const reason = String(err?.message);
+      if (reason.includes("Malicious entry")) return true;
+      if (reason !== "Bad archive" && reason !== "Archive read error") throw err;
+
+      // other archive
+      archiveEntries = await listArchiveEntries(absSource);
+    } finally {
+      await zip.close().catch(() => {});
+    }
+
+    const entryDirs = new Set<string>();
+    for (const entry of archiveEntries) {
+      const entryPath = path.resolve(absDest, entry.name);
+      const relativeEntryPath = path.relative(absDest, entryPath);
+      if (
+        relativeEntryPath === ".." ||
+        relativeEntryPath.startsWith(".." + path.sep) ||
+        path.isAbsolute(relativeEntryPath)
+      ) {
+        return true;
+      }
+      entryDirs.add(entry.isDirectory ? entryPath : path.dirname(entryPath));
+    }
+
+    for (const entryDir of entryDirs) {
+      if (this.isOutsideWorkspace(entryDir)) return true;
+    }
+    return false;
   }
 
   async zip(sourceZip: string, files: string[], code?: string) {
