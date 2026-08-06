@@ -4,7 +4,7 @@ import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
 import RemoteRequest from "../service/remote_command";
@@ -69,8 +69,7 @@ router.post(
       });
 
       operationLogger.log("instance_task_create", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
         task_name: name
@@ -106,8 +105,7 @@ router.delete(
       const name = String(ctx.query.task_name);
 
       operationLogger.log("instance_task_delete", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
         task_name: name

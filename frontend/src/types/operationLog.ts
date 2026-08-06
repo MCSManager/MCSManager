@@ -4,6 +4,7 @@ export type GlobalGeneralOptions = {
   operation_level: "info" | "warning" | "error";
   operator_ip: string;
   operator_name?: string;
+  operator_source?: "api";
 };
 
 export type InstanceGeneralOptions = {

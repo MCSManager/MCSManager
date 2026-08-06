@@ -4,7 +4,7 @@ import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
@@ -213,8 +213,7 @@ router.put(
         100000
       );
       operationLogger.log("instance_file_update", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
         file: target
@@ -270,8 +269,7 @@ router.post(
       ctx.body = downloadId;
 
       operationLogger.log("instance_file_download_from_url", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
         url: url,
@@ -355,8 +353,7 @@ router.delete(
         targets
       });
       operationLogger.log("instance_file_delete", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: String(instanceUuid),
         daemon_id: daemonId,
         file: targets
@@ -427,8 +424,7 @@ router.all(
         }
       });
       operationLogger.log("instance_file_download", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
         file: fileName
@@ -467,8 +463,7 @@ router.all(
         }
       });
       operationLogger.log("instance_file_upload", {
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId
       });

@@ -1,7 +1,7 @@
-import { computed, ref } from "vue";
-import { getOperationLog } from "@/services/apis/operationLog";
 import { t } from "@/lang/i18n";
+import { getOperationLog } from "@/services/apis/operationLog";
 import type { OperationLoggerItem } from "@/types/operationLog";
+import { computed, ref } from "vue";
 
 type TextRenderResult = {
   text: string;
@@ -16,121 +16,102 @@ type OperationRenderer = {
   ) => TextRenderResult;
 };
 
+const getOperatorLabel = (item: OperationLoggerItem) => {
+  const operatorName = item.operator_name || item.operation_id;
+  return item.operator_source ? `${operatorName} (${item.operator_source})` : operatorName;
+};
+
 const renderMap: OperationRenderer = {
   instance_start: (item) => ({
     text: t("TXT_CODE_e4605c4"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_stop: (item) => ({
     text: t("TXT_CODE_48c286cc"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_restart: (item) => ({
     text: t("TXT_CODE_fa7002ef"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_update: (item) => ({
     text: t("TXT_CODE_e1454ba7"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_kill: (item) => ({
     text: t("TXT_CODE_ee54440"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_config_change: (item) => ({
     text: t("TXT_CODE_30fcc19a"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_create: (item) => ({
     text: t("TXT_CODE_9ab6fd"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_delete: (item) => ({
     text: t("TXT_CODE_61b6facb"),
-    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id]
   }),
   instance_file_upload: (item) => ({
     text: t("TXT_CODE_58e4a9bd"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.file || ""
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.file || ""]
   }),
   instance_file_update: (item) => ({
     text: t("TXT_CODE_c5687e56"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.file
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.file]
   }),
   instance_file_download: (item) => ({
     text: t("TXT_CODE_6f43f95f"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.file
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.file]
   }),
   instance_file_delete: (item) => ({
     text: t("TXT_CODE_de567e84"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.file
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.file]
   }),
   instance_task_create: (item) => ({
     text: t("TXT_CODE_5ddb00f2"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.task_name
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.task_name]
   }),
   instance_task_delete: (item) => ({
     text: t("TXT_CODE_41f86ac"),
-    data: [
-      item.operator_name || item.operation_id,
-      item.instance_name || item.instance_id,
-      item.task_name
-    ]
+    data: [getOperatorLabel(item), item.instance_name || item.instance_id, item.task_name]
   }),
   daemon_create: (item) => ({
     text: t("TXT_CODE_f7969e5a"),
-    data: [item.operator_name || item.operation_id, item.daemon_id]
+    data: [getOperatorLabel(item), item.daemon_id]
   }),
   daemon_remove: (item) => ({
     text: t("TXT_CODE_384d278f"),
-    data: [item.operator_name || item.operation_id, item.daemon_id]
+    data: [getOperatorLabel(item), item.daemon_id]
   }),
   daemon_config_change: (item) => ({
     text: t("TXT_CODE_b6ac7af4"),
-    data: [item.operator_name || item.operation_id, item.daemon_id]
+    data: [getOperatorLabel(item), item.daemon_id]
   }),
   user_create: (item) => ({
     text: t("TXT_CODE_faa1962b"),
-    data: [item.operator_name || item.operation_id, item.target_user_name]
+    data: [getOperatorLabel(item), item.target_user_name]
   }),
   user_delete: (item) => ({
     text: t("TXT_CODE_cd76bc9"),
-    data: [item.operator_name || item.operation_id, item.target_user_name]
+    data: [getOperatorLabel(item), item.target_user_name]
   }),
   user_config_change: (item) => ({
     text: t("TXT_CODE_5564bc4c"),
-    data: [item.operator_name || item.operation_id]
+    data: [getOperatorLabel(item)]
   }),
   user_login: (item) => ({
     text: t("TXT_CODE_31a48870") + ` (${item.operator_ip})`,
     data: [
-      item.operator_name || item.operation_id,
+      getOperatorLabel(item),
       item.login_result ? t("TXT_CODE_43fcaf94") : t("TXT_CODE_56c686f8")
     ]
   }),
   system_config_change: (item) => ({
     text: t("TXT_CODE_d6312bd5"),
-    data: [item.operator_name || item.operation_id]
+    data: [getOperatorLabel(item)]
   })
 };
 

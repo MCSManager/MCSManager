@@ -16,7 +16,7 @@ import {
   setFrontendLayoutConfig
 } from "../service/frontend_layout";
 import { logger } from "../service/log";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import remoteService from "../service/remote_service";
 import userSystem from "../service/user_service";
 import { saveSystemConfig, systemConfig } from "../setting";
@@ -209,8 +209,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
 
     operationLogger.log("system_config_change", {
-      operator_ip: ctx.ip,
-      operator_name: ctx.session?.["userName"]
+      ...getOperationLoggerOperator(ctx)
     });
 
     saveSystemConfig(systemConfig);
