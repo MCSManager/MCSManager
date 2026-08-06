@@ -103,6 +103,41 @@ export async function decompress(
   }
 }
 
+export interface ArchiveEntryInfo {
+  name: string;
+  isDirectory: boolean;
+}
+
+export async function listArchiveEntries(sourceArchive: string): Promise<ArchiveEntryInfo[]> {
+  const { stdout } = await runSpawn(
+    SEVEN_ZIP_PATH,
+    ["l", "-slt", "-ba", "-sccUTF-8", sourceArchive],
+    {
+      cwd: path.dirname(sourceArchive),
+      timeout: ZIP_TIMEOUT_SECONDS * 1000
+    }
+  );
+
+  const entries: ArchiveEntryInfo[] = [];
+  let currentEntry: ArchiveEntryInfo | undefined;
+  for (const line of stdout.split(/\r?\n/)) {
+    if (line.startsWith("Path = ")) {
+      if (currentEntry) entries.push(currentEntry);
+      currentEntry = {
+        name: line.slice("Path = ".length),
+        isDirectory: false
+      };
+    } else if (
+      currentEntry &&
+      (line === "Folder = +" || line === "Attributes = D" || line.startsWith("Attributes = D "))
+    ) {
+      currentEntry.isDirectory = true;
+    }
+  }
+  if (currentEntry) entries.push(currentEntry);
+  return entries;
+}
+
 /**
  * Decompress using 7zip
  */
