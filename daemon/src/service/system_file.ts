@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import iconv from "iconv-lite";
 import { ProcessWrapper } from "mcsmanager-common";
+import StreamZip from "node-stream-zip";
 import os from "os";
 import path from "path";
 import { compress, decompress } from "../common/compress";
@@ -268,6 +269,9 @@ export default class FileManager {
     let hasEscapingLink = await this.hasEscapingLink(absDest);
     if (hasEscapingLink) throw new Error(ERROR_MSG_01);
 
+    let hasZipSlip = await this.hasZipSlip(this.toAbsolutePath(sourceZip));
+    if (hasZipSlip) throw new Error(ERROR_MSG_01);
+
     return await decompress(this.toAbsolutePath(sourceZip), absDest, code);
   }
 
@@ -301,6 +305,21 @@ export default class FileManager {
       }
     } catch {}
     return false;
+  }
+
+  private async hasZipSlip(absSource: string): Promise<boolean> {
+    if (path.extname(absSource).toLowerCase() !== ".zip") return false;
+
+    const zip = new StreamZip.async({ file: absSource });
+    try {
+      await zip.entries();
+      return false;
+    } catch (err: any) {
+      let reason = err.message as String;
+      return reason.indexOf("Malicious entry") !== -1;
+    } finally {
+      await zip.close().catch(() => {});
+    }
   }
 
   async zip(sourceZip: string, files: string[], code?: string) {
