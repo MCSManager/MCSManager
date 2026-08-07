@@ -51,6 +51,7 @@ class OperationLogger {
   #cache = new Map<string, OperationLoggerItem[]>();
   #bufferSize: number;
   #flushTimer: NodeJS.Timeout | null = null;
+  #flushChain: Promise<void> = Promise.resolve();
   #currentFile = "";
   #currentLines = 0;
 
@@ -106,13 +107,19 @@ class OperationLogger {
     this.#currentLines = (await this.read(last)).length;
   }
 
-  private write(entries: OperationLoggerItem[], sync: boolean) {
+  private takeChunk(entries: OperationLoggerItem[]) {
+    const file = this.nextFile();
+    const room = Math.max(1, this.maxLinesPerFile - this.#currentLines);
+    const chunk = entries.splice(0, room);
+    this.#currentLines += chunk.length;
+    return { file, chunk };
+  }
+
+  private async write(entries: OperationLoggerItem[], sync: boolean = false) {
     while (entries.length > 0) {
-      const file = this.nextFile();
-      const room = Math.max(1, this.maxLinesPerFile - this.#currentLines);
-      const chunk = entries.splice(0, room);
-      this.#storage.append(file, chunk, sync);
-      this.#currentLines += chunk.length;
+      const { file, chunk } = this.takeChunk(entries);
+      if (sync) this.#storage.appendSync(file, chunk);
+      else await this.#storage.append(file, chunk);
       this.#cache.get(file)?.push(...chunk);
     }
   }
@@ -123,16 +130,24 @@ class OperationLogger {
     return entries;
   }
 
-  async flush() {
+  private async doFlush() {
     if (this.#buffer.size === 0) return;
     await this.initCurrentFile();
-    this.write(this.takeBuffer(), false);
+    await this.write(this.takeBuffer());
     await this.runRetention();
+  }
+
+  flush(): Promise<void> {
+    const next = this.#flushChain.then(() => this.doFlush());
+    this.#flushChain = next.catch(() => {});
+    return next;
   }
 
   flushSync() {
     if (this.#buffer.size === 0) return;
-    this.write(this.takeBuffer(), true);
+    try {
+      this.write(this.takeBuffer(), true);
+    } catch {}
   }
 
   checkBufferQueue() {
