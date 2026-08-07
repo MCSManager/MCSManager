@@ -1,13 +1,23 @@
+import Koa from "koa";
 import { JsonlStorageSubsystem } from "./../common/storage/jsonl_storage";
 import { v4 } from "uuid";
 import type { OperationLoggerItem, OperationLoggerItemPayload } from "../../types/operation_logger";
 import RemoteRequest from "./remote_command";
 import RemoteServiceSubsystem from "./remote_service";
+import { getUserFromCtx, isApiRequest } from "./passport_service";
 
 type CleanPayload<T extends keyof OperationLoggerItemPayload> = Omit<
   OperationLoggerItemPayload[T],
   "operation_id" | "operation_time" | "operation_level"
 >;
+
+export function getOperationLoggerOperator(ctx: Koa.ParameterizedContext) {
+  return {
+    operator_ip: ctx.ip,
+    operator_name: getUserFromCtx(ctx)?.userName,
+    operator_source: isApiRequest(ctx) ? ("api" as const) : undefined
+  };
+}
 
 class OperationLogger {
   #storage: JsonlStorageSubsystem;

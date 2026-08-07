@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { ROLE } from "../entity/user";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 
@@ -166,8 +166,7 @@ router.post(
     });
 
     operationLogger.log("daemon_create", {
-      operator_ip: ctx.ip,
-      operator_name: ctx.session?.["userName"],
+      ...getOperationLoggerOperator(ctx),
       daemon_id: instance.uuid
     });
 
@@ -206,8 +205,7 @@ router.put(
     });
 
     operationLogger.log("daemon_config_change", {
-      operator_ip: ctx.ip,
-      operator_name: ctx.session?.["userName"],
+      ...getOperationLoggerOperator(ctx),
       daemon_id: uuid
     });
 
@@ -226,8 +224,7 @@ router.delete(
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
     await RemoteServiceSubsystem.deleteRemoteService(uuid);
     operationLogger.log("daemon_remove", {
-      operator_ip: ctx.ip,
-      operator_name: ctx.session?.["userName"],
+      ...getOperationLoggerOperator(ctx),
       daemon_id: uuid
     });
     ctx.body = true;

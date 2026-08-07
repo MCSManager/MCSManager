@@ -9,7 +9,7 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { multiOperationForwarding } from "../service/instance_service";
 import { logger } from "../service/log";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
@@ -60,8 +60,7 @@ router.post(
       operationLogger.log("instance_create", {
         daemon_id: daemonId,
         instance_id: result.instanceUuid,
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_name: result.nickname
       });
     } catch (err) {
@@ -89,8 +88,7 @@ router.post(
       operationLogger.log("instance_create", {
         daemon_id: daemonId,
         instance_id: newInstanceUuid,
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_name: result.nickname
       });
       // Send a cross-end file upload task to the daemon
@@ -136,8 +134,7 @@ router.put(
       operationLogger.log("instance_config_change", {
         daemon_id: daemonId,
         instance_id: instanceUuid,
-        operator_ip: ctx.ip,
-        operator_name: ctx.session?.["userName"],
+        ...getOperationLoggerOperator(ctx),
         instance_name: config.nickname
       });
       ctx.body = result;
@@ -175,8 +172,7 @@ router.delete(
           {
             daemon_id: daemonId,
             instance_id: e.instanceUuid,
-            operator_ip: ctx.ip,
-            operator_name: ctx.session?.["userName"],
+            ...getOperationLoggerOperator(ctx),
             instance_name: e.nickname
           },
           "error"
@@ -205,8 +201,7 @@ router.post("/multi_open", permission({ level: ROLE.ADMIN }), async (ctx) => {
             operationLogger.log("instance_start", {
               daemon_id: daemonId,
               instance_id: instance.instanceUuid,
-              operator_ip: ctx.ip,
-              operator_name: ctx.session?.["userName"],
+              ...getOperationLoggerOperator(ctx),
               instance_name: instance.nickname
             });
           });
@@ -235,8 +230,7 @@ router.post("/multi_stop", permission({ level: ROLE.ADMIN }), async (ctx) => {
             operationLogger.log("instance_stop", {
               daemon_id: daemonId,
               instance_id: instance.instanceUuid,
-              operator_ip: ctx.ip,
-              operator_name: ctx.session?.["userName"],
+              ...getOperationLoggerOperator(ctx),
               instance_name: instance.nickname
             });
           });
@@ -263,8 +257,7 @@ router.post("/multi_kill", permission({ level: ROLE.ADMIN }), async (ctx) => {
             operationLogger.warning("instance_kill", {
               daemon_id: daemonId,
               instance_id: instance.instanceUuid,
-              operator_ip: ctx.ip,
-              operator_name: ctx.session?.["userName"],
+              ...getOperationLoggerOperator(ctx),
               instance_name: instance.nickname
             });
           });
@@ -291,8 +284,7 @@ router.post("/multi_restart", permission({ level: ROLE.ADMIN }), async (ctx) => 
             operationLogger.log("instance_restart", {
               daemon_id: daemonId,
               instance_id: instance.instanceUuid,
-              operator_ip: ctx.ip,
-              operator_name: ctx.session?.["userName"],
+              ...getOperationLoggerOperator(ctx),
               instance_name: instance.nickname
             });
           });

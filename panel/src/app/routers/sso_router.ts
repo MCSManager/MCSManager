@@ -5,7 +5,7 @@ import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { logger } from "../service/log";
-import { operationLogger } from "../service/operation_logger";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { checkBanIp, loginSuccess } from "../service/passport_service";
 import {
   buildAuthorizationUrl,
@@ -350,8 +350,7 @@ router.put(
     await userSystem.unbindSso(uuid);
 
     operationLogger.log("sso_unbind", {
-      operator_ip: ctx.ip,
-      operator_name: ctx.session?.["userName"],
+      ...getOperationLoggerOperator(ctx),
       target_user_name: user.userName
     });
 
