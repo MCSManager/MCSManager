@@ -64,6 +64,22 @@ export default class SystemConfig {
   // they will no longer be able to use it.
   enableApiKey = false;
 
+  // Operation audit log settings
+  // Whether to record user operations (audit log)
+  operationLogEnabled = true;
+  // Rotate to a new JSONL file after this many records (a new file also starts each day)
+  operationLogMaxLinesPerFile = 200;
+  // Delete log files older than N days (0 = keep forever)
+  operationLogKeepDays = 30;
+  // Delete the oldest log files when the total record count exceeds N (0 = unlimited)
+  operationLogMaxTotalLines = 20000;
+  // Per-category recording switches
+  operationLogRecordLogin = true;
+  operationLogRecordInstance = true;
+  operationLogRecordFile = true;
+  operationLogRecordUser = true;
+  operationLogRecordSystem = true;
+
   // -----
   // After it is enabled, you can connect to the redeem.mcsmanager.com platform
   // to sell instances based on redeem

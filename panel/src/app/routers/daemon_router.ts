@@ -1,4 +1,5 @@
 import Router from "@koa/router";
+import { diffConfig } from "../common/config_diff";
 import { ROLE } from "../entity/user";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
@@ -195,6 +196,19 @@ router.put(
 
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
 
+    const snapshotDaemonConfig = (daemonId: string) => {
+      const config = RemoteServiceSubsystem.getInstance(daemonId)?.config;
+      if (!config) return null;
+      return {
+        port: config.port,
+        ip: config.ip,
+        prefix: config.prefix,
+        remarks: config.remarks,
+        remoteMappings: JSON.parse(JSON.stringify(config.remoteMappings ?? []))
+      };
+    };
+
+    const configBefore = snapshotDaemonConfig(uuid);
     await RemoteServiceSubsystem.edit(uuid, {
       port: parameter.port,
       ip: parameter.ip,
@@ -203,11 +217,21 @@ router.put(
       remarks: parameter.remarks,
       remoteMappings: parameter.remoteMappings ?? []
     });
+    const configAfter = snapshotDaemonConfig(uuid);
 
-    operationLogger.log("daemon_config_change", {
-      ...getOperationLoggerOperator(ctx),
-      daemon_id: uuid
-    });
+    const diff = diffConfig(configBefore, configAfter);
+    if (diff) {
+      operationLogger.log(
+        "daemon_config_change",
+        {
+          ...getOperationLoggerOperator(ctx),
+          daemon_id: uuid,
+          config_before: diff.before,
+          config_after: diff.after
+        },
+        "warning"
+      );
+    }
 
     ctx.body = true;
   }
@@ -222,11 +246,17 @@ router.delete(
   async (ctx) => {
     const uuid = String(ctx.request.query.uuid);
     if (!RemoteServiceSubsystem.services.has(uuid)) throw new Error("Instance does not exist");
+    const daemonName = RemoteServiceSubsystem.getInstance(uuid)?.config?.remarks;
     await RemoteServiceSubsystem.deleteRemoteService(uuid);
-    operationLogger.log("daemon_remove", {
-      ...getOperationLoggerOperator(ctx),
-      daemon_id: uuid
-    });
+    operationLogger.log(
+      "daemon_remove",
+      {
+        ...getOperationLoggerOperator(ctx),
+        daemon_id: uuid,
+        daemon_name: daemonName
+      },
+      "error"
+    );
     ctx.body = true;
   }
 );

@@ -1,10 +1,12 @@
-import Koa from "koa";
 import Router from "@koa/router";
-import permission from "../middleware/permission";
-import userSystem from "../service/user_service";
+import Koa from "koa";
+import { diffConfig } from "../common/config_diff";
 import { ICompleteUser } from "../entity/entity_interface";
-import { $t } from "../i18n";
 import { ROLE } from "../entity/user";
+import { $t } from "../i18n";
+import permission from "../middleware/permission";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
+import userSystem from "../service/user_service";
 
 const router = new Router({ prefix: "/auth" });
 
@@ -20,7 +22,37 @@ router.put("/", permission({ level: ROLE.ADMIN }), async (ctx: Koa.Parameterized
       config.secret = "";
       config.open2FA = false;
     }
+
+    const snapshotUserConfig = (userUuid: string) => {
+      const user = userSystem.getInstance(userUuid);
+      if (!user) return null;
+      const copy = JSON.parse(JSON.stringify(user));
+      delete copy.passWord;
+      delete copy.passWordType;
+      delete copy.salt;
+      delete copy.secret;
+      delete copy.apiKey;
+      return copy;
+    };
+
+    const userBefore = snapshotUserConfig(uuid);
     await userSystem.edit(uuid, config);
+    const userAfter = snapshotUserConfig(uuid);
+
+    const diff = diffConfig(userBefore, userAfter);
+    if (diff || passWord) {
+      operationLogger.log(
+        "user_config_change",
+        {
+          ...getOperationLoggerOperator(ctx),
+          target_user_name: userBefore?.userName,
+          password_reset: passWord ? true : undefined,
+          config_before: diff?.before,
+          config_after: diff?.after
+        },
+        "warning"
+      );
+    }
     ctx.body = true;
   } catch (error: any) {
     ctx.throw(500, error.message);

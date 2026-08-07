@@ -19,6 +19,7 @@ import {
   BookOutlined,
   BugOutlined,
   EditOutlined,
+  FileProtectOutlined,
   GithubOutlined,
   LockOutlined,
   MessageOutlined,
@@ -123,6 +124,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_9c3ca8f"),
     key: "security",
     icon: LockOutlined
+  },
+  {
+    title: t("审计日志"),
+    key: "audit",
+    icon: FileProtectOutlined
   },
   {
     title: t("TXT_CODE_SSO_TAB_TITLE"),
@@ -958,6 +964,140 @@ onUnmounted(() => {
             </div>
           </template>
 
+          <template #audit>
+            <div class="content-box" :style="{ maxHeight: card.height }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("审计日志") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("启用操作审计") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "记录用户在面板上的敏感操作（实例、文件、用户、节点、系统设置等），用于安全审计，修改后立即生效。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).operationLogEnabled"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("记录范围") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("关闭某一分类后，该类操作将不再写入审计日志。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <div class="audit-scope-list">
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("用户登录") }}</span>
+                        <a-switch v-model:checked="(formData as any).operationLogRecordLogin" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("实例操作") }}</span>
+                        <a-switch v-model:checked="(formData as any).operationLogRecordInstance" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("文件操作") }}</span>
+                        <a-switch v-model:checked="(formData as any).operationLogRecordFile" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("用户管理") }}</span>
+                        <a-switch v-model:checked="(formData as any).operationLogRecordUser" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("节点与系统") }}</span>
+                        <a-switch v-model:checked="(formData as any).operationLogRecordSystem" />
+                      </div>
+                    </div>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("单文件记录条数") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{
+                          t(
+                            "每个日志文件写入指定条数后自动切分新文件，跨天时也会自动切分，默认 200 条。"
+                          )
+                        }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogMaxLinesPerFile"
+                      style="max-width: 320px; width: 100%"
+                      :min="10"
+                      :max="1000"
+                      :step="10"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("日志保留天数") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("超过该天数的日志文件将被自动删除，0 表示永久保留。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogKeepDays"
+                      style="max-width: 320px; width: 100%"
+                      :min="0"
+                      :max="3650"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("最大记录总数") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("当记录总数超过该值时，自动删除最旧的日志文件，0 表示不限制。") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogMaxTotalLines"
+                      style="max-width: 320px; width: 100%"
+                      :min="0"
+                      :max="1000000"
+                      :step="1000"
+                    />
+                  </a-form-item>
+
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
           <template #sso>
             <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
@@ -1275,5 +1415,16 @@ div {
 .content-box {
   padding: 16px;
   overflow-y: auto;
+}
+
+.audit-scope-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+
+  .audit-scope-item {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

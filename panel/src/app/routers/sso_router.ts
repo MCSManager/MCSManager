@@ -349,10 +349,14 @@ router.put(
 
     await userSystem.unbindSso(uuid);
 
-    operationLogger.log("sso_unbind", {
-      ...getOperationLoggerOperator(ctx),
-      target_user_name: user.userName
-    });
+    operationLogger.log(
+      "sso_unbind",
+      {
+        ...getOperationLoggerOperator(ctx),
+        target_user_name: user.userName
+      },
+      "warning"
+    );
 
     logger.info(`[SSO] Admin unbound SSO for user ${user.userName}`);
     ctx.body = true;

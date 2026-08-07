@@ -1,6 +1,7 @@
 import { t } from "@/lang/i18n";
 import { getRandomId } from "@/tools/randId";
 import type { LayoutCard } from "@/types";
+import AuditLog from "@/widgets/AuditLog.vue";
 import DefaultCard from "@/widgets/DefaultCard.vue";
 import EmptyCard from "@/widgets/EmptyCard.vue";
 import ImageManager from "@/widgets/imageManager/index.vue";
@@ -94,6 +95,7 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   MusicCard,
   ShelvesCard,
   OperationLogCard,
+  AuditLog,
   Market,
   MarketEditor
 };
@@ -432,6 +434,17 @@ export function getLayoutCardPool() {
       width: 3,
       description: t("TXT_CODE_9e8c176e"),
       height: LayoutCardHeight.MEDIUM,
+      category: NEW_CARD_TYPE.DATA
+    },
+    {
+      id: getRandomId(),
+      permission: ROLE.ADMIN,
+      type: "AuditLog",
+      title: t("审计日志"),
+      meta: {},
+      width: 12,
+      description: t("查看并筛选面板所有用户操作的审计记录"),
+      height: LayoutCardHeight.AUTO,
       category: NEW_CARD_TYPE.DATA
     },
     {

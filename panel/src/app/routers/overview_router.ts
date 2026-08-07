@@ -97,4 +97,21 @@ router.get("/operation_logs", permission({ level: ROLE.ADMIN }), async (ctx) => 
   ctx.body = await operationLogger.get(limit);
 });
 
+// [Top-level Permission]
+// Search user operation logs (audit page): pagination + filters
+router.get("/operation_logs/search", permission({ level: ROLE.ADMIN }), async (ctx) => {
+  const page = Math.max(1, Number(ctx.query.page) || 1);
+  const pageSize = Math.min(100, Math.max(1, Number(ctx.query.page_size) || 20));
+  ctx.body = await operationLogger.search({
+    page,
+    pageSize,
+    type: ctx.query.type ? String(ctx.query.type) : undefined,
+    level: ctx.query.level ? String(ctx.query.level) : undefined,
+    operatorName: ctx.query.operator_name ? String(ctx.query.operator_name) : undefined,
+    startTime: ctx.query.start_time ? Number(ctx.query.start_time) : undefined,
+    endTime: ctx.query.end_time ? Number(ctx.query.end_time) : undefined,
+    keyword: ctx.query.keyword ? String(ctx.query.keyword) : undefined
+  });
+});
+
 export default router;

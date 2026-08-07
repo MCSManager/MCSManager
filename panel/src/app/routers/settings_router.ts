@@ -4,6 +4,7 @@ import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import FileManager from "../../../../daemon/src/service/system_file";
+import { diffConfig } from "../common/config_diff";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
@@ -35,6 +36,8 @@ router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
   const config = ctx.request.body as Partial<SystemConfig>;
   if (config && systemConfig) {
+    // Snapshot for the audit log (masked diff is computed after all mutations)
+    const systemConfigBefore = JSON.parse(JSON.stringify(systemConfig)) as SystemConfig;
     if (config.httpIp != null) systemConfig.httpIp = config.httpIp;
     if (config.httpPort != null) systemConfig.httpPort = config.httpPort;
     if (config.prefix != null) systemConfig.prefix = config.prefix;
@@ -61,6 +64,25 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableApiKey != null) systemConfig.enableApiKey = Boolean(config.enableApiKey);
+
+    if (config.operationLogEnabled != null)
+      systemConfig.operationLogEnabled = config.operationLogEnabled;
+    if (config.operationLogMaxLinesPerFile != null)
+      systemConfig.operationLogMaxLinesPerFile = config.operationLogMaxLinesPerFile;
+    if (config.operationLogKeepDays != null)
+      systemConfig.operationLogKeepDays = config.operationLogKeepDays;
+    if (config.operationLogMaxTotalLines != null)
+      systemConfig.operationLogMaxTotalLines = config.operationLogMaxTotalLines;
+    if (config.operationLogRecordLogin != null)
+      systemConfig.operationLogRecordLogin = config.operationLogRecordLogin;
+    if (config.operationLogRecordInstance != null)
+      systemConfig.operationLogRecordInstance = config.operationLogRecordInstance;
+    if (config.operationLogRecordFile != null)
+      systemConfig.operationLogRecordFile = config.operationLogRecordFile;
+    if (config.operationLogRecordUser != null)
+      systemConfig.operationLogRecordUser = config.operationLogRecordUser;
+    if (config.operationLogRecordSystem != null)
+      systemConfig.operationLogRecordSystem = config.operationLogRecordSystem;
 
     if (config.presetPackAddr != null) {
       // clear cache
@@ -208,12 +230,23 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       systemConfig.ssoCallbackUrl = cbUrl;
     }
 
-    operationLogger.log("system_config_change", {
-      ...getOperationLoggerOperator(ctx)
-    });
+    const diff = diffConfig(systemConfigBefore, JSON.parse(JSON.stringify(systemConfig)));
+    if (diff) {
+      operationLogger.log(
+        "system_config_change",
+        {
+          ...getOperationLoggerOperator(ctx),
+          config_before: diff.before,
+          config_after: diff.after
+        },
+        "warning",
+        config.operationLogEnabled !== systemConfigBefore.operationLogEnabled
+      );
+    }
 
     saveSystemConfig(systemConfig);
     checkBusinessMode();
+    operationLogger.runRetention();
     ctx.body = "OK";
     return;
   }

@@ -4,6 +4,7 @@ import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
+import { getInstanceNameSafely } from "../service/instance_name_service";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserUuid } from "../service/passport_service";
 import { isHaveInstanceByUuid } from "../service/permission_service";
@@ -72,6 +73,7 @@ router.post(
         ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
+        instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
         task_name: name
       });
 
@@ -108,6 +110,7 @@ router.delete(
         ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
+        instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
         task_name: name
       });
 
