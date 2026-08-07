@@ -977,11 +977,7 @@ onUnmounted(() => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "TXT_CODE_16a4e557"
-                          )
-                        }}
+                        {{ t("TXT_CODE_16a4e557") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-select
@@ -1010,23 +1006,25 @@ onUnmounted(() => {
                     <div class="audit-scope-list">
                       <div class="audit-scope-item">
                         <span class="mr-8">{{ t("TXT_CODE_dbbaf16e") }}</span>
-                        <a-switch v-model:checked="(formData as any).operationLogRecordLogin" />
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordLogin" />
                       </div>
                       <div class="audit-scope-item">
                         <span class="mr-8">{{ t("TXT_CODE_b68c8da6") }}</span>
-                        <a-switch v-model:checked="(formData as any).operationLogRecordInstance" />
+                        <a-checkbox
+                          v-model:checked="(formData as any).operationLogRecordInstance"
+                        />
                       </div>
                       <div class="audit-scope-item">
                         <span class="mr-8">{{ t("TXT_CODE_95495db") }}</span>
-                        <a-switch v-model:checked="(formData as any).operationLogRecordFile" />
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordFile" />
                       </div>
                       <div class="audit-scope-item">
                         <span class="mr-8">{{ t("TXT_CODE_500fed5c") }}</span>
-                        <a-switch v-model:checked="(formData as any).operationLogRecordUser" />
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordUser" />
                       </div>
                       <div class="audit-scope-item">
                         <span class="mr-8">{{ t("TXT_CODE_36b3a6b") }}</span>
-                        <a-switch v-model:checked="(formData as any).operationLogRecordSystem" />
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordSystem" />
                       </div>
                     </div>
                   </a-form-item>
@@ -1037,11 +1035,7 @@ onUnmounted(() => {
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{
-                          t(
-                            "TXT_CODE_507be396"
-                          )
-                        }}
+                        {{ t("TXT_CODE_507be396") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-input-number
