@@ -30,9 +30,9 @@ const typeOptions = computed(() => {
 });
 
 const levelOptions = computed(() => [
-  { value: "info", label: t("信息") },
-  { value: "warning", label: t("警告") },
-  { value: "error", label: t("错误") }
+  { value: "info", label: t("TXT_CODE_92c9a2f3") },
+  { value: "warning", label: t("TXT_CODE_617ce69c") },
+  { value: "error", label: t("TXT_CODE_ac405b50") }
 ]);
 
 interface QueryForm {
@@ -101,14 +101,14 @@ const columns = computed(() => {
   return arrayFilter<AntColumnsType>([
     {
       align: "center",
-      title: t("时间"),
+      title: t("TXT_CODE_7edf331d"),
       dataIndex: "operation_time",
       key: "operation_time",
       width: 165
     },
     {
       align: "center",
-      title: t("级别"),
+      title: t("TXT_CODE_2d3fc1f8"),
       dataIndex: "operation_level",
       key: "operation_level",
       width: 85,
@@ -116,14 +116,14 @@ const columns = computed(() => {
     },
     {
       align: "center",
-      title: t("操作类型"),
+      title: t("TXT_CODE_5b265628"),
       dataIndex: "type",
       key: "type",
       width: 140
     },
     {
       align: "center",
-      title: t("操作者"),
+      title: t("TXT_CODE_745f713e"),
       dataIndex: "operator_name",
       key: "operator_name",
       width: 130,
@@ -131,7 +131,7 @@ const columns = computed(() => {
     },
     {
       align: "left",
-      title: t("操作内容"),
+      title: t("TXT_CODE_28a7b54"),
       key: "content",
       minWidth: 260
     },
@@ -172,8 +172,8 @@ const getDaemonLabel = (record: OperationLoggerItem) => {
 const getScopeLabel = (record: OperationLoggerItem) => {
   const anyRecord = record as any;
   const parts: string[] = [];
-  if (anyRecord.instance_name) parts.push(`${t("实例")}: ${anyRecord.instance_name}`);
-  if (anyRecord.daemon_name) parts.push(`${t("节点")}: ${anyRecord.daemon_name}`);
+  if (anyRecord.instance_name) parts.push(`${t("TXT_CODE_cb043d10")}: ${anyRecord.instance_name}`);
+  if (anyRecord.daemon_name) parts.push(`${t("TXT_CODE_e076d90b")}: ${anyRecord.daemon_name}`);
   return parts.join(" · ");
 };
 
@@ -257,10 +257,10 @@ onMounted(async () => {
           <template #body>
             <div class="audit-filter mb-16">
               <a-form layout="inline" :model="queryForm">
-                <a-form-item :label="t('操作类型')" class="mb-8">
+                <a-form-item :label="t('TXT_CODE_5b265628')" class="mb-8">
                   <a-select
                     v-model:value="queryForm.type"
-                    :placeholder="t('全部')"
+                    :placeholder="t('TXT_CODE_68022ee7')"
                     allow-clear
                     show-search
                     option-filter-prop="label"
@@ -269,17 +269,17 @@ onMounted(async () => {
                     @change="search()"
                   />
                 </a-form-item>
-                <a-form-item :label="t('级别')" class="mb-8">
+                <a-form-item :label="t('TXT_CODE_2d3fc1f8')" class="mb-8">
                   <a-select
                     v-model:value="queryForm.level"
-                    :placeholder="t('全部')"
+                    :placeholder="t('TXT_CODE_68022ee7')"
                     allow-clear
                     style="width: 120px"
                     :options="levelOptions"
                     @change="search()"
                   />
                 </a-form-item>
-                <a-form-item :label="t('操作者')" class="mb-8">
+                <a-form-item :label="t('TXT_CODE_745f713e')" class="mb-8">
                   <a-input
                     v-model:value="queryForm.operatorName"
                     :placeholder="t('TXT_CODE_4ea93630')"
@@ -289,7 +289,7 @@ onMounted(async () => {
                     @change="search()"
                   />
                 </a-form-item>
-                <a-form-item :label="t('时间范围')" class="mb-8">
+                <a-form-item :label="t('TXT_CODE_482e7583')" class="mb-8">
                   <a-range-picker
                     v-model:value="queryForm.timeRange"
                     size="large"
@@ -298,7 +298,7 @@ onMounted(async () => {
                     @change="search()"
                   />
                 </a-form-item>
-                <a-form-item :label="t('关键字')" class="mb-8">
+                <a-form-item :label="t('TXT_CODE_fe7c7d2d')" class="mb-8">
                   <a-input
                     v-model:value="queryForm.keyword"
                     :placeholder="t('TXT_CODE_4ea93630')"
@@ -313,10 +313,10 @@ onMounted(async () => {
                 </a-form-item>
                 <a-form-item class="mb-8">
                   <a-button type="primary" :loading="isLoading" @click="search()">
-                    {{ t("查询") }}
+                    {{ t("TXT_CODE_ee8ae330") }}
                   </a-button>
                   <a-button class="ml-8" @click="resetQuery()">
-                    {{ t("重置") }}
+                    {{ t("TXT_CODE_50d471b2") }}
                   </a-button>
                 </a-form-item>
               </a-form>
@@ -376,7 +376,7 @@ onMounted(async () => {
                 </template>
                 <template v-if="column.key === 'action'">
                   <a-button size="middle" @click="openDetail(record)">
-                    {{ t("详情") }}
+                    {{ t("TXT_CODE_f1b166e7") }}
                   </a-button>
                 </template>
               </template>
@@ -390,7 +390,7 @@ onMounted(async () => {
       v-model:open="detailDialog"
       centered
       :width="820"
-      :title="t('审计详情')"
+      :title="t('TXT_CODE_d1f48be5')"
       :footer="null"
       :destroy-on-close="true"
     >
@@ -399,28 +399,28 @@ onMounted(async () => {
           {{ operationLog.generateTextByItem(detailItem) }}
         </a-typography-paragraph>
         <a-descriptions bordered size="small" :column="isPhone ? 1 : 2" class="mb-16">
-          <a-descriptions-item :label="t('时间')">
+          <a-descriptions-item :label="t('TXT_CODE_7edf331d')">
             {{ formatTime(detailItem.operation_time) }}
           </a-descriptions-item>
-          <a-descriptions-item :label="t('级别')">
+          <a-descriptions-item :label="t('TXT_CODE_2d3fc1f8')">
             <a-tag :color="operationLog.getColorByLevel(detailItem.operation_level)">
               {{ getLevelName(detailItem.operation_level) }}
             </a-tag>
           </a-descriptions-item>
-          <a-descriptions-item :label="t('操作类型')">
+          <a-descriptions-item :label="t('TXT_CODE_5b265628')">
             <a-tag>{{ getTypeName(detailItem.type) }}</a-tag>
           </a-descriptions-item>
-          <a-descriptions-item :label="t('操作者')">
+          <a-descriptions-item :label="t('TXT_CODE_745f713e')">
             {{ detailItem.operator_name || "--" }}
             <a-tag v-if="detailItem.operator_source" color="purple" class="ml-4">API</a-tag>
           </a-descriptions-item>
-          <a-descriptions-item :label="t('来源 IP')">
+          <a-descriptions-item :label="t('TXT_CODE_5b845bf0')">
             {{ detailItem.operator_ip || "--" }}
           </a-descriptions-item>
-          <a-descriptions-item :label="t('实例')">
+          <a-descriptions-item :label="t('TXT_CODE_cb043d10')">
             {{ getInstanceLabel(detailItem) }}
           </a-descriptions-item>
-          <a-descriptions-item :label="t('节点')">
+          <a-descriptions-item :label="t('TXT_CODE_e076d90b')">
             {{ getDaemonLabel(detailItem) }}
           </a-descriptions-item>
           <a-descriptions-item
@@ -436,13 +436,13 @@ onMounted(async () => {
           <a-row :gutter="[16, 16]">
             <a-col :span="isPhone ? 24 : 12">
               <a-typography-title :level="5">
-                {{ t("修改前") }}
+                {{ t("TXT_CODE_cb111efa") }}
               </a-typography-title>
               <pre class="audit-json">{{ detailConfigBefore || "--" }}</pre>
             </a-col>
             <a-col :span="isPhone ? 24 : 12">
               <a-typography-title :level="5">
-                {{ t("修改后") }}
+                {{ t("TXT_CODE_c918e658") }}
               </a-typography-title>
               <pre class="audit-json">{{ detailConfigAfter || "--" }}</pre>
             </a-col>

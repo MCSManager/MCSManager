@@ -250,7 +250,7 @@ const originRouterConfig: RouterConfig[] = [
 
   {
     path: "/audit",
-    name: t("审计日志"),
+    name: t("TXT_CODE_ea1600d2"),
     component: LayoutContainer,
     meta: {
       permission: ROLE.ADMIN,

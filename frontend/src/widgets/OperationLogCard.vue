@@ -25,7 +25,7 @@ onMounted(() => {
     </template>
     <template #operator>
       <a-button type="link" size="small" @click="router.push({ path: '/audit' })">
-        {{ t("查看全部") }}
+        {{ t("TXT_CODE_ac4ad8b0") }}
       </a-button>
     </template>
     <template #body>

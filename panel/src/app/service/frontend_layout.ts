@@ -440,7 +440,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
           id: getRandomId(),
           meta: {},
           type: "AuditLog",
-          title: t("审计日志"),
+          title: t("TXT_CODE_ea1600d2"),
           width: 12,
           height: LayoutCardHeight.AUTO,
           disableDelete: true

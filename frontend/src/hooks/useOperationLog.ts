@@ -32,7 +32,7 @@ const getOperatorLabel = (item: OperationLoggerItem) => {
 const getChangedKeys = (item: { config_after?: Record<string, any> }) => {
   const keys = Object.keys(item.config_after ?? {});
   if (keys.length === 0) return "";
-  return `${t("修改项目")}: ${keys.join(", ")}`;
+  return `${t("TXT_CODE_fafe0a1")}: ${keys.join(", ")}`;
 };
 
 export const useOperationLog = () => {
@@ -40,7 +40,7 @@ export const useOperationLog = () => {
 
   const renderMap: OperationRenderer = {
     instance_start: {
-      title: t("启动实例"),
+      title: t("TXT_CODE_967f4e93"),
       render: (item) => ({
         text: t("TXT_CODE_e4605c4"),
         data: {
@@ -50,7 +50,7 @@ export const useOperationLog = () => {
       })
     },
     instance_stop: {
-      title: t("关闭实例"),
+      title: t("TXT_CODE_27febf35"),
       render: (item) => ({
         text: t("TXT_CODE_48c286cc"),
         data: {
@@ -60,7 +60,7 @@ export const useOperationLog = () => {
       })
     },
     instance_restart: {
-      title: t("重启实例"),
+      title: t("TXT_CODE_77cc12da"),
       render: (item) => ({
         text: t("TXT_CODE_fa7002ef"),
         data: {
@@ -70,7 +70,7 @@ export const useOperationLog = () => {
       })
     },
     instance_update: {
-      title: t("更新实例"),
+      title: t("TXT_CODE_5b26ab30"),
       render: (item) => ({
         text: t("TXT_CODE_e1454ba7"),
         data: {
@@ -80,7 +80,7 @@ export const useOperationLog = () => {
       })
     },
     instance_kill: {
-      title: t("强制终止实例"),
+      title: t("TXT_CODE_6a707901"),
       render: (item) => ({
         text: t("TXT_CODE_ee54440"),
         data: {
@@ -90,7 +90,7 @@ export const useOperationLog = () => {
       })
     },
     instance_config_change: {
-      title: t("修改实例配置"),
+      title: t("TXT_CODE_e0398e0a"),
       render: (item) => ({
         text: t("TXT_CODE_30fcc19a"),
         managementText: getChangedKeys(item),
@@ -101,7 +101,7 @@ export const useOperationLog = () => {
       })
     },
     instance_create: {
-      title: t("创建实例"),
+      title: t("TXT_CODE_5a74975b"),
       render: (item) => ({
         text: t("TXT_CODE_9ab6fd"),
         data: {
@@ -111,7 +111,7 @@ export const useOperationLog = () => {
       })
     },
     instance_delete: {
-      title: t("删除实例"),
+      title: t("TXT_CODE_a0e19f38"),
       render: (item) => ({
         text: t("TXT_CODE_61b6facb"),
         data: {
@@ -121,9 +121,9 @@ export const useOperationLog = () => {
       })
     },
     instance_file_download_from_url: {
-      title: t("链接下载文件"),
+      title: t("TXT_CODE_95848ebc"),
       render: (item) => ({
-        text: t("用户 <<operator_name>> 向 <<instance_name>> 实例通过链接下载文件 <<file_name>>"),
+        text: t("TXT_CODE_fef2078b"),
         managementText: "<<file_name>>",
         data: {
           operator_name: getOperatorLabel(item),
@@ -133,7 +133,7 @@ export const useOperationLog = () => {
       })
     },
     instance_file_upload: {
-      title: t("上传文件"),
+      title: t("TXT_CODE_e00c858c"),
       render: (item) => ({
         text: t("TXT_CODE_58e4a9bd"),
         managementText: "<<file>>",
@@ -145,7 +145,7 @@ export const useOperationLog = () => {
       })
     },
     instance_file_update: {
-      title: t("编辑文件"),
+      title: t("TXT_CODE_b0dc1f17"),
       render: (item) => ({
         text: t("TXT_CODE_c5687e56"),
         managementText: "<<file>>",
@@ -157,7 +157,7 @@ export const useOperationLog = () => {
       })
     },
     instance_file_download: {
-      title: t("下载文件"),
+      title: t("TXT_CODE_2359e036"),
       render: (item) => ({
         text: t("TXT_CODE_6f43f95f"),
         managementText: "<<file>>",
@@ -169,7 +169,7 @@ export const useOperationLog = () => {
       })
     },
     instance_file_delete: {
-      title: t("删除文件"),
+      title: t("TXT_CODE_bf2abe90"),
       render: (item) => ({
         text: t("TXT_CODE_de567e84"),
         managementText: "<<file>>",
@@ -181,10 +181,10 @@ export const useOperationLog = () => {
       })
     },
     instance_file_rename: {
-      title: t("重命名文件"),
+      title: t("TXT_CODE_ccaabd02"),
       render: (item) => ({
         text: t(
-          "用户 <<operator_name>> 将 <<instance_name>> 实例的文件 <<file_before>> 重命名为 <<file_after>>"
+          "TXT_CODE_5487e155"
         ),
         managementText: "<<file_before>> → <<file_after>>",
         data: {
@@ -196,10 +196,10 @@ export const useOperationLog = () => {
       })
     },
     instance_file_move: {
-      title: t("移动文件"),
+      title: t("TXT_CODE_4a9b8ea9"),
       render: (item) => ({
         text: t(
-          "用户 <<operator_name>> 将 <<instance_name>> 实例的文件 <<file_before>> 移动至 <<file_after>>"
+          "TXT_CODE_76773e23"
         ),
         managementText: "<<file_before>> → <<file_after>>",
         data: {
@@ -211,9 +211,9 @@ export const useOperationLog = () => {
       })
     },
     instance_file_compress: {
-      title: t("压缩文件"),
+      title: t("TXT_CODE_f8a15a94"),
       render: (item) => ({
-        text: t("用户 <<operator_name>> 在 <<instance_name>> 实例中压缩生成文件 <<file>>"),
+        text: t("TXT_CODE_ca58a1ec"),
         managementText: "<<file>>",
         data: {
           operator_name: getOperatorLabel(item),
@@ -223,9 +223,9 @@ export const useOperationLog = () => {
       })
     },
     instance_file_decompress: {
-      title: t("解压文件"),
+      title: t("TXT_CODE_7669fd3f"),
       render: (item) => ({
-        text: t("用户 <<operator_name>> 在 <<instance_name>> 实例中解压了文件 <<file>>"),
+        text: t("TXT_CODE_1389014c"),
         managementText: "<<file>>",
         data: {
           operator_name: getOperatorLabel(item),
@@ -235,7 +235,7 @@ export const useOperationLog = () => {
       })
     },
     instance_task_create: {
-      title: t("创建计划任务"),
+      title: t("TXT_CODE_7f36293b"),
       render: (item) => ({
         text: t("TXT_CODE_5ddb00f2"),
         managementText: "<<task_name>>",
@@ -247,7 +247,7 @@ export const useOperationLog = () => {
       })
     },
     instance_task_delete: {
-      title: t("删除计划任务"),
+      title: t("TXT_CODE_f3ebf89e"),
       render: (item) => ({
         text: t("TXT_CODE_41f86ac"),
         managementText: "<<task_name>>",
@@ -259,7 +259,7 @@ export const useOperationLog = () => {
       })
     },
     daemon_create: {
-      title: t("新增节点"),
+      title: t("TXT_CODE_15a381d5"),
       render: (item) => ({
         text: t("TXT_CODE_f7969e5a"),
         data: {
@@ -269,7 +269,7 @@ export const useOperationLog = () => {
       })
     },
     daemon_remove: {
-      title: t("删除节点"),
+      title: t("TXT_CODE_8b937b23"),
       render: (item) => ({
         text: t("TXT_CODE_384d278f"),
         data: {
@@ -279,7 +279,7 @@ export const useOperationLog = () => {
       })
     },
     daemon_config_change: {
-      title: t("修改节点配置"),
+      title: t("TXT_CODE_a152dc5b"),
       render: (item) => ({
         text: t("TXT_CODE_b6ac7af4"),
         managementText: getChangedKeys(item),
@@ -290,10 +290,10 @@ export const useOperationLog = () => {
       })
     },
     user_create: {
-      title: t("新增用户"),
+      title: t("TXT_CODE_e83ffa03"),
       render: (item) => ({
         text: t("TXT_CODE_faa1962b"),
-        managementText: `${t("目标用户")}: <<target_user_name>>`,
+        managementText: `${t("TXT_CODE_887a895")}: <<target_user_name>>`,
         data: {
           operator_name: getOperatorLabel(item),
           target_user_name: item.target_user_name
@@ -301,10 +301,10 @@ export const useOperationLog = () => {
       })
     },
     user_delete: {
-      title: t("删除用户"),
+      title: t("TXT_CODE_760f00f5"),
       render: (item) => ({
         text: t("TXT_CODE_cd76bc9"),
-        managementText: `${t("目标用户")}: <<target_user_name>>`,
+        managementText: `${t("TXT_CODE_887a895")}: <<target_user_name>>`,
         data: {
           operator_name: getOperatorLabel(item),
           target_user_name: item.target_user_name
@@ -312,18 +312,18 @@ export const useOperationLog = () => {
       })
     },
     user_config_change: {
-      title: t("修改用户配置"),
+      title: t("TXT_CODE_a1bd4c28"),
       render: (item) => {
         const managementText: string[] = [];
         if (item.target_user_name) {
-          managementText.push(`${t("目标用户")}: <<target_user_name>>`);
+          managementText.push(`${t("TXT_CODE_887a895")}: <<target_user_name>>`);
         }
-        if (item.password_reset) managementText.push(t("重置了密码"));
+        if (item.password_reset) managementText.push(t("TXT_CODE_9c9025b1"));
         const changed = getChangedKeys(item);
         if (changed) managementText.push(changed);
         return {
           text: item.target_user_name
-            ? t("用户 <<operator_name>> 修改了用户 <<target_user_name>> 的配置")
+            ? t("TXT_CODE_3268ae52")
             : t("TXT_CODE_5564bc4c"),
           managementText: managementText.join("  "),
           data: {
@@ -334,12 +334,12 @@ export const useOperationLog = () => {
       }
     },
     user_apikey_change: {
-      title: t("开关 API 密钥"),
+      title: t("TXT_CODE_c6bd6421"),
       render: (item) => ({
         text: item.enabled
-          ? t("用户 <<operator_name>> 开启了用户 <<target_user_name>> 的 API 密钥")
-          : t("用户 <<operator_name>> 关闭了用户 <<target_user_name>> 的 API 密钥"),
-        managementText: item.enabled ? t("将 API 设置为启用") : t("将 API 设置为禁用"),
+          ? t("TXT_CODE_d0ea7f96")
+          : t("TXT_CODE_1e9cadb1"),
+        managementText: item.enabled ? t("TXT_CODE_71c45450") : t("TXT_CODE_52806070"),
         data: {
           operator_name: getOperatorLabel(item),
           target_user_name: item.target_user_name
@@ -347,7 +347,7 @@ export const useOperationLog = () => {
       })
     },
     user_login: {
-      title: t("用户登录"),
+      title: t("TXT_CODE_dbbaf16e"),
       render: (item) => ({
         text: t("TXT_CODE_31a48870") + ` (${item.operator_ip})`,
         managementText: "<<login_result>>",
@@ -358,10 +358,10 @@ export const useOperationLog = () => {
       })
     },
     sso_unbind: {
-      title: t("解绑 SSO"),
+      title: t("TXT_CODE_80e93277"),
       render: (item) => ({
-        text: t("用户 <<operator_name>> 解绑了用户 <<target_user_name>> 的 SSO 账号"),
-        managementText: `${t("目标用户")}: <<target_user_name>>`,
+        text: t("TXT_CODE_162672b7"),
+        managementText: `${t("TXT_CODE_887a895")}: <<target_user_name>>`,
         data: {
           operator_name: getOperatorLabel(item),
           target_user_name: item.target_user_name
@@ -369,7 +369,7 @@ export const useOperationLog = () => {
       })
     },
     system_config_change: {
-      title: t("修改系统设置"),
+      title: t("TXT_CODE_bd3b414e"),
       render: (item) => ({
         text: t("TXT_CODE_d6312bd5"),
         managementText: getChangedKeys(item),

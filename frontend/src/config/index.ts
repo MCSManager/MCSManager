@@ -440,10 +440,10 @@ export function getLayoutCardPool() {
       id: getRandomId(),
       permission: ROLE.ADMIN,
       type: "AuditLog",
-      title: t("审计日志"),
+      title: t("TXT_CODE_ea1600d2"),
       meta: {},
       width: 12,
-      description: t("查看并筛选面板所有用户操作的审计记录"),
+      description: t("TXT_CODE_fe933494"),
       height: LayoutCardHeight.AUTO,
       category: NEW_CARD_TYPE.DATA
     },

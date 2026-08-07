@@ -126,7 +126,7 @@ const menus = arrayFilter([
     icon: LockOutlined
   },
   {
-    title: t("审计日志"),
+    title: t("TXT_CODE_ea1600d2"),
     key: "audit",
     icon: FileProtectOutlined
   },
@@ -967,19 +967,19 @@ onUnmounted(() => {
           <template #audit>
             <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
-                {{ t("审计日志") }}
+                {{ t("TXT_CODE_ea1600d2") }}
               </a-typography-title>
               <div style="text-align: left">
                 <a-form :model="formData" layout="vertical">
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("启用操作审计") }}
+                      {{ t("TXT_CODE_3c7c9297") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         {{
                           t(
-                            "记录用户在面板上的敏感操作（实例、文件、用户、节点、系统设置等），用于安全审计，修改后立即生效。"
+                            "TXT_CODE_16a4e557"
                           )
                         }}
                       </a-typography-text>
@@ -1000,32 +1000,32 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("记录范围") }}
+                      {{ t("TXT_CODE_186e1ce1") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("关闭某一分类后，该类操作将不再写入审计日志。") }}
+                        {{ t("TXT_CODE_3effdfb0") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <div class="audit-scope-list">
                       <div class="audit-scope-item">
-                        <span class="mr-8">{{ t("用户登录") }}</span>
+                        <span class="mr-8">{{ t("TXT_CODE_dbbaf16e") }}</span>
                         <a-switch v-model:checked="(formData as any).operationLogRecordLogin" />
                       </div>
                       <div class="audit-scope-item">
-                        <span class="mr-8">{{ t("实例操作") }}</span>
+                        <span class="mr-8">{{ t("TXT_CODE_b68c8da6") }}</span>
                         <a-switch v-model:checked="(formData as any).operationLogRecordInstance" />
                       </div>
                       <div class="audit-scope-item">
-                        <span class="mr-8">{{ t("文件操作") }}</span>
+                        <span class="mr-8">{{ t("TXT_CODE_95495db") }}</span>
                         <a-switch v-model:checked="(formData as any).operationLogRecordFile" />
                       </div>
                       <div class="audit-scope-item">
-                        <span class="mr-8">{{ t("用户管理") }}</span>
+                        <span class="mr-8">{{ t("TXT_CODE_500fed5c") }}</span>
                         <a-switch v-model:checked="(formData as any).operationLogRecordUser" />
                       </div>
                       <div class="audit-scope-item">
-                        <span class="mr-8">{{ t("节点与系统") }}</span>
+                        <span class="mr-8">{{ t("TXT_CODE_36b3a6b") }}</span>
                         <a-switch v-model:checked="(formData as any).operationLogRecordSystem" />
                       </div>
                     </div>
@@ -1033,13 +1033,13 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("单文件记录条数") }}
+                      {{ t("TXT_CODE_68f99fdf") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
                         {{
                           t(
-                            "每个日志文件写入指定条数后自动切分新文件，跨天时也会自动切分，默认 200 条。"
+                            "TXT_CODE_507be396"
                           )
                         }}
                       </a-typography-text>
@@ -1055,11 +1055,11 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("日志保留天数") }}
+                      {{ t("TXT_CODE_dda5f944") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("超过该天数的日志文件将被自动删除，0 表示永久保留。") }}
+                        {{ t("TXT_CODE_8d88f625") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-input-number
@@ -1072,11 +1072,11 @@ onUnmounted(() => {
 
                   <a-form-item>
                     <a-typography-title :level="5">
-                      {{ t("最大记录总数") }}
+                      {{ t("TXT_CODE_706b201e") }}
                     </a-typography-title>
                     <a-typography-paragraph>
                       <a-typography-text type="secondary">
-                        {{ t("当记录总数超过该值时，自动删除最旧的日志文件，0 表示不限制。") }}
+                        {{ t("TXT_CODE_7ef4ecf4") }}
                       </a-typography-text>
                     </a-typography-paragraph>
                     <a-input-number
