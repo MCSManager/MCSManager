@@ -1,5 +1,6 @@
 import Koa from "koa";
 import { GlobalVariable } from "mcsmanager-common";
+import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { getUuidByApiKey, ILLEGAL_ACCESS_KEY, isAjax, logout } from "../service/passport_service";
 import userSystem from "../service/user_service";
@@ -48,8 +49,7 @@ function apiError(ctx: Koa.ParameterizedContext) {
 
 function disabledApiKey(ctx: Koa.ParameterizedContext) {
   ctx.status = 403;
-  ctx.body = `The administrator has disabled the use of the API key. 
-Please contact the administrator and set "enableApiKey" to "true" in the configuration file to enable normal use of the API endpoints.`;
+  ctx.body = $t("TXT_CODE_db253979");
 }
 
 function tooFast(ctx: Koa.ParameterizedContext) {
@@ -89,6 +89,8 @@ export default (parameter: IPermissionCfg) => {
       }
 
       const user = getUuidByApiKey(apiKey);
+      if (user && enableApiKey === "ONLY_ADMIN" && user.permission < ROLE.ADMIN)
+        return disabledApiKey(ctx);
       if (user && user.permission >= Number(parameter.level)) {
         return await next();
       } else {

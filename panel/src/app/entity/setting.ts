@@ -62,7 +62,7 @@ export default class SystemConfig {
   // This option determines whether the entire panel can use an API key.
   // If set to fail, even if the user has already generated an API key,
   // they will no longer be able to use it.
-  enableApiKey = false;
+  enableApiKey: boolean | "ONLY_ADMIN" = false;
 
   // Operation audit log settings
   // Whether to record user operations (audit log)

@@ -3514,5 +3514,6 @@
   "TXT_CODE_dda5f944": "Log Retention Days",
   "TXT_CODE_8d88f625": "Exceeding this number of days will automatically delete the log file. 0 indicates permanent retention.",
   "TXT_CODE_706b201e": "Maximum Record Count",
-  "TXT_CODE_7ef4ecf4": "Exceeding this number of records will automatically delete the oldest log file. 0 indicates no limit."
+  "TXT_CODE_7ef4ecf4": "Exceeding this number of records will automatically delete the oldest log file. 0 indicates no limit.",
+  "TXT_CODE_675e5397": "Only Admin"
 }

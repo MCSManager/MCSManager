@@ -166,6 +166,21 @@ const allYesNo = [
   }
 ];
 
+const apiKeyAccessOptions = [
+  {
+    label: t("TXT_CODE_52c8a730"),
+    value: true
+  },
+  {
+    label: t("TXT_CODE_675e5397"),
+    value: "ONLY_ADMIN"
+  },
+  {
+    label: t("TXT_CODE_718c9310"),
+    value: false
+  }
+];
+
 const totpDriftOptions = ref([
   {
     label: t("TXT_CODE_718c9310"),
@@ -740,7 +755,7 @@ onUnmounted(() => {
                       style="max-width: 320px"
                     >
                       <a-select-option
-                        v-for="item in allYesNo"
+                        v-for="item in apiKeyAccessOptions"
                         :key="item.value"
                         :value="item.value"
                       >
