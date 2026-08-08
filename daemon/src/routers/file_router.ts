@@ -179,7 +179,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const url = data.url;
     const fileName = data.fileName;
 
-    if (!checkSafeUrl(url)) {
+    if (!(await checkSafeUrl(url))) {
       protocol.responseError(ctx, t("TXT_CODE_3fe1b194"), {
         disablePrint: true
       });

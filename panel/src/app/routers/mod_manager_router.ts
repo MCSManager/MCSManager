@@ -180,14 +180,14 @@ router.post(
         ctx.request.body;
 
       // Validate URL to prevent SSRF attacks
-      if (!checkSafeUrl(url)) {
+      if (!(await checkSafeUrl(url))) {
         ctx.status = 400;
         ctx.body = new Error("Invalid or unsafe URL");
         return;
       }
 
       // Validate fallbackUrl if provided
-      if (fallbackUrl && !checkSafeUrl(fallbackUrl)) {
+      if (fallbackUrl && !(await checkSafeUrl(fallbackUrl))) {
         ctx.status = 400;
         ctx.body = new Error("Invalid or unsafe fallback URL");
         return;
