@@ -137,8 +137,8 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
       if (ssoType === "oidc") {
         const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
-        if (issuer && !issuer.startsWith("https://") && !issuer.startsWith("http://")) {
-          throw new Error("SSO Issuer URL must use http(s) protocol");
+        if (issuer && !issuer.startsWith("https://")) {
+          throw new Error("SSO Issuer URL must use the https protocol");
         }
         if (wantEnable && (!issuer?.trim() || !clientId?.trim() || !clientSecret?.trim())) {
           throw new Error(
