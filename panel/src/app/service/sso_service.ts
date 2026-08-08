@@ -37,6 +37,14 @@ function buildClientAuth(): oidc.ClientAuth {
 let cachedConfig: oidc.Configuration | null = null;
 let cachedConfigKey = "";
 
+function discoveryOptions(issuerUrl: URL): oidc.DiscoveryRequestOptions | undefined {
+  if (issuerUrl.protocol !== "http:") return undefined;
+  logger.warn(
+    `[SSO] Issuer ${issuerUrl.origin} uses plain HTTP; client credentials and tokens will be sent unencrypted.`
+  );
+  return { execute: [oidc.allowInsecureRequests] };
+}
+
 function oidcConfigKey(): string {
   return crypto
     .createHash("sha256")
@@ -64,7 +72,8 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
       issuerUrl,
       systemConfig.ssoClientId,
       systemConfig.ssoClientSecret,
-      buildClientAuth()
+      buildClientAuth(),
+      discoveryOptions(issuerUrl)
     );
     cachedConfigKey = configKey;
     logger.info(
@@ -82,7 +91,13 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
 export async function verifyIssuer(issuer: string, clientId: string, clientSecret: string): Promise<void> {
   try {
     const issuerUrl = new URL(issuer);
-    await oidc.discovery(issuerUrl, clientId, clientSecret, buildClientAuth());
+    await oidc.discovery(
+      issuerUrl,
+      clientId,
+      clientSecret,
+      buildClientAuth(),
+      discoveryOptions(issuerUrl)
+    );
   } catch (err: any) {
     logger.error("[SSO] Issuer verification failed: " + err.message);
     throw new Error(`SSO Issuer verification failed: unable to reach ${issuer}/.well-known/openid-configuration`);
