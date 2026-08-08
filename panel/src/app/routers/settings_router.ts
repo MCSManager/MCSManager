@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import FileManager from "../../../../daemon/src/service/system_file";
-import { diffConfig } from "../common/config_diff";
+import { diffConfig, MASK_TEXT } from "../common/config_diff";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
@@ -28,7 +28,14 @@ const router = new Router({ prefix: "/overview" });
 // [Top-level Permission]
 // Get panel configuration items
 router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  ctx.body = systemConfig;
+  if (!systemConfig) {
+    ctx.body = systemConfig;
+    return;
+  }
+  ctx.body = {
+    ...systemConfig,
+    ssoClientSecret: systemConfig.ssoClientSecret ? MASK_TEXT : ""
+  };
 });
 
 // [Top-level Permission]
@@ -131,7 +138,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       const clientId =
         config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
       const clientSecret =
-        config.ssoClientSecret != null
+        config.ssoClientSecret != null && config.ssoClientSecret !== MASK_TEXT
           ? String(config.ssoClientSecret)
           : systemConfig.ssoClientSecret;
 

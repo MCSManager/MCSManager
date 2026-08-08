@@ -1,5 +1,5 @@
 const SENSITIVE_KEY_REGEX = /passw(or)?d|secret|token|api_?key/i;
-const MASK_TEXT = "******";
+export const MASK_TEXT = "******";
 
 const DIFF_EXCLUDED_KEY_REGEX = /^(passw(or)?d|passWordType|salt|secret|api_?key)$/i;
 
