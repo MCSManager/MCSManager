@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
 import FileManager from "../../../../daemon/src/service/system_file";
-import { diffConfig, MASK_TEXT } from "../common/config_diff";
+import { diffConfig } from "../common/config_diff";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
@@ -32,10 +32,7 @@ router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     ctx.body = systemConfig;
     return;
   }
-  ctx.body = {
-    ...systemConfig,
-    ssoClientSecret: systemConfig.ssoClientSecret ? MASK_TEXT : ""
-  };
+  ctx.body = { ...systemConfig, ssoClientSecret: "" };
 });
 
 // [Top-level Permission]
@@ -137,10 +134,9 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
         config.ssoEnabled != null ? Boolean(config.ssoEnabled) : systemConfig.ssoEnabled;
       const clientId =
         config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
-      const clientSecret =
-        config.ssoClientSecret != null && config.ssoClientSecret !== MASK_TEXT
-          ? String(config.ssoClientSecret)
-          : systemConfig.ssoClientSecret;
+      const clientSecret = config.ssoClientSecret
+        ? String(config.ssoClientSecret)
+        : systemConfig.ssoClientSecret;
 
       if (ssoType === "oidc") {
         const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
@@ -207,7 +203,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
       if (config.ssoEnabled != null) systemConfig.ssoEnabled = wantEnable;
       if (config.ssoClientId != null) systemConfig.ssoClientId = clientId;
-      if (config.ssoClientSecret != null) systemConfig.ssoClientSecret = clientSecret;
+      if (config.ssoClientSecret) systemConfig.ssoClientSecret = clientSecret;
     }
 
     if (config.ssoUserIdField != null)
