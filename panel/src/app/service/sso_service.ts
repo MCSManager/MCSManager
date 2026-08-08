@@ -35,7 +35,16 @@ function buildClientAuth(): oidc.ClientAuth {
 // ─── OIDC Cache ───
 
 let cachedConfig: oidc.Configuration | null = null;
-let cachedIssuer = "";
+let cachedConfigKey = "";
+
+function oidcConfigKey(): string {
+  return crypto
+    .createHash("sha256")
+    .update(
+      [systemConfig?.ssoIssuer, systemConfig?.ssoClientId, systemConfig?.ssoClientSecret].join("\n")
+    )
+    .digest("hex");
+}
 
 export async function getOIDCConfig(): Promise<oidc.Configuration> {
   if (!systemConfig) throw new Error("System config not initialized");
@@ -44,7 +53,8 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
     throw new Error("SSO configuration is incomplete");
   }
 
-  if (cachedConfig && cachedIssuer === systemConfig.ssoIssuer) {
+  const configKey = oidcConfigKey();
+  if (cachedConfig && cachedConfigKey === configKey) {
     return cachedConfig;
   }
 
@@ -56,14 +66,14 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
       systemConfig.ssoClientSecret,
       buildClientAuth()
     );
-    cachedIssuer = systemConfig.ssoIssuer;
+    cachedConfigKey = configKey;
     logger.info(
       `[SSO] OIDC discovery completed for: ${systemConfig.ssoIssuer} (token endpoint auth: ${getTokenAuthMethod()})`
     );
     return cachedConfig;
   } catch (err: any) {
     cachedConfig = null;
-    cachedIssuer = "";
+    cachedConfigKey = "";
     logger.error("[SSO] OIDC discovery failed: " + err.message);
     throw new Error("OIDC discovery failed. Check server logs for details.");
   }
@@ -71,7 +81,7 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
 
 export function clearOIDCCache() {
   cachedConfig = null;
-  cachedIssuer = "";
+  cachedConfigKey = "";
 }
 
 export async function verifyIssuer(issuer: string, clientId: string, clientSecret: string): Promise<void> {
