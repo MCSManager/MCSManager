@@ -91,6 +91,7 @@ export interface Settings {
   businessMode: boolean;
   businessId: string;
   allowChangeCmd: boolean;
+  enableApiKey: boolean | "admin";
   registerCode: string;
   panelId: string;
   ssoEnabled: boolean;

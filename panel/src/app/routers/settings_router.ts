@@ -63,7 +63,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.allowChangeCmd != null) systemConfig.allowChangeCmd = Boolean(config.allowChangeCmd);
     if (config.registerCode != null) systemConfig.registerCode = String(config.registerCode);
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
-    if (config.enableApiKey != null) systemConfig.enableApiKey = Boolean(config.enableApiKey);
+    if (config.enableApiKey != null) systemConfig.enableApiKey = config.enableApiKey;
 
     if (config.operationLogEnabled != null)
       systemConfig.operationLogEnabled = config.operationLogEnabled;

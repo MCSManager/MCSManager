@@ -7,6 +7,7 @@ import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { getInstancesByUuid } from "../service/instance_service";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import {
   bind2FA,
   confirm2FaQRCode,
@@ -16,7 +17,6 @@ import {
   isAjax,
   logout
 } from "../service/passport_service";
-import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
 import userSystem from "../service/user_service";
 import { systemConfig } from "../setting";
@@ -86,7 +86,12 @@ router.put("/api", permission({ level: ROLE.USER }), async (ctx: Koa.Parameteriz
   try {
     if (user) {
       if (enable) {
-        if (!systemConfig?.enableApiKey) throw new Error($t("TXT_CODE_db253979"));
+        const enableApiKey = systemConfig?.enableApiKey || false;
+        if (!enableApiKey) throw new Error($t("TXT_CODE_db253979"));
+
+        if (enableApiKey === "admin" && user.permission < ROLE.ADMIN)
+          throw new Error($t("TXT_CODE_db253979"));
+
         newKey = v4().replace(/-/gim, "");
         await userSystem.edit(userUuid, {
           apiKey: newKey
