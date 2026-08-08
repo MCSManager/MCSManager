@@ -89,7 +89,7 @@ router.put("/api", permission({ level: ROLE.USER }), async (ctx: Koa.Parameteriz
         const enableApiKey = systemConfig?.enableApiKey || false;
         if (!enableApiKey) throw new Error($t("TXT_CODE_db253979"));
 
-        if (enableApiKey === "admin" && user.permission < ROLE.ADMIN)
+        if (enableApiKey === "ONLY_ADMIN" && user.permission < ROLE.ADMIN)
           throw new Error($t("TXT_CODE_db253979"));
 
         newKey = v4().replace(/-/gim, "");

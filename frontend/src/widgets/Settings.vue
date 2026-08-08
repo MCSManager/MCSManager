@@ -173,7 +173,7 @@ const apiKeyAccessOptions = [
   },
   {
     label: t("TXT_CODE_675e5397"),
-    value: "admin"
+    value: "ONLY_ADMIN"
   },
   {
     label: t("TXT_CODE_718c9310"),

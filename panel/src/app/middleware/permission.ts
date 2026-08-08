@@ -89,7 +89,7 @@ export default (parameter: IPermissionCfg) => {
       }
 
       const user = getUuidByApiKey(apiKey);
-      if (user && enableApiKey === "admin" && user.permission < ROLE.ADMIN)
+      if (user && enableApiKey === "ONLY_ADMIN" && user.permission < ROLE.ADMIN)
         return disabledApiKey(ctx);
       if (user && user.permission >= Number(parameter.level)) {
         return await next();
