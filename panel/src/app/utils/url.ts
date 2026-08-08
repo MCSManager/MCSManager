@@ -1,48 +1,48 @@
-/**
- * Check if a URL is safe for external requests
- * Prevents SSRF attacks by blocking local/private IP addresses and internal domains
- */
-export function checkSafeUrl(url: string): boolean {
+import { promises as dns } from "dns";
+import { isIP } from "net";
+
+function isPrivateAddress(address: string, family: number): boolean {
+  if (family === 6) {
+    const normalized = address.toLowerCase();
+    return (
+      normalized === "::" ||
+      normalized === "::1" ||
+      normalized.startsWith("fc") ||
+      normalized.startsWith("fd") ||
+      /^fe[89ab]/.test(normalized) ||
+      normalized.startsWith("::ffff:")
+    );
+  }
+
+  const [first, second] = address.split(".").map(Number);
+  return (
+    first === 0 ||
+    first === 10 ||
+    (first === 100 && second >= 64 && second <= 127) ||
+    first === 127 ||
+    (first === 169 && second === 254) ||
+    (first === 172 && second >= 16 && second <= 31) ||
+    (first === 192 && second === 168)
+  );
+}
+
+export async function checkSafeUrl(url: string) {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
 
-    // Reject IPv6 addresses (IPv6 addresses are wrapped in brackets by URL object)
-    if (hostname.startsWith("[") && hostname.endsWith("]")) {
+    // Reject ip addresses
+    if ((hostname.startsWith("[") && hostname.endsWith("]")) || isIP(hostname) !== 0) {
       return false;
     }
 
-    // Reject IPv4 address format
-    const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (ipv4Regex.test(hostname)) {
+    // Reject local domains
+    if (
+      hostname === "localhost" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".local")
+    ) {
       return false;
-    }
-
-    // Reject local domains and loopback addresses
-    const localDomains = ["localhost", "127.0.0.1", "0.0.0.0", "::1"];
-
-    if (localDomains.includes(hostname)) {
-      return false;
-    }
-
-    // Reject .local domains
-    if (hostname.endsWith(".local")) {
-      return false;
-    }
-
-    // Reject private IP address ranges (additional check in case IP format bypasses above)
-    if (ipv4Regex.test(hostname)) {
-      const parts = hostname.split(".").map(Number);
-      // 10.0.0.0/8
-      if (parts[0] === 10) return false;
-      // 172.16.0.0/12
-      if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return false;
-      // 192.168.0.0/16
-      if (parts[0] === 192 && parts[1] === 168) return false;
-      // 127.0.0.0/8 (loopback)
-      if (parts[0] === 127) return false;
-      // 169.254.0.0/16 (link-local)
-      if (parts[0] === 169 && parts[1] === 254) return false;
     }
 
     // Must contain at least one dot (ensure it's a valid domain, not a single word)
@@ -56,9 +56,21 @@ export function checkSafeUrl(url: string): boolean {
       return false;
     }
 
-    // Only allow http and https protocols
-    const allowedProtocols = ["http:", "https:"];
-    if (!allowedProtocols.includes(urlObj.protocol)) {
+    // Resolve through the system DNS and reject private addresses
+    const addresses = await dns.lookup(hostname, {
+      all: true,
+      verbatim: true
+    });
+
+    if (
+      addresses.length === 0 ||
+      addresses.some(({ address, family }) => isPrivateAddress(address, family))
+    ) {
+      return false;
+    }
+
+    // Only allow HTTP and HTTPS protocols
+    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
       return false;
     }
 
