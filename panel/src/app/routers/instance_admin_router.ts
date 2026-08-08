@@ -155,14 +155,15 @@ router.delete(
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!instanceUuids || !Array.isArray(instanceUuids))
         throw new Error("Type error, invalid uuids or daemonId");
-      const instanceIds = instanceUuids.map((uuid: string) => {
-        return { instanceUuid: uuid, daemonId };
-      });
-      userSystem.deleteUserInstances(null, instanceIds, true);
       const result = await new RemoteRequest(remoteService).request("instance/delete", {
         instanceUuids,
         deleteFile
       });
+      const instanceIds = result.instances.map((instance: { instanceUuid: string }) => ({
+        instanceUuid: instance.instanceUuid,
+        daemonId
+      }));
+      userSystem.deleteUserInstances(null, instanceIds, true);
       result.instances.forEach((e: { instanceUuid: string; nickname: string }) => {
         operationLogger.log(
           "instance_delete",
