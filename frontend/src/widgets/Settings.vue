@@ -172,7 +172,7 @@ const apiKeyAccessOptions = [
     value: true
   },
   {
-    label: t("仅管理员"),
+    label: t("TXT_CODE_675e5397"),
     value: "admin"
   },
   {
