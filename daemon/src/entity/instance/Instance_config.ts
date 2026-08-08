@@ -63,7 +63,7 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
 
   // Extend
   public docker: IGlobalInstanceDockerConfig = {
-    updateCommandImage: "",
+    updateCommandImage: "HOST",
     containerName: "",
     image: "",
     uploadSpeedLimit: 0,

@@ -127,7 +127,7 @@ export enum ScheduleCreateType {
 }
 
 export const defaultDockerConfig: IGlobalInstanceDockerConfig = {
-  updateCommandImage: "",
+  updateCommandImage: "HOST",
   containerName: "",
   image: "",
   memory: undefined,
