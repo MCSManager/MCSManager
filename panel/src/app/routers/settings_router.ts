@@ -113,6 +113,17 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
     const ssoType = systemConfig.ssoType || "oidc";
 
+    // SSO Token Endpoint client authentication method
+    if (config.ssoTokenAuthMethod != null) {
+      const m = String(config.ssoTokenAuthMethod);
+      if (m !== "auto" && m !== "client_secret_basic" && m !== "client_secret_post") {
+        throw new Error(
+          "ssoTokenAuthMethod must be 'auto', 'client_secret_basic' or 'client_secret_post'"
+        );
+      }
+      systemConfig.ssoTokenAuthMethod = m;
+    }
+
     // SSO core fields
     {
       const wantEnable =
