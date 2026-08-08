@@ -79,11 +79,6 @@ export async function getOIDCConfig(): Promise<oidc.Configuration> {
   }
 }
 
-export function clearOIDCCache() {
-  cachedConfig = null;
-  cachedConfigKey = "";
-}
-
 export async function verifyIssuer(issuer: string, clientId: string, clientSecret: string): Promise<void> {
   try {
     const issuerUrl = new URL(issuer);

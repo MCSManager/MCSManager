@@ -145,10 +145,17 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
             "Cannot enable SSO (OIDC): Issuer, Client ID, and Client Secret are required"
           );
         }
-        if (issuer?.trim() && clientId?.trim() && clientSecret?.trim()) {
-          const { verifyIssuer, clearOIDCCache } = require("../service/sso_service");
+        const oidcCredentialsChanged =
+          issuer !== systemConfig.ssoIssuer ||
+          clientId !== systemConfig.ssoClientId ||
+          clientSecret !== systemConfig.ssoClientSecret;
+        const needVerify =
+          wantEnable &&
+          Boolean(issuer?.trim() && clientId?.trim() && clientSecret?.trim()) &&
+          (!systemConfig.ssoEnabled || oidcCredentialsChanged);
+        if (needVerify) {
+          const { verifyIssuer } = require("../service/sso_service");
           await verifyIssuer(issuer, clientId, clientSecret);
-          clearOIDCCache();
         }
         if (config.ssoIssuer != null) systemConfig.ssoIssuer = issuer;
       } else {
