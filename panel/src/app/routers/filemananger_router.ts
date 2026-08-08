@@ -1,9 +1,11 @@
 import Router from "@koa/router";
+import path from "path";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
+import { getInstanceNameSafely } from "../service/instance_name_service";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
@@ -203,6 +205,18 @@ router.put(
       const target = String(ctx.request.body.target);
       const text = ctx.request.body.text;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+
+      let textBefore: string | null = null;
+      try {
+        textBefore = await new RemoteRequest(remoteService).request(
+          "file/edit",
+          { instanceUuid, target },
+          100000
+        );
+      } catch (err) {
+        textBefore = null;
+      }
+
       const result = await new RemoteRequest(remoteService).request(
         "file/edit",
         {
@@ -212,12 +226,17 @@ router.put(
         },
         100000
       );
-      operationLogger.log("instance_file_update", {
-        ...getOperationLoggerOperator(ctx),
-        instance_id: instanceUuid,
-        daemon_id: daemonId,
-        file: target
-      });
+
+      const diff = textBefore !== text;
+      if (diff) {
+        operationLogger.log("instance_file_update", {
+          ...getOperationLoggerOperator(ctx),
+          instance_id: instanceUuid,
+          daemon_id: daemonId,
+          instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
+          file: target
+        });
+      }
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -272,8 +291,9 @@ router.post(
         ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
+        instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
         url: url,
-        fileName: fileName
+        file: fileName
       });
 
       await new RemoteRequest(remoteService).request("file/download_from_url", {
@@ -330,6 +350,22 @@ router.put(
         instanceUuid,
         targets
       });
+      const instanceName = await getInstanceNameSafely(daemonId, instanceUuid);
+      for (const target of targets as string[][]) {
+        if (!Array.isArray(target) || target.length < 2) continue;
+        const fileBefore = String(target[0]);
+        const fileAfter = String(target[1]);
+
+        const isRename = path.posix.dirname(fileBefore) === path.posix.dirname(fileAfter);
+        operationLogger.log(isRename ? "instance_file_rename" : "instance_file_move", {
+          ...getOperationLoggerOperator(ctx),
+          instance_id: instanceUuid,
+          daemon_id: daemonId,
+          instance_name: instanceName,
+          file_before: fileBefore,
+          file_after: fileAfter
+        });
+      }
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -352,12 +388,17 @@ router.delete(
         instanceUuid,
         targets
       });
-      operationLogger.log("instance_file_delete", {
-        ...getOperationLoggerOperator(ctx),
-        instance_id: String(instanceUuid),
-        daemon_id: daemonId,
-        file: targets
-      });
+      operationLogger.log(
+        "instance_file_delete",
+        {
+          ...getOperationLoggerOperator(ctx),
+          instance_id: String(instanceUuid),
+          daemon_id: daemonId,
+          instance_name: await getInstanceNameSafely(daemonId, String(instanceUuid)),
+          file: targets
+        },
+        "warning"
+      );
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
@@ -393,6 +434,26 @@ router.post(
         },
         0
       );
+      const instanceName = await getInstanceNameSafely(daemonId, instanceUuid);
+      if (type === 1) {
+        operationLogger.log("instance_file_compress", {
+          ...getOperationLoggerOperator(ctx),
+          instance_id: instanceUuid,
+          daemon_id: daemonId,
+          instance_name: instanceName,
+          file: source,
+          targets: Array.isArray(targets) ? targets.map((v: any) => String(v)) : [String(targets)]
+        });
+      } else {
+        operationLogger.log("instance_file_decompress", {
+          ...getOperationLoggerOperator(ctx),
+          instance_id: instanceUuid,
+          daemon_id: daemonId,
+          instance_name: instanceName,
+          file: source,
+          target_dir: String(targets)
+        });
+      }
       ctx.body = res;
     } catch (err) {
       ctx.body = err;
@@ -427,6 +488,7 @@ router.all(
         ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
         daemon_id: daemonId,
+        instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
         file: fileName
       });
       ctx.body = {
@@ -465,7 +527,8 @@ router.all(
       operationLogger.log("instance_file_upload", {
         ...getOperationLoggerOperator(ctx),
         instance_id: instanceUuid,
-        daemon_id: daemonId
+        daemon_id: daemonId,
+        instance_name: await getInstanceNameSafely(daemonId, instanceUuid)
       });
       ctx.body = {
         password,

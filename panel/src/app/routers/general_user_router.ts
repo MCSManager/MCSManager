@@ -16,6 +16,7 @@ import {
   isAjax,
   logout
 } from "../service/passport_service";
+import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
 import userSystem from "../service/user_service";
 import { systemConfig } from "../setting";
@@ -65,7 +66,12 @@ router.put("/update", permission({ level: ROLE.USER }), async (ctx: Koa.Paramete
     const { passWord, isInit } = config;
     if (!userSystem.validatePassword(passWord))
       throw new Error($t("TXT_CODE_router.user.passwordCheck"));
+    const user = userSystem.getInstance(userUuid);
     await userSystem.edit(userUuid, { passWord, isInit });
+    operationLogger.log("user_config_change", {
+      ...getOperationLoggerOperator(ctx),
+      target_user_name: user?.userName
+    });
     ctx.body = logout(ctx);
   }
 });
@@ -90,6 +96,15 @@ router.put("/api", permission({ level: ROLE.USER }), async (ctx: Koa.Parameteriz
           apiKey: ""
         });
       }
+      operationLogger.log(
+        "user_apikey_change",
+        {
+          ...getOperationLoggerOperator(ctx),
+          target_user_name: user.userName,
+          enabled: Boolean(enable)
+        },
+        "warning"
+      );
     }
     ctx.body = newKey;
   } catch (error: any) {

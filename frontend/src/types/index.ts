@@ -102,6 +102,15 @@ export interface Settings {
   ssoClientId: string;
   ssoClientSecret: string;
   ssoCallbackUrl: string;
+  operationLogEnabled: boolean;
+  operationLogMaxLinesPerFile: number;
+  operationLogKeepDays: number;
+  operationLogMaxTotalLines: number;
+  operationLogRecordLogin: boolean;
+  operationLogRecordInstance: boolean;
+  operationLogRecordFile: boolean;
+  operationLogRecordUser: boolean;
+  operationLogRecordSystem: boolean;
 }
 
 export interface ImageInfo {

@@ -434,6 +434,28 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
+      page: "/audit",
+      items: [
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "AuditLog",
+          title: t("TXT_CODE_ea1600d2"),
+          width: 12,
+          height: LayoutCardHeight.AUTO,
+          disableDelete: true
+        },
+        {
+          id: getRandomId(),
+          meta: {},
+          type: "EmptyCard",
+          title: "",
+          width: 12,
+          height: LayoutCardHeight.MINI
+        }
+      ]
+    },
+    {
       page: "/node",
       items: [
         {

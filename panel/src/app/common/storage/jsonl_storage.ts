@@ -44,6 +44,22 @@ export class JsonlStorageSubsystem {
     await this.trimToMaxLines(logicalPath);
   }
 
+  public appendSync(logicalPath: string, entry: object | object[]) {
+    const entries = Array.isArray(entry) ? entry : [entry];
+    const filePath = this.resolveFilePath(logicalPath);
+    fs.ensureFileSync(filePath);
+    fs.appendFileSync(filePath, entries.map((e) => JSON.stringify(e)).join("\n") + "\n", "utf-8");
+  }
+
+  public list(): string[] {
+    if (!fs.existsSync(this.#rootDir)) return [];
+    return fs
+      .readdirSync(this.#rootDir)
+      .filter((name) => name.endsWith(".jsonl"))
+      .map((name) => name.slice(0, -".jsonl".length))
+      .sort();
+  }
+
   public async readAll(logicalPath: string): Promise<object[]> {
     const filePath = this.resolveFilePath(logicalPath);
     if (!(await fs.pathExists(filePath))) return [];

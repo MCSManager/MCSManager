@@ -249,6 +249,16 @@ const originRouterConfig: RouterConfig[] = [
   },
 
   {
+    path: "/audit",
+    name: t("TXT_CODE_ea1600d2"),
+    component: LayoutContainer,
+    meta: {
+      permission: ROLE.ADMIN,
+      mainMenu: false
+    }
+  },
+
+  {
     path: "/settings",
     name: t("TXT_CODE_b5c7b82d"),
     component: LayoutContainer,

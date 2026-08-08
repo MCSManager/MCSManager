@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
+import { router } from "@/config/router";
+import { useOperationLog } from "@/hooks/useOperationLog";
 import { t } from "@/lang/i18n";
 import type { LayoutCard } from "@/types";
-
-import { useOperationLog } from "@/hooks/useOperationLog";
 import dayjs from "dayjs";
 import { onMounted } from "vue";
 
@@ -22,6 +22,11 @@ onMounted(() => {
   <card-panel>
     <template #title>
       {{ card.title }}
+    </template>
+    <template #operator>
+      <a-button type="link" size="small" @click="router.push({ path: '/audit' })">
+        {{ t("TXT_CODE_ac4ad8b0") }}
+      </a-button>
     </template>
     <template #body>
       <div class="time-line full-card-body-container scrollbar-hidden">

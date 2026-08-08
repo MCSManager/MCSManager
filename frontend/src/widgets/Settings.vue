@@ -19,6 +19,7 @@ import {
   BookOutlined,
   BugOutlined,
   EditOutlined,
+  FileProtectOutlined,
   GithubOutlined,
   LockOutlined,
   MessageOutlined,
@@ -123,6 +124,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_9c3ca8f"),
     key: "security",
     icon: LockOutlined
+  },
+  {
+    title: t("TXT_CODE_ea1600d2"),
+    key: "audit",
+    icon: FileProtectOutlined
   },
   {
     title: t("TXT_CODE_SSO_TAB_TITLE"),
@@ -958,6 +964,134 @@ onUnmounted(() => {
             </div>
           </template>
 
+          <template #audit>
+            <div class="content-box" :style="{ maxHeight: card.height }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_ea1600d2") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_3c7c9297") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_16a4e557") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).operationLogEnabled"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_186e1ce1") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_3effdfb0") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <div class="audit-scope-list">
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("TXT_CODE_dbbaf16e") }}</span>
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordLogin" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("TXT_CODE_b68c8da6") }}</span>
+                        <a-checkbox
+                          v-model:checked="(formData as any).operationLogRecordInstance"
+                        />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("TXT_CODE_95495db") }}</span>
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordFile" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("TXT_CODE_500fed5c") }}</span>
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordUser" />
+                      </div>
+                      <div class="audit-scope-item">
+                        <span class="mr-8">{{ t("TXT_CODE_36b3a6b") }}</span>
+                        <a-checkbox v-model:checked="(formData as any).operationLogRecordSystem" />
+                      </div>
+                    </div>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_68f99fdf") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_507be396") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogMaxLinesPerFile"
+                      style="max-width: 320px; width: 100%"
+                      :min="10"
+                      :max="1000"
+                      :step="10"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_dda5f944") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_8d88f625") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogKeepDays"
+                      style="max-width: 320px; width: 100%"
+                      :min="0"
+                      :max="3650"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_706b201e") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_7ef4ecf4") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-input-number
+                      v-model:value="formData.operationLogMaxTotalLines"
+                      style="max-width: 320px; width: 100%"
+                      :min="0"
+                      :max="1000000"
+                      :step="1000"
+                    />
+                  </a-form-item>
+
+                  <div class="button">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                  </div>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
           <template #sso>
             <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
@@ -1275,5 +1409,16 @@ div {
 .content-box {
   padding: 16px;
   overflow-y: auto;
+}
+
+.audit-scope-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+
+  .audit-scope-item {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

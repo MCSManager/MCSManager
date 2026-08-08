@@ -7,6 +7,7 @@ import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
+import { updateInstanceWithAudit } from "../service/instance_config_audit";
 import { multiOperationForwarding } from "../service/instance_service";
 import { logger } from "../service/log";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
@@ -127,16 +128,12 @@ router.put(
       const instanceUuid = String(ctx.query.uuid);
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/update", {
-        instanceUuid,
-        config
-      });
-      operationLogger.log("instance_config_change", {
-        daemon_id: daemonId,
-        instance_id: instanceUuid,
-        ...getOperationLoggerOperator(ctx),
-        instance_name: config.nickname
-      });
+      const result = await updateInstanceWithAudit(ctx, daemonId, instanceUuid, () =>
+        new RemoteRequest(remoteService).request("instance/update", {
+          instanceUuid,
+          config
+        })
+      );
       ctx.body = result;
     } catch (err) {
       ctx.body = err;
