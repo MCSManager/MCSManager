@@ -30,8 +30,13 @@ class DiskLimitService {
   }
 
   async checkInstanceDiskSize(instance: Instance) {
-    const workspace = instance.absoluteCwdPath();
     const maxSpace = Number(instance.config.docker.maxSpace);
+    // Defensive guard: maxSpace <= 0 means the quota feature is disabled
+    // (default 0 / unset / negative). The 45s lifecycle task already filters
+    // these out, but this keeps the service contract self-contained so other
+    // callers cannot enqueue useless `du` jobs.
+    if (maxSpace <= 0) return;
+    const workspace = instance.absoluteCwdPath();
     this.queue.push({
       key: instance.instanceUuid,
       item: {
