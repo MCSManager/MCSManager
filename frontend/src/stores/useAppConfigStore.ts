@@ -99,7 +99,7 @@ export const useAppConfigStore = createGlobalState(() => {
     if (frontendSettings?.theme?.backgroundImage)
       setBackgroundImage(frontendSettings.theme.backgroundImage);
     const pos = frontendSettings?.theme?.sidebarPosition;
-    sidebarPosition.value = pos === "left" || pos === "right" ? pos : "left";
+    sidebarPosition.value = pos === "left" || pos === "right" ? pos : "right";
   };
 
   const setTheme = (t: AppTheme) => {
