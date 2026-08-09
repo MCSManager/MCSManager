@@ -14,13 +14,23 @@ import {
   generateState,
   getCallbackUrl,
   getPublicSsoConfig,
-  handleOIDCCallback,
-  handleOAuth2Callback
+  handleOAuth2Callback,
+  handleOIDCCallback
 } from "../service/sso_service";
 import userSystem, { TwoFactorError } from "../service/user_service";
 import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/auth/sso" });
+
+const SSO_BIND_SESSION_TTL = 10 * 60 * 1000;
+
+function hasPendingSsoBind(ctx: Koa.ParameterizedContext): boolean {
+  const ssoSub = ctx.session?.["ssoBindSub"];
+  const ssoBindTimestamp = ctx.session?.["ssoBindTimestamp"];
+  if (!ssoSub || !ssoBindTimestamp) return false;
+  if (Date.now() - ssoBindTimestamp > SSO_BIND_SESSION_TTL) return false;
+  return !userSystem.getUserBySsoSub(ssoSub);
+}
 
 // [Public] Return SSO configuration (no secrets)
 router.get(
@@ -129,19 +139,18 @@ router.get(
 
     try {
       let sub: string;
-      let claims: Record<string, unknown>;
 
       if (isOAuth2) {
         const code = callbackUrl.searchParams.get("code");
         if (!code) throw new Error("OAuth 2.0 callback missing code parameter");
         const stateParam = callbackUrl.searchParams.get("state");
         if (stateParam !== expectedState) throw new Error("OAuth 2.0 state mismatch");
-        ({ sub, claims } = await handleOAuth2Callback(code, codeVerifier, ctx));
+        ({ sub } = await handleOAuth2Callback(code, codeVerifier, ctx));
       } else {
         const configuredCallback = getCallbackUrl(ctx);
         const reconstructedUrl = new URL(configuredCallback);
         reconstructedUrl.search = callbackUrl.search;
-        ({ sub, claims } = await handleOIDCCallback(
+        ({ sub } = await handleOIDCCallback(
           reconstructedUrl,
           expectedState,
           expectedNonce,
@@ -167,7 +176,6 @@ router.get(
 
       // Not bound yet - redirect to bind page
       ctx.session!["ssoBindSub"] = sub;
-      ctx.session!["ssoBindClaims"] = JSON.stringify(claims);
       ctx.session!["ssoBindTimestamp"] = Date.now();
       ctx.session!.save();
 
@@ -183,6 +191,14 @@ router.get(
       });
       ctx.redirect(`/#/login?${params.toString()}`);
     }
+  }
+);
+
+router.get(
+  "/bind-status",
+  permission({ token: false, level: null, speedLimit: false }),
+  async (ctx: Koa.ParameterizedContext) => {
+    ctx.body = { pending: Boolean(systemConfig?.ssoEnabled) && hasPendingSsoBind(ctx) };
   }
 );
 
@@ -210,9 +226,8 @@ router.post(
     }
 
     // Reject if the bind session is older than 10 minutes
-    if (!ssoBindTimestamp || Date.now() - ssoBindTimestamp > 10 * 60 * 1000) {
+    if (!ssoBindTimestamp || Date.now() - ssoBindTimestamp > SSO_BIND_SESSION_TTL) {
       delete ctx.session["ssoBindSub"];
-      delete ctx.session["ssoBindClaims"];
       delete ctx.session["ssoBindTimestamp"];
       ctx.session.save();
       throw new Error("SSO binding session expired");
@@ -222,7 +237,6 @@ router.post(
     const alreadyBound = userSystem.getUserBySsoSub(ssoSub);
     if (alreadyBound) {
       delete ctx.session["ssoBindSub"];
-      delete ctx.session["ssoBindClaims"];
       delete ctx.session["ssoBindTimestamp"];
       ctx.session.save();
       throw new Error("This SSO account is already bound to another user");
@@ -254,7 +268,6 @@ router.post(
 
     // Clean up session
     delete ctx.session["ssoBindSub"];
-    delete ctx.session["ssoBindClaims"];
     delete ctx.session["ssoBindTimestamp"];
 
     const token = loginSuccess(ctx, userName);
@@ -291,9 +304,8 @@ router.post(
       throw new Error("No pending SSO binding session");
     }
 
-    if (!ssoBindTimestamp || Date.now() - ssoBindTimestamp > 10 * 60 * 1000) {
+    if (!ssoBindTimestamp || Date.now() - ssoBindTimestamp > SSO_BIND_SESSION_TTL) {
       delete ctx.session["ssoBindSub"];
-      delete ctx.session["ssoBindClaims"];
       delete ctx.session["ssoBindTimestamp"];
       ctx.session.save();
       throw new Error("SSO binding session expired");
@@ -302,7 +314,6 @@ router.post(
     const alreadyBound = userSystem.getUserBySsoSub(ssoSub);
     if (alreadyBound) {
       delete ctx.session["ssoBindSub"];
-      delete ctx.session["ssoBindClaims"];
       delete ctx.session["ssoBindTimestamp"];
       ctx.session.save();
       throw new Error("This SSO account is already bound to another user");
@@ -321,7 +332,6 @@ router.post(
     await userSystem.bindSso(user.uuid, ssoSub);
 
     delete ctx.session["ssoBindSub"];
-    delete ctx.session["ssoBindClaims"];
     delete ctx.session["ssoBindTimestamp"];
     ctx.session.save();
 

@@ -108,6 +108,7 @@ export default class SystemConfig {
   // Shared
   ssoClientId = "";
   ssoClientSecret = "";
+  ssoTokenAuthMethod: "auto" | "client_secret_basic" | "client_secret_post" = "auto";
   ssoCallbackUrl = "";
 
   // Whether to enable SSL/TLS (HTTPS)

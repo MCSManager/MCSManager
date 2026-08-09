@@ -28,7 +28,11 @@ const router = new Router({ prefix: "/overview" });
 // [Top-level Permission]
 // Get panel configuration items
 router.get("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
-  ctx.body = systemConfig;
+  if (!systemConfig) {
+    ctx.body = systemConfig;
+    return;
+  }
+  ctx.body = { ...systemConfig, ssoClientSecret: "" };
 });
 
 // [Top-level Permission]
@@ -113,31 +117,48 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
     const ssoType = systemConfig.ssoType || "oidc";
 
+    // SSO Token Endpoint client authentication method
+    if (config.ssoTokenAuthMethod != null) {
+      const m = String(config.ssoTokenAuthMethod);
+      if (m !== "auto" && m !== "client_secret_basic" && m !== "client_secret_post") {
+        throw new Error(
+          "ssoTokenAuthMethod must be 'auto', 'client_secret_basic' or 'client_secret_post'"
+        );
+      }
+      systemConfig.ssoTokenAuthMethod = m;
+    }
+
     // SSO core fields
     {
       const wantEnable =
         config.ssoEnabled != null ? Boolean(config.ssoEnabled) : systemConfig.ssoEnabled;
       const clientId =
         config.ssoClientId != null ? String(config.ssoClientId) : systemConfig.ssoClientId;
-      const clientSecret =
-        config.ssoClientSecret != null
-          ? String(config.ssoClientSecret)
-          : systemConfig.ssoClientSecret;
+      const clientSecret = config.ssoClientSecret
+        ? String(config.ssoClientSecret)
+        : systemConfig.ssoClientSecret;
 
       if (ssoType === "oidc") {
         const issuer = config.ssoIssuer != null ? String(config.ssoIssuer) : systemConfig.ssoIssuer;
-        if (issuer && !issuer.startsWith("https://") && !issuer.startsWith("http://")) {
-          throw new Error("SSO Issuer URL must use http(s) protocol");
+        if (issuer && !issuer.startsWith("https://")) {
+          throw new Error("SSO Issuer URL must use the https protocol");
         }
         if (wantEnable && (!issuer?.trim() || !clientId?.trim() || !clientSecret?.trim())) {
           throw new Error(
             "Cannot enable SSO (OIDC): Issuer, Client ID, and Client Secret are required"
           );
         }
-        if (issuer?.trim() && clientId?.trim() && clientSecret?.trim()) {
-          const { verifyIssuer, clearOIDCCache } = require("../service/sso_service");
+        const oidcCredentialsChanged =
+          issuer !== systemConfig.ssoIssuer ||
+          clientId !== systemConfig.ssoClientId ||
+          clientSecret !== systemConfig.ssoClientSecret;
+        const needVerify =
+          wantEnable &&
+          Boolean(issuer?.trim() && clientId?.trim() && clientSecret?.trim()) &&
+          (!systemConfig.ssoEnabled || oidcCredentialsChanged);
+        if (needVerify) {
+          const { verifyIssuer } = require("../service/sso_service");
           await verifyIssuer(issuer, clientId, clientSecret);
-          clearOIDCCache();
         }
         if (config.ssoIssuer != null) systemConfig.ssoIssuer = issuer;
       } else {
@@ -182,7 +203,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
 
       if (config.ssoEnabled != null) systemConfig.ssoEnabled = wantEnable;
       if (config.ssoClientId != null) systemConfig.ssoClientId = clientId;
-      if (config.ssoClientSecret != null) systemConfig.ssoClientSecret = clientSecret;
+      if (config.ssoClientSecret) systemConfig.ssoClientSecret = clientSecret;
     }
 
     if (config.ssoUserIdField != null)

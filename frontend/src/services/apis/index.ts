@@ -278,6 +278,11 @@ export const ssoConfig = useDefineApi<any, SsoPublicConfig | null>({
   method: "GET"
 });
 
+export const ssoBindStatus = useDefineApi<any, { pending: boolean } | null>({
+  url: "/api/auth/sso/bind-status",
+  method: "GET"
+});
+
 export const ssoBindLogin = useDefineApi<
   {
     data: {

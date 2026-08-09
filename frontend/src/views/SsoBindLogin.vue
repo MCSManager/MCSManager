@@ -2,7 +2,7 @@
 import CardPanel from "@/components/CardPanel.vue";
 import { router } from "@/config/router";
 import { t } from "@/lang/i18n";
-import { ssoBindCurrent, ssoBindLogin, userInfoApi } from "@/services/apis";
+import { ssoBindCurrent, ssoBindLogin, ssoBindStatus, userInfoApi } from "@/services/apis";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { sleep } from "@/tools/common";
 import { reportErrorMsg } from "@/tools/validator";
@@ -19,6 +19,7 @@ import { onMounted, reactive, ref } from "vue";
 const { updateUserInfo, isAdmin } = useAppStateStore();
 const { execute: bindExecute } = ssoBindLogin();
 const { execute: bindCurrentExecute } = ssoBindCurrent();
+const { execute: fetchBindStatus } = ssoBindStatus();
 const { execute: fetchUserInfo } = userInfoApi();
 
 const formData = reactive({
@@ -27,12 +28,20 @@ const formData = reactive({
   code: ""
 });
 
-const step = ref(0);
+const step = ref(1);
 const is2Fa = ref(false);
 const loggedInUserName = ref("");
 const showLoginForm = ref(false);
 
 onMounted(async () => {
+  try {
+    const status = await fetchBindStatus();
+    if (!status.value?.pending) throw new Error("no pending SSO binding");
+  } catch {
+    router.replace({ path: "/login", query: { sso_error: "invalid_sso_session" } });
+    return;
+  }
+
   try {
     const info = await fetchUserInfo();
     if (info.value?.userName) {
@@ -41,6 +50,8 @@ onMounted(async () => {
   } catch {
     // Not logged in
   }
+
+  step.value = 0;
 });
 
 const handleBindCurrent = async () => {
@@ -115,7 +126,7 @@ const handleBind = async () => {
           <div v-if="loggedInUserName && !showLoginForm">
             <a-alert type="info" show-icon class="mb-20">
               <template #message>
-                {{ t('TXT_CODE_SSO_BIND_CURRENT_HINT') }}
+                {{ t("TXT_CODE_SSO_BIND_CURRENT_HINT") }}
                 <strong>{{ loggedInUserName }}</strong>
               </template>
             </a-alert>
@@ -197,9 +208,7 @@ const handleBind = async () => {
 
         <div v-show="step >= 2" class="sso-bind-body flex-center">
           <div style="text-align: center">
-            <CheckCircleOutlined
-              :style="{ fontSize: '62px', color: 'var(--color-green-6)' }"
-            />
+            <CheckCircleOutlined :style="{ fontSize: '62px', color: 'var(--color-green-6)' }" />
           </div>
         </div>
       </template>

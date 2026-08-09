@@ -102,6 +102,7 @@ export interface Settings {
   ssoIssuer: string;
   ssoClientId: string;
   ssoClientSecret: string;
+  ssoTokenAuthMethod: string;
   ssoCallbackUrl: string;
   operationLogEnabled: boolean;
   operationLogMaxLinesPerFile: number;
