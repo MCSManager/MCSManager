@@ -42,6 +42,7 @@ const computedValue = computed({
         value.value[key.value] = `${FLOAT_MAGIC_PREFIX}${v}`;
         return;
       }
+      value.value[key.value] = v;
       return;
     }
     value.value[key.value] = v;
