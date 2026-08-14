@@ -17,7 +17,7 @@ import {
   isAjax,
   logout
 } from "../service/passport_service";
-import { getUserByUserName, isTopPermissionByUuid } from "../service/permission_service";
+import { isTopPermissionByUuid } from "../service/permission_service";
 import userSystem from "../service/user_service";
 import { systemConfig } from "../setting";
 
@@ -144,30 +144,6 @@ router.post(
     const userUuid = getUserUuid(ctx);
     await confirm2FaQRCode(userUuid, enable);
     ctx.body = true;
-  }
-);
-
-// [Public Permission]
-router.get(
-  "/query_username",
-  permission({ token: false, level: null }),
-  validator({
-    query: { username: String }
-  }),
-  async (ctx: Koa.ParameterizedContext) => {
-    const userName = String(ctx.request.query.username);
-    const user = getUserByUserName(userName);
-    if (!user) {
-      ctx.body = {
-        uuid: null,
-        userName: null
-      };
-    } else {
-      ctx.body = {
-        uuid: user?.uuid,
-        userName: user?.userName
-      };
-    }
   }
 );
 
