@@ -41,18 +41,3 @@ export const confirm2FA = useDefineApi<
   url: "/api/auth/confirm2fa",
   method: "POST"
 });
-
-export const queryUsername = useDefineApi<
-  {
-    params: {
-      username: string;
-    };
-  },
-  {
-    uuid?: string;
-    userName?: string;
-  }
->({
-  url: "/api/auth/query_username",
-  method: "GET"
-});
