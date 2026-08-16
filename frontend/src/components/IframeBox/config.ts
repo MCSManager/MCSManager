@@ -1,4 +1,3 @@
-import { v4 } from "uuid";
 import { onUnmounted, type Ref } from "vue";
 import { iframeRouters } from "./handler";
 
@@ -23,30 +22,30 @@ export interface IframeBoxEmits {
 }
 
 const globalReqIdMap = new Map<string, boolean>();
-const globalIframeList = new Map<string, Ref<HTMLIFrameElement | null>>();
 
 export function getProPanelUrl(path: string) {
   return `http://localhost:5174/#${path}`;
 }
 
 export function useIframeEventListener(iframe: Ref<HTMLIFrameElement | null>) {
-  const iframeId = v4();
-  globalIframeList.set(iframeId, iframe);
   const handler = async (event: MessageEvent) => {
     const cfg = event.data as Partial<IframeEvent>;
     if (cfg?.app === "MCSManager" && cfg?.id) {
-      return await iframeEventDispatch(cfg);
+      if (!iframe.value?.contentWindow || event.source !== iframe.value.contentWindow) return;
+      return await iframeEventDispatch(cfg, iframe);
     }
   };
   window.addEventListener("message", handler);
 
   onUnmounted(() => {
-    globalIframeList.delete(iframeId);
     window.removeEventListener("message", handler);
   });
 }
 
-export async function iframeEventDispatch(event: Partial<IframeEvent>) {
+export async function iframeEventDispatch(
+  event: Partial<IframeEvent>,
+  iframe: Ref<HTMLIFrameElement | null>
+) {
   const routerHandler = iframeRouters[String(event.source)];
   if (event.id && typeof routerHandler === "function" && !globalReqIdMap.has(String(event.id))) {
     console.warn("iframeEventDispatch(): Receive iframe event:", event);
@@ -57,12 +56,10 @@ export async function iframeEventDispatch(event: Partial<IframeEvent>) {
     try {
       const result = await routerHandler(event.data);
       console.warn("iframeEventDispatch(): Send iframe event:", event, result);
-      globalIframeList.forEach((iframe) => sendIframeMsg(iframe, event, result));
+      sendIframeMsg(iframe, event, result);
     } catch (error: any) {
       console.error("Iframe router error:", error);
-      globalIframeList.forEach((iframe) =>
-        sendIframeMsg(iframe, event, error instanceof Error ? error : new Error(String(error)))
-      );
+      sendIframeMsg(iframe, event, error instanceof Error ? error : new Error(String(error)));
     }
   }
 }
