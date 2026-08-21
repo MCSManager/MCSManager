@@ -114,7 +114,10 @@ export default class FileWriter {
     if (this.fd != null) {
       await fs.close(this.fd);
       this.fd = null;
-      await this.releaseLock!();
+      if (typeof this.releaseLock === "function") {
+        await this.releaseLock();
+        this.releaseLock = undefined;
+      }
     }
 
     if (this.id != null) {
@@ -179,11 +182,20 @@ export default class FileWriter {
   }
 
   private isFullyCovered(): boolean {
+    // Zero-byte uploads never receive pieces; treat them as complete.
+    if (this.size === 0) return true;
     return (
       this.received.length === 1 &&
       this.received[0].start === 0 &&
       this.received[0].end === this.size
     );
+  }
+
+  /** Complete the upload when no further pieces are expected (e.g. empty files). */
+  async completeIfCovered() {
+    if (this.fd != null && this.isFullyCovered()) {
+      await this.done();
+    }
   }
 
   private readStreamToHash(

@@ -179,6 +179,8 @@ router.post("/upload-new/:key", async (ctx) => {
       await fileWriter.init();
       const id = uploadManager.add(fileWriter);
       fr = { id, writer: fileWriter };
+      // Empty files never send upload pieces, so finish and release the lock here.
+      await fileWriter.completeIfCovered();
     }
 
     ctx.body = {
