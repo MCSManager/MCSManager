@@ -3515,5 +3515,10 @@
   "TXT_CODE_8d88f625": "Exceeding this number of days will automatically delete the log file. 0 indicates permanent retention.",
   "TXT_CODE_706b201e": "Maximum Record Count",
   "TXT_CODE_7ef4ecf4": "Exceeding this number of records will automatically delete the oldest log file. 0 indicates no limit.",
-  "TXT_CODE_675e5397": "Only Admin"
+  "TXT_CODE_675e5397": "Only Admin",
+  "TXT_CODE_1e7b57ae": "Enabling",
+  "TXT_CODE_4d6e44c": "Leave empty to not modify",
+  "TXT_CODE_b25b5335": "Token Endpoint Authentication Method",
+  "TXT_CODE_9a26aa70": "Submit to Token endpoint to authenticate client_id / client_secret",
+  "TXT_CODE_2f56b56e": "**Enabling**"
 }

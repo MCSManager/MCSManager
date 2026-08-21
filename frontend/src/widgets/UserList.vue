@@ -379,7 +379,7 @@ onMounted(async () => {
         <a-typography-paragraph v-if="!formData.apiKey">
           {{ t("TXT_CODE_6c274bdc") }}
         </a-typography-paragraph>
-        <a-input v-else v-model:value="formData.apiKey" :readonly="true" />
+        <a-input v-else :value="t('TXT_CODE_2f56b56e')" :readonly="true" />
       </a-form-item>
 
       <a-form-item v-if="isAddMode" required :label="t('TXT_CODE_ef0ce2e')">

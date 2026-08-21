@@ -74,6 +74,7 @@ router.get(
     resultPage.data.forEach((v) => {
       v.passWord = "";
       v.salt = "";
+      v.apiKey = v.apiKey ? "__MCSM_SECRET_DATA__" : "";
     });
     ctx.body = resultPage;
   }

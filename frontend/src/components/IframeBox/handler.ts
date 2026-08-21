@@ -59,14 +59,14 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
     const { state: panelStatus } = useAppStateStore();
     const { isDarkTheme } = useAppConfigStore();
     try {
-      await autoOpenUserApiKey();
+      const { apiKey } = await autoOpenUserApiKey();
       const userInfo = await getUserInfo();
       const setting = await settingInfo().execute();
       return {
         isDarkMode: isDarkTheme.value,
         panelId: setting.value?.panelId || "",
         code: setting.value?.registerCode || "",
-        userInfo: JSON.parse(JSON.stringify(userInfo))
+        userInfo: { ...JSON.parse(JSON.stringify(userInfo)), apiKey }
       };
     } catch (err: any) {
       console.warn(`MainAppInfo error, we will use default config:`, err?.message);
@@ -85,9 +85,7 @@ export const iframeRouters: Record<string, IframeRouterHandler<any>> = {
     return true;
   },
   GetRemoteAppDaemons: async () => {
-    await autoOpenUserApiKey();
-    const { state } = useAppStateStore();
-    const apiKey = state.userInfo?.apiKey;
+    const { apiKey } = await autoOpenUserApiKey();
 
     const { refresh: fetchRemoteAppDaemons } = useRemoteNode();
     const daemonList = await fetchRemoteAppDaemons(true);

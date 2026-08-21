@@ -1267,22 +1267,22 @@ onUnmounted(() => {
                       <a-input-password
                         v-model:value="(formData as any).ssoClientSecret"
                         style="max-width: 480px"
-                        :placeholder="t('留空表示不修改')"
+                        :placeholder="t('TXT_CODE_4d6e44c')"
                       />
                     </a-form-item>
 
                     <a-form-item>
                       <a-typography-title :level="5">
-                        {{ t("Token 端点认证方式") }}
+                        {{ t("TXT_CODE_b25b5335") }}
                       </a-typography-title>
                       <a-typography-paragraph type="secondary">
-                        {{ t("向 Token 端点提交 client_id / client_secret 的方式。") }}
+                        {{ t("TXT_CODE_9a26aa70") }}
                       </a-typography-paragraph>
                       <a-select
                         v-model:value="(formData as any).ssoTokenAuthMethod"
                         style="max-width: 320px"
                       >
-                        <a-select-option value="auto">{{ t("自动") }}</a-select-option>
+                        <a-select-option value="auto">{{ t("TXT_CODE_dc8de4ff") }}</a-select-option>
                         <a-select-option value="client_secret_basic">
                           client_secret_basic
                         </a-select-option>
