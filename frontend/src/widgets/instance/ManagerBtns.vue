@@ -243,7 +243,7 @@ const btns = computed(() => {
       condition: () =>
         !isAdmin.value &&
         instanceInfo.value?.config.processType === "docker" &&
-        state.settings.allowChangeCmd,
+        !!state.settings?.allowChangeCmd,
       click: () => {
         instanceFundamentalDetailDialog.value?.openDialog();
       }

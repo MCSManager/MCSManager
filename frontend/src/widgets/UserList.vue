@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { t } from "@/lang/i18n";
-import { message, Modal, type FormInstance } from "ant-design-vue";
-import { DownOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
-import type { Rule } from "ant-design-vue/es/form";
-import { throttle } from "lodash";
-import CardPanel from "@/components/CardPanel.vue";
 import BetweenMenus from "@/components/BetweenMenus.vue";
-import { useScreen } from "../hooks/useScreen";
-import { arrayFilter } from "../tools/array";
+import CardPanel from "@/components/CardPanel.vue";
+import { PERMISSION_MAP } from "@/config/const";
 import { useAppRouters } from "@/hooks/useAppRouters";
-import { useAppStateStore } from "@/stores/useAppStateStore";
+import { t } from "@/lang/i18n";
 import {
-  getUserInfo,
-  deleteUser as deleteUserApi,
   addUser as addUserApi,
+  deleteUser as deleteUserApi,
   editUserInfo,
+  getUserInfo,
   ssoUnbind as ssoUnbindApi
 } from "@/services/apis";
+import { useAppStateStore } from "@/stores/useAppStateStore";
+import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard } from "@/types/index";
 import type { BaseUserInfo, EditUserInfo } from "@/types/user";
-import _ from "lodash";
-import type { AntColumnsType, AntTableCell } from "../types/ant";
+import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { message, Modal, type FormInstance } from "ant-design-vue";
 import type { Key } from "ant-design-vue/es/_util/type";
+import type { Rule } from "ant-design-vue/es/form";
+import _, { throttle } from "lodash";
+import { computed, onMounted, ref } from "vue";
+import { useScreen } from "../hooks/useScreen";
+import { arrayFilter } from "../tools/array";
 import { PASSWORD_REGEX } from "../tools/validator";
-import { PERMISSION_MAP } from "@/config/const";
-import { reportErrorMsg } from "@/tools/validator";
+import type { AntColumnsType, AntTableCell } from "../types/ant";
 
 defineProps<{
   card: LayoutCard;
@@ -98,7 +97,7 @@ const columns = computed(() => {
       dataIndex: "ssoBound",
       key: "ssoBound",
       minWidth: 100,
-      condition: () => !isPhone.value && appState.settings.ssoEnabled
+      condition: () => !isPhone.value && !!appState.settings?.ssoEnabled
     },
     {
       align: "center",
