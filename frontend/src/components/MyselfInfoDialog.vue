@@ -10,7 +10,7 @@ import type { FormInstance } from "ant-design-vue";
 import { message } from "ant-design-vue";
 import { reactive, ref } from "vue";
 import { bind2FA } from "../services/apis/user";
-const { state, updateUserInfo } = useAppStateStore();
+const { state, updateUserInfo, generatedApiKey } = useAppStateStore();
 const { state: tools } = useAppToolsStore();
 
 const { execute: executeSetUserApiKey, isLoading: setUserApiKeyLoading } = setUserApiKey();
@@ -28,7 +28,7 @@ const formRef = ref<FormInstance>();
 
 const handleGenerateApiKey = async (enable: boolean) => {
   try {
-    await executeSetUserApiKey({
+    const newKey = await executeSetUserApiKey({
       data: {
         enable
       },
@@ -37,6 +37,7 @@ const handleGenerateApiKey = async (enable: boolean) => {
     });
 
     updateUserInfo();
+    generatedApiKey.value = enable ? newKey.value : undefined;
     return message.success(t("TXT_CODE_d3de39b4"));
   } catch (error: any) {
     return reportErrorMsg(error.message);
@@ -200,9 +201,12 @@ const disable2FACode = async () => {
           <a-typography-paragraph>
             {{ t("TXT_CODE_b2dbf778") }}
           </a-typography-paragraph>
-          <a-typography-paragraph v-if="state.userInfo?.apiKey">
+          <a-typography-paragraph v-if="generatedApiKey">
             <pre
-              class="flex flex-between align-center">{{ state.userInfo.apiKey }}<CopyButton size="small" type="text" :value="state.userInfo.apiKey" /></pre>
+              class="flex flex-between align-center">{{ generatedApiKey }} <CopyButton size="small" type="text" :value="generatedApiKey" /> </pre>
+          </a-typography-paragraph>
+          <a-typography-paragraph v-else-if="state.userInfo?.apiKey">
+            <pre>{{ t("TXT_CODE_1e7b57ae") }}</pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else>
             <pre>{{ t("TXT_CODE_d7dbc7c2") }}</pre>
@@ -215,7 +219,7 @@ const disable2FACode = async () => {
             {{ t("TXT_CODE_d51cd7ae") }}
           </a-button>
           <a-popconfirm
-            v-if="state.userInfo?.apiKey"
+            v-if="generatedApiKey || state.userInfo?.apiKey"
             :title="t('TXT_CODE_6819de18')"
             @confirm="handleGenerateApiKey(false)"
           >

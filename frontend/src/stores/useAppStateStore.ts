@@ -4,7 +4,7 @@ import type { PanelStatus } from "@/types";
 import type { LoginUserInfo } from "@/types/user";
 import { createGlobalState, useLocalStorage } from "@vueuse/core";
 import _ from "lodash";
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 
 interface AppStateInfo extends PanelStatus {
   userInfo: LoginUserInfo | null;
@@ -28,6 +28,8 @@ export const useAppStateStore = createGlobalState(() => {
       ssoEnabled: false
     }
   });
+
+  const generatedApiKey = ref<string | undefined>();
 
   const cloneState = (): AppStateInfo => {
     const tmp = _.cloneDeep(state);
@@ -84,6 +86,7 @@ export const useAppStateStore = createGlobalState(() => {
     updatePanelStatus,
     isAdmin,
     isLogged,
+    generatedApiKey,
     state
   };
 });

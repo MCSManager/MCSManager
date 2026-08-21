@@ -3515,5 +3515,10 @@
   "TXT_CODE_8d88f625": "超过该天数的日志文件将被自动删除，0 表示永久保留。",
   "TXT_CODE_706b201e": "最大记录总数",
   "TXT_CODE_7ef4ecf4": "当记录总数超过该值时，自动删除最旧的日志文件，0 表示不限制。",
-  "TXT_CODE_675e5397": "仅管理员"
+  "TXT_CODE_675e5397": "仅管理员",
+  "TXT_CODE_1e7b57ae": "已启用",
+  "TXT_CODE_4d6e44c": "留空表示不修改",
+  "TXT_CODE_b25b5335": "Token 端点认证方式",
+  "TXT_CODE_9a26aa70": "向 Token 端点提交 client_id / client_secret 的方式。",
+  "TXT_CODE_2f56b56e": "**已启用**"
 }
