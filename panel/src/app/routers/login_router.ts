@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import axios from "axios";
 import Koa from "koa";
-import { GlobalVariable } from "mcsmanager-common";
 import SystemConfig from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
@@ -9,7 +8,7 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { logger } from "../service/log";
 import { operationLogger } from "../service/operation_logger";
-import { check, checkBanIp, login, logout } from "../service/passport_service";
+import { check, checkBanIp, getUserFromCtx, login, logout } from "../service/passport_service";
 import userSystem, { TwoFactorError } from "../service/user_service";
 import { systemConfig } from "../setting";
 
@@ -86,20 +85,24 @@ router.all(
     if (userSystem.objects.size === 0) {
       isInstall = false;
     }
+
+    const settings: Partial<SystemConfig> = {
+      businessMode: systemConfig?.businessMode || false,
+      businessId: systemConfig?.businessId || ""
+    };
+    const user = getUserFromCtx(ctx);
+    if (user && user.permission >= ROLE.USER) {
+      settings.canFileManager = systemConfig?.canFileManager || false;
+      settings.allowUsePreset = systemConfig?.allowUsePreset || false;
+      settings.allowChangeCmd = systemConfig?.allowChangeCmd || false;
+      settings.panelId = systemConfig?.panelId || "";
+      settings.ssoEnabled = systemConfig?.ssoEnabled || false;
+    }
+
     ctx.body = {
-      versionChange: GlobalVariable.get("versionChange", null),
       isInstall,
       language: systemConfig?.language || null,
-      settings: {
-        canFileManager: systemConfig?.canFileManager || false,
-        allowUsePreset: systemConfig?.allowUsePreset || false,
-        businessMode: systemConfig?.businessMode || false,
-        businessId: systemConfig?.businessId || null,
-        allowChangeCmd: systemConfig?.allowChangeCmd || false,
-        panelId: systemConfig?.panelId || null,
-        ssoEnabled: systemConfig?.ssoEnabled || false,
-        ssoOnlyMode: systemConfig?.ssoOnlyMode || false
-      } as Partial<SystemConfig>
+      settings
     };
   }
 );
