@@ -17,7 +17,6 @@ export const useAppStateStore = createGlobalState(() => {
   const state: AppStateInfo = reactive<AppStateInfo>({
     userInfo: null,
     isInstall: true,
-    versionChange: false,
     language: language.value,
     settings: {
       panelId: "",
@@ -26,8 +25,7 @@ export const useAppStateStore = createGlobalState(() => {
       businessMode: false,
       businessId: "",
       allowChangeCmd: false,
-      ssoEnabled: false,
-      ssoOnlyMode: false
+      ssoEnabled: false
     }
   });
 
@@ -40,6 +38,7 @@ export const useAppStateStore = createGlobalState(() => {
   const isLogged = computed(() => Number(state.userInfo?.permission) > 0);
 
   const updateUserInfo = async (userInfo?: LoginUserInfo) => {
+    const wasLogged = isLogged.value;
     try {
       if (userInfo) {
         state.userInfo = userInfo;
@@ -55,15 +54,22 @@ export const useAppStateStore = createGlobalState(() => {
       console.error(err);
       throw new Error(err.message);
     }
+
+    if (isLogged.value != wasLogged) {
+      try {
+        await updatePanelStatus();
+      } catch (err) {
+        console.error("Failed to refresh panel status after login:", err);
+      }
+    }
   };
 
   const updatePanelStatus = async () => {
     const { state } = useAppStateStore();
     const panelStatusRes = await panelStatus().execute();
     state.isInstall = panelStatusRes.value?.isInstall ?? true;
-    state.versionChange = panelStatusRes.value?.versionChange ? true : false;
     if (panelStatusRes.value?.settings) {
-      state.settings = panelStatusRes.value?.settings;
+      state.settings = { ...state.settings, ...panelStatusRes.value.settings };
     }
     if (state.isInstall) {
       state.language = language.value = toStandardLang(panelStatusRes.value?.language);
