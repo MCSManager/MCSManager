@@ -3,7 +3,6 @@ import formidable from "formidable";
 import * as fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
-import FileManager from "../../../../daemon/src/service/system_file";
 import { diffConfig } from "../common/config_diff";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
 import SystemConfig from "../entity/setting";
@@ -21,6 +20,7 @@ import { getOperationLoggerOperator, operationLogger } from "../service/operatio
 import remoteService from "../service/remote_service";
 import userSystem from "../service/user_service";
 import { saveSystemConfig, systemConfig } from "../setting";
+import { checkFileName } from "../utils/safe";
 import { checkBusinessMode } from "../version";
 
 const router = new Router({ prefix: "/overview" });
@@ -327,8 +327,7 @@ router.post("/upload_assets", permission({ level: ROLE.ADMIN }), async (ctx) => 
     if (!tmpFile.filepath || !fs.existsSync(tmpFile.filepath))
       throw new Error($t("TXT_CODE_1a499109"));
     const newFileName = v4() + path.extname(tmpFile.originalFilename || "");
-    if (!FileManager.checkFileName(newFileName))
-      throw new Error("Access denied: Malformed file name");
+    if (!checkFileName(newFileName)) throw new Error("Access denied: Malformed file name");
     const saveDirPath = path.join(process.cwd(), SAVE_DIR_PATH);
     if (!fs.existsSync(saveDirPath)) fs.mkdirsSync(saveDirPath);
     await fs.move(tmpFile.filepath, path.join(saveDirPath, newFileName));

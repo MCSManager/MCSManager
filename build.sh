@@ -4,6 +4,12 @@ set -e
 
 BASE_PATH=$(pwd)
 
+# BUNDLE=1 makes the panel/daemon webpack configs inline the entire dependency
+# tree and all language packs into a single self-contained app.js, so the output
+# runs with bare `node` and no `npm install`. See panel/webpack.config.js and
+# daemon/webpack.config.js for details.
+export BUNDLE=1
+
 npm run preview-build
 
 rm -rf production-code
@@ -46,10 +52,13 @@ rm -rf "${BASE_PATH}/daemon/dist" "${BASE_PATH}/daemon/production"
 rm -rf "${BASE_PATH}/panel/dist" "${BASE_PATH}/panel/production"
 rm -rf "${BASE_PATH}/frontend/dist"
 
-cd "${BASE_PATH}/production-code/daemon"
-npm install --production --no-fund --no-audit
-cd "${BASE_PATH}/production-code/web"
-npm install --production --no-fund --no-audit
+# app.js is fully self-contained (deps + language packs inlined), so no
+# `npm install` is needed in production-code any more. Only copy the
+# per-platform external runtime binaries (PTY / Zip-Tools) if present; these
+# are NOT bundled into app.js and ship per-platform alongside it.
+if [ -d "${BASE_PATH}/daemon/lib" ]; then
+  cp -rf "${BASE_PATH}/daemon/lib" "${BASE_PATH}/production-code/daemon/lib"
+fi
 
 echo "------------"
 echo "Compilation completed!"

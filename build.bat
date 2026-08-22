@@ -1,3 +1,7 @@
+REM BUNDLE=1: panel/daemon webpack inline all deps + language packs into a
+REM single self-contained app.js, so no npm install is needed at runtime.
+set BUNDLE=1
+
 call npm run preview-build
 
 rd /s /q "production-code"
@@ -44,11 +48,9 @@ rd /s /q ".\daemon\dist"
 rd /s /q ".\panel\dist" 
 rd /s /q ".\frontend\dist" 
 
-cd "production-code\daemon"
-call npm install --production
-cd "../web"
-call npm install --production
-cd "../../"
+REM app.js is self-contained; no npm install needed. Copy per-platform external
+REM runtime binaries (PTY / Zip-Tools) if present.
+if exist ".\daemon\lib" xcopy ".\daemon\lib" ".\production-code\daemon\lib" /E /I /H /Y
 
 echo "------------"
 echo "Compilation completed!"
