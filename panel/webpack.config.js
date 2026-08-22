@@ -3,6 +3,37 @@ const fs = require("fs");
 const nodeExternals = require("webpack-node-externals");
 
 /**
+ * Optional native-acceleration packages that are loaded by their consumers
+ * inside try/catch with a pure-JS fallback (e.g. ws / socket.io). We never want
+ * webpack to bundle a `.node` binary, so in bundle mode these stay external.
+ * At runtime they are simply absent and the consumer falls back to pure JS.
+ */
+const OPTIONAL_NATIVE_EXTERNALS = ["bufferutil", "utf-8-validate", "cpu-features"];
+
+/**
+ * BUNDLE=1 => production packaging: inline the entire dependency tree (every
+ * npm package + all language packs via the static `@languages` imports) so the
+ * emitted app.js runs with bare `node` and no `node_modules` installed.
+ * Otherwise (dev) keep deps external for fast incremental rebuilds.
+ */
+const BUNDLE = process.env.BUNDLE === "1";
+
+/**
+ * Externalize native `.node` binary requires (e.g. ssh2's `sshcrypto.node`) as
+ * CommonJS so webpack emits `module.exports = require("...")` instead of trying
+ * to parse the binary (build error) or emitting invalid JS. These binaries are
+ * pure acceleration: their consumers load them inside `try { } catch { }` and
+ * fall back to pure JS. At runtime the require throws MODULE_NOT_FOUND (no
+ * node_modules shipped) and the consumer catches it -> pure-JS path.
+ */
+function externalNativeNodeBinary({ request }, callback) {
+  if (typeof request === "string" && /\.node$/.test(request)) {
+    return callback(null, { commonjs: request });
+  }
+  callback();
+}
+
+/**
  * Auto-detect ESM-only packages and bundle them
  * instead of externalizing with require()
  */
@@ -42,11 +73,13 @@ module.exports = {
     moduleIds: "named"
   },
   externalsPresets: { node: true },
-  externals: [
-    nodeExternals({
-      allowlist: ["mcsmanager-common", isEsmPackage]
-    })
-  ],
+  externals: BUNDLE
+    ? [...OPTIONAL_NATIVE_EXTERNALS, externalNativeNodeBinary]
+    : [
+        nodeExternals({
+          allowlist: ["mcsmanager-common", isEsmPackage]
+        })
+      ],
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "production")

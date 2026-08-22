@@ -915,6 +915,7 @@ defineExpose({
                   </a-typography-paragraph>
                   <a-input-number
                     v-model:value="formData.instance.config.stopTimeout"
+                    size="large"
                     :min="0"
                     :max="86400"
                     :step="1"

@@ -4,3 +4,12 @@ export function checkSafeName(name: string) {
   if (name.length === 0) return false;
   return /^[A-Za-z0-9-_]+$/.test(name);
 }
+
+export function checkFileName(fileName?: string): boolean {
+  if (!fileName) return false;
+  const blackKeys = ["/", "\\", "|", "?", "*", ">", "<", ";", '"'];
+  for (const ch of blackKeys) {
+    if (fileName.includes(ch)) return false;
+  }
+  return true;
+}
