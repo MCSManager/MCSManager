@@ -2115,7 +2115,6 @@
   "TXT_CODE_b9442311": "Parâmetros adicionais",
   "TXT_CODE_b946a322": "Memória virtual adicional alocada no topo da memória máxima. \nUsar essa memória é menos eficiente. \nDeixe em branco para alocação automática.",
   "TXT_CODE_b94f13ce": "Nas plataformas Windows, geralmente é 'Retorno de Carro e Avanço de Linha' (\\r\\n), enquanto nas plataformas Linux/MacOS, é 'Avanço de Linha' (\\n).",
-
   "TXT_CODE_b9af1460": "Quantidade mínima de carrapatos de intervalo que são baleados",
   "TXT_CODE_b9ca022b": "Instalando arquivos de instância, por favor, aguarde pacientemente...",
   "TXT_CODE_b9d7fe43": "Exigir autenticação de token ao usar pontos de extremidade públicos da API REST.",

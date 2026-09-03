@@ -616,7 +616,6 @@
   "TXT_CODE_47491a7e": "Dolgu modu 'orta' olduğunda ne renk göstermeli",
   "TXT_CODE_475c5890": "Örneğin: İlk Sunucum",
   "TXT_CODE_47667d86": "Üçüncü taraf deadmau5 kulaklarının görünür olmasına izin ver.",
-  "": "Satıcı Bilgileri",
   "TXT_CODE_478717e2": "Bu, bir kullanıcı AFK'ya gittiğinde yayınlanan mesajdır (Player-Idle-Timeout'un 0'dan daha büyük ayarlanması gerekir",
   "TXT_CODE_479389a": "Oyuncuların işaretlerde renk kodlarını kullanmasına izin verin",
   "TXT_CODE_47ae8ee6": "MCSManager Paneli",
@@ -2116,7 +2115,6 @@
   "TXT_CODE_b9442311": "Ek parametreler",
   "TXT_CODE_b946a322": "Maksimum belleğin üzerine tahsis edilen ek sanal bellek. \nBu hafızayı kullanmak daha az verimlidir. \nOtomatik tahsis için boş bırakın.",
   "TXT_CODE_b94f13ce": "Windows platformlarında genellikle 'Satır Başı ve Satır Besleme' (\\r\\n), Linux/MacOS platformlarında ise genellikle 'Satır Besleme' (\\n) şeklindedir.",
-
   "TXT_CODE_b9af1460": "Azalanan aralık kenarı miktarı",
   "TXT_CODE_b9ca022b": "Örnek dosyaları yükleniyor, lütfen sabırla bekleyin...",
   "TXT_CODE_b9d7fe43": "Genel REST API uç noktalarını kullanırken belirteç kimlik doğrulaması gerektir.",
