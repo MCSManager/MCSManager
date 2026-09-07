@@ -39,7 +39,6 @@ import RequestChart from "@/widgets/RequestChart.vue";
 import Settings from "@/widgets/Settings.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
 import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
-import ShelvesCard from "@/widgets/ShelvesCard.vue";
 import StatusBlock from "@/widgets/StatusBlock.vue";
 import TitleCard from "@/widgets/TitleCard.vue";
 import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
@@ -93,7 +92,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   Carousel,
   PluginCard,
   MusicCard,
-  ShelvesCard,
   OperationLogCard,
   AuditLog,
   Market,
@@ -529,17 +527,6 @@ export function getLayoutCardPool() {
       width: 4,
       description: t("TXT_CODE_cb84b22"),
       height: LayoutCardHeight.SMALL,
-      category: NEW_CARD_TYPE.COMMON
-    },
-    {
-      id: getRandomId(),
-      permission: ROLE.GUEST,
-      meta: {},
-      type: "ShelvesCard",
-      title: t("TXT_CODE_b99cae18"),
-      width: 8,
-      description: t("TXT_CODE_163e2d0a"),
-      height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.COMMON
     },
     {

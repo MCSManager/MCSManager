@@ -14,7 +14,6 @@ import {
   MenuOutlined,
   SettingOutlined,
   ShopOutlined,
-  ShoppingOutlined,
   TeamOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
@@ -43,7 +42,6 @@ const routePathIcons: Record<string, Component> = {
   "/settings": SettingOutlined,
   "/customer": UserOutlined,
   "/login": LoginOutlined,
-  "/shop": ShoppingOutlined,
   "/_open_page": LinkOutlined
 };
 
