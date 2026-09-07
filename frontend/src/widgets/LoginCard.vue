@@ -88,10 +88,6 @@ const loginSuccess = () => {
   }
 };
 
-const openBuyInstanceDialog = async () => {
-  router.push({ path: "/shop" });
-};
-
 const handleSsoLogin = () => {
   window.location.href = "/api/auth/sso/authorize";
 };
@@ -227,7 +223,7 @@ onMounted(async () => {
               </form>
 
               <div class="mt-24 flex-between align-center">
-                <div v-if="!appConfig.settings.businessMode" class="mcsmanager-link">
+                <div class="mcsmanager-link">
                   <div
                     v-if="pageInfoResult?.loginInfo"
                     class="global-markdown-html"
@@ -238,17 +234,7 @@ onMounted(async () => {
                     MCSManager
                   </a>
                 </div>
-                <div v-else></div>
-                <div class="justify-end" style="gap: 10px">
-                  <a-button
-                    v-if="appConfig.settings.businessMode"
-                    size="large"
-                    class="green"
-                    style="min-width: 95px"
-                    @click="openBuyInstanceDialog"
-                  >
-                    {{ t("TXT_CODE_5a408a5e") }}
-                  </a-button>
+                <div class="justify-end">
                   <a-button
                     size="large"
                     type="primary"

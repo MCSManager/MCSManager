@@ -630,20 +630,6 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
-      page: "/shop",
-      items: [
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "ShelvesCard",
-          title: t("TXT_CODE_381f8f22"),
-          width: 12,
-          height: LayoutCardHeight.LARGE,
-          disableDelete: true
-        }
-      ]
-    },
-    {
       page: "/404",
       items: [
         {
