@@ -1,4 +1,4 @@
-import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
+import { parseForwardAddress, resolveForwardTarget } from "@/tools/protocol";
 import { removeTrail } from "@/tools/string";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
 import type { Socket } from "socket.io-client";
@@ -41,27 +41,23 @@ export function useSocketIoClient() {
     } else {
       try {
         socketStatus.value = SocketStatus.Connecting;
-        let addr = `${nodeCfg.ip}:${nodeCfg.port}`,
-          prefix = nodeCfg.prefix;
-        if (nodeCfg.remoteMappings) {
-          const mapped = mapDaemonAddress(
-            nodeCfg.remoteMappings.map((entry) => ({
-              from: {
-                addr: `${entry.from.ip}:${entry.from.port}`,
-                prefix: entry.from.prefix
-              },
-              to: {
-                addr: `${entry.to.ip}:${entry.to.port}`,
-                prefix: entry.to.prefix
-              }
-            }))
-          );
-          if (mapped) {
-            addr = mapped.addr;
-            prefix = mapped.prefix;
-          }
-        }
-        await testConnect(addr, prefix);
+        const target = resolveForwardTarget({
+          addr: `${nodeCfg.ip}:${nodeCfg.port}`,
+          prefix: nodeCfg.prefix ?? "",
+          remoteMappings: nodeCfg.remoteMappings?.map((entry) => ({
+            from: {
+              addr: `${entry.from.ip}:${entry.from.port}`,
+              prefix: entry.from.prefix
+            },
+            to: {
+              addr: `${entry.to.ip}:${entry.to.port}`,
+              prefix: entry.to.prefix
+            }
+          })),
+          proxy: nodeCfg.proxyWebSocket === true,
+          panelPrefix: nodeCfg.panelPrefix
+        });
+        await testConnect(target.addr, target.prefix);
         socketStatus.value = SocketStatus.Connected;
       } catch (error) {
         console.error("Socket error: ", error);

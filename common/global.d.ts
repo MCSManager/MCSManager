@@ -173,6 +173,7 @@ declare global {
     available: boolean;
     remarks: string;
     proxyWebSocket: boolean;
+    panelPrefix?: string;
     config: {
       language: string;
       uploadSpeedRate: number;

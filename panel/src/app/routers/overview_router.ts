@@ -13,6 +13,7 @@ import {
 import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import VisualDataSubsystem from "../service/visual_data";
+import { systemConfig } from "../setting";
 import { getVersion, specifiedDaemonVersion } from "../version";
 
 const router = new Router({ prefix: "/overview" });
@@ -38,6 +39,7 @@ router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => 
       remoteInfo.remarks = remoteService.config.remarks;
       remoteInfo.remoteMappings = remoteService.config.remoteMappings;
       remoteInfo.proxyWebSocket = remoteService.config.proxyWebSocket;
+      remoteInfo.panelPrefix = systemConfig?.prefix ?? "";
       return remoteInfo;
     }
   );
