@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "활성화 시, 소프트 셧다운 중 Docker 인스턴스는 무시됩니다.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "소프트 셧다운 대기 시간(초)",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "남은 대상 인스턴스를 강제 종료하기 전 타임아웃(1-600초).",
+  "TXT_CODE_node_proxyWebSocket": "패널을 통한 WebSocket 프록시",
+  "TXT_CODE_node_proxyWebSocketInfo": "활성화하면 브라우저가 데몬에 직접 연결하는 대신 패널을 통해 노드에 연결합니다. 패널과 데몬이 같은 서버에 배포된 경우에 권장됩니다.",
   "TXT_CODE_db04e635": "기본 서버가 하나만 있는 경우 서버는 플레이어의 Motd에 표시됩니다. \nping_passthrough가 켜져 있으면 이 항목은 효과가 없습니다.",
   "TXT_CODE_db07cf9e": "당신이 어떻게 든 세계 국경 밖으로 나가면 스폰으로 순간 이동합니다.",
   "TXT_CODE_db14fb46": "성공적으로 추가되었습니다",

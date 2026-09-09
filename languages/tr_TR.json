@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "Etkinleştirilirse, yumuşak kapatma sırasında Docker örnekleri göz ardı edilir.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Yumuşak Kapatma Bekleme Süresi (Saniye)",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Kalan hedef örnekleri zorla sonlandırmadan önceki zaman aşımı (1-600 saniye).",
+  "TXT_CODE_node_proxyWebSocket": "WebSocket'u Panel Üzerinden Vekille",
+  "TXT_CODE_node_proxyWebSocketInfo": "Etkinleştirildiğinde tarayıcı, daemon'a doğrudan bağlanmak yerine Panel üzerinden düğüme bağlanır. Panel ve Daemon aynı sunucuda dağıtıldığında önerilir.",
   "TXT_CODE_db04e635": "Yalnızca Bir Varsayılan Sunucu Varken Oyunculara MOTD Görüntülenir. 'ping_passthrough' etkinleştirildiğinde bu geçersiz kılınır.",
   "TXT_CODE_db07cf9e": "Bir şekilde dünya sınırının dışına çıkarsanız sizi ortaya çıkarman için sizi ışınlar",
   "TXT_CODE_db14fb46": "Eklendi",

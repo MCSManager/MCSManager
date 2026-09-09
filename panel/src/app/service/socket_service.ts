@@ -1,6 +1,8 @@
 import http from "http";
 import { Server, Socket } from "socket.io";
+import { removeTrail } from "mcsmanager-common";
 import WebSocketRouter from "../routers/socket_router";
+import { systemConfig } from "../setting";
 import { logger } from "./log";
 
 export default class SocketService {
@@ -9,7 +11,7 @@ export default class SocketService {
 
   public static setUpSocketIO(httpServer: http.Server) {
     const io = new Server(httpServer, {
-      path: "/socket.io",
+      path: removeTrail(systemConfig?.prefix ?? "", "/") + "/socket.io",
       cors: {
         // temporary
         origin: "*",

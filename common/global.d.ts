@@ -172,6 +172,7 @@ declare global {
     remoteMappings: IPanelOverviewRemoteMappingResponse[];
     available: boolean;
     remarks: string;
+    proxyWebSocket: boolean;
     config: {
       language: string;
       uploadSpeedRate: number;

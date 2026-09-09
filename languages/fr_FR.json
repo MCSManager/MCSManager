@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "Si activé, les instances Docker sont ignorées pendant l'arrêt progressif.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Secondes d'attente pour l'arrêt progressif",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Délai avant de forcer l'arrêt des instances cibles restantes (1 à 600 secondes).",
+  "TXT_CODE_node_proxyWebSocket": "Proxy WebSocket via le panneau",
+  "TXT_CODE_node_proxyWebSocketInfo": "Lorsqu'elle est activée, le navigateur se connecte au nœud via le panneau au lieu du démon. Recommandé lorsque le panneau et le démon sont déployés sur le même serveur.",
   "TXT_CODE_db04e635": "Lorsqu'il n'y a qu'un seul serveur par défaut, le serveur sera affiché sur le Motd du joueur. \nCet élément n'a aucun effet lorsque ping_passthrough est activé",
   "TXT_CODE_db07cf9e": "Vous téléporte pour engendrer si vous sortez d'une manière ou d'une autre de la frontière mondiale",
   "TXT_CODE_db14fb46": "ajouté avec succès",

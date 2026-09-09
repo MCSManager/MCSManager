@@ -30,6 +30,7 @@ const DEFAULT_CONFIG = {
   portAssignInterval: 0,
   daemonPort: 24444,
   remoteMappings: [] as IPanelOverviewRemoteMappingResponse[],
+  proxyWebSocket: false,
   outputBufferSize: 256,
   enableSoftShutdown: true,
   softShutdownSkipDocker: true,
@@ -240,6 +241,14 @@ defineExpose({ openDialog });
       <!-- 高级配置标签页 -->
       <a-tab-pane v-if="daemonInfo?.available" key="advanced" :tab="t('TXT_CODE_31a1d824')">
         <a-form :model="dialog.data" layout="vertical">
+          <a-form-item :label="t('TXT_CODE_node_proxyWebSocket')" name="proxyWebSocket">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_node_proxyWebSocketInfo") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-switch v-model:checked="dialog.data.proxyWebSocket" />
+          </a-form-item>
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item :label="t('TXT_CODE_fde31068')" name="uploadSpeedRate">

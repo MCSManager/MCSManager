@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "หากเปิดใช้งาน อินสแตนซ์ Docker จะถูกละเว้นระหว่างการปิดแบบนุ่มนวล",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "เวลารอปิดแบบนุ่มนวล (วินาที)",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "เวลาจำกัดก่อนบังคับปิดอินสแตนซ์เป้าหมายที่เหลือ (1-600 วินาที)",
+  "TXT_CODE_node_proxyWebSocket": "พร็อกซี WebSocket ผ่านแผงควบคุม",
+  "TXT_CODE_node_proxyWebSocketInfo": "เมื่อเปิดใช้งาน เบราว์เซอร์จะเชื่อมต่อกับโหนดผ่านแผงควบคุมแทนการเชื่อมต่อโดยตรงกับ daemon แนะนำเมื่อแผงควบคุมและ daemon อยู่บนเซิร์ฟเวอร์เดียวกัน",
   "TXT_CODE_db04e635": "MOTD จะแสดงให้ผู้เล่นเห็นเมื่อมีเซิร์ฟเวอร์เริ่มต้นเพียงเซิร์ฟเวอร์เดียวเท่านั้น จะถูกเขียนทับเมื่อเปิดใช้งาน 'ping_passthrough'",
   "TXT_CODE_db07cf9e": "เทเลพอร์ตคุณไปยังจุดเกิดหากคุณหลุดออกจากขอบเขตโลกได้",
   "TXT_CODE_db14fb46": "เพิ่มแล้ว",

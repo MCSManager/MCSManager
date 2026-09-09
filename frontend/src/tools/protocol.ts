@@ -18,20 +18,66 @@ export type RemoteMappingEntry = {
   };
 };
 
-export function mapDaemonAddress(remoteMappings: RemoteMappingEntry[]) {
-  const loc = window.location;
-  let addr = loc.host;
-  if (loc.port === "") {
-    if (loc.protocol === "http:") addr = `${addr}:80`;
-    if (loc.protocol === "https:") addr = `${addr}:443`;
+export interface ForwardLocation {
+  host: string;
+  pathname: string;
+  protocol: string;
+}
+
+function getForwardLocation(): ForwardLocation {
+  if (typeof window === "undefined") return { host: "", pathname: "", protocol: "" };
+  return {
+    host: window.location.host,
+    pathname: window.location.pathname,
+    protocol: window.location.protocol
+  };
+}
+
+export function mapDaemonAddress(
+  remoteMappings: RemoteMappingEntry[],
+  location: ForwardLocation = getForwardLocation()
+) {
+  let addr = location.host;
+  if (location.host.split(":").length === 1) {
+    if (location.protocol === "http:") addr = `${addr}:80`;
+    if (location.protocol === "https:") addr = `${addr}:443`;
   }
   const match = remoteMappings.find(
     (entry) =>
       entry.from.addr === addr &&
-      removeTrail(entry.from.prefix, "/") === removeTrail(loc.pathname, "/")
+      removeTrail(entry.from.prefix, "/") === removeTrail(location.pathname, "/")
   );
   if (!match) return undefined;
   return match.to;
+}
+
+// Decides where the browser opens its terminal stream socket:
+// - proxy mode routes the connection through the panel;
+// - otherwise the daemon address is used, honouring remote mappings.
+export function resolveForwardTarget(
+  remoteInfo: {
+    addr: string;
+    prefix: string;
+    remoteMappings?: RemoteMappingEntry[];
+    proxy?: boolean;
+    panelPrefix?: string;
+  },
+  location: ForwardLocation = getForwardLocation()
+) {
+  if (remoteInfo.proxy === true) {
+    return {
+      addr: location.host,
+      prefix: remoteInfo.panelPrefix ?? ""
+    };
+  }
+  if (remoteInfo.remoteMappings) {
+    const mapped = mapDaemonAddress(remoteInfo.remoteMappings, location);
+    if (mapped) return mapped;
+  }
+  return {
+    addr: remoteInfo.addr,
+    prefix: remoteInfo.prefix
+  };
 }
 
 export function parseForwardAddress(addr: string, require: "http" | "ws") {

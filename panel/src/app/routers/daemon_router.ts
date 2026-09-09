@@ -163,7 +163,8 @@ router.post(
       port: parameter.port,
       ip: parameter.ip,
       prefix: parameter.prefix ?? "",
-      remarks: parameter.remarks ?? ""
+      remarks: parameter.remarks ?? "",
+      proxyWebSocket: parameter.proxyWebSocket ?? false
     });
 
     operationLogger.log("daemon_create", {
@@ -204,6 +205,7 @@ router.put(
         ip: config.ip,
         prefix: config.prefix,
         remarks: config.remarks,
+        proxyWebSocket: config.proxyWebSocket,
         remoteMappings: JSON.parse(JSON.stringify(config.remoteMappings ?? []))
       };
     };
@@ -215,7 +217,8 @@ router.put(
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
       remarks: parameter.remarks,
-      remoteMappings: parameter.remoteMappings ?? []
+      remoteMappings: parameter.remoteMappings ?? [],
+      proxyWebSocket: parameter.proxyWebSocket
     });
     const configAfter = snapshotDaemonConfig(uuid);
 

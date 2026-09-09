@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "Si se habilita, las instancias Docker se ignoran durante el apagado suave.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Segundos de Espera para Apagado Suave",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Tiempo de espera antes de forzar la terminación de instancias objetivo restantes (1-600 segundos).",
+  "TXT_CODE_node_proxyWebSocket": "Proxy WebSocket a través del panel",
+  "TXT_CODE_node_proxyWebSocketInfo": "Cuando está habilitado, el navegador se conecta al nodo a través del panel en lugar de hacerlo directamente al daemon. Recomendado cuando el panel y el daemon se despliegan en el mismo servidor.",
   "TXT_CODE_db04e635": "Cuando solo hay un servidor predeterminado, el servidor se mostrará en el Motd del jugador. \nEste elemento no tiene ningún efecto cuando ping_passthrough está activado",
   "TXT_CODE_db07cf9e": "Te teletransporta a desovar si de alguna manera sales de la frontera mundial",
   "TXT_CODE_db14fb46": "agregado exitosamente",

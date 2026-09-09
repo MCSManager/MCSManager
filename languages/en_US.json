@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "If enabled, Docker instances are ignored during soft shutdown.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Soft Shutdown Wait Seconds",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Timeout before force-killing remaining target instances (1-600 seconds).",
+  "TXT_CODE_node_proxyWebSocket": "Proxy WebSocket Through Panel",
+  "TXT_CODE_node_proxyWebSocketInfo": "When enabled, the browser connects to the node through the Panel instead of directly to the Daemon. Recommended when the Panel and Daemon are deployed on the same server.",
   "TXT_CODE_db04e635": "MOTD Displayed to Players When Only One Default Server Exists. This is overridden when 'ping_passthrough' is enabled.",
   "TXT_CODE_db07cf9e": "Teleports you to spawn if you somehow get outside the world border",
   "TXT_CODE_db14fb46": "Added",

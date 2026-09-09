@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "若啟用，軟關機期間將略過 Docker 執行個體。",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "軟關機等待秒數",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "強制終止剩餘目標執行個體前的逾時時間 (1-600 秒)。",
+  "TXT_CODE_node_proxyWebSocket": "透過面板代理 WebSocket",
+  "TXT_CODE_node_proxyWebSocketInfo": "啟用後，瀏覽器將透過面板連線節點，而不是直接連線守護程序。建議在面板與守護程序部署於同一台伺服器時啟用。",
   "TXT_CODE_db04e635": "只有一個預設伺服器時，伺服器將會顯示給玩家的 Motd。當 ping_passthrough 開啟時，此項目無效",
   "TXT_CODE_db07cf9e": "若玩家超出世界邊界，將被傳送回出生點。",
   "TXT_CODE_db14fb46": "新增成功",

@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "开启后，软关闭阶段会忽略 Docker 实例。",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "软关闭等待秒数",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "超过该时间后将强制关闭剩余目标实例（1-600 秒）。",
+  "TXT_CODE_node_proxyWebSocket": "通过面板代理 WebSocket",
+  "TXT_CODE_node_proxyWebSocketInfo": "启用后，浏览器将通过面板连接节点，而不是直接连接守护进程。推荐在面板和守护进程部署在同一台服务器时启用。",
   "TXT_CODE_db04e635": "当仅有一个默认服务器时，服务器将会显示给玩家的 Motd。当 ping_passthrough 被开启时，此项无效",
   "TXT_CODE_db07cf9e": "若玩家越过世界边界，将被传送回出生点。",
   "TXT_CODE_db14fb46": "添加成功",

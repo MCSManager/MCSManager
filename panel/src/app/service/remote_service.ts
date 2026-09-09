@@ -81,6 +81,7 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     if (config.prefix != null) instance.config.prefix = config.prefix;
     if (config.apiKey) instance.config.apiKey = config.apiKey;
     if (config.remoteMappings != null) instance.config.remoteMappings = config.remoteMappings;
+    if (config.proxyWebSocket != null) instance.config.proxyWebSocket = config.proxyWebSocket;
     await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
   }
 

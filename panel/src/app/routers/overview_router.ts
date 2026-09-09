@@ -37,6 +37,7 @@ router.get("/", permission({ level: ROLE.ADMIN, token: false }), async (ctx) => 
       remoteInfo.available = remoteService.available;
       remoteInfo.remarks = remoteService.config.remarks;
       remoteInfo.remoteMappings = remoteService.config.remoteMappings;
+      remoteInfo.proxyWebSocket = remoteService.config.proxyWebSocket;
       return remoteInfo;
     }
   );

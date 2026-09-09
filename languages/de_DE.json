@@ -3065,6 +3065,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "Wenn diese Option aktiviert ist, werden Docker-Instanzen beim sanften Herunterfahren ignoriert.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Soft-Shutdown-Wartesekunden",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Zeitüberschreitung vor dem erzwungenen Töten verbleibender Zielinstanzen (1–600 Sekunden).",
+  "TXT_CODE_node_proxyWebSocket": "WebSocket über das Panel weiterleiten",
+  "TXT_CODE_node_proxyWebSocketInfo": "Wenn aktiviert, verbindet sich der Browser über das Panel mit dem Knoten, statt direkt mit dem Daemon. Empfohlen, wenn Panel und Daemon auf demselben Server laufen.",
   "TXT_CODE_dc053043": "Symbolbild festlegen?",
   "TXT_CODE_dc47d2aa": "Privilegierter Modus",
   "TXT_CODE_dc8de4ff": "Auto",

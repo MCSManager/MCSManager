@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "有効の場合、ソフトシャットダウン時にDockerインスタンスは無視されます。",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "ソフトシャットダウンの待機秒数",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "残存ターゲットインスタンスを強制終了するまでのタイムアウト（1〜600秒）。",
+  "TXT_CODE_node_proxyWebSocket": "パネル経由で WebSocket をプロキシする",
+  "TXT_CODE_node_proxyWebSocketInfo": "有効にすると、ブラウザーはデーモンに直接接続せず、パネル経由でノードに接続します。パネルとデーモンが同じサーバー上にある場合に推奨されます。",
   "TXT_CODE_db04e635": "デフォルトサーバーが 1 つだけの場合、そのサーバーがプレーヤーの Motd に表示されます。 \nping_passthrough がオンになっている場合、この項目は効果がありません。",
   "TXT_CODE_db07cf9e": "どういうわけか世界の国境の外に出るなら、あなたをテレポートしてスポーンします",
   "TXT_CODE_db14fb46": "正常に追加されました",

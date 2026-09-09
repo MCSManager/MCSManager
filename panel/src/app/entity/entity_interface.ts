@@ -60,6 +60,7 @@ export interface IRemoteService {
   remarks?: string;
   apiKey?: string;
   remoteMappings?: RemoteMappingEntry[];
+  proxyWebSocket?: boolean;
 }
 
 // @Entity
@@ -70,6 +71,10 @@ export class RemoteServiceConfig {
   public remarks = "";
   public apiKey = "";
   public remoteMappings: RemoteMappingEntry[] = [];
+
+  // When enabled, the browser connects to the daemon through the panel
+  // instead of connecting to the daemon directly.
+  public proxyWebSocket = false;
 
   connectOpts: Partial<SocketOptions & ManagerOptions> = {
     multiplex: false,

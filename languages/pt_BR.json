@@ -2473,6 +2473,8 @@
   "TXT_CODE_daemon_softShutdownSkipDockerInfo": "Se habilitado, as instâncias Docker são ignoradas durante o desligamento suave.",
   "TXT_CODE_daemon_softShutdownWaitSeconds": "Segundos de Espera para Desligamento Suave",
   "TXT_CODE_daemon_softShutdownWaitSecondsInfo": "Tempo limite antes de forçar o encerramento das instâncias restantes (1-600 segundos).",
+  "TXT_CODE_node_proxyWebSocket": "Proxy WebSocket através do painel",
+  "TXT_CODE_node_proxyWebSocketInfo": "Quando ativado, o navegador conecta-se ao nó através do painel em vez de conectar-se diretamente ao daemon. Recomendado quando painel e daemon são implantados no mesmo servidor.",
   "TXT_CODE_db04e635": "MOTD Exibido para Jogadores Quando Apenas Um Servidor Padrão Existe. Isso é substituído quando 'ping_passthrough' está habilitado.",
   "TXT_CODE_db07cf9e": "Teleports você para desovar se de alguma forma sair da fronteira mundial",
   "TXT_CODE_db14fb46": "Adicionado",

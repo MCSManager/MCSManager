@@ -248,11 +248,14 @@ router.post(
           instanceUuid
         }
       });
+      const proxied = remoteService.config.proxyWebSocket === true;
       ctx.body = {
         password,
         addr,
         prefix,
-        remoteMappings
+        remoteMappings,
+        proxy: proxied,
+        panelPrefix: proxied ? systemConfig?.prefix ?? "" : ""
       };
     } catch (err) {
       ctx.body = err;

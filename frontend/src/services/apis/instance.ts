@@ -13,6 +13,8 @@ export interface MissionPassportResponse {
   password: string;
   prefix: string;
   remoteMappings: RemoteMappingEntry[];
+  proxy?: boolean;
+  panelPrefix?: string;
 }
 
 export const setUpTerminalStreamChannel = useDefineApi<

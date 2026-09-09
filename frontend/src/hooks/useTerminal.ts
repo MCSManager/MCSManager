@@ -4,7 +4,7 @@ import { t } from "@/lang/i18n";
 import { setUpTerminalStreamChannel } from "@/services/apis/instance";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { toCopy } from "@/tools/copy";
-import { mapDaemonAddress, parseForwardAddress } from "@/tools/protocol";
+import { parseForwardAddress, resolveForwardTarget } from "@/tools/protocol";
 import type { InstanceDetail } from "@/types";
 import { INSTANCE_STATUS_CODE } from "@/types/const";
 import type { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -107,22 +107,23 @@ export function useTerminal() {
 
     let addr = remoteInfo.addr,
       prefix = remoteInfo.prefix;
-    if (remoteInfo.remoteMappings) {
-      const mapped = mapDaemonAddress(remoteInfo.remoteMappings);
-      if (mapped) {
-        addr = mapped.addr;
-        prefix = mapped.prefix;
-      }
-    }
+    const target = resolveForwardTarget(remoteInfo);
+    addr = target.addr;
+    prefix = target.prefix;
     socketAddress.value = parseForwardAddress(addr, "ws");
     const password = remoteInfo.password;
+
+    // When the stream is proxied through the panel, the daemon id must be
+    // attached so the panel can open a pipe to the right daemon.
+    const streamAuthData: { password: string; daemonId?: string } = { password };
+    if (remoteInfo.proxy === true) streamAuthData.daemonId = config.daemonId;
 
     socket = makeSocketIo(addr, prefix);
 
     socket.on("connect", () => {
       console.log("[Socket.io] connect:", addr);
       socket?.emit("stream/auth", {
-        data: { password }
+        data: streamAuthData
       });
       isConnect.value = true;
     });
@@ -156,7 +157,7 @@ export function useTerminal() {
       console.warn("[Socket.io] reconnect:", addr);
       isConnect.value = true;
       socket?.emit("stream/auth", {
-        data: { password }
+        data: streamAuthData
       });
     });
 
