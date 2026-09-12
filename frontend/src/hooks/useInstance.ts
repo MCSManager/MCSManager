@@ -200,7 +200,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_SPONGE,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH,
-      TYPE_MINECRAFT_LEAVES
+      TYPE_MINECRAFT_LEAVES,
+      TYPE_MINECRAFT_MOHIST
     ]
   },
   {
@@ -221,7 +222,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_SPONGE,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH,
-      TYPE_MINECRAFT_LEAVES
+      TYPE_MINECRAFT_LEAVES,
+      TYPE_MINECRAFT_MOHIST
     ]
   },
   {
@@ -238,7 +240,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH,
-      TYPE_MINECRAFT_LEAVES
+      TYPE_MINECRAFT_LEAVES,
+      TYPE_MINECRAFT_MOHIST
     ]
   },
   {
@@ -255,7 +258,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
       TYPE_MINECRAFT_BUKKIT,
       TYPE_MINECRAFT_PURPUR,
       TYPE_MINECRAFT_PUFFERFISH,
-      TYPE_MINECRAFT_LEAVES
+      TYPE_MINECRAFT_LEAVES,
+      TYPE_MINECRAFT_MOHIST
     ]
   },
   {
@@ -284,8 +288,8 @@ export const INSTANCE_CONFIGS: InstanceConfigs[] = [
   },
   {
     fileName: "[Mohist] mohist.yml",
-    path: "mohist.yml",
-    redirect: "mohist-config/mohist.yml",
+    path: "mohist-config/mohist.yml",
+    redirect: "mohist/mohist.yml",
     type: "yml",
     info: t("TXT_CODE_6eead111"),
     category: [TYPE_MINECRAFT_JAVA, TYPE_MINECRAFT_MOHIST]
