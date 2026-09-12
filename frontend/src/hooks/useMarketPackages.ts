@@ -29,6 +29,14 @@ export interface UseMarketPackagesOptions {
   onlyDockerTemplate?: boolean;
 }
 
+export const resetSearchForm = (searchForm: SearchForm) => {
+  searchForm.language = SEARCH_ALL_KEY;
+  searchForm.gameType = SEARCH_ALL_KEY;
+  searchForm.category = SEARCH_ALL_KEY;
+  searchForm.platform = SEARCH_ALL_KEY;
+  searchForm.keyword = "";
+};
+
 /**
  * Composable for market packages filtering and search functionality
  */
@@ -236,11 +244,7 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
 
   // Handler functions
   const handleReset = () => {
-    searchForm.language = SEARCH_ALL_KEY;
-    searchForm.gameType = SEARCH_ALL_KEY;
-    searchForm.category = SEARCH_ALL_KEY;
-    // searchForm.platform = SEARCH_ALL_KEY;
-    searchForm.keyword = "";
+    resetSearchForm(searchForm);
   };
 
   const handleGameTypeChange = () => {
