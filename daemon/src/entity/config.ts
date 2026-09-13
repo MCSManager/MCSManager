@@ -49,6 +49,13 @@ class Config {
   ssl = false;
   sslPemPath = "";
   sslKeyPath = "";
+
+  // ---- Auto update (self-update daemon app.js from a remote manifest) ----
+  // Full URL to a manifest.json describing available updates, e.g.
+  // "http://localhost:9999/manifest.json". Empty => auto update disabled.
+  public updateSourceUrl = "";
+  // Master switch: allow this daemon to be updated from the panel.
+  public allowAutoUpdate = true;
 }
 
 // daemon configuration class
