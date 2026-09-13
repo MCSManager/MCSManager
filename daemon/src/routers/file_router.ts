@@ -243,7 +243,7 @@ routerApp.on("file/copy", async (ctx, data) => {
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
     for (const target of targets) {
-      fileManager.copy(target[0], target[1]);
+      await fileManager.copy(target[0], target[1]);
     }
     protocol.response(ctx, true);
   } catch (error: any) {
