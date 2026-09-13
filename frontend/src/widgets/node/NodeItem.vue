@@ -8,7 +8,7 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
 import { t } from "@/lang/i18n";
-import { connectNode } from "@/services/apis";
+import { connectNode, upgradeDaemon } from "@/services/apis";
 import { arrayFilter } from "@/tools/array";
 import { reportErrorMsg } from "@/tools/validator";
 import { hasVersionUpdate } from "@/tools/version";
@@ -17,6 +17,7 @@ import {
   BlockOutlined,
   CheckCircleOutlined,
   CloudServerOutlined,
+  CloudUploadOutlined,
   CodeOutlined,
   FolderOpenOutlined,
   InfoCircleOutlined,
@@ -24,7 +25,7 @@ import {
   ReloadOutlined,
   SettingOutlined
 } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { computed, onMounted, ref } from "vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 
@@ -69,6 +70,29 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
   } catch (error: any) {
     reportErrorMsg(t("TXT_CODE_6a365d01"));
   }
+};
+
+// Self-update the daemon: download latest package, overlay it, restart the node.
+const triggerDaemonUpdate = (uuid: string) => {
+  Modal.confirm({
+    title: t("TXT_CODE_AUTOUPDATE_DAEMON_BTN"),
+    content: t("TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM"),
+    okText: t("TXT_CODE_AUTOUPDATE_BTN_OK"),
+    cancelText: t("TXT_CODE_AUTOUPDATE_BTN_CANCEL"),
+    onOk: async () => {
+      try {
+        const { execute } = upgradeDaemon();
+        const res = await execute({ params: { uuid } });
+        if (res.value?.started) {
+          message.success(t("TXT_CODE_AUTOUPDATE_DAEMON_STARTED"));
+        } else {
+          message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
+        }
+      } catch (error: any) {
+        reportErrorMsg(error?.message ? error.message : t("TXT_CODE_AUTOUPDATE_DAEMON_FAILED"));
+      }
+    }
+  });
 };
 
 const { toPage } = useAppRouters();
@@ -164,6 +188,14 @@ const nodeOperations = computed(() =>
             daemonId
           }
         });
+      },
+      condition: () => remoteNode.value!.available
+    },
+    {
+      title: t("TXT_CODE_AUTOUPDATE_DAEMON_BTN"),
+      icon: CloudUploadOutlined,
+      click: (item: ComputedNodeInfo) => {
+        triggerDaemonUpdate(item.uuid);
       },
       condition: () => remoteNode.value!.available
     },
