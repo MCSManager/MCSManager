@@ -18,6 +18,7 @@ import logger from "./log";
 import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
 import { getLinuxSystemId } from "../tools/system_user";
+import { sleep } from "../utils/sleep";
 
 type PublicPortArray = {
   [key: string]: {
@@ -29,6 +30,76 @@ type PublicPortArray = {
 type ExposedPorts = {
   [key: string]: {};
 };
+
+const DOCKER_NAME_RELEASE_ATTEMPTS = 5;
+const DOCKER_NAME_RELEASE_DELAY_MS = 1000;
+
+function isDockerNameConflictError(error: any): boolean {
+  const message = String(error?.message ?? error ?? "");
+  return (
+    (error?.statusCode === 409 || error?.status === 409 || message.includes("HTTP code 409")) &&
+    message.includes("is already in use by container")
+  );
+}
+
+async function findContainerByName(
+  docker: DefaultDocker,
+  containerName: string
+): Promise<Docker.ContainerInfo | undefined> {
+  const containers = await docker.listContainers({
+    all: true,
+    filters: { name: [containerName] }
+  });
+
+  return containers.find((container) =>
+    container.Names?.some((name) => name === `/${containerName}` || name === containerName)
+  );
+}
+
+function belongsToInstance(container: Docker.ContainerInfo, instanceUuid: string): boolean {
+  return container.Labels?.["mcsmanager.instance.uuid"] === instanceUuid;
+}
+
+async function waitForContainerNameRelease(
+  docker: DefaultDocker,
+  containerName: string,
+  instanceUuid: string
+): Promise<boolean> {
+  for (let attempt = 0; attempt < DOCKER_NAME_RELEASE_ATTEMPTS; attempt++) {
+    const container = await findContainerByName(docker, containerName);
+    if (!container) return true;
+    if (!belongsToInstance(container, instanceUuid)) return false;
+    if (attempt + 1 < DOCKER_NAME_RELEASE_ATTEMPTS) {
+      await sleep(DOCKER_NAME_RELEASE_DELAY_MS);
+    }
+  }
+
+  return false;
+}
+
+async function createContainerWithNameRetry(
+  docker: DefaultDocker,
+  options: Docker.ContainerCreateOptions,
+  containerName: string,
+  instanceUuid: string
+): Promise<Docker.Container> {
+  try {
+    return await docker.createContainer(options);
+  } catch (error: any) {
+    if (!isDockerNameConflictError(error)) throw error;
+
+    const conflictingContainer = await findContainerByName(docker, containerName);
+    if (!conflictingContainer || !belongsToInstance(conflictingContainer, instanceUuid)) {
+      throw error;
+    }
+
+    if (!(await waitForContainerNameRelease(docker, containerName, instanceUuid))) {
+      throw error;
+    }
+
+    return await docker.createContainer(options);
+  }
+}
 
 function attachDockerContainer(container: Docker.Container): Promise<NodeJS.ReadWriteStream> {
   const query = {
@@ -448,7 +519,7 @@ export class SetupDockerContainer extends AsyncTask {
       }
     }
 
-    this.container = await docker.createContainer({
+    const containerOptions: Docker.ContainerCreateOptions = {
       Entrypoint: entrypoint,
       Cmd: startCmd,
       name: containerName,
@@ -504,7 +575,14 @@ export class SetupDockerContainer extends AsyncTask {
             }
           }
         })
-    });
+    };
+
+    this.container = await createContainerWithNameRetry(
+      docker,
+      containerOptions,
+      containerName,
+      instance.instanceUuid
+    );
 
     await this.container.start();
 
