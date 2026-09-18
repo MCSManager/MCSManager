@@ -5,6 +5,7 @@ import path from "path";
 import { Throttle } from "stream-throttle";
 import { getCommonHeaders } from "../common/network";
 import { globalConfiguration } from "../entity/config";
+import { checkSafeUrl } from "../utils/url";
 
 export const DOWNLOAD_STATUS = {
   DOWNLOADING: 0,
@@ -164,15 +165,34 @@ class DownloadManager {
     retries = 2
   ): Promise<any> {
     try {
-      return await axios({
-        method: "get",
-        url: url,
-        responseType: "stream",
-        timeout: 60000,
-        headers: getCommonHeaders(url),
-        maxRedirects: 10,
-        signal: controller.signal
-      });
+      let currentUrl = url;
+      for (let redirectCount = 0; ; redirectCount++) {
+        if (!(await checkSafeUrl(currentUrl))) {
+          throw new Error(`Refusing unsafe download URL: ${currentUrl}`);
+        }
+
+        const response = await axios({
+          method: "get",
+          url: currentUrl,
+          responseType: "stream",
+          timeout: 60000,
+          headers: getCommonHeaders(currentUrl),
+          maxRedirects: 0,
+          validateStatus: (status) => status >= 200 && status < 400,
+          signal: controller.signal
+        });
+
+        if (response.status < 300) return response;
+        if (redirectCount >= 10) {
+          response.data?.destroy?.();
+          throw new Error("Too many redirects while downloading file");
+        }
+
+        const location = response.headers.location;
+        response.data?.destroy?.();
+        if (!location) throw new Error("Redirect response did not include a location");
+        currentUrl = new URL(location, currentUrl).toString();
+      }
     } catch (err: any) {
       if (controller.signal.aborted) throw err;
 
