@@ -582,6 +582,12 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   pid?: number | string;
 
   private stream?: NodeJS.ReadWriteStream;
+  private streamGeneration = 0;
+  private reconnectTimer?: NodeJS.Timeout;
+  private reconnecting = false;
+  private stopping = false;
+  private exitEmitted = false;
+  private waitActive = false;
   public container?: Docker.Container;
 
   constructor(public readonly containerWrapper: SetupDockerContainer) {
@@ -604,10 +610,8 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
       }
 
       this.pid = this.container.id;
-      this.stream = await attachDockerContainer(this.container);
-      this.stream.on("data", (data) => this.emit("data", data));
-      this.stream.on("error", (data) => this.emit("data", data));
-      this.wait();
+      await this.attachStream();
+      this.watchExit();
     } catch (error: any) {
       this.kill();
       throw error;
@@ -615,24 +619,134 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   public write(data?: string) {
-    if (this.stream && data) this.stream.write(data);
+    if (!data) return;
+    if (!this.stream) {
+      this.scheduleReconnect();
+      return;
+    }
+    try {
+      this.stream.write(data);
+    } catch (error) {
+      this.handleStreamLost(this.streamGeneration);
+    }
   }
 
   public async kill(s?: string) {
+    this.stopping = true;
+    this.clearReconnectTimer();
     await this.container?.kill();
     return true;
   }
 
   public async destroy() {
+    this.stopping = true;
+    this.clearReconnectTimer();
+    this.closeStream();
     try {
       await this.container?.remove();
     } catch (error: any) {}
   }
 
-  private wait() {
-    this.container?.wait(async (v) => {
-      await this.destroy();
-      this.emit("exit", v);
+  private async attachStream() {
+    if (!this.container || this.stream || this.stopping || this.exitEmitted) return;
+    const stream = await attachDockerContainer(this.container);
+    if (this.stopping || this.exitEmitted) {
+      (stream as any).destroy?.();
+      return;
+    }
+
+    const generation = ++this.streamGeneration;
+    this.stream = stream;
+    stream.on("data", (data) => {
+      if (generation === this.streamGeneration) this.emit("data", data);
     });
+    stream.once("error", () => this.handleStreamLost(generation));
+    stream.once("end", () => this.handleStreamLost(generation));
+    stream.once("close", () => this.handleStreamLost(generation));
+  }
+
+  private handleStreamLost(generation: number) {
+    if (
+      generation !== this.streamGeneration ||
+      this.stopping ||
+      this.exitEmitted
+    )
+      return;
+    this.stream = undefined;
+    this.scheduleReconnect();
+  }
+
+  private scheduleReconnect(delay = 2000) {
+    if (this.stopping || this.exitEmitted || this.reconnectTimer) return;
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = undefined;
+      void this.reconnect();
+    }, delay);
+  }
+
+  private clearReconnectTimer() {
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
+  }
+
+  private async reconnect() {
+    if (this.reconnecting || this.stopping || this.exitEmitted) return;
+    this.reconnecting = true;
+    try {
+      await this.attachStream();
+      this.watchExit();
+    } catch (error) {
+      this.scheduleReconnect(3000);
+    } finally {
+      this.reconnecting = false;
+    }
+  }
+
+  private watchExit() {
+    if (!this.container || this.waitActive || this.exitEmitted) return;
+    this.waitActive = true;
+    this.container.wait((error, result) => {
+      this.waitActive = false;
+      if (this.exitEmitted) return;
+      if (error) {
+        void this.handleWaitError();
+        return;
+      }
+      void this.handleContainerExit(result?.StatusCode ?? 0);
+    });
+  }
+
+  private async handleWaitError() {
+    if (!this.container || this.exitEmitted) return;
+    try {
+      const info = await this.container.inspect();
+      if (info.State?.Running) {
+        if (!this.stopping) this.scheduleReconnect();
+        else setTimeout(() => this.watchExit(), 3000);
+      } else {
+        await this.handleContainerExit(info.State?.ExitCode ?? 0);
+      }
+    } catch (error) {
+      if (!this.stopping) this.scheduleReconnect(3000);
+      else await this.handleContainerExit(0);
+    }
+  }
+
+  private async handleContainerExit(code: number) {
+    if (this.exitEmitted) return;
+    this.exitEmitted = true;
+    this.clearReconnectTimer();
+    this.closeStream();
+    try {
+      await this.container?.remove();
+    } catch (error) {}
+    this.emit("exit", code);
+  }
+
+  private closeStream() {
+    const stream = this.stream;
+    this.stream = undefined;
+    this.streamGeneration++;
+    (stream as any)?.destroy?.();
   }
 }
