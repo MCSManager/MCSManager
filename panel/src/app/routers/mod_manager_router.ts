@@ -72,12 +72,14 @@ router.get(
       const page = Math.max(1, Number(ctx.query.page) || 1);
       const pageSize = Math.min(50, Math.max(1, Number(ctx.query.pageSize) || 50));
       const folder = ctx.query.folder ? String(ctx.query.folder) : undefined;
+      const search = ctx.query.search ? String(ctx.query.search) : undefined;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await new RemoteRequest(remoteService).request("instance/mods/list", {
         instanceUuid,
         page,
         pageSize,
-        folder: folder || ""
+        folder: folder || "",
+        search: search || ""
       });
       ctx.body = result;
     } catch (err) {
