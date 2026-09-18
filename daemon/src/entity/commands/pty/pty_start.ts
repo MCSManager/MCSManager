@@ -188,8 +188,10 @@ export default class PtyStartCommand extends AbsStartCommand {
     }
     if (os.platform() !== "win32") {
       try {
-        fs.chmodSync(pipeLinuxDir, 0o777);
-      } catch {}
+        fs.chmodSync(pipeLinuxDir, 0o1777);
+      } catch (err: any) {
+        logger.warn(`Failed to set permissions for ${pipeLinuxDir}:`, err);
+      }
     }
     let pipeName = `${pipeLinuxDir}/pipe-${pipeId}`;
     if (os.platform() === "win32") {
