@@ -313,3 +313,59 @@ export const ssoUnbind = useDefineApi<
   url: "/api/auth/sso/unbind",
   method: "PUT"
 });
+
+export interface IUpgradeInfo {
+  configured: boolean;
+  currentVersion: string;
+  onlineVersion?: string;
+  updateAvailable: boolean;
+  updateSourceUrl: string;
+  error?: string;
+}
+
+export interface IUpgradeResult {
+  started: boolean;
+  onlineVersion?: string;
+  message?: string;
+}
+
+// Panel self-update info (current vs online version).
+export const getPanelUpgradeInfo = useDefineApi<any, IUpgradeInfo>({
+  url: "/api/upgrade/panel_info"
+});
+
+// Trigger the panel self-update (downloads/extracts/overlays & restarts).
+// Long timeout: the panel downloads+extracts BEFORE responding; large/slow
+// packages must not hit the default 30s axios timeout mid-update.
+export const upgradePanel = useDefineApi<any, IUpgradeResult>({
+  url: "/api/upgrade/panel",
+  method: "POST",
+  timeout: 1000 * 60 * 5
+});
+
+// Forward: query a daemon for its update info.
+export const getDaemonUpgradeInfo = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+  },
+  IUpgradeInfo
+>({
+  url: "/api/upgrade/daemon_info"
+});
+
+// Forward: trigger a daemon self-update.
+// Long timeout: the panel forwards after the daemon downloads+extracts+overlays.
+export const upgradeDaemon = useDefineApi<
+  {
+    params: {
+      uuid: string;
+    };
+  },
+  IUpgradeResult
+>({
+  url: "/api/upgrade/daemon",
+  method: "POST",
+  timeout: 1000 * 60 * 5
+});

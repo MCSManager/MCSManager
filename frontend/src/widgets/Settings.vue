@@ -6,7 +6,13 @@ import Loading from "@/components/Loading.vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { router } from "@/config/router";
 import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
-import { setSettingInfo, settingInfo } from "@/services/apis";
+import {
+  getPanelUpgradeInfo,
+  setSettingInfo,
+  settingInfo,
+  upgradePanel,
+  type IUpgradeInfo
+} from "@/services/apis";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
@@ -18,6 +24,7 @@ import {
   BankOutlined,
   BookOutlined,
   BugOutlined,
+  CloudUploadOutlined,
   EditOutlined,
   FileProtectOutlined,
   GithubOutlined,
@@ -27,7 +34,8 @@ import {
   PicLeftOutlined,
   PlusOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  ReloadOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { computed, onMounted, onUnmounted, ref } from "vue";
@@ -414,6 +422,77 @@ const toTemplate = {
     })
 };
 
+// ---- Panel self-update (web) ----
+const panelUpgradeInfo = ref<IUpgradeInfo>();
+const panelUpgradeLoading = ref(false);
+const panelRestarting = ref(false);
+
+const refreshPanelUpgradeInfo = async () => {
+  if (panelUpgradeLoading.value) return;
+  panelUpgradeLoading.value = true;
+  try {
+    const { execute } = getPanelUpgradeInfo();
+    panelUpgradeInfo.value = (await execute({})).value;
+  } catch (error: any) {
+    // silent: keep last known state
+  } finally {
+    panelUpgradeLoading.value = false;
+  }
+};
+
+// After POST /upgrade/panel the panel restarts ~1s later, dropping this
+// HTTP/socket connection. Poll the panel's own /api/auth/status endpoint
+// (a JSON 200 is only served by the panel process — a reverse-proxy root would
+// not falsely satisfy this) until it responds again, then reload to pick up
+// the new frontend bundle. Rejects on timeout so the caller does NOT report a
+// false "updated successfully" when the panel actually failed to come back.
+const waitForPanelRestart = (timeoutMs = 90000) =>
+  new Promise<void>((resolve, reject) => {
+    const deadline = Date.now() + timeoutMs;
+    const poll = () => {
+      fetch(window.location.origin + "/api/auth/status", { cache: "no-store" })
+        .then(async (r) => {
+          if (r.ok && String(r.headers.get("content-type") || "").includes("application/json")) {
+            resolve();
+            return;
+          }
+          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
+          else setTimeout(poll, 1500);
+        })
+        .catch(() => {
+          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
+          else setTimeout(poll, 1500);
+        });
+    };
+    setTimeout(poll, 3000);
+  });
+
+const onUpdateWeb = () => {
+  Modal.confirm({
+    title: t("TXT_CODE_AUTOUPDATE_WEB_BTN"),
+    content: t("TXT_CODE_AUTOUPDATE_WEB_CONFIRM"),
+    okText: t("TXT_CODE_AUTOUPDATE_BTN_OK"),
+    cancelText: t("TXT_CODE_AUTOUPDATE_BTN_CANCEL"),
+    onOk: async () => {
+      try {
+        const { execute } = upgradePanel();
+        const res = await execute({});
+        if (!res.value?.started) {
+          message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
+          return;
+        }
+        panelRestarting.value = true;
+        await waitForPanelRestart();
+        message.success(t("TXT_CODE_AUTOUPDATE_WEB_SUCCESS"));
+        setTimeout(() => window.location.reload(), 800);
+      } catch (error: any) {
+        panelRestarting.value = false;
+        reportErrorMsg(error?.message ? error.message : t("TXT_CODE_AUTOUPDATE_WEB_FAILED"));
+      }
+    }
+  });
+};
+
 onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
@@ -444,6 +523,8 @@ onMounted(async () => {
       leftMenusPanelRef.value?.setActiveKey("pro");
     }
   }, 100);
+
+  refreshPanelUpgradeInfo();
 });
 
 onUnmounted(() => {
@@ -459,8 +540,82 @@ onUnmounted(() => {
 
 <template>
   <div>
+    <div
+      v-if="panelRestarting"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <a-spin size="large" />
+      <div style="margin-top: 16px; color: #fff; font-size: 16px">
+        {{ t("TXT_CODE_AUTOUPDATE_WEB_RESTARTING") }}
+      </div>
+    </div>
     <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
+        <div v-if="panelUpgradeInfo" class="px-16 pt-16 pb-8">
+          <a-alert type="info" show-icon>
+            <template #message>
+              <div class="flex-center" style="gap: 12px; flex-wrap: wrap">
+                <CloudUploadOutlined />
+                <span>
+                  {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE") }}:&nbsp;v{{
+                    panelUpgradeInfo.currentVersion
+                  }}
+                </span>
+                <a-tag v-if="!panelUpgradeInfo.configured" color="default">
+                  {{ t("TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED") }}
+                </a-tag>
+                <template v-else>
+                  <a-tag v-if="panelUpgradeInfo.updateAvailable" color="processing">
+                    {{ t("TXT_CODE_AUTOUPDATE_WEB_LATEST", { v: panelUpgradeInfo.onlineVersion }) }}
+                  </a-tag>
+                  <a-tag v-else color="success">{{ t("TXT_CODE_AUTOUPDATE_UP_TO_DATE") }}</a-tag>
+                </template>
+                <a-button
+                  size="small"
+                  :loading="panelUpgradeLoading"
+                  @click="refreshPanelUpgradeInfo"
+                >
+                  <template #icon><ReloadOutlined /></template>
+                  {{ t("TXT_CODE_AUTOUPDATE_BTN_REFRESH") }}
+                </a-button>
+                <a-button
+                  v-if="panelUpgradeInfo.configured"
+                  size="small"
+                  type="primary"
+                  :disabled="!panelUpgradeInfo.updateAvailable"
+                  @click="onUpdateWeb"
+                >
+                  {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                </a-button>
+              </div>
+            </template>
+            <template #description>
+              <div class="flex-center" style="gap: 12px; flex-wrap: wrap; margin-top: 8px">
+                <span style="white-space: nowrap">{{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE") }}</span>
+                <a-input
+                  v-model:value="formData.updateSourceUrl"
+                  style="max-width: 360px"
+                  :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
+                />
+                <a-checkbox v-model:checked="formData.allowAutoUpdate">
+                  {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW") }}
+                </a-checkbox>
+                <a-button size="small" type="primary" @click="submit(true)">
+                  {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}
+                </a-button>
+              </div>
+            </template>
+          </a-alert>
+        </div>
         <LeftMenusPanel ref="leftMenusPanelRef" :menus="menus">
           <template #baseInfo>
             <div class="content-box" :style="{ maxHeight: card.height }">

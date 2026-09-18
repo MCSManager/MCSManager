@@ -69,6 +69,12 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableApiKey != null) systemConfig.enableApiKey = config.enableApiKey;
 
+    // Auto update (panel self-update)
+    if (config.updateSourceUrl != null)
+      systemConfig.updateSourceUrl = String(config.updateSourceUrl);
+    if (config.allowAutoUpdate != null)
+      systemConfig.allowAutoUpdate = Boolean(config.allowAutoUpdate);
+
     if (config.operationLogEnabled != null)
       systemConfig.operationLogEnabled = config.operationLogEnabled;
     if (config.operationLogMaxLinesPerFile != null)
