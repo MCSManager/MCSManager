@@ -584,11 +584,12 @@ routerApp.on("instance/mods/list", async (ctx, data) => {
   const page = Number(data.page) || 1;
   const pageSize = Math.min(Number(data.pageSize) || 50, 50); // Max 50
   const folder = data.folder ? String(data.folder) : undefined;
+  const search = data.search ? String(data.search) : undefined;
   try {
     const fileManager = new FileManager(
       InstanceSubsystem.getInstance(instanceUuid)!.absoluteCwdPath()
     );
-    const mods = await modService.listMods(instanceUuid, page, pageSize, folder);
+    const mods = await modService.listMods(instanceUuid, page, pageSize, folder, search);
     const downloadTasks = downloadManager.tasks
       .filter((t) => fileManager.checkPath(t.path))
       .map((t) => {
