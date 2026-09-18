@@ -183,7 +183,16 @@ export default class PtyStartCommand extends AbsStartCommand {
 
     const pipeId = v4();
     const pipeLinuxDir = "/tmp/mcsmanager-instance-pipe";
-    if (!fs.existsSync(pipeLinuxDir)) fs.mkdirsSync(pipeLinuxDir);
+    if (!fs.existsSync(pipeLinuxDir)) {
+      fs.mkdirsSync(pipeLinuxDir);
+    }
+    if (os.platform() !== "win32") {
+      try {
+        fs.chmodSync(pipeLinuxDir, 0o1777);
+      } catch (err: any) {
+        logger.warn(`Failed to set permissions for ${pipeLinuxDir}:`, err);
+      }
+    }
     let pipeName = `${pipeLinuxDir}/pipe-${pipeId}`;
     if (os.platform() === "win32") {
       pipeName = `\\\\.\\pipe\\mcsmanager-${pipeId}`;
