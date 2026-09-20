@@ -11,7 +11,7 @@
 
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { makeZip } from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
@@ -54,9 +54,7 @@ function stageAndZip(name, newVersion, includePublic) {
 
   const zipPath = path.join(outDir, name + ".zip");
   fs.rmSync(zipPath, { force: true });
-  execSync(`zip -rq ${JSON.stringify(zipPath)} ${entries.map((e) => JSON.stringify(e)).join(" ")}`, {
-    cwd: staging
-  });
+  makeZip(zipPath, entries, staging);
   fs.rmSync(staging, { recursive: true, force: true });
   console.log(`${name}.zip -> v${newVersion}  (${(fs.statSync(zipPath).size / 1024 / 1024).toFixed(1)} MB)`);
 }

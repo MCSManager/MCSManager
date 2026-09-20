@@ -3,8 +3,9 @@
 Date: 2026-09-07
 Feature: in-place self-update of the daemon and the control panel (web) via a downloaded zip package. See the companion [design document](./2026-09-06-auto-update-design.md).
 
-This plan covers two complementary test modes:
+This plan covers three complementary test modes:
 - **Automated end-to-end (primary):** `scripts/verify-auto-update.mjs` — a headless harness that drives the real upgrade HTTP endpoints against fresh daemon/panel processes and asserts the full download → overlay → restart → reconnect flow. This is what you run to prove the feature works.
+- **Automated strict / negative cases:** `scripts/verify-auto-update-strict.mjs` — runs on one fresh panel and additionally proves that (0) an unconfigured source reports `configured:false`, (A) an already-latest version does nothing, (B) a Zip-Slip package is rejected, (B2) a package missing `app.js` is rejected before any overlay, (B3) a disabled auto-update is guarded, and (C/D) a real content update actually replaces `app.js` + `public/` and restarts.
 - **Manual / browser:** exercising the actual UI buttons against the same local update server.
 
 ---
@@ -34,6 +35,8 @@ All live under `scripts/` (the generated zips + logs under `scripts/update-packa
 | `scripts/build-update-packages.mjs` | Builds the two update zips + `manifest.json` from `production-code/`. Bumps only `package.json.version` in each zip (the version is read at runtime from `package.json`, so the shipped `app.js` is byte-identical to the running one — this still exercises the whole pipeline). Also drops an `OVERLAY_MARKER.txt` at each package root to prove whole-package overlay. |
 | `scripts/update-test-server.mjs` | Tiny static HTTP server on `:9999` serving `manifest.json`, `daemon.zip`, `web.zip`. |
 | `scripts/verify-auto-update.mjs` | The orchestrator: builds packages, starts the server + a fresh daemon + a fresh panel, drives the upgrade endpoints, asserts each step, cleans up. |
+| `scripts/verify-auto-update-strict.mjs` | The strict/negative orchestrator: unconfigured, already-latest, Zip-Slip, missing-`app.js`, disabled, and real content-update scenarios on one fresh panel. Restores a pristine snapshot of `production-code` afterwards so it is idempotent. |
+| `scripts/auto-update-test-utils.mjs` | Cross-platform helpers (`makeZip`/`listZip` via `zip` or Windows `tar.exe`; `killPort`/`killPattern`/`killChild` via `lsof`/`pkill` or Windows `netstat`/`taskkill`/PowerShell). |
 
 > The version-bumped-package trick keeps the verification honest and fast: the report-version genuinely changes on disk and via the API after restart, while avoiding a second full webpack build.
 
@@ -42,15 +45,17 @@ All live under `scripts/` (the generated zips + logs under `scripts/update-packa
 ## 3. Automated end-to-end test (run this)
 
 ### 3.1 Prerequisites
-1. A clean build of the current source: `bash build.sh` (produces `production-code/{daemon,web}` at the baseline versions, currently `daemon@4.18.3`, `panel@10.18.3`).
-2. `node` (≥ 18; the harness uses global `fetch`, `fs.cpSync`, etc.). macOS/Linux supported out of the box.
+1. A clean build of the current source: `bash build.sh` (or `build.bat` / the manual steps on Windows; produces `production-code/{daemon,web}` at the baseline versions, currently `daemon@4.18.3`, `panel@10.18.3`).
+2. `node` (≥ 18; the harness uses global `fetch`, `fs.cpSync`, etc.).
 3. Ports `9999`, `23333`, `24444` free (the harness kills anything on them at start and on exit).
+4. **Cross-platform:** Linux/macOS use `zip`/`unzip`/`lsof`/`pkill`; Windows uses the bundled `tar.exe` (zip read/write) plus `netstat`/`taskkill`/PowerShell for process cleanup. Both are supported; the harnesses are idempotent and safe to re-run.
 
 ### 3.2 Run
 ```
-node scripts/verify-auto-update.mjs
+node scripts/verify-auto-update.mjs          # primary happy-path end-to-end
+node scripts/verify-auto-update-strict.mjs   # strict / negative cases (recommended)
 ```
-Expected wall-clock: ~60–90 s. Exit code `0` and the banner:
+Expected wall-clock: ~60–90 s each. Exit code `0` and the banner:
 ```
 ================ RESULT ================
 Panel  self-update: 10.18.3 -> 10.18.4  OK (whole-package overlay verified)
@@ -82,7 +87,7 @@ After step 15 the harness removes the two marker files (so `production-code` sta
 
 ### 3.4 Determinism & cleanup
 - Step 0 restores the baseline `package.json` and wipes runtime `data/`, so consecutive runs are independent.
-- The harness cleans up on both success and failure (SIGINT/SIGTERM handlers + `process.on('exit')`), killing by child handle, by command pattern (`pkill -f production-code/{daemon,web}/app.js`, `update-test-server`), and by port.
+- The harness cleans up on both success and failure (SIGINT/SIGTERM handlers + `process.on('exit')`), killing by child handle, by command pattern (POSIX `pkill -f …` / Windows `Get-CimInstance Win32_Process`), and by port (POSIX `lsof` / Windows `netstat` + `taskkill`).
 - Per-run logs: `scripts/update-packages/verify-{server,daemon,panel}.log` (grep `[AutoUpdate …]` for the upgrade trace).
 
 ### 3.5 Pass / fail criteria
@@ -120,17 +125,17 @@ For UI-level confidence (the automated test drives the same endpoints the UI cal
 | 1 | Newer version available → update | automated (daemon+panel) | files overlaid, process restarts, version changes, marker lands |
 | 2 | Whole-package overlay (non-whitelisted file) | automated (`OVERLAY_MARKER.txt`) | marker present in install dir after update |
 | 3 | Daemon updated with no local config (panel-forwarded URL) | automated step 10/14 | `configured:true`, update succeeds |
-| 4 | `updateSourceUrl` empty / not configured | automated (baseline) + manual | `configured:false`; banner shows "not configured"; "Update" disabled |
-| 5 | Already on latest version | code path in `performUpgrade` | `{started:false, message:"Already up to date (v…)"}`; no restart |
+| 4 | `updateSourceUrl` empty / not configured | automated (basic step 6.5 + strict scenario 0) + manual | `configured:false`; banner shows "not configured"; "Update" disabled |
+| 5 | Already on latest version | strict scenario A / code path in `performUpgrade` | `{started:false, message:"Already up to date (v…)"}`; no restart |
 | 6 | Update aborted mid-overlay (e.g., disk full) | transactional `applyUpgradePackage` | changed files restored from snapshot; service stays up on old version; error returned |
-| 7 | Malicious zip with `../` entry (Zip-Slip) | `extractZip` guard | extraction rejected before any write; update aborts with "Zip-slip detected" |
-| 8 | Package missing `app.js` | `requiredFiles:["app.js"]` gate | `applyUpgradePackage` throws "Required file not found"; no overlay |
+| 7 | Malicious zip with `../` entry (Zip-Slip) | strict scenario B / `extractZip` guard | extraction rejected before any write; update aborts with "Zip-slip detected" |
+| 8 | Package missing `app.js` | strict scenario B2 / `requiredFiles:["app.js"]` gate | `applyUpgradePackage` throws "Required file not found"; no overlay |
 | 9 | Slow / stalled download (TARPIT) | `downloadToFile` total timeout (5 min) | download aborts; mutex released; error returned |
 | 10 | Panel restart behind a reverse proxy | manual / `waitForPanelRestart` probes `/api/auth/status` (JSON 200) | no false "alive" from proxy root; reload only on real panel-up; rejects on timeout |
 | 11 | Bare node vs systemd vs `npm start` | supervisor detection | bare node & `npm start` get the detached restarter; systemd/pm2 just exit |
 | 12 | Windows native binary in package | overlay attempts it | on Windows the loaded `lib/*` binary is locked → that file's copy fails → transactional rollback → clean abort (no corruption); code-only updates still work |
 
-Scenarios 1–5, 7–9 are exercised by the automated harness or are directly assertable from its logs. 6, 11, 12 are covered by the design's guards (see design §8); they can be exercised manually by crafting a bad zip / killing disk space / inspecting the supervisor-detection branch.
+Scenarios 1–5, 7, 8 are exercised by the automated harnesses; scenario 0/B3 (unconfigured / disabled) are covered by the strict harness too. 6, 9, 11, 12 are covered by the design's guards (see design §8); they can be exercised manually by crafting a bad zip / killing disk space / inspecting the supervisor-detection branch.
 
 ---
 
@@ -138,7 +143,7 @@ Scenarios 1–5, 7–9 are exercised by the automated harness or are directly as
 
 If the build changes, regenerate before re-running:
 ```
-bash build.sh                          # rebuild production-code from current source
+bash build.sh                          # (or build.bat on Windows) rebuild production-code from current source
 node scripts/build-update-packages.mjs # rebuild daemon.zip / web.zip / manifest.json (bumped versions)
 ```
 `build-update-packages.mjs` reads the bumped versions from its own constants (`DAEMON_NEW_VERSION` / `WEB_NEW_VERSION`); bump them along with `daemon/package.json` / `panel/package.json` when the baseline version changes.

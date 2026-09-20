@@ -18,6 +18,7 @@ import fs from "fs";
 import net from "net";
 import path from "path";
 import { spawn, execSync } from "child_process";
+import { killChild, killPattern, killPort } from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
@@ -86,34 +87,9 @@ function waitForPort(port, host = "127.0.0.1", timeout = 30000) {
   });
 }
 
-function killPort(port) {
-  try {
-    execSync(`lsof -ti tcp:${port} 2>/dev/null | xargs kill -9 2>/dev/null || true`, { stdio: "ignore" });
-  } catch {
-    // ignore
-  }
-}
-
 // Track spawned children so cleanup can terminate them directly (a detached
 // re-launch after an update is not a direct child and is handled via killPort).
 let procServer, procDaemon, procPanel;
-function killChild(p) {
-  try {
-    if (p && !p.killed) p.kill("SIGKILL");
-  } catch {
-    // ignore
-  }
-}
-// Kill by command line (catches detached re-launched grandchildren, which are
-// reparented to init/PID 1 after the restarter exits and may not be reachable
-// via the spawned child handle or a single lsof snapshot).
-function killPattern(pattern) {
-  try {
-    execSync(`pkill -9 -f ${JSON.stringify(pattern)} 2>/dev/null || true`, { stdio: "ignore" });
-  } catch {
-    // ignore
-  }
-}
 function cleanup() {
   log("cleanup: killing children + processes + :9999 :23333 :24444");
   killChild(procServer);
@@ -258,6 +234,16 @@ async function main() {
     );
     global.__token = login.data;
     log("  token:", global.__token);
+  }
+
+  log("step 6.5: GET /api/upgrade/panel_info before configuring a source -> expect configured:false");
+  {
+    const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
+    assert(r.status === 200, "panel_info 200 (unconfigured)");
+    assert(
+      r.data?.configured === false && r.data?.updateAvailable === false,
+      "panel reports unconfigured before updateSourceUrl is set"
+    );
   }
 
   log("step 7: configure panel updateSourceUrl via PUT /api/overview/setting");
