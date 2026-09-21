@@ -66,6 +66,8 @@ html {
 }
 
 .global-app-container {
+  position: relative;
+  z-index: 1;
   max-width: var(--app-max-width);
   height: 100svh;
   margin: auto;
@@ -74,6 +76,14 @@ html {
     display: flex;
     max-width: 100%;
   }
+}
+
+.instance-background {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.2s ease-in-out;
 }
 
 .app-layout-sidebar-only {

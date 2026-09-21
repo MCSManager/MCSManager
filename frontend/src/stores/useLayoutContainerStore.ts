@@ -5,15 +5,23 @@ export const useLayoutContainerStore = createGlobalState(() => {
   const containerState = reactive({
     isDesignMode: false,
     showNewCardDialog: false,
-    showPhoneMenu: false
+    showPhoneMenu: false,
+    instanceAppearance: {
+      color: ""
+    }
   });
 
   const changeDesignMode = (b: boolean) => {
     containerState.isDesignMode = b;
   };
 
+  const setInstanceAppearance = (color = "") => {
+    containerState.instanceAppearance.color = color;
+  };
+
   return {
     containerState,
-    changeDesignMode
+    changeDesignMode,
+    setInstanceAppearance
   };
 });

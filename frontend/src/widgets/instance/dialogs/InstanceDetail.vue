@@ -93,6 +93,14 @@ const formData = ref<CombinedFormData>({
   template: _.cloneDeep(defaultQuickStartPackages)
 });
 
+const backgroundColorPickerValue = computed({
+  get: () => formData.value.instance.config?.backgroundColor || "#1f2937",
+  set: (value: string) => {
+    if (!formData.value.instance.config) return;
+    formData.value.instance.config.backgroundColor = value;
+  }
+});
+
 const formRules = computed<Record<string, any>>(() => ({
   instance: {
     config: {
@@ -334,6 +342,14 @@ const submit = async () => {
         },
         data: postData?.config!
       });
+      window.dispatchEvent(
+        new CustomEvent("mcs-instance-appearance-update", {
+          detail: {
+            instanceId: props.instanceId,
+            color: postData?.config?.backgroundColor || ""
+          }
+        })
+      );
       emit("update");
       open.value = false;
       return message.success(t("TXT_CODE_d3de39b4"));
@@ -347,6 +363,7 @@ const submit = async () => {
 const encodeFormData = () => {
   const postData = _.cloneDeep(unref(formData.value.instance));
   if (postData?.config) {
+    postData.config.backgroundColor = formData.value.instance.config?.backgroundColor || "";
     postData.config.endTime = dayjsToTimestamp(postData.dayjsEndTime);
     postData.config.docker.networkAliases = postData?.networkAliasesText
       ?.split(",")
@@ -486,6 +503,11 @@ const handleEditDockerConfig = async (
 const handleUploadImg = async () => {
   const url = await useUploadFileDialog();
   if (url && formData.value.template) formData.value.template.image = url;
+};
+
+const clearBackground = () => {
+  if (!formData.value.instance.config) return;
+  formData.value.instance.config.backgroundColor = "";
 };
 
 defineExpose({
@@ -922,6 +944,31 @@ defineExpose({
                     :precision="0"
                     style="width: 100%"
                   />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row v-if="!isTemplateMode" :gutter="20">
+              <a-col :xs="24" :lg="12" :offset="0">
+                <a-form-item>
+                  <a-typography-title :level="5">
+                    {{ t("TXT_CODE_INSTANCE_BACKGROUND") }}
+                  </a-typography-title>
+                  <a-typography-paragraph>
+                    <a-typography-text type="secondary" class="typography-text-ellipsis">
+                      {{ t("TXT_CODE_INSTANCE_BACKGROUND_HINT") }}
+                    </a-typography-text>
+                  </a-typography-paragraph>
+                  <a-space wrap>
+                    <input
+                      v-model="backgroundColorPickerValue"
+                      class="instance-color-picker"
+                      type="color"
+                      :aria-label="t('TXT_CODE_INSTANCE_BACKGROUND_COLOR')"
+                    />
+                    <a-button v-if="formData.instance.config.backgroundColor" type="link" danger @click="clearBackground">
+                      {{ t("TXT_CODE_INSTANCE_BACKGROUND_CLEAR") }}
+                    </a-button>
+                  </a-space>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1706,6 +1753,17 @@ defineExpose({
     </div>
   </a-modal>
 </template>
+
+<style lang="scss" scoped>
+.instance-color-picker {
+  width: 42px;
+  height: 32px;
+  padding: 2px;
+  cursor: pointer;
+  border: 1px solid var(--color-gray-6);
+  border-radius: 6px;
+}
+</style>
 
 <style scoped>
 .typography-text-ellipsis {
