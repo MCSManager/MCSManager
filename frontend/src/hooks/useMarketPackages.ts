@@ -37,6 +37,13 @@ export const resetSearchForm = (searchForm: SearchForm) => {
   searchForm.keyword = "";
 };
 
+export const matchesLanguage = (
+  item: Pick<QuickStartPackages, "language">,
+  language: string
+): boolean => {
+  return language === SEARCH_ALL_KEY || item.language === language || item.language === "en_us";
+};
+
 /**
  * Composable for market packages filtering and search functionality
  */
@@ -70,7 +77,7 @@ export function useMarketPackages(options: UseMarketPackagesOptions = {}) {
 
   // Specific filter functions
   const matchesLanguageFilter = (item: QuickStartPackages): boolean => {
-    return item.language === searchForm.language || item.language === "en_us";
+    return matchesLanguage(item, searchForm.language);
   };
 
   const matchesGameTypeFilter = (item: QuickStartPackages): boolean => {
