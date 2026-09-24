@@ -222,6 +222,7 @@ export default class Instance extends EventEmitter {
     configureEntityParams(this.config, cfg, "rconIp", String);
     configureEntityParams(this.config, cfg, "category", Number);
     configureEntityParams(this.config, cfg, "basePort", Number);
+    configureEntityParams(this.config, cfg, "backgroundColor", String);
     configureEntityParams(this.config, cfg, "stopTimeout", Number);
     // configureEntityParams does no range check: non-finite/null -> 0, negative -> 0, cap at 86400, floor to integer
     if (!Number.isFinite(this.config.stopTimeout) || this.config.stopTimeout < 0) {

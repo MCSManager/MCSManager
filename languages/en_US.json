@@ -3228,5 +3228,9 @@
   "TXT_CODE_4d6e44c": "Leave empty to not modify",
   "TXT_CODE_b25b5335": "Token Endpoint Authentication Method",
   "TXT_CODE_9a26aa70": "Submit to Token endpoint to authenticate client_id / client_secret",
-  "TXT_CODE_2f56b56e": "**Enabling**"
+  "TXT_CODE_2f56b56e": "**Enabling**",
+  "TXT_CODE_INSTANCE_BACKGROUND": "Dashboard background",
+  "TXT_CODE_INSTANCE_BACKGROUND_HINT": "Choose a color to identify this server.",
+  "TXT_CODE_INSTANCE_BACKGROUND_COLOR": "Background color",
+  "TXT_CODE_INSTANCE_BACKGROUND_CLEAR": "Clear background"
 }

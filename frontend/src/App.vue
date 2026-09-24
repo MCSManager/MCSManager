@@ -35,6 +35,13 @@ const designModeNavStyle = computed(() => {
   };
 });
 
+const instanceAppearanceStyle = computed(() => {
+  const { color } = containerState.instanceAppearance;
+  return {
+    backgroundColor: color || undefined,
+  };
+});
+
 onMounted(async () => {
   setLoadingTitle("Loading application settings...");
   await initAppTheme();
@@ -45,6 +52,7 @@ onMounted(async () => {
 <template>
   <AppConfigProvider :has-bg-image="hasBgImage">
     <!-- App Container -->
+    <div class="instance-background" :style="instanceAppearanceStyle"></div>
     <div class="global-app-container">
       <AppSidebarMenu v-if="useSidebarLayout" :style="designModeNavStyle" />
       <main class="main-content" :class="{ 'app-layout-sidebar-only': useSidebarLayout }">

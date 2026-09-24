@@ -9,14 +9,54 @@ import { useMouseEnter } from "@/hooks/useMouseEnter";
 import { useScreen } from "@/hooks/useScreen";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { getInstanceInfo } from "@/services/apis/instance";
+import { onMounted, onUnmounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useRouterParams } from "../hooks/useRouterParams";
 
-const { containerState } = useLayoutContainerStore();
+const { containerState, setInstanceAppearance } = useLayoutContainerStore();
 const { currentRoutePath } = useRouterParams();
 const { getPageLayoutConfig } = useLayoutConfigStore();
 const currentLayoutConfig = getPageLayoutConfig(currentRoutePath.value);
 const { computedLayout } = useCardLayoutComputed(currentLayoutConfig);
 const { isPhone } = useScreen();
+
+const route = useRoute();
+const { execute: executeInstanceInfo } = getInstanceInfo();
+
+const refreshInstanceAppearance = async () => {
+  const instanceId = String(route.query.instanceId || "");
+  const daemonId = String(route.query.daemonId || "");
+  if (!instanceId || !daemonId) {
+    setInstanceAppearance();
+    return;
+  }
+
+  try {
+    const result = await executeInstanceInfo({ params: { uuid: instanceId, daemonId } });
+    setInstanceAppearance(result.value?.config.backgroundColor || "");
+  } catch {
+    setInstanceAppearance();
+  }
+};
+
+const handleInstanceAppearanceUpdate = (event: Event) => {
+  const detail = (event as CustomEvent<{ instanceId: string; color: string }>).detail;
+  if (detail?.instanceId === String(route.query.instanceId || "")) {
+    setInstanceAppearance(detail.color || "");
+  }
+};
+
+watch(() => [route.query.instanceId, route.query.daemonId], refreshInstanceAppearance, {
+  immediate: true
+});
+
+onMounted(() =>
+  window.addEventListener("mcs-instance-appearance-update", handleInstanceAppearanceUpdate)
+);
+onUnmounted(() =>
+  window.removeEventListener("mcs-instance-appearance-update", handleInstanceAppearanceUpdate)
+);
 
 const {
   dragover,
