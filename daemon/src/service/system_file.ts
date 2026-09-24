@@ -7,6 +7,8 @@ import path from "path";
 import { compress, decompress, listArchiveEntries } from "../common/compress";
 import { globalConfiguration } from "../entity/config";
 import { $t, i18next } from "../i18n";
+import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
+import type { FileOwnership } from "../tools/file_ownership";
 import { normalizedJoin } from "../tools/filepath";
 import { resolveRealPath } from "../tools/path_link_check";
 
@@ -262,29 +264,33 @@ export default class FileManager {
     await fs.move(targetPath, destPath);
   }
 
-  async unzip(sourceZip: string, destDir: string, code?: string) {
+  async unzip(sourceZip: string, destDir: string, code?: string, ownership?: FileOwnership) {
     if (!code) code = this.fileCode;
     if (!this.check(sourceZip) || !this.checkPath(destDir)) throw new Error(ERROR_MSG_01);
     this.zipFileCheck(this.toAbsolutePath(sourceZip));
     const absSource = this.toAbsolutePath(sourceZip);
     const absDest = this.toAbsolutePath(destDir);
 
-    const hasZipSlip = await this.hasZipSlip(absSource, absDest);
+    const archiveEntries = await this.getArchiveEntries(absSource);
+    const hasZipSlip = this.hasZipSlip(absDest, archiveEntries);
     if (hasZipSlip) throw new Error(ERROR_MSG_01);
 
-    return await decompress(absSource, absDest, code);
+    const result = await decompress(absSource, absDest, code);
+    if (ownership) await this.syncArchiveOwnership(absDest, archiveEntries, ownership);
+    return result;
   }
 
-  private async hasZipSlip(absSource: string, absDest: string): Promise<boolean> {
+  private async getArchiveEntries(
+    absSource: string
+  ): Promise<Array<{ name: string; isDirectory: boolean }>> {
     const zip = new StreamZip.async({ file: absSource });
-
     let archiveEntries: Array<{ name: string; isDirectory: boolean }>;
     try {
       // zip archive
       archiveEntries = Object.values(await zip.entries());
     } catch (err: any) {
       const reason = String(err?.message);
-      if (reason.includes("Malicious entry")) return true;
+      if (reason.includes("Malicious entry")) throw new Error(ERROR_MSG_01);
       if (reason !== "Bad archive" && reason !== "Archive read error") throw err;
 
       // other archive
@@ -292,7 +298,13 @@ export default class FileManager {
     } finally {
       await zip.close().catch(() => {});
     }
+    return archiveEntries;
+  }
 
+  private hasZipSlip(
+    absDest: string,
+    archiveEntries: Array<{ name: string; isDirectory: boolean }>
+  ): boolean {
     const entryDirs = new Set<string>();
     for (const entry of archiveEntries) {
       const entryPath = path.resolve(absDest, entry.name);
@@ -311,6 +323,37 @@ export default class FileManager {
       if (this.isOutsideWorkspace(entryDir)) return true;
     }
     return false;
+  }
+
+  private async syncArchiveOwnership(
+    absDest: string,
+    archiveEntries: Array<{ name: string; isDirectory: boolean }>,
+    ownership: FileOwnership
+  ): Promise<void> {
+    const paths = new Set<string>();
+    for (const entry of archiveEntries) {
+      const entryPath = path.resolve(absDest, entry.name);
+      if (entryPath === absDest) continue;
+      paths.add(entryPath);
+
+      let parentPath = path.dirname(entryPath);
+      while (parentPath !== absDest) {
+        paths.add(parentPath);
+        const nextParent = path.dirname(parentPath);
+        if (nextParent === parentPath) break;
+        parentPath = nextParent;
+      }
+    }
+
+    const orderedPaths = [...paths].sort((a, b) => b.length - a.length);
+    for (const targetPath of orderedPaths) {
+      try {
+        await syncPathOwnershipWithinRoot(this.topPath, targetPath, ownership);
+      } catch (error: any) {
+        if (error?.code === "ENOENT") continue;
+        throw error;
+      }
+    }
   }
 
   async zip(sourceZip: string, files: string[], code?: string) {

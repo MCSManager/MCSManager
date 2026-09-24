@@ -11,6 +11,7 @@ import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
+import { resolveInstanceFileOwnership } from "../tools/file_ownership";
 import { checkSafeUrl } from "../utils/url";
 
 // Some routers operate router authentication middleware
@@ -343,7 +344,8 @@ routerApp.on("file/compress", async (ctx, data) => {
       if (type === 1) {
         await fileManager.zip(source, targets, code);
       } else {
-        await fileManager.unzip(source, targets, code);
+        const ownership = await resolveInstanceFileOwnership(instance);
+        await fileManager.unzip(source, targets, code, ownership);
       }
       protocol.response(ctx, true);
     } catch (error: any) {

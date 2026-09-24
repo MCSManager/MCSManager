@@ -3156,5 +3156,9 @@
   "TXT_CODE_6542489a": "範例：/dev/sda:10MB",
   "TXT_CODE_9d2e6d5e": "裝置寫入速率限制 (BPS)",
   "TXT_CODE_2b2ff3ff": "限制容器特定區塊裝置的寫入速率。格式：/dev/sda:5MB。多個裝置請用逗號分隔。",
-  "TXT_CODE_f0dc9eca": "範例：/dev/sda:5MB"
+  "TXT_CODE_f0dc9eca": "範例：/dev/sda:5MB",
+  "TXT_CODE_file_ownership.invalidId": "實例 runAs 設定中的 {{label}} 無效",
+  "TXT_CODE_file_ownership.invalidTarget": "存取遭拒：擁有權目標無效",
+  "TXT_CODE_file_ownership.outsideWorkspace": "存取遭拒：擁有權目標超出實例工作目錄",
+  "TXT_CODE_file_ownership.targetChanged": "存取遭拒：擁有權目標在驗證期間發生變更"
 }
