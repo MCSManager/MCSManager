@@ -3228,5 +3228,8 @@
   "TXT_CODE_4d6e44c": "Leave empty to not modify",
   "TXT_CODE_b25b5335": "Token Endpoint Authentication Method",
   "TXT_CODE_9a26aa70": "Submit to Token endpoint to authenticate client_id / client_secret",
-  "TXT_CODE_2f56b56e": "**Enabling**"
+  "TXT_CODE_2f56b56e": "**Enabling**",
+  "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
+  "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
+  "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace"
 }

@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import type Instance from "../entity/instance/instance";
+import { $t } from "../i18n";
 import { getLinuxSystemId } from "./system_user";
 
 export interface FileOwnership {
@@ -19,7 +20,7 @@ function isInside(root: string, target: string): boolean {
 function parseId(value: string, label: string): number {
   const id = Number(value);
   if (!Number.isSafeInteger(id) || id < 0 || id >= 0xffffffff) {
-    throw new Error(`Invalid ${label} in instance runAs setting`);
+    throw new Error($t("TXT_CODE_file_ownership.invalidId", { label }));
   }
   return id;
 }
@@ -59,14 +60,16 @@ export async function syncPathOwnershipWithinRoot(
 ): Promise<void> {
   const rootPath = path.resolve(workspaceRoot);
   const targetPath = path.resolve(target);
-  if (!isInside(rootPath, targetPath)) throw new Error("Access denied: Invalid ownership target");
+  if (!isInside(rootPath, targetPath)) {
+    throw new Error($t("TXT_CODE_file_ownership.invalidTarget"));
+  }
 
   const rootRealPath = await fs.realpath(rootPath);
   const targetInfo = await fs.lstat(targetPath);
   const pathToValidate = targetInfo.isSymbolicLink() ? path.dirname(targetPath) : targetPath;
   const targetRealPath = await fs.realpath(pathToValidate);
   if (!isInside(rootRealPath, targetRealPath)) {
-    throw new Error("Access denied: Ownership target escapes instance workspace");
+    throw new Error($t("TXT_CODE_file_ownership.outsideWorkspace"));
   }
 
   await fs.lchown(targetPath, ownership.uid, ownership.gid);
