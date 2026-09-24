@@ -3231,5 +3231,6 @@
   "TXT_CODE_2f56b56e": "**Enabling**",
   "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
   "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
-  "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace"
+  "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace",
+  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation"
 }

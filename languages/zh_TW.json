@@ -3159,5 +3159,6 @@
   "TXT_CODE_f0dc9eca": "範例：/dev/sda:5MB",
   "TXT_CODE_file_ownership.invalidId": "實例 runAs 設定中的 {{label}} 無效",
   "TXT_CODE_file_ownership.invalidTarget": "存取遭拒：擁有權目標無效",
-  "TXT_CODE_file_ownership.outsideWorkspace": "存取遭拒：擁有權目標超出實例工作目錄"
+  "TXT_CODE_file_ownership.outsideWorkspace": "存取遭拒：擁有權目標超出實例工作目錄",
+  "TXT_CODE_file_ownership.targetChanged": "存取遭拒：擁有權目標在驗證期間發生變更"
 }

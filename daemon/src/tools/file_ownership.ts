@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import { constants as fsConstants } from "fs";
 import path from "path";
 import type Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
@@ -72,7 +73,25 @@ export async function syncPathOwnershipWithinRoot(
     throw new Error($t("TXT_CODE_file_ownership.outsideWorkspace"));
   }
 
-  await fs.lchown(targetPath, ownership.uid, ownership.gid);
+  // Node cannot safely chown a symlink through a directory descriptor. Its owner
+  // does not control access to the target, so leave symlinks and special files alone.
+  if (!targetInfo.isFile() && !targetInfo.isDirectory()) return;
+
+  const flags =
+    fsConstants.O_RDONLY |
+    fsConstants.O_NOFOLLOW |
+    fsConstants.O_NONBLOCK |
+    (targetInfo.isDirectory() ? fsConstants.O_DIRECTORY : 0);
+  const fd = await fs.open(targetPath, flags);
+  try {
+    const openedInfo = await fs.fstat(fd);
+    if (openedInfo.dev !== targetInfo.dev || openedInfo.ino !== targetInfo.ino) {
+      throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+    }
+    await fs.fchown(fd, ownership.uid, ownership.gid);
+  } finally {
+    await fs.close(fd);
+  }
 }
 
 export async function syncInstancePathOwnership(
