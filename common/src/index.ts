@@ -25,6 +25,16 @@ export {
 
 export { arrayUnique } from "./array";
 
+export {
+  applyUpgradePackage,
+  compareVersions,
+  downloadToFile,
+  extractZip,
+  fetchJson,
+  isSupervisedProcess,
+  selfRestartProcess
+} from "./upgrade";
+
 export { removeTrail } from "./string_utils";
 
 export {

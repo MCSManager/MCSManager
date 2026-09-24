@@ -117,4 +117,11 @@ export default class SystemConfig {
   sslPemPath = "";
   // SSL private key file path (.key)
   sslKeyPath = "";
+
+  // ---- Auto update (self-update the panel app.js + public/ from a manifest) ----
+  // Full URL to a manifest.json describing available updates, e.g.
+  // "http://localhost:9999/manifest.json". Empty => auto update disabled.
+  updateSourceUrl = "";
+  // Master switch: allow this panel to be updated from its own Settings page.
+  allowAutoUpdate = true;
 }
